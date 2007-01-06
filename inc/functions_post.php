@@ -111,7 +111,13 @@ function build_postbit($post, $post_type=0)
 		{
 			$postcounter = 0;
 		}
+		$post_extra_style = "border-top-width: 0;";
 	}
+	else
+	{
+		$post_extra_style = "margin-top: 5px";
+	}
+	
 	if(!$altbg)
 	{ // Define the alternate background colour if this is the first post
 		$altbg = "trow1";

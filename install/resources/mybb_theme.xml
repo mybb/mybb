@@ -731,7 +731,7 @@ var inlineId = {$tid};
 	{$newreply}{$newthread}
 </div>
 {$multipage}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" id="post_list">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="2">
 	<div style="float: right;">
@@ -746,8 +746,11 @@ var inlineId = {$tid};
 <td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
 <td class="tcat" width="85%"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 </tr>
+</table>
+<div id="posts">
 {$posts}
-<!-- mybb:quickreply -->
+</div>
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="border-top-width: 0;">
 {$threadpages}
 <tr>
 <td colspan="2" class="tfoot">
@@ -3870,7 +3873,8 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="forumdisplay_threads_sep" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
-		<template name="postbit" version="120"><![CDATA[<tr id="post_{$post['pid']}">
+		<template name="postbit" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style}">
+<tr id="post_{$post['pid']}">
 <td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
@@ -3904,7 +3908,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	</table>
 </td>
 </tr>
-{$seperator}]]></template>
+</table>]]></template>
 		<template name="postbit_seperator" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
@@ -4043,15 +4047,12 @@ if(use_xmlhttprequest == "yes")
 </head>
 <body>
 {$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->forum_announcement}</strong></td>
 </tr>
-{$announcement}
-<tr>
-<td class="thead" colspan="3"><strong>&nbsp;</strong></td>
-</tr>
 </table>
+{$announcement}
 {$footer}
 </body>
 </html>]]></template>
@@ -5924,7 +5925,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 {$usercpnav}
 <td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="2">
 <strong>{$pm['subject']}</strong>
@@ -5953,12 +5954,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 	<td class="tcat" colspan="2"><strong>{$lang->message}</strong></td>
 </tr>
-{$message}
-<tr>
-<td class="tfoot" colspan="2"><strong>{$pm['subject']}</strong>
-</td>
-</tr>
 </table>
+{$message}
 {$footer}
 </body>
 </html>]]></template>
@@ -6532,13 +6529,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
-		<template name="previewpost" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="previewpost" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->post_preview}</strong></td>
 </tr>
-{$postbit}
 </table>
-<br />]]></template>
+{$postbit}
+]]></template>
 		<template name="misc_help_helpdoc" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->help_docs}</title>

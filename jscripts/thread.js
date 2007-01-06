@@ -251,7 +251,7 @@ var Thread = {
 
 	initQuickReply: function()
 	{
-		if($('quick_reply_form') && use_xmlhttprequest == "yes")
+		if($('quick_reply_form'))
 		{
 			Event.observe($('quick_reply_form'), "submit", Thread.quickReply.bindAsEventListener(this));
 		}
@@ -289,9 +289,13 @@ var Thread = {
 		else if(request.responseText.match(/id="post_([0-9]+)"/))
 		{
 			var pid = request.responseText.match(/id="post_([0-9]+)"/)[1];
-			$('post_list').innerHTML = $('post_list').innerHTML.replace("<!-- mybb:quickreply -->", request.responseText+"<!-- mybb:quickreply -->");				
-			request.responseText.evalScripts();
-			new PopupMenu("edit_post_"+pid);
+			var post = document.createElement("div");
+			post.innerHTML = request.responseText;
+			$('post_list').appendChild(post);
+			if(MyBB.browser == "ie")
+			{
+				request.responseText.evalScripts();
+			}
 			Form.reset('quick_reply_form');
 			if($('lastpid'))
 			{
