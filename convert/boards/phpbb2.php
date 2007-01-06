@@ -1210,10 +1210,39 @@ class Convert_phpbb2 extends Converter {
 
 		$this->phpbb_db_connect();
 
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"sitename" => "bbname",
+			"max_sig_chars" => "siglength",
+			"avatar_max_height" => "maxavatardims",
+			"avatar_max_width" => "maxavatardims",
+			"avatar_path" => "avataruploadpath",
+			"hot_threshold" => "hottopic",
+			"max_poll_options" => "maxpolloptions",
+			"privmsg_disable" => "mybbsetting",
+			"board_timezone" => "timezoneoffset",
+			"board_email" => "adminemail",
+			"avatar_gallery_path" => "avatardir",
+			"posts_per_page" => "postsperpage",
+			"topics_per_page" => "threadsperpage",
+			"flood_interval" => "postfloodsecs",
+			"search_flood_interval" => "searchfloodtime",
+			"search_min_chars" => "minsearchword",
+			"enable_confirm" => "captchaimage",
+			"avatar_filesize" => "avatarsize",
+			"max_login_attempts" => "failedlogincount",
+			"login_reset_time" => "failedlogintime",
+			"gzip_compress" => "gzipoutput"
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
+		$int_to_yes_no = array(
+			"privmsg_disable" => 0
+		);
+
 		// Get number of threads
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("config", "COUNT(*) as count", "config_name IN({$settings})");
 			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');
 		}
 
@@ -1248,19 +1277,37 @@ class Convert_phpbb2 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select("config", "config_name, config_value", "config_name IN({$settings})", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from the phpBB database... ";
-
 				// phpBB 2 values
-				$name = $value = "";
-
-				switch($setting['config_name'])
+				$name = $settings_array[$setting['config_name']];
+				$value = $setting['config_value'];
+				
+				echo "Updating setting {$value} from the phpBB database to {$name} in the MyBB database... ";
+				
+				if($setting['config_name'] == "avatar_max_height")
 				{
-					case '':
+					$avatar_setting = "x".$value;
+					echo "done.<br />\n";
+					continue;
 				}
-			
+				else if($setting['config_name'] == "avatar_max_width")
+				{
+					$value = $value.$avatar_setting;
+					unset($avatar_setting);
+				}
+				
+				if($setting['config_name'] == "avatar_filesize")
+				{
+					$value = ceil($value / 1024);
+				}
+				
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$name]))
+				{
+					$value = $this->int_to_yes_no($value, $int_to_yes_no[$name]);
+				}
+				
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
@@ -1399,6 +1446,38 @@ class Convert_phpbb2 extends Converter {
 	
 			return $group;
 		}
+	}
+	
+	/**
+	 * Generates yes/on based on the supplied int
+	 *
+	 * @param int Setting before import
+	 * @param int Is zero or one equal yes
+	 * @return string Yes/No
+	 */
+	function int_to_yes_no($setting, $yes="1")
+	{
+		if($setting == 0 && $yes == 1)
+		{
+			$return = "no";
+		}
+		elseif($setting == 1 && $yes == 1)
+		{
+			$return = "yes";
+		}
+		elseif($setting == 0 && $yes == 0)
+		{
+			$return = "yes";
+		}
+		elseif($setting == 1 && $yes == 0)
+		{
+			$return = "no";
+		}
+		else
+		{
+			$return = "yes";
+		}
+		return $return;
 	}
 	
 	/**

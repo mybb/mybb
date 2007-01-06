@@ -1092,19 +1092,15 @@ class Convert_phpbb3 extends Converter {
 			{
 				$import_session['phpbbpath'] .= '/';
 			}
-			 
-			// bah... this crapola piece of code never works!
-			/*
+			
+			
+			// Doesn't work?
 			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
 			{
 				echo $import_session['phpbbpath'].'adm/index.php';
 				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
 				$error_phpbbpath = true;
 			}
-			*/
-			
-			//clearstatcache();
-			
 		}
 		
 		// Set uploads path
@@ -1169,7 +1165,7 @@ class Convert_phpbb3 extends Converter {
 				$this->insert_attachment($insert_attachment);
 				
 				$file_not_transfered = "";
-				if(file_exists($import_session['uploadspath'].'/'.$attachment['physical_filename']))
+				if($this->url_exists($import_session['uploadspath'].'/'.$attachment['physical_filename']) !== false)
 				{
 					// Get the contents
 					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['physical_filename']);

@@ -149,6 +149,11 @@ class errorHandler {
 	{
 		global $lang, $templates;
 		
+		if(empty($this->warnings))
+		{
+			return false;
+		}
+		
 		// Incase a template fails and we're recieving a blank page
 		if(MANUAL_WARNINGS)
 		{
@@ -166,7 +171,7 @@ class errorHandler {
 		}
 		else
 		{
-			$parser_exists = false;
+			$template_exists = false;
 			
 			if(!is_object($templates) || !method_exists($templates, 'get'))
 			{
@@ -174,15 +179,15 @@ class errorHandler {
 				{
 					@require_once MYBB_ROOT."inc/class_templates.php";
 					$templates = new templates;
-					$parser_exists = true;
+					$template_exists = true;
 				}
 			}
 			else
 			{
-				$parser_exists = true;
+				$template_exists = true;
 			}
 			
-			if($parser_exists == true)
+			if($template_exists == true)
 			{
 				eval("\$warning = \"".$templates->get("warnings")."\";");
 			}
