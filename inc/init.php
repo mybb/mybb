@@ -165,7 +165,7 @@ add_shutdown('send_mail_queue');
 $rand = rand(0, 10);
 
 /* URL Definitions */
-if($mybb->settings['seourls'] == "yes")
+if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
 {
 	define('FORUM_URL', "forum{fid}.html");
 	define('FORUM_URL_PAGED', "forum{fid}-{page}.html");
