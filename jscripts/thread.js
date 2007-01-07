@@ -291,7 +291,7 @@ var Thread = {
 			var pid = request.responseText.match(/id="post_([0-9]+)"/)[1];
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
-			$('post_list').appendChild(post);
+			$('posts').appendChild(post);
 			if(MyBB.browser == "ie")
 			{
 				request.responseText.evalScripts();
