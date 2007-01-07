@@ -399,7 +399,15 @@ function show($user)
 			break;
 		case "member":
 		case "member_login":
-			$locationname = $lang->logging_in;
+			// Guest or member?
+			if($mybb->user['uid'] == 0)
+			{
+				$location_name = $lang->logging_in;
+			}
+			else
+			{
+				$location_name = $lang->logging_in_plain;
+			}
 			break;
 		case "member_logout":
 			$locationname = $lang->logging_out;

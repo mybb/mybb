@@ -231,17 +231,33 @@ if($mybb->settings['portal_showwol'] != "no")
 	");
 	while($user = $db->fetch_array($query))
 	{
+		// Create a key to test if this user is a search bot.
+		$botkey = strtolower(str_replace("bot=", '', $user['sid']));
+		
 		if($user['uid'] == "0")
 		{
-			$guestcount++;
+			++$guestcount;
+		}
+		elseif(strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		{
+			// The user is a search bot.
+			$onlinemembers .= $comma.format_name($session->bots[$botkey], $session->botgroup);
+			$comma = ", ";
+			++$botcount;
 		}
 		else
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
 				$doneusers[$user['uid']] = $user['time'];
-				$membercount++;
-				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes")
+				
+				// If the user is logged in anonymously, update the count for that.
+				if($user['invisible'] == "yes")
+				{
+					++$anoncount;
+				}
+				
+				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
 				{
 					if($user['invisible'] == "yes")
 					{
@@ -252,13 +268,21 @@ if($mybb->settings['portal_showwol'] != "no")
 						$invisiblemark = '';
 					}
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['profilelink'] = get_profile_link($user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
 					$comma = ", ";
 				}
 			}
 		}
 	}
-	$onlinecount = $membercount + $guestcount + $anoncount;
+	
+	$onlinecount = $membercount + $guestcount + $botcount + $anoncount;
+	
+	// If we can't see invisible users remove them from the count
+	if($mybb->usergroup['canviewwolinvis'] != "yes")
+	{
+		$onlinecount -= $anoncount;
+	}
 
 	// Most users online
 	$mostonline = $cache->read("mostonline");
@@ -356,9 +380,12 @@ while($attachment = $db->fetch_array($query))
 	$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 }
 
-foreach($forum as $fid => $forumrow)
+if(is_array($forum))
 {
-    $forumpermissions[$fid] = forum_permissions($fid);
+	foreach($forum as $fid => $forumrow)
+	{
+		$forumpermissions[$fid] = forum_permissions($fid);
+	}
 }
 
 $icon_cache = $cache->read("posticons");

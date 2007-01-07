@@ -547,7 +547,7 @@ class Moderation
 					$db->insert_array(TABLE_PREFIX."polls", $poll_array);
 				}
 				
-				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid = '$tid'");				
+				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid = '{$thread['tid']}'");				
 				while($post = $db->fetch_array($query))
 				{
 					$post_array = array(
@@ -570,8 +570,8 @@ class Moderation
 					$pid = $db->insert_id();
 					
 					// Insert attachments for this post
-					$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid = '$pid'");
-					while($attachment = $db->fetch_array($query))
+					$query2 = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid = '{$post['pid']}'");
+					while($attachment = $db->fetch_array($query2))
 					{
 						$attachment_array = array(
 							'pid' => $pid,
