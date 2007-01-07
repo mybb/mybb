@@ -200,10 +200,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				delete_thread($tid);
 				update_forum_count($fid);
 				mark_reports($tid, "thread");
-				if(!is_moderator($fid, "candeleteposts"))
-				{
-					log_moderator_action($modlogdata, "Deleted Thread");
-				}
+				log_moderator_action($modlogdata, $lang->thread_deleted);
 				redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
 			}
 			else
@@ -220,10 +217,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				update_thread_count($tid);
 				update_forum_count($fid);
 				mark_reports($pid, "post");
-				if(!is_moderator($fid, "candeleteposts"))
-				{
-					log_moderator_action($modlogdata, "Deleted Post");
-				}
+				log_moderator_action($modlogdata, $lang->post_deleted);
 				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])

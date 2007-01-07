@@ -620,28 +620,28 @@ class PostDataHandler extends DataHandler
 				if($modoptions['closethread'] == "yes" && $thread['closed'] != "yes")
 				{
 					$newclosed = "closed='yes'";
-					log_moderator_action($modlogdata, "Thread closed");
+					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
 				if($modoptions['closethread'] != "yes" && $thread['closed'] == "yes")
 				{
 					$newclosed = "closed='no'";
-					log_moderator_action($modlogdata, "Thread opened");
+					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
 				// Stick the thread.
 				if($modoptions['stickthread'] == "yes" && $thread['sticky'] != 1)
 				{
 					$newstick = "sticky='1'";
-					log_moderator_action($modlogdata, "Thread stuck");
+					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
 				if($modoptions['stickthread'] != "yes" && $thread['sticky'])
 				{
 					$newstick = "sticky='0'";
-					log_moderator_action($modlogdata, "Thread unstuck");
+					log_moderator_action($modlogdata, $lang->thread_unstuck);
 				}
 
 				// Execute moderation options.
@@ -1097,14 +1097,14 @@ class PostDataHandler extends DataHandler
 				if($modoptions['closethread'] == "yes")
 				{
 					$newclosed = "closed='yes'";
-					log_moderator_action($modlogdata, "Thread closed");
+					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
 				if($modoptions['stickthread'] == "yes")
 				{
 					$newstick = "sticky='1'";
-					log_moderator_action($modlogdata, "Thread stuck");
+					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Execute moderation options.

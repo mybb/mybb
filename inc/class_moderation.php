@@ -549,7 +549,7 @@ class Moderation
 					$db->insert_array("polls", $poll_array);
 				}
 				
-				$query = $db->simple_select("posts", "*", "tid = '$tid'");				
+				$query = $db->simple_select("posts", "*", "tid = '{$thread['tid']}'");	
 				while($post = $db->fetch_array($query))
 				{
 					$post_array = array(
@@ -572,8 +572,8 @@ class Moderation
 					$pid = $db->insert_id();
 					
 					// Insert attachments for this post
-					$query = $db->simple_select("attachments", "*", "pid = '$pid'");
-					while($attachment = $db->fetch_array($query))
+					$query2 = $db->simple_select("attachments", "*", "pid = '{$post['pid']}'");
+					while($attachment = $db->fetch_array($query2))
 					{
 						$attachment_array = array(
 							'pid' => $pid,
@@ -787,7 +787,7 @@ class Moderation
 			SELECT COUNT(p.pid) AS posts, u.uid, p.visible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.tid='$newtid'
+			WHERE p.tid='$newtid' AND p.visible = '1'
 			GROUP BY u.uid
 			ORDER BY posts DESC
 		");
@@ -802,7 +802,7 @@ class Moderation
 				$pcount = "+{$posters['posts']}";
 			}
 
-			if(!empty($pcount) && $post['visible'] == '1')
+			if(!empty($pcount))
 			{
 				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 			}

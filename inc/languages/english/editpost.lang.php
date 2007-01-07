@@ -35,4 +35,7 @@ $l['error_invalidpost'] = "Sorry, but you seem to have followed an invalid addre
 $l['redirect_threaddeleted'] = "Thank you, the thread has been deleted.<br />You will now be returned to the forum.";
 $l['redirect_postdeleted'] = "Thank you, the post has been deleted.<br />You will now be returned to the thread.";
 $l['redirect_threadclosed'] = "You cannot edit existing posts in this thread because it has been closed by a moderator.";
+
+$l['thread_deleted'] = "Deleted Thread";
+$l['post_deleted'] = "Deleted Post";
 ?>

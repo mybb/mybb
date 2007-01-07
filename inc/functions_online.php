@@ -370,7 +370,7 @@ function fetch_wol_activity($location)
  */
 function build_friendly_wol_location($user_activity, $return=false)
 {
-	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser;
+	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb;
 	static $threads, $forums, $forums_linkto, $posts, $events, $users;
 
 	// Fetch forum permissions for this user
@@ -546,7 +546,15 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		case "member":
 		case "member_login":
-			$location_name = $lang->logging_in;
+			// Guest or member?
+			if($mybb->user['uid'] == 0)
+			{
+				$location_name = $lang->logging_in;
+			}
+			else
+			{
+				$location_name = $lang->logging_in_plain;
+			}
 			break;
 		case "member_logout":
 			$location_name = $lang->logging_out;

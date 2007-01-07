@@ -29,6 +29,7 @@ $l['viewing_profile'] = "Viewing Profile";
 $l['viewing_profile2'] = "Viewing Profile of <a href=\"member.php?action=profile&amp;uid={1}\">{2}</a>";
 $l['registering'] = "<a href=\"member.php?action=register\">Registering</a>";
 $l['logging_in'] = "<a href=\"member.php?action=login\">Logging In</a>";
+$l['logging_in_plain'] = "Logging In";
 $l['logging_out'] = "<a href=\"member.php?action=logout\">Logging Out</a>";
 $l['emailing_user'] = "Emailing a User";
 $l['rating_user'] = "Rating User";
