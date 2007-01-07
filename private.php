@@ -195,13 +195,15 @@ if($mybb->input['action'] == "send")
 {
 	$plugins->run_hooks("private_send_start");
 
+	$smilieinserter = $codebuttons = "";
+
 	if($mybb->settings['bbcodeinserter'] != "off" && $mybb->settings['pmsallowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
 	{
 		$codebuttons = build_mycode_inserter();
-	}
-	if($mybb->settings['pmsallowsmilies'] != "no")
-	{
-		$smilieinserter = build_clickable_smilies();
+		if($mybb->settings['pmsallowsmilies'] != "no")
+		{
+			$smilieinserter = build_clickable_smilies();
+		}
 	}
 
 	$posticons = get_post_icons();
