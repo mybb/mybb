@@ -9,10 +9,10 @@
  * $Id$
  */
  
-// Board Name: Invision Power Board 2
+// Board Name: Invision Power Board 2.2
 
 class Convert_ipb2 extends Converter {
-	var $bbname = "Invision Power Board 2";
+	var $bbname = "Invision Power Board 2.2";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import Invision Power Board 2 Usergroups",

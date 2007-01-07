@@ -12,7 +12,7 @@
 // Board Name: XMB 1.9
 
 class Convert_xmb extends Converter {
-	var $bbname = "XMB";
+	var $bbname = "XMB 1.9";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_users" => array("name" => "Import XMB Users",

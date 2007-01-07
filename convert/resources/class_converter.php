@@ -333,7 +333,7 @@ class Converter
 	}
 	
 	/**
-	 * Insert attachment into database
+	 * Insert an event into database
 	 */
 	function insert_event($event)
 	{

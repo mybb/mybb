@@ -9,10 +9,10 @@
  * $Id$
  */
  
-// Board Name: vBulletin 3
+// Board Name: vBulletin 3.6
 
 class Convert_vbulletin3 extends Converter {
-	var $bbname = "vBulletin 3";
+	var $bbname = "vBulletin 3.6";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_users" => array("name" => "Import vBulletin 3 Users",
