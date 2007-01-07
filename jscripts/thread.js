@@ -251,7 +251,7 @@ var Thread = {
 
 	initQuickReply: function()
 	{
-		if($('quick_reply_form'))
+		if($('quick_reply_form') && use_xmlhttprequest == "yes")
 		{
 			Event.observe($('quick_reply_form'), "submit", Thread.quickReply.bindAsEventListener(this));
 		}

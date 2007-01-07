@@ -158,6 +158,19 @@ class Moderation
 		$num_unapproved_posts = 0;
 		while($post = $db->fetch_array($query))
 		{
+			$pids .= $post['pid'].",";
+			$usepostcounts = $post['usepostcounts'];
+			
+			// Remove attachments
+			remove_attachments($post['pid']);
+			
+			// If the post is unapproved, count it!
+			if($post['visible'] == 0)
+			{
+				$num_unapproved_posts++;
+				continue;
+			}
+			
 			// Count the post counts for each user to be subtracted
 			if($userposts[$post['uid']])
 			{
@@ -166,16 +179,6 @@ class Moderation
 			else
 			{
 				$userposts[$post['uid']] = -1;
-			}
-			$pids .= $post['pid'].",";
-			$usepostcounts = $post['usepostcounts'];
-			// Remove attachments
-			remove_attachments($post['pid']);
-	
-			// If the post is unapproved, count it!
-			if($post['visible'] == 0)
-			{
-				$num_unapproved_posts++;
 			}
 		}
 		// Remove post count from users
@@ -250,17 +253,31 @@ class Moderation
 			$tids = array($tids);
 		}
 		$tid_list = implode(",", $tids);
+		
+		foreach($tids as $tid)
+		{
+			$query = $db->query("
+				SELECT p.tid, f.usepostcounts, p.uid
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+				WHERE p.tid='$tid' AND p.visible = '0'
+			");
+			while($post = $db->fetch_array($query))
+			{
+				// If post counts enabled in this forum and the post hasn't already been approved, remove 1
+				if($post['usepostcounts'] != "no")
+				{
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
+				}
+			}
+			update_thread_count($tid);
+		}
 
 		$approve = array(
 			"visible" => 1,
 		);
 		$db->update_query("threads", $approve, "tid IN ($tid_list)");
 		$db->update_query("posts", $approve, "tid IN ($tid_list)", 1);
-		
-		foreach($tids as $tid)
-		{
-			update_thread_count($tid);
-		}
 		
 		// Update stats
 		$cache->updatestats();
@@ -279,23 +296,37 @@ class Moderation
 	function unapprove_threads($tids, $fid)
 	{
 		global $db, $cache;
-
+		
 		if(!is_array($tids))
 		{
 			$tids = array($tids);
 		}
 		$tid_list = implode(",", $tids);
+		
+		foreach($tids as $tid)
+		{
+			$query = $db->query("
+				SELECT p.tid, f.usepostcounts, p.uid
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+				WHERE p.tid='$tid' AND p.visible = '1'
+			");
+			while($post = $db->fetch_array($query))
+			{
+				// If post counts enabled in this forum and the post hasn't already been unapproved, remove 1
+				if($post['usepostcounts'] != "no")
+				{
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+				}
+			}
+			update_thread_count($tid);
+		}
 
 		$approve = array(
 			"visible" => 0,
 		);
 		$db->update_query("threads", $approve, "tid IN ($tid_list)");
 		$db->update_query("posts", $approve, "tid IN ($tid_list) AND replyto='0'", 1);
-
-		foreach($tids as $tid)
-		{
-			update_thread_count($tid);
-		}
 		
 		// Update stats
 		$cache->updatestats();
@@ -322,8 +353,8 @@ class Moderation
 			WHERE p.pid='$pid'
 		");
 		$post = $db->fetch_array($query);
-		// If post counts enabled in this forum, remove 1
-		if($post['usepostcounts'] != "no")
+		// If post counts enabled in this forum and it hasn't already been unapproved, remove 1
+		if($post['usepostcounts'] != "no" && $post['visible'] != 0)
 		{
 			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 		}
@@ -331,7 +362,7 @@ class Moderation
 		$db->delete_query("posts", "pid='$pid'");
 		// Remove attachments
 		remove_attachments($pid);
-	
+		
 		// Update unapproved post count
 		if($post['visible'] == 0)
 		{
@@ -340,6 +371,7 @@ class Moderation
 		}
 		$plugins->run_hooks("delete_post", $post['tid']);
 		$cache->updatestats();
+
 		update_thread_count($post['tid']);
 		update_forum_count($post['fid']);
 
@@ -388,7 +420,7 @@ class Moderation
 					$message .= "[hr]{$post['message']}";
 				}
 				
-				if($post['usepostcounts'] != "no")
+				if($post['usepostcounts'] != "no" && $post['visible'] == '1')
 				{
 					// Update post count of the user of the merged posts
 					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
@@ -752,11 +784,11 @@ class Moderation
 		$query = $db->simple_select("forums", "usepostcounts", "fid='$moveto'");
 		$newusepcounts = $db->fetch_field($query, "usepostcounts");
 		$query = $db->query("
-			SELECT COUNT(p.pid) AS posts, u.uid 
-			FROM ".TABLE_PREFIX."posts p 
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid) 
-			WHERE p.tid='$newtid' 
-			GROUP BY u.uid 
+			SELECT COUNT(p.pid) AS posts, u.uid, p.visible
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.tid='$newtid'
+			GROUP BY u.uid
 			ORDER BY posts DESC
 		");
 		while($posters = $db->fetch_array($query))
@@ -770,7 +802,7 @@ class Moderation
 				$pcount = "+{$posters['posts']}";
 			}
 
-			if(!empty($pcount))
+			if(!empty($pcount) && $post['visible'] == '1')
 			{
 				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 			}
@@ -860,12 +892,30 @@ class Moderation
 
 		$thread = get_thread($tid);
 		
-		$where = "pid IN (".implode(",", $pids).")";
+		foreach($pids as $pid)
+		{
+			$query = $db->query("
+				SELECT p.tid, f.usepostcounts, p.uid
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+				WHERE p.pid='{$pid}' AND p.visible = '0'
+			");
+			while($post = $db->fetch_array($query))
+			{
+				// If post counts enabled in this forum and the post hasn't already been approved, add 1
+				if($post['usepostcounts'] != "no")
+				{
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
+				}
+			}
+		}
+		
+		$where = "pid IN (".implode(",", $pids).")";		
 
 		// Make visible
 		$approve = array(
 			"visible" => 1,
-			);
+		);
 		$db->update_query("posts", $approve, $where);
 
 		// If this is the first post of the thread, also approve the thread
@@ -896,14 +946,32 @@ class Moderation
 		
 		$thread = get_thread($tid);
 
+		foreach($pids as $pid)
+		{
+			$query = $db->query("
+				SELECT p.tid, f.usepostcounts, p.uid
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+				WHERE p.pid='{$pid}' AND p.visible = '1'
+			");
+			while($post = $db->fetch_array($query))
+			{
+				// If post counts enabled in this forum and the post hasn't already been unapproved, remove 1
+				if($post['usepostcounts'] != "no")
+				{
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+				}
+			}
+		}
+		
 		$where = "pid IN (".implode(",", $pids).")";
-
+		
 		// Make invisible
 		$unapprove = array(
 			"visible" => 0,
 		);
 		$db->update_query("posts", $unapprove, $where);
-
+		
 		// If this is the first post of the thread, also unapprove the thread
 		$query = $db->simple_select("posts", "tid", "pid='{$thread['firstpost']}' AND visible='0'");
 		$first_post = $db->fetch_array($query);
