@@ -852,6 +852,11 @@ elseif($mybb->input['action'] == "resetpassword")
 else if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
+	
+	if($mybb->user['uid'] != 0)
+	{
+		error($lang->error_already_logged_in);
+	}
 
 	//Checks to make sure the user can login; they haven't had too many tries at logging in.
 	//Is a fatal call if user has had too many tries
@@ -873,6 +878,11 @@ else if($mybb->input['action'] == "login")
 else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_login_start");
+	
+	if($mybb->user['uid'] != 0)
+	{
+		error($lang->error_already_logged_in);
+	}
 
 	//Checks to make sure the user can login; they haven't had too many tries at logging in.
 	//Is a fatal call if user has had too many tries
