@@ -957,10 +957,56 @@ class Convert_punbb extends Converter {
 
 		$this->punbb_db_connect();
 
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"o_board_title" => "bbname",
+			"o_server_timezone" => "timezoneoffset",
+			"o_time_format" => "timeformat",
+			"o_date_format" => "dateformat",
+			"o_timeout_online" => "wolcutoffmins",
+			"o_show_version" => "showvernum",
+			"o_smilies_sig" => "sigsmilies",
+			"o_disp_topics_default" => "threadsperpage",
+			"o_disp_posts_default" => "postsperpage",
+			"o_quickpost" => "quickreply",
+			"o_users_online" => "showwol",
+			"o_show_dot" => "dotfolders",
+			"o_gzip" => "gzipoutput",
+			"o_avatars_dir" => "avataruploadpath",
+			"o_avatars_height" => "maxavatardims",
+			"o_avatars_width" => "maxavatardims",
+			"o_avatars_size" => "avatarsize",
+			"o_webmaster_email" => "adminemail",
+			/* To be used at a later date
+			"o_smtp_host" => "",
+			"o_smtp_user" => "",
+			"o_smtp_pass" => "", */
+			"o_regs_allow" => "disableregs",
+			"o_regs_verify" => "regtype",
+			"o_maintenance" => "boardclosed",
+			"o_maintenance_message" => "boardclosed_reason",
+			"p_sig_bbcode" => "sigmycode",
+			"p_sig_img_tag" => "sigimgcode",
+			"p_sig_length" => "siglength"
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
+		$int_to_yes_no = array(
+			"o_show_version" => 1,
+			"o_smilies_sig" => 1,
+			"o_quickpost" => 1,
+			"o_users_online" => 1,
+			"o_show_dot" => 1,
+			"o_gzip" => 1,
+			"o_regs_allow" => 0,
+			"o_maintenance" => 1,
+			"p_sig_bbcode" => 1,
+			"p_sig_img_tag" => 1
+		);
+
 		// Get number of settings
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("config", "COUNT(*) as count", "conf_name IN({$settings})");
 			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');			
 		}
 
@@ -995,19 +1041,72 @@ class Convert_punbb extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select("config", "conf_name, conf_value", "conf_name IN({$settings})", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from the punBB database... ";
-
-				// punBB values
-				$name = $value = "";
-
-				switch($setting['config_name'])
+				// punBB 1 values
+				$name = $settings_array[$setting['conf_name']];
+				$value = $setting['conf_value'];
+				
+				echo "Updating setting {$value} from the punBB database to {$name} in the MyBB database... ";
+				
+				if($setting['conf_name'] == "o_timeout_online")
 				{
-					case '':
+					$value = ceil($value / 60);
 				}
-			
+				
+				if($setting['conf_name'] == "o_server_timezone")
+				{
+					$value = str_replace(".5", "", $value);
+				}
+				
+				if($setting['conf_name'] == "o_avatars_width")
+				{
+					$avatar_setting = $value."x";
+					echo "done.<br />\n";
+					continue;
+				}
+				
+				if($setting['conf_name'] == "o_avatars_height")
+				{
+					$value = $avatar_setting.$value;
+					unset($avatar_setting);
+				}
+				
+				if($setting['conf_name'] == "o_avatars_size")
+				{
+					$value = ceil($value / 1024);
+				}
+				
+				if($setting['conf_name'] == "o_regs_verify")
+				{
+					if($value == 0)
+					{
+						$value = "randompass";
+					}
+					else
+					{
+						$value = "verify";
+					}
+				}
+				
+				if($setting['conf_name'] == "o_quickpost")
+				{
+					if($value == 0)
+					{
+						$value = "off";
+					}
+					else
+					{
+						$value = "on";
+					}
+				}
+				
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['conf_name']]))
+				{
+					$value = $this->int_to_yes_no($value, $int_to_yes_no[$setting['conf_name']]);
+				}
+				
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
@@ -1070,6 +1169,39 @@ class Convert_punbb extends Converter {
 			'thread' => $thread
 		);
 	}
+	
+	/**
+	 * Generates yes/on based on the supplied int
+	 *
+	 * @param int Setting before import
+	 * @param int Is zero or one equal yes
+	 * @return string Yes/No
+	 */
+	function int_to_yes_no($setting, $yes="1")
+	{
+		if($setting == 0 && $yes == 1)
+		{
+			$return = "no";
+		}
+		elseif($setting == 1 && $yes == 1)
+		{
+			$return = "yes";
+		}
+		elseif($setting == 0 && $yes == 0)
+		{
+			$return = "yes";
+		}
+		elseif($setting == 1 && $yes == 0)
+		{
+			$return = "no";
+		}
+		else
+		{
+			$return = "yes";
+		}
+		return $return;
+	}
+
 	
 	/**
 	 * Convert a punBB group ID into a MyBB group ID
