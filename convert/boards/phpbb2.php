@@ -1219,7 +1219,7 @@ class Convert_phpbb2 extends Converter {
 			"avatar_path" => "avataruploadpath",
 			"hot_threshold" => "hottopic",
 			"max_poll_options" => "maxpolloptions",
-			"privmsg_disable" => "mybbsetting",
+			"privmsg_disable" => "enablepms",
 			"board_timezone" => "timezoneoffset",
 			"board_email" => "adminemail",
 			"avatar_gallery_path" => "avatardir",
@@ -1303,9 +1303,9 @@ class Convert_phpbb2 extends Converter {
 					$value = ceil($value / 1024);
 				}
 				
-				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$name]))
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['config_name']]))
 				{
-					$value = $this->int_to_yes_no($value, $int_to_yes_no[$name]);
+					$value = $this->int_to_yes_no($value, $int_to_yes_no[$setting['config_name']]);
 				}
 				
 				$this->update_setting($name, $value);
