@@ -4,7 +4,7 @@
  * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
+ * License: http://www.mybboard.com/eula.html al
  *
  * $Id$
  */
@@ -1503,10 +1503,106 @@ class Convert_vbulletin3 extends Converter {
 
 		$this->vbulletin_db_connect();
 
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"addtemplatename" => "tplhtmlcomments",
+			"allowregistration" => "disableregs",
+			"allowkeepbannedemail" => "emailkeep",
+			"attachlimit" => "maxattachments",
+			"attachthumbs" => "attachthumbnails",
+			"attachthumbssize" => "attachthumbh",
+			"banemail" => "bannedemails",
+			"banip" => "bannedips",
+			"bbactive" => "boardclosed",
+			"bbclosedreason" => "boardclosed_reason", 
+			"bbtitle" => "bbname",
+			"dateformat" => "dateformat",
+			"displayloggedin" => "showwol",
+			"dstonoff" => "dstcorrection",
+			"edittimelimit" => "edittimelimit",
+			"enablememberlist" => "enablememberlist",
+			"enablepms" => "enablepms",
+			"floodchecktime" => "postfloodsecs",
+			"forumhomedepth" => "subforumsindex",
+			"gziplevel" => "gziplevel",
+			"gzipoutput" => "gzipoutput",
+			"hometitle" => "homename",
+			"homeurl" => "homeurl",
+			"hotnumberposts" => "hottopic",
+			"hotnumberviews" => "hottopicviews",
+			"illegalusernames" => "bannedusername",
+			"loadlimit" => "load",
+			"logip" => "logip",
+			"maximages" => "maxpostimages",
+			"maxpolllength" => "polloptionlimit",
+			"maxpolloptions" => "maxpolloptions",
+			"maxposts" => "postsperpage",
+			"maxthreads" => "threadsperpage",
+			"maxuserlength" => "maxnamelength",
+			"memberlistperpage" => "membersperpage",
+			"minsearchlength" => "minsearchword",
+			"minuserlength" => "minnamelength",
+			"moderatenewmembers" => "regtype",
+			"nocacheheaders" => "nocacheheaders",
+			"postmaxchars" => "maxmessagelength",
+			"postminchars" => "minmessagelength",
+			"privallowbbcode" => "pmsallowmycode",
+			"privallowbbimagecode" => "pmsallowimgcode",
+			"privallowhtml" => "pmsallowhtml",
+			"privallowsmilies" => "pmsallowsmilies",
+			"registereddateformat" => "regdateformat",
+			"reputationenable" => "enablereputation",
+			"searchfloodtime" => "searchfloodtime",
+			"showbirthdays" => "showbirthdays",
+			"showdots" => "dotfolders",
+			"showforumdescription" => "showdescriptions",
+			"showforumusers" => "browsingthisforum",
+			"showprivateforums" => "hideprivateforums",
+			"showsimilarthreads" => "showsimilarthreads",
+			/* To be used at a later date
+			"smtp_host" => "",
+			"smtp_pass" => "",
+			"smtp_port" => "",
+			"smtp_tls" => "",
+			"smtp_user" => "", 
+			"use_smtp" => "", */
+			"timeformat" => "timeformat",
+			"timeoffset" => "timezoneoffset",
+			"useheaderredirect" => "redirects",
+			"usereferrer" => "usereferrals",
+			"usermaxposts" => "userpppoptions",
+			"webmasteremail" => "adminemail",
+			"WOLrefresh" => "refreshwol"
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
+		$int_to_yes_no = array(
+			"addtemplatename" => 1,
+			"allowregistration" => 0,
+			"allowkeepbannedemail" => 1,
+			"attachthumbs" => 1,
+			"bbactive" => 0,
+			"displayloggedin" => 1,
+			"dstonoff" => 1,
+			"enablememberlist" => 1,
+			"enablepms" => 1,
+			"gzipoutput" => 1,
+			"nocacheheaders" => 1,
+			"privallowbbcode" => 1,
+			"privallowbbimagecode" => 1,
+			"privallowhtml" => 1,
+			"privallowsmilies" => 1,
+			"reputationenable" => 1,
+			"showbirthdays" => 1,
+			"showdots" => 1,
+			"showforumdescription" => 1,
+			"showsimilarthreads" => 1,
+			"usereferrer" => 1
+		);
+
 		// Get number of settings
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("setting", "COUNT(*) as count", "varname IN({$settings})");
 			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
 		}
 
@@ -1541,22 +1637,115 @@ class Convert_vbulletin3 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select("setting", "varname, value", "varname IN({$settings})", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from the vBulletin database... ";
-
-				// phpBB 3 values
-				$name = $value = "";
-
-				switch($setting['config_name'])
+				// vBulletin 3.6 values
+				$name = $settings_array[$setting['varname']];
+				$value = $setting['value'];
+				
+				echo "Updating setting {$value} from the vBulletin database to {$name} in the MyBB database... ";
+				
+				if($setting['varname'] == "banemail" || $setting['varname'] == "illegalusernames")
 				{
-					case '':
+					$value = explode(" ", $value);
+					$value = implode(",", $value);
 				}
-			
+				
+				if($setting['varname'] == "banip")
+				{
+					$value = explode(" ", $string);
+					$value = implode(",", $value);
+					$value = explode("\n", $value);
+					$value = implode(",", $value);
+				}
+				
+				if($setting['varname'] == "logip")
+				{
+					if($value == 1)
+					{
+						$value = "hide";
+					}
+					else if($value == 2)
+					{
+						$value = "show";
+					}
+					else
+					{
+						$value = "no";
+					}
+				}
+				
+				if($setting['varname'] == "moderatenewmembers")
+				{
+					if($setting['config_value'] == 1)
+					{
+						$value = "admin";
+					}
+					else
+					{
+						$value = "verify";
+					}
+				}
+				if($setting['varname'] == "WOLrefresh")
+				{
+					$value = ceil($value / 60);
+				}
+				
+				if($setting['varname'] == "showforumusers")
+				{
+					if($value == 0)
+					{
+						$value = "off";
+					}
+					else
+					{
+						$value = "on";
+					}
+						
+				}
+				
+				if($setting['varname'] == "useheaderredirect")
+				{
+					if($value == 0)
+					{
+						$value = "on";
+					}
+					else
+					{
+						$value = "off";
+					}
+						
+				}
+				
+				if($setting['varname'] == "showprivateforums")
+				{
+					if($value == 0)
+					{
+						$value = "no";
+					}
+					else
+					{
+						$value = "yes";
+					}
+				}
+				
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['varname']]))
+				{
+					$value = $this->int_to_yes_no($value, $int_to_yes_no[$setting['varname']]);
+				}
+				
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
+				
+				if($setting['varname'] == "attachthumbssize")
+				{
+					$name = "attachthumbw";
+					echo "Updating setting {$value} from the vBulletin database to attachthumbw in the MyBB database... ";
+					$this->update_setting($name, $value);
+					echo "done.<br />\n";
+				}
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1920,6 +2109,38 @@ class Convert_vbulletin3 extends Converter {
 			
 			return $group;
 		}
+	}
+	
+	/**
+	 * Generates yes/on based on the supplied int
+	 *
+	 * @param int Setting before import
+	 * @param int Is zero or one equal yes
+	 * @return string Yes/No
+	 */
+	function int_to_yes_no($setting, $yes="1")
+	{
+		if($setting == 0 && $yes == 1)
+		{
+			$return = "no";
+		}
+		elseif($setting == 1 && $yes == 1)
+		{
+			$return = "yes";
+		}
+		elseif($setting == 0 && $yes == 0)
+		{
+			$return = "yes";
+		}
+		elseif($setting == 1 && $yes == 0)
+		{
+			$return = "no";
+		}
+		else
+		{
+			$return = "yes";
+		}
+		return $return;
 	}
 	
 	/**
