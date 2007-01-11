@@ -1676,11 +1676,22 @@ if($mybb->input['action'] == "find")
 		{
 			foreach($search as $key => $val)
 			{
-				if($key != 'additionalgroups' && $key != "profilefields")
+				if($key != 'usergroups' && $key != 'additionalgroups' && $key != "profilefields")
 				{
 					$hiddens .= "<input type=\"hidden\" name=\"search[$key]\" value=\"$val\" />";
 				}
 			}
+		}
+		if(is_array($search['usergroups']))
+		{
+			foreach($search['usergroups'] as $key => $val)
+			{
+				$hiddens .= "<input type=\"hidden\" name=\"search[usergroups][]\" value=\"$val\" />";
+			}
+		}
+		else if($search['usergroups'])
+		{
+			$hiddens .= "<input type=\"hidden\" name=\"search[usergroups]\" value=\"$val\" />";
 		}
 		if(is_array($search['additionalgroups']))
 		{

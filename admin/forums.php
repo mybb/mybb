@@ -78,9 +78,9 @@ function getforums($pid=0, $depth=1)
 	reset($iforumcache);
 	if(is_array($iforumcache[$pid]))
 	{
+		$comma = "";
 		foreach($iforumcache[$pid] as $key => $main)
 		{
-			$comma = "";
 			foreach($main as $key => $forum)
 			{
 				$forum['name'] = $forum['name'];
