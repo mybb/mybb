@@ -483,9 +483,18 @@ if(!$mybb->input['action'])
 		// Get the reputation for the user who posted this comment
 		if($reputation_vote['adduid'] == 0)
 		{
-			$reputation_vote['user_reputation'] = 0; 
+			$reputation_vote['user_reputation'] = '0'; 
 		}
+
 		$reputation_vote['user_reputation'] = get_reputation($reputation_vote['user_reputation'], $reputation_vote['adduid']);
+		if($reputation_vote['username'])
+		{
+			$reputation_vote['user_reputation'] = " <span class=\"smalltext\">({$reputation_vote['user_reputation']})";
+		}
+		else
+		{
+			$reputation_vote['user_reputation'] = '';
+		}
 
 		// Format the date this reputation was last modified
 		$last_updated_date = my_date($mybb->settings['dateformat'], $reputation_vote['dateline']);
