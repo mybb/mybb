@@ -1086,11 +1086,6 @@ class Convert_ipb1 extends Converter {
 				}
 			}
 		}
-		
-		echo "<pre>";
-		print_r($import_session['file_array']);
-		echo "</pre>";
-
 		// Get number of icons
 		if(!isset($import_session['total_icons']))
 		{
@@ -1102,10 +1097,8 @@ class Convert_ipb1 extends Converter {
 			// If there are more icons to do, continue, or else, move onto next module
 			if($import_session['total_icons'] - $import_session['start_icons'] <= 0)
 			{
-				$import_session['total_icons'] = count($import_session['file_array']);
-				$import_session['start_icons'] = 0;
-				//$import_session['disabled'][] = 'import_icons';
-				//return "finished";
+				$import_session['disabled'][] = 'import_icons';
+				return "finished";
 			}
 		}
 		
@@ -1156,20 +1149,21 @@ class Convert_ipb1 extends Converter {
 			
 			for($i=$import_session['start_icons']; $i <= $import_session['total_icons']; $i++)
 			{
+				echo "Transfering icon #".strstr('icon', $image[0])."... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
+				
 				$image = explode('|', $import_session['file_array'][$i]);	
 				
 				$insert_icon['name'] = $image[0];
 				$insert_icon['path'] = 'images/icons/'.$image[0];
 				
 				$this->insert_icon($insert_icon);
-				echo "Transfering icon #".strstr('icon', $image[0])."... ";
-				flush(); // Show status as soon as possible to avoid inconsistent status reporting
-				
+								
 				$icondata = file_get_contents($image[1].'/'.$image[0]);
-				$file = fopen(MYBB_ROOT."images/icons/".$image[0], 'w');
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
 				fwrite($file, $icondata);
 				fclose($file);
-				@chmod(MYBB_ROOT."images/icons/".$image[0], 0777);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				echo "done.<br />\n";
 			}
 			

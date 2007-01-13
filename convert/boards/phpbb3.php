@@ -727,6 +727,43 @@ class Convert_phpbb3 extends Converter {
 			$import_session['icons_per_screen'] = intval($mybb->input['icons_per_screen']);
 		}
 		
+		$error_phpbbpath = false;
+		
+		if(!empty($mybb->input['phpbbpath']))
+		{
+			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
+			if($import_session['phpbbpath']{strlen($import_session['phpbbpath'])-1} != '/') 
+			{
+				$import_session['phpbbpath'] .= '/';
+			}
+			
+			
+			// Doesn't work?
+			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
+			{
+				echo $import_session['phpbbpath'].'adm/index.php';
+				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
+				$error_phpbbpath = true;
+			}
+		}
+		
+		// Set uploads path
+		if(!isset($import_session['uploadspath']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
+		{
+			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'upload_path'", array('limit' => 1));
+			$import_session['uploadspath'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
+		}
+					
+		$phpbbpath = false;
+		
+		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
+		{
+			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
+<p><input type=\"text\" name=\"phpbbpath\" value=\"{$import_session['phpbbpath']}\" /></p>";
+
+			$phpbbpath = true;
+		}
+		
 		if(empty($import_session['icons_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
@@ -742,18 +779,24 @@ class Convert_phpbb3 extends Converter {
 			$query = $this->old_db->simple_select("icons", "*", "icons_id > 10", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting icon #{$icon['icons_id']}... ";		
+				echo "Inserting icon #{$icon['icons_id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
 				$insert_icon['import_iid'] = $icon['icons_id'];
 				$insert_icon['name'] = str_replace(array('smilie/', 'misc/'), array('', ''), $icon['icons_url']);
-				$insert_icon['path'] = 'images/icons/'.str_replace(array('smilie/', 'misc/'), array('', ''), $icon['icons_url']);
-				
+				$insert_icon['path'] = 'images/icons/'.str_replace(array('smilie/', 'misc/'), array('', ''), $icon['icons_url']);				
 			
 				$iid = $this->insert_icon($insert_icon);
 				
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['icons_id'])."'");
+				
+				$icondata = file_get_contents($import_session['phpbbpath'].$icon['icons_url']);
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

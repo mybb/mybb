@@ -952,6 +952,12 @@ class Convert_vbulletin3 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->vbulletin_db_connect();
+		
+		if(!isset($import_session['bburl']))
+		{
+			$query = $this->old_db->simple_select("setting", "value", "name = 'bburl'");
+			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_icons']))
@@ -993,18 +999,24 @@ class Convert_vbulletin3 extends Converter {
 			$query = $this->old_db->simple_select("icon", "*", "iconid > 14", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting icon #{$icon['iconid']}... ";		
+				echo "Inserting icon #{$icon['iconid']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
 				$insert_icon['import_iid'] = $icon['iconid'];
 				$insert_icon['name'] = $icon['title'];
-				$insert_icon['path'] = $icon['iconpath'];
-				
+				$insert_icon['path'] = "images/icons".substr(strrchr($icon['iconpath'], "/"), 1);
 			
 				$iid = $this->insert_icon($insert_icon);
 				
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['id'])."'");
+				
+				$icondata = file_get_contents($import_session['bburl'].$icon['iconpath']);
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";	
 			}

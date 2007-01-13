@@ -569,6 +569,12 @@ class Convert_mybb extends Converter
 		global $mybb, $output, $import_session, $db;
 
 		$this->mybb_db_connect();
+		
+		if(!isset($import_session['bburl']))
+		{
+			$query = $this->old_db->simple_select("settings", "value", "name = 'bburl'");
+			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_icons']))
@@ -598,8 +604,6 @@ class Convert_mybb extends Converter
 		if(empty($import_session['icons_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
-			echo "<p>Please select how many icons to import at a time:</p>
-<p><input type=\"text\" name=\"icons_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -610,18 +614,24 @@ class Convert_mybb extends Converter
 			$query = $this->old_db->simple_select("icons", "*", "iid > 16", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting icon #{$icon['iid']}... ";		
+				echo "Inserting icon #{$icon['iid']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting		
 				
-				// Invision Power Board 2 values
+				// MyBB values
 				$insert_icon['import_iid'] = $icon['iid'];
 				$insert_icon['name'] = $icon['name'];
-				$insert_icon['path'] = $icon['path'];
+				$insert_icon['path'] = "images/icons".substr(strrchr($icon['path'], "/"), 1);
 				
-			
 				$iid = $this->insert_icon($insert_icon);
 				
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['iid'])."'");
+				
+				$icondata = file_get_contents($import_session['bburl'].$icon['path']);
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";	
 			}
@@ -1253,6 +1263,9 @@ class Convert_mybb extends Converter
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
 			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("smilies");
+			
 			$query = $this->old_db->simple_select("smilies", "*", "sid > 9", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
@@ -1435,17 +1448,29 @@ class Convert_mybb extends Converter
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settinggroups']-$import_session['start_settinggroups'])." settings left to import and ".round((($import_session['total_settinggroups']-$import_session['start_settinggroups'])/$import_session['settinggroups_per_screen']))." pages left at a rate of {$import_session['settinggroups_per_screen']} per page.<br /><br />";
 
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("settinggroups");
+
 			$query = $this->old_db->simple_select("settinggroups", "*", "isdefault != 'yes'", array('limit_start' => $import_session['start_settinggroups'], 'limit' => $import_session['settinggroups_per_screen']));
 			while($settinggroup = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting setting group {$settinggroup['name']} from your other MyBB database... ";
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_settinggroup[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($settinggroup[$field['Field']]))
+					{
+						$insert_settinggroup[$field['Field']] = $settinggroup[$field['Field']];
+					}
+				}
 
 				$insert_settinggroup['import_gid'] = $settinggroup['gid'];
-				$insert_settinggroup['name'] = $settinggroup['name'];
-				$insert_settinggroup['title'] = $settinggroup['title'];
-				$insert_settinggroup['description'] = $settinggroup['description'];
-				$insert_settinggroup['disporder'] = $settinggroup['disporder'];
-				$insert_settinggroup['isdefault'] = $settinggroup['isdefault'];
 
 				$this->insert_settinggroup($insert_settinggroup);
 

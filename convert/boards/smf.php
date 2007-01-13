@@ -918,6 +918,13 @@ class Convert_smf extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->smf_db_connect();
+		
+		if(!isset($import_session['pathurl']))
+		{
+			$query = $this->old_db->simple_select("settings", "value", "variable = 'attachmentUploadDir'");
+			$uploaddir = $this->old_db->fetch_field($query, "value");
+			$import_session['pathurl'] = str_replace(strrchr($uploaddir, "/"), '', $uploaddir);
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_icons']))
@@ -959,18 +966,24 @@ class Convert_smf extends Converter {
 			$query = $this->old_db->simple_select("message_icons", "*", "ID_ICON > 12", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting icon #{$icon['ID_ICON']}... ";		
+				echo "Inserting icon #{$icon['ID_ICON']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
 				$insert_icon['import_iid'] = $icon['ID_ICON'];
 				$insert_icon['name'] = $icon['title'];
 				$insert_icon['path'] = 'images/icons/'.$icon['filename'].'.gif';
-				
-			
+							
 				$iid = $this->insert_icon($insert_icon);
 				
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['ID_ICON'])."'");
+				
+				$icondata = file_get_contents($import_session['pathurl'].$icon['filename'].'.gif');
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

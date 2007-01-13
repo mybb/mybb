@@ -747,6 +747,12 @@ class Convert_xmb extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->xmb_db_connect();
+		
+		if(!isset($import_session['boardurl']))
+		{
+			$query = $this->old_db->simple_select("table_settings", "boardurl", "", array('limit' => 1));
+    		$import_session['boardurl'] = $db->fetch_field($query, "boardurl");
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_icons']))
@@ -788,18 +794,24 @@ class Convert_xmb extends Converter {
 			$query = $this->old_db->simple_select("smilies", "*", "id > 17 AND type='picon'", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting icon #{$icon['id']}... ";		
+				echo "Inserting icon #{$icon['id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
 				$insert_icon['import_iid'] = $icon['id'];
 				$insert_icon['name'] = $icon['code'];
-				$insert_icon['path'] = 'images/icons/'.$icon['url'];
-				
+				$insert_icon['path'] = 'images/icons/'.$icon['url'];			
 			
 				$iid = $this->insert_icon($insert_icon);
 				
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['id'])."'");
+				
+				$icondata = file_get_contents($import_session['pathurl'].$icon['url']);
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}
