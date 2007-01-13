@@ -278,7 +278,24 @@ class errorHandler {
 		}
 		
 		$message = "Your copy of MyBB running on {$mybb->settings['bbname']} ({$mybb->settings['bburl']}) has experienced an error. Details of the error include:\n---\nType: $type\nFile: $file (Line no. $line)\nMessage\n$message";
-		@my_mail($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
+
+		@require_once MYBB_ROOT."inc/class_mailhandler.php";
+		if($mybb->settings['mail_handler'] == 'smtp')
+		{
+			@require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+			$mail = new SmtpMail();
+		}
+		else
+		{
+			@require_once MYBB_ROOT."inc/mailhandlers/php.php";
+			$mail = new PhpMail();
+		}
+		$mail->make_message($mybb->settings['adminemail'], "MyBB error on {$mybb->settings['bbname']}", $message, $mybb->settings['adminemail']);
+		$error = $mail->send();
+		if($error)
+		{
+			$this->output_error(MYBB_GENERAL, $error);
+		}
 	}
 
 	function output_error($type, $message, $file, $line)

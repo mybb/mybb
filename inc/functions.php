@@ -205,7 +205,19 @@ function send_mail_queue($count=10)
 			// Delete the message from the queue
 			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
 
-			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+			require_once MYBB_ROOT."inc/class_mailhandler.php";
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+				$mail = new SmtpMail();
+			}
+			else
+			{
+				require_once MYBB_ROOT."inc/mailhandlers/php.php";
+				$mail = new PhpMail();
+			}
+			$mail->make_message($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+			$mail->send();
 		}
 		// Update the mailqueue cache and remove the lock
 		$cache->updatemailqueue(time(), 0);

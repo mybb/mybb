@@ -105,7 +105,19 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			}
 			else
 			{
-				my_mail($mod['email'], $emailsubject, $emailmessage);
+				require_once MYBB_ROOT."inc/class_mailhandler.php";
+				if($mybb->settings['mail_handler'] == 'smtp')
+				{
+					require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+					$mail = new SmtpMail();
+				}
+				else
+				{
+					require_once MYBB_ROOT."inc/mailhandlers/php.php";
+					$mail = new PhpMail();
+				}
+				$mail->make_message($mod['email'], $emailsubject, $emailmessage);
+				$mail->send();
 			}
 		}
 	}

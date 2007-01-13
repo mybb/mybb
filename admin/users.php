@@ -403,7 +403,20 @@ if($mybb->input['action'] == "do_add")
 		$db->insert_query("awaitingactivation", $activationarray);
 		$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-		my_mail($email, $emailsubject, $emailmessage);
+
+		require_once MYBB_ROOT."inc/class_mailhandler.php";
+		if($mybb->settings['mail_handler'] == 'smtp')
+		{
+			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+			$mail = new SmtpMail();
+		}
+		else
+		{
+			require_once MYBB_ROOT."inc/mailhandlers/php.php";
+			$mail = new PhpMail();
+		}
+		$mail->make_message($email, $emailsubject, $emailmessage);
+		$mail->send();
 	}
 	$cache->updatestats();
 	cpredirect("users.php?".SID."&lastuid={$user_info['uid']}", $lang->user_added);
@@ -708,14 +721,40 @@ if($mybb->input['action'] == "do_email")
 					}
 					$emailmessage = sprintf($emailmessage, $user['username'], $mybbadmin['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 					$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-					my_mail($user['email'], $emailsubject, $emailmessage);
+
+					require_once MYBB_ROOT."inc/class_mailhandler.php";
+					if($mybb->settings['mail_handler'] == 'smtp')
+					{
+						require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+						$mail = new SmtpMail();
+					}
+					else
+					{
+						require_once MYBB_ROOT."inc/mailhandlers/php.php";
+						$mail = new PhpMail();
+					}
+					$mail->make_message($user['email'], $emailsubject, $emailmessage);
+					$mail->send();
 				}
 				
 				echo sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != '')
 			{
-				my_mail($user['email'], $searchop['subject'], $sendmessage, $searchop['from']);
+				require_once MYBB_ROOT."inc/class_mailhandler.php";
+				if($mybb->settings['mail_handler'] == 'smtp')
+				{
+					require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+					$mail = new SmtpMail();
+				}
+				else
+				{
+					require_once MYBB_ROOT."inc/mailhandlers/php.php";
+					$mail = new PhpMail();
+				}
+				$mail->make_message($user['email'], $searchop['subject'], $sendmessage, $searchop['from']);
+				$mail->send();
+
 				echo sprintf($lang->email_sent, $user['username']);
 			}
 			else

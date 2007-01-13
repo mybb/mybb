@@ -456,6 +456,69 @@ email=Sent via Email]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
+	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="20" isdefault="yes">
+		<setting name="mail_handler">
+			<title>Mail handler</title>
+			<description><![CDATA[How would you want to send your mails?]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[select
+mail=PHP mail
+smtp=SMTP mail]]></optionscode>
+			<settingvalue><![CDATA[mail]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="smtp_host">
+			<title>SMTP hostname</title>
+			<description><![CDATA[The SMTP hostname you want to send through.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="smtp_port">
+			<title>SMTP port</title>
+			<description><![CDATA[The SMTP port number you want to send through.]]></description>
+			<disporder>3</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="smtp_user">
+			<title>SMTP username</title>
+			<description><![CDATA[The SMTP username.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="smtp_pass">
+			<title>SMTP password</title>
+			<description><![CDATA[The SMTP password.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="smtp_encrypt">
+			<title>SMTP encrypt</title>
+			<description><![CDATA[If your password and username should be encrypted with base64 encryption, this is not supported by all servers.]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[no]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="secure_smtp">
+			<title>SMTP encrypted connection</title>
+			<description><![CDATA[Is the server you are trying to send mail through using encrypted connection? Select here.]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[select
+0=No encryption
+1=SSL encryption
+2=TLS encryption]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+	</settinggroup>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
 		<setting name="enablememberlist">
 			<title>Enable Member List Functionality</title>
