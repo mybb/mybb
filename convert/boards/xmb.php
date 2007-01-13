@@ -750,7 +750,7 @@ class Convert_xmb extends Converter {
 		
 		if(!isset($import_session['boardurl']))
 		{
-			$query = $this->old_db->simple_select("table_settings", "boardurl", "", array('limit' => 1));
+			$query = $this->old_db->simple_select("settings", "boardurl", "", array('limit' => 1));
     		$import_session['boardurl'] = $db->fetch_field($query, "boardurl");
 		}
 
@@ -1122,7 +1122,13 @@ class Convert_xmb extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->xmb_db_connect();
-
+		
+		if(!isset($import_session['boardurl']))
+		{
+			$query = $this->old_db->simple_select("settings", "boardurl", "", array('limit' => 1));
+    		$import_session['boardurl'] = $db->fetch_field($query, "boardurl");
+		}
+		
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
 		{
@@ -1163,7 +1169,8 @@ class Convert_xmb extends Converter {
 			$query = $this->old_db->simple_select("smilies", "*", "id > 8 AND type = 'smiliey'", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['id']}... ";		
+				echo "Inserting smilie #{$smilie['id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
 				$insert_smilie['import_iid'] = $smilie['id'];
@@ -1171,9 +1178,15 @@ class Convert_xmb extends Converter {
 				$insert_smilie['find'] = $smilie['code'];
 				$insert_smilie['path'] = 'images/smilies/'.$smilie['url'];
 				$insert_smilie['disporder'] = $smilie['id'];
-				$insert_smilie['showclickable'] = 'yes';				
+				$insert_smilie['showclickable'] = 'yes';
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['bburl'].'images/smilies/'.$smilie['filename']);
+				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

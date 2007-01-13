@@ -1086,6 +1086,7 @@ class Convert_ipb1 extends Converter {
 				}
 			}
 		}
+		
 		// Get number of icons
 		if(!isset($import_session['total_icons']))
 		{
@@ -1369,11 +1370,36 @@ class Convert_ipb1 extends Converter {
 			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
 		}
 		
+		// Validate IPB configuration file location
+		$conf_global_not_found = false;
+		if(!isset($mybb->input['ipb_conf_global']))
+		{
+			unset($import_session['icons_per_screen']);
+		}
+		elseif(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
+		{
+			unset($import_session['icons_per_screen']);
+			$conf_global_not_found = true;
+		}
+		else if(isset($mybb->input['ipb_conf_global']) && $conf_global_not_found == false)
+		{
+			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
+			require($import_session['ipb_conf_global']);
+			$import_session['html_dir'] = $INFO['html_dir'];
+		}
+		
 		if(empty($import_session['smilies_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many smilies to import at a time:</p>
 <p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
+			if($conf_global_not_found)
+			{
+				echo '<p style="color: red">The file specified was not found.</p>';
+			}
+			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1381,10 +1407,11 @@ class Convert_ipb1 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			$query = $this->old_db->simple_select("emoticons", "*", "", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['id']}... ";		
+				echo "Inserting smilie #{$smilie['id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
 				$insert_smilie['import_iid'] = $smilie['id'];
@@ -1392,9 +1419,15 @@ class Convert_ipb1 extends Converter {
 				$insert_smilie['find'] = $smilie['typed'];
 				$insert_smilie['path'] = 'images/smilies/'.$smilie['image'];
 				$insert_smilie['disporder'] = $smilie['id'];
-				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);				
+				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);			
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['html_dir'].'emoticons/'.$smilie['image']);
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

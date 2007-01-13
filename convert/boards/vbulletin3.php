@@ -1443,6 +1443,12 @@ class Convert_vbulletin3 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->vbulletin_db_connect();
+		
+		if(!isset($import_session['bburl']))
+		{
+			$query = $this->old_db->simple_select("setting", "value", "name = 'bburl'");
+			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
@@ -1484,17 +1490,24 @@ class Convert_vbulletin3 extends Converter {
 			$query = $this->old_db->simple_select("smilie", "*", "smilieid > 11", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['smilieid']}... ";		
+				echo "Inserting smilie #{$smilie['smilieid']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
 				$insert_smilie['import_iid'] = $smilie['smilieid'];
 				$insert_smilie['name'] = $smilie['title'];
 				$insert_smilie['find'] = $smilie['smilietext'];
-				$insert_smilie['path'] = $smilie['smiliepath'];
+				$insert_smilie['path'] = "images/smilies/".substr(strrchr($smilie['smiliepath'], "/"), 1);
 				$insert_smilie['disporder'] = $smilie['displayorder'];
-				$insert_smilie['showclickable'] = 'yes';				
+				$insert_smilie['showclickable'] = 'yes';
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['bburl'].$smilie['smiliepath']);
+				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

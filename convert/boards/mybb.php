@@ -611,15 +611,31 @@ class Convert_mybb extends Converter
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_icons']-$import_session['start_icons'])." icons left to import and ".round((($import_session['total_icons']-$import_session['start_icons'])/$import_session['icons_per_screen']))." pages left at a rate of {$import_session['icons_per_screen']} per page.<br /><br />";
 			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("icons");
+			
 			$query = $this->old_db->simple_select("icons", "*", "iid > 16", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting icon #{$icon['iid']}... ";
-				flush(); // Show status as soon as possible to avoid inconsistent status reporting		
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
+				
+				foreach($field_info as $key => $field)
+				{
+					if($field['Extra'] == 'auto_increment')
+					{
+						$insert_smilie[$field['Field']] = '';
+						continue;
+					}
+					
+					if(isset($smilie[$field['Field']]))
+					{
+						$insert_smilie[$field['Field']] = $smilie[$field['Field']];
+					}
+				}
 				
 				// MyBB values
 				$insert_icon['import_iid'] = $icon['iid'];
-				$insert_icon['name'] = $icon['name'];
 				$insert_icon['path'] = "images/icons".substr(strrchr($icon['path'], "/"), 1);
 				
 				$iid = $this->insert_icon($insert_icon);
@@ -1225,6 +1241,12 @@ class Convert_mybb extends Converter
 		global $mybb, $output, $import_session, $db;
 
 		$this->mybb_db_connect();
+		
+		if(!isset($import_session['bburl']))
+		{
+			$query = $this->old_db->simple_select("settings", "value", "name = 'bburl'");
+			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
@@ -1269,7 +1291,8 @@ class Convert_mybb extends Converter
 			$query = $this->old_db->simple_select("smilies", "*", "sid > 9", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['sid']}... ";	
+				echo "Inserting smilie #{$smilie['sid']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				foreach($field_info as $key => $field)
 				{
@@ -1287,8 +1310,15 @@ class Convert_mybb extends Converter
 				
 				// MyBB values
 				$insert_smilie['import_iid'] = $smilie['sid'];
+				$insert_smilie['path'] = "images/smilies/".substr(strrchr($smilie['path'], "/"), 1);
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['bburl'].$smilie['path']);
+				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

@@ -1436,6 +1436,43 @@ class Convert_phpbb3 extends Converter {
 			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
 		}
 		
+		$error_phpbbpath = false;
+		
+		if(!empty($mybb->input['phpbbpath']))
+		{
+			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
+			if($import_session['phpbbpath']{strlen($import_session['phpbbpath'])-1} != '/') 
+			{
+				$import_session['phpbbpath'] .= '/';
+			}
+			
+			
+			// Doesn't work?
+			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
+			{
+				echo $import_session['phpbbpath'].'adm/index.php';
+				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
+				$error_phpbbpath = true;
+			}
+		}
+		
+		// Set uploads path
+		if(!isset($import_session['smiliesurl']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
+		{
+			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'smilies_path'", array('limit' => 1));
+			$import_session['smiliesurl'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
+		}
+					
+		$phpbbpath = false;
+		
+		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
+		{
+			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
+<p><input type=\"text\" name=\"phpbbpath\" value=\"{$import_session['phpbbpath']}\" /></p>";
+
+			$phpbbpath = true;
+		}
+		
 		if(empty($import_session['smilies_per_screen']))
 		{
 			$import_session['start_smilies'] = 0;
@@ -1451,7 +1488,8 @@ class Convert_phpbb3 extends Converter {
 			$query = $this->old_db->simple_select("smilies", "*", "smiley_id > 23", array('limit_start' => $import_session['start_smilies'], 'limit' => $import_session['smilies_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['smiley_id']}... ";		
+				echo "Inserting smilie #{$smilie['smiley_id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// phpBB 3 values
 				$insert_smilie['import_iid'] = $smilie['smiley_id'];
@@ -1462,6 +1500,12 @@ class Convert_phpbb3 extends Converter {
 				$insert_smilie['showclickable'] = int_to_yesno($smilie['display_on_posting']);				
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['smiliesurl'].$smilie['smiley_url']);
+				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
 				
 				echo "done.<br />\n";
 			}

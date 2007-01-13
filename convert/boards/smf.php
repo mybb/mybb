@@ -1614,6 +1614,13 @@ class Convert_smf extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->smf_db_connect();
+		
+		if(!isset($import_session['pathurl']))
+		{
+			$query = $this->old_db->simple_select("settings", "value", "variable = 'attachmentUploadDir'");
+			$uploaddir = $this->old_db->fetch_field($query, "value");
+			$import_session['pathurl'] = str_replace(strrchr($uploaddir, "/"), '', $uploaddir);
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
@@ -1655,7 +1662,8 @@ class Convert_smf extends Converter {
 			$query = $this->old_db->simple_select("smileys", "*", "ID_SMILEY > 19", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['ID_SMILEY']}... ";		
+				echo "Inserting smilie #{$smilie['ID_SMILEY']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
 				$insert_smilie['import_iid'] = $smilie['ID_SMILEY'];
@@ -1663,9 +1671,15 @@ class Convert_smf extends Converter {
 				$insert_smilie['find'] = $smilie['code'];
 				$insert_smilie['path'] = 'images/smilies/'.$smilie['filename'];
 				$insert_smilie['disporder'] = $smilie['smileyOrder'];
-				$insert_smilie['showclickable'] = int_to_noyes($smilie['hidden']);				
+				$insert_smilie['showclickable'] = int_to_noyes($smilie['hidden']);
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['bburl'].'default/'.$smilie['filename']);
+				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

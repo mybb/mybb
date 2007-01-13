@@ -1119,7 +1119,7 @@ class Convert_ipb2 extends Converter {
 		
 		if(!isset($import_session['file_array']) && isset($import_session['base_dir']) && is_dir($import_session['base_dir']))
 		{
-			$dir = $import_session['base_dir'].'style_images/';
+			$dir = $import_session['board_url'].'style_images/';
 			if($dh = opendir($dir))
 			{
 				// Cycle through the image theme directories
@@ -1185,7 +1185,7 @@ class Convert_ipb2 extends Converter {
 		{
 			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
 			require($import_session['ipb_conf_global']);
-			$import_session['base_dir'] = $INFO['base_dir'];
+			$import_session['board_url'] = $INFO['board_url'];
 		}
 		
 		if(empty($import_session['icons_per_screen']))
@@ -1533,6 +1533,35 @@ class Convert_ipb2 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->ipb_db_connect();
+		
+		if(!isset($import_session['file_array']) && isset($import_session['base_dir']) && is_dir($import_session['base_dir']))
+		{
+			$dir = $import_session['board_url'].'style_emoticons/';
+			if($dh = opendir($dir))
+			{
+				// Cycle through the image theme directories
+				while(($dir2 = readdir($dh)) !== false)
+				{
+					if($dir2 == "." || $dir2 == "..")
+					{
+						continue;
+					}
+					
+					// Open the image theme directory
+					if(filetype($dir.$dir2) == "dir" && $dh2 = opendir($dir.$dir2))
+					{
+						while(($file = readdir($dh2)) !== false)
+						{
+							if($file != 'index.html')
+							{
+								$import_session['file_array'][] = $file.'|'.$dir.$dir2;
+							}
+						}
+						closedir($dh2);
+					}
+				}
+			}
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
@@ -1559,11 +1588,36 @@ class Convert_ipb2 extends Converter {
 			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
 		}
 		
+		// Validate IPB configuration file location
+		$conf_global_not_found = false;
+		if(!isset($mybb->input['ipb_conf_global']))
+		{
+			unset($import_session['icons_per_screen']);
+		}
+		elseif(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
+		{
+			unset($import_session['icons_per_screen']);
+			$conf_global_not_found = true;
+		}
+		else if(isset($mybb->input['ipb_conf_global']) && $conf_global_not_found == false)
+		{
+			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
+			require($import_session['ipb_conf_global']);
+			$import_session['board_url'] = $INFO['board_url'].'/';
+		}
+			
 		if(empty($import_session['smilies_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many smilies to import at a time:</p>
 <p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
+			if($conf_global_not_found)
+			{
+				echo '<p style="color: red">The file specified was not found.</p>';
+			}
+			echo "<p>Please enter the path to the IPB2 conf_global.php file:</p>
+<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1574,7 +1628,8 @@ class Convert_ipb2 extends Converter {
 			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['id']}... ";		
+				echo "Inserting smilie #{$smilie['id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
 				$insert_smilie['import_iid'] = $smilie['id'];
@@ -1582,9 +1637,18 @@ class Convert_ipb2 extends Converter {
 				$insert_smilie['find'] = $smilie['typed'];
 				$insert_smilie['path'] = 'images/smilies/'.$smilie['image'];
 				$insert_smilie['disporder'] = $smilie['id'];
-				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);				
+				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);			
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$key = array_search($smilie['image'], $import_session['file_array']);
+				$smilie_array = explode('|', $import_session['file_array'][$key]);
+				
+				$smiliedata = file_get_contents($smilie_array[1]);
+				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}

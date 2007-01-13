@@ -1138,6 +1138,26 @@ class Convert_phpbb2 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->phpbb_db_connect();
+		
+		if(!isset($import_session['smilieurl']))
+		{
+			$query = $this->old_db->simple_select("config", "*", "config_name = 'server_name' OR config_name = 'script_path' OR config_name = 'smilies_path'", array('order_by' => 'config_name');
+			while($config = $this->old_db->fetch_array($query))
+			{
+				if($config['config_name'] == 'server_name')
+				{
+					$import_session['smilieurl'] = 'http://'.$config['config_name'];
+				}
+				elseif($config['config_name'] == 'script_path')
+				{
+					$import_session['smilieurl'] .= $config['config_name'];
+				}
+				else
+				{
+					$import_session['smilieurl'] .= $config['config_name'].'/';
+				}
+			}
+		}
 
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
@@ -1179,7 +1199,8 @@ class Convert_phpbb2 extends Converter {
 			$query = $this->old_db->simple_select("smilies", "*", "smilies_id > 42", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['smilies_id']}... ";		
+				echo "Inserting smilie #{$smilie['smilies_id']}... ";
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
 				$insert_smilie['import_iid'] = $smilie['smilies_id'];
@@ -1190,6 +1211,12 @@ class Convert_phpbb2 extends Converter {
 				$insert_smilie['showclickable'] = 'yes';				
 			
 				$this->insert_smilie($insert_smilie);
+				
+				$smiliedata = file_get_contents($import_session['smilieurl'].$smilie['smilie_url']);
+				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+				fwrite($file, $smiliedata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}
