@@ -1141,7 +1141,7 @@ class Convert_phpbb2 extends Converter {
 		
 		if(!isset($import_session['smilieurl']))
 		{
-			$query = $this->old_db->simple_select("config", "*", "config_name = 'server_name' OR config_name = 'script_path' OR config_name = 'smilies_path'", array('order_by' => 'config_name');
+			$query = $this->old_db->simple_select("config", "*", "config_name = 'server_name' OR config_name = 'script_path' OR config_name = 'smilies_path'", array('order_by' => 'config_name'));
 			while($config = $this->old_db->fetch_array($query))
 			{
 				if($config['config_name'] == 'server_name')

@@ -9,10 +9,10 @@
  * $Id$
  */
  
-// Board Name: Invision Power Board 2.2
+// Board Name: Invision Power Board 2
 
 class Convert_ipb2 extends Converter {
-	var $bbname = "Invision Power Board 2.2";
+	var $bbname = "Invision Power Board 2";
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import Invision Power Board 2 Usergroups",
@@ -43,8 +43,7 @@ class Convert_ipb2 extends Converter {
 									  "dependencies" => "db_configuration"),
 						 "import_events" => array("name" => "Import Invision Power Board 2 Calendar Events",
 									  "dependencies" => "db_configuration,import_users"),
-						 "import_attachments" => array("name" => "Import Invision Power Board 2 Attachments",
-									  "dependencies" => "db_configuration,import_posts"),
+
 						);
 
 	function ipb_db_connect()
@@ -1116,45 +1115,17 @@ class Convert_ipb2 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->ipb_db_connect();
-		
-		if(!isset($import_session['file_array']) && isset($import_session['base_dir']) && is_dir($import_session['base_dir']))
-		{
-			$dir = $import_session['board_url'].'style_images/';
-			if($dh = opendir($dir))
-			{
-				// Cycle through the image theme directories
-				while(($dir2 = readdir($dh)) !== false)
-				{
-					if($dir2 == "." || $dir2 == "..")
-					{
-						continue;
-					}
-					
-					// Open the image theme directory
-					if(filetype($dir.$dir2.'folder_post_icons') == "dir" && $dh2 = opendir($dir.$dir2.'folder_post_icons'))
-					{
-						while(($file = readdir($dh2)) !== false)
-						{
-							if(my_strpos($file, 'icon') !== false)
-							{
-								$import_session['file_array'][] = strstr($file, 'icon').'|'.$dir.$dir2;
-							}
-						}
-						closedir($dh2);
-					}
-				}
-			}
-		}
-		
-		// Get number of icons
+
+		// Get number of threads
 		if(!isset($import_session['total_icons']))
 		{
-			$import_session['total_icons'] = count($import_session['file_array']);
+			$query = $this->old_db->simple_select("emoticons", "COUNT(*) as count", "id > 20");
+			$import_session['total_icons'] = $this->old_db->fetch_field($query, 'count');			
 		}
-		
+
 		if($import_session['start_icons'])
 		{
-			// If there are more icons to do, continue, or else, move onto next module
+			// If there are more polls to do, continue, or else, move onto next module
 			if($import_session['total_icons'] - $import_session['start_icons'] <= 0)
 			{
 				$import_session['disabled'][] = 'import_icons';
@@ -1170,36 +1141,11 @@ class Convert_ipb2 extends Converter {
 			$import_session['icons_per_screen'] = intval($mybb->input['icons_per_screen']);
 		}
 		
-		// Validate IPB configuration file location
-		$conf_global_not_found = false;
-		if(!isset($mybb->input['ipb_conf_global']))
-		{
-			unset($import_session['icons_per_screen']);
-		}
-		elseif(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
-		{
-			unset($import_session['icons_per_screen']);
-			$conf_global_not_found = true;
-		}
-		else if(isset($mybb->input['ipb_conf_global']) && $conf_global_not_found == false)
-		{
-			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
-			require($import_session['ipb_conf_global']);
-			$import_session['board_url'] = $INFO['board_url'];
-		}
-		
 		if(empty($import_session['icons_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many icons to import at a time:</p>
-<p><input type=\"text\" name=\"icons_per_screen\" value=\"10\" /></p>";
-			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
-			if($conf_global_not_found)
-			{
-				echo '<p style="color: red">The file specified was not found.</p>';
-			}
-			echo "<p>Please enter the path to the IPB2 conf_global.php file:</p>
-<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
+<p><input type=\"text\" name=\"icons_per_screen\" value=\"200\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1207,30 +1153,26 @@ class Convert_ipb2 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_icons']-$import_session['start_icons'])." icons left to import and ".round((($import_session['total_icons']-$import_session['start_icons'])/$import_session['icons_per_screen']))." pages left at a rate of {$import_session['icons_per_screen']} per page.<br /><br />";
 			
-			if($import_session['total_icons'] > 0)
+			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			while($icon = $this->old_db->fetch_array($query))
 			{
-				for($i=$import_session['start_icons']; $i <= $import_session['total_icons']; $i++)
-				{
-					echo "Transfering icon #".strstr('icon', $image[0])."... ";
-					flush(); // Show status as soon as possible to avoid inconsistent status reporting
+				echo "Inserting icon #{$icon['id']}... ";		
 				
-					$image = explode('|', $import_session['file_array'][$i]);	
-					
-					$insert_icon['name'] = $image[0];
-					$insert_icon['path'] = 'images/icons/'.$image[0];
-					
-					$this->insert_icon($insert_icon);
-					
-					$icondata = file_get_contents($image[1].'/'.$image[0]);
-					$file = fopen(MYBB_ROOT."images/icons/".$image[0], 'w');
-					fwrite($file, $icondata);
-					fclose($file);
-					@chmod(MYBB_ROOT."images/icons/".$image[0], 0777);
-					echo "done.<br />\n";
-				}
+				// Invision Power Board 2 values
+				$insert_icon['import_iid'] = $icon['id'];
+				$insert_icon['name'] = $icon['typed'];
+				$insert_icon['path'] = 'images/icons/'.$icon['image'];
+				
+			
+				$iid = $this->insert_icon($insert_icon);
+				
+				// Restore connections
+				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['id'])."'");
+				
+				echo "done.<br />\n";			
 			}
 			
-			if($import_session['total_icons'] == 0)
+			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no icons to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
@@ -1536,35 +1478,6 @@ class Convert_ipb2 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->ipb_db_connect();
-		
-		if(!isset($import_session['file_array']) && isset($import_session['base_dir']) && is_dir($import_session['base_dir']))
-		{
-			$dir = $import_session['board_url'].'style_emoticons/';
-			if($dh = opendir($dir))
-			{
-				// Cycle through the image theme directories
-				while(($dir2 = readdir($dh)) !== false)
-				{
-					if($dir2 == "." || $dir2 == "..")
-					{
-						continue;
-					}
-					
-					// Open the image theme directory
-					if(filetype($dir.$dir2) == "dir" && $dh2 = opendir($dir.$dir2))
-					{
-						while(($file = readdir($dh2)) !== false)
-						{
-							if($file != 'index.html')
-							{
-								$import_session['file_array'][] = $file.'|'.$dir.$dir2;
-							}
-						}
-						closedir($dh2);
-					}
-				}
-			}
-		}
 
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
@@ -1591,36 +1504,11 @@ class Convert_ipb2 extends Converter {
 			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
 		}
 		
-		// Validate IPB configuration file location
-		$conf_global_not_found = false;
-		if(!isset($mybb->input['ipb_conf_global']))
-		{
-			unset($import_session['icons_per_screen']);
-		}
-		elseif(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
-		{
-			unset($import_session['icons_per_screen']);
-			$conf_global_not_found = true;
-		}
-		else if(isset($mybb->input['ipb_conf_global']) && $conf_global_not_found == false)
-		{
-			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
-			require($import_session['ipb_conf_global']);
-			$import_session['board_url'] = $INFO['board_url'].'/';
-		}
-			
 		if(empty($import_session['smilies_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many smilies to import at a time:</p>
 <p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
-			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
-			if($conf_global_not_found)
-			{
-				echo '<p style="color: red">The file specified was not found.</p>';
-			}
-			echo "<p>Please enter the path to the IPB2 conf_global.php file:</p>
-<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1631,26 +1519,17 @@ class Convert_ipb2 extends Converter {
 			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting smilie #{$smilie['id']}... ";
-				flush(); // Show status as soon as possible to avoid inconsistent status reporting
+				echo "Inserting smilie #{$smilie['id']}... ";		
 				
 				// Invision Power Board 2 values
+				$insert_smilie['import_iid'] = $smilie['id'];
 				$insert_smilie['name'] = $smilie['typed'];
 				$insert_smilie['find'] = $smilie['typed'];
-				$insert_smilie['image'] = 'images/smilies/'.$smilie['image'];
+				$insert_smilie['path'] = 'images/smilies/'.$smilie['image'];
 				$insert_smilie['disporder'] = $smilie['id'];
-				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);			
+				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);				
 			
 				$this->insert_smilie($insert_smilie);
-				
-				$key = array_search($smilie['image'], $import_session['file_array']);
-				$smilie_array = explode('|', $import_session['file_array'][$key]);
-				
-				$smiliedata = file_get_contents($smilie_array[1]);
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
 				
 				echo "done.<br />\n";			
 			}
@@ -1737,121 +1616,6 @@ class Convert_ipb2 extends Converter {
 		$output->print_footer();
 	}
 	
-	function import_attachtypes()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->ipb_db_connect();
-		
-		if(!isset($import_session['existing_types']))
-		{
-			// Get existing attachment types
-			$query = $db->simple_select("attachtypes", "extension");
-			while($row = $db->fetch_array($query))
-			{
-				$import_session['existing_types'][$row['extension']] = true;
-			}
-		}
-
-		// Get number of attachment types
-		if(!isset($import_session['total_attachtypes']))
-		{
-			$query = $this->old_db->simple_select("attachment_types", "COUNT(*) as types");
-			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, "types");
-		}
-		
-		if($import_session['start_attachtypes'])
-		{
-			// If there are more attachment types to do, continue, or else, move onto next module
-			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
-			{
-				$import_session['disabled'][] = 'import_attachtypes';
-				return "finished";
-			}
-		}
-		
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of attachment types per screen from form
-		if(isset($mybb->input['attachtypes_per_screen']))
-		{
-			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
-		}
-		
-		// Validate IPB configuration file location
-		$conf_global_not_found = false;
-		if(!isset($mybb->input['ipb_conf_global']) || (isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global'])))
-		{
-			unset($import_session['attachtypes_per_screen']);
-			$conf_global_not_found = true;
-		}
-		else if(isset($mybb->input['ipb_conf_global']))
-		{
-			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
-			require($import_session['ipb_conf_global']);
-			$import_session['boardurl'] = $INFO['board_url'];
-		}
-		
-		if(empty($import_session['attachtypes_per_screen']))
-		{
-			$import_session['start_attachtypes'] = 0;
-			echo "<p>Please select how many attachment types to import at a time:</p>
-<p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
-			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
-			if($conf_global_not_found)
-			{
-				echo '<p style="color: red">The file specified was not found.</p>';
-			}
-			echo "<p>Please enter the path to the IPB2 conf_global.php file:</p>
-<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{
-			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
-			
-			$query = $this->old_db->simple_select("attachment_types", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
-			
-			while($attachtype = $db->fetch_array($query))
-			{
-				echo "Inserting attachment type #{$attachtype['atype_id']}... ";				
-
-				$insert_attachtype['import_atid'] = $attachtype['atype_id'];
-				$insert_attachtype['name'] = $attachtype['atype_extension'].' file';
-				$insert_attachtype['mimetype'] = $attachtype['atype_mimetype'];
-				$insert_attachtype['extension'] = $attachtype['atype_extension'];
-				$insert_attachtype['maxsize'] = 512;
-				$insert_attachtype['icon'] = 'images/attachtypes/'.substr(strrchr($attachtype['atype_img'], "/"), 1);
-				
-				$this->insert_attachtype($insert_attachtype);
-
-				echo "done.";
-					
-				if(isset($import_session['existing_types'][$attachtype['atype_extension']]))
-				{
-					echo " (Note: extension already exists)\n";
-				}
-				
-				$icondata = file_get_contents($import_session['boardurl'].$attachtype['atype_img']);
-				$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
-				
-				echo "<br />\n";
-			}
-			
-			if($import_session['total_attachtypes'] == 0)
-			{
-				echo "There are no attachment types to import. Please press next to continue.";
-				define('BACK_BUTTON', false);
-			}
-		}
-		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
-		$output->print_footer();
-	}
-	
 	function import_events()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1929,6 +1693,79 @@ class Convert_ipb2 extends Converter {
 			}
 		}
 		$import_session['start_events'] += $import_session['events_per_screen'];
+		$output->print_footer();
+	}
+	
+	function import_attachtypes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+
+		// Get number of attachment types
+		if(!isset($import_session['total_attachtypes']))
+		{
+			$query = $this->old_db->simple_select("calendar_events", "COUNT(*) as count");
+			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, 'count');
+		}
+
+		if($import_session['start_attachtypes'])
+		{
+			// If there are more attachment types to do, continue, or else, move onto next module
+			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachtypes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of attachment types per screen from form
+		if(isset($mybb->input['attachtypes_per_screen']))
+		{
+			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
+		}
+		
+		if(empty($import_session['attachtypes_per_screen']))
+		{
+			$import_session['start_attachtypes'] = 0;
+			echo "<p>Please select how many attachment types to import at a time:</p>
+<p><input type=\"text\" name=\"events_per_screen\" value=\"200\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attactypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
+			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from("attachtypes");
+
+			$query = $this->old_db->simple_select("calendar_events", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
+			while($type = $this->old_db->fetch_array($query))
+			{
+				echo "Inserting attachment type #{$type['eventid']}... ";				
+
+				$insert_attachtype['import_atid'] = $type[''];
+				$insert_attachtype['name'] = $type[''];
+				$insert_attachtype['mimetype'] = $type[''];
+				$insert_attachtype['extension'] = $type[''];
+				$insert_attachtype['maxsize'] = $type[''];
+				$insert_attachtype['icon'] = $type[''];
+
+				$this->insert_event($insert_attachtype);
+
+				echo "done.<br />\n";
+			}
+			
+			if($this->old_db->num_rows($query) == 0)
+			{
+				echo "There are no attachment types to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
 		$output->print_footer();
 	}
 	
