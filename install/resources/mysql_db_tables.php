@@ -311,7 +311,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors(
   smtperror varchar(200) NOT NULL default '',
   smtpcode int(5) NOT NULL default '0',
   PRIMARY KEY(eid)
-) TYPE=MyISAM;";"
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_maillogs (
 	mid int unsigned NOT NULL auto_increment,

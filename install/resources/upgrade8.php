@@ -148,12 +148,12 @@ function upgrade8_dbchanges()
 		PRIMARY KEY(eid)
  	) TYPE=MyISAM;");
 
-	if(!$db->field_exists('maxemails' "usergroups"))
+	if(!$db->field_exists('maxemails', "usergroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER candsendemail");
 	}
 	
-	if(!$db->field_exists('parseorder' "mycode"))
+	if(!$db->field_exists('parseorder', "mycode"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
 	}

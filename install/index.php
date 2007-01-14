@@ -322,6 +322,8 @@ function requirements_check()
 	{
 		$error_list = error_list($errors);
 		echo sprintf($lang->req_step_error_tablelist, $error_list);
+		echo "\n			<input type=\"hidden\" name=\"action\" value=\"{$mybb->input['action']}\" />";
+		echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"{$lang->recheck} &raquo;\" /></div><br style=\"clear: both;\" />\n";
 		$output->print_footer();
 	}
 	else
@@ -921,6 +923,7 @@ function install_done()
 	$db->insert_query("adminoptions", $insert_array);
 
 	// Automatic Login
+	my_unsetcookie('mybbuser');
 	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true);
 	ob_end_flush();
 

@@ -9,6 +9,7 @@ $l['done'] = 'done';
 $l['next'] = 'Next';
 $l['error'] = 'Error';
 $l['multi_byte'] = 'Multi-Byte';
+$l['recheck'] = 'Recheck';
 
 $l['welcome'] = 'Welcome';
 $l['license_agreement'] = 'License Agreement';
