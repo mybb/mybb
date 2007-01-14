@@ -1668,7 +1668,7 @@ class Convert_vbulletin3 extends Converter {
 				$name = $settings_array[$setting['varname']];
 				$value = $setting['value'];
 				
-				echo "Updating setting {$value} from the vBulletin database to {$name} in the MyBB database... ";
+				echo "Updating setting ".htmlspecialchars_uni($value)." from the vBulletin database to {$name} in the MyBB database... ";
 				
 				if($setting['varname'] == "banemail" || $setting['varname'] == "illegalusernames")
 				{
