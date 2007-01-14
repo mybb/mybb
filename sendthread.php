@@ -77,7 +77,7 @@ if($mybb->usergroup['maxemails'] > 0)
 	if($sent_count > $mybb->usergroup['maxemails'])
 	{
 		$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
-		error($lang->error_max_emails_day)
+		error($lang->error_max_emails_day);
 	}
 }
 
