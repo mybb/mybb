@@ -1771,7 +1771,8 @@ class Convert_ipb1 extends Converter {
 		}
 		else
 		{
-			$i_present = $i = $import_session['start_attachments'];
+			$i_present = $import_session['start_attachments'];
+			$i = 0;
 			
 			// Get upload path
 			if(!isset($import_session['uploadspath']))
