@@ -65,13 +65,6 @@ class MailHandler
 	var $charset = "utf-8";
 
 	/**
-	 * The errors that occurred when handling email.
-	 *
-	 * @var array
-	 */
-	var $errors = array();
-
-	/**
 	 * The currently used delimiter new lines.
 	 *
 	 * @var string.
@@ -79,24 +72,11 @@ class MailHandler
 	var $delimiter = "\r\n";
 
 	/**
-	 * How it should parse the email.
+	 * How it should parse the email (HTML or plain text?)
 	 *
 	 * @var array
 	 */
-	var $parser_options = array(
-		'allow_html' => 'yes',
-		'filter_badwords' => 'yes',
-		'allow_mycode' => 'yes',
-		'allow_smilies' => 'yes',
-		'allow_imgcode' => 'yes'
-	);
-
-	/**
-	 * Will be set if sendmail is enable on the server.
-	 *
-	 * @var string
-	 */
-	var $sendmail;
+	var $parse_format = 'text';
 
 	/**
 	 * Builds the whole mail.
@@ -113,16 +93,8 @@ class MailHandler
 	{
 		global $parser, $lang, $mybb;
 		
-		// For some reason sendmail/qmail doesn't like \r\n
-		$this->sendmail = @ini_get('sendmail_path');
-		if($this->sendmail)
-		{
-			$this->delimiter = "\n";
-		}
-		else
-		{
-			$this->delimiter = "\r\n";
-		}
+		$this->headers = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $this->headers);
+		$this->message = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $this->message);
 
 		$this->headers = $headers;
 		$this->from = $from;
@@ -133,8 +105,6 @@ class MailHandler
 		$this->set_common_headers();
 		$this->set_message($message);
 
-		$this->headers = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $headers);
-		$this->message = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $this->message);
 	}
 
 	/**
@@ -157,62 +127,43 @@ class MailHandler
 	}
 
 	/**
-	 * Checks if message is not a empty string and formats it.
+	 * Sets and formats the email message.
 	 *
 	 * @param string message
 	 */
 	function set_message($message)
 	{		
-		if(trim($message) == '')
+		if($this->parse_format == "html")
 		{
-			$this->set_error('error_no_message');
+			$this->set_html_headers($message);
 		}
 		else
 		{
-			if($this->parser_options['allow_html'] == 'yes')
-			{
-				$this->set_html_headers($message);
-			}
-			else
-			{
-				$this->message = $message;
-				$this->set_plain_headers();
-			}
+			$this->message = $message;
+			$this->set_plain_headers();
 		}
 	}
 
 	/**
-	 * Checks if subject is not a empty string.
+	 * Sets and formats the email subject.
 	 *
 	 * @param string subject
 	 */
 	function set_subject($subject)
 	{
-		if(trim($subject) == '')
-		{
-			$this->set_error('error_no_subject');
-		}
-		else
-		{
-			$this->subject = $subject;
-		}
+		$this->subject = $this->cleanup($subject);
 	}
 
 	/**
-	 * Checks if to is not a empty string.
+	 * Sets and formats the recipient address.
 	 *
 	 * @param string to
 	 */
 	function set_to($to)
 	{
-		if(trim($to) == '')
-		{
-			$this->set_error('error_no_recipient');
-		}
-		else
-		{
-			$this->to = $to;
-		}
+		$to = $this->cleanup($to);
+
+		$this->to = $this->cleanup($to);
 	}
 
 	/**
@@ -220,7 +171,7 @@ class MailHandler
 	 */
 	function set_plain_headers()
 	{
-		$this->headers .= "Content-Type: text/plain; charset=\"{$this->charset}\"\n";
+		$this->headers .= "Content-Type: text/plain; charset={$this->charset}{$this->delimiter}";
 	}
 
 	/**
@@ -230,26 +181,22 @@ class MailHandler
 	 */
 	function set_html_headers($message)
 	{
-		global $parser;
+		$mime_boundary = "----=_NextPart".md5(time());
+
+		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}{$this->delimiter}";
+		$this->message = "This is a multi-part message in MIME format.{$this->delimiter}{$this->delimiter}";
+
+		$this->message .= "--{$mime_boundary}{$this->delimiter}";
+		$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
+		$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
+		$this->message .= strip_tags($message)."{$this->delimiter}{$this->delimiter}";
 		
-		if(!is_object($parser))
-		{
-			require_once MYBB_ROOT."inc/class_parser.php";
-			$parser = new postParser;
-		}
-
-		$mime_boundary = md5(time());
-
-		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"\n";
-		$this->message = "--{$mime_boundary}\n";
-		$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"\n";
-		$this->message .= "Content-Transfer-Encoding: 8bit\n";
-		$this->message .= $message."\n\n";
-		$this->message .= "--{$mime_boundary}\n";
-		$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"\n";
-		$this->message .= "Content-Transfer-Encoding: 8bit\n";
-		$this->message .= $parser->parse_message($message, $this->parser_options)."\n\n";
-		$this->message .= "--{$mime_boundary}--\n\n";
+		$this->message .= "--{$mime_boundary}{$this->delimiter}{$this->delimiter}";
+		$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
+		$this->message .= "Content-Transfer-Encoding: quoted-printable{$this->delimiter}{$this->delimiter}";
+		$this->message .= $message."{$this->delimiter}{$this->delimiter}";
+		
+		$this->message .= "--{$mime_boundary}--{$this->delimiter}{$this->delimiter}";
 	}
 
 	/**
@@ -265,8 +212,8 @@ class MailHandler
 			$this->from = "\"{$mybb->settings['bbname']} Mailer\" <{$mybb->settings['adminemail']}>";
 		}
 
-		$this->headers .= "From: {$this->from}\n";
-		$this->headers .= "Return-Path: {$mybb->settings['adminemail']}\n";
+		$this->headers .= "From: {$this->from}{$this->delimiter}";
+		$this->headers .= "Return-Path: {$mybb->settings['adminemail']}{$this->delimiter}";
 
 		if(isset($_SERVER['SERVER_NAME']))
 		{
@@ -283,87 +230,49 @@ class MailHandler
 
 		$msg_id = md5(uniqid(time())) . "@" . $http_host;
 
-		$this->headers .= "Message-ID: <{$msg_id}>\n";
-		$this->headers .= "MIME-Version: 1.0\n";
-		$this->headers .= "Content-Transfer-Encoding: 8bit\n";
-		$this->headers .= "X-Priority: 3\n";
-		$this->headers .= "X-MSMail-Priority: Normal\n";
-		$this->headers .= "X-Mailer: MyBB\n";
+		$this->headers .= "Message-ID: <{$msg_id}>{$this->delimiter}";
+		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
+		$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}";
+		$this->headers .= "X-Priority: 3{$this->delimiter}";
+		$this->headers .= "X-MSMail-Priority: Normal{$this->delimiter}";
+		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
 	}
-
+	
 	/**
-	 * Append a error to the errors array.
+	 * Log a fatal error message to the database.
 	 *
-	 * @param string language error
-	 * @param string additional error
-	 * @param boolean if it should halt or not.
+	 * @param string The error message
+	 * @param string Any additional information
 	 */
-	function set_error($lang_error, $error = '', $halt = false)
+	function fatal_error($error)
 	{
-		if($this->show_errors == 1)
-		{
-			$this->errors[] = array(
-				'lang_error' => $lang_error,
-				'error' => $error
-			);
-
-			if($halt)
-			{
-				$this->check_errors(true);
-			}
-		}
+		global $db;
+		
+		$mail_error = array(
+			"subject" => $db->escape_string($this->subject),
+			"toaddress" => $db->escape_string($this->to),
+			"fromaddress" => $db->escape_string($this->from),
+			"dateline" => time(),
+			"error" => $db->escape_string($error),
+			"smtperror" => $db->escape_string($this->data),
+			"smtpcode" => intval($this->code)
+		);
+		$db->insert_query(TABLE_PREFIX."mailerrors", $mail_error);
+		
+		// Another neat feature would be the ability to notify the site administrator via email - but wait, with email down, how do we do that?
 	}
-
+	
 	/**
-	 * Returns any errors unless the script has denifed otherwise.
+	 * Rids pesky characters from subjects, recipients, from addresses etc (prevents mail injection too)
+	 *
+	 * @param string The string being checked
+	 * @return string The cleaned string
 	 */
-	function check_errors($halt = false)
+	function cleanup($string)
 	{
-		if(!empty($this->errors) && $this->show_errors == 1)
-		{
-			global $lang;
-
-			$lang->load('mailhandler', true);
-
-			$errors = "";
-			foreach($this->errors as $key => $error)
-			{
-				if(!empty($error['error']) && isset($lang->$error['lang_error']))
-				{
-					$error_message = $lang->$error['lang_error'] . $error['error'];
-				}
-				else if(!empty($error['lang_error']))
-				{
-					$error_message = $lang->$error['lang_error'];
-				}
-				else
-				{
-					$error_message = $error['error'];
-				}
-
-				$errors .= "<li>{$error_message}</li>\n";
-			}
-
-			/*
-			 * Only temporary..
-			 */
-			if(defined("IN_ADMINCP"))
-			{
-				cperror("{$lang->error_occurred}<ul>\n{$errors}</ul>");
-			}
-
-			if(!is_object($templates) || !method_exists($templates, 'get'))
-			{
-				$this->errors = "{$errors}</ul>\n";
-			}
-			else
-			{
-				error($errors, $lang->error_occurred);
-			}
-
-			return true;
-		}
-		return false;
+		$string = str_replace(array("\r", "\n", "\r\n"), "", $string);
+		$string = trim($string);
+		return $string;
 	}
 }
 ?>

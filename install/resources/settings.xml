@@ -499,14 +499,6 @@ smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="smtp_encrypt">
-			<title>SMTP encrypt</title>
-			<description><![CDATA[If your password and username should be encrypted with base64 encryption, this is not supported by all servers.]]></description>
-			<disporder>2</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="secure_smtp">
 			<title>SMTP encrypted connection</title>
 			<description><![CDATA[Is the server you are trying to send mail through using encrypted connection? Select here.]]></description>
@@ -518,6 +510,14 @@ smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="mail_parameters">
+			<title>Additional Parameters for PHPs mail()</title>
+			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail function. Only in use when 'PHP mail' is selected above. <a href="http://php.net/function.mail">More information</a>]]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>		
 	</settinggroup>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
 		<setting name="enablememberlist">
@@ -690,7 +690,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergeuignore">
-			<title>Merge Usergroups to Ignore</title>
+			<title>Merge User Groups to Ignore</title>
 			<description><![CDATA[Usergroups, seperated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>

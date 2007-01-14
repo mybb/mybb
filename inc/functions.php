@@ -344,11 +344,14 @@ function my_date($format, $stamp="", $offset="", $ty=1)
  * @param string The message being sent.
  * @param string The from address of the email, if blank, the board name will be used.
  * @param string The chracter set being used to send this email.
+ * @param boolean Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
  */
-function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
+function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false)
 {
-	global $mybb, $mail;
+	global $mybb;
+	static $mail;
 	
+	// Does our object not exist? Create it
 	if(!is_object($mail))
 	{
 		require_once MYBB_ROOT."inc/class_mailhandler.php";
@@ -365,6 +368,25 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 		}
 	}
 	
+	// Using SMTP based mail
+	if($mybb->settings['mail_handler'] == 'smtp'])
+	{
+		if($keep_alive == true)
+		{
+			$mail->keep_alive = true;
+		}
+	}
+	
+	// Using PHP based mail()
+	else
+	{
+		if($mybb->settings['mail_parameters'] != '')
+		{
+			$mail->additional_parameters = $mybb->settings['mail_parameters'];
+		}
+	}
+	
+	// Build and send
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers);
 	return $mail->send();
 }

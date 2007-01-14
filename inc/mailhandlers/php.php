@@ -15,17 +15,35 @@
 class PhpMail extends MailHandler
 {
 	/**
+	 * The currently used delimiter new lines.
+	 *
+	 * @var string.
+	 */
+	var $delimiter = "\r\n";
+	
+	/**
+	 * Additional parameters to pass to PHPs mail() function.
+	 *
+	 * @var string
+	*/
+	var $additional_parameters = '';
+		
+	/**
 	 * Sends the email.
 	 *
 	 * @return true/false wether or not the email got sent or not.
-	 */
+	 */	
 	function send()
 	{
 		global $lang, $mybb;
 
-		if($this->check_errors())
+		// For some reason sendmail/qmail doesn't like \r\n
+		$this->sendmail = @ini_get('sendmail_path');
+		if($this->sendmail)
 		{
-			return $this->errors;
+			$this->headers = str_replace("\r\n", "\n", $this->headers);
+			$this->message = str_replace("\r\n", "\n", $this->message);
+			$this->delimiter = "\n";
 		}
 		
 		if(function_exists('mb_send_mail'))
@@ -43,12 +61,20 @@ class PhpMail extends MailHandler
 				@mb_language($language);
 			}
 			
-			return mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers));
+			$sent = mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $additional_parameters);
 		}
 		else
 		{
-			return mail($this->to, $this->subject, $this->message, trim($this->headers));
+			$sent = mail($this->to, $this->subject, $this->message, trim($this->headers), $additional_parameters);
 		}
+		
+		if(!$sent)
+		{
+			$this->fatal_error("MyBB was unable to send the email using the PHP mail() function.");
+			return false
+		}
+		
+		return true;
 	}
 }
 ?>

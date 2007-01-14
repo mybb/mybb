@@ -94,6 +94,27 @@ class SmtpMail extends MailHandler
 	 * @var string
 	 */
 	var $host = '';
+	
+	/**
+	 * The last received response from the SMTP server.
+	 *
+	 * @var string
+	 */
+	var $data = '';
+	
+	/**
+	 * The last received response code from the SMTP server.
+	 *
+	 * @var string
+	 */
+	var $code = 0;
+	
+	/**
+	 * Are we keeping the connection to the SMTP server alive?
+	 *
+	 * @var boolean
+	 */
+	var $keep_alive = false;
 
 	function SmtpMail()
 	{
@@ -142,17 +163,9 @@ class SmtpMail extends MailHandler
 		{
 			$this->port = $mybb->settings['smtp_port'];
 		}
-
-		if($mybb->settings['smtp_encrypt'] == "yes")
-		{
-			$this->password = base64_encode($mybb->settings['smtp_pass']);
-			$this->username = base64_encode($mybb->settings['smtp_user']);
-		}
-		else
-		{
-			$this->password = $mybb->settings['smtp_pass'];
-			$this->username = $mybb->settings['smtp_user'];
-		}
+	
+		$this->password = $mybb->settings['smtp_pass'];
+		$this->username = $mybb->settings['smtp_user'];
 	}
 
 	/**
@@ -162,52 +175,65 @@ class SmtpMail extends MailHandler
 	 */
 	function send()
 	{
-		global $lang, $mybb, $error_handler;
+		global $lang, $mybb;
 
-		$this->check_errors();
-
-		if(!$this->connect())
+		if(!$this->connected())
 		{
-			return $this->errors;
+			$this->connect();
 		}
-
+		
 		if($this->connected())
 		{
-			$this->send_data('MAIL FROM:<'.$this->from.'>' . $this->delimiter, '250');
+			if(!$this->send_data('MAIL FROM:<'.$this->from.'>', '250'))
+			{
+				$this->fatal_error("The mail server does not understand the MAIL FROM command");
+				return false;
+			}
+			
+			// Loop through recipients
 			$emails = explode(',', $this->to);
 			foreach($emails as $to)
 			{
-				$this->send_data('RCPT TO:<'.$to.'>' . $this->delimiter, '250');
+				$to = trim($to);
+				if(!$this->send_data('RCPT TO:<'.$to.'>', '250'))
+				{
+					$this->fatal_error("The mail server does not understand the RCPT TO command");
+					return false;
+				}
 			}
 
-			if($this->send_data('DATA' . $this->delimiter, '354'))
+			if($this->send_data('DATA', '354'))
 			{
 				$this->send_data('Date: ' . gmdate('r'));
 				$this->send_data('To: ' . $this->to);
-				$this->send_data(trim($this->headers));
+				
 				$this->send_data('Subject: ' . $this->subject);
-				$this->send_data($this->delimiter);
 
-				$this->message = preg_replace('#^\.' . $this->delimiter . '#m', '..' . $this->delimiter, $this->message);
+				// Only send additional headers if we've got any
+				if(trim($this->headers))
+				{
+					$this->send_data(trim($this->headers));
+				}
+				
+				$this->send_data("");
+
+				// Queue the actual message
+				$this->message = str_replace("\n.", "\n..", $this->message);
 				$this->send_data($this->message);
-
-				$this->check_status('250');
+			}
+			else
+			{
+				$this->fatal_error("The mail server did not understand the DATA command");
+				return false;
 			}
 
 			$this->send_data('.', '250');
 
-			$this->send_data('QUIT');
-			fclose($this->connection);
-			$this->status = 0;
-
-			if($this->check_errors())
+			if(!$this->keep_alive)
 			{
-				return $this->errors;
+				$this->close();
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 		else
 		{
@@ -215,9 +241,14 @@ class SmtpMail extends MailHandler
 		}
 	}
 
+	/**
+	 * Connect to the SMTP server.
+	 *
+	 * @return boolean True if connection was successful
+	 */
 	function connect()
 	{
-		global $lang, $mybb, $error_handler;
+		global $lang, $mybb;
 
 		$this->connection = @fsockopen($this->host, $this->port, $error_number, $error_string, $this->timeout);
 		if(function_exists('stream_set_timeout') && substr(PHP_OS, 0, 3) != "WIN")
@@ -228,81 +259,136 @@ class SmtpMail extends MailHandler
 		if(is_resource($this->connection))
 		{
 			$this->status = 1;
-			$this->check_status('220');
+			$this->get_data();
+			if(!$this->check_status('220'))
+			{
+				$this->fatal_error("The mail server is not ready, it did not respond with a 220 status message.");
+				return false;
+			}
 
 			if(!empty($this->username) && !empty($this->password))
 			{
-				$this->send_data('EHLO ' . $this->helo . $this->delimiter, '250');
-				$this->auth();
+				$data = $this->send_data('EHLO ' . $this->helo, '250');
+				if(!$data)
+				{
+					$this->fatal_error("The server did not understand the EHLO command");
+					return false;
+				}
+				preg_match("#250-AUTH( |=)(.+)$#mi", $data, $matches);
+				if(!$this->auth($matches[2]))
+				{
+					$this->fatal_error("MyBB was unable to authenticate you against the SMTP server");
+					return false;
+				}
 			}
 			else
 			{
-				$this->send_data('HELO ' . $this->helo . $this->delimiter, '250');
+				if(!$this->send_data('HELO ' . $this->helo, '250'))
+				{
+					$this->fatal_error("The server did not understand the HELO command");
+					return false;
+				}
 			}
-
-			if($this->authenticated || !$this->check_errors())
+			return true;
+		}
+		else
+		{
+			$this->fatal_error("Unable to connect to the mail server with the given details.<br /><br />{$error_number}: {$error_string}");
+			return false;
+		}
+	}
+	
+	/**
+	 * Authenticate against the SMTP server.
+	 *
+	 * @param string A list of authentication methods supported by the server
+	 * @return boolean True on success
+	 */
+	function auth($auth_methods)
+	{
+		global $lang, $mybb;
+		
+		$auth_methods = explode(" ", $auth_methods);
+		
+		if(in_array("LOGIN", $auth_methods))
+		{
+			if(!$$this->send_data("AUTH LOGIN", 334))
 			{
-				return true;
+				if($this->code == 503)
+				{
+					return true;
+				}
+				$this->fatal_error("The SMTP server did not respond correctly to the AUTH LOGIN command");
+				return false;
 			}
-			else
+			
+			if(!$this->send_data(base64_encode($this->username), '334'))
 			{
-				$this->set_error('error_no_connection', $this->get_data(), true);
-				$this->status = 0;
+				$this->fatal_error("The SMTP server rejected the supplied SMTP username");
+				return false;
+			}
+			
+			if(!$this->send_data(base64_encode($this->password), '235'))
+			{
+				$this->fatal_error("The SMTP server rejected the supplied SMTP password");
+				return false;
+			}
+		}
+		else if(in_array("PLAIN", $auth_methods))
+		{
+			if(!$this->send_data("AUTH PLAIN", '334'))
+			{
+				if($this->code == 503)
+				{
+					return true;
+				}
+				$this->fatal_error("The SMTP server did not respond correctly to the AUTH PLAIN command");
+				return false;
+			}
+			$auth = base64_encode(chr(0).$this->username.chr(0).$this->password);
+			if(!$this->send_data($auth, 235))
+			{
+				$this->fatal_error("The SMTP server rejected the supplied login username and password");
 				return false;
 			}
 		}
 		else
 		{
-			$this->set_error('error_no_connection', $error_number . " - " . $error_string, true);
+			$this->fatal_error("The SMTP server does not support any of the AUTH methods that MyBB supports");
+			return false;
 		}
+
+		// Still here, we're authenticated
+		return true;
 	}
 
-	function auth()
-	{
-		global $lang, $error_handler, $mybb;
-
-		$this->send_data('AUTH LOGIN' . $this->delimiter, '334');
-
-		$this->send_data($this->username . $this->delimiter, '334');
-		$this->send_data($this->password . $this->delimiter, '235');
-
-		if(!$this->check_errors())
-		{
-			$this->authenticated = true;
-			return true;
-		}
-		return false;
-	}
-
+	/**
+	 * Fetch data from the SMTP server.
+	 *
+	 * @return string The data from the SMTP server
+	 */
 	function get_data()
 	{
 		$string = '';
 
-		if(function_exists('stream_get_line'))
+		while((($line = fgets($this->connection, 515)) !== false))
 		{
-			while((($line = @stream_get_line($this->connection, 515)) !== false))
+			$string .= $line;
+			if(substr($line, 3, 1) == ' ')
 			{
-				$string .= $line;
-				if(substr($line, 3, 1) == ' ')
-				{
-					break;
-				}
+				break;
 			}
 		}
-		else
-		{
-			while((($line = @fgets($this->connection, 515)) !== false))
-			{
-				$string .= $line;
-				if(substr($line, 3, 1) == ' ')
-				{
-					break;
-				}
-			}
-		}
+		$this->data = $string;
+		$this->code = substr(trim($this->data), 0, 3);
 		return $string;
 	}
 
+	/**
+	 * Check if we're currently connected to an SMTP server
+	 *
+	 * @return boolean true if connected
+	 */
 	function connected()
 	{
 		if($this->status == 1)
@@ -312,17 +398,25 @@ class SmtpMail extends MailHandler
 		return false;
 	}
 
+	/**
+	 * Send data through to the SMTP server.
+	 *
+	 * @param string The data to be sent
+	 * @param int The response code expected back from the server (if we have one)
+	 * @return boolean True on success
+	 */
 	function send_data($data, $status_num = false)
 	{
 		if($this->connected())
 		{
-			if(fwrite($this->connection, $data."\n"))
+			if(fwrite($this->connection, $data."\r\n"))
 			{
 				if($status_num != false)
 				{
+					$rec = $this->get_data();
 					if($this->check_status($status_num))
 					{
-						return true;
+						return $rec;
 					}
 					else
 					{
@@ -333,23 +427,41 @@ class SmtpMail extends MailHandler
 			}
 			else
 			{
-				$this->set_error('error_data_not_sent', $data);
+				$this->fatal_error("Unable to send the data to the SMTP server");
+				return false;
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * Checks if the received status code matches the one we expect.
+	 *
+	 * @param int The status code we expected back from the server
+	 * @param boolean True if it matches
+	 */
 	function check_status($status_num)
 	{
-		$data = $this->get_data();
-		if(substr(trim($data), 0, 3) == $status_num)
+		if($this->code == $status_num)
 		{
-			return true;
+			return $this->data;
 		}
 		else
 		{
-			$this->set_error('error_status_missmatch', $data);
 			return false;
+		}
+	}
+	
+	/**
+	 * Close the connection to the SMTP server.
+	 */
+	function close()
+	{
+		if($this->status == 1)
+		{
+			$this->send_data('QUIT');
+			fclose($this->connection);
+			$this->status = 0;
 		}
 	}
 }

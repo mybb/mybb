@@ -158,19 +158,6 @@ if(!defined("NO_PLUGINS"))
 	$plugins->load();
 }
 
-require_once MYBB_ROOT."inc/class_mailhandler.php";
-
-if($mybb->settings['mail_handler'] == 'smtp')
-{
-	require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-	$mail = new SmtpMail();
-}
-else
-{
-	require_once MYBB_ROOT."inc/mailhandlers/php.php";
-	$mail = new PhpMail();
-}
-
 // Set up any shutdown functions we need to run globally
 add_shutdown('send_mail_queue');
 

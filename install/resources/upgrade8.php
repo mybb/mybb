@@ -117,23 +117,37 @@ function upgrade8_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_mins varchar(2) NOT NULL");
 	}
 	
-	if(!$db->table_exists("maillogs"))
+	if($db->table_exists("maillogs"))
 	{
-		$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
-			mid int unsigned NOT NULL auto_increment,
-			subject varchar(200) not null default '',
-			message text NOT NULL default '',
-			dateline bigint(30) NOT NULL default '0',
-			fromuid int unsigned NOT NULL default '0',
-			fromemail varchar(200) not null default '',
-			touid bigint(30) NOT NULL default '0',
-			toemail varchar(200) NOT NULL default '',
-			tid int unsigned NOT NULL default '0',
-			ipaddress varchar(20) NOT NULL default '',
-			PRIMARY KEY(mid)
-		) TYPE=MyISAM;");
+		$db->query("DROP TABLE ".TABLE_PREFIX."maillogs");
 	}
 	
+	$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
+		mid int unsigned NOT NULL auto_increment,
+		subject varchar(200) not null default '',
+		message text NOT NULL default '',
+		dateline bigint(30) NOT NULL default '0',
+		fromuid int unsigned NOT NULL default '0',
+		fromemail varchar(200) not null default '',
+		touid bigint(30) NOT NULL default '0',
+		toemail varchar(200) NOT NULL default '',
+		tid int unsigned NOT NULL default '0',
+		ipaddress varchar(20) NOT NULL default '',
+		PRIMARY KEY(mid)
+	) TYPE=MyISAM;");
+
+	$db->query("CREATE TABLE mybb_mailerrors(
+		eid int unsigned NOT NULL auto_increment,
+		subject varchar(200) NOT NULL default '',
+		toaddress varchar(150) NOT NULL default '',
+		fromaddress varchar(150) NOT NULL default '',
+		dateline bigint(30) NOT NULL default '0',
+		error text NOT NULL,
+		smtperror varchar(200) NOT NULL default '',
+		smtpcode int(5) NOT NULL default '0',
+		PRIMARY KEY(eid)
+ 	) TYPE=MyISAM;");
+
 	if(!$db->field_exists('maxemails' "usergroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER candsendemail");
