@@ -257,9 +257,9 @@ class MailHandler
 			"smtperror" => $db->escape_string($this->data),
 			"smtpcode" => intval($this->code)
 		);
-		$db->insert_query(TABLE_PREFIX."mailerrors", $mail_error);
+		$db->insert_query("mailerrors", $mail_error);
 		
-		// Another neat feature would be the ability to notify the site administrator via email - but wait, with email down, how do we do that?
+		// Another neat feature would be the ability to notify the site administrator via email - but wait, with email down, how do we do that? How about private message and hope the admin checks their PMs?
 	}
 	
 	/**
