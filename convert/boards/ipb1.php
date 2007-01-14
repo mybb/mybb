@@ -1685,12 +1685,12 @@ class Convert_ipb1 extends Converter {
 				$i_present = $i + 1;
 				echo "Inserting attachment type #{$i_present}... ";				
 
-				$insert_attachtype['import_atid'] = ($i_present);
+				$insert_attachtype['import_atid'] = $i_present;
 				$insert_attachtype['name'] = $types[$i].' file';
 				$insert_attachtype['mimetype'] = '';
 				$insert_attachtype['extension'] = $types[$i];
 				$insert_attachtype['maxsize'] = 512;
-				$insert_attachtype['icon'] = '';
+				$insert_attachtype['icon'] = 'images/attachtypes/image.gif';
 				
 				$this->insert_attachtype($insert_attachtype);
 

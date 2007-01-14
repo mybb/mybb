@@ -1932,7 +1932,7 @@ class Convert_vbulletin3 extends Converter {
 				}
 				$insert_attachtype['extension'] = $type['extension'];
 				$insert_attachtype['maxsize'] = round($type['size'] / 1000);
-				$insert_attachtype['icon'] = '';
+				$insert_attachtype['icon'] = 'images/attachtypes/image.gif';
 				
 				$this->insert_attachtype($insert_attachtype);
 

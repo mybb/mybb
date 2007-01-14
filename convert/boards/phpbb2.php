@@ -1013,9 +1013,9 @@ class Convert_phpbb2 extends Converter {
 				$insert_post['dateline'] = $post['post_time'];
 				$insert_post['message'] = str_replace(':'.$post['bbcode_uid'], '', htmlspecialchars_decode($post['post_text']));
 				$insert_post['ipaddress'] = $this->decode_ip($post['poster_ip']);
-				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);		
-				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);		
-				$insert_post['edituid'] = 0;				
+				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);
+				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);
+				$insert_post['edituid'] = 0;
 				$insert_post['edittime'] = 0;
 				$insert_post['visible'] = 1;
 				$insert_post['posthash'] = '';

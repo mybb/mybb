@@ -1928,7 +1928,7 @@ class Convert_smf extends Converter {
 				$insert_attachtype['mimetype'] = '';
 				$insert_attachtype['extension'] = $types[$i];
 				$insert_attachtype['maxsize'] = $max_size;
-				$insert_attachtype['icon'] = '';
+				$insert_attachtype['icon'] = 'images/attachtypes/image.gif';
 				
 				$this->insert_attachtype($insert_attachtype);
 

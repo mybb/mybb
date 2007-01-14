@@ -1604,6 +1604,12 @@ class Convert_mybb extends Converter
 		global $mybb, $output, $import_session, $db;
 
 		$this->mybb_db_connect();
+		
+		if(!isset($import_session['bburl']))
+		{
+			$query = $this->old_db->simple_select("settings", "value", "name = 'bburl'");
+			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
+		}
 
 		// Get number of attachment types
 		if(!isset($import_session['total_attachtypes']))
@@ -1652,7 +1658,6 @@ class Convert_mybb extends Converter
 			$query = $this->old_db->simple_select("attachtypes", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
 			while($type = $this->old_db->fetch_array($query))
 			{
-
 				echo "Inserting attachment type #{$type['atid']}... ";
 				
 				foreach($field_info as $key => $field)
@@ -1670,8 +1675,15 @@ class Convert_mybb extends Converter
 				}		
 
 				$insert_attachtype['import_atid'] = $type['atid'];
+				$insert_attachtype['icon'] = 'images/attachtypes/'.substr(strrchr($attachtype['icon'], "/"), 1);
 				
 				$this->insert_attachtype($insert_attachtype);
+				
+				$icondata = file_get_contents($import_session['bburl'].$attachtype['icon']);
+				$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
 
 				echo "done.";
 					

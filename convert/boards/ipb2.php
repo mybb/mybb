@@ -1735,6 +1735,121 @@ class Convert_ipb2 extends Converter {
 		$output->print_footer();
 	}
 	
+	function import_attachtypes()
+	{
+		global $mybb, $output, $import_session, $db;
+
+		$this->ipb_db_connect();
+		
+		if(!isset($import_session['existing_types']))
+		{
+			// Get existing attachment types
+			$query = $db->simple_select("attachtypes", "extension");
+			while($row = $db->fetch_array($query))
+			{
+				$import_session['existing_types'][$row['extension']] = true;
+			}
+		}
+
+		// Get number of attachment types
+		if(!isset($import_session['total_attachtypes']))
+		{
+			$query = $this->old_db->simple_select("attachment_types", "COUNT(*) as types");
+			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, "types");
+		}
+		
+		if($import_session['start_attachtypes'])
+		{
+			// If there are more attachment types to do, continue, or else, move onto next module
+			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
+			{
+				$import_session['disabled'][] = 'import_attachtypes';
+				return "finished";
+			}
+		}
+		
+		$output->print_header($this->modules[$import_session['module']]['name']);
+
+		// Get number of attachment types per screen from form
+		if(isset($mybb->input['attachtypes_per_screen']))
+		{
+			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
+		}
+		
+		// Validate IPB configuration file location
+		$conf_global_not_found = false;
+		if(!isset($mybb->input['ipb_conf_global']) || (isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global'])))
+		{
+			unset($import_session['attachtypes_per_screen']);
+			$conf_global_not_found = true;
+		}
+		else if(isset($mybb->input['ipb_conf_global']))
+		{
+			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
+			require($import_session['ipb_conf_global']);
+			$import_session['boardurl'] = $INFO['board_url'];
+		}
+		
+		if(empty($import_session['attachtypes_per_screen']))
+		{
+			$import_session['start_attachtypes'] = 0;
+			echo "<p>Please select how many attachment types to import at a time:</p>
+<p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
+			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
+			if($conf_global_not_found)
+			{
+				echo '<p style="color: red">The file specified was not found.</p>';
+			}
+			echo "<p>Please enter the path to the IPB2 conf_global.php file:</p>
+<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
+			$output->print_footer($import_session['module'], 'module', 1);
+		}
+		else
+		{
+			// A bit of stats to show the progress of the current import
+			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
+			
+			$query = $this->old_db->simple_select("attachment_types", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
+			
+			while($attachtype = $db->fetch_array($query))
+			{
+				echo "Inserting attachment type #{$attachtype['atype_id']}... ";				
+
+				$insert_attachtype['import_atid'] = $attachtype['atype_id'];
+				$insert_attachtype['name'] = $attachtype['atype_extension'].' file';
+				$insert_attachtype['mimetype'] = $attachtype['atype_mimetype'];
+				$insert_attachtype['extension'] = $attachtype['atype_extension'];
+				$insert_attachtype['maxsize'] = 512;
+				$insert_attachtype['icon'] = 'images/attachtypes/'.substr(strrchr($attachtype['atype_img'], "/"), 1);
+				
+				$this->insert_attachtype($insert_attachtype);
+
+				echo "done.";
+					
+				if(isset($import_session['existing_types'][$attachtype['atype_extension']]))
+				{
+					echo " (Note: extension already exists)\n";
+				}
+				
+				$icondata = file_get_contents($import_session['boardurl'].$attachtype['atype_img']);
+				$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
+				
+				echo "<br />\n";
+			}
+			
+			if($import_session['total_attachtypes'] == 0)
+			{
+				echo "There are no attachment types to import. Please press next to continue.";
+				define('BACK_BUTTON', false);
+			}
+		}
+		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
+		$output->print_footer();
+	}
+	
 	function import_events()
 	{
 		global $mybb, $output, $import_session, $db;

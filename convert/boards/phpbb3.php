@@ -1623,6 +1623,43 @@ class Convert_phpbb3 extends Converter {
 			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
 		}
 		
+		$error_phpbbpath = false;
+		
+		if(!empty($mybb->input['phpbbpath']))
+		{
+			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
+			if($import_session['phpbbpath']{strlen($import_session['phpbbpath'])-1} != '/') 
+			{
+				$import_session['phpbbpath'] .= '/';
+			}
+			
+			
+			// Doesn't work?
+			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
+			{
+				echo $import_session['phpbbpath'].'adm/index.php';
+				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
+				$error_phpbbpath = true;
+			}
+		}
+		
+		// Set uploads path
+		if(!isset($import_session['uploadiconsurl']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
+		{
+			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'upload_icons_path'", array('limit' => 1));
+			$import_session['uploadiconsurl'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
+		}
+					
+		$phpbbpath = false;
+		
+		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
+		{
+			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
+<p><input type=\"text\" name=\"phpbbpath\" value=\"{$import_session['phpbbpath']}\" /></p>";
+
+			$phpbbpath = true;
+		}
+		
 		if(empty($import_session['attachtypes_per_screen']))
 		{
 			$import_session['start_attachtypes'] = 0;
@@ -1677,6 +1714,12 @@ class Convert_phpbb3 extends Converter {
 				}
 				
 				$this->insert_attachtype($insert_attachtype);
+				
+				$icondata = file_get_contents($import_session['uploadiconsurl'].$type['upload_icon']);
+				$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
+				fwrite($file, $icondata);
+				fclose($file);
+				@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
 
 				echo "done.";
 					
