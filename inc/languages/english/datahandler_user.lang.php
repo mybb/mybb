@@ -10,7 +10,7 @@ $l['userdata_missing_username'] = 'You did not enter a username. Please enter on
 $l['userdata_banned_username'] = 'The username you entered may not be registered. Please enter a different username.';
 $l['userdata_bad_characters_username'] = 'The username you entered contains bad characters. Please enter a different username.';
 $l['userdata_invalid_username_length'] = 'The username you entered is of invalid length. Please enter a username between {1} and {2} characters.';
-$l['userdata_username_exists'] = 'The username you entered does already exist. Please enter a different username.';
+$l['userdata_username_exists'] = 'The username you entered already exists. Please enter a different username.';
 
 $l['userdata_invalid_password_length'] = 'The password you entered is of invalid length. Please enter a password between {1} and {2} characters.';
 $l['userdata_no_complex_characters'] = 'The password you entered does not contain one or more complex characters. Please enter one or more complex characters.';
