@@ -369,7 +369,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 	}
 	
 	// Using SMTP based mail
-	if($mybb->settings['mail_handler'] == 'smtp'])
+	if($mybb->settings['mail_handler'] == 'smtp')
 	{
 		if($keep_alive == true)
 		{
