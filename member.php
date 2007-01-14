@@ -226,21 +226,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$db->insert_query("awaitingactivation", $activationarray);
 			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
-
-			require_once MYBB_ROOT."inc/class_mailhandler.php";
-			if($mybb->settings['mail_handler'] == 'smtp')
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-				$mail = new SmtpMail();
-			}
-			else
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/php.php";
-				$mail = new PhpMail();
-			}
-			$mail->make_message($user_info['email'], $emailsubject, $emailmessage);
-			$mail->send();
-
+			my_mail($user_info['email'], $emailsubject, $emailmessage);
+			
 			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -251,20 +238,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		{
 			$emailsubject = sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
-			
-			require_once MYBB_ROOT."inc/class_mailhandler.php";
-			if($mybb->settings['mail_handler'] == 'smtp')
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-				$mail = new SmtpMail();
-			}
-			else
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/php.php";
-				$mail = new PhpMail();
-			}
-			$mail->make_message($user_info['email'], $emailsubject, $emailmessage);
-			$mail->send();
+			my_mail($user_info['email'], $emailsubject, $emailmessage);
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -797,20 +771,7 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 				$activationcode = $user['code'];
 				$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
 				$emailmessage = sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
-
-				require_once MYBB_ROOT."inc/class_mailhandler.php";
-				if($mybb->settings['mail_handler'] == 'smtp')
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-					$mail = new SmtpMail();
-				}
-				else
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/php.php";
-					$mail = new PhpMail();
-				}
-				$mail->make_message($email, $emailsubject, $emailmessage);
-				$mail->send();
+				my_mail($email, $emailsubject, $emailmessage);
 			}
 		}
 		$plugins->run_hooks("member_do_resendactivation_end");
@@ -858,20 +819,7 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 			$activationcode = $user['activationcode'];
 			$emailsubject = sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
-
-			require_once MYBB_ROOT."inc/class_mailhandler.php";
-			if($mybb->settings['mail_handler'] == 'smtp')
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-				$mail = new SmtpMail();
-			}
-			else
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/php.php";
-				$mail = new PhpMail();
-			}
-			$mail->make_message($email, $emailsubject, $emailmessage);
-			$mail->send();
+			my_mail($email, $emailsubject, $emailmessage);
 		}
 	}
 	$plugins->run_hooks("member_do_lostpw_end");
@@ -919,20 +867,7 @@ if($mybb->input['action'] == "resetpassword")
 
 		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
 		$emailmessage = sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
-
-		require_once MYBB_ROOT."inc/class_mailhandler.php";
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
-		}
-		$mail->make_message($email, $emailsubject, $emailmessage);
-		$mail->send();
+		my_mail($email, $emailsubject, $emailmessage);
 
 		$plugins->run_hooks("member_resetpassword_reset");
 

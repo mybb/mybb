@@ -285,20 +285,7 @@ class PMDataHandler extends DataHandler
 				}
 				$emailmessage = sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-
-				require_once MYBB_ROOT."inc/class_mailhandler.php";
-				if($mybb->settings['mail_handler'] == 'smtp')
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-					$mail = new SmtpMail();
-				}
-				else
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/php.php";
-					$mail = new PhpMail();
-				}
-				$mail->make_message($user['email'], $emailsubject, $emailmessage);
-				$mail->send();
+				my_mail($user['email'], $emailsubject, $emailmessage);
 	
 				$this->set_error("recipient_reached_quota", array($user['username']));
 			}
@@ -511,20 +498,7 @@ class PMDataHandler extends DataHandler
 				}
 				$emailmessage = sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
-
-				require_once MYBB_ROOT."inc/class_mailhandler.php";
-				if($mybb->settings['mail_handler'] == 'smtp')
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-					$mail = new SmtpMail();
-				}
-				else
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/php.php";
-					$mail = new PhpMail();
-				}
-				$mail->make_message($recipient['email'], $emailsubject, $emailmessage);
-				$mail->send();
+				my_mail($recipient['email'], $emailsubject, $emailmessage);
 			}
 
 			$this->pm_insert_data['uid'] = $recipient['uid'];

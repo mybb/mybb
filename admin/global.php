@@ -215,20 +215,7 @@ else
 		$iphost = @gethostbyaddr($ipaddress);
 		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $mybb->input['password'], $md5pw, $ipaddress, $iphost);
 		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
-
-		require_once MYBB_ROOT."inc/class_mailhandler.php";
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
-		}
-		$mail->make_message($mybb->settings['adminemail'], $lang->invalidlogin_subject, $lang->invalidlogin_message);
-		$mail->send();
+		my_mail($mybb->settings['adminemail'], $lang->invalidlogin_subject, $lang->invalidlogin_message);
 
 		$plugins->run_hooks("admin_global_invalid_login");
 	}

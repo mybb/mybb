@@ -204,20 +204,8 @@ function send_mail_queue($count=10)
 		{
 			// Delete the message from the queue
 			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
-
-			require_once MYBB_ROOT."inc/class_mailhandler.php";
-			if($mybb->settings['mail_handler'] == 'smtp')
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-				$mail = new SmtpMail();
-			}
-			else
-			{
-				require_once MYBB_ROOT."inc/mailhandlers/php.php";
-				$mail = new PhpMail();
-			}
-			$mail->make_message($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
-			$mail->send();
+			
+			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
 		// Update the mailqueue cache and remove the lock
 		$cache->updatemailqueue(time(), 0);
@@ -359,57 +347,26 @@ function my_date($format, $stamp="", $offset="", $ty=1)
  */
 function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 {
-	global $db, $mybb, $lang;
-
-	if(empty($charset))
+	global $mybb, $mail;
+	
+	if(!is_object($mail))
 	{
-		$charset = $lang->settings['charset'];
+		require_once MYBB_ROOT."inc/class_mailhandler.php";
+		
+		if($mybb->settings['mail_handler'] == 'smtp')
+		{
+			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
+			$mail = new SmtpMail();
+		}
+		else
+		{
+			require_once MYBB_ROOT."inc/mailhandlers/php.php";
+			$mail = new PhpMail();
+		}
 	}
-
-	// Build mail headers
-	if(my_strlen(trim($from)) == 0)
-	{
-		$from = "\"".$mybb->settings['bbname']." Mailer\" <".$mybb->settings['adminemail'].">";
-	}
-
-	$headers .= "From: {$from}\n";
-	$headers .= "Return-Path: {$mybb->settings['adminemail']}\n";
-
-	if($_SERVER['SERVER_NAME'])
-	{
-		$http_host = $_SERVER['SERVER_NAME'];
-	}
-	else if($_SERVER['HTTP_HOST'])
-	{
-		$http_host = $_SERVER['HTTP_HOST'];
-	}
-	else
-	{
-		$http_host = "unknown.local";
-	}
-
-	$headers .= "Message-ID: <". md5(uniqid(time()))."@{$http_host}>\n";
-	$headers .= "MIME-Version: 1.0\n";
-	$headers .= "Content-Type: text/plain; charset=\"{$charset}\"\n";
-	$headers .= "Content-Transfer-Encoding: 8bit\n";
-	$headers .= "X-Priority: 3\n";
-	$headers .= "X-MSMail-Priority: Normal\n";
-	$headers .= "X-Mailer: MyBB\n";
-
-	// For some reason sendmail/qmail doesn't like \r\n
-	$sendmail = @ini_get('sendmail_path');
-	if($sendmail)
-	{
-		$headers = preg_replace("#(\r\n|\r|\n)#s", "\n", $headers);
-		$message = preg_replace("#(\r\n|\r|\n)#s", "\n", $message);
-	}
-	else
-	{
-		$headers = preg_replace("#(\r\n|\r|\n)#s", "\r\n", $headers);
-		$message = preg_replace("#(\r\n|\r|\n)#s", "\r\n", $message);
-	}
-
-	mail($to, $subject, $message, $headers);
+	
+	$mail->make_message($to, $subject, $message, $from, $charset, $headers);
+	return $mail->send();
 }
 
 /**

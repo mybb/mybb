@@ -918,20 +918,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 				$uid = $mybb->user['uid'];
 				$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
 				$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
-				
-				require_once MYBB_ROOT."inc/class_mailhandler.php";
-				if($mybb->settings['mail_handler'] == 'smtp')
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-					$mail = new SmtpMail();
-				}
-				else
-				{
-					require_once MYBB_ROOT."inc/mailhandlers/php.php";
-					$mail = new PhpMail();
-				}
-				$mail->make_message($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
-				$mail->send();
+				my_mail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
 
 				$plugins->run_hooks("usercp_do_email_verify");
 				error($lang->redirect_changeemail_activation);
