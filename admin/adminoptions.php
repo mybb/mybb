@@ -230,14 +230,16 @@ if($mybb->input['action'] == "adminpermissions")
 {
 	$plugins->run_hooks("admin_adminoptions_adminpermissions");
 	
+	checkadminpermissions("caneditaperms");
+	
+	// Get usergroups with ACP access
 	$usergroups = array();
-
 	$query = $db->simple_select("usergroups", "*", "cancp='yes'");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
-	checkadminpermissions("caneditaperms");
+	
 	cpheader();
 	starttable();
 	tableheader($lang->admin_perms.makelinkcode($lang->edit_default, "adminoptions.php?".SID."&action=updateperms&uid=0", "", "header"), "", 4);
@@ -247,6 +249,15 @@ if($mybb->input['action'] == "adminpermissions")
 	echo "<td class=\"subheader\">$lang->perm_options</td>\n";
 	echo "<td class=\"subheader\">$lang->options</td>\n";
 	echo "</tr>\n";
+	
+	// Get users whose primary or secondary usergroup has ACP access
+	$comma = $primary_group_list = $secondary_group_list = '';
+	foreach($usergroups as $gid => $group_info)
+	{
+		$primary_group_list .= $comma.$gid;
+		$secondary_group_list .= " OR CONCAT(',', u.additionalgroups,',') LIKE '%,{$gid},%'";
+		$comma = ',';
+	}
 	$group_list = implode(',', array_keys($usergroups));
 	$secondary_groups = ','.$group_list.',';
 	$query = $db->query("
@@ -254,8 +265,7 @@ if($mybb->input['action'] == "adminpermissions")
 		FROM ".TABLE_PREFIX."users u
 		LEFT JOIN ".TABLE_PREFIX."adminoptions a
 		ON (a.uid=u.uid)
-		WHERE (u.usergroup IN ($group_list) OR CONCAT(',', u.additionalgroups,',')
-		LIKE '%{$secondary_groups}%')
+		WHERE (u.usergroup IN ({$primary_group_list}) {$secondary_group_list})
 		ORDER BY u.username ASC
 	");
 	while($admin = $db->fetch_array($query))
@@ -263,11 +273,13 @@ if($mybb->input['action'] == "adminpermissions")
 		$la = my_date($mybb->settings['dateformat'].",".$mybb->settings['timeformat'], $admin['lastactive']);
 		$bgcolor = getaltbg();
 		$usergroup_list = array();
-		// Build a list of group memberships that have access to the admin CP
+		// Build a list of group memberships that have access to the Admin CP
+		// Primary usergroup?
 		if($usergroups[$admin['usergroup']]['cancp'] == "yes")
 		{
 			$usergroup_list[] = $usergroups[$admin['usergroup']]['title'];
 		}
+		// Secondary usergroups?
 		$additional_groups = explode(',', $admin['additionalgroups']);
 		if(is_array($additional_groups))
 		{
