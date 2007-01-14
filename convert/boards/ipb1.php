@@ -1771,7 +1771,7 @@ class Convert_ipb1 extends Converter {
 		}
 		else
 		{
-			$i_present = $import_session['start_attachments'];
+			$i_present = $i = $import_session['start_attachments'];
 			
 			// Get upload path
 			if(!isset($import_session['uploadspath']))
@@ -1783,7 +1783,7 @@ class Convert_ipb1 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("posts", "attach_id,attach_hits,attach_type,attach_file,pid,author_id,", "attach_id != ''", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			$query = $this->old_db->simple_select("posts", "attach_id,attach_hits,attach_type,attach_file,pid,author_id", "attach_id != ''", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
 			while($attachment = $this->old_db->fetch_array($query))
 			{
 				$i_present = $i++;
@@ -1821,7 +1821,7 @@ class Convert_ipb1 extends Converter {
 					// Restore connection
 					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				}
-				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE tid = '".$posthash['tid']."'");
+				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
 				
 				if(file_exists($import_session['uploadspath'].'/'.$attachment['attach_id']))
 				{
