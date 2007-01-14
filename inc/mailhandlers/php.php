@@ -15,19 +15,12 @@
 class PhpMail extends MailHandler
 {
 	/**
-	 * The currently used delimiter new lines.
-	 *
-	 * @var string.
-	 */
-	var $delimiter = "\r\n";
-	
-	/**
 	 * Additional parameters to pass to PHPs mail() function.
 	 *
 	 * @var string
 	*/
 	var $additional_parameters = '';
-		
+
 	/**
 	 * Sends the email.
 	 *
@@ -45,7 +38,7 @@ class PhpMail extends MailHandler
 			$this->message = str_replace("\r\n", "\n", $this->message);
 			$this->delimiter = "\n";
 		}
-		
+
 		if(function_exists('mb_send_mail'))
 		{
 			if(function_exists('mb_language'))
@@ -67,13 +60,13 @@ class PhpMail extends MailHandler
 		{
 			$sent = mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 		}
-		
+
 		if(!$sent)
 		{
 			$this->fatal_error("MyBB was unable to send the email using the PHP mail() function.");
-			return false
+			return false;
 		}
-		
+
 		return true;
 	}
 }
