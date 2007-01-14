@@ -365,7 +365,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 		}
 	}
 	
-	$mail->make_message($to, $subject, $message, $from, $charset, $headers);
+	$mail->build_message($to, $subject, $message, $from, $charset, $headers);
 	return $mail->send();
 }
 

@@ -1277,10 +1277,9 @@ class Convert_xmb extends Converter {
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
-				$insert_smilie['import_iid'] = $smilie['id'];
 				$insert_smilie['name'] = $smilie['code'];
 				$insert_smilie['find'] = $smilie['code'];
-				$insert_smilie['path'] = 'images/smilies/'.$smilie['url'];
+				$insert_smilie['image'] = 'images/smilies/'.$smilie['url'];
 				$insert_smilie['disporder'] = $smilie['id'];
 				$insert_smilie['showclickable'] = 'yes';
 			

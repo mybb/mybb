@@ -1666,10 +1666,9 @@ class Convert_smf extends Converter {
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
-				$insert_smilie['import_iid'] = $smilie['ID_SMILEY'];
 				$insert_smilie['name'] = $smilie['description'];
 				$insert_smilie['find'] = $smilie['code'];
-				$insert_smilie['path'] = 'images/smilies/'.$smilie['filename'];
+				$insert_smilie['image'] = 'images/smilies/'.$smilie['filename'];
 				$insert_smilie['disporder'] = $smilie['smileyOrder'];
 				$insert_smilie['showclickable'] = int_to_noyes($smilie['hidden']);
 			

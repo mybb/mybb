@@ -1494,10 +1494,9 @@ class Convert_vbulletin3 extends Converter {
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
-				$insert_smilie['import_iid'] = $smilie['smilieid'];
 				$insert_smilie['name'] = $smilie['title'];
 				$insert_smilie['find'] = $smilie['smilietext'];
-				$insert_smilie['path'] = "images/smilies/".substr(strrchr($smilie['smiliepath'], "/"), 1);
+				$insert_smilie['image'] = "images/smilies/".substr(strrchr($smilie['smiliepath'], "/"), 1);
 				$insert_smilie['disporder'] = $smilie['displayorder'];
 				$insert_smilie['showclickable'] = 'yes';
 			

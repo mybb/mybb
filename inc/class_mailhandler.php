@@ -109,7 +109,7 @@ class MailHandler
 	 * @param string charset of email.
 	 * @param string headers of email.
 	 */
-	function make_message($to, $subject, $message, $from="", $charset="", $headers="")
+	function build_message($to, $subject, $message, $from="", $charset="", $headers="")
 	{
 		global $parser, $lang, $mybb;
 		
@@ -169,12 +169,6 @@ class MailHandler
 		}
 		else
 		{
-			global $parser;
-			if(!is_object($parser))
-			{
-				require_once MYBB_ROOT."inc/class_parser.php";
-				$parser = new postParser;
-			}
 			if($this->parser_options['allow_html'] == 'yes')
 			{
 				$this->set_html_headers($message);
@@ -237,6 +231,12 @@ class MailHandler
 	function set_html_headers($message)
 	{
 		global $parser;
+		
+		if(!is_object($parser))
+		{
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+		}
 
 		$mime_boundary = md5(time());
 

@@ -1309,7 +1309,6 @@ class Convert_mybb extends Converter
 				}
 				
 				// MyBB values
-				$insert_smilie['import_iid'] = $smilie['sid'];
 				$insert_smilie['path'] = "images/smilies/".substr(strrchr($smilie['path'], "/"), 1);
 			
 				$this->insert_smilie($insert_smilie);

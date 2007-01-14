@@ -1203,10 +1203,9 @@ class Convert_phpbb2 extends Converter {
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// Invision Power Board 2 values
-				$insert_smilie['import_iid'] = $smilie['smilies_id'];
 				$insert_smilie['name'] = $smilie['emotion'];
 				$insert_smilie['find'] = $smilie['code'];
-				$insert_smilie['path'] = 'images/smilies/'.$smilie['smile_url'];
+				$insert_smilie['image'] = 'images/smilies/'.$smilie['smile_url'];
 				$insert_smilie['disporder'] = $smilie['smilies_id'];
 				$insert_smilie['showclickable'] = 'yes';				
 			

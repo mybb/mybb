@@ -1492,10 +1492,9 @@ class Convert_phpbb3 extends Converter {
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
 				// phpBB 3 values
-				$insert_smilie['import_iid'] = $smilie['smiley_id'];
 				$insert_smilie['name'] = $smilie['emotion'];
 				$insert_smilie['find'] = $smilie['code'];
-				$insert_smilie['path'] = 'images/smilies/'.$smilie['smiley_url'];
+				$insert_smilie['image'] = 'images/smilies/'.$smilie['smiley_url'];
 				$insert_smilie['disporder'] = $smilie['smiley_order'];
 				$insert_smilie['showclickable'] = int_to_yesno($smilie['display_on_posting']);				
 			

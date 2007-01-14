@@ -1148,24 +1148,27 @@ class Convert_ipb1 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_icons']-$import_session['start_icons'])." icons left to import and ".round((($import_session['total_icons']-$import_session['start_icons'])/$import_session['icons_per_screen']))." pages left at a rate of {$import_session['icons_per_screen']} per page.<br /><br />";
 			
-			for($i=$import_session['start_icons']; $i <= $import_session['total_icons']; $i++)
+			if($import_session['total_icons'] > 0)
 			{
-				echo "Transfering icon #".strstr('icon', $image[0])."... ";
-				flush(); // Show status as soon as possible to avoid inconsistent status reporting
-				
-				$image = explode('|', $import_session['file_array'][$i]);	
-				
-				$insert_icon['name'] = $image[0];
-				$insert_icon['path'] = 'images/icons/'.$image[0];
-				
-				$this->insert_icon($insert_icon);
-								
-				$icondata = file_get_contents($image[1].'/'.$image[0]);
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
-				echo "done.<br />\n";
+				for($i=$import_session['start_icons']; $i <= $import_session['total_icons']; $i++)
+				{
+					echo "Transfering icon #".strstr('icon', $image[0])."... ";
+					flush(); // Show status as soon as possible to avoid inconsistent status reporting
+					
+					$image = explode('|', $import_session['file_array'][$i]);	
+					
+					$insert_icon['name'] = $image[0];
+					$insert_icon['path'] = 'images/icons/'.$image[0];
+					
+					$this->insert_icon($insert_icon);
+									
+					$icondata = file_get_contents($image[1].'/'.$image[0]);
+					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+					fwrite($file, $icondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					echo "done.<br />\n";
+				}
 			}
 			
 			if($import_session['total_icons'] == 0)
@@ -1414,10 +1417,9 @@ class Convert_ipb1 extends Converter {
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
 				// Invision Power Board 2 values
-				$insert_smilie['import_iid'] = $smilie['id'];
 				$insert_smilie['name'] = $smilie['typed'];
 				$insert_smilie['find'] = $smilie['typed'];
-				$insert_smilie['path'] = 'images/smilies/'.$smilie['image'];
+				$insert_smilie['image'] = 'images/smilies/'.$smilie['image'];
 				$insert_smilie['disporder'] = $smilie['id'];
 				$insert_smilie['showclickable'] = int_to_yesno($smilie['clickable']);			
 			
@@ -1723,7 +1725,7 @@ class Convert_ipb1 extends Converter {
 		// Get number of attachments
 		if(empty($import_session['total_attachments']))
 		{
-			$query = $db->simple_select("posts", "COUNT(*) as attachments", "attach_id != ''");
+			$query = $this->old_db->simple_select("posts", "COUNT(*) as attachments", "attach_id != ''");
 			$import_session['total_attachments'] = $this->old_db->fetch_field($query, "attachments");
 		}
 

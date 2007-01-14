@@ -367,6 +367,42 @@ class Converter
 		
 		return $atid;
 	}
+	
+	/**
+	 * Insert a icon into database
+	 */
+	function insert_icon($icon)
+	{
+		global $db;
+
+		foreach($icon as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+
+		$db->insert_query("icons", $insertarray);
+		$cid = $db->insert_id();
+		
+		return $cid;
+	}
+	
+	/**
+	 * Insert a smilie into database
+	 */
+	function insert_smilie($smilie)
+	{
+		global $db;
+
+		foreach($smilie as $key => $value)
+		{
+			$insertarray[$key] = $db->escape_string($value);
+		}
+
+		$db->insert_query("smilies", $insertarray);
+		$sid = $db->insert_id();
+		
+		return $sid;
+	}
 
 	/**
 	 * Update setting in the database
