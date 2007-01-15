@@ -97,7 +97,7 @@ $l['search_found'] = "Found in {1}";
 $l['search_created_custom'] = "Created custom template for {1}";
 $l['search_edit'] = "edit";
 $l['search_change_original'] = "change original";
-$l['search_noresults'] = 'No templates were found containing the string \'<strong>{1}</strong>\'';
+$l['search_noresults'] = "No templates were found containing the string '<strong>{1}</strong>'";
 
 $l['search_names'] = "Search Template Names";
 $l['find_names'] = "Find Templates";

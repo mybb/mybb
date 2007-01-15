@@ -123,7 +123,7 @@ class postParser
 		// Always fix bad Javascript in the message.
 		$message = $this->fix_javascript($message);
 
-		// If we can, parse smiliesa
+		// If we can, parse smilies
 		if($options['allow_smilies'] != "no")
 		{
 			$message = $this->parse_smilies($message, $options['allowhtml']);
