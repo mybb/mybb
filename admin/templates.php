@@ -224,74 +224,81 @@ if($mybb->input['action'] == "do_replace")
 		$plugins->run_hooks("admin_templates_do_replace");
 		// Select all templates with that search term
 		$query = $db->query("SELECT tid, title, template, sid FROM ".TABLE_PREFIX."templates WHERE template LIKE '%".$db->escape_string($mybb->input['find'])."%' ORDER BY sid,title ASC");
-		while($template = $db->fetch_array($query))
+		if($db->num_rows($query) == 0)
 		{
-			if($template['sid'] == 1)
-			{
-				$template_list[-2][$template['title']] = $template;
-			}
-			else
-			{
-				$template_list[$template['sid']][$template['title']] = $template;
-			}
+			makelabelcode(sprintf($lang->search_noresults, $mybb->input['find']));
 		}
-
-		// Loop templates we found
-		foreach($template_list as $sid => $templates)
+		else
 		{
-			// Show group header
-			$search_header = sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
-			tablesubheader($search_header);
-
-			foreach($templates as $title => $template)
+			while($template = $db->fetch_array($query))
 			{
-				// Do replacement
-				$newtemplate = str_replace($mybb->input['find'], $mybb->input['replace'], $template['template']);
-				if($newtemplate != $template['template'])
+				if($template['sid'] == 1)
 				{
-					// If the template is different, that means the search term has been found. 
-					if($mybb->input['replace'] != "")
+					$template_list[-2][$template['title']] = $template;
+				}
+				else
+				{
+					$template_list[$template['sid']][$template['title']] = $template;
+				}
+			}
+	
+			// Loop templates we found
+			foreach($template_list as $sid => $templates)
+			{
+				// Show group header
+				$search_header = sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
+				tablesubheader($search_header);
+	
+				foreach($templates as $title => $template)
+				{
+					// Do replacement
+					$newtemplate = str_replace($mybb->input['find'], $mybb->input['replace'], $template['template']);
+					if($newtemplate != $template['template'])
 					{
-						if($template['sid'] == -2)
+						// If the template is different, that means the search term has been found. 
+						if($mybb->input['replace'] != "")
 						{
-							// The template is a master template.  We have to make a new custom template.
-							$new_template = array(
-								"title" => $db->escape_string($title),
-								"template" => $db->escape_string($newtemplate),
-								"sid" => 1,
-								"version" => $mybb->version_code,
-								"status" => '',
-								"dateline" => time()
-							);
-							$db->insert_query(TABLE_PREFIX."templates", $new_template);
-							$new_tid = $db->insert_id();
-							$label = sprintf($lang->search_created_custom, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
-						}
-						else
-						{
-							// The template is a custom template.  Replace as normal.
-							// Update the template if there is a replacement term
-							$updatedtemplate = array(
-								"template" => $db->escape_string($newtemplate)
+							if($template['sid'] == -2)
+							{
+								// The template is a master template.  We have to make a new custom template.
+								$new_template = array(
+									"title" => $db->escape_string($title),
+									"template" => $db->escape_string($newtemplate),
+									"sid" => 1,
+									"version" => $mybb->version_code,
+									"status" => '',
+									"dateline" => time()
 								);
-							$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$template['tid']."'");
-							$label = sprintf($lang->search_updated, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
-						}
-					}
-					else
-					{
-						// Just show that the term was found
-						if($template['sid'] == -2)
-						{
-							$label = sprintf($lang->search_found, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_change_original, "templates.php?".SID."&action=add&title=".$template['title']."&sid=1"));
+								$db->insert_query(TABLE_PREFIX."templates", $new_template);
+								$new_tid = $db->insert_id();
+								$label = sprintf($lang->search_created_custom, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
+							}
+							else
+							{
+								// The template is a custom template.  Replace as normal.
+								// Update the template if there is a replacement term
+								$updatedtemplate = array(
+									"template" => $db->escape_string($newtemplate)
+									);
+								$db->update_query(TABLE_PREFIX."templates", $updatedtemplate, "tid='".$template['tid']."'");
+								$label = sprintf($lang->search_updated, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
+							}
 						}
 						else
 						{
-							$label = sprintf($lang->search_found, $template['title']);
-							makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
+							// Just show that the term was found
+							if($template['sid'] == -2)
+							{
+								$label = sprintf($lang->search_found, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_change_original, "templates.php?".SID."&action=add&title=".$template['title']."&sid=1"));
+							}
+							else
+							{
+								$label = sprintf($lang->search_found, $template['title']);
+								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
+							}
 						}
 					}
 				}
