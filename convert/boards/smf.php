@@ -12,7 +12,19 @@
 // Board Name: SMF 1.1
 
 class Convert_smf extends Converter {
+
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "SMF 1.1";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import SMF Usergroups",
@@ -246,17 +258,11 @@ class Convert_smf extends Converter {
 					$star_info = explode('#', $group['stars']);
 					$insert_group['stars'] = $star_info[0];
 					$insert_group['starimage'] = 'images/'.$star_info[1];
-					$insert_group['image'] = '';
-					$insert_group['disporder'] = 0;
-					$insert_group['isbannedgroup'] = 'no';
-					$insert_group['canview'] = 'yes';
-					$insert_group['canviewthreads'] = 'yes';
 					$insert_group['canviewprofiles'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_view_any']);
 					$insert_group['candlattachments'] = int_to_yesno($permissions[$group['ID_GROUP']]['view_attachments']);
 					$insert_group['canpostthreads'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_new']);
 					$insert_group['canpostreplys'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_reply_any']);
-					$insert_group['canpostattachments'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_attachment']);
-					$insert_group['canratethreads'] = 'yes';
+					$insert_group['canpostattachments'] = int_to_yesno($permissions[$group['ID_GROUP']]['post_attachment']);					
 					$insert_group['caneditposts'] = int_to_yesno($permissions[$group['ID_GROUP']]['modify_own']);
 					$insert_group['candeleteposts'] = int_to_yesno($permissions[$group['ID_GROUP']]['remove_own']);
 					$insert_group['candeletethreads'] = int_to_yesno($permissions[$group['ID_GROUP']]['delete_own']);
@@ -264,34 +270,42 @@ class Convert_smf extends Converter {
 					$insert_group['canpostpolls'] = int_to_yesno($permissions[$group['ID_GROUP']]['poll_post']);
 					$insert_group['canvotepolls'] = int_to_yesno($permissions[$group['ID_GROUP']]['poll_vote']);
 					$insert_group['canusepms'] = int_to_yesno($permissions[$group['ID_GROUP']]['pm_read']);
-					$insert_group['cansendpms'] = int_to_yesno($permissions[$group['ID_GROUP']]['pm_send']);
+					$insert_group['cansendpms'] = int_to_yesno($permissions[$group['ID_GROUP']]['pm_send']);					
+					$insert_group['canviewmemberlist'] = int_to_yesno($permissions[$group['ID_GROUP']]['view_mlist']);
+					$insert_group['canviewcalendar'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_view']);
+					$insert_group['canaddpublicevents'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_post']);
+					$insert_group['canaddprivateevents'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_post']);
+					$insert_group['canviewonline'] = int_to_yesno($permissions[$group['ID_GROUP']]['who_view']);					
+					$insert_group['cancp'] = int_to_yesno($permissions[$group['ID_GROUP']]['admin_forum']);
+					$insert_group['issupermod'] = int_to_yesno($permissions[$group['ID_GROUP']]['moderate_board']);
+					$insert_group['cansearch'] = int_to_yesno($permissions[$group['ID_GROUP']]['search_posts']);
+					$insert_group['canusercp'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_identity_own']);					
+					$insert_group['usereputationsystem'] = int_to_yesno($permissions[$group['ID_GROUP']]['karma_edit']);
+					$insert_group['cangivereputations'] = int_to_yesno($permissions[$group['ID_GROUP']]['karma_edit']);					
+					$insert_group['cancustomtitle'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_title_own']);
+					
+					// Default values
+					$insert_group['image'] = '';
+					$insert_group['disporder'] = 0;
+					$insert_group['isbannedgroup'] = 'no';
+					$insert_group['canview'] = 'yes';
+					$insert_group['canviewthreads'] = 'yes';
+					$insert_group['canratethreads'] = 'yes';
 					$insert_group['cantrackpms'] = 'yes';
 					$insert_group['candenypmreceipts'] = 'yes';
 					$insert_group['pmquota'] = '0';
 					$insert_group['maxpmrecipients'] = '5';
 					$insert_group['cansendemail'] = 'yes';
-					$insert_group['canviewmemberlist'] = int_to_yesno($permissions[$group['ID_GROUP']]['view_mlist']);
-					$insert_group['canviewcalendar'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_view']);
-					$insert_group['canaddpublicevents'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_post']);
-					$insert_group['canaddprivateevents'] = int_to_yesno($permissions[$group['ID_GROUP']]['calendar_post']);
-					$insert_group['canviewonline'] = int_to_yesno($permissions[$group['ID_GROUP']]['who_view']);
 					$insert_group['canviewwolinvis'] = 'no';
 					$insert_group['canviewonlineips'] = 'no';
-					$insert_group['cancp'] = int_to_yesno($permissions[$group['ID_GROUP']]['admin_forum']);
-					$insert_group['issupermod'] = int_to_yesno($permissions[$group['ID_GROUP']]['moderate_board']);
-					$insert_group['cansearch'] = int_to_yesno($permissions[$group['ID_GROUP']]['search_posts']);
-					$insert_group['canusercp'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_identity_own']);
 					$insert_group['canuploadavatars'] = 'yes';
 					$insert_group['canratemembers'] = 'yes';
 					$insert_group['canchangename'] = 'no';
 					$insert_group['showforumteam'] = 'no';
-					$insert_group['usereputationsystem'] = int_to_yesno($permissions[$group['ID_GROUP']]['karma_edit']);
-					$insert_group['cangivereputations'] = int_to_yesno($permissions[$group['ID_GROUP']]['karma_edit']);
 					$insert_group['reputationpower'] = '1';
 					$insert_group['maxreputationsday'] = '5';
 					$insert_group['candisplaygroup'] = 'yes';
 					$insert_group['attachquota'] = '0';
-					$insert_group['cancustomtitle'] = int_to_yesno($permissions[$group['ID_GROUP']]['profile_title_own']);
 					
 					echo "custom usergroup...";
 	
@@ -390,7 +404,8 @@ class Convert_smf extends Converter {
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
-					
+				
+				// Check if we have duplicate users
 				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['memberName']))."'");
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && my_strtolower($user['emailAddress']) == my_strtolower($duplicate_user['email']))
@@ -408,6 +423,7 @@ class Convert_smf extends Converter {
 				
 				echo "Adding user #{$user['ID_MEMBER']}... ";
 				
+				// SMF values
 				$insert_user['usergroup'] = $this->get_group_id($user, 'ID_GROUP');
 				$insert_user['additionalgroups'] = $this->get_group_id($user, 'additionalGroups');
 				$insert_user['displaygroup'] = $insert_user['usergroup'];
@@ -432,11 +448,24 @@ class Convert_smf extends Converter {
 				$insert_user['msn'] = $user['MSN'];
 				$insert_user['hideemail'] = int_to_yesno($user['hideEmail']);
 				$insert_user['invisible'] = int_to_yesno($user['showOnline']);
+				$insert_user['pmnotify'] = int_to_yesno($user['pm_email_notify']);
+				$insert_user['timeformat'] = $user['timeFormat'];
+				$insert_user['timezone'] = $user['timeOffset'];
+				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);
+				$insert_user['buddylist'] = $user['buddy_list'];
+				$insert_user['ignorelist'] = $user['pm_ignore_list'];
+				$insert_user['style'] = $user['ID_THEME'];
+				$insert_user['regip'] = $user['memberIP'];
+				$insert_user['timeonline'] = $user['totalTimeLoggedIn'];
+				$insert_user['totalpms'] = $user['instantMessages'];
+				$insert_user['unreadpms'] = $user['unreadMessages'];
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';
+				
+				// Default values
 				$insert_user['allownotices'] = "yes";
 				$insert_user['emailnotify'] = "no";
 				$insert_user['receivepms'] = "yes";
 				$insert_user['pmpopup'] = "yes";
-				$insert_user['pmnotify'] = int_to_yesno($user['pm_email_notify']);
 				$insert_user['remember'] = "yes";
 				$insert_user['showsigs'] = "yes";
 				$insert_user['showavatars'] = "yes";
@@ -444,24 +473,14 @@ class Convert_smf extends Converter {
 				$insert_user['ppp'] = "0";
 				$insert_user['tpp'] = "0";
 				$insert_user['daysprune'] = "0";
-				$insert_user['timeformat'] = $user['timeFormat'];
-				$insert_user['timezone'] = $user['timeOffset'];
-				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);	
 				$insert_user['dst'] = "no";
-				$insert_user['buddylist'] = $user['buddy_list'];
-				$insert_user['ignorelist'] = $user['pm_ignore_list'];
-				$insert_user['style'] = $user['ID_THEME'];
 				$insert_user['away'] = "no";
 				$insert_user['awaydate'] = "0";
 				$insert_user['returndate'] = "0";
 				$insert_user['referrer'] = "0";
 				$insert_user['reputation'] = "0";
-				$insert_user['regip'] = $user['memberIP'];
-				$insert_user['timeonline'] = $user['totalTimeLoggedIn'];
-				$insert_user['totalpms'] = $user['instantMessages'];
-				$insert_user['unreadpms'] = $user['unreadMessages'];
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
-				$uid = $this->insert_user($insert_user);
+					
+				$this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
 			}
@@ -529,6 +548,7 @@ class Convert_smf extends Converter {
 		}
 		else
 		{
+			// Default values
 			$insert_perm['canratethreads'] = "yes";
 			$insert_perm['cansearch'] = "yes";				
 			$insert_perm['canviewthreads'] = "yes";
@@ -616,7 +636,7 @@ class Convert_smf extends Converter {
 			{
 				echo "Inserting category #{$cat['ID_CAT']}... ";
 				
-				// Values from SMF
+				// SMF values
 				$insert_forum['import_fid'] = (-1 * intval($cat['ID_CAT']));
 				$insert_forum['name'] = $cat['name'];
 				$insert_forum['disporder'] = $cat['catOrder'];
@@ -661,8 +681,7 @@ class Convert_smf extends Converter {
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $fid);
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$db->update_query("forums", array('parentlist' => $fid), "fid = '{$fid}'");
 				
 				echo "done.<br />\n";	
 			}
@@ -725,7 +744,7 @@ class Convert_smf extends Converter {
 			{
 				echo "Inserting forum #{$forum['ID_BOARD']}... ";
 				
-				// Values from SMF
+				// SMF values
 				$insert_forum['import_fid'] = intval($forum['ID_BOARD']);
 				$insert_forum['name'] = $forum['name'];
 				$insert_forum['description'] = $forum['description'];
@@ -777,8 +796,7 @@ class Convert_smf extends Converter {
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array, "fid='{$fid}'");
+				$db->update_query("forums", array('parentlist' => $insert_forum['pid'].','.$fid), "fid='{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -967,9 +985,9 @@ class Convert_smf extends Converter {
 			while($icon = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting icon #{$icon['ID_ICON']}... ";
-				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
+				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
-				// Invision Power Board 2 values
+				// SMF values
 				$insert_icon['import_iid'] = $icon['ID_ICON'];
 				$insert_icon['name'] = $icon['title'];
 				$insert_icon['path'] = 'images/icons/'.$icon['filename'].'.gif';
@@ -979,13 +997,22 @@ class Convert_smf extends Converter {
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['ID_ICON'])."'");
 				
-				$icondata = file_get_contents($import_session['pathurl'].$icon['filename'].'.gif');
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+				// Transfer icons
+				if(file_exists($import_session['pathurl'].$icon['filename'].'.gif'))
+				{
+					$icondata = file_get_contents($import_session['pathurl'].$icon['filename'].'.gif');
+					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+					fwrite($file, $icondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
+				}
 				
-				echo "done.<br />\n";			
+				echo "done.{$transfer_error}<br />\n";		
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1046,7 +1073,7 @@ class Convert_smf extends Converter {
 			{
 				echo "Inserting poll #{$poll['ID_POLL']}... ";		
 				
-				// Invision Power Board 2 values
+				// SMF values
 				$insert_poll['import_pid'] = $poll['ID_POLL'];
 								
 				$query1 = $db->simple_select("threads", "tid,dateline", "import_poll = '{$poll['ID_POLL']}'");
@@ -1220,6 +1247,7 @@ class Convert_smf extends Converter {
 			{
 				echo "Inserting post #{$post['ID_MSG']}... ";
 				
+				// SMF values
 				$insert_post['import_pid'] = $post['ID_MSG'];
 				$insert_post['tid'] = $this->get_import_tid($post['ID_TOPIC']);
 				
@@ -1239,15 +1267,13 @@ class Convert_smf extends Converter {
 
 				$insert_post['fid'] = $this->get_import_fid($post['ID_BOARD']);
 				$insert_post['subject'] = $post['subject'];
-				$insert_post['icon'] = 0;
 				$insert_post['uid'] = $this->get_import_uid($post['ID_MEMBER']);
 				$insert_post['import_uid'] = $post['ID_MEMBER'];
 				$insert_post['username'] = $post['posterName'];
 				$insert_post['dateline'] = $post['posterTime'];
 				$insert_post['message'] = str_replace('<br />', "\n", unhtmlentities($post['body']));
 				$insert_post['ipaddress'] = $post['posterIP'];
-				$insert_post['includesig'] = 'yes';
-				
+								
 				if($post['smileysEnabled'] == '1')
 				{
 					$insert_post['smilieoff'] = 'no';					
@@ -1269,6 +1295,10 @@ class Convert_smf extends Converter {
 				}
 				
 				$insert_post['edittime'] = $post['modifiedTime'];
+				
+				// Default values
+				$insert_post['icon'] = 0;
+				$insert_post['includesig'] = 'yes';
 				$insert_post['visible'] = 1;
 				$insert_post['posthash'] = '';
 
@@ -1355,8 +1385,7 @@ class Convert_smf extends Converter {
 				echo "Inserting attachment #{$attachment['ID_ATTACH']}... ";				
 
 				$insert_attachment['import_aid'] = $attachment['ID_ATTACH'];
-				$insert_attachment['pid'] = $this->get_import_pid($attachment['ID_MSG']);
-				
+				$insert_attachment['pid'] = $this->get_import_pid($attachment['ID_MSG']);				
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['ID_MEMBER']);
 				$insert_attachment['filename'] = $attachment['filename'];
 				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".time().".attach";
@@ -1378,7 +1407,8 @@ class Convert_smf extends Converter {
 					mt_srand ((double) microtime() * 1000000);
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
-
+				
+				// Transfer attachment thumbnail
 				$thumb_not_exists = "";
 				if($attachment['ID_THUMB'] != 0)
 				{
@@ -1404,6 +1434,7 @@ class Convert_smf extends Converter {
 				
 				$this->insert_attachment($insert_attachment);				
 				
+				// Transfer attachments
 				$attach_not_exists = "";
 				if(file_exists($import_session['uploadspath'].'/'.$attachment['filename']))
 				{				
@@ -1416,8 +1447,7 @@ class Convert_smf extends Converter {
 				else
 				{
 					$attach_not_exists = "Could not find the attachment.";
-				}
-				
+				}				
 				
 				if(!$posthash)
 				{
@@ -1426,8 +1456,7 @@ class Convert_smf extends Converter {
 				}
 				
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
-				
-				
+								
 				$error_notice = "";
 				if($attach_not_exists || $thumb_not_exists)
 				{
@@ -1585,8 +1614,11 @@ class Convert_smf extends Converter {
 			{
 				echo "Inserting user #{$mod['ID_MEMBER']} as moderator to forum #{$mod['ID_BOARD']}... ";
 				
+				// SMF values
 				$insert_mod['fid'] = $this->get_import_fid($mod['ID_BOARD']);
 				$insert_mod['uid'] = $this->get_import_uid($mod['ID_MEMBER']);
+				
+				// Default values
 				$insert_mod['caneditposts'] = 'yes';
 				$insert_mod['candeleteposts'] = 'yes';
 				$insert_mod['canviewips'] = 'yes';
@@ -1665,7 +1697,7 @@ class Convert_smf extends Converter {
 				echo "Inserting smilie #{$smilie['ID_SMILEY']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
-				// Invision Power Board 2 values
+				// SMF values
 				$insert_smilie['name'] = $smilie['description'];
 				$insert_smilie['find'] = $smilie['code'];
 				$insert_smilie['image'] = 'images/smilies/'.$smilie['filename'];
@@ -1674,13 +1706,22 @@ class Convert_smf extends Converter {
 			
 				$this->insert_smilie($insert_smilie);
 				
-				$smiliedata = file_get_contents($import_session['bburl'].'default/'.$smilie['filename']);
-				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+				// Transfer smilies
+				if(file_exists($import_session['bburl'].'default/'.$smilie['filename']))
+				{
+					$smiliedata = file_get_contents($import_session['bburl'].'default/'.$smilie['filename']);
+					$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+					fwrite($file, $smiliedata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+				}
 				
-				echo "done.<br />\n";			
+				echo "done.{$transfer_error}<br />\n";		
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1815,7 +1856,8 @@ class Convert_smf extends Converter {
 			while($event = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting event #{$event['ID_EVENT']}... ";				
-
+				
+				// SMF values
 				$insert_event['import_eid'] = $event['ID_EVENT'];
 				$insert_event['author'] = $this->get_import_uid($event['ID_MEMBER']);
 				$insert_event['subject'] = $event['title'];
@@ -1828,10 +1870,12 @@ class Convert_smf extends Converter {
 				$insert_event['end_day'] = $end_days[2];
 				$insert_event['end_month'] = $end_days[1];
 				$insert_event['end_year'] = $end_days[0];
-				$insert_event['repeat_days'] = 0;
-				
+								
 				$thread = $this->get_thread($event['ID_TOPIC']);				
-				$insert_event['description'] = $thread['body'];				
+				$insert_event['description'] = $thread['body'];
+				
+				// Default values
+				$insert_event['repeat_days'] = 0;			
 				$insert_event['private'] = 'no';		
 				
 
@@ -1953,24 +1997,28 @@ class Convert_smf extends Converter {
 
 	/**
 	 * Get a post from the SMF database
+	 *
 	 * @param int Post ID
 	 * @return array The post
 	 */
 	function get_post($pid)
-	{		
-		$query = $this->old_db->simple_select("messages", "*", "ID_MSG='{$pid}'", array('limit' => 1));
+	{
+		$pid = intval($pid);
+		$query = $this->old_db->simple_select("messages", "*", "ID_MSG = '{$pid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a thread from the SMF database
+	 *
 	 * @param int Thread ID
 	 * @return array The thread
 	 */
 	function get_thread($tid)
-	{		
-		$query = $this->old_db->simple_select("topics", "ID_FIRST_MSG", "ID_TOPIC='{$tid}'", array('limit' => 1));
+	{
+		$tid = intval($tid);
+		$query = $this->old_db->simple_select("topics", "ID_FIRST_MSG", "ID_TOPIC = '{$tid}'", array('limit' => 1));
 		$firstpost = $this->get_post($this->old_db->fetch_field($query, "ID_FIRST_MSG"));
 		
 		return $firstpost;
@@ -1978,12 +2026,14 @@ class Convert_smf extends Converter {
 	
 	/**
 	 * Get a user from the SMF database
+	 *
 	 * @param int User ID
 	 * @return array If the uid is 0, returns an array of posterName and memberName as Guest.  Otherwise returns the user
 	 */
 	function get_user($uid)
 	{
-		if($uid == 0)
+		$uid = intval($uid);
+		if(empty($uid))
 		{
 			return array(
 				'posterName' => 'Guest',
@@ -1991,35 +2041,40 @@ class Convert_smf extends Converter {
 			);
 		}
 		
-		$query = $this->old_db->simple_select("members", "*", "ID_MEMBER='{$uid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("members", "*", "ID_MEMBER = '{$uid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Gets the time of the last post of a user from the SMF database
+	 *
 	 * @param int User ID
 	 * @return int Last post
 	 */
 	function get_last_post($uid)
 	{
-		$query = $this->old_db->simple_select("messages", "*", "ID_MEMBER='{$uid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
+		$uid = intval($uid);
+		$query = $this->old_db->simple_select("messages", "*", "ID_MEMBER = '{$uid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Gets the time of the last post of a forum from the SMF database
+	 *
 	 * @param int Forum ID
 	 * @return array Last post
 	 */
 	function get_last_post_fid($fid)
 	{
-		$query = $this->old_db->simple_select("messages", "*", "ID_BOARD='{$fid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
+		$fid = intval($fid);
+		$query = $this->old_db->simple_select("messages", "*", "ID_BOARD = '{$fid}'", array('order_by' => 'posterTime', 'order_dir' => 'DESC', 'limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Convert a SMF group ID into a MyBB group ID
+	 *
 	 * @param array user
 	 * @param int row
 	 * @return mixed group id(s)
@@ -2084,6 +2139,7 @@ class Convert_smf extends Converter {
 	
 	/**
 	 * Get the usergroup permissions from SMF
+	 *
 	 * @return array group permissions
 	 */
 	function get_group_permissions()

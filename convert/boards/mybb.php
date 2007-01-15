@@ -13,7 +13,18 @@
 
 class Convert_mybb extends Converter
 {
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "MyBB 1.4 (Merge)";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import MyBB Usergroups",
@@ -333,7 +344,8 @@ class Convert_mybb extends Converter
 						$insert_user[$field['Field']] = $user[$field['Field']];
 					}
 				}
-					
+				
+				// Check for duplicate users
 				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
@@ -357,7 +369,7 @@ class Convert_mybb extends Converter
 				$insert_user['import_usergroup'] = $user['usergroup'];
 				$insert_user['import_additionalgroups'] = $user['additionalgroups'];
 				
-				$uid = $this->insert_user($insert_user);
+				$this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
 			}
@@ -643,13 +655,21 @@ class Convert_mybb extends Converter
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['iid'])."'");
 				
-				$icondata = file_get_contents($import_session['bburl'].$icon['path']);
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
-				
-				echo "done.<br />\n";	
+				// Transfer the icon
+				if(file_exists($import_session['bburl'].$icon['path']))
+				{
+					$icondata = file_get_contents($import_session['bburl'].$icon['path']);
+					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+					fwrite($file, $icondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer attachment icon. - \"Not Found\")";
+				}
+				echo "done.{$transfer_error}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1006,6 +1026,8 @@ class Convert_mybb extends Converter
 				{
 					$ext = get_extension($attachment['thumbnail']);
 					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.$ext", $insert_attachment['attachname']);
+					
+					// Transfer attachment thumbnail
 					if(file_exists($import_session['uploadspath'].'/'.$attachment['attach_thumb_location']))
 					{
 						$thumbattachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_thumb_location']);
@@ -1021,8 +1043,8 @@ class Convert_mybb extends Converter
 				}
 
 				$this->insert_attachment($insert_attachment);
-							
-				$attach_not_exists = "";	
+				
+				// Transfer attachment
 				if(file_exists($import_session['uploadspath'].'/'.$attachment['attachname']))
 				{
 					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attachname']);
@@ -1030,6 +1052,7 @@ class Convert_mybb extends Converter
 					fwrite($file, $attachmentdata);
 					fclose($file);
 					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['attachname'], 0777);
+					$attach_not_exists = "";
 				}
 				else
 				{
@@ -1313,13 +1336,22 @@ class Convert_mybb extends Converter
 			
 				$this->insert_smilie($insert_smilie);
 				
-				$smiliedata = file_get_contents($import_session['bburl'].$smilie['path']);
-				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+				// Transfer smilie
+				if(file_exists($import_session['bburl'].$smilie['path']))
+				{
+					$smiliedata = file_get_contents($import_session['bburl'].$smilie['path']);
+					$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+					fwrite($file, $smiliedata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer attachment icon. - \"Not Found\")\n";
+				}
 				
-				echo "done.<br />\n";			
+				echo "done.{$transfer_error}<br />\n";			
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1678,17 +1710,25 @@ class Convert_mybb extends Converter
 				
 				$this->insert_attachtype($insert_attachtype);
 				
-				$icondata = file_get_contents($import_session['bburl'].$attachtype['icon']);
-				$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
-
 				echo "done.";
 					
 				if(isset($existing_types[$type['extension']]))
 				{
 					echo " (Note: extension already exists)\n";
+				}
+				
+				// Transfer attachment icon
+				if(file_exists($import_session['bburl'].$attachtype['icon']))
+				{
+					$attachicondata = file_get_contents($import_session['bburl'].$attachtype['icon']);
+					$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
+					fwrite($file, $attachicondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
+				}
+				else
+				{
+					echo " (Note: Could not transfer attachment icon. - \"Not Found\")\n";
 				}
 				
 				echo "<br />\n";
@@ -1706,6 +1746,7 @@ class Convert_mybb extends Converter
 	}
 	/**
 	 * Get a user from the MyBB database
+	 *
 	 * @param int Username
 	 * @return array If the username is empty, returns an array of username as Guest.  Otherwise returns the user
 	 */
@@ -1726,6 +1767,7 @@ class Convert_mybb extends Converter
 	
 	/**
 	 * Convert a MyBB group ID into a MyBB group ID (merge)
+	 *
 	 * @param int Group ID
 	 * @param boolean single group or multiple?
 	 * @param boolean original group values?

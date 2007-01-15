@@ -12,7 +12,19 @@
 // Board Name: punBB 1.2
 
 class Convert_punbb extends Converter {
+
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "punBB 1.2";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import punBB 1.2 Usergroups",
@@ -868,33 +880,32 @@ class Convert_punbb extends Converter {
 					continue;
 				}
 
-				echo "Inserting group #{$group['g_id']} as a ";
-				// Make this into a usergroup
+				echo "Inserting group #{$group['g_id']} as a custom usergroup...";
 				
 				// PunBB Values
-				$insert_group['import_gid'] = $group['g_id'];
-				$insert_group['type'] = 2;
-				$insert_group['title'] = $group['g_title'];
-				$insert_group['description'] = '';
-				$insert_group['namestyle'] = '{username}';
-				$insert_group['canview'] = int_to_yesno($group['g_read_board']);
-				$insert_group['canviewthreads'] = 'yes';
-				$insert_group['canviewprofiles'] = 'yes';
-				$insert_group['candlattachments'] = 'yes';
+				$insert_group['import_gid'] = $group['g_id'];				
+				$insert_group['title'] = $group['g_title'];				
+				$insert_group['canview'] = int_to_yesno($group['g_read_board']);				
 				$insert_group['canpostthreads'] = int_to_yesno($usergroup['g_post_topics']);
-				$insert_group['canpostreplys'] = int_to_yesno($usergroup['g_post_replies']);
-				$insert_group['canpostattachments'] = 'yes';
-				$insert_group['canratethreads'] = 'yes';
+				$insert_group['canpostreplys'] = int_to_yesno($usergroup['g_post_replies']);				
 				$insert_group['caneditposts'] = int_to_yesno($usergroup['g_edit_posts']);
 				$insert_group['candeleteposts'] = int_to_yesno($usergroup['g_delete_posts']);
-				$insert_group['candeletethreads'] = int_to_yesno($usergroup['g_delete_topics']);
-				$insert_group['caneditattachments'] = 'yes';
-				$insert_group['canpostpolls'] = 'yes';
-				$insert_group['canvotepolls'] = 'yes';
+				$insert_group['candeletethreads'] = int_to_yesno($usergroup['g_delete_topics']);				
 				$insert_group['cansearch'] = int_to_yesno($usergroup['g_search']);
 				$insert_group['canviewmemberlist'] = int_to_yesno($usergroup['g_search_users']);				
 
 				// Default values
+				$insert_group['caneditattachments'] = 'yes';
+				$insert_group['canpostpolls'] = 'yes';
+				$insert_group['canvotepolls'] = 'yes';
+				$insert_group['canpostattachments'] = 'yes';
+				$insert_group['canratethreads'] = 'yes';
+				$insert_group['canviewthreads'] = 'yes';
+				$insert_group['canviewprofiles'] = 'yes';
+				$insert_group['candlattachments'] = 'yes';
+				$insert_group['description'] = '';
+				$insert_group['namestyle'] = '{username}';
+				$insert_group['type'] = 2;
 				$insert_group['stars'] = 0;
 				$insert_group['starimage'] = 'images/star.gif';
 				$insert_group['image'] = '';
@@ -928,13 +939,10 @@ class Convert_punbb extends Converter {
 				$insert_group['attachquota'] = '0';
 				$insert_group['cancustomtitle'] = 'yes';
 
-				echo "custom usergroup...";
-
 				$gid = $this->insert_usergroup($insert_group);
 
 				// Restore connections
-				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
+				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
 
 				$this->import_gids = null; // Force cache refresh
 
@@ -1124,24 +1132,26 @@ class Convert_punbb extends Converter {
 	
 	/**
 	 * Get a post from the punBB database
+	 *
 	 * @param int Post ID
 	 * @return array The post
 	 */
 	function get_post($pid)
 	{
-		$query = $this->old_db->simple_select("posts", "*", "id='{$pid}'");
+		$query = $this->old_db->simple_select("posts", "*", "id = '{$pid}'");
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a user from the punBB database
+	 *
 	 * @param string Username
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
 	function get_user($username)
 	{		
-		if($username == '')
+		if(empty($username))
 		{
 			return array(
 				'username' => 'Guest',
@@ -1149,20 +1159,22 @@ class Convert_punbb extends Converter {
 			);
 		}
 	
-		$query = $this->old_db->simple_select("users", "id, username", "username='{$username}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("users", "id, username", "username = '{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Gets the time of the last post of a user from the punBB database
+	 *
 	 * @param int Forum ID
 	 * @return array Post
 	 */
 	function get_last_post($fid)
 	{
-		$query = $this->old_db->simple_select("topics", "*", "forum_id = '$fid'", array('order_by' => 'posted', 'order_dir' => 'DESC', 'limit' => 1));
+		$query = $this->old_db->simple_select("topics", "*", "forum_id = '{$fid}'", array('order_by' => 'posted', 'order_dir' => 'DESC', 'limit' => 1));
 		$thread = $this->old_db->fetch_array($query);
+		
 		$query = $this->old_db->simple_select("posts", "*", "topic_id = '{$thread['id']}'", array('order_by' => 'posted', 'order_dir' => 'DESC', 'limit' => 1));
 		return array(
 			'post' => $this->old_db->fetch_array($query),
@@ -1199,12 +1211,14 @@ class Convert_punbb extends Converter {
 		{
 			$return = "yes";
 		}
+		
 		return $return;
 	}
 
 	
 	/**
 	 * Convert a punBB group ID into a MyBB group ID
+	 *
 	 * @param int Group ID
 	 * @param boolean single group or multiple?
 	 * @param boolean original group values?
@@ -1215,11 +1229,11 @@ class Convert_punbb extends Converter {
 		$settings = array();
 		if($not_multiple == false)
 		{
-			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id='{$gid}'");
+			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id = '{$gid}'");
 			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
 		}
 		
-		$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'", $settings);
+		$query = $this->old_db->simple_select("groups", "*", "g_id = '{$gid}'", $settings);
 		
 		$comma = $group = '';
 		while($punbbgroup = $this->old_db->fetch_array($query))

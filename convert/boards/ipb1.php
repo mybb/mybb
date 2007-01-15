@@ -12,7 +12,19 @@
 // Board Name: Invision Power Board 1.3
 
 class Convert_ipb1 extends Converter {
+	
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "Invision Power Board 1.3";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import Invision Power Board 1 Usergroups",
@@ -220,13 +232,11 @@ class Convert_ipb1 extends Converter {
 			$query = $this->old_db->simple_select("groups", "*", "g_id > 6", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting group #{$group['g_id']} as a ";
+				echo "Inserting group #{$group['g_id']} as a custom usergroup...";
 				
 				// Invision Power Board 1 values
 				$insert_group['import_gid'] = $group['g_id'];
-				$insert_group['type'] = 2;
 				$insert_group['title'] = $group['g_title'];
-				$insert_group['description'] = '';
 				$insert_group['pmquota'] = $group['g_max_messages'];
 				$insert_group['maxpmrecipients'] = $group['g_max_mass_pm'];
 				$insert_group['attachquota'] = $group['g_attach_max'];
@@ -246,6 +256,8 @@ class Convert_ipb1 extends Converter {
 				$insert_group['canpostreplys'] = int_to_yesno($group['g_reply_other_topics']);
 				
 				// Default values
+				$insert_group['description'] = '';
+				$insert_group['type'] = 2;
 				$insert_group['namestyle'] = '{username}';
 				$insert_group['stars'] = 0;
 				$insert_group['starimage'] = 'images/star.gif';
@@ -278,14 +290,11 @@ class Convert_ipb1 extends Converter {
 				$insert_group['maxreputationsday'] = '5';
 				$insert_group['candisplaygroup'] = 'yes';
 				$insert_group['cancustomtitle'] = 'yes';
-				
-				echo "custom usergroup...";
 
 				$gid = $this->insert_usergroup($insert_group);
 				
 				// Restore connections
-				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['g_id']}' OR import_displaygroup = '{$group['g_id']}'");
+				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['g_id']}' OR import_displaygroup = '{$group['g_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				
@@ -355,7 +364,8 @@ class Convert_ipb1 extends Converter {
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
-					
+				
+				// Check for duplicate users
 				$query1 = $db->simple_select("users", "username,email,uid", "LOWER(username)='".$db->escape_string(my_strtolower($user['name']))."'");
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
@@ -430,7 +440,8 @@ class Convert_ipb1 extends Converter {
 				$insert_user['timeonline'] = "0";
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
 				$insert_user['avatartype'] = '2';	
-				$uid = $this->insert_user($insert_user);
+				
+				$this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
 			}
@@ -537,8 +548,8 @@ class Convert_ipb1 extends Converter {
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $fid);					
-				$db->update_query("forums", $update_array, "fid='{$fid}'");
+				$update_array = array('parentlist' => $fid);
+				$db->update_query("forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";
 			}
@@ -628,7 +639,6 @@ class Convert_ipb1 extends Converter {
 				$insert_forum['unapprovedposts'] = $this->get_invisible_posts('', $forum['id']);	
 				
 				$insert_forum['linkto'] = $forum['redirect_url'];
-				$insert_forum['type'] = 'f';
 				$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['parent_id']);
 				$insert_forum['lastpost'] = $forum['last_post'];
 				$insert_forum['lastposteruid'] = $this->get_import_uid($forum['last_poster_id']);
@@ -637,6 +647,7 @@ class Convert_ipb1 extends Converter {
 				$insert_forum['lastposter'] = $this->get_import_username($forum['last_poster_id']);
 				
 				// Default values
+				$insert_forum['type'] = 'f';
 				$insert_forum['parentlist'] = '';
 				$insert_forum['open'] = 'yes';
 				$insert_forum['rules'] = '';
@@ -661,14 +672,14 @@ class Convert_ipb1 extends Converter {
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);				
-				$db->update_query("forums", $update_array, "fid='{$fid}'");
+				$db->update_query("forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
 			{
-				echo "There are no Forums to import. Please press next to continue.";
+				echo "There are no forums to import. Please press next to continue.";
 				define('BACK_BUTTON', false);
 			}
 		}
@@ -745,23 +756,24 @@ class Convert_ipb1 extends Converter {
 				{				
 					$insert_thread['closed'] = '';	
 				}
-
-				$insert_thread['totalratings'] = 0;
 				$insert_thread['notes'] = $thread['notes'];
 				$insert_thread['visible'] = $thread['approved'];
 				$insert_thread['unapprovedposts'] = $this->get_invisible_posts($thread['tid']);
-				$insert_thread['numratings'] = 0;
-				$insert_thread['attachmentcount'] = 0;
 				$insert_thread['lastpost'] = $thread['last_post'];
 				$insert_thread['lastposteruid'] = $this->get_import_uid($thread['last_poster_id']);				
 				$insert_thread['lastposter'] = $this->get_import_username($thread['last_poster_id']);
 				$insert_thread['username'] = $this->get_import_username($thread['starter_id']);
 				
+				// Default values
+				$insert_thread['totalratings'] = 0;
+				$insert_thread['numratings'] = 0;
+				$insert_thread['attachmentcount'] = 0;
+				
 				$tid = $this->insert_thread($insert_thread);
 				
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $thread['tid'])."'");
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['tid'])."'");
 				
-				echo "done.<br />\n";			
+				echo "done.<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -926,11 +938,11 @@ class Convert_ipb1 extends Converter {
 				
 				$insert_pollvote['uid'] = $this->get_import_uid($pollvote['member_id']);
 				$insert_pollvote['dateline'] = $pollvote['vote_date'];
-				$insert_pollvote['voteoption'] = ''; // We dunno!
+				$insert_pollvote['voteoption'] = ''; // IPB doesn't specify this :(
 				
 				// Get poll id from thread id
 				$tid = $this->get_import_tid($pollvote['tid']);
-				$query1 = $db->simple_select("threads", "poll", "tid = '$tid'");
+				$query1 = $db->simple_select("threads", "poll", "tid = '{$tid}'");
 				$insert_pollvote['pid'] = $db->fetch_field($query1, "poll");
 				
 				$this->insert_pollvote($insert_pollvote);
@@ -998,8 +1010,7 @@ class Convert_ipb1 extends Converter {
 				
 				// Invision Power Board 1 values
 				$insert_post['import_pid'] = $post['pid'];
-				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);			
-				$insert_post['pid'] = 0;
+				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
 				$thread = $this->get_thread($post['topic_id']);	
 				$insert_post['fid'] = $this->get_import_fid($post['forum_id']);
 				$insert_post['subject'] = $thread['title'];
@@ -1022,8 +1033,9 @@ class Convert_ipb1 extends Converter {
 				$insert_post['edituid'] = $this->get_import_uid($this->get_uid_from_username($post['edit_name']));		
 				$insert_post['edittime'] = $post['edit_time'];
 				$insert_post['icon'] = $post['icon_id'];
-				$insert_post['posthash'] = '';
 				
+				// Default values
+				$insert_post['posthash'] = '';				
 
 				$pid = $this->insert_post($insert_post);
 				
@@ -1031,12 +1043,12 @@ class Convert_ipb1 extends Converter {
 				update_thread_count($insert_post['tid']);
 				
 				// Restore first post connections
-				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $post['pid'])."'");
+				$db->update_query("threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
-					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
+					$query1 = $db->simple_select("threads", "firstpost", "tid = '{$insert_post['tid']}'");
 					$first_post = $db->fetch_field($query1, "firstpost");
-					$db->update_query("posts", array('replyto' => $first_post), "pid='{$pid}'");
+					$db->update_query("posts", array('replyto' => $first_post), "pid = '{$pid}'");
 				}				
 				
 				echo "done.<br />\n";			
@@ -1155,19 +1167,28 @@ class Convert_ipb1 extends Converter {
 					echo "Transfering icon #".strstr('icon', $image[0])."... ";
 					flush(); // Show status as soon as possible to avoid inconsistent status reporting
 					
-					$image = explode('|', $import_session['file_array'][$i]);	
+					$image = explode('|', $import_session['file_array'][$i]);
 					
 					$insert_icon['name'] = $image[0];
 					$insert_icon['path'] = 'images/icons/'.$image[0];
 					
 					$this->insert_icon($insert_icon);
 									
-					$icondata = file_get_contents($image[1].'/'.$image[0]);
-					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-					fwrite($file, $icondata);
-					fclose($file);
-					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
-					echo "done.<br />\n";
+					// Transfer the icon
+					if(file_exists($image[1].'/'.$image[0]))
+					{
+						$transfer_error = "";
+						$icondata = file_get_contents($image[1].'/'.$image[0]);
+						$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+						fwrite($file, $icondata);
+						fclose($file);
+						@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					}
+					else
+					{
+						$transfer_error = " (Note: Attachment could not be transfered. - \"Not Found\")";
+					}
+					echo "done.{$transfer_error}<br />\n";
 				}
 			}
 			
@@ -1229,14 +1250,17 @@ class Convert_ipb1 extends Converter {
 			{
 				echo "Inserting user #{$mod['member_id']} as moderator to forum #{$mod['forum_id']}... ";
 				
+				// Invision Power Board 1 values
 				$insert_mod['fid'] = $this->get_import_fid($mod['forum_id']);
 				$insert_mod['uid'] = $this->get_import_uid($mod['member_id']);
 				$insert_mod['caneditposts'] = int_to_yesno($mod['edit_post']);
 				$insert_mod['candeleteposts'] = int_to_yesno($mod['delete_post']);
 				$insert_mod['canviewips'] = int_to_yesno($mod['view_ip']);
 				$insert_mod['canopenclosethreads'] = int_to_yesno($mod['close_topic']);
-				$insert_mod['canmanagethreads'] = 'yes';
 				$insert_mod['canmovetononmodforum'] = int_to_yesno($mod['move_topic']);
+				
+				// Default values
+				$insert_mod['canmanagethreads'] = 'yes';
 
 				$this->insert_moderator($insert_mod);
 				
@@ -1302,7 +1326,7 @@ class Convert_ipb1 extends Converter {
 			{
 				echo "Inserting Private Message #{$pm['msg_id']}... ";
 				
-				$insert_pm['pmid'] = '';
+				// Invision Power Board 1 values
 				$insert_pm['import_pmid'] = $pm['msg_id'];
 				$insert_pm['uid'] = $this->get_import_uid($pm['member_id']);
 				$insert_pm['fromid'] = $this->get_import_uid($pm['from_id']);
@@ -1317,16 +1341,19 @@ class Convert_ipb1 extends Converter {
 					$recipients['to'][] = $this->get_import_username($username['id']);
 				}
 				$insert_pm['recipients'] = serialize($recipients);
-				$insert_pm['folder'] = 0;
 				$insert_pm['subject'] = $pm['title'];
 				$insert_pm['status'] = $pm['read_state'];
 				$insert_pm['dateline'] = $pm['msg_date'];
 				$insert_pm['message'] = $pm['message'];
+				$insert_pm['readtime'] = $pm['read_date'];
+				
+				// Default values
+				$insert_pm['folder'] = 0;
 				$insert_pm['includesig'] = 'no';
 				$insert_pm['smilieoff'] = '';
-				$insert_pm['readtime'] = $pm['read_date'];
 				$insert_pm['icon'] = '';			
 				$insert_pm['receipt'] = '2';
+				$insert_pm['pmid'] = '';
 
 				$this->insert_privatemessage($insert_pm);
 				echo "done.<br />\n";
@@ -1425,13 +1452,22 @@ class Convert_ipb1 extends Converter {
 			
 				$this->insert_smilie($insert_smilie);
 				
-				$smiliedata = file_get_contents($import_session['html_dir'].'emoticons/'.$smilie['image']);
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+				// Transfer smilie
+				if(file_exists($import_session['html_dir'].'emoticons/'.$smilie['image']))
+				{
+					$smiliedata = file_get_contents($import_session['html_dir'].'emoticons/'.$smilie['image']);
+					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+					fwrite($file, $smiliedata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+				}
 				
-				echo "done.<br />\n";			
+				echo "done.{$transfer_error}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1567,6 +1603,7 @@ class Convert_ipb1 extends Converter {
 			{
 				echo "Inserting event #{$event['eventid']}... ";				
 
+				// Invision Power Board 1 values
 				$insert_event['import_eid'] = $event['eventid'];
 				$insert_event['subject'] = $event['title'];
 				$insert_event['author'] = $this->get_import_uid($event['userid']);
@@ -1602,15 +1639,6 @@ class Convert_ipb1 extends Converter {
 
 		$this->ipb_db_connect();
 
-		// Get number of attachment types
-		if(!isset($import_session['total_attachtypes']) && isset($import_session['ipb_conf_global']))
-		{
-			require($import_session['ipb_conf_global']);
-			$types = $INFO['img_ext'];
-			$types = explode('|', $types);
-			$import_session['total_attachtypes'] = count($types);
-		}
-
 		if($import_session['start_attachtypes'])
 		{
 			// If there are more attachment types to do, continue, or else, move onto next module
@@ -1641,7 +1669,7 @@ class Convert_ipb1 extends Converter {
 			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
 			require($import_session['ipb_conf_global']);
 			$types = $INFO['img_ext'];
-			$types = explode('|', $types);
+			$import_session['types'] = explode('|', $types);
 			$import_session['total_attachtypes'] = count($types);
 		}
 		
@@ -1650,7 +1678,7 @@ class Convert_ipb1 extends Converter {
 			$import_session['start_attachtypes'] = 0;
 			echo "<p>Please select how many attachment types to import at a time:</p>
 <p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
-			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
+			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
 			if($conf_global_not_found)
 			{
 				echo '<p style="color: red">The file specified was not found.</p>';
@@ -1663,11 +1691,6 @@ class Convert_ipb1 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
-			
-			// Get attachment types
-			require($import_session['ipb_conf_global']);
-			$types = $INFO['img_ext'];
-			$types = explode('|', $types);
 			
 			// Get existing attachment types
 			$query = $db->simple_select("attachtypes", "extension");
@@ -1682,15 +1705,19 @@ class Convert_ipb1 extends Converter {
 			{
 				$end = $import_session['total_attachtypes'];
 			}
-			for($i = $start; $i < $end; $i++)
+			
+			for($i = $start; $i < $end; ++$i)
 			{
 				$i_present = $i + 1;
 				echo "Inserting attachment type #{$i_present}... ";				
-
+				
+				// Invision Power Board 1
 				$insert_attachtype['import_atid'] = $i_present;
-				$insert_attachtype['name'] = $types[$i].' file';
+				$insert_attachtype['name'] = $import_session['types'][$i].' file';
+				$insert_attachtype['extension'] = $import_session['types'][$i];
+				
+				// Default values
 				$insert_attachtype['mimetype'] = '';
-				$insert_attachtype['extension'] = $types[$i];
 				$insert_attachtype['maxsize'] = 512;
 				$insert_attachtype['icon'] = 'images/attachtypes/image.gif';
 				
@@ -1760,7 +1787,7 @@ class Convert_ipb1 extends Converter {
 			$import_session['start_attachments'] = 0;
 			echo "<p>Please select how many attachments to import at a time:</p>
 <p><input type=\"text\" name=\"attachments_per_screen\" value=\"10\" /></p>";
-			$conf_global = dirname($_SERVER['SCRIPT_FILENAME']).'/conf_global.php';
+			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
 			if($conf_global_not_found)
 			{
 				echo '<p style="color: red">The file specified was not found.</p>';
@@ -1787,11 +1814,12 @@ class Convert_ipb1 extends Converter {
 			$query = $this->old_db->simple_select("posts", "attach_id,attach_hits,attach_type,attach_file,pid,author_id", "attach_id != ''", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
 			while($attachment = $this->old_db->fetch_array($query))
 			{
-				$i_present = $i++;
+				$i_present = ++$i;
 				echo "Inserting attachment #{$i_present}... ";
 				
 				$attachname_array = explode('-', $attachment['attach_id']);
 				
+				// Invision Power Board 1 values
 				$insert_attachment['import_aid'] = $i_present;
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['pid']);
 				$insert_attachment['filetype'] = $attachment['attach_type'];
@@ -1800,6 +1828,8 @@ class Convert_ipb1 extends Converter {
 				$insert_attachment['attachname'] = "post_".$insert_attachment['uid']."_".$attachname_array[2].".attach";
 				$insert_attachment['downloads'] = $attachment['attach_hits'];
 				$insert_attachment['filesize'] = filesize($import_session['uploadspath'].'/'.$attachment['attach_id']);
+				
+				// Default values
 				$insert_attachment['visible'] = 1;
 				$insert_attachment['thumbnail'] = '';
 				
@@ -1824,6 +1854,7 @@ class Convert_ipb1 extends Converter {
 				}
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
 				
+				// Transfer attachment
 				if(file_exists($import_session['uploadspath'].'/'.$attachment['attach_id']))
 				{
 					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['attach_id']);
@@ -1854,18 +1885,20 @@ class Convert_ipb1 extends Converter {
 	}
 	
 	/**
-	 * Get the first post from a thread in the XMB database
+	 * Get the first post from a thread in the IPB database
+	 *
 	 * @param int Thread ID
 	 * @return array The first post
 	 */
 	function get_firstpost($tid)
 	{
-		$query = $this->old_db->simple_select("posts", "pid", "topic_id='".intval($tid)."'", array('order_by' => 'pid', 'order_dir' => 'asc', 'limit' => 1));
+		$query = $this->old_db->simple_select("posts", "pid", "topic_id = '".intval($tid)."'", array('order_by' => 'pid', 'order_dir' => 'asc', 'limit' => 1));
 		return $this->old_db->fetch_field($query, 'pid');
 	}
 	
 	/**
-	 * Count number of invisible posts from the phpBB 3 database
+	 * Count number of invisible posts from the IPB database
+	 *
 	 * @param int thread id (optional)
 	 * @param int forum id (optional)
 	 * @return int number of invisible posts
@@ -1875,20 +1908,21 @@ class Convert_ipb1 extends Converter {
 		$fidbit = "";
 		if(!empty($fid))
 		{
-			$fidbit = "AND forum_id='".intval($fid)."'";
+			$fidbit = "AND forum_id = '".intval($fid)."'";
 		}
 		
 		$tidbit = "";
 		if(!empty($tid))
 		{
-			$tidbit = " AND topic_id='".intval($tid)."'";
+			$tidbit = " AND topic_id = '".intval($tid)."'";
 		}
-		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "queued='1'{$tidbit}{$fidbit}");
+		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "queued = '1'{$tidbit}{$fidbit}");
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
 	/**
-	 * Count number of invisible threads from the phpBB 3 database
+	 * Count number of invisible threads from the IPB database
+	 *
 	 * @param int forum id (optional)
 	 * @return int number of invisible threads
 	 */
@@ -1897,30 +1931,33 @@ class Convert_ipb1 extends Converter {
 		$fidbit = "";
 		if(!empty($fid))
 		{
-			$fidbit = "AND forum_id='".intval($fid)."'";
+			$fidbit = "AND forum_id = '".intval($fid)."'";
 		}
-		$query = $this->old_db->simple_select("topics", "COUNT(*) as invisible", "approved='0'{$fidbit}");
+		$query = $this->old_db->simple_select("topics", "COUNT(*) as invisible", "approved = '0'{$fidbit}");
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
 	/**
 	 * Get a thread from the IPB database
+	 *
 	 * @param int Thread ID
 	 * @return array The thread
 	 */
 	function get_thread($tid)
 	{		
-		$query = $this->old_db->simple_select("topics", "*", "tid='{$tid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("topics", "*", "tid = '{$tid}'", array('limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a user from the IPB database
+	 *
 	 * @param int User ID
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
 	function get_user($uid)
 	{
+		$uid = intval($uid);
 		if($uid == 0)
 		{
 			return array(
@@ -1929,19 +1966,20 @@ class Convert_ipb1 extends Converter {
 			);
 		}
 		
-		$query = $this->old_db->simple_select("members", "*", "id='{$uid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("members", "*", "id = '{$uid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a user from the IPB database
+	 *
 	 * @param int Username
 	 * @return array If the username is empty, returns an array of username as Guest.  Otherwise returns the user
 	 */
 	function get_username($username)
 	{
-		if($username == '')
+		if(empty($username))
 		{
 			return array(
 				'username' => 'Guest',
@@ -1949,30 +1987,32 @@ class Convert_ipb1 extends Converter {
 			);
 		}
 		
-		$query = $this->old_db->simple_select("members", "*", "name='{$username}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("members", "*", "name = '{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a user id from a username in the IPB database
+	 *
 	 * @param int Username
 	 * @return int If the username is blank it returns 0. Otherwise returns the user id
 	 */
 	function get_uid_from_username($username)
 	{
-		if($username == '')
+		if(empty($username))
 		{
 			return 0;
 		}
 		
-		$query = $this->old_db->simple_select("members", "id", "name='{$username}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("members", "id", "name = '{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_field($query, "id");
 	}
 	
 	/**
 	 * Convert a IPB group ID into a MyBB group ID
+	 *
 	 * @param int Group ID
 	 * @param boolean single group or multiple?
 	 * @param boolean original group values?
@@ -1983,7 +2023,7 @@ class Convert_ipb1 extends Converter {
 		$settings = array();
 		if($not_multiple == false)
 		{
-			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id='{$gid}'");
+			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id = '{$gid}'");
 			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
 		}
 		

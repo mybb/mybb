@@ -12,7 +12,19 @@
 // Board Name: phpBB 2
 
 class Convert_phpbb2 extends Converter {
+
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "phpBB 2";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_usergroups" => array("name" => "Import phpBB 2 Usergroups",
@@ -210,15 +222,15 @@ class Convert_phpbb2 extends Converter {
 			$query = $this->old_db->simple_select("groups", "*", "group_id > 2", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting group #{$group['group_id']} as a ";
+				echo "Inserting group #{$group['group_id']} as a custom usergroup...";
 				
-				// Make this into a usergroup
-				$insert_group['import_gid'] = $group['group_id'];
-				$insert_group['type'] = 2;
+				// phpBB 2 values
+				$insert_group['import_gid'] = $group['group_id'];				
 				$insert_group['title'] = $group['group_name'];
 				$insert_group['description'] = $group['group_description'];
 				
 				// Default values
+				$insert_group['type'] = 2;
 				$insert_group['namestyle'] = '{username}';
 				$insert_group['stars'] = 0;
 				$insert_group['starimage'] = 'images/star.gif';
@@ -268,14 +280,11 @@ class Convert_phpbb2 extends Converter {
 				$insert_group['candisplaygroup'] = 'yes';
 				$insert_group['attachquota'] = '0';
 				$insert_group['cancustomtitle'] = 'yes';
-				
-				echo "custom usergroup...";
 
 				$gid = $this->insert_usergroup($insert_group);
 				
 				// Restore connections
-				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
+				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				
@@ -350,7 +359,8 @@ class Convert_phpbb2 extends Converter {
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
-					
+				
+				// Check for duplicate users
 				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && my_strtolower($user['user_email']) == my_strtolower($duplicate_user['email']))
@@ -368,6 +378,7 @@ class Convert_phpbb2 extends Converter {
 				
 				echo "Adding user #{$user['user_id']}... ";
 				
+				// phpBB 2 values
 				$insert_user['usergroup'] = $this->get_group_id($user['user_id'], true);
 				$insert_user['additionalgroups'] = str_replace($insert_user['usergroup'], '', $this->get_group_id($user['user_id']));
 				$insert_user['displaygroup'] = $this->get_group_id($user['user_id'], true);
@@ -385,7 +396,6 @@ class Convert_phpbb2 extends Converter {
 				//$user['avatardimensions']
 				//$user['avatartype']
 				$insert_user['lastpost'] = $this->get_last_post($user['user_id']);
-				$insert_user['birthday'] = '';
 				$insert_user['icq'] = $user['user_icq'];
 				$insert_user['aim'] = $user['user_aim'];
 				$insert_user['yahoo'] = $user['user_yim'];
@@ -396,31 +406,35 @@ class Convert_phpbb2 extends Converter {
 				$insert_user['emailnotify'] = int_to_yesno($user['user_notify']);
 				$insert_user['receivepms'] = int_to_yesno($user['user_allow_pm']);
 				$insert_user['pmpopup'] = int_to_yesno($user['user_popup_pm']);
-				$insert_user['pmnotify'] = int_to_yesno($user['pm_email_notify']);
-				$insert_user['remember'] = "yes";
+				$insert_user['pmnotify'] = int_to_yesno($user['pm_email_notify']);				
 				$insert_user['showsigs'] = int_to_yesno($user['user_attachsig']);
 				$insert_user['showavatars'] = int_to_yesno($user['user_allowavatar']); // Check ?
+				$insert_user['timeformat'] = $user['user_dateformat'];
+				$insert_user['timezone'] = $user['user_timezone'];				
+				$insert_user['style'] = $user['user_style'];				
+				$last_post = $this->get_last_post($user['user_id']);
+				$insert_user['regip'] = $last_post['poster_ip'];				
+				$insert_user['totalpms'] = $this->get_private_messages($user['user_id']);
+				$insert_user['unreadpms'] = $user['user_unread_privmsg'];
+				
+				// Default values
+				$insert_user['remember'] = "yes";
 				$insert_user['showquickreply'] = "yes";
 				$insert_user['ppp'] = "0";
 				$insert_user['tpp'] = "0";
 				$insert_user['daysprune'] = "0";
-				$insert_user['timeformat'] = $user['user_dateformat'];
-				$insert_user['timezone'] = $user['user_timezone'];
-				$insert_user['dst'] = "no";
-				$insert_user['buddylist'] = "";
-				$insert_user['ignorelist'] = "";
-				$insert_user['style'] = $user['user_style'];
+				$insert_user['birthday'] = '';
+				$insert_user['timeonline'] = "0";
 				$insert_user['away'] = "no";
 				$insert_user['awaydate'] = "0";
 				$insert_user['returndate'] = "0";
 				$insert_user['referrer'] = "0";
 				$insert_user['reputation'] = "0";
-				$last_post = $this->get_last_post($user['user_id']);
-				$insert_user['regip'] = $last_post['poster_ip'];
-				$insert_user['timeonline'] = "0";
-				$insert_user['totalpms'] = $this->get_private_messages($user['user_id']);
-				$insert_user['unreadpms'] = $user['user_unread_privmsg'];
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
+				$insert_user['dst'] = "no";
+				$insert_user['buddylist'] = "";
+				$insert_user['ignorelist'] = "";
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';
+				
 				$uid = $this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
@@ -528,8 +542,7 @@ class Convert_phpbb2 extends Converter {
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $fid);
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$db->update_query("forums", array('parentlist' => $fid), "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -646,8 +659,7 @@ class Convert_phpbb2 extends Converter {
 				$fid = $this->insert_forum($insert_forum);
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$db->update_query("forums", array('parentlist' => $insert_forum['pid'].','.$fid), "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -709,15 +721,13 @@ class Convert_phpbb2 extends Converter {
 			{
 				echo "Inserting thread #{$thread['topic_id']}... ";
 				
+				// phpBB 2 values
 				$insert_thread['import_tid'] = $thread['topic_id'];
 				$insert_thread['sticky'] = $thread['topic_type'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['forum_id']);
-				$insert_thread['firstpost'] = ((-1) * $thread['topic_first_post_id']);	
-				$insert_thread['icon'] = '';
+				$insert_thread['firstpost'] = ((-1) * $thread['topic_first_post_id']);					
 				$insert_thread['dateline'] = $thread['topic_time'];
-				$insert_thread['subject'] = $thread['topic_title'];
-				
-				$insert_thread['poll'] = 0;
+				$insert_thread['subject'] = $thread['topic_title'];				
 				$insert_thread['uid'] = $this->get_import_uid($thread['topic_poster']);
 				$insert_thread['import_uid'] = $thread['topic_poster'];
 				$insert_thread['views'] = $thread['topic_views'];
@@ -726,14 +736,7 @@ class Convert_phpbb2 extends Converter {
 				if($insert_thread['closed'] == "no")
 				{
 					$insert_thread['closed'] = '';
-				}
-				
-				$insert_thread['totalratings'] = '0';
-				$insert_thread['notes'] = '';
-				$insert_thread['visible'] = '1';
-				$insert_thread['unapprovedposts'] = '0';
-				$insert_thread['numratings'] = '0';
-				$insert_thread['attachmentcount'] = '0';
+				}				
 				
 				$last_post = $this->get_post($thread['topic_last_post_id']);
 				$insert_thread['lastpost'] = $last_post['post_time'];
@@ -745,6 +748,16 @@ class Convert_phpbb2 extends Converter {
 				$member_started = $this->get_post($thread['topic_first_post_id']);
 				$member_started = $this->get_user($member_started['poster_id']);
 				$insert_thread['username'] = $member_started['username'];
+				
+				// Default values
+				$insert_thread['icon'] = '';
+				$insert_thread['totalratings'] = '0';
+				$insert_thread['notes'] = '';
+				$insert_thread['visible'] = '1';
+				$insert_thread['unapprovedposts'] = '0';
+				$insert_thread['numratings'] = '0';
+				$insert_thread['attachmentcount'] = '0';
+				$insert_thread['poll'] = 0;
 				
 				$tid = $this->insert_thread($insert_thread);
 				
@@ -810,7 +823,7 @@ class Convert_phpbb2 extends Converter {
 			{
 				echo "Inserting poll #{$poll['vote_id']}... ";				
 				
-				// Invision Power Board 2 values
+				// phpBB 2 values
 				$insert_poll['import_pid'] = $poll['vote_id'];
 				$insert_poll['tid'] = $this->get_import_tid($poll['topic_id']);
 
@@ -836,9 +849,9 @@ class Convert_phpbb2 extends Converter {
 				$insert_poll['votes'] = $votes;
 				$insert_poll['numoptions'] = $options_count;
 				$insert_poll['numvotes'] = $vote_count;
-				$insert_poll['multiple'] = 'no';
-				
+								
 				// Default values
+				$insert_poll['multiple'] = 'no';
 				$poll['timeout'] = '';
 				$poll['closed'] = '';				
 				
@@ -984,6 +997,7 @@ class Convert_phpbb2 extends Converter {
 			{
 				echo "Inserting post #{$post['post_id']}... ";
 				
+				// phpBB 2 values
 				$insert_post['import_pid'] = $post['post_id'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
 				
@@ -1002,11 +1016,9 @@ class Convert_phpbb2 extends Converter {
 				{
 					$post['username'] = 'Guest';
 				}
-
-				$insert_post['pid'] = 0;
+				
 				$insert_post['fid'] = $this->get_import_fid($post['forum_id']);
-				$insert_post['subject'] = $post['post_subject'];
-				$insert_post['icon'] = 0;
+				$insert_post['subject'] = $post['post_subject'];				
 				$insert_post['uid'] = $this->get_import_uid($post['poster_id']);
 				$insert_post['import_uid'] = $post['poster_id'];
 				$insert_post['username'] = $post['username'];
@@ -1015,6 +1027,10 @@ class Convert_phpbb2 extends Converter {
 				$insert_post['ipaddress'] = $this->decode_ip($post['poster_ip']);
 				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);
 				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);
+				
+				// Default values
+				$insert_post['pid'] = 0;
+				$insert_post['icon'] = 0;
 				$insert_post['edituid'] = 0;
 				$insert_post['edittime'] = 0;
 				$insert_post['visible'] = 1;
@@ -1025,12 +1041,12 @@ class Convert_phpbb2 extends Converter {
 				// Update thread count
 				update_thread_count($insert_post['tid']);
 				
-				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $import_post['pid'])."'");
+				$db->update_query("threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $import_post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
-					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
+					$query1 = $db->simple_select("threads", "firstpost", "tid = '{$insert_post['tid']}'");
 					$first_post = $db->fetch_field($query1, "firstpost");
-					$db->update_query("posts", array('replyto' => $first_post), "pid='{$pid}'");
+					$db->update_query("posts", array('replyto' => $first_post), "pid = '{$pid}'");
 				}
 				
 				echo "done.<br />\n";			
@@ -1099,13 +1115,14 @@ class Convert_phpbb2 extends Converter {
 			{
 				echo "Inserting Private Message #{$pm['privmsgs_id']}... ";
 				
+				// phpBB 2 values
 				$insert_pm['pmid'] = null;
 				$insert_pm['import_pmid'] = $pm['privmsgs_id'];
 				$insert_pm['uid'] = $this->get_import_uid($pm['privmsgs_from_userid']);
 				$insert_pm['fromid'] = $this->get_import_uid($pm['privmsgs_from_userid']);
 				$insert_pm['toid'] = $this->get_import_uid($pm['privmsgs_to_userid']);
 				$insert_pm['recipients'] = 'a:1:{s:2:"to";a:1:{i:0;s:'.strlen($insert_pm['toid']).':"'.$insert_pm['toid'].'";}}';
-				$insert_pm['folder'] = '1';
+				$insert_pm['readtime'] = time();
 				$insert_pm['subject'] = $pm['privmsgs_subject'];
 				$insert_pm['status'] = $pm['is_read'];
 				$insert_pm['dateline'] = $pm['privmsgs_date'];
@@ -1116,8 +1133,10 @@ class Convert_phpbb2 extends Converter {
 				{
 					$insert_pm['smilieoff'] = '';
 				}
+				
+				// Default values
 				$insert_pm['icon'] = '0';
-				$insert_pm['readtime'] = time();
+				$insert_pm['folder'] = '1';
 				$insert_pm['receipt'] = '2';
 
 				$this->insert_privatemessage($insert_pm);
@@ -1202,22 +1221,33 @@ class Convert_phpbb2 extends Converter {
 				echo "Inserting smilie #{$smilie['smilies_id']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
-				// Invision Power Board 2 values
+				// phpBB 2 values
 				$insert_smilie['name'] = $smilie['emotion'];
 				$insert_smilie['find'] = $smilie['code'];
 				$insert_smilie['image'] = 'images/smilies/'.$smilie['smile_url'];
 				$insert_smilie['disporder'] = $smilie['smilies_id'];
+				
+				// Default values
 				$insert_smilie['showclickable'] = 'yes';				
 			
 				$this->insert_smilie($insert_smilie);
 				
-				$smiliedata = file_get_contents($import_session['smilieurl'].$smilie['smilie_url']);
-				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+				// Transfer smilies
+				if(file_exists($import_session['smilieurl'].$smilie['smilie_url']))
+				{
+					$smiliedata = file_get_contents($import_session['smilieurl'].$smilie['smilie_url']);
+					$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+					fwrite($file, $smiliedata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+				}
 				
-				echo "done.<br />\n";			
+				echo "done.{$transfer_error}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1351,6 +1381,7 @@ class Convert_phpbb2 extends Converter {
 	
 	/**
 	 * Get total number of Private Messages the user has from the phpBB database
+	 *
 	 * @param int User ID
 	 * @return int Number of Private Messages
 	 */
@@ -1363,6 +1394,7 @@ class Convert_phpbb2 extends Converter {
 	
 	/**
 	 * Get a post from the phpBB database
+	 *
 	 * @param int Post ID
 	 * @return array The post
 	 */
@@ -1381,6 +1413,7 @@ class Convert_phpbb2 extends Converter {
 	
 	/**
 	 * Get a user from the phpBB database
+	 *
 	 * @param int User ID
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
@@ -1401,6 +1434,7 @@ class Convert_phpbb2 extends Converter {
 	
 	/**
 	 * Gets the time of the last post of a user from the phpBB database
+	 *
 	 * @param int User ID
 	 * @return int Last post time
 	 */
@@ -1412,6 +1446,7 @@ class Convert_phpbb2 extends Converter {
 	
 	/**
 	 * Convert a phpBB group ID into a MyBB group ID
+	 *
 	 * @param int Group ID
 	 * @param boolean single group or multiple?
 	 * @param boolean original group values?
@@ -1508,6 +1543,7 @@ class Convert_phpbb2 extends Converter {
 	
 	/**
 	 * Decode function for phpBB's IP Addresses
+	 *
 	 * @param string Encoded IP Address
 	 * @return string Decoded IP Address
 	 */

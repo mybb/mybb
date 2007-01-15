@@ -12,7 +12,19 @@
 // Board Name: XMB 1.9
 
 class Convert_xmb extends Converter {
+
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "XMB 1.9";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_users" => array("name" => "Import XMB Users",
@@ -216,7 +228,8 @@ class Convert_xmb extends Converter {
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
-					
+				
+				// Check for duplicate users
 				$query = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query);
 				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
@@ -242,7 +255,8 @@ class Convert_xmb extends Converter {
 				{
 					$insert_user['usergroup'] = 2;
 				}
-				$insert_user['additionalgroups'] = '';
+				
+				// XMB values
 				$insert_user['displaygroup'] = $insert_user['usergroup'];
 				$insert_user['import_usergroup'] = $insert_user['usergroup'];
 				$insert_user['import_additionalgroups'] = '';
@@ -268,7 +282,17 @@ class Convert_xmb extends Converter {
 				$insert_user['yahoo'] = $user['yahoo'];
 				$insert_user['msn'] = $user['msn'];
 				$insert_user['hideemail'] = $user['showemail'];
-				$insert_user['invisible'] = int_to_yesno($user['invisible']);
+				$insert_user['invisible'] = int_to_yesno($user['invisible']);				
+				$insert_user['ppp'] = $user['ppp'];
+				$insert_user['tpp'] = $user['tpp'];				
+				$insert_user['timeformat'] = $user['timeformat'];
+				$insert_user['timezone'] = $user['timeoffset'];
+				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);	
+				
+				$insert_user['style'] = $user['theme'];
+				
+				
+				// Default values
 				$insert_user['allownotices'] = 'yes';
 				$insert_user['emailnotify'] = 'yes';
 				$insert_user['receivepms'] = 'yes';
@@ -278,16 +302,11 @@ class Convert_xmb extends Converter {
 				$insert_user['showsigs'] = 'yes';
 				$insert_user['showavatars'] = 'yes';
 				$insert_user['showquickreply'] = "yes";
-				$insert_user['ppp'] = $user['ppp'];
-				$insert_user['tpp'] = $user['tpp'];
 				$insert_user['daysprune'] = "0";
-				$insert_user['timeformat'] = $user['timeformat'];
-				$insert_user['timezone'] = $user['timeoffset'];
-				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);	
 				$insert_user['dst'] = '';
 				$insert_user['buddylist'] = "";
 				$insert_user['ignorelist'] = "";
-				$insert_user['style'] = $user['theme'];
+				$insert_user['additionalgroups'] = '';
 				$insert_user['away'] = "no";
 				$insert_user['awaydate'] = "0";
 				$insert_user['returndate'] = "0";
@@ -297,8 +316,9 @@ class Convert_xmb extends Converter {
 				$insert_user['timeonline'] = 0;
 				$insert_user['totalpms'] = 0;
 				$insert_user['unreadpms'] = 0;
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
-				$uid = $this->insert_user($insert_user);
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';
+				
+				$this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
 			}
@@ -361,7 +381,7 @@ class Convert_xmb extends Converter {
 			{
 				echo "Inserting category #{$cat['fid']}... ";
 				
-				// Values from XMB
+				// XMB values
 				$insert_forum['import_fid'] = intval($cat['fid']);
 				$insert_forum['name'] = $cat['name'];
 				$insert_forum['description'] = $cat['description'];				
@@ -572,8 +592,8 @@ class Convert_xmb extends Converter {
 				// do fix lastpost stuff
 				
 				// Update parent list.
-				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$update_array = ;
+				$db->update_query("forums", array('parentlist' => $insert_forum['pid'].','.$fid), "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -797,7 +817,7 @@ class Convert_xmb extends Converter {
 				echo "Inserting icon #{$icon['id']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
-				// Invision Power Board 2 values
+				// XMB values
 				$insert_icon['import_iid'] = $icon['id'];
 				$insert_icon['name'] = $icon['code'];
 				$insert_icon['path'] = 'images/icons/'.$icon['url'];			
@@ -807,13 +827,22 @@ class Convert_xmb extends Converter {
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['id'])."'");
 				
-				$icondata = file_get_contents($import_session['pathurl'].$icon['url']);
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
-				
-				echo "done.<br />\n";			
+				// Transfer icons
+				if(file_exists($import_session['pathurl'].$icon['url']))
+				{
+					$icondata = file_get_contents($import_session['pathurl'].$icon['url']);
+					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+					fwrite($file, $icondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
+				}
+				echo "done.{$transfer_error}<br />\n";
+	
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -874,6 +903,7 @@ class Convert_xmb extends Converter {
 			{
 				echo "Inserting post #{$post['pid']}... ";
 				
+				// XMB values
 				$insert_post['import_pid'] = $post['pid'];
 				$insert_post['tid'] = $this->get_import_tid($post['tid']);
 				
@@ -901,13 +931,15 @@ class Convert_xmb extends Converter {
 				$insert_post['subject'] = $post['subject'];
 				$insert_post['icon'] = $post['icon'];
 				$insert_post['import_uid'] = $this->get_uid($post['author']);
-				$insert_post['uid'] = $this->get_import_uid($insert_post['import_uid']);				
+				$insert_post['uid'] = $this->get_import_uid($insert_post['import_uid']);
 				$insert_post['username'] = $post['author'];
 				$insert_post['dateline'] = $post['dateline'];
 				$insert_post['message'] = $post['message'];
 				$insert_post['ipaddress'] = $post['useip'];
-				$insert_post['includesig'] = $post['usesig'];		
-				$insert_post['smilieoff'] = $post['smileyoff'];		
+				$insert_post['includesig'] = $post['usesig'];
+				$insert_post['smilieoff'] = $post['smileyoff'];
+				
+				// Default values
 				$insert_post['edituid'] = 0;
 				$insert_post['edittime'] = 0;
 				$insert_post['visible'] = 1;
@@ -996,7 +1028,8 @@ class Convert_xmb extends Converter {
 				}
 
 				echo "Inserting attachment type #{$i}... ";				
-
+				
+				// XMB values
 				$insert_attachtype['import_atid'] = $i;
 				$insert_attachtype['name'] = substr(strrchr($type['filename'], "."), 1).' file';
 				
@@ -1114,6 +1147,7 @@ class Convert_xmb extends Converter {
 	
 				$this->insert_attachment($insert_attachment);				
 				
+				// Transfer attachments
 				$error_notce = "";
 				if(file_exists($import_session['uploadspath'].'/'.$attachment['attachname']))
 				{
@@ -1197,8 +1231,11 @@ class Convert_xmb extends Converter {
 				$user = $this->get_user($mod['moderator']);
 				echo "Inserting user #{$user['uid']} as moderator to forum #{$mod['fid']}... ";
 				
+				// XMB values
 				$insert_mod['fid'] = $this->get_import_fid($mod['fid']);
 				$insert_mod['uid'] = $this->get_import_username($mod['moderator']);
+				
+				// Default values
 				$insert_mod['caneditposts'] = 'yes';
 				$insert_mod['candeleteposts'] = 'yes';
 				$insert_mod['canviewips'] = 'yes';
@@ -1276,22 +1313,32 @@ class Convert_xmb extends Converter {
 				echo "Inserting smilie #{$smilie['id']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
-				// Invision Power Board 2 values
+				// XMB values
 				$insert_smilie['name'] = $smilie['code'];
 				$insert_smilie['find'] = $smilie['code'];
 				$insert_smilie['image'] = 'images/smilies/'.$smilie['url'];
 				$insert_smilie['disporder'] = $smilie['id'];
+				
+				// Default values
 				$insert_smilie['showclickable'] = 'yes';
 			
 				$this->insert_smilie($insert_smilie);
 				
-				$smiliedata = file_get_contents($import_session['bburl'].'images/smilies/'.$smilie['filename']);
-				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
-				
-				echo "done.<br />\n";			
+				// Transfer smilies
+				if(file_exists($import_session['bburl'].'images/smilies/'.$smilie['filename']))
+				{
+					$smiliedata = file_get_contents($import_session['bburl'].'images/smilies/'.$smilie['filename']);
+					$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+					fwrite($file, $smiliedata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+				}
+				echo "done.{$transfer_error}<br />\n";			
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1373,37 +1420,43 @@ class Convert_xmb extends Converter {
 	
 	/**
 	 * Get the last post from a forum in the XMB database
+	 *
 	 * @param int Forum ID
 	 * @return array The last post
 	 */
 	function get_lastpost($fid)
 	{
-		$query = $this->old_db->simple_select("posts", "tid,subject", "fid='{$fid}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
+		$fid = intval($fid);
+		$query = $this->old_db->simple_select("posts", "tid,subject", "fid = '{$fid}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get the first post from a thread in the XMB database
+	 *
 	 * @param int Thread ID
 	 * @return array The first post
 	 */
 	function get_firstpost($tid)
 	{
-		$query = $this->old_db->simple_select("posts", "pid,dateline", "tid='{$tid}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
+		$tid = intval($tid);
+		$query = $this->old_db->simple_select("posts", "pid,dateline", "tid = '{$tid}'", array('order_by' => 'dateline', 'order_dir' => 'asc', 'limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a user id from the XMB database
+	 *
 	 * @param int Username
 	 * @return int The user id
 	 */
 	function get_uid($username)
 	{
-		if($username == 'Guest')
+		if($username == 'Guest' || empty($username))
 		{
 			return 0;
 		}
+		
 		$query = $this->old_db->simple_select("members", "uid", "username = '{$username}'");
 		return $this->old_db->fetch_field($query, "uid");
 	}	

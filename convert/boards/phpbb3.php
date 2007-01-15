@@ -12,7 +12,19 @@
 // Board Name: phpBB 3
 
 class Convert_phpbb3 extends Converter {
+
+	/**
+	 * String of the bulletin board name
+	 *
+	 * @var string
+	 */
 	var $bbname = "phpBB 3";
+	
+	/**
+	 * Array of all of the modules
+	 *
+	 * @var array
+	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
 						 "import_users" => array("name" => "Import phpBB 3 Users",
@@ -228,7 +240,8 @@ class Convert_phpbb3 extends Converter {
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
-					
+				
+				// Check for duplicate users
 				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
 				if($duplicate_user['username'] && my_strtolower($user['user_email']) == my_strtolower($duplicate_user['email']))
@@ -306,8 +319,9 @@ class Convert_phpbb3 extends Converter {
 				$insert_user['referrer'] = "0";
 				$insert_user['reputation'] = "0";				
 				$insert_user['timeonline'] = "0";				
-				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';		
-				$uid = $this->insert_user($insert_user);
+				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
+					
+				$this->insert_user($insert_user);
 				
 				echo "done.<br />\n";
 			}
@@ -373,11 +387,11 @@ class Convert_phpbb3 extends Converter {
 				
 				// phpBB 3 values
 				$insert_group['import_gid'] = $group['group_id'];
-				$insert_group['type'] = 2;
 				$insert_group['title'] = $group['group_name'];
 				$insert_group['description'] = $group['group_desc'];
 				
 				// Default values
+				$insert_group['type'] = 2;
 				$insert_group['namestyle'] = '{username}';
 				$insert_group['stars'] = 0;
 				$insert_group['starimage'] = 'images/star.gif';
@@ -433,8 +447,7 @@ class Convert_phpbb3 extends Converter {
 				$gid = $this->insert_usergroup($insert_group);
 				
 				// Restore connections
-				$update_array = array('usergroup' => $gid);
-				$db->update_query("users", $update_array, "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
+				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				
@@ -499,7 +512,7 @@ class Convert_phpbb3 extends Converter {
 			{
 				echo "Inserting forum #{$forum['forum_id']}... ";
 				
-				// Values from phpBB
+				// phpBB 3 values
 				$insert_forum['import_fid'] = intval($forum['forum_id']);
 				$insert_forum['name'] = $forum['forum_name'];
 				$insert_forum['description'] = $forum['forum_desc'];				
@@ -681,7 +694,7 @@ class Convert_phpbb3 extends Converter {
 				
 				$tid = $this->insert_thread($insert_thread);
 				
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid='".((-1) * $thread['topic_id'])."'");
+				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['topic_id'])."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -792,11 +805,22 @@ class Convert_phpbb3 extends Converter {
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['icons_id'])."'");
 				
-				$icondata = file_get_contents($import_session['phpbbpath'].$icon['icons_url']);
-				$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+				// Transfer icons
+				if(file_exists($import_session['phpbbpath'].$icon['icons_url']))
+				{
+					$icondata = file_get_contents($import_session['phpbbpath'].$icon['icons_url']);
+					$file = fopen(MYBB_ROOT.$insert_icon['path'], 'w');
+					fwrite($file, $icondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_icon['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
+				}
+				
+				echo "done.{$transfer_error}<br />\n";
 				
 				echo "done.<br />\n";			
 			}
@@ -866,7 +890,7 @@ class Convert_phpbb3 extends Converter {
 				
 				echo "Inserting poll of topic #{$poll['topic_id']}... ";		
 				
-				// Invision Power Board 2 values
+				// phpBB 3 values
 				$insert_poll['import_pid'] = 0;
 				$insert_poll['tid'] = $this->get_import_tid($poll['topic_id']);
 				
@@ -896,10 +920,9 @@ class Convert_phpbb3 extends Converter {
 				$insert_poll['numoptions'] = $options_count;
 				$insert_poll['numvotes'] = $vote_count;
 				$insert_poll['timeout'] = $poll_details['poll_length'];
-				$insert_poll['multiple'] = 'no';
 				
 				// Default values
-				
+				$insert_poll['multiple'] = 'no';
 				$poll['closed'] = '';				
 				
 				$pid = $this->insert_poll($insert_poll);
@@ -1042,7 +1065,6 @@ class Convert_phpbb3 extends Converter {
 				echo "Inserting post #{$post['post_id']}... ";
 				
 				// phpBB 3 values
-				$insert_post['pid'] = 0;
 				$insert_post['import_pid'] = $post['post_id'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
 				
@@ -1062,6 +1084,7 @@ class Convert_phpbb3 extends Converter {
 				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);
 				
 				// Default values
+				$insert_post['pid'] = 0;
 				$insert_post['icon'] = 0;	
 				$insert_post['edituid'] = 0;				
 				$insert_post['edittime'] = 0;
@@ -1074,12 +1097,12 @@ class Convert_phpbb3 extends Converter {
 				update_thread_count($insert_post['tid']);
 				
 				// Restore first post connections
-				$db->update_query("threads", array('firstpost' => $pid), "tid='{$insert_post['tid']}' AND firstpost='".((-1) * $import_post['pid'])."'");
+				$db->update_query("threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $import_post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
-					$query1 = $db->simple_select("threads", "firstpost", "tid='{$insert_post['tid']}'");
+					$query1 = $db->simple_select("threads", "firstpost", "tid = '{$insert_post['tid']}'");
 					$first_post = $db->fetch_field($query1, "firstpost");
-					$db->update_query("posts", array('replyto' => $first_post), "pid='{$pid}'");
+					$db->update_query("posts", array('replyto' => $first_post), "pid = '{$pid}'");
 				}
 				
 				echo "done.<br />\n";			
@@ -1181,7 +1204,8 @@ class Convert_phpbb3 extends Converter {
 			{
 				echo "Inserting attachment #{$attachment['attach_id']}... ";
 				flush(); // We do this to show status because the transfer of the file might take a while. Otherwise the user will just think the script froze.
-
+				
+				// phpBB 3 values
 				$insert_attachment['import_aid'] = $attachment['attach_id'];
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['post_msg_id']);				
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['poster_id']);
@@ -1190,6 +1214,8 @@ class Convert_phpbb3 extends Converter {
 				$insert_attachment['filetype'] = $attachment['mimetype'];
 				$insert_attachment['filesize'] = $attachment['filesize'];
 				$insert_attachment['downloads'] = $attachment['download_count'];
+				
+				// Default values
 				$insert_attachment['visible'] = 'yes';
 				$insert_attachment['thumbnail'] = '';
 				
@@ -1205,10 +1231,11 @@ class Convert_phpbb3 extends Converter {
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
 				
-				$this->insert_attachment($insert_attachment);
+				$this->insert_attachment($insert_attachment);				
 				
+				// Transfer attachment
 				$file_not_transfered = "";
-				if($this->url_exists($import_session['uploadspath'].'/'.$attachment['physical_filename']) !== false)
+				if(file_exists($import_session['uploadspath'].'/'.$attachment['physical_filename']))
 				{
 					// Get the contents
 					$attachmentdata = file_get_contents($import_session['uploadspath'].'/'.$attachment['physical_filename']);
@@ -1381,8 +1408,11 @@ class Convert_phpbb3 extends Converter {
 			{
 				echo "Inserting user #{$mod['user_id']} as moderator to forum #{$mod['forum_id']}... ";
 				
+				// phpBB 3 values
 				$insert_mod['fid'] = $this->get_import_fid($mod['forum_id']);
 				$insert_mod['uid'] = $this->get_import_uid($mod['user_id']);
+				
+				// Default values
 				$insert_mod['caneditposts'] = 'yes';
 				$insert_mod['candeleteposts'] = 'yes';
 				$insert_mod['canviewips'] = 'yes';
@@ -1448,7 +1478,7 @@ class Convert_phpbb3 extends Converter {
 			
 			
 			// Doesn't work?
-			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
+			if(!file_exists($import_session['phpbbpath'].'adm/index.php'))
 			{
 				echo $import_session['phpbbpath'].'adm/index.php';
 				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
@@ -1500,13 +1530,22 @@ class Convert_phpbb3 extends Converter {
 			
 				$this->insert_smilie($insert_smilie);
 				
-				$smiliedata = file_get_contents($import_session['smiliesurl'].$smilie['smiley_url']);
-				$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
-				fwrite($file, $smiliedata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+				// Transfer smilies
+				if(file_exists($import_session['smiliesurl'].$smilie['smiley_url']))
+				{
+					$smiliedata = file_get_contents($import_session['smiliesurl'].$smilie['smiley_url']);
+					$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+					fwrite($file, $smiliedata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+					$transfer_error = "";
+				}
+				else
+				{
+					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+				}
 				
-				echo "done.<br />\n";
+				echo "done.{$transfer_error}<br />\n";
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1634,7 +1673,7 @@ class Convert_phpbb3 extends Converter {
 			
 			
 			// Doesn't work?
-			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
+			if(!file_exists($import_session['phpbbpath'].'adm/index.php'))
 			{
 				echo $import_session['phpbbpath'].'adm/index.php';
 				echo "<p><span style=\"color: red;\">The link you provided is not correct. Please enter in a valid url.</span></p>";
@@ -1714,17 +1753,23 @@ class Convert_phpbb3 extends Converter {
 				
 				$this->insert_attachtype($insert_attachtype);
 				
-				$icondata = file_get_contents($import_session['uploadiconsurl'].$type['upload_icon']);
-				$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
-				fwrite($file, $icondata);
-				fclose($file);
-				@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
-
-				echo "done.";
-					
 				if(isset($existing_types[$type['extension']]))
 				{
 					echo " (Note: extension already exists)\n";
+				}
+				
+				// Transfer attachment icons
+				if(file_exists($import_session['uploadiconsurl'].$type['upload_icon']))
+				{
+					$attachicondata = file_get_contents($import_session['uploadiconsurl'].$type['upload_icon']);
+					$file = fopen(MYBB_ROOT.$insert_attachtype['icon'], 'w');
+					fwrite($file, $attachicondata);
+					fclose($file);
+					@chmod(MYBB_ROOT.$insert_attachtype['icon'], 0777);
+				}
+				else
+				{
+					echo " (Note: Could not transfer attachment icons. - \"Not Found\")";
 				}
 				
 				echo "<br />\n";
@@ -1743,6 +1788,7 @@ class Convert_phpbb3 extends Converter {
 	
 	/**
 	 * Count number of invisible posts from the phpBB 3 database
+	 *
 	 * @param int thread id (optional)
 	 * @param int forum id (optional)
 	 * @return int number of invisible posts
@@ -1752,21 +1798,22 @@ class Convert_phpbb3 extends Converter {
 		$tidbit = "";
 		if(!empty($tid))
 		{
-			$tidbit = " AND topic_id='".intval($tid)."'";
+			$tidbit = " AND topic_id = '".intval($tid)."'";
 		}
 		
 		$fidbit = "";
 		if(!empty($fid))
 		{
-			$fidbit = " AND forum_id='".intval($fid)."'";
+			$fidbit = " AND forum_id = '".intval($fid)."'";
 		}
 		
-		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "post_approved='0'{$tidbit}{$fidbit}");
+		$query = $this->old_db->simple_select("posts", "COUNT(*) as invisible", "post_approved = '0'{$tidbit}{$fidbit}");
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
 	/**
 	 * Count number of invisible threads from the phpBB 3 database
+	 *
 	 * @param int forum id (optional)
 	 * @return int number of invisible threads
 	 */
@@ -1775,49 +1822,53 @@ class Convert_phpbb3 extends Converter {
 		$fidbit = "";
 		if(!empty($fid))
 		{
-			$fidbit = " AND forum_id='".intval($fid)."'";
+			$fidbit = " AND forum_id = '".intval($fid)."'";
 		}
 		
-		$query = $this->old_db->simple_select("topics", "COUNT(*) as invisible", "topic_approved='0'{$fidbit}");
+		$query = $this->old_db->simple_select("topics", "COUNT(*) as invisible", "topic_approved = '0'{$fidbit}");
 		return $this->old_db->fetch_field($query, "invisible");
 	}
 	
 	/**
 	 * Get poll option id from the phpBB 3 database
+	 *
 	 * @param int thread id
 	 * @return int poll option id
 	 */
 	function get_poll_pid($tid)
 	{
-		$query = $this->old_db->simple_select("poll_options", "poll_option_id", "topic_id='$tid'", array('limit' => 1));
+		$query = $this->old_db->simple_select("poll_options", "poll_option_id", "topic_id = '{$tid}'", array('limit' => 1));
 		return $this->old_db->fetch_field($query, "poll_option_id");
 	}
 	
 	/**
 	 * Get total number of Private Messages the user has from the phpBB database
+	 *
 	 * @param int User ID
 	 * @return int Number of Private Messages
 	 */
 	function get_private_messages($uid)
 	{
-		$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "to_address = '$uid' OR author_id = '$uid'");
+		$query = $this->old_db->simple_select("privmsgs", "COUNT(*) as pms", "to_address = '{$uid}' OR author_id = '{$uid}'");
 		
 		return $this->old_db->fetch_field($query, 'pms');
 	}
 	
 	/**
 	 * Get a post from the phpBB database
+	 *
 	 * @param int Post ID
 	 * @return array The post
 	 */
 	function get_post($pid)
 	{		
-		$query = $this->old_db->simple_select("posts", "*", "post_id='{$pid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("posts", "*", "post_id = '{$pid}'", array('limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Get a user from the phpBB database
+	 *
 	 * @param int User ID
 	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
 	 */
@@ -1831,13 +1882,14 @@ class Convert_phpbb3 extends Converter {
 			);
 		}
 		
-		$query = $this->old_db->simple_select("users", "*", "user_id='{$uid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select("users", "*", "user_id = '{$uid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
 	
 	/**
 	 * Checks if a URL exists (if it is correct or not)
+	 *
 	 * @param string url to check
 	 * @return boolean true if the url is correct, false otherwise
 	 */
@@ -1855,17 +1907,19 @@ class Convert_phpbb3 extends Converter {
 	
 	/**
 	 * Gets the time of the last post of a user from the phpBB database
+	 *
 	 * @param int User ID
 	 * @return int Last post time
 	 */
 	function get_last_post($uid)
 	{
-		$query = $this->old_db->simple_select("posts", "post_time", "poster_id='{$uid}'", array('order_by' => 'post_time', 'order_dir' => 'DESC', 'limit' => 1));
+		$query = $this->old_db->simple_select("posts", "post_time", "poster_id = '{$uid}'", array('order_by' => 'post_time', 'order_dir' => 'DESC', 'limit' => 1));
 		return $this->old_db->fetch_field($query, "post_time");
 	}
 	
 	/**
 	 * Convert a phpBB 3 group ID into a MyBB group ID
+	 *
 	 * @param int Group ID
 	 * @param boolean single group or multiple?
 	 * @param boolean original group values?
@@ -1876,11 +1930,11 @@ class Convert_phpbb3 extends Converter {
 		$settings = array();
 		if($not_multiple == false)
 		{
-			$query = $this->old_db->simple_select("user_group", "COUNT(*) as rows", "user_id='{$uid}'");
+			$query = $this->old_db->simple_select("user_group", "COUNT(*) as rows", "user_id = '{$uid}'");
 			$settings = array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows'));
 		}
 		
-		$query = $this->old_db->simple_select("user_group", "*", "user_id='{$uid}'", $settings);
+		$query = $this->old_db->simple_select("user_group", "*", "user_id = '{$uid}'", $settings);
 		
 		$comma = $group = '';
 		while($phpbbgroup = $this->old_db->fetch_array($query))
