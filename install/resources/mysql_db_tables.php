@@ -301,7 +301,7 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
   PRIMARY KEY  (rid)
 ) TYPE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_mailerrors(
+$tables[] = "CREATE TABLE mybb_mailerrors (
   eid int unsigned NOT NULL auto_increment,
   subject varchar(200) NOT NULL default '',
   toaddress varchar(150) NOT NULL default '',
