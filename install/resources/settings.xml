@@ -459,7 +459,7 @@ email=Sent via Email]]></optionscode>
 	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="20" isdefault="yes">
 		<setting name="mail_handler">
 			<title>Mail handler</title>
-			<description><![CDATA[How would you want to send your mails?]]></description>
+			<description><![CDATA[How do you want MyBB to send your outgoing mail?]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[select
 mail=PHP mail
@@ -469,7 +469,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="smtp_host">
 			<title>SMTP hostname</title>
-			<description><![CDATA[The SMTP hostname you want to send through.]]></description>
+			<description><![CDATA[The hostname of the SMTP server through which mail should be sent.<br />Only required if SMTP Mail is selected as the Mail Handler.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -477,7 +477,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="smtp_port">
 			<title>SMTP port</title>
-			<description><![CDATA[The SMTP port number you want to send through.]]></description>
+			<description><![CDATA[The port number of the SMTP server through which mail should be sent.<br />Only required if SMTP Mail is selected as the Mail Handler.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -485,7 +485,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="smtp_user">
 			<title>SMTP username</title>
-			<description><![CDATA[The SMTP username.]]></description>
+			<description><![CDATA[The username to authenticate with the SMTP server.<br />Only required if SMTP Mail is selected as the Mail Handler, and the SMTP server requires authentication.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -493,15 +493,15 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="smtp_pass">
 			<title>SMTP password</title>
-			<description><![CDATA[The SMTP password.]]></description>
+			<description><![CDATA[The password to authenticate with the SMTP server.<br />Only required if SMTP Mail is selected as the Mail Handler, and the SMTP server requires authentication.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="secure_smtp">
-			<title>SMTP encrypted connection</title>
-			<description><![CDATA[Is the server you are trying to send mail through using encrypted connection? Select here.]]></description>
+			<title>SMTP Encryption Mode</title>
+			<description><![CDATA[Select the encryption required to communicate with the SMTP server.<br />Only required if SMTP Mail is selected as the Mail Handler.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[select
 0=No encryption
@@ -511,8 +511,8 @@ smtp=SMTP mail]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="mail_parameters">
-			<title>Additional Parameters for PHPs mail()</title>
-			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail function. Only in use when 'PHP mail' is selected above. <a href="http://php.net/function.mail">More information</a>]]]></description>
+			<title>Additional Parameters for PHP's mail()</title>
+			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail">More information</a>]]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
