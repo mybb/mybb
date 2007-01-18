@@ -4841,8 +4841,23 @@ if(use_xmlhttprequest == "yes")
 </tr>
 <tr>
 <td class="trow1">
-<table border="0" cellpadding="{$theme['tablespace']}" width="100%"><tr>{$avatar}<td class="trow1">{$message}{$post['attachments']}</td></tr>
-<tr><td align="right" colspan="2" valign="bottom"><span class="smalltext"><a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" alt="" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" alt="" /></a></span></td></tr>
+<table border="0" cellpadding="{$theme['tablespace']}" width="100%">
+	<tr>
+		{$avatar}
+		<td class="trow1">
+			<p>
+				{$message}
+			</p>
+			{$post['attachments']}
+		</td>
+	</tr>
+	<tr>
+		<td align="right" colspan="2" valign="bottom">
+			<span class="smalltext">
+				<a href="{$mybb->settings['bburl']}/printthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/printable.gif" alt="" /></a>&nbsp;<a href="{$mybb->settings['bburl']}/sendthread.php?tid={$announcement['tid']}"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/send.gif" alt="" /></a>
+			</span>
+		</td>
+	</tr>
 </table>
 </td>
 </tr>
