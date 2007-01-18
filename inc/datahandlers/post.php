@@ -315,30 +315,34 @@ class PostDataHandler extends DataHandler
 		// Check if this post contains more images than the forum allows
 		if($post['savedraft'] != 1 && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != "yes")
 		{
-			if($post['options']['disablesmilies'] == "yes")
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+
+			// Parse the message.
+			$parser_options = array(
+				"allow_html" => $forum['allowhtml'],
+				"allow_mycode" => $forum['allowmycode'],
+				"allow_imgcode" => $forum['allowimgcode']
+			);
+
+			if($post['options']['disablesmilies'] != "yes")
 			{
-				require_once MYBB_ROOT."inc/class_parser.php";
-				$parser = new postParser;
+				$parser_options['allow_smilies'] = $forum['allowmilies'];
+			}
+			else
+			{
+				$parser_options['allow_smilies'] = "no";
+			}
 
-				// Parse the message.
-				$parser_options = array(
-					"allow_html" => $forum['allowhtml'],
-					"allow_mycode" => $forum['allowmycode'],
-					"allow_smilies" => $forum['allowmilies'],
-					"allow_imgcode" => $forum['allowimgcode']
-				);
+			$image_check = $parser->parse_message($post['message'], $parser_options);
 
-				$image_check = $parser->parse_message($post['message'], $parser_options);
-
-				// And count the number of image tags in the message.
-				$image_count = substr_count($image_check, "<img");
-				if($image_count > $mybb->settings['maxpostimages'])
-				{
-					// Throw back a message if over the count with the number of images as well as the maximum number of images per post.
-					$this->set_error("too_many_images", array(1 => $image_count, 2 => $mybb->settings['maxpostimages']));
-					return false;
-				}
-
+			// And count the number of image tags in the message.
+			$image_count = substr_count($image_check, "<img");
+			if($image_count > $mybb->settings['maxpostimages'])
+			{
+				// Throw back a message if over the count with the number of images as well as the maximum number of images per post.
+				$this->set_error("too_many_images", array(1 => $image_count, 2 => $mybb->settings['maxpostimages']));
+				return false;
 			}
 		}
 	}
