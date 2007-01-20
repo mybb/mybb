@@ -602,7 +602,9 @@ form {
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
 <script type="text/javascript">
-lang.click_mark_read = "{$lang->click_mark_read}";
+<!--
+	lang.click_mark_read = "{$lang->click_mark_read}";
+// -->
 </script>
 </head>
 <body>
@@ -710,17 +712,21 @@ lang.click_mark_read = "{$lang->click_mark_read}";
 <input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
 <input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
 </form>
-<script language="JavaScript" type="text/javascript">
-var go_text = "{$lang->inline_go}";
-var inlineType = "thread";
-var inlineId = {$tid};
+<script type="text/javascript">
+<!--
+	var go_text = "{$lang->inline_go}";
+	var inlineType = "thread";
+	var inlineId = {$tid};
+// -->
 </script>]]></template>
 		<template name="showthread" version="120"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
 <script type="text/javascript">
-		 var quickdelete_confirm = "{$lang->quickdelete_confirm}";
+<!--
+	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
+// -->
 </script>
 <script type="text/javascript" src="jscripts/thread.js?ver=120"></script>
 </head>
@@ -1490,10 +1496,12 @@ var inlineId = {$tid};
 	<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" class="button" />
 </div>
 </form>
-<script language="JavaScript" type="text/javascript">
-var go_text = "{$lang->inline_go}";
-var inlineType = "forum";
-var inlineId = {$fid};
+<script type="text/javascript">
+<!--
+	var go_text = "{$lang->inline_go}";
+	var inlineType = "forum";
+	var inlineId = {$fid};
+// -->
 </script>
 <br />]]></template>
 		<template name="report_thanks"><![CDATA[<html>
@@ -1513,7 +1521,10 @@ var inlineId = {$fid};
 <br /><br />
 <div style="text-align: center;">
 	<script type="text/javascript">
-	document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+	<!--
+		document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
+	// -->
+	</script>
 </div>
 </td>
 </tr>
@@ -2257,7 +2268,7 @@ var inlineId = {$fid};
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=120"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=120"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
-<script language="Javascript" type="text/javascript">
+<script type="text/javascript">
 <!--
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
@@ -2631,7 +2642,11 @@ var inlineId = {$fid};
 </tr>
 <tr>
 <td class="trow1" valign="top" width="200"><strong>{$lang->compose_to}</strong>
-	<script type="text/javascript">document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}</a>)');</script>
+	<script type="text/javascript">
+	<!--
+		document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}</a>)');
+	// -->
+	</script>
 	<br /><span class="smalltext">{$lang->separate_names}</span></td>
 <td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
 </tr>
@@ -2675,22 +2690,24 @@ var inlineId = {$fid};
 </form>
 {$footer}
 <script type="text/javascript">
-if($('bcc_area'))
-{
-	$('bcc_area').style.display = 'none';
-}
-
-function showBcc()
-{
-	if($('bcc_area').style.display == 'none')
-	{
-		$('bcc_area').style.display = '';
-	}
-	else
+<!--
+	if($('bcc_area'))
 	{
 		$('bcc_area').style.display = 'none';
 	}
-}
+
+	function showBcc()
+	{
+		if($('bcc_area').style.display == 'none')
+		{
+			$('bcc_area').style.display = '';
+		}
+		else
+		{
+			$('bcc_area').style.display = 'none';
+		}
+	}
+// -->
 </script>
 {$autocompletejs}
 </body>
@@ -2789,17 +2806,21 @@ function showBcc()
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 <!--
-if(use_xmlhttprequest == "yes")
-{
-	new PopupMenu("edit_post_{$post['pid']}");
-}
+	if(use_xmlhttprequest == "yes")
+	{
+		new PopupMenu("edit_post_{$post['pid']}");
+	}
 // -->
 </script>]]></template>
 		<template name="postbit_email" version="120"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" alt="{$lang->postbit_email}" title="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="120"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
 		<template name="postbit_quickdelete" version="120"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
-<script type="text/javascript">document.getElementById('quick_delete_{$post['pid']}').style.display='';</script>]]></template>
+<script type="text/javascript">
+<!--
+	$('quick_delete_{$post['pid']}').style.display = '';
+// -->
+</script>]]></template>
 		<template name="postbit_quote" version="120"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->postbit_quote}" title="{$lang->postbit_quote}" /></a>]]></template>
 		<template name="postbit_report" version="120"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_report.gif" alt="{$lang->postbit_report}" title="{$lang->postbit_report}" /></a>]]></template>
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>
@@ -2897,8 +2918,11 @@ if(use_xmlhttprequest == "yes")
 <br /><br />
 <div>
 	<script type="text/javascript">
-	document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
-	document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+	<!--
+		document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
+		document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
+	// -->
+	</script>
 </div>
 </td>
 </tr>
@@ -2910,7 +2934,9 @@ if(use_xmlhttprequest == "yes")
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
 <script type="text/javascript">
-var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
+<!--
+	var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
+// -->
 </script>
 </head>
 <body>
@@ -3576,9 +3602,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 		<template name="private_send_buddyselect" version="120"><![CDATA[<br /><span class="smalltext">{$lang->select_buddy}<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>{$buddies}</select>]]></template>
 		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
+<!--
 	{$editor_language}
 	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
+// -->
 </script>]]></template>
 		<template name="showthread_quickreply" version="120"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;proccessed=1" name="input" id="quick_reply_form">
@@ -3611,7 +3639,11 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	<div>
 		<textarea style="width: 90%; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 	</div>
-	<script type="text/javascript">document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted(\'{$tid}\');">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');</script>
+	<script type="text/javascript">
+	<!--
+		document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted(\'{$tid}\');">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');
+	// -->
+	</script>
 </td>
 </tr>
 <tr>
@@ -4013,10 +4045,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
 <!--
-if(use_xmlhttprequest == "yes")
-{
-	new autoComplete("author", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-}
+	if(use_xmlhttprequest == "yes")
+	{
+		new autoComplete("author", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+	}
 // -->
 </script>
 </body>
@@ -5402,6 +5434,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
 {$headerinclude}
 <script type="text/javascript">
+<!--
 	var editor = eval('opener.' + '{$editor}');
 	function insertSmilie(code)
 	{
@@ -5410,6 +5443,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			editor.performInsert(code, "", true, false);
 		}
 	}
+// -->
 </script>
 
 </head>
@@ -6835,7 +6869,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td><span class="smalltext">{$lang->verification_note}</span></td>
 <td rowspan="2" align="center"><img src="captcha.php?action=regimage&amp;imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
-<script language="Javascript" type="text/javascript">
+<script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "yes")
 	{
@@ -6980,12 +7014,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </div>
 </form>
 <script type="text/javascript">
+<!--
 	regValidator = new FormValidator('registration_form');
 	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
 	regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
 	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'{$lang->js_validator_email_match}'});
 	{$validator_extra}
 	regValidator.register('username', 'ajax', {url:'xmlhttp.php?action=username_availability', loading_message:'{$lang->js_validator_checking_username}'}); // needs to be last
+// -->
 </script>
 {$footer}
 </body>
@@ -7002,27 +7038,31 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_multiquote" version="120"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
-<script type="text/javascript">document.getElementById('multiquote_link_{$post['pid']}').style.display='';</script>]]></template>
+<script type="text/javascript">
+<!--
+	$('multiquote_link_{$post['pid']}').style.display = '';
+// -->
+</script>]]></template>
 		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
 <!--
-if(use_xmlhttprequest == "yes")
-{
-	new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
-	if($('bcc'))
+	if(use_xmlhttprequest == "yes")
 	{
-		new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+		new autoComplete("to", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+		if($('bcc'))
+		{
+			new autoComplete("bcc", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+		}
 	}
-}
 // -->
 </script>]]></template>
 		<template name="forumdisplay_threadlist_inlineedit_js" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
 <script type="text/javascript">
 <!--
-if(use_xmlhttprequest == "yes")
-{
-	new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
-}
+	if(use_xmlhttprequest == "yes")
+	{
+		new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
+	}
 // -->
 </script>]]></template>
 		<template name="xmlhttp_inline_post_editor" version="120"><![CDATA[<br />
@@ -7054,7 +7094,11 @@ if(use_xmlhttprequest == "yes")
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
-<script type="text/javascript">var showBack = {$show_back};</script>
+<script type="text/javascript">
+<!--
+	var showBack = {$show_back};
+// -->
+</script>
 </head>
 <body>
 <br />
@@ -7066,8 +7110,14 @@ if(use_xmlhttprequest == "yes")
 				<br /><br />
 				<div style="text-align: center;">
 					<script type="text/javascript">
-					if(showBack == 1) { document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]'); }
-					document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+					<!--
+						if(showBack == 1)
+						{
+							document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
+						}
+						document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
+					// -->
+					</script>
 				</div>
 		</td>
 	</tr>
@@ -7088,7 +7138,11 @@ if(use_xmlhttprequest == "yes")
 			   <blockquote>{$lang->vote_added_message}</blockquote>
 				<br /><br />
 				<div style="text-align: center;">
-					<script type="text/javascript">document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+					<script type="text/javascript">
+					<!--
+						document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
+					// -->
+					</script>
 				</div>
 		</td>
 	</tr>
@@ -7109,7 +7163,11 @@ if(use_xmlhttprequest == "yes")
 			   <blockquote>{$lang->vote_deleted_message}</blockquote>
 				<br /><br />
 				<div style="text-align: center;">
-					<script type="text/javascript">document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');</script>
+					<script type="text/javascript">
+					<!--
+						document.write('[<a href="javascript:window.close();">{$lang->close_window}</a>]');
+					// -->
+					</script>
 				</div>
 		</td>
 	</tr>
@@ -7126,7 +7184,7 @@ if(use_xmlhttprequest == "yes")
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
-		<script language="Javascript" type="text/javascript">
+		<script type="text/javascript">
 		<!--
 			if(use_xmlhttprequest == "yes")
 			{
