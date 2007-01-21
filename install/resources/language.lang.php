@@ -192,7 +192,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="websitename" id="websitename" value="{3}" /></td>
 				</tr>
 				<tr class="alt_row last">
-					<td class="first"><label for="websiteurl">Website URL:</td>
+					<td class="first"><label for="websiteurl">Website URL:</label></td>
 					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
@@ -211,7 +211,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 				</tr>
 				<tr class="last">
 					<td class="first"><label for="contactemail">Contact Email:</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" class="text_input" name="contactemail" id="contactemail" value="{7}" /></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="contactemail" id="contactemail" value="{7}" /></td>
 				</tr>
 			</table>
 		</div>

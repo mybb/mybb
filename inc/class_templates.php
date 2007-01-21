@@ -87,6 +87,11 @@ class templates
 		{
 			$template = "<!-- start: $title -->\n$template\n<!-- end: $title -->";
 		}
+		else
+		{
+			$template = "\n$template\n";
+		}
+		
 		if($eslashes)
 		{
 			$template = str_replace("\\'", "'", $db->escape_string($template));
