@@ -144,7 +144,7 @@ class MyLanguage
 		{
 			foreach($l as $key => $val)
 			{
-				if(!$this->$key || $this->$key != $val)
+				if(empty($this->$key) || $this->$key != $val)
 				{
 					$val = preg_replace("#\{([0-9]+)\}#", "%$1\$s", $val);
 					$this->$key = $val;

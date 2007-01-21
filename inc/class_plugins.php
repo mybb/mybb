@@ -51,7 +51,7 @@ class pluginSystem
 	function add_hook($hook, $function, $priority=10, $file="")
 	{
 		// Check to see if we already have this hook running at this priority
-		if(is_array($this->hooks[$hook][$priority][$function]))
+		if(!empty($this->hooks[$hook][$priority][$function]) && is_array($this->hooks[$hook][$priority][$function]))
 		{
 			return true;
 		}
@@ -89,7 +89,7 @@ class pluginSystem
 					{
 						require_once $hook['file'];
 					}
-					$oldreturnargs = $returnargs;
+					$oldreturnargs = $returnargs; // why is this line of code here?
 					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
 					if($returnargs)
 					{
@@ -110,7 +110,7 @@ class pluginSystem
 	 */
 	function run_hooks_by_ref($hook, &$arguments)
 	{
-		if(!is_array($this->hooks[$hook]))
+		if(empty($this->hooks[$hook]) && !is_array($this->hooks[$hook]))
 		{
 			return $arguments;
 		}
