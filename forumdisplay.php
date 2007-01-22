@@ -332,11 +332,14 @@ $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != 9999)
 {
 	$checkdate = time() - ($datecut * 86400);
-	$datecutsql = "AND lastpost >= '$checkdate'";
+	$datecutsql = "AND (lastpost >= '$checkdate' OR sticky = '1')";
+	$datecutsql2 = "AND (t.lastpost >= '$checkdate' OR t.sticky = '1')";
+	//$datecutsql = "AND lastpost >= '$checkdate'";
 }
 else
 {
 	$datecutsql = '';
+	$datecutsql2 = '';
 }
 
 // Pick the sort order.
@@ -551,7 +554,7 @@ $query = $db->query("
 	SELECT t.*, $ratingadd t.username AS threadusername, u.username
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-	WHERE t.fid='$fid' $visibleonly $datecutsql
+	WHERE t.fid='$fid' $visibleonly $datecutsql2
 	ORDER BY t.sticky DESC, t.$sortfield $sortordernow
 	LIMIT $start, $perpage
 ");

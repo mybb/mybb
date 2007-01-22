@@ -717,14 +717,18 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 			echo "<td class=\"$bgcolor\" width=\"88%\">\n<strong>\n<a href=\"settings.php?".SID."&amp;action=change&amp;gid=".$group['gid']."\">".$group['title']."</a>\n</strong>\n (".$settings_count.")\n<br />\n".$group['description'];
 			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes")
 			{
-				$options['change'] = $lang->modify_settings;
-				$options['edit'] = $lang->edit_setting_group;
-				$options['add'] = $lang->add_setting;
-				$options['delete'] = $lang->delete_setting_group;
+				$options = array(
+					'change' => $lang->modify_settings,
+					'edit' => $lang->edit_setting_group,
+					'add' => $lang->add_setting,
+					'delete' => $lang->delete_setting_group,
+				);
 			}
 			else
 			{
-				$options['change'] = $lang->modify_settings;
+				$options = array(
+					'change' => $lang->modify_settings,
+				);
 			}
 			echo "<td class=\"$bgcolor\" align=\"right\" nowrap=\"nowrap\">\n";
 			startform("settings.php");

@@ -35,6 +35,7 @@ $l['select_all'] = "Select all";
 $l['deselect_all'] = "Deselect all";
 $l['select_forum_tables'] = "Select Forum Tables";
 $l['perform_backup'] = "Perform Backup";
+$l['sequential_backup'] = "Perform a sequential backup?";
 
 $l['tables_optimized'] = "The selected database tables have successfully been optimized.";
 $l['optimize_tables'] = "Optimize Database Tables";
