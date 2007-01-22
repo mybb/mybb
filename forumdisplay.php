@@ -321,7 +321,7 @@ $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != 9999)
 {
 	$checkdate = time() - ($datecut * 86400);
-	$datecutsql = "AND t.lastpost >= '$checkdate'";
+	$datecutsql = "AND (t.lastpost >= '$checkdate' OR t.sticky = '1')";
 }
 else
 {

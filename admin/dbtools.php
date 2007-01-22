@@ -121,6 +121,7 @@ if($mybb->input['action'] == 'do_backup')
 		{
 			$structure = $db->show_create_table($table).";\n";
 			$contents .= $structure;
+			seq_backup($fp, $contents);
 		}
 		if($mybb->input['contents'] != 'structure')
 		{
@@ -143,6 +144,7 @@ if($mybb->input['action'] == 'do_backup')
 				}
 				$insert .= ");\n";
 				$contents .= $insert;
+				seq_backup($fp, $contents);
 			}
 		}
 	}
@@ -462,8 +464,42 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "</td>\n";
 	echo "</tr>\n";	
 	makeyesnocode($lang->analyse_optimise, 'analyse');
+	makeyesnocode($lang->sequential_backup, 'sequential_backup');
 	endtable();
 	endform($lang->perform_backup);
 	cpfooter();
+}
+
+function seq_backup($fp, &$contents) 
+{
+	global $mybb;
+	
+	if($mybb->input['sequential_backup'] == 'yes') 
+	{
+		if($mybb->input['write'] == 'disk') 
+		{
+			if($mybb->input['type'] == 'gzip') 
+			{
+				gzwrite($fp, $contents);
+			} 
+			else 
+			{
+				fwrite($fp, $contents);
+			}
+		} 
+		else 
+		{
+			if($mybb->input['type'] == "gzip")
+			{
+				echo gzencode($contents);
+			}
+			else
+			{
+				echo $contents;
+			}
+		}
+		
+		$contents = '';	
+	}
 }
 ?>
