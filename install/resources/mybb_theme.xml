@@ -719,7 +719,7 @@ form {
 	var inlineId = {$tid};
 // -->
 </script>]]></template>
-		<template name="showthread" version="120"><![CDATA[<html>
+		<template name="showthread" version="140"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -760,7 +760,10 @@ form {
 {$threadpages}
 <tr>
 <td colspan="2" class="tfoot">
-<div><strong>&laquo; <a href="{$next_oldest_link}">{$lang->next_oldest}</a> | <a href="{$next_newest_link}">{$lang->next_newest}</a> &raquo;</strong></div>
+	{$search_thread}
+	<div>
+		<strong>&laquo; <a href="{$next_oldest_link}">{$lang->next_oldest}</a> | <a href="{$next_newest_link}">{$lang->next_newest}</a> &raquo;</strong>
+	</div>
 </td>
 </tr>
 </table>
@@ -7236,5 +7239,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<template name="postbit_delete_pm" version="140"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
 	<template name="postbit_forward_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward"><img src="{$theme['imglangdir']}/pm_forward.gif" alt="{$lang->forward}" title="{$lang->forward_title}" /></a>]]></template>
 	<template name="postbit_reply_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
+	<template name="showthread_search" version="140"><![CDATA[	<div class="float_right">
+		<form action="search.php" method="post">
+			<input type="hidden" name="action" value="thread" />
+			<input type="hidden" name="tid" value="{$thread['tid']}" />
+			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" class="textbox" size="25" />
+			<input type="submit" value="{$lang->search_thread}" />
+		</form>
+	</div>]]></template>
 	</templates>
 </theme>

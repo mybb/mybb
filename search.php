@@ -910,6 +910,100 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	$plugins->run_hooks("search_do_search_end");
 	redirect("search.php?action=results&sid=".$sid."&sortby=".$sortby."&order=".$sortorder, $lang->redirect_searchresults);
 }
+else if($mybb->input['action'] == "thread")
+{
+	// Fetch thread info
+	$thread = get_thread($mybb->input['tid']);
+	if(!$thread['tid'] || (($thread['visible'] == 0 && !is_moderator($thread['fid'])) || $thread['visible'] < 0))
+	{
+		error($lang->error_invalidthread);
+	}
+
+	// Get forum info
+	$forum = get_forum($thread['fid']);
+	if(!$forum)
+	{
+		error($lang->error_invalidforum);
+	}
+
+	$forum_permissions = forum_permissions($forum['fid']);
+
+	if($forum['open'] == "no" || $forum['type'] != "f")
+	{
+		error($lang->error_closedinvalidforum);
+	}
+	if($forum_permissions['canview'] == "no" || $forum_permissions['canviewthreads'] != "yes")
+	{
+		error_no_permission();
+	}
+
+	$plugins->run_hooks("search_thread_start");
+
+	// Check if search flood checking is enabled and user is not admin
+	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 'yes')
+	{
+		// Fetch the time this user last searched
+		if($mybb->user['uid'])
+		{
+			$conditions = "uid='{$mybb->user['uid']}'";
+		}
+		else
+		{
+			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
+		}
+		$timecut = time()-$mybb->settings['searchfloodtime'];
+		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$last_search = $db->fetch_array($query);
+		// Users last search was within the flood time, show the error
+		if($last_search['sid'])
+		{
+			$remaining_time = $mybb->settings['searchfloodtime']-(time()-$last_search['dateline']);
+			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+			error($lang->error_searchflooding);
+		}
+	}
+
+	$search_data = array(
+		"keywords" => $mybb->input['keywords'],
+		"postthread" => 1,
+		"tid" => $mybb->input['tid']
+	);
+
+	if($config['dbtype'] == "mysql" || $config['dbtype'] == "mysqli")
+	{
+		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->is_fulltext("posts"))
+		{
+			$search_results = perform_search_mysql_ft($search_data);
+		}
+		else
+		{
+			$search_results = perform_search_mysql($search_data);
+		}
+	}
+	else
+	{
+		error($lang->error_no_search_support);
+	}
+	$sid = md5(uniqid(microtime(), 1));
+	$searcharray = array(
+		"sid" => $db->escape_string($sid),
+		"uid" => $mybb->user['uid'],
+		"dateline" => $now,
+		"ipaddress" => $db->escape_string($session->ipaddress),
+		"threads" => $search_results['threads'],
+		"posts" => $search_results['posts'],
+		"searchtype" => 'posts',
+		"resulttype" => 'posts',
+		"querycache" => $search_results['querycache'],
+		"keywords" => $db->escape_string($mybb->input['keywords'])
+	);
+	$plugins->run_hooks("search_thread_process");
+
+	$db->insert_query("searchlog", $searcharray);
+
+	$plugins->run_hooks("search_do_search_end");
+	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
+}
 else
 {
 	$plugins->run_hooks("search_start");

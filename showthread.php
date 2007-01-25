@@ -15,7 +15,7 @@ $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,sho
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator,postbit_groupimage,postbit_multiquote";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator,postbit_groupimage,postbit_multiquote,showthread_search";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -521,6 +521,12 @@ if($mybb->input['action'] == "thread")
 		$highlight_replace = explode(' ', htmlspecialchars_uni($mybb->input['highlight']));
 		$highlight = $highlight_replace;
 		array_walk($highlight_replace, 'apply_highlight');
+	}
+
+	// Can this user perform searches? If so, we can show them the "Search thread" form
+	if($forumpermissions['cansearch'] != "no")
+	{
+		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
 	}
 
 	// Threaded or lineair display?

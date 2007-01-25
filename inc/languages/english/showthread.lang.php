@@ -82,4 +82,6 @@ $l['quickreply_multiquote_selected'] = "You have selected one or more posts to q
 $l['quickreply_multiquote_now'] = "Quote these posts now";
 $l['or'] ="or";
 $l['quickreply_multiquote_deselect'] = "deselect them";
+$l['search_thread'] = "Search Thread";
+$l['enter_keywords'] = "Enter Keywords";
 ?>
