@@ -1889,7 +1889,7 @@ function build_clickable_smilies()
 						$smilies .=  "<tr>\n";
 					}
 
-					$find = htmlspecialchars($find);
+					$find = htmlspecialchars_uni($find);
 					$smilies .= "<td><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
 					++$i;
 					++$counter;
@@ -3847,14 +3847,7 @@ function login_attempt_check($fatal = true)
 */
 function validate_email_format($email)
 {
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email))
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+	return preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
 }
 
 /**
