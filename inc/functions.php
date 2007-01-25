@@ -1669,7 +1669,7 @@ function build_clickable_smilies()
 					{
 						$smilies .=  "<tr>\n";
 					}
-					$find = $db->escape_string(htmlspecialchars($find));
+					$find = htmlspecialchars_uni($find);
 					$smilies .= "<td><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
 					$i++;
 					$counter++;

@@ -106,7 +106,7 @@ if($mybb->input['action'] == 'do_backup')
 	}
 	
 	$time = date('dS F Y \a\t H:i', time());
-	$header = "-- MyBB Database Backup\n-- Generated: ".$time."\n---------------------------------------\n\n";
+	$header = "-- MyBB Database Backup\n-- Generated: ".$time."\n-- -------------------------------------\n\n";
 	$contents = $header;
 	foreach($mybb->input['tables'] as $table)
 	{
