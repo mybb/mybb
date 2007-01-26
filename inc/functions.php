@@ -450,10 +450,18 @@ function build_parent_list($fid, $column="fid", $joiner="OR", $parentlist="")
 
 /**
  * Load the forum cache in to memory
+ *
+ * @param boolean True to force a reload of the cache
  */
-function cache_forums()
+function cache_forums($force=false)
 {
 	global $forum_cache, $db, $cache;
+	
+	if($force == true)
+	{
+		$forum_cache = $cache->read("forums", 1);
+		return $forum_cache;
+	}
 
 	if(!$forum_cache)
 	{

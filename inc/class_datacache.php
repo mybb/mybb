@@ -234,12 +234,13 @@ class datacache
 		}
 	
 		// Get our forum list
-		cache_forums();
+		cache_forums(true);
 		if(!is_array($forum_cache))
 		{
 			return false;
 		}
 		reset($forum_cache);
+		$fcache = array();
 		foreach($forum_cache as $fid => $forum)
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -266,7 +267,7 @@ class datacache
 	 * @param array An optional permissions array.
 	 * @param int An optional permission id.
 	 */
-	function buildforumpermissions($permissions="", $pid=0)
+	function buildforumpermissions($permissions=array(), $pid=0)
 	{
 		global $fcache, $usergroupcache, $fperms, $forumpermissions;
 		if($fcache[$pid])
