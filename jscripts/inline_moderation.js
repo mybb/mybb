@@ -129,7 +129,9 @@ var inlineModeration = {
 			return false;
 		}
 
-		inputs.each(function(element) {
+		$H(inputs).each(function(element) {
+			var element = element.value;
+			if(!element.value) return;
 			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
 			{
 				element.checked = false;
@@ -161,10 +163,10 @@ var inlineModeration = {
 		}
 
 		var newIds = new Array();
-		inputs.each(function(element) {
-			var element = inputs[i];
+		$H(inputs).each(function(element) {
+			var element = element.value;
+			if(!element.value) return;
 			inlineCheck = element.id.split("_");
-
 			if((element.name != "allbox") && (element.type == "checkbox") && (inlineCheck[0] == "inlinemod"))
 			{
 				id = inlineCheck[1];

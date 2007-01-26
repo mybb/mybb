@@ -13,6 +13,7 @@ var MyBB = {
 		{
 			mark_read_imgs = document.getElementsByClassName("ajax_mark_read", "img");
 			mark_read_imgs.each(function(element) {
+				if(element.src.match("off.gif") || element.src.match("offlock.gif") || (element.title && element.title == lang.no_new_posts)) return;
 				Event.observe(element, "click", MyBB.markForumRead.bindAsEventListener(this));
 				element.style.cursor = 'pointer';
 				if(element.title)
@@ -212,6 +213,9 @@ var MyBB = {
 		if(request.responseText == 1)
 		{
 			$('mark_read_'+fid).src = $('mark_read_'+fid).src.replace("on.gif", "off.gif");
+			Event.stopObserving($('mark_read_'+fid), "click", MyBB.markForumRead.bindAsEventListener(this));
+			$('mark_read_'+fid).style.cursor = 'default';
+			$('mark_read_'+fid).title = lang.no_new_posts;
 		}
 	},
 

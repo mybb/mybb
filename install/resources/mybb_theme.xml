@@ -603,6 +603,7 @@ form {
 {$headerinclude}
 <script type="text/javascript">
 <!--
+	lang.no_new_posts = "{$lang->no_new_posts}";
 	lang.click_mark_read = "{$lang->click_mark_read}";
 // -->
 </script>
@@ -3685,7 +3686,12 @@ form {
 <form method="post" action="memberlist.php">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><strong>{$lang->search_members}</strong></td>
+<td class="thead" colspan="3">
+	<div class="float_right">
+		<strong><a href="memberlist.php?action=search">{$lang->advanced_search}</a></strong>
+	</div>
+	<div><strong>{$lang->search_members}</strong></div>
+</td>
 </tr>
 <tr>
 	<td class="tcat"><strong><label for="username">{$lang->username}</label></strong></td>
@@ -4409,7 +4415,7 @@ form {
 </table>
 <br />]]></template>
 		<template name="memberlist_user" version="140"><![CDATA[<tr>
-	<td class="{$alt_bg}">{$user['avatar']}</td>
+	<td class="{$alt_bg}" align="center">{$user['avatar']}</td>
 	<td class="{$alt_bg}">{$user['profilelink']}<br />
 <span class="smalltext">
 	{$user['usertitle']}<br />
