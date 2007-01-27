@@ -198,6 +198,8 @@ $l['postbit_edit'] = "Edit this post";
 $l['postbit_multiquote'] = "Quote this post on a new reply page";
 $l['postbit_quick_edit'] = "Quick Edit";
 $l['postbit_full_edit'] = "Full Edit";
+$l['postbit_show_ignored_post'] = "Show this Post";
+$l['postbit_currently_ignoring_user'] = "The contents of this message is hidden because {1} is on your <a href=\"usercp.php?action=editlists\">ignore list</a>.";
 
 $l['forumjump'] = "Forum Jump:";
 $l['forumjump_select'] = "Please select one:";

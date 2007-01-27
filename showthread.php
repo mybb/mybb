@@ -529,6 +529,17 @@ if($mybb->input['action'] == "thread")
 		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
 	}
 
+	// Fetch the ignore list for the current user if they have one
+	$ignored_users = array();
+	if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
+	{
+		$ignore_list = explode(",", $mybb->user['ignorelist']);
+		foreach($ignore_list as $uid)
+		{
+			$ignored_users[$uid] = 1;
+		}
+	}
+
 	// Threaded or lineair display?
 	if($mybb->input['mode'] == "threaded")
 	{

@@ -21,7 +21,7 @@ function build_postbit($post, $post_type=0)
 	global $db, $altbg, $theme, $mybb, $postcounter;
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
-	global $plugins, $parser, $cache;
+	global $plugins, $parser, $cache, $ignored_users;
 
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
@@ -115,7 +115,7 @@ function build_postbit($post, $post_type=0)
 	}
 	else
 	{
-		$post_extra_style = "margin-top: 5px";
+		$post_extra_style = "margin-top: 5px;";
 	}
 	
 	if(!$altbg)
@@ -498,6 +498,7 @@ function build_postbit($post, $post_type=0)
 		$post['icon'] = "";
 	}
 	
+	$post_visibility = '';
 	switch($post_type)
 	{
 		case 1: // Message preview
@@ -511,6 +512,14 @@ function build_postbit($post, $post_type=0)
 			break;
 		default: // Regular post
 			$plugins->run_hooks_by_ref("postbit", $post);
+
+			// Is this author on the ignore list of the current user? Hide this post
+			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
+			{
+				$lang->postbit_currently_ignoring_user = sprintf($lang->postbit_currently_ignoring_user, $post['username']);
+				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
+				$post_visibility = "display: none;";
+			}
 			eval("\$seperator = \"".$templates->get("postbit_seperator")."\";");
 			break;
 	}

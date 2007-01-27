@@ -312,6 +312,12 @@ var Thread = {
 			this.spinner = '';
 		}
 		this.quick_replying = 0;
+	},
+
+	showIgnoredPost: function(pid)
+	{
+		$('ignored_post_'+pid).style.display = 'none';
+		$('post_'+pid).style.display = '';
 	}
 };
 Event.observe(window, 'load', Thread.init);

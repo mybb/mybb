@@ -3914,8 +3914,9 @@ form {
 		<template name="forumdisplay_threads_sep" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
-		<template name="postbit" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style}">
-<tr id="post_{$post['pid']}">
+		<template name="postbit" version="140"><![CDATA[{$ignore_bit}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">
+<tr>
 <td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
@@ -7253,5 +7254,21 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<input type="submit" value="{$lang->search_thread}" />
 		</form>
 	</div>]]></template>
+	<template name="postbit_ignored" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style}" id="ignored_post_{$post['pid']}">
+<tr>
+	<td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;">
+		<strong><span class="largetext">{$post['profilelink']}</span></strong>
+	</td>
+	<td class="{$altbg}" width="85%" style="vertical-align: middle;">
+		<div style="float: right; width: auto; vertical-align: top; display: none;" id="show_ignored_link_{$post['pid']}"><span class="smalltext"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;">{$lang->postbit_show_ignored_post}</a></span></div>
+<script type="text/javascript">
+<!--
+	$('show_ignored_link_{$post['pid']}').style.display = '';
+// -->
+</script>
+		<span class="smalltext">{$lang->postbit_currently_ignoring_user}</span>
+	</td>
+</tr>
+</table>]]></template>
 	</templates>
 </theme>
