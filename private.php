@@ -320,9 +320,9 @@ if($mybb->input['action'] == "send")
 	}
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-	$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".intval($mybb->input['uid'])."'");
-	$user = $db->fetch_array($query);
-	$to = $user['username'];
+		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".intval($mybb->input['uid'])."'");
+		$user = $db->fetch_array($query);
+		$to = $user['username'];
 	}
 
 	// Load the auto complete javascript if it is enabled.
