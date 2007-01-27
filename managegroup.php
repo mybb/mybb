@@ -92,7 +92,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 	if(is_array($uidin))
 	{
 		$uids = implode(",", $uidin);
-		$db->delete_query(TABLE_PREFIX."joinrequests", "uid IN ({$uids})");
+		$db->delete_query(TABLE_PREFIX."joinrequests", "uid IN ({$uids}) AND gid='$gid'");
 	}
 
 	$plugins->run_hooks("managegroup_do_joinrequests_end");

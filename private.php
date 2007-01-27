@@ -213,7 +213,7 @@ if($mybb->input['action'] == "send")
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
 		$post['message'] = $previewmessage;
-		$post['subject'] = $mybb->input['subject'];
+		$post['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = time();
