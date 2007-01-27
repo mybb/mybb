@@ -47,6 +47,7 @@ if($usergroups[6]['gid'])
 		FROM ".TABLE_PREFIX."moderators m
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
+		WHERE f.active = 'yes'
 		ORDER BY u.username
 		");
 		while($moderator = $db->fetch_array($query))
