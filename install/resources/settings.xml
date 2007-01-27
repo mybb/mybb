@@ -512,7 +512,7 @@ smtp=SMTP mail]]></optionscode>
 		</setting>
 		<setting name="mail_parameters">
 			<title>Additional Parameters for PHP's mail()</title>
-			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail">More information</a>]]></description>
+			<description><![CDATA[This setting allows you to set additional parameters for the PHP mail() function. Only used when 'PHP mail' is selected as Mail Handler. <a href="http://php.net/function.mail" target="_blank">More information</a>]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
