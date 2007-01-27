@@ -405,7 +405,7 @@ if($mybb->input['action'] == "do_add")
 		$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 		my_mail($email, $emailsubject, $emailmessage);
 	}
-	$cache->updatestats();
+	$cache->update_stats();
 	cpredirect("users.php?".SID."&lastuid={$user_info['uid']}", $lang->user_added);
 }
 
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$user_info = $userhandler->update_user();
 	}
-	$cache->updatestats();
+	$cache->update_stats();
 
 	cpredirect("users.php?".SID."&lastuid={$mybb->input['uid']}", $lang->profile_updated);
 }
@@ -536,7 +536,7 @@ if($mybb->input['action'] == "do_delete")
 		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".intval($mybb->input['uid'])."'");
 
 		// Update forum stats
-		$cache->updatestats();
+		$cache->update_stats();
 
 		cpredirect("users.php?".SID, $lang->user_deleted);
 	}

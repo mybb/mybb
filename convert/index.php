@@ -117,13 +117,13 @@ elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 {
 	// Delete import fields
 	delete_import_fields();
-	$cache->updatestats();
-	$cache->updatebadwords();
-	$cache->updateusergroups();
-	$cache->updateforumpermissions();
-	$cache->updatemoderators();
-	$cache->updateforums();
-	$cache->updateusertitles();
+	$cache->update_stats();
+	$cache->update_badwords();
+	$cache->update_usergroups();
+	$cache->update_forumpermissions();
+	$cache->update_moderators();
+	$cache->update_forums();
+	$cache->update_usertitles();
 	
 	// Delete import session cache
 	$import_session = null;

@@ -68,9 +68,9 @@ if($mybb->input['action'] == "do_cache")
 	}
 	if($mybb->input['refresh'])
 	{
-		if(method_exists($cache, "update$cacheitem"))
+		if(method_exists($cache, "update_$cacheitem"))
 		{
-			$func = "update$cacheitem";
+			$func = "update_$cacheitem";
 			$cache->$func();
 			cpredirect("maintenance.php?".SID."&action=cache", $lang->cache_updated);
 		}
@@ -106,7 +106,7 @@ if($mybb->input['action'] == "cache")
 		echo "<input type=\"submit\" name=\"view\" value=\"$lang->view_contents\" class=\"submitbutton\" />";
 		endform();
 		echo "</td>";
-		if(method_exists($cache, "update".$cacheitem['title']))
+		if(method_exists($cache, "update_".$cacheitem['title']))
 		{
 			echo "<td class=\"$bgcolor\" align=\"center\">";
 			startform("maintenance.php", "", "do_cache");
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "cache")
 if($mybb->input['action'] == "do_rebuildstats")
 {
 	$plugins->run_hooks("admin_maintenance_do_rebuildstats");
-	$cache->updatestats();
+	$cache->update_stats();
 	cpredirect("maintenance.php?".SID."&action=rebuild", $lang->stats_rebuilt);
 }
 

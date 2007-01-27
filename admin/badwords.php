@@ -43,7 +43,7 @@ if($mybb->input['action'] == "do_add")
 	);
 	$plugins->run_hooks("admin_badwords_do_add");
 	$db->insert_query("badwords", $sqlarray);
-	$cache->updatebadwords();
+	$cache->update_badwords();
 	cpredirect("badwords.php?".SID, $lang->badword_added);
 }
 
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "do_edit")
 	);
 	$plugins->run_hooks("admin_badwords_do_edit");
 	$db->update_query("badwords", $sqlarray, "bid='".$sqlarray['bid']."'");
-	$cache->updatebadwords();
+	$cache->update_badwords();
 	cpredirect("badwords.php?".SID, $lang->badword_edited);
 }
 
@@ -68,7 +68,7 @@ if($mybb->input['action'] == "edit")
 		$plugins->run_hooks("admin_badwords_delete");
 		$db->delete_query("badwords", "bid='$bid'");
 		cpredirect("badwords.php?".SID, $lang->badword_deleted);
-		$cache->updatebadwords();
+		$cache->update_badwords();
 		exit;
 	}
 	$query = $db->simple_select("badwords", "*", "bid='$bid'");

@@ -120,9 +120,9 @@ function add_shutdown($name)
  */
 function run_shutdown()
 {
-	global $db, $cache, $plugins, $shutdown_functions, $done_shutdown;
+	global $config, $db, $cache, $plugins, $shutdown_functions, $done_shutdown;
 
-	if($done_shutdown == true)
+	if($done_shutdown == true || !$config)
 	{
 		return;
 	}
@@ -137,6 +137,7 @@ function run_shutdown()
 			$db = new databaseEngine;
 			$db->connect($config['hostname'], $config['username'], $config['password']);
 			$db->select_db($config['database']);
+			$db->set_table_prefix(TABLE_PREFIX);
 		}
 	}
 
@@ -145,9 +146,10 @@ function run_shutdown()
 	{
 		require_once MYBB_ROOT."inc/class_datacache.php";
 		$cache = new datacache;
+		$cache->cache();
 	}
 
-	// And finaly.. we have the PHP developers to thank for this "hack" which fixes a problem THEY created
+	// And finaly.. plugins
 	if(!is_object($plugins) && !defined("NO_PLUGINS"))
 	{
 		require_once MYBB_ROOT."inc/class_plugins.php";
@@ -193,7 +195,7 @@ function send_mail_queue($count=10)
 	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < time()-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
-		$cache->updatemailqueue(0, time());
+		$cache->update_mailqueue(0, time());
 
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
@@ -208,7 +210,7 @@ function send_mail_queue($count=10)
 			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
 		// Update the mailqueue cache and remove the lock
-		$cache->updatemailqueue(time(), 0);
+		$cache->update_mailqueue(time(), 0);
 	}
 
 	$plugins->run_hooks("send_mail_queue_end");
@@ -468,7 +470,7 @@ function cache_forums($force=false)
 		$forum_cache = $cache->read("forums");
 		if(!$forum_cache)
 		{
-			$cache->updateforums();
+			$cache->update_forums();
 			$forum_cache = $cache->read("forums", 1);
 		}
 	}
@@ -973,7 +975,6 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 			$permissions[$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
 		}
 	}
-
 	return $permissions;
 }
 
@@ -996,48 +997,33 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		return $groupperms;
 	}
-
-	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
-	// Many thanks.
-	foreach($fpermfields as $perm)
-	{
-		$forumpermissions[$perm] = "no";
-	}
-
+	
+	$current_permissions = array();
+	
 	foreach($groups as $gid)
 	{
-		if($gid && $groupscache[$gid])
+		if($groupscache[$gid])
 		{
-			if(is_array($fpermcache[$fid][$gid]))
+			// If this forum has permissions set
+			if($fpermcache[$fid][$gid])
 			{
-				$p = $fpermcache[$fid][$gid];
-			}
-			else
-			{
-				$p = $groupperms;
-			}
-
-			if($p == NULL)
-			{
-				foreach($forumpermissions as $k => $v)
+				$level_permissions = $fpermcache[$fid][$gid];
+				foreach($level_permissions as $permission => $access)
 				{
-					$forumpermissions[$k] = 'yes'; // No inherited group, assume one has access
-				}
-			}
-			else
-			{
-				foreach($p as $perm => $access)
-				{
-					if(isset($forumpermissions[$perm]) && $access == 'yes')
+					if($access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no") || !$current_permissions[$permission])
 					{
-						$forumpermissions[$perm] = $access;
+						$current_permissions[$permission] = $access;
 					}
 				}
 			}
 		}
 	}
-
-	return $forumpermissions;
+	
+	if(count($current_permissions) == 0)
+	{
+		$current_permissions = $groupperms;
+	}
+	return $current_permissions;
 }
 
 /**
@@ -2600,7 +2586,7 @@ function mark_reports($id, $type="post")
 	}
 
 	$plugins->run_hooks("mark_reports");
-	$cache->updatereportedposts();
+	$cache->update_reportedposts();
 }
 
 /**

@@ -21,7 +21,7 @@ $mcache = $cache->read("moderators");
 // If the groups cache doesn't exist, update it and re-read it
 if(!is_array($groupscache))
 {
-	$cache->updateusergroups();
+	$cache->update_usergroups();
 	$groupscache = $cache->read("usergroups");
 }
 

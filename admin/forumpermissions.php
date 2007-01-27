@@ -181,7 +181,7 @@ if($mybb->input['action'] == "do_edit")
 			$db->update_query("forumpermissions", $sqlarray, "pid='$pid'");
 		}
 	}
-	$cache->updateforumpermissions();
+	$cache->update_forumpermissions();
 	cpredirect("forumpermissions.php?".SID, $lang->perms_updated);
 }
 if($mybb->input['action'] == "edit")

@@ -17,6 +17,13 @@ class datacache
 	 * @var array
 	 */
 	var $cache = array();
+	
+	/**
+	 * The current cache handler we're using
+	 *
+	 * @var object
+	 */
+	var $handler;
 
 	/**
 	 * Build cache data.
@@ -25,28 +32,36 @@ class datacache
 	function cache()
 	{
 		global $db, $mybb;
-		if($mybb->config['cache_store'] == "files")
+		
+		switch($mybb->config['cache_store'])
 		{
-			// Check if no files exist in cache directory, if not we need to create them (possible move from db to files)
-			if(!file_exists(MYBB_ROOT."inc/cache/version.php"))
-			{
-				$query = $db->simple_select("datacache", "title,cache");
-				while($data = $db->fetch_array($query))
+			// Disk cache
+			case "files":
+				require_once MYBB_ROOT."/inc/cachehandlers/disk.php";
+				$this->handler = new diskCacheHandler;
+				
+				if(method_exists($this->handler, "connect"))
 				{
-					$this->update($data['title'], unserialize($data['cache']));
+					if(!$this->handler->connect())
+					{
+						$this->handler = null;
+					}
 				}
-			}
+				
+				break;
 		}
-		else
+		
+		if(!is_object($this->handler))
 		{
+			// Database cache
 			$query = $db->simple_select("datacache", "title,cache");
 			while($data = $db->fetch_array($query))
 			{
 				$this->cache[$data['title']] = unserialize($data['cache']);
-			}
+			}				
 		}
 	}
-
+	
 	/**
 	 * Read cache from files or db.
 	 *
@@ -57,33 +72,61 @@ class datacache
 	function read($name, $hard=false)
 	{
 		global $db, $mybb;
-		if($mybb->config['cache_store'] == "files")
-		{
-			if($hard)
-			{
-				@include(MYBB_ROOT."inc/cache/".$name.".php");
-			}
-			else
-			{
-				@include_once(MYBB_ROOT."inc/cache/".$name.".php");
-			}
-			$this->cache[$name] = $$name;
-			unset($$name);
-		}
-		else
-		{
-			if($hard)
-			{
-				$query = $db->simple_select("datacache", "title,cache", "title='$name'");
-				$data = $db->fetch_array($query);
-				$this->cache[$data['title']] = unserialize($data['cache']);
-			}
-		}
-		if(isset($this->cache[$name]))
+		
+		// Already ready this cache and we're not doing a hard refresh? Return cached copy
+		if(isset($this->cache[$name]) && $hard == false)
 		{
 			return $this->cache[$name];
 		}
-		return false;
+		
+		if(is_object($this->handler))
+		{
+			$data = $this->handler->fetch($name);
+			
+			// No data returned - cache gone bad?
+			if($data === false)
+			{
+				// Fetch from database
+				$query = $db->simple_select("datacache", "title,cache", "title='$name'");
+				$cache_data = $db->fetch_array($query);
+				$data = @unserialize($cache_data['cache']);
+				
+				if($data == null)
+				{
+					$data = '';
+				}
+				
+				// Update cache for handler
+				$this->handler->put($name, $data);
+			}
+		}
+		
+		// Else, using internal database cache
+		else
+		{
+			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
+			$cache_data = $db->fetch_array($query);
+			if(!$cache_data['title'])
+			{
+				$data = false;
+			}
+			else
+			{
+				$data = @unserialize($cache_data['cache']);
+			}
+		}
+
+		// Cache locally
+		$this->cache[$name] = $data;
+		
+		if($data !== false)
+		{
+			return $data;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -104,18 +147,10 @@ class datacache
 			VALUES ('$name','$dbcontents')
 		");
 
-		// If using files, update the cache file too
-		if($mybb->config['cache_store'] == "files")
+		// Do we have a cache handler we're using?
+		if(is_object($this->handler))
 		{
-			if(!@is_writable(MYBB_ROOT."inc/cache/"))
-			{
-				$mybb->trigger_generic_error("cache_no_write");
-			}
-			$cachefile = fopen(MYBB_ROOT."inc/cache/$name.php", "w");
-			$cachecontents = "<?php\n\n/** MyBB Generated Cache - Do Not Alter\n * Cache Name: $name\n * Generated: ".gmdate("r")."\n*/\n\n";
-			$cachecontents .= "\$$name = ".var_export($contents, true).";\n\n ?>";
-			fwrite($cachefile, $cachecontents);
-			fclose($cachefile);
+			$this->handler->put($name, $contents);
 		}
 	}
 
@@ -123,13 +158,15 @@ class datacache
 	 * Update the MyBB version in the cache.
 	 *
 	 */
-	function updateversion()
+	function update_version()
 	{
-		global $db, $mybb;
+		global $mybb;
+		
 		$version = array(
 			"version" => $mybb->version,
 			"version_code" => $mybb->version_code
 		);
+		
 		$this->update("version", $version);
 	}
 
@@ -137,15 +174,17 @@ class datacache
 	 * Update the attachment type cache.
 	 *
 	 */
-	function updateattachtypes()
+	function update_attachtypes()
 	{
 		global $db;
+		
 		$query = $db->simple_select("attachtypes", "atid, name, mimetype, extension, maxsize, icon");
 		while($type = $db->fetch_array($query))
 		{
 			$type['extension'] = my_strtolower($type['extension']);
 			$types[$type['extension']] = $type;
 		}
+		
 		$this->update("attachtypes", $types);
 	}
 
@@ -153,14 +192,16 @@ class datacache
 	 * Update the smilies cache.
 	 *
 	 */
-	function updatesmilies()
+	function update_smilies()
 	{
 		global $db;
+		
 		$query = $db->simple_select("smilies", "sid, name, find, image, disporder, showclickable", "", array('order_by' => 'LENGTH(find)', 'order_dir' => 'DESC'));
 		while($smilie = $db->fetch_array($query))
 		{
 			$smilies[$smilie['sid']] = $smilie;
 		}
+		
 		$this->update("smilies", $smilies);
 	}
 
@@ -168,14 +209,16 @@ class datacache
 	 * Update the posticon cache.
 	 *
 	 */
-	function updateposticons()
+	function update_posticons()
 	{
 		global $db;
+		
 		$query = $db->simple_select("icons", "iid, name, path");
 		while($icon = $db->fetch_array($query))
 		{
 			$icons[$icon['iid']] = $icon;
 		}
+		
 		$this->update("posticons", $icons);
 	}
 
@@ -183,14 +226,16 @@ class datacache
 	 * Update the badwords cache.
 	 *
 	 */
-	function updatebadwords()
+	function update_badwords()
 	{
 		global $db;
+		
 		$query = $db->simple_select("badwords", "bid, badword, replacement");
 		while($badword = $db->fetch_array($query)) 
 		{
 			$badwords[$badword['bid']] = $badword;
 		}
+		
 		$this->update("badwords", $badwords);
 	}
 
@@ -198,14 +243,16 @@ class datacache
 	 * Update the usergroups cache.
 	 *
 	 */
-	function updateusergroups()
+	function update_usergroups()
 	{
 		global $db;
+		
 		$query = $db->simple_select("usergroups");
 		while($g = $db->fetch_array($query))
 		{
 			$gs[$g['gid']] = $g;
 		}
+		
 		$this->update("usergroups", $gs);
 	}
 
@@ -214,81 +261,73 @@ class datacache
 	 *
 	 * @return false When failed, returns false.
 	 */
-	function updateforumpermissions()
+	function update_forumpermissions()
 	{
-		global $forum_cache, $fcache, $db, $usergroupcache, $fperms, $fpermfields, $forumpermissions;
+		global $forum_cache, $db;
 
-		// Get usergroups
-		$query = $db->simple_select("usergroups");
-		while($usergroup = $db->fetch_array($query))
-		{
-			$gid = $usergroup['gid'];
-			foreach($usergroup as $key => $val)
-			{
-				if(!in_array($key, $fpermfields))
-				{
-					unset($usergroup[$key]);
-				}
-			}
-			$usergroupcache[$gid] = $usergroup;
-		}
-	
 		// Get our forum list
 		cache_forums(true);
 		if(!is_array($forum_cache))
 		{
 			return false;
 		}
+		
 		reset($forum_cache);
 		$fcache = array();
+		
+		// Resort in to the structure we require
 		foreach($forum_cache as $fid => $forum)
 		{
-			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+			$this->forum_permissions_forum_cache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 		}
+		
+		// Sort children
 		foreach($fcache as $pid => $value)
 		{
 			ksort($fcache[$pid]);
 		}
 		ksort($fcache);
 	
-		// Fetch forum permissions
+		// Fetch forum permissions from the database
 		$query = $db->simple_select("forumpermissions");
-		while($fperm = $db->fetch_array($query))
+		while($forum_permission = $db->fetch_array($query))
 		{
-			$fperms[$fperm['fid']][$fperm['gid']] = $fperm;
+			$this->forum_permissions[$forum_permission['fid']][$forum_permission['gid']] = $forum_permission;
 		}
-		$this->buildforumpermissions();
-		$this->update("forumpermissions", $forumpermissions);
+
+		$this->build_forum_permissions();
+		$this->update("forumpermissions", $this->built_forum_permissions);
 	}
 
 	/**
-	 * Build the forumpermissions cache.
+	 * Build the forum permissions array
 	 *
+	 * @access private
 	 * @param array An optional permissions array.
 	 * @param int An optional permission id.
 	 */
-	function buildforumpermissions($permissions=array(), $pid=0)
+	function build_forum_permissions($permissions=array(), $pid=0)
 	{
-		global $fcache, $usergroupcache, $fperms, $forumpermissions;
-		if($fcache[$pid])
+		$usergroups = array_keys($this->read("usergroups", true));
+		if($this->forum_permissions_forum_cache[$pid])
 		{
-			foreach($fcache[$pid] as $key => $main)
+			foreach($this->forum_permissions_forum_cache[$pid] as $main)
 			{
 				foreach($main as $forum)
 				{
 					$perms = $permissions;
-					foreach($usergroupcache as $gid => $usergroup)
+					foreach($usergroups as $gid)
 					{
-						if($fperms[$forum['fid']][$gid])
+						if($this->forum_permissions[$forum['fid']][$gid])
 						{
-							$perms[$gid] = $fperms[$forum['fid']][$gid];
+							$perms[$gid] = $this->forum_permissions[$forum['fid']][$gid];
 						}
 						if($perms[$gid])
 						{
-							$forumpermissions[$forum['fid']][$gid] = $perms[$gid];
+							$this->built_forum_permissions[$forum['fid']][$gid] = $perms[$gid];
 						}
 					}
-					$this->buildforumpermissions($perms, $forum['fid']);
+					$this->build_forum_permissions($perms, $forum['fid']);
 				}
 			}
 		}
@@ -298,20 +337,24 @@ class datacache
 	 * Update the stats cache.
 	 *
 	 */
-	function updatestats()
+	function update_stats()
 	{
 		global $db;
 		
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "visible='1' AND closed NOT LIKE 'moved|%'");
 		$stats['numthreads'] = $db->fetch_field($query, 'threads');
+		
 		$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible='1'");
 		$stats['numposts'] = $db->fetch_field($query, 'posts');
+		
 		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'uid', 'order_dir' => 'DESC', 'limit' => 1));
 		$lastmember = $db->fetch_array($query);
 		$stats['lastuid'] = $lastmember['uid'];
 		$stats['lastusername'] = $lastmember['username'];
+		
 		$query = $db->simple_select("users", "COUNT(uid) AS users");
-		$stats['numusers'] = $db->fetch_field($query, 'users');		
+		$stats['numusers'] = $db->fetch_field($query, 'users');
+			
 		$this->update("stats", $stats);
 	}
 
@@ -319,14 +362,16 @@ class datacache
 	 * Update the moderators cache.
 	 *
 	 */
-	function updatemoderators()
+	function update_moderators()
 	{
 		global $db;
+		
 		$query = $db->simple_select("moderators", "mid, fid, uid, caneditposts, candeleteposts, canviewips, canopenclosethreads, canmanagethreads");
 		while($mod = $db->fetch_array($query))
 		{
 			$mods[$mod['fid']][$mod['uid']] = $mod;
 		}
+		
 		$this->update("moderators", $mods);
 	}
 
@@ -334,12 +379,14 @@ class datacache
 	 * Update the forums cache.
 	 *
 	 */
-	function updateforums()
+	function update_forums()
 	{
 		global $db;
+		
+		// Things we don't want to cache
 		$exclude = array("threads", "posts", "lastpost", "lastposter", "lastposttid");
+		
 		$query = $db->simple_select("forums", "*", "", array('order_by' => 'pid,disporder'));
-
 		while($forum = $db->fetch_array($query))
 		{
 			foreach($forum as $key => $val)
@@ -351,6 +398,7 @@ class datacache
 				$forums[$forum['fid']] = $forum;
 			}
 		}
+		
 		$this->update("forums", $forums);
 	}
 
@@ -358,15 +406,16 @@ class datacache
 	 * Update usertitles cache.
 	 *
 	 */
-	function updateusertitles()
+	function update_usertitles()
 	{
 		global $db;
-		$query = $db->simple_select("usertitles", "utid, posts, title, stars, starimage", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		
+		$query = $db->simple_select("usertitles", "utid, posts, title, stars, starimage", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($usertitle = $db->fetch_array($query))
 		{
 			$usertitles[] = $usertitle;
 		}
+		
 		$this->update("usertitles", $usertitles);
 	}
 
@@ -374,18 +423,24 @@ class datacache
 	 * Update reported posts cache.
 	 *
 	 */
-	function updatereportedposts()
+	function update_reportedposts()
 	{
 		global $db;
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
+		
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS reportcount");
 		$total = $db->fetch_array($query);
+		
 		$query = $db->simple_select("reportedposts", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
-		$reports['unread'] = $num['unreadcount'];
-		$reports['total'] = $total['reportcount'];
-		$reports['lastdateline'] = $latest['dateline'];
+		
+		$reports = array(
+			"unread" => $num['unreadcount'],
+			"total" => $total['reportcount'],
+			"lastdateline" => $latest['dateline']
+		);
+		
 		$this->update("reportedposts", $reports);
 	}
 
@@ -393,23 +448,26 @@ class datacache
 	 * Update mycode cache.
 	 *
 	 */
-	function updatemycode()
+	function update_mycode()
 	{
 		global $db;
+		
 		$query = $db->simple_select("mycode", "regex, replacement", "active='yes'", array('order_by' => 'parseorder'));
 		while($mycode = $db->fetch_array($query))
 		{
 			$mycodes[] = $mycode;
 		}
+		
 		$this->update("mycode", $mycodes);
 	}
 	/**
 	 * Update the mailqueue cache
 	 *
 	 */
-	function updatemailqueue($last_run=0, $lock_time=0)
+	function update_mailqueue($last_run=0, $lock_time=0)
 	{
 		global $db;
+		
 		$query = $db->simple_select("mailqueue", "COUNT(*) AS queue_size");
 		$queue_size = $db->fetch_field($query, "queue_size");
 		
@@ -420,17 +478,19 @@ class datacache
 			$mailqueue['last_run'] = $last_run;
 		}
 		$mailqueue['locked'] = $lock_time;
+		
 		$this->update("mailqueue", $mailqueue);
 	}
 	
 	/**
 	 * Update update_check cache (dummy function used by upgrade/install scripts)
 	 */
-	function updateupdate_check()
+	function update_update_check()
 	{
 		$update_cache = array(
 			"dateline" => time()
 		);
+		
 		$this->update("update_check", $update_cache);
 	}
 }

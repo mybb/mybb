@@ -210,7 +210,7 @@ class Moderation
 		$db->delete_query("polls", "tid='$tid'");
 		$db->delete_query("pollvotes", "pid='".$thread['poll']."'");
 		$db->delete_query("threadsread", "tid='$tid'");
-		$cache->updatestats();
+		$cache->update_stats();
 		update_forum_count($thread['fid']);
 		$plugins->run_hooks("delete_thread", $tid);
 
@@ -280,7 +280,7 @@ class Moderation
 		$db->update_query("posts", $approve, "tid IN ($tid_list)", 1);
 		
 		// Update stats
-		$cache->updatestats();
+		$cache->update_stats();
 		update_forum_count($fid);
 
 		return true;
@@ -329,7 +329,7 @@ class Moderation
 		$db->update_query("posts", $approve, "tid IN ($tid_list) AND replyto='0'", 1);
 		
 		// Update stats
-		$cache->updatestats();
+		$cache->update_stats();
 		update_forum_count($fid);
 
 		return true;
@@ -370,7 +370,7 @@ class Moderation
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='{$post['tid']}'");
 		}
 		$plugins->run_hooks("delete_post", $post['tid']);
-		$cache->updatestats();
+		$cache->update_stats();
 
 		update_thread_count($post['tid']);
 		update_forum_count($post['fid']);
@@ -927,7 +927,7 @@ class Moderation
 		}
 		update_thread_count($tid);
 		update_forum_count($fid);
-		$cache->updatestats();
+		$cache->update_stats();
 
 		return true;
 	}
@@ -981,7 +981,7 @@ class Moderation
 		}
 		update_thread_count($tid);
 		update_forum_count($fid);
-		$cache->updatestats();
+		$cache->update_stats();
 
 		return true;
 	}

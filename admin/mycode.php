@@ -72,7 +72,7 @@ if($mybb->input['action'] == "do_add")
 	$plugins->run_hooks("admin_mycode_do_add");
 	$db->insert_query("mycode", $newmycode);
 
-	$cache->updatemycode();
+	$cache->update_mycode();
 
 	cpredirect("mycode.php?".SID, $lang->mycode_added);
 }
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "do_edit")
 
 	$db->update_query("mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");
 
-	$cache->updatemycode();
+	$cache->update_mycode();
 
 	cpredirect("mycode.php?".SID, $lang->mycode_updated);
 }
@@ -156,7 +156,7 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$plugins->run_hooks("admin_mycode_do_delete");
 		$db->delete_query("mycode", "cid='".intval($mybb->input['cid'])."'");
-		$cache->updatemycode();
+		$cache->update_mycode();
 		cpredirect("mycode.php?".SID, $lang->mycode_deleted);
 	}
 	else

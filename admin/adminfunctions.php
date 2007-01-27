@@ -1728,7 +1728,7 @@ function savequickperms($fid)
 			$db->insert_query("forumpermissions", $insertquery);
 		}
 	}
-	$cache->updateforumpermissions();
+	$cache->update_forumpermissions();
 }
 
 function build_css_array($tid, $addinherited=1)

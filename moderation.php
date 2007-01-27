@@ -892,7 +892,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_approved_threads);
 		clearinline($fid, "forum");
-		$cache->updatestats();
+		$cache->update_stats();
 		redirect(get_forum_link($fid), $lang->redirect_inline_threadsapproved);
 		break;
 
@@ -912,7 +912,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->multi_unapproved_threads);
 		clearinline($fid, "forum");
-		$cache->updatestats();
+		$cache->update_stats();
 		redirect(get_forum_link($fid), $lang->redirect_inline_threadsunapproved);
 		break;
 
@@ -1272,7 +1272,7 @@ switch($mybb->input['action'])
 			"reportstatus" => 1,
 			);
 		$db->update_query("reportedposts", $sqlarray, "rid IN ($rids)");
-		$cache->updatereportedposts();
+		$cache->update_reportedposts();
 		redirect("moderation.php?action=reports", $lang->redirect_reportsmarked);
 		break;
 

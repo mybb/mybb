@@ -836,13 +836,13 @@ class PostDataHandler extends DataHandler
 			// Have one or more emails been queued? Update the queue count
 			if($queued_email == 1)
 			{
-				$cache->updatemailqueue();
+				$cache->update_mailqueue();
 			}
 
 			// Update forum count
 			update_thread_count($post['tid']);
 			update_forum_count($post['fid']);
-			$cache->updatestats();
+			$cache->update_stats();
 		}
 		// Post is stuck in moderation queue
 		else if($visible == 0)
@@ -1216,7 +1216,7 @@ class PostDataHandler extends DataHandler
 			// Have one or more emails been queued? Update the queue count
 			if($queued_email == 1)
 			{
-				$cache->updatemailqueue();
+				$cache->update_mailqueue();
 			}
 			// Automatically subscribe the user to this thread if they've chosen to.
 			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
@@ -1243,7 +1243,7 @@ class PostDataHandler extends DataHandler
 		// Thread is public - update the forum counts.
 		if($visible == 1 || $visible == 0)
 		{
-			$cache->updatestats();
+			$cache->update_stats();
 			update_thread_count($this->tid);
 			update_forum_count($thread['fid']);
 		}

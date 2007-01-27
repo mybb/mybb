@@ -65,7 +65,7 @@ if($mybb->input['action'] == "do_add")
 		);
 		$plugins->run_hooks("admin_attachments_do_add");
 		$db->insert_query("attachtypes", $sqlarray);
-		$cache->updateattachtypes();
+		$cache->update_attachtypes();
 		cpredirect("attachments.php?".SID, $lang->type_added);
 	}
 	else
@@ -81,7 +81,7 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$plugins->run_hooks("admin_attachments_do_delete");
 		$db->delete_query("attachtypes", "atid='".intval($mybb->input['atid'])."'");
-		$cache->updateattachtypes();
+		$cache->update_attachtypes();
 		cpredirect("attachments.php?".SID, $lang->type_deleted);
 	}
 	else
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "do_edit")
 		);
 		$plugins->run_hooks("admin_attachments_do_edit");
 		$db->update_query("attachtypes", $sqlarray, "atid='".$sqlarray['atid']."'");
-		$cache->updateattachtypes();
+		$cache->update_attachtypes();
 		cpredirect("attachments.php?".SID, $lang->type_updated);
 	}
 	else

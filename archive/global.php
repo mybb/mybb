@@ -25,7 +25,7 @@ $parser = new postParser;
 $groupscache = $cache->read("usergroups");
 if(!is_array($groupscache))
 {
-	$cache->updateusergroups();
+	$cache->update_usergroups();
 	$groupscache = $cache->read("usergroups");
 }
 $fpermissioncache = $cache->read("forumpermissions");

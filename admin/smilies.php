@@ -51,7 +51,7 @@ if($mybb->input['action'] == "do_add")
 	);
 	$plugins->run_hooks("admin_smilies_do_add");
 	$db->insert_query("smilies", $newsmilie);
-	$cache->updatesmilies();
+	$cache->update_smilies();
 	cpredirect("smilies.php?".SID, $lang->smilie_added);
 }
 
@@ -61,7 +61,7 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$plugins->run_hooks("admin_smilies_do_delete");
 		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
-		$cache->updatesmilies();
+		$cache->update_smilies();
 		cpredirect("smilies.php?".SID, $lang->smilie_deleted);
 	}
 	else
@@ -85,7 +85,7 @@ if($mybb->input['action'] == "do_edit")
 	);
 	$plugins->run_hooks("admin_smilies_do_edit");
 	$db->update_query("smilies", $smilie, "sid='".intval($mybb->input['sid'])."'");
-	$cache->updatesmilies();
+	$cache->update_smilies();
 	cpredirect("smilies.php?".SID, $lang->smilie_updated);
 }
 
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "do_addmultiple")
 				$db->insert_query("smilies", $newsmilie);
 			}
 		}
-		$cache->updatesmilies();
+		$cache->update_smilies();
 		cpredirect("smilies.php?".SID, $lang->all_sel_added);
 		$finishedinsert = 1;
 		$mybb->input['action'] = "add";

@@ -121,7 +121,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
 			);
 		$db->insert_query("reportedposts", $reportedpost);
-		$cache->updatereportedposts();
+		$cache->update_reportedposts();
 	}
 	eval("\$report = \"".$templates->get("report_thanks")."\";");
 	$plugins->run_hooks("report_do_report_end");

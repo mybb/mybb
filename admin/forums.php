@@ -246,8 +246,8 @@ if($mybb->input['action'] == "do_add")
 	$canpostpolls = $mybb->input['canpostpolls'];
 	$canpostattachments = $mybb->input['canpostattachments'];
 	savequickperms($fid);
-	$cache->updateforums();
-	$cache->updateforumpermissions();
+	$cache->update_forums();
+	$cache->update_forumpermissions();
 
 	cpredirect("forums.php?".SID, $lang->forum_added);
 }
@@ -290,7 +290,7 @@ if($mybb->input['action'] == "do_addmod")
 				"usergroup" => "6"
 			);
 			$db->update_query("users", $updatequery, "uid='$user[uid]' AND usergroup='2'");
-			$cache->updatemoderators();
+			$cache->update_moderators();
 			cpredirect("forums.php?".SID."&fid=$fid", $lang->mod_added);
 		}
 		else
@@ -355,9 +355,9 @@ if($mybb->input['action'] == "do_delete")
 		$db->delete_query("posts", "fid='$fid' $delquery");
 		$db->delete_query("moderators", "fid='$fid' $delquery");
 
-		$cache->updateforums();
-		$cache->updatemoderators();
-		$cache->updateforumpermissions();
+		$cache->update_forums();
+		$cache->update_moderators();
+		$cache->update_forumpermissions();
 
 		cpredirect("forums.php?".SID, $lang->forum_deleted);
 	}
@@ -384,7 +384,7 @@ if($mybb->input['action'] == "do_deletemod")
 			);
 			$db->update_query("users", $updatequery, "uid='$mod[uid]' AND usergroup!='4' AND usergroup!='3'");
 		}
-		$cache->updatemoderators();
+		$cache->update_moderators();
 		cpredirect("forums.php?".SID."&fid=$fid", $lang->mod_deleted);
 	}
 	else
@@ -481,8 +481,8 @@ if($mybb->input['action'] == "do_edit")
 				$db->update_query("forums", $sql_array, "fid='".$childforum['fid']."'", 1);
 			}
 		}
-		$cache->updateforums();
-		$cache->updateforumpermissions();
+		$cache->update_forums();
+		$cache->update_forumpermissions();
 
 		cpredirect("forums.php?".SID, $lang->forum_updated);
 	}
@@ -509,7 +509,7 @@ if($mybb->input['action'] == "do_editmod")
 		);
 		$plugins->run_hooks("admin_forums_do_editmod");
 		$db->update_query("moderators", $sqlarray, "mid='".intval($mybb->input['mid'])."'");
-		$cache->updatemoderators();
+		$cache->update_moderators();
 		cpredirect("forums.php?".SID."&fid=$fid", $lang->mod_updated);
 	}
 	else
@@ -824,7 +824,7 @@ if($mybb->input['action'] == "do_modify")
 		);
 		$db->update_query("forums", $updatequery, "fid='$fid'");
 	}
-	$cache->updateforums();
+	$cache->update_forums();
 	cpredirect("forums.php?".SID, $lang->orders_updated);
 }
 
@@ -917,8 +917,8 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 			$db->insert_query("forumpermissions", $permissions);
 		}
 	}
-	$cache->updateforums();
-	$cache->updateforumpermissions();
+	$cache->update_forums();
+	$cache->update_forumpermissions();
 
 	cpredirect("forums.php?".SID."&amp;action=modify", $lang->copy_successful);
 }

@@ -303,8 +303,11 @@ class session
 		}
 
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
-		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
-
+		if(is_array($mydisplaygroup))
+		{
+			$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
+		}
+		
 		if(!$mybb->user['usertitle'])
 		{
 			$mybb->user['usertitle'] = $mybb->usergroup['usertitle'];
