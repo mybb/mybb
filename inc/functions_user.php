@@ -567,7 +567,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	{
 		if(!$pm_lastvisit_cache[$uid])
 		{
-			$query = $db->simple_select("users", "lastvisit", "users", "uid='".intval($uid)."'");
+			$query = $db->simple_select("users", "lastvisit", "uid='".intval($uid)."'");
 			$user = $db->fetch_array($query);
 			$pm_lastvisit_cache[$uid] = $user['lastvisit'];
 		}

@@ -224,7 +224,7 @@ if($mybb->input['action'] == "send")
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
 		$post['message'] = $previewmessage;
-		$post['subject'] = htmlspecialchars_uni($mybb->input['subject'])
+		$post['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = time();
@@ -348,9 +348,32 @@ if($mybb->input['action'] == "send")
 			{
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
-				$query = $db->simple_select("users", "username", "uid='{$uid}'$extrausers");
+				$query = $db->simple_select("users", "username", "uid='{$uid}'");
 				$user = $db->fetch_array($query);
 				$to = $user['username'];
+			}
+			else if($mybb->input['do'] == "replyall")
+			{
+				$subject = "Re: $subject";
+
+				// Get list of recipients
+				$recipients = unserialize($pm['recipients']);
+				$recipientids = $pm['fromid'];
+				foreach($recipients['to'] as $recipient)
+				{
+					if($recipient == $mybb->user['uid'])
+					{
+						continue;
+					}
+					$recipientids .= ",".$recipient;
+				}
+				$comma = '';
+				$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
+				while($user = $db->fetch_array($query))
+				{
+					$to .= $comma.$user['username'];
+					$comma = ', ';
+				}
 			}
 		}
 	}
@@ -1316,14 +1339,6 @@ if(!$mybb->input['action'])
 			{
 				$senddate = $lang->not_sent;
 			}
-			
-			if($doneunread && $doneread)
-			{
-				eval("\$messagelist .= \"".$templates->get("private_messagebit_sep")."\";");
-				$doneunread = 0;
-				$doneread = 0;
-			}
-			
 			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 		}
 	}
