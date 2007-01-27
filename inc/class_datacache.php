@@ -39,19 +39,29 @@ class datacache
 			case "files":
 				require_once MYBB_ROOT."/inc/cachehandlers/disk.php";
 				$this->handler = new diskCacheHandler;
-				
-				if(method_exists($this->handler, "connect"))
-				{
-					if(!$this->handler->connect())
-					{
-						$this->handler = null;
-					}
-				}
-				
+				break;
+			// Memcache cache
+			case "memcache":
+				require_once MYBB_ROOT."/inc/cachehandlers/memcache.php";
+				$this->handler = new memcacheCacheHandler;
+				break;
+			// eAccelerator cache
+			case "eaccelerator":
+				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
+				$this->handler = new eacceleratorCacheHandler;
 				break;
 		}
-		
-		if(!is_object($this->handler))
+		if(is_object($this->handler))
+		{
+			if(method_exists($this->handler, "connect"))
+			{
+				if(!$this->handler->connect())
+				{
+					$this->handler = null;
+				}
+			}
+		}
+		else
 		{
 			// Database cache
 			$query = $db->simple_select("datacache", "title,cache");

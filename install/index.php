@@ -459,6 +459,18 @@ function create_tables()
 \$config['cache_store'] = 'db';
 
 /**
+ * Memcache configuration
+ *  If you are using memcache as your data-cache,
+ *  you need to configure the hostname and port
+ *  of your memcache server below.
+ *
+ * If not using memcache, ignore this section.
+ */
+
+ \$config['memcache_host'] = 'localhost';
+ \$config['memcache_port'] = 11211;
+
+/**
  * Super Administrators
  *  A comma separated list of user IDs who cannot
  *  be edited, deleted or banned in the Admin CP.
