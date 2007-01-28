@@ -517,8 +517,7 @@ function error_no_permission()
 		"location2" => 0
 	);
 	$db->update_query(TABLE_PREFIX."sessions", $noperm_array, "sid='".$session->sid."'");
-	$url = $_SERVER['REQUEST_URI'];
-	$url = str_replace("&", "&amp;", $url);
+	$url = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
 	if($mybb->user['uid'])
 	{
 		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
@@ -923,6 +922,7 @@ function check_forum_password($fid, $password="")
 	}
 	if($showform)
 	{
+		$_SERVER['REQUEST_URI'] = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
 		eval("\$pwform = \"".$templates->get("forumdisplay_password")."\";");
 		output_page($pwform);
 		exit;
@@ -2195,7 +2195,7 @@ function debug_page()
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$db->query_count</font></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Proccessing Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Processing Time:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime seconds ($percentphp%)</font></td>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">MySQL Processing Time:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$querytime seconds ($percentsql%)</font></td>\n";
