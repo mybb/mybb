@@ -70,16 +70,17 @@ var Thread = {
 		Cookie.set("multiquote", new_post_ids.join("|"));
 	},
 
-	loadMultiQuoted: function(tid)
+	loadMultiQuoted: function()
 	{
 		if(use_xmlhttprequest == "yes")
 		{
 			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 			new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});
+			return false;
 		}
 		else
 		{
-			document.location = './newreply.php?tid=' + tid;
+			return true;
 		}
 	},
 
@@ -136,7 +137,8 @@ var Thread = {
 	deletePost: function(pid)
 	{
 		confirmReturn = confirm(quickdelete_confirm);
-		if(confirmReturn == true) {
+		if(confirmReturn == true)
+		{
 			form = document.createElement("form");
 			form.setAttribute("method", "post");
 			form.setAttribute("action", "editpost.php?action=deletepost&delete=yes");
@@ -164,10 +166,12 @@ var Thread = {
 		{
 			return false;
 		}
+
 		if(Thread.qeCache[pid])
 		{
 			return false;
 		}
+
 		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});

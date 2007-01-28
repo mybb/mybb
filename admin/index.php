@@ -11,10 +11,9 @@
 
 define("IN_MYBB", 1);
 
-require_once "./global.php";;
+require_once "./global.php";
 
 // Load language packs for this section
-global $lang;
 $lang->load("index");
 
 $plugins->run_hooks("admin_index_start");

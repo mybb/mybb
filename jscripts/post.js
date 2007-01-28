@@ -5,15 +5,31 @@ var Post = {
 
 	loadMultiQuoted: function()
 	{
-		tid = document.input.tid.value;
-		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
+		if(use_xmlhttprequest == "yes")
+		{
+			tid = document.input.tid.value;
+			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+			new ajax('xmlhttp.php?action=get_multiquoted&tid='+tid, {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	},
 
 	loadMultiQuotedAll: function()
 	{
-		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
+		if(use_xmlhttprequest == "yes")
+		{
+			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+			new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	},
 
 	multiQuotedLoaded: function(request)

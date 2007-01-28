@@ -117,7 +117,7 @@ if($mybb->input['previewpost'])
 	$mybb->input['action'] = "newthread";
 }
 
-if((empty($_POST) && empty($_FILES)) && $mybb->input['proccessed'] == '1')
+if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 {
 	error($lang->error_cannot_upload_php_post);
 }

@@ -143,7 +143,7 @@ if($mybb->input['previewpost'])
 	$mybb->input['action'] = "newreply";
 }
 
-if((empty($_POST) && empty($_FILES)) && $mybb->input['proccessed'] == '1')
+if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 {
 	error($lang->error_cannot_upload_php_post);
 }
@@ -580,10 +580,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
 			");
+			$load_all = intval($mybb->input['load_all_quotes']);
 			while($quoted_post = $db->fetch_array($query))
 			{
 				// Only show messages for the current thread
-				if($quoted_post['tid'] == $tid)
+				if($quoted_post['tid'] == $tid || $load_all == 1)
 				{
 					// If this post was the post for which a quote button was clicked, set the subject
 					if($pid == $quoted_post['pid'])

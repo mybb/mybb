@@ -197,7 +197,7 @@ messageEditor.prototype = {
 
 		var closeButton = document.createElement("img");
 		closeButton.id = "close_tags";
-		closeButton.src = "images/codebuttons/close_tags.gif";
+		closeButton.src = this.options.imagepath + "/codebuttons/close_tags.gif";
 		closeButton.title = "";
 		closeButton.className = "toolbar_normal";
 		closeButton.height = 22;
@@ -235,14 +235,14 @@ messageEditor.prototype = {
 		toolbar2.appendChild(formatting);
 
 		// Insert toolbar buttons.
-		this.insertStandardButton(formatting, "b", "images/codebuttons/bold.gif", "b", "", this.options.lang.title_bold);
-		this.insertStandardButton(formatting, "i", "images/codebuttons/italic.gif", "i", "", this.options.lang.title_italic);
-		this.insertStandardButton(formatting, "u", "images/codebuttons/underline.gif", "u", "", this.options.lang.title_underline);
+		this.insertStandardButton(formatting, "b", this.options.imagepath + "/codebuttons/bold.gif", "b", "", this.options.lang.title_bold);
+		this.insertStandardButton(formatting, "i", this.options.imagepath + "/codebuttons/italic.gif", "i", "", this.options.lang.title_italic);
+		this.insertStandardButton(formatting, "u", this.options.imagepath + "/codebuttons/underline.gif", "u", "", this.options.lang.title_underline);
 		this.insertSeparator(formatting);
-		this.insertStandardButton(formatting, "align_left", "images/codebuttons/align_left.gif", "align", "left", this.options.lang.title_left);
-		this.insertStandardButton(formatting, "align_center", "images/codebuttons/align_center.gif", "align", "center", this.options.lang.title_center);
-		this.insertStandardButton(formatting, "align_right", "images/codebuttons/align_right.gif", "align", "right", this.options.lang.title_right);
-		this.insertStandardButton(formatting, "align_justify", "images/codebuttons/align_justify.gif", "align", "justify", this.options.lang.title_justify);
+		this.insertStandardButton(formatting, "align_left", this.options.imagepath + "/codebuttons/align_left.gif", "align", "left", this.options.lang.title_left);
+		this.insertStandardButton(formatting, "align_center", this.options.imagepath + "/codebuttons/align_center.gif", "align", "center", this.options.lang.title_center);
+		this.insertStandardButton(formatting, "align_right", this.options.imagepath + "/codebuttons/align_right.gif", "align", "right", this.options.lang.title_right);
+		this.insertStandardButton(formatting, "align_justify", this.options.imagepath + "/codebuttons/align_justify.gif", "align", "justify", this.options.lang.title_justify);
 
 		// Create insertable elements section of second toolbar.
 		elements = document.createElement("div");
@@ -258,16 +258,16 @@ messageEditor.prototype = {
 		}
 
 		toolbar2.appendChild(elements);
-		this.insertStandardButton(elements, "list_num", "images/codebuttons/list_num.gif", "list", "1", this.options.lang.title_numlist);
-		this.insertStandardButton(elements, "list_bullet", "images/codebuttons/list_bullet.gif", "list", "", this.options.lang.title_bulletlist);
+		this.insertStandardButton(elements, "list_num", this.options.imagepath + "/codebuttons/list_num.gif", "list", "1", this.options.lang.title_numlist);
+		this.insertStandardButton(elements, "list_bullet", this.options.imagepath + "/codebuttons/list_bullet.gif", "list", "", this.options.lang.title_bulletlist);
 		this.insertSeparator(elements);
-		this.insertStandardButton(elements, "img", "images/codebuttons/image.gif", "image", "", this.options.lang.title_image);
-		this.insertStandardButton(elements, "url", "images/codebuttons/link.gif", "url", "", this.options.lang.title_hyperlink);
-		this.insertStandardButton(elements, "email", "images/codebuttons/email.gif", "email", "", this.options.lang.title_email);
+		this.insertStandardButton(elements, "img", this.options.imagepath + "/codebuttons/image.gif", "image", "", this.options.lang.title_image);
+		this.insertStandardButton(elements, "url", this.options.imagepath + "/codebuttons/link.gif", "url", "", this.options.lang.title_hyperlink);
+		this.insertStandardButton(elements, "email", this.options.imagepath + "/codebuttons/email.gif", "email", "", this.options.lang.title_email);
 		this.insertSeparator(elements);
-		this.insertStandardButton(elements, "quote", "images/codebuttons/quote.gif", "quote", "", this.options.lang.title_quote);
-		this.insertStandardButton(elements, "code", "images/codebuttons/code.gif", "code", "", this.options.lang.title_code);
-		this.insertStandardButton(elements, "php", "images/codebuttons/php.gif", "php", "", this.options.lang.title_php);
+		this.insertStandardButton(elements, "quote", this.options.imagepath + "/codebuttons/quote.gif", "quote", "", this.options.lang.title_quote);
+		this.insertStandardButton(elements, "code", this.options.imagepath + "/codebuttons/code.gif", "code", "", this.options.lang.title_code);
+		this.insertStandardButton(elements, "php", this.options.imagepath + "/codebuttons/php.gif", "php", "", this.options.lang.title_php);
 
 		// Append the second toolbar to the editor
 		editor.appendChild(toolbar2);
@@ -352,7 +352,7 @@ messageEditor.prototype = {
 	{
 		var separator = document.createElement("img");
 		separator.style.margin = "2px";
-		separator.src = "images/codebuttons/sep.gif";
+		separator.src = this.options.imagepath + "/codebuttons/sep.gif";
 		separator.style.verticalAlign = "top";
 		separator.className = "toolbar_sep";
 		into.appendChild(separator);

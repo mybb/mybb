@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<theme name="MyBB Master Style" version="120">
+<theme name="MyBB Master Style" version="140">
 	<cssbits>
 		<body>
 			<background><![CDATA[#efefef]]></background>
@@ -491,7 +491,7 @@ form {
 }]]></extracss>
 	</themebits>
 	<templates>
-		    <template name="forumdisplay_threadlist" version="120"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
+		    <template name="forumdisplay_threadlist" version="122"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
 	{$newthread}
 </div>
 {$multipage}
@@ -589,7 +589,7 @@ form {
 </table>
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_sortrating" version="120"><![CDATA[<option value="rating" {$sortsel['rating']}>{$lang->sort_by_rating}</option>]]></template>
-		<template name="global_boardclosed_warning" version="120"><![CDATA[<br />
+		<template name="global_boardclosed_warning" version="140"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="center"><strong><span style="color:#FF0000;">{$lang->bbclosed_warning}</span></strong></td>
@@ -654,7 +654,7 @@ form {
 					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
 				</span>
 				<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
-		<template name="postbit_online" version="120"><![CDATA[<a href="online.php"><span style="color:#15A018;"><strong>{$lang->postbit_status_online}</strong></span></a>]]></template>
+		<template name="postbit_online" version="140"><![CDATA[<a href="online.php"><span style="color:#15A018;"><strong>{$lang->postbit_status_online}</strong></span></a>]]></template>
 		<template name="showthread_moderationoptions" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -695,7 +695,7 @@ form {
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_inlinemoderation" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="showthread_inlinemoderation" version="140"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
@@ -840,11 +840,11 @@ form {
 </form>
 </td></tr>
 </table>]]></template>
-		<template name="forumbit_depth2_forum_lastpost" version="120"><![CDATA[<span class="smalltext">
+		<template name="forumbit_depth2_forum_lastpost" version="140"><![CDATA[<span class="smalltext">
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
 ]]></template>
-		<template name="editpost" version="120"><![CDATA[<html>
+		<template name="editpost" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -870,7 +870,7 @@ form {
 <input type="hidden" name="pid" value="{$pid}" />
 </form>
 <br />
-<form action="editpost.php?pid={$pid}&amp;proccessed=1" method="post" enctype="multipart/form-data" name="input">
+<form action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_post}</strong></td>
@@ -901,7 +901,6 @@ form {
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
-<input type="hidden" name="pid" value="{$pid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
@@ -911,7 +910,7 @@ form {
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="newreply" version="120"><![CDATA[<html>
+		<template name="newreply" version="140"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -923,7 +922,7 @@ form {
 {$maximageserror}
 {$attacherror}
 {$reply_errors}
-<form action="newreply.php?tid={$tid}&amp;proccessed=1" method="post" enctype="multipart/form-data" name="input">
+<form action="newreply.php?tid={$tid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_reply}</strong></td>
@@ -960,7 +959,6 @@ form {
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->post_reply}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" />{$savedraftbutton}</div>
 <input type="hidden" name="action" value="do_newreply" />
-<input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="replyto" value="{$pid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
@@ -1017,7 +1015,7 @@ form {
 <td class="{$trow}" align="center"><a href="{$editurl}">{$lang->edit_draft}</a></td>
 <td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="deletedraft[{$id}]" value="{$type}" /></td>
 </tr>]]></template>
-		<template name="newthread" version="120"><![CDATA[<html>
+		<template name="newthread" version="140"><![CDATA[<html>
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
@@ -1028,7 +1026,7 @@ form {
 {$preview}
 {$thread_errors}
 {$attacherror}
-<form action="newthread.php?fid={$fid}&amp;proccessed=1" method="post" enctype="multipart/form-data" name="input">
+<form action="newthread.php?fid={$fid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_thread}</strong></td>
@@ -1063,7 +1061,6 @@ form {
 <div style="text-align:center"><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5" />{$savedraftbutton}</div>
 <input type="hidden" name="action" value="do_newthread" />
 <input type="hidden" name="posthash" value="{$posthash}" />
-<input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
 {$editdraftpid}
@@ -1074,7 +1071,7 @@ form {
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="usercp_nav" version="120"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
+		<template name="usercp_nav" version="140"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->ucp_nav_menu}</strong></td>
@@ -1397,7 +1394,7 @@ form {
 		<template name="usercp_drafts_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
-		<template name="usercp_subscriptions_thread" version="120"><![CDATA[<tr>
+		<template name="usercp_subscriptions_thread" version="140"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt="" /></td>
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="{$subscription['threadlink']}">{$subscription['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$subscription['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removesubscription&amp;tid={$subscription['tid']}">{$lang->unsubscribe}</a></span></td>
@@ -1442,7 +1439,7 @@ form {
 		<template name="usercp_favorites_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="7">{$lang->no_favorite_threads}</td>
 </tr>]]></template>
-		<template name="usercp_favorites_thread" version="120"><![CDATA[<tr>
+		<template name="usercp_favorites_thread" version="140"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="{$favorite['threadlink']}">{$favorite['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$favorite['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removefavorite&amp;tid={$favorite['tid']}">{$lang->delete_from_favorites}</a></span></td>
@@ -1476,7 +1473,7 @@ form {
 </form>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="forumdisplay_inlinemoderation" version="140"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
@@ -1508,7 +1505,7 @@ form {
 // -->
 </script>
 <br />]]></template>
-		<template name="report_thanks"><![CDATA[<html>
+		<template name="report_thanks" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
 {$headerinclude}
@@ -1592,8 +1589,8 @@ form {
 </body>
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="postbit_away" version="120"><![CDATA[<a href="{$post['profilelink_plain']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
-		<template name="calendar_dayview_birthdays_bday" version="120"><![CDATA[{$comma}<a href="{$bdays['profilelink']}">{$age}</a>]]></template>
+		<template name="postbit_away" version="140"><![CDATA[<a href="{$post['profilelink_plain']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
+		<template name="calendar_dayview_birthdays_bday" version="140"><![CDATA[{$comma}<a href="{$bdays['profilelink']}">{$age}</a>]]></template>
 		<template name="misc_imcenter_icq" version="120"><![CDATA[<html>
 <head>
 <title>{$lang->icq_message_center}</title>
@@ -1673,7 +1670,7 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumbit_depth2_forum" version="120"><![CDATA[<tr>
+		<template name="forumbit_depth2_forum" version="140"><![CDATA[<tr>
 <td class="{$bgcolor}" align="center" valign="top"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
 <td class="{$bgcolor}" valign="top">
 <strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$modlist}{$subforums}</div>
@@ -1682,8 +1679,8 @@ form {
 <td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth3" version="120"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" class="ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
+		<template name="forumbit_depth3" version="140"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
+		<template name="forumbit_depth3_statusicon" version="140"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" class="ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
 <head>
@@ -2026,7 +2023,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_attachments_attachment" version="120"><![CDATA[<tr>
+		<template name="usercp_attachments_attachment" version="140"><![CDATA[<tr>
 <td class="{$altbg}" width="1">{$icon}</td>
 <td class="{$altbg}" width="40%"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a><br /><span class="smalltext">{$sizedownloads}</span></td>
 <td class="{$altbg}"><a href="{$attachment['postlink']}#pid{$attachment['pid']}">{$attachment['subject']}</a><br /><span class="smalltext">{$lang->attachment_thread} <a href="{$attachment['threadlink']}">{$attachment['threadsubject']}</a></span></td>
@@ -2082,7 +2079,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_register_referrer" version="120"><![CDATA[<br />
+		<template name="member_register_referrer" version="140"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->referrer}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -2137,7 +2134,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_avatar" version="120"><![CDATA[<html>
+		<template name="usercp_avatar" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
@@ -2264,7 +2261,7 @@ form {
 </html>]]></template>
 		<template name="usercp_avatar_gallery_avatar" version="120"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="120"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" {$avatar_width_height} /></td>]]></template>
-		<template name="headerinclude" version="120"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="140"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.lite.js?ver=120"></script>
@@ -2305,9 +2302,9 @@ form {
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
-		<template name="member_profile_online" version="120"><![CDATA[<a href="online.php"><span style="color: #15A018; font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
-		<template name="member_profile_offline" version="120"><![CDATA[<span style="color: #C7C7C7; font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
-		<template name="member_profile" version="120"><![CDATA[<html>
+		<template name="member_profile_online" version="140"><![CDATA[<a href="online.php"><span style="color: #15A018; font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
+		<template name="member_profile_offline" version="140"><![CDATA[<span style="color: #C7C7C7; font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
+		<template name="member_profile" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
@@ -2420,7 +2417,7 @@ form {
 ]]></template>
 		<template name="header_welcomeblock_guest" version="120"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
-		<template name="header" version="120"><![CDATA[	<div id="container">
+		<template name="header" version="140"><![CDATA[	<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
 			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$mybb->settings['bburl']}/{$theme['logo']}" alt="{$mybb->settings['bbname']}" /></a></div>
@@ -2574,7 +2571,7 @@ form {
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_user" version="120"><![CDATA[<tr>
+		<template name="managegroup_user" version="140"><![CDATA[<tr>
 <td class="{$altbg}">{$user['profilelink']} {$leader}</td>
 <td class="{$altbg}" align="center">{$email}</td>
 <td class="{$altbg}" align="center">{$sendpm}</td>
@@ -2618,7 +2615,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="managegroup_joinrequests_request" version="120"><![CDATA[<tr>
+		<template name="managegroup_joinrequests_request" version="140"><![CDATA[<tr>
 <td class="{$altbg}">{$user['profilelink']}</td>
 <td class="{$altbg}" align="center">{$user['reason']}</td>
 <td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="accept" /></td>
@@ -2626,7 +2623,7 @@ form {
 <td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="decline" /></td>
 </tr>
 ]]></template>
-		<template name="private_send" version="120"><![CDATA[<html>
+		<template name="private_send" version="140"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
@@ -2785,7 +2782,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumbit_depth1_cat" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="forumbit_depth1_cat" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
 <td class="thead" colspan="5">
@@ -2806,7 +2803,7 @@ form {
 </tbody>
 </table>
 <br />]]></template>
-		<template name="postbit_edit" version="120"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->postbit_edit}" title="{$lang->postbit_edit}" /></a>
+		<template name="postbit_edit" version="140"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->postbit_edit}" title="{$lang->postbit_edit}" /></a>
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
 <!--
@@ -2819,7 +2816,7 @@ form {
 		<template name="postbit_email" version="120"><![CDATA[<a href="member.php?action=emailuser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_email.gif" alt="{$lang->postbit_email}" title="{$lang->postbit_email}" /></a>]]></template>
 		<template name="postbit_find" version="120"><![CDATA[<a href="search.php?action=finduser&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_find.gif" alt="{$lang->postbit_find}" title="{$lang->postbit_find}" /></a>]]></template>
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
-		<template name="postbit_quickdelete" version="120"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
+		<template name="postbit_quickdelete" version="140"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
 <script type="text/javascript">
 <!--
 	$('quick_delete_{$post['pid']}').style.display = '';
@@ -2854,7 +2851,7 @@ form {
 {$usergrouprows}
 </table>
 <br />]]></template>
-		<template name="calendar_event" version="120"><![CDATA[<html>
+		<template name="calendar_event" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->view_event}</title>
 {$headerinclude}
@@ -2882,7 +2879,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_eventbit_dates" version="120"><![CDATA[<tr>
+		<template name="calendar_eventbit_dates" version="140"><![CDATA[<tr>
 <td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
 <td width="70%" class="trow1">{$eventdate}</td>
 </tr>]]></template>
@@ -2899,13 +2896,13 @@ form {
 {$modrows}
 </table>
 <br/>]]></template>
-		<template name="showteam_moderators_mod" version="120"><![CDATA[<tr>
+		<template name="showteam_moderators_mod" version="140"><![CDATA[<tr>
 <td width="50%" class="trow1"><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="30%" class="trow2"><span class="smalltext">{$forumslist}</span></td>
 <td width="10%" class="trow2">{$emailcode}</td>
 <td width="10%" class="trow1">{$pmcode}</td>
 </tr>]]></template>
-		<template name="report_noreason" version="120"><![CDATA[<html>
+		<template name="report_noreason" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
 {$headerinclude}
@@ -2933,7 +2930,7 @@ form {
 </table>
 </body>
 </html>]]></template>
-		<template name="reputation" version="120"><![CDATA[<html>
+		<template name="reputation" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -3067,7 +3064,7 @@ form {
 
 {$pmsdownload}]]></template>
 		<template name="postbit_avatar" version="120"><![CDATA[<img src="{$post['avatar']}" alt="" {$avatar_width_height} />]]></template>
-		<template name="usercp_profile_customfield" version="120"><![CDATA[<tr>
+		<template name="usercp_profile_customfield" version="140"><![CDATA[<tr>
 <td><span class="smalltext">
 <a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:</span></td>
 </tr>
@@ -3134,7 +3131,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_addevent" version="120"><![CDATA[<html>
+		<template name="calendar_addevent" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
 {$headerinclude}
@@ -3172,7 +3169,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-	<template name="calendar_addevent_normal" version="120"><![CDATA[<tr>
+	<template name="calendar_addevent_normal" version="140"><![CDATA[<tr>
 <td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
 <td class="trow1">
 <select name="month">
@@ -3290,12 +3287,12 @@ form {
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" /><span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
-		<template name="showteam_usergroup_user" version="120"><![CDATA[<tr>
+		<template name="showteam_usergroup_user" version="140"><![CDATA[<tr>
 <td width="80%" class="{$bgcolor}"><a href={$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="10%" class="{$bgcolor}">{$emailcode}</td>
 <td width="10%" class="{$bgcolor}">{$pmcode}</td>
 </tr>]]></template>
-		<template name="showteam_moderators_forum" version="120"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
+		<template name="showteam_moderators_forum" version="140"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
 		<template name="moderation_inline_deleteposts" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_posts}</title>
@@ -3331,7 +3328,7 @@ form {
 </table>
 <br />
 ]]></template>
-		<template name="calendar_dayview_event" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="calendar_dayview_event" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$event['subject']}</strong></td>
 </tr>
@@ -3349,7 +3346,7 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="calendar_dayview_event_normal" version="120"><![CDATA[<tr>
+		<template name="calendar_dayview_event_normal" version="140"><![CDATA[<tr>
 <td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
 <td width="70%" class="trow1">{$eventdate}</td>
 </tr>]]></template>
@@ -3398,7 +3395,7 @@ form {
 </tr>
 </table>
 ]]></template>
-		<template name="forumdisplay_thread_gotounread" version="120"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" /></a> ]]></template>
+		<template name="forumdisplay_thread_gotounread" version="140"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" /></a> ]]></template>
 		<template name="private_tracking" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
@@ -3501,7 +3498,7 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="calendar" version="120"><![CDATA[<html>
+		<template name="calendar" version="140"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 	{$headerinclude}
@@ -3523,8 +3520,8 @@ form {
 
 	<table width="100%" align="center">
 		<tr>
-			<td><span class="smalltext"><a href="$prev_link">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span></td>
-			<td align="right"><span class="smalltext"><a href="$next_link">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
+			<td><span class="smalltext"><a href="{$prev_link}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span></td>
+			<td align="right"><span class="smalltext"><a href="{$next_link}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
 		</tr>
 	</table>
 
@@ -3604,19 +3601,18 @@ form {
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
 		<template name="private_send_buddyselect" version="120"><![CDATA[<br /><span class="smalltext">{$lang->select_buddy}<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>{$buddies}</select>]]></template>
-		<template name="codebuttons" version="120"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
+		<template name="codebuttons" version="140"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
 <!--
 	{$editor_language}
-	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}});
+	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}, imagepath: '{$theme['imgdir']}'});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 // -->
 </script>]]></template>
-		<template name="showthread_quickreply" version="120"><![CDATA[<br />
-<form method="post" action="newreply.php?tid={$tid}&amp;proccessed=1" name="input" id="quick_reply_form">
+		<template name="showthread_quickreply" version="140"><![CDATA[<br />
+<form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="input" id="quick_reply_form">
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
-<input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="quoted_ids" value="" />
 <input type="hidden" name="lastpid" value="{$last_pid}" id="lastpid" />
@@ -3645,7 +3641,7 @@ form {
 	</div>
 	<script type="text/javascript">
 	<!--
-		document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="javascript:Thread.loadMultiQuoted(\'{$tid}\');">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');
+		document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="./newreply.php?tid={$tid}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');
 	// -->
 	</script>
 </td>
@@ -3812,7 +3808,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private" version="120"><![CDATA[<html>
+		<template name="private" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
@@ -3890,7 +3886,7 @@ form {
 		<td width="130" align="center"><span class="smalltext"><strong>{$lang->pmspaceused}</strong></span></td>
 	</tr>
 </table></span>]]></template>
-		<template name="forumdisplay_announcements_announcement" version="120"><![CDATA[<tr>
+		<template name="forumdisplay_announcements_announcement" version="140"><![CDATA[<tr>
 <td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}">
@@ -3955,7 +3951,7 @@ form {
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="120"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="portal_welcome_guesttext" version="120"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}<br />
+		<template name="portal_welcome_guesttext" version="140"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}<br />
 <br />
 <form method="post" action="{$portal_url}"><input type="hidden" name="action" value="do_login" />
 {$lang->username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
@@ -3972,7 +3968,7 @@ form {
 </span>
 </td>
 </tr>]]></template>
-		<template name="search" version="120"><![CDATA[<html>
+		<template name="search" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search}</title>
 {$headerinclude}
@@ -4082,7 +4078,7 @@ form {
 </tbody>
 </table>
 <br />]]></template>
-		<template name="announcement" version="120"><![CDATA[<html>
+		<template name="announcement" version="140"><![CDATA[<html>
 <head>
 <title>{$lang->announcements}</title>
 {$headerinclude}
@@ -4098,7 +4094,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_emailuser" version="120"><![CDATA[<html>
+		<template name="member_emailuser" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->email_user}</title>
 {$headerinclude}
@@ -4172,7 +4168,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_register_password" version="120"><![CDATA[<tr>
+		<template name="member_register_password" version="140"><![CDATA[<tr>
 <td><span class="smalltext">{$lang->password}</span></td>
 <td><span class="smalltext">{$lang->confirm_password}</span></td>
 </tr>
@@ -4233,7 +4229,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_reports_report" version="120"><![CDATA[<tr>
+		<template name="moderation_reports_report" version="140"><![CDATA[<tr>
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
@@ -4270,7 +4266,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-	<template name="moderation_reports_allreport" version="120"><![CDATA[<tr>
+	<template name="moderation_reports_allreport" version="140"><![CDATA[<tr>
 <td class="{$trow}" align="center"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
 <td class="{$trow}" align="center">{$report['postusername']}</td>
 <td class="{$trow}">{$report['threadsubject']}</td>
@@ -4433,17 +4429,17 @@ form {
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
-	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
-	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
+	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="if(this.value == "{$lang->login_username}") { this.value='' }" />
+	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if(this.value == "{$lang->login_password}") { this.value='' }" />
 	{$gobutton}
 </form>]]></template>
 		<template name="multipage" version="120"><![CDATA[<div><span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span></div>]]></template>
-		<template name="multipage_end" version="120"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">{$lang->multipage_last} &raquo;</a></span>]]></template>
-		<template name="multipage_nextpage" version="120"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">{$lang->multipage_next} &gt;</a></span>]]></template>
-		<template name="multipage_page" version="120"><![CDATA[ <span class="pagenavbit"><a href="{$page_url}">{$i}</a></span>]]></template>
+		<template name="multipage_end" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">{$lang->multipage_last} &raquo;</a></span>]]></template>
+		<template name="multipage_nextpage" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">{$lang->multipage_next} &gt;</a></span>]]></template>
+		<template name="multipage_page" version="140"><![CDATA[ <span class="pagenavbit"><a href="{$page_url}">{$i}</a></span>]]></template>
 		<template name="multipage_page_current" version="120"><![CDATA[ <span class="pagenavcurrent">[{$i}]</span>]]></template>
-		<template name="multipage_prevpage" version="120"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">&lt; {$lang->multipage_previous}</a></span>]]></template>
-		<template name="multipage_start" version="120"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">&laquo; {$lang->multipage_first}</a></span>]]></template>
+		<template name="multipage_prevpage" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">&lt; {$lang->multipage_previous}</a></span>]]></template>
+		<template name="multipage_start" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">&laquo; {$lang->multipage_first}</a></span>]]></template>
 		<template name="usercp_forumsubscriptions_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="5">{$lang->no_forum_subscriptions}</td>
 </tr>]]></template>
@@ -4512,7 +4508,7 @@ form {
 <br />]]></template>
 		<template name="forumdisplay_threadlist_rating" version="120"><![CDATA[<td class="tcat" align="center" width="60"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span></td>
 ]]></template>
-		<template name="forumdisplay_thread" version="120"><![CDATA[<tr>
+		<template name="forumdisplay_thread" version="140"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
@@ -4534,7 +4530,7 @@ form {
 ]]></template>
 		<template name="forumdisplay_orderarrow" version="120"><![CDATA[<span class="smalltext">[<a href="{$sorturl}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 		<template name="showthread_ratingdisplay" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$thread['rating']}" alt="{$ratingav}" />&nbsp;&nbsp;]]></template>
-		<template name="postbit_posturl" version="120"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
+		<template name="postbit_posturl" version="140"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
 		<template name="postbit_attachments_thumbnails_thumbnail" version="120"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_images_image" version="120"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_signature" version="120"><![CDATA[<hr size="1" width="25%"  align="left" />
@@ -4610,7 +4606,7 @@ form {
 <td class="{$altbg}" valign="top" align="center" width="1"><input type="checkbox" class="checkbox" name="mergepost[{$post['pid']}]" value="yes" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
-		<template name="stats" version="120"><![CDATA[<html>
+		<template name="stats" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->board_stats}</title>
 {$headerinclude}
@@ -4754,8 +4750,8 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="stats_thread" version="120"><![CDATA[<a href="{$thread['threadlink']}"><strong>{$thread['subject']}</strong></a> ({$numberbit} {$numbertype})<br />]]></template>
-		<template name="online" version="120"><![CDATA[<html>
+		<template name="stats_thread" version="140"><![CDATA[<a href="{$thread['threadlink']}"><strong>{$thread['subject']}</strong></a> ({$numberbit} {$numbertype})<br />]]></template>
+		<template name="online" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->users_online}</title>
 {$headerinclude}
@@ -4831,7 +4827,7 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="portal_stats" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="portal_stats" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$lang->forum_stats}</strong></td>
 </tr>
@@ -4871,8 +4867,8 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="portal_announcement_numcomments" version="120"><![CDATA[- <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
-		<template name="portal_announcement" version="120"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="portal_announcement_numcomments" version="140"><![CDATA[- <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
+		<template name="portal_announcement" version="140"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$icon} <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$announcement['subject']}</a></strong></td>
 </tr>
@@ -4934,7 +4930,7 @@ form {
 {$threadlist}
 </table>
 <br />]]></template>
-		<template name="portal_whosonline_memberbit" version="120"><![CDATA[{$comma}<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
+		<template name="portal_whosonline_memberbit" version="140"><![CDATA[{$comma}<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
 		<template name="usercp_favorites" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->favorites}</title>
@@ -4973,7 +4969,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="printthread" version="120"><![CDATA[<html>
+		<template name="printthread" version="140"><![CDATA[<html>
 <head>
 <title>{$thread['subject']} - {$lang->printable_version}</title>
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
@@ -5126,7 +5122,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" alt="" /></td>
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="120"><![CDATA[{$senddate},{$foldername},{$message['subject']},{$message['tousername']},{$message['fromusername']},{$message['message']}]]></template>
-		<template name="search_results_threads_thread" version="120"><![CDATA[<tr>
+		<template name="search_results_threads_thread" version="140"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">{$gotounread}{$prefix} <a href="showthread.php?tid={$thread['tid']}{$highlight}">{$thread['subject']}</a>{$thread['multipage']}</td>
@@ -5134,8 +5130,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
-	<td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$lastpostdate} {$lastposttime}<br />
-<a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
+	<td class="{$bgcolor}" style="white-space: nowrap">
+		<span class="smalltext">
+			{$lastpostdate} {$lastposttime}<br />
+			<a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}
+		</span>
 	</td>
 </tr>]]></template>
 		<template name="search_results_threads" version="120"><![CDATA[<html>
@@ -5174,18 +5173,23 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		{$footer}
 		</body>
 		</html>]]></template>
-		<template name="search_results_posts_post" version="120"><![CDATA[<tr>
+		<template name="search_results_posts_post" version="140"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-	<td class="{$bgcolor}"><span class="smalltext">{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}{$highlight}">{$post['thread_subject']}</a><br />{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}{$highlight}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a></span><br />
-	<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table></td>
+	<td class="{$bgcolor}">
+		<span class="smalltext">
+			{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}{$highlight}">{$post['thread_subject']}</a><br />
+			{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}{$highlight}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a>
+		</span><br />
+		<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table>
+	</td>
 	<td align="center" class="{$bgcolor}">{$post['profilelink']}</td>
 	<td class="{$bgcolor}" >{$post['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$post['tid']});">{$post['thread_replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$post['thread_views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$posted}</span></td>
 </tr>]]></template>
-		<template name="reputation_add" version="120"><![CDATA[<html>
+		<template name="reputation_add" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
@@ -5219,7 +5223,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </body>
 </html>]]></template>
-		<template name="postbit_reputation" version="120"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
+		<template name="postbit_reputation" version="140"><![CDATA[<br />{$lang->postbit_reputation} {$post['userreputation']}]]></template>
 		<template name="moderation_threadnotes_modaction" version="120"><![CDATA[<tr>
 <td class="{$trow}" align="center">{$modaction['profilelink']}</td>
 <td class="{$trow}" align="center">{$modaction['dateline']}</td>
@@ -5284,7 +5288,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private_limitwarning" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="private_limitwarning" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="center"><span class="smalltext"><strong><span style="color:#FF0000;">{$lang->reached_warning}</span></strong><br />{$lang->reached_warning2}</span></td>
 </tr>
@@ -5343,7 +5347,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="online_today_row" version="120"><![CDATA[<tr>
+		<template name="online_today_row" version="140"><![CDATA[<tr>
 <td align="center" class="trow1" width="50%">{$online['profilelink']}{$invisiblemark}</td>
 <td align="center" class="trow2" width="50%">{$onlinetime}</td>
 </tr>]]></template>
@@ -5367,15 +5371,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 ]]></template>
 		<template name="calendar_addpublicevent" version="120"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">{$lang->add_public_event}</a>]]></template>
 		<template name="calendar_addprivateevent" version="120"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">{$lang->add_private_event}</a>]]></template>
-		<template name="index_birthdays_birthday" version="120"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
-		<template name="private_tracking_readmessage" version="120"><![CDATA[<tr>
+		<template name="index_birthdays_birthday" version="140"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
+		<template name="private_tracking_readmessage" version="140"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
 <td class="trow2">{$readmessage['subject']}</td>
 <td class="trow1">{$readmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="yes" /></td>
 </tr>]]></template>
-		<template name="private_tracking_unreadmessage" version="120"><![CDATA[<tr>
+		<template name="private_tracking_unreadmessage" version="140"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/new_pm.gif" alt="" /></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1">{$unreadmessage['profilelink']}</td>
@@ -5439,7 +5443,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
 <td class="trow2" align="center"><span class="smalltext"><strong>[<a href="javascript:clickableEditor.openGetMoreSmilies('clickableEditor');">{$lang->smilieinsert_getmore}</a>]</strong></span></td>
 </tr>]]></template>
-		<template name="misc_smilies_popup" version="122"><![CDATA[<html>
+		<template name="misc_smilies_popup" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->smilies_listing}</title>
 {$headerinclude}
@@ -5681,8 +5685,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_multipage" version="120"><![CDATA[ <span class="smalltext">({$lang->pages} {$threadpages}{$morelink})</span>]]></template>
-		<template name="forumdisplay_thread_multipage_page" version="120"><![CDATA[<a href="{$page_link}">{$i}</a> ]]></template>
-		<template name="forumdisplay_thread_multipage_more" version="120"><![CDATA[... <a href="{$page_link}">{$lang->pages_last}</a>]]></template>
+		<template name="forumdisplay_thread_multipage_page" version="140"><![CDATA[<a href="{$page_link}">{$i}</a> ]]></template>
+		<template name="forumdisplay_thread_multipage_more" version="140"><![CDATA[... <a href="{$page_link}">{$lang->pages_last}</a>]]></template>
 		<template name="member_profile_customfields" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->users_additional_info}</strong></td>
@@ -5694,7 +5698,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="{$bgcolor}" width="60%">{$customfieldval}</td>
 </tr>
 ]]></template>
-		<template name="forumdisplay_usersbrowsing_user" version="120"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
+		<template name="forumdisplay_usersbrowsing_user" version="140"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
 		<template name="forumdisplay_usersbrowsing" version="120"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>]]></template>
 		<template name="member_lostpw" version="120"><![CDATA[<html>
 <head>
@@ -5884,7 +5888,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$reviewmore}
 </table>
 ]]></template>
-		<template name="sendthread" version="120"><![CDATA[<html>
+		<template name="sendthread" version="140"><![CDATA[<html>
 <head>
 <title>{$thread['subject']} - {$lang->send_thread}</title>
 {$headerinclude}
@@ -5919,7 +5923,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_editsig" version="120"><![CDATA[<html>
+		<template name="usercp_editsig" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_sig}</title>
 {$headerinclude}
@@ -5969,11 +5973,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
-		<template name="private_read_bcc" version="120"><![CDATA[<tr>
+		<template name="private_read_bcc" version="140"><![CDATA[<tr>
 	<td class="trow1"><strong>{$lang->bcc}</strong></td>
 	<td class="trow1">{$bcc_recipients}</td>
 </tr>]]></template>
-		<template name="private_read" version="120"><![CDATA[<html>
+		<template name="private_read" version="140"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
 {$headerinclude}
@@ -6018,8 +6022,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_inlinemoderation_col" version="120"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
-		<template name="printthread_post" version="120"><![CDATA[<strong>{$postrow['subject']}</strong> - {$postrow['profilelink']} -  <strong>{$postrow['date']}</strong> <strong>{$postrow['time']}</strong>
+		<template name="forumdisplay_inlinemoderation_col" version="140"><![CDATA[<td class="tcat" align="center" width="1"><input type="checkbox" name="allbox" onclick="inlineModeration.checkAll(this)" /></td>]]></template>
+		<template name="printthread_post" version="140"><![CDATA[<strong>{$postrow['subject']}</strong> - {$postrow['profilelink']} -  <strong>{$postrow['date']}</strong> <strong>{$postrow['time']}</strong>
 <br />
 <br />
 {$postrow['message']}
@@ -6174,7 +6178,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showthread_similarthreads_bit" version="120"><![CDATA[<tr>
+		<template name="showthread_similarthreads_bit" version="140"><![CDATA[<tr>
 	<td align="center" class="{$trow}" width="2%">{$icon}</td>
 	<td class="{$trow}"><a href="{$similar_thread['threadlink']}">{$similar_thread['subject']}</a></td>
 	<td align="center" class="{$trow}">{$similar_thread['profilelink']}</td>
@@ -6185,8 +6189,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<a href="{$similar_thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
-		<template name="calendar_eventbit_public" version="120"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['publiceventcolor']};">{$event['subject']}</span></a><br />]]></template>
-		<template name="calendar_eventbit_private" version="120"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['privateeventcolor']};">{$event['subject']}</span></a><br />]]></template>
+		<template name="calendar_eventbit_public" version="140"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['publiceventcolor']};">{$event['subject']}</span></a><br />]]></template>
+		<template name="calendar_eventbit_private" version="140"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['privateeventcolor']};">{$event['subject']}</span></a><br />]]></template>
 		<template name="calendar_daybit_today" version="120"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
 <strong><a href="$day_url">{$i}</a></strong>
 <br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
@@ -6347,13 +6351,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[postip]={$ip}">{$lang->search_postip_users}</a>
 </td>
 </tr>]]></template>
-		<template name="online_row" version="120"><![CDATA[<tr>
+		<template name="online_row" version="140"><![CDATA[<tr>
 <td class="trow1">{$online_name}{$user_ip}</td>
 <td align="center" class="trow2">{$online_time}</td>
 <td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
 		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
-		<template name="calendar_editevent" version="120"><![CDATA[<html>
+		<template name="calendar_editevent" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
 {$headerinclude}
@@ -6392,11 +6396,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_eventbit_dates" version="120"><![CDATA[<tr>
+		<template name="calendar_eventbit_dates" version="140"><![CDATA[<tr>
 <td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
 <td width="70%" class="trow1">{$eventdate}</td>
 </tr>]]></template>
-		<template name="calendar_eventbit_dates_recurring" version="120"><![CDATA[<tr>
+		<template name="calendar_eventbit_dates_recurring" version="140"><![CDATA[<tr>
 <td width="30%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
 <td width="70%" class="trow1">{$eventdate}</td>
 </tr><tr>
@@ -6407,11 +6411,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td width="30%" class="trow2"><strong>{$lang->event_recurring_repeat_days}</strong></td>
 <td width="70%" class="trow2">{$repeat_days}</td>
 </tr>]]></template>
-		<template name="calendar_eventbit_times" version="120"><![CDATA[<tr>
+		<template name="calendar_eventbit_times" version="140"><![CDATA[<tr>
 <td width="30%" class="trow2"><strong>{$lang->event_duration}</strong></td>
 <td width="70%" class="trow2">{$event['start_time_hours']}:{$event['start_time_mins']} - {$event['end_time_hours']}:{$event['end_time_mins']}</td>
 </tr>]]></template>
-		<template name="calendar_editevent_normal" version="120"><![CDATA[<tr>
+		<template name="calendar_editevent_normal" version="140"><![CDATA[<tr>
 <td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
 <td class="trow1">
 <select name="month">
@@ -6522,11 +6526,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2"><strong>{$lang->event_end_time_recurring}</strong></td>
 <td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
 </tr>]]></template>
-		<template name="postbit_offline" version="120"><![CDATA[<span style="color:#C7C7C7;"><strong>{$lang->postbit_status_offline}</strong></span>]]></template>
-		<template name="postbit_editedby" version="120"><![CDATA[<p class="smalltext">{$post['editnote']} {$post['editedprofilelink']}.</p>
+		<template name="postbit_offline" version="140"><![CDATA[<span style="color:#C7C7C7;"><strong>{$lang->postbit_status_offline}</strong></span>]]></template>
+		<template name="postbit_editedby" version="140"><![CDATA[<p class="smalltext">{$post['editnote']} {$post['editedprofilelink']}.</p>
 
 ]]></template>
-		<template name="member_register_requiredfields" version="120"><![CDATA[<br />
+		<template name="member_register_requiredfields" version="140"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->additional_info}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
@@ -6557,7 +6561,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="index_whosonline_memberbit" version="120"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
+		<template name="index_whosonline_memberbit" version="140"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
 		<template name="member_profile_away" version="120"><![CDATA[<tr>
 <td class="trow1" align="center">
 <strong>{$lang->away_note}</strong><br />
@@ -6565,12 +6569,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$lang->away_since} {$awaydate} &nbsp;&nbsp;&nbsp; {$lang->away_returns} {$returndate}
 </td>
 </tr>]]></template>
-		<template name="forumdisplay_moderatedby_moderator" version="120"><![CDATA[{$modcomma}{$moderator['profilelink']}]]></template>
+		<template name="forumdisplay_moderatedby_moderator" version="140"><![CDATA[{$modcomma}{$moderator['profilelink']}]]></template>
 		<template name="forumdisplay_moderatedby" version="120"><![CDATA[<span class="smalltext">{$lang->moderated_by} <strong>{$modlist}</strong></span><br />]]></template>
-		<template name="forumbit_depth2_cat" version="120"><![CDATA[<tr>
+		<template name="forumbit_depth2_cat" version="140"><![CDATA[<tr>
 <td class="tcat">&nbsp;</td>
 <td class="tcat" colspan="4"><strong>&raquo;&nbsp;&nbsp;<a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}{$sub_forums}</span></td></tr>]]></template>
-		<template name="forumbit_depth1_cat_subforum" version="120"><![CDATA[<tr>
+		<template name="forumbit_depth1_cat_subforum" version="140"><![CDATA[<tr>
 <td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}</span></td></tr>{$sub_forums}]]></template>
 		<template name="misc_help" version="120"><![CDATA[<html>
 <head>
@@ -6588,7 +6592,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
-		<template name="previewpost" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
+		<template name="previewpost" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->post_preview}</strong></td>
 </tr>
@@ -6871,7 +6875,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_register_regimage" version="120"><![CDATA[<br />
+		<template name="member_register_regimage" version="140"><![CDATA[<br />
 <fieldset class="trow2">
 <script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
@@ -6909,7 +6913,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />]]></template>
-		<template name="member_register" version="120"><![CDATA[<html>
+		<template name="member_register" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
@@ -7036,7 +7040,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="global_bannedwarning" version="120"><![CDATA[<br />
+		<template name="global_bannedwarning" version="140"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="center"><span style="color:#FF0000;"><strong>{$lang->banned_warning}</strong><br />
@@ -7047,13 +7051,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 <br />]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
-		<template name="postbit_multiquote" version="120"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
+		<template name="postbit_multiquote" version="140"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
 <script type="text/javascript">
 <!--
 	$('multiquote_link_{$post['pid']}').style.display = '';
 // -->
 </script>]]></template>
-		<template name="private_send_autocomplete" version="120"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+		<template name="private_send_autocomplete" version="140"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "yes")
@@ -7066,7 +7070,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	}
 // -->
 </script>]]></template>
-		<template name="forumdisplay_threadlist_inlineedit_js" version="120"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
+		<template name="forumdisplay_threadlist_inlineedit_js" version="140"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "yes")
@@ -7086,7 +7090,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			</div>
 			<br style="clear: both;" />
 		</div>]]></template>
-		<template name="reputation_vote" version="123"><![CDATA[<tr>
+		<template name="reputation_vote" version="140"><![CDATA[<tr>
 	<td class="trow1 {$status_class}">
 		{$reputation_vote['username']}{$reputation_vote['user_reputation']} - {$last_updated} {$delete_link}<br /><br /></span>
 		<strong class="{$vote_type_class}">{$vote_type} {$vote_reputation}:</strong> {$reputation_vote['comments']}
@@ -7100,7 +7104,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="reputation_no_votes" version="120"><![CDATA[<tr>
 	<td class="trow1" style="text-align: center;">{$lang->no_reputation_votes}</td>
 </tr>]]></template>
-		<template name="reputation_add_error" version="120"><![CDATA[<html>
+		<template name="reputation_add_error" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
@@ -7134,7 +7138,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </body>
 </html>]]></template>
-		<template name="reputation_added" version="120"><![CDATA[<html>
+		<template name="reputation_added" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
@@ -7159,7 +7163,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </body>
 </html>]]></template>
-		<template name="reputation_deleted" version="120"><![CDATA[<html>
+		<template name="reputation_deleted" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
@@ -7187,7 +7191,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_thread_attachment_count" version="120"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
 		<template name="forumdisplay_rssdiscovery" version="120"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?fid={$fid}" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
-		<template name="post_captcha" version="120"><![CDATA[<tr>
+		<template name="post_captcha" version="140"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow2">
 <script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
@@ -7213,8 +7217,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
-	<template name="newreply_multiquote_external" version="120"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
-	<template name="newthread_multiquote_external" version="120"><![CDATA[<input type="hidden" name="quoted_ids" value="" /><div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="newreply_multiquote_external" version="140"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="newthread_multiquote_external" version="140"><![CDATA[<input type="hidden" name="quoted_ids" value="" /><div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="postbit_author_user" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
 	{$post['usertitle']}<br />
@@ -7233,7 +7237,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	{$post['groupimage']}<br />
 	{$post['useravatar']}<br />
 </span>]]></template>
-	<template name="warnings" version="120"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" align="center" class="tborder">
+	<template name="warnings" version="140"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" align="center" class="tborder">
 <tr>
 <td class="tcat">
 <strong>{$lang->warnings}</strong>

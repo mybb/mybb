@@ -170,7 +170,7 @@ class postParser
 			$message = str_replace("</div><br />", "</div>", $message);
 			$message = preg_replace("#<(/?)p>\s*(<br />?)#", "<$1p>", $message);
 		}
-	
+
 		$message = my_wordwrap($message);
 		
 		$message = str_replace("  ", "&nbsp;&nbsp;", $message); 
@@ -780,7 +780,7 @@ class postParser
 		}
 		else
 		{
-			$list = "</p>\n<ul>$message</ul>\n</p>";
+			$list = "</p>\n<ul>$message</ul>\n<p>";
 		}
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;

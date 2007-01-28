@@ -680,7 +680,8 @@ class PostDataHandler extends DataHandler
 		if($this->method != "update" && $visible != -2)
 		{
 			$double_post = $this->verify_post_merge();
-	if($double_post !== true && $double_post['visible'] == $visible)
+
+			if($double_post !== true && $double_post['visible'] == $visible)
 			{
 				// Only combine if they are both invisible (mod queue'd forum) or both visible
 				$double_post['message'] .= $mybb->settings['postmergesep'].$db->escape_string($post['message']);
