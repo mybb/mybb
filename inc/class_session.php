@@ -281,10 +281,14 @@ class session
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."'");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
-			$query = $db->simple_select(TABLE_PREFIX."usergroups", "usergroup", "gid='".$mybb->user['banoldgroup']."'", array('limit' => 1)); 
-			$group = $db->fetch_array($query);
-			$mybb->user['usergroup'] = $group['usergroup'];
-			$mybbgroups = $mybb->user['usergroup'];
+			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
+			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
+			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
+			if($mybb->user['additionalgroups'])
+			{
+				$mybb->user['additionalgroups'] = ','.$mybb->user['additionalgroups'];
+			}
+			$mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
 		}
 		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
         {
@@ -292,8 +296,12 @@ class session
         }
         else
         {
+			if($mybb->user['additionalgroups'])
+			{
+				$mybb->user['additionalgroups'] = ','.$mybb->user['additionalgroups'];
+			}
 			// Gather a full permission set for this user and the groups they are in.
-            $mybbgroups = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
+            $mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
         }
 		
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
