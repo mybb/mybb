@@ -750,7 +750,7 @@ class Convert_vbulletin3 extends Converter {
 				$insert_thread['icon'] = $thread['iconid'];
 				$insert_thread['dateline'] = $thread['dateline'];
 				$insert_thread['subject'] = $thread['title'];				
-				$insert_thread['poll'] = $thread['pollid'];
+				$insert_thread['poll'] = ((-1) * $thread['pollid']);
 				$insert_thread['uid'] = $this->get_import_uid($thread['postuserid']);
 				$insert_thread['import_uid'] = $thread['postuserid'];
 				$insert_thread['views'] = $thread['views'];
@@ -848,7 +848,7 @@ class Convert_vbulletin3 extends Converter {
 				// vBulletin 3 values
 				$insert_poll['import_pid'] = $poll['pollid'];
 								
-				$query1 = $db->simple_select("threads", "dateline,tid", "import_poll = '{$poll['pollid']}'");
+				$query1 = $db->simple_select("threads", "dateline,tid", "import_poll = '".(-1) * $poll['pollid']."'");
 				$thread = $db->fetch_array($query1);
 				
 				$insert_poll['tid'] = $thread['tid'];
@@ -941,7 +941,7 @@ class Convert_vbulletin3 extends Converter {
 				$insert_pollvote['uid'] = $this->get_import_uid($pollvote['userid']);
 				$insert_pollvote['dateline'] = $pollvote['votedate'];
 				$insert_pollvote['voteoption'] = $pollvote['voteoption'];
-				$insert_pollvote['pid'] = $pollvote['pollid'];
+				$insert_pollvote['pid'] = $this->get_import_pid($pollvote['pollid']);
 				
 				$this->insert_pollvote($insert_pollvote);
 				
