@@ -55,7 +55,7 @@ if($rand == 5)
 }
 
 $timecut = time()-(60*60*24*7);
-$db->delete_query("privatemessages", "dateline <= $timecut AND folder='4' AND uid='".$mybb->user['uid']."'");
+$db->delete_query("privatemessages", "deletetime <= '{$timecut}' AND folder='4' AND uid='".$mybb->user['uid']."'");
 
 $folderjump = "<select name=\"jumpto\">\n";
 $folderoplist = "<input type=\"hidden\" value=\"".intval($mybb->input['fid'])."\" name=\"fromfid\" />\n<select name=\"fid\">\n";
@@ -827,7 +827,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	
 	if($mybb->input['hop'])
 	{
-		header("Location: private.php?fid=".$mybb->input['jumpto']);
+		header("Location: private.php?fid=".intval($mybb->input['jumpto']));
 	}
 	elseif($mybb->input['moveto'])
 	{
@@ -838,7 +838,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$sql_array = array(
 					"folder" => intval($mybb->input['fid'])
 				);
-				$db->update_query("privatemessages", $sql_array, "pmid=".intval($key)." AND uid=".$mybb->user['uid']);
+				$db->update_query("privatemessages", $sql_array, "pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
 			}
 		}
 		// Update PM count
@@ -853,7 +853,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 			redirect("private.php", $lang->redirect_pmsmoved);
 		}
 	}
-	elseif($mybb->input['delete'])
+	else if($mybb->input['delete'])
 	{
 		if(is_array($mybb->input['check']))
 		{
@@ -885,6 +885,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				{
 					$sql_array = array(
 						"folder" => 4,
+						"deletetime" => time()
 					);
 					$db->update_query("privatemessages", $sql_array, "pmid='".$key."' AND uid='".$mybb->user['uid']."'");
 				}
@@ -902,7 +903,8 @@ if($mybb->input['action'] == "delete")
 	$plugins->run_hooks("private_delete_start");
 
 	$sql_array = array(
-		"folder" => 4
+		"folder" => 4,
+		"deletetime" => time()
 	);
 	$db->update_query("privatemessages", $sql_array, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
 

@@ -22,7 +22,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade8_dbchanges()
+function upgrade9_dbchanges()
 {
 	global $db, $output, $mybb;
 
@@ -35,6 +35,11 @@ function upgrade8_dbchanges()
 	if(!$db->field_exists('recipients', "privatemessages"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
+	}
+	
+	if(!$db->field_exists('deletetime', "privatemessages"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime int NOT NULL default '0' AFTER dateline");
 	}
 	
 	if(!$db->field_exists('maxpmrecipients', "usergroups"))
