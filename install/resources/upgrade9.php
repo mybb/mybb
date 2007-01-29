@@ -39,7 +39,7 @@ function upgrade9_dbchanges()
 	
 	if(!$db->field_exists('deletetime', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime int NOT NULL default '0' AFTER dateline");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
 	}
 	
 	if(!$db->field_exists('maxpmrecipients', "usergroups"))
