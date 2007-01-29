@@ -674,7 +674,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_stuff");
 	if($mybb->input['hop'])
 	{
-		header("Location: private.php?fid=".$mybb->input['jumpto']);
+		header("Location: private.php?fid=".intval($mybb->input['jumpto']));
 	}
 	elseif($mybb->input['moveto'])
 	{
@@ -685,7 +685,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				$sql_array = array(
 					"folder" => intval($mybb->input['fid'])
 				);
-				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid=".intval($key)." AND uid=".$mybb->user['uid']);
+				$db->update_query(TABLE_PREFIX."privatemessages", $sql_array, "pmid='".intval($key)."' AND uid='".$mybb->user['uid']."'");
 			}
 		}
 		// Update PM count
