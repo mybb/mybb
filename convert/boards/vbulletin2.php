@@ -6,19 +6,19 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/license.php
  *
- * $Id$
+ * $Id: vbulletin3.php 2656 2007-01-15 06:54:08Z Tikitiki $
  */
  
-// Board Name: vBulletin 3.6
+// Board Name: vBulletin 2.3
 
-class Convert_vbulletin3 extends Converter {
+class Convert_vbulletin2 extends Converter {
 
 	/**
 	 * String of the bulletin board name
 	 *
 	 * @var string
 	 */
-	var $bbname = "vBulletin 3.6";
+	var $bbname = "vBulletin 2.3";
 	
 	/**
 	 * Array of all of the modules
@@ -27,37 +27,35 @@ class Convert_vbulletin3 extends Converter {
 	 */
 	var $modules = array("db_configuration" => array("name" => "Database Configuration",
 									  "dependencies" => ""),
-						 "import_users" => array("name" => "Import vBulletin 3 Users",
+						 "import_users" => array("name" => "Import vBulletin 2 Users",
 									  "dependencies" => "db_configuration"),
-						 "import_usergroups" => array("name" => "Import vBulletin 3 Usergroups",
+						 "import_usergroups" => array("name" => "Import vBulletin 2 Usergroups",
 									  "dependencies" => "db_configuration,import_users"),
-						 "import_forums" => array("name" => "Import vBulletin 3 Forums",
+						 "import_forums" => array("name" => "Import vBulletin 2 Forums",
 									  "dependencies" => "db_configuration,import_users"),
-						 "import_forumperms" => array("name" => "Import vBulletin 3 Forum Permissions",
+						 "import_forumperms" => array("name" => "Import vBulletin 2 Forum Permissions",
 									  "dependencies" => "db_configuration,import_forums"),
-						 "import_threads" => array("name" => "Import vBulletin 3 Threads",
+						 "import_threads" => array("name" => "Import vBulletin 2 Threads",
 									  "dependencies" => "db_configuration,import_forums"),
-						 "import_polls" => array("name" => "Import vBulletin 3 Polls",
+						 "import_polls" => array("name" => "Import vBulletin 2 Polls",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_pollvotes" => array("name" => "Import vBulletin 3 Poll Votes",
+						 "import_pollvotes" => array("name" => "Import vBulletin 2 Poll Votes",
 									  "dependencies" => "db_configuration,import_polls"),
-						 "import_icons" => array("name" => "Import vBulletin 3 Icons",
+						 "import_icons" => array("name" => "Import vBulletin 2 Icons",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_posts" => array("name" => "Import vBulletin 3 Posts",
+						 "import_posts" => array("name" => "Import vBulletin 2 Posts",
 									  "dependencies" => "db_configuration,import_threads"),
-						 "import_moderators" => array("name" => "Import vBulletin 3 Moderators",
+						 "import_moderators" => array("name" => "Import vBulletin 2 Moderators",
 									  "dependencies" => "db_configuration,import_forums,import_users"),
-						 "import_privatemessages" => array("name" => "Import vBulletin 3 Private Messages",
+						 "import_privatemessages" => array("name" => "Import vBulletin 2 Private Messages",
 						 			  "dependencies" => "db_configuration,import_users"),
-						 "import_smilies" => array("name" => "Import vBulletin 3 Smilies",
+						 "import_smilies" => array("name" => "Import vBulletin 2 Smilies",
 									  "dependencies" => "db_configuration"),
-						 "import_settings" => array("name" => "Import vBulletin 3 Settings",
+						 "import_settings" => array("name" => "Import vBulletin 2 Settings",
 									  "dependencies" => "db_configuration"),
-						 "import_events" => array("name" => "Import vBulletin 3 Calendar Events",
+						 "import_events" => array("name" => "Import vBulletin 2 Calendar Events",
 									  "dependencies" => "db_configuration,import_users"),
-						 "import_attachtypes" => array("name" => "Import vBulletin 3 Attachment Types",
-									  "dependencies" => "db_configuration"),
-						 "import_attachments" => array("name" => "Import vBulletin 3 Attachments",
+						 "import_attachments" => array("name" => "Import vBulletin 2 Attachments",
 									  "dependencies" => "db_configuration,import_posts"),
 						);
 
@@ -139,7 +137,7 @@ class Convert_vbulletin3 extends Converter {
 			}
 		}
 
-		$output->print_header("vBulletin 3 Database Configuration");
+		$output->print_header("vBulletin 2 Database Configuration");
 
 		// Check for errors
 		if(is_array($errors))
@@ -158,7 +156,7 @@ class Convert_vbulletin3 extends Converter {
 		}
 		else
 		{
-			echo "<p>Please enter the database details for your current installation of vBulletin 3.</p>";
+			echo "<p>Please enter the database details for your current installation of vBulletin 2.</p>";
 			$dbhost = 'localhost';
 			$tableprefix = '';
 			$dbuser = '';
@@ -180,7 +178,7 @@ class Convert_vbulletin3 extends Converter {
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype}</option>";
 		}
 
-		$output->print_database_details_table("vBulletin 3");
+		$output->print_database_details_table("vBulletin 2");
 
 		$output->print_footer();
 	}
@@ -234,13 +232,34 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting group #{$group['usergroupid']} as a custom usergroup...";
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_group['import_gid'] = $group['usergroupid'];				
 				$insert_group['title'] = $group['title'];
-				$insert_group['description'] = $group['description'];
-				$insert_group['pmquota'] = $group['pmquota'];
-				$insert_group['maxpmrecipients'] = $group['pmsendmax'];
-				$insert_group['attachquota'] = $group['attachlimit'];
+				$insert_group['canview'] = int_to_yesno($group['canview']);
+				$insert_group['canviewthreads'] = int_to_yesno($group['canviewothers']);
+				$insert_group['candlattachments'] = int_to_yesno($group['cangetattachment']);
+				$insert_group['canpostthreads'] = int_to_yesno($group['canpostnew']);
+				$insert_group['canpostreplys'] = int_to_yesno($group['canreplyothers']);
+				$insert_group['canratethreads'] = int_to_yesno($group['canthreadrate']);
+				$insert_group['caneditposts'] = int_to_yesno($group['caneditpost']);
+				$insert_group['candeleteposts'] = int_to_yesno($group['candeletepost']);
+				$insert_group['candeletethreads'] = int_to_yesno($group['candeletethread']);
+				$insert_group['canpostpolls'] = int_to_yesno($group['canpostpoll']);
+				$insert_group['canvotepolls'] = int_to_yesno($group['canvote']);
+				$insert_group['canusepms'] = int_to_yesno($group['canusepm']);
+				$insert_group['cantrackpms'] = int_to_yesno($group['cantrackpm']);
+				$insert_group['candenypmreceipts'] = int_to_yesno($group['candenypmreceipts']);
+				$insert_group['cansendemail'] = int_to_yesno($group['canemail']);
+				$insert_group['canviewmemberlist'] = int_to_yesno($group['canviewmembers']);
+				$insert_group['canviewonlineips'] = int_to_yesno($group['canwhosonlineip']);
+				$insert_group['cancp'] = int_to_yesno($group['cancontrolpanel']);
+				$insert_group['issupermod'] = int_to_yesno($group['ismoderator']);
+				$insert_group['cansearch'] = int_to_yesno($group['cansearch']);
+				$insert_group['showforumteam'] = int_to_yesno($group['showgroup']);
+				$insert_group['canaddpublicevents'] = int_to_yesno($group['canpublicevent']);
+				$insert_group['canviewonline'] = int_to_yesno($group['canwhosonline']);				
+				$insert_group['maxpmrecipients'] = $group['maxbuddypm'];
+				
 				
 				// Default values
 				$insert_group['type'] = 2;
@@ -250,40 +269,20 @@ class Convert_vbulletin3 extends Converter {
 				$insert_group['image'] = '';
 				$insert_group['disporder'] = 0;
 				$insert_group['isbannedgroup'] = 'no';
-				$insert_group['canview'] = 'yes';
-				$insert_group['canviewthreads'] = 'yes';
+				$insert_group['description'] = '';
+				$insert_group['pmquota'] = '';
 				$insert_group['canviewprofiles'] = 'yes';
-				$insert_group['candlattachments'] = 'yes';
-				$insert_group['canpostthreads'] = 'yes';
-				$insert_group['canpostreplys'] = 'yes';
-				$insert_group['canpostattachments'] = 'yes';
-				$insert_group['canratethreads'] = 'yes';
-				$insert_group['caneditposts'] = 'yes';
-				$insert_group['candeleteposts'] = 'yes';
-				$insert_group['candeletethreads'] = 'yes';
-				$insert_group['caneditattachments'] = 'yes';
-				$insert_group['canpostpolls'] = 'yes';
-				$insert_group['canvotepolls'] = 'yes';
-				$insert_group['canusepms'] = 'yes';
-				$insert_group['cansendpms'] = 'yes';
-				$insert_group['cantrackpms'] = 'yes';
-				$insert_group['candenypmreceipts'] = 'yes';
-				$insert_group['cansendemail'] = 'yes';
-				$insert_group['canviewmemberlist'] = 'yes';
-				$insert_group['canviewcalendar'] = 'yes';
-				$insert_group['canaddpublicevents'] = 'yes';
-				$insert_group['canaddprivateevents'] = 'yes';
-				$insert_group['canviewonline'] = 'yes';
-				$insert_group['canviewwolinvis'] = 'no';
-				$insert_group['canviewonlineips'] = 'no';
-				$insert_group['cancp'] = 'no';
-				$insert_group['issupermod'] = 'no';
-				$insert_group['cansearch'] = 'yes';
+				$insert_group['attachquota'] = '';
+				$insert_group['canpostattachments'] = 'yes';				
+				$insert_group['caneditattachments'] = 'yes';				
+				$insert_group['cansendpms'] = 'yes';				
+				$insert_group['canviewcalendar'] = 'yes'; 				
+				$insert_group['canaddprivateevents'] = 'yes';				
+				$insert_group['canviewwolinvis'] = 'no';				
 				$insert_group['canusercp'] = 'yes';
 				$insert_group['canuploadavatars'] = 'yes';
 				$insert_group['canratemembers'] = 'yes';
-				$insert_group['canchangename'] = 'no';
-				$insert_group['showforumteam'] = 'no';
+				$insert_group['canchangename'] = 'no';				
 				$insert_group['usereputationsystem'] = 'yes';
 				$insert_group['cangivereputations'] = 'yes';
 				$insert_group['reputationpower'] = '1';
@@ -378,12 +377,12 @@ class Convert_vbulletin3 extends Converter {
 				}
 				else if($duplicate_user['username'])
 				{				
-					$user['username'] = $duplicate_user['username']."_vb3_import".$total_users;
+					$user['username'] = $duplicate_user['username']."_vb2_import".$total_users;
 				}
 				
 				echo "Adding user #{$user['userid']}... ";
 						
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_user['usergroup'] = $this->get_group_id($user['usergroupid'], true);
 				$insert_user['additionalgroups'] = str_replace($insert_user['usergroup'], '', $this->get_group_id($user['usergroupid']));
 				$insert_user['displaygroup'] = $this->get_group_id($user['usergroupid'], true);
@@ -399,24 +398,24 @@ class Convert_vbulletin3 extends Converter {
 				$insert_user['lastvisit'] = $user['lastvisit'];
 				$insert_user['website'] = $user['homepage'];
 				$avatar = $this->get_avatar($user['avatarid']);
-				$insert_user['avatardimensions'] = ''; // to do				
+				$insert_user['avatardimensions'] = ''; // to do
 				$insert_user['avatar'] = $avatar['avatarpath'];
 				$insert_user['lastpost'] = $user['lastpost'];
 				$insert_user['birthday'] = $user['birthday'];
 				$insert_user['icq'] = $user['icq'];
 				$insert_user['aim'] = $user['aim'];
 				$insert_user['yahoo'] = $user['yahoo'];
-				$insert_user['msn'] = $user['msn'];
+				$insert_user['msn'] = '';
 				if($avatar['avatar'] == '')
 				{
 					$user['avatartype'] = 0;
 				}
-				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);						
-				$insert_user['style'] = $user['styleid'];				
+				$insert_user['timezone'] = '';						
+				$insert_user['style'] = $user['styleid'];
 				$insert_user['referrer'] = $user['referrerid'];				
 				$insert_user['regip'] = $user['ipaddress'];				
-				$insert_user['totalpms'] = $user['pmtotal'];
-				$insert_user['unreadpms'] = 0; // check ?
+				$insert_user['totalpms'] = $this->get_private_messages($user['userid']);
+				$insert_user['unreadpms'] = $this->get_private_messages($user['userid'], true);
 				
 				// Default values
 				$insert_user['hideemail'] = 'yes';
@@ -443,7 +442,7 @@ class Convert_vbulletin3 extends Converter {
 				$insert_user['reputation'] = "0";
 				$insert_user['timeonline'] = "0";
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
-				$insert_user['avatartype'] = '2';	
+				$insert_user['avatartype'] = '2';
 				
 				$this->insert_user($insert_user);
 				
@@ -508,7 +507,7 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting forum #{$forum['forumid']}... ";
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_forum['import_fid'] = $forum['forumid'];
 				$insert_forum['name'] = $forum['title'];
 				$insert_forum['description'] = $forum['description'];				
@@ -516,13 +515,9 @@ class Convert_vbulletin3 extends Converter {
 				$insert_forum['threads'] = $forum['threadcount'];
 				$insert_forum['posts'] = $forum['replycount'];
 				$insert_forum['style'] = $forum['styleid'];
-				$insert_forum['password'] = $forum['password'];
-				if($forum['defaultsortfield'] == 'lastpost')
-				{
-					$forum['defaultsortfield'] = '';
-				}
-				$insert_forum['defaultsortby'] = $forum['defaultsortfield'];
-				$insert_forum['defaultsortorder'] = $forum['defaultsortorder'];	
+				$insert_forum['password'] = '';
+				$insert_forum['defaultsortby'] = '';
+				$insert_forum['defaultsortorder'] = '';	
 				$insert_forum['unapprovedthreads'] = $this->get_invisible_threads();
 				$insert_forum['unapprovedposts'] = $this->get_invisible_posts();			
 				
@@ -539,15 +534,15 @@ class Convert_vbulletin3 extends Converter {
 				// We have a forum
 				else
 				{
-					$insert_forum['linkto'] = $forum['link'];
+					$insert_forum['linkto'] = '';
 					$insert_forum['type'] = 'f';
 					$insert_forum['pid'] = $this->get_import_fid((-1) * $forum['parentid']);
 					$insert_forum['lastpost'] = $forum['lastpost'];
-					$thread = $this->get_thread($forum['lastthreadid']);
-					$insert_forum['lastposteruid'] = $this->get_import_uid($thread['postuserid']);
-					$insert_forum['lastposttid'] = ((-1) * $forum['lastthreadid']);
-					$insert_forum['lastpostsubject'] = $forum['lastthread'];
-					$insert_forum['lastposter'] = $this->get_import_username($thread['postusername']);
+					$thread = $this->get_lastpost($forum['forumid']);
+					$insert_forum['lastposteruid'] = $this->get_import_uid($thread['userid']);
+					$insert_forum['lastposttid'] = ((-1) * $thread['threadid']);
+					$insert_forum['lastpostsubject'] = $thread['title'];
+					$insert_forum['lastposter'] = $this->get_import_username($thread['userid']);
 				}
 				
 				
@@ -556,21 +551,21 @@ class Convert_vbulletin3 extends Converter {
 				$insert_forum['open'] = 'yes';
 				$insert_forum['rules'] = '';
 				$insert_forum['rulestype'] = 1;
-				$insert_forum['active'] = 'yes';
-				$insert_forum['allowhtml'] = 'no';
-				$insert_forum['allowmycode'] = 'yes';
-				$insert_forum['allowsmilies'] = 'yes';
-				$insert_forum['allowimgcode'] = 'yes';
-				$insert_forum['allowpicons'] = 'yes';
-				$insert_forum['allowtratings'] = 'yes';
+				$insert_forum['active'] = int_to_yesno($forum['active']);
+				$insert_forum['allowhtml'] = int_to_yesno($forum['allowhtml']);
+				$insert_forum['allowmycode'] = int_to_yesno($forum['allowbbcode']);
+				$insert_forum['allowsmilies'] = int_to_yesno($forum['allowsmilies']);
+				$insert_forum['allowimgcode'] = int_to_yesno($forum['allowimages']);
+				$insert_forum['allowpicons'] = int_to_yesno($forum['allowicons']);
+				$insert_forum['allowtratings'] = int_to_yesno($forum['allowratings']);
 				$insert_forum['status'] = 1;
 				$insert_forum['showinjump'] = 'yes';
-				$insert_forum['modposts'] = 'no';
-				$insert_forum['modthreads'] = 'no';
-				$insert_forum['modattachments'] = 'no';
-				$insert_forum['overridestyle'] = 'no';
+				$insert_forum['modposts'] = int_to_yesno($forum['moderatenew']);
+				$insert_forum['modthreads'] = int_to_yesno($forum['moderatenew']);
+				$insert_forum['modattachments'] = int_to_yesno($forum['moderateattach']);
+				$insert_forum['overridestyle'] = int_to_yesno($forum['styleoverride']);
 				$insert_forum['defaultdatecut'] = 0;
-				$insert_forum['usepostcounts'] = 'yes';
+				$insert_forum['usepostcounts'] = int_to_yesno($forum['countposts']);
 	
 				$fid = $this->insert_forum($insert_forum);
 				
@@ -647,37 +642,26 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting permission for forum #{$perm['forumid']}... ";
 				
+				// vBulletin 2 values
 				$insert_perm['fid'] = $this->get_import_fid($perm['forumid']);
 				$insert_perm['gid'] = $this->get_group_id($perm['usergroupid'], true);
+				$insert_perm['canview'] = int_to_yesno($perm['canview']);
+				$insert_perm['cansearch'] = int_to_yesno($perm['cansearch']);
+				$insert_perm['canviewthreads'] = int_to_yesno($perm['canviewothers']);
+				$insert_perm['canpostthreads'] = int_to_yesno($perm['canpostnew']);
+				$insert_perm['candlattachments'] = int_to_yesno($perm['cangetattachment']);
+				$insert_perm['canpostattachments'] = int_to_yesno($perm['canpostattachment']);
+				$insert_perm['caneditposts'] = int_to_yesno($perm['caneditpost']);
+				$insert_perm['candeletethreads'] = int_to_yesno($perm['candeletethread']);
+				$insert_perm['canpostthreads'] = int_to_yesno($perm['canreplyothers']);
+				$insert_perm['candeleteposts'] = int_to_yesno($perm['candeletepost']);
+				$insert_perm['candeletethreads'] = int_to_yesno($perm['candeletethread']);
+				$insert_perm['canpostpolls'] = int_to_yesno($perm['canpostpoll']);
+				$insert_perm['canvotepolls'] = int_to_yesno($perm['canvote']);
 				
-				$perm_bits = array(
-					"canview" => 1, 
-					"canviewthreads" => 2,
-					"candlattachments" => 4096,
-					"canpostthreads" => 16,
-					"canpostreplys" => 64,
-					"canpostattachments" => 8192,
-					"canratethreads" => 65536,
-					"caneditposts" => 128,
-					"candeleteposts" => 256,
-					"candeletethreads" => 512,
-					"caneditattachments" => 8192,
-					"canpostpolls" => 16384,
-					"canvotepolls" => 32768,
-					"cansearch" => 4
-				);
-				
-				foreach($perm_bits as $key => $val) 
-				{
-					if($perm['forumpermissions'] & $val) 
-					{
-						$insert_perm[$key] = "yes"; 
-					} 
-					else 
-					{ 
-						$insert_perm[$key] = "no"; 
-					}
-				}
+				// Default values
+				$insert_perm['canratethreads'] = 'yes';
+				$insert_perm['caneditattachments'] = 'yes';		
 					
 				$this->insert_forumpermission($insert_perm);
 				
@@ -737,16 +721,16 @@ class Convert_vbulletin3 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_threads']-$import_session['start_threads'])." threads left to import and ".round((($import_session['total_threads']-$import_session['start_threads'])/$import_session['threads_per_screen']))." pages left at a rate of {$import_session['threads_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("thread", "*", "", array('order_by' => 'firstpostid', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
+			$query = $this->old_db->simple_select("thread", "*", "", array('order_by' => 'threadid', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting thread #{$thread['threadid']}... ";
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_thread['import_tid'] = $thread['threadid'];
 				$insert_thread['sticky'] = $thread['sticky'];
 				$insert_thread['fid'] = $this->get_import_fid($thread['forumid']);
-				$insert_thread['firstpost'] = ((-1) * $thread['firstpostid']);			
+				$insert_thread['firstpost'] = ((-1) * $this->get_firstpost($thread['threadid']));		
 				$insert_thread['icon'] = $thread['iconid'];
 				$insert_thread['dateline'] = $thread['dateline'];
 				$insert_thread['subject'] = $thread['title'];				
@@ -769,13 +753,13 @@ class Convert_vbulletin3 extends Converter {
 				
 				$insert_thread['totalratings'] = $thread['votetotal'];
 				$insert_thread['notes'] = $thread['notes'];
-				$insert_thread['visible'] = $thread['visible'];
-				$insert_thread['unapprovedposts'] = $thread['hiddencount'];
+				$insert_thread['visible'] = $thread['visible'];				
+				$insert_thread['unapprovedposts'] = $this->get_invisible_posts($thread['threadid']);
 				$insert_thread['numratings'] = $thread['votenum'];
 				$insert_thread['attachmentcount'] = $thread['attach'];	
 				$insert_thread['lastpost'] = $thread['lastpost'];
 				
-				$post = $this->get_post($thread['lastpostid']);
+				$post = $this->get_lastpost2($thread['threadid']);
 				$insert_thread['lastposteruid'] = $this->get_import_uid($post['userid']);				
 				$insert_thread['lastposter'] = $this->get_import_username($post['userid']);
 				$insert_thread['username'] = $this->get_import_username($thread['postuserid']);
@@ -845,7 +829,7 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting poll #{$poll['pollid']}... ";		
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_poll['import_pid'] = $poll['pollid'];
 								
 				$query1 = $db->simple_select("threads", "tid", "import_poll = '{$poll['pollid']}'");
@@ -854,8 +838,8 @@ class Convert_vbulletin3 extends Converter {
 				$votes = @explode('|||', $poll['votes']);
 				
 				$insert_poll['tid'] = $thread['tid'];
-				$insert_poll['question'] = $poll['question'];
 				$insert_poll['dateline'] = $poll['dateline'];
+				$insert_poll['question'] = $poll['question'];
 				$insert_poll['options'] = str_replace('|||', '||~|~||', $poll['options']);
 				$insert_poll['votes'] = str_replace('|||', '||~|~||', $poll['votes']);
 				$insert_poll['numoptions'] = $poll['numberoptions'];
@@ -928,7 +912,7 @@ class Convert_vbulletin3 extends Converter {
 			$query = $this->old_db->simple_select("pollvote", "*", "", array('limit_start' => $import_session['start_pollvotes'], 'limit' => $import_session['pollvotes_per_screen']));
 			while($pollvote = $this->old_db->fetch_array($query))
 			{
-				echo "Inserting poll vote #{$pollvote['pollvoteid']}... ";				
+				echo "Inserting poll vote #{$pollvote['pollvoteid']}... ";
 				
 				$insert_pollvote['uid'] = $this->get_import_uid($pollvote['userid']);
 				$insert_pollvote['dateline'] = $pollvote['votedate'];
@@ -958,7 +942,7 @@ class Convert_vbulletin3 extends Converter {
 		
 		if(!isset($import_session['bburl']))
 		{
-			$query = $this->old_db->simple_select("setting", "value", "name = 'bburl'");
+			$query = $this->old_db->simple_select("setting", "value", "varname = 'bburl'");
 			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
 		}
 
@@ -1005,7 +989,7 @@ class Convert_vbulletin3 extends Converter {
 				echo "Inserting icon #{$icon['iconid']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_icon['import_iid'] = $icon['iconid'];
 				$insert_icon['name'] = $icon['title'];
 				$insert_icon['path'] = "images/icons".substr(strrchr($icon['iconpath'], "/"), 1);
@@ -1091,23 +1075,22 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting post #{$post['postid']}... ";
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_post['import_pid'] = $post['postid'];
 				$insert_post['tid'] = $this->get_import_tid($post['threadid']);
 				$thread = $this->get_thread($post['threadid']);				
-				$insert_post['fid'] = $this->get_import_fid($thread['fid']);
-				$insert_post['subject'] = $thread['title'];
+				$insert_post['fid'] = $this->get_import_fid($thread['forumid']);
+				$insert_post['subject'] = $post['title'];
 				$insert_post['visible'] = $post['visible'];
 				$insert_post['uid'] = $this->get_import_uid($post['userid']);
 				$insert_post['import_uid'] = $post['userid'];
-				$insert_post['username'] = $this->get_import_username($insert_post['import_uid']);
+				$insert_post['username'] = $this->get_import_username($post['userid']);
 				$insert_post['dateline'] = $post['dateline'];
 				$insert_post['message'] = $post['pagetext'];
 				$insert_post['ipaddress'] = $post['ipaddress'];
-				$insert_post['icon'] = $this->get_import_iid($post['iconid']);				
-				$edit = $this->get_editlog($post['postid']);	
-				$insert_post['edituid'] = $this->get_import_uid($edit['userid']);				
-				$insert_post['edittime'] = $edit['dateline'];
+				$insert_post['icon'] = $this->get_import_iid($post['iconid']);	
+				$insert_post['edituid'] = $this->get_import_uid($post['edituserid']);
+				$insert_post['edittime'] = $post['editdate'];
 				$insert_post['includesig'] = int_to_yesno($post['showsignature']);		
 				$insert_post['smilieoff'] = int_to_noyes($post['allowsmilie']);	
 				
@@ -1190,13 +1173,13 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting attachment #{$attachment['attachmentid']}... ";				
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_attachment['import_aid'] = $attachment['attachmentid'];
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['postid']);
 				$insert_attachment['uid'] = $this->get_import_uid($attachment['userid']);
 				$insert_attachment['filename'] = $attachment['filename'];
 				$insert_attachment['attachname'] = "post_".$import_attachment['uid']."_".$attachment['dateline'].".attach";
-				$insert_attachment['filetype'] = $this->get_attach_type($attachment['extension']);
+				$insert_attachment['filetype'] = @mime_content_type($attachment['extension']);
 				$insert_attachment['filesize'] = $attachment['filesize'];
 				$insert_attachment['downloads'] = $attachment['counter'];
 				$insert_attachment['visible'] = int_to_yesno($attachment['visible']);
@@ -1214,17 +1197,6 @@ class Convert_vbulletin3 extends Converter {
 				{
 					mt_srand ((double) microtime() * 1000000);
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
-				}
-				
-				if($attachment['thumbnail'])
-				{
-					$insert_attachment['thumbnail'] = str_replace(".attach", "_thumb.{$attachment['extension']}", $insert_attachment['attachname']);
-					
-					// Transfer attachment thumbnails
-					$file = fopen($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 'w');
-					fwrite($file, $attachment['thumbnail']);
-					fclose($file);
-					@chmod($mybb->settings['uploadspath'].'/'.$insert_attachment['thumbnail'], 0777);
 				}
 				
 				$this->insert_attachment($insert_attachment);
@@ -1263,7 +1235,7 @@ class Convert_vbulletin3 extends Converter {
 		// Get number of usergroups
 		if(!isset($import_session['total_privatemessages']))
 		{
-			$query = $this->old_db->simple_select("pm", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("privatemessage", "COUNT(*) as count");
 			$import_session['total_privatemessages'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1297,31 +1269,21 @@ class Convert_vbulletin3 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_privatemessages']-$import_session['start_privatemessages'])." private messages left to import and ".round((($import_session['total_privatemessages']-$import_session['start_privatemessages'])/$import_session['privatemessages_per_screen']))." pages left at a rate of {$import_session['privatemessages_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->query("
-				SELECT * 
-				FROM ".VB_TABLE_PREFIX."pm p
-				LEFT JOIN ".VB_TABLE_PREFIX."pmtext pt ON(p.pmtextid=pt.pmtextid)
-				LIMIT ".$import_session['start_privatemessages'].", ".$import_session['privatemessages_per_screen']
-			);
-			
+			$query = $this->old_db->simple_select("privatemessage", "*", "", array('limit_start' => $import_session['start_privatemessages'], 'limit' => $import_session['privatemessages_per_screen']));
 			while($pm = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting Private Message #{$pm['pmid']}... ";
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_pm['import_pmid'] = $pm['pmid'];
 				$insert_pm['uid'] = $this->get_import_uid($pm['userid']);
 				$insert_pm['fromid'] = $this->get_import_uid($pm['fromuserid']);
 				$insert_pm['toid'] = $insert_pm['uid']; // need to fix
-				$touserarray = unserialize($pm['touserarray']);
 
 				// Rebuild the recipients array
 				$recipients = array();
-				foreach($touserarray['cc'] as $key => $to)
-				{
-					$username = $this->get_username($to);					
-					$recipients['to'][] = $this->get_import_username($username['userid']);
-				}
+				$recipients['to'][] = $this->get_import_username($insert_pm['toid']);
+				
 				$insert_pm['recipients'] = serialize($recipients);
 				if($pm['folderid'] == -1)
 				{
@@ -1337,11 +1299,7 @@ class Convert_vbulletin3 extends Converter {
 				$insert_pm['dateline'] = $pm['dateline'];
 				$insert_pm['message'] = $pm['message'];
 				$insert_pm['includesig'] = int_to_yesno($pm['showsignature']);
-				$insert_pm['smilieoff'] = int_to_noyes($pm['allowsmilie']);
-				if($insert_pm['smilieoff'] == 'no')
-				{
-					$insert_pm['smilieoff'] = '';
-				}
+				$insert_pm['smilieoff'] = 0;
 				
 				if($pm['messageread'] == 1)
 				{
@@ -1415,16 +1373,16 @@ class Convert_vbulletin3 extends Converter {
 			{
 				echo "Inserting user #{$mod['userid']} as moderator to forum #{$mod['forumid']}... ";
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_mod['fid'] = $this->get_import_fid($mod['forumid']);
 				$insert_mod['uid'] = $this->get_import_uid($mod['userid']);
+				$insert_mod['caneditposts'] = int_to_yesno($mod['caneditposts']);
+				$insert_mod['candeleteposts'] = int_to_yesno($mod['candeleteposts']);
+				$insert_mod['canviewips'] = int_to_yesno($mod['canviewips']);
+				$insert_mod['canopenclosethreads'] = int_to_yesno($mod['canopenclose']);
+				$insert_mod['canmanagethreads'] = int_to_yesno($mod['canmanagethreads']);
 				
 				// Default values
-				$insert_mod['caneditposts'] = 'yes';
-				$insert_mod['candeleteposts'] = 'yes';
-				$insert_mod['canviewips'] = 'yes';
-				$insert_mod['canopenclosethreads'] = 'yes';
-				$insert_mod['canmanagethreads'] = 'yes';
 				$insert_mod['canmovetononmodforum'] = 'yes';
 
 				$this->insert_moderator($insert_mod);
@@ -1450,7 +1408,7 @@ class Convert_vbulletin3 extends Converter {
 		
 		if(!isset($import_session['bburl']))
 		{
-			$query = $this->old_db->simple_select("setting", "value", "name = 'bburl'");
+			$query = $this->old_db->simple_select("setting", "value", "varname = 'bburl'");
 			$import_session['bburl'] = $this->old_db->fetch_field($query, "value").'/';
 		}
 
@@ -1497,11 +1455,11 @@ class Convert_vbulletin3 extends Converter {
 				echo "Inserting smilie #{$smilie['smilieid']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
 				
-				// vBulletin 3 values
+				// vBulletin 2 values
 				$insert_smilie['name'] = $smilie['title'];
 				$insert_smilie['find'] = $smilie['smilietext'];
 				$insert_smilie['image'] = "images/smilies/".substr(strrchr($smilie['smiliepath'], "/"), 1);
-				$insert_smilie['disporder'] = $smilie['displayorder'];
+				$insert_smilie['disporder'] = $smilie['smilieid'];
 				
 				// Default values
 				$insert_smilie['showclickable'] = 'yes';
@@ -1535,6 +1493,7 @@ class Convert_vbulletin3 extends Converter {
 		$output->print_footer();
 	}
 	
+	// TO-DO
 	function import_settings()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1678,95 +1637,11 @@ class Convert_vbulletin3 extends Converter {
 			$query = $this->old_db->simple_select("setting", "varname, value", "varname IN({$settings})", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				// vBulletin 3.6 values
+				// vBulletin 2 values
 				$name = $settings_array[$setting['varname']];
 				$value = $setting['value'];
 				
 				echo "Updating setting ".htmlspecialchars_uni($value)." from the vBulletin database to {$name} in the MyBB database... ";
-				
-				if($setting['varname'] == "banemail" || $setting['varname'] == "illegalusernames")
-				{
-					$value = explode(" ", $value);
-					$value = implode(",", $value);
-				}
-				
-				if($setting['varname'] == "banip")
-				{
-					$value = explode(" ", $string);
-					$value = implode(",", $value);
-					$value = explode("\n", $value);
-					$value = implode(",", $value);
-				}
-				
-				if($setting['varname'] == "logip")
-				{
-					if($value == 1)
-					{
-						$value = "hide";
-					}
-					else if($value == 2)
-					{
-						$value = "show";
-					}
-					else
-					{
-						$value = "no";
-					}
-				}
-				
-				if($setting['varname'] == "moderatenewmembers")
-				{
-					if($setting['config_value'] == 1)
-					{
-						$value = "admin";
-					}
-					else
-					{
-						$value = "verify";
-					}
-				}
-				if($setting['varname'] == "WOLrefresh")
-				{
-					$value = ceil($value / 60);
-				}
-				
-				if($setting['varname'] == "showforumusers")
-				{
-					if($value == 0)
-					{
-						$value = "off";
-					}
-					else
-					{
-						$value = "on";
-					}
-						
-				}
-				
-				if($setting['varname'] == "useheaderredirect")
-				{
-					if($value == 0)
-					{
-						$value = "on";
-					}
-					else
-					{
-						$value = "off";
-					}
-						
-				}
-				
-				if($setting['varname'] == "showprivateforums")
-				{
-					if($value == 0)
-					{
-						$value = "no";
-					}
-					else
-					{
-						$value = "yes";
-					}
-				}
 				
 				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['varname']]))
 				{
@@ -1805,7 +1680,7 @@ class Convert_vbulletin3 extends Converter {
 		// Get number of threads
 		if(!isset($import_session['total_events']))
 		{
-			$query = $this->old_db->simple_select("event", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("calendar_events", "COUNT(*) as count");
 			$import_session['total_events'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1842,23 +1717,24 @@ class Convert_vbulletin3 extends Converter {
 			// Get columns so we avoid any 'unknown column' errors
 			$field_info = $db->show_fields_from("events");
 
-			$query = $this->old_db->simple_select("event", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
+			$query = $this->old_db->simple_select("calendar_events", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
 			while($event = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting event #{$event['eventid']}... ";				
 
 				$insert_event['import_eid'] = $event['eventid'];
-				$insert_event['subject'] = $event['title'];
-				$insert_event['description'] = '';
+				$insert_event['subject'] = $event['subject'];
+				$insert_event['description'] = $event['event'];
 				$insert_event['author'] = $this->get_import_uid($event['userid']);
-				$insert_event['private'] = 'no';
-				$insert_event['date'] = date('j-n-Y', $event['dateline']);
-				$insert_event['start_day'] = date('j', $event['dateline_from']);
-				$insert_event['start_month'] = date('n', $event['dateline_from']);
-				$insert_event['start_year'] = date('Y', $event['dateline_from']);
-				$insert_event['end_day'] = date('j', $event['dateline_to']);
-				$insert_event['end_month'] = date('n', $event['dateline_to']);
-				$insert_event['end_year'] = date('Y', $event['dateline_to']);
+				$insert_event['private'] = int_to_noyes($event['public']);
+				$eventdate = explode('-', $event['eventdate']);
+				$insert_event['date'] = $event[2].'-'.$event[1].'-'.$event[0];
+				$insert_event['start_day'] = $event[2];
+				$insert_event['start_month'] = $event[1];
+				$insert_event['start_year'] = $event[0];
+				$insert_event['end_day'] = 0;
+				$insert_event['end_month'] = 0;
+				$insert_event['end_year'] = 0;
 
 				$this->insert_event($insert_event);
 
@@ -1873,115 +1749,6 @@ class Convert_vbulletin3 extends Converter {
 		}
 		$import_session['start_events'] += $import_session['events_per_screen'];
 		$output->print_footer();
-	}
-
-	function import_attachtypes()
-	{
-		global $mybb, $output, $import_session, $db;
-
-		$this->vbulletin_db_connect();
-
-		// Get number of attachment types
-		if(!isset($import_session['total_attachtypes']))
-		{
-			$query = $this->old_db->simple_select("attachmenttype", "COUNT(*) as count");
-			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, 'count');
-		}
-
-		if($import_session['start_attachtypes'])
-		{
-			// If there are more attachment types to do, continue, or else, move onto next module
-			if($import_session['total_attachtypes'] - $import_session['start_attachtypes'] <= 0)
-			{
-				$import_session['disabled'][] = 'import_attachtypes';
-				return "finished";
-			}
-		}
-		
-		$output->print_header($this->modules[$import_session['module']]['name']);
-
-		// Get number of attachment types per screen from form
-		if(isset($mybb->input['attachtypes_per_screen']))
-		{
-			$import_session['attachtypes_per_screen'] = intval($mybb->input['attachtypes_per_screen']);
-		}
-		
-		if(empty($import_session['attachtypes_per_screen']))
-		{
-			$import_session['start_attachtypes'] = 0;
-			echo "<p>Please select how many attachment types to import at a time:</p>
-<p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
-			$output->print_footer($import_session['module'], 'module', 1);
-		}
-		else
-		{
-			// A bit of stats to show the progress of the current import
-			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
-			
-			// Get existing attachment types
-			$query = $db->simple_select("attachtypes", "extension");
-			while($row = $db->fetch_array($query))
-			{
-				$existing_types[$row['extension']] = true;
-			}
-			
-			$query = $this->old_db->simple_select("attachmenttype", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
-			$i = ($import_session['start_attachtypes']+1);
-			while($type = $this->old_db->fetch_array($query))
-			{
-
-				echo "Inserting attachment type #{$i}... ";				
-
-				$insert_attachtype['import_atid'] = $i;
-				$insert_attachtype['name'] = $type['extension'].' file';
-				$mime_lines = unserialize($type['mimetype']);
-				foreach($mime_lines as $line)
-				{
-					if(strpos($line, 'Content-type:') !== false)
-					{
-						$insert_attachtype['mimetype'] = str_replace('Content-type: ', '', $line);
-						break;
-					}
-				}
-				$insert_attachtype['extension'] = $type['extension'];
-				$insert_attachtype['maxsize'] = round($type['size'] / 1000);
-				$insert_attachtype['icon'] = 'images/attachtypes/image.gif';
-				
-				$this->insert_attachtype($insert_attachtype);
-
-				echo "done.";
-					
-				if(isset($existing_types[$type['extension']]))
-				{
-					echo " (Note: extension already exists)\n";
-				}
-				
-				echo "<br />\n";
-				++$i;
-			}
-			
-			if($import_session['total_attachtypes'] == 0)
-			{
-				echo "There are no attachment types to import. Please press next to continue.";
-				define('BACK_BUTTON', false);
-			}
-		}
-		$import_session['start_attachtypes'] += $import_session['attachtypes_per_screen'];
-		$output->print_footer();
-	}
-	
-	/**
-	 * Get a attachment mime type from the vB database
-	 *
-	 * @param string Extension
-	 * @return string The mime type
-	 */
-	function get_attach_type($ext)
-	{
-		$query = $this->old_db->simple_select("attachmenttype", "mimetype", "extension = '{$ext}'");
-		$mimetype = unserialize($this->old_db->fetch_field($query, "mimetype"));
-		
-		return str_replace('Content-type: ', '', $mimetype[0]);
 	}
 	
 	/**
@@ -2206,16 +1973,66 @@ class Convert_vbulletin3 extends Converter {
 	}
 	
 	/**
-	 * Get a edit log from the vB database
+	 * Get the lastest post from the vB database
 	 *
-	 * @param int Post ID
-	 * @return array The edit log
+	 * @param int Forum ID
+	 * @return array The lastest post
 	 */
-	function get_editlog($pid)
+	function get_lastpost($fid)
 	{
-		$pid = intval($pid);
-		$query = $this->old_db->simple_select("editlog", "*", "postid = '{$pid}'", array('limit' => 1));
-		return $this->fetch_array($query);
+		$query = $this->old_db->query("
+			SELECT * FROM ".VB_TABLE_PREFIX."post p
+			LEFT JOIN ".VB_TABLE_PREFIX."thread t ON(p.threadid=t.threadid) 
+			WHERE t.forumid = '".intval($fid)."' AND p.visible='1'
+			ORDER BY p.dateline DESC
+			LIMIT 1
+		");
+		return $this->old_db->fetch_array($query);
+	}
+	
+	/**
+	 * Get the lastest post from the vB database
+	 *
+	 * @param int Thread ID
+	 * @return array The lastest post
+	 */
+	function get_lastpost2($tid)
+	{
+		$query = $this->old_db->simple_select("post", "*", "threadid = '".intval($tid)."' AND visible='1'", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => 1));
+		return $this->old_db->fetch_array($query);
+	}
+	
+	/**
+	 * Get the first post from the vB database
+	 *
+	 * @param int Thread ID
+	 * @return array The first post
+	 */
+	function get_firstpost($tid)
+	{
+		$query = $this->old_db->simple_select("post", "*", "threadid = '".intval($tid)."'", array('order_by' => 'dateline', 'order_dir' => 'ASC', 'limit' => 1));
+		return $this->old_db->fetch_field($query, "postid");
+	}
+	
+	/**
+	 * Get total number of Private Messages the user has from the vB database
+	 *
+	 * @param int User ID
+	 * @param boolean Count unread messages
+	 * @return int Number of Private Messages
+	 */
+	function get_private_messages($uid, $unread=false)
+	{
+		if($unread == false)
+		{
+			$query = $this->old_db->simple_select("privatemessage", "COUNT(*) as pms", "userid = '{$uid}'");
+		}
+		else
+		{
+			$query = $this->old_db->simple_select("privatemessage", "COUNT(*) as pms", "userid = '{$uid}' AND messageread = '0'");
+		}
+		
+		return $this->old_db->fetch_field($query, 'pms');
 	}
 }
 

@@ -1,10 +1,10 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
+ * License: http://www.mybboard.com/license.php
  *
  * $Id$
  */
@@ -858,6 +858,43 @@ class Converter
 			$atid_array = $this->import_attachtypes;
 		}
 		return $atid_array[$old_atid];
+	}
+	
+	/**
+	 * Get an array of imported icons
+	 *
+	 * @return array
+	 */
+	function get_import_icons()
+	{
+		global $db;
+		
+		$query = $db->simple_select("icons", "iid, import_iid");
+		while($icon = $db->fetch_array($query))
+		{
+			$icons[$icon['import_iid']] = $icon['iid'];
+		}
+		$this->import_icons = $icons;
+		return $icons;
+	}
+	
+	/**
+	 * Get the MyBB icon ID of an old icon id.
+	 *
+	 * @param int Icon ID used before import
+	 * @return int Icon ID in MyBB
+	 */
+	function get_import_iid($old_iid)
+	{
+		if(!is_array($this->import_icons))
+		{
+			$iid_array = $this->get_import_icons();
+		}
+		else
+		{
+			$iid_array = $this->import_icons;
+		}
+		return $iid_array[$old_iid];
 	}
 }
 ?>
