@@ -451,16 +451,16 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				// Was there a new post since we hit the quick reply button?
 				if($mybb->input['lastpid'])
 				{
-					$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND pid!='{$pid}'", array("order_by" => "dateline", "order_dir" => "desc"));
+					$query = $db->simple_select("posts", "pid", "tid = '{$tid}' AND pid != '{$pid}'", array("order_by" => "pid", "order_dir" => "desc"));
 					$new_post = $db->fetch_array($query);
 					if($new_post['pid'] != $mybb->input['lastpid'])
 					{
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
 				}
-				// Lets see if this post is on the same page as the one we're viewing or not
-				// if it isn't, redirect us
 				
+				// Lets see if this post is on the same page as the one we're viewing or not
+				// if it isn't, redirect us				
 				if($perpage > 0 && (($postcounter+1) % $perpage) == 0)
 				{
 					$post_page = ($postcounter+1) / $mybb->settings['postsperpage'];
