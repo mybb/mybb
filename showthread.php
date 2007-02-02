@@ -803,10 +803,10 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 
-	// Decide whether or not to include signatures.
+	// Decide whether or not to show quick reply.
 	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid)) && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "dateline", "order_dir" => "desc"));
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc"));
 		$last_pid = $db->fetch_field($query, "pid");
 		
 		if($mybb->user['signature'])
