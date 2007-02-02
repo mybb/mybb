@@ -40,7 +40,7 @@ if($mybb->input['action'] == "editdraft" && $pid)
 	$options = array(
 		"limit" => 1
 	);
-	$query = $db->simple_select("posts", "*", "pid=".$pid, $options);
+	$query = $db->simple_select("posts", "*", "pid='".$pid."'", $options);
 	$post = $db->fetch_array($query);
 	if(!$post['pid'])
 	{
