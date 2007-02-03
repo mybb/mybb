@@ -83,13 +83,17 @@ class templates
 			$this->cache[$title] = $gettemplate['template'];
 		}
 		$template = $this->cache[$title];
-		if($htmlcomments && $mybb->settings['tplhtmlcomments'] == "yes")
+
+		if($htmlcomments)
 		{
-			$template = "<!-- start: $title -->\n$template\n<!-- end: $title -->";
-		}
-		else
-		{
-			$template = "\n$template\n";
+			if($mybb->settings['tplhtmlcomments'] == "yes")
+			{
+				$template = "<!-- start: $title -->\n$template\n<!-- end: $title -->";
+			}
+			else
+			{
+				$template = "\n$template\n";
+			}
 		}
 		
 		if($eslashes)
