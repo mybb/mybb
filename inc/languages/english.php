@@ -16,7 +16,7 @@ $langinfo['author'] = "MyBulletinBoard";
 $langinfo['website'] = "http://www.mybboard.com/";
 
 // Compatible version of MyBB
-$langinfo['version'] = "122";
+$langinfo['version'] = "123";
 
 // Sets if the translation includes the Admin CP (1 = yes, 0 = no)
 $langinfo['admin'] = 1;
