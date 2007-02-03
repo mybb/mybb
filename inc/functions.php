@@ -646,7 +646,7 @@ function redirect($url, $message="", $title="")
 	else
 	{
 		$url = str_replace("#", "&#", $url);
-		$url = str_replace("&amp;", "&", $url);
+		$url = unhtmlspecialchars($url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
 
 		run_shutdown();
@@ -2967,10 +2967,28 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 function htmlspecialchars_uni($message)
 {
 	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
-	$message = str_replace("<","&lt;" ,$message);
-	$message = str_replace(">","&gt;", $message);
-	$message = str_replace("\"","&quot;", $message);
+	$message = str_replace("<", "&lt;", $message);
+	$message = str_replace(">", "&gt;", $message);
+	$message = str_replace("\"", "&quot;", $message);
 	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
+
+	return $message;
+}
+
+/**
+ * Custom function for reverting back htmlspecialchars.
+ *
+ * @param string The string to format
+ * @return string The string with htmlspecialchars reverted
+ */
+function unhtmlspecialchars($message)
+{
+	$message = str_replace('&amp;',			'&',	$message);
+	$message = str_replace('&#039;',		'\'',	$message);
+	$message = str_replace('&quot;',		'"',	$message);
+	$message = str_replace('&lt;',			'<',	$message);
+	$message = str_replace('&gt;',			'>',	$message);
+	$message = str_replace('&nbsp;&nbsp;',	'  ',	$message);
 
 	return $message;
 }
@@ -3401,7 +3419,7 @@ function get_event_date($event)
 function get_profile_link($uid=0)
 {
 	$link = str_replace("{uid}", $uid, PROFILE_URL);
-	return $link;
+	return htmlspecialchars_uni($link);
 }
 
 /**
@@ -3456,13 +3474,14 @@ function get_forum_link($fid, $page=0)
 {
 	if($page > 0)
 	{
-		$forum_link = str_replace("{fid}", $fid, FORUM_URL_PAGED);
-
-		return str_replace("{page}", $page, $forum_link);
+		$link = str_replace("{fid}", $fid, FORUM_URL_PAGED);
+		$link = str_replace("{page}", $page, $link);
+		return htmlspecialchars_uni($link);
 	}
 	else
 	{
-		return str_replace("{fid}", $fid, FORUM_URL);
+		$link = str_replace("{fid}", $fid, FORUM_URL);
+		return htmlspecialchars_uni($link);
 	}
 }
 
@@ -3486,22 +3505,24 @@ function get_thread_link($tid, $page=0, $action='')
 		{
 			$link = THREAD_URL_PAGED;
 		}
-		$thread_link = str_replace("{tid}", $tid, $link);
-		$thread_link = str_replace("{action}", $action, $thread_link);
-		return str_replace("{page}", $page, $thread_link);
+		$link = str_replace("{tid}", $tid, $link);
+		$link = str_replace("{action}", $action, $link);
+		$link = str_replace("{page}", $page, $link);
+		return htmlspecialchars_uni($link);
 	}
 	else
 	{
 		if($action)
 		{
 			$link = THREAD_URL_ACTION;
+			$link = str_replace("{action}", $action, $link);
 		}
 		else
 		{
 			$link = THREAD_URL;
 		}
-		$link = str_replace("{action}", $action, $link);
-		return str_replace("{tid}", $tid, $link);
+		$link = str_replace("{tid}", $tid, $link);
+		return htmlspecialchars_uni($link);
 	}
 }
 
@@ -3515,12 +3536,14 @@ function get_post_link($pid, $tid=0)
 {
 	if($tid > 0)
 	{
-		$post_link = str_replace("{tid}", $tid, THREAD_URL_POST);
-		return str_replace("{pid}", $pid, $post_link);
+		$link = str_replace("{tid}", $tid, THREAD_URL_POST);
+		$link = str_replace("{pid}", $pid, $link);
+		return htmlspecialchars_uni($link);
 	}
 	else
 	{
-		return str_replace("{pid}", $pid, POST_URL);
+		$link = str_replace("{pid}", $pid, POST_URL);
+		return htmlspecialchars_uni($link);
 	}
 }
 
@@ -3532,7 +3555,8 @@ function get_post_link($pid, $tid=0)
  */
 function get_event_link($eid)
 {
-	return str_replace("{eid}", $eid, EVENT_URL);
+	$link = str_replace("{eid}", $eid, EVENT_URL);
+	return htmlspecialchars_uni($link);
 }
 
 /**
@@ -3550,13 +3574,13 @@ function get_calendar_link($year, $month, $day=0)
 		$link = str_replace("{month}", $month, CALENDAR_URL_DAY);
 		$link = str_replace("{year}", $year, $link);
 		$link = str_replace("{day}", $day, $link);
-		return $link;
+		return htmlspecialchars_uni($link);
 	}
 	else
 	{
 		$link = str_replace("{month}", $month, CALENDAR_URL);
 		$link = str_replace("{year}", $year, $link);
-		return $link;
+		return htmlspecialchars_uni($link);
 	}
 }
 

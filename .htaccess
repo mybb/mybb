@@ -15,7 +15,7 @@
 	RewriteRule ^thread([0-9]+)-nextoldest.html showthread.php?tid=$1&action=nextoldest [L]
 	RewriteRule ^thread([0-9]+)-newpost.html showthread.php?tid=$1&action=newpost [L]
 	RewriteRule ^thread([0-9]+)-p([0-9]+).html showthread.php?tid=$1&pid=$2 [L]
-	RewriteRule ^post-([0-9]+).html showthread.php?pid=$1 [L]
+	RewriteRule ^post([0-9]+).html showthread.php?pid=$1 [L]
 	RewriteRule ^announcemet([0-9]+).html announcement.php?aid=$1 [L]
 	RewriteRule ^user([0-9]+).html member.php?action=profile&uid=$1 [L]
 	RewriteRule ^calendar([0-9]+)-([0-9]+).html calendar.php?year=$1&month=$2 [L]

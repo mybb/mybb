@@ -123,7 +123,7 @@ if($mybb->input['action'] == "lastpost")
 		$query = $db->simple_select('posts', 'pid', "tid={$tid}", $options);
 		$pid = $db->fetch_field($query, "pid");
 	}
-	header("Location:".get_post_link($pid, $tid)."#pid{$pid}");
+	header("Location:".unhtmlspecialchars(get_post_link($pid, $tid))."#pid{$pid}");
 	exit;
 }
 
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "nextnewest")
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:".get_post_link($pid, $nextthread['tid'])."#pid{$pid}");
+	header("Location:".unhtmlspecialchars(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
 }
 
 // Jump to the next oldest posts.
@@ -183,7 +183,7 @@ if($mybb->input['action'] == "nextoldest")
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:".get_post_link($pid, $nextthread['tid'])."#pid{$pid}");
+	header("Location:".unhtmlspecialchars(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
 }
 
 // Jump to the unread posts.
@@ -239,11 +239,11 @@ if($mybb->input['action'] == "newpost")
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
-		header("Location:".get_post_link($newpost['pid'], $tid)."#pid{$newpost['pid']}");
+		header("Location:".unhtmlspecialchars(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
 	}
 	else
 	{
-		header("Location:".get_thread_link($tid, 0, "lastpost"));
+		header("Location:".unhtmlspecialchars(get_thread_link($tid, 0, "lastpost")));
 	}
 }
 

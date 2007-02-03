@@ -3706,14 +3706,14 @@ form {
 	</td>
 	<td class="trow1" width="33%">
 		<select name="sort" id="sort" style="width: 99%;">
-			<option value="username" {$sort_selected['username']}>{$lang->sort_by_username}</option>
-			<option value="regdate" {$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
-			<option value="lastvisit" {$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
-			<option value="posts" {$sort_selected['posts']}>{$lang->sort_by_posts}</option>
+			<option value="username"{$sort_selected['username']}>{$lang->sort_by_username}</option>
+			<option value="regdate"{$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
+			<option value="lastvisit"{$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
+			<option value="posts"{$sort_selected['posts']}>{$lang->sort_by_posts}</option>
 		</select><br />
 		<span class="smalltext">
-		<input type="radio" class="radio" name="order" id="order_asc" value="asc" {$order_check['asc']} /> <label for="order_asc">{$lang->order_asc}</label><br />
-		<input type="radio" class="radio" name="order" id="order_desc" value="desc" {$order_check['desc']} /> <label for="order_desc">{$lang->order_desc}</label>
+		<input type="radio" class="radio" name="order" id="order_asc" value="asc"{$order_check['asc']} /> <label for="order_asc">{$lang->order_asc}</label><br />
+		<input type="radio" class="radio" name="order" id="order_desc" value="desc"{$order_check['desc']} /> <label for="order_desc">{$lang->order_desc}</label>
 		</span>
 	</td>
 </tr>

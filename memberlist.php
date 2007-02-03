@@ -71,7 +71,7 @@ else
 			$mybb->input['sort'] = 'username';
 			break;
 	}
-	$sort_selected[$mybb->input['sort']] = "selected=\"selected\"";
+	$sort_selected[$mybb->input['sort']] = " selected=\"selected\"";
 	
 	// Incoming sort order?
 	$mybb->input['order'] = strtolower($mybb->input['order']);
@@ -85,7 +85,7 @@ else
 		$sort_order = "DESC";
 		$mybb->input['order'] = "desc";
 	}
-	$order_check[$mybb->input['order']] = "checked=\"checked\"";
+	$order_check[$mybb->input['order']] = " checked=\"checked\"";
 	
 	// Incoming results per page?
 	$mybb->input['perpage'] = intval($mybb->input['perpage']);
@@ -115,7 +115,7 @@ else
 		}
 		$search_url .= "&letter={$letter}";
 	}
-	
+
 	// Searching for a matching username
 	$search_username = htmlspecialchars_uni($mybb->input['username']);
 	if(trim($mybb->input['username']))
@@ -134,7 +134,7 @@ else
 		}
 		$search_url .= "&username={$mybb->input['username']}";
 	}
-	
+
 	// Website contains
 	$search_website = htmlspecialchars_uni($mybb->input['website']);	
 	if(trim($mybb->input['website']))
@@ -143,7 +143,7 @@ else
 		$search_query .= " AND u.website LIKE '%".$db->escape_string($mybb->input['website'])."%'";
 		$search_url .= "&website={$mybb->input['website']}";
 	}
-	
+
 	// AIM Identity
 	if(trim($mybb->input['aim']))
 	{
@@ -151,7 +151,7 @@ else
 		$search_query .= " AND u.aim LIKE '%".$db->escape_string($mybb->input['aim'])."%'";
 		$search_url .= "&aim={$mybb->input['aim']}";
 	}
-	
+
 	// ICQ Number
 	if(trim($mybb->input['icq']))
 	{
@@ -159,7 +159,7 @@ else
 		$search_query .= " AND u.icq LIKE '%".$db->escape_string($mybb->input['icq'])."%'";
 		$search_url .= "&icq={$mybb->input['icq']}";
 	}
-	
+
 	// MSN/Windows Live Messenger address
 	if(trim($mybb->input['msn']))
 	{
@@ -167,7 +167,7 @@ else
 		$search_query .= " AND u.msn LIKE '%".$db->escape_string($mybb->input['msn'])."%'";
 		$search_url .= "&msn={$mybb->input['msn']}";
 	}
-	
+
 	// Yahoo! Messenger address
 	if(trim($mybb->input['yahoo']))
 	{
@@ -175,10 +175,10 @@ else
 		$search_query .= " AND u.yahoo LIKE '%".$db->escape_string($mybb->input['yahoo'])."%'";
 		$search_url .= "&yahoo={$mybb->input['yahoo']}";	
 	}
-	
+
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
 	$num_users = $db->fetch_field($query, "users");
-	
+
 	$page = intval($mybb->input['page']);
 	if($page)
 	{
