@@ -402,9 +402,9 @@ if($mybb->input['action'] == "profile")
 					$sel = "";
 					if($val == $seloptions[$val])
 					{
-						$sel = "selected=\"selected\"";
+						$sel = " selected=\"selected\"";
 					}
-					$select .= "<option value=\"$val\" $sel>$val</option>\n";
+					$select .= "<option value=\"$val\"$sel>$val</option>\n";
 				}
 				if(!$profilefield['length'])
 				{
@@ -425,9 +425,9 @@ if($mybb->input['action'] == "profile")
 					$sel = "";
 					if($val == $userfield)
 					{
-						$sel = "selected=\"selected\"";
+						$sel = " selected=\"selected\"";
 					}
-					$select .= "<option value=\"$val\" $sel>$val</option>";
+					$select .= "<option value=\"$val\"$sel>$val</option>";
 				}
 				if(!$profilefield['length'])
 				{
@@ -446,9 +446,9 @@ if($mybb->input['action'] == "profile")
 					$checked = "";
 					if($val == $userfield)
 					{
-						$checked = "checked=\"checked\"";
+						$checked = " checked=\"checked\"";
 					}
-					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+					$code .= "<input type=\"radio\" class=\"radio\" name=\"profile_fields[$field]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
 				}
 			}
 		}
@@ -477,9 +477,9 @@ if($mybb->input['action'] == "profile")
 					$checked = "";
 					if($val == $seloptions[$val])
 					{
-						$checked = "checked=\"checked\"";
+						$checked = " checked=\"checked\"";
 					}
-					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\" $checked /> <span class=\"smalltext\">$val</span><br />";
+					$code .= "<input type=\"checkbox\" class=\"checkbox\" name=\"profile_fields[$field][]\" value=\"$val\"$checked /> <span class=\"smalltext\">$val</span><br />";
 				}
 			}
 		}
