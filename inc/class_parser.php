@@ -510,7 +510,6 @@ class postParser
 		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
-			$message = stripslashes($message);
 		}
 
 		if($text_only == false)
@@ -543,6 +542,7 @@ class postParser
 
 		$linkback = $date = "";
 
+		$message = stripslashes($message);
 		$username = stripslashes($username) . "'";
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
