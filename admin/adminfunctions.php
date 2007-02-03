@@ -1306,7 +1306,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 		}
 		
 		$perms_group = array();
-		$query = $db->simple_select("adminoptions", "*", "(uid='{$uid}' OR uid='0'{$group_sql}) AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='{$uid}'{$group_sql}) AND permsset != ''", $options);
 		while($perm = $db->fetch_array($query))
 		{
 			// Sorting out which permission is which
