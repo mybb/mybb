@@ -260,9 +260,6 @@ class postParser
 
 		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
 		$standard_mycode['hr']['replacement'] = "<hr />";
-		
-		$standard_mycode['linkback']['regex'] = "#\[linkback=([0-9]*)\]#si";
-		$standard_mycode['linkback']['replacement'] = "<a href=\"showthread.php?pid=$1#pid$1\">[{$lang->linkback}]</a>";
 
 		$custom_mycode = $cache->read("mycode");
 
@@ -316,7 +313,7 @@ class postParser
 
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message);
-		
+
 		$message = $this->mycode_auto_url($message);
 
 		$message = str_replace('$', '&#36;', $message);
@@ -432,7 +429,10 @@ class postParser
 			reset($this->badwords_cache);
 			foreach($this->badwords_cache as $bid => $badword)
 			{
-				if(!$badword['replacement']) $badword['replacement'] = "*****";
+				if(!$badword['replacement'])
+				{
+					$badword['replacement'] = "*****";
+				}
 				$badword['badword'] = preg_quote($badword['badword']);
 				$message = preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
 			}
@@ -484,43 +484,98 @@ class postParser
 	*/
 	function mycode_parse_quotes($message, $text_only=false)
 	{
-		global $lang;
+		global $lang, $templates, $theme, $mybb;
 
 		// Assign pattern and replace values.
-		$pattern = array("#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#si",
-						 "#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si");
-						 
+		$pattern = array(
+			"#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#esi",
+			"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si"
+		);
 
 		if($text_only == false)
 		{
-			$replace = array("</p>\n<div class=\"quote_header\">".htmlentities('\\1')." $lang->wrote\n</div><div class=\"quote_body\">$2</div>\n<p>\n",
-						 	"</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n");
+			$replace = array(
+				"\$this->mycode_parse_post_quotes(\"$2\",\"$1\")",
+				"</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n"
+			);
 		}
 		else
 		{
-			$replace = array("\n".htmlentities('\\1')." $lang->wrote\n--\n$2\n--\n",
-							"\n{$lang->quote}\n--\n$1\n--\n");
+			$replace = array(
+				"\$this->mycode_parse_post_quotes(\"$2\", \"$1\", true)",
+				"\n{$lang->quote}\n--\n$1\n--\n"
+			);
 		}
-		
+
 		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
+			$message = stripslashes($message);
 		}
+
 		if($text_only == false)
 		{
 			$find = array(
 				"#<div class=\"quote_body\">(\r\n?|\n?)#",
 				"#(\r\n?|\n?)</div>#"
-				);
+			);
 
-				$replace = array(
-					"<div class=\"quote_body\">",
+			$replace = array(
+				"<div class=\"quote_body\">",
 				"</div>"
-				);
-				$message = preg_replace($find, $replace, $message);
+			);
+			$message = preg_replace($find, $replace, $message);
 		}
 		return $message;
+	}
+	
+	/**
+	* Parses quotes with post id and/or dateline.
+	*
+	* @param string The message to be parsed
+	* @param string The username to be parsed
+	* @param boolean Are we formatting as text?
+	* @return string The parsed message.
+	*/
+	function mycode_parse_post_quotes($message, $username, $text_only=false)
+	{
+		global $lang, $templates, $theme, $mybb;
 
+		$linkback = $date = "";
+
+		$username = stripslashes($username) . "'";
+
+		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
+		if(intval($match[1]))
+		{
+			$url = get_post_link(intval($match[1]));
+			eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
+			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
+		}
+
+		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#", $username, $match);
+		if(intval($match[1]))
+		{
+			$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
+			$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
+			$date = " ({$postdate} {$posttime})";
+			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#", '', $username);
+		}
+
+		$username_length = my_strlen($username)-1;
+		if(my_strpos($username, "'") == $username_length)
+		{
+			$username = my_substr($username, 0, $username_length);
+		}
+
+		if($text_only)
+		{
+			return "\n".htmlentities($username)." $lang->wrote{$date}\n--\n{$message}\n--\n";
+		}
+		else
+		{
+			return "</p>\n<div class=\"quote_header\">".htmlentities($username)." $lang->wrote{$date}{$linkback}\n</div><div class=\"quote_body\">{$message}</div>\n<p>\n";
+		}
 	}
 
 	/**
@@ -638,6 +693,8 @@ class postParser
 		if($added_end_tag)
 		{
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
+			// Wait a minute. It fails highlighting? Stupid highlighter.
+			$code = str_replace("?&gt;</code>", "</code>", $code);
 		}
 
 		$code = preg_replace("#<span style=\"color: \#([A-Z0-9]{6})\"></span>#", "", $code);

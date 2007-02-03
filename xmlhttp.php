@@ -460,14 +460,14 @@ else if($mybb->input['action'] == "get_multiquoted")
 	}
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
-		SELECT p.subject, p.message, p.pid, p.tid, p.username, t.fid, p.visible, u.username AS userusername
+		SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, t.fid, p.visible, u.username AS userusername
 		FROM ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 		WHERE {$from_tid}p.pid IN ($quoted_posts) {$unviewable_forums}
 	");
 	while($quoted_post = $db->fetch_array($query))
-	{	
+	{
 		if(!is_moderator($quoted_post['fid']) && $quoted_post['visible'] == 0)
 		{
 			continue;
@@ -484,7 +484,7 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 		
 		// Tack on to list of messages
-		$message .= "[quote={$quoted_post['username']}][linkback={$quoted_post['pid']}]\n{$quoted_post['message']}\n[/quote]\n\n";
+		$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 	}
 	
 	// Send our headers.

@@ -574,7 +574,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				$visible_where = "AND p.visible > 0";
 			}
 			$query = $db->query("
-				SELECT p.subject, p.message, p.pid, p.tid, p.username, u.username AS userusername
+				SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -599,7 +599,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
-					$message .= "[quote={$quoted_post['username']}][linkback={$quoted_post['pid']}]\n{$quoted_post['message']}\n[/quote]\n\n";
+					$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 					$quoted_ids[] = $quoted_post['pid'];
 				}
 				// Count the rest

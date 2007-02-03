@@ -1399,7 +1399,7 @@ form {
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="{$subscription['threadlink']}">{$subscription['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$subscription['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removesubscription&amp;tid={$subscription['tid']}">{$lang->unsubscribe}</a></span></td>
 <td align="center" class="trow2">{$subscription['profilelink']}</td>
-<td align="center" class="trow1">{$subscription['replies']}</td>
+<td align="center" class="trow1"><a href="javascript:MyBB.whoPosted({$subscription['tid']});">{$subscription['replies']}</a></td>
 <td align="center" class="trow2">{$subscription['views']}</td>
 <td class="trow1" style="white-space: nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>]]></template>
 		<template name="usercp_options_timezoneselect" version="120"><![CDATA[<select name="timezoneoffset">
@@ -1444,7 +1444,7 @@ form {
 <td align="center" class="trow2">{$icon}</td>
 <td width="100%" class="trow1"><a href="{$favorite['threadlink']}">{$favorite['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$favorite['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removefavorite&amp;tid={$favorite['tid']}">{$lang->delete_from_favorites}</a></span></td>
 <td align="center" class="trow2">{$favorite['profilelink']}</td>
-<td align="center" class="trow1">{$favorite['replies']}</td>
+<td align="center" class="trow1"><a href="javascript:MyBB.whoPosted({$favorite['tid']});">{$favorite['replies']}</a></td>
 <td align="center" class="trow2">{$favorite['views']}</td>
 <td class="trow1">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>
 </tr>]]></template>
@@ -3948,6 +3948,7 @@ form {
 </td>
 </tr>
 </table>]]></template>
+		<template name="postbit_gotopost" version="140"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" /></a>]]></template>
 		<template name="postbit_seperator" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
@@ -7034,7 +7035,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
 	regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
 	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'{$lang->js_validator_email_match}'});
-	{$validator_extra}
+{$validator_extra}
 	regValidator.register('username', 'ajax', {url:'xmlhttp.php?action=username_availability', loading_message:'{$lang->js_validator_checking_username}'}); // needs to be last
 // -->
 </script>
