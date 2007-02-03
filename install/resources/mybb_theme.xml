@@ -3948,7 +3948,7 @@ form {
 </td>
 </tr>
 </table>]]></template>
-		<template name="postbit_gotopost" version="140"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" /></a>]]></template>
+		<template name="postbit_gotopost" version="140"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" style="vertical-align: middle" /></a>]]></template>
 		<template name="postbit_seperator" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
