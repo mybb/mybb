@@ -29,7 +29,7 @@ require_once MYBB_ROOT.'inc/class_xml.php';
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';
 $lang = new MyLanguage();
-$lang->set_path(MYBB_ROOT.'install/resources/');
+$lang->set_path(MYBB_ROOT.'install/resources');
 $lang->load('language');
 
 // Include the necessary contants for installation
