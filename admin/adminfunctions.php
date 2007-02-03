@@ -1257,7 +1257,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 		// If user's permission are explicitly set, they've already been returned above.
 		if(isset($final_group_perms))
 		{
-			return $perms_group;
+			return $final_group_perms;
 		}
 		else
 		{
