@@ -1192,8 +1192,17 @@ if($mybb->input['action'] == "profile")
 		else
 		{
 			$returnhome = explode("-", $memprofile['returndate']);
-			$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
-			$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
+			if($returnhome[2] >= 2038)
+			{
+				require_once MYBB_ROOT."inc/functions_time.php";
+				$returnmkdate = adodb_mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
+				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate, "", 1, true);
+			}
+			else
+			{
+				$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
+				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
+			}
 		}
 		eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
 	}

@@ -387,6 +387,7 @@ switch($mybb->input['sortby'])
 		break;
 	case "rating":
 		$sortfield = "averagerating";
+		$sortfield2 = ", t.totalratings DESC";
 		break;
 	case "started":
 		$sortfield = "dateline";
@@ -555,7 +556,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 	WHERE t.fid='$fid' $visibleonly $datecutsql2
-	ORDER BY t.sticky DESC, t.$sortfield $sortordernow
+	ORDER BY t.sticky DESC, t.$sortfield $sortordernow $sortfield2
 	LIMIT $start, $perpage
 ");
 while($thread = $db->fetch_array($query))

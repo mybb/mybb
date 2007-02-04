@@ -270,9 +270,10 @@ function parse_page($contents)
  * @param int The unix timestamp the date should be generated for.
  * @param int The offset in hours that should be applied to times. (timezones)
  * @param int Whether or not to use today/yesterday formatting.
+ * @param boolean Whether or not to use the adodb time class for < 1970 or > 2038 times
  * @return string The formatted timestamp.
  */
-function my_date($format, $stamp="", $offset="", $ty=1)
+function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
@@ -315,13 +316,30 @@ function my_date($format, $stamp="", $offset="", $ty=1)
 	{
 		$offset = 0;
 	}
-
-	$date = gmdate($format, $stamp + ($offset * 3600));
+	
+	if($adodb == true && function_exists('adodb_date'))
+	{
+		$date = adodb_date($format, $stamp + ($offset * 3600));
+	}
+	else
+	{
+		$date = gmdate($format, $stamp + ($offset * 3600));
+	}
+	
 	if($mybb->settings['dateformat'] == $format && $ty)
 	{
 		$stamp = time();
-		$todaysdate = gmdate($format, $stamp + ($offset * 3600));
-		$yesterdaysdate = gmdate($format, ($stamp - 86400) + ($offset * 3600));
+		
+		if($adodb == true && function_exists('adodb_date'))
+		{
+			$todaysdate = adodb_date($format, $stamp + ($offset * 3600));
+			$yesterdaysdate = adodb_date($format, ($stamp - 86400) + ($offset * 3600));
+		}
+		else
+		{
+			$todaysdate = gmdate($format, $stamp + ($offset * 3600));
+			$yesterdaysdate = gmdate($format, ($stamp - 86400) + ($offset * 3600));
+		}
 
 		if($todaysdate == $date)
 		{

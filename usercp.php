@@ -166,8 +166,18 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 	if($mybb->input['away'] == "yes" && $mybb->settings['allowaway'] != "no")
 	{
 		$awaydate = time();
-		if($mybb->input['awayday'] && $mybb->input['awaymonth'] && $mybb->input['awayyear'])
+		if($mybb->input['awayday'])
 		{
+			if(!$mybb->input['awaymonth'])
+			{
+				$mybb->input['awaymonth'] = my_date('n', $awaydate);
+			}
+			
+			if(!$mybb->input['awayyear'])
+			{
+				$mybb->input['awayyear'] = my_date('Y', $awaydate);
+			}
+			
 			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
 			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
 			if ($returntimestamp < $awaytimestamp && $mybb->input['awayyear'] < my_date("Y"))
