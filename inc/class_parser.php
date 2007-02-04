@@ -453,6 +453,7 @@ class postParser
 	function fix_javascript($message)
 	{
 		$js_array = array(
+			"#(&\#106;)(&\#97;&\#118;&\#97;&\#115;&\#99;&\#114;&\#105;&\#112;&\#116;&\#58;)#",
 			"#(j)(avascript\:)#i",
 			"#(o)(nmouseover\s?=)#i",
 			"#(o)(nmouseout\s?=)#i",
