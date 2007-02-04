@@ -402,11 +402,11 @@ function show($user)
 			// Guest or member?
 			if($mybb->user['uid'] == 0)
 			{
-				$location_name = $lang->logging_in;
+				$locationname = $lang->logging_in;
 			}
 			else
 			{
-				$location_name = $lang->logging_in_plain;
+				$locationname = $lang->logging_in_plain;
 			}
 			break;
 		case "member_logout":
