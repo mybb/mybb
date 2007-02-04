@@ -390,44 +390,51 @@ hr {
 }
 
 .quote_header {
-	background: #fff;
-	border: 1px dashed #000;
-	border-bottom: 0;
-	color: #000;
+	background: #adcbe7;
+	border: 1px solid #81A2C4;
+	color: #000000;
 	font-weight: bold;
-	margin: 8px auto 0 auto;
+	margin: 4px;
+	margin-left: 0px;
+	margin-bottom:0px;
 	padding: 4px;
 }
 
 .quote_body {
-	background: #fff;
-	border: 1px dashed #000;
-	border-top: 0;
+	background: #ffffff;
+	border: 1px solid #81A2C4;
+	border-top: 0px;
 	color: #000;
 	padding: 4px;
-	margin: 0 auto 8px auto;
+	margin: 4px;
+	margin-left: 0px;
+	margin-top: 0px;
 }
 
 .code_header {
-	background: #fff;
-	border: 1px dashed #000;
-	border-bottom: 0;
-	color: #000;
+	background: #adcbe7;
+	border: 1px solid #81A2C4;
+	color: #000000;
 	font-weight: bold;
-	margin: 8px auto 0 auto;
+	margin: 4px;
+	margin-left: 0px;
+	margin-bottom:0px;
 	padding: 4px;
 }
 
 .code_body {
-	background: #fff;
-	border: 1px dashed #000;
-	border-top: 0;
+	background: #ffffff;
+	border: 1px solid #81A2C4;
+	border-top: 0px;
 	color: #000;
 	padding: 4px;
-	margin: 0 auto 8px auto;
+	margin: 4px;
+	margin-left: 0px;
+	margin-top: 0px;
 	font-family: Monaco, Consolas, Courier, monospace;
 	font-size: 12px;
 }
+
 .usercpnav {
 	list-style: inside;
 	padding: 0;

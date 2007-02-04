@@ -576,7 +576,12 @@ class postParser
 		}
 		else
 		{
-			return "</p>\n<div class=\"quote_header\">".htmlentities($username)." $lang->wrote{$date}{$linkback}\n</div><div class=\"quote_body\">{$message}</div>\n<p>\n";
+			$span = "";
+			if(!$delete_quote)
+			{
+				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
+			}
+			return "</p>\n<div class=\"quote_header\">{$span}".htmlentities($username)." $lang->wrote{$linkback}\n</div><div class=\"quote_body\">{$message}</div>\n<p>\n";
 		}
 	}
 
