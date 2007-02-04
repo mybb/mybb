@@ -4072,12 +4072,12 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <td class="trow1">{$users['regdate']}</td>
 <td class="trow2">{$users['postnum']}</td>
 </tr>]]></template>
-		<template name="index_loginform" version="120"><![CDATA[<br /><br />
+		<template name="index_loginform" version="123"><![CDATA[<br /><br />
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
-	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="this.value=''" />
-	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="this.value=''" />
+	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="if(this.value == "{$lang->login_username}") { this.value='' }" />
+	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if(this.value == "{$lang->login_password}") { this.value='' }" />
 	{$gobutton}
 </form>]]></template>
 		<template name="multipage" version="120"><![CDATA[<div><span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span></div>]]></template>
