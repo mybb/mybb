@@ -153,6 +153,5 @@ $l['error_bannedusername'] = "You have entered a username that is banned from re
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_hideemail'] = "The recipient has chosen to hide his/her e-mail address.";
-$l['error_already_logged_in'] = "Sorry, but it seems you are already logged in. If you wish to log in again, please log out first.";
 
 ?>
