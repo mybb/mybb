@@ -123,7 +123,7 @@ class session
 
 		$uid = intval($uid);
 		$query = $db->query("
-			SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup 
+			SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup, b.olddisplaygroup as banolddisplaygroup, b.oldadditionalgroups as banoldadditionalgroups 
 			FROM ".TABLE_PREFIX."users u 
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
 			LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) 

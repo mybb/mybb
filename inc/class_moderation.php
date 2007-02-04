@@ -544,7 +544,20 @@ class Moderation
 						'multiple' => $poll['multiple'],
 						'public' => $poll['public']
 					);
-					$db->insert_array(TABLE_PREFIX."polls", $poll_array);
+					$db->insert_query(TABLE_PREFIX."polls", $poll_array);
+					$new_pid = $db->insert_id();
+				}
+				
+				$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "tid = '{$thread['tid']}'");				
+				while($pollvote = $db->fetch_array($query))
+				{
+					$pollvote_array = array(
+						'pid' => $new_pid,
+						'uid' => $pollvote['uid'];,
+						'voteoption' => $pollvote['voteoption'],
+						'dateline' => $pollvote['dateline'],
+					);
+					$db->insert_query(TABLE_PREFIX."pollvotes", $pollvote_array);
 				}
 				
 				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid = '{$thread['tid']}'");				

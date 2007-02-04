@@ -170,9 +170,14 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
 			
+			if($mybb->input['awayyear'] >= 2038)
+			{
+				error($lang->error_usercp_return_date_2038);
+			}
+			
 			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
 			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
-			if ($returntimestamp < $awaytimestamp && $mybb->input['awayyear'] < my_date("Y"))
+			if($returntimestamp < $awaytimestamp && $mybb->input['awayyear'] < my_date("Y"))
 			{
 				error($lang->error_usercp_return_date_past);
 			}

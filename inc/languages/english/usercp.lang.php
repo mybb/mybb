@@ -309,4 +309,5 @@ $l['error_noavatar'] = "You did not choose an avatar. Please go back and do so n
 $l['error_avatartype'] = "Invalid file type. An uploaded avatar must be in GIF, JPEG, or PNG format.";
 $l['error_alreadyingroup'] = "The user specified already is part of the usergroup.";
 $l['error_usercp_return_date_past'] = "You cannot return in the past!";
+$l['error_usercp_return_date_2038'] = "You cannot set your away year date more than 2037!";
 ?>
