@@ -58,25 +58,24 @@ function int_to_yes_no($setting, $yes=1)
 
 	if($setting == 0 && $yes == 1)
 	{
-		$return = "no";
+		return "no";
 	}
 	elseif($setting == 1 && $yes == 1)
 	{
-		$return = "yes";
+		return "yes";
 	}
 	elseif($setting == 0 && $yes == 0)
 	{
-		$return = "yes";
+		return "yes";
 	}
 	elseif($setting == 1 && $yes == 0)
 	{
-		$return = "no";
+		return "no";
 	}
 	else
 	{
-		$return = "yes";
+		return "yes";
 	}
-	return $return;
 }
 
 /**
@@ -84,31 +83,30 @@ function int_to_yes_no($setting, $yes=1)
  * @param int Integer to be converted
  * @return string Correspondig on or off
  */
-function int_to_on_off($setting, $yes=1)
+function int_to_on_off($setting, $on=1)
 {
 	$setting = intval($setting);
 
-	if($setting == 0 && $yes == 1)
+	if($setting == 0 && $on == 1)
 	{
-		$return = "off";
+		return "off";
 	}
-	elseif($setting == 1 && $yes == 1)
+	elseif($setting == 1 && $on == 1)
 	{
-		$return = "on";
+		return "on";
 	}
-	elseif($setting == 0 && $yes == 0)
+	elseif($setting == 0 && $on == 0)
 	{
-		$return = "on";
+		return "on";
 	}
-	elseif($setting == 1 && $yes == 0)
+	elseif($setting == 1 && $on == 0)
 	{
-		$return = "off";
+		return "off";
 	}
 	else
 	{
-		$return = "on";
+		return "on";
 	}
-	return $return;
 }
 
 /**

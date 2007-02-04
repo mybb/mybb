@@ -7263,7 +7263,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<form action="search.php" method="post">
 			<input type="hidden" name="action" value="thread" />
 			<input type="hidden" name="tid" value="{$thread['tid']}" />
-			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" class="textbox" size="25" />
+			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
 			<input type="submit" value="{$lang->search_thread}" />
 		</form>
 	</div>]]></template>

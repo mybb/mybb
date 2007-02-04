@@ -1684,7 +1684,7 @@ class Convert_phpbb3 extends Converter {
 
 				if($setting['config_name'] == 'board_timezone')
 				{
-					if(strpos($value, '-') === false)
+					if(strpos($value, '-') === false && $value != 0)
 					{
 						$value = "+" . $value;
 					}
