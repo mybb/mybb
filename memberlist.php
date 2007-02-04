@@ -120,7 +120,7 @@ else
 	$search_username = htmlspecialchars_uni($mybb->input['username']);
 	if(trim($mybb->input['username']))
 	{
-		$mybb->input['username'] = str_replace("%", "\\%", $mybb->input['username']);
+		$mybb->input['username'] = $db->escape_string_like($mybb->input['username']);
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
@@ -136,10 +136,10 @@ else
 	}
 
 	// Website contains
-	$search_website = htmlspecialchars_uni($mybb->input['website']);	
+	$search_website = htmlspecialchars_uni($mybb->input['website']);
 	if(trim($mybb->input['website']))
 	{
-		$mybb->input['website'] = str_replace("%", "\\%", $mybb->input['website']);
+		$mybb->input['website'] = $db->escape_string_like($mybb->input['website']);
 		$search_query .= " AND u.website LIKE '%".$db->escape_string($mybb->input['website'])."%'";
 		$search_url .= "&website={$mybb->input['website']}";
 	}
@@ -147,7 +147,7 @@ else
 	// AIM Identity
 	if(trim($mybb->input['aim']))
 	{
-		$mybb->input['aim'] = str_replace("%", "\\%", $mybb->input['aim']);
+		$mybb->input['aim'] = $db->escape_string_like($mybb->input['aim']);
 		$search_query .= " AND u.aim LIKE '%".$db->escape_string($mybb->input['aim'])."%'";
 		$search_url .= "&aim={$mybb->input['aim']}";
 	}
@@ -155,7 +155,7 @@ else
 	// ICQ Number
 	if(trim($mybb->input['icq']))
 	{
-		$mybb->input['icq'] = str_replace("%", "\\%", $mybb->input['icq']);
+		$mybb->input['icq'] = $db->escape_string_like($mybb->input['icq']);
 		$search_query .= " AND u.icq LIKE '%".$db->escape_string($mybb->input['icq'])."%'";
 		$search_url .= "&icq={$mybb->input['icq']}";
 	}
@@ -163,7 +163,7 @@ else
 	// MSN/Windows Live Messenger address
 	if(trim($mybb->input['msn']))
 	{
-		$mybb->input['msn'] = str_replace("%", "\\%", $mybb->input['msn']);
+		$mybb->input['msn'] = $db->escape_string_like($mybb->input['msn']);
 		$search_query .= " AND u.msn LIKE '%".$db->escape_string($mybb->input['msn'])."%'";
 		$search_url .= "&msn={$mybb->input['msn']}";
 	}
@@ -171,7 +171,7 @@ else
 	// Yahoo! Messenger address
 	if(trim($mybb->input['yahoo']))
 	{
-		$mybb->input['yahoo'] = str_replace("%", "\\%", $mybb->input['yahoo']);
+		$mybb->input['yahoo'] = $db->escape_string_like($mybb->input['yahoo']);
 		$search_query .= " AND u.yahoo LIKE '%".$db->escape_string($mybb->input['yahoo'])."%'";
 		$search_url .= "&yahoo={$mybb->input['yahoo']}";	
 	}

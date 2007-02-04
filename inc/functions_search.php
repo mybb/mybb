@@ -334,10 +334,10 @@ function perform_search_mysql($search)
 								error($lang->error_minsearchlength);
 							}
 							// Add terms to search query
-							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$word."%'";
+							$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%{$word}%'";
 							if($search['postthread'] == 1)
 							{
-								$message_lookin .= " $boolean LOWER(p.message) LIKE '%".$word."%'";
+								$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$word}%'";
 							}
 						}
 					}
@@ -352,10 +352,10 @@ function perform_search_mysql($search)
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
-					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%".$phrase."%'";
+					$subject_lookin .= " $boolean LOWER(t.subject) LIKE '%{$phrase}%'";
 					if($search['postthread'] == 1)
 					{
-						$message_lookin .= " $boolean LOWER(p.message) LIKE '%".$phrase."%'";
+						$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$phrase}%'";
 					}					
 				}
 				$inquote = !$inquote;
@@ -371,10 +371,10 @@ function perform_search_mysql($search)
 				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
-			$subject_lookin = " AND LOWER(t.subject) LIKE '%".$keywords."%'";
+			$subject_lookin = " AND LOWER(t.subject) LIKE '%{$keywords}%'";
 			if($search['postthread'] == 1)
 			{
-				$message_lookin = " AND LOWER(p.message) LIKE '%".$keywords."%'";
+				$message_lookin = " AND LOWER(p.message) LIKE '%{$keywords}%'";
 			}
 		}
 	}
@@ -390,7 +390,7 @@ function perform_search_mysql($search)
 		else
 		{
 			$search['author'] = my_strtolower($search['author']);
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['author']))."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{
@@ -655,7 +655,7 @@ function perform_search_mysql_ft($search)
 		else
 		{
 			$search['author'] = my_strtolower($search['author']);
-			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
+			$query = $db->simple_select("users", "uid", "LOWER(username) LIKE '%".$db->escape_string_like($db->escape_string($search['author']))."%'");
 		}
 		while($user = $db->fetch_array($query))
 		{

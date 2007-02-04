@@ -594,8 +594,18 @@ class databaseEngine
 	 */
 	function escape_string($string)
 	{
-		$string = mysqli_real_escape_string($this->link, $string);
-		return $string;
+		return mysqli_real_escape_string($this->link, $string);
+	}
+	
+	/**
+	 * Escape a string used within a like command.
+	 *
+	 * @param string The string to be escaped.
+	 * @return string The escaped string.
+	 */
+	function escape_string_like($string)
+	{
+		return str_replace(array('%', '_') , array('\\%' , '\\_') , $string);
 	}
 
 	/**
