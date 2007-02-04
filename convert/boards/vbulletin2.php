@@ -1645,7 +1645,7 @@ class Convert_vbulletin2 extends Converter {
 				
 				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['varname']]))
 				{
-					$value = $this->int_to_yes_no($value, $int_to_yes_no[$setting['varname']]);
+					$value = int_to_yes_no($value, $int_to_yes_no[$setting['varname']]);
 				}
 				
 				$this->update_setting($name, $value);
@@ -1925,38 +1925,6 @@ class Convert_vbulletin2 extends Converter {
 			
 			return $group;
 		}
-	}
-	
-	/**
-	 * Generates yes/on based on the supplied int
-	 *
-	 * @param int Setting before import
-	 * @param int Is zero or one equal yes
-	 * @return string Yes/No
-	 */
-	function int_to_yes_no($setting, $yes="1")
-	{
-		if($setting == 0 && $yes == 1)
-		{
-			$return = "no";
-		}
-		elseif($setting == 1 && $yes == 1)
-		{
-			$return = "yes";
-		}
-		elseif($setting == 0 && $yes == 0)
-		{
-			$return = "yes";
-		}
-		elseif($setting == 1 && $yes == 0)
-		{
-			$return = "no";
-		}
-		else
-		{
-			$return = "yes";
-		}
-		return $return;
 	}
 	
 	/**

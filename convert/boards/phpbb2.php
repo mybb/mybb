@@ -65,7 +65,7 @@ class Convert_phpbb2 extends Converter {
 		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass'], 0, true);
 		$this->old_db->select_db($import_session['old_db_name']);
 		$this->old_db->set_table_prefix($import_session['old_tbl_prefix']);
-		
+
 		define('PHPBB_TABLE_PREFIX', $import_session['old_tbl_prefix']);
 	}
 
@@ -120,10 +120,10 @@ class Convert_phpbb2 extends Converter {
 					$import_session['old_db_pass'] = $mybb->input['dbpass'];
 					$import_session['old_db_name'] = $mybb->input['dbname'];
 					$import_session['old_tbl_prefix'] = $mybb->input['tableprefix'];
-					
+
 					// Create temporary import data fields
 					create_import_fields();
-					
+
 					return "finished";
 				}
 			}
@@ -1361,11 +1361,11 @@ class Convert_phpbb2 extends Converter {
 				
 				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['config_name']]))
 				{
-					$value = $this->int_to_yes_no($value, $int_to_yes_no[$setting['config_name']]);
+					$value = int_to_yes_no($value, $int_to_yes_no[$setting['config_name']]);
 				}
-				
+
 				$this->update_setting($name, $value);
-				
+
 				echo "done.<br />\n";
 			}
 			
@@ -1507,38 +1507,6 @@ class Convert_phpbb2 extends Converter {
 	
 			return $group;
 		}
-	}
-	
-	/**
-	 * Generates yes/on based on the supplied int
-	 *
-	 * @param int Setting before import
-	 * @param int Is zero or one equal yes
-	 * @return string Yes/No
-	 */
-	function int_to_yes_no($setting, $yes="1")
-	{
-		if($setting == 0 && $yes == 1)
-		{
-			$return = "no";
-		}
-		elseif($setting == 1 && $yes == 1)
-		{
-			$return = "yes";
-		}
-		elseif($setting == 0 && $yes == 0)
-		{
-			$return = "yes";
-		}
-		elseif($setting == 1 && $yes == 0)
-		{
-			$return = "no";
-		}
-		else
-		{
-			$return = "yes";
-		}
-		return $return;
 	}
 	
 	/**

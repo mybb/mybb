@@ -15,12 +15,12 @@ class Converter
 	 * Cache for the new UIDs
 	 */
 	var $import_uids;
-	
+
 	/**
 	 * Cache for the new FIDs
 	 */
 	var $import_fids;
-	
+
 	/**
 	 * Cache for the new TIDs
 	 */
@@ -30,41 +30,41 @@ class Converter
 	 * Cache for the new GIDs
 	 */
 	var $import_gids;
-	
+
 	/**
 	 * Cache for the new Usernames
 	 */
 	var $import_usernames;
-	
+
 	/**
 	 * Cache for the new Settinggroups
 	 */
 	var $import_settinggroups;
-	
+
 	/**
 	 * Cache for the new Events
 	 */
 	var $import_events;
-	
+
 	/**
 	 * Cache for the new Attachments
 	 */
 	var $import_attachments;
-	
+
 	/**
 	 * Cache for the new Attachment Types
 	 */
 	var $import_attachtypes;
-	
+
 	/**
 	 * Class constructor
 	 */
-    function Converter()
-    {
-    	return 'MyBB'; 
-    }
-    
-    /**
+	function Converter()
+	{
+		return 'MyBB'; 
+	}
+
+	/**
 	 * Make a database connection
 	 * @param array Database configuration
 	 */
@@ -78,59 +78,58 @@ class Converter
 		$this->olddb->select_db($config['database']);
 		$this->olddb->set_table_prefix($config['table_prefix']);
 	}
-    
-	
+
 	/**
 	 * Insert user into database
 	 */
 	function insert_user($user)
 	{
 		global $db;
-	
+
 		foreach($user as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("users", $insertarray);
 		$uid = $db->insert_id();
-		
+
 		return $uid;
 	}
-	
+
 	/**
 	 * Insert thread into database
 	 */
 	function insert_thread($thread)
 	{
 		global $db;
-	
+
 		foreach($thread as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("threads", $insertarray);
 		$tid = $db->insert_id();
-		
+
 		return $tid;
 	}
-	
+
 	/**
 	 * Insert forum into database
 	 */
 	function insert_forum($forum)
 	{
 		global $db;
-	
+
 		foreach($forum as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("forums", $insertarray);
 		$fid = $db->insert_id();
-		
+
 		return $fid;
 	}
 
@@ -140,33 +139,33 @@ class Converter
 	function insert_post($post)
 	{
 		global $db;
-	
+
 		foreach($post as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("posts", $insertarray);
 		$pid = $db->insert_id();
 		
 		return $pid;
 	}
-	
+
 	/**
 	 * Insert moderator into database
 	 */
 	function insert_moderator($mod)
 	{
 		global $db;
-	
+
 		foreach($mod as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("moderators", $insertarray);
 		$mid = $db->insert_id();
-		
+
 		return $mid;
 	}
 	
@@ -176,15 +175,15 @@ class Converter
 	function insert_usergroup($group)
 	{
 		global $db;
-	
+
 		foreach($group as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("usergroups", $insertarray);
 		$gid = $db->insert_id();
-		
+
 		return $gid;
 	}
 	
@@ -194,33 +193,33 @@ class Converter
 	function insert_usertitle($title)
 	{
 		global $db;
-	
+
 		foreach($title as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("usertitles", $insertarray);
 		$tid = $db->insert_id();
-		
+
 		return $tid;
 	}
-	
+
 	/**
 	 * Insert privatemessages into database
 	 */
 	function insert_privatemessage($title)
 	{
 		global $db;
-	
+
 		foreach($title as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("privatemessages", $insertarray);
 		$pmid = $db->insert_id();
-		
+
 		return $pmid;
 	}
 	
@@ -230,51 +229,51 @@ class Converter
 	function insert_forumpermission($title)
 	{
 		global $db;
-	
+
 		foreach($title as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$query = $db->insert_query("forumpermissions", $insertarray);
 		$fpid = $db->insert_id();
-		
+
 		return $fpid;
 	}
-	
+
 	/**
 	 * Insert poll into database
 	 */
 	function insert_poll($title)
 	{
 		global $db;
-	
+
 		foreach($title as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("polls", $insertarray);
 		$pollid = $db->insert_id();
-		
+
 		return $pollid;
 	}
-	
+
 	/**
 	 * Insert poll vote into database
 	 */
 	function insert_pollvote($title)
 	{
 		global $db;
-	
+
 		foreach($title as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("pollvotes", $insertarray);
 		$pollvoteid = $db->insert_id();
-		
+
 		return $pollvoteid;
 	}
 
@@ -284,15 +283,15 @@ class Converter
 	function insert_setting($setting)
 	{
 		global $db;
-	
+
 		foreach($setting as $key => $value)
 		{
 			$insertarray[$key] = $db->escape_string($value);
 		}
-		
+
 		$db->insert_query("settings", $insertarray);
 		$sid = $db->insert_id();
-		
+
 		return $sid;
 	}
 
@@ -310,7 +309,7 @@ class Converter
 
 		$db->insert_query("settinggroups", $insertarray);
 		$gid = $db->insert_id();
-		
+
 		return $gid;
 	}
 	
@@ -328,10 +327,10 @@ class Converter
 
 		$db->insert_query("attachments", $insertarray);
 		$aid = $db->insert_id();
-		
+
 		return $aid;
 	}
-	
+
 	/**
 	 * Insert an event into database
 	 */
@@ -346,10 +345,10 @@ class Converter
 
 		$db->insert_query("events", $insertarray);
 		$eid = $db->insert_id();
-		
+
 		return $eid;
 	}
-	
+
 	/**
 	 * Insert attachment type into database
 	 */
@@ -364,7 +363,7 @@ class Converter
 
 		$db->insert_query("attachtypes", $insertarray);
 		$atid = $db->insert_id();
-		
+
 		return $atid;
 	}
 	
@@ -382,10 +381,10 @@ class Converter
 
 		$db->insert_query("icons", $insertarray);
 		$cid = $db->insert_id();
-		
+
 		return $cid;
 	}
-	
+
 	/**
 	 * Insert a smilie into database
 	 */
@@ -400,7 +399,7 @@ class Converter
 
 		$db->insert_query("smilies", $insertarray);
 		$sid = $db->insert_id();
-		
+
 		return $sid;
 	}
 
@@ -416,7 +415,7 @@ class Converter
 		);
 		$db->update_query("settings", $modify, "name='{$name}'");
 	}
-	
+
 	/**
 	 * Get an array of imported users
 	 *
@@ -425,7 +424,7 @@ class Converter
 	function get_import_users()
 	{
 		global $db;
-	
+
 		$query = $db->simple_select("users", "uid, import_uid");
 		while($user = $db->fetch_array($query))
 		{
@@ -434,7 +433,7 @@ class Converter
 		$this->import_uids = $users;
 		return $users;
 	}
-	
+
 	/**
 	 * Get an array of imported usernames
 	 *
@@ -443,7 +442,7 @@ class Converter
 	function get_import_usernames()
 	{
 		global $db;
-	
+
 		$query = $db->simple_select("users", "username, import_uid");
 		while($user = $db->fetch_array($query))
 		{
@@ -452,7 +451,7 @@ class Converter
 		$this->import_usernames = $users;
 		return $users;
 	}
-	
+
 	/**
 	 * Get an array of imported polls
 	 *
@@ -461,7 +460,7 @@ class Converter
 	function get_import_polls()
 	{
 		global $db;
-	
+
 		$query = $db->simple_select("polls", "pid, import_pid");
 		while($poll = $db->fetch_array($query))
 		{
@@ -470,7 +469,7 @@ class Converter
 		$this->import_pids = $polls;
 		return $polls;
 	}
-	
+
 	/**
 	 * Get an array of imported poll votes
 	 *
@@ -479,7 +478,7 @@ class Converter
 	function get_import_pollvotes()
 	{
 		global $db;
-	
+
 		$query = $db->simple_select("pollvotes", "vid, import_vid");
 		while($pollvote = $db->fetch_array($query))
 		{
@@ -488,7 +487,7 @@ class Converter
 		$this->import_pollvotes = $pollvotes;
 		return $pollvotes;
 	}
-	
+
 	/**
 	 * Get the MyBB PID of an old PID.
 	 *
@@ -505,14 +504,14 @@ class Converter
 		{
 			$pid_array = $this->import_pids;
 		}
-		
+
 		if(!isset($pid_array[$old_pid]) || $old_pid == 0)
 		{
 			return 0;
 		}
 		return $pid_array[$old_pid];
 	}
-	
+
 	/**
 	 * Get the MyBB VID of an old VID.
 	 *
@@ -529,14 +528,14 @@ class Converter
 		{
 			$vid_array = $this->import_vids;
 		}
-		
+
 		if(!isset($vid_array[$old_vid]) || $old_vid == 0)
 		{
 			return 0;
 		}
 		return $vid_array[$old_vid];
 	}
-	
+
 	/**
 	 * Get the MyBB UID of an old UID.
 	 *
@@ -553,14 +552,14 @@ class Converter
 		{
 			$uid_array = $this->import_uids;
 		}
-		
+
 		if(!isset($uid_array[$old_uid]) || $old_uid == 0)
 		{
 			return 0;
 		}
 		return $uid_array[$old_uid];
 	}
-	
+
 	/**
 	 * Get the MyBB Username of an old UID.
 	 *
@@ -577,14 +576,14 @@ class Converter
 		{
 			$username_array = $this->import_usernames;
 		}
-		
+
 		if(!isset($username_array[$old_uid]) || $old_uid == 0)
 		{
 			return 'Guest';
 		}
 		return $username_array[$old_uid];
 	}
-	
+
 	/**
 	 * Get an array of imported forums
 	 *
@@ -593,7 +592,7 @@ class Converter
 	function get_import_forums()
 	{
 		global $db;
-	
+
 		$query = $db->simple_select("forums", "fid, import_fid");
 		while($forum = $db->fetch_array($query))
 		{
@@ -602,7 +601,7 @@ class Converter
 		$this->import_fids = $forums;
 		return $forums;
 	}
-	
+
 	/**
 	 * Get the MyBB FID of an old FID.
 	 *
@@ -630,7 +629,7 @@ class Converter
 	function get_import_threads()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("threads", "tid, import_tid");
 		while($thread = $db->fetch_array($query))
 		{
@@ -658,7 +657,7 @@ class Converter
 		}
 		return $tid_array[$old_tid];
 	}
-	
+
 	/**
 	 * Get an array of imported posts
 	 *
@@ -667,7 +666,7 @@ class Converter
 	function get_import_posts()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("posts", "pid, import_pid");
 		while($post = $db->fetch_array($query))
 		{
@@ -675,7 +674,7 @@ class Converter
 		}
 		return $posts;
 	}
-	
+
 	/**
 	 * Get an array of imported attachments
 	 *
@@ -684,7 +683,7 @@ class Converter
 	function get_import_attachments()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("attachments", "aid, import_aid");
 		while($attachment = $db->fetch_array($query))
 		{
@@ -692,7 +691,7 @@ class Converter
 		}
 		return $attachments;
 	}
-	
+
 	/**
 	 * Get an array of imported usergroups
 	 *
@@ -701,7 +700,7 @@ class Converter
 	function get_import_usergroups()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("usergroups", "gid, import_gid");
 		while($usergroup = $db->fetch_array($query))
 		{
@@ -710,7 +709,7 @@ class Converter
 		$this->import_gids = $usergroups;
 		return $usergroups;
 	}
-	
+
 	/**
 	 * Get an array of imported events
 	 *
@@ -719,7 +718,7 @@ class Converter
 	function get_import_events()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("events", "eid, import_eid");
 		while($event = $db->fetch_array($query))
 		{
@@ -728,7 +727,7 @@ class Converter
 		$this->import_eids = $events;
 		return $events;
 	}
-	
+
 	/**
 	 * Get the MyBB usergroup ID of an old GID.
 	 *
@@ -747,7 +746,7 @@ class Converter
 		}
 		return $gid_array[$old_gid];
 	}
-	
+
 	/**
 	 * Get an array of imported settinggroups
 	 *
@@ -765,7 +764,7 @@ class Converter
 		$this->import_settinggroups = $settinggroups;
 		return $settinggroups;
 	}
-	
+
 	/**
 	 * Get the MyBB settinggroups ID of an old GID.
 	 *
@@ -784,7 +783,7 @@ class Converter
 		}
 		return $gid_array[$old_gid];
 	}
-	
+
 	/**
 	 * Get the MyBB attachments ID of an old AID.
 	 *
@@ -803,7 +802,7 @@ class Converter
 		}
 		return $aid_array[$old_aid];
 	}
-	
+
 	/**
 	 * Get the MyBB event ID of an old EID.
 	 *
@@ -831,7 +830,7 @@ class Converter
 	function get_import_attachtypes()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("attachtypes", "atid, import_atid");
 		while($type = $db->fetch_array($query))
 		{
@@ -840,7 +839,7 @@ class Converter
 		$this->import_attachtypes = $attachtypes;
 		return $attachtypes;
 	}
-	
+
 	/**
 	 * Get the MyBB attachment type ID of an old attachment type id.
 	 *
@@ -859,7 +858,7 @@ class Converter
 		}
 		return $atid_array[$old_atid];
 	}
-	
+
 	/**
 	 * Get an array of imported icons
 	 *
@@ -868,7 +867,7 @@ class Converter
 	function get_import_icons()
 	{
 		global $db;
-		
+
 		$query = $db->simple_select("icons", "iid, import_iid");
 		while($icon = $db->fetch_array($query))
 		{
@@ -877,7 +876,7 @@ class Converter
 		$this->import_icons = $icons;
 		return $icons;
 	}
-	
+
 	/**
 	 * Get the MyBB icon ID of an old icon id.
 	 *

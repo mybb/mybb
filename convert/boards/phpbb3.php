@@ -71,7 +71,7 @@ class Convert_phpbb3 extends Converter {
 		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass'], 0, true);
 		$this->old_db->select_db($import_session['old_db_name']);
 		$this->old_db->set_table_prefix($import_session['old_tbl_prefix']);
-		
+
 		define('PHPBB_TABLE_PREFIX', $import_session['old_tbl_prefix']);
 	}
 
@@ -126,10 +126,10 @@ class Convert_phpbb3 extends Converter {
 					$import_session['old_db_pass'] = $mybb->input['dbpass'];
 					$import_session['old_db_name'] = $mybb->input['dbname'];
 					$import_session['old_tbl_prefix'] = $mybb->input['tableprefix'];
-					
+
 					// Create temporary import data fields
 					create_import_fields();
-					
+
 					return "finished";
 				}
 			}
@@ -165,7 +165,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$dboptions['mysqli'] = 'MySQL Improved';
 		}
-		
+
 		if(function_exists('mysql_connect'))
 		{
 			$dboptions['mysql'] = 'MySQL';
@@ -177,16 +177,16 @@ class Convert_phpbb3 extends Converter {
 		}
 
 		$output->print_database_details_table("phpBB 3");
-		
+
 		$output->print_footer();
 	}
 	
 	function import_users()
 	{
 		global $mybb, $output, $import_session, $db;
-		
+
 		$this->phpbb_db_connect();
-		
+
 		// Get number of members
 		if(!isset($import_session['total_members']))
 		{
@@ -203,15 +203,15 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
-		
+
 		// Get number of users per screen from form
 		if(isset($mybb->input['users_per_screen']))
 		{
 			$import_session['users_per_screen'] = intval($mybb->input['users_per_screen']);
 		}
-		
+
 		if(empty($import_session['users_per_screen']))
 		{
 			$import_session['start_users'] = 0;
@@ -223,11 +223,11 @@ class Convert_phpbb3 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_members']-$import_session['start_users'])." users left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
-			
+
 			// Count the total number of users so we can generate a unique id if we have a duplicate user
 			$query = $db->simple_select("users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
-			
+
 			// Get members
 			$query = $this->old_db->query("
 				SELECT * 
@@ -240,7 +240,7 @@ class Convert_phpbb3 extends Converter {
 			while($user = $this->old_db->fetch_array($query))
 			{
 				++$total_users;
-				
+
 				// Check for duplicate users
 				$query1 = $db->simple_select("users", "username,email,uid", " LOWER(username)='".$db->escape_string(my_strtolower($user['username']))."'");
 				$duplicate_user = $db->fetch_array($query1);
@@ -256,9 +256,9 @@ class Convert_phpbb3 extends Converter {
 				{					
 					$insert_user['username'] = $duplicate_user['username']."_phpbb3_import".$total_users;
 				}
-				
+
 				echo "Adding user #{$user['user_id']}... ";
-				
+
 				// phpBB 3 Values
 				$insert_user['usergroup'] = $this->get_group_id($user['user_id'], true);
 				$insert_user['additionalgroups'] = str_replace($insert_user['usergroup'], '', $this->get_group_id($user['user_id']));
@@ -302,7 +302,7 @@ class Convert_phpbb3 extends Converter {
 				$insert_user['regip'] = $user['user_ip'];
 				$insert_user['totalpms'] = $this->get_private_messages($user['user_id']);
 				$insert_user['unreadpms'] = $user['user_unread_privmsg'];
-				
+
 				// Default values
 				$insert_user['remember'] = "yes";
 				$insert_user['showsigs'] = 'yes';
@@ -320,12 +320,12 @@ class Convert_phpbb3 extends Converter {
 				$insert_user['reputation'] = "0";				
 				$insert_user['timeonline'] = "0";				
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
-					
+
 				$this->insert_user($insert_user);
-				
+
 				echo "done.<br />\n";
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no users to import. Please press next to continue.";
@@ -366,7 +366,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['usergroups_per_screen'] = intval($mybb->input['usergroups_per_screen']);
 		}
-		
+
 		if(empty($import_session['usergroups_per_screen']))
 		{
 			$import_session['start_usergroups'] = 0;
@@ -378,18 +378,18 @@ class Convert_phpbb3 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
-			
+
 			// Get only non-staff groups.
 			$query = $this->old_db->simple_select("groups", "*", "group_id > 6", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting group #{$group['group_id']} as a ";
-				
+
 				// phpBB 3 values
 				$insert_group['import_gid'] = $group['group_id'];
 				$insert_group['title'] = $group['group_name'];
 				$insert_group['description'] = $group['group_desc'];
-				
+
 				// Default values
 				$insert_group['type'] = 2;
 				$insert_group['namestyle'] = '{username}';
@@ -441,16 +441,16 @@ class Convert_phpbb3 extends Converter {
 				$insert_group['candisplaygroup'] = 'yes';
 				$insert_group['attachquota'] = '0';
 				$insert_group['cancustomtitle'] = 'yes';
-				
+
 				echo "custom usergroup...";
 
 				$gid = $this->insert_usergroup($insert_group);
-				
+
 				// Restore connections
 				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['group_id']}' OR import_displaygroup = '{$group['group_id']}'");
-				
+
 				$this->import_gids = null; // Force cache refresh
-				
+
 				echo "done.<br />\n";	
 			}
 			
@@ -486,7 +486,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of forums per screen from form
@@ -494,7 +494,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['forums_per_screen'] = intval($mybb->input['forums_per_screen']);
 		}
-		
+
 		if(empty($import_session['forums_per_screen']))
 		{
 			$import_session['start_forums'] = 0;
@@ -511,7 +511,7 @@ class Convert_phpbb3 extends Converter {
 			while($forum = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting forum #{$forum['forum_id']}... ";
-				
+
 				// phpBB 3 values
 				$insert_forum['import_fid'] = intval($forum['forum_id']);
 				$insert_forum['name'] = $forum['forum_name'];
@@ -535,7 +535,7 @@ class Convert_phpbb3 extends Converter {
 					$insert_forum['rules'] = $forum['forum_rules'];
 				}
 				$insert_forum['rulestype'] = 1;
-				
+
 				// We have a category
 				if($forum['forum_type'] == '0')
 				{
@@ -562,8 +562,7 @@ class Convert_phpbb3 extends Converter {
 					$insert_forum['lastpostsubject'] = $forum['forum_last_post_subject'];
 					$insert_forum['lastposter'] = $this->get_import_username($forum['forum_last_poster_id']);
 				}
-				
-				
+
 				// Default values
 				$insert_forum['parentlist'] = '';
 				$insert_forum['active'] = 'yes';
@@ -585,7 +584,7 @@ class Convert_phpbb3 extends Converter {
 				$insert_forum['usepostcounts'] = 'yes';
 	
 				$fid = $this->insert_forum($insert_forum);
-				
+
 				// Update parent list.
 				if($forum['forum_type'] == '0')
 				{
@@ -595,12 +594,12 @@ class Convert_phpbb3 extends Converter {
 				{
 					$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);										
 				}
-				
+
 				$db->update_query("forums", $update_array, "fid = {$fid}");
-				
+
 				echo "done.<br />\n";			
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no forums to import. Please press next to continue.";
@@ -633,7 +632,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of threads per screen from form
@@ -641,7 +640,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['threads_per_screen'] = intval($mybb->input['threads_per_screen']);
 		}
-		
+
 		if(empty($import_session['threads_per_screen']))
 		{
 			$import_session['start_threads'] = 0;
@@ -653,12 +652,12 @@ class Convert_phpbb3 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_threads']-$import_session['start_threads'])." threads left to import and ".round((($import_session['total_threads']-$import_session['start_threads'])/$import_session['threads_per_screen']))." threads left at a rate of {$import_session['threads_per_screen']} per page.<br /><br />";
-			
+
 			$query = $this->old_db->simple_select("topics", "*", "", array('order_by' => 'topic_first_post_id', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting thread #{$thread['topic_id']}... ";
-				
+
 				// phpBB 3 values
 				$insert_thread['import_tid'] = $thread['topic_id'];
 				$insert_thread['sticky'] = $thread['topic_type'];
@@ -677,28 +676,27 @@ class Convert_phpbb3 extends Converter {
 				if($insert_thread['closed'] == 'no')
 				{
 					$insert_thread['closed'] = '';
-				}				
-				
+				}
+
 				$insert_thread['visible'] = $thread['topic_approved'];
 				$insert_thread['lastpost'] = $thread['topic_last_post_time'];
 				$insert_thread['lastposter'] = $thread['topic_last_poster_name'];				
 				$insert_thread['unapprovedposts'] = $this->get_invisible_posts($thread['topic_id']);	
 				$insert_thread['lastposteruid'] = $this->get_import_uid($thread['topic_last_poster_id']);				
-				
-				
+
 				// Default values
 				$insert_thread['totalratings'] = '0';
 				$insert_thread['notes'] = '';
 				$insert_thread['numratings'] = '0';
 				$insert_thread['attachmentcount'] = '0';		
-				
+
 				$tid = $this->insert_thread($insert_thread);
-				
+
 				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['topic_id'])."'");
-				
+
 				echo "done.<br />\n";			
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no threads to import. Please press next to continue.";
@@ -731,7 +729,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of polls per screen from form
@@ -739,9 +737,9 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['icons_per_screen'] = intval($mybb->input['icons_per_screen']);
 		}
-		
+
 		$error_phpbbpath = false;
-		
+
 		if(!empty($mybb->input['phpbbpath']))
 		{
 			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
@@ -749,8 +747,7 @@ class Convert_phpbb3 extends Converter {
 			{
 				$import_session['phpbbpath'] .= '/';
 			}
-			
-			
+
 			// Doesn't work?
 			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
 			{
@@ -759,16 +756,16 @@ class Convert_phpbb3 extends Converter {
 				$error_phpbbpath = true;
 			}
 		}
-		
+
 		// Set uploads path
 		if(!isset($import_session['uploadspath']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
 		{
 			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'upload_path'", array('limit' => 1));
 			$import_session['uploadspath'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
 		}
-					
+
 		$phpbbpath = false;
-		
+
 		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
 		{
 			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
@@ -776,7 +773,7 @@ class Convert_phpbb3 extends Converter {
 
 			$phpbbpath = true;
 		}
-		
+
 		if(empty($import_session['icons_per_screen']))
 		{
 			$import_session['start_icons'] = 0;
@@ -788,23 +785,23 @@ class Convert_phpbb3 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_icons']-$import_session['start_icons'])." icons left to import and ".round((($import_session['total_icons']-$import_session['start_icons'])/$import_session['icons_per_screen']))." pages left at a rate of {$import_session['icons_per_screen']} per page.<br /><br />";
-			
+
 			$query = $this->old_db->simple_select("icons", "*", "icons_id > 10", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($icon = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting icon #{$icon['icons_id']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting	
-				
+
 				// Invision Power Board 2 values
 				$insert_icon['import_iid'] = $icon['icons_id'];
 				$insert_icon['name'] = str_replace(array('smilie/', 'misc/'), array('', ''), $icon['icons_url']);
 				$insert_icon['path'] = 'images/icons/'.str_replace(array('smilie/', 'misc/'), array('', ''), $icon['icons_url']);				
-			
+
 				$iid = $this->insert_icon($insert_icon);
-				
+
 				// Restore connections
 				$db->update_query("threads", array('icon' => $iid), "icon = '".((-1) * $icon['icons_id'])."'");
-				
+
 				// Transfer icons
 				if(file_exists($import_session['phpbbpath'].$icon['icons_url']))
 				{
@@ -819,12 +816,12 @@ class Convert_phpbb3 extends Converter {
 				{
 					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
 				}
-				
+
 				echo "done.{$transfer_error}<br />\n";
-				
+
 				echo "done.<br />\n";			
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no icons to import. Please press next to continue.";
@@ -834,7 +831,7 @@ class Convert_phpbb3 extends Converter {
 		$import_session['start_icons'] += $import_session['icons_per_screen'];
 		$output->print_footer();
 	}
-	
+
 	function import_polls()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -857,7 +854,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of polls per screen from form
@@ -865,7 +862,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['polls_per_screen'] = intval($mybb->input['polls_per_screen']);
 		}
-		
+
 		if(empty($import_session['polls_per_screen']))
 		{
 			$import_session['start_polls'] = 0;
@@ -876,10 +873,10 @@ class Convert_phpbb3 extends Converter {
 		else
 		{
 			$done_array = array();
-			
+
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_polls']-$import_session['start_polls'])." polls left to import and ".round((($import_session['total_polls']-$import_session['start_polls'])/$import_session['polls_per_screen']))." pages left at a rate of {$import_session['polls_per_screen']} per page.<br /><br />";
-			
+
 			$query = $this->old_db->simple_select("poll_options", "*", "", array('order_by' => 'topic_id', 'limit_start' => $import_session['start_polls'], 'limit' => $import_session['polls_per_screen']));
 			while($poll = $this->old_db->fetch_array($query))
 			{
@@ -887,13 +884,13 @@ class Convert_phpbb3 extends Converter {
 				{
 					continue;
 				}
-				
+
 				echo "Inserting poll of topic #{$poll['topic_id']}... ";		
-				
+
 				// phpBB 3 values
 				$insert_poll['import_pid'] = 0;
 				$insert_poll['tid'] = $this->get_import_tid($poll['topic_id']);
-				
+
 				$query1 = $this->old_db->simple_select("topics", "poll_title,poll_start,poll_length", "topic_id = '{$poll['topic_id']}'");
 				$poll_details = $this->old_db->fetch_array($query1);
 
@@ -902,7 +899,7 @@ class Convert_phpbb3 extends Converter {
 				$votes = '';
 				$vote_count = 0;
 				$options_count = 0;
-				
+
 				$query2 = $this->old_db->simple_select("poll_options", "*", "topic_id = '{$poll['topic_id']}'");
 				while($vote_result = $this->old_db->fetch_array($query2))
 				{
@@ -912,7 +909,7 @@ class Convert_phpbb3 extends Converter {
 					$vote_count += $vote_result['poll_option_total'];
 					$seperator = '||~|~||';
 				}
-								
+
 				$insert_poll['question'] = $poll_details['poll_title'];
 				$insert_poll['dateline'] = $poll_details['poll_start'];
 				$insert_poll['options'] = $options;
@@ -920,21 +917,21 @@ class Convert_phpbb3 extends Converter {
 				$insert_poll['numoptions'] = $options_count;
 				$insert_poll['numvotes'] = $vote_count;
 				$insert_poll['timeout'] = $poll_details['poll_length'];
-				
+
 				// Default values
 				$insert_poll['multiple'] = 'no';
 				$poll['closed'] = '';				
-				
+
 				$pid = $this->insert_poll($insert_poll);
-				
+
 				$done_array[] = $poll['topic_id'];
-								
+
 				// Restore connections
 				$db->update_query("threads", array('poll' => $pid), "tid = '".$insert_poll['tid']."'");
-				
+
 				echo "done.<br />\n";			
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no polls to import. Please press next to continue.";
@@ -967,7 +964,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of poll votes per screen from form
@@ -975,7 +972,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['pollvotes_per_screen'] = intval($mybb->input['pollvotes_per_screen']);
 		}
-		
+
 		if(empty($import_session['pollvotes_per_screen']))
 		{
 			$import_session['start_pollvotes'] = 0;
@@ -992,20 +989,20 @@ class Convert_phpbb3 extends Converter {
 			while($pollvote = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting poll vote of topic #{$pollvote['topic_id']}... ";				
-				
+
 				$query1 = $db->simple_select("threads", "dateline,poll", "tid = '".$this->get_import_tid($pollvote['topic_id'])."'");
 				$poll = $db->fetch_array($query1);
-				
+
 				$insert_pollvote['uid'] = $this->get_import_uid($pollvote['vote_user_id']);
 				$insert_pollvote['dateline'] = $poll['dateline'];
 				$insert_pollvote['voteoption'] = $pollvote['poll_option_id'];
 				$insert_pollvote['pid'] = $poll['poll'];
-				
+
 				$this->insert_pollvote($insert_pollvote);
-				
+
 				echo "done.<br />\n";
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no poll votes to import. Please press next to continue.";
@@ -1015,7 +1012,7 @@ class Convert_phpbb3 extends Converter {
 		$import_session['start_pollvotes'] += $import_session['pollvotes_per_screen'];
 		$output->print_footer();
 	}
-	
+
 	function import_posts()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1063,15 +1060,15 @@ class Convert_phpbb3 extends Converter {
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['post_id']}... ";
-				
+
 				// phpBB 3 values
 				$insert_post['import_pid'] = $post['post_id'];
 				$insert_post['tid'] = $this->get_import_tid($post['topic_id']);
-				
+
 				// Get Username
 				$topic_poster = $this->get_user($post['poster_id']);
 				$post['username'] = $topic_poster['username'];
-								
+
 				$insert_post['fid'] = $this->get_import_fid($post['forum_id']);
 				$insert_post['subject'] = $post['post_subject'];				
 				$insert_post['uid'] = $this->get_import_uid($post['poster_id']);
@@ -1082,7 +1079,7 @@ class Convert_phpbb3 extends Converter {
 				$insert_post['ipaddress'] = $post['poster_ip'];
 				$insert_post['includesig'] = int_to_yesno($post['enable_sig']);		
 				$insert_post['smilieoff'] = int_to_noyes($post['enable_smilies']);
-				
+
 				// Default values
 				$insert_post['pid'] = 0;
 				$insert_post['icon'] = 0;	
@@ -1092,10 +1089,10 @@ class Convert_phpbb3 extends Converter {
 				$insert_post['posthash'] = '';
 
 				$pid = $this->insert_post($insert_post);
-				
+
 				// Update thread count
 				update_thread_count($insert_post['tid']);
-				
+
 				// Restore first post connections
 				$db->update_query("threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $import_post['pid'])."'");
 				if($db->affected_rows() == 0)
@@ -1104,10 +1101,10 @@ class Convert_phpbb3 extends Converter {
 					$first_post = $db->fetch_field($query1, "firstpost");
 					$db->update_query("posts", array('replyto' => $first_post), "pid = '{$pid}'");
 				}
-				
+
 				echo "done.<br />\n";			
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no posts to import. Please press next to continue.";
@@ -1123,7 +1120,7 @@ class Convert_phpbb3 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->phpbb_db_connect();		
-		
+
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
 		{
@@ -1140,7 +1137,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of polls per screen from form
@@ -1148,9 +1145,9 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['attachments_per_screen'] = intval($mybb->input['attachments_per_screen']);
 		}
-		
+
 		$error_phpbbpath = false;
-		
+
 		if(!empty($mybb->input['phpbbpath']))
 		{
 			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
@@ -1158,8 +1155,7 @@ class Convert_phpbb3 extends Converter {
 			{
 				$import_session['phpbbpath'] .= '/';
 			}
-			
-			
+
 			// Doesn't work?
 			if($this->url_exists($import_session['phpbbpath'].'adm/index.php') === false)
 			{
@@ -1168,16 +1164,16 @@ class Convert_phpbb3 extends Converter {
 				$error_phpbbpath = true;
 			}
 		}
-		
+
 		// Set uploads path
 		if(!isset($import_session['uploadspath']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
 		{
 			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'upload_path'", array('limit' => 1));
 			$import_session['uploadspath'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
 		}
-					
+
 		$phpbbpath = false;
-		
+
 		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
 		{
 			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
@@ -1185,7 +1181,7 @@ class Convert_phpbb3 extends Converter {
 
 			$phpbbpath = true;
 		}
-		
+
 		if(empty($import_session['attachments_per_screen']) || $phpbbpath)
 		{
 			$import_session['start_attachments'] = 0;
@@ -1204,7 +1200,7 @@ class Convert_phpbb3 extends Converter {
 			{
 				echo "Inserting attachment #{$attachment['attach_id']}... ";
 				flush(); // We do this to show status because the transfer of the file might take a while. Otherwise the user will just think the script froze.
-				
+
 				// phpBB 3 values
 				$insert_attachment['import_aid'] = $attachment['attach_id'];
 				$insert_attachment['pid'] = $this->get_import_pid($attachment['post_msg_id']);				
@@ -1214,11 +1210,11 @@ class Convert_phpbb3 extends Converter {
 				$insert_attachment['filetype'] = $attachment['mimetype'];
 				$insert_attachment['filesize'] = $attachment['filesize'];
 				$insert_attachment['downloads'] = $attachment['download_count'];
-				
+
 				// Default values
 				$insert_attachment['visible'] = 'yes';
 				$insert_attachment['thumbnail'] = '';
-				
+
 				$query2 = $db->simple_select("posts", "posthash, tid, uid", "pid = '{$insert_attachment['pid']}'");
 				$posthash = $db->fetch_array($query2);
 				if($posthash['posthash'])
@@ -1230,9 +1226,9 @@ class Convert_phpbb3 extends Converter {
 					mt_srand ((double) microtime() * 1000000);
 					$insert_attachment['posthash'] = md5($posthash['tid'].$posthash['uid'].mt_rand());
 				}
-				
+
 				$this->insert_attachment($insert_attachment);				
-				
+
 				// Transfer attachment
 				$file_not_transfered = "";
 				if(file_exists($import_session['uploadspath'].'/'.$attachment['physical_filename']))
@@ -1252,17 +1248,17 @@ class Convert_phpbb3 extends Converter {
 				{
 					$file_not_transfered = " (Note: The file could not be found)";
 				}
-				
+
 				if(!$posthash)
 				{
 					// Restore connection
 					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				}
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
-				
+
 				echo "done. {$file_not_transfered}<br />\n";
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no attachments to import. Please press next to continue.";
@@ -1272,7 +1268,7 @@ class Convert_phpbb3 extends Converter {
 		$import_session['start_attachments'] += $import_session['attachments_per_screen'];
 		$output->print_footer();
 	}
-	
+
 	function import_privatemessages()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1303,7 +1299,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['privatemessages_per_screen'] = intval($mybb->input['privatemessages_per_screen']);
 		}
-		
+
 		if(empty($import_session['privatemessages_per_screen']))
 		{
 			$import_session['start_privatemessages'] = 0;
@@ -1315,13 +1311,13 @@ class Convert_phpbb3 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_privatemessages']-$import_session['start_privatemessages'])." private messages left to import and ".round((($import_session['total_privatemessages']-$import_session['start_privatemessages'])/$import_session['privatemessages_per_screen']))." pages left at a rate of {$import_session['privatemessages_per_screen']} per page.<br /><br />";
-			
+
 			$query = $this->old_db->simple_select("privmsgs", "*", "", array('limit_start' => $import_session['start_privatemessages'], 'limit' => $import_session['privatemessages_per_screen']));
-			
+
 			while($pm = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting Private Message #{$pm['msg_id']}... ";
-				
+
 				// phpBB 3 values
 				$insert_pm['pmid'] = null;
 				$insert_pm['import_pmid'] = $pm['msg_id'];
@@ -1339,7 +1335,7 @@ class Convert_phpbb3 extends Converter {
 				{
 					$insert_pm['smilieoff'] = '';
 				}
-				
+
 				// Default values
 				$insert_pm['folder'] = '1';
 				$insert_pm['icon'] = '0';
@@ -1349,7 +1345,7 @@ class Convert_phpbb3 extends Converter {
 				$this->insert_privatemessage($insert_pm);
 				echo "done.<br />\n";
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no private messages to import. Please press next to continue.";
@@ -1390,7 +1386,7 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['mods_per_screen'] = intval($mybb->input['mods_per_screen']);
 		}
-		
+
 		if(empty($import_session['mods_per_screen']))
 		{
 			$import_session['start_mods'] = 0;
@@ -1402,16 +1398,16 @@ class Convert_phpbb3 extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_mods']-$import_session['start_mods'])." moderators left to import and ".round((($import_session['total_mods']-$import_session['start_mods'])/$import_session['mods_per_screen']))." pages left at a rate of {$import_session['mods_per_screen']} per page.<br /><br />";
-			
+
 			$query = $this->old_db->simple_select("moderator_cache", "*", "", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
 			while($mod = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting user #{$mod['user_id']} as moderator to forum #{$mod['forum_id']}... ";
-				
+
 				// phpBB 3 values
 				$insert_mod['fid'] = $this->get_import_fid($mod['forum_id']);
 				$insert_mod['uid'] = $this->get_import_uid($mod['user_id']);
-				
+
 				// Default values
 				$insert_mod['caneditposts'] = 'yes';
 				$insert_mod['candeleteposts'] = 'yes';
@@ -1421,10 +1417,10 @@ class Convert_phpbb3 extends Converter {
 				$insert_mod['canmovetononmodforum'] = 'yes';
 
 				$this->insert_moderator($insert_mod);
-				
+
 				echo "done.<br />\n";			
 			}
-			
+
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no moderators to import. Please press next to continue.";
@@ -1457,7 +1453,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of polls per screen from form
@@ -1465,9 +1461,9 @@ class Convert_phpbb3 extends Converter {
 		{
 			$import_session['smilies_per_screen'] = intval($mybb->input['smilies_per_screen']);
 		}
-		
+
 		$error_phpbbpath = false;
-		
+
 		if(!empty($mybb->input['phpbbpath']))
 		{
 			$import_session['phpbbpath'] = $mybb->input['phpbbpath'];
@@ -1475,8 +1471,7 @@ class Convert_phpbb3 extends Converter {
 			{
 				$import_session['phpbbpath'] .= '/';
 			}
-			
-			
+
 			// Doesn't work?
 			if(!file_exists($import_session['phpbbpath'].'adm/index.php'))
 			{
@@ -1485,16 +1480,16 @@ class Convert_phpbb3 extends Converter {
 				$error_phpbbpath = true;
 			}
 		}
-		
+
 		// Set uploads path
 		if(!isset($import_session['smiliesurl']) && !empty($import_session['phpbbpath']) && !$error_phpbbpath)
 		{
 			$query = $this->old_db->simple_select("config", "config_value", "config_name = 'smilies_path'", array('limit' => 1));
 			$import_session['smiliesurl'] = $import_session['phpbbpath'].$this->old_db->fetch_field($query, 'config_value');
 		}
-					
+
 		$phpbbpath = false;
-		
+
 		if(empty($import_session['phpbbpath']) || $error_phpbbpath)
 		{
 			echo "<p>Please input the link to your phpBB 3 installation. This should be the url you use to access your phpBB 3 forum:</p>
@@ -1502,7 +1497,7 @@ class Convert_phpbb3 extends Converter {
 
 			$phpbbpath = true;
 		}
-		
+
 		if(empty($import_session['smilies_per_screen']))
 		{
 			$import_session['start_smilies'] = 0;
@@ -1520,16 +1515,16 @@ class Convert_phpbb3 extends Converter {
 			{
 				echo "Inserting smilie #{$smilie['smiley_id']}... ";
 				flush(); // Show status as soon as possible to avoid inconsistent status reporting
-				
+
 				// phpBB 3 values
 				$insert_smilie['name'] = $smilie['emotion'];
 				$insert_smilie['find'] = $smilie['code'];
 				$insert_smilie['image'] = 'images/smilies/'.$smilie['smiley_url'];
 				$insert_smilie['disporder'] = $smilie['smiley_order'];
 				$insert_smilie['showclickable'] = int_to_yesno($smilie['display_on_posting']);				
-			
+
 				$this->insert_smilie($insert_smilie);
-				
+
 				// Transfer smilies
 				if(file_exists($import_session['smiliesurl'].$smilie['smiley_url']))
 				{
@@ -1544,7 +1539,7 @@ class Convert_phpbb3 extends Converter {
 				{
 					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
 				}
-				
+
 				echo "done.{$transfer_error}<br />\n";
 			}
 			
@@ -1564,10 +1559,53 @@ class Convert_phpbb3 extends Converter {
 
 		$this->phpbb_db_connect();
 
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"avatar_path" => "avataruploadpath",
+			"avatar_max_height" => "maxavatardims",
+			"avatar_max_width" => "maxavatardims",
+			"avatar_gallery_path" => "avatardir",
+			"avatar_filesize" => "avatarsize",
+			"sitename" => "bbname",
+			"max_sig_chars" => "siglength",
+			"hot_threshold" => "hottopic",
+			"max_poll_options" => "maxpolloptions",
+			"allow_privmsg" => "enablepms",
+			"board_timezone" => "timezoneoffset",
+			"board_email" => "adminemail",
+			"posts_per_page" => "postsperpage",
+			"topics_per_page" => "threadsperpage",
+			"flood_interval" => "postfloodsecs",
+			"search_interval" => "searchfloodtime",
+			"min_search_author_chars" => "minsearchword",
+			"enable_confirm" => "captchaimage",
+			"max_login_attempts" => "failedlogincount",
+			"gzip_compress" => "gzipoutput",
+			"search_type" => "searchtype",
+			/* MyBB 1.4
+			"smtp_host"		=> "smtp_host",
+			"smtp_password"	=> "smtp_pass",
+			"smtp_port"		=> "smtp_port",
+			"smtp_username"	=> "smtp_user",
+			"smtp_delivery" => "mail_handler"
+			*/
+		);
+
+		$settings = "'".implode("','", array_keys($settings_array))."'";
+
+		$int_to_yes_no = array(
+			"allow_privmsg" => 1,
+			"gzip_compress" => 1
+		);
+
+		$int_to_on_off = array(
+			"enable_confirm" => 1
+		);
+
 		// Get number of threads
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("config", "COUNT(*) as count", "config_name IN({$settings})");
 			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');
 		}
 
@@ -1581,7 +1619,7 @@ class Convert_phpbb3 extends Converter {
 				return "finished";
 			}
 		}
-		
+
 		$output->print_header($this->modules[$import_session['module']]['name']);
 
 		// Get number of settings per screen from form
@@ -1602,21 +1640,65 @@ class Convert_phpbb3 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select("config", "config_name, config_value", "config_name IN({$settings})", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from the phpBB database... ";
-
 				// phpBB 3 values
-				$name = $value = "";
+				$name = $settings_array[$setting['config_name']];
+				$value = $setting['config_value'];
 
-				switch($setting['config_name'])
-				{
-					case '':
-				}
-			
-				$this->update_setting($name, $value);
+				echo "Updating setting ".htmlspecialchars_uni($value)." from the phpBB database to {$name} in the MyBB database... ";
 				
+				if($setting['config_name'] == "avatar_max_height")
+				{
+					$avatar_setting = "x".$value;
+					echo "done.<br />\n";
+					continue;
+				}
+				else if($setting['config_name'] == "avatar_max_width")
+				{
+					$value = $value.$avatar_setting;
+					unset($avatar_setting);
+				}
+				
+				if($setting['config_name'] == "avatar_filesize")
+				{
+					$value = ceil($value / 1024);
+				}
+
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['config_name']]))
+				{
+					$value = int_to_yes_no($value, $int_to_yes_no[$setting['config_name']]);
+				}
+				
+				if(($value == 0 || $value == 1) && isset($int_to_on_off[$setting['config_name']]))
+				{
+					$value = int_to_on_off($value, $int_to_on_off[$setting['config_name']]);
+				}
+				
+				if($setting['config_name'] == 'search_type')
+				{
+					$value = "fulltext";
+				}
+
+				if($setting['config_name'] == 'board_timezone')
+				{
+					if(strpos($value, '-') === false)
+					{
+						$value = "+" . $value;
+					}
+				}
+
+				/* MyBB 1.4
+				if($setting['config_name'] == "smtp_delivery" && $value == 1)
+				{
+					$value = "smtp";
+				}
+				*/
+
+				$this->update_setting($name, $value);
+
 				echo "done.<br />\n";
 			}
 			

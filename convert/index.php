@@ -124,10 +124,10 @@ elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 	$cache->update_moderators();
 	$cache->update_forums();
 	$cache->update_usertitles();
-	
+
 	// Delete import session cache
 	$import_session = null;
-	
+
 	$output->finish_conversion();
 }
 // Otherwise that means we've selected a module to run or we're in one
@@ -160,17 +160,16 @@ elseif($import_session['module'] && $mybb->input['action'] != 'module_list')
 	// Run the module
 	$result = $board->$function();
 
-
 	// If the module returns "finished" then it has finished everything it needs to do. We set the import session
 	// to blank so we go back to the module list
 	if($result == "finished")
-	{		
+	{
 		$key = array_search($import_session['module'], $import_session['resume_module']);
 		if(isset($key))
 		{
 			unset($import_session['resume_module'][$key]);
 		}
-		
+
 		$import_session['completed'][] = $import_session['module'];
 		$import_session['module'] = '';
 		update_import_session();
@@ -185,7 +184,7 @@ else
 	require_once CONVERT_ROOT."boards/".$import_session['board'].".php";
 	$classname = "convert_".$import_session['board'];
 	$board = new $classname;
-	
+
 	$output->module_list();
 }
 ?>

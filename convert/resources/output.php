@@ -12,8 +12,8 @@
 /**
  * Class to create output from the converter scripts
  */
-class converterOutput {
-
+class converterOutput
+{
 	/**
 	 * This is set to 1 if the header has been called.
 	 * @var int 1 or 0
@@ -54,7 +54,7 @@ class converterOutput {
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb;
-		
+
 		$this->doneheader = 1;
 
 		echo <<<END
@@ -66,7 +66,7 @@ class converterOutput {
 </head>
 <body>
 END;
-		
+
 		echo <<<END
 		<div id="container">
 		<div id="logo">
@@ -81,7 +81,7 @@ END;
 			echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
 			$this->opened_form = 1;
 		}
-		
+
 		if($title != "")
 		{
 			echo <<<END
@@ -113,7 +113,7 @@ END;
 		echo "<h3>Error</h3>";
 		$this->print_contents($message);
 		echo "\n			</div>";
-		
+
 		$this->print_footer();
 	}
 
@@ -126,16 +126,16 @@ END;
 		{
 			$this->print_header();
 		}
-		
+
 		echo "<p>Thank you for choosing MyBB.  This wizard will guide you through the process of converting from your existing bulletin board software to MyBB.";
-		
+
 		echo "<div class=\"border_wrapper\">\n";
 		echo "<div class=\"title\">Board Selection</div>\n";
 		echo "<table class=\"general\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
 		echo "<th colspan=\"2\" class=\"first last\">Please select the board you wish to convert from.</th>\n";
 		echo "</tr>\n";
-		
+
 		$dh = opendir(CONVERT_ROOT."boards");
 		while(($file = readdir($dh)) !== false)
 		{
@@ -151,9 +151,9 @@ END;
 				}
 			}
 		}
-		
+
 		asort($board_array);
-		
+
 		foreach($board_array as $bb_name => $version_info)
 		{
 			echo "<tr>\n";
@@ -161,39 +161,39 @@ END;
 			echo "<td><input type=\"radio\" name=\"board\" value=\"$bb_name\" id=\"$bb_name\" /></td>\n";
 			echo "</tr>\n";
 		}
-		
+
 		closedir($dh);
 		echo "</table>\n";
 		echo "</div>\n";
-		
+
 		$this->print_footer();
 	}
-		
+
 	/**
 	 * Print a list of modules and their dependencies for user to choose from, and the footer
 	 */
 	function module_list()
 	{
 		global $board, $import_session;
-		
+
 		if(count($board->modules) == count($import_session['completed']))
 		{
 			header("Location: index.php?action=finish");
 			exit;
 		}
-		
+
 		$this->print_header("Module Selection", "", 0);
-		
+
 		echo "<div class=\"border_wrapper\">\n";
 		echo "<div class=\"title\">Module Selection</div>\n";
 		echo "<table class=\"general\" cellspacing=\"0\">\n";
 		echo "<tr>\n";
 		echo "<th colspan=\"2\" class=\"first last\">Please select a module to run.</th>\n";
 		echo "</tr>\n";
-		
+
 		$class = "first";
-		$i=0;
-		
+		$i = 0;
+
 		foreach($board->modules as $key => $module)
 		{
 			++$i;
@@ -209,9 +209,9 @@ END;
 				{
 					if($dependency == '')
 					{
-						break;	
+						break;
 					}
-					
+
 					if(!in_array($dependency, $import_session['completed']))
 					{
 						// Cannot be run yet
@@ -226,26 +226,26 @@ END;
 					}
 				}
 			}
-			
+
 			if(in_array($key, $import_session['completed']))
 			{
 				// Module has been completed.  Thus show.
 				$icon = ' completed';
 			}
-			
+
 			if(count($board->modules) == $i)
 			{
 				$class .= " last";
 			}
-			
+
 			echo "<tr class=\"{$class}\">\n";
 			echo "<td class=\"first\"><div class=\"module{$icon}\">".$module['name']."</div>\n";
-			
+
 			if($module['description'])
 			{
 				echo "<div class=\"module_description\">".$module['description']."</div>\n";
 			}
-			
+
 			if(in_array($key, $import_session['completed']))
 			{
 				// Module has been completed.  Thus show.
@@ -256,11 +256,11 @@ END;
 			{
 				echo "<div class=\"module_description\"><small>Dependencies: ".implode(', ', $dependency_list)."</small></div>\n";
 			}
-			
+
 			echo "</td>\n";
 			echo "<td class=\"last\" width=\"1\">\n";
 			echo "<form method=\"post\" action=\"{$this->script}\">\n";
-			
+
 			if($import_session['module'] == $key || in_array($key, $import_session['resume_module']))
 			{
 				echo "<input type=\"submit\" class=\"submit_button\" value=\"Resume &raquo;\" />\n";
@@ -273,12 +273,12 @@ END;
 			{
 				echo "<input type=\"submit\" class=\"submit_button\" value=\"Run &raquo;\" />\n";
 			}
-			
+
 			echo "<input type=\"hidden\" name=\"module\" value=\"{$key}\" />\n";
 			echo "</form>\n";
 			echo "</td>\n";
 			echo "</tr>\n";
-			
+
 			if($class == "alt_row")
 			{
 				$class = "";
@@ -288,17 +288,20 @@ END;
 				$class = "alt_row";
 			}
 		}
-		
+
 		echo "</table>\n";
 		echo "</div><br />\n";
 		echo '<p>After you have run the modules you want, continue to the next step in the conversion process.  The cleanup step will remove any temporary data created during the conversion.</p>';
 		echo "<form method=\"post\" action=\"{$this->script}\">\n";
 		echo '<input type="hidden" name="action" value="finish" />';
 		echo '<div style="text-align:right"><input type="submit" class="submit_button" value="Cleanup &raquo;" /></div></form>';
-		
+
 		$this->print_footer('', '', 1);
 	}
-	
+
+	/**
+	 * Print a list of fields to be written in by user for database details.
+	 */
 	function print_database_details_table($name)
 	{
 		global $dbengines, $dbhost, $dbuser, $dbname, $tableprefix;
@@ -342,27 +345,27 @@ END;
 <p>Once you have checked these details are correct, click next to continue.</p>
 EOF;
 	}
-	
+
 	/**
 	 * Print final page
 	 */
 	function finish_conversion()
 	{
 		global $config;
-		
+
 		if(!$this->doneheader)
 		{
 			$this->print_header("Completion", '', 0);
 		}
-		
+
 		if(!isset($config['admin_dir']))
 		{
 			$config['admin_dir'] = "admin";
 		}
-		
+
 		echo '<p>The current conversion session has been finished.  You may now go to your copy of <a href="../">MyBB</a> or your <a href="../'.$config['admin_dir'].'/index.php">Admin Control Panel</a>.  It is recommended that you run the Rebuild and Recount tools in the Admin CP.</p>';
 		echo '<p>Please remove this directory if you are not planning on converting any other forums.</p>';
-		
+
 		$this->print_footer('', '', 1);
 	}
 
@@ -375,16 +378,15 @@ EOF;
 	function print_footer($next_action="", $name="", $do_session=1)
 	{
 		global $import_session;
-		
+
 		if($this->opened_form)
 		{
 			echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Next &raquo;\" /></div>";
 			echo "\n	</form>\n";
-			
+
 			// Only if we're in a module
 			if($import_session['module'] && $import_session['module'] != 'db_configuration' && (!defined('BACK_BUTTON') || BACK_BUTTON != false))
 			{
-				
 				echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
 				echo "\n		<input type=\"hidden\" name=\"action\" value=\"module_list\" />\n";
 				echo "\n		<div id=\"back_button\"><input type=\"submit\" class=\"submit_button\" value=\"&laquo; Back\" /></div><br style=\"clear: both;\" />\n";
@@ -394,7 +396,6 @@ EOF;
 			{
 				echo "\n <br style=\"clear: both;\" />";
 			}
-			
 		}
 		else
 		{
