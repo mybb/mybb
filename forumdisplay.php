@@ -370,6 +370,7 @@ switch($mybb->input['sortby'])
 		break;
 	case "rating":
 		$sortfield = "averagerating";
+		$sortfield2 = ", t.totalratings DESC";
 		break;
 	case "started":
 		$sortfield = "t.dateline";
@@ -507,13 +508,13 @@ $icon_cache = $cache->read("posticons");
 
 // Start Getting Threads
 $query = $db->query("
-	SELECT t.*, $ratingadd t.username AS threadusername, u.username
-	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-	WHERE t.fid='$fid' $visibleonly $datecutsql
-	ORDER BY t.sticky DESC, $sortfield $sortordernow
-	LIMIT $start, $perpage
-");
+    SELECT t.*, $ratingadd t.username AS threadusername, u.username
+    FROM ".TABLE_PREFIX."threads t
+    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+    WHERE t.fid='$fid' $visibleonly $datecutsql
+    ORDER BY t.sticky DESC, $sortfield $sortordernow $sortfield2
+    LIMIT $start, $perpage
+"); 
 while($thread = $db->fetch_array($query))
 {
 	$threadcache[$thread['tid']] = $thread;

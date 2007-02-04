@@ -248,7 +248,7 @@ if($mybb->settings['portal_showwol'] != "no")
 		else
 		{
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
-			{
+			{				
 				$doneusers[$user['uid']] = $user['time'];
 				
 				// If the user is logged in anonymously, update the count for that.
@@ -256,17 +256,22 @@ if($mybb->settings['portal_showwol'] != "no")
 				{
 					++$anoncount;
 				}
-				
-				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+				else
 				{
-					if($user['invisible'] == "yes")
-					{
-						$invisiblemark = "*";
-					}
-					else
-					{
-						$invisiblemark = '';
-					}
+					++$membercount;
+				}
+				
+				if($user['invisible'] == "yes")
+				{
+					$invisiblemark = "*";
+				}
+				else
+				{
+					$invisiblemark = '';
+				}
+				
+				if(($user['invisible'] == "yes" && ($mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != "yes")
+				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
 					eval("\$onlinemembers .= \"".$templates->get("portal_whosonline_memberbit", 1, 0)."\";");
@@ -276,12 +281,18 @@ if($mybb->settings['portal_showwol'] != "no")
 		}
 	}
 	
-	$onlinecount = $membercount + $guestcount + $botcount + $anoncount;
+	$onlinecount = $membercount + $guestcount + $botcount;
 	
-	// If we can't see invisible users remove them from the count
-	if($mybb->usergroup['canviewwolinvis'] != "yes")
+	// If we can see invisible users add them to the count
+	if($mybb->usergroup['canviewwolinvis'] == "yes")
 	{
-		$onlinecount -= $anoncount;
+		$onlinecount += $anoncount;
+	}
+	
+	// If we can't see invisible users but the user is an invisible user incriment the count by one
+	if($mybb->usergroup['canviewwolinvis'] != "yes" && $mybb->user['invisible'] == "yes")
+	{
+		++$onlinecount;
 	}
 
 	// Most users online

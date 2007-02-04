@@ -1154,7 +1154,7 @@ elseif($mybb->input['action'] == "profile")
 			$returndate = "$lang->unknown";
 		}
 		else
-		{
+		{			
 			$returnhome = explode("-", $memprofile['returndate']);
 			$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
 			$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
