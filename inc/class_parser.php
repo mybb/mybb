@@ -544,6 +544,7 @@ class postParser
 
 		$message = stripslashes($message);
 		$username = stripslashes($username) . "'";
+		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
 		if(intval($match[1]))
@@ -551,6 +552,7 @@ class postParser
 			$url = get_post_link(intval($match[1]));
 			eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
 			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
+			$delete_quote = false;
 		}
 
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#", $username, $match);
@@ -560,12 +562,12 @@ class postParser
 			$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
 			$date = " ({$postdate} {$posttime})";
 			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#", '', $username);
+			$delete_quote = false;
 		}
 
-		$username_length = my_strlen($username)-1;
-		if(my_strpos($username, "'") == $username_length)
+		if($delete_quote)
 		{
-			$username = my_substr($username, 0, $username_length);
+			$username = my_substr($username, 0, my_strlen($username)-1);
 		}
 
 		if($text_only)
@@ -770,7 +772,7 @@ class postParser
 		}
 		else
 		{
-			return "<img src=\"{$url}\" border=\"0\" alt=\"\" />";			
+			return "<img src=\"{$url}\" border=\"0\" alt=\"\" />";
 		}
 	}
 
