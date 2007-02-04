@@ -4427,7 +4427,7 @@ form {
 </tr>]]></template>
 		<template name="memberlist_user_avatar" version="140"><![CDATA[<img src="{$user['avatar']}" alt="" {$avatar_width_height} />]]></template>
 		<template name="memberlist_user_groupimage" version="140"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" />]]></template>
-		<template name="index_loginform" version="120"><![CDATA[<br /><br />
+		<template name="index_loginform" version="123"><![CDATA[<br /><br />
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
