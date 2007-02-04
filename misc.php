@@ -351,6 +351,7 @@ elseif($mybb->input['action'] == "smilies")
 		$query = $db->simple_select(TABLE_PREFIX."smilies", "*", "", array('order_by' => 'disporder'));
 		while($smilie = $db->fetch_array($query))
 		{
+			$smilie['insert'] = addslashes($smilie['find']);
 			$smilie['find'] = htmlspecialchars_uni($smilie['find']);
 			eval("\$smilies .= \"".$templates->get("misc_smilies_popup_smilie")."\";");
 			if($e == 2)
