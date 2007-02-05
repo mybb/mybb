@@ -4307,7 +4307,13 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="member_login" version="120"><![CDATA[<html>
+		<template name="member_loggedin_notice" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="trow1" align="right"><span class="smalltext">{$lang->already_logged_in}</a></span></td>
+</tr>
+</table>
+<br />]]></template>
+		<template name="member_login" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->login}</title>
 {$headerinclude}
@@ -4315,6 +4321,7 @@ form {
 <body>
 {$header}
 <br />
+{$member_loggedin_notice}
 <form action="member.php" method="post">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>

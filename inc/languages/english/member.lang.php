@@ -127,6 +127,7 @@ $l['admin_ban_in_acp'] = "Ban this user in Admin CP";
 $l['reputation'] = "Reputation:";
 $l['reputation_vote'] = "Rate";
 $l['reputation_details'] = "Details";
+$l['already_logged_in'] = "Notice: You are already currently logged in as {1}.";
 
 $l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
 $l['redirect_emailupdated'] = "Your email has been successfully changed.<br />You will now be taken back to the main page.";
@@ -153,7 +154,6 @@ $l['error_invalidpworusername'] = "You have entered an invalid username or passw
 $l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
-$l['error_already_logged_in'] = "Sorry, but it seems you are already logged in. If you wish to log in again, please log out first.";
 
 $l['js_validator_no_username'] = "You must enter a username";
 $l['js_validator_invalid_email'] = "You need to enter a valid email address";
