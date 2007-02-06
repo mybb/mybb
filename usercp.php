@@ -1976,6 +1976,7 @@ if($mybb->input['action'] == "usergroups")
 			$joingroup = $mybb->input['joingroup'];
 			eval("\$joinpage = \"".$templates->get("usercp_usergroups_joingroup")."\";");
 			output_page($joinpage);
+			exit();
 		}
 		else
 		{
