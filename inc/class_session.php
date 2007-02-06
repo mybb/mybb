@@ -284,11 +284,12 @@ class session
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
 			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
 			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
+
+			$mybbgroups = $mybb->user['usergroup'];
 			if($mybb->user['additionalgroups'])
 			{
-				$mybb->user['additionalgroups'] = ','.$mybb->user['additionalgroups'];
+				$mybbgroups .= ','.$mybb->user['additionalgroups'];
 			}
-			$mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
 		}
 		else if(!empty($mybb->user['bandate']) && (empty($mybb->user['banlifted']) || !empty($mybb->user['banlifted']) && $mybb->user['banlifted'] > $time))
         {
@@ -296,14 +297,14 @@ class session
         }
         else
         {
+			// Gather a full permission set for this user and the groups they are in.
+			$mybbgroups = $mybb->user['usergroup'];
 			if($mybb->user['additionalgroups'])
 			{
-				$mybb->user['additionalgroups'] = ','.$mybb->user['additionalgroups'];
+				$mybbgroups .= ','.$mybb->user['additionalgroups'];
 			}
-			// Gather a full permission set for this user and the groups they are in.
-            $mybbgroups = $mybb->user['usergroup'].$mybb->user['additionalgroups'];
         }
-		
+
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		if(!$mybb->user['displaygroup'])
 		{
