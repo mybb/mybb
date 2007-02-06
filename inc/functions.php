@@ -3325,7 +3325,7 @@ function login_attempt_check($fatal = true)
 */
 function validate_email_format($email)
 {
-	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email))
+	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email) || strpos($email, ' ') !== false)
 	{
 		return false;
 	}

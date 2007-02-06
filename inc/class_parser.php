@@ -517,9 +517,21 @@ class postParser
 	function mycode_parse_code($code)
 	{
 		global $lang;
-		$code = trim($code);
+
+		// Clean the string before parsing.
+		$code = preg_replace('#^(\t*)(\n|\r|\0|\x0B| )*#', '\\1', $code);
+		$code = rtrim($code);
+		$original = preg_replace('#^\t*#', '', $code);
+
+		if(empty($original))
+		{
+			return;
+		}
+
+		$code = str_replace('&amp;', '&', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
+		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
 
@@ -534,8 +546,12 @@ class postParser
 		global $lang;
 
 		// Clean the string before parsing.
-		$str = trim($str);
-		if(!$str)
+		$str = preg_replace('#^(\t*)(\n|\r|\0|\x0B| )*#', '\\1', $str);
+		$str = rtrim($str);
+
+		$original = preg_replace('#^\t*#', '', $str);
+
+		if(empty($original))
 		{
 			return;
 		}
@@ -543,7 +559,6 @@ class postParser
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
-		$original = $str;
 
 		// See if open and close tags are provided.
 		$added_open_tag = false;
@@ -605,6 +620,8 @@ class postParser
 		if($added_end_tag)
 		{
 			$code = str_replace("?&gt;</span></code>", "</span></code>", $code);
+			// Wait a minute. It fails highlighting? Stupid highlighter.
+			$code = str_replace("?&gt;</code>", "</code>", $code);
 		}
 
 		$code = preg_replace("#<span style=\"color: \#([A-Z0-9]{6})\"></span>#", "", $code);
