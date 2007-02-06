@@ -299,7 +299,7 @@ $tables[] = "CREATE TABLE mybb_mailqueue (
 	message text NOT NULL,
 	headers text NOT NULL,
 	PRIMARY KEY(mid)
-);";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_moderatorlog (
   uid int unsigned NOT NULL default '0',
