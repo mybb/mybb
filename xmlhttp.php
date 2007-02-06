@@ -376,7 +376,15 @@ else if($mybb->input['action'] == "edit_post")
 		// No errors were found, we can call the update method.
 		else
 		{
-			$posthandler->update_post();
+			$postinfo = $posthandler->update_post();
+			$visible = $postinfo['visible'];
+			if($visible == 0)
+			{
+				echo "<p>\n";
+				echo $lang->post_moderation;
+				echo "</p>\n";
+				exit;
+			}
 		}
 
 		require_once MYBB_ROOT."inc/class_parser.php";

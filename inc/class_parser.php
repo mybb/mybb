@@ -549,7 +549,7 @@ class postParser
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
 		if(intval($match[1]))
 		{
-			$url = get_post_link(intval($match[1]));
+			$url = get_post_link(intval($match[1]))."#pid$pid";
 			eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
 			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
 			$delete_quote = false;
@@ -600,7 +600,7 @@ class postParser
 		{
 			return "\n{$lang->code}\n--\n{$code}\n--\n";
 		}
-		
+
 		// Clean the string before parsing.
 		$code = preg_replace('#^(\t*)(\n|\r|\0|\x0B| )*#', '\\1', $code);
 		$code = rtrim($code);

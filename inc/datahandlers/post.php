@@ -161,11 +161,11 @@ class PostDataHandler extends DataHandler
 			$first_check = $db->fetch_array($query);
 			if($first_check['pid'] == $post['pid'])
 			{
-				$first_post = 1;
+				$first_post = true;
 			}
 			else
 			{
-				$first_post = 0;
+				$first_post = false;
 			}
 
 			// If this is the first post there needs to be a subject, else make it the default one.
@@ -1287,6 +1287,19 @@ class PostDataHandler extends DataHandler
 			$post['tid'] = $tid_fetch['tid'];
 			$post['fid'] = $tid_fetch['fid'];
 		}
+		
+		$forum = get_forum($post['fid']);
+
+		// Decide on the visibility of this post.
+		if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
+		{
+			$visible = 0;
+		}
+		else
+		{
+			$visible = 1;
+		}
+
 		// Check if this is the first post in a thread.
 		$options = array(
 			"order_by" => "dateline",
@@ -1298,16 +1311,18 @@ class PostDataHandler extends DataHandler
 		$first_post_check = $db->fetch_array($query);
 		if($first_post_check['pid'] == $post['pid'])
 		{
-			$first_post = 1;
+			$first_post = true;
 		}
 		else
 		{
-			$first_post = 0;
+			$first_post = false;
 		}
 		// Update the thread details that might have been changed first.
 		if($first_post)
 		{
 			$this->tid = $post['tid'];
+
+			$this->thread_update_data['visible'] = $visible;
 
 			if(isset($post['subject']))
 			{
@@ -1364,6 +1379,8 @@ class PostDataHandler extends DataHandler
 			$this->post_update_data['edittime'] = time();
 		}
 
+		$this->post_update_data['visible'] = $visible;
+
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
 
 		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
@@ -1390,6 +1407,11 @@ class PostDataHandler extends DataHandler
 		update_thread_attachment_count($post['tid']);
 
 		update_forum_count($post['fid']);
+
+		return array(
+			'visible' => $visible,
+			'first_post' => $first_post
+		);
 	}
 }
 ?>

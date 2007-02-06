@@ -283,6 +283,9 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	else
 	{
 		$posthandler->update_post();
+		$postinfo = $posthandler->update_post();
+		$visible = $postinfo['visible'];
+		$first_post = $postinfo['first_post'];
 
 		// Help keep our attachments table clean.
 		$db->delete_query("attachments", "filename='' OR filesize<1");
@@ -291,17 +294,28 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 		{
 			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
-			$redirect = $lang->redirect_postedited_poll;
+			$lang->redirect_postedited = $lang->redirect_postedited_poll;
+		}
+		else if($visible == 0 && $first_post)
+		{
+			// Moderated post
+			$lang->redirect_postedited .= $lang->redirect_thread_moderation;
+			$url = get_forum_link($fid);
+		}
+		else if($visible == 0)
+		{
+			$lang->redirect_postedited .= $lang->redirect_post_moderation;
+			$url = get_thread_link($tid);
 		}
 		// Otherwise, send them back to their post
 		else
 		{
-			$url = get_post_link($pid, $tid)."#pid$pid";
-			$redirect = $lang->redirect_postedited;
+			$lang->redirect_postedited .= $lang->redirect_postedited_redirect;
+			$url = get_post_link($pid, $tid)."#pid{$pid}";
 		}
 		$plugins->run_hooks("editpost_do_editpost_end");
 
-		redirect($url, $redirect);
+		redirect($url, $lang->redirect_postedited);
 	}
 }
 

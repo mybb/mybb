@@ -317,6 +317,20 @@ function makeyesnocode($title, $name, $value="yes")
 	}
 	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"yes\"$yescheck />&nbsp;$lang->yes</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"no\"$nocheck />&nbsp;$lang->no</label></td>\n</tr>\n";
 }
+function makeintcode($title, $name, $value=1)
+{
+	global $lang;
+	$bgcolor = getaltbg();
+	if($value == 0)
+	{
+		$nocheck = " checked=\"checked\"";
+	}
+	else
+	{
+		$yescheck = " checked=\"checked\"";
+	}
+	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\" width=\"60%\"><label><input type=\"radio\" name=\"$name\" value=\"1\"$yescheck />&nbsp;$lang->yes</label> &nbsp;&nbsp;<label><input type=\"radio\" name=\"$name\" value=\"0\"$nocheck />&nbsp;$lang->no</label></td>\n</tr>\n";
+}
 function makeonoffcode($title, $name, $value="on")
 {
 	global $lang;

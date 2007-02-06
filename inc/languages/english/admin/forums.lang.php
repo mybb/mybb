@@ -70,6 +70,7 @@ $l['forum_open'] = "Forum Is Open?<br /><small>If no, the forum will be closed f
 $l['moderation_options'] = "Moderation Options";
 $l['moderate_posts'] = "Moderate New Posts";
 $l['moderate_threads'] = "Moderate New Threads";
+$l['moderate_edit_posts'] = "Moderate Posts after edit";
 $l['moderate_attachments'] = "Moderate New Attachments";
 
 $l['style_options'] = "Style Options";

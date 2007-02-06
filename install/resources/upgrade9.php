@@ -167,6 +167,11 @@ function upgrade9_dbchanges()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
 	}
+	
+	if(!$db->field_exists('mod_edit_posts', "forums"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts smallint unsigned NOT NULL default '0' AFTER modthreads");
+	}
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
