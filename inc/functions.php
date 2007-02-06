@@ -3883,6 +3883,10 @@ function login_attempt_check($fatal = true)
 */
 function validate_email_format($email)
 {
+	if(strpos($email, ' ') !== false)
+	{
+		return false;
+	}
 	return preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
 }
 

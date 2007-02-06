@@ -595,13 +595,23 @@ class postParser
 	function mycode_parse_code($code, $text_only=false)
 	{
 		global $lang;
-		
+
 		if($text_only == true)
 		{
 			return "\n{$lang->code}\n--\n{$code}\n--\n";
 		}
 		
-		$code = trim($code);
+		// Clean the string before parsing.
+		$code = preg_replace('#^(\t*)(\n|\r|\0|\x0B| )*#', '\\1', $code);
+		$code = rtrim($code);
+		$original = preg_replace('#^\t*#', '', $code);
+
+		if(empty($original))
+		{
+			return;
+		}
+
+		$code = str_replace('&amp;', '&', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
@@ -620,16 +630,19 @@ class postParser
 	function mycode_parse_php($str, $bare_return = false, $text_only = false)
 	{
 		global $lang;
-		
+
 		if($text_only == true)
 		{
 			return "\n{$lang->php_code}\n--\n$str\n--\n";
 		}
 
-		// Clean the string before parsing.
-		$str = trim($str);
-		
-		if(!$str)
+		// Clean the string before parsing except tab spaces.
+		$str = preg_replace('#^(\t*)(\n|\r|\0|\x0B| )*#', '\\1', $str);
+		$str = rtrim($str);
+
+		$original = preg_replace('#^\t*#', '', $str);
+
+		if(empty($original))
 		{
 			return;
 		}
@@ -637,17 +650,15 @@ class postParser
 		$str = str_replace('&amp;', '&', $str);
 		$str = str_replace('&lt;', '<', $str);
 		$str = str_replace('&gt;', '>', $str);
-		$original = $str;
 
 		// See if open and close tags are provided.
-		
 		$added_open_tag = false;
 		if(!preg_match("#^\s*<\?#si", $str))
 		{
 			$added_open_tag = true;
 			$str = "<?php \n".$str;
 		}
-		
+
 		$added_end_tag = false;
 		if(!preg_match("#\?>\s*$#si", $str))
 		{
@@ -713,7 +724,7 @@ class postParser
 		{
 			return $code;
 		}
-		
+
 		// Send back the code all nice and pretty
 		return "</p>\n<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n<p>\n";
 	}
