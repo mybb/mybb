@@ -52,7 +52,11 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		'allow_imgcode' => $mybb->settings['sigimgcode']
 	);
 	$parsed_sig = $parser->parse_message($mybb->input['signature'], $parser_options);
-	if(($mybb->settings['sigimgcode'] == "no" && substr_count($parsed_sig, "<img") > 0) || ($mybb->settings['sigimgcode'] == "yes" && substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages']))
+	if((($mybb->settings['sigimgcode'] == "no" && $mybb->settings['sigsmilies'] != 'yes') &&
+		substr_count($parsed_sig, "<img") > 0) ||
+		(($mybb->settings['sigimgcode'] == "yes" || $mybb->settings['sigsmilies'] == 'yes') &&
+		substr_count($parsed_sig, "<img") > $mybb->settings['maxsigimages'])
+	)
 	{
 		if($mybb->settings['sigimgcode'] == "yes")
 		{
