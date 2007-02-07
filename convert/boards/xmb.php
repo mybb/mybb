@@ -592,7 +592,6 @@ class Convert_xmb extends Converter {
 				// do fix lastpost stuff
 				
 				// Update parent list.
-				$update_array = ;
 				$db->update_query("forums", array('parentlist' => $insert_forum['pid'].','.$fid), "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
@@ -1356,12 +1355,60 @@ class Convert_xmb extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->xmb_db_connect();
-
+		
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"langfile" => "bblanguage",
+			"bbname" => "bbname",
+			"postsperpage" => "postsperpage",
+			"topicsperpage" => "threadsperpage",
+			"hottopic" => "hottopic",
+			"bbstatus" => "boardclosed",
+			"regstatus" => "disableregs",
+			"bboffreason" => "boardclosed_reason",
+			"floodctrl" => "postfloodsecs",
+			"memberperpage" => "membersperpage",
+			"hideprivate" => "hideprivateforums",
+			"emailcheck" => "regtype",
+			"sitename" => "bbname",
+			"siteurl" => "homeurl",
+			"timeformat" => "timeformat",
+			"adminemail" => "adminemail",
+			"dateformat" => "dateformat",
+			"sigbbcode" => "sigmycode",
+			"sightml" => "sightml",
+			"whosonlinestatus" => "showwol",
+			"smtotal" => "smilieinsertertot",
+			"smcols" => "smilieinsertercols",
+			"dotfolders" => "dotfolders",
+			"attachimgpost" => "attachthumbnails",
+			"max_avatar_size" => "maxavatardims",
+			"def_tz" => "timezoneoffset",
+			"maxattachsize" => "avatarresizing",
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
+		$on_off_to_yes_no = array(
+			"bbstatus",
+			"regstatus",
+			"hideprivate",
+			"whosonlinestatus",
+			"attachimgpost",			
+		);
+		
 		// Get number of settings
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
-			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
+			$query = $this->old_db->query("SHOW FIELDS FROM ".XMB_TABLE_PREFIX."settings");
+			while($field = $this->old_db->fetch_array($query))
+			{
+				if(array_key_exists($field['Field'], $settings_array))
+				{
+					$query2 = $this->old_db->simple_select("settings", $field['Field'], "", array('limit' => 1));
+					$setting_list[$field['Field']] = $this->old_db->fetch_field($query2, $field['Field']);
+				}
+			}
+			$import_session['setting_list'] = $setting_list;
+			$import_session['total_settings'] = count($setting_list);
 		}
 
 		if($import_session['start_settings'])
@@ -1394,21 +1441,52 @@ class Convert_xmb extends Converter {
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
-
-			$query = $this->old_db->simple_select("settings");
-    		foreach($this->old_db->fetch_array($query) as $name => $value)
-			{
-				echo "Updating setting {$setting['config_name']} from the XMB database... ";
-
-				// XMB values
-				$name = $value = "";
 			
+			$done_settings = $import_session['settings_per_screen'];
+			
+			foreach($settings_array as $oldname => $name)
+			{
+				// XMB values
+				$value = $import_session['setting_list'][$oldname];
+				
+				if(array_key_exists($oldname, $on_off_to_yes_no))
+				{
+					if($value == "on")
+					{
+						$value = "no";
+					}
+					else
+					{
+						$value = "yes";
+					}
+				}
+				
+				if($oldname == "emailcheck" && $value == "on")
+				{
+					$value = "randompass";
+				}
+				
+				if($oldname == "def_tz")
+				{
+					$value = intval($value);
+				}
+				
+				echo "Updating setting ".htmlspecialchars_uni($value)." from the XMB database to {$name} in the MyBB database... ";
+				
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
+				
+				--$done_settings;
+				unset($import_session['setting_list'][$oldname]);
+				
+				if($done_settings == 0)
+				{
+					break;
+				}
 			}
 			
-			if($this->old_db->num_rows($query) == 0)
+			if($import_session['total_settings'] == 0)
 			{
 				echo "There are no settings to update. Please press next to continue.";
 				define('BACK_BUTTON', false);

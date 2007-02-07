@@ -1493,7 +1493,6 @@ class Convert_vbulletin2 extends Converter {
 		$output->print_footer();
 	}
 	
-	// TO-DO
 	function import_settings()
 	{
 		global $mybb, $output, $import_session, $db;
@@ -1505,9 +1504,6 @@ class Convert_vbulletin2 extends Converter {
 			"addtemplatename" => "tplhtmlcomments",
 			"allowregistration" => "disableregs",
 			"allowkeepbannedemail" => "emailkeep",
-			"attachlimit" => "maxattachments",
-			"attachthumbs" => "attachthumbnails",
-			"attachthumbssize" => "attachthumbh",
 			"banemail" => "bannedemails",
 			"banip" => "bannedips",
 			"bbactive" => "boardclosed",
@@ -1515,7 +1511,6 @@ class Convert_vbulletin2 extends Converter {
 			"bbtitle" => "bbname",
 			"dateformat" => "dateformat",
 			"displayloggedin" => "showwol",
-			"dstonoff" => "dstcorrection",
 			"edittimelimit" => "edittimelimit",
 			"enablememberlist" => "enablememberlist",
 			"enablepms" => "enablepms",
@@ -1531,7 +1526,6 @@ class Convert_vbulletin2 extends Converter {
 			"loadlimit" => "load",
 			"logip" => "logip",
 			"maximages" => "maxpostimages",
-			"maxpolllength" => "polloptionlimit",
 			"maxpolloptions" => "maxpolloptions",
 			"maxposts" => "postsperpage",
 			"maxthreads" => "threadsperpage",
@@ -1542,30 +1536,19 @@ class Convert_vbulletin2 extends Converter {
 			"moderatenewmembers" => "regtype",
 			"nocacheheaders" => "nocacheheaders",
 			"postmaxchars" => "maxmessagelength",
-			"postminchars" => "minmessagelength",
 			"privallowbbcode" => "pmsallowmycode",
 			"privallowbbimagecode" => "pmsallowimgcode",
 			"privallowhtml" => "pmsallowhtml",
 			"privallowsmilies" => "pmsallowsmilies",
 			"registereddateformat" => "regdateformat",
-			"reputationenable" => "enablereputation",
 			"searchfloodtime" => "searchfloodtime",
 			"showbirthdays" => "showbirthdays",
 			"showdots" => "dotfolders",
 			"showforumdescription" => "showdescriptions",
 			"showforumusers" => "browsingthisforum",
 			"showprivateforums" => "hideprivateforums",
-			"showsimilarthreads" => "showsimilarthreads",
-			/* To be used at a later date
-			"smtp_host" => "",
-			"smtp_pass" => "",
-			"smtp_port" => "",
-			"smtp_tls" => "",
-			"smtp_user" => "", 
-			"use_smtp" => "", */
 			"timeformat" => "timeformat",
 			"timeoffset" => "timezoneoffset",
-			"useheaderredirect" => "redirects",
 			"usereferrer" => "usereferrals",
 			"usermaxposts" => "userpppoptions",
 			"webmasteremail" => "adminemail",
@@ -1576,10 +1559,8 @@ class Convert_vbulletin2 extends Converter {
 			"addtemplatename" => 1,
 			"allowregistration" => 0,
 			"allowkeepbannedemail" => 1,
-			"attachthumbs" => 1,
 			"bbactive" => 0,
 			"displayloggedin" => 1,
-			"dstonoff" => 1,
 			"enablememberlist" => 1,
 			"enablepms" => 1,
 			"gzipoutput" => 1,
@@ -1588,11 +1569,9 @@ class Convert_vbulletin2 extends Converter {
 			"privallowbbimagecode" => 1,
 			"privallowhtml" => 1,
 			"privallowsmilies" => 1,
-			"reputationenable" => 1,
 			"showbirthdays" => 1,
 			"showdots" => 1,
 			"showforumdescription" => 1,
-			"showsimilarthreads" => 1,
 			"usereferrer" => 1
 		);
 
@@ -1651,14 +1630,6 @@ class Convert_vbulletin2 extends Converter {
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
-				
-				if($setting['varname'] == "attachthumbssize")
-				{
-					$name = "attachthumbw";
-					echo "Updating setting {$value} from the vBulletin database to attachthumbw in the MyBB database... ";
-					$this->update_setting($name, $value);
-					echo "done.<br />\n";
-				}
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
