@@ -1080,15 +1080,15 @@ class PostDataHandler extends DataHandler
 		if(!$thread['savedraft'])
 		{
 
-			// Automatic subscription to the thread
+			// Automatically subscribe the user to this thread if they've chosen to.
 			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
 			{
-				$favoriteadd = array(
-					"uid" => intval($thread['uid']),
-					"tid" => intval($this->tid),
-					"type" => "s"
+				$insert_favorite = array(
+					'uid' => intval($thread['uid']),
+					'tid' => $this->tid,
+					'type' => 's'
 				);
-				$db->insert_query("favorites", $favoriteadd);
+				$db->insert_query('favorites', $insert_favorite);
 			}
 
 			// Perform any selected moderation tools.
@@ -1218,16 +1218,6 @@ class PostDataHandler extends DataHandler
 			if($queued_email == 1)
 			{
 				$cache->update_mailqueue();
-			}
-			// Automatically subscribe the user to this thread if they've chosen to.
-			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
-			{
-				$insert_favorite = array(
-					'uid' => intval($thread['uid']),
-					'tid' => $this->tid,
-					'type' => 's'
-				);
-				$db->insert_query('favorites', $insert_favorite);
 			}
 		}
 
