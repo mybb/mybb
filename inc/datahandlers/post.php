@@ -327,7 +327,7 @@ class PostDataHandler extends DataHandler
 
 			if($post['options']['disablesmilies'] != "yes")
 			{
-				$parser_options['allow_smilies'] = $forum['allowmilies'];
+				$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			}
 			else
 			{
