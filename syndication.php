@@ -100,7 +100,7 @@ if($all_forums)
 
 // Get the threads to syndicate.
 $query = $db->query("
-	SELECT t.*, f.name AS forumname, p.message AS postmessage
+	SELECT t.*, f.name AS forumname, p.message AS postmessage, p.edittime
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
@@ -128,12 +128,12 @@ while($thread = $db->fetch_array($query))
 		"title" => $thread['subject'],
 		"link" => $mybb->settings['bburl']."/showthread.php?tid=".$thread['tid'],
 		"description" => $parser->strip_mycode($thread['postmessage'], $parser_options),
-		"date" => $thread['dateline']
+		"date" => $thread['dateline'],
+		"updated" => $thread['edittime']
 	);
 	$feedgenerator->add_item($item);
 }
 
 // Then output the feed XML.
 $feedgenerator->output_feed();
-
 ?>
