@@ -4073,7 +4073,6 @@ function get_banned_ips()
 	global $mybb;
 	$banned_ips = explode(",", $mybb->settings['bannedips']);
 	$banned_ips = array_map("trim", $banned_ips);
-	$banned_emails = array_map("my_strtolower", $banned_ips);
 	return $banned_ips;
 }
 
