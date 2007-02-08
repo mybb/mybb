@@ -555,7 +555,7 @@ class Moderation
 				{
 					$pollvote_array = array(
 						'pid' => $new_pid,
-						'uid' => $pollvote['uid'];,
+						'uid' => $pollvote['uid'],
 						'voteoption' => $pollvote['voteoption'],
 						'dateline' => $pollvote['dateline'],
 					);
