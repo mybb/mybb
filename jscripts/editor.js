@@ -318,7 +318,7 @@ messageEditor.prototype = {
 		this.oldTextarea = oldTextarea;
 
 		// Append the new editor
-		oldTextarea.parentNode.appendChild(editor);
+		oldTextarea.parentNode.insertBefore(editor, oldTextarea);
 
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
