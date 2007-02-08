@@ -46,17 +46,7 @@ function upgrade9_dbchanges()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 	}
-	
-	if(!$db->field_exists('oldadditionalgroups', "banned"))
-	{	
-		$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups text NOT NULL AFTER oldgroup");
-	}
-	
-	if(!$db->field_exists('olddisplaygroup', "banned"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD olddisplaygroup int NOT NULL default '0' AFTER oldadditionalgroups");
-	}
-	
+
 	if($db->field_exists('newpms', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");

@@ -1471,7 +1471,7 @@ class Convert_xmb extends Converter {
 					$value = intval($value);
 				}
 				
-				echo "Updating setting ".htmlspecialchars_uni($value)." from the XMB database to {$name} in the MyBB database... ";
+				echo "Updating setting ".$oldname." from the XMB database to {$name} in the MyBB database... ";
 				
 				$this->update_setting($name, $value);
 				

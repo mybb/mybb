@@ -22,6 +22,26 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-/* Nothing to do from 1.2.2 to 1.2.3 */
+function upgrade8_dbchanges()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
+
+	if(!$db->field_exists('oldadditionalgroups', TABLE_PREFIX."banned"))
+	{
+			$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups text NOT NULL AFTER oldgroup");
+	}
+
+	if(!$db->field_exists('olddisplaygroup', TABLE_PREFIX."banned"))
+	{
+			$db->query("ALTER TABLE ".TABLE_PREFIX."banned ADD olddisplaygroup int NOT NULL default '0' AFTER oldadditionalgroups");
+	}
+	$contents .= "Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+	$output->print_footer("8_done");
+}
 
 ?>

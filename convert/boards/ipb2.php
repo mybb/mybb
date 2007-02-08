@@ -1710,6 +1710,36 @@ class Convert_ipb2 extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->ipb_db_connect();
+		
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"board_offline" => "boardclosed",
+			"offline_msg" => "boardclosed_reason",
+			"au_cutoff" => "wolcutoffmins",
+			"how_totals" => "showindexstats",
+			"show_active" => "showwol",
+			"load_limit" => "load",
+			"disable_subforum_show" => "subforumsindex",
+			"email_out" => "adminemail",
+			/*
+			"mail_method" => "mail_handler",
+			"smtp_host" => "smtp_host",
+			"smtp_port" => "smtp_port",
+			"smtp_user" => "smtp_user",
+			"smtp_pass" => "smtp_pass",
+			"php_mail_extra" => "mail_parameters",
+			*/
+			"board_name" => "bbname",
+			"home_name" => "homename",
+			"home_url" => "homeurl",
+			"csite_pm_show" => "portal_showwelcome",
+			"csite_search_show" => "portal_showsearch",
+			"msg_allow_code" => "pmsallowmycode",
+			"msg_allow_html" => "pmsallowhtml",
+			"search_sql_method" => "searchtype",
+			"min_search_word" => "minsearchword",
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
 
 		// Get number of settings
 		if(!isset($import_session['total_settings']))
@@ -1749,19 +1779,47 @@ class Convert_ipb2 extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select("conf_settings", "conf_key, conf_value, conf_default", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from the IPB database... ";
-
 				// Invision Power Board 2 values
-				$name = $value = "";
-
-				switch($setting['config_name'])
+				$name = $settings_array[$setting['conf_name']];
+				
+				if(empty($setting['conf_value']))
 				{
-					case '':
+					$value = $setting['conf_default'];
 				}
-			
+				else
+				{
+					$value = $setting['conf_value'];
+				}
+				
+				if($setting['conf_name'] == "disable_subforum_show")
+				{
+					if($value == "on")
+					{
+						$value = "1000";
+					}
+					else
+					{
+						$value = "0";
+					}
+				}
+				
+				if($setting['conf_name'] == "search_sql_method")
+				{
+					if($value == "ftext")
+					{
+						$value = "fulltext";
+					}
+					else
+					{
+						$value = "standard";
+					}
+				}
+				
+				echo "Updating setting ".$setting['conf_name']." from the IPB database to {$name} in the MyBB database... ";
+					
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";

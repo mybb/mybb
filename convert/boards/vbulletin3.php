@@ -1682,7 +1682,7 @@ class Convert_vbulletin3 extends Converter {
 				$name = $settings_array[$setting['varname']];
 				$value = $setting['value'];
 				
-				echo "Updating setting ".htmlspecialchars_uni($value)." from the vBulletin database to {$name} in the MyBB database... ";
+				echo "Updating setting ".$setting['varname']." from the vBulletin database to {$name} in the MyBB database... ";
 				
 				if($setting['varname'] == "banemail" || $setting['varname'] == "illegalusernames")
 				{
@@ -1780,7 +1780,7 @@ class Convert_vbulletin3 extends Converter {
 				if($setting['varname'] == "attachthumbssize")
 				{
 					$name = "attachthumbw";
-					echo "Updating setting {$value} from the vBulletin database to attachthumbw in the MyBB database... ";
+					echo "Updating setting {$setting['varname']} from the vBulletin database to attachthumbw in the MyBB database... ";
 					$this->update_setting($name, $value);
 					echo "done.<br />\n";
 				}

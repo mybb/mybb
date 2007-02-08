@@ -1340,7 +1340,7 @@ class Convert_phpbb2 extends Converter {
 				$name = $settings_array[$setting['config_name']];
 				$value = $setting['config_value'];
 				
-				echo "Updating setting ".htmlspecialchars_uni($value)." from the phpBB database to {$name} in the MyBB database... ";
+				echo "Updating setting ".$setting['config_name']." from the phpBB database to {$name} in the MyBB database... ";
 				
 				if($setting['config_name'] == "avatar_max_height")
 				{

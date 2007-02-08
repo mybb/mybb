@@ -1620,7 +1620,7 @@ class Convert_vbulletin2 extends Converter {
 				$name = $settings_array[$setting['varname']];
 				$value = $setting['value'];
 				
-				echo "Updating setting ".htmlspecialchars_uni($value)." from the vBulletin database to {$name} in the MyBB database... ";
+				echo "Updating setting ".$setting['varname']." from the vBulletin database to {$name} in the MyBB database... ";
 				
 				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['varname']]))
 				{

@@ -1056,7 +1056,7 @@ class Convert_punbb extends Converter {
 				$name = $settings_array[$setting['conf_name']];
 				$value = $setting['conf_value'];
 				
-				echo "Updating setting ".htmlspecialchars_uni($value)." from the punBB database to {$name} in the MyBB database... ";
+				echo "Updating setting ".$setting['conf_name'])." from the punBB database to {$name} in the MyBB database... ";
 				
 				if($setting['conf_name'] == "o_timeout_online")
 				{
