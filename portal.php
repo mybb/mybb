@@ -365,7 +365,7 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 // Get latest news announcements
 // First validate announcement fids:
 $mybb->settings['portal_announcementsfid'] = explode(',', $mybb->settings['portal_announcementsfid']);
-if(is_array($mybb->settings['portal_announcementsfid'])
+if(is_array($mybb->settings['portal_announcementsfid']))
 {
 	foreach($mybb->settings['portal_announcementsfid'] as $fid)
 	{
