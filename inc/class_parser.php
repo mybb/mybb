@@ -249,8 +249,8 @@ class postParser
 		$standard_mycode['size']['regex'] = "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
 		$standard_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
 
-		$standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
-		$standard_mycode['size_int']['replacement'] = "<span style=\"font-size: $1em;\">$2</span>";
+		$standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#esi";
+		$standard_mycode['size_int']['replacement'] = "\$this->mycode_handle_size(\"$1\", \"$2\")";
 
 		$standard_mycode['font']['regex'] = "#\[font=([a-z ]+?)\](.+?)\[/font\]#si";
 		$standard_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
@@ -473,6 +473,27 @@ class postParser
 		$message = preg_replace($js_array, "$1<strong></strong>$2", $message);
 
 		return $message;
+	}
+	
+	/**
+	* Handles fontsize.
+	*
+	* @param string The original size.
+	* @param string The text within a size tag.
+	* @return string The parsed text.
+	*/
+	function mycode_handle_size($size, $text)
+	{
+		$size = intval($size)+10;
+
+		if($size > 50)
+		{
+			$size = 50;
+		}
+
+		$text = "<span style=\"font-size: {$size}pt\">".stripslashes($text)."</span>";
+
+		return $text;
 	}
 
 	/**
