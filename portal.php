@@ -21,7 +21,14 @@ $change_dir = "./";
 
 if(!@chdir($forumdir) && !empty($forumdir))
 {
-	$change_dir = $forumdir;
+	if(@is_dir($forumdir))
+	{
+		$change_dir = $forumdir;
+	}
+	else
+	{
+		die("\$forumdir is invalid!");
+	}
 }
 
 $templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread_lastpost,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal";
