@@ -1739,11 +1739,52 @@ class Convert_smf extends Converter {
 		global $mybb, $output, $import_session, $db;
 
 		$this->smf_db_connect();
-
+		
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"karmaMode" => "enablereputation",
+			"enableCompressedOutput" => "gzipoutput",
+			"attachmentNumPerPostLimit" => "maxattachments",
+			"attachmentThumbnails" => "attachthumbnails",
+			"attachmentThumbWidth" => "attachthumbw",
+			"attachmentThumbHeight" => "attachthumbh",
+			"enableErrorLogging" => "useerrorhandling",
+			"cal_enabled" => "enablecalendar",
+			"smtp_host" => "smtp_host",
+			"smtp_port" => "smtp_port",
+			"smtp_username" => "smtp_user",
+			"smtp_password" => "smtp_pass",
+			"mail_type" => "mail_handler",
+			"hotTopicPosts" => "hottopic",
+			"registration_method" => "regtype",
+			"spamWaitTime" => "postfloodsecs",
+			"reserveNames" => "bannedusernames",
+			"avatar_max_height_upload" => "maxavatardims",
+			"avatar_max_width_upload" => "maxavatardims",
+			"failed_login_threshold" => "failedlogincount",
+			"edit_disable_time" => "edittimelimit",
+			"max_messageLength" => "maxmessagelength",
+			"max_signatureLength" => "siglength",
+			"defaultMaxTopics" => "threadsperpage",
+			"defaultMaxMembers" => "membersperpage",
+			"time_offset" => "timezoneoffset"
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
+		$int_to_yes_no = array(
+			"karmaMode" => 1,
+			"enableCompressedOutput" => 1,
+			"attachmentThumbnails" => 1,
+			"cal_enabled" => 1
+		);
+		
+		$int_to_on_off = array(
+			"enableErrorLogging" => 1
+		);
+		
 		// Get number of settings
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("settings", "COUNT(*) as count", "variable IN({$settings})");
 			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');
 		}
 
@@ -1778,24 +1819,83 @@ class Convert_smf extends Converter {
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select("settings", "variable, value", "variable IN({$settings})", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
-				echo "Updating setting {$setting['config_name']} from the SMF database... ";
-
 				// SMF values
-				$name = $value = "";
-
-				switch($setting['config_name'])
+				$name = $settings_array[$setting['variable']];
+				$value = $setting['value'];
+				
+				echo "Updating setting ".htmlspecialchars_uni($value)." from the SMF database to {$name} in the MyBB database... ";
+				
+				if($setting['variable'] == "karmaMode")
 				{
-					case '':
+					if($value == "2")
+					{
+						$value = 1;
+					}
+					$value = int_to_yes_no($value, 1);		
 				}
-			
+				
+				if($setting['variable'] == "mail_type")
+				{
+					if($value == 1)
+					{
+						$value = "smtp";
+					}
+					else
+					{
+						$value = "mail";
+					}	
+				}
+				
+				if($setting['variable'] == "avatar_max_height_upload")
+				{
+					$avatar_setting = "x".$value;
+					echo "done.<br />\n";
+					continue;	
+				}
+				else if($setting['variable'] == "avatar_max_width_upload")
+				{
+					$value = $value.$avatar_setting;
+					unset($avatar_setting);
+				}
+				
+				if($setting['variable'] == "registration_method")
+				{
+					if($value == 0)
+					{
+						$value = "instant";
+					}
+					else if($value == 2)
+					{
+						$value = "admin";
+					}
+					else
+					{
+						$value = "verify";
+					}
+				}
+				
+				if($setting['variable'] == "reserveNames")
+				{
+					$value = str_replace("\n", ",", $value);
+				}
+						
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['conf_name']]))
+				{
+					$value = int_to_yes_no($value, $int_to_yes_no[$setting['conf_name']]);
+				}
+				
+				if(($value == 0 || $value == 1) && isset($int_to_on_off[$setting['variable']]))
+				{
+					$value = int_to_on_off($value, $int_to_on_off[$setting['variable']]);
+				}
+				
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
 			}
-			
 			if($this->old_db->num_rows($query) == 0)
 			{
 				echo "There are no settings to update. Please press next to continue.";
