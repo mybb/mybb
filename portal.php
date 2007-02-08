@@ -371,8 +371,8 @@ if(is_array($mybb->settings['portal_announcementsfid'])
 	{
 		$fid_array[] = intval($fid);
 	}
+	$mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
 }
-$mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
 // And get them!
 $query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
 while($forumrow = $db->fetch_array($query))
