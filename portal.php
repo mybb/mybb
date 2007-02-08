@@ -21,10 +21,6 @@ $change_dir = "./";
 
 if(!@chdir($forumdir) && !empty($forumdir))
 {
-	die("\$forumdir is invalid!");
-}
-else if(!empty($forumdir))
-{
 	$change_dir = $forumdir;
 }
 
