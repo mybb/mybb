@@ -1750,11 +1750,13 @@ class Convert_smf extends Converter {
 			"attachmentThumbHeight" => "attachthumbh",
 			"enableErrorLogging" => "useerrorhandling",
 			"cal_enabled" => "enablecalendar",
+			/* This is only for MyBB 1.4
 			"smtp_host" => "smtp_host",
 			"smtp_port" => "smtp_port",
 			"smtp_username" => "smtp_user",
 			"smtp_password" => "smtp_pass",
 			"mail_type" => "mail_handler",
+			*/
 			"hotTopicPosts" => "hottopic",
 			"registration_method" => "regtype",
 			"spamWaitTime" => "postfloodsecs",
