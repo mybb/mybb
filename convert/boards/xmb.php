@@ -211,6 +211,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
 <p><input type=\"text\" name=\"users_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -369,6 +372,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_cats'] = 0;
 			echo "<p>Please select how many categories to import at a time:</p>
 <p><input type=\"text\" name=\"cats_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -488,6 +494,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_forums'] = 0;
 			echo "<p>Please select how many forums to import at a time:</p>
 <p><input type=\"text\" name=\"forums_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -643,6 +652,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_threads'] = 0;
 			echo "<p>Please select how many threads to import at a time:</p>
 <p><input type=\"text\" name=\"threads_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -803,6 +815,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many icons to import at a time:</p>
 <p><input type=\"text\" name=\"icons_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -890,6 +905,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_posts'] = 0;
 			echo "<p>Please select how many posts to import at a time:</p>
 <p><input type=\"text\" name=\"posts_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -969,12 +987,12 @@ class Convert_xmb extends Converter {
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->vbulletin_db_connect();
+		$this->xmb_db_connect();
 
 		// Get number of attachment types
 		if(!isset($import_session['total_attachtypes']))
 		{
-			$query = $this->old_db->simple_select("attachmenttype", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("attachments", "COUNT(*) as count");
 			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, 'count');
 		}
 
@@ -1001,6 +1019,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_attachtypes'] = 0;
 			echo "<p>Please select how many attachment types to import at a time:</p>
 <p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1106,6 +1127,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_attachments'] = 0;
 			echo "<p>Please select how many attachments to import at a time:</p>
 <p><input type=\"text\" name=\"attachments_per_screen\" value=\"10\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1166,7 +1190,7 @@ class Convert_xmb extends Converter {
 					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				}
 				
-				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachcount = attachcount + 1 WHERE import_tid = '".$attachment['tid']."'");				
+				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE import_tid = '".$attachment['tid']."'");				
 				
 				echo "done.{$error_notice}<br />\n";
 			}
@@ -1185,7 +1209,7 @@ class Convert_xmb extends Converter {
 	{
 		global $mybb, $output, $import_session, $db;
 
-		$this->phpbb_db_connect();
+		$this->xmb_db_connect();
 
 		// Get number of moderators
 		if(!isset($import_session['total_mods']))
@@ -1217,6 +1241,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_mods'] = 0;
 			echo "<p>Please select how many moderators to import at a time:</p>
 <p><input type=\"text\" name=\"mods_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1232,7 +1259,7 @@ class Convert_xmb extends Converter {
 				
 				// XMB values
 				$insert_mod['fid'] = $this->get_import_fid($mod['fid']);
-				$insert_mod['uid'] = $this->get_import_username($mod['moderator']);
+				$insert_mod['uid'] = $this->get_import_uid($user['uid']);
 				
 				// Default values
 				$insert_mod['caneditposts'] = 'yes';
@@ -1299,6 +1326,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many smilies to import at a time:</p>
 <p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1435,6 +1465,9 @@ class Convert_xmb extends Converter {
 			$import_session['start_settings'] = 0;
 			echo "<p>Please select how many settings to modify at a time:</p>
 <p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1538,6 +1571,27 @@ class Convert_xmb extends Converter {
 		$query = $this->old_db->simple_select("members", "uid", "username = '{$username}'");
 		return $this->old_db->fetch_field($query, "uid");
 	}	
+	
+	/**
+	 * Get a user from the XMB database
+	 *
+	 * @param int User ID
+	 * @return array If the uid is 0, returns an array of username as Guest.  Otherwise returns the user
+	 */
+	function get_user($uid)
+	{
+		if($uid == 0)
+		{
+			return array(
+				'username' => 'Guest',
+				'uid' => 0,
+			);
+		}
+		
+		$query = $this->old_db->simple_select("members", "*", "uid = '{$uid}'", array('limit' => 1));
+		
+		return $this->old_db->fetch_array($query);
+	}
 }
 
 ?>

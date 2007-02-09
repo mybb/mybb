@@ -223,6 +223,9 @@ class Convert_smf extends Converter {
 			$import_session['start_usergroups'] = 0;
 			echo "<p>Please select how many usergroups to import at a time:</p>
 <p><input type=\"text\" name=\"usergroups_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -387,6 +390,9 @@ class Convert_smf extends Converter {
 			$import_session['start_users'] = 0;
 			echo "<p>Please select how many users to import at a time:</p>
 <p><input type=\"text\" name=\"users_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -544,6 +550,9 @@ class Convert_smf extends Converter {
 			$import_session['start_forumperms'] = 0;
 			echo "<p>Please select how many forum permissions to import at a time:</p>
 <p><input type=\"text\" name=\"forumperms_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -624,6 +633,9 @@ class Convert_smf extends Converter {
 			$import_session['start_cats'] = 0;
 			echo "<p>Please select how many categories to import at a time:</p>
 <p><input type=\"text\" name=\"cats_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -732,6 +744,9 @@ class Convert_smf extends Converter {
 			$import_session['start_forums'] = 0;
 			echo "<p>Please select how many forums to import at a time:</p>
 <p><input type=\"text\" name=\"forums_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -847,6 +862,9 @@ class Convert_smf extends Converter {
 			$import_session['start_threads'] = 0;
 			echo "<p>Please select how many threads to import at a time:</p>
 <p><input type=\"text\" name=\"threads_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -974,6 +992,9 @@ class Convert_smf extends Converter {
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many icons to import at a time:</p>
 <p><input type=\"text\" name=\"icons_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1061,6 +1082,9 @@ class Convert_smf extends Converter {
 			$import_session['start_polls'] = 0;
 			echo "<p>Please select how many polls to import at a time:</p>
 <p><input type=\"text\" name=\"polls_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1164,6 +1188,9 @@ class Convert_smf extends Converter {
 			$import_session['start_pollvotes'] = 0;
 			echo "<p>Please select how many poll votes to import at a time:</p>
 <p><input type=\"text\" name=\"pollvotes_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1235,6 +1262,9 @@ class Convert_smf extends Converter {
 			$import_session['start_posts'] = 0;
 			echo "<p>Please select how many posts to import at a time:</p>
 <p><input type=\"text\" name=\"posts_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1366,6 +1396,9 @@ class Convert_smf extends Converter {
 			$import_session['start_attachments'] = 0;
 			echo "<p>Please select how many attachments to import at a time:</p>
 <p><input type=\"text\" name=\"attachments_per_screen\" value=\"10\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1511,6 +1544,9 @@ class Convert_smf extends Converter {
 			$import_session['start_privatemessages'] = 0;
 			echo "<p>Please select how many Private Messages to import at a time:</p>
 <p><input type=\"text\" name=\"privatemessages_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1602,6 +1638,9 @@ class Convert_smf extends Converter {
 			$import_session['start_mods'] = 0;
 			echo "<p>Please select how many moderators to import at a time:</p>
 <p><input type=\"text\" name=\"mods_per_screen\" value=\"100\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1684,6 +1723,9 @@ class Convert_smf extends Converter {
 			$import_session['start_icons'] = 0;
 			echo "<p>Please select how many smilies to import at a time:</p>
 <p><input type=\"text\" name=\"smilies_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1814,6 +1856,9 @@ class Convert_smf extends Converter {
 			$import_session['start_settings'] = 0;
 			echo "<p>Please select how many settings to modify at a time:</p>
 <p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1944,6 +1989,9 @@ class Convert_smf extends Converter {
 			$import_session['start_events'] = 0;
 			echo "<p>Please select how many events to import at a time:</p>
 <p><input type=\"text\" name=\"events_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -2034,6 +2082,9 @@ class Convert_smf extends Converter {
 			$import_session['start_attachtypes'] = 0;
 			echo "<p>Please select how many attachment types to import at a time:</p>
 <p><input type=\"text\" name=\"attachtypes_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else

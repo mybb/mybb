@@ -381,16 +381,32 @@ EOF;
 
 		if($this->opened_form)
 		{
-			echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Next &raquo;\" /></div>";
+			global $mybb;
+			
+			if($mybb->input['autorefresh'] == "yes" || $mybb->input['autorefresh'] == "no")
+			{
+				$import_session['autorefresh'] = $mybb->input['autorefresh'];
+			}
+			
+			if($import_session['autorefresh'] == "yes")
+			{
+				echo "\n		<meta http-equiv=\"Refresh\" content=\"3; url=".$this->script."\" />";
+				echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Redirecting... &raquo;\" alt=\"Click to continue, if you do not wish to wait.\"/></div>"; 
+			}
+			else
+			{
+				echo "\n		<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Next &raquo;\" /></div>";
+			}
 			echo "\n	</form>\n";
 
 			// Only if we're in a module
 			if($import_session['module'] && $import_session['module'] != 'db_configuration' && (!defined('BACK_BUTTON') || BACK_BUTTON != false))
-			{
+			{				
 				echo "\n	<form method=\"post\" action=\"".$this->script."\">\n";
 				echo "\n		<input type=\"hidden\" name=\"action\" value=\"module_list\" />\n";
 				echo "\n		<div id=\"back_button\"><input type=\"submit\" class=\"submit_button\" value=\"&laquo; Back\" /></div><br style=\"clear: both;\" />\n";
 				echo "\n	</form>\n";
+				
 			}
 			else
 			{
