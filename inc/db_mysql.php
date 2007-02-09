@@ -288,7 +288,14 @@ class databaseEngine
 	 */
 	function errno()
 	{
-		return mysql_errno($this->link);
+		if($this->link)
+		{
+			return mysql_errno($this->link);
+		}
+		else
+		{
+			return mysql_errno();
+		}
 	}
 
 	/**
@@ -298,7 +305,14 @@ class databaseEngine
 	 */
 	function error()
 	{
-		return mysql_error($this->link);
+		if($this->link)
+		{
+			return mysql_error($this->link);
+		}
+		else
+		{
+			return mysql_error();
+		}
 	}
 
 	/**
@@ -310,8 +324,8 @@ class databaseEngine
 	{
 		if($this->error_reporting)
 		{
-			echo "MySQL error: " . mysql_errno($this->link);
-			echo "<br />" . mysql_error($this->link);
+			echo "MySQL error: " . $this->errno();
+			echo "<br />" . $this->error();
 			echo "<br />Query: $string";
 			exit;
 		}

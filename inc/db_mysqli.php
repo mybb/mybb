@@ -278,7 +278,11 @@ class databaseEngine
 	 */
 	function errno()
 	{
-		if(version_compare(phpversion(), "5", ">="))
+		if(!$this->link)
+		{
+			return mysqli_connect_errno();
+		}
+		else
 		{
 			return mysqli_errno($this->link);
 		}
