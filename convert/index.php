@@ -27,9 +27,6 @@ if(!isset($config['dbtype']))
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
-require_once MYBB_ROOT."inc/class_error.php";
-$error_handler = new errorHandler();
-
 // Include the files necessary for converting
 require_once MYBB_ROOT."inc/class_timers.php";
 $timer = new timer;
@@ -53,7 +50,6 @@ $db = new databaseEngine;
 // Connect to the installed MyBB database
 $db->connect($config['hostname'], $config['username'], $config['password']);
 $db->select_db($config['database']);
-$db->set_table_prefix($config['table_prefix']);
 define('TABLE_PREFIX', $config['table_prefix']);
 
 // REMOVE BEFORE RELEASE

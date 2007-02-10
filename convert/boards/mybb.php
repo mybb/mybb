@@ -18,7 +18,7 @@ class Convert_mybb extends Converter
 	 *
 	 * @var string
 	 */
-	var $bbname = "MyBB 1.4 (Merge)";
+	var $bbname = "MyBB 1.2 (Merge)";
 	
 	/**
 	 * Array of all of the modules

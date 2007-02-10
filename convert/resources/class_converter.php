@@ -91,7 +91,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("users", $insertarray);
+		$db->insert_query(TABLE_PREFIX."users", $insertarray);
 		$uid = $db->insert_id();
 
 		return $uid;
@@ -109,7 +109,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("threads", $insertarray);
+		$db->insert_query(TABLE_PREFIX."threads", $insertarray);
 		$tid = $db->insert_id();
 
 		return $tid;
@@ -127,7 +127,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("forums", $insertarray);
+		$db->insert_query(TABLE_PREFIX."forums", $insertarray);
 		$fid = $db->insert_id();
 
 		return $fid;
@@ -145,7 +145,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("posts", $insertarray);
+		$db->insert_query(TABLE_PREFIX."posts", $insertarray);
 		$pid = $db->insert_id();
 		
 		return $pid;
@@ -163,7 +163,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("moderators", $insertarray);
+		$db->insert_query(TABLE_PREFIX."moderators", $insertarray);
 		$mid = $db->insert_id();
 
 		return $mid;
@@ -181,7 +181,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("usergroups", $insertarray);
+		$db->insert_query(TABLE_PREFIX."usergroups", $insertarray);
 		$gid = $db->insert_id();
 
 		return $gid;
@@ -199,7 +199,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("usertitles", $insertarray);
+		$db->insert_query(TABLE_PREFIX."usertitles", $insertarray);
 		$tid = $db->insert_id();
 
 		return $tid;
@@ -217,7 +217,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("privatemessages", $insertarray);
+		$db->insert_query(TABLE_PREFIX."privatemessages", $insertarray);
 		$pmid = $db->insert_id();
 
 		return $pmid;
@@ -235,7 +235,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$query = $db->insert_query("forumpermissions", $insertarray);
+		$query = $db->insert_query(TABLE_PREFIX."forumpermissions", $insertarray);
 		$fpid = $db->insert_id();
 
 		return $fpid;
@@ -253,7 +253,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("polls", $insertarray);
+		$db->insert_query(TABLE_PREFIX."polls", $insertarray);
 		$pollid = $db->insert_id();
 
 		return $pollid;
@@ -271,7 +271,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("pollvotes", $insertarray);
+		$db->insert_query(TABLE_PREFIX."pollvotes", $insertarray);
 		$pollvoteid = $db->insert_id();
 
 		return $pollvoteid;
@@ -289,7 +289,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("settings", $insertarray);
+		$db->insert_query(TABLE_PREFIX."settings", $insertarray);
 		$sid = $db->insert_id();
 
 		return $sid;
@@ -307,7 +307,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("settinggroups", $insertarray);
+		$db->insert_query(TABLE_PREFIX."settinggroups", $insertarray);
 		$gid = $db->insert_id();
 
 		return $gid;
@@ -325,7 +325,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("attachments", $insertarray);
+		$db->insert_query(TABLE_PREFIX."attachments", $insertarray);
 		$aid = $db->insert_id();
 
 		return $aid;
@@ -343,7 +343,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("events", $insertarray);
+		$db->insert_query(TABLE_PREFIX."events", $insertarray);
 		$eid = $db->insert_id();
 
 		return $eid;
@@ -361,7 +361,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("attachtypes", $insertarray);
+		$db->insert_query(TABLE_PREFIX."attachtypes", $insertarray);
 		$atid = $db->insert_id();
 
 		return $atid;
@@ -379,7 +379,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("icons", $insertarray);
+		$db->insert_query(TABLE_PREFIX."icons", $insertarray);
 		$cid = $db->insert_id();
 
 		return $cid;
@@ -397,7 +397,7 @@ class Converter
 			$insertarray[$key] = $db->escape_string($value);
 		}
 
-		$db->insert_query("smilies", $insertarray);
+		$db->insert_query(TABLE_PREFIX."smilies", $insertarray);
 		$sid = $db->insert_id();
 
 		return $sid;
@@ -413,7 +413,7 @@ class Converter
 		$modify = array(
 			'value' => $db->escape_string($value)
 		);
-		$db->update_query("settings", $modify, "name='{$name}'");
+		$db->update_query(TABLE_PREFIX."settings", $modify, "name='{$name}'");
 	}
 
 	/**
@@ -425,7 +425,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("users", "uid, import_uid");
+		$query = $db->simple_select(TABLE_PREFIX."users", "uid, import_uid");
 		while($user = $db->fetch_array($query))
 		{
 			$users[$user['import_uid']] = $user['uid'];
@@ -443,7 +443,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("users", "username, import_uid");
+		$query = $db->simple_select(TABLE_PREFIX."users", "username, import_uid");
 		while($user = $db->fetch_array($query))
 		{
 			$users[$user['import_uid']] = $user['username'];
@@ -461,7 +461,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("polls", "pid, import_pid");
+		$query = $db->simple_select(TABLE_PREFIX."polls", "pid, import_pid");
 		while($poll = $db->fetch_array($query))
 		{
 			$polls[$poll['import_pid']] = $poll['pid'];
@@ -479,7 +479,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("pollvotes", "vid, import_vid");
+		$query = $db->simple_select(TABLE_PREFIX."pollvotes", "vid, import_vid");
 		while($pollvote = $db->fetch_array($query))
 		{
 			$pollvotes[$pollvote['import_vid']] = $pollvote['vid'];
@@ -593,7 +593,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("forums", "fid, import_fid");
+		$query = $db->simple_select(TABLE_PREFIX."forums", "fid, import_fid");
 		while($forum = $db->fetch_array($query))
 		{
 			$forums[$forum['import_fid']] = $forum['fid'];
@@ -630,7 +630,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("threads", "tid, import_tid");
+		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, import_tid");
 		while($thread = $db->fetch_array($query))
 		{
 			$threads[$thread['import_tid']] = $thread['tid'];
@@ -667,7 +667,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("posts", "pid, import_pid");
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid, import_pid");
 		while($post = $db->fetch_array($query))
 		{
 			$posts[$post['import_pid']] = $post['pid'];
@@ -684,7 +684,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("attachments", "aid, import_aid");
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "aid, import_aid");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachments[$attachment['import_aid']] = $attachment['aid'];
@@ -701,7 +701,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("usergroups", "gid, import_gid");
+		$query = $db->simple_select(TABLE_PREFIX."usergroups", "gid, import_gid");
 		while($usergroup = $db->fetch_array($query))
 		{
 			$usergroups[$usergroup['import_gid']] = $usergroup['gid'];
@@ -719,7 +719,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("events", "eid, import_eid");
+		$query = $db->simple_select(TABLE_PREFIX."events", "eid, import_eid");
 		while($event = $db->fetch_array($query))
 		{
 			$events[$event['import_eid']] = $event['eid'];
@@ -756,7 +756,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("settinggroups", "gid, import_gid");
+		$query = $db->simple_select(TABLE_PREFIX."settinggroups", "gid, import_gid");
 		while($settinggroup = $db->fetch_array($query))
 		{
 			$settinggroups[$settinggroup['import_gid']] = $settinggroup['gid'];
@@ -831,7 +831,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("attachtypes", "atid, import_atid");
+		$query = $db->simple_select(TABLE_PREFIX."attachtypes", "atid, import_atid");
 		while($type = $db->fetch_array($query))
 		{
 			$attachtypes[$type['import_atid']] = $type['atid'];
@@ -868,7 +868,7 @@ class Converter
 	{
 		global $db;
 
-		$query = $db->simple_select("icons", "iid, import_iid");
+		$query = $db->simple_select(TABLE_PREFIX."icons", "iid, import_iid");
 		while($icon = $db->fetch_array($query))
 		{
 			$icons[$icon['import_iid']] = $icon['iid'];
