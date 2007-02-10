@@ -41,6 +41,7 @@ require_once MYBB_ROOT."inc/class_xml.php";
 // Include the converter resources
 require_once CONVERT_ROOT."resources/functions.php";
 require_once CONVERT_ROOT.'resources/output.php';
+
 $output = new converterOutput;
 require_once CONVERT_ROOT.'resources/class_converter.php';
 
@@ -111,15 +112,19 @@ if(!$import_session['board'])
 // Perhaps we have selected to stop converting
 elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 {
+	$fpermfields = array('canview', 'candlattachments', 'canpostthreads', 'canpostreplys', 'canpostattachments', 
+	'canratethreads', 'caneditposts', 'candeleteposts', 'candeletethreads', 'caneditattachments', 
+	'canpostpolls', 'canvotepolls', 'cansearch');
+	
 	// Delete import fields
 	delete_import_fields();
-	$cache->update_stats();
-	$cache->update_badwords();
-	$cache->update_usergroups();
-	$cache->update_forumpermissions();
-	$cache->update_moderators();
-	$cache->update_forums();
-	$cache->update_usertitles();
+	$cache->updatestats();
+	$cache->updatebadwords();
+	$cache->updateusergroups();
+	$cache->updateforumpermissions();
+	$cache->updatemoderators();
+	$cache->updateforums();
+	$cache->updateusertitles();
 
 	// Delete import session cache
 	$import_session = null;
@@ -152,7 +157,7 @@ elseif($import_session['module'] && $mybb->input['action'] != 'module_list')
 		header("Location: index.php");
 		exit;
 	}
-
+	
 	// Run the module
 	$result = $board->$function();
 

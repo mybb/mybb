@@ -133,92 +133,92 @@ function delete_import_fields()
 {
 	global $db;
 
-	if($db->field_exists('import_uid', "users"))
+	if($db->field_exists('import_uid', TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_uid");
 	}
 
-	if($db->field_exists('import_usergroup', "users"))
+	if($db->field_exists('import_usergroup', TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_usergroup");
 	}
 
-	if($db->field_exists('import_additionalgroups', "users"))
+	if($db->field_exists('import_additionalgroups', TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_additionalgroups");
 	}
 
-	if($db->field_exists('import_displaygroup', "users"))
+	if($db->field_exists('import_displaygroup', TABLE_PREFIX."users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP import_displaygroup");
 	}
 
-	if($db->field_exists('import_fid', "forums"))
+	if($db->field_exists('import_fid', TABLE_PREFIX."forums"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP import_fid");
 	}
 
-	if($db->field_exists('import_tid', "threads"))
+	if($db->field_exists('import_tid', TABLE_PREFIX."threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP import_tid");
 	}
 
-	if($db->field_exists('import_uid', "threads"))
+	if($db->field_exists('import_uid', TABLE_PREFIX."threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP import_uid");
 	}
 
-	if($db->field_exists('import_poll', "threads"))
+	if($db->field_exists('import_poll', TABLE_PREFIX."threads"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP import_poll");
 	}
 
-	if($db->field_exists('import_pid', "posts"))
+	if($db->field_exists('import_pid', TABLE_PREFIX."posts"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_pid");
 	}
 
-	if($db->field_exists('import_tid', "polls"))
+	if($db->field_exists('import_tid', TABLE_PREFIX."polls"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."polls DROP import_tid");
 	}
 
-	if($db->field_exists('import_uid', "posts"))
+	if($db->field_exists('import_uid', TABLE_PREFIX."posts"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."posts DROP import_uid");
 	}
 
-	if($db->field_exists('import_gid', "usergroups"))
+	if($db->field_exists('import_gid', TABLE_PREFIX."usergroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP import_gid");
 	}
 
-	if($db->field_exists('import_pmid', "privatemessages"))
+	if($db->field_exists('import_pmid', TABLE_PREFIX."privatemessages"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP import_pmid");
 	}
 
-	if($db->field_exists('import_pid', "polls"))
+	if($db->field_exists('import_pid', TABLE_PREFIX."polls"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."polls DROP import_pid");
 	}
 
-	if($db->field_exists('import_gid', "settinggroups"))
+	if($db->field_exists('import_gid', TABLE_PREFIX."settinggroups"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."settinggroups DROP import_gid");
 	}
 
-	if($db->field_exists('import_eid', "events"))
+	if($db->field_exists('import_eid', TABLE_PREFIX."events"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP import_eid");
 	}
 
-	if($db->field_exists('import_aid', "attachments"))
+	if($db->field_exists('import_aid', TABLE_PREFIX."attachments"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachments DROP import_aid");
 	}
 
-	if($db->field_exists('import_atid', "attachtypes"))
+	if($db->field_exists('import_atid', TABLE_PREFIX."attachtypes"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes DROP import_atid");
 	}

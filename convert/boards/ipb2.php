@@ -72,7 +72,6 @@ class Convert_ipb2 extends Converter {
 
 		$this->old_db->connect($import_session['old_db_host'], $import_session['old_db_user'], $import_session['old_db_pass'], 0, true);
 		$this->old_db->select_db($import_session['old_db_name']);
-		$this->old_db->set_table_prefix($import_session['old_tbl_prefix']);
 		
 		define('IPB_TABLE_PREFIX', $import_session['old_tbl_prefix']);
 	}
@@ -113,8 +112,7 @@ class Convert_ipb2 extends Converter {
 				}
 
 				// Need to check if IPB is actually installed here
-				$this->old_db->set_table_prefix($mybb->input['tableprefix']);
-				if(!$this->old_db->table_exists("members"))
+				if(!$this->old_db->table_exists($mybb->input['tableprefix']."members"))
 				{
 					$errors[] = "The Invision Power Board table '{$mybb->input['tableprefix']}members' could not be found in database '{$mybb->input['dbname']}'.  Please ensure phpBB exists at this database and with this table prefix.";
 				}
@@ -192,7 +190,7 @@ class Convert_ipb2 extends Converter {
 		// Get number of usergroups
 		if(!isset($import_session['total_usergroups']))
 		{
-			$query = $this->old_db->simple_select("groups", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."groups", "COUNT(*) as count");
 			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -230,7 +228,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			echo "There are ".($import_session['total_usergroups']-$import_session['start_usergroups'])." usergroups left to import and ".round((($import_session['total_usergroups']-$import_session['start_usergroups'])/$import_session['usergroups_per_screen']))." pages left at a rate of {$import_session['usergroups_per_screen']} per page.<br /><br />";
 			
 			// Get only non-staff groups.
-			$query = $this->old_db->simple_select("groups", "*", "g_id > 6", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."groups", "*", "g_id > 6", array('limit_start' => $import_session['start_usergroups'], 'limit' => $import_session['usergroups_per_screen']));
 			while($group = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting group #{$group['g_id']} as a custom usergroup...";
@@ -295,7 +293,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$gid = $this->insert_usergroup($insert_group);
 				
 				// Restore connections
-				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['g_id']}' OR import_displaygroup = '{$group['g_id']}'");
+				$db->update_query(IPB_TABLE_PREFIX."users", array('usergroup' => $gid), "import_usergroup = '{$group['g_id']}' OR import_displaygroup = '{$group['g_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				
@@ -321,7 +319,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of members
 		if(!isset($import_session['total_members']))
 		{
-			$query = $this->old_db->simple_select("members", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."members", "COUNT(*) as count");
 			$import_session['total_members'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -359,7 +357,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			echo "There are ".($import_session['total_members']-$import_session['start_users'])." users left to import and ".round((($import_session['total_members']-$import_session['start_users'])/$import_session['users_per_screen']))." pages left at a rate of {$import_session['users_per_screen']} per page.<br /><br />";
 			
 			// Count the total number of users so we can generate a unique id if we have a duplicate user
-			$query = $db->simple_select("users", "COUNT(*) as totalusers");
+			$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(*) as totalusers");
 			$total_users = $db->fetch_field($query, "totalusers");
 			
 			// Get members
@@ -375,12 +373,12 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				++$total_users;
 				
 				// Check for duplicate users
-				$query1 = $db->simple_select("users", "username,email,uid", "LOWER(username)='".$db->escape_string(my_strtolower($user['name']))."'");
+				$query1 = $db->simple_select(TABLE_PREFIX."users", "username,email,uid", "LOWER(username)='".$db->escape_string(strtolower($user['name']))."'");
 				$duplicate_user = $db->fetch_array($query1);
-				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
+				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
 					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... ";
-					$db->update_query("users", array('import_uid' => $user['id']), "uid = '{$duplicate_user['uid']}'");
+					$db->update_query(IPB_TABLE_PREFIX."users", array('import_uid' => $user['id']), "uid = '{$duplicate_user['uid']}'");
 					echo "done.<br />";
 					
 					continue;
@@ -447,7 +445,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['reputation'] = "0";
 				$insert_user['timeonline'] = "0";
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
-				$insert_user['avatartype'] = '2';
+				$insert_user['avatartype'] = 'remote';
 				
 				$this->insert_user($insert_user);
 				
@@ -473,7 +471,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of forums
 		if(!isset($import_session['total_forums']))
 		{
-			$query = $this->old_db->simple_select("forums", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."forums", "COUNT(*) as count");
 			$import_session['total_forums'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -510,7 +508,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_forums']-$import_session['start_forums'])." forums left to import and ".round((($import_session['total_forums']-$import_session['start_forums'])/$import_session['forums_per_screen']))." pages left at a rate of {$import_session['forums_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("forums", "*", "", array('order_by' => 'parent_id', 'order_dir' => 'asc', 'limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."forums", "*", "", array('order_by' => 'parent_id', 'order_dir' => 'asc', 'limit_start' => $import_session['start_forums'], 'limit' => $import_session['forums_per_screen']));
 			while($forum = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting forum #{$forum['id']}... ";
@@ -598,7 +596,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 					$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);										
 				}
 				
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$db->update_query(IPB_TABLE_PREFIX."forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -622,7 +620,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of threads
 		if(!isset($import_session['total_forumperms']))
 		{
-			$query = $this->old_db->simple_select("forums", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."forums", "COUNT(*) as count");
 			$import_session['total_forumperms'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -674,7 +672,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_forumperms']-$import_session['start_forumperms'])." forum permissions left to import and ".round((($import_session['total_forumperms']-$import_session['start_forumperms'])/$import_session['forumperms_per_screen']))." forum permissions left at a rate of {$import_session['forumperms_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("forums", "permission_array,id", "", array('limit_start' => $import_session['start_forumperms'], 'limit' => $import_session['forumperms_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."forums", "permission_array,id", "", array('limit_start' => $import_session['start_forumperms'], 'limit' => $import_session['forumperms_per_screen']));
 			while($perm = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting permission for forum #{$perm['id']}... ";
@@ -753,7 +751,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of threads
 		if(!isset($import_session['total_threads']))
 		{
-			$query = $this->old_db->simple_select("topics", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."topics", "COUNT(*) as count");
 			$import_session['total_threads'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -790,7 +788,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_threads']-$import_session['start_threads'])." threads left to import and ".round((($import_session['total_threads']-$import_session['start_threads'])/$import_session['threads_per_screen']))." threads left at a rate of {$import_session['threads_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("topics", "*", "", array('order_by' => 'topic_firstpost', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."topics", "*", "", array('order_by' => 'topic_firstpost', 'order_dir' => 'DESC', 'limit_start' => $import_session['start_threads'], 'limit' => $import_session['threads_per_screen']));
 			while($thread = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting thread #{$thread['tid']}... ";
@@ -824,7 +822,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				
 				$pids = '';
 				$seperator = '';
-				$query1 = $this->old_db->simple_select("posts", "pid", "topic_id = '{$thread['tid']}'");
+				$query1 = $this->old_db->simple_select(IPB_TABLE_PREFIX."posts", "pid", "topic_id = '{$thread['tid']}'");
 				while($post = $db->fetch_array($query1))
 				{
 					$pids .= $seperate.$post['pid'];
@@ -834,7 +832,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_thread['attachmentcount'] = '';
 				if($pids != '')
 				{
-					$query2 = $this->old_db->simple_select("attachments", "COUNT(*) as attach_count", "attach_pid IN ($pids)");
+					$query2 = $this->old_db->simple_select(IPB_TABLE_PREFIX."attachments", "COUNT(*) as attach_count", "attach_pid IN ($pids)");
 					$insert_thread['attachmentcount'] = $this->old_db->fetch_field($query2, "attach_count");
 				}
 				
@@ -850,7 +848,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				
 				$tid = $this->insert_thread($insert_thread);
 				
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['tid'])."'");
+				$db->update_query(IPB_TABLE_PREFIX."forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['tid'])."'");
 				
 				echo "done.<br />\n";
 			}
@@ -874,7 +872,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of threads
 		if(!isset($import_session['total_polls']))
 		{
-			$query = $this->old_db->simple_select("polls", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."polls", "COUNT(*) as count");
 			$import_session['total_polls'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -911,7 +909,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_polls']-$import_session['start_polls'])." polls left to import and ".round((($import_session['total_polls']-$import_session['start_polls'])/$import_session['polls_per_screen']))." pages left at a rate of {$import_session['polls_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("polls", "*", "", array('limit_start' => $import_session['start_polls'], 'limit' => $import_session['polls_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."polls", "*", "", array('limit_start' => $import_session['start_polls'], 'limit' => $import_session['polls_per_screen']));
 			while($poll = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting poll #{$poll['pid']}... ";				
@@ -955,7 +953,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$pid = $this->insert_poll($insert_poll);
 				
 				// Restore connections
-				$db->update_query("threads", array('poll' => $pid), "import_poll = '".$poll['pid']."'");
+				$db->update_query(IPB_TABLE_PREFIX."threads", array('poll' => $pid), "import_poll = '".$poll['pid']."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -979,7 +977,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of threads
 		if(!isset($import_session['total_pollvotes']))
 		{
-			$query = $this->old_db->simple_select("voters", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."voters", "COUNT(*) as count");
 			$import_session['total_pollvotes'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1016,7 +1014,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_pollvotes']-$import_session['start_pollvotes'])." poll votes left to import and ".round((($import_session['total_pollvotes']-$import_session['start_pollvotes'])/$import_session['pollvotes_per_screen']))." pages left at a rate of {$import_session['pollvotes_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("voters", "*", "", array('limit_start' => $import_session['start_pollvotes'], 'limit' => $import_session['pollvotes_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."voters", "*", "", array('limit_start' => $import_session['start_pollvotes'], 'limit' => $import_session['pollvotes_per_screen']));
 			while($pollvote = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting poll vote #{$pollvote['vid']}... ";				
@@ -1027,7 +1025,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				
 				// Get poll id from thread id
 				$tid = $this->get_import_tid($pollvote['tid']);
-				$query1 = $db->simple_select("threads", "poll", "tid = '{$tid}'");
+				$query1 = $db->simple_select(TABLE_PREFIX."threads", "poll", "tid = '{$tid}'");
 				$insert_pollvote['pid'] = $db->fetch_field($query1, "poll");
 				
 				$this->insert_pollvote($insert_pollvote);
@@ -1054,7 +1052,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of posts
 		if(!isset($import_session['total_posts']))
 		{
-			$query = $this->old_db->simple_select("posts", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."posts", "COUNT(*) as count");
 			$import_session['total_posts'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1091,7 +1089,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_posts']-$import_session['start_posts'])." posts left to import and ".round((($import_session['total_posts']-$import_session['start_posts'])/$import_session['posts_per_screen']))." pages left at a rate of {$import_session['posts_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."posts", "*", "", array('limit_start' => $import_session['start_posts'], 'limit' => $import_session['posts_per_screen']));
 			while($post = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting post #{$post['pid']}... ";
@@ -1129,12 +1127,12 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				update_thread_count($insert_post['tid']);
 				
 				// Restore first post connections
-				$db->update_query("threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $post['pid'])."'");
+				$db->update_query(IPB_TABLE_PREFIX."threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
-					$query1 = $db->simple_select("threads", "firstpost", "tid = '{$insert_post['tid']}'");
+					$query1 = $db->simple_select(TABLE_PREFIX."threads", "firstpost", "tid = '{$insert_post['tid']}'");
 					$first_post = $db->fetch_field($query1, "firstpost");
-					$db->update_query("posts", array('replyto' => $first_post), "pid = '{$pid}'");
+					$db->update_query(IPB_TABLE_PREFIX."posts", array('replyto' => $first_post), "pid = '{$pid}'");
 				}
 				
 				echo "done.<br />\n";
@@ -1275,7 +1273,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 					}
 					else
 					{
-						$transfer_error = " (Note: Attachment could not be transfered. - \"Not Found\")";
+						$transfer_error = " (Note: Attachment could not be transfered.)";
 					}
 					echo "done.{$transfer_error}<br />\n";
 				}
@@ -1300,7 +1298,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of moderators
 		if(!isset($import_session['total_mods']))
 		{
-			$query = $this->old_db->simple_select("moderators", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."moderators", "COUNT(*) as count");
 			$import_session['total_mods'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1337,7 +1335,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_mods']-$import_session['start_mods'])." moderators left to import and ".round((($import_session['total_mods']-$import_session['start_mods'])/$import_session['mods_per_screen']))." pages left at a rate of {$import_session['mods_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("moderators", "*", "", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."moderators", "*", "", array('limit_start' => $import_session['start_mods'], 'limit' => $import_session['mods_per_screen']));
 			while($mod = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting user #{$mod['member_id']} as moderator to forum #{$mod['forum_id']}... ";
@@ -1378,7 +1376,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of usergroups
 		if(!isset($import_session['total_privatemessages']))
 		{
-			$query = $this->old_db->simple_select("message_text", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."message_text", "COUNT(*) as count");
 			$import_session['total_privatemessages'] = $this->old_db->fetch_field($query, 'count');		
 		}
 
@@ -1481,14 +1479,14 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Set uploads path
 		if(!isset($import_session['uploadspath']))
 		{
-			$query = $this->old_db->query("conf_settings", "conf_value", "conf_key = 'upload_url'", array('limit' => 1));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."conf_settings", "conf_value", "conf_key = 'upload_url'", array('limit' => 1));
 			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'conf_value');
 		}
 
 		// Get number of threads
 		if(!isset($import_session['total_attachments']))
 		{
-			$query = $this->old_db->simple_select("attachments", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."attachments", "COUNT(*) as count");
 			$import_session['total_attachments'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -1525,7 +1523,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_attachments']-$import_session['start_attachments'])." attachments left to import and ".round((($import_session['total_attachments']-$import_session['start_attachments'])/$import_session['attachments_per_screen']))." pages left at a rate of {$import_session['attachments_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."attachments", "*", "", array('limit_start' => $import_session['start_attachments'], 'limit' => $import_session['attachments_per_screen']));
 			while($attachment = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting attachment #{$attachment['attach_id']}... ";				
@@ -1636,7 +1634,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of threads
 		if(!isset($import_session['total_smilies']))
 		{
-			$query = $this->old_db->simple_select("emoticons", "COUNT(*) as count", "id > 20");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."emoticons", "COUNT(*) as count", "id > 20");
 			$import_session['total_smilies'] = $this->old_db->fetch_field($query, 'count');			
 		}
 
@@ -1698,7 +1696,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_smilies']-$import_session['start_smilies'])." smilies left to import and ".round((($import_session['total_smilies']-$import_session['start_smilies'])/$import_session['smilies_per_screen']))." pages left at a rate of {$import_session['smilies_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."emoticons", "*", "id > 20", array('limit_start' => $import_session['start_icons'], 'limit' => $import_session['icons_per_screen']));
 			while($smilie = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting smilie #{$smilie['id']}... ";
@@ -1728,7 +1726,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";
@@ -1760,14 +1758,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"load_limit" => "load",
 			"disable_subforum_show" => "subforumsindex",
 			"email_out" => "adminemail",
-			/*
-			"mail_method" => "mail_handler",
-			"smtp_host" => "smtp_host",
-			"smtp_port" => "smtp_port",
-			"smtp_user" => "smtp_user",
-			"smtp_pass" => "smtp_pass",
-			"php_mail_extra" => "mail_parameters",
-			*/
 			"board_name" => "bbname",
 			"home_name" => "homename",
 			"home_url" => "homeurl",
@@ -1804,7 +1794,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of settings
 		if(!isset($import_session['total_settings']))
 		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."config", "COUNT(*) as count");
 			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
 		}
 
@@ -1842,7 +1832,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
 
-			$query = $this->old_db->simple_select("conf_settings", "conf_key, conf_value, conf_default", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."conf_settings", "conf_key, conf_value, conf_default", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
 			while($setting = $this->old_db->fetch_array($query))
 			{
 				// Invision Power Board 2 values
@@ -1907,7 +1897,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		if(!isset($import_session['existing_types']))
 		{
 			// Get existing attachment types
-			$query = $db->simple_select("attachtypes", "extension");
+			$query = $db->simple_select(TABLE_PREFIX."attachtypes", "extension");
 			while($row = $db->fetch_array($query))
 			{
 				$import_session['existing_types'][$row['extension']] = true;
@@ -1917,7 +1907,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of attachment types
 		if(!isset($import_session['total_attachtypes']))
 		{
-			$query = $this->old_db->simple_select("attachment_types", "COUNT(*) as types");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."attachment_types", "COUNT(*) as types");
 			$import_session['total_attachtypes'] = $this->old_db->fetch_field($query, "types");
 		}
 		
@@ -1975,7 +1965,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_attachtypes']-$import_session['start_attachtypes'])." attachment types left to import and ".round((($import_session['total_attachtypes']-$import_session['start_attachtypes'])/$import_session['attachtypes_per_screen']))." pages left at a rate of {$import_session['attachtypes_per_screen']} per page.<br /><br />";
 			
-			$query = $this->old_db->simple_select("attachment_types", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."attachment_types", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
 			
 			while($attachtype = $db->fetch_array($query))
 			{
@@ -2011,7 +2001,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					echo " (Note: Could not transfer attachment icon. - \"Not Found\")\n";
+					echo " (Note: Could not transfer attachment icon.)\n";
 				}
 				
 				echo "<br />\n";
@@ -2036,7 +2026,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Get number of threads
 		if(!isset($import_session['total_events']))
 		{
-			$query = $this->old_db->simple_select("cal_events", "COUNT(*) as count");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."cal_events", "COUNT(*) as count");
 			$import_session['total_events'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -2072,11 +2062,8 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_events']-$import_session['start_events'])." events left to import and ".round((($import_session['total_events']-$import_session['start_events'])/$import_session['events_per_screen']))." pages left at a rate of {$import_session['events_per_screen']} per page.<br /><br />";
-			
-			// Get columns so we avoid any 'unknown column' errors
-			$field_info = $db->show_fields_from("events");
 
-			$query = $this->old_db->simple_select("cal_events", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."cal_events", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
 			while($event = $this->old_db->fetch_array($query))
 			{
 				echo "Inserting event #{$event['event_id']}... ";				
@@ -2118,7 +2105,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 	 */
 	function get_attach_type($ext)
 	{
-		$query = $this->old_db->simple_select("attachments_type", "atype_mimetype", "atype_extension = '{$ext}'");
+		$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."attachments_type", "atype_mimetype", "atype_extension = '{$ext}'");
 		return $this->old_db->fetch_field($query, "atype_mimetype");
 	}
 	
@@ -2130,7 +2117,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 	 */
 	function get_thread($tid)
 	{		
-		$query = $this->old_db->simple_select("topics", "*", "tid='{$tid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."topics", "*", "tid='{$tid}'", array('limit' => 1));
 		return $this->old_db->fetch_array($query);
 	}
 	
@@ -2150,7 +2137,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			);
 		}
 		
-		$query = $this->old_db->simple_select("members", "*", "id='{$uid}'", array('limit' => 1));
+		$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."members", "*", "id='{$uid}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
@@ -2171,7 +2158,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			);
 		}
 		
-		$query = $this->old_db->simple_select("members", "*", "name='{$username}'", array('limit' => 1));
+		$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."members", "*", "name='{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_array($query);
 	}
@@ -2189,7 +2176,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			return 0;
 		}
 		
-		$query = $this->old_db->simple_select("members", "id", "name='{$username}'", array('limit' => 1));
+		$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."members", "id", "name='{$username}'", array('limit' => 1));
 		
 		return $this->old_db->fetch_field($query, "id");
 	}
@@ -2207,12 +2194,12 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 	
 		if($not_multiple != true)
 		{
-			$query = $this->old_db->simple_select("groups", "COUNT(*) as rows", "g_id='{$gid}'");
-			$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'", array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows')));
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."groups", "COUNT(*) as rows", "g_id='{$gid}'");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."groups", "*", "g_id='{$gid}'", array('limit_start' => '1', 'limit' => $this->old_db->fetch_field($query, 'rows')));
 		}
 		else
 		{
-			$query = $this->old_db->simple_select("groups", "*", "g_id='{$gid}'");
+			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."groups", "*", "g_id='{$gid}'");
 		}		
 				
 		$comma = $group = '';

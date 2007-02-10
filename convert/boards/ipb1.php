@@ -113,7 +113,7 @@ class Convert_ipb1 extends Converter {
 				}
 
 				// Need to check if IPB is actually installed here
-				if(!$this->old_db->table_exists(TABLE_PREFIX."members"))
+				if(!$this->old_db->table_exists($mybb->input['tableprefix']."members"))
 				{
 					$errors[] = "The Invision Power Board table '{$mybb->input['tableprefix']}members' could not be found in database '{$mybb->input['dbname']}'.  Please ensure phpBB exists at this database and with this table prefix.";
 				}
@@ -294,7 +294,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$gid = $this->insert_usergroup($insert_group);
 				
 				// Restore connections
-				$db->update_query("users", array('usergroup' => $gid), "import_usergroup = '{$group['g_id']}' OR import_displaygroup = '{$group['g_id']}'");
+				$db->update_query(IPB_TABLE_PREFIX."users", array('usergroup' => $gid), "import_usergroup = '{$group['g_id']}' OR import_displaygroup = '{$group['g_id']}'");
 				
 				$this->import_gids = null; // Force cache refresh
 				
@@ -369,12 +369,12 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				++$total_users;
 				
 				// Check for duplicate users
-				$query1 = $db->simple_select(TABLE_PREFIX."users", "username,email,uid", "LOWER(username)='".$db->escape_string(my_strtolower($user['name']))."'");
+				$query1 = $db->simple_select(TABLE_PREFIX."users", "username,email,uid", "LOWER(username)='".$db->escape_string(strtolower($user['name']))."'");
 				$duplicate_user = $db->fetch_array($query1);
-				if($duplicate_user['username'] && my_strtolower($user['email']) == my_strtolower($duplicate_user['email']))
+				if($duplicate_user['username'] && strtolower($user['email']) == strtolower($duplicate_user['email']))
 				{
 					echo "Merging user #{$user['id']} with user #{$duplicate_user['uid']}... ";
-					$db->update_query("users", array('import_uid' => $user['id']), "uid = '{$duplicate_user['uid']}'");
+					$db->update_query(IPB_TABLE_PREFIX."users", array('import_uid' => $user['id']), "uid = '{$duplicate_user['uid']}'");
 					echo "done.<br />";
 					
 					continue;
@@ -442,7 +442,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['reputation'] = "0";
 				$insert_user['timeonline'] = "0";
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
-				$insert_user['avatartype'] = '2';	
+				$insert_user['avatartype'] = 'remote';
 				
 				$this->insert_user($insert_user);
 				
@@ -555,7 +555,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $fid);
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$db->update_query(IPB_TABLE_PREFIX."forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";
 			}
@@ -681,7 +681,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				
 				// Update parent list.
 				$update_array = array('parentlist' => $insert_forum['pid'].','.$fid);				
-				$db->update_query("forums", $update_array, "fid = '{$fid}'");
+				$db->update_query(IPB_TABLE_PREFIX."forums", $update_array, "fid = '{$fid}'");
 				
 				echo "done.<br />\n";			
 			}
@@ -783,7 +783,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				
 				$tid = $this->insert_thread($insert_thread);
 				
-				$db->update_query("forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['tid'])."'");
+				$db->update_query(IPB_TABLE_PREFIX."forums", array('lastposttid' => $tid), "lastposttid = '".((-1) * $thread['tid'])."'");
 				
 				echo "done.<br />\n";
 			}
@@ -888,7 +888,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$pid = $this->insert_poll($insert_poll);
 				
 				// Restore connections
-				$db->update_query("threads", array('poll' => $pid), "import_poll = '".$poll['pid']."'");
+				$db->update_query(IPB_TABLE_PREFIX."threads", array('poll' => $pid), "import_poll = '".$poll['pid']."'");
 				
 				echo "done.<br />\n";			
 			}
@@ -1064,12 +1064,12 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				update_thread_count($insert_post['tid']);
 				
 				// Restore first post connections
-				$db->update_query("threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $post['pid'])."'");
+				$db->update_query(IPB_TABLE_PREFIX."threads", array('firstpost' => $pid), "tid = '{$insert_post['tid']}' AND firstpost = '".((-1) * $post['pid'])."'");
 				if($db->affected_rows() == 0)
 				{
 					$query1 = $db->simple_select(TABLE_PREFIX."threads", "firstpost", "tid = '{$insert_post['tid']}'");
 					$first_post = $db->fetch_field($query1, "firstpost");
-					$db->update_query("posts", array('replyto' => $first_post), "pid = '{$pid}'");
+					$db->update_query(IPB_TABLE_PREFIX."posts", array('replyto' => $first_post), "pid = '{$pid}'");
 				}				
 				
 				echo "done.<br />\n";			
@@ -1210,7 +1210,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 					}
 					else
 					{
-						$transfer_error = " (Note: Attachment could not be transfered. - \"Not Found\")";
+						$transfer_error = " (Note: Attachment could not be transfered.)";
 					}
 					echo "done.{$transfer_error}<br />\n";
 				}
@@ -1497,7 +1497,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";
@@ -1677,9 +1677,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_events']-$import_session['start_events'])." events left to import and ".round((($import_session['total_events']-$import_session['start_events'])/$import_session['events_per_screen']))." pages left at a rate of {$import_session['events_per_screen']} per page.<br /><br />";
-			
-			// Get columns so we avoid any 'unknown column' errors
-			$field_info = $db->show_fields_from("events");
 
 			$query = $this->old_db->simple_select(IPB_TABLE_PREFIX."calendar_events", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
 			while($event = $this->old_db->fetch_array($query))
@@ -1939,7 +1936,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				if(!$posthash)
 				{
 					// Restore connection
-					$db->update_query("posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
+					$db->update_query(IPB_TABLE_PREFIX."posts", array('posthash' => $insert_attachment['posthash']), "pid = '{$insert_attachment['pid']}'");
 				}
 				$db->query("UPDATE ".TABLE_PREFIX."threads SET attachmentcount = attachmentcount + 1 WHERE tid = '".$posthash['tid']."'");
 				
