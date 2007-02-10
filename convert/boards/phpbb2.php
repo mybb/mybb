@@ -399,8 +399,17 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['lastactive'] = $user['user_lastvisit'];
 				$insert_user['lastvisit'] = $user['user_lastvisit'];
 				$insert_user['website'] = $user['user_website'];
-				//$user['avatardimensions']
-				//$user['avatartype']
+				$insert_user['avatar'] = $user['user_avatar'];
+				list($width, $height) = @getimagesize($user['user_avatar']);
+				$insert_user['avatardimensions'] = $width.'x'.$height;
+				if($insert_user['avatar'] == '')
+				{
+					$insert_user['avtartype'] = "";
+				}
+				else
+				{
+					$insert_user['avatartype'] = 'remote';
+				}
 				$insert_user['lastpost'] = $this->get_last_post($user['user_id']);
 				$insert_user['icq'] = $user['user_icq'];
 				$insert_user['aim'] = $user['user_aim'];
@@ -414,7 +423,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['pmpopup'] = int_to_yesno($user['user_popup_pm']);
 				$insert_user['pmnotify'] = int_to_yesno($user['pm_email_notify']);				
 				$insert_user['showsigs'] = int_to_yesno($user['user_attachsig']);
-				$insert_user['showavatars'] = int_to_yesno($user['user_allowavatar']); // Check ?
+				$insert_user['showavatars'] = int_to_yesno($user['user_allowavatar']);
 				$insert_user['timeformat'] = $user['user_dateformat'];
 				$insert_user['timezone'] = $user['user_timezone'];				
 				$insert_user['style'] = $user['user_style'];				
@@ -1274,7 +1283,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";

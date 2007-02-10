@@ -272,9 +272,18 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['lastactive'] = $user['lastvisit'];
 				$insert_user['lastvisit'] = $user['lastvisit'];
 				$insert_user['website'] = $user['site'];
-				$insert_user['avatardimensions'] = '';
-				$insert_user['avatartype'] = '';
+				list($width, $height) = @getimagesize($user['avatar']);
+				$insert_user['avatardimensions'] = $width.'x'.$height;
 				$insert_user['avatar'] = $user['avatar'];
+				if($insert_user['avatar'] == '')
+				{
+					$insert_user['avtartype'] = "";
+				}
+				else
+				{
+					$insert_user['avatartype'] = 'remote';
+				}
+				
 				if($user['bday'] == '0000-00-00')
 				{
 					$user['bday'] = '';
@@ -291,9 +300,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['timeformat'] = $user['timeformat'];
 				$insert_user['timezone'] = $user['timeoffset'];
 				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);	
-				
-				$insert_user['style'] = $user['theme'];
-				
+				$insert_user['style'] = $user['theme'];				
 				
 				// Default values
 				$insert_user['allownotices'] = 'yes';
@@ -853,7 +860,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer icon.)";
 				}
 				echo "done.{$transfer_error}<br />\n";
 	
@@ -1365,7 +1372,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 				echo "done.{$transfer_error}<br />\n";			
 			}

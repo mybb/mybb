@@ -445,7 +445,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['reputation'] = "0";
 				$insert_user['timeonline'] = "0";
 				$insert_user['pmfolders'] = '1**Inbox$%%$2**Sent Items$%%$3**Drafts$%%$4**Trash Can';	
-				$insert_user['avatartype'] = '2';	
+				$insert_user['avatartype'] = 'remote';	
 				
 				$this->insert_user($insert_user);
 				
@@ -1213,7 +1213,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 					}
 					else
 					{
-						$transfer_error = " (Note: Attachment could not be transfered. - \"Not Found\")";
+						$transfer_error = " (Note: Attachment could not be transfered.)";
 					}
 					echo "done.{$transfer_error}<br />\n";
 				}
@@ -1500,7 +1500,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";
@@ -1680,9 +1680,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_events']-$import_session['start_events'])." events left to import and ".round((($import_session['total_events']-$import_session['start_events'])/$import_session['events_per_screen']))." pages left at a rate of {$import_session['events_per_screen']} per page.<br /><br />";
-			
-			// Get columns so we avoid any 'unknown column' errors
-			$field_info = $db->show_fields_from("events");
 
 			$query = $this->old_db->simple_select("calendar_events", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
 			while($event = $this->old_db->fetch_array($query))

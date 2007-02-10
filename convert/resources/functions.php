@@ -11,7 +11,7 @@
 
 function update_import_session()
 {
-	global $import_session, $cache;
+	global $import_session, $cache, $board, $db, $querytime;
 
 	// TEMPORARY
 	global $mybb;
@@ -26,6 +26,14 @@ function update_import_session()
 	{
 		$import_session['completed'] = array();
 	}
+	
+	// Stats
+	if($import_session['module'] && $import_session['module'] != 'db_configuration')
+	{
+		$import_session['olddb_query_count'] += $board->old_db->query_count;
+	}
+	$import_session['newdb_query_count'] += $db->query_count;
+	$import_session['total_query_time'] += $querytime;
 
 	$import_session['completed'] = array_unique($import_session['completed']);
 

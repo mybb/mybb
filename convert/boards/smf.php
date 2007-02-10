@@ -444,8 +444,17 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['lastactive'] = $user['lastLogin'];
 				$insert_user['lastvisit'] = $user['lastLogin'];
 				$insert_user['website'] = $user['websiteUrl'];
-				//$user['avatardimensions']
-				//$user['avatartype']
+				$insert_user['avatar'] = $user['avatar'];
+				list($width, $height) = @getimagesize($user['avatar']);
+				$insert_user['avatardimensions'] = $width.'x'.$height;
+				if($insert_user['avatar'] == '')
+				{
+					$insert_user['avtartype'] = "";
+				}
+				else
+				{
+					$insert_user['avatartype'] = 'remote';
+				}
 				$insert_user['lastpost'] = $this->get_last_post($user['ID_MEMBER']);
 				$insert_user['birthday'] = date("n-j-Y", strtotime($user['birthdate']));
 				$insert_user['icq'] = $user['ICQ'];
@@ -460,7 +469,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);
 				$insert_user['buddylist'] = $user['buddy_list'];
 				$insert_user['ignorelist'] = $user['pm_ignore_list'];
-				$insert_user['style'] = $user['ID_THEME'];
 				$insert_user['regip'] = $user['memberIP'];
 				$insert_user['timeonline'] = $user['totalTimeLoggedIn'];
 				$insert_user['totalpms'] = $user['instantMessages'];
@@ -485,6 +493,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['returndate'] = "0";
 				$insert_user['referrer'] = "0";
 				$insert_user['reputation'] = "0";
+				$insert_user['style'] = "0";
 					
 				$this->insert_user($insert_user);
 				
@@ -1030,7 +1039,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer icon. )";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";		
@@ -1362,7 +1371,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Set uploads path
 		if(!isset($import_session['uploadspath']))
 		{
-			$query = $this->old_db->query("settings", "value", "variable = 'attachmentUploadDir'", array('limit' => 1));
+			$query = $this->old_db->simple_select(SMF_TABLE_PREFIX."settings", "value", "variable = 'attachmentUploadDir'", array('limit' => 1));
 			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'value');
 		}		
 
@@ -1760,7 +1769,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";		
@@ -1998,9 +2007,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_events']-$import_session['start_events'])." events left to import and ".round((($import_session['total_events']-$import_session['start_events'])/$import_session['events_per_screen']))." pages left at a rate of {$import_session['events_per_screen']} per page.<br /><br />";
-			
-			// Get columns so we avoid any 'unknown column' errors
-			$field_info = $db->show_fields_from("events");
 
 			$query = $this->old_db->simple_select("calendar", "*", "", array('limit_start' => $import_session['start_events'], 'limit' => $import_session['events_per_screen']));
 			while($event = $this->old_db->fetch_array($query))

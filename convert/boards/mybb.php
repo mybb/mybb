@@ -192,7 +192,7 @@ class Convert_mybb extends Converter
 		// Get number of usergroups
 		if(!isset($import_session['total_usergroups']))
 		{
-			$query = $this->old_db->simple_select("usergroups", "COUNT(*) as count");
+			$query = $this->old_db->simple_select("usergroups", "COUNT(*) as count", "gid > 7");
 			$import_session['total_usergroups'] = $this->old_db->fetch_field($query, 'count');				
 		}
 
@@ -681,7 +681,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer attachment icon. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer attachment icon.)";
 				}
 				echo "done.{$transfer_error}<br />\n";
 			}
@@ -975,7 +975,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		// Set uploads path
 		if(!isset($import_session['uploadspath']))
 		{
-			$query = $this->old_db->query("settings", "value", "name = 'uploadspath'", array('limit' => 1));
+			$query = $this->old_db->simple_select(MYBB_TABLE_PREFIX."settings", "value", "name = 'uploadspath'", array('limit' => 1));
 			$import_session['uploadspath'] = $this->old_db->fetch_field($query, 'value');
 		}
 
@@ -1366,24 +1366,23 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 					}
 				}
 				
-				// MyBB values
-				$insert_smilie['path'] = "images/smilies/".substr(strrchr($smilie['path'], "/"), 1);
-			
 				$this->insert_smilie($insert_smilie);
+				
+				$smilie_path = "images/smilies/".substr(strrchr($smilie['path'], "/"), 1);
 				
 				// Transfer smilie
 				if(file_exists($import_session['bburl'].$smilie['path']))
 				{
 					$smiliedata = file_get_contents($import_session['bburl'].$smilie['path']);
-					$file = fopen(MYBB_ROOT.$insert_smilie['path'], 'w');
+					$file = fopen(MYBB_ROOT.$smilie_path, 'w');
 					fwrite($file, $smiliedata);
 					fclose($file);
-					@chmod(MYBB_ROOT.$insert_smilie['path'], 0777);
+					@chmod(MYBB_ROOT.$smilie_path, 0777);
 					$transfer_error = "";
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer attachment icon. - \"Not Found\")\n";
+					$transfer_error = " (Note: Could not transfer attachment icon.)\n";
 				}
 				
 				echo "done.{$transfer_error}<br />\n";			
@@ -1540,6 +1539,9 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			$import_session['start_settinggroups'] = 0;
 			echo "<p>Please select how many settinggroups to insert at a time:</p>
 <p><input type=\"text\" name=\"settinggroups_per_screen\" value=\"200\" /></p>";
+			$import_session['autorefresh'] = "";
+			echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+<p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
@@ -1730,6 +1732,9 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$existing_types[$row['extension']] = true;
 			}
 			
+			// Get columns so we avoid any 'unknown column' errors
+			$field_info = $db->show_fields_from(TABLE_PREFIX."attachtypes");
+			
 			$query = $this->old_db->simple_select("attachtypes", "*", "", array('limit_start' => $import_session['start_attachtypes'], 'limit' => $import_session['attachtypes_per_screen']));
 			while($type = $this->old_db->fetch_array($query))
 			{
@@ -1772,7 +1777,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					echo " (Note: Could not transfer attachment icon. - \"Not Found\")\n";
+					echo " (Note: Could not transfer attachment icon.)\n";
 				}
 				
 				echo "<br />\n";

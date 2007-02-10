@@ -282,7 +282,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				{
 					$insert_user['avatardimensions'] = '';
 				}
-				$insert_user['avatartype'] = $user['user_avatar_type'];
 				$insert_user['avatar'] = $user['avatar'];
 				$insert_user['lastpost'] = $user['user_lastpost_time'];
 				$insert_user['birthday'] = $user['user_birthday'];
@@ -307,6 +306,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['unreadpms'] = $user['user_unread_privmsg'];
 
 				// Default values
+				$insert_user['avatartype'] = 'remote';
 				$insert_user['remember'] = "yes";
 				$insert_user['showsigs'] = 'yes';
 				$insert_user['showavatars'] = 'yes';
@@ -829,7 +829,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer icon. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer icon.)";
 				}
 
 				echo "done.{$transfer_error}<br />\n";
@@ -1573,7 +1573,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					$transfer_error = " (Note: Could not transfer smilie. - \"Not Found\")";
+					$transfer_error = " (Note: Could not transfer smilie.)";
 				}
 
 				echo "done.{$transfer_error}<br />\n";
@@ -1893,7 +1893,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				else
 				{
-					echo " (Note: Could not transfer attachment icons. - \"Not Found\")";
+					echo " (Note: Could not transfer attachment icons.)";
 				}
 				
 				echo "<br />\n";

@@ -181,6 +181,20 @@ class Convert_punbb extends Converter {
 			$query = $this->old_db->simple_select("users", "COUNT(*) as count");
 			$import_session['total_members'] = $this->old_db->fetch_field($query, 'count');
 		}
+		
+		if(!isset($import_session['avatar_directory']))
+		{
+			$query = $this->old_db->simple_select("config", "conf_value, conf_name", "conf_name = 'o_avatars_dir' OR conf_name = 'o_base_url'");
+			if($this->old_db->fetch_field($query, 'conf_name') == 'o_avatar_dir')
+			{
+				$import_session['avatar_directory'] = $this->old_db->fetch_field($query, 'conf_value');
+			}
+			else
+			{
+				$import_session['main_directory'] = $this->old_db->fetch_field($query, 'conf_value');
+			}
+			
+		}
 
 		if($import_session['start_users'])
 		{
@@ -242,7 +256,8 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				}
 				
 				echo "Adding user #{$user['id']}... ";
-
+				
+				// PunBB values
 				$insert_user['usergroup'] = $this->get_group_id($user['id'], true);
 				$insert_user['additionalgroups'] = $this->get_group_id($user['id']);
 				$insert_user['displaygroup'] = $this->get_group_id($user['id'], true);
@@ -257,31 +272,51 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['lastactive'] = $user['last_visit'];
 				$insert_user['lastvisit'] = $user['last_visit'];
 				$insert_user['website'] = $user['url'];
-				//$user['avatardimensions']
-				//$user['avatartype']
-				$insert_user['lastpost'] = $user['last_post'];
-				$insert_user['birthday'] = '';
+				$insert_user['showsigs'] = int_to_yesno($user['show_sig']);
+				$insert_user['showavatars'] = int_to_yesno($user['show_avatars']);
+				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $user['timezone']);
+				if($user['use_avatar'] == '1')
+				{
+					$extensions = array('.gif', '.jpg', '.png');
+					foreach($extensions as $key => $extension)
+					{
+						if(file_exists($import_session['main_directory'].'/'.$import_session['avatar_directory'].'/'.$user['id'].$extension))
+						{
+							list($width, $height) = @getimagesize($import_session['main_directory'].'/'.$import_session['avatar_directory'].'/'.$user['id'].$extension);
+							$insert_user['avatardimensions'] = $width.'x'.$height;
+							$insert_user['avatartype'] = 'upload';
+							$insert_user['avatar'] = $user['id'].$extension;
+						}
+					}
+				}
+				else
+				{
+					$insert_user['avatardimensions'] = '';
+					$insert_user['avatartype'] = '';
+					$insert_user['avatar'] = '';
+				}
+				$insert_user['lastpost'] = $user['last_post'];				
 				$insert_user['icq'] = $user['icq'];
 				$insert_user['aim'] = $user['aim'];
 				$insert_user['yahoo'] = $user['yahoo'];
 				$insert_user['msn'] = $user['msn'];
 				$insert_user['hideemail'] = int_to_yesno($user['email_setting']);
-				$insert_user['invisible'] = 'no';
 				$insert_user['allownotices'] = int_to_yesno($user['notify_with_post']);
+				$insert_user['regip'] = $user['registration_ip'];
+				
+				// Default values
+				$insert_user['invisible'] = 'no';
+				$insert_user['birthday'] = '';
 				$insert_user['emailnotify'] = 'yes';
 				$insert_user['receivepms'] = 'yes';
 				$insert_user['pmpopup'] = 'yes';
 				$insert_user['pmnotify'] = 'yes';
 				$insert_user['remember'] = 'yes';
-				$insert_user['showsigs'] = int_to_yesno($user['show_sig']);
-				$insert_user['showavatars'] = int_to_yesno($user['show_avatars']); // Check ?
 				$insert_user['showquickreply'] = 'yes';
 				$insert_user['ppp'] = 0;
 				$insert_user['tpp'] = 0;
 				$insert_user['daysprune'] = 0;
-				$insert_user['timeformat'] = 'd M';				
-				$insert_user['timezone'] = $user['timezone'];
-				$insert_user['timezone'] = str_replace(array('.0', '.00'), array('', ''), $insert_user['timezone']);	
+				$insert_user['timeformat'] = 'd M';
 				$insert_user['dst'] = 'no';
 				$insert_user['buddylist'] = '';
 				$insert_user['ignorelist'] = '';
@@ -291,7 +326,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['returndate'] = 0;
 				$insert_user['referrer'] = 0;
 				$insert_user['reputation'] = 0;
-				$insert_user['regip'] = $user['registration_ip'];
 				$insert_user['timeonline'] = 0;
 				$insert_user['totalpms'] = 0;
 				$insert_user['unreadpms'] = 0;
