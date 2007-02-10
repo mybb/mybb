@@ -1777,6 +1777,27 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"msg_allow_html" => "pmsallowhtml",
 			"search_sql_method" => "searchtype",
 			"min_search_word" => "minsearchword",
+			"display_max_topics" => "threadsperpage",
+			"hot_topic" => "hottopic",
+			"display_max_posts" => "postsperpage",
+			"max_images" => "maxpostimages",
+			"siu_thumb" => "attachthumbnails",
+			"siu_width" => "attachthumbw",
+			"siu_height" => "attachthumbh",
+			"max_poll_choices" => "maxpolloptions",
+			"post_wordwrap" => "wordwrap",
+			//"max_sig_length" => "siglength", // (IPB limits by bytes, MyBB limits by characters)
+			"sig_allow_html" => "sightml",
+			"sig_allow_ibc" => "sigmycode",
+			"postpage_contents" => "userpppoptions",
+			"topicpage_contents" => "usertppoptions",
+			"avup_size_max" => "avatarsize",
+			"avatar_dims" => "maxavatardims",
+			"ipb_bruteforce_attempts" => "failedlogincount",
+			"ipb_bruteforce_period" => "failedlogintime",
+			"no_reg" => "disableregs",
+			"flood_control" => "postfloodsecs",
+			"ipb_display_version" => "showvernum",			
 		);
 		$settings = "'".implode("','", array_keys($settings_array))."'";
 
