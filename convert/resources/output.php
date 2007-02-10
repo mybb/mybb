@@ -399,6 +399,8 @@ EOF;
 		
 </form>';
 
+		$import_session['finished'] = '1';
+
 		$this->print_footer('', '', 1, true);
 	}
 

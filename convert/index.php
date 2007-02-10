@@ -132,6 +132,13 @@ if(isset($mybb->input['reportgen']))
 	exit;
 }
 
+if($import_session['finished_convert'] == '1')
+{
+	// Delete import session cache
+	$import_session = null;
+	update_import_session();
+}
+
 if($mybb->input['board'])
 {
 	$mybb->input['board'] = str_replace(".", "", $mybb->input['board']);
@@ -157,7 +164,6 @@ if(!$import_session['board'])
 elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 {
 	// Delete import fields
-	/*
 	delete_import_fields();
 	$cache->update_stats();
 	$cache->update_badwords();
@@ -167,9 +173,8 @@ elseif(isset($mybb->input['action']) && $mybb->input['action'] == 'finish')
 	$cache->update_forums();
 	$cache->update_usertitles();
 
-	// Delete import session cache
-	$import_session = null;
-	*/
+	// Update import session cache
+	$import_session['finished_convert'] = 1;
 
 	$output->finish_conversion();
 }
