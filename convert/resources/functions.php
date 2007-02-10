@@ -28,7 +28,7 @@ function update_import_session()
 	}
 	
 	// Stats
-	if($import_session['module'] && $import_session['module'] != 'db_configuration')
+	if(!empty($board->old_db->query_count))
 	{
 		$import_session['olddb_query_count'] += $board->old_db->query_count;
 	}
