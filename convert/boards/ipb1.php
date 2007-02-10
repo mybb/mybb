@@ -1178,7 +1178,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			{
 				echo '<p style="color: red">The file specified was not found.</p>';
 			}
-			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+			echo "<p>Please enter the path to the IPB 1 conf_global.php file:</p>
 <p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -1464,7 +1464,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			{
 				echo '<p style="color: red">The file specified was not found.</p>';
 			}
-			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+			echo "<p>Please enter the path to the IPB 1 conf_global.php file:</p>
 <p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -1522,12 +1522,26 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 
 		$this->ipb_db_connect();
 
-		// Get number of settings
-		if(!isset($import_session['total_settings']))
-		{
-			$query = $this->old_db->simple_select("config", "COUNT(*) as count");
-			$import_session['total_settings'] = $this->old_db->fetch_field($query, 'count');		
-		}
+		// What settings do we need to get and what is their MyBB equivalent?
+		$settings_array = array(
+			"board_name" => "bbname",
+			"home_name" => "homename",
+			"home_url" => "homeurl",
+			"no_reg" => "disableregs",
+			"display_max_topics" => "threadsperpage",
+			"hot_topic" => "hottopic",
+			"emo_per_row" => "smilieinsertercols",
+			"max_images" => "maxpostimages",
+			"post_wordwrap" => "wordwrap",
+			"max_poll_choices" => "maxpolloptions",
+			//"max_sig_length" => "siglength",(IPB 1.3 limits by bytes, MyBB limits by characters)
+			"sig_allow_html" => "sightml",
+			"sig_allow_ibc" => "sigmycode",
+			"postpage_contents" => "userpppoptions",
+			"topicpage_contents" => "usertppoptions",
+			"avatar_dims" => "maxavatardim",
+		);
+		$settings = "'".implode("','", array_keys($settings_array))."'";
 
 		if($import_session['start_settings'])
 		{
@@ -1547,6 +1561,25 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 		{
 			$import_session['settings_per_screen'] = intval($mybb->input['settings_per_screen']);
 		}
+		
+		// Validate IPB configuration file location
+		$conf_global_not_found = false;
+		if(!isset($mybb->input['ipb_conf_global']) && !isset($import_session['ipb_conf_global']))
+		{
+			unset($import_session['settings_per_screen']);
+		}
+		elseif(isset($mybb->input['ipb_conf_global']) && !file_exists($mybb->input['ipb_conf_global']))
+		{
+			unset($import_session['settings_per_screen']);
+			$conf_global_not_found = true;
+		}
+		else if(isset($mybb->input['ipb_conf_global']) && $conf_global_not_found == false)
+		{
+			$import_session['ipb_conf_global'] = $mybb->input['ipb_conf_global'];
+			require($import_session['ipb_conf_global']);
+			$import_session['settings_per_page'] = count($INFO);
+			$import_session['settings_array'] = $INFO;
+		}
 
 		if(empty($import_session['settings_per_screen']))
 		{
@@ -1554,31 +1587,42 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			echo "<p>Please select how many settings to modify at a time:</p>
 <p><input type=\"text\" name=\"settings_per_screen\" value=\"200\" /></p>";
 			$import_session['autorefresh'] = "";
-echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
+			echo "<p>Do you want to automically continue to the next step until it's finished?:</p>
 <p><input type=\"radio\" name=\"autorefresh\" value=\"yes\" checked=\"checked\" /> Yes <input type=\"radio\" name=\"autorefresh\" value=\"no\" /> No</p>";
+			$conf_global = dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))).'/conf_global.php';
+			if($conf_global_not_found)
+			{
+				echo '<p style="color: red">The file specified was not found.</p>';
+			}
+			echo "<p>Please enter the path to the IPB 1 conf_global.php file:</p>
+<p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
 		else
 		{
 			// A bit of stats to show the progress of the current import
 			echo "There are ".($import_session['total_settings']-$import_session['start_settings'])." settings left to import and ".round((($import_session['total_settings']-$import_session['start_settings'])/$import_session['settings_per_screen']))." pages left at a rate of {$import_session['settings_per_screen']} per page.<br /><br />";
-
-			$query = $this->old_db->simple_select("config", "config_name, config_value", "", array('limit_start' => $import_session['start_settings'], 'limit' => $import_session['settings_per_screen']));
-			while($setting = $this->old_db->fetch_array($query))
-			{
-				echo "Updating setting {$setting['config_name']} from the IPB database... ";
-
-				// Invision Power Board 1 values
-				$name = $value = "";
-
-				switch($setting['config_name'])
-				{
-					case '':
-				}
 			
+			$count = $import_session['settings_per_page'];
+			
+			foreach($import_session['settings_array'] as $oldname => $value)
+			{
+				// Invision Power Board 1 values
+				$name = $settings_array[$oldname];
+				
+				echo "Updating setting ".$oldname." from the IPB database to {$name} in the MyBB database... ";
+					
 				$this->update_setting($name, $value);
 				
 				echo "done.<br />\n";
+				
+				unset($import_session['settings_array'][$oldname]);
+				--$count;
+				
+				if($count == 0)
+				{
+					break;
+				}
 			}
 			
 			if($this->old_db->num_rows($query) == 0)
@@ -1728,7 +1772,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			{
 				echo '<p style="color: red">The file specified was not found.</p>';
 			}
-			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+			echo "<p>Please enter the path to the IPB 1 conf_global.php file:</p>
 <p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}
@@ -1840,7 +1884,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			{
 				echo '<p style="color: red">The file specified was not found.</p>';
 			}
-			echo "<p>Please enter the path to the IPB1 conf_global.php file:</p>
+			echo "<p>Please enter the path to the IPB 1 conf_global.php file:</p>
 <p><input type=\"text\" name=\"ipb_conf_global\" value=\"{$conf_global}\" style=\"width: 50%\" /></p>";
 			$output->print_footer($import_session['module'], 'module', 1);
 		}

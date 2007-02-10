@@ -61,7 +61,8 @@ class timer {
 	 */
 	function add()
 	{
-		if(!$this->start) {
+		if(!$this->start) 
+		{
 			$mtime1 = explode(" ", microtime());
 			$this->start = $mtime1[1] + $mtime1[0];
 		}
