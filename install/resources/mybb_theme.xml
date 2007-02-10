@@ -1500,6 +1500,24 @@ var inlineId = {$fid};
 </table>
 </body>
 </html>]]></template>
+		<template name="report_error" version="123"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
+{$headerinclude}
+</head>
+<body>
+<br />
+<table border="0" cellspacing="1" cellpadding="4" class="tborder">
+<tr>
+<td class="thead"><span class="smalltext"><strong>{$mybb->settings['bbname']}</strong></span></td>
+
+</tr>
+<tr>
+<td class="trow1">{$error}</td>
+</tr>
+</table>
+</body>
+</html>]]></template>
 		<template name="redirect" version="120"><![CDATA[<html>
 <head>
 <title>{$title}</title>

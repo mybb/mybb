@@ -31,15 +31,20 @@ $post = get_post($mybb->input['pid']);
 
 if(!$post['pid'])
 {
-	error($lang->error_invalidpost);
+	$error = $lang->error_invalidpost;
+	eval("\$report_error = \"".$templates->get("report_error")."\";");
+	output_page($report_error);
 }
 
 
 $forum = get_forum($post['fid']);
 if(!$forum)
 {
-	error($lang->error_invalidforum);
+	$error = $lang->error_invalidforum;
+	eval("\$report_error = \"".$templates->get("report_error")."\";");
+	output_page($report_error);
 }
+
 // Password protected forums ......... yhummmmy!
 check_forum_password($forum['fid'], $forum['password']);
 
