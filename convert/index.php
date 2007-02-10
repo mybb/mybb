@@ -88,6 +88,47 @@ if($mybb->input['debug'])
 	echo "</pre>";
 }
 
+if(isset($mybb->input['reportgen']))
+{
+	if($mybb->input['reportgen'] == "txt")
+	{
+		$ext = "txt";
+		$output = "Welcome to the MyBB Merge Wizard Generated Report!\r\n\r\n\r\n";
+		$output .= "You merged {$import_session['board']} to your forum.\r\n\r\n";
+		$output .= "You have made a total of {$import_session['newdb_query_count']} queries on the MyBB Database";
+		$output .= " and {$import_session['olddb_query_count']} queries on the old database";
+		$output .= " which took a total of {$import_session['total_query_time']} to complete.\r\n";
+	}
+	
+	if($mybb->input['reportgen'] == "html")
+	{
+		$ext = "html";
+		$output = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>MyBB Merge Wizard &gt; Generated Report</title>
+	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
+</head>
+<body>';
+		$output .= "Welcome to the MyBB Merge Wizard Generated Report!<br /><br /><br />\r\n\r\n\r\n";
+		$output .= "You merged {$import_session['board']} to your forum.<br /><br />\r\n\r\n";
+		$output .= "You have made a total of {$import_session['newdb_query_count']} queries on the MyBB Database";
+		$output .= " and {$import_session['olddb_query_count']} queries on the old database";
+		$output .= " which took a total of {$import_session['total_query_time']} to complete.<br />\r\n";
+		$output .= "</body>\n</html>";
+	}
+	
+	if($mybb->input['reportgen'] == "xml")
+	{
+	}
+	
+	header("Content-disposition: attachment; filename=\"report".time().".{$ext}\"");		
+	header("Content-type: ".$ext);
+	header("Content-length: ".strlen($output));
+	echo $output;
+	exit;
+}
+
 if($mybb->input['board'])
 {
 	$mybb->input['board'] = str_replace(".", "", $mybb->input['board']);
