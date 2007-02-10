@@ -67,16 +67,16 @@ foreach($foldersexploded as $key => $folders)
 	$folderinfo = explode("**", $folders, 2);
 	if($fid == $folderinfo[0])
 	{
-		$sel = "selected";
+		$sel = " selected=\"selected\"";
 	}
 	else
 	{
 		$sel = "";
 	}
 	$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-	$folderjump .= "<option value=\"$folderinfo[0]\" $sel>$folderinfo[1]</option>\n";
-	$folderjump2 .= "<option value=\"$folderinfo[0]\" $sel>$folderinfo[1]</option>\n";
-	$folderoplist .= "<option value=\"$folderinfo[0]\" $sel>$folderinfo[1]</option>\n";
+	$folderjump .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
+	$folderjump2 .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
+	$folderoplist .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
 	$folderlinks .= "&#149;&nbsp;<a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a><br />\n";
 }
 $folderjump .= "</select>\n";
