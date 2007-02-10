@@ -501,21 +501,22 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
-		// Can we disable smilies or are they disabled already?
-		if($forum['allowsmilies'] != "no")
-		{
-			eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
-		}
-		else
-		{
-			$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
-		}
 		$query = $db->simple_select("favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		$subcheck = $db->fetch_array($query);
 		if($subcheck['tid'])
 		{
 			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
 		}
+	}
+
+	// Can we disable smilies or are they disabled already?
+	if($forum['allowsmilies'] != "no")
+	{
+		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
+	}
+	else
+	{
+		$disablesmilies = "<input type=\"hidden\" name=\"postoptions[disablesmilies]\" value=\"no\" />";
 	}
 
 	$plugins->run_hooks("editpost_end");
