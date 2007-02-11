@@ -397,34 +397,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			{
 				my_unsetcookie("multiquote");
 			}
-			// Only quoted a few - attempt to remove them from the cookie
-			else
-			{
-				$quoted_ids = explode("|", $mybb->input['quoted_ids']);
-				$multiquote = explode("|", $_COOKIE['multiquote']);
-				if(is_array($multiquote) && is_array($quoted_ids))
-				{
-					foreach($multiquote as $key => $quoteid)
-					{
-						// If this ID was quoted, remove it from the multiquote list
-						if(in_array($quoteid, $quoted_ids))
-						{
-							unset($multiquote[$key]);
-						}
-					}
-					// Still have an array - set the new cookie
-					if(is_array($multiquote))
-					{
-						$new_multiquote = implode(",", $multiquote);
-						my_setcookie("multiquote", $new_multiquote);
-					}
-					// Otherwise, unset it
-					else
-					{
-						my_unsetcookie("multiquote");
-					}
-				}
-			}
 		}
 
 		$plugins->run_hooks("newthread_do_newthread_end");
@@ -498,13 +470,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
 					$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
-					$quoted_ids[] = $quoted_post['pid'];
 				}
 
-				if(count($quoted_ids) > 0)
-				{
-					$quoted_ids = implode("|", $quoted_ids);
-				}
+				$quoted_ids = "all";
 			}
 			else
 			{
