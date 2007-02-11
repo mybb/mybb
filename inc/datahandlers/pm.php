@@ -129,7 +129,7 @@ class PMDataHandler extends DataHandler
 
 		return true;
 	}
-	
+
 	/**
 	 * Verifies if an array of recipients for a private message are valid
 	 *
@@ -140,7 +140,7 @@ class PMDataHandler extends DataHandler
 		global $db, $mybb, $lang;
 
 		$pm = &$this->data;
-		
+
 		$invalid_recipients = array();
 		// We have our recipient usernames but need to fetch user IDs
 		if(array_key_exists("to", $pm))
@@ -150,7 +150,7 @@ class PMDataHandler extends DataHandler
 				$this->set_error("no_recipients");
 				return false;
 			}
-			
+
 			foreach(array("to", "bcc") as $recipient_type)
 			{
 				if(!is_array($pm[$recipient_type]))
@@ -160,7 +160,10 @@ class PMDataHandler extends DataHandler
 				foreach($pm[$recipient_type] as $username)
 				{
 					$username = trim($username);
-					if(!$username) { continue; }
+					if(empty($username))
+					{
+						continue;
+					}
 					// Check that this recipient actually exists
 					$query = $db->simple_select("users", "*", "username='".$db->escape_string($username)."'");
 					$user = $db->fetch_array($query);
@@ -188,7 +191,7 @@ class PMDataHandler extends DataHandler
 				{
 					$this->set_error("no_recipients");
 					return false;
-				}				
+				}
 				foreach($pm[$recipient_type] as $uid)
 				{
 					// Check that this recipient actually exists
@@ -217,9 +220,9 @@ class PMDataHandler extends DataHandler
 			$this->set_error("invalid_recipients", array($invalid_recipients));
 			return false;
 		}
-		
+
 		$sender_permissions = user_permissions($pm['fromid']);
-		
+
 		// Are we trying to send this message to more users than the permissions allow?
 		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'])
 		{
@@ -344,7 +347,7 @@ class PMDataHandler extends DataHandler
 		global $plugins;
 
 		$pm = &$this->data;
-		
+
 		// Verify all PM assets.
 		$this->verify_subject();
 
@@ -403,11 +406,13 @@ class PMDataHandler extends DataHandler
 		$pm = &$this->data;
 
 		$pm['pmid'] = intval($pm['pmid']);
-			
+
 		if(!$pm['icon'] || $pm['icon'] < 0)
 		{
 			$pm['icon'] = 0;
 		}
+
+		$uid = 0;
 
 		// Build recipient list
 		foreach($pm['recipients'] as $recipient)
@@ -420,6 +425,7 @@ class PMDataHandler extends DataHandler
 			{
 				$recipient_list['to'][] = $recipient['uid'];
 			}
+			$uid = $recipient['uid'];
 		}
 		$recipient_list = serialize($recipient_list);
 
@@ -437,7 +443,7 @@ class PMDataHandler extends DataHandler
 			'readtime' => 0,
 			'recipients' => $db->escape_string($recipient_list)
 		);
-		
+
 		// Check if we're updating a draft or not.
 		$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
@@ -461,7 +467,7 @@ class PMDataHandler extends DataHandler
 				"draftsaved" => 1
 			);
 		}
-		
+
 		// Save a copy of the PM for each of our recipients
 		foreach($pm['recipients'] as $recipient)
 		{
@@ -506,12 +512,12 @@ class PMDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
 			$db->insert_query("privatemessages", $this->pm_insert_data);
-	
+
 			$this->pmid = $db->insert_id();
-	
+
 			// Update private message count (total, new and unread) for recipient
 			update_pm_count($recipient['uid'], 7, $recipient['lastactive']);
-		
+
 			// If the recipient has pm popup functionality enabled, update it to show the popup.
 			if($recipient['pmpopup'] != "no")
 			{
@@ -521,7 +527,7 @@ class PMDataHandler extends DataHandler
 				$db->update_query("users", $sql_array, "uid={$recipient['uid']}");
 			}
 		}
-		
+
 		// Are we replying or forwarding an existing PM?
 		if($pm['pmid'])
 		{
@@ -540,18 +546,25 @@ class PMDataHandler extends DataHandler
 				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
 		}
-	
+
 		// If we're saving a copy
 		if($pm['options']['savecopy'] != "no")
 		{
-			$this->pm_insert_data['toid'] = "0";
+			if(count($pm['recipients']) == 1)
+			{
+				$this->pm_insert_data['toid'] = $uid;
+			}
+			else
+			{
+				$this->pm_insert_data['toid'] = 0;
+			}
 			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
 			$this->pm_insert_data['folder'] = 2;
 			$this->pm_insert_data['receipt'] = 0;
-		
+
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
 			$db->insert_query("privatemessages", $this->pm_insert_data);
-	
+
 			// Because the sender saved a copy, update their total pm count
 			update_pm_count($pm['sender']['uid'], 1);
 		}

@@ -1240,9 +1240,10 @@ if(!$mybb->input['action'])
 	$icon_cache = $cache->read("posticons");
 	
 	$query = $db->query("
-		SELECT pm.*, fu.username AS fromusername
+		SELECT pm.*, fu.username AS fromusername, tu.username as tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+		LEFT JOIN ".TABLE_PREFIX."users tu ON (tu.uid=pm.toid)
 		WHERE pm.folder='$folder' AND pm.uid='".$mybb->user['uid']."'
 		ORDER BY pm.dateline DESC
 		LIMIT $start, $perpage
@@ -1284,7 +1285,40 @@ if(!$mybb->input['action'])
 				$recipients = unserialize($message['recipients']);
 				if(count($recipients['to']) > 1)
 				{
-					$tofromusername = $lang->multiple_recipients;
+					$uids = array();
+					foreach($recipients['to'] as $recipient)
+					{
+						$recipientsids['to'][] = $recipient;
+						$uids[] = $recipient;
+					}
+
+					if(count($recipients['bcc']) > 1)
+					{
+						foreach($recipients['bcc'] as $recipient)
+						{
+							$recipientsids['bcc'][] = $recipient;
+							$uids[] = $recipient;
+						}
+					}
+
+					$uids = implode(',', $uids);
+					$query = $db->simple_select("users", "uid, username", "uid IN ({$uids})");
+
+					while($user = $db->fetch_array($query))
+					{
+						$profilelink = get_profile_link($user['uid']);
+						$username = htmlspecialchars_uni($user['username']);
+						if(in_array($user['uid'], $recipientsids['to']))
+						{
+							eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user", 1, 0)."\";");
+						}
+						else if(in_array($user['uid'], $recipientsids['bcc']))
+						{
+							eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user", 1, 0)."\";");
+						}
+					}
+
+					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
 				}
 				else if($message['toid'])
 				{
