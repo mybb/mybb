@@ -493,7 +493,15 @@ else
 	if(!empty($mybb->input['goto']))
 	{
 		// Strip session ID from goto
-		$goto = preg_replace('#(&?|&amp;?|\??)adminsid=([a-zA-Z0-9]{1,32})(&?|&amp;?)#i', '\\1', $mybb->input['goto']);
+		$goto = $mybb->input['goto'];
+		if(strpos($goto, '&') !== false)
+		{
+			$goto = preg_replace('#(&?|&amp;?|\??)adminsid=([a-zA-Z0-9]{1,32})(&?|&amp;?)#i', '\\1', $goto);
+		}
+		else
+		{
+			$goto = preg_replace('#\?adminsid=([a-zA-Z0-9]{1,32})#i', '', $goto);
+		}
 		$parsed_url = parse_url($goto);
 		$goto = htmlspecialchars_uni($goto);
 		if(!$parsed_url['query'])
