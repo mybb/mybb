@@ -1318,6 +1318,12 @@ if(!$mybb->input['action'])
 						}
 					}
 
+					if(!empty($bcc_users))
+					{
+						eval("\$bcc_top .= \"".$templates->get("private_multiple_recipients_bcc", 1, 0)."\";");
+						$bcc_users = $bcc_top . $bcc_users;
+					}
+
 					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
 				}
 				else if($message['toid'])
