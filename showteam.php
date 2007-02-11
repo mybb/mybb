@@ -83,7 +83,6 @@ while($user = $db->fetch_array($query))
 				eval("\$forumlist .= \"".$templates->get("showteam_moderators_forum")."\";");
 			}
 		}
-		$user['profilelink'] = get_profile_link($user['uid']);
 		$user['forumlist'] = $forumlist;
 		$forumlist = '';
 		$usergroups[6]['user_list'][$user['uid']] = $user;
@@ -118,6 +117,7 @@ foreach($usergroups as $usergroup)
 	foreach($usergroup['user_list'] as $user)
 	{
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+		$user['profilelink'] = get_profile_link($user['uid']);
 		// For the postbit templates
 		$post['uid'] = $user['uid'];
 		$emailcode = $pmcode = '';

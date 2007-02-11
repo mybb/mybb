@@ -3323,7 +3323,7 @@ form {
 </td>
 </tr>]]></template>
 		<template name="showteam_usergroup_user" version="140"><![CDATA[<tr>
-<td width="80%" class="{$bgcolor}"><a href={$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
+<td width="80%" class="{$bgcolor}"><a href="{$user['profilelink']}"><strong>{$user['username']}</strong></a></td>
 <td width="10%" class="{$bgcolor}">{$emailcode}</td>
 <td width="10%" class="{$bgcolor}">{$pmcode}</td>
 </tr>]]></template>
