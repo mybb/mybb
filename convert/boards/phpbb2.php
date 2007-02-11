@@ -428,6 +428,9 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['regip'] = $last_post['poster_ip'];				
 				$insert_user['totalpms'] = $this->get_private_messages($user['user_id']);
 				$insert_user['unreadpms'] = $user['user_unread_privmsg'];
+				$salt = generate_salt();
+				$insert_user['salt'] = $salt;
+				$insert_user['password'] = salt_password($user['user_password'], $salt);
 				
 				// Default values
 				$insert_user['remember'] = "yes";
