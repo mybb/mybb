@@ -424,8 +424,8 @@ class PMDataHandler extends DataHandler
 			else
 			{
 				$recipient_list['to'][] = $recipient['uid'];
+				$uid = $recipient['uid'];
 			}
-			$uid = $recipient['uid'];
 		}
 		$recipient_list = serialize($recipient_list);
 
@@ -550,7 +550,7 @@ class PMDataHandler extends DataHandler
 		// If we're saving a copy
 		if($pm['options']['savecopy'] != "no")
 		{
-			if(count($pm['recipients']) == 1)
+			if(count($recipient_list['to']) == 1)
 			{
 				$this->pm_insert_data['toid'] = $uid;
 			}
