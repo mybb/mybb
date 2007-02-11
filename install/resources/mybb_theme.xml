@@ -495,6 +495,14 @@ form {
 .highlight {
 	background: #ffff00;
 	font-weight: bold;
+}
+
+.alert {
+	background: #FFF6BF;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	text-align: center;
+	padding: 5px 20px;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -603,6 +611,7 @@ form {
 </tr>
 </table>
 <br />]]></template>
+		<template name="global_pm_alert" version="140"><![CDATA[<div class="alert">{$privatemessage_text}</div><br class="clear" />]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
 		<template name="index" version="120"><![CDATA[<html>
 <head>
@@ -1188,7 +1197,7 @@ form {
 </tr>
 </table>
 </fieldset>]]></template>
-		<template name="usercp_options" version="120"><![CDATA[<html>
+		<template name="usercp_options" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
 {$headerinclude}
@@ -1241,8 +1250,8 @@ form {
 <td><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmpopup" id="pmpopup" value="yes" {$pmpopupcheck} /></td>
-<td><span class="smalltext"><label for="pmpopup">{$lang->pm_popup}</label></span></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="yes"{$pmnoticecheck} /></td>
+<td><span class="smalltext"><label for="pmnotice">{$lang->pm_popup}</label></span></td>
 </tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="yes" {$pmnotifycheck} /></td>
@@ -2463,6 +2472,7 @@ form {
 		<hr class="hidden" />
 		<br class="clear" />
 		<div id="content">
+			{$pm_notice}
 			{$bannedwarning}
 			{$bbclosedwarning}
 			{$unreadreports}
@@ -7022,8 +7032,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top"><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmpopup" id="pmpopup" value="yes" {$pmpopupcheck} /></td>
-<td valign="top"><span class="smalltext"><label for="pmpopup">{$lang->pm_popup}</label></span></td>
+<td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="yes"{$pmnoticecheck} /></td>
+<td valign="top"><span class="smalltext"><label for="pm">{$lang->pm_popup}</label></span></td>
 </tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailpmnotify" id="emailpmnotify" value="yes" {$emailpmnotifycheck} /></td>
@@ -7262,7 +7272,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	<template name="newreply_multiquote_external" version="140"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
-	<template name="newthread_multiquote_external" version="140"><![CDATA[<input type="hidden" name="quoted_ids" value="" /><div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="newthread_multiquote_external" version="140"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="postbit_author_user" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
 	{$post['usertitle']}<br />

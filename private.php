@@ -1292,18 +1292,19 @@ if(!$mybb->input['action'])
 						$uids[] = $recipient;
 					}
 
-					if(count($recipients['bcc']) > 1)
+					$to_users = $bcc_users = "";
+					if(count($recipients['bcc']) > 0)
 					{
 						foreach($recipients['bcc'] as $recipient)
 						{
 							$recipientsids['bcc'][] = $recipient;
 							$uids[] = $recipient;
 						}
+						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc", 1, 0)."\";");
 					}
 
 					$uids = implode(',', $uids);
 					$query2 = $db->simple_select("users", "uid, username", "uid IN ({$uids})");
-					$to_users = $bcc_users = $bcc_top = "";
 
 					while($user = $db->fetch_array($query2))
 					{
@@ -1317,12 +1318,6 @@ if(!$mybb->input['action'])
 						{
 							eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user", 1, 0)."\";");
 						}
-					}
-
-					if(!empty($bcc_users))
-					{
-						eval("\$bcc_top .= \"".$templates->get("private_multiple_recipients_bcc", 1, 0)."\";");
-						$bcc_users = $bcc_top . $bcc_users;
 					}
 
 					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
