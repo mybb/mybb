@@ -259,6 +259,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_group['cantrackpms'] = 'yes';
 				$insert_group['candenypmreceipts'] = 'yes';
 				$insert_group['pmquota'] = '0';
+				$insert_group['maxpmrecipients'] = '5';
 				$insert_group['cansendemail'] = 'yes';
 				$insert_group['canviewmemberlist'] = 'yes';
 				$insert_group['canviewcalendar'] = 'yes';
@@ -1156,6 +1157,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_pm['uid'] = $this->get_import_uid($pm['privmsgs_from_userid']);
 				$insert_pm['fromid'] = $this->get_import_uid($pm['privmsgs_from_userid']);
 				$insert_pm['toid'] = $this->get_import_uid($pm['privmsgs_to_userid']);
+				$insert_pm['recipients'] = 'a:1:{s:2:"to";a:1:{i:0;s:'.strlen($insert_pm['toid']).':"'.$insert_pm['toid'].'";}}'; 
 				$insert_pm['readtime'] = time();
 				$insert_pm['subject'] = $pm['privmsgs_subject'];
 				$insert_pm['status'] = $pm['is_read'];
