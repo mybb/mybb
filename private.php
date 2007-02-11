@@ -1302,9 +1302,9 @@ if(!$mybb->input['action'])
 					}
 
 					$uids = implode(',', $uids);
-					$query = $db->simple_select("users", "uid, username", "uid IN ({$uids})");
+					$query2 = $db->simple_select("users", "uid, username", "uid IN ({$uids})");
 
-					while($user = $db->fetch_array($query))
+					while($user = $db->fetch_array($query2))
 					{
 						$profilelink = get_profile_link($user['uid']);
 						$username = htmlspecialchars_uni($user['username']);
