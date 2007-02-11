@@ -388,6 +388,44 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$lang->redirect_newthread .= $lang->redirect_newthread_thread;
 			$url = get_thread_link($tid);
 		}
+		
+		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
+		if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
+		{
+			// We quoted all posts - remove the entire cookie
+			if($mybb->input['quoted_ids'] == "all")
+			{
+				my_unsetcookie("multiquote");
+			}
+			// Only quoted a few - attempt to remove them from the cookie
+			else
+			{
+				$quoted_ids = explode("|", $mybb->input['quoted_ids']);
+				$multiquote = explode("|", $_COOKIE['multiquote']);
+				if(is_array($multiquote) && is_array($quoted_ids))
+				{
+					foreach($multiquote as $key => $quoteid)
+					{
+						// If this ID was quoted, remove it from the multiquote list
+						if(in_array($quoteid, $quoted_ids))
+						{
+							unset($multiquote[$key]);
+						}
+					}
+					// Still have an array - set the new cookie
+					if(is_array($multiquote))
+					{
+						$new_multiquote = implode(",", $multiquote);
+						my_setcookie("multiquote", $new_multiquote);
+					}
+					// Otherwise, unset it
+					else
+					{
+						my_unsetcookie("multiquote");
+					}
+				}
+			}
+		}
 
 		$plugins->run_hooks("newthread_do_newthread_end");
 		
@@ -441,31 +479,66 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 				$visible_where = "AND p.visible > 0";
 			}
 			
-			$query = $db->query("
-				SELECT COUNT(*) AS quotes
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-				WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
-			");
-			$external_quotes = $db->fetch_field($query, 'quotes');
-
-			if($external_quotes > 0)
+			if(intval($mybb->input['load_all_quotes']) == 1)
 			{
-				if($external_quotes == 1)
+				$query = $db->query("
+					SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, u.username AS userusername
+					FROM ".TABLE_PREFIX."posts p
+					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+					WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
+				");
+				while($quoted_post = $db->fetch_array($query))
 				{
-					$multiquote_text = $lang->multiquote_external_one;
-					$multiquote_deselect = $lang->multiquote_external_one_deselect;
-					$multiquote_quote = $lang->multiquote_external_one_quote;
+					if($quoted_post['userusername'])
+					{
+						$quoted_post['username'] = $quoted_post['userusername'];
+					}
+					$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
+					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
+					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
+					$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
+					$quoted_ids[] = $quoted_post['pid'];
 				}
-				else
+
+				if(count($quoted_ids) > 0)
 				{
-					$multiquote_text = sprintf($lang->multiquote_external, $external_quotes);
-					$multiquote_deselect = $lang->multiquote_external_deselect;
-					$multiquote_quote = $lang->multiquote_external_quote;
+					$quoted_ids = implode("|", $quoted_ids);
 				}
-				eval("\$multiquote_external = \"".$templates->get("newthread_multiquote_external")."\";");
+			}
+			else
+			{
+				$query = $db->query("
+					SELECT COUNT(*) AS quotes
+					FROM ".TABLE_PREFIX."posts p
+					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+					WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
+				");
+				$external_quotes = $db->fetch_field($query, 'quotes');
+
+				if($external_quotes > 0)
+				{
+					if($external_quotes == 1)
+					{
+						$multiquote_text = $lang->multiquote_external_one;
+						$multiquote_deselect = $lang->multiquote_external_one_deselect;
+						$multiquote_quote = $lang->multiquote_external_one_quote;
+					}
+					else
+					{
+						$multiquote_text = sprintf($lang->multiquote_external, $external_quotes);
+						$multiquote_deselect = $lang->multiquote_external_deselect;
+						$multiquote_quote = $lang->multiquote_external_quote;
+					}
+					eval("\$multiquote_external = \"".$templates->get("newthread_multiquote_external")."\";");
+				}
 			}
 		}
+	}
+
+	if($mybb->input['quoted_ids'])
+	{
+		$quoted_ids = htmlspecialchars_uni($mybb->input['quoted_ids']);
 	}
 
 	// Check the various post options if we're
@@ -479,15 +552,15 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($postoptions['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		if($mybb->input['postpoll'] == "yes")
 		{
@@ -503,11 +576,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$subject = htmlspecialchars_uni($post['subject']);
 		if($post['includesig'] != "no")
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($post['smilieoff'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		$icon = $post['icon'];
 	}
@@ -517,11 +590,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		if($mybb->user['signature'] != '')
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($mybb->user['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
 		}
 		$numpolloptions = "2";
 	}

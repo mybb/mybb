@@ -631,7 +631,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 	}
 
-
 	if($mybb->input['quoted_ids'])
 	{
 		$quoted_ids = htmlspecialchars_uni($mybb->input['quoted_ids']);
@@ -653,15 +652,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$postoptions = $mybb->input['postoptions'];
 		if($postoptions['signature'] == "yes")
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($postoptions['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		$subject = $mybb->input['subject'];
 	}
@@ -671,11 +670,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$subject = $post['subject'];
 		if($post['includesig'] != "no")
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($post['smilieoff'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		$mybb->input['icon'] = $post['icon'];
 	}
@@ -683,11 +682,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		if($mybb->user['signature'] != '')
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($mybb->user['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
 		}
 	}
 	if($forum['allowpicons'] != "no")

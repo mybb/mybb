@@ -443,15 +443,15 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		if($postoptions['signature'] == "yes")
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($postoptions['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 
 		$pid = intval($mybb->input['pid']);
@@ -495,17 +495,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 		if($post['includesig'] != "no")
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 		if($post['smilieoff'] == "yes")
 		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		$query = $db->simple_select("favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		$subcheck = $db->fetch_array($query);
 		if($subcheck['tid'])
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
 		}
 	}
 

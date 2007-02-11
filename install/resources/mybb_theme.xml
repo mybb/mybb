@@ -898,8 +898,8 @@ form {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7"{$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
 {$disablesmilies}</span></td>
 </tr>
 {$attachbox}
@@ -916,7 +916,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="newreply" version="140"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
@@ -954,8 +954,8 @@ form {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7"{$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
 {$disablesmilies}
 </span></td>
 </tr>
@@ -979,7 +979,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_drafts" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
@@ -1055,8 +1055,8 @@ form {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="7" {$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8" {$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
+<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8"{$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
 {$disablesmilies}</span></td>
 </tr>
 {$modoptions}
@@ -1070,6 +1070,7 @@ form {
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
+<input type="hidden" name="quoted_ids" value="{$quoted_ids}" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -1077,7 +1078,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="newthread_disablesmilies" version="120"><![CDATA[<br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
+<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_nav" version="140"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -3665,11 +3666,11 @@ form {
 	<div>
 		<textarea style="width: 90%; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
 	</div>
-	<script type="text/javascript">
-	<!--
-		document.write('<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote"><span class="smalltext">{$lang->quickreply_multiquote_selected} <a href="./newreply.php?tid={$tid}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}<\/a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}<\/a>.<\/span><\/div>');
-	// -->
-	</script>
+	<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote">
+		<span class="smalltext">
+			{$lang->quickreply_multiquote_selected} <a href="./newreply.php?tid={$tid}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}</a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}</a>.
+		</span>
+	</div>
 </td>
 </tr>
 <tr>
@@ -7252,7 +7253,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	<template name="newreply_multiquote_external" version="140"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
-	<template name="newthread_multiquote_external" version="140"><![CDATA[<input type="hidden" name="quoted_ids" value="" /><div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="javascript:Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
+	<template name="newthread_multiquote_external" version="140"><![CDATA[<input type="hidden" name="quoted_ids" value="" /><div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="postbit_author_user" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
 	{$post['usertitle']}<br />

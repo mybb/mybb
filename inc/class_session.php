@@ -81,9 +81,9 @@ class session
 		}
 
 		// If we have a valid session id and user id, load that users session.
-		$logon = explode("_", $_COOKIE['mybbuser'], 2);
 		if($_COOKIE['mybbuser'])
 		{
+			$logon = explode("_", $_COOKIE['mybbuser'], 2);
 			$this->load_user($logon[0], $logon[1]);
 		}
 
