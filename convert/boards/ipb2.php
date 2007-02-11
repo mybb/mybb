@@ -1760,14 +1760,12 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"load_limit" => "load",
 			"disable_subforum_show" => "subforumsindex",
 			"email_out" => "adminemail",
-			/*
 			"mail_method" => "mail_handler",
 			"smtp_host" => "smtp_host",
 			"smtp_port" => "smtp_port",
 			"smtp_user" => "smtp_user",
 			"smtp_pass" => "smtp_pass",
 			"php_mail_extra" => "mail_parameters",
-			*/
 			"board_name" => "bbname",
 			"home_name" => "homename",
 			"home_url" => "homeurl",
@@ -1786,7 +1784,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"siu_height" => "attachthumbh",
 			"max_poll_choices" => "maxpolloptions",
 			"post_wordwrap" => "wordwrap",
-			//"max_sig_length" => "siglength", // (IPB limits by bytes, MyBB limits by characters)
+			"max_sig_length" => "siglength",
 			"sig_allow_html" => "sightml",
 			"sig_allow_ibc" => "sigmycode",
 			"postpage_contents" => "userpppoptions",

@@ -1040,10 +1040,9 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"o_avatars_width" => "maxavatardims",
 			"o_avatars_size" => "avatarsize",
 			"o_webmaster_email" => "adminemail",
-			/* To be used at a later date
 			"o_smtp_host" => "",
 			"o_smtp_user" => "",
-			"o_smtp_pass" => "", */
+			"o_smtp_pass" => "",
 			"o_regs_allow" => "disableregs",
 			"o_regs_verify" => "regtype",
 			"o_maintenance" => "boardclosed",

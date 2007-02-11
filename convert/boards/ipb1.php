@@ -1534,14 +1534,46 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"max_images" => "maxpostimages",
 			"post_wordwrap" => "wordwrap",
 			"max_poll_choices" => "maxpolloptions",
-			//"max_sig_length" => "siglength",(IPB 1.3 limits by bytes, MyBB limits by characters)
+			"max_sig_length" => "siglength",
 			"sig_allow_html" => "sightml",
 			"sig_allow_ibc" => "sigmycode",
 			"postpage_contents" => "userpppoptions",
 			"topicpage_contents" => "usertppoptions",
 			"avatar_dims" => "maxavatardim",
+			"show_active" => "showwol",
+			"au_cutoff" => "wolcutoffminutes",
+			"show_birthdays" => "showbirthdays",
+			"show_totals" => "showindexstats",
+			"no_au_forum" => "browsingthisforum",
+			"load_limit" => "load",
+			"min_search_word" => "minsearchword",
+			"nocache" => "nocacheheaders",
+			"msg_allow_code" => "pmsallowmycode",
+			"msg_allow_html" => "pmsallowhtml",
+			"board_offline" => "boardclosed",
+			"offline_msg" => "boardclosed_reason",
+			"search_sql_method" => "searchtype",
+			"csite_article_forum" => "portal_announcementsfid",
+			"csite_article_max" => "portal_numannouncements",
+			"csite_discuss_max" => "portal_showdiscussionsnum",
+			"csite_discuss_on" => "portal_showdiscussions",
+			"csite_pm_show" => "portal_showwelcome",
+			"csite_search_show" => "portal_showsearch",
+			"csite_online_show" => "portal_showwol",
+			"mail_method" => "mail_handler",
+			"smtp_host" => "smtp_host",
+			"smtp_port" => "smtp_port",
+			"smtp_user" => "smtp_user",
+			"smtp_pass" => "smtp_pass",
 		);
 		$settings = "'".implode("','", array_keys($settings_array))."'";
+		$int_to_yes_no = array(
+			"csite_discuss_on" => 1,
+			"csite_pm_show" => 1,
+			"csite_search_show" => 1,
+			"csite_online_show" => 1,
+			"no_au_forum" => 0
+		);
 
 		if($import_session['start_settings'])
 		{
@@ -1611,6 +1643,34 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$name = $settings_array[$oldname];
 				
 				echo "Updating setting ".$oldname." from the IPB database to {$name} in the MyBB database... ";
+				
+				if($oldname == "search_sql_method")
+				{
+					if($value == "ftext")
+					{
+						$value = "fulltext";
+					}
+					else
+					{
+						$value = "standard";
+					}
+				}
+				
+				if($oldname == "csite_article_forum")
+				{
+					$comma = '';
+					$values = explode(',' $value);
+					foreach($values as => $key => $fid)
+					{
+						$value .= $comma.$this->get_import_fid($fid);
+						$comma = ',';
+					}
+				}
+				
+				if(($value == 0 || $value == 1) && isset($int_to_yes_no[$setting['conf_name']]))
+				{
+					$value = int_to_yes_no($value, $int_to_yes_no[$setting['conf_name']]);
+				}
 					
 				$this->update_setting($name, $value);
 				

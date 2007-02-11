@@ -1618,13 +1618,11 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"max_login_attempts" => "failedlogincount",
 			"gzip_compress" => "gzipoutput",
 			"search_type" => "searchtype",
-			/* MyBB 1.4
 			"smtp_host"		=> "smtp_host",
 			"smtp_password"	=> "smtp_pass",
 			"smtp_port"		=> "smtp_port",
 			"smtp_username"	=> "smtp_user",
 			"smtp_delivery" => "mail_handler"
-			*/
 		);
 
 		$settings = "'".implode("','", array_keys($settings_array))."'";
