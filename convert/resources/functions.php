@@ -262,4 +262,26 @@ function create_import_fields()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD import_eid int NOT NULL default '0' AFTER eid");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes ADD import_atid int NOT NULL default '0' AFTER atid");
 }
+
+/**
+ * Salts a password based on a supplied salt.
+ *
+ * @param string The md5()'ed password.
+ * @param string The salt.
+ * @return string The password hash.
+ */
+function salt_password($password, $salt)
+{
+	return md5(md5($salt).$password);
+}
+
+/**
+ * Generates a random salt
+ *
+ * @return string The salt.
+ */
+function generate_salt()
+{
+	return random_str(8);
+}
 ?>
