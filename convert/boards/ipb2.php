@@ -1776,7 +1776,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"siu_height" => "attachthumbh",
 			"max_poll_choices" => "maxpolloptions",
 			"post_wordwrap" => "wordwrap",
-			//"max_sig_length" => "siglength", // (IPB limits by bytes, MyBB limits by characters)
+			"max_sig_length" => "siglength",
 			"sig_allow_html" => "sightml",
 			"sig_allow_ibc" => "sigmycode",
 			"postpage_contents" => "userpppoptions",

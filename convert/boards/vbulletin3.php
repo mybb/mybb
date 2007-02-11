@@ -1639,13 +1639,6 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 			"showforumusers" => "browsingthisforum",
 			"showprivateforums" => "hideprivateforums",
 			"showsimilarthreads" => "showsimilarthreads",
-			/* To be used at a later date
-			"smtp_host" => "",
-			"smtp_pass" => "",
-			"smtp_port" => "",
-			"smtp_tls" => "",
-			"smtp_user" => "", 
-			"use_smtp" => "", */
 			"timeformat" => "timeformat",
 			"timeoffset" => "timezoneoffset",
 			"useheaderredirect" => "redirects",
