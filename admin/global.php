@@ -230,7 +230,7 @@ else
 		if(!empty($_SERVER['QUERY_STRING']))
 		{
 			$goto .= '?'.$_SERVER['QUERY_STRING'];
-			$goto = preg_replace('#(&?|&amp;?|\??)adminsid=([a-zA-Z0-9]{1,32})#i', '', $goto);
+			$goto = preg_replace('#(&?|&amp;?|\??)adminsid=([a-zA-Z0-9]{1,32})(&?|&amp;?)#i', '\\1', $goto);
 		}
 	}
 	else
