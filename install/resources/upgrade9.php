@@ -163,6 +163,11 @@ function upgrade9_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts smallint unsigned NOT NULL default '0' AFTER modthreads");
 	}
 
+	if(!$db->field_exists('pmnotice', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
+	}
+
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

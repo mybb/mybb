@@ -479,7 +479,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'hideemail', 'no');
 		$this->verify_yesno_option($options, 'emailnotify', 'no');
 		$this->verify_yesno_option($options, 'receivepms', 'yes');
-		$this->verify_yesno_option($options, 'pmpopup', 'yes');
+		$this->verify_yesno_option($options, 'pmnotice', 'yes');
 		$this->verify_yesno_option($options, 'pmnotify', 'yes');
 		$this->verify_yesno_option($options, 'invisible', 'no');
 		$this->verify_yesno_option($options, 'remember', 'yes');
@@ -808,7 +808,7 @@ class UserDataHandler extends DataHandler
 			"hideemail" => $user['options']['hideemail'],
 			"emailnotify" => $user['options']['emailnotify'],
 			"receivepms" => $user['options']['receivepms'],
-			"pmpopup" => $user['options']['pmpopup'],
+			"pmnotice" => $user['options']['pmnotice'],
 			"pmnotify" => $user['options']['emailpmnotify'],
 			"remember" => $user['options']['remember'],
 			"showsigs" => $user['options']['showsigs'],

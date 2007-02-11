@@ -593,7 +593,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"showquickreply" => $mybb->input['showquickreply'],
 		"remember" => $mybb->input['remember'],
 		"receivepms" => $mybb->input['receivepms'],
-		"pmpopup" => $mybb->input['pmpopup'],
+		"pmnotice" => $mybb->input['pmnotice'],
 		"daysprune" => $mybb->input['daysprune'],
 		"showcodebuttons" => intval($mybb->input['showcodebuttons']),
 		"pmnotify" => $mybb->input['pmnotify'],
@@ -752,13 +752,13 @@ if($mybb->input['action'] == "options")
 		$receivepmscheck = "";
 	}
 
-	if($user['pmpopup'] == "yes")
+	if($user['pmnotice'] == "yes")
 	{
-		$pmpopupcheck = "checked=\"checked\"";
+		$pmnoticecheck = " checked=\"checked\"";
 	}
 	else
 	{
-		$pmpopupcheck = "";
+		$pmnoticecheck = "";
 	}
 
 	if($user['dst'] == "yes")

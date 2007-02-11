@@ -260,7 +260,8 @@ $l['slaps'] = "slaps";
 $l['with_trout'] = "around a bit with a large trout.";
 
 $l['quickdelete_confirm'] = "Are you sure you want to delete this post?";
-$l['newpm_prompt'] = "You have received a new private message. Click OK to view it, or Cancel to hide this prompt.";
+$l['newpm_notice_one'] = "<strong>You have a new private message from <a href=\"{1}\">{2}</a> titled '<a href=\"private.php?action=read&amp;pmid={3}\">{4}</a>'.</strong>";
+$l['newpm_notice_multiple'] = "<strong>You have {1} new private message.</strong> Most recent one is from <a href=\"{2}\">{3}</a> titled '<a href=\"private.php?action=read&amp;pmid={4}\">{5}</a>'.";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 

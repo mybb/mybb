@@ -216,7 +216,7 @@ if(isset($templatelist))
 {
 	$templatelist .= ',';
 }
-$templatelist .= "css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin";
+$templatelist .= "css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert";
 $templatelist .= ",nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active";
 $templates->cache($db->escape_string($templatelist));
 
@@ -338,6 +338,29 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Set up some of the default templates
+// Check if this user has a new private message.
+if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
+{
+	$query = $db->query("
+		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
+		WHERE pm.folder='1' AND pm.uid='{$mybb->user['uid']}' AND pm.status='0'
+		ORDER BY pm.dateline DESC
+		LIMIT 0, 1
+	");
+	$pm = $db->fetch_array($query);
+	if($mybb->user['pms_unread'] == 1)
+	{
+		$privatemessage_text = sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
+	}
+	else
+	{
+		$privatemessage_text = sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
+	}
+	eval("\$pm_notice = \"".$templates->get("global_pm_alert")."\";");
+}
+
 eval("\$headerinclude = \"".$templates->get("headerinclude")."\";");
 eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype", 1, 0)."\";");

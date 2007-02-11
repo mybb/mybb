@@ -361,7 +361,7 @@ if($mybb->input['action'] == "do_add")
 		"hideemail" => $mybb->input['hideemail'],
 		"emailnotify" => $mybb->input['emailnotify'],
 		"receivepms" => $mybb->input['receivepms'],
-		"pmpopup" => $mybb->input['pmpopup'],
+		"pmnotice" => $mybb->input['pmnotice'],
 		"pmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"dst" => $mybb->input['enabledst']
@@ -482,7 +482,7 @@ if($mybb->input['action'] == "do_edit")
 		"hideemail" => $mybb->input['hideemail'],
 		"emailnotify" => $mybb->input['emailnotify'],
 		"receivepms" => $mybb->input['receivepms'],
-		"pmpopup" => $mybb->input['pmpopup'],
+		"pmnotice" => $mybb->input['pmnotice'],
 		"pmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
 		"dst" => $mybb->input['enabledst']
@@ -878,7 +878,7 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->hide_email, "hideemail", 'no');
 	makeyesnocode($lang->email_notify, "emailnotify", 'yes');
 	makeyesnocode($lang->enable_pms, "receivepms", 'yes');
-	makeyesnocode($lang->pm_popup, "pmpopup", 'yes');
+	makeyesnocode($lang->pm_popup, "pmnotice", 'yes');
 	makeyesnocode($lang->pm_notify, "emailpmnotify", 'yes');
 	makeinputcode($lang->time_offset, "timezoneoffset");
 	makeselectcode($lang->style, "style", "themes", "tid", "name", 0, $lang->use_default, '', "tid>1");
@@ -956,7 +956,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->hide_email, "hideemail", $user['hideemail']);
 	makeyesnocode($lang->email_notify, "emailnotify", $user['emailnotify']);
 	makeyesnocode($lang->enable_pms, "receivepms", $user['receivepms']);
-	makeyesnocode($lang->pm_popup, "pmpopup", $user['pmpopup']);
+	makeyesnocode($lang->pm_popup, "pmnotice", $user['pmnotice']);
 	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['emailpmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
 	if(!$user['style'])

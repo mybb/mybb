@@ -224,7 +224,7 @@ function send_mail_queue($count=10)
  */
 function parse_page($contents)
 {
-	global $db, $lang, $theme, $mybb, $htmldoctype, $loadpmpopup, $archive_url, $error_handler;
+	global $db, $lang, $theme, $mybb, $htmldoctype, $archive_url, $error_handler;
 
 	$contents = str_replace('<navigation>', build_breadcrumb(1), $contents);
 	$contents = str_replace('<archive_url>', $archive_url, $contents);
@@ -253,13 +253,6 @@ function parse_page($contents)
 		$contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
 	}
 
-	if($loadpmpopup)
-	{
-		if(my_substr($_SERVER['PHP_SELF'], -strlen("private.php")) != "private.php")
-		{
-			$contents = str_replace("<body", "<body onload=\"Javascript:MyBB.newPM()\"", $contents);
-		}
-	}
 	return $contents;
 }
 
@@ -621,9 +614,6 @@ function error_no_permission()
 function redirect($url, $message="", $title="")
 {
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
-
-	$loadpmpopup = false;
-
 
 	if($mybb->input['ajax'])
 	{

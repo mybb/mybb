@@ -883,7 +883,7 @@ function install_done()
 		'hideemail' => 'no',
 		'emailnotify' => 'no',
 		'receivepms' => 'yes',
-		'pmpopup' => 'yes',
+		'pmnotice' => 'yes',
 		'pmnotify' => 'yes',
 		'remember' => 'yes',
 		'showsigs' => 'yes',

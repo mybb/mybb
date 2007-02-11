@@ -19,8 +19,6 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   KEY scriptname (scriptname, action)
 ) TYPE=MyISAM;";
 
-
-
 $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int(10) NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
@@ -55,7 +53,6 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0'
 ) TYPE=MyISAM;";
-
 
 $tables[] = "CREATE TABLE mybb_announcements (
   aid int unsigned NOT NULL auto_increment,
@@ -758,7 +755,7 @@ $tables[] = "CREATE TABLE mybb_users (
   emailnotify char(3) NOT NULL default '',
   invisible char(3) NOT NULL default '',
   receivepms char(3) NOT NULL default '',
-  pmpopup char(3) NOT NULL default '',
+  pmnotice char(3) NOT NULL default '',
   pmnotify char(3) NOT NULL default '',
   remember char(3) NOT NULL default '',
   threadmode varchar(8) NOT NULL default '',

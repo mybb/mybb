@@ -479,7 +479,7 @@ echo "<p>Do you want to automically continue to the next step until it's finishe
 				$insert_user['allownotices'] = "yes";
 				$insert_user['emailnotify'] = "no";
 				$insert_user['receivepms'] = "yes";
-				$insert_user['pmpopup'] = "yes";
+				$insert_user['pmnotice'] = "yes";
 				$insert_user['remember'] = "yes";
 				$insert_user['showsigs'] = "yes";
 				$insert_user['showavatars'] = "yes";

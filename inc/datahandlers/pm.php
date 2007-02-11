@@ -299,7 +299,7 @@ class PMDataHandler extends DataHandler
 				"username" => $user['username'],
 				"email" => $user['email'],
 				"lastactive" => $user['lastactive'],
-				"pmpopup" => $user['pmpopup'],
+				"pmnotice" => $user['pmnotice'],
 				"pmnotify" => $user['pmnotify'],
 				"language" => $user['language']
 			);
@@ -517,15 +517,6 @@ class PMDataHandler extends DataHandler
 
 			// Update private message count (total, new and unread) for recipient
 			update_pm_count($recipient['uid'], 7, $recipient['lastactive']);
-
-			// If the recipient has pm popup functionality enabled, update it to show the popup.
-			if($recipient['pmpopup'] != "no")
-			{
-				$sql_array = array(
-					"pmpopup" => "new"
-				);
-				$db->update_query("users", $sql_array, "uid={$recipient['uid']}");
-			}
 		}
 
 		// Are we replying or forwarding an existing PM?

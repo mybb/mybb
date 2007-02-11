@@ -2308,7 +2308,6 @@ form {
 <!--
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
-	var newpm_prompt = "{$lang->newpm_prompt}";
 	var deleteevent_confirm = "{$lang->deleteevent_confirm}";
 	var removeattach_confirm = "{$lang->removeattach_confirm}";
 	var loading_text = '{$lang->ajax_loading}';
@@ -7033,7 +7032,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotice" id="pmnotice" value="yes"{$pmnoticecheck} /></td>
-<td valign="top"><span class="smalltext"><label for="pm">{$lang->pm_popup}</label></span></td>
+<td valign="top"><span class="smalltext"><label for="pmnotice">{$lang->pm_popup}</label></span></td>
 </tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailpmnotify" id="emailpmnotify" value="yes" {$emailpmnotifycheck} /></td>

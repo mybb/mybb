@@ -119,7 +119,7 @@ class session
 	 */
 	function load_user($uid, $password='')
 	{
-		global $mybb, $db, $time, $lang, $mybbgroups, $loadpmpopup, $session;
+		global $mybb, $db, $time, $lang, $mybbgroups, $session;
 
 		$uid = intval($uid);
 		$query = $db->query("
@@ -163,23 +163,11 @@ class session
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
-		// Check if this user has a new private message.
-		if($mybb->user['pmpopup'] == "new" && $mybb->settings['enablepms'] != "no")
-		{
-			$popupadd = ", pmpopup='yes'";
-			$loadpmpopup = 1;
-		}
-		else
-		{
-			$popupadd = '';
-			$loadpmpopup = 0;
-		}
-
 		// If the last visit was over 900 seconds (session time out) ago then update lastvisit.
 		$time = time();
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' WHERE uid='{$mybb->user['uid']}'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
@@ -187,7 +175,7 @@ class session
 		else
 		{
 			$timespent = time() - $mybb->user['lastactive'];
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent WHERE uid='{$mybb->user['uid']}'");
 		}
 
 		// Sort out the language and forum preferences.
