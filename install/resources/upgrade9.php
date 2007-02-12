@@ -171,6 +171,6 @@ function upgrade9_dbchanges()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("8_done");
+	$output->print_footer("9_done");
 }
 ?>
