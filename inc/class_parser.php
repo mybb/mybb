@@ -173,7 +173,7 @@ class postParser
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
 			$message = preg_replace("#(</?(?:table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)#i", "$1", $message);
+			$message = preg_replace("#(&nbsp;)+(</?(?:table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)#i", "$2", $message);
 		}
 	
 		$message = my_wordwrap($message);
