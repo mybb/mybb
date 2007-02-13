@@ -160,7 +160,7 @@ function upgrade9_dbchanges()
 	
 	if(!$db->field_exists('mod_edit_posts', "forums"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts smallint unsigned NOT NULL default '0' AFTER modthreads");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts char(3) NOT NULL default '' AFTER modthreads");
 	}
 
 	if(!$db->field_exists('pmnotice', "users"))

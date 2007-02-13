@@ -227,7 +227,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   showinjump char(3) NOT NULL default '',
   modposts char(3) NOT NULL default '',
   modthreads char(3) NOT NULL default '',
-  mod_edit_posts smallint unsigned NOT NULL default '0',
+  mod_edit_posts char(3) NOT NULL default '',
   modattachments char(3) NOT NULL default '',
   style smallint unsigned NOT NULL default '0',
   overridestyle char(3) NOT NULL default '',

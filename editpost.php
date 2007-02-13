@@ -282,7 +282,6 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	// No errors were found, we can call the update method.
 	else
 	{
-		$posthandler->update_post();
 		$postinfo = $posthandler->update_post();
 		$visible = $postinfo['visible'];
 		$first_post = $postinfo['first_post'];

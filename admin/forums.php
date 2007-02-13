@@ -221,7 +221,7 @@ if($mybb->input['action'] == "do_add")
 		"showinjump" => $db->escape_string($mybb->input['showinjump']),
 		"modposts" => $db->escape_string($mybb->input['modposts']),
 		"modthreads" => $db->escape_string($mybb->input['modthreads']),
-		"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
+		"mod_edit_posts" => $db->escape_string($mybb->input['mod_edit_posts']),
 		"modattachments" => $db->escape_string($mybb->input['modattachments']),
 		"style" => $db->escape_string($mybb->input['fstyle']),
 		"overridestyle" => $db->escape_string($mybb->input['overridestyle']),
@@ -453,7 +453,7 @@ if($mybb->input['action'] == "do_edit")
  			"showinjump" => $db->escape_string($mybb->input['showinjump']),
 			"modposts" => $db->escape_string($mybb->input['modposts']),
 			"modthreads" => $db->escape_string($mybb->input['modthreads']),
-			"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
+			"mod_edit_posts" => $db->escape_string($mybb->input['mod_edit_posts']),
 			"modattachments" => $db->escape_string($mybb->input['modattachments']),
 			"style" => intval($mybb->input['fstyle']),
 			"overridestyle" => $db->escape_string($mybb->input['overridestyle']),
@@ -552,7 +552,7 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->moderation_options);
 	makeyesnocode($lang->moderate_posts, "modposts", "no");
 	makeyesnocode($lang->moderate_threads, "modthreads", "no");
-	makeintcode($lang->moderate_edit_posts, "mod_edit_posts", 0);
+	makeyesnocode($lang->moderate_edit_posts, "mod_edit_posts", "no");
 	makeyesnocode($lang->moderate_attachments, "modattachments", "no");
 
 	tablesubheader($lang->style_options);
@@ -716,7 +716,7 @@ if($mybb->input['action'] == "edit")
 	tablesubheader($lang->moderation_options);
 	makeyesnocode($lang->moderate_posts, "modposts", $forum['modposts']);
 	makeyesnocode($lang->moderate_threads, "modthreads", $forum['modthreads']);
-	makeintcode($lang->moderate_edit_posts, "mod_edit_posts", $forum['mod_edit_posts']);
+	makeyesnocode($lang->moderate_edit_posts, "mod_edit_posts", $forum['mod_edit_posts']);
 	makeyesnocode($lang->moderate_attachments, "modattachments", $forum['modattachments']);
 
 	tablesubheader($lang->style_options);
