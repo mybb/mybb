@@ -2238,7 +2238,7 @@ function debug_page()
 	{
 		echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
 		echo "<tr>\n";
-		echo "<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>Templates Used (Loaded for this Page) - ".count($templates->cache)." Total</strong></td>\n";
+		echo "<td style=\"background-color: #ccc;\"><strong>Templates Used (Loaded for this Page) - ".count($templates->cache)." Total</strong></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td style=\"background: #fff;\">".implode(", ", array_keys($templates->cache))."</td>\n";

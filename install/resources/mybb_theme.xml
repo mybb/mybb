@@ -4391,7 +4391,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <form action="member.php" method="post">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="2"><strong>{$mybb->settings['bbname']} - {$lang->agreement}</strong></td>
+<td class="thead"><strong>{$mybb->settings['bbname']} - {$lang->agreement}</strong></td>
 </tr>
 <tr>
 <td class="trow1">
