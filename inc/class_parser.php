@@ -107,8 +107,8 @@ class postParser
 					$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
 				}
 				// Remove these completely
-				$message = preg_replace("#<base[^>]*>#is", "", $message);
-				$message = preg_replace("#<meta[^>]*>#is", "", $message);
+				$message = preg_replace("#\s*<base[^>]*>\s*#is", "", $message);
+				$message = preg_replace("#\s*<meta[^>]*>\s*#is", "", $message);
 
 				$message = str_replace(array('<?php', '<!--', '-->', '?>'), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;'), $message);
 			}
@@ -172,8 +172,8 @@ class postParser
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)#i", "$2", $message);
+			$message = preg_replace("#(</?(?:html|head|body|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)\s*<br />#i", "$1", $message);
+			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)#i", "$2", $message);
 		}
 	
 		$message = my_wordwrap($message);
