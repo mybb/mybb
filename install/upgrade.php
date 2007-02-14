@@ -77,7 +77,7 @@ else
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
-		if($db->table_exists("datacache"))
+		if($db->table_exists("datacache") && $system_upgrade_detail['requires_deactivated_plugins'] == 1)
 		{
 			require_once MYBB_ROOT."inc/class_datacache.php";
 			$cache = new datacache;
