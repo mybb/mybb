@@ -4380,7 +4380,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_register_agreement" version="120"><![CDATA[<html>
+		<template name="member_register_agreement" version="123"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->agreement}</title>
 {$headerinclude}
@@ -4531,7 +4531,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />]]></template>
 		<template name="portal_announcement_numcomments" version="120"><![CDATA[- <a href="{$mybb->settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
-		<template name="portal_announcement" version="120"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="portal_announcement" version="123"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$icon} <a href="{$mybb->settings['bburl']}/showthread.php?tid={$announcement['tid']}">{$announcement['subject']}</a></strong></td>
 </tr>
