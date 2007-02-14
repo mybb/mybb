@@ -318,7 +318,7 @@ class postParser
 		$message = $this->mycode_auto_url($message);
 
 		$message = str_replace('$', '&#36;', $message);
-		
+
 		// Replace the rest
 		$message = preg_replace($this->mycode_cache['find'], $this->mycode_cache['replacement'], $message);
 
@@ -532,6 +532,7 @@ class postParser
 		}
 
 		$code = str_replace('&amp;', '&', $code);
+		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
@@ -613,6 +614,7 @@ class postParser
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
+		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
 
 		if($added_open_tag)
