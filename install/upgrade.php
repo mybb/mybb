@@ -75,6 +75,17 @@ else
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
+		if($db->table_exists(TABLE_PREFIX."datacache"))
+		{
+			require_once MYBB_ROOT."inc/class_datacache.php";
+			$cache = new datacache;
+			$plugins = $cache->read('plugins', true);
+			if(!empty($plugins['active']))
+			{
+				$lang->upgrade_welcome = "<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure.</p></div> <br />".$lang->upgrade_welcome;
+			}
+		}
+
 		$output->print_header();
 
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");
