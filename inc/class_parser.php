@@ -166,8 +166,6 @@ class postParser
 			}
 		}
 
-		$message = str_replace("  ", "&nbsp;&nbsp;", $message); 
-
 		if($options['nl2br'] != "no")
 		{
 			$message = nl2br($message);
@@ -341,6 +339,8 @@ class postParser
 		{
 			$message = preg_replace("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$2')\n", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2'));", $message);
+			$message = preg_replace("#\[img align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$3', array(), '$1');", $message);
+			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3}) align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2', '$3'));", $message);
 		}
 
 		// Replace "me" code and slaps if we have a username
@@ -535,6 +535,7 @@ class postParser
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
+		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
 		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
 
@@ -599,7 +600,6 @@ class postParser
 				"color=\"",
 				"</font>"
 			);
-
 			$replace = array(
 				"<span",
 				"style=\"color: ",
@@ -685,18 +685,26 @@ class postParser
 	 * @param string The URL to the image
 	 * @param array Optional array of dimensions
 	 */
-	function mycode_parse_img($url, $dimensions=array())
+	function mycode_parse_img($url, $dimensions=array(), $align='')
 	{
 		$url = trim($url);
 		$url = str_replace("\n", "", $url);
 		$url = str_replace("\r", "", $url);
+		if($align == "right")
+		{
+			$css_align = " style=\"float: right;\"";
+		}
+		else if($align == "left")
+		{
+			$css_align = " style=\"float: left;\"";
+		}
 		if($dimensions[0] > 0 && $dimensions[1] > 0)
 		{
-			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"\" />";
+			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"\"{$css_align} />";
 		}
 		else
 		{
-			return "<img src=\"{$url}\" border=\"0\" alt=\"\" />";			
+			return "<img src=\"{$url}\" border=\"0\" alt=\"\"{$css_align} />";			
 		}
 	}
 
