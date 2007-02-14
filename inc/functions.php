@@ -2887,18 +2887,18 @@ function my_strlen($string)
     global $lang;
 
     $string = preg_replace("#&\#(0-9]+);#", "-", $string);
-	
+
     if(strtolower($lang->settings['charset']) == "utf-8")
     {
         // Get rid of any excess RTL and LTR override for they are the workings of the devil
         $string = str_replace(dec_to_utf8(8238), "", $string);
         $string = str_replace(dec_to_utf8(8237), "", $string);
-        
+
         // Remove dodgy whitspaces
         $string = str_replace(chr(0xCA), "", $string);
     }
 	$string = trim($string);
-	
+
     if(function_exists("mb_strlen"))
     {
         $string_length = mb_strlen($string);
@@ -2907,7 +2907,7 @@ function my_strlen($string)
     {
         $string_length = strlen($string);
     }
-	
+
     return $string_length;
 }
 
@@ -2948,6 +2948,73 @@ function my_substr($string, $start, $length="")
 }
 
 /**
+ * lowers the case of a string, mb strings accounted for
+ *
+ * @param string The string to lower.
+ * @return int The lowered string.
+ */
+function my_strtolower($string)
+{
+	if(function_exists("mb_strtolower"))
+	{
+		$string = mb_strtolower($string);
+	}
+	else
+	{
+		$string = strtolower($string);
+	}
+
+	return $string;
+}
+
+/**
+ * Finds a needle in a haystack and returns it position, mb strings accounted for
+ *
+ * @param string String to look in (haystack)
+ * @param string What to look for (needle)
+ * @param int (optional) How much to offset
+ * @return int false on needle not found, integer position if found
+ */
+function my_strpos($haystack, $needle, $offset=0)
+{
+	if($needle == '')
+	{
+		return false;
+	}
+
+	if(function_exists("mb_strpos"))
+	{
+		$position = mb_strpos($haystack, $needle, $offset);
+	}
+	else
+	{
+		$position = strpos($haystack, $needle, $offset);
+	}
+
+	return $position;
+}
+
+/**
+ * ups the case of a string, mb strings accounted for
+ *
+ * @param string The string to up.
+ * @return int The uped string.
+ */
+function my_strtoupper($string)
+{
+	if(function_exists("mb_strtoupper"))
+	{
+		$string = mb_strtoupper($string);
+	}
+	else
+	{
+		$string = strtoupper($string);
+	}
+
+	return $string;
+}
+
+/**
  * Returns any html entities to their original character
  *
  * @param string The string to un-htmlentitize.
@@ -2955,12 +3022,14 @@ function my_substr($string, $start, $length="")
  */
 function unhtmlentities($string)
 {
-   // replace numeric entities
+   // Replace numeric entities
    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
    $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-   // replace literal entities
+
+   // Replace literal entities
    $trans_tbl = get_html_translation_table(HTML_ENTITIES);
    $trans_tbl = array_flip($trans_tbl);
+
    return strtr($string, $trans_tbl);
 }
 

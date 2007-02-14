@@ -381,7 +381,7 @@ if($mybb->input['action'] == "register")
 			}
 			elseif($referrername)
 			{
-				$query = $db->simple_select(TABLE_PREFIX."users", "uid", "username='".$db->escape_string($referrername)."'");
+				$query = $db->simple_select(TABLE_PREFIX."users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($referrername))."'");
 				$ref = $db->fetch_array($query);
 				if(!$ref['uid'])
 				{
@@ -615,7 +615,7 @@ elseif($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
@@ -799,7 +799,7 @@ elseif($mybb->input['action'] == "resetpassword")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select(TABLE_PREFIX."users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -1399,7 +1399,7 @@ elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "pos
 	{
 		error_no_permission();
 	}
-	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, email, hideemail", "username='".$db->escape_string($mybb->input['touser'])."'");
+	$query = $db->simple_select(TABLE_PREFIX."users", "uid, username, email, hideemail", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['touser']))."'");
 	$emailto = $db->fetch_array($query);
 	if(!$emailto['username'])
 	{
