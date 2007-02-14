@@ -4770,7 +4770,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_register_agreement" version="120"><![CDATA[<html>
+		<template name="member_register_agreement" version="123"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->agreement}</title>
 {$headerinclude}
