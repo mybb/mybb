@@ -831,51 +831,40 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 function fetch_forum_permissions($fid, $gid, $groupperms)
 {
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
+
 	$groups = explode(",", $gid);
+
 	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
 	{
 		return $groupperms;
 	}
-	// The fix here for better working inheritance was provided by tinywizard - http://windizupdate.com/
-	// Many thanks.
-	foreach($fpermfields as $perm)
-	{
-		$forumpermissions[$perm] = "no";
-	}
-
+	
+	$current_permissions = array();
+	
 	foreach($groups as $gid)
 	{
-		if($gid && $groupscache[$gid])
+		if($groupscache[$gid])
 		{
-			if(is_array($fpermcache[$fid][$gid]))
+			// If this forum has permissions set
+			if($fpermcache[$fid][$gid])
 			{
-				$p = $fpermcache[$fid][$gid];
-			}
-			else
-			{
-				$p = $groupperms;
-			}
-			
-			if($p == NULL)
-			{
-				foreach($forumpermissions as $k => $v)
+				$level_permissions = $fpermcache[$fid][$gid];
+				foreach($level_permissions as $permission => $access)
 				{
-					$forumpermissions[$k] = 'yes';        // no inherited group, assume one has access
-				}
-			}
-			else
-			{
-				foreach($p as $perm => $access)
-				{
-					if(isset($forumpermissions[$perm]) && $access == 'yes')
+					if($access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no") || !$current_permissions[$permission])
 					{
-						$forumpermissions[$perm] = $access;
+						$current_permissions[$permission] = $access;
 					}
 				}
 			}
 		}
 	}
-	return $forumpermissions;
+	
+	if(count($current_permissions) == 0)
+	{
+		$current_permissions = $groupperms;
+	}
+	return $current_permissions;
 }
 
 /**
