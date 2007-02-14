@@ -636,11 +636,11 @@ class postParser
 		}
 
 		$code = str_replace('&amp;', '&', $code);
+		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
-
 
 		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
@@ -727,6 +727,7 @@ class postParser
 		$code = preg_replace("#</span>\s*</code>#", "</code>", $code);
 		$code = preg_replace("#</span>(\r\n?|\n?)</code>#", "</span></code>", $code);
 		$code = str_replace("\\", '&#092;', $code);
+		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $code);
 
 		if($added_open_tag)
