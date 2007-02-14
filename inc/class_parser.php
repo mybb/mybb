@@ -872,24 +872,19 @@ class postParser
 	* @param boolean Are we formatting as text?
 	* @return string The parsed message.
 	*/
-	function mycode_parse_list($message, $type="", $text_only = false)
+	function mycode_parse_list($message, $type="")
 	{
-		if($text_only == true)
-		{
-			$message = preg_replace("#\[\*\]\s?#", "* ", $message);
-			return $message;
-		}
 		$message = str_replace('\"', '"', $message);
-		$message = preg_replace("#\[\*\]\s?#", "</li><li>", $message);
+		$message = preg_replace("#\s*\[\*\]\s*#", "</li>\n<li>", $message);
 		$message .= "</li>";
 
 		if($type)
 		{
-			$list = "</p>\n<ol type=\"$type\">$message</ol>\n<p>";
+			$list = "\n<ol type=\"$type\">$message</ol>\n";
 		}
 		else
 		{
-			$list = "</p>\n<ul>$message</ul>\n<p>";
+			$list = "<ul>$message</ul>\n";
 		}
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
 		return $list;
