@@ -203,6 +203,12 @@ else
 	}
 }
 
+// Theme logo - is it a relative URL to the forum root? Append bburl
+if(!preg_match("#^(\/|\.\.|\.|([a-z0-9]+)://)#i", $theme['logo']))
+{
+	$theme['logo'] = $mybb->settings['bburl']."/".$theme['logo'];
+}
+
 // Load Main Templates and Cached Templates
 if(isset($templatelist))
 {

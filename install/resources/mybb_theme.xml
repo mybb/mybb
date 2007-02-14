@@ -2371,7 +2371,7 @@ var inlineId = {$fid};
 		<template name="header" version="123"><![CDATA[	<a name="top" id="top"></a>
 	<div id="container">
 		<div id="header">
-			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$mybb->settings['bburl']}/{$theme['logo']}" alt="{$mybb->settings['bbname']}" /></a></div>
+			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" /></a></div>
 			<div class="menu">
 				<ul>
 					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$mybb->settings['bburl']}/{$theme['imgdir']}/toplinks/search.gif" alt="" />{$lang->toplinks_search}</a></li>
