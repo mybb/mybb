@@ -513,6 +513,13 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				require_once MYBB_ROOT."inc/functions_post.php";
 				$post = build_postbit($post);
 				echo $post;
+
+				// Build a new posthash incase the user wishes to quick reply again
+				mt_srand((double) microtime() * 1000000);
+			    $new_posthash = md5($mybb->user['uid'].mt_rand());
+				echo "<script type=\"text/javascript\">\n";
+				echo "$('posthash').value = '{$new_posthash}';\n";
+				echo "</script>\n";
 				exit;				
 			}
 			// Post is in the moderation queue

@@ -3657,7 +3657,7 @@ form {
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="input" id="quick_reply_form">
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
-<input type="hidden" name="posthash" value="{$posthash}" />
+<input type="hidden" name="posthash" value="{$posthash}" id="posthash" />
 <input type="hidden" name="quoted_ids" value="" />
 <input type="hidden" name="lastpid" id="lastpid" value="{$last_pid}" />
 <input type="hidden" name="from_page" value="{$page}" />
@@ -3692,7 +3692,7 @@ form {
 </td>
 </tr>
 <tr>
-<td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->post_reply}" tabindex="2" accesskey="s" /> <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="3" /></td>
+<td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->post_reply}" tabindex="2" accesskey="s" id="quick_reply_submit" /> <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="3" /></td>
 </tr>
 </tbody>
 </table>

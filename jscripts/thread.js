@@ -257,7 +257,7 @@ var Thread = {
 	{
 		if($('quick_reply_form') && use_xmlhttprequest == "yes")
 		{
-			Event.observe($('quick_reply_form'), "submit", Thread.quickReply.bindAsEventListener(this));
+			Event.observe($('quick_reply_submit'), "click", Thread.quickReply.bindAsEventListener(this));
 		}
 	},
 

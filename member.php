@@ -384,7 +384,7 @@ if($mybb->input['action'] == "register")
 			}
 			elseif($referrername)
 			{
-				$query = $db->simple_select("users", "uid", "username='".$db->escape_string($referrername)."'");
+				$query = $db->simple_select("users", "uid", "LOWER(username)='".$db->escape_string(my_strtolower($referrername))."'");
 				$ref = $db->fetch_array($query);
 				if(!$ref['uid'])
 				{
@@ -654,7 +654,7 @@ if($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
@@ -833,7 +833,7 @@ if($mybb->input['action'] == "resetpassword")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "username='".$db->escape_string($mybb->input['username'])."'");
+		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{

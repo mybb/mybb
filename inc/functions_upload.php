@@ -316,9 +316,26 @@ function upload_attachment($attachment)
 		return $ret;
 	}
 
+	// Check if the attachment directory (YYYYMM) exists, if not, create it
+	$month_dir = gmdate("Ym")."/";
+	if(!@is_dir($mybb->settings['uploadspath'].$month_dir))
+	{
+		@mkdir($mybb->settings['uploadspath'].$month_dir);
+		// Still doesn't exist - oh well, throw it in the main directory
+		if(!@is_dir($mybb->settings['uploadspath'].$month_dir))
+		{
+			$month_dir = '';
+		}
+	}    
 	// All seems to be good, lets move the attachment!
 	$filename = "post_".$mybb->user['uid']."_".time().".attach";
-	$file = upload_file($attachment, $mybb->settings['uploadspath'], $filename);
+	$file = upload_file($attachment, $mybb->settings['uploadspath']."/".$month_dir, $filename);
+
+	if($month_dir)
+	{
+		$filename =$month_dir.$filename;
+	}
+	
 	if($file['error'])
 	{
 		$ret['error'] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
