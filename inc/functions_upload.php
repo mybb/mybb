@@ -317,7 +317,7 @@ function upload_attachment($attachment)
 	}
 
 	// Check if the attachment directory (YYYYMM) exists, if not, create it
-	$month_dir = gmdate("Ym")."/";
+	$month_dir = gmdate("Ym");
 	if(!@is_dir($mybb->settings['uploadspath'].$month_dir))
 	{
 		@mkdir($mybb->settings['uploadspath'].$month_dir);
@@ -333,7 +333,7 @@ function upload_attachment($attachment)
 
 	if($month_dir)
 	{
-		$filename =$month_dir.$filename;
+		$filename =$month_dir."/".$filename;
 	}
 	
 	if($file['error'])
