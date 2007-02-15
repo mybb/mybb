@@ -18,7 +18,7 @@ $upgrade_detail = array(
 	"revert_all_themes" => 1,
 	"revert_all_settings" => 1,
 	"requires_deactivated_plugins" => 1,
-	);
+);
 
 @set_time_limit(0);
 

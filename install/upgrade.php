@@ -77,17 +77,6 @@ else
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
-		if($db->table_exists("datacache") && $system_upgrade_detail['requires_deactivated_plugins'] == 1)
-		{
-			require_once MYBB_ROOT."inc/class_datacache.php";
-			$cache = new datacache;
-			$plugins = $cache->read('plugins', true);
-			if(!empty($plugins['active']))
-			{
-				$lang->upgrade_welcome = "<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure.</p></div> <br />".$lang->upgrade_welcome;
-			}
-		}
-
 		$output->print_header();
 
 		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");
@@ -126,13 +115,30 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents(sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>");
+		$output->print_contents("<p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
 	{
-		add_upgrade_store("startscript", $mybb->input['from']);
-		$runfunction = next_function($mybb->input['from']);
+		require_once INSTALL_ROOT."resources/upgrade".intval($mybb->input['from']).".php";
+		if($db->table_exists("datacache") && $upgrade_detail['requires_deactivated_plugins'] == 1 && $mybb->input['donewarning'] != "true")
+		{
+			require_once MYBB_ROOT."inc/class_datacache.php";
+			$cache = new datacache;
+			$plugins = $cache->read('plugins', true);
+			if(!empty($plugins['active']))
+			{
+				$output->print_header();
+				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".intval($mybb->input['from'])."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
+				$output->print_contents(sprintf($lang->plugin_warning, $mybb->version));
+				$output->print_footer("doupgrade");
+			}
+		}
+		else
+		{
+			add_upgrade_store("startscript", $mybb->input['from']);
+			$runfunction = next_function($mybb->input['from']);
+		}
 	}
 	$currentscript = get_upgrade_store("currentscript");
 	$system_upgrade_detail = get_upgrade_store("upgradedetail");

@@ -234,10 +234,8 @@ elseif($mybb->input['action'] == "vercheck")
 	{
 		$latest_version = "<span style=\"color: red\">".$latest_version."</font>";
 		$version_warn = 1;
-		$updated_cache = array(
-			"latest_version" => $latest_version,
-			"latest_version_code" => $latest_code
-		);
+		$updated_cache['latest_version'] = $latest_version;
+		$updated_cache['latest_version_code'] = $latest_code;
 	}
 
 	$cache->update("update_check", $updated_cache);
