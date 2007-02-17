@@ -1377,7 +1377,6 @@ function get_server_load()
 		$wmi = new COM("WinMgmts:\\\\.");
 		$cpus = $wmi->InstancesOf("Win32_Processor");
 
-		$cpuload = 0;
 		$i = 0;
 
 		if(version_compare(PHP_VERSION, '5.0.0', '>='))
@@ -1415,7 +1414,12 @@ function get_server_load()
 	{
 		$returnload = $lang->unknown;
 	}
-	return $returnload . ' %';
+	else
+	{
+		$returnload .=  ' %';
+	}
+
+	return $returnload;
 }
 
 /**
