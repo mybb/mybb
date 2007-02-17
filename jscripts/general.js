@@ -81,17 +81,6 @@ var MyBB = {
 		window.open(url, name, settings);
 	},
 
-	newPM: function()
-	{
-		confirmReturn = confirm(newpm_prompt);
-
-		if(confirmReturn == true) 
-		{
-			settings = "toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=600,height=500";
-			NewWindow = window.open('private.php', 'pmPopup', settings);
-		}
-	},
-
 	deleteEvent: function(eid)
 	{
 		confirmReturn = confirm(deleteevent_confirm);
