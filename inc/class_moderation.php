@@ -426,13 +426,17 @@ class Moderation
 			}
 		}
 		
+		// Get lastpost pid to check if we're merging a post that is on the lastpost info
+		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid = '{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => '1'));
+		$lastpostpid = $db->fetch_field($query, 'pid');
+		
 		$fid = $post['fid'];
 
 		// Update the message
 		$mergepost = array(
 			"message" => $db->escape_string($message),
 		);
-		$db->update_query(TABLE_PREFIX."posts", $mergepost, "pid='$masterpid'");
+		$db->update_query(TABLE_PREFIX."posts", $mergepost, "pid = '$masterpid'");
 		$db->delete_query(TABLE_PREFIX."posts", "pid IN($pidin) AND pid != '$masterpid'");
 		// Update pid for attachments
 		$mergepost2 = array(
@@ -444,6 +448,22 @@ class Moderation
 		// Update stats
 		update_thread_count($tid);
 		update_forum_count($fid);
+		
+		// Do we need to update lastpost info?
+		$pininarray = explode(',', $pidin);
+		if(in_array($lastpostpid, $pininarray))
+		{
+			// Get the new lastpost pid to update the lastpost data
+			$query = $db->simple_select(TABLE_PREFIX."posts", "pid, dateline, username, uid", "tid = '{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => '1'));
+			$post = $db->fetch_array($query);
+			
+			$update_array = array(
+				'lastpost' => $post['dateline'],
+				'lastposter' => $db->escape_string($post['username']),
+				'lastpostuid' => $post['uid']
+			);
+			$db->update_query(TABLE_PREFIX."threads", $update_array, "tid = '{$post['tid']}'");
+		}
 
 		return true;
 	}
