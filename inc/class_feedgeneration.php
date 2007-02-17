@@ -88,7 +88,7 @@ class FeedGenerator
 		{
 			// Ouput an Atom 1.0 formatted feed.
 			case "atom1.0":
-				$this->channel['date'] = date("Y-m-d\TH:i:s\Z", $this->channel['date']);
+				$this->channel['date'] = gmdate("Y-m-d\TH:i:s\Z", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<title type=\"html\">".htmlspecialchars_uni($this->channel['title'])."</title>\n";
