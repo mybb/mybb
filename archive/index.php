@@ -109,7 +109,7 @@ switch($action)
 
 		$pids = array();
 		// Fetch list of post IDs to be shown
-		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('limit_start' => $start, 'limit' => $perpage));
+		$query = $db->simple_select("posts", "pid", "tid='{$id}' AND visible='1'", array('order_by' => 'dateline', 'limit_start' => $start, 'limit' => $perpage));
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['pid'];
