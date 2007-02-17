@@ -1354,28 +1354,60 @@ function get_server_load()
 {
 	global $lang;
 
-	if(my_strtolower(substr(PHP_OS, 0, 3)) === 'win')
-	{
-		return $lang->unknown;
-	}
-	elseif(@file_exists("/proc/loadavg"))
-	{
-		$load = @file_get_contents("/proc/loadavg");
-		$serverload = explode(" ", $load);
-		$serverload[0] = round($serverload[0], 4);
+	$serverload = array();
 
-		if(!$serverload)
+	if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
+	{
+		if(@file_exists("/proc/loadavg"))
+		{
+			$load = @file_get_contents("/proc/loadavg");
+			$serverload = explode(" ", $load);
+			$serverload[0] = round($serverload[0], 4);
+
+			if(!$serverload)
+			{
+				$load = @exec("uptime");
+				$load = split("load averages?: ", $load);
+				$serverload = explode(",", $load[1]);
+			}
+		}
+		else
 		{
 			$load = @exec("uptime");
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
 		}
 	}
+	else if(class_exists('COM'))
+	{
+		$wmi = new COM("WinMgmts:\\\\.");
+		$cpus = $wmi->InstancesOf("Win32_Processor");
+
+		$cpuload = 0;
+		$i = 0;
+
+		if(version_compare('4.50.0', PHP_VERSION) == 1)
+		{
+			// PHP 4
+			while ($cpu = $cpus->Next())
+			{
+				$serverload[0] += $cpu->LoadPercentage;
+				++$i;
+			}
+		}
+		else
+		{
+			// PHP 5
+			foreach($cpus as $cpu)
+			{
+				$serverload[0] += $cpu->LoadPercentage;
+				++$i;
+			}
+		}
+	}
 	else
 	{
-		$load = @exec("uptime");
-		$load = split("load averages?: ", $load);
-		$serverload = explode(",", $load[1]);
+		return $lang->unknown;
 	}
 
 	$returnload = trim($serverload[0]);
