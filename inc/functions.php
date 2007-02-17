@@ -1380,7 +1380,7 @@ function get_server_load()
 		$cpuload = 0;
 		$i = 0;
 
-		if(version_compare(PHP_VERSION, '5.0.0', '>=') == 1)
+		if(version_compare(PHP_VERSION, '5.0.0', '>='))
 		{
 			// PHP 5
 			foreach($cpus as $cpu)
