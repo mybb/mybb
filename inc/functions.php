@@ -1377,7 +1377,7 @@ function get_server_load()
 		$wmi = new COM("WinMgmts:\\\\.");
 		$cpus = $wmi->InstancesOf("Win32_Processor");
 
-		$i = 0;
+		$cpu_count = 0;
 
 		if(version_compare(PHP_VERSION, '5.0.0', '>='))
 		{
@@ -1385,7 +1385,7 @@ function get_server_load()
 			foreach($cpus as $cpu)
 			{
 				$serverload[0] += $cpu->LoadPercentage;
-				++$i;
+				++$cpu_count;
 			}
 		}
 		else
@@ -1394,13 +1394,13 @@ function get_server_load()
 			while ($cpu = $cpus->Next())
 			{
 				$serverload[0] += $cpu->LoadPercentage;
-				++$i;
+				++$cpu_count;
 			}
 		}
 
-		if($i > 1)
+		if($cpu_count > 1)
 		{
-			$serverload[0] = round($serverload[0] / $i, 2);
+			$serverload[0] = round($serverload[0] / $cpu_count, 2);
 		}
 	}
 	else
@@ -1412,14 +1412,10 @@ function get_server_load()
 
 	if(!$returnload)
 	{
-		$returnload = $lang->unknown;
-	}
-	else
-	{
-		$returnload .=  ' %';
+		return $lang->unknown;
 	}
 
-	return $returnload;
+	return $returnload . ' %';
 }
 
 /**
@@ -4172,10 +4168,9 @@ if(!function_exists('html_entity_decode'))
 
 if(!function_exists('htmlspecialchars_decode'))
 {
-   function htmlspecialchars_decode($text)
-   {
-       return strtr($text, array_flip(get_html_translation_table(HTML_SPECIALCHARS)));
-   }
+	function htmlspecialchars_decode($text)
+	{
+		return strtr($text, array_flip(get_html_translation_table(HTML_SPECIALCHARS)));
+	}
 }
-
 ?>
