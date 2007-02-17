@@ -1358,11 +1358,15 @@ function get_server_load()
 
 	if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 	{
-		if(@file_exists("/proc/loadavg"))
+		if(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
 		{
-			$load = @file_get_contents("/proc/loadavg");
 			$serverload = explode(" ", $load);
 			$serverload[0] = round($serverload[0], 4);
+		}
+		else if(function_exists("shell_exec"))
+		{
+			$load = explode(' ', `uptime`);
+			$serverload[0] = $load[count($load)-1];
 		}
 
 		if(!$serverload)
