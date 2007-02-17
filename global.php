@@ -31,12 +31,6 @@ $fpermissioncache = $cache->read("forumpermissions");
 // Send page headers
 send_page_headers();
 
-// Trigger an error if the installation directory exists
-if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
-{
-	$mybb->trigger_generic_error("install_directory", true);
-}
-
 // Do not use session system for defined pages
 if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && my_strpos($_SERVER['PHP_SELF'], 'attachment.php')))
 {

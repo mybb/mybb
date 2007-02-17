@@ -46,6 +46,12 @@ $maintimer = new timer();
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
+// Trigger an error if the installation directory exists
+if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
+{
+	$mybb->trigger_generic_error("install_directory", true);
+}
+
 // Include the required core files
 require_once MYBB_ROOT."inc/config.php";
 
