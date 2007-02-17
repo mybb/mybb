@@ -1,0 +1,638 @@
+/* MyBB Admin CP
+ *
+ * Main CSS
+ */
+
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	background: #fff;
+	color: #000000;
+	margin: 0;
+}
+
+a {
+	color: #035488;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #444;
+	text-decoration: underline;
+}
+
+.invisible {
+	display: none;
+}
+
+#container {
+}
+
+#logo h1 {
+	background: #fff url(images/logo.gif) no-repeat top left;
+	height: 82px;
+	margin: 0 0 2px 0;
+	border-bottom: 2px solid #ccc;
+	padding: 3px;
+}
+
+#logo {
+ background: #F0F0F0;
+}
+
+#welcome {
+	position: absolute;
+	right: 10px;
+	top: 70px;
+	color: #666;
+	height: 20px;
+	font-size: 96%;
+}
+
+#welcome .logout {
+	margin-left: 4px;
+	padding: 0 18px 2px 0;
+	background: url(images/icons/logout.gif) no-repeat right;
+}
+
+#welcome .username {
+	margin-left: 4px;
+	padding: 0 0 2px 18px;
+	background: url(images/icons/user.gif) no-repeat left;
+}
+
+/* Menu */
+
+#menu ul {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-bottom: 5px solid #016DB1;
+	background: #727172;
+}
+
+html>body #menu ul {
+	float: left;
+}
+
+#menu li {
+	font-size: 11px;
+	float: left;
+	margin: 0;
+	padding: 0 2px 0 0;
+	list-style: none;
+	background: url(images/menu_sep.gif) repeat-y top right;
+}
+
+#menu a {
+	font-weight: bold;
+	float: left;
+	padding: 4px 15px 4px 15px;
+	text-decoration: none;
+	color: #fff;
+}
+
+#menu a:hover, #menu a.active {
+	color: #fff;
+	background: #016DB1 url(images/menu_active_bg.gif) repeat-x top left;
+}
+
+#menu a.active {
+	background: #016DB1 url(images/menu_active_bg.gif) repeat-x top left;
+}
+
+/* Sub Menu */
+
+#submenu ul {
+	float: left;
+	width: 100%;
+	margin: 0;
+	padding: 5px 0 5px 0;
+	list-style: none;
+	border-bottom: 1px solid #000;
+	background: #ABC9E5 url(images/submenu_bg.gif) repeat-x top left;
+}
+
+#submenu li {
+	font-size: 11px;
+	float: left;
+	margin: 0;
+	padding: 0 0px 0 0;
+	list-style: none;
+}
+
+#submenu .sep {
+		border-right: 1px solid #000;
+}
+
+#submenu a {
+	float: left;
+	padding: 0px 15px 0px 15px;
+	text-decoration: none;
+	color: #000;
+}
+
+#submenu a:hover {
+	text-decoration: underline;
+}
+
+#submenu a.active {
+	font-weight: bold;
+}
+
+#submenu a.active:hover {
+	text-decoration: none;
+}
+
+#page {
+	clear: both;
+	background: #fff;
+}
+
+/* Main Content */
+
+#content {
+	padding: 10px 15px;
+	margin: 0;
+	margin-left: 200px;
+}
+
+#content p {
+	line-height: 150%;
+}
+
+#content h2 {
+	font-family: 'Century Gothic', 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
+	font-size: 190%;
+	letter-spacing: -1px;
+	font-weight: bold;
+	color: #666;
+	margin: 0 0 5px 0;
+}
+
+#content h3 {
+	border-bottom: 1px solid #ccc;
+	font-size: 16px;
+	margin: 10px 0 7px 0;
+}
+
+#content h4 {
+	font-size: 14px;
+	margin: 10px 0 -10px 0;
+}
+
+/* Left Menu */
+
+#page {
+	background: url(images/sidebar_bg.gif) repeat-y left;
+}
+
+#left_menu {
+	float: left;
+	width: 200px;
+	color: #000;
+	padding: 0;
+	margin: 0;
+	font-size: 96%;
+}
+
+#left_menu div.left_menu_box {
+	border: 1px solid #ccc;
+	background: #fff;
+	list-style: none;
+	margin: 4px;
+	padding: 5px;
+}
+
+#left_menu div.left_menu_box div.title {
+	font-weight: bold;
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 5px;
+}
+
+#left_menu div.left_menu_box ul.menu {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#left_menu div.left_menu_box ul.menu li a {
+	display: block;
+	padding: 6px 15px;
+	border-bottom: 1px solid #ddd;
+}
+
+#left_menu div.left_menu_box ul.menu li.active a {
+	font-weight: bold;
+	color: #000;
+}
+
+#left_menu div.left_menu_box ul.menu li a:hover {
+	background: #efefef;
+	text-decoration: none;
+}
+/* Fix IE. Hide from IE Mac \*/
+* html #left_menu li a, , * html #left_menu li { height: 1%; }
+/* End */
+
+
+/* Tables */
+
+.border_wrapper {
+	border: 1px solid #0F5C8E;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	margin-top: 14px;
+}
+
+.border_wrapper div.title {
+	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
+	color: #fff;
+	padding: 6px 4px;
+	font-size: 100%;
+	text-align: left;
+	font-weight: bold;
+}
+
+.border_wrapper div.title a {
+	color: #fff;
+	text-decoration: none;
+}
+
+table.general {
+	background: #ccc;
+	width: 100%;
+}
+
+table.general td {
+	border-top: 1px solid #fafafa;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #fafafa;
+}
+
+table.bottom_cell_border td {
+	border-right: 0;
+	border-left: 0;
+}
+
+
+table.general td {
+	background: #f5f5f5;
+	padding: 6px;
+/*	vertical-align: top; */
+}
+
+table.general th {
+	background: #ADCBE6 url(images/tsubhead_bg.gif) repeat-x;
+	text-align: left;
+	color: #000;
+	padding: 5px;
+	font-size: 96%;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+	border-top: 1px solid #000;
+}
+
+table.general th a, table.general th {
+	color: #000;
+	text-decoration: none;
+}
+
+
+table .alt_row td {
+	background: #f1f1f1;
+}
+/*
+table td.alt_col {
+	background: #f1f1f1;
+}*/
+
+
+
+/* Page Footer */
+#footer {
+	clear: both;
+	border-top: 1px solid #ccc;
+	background: #ddd;
+}
+
+#footer p {
+border-top: 1px solid #efefef;
+padding:5px;
+margin: 0;
+	font-size: 11px;
+}
+
+#footer .generation {
+float: right;
+}
+/* Popup Menus */
+
+.popup_button {
+	color: #000;
+	text-align: right;
+	background: #B3CEE8;
+	border: 1px solid #000;
+	font-weight: bold;
+	padding: 3px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	margin-left: 3px;
+}
+
+a.popup_button:link,
+a.popup_button:visited,
+a.popup_button:active,
+a.popup_button:hover {
+	text-decoration: none;
+	color: #000;
+}
+
+.popup_menu {
+	position: absolute;
+	border: 1px solid #000;
+	background: #ccc;
+}
+
+.popup_menu ul
+{
+	margin:0px;
+	padding:0px;
+	list-style-type:none;
+}
+
+.popup_menu li
+{
+	background: #fff;
+	margin: 1px;
+	padding: 0;
+
+}
+
+.popup_menu ul li a
+{
+	display: block;
+	padding: 3px;
+	color: #000;
+	text-decoration: none;
+}
+
+* html .popup_menu ul li a {
+	display: visible;
+	width: 100%;
+}
+
+.popup_menu a:hover {
+	background: #C7DBEE;
+	text-decoration: none;
+	color: #000;
+}
+
+.transparent, .transparent td {
+	background: transparent;
+}
+
+.breadcrumb {
+	margin-bottom: 10px;
+	font-size: 96%;
+}
+.breadcrumb .active {
+	display: block;
+	background: url(images/nav_bit.gif) no-repeat top left;
+	padding-left: 20px;
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.alert {
+	background: #FFF6BF;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	text-align: center;
+	margin: 10px auto;
+	padding: 5px 20px;
+}
+
+.inline_message {
+	background: #FFF6BF;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	text-align: center;
+	margin: 10px auto;
+	padding: 5px 20px;
+}
+
+.notice {
+	background: #EFEFEF;
+	border-top: 2px solid #CCC;
+	border-bottom: 2px solid #CCC;
+	text-align: center;
+	margin: 10px auto;
+	padding: 5px 20px;
+}
+
+.intro_description {
+	border: 1px solid #ccc;
+	padding: 5px;
+	background-color: #efefef;
+	font-size: 95%;
+}
+
+.templates_intro {
+	background-image: url(images/templates.gif);
+	background-repeat: no-repeat;
+	padding-left: 40px;
+}
+
+.intro_description p {
+	margin: 0;
+}
+
+table.individual_cell_border {
+	border-style: collapse;
+}
+
+table.cell_border_bottom td {
+	border: 1px solid #cc;
+	border-style: collapse;
+	border-spacing: 1px;
+}
+
+/* Forms */
+
+form {
+	border: 0;
+	margin: 0;
+}
+
+form .form_container, fieldset {
+	background: #efefef;
+	border: 1px solid #ccc;
+	padding: 2px 7px 5px;
+	margin-bottom: 10px;
+}
+
+legend {
+	font-weight: bold;
+}
+
+dl, dt, dd {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+dl {
+	margin: 7px 0 10px 0;
+}
+
+dd {
+	margin: 10px 0;
+}
+
+dt {
+	margin-top: 0.9em;
+}
+
+dt label {
+	font-weight: bold;
+}
+
+dt .description, small {
+font-size: 11px;
+color: #444;
+}
+
+
+input.text_input {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	width: 300px;
+	padding: 3px;
+	font-size: 15px;
+}
+
+textarea {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	padding: 4px;
+	width: 400px;
+	font-size: 12px;
+	font-family: Verdana;
+	border: 1px solid #ccc;
+}
+
+textarea:focus, input.text_input:focus {
+	border: 1px solid #000;
+}
+
+
+input.inline_submit {
+	font-weight:  bold;
+}
+
+form p.legend {
+	margin-bottom: 10px;
+}
+
+form p.legend em { 
+	color: #C00; font-style: normal;
+}
+
+div.form_container label em, fieldset label em {
+	font-style: normal;
+	color: #C00;
+}
+
+input.submit_button {
+	border: 3px double #0F5C8E;
+	padding: 3px;
+	background: #fff url(images/submit_bg.gif) repeat-x top;
+	color: #0F5C8E;
+	font-weight: bold;
+	margin-right: 3px;
+}
+
+.form_button_wrapper {
+	margin-top: 5px;
+	text-align: center;
+	border: 1px solid #ccc;
+	background: #efefef;
+	padding: 3px;
+}
+
+.label_radio_yes, .label_radio_on {
+	background: #D6ECA6;
+	border: 1px solid #8DC93E;
+	padding: 3px 6px;
+	margin-right: 5px;
+}
+
+.label_radio_no, .label_radio_off {
+	background: #ECA6D6;
+	border: 1px solid #C93E8D;
+	padding: 3px 6px ;
+}
+
+input.radio_input {
+	vertical-align: middle;
+	margin: 0;
+	margin-right: 9px;
+}
+
+div.error {
+	margin: 10px 0;
+	padding: 5px 10px;
+	border: #FC6 1px solid;
+	background-color: #FFC;
+}
+
+div.error p {
+	margin: 0;
+}
+
+div.error p em {
+	color: #C00;
+	font-style: normal;
+	font-weight: bold;
+}
+
+div.success{
+	margin: 10px 0;
+	padding: 5px 10px;
+	border: #080 1px solid;
+	background-color: #E8FCDC;
+}
+
+div.success p {
+	margin: 0;
+}
+
+div.success p em {
+	color: #080;
+	font-style: normal;
+	font-weight: bold;
+}
+
+#flash_message {
+	margin: 10px 0;
+	padding: 10px;
+	font-weight: bold;
+	background: #efefef;
+	border: 1px solid #ccc;
+}
+
+#flash_message.error {
+	border: 1px solid #FC6;
+	background: #FFC;
+	color: #C00;
+}
+
+#flash_message .success {
+	border: #080 1px solid;
+	background-color: #E8FCDC;
+	color: #080;
+}	
