@@ -1380,7 +1380,16 @@ function get_server_load()
 		$cpuload = 0;
 		$i = 0;
 
-		if(version_compare('4.50.0', PHP_VERSION) == 1)
+		if(version_compare(PHP_VERSION, '5.0.0', '>=') == 1)
+		{
+			// PHP 5
+			foreach($cpus as $cpu)
+			{
+				$serverload[0] += $cpu->LoadPercentage;
+				++$i;
+			}
+		}
+		else
 		{
 			// PHP 4
 			while ($cpu = $cpus->Next())
@@ -1389,14 +1398,10 @@ function get_server_load()
 				++$i;
 			}
 		}
-		else
+
+		if($i > 1)
 		{
-			// PHP 5
-			foreach($cpus as $cpu)
-			{
-				$serverload[0] += $cpu->LoadPercentage;
-				++$i;
-			}
+			$serverload[0] = round($serverload[0] / $i, 2);
 		}
 	}
 	else
@@ -1410,7 +1415,7 @@ function get_server_load()
 	{
 		$returnload = $lang->unknown;
 	}
-	return $returnload;
+	return $returnload . ' %';
 }
 
 /**
