@@ -1182,9 +1182,8 @@ function get_server_load()
 	{
 		return $lang->unknown;
 	}
-	elseif(@file_exists("/proc/loadavg"))
+	elseif(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
 	{
-		$load = @file_get_contents("/proc/loadavg");
 		$serverload = explode(" ", $load);
 		$serverload[0] = round($serverload[0], 4);
 		if(!$serverload)
@@ -1193,6 +1192,11 @@ function get_server_load()
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
 		}
+	}
+	else if(function_exists("shell_exec"))
+	{
+		$load = explode(' ', `uptime`);
+		$serverload[0] = $load[count($load)-1];
 	}
 	else
 	{
