@@ -22,10 +22,6 @@ require_once MYBB_ROOT.'inc/class_error.php';
 $error_handler = new errorHandler();
 
 // Include the files necessary for installation
-if(file_exists(MYBB_ROOT.'inc/config.php'))
-{
-	require_once MYBB_ROOT.'inc/config.php';
-}
 require_once MYBB_ROOT.'inc/class_timers.php';
 require_once MYBB_ROOT.'inc/functions.php';
 require_once MYBB_ROOT.'admin/adminfunctions.php';
