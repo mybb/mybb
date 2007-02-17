@@ -1363,15 +1363,9 @@ function get_server_load()
 			$load = @file_get_contents("/proc/loadavg");
 			$serverload = explode(" ", $load);
 			$serverload[0] = round($serverload[0], 4);
-
-			if(!$serverload)
-			{
-				$load = @exec("uptime");
-				$load = split("load averages?: ", $load);
-				$serverload = explode(",", $load[1]);
-			}
 		}
-		else
+
+		if(!$serverload)
 		{
 			$load = @exec("uptime");
 			$load = split("load averages?: ", $load);
