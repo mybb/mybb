@@ -2,7 +2,7 @@
 function home_meta()
 {
 	global $page;
-	$page->add_menu_item("Home", "home", "index.php", 1);
+	$page->add_menu_item("Home", "home", "index.php?".SID, 1);
 	return true;
 }
 

@@ -77,7 +77,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row("Description", "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
 	
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
+	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
 		$options[$group['gid']] = $group['title'];
@@ -206,7 +206,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row("Description", "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
 	
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settinggroups ORDER BY disporder");
+	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
 		$options[$group['gid']] = $group['title'];
@@ -254,27 +254,33 @@ if($mybb->input['action'] == "change")
 			{
 				$value = $db->escape_string($value);
 				$sid = intval($sid);
-				$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$value' WHERE sid='$sid'");
+				$db->update_query("settings", array('value' => $value), "sid='$sid'");
 			}
 		}
 		rebuild_settings();
 		// Check if we need to create our fulltext index after changing the search mode
 		if($mybb->settings['searchtype'] == "fulltext")
 		{
-			if(!$db->is_fulltext(TABLE_PREFIX."posts") && $db->supports_fulltext_boolean(TABLE_PREFIX."posts"))
+			if(!$db->is_fulltext("posts") && $db->supports_fulltext_boolean("posts"))
 			{
-				$db->create_fulltext_index(TABLE_PREFIX."posts", "message");
+				$db->create_fulltext_index("posts", "message");
 			}
-			if(!$db->is_fulltext(TABLE_PREFIX."posts") && $db->supports_fulltext(TABLE_PREFIX."threads"))
+			if(!$db->is_fulltext("posts") && $db->supports_fulltext("threads"))
 			{
-				$db->create_fulltext_index(TABLE_PREFIX."threads", "subject");
+				$db->create_fulltext_index("threads", "subject");
 			}
 		}
 		flash_message('The settings have successfully been updated.', 'success');
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}
 
-	$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) WHERE g.gid='".intval($mybb->input['gid'])."' GROUP BY s.gid");
+	$query = $db->query("
+		SELECT g.*, COUNT(s.sid) AS settingcount 
+		FROM ".TABLE_PREFIX."settinggroups g 
+		LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+		WHERE g.gid='".intval($mybb->input['gid'])."' 
+		GROUP BY s.gid
+	");
 	$groupinfo = $db->fetch_array($query);
 	
 	if(!$groupinfo['gid'])
@@ -290,7 +296,7 @@ if($mybb->input['action'] == "change")
 	
 	$form_container = new FormContainer();
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."' ORDER BY disporder");
+	$query = $db->simple_select("settings", "*", "gid='".intval($mybb->input['gid'])."'", array('order_by' => 'disporder'));
 	while($setting = $db->fetch_array($query))
 	{
 		$options = "";
@@ -324,39 +330,17 @@ if($mybb->input['action'] == "change")
 			}
 			closedir($dir);
 			ksort($folders);
-			foreach($folders as $key => $folder)
-			{
-				$option_list[$key] = array("title" => $folder, "value" => $folder);
-				if($setting['value'] == $folder)
-				{
-					$option_list[$key]['selected'] = 1;
-				}
-			}
-			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $option_list);
+			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $folders, $setting['value']);
 		}
-		else if($type[0] == "language") {
+		else if($type[0] == "language") 
+		{
 			$languages = $lang->get_languages();
-			foreach($languages as $lname => $language)
-			{
-				$option_list[$lname] = array("title" => $language, "value" => $lname);
-				if($setting['value'] == $lname)
-				{
-					$option_list[$lname]['selected'] = 1;
-				}
-			}
-			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $option_list);
+			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $languages, $setting['value']);
 		}
-		else if($type[0] == "adminlanguage") {
+		else if($type[0] == "adminlanguage") 
+		{
 			$languages = $lang->get_languages(1);
-			foreach($languages as $lname => $language)
-			{
-				$option_list[$lname] = array("title" => $language, "value" => $lname);
-				if($setting['value'] == $lname)
-				{
-					$option_list[$lname]['selected'] = 1;
-				}
-			}
-			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $option_list);
+			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $languages, $setting['value']);
 		}
 		else if($type[0] == "php")
 		{
@@ -365,7 +349,7 @@ if($mybb->input['action'] == "change")
 		}
 		else
 		{
-			for($i=0;$i<count($type);$i++)
+			for($i=0; $i < count($type); $i++)
 			{
 				$optionsexp = explode("=", $type[$i]);
 				if(!$optionsexp[1])
@@ -374,12 +358,7 @@ if($mybb->input['action'] == "change")
 				}
 				if($type[0] == "select")
 				{
-					$option_list[$i] = array("title" => $optionsexp[1], "value" => $optionsexp[0]);
-
-					if($setting['value'] == $optionsexp[0])
-					{
-						$option_list[$i]['selected'] = 1;
-					}
+					$option_list[$optionsexp[0]] = $optionsexp[1];
 				}
 				else if($type[0] == "radio")
 				{
@@ -448,7 +427,13 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header("Setting Groups");
 
-	$query = $db->query("SELECT g.*, COUNT(s.sid) AS settingcount FROM ".TABLE_PREFIX."settinggroups g LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) GROUP BY s.gid ORDER BY g.disporder");
+	$query = $db->query("
+		SELECT g.*, COUNT(s.sid) AS settingcount 
+		FROM ".TABLE_PREFIX."settinggroups g 
+		LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+		GROUP BY s.gid 
+		ORDER BY g.disporder
+	");
 	while($group = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong><a href=\"index.php?".SID."&module=config/settings&action=change&gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} Settings)<br /><small>{$group['description']}</small>");

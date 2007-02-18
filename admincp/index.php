@@ -187,7 +187,7 @@ if($mybb->usergroup['cancp'] != "yes" || !$mybb->user['uid'])
 
 if($mybb->user['uid'])
 {
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
 	
 	if($admin_options['cpstyle'] && is_dir(MYBB_ADMIN_DIR."styles/{$admin_options['cpstyle']}"))
@@ -224,7 +224,7 @@ if($rand == 2 || $rand == 5)
 	$db->delete_query("adminsessions", "lastactive<'$stamp'");
 }
 
-$page->add_breadcrumb_item("Home", "index.php");
+$page->add_breadcrumb_item("Home", "index.php?".SID);
 
 // Begin dealing with the modules
 $modules_dir = MYBB_ADMIN_DIR."modules";

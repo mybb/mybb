@@ -21,6 +21,7 @@ class Form
 	{
 		return "<input type=\"hidden\" name=\"{$name}\" value=\"".htmlspecialchars($value)."\" />";
 	}
+	
 	function generate_text_box($name, $value="", $options=array())
 	{
 		$input = "<input type=\"text\" name=\"".$name."\" value=\"".htmlspecialchars($value)."\"";

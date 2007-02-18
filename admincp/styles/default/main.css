@@ -522,10 +522,17 @@ textarea {
 	width: 400px;
 	font-size: 12px;
 	font-family: Verdana;
-	border: 1px solid #ccc;
 }
 
-textarea:focus, input.text_input:focus {
+select {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	padding: 4px;
+	font-size: 12px;
+	font-family: Verdana;
+}
+
+textarea:focus, input.text_input:focus, select:focus {
 	border: 1px solid #000;
 }
 
