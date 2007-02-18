@@ -550,7 +550,7 @@ class Moderation
 				{
 					$query = $db->simple_select(TABLE_PREFIX."polls", "*", "tid = '{$thread['tid']}'");
 					$poll = $db->fetch_array($query);
-					
+
 					$poll_array = array(
 						'tid' => $newtid,
 						'question' => $db->escape_string($poll['question']),
@@ -566,6 +566,20 @@ class Moderation
 					);
 					$db->insert_query(TABLE_PREFIX."polls", $poll_array);
 					$new_pid = $db->insert_id();
+
+					$query = $db->simple_select(TABLE_PREFIX."pollvotes", "*", "pid = '{$poll['pid']}'");
+					while($pollvote = $db->fetch_array($query))
+					{
+						$pollvote_array = array(
+							'pid' => $new_pid,
+							'uid' => $pollvote['uid'],
+							'voteoption' => $pollvote['voteoption'],
+							'dateline' => $pollvote['dateline'],
+						);
+						$db->insert_query(TABLE_PREFIX."pollvotes", $pollvote_array);
+					}
+
+					$db->update_query(TABLE_PREFIX."threads", array('poll' => $new_pid), "tid='{$newtid}'");
 				}
 				
 				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid = '{$thread['tid']}'");				
@@ -612,22 +626,10 @@ class Moderation
 						$db->insert_query(TABLE_PREFIX."attachments", $attachment_array);
 					}
 				}
-				
-				$query = $db->simple_select("pollvotes", "*", "pid IN({$pidin})");				
-				while($pollvote = $db->fetch_array($query))
-				{
-					$pollvote_array = array(
-						'pid' => $new_pid,
-						'uid' => $pollvote['uid'],
-						'voteoption' => $pollvote['voteoption'],
-						'dateline' => $pollvote['dateline'],
-					);
-					$db->insert_query(TABLE_PREFIX."pollvotes", $pollvote_array);
-				}
-				
+
 				update_first_post($newtid);
 				update_thread_count($newtid);
-	
+
 				$the_thread = $newtid;
 				break;
 			default:
