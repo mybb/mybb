@@ -137,7 +137,7 @@ class Page
 	function show_login($message="Please enter your username and password to continue")
 	{
 print <<<EOF
-<form method="post" action="{$_SERER['PHP_SELF']}">
+<form method="post" action="{$_SERVER['PHP_SELF']}">
 <strong>{$message}</strong>
 Username: <input type="text" name="username" /><br />
 Password: <input type="password" name="password" /><br />
