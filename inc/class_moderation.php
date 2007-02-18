@@ -585,9 +585,6 @@ class Moderation
 				$query = $db->simple_select(TABLE_PREFIX."posts", "*", "tid = '{$thread['tid']}'");				
 				while($post = $db->fetch_array($query))
 				{
-					$pidin .= $comma.$post['pid'];
-					$comma = ',';
-					
 					$post_array = array(
 						'tid' => $newtid,
 						'fid' => $new_fid,
