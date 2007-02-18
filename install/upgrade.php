@@ -56,6 +56,7 @@ $fpermfields = array("canview", "candlattachments", "canpostthreads", "canpostre
 require_once INSTALL_ROOT."/resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
+$output->title = "MyBB Upgrade Wizard";
 
 $db = new databaseEngine;
 // Connect to Database
