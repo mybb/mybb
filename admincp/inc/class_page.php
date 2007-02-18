@@ -32,7 +32,7 @@ class Page
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
 		echo "	<div id=\"logo\"><h1><span class=\"invisible\">MyBB Admin CP</span></h1></div>\n";
-		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">Logged in as <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"#\" class=\"logout\">Logout</a></div>\n";
+		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">Logged in as <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">Logout</a></div>\n";
 		echo $this->build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";
@@ -140,7 +140,7 @@ print <<<EOF
 <form method="post" action="{$_SERER['PHP_SELF']}">
 <strong>{$message}</strong>
 Username: <input type="text" name="username" /><br />
-Password: <input type="text" name="password" /><br />
+Password: <input type="password" name="password" /><br />
 <input type="submit" value="Login" />
 <input type="hidden" name="do" value="login" />
 </form>
