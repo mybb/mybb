@@ -32,6 +32,7 @@ function upgrade9_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
 	
 	if(!$db->field_exists('recipients', "privatemessages"))
 	{

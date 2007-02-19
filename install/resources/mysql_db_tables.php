@@ -429,6 +429,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   posthash varchar(32) NOT NULL default '',
   KEY tid (tid, uid),
   KEY uid (uid),
+  KEY visible (visible),
   KEY dateline (dateline),
   PRIMARY KEY  (pid)
 ) TYPE=MyISAM;";
