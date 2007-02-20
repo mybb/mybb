@@ -2682,7 +2682,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 	
-	if(!$tid)
+	if($tid)
 	{
 		$themeselect .= "</select>";
 	}
