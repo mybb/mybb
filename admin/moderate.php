@@ -87,7 +87,6 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			if($mybb->input['threaddelete'][$tid] == "yes")
 			{
 				delete_thread($tid);
-				$update_forum_count[$thread['fid']] = 1;
 			}
 			else
 			{
@@ -104,10 +103,9 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"visible" => 1
 					);
 					$db->update_query("posts", $sql_array, "tid = '".$tid."'");
-					$update_forum_count[$thread['fid']] = 1;
 
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-1,unapprovedposts=unapprovedposts-1 WHERE fid='{$thread['fid']}'");
+					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-1,unapprovedposts=unapprovedposts-1,threads=threads+1, posts=posts+1 WHERE fid='{$thread['fid']}'");
 				}
 			}
 		}
@@ -125,8 +123,6 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			if($mybb->input['postdelete'][$pid] == "yes")
 			{
 				delete_post($pid);
-				$update_thread_count[$post['tid']] = 1;
-				$update_forum_count[$thread['fid']] = 1;
 			}
 			else
 			{
@@ -141,27 +137,11 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"subject" => $subject
 					);
 					$db->update_query("posts", $sql_array, "pid = '".$pid."'");
-					$update_thread_count[$post['tid']] = 1;
-					$update_forum_count[$thread['fid']] = 1;
-
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='$post[tid]'");
+					$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1, replies=replies+1 WHERE tid='$post[tid]'");
+					$db->query("UPDATE ".TABLE_PREFIX."forums SET posts=posts+1 WHERE fid='$post[fid]'");
 				}
 			}
-		}
-	}
-	if(is_array($update_thread_count)) 
-	{
-		foreach($update_thread_count as $tid => $val)
-		{
-			update_thread_count($tid);
-		}
-	}
-	if(is_array($update_forum_count)) 
-	{
-		foreach($update_forum_count as $fid => $val)
-		{
-			update_forum_count($fid);
 		}
 	}
 	cpredirect("moderate.php?".SID."&action=".str_replace('do_', '', $mybb->input['action']), $lang->threadsposts_moderated);

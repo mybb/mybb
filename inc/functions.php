@@ -1423,13 +1423,68 @@ function get_server_load()
 }
 
 /**
- * Update the forum counters for a specific forum
+ * Updates the forum counters with a specific value (or addition/subtraction of the previous value)
+ *
+ * @param int The forum ID
+ * @param array Array of items being updated (threads, posts, unapprovedthreads, unapprovedposts) and their value (ex, 1, +1, -1)
+ */
+function update_forum_counters($fid, $changes=array())
+{
+	global $db, $cache;
+
+	$update_query = array();
+
+	$counters = array('threads','unapprovedthreads','posts','unapprovedposts');
+
+	// Fetch above counters for this forum
+	$query = $db->simple_select("forums", implode(",", $counters), "fid='{$fid}'");
+	$forum = $db->fetch_array($query);
+
+	foreach($counters as $counter)
+	{
+		if(array_key_exists($counter, $changes))
+		{
+			// Adding or subtracting from previous value?
+			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+			{
+				$update_query[$counter] = $forum[$counter] + $changes[$counter];
+			}
+			else
+			{
+				$update_query[$counter] = $changes[$counter];
+			}
+			// Less than 0? That's bad
+			if($update_query[$counter] < 0)
+			{
+				$update_query[$counter] = 0;
+			}
+		}
+	}
+
+	// Only update if we're actually doing something
+	if(count($update_query) > 0)
+	{
+		$db->update_query("forums", $update_query, "fid='".intval($fid)."'");
+	}
+
+	// Guess we should update the statistics too?
+	if($update_query['threads'] || $update_query['posts'])
+	{
+		$cache->update_stats();
+	}
+
+	// Update last post info
+	update_forum_lastpost($fid);
+}
+
+/**
+ * Update the last post information for a specific forum
  *
  * @param int The forum ID
  */
-function update_forum_count($fid)
+function update_forum_lastpost($fid)
 {
-	global $db, $cache;
+	global $db;
 
 	// Fetch the last post for this forum
 	$query = $db->query("
@@ -1441,35 +1496,7 @@ function update_forum_count($fid)
 	");
 	$lastpost = $db->fetch_array($query);
 
-	// Fetch the number of threads and replies in this forum (Approved only)
-	$query = $db->query("
-		SELECT COUNT(*) AS threads, SUM(replies) AS replies
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND visible='1' AND closed	NOT LIKE 'moved|%'
-	");
-	$count = $db->fetch_array($query);
-	$count['posts'] = $count['threads'] + $count['replies'];
-
-	// Fetch the number of threads and replies in this forum (Unapproved only)
-	$query = $db->query("
-		SELECT COUNT(*) AS threads
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND visible='0' AND closed NOT LIKE 'moved|%'
-	");
-	$unapproved_count['threads'] = $db->fetch_field($query, "threads");
-
-	$query = $db->query("
-		SELECT SUM(unapprovedposts) AS posts
-		FROM ".TABLE_PREFIX."threads
-		WHERE fid='$fid' AND closed NOT LIKE 'moved|%'
-	");
-	$unapproved_count['posts'] = $db->fetch_field($query, "posts");
-
-	$update_count = array(
-		"posts" => intval($count['posts']),
-		"threads" => intval($count['threads']),
-		"unapprovedposts" => intval($unapproved_count['posts']),
-		"unapprovedthreads" => intval($unapproved_count['threads']),
+	$updated_forum = array(
 		"lastpost" => intval($lastpost['lastpost']),
 		"lastposter" => $db->escape_string($lastpost['lastposter']),
 		"lastposteruid" => intval($lastpost['lastposteruid']),
@@ -1477,28 +1504,65 @@ function update_forum_count($fid)
 		"lastpostsubject" => $db->escape_string($lastpost['subject'])
 	);
 
-	$db->update_query("forums", $update_count, "fid='{$fid}'");
+	$db->update_query("forums", $updated_forum, "fid='{$fid}'");
 }
 
 /**
- * Update the thread counters for a specific thread
+ * Updates the thread counters with a specific value (or addition/subtraction of the previous value)
+ *
+ * @param int The thread ID
+ * @param array Array of items being updated (replies, unapprovedposts, attachmentcount) and their value (ex, 1, +1, -1)
+ */
+function update_thread_counters($tid, $changes=array())
+{
+	global $db;
+
+	$update_query = array();
+	
+	$counters = array('replies','unapprovedposts','attachmentcount');
+
+	// Fetch above counters for this thread
+	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");
+	$thread = $db->fetch_array($query);
+	
+	foreach($counters as $counter)
+	{
+		if(array_key_exists($counter, $changes))
+		{
+			// Adding or subtracting from previous value?
+			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+			{
+				$update_query[$counter] = $thread[$counter] + $changes[$counter];
+			}
+			else
+			{
+				$update_query[$counter] = $changes[$counter];
+			}
+			// Less than 0? That's bad
+			if($update_query[$counter] < 0)
+			{
+				$update_query[$counter] = 0;
+			}
+		}
+	}
+
+	// Only update if we're actually doing something
+	if(count($update_query) > 0)
+	{
+		$db->update_query("threads", $update_query, "tid='".intval($tid)."'");
+	}
+
+	update_thread_data($tid);
+}
+
+/**
+ * Update the first post and lastpost data for a specific thread
  *
  * @param int The thread ID
  */
-function update_thread_count($tid)
+function update_thread_data($tid)
 {
-	global $db, $cache;
-
-	$query = $db->simple_select("posts", "COUNT(*) AS replies", "tid='{$tid}' AND visible='1'");
-	$replies = $db->fetch_array($query);
-
-	$treplies = $replies['replies'] - 1;
-
-	if($treplies < 0)
-	{
-		$treplies = 0;
-	}
-
+	global $db;
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p
@@ -1539,47 +1603,27 @@ function update_thread_count($tid)
 	$lastpost['username'] = $db->escape_string($lastpost['username']);
 	$firstpost['username'] = $db->escape_string($firstpost['username']);
 
-	// Unapproved posts
-	$query = $db->simple_select("posts", "COUNT(*) AS totunposts", "tid='{$tid}' AND visible='0'");
-	$nounposts = $db->fetch_field($query, "totunposts");
-
-	// Update the attachment count for this thread
-	update_thread_attachment_count($tid);
-
 	$update_array = array(
 		'username' => $firstpost['username'],
 		'uid' => intval($firstpost['uid']),
 		'lastpost' => intval($lastpost['dateline']),
 		'lastposter' => $lastpost['username'],
 		'lastposteruid' => intval($lastpost['uid']),
-		'replies' => $treplies,
-		'unapprovedposts' => $nounposts
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
 }
 
-/**
- * Updates the number of attachments for a specific thread
- *
- * @param int The thread ID
- */
+function update_forum_count($fid)
+{
+	die("Depreciated function call: update_forum_count");
+}
+function update_thread_count($tid)
+{
+	die("Depreciated function call: update_thread_count");
+}
 function update_thread_attachment_count($tid)
 {
-	global $db;
-
-	$query = $db->query("
-		SELECT COUNT(*) AS attachment_count
-		FROM ".TABLE_PREFIX."attachments a
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
-		WHERE p.tid='$tid'
-	");
-	$attachment_count = $db->fetch_field($query, "attachment_count");
-
-	$db->query("
-		UPDATE ".TABLE_PREFIX."threads
-		SET attachmentcount='{$attachment_count}'
-		WHERE tid='$tid'
-	");
+	die("Depreciated function call: update_thread_attachment_count");
 }
 
 /**

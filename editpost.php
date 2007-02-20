@@ -198,7 +198,6 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			if($forumpermissions['candeletethreads'] == "yes")
 			{
 				delete_thread($tid);
-				update_forum_count($fid);
 				mark_reports($tid, "thread");
 				log_moderator_action($modlogdata, $lang->thread_deleted);
 				redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
@@ -214,8 +213,6 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 			{
 				// Select the first post before this
 				delete_post($pid, $tid);
-				update_thread_count($tid);
-				update_forum_count($fid);
 				mark_reports($pid, "post");
 				log_moderator_action($modlogdata, $lang->post_deleted);
 				$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline <= '{$post['dateline']}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "desc"));
