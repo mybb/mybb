@@ -130,6 +130,8 @@ messageEditor.prototype = {
 		// Create text font/color/size toolbar
 		textFormatting = document.createElement("div");
 		textFormatting.style.position = "absolute";
+		textFormatting.style.width = "100%";
+
 		
 		if(this.options.rtl == 1)
 		{
@@ -278,7 +280,7 @@ messageEditor.prototype = {
 
 		// Set the width/height of the area
 		subtract = subtract2 = 0;
-		if(MyBB.browser == "mozilla")
+		if(MyBB.browser != "ie" || (MyBB.browser == "ie" && MyBB.useragent.indexOf('msie 7.') != -1))
 		{
 			subtract = subtract2 = 8;
 		}
