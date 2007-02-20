@@ -61,7 +61,7 @@ class Page
 		echo "		</div>\n";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">Generated in {$totaltime} seconds with {$querycount} queries.</p><p class=\"powered\">Powered By MyBB. &copy; 2005 MyBB Group. All Rights Reserved.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">Generated in {$totaltime} seconds with {$querycount} queries.</p><p class=\"powered\">Powered By MyBB. &copy; ".date("Y")." MyBB Group. All Rights Reserved.</p></div>\n";
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
