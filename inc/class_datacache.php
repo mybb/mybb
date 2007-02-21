@@ -344,28 +344,14 @@ class datacache
 	}
 
 	/**
-	 * Update the stats cache.
+	 * Update the stats cache (kept for the sake of being able to rebuild this cache via the cache interface)
 	 *
 	 */
 	function update_stats()
 	{
 		global $db;
-		
-		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "visible='1' AND closed NOT LIKE 'moved|%'");
-		$stats['numthreads'] = $db->fetch_field($query, 'threads');
-		
-		$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible='1'");
-		$stats['numposts'] = $db->fetch_field($query, 'posts');
-		
-		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'uid', 'order_dir' => 'DESC', 'limit' => 1));
-		$lastmember = $db->fetch_array($query);
-		$stats['lastuid'] = $lastmember['uid'];
-		$stats['lastusername'] = $lastmember['username'];
-		
-		$query = $db->simple_select("users", "COUNT(uid) AS users");
-		$stats['numusers'] = $db->fetch_field($query, 'users');
-			
-		$this->update("stats", $stats);
+		require_once MYBB_ROOT."inc/functions_rebuild.php";
+		rebuild_stats();
 	}
 
 	/**

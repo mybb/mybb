@@ -1067,7 +1067,7 @@ class Moderation
 			// Update new forum stats
 			$update_array = array(
 				"posts" => "+{$num_visible}",
-				"unapprovedposts" => "+	{$num_unapproved}"
+				"unapprovedposts" => "+{$num_unapproved}"
 			);
 		}
 		else

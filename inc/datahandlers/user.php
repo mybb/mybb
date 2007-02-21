@@ -861,7 +861,7 @@ class UserDataHandler extends DataHandler
 		$db->insert_query("userfields", $user['user_fields']);
 
 		// Update forum stats
-		$cache->update_stats();
+		update_stats(array('numusers' => '+1'));
 
 		return array(
 			"uid" => $this->uid,

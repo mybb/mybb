@@ -12,6 +12,7 @@
 define("IN_MYBB", 1);
 
 require_once "./global.php";
+require_once MYBB_ROOT."inc/functions_rebuild.php";
 
 // Load language packs for this section
 global $lang;
@@ -157,7 +158,7 @@ if($mybb->input['action'] == "do_rebuildforums")
 	{
 		$update['parentlist'] = makeparentlist($forum['fid']);
 		$db->update_query("forums", $update, "fid='{$forum['fid']}'");
-		update_forum_count($forum['fid']);
+		rebuild_forum_counters($forum['fid']);
 	}
 
 	if($end >= $num_forums)
@@ -202,7 +203,7 @@ if($mybb->input['action'] == "do_rebuildthreads")
 	$query = $db->simple_select("threads", "tid", '', array('order_by' => 'tid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
 	while($thread = $db->fetch_array($query))
 	{
-		update_thread_count($thread['tid']);
+		rebuild_thread_counters($thread['tid']);
 	}
 
 	if($end >= $num_threads)
