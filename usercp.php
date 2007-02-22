@@ -2298,7 +2298,7 @@ if(!$mybb->input['action'])
 	}
 	// Make reputations row
 	$reputations = '';
-	if($mybb->usergroup['usereputationsystem'] == 'yes')
+	if($mybb->usergroup['usereputationsystem'] == 'yes' && $mybb->settings['enablereputation'] == 'yes')
 	{
 		$reputation_link = get_reputation($mybb->user['reputation']);
 		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
