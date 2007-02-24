@@ -232,10 +232,6 @@ EOF;
 		{
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}
-		else
-		{
-			echo "<br style=\"clear: both;\" />\n";
-		}
 		echo "</div>";
 	}
 }

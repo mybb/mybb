@@ -13,6 +13,10 @@ function config_action_handler($manage)
 	
 	switch($manage)
 	{
+		case "plugins":
+			$page->active_action = "plugins";
+			$action_file = "plugins.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";

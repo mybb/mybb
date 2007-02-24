@@ -65,6 +65,14 @@ if($mybb->input['action'] == "add")
 
 	$page->add_breadcrumb_item("Add New Setting");
 	$page->output_header("Board Settings - Add New Setting");
+	
+	$sub_tabs['add_setting'] = array(
+		'title' => "Add New Setting",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add",
+		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'add_setting');
 
 	$form = new Form("index.php?module=config/settings", "post", "add");
 
@@ -182,6 +190,14 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item("Edit Setting");
 	$page->output_header("Board Settings - Edit Setting");
+	
+	$sub_tabs['modify_setting'] = array(
+		'title' => "Modify Existing Settings",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit",
+		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'modify_setting');
 
 	$form = new Form("index.php?module=config/settings", "post", "edit");
 
@@ -383,7 +399,7 @@ if($mybb->input['action'] == "change")
 			}
 			if($type[0] == "select")
 			{
-				$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $option_list);
+				$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $option_list, $setting['value']);
 			}
 			else
 			{
@@ -424,14 +440,17 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['change_settings'] = array(
 		'title' => "Change Settings",
+		'link' => "index.php?".SID."&amp;module=config/settings",
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
 	$sub_tabs['add_setting'] = array(
 		'title' => "Add New Setting",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add",
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
 	$sub_tabs['modify_setting'] = array(
 		'title' => "Modify Existing Settings",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit",
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
 
@@ -449,7 +468,7 @@ if(!$mybb->input['action'])
 	");
 	while($group = $db->fetch_array($query))
 	{
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&module=config/settings&action=change&gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} Settings)<br /><small>{$group['description']}</small>");
+		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} Settings)<br /><small>{$group['description']}</small>");
 		$table->construct_row();
 	}
 	$table->output("Board Settings");

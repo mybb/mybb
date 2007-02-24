@@ -181,9 +181,9 @@ class Form
 			$select_add = '';
 			if($value == $selected)
 			{
-				$select_add = "selected=\"selected\"";
+				$select_add = " selected=\"selected\"";
 			}
-			$select .= "<option value=\"{$value}\" {$select_add}>{$option}</option>\n";
+			$select .= "<option value=\"{$value}\"{$select_add}>{$option}</option>\n";
 		}
 		$select .= "</select>\n";
 		return $select;
