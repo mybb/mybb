@@ -434,13 +434,6 @@ a.popup_button:hover {
 	padding: 5px 20px;
 }
 
-.intro_description {
-	border: 1px solid #ccc;
-	padding: 5px;
-	background-color: #efefef;
-	font-size: 95%;
-}
-
 .templates_intro {
 	background-image: url(images/templates.gif);
 	background-repeat: no-repeat;
@@ -468,40 +461,25 @@ form {
 	margin: 0;
 }
 
-form .form_container, fieldset {
+form div.form_container, fieldset {
 	background: #efefef;
 	border: 1px solid #ccc;
 	padding: 2px 7px 5px;
 	margin-bottom: 10px;
 }
 
+.form_row {
+margin: 10px 30px;
+}
 legend {
 	font-weight: bold;
 }
 
-dl, dt, dd {
-	border: 0;
-	margin: 0;
-	padding: 0;
-}
-
-dl {
-	margin: 7px 0 10px 0;
-}
-
-dd {
-	margin: 10px 0;
-}
-
-dt {
-	margin-top: 0.9em;
-}
-
-dt label {
+.form_container label {
 	font-weight: bold;
 }
 
-dt .description, small {
+.form_container .description, small {
 font-size: 11px;
 color: #444;
 }
@@ -549,7 +527,7 @@ form p.legend em {
 	color: #C00; font-style: normal;
 }
 
-div.form_container label em, fieldset label em {
+.form_container label em, fieldset label em {
 	font-style: normal;
 	color: #C00;
 }
@@ -574,18 +552,19 @@ input.submit_button {
 .label_radio_yes, .label_radio_on {
 	background: #D6ECA6;
 	border: 1px solid #8DC93E;
-	padding: 3px 6px;
+	padding: 4px 6px;
 	margin-right: 5px;
+	margin-top: 5px;
 }
 
 .label_radio_no, .label_radio_off {
 	background: #ECA6D6;
 	border: 1px solid #C93E8D;
-	padding: 3px 6px ;
+	padding: 4px 6px ;
 }
 
 input.radio_input {
-	vertical-align: middle;
+	vertical-align: top;
 	margin: 0;
 	margin-right: 9px;
 }
@@ -643,3 +622,63 @@ div.success p em {
 	background-color: #E8FCDC;
 	color: #080;
 }	
+
+.nav_tabs {
+float: left;
+}
+
+.nav_tabs ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	height: 32px;
+	border-bottom: 1px solid #ccc;
+}
+
+.nav_tabs li {
+	float: left;
+	padding-right: 5px;
+}
+
+.nav_tabs li.right {
+	float: right;
+	padding-left: 5px;
+padding-right: 0;
+}
+
+
+
+.nav_tabs li a {
+	border: 1px solid #ccc;
+	display: block;
+	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
+	font-size: 160%;
+	letter-spacing: -1px;
+	color: #aaa;
+	padding: 3px 8px 4px;
+	background: #f7f7f7;
+}
+
+
+.nav_tabs li a:hover {
+	background: #f1f1f1;
+	text-decoration: none;
+}
+
+
+.nav_tabs li.active a {
+	color: #666;
+	font-weight: bold;
+	padding-top: 4px;
+	border-bottom: 0;
+	background: #efefef;
+}
+
+.nav_tabs .tab_description {
+clear: left;
+	background: #efefef;
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	border-top: 0;
+	font-size: 95%;
+}

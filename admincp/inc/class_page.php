@@ -209,6 +209,35 @@ EOF;
 		}
 		echo "</script>\n";
 	}
+
+	function output_nav_tabs($tabs=array(), $active='')
+	{
+		echo "<div class=\"nav_tabs\">";
+		echo "\t<ul>\n";
+		foreach($tabs as $id => $tab)
+		{
+			$class = '';
+			if($id == $active)
+			{
+				$class = ' active';
+			}
+			if($tab['align'] == "right")
+			{
+				$class .= " right";
+			}
+			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\">{$tab['title']}</a></li>\n";
+		}
+		echo "\t</ul>\n";
+		if($tabs[$active]['description'])
+		{
+			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
+		}
+		else
+		{
+			echo "<br style=\"clear: both;\" />\n";
+		}
+		echo "</div><br style=\"clear: left;\" />";
+	}
 }
 
 class sideBarItem

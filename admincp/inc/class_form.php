@@ -266,65 +266,40 @@ class Form
 
 class FormContainer
 {
-	var $is_fieldset = 0;
-	var $started_rows = 0;
+	var $container;
+	var $title;
 
-	function FormContainer($title='', $fieldset=0)
+	function FormContainer($title='')
 	{
-		if($fieldset == 1)
-		{
-			echo "<fieldset>\n";
-			if($title)
-			{
-				echo "<legend>".htmlspecialchars_uni($title)."</legend>\n";
-			}
-			$this->is_fieldset = 1;
-		}
-		else
-		{
-			if($title)
-			{
-				echo "<div class=\"form_container_title\">{$title}</div>\n";
-			}
-			echo "<div class=\"form_container\">\n";
-		}
+		$this->container = new Table();
+		$this->title = $title;
+	}
+
+	function output_row_header($title)
+	{
+		$this->container->construct_header($title);
 	}
 
 	function output_row($title, $description="", $content="", $label_for="", $options=array())
 	{
-		if(!$this->started_rows)
-		{
-			echo "<dl>\n";
-			$this->started_rows = 1;
-		}
 		if($label_for != '')
 		{
 			$for = " for=\"{$label_for}\"";
 		}
-		echo "<dt><label{$for}>{$title}</label>";
+		$row = "<label {$for}>{$title}</label>";
 		if($description != '')
 		{
-			echo "\n<div class=\"description\">{$description}</div>\n";
+			$row .= "\n<div class=\"description\">{$description}</div>\n";
 		}
-		echo "</dt>\n";
-		echo "<dd>\n{$content}\n</dd>\n";
+		$row .= "<div class=\"form_row\">{$content}</div>\n";
+		
+		$this->container->construct_cell($row);
+		$this->container->construct_row();
 	}
 
 	function end()
 	{
-		if($started_rows)
-		{
-			echo "</dl>\n";
-		}
-
-		if($this->is_fieldset == 1)
-		{
-			echo "</fieldset>\n";
-		}
-		else
-		{
-			echo "</div>\n";
-		}
+		$this->container->output($this->title, 1, "general form_container");
 	}
 }
 

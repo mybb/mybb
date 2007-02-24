@@ -73,7 +73,7 @@ if($mybb->input['action'] == "add")
 		$page->output_inline_error($errors);
 	}
 
-	$form_container = new FormContainer();
+	$form_container = new FormContainer("Add New Setting");
 	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row("Description", "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
 	
@@ -84,9 +84,7 @@ if($mybb->input['action'] == "add")
 	}
 	$form_container->output_row("Group <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
 	$form_container->output_row("Display Order", "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	$form_container->end();
 
-	$form_container = new FormContainer("Setting Configuration", 1);
 	$form_container->output_row("Name <em>*</em>", 'The setting name the key name of the settings array used in scripts and templates.', $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 
 	$setting_types = array(
@@ -202,7 +200,7 @@ if($mybb->input['action'] == "edit")
 		$setting_data['extra'] = trim($type[1]);
 	}
 
-	$form_container = new FormContainer();
+	$form_container = new FormContainer("Modify Setting");
 	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row("Description", "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
 	
@@ -294,7 +292,7 @@ if($mybb->input['action'] == "change")
 
 	echo $form->generate_hidden_field("gid", $groupinfo['gid']);
 	
-	$form_container = new FormContainer();
+	$form_container = new FormContainer($groupinfo['title']);
 
 	$query = $db->simple_select("settings", "*", "gid='".intval($mybb->input['gid'])."'", array('order_by' => 'disporder'));
 	while($setting = $db->fetch_array($query))
@@ -423,7 +421,22 @@ if(!$mybb->input['action'])
 	{
 		$page->output_inline_message($message);
 	}
-	$page->output_intro("Change Settings", "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group.");
+
+	$sub_tabs['change_settings'] = array(
+		'title' => "Change Settings",
+		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+	);
+	$sub_tabs['add_setting'] = array(
+		'title' => "Add New Setting",
+		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+	);
+	$sub_tabs['modify_setting'] = array(
+		'title' => "Modify Existing Settings",
+		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'change_settings');
+
 	$table = new Table;
 	$table->construct_header("Setting Groups");
 
