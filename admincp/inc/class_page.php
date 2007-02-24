@@ -19,7 +19,7 @@ class Page
 		echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
 		echo "	<title>".$title."</title>\n";
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
-		echo "	<meta name=\"copyright\" content=\"Copyright 2005 MyBB Group.\" />\n";
+		echo "	<meta name=\"copyright\" content=\"Copyright ".date('Y')." MyBB Group.\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
