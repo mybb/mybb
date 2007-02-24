@@ -623,10 +623,6 @@ div.success p em {
 	color: #080;
 }	
 
-.nav_tabs {
-float: left;
-}
-
 .nav_tabs ul {
 	list-style: none;
 	padding: 0;
@@ -675,7 +671,6 @@ padding-right: 0;
 }
 
 .nav_tabs .tab_description {
-clear: left;
 	background: #efefef;
 	padding: 5px 10px;
 	border: 1px solid #ccc;

@@ -236,7 +236,7 @@ EOF;
 		{
 			echo "<br style=\"clear: both;\" />\n";
 		}
-		echo "</div><br style=\"clear: left;\" />";
+		echo "</div>";
 	}
 }
 
