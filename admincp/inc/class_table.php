@@ -101,7 +101,10 @@ class Table
 				{
 					$table .= "class=\"".$data['extra']['class']."\" ";
 				}
-
+				if($data['extra']['width'])
+				{
+					$table .= "width=\"".$data['extra']['width']."\" ";
+				}
 				if(isset($data['extra']['colspan']) && $data['extra']['colspan'] > 1)
 				{
 					$table .= "colspan=\"".$data['extra']['colspan']."\"";

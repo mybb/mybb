@@ -20,7 +20,7 @@ PopupMenu.prototype = {
 		}
 
 		this.menu = $(popupMenu);
-		//this.menu.style.display = "none";
+		this.menu.style.display = "none";
 		Event.observe(element, "click", this.openMenu.bindAsEventListener(this));
 		//element.onclick = this.openMenu.bindAsEventListener(this);
 	},

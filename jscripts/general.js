@@ -9,7 +9,7 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
-		if(use_xmlhttprequest == "yes")
+		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == "yes")
 		{
 			mark_read_imgs = document.getElementsByClassName("ajax_mark_read", "img");
 			mark_read_imgs.each(function(element) {

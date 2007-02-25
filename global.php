@@ -377,6 +377,25 @@ else
 {
 	$mybbversion = '';
 }
+
+// Check to see if we have any tasks to run
+if($mybb->settings['taskscron'] != "yes")
+{
+	$task_cache = $cache->read("tasks");
+	if(!$task_cache['nextrun'])
+	{
+		$task_cache['nextrun'] = time();
+	}
+	echo "{$task_cache['nextrun']} <= ".time();
+	if($task_cache['nextrun'] <= time())
+	{
+		$task_image = "<img src=\"{$mybb->settings['bburl']}/task.php\" border=\"0\" width=\"1\" height=\"1\" alt=\"\" />";
+	}
+	else
+	{
+		$task_image = '';
+	}
+}
 eval("\$footer = \"".$templates->get("footer")."\";");
 
 // Add our main parts to the navigation
@@ -474,19 +493,6 @@ if($_COOKIE['collapsed'])
 		$collapsed[$ex] = "display: none;";
 		$collapsedimg[$val] = "_collapsed";
 	}
-}
-
-// Randomly expire threads
-if($rand > 8 || isset($mybb->input['force_thread_expiry']))
-{
-	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".time()."'");
-}
-
-// Randomly clear out old guest sessions (older than 24 hours)
-if($rand > 4 && $rand < 8)
-{
-	$timecut = time()-60*60*24;
-	$db->delete_query("sessions", "uid=0 AND time<='$timecut'");
 }
 
 // Set the link to the archive.

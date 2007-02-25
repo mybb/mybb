@@ -55,7 +55,10 @@ else
 	$page->style = "default";
 }
 
-// LANGUAGE LOADING STUFF NEEDS TO GO HERE
+$lang->set_language($mybb->settings['cplanguage'], "admincp");
+
+// Load global language phrases
+$lang->load("global");
 
 $time = time();
 
@@ -261,4 +264,9 @@ $action_file = $action_handler($current_module[1]);
 log_admin_action();
 
 require $modules_dir."/".$run_module."/".$action_file;
+
+if($mybb->input['debug'])
+{
+	echo $db->explain;
+}
 ?>

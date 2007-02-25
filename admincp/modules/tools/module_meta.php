@@ -16,6 +16,10 @@ function tools_action_handler($action)
 			$page->active_action = "php_info";
 			$action_file = "php_info.php";
 			break;
+		case "tasks":
+			$page->active_action = "tasks";
+			$action_file = "tasks.php";
+			break;
 		default:
 			$page->active_action = "stats";
 			$action_file = "index.php";

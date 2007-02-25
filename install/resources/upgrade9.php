@@ -170,6 +170,63 @@ function upgrade9_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
 	}
 
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."tasks (
+		tid int unsigned NOT NULL auto_increment,
+		title varchar(120) NOT NULL default '',
+		description text NOT NULL,
+		file varchar(30) NOT NULL default '',
+		minute varchar(200) NOT NULL default '',
+		hour varchar(200) NOT NULL default '',
+		day varchar(100) NOT NULL default '',
+		month varchar(30) NOT NULL default '',
+		weekday varchar(15) NOT NULL default '',
+		nextrun bigint(30) NOT NULL default '0',
+		lastrun bigint(30) NOT NULL default '0',
+		enabled int(1) NOT NULL default '1',
+		logging int(1) NOT NULL default '0',
+		locked bigint(30) NOT NULL default '0',
+		PRIMARY KEY(tid)
+	) TYPE=MyISAM;");
+
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."tasklog (
+		lid int unsigned NOT NULL auto_increment,
+		tid int unsigned NOT NULL default '0',
+		dateline bigint(30) NOT NULL default '0',
+		data text NOT NULL,
+		PRIMARY KEY(lid)
+	) TYPE=MyISAM;");
+
+
+	include_once MYBB_ROOT."inc/functions_task.php";
+	$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
+	$parser = new XMLParser($tasks);
+	$parser->collapse_dups = 0;
+	$tree = $parser->get_tree();
+
+	// Insert scheduled tasks
+	foreach($tree['tasks'][0]['task'] as $task)
+	{
+		$new_task = array(
+			'title' => $db->escape_string($task['title'][0]['value']),
+			'description' => $db->escape_string($task['description'][0]['value']),
+			'file' => $db->escape_string($task['file'][0]['value']),
+			'minute' => $db->escape_string($task['minute'][0]['value']),
+			'hour' => $db->escape_string($task['hour'][0]['value']),
+			'day' => $db->escape_string($task['day'][0]['value']),
+			'weekday' => $db->escape_string($task['weekday'][0]['value']),
+			'month' => $db->escape_string($task['month'][0]['value']),
+			'enabled' => $db->escape_string($task['enabled'][0]['value']),
+			'logging' => $db->escape_string($task['logging'][0]['value'])
+		);
+
+		$new_task['nextrun'] = fetch_next_run($new_task);
+
+		$db->insert_query("tasks", $new_task);
+		$taskcount++;
+	}
+
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

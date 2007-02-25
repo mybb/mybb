@@ -1824,6 +1824,7 @@ form {
 				<!-- End copyright -->
 				<br />
 <br class="clear" />
+<!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{$task_image}<!-- End task image code -->
 		</div>
 		</div>]]></template>
 		<template name="private_archive_csv" version="120"><![CDATA[{$lang->export_date_sent},{$lang->export_folder},{$lang->export_subject},{$lang->export_to},{$lang->export_from},{$lang->export_message}

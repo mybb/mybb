@@ -769,7 +769,6 @@ function create_admin_user()
 				$settingcount++;
 			}
 		}
-		echo sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
 
 		if(my_substr($mybb->input['bburl'], -1, 1) == '/')
 		{
@@ -786,6 +785,39 @@ function create_admin_user()
 		$db->update_query("settings", array('value' => $db->escape_string($mybb->input['contactemail'])), "name='contactlink'");
 
 		write_settings();
+
+		echo sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
+
+		include_once MYBB_ROOT."inc/functions_task.php";
+		$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
+		$parser = new XMLParser($tasks);
+		$parser->collapse_dups = 0;
+		$tree = $parser->get_tree();
+
+		// Insert scheduled tasks
+		foreach($tree['tasks'][0]['task'] as $task)
+		{
+			$new_task = array(
+				'title' => $db->escape_string($task['title'][0]['value']),
+				'description' => $db->escape_string($task['description'][0]['value']),
+				'file' => $db->escape_string($task['file'][0]['value']),
+				'minute' => $db->escape_string($task['minute'][0]['value']),
+				'hour' => $db->escape_string($task['hour'][0]['value']),
+				'day' => $db->escape_string($task['day'][0]['value']),
+				'weekday' => $db->escape_string($task['weekday'][0]['value']),
+				'month' => $db->escape_string($task['month'][0]['value']),
+				'enabled' => $db->escape_string($task['enabled'][0]['value']),
+				'logging' => $db->escape_string($task['logging'][0]['value'])
+			);
+
+			$new_task['nextrun'] = fetch_next_run($new_task);
+
+			$db->insert_query("tasks", $new_task);
+			$taskcount++;
+		}
+
+		echo sprintf($lang->admin_step_insertedtasks, $taskcount);
+
 		echo $lang->admin_step_createadmin;
 	}
 
@@ -969,6 +1001,7 @@ function install_done()
 	$cache->update_mycode();
 	$cache->update_posticons();
 	$cache->update_update_check();
+	$cache->update_tasks();
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

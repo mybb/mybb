@@ -343,6 +343,7 @@ function buildcaches()
 	$cache->update_mycode();
 	$cache->update_posticons();
 	$cache->update_update_check();
+	$cache->update_tasks();
 	$contents .= $lang->done."</p>";
 
 	$output->print_contents("$contents<p>".$lang->upgrade_continue."</p>");

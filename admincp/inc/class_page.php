@@ -28,6 +28,10 @@ class Page
 				echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.lite.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/moo.ajax.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "</head>\n";
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
@@ -310,6 +314,46 @@ class sideBarItem
 		}
 		$markup .= "</div>\n";
 		return $markup;
+	}
+}
+
+class PopupMenu
+{
+	var $title;
+	var $id;
+	var $items;
+
+	function PopupMenu($id, $title='')
+	{
+		$this->id = $id;
+		$this->title = $title;
+	}
+
+	function add_item($text, $link, $onclick='')
+	{
+		if($onclick)
+		{
+			$onclick = " onclick=\"{$onclick}\"";
+		}
+		$this->items .= "<div class=\"popup_item_container\"><a href=\"{$link}\"{$onclick} class=\"popup_item\">{$text}</a></div>\n";
+	}
+
+	function fetch()
+	{
+		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\">\n{$this->items}</div>\n";
+		$popup .= "<script type=\"text/javascript\">\n";
+		if($this->title)
+		{
+			$popup .= "document.write('<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}</a>');\n";
+		}
+		$popup .= "new PopupMenu('{$this->id}');\n";
+		$popup .= "</script>\n";
+		return $popup;
+	}
+
+	function output()
+	{
+		echo $this->fetch();
 	}
 }
 ?>

@@ -996,17 +996,6 @@ else
 	}
 }
 
-/* On a random occasion, delete all the threadsread which were read before a certain date cut. */
-if($rand == 5 && $mybb->settings['threadreadcut'] > 0)
-{
-	$cut = time()-($mybb->settings['threadreadcut']*60*60*24);
-	$db->shutdown_query("
-		DELETE
-		FROM ".TABLE_PREFIX."threadsread
-		WHERE dateline < '$cut'
-	");
-}
-
 $plugins->run_hooks("forumdisplay_end");
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");

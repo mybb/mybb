@@ -237,6 +237,7 @@ $l['config_step_error_name'] = 'You did not enter a name for your copy of MyBB.'
 $l['admin_step_setupsettings'] = '<p>Setting up basic board settings...</p>';
 $l['admin_step_insertesettings'] = '<p>Inserted {1} settings into {2} groups.</p>
 <p>Updating settings with user defined values.</p>';
+$l['admin_step_insertedtasks'] = '<p>Inserted {1} scheduled tasks.</p>';
 $l['admin_step_createadmin'] ='<p>You need to create an initial administrator account for you to login and manage your copy of MyBB. Please fill in the required fields below to create this account.</p>';
 $l['admin_step_admintable'] = '<div class="border_wrapper">
 			<div class="title">Administrator Account Details</div>

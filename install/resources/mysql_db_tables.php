@@ -567,6 +567,32 @@ $tables[] = "CREATE TABLE mybb_smilies (
   PRIMARY KEY  (sid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_tasks (
+	tid int unsigned NOT NULL auto_increment,
+	title varchar(120) NOT NULL default '',
+	description text NOT NULL,
+	file varchar(30) NOT NULL default '',
+	minute varchar(200) NOT NULL default '',
+	hour varchar(200) NOT NULL default '',
+	day varchar(100) NOT NULL default '',
+	month varchar(30) NOT NULL default '',
+	weekday varchar(15) NOT NULL default '',
+	nextrun bigint(30) NOT NULL default '0',
+	lastrun bigint(30) NOT NULL default '0',
+	enabled int(1) NOT NULL default '1',
+	logging int(1) NOT NULL default '0',
+	locked bigint(30) NOT NULL default '0',
+	PRIMARY KEY(tid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_tasklog (
+	lid int unsigned NOT NULL auto_increment,
+	tid int unsigned NOT NULL default '0',
+	dateline bigint(30) NOT NULL default '0',
+	data text NOT NULL,
+	PRIMARY KEY(lid)
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_templategroups (
   gid int unsigned NOT NULL auto_increment,
   prefix varchar(50) NOT NULL default '',

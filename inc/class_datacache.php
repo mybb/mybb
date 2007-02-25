@@ -489,5 +489,25 @@ class datacache
 		
 		$this->update("update_check", $update_cache);
 	}
+
+	/**
+	 * Updates the tasks cache saving the next run time
+	 */
+	function update_tasks()
+	{
+		global $db;
+		$query = $db->simple_select("tasks", "nextrun", "enabled=1", array("order_by" => "nextrun", "order_dir" => "asc", "limit" => 1));
+		$next_task = $db->fetch_array($query);
+		
+		$task_cache = $this->read("tasks");
+		$task_cache['nextrun'] = $next_task['nextrun'];
+
+		if(!$task_cache['nextrun'])
+		{
+			$task_cache['nextrun'] = time()+3600;
+		}
+
+		$this->update("tasks", $task_cache);
+	}
 }
 ?>

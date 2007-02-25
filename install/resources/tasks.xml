@@ -1,0 +1,26 @@
+<tasks version="140" exported="">
+	<task>
+		<title>Hourly Cleanup</title>
+		<description><![CDATA[Cleans out old searches, captcha images and expires redirects]]></description>
+		<file>hourlycleanup</file>
+		<minute>0</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Daily Cleanup</title>
+		<description><![CDATA[Cleans out old sessions and read threads]]></description>
+		<file>dailycleanup</file>
+		<minute>0</minute>
+		<hour>0</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+</tasks>

@@ -90,13 +90,13 @@ class MyLanguage
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
-		if($area == "admin")
+		if($area == "admin" || $area == "admincp")
 		{
-			if(!is_dir($this->path."/".$language."/admin"))
+			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
-				if(!is_dir($this->path."/".$mybb->settings['cplanguage']."/admin"))
+				if(!is_dir($this->path."/".$mybb->settings['cplanguage']."/{$area}"))
 				{
-					if(!is_dir($this->path."/english/admin"))
+					if(!is_dir($this->path."/english/{$area}"))
 					{
 						die("Your forum does not conain an Administration set. Please reupload the english language administration pack.");
 					}
@@ -110,7 +110,7 @@ class MyLanguage
 					$language = $mybb->settings['cplanguage'];
 				}
 			}
-			$this->language = $language."/admin";
+			$this->language = $language."/{$area}";
 		}
 	}
 

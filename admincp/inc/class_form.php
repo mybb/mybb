@@ -172,9 +172,16 @@ class Form
 		return $input;
 	}
 	
-	function generate_select_box($name, $option_list, $selected='', $options=array())
+	function generate_select_box($name, $option_list, $selected=false, $options=array())
 	{
-		$select = "<select name=\"{$name}\"";
+		if(!isset($options['multiple']))
+		{
+			$select = "<select name=\"{$name}\"";
+		}
+		else
+		{
+			$select = "<select name=\"{$name}\" multiple=\"multiple\"";
+		}
 		if(isset($options['class']))
 		{
 			$select .= " class=\"{$options['class']}\"";
@@ -187,7 +194,7 @@ class Form
 		foreach($option_list as $value => $option)
 		{
 			$select_add = '';
-			if($value == $selected)
+			if($value === $selected || (is_array($selected) && in_array($value, $selected)))
 			{
 				$select_add = " selected=\"selected\"";
 			}
@@ -217,9 +224,9 @@ class Form
 		return $input;
 	}
 
-	function generate_yes_no_radio($name, $value="yes")
+	function generate_yes_no_radio($name, $value="yes", $int)
 	{
-		if($value == "no")
+		if($value == "no" || $value === 0)
 		{
 			$no_checked = 1;
 			$yes_checked = 0;
@@ -229,8 +236,13 @@ class Form
 			$yes_checked = 1;
 			$no_checked = 0;
 		}
-		$yes = $this->generate_radio_button($name, "yes", "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
-		$no = $this->generate_radio_button($name, "no", "No", array("class" => "radio_no", "checked" => $no_checked));
+		if($int == true)
+		{
+			$yes_value = 'yes';
+			$no_value = 'no';
+		}
+		$yes = $this->generate_radio_button($name, $int, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
+		$no = $this->generate_radio_button($name, $int, "No", array("class" => "radio_no", "checked" => $no_checked));
 		return $yes." ".$no;
 	}
 
