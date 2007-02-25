@@ -4,7 +4,7 @@
 //   Delete setting page
 //   Add / edit group pages
 
-$page->add_breadcrumb_item("Board Settings", "index.php?".SID."&module=config/settings");
+$page->add_breadcrumb_item("Board Settings", "index.php?".SID."&amp;module=config/settings");
 
 // Creating a new setting
 if($mybb->input['action'] == "add")
@@ -74,7 +74,7 @@ if($mybb->input['action'] == "add")
 
 	$page->output_nav_tabs($sub_tabs, 'add_setting');
 
-	$form = new Form("index.php?module=config/settings", "post", "add");
+	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=add", "post", "add");
 
 	if($errors)
 	{
@@ -448,11 +448,15 @@ if(!$mybb->input['action'])
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add",
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
+	
+	// Doesn't go here.
+	/*
 	$sub_tabs['modify_setting'] = array(
 		'title' => "Modify Existing Settings",
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit",
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
+	*/
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
 

@@ -39,6 +39,10 @@ class Table
 			{
 				$cells .= " colspan=\"".$cell['extra']['colspan']."\"";
 			}
+			if(isset($cell['extra']['rowspan']) && $cell['extra']['rowspan'] > 1)
+			{
+				$cells .= " rowspan=\"".$cell['extra']['rowspan']."\"";
+			}
 			if($cell['extra']['width'])
 			{
 				$cells .= " width=\"".$cell['extra']['width']."\"";

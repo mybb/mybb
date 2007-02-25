@@ -210,11 +210,11 @@ else
 {
 	if($fail_check == 1)
 	{
-		$page->show_login("The username and password you entered are invalid or the account is not a valid administrator");
+		$page->show_login("The username and password you entered are invalid or the account is not a valid administrator", "error");
 	}
 	else
 	{
-		$page->show_login($login_message);
+		$page->show_login($login_message, "error");
 	}
 }
 

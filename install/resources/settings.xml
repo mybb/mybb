@@ -1,5 +1,5 @@
 <settings version="120" exported="1129013345">
-	<settinggroup name="banning" title="Banning Options" description="" disporder="15" isdefault="yes">
+	<settinggroup name="banning" title="Banning Options" description="Here you can ban IP addresses, email addresses, and usernames from being used." disporder="15" isdefault="yes">
 		<setting name="bannedusernames">
 			<title>Banned Usernames</title>
 			<description><![CDATA[Ban users from registering certain usernames. You must seperate usernames with a comma.]]></description>
@@ -79,7 +79,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="" disporder="17" isdefault="yes">
+	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="17" isdefault="yes">
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
 			<description><![CDATA[Clickable smilies will appear on the posting pages if this option is set to 'on'.]]></description>
@@ -105,7 +105,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="" disporder="19" isdefault="yes">
+	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="19" isdefault="yes">
 		<setting name="cplanguage">
 			<title>Control Panel Language</title>
 			<description><![CDATA[The language of the control panel.]]></description>
@@ -558,7 +558,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="portal" title="Portal Settings" description="" disporder="14" isdefault="yes">
+	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="14" isdefault="yes">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
@@ -813,7 +813,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="reputation" title="Reputation" description="" disporder="10" isdefault="yes">
+	<settinggroup name="reputation" title="Reputation" description="The reputation allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="10" isdefault="yes">
 		<setting name="enablereputation">
 			<title>Enable Reputation Functionality</title>
 			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>

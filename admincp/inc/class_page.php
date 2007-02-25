@@ -134,16 +134,50 @@ class Page
 		echo "</div>\n";
 	}
 
-	function show_login($message="Please enter your username and password to continue")
+	function show_login($message="Please enter your username and password to continue.", $class="success")
 	{
 print <<<EOF
-<form method="post" action="{$_SERVER['PHP_SELF']}">
-<strong>{$message}</strong>
-Username: <input type="text" name="username" /><br />
-Password: <input type="password" name="password" /><br />
-<input type="submit" value="Login" />
-<input type="hidden" name="do" value="login" />
-</form>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head profile="http://gmpg.org/xfn/1">
+<title>MyBB Administration - Login</title>
+<meta name="author" content="MyBB Group" />
+<meta name="copyright" content="Copyright 2006 MyBB Group." />
+<link rel="stylesheet" href="./styles/default/login.css" type="text/css" />
+</head>
+<body>
+<div id="container">
+	<div id="header">
+		<div id="logo">
+			<h1><a href="../" title="Return to forum"><span class="invisible">MyBB Admin CP</span></a></h1>
+
+		</div>
+	</div>
+	<div id="content">
+		<h2>Please Login</h2>
+					<p id="message" class="{$class}"><span class="text">{$message}</span><br />Please enter your username and password to continue.</p>
+		
+		<form method="post" action="{$_SERVER['PHP_SELF']}">
+		<div class="form_container">
+
+			<div class="label"><label for="username">Username:</label></div>
+
+			<div class="field"><input type="text" name="username" id="username" class="text_input" /></div>
+
+			<div class="label"><label for="password">Password:</label></div>
+			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
+		</div>
+		<p class="submit">
+			<input type="submit" value="Login" />
+
+			<input type="hidden" name="do" value="login" />
+		</p>
+
+		</form>
+	</div>
+</div>
+</body>
+</html>
 EOF;
 	exit;
 	}
@@ -225,7 +259,11 @@ EOF;
 			{
 				$class .= " right";
 			}
-			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\">{$tab['title']}</a></li>\n";
+			if($tab['link_target'])
+			{
+				$target = " target=\"{$tab['link_target']}\"";
+			}
+			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
 		}
 		echo "\t</ul>\n";
 		if($tabs[$active]['description'])

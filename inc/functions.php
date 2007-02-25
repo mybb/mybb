@@ -1463,7 +1463,6 @@ function update_stats($changes=array())
 		$new_stats['lastuid'] = $lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'];
 	}
-	print_r($new_stats);
 	$stats = array_merge($stats, $new_stats);
 	$cache->update("stats", $stats);
 }

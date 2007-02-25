@@ -2,7 +2,7 @@
 
 class Form
 {
-	function Form($action, $method, $allow_uploads=0, $id="")
+	function Form($script, $method, $allow_uploads=0, $name="", $id="")
 	{
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
 		if($allow_uploads != 0)
@@ -11,7 +11,11 @@ class Form
 		}
 		if($name != "")
 		{
-			$form .= " name=\"{$name}\" id=\"{$id}\"";
+			$form .= " name=\"{$name}\"";
+		}
+		if($id != "")
+		{
+			$form .= " id=\"{$id}\"";
 		}
 		$form .= ">\n";
 		echo $form;
@@ -84,7 +88,11 @@ class Form
 		{
 			$options['cols'] = 45;
 		}
-		$textarea .= " rows=\"{$options['rows']}\" cols=\"{$options['cols']}\">";
+		if($options['style'])
+		{
+			$options['style'] = " style=\"{$options['style']}\"";
+		}
+		$textarea .= " rows=\"{$options['rows']}\" cols=\"{$options['cols']}\"{$options['style']}>";
 		$textarea .= htmlspecialchars_uni($value);
 		$textarea .= "</textarea>";
 		return $textarea;

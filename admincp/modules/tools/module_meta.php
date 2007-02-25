@@ -12,6 +12,10 @@ function tools_action_handler($action)
 	$page->active_module = "tools";
 	switch($action)
 	{
+		case "php_info":
+			$page->active_action = "php_info";
+			$action_file = "php_info.php";
+			break;
 		default:
 			$page->active_action = "stats";
 			$action_file = "index.php";

@@ -12,6 +12,14 @@ function home_action_handler($action)
 	$page->active_module = "home";
 	switch($action)
 	{
+		case "preferences":
+			$page->active_action = "preferences";
+			$action_file = "preferences.php";
+			break;
+		case "credits":
+			$page->active_action = "credits";
+			$action_file = "credits.php";
+			break;
 		default:
 			$page->active_action = "dashboard";
 			$action_file = "index.php";
@@ -20,9 +28,8 @@ function home_action_handler($action)
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "dashboard", "title" => "Dashboard", "link" => "index.php?".SID."&module=home/dashboard");
 	$sub_menu['20'] = array("id" => "preferences", "title" => "Preferences", "link" => "index.php?".SID."&module=home/preferences");
-	$sub_menu['30'] = array("id" => "admin_notes", "title" => "Admin Notes", "link" => "index.php?".SID."&module=home/admin_notes");
-	$sub_menu['40'] = array("id" => "version_check", "title" => "Version Check", "link" => "index.php?".SID."&module=home/version_check");
-	$sub_menu['50'] = array("id" => "credits", "title" => "MyBB Credits", "link" => "index.php?".SID."&module=home/credits");
+	$sub_menu['30'] = array("id" => "version_check", "title" => "Version Check", "link" => "index.php?".SID."&module=home/version_check");
+	$sub_menu['40'] = array("id" => "credits", "title" => "MyBB Credits", "link" => "index.php?".SID."&module=home/credits");
 
 	$sidebar = new sideBarItem("Home");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
@@ -33,7 +40,10 @@ function home_action_handler($action)
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "add_forum", "title" => "Add New Forum", "link" => "index.php?".SID."&module=forum/add_forum");
 	$sub_menu['20'] = array("id" => "search", "title" => "Search for Users", "link" => "index.php?".SID."&module=user/search");
-	$sub_menu['30'] = array("id" => "dork", "title" => "(what else could we put here?)", "link" => "index.php?".SID."&module=tools/dork");
+	$sub_menu['30'] = array("id" => "themes", "title" => "Themes", "link" => "index.php?".SID."&module=style/themes");
+	$sub_menu['40'] = array("id" => "templates", "title" => "Templates", "link" => "index.php?".SID."&module=style/templates");
+	$sub_menu['50'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
+	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database backups", "link" => "index.php?".SID."&module=tools/backupdb");
 	
 	$sidebar = new sideBarItem("Quick Access");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
