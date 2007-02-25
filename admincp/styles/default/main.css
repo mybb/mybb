@@ -704,11 +704,15 @@ height: 24px;
 .nav_tabs .tab_description { 
 	background: #efefef; 
 	padding: 5px 10px; 
-    border: 1px solid #ccc; 
+	border: 1px solid #ccc; 
 	border-top: 0; 
 	font-size: 95%; 
 } 
  	 
 table.general td.align_center, table.general th.align_center, .align_center { 
 	text-align: center; 
-} 
+}
+
+a img {
+	border: 0;
+}

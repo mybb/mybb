@@ -114,10 +114,9 @@ if($mybb->input['action'] == "add")
 			admin_redirect("index.php?".SID."&module=tools/tasks");
 		}
 	}
-
 	$page->add_breadcrumb_item("Add New Task");
 	$page->output_header("Scheduled Tasks - Add New Task");
-	
+
 	$sub_tabs['add_task'] = array(
 		'title' => "Add New Task",
 		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add",
@@ -125,24 +124,19 @@ if($mybb->input['action'] == "add")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
-
 	$form = new Form("index.php?".SID."&amp;module=tools/tasks&amp;action=add", "post", "add");
-
 	if($errors)
 	{
 		$page->output_inline_error($errors);
 	}
 	else
 	{
-		$mybb->input = array(
-			'minute' => '*',
-			'hour' => '*',
-			'day' => '*',
-			'weekday' => '*',
-			'month' => '*',
-		);
+		$mybb->input['minute'] = '*';
+		$mybb->input['hour'] = '*';
+		$mybb->input['day'] = '*';
+		$mybb->input['weekday'] = '*';
+		$mybb->input['month'] = '*';
 	}
-
 	$form_container = new FormContainer("Add New Task");
 	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row("Short Description", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
@@ -450,6 +444,8 @@ if($mybb->input['action'] == "run")
 
 if($mybb->input['action'] == "logs")
 {
+	$page->output_header("Task Logs");
+	$page->output_footer();
 }
 
 
@@ -486,20 +482,20 @@ if(!$mybb->input['action'])
 		$task['title'] = htmlspecialchars_uni($task['title']);
 		$task['description'] = htmlspecialchars_uni($task['description']);
 		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
-		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"{$page->style}/images/icons/run_task.gif\" title=\"Run this task now\" alt=\"Run task\" /></a></div><div><strong><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"Run this task now\" alt=\"Run task\" /></a></div><div><strong><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 
 		$popup = new PopupMenu("task_{$task['tid']}", "Options");
-		$popup->add_item("Edit Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=edit&tid={$task['tid']}");
+		$popup->add_item("Edit Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}");
 		if($task['enabled'] == 1)
 		{
-			$popup->add_item("Disable Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=disable&tid={$task['tid']}");
+			$popup->add_item("Disable Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=disable&amp;tid={$task['tid']}");
 		}
 		else
 		{
-			$popup->add_item("Enable Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=enable&tid={$task['tid']}");
+			$popup->add_item("Enable Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}");
 		}
-		$popup->add_item("Delete Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=delete&tid={$task['tid']}");
+		$popup->add_item("Delete Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

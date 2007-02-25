@@ -14,6 +14,7 @@ class Page
 	function output_header($title="MyBB Administration Panel")
 	{
 		global $mybb, $admin_session;
+		
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
 		echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
@@ -25,7 +26,7 @@ class Page
 		// Load stylesheet for this module if it has one
 		if(file_exists(MYBB_ADMIN_DIR."styles/{$this->style}/{$this->active_module}.css"))
 		{
-				echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
+			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.lite.js\"></script>\n";
@@ -344,7 +345,7 @@ class PopupMenu
 		$popup .= "<script type=\"text/javascript\">\n";
 		if($this->title)
 		{
-			$popup .= "document.write('<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}</a>');\n";
+			$popup .= "document.write('<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}<\/a>');\n";
 		}
 		$popup .= "new PopupMenu('{$this->id}');\n";
 		$popup .= "</script>\n";

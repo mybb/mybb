@@ -386,7 +386,6 @@ if($mybb->settings['taskscron'] != "yes")
 	{
 		$task_cache['nextrun'] = time();
 	}
-	echo "{$task_cache['nextrun']} <= ".time();
 	if($task_cache['nextrun'] <= time())
 	{
 		$task_image = "<img src=\"{$mybb->settings['bburl']}/task.php\" border=\"0\" width=\"1\" height=\"1\" alt=\"\" />";
