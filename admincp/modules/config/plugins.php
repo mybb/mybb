@@ -87,7 +87,7 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header("Plugin");
-	$table->construct_header("Control");
+	$table->construct_header("Controls", array("class" => "align_center"));
 	
 	if($plugins_list)
 	{
@@ -118,16 +118,16 @@ if(!$mybb->input['action'])
 				$pluginbuttons = "<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">Activate</a>";
 			}
 			
-			$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i>Created by {$plugininfo['author']}</i>");
-			$table->construct_cell($pluginbuttons);
+			$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>Created by {$plugininfo['author']}</small></i>");
+			$table->construct_cell($pluginbuttons, array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
 	else
 	{
-		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" colspan=\"4\">".$lang->no_plugins."</td>\n";
-		echo "</tr>\n";
+		$table->contruct_cell("There are no plugins on your forum at this time.");
+		$table->contruct_cell("");
+		$table->construct_row();
 	}
 	$table->output("Plugins");
 
