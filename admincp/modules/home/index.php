@@ -1,7 +1,7 @@
 <?php
 if(!$mybb->input['action'])
 {
-	if($mybb->request_method == "post")
+	if($mybb->request_method == "post" && isset($mybb->input['adminnotes']))
 	{
 		// Update Admin Notes cache
 		$update_cache = array(
