@@ -449,14 +449,12 @@ if(!$mybb->input['action'])
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
 	
-	// Doesn't go here.
-	/*
 	$sub_tabs['modify_setting'] = array(
 		'title' => "Modify Existing Settings",
-		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage",
 		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
-	*/
+	
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
 

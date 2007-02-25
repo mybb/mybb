@@ -653,3 +653,62 @@ height: 24px;
 .float_right {
 	float: right;
 }
+
+.nav_tabs ul { 
+	list-style: none; 
+	padding: 0; 
+ 	margin: 0; 
+ 	height: 32px; 
+ 	border-bottom: 1px solid #ccc;
+} 
+	 
+.nav_tabs li { 
+	float: left; 
+	padding-right: 5px; 
+} 
+ 	 
+.nav_tabs li.right { 
+	float: right; 
+	padding-left: 5px; 
+	padding-right: 0; 
+} 
+ 	 
+ 	 
+ 	 
+.nav_tabs li a { 
+ 	border: 1px solid #ccc; 
+ 	display: block; 
+ 	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif; 
+ 	font-size: 160%; 
+ 	letter-spacing: -1px; 
+	color: #aaa; 
+	padding: 3px 8px 4px; 
+	background: #f7f7f7; 
+} 
+ 	 
+ 	 
+.nav_tabs li a:hover { 
+	background: #f1f1f1; 
+	text-decoration: none; 
+} 
+	 
+	 
+.nav_tabs li.active a { 
+    color: #666; 
+	font-weight: bold; 
+	padding-top: 4px; 
+    border-bottom: 0; 
+	background: #efefef; 
+} 
+	 
+.nav_tabs .tab_description { 
+	background: #efefef; 
+	padding: 5px 10px; 
+    border: 1px solid #ccc; 
+	border-top: 0; 
+	font-size: 95%; 
+} 
+ 	 
+table.general td.align_center, table.general th.align_center, .align_center { 
+	text-align: center; 
+} 
