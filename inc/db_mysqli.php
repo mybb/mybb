@@ -335,8 +335,8 @@ class databaseEngine
 			}
 			
 			$error = array(
-				"error_no" => $this->error_number($this->link),
-				"error" => $this->error_string($this->link),
+				"error_no" => $this->error_number(),
+				"error" => $this->error_string(),
 				"query" => $string
 			);
 			$error_handler->error(MYBB_SQL, $error);	

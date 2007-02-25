@@ -263,7 +263,7 @@ class session
 			// must have been good.. bans up :D
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."'");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
-			// we better do this..otherwise they have dodgy permissions 
+			// we better do this..otherwise they have dodgy permissions
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
 			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
 			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];

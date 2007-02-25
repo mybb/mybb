@@ -125,16 +125,16 @@ class databaseEngine
 	function query($string, $hide_errors=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
-		
+
 		$qtimer = new timer();
 		$query = @mysql_query($string, $this->link);
-		
+
 		if($this->error_number() && !$hide_errors)
 		{
 			 $this->error($string);
 			 exit;
 		}
-		
+
 		$qtime = $qtimer->stop();
 		$querytime += $qtimer->totaltime;
 		$qtimer->remove();
@@ -301,7 +301,14 @@ class databaseEngine
 	 */
 	function error_number()
 	{
-		return @mysql_errno($this->link);
+		if($this->link)
+		{
+			return @mysql_errno($this->link);
+		}
+		else
+		{
+			return @mysql_errno();
+		}
 	}
 
 	/**
@@ -311,7 +318,14 @@ class databaseEngine
 	 */
 	function error_string()
 	{
-		return mysql_error($this->link);
+		if($this->link)
+		{
+			return @mysql_error($this->link);
+		}
+		else
+		{
+			return @mysql_error();
+		}
 	}
 
 	/**

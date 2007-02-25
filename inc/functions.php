@@ -654,7 +654,7 @@ function redirect($url, $message="", $title="")
 	else
 	{
 		$url = str_replace("#", "&#", $url);
-		$url = unhtmlspecialchars($url);
+		$url = htmlspecialchars_decode($url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
 
 		run_shutdown();
@@ -3128,24 +3128,6 @@ function htmlspecialchars_uni($message)
 	$message = str_replace(">", "&gt;", $message);
 	$message = str_replace("\"", "&quot;", $message);
 	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
-
-	return $message;
-}
-
-/**
- * Custom function for reverting back htmlspecialchars.
- *
- * @param string The string to format
- * @return string The string with htmlspecialchars reverted
- */
-function unhtmlspecialchars($message)
-{
-	$message = str_replace('&amp;',			'&',	$message);
-	$message = str_replace('&#039;',		'\'',	$message);
-	$message = str_replace('&quot;',		'"',	$message);
-	$message = str_replace('&lt;',			'<',	$message);
-	$message = str_replace('&gt;',			'>',	$message);
-	$message = str_replace('&nbsp;&nbsp;',	'  ',	$message);
 
 	return $message;
 }
