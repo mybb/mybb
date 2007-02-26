@@ -11,7 +11,7 @@ function check_time_values($value, $min, $max)
 {
 	if(!is_array($value))
 	{
-		if(!$value)
+		if($value === '')
 		{
 			return '*';
 		}
@@ -78,7 +78,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 1, 31);
+			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6);
 			if($mybb->input['weekday'] === false)
 			{
 				$errors[] = "The value you've selected for the run weekday is invalid";
@@ -272,8 +272,8 @@ if($mybb->input['action'] == "edit")
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),
-				"month" => $db->escape_string(implode(",", $mybb->input['month'])),
-				"weekday" => $db->escape_string(implode(",", $mybb->input['weekday'])),
+				"month" => $db->escape_string($mybb->input['month']),
+				"weekday" => $db->escape_string($mybb->input['weekday']),
 				"enabled" => intval($mybb->input['enabled']),
 				"logging" => intval($mybb->input['logging'])
 			);
@@ -410,14 +410,14 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	if($mybb->input['action'] == "enable")
 	{
 		$nextrun = fetch_next_run($task);
-		$db->update_query("tasks", array("nextrun" => $nextrun, "enabled='1'"), "tid='{$task['tid']}'");
+		$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
 		$cache->update_tasks();
 		flash_message('The speicified task has now been enabled.', 'success');
 		admin_redirect("index.php?".SID."&module=tools/tasks");
 	}
 	else
 	{
-		$db->update_query("tasks", array("enabled='1'"), "tid='{$task['tid']}'");
+		$db->update_query("tasks", array("enabled" => 0), "tid='{$task['tid']}'");
 		$cache->update_tasks();
 		flash_message('The speicified task has now been disabled.', 'success');
 		admin_redirect("index.php?".SID."&module=tools/tasks");

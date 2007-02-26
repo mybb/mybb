@@ -194,8 +194,9 @@ class Form
 		foreach($option_list as $value => $option)
 		{
 			$select_add = '';
-			if($value === $selected || (is_array($selected) && in_array($value, $selected)))
+			if($value === $selected || (is_array($selected) && in_array($value, $selected, true)))
 			{
+				print_r($selected);
 				$select_add = " selected=\"selected\"";
 			}
 			$select .= "<option value=\"{$value}\"{$select_add}>{$option}</option>\n";

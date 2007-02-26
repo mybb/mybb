@@ -36,12 +36,14 @@ function run_task($tid=0)
 	// No task? Return
 	if(!$task['tid'])
 	{
+		$cache->update_tasks();
 		return false;
 	}
 
 	// Is this task locked less than 5 minutes ago? Must still be running.
 	if($task['locked'] != 0 && $task['locked'] < time()-300)
 	{
+		$cache->update_tasks();
 		return false;
 	}
 	// Lock it! It' mine, all mine!
@@ -57,6 +59,7 @@ function run_task($tid=0)
 		{
 			add_task_log($task['id'], "Task file does not exist");
 		}
+		$cache->update_tasks();
 		return false;
 	}
 	// Run the task
@@ -304,7 +307,6 @@ function fetch_next_run($task)
 			}
 		}
 	}
-
 	return mktime($next_hour, $next_minute, 0, $next_month, $next_day, $next_year);
 }
 
