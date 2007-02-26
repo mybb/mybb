@@ -304,7 +304,7 @@ if($mybb->input['action'] == "change")
 	$page->add_breadcrumb_item($groupinfo['title']);
 	$page->output_header("Board Settings - {$groupinfo['title']}");
 	
-	$form = new Form("index.php?".SID."&amp;module=config/settings", "post", "change");
+	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
 
 	echo $form->generate_hidden_field("gid", $groupinfo['gid']);
 	

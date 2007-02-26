@@ -716,3 +716,7 @@ table.general td.align_center, table.general th.align_center, .align_center {
 a img {
 	border: 0;
 }
+
+option { 
+	padding-right: 10px;
+}

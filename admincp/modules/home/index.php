@@ -102,33 +102,33 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header("MyBB and Server Statistics");
-	$table->construct_header();
+	$table->construct_header("&nbsp;");
 	$table->construct_header("Forum Statistics");
-	$table->construct_header();
+	$table->construct_header("&nbsp;");
 	
 	$table->construct_cell("<strong>MyBB Version</strong>", array('width' => '25%'));
 	$table->construct_cell($mybb->version, array('width' => '25%'));
 	$table->construct_cell("<strong>Threads</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$threads['numthreads']}</strong> Threads<br /><strong>{$newthreads}</strong> New Today<br /><a href=\"\"><strong>{$unapproved_threads}</strong> Unapproved</a>", array('width' => '25%'));
-	$table->construct_row();
+	$table->construct_row("&nbsp;");
 	
 	$table->construct_cell("<strong>PHP Version</strong>", array('width' => '25%'));
 	$table->construct_cell(phpversion(), array('width' => '25%'));
 	$table->construct_cell("<strong>Posts</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$posts['numposts']}</strong> Posts<br /><strong>{$newposts}</strong> New Today<br /><a href=\"\"><strong>{$unapproved_posts}</strong> Unapproved</a>", array('width' => '25%'));
-	$table->construct_row();
+	$table->construct_row("&nbsp;");
 	
 	$table->construct_cell("<strong>MySQL Engine</strong>", array('width' => '25%'));
 	$table->construct_cell($db->title." ".$db->get_version(), array('width' => '25%'));
 	$table->construct_cell("<strong>Users</strong>", array('width' => '25%'));
 	$table->construct_cell("<a href=\"\"><strong>{$users}</strong> Registered Users</a><br /><strong>{$activeusers}</strong> Active Users<br /><strong>{$newusers}</strong> Registrations Today<br /><a href=\"\"><strong>{$awaitingusers}</strong> Awaiting Activation</a>", array('width' => '25%'));
-	$table->construct_row();
+	$table->construct_row("&nbsp;");
 	
 	$table->construct_cell("<strong>Server Load</strong>", array('width' => '25%'));
 	$table->construct_cell($serverload, array('width' => '25%'));
 	$table->construct_cell("<strong>Attachments</strong>", array('width' => '25%'));
 	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> Attachments<br /><a href=\"\"><strong>{$unapproved_attachs}</strong> Unapproved</a><br /><strong>{$attachs['spaceused']}</strong> Used", array('width' => '25%'));
-	$table->construct_row();
+	$table->construct_row("&nbsp;");
 	
 	$table->output("Dashboard");
 	

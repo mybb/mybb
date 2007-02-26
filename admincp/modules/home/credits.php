@@ -36,19 +36,19 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=5\" target=\"_blank\">Scott Hough</a>");
 	$table->construct_row();	
 	
-	$table->construct_cell("");
+	$table->construct_cell("&nbsp;");
 	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=240\" target=\"_blank\">Peter</a>");
 	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1830\" target=\"_blank\">Justin S.</a>");
 	$table->construct_row();
 	
-	$table->construct_cell("");
+	$table->construct_cell("&nbsp;");
 	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=2165\" target=\"_blank\">Tikitiki</a>");
-	$table->construct_cell("");
+	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
-	$table->construct_cell("");
+	$table->construct_cell("&nbsp;");
 	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1959\" target=\"_blank\">Crakter</a>");
-	$table->construct_cell("");
+	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
 	$table->output("MyBB Credits");
