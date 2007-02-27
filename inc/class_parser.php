@@ -124,6 +124,13 @@ class postParser
 
 		// Always fix bad Javascript in the message.
 		$message = $this->fix_javascript($message);
+		
+		// Replace "me" code and slaps if we have a username
+		if($options['me_username'])
+		{
+			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
+		}
 
 		// If we can, parse smilies
 		if($options['allow_smilies'] != "no")
@@ -341,13 +348,6 @@ class postParser
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2'));", $message);
 			$message = preg_replace("#\[img align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$3', array(), '$1');", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3}) align=([a-z]+)\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$5', array('$1', '$2', '$3'));", $message);
-		}
-
-		// Replace "me" code and slaps if we have a username
-		if($options['me_username'])
-		{
-			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
-			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
 		return $message;
