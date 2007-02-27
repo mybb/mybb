@@ -49,11 +49,11 @@ if($usergroups[6]['gid'])
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
 		WHERE f.active = 'yes'
 		ORDER BY u.username
-		");
-		while($moderator = $db->fetch_array($query))
-		{
-			$moderators[$moderator['uid']][] = $moderator;
-		} 
+	");
+	while($moderator = $db->fetch_array($query))
+	{
+		$moderators[$moderator['uid']][] = $moderator;
+	} 
 }
 
 // Now query the users of those specific groups
@@ -84,6 +84,11 @@ while($user = $db->fetch_array($query))
 		}
 		$user['forumlist'] = $forumlist;
 		$forumlist = '';
+		$usergroups[6]['user_list'][$user['uid']] = $user;
+	}
+	
+	if($user['displaygroup'] == '6' || $user['displaygroup'] == '6')
+	{
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 	
@@ -130,8 +135,8 @@ foreach($usergroups as $usergroup)
 		
 		$bgcolor = alt_trow();
 
-		//If the current group is a moderator group
-		if($usergroup['gid'] == 6)
+		// If the current group is a moderator group
+		if($usergroup['gid'] == 6 && !empty($user['forumlist']))
 		{
 			$forumslist = $user['forumlist'];
 			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
@@ -142,7 +147,7 @@ foreach($usergroups as $usergroup)
 		}	
 	}
 	
-	if($usergroup['gid'] == 6)
+	if($usergroup['gid'] == 6 && !empty($user['forumlist']))
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
 	}
