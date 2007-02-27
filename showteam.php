@@ -88,6 +88,11 @@ while($user = $db->fetch_array($query))
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 	
+	if($user['displaygroup'] == '6' || $user['displaygroup'] == '6')
+	{
+		$usergroups[6]['user_list'][$user['uid']] = $user;
+	}
+	
 	// Are they also in another group which is being shown on the list?
 	if($user['displaygroup'] != 0)
 	{
@@ -134,7 +139,7 @@ foreach($usergroups as $usergroup)
 		$bgcolor = alt_trow();
 
 		// If the current group is a moderator group
-		if($usergroup['gid'] == 6)
+		if($usergroup['gid'] == 6 && !empty($user['forumlist']))
 		{
 			$forumslist = $user['forumlist'];
 			eval("\$modrows .= \"".$templates->get("showteam_moderators_mod")."\";");
@@ -145,7 +150,7 @@ foreach($usergroups as $usergroup)
 		}	
 	}
 	
-	if($usergroup['gid'] == 6)
+	if($usergroup['gid'] == 6 && !empty($user['forumlist']))
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
 	}
