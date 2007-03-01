@@ -135,7 +135,7 @@ class postParser
 		// If we can, parse smilies
 		if($options['allow_smilies'] != "no")
 		{
-			$message = $this->parse_smilies($message, $options['allowhtml']);
+			$message = $this->parse_smilies($message, $options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
