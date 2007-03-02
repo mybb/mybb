@@ -1110,8 +1110,8 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$ppd = $memprofile['postnum'];
 	}
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS posts", "visible > 0");
-	$posts = $db->fetch_field($query, "posts");
+	$stats = $cache->read("stats");
+	$posts = $stats['numposts'];
 	if($posts == 0)
 	{
 		$percent = "0";

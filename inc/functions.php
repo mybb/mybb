@@ -2702,7 +2702,6 @@ function htmlspecialchars_uni($message)
 	$message = str_replace("<","&lt;",$message);
 	$message = str_replace(">","&gt;",$message);
 	$message = str_replace("\"","&quot;",$message);
-	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
 	return $message;
 }
 
