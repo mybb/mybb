@@ -624,12 +624,12 @@ div.success p em {
 .nav_tabs li.right {
 	float: right;
 	padding-left: 5px;
-padding-right: 0;
+	padding-right: 0;
 }
 
 .nav_tabs li a {
 	border: 1px solid #ccc;
-border-bottom: 0;
+	border-bottom: 0;
 	display: block;
 	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
 	font-size: 160%;
@@ -637,7 +637,7 @@ border-bottom: 0;
 	color: #aaa;
 	padding: 3px 8px 4px;
 	background: #f7f7f7;
-height: 24px;
+	height: 24px;
 }
 
 
@@ -646,52 +646,6 @@ height: 24px;
 	text-decoration: none;
 }
 
-*.align_center {
-	text-align: center;
-}
-
-.float_right {
-	float: right;
-}
-
-.nav_tabs ul { 
-	list-style: none; 
-	padding: 0; 
- 	margin: 0; 
- 	height: 32px; 
- 	border-bottom: 1px solid #ccc;
-} 
-	 
-.nav_tabs li { 
-	float: left; 
-	padding-right: 5px; 
-} 
- 	 
-.nav_tabs li.right { 
-	float: right; 
-	padding-left: 5px; 
-	padding-right: 0; 
-} 
- 	 
- 	 
- 	 
-.nav_tabs li a { 
- 	border: 1px solid #ccc; 
- 	display: block; 
- 	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif; 
- 	font-size: 160%; 
- 	letter-spacing: -1px; 
-	color: #aaa; 
-	padding: 3px 8px 4px; 
-	background: #f7f7f7; 
-} 
- 	 
- 	 
-.nav_tabs li a:hover { 
-	background: #f1f1f1; 
-	text-decoration: none; 
-} 
-	 
 	 
 .nav_tabs li.active a { 
     color: #666; 
@@ -708,9 +662,15 @@ height: 24px;
 	border-top: 0; 
 	font-size: 95%; 
 } 
- 	 
-table.general td.align_center, table.general th.align_center, .align_center { 
-	text-align: center; 
+<<<<<<< .mine
+
+
+*.align_center, table.general th.align_center {
+	text-align: center;
+}
+
+.float_right {
+	float: right;
 }
 
 a img {

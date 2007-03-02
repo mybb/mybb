@@ -1455,6 +1455,8 @@ function update_stats($changes=array())
 			}
 		}
 	}
+	print_r($changes);
+	print_r($new_stats);
 	// Fetch latest user if the user count is changing
 	if(array_key_exists('numusers', $changes))
 	{
@@ -1463,7 +1465,14 @@ function update_stats($changes=array())
 		$new_stats['lastuid'] = $lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'];
 	}
-	$stats = array_merge($stats, $new_stats);
+	if(is_array($stats))
+	{
+		$stats = array_merge($stats, $new_stats);
+	}
+	else
+	{
+		$stats = $new_stats;
+	}
 	$cache->update("stats", $stats);
 }
 
@@ -3127,8 +3136,6 @@ function htmlspecialchars_uni($message)
 	$message = str_replace("<", "&lt;", $message);
 	$message = str_replace(">", "&gt;", $message);
 	$message = str_replace("\"", "&quot;", $message);
-	$message = str_replace("  ", "&nbsp;&nbsp;", $message);
-
 	return $message;
 }
 
