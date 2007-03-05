@@ -1,4 +1,14 @@
 <?php
+/**
+ * MyBB 1.2
+ * Copyright © 2007 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/license.php
+ *
+ * $Id$
+ */
+
 function user_meta()
 {
 	global $page;
@@ -28,7 +38,7 @@ function user_action_handler($action)
 	$sub_menu['40'] = array("id" => "banning", "title" => "Banning", "link" => "index.php?".SID."&module=user/banning");
 	$sub_menu['50'] = array("id" => "admin_permissions", "title" => "Admin Permissions", "link" => "index.php?".SID."&module=user/admin_permissions");
 	$sub_menu['60'] = array("id" => "mass_mail", "title" => "Mass Mail", "link" => "index.php?".SID."&module=user/mass_mail");
-	$sub_menu['70'] = array("id" => "group_promotions", "title" => "User Group Promotions", "link" => "index.php?".SID."&module=user/group_promotions");
+	$sub_menu['70'] = array("id" => "group_promotions", "title" => "Group Promotions", "link" => "index.php?".SID."&module=user/group_promotions");
 	$sub_menu['80'] = array("id" => "stats_and_logging", "title" => "Statistics and Logging", "link" => "index.php?".SID."&module=user/stats_and_logging");
 
 	$sidebar = new sideBarItem("Users and Groups");

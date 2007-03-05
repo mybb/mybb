@@ -1,4 +1,14 @@
 <?php
+/**
+ * MyBB 1.2
+ * Copyright © 2007 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/license.php
+ *
+ * $Id$
+ */
+
 
 $page->add_breadcrumb_item("User Group Promotions", "index.php?".SID."&amp;module=user/group_promotions");
 
@@ -55,7 +65,7 @@ if($mybb->input['action'] == "add")
 				"logging" => intval($mybb->input['logging'])
 			);
 			
-			$db->insert_query("promotions", $new_task);
+			$db->insert_query("promotions", $new_promotion);
 			flash_message('The promotion has successfully been promotion.', 'success');
 			admin_redirect("index.php?".SID."&module=user/group_promotions");
 		}

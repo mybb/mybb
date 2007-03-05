@@ -1,4 +1,14 @@
 <?php
+/**
+ * MyBB 1.2
+ * Copyright © 2007 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/license.php
+ *
+ * $Id$
+ */
+
 define("IN_MYBB", 1);
 
 // Lets pretend we're a level higher

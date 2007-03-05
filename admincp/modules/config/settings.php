@@ -1,4 +1,14 @@
 <?php
+/**
+ * MyBB 1.2
+ * Copyright © 2007 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.com
+ * License: http://www.mybboard.com/license.php
+ *
+ * $Id$
+ */
+
 // TODO
 //   Manage settings and groups page - lists the groups and has edit/delete for both groups and settings
 //   Delete setting page
