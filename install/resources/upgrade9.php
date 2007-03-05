@@ -129,6 +129,11 @@ function upgrade9_dbchanges()
 		$db->query("DROP TABLE ".TABLE_PREFIX."promotions");
 	}
 	
+	if($db->table_exists("promotionlogs"))
+	{
+		$db->query("DROP TABLE ".TABLE_PREFIX."promotionlogs");
+	}
+	
 	$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
@@ -269,17 +274,38 @@ function upgrade9_dbchanges()
 		$taskcount++;
 	}
 
-	$db->query("RENAME TABLE ".TABLE_PREFIX."favorites TO ".TABLE_PREFIX."threadsubscriptions");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
-	$db->query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='0' WHERE type='f'");
-	$db->query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='1' WHERE type='s'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."subscriptionkey varchar(32) NOT NULL default ''");
+	if($db->table_exists("favorites") && !$db->table_exists("threadsubscriptions"))
+	{
+		$db->query("RENAME TABLE ".TABLE_PREFIX."favorites TO ".TABLE_PREFIX."threadsubscriptions");
+	}
+	
+	if($db->field_exists('fid', "threadsubscriptions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
+	}
+	
+	if($db->field_exists('type', "threadsubscriptions"))
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='0' WHERE type='f'");
+		$db->query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='1' WHERE type='s'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
+	}
+	
+	if(!$db->field_exists('dateline', "threadsubscriptions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
+	}
+	if(!$db->field_exists('dateline', "threadsubscriptions"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD subscriptionkey varchar(32) NOT NULL default ''");
+	}
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='1' WHERE emailnotify='no'");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='2' WHERE emailnotify='yes'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
+	if($db->field_exists('emailnotify', "users"))
+	{
+		$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='1' WHERE emailnotify='no'");
+		$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='2' WHERE emailnotify='yes'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
+	}
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

@@ -5320,7 +5320,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
 <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" /></td>
 </tr>]]></template>
-		<template name="usercp_subscriptions" version="120"><![CDATA[<html>
+		<template name="usercp_subscriptions" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->subscriptions}</title>
 {$headerinclude}
@@ -5350,8 +5350,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<div class="float_right"><strong>{$lang->with_selected}</strong>
 				<select name="do">
 					<option value="delete">{$lang->delete_subscriptions}</option>
-					<option value="no_notification">{$lang->update_no_notification</option>
-					<option value="instant_notification">{$lang->instant_notification</option>
+					<option value="no_notification">{$lang->update_no_notification}</option>
+					<option value="instant_notification">{$lang->instant_notification}</option>
 				</select>
 				{$gobutton}
 			</div>

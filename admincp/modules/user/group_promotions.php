@@ -169,6 +169,17 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "logs")
 {
+	if($mybb->input['page'] && $mybb->input['page'] > 1)
+	{
+		$mybb->input['page'] = intval($mybb->input['page']);
+		$start = ($mybb->input['page']*20)-20;
+	}
+	else
+	{
+		$mybb->input['page'] = 1;
+		$start = 0;
+	}
+	
 	$page->add_breadcrumb_item("Promotion Logs");
 	$page->output_header("User Group Promotions - Promotion Logs");
 	
@@ -186,10 +197,10 @@ if($mybb->input['action'] == "logs")
 	$table->construct_header("New User Group", array("class" => "align_center", "width" => '25%'));
 	$table->construct_header("Time Promoted", array("class" => "align_center", "width" => '25%'));
 
-	$query = $db->simple_select("promotionlogs", "*", "", array("order_by" => "dateline", "order_dir" => "desc"));
+	$query = $db->simple_select("promotionlogs", "*", "", array("order_by" => "dateline", "order_dir" => "desc", "limit_start" => $start, "limit" => "20"));
 	while($log = $db->fetch_array($query))
 	{
-		$log['username'] = "<a href=\"index.php".SID."&amp;module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($promotion['username'])."</a>";
+		$log['username'] = "<a href=\"index.php?".SID."&amp;module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($promotion['username'])."</a>";
 		$log['oldusergroup'] = htmlspecialchars_uni($log['oldusergroup']);
 		$log['newusergroup'] = htmlspecialchars_uni($log['newusergroup']);
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
@@ -200,13 +211,15 @@ if($mybb->input['action'] == "logs")
 		$table->construct_row();
 	}
 	
-	if($db->num_rows($query) == 0)
+	if(count($table->rows) == 0)
 	{
 		$table->construct_cell("There are currently no promotions logged.", array("colspan" => "4"));
 		$table->construct_row();
 	}
 	
 	$table->output("Promotion Logs");
+	
+	echo "<br />".draw_admin_pagination($mybb->input['page'], "20", count($table->rows), "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs&amp;page={page}");
 	
 	$page->output_footer();
 }
@@ -259,7 +272,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if($db->num_rows($query) == 0)
+	if(count($table->rows) == 0)
 	{
 		$table->construct_cell("There are currently no set promotions.", array("colspan" => "2"));
 		$table->construct_row();

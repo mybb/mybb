@@ -116,7 +116,7 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents("<p><select name=\"from\">$vers</select>");
+		$output->print_contents(sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
@@ -133,6 +133,11 @@ else
 				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".intval($mybb->input['from'])."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
 				$output->print_contents(sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
+			}
+			else
+			{
+				add_upgrade_store("startscript", $mybb->input['from']);
+				$runfunction = next_function($mybb->input['from']);
 			}
 		}
 		else
@@ -416,7 +421,7 @@ function next_function($from, $func="dbchanges")
 
 function load_module($module)
 {
-	global $system_upgrade_detail, $currentscript;
+	global $system_upgrade_detail, $currentscript, $upgrade_detail;
 	require_once INSTALL_ROOT."resources/".$module;
 	if($currentscript != $module)
 	{
