@@ -138,7 +138,7 @@ border: 1px solid #0F5C8E;]]></extra>
 			<background><![CDATA[#efefef]]></background>
 			<color><![CDATA[#000000]]></color>
 			<extra><![CDATA[border: 1px solid #4874a3;
-padding: 6px;]]></extra>
+padding: 10px;]]></extra>
 		</bottommenu>
 		<navigation>
 			<color><![CDATA[#000000]]></color>
@@ -801,7 +801,7 @@ form {
 						<span class="smalltext">
 							<a href="printthread.php?tid={$tid}">{$lang->view_printable}</a><br />
 							<a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a><br />
-							<a href="usercp2.php?action=addsubscription&amp;tid={$tid}">{$lang->subscribe_thread}</a> | <a href="usercp2.php?action=addfavorite&amp;tid={$tid}">{$lang->add_favorites}</a>
+							<a href="usercp2.php?action=addsubscription&amp;tid={$tid}">{$lang->subscribe_thread}</a>
 						</span>
 					</td>
 					<td align="right">
@@ -907,10 +907,11 @@ form {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7"{$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
-{$disablesmilies}</span></td>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
+{$disablesmilies}</span>
+</td>
 </tr>
+{$subscriptionmethod}
 {$attachbox}
 {$pollbox}
 </table>
@@ -963,11 +964,11 @@ form {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="7"{$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="6"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
 {$disablesmilies}
 </span></td>
 </tr>
+{$subscriptionmethod}
 {$attachbox}
 {$modoptions}
 {$captcha}
@@ -1064,10 +1065,10 @@ form {
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->post_options}</strong></td>
 <td class="trow1"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" tabindex="8"{$postoptionschecked['emailnotify']} /> {$lang->options_emailnotify}</label>
+<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
 {$disablesmilies}</span></td>
 </tr>
+{$subscriptionmethod}
 {$modoptions}
 {$attachbox}
 {$pollbox}
@@ -1135,7 +1136,6 @@ form {
 <li><a href="usercp.php?action=editlists">{$lang->ucp_nav_editlists}</a></li>
 <li><a href="usercp.php?action=attachments">{$lang->ucp_nav_attachments}</a></li>
 <li>{$draftstart}<a href="usercp.php?action=drafts">{$lang->ucp_nav_drafts}</a> {$draftcount}{$draftend}</li>
-<li><a href="usercp.php?action=favorites">{$lang->ucp_nav_favorite_threads}</a></li>
 <li><a href="usercp.php?action=subscriptions">{$lang->ucp_nav_subscribed_threads}</a></li>
 <li><a href="usercp.php?action=forumsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></li>
 <li><a href="usercp.php?action=notepad">{$lang->ucp_nav_notepad}</a></li>
@@ -1242,10 +1242,6 @@ form {
 <td><span class="smalltext"><label for="hideemail">{$lang->allow_emails}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailnotify" id="emailnotify" value="yes" {$emailnotifycheck} /></td>
-<td><span class="smalltext"><label for="emailnotify">{$lang->email_notify}</label></span></td>
-</tr>
-<tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="yes" {$receivepmscheck} /></td>
 <td><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
 </tr>
@@ -1257,6 +1253,19 @@ form {
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="pmnotify" id="pmnotify" value="yes" {$pmnotifycheck} /></td>
 <td><span class="smalltext"><label for="pmnotify">{$lang->pm_notify}</label></span></td>
 </tr>
+<tr>
+<td colspan="2"><span class="smalltext"><label for="subscriptionmethod">{$lang->subscription_method}</label></span></td>
+</tr>
+<tr>
+<td colspan="2">
+	<select name="subscriptionmethod">
+		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
+		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
+		<option value="2" {$instant_email_subscribe_selected}>{$lang->instant_email_subscribe}</option>
+	</select>
+</td>
+</tr>
+
 </table>
 </fieldset>
 <br />
@@ -1412,13 +1421,17 @@ form {
 <td class="trow1" colspan="7">{$lang->no_drafts}</td>
 </tr>]]></template>
 		<template name="usercp_subscriptions_thread" version="140"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt="" /></td>
-<td align="center" class="trow2">{$icon}</td>
-<td width="100%" class="trow1"><a href="{$subscription['threadlink']}">{$subscription['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$subscription['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removesubscription&amp;tid={$subscription['tid']}">{$lang->unsubscribe}</a></span></td>
-<td align="center" class="trow2">{$subscription['profilelink']}</td>
-<td align="center" class="trow1"><a href="javascript:MyBB.whoPosted({$subscription['tid']});">{$subscription['replies']}</a></td>
-<td align="center" class="trow2">{$subscription['views']}</td>
-<td class="trow1" style="white-space: nowrap">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>]]></template>
+	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
+	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
+	<td class="{$bgcolor}">{$gotounread}<a href="{$thread['threadlink']}" class="{$new_class}">{$thread['subject']}</a><br /><span class="smalltext">{$lang->notification_method} {$notification_type}</span></td>
+	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
+	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
+	<td class="{$bgcolor}" style="white-space: nowrap">
+		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
+		<a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
+	</td>
+	<td class="{$bgcolor}" align="center"><input type="checkbox" class="checkbox" name="check[{$thread['tid']}]" value="{$thread['tid']}" /></td>
+</tr>]]></template>
 		<template name="usercp_options_timezoneselect" version="120"><![CDATA[<select name="timezoneoffset">
 <option value="-12" {$timezoneselect['n120']}>{$lang->gmt} -12:00 {$lang->hours} ({$timein['n120']})</option>
 <option value="-11" {$timezoneselect['n110']}>{$lang->gmt} -11:00 {$lang->hours} ({$timein['n110']})</option>
@@ -1453,18 +1466,6 @@ form {
 <option value="+11" {$timezoneselect['110']}>{$lang->gmt} +11:00 {$lang->hours} ({$timein['110']})</option>
 <option value="+12" {$timezoneselect['120']}>{$lang->gmt} +12:00 {$lang->hours} ({$timein['120']})</option>
 </select>]]></template>
-		<template name="usercp_favorites_none" version="120"><![CDATA[<tr>
-<td class="trow1" colspan="7">{$lang->no_favorite_threads}</td>
-</tr>]]></template>
-		<template name="usercp_favorites_thread" version="140"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
-<td align="center" class="trow2">{$icon}</td>
-<td width="100%" class="trow1"><a href="{$favorite['threadlink']}">{$favorite['subject']}</a><br /><span class="smalltext"><a href="newreply.php?tid={$favorite['tid']}">{$lang->post_reply}</a> | <a href="usercp2.php?action=removefavorite&amp;tid={$favorite['tid']}">{$lang->delete_from_favorites}</a></span></td>
-<td align="center" class="trow2">{$favorite['profilelink']}</td>
-<td align="center" class="trow1"><a href="javascript:MyBB.whoPosted({$favorite['tid']});">{$favorite['replies']}</a></td>
-<td align="center" class="trow2">{$favorite['views']}</td>
-<td class="trow1">{$lastpostdate}, {$lastposttime}<br /><span class="smalltext">{$lang->by} {$lastposterlink}</span></td>
-</tr>]]></template>
 		<template name="header_welcomeblock_member_admin" version="120"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php">{$lang->welcome_admin}</a>]]></template>
 		<template name="forumdisplay_newthread" version="120"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" alt="{$lang->post_thread}" /></a>]]></template>
 		<template name="showthread_threaded_bitactive" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
@@ -1808,7 +1809,11 @@ form {
 </tr>]]></template>
 		<template name="usercp_currentavatar" version="120"><![CDATA[<td class="trow1" rowspan="6" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" {$avatar_width_height} /></td>]]></template>
 		<template name="footer" version="120"><![CDATA[			<br />
-			<div class="bottommenu"><span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
+			<div class="bottommenu">
+				<div class="float_right">{$lang_select}</div>
+				<div>
+					<span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
+				</div>
 			</div>
 			</div>
 		<hr class="hidden" />
@@ -3193,7 +3198,7 @@ form {
 <tr>
 <td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
 <td class="trow2">
-<input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
+<input type="checkbox" class="checkbox" name=thread value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
 </td>
 </tr>
 </table>
@@ -3423,14 +3428,6 @@ form {
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_modbit" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
-		<template name="index_pms" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr><td class="thead" colspan="2"><a href="private.php"><strong>{$lang->private_messages}</strong></a></td></tr>
-<tr>
-<td class="trow1" align="center" width="2%"><img src="{$theme['imgdir']}/{$pmfolder}" alt="{$lang->private_messages}" /></td>
-<td class="trow1" width="98%"><span class="smalltext">{$lang->pms_new}<br />{$lang->pms_unread_total}</span></td>
-</tr>
-</table>
-]]></template>
 		<template name="forumdisplay_thread_gotounread" version="140"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" /></a> ]]></template>
 		<template name="private_tracking" version="120"><![CDATA[<html>
 <head>
@@ -3663,6 +3660,7 @@ form {
 <input type="hidden" name="lastpid" id="lastpid" value="{$last_pid}" />
 <input type="hidden" name="from_page" value="{$page}" />
 <input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="method" value="quickreply" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
@@ -3678,7 +3676,6 @@ form {
 <strong>{$lang->message}</strong><br />
 <span class="smalltext">{$lang->message_note}<br /><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="yes" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[emailnotify]" value="yes" {$postoptionschecked['emailnotify']} />&nbsp;<strong>{$lang->email_notify}</strong></label><br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
 </td>
 <td class="trow1">
@@ -4985,44 +4982,6 @@ form {
 </table>
 <br />]]></template>
 		<template name="portal_whosonline_memberbit" version="140"><![CDATA[{$comma}<a href="{$mybb->settings['bburl']}/{$user['profilelink']}">{$user['username']}</a>{$invisiblemark}]]></template>
-		<template name="usercp_favorites" version="120"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->favorites}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table width="100%" border="0" align="center">
-<tr>
-{$usercpnav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="trow1"><span class="smalltext"><a href="usercp2.php?action=removefavorites">{$lang->remove_all_favs}</a> | <a href="usercp.php?action=subscriptions">{$lang->view_thread_subscriptions}</a></span></td>
-<td class="trow1" align="right">&nbsp;{$multipage}</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="3"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->replies}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->views}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
-</tr>
-{$threads}
-</table>
-</td></tr></table>
-{$footer}
-</body>
-</html>]]></template>
 		<template name="printthread" version="140"><![CDATA[<html>
 <head>
 <title>{$thread['subject']} - {$lang->printable_version}</title>
@@ -5368,36 +5327,44 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </head>
 <body>
 {$header}
+<form action="usercp.php" method="post" name="input">
+<input type="hidden" name="action" value="do_subscriptions" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td class="trow1"><span class="smalltext"><a href="usercp2.php?action=removesubscriptions">{$lang->remove_all_subscriptions}</a> | <a href="usercp.php?action=favorites">{$lang->view_favorite_threads}</a></span></td>
-<td class="trow1" align="right">&nbsp;{$multipage}</td>
-</tr>
+	<tr>
+		<td class="thead" colspan="7"><strong>{$lang->subscriptions} ({$threadcount})</strong>
+	<tr>
+		<td class="tcat" align="center" colspan="2">&nbsp;</td>
+		<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
+		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->replies}</strong></span></td>
+		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->views}</strong></span></td>
+		<td class="tcat" align="center" width="200"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
+		<td class="tcat" align="center" width="1"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="1" onClick="MyBB.checkAll(this.form)" /></td>
+	</tr>
+	{$threads}
+	<tr>
+		<td class="tfoot" colspan="7">
+			<div class="float_right"><strong>{$lang->with_selected}</strong>
+				<select name="do">
+					<option value="delete">{$lang->delete_subscriptions}</option>
+					<option value="no_notification">{$lang->update_no_notification</option>
+					<option value="instant_notification">{$lang->instant_notification</option>
+				</select>
+				{$gobutton}
+			</div>
+			<div>
+				<strong><a href="usercp2.php?action=removesubscriptions">{$lang->remove_all_subscriptions}</a></strong>
+			</div>
+		</td>
+	</tr>
 </table>
 </td>
 </tr>
 </table>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="3"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->replies}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->views}</strong></span></td>
-<td class="thead" align="center"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
-</tr>
-{$threads}
-</table>
-</td>
-</tr>
-</table>
+</form>
 {$footer}
 </body>
 </html>]]></template>
@@ -7024,10 +6991,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top"><span class="smalltext"><label for="hideemail">{$lang->hide_email}</label></span></td>
 </tr>
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="emailnotify" id="emailnotify" value="yes" {$emailnotifycheck} /></td>
-<td valign="top"><span class="smalltext"><label for="emailnotify">{$lang->email_notify}</label></span></td>
-</tr>
-<tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="receivepms" id="receivepms" value="yes" {$receivepmscheck} /></td>
 <td valign="top"><span class="smalltext"><label for="receivepms">{$lang->receive_pms}</label></span></td>
 </tr>
@@ -7043,6 +7006,16 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="invisible" id="invisible" value="yes" {$invisiblecheck} /></td>
 <td valign="top"><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
 </tr>
+<tr>
+<td>
+	<select name="subscriptionmethod">
+		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
+		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
+		<option value="2" {$instant_email_subscribe_selected}>{$lang->instant_email_subscribe}</option>
+	</select>
+</td>
+</tr>
+
 </table>
 </fieldset>
 <br />
@@ -7246,8 +7219,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_rssdiscovery" version="120"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?fid={$fid}" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
 		<template name="post_captcha" version="140"><![CDATA[<tr>
-<td class="trow2" valign="top"><strong>{$lang->image_verification}</strong></td>
-<td class="trow2">
+<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow1">
 <script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
@@ -7328,5 +7301,68 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</td>
 </tr>
 </table>]]></template>
+	<template name="footer_languageselect" version="140"><![CDATA[<form method="get" action="index.php">
+		<select name="language" id="lang_select" onchange="MyBB.changeLanguage();">
+			<optgroup label="{$lang->select_language}">
+				{$lang_options}
+			</optgroup>
+		</select>
+		{$gobutton}
+	</form>]]></template>
+	<template name="usercp_addsubscription_thread" version="140"><![CDATA[<html>
+<head>
+<title>{$lang->subscribe_to_thread}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="usercp2.php" method="post" name="input">
+<input type="hidden" name="action" value="do_addsubscription" />
+<input type="hidden" name="tid" value="{$thread['tid']}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->subscribe_to_thread}</strong></td>
+</tr>
+<tr>
+<td class="trow1" valign="top" width="200"><strong>{$lang->notification_method}</strong>
+<td class="trow1" valign="top">
+	<table width="100%" border="0" align="center">
+		<tr>
+			<td width="1"><input type="radio" name="notification" id="notification_none" value="0" {$notification_none_checked} /></td>
+			<td><strong><label for="notification_none">{$lang->no_notification}</label></strong><br /><span class="smalltext">{$lang->no_notification_desc}</span></td>
+		</tr>
+		<tr>
+			<td width="1"><input type="radio" name="notification" id="notification_instant" value="1" {$notification_instant_checked} /></td>
+			<td><strong><label for="notification_instant">{$lang->instant_notification}</label></strong><br /><span class="smalltext">{$lang->instant_notification_desc}</span></td>
+		</tr>
+	</table>
+</td>
+</tr>
+</table>
+<br />
+<div style="text-align: center;">
+	<input type="submit" class="button" name="submit" value="{$lang->do_subscribe}" tabindex="3" accesskey="s" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+	<template name="post_subscription_method" version="140"><![CDATA[<tr>
+<td class="trow2">{$lang->thread_subscription_method}</td>
+<td class="trow2">
+	<select name="postoptions[subscriptionmethod]" id="subscriptionmethod">
+		<option value="">{$lang->no_subscribe}</option>
+		<option value="none" {$postoptions_subscriptionmethod_none}>{$lang->no_email_subscribe}</option>
+		<option value="instant" {$postoptions_subscriptionmethod_instant}>{$lang->instant_email_subscribe}</option>
+	</select>
+</td>
+</tr>]]></template>
 	</templates>
 </theme>

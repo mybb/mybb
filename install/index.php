@@ -913,7 +913,7 @@ function install_done()
 		'signature' => '',
 		'allownotices' => 'yes',
 		'hideemail' => 'no',
-		'emailnotify' => 'no',
+		'subscriptionmethod' => '0',
 		'receivepms' => 'yes',
 		'pmnotice' => 'yes',
 		'pmnotify' => 'yes',

@@ -75,4 +75,85 @@ function rebuild_settings()
 	$GLOBALS['settings'] = &$mybb->settings;
 }
 
+
+function draw_admin_pagination($page, $per_page, $total_items, $url)
+{
+	if($total_items <= $per_page)
+	{
+		return;
+	}
+
+	$pages = ceil($total_items / $per_page);
+
+	$pagination = "<div class=\"pagination\"><span class=\"pages\">Pages: </span>\n";
+
+	if($page > 1)
+	{
+		$prev = $page-1;
+		$prev_page = fetch_page_url($url, $prev);
+		$pagination .= "<a href=\"$prev_page\" class=\"previous\">&laquo; Previous</a> \n";
+	}
+
+	if($page > 2)
+	{
+		$from = $page-2;
+	}
+	else
+	{
+		$from = $page-1;
+	}
+
+	if($from < 1)
+	{
+		$from = 1;
+	}
+
+	if($page == $pages)
+	{
+		$to = $pages;
+	}
+	elseif($page == $pages-1)
+	{
+		$to = $page+1;
+	}
+	else
+	{
+		$to = $page+2;
+	}
+
+	if($from > 2)
+	{
+		$first = fetch_page_url($url, 1);
+		$pagination .= "<a href=\"{$page_url}\" title=\"Page 1\" class=\"first\">1</a> ... ";
+	}
+
+	for($i = $from; $i <= $to; ++$i)
+	{
+		$page_url = fetch_page_url($url, $i);
+		if($page == $i)
+		{
+			$pagination .= "<span class=\"current\">{$i}</span> \n";
+		}
+		else
+		{
+			$pagination .= "<a href=\"{$page_url}\" title=\"Page {$i}\">{$i}</a> \n";
+		}
+	}
+
+	if($to < $pages)
+	{
+		$last = fetch_page_url($url, $pages);
+		$pagination .= "... <a href=\"{$page_url}\" title=\"Page {$pages}\" class=\"last\">{$pages}</a>";
+	}
+
+	if($page < $pages)
+	{
+		$next = $page+1;
+		$next_page = fetch_page_url($url, $next);
+		$pagination .= " <a href=\"$next_page\" class=\"next\">Next &raquo;</a>\n";
+	}
+	$pagination .= "</div>\n";
+	return $pagination;
+}
+
 ?>

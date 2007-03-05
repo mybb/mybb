@@ -166,16 +166,6 @@ $tables[] = "CREATE TABLE mybb_events (
   PRIMARY KEY  (eid)
 ) TYPE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_favorites (
-  fid int unsigned NOT NULL auto_increment,
-  uid int unsigned NOT NULL default '0',
-  tid int unsigned NOT NULL default '0',
-  type char(1) NOT NULL default '',
-  KEY uid (uid),
-  KEY tid (tid,type),
-  PRIMARY KEY  (fid)
-) TYPE=MyISAM;";
-
 $tables[] = "CREATE TABLE mybb_forumpermissions (
   pid int unsigned NOT NULL auto_increment,
   fid int unsigned NOT NULL default '0',
@@ -683,6 +673,18 @@ $tables[] = "CREATE TABLE mybb_threadsread (
   UNIQUE KEY tid (tid,uid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_threadsubscriptions (
+  sid int unsigned NOT NULL auto_increment,
+  uid int unsigned NOT NULL default '0',
+  tid int unsigned NOT NULL default '0',
+  notification int(1) NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  subscriptionkey varchar(32) NOT NULL default '',
+  KEY uid (uid),
+  KEY tid (tid,notification),
+  PRIMARY KEY  (sid)
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_userfields (
   ufid int unsigned NOT NULL default '0',
   fid1 text NOT NULL,
@@ -779,7 +781,7 @@ $tables[] = "CREATE TABLE mybb_users (
   signature text NOT NULL,
   allownotices char(3) NOT NULL default '',
   hideemail char(3) NOT NULL default '',
-  emailnotify char(3) NOT NULL default '',
+  subscriptionmethod int(1) NOT NULL default '0',
   invisible char(3) NOT NULL default '',
   receivepms char(3) NOT NULL default '',
   pmnotice char(3) NOT NULL default '',

@@ -167,4 +167,9 @@ $l['js_validator_checking_username'] = "Checking if username is available";
 $l['js_validator_username_length'] = "Usernames must be between {1} and {2} characters long";
 $l['js_validator_checking_referrer'] = "Checking if referrer username exists.";
 $l['js_validator_captcha_valid'] = "Checking wether or not you entered the correct image verification code.";
+
+$l['subscription_method'] = "Default Thread Subscription Mode:";
+$l['no_auto_subscribe'] = "Do not subscribe";
+$l['no_email_subscribe'] = "No email notification";
+$l['instant_email_subscribe'] = "Instant email notification";
 ?>

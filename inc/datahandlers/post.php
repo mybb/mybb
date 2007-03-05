@@ -251,7 +251,6 @@ class PostDataHandler extends DataHandler
 
 		// Verify yes/no options.
 		$this->verify_yesno_option($options, 'signature', 'no');
-		$this->verify_yesno_option($options, 'emailnotify', 'no');
 		$this->verify_yesno_option($options, 'disablesmilies', 'no');
 
 		return true;
@@ -595,19 +594,19 @@ class PostDataHandler extends DataHandler
 		else
 		{
 			// Automatic subscription to the thread
-			if($post['options']['emailnotify'] != "no" && $post['uid'] > 0)
+			if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
 			{
-				$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
-				$already_subscribed = $db->fetch_field($query, "fid");
-				if(!$already_subscribed)
+				switch($post['options']['subscriptionmethod'])
 				{
-					$favoriteadd = array(
-						"uid" => intval($post['uid']),
-						"tid" => intval($post['tid']),
-						"type" => "s"
-					);
-					$db->insert_query("favorites", $favoriteadd);
+					case "instant":
+						$notification = 1;
+						break;
+					default:
+						$notification = '0';
 				}
+
+				require_once MYBB_ROOT."inc/functions_user.php";
+				add_subscribed_thread($post['tid'], $notification, $post['uid']);
 			}
 
 			// Perform any selected moderation tools.
@@ -772,13 +771,13 @@ class PostDataHandler extends DataHandler
 			$excerpt = $parser->text_parse_message($post['message']);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
-			// Fetch any users subscribed to this thread and queue up their subscription notices
+			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("
-				SELECT u.username, u.email, u.uid, u.language
-				FROM ".TABLE_PREFIX."favorites f, ".TABLE_PREFIX."users u
-				WHERE f.type='s' AND f.tid='{$post['tid']}'
-				AND u.uid=f.uid
-				AND f.uid != '{$post['uid']}'
+				SELECT u.username, u.email, u.uid, u.language, s.subscriptionkey
+				FROM ".TABLE_PREFIX."threadsubscriptions s, ".TABLE_PREFIX."users u
+				WHERE s.notification='1' AND s.tid='{$post['tid']}'
+				AND u.uid=s.uid
+				AND s.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
@@ -822,7 +821,7 @@ class PostDataHandler extends DataHandler
 					$emailmessage = $langcache[$uselang]['email_subscription'];
 				}
 				$emailsubject = sprintf($emailsubject, $subject);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $thread['tid']);
+				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $thread['tid'], $subscribedmember['subscriptionkey']);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',
@@ -1084,16 +1083,19 @@ class PostDataHandler extends DataHandler
 		// If we're not saving a draft there are some things we need to check now
 		if(!$thread['savedraft'])
 		{
-
-			// Automatically subscribe the user to this thread if they've chosen to.
-			if($thread['options']['emailnotify'] != "no" && $thread['uid'] > 0)
+			if($thread['options']['subscriptionmethod'] != "" && $thread['uid'] > 0)
 			{
-				$insert_favorite = array(
-					'uid' => intval($thread['uid']),
-					'tid' => $this->tid,
-					'type' => 's'
-				);
-				$db->insert_query('favorites', $insert_favorite);
+				switch($thread['options']['subscriptionmethod'])
+				{
+					case "instant":
+						$notification = 1;
+						break;
+					default:
+						$notification = '0';
+				}
+
+				require_once MYBB_ROOT."inc/functions_user.php";
+				add_subscribed_thread($this->tid, $notification, $thread['uid']);
 			}
 
 			// Perform any selected moderation tools.
@@ -1392,23 +1394,22 @@ class PostDataHandler extends DataHandler
 		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 
 		// Automatic subscription to the thread
-		if($post['options']['emailnotify'] == "yes" && $post['uid'] > 0)
+		if($post['options']['subscriptionmethod'] != "" && $post['uid'] > 0)
 		{
-			$query = $db->simple_select("favorites", "fid", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."' AND type='s'", array("limit" => 1));
-			$already_subscribed = $db->fetch_field($query, "fid");
-			if(!$already_subscribed)
+			switch($post['options']['subscriptionmethod'])
 			{
-				$favoriteadd = array(
-					"uid" => intval($post['uid']),
-					"tid" => intval($post['tid']),
-					"type" => "s"
-				);
-				$db->insert_query("favorites", $favoriteadd);
+				case "instant":
+					$notification = 1;
+					break;
+				default:
+					$notification = '0';
 			}
+			require_once MYBB_ROOT."inc/functions_user.php";
+			add_subscribed_thread($post['tid'], $notification, $post['uid']);
 		}
 		else
 		{
-			$db->delete_query("favorites", "type='s' AND uid='{$post['uid']}' AND tid='{$post['tid']}'");
+			$db->delete_query("threadsubscriptions", "uid='{$post['uid']}' AND tid='{$post['tid']}'");
 		}
 
 		update_forum_count($post['fid']);

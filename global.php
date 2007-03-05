@@ -47,7 +47,27 @@ $mybb->session = &$session;
 $plugins->run_hooks("global_start");
 
 // Set and load the language
-if(!isset($mybb->settings['bblanguage']))
+if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
+{
+	$mybb->settings['bblanguage'] = $mybb->input['language'];
+	// If user is logged in, update their language selection with the new one
+	if($mybb->user['uid'])
+	{
+		$updated_lang = array("language" => $mybb->settings['bblanguage']);
+		$db->update_query("users", $updated_lang, "uid='{$mybb->user['uid']}'");
+	}
+	// Guest = cookie
+	else
+	{
+		my_setcookie("mybblang", $mybb->settings['bblang']);
+	}
+}
+// Cookied language!
+else if($_COOKIE['mybblang'] && $lang->language_exists($_COOKIE['mybblang']))
+{
+	$mybb->settings['bblanguage'] = $mybb->input['language'];
+}
+else if(!isset($mybb->settings['bblanguage']))
 {
 	$mybb->settings['bblanguage'] = "english";
 }
@@ -89,7 +109,6 @@ if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 {
 	$loadstyle = "tid='".$mybb->user['style']."'";
 }
-
 
 $valid = array(
 	"showthread.php", 
@@ -337,7 +356,6 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
-// Set up some of the default templates
 // Check if this user has a new private message.
 if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
 {
@@ -361,6 +379,7 @@ if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && my_s
 	eval("\$pm_notice = \"".$templates->get("global_pm_alert")."\";");
 }
 
+// Set up some of the default templates
 eval("\$headerinclude = \"".$templates->get("headerinclude")."\";");
 eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype", 1, 0)."\";");
@@ -395,6 +414,27 @@ if($mybb->settings['taskscron'] != "yes")
 		$task_image = '';
 	}
 }
+
+// Are we showing the quick language selection box?
+$lang_select = '';
+if($mybb->settings['showlanguageselect'] != "no")
+{
+	$languages = $lang->get_languages();
+	foreach($languages as $key => $language)
+	{
+		// Current language matches
+		if($lang->language == $key)
+		{
+			$lang_options .= "<option value=\"{$key}\" selected=\"selected\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+		}
+		else
+		{
+			$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+		}
+	}
+	eval("\$lang_select = \"".$templates->get("footer_languageselect")."\";");
+}
+
 eval("\$footer = \"".$templates->get("footer")."\";");
 
 // Add our main parts to the navigation

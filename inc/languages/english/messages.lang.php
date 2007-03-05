@@ -227,7 +227,7 @@ Thank you,
 Unsubscription Information:
 
 If you would not like to receive any more notifications of replies to this thread, visit the following URL in your browser:
-{6}/usercp2.php?action=removesubscription&tid={7}
+{6}/usercp2.php?action=removesubscription&tid={7}&key={8}
 
 ------------------------------------------";
 $l['email_reachedpmquota'] = "{1},

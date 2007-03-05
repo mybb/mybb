@@ -477,7 +477,6 @@ class UserDataHandler extends DataHandler
 		// Verify yes/no options.
 		$this->verify_yesno_option($options, 'allownotices', 'yes');
 		$this->verify_yesno_option($options, 'hideemail', 'no');
-		$this->verify_yesno_option($options, 'emailnotify', 'no');
 		$this->verify_yesno_option($options, 'emailpmnotify', 'no');
 		$this->verify_yesno_option($options, 'receivepms', 'yes');
 		$this->verify_yesno_option($options, 'pmnotice', 'yes');
@@ -489,6 +488,16 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 'yes');
 		$this->verify_yesno_option($options, 'showquickreply', 'yes');
 		$this->verify_yesno_option($options, 'showredirect', 'yes');
+
+		if(array_key_exists('subscriptionmethod', $options))
+		{
+			// Value out of range
+			$options['subscriptionmethod'] = intval($options['subscriptionmethod']);
+			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 2)
+			{
+				$options['subscriptionmethod'] = 0;
+			}
+		}
 
 		if(isset($options['showcodebuttons']))
         {
@@ -807,7 +816,7 @@ class UserDataHandler extends DataHandler
 			"signature" => $db->escape_string($user['signature']),
 			"allownotices" => $user['options']['allownotices'],
 			"hideemail" => $user['options']['hideemail'],
-			"emailnotify" => $user['options']['emailnotify'],
+			"subscriptionmethod" => intval($user['options']['subscriptionmethod']),
 			"receivepms" => $user['options']['receivepms'],
 			"pmnotice" => $user['options']['pmnotice'],
 			"pmnotify" => $user['options']['emailpmnotify'],

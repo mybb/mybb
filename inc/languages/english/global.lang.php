@@ -99,6 +99,9 @@ $l['post_preview'] = "Post Preview";
 $l['change_user'] = "change user";
 $l['post_icon'] = "Post Icon";
 $l['no_post_icon'] = "no icon";
+$l['thread_subscription_method'] = "<strong>Thread Subscription:</strong><br /><span class=\"smalltext\">Specify the type of email notification and thread subscription you'd like to have to this thread. (Registered users only)</span>";$l['no_subscribe'] = "Do not subscribe";
+$l['no_email_subscribe'] = "No email notification";
+$l['instant_email_subscribe'] = "Instant email notification";
 
 $l['today'] = "Today";
 $l['yesterday'] = "Yesterday";
@@ -287,4 +290,5 @@ $l['warnings'] = "The following warnings occured:";
 $l['ajax_loading'] = "Loading. <br />Please Wait..";
 $l['saving_changes'] = "Saving changes..";
 $l['refresh'] = "Refresh";
+$l['select_language'] = "Quick Language Select";
 ?>

@@ -122,7 +122,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
+		"subscriptionmethod" => $mybb->input['subscriptionmethod'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmnotice" => $mybb->input['pmnotice'],
 		"emailpmnotify" => $mybb->input['emailpmnotify'],
@@ -169,9 +169,17 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$hideemailcheck = "checked=\"checked\"";
 		}
 
-		if($mybb->input['emailnotify'] == "yes")
+		if($mybb->input['subscriptionmethod'] == 1)
 		{
-			$emailnotifycheck = "checked=\"checked\"";
+			$no_email_subscribe_selected = "selected=\"selected\"";
+		}
+		else if($mybb->input['subscriptionmethod'] == 2)
+		{
+			$instant_email_subscribe_selected = "selected=\"selected\"";
+		}
+		else
+		{
+			$no_subscribe_selected = "selected=\"selected\"";
 		}
 
 		if($mybb->input['receivepms'] == "yes")

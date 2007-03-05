@@ -455,6 +455,14 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="showlanguageselect">
+			<title>Show Language Selector in Footer</title>
+			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="20" isdefault="yes">
 		<setting name="mail_handler">

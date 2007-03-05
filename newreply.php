@@ -92,6 +92,19 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] ==
 	error_no_permission();
 }
 
+// Coming from quick reply? Set some defaults
+if($mybb->input['method'] == "quickreply")
+{
+	if($mybb->user['subscriptionmethod'] == 1)
+	{
+		$mybb->input['postoptions']['subscriptionmethod'] = "none";
+	}
+	else if($mybb->user['subscriptionmethod'] == 2)
+	{
+		$mybb->input['postoptions']['subscriptinmethod'] = "instant";
+	}
+}
+
 // Password protected forums ......... yhummmmy!
 check_forum_password($fid, $forum['password']);
 
@@ -330,7 +343,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	// Set up the post options from the input.
 	$post['options'] = array(
 		"signature" => $mybb->input['postoptions']['signature'],
-		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+		"subscriptionmethod" => $mybb->input['postoptions']['subscriptionmethod'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
 
@@ -661,9 +674,13 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($postoptions['emailnotify'] == "yes")
+		if($postoptions['subscriptionmethod'] == "none")
 		{
-			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
+			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+		}
+		else if($postoptions['subscriptionmethod'] == "instant")
+		{
+			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
@@ -691,11 +708,19 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($mybb->user['emailnotify'] == "yes")
+		if($mybb->user['subscriptionmethod'] ==  1)
 		{
-			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
+			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+		}
+		else if($mybb->user['subscriptionmethod'] == 2)
+		{
+			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 		}
 	}
+
+	// Fetch subscription select box
+	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+
 	if($forum['allowpicons'] != "no")
 	{
 		$posticons = get_post_icons();
@@ -822,7 +847,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// Get a listing of the current attachments.
-	$bgcolor = "trow2";
+	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != "no")
 	{
 		$attachcount = 0;
@@ -876,7 +901,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
-		$bgcolor = "trow1";
+		$bgcolor = "trow2";
 	}
 
 	// If the user is logged in, provide a save draft button.

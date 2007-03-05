@@ -127,9 +127,6 @@ switch($mybb->input['action'])
 	case "do_changename":
 		add_breadcrumb($lang->nav_changename);
 		break;
-	case "favorites":
-		add_breadcrumb($lang->nav_favorites);
-		break;
 	case "subscriptions":
 		add_breadcrumb($lang->nav_subthreads);
 		break;
@@ -584,7 +581,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
+		"subscriptionmethod" => $mybb->input['subscriptionmethod'],
 		"invisible" => $mybb->input['invisible'],
 		"dst" => $mybb->input['dst'],
 		"threadmode" => $mybb->input['threadmode'],
@@ -698,13 +695,17 @@ if($mybb->input['action'] == "options")
 		$hideemailcheck = "";
 	}
 
-	if($user['emailnotify'] == "yes")
+	if($user['subscriptionmethod'] == 1)
 	{
-		$emailnotifycheck = "checked=\"checked\"";
+		$no_email_subscribe_selected = "selected=\"selected\"";
+	}
+	else if($user['subscriptionmethod'] == 2)
+	{
+		$instant_email_subscribe_selected = "selected=\"selected\"";
 	}
 	else
 	{
-		$emailnotifycheck = "";
+		$no_subscribe_selected = "selected=\"selected\"";
 	}
 
 	if($user['showsigs'] == "yes")
@@ -1077,114 +1078,51 @@ if($mybb->input['action'] == "changename")
 	output_page($changename);
 }
 
-if($mybb->input['action'] == "favorites")
+if($mybb->input['action'] == "do_subscriptions")
 {
-	$plugins->run_hooks("usercp_favorites_start");
-	
-	// Do Multi Pages
-	$query = $db->simple_select("favorites", "COUNT(tid) AS threads", "type='f' AND uid='".$mybb->user['uid']."'");
-	$threadcount = $db->fetch_field($query, "threads");
-	
-	if(!$mybb->settings['threadsperpage'])
+	$plugins->run_hooks("usercp_do_subscriptions_start");
+
+	if(!is_array($mybb->input['check']))
 	{
-		$mybb->settings['threadsperpage'] = 20;
+		error($lang->no_subscriptions_selected);
 	}
 
-	$perpage = $mybb->settings['threadsperpage'];
-	$page = intval($mybb->input['page']);
-	if($page)
+	// Clean input - only accept integers thanks!
+	array_walk($mybb->input['check'], 'intval');
+	$tids = implode(",", $mybb->input['check']);
+
+	// Deleting these subscriptions?
+	if($mybb->input['do'] == "delete")
 	{
-		$start = ($page-1) *$perpage;
+		$db->delete_query("threadsubscriptions", "tid IN ($tids) AND uid='{$mybb->user['uid']}'");
 	}
+	// Changing subscription type
 	else
 	{
-		$start = 0;
-		$page = 1;
-	}
-	$end = $start + $perpage;
-	$lower = $start+1;
-	$upper = $end;
-	if($upper > $threadcount)
-	{
-		$upper = $threadcount;
-	}
-	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=favorites");
-	$fpermissions = forum_permissions();
-
-	$icon_cache = $cache->read("posticons");
-
-	$query = $db->query("
-		SELECT f.*, t.*, t.username AS threadusername, u.username
-		FROM ".TABLE_PREFIX."favorites f
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (f.tid=t.tid)
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'
-		ORDER BY t.lastpost DESC
-	");
-	while($favorite = $db->fetch_array($query))
-	{
-		$forumpermissions = $fpermissions[$favorite['fid']];
-		if($forumpermissions['canview'] != "no" || $forumpermissions['canviewthreads'] != "no")
+		if($mybb->input['do'] == "no_notification")
 		{
-			$lastpostdate = my_date($mybb->settings['dateformat'], $favorite['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $favorite['lastpost']);
-			$lastposterlink = build_profile_link($favorite['lastposter'], $favorite['lastposteruid']);
-			if(!$favorite['username'])
-			{
-				$favorite['username'] = $favorite['threadusername'];
-			}
-			$favorite['profilelink'] = build_profile_link($favorite['username'], $favorite['uid']);
-			$favorite['subject'] = htmlspecialchars_uni($parser->parse_badwords($favorite['subject']));
-			if($favorite['icon'] > 0 && $icon_cache[$favorite['icon']])
-			{
-				$icon = $icon_cache[$favorite['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
-			}
-			else
-			{
-				$icon = "&nbsp;";
-			}
-			if($mybb->user['lastvisit'] == "0")
-			{
-				$folder = "new";
-			}
-			if($favorite['lastpost'] > $mybb->user['lastvisit'])
-			{
-				$threadread = my_get_array_cookie("threadread", $favorite['tid']);
-				if($threadread < $favorite['lastpost'])
-				{
-					$folder = "new";
-				}
-			}
-			if($favorite['replies'] >= $mybb->settings['hottopic'])
-			{
-				$folder .= "hot";
-			}
-			if($favorite['closed'] == "yes")
-			{
-				$folder .= "lock";
-			}
-			$folder .= "folder";
-			$favorite['replies'] = my_number_format($favorite['replies']);
-			$favorite['views'] = my_number_format($favorite['views']);
-			$favorite['threadlink'] = get_thread_link($favorite['tid']);
-			eval("\$threads .= \"".$templates->get("usercp_favorites_thread")."\";");
-			$folder = "";
+			$new_notification = 0;
 		}
+		else if($mybb->input['do'] == "instant_notification")
+		{
+			$new_notification = 1;
+		}
+
+		// Update
+		$update_array = array("notification" => $new_notification);
+		$db->update_query("threadsubscriptions", $update_array, "tid IN ($tids) AND uid='{$mybb->user['uid']}'");
 	}
-	if(!$threads)
-	{
-		eval("\$threads = \"".$templates->get("usercp_favorites_none")."\";");
-	}
-	eval("\$favorites = \"".$templates->get("usercp_favorites")."\";");
-	$plugins->run_hooks("usercp_favorites_end");
-	output_page($favorites);
+
+	// Done, redirect
+	redirect("usercp.php?action=subscriptions", $lang->redirect_subscriptions_updated);
 }
+
 if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
+
 	// Do Multi Pages
-	$query = $db->simple_select("favorites", "COUNT(tid) AS threads", "type='s' AND uid='".$mybb->user['uid']."'");
+	$query = $db->simple_select("threadsubscriptions", "COUNT(tid) AS threads", "uid='".$mybb->user['uid']."'");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	if(!$mybb->settings['threadsperpage'])
@@ -1212,67 +1150,206 @@ if($mybb->input['action'] == "subscriptions")
 	}
 	$multipage = multipage($threadcount, $perpage, $page, "usercp.php?action=subscriptions");
 	$fpermissions = forum_permissions();
+
+	// Fetch subscriptions
 	$query = $db->query("
 		SELECT s.*, t.*, t.username AS threadusername, u.username
-		FROM ".TABLE_PREFIX."favorites s
+		FROM ".TABLE_PREFIX."threadsubscriptions s
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE s.type='s' AND s.uid='".$mybb->user['uid']."'
+		WHERE s.uid='".$mybb->user['uid']."'
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
 	while($subscription = $db->fetch_array($query))
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
+		// Only keep if we're allowed to view them
 		if($forumpermissions['canview'] != "no" || $forumpermissions['canviewthreads'] != "no")
 		{
-			$lastpostdate = my_date($mybb->settings['dateformat'], $subscription['lastpost']);
-			$lastposttime = my_date($mybb->settings['timeformat'], $subscription['lastpost']);
-			$lastposterlink = build_profile_link($subscription['lastposter'], $subscription['lastposteruid']);
-			if(!$subscription['username'])
+			$subscriptions[$subscription['tid']] = $subscription;
+		}
+		// Hmm, you don't have permission to view - unsubscribe!
+		else
+		{
+			$del_subscriptions[] = $subscription['tid'];
+		}
+	}
+
+	if(is_array($del_subscriptions))
+	{
+		$db->delete_query("threadsubscriptions", "tid IN (".implode(",", $del_subscriptions).") AND uid='{$mybb->user['uid']}'");
+	}
+
+	if(is_array($subscriptions))
+	{
+		$tids = implode(",", array_keys($subscriptions));
+
+		// Check participation by the current user in any of these threads - for 'dot' folder icons
+		if($mybb->settings['dotfolders'] != "no")
+		{
+			$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
+			while($post = $db->fetch_array($query))
 			{
-				$subscription['username'] = $subscription['threadusername'];
+				$subscriptions[$post['tid']]['doticon'] = 1;
 			}
-			$subscription['profilelink'] = build_profile_link($subscription['username'], $subscription['uid']);
-			$subscription['subject'] = htmlspecialchars_uni($parser->parse_badwords($subscription['subject']));
-			if($subscription['icon'] > 0 && $icon_cache[$subscription['icon']])
+		}
+
+		// Read threads
+		if($mybb->settings['threadreadcut'] > 0)
+		{
+			$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); 
+			while($readthread = $db->fetch_array($query))
 			{
-				$icon = $icon_cache[$subscription['icon']];
+				$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline']; 
+			}
+		}
+
+
+		// Now we can build our subscription list
+		foreach($subscriptions as $thread)
+		{
+			$bgcolor = alt_trow();
+		
+			$folder = '';
+			$prefix = '';
+
+			// Sanitize
+			$thread['subject'] = $parser->parse_badwords($thread['subject']);
+			$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+
+			// Build our links
+			$thread['threadlink'] = get_thread_link($thread['tid']);
+			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
+			
+			// Fetch the thread icon if we have one
+			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
+			{
+				$icon = $icon_cache[$thread['icon']];
 				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />";
 			}
 			else
 			{
 				$icon = "&nbsp;";
 			}
-			if($mybb->user['lastvisit'] == "0")
+
+			// Determine the folder
+			$folder = '';
+			$folder_label = '';
+			
+			if($thread['doticon'])
 			{
-				$folder = "new";
+				$folder = "dot_";
+				$folder_label .= $lang->icon_dot;
 			}
-			if($subscription['lastpost'] > $mybb->user['lastvisit'])
+			
+			$gotounread = '';
+			$isnew = 0;
+			$donenew = 0;
+			$lastread = 0;
+
+			$forumread = my_get_array_cookie("forumread", $thread['fid']);
+			if($mybb->user['lastvisit'] > $forumread)
 			{
-				$threadread = my_get_array_cookie("threadread", $subscription['tid']);
-				if($threadread < $subcription['lastpost'])
+				$forumread = $mybb->user['lastvisit'];
+			}
+			
+			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forumread)
+			{
+				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+			}
+			
+			if($thread['lastpost'] > $cutoff)
+			{
+				if($thread['lastpost'] > $cutoff)
 				{
-					$folder = "new";
+					if($thread['lastread'])
+					{
+							$lastread = $thread['lastread'];
+					}
+					else
+					{
+							$lastread = 1;
+					}
+				}
+			} 
+			
+			if(!$lastread) 
+			{
+				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']); 
+				if($readcookie > $forumread) 
+				{ 
+					$lastread = $readcookie; 
+				}
+				else
+				{
+					$lastread = $forumread;
 				}
 			}
-			if($subscription['replies'] >= $mybb->settings['hottopic'])
+			
+			if($thread['lastpost'] > $lastread && $lastread)
+			{
+				$folder .= "new";
+				$folder_label .= $lang->icon_new;
+				$new_class = "subject_new";
+				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
+				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
+				$unreadpost = 1;
+			}
+			else
+			{
+				$folder_label .= $lang->icon_no_new;
+				$new_class = "";
+			}
+
+			if($thread['replies'] >= $mybb->settings['hottopic'] || $thread['views'] >= $mybb->settings['hottopicviews'])
 			{
 				$folder .= "hot";
+				$folder_label .= $lang->icon_hot;
 			}
-			if($subscription['closed'] == "yes")
+			
+			if($thread['closed'] == "yes")
 			{
 				$folder .= "lock";
+				$folder_label .= $lang->icon_lock;
 			}
+
 			$folder .= "folder";
-			$subscription['replies'] = my_number_format($subscription['replies']);
-			$subscription['views'] = my_number_format($subscription['views']);
-			$subscription['threadlink'] = get_thread_link($subscription['tid']);
+
+			// Build last post info
+
+			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
+			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
+			$lastposter = $thread['lastposter'];
+			$lastposteruid = $thread['lastposteruid'];
+
+			// Don't link to guest's profiles (they have no profile).
+			if($lastposteruid == 0)
+			{
+				$lastposterlink = $lastposter;
+			}
+			else
+			{
+				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
+			}
+			
+			$thread['replies'] = my_number_format($thread['replies']);
+			$thread['views'] = my_number_format($thread['views']);
+
+			// What kind of notification type do we have here?
+			switch($thread['notification'])
+			{
+				case "1": // Instant
+					$notification_type = $lang->instant_notification;
+					break;
+				default: // No notification
+					$notification_type = $lang->no_notification;
+			}
+
 			eval("\$threads .= \"".$templates->get("usercp_subscriptions_thread")."\";");
-			$folder = "";
 		}
 	}
-	if(!$threads)
+	else
 	{
 		eval("\$threads = \"".$templates->get("usercp_subscriptions_none")."\";");
 	}

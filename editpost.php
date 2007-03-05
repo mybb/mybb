@@ -263,7 +263,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 	// Set up the post options from the input.
 	$post['options'] = array(
 		"signature" => $mybb->input['postoptions']['signature'],
-		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+		"subscriptionmethod" => $mybb->input['postoptions']['subscriptionmethod'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
 
@@ -342,7 +342,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$query = $db->simple_select("posts", "posthash", "pid='{$pid}'");
 	$posthash = $db->fetch_field($query, "posthash");
 
-	$bgcolor = "trow2";
+	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
@@ -441,11 +441,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($postoptions['emailnotify'] == "yes")
+		if($postoptions['subscriptionmethod'] == "none")
 		{
-			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
+			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
 		}
-		if($postoptions['disablesmilies'] == "yes")
+		else if($postoptions['subscriptionmethod'] == "instant")
+		{
+			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
+		}		if($postoptions['disablesmilies'] == "yes")
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
@@ -497,13 +500,24 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
-		$query = $db->simple_select("favorites", "*", "type='s' AND tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-		$subcheck = $db->fetch_array($query);
-		if($subcheck['tid'])
+		$query = $db->simple_select("threadsubscriptions", "notification", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+		if($db->num_rows($query) > 0)
 		{
-			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
+			$notification = $db->fetch_field($query, 'notification');
+			if($notification ==  0)
+			{
+				$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+			}
+			else if($notification == 1)
+			{
+				$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
+			}
 		}
 	}
+
+	// Fetch subscription select box
+	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+
 
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != "no")

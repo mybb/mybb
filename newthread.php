@@ -308,7 +308,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	// Set up the thread options from the input.
 	$new_thread['options'] = array(
 		"signature" => $mybb->input['postoptions']['signature'],
-		"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+		"subscriptionmethod" => $mybb->input['postoptions']['subscriptionmethod'],
 		"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
 	);
 	
@@ -522,9 +522,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($postoptions['emailnotify'] == "yes")
+		if($postoptions['subscriptionmethod'] == "none")
 		{
-			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
+			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+		}
+		else if($postoptions['subscriptionmethod'] == "instant")
+		{
+			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 		}
 		if($postoptions['disablesmilies'] == "yes")
 		{
@@ -560,12 +564,20 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($mybb->user['emailnotify'] == "yes")
+		if($mybb->user['subscriptionmethod'] ==  1)
 		{
-			$postoptionschecked['emailnotify'] = " checked=\"checked\"";
+			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+		}
+		else if($mybb->user['subscriptionmethod'] == 2)
+		{
+			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 		}
 		$numpolloptions = "2";
 	}
+
+	// Fetch subscription select box
+	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+
 	
 	// If we're preving a post then generate the preview.
 	if($mybb->input['previewpost'])
@@ -721,13 +733,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$stickycheck = '';
 		}
 		unset($modoptions);
-		$bgcolor = "trow2";
-		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
 		$bgcolor = "trow1";
+		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
+		$bgcolor = "trow2";
 	}
 	else
 	{
-		$bgcolor = "trow2";
+		$bgcolor = "trow1";
 	}
 
 	if($forumpermissions['canpostattachments'] != "no")

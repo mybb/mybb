@@ -10,7 +10,6 @@
  */
 
 // TODO: (Chris)
-// -- Delete task
 // -- Task logs
 
 require_once MYBB_ROOT."/inc/functions_task.php";
@@ -402,6 +401,15 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?".SID."&module=tools/tasks");
 	}
 
+	// Delete the task & any associated task log entries
+	$db->delete_query("tasks", "tid='{$task['tid']}'");
+	$db->delete_query("tasklog", "tid='{$task['tid']}'");
+
+	// Fetch next task run
+	$cache->update_tasks();
+
+	flash_message('The specified task has been deleted.', 'error');
+	admin_redirect("index.php?".SID."&module=tools/tasks");
 
 }
 
@@ -455,9 +463,83 @@ if($mybb->input['action'] == "run")
 if($mybb->input['action'] == "logs")
 {
 	$page->output_header("Task Logs");
+
+	$sub_tabs['scheduled_tasks'] = array(
+	'title' => "Scheduled Tasks",
+	'link' => "index.php?".SID."&amp;module=tools/tasks"
+);
+
+	$sub_tabs['add_task'] = array(
+		'title' => "Add New Task",
+		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add"
+	);
+
+	$sub_tabs['task_logs'] = array(
+		'title' => "View Task Logs",
+		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs",
+		'description' => "When a task is run and logging is enabled, any results or errors will be listed below. Entries older than 30 days are automatically deleted."
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'task_logs');
+
+	$table = new Table;
+	$table->construct_header("Task");
+	$table->construct_header("Date", array("class" => "align_center", "width" => 200));
+	$table->construct_header("Data", array("width" => "60%"));
+
+	$query = $db->simple_select("tasklog", "COUNT(*) AS log_count");
+	$log_count = $db->fetch_field($query, "log_count");
+
+	$per_page = 20;
+
+	if($mybb->input['page'] > 0)
+	{
+		$current_page = intval($mybb->input['page']);
+		$start = ($current_page-1)*$per_page;
+		$pages = $log_count / $per_page;
+		$pages = ceil($pages);
+		if($current_page > $pages)
+		{
+			$start = 0;
+			$current_page = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$current_page = 1;
+	}
+
+	$pagination = draw_admin_pagination($current_page, $per_page, $log_count, "index.php?".SID."&amp;module=tools/tasks&amp;action=logs&amp;page={page}");
+
+	$query = $db->query("
+		SELECT l.*, t.title
+		FROM ".TABLE_PREFIX."tasklog l
+		LEFT JOIN ".TABLE_PREFIX."tasks t ON (t.tid=l.lid)
+		ORDER BY l.dateline DESC
+		LIMIT {$start}, {$per_page}
+	");
+	while($log_entry = $db->fetch_array($query))
+	{
+		$log_entry['title'] = htmlspecialchars_uni($log_entry['title']);
+		$log_entry['data'] = htmlspecialchars_uni($log_entry['data']);
+		$date = my_date($mybb->settings['dateformat'], $log_entry['dateline']).", ".my_date($mybb->settings['timeformat'], $log_entry['dateline']);
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$log_entry['tid']}\">{$log_entry['title']}</a>");
+		$table->construct_cell($date, array("class" => "align_center"));
+		$table->construct_cell($log_entry['data']);
+		$table->construct_row();
+	}
+
+	if(count($table->rows) == 0)
+	{
+		$table->construct_cell("There are currently no log entries for any of the scheduled tasks.", array("colspan" => "3"));
+		$table->construct_row();
+	}
+	$table->output("Task Log");
+	echo $pagination;
+
 	$page->output_footer();
 }
-
 
 if(!$mybb->input['action'])
 {

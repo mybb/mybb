@@ -232,77 +232,15 @@ function update_loginkey($uid)
 }
 
 /**
- * Adds a thread to a user's favorite thread list.
- * If no uid is supplied, the currently logged in user's id will be used.
- *
- * @param int The tid of the thread to add to the list.
- * @param int (Optional) The uid of the user who's list to update.
- * @return boolean True when success, false when otherwise.
- */
-function add_favorite_thread($tid, $uid="")
-{
-	global $mybb, $db;
-	
-	if(!$uid)
-	{
-		$uid = $mybb->user['uid'];
-	}
-	
-	if(!$uid)
-	{
-		return;
-	}
-	
-	$query = $db->simple_select("favorites", "*", "tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'", array('limit' => 1));
-	$favorite = $db->fetch_array($query);
-	if(!$favorite['tid'])
-	{
-		$insert_query = array(
-			'uid' => intval($uid),
-			'tid' => intval($tid),
-			'type' => 'f'
-		);
-		$db->insert_query("favorites", $insert_query);
-	}
-	
-	return true;
-}
-
-/**
- * Removes a thread from a user's favorite thread list.
- * If no uid is supplied, the currently logged in user's id will be used.
- *
- * @param int The tid of the thread to remove from the list.
- * @param int (Optional)The uid of the user who's list to update.
- * @return boolean True when success, false when otherwise.
- */
-function remove_favorite_thread($tid, $uid="")
-{
-	global $mybb, $db;
-	
-	if(!$uid)
-	{
-		$uid = $mybb->user['uid'];
-	}
-	
-	if(!$uid)
-	{
-		return;
-	}
-	$db->delete_query("favorites", "tid='".intval($tid)."' AND type='f' AND uid='".intval($uid)."'");
-	
-	return true;
-}
-
-/**
  * Adds a thread to a user's thread subscription list.
  * If no uid is supplied, the currently logged in user's id will be used.
  *
  * @param int The tid of the thread to add to the list.
+ * @param int (Optional) The type of notification to receive for replies (0=none, 1=instant)
  * @param int (Optional) The uid of the user who's list to update.
  * @return boolean True when success, false when otherwise.
  */
-function add_subscribed_thread($tid, $uid="")
+function add_subscribed_thread($tid, $notification=1, $uid="")
 {
 	global $mybb, $db;
 	
@@ -316,18 +254,28 @@ function add_subscribed_thread($tid, $uid="")
 		return;
 	}
 	
-	$query = $db->simple_select("favorites", "*", "tid='".intval($tid)."' AND type='s' AND uid='".intval($uid)."'", array('limit' => 1));
-	$favorite = $db->fetch_array($query);
-	if(!$favorite['tid'])
+	$query = $db->simple_select("threadsubscriptions", "*", "tid='".intval($tid)."' AND uid='".intval($uid)."'", array('limit' => 1));
+	$subscription = $db->fetch_array($query);
+	if(!$subscription['tid'])
 	{
 		$insert_array = array(
 			'uid' => intval($uid),
 			'tid' => intval($tid),
-			'type' => 's'
+			'notification' => intval($notification),
+			'dateline' => time(),
+			'subscriptionkey' => md5(time().$uid.$tid)
+
 		);
-		$db->insert_query("favorites", $insert_array);
+		$db->insert_query("threadsubscriptions", $insert_array);
 	}
-	
+	else
+	{
+		// Subscription exists - simply update notification
+		$update_array = array(
+			"notification" => intval($notification)
+		);
+		$db->update_query("threadsubscriptions", $update_array, "uid='{$uid}' AND tid='{$tid}'");
+	}
 	return true;
 }
 
@@ -352,7 +300,7 @@ function remove_subscribed_thread($tid, $uid="")
 	{
 		return;
 	}
-	$db->delete_query("favorites", "tid='".$tid."' AND type='s' AND uid='{$uid}'");
+	$db->delete_query("threadsubscriptions", "tid='".$tid."' AND uid='{$uid}'");
 	
 	return true;
 }

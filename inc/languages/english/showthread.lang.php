@@ -19,7 +19,6 @@ $l['next_newest'] = "Next Newest";
 $l['view_printable'] = "View a Printable Version";
 $l['send_thread'] = "Send this Thread to a Friend";
 $l['subscribe_thread'] = "Subscribe to this Thread";
-$l['add_favorites'] = "Add Thread to Favorites";
 $l['moderation_options'] = "Moderation Options:";
 $l['thread_notes'] = "Edit / View Thread Notes";
 $l['open_close_thread'] = "Open / Close Thread";

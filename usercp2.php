@@ -21,50 +21,41 @@ if($mybb->user['uid'] == 0)
 
 $lang->load("usercp");
 
+usercp_menu();
+
 $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
-if($mybb->input['action'] == "addfavorite")
+if($mybb->input['action'] == "do_addsubscription")
 {
-	$thread  = get_thread($mybb->input['tid']);
-	if(!$thread['tid'])
+	if($mybb->input['type'] == "forum")
 	{
-		error($lang->error_invalidthread);
-	}
-	$forumpermissions = forum_permissions($thread['fid']);
-	if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
-	{
-		error_no_permission();
-	}
-	add_favorite_thread($thread['tid']);
-	if($server_http_referer)
-	{
-		$url = $server_http_referer;
 	}
 	else
 	{
-		$url = get_thread_link($thread['tid']);
+		$thread  = get_thread($mybb->input['tid']);
+		if(!$thread['tid'])
+		{
+			error($lang->error_invalidthread);
+		}
+		$forumpermissions = forum_permissions($thread['fid']);
+		if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
+		{
+			error_no_permission();
+		}
+		add_subscribed_thread($thread['tid'], $mybb->input['notification']);
+		if($mybb->input['referrer'])
+		{
+			$url = $mybb->input['referrer'];
+		}
+		else
+		{
+			$url = get_thread_link($thread['tid']);
+		}
+		redirect($url, $lang->redirect_subscriptionadded);
 	}
-	redirect($url, $lang->redirect_favoriteadded);
 }
-elseif($mybb->input['action'] == "removefavorite")
-{
-	$thread  = get_thread($mybb->input['tid']);
-	if(!$thread['tid'])
-	{
-		error($lang->error_invalidthread);
-	}
-	remove_favorite_thread($thread['tid']);
-	if($server_http_referer)
-	{
-		$url = $server_http_referer;
-	}
-	else
-	{
-		$url = "usercp.php?action=favorites";
-	}
-	redirect($url, $lang->redirect_favoriteremoved);
-}
-elseif($mybb->input['action'] == "addsubscription")
+
+if($mybb->input['action'] == "addsubscription")
 {
 	if($mybb->input['type'] == "forum")
 	{
@@ -96,21 +87,36 @@ elseif($mybb->input['action'] == "addsubscription")
 		{
 			error($lang->error_invalidthread);
 		}
+		add_breadcrumb($lang->nav_subthreads, "usercp.php?action=subscriptions");
+		add_breadcrumb($lang->nav_addsubscription);
+
 		$forumpermissions = forum_permissions($thread['fid']);
 		if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
 		{
 			error_no_permission();
 		}
-		add_subscribed_thread($thread['tid']);
+		$referrer = '';
 		if($server_http_referer)
 		{
-			$url = $server_http_referer;
+			$referrer = $server_http_referer;
 		}
-		else
+
+		require_once MYBB_ROOT."inc/class_parser.php";
+		$parser = new postParser;
+		$thread['subject'] = $parser->parse_badwords($thread['subject']);
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$lang->subscribe_to_thread = sprintf($lang->subscribe_to_thread, $thread['subject']);
+
+		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
 		{
-			$url = get_thread_link($thread['tid']);
+			$notification_none_checked = "checked=\"checked\"";
 		}
-		redirect($url, $lang->redirect_subscriptionadded);
+		else if($mybb->user['subscriptionmethod'] == 2)
+		{
+			$notification_instant_checked = "checked=\"checked\"";
+		}
+		eval("\$add_subscription = \"".$templates->get("usercp_addsubscription_thread")."\";");
+		output_page($add_subscription);
 	}
 }
 elseif($mybb->input['action'] == "removesubscription")
@@ -169,7 +175,7 @@ elseif($mybb->input['action'] == "removesubscriptions")
 	}
 	else
 	{
-		$db->delete_query("favorites", "type='s' AND uid='".$mybb->user['uid']."'");
+		$db->delete_query("threadsubscriptions", "uid='".$mybb->user['uid']."'");
 		if($server_http_referer)
 		{
 			$url = $server_http_referer;
@@ -180,19 +186,6 @@ elseif($mybb->input['action'] == "removesubscriptions")
 		}
 		redirect($url, $lang->redirect_subscriptionsremoved);
 	}
-}
-elseif($mybb->input['action'] == "removefavorites")
-{
-	$db->delete_query("favorites", "type='f' AND uid='".$mybb->user['uid']."'");
-	if($server_http_referer)
-	{
-		$url = $server_http_referer;
-	}
-	else
-	{
-		$url = "usercp.php?action=favorites";
-	}
-	redirect($url, $lang->redirect_favoritesremoved);
 }
 else
 {
