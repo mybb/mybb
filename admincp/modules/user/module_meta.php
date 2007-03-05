@@ -12,6 +12,10 @@ function user_action_handler($action)
 	$page->active_module = "user";
 	switch($action)
 	{
+		case "group_promotions":
+			$page->active_action = "group_promotions";
+			$action_file = "group_promotions.php";
+			break;
 		default:
 			$page->active_action = "view";
 			$action_file = "index.php";

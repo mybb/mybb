@@ -813,7 +813,7 @@ show=Show to all Users]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="reputation" title="Reputation" description="The reputation allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="10" isdefault="yes">
+	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="10" isdefault="yes">
 		<setting name="enablereputation">
 			<title>Enable Reputation Functionality</title>
 			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>

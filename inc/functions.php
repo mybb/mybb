@@ -1455,8 +1455,7 @@ function update_stats($changes=array())
 			}
 		}
 	}
-	print_r($changes);
-	print_r($new_stats);
+
 	// Fetch latest user if the user count is changing
 	if(array_key_exists('numusers', $changes))
 	{

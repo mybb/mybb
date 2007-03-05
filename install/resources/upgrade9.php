@@ -124,6 +124,11 @@ function upgrade9_dbchanges()
 		$db->query("DROP TABLE ".TABLE_PREFIX."mailerrors");
 	}
 	
+	if($db->table_exists("promotions"))
+	{
+		$db->query("DROP TABLE ".TABLE_PREFIX."promotions");
+	}
+	
 	$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
@@ -138,7 +143,7 @@ function upgrade9_dbchanges()
 		PRIMARY KEY(mid)
 	) TYPE=MyISAM;");
 
-	$db->query("CREATE TABLE mybb_mailerrors(
+	$db->query("CREATE TABLE ".TABLE_PREFIX."mailerrors(
 		eid int unsigned NOT NULL auto_increment,
 		subject varchar(200) NOT NULL default '',
 		toaddress varchar(150) NOT NULL default '',
@@ -148,6 +153,34 @@ function upgrade9_dbchanges()
 		smtperror varchar(200) NOT NULL default '',
 		smtpcode int(5) NOT NULL default '0',
 		PRIMARY KEY(eid)
+ 	) TYPE=MyISAM;");
+	
+	$db->query("CREATE TABLE ".TABLE_PREFIX."promotions(
+		pid int unsigned NOT NULL auto_increment,
+		title varchar(120) NOT NULL default '',
+		description text NOT NULL,
+		enabled int(1) NOT NULL default '1',
+		logging int(1) NOT NULL default '0',
+		posts int NOT NULL default '0',
+		posttype varchar(120) NOT NULL default '',
+		registered int NOT NULL default '0',
+		reputations int NOT NULL default '0',
+		reputationtype varchar(120) NOT NULL default '',
+		requirements varchar(200) NOT NULL default '',
+		originalusergroup varchar(200) NOT NULL default '0',
+		newusergroup smallint unsigned NOT NULL default '0',
+		usergrouptype varchar(120) NOT NULL default '0',
+		PRIMARY KEY(pid)
+ 	) TYPE=MyISAM;");
+	
+	$db->query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
+		plid int unsigned NOT NULL auto_increment,
+		pid int unsigned NOT NULL default '0',
+		uid int unsigned NOT NULL default '0',
+		oldusergroup smallint unsigned NOT NULL default '0',
+		newusergroup smallint unsigned NOT NULL default '0',
+		dateline bigint(30) NOT NULL default '0',
+		PRIMARY KEY(plid)
  	) TYPE=MyISAM;");
 
 	if(!$db->field_exists('maxemails', "usergroups"))
@@ -169,7 +202,16 @@ function upgrade9_dbchanges()
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
 	}
-
+	
+	if($db->table_exists("tasks"))
+	{
+		$db->query("DROP TABLE ".TABLE_PREFIX."tasks");
+	}
+	
+	if($db->table_exists("tasklog"))
+	{
+		$db->query("DROP TABLE ".TABLE_PREFIX."tasklog");
+	}
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."tasks (
 		tid int unsigned NOT NULL auto_increment,

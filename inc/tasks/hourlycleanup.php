@@ -18,11 +18,11 @@ function task_hourlycleanup($task)
 
 	// Delete old searches
 	$cut = time()-(60*60*24);
-	$db->delete_query("searchlog", "dateline<{$cut}");
+	$db->delete_query("searchlog", "dateline < '{$cut}'");
 
 	// Delete old captcha images
 	$cut = time()-(60*60*12);
-	$db->delete_query("captcha", "dateline<{$cut}");
+	$db->delete_query("captcha", "dateline < '{$cut}'");
 
 }
 ?>

@@ -713,6 +713,11 @@ if(is_array($threadcache))
 			$mybb->settings['postperpage'] = 20;
 		}
 		
+		if($thread['unapprovedposts'] > 0 && $ismod)
+		{
+			$thread['posts'] += $thread['unapprovedposts'];
+		}
+		
 		if($thread['posts'] > $mybb->settings['postsperpage'])
 		{
 			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];

@@ -124,7 +124,7 @@ if($mybb->input['action'] == "add")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
-	$form = new Form("index.php?".SID."&amp;module=tools/tasks&amp;action=add", "post", "add");
+	$form = new Form("index.php?".SID."&amp;module=user/tasks&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "add")
 	}
 	$form_container = new FormContainer("Add New Task");
 	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row("Short Description", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row("Short Description <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 
 	$task_list = array();
 	$task_files = scandir(MYBB_ROOT."inc/tasks/");
@@ -185,9 +185,9 @@ if($mybb->input['action'] == "add")
 	);
 	$form_container->output_row("Time: Months", "Select which months this task should run on. Holding down CTRL selects multiple months. Select 'Every month' if you want this task to run each month.", $form->generate_select_box('month', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true)), 'month');
 
-	$form_container->output_row("Enabled? <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
+	$form_container->output_row("Enabled? <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
 
-	$form_container->output_row("Enable Logging? <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
+	$form_container->output_row("Enable Logging? <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button("Save New Task");
