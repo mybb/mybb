@@ -169,6 +169,7 @@ function upgrade9_dbchanges()
 		posts int NOT NULL default '0',
 		posttype varchar(120) NOT NULL default '',
 		registered int NOT NULL default '0',
+		registeredtype varchar(120) NOT NULL default '',
 		reputations int NOT NULL default '0',
 		reputationtype varchar(120) NOT NULL default '',
 		requirements varchar(200) NOT NULL default '',

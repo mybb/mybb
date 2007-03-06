@@ -463,6 +463,35 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 ) TYPE=MyISAM;";
 
 
+$tables[] = "CREATE TABLE mybb_promotions(
+  pid int unsigned NOT NULL auto_increment,
+  title varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  enabled int(1) NOT NULL default '1',
+  logging int(1) NOT NULL default '0',
+  posts int NOT NULL default '0',
+  posttype varchar(120) NOT NULL default '',
+  registered int NOT NULL default '0',
+  registeredtype varchar(120) NOT NULL default '',
+  reputations int NOT NULL default '0',
+  reputationtype varchar(120) NOT NULL default '',
+  requirements varchar(200) NOT NULL default '',
+  originalusergroup varchar(200) NOT NULL default '0',
+  newusergroup smallint unsigned NOT NULL default '0',
+  usergrouptype varchar(120) NOT NULL default '0',
+  PRIMARY KEY(pid)
+) TYPE=MyISAM;");
+	
+$tables[] = "CREATE TABLE mybb_promotionlogs(
+  plid int unsigned NOT NULL auto_increment,
+  pid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  oldusergroup smallint unsigned NOT NULL default '0',
+  newusergroup smallint unsigned NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  PRIMARY KEY(plid)
+) TYPE=MyISAM;");
+
 $tables[] = "CREATE TABLE mybb_reportedposts (
   rid int unsigned NOT NULL auto_increment,
   pid int unsigned NOT NULL default '0',
