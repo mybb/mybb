@@ -43,6 +43,7 @@ class Page
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/moo.ajax.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "</head>\n";
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
@@ -286,6 +287,26 @@ EOF;
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}
 		echo "</div>";
+	}
+
+	function output_confirm_action($url, $message='')
+	{
+		global $lang;
+		if(!$message)
+		{
+			$message = 'Are you sure you wish to perform this action?';
+		}
+		$this->output_header();
+		$form = new Form($url, 'post');
+		echo "<div class=\"confirm_action\">\n";
+		echo "<p>{$message}</p>\n";
+		echo "<p class=\"buttons\">\n";
+		echo $form->generate_submit_button("Yes");
+		echo $form->generate_submit_button("No", array("name" => "no"));
+		echo "</p>\n";
+		echo "</div>\n";
+		$form->end();
+		$this->output_footer();
 	}
 }
 

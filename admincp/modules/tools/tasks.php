@@ -133,7 +133,7 @@ if($mybb->input['action'] == "add")
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
-	$form = new Form("index.php?".SID."&amp;module=user/tasks&amp;action=add", "post", "add");
+	$form = new Form("index.php?".SID."&amp;module=tools/tasks&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -400,17 +400,29 @@ if($mybb->input['action'] == "delete")
 		flash_message('The specified task does not exist.', 'error');
 		admin_redirect("index.php?".SID."&module=tools/tasks");
 	}
+	
+	// User clicked no
+	if($mybb->input['no'])
+	{
+		admin_redirect("index.php?".SID."&module=tools/tasks");
+	}
 
-	// Delete the task & any associated task log entries
-	$db->delete_query("tasks", "tid='{$task['tid']}'");
-	$db->delete_query("tasklog", "tid='{$task['tid']}'");
+	if($mybb->request_method == "post")
+	{
+		// Delete the task & any associated task log entries
+		$db->delete_query("tasks", "tid='{$task['tid']}'");
+		$db->delete_query("tasklog", "tid='{$task['tid']}'");
 
-	// Fetch next task run
-	$cache->update_tasks();
+		// Fetch next task run
+		$cache->update_tasks();
 
-	flash_message('The specified task has been deleted.', 'error');
-	admin_redirect("index.php?".SID."&module=tools/tasks");
-
+		flash_message('The specified task has been deleted.', 'error');
+		admin_redirect("index.php?".SID."&module=tools/tasks");
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?".SID."&amp;module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", "Are you sure you wish to delete this scheduled task?");
+	}
 }
 
 if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
@@ -587,7 +599,7 @@ if(!$mybb->input['action'])
 		{
 			$popup->add_item("Enable Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}");
 		}
-		$popup->add_item("Delete Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}");
+		$popup->add_item("Delete Task", "index.php?".SID."&amp;module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this scheduled task?')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

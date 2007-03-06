@@ -230,6 +230,10 @@ class Form
 		{
 			$input .= " id=\"".$options['id']."\"";
 		}
+		if(isset($options['name']))
+		{
+			$input .= " name=\"".$options['name']."\"";
+		}
 		$input .= " />";
 		return $input;
 	}
