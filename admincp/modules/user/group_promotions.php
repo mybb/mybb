@@ -256,9 +256,9 @@ if($mybb->input['action'] == "edit")
 	
 	$form_container->output_row("User Group Change Type <em>*</em>", "Select 'Primary User Group' if the user should have their primary user group changed to the new user group. Select 'Additional User Group' if the user should have the new user group added as an additional user group to their profile.", $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row("Enabled? <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row("Enabled? <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
 	
-	$form_container->output_row("Enable Logging? <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	$form_container->output_row("Enable Logging? <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button("Update Promotion");
@@ -410,9 +410,9 @@ if($mybb->input['action'] == "add")
 	
 	$form_container->output_row("User Group Change Type <em>*</em>", "Select 'Primary User Group' if the user should have their primary user group changed to the new user group. Select 'Additional User Group' if the user should have the new user group added as an additional user group to their profile.", $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row("Enabled? <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row("Enabled? <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
 	
-	$form_container->output_row("Enable Logging? <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	$form_container->output_row("Enable Logging? <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button("Save New Promotion");

@@ -10,14 +10,256 @@
  */
 
 
-// TODO
-// * Generate Backup
-// * Delete Backups
+// Allows us to refresh cache to prevent over flowing
+function clear_overflow($fp, &$contents) 
+{
+	global $mybb;
+	
+	if($mybb->input['method'] == 'disk') 
+	{
+		if($mybb->input['filetype'] == 'gzip') 
+		{
+			gzwrite($fp, $contents);
+		} 
+		else 
+		{
+			fwrite($fp, $contents);
+		}
+	} 
+	else 
+	{
+		if($mybb->input['filetype'] == "gzip")
+		{
+			echo gzencode($contents);
+		}
+		else
+		{
+			echo $contents;
+		}
+	}
+		
+	$contents = '';	
+}
 
 $page->add_breadcrumb_item("Database Backups", "index.php?".SID."&amp;module=tools/backupdb");
 
+if($mybb->input['action'] == "dlbackup")
+{
+	if(empty($mybb->input['file']))
+	{
+		flash_message('You did not specify a database backup to download, so your request could not be performed.', 'error');
+		admin_redirect("index.php?".SID."&module=tools/backupdb");
+	}
+	
+	$file = basename($mybb->input['file']);
+	$ext = get_extension($file);
+		
+	if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file) && filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file' && ($ext == 'gz' || $ext == 'sql'))
+	{
+		header('Content-disposition: attachment; filename='.$file);
+		header("Content-type: ".$ext);
+		header("Content-length: ".filesize(MYBB_ADMIN_DIR.'backups/'.$file));
+		echo file_get_contents(MYBB_ADMIN_DIR.'backups/'.$file);
+	}
+	else
+	{
+		flash_message('An error occured while attempting to download your database backup.', 'error');
+		admin_redirect("index.php?".SID."&module=tools/backupdb");
+	}
+}
+
+if($mybb->input['action'] == "delete")
+{
+	if($mybb->input['no']) 
+	{ 
+		admin_redirect("index.php?".SID."&module=tools/backupdb"); 
+	}
+	
+	if(!trim($mybb->input['file']))
+	{
+		flash_message('You did not enter a file to delete', 'error');
+		admin_redirect("index.php?".SID."&module=tools/backupdb");
+	}
+	
+	$file = basename($mybb->input['file']);
+	
+	if(!file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
+	{
+		flash_message('You did not enter a valid promotion id', 'error');
+		admin_redirect("index.php?".SID."&module=tools/backupdb");
+	}
+	
+	if($mybb->request_method == "post")
+	{		
+		$delete = @unlink(MYBB_ADMIN_DIR.'backups/'.$file);
+			
+		if($delete)
+		{
+			flash_message('Backup Delete Successfully', 'success');
+			admin_redirect("index.php?".SID."&module=tools/backupdb");
+			cpredirect('dbtools.php?'.SID.'&action=existing', $lang->backup_deleted);
+		}
+		else
+		{
+			flash_message('Could not delete selected backup.', 'error');
+			admin_redirect("index.php?".SID."&module=tools/backupdb");
+		}
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?".SID."&amp;module=tools/backupdb&amp;action=delete&amp;file={$mybb->input['file']}", "Are you sure you wish to delete this backup?"); 
+	}
+}
+
 if($mybb->input['action'] == "backup")
 {
+	if($mybb->request_method == "post")
+	{
+		$db->set_table_prefix('');
+		
+		if(!is_array($mybb->input['tables']))
+		{
+			$page->output_error("You did not select any tables.");
+		}
+		
+		@set_time_limit(0);
+		
+		if($mybb->input['method'] == 'disk')
+		{
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
+			
+			if($mybb->input['filetype'] == 'gzip')
+			{
+				if(!function_exists('gzopen')) // check zlib-ness
+				{
+					$page->output_error("The zlib library for PHP is not enabled, so your request could not be performed.");
+				}
+				
+				$fp = gzopen($file.'.gz', 'w9');
+			}
+			else
+			{
+				$fp = fopen($file.'.sql', 'w');
+			}
+		}
+		else
+		{
+			$file = 'backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
+			if($mybb->input['filetype'] == 'gzip')
+			{
+				if(!function_exists('gzopen')) // check zlib-ness
+				{
+					$page->output_error("The zlib library for PHP is not enabled, so your request could not be performed.");
+				}
+
+				// Send headers for gzip file (do ob_start too)
+				header('Content-Encoding: x-gzip');
+				header('Content-Type: application/x-gzip');
+				header('Content-Disposition: attachment; filename="'.$file.'.gz"');
+			}
+			else
+			{
+				// Send standard headers for .sql
+				header('Content-Type: text/x-sql');
+				header('Content-Disposition: attachment; filename="'.$file.'.sql"');
+			}
+		}
+		
+		$time = date('dS F Y \a\t H:i', time());
+		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
+		$contents = $header;
+		foreach($mybb->input['tables'] as $table)
+		{			
+			if($mybb->input['analyzeoptimize'] == "yes")
+			{
+				$db->optimize_table($table);
+				$db->analyze_table($table);
+			}
+			
+			$field_list = array();
+			$query = $db->query("SHOW FIELDS FROM ".$table);
+			while($row = $db->fetch_array($query))
+			{
+				$field_list[] = $row['Field'];
+			}
+			
+			$fields = implode(",", $field_list);
+			if($mybb->input['contents'] != 'data')
+			{
+				$structure = $db->show_create_table($table).";\n";
+				$contents .= $structure;
+				clear_overflow($fp, $contents);
+			}
+			
+			if($mybb->input['contents'] != 'structure')
+			{
+				$query = $db->simple_select($table);
+				while($row = $db->fetch_array($query))
+				{
+					$insert = "INSERT INTO {$table} ($fields) VALUES (";
+					$comma = '';
+					foreach($field_list as $field)
+					{
+						if(!isset($row[$field]) || trim($row[$field]) == "")
+						{
+							$insert .= $comma."''";
+						}
+						else
+						{
+							$insert .= $comma."'".$db->escape_string($row[$field])."'";
+						}
+						$comma = ',';
+					}
+					$insert .= ");\n";
+					$contents .= $insert;
+					clear_overflow($fp, $contents);
+				}
+			}
+		}
+		
+		if($mybb->input['method'] == 'disk')
+		{
+			if($mybb->input['filetype'] == 'gzip')
+			{
+				gzwrite($fp, $contents);
+				gzclose($fp);
+			}
+			else
+			{
+				fwrite($fp, $contents);
+				fclose($fp);
+			}
+			
+			if($mybb->input['filetype'] == 'gzip')
+			{
+				$ext = '.gz';
+			}
+			else
+			{
+				$ext = '.sql';
+			}
+			
+			$db->set_table_prefix(TABLE_PREFIX);
+			
+			$file_from_admindir = 'index.php?'.SID.'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
+			flash_message("Backup generated successfully.<br /><br />The backup was saved to:<br />{$file}{$ext}<br /><br /><a href=\"{$file_from_admindir}\">Download this backup</a>.", 'success');
+			admin_redirect("index.php?".SID."&module=tools/backupdb");
+		}
+		else
+		{
+			if($mybb->input['filetype'] == 'gzip')
+			{
+				echo gzencode($contents);
+			}
+			else
+			{
+				echo $contents;
+			}
+		}
+		
+		exit;
+	}
+	
 	$page->extra_header = "	<script type=\"text/javascript\" language=\"Javascript\">
 	function changeSelection(action, prefix)
 	{
@@ -81,11 +323,11 @@ if($mybb->input['action'] == "backup")
 	
 	$table->construct_cell("<strong>File Type</strong><br />\nSelect the file type you would like the database backup saved as.<br />\n<div class=\"form_row\">".$form->generate_radio_button("filetype", "gzip", "GZIP Compressed", array('checked' => 1))."<br />\n".$form->generate_radio_button("filetype", "plain", "Plain Text")."</div>", array('width' => '50%'));
 	$table->construct_row();
-	$table->construct_cell("<strong>Save Method</strong><br />\nSelect the method you would like to use to save the backup.<br /><div class=\"form_row\">".$form->generate_radio_button("method", "directory", "Backup Directory")."<br />\n".$form->generate_radio_button("method", "download", "Download", array('checked' => 1))."</div>", array('width' => '50%'));
+	$table->construct_cell("<strong>Save Method</strong><br />\nSelect the method you would like to use to save the backup.<br /><div class=\"form_row\">".$form->generate_radio_button("method", "disk", "Backup Directory")."<br />\n".$form->generate_radio_button("method", "download", "Download", array('checked' => 1))."</div>", array('width' => '50%'));
 	$table->construct_row();
 	$table->construct_cell("<strong>Backup Contents</strong><br />\nSelect the information that you would like included in the backup.<br /><div class=\"form_row\">".$form->generate_radio_button("contents", "both", "Structure and Data", array('checked' => 1))."<br />\n".$form->generate_radio_button("contents", "structure", "Structure Only")."<br />\n".$form->generate_radio_button("contents", "data", "Data only")."</div>", array('width' => '50%'));
 	$table->construct_row();
-	$table->construct_cell("<strong>Analyze and Optimize Selected Tables</strong><br />\nWould you like the databases to be analyzed and optimized during the backup?<br /><div class=\"form_row\">".$form->generate_yes_no_radio("analyzeoptimize")."</div>", array('width' => '50%'));
+	$table->construct_cell("<strong>Analyze and Optimize Selected Tables</strong><br />\nWould you like the selected tables to be analyzed and optimized during the backup?<br /><div class=\"form_row\">".$form->generate_yes_no_radio("analyzeoptimize")."</div>", array('width' => '50%'));
 	$table->construct_row();
 		
 	$table->output("New Database Backup");
@@ -154,10 +396,10 @@ if(!$mybb->input['action'])
 			$time = "-";
 		}
 		
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$filename}</a>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
 		$table->construct_cell(get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$backup['file'])));
 		$table->construct_cell($time);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}\">Delete</a>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this backup?')\">Delete</a>");
 		$table->construct_row();
 	}
 	

@@ -242,7 +242,7 @@ class Form
 		return $input;
 	}
 
-	function generate_yes_no_radio($name, $value="yes", $int)
+	function generate_yes_no_radio($name, $value="yes", $int=true)
 	{
 		if($value == "no" || $value === 0)
 		{
@@ -259,8 +259,13 @@ class Form
 			$yes_value = 'yes';
 			$no_value = 'no';
 		}
-		$yes = $this->generate_radio_button($name, $int, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
-		$no = $this->generate_radio_button($name, $int, "No", array("class" => "radio_no", "checked" => $no_checked));
+		else
+		{
+			$yes_value = $int['yes'];
+			$no_value = $int['no'];
+		}
+		$yes = $this->generate_radio_button($name, $yes_value, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
+		$no = $this->generate_radio_button($name, $no_value, "No", array("class" => "radio_no", "checked" => $no_checked));
 		return $yes." ".$no;
 	}
 
