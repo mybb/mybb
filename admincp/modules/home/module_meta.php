@@ -30,6 +30,10 @@ function home_action_handler($action)
 			$page->active_action = "credits";
 			$action_file = "credits.php";
 			break;
+		case "version_check":
+			$page->active_action = "version_check";
+			$action_file = "version_check.php";
+			break;
 		default:
 			$page->active_action = "dashboard";
 			$action_file = "index.php";

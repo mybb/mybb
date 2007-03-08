@@ -30,6 +30,10 @@ function tools_action_handler($action)
 			$page->active_action = "tasks";
 			$action_file = "tasks.php";
 			break;
+		case "backupdb":
+			$page->active_action = "backupdb";
+			$action_file = "backupdb.php";
+			break;
 		default:
 			$page->active_action = "stats";
 			$action_file = "index.php";

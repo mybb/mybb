@@ -200,6 +200,10 @@ class Form
 		{
 			$select .= " id=\"{$options['id']}\"";
 		}
+		if(isset($options['size']))
+		{
+			$select .= " size=\"{$options['size']}\"";
+		}
 		$select .= ">\n";
 		foreach($option_list as $value => $option)
 		{
@@ -320,7 +324,7 @@ class FormContainer
 		{
 			$for = " for=\"{$label_for}\"";
 		}
-		$row = "<label {$for}>{$title}</label>";
+		$row = "<label{$for}>{$title}</label>";
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";

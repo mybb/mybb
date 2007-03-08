@@ -504,6 +504,11 @@ class PostDataHandler extends DataHandler
 
 		$post = &$this->data;
 		$time = time();
+		
+		if($this->method != "update" && !$post['savedraft'])
+		{
+			$this->verify_post_flooding();
+		}
 
 		// Verify all post assets.
 
@@ -526,11 +531,6 @@ class PostDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('dateline', $post))
 		{
 			$this->verify_dateline();
-		}
-
-		if($this->method != "update" && !$post['savedraft'])
-		{
-			$this->verify_post_flooding();
 		}
 
 		if($this->method == "insert" || array_key_exists('replyto', $post))
@@ -589,7 +589,7 @@ class PostDataHandler extends DataHandler
 		{
 			$visible = -2;
 		}
-
+		
 		// Otherwise this post is being made now and we have a bit to do.
 		else
 		{
@@ -674,6 +674,20 @@ class PostDataHandler extends DataHandler
 			{
 				$visible = 1;
 			}
+		}
+		
+		if($visible != -2)
+		{
+			$now = time();
+			if($forum['usepostcounts'] != "no")
+			{
+				$queryadd = ",postnum=postnum+1";
+			}
+			else
+			{
+				$queryadd = '';
+			}
+			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
 		}
 		
 		if($this->method != "update" && $visible != -2)
@@ -857,20 +871,6 @@ class PostDataHandler extends DataHandler
 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
 		}
 
-		if($visible != -2)
-		{
-			$now = time();
-			if($forum['usepostcounts'] != "no")
-			{
-				$queryadd = ",postnum=postnum+1";
-			}
-			else
-			{
-				$queryadd = '';
-			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
-		}
-
 		// Return the post's pid and whether or not it is visible.
 		return array(
 			"pid" => $this->pid,
@@ -890,6 +890,11 @@ class PostDataHandler extends DataHandler
 		$thread = &$this->data;
 
 		// Validate all thread assets.
+		
+		if(!$thread['savedraft'])
+		{
+			$this->verify_post_flooding();
+		}
 
 		if($this->method == "insert" || array_key_exists('uid', $thread))
 		{
@@ -920,11 +925,6 @@ class PostDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('options', $thread))
 		{
 			$this->verify_options();
-		}
-
-		if(!$thread['savedraft'])
-		{
-			$this->verify_post_flooding();
 		}
 
 		$plugins->run_hooks_by_ref("datahandler_post_validate_thread", $this);

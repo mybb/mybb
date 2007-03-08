@@ -20,6 +20,8 @@ class Page
 	var $sidebar;
 
 	var $breadcrumb_trail = array();
+	
+	var $extra_header = "";
 
 	function output_header($title="MyBB Administration Panel")
 	{
@@ -44,6 +46,7 @@ class Page
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/moo.ajax.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
+		echo $this->extra_header;
 		echo "</head>\n";
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
@@ -122,6 +125,11 @@ class Page
 		echo "</div>\n";
 		echo "</div>\n";	
 	}
+	
+	function output_success($message)
+	{
+		echo "<div class=\"success\">".$message."</div>\n";
+	}
 
 	function output_alert($message)
 	{
@@ -131,6 +139,13 @@ class Page
 	function output_inline_message($message)
 	{
 		echo "<div class=\"inline_message\">".$message."</div>\n";
+	}
+	
+	function output_error($error)
+	{
+		echo "<div class=\"error\">\n";
+		echo "{$error}\n";
+		echo "</div>\n";
 	}
 
 	function output_inline_error($errors)
@@ -300,9 +315,10 @@ EOF;
 		$form = new Form($url, 'post');
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$message}</p>\n";
+		echo "<br />\n";
 		echo "<p class=\"buttons\">\n";
-		echo $form->generate_submit_button("Yes");
-		echo $form->generate_submit_button("No", array("name" => "no"));
+		echo $form->generate_submit_button("Yes", array('class' => 'button_yes'));
+		echo $form->generate_submit_button("No", array("name" => "no", 'class' => 'button_no'));
 		echo "</p>\n";
 		echo "</div>\n";
 		$form->end();

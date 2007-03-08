@@ -534,6 +534,34 @@ input.submit_button {
 	padding: 3px;
 }
 
+.confirm_action {
+	margin: 10px 0;
+	padding: 10px;
+	font-weight: bold;
+  	border: 1px solid #FC6;
+	background: #FFC;
+	color: #C00;
+}
+
+.confirm_action p {
+  	margin: 0;
+}
+
+input.button_yes {
+	background: #D6ECA6;
+	border: 3px double #8DC93E;
+	padding: 4px 6px;
+	font-weight: bold;
+	margin-right: 3px;
+}
+
+input.button_no {
+	background: #ECA6D6;
+	border: 3px double #C93E8D;
+	padding: 4px 6px;
+	font-weight: bold;
+}
+
 .label_radio_yes, .label_radio_on {
 	background: #D6ECA6;
 	border: 1px solid #8DC93E;

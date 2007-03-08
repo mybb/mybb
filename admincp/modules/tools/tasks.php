@@ -476,16 +476,6 @@ if($mybb->input['action'] == "logs")
 {
 	$page->output_header("Task Logs");
 
-	$sub_tabs['scheduled_tasks'] = array(
-	'title' => "Scheduled Tasks",
-	'link' => "index.php?".SID."&amp;module=tools/tasks"
-);
-
-	$sub_tabs['add_task'] = array(
-		'title' => "Add New Task",
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add"
-	);
-
 	$sub_tabs['task_logs'] = array(
 		'title' => "View Task Logs",
 		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs",

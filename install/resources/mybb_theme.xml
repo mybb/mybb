@@ -2305,6 +2305,7 @@ form {
 		<template name="headerinclude" version="140"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.lite.js?ver=120"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/moo.ajax.js?ver=120"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=120"></script>
@@ -3995,7 +3996,7 @@ form {
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="120"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="portal_welcome_guesttext" version="140"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}<br />
+		<template name="portal_welcome_guesttext" version="140"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
 <br />
 <form method="post" action="{$portal_url}"><input type="hidden" name="action" value="do_login" />
 {$lang->username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
