@@ -249,7 +249,8 @@ class session
 		// Choose time format.
 		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != '')
 		{
-			switch($mybb->user['timeformat']) {
+			switch($mybb->user['timeformat'])
+			{
 				case "1":
 					$mybb->settings['timeformat'] = "h:i a";
 					break;

@@ -653,6 +653,10 @@ if(is_array($threadcache))
 		$threadpages = '';
 		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
+		if($thread['unapprovedposts'] > 0 && $ismod)
+		{
+			$thread['posts'] += $thread['unapprovedposts'];
+		}
 		if($thread['posts'] > $mybb->settings['postsperpage'])
 		{
 			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
