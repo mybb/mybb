@@ -57,7 +57,7 @@ if(!$mybb->input['action'])
 	$latest_version = "<strong>".$tree['mybb']['latest_version']['value']."</strong> (".$latest_code.")";
 	if($latest_code > $mybb->version_code)
 	{
-		$latest_version = "<span style=\"color: red;\">".$latest_version."</span>";
+		$latest_version = "<span style=\"color: #C00;\">".$latest_version."</span>";
 		$version_warn = 1;
 		$updated_cache['latest_version'] = $latest_version;
 		$updated_cache['latest_version_code'] = $latest_code;
@@ -86,11 +86,11 @@ if(!$mybb->input['action'])
 	
 	if($version_warn)
 	{
-		$page->output_error("<p><em><span style=\"color: red;\">Your copy of MyBB is out of date.</span></em> Please upgrade to the latest version of MyBB by visiting the <a href=\"http://mybboard.net\" target=\"_blank\">MyBB Website</a>.</p>");
+		$page->output_error("<p><em>Your copy of MyBB is out of date.</em> Please upgrade to the latest version of MyBB by visiting the <a href=\"http://mybboard.net\" target=\"_blank\">MyBB Website</a>.</p>");
 	}
 	else
 	{
-		$page->output_success("<p><em><span style=\"color: green;\">Congratulations, you are running the latest version of MyBB.</span></em></p>");
+		$page->output_success("<p><em>Congratulations, you are running the latest version of MyBB.</em></p>");
 	}
 	
 	if($feed_parser->error == '')
@@ -113,7 +113,7 @@ if(!$mybb->input['action'])
 			{
 				$content = $item['description'];
 			}
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span>{$content}<strong><a href=\"{$item['link']}\" target=\"_blank\">&raquo; Read more</a></strong><div style=\"text-align: right;\">{$stamp}</div>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span>{$content}<strong><span style=\"float: right;\">{$stamp}</span><a href=\"{$item['link']}\" target=\"_blank\">&raquo; Read more</a></strong>");
 			$table->construct_row();
 		}
 	}
