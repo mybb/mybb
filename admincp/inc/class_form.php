@@ -47,6 +47,10 @@ class Form
 		{
 			$input .= " class=\"text_input\"";
 		}
+		if(isset($options['style']))
+		{
+			$input .= " style=\"".$options['style']."\"";
+		}
 		if(isset($options['id']))
 		{
 			$input .= " id=\"".$options['id']."\"";
@@ -241,6 +245,30 @@ class Form
 		$input .= " />";
 		return $input;
 	}
+	
+	function generate_reset_button($value, $options=array())
+	{
+		$input = "<input type=\"reset\" value=\"".htmlspecialchars($value)."\"";
+
+		if(isset($options['class']))
+		{
+			$input .= " class=\"submit_button ".$options['class']."\"";
+		}
+		else
+		{
+			$input .= " class=\"submit_button\"";
+		}
+		if(isset($options['id']))
+		{
+			$input .= " id=\"".$options['id']."\"";
+		}
+		if(isset($options['name']))
+		{
+			$input .= " name=\"".$options['name']."\"";
+		}
+		$input .= " />";
+		return $input;
+	}
 
 	function generate_yes_no_radio($name, $value="yes", $int=true)
 	{
@@ -318,9 +346,9 @@ class FormContainer
 		$this->title = $title;
 	}
 
-	function output_row_header($title)
+	function output_row_header($title, $extra=array())
 	{
-		$this->container->construct_header($title);
+		$this->container->construct_header($title, $extra);
 	}
 
 	function output_row($title, $description="", $content="", $label_for="", $options=array())
@@ -336,7 +364,17 @@ class FormContainer
 		}
 		$row .= "<div class=\"form_row\">{$content}</div>\n";
 		
-		$this->container->construct_cell($row);
+		$this->container->construct_cell($row, $options);
+		$this->container->construct_row();
+	}
+	
+	function output_cell($data, $options=array())
+	{
+		$this->container->construct_cell($data, $options);
+	}
+	
+	function construct_row()
+	{
 		$this->container->construct_row();
 	}
 

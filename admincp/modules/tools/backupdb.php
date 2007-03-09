@@ -85,7 +85,7 @@ if($mybb->input['action'] == "delete")
 	
 	if(!file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 	{
-		flash_message('You did not enter a valid promotion id', 'error');
+		flash_message('You did not enter a valid promotion', 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 	
@@ -97,7 +97,6 @@ if($mybb->input['action'] == "delete")
 		{
 			flash_message('Backup Delete Successfully', 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
-			cpredirect('dbtools.php?'.SID.'&action=existing', $lang->backup_deleted);
 		}
 		else
 		{

@@ -10,7 +10,7 @@
  */
 
 
-$page->add_breadcrumb_item("Plugins", "index.php?".SID."&module=config/plugins");
+$page->add_breadcrumb_item("Plugins", "index.php?".SID."&amp;module=config/plugins");
 
 
 // Activates or deactivates a specific plugin
@@ -58,10 +58,6 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 if(!$mybb->input['action'])
 {
 	$page->output_header("Plugins");
-	if($message)
-	{
-		$page->output_inline_message($message);
-	}
 
 	$sub_tabs['change_plugins'] = array(
 		'title' => "Change Plugins",
@@ -135,8 +131,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		$table->contruct_cell("There are no plugins on your forum at this time.");
-		$table->contruct_cell("");
+		$table->contruct_cell("There are no plugins on your forum at this time.", array('colspan' => 2));
 		$table->construct_row();
 	}
 	$table->output("Plugins");

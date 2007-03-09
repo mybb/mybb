@@ -27,6 +27,10 @@ function config_action_handler($manage)
 			$page->active_action = "plugins";
 			$action_file = "plugins.php";
 			break;
+		case "smilies":
+			$page->active_action = "smilies";
+			$action_file = "smilies.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";

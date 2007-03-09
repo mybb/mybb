@@ -295,6 +295,7 @@ EOF;
 				$target = " target=\"{$tab['link_target']}\"";
 			}
 			echo "\t\t<li class=\"{$class}\"><a href=\"{$tab['link']}\"{$target}>{$tab['title']}</a></li>\n";
+			$target = '';
 		}
 		echo "\t</ul>\n";
 		if($tabs[$active]['description'])

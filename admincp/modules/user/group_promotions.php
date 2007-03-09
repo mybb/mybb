@@ -475,7 +475,10 @@ if($mybb->input['action'] == "logs")
 	
 	$table->output("Promotion Logs");
 	
-	echo "<br />".draw_admin_pagination($mybb->input['page'], "20", count($table->rows), "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs&amp;page={page}");
+	$query = $db->simple_select("promotions", "COUNT(pid) as promotions");
+	$total_rows = $db->fetch_field($query, "promotions");
+	
+	echo "<br />".draw_admin_pagination($mybb->input['page'], "20", $total_rows, "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs&amp;page={page}");
 	
 	$page->output_footer();
 }
