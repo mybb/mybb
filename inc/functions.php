@@ -1151,10 +1151,10 @@ function is_moderator($fid="0", $action="", $uid="0")
 	{
 		if(!$fid)
 		{
-			$query = $db->simple_select('moderators', 'mid', "uid={$uid}", array('limit' => 1));
+			$query = $db->simple_select('moderators', 'COUNT(*) as count', "uid={$uid}", array('limit' => 1));
 			$modcheck = $db->fetch_array($query);
 
-			if($modcheck['mid'])
+			if($modcheck['count'] > 0)
 			{
 				return true;
 			}
