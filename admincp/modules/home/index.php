@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -104,7 +104,7 @@ if(!$mybb->input['action'])
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.com/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
 		makewarning($lang->new_version_available);
 	}*/
 	

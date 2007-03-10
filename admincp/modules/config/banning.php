@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id: settings.php 2918 2007-03-05 00:50:41Z Tikitiki $
  */

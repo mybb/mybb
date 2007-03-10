@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -98,7 +98,7 @@ class FeedGenerator
 				$this->xml .= "\t<id>{$this->channel['link']}</id>\n";
 				$this->xml .= "\t<link rel=\"alternate\" type=\"text/html\" href=\"{$this->channel['link']}\"/>\n";
 				$this->xml .= "\t<updated>{$this->channel['date']}</updated>\n";
-				$this->xml .= "\t<generator uri=\"http://mybboard.com\">MyBB</generator>\n";
+				$this->xml .= "\t<generator uri=\"http://mybboard.net\">MyBB</generator>\n";
 				break;
 			// The default is the RSS 2.0 format.
 			default:

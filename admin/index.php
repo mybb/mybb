@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -111,7 +111,7 @@ elseif($mybb->input['action'] == "home")
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.com/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
 		makewarning($lang->new_version_available);
 	}
 
@@ -180,7 +180,7 @@ elseif($mybb->input['action'] == "home")
 	tableheader($lang->mybb_credits);
 	tablesubheader($lang->contributed);
 	makelabelcode("<b>$lang->product_managers</b>", "<a href=\"http://www.surfionline.com\" target=\"_blank\">Chris Boulton</a>");
-	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\" target=\"_blank\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.com/\" target=\"_blank\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\" target=\"_blank\">DennisTT</a><br /><a href=\"http://www.peterakkies.com\" target=\"_blank\">Peter</a><br /><a href=\"http://www.tiki.rct3x.net\" target=\"_blank\">Tikitiki</a><br /><a href=\"http://www.decswxaqz.co.uk/\" target=\"_blank\">decswxaqz</a><br /><a href=\"http://www.mcdcpp.net/blog/\" target=\"_blank\">CraKteR</a>");
+	makelabelcode("<b>$lang->developers</b>", "<a href=\"http://www.surfionline.com/\" target=\"_blank\">Chris Boulton</a><br /><a href=\"http://mods.mybboard.net/\" target=\"_blank\">Musicalmidget</a><br /><a href=\"http://www.dennistt.net/\" target=\"_blank\">DennisTT</a><br /><a href=\"http://www.peterakkies.com\" target=\"_blank\">Peter</a><br /><a href=\"http://www.tiki.rct3x.net\" target=\"_blank\">Tikitiki</a><br /><a href=\"http://www.decswxaqz.co.uk/\" target=\"_blank\">decswxaqz</a><br /><a href=\"http://www.mcdcpp.net/blog/\" target=\"_blank\">CraKteR</a>");
 	makelabelcode("<b>$lang->graphics_and_style</b>", "<a href=\"http://www.surfionline.com\" target=\"_blank\">Chris Boulton</a><br /><a href=\"http://www.templatesforall.com\" target=\"_blank\">Scott Hough</a>");
 	endtable();
 
@@ -218,7 +218,7 @@ elseif($mybb->input['action'] == "vercheck")
 	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = @implode("", @file("http://mybboard.com/version_check.php"));
+	$contents = @implode("", @file("http://mybboard.net/version_check.php"));
 	if(!$contents)
 	{
 		cperror($lang->vercheck_error);
@@ -244,7 +244,7 @@ elseif($mybb->input['action'] == "vercheck")
 
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://www.mybboard.com/latest_news.php");
+	$feed_parser->parse_feed("http://www.mybboard.net/latest_news.php");
 	echo $feed_parser->error;
 	cpheader();
 	starttable();

@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -42,7 +42,7 @@ if(!$mybb->input['action'])
 	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = @implode("", @file("http://mybboard.com/version_check.php"));
+	$contents = @implode("", @file("http://mybboard.net/version_check.php"));
 	if(!$contents)
 	{
 		$page->output_inline_error("There was a problem communicating with the version server. Please try again in a few minutes.");
@@ -71,7 +71,7 @@ if(!$mybb->input['action'])
 
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
-	$feed_parser->parse_feed("http://www.mybboard.com/latest_news.php");
+	$feed_parser->parse_feed("http://www.mybboard.net/latest_news.php");
 	echo $feed_parser->error;
 	
 	$table = new Table;

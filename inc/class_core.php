@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -310,7 +310,7 @@ class MyBB {
 				$message = "Your board has not yet been installed and configured. Please do so before attempting to browse it.";
 				break;
 			default:
-				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.com\">MyBB Website</a>";
+				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.net\">MyBB Website</a>";
 		}
 		$error_handler->trigger($message, MYBB_GENERAL);
 	}

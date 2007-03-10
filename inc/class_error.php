@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -412,7 +412,7 @@ class errorHandler {
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="http://mybboard.com/" title="MyBulletinBoard"><span class="invisible">MyBB</span></a></h1>
+			<h1><a href="http://mybboard.net/" title="MyBulletinBoard"><span class="invisible">MyBB</span></a></h1>
 		</div>
 
 		<div id="content">

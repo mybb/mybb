@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -983,7 +983,7 @@ function cpfooter($showversion=1)
 	{
 		$mybbversion = $mybb->version;
 	}
-	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">\n".$lang->footer_powered_by."\n<b>\n<a href=\"http://www.mybboard.com\" target=\"_blank\">MyBB</a> $mybbversion\n</b>\n<br />\n".$lang->footer_copyright." &copy; 2002-".my_date("Y")." <a href=\"http://www.mybboard.com\">MyBB Group</a>\n<br />\n".$lang->footer_stats."\n</font>\n</div>\n";
+	echo "<font size=\"1\" face=\"Verdana,Arial,Helvetica\">\n".$lang->footer_powered_by."\n<b>\n<a href=\"http://www.mybboard.net\" target=\"_blank\">MyBB</a> $mybbversion\n</b>\n<br />\n".$lang->footer_copyright." &copy; 2002-".my_date("Y")." <a href=\"http://www.mybboard.net\">MyBB Group</a>\n<br />\n".$lang->footer_stats."\n</font>\n</div>\n";
 	echo "</body>\n";
 	echo "</html>";
 }

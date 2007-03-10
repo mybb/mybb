@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/license.php
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
  *
  * $Id$
  */
@@ -23,9 +23,9 @@ function hello_info()
 	return array(
 		"name"			=> "Hello World!",
 		"description"	=> "A sample plugin that prints hello world and changes the content of each post to 'Hello world!'",
-		"website"		=> "http://www.mybboard.com",
+		"website"		=> "http://www.mybboard.net",
 		"author"		=> "MyBB Group",
-		"authorsite"	=> "http://www.mybboard.com",
+		"authorsite"	=> "http://www.mybboard.net",
 		"version"		=> "1.0",
 	);
 }
