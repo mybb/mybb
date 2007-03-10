@@ -683,6 +683,9 @@ class Moderation
 		}
 		else
 		{
+			// Remove thread subscriptions for the users who no longer have permission to view the thread
+			$this->remove_thread_subscriptions($tid, false, $new_fid);
+			
 			return $tid;
 		}
 	}
@@ -907,6 +910,9 @@ class Moderation
 		{
 			update_forum_count($fid);
 		}
+		
+		// Remove thread subscriptions for the users who no longer have permission to view the thread
+		$this->remove_thread_subscriptions($tid_list, false, $moveto);
 		return true;
 	}
 
@@ -1169,6 +1175,58 @@ class Moderation
 		{
 			$this->close_threads($close);
 		}
+		return true;
+	}
+	/**
+	 * Remove thread subscriptions (from one or multiple threads in the same forum)
+	 * 
+	 * @param int $tids Thread ID, or an array of thread IDs from the same forum.
+	 * @param boolean $all True (default) to delete all subscriptions, false to only delete subscriptions from users with no permission to read the thread
+	 * @param int $fid (Only applies if $all is false) The forum ID of the thread (if 0, will query database)
+	 * @return boolean true
+	 */
+	function remove_thread_subscriptions($tids,$all = true, $fid = 0)
+	{
+		global $db;
+		
+		// Format thread IDs
+		if(!is_array($tids))
+		{
+			$tids = array($tids);
+		}
+		$tids_csv = implode(',', $tids);
+		
+		// Delete only subscriptions from users who no longer have permission to read the thread.
+		if(!$all)
+		{
+			// Get forum ID
+			if(!$fid)
+			{
+				$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid='{$tid[0]}'");
+			}
+			
+			// Get groups that cannot view the forum or its threads
+			$forum_parentlist = get_parent_list($fid);
+			$query = $db->simple_select(TABLE_PREFIX."forumpermissions", "gid", "fid IN ({$forum_parentlist}) AND (canview='no' OR canviewthreads='no')");
+			$groups = array();
+			while($group = $db->fetch_array($query))
+			{
+				$groups[] = $group['gid'];
+				$additional_groups .= " OR CONCAT(',',u.additionalgroups,',') LIKE ',{$group['gid']},'";
+			}
+			// If there are groups found, delete subscriptions from users in these groups
+			if(count($groups) > 0)
+			{
+				$groups_csv = implode(',', $groups);
+				$db->query("DELETE s FROM (".TABLE_PREFIX."favorites s, ".TABLE_PREFIX."users u) WHERE s.type='s' AND s.tid IN ({$tids_csv}) AND s.uid=u.uid AND (u.usergroup IN ({$groups_csv}){$additional_groups})");
+			}
+		}
+		// Delete all subscriptions of this thread
+		else
+		{
+			$db->delete_query(TABLE_PREFIX."favorites", "tid IN ({$tids_csv}) AND type='s'");
+		}
+		
 		return true;
 	}
 }
