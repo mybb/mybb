@@ -13,7 +13,7 @@
  * eAccelerator Cache Handler
  */
 class eacceleratorCacheHandler
-
+{
 	/**
 	 * Unique identifier representing this copy of MyBB
 	 */
@@ -70,7 +70,7 @@ class eacceleratorCacheHandler
 		eaccelerator_lock($this->unique_id."_".$name);
 		$status = eaccelerator_put($this->unique_id."_".$name, serialize($data));
 		eaccelerator_unlock($this->unique_id."_".$name);
-		return $status
+		return $status;
 	}
 	
 	/**
