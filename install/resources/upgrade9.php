@@ -311,6 +311,58 @@ function upgrade9_dbchanges()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+	$output->print_footer("9_dbchanges2");
+}
+
+function upgrade9_dbchanges2()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Converting Ban Filters");
+
+	echo "<p>Converting existing banned IP addresses, email addresses and usernames..</p>";
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."banfilters (
+	  fid int unsigned NOT NULL auto_increment,
+	  filter varchar(200) NOT NULL default '',
+	  type int(1) NOT NULL default '0',
+	  lastuse bigint(30) NOT NULL default '0',
+	  dateline bigint(30) NOT NULL default '0',
+	  PRIMARY KEY  (fid)
+	) TYPE=MyISAM;");
+
+	// Now we convert all of the old bans in to the new system!
+	$ban_types = array('bannedips','bannedemails','bannedusernames');
+	foreach($ban_types as $type)
+	{
+		$bans = explode(",", $mybb->settings[$type]);
+		$bans = array_map("trim", $bans);
+		foreach($bans as $ban)
+		{
+			if($type == "bannedips")
+			{
+				$ban_type = 1;
+			}
+			else if($type == "bannedusernames")
+			{
+				$ban_type = 2;
+			}
+			else if($type == "bannedemails")
+			{
+				$ban_type = 3;
+			}
+			$new_ban = array(
+				"filter" => $db->escape_string($banned_ip),
+				"type" => $ban_type,
+				"dateline" => time()
+			);
+			$db->insert_query("banfilters", $new_ban);
+		}
+	}
+
+	$contents = "Done</p>";
+	$contents .= "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
 	$output->print_footer("9_done");
 }
 ?>

@@ -87,7 +87,6 @@ $tables[] = "CREATE TABLE mybb_attachments (
   PRIMARY KEY  (aid)
 ) TYPE=MyISAM;";
 
-
 $tables[] = "CREATE TABLE mybb_attachtypes (
   atid int unsigned NOT NULL auto_increment,
   name varchar(120) NOT NULL default '',
@@ -114,6 +113,15 @@ $tables[] = "CREATE TABLE mybb_badwords (
   badword varchar(100) NOT NULL default '',
   replacement varchar(100) NOT NULL default '',
   PRIMARY KEY  (bid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_banfilters (
+  fid int unsigned NOT NULL auto_increment,
+  filter varchar(200) NOT NULL default '',
+  type int(1) NOT NULL default '0',
+  lastuse bigint(30) NOT NULL default '0',
+  dateline bigint(30) NOT NULL default '0',
+  PRIMARY KEY  (fid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_banned (
@@ -480,7 +488,7 @@ $tables[] = "CREATE TABLE mybb_promotions(
   newusergroup smallint unsigned NOT NULL default '0',
   usergrouptype varchar(120) NOT NULL default '0',
   PRIMARY KEY(pid)
-) TYPE=MyISAM;");
+) TYPE=MyISAM;";
 	
 $tables[] = "CREATE TABLE mybb_promotionlogs(
   plid int unsigned NOT NULL auto_increment,
@@ -490,7 +498,7 @@ $tables[] = "CREATE TABLE mybb_promotionlogs(
   newusergroup smallint unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   PRIMARY KEY(plid)
-) TYPE=MyISAM;");
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reportedposts (
   rid int unsigned NOT NULL auto_increment,

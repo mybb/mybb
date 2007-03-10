@@ -509,5 +509,21 @@ class datacache
 
 		$this->update("tasks", $task_cache);
 	}
+
+
+	/**
+	 * Updates the banned IPs cache
+	 */
+	function update_bannedips()
+	{
+		global $db;
+		$banned_ips = array();
+		$query = $db->simple_select("banfilters", "fid,filter", "type=1");
+		while($banned_ip = $db->fetch_array($query))
+		{
+			$banned_ips[$banned_ip['fid']] = $banned_ip;
+		}
+		$this->update("bannedips", $banned_ips);
+	}
 }
 ?>

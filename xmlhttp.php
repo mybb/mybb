@@ -557,7 +557,7 @@ else if($mybb->input['action'] == "username_availability")
 	header("Content-type: text/xml; charset={$charset}");
 
 	// Check if the username belongs to the list of banned usernames.
-	$banned_username = is_banned_username($username);
+	$banned_username = is_banned_username($username, true);
 	if($banned_username)
 	{
 		echo "<fail>{$lang->banned_username}</fail>";

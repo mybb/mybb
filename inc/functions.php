@@ -4126,101 +4126,90 @@ function dec_to_utf8($src)
 }
 
 /**
- * Return a list of banned usernames.
- *
- * @return array The array of banned usernames.
- */
-function get_banned_usernames()
-{
-	global $mybb;
-	$banned_usernames = explode(",", $mybb->settings['bannedusernames']);
-	$banned_usernames = array_map("trim", $banned_usernames);
-	$banned_usernames = array_map("my_strtolower", $banned_usernames);
-	return $banned_usernames;
-}
-
-/**
  * Checks if a username has been disallowed for registration/use.
  *
  * @param string The username
+ * @param boolean True if the 'last used' dateline should be updated if a match is found.
  * @return boolean True if banned, false if not banned
  */
-function is_banned_username($username)
+function is_banned_username($username, $update_lastuse=false)
 {
-	$banned_usernames = get_banned_usernames();
-	if(in_array(my_strtolower($username), $banned_usernames))
+	global $db;
+	$query = $db->simple_select("banfilters", "*", "type='2'");
+	while($banned_username = $db->fetch_array($query))
 	{
-		return true;
+		// Make regular expression * match
+		$banned_username['filter'] = str_replace('\*', '(.*)', preg_quote($banned_username['filter'], '#'));
+		if(preg_match("#{$banned_username['filter']}#i", $username))
+		{
+			// Updating last use
+			if($update_lastuse == true)
+			{
+				$db->update_query("banfilters", array("lastuse" => time()), "fid='{$banned_username['fid']}'");
+			}
+			return true;
+		}
 	}
-	else
-	{
-		return false;
-	}
-}
-
-/**
- * Return a list of banned email addresses.
- *
- * @return array The array of banned email addresses.
- */
-function get_banned_emails()
-{
-	global $mybb;
-	$banned_emails = explode(",", $mybb->settings['bannedemails']);
-	$banned_emails = array_map("trim", $banned_emails);
-	$banned_emails = array_map("my_strtolower", $banned_emails);
-	return $banned_emails;
+	// Still here - good username
+	return false;
 }
 
 /**
  * Check if a specific email address has been banned.
  *
  * @param string The email address.
+ * @param boolean True if the 'last used' dateline should be updated if a match is found.
  * @return boolean True if banned, false if not banned
  */
-function is_banned_email($email)
+function is_banned_email($email, $update_lastuse=false)
 {
-	$banned_emails = get_banned_emails();
-	$email = my_strtolower($email);
-	foreach($banned_emails as $banned_email)
+	global $db;
+	$query = $db->simple_select("banfilters", "*", "type='3'");
+	while($banned_email = $db->fetch_array($query))
 	{
-		if($banned_email != "" && my_strpos($email, $banned_email) !== false)
+		// Make regular expression * match
+		$banned_email['filter'] = str_replace('\*', '(.*)', preg_quote($banned_email['filter'], '#'));
+		if(preg_match("#{$banned_email['filter']}#i", $email))
 		{
+			// Updating last use
+			if($update_lastuse == true)
+			{
+				$db->update_query("banfilters", array("lastuse" => time()), "fid='{$banned_email['fid']}'");
+			}
 			return true;
 		}
 	}
+	// Still here - good email
 	return false;
-}
-
-/**
- * Return a list of banned IP addresses.
- *
- * @return array The array of banned IP addresses.
- */
-function get_banned_ips()
-{
-	global $mybb;
-	$banned_ips = explode(",", $mybb->settings['bannedips']);
-	$banned_ips = array_map("trim", $banned_ips);
-	return $banned_ips;
 }
 
 /**
  * Checks if a specific IP address has been banned.
  *
  * @param string The IP address.
+ * @param boolean True if the 'last used' dateline should be updated if a match is found.
  * @return boolean True if banned, false if not banned.
  */
-function is_banned_ip($ip_address)
+function is_banned_ip($ip_address, $update_lastuse=false)
 {
-	$banned_ips = get_banned_ips();
+	global $db, $cache;
+	$banned_ips = $cache->read("bannedips");
+	if(!is_array($banned_ips)) return false;
 	foreach($banned_ips as $banned_ip)
 	{
-		if($banned_ip != "" && my_strpos($ip_address, $banned_ip) !== false)
+		// Make regular expression * match
+		$banned_ip['filter'] = str_replace('\*', '(.*)', preg_quote($banned_ip['filter'], '#'));
+		if(preg_match("#{$banned_ip['filter']}#i", $ip_address))
 		{
+			// Updating last use
+			if($update_lastuse == true)
+			{
+				$db->update_query("banfilters", array("lastuse" => time()), "fid='{$banned_ip['fid']}'");
+			}
 			return true;
 		}
 	}
+	// Still here - good ip
 	return false;
 }
 

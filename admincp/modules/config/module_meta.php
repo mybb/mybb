@@ -31,6 +31,10 @@ function config_action_handler($manage)
 			$page->active_action = "smilies";
 			$action_file = "smilies.php";
 			break;
+		case "banning":
+			$page->active_action = "banning";
+			$action_file = "banning.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
@@ -38,15 +42,16 @@ function config_action_handler($manage)
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "settings", "title" => "Settings", "link" => "index.php?".SID."&module=config/settings");
-	$sub_menu['20'] = array("id" => "profile_fields", "title" => "Custom Profile Fields", "link" => "index.php?".SID."&module=config/profile_fields");
-	$sub_menu['30'] = array("id" => "smilies", "title" => "Smilies", "link" => "index.php?".SID."&module=config/smilies");
-	$sub_menu['40'] = array("id" => "badwords", "title" => "Bad Words", "link" => "index.php?".SID."&module=config/badwords");
-	$sub_menu['50'] = array("id" => "mycode", "title" => "MyCode", "link" => "index.php?".SID."&module=config/mycode");
-	$sub_menu['60'] = array("id" => "languages", "title" => "Languages", "link" => "index.php?".SID."&module=config/languages");
-	$sub_menu['70'] = array("id" => "post_icons", "title" => "Post Icons", "link" => "index.php?".SID."&module=config/post_icons");
-	$sub_menu['80'] = array("id" => "help_documents", "title" => "Help Documents", "link" => "index.php?".SID."&module=config/help_documents");
-	$sub_menu['90'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
-	$sub_menu['100'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
+	$sub_menu['20'] = array("id" => "banning", "title" => "Banning", "link" => "index.php?".SID."&module=config/banning");
+	$sub_menu['30'] = array("id" => "profile_fields", "title" => "Custom Profile Fields", "link" => "index.php?".SID."&module=config/profile_fields");
+	$sub_menu['40'] = array("id" => "smilies", "title" => "Smilies", "link" => "index.php?".SID."&module=config/smilies");
+	$sub_menu['50'] = array("id" => "badwords", "title" => "Bad Words", "link" => "index.php?".SID."&module=config/badwords");
+	$sub_menu['60'] = array("id" => "mycode", "title" => "MyCode", "link" => "index.php?".SID."&module=config/mycode");
+	$sub_menu['70'] = array("id" => "languages", "title" => "Languages", "link" => "index.php?".SID."&module=config/languages");
+	$sub_menu['80'] = array("id" => "post_icons", "title" => "Post Icons", "link" => "index.php?".SID."&module=config/post_icons");
+	$sub_menu['90'] = array("id" => "help_documents", "title" => "Help Documents", "link" => "index.php?".SID."&module=config/help_documents");
+	$sub_menu['100'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
+	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
 
 	$sidebar = new sideBarItem("Configuration");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);

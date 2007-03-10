@@ -76,7 +76,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check if the username belongs to the list of banned usernames.
-		if(is_banned_username($username))
+		if(is_banned_username($username, true))
 		{
 			$this->set_error('banned_username');
 			return false;
@@ -211,7 +211,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check banned emails
-		if(is_banned_email($user['email']))
+		if(is_banned_email($user['email'], true))
 		{
 			$this->set_error('banned_email');
 			return false;

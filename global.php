@@ -443,7 +443,7 @@ $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
 // Check banned ip addresses
-if(is_banned_ip($session->ipaddress))
+if(is_banned_ip($session->ipaddress, true))
 {
 	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
 	error($lang->error_banned);

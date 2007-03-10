@@ -57,14 +57,17 @@ function tools_action_handler($action)
 
 function tools_admin_log_data()
 {
+	global $mybb;
 	switch($page->active_action)
 	{
-		case "dashboard":
-			return array(
-				"data" => array("uid" => "1234", "username" => "Test")
-			);
+		case "tasks":
+			if($mybb->input['action'] == "edit" || $mybb->input['action'] == "delete" || $mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
+			{
+				return array(
+					"data" => array("action" => $mybb->input['action'], "tid" => intval($mybb->input['tid']))
+				);
+			}
 			break;
-
 	}
 }
 
@@ -72,8 +75,23 @@ function tools_format_admin_log_data($action, $data)
 {
 	switch($action)
 	{
-		case "dashboard":
-			return "Edit profile of {$data['username']} ({$data['uid']})";
+		case "tasks":
+			if($data['action'] == "edit")
+			{
+				return "Edited task #{$data['tid']}";
+			}
+			else if($data['action'] == "delete")
+			{
+				return "Deleted task #{$data['tid']}'";
+			}
+			else if($data['action'] == "enable")
+			{
+				return "Enabled task #{$data['tid']}'";
+			}
+			else if($data['action'] == "disable")
+			{
+				return "Disabled task #{$data['tid']}'";
+			}
 			break;
 	}
 }
