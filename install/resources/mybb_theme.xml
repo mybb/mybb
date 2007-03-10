@@ -977,7 +977,7 @@ form {
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->post_reply}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" />{$savedraftbutton}</div>
 <input type="hidden" name="action" value="do_newreply" />
-<input type="hidden" name="replyto" value="{$pid}" />
+<input type="hidden" name="replyto" value="{$replyto}" />
 <input type="hidden" name="posthash" value="{$posthash}" />
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />

@@ -22,9 +22,13 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("newreply");
 
-// Get the pid and tid from the input.
-$pid = $mybb->input['pid'];
+// Get the pid and tid and replyto from the input.
+$pid = $replyto = $mybb->input['pid'];
 $tid = $mybb->input['tid'];
+if(isset($mybb->input['replyto']))
+{
+	$replyto = intval($mybb->input['replyto']);	
+}
 
 // AJAX quick reply?
 if($mybb->input['ajax'])
