@@ -1142,7 +1142,8 @@ function is_moderator($fid="0", $action="", $uid="0")
 		$uid = $mybb->user['uid'];
 	}
 
-	if($mybb->usergroup['issupermod'] == "yes")
+	$user_perms = user_permissions($uid);
+	if($user_perms['issupermod'] == "yes")
 	{
 		return true;
 	}
