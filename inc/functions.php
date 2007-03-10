@@ -1002,7 +1002,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$groups = explode(",", $gid);
 
-	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
+	if(!$fpermcache[$fid]) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
 		return $groupperms;
 	}

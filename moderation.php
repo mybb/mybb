@@ -760,7 +760,7 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_nosplitposts);
 		}
-		$query = $db->simple_select("posts", "COUNT(*) AS totalposts", "tid='".intval($mybb->input['tid'])."'");
+		$query = $db->simple_select("posts", "COUNT(*) AS totalposts", "tid='{$tid}'");
 		$count = $db->fetch_array($query);
 
 		if($count['totalposts'] == count($mybb->input['splitpost']))
@@ -797,6 +797,22 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->thread_split);
 
 		redirect(get_thread_link($newtid), $lang->redirect_threadsplit);
+		break;
+		
+	// Delete Thread Subscriptions
+	case "removesubscriptions":
+		if(!is_moderator($fid, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
+
+		$plugins->run_hooks("moderation_removesubscriptions");
+
+		$moderation->remove_thread_subscriptions($tid, true);
+
+		log_moderator_action($modlogdata, $lang->deleted_subscriptions);
+
+		redirect(get_thread_link($thread['tid']), $lang->redirect_deleted_subscriptions);
 		break;
 
 	// Delete Threads - Inline moderation

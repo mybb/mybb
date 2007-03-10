@@ -694,6 +694,7 @@ form {
 	<option value="merge">{$lang->merge_threads}</option>
 	<option value="mergeposts">{$lang->merge_posts}</option>
 	<option value="removeredirects">{$lang->remove_redirects}</option>
+	<option value="removesubscriptions">{$lang->remove_subscriptions}</option>
 	{$approveunapprovethread}
 </optgroup>
 {$customthreadtools}

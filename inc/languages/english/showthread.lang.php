@@ -32,6 +32,7 @@ $l['split_thread'] = "Split Thread";
 $l['merge_threads'] = "Merge Threads";
 $l['merge_posts'] = "Merge Selective Posts";
 $l['remove_redirects'] = "Remove Redirects";
+$l['remove_subscriptions'] = "Remove All Subscriptions";
 $l['poll'] = "Poll:";
 $l['show_results'] = "Show Results";
 $l['edit_poll'] = "Edit poll";
