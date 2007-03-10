@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2006 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/eula.html
  *
  * $Id: db_mysql.php 1370 2006-04-16 13:47:01Z chris $
  */

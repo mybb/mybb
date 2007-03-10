@@ -94,11 +94,11 @@ $l['req_step_error_box'] = '<p><strong>{1}</strong></p>';
 $l['req_step_error_phpversion'] = 'MyBB Requires PHP 4.1.0 or later to run. You currently have {1} installed.';
 $l['req_step_error_dboptions'] = 'MyBB requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
-$l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://wiki.mybboard.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://wiki.mybboard.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="http://wiki.mybboard.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="http://wiki.mybboard.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
-$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="http://wiki.mybboard.com/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_tablelist'] = '<div class="error">
 <h3>Error</h3>
 <p>The MyBB Requirements check failed due to the reasons below. MyBB installation cannot continue because you did not meet the MyBB requirements. Please correct the errors below and try again:</p>
@@ -196,7 +196,7 @@ $l['config_step_table'] = '<p>It is now time for you to configure the basic sett
 					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
-					<th colspan="2" class="first last">Cookie settings <a title="Whats this?" target="_blank" href="http://wiki.mybboard.com/index.php/Cookie_Settings">(?)</a></th>
+					<th colspan="2" class="first last">Cookie settings <a title="Whats this?" target="_blank" href="http://wiki.mybboard.net/index.php/Cookie_Settings">(?)</a></th>
 				</tr>
 				<tr>
 					<td class="first"><label for="cookiedomain">Cookie Domain:</label></td>
@@ -283,7 +283,7 @@ $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="colour:red">Please remove this directory before exploring your copy of MyBB.</span></strong></p>';
-$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Make sure you\'re subscribed to the updates mailing list!</strong></p><p>Everytime we release a new version of MyBB, be it a new feature release or security update, we send out a message via our mailing list to alert you of the release.</p><p>This helps keep you up to date with new security releases and ensures you\'re running the latest and greatest version of MyBB!</p><p><a href="http://www.mybboard.com/mailinglist.php">Subscribe to the updates mailing list!</a></p>';
+$l['done_subscribe_mailing'] = '<div class="error"><p><strong>Make sure you\'re subscribed to the updates mailing list!</strong></p><p>Everytime we release a new version of MyBB, be it a new feature release or security update, we send out a message via our mailing list to alert you of the release.</p><p>This helps keep you up to date with new security releases and ensures you\'re running the latest and greatest version of MyBB!</p><p><a href="http://www.mybboard.net/mailinglist.php">Subscribe to the updates mailing list!</a></p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";

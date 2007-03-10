@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2006 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/eula.html
  *
  * $Id$
  */
@@ -180,7 +180,7 @@ function archive_footer()
 </div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="http://www.mybboard.com">MyBB</a> <?php echo $mybbversion; ?><br /><?php echo $lang->copyright; ?> &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybboard.com">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="http://www.mybboard.net">MyBB</a> <?php echo $mybbversion; ?><br /><?php echo $lang->copyright; ?> &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybboard.net">MyBB Group</a>
 </div>
 </body>
 </html>

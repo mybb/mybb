@@ -13,7 +13,7 @@ $langinfo['name'] = "English (American)";
 $langinfo['author'] = "MyBulletinBoard";
 
 // The language authors website
-$langinfo['website'] = "http://www.mybboard.com/";
+$langinfo['website'] = "http://www.mybboard.net/";
 
 // Compatible version of MyBB
 $langinfo['version'] = "123";

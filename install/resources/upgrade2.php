@@ -3,8 +3,8 @@
  * MyBB 1.2
  * Copyright © 2006 MyBB Group, All Rights Reserved
  *
- * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/eula.html
  *
  * $Id$
  */
@@ -162,7 +162,7 @@ function upgrade2_dbchanges2()
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'bbname', 'Board Name', 'The name of your message boards. We recommend that it is not over 75 characters.', 'text', 'MyBB Forums', 1, 1);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'bburl', 'Board URL', 'The url to your forums.<br />Include the http://. Do NOT include a trailing slash.', 'text', '', 2, 1);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'homename', 'Homepage Name', 'The name of your homepage. This will appear in the footer with a link to it.', 'text', 'MyBB', 3, 1);");
-	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', 'http://www.mybboard.com', 4, 1);");
+	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'homeurl', 'Homepage URL', 'The full URL of your homepage. This will be linked to in the footer along with its name.', 'text', 'http://www.mybboard.net', 4, 1);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'dateformat', 'Date Format', 'The format of the dates used on the forum. This format uses the PHP date() function. We recommend not changing this unless you know what you\'re doing.', 'text', 'm-d-Y', 1, 3);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'adminemail', 'Admin Email', 'The administrator\'s email address. This will be used for outgoing emails sent via the forums.', 'text', '', 5, 1);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'timeformat', 'Time Format', 'The format of the times used on the forum. This format uses PHP\'s date() function. We recommend not changing this unless you know what you\'re doing.', 'text', 'h:i A', 2, 3);");
@@ -200,7 +200,7 @@ function upgrade2_dbchanges2()
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'bannedusernames', 'Banned Usernames', 'Ban users from registering certain usernames.  Seperate them with a space.', 'textarea', 'drcracker Oops! hmmm', 1, 14);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'maxpolloptions', 'Maximum Number of Poll Options', 'The maximum number of options for polls that users can post.', 'text', '10', 3, 13);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'dotfolders', 'Use \'dot\' Icons', 'Do you want to show dots on the thread indicators of threads users have participated in.', 'yesno', 'yes', 8, 7);");
-	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'contactlink', 'Contact Us Link', 'This will be used for the Contact Us link on the bottom of all the forum pages. Can either be an email address (using mailto:email@website.com) or a hyperlink.', 'text', 'mailto:contact@mybboard.com', 6, 1);");
+	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'contactlink', 'Contact Us Link', 'This will be used for the Contact Us link on the bottom of all the forum pages. Can either be an email address (using mailto:email@website.com) or a hyperlink.', 'text', 'mailto:contact@mybboard.net', 6, 1);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'showdescriptions', 'Show Forum Descriptions?', 'This option will allow you to turn off showing the descriptions for forums.', 'yesno', 'yes', 1, 16);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'showbirthdays', 'Show Today\'s Birthdays?', 'Do you want to show today\'s birthdays on the forum homepage?', 'yesno', 'yes', 2, 16);");
 	$db->query("INSERT INTO ".TABLE_PREFIX."settings (sid, name, title, description, optionscode, value, disporder, gid) VALUES (NULL, 'showwol', 'Show Who\'s Online?', 'Display the currently active users on the forum home page.', 'yesno', 'yes', 4, 16);");
