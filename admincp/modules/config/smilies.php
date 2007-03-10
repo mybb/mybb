@@ -11,7 +11,7 @@
 
 // TODO:
 // - Add multiple smilies
-// - Finish Mass Edit (Testing, updating)
+// - Edit Page
 
 
 $page->add_breadcrumb_item("Smilies", "index.php?".SID."&amp;module=config/smilies");
@@ -147,8 +147,69 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
+if($mybb->input['action'] == "add_multiple")
+{
+	$page->add_breadcrumb_item("Add Multiple Smilie");
+	$page->output_header("Smilies - Add Multiple Smilies");
+	
+	$sub_tabs['add_smilie'] = array(
+		'title' => "Add Smilie",
+		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add"
+	);
+	$sub_tabs['add_multiple_smilies'] = array(
+		'title' => "Add Multiple Smilies",
+		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
+		'description' => 'Here you can add multiple new smilie.'
+	);
+	
+	$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
+	$form = new Form("index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple", "post", "add_multiple");
+	
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
+	$form_container = new FormContainer("Add Multiple Smilies");
+	$form_container->output_row("Path to Images", "This is the path to the folder that the images are in.", $form->generate_text_box('pathfolder', $mybb->input['pathfolder'], array('id' => 'pathfolder')), 'pathfolder');
+	$form_container->end();
+
+	$buttons[] = $form->generate_submit_button("Show Smilies");
+
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+
+	$page->output_footer();
+}
+
 if($mybb->input['action'] == "mass_edit")
 {
+	if($mybb->request_method == "post")
+	{
+		foreach($mybb->input['name'] as $sid => $name)
+		{
+			if($mybb->input['delete'][$sid] == "yes")
+			{
+				$db->delete_query("smilies", "sid = '{$sid}'", 1);
+			}
+			else
+			{
+				$smilie = array(
+					"name" => $db->escape_string($mybb->input['name'][$sid]),
+					"find" => $db->escape_string($mybb->input['replacement'][$sid]),
+					"disporder" => intval($mybb->input['disporder'][$sid]),
+					"showclickable" => $db->escape_string($mybb->input['showclickable'][$sid])
+				);
+					
+				$db->update_query("smilies", $smilie, "sid = '{$sid}'");
+			}
+		}
+		
+		flash_message("The smilies has been saved or removed successfully.", 'success');
+		admin_redirect("index.php?".SID."&module=config/smilies");
+	}
+	
+	$page->add_breadcrumb_item("Mass Edit");
 	$page->output_header("Smilies - Mass Edit");
 
 	$sub_tabs['mass_edit'] = array(
@@ -159,7 +220,7 @@ if($mybb->input['action'] == "mass_edit")
 	
 	$page->output_nav_tabs($sub_tabs, 'mass_edit');
 	
-	$form = new Form("index.php?".SID."&amp;module=config/smilies&amp;action=add", "post", "add");
+	$form = new Form("index.php?".SID."&amp;module=config/smilies&amp;action=mass_edit", "post", "mass_edit");
 	
 	if($errors)
 	{
@@ -185,7 +246,7 @@ if($mybb->input['action'] == "mass_edit")
 	$form_container->output_row_header("Show on clickable list?", array('width' => '20%'));
 	$form_container->output_row_header("Delete?", array("class" => "align_center", 'width' => '5%'));
 	
-	$query = $db->simple_select("smilies");
+	$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
 	while($smilie = $db->fetch_array($query))
 	{
 		$smilie['image'] = str_replace("{theme:imgdir}", $theme['imgdir'], $smilie['image']);
@@ -198,12 +259,12 @@ if($mybb->input['action'] == "mass_edit")
 			$image = "../".$smilie['image'];
 		}
 		
-		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", 'width' => '10%'));
-		$form_container->output_cell($form->generate_text_box('name', $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')), array('width' => '50%'));
-		$form_container->output_cell($form->generate_text_box('replacement', $smilie['find'], array('id' => 'replacement', 'style' => 'width: 95%')), array('width' => '10%'));
-		$form_container->output_cell($form->generate_text_box('disporder', $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')), array('width' => '5%'));
-		$form_container->output_cell($form->generate_yes_no_radio('showclickable', $smilie['showclickable']), array("class" => "align_center", 'width' => '10%'));
-		$form_container->output_cell($form->generate_check_box('delete', $mybb->input['delete']), array("class" => "align_center", 'width' => '5%'));
+		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
+		$form_container->output_cell($form->generate_text_box("replacement[{$smilie['sid']}]", $smilie['find'], array('id' => 'replacement', 'style' => 'width: 95%')));
+		$form_container->output_cell($form->generate_text_box("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')));
+		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center", "width" => 200));
+		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", $mybb->input['delete']), array("class" => "align_center"));
 		$form_container->construct_row();
 	}
 	
@@ -215,7 +276,7 @@ if($mybb->input['action'] == "mass_edit")
 	
 	$form_container->end();
 	
-	$buttons[] = $form->generate_submit_button("Save Smilie");
+	$buttons[] = $form->generate_submit_button("Save Smilies");
 	$buttons[] = $form->generate_reset_button("Reset");
 
 	$form->output_submit_wrapper($buttons);

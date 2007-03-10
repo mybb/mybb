@@ -286,6 +286,8 @@ if($mybb->input['action'] == "backup")
 		}
 	}
 	</script>\n";
+	
+	$page->add_breadcrumb_item("New Database Backup");
 	$page->output_header("New Database Backup");
 	
 	$sub_tabs['new_backup'] = array(
@@ -341,6 +343,7 @@ if($mybb->input['action'] == "backup")
 
 if(!$mybb->input['action'])
 {	
+	$page->add_breadcrumb_item("Backups");
 	$page->output_header("Database Backups");
 	
 	$sub_tabs['database_backup'] = array(
