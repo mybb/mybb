@@ -463,8 +463,6 @@ function populate_tables()
 	global $output, $lang;
 
 	require_once MYBB_ROOT.'inc/config.php';
-	echo file_get_contents(MYBB_ROOT.'inc/config.php');
-	var_dump($config);
 	$db = db_connection($config);
 
 	$output->print_header($lang->table_population, 'tablepopulate');
