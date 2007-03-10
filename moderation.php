@@ -810,9 +810,9 @@ switch($mybb->input['action'])
 
 		$moderation->remove_thread_subscriptions($tid, true);
 
-		log_moderator_action($modlogdata, $lang->deleted_subscriptions);
+		log_moderator_action($modlogdata, $lang->removed_subscriptions);
 
-		redirect(get_thread_link($thread['tid']), $lang->redirect_deleted_subscriptions);
+		redirect(get_thread_link($thread['tid']), $lang->redirect_removed_subscriptions);
 		break;
 
 	// Delete Threads - Inline moderation

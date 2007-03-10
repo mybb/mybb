@@ -95,7 +95,7 @@ $l['thread_unapproved'] = "Thread Unapproved: {1}";
 $l['deleted_selective_posts'] = "Deleted Selective Posts ({1})";
 $l['merged_selective_posts'] = "Merged Selective Posts";
 $l['split_selective_posts'] = "Split posts (PIDs: {1}) to thread (TID: {2})";
-$l['deleted_subscriptions'] = "Deleted All Subscriptions";
+$l['removed_subscriptions'] = "Removed All Subscriptions";
 $l['thread_moved'] = "Thread Moved";
 $l['thread_copied'] = "Thread Copied";
 $l['thread_merged'] = "Threads Merged";
@@ -153,7 +153,7 @@ $l['redirect_inline_postsapproved'] = "The selected posts have been approved.<br
 $l['redirect_inline_postsunapproved'] = "The selected posts have been unapproved.<br />You will now be returned to the thread.";
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
 $l['redirect_postsdeleted'] = "The selected posts have been deleted successfully.<br />You will now be returned to the thread.";
-$l['redirect_removed_subscriptions'] = "All subscriptions for this thread have been removed successfully.";
+$l['redirect_removed_subscriptions'] = "All subscriptions for this thread have been removed successfully.<br />You will now be returned to the thread.";
 $l['redirect_customtool_thread'] = "\"{1}\" moderation tool executed successfully.<br />You will now be returned to the thread.";
 $l['redirect_customtool_forum'] = "\"{1}\" moderation tool executed successfully.<br />You will now be returned to the forum.";
 

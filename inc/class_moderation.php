@@ -1169,7 +1169,7 @@ class Moderation
 		update_forum_counters($moveto, $updated_count);
 		
 		// Remove thread subscriptions for the users who no longer have permission to view the thread
-		$this->remove_thread_subscriptions($tid_list, false);
+		$this->remove_thread_subscriptions($tid_list, false, $moveto);
 
 		return true;
 	}
