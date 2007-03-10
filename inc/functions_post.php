@@ -356,7 +356,9 @@ function build_postbit($post, $post_type=0)
 	
 	if(!$post_type)
 	{
-		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "")
+		// Figure out if we need to show an "edited by" message
+		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
+		if($post['edituid'] != "" && $post['edittime'] != "" && $post['editusername'] != "" && $mybb->settings['showeditedby'] != "no" && $mybb->settings['showeditedbyadmin'] != "no")
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
