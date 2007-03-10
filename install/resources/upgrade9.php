@@ -321,7 +321,12 @@ function upgrade9_dbchanges2()
 	$output->print_header("Converting Ban Filters");
 
 	echo "<p>Converting existing banned IP addresses, email addresses and usernames..</p>";
-
+	
+	if($db->table_exists("banfilters"))
+	{
+		$db->query("DROP TABLE ".TABLE_PREFIX."banfilters");
+	}
+	
 	$db->query("CREATE TABLE ".TABLE_PREFIX."banfilters (
 	  fid int unsigned NOT NULL auto_increment,
 	  filter varchar(200) NOT NULL default '',
