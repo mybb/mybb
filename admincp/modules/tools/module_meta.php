@@ -40,7 +40,7 @@ function tools_action_handler($action)
 	}
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "stats", "title" => "Matinenance Stats", "link" => "index.php?".SID."&module=tools/stats");
+	$sub_menu['10'] = array("id" => "stats", "title" => "Maintenance Stats", "link" => "index.php?".SID."&module=tools/stats");
 	$sub_menu['20'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
 	$sub_menu['30'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
 	$sub_menu['40'] = array("id" => "recould_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");

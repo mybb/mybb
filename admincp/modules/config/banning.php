@@ -142,7 +142,7 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['users'] = array(
 		'title' => "Banned Accounts",
-		'link' => "index.php?".SID."&amp;module=users/banning"
+		'link' => "index.php?".SID."&amp;module=user/banning"
 	);
 
 	$sub_tabs['usernames'] = array(
@@ -199,6 +199,13 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this ban?');\"><img src=\"styles/{$page->style}/images/icons/delete.gif\" title=\"Delete\" alt=\"Delete\" /></a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
+	
+	if(count($table->rows) == 0)
+	{
+		$table->construct_cell("There are no bans currently set at this time.", array("colspan" => 4));
+		$table->construct_row();
+	}
+	
 	$table->output($title);
 
 	$form = new Form("index.php?".SID."&amp;module=config/banning&amp;action=add", "post", "add");

@@ -240,10 +240,10 @@ if($mybb->input['action'] == "mass_edit")
 	
 	$form_container = new FormContainer("Manage Smilie");
 	$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '10%'));
-	$form_container->output_row_header("Name", array('width' => '40%'));
+	$form_container->output_row_header("Name");
 	$form_container->output_row_header("Text to Replace", array('width' => '20%'));
 	$form_container->output_row_header("Order", array('width' => '5%'));
-	$form_container->output_row_header("Show on clickable list?", array('width' => '20%'));
+	$form_container->output_row_header("Show on clickable list?", array("width" => 135));
 	$form_container->output_row_header("Delete?", array("class" => "align_center", 'width' => '5%'));
 	
 	$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
@@ -263,8 +263,8 @@ if($mybb->input['action'] == "mass_edit")
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
 		$form_container->output_cell($form->generate_text_box("replacement[{$smilie['sid']}]", $smilie['find'], array('id' => 'replacement', 'style' => 'width: 95%')));
 		$form_container->output_cell($form->generate_text_box("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')));
-		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center", "width" => 200));
-		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", $mybb->input['delete']), array("class" => "align_center"));
+		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center"));
+		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", "yes", $mybb->input['delete']), array("class" => "align_center"));
 		$form_container->construct_row();
 	}
 	
