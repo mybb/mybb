@@ -5702,7 +5702,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 <br />
-<div align="center"><input type="hidden" name="action" value="activate" /><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}" /></div>
+<div align="center"><input type="hidden" name="action" value="resetpassword" /><input type="submit" class="button" name="regsubmit" value="{$lang->send_password}" /></div>
 </form>
 {$footer}
 </body>
