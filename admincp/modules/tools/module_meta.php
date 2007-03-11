@@ -34,6 +34,18 @@ function tools_action_handler($action)
 			$page->active_action = "backupdb";
 			$action_file = "backupdb.php";
 			break;
+		case "optimizedb":
+			$page->active_action = "optimizedb";
+			$action_file = "optimizedb.php";
+			break;
+		case "cache":
+			$page->active_action = "cache";
+			$action_file = "cache.php";
+			break;
+		case "recount_rebuild":
+			$page->active_action = "recount_rebuild";
+			$action_file = "recount_rebuild.php";
+			break;
 		default:
 			$page->active_action = "stats";
 			$action_file = "index.php";
@@ -43,7 +55,7 @@ function tools_action_handler($action)
 	$sub_menu['10'] = array("id" => "stats", "title" => "Maintenance Stats", "link" => "index.php?".SID."&module=tools/stats");
 	$sub_menu['20'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
 	$sub_menu['30'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
-	$sub_menu['40'] = array("id" => "recould_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
+	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
 	$sub_menu['50'] = array("id" => "php_info", "title" => "View PHP Info", "link" => "index.php?".SID."&module=tools/php_info");
 	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database Backups", "link" => "index.php?".SID."&module=tools/backupdb");
 	$sub_menu['70'] = array("id" => "optimizedb", "title" => "Optimize Database", "link" => "index.php?".SID."&module=tools/optimizedb");

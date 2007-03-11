@@ -156,4 +156,40 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	return $pagination;
 }
 
+
+function make_parent_list($fid, $navsep=",")
+{
+	global $pforumcache, $db;
+	
+	if(!$pforumcache)
+	{
+		$query = $db->simple_select("forums", "name, fid, pid", "", array("order_by" => "disporder, pid"));
+		while($forum = $db->fetch_array($query))
+		{
+			$pforumcache[$forum['fid']][$forum['pid']] = $forum;
+		}
+	}
+	
+	reset($pforumcache);
+	reset($pforumcache[$fid]);
+	
+	foreach($pforumcache[$fid] as $key => $forum)
+	{
+		if($fid == $forum['fid'])
+		{
+			if($pforumcache[$forum['pid']])
+			{
+				$navigation = make_parent_list($forum['pid'], $navsep).$navigation;
+			}
+			
+			if($navigation)
+			{
+				$navigation .= $navsep;
+			}
+			$navigation .= $forum['fid'];
+		}
+	}
+	return $navigation;
+}
+
 ?>
