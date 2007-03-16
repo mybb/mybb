@@ -325,6 +325,7 @@ EOF;
 		$form->end();
 		$this->output_footer();
 	}
+	
 }
 
 class sideBarItem

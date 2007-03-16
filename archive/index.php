@@ -217,7 +217,8 @@ switch($action)
 		{
 			$page = 1;
 		}
-		if($page)
+		
+		if($page > 0)
 		{
 			$start = ($page-1) * $perpage;
 		}

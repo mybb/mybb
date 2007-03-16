@@ -4859,7 +4859,7 @@ form {
 {$latestthreads}
 </td>
 <td>&nbsp;</td>
-<td width="*" valign="top">
+<td valign="top">
 {$announcements}
 </td>
 </tr>
