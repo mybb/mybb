@@ -1052,11 +1052,11 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		tableheader($lang->forum_moderators);
 		makelabelcode($lang->mods_colors_note, '', 2);
 		tablesubheader("<div align=\"right\"><input type=\"button\" value=\"$lang->add_mod\" onclick=\"hopto('forums.php?".SID."&amp;action=addmod&amp;fid=$fid');\" class=\"submitbutton\"></div>");
-		$parentlist = build_parent_list($fid, 'm.fid');
+
 		$options = array(
 			"order_by" => "u.username"
 		);
-		$modquery = $db->simple_select("moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)", "m.mid, m.uid, m.fid, u.username", $parentlist, $options);
+				$modquery = $db->simple_select("moderators m LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)", "m.mid, m.uid, m.fid, u.username", "m.fid = '{$fid}'", $options);
 		$nummods = $db->num_rows($modquery);
 		if(!$nummods)
 		{

@@ -222,7 +222,7 @@ if($mybb->input['action'] == "addmultiple")
 	$query = $db->simple_select("smilies");
 	while($smilie = $db->fetch_array($query))
 	{
-		$asmilies[$smilie[image]] = 1;
+		$asmilies[$smilie['image']] = 1;
 	}
 	while($file = readdir($dir))
 	{
@@ -231,7 +231,7 @@ if($mybb->input['action'] == "addmultiple")
 			$ext = get_extension($file);
 			if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 			{
-				if(!$asmilies["$path/$file"])
+				if(!$asmilies[$path."/".$file])
 				{
 					$smilies[] = $file;
 				}
@@ -239,6 +239,7 @@ if($mybb->input['action'] == "addmultiple")
 		}
 	}
 	closedir($dir);
+	
 	if(!$page)
 	{
 		$page = 1;

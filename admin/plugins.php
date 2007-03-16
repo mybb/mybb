@@ -80,9 +80,7 @@ if($mybb->input['action'] == "activate")
 
 if($mybb->input['action'] == "")
 {
-	//
 	// Get a list of the plugin files which exist in the plugins directory
-	//
 	$dir = @opendir(MYBB_ROOT."inc/plugins/");
 	if($dir)
 	{
