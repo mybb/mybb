@@ -315,19 +315,82 @@ class datacache
 		$this->update("stats", $stats);
 	}
 
-	/**
-	 * Update the moderators cache.
-	 *
-	 */
 	function updatemoderators()
 	{
-		global $db;
-		$query = $db->simple_select(TABLE_PREFIX."moderators", "mid, fid, uid, caneditposts, candeleteposts, canviewips, canopenclosethreads, canmanagethreads");
-		while($mod = $db->fetch_array($query))
+		global $forum_cache, $db;
+
+		// Get our forum list
+		cache_forums(true);
+		if(!is_array($forum_cache))
 		{
-			$mods[$mod['fid']][$mod['uid']] = $mod;
+			return false;
 		}
-		$this->update("moderators", $mods);
+		
+		reset($forum_cache);
+		$fcache = array();
+		
+		// Resort in to the structure we require
+		foreach($forum_cache as $fid => $forum)
+		{
+			$this->moderators_forum_cache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+		}
+		
+		// Sort children
+		foreach($fcache as $pid => $value)
+		{
+			ksort($fcache[$pid]);
+		}
+		ksort($fcache);
+	
+		// Fetch moderators from the database
+		$query = $db->simple_select(TABLE_PREFIX."moderators");
+		while($moderator = $db->fetch_array($query))
+		{
+			$this->moderators[$moderator['fid']][$moderator['uid']] = $moderator;
+		}
+
+		$this->build_moderators();
+		
+		$this->update("moderators", $this->built_moderators);
+	}
+
+	/**
+	 * Build the moderators array
+	 *
+	 * @access private
+	 * @param array An optional moderators array (moderators of the parent forum for example).
+	 * @param int An optional parent ID.
+	 */
+	function build_moderators($moderators=array(), $pid=0)
+	{
+		if($this->moderators_forum_cache[$pid])
+		{
+			foreach($this->moderators_forum_cache[$pid] as $main)
+			{
+				foreach($main as $forum)
+				{
+					$forum_mods = '';
+					if($moderators)
+					{
+						$forum_mods = $moderators;
+					}
+					// Append - local settings override that of a parent - array_merge works here
+					if($this->moderators[$forum['fid']])
+					{
+						if(is_array($forum_mods))
+						{
+							$forum_mods = array_merge($forum_mods, $this->moderators[$forum['fid']]);
+						}
+						else
+						{
+							$forum_mods = $this->moderators[$forum['fid']];
+						}
+					}
+					$this->built_moderators[$forum['fid']] = $forum_mods;
+					$this->build_moderators($forum_mods, $forum['fid']);
+				}
+			}
+		}
 	}
 
 	/**

@@ -94,7 +94,7 @@ if($mybb->settings['modlist'] != "off")
 	// Build a moderator cache.
 	while($moderator = $db->fetch_array($query))
 	{
-		$moderatorcache[$moderator['fid']][] = $moderator;
+		$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
 	}
 }
 

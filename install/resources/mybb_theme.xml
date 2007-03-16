@@ -4470,7 +4470,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$latestthreads}
 </td>
 <td>&nbsp;</td>
-<td width="*" valign="top">
+<td valign="top">
 {$announcements}
 </td>
 </tr>

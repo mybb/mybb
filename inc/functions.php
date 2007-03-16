@@ -935,26 +935,24 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 	{
 		$uid = $mybb->user['uid'];
 	}
-	if(!isset($modpermscache[$uid][$fid]))
+	
+	if(!isset($modpermscache[$fid][$uid]))
 	{
 		if(!$parentslist)
 		{
 			$parentslist = get_parent_list($fid);
 		}
+		
 		$sql = build_parent_list($fid, "fid", "OR", $parentslist);
-		$query = $db->query("
-			SELECT *
-			FROM ".TABLE_PREFIX."moderators
-			WHERE uid='$uid'
-			AND $sql
-		");
+		$query = $db->simple_select(TABLE_PREFIX."moderators", "*", "uid='{$uid}' AND {$sql}");
 		$perms = $db->fetch_array($query);
-		$modpermscache[$uid][$fid] = $perms;
+		$modpermscache[$fid][$uid] = $perms;
 	}
 	else
 	{
-		$perms = $modpermscache[$uid][$fid];
+		$perms = $modpermscache[$fid][$uid];
 	}
+	
 	return $perms;
 }
 
