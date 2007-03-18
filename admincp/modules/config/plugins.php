@@ -12,6 +12,98 @@
 
 $page->add_breadcrumb_item("Plugins", "index.php?".SID."&amp;module=config/plugins");
 
+if($mybb->input['action'] == "check")
+{		
+	$plugins_list = get_plugins_list();
+	
+	$info = array();
+	
+	if($plugins_list)
+	{
+		foreach($plugins_list as $plugin_file)
+		{
+			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
+			$codename = str_replace(".php", "", $plugin_file);
+			$infofunc = $codename."_info";
+			if(!function_exists($infofunc))
+			{
+				continue;
+			}
+			$plugininfo = $infofunc();
+			
+			if($plugininfo['pid'])
+			{
+				$info[$plugininfo['pid']] = array('pid' => $plugininfo['pid'], 'ver' => $plugininfo['version']);
+			}
+		}
+	}
+	
+	if(empty($info))
+	{
+		flash_message("There are no supported plugins available to check for updates.", 'error');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}
+		
+	$contents = @implode("", @file("http://mods.mybboard.com/version_check.php?info=".urlencode(serialize($info))));
+	if(!$contents)
+	{
+		flash_message("There was a problem communicating with the mod version server. Please try again in a few minutes.", 'error');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}	
+	elseif($contents == "error1")
+	{
+		flash_message("There was a problem communicating with the mod version server. Error code 1: No input specified.", 'error');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}	
+	elseif($contents == "error2")
+	{
+		flash_message("There was a problem communicating with the mod version server. Error code 2: No plugin ids specified.", 'error');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}	
+	elseif($contents == "error3")
+	{
+		flash_message("There was a problem communicating with the mod version server. Error code 3: Specified plugins not found.", 'error');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}
+	else if($contents == "success")
+	{
+		flash_message("Congratulations, all of your plugins are up to date.", 'error');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}
+
+	$page->add_breadcrumb_item("Plugin Updates");
+	
+	$page->output_header("Plugins Updates");
+	
+	$sub_tabs['update_plugins'] = array(
+		'title' => "Plugin Updates",
+		'link' => "index.php?".SID."&amp;module=config/plugin&amp;action=check",
+		'description' => "This section allows you to check for updates on all your plugins."
+	);
+	
+	$page->output_nav_tabs($sub_tabs, 'update_plugins');
+
+	$table = new Table;
+	$table->construct_header("Plugin");
+	$table->construct_header("Your Version", array("class" => "align_center", 'width' => 125));
+	$table->construct_header("Latest Version", array("class" => "align_center", 'width' => 125));
+	$table->construct_header("Controls", array("class" => "align_center", 'width' => 125));
+
+	$plugins = unserialize($contents);
+
+	foreach($plugins as $pid => $plugin)
+	{
+		$table->construct_cell("<strong>{$plugininfo['name']}</strong>");
+		$table->construct_cell("{$info[$pid]['ver']}", array("class" => "align_center"));
+		$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin}</span></strong>", array("class" => "align_center"));
+		$table->construct_cell("<strong><a href=\"http://mods.mybboard.com/view.php?did={$pid}\" target=\"_blank\">Download</a></strong>", array("class" => "align_center"));
+		$table->construct_row();
+	}
+	
+	$table->output("Plugins Updates");
+	
+	$page->output_footer();
+}
 
 // Activates or deactivates a specific plugin
 if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate")
@@ -59,37 +151,23 @@ if(!$mybb->input['action'])
 {
 	$page->output_header("Plugins");
 
-	$sub_tabs['change_plugins'] = array(
-		'title' => "Change Plugins",
+	$sub_tabs['manage_plugins'] = array(
+		'title' => "Manage Plugins",
 		'link' => "index.php?".SID."&amp;module=config/plugins",
 		'description' => "This section allows you to activate, deactivate, and manage the plugins that you have uploaded to your forum's <strong>inc/plugins</strong> directory."
 	);
 	$sub_tabs['update_plugins'] = array(
 		'title' => "Plugin Updates",
-		'link' => "index.php?".SID."&amp;module=config/plugin&amp;action=check",
+		'link' => "index.php?".SID."&amp;module=config/plugins&amp;action=check",
 		'description' => "This section allows you to check for updates on all your plugins."
 	);
 	
-	$page->output_nav_tabs($sub_tabs, 'change_plugins');
+	$page->output_nav_tabs($sub_tabs, 'manage_plugins');
 	
 	$plugins_cache = $cache->read("plugins");
 	$active_plugins = $plugins_cache['active'];
 	
-	// Get a list of the plugin files which exist in the plugins directory
-	$dir = @opendir(MYBB_ROOT."inc/plugins/");
-	if($dir)
-	{
-		while($file = readdir($dir))
-		{
-			$ext = get_extension($file);
-			if($ext == "php")
-			{
-				$plugins_list[] = $file;
-			}
-		}
-		@sort($plugins_list);
-	}
-	@closedir($dir);
+	$plugins_list = get_plugins_list();
 
 	$table = new Table;
 	$table->construct_header("Plugin");
@@ -137,5 +215,26 @@ if(!$mybb->input['action'])
 	$table->output("Plugins");
 
 	$page->output_footer();
+}
+
+function get_plugins_list()
+{
+	// Get a list of the plugin files which exist in the plugins directory
+	$dir = @opendir(MYBB_ROOT."inc/plugins/");
+	if($dir)
+	{
+		while($file = readdir($dir))
+		{
+			$ext = get_extension($file);
+			if($ext == "php")
+			{
+				$plugins_list[] = $file;
+			}
+		}
+		@sort($plugins_list);
+	}
+	@closedir($dir);
+	
+	return $plugins_list;
 }
 ?>

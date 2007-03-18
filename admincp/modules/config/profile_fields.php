@@ -343,11 +343,11 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($field = $db->fetch_array($query))
 	{
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}\">{$field['name']}</a></strong><br /><span class=\"smalltext\">{$field['description']}</span>", array('width' => '45%'));
+		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}\">{$field['name']}</a></strong><br /><small>{$field['description']}</small>", array('width' => '45%'));
 		$table->construct_cell($field['fid'], array("class" => "align_center", 'width' => '5%'));
-		$table->construct_cell($field['required'], array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell($field['editable'], array("class" => "align_center", 'width' => '10%'));		
-		$table->construct_cell($field['hidden'], array("class" => "align_center", 'width' => '10%'));
+		$table->construct_cell(ucfirst($field['required']), array("class" => "align_center", 'width' => '10%'));
+		$table->construct_cell(ucfirst($field['editable']), array("class" => "align_center", 'width' => '10%'));		
+		$table->construct_cell(ucfirst($field['hidden']), array("class" => "align_center", 'width' => '10%'));
 		
 		$popup = new PopupMenu("field_{$field['fid']}", "Options");
 		$popup->add_item("Edit Field", "index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}");
