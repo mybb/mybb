@@ -95,7 +95,7 @@ $l['time_offset_desc'] = "If you live in a timezone which differs to what this b
 $l['enable_dst'] = "Enable Daylight Savings Time Correction?";
 
 $l['lang_select'] = "Language Settings:";
-$l['lang_select_desc'] = "If you live in a country that speaks a language other than the forums default, you may be able to select an installed, read-able langauge pack below.";
+$l['lang_select_desc'] = "If you live in a country that speaks a language other than the forums default, you may be able to select an installed, read-able language pack below.";
 $l['lang_select_default'] = "Use Default";
 
 $l['submit_registration'] = "Submit Registration!";
@@ -152,7 +152,7 @@ $l['error_alreadyactivated'] = "It appears your account is already activated or 
 $l['error_nothreadurl'] = "Your message does not contain the URL of the thread. Please use the \"send to friend\" feature for it's intended purpose.";
 $l['error_invalidpworusername'] = "You have entered an invalid username or password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
-$l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
+$l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 
 $l['js_validator_no_username'] = "You must enter a username";
@@ -166,7 +166,7 @@ $l['js_validator_not_empty'] = "You must select or enter a value for this field"
 $l['js_validator_checking_username'] = "Checking if username is available";
 $l['js_validator_username_length'] = "Usernames must be between {1} and {2} characters long";
 $l['js_validator_checking_referrer'] = "Checking if referrer username exists.";
-$l['js_validator_captcha_valid'] = "Checking wether or not you entered the correct image verification code.";
+$l['js_validator_captcha_valid'] = "Checking whether or not you entered the correct image verification code.";
 
 $l['subscription_method'] = "Default Thread Subscription Mode:";
 $l['no_auto_subscribe'] = "Do not subscribe";

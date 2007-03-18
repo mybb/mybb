@@ -640,7 +640,7 @@ class postParser
 	* Parses PHP code MyCode.
 	*
 	* @param string The message to be parsed
-	* @param boolean wether or not it should return it as pre-wrapped in a div or not.
+	* @param boolean Whether or not it should return it as pre-wrapped in a div or not.
 	* @param boolean Are we formatting as text?
 	* @return string The parsed message.
 	*/

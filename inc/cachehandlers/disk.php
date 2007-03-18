@@ -101,4 +101,28 @@ class diskCacheHandler
 	{
 		return true;
 	}
+	
+	/**
+	 * Select the size of the disk cache 
+	 *
+	 * @param string The name of the cache
+	 * @return integer the size of the disk cache
+	 */
+	function size_of($name='')
+	{
+		if($name != '')
+		{
+			return @filesize(MYBB_ROOT."/inc/cache/{$name}.php");
+		}
+		else
+		{
+			$total = 0;
+			$dir = opendir(MYBB_ROOT."/inc/cache");
+			while(($file = readdir($dir) !== false)
+			{
+				$total += @filesize(MYBB_ROOT."/inc/cache/{$name}.php");
+			}
+			return $title;
+		}
+	}
 }

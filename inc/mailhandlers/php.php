@@ -24,7 +24,7 @@ class PhpMail extends MailHandler
 	/**
 	 * Sends the email.
 	 *
-	 * @return true/false wether or not the email got sent or not.
+	 * @return true/false whether or not the email got sent or not.
 	 */	
 	function send()
 	{

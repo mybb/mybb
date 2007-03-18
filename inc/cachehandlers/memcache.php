@@ -113,4 +113,9 @@ class memcacheCacheHandler
 	{
 		@memcache_close($this->memcache);
 	}
+	
+	function size_of($name)
+	{
+		return "N/A";
+	}
 }

@@ -775,5 +775,29 @@ class databaseEngine
 	{
 		$this->table_prefix = $prefix;
 	}
+	
+	/**
+	 * Fetched the total size of all mysql tables or a specific table
+	 *
+	 * @param string The table (optional)
+	 * @return integer the total size of all mysql tables or a specific table
+	 */
+	function fetch_size($table='')
+	{
+		if($table != '')
+		{
+			$query = $this->query("SHOW TABLE STATUS LIKE '".$this->table_prefix.$table."'");
+		}
+		else
+		{
+			$query = $this->query("SHOW TABLE STATUS");
+		}
+		$total = 0;
+		while($table = $this->fetch_array($query))
+		{
+			$total += $table['Data_length']+$table['Index_length'];
+		}
+		return $total;
+	}
 }
 ?>

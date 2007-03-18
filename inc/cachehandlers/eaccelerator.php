@@ -91,4 +91,9 @@ class eacceleratorCacheHandler
 	{
 		return true;
 	}
+	
+	function size_of($name)
+	{
+		return "N/A";
+	}
 }

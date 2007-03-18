@@ -379,7 +379,7 @@ if(!$mybb->input['action'])
 	}
 	
 	$count = count($backups);
-	ksort($backups);
+	krsort($backups);
 	
 	$table = new Table;
 	$table->construct_header("Backup Filename");
