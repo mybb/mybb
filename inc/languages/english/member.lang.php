@@ -94,7 +94,7 @@ $l['time_offset_desc'] = "If you live in a timezone which differs to what this b
 $l['enable_dst'] = "Enable Daylight Savings Time Correction?";
 
 $l['lang_select'] = "Language Settings:";
-$l['lang_select_desc'] = "If you live in a country that speaks a language other than the forums default, you may be able to select an installed, read-able langauge pack below.";
+$l['lang_select_desc'] = "If you live in a country that speaks a language other than the forums default, you may be able to select an installed, read-able language pack below.";
 $l['lang_select_default'] = "Use Default";
 
 $l['submit_registration'] = "Submit Registration!";
@@ -150,7 +150,7 @@ $l['error_alreadyactivated'] = "It appears your account is already activated or 
 $l['error_nothreadurl'] = "Your message does not contain the URL of the thread. Please use the \"send to friend\" feature for it's intended purpose.";
 $l['error_invalidusername'] = "You have entered an invalid username. Usernames can only contain alphanumeric characters.";
 $l['error_bannedusername'] = "You have entered a username that is banned from registration.  Please choose another username.";
-$l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malacious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
+$l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to logout, please click the Logout button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_hideemail'] = "The recipient has chosen to hide his/her e-mail address.";
 
