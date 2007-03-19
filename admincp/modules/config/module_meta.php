@@ -35,6 +35,10 @@ function config_action_handler($manage)
 			$page->active_action = "banning";
 			$action_file = "banning.php";
 			break;
+		case "badwords":
+			$page->active_action = "badwords";
+			$action_file = "badwords.php";
+			break;
 		case "profile_fields":
 			$page->active_action = "profile_fields";
 			$action_file = "profile_fields.php";
