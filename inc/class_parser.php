@@ -564,12 +564,14 @@ class postParser
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
 		if(intval($match[1]))
 		{
-			$url = get_post_link(intval($match[1]))."#pid$pid";
+			$pid = intval($match[1]);
+			$url = get_post_link($pid)."#pid$pid";
 			eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
 			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
 			$delete_quote = false;
 		}
 
+		unset($match);
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#", $username, $match);
 		if(intval($match[1]))
 		{
