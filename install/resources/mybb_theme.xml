@@ -389,50 +389,40 @@ hr {
 	margin-top: 0;
 }
 
-.quote_header {
-	background: #adcbe7;
-	border: 1px solid #81A2C4;
-	color: #000000;
+blockquote {
+	border: 1px solid #ccc;
+	margin: 0;
+	background: #fff;
+	padding: 4px;
+}
+
+blockquote cite {
 	font-weight: bold;
-	margin: 4px;
-	margin-left: 0px;
-	margin-bottom:0px;
+	border-bottom: 1px solid #ccc;
+	font-style: normal;
+	display: block;
+	margin: 4px 0;
+}
+
+.codeblock {
+	background: #fff;
+	border: 1px solid #ccc;
 	padding: 4px;
 }
 
-.quote_body {
-	background: #ffffff;
-	border: 1px solid #81A2C4;
-	border-top: 0px;
-	color: #000;
-	padding: 4px;
-	margin: 4px;
-	margin-left: 0px;
-	margin-top: 0px;
-}
-
-.code_header {
-	background: #adcbe7;
-	border: 1px solid #81A2C4;
-	color: #000000;
+.codeblock .title {
+	border-bottom: 1px solid #ccc;
 	font-weight: bold;
-	margin: 4px;
-	margin-left: 0px;
-	margin-bottom:0px;
-	padding: 4px;
+	margin: 4px 0;
 }
 
-.code_body {
-	background: #ffffff;
-	border: 1px solid #81A2C4;
-	border-top: 0px;
-	color: #000;
-	padding: 4px;
-	margin: 4px;
-	margin-left: 0px;
-	margin-top: 0px;
+.codeblock code {
+	overflow: auto;
+	height: auto;
+	max-height: 200px;
+	display: block;
 	font-family: Monaco, Consolas, Courier, monospace;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 .usercpnav {

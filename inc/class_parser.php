@@ -177,8 +177,8 @@ class postParser
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p)[^>]*>)#i", "$2", $message);
+			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote)[^>]*>)\s*<br />#i", "$1", $message);
+			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote)[^>]*>)#i", "$2", $message);
 		}
 
 		$message = my_wordwrap($message);
@@ -511,7 +511,7 @@ class postParser
 		{
 			$replace = array(
 				"\$this->mycode_parse_post_quotes(\"$2\",\"$1\")",
-				"</p>\n<div class=\"quote_header\">$lang->quote\n</div><div class=\"quote_body\">$1</div>\n<p>\n"
+				"</p>\n<blockquote><cite>$lang->quote</cite>$1</blockquote>\n<p>\n"
 			);
 		}
 		else
@@ -530,13 +530,13 @@ class postParser
 		if($text_only == false)
 		{
 			$find = array(
-				"#<div class=\"quote_body\">(\r\n?|\n?)#",
-				"#(\r\n?|\n?)</div>#"
+				"#(\r\n?|\n?)<\/cite>(\r\n?|\n?)#",
+				"#(\r\n?|\n?)<\/blockquote>#"
 			);
 
 			$replace = array(
-				"<div class=\"quote_body\">",
-				"</div>"
+				"</cite><br />",
+				"</blockquote>"
 			);
 			$message = preg_replace($find, $replace, $message);
 		}
@@ -596,7 +596,7 @@ class postParser
 			{
 				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
 			}
-			return "</p>\n<div class=\"quote_header\">{$span}".htmlentities($username)." $lang->wrote{$linkback}\n</div><div class=\"quote_body\">{$message}</div>\n<p>\n";
+			return "</p>\n<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote>\n<p>\n";
 		}
 	}
 
@@ -633,7 +633,7 @@ class postParser
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
 
-		return "</p>\n<div class=\"code_header\">".$lang->code."\n</div><div class=\"code_body\"><div dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
+		return "</p>\n<div class=\"codeblock\">\n<div class=\"title\">".$lang->code."\n</div><div class=\"body\" dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
 	}
 
 	/**
@@ -744,7 +744,7 @@ class postParser
 		}
 
 		// Send back the code all nice and pretty
-		return "</p>\n<div class=\"code_header\">$lang->php_code\n</div><div class=\"code_body\">".$code."</div>\n<p>\n";
+		return "</p>\n<div class=\"codeblock phpcodeblock\"><div class=\"title\">$lang->php_code\n</div><div class=\"body\">".$code."</div></div>\n<p>\n";
 	}
 
 	/**
