@@ -12,7 +12,7 @@
 function tools_meta()
 {
 	global $page;
-	$page->add_menu_item("Tools and Maintenance", "tools", "index.php?".SID."&module=tools", 50);
+	$page->add_menu_item("Tools &amp; Maintenance", "tools", "index.php?".SID."&module=tools", 50);
 	return true;
 }
 
@@ -53,18 +53,27 @@ function tools_action_handler($action)
 	
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "stats", "title" => "System Health", "link" => "index.php?".SID."&module=tools/stats");
-	$sub_menu['20'] = array("id" => "adminlog", "title" => "Administrator Log", "link" => "index.php?".SID."&module=tools/adminlog");
-	$sub_menu['30'] = array("id" => "modlog", "title" => "Moderator Log", "link" => "index.php?".SID."&module=tools/modlog");
-	$sub_menu['40'] = array("id" => "maillogs", "title" => "User Email Log", "link" => "index.php?".SID."&module=tools/maillogs");
-	$sub_menu['50'] = array("id" => "mailerrors", "title" => "System Mail Log", "link" => "index.php?".SID."&module=tools/mailerrors");
-	$sub_menu['60'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
-	$sub_menu['70'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
-	$sub_menu['80'] = array("id" => "recould_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
-	$sub_menu['90'] = array("id" => "php_info", "title" => "View PHP Info", "link" => "index.php?".SID."&module=tools/php_info");
-	$sub_menu['100'] = array("id" => "backupdb", "title" => "Database Backups", "link" => "index.php?".SID."&module=tools/backupdb");
-	$sub_menu['110'] = array("id" => "optimizedb", "title" => "Optimize Database", "link" => "index.php?".SID."&module=tools/optimizedb");
+	$sub_menu['20'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
+	$sub_menu['30'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
+	$sub_menu['40'] = array("id" => "recould_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
+	$sub_menu['50'] = array("id" => "php_info", "title" => "View PHP Info", "link" => "index.php?".SID."&module=tools/php_info");
+	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database Backups", "link" => "index.php?".SID."&module=tools/backupdb");
+	$sub_menu['70'] = array("id" => "optimizedb", "title" => "Optimize Database", "link" => "index.php?".SID."&module=tools/optimizedb");
+
 
 	$sidebar = new sideBarItem("Maintenance");
+	$sidebar->add_menu_items($sub_menu, $page->active_action);
+	
+	$page->sidebar .= $sidebar->get_markup();
+	
+
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "adminlog", "title" => "Administrator Log", "link" => "index.php?".SID."&module=tools/adminlog");
+	$sub_menu['20'] = array("id" => "modlog", "title" => "Moderator Log", "link" => "index.php?".SID."&module=tools/modlog");
+	$sub_menu['30'] = array("id" => "maillogs", "title" => "User Email Log", "link" => "index.php?".SID."&module=tools/maillogs");
+	$sub_menu['40'] = array("id" => "mailerrors", "title" => "System Mail Log", "link" => "index.php?".SID."&module=tools/mailerrors");
+	
+	$sidebar = new sideBarItem("Logs");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();

@@ -16,7 +16,7 @@ $page->output_header("System Health");
 $sub_tabs['system_health'] = array(
 	'title' => "System Health",
 	'link' => "index.php?".SID."&amp;module=tools/stats",
-	'description' => 'Here you can view information on your systems health.'
+	'description' => 'Here you can view information on your system\'s health.'
 );
 
 $page->output_nav_tabs($sub_tabs, 'system_health');

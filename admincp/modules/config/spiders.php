@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$page->add_breadcrumb_item("Spiders / Bots", "index.php?".SID."&module=config/spiders");
+$page->add_breadcrumb_item("Spiders / Bots", "index.php?".SID."&amp;module=config/spiders");
 
 if($mybb->input['action'] == "add")
 {
@@ -47,7 +47,7 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item("Add New Bot");
 	$page->output_header("Spiders / Bots - Add New Bot");
 	
-	$form = new Form("index.php?".SID."&module=config/spiders&action=add", "post");
+	$form = new Form("index.php?".SID."&amp;module=config/spiders&amp;action=add", "post");
 
 	if($errors)
 	{
@@ -80,6 +80,8 @@ if($mybb->input['action'] == "add")
 	$buttons[] = $form->generate_submit_button("Save Bot");
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+	
+	$page->output_footer();
 }
 
 if($mybb->input['action'] == "delete")
@@ -161,7 +163,7 @@ if($mybb->input['action'] == "edit")
 	$page->add_breadcrumb_item("Edit Bot");
 	$page->output_header("Spiders / Bots - Edit Bot");
 	
-	$form = new Form("index.php?".SID."&module=config/spiders&action=edit&sid={$spider['sid']}", "post");
+	$form = new Form("index.php?".SID."&amp;module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}", "post");
 
 	if($errors)
 	{
@@ -198,6 +200,8 @@ if($mybb->input['action'] == "edit")
 	$buttons[] = $form->generate_submit_button("Save Bot");
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+	
+	$page->output_footer();
 }
 
 if(!$mybb->input['action'])

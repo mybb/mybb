@@ -12,7 +12,7 @@
 function user_meta()
 {
 	global $page;
-	$page->add_menu_item("Users and Groups", "user", "index.php?".SID."&module=user", 30);
+	$page->add_menu_item("Users &amp; Groups", "user", "index.php?".SID."&module=user", 30);
 	return true;
 }
 
@@ -25,6 +25,10 @@ function user_action_handler($action)
 		case "group_promotions":
 			$page->active_action = "group_promotions";
 			$action_file = "group_promotions.php";
+			break;
+		case "admin_permissions":
+			$page->active_action = "admin_permissions";
+			$action_file = "admin_permissions.php";
 			break;
 		default:
 			$page->active_action = "view";

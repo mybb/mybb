@@ -390,7 +390,7 @@ function upgrade9_dbchanges3()
 		useragent varchar(200) NOT NULL default '',
 		lastvisit bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
-	) TYPE=MyISAM;";
+	) TYPE=MyISAM;");
 
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('GoogleBot','google');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Lycos','lycos');");

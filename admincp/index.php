@@ -172,6 +172,7 @@ else
 							break;
 						}
 					}
+					
 					// IP doesn't match properly - show message on logon screen
 					if(!$valid_ip)
 					{

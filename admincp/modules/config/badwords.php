@@ -109,7 +109,7 @@ if($mybb->input['action'] == "edit")
 	$page->add_breadcrumb_item("Edit Bad Word");
 	$page->output_header("Bad Words - Edit Bad Word");
 	
-	$form = new Form("index.php?".SID."&module=config/badwords&action=edit&bid={$badword['bid']}", "post");
+	$form = new Form("index.php?".SID."&amp;module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}", "post");
 
 	if($errors)
 	{
@@ -166,7 +166,7 @@ if(!$mybb->input['action'])
 	
 	$table->output("Bad Word Filters");
 
-	$form = new Form("index.php?".SID."&module=config/badwords&action=add", "post", "add");
+	$form = new Form("index.php?".SID."&amp;module=config/badwords&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);

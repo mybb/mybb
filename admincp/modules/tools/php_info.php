@@ -16,7 +16,7 @@ if($mybb->input['action'] == 'phpinfo')
 	exit;
 }
 
-$page->add_breadcrumb_item("PHP Info", "index.php?".SID."&module=tools/php_info");
+$page->add_breadcrumb_item("PHP Info", "index.php?".SID."&amp;module=tools/php_info");
 
 if(!$mybb->input['action'])
 {

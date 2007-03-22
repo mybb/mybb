@@ -31,9 +31,10 @@ if($mybb->input['action'] == "check")
 			}
 			$plugininfo = $infofunc();
 			
-			if($plugininfo['pid'])
+			if(trim($plugininfo['guid']) != "")
 			{
-				$info[$plugininfo['pid']] = array('pid' => $plugininfo['pid'], 'ver' => $plugininfo['version']);
+				$info[$plugininfo['guid']] = $plugininfo['version'];
+				$names[$plugininfo['guid']] = $plugininfo['name'];
 			}
 		}
 	}
@@ -43,34 +44,64 @@ if($mybb->input['action'] == "check")
 		flash_message("There are no supported plugins available to check for updates.", 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
-		
+	
+	require_once MYBB_ROOT."inc/class_xml.php";
 	$contents = @implode("", @file("http://mods.mybboard.com/version_check.php?info=".urlencode(serialize($info))));
+	
 	if(!$contents)
 	{
 		flash_message("There was a problem communicating with the mod version server. Please try again in a few minutes.", 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
-	}	
-	elseif($contents == "error1")
+	}
+	
+	$parser = new XMLParser($contents);
+	$tree = $parser->get_tree();
+	
+	if(array_key_exists('error', $tree['plugins'][0]))
 	{
-		flash_message("There was a problem communicating with the mod version server. Error code 1: No input specified.", 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
-	}	
-	elseif($contents == "error2")
-	{
-		flash_message("There was a problem communicating with the mod version server. Error code 2: No plugin ids specified.", 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
-	}	
-	elseif($contents == "error3")
-	{
-		flash_message("There was a problem communicating with the mod version server. Error code 3: Specified plugins not found.", 'error');
+		switch($tree['plugins'][0]['error'])
+		{
+			case "1":
+				$error_msg = "Error code 1: No input specified.";
+				break;
+			case "2":
+				$error_msg = "Error code 2: No plugin ids specified.";
+				break;
+			case "3":
+				$error_msg = "Error code 1: No input specified.";
+				break;
+			default:
+				$error_msg = "";
+		}
+		
+		flash_message("There was a problem communicating with the mod version server.".$error_msg, 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
-	else if($contents == "success")
-	{
-		flash_message("Congratulations, all of your plugins are up to date.", 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
-	}
+	
+	$table = new Table;
+	$table->construct_header("Plugin");
+	$table->construct_header("Your Version", array("class" => "align_center", 'width' => 125));
+	$table->construct_header("Latest Version", array("class" => "align_center", 'width' => 125));
+	$table->construct_header("Controls", array("class" => "align_center", 'width' => 125));
 
+	foreach($tree['plugins'][0]['plugin'] as $plugin)
+	{
+		if(version_compare($info[$plugin['attributes']['guid']], $plugin['version'][0]['value'], ">="))
+		{
+			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]}</strong>");
+			$table->construct_cell("{$info[$plugin['attributes']['guid']]}", array("class" => "align_center"));
+			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version'][0]['value']}</span></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://mods.mybboard.com/view.php?did={$plugin['download_url'][0]['value']}\" target=\"_blank\">Download</a></strong>", array("class" => "align_center"));
+			$table->construct_row();
+		}		
+	}
+	
+	if(count($table->rows) == 0)
+	{
+		flash_message("Congratulations, all of your plugins are up to date.", 'success');
+		admin_redirect("index.php?".SID."&module=config/plugins");
+	}
+	
 	$page->add_breadcrumb_item("Plugin Updates");
 	
 	$page->output_header("Plugins Updates");
@@ -82,23 +113,6 @@ if($mybb->input['action'] == "check")
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'update_plugins');
-
-	$table = new Table;
-	$table->construct_header("Plugin");
-	$table->construct_header("Your Version", array("class" => "align_center", 'width' => 125));
-	$table->construct_header("Latest Version", array("class" => "align_center", 'width' => 125));
-	$table->construct_header("Controls", array("class" => "align_center", 'width' => 125));
-
-	$plugins = unserialize($contents);
-
-	foreach($plugins as $pid => $plugin)
-	{
-		$table->construct_cell("<strong>{$plugininfo['name']}</strong>");
-		$table->construct_cell("{$info[$pid]['ver']}", array("class" => "align_center"));
-		$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin}</span></strong>", array("class" => "align_center"));
-		$table->construct_cell("<strong><a href=\"http://mods.mybboard.com/view.php?did={$pid}\" target=\"_blank\">Download</a></strong>", array("class" => "align_center"));
-		$table->construct_row();
-	}
 	
 	$table->output("Plugins Updates");
 	

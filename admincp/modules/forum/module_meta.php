@@ -12,7 +12,7 @@
 function forum_meta()
 {
 	global $page;
-	$page->add_menu_item("Forums and Posts", "forum", "index.php?".SID."&module=forum", 20);
+	$page->add_menu_item("Forums &amp; Posts", "forum", "index.php?".SID."&module=forum", 20);
 
 	return true;
 }

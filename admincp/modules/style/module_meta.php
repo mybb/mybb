@@ -12,7 +12,7 @@
 function style_meta()
 {
 	global $page;
-	$page->add_menu_item("Templates and Style", "style", "index.php?".SID."&module=style", 40);
+	$page->add_menu_item("Templates &amp; Style", "style", "index.php?".SID."&module=style", 40);
 	return true;
 }
 
