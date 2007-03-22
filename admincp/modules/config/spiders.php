@@ -31,6 +31,7 @@ if($mybb->input['action'] == "add")
 				"name" => $db->escape_string($mybb->input['name']),
 				"theme" => intval($mybb->input['theme']),
 				"language" => $db->escape_string($mybb->input['language']),
+				"usergroup" => intval($mybb->input['usergroup']),
 				"useragent" => $db->escape_string($mybb->input['useragent']),
 				"lastvisit" => 0
 			);
@@ -56,10 +57,24 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer("Add New Bot");
 	$form_container->output_row("Name <em>*</em>", "Enter the name of this bot which you want to identify it by", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row("User Agent String", "Enter the string which will be matched against the bots user agent (partial matches are accepted)", $form->generate_text_box('useragent', $mybb->input['useragent'], array('id' => 'useragent')), 'useragent');
+	
 	$languages = array('' => 'Use Board Default');
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row("Language", "Select the language pack the bot will use when viewing the board.", $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
+	
 	$form_container->output_row("Theme", "Select the theme the bot will use when viewing the board.", build_theme_select("theme", $mybb->input['theme'], 0, "", 1), 'theme');
+
+	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
+	while($usergroup = $db->fetch_array($query))
+	{
+		$usergroups[$usergroup['gid']] = $usergroup['title'];
+	}
+	if(!$mybb->input['usergroup'])
+	{
+		$mybb->input['usergroup'] = 1;
+	}
+	$form_container->output_row("User Group", "Select the user group permissions will be applied from for this board (Note: It is not recommended you change this from the default Guests group)", $form->generate_select_box("usergroup", $usergroups, $mybb->input['usergroup'], array("id" => "usergroup")), 'usergroup');
+
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button("Save Bot");
@@ -131,6 +146,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"theme" => intval($mybb->input['theme']),
 				"language" => $db->escape_string($mybb->input['language']),
+				"usergroup" => intval($mybb->input['usergroup']),
 				"useragent" => $db->escape_string($mybb->input['useragent'])
 			);
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
@@ -160,10 +176,23 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer("Edit Bot");
 	$form_container->output_row("Name <em>*</em>", "Enter the name of this bot which you want to identify it by", $form->generate_text_box('name', $spider_data['name'], array('id' => 'name')), 'name');
 	$form_container->output_row("User Agent String", "Enter the string which will be matched against the bots user agent (partial matches are accepted)", $form->generate_text_box('useragent', $spider_data['useragent'], array('id' => 'useragent')), 'useragent');
+	
 	$languages = array('' => 'Use Board Default');
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row("Language", "Select the language pack the bot will use when viewing the board.", $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
+
 	$form_container->output_row("Theme", "Select the theme the bot will use when viewing the board.", build_theme_select("theme", $spider_data['theme'], 0, "", 1), 'theme');
+
+	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
+	while($usergroup = $db->fetch_array($query))
+	{
+		$usergroups[$usergroup['gid']] = $usergroup['title'];
+	}
+	if(!$mybb->input['usergroup'])
+	{
+		$mybb->input['usergroup'] = 1;
+	}
+	$form_container->output_row("User Group", "Select the user group permissions will be applied from for this board (Note: It is not recommended you change this from the default Guests group)", $form->generate_select_box("usergroup", $usergroups, $mybb->input['usergroup'], array("id" => "usergroup")), 'usergroup');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button("Save Bot");

@@ -386,6 +386,7 @@ function upgrade9_dbchanges3()
 		name varchar(100) NOT NULL default '',
 		theme int unsigned NOT NULL default '0',
 		language varchar(20) NOT NULL default '',
+		usergroup int unsigned NOT NULL default '0',
 		useragent varchar(200) NOT NULL default '',
 		lastvisit bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
