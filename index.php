@@ -61,6 +61,9 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 	$anoncount = 0;
 	$doneusers = array();
 
+	// Fetch spiders
+	$spiders = $cache->read("spiders");
+
 	// Loop through all users.
 	while($user = $db->fetch_array($query))
 	{
@@ -101,10 +104,10 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		elseif(my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey])
 		{
 			// The user is a search bot.
-			$onlinemembers .= $comma.format_name($session->bots[$botkey], $session->botgroup);
+			$onlinemembers .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
 			$comma = ", ";
 			++$botcount;
 		}

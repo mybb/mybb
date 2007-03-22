@@ -69,6 +69,17 @@ $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showc
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (8, 'Sad', ':(', 'images/smilies/sad.gif', 8, 'yes');";
 $inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (9, 'At', ':at:', 'images/smilies/at.gif', 9, 'no');";
 
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('GoogleBot','google');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Lycos','lycos');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Ask Jeeves','ask jeeves');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Hot Bot','slurp@inktomi');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('What You Seek','whatuseek');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('is_archiver','Archive.org');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Altavista','scooter');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Alexa','ia_archiver');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('MSN Search','msnbot');";
+$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Yahoo!','yahoo slurp');";
+
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('2','editpost','<lang:group_editpost>');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('3','email','<lang:group_email>');";

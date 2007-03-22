@@ -619,5 +619,21 @@ class datacache
 		}
 		$this->update("bannedips", $banned_ips);
 	}
+
+	/**
+	 * Updates the search engine spiders cache
+	 */
+	function update_spiders()
+	{
+		global $db;
+		$banned_ips = array();
+		$query = $db->simple_select("spiders", "sid,name,useragent", "", array("order_by" => "LENGTH(useragent)", "order_dir" => "DESC"));
+		while($spider = $db->fetch_array($query))
+		{
+			$spiders[$spider['sid']] = $spider;
+		}
+		$this->update("spiders", $spiders);
+	}
+
 }
 ?>

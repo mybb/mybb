@@ -368,6 +368,43 @@ function upgrade9_dbchanges2()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+	$output->print_footer("9_dbchanges3");
+}
+
+function upgrade9_dbchanges3()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
+	
+	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."spiders");
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."spiders (
+		sid int unsigned NOT NULL auto_increment,
+		name varchar(100) NOT NULL default '',
+		theme int unsigned NOT NULL default '0',
+		language varchar(20) NOT NULL default '',
+		useragent varchar(200) NOT NULL default '',
+		lastvisit bigint(30) NOT NULL default '0',
+		PRIMARY KEY(sid)
+	) TYPE=MyISAM;";
+
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('GoogleBot','google');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Lycos','lycos');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Ask Jeeves','ask jeeves');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Hot Bot','slurp@inktomi');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('What You Seek','whatuseek');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('is_archiver','Archive.org');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Altavista','scooter');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Alexa','ia_archiver');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('MSN Search','msnbot');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Yahoo!','yahoo slurp');");
+
+	$contents = "Done</p>";
+	$contents .= "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
 	$output->print_footer("9_done");
 }
 ?>

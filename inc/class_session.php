@@ -15,32 +15,16 @@ class session
 	var $uid = 0;
 	var $ipaddress = '';
 	var $useragent = '';
-	var $botgroup = 1;
 	var $is_spider = false;
 	var $logins = 1;
 	var $failedlogin = 0;
-
-	var $bots = array(
-		'google' => 'GoogleBot',
-		'lycos' => 'Lycos.com',
-		'ask jeeves' => 'Ask Jeeves',
-		'slurp@inktomi' => 'Hot Bot',
-		'whatuseek' => 'What You Seek',
-		'is_archiver' => 'Archive.org',
-		'scooter' => 'Altavista',
-		'fast-webcrawler' => 'AlltheWeb',
-		'grub.org' => 'Grub Client',
-		'turnitinbot' => 'Turnitin.com',
-		'msnbot' => 'MSN Search',
-		'yahoo' => 'Yahoo! Slurp'
-	);
 
 	/**
 	 * Initialize a session
 	 */
 	function init()
 	{
-		global $db, $mybb;
+		global $db, $mybb, $cache;
 
 		// Get our visitor's IP.
 		$this->ipaddress = get_ip();
@@ -56,23 +40,20 @@ class session
 		if(isset($_COOKIE['sid']))
 		{
 			$this->sid = $db->escape_string($_COOKIE['sid']);
-		}
-		else
-		{
-			$this->sid = 0;
+			// Load the session
+			$query = $db->simple_select("sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
+			$session = $db->fetch_array($query);
+			if($session['sid'])
+			{
+				$this->sid = $session['sid'];
+				$this->uid = $session['uid'];
+				$this->logins = $session['loginattempts'];
+				$this->failedlogin = $session['failedlogin'];
+			}
 		}
 
-		// Attempt to load the session from the database.
-		$query = $db->simple_select("sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
-		$session = $db->fetch_array($query);
-		if($session['sid'])
-		{
-			$this->sid = $session['sid'];
-			$this->uid = $session['uid'];
-			$this->logins = $session['loginattempts'];
-			$this->failedlogin = $session['failedlogin'];
-		}
-		else
+		// Still no session, fall back
+		if(!$this->sid)
 		{
 			$this->sid = 0;
 			$this->uid = 0;
@@ -90,24 +71,34 @@ class session
 		// If no user still, then we have a guest.
 		if(!isset($mybb->user['uid']))
 		{
-			// Detect if this guest is a search engine spider.
-			$spiders = my_strtolower(implode("|", array_keys($this->bots)));
-			if(preg_match("#(".$spiders.")#i", $this->useragent, $match))
+			// Detect if this guest is a search engine spider. (bots don't get a cookied session ID so we first see if that's set
+			if(!$this->sid)
 			{
-				$this->load_spider(my_strtolower($match[0]));
+				$spiders = $cache->read("spiders");
+				if(is_array($spiders))
+				{
+					foreach($spiders as $spider)
+					{
+						if(my_strpos(my_strtolower($this->useragent), my_strtolower($spider['useragent'])) !== false)
+						{
+							$this->load_spider($spider['sid']);
+						}
+					}
+				}
 			}
 
-			// Just a plain old guest.
-			else
+			// Still nothing? JUST A GUEST!
+			if(!$this->is_spider)
 			{
 				$this->load_guest();
 			}
 		}
 
-		// As a token of our appreciation for getting this far, give the user a cookie
-		if((!$_COOKIE['sid'] || !$session['sid']) && $this->sid)
+
+		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
+		if((!$_COOKIE['sid'] || !$session['sid']) && $this->sid && $this->is_spider != true)
 		{
-			my_setcookie("sid", $this->sid, -1, true);
+			//my_setcookie("sid", $this->sid, -1, true);
 		}
 	}
 
@@ -391,33 +382,61 @@ class session
 	/**
 	 * Load a search engine spider.
 	 *
-	 * @param string The spider name.
+	 * @param int The ID of the search engine spider
 	 */
-	function load_spider($spider)
+	function load_spider($spider_id)
 	{
 		global $mybb, $time, $db, $lang;
+
+		// Fetch the spider preferences from the database
+		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'");
+		$spider = $db->fetch_array($query);
 
 		// Set up some defaults
 		$time = time();
 		$this->is_spider = true;
-		$mybb->user['usergroup'] = $this->botgroup;
-		$mybb->user['username'] = '';
+		if($spider['usergroup'])
+		{
+			$mybb->user['usergroup'] = $spider['usergroup'];
+		}
+		else
+		{
+			$mybb->user['usergroup'] = 1;
+		}
 		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
-		$mybbgroups = $this->botgroup;
-		$mybb->user['displaygroup'] = $this->botgroup;
+		$mybb->user['displaygroup'] = $mybb->user['usergroup'];
+
+		// Set spider language
+		if($spider['language'] && $lang->language_exists($spider['language']))
+		{
+			$mybb->settings['bblanguage'] = $spider['language'];
+		}
+
+		// Set spider theme
+		if($spider['theme'])
+		{
+			$mybb->user['style'] = $spider['theme'];
+		}
 
 		// Gather a full permission set for this spider.
-		$mybb->usergroup = usergroup_permissions($mybbgroups);
+		$mybb->usergroup = usergroup_permissions($mybb->user['usergroup']);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
-		$db->delete_query("sessions", "sid='bot=".$spider."'", 1);
+		// Update spider last minute (only do so on two minute intervals - decrease load for quick spiders)
+		if($spider['lastvisit'] < time()-120)
+		{
+			$updated_spider = array(
+				"lastvisit" => time()
+			);
+			$db->update_query("spiders", $updated_spider, "sid='{$spider_id}'");
+		}
 
 		// Update the online data.
 		if(!defined("NO_ONLINE"))
 		{
-			$this->sid = "bot=".$spider;
+			$this->sid = "bot=".$spider_id;
 			$this->create_session();
 		}
 
@@ -467,20 +486,24 @@ class session
 		// If there is a proper uid, delete by uid.
 		if($uid > 0)
 		{
-			$db->delete_query("sessions", "uid=".$uid);
+			$db->delete_query("sessions", "uid='{$uid}'");
 			$onlinedata['uid'] = $uid;
+		}
+		// Is a spider - delete all other spider references
+		else if($this->is_spider == true)
+		{
+			$db->delete_query("sessions", "sid='{$this->sid}'", 1);
 		}
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip='".$this->ipaddress."'");
+			$db->delete_query("sessions", "ip='".$db->escape_string($this->ipaddress)."'");
 			$onlinedata['uid'] = 0;
 		}
 
 		// If the user is a search enginge spider, ...
 		if($this->is_spider == true)
 		{
-			//$onlinedata['sid'] = "bot=".$this->useragent;
 			$onlinedata['sid'] = $this->sid;
 		}
 		else

@@ -594,6 +594,16 @@ $tables[] = "CREATE TABLE mybb_smilies (
   PRIMARY KEY  (sid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_spiders (
+	sid int unsigned NOT NULL auto_increment,
+	name varchar(100) NOT NULL default '',
+	theme int unsigned NOT NULL default '0',
+	language varchar(20) NOT NULL default '',
+	useragent varchar(200) NOT NULL default '',
+	lastvisit bigint(30) NOT NULL default '0',
+	PRIMARY KEY(sid)
+) TYPE=MyISAM;";
+	
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid int unsigned NOT NULL auto_increment,
 	title varchar(120) NOT NULL default '',

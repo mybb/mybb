@@ -9,7 +9,7 @@
  * $Id$
  */
 
-$page->add_breadcrumb_item("Bad Words", "index.php?".SID."&amp;module=config/badwords");
+$page->add_breadcrumb_item("Bad Words", "index.php?".SID."&module=config/badwords");
 
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
@@ -67,7 +67,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/badwords&amp;action=delete&amp;bid={$badword['bid']}", "Are you sure you wish to delete this bad word?");
+		$page->output_confirm_action("index.php?".SID."&module=config/badwords&action=delete&bid={$badword['bid']}", "Are you sure you wish to delete this bad word?");
 	}
 }
 
@@ -109,7 +109,7 @@ if($mybb->input['action'] == "edit")
 	$page->add_breadcrumb_item("Edit Bad Word");
 	$page->output_header("Bad Words - Edit Bad Word");
 	
-	$form = new Form("index.php?".SID."&amp;module=config/badwords&amp;action=edit&bid={$badword['bid']}", "post");
+	$form = new Form("index.php?".SID."&module=config/badwords&action=edit&bid={$badword['bid']}", "post");
 
 	if($errors)
 	{
@@ -166,7 +166,7 @@ if(!$mybb->input['action'])
 	
 	$table->output("Bad Word Filters");
 
-	$form = new Form("index.php?".SID."&amp;module=config/badwords&amp;action=add", "post", "add");
+	$form = new Form("index.php?".SID."&module=config/badwords&action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);

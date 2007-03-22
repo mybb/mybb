@@ -146,6 +146,10 @@ else
 	$user_count = 0;
 	$guest_count = 0;
 	$invisible_count = 0;
+
+	// Fetch spiders
+	$spiders = $cache->read("spiders");
+
 	while($user = $db->fetch_array($query))
 	{
 		$plugins->run_hooks("online_user");
@@ -169,9 +173,10 @@ else
 			}
 		}
 		// Otherwise this session is a bot
-		else if(my_strpos($user['sid'], "bot=") !== false && $session->bots[$botkey])
+		else if(my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey])
 		{
-			$user['bot'] = $session->bots[$botkey];
+			$user['bot'] = $spiders[$botkey]['name'];
+			$user['usergroup'] = $spiders[$botkey]['usergroup'];
 			$guests[] = $user;
 			++$botcount;
 		}

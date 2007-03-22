@@ -43,6 +43,10 @@ function config_action_handler($manage)
 			$page->active_action = "profile_fields";
 			$action_file = "profile_fields.php";
 			break;
+		case "spiders":
+			$page->active_action = "spiders";
+			$action_file = "spiders.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
@@ -60,6 +64,7 @@ function config_action_handler($manage)
 	$sub_menu['90'] = array("id" => "help_documents", "title" => "Help Documents", "link" => "index.php?".SID."&module=config/help_documents");
 	$sub_menu['100'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
 	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
+	$sub_menu['120'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
 
 	$sidebar = new sideBarItem("Configuration");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);

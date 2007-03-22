@@ -54,7 +54,7 @@ function tools_action_handler($action)
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "stats", "title" => "System Health", "link" => "index.php?".SID."&module=tools/stats");
 	$sub_menu['20'] = array("id" => "adminlog", "title" => "Administrator Log", "link" => "index.php?".SID."&module=tools/adminlog");
-	$sub_menu['30'] = array("id" => "modlog", "title" => "Moderator", "link" => "index.php?".SID."&module=tools/modlog");
+	$sub_menu['30'] = array("id" => "modlog", "title" => "Moderator Log", "link" => "index.php?".SID."&module=tools/modlog");
 	$sub_menu['40'] = array("id" => "maillogs", "title" => "User Email Log", "link" => "index.php?".SID."&module=tools/maillogs");
 	$sub_menu['50'] = array("id" => "mailerrors", "title" => "System Mail Log", "link" => "index.php?".SID."&module=tools/mailerrors");
 	$sub_menu['60'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
