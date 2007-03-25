@@ -1299,16 +1299,22 @@ form {
 </td>
 </tr>
 <tr>
-<td><span class="smalltext">{$lang->time_offset}</span></td>
+<td><span class="smalltext">{$lang->time_offset_desc}</span></td>
 </tr>
 <tr>
-<td >{$tzselect}</td>
+<td>{$tzselect}</td>
 </tr>
-</table>
-<table cellspacing="0" cellpadding="2">
 <tr>
-<td valign="top" width="1"><input type="checkbox" class="checkbox" name="dst" id="dst" value="yes" {$dstcheck} /></td>
-<td><span class="smalltext"><label for="dst">{$lang->dst}</label></span></td>
+<td><san class="smalltext">{$lang->dst_correction}</span></td>
+</tr>
+<tr>
+<td>
+	<select name="dstcorrection">
+		<option value="2" {$dst_auto_selected}>{$lang->dst_correction_auto}</option>
+		<option value="1" {$dst_enabled_selected}>{$lang->dst_correction_enabled}</option>
+		<option value="0" {$dst_disabled_selected}>{$lang->dst_correction_disabled}</option>
+	</seelct>
+</td>
 </tr>
 </table>
 </fieldset>
@@ -1821,6 +1827,7 @@ form {
 				<br />
 <br class="clear" />
 <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{$task_image}<!-- End task image code -->
+{$auto_dst_detection}
 		</div>
 		</div>]]></template>
 		<template name="private_archive_csv" version="120"><![CDATA[{$lang->export_date_sent},{$lang->export_folder},{$lang->export_subject},{$lang->export_to},{$lang->export_from},{$lang->export_message}
@@ -6999,7 +7006,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top"><span class="smalltext"><label for="invisible">{$lang->invisible_mode}</label></span></td>
 </tr>
 <tr>
-<td>
+<td colspan="2"><span class="smalltext"><label for="subscriptionmethod">{$lang->subscription_method}</label></span></td>
+</tr>
+<tr>
+<td colspan="2">
 	<select name="subscriptionmethod">
 		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
 		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
@@ -7015,13 +7025,22 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <legend><strong><label for="timezone">{$lang->time_offset}</label></strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}" width="100%">
 <tr>
-<td colspan="2"><span class="smalltext">{$lang->time_offset_desc}</span></td>
+<td><span class="smalltext">{$lang->time_offset_desc}</span></td>
 </tr>
 <tr>
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td valign="top" colspan="2"><input type="checkbox" class="checkbox" name="enabledst" id="enabledst" value="yes" {$enabledstcheck} />   <span class="smalltext"><label for="enabledst">{$lang->enable_dst}</label></span></td>
+<td><san class="smalltext">{$lang->dst_correction}</span></td>
+</tr>
+<tr>
+<td>
+	<select name="dstcorrection">
+		<option value="2" {$dst_auto_selected}>{$lang->dst_correction_auto}</option>
+		<option value="1" {$dst_enabled_selected}>{$lang->dst_correction_enabled}</option>
+		<option value="0" {$dst_disabled_selected}>{$lang->dst_correction_disabled}</option>
+	</seelct>
+</td>
 </tr>
 </table>
 </fieldset>

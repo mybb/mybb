@@ -6,11 +6,13 @@ ajax.prototype = {
 	initialize: function(url, options) 
 	{
 		this.transport = this.getTransport();
+		if(!this.transport) { return false; } // No ajax support, return false
 		this.postBody = options.postBody || '';
 		this.method = options.method || 'post';
 		this.onComplete = options.onComplete || null;
 		this.update = $(options.update) || null;
 		this.request(url);
+		return true; // Sent, return true
 	},
 
 	request: function(url) 

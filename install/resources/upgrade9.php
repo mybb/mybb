@@ -403,6 +403,13 @@ function upgrade9_dbchanges3()
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('MSN Search','msnbot');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Yahoo!','yahoo slurp');");
 
+	// DST correction changes
+	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=1 WHERE dst='yes'");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=0 WHERE dst='no'");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
+	$db->query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");
+
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

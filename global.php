@@ -435,6 +435,12 @@ if($mybb->settings['showlanguageselect'] != "no")
 	eval("\$lang_select = \"".$templates->get("footer_languageselect")."\";");
 }
 
+// DST Auto detection enabled?
+if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
+{
+	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { Event.observe(window, 'load', function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
+}
+
 eval("\$footer = \"".$templates->get("footer")."\";");
 
 // Add our main parts to the navigation

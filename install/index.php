@@ -486,6 +486,9 @@ function create_tables()
 	fwrite($file, $configdata);
 	fclose($file);
 
+	// Error reporting back on
+ 	$db->error_reporting = 1;
+
 	$output->print_header($lang->table_creation, 'createtables');
 	echo sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['title'], $db->get_version());
 	
@@ -501,14 +504,11 @@ function create_tables()
 	require_once INSTALL_ROOT."resources/{$structure_file}";
 	foreach($tables as $val)
 	{
-		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $mybb->input['tableprefix'].'\\1\\2', $val);
-		preg_match('#CREATE TABLE (\S+) \(#i', $val, $match);
+		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $mybb->input['tableprefix'].'\\1\\2', $val);
+		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
 		if($match[1])
 		{
-			if($db->table_exists($match[1]))
-			{
-				$db->query('DROP TABLE '.$match[1]);
-			}
+			$db->query('DROP TABLE IF EXISTS '.$match[1]);
 			echo sprintf($lang->tablecreate_step_created, $match[1]);
 		}
 		$db->query($val);

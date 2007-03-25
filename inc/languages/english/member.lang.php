@@ -90,9 +90,12 @@ $l['email_notify'] = "Automatically subscribe to threads you post in.";
 $l['receive_pms'] = "Receive private messages from other users.";
 $l['pm_notice'] = "Alert me with a notice when I receive a Private Message.";
 $l['email_notify_newpm'] = "Notify me by email when I receive a new Private Message.";
-$l['time_offset'] = "Timezone Settings:";
-$l['time_offset_desc'] = "If you live in a timezone which differs to what this board is set at, you can select it from the list below. GMT time now is {1}.";
-$l['enable_dst'] = "Enable Daylight Savings Time Correction?";
+$l['time_offset'] = "Time Zone (<acronym title=\"Daylight Savings Time\">DST</acronym> correction excluded):";
+$l['time_offset_desc'] = "If you live in a timezone which differs to what this board is set at, you can select it from the list below.";
+$l['dst_correction'] = "Daylight Savings Time correction:";
+$l['dst_correction_auto'] = "Automatically detect DST settings";
+$l['dst_correction_enabled'] = "Always use DST correction";
+$l['dst_correction_disabled'] = "Never use DST correction";
 
 $l['lang_select'] = "Language Settings:";
 $l['lang_select_desc'] = "If you live in a country that speaks a language other than the forums default, you may be able to select an installed, read-able language pack below.";

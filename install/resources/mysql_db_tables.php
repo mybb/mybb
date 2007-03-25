@@ -471,7 +471,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
 ) TYPE=MyISAM;";
 
 
-$tables[] = "CREATE TABLE mybb_promotions(
+$tables[] = "CREATE TABLE mybb_promotions (
   pid int unsigned NOT NULL auto_increment,
   title varchar(120) NOT NULL default '',
   description text NOT NULL,
@@ -490,7 +490,7 @@ $tables[] = "CREATE TABLE mybb_promotions(
   PRIMARY KEY(pid)
 ) TYPE=MyISAM;";
 	
-$tables[] = "CREATE TABLE mybb_promotionlogs(
+$tables[] = "CREATE TABLE mybb_promotionlogs (
   plid int unsigned NOT NULL auto_increment,
   pid int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
@@ -846,7 +846,8 @@ $tables[] = "CREATE TABLE mybb_users (
   dateformat varchar(4) NOT NULL default '',
   timeformat varchar(4) NOT NULL default '',
   timezone varchar(4) NOT NULL default '',
-  dst varchar(4) NOT NULL default '',
+  dst int(1) NOT NULL default '0',
+  dstcorrection int(1) NOT NULL default '0',
   buddylist text NOT NULL,
   ignorelist text NOT NULL,
   style smallint unsigned NOT NULL default '0',

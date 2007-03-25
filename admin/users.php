@@ -359,12 +359,12 @@ if($mybb->input['action'] == "do_add")
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
+		"subscriptionmethod" => $mybb->input['subscriptionmethod'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmnotice" => $mybb->input['pmnotice'],
 		"pmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
-		"dst" => $mybb->input['enabledst']
+		"dstcorrection" => $mybb->input['dstcorrection']
 	);
 
 	$plugins->run_hooks("admin_users_do_add");
@@ -479,12 +479,12 @@ if($mybb->input['action'] == "do_edit")
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
 		"hideemail" => $mybb->input['hideemail'],
-		"emailnotify" => $mybb->input['emailnotify'],
+		"subscriptionmethod" => $mybb->input['subscriptionmethod'],
 		"receivepms" => $mybb->input['receivepms'],
 		"pmnotice" => $mybb->input['pmnotice'],
 		"pmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
-		"dst" => $mybb->input['enabledst']
+		"dstcorrection" => $mybb->input['dstcorrection']
 	);
 
 	$plugins->run_hooks("admin_users_do_edit");
@@ -874,11 +874,22 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->invisible_mode, "invisible", 'no');
 	makeyesnocode($lang->admin_emails, "allownotices", 'yes');
 	makeyesnocode($lang->hide_email, "hideemail", 'no');
-	makeyesnocode($lang->email_notify, "emailnotify", 'yes');
+	$select = "<select name=\"subscriptionmethod\">\n";
+	$select .= "<option value=\"2\">Instant Email Notification</option>\n";
+	$select .= "<option value=\"1\">Subscribe with no notification</option>\n";
+	$select .= "<option value=\"0\">Do not subscribe at all</option>\n";
+	$select .= "</select>";
+	makelabelcode($lang->email_notify, $select);
 	makeyesnocode($lang->enable_pms, "receivepms", 'yes');
 	makeyesnocode($lang->pm_notice, "pmnotice", 'yes');
 	makeyesnocode($lang->pm_notify, "emailpmnotify", 'yes');
 	makeinputcode($lang->time_offset, "timezoneoffset");
+	$select = "<select name=\"dstcorrection\">\n";
+	$select .= "<option value=\"2\">Automatic</option>\n";
+	$select .= "<option value=\"1\">Enabled</option>\n";
+	$select .= "<option value=\"0\">Disabled</option>\n";
+	$select .= "</select>";
+	makelabelcode("DST Correction", $select);
 	makeselectcode($lang->style, "style", "themes", "tid", "name", 0, $lang->use_default, '', "tid>1");
 	maketextareacode($lang->signature, "signature", '', 6, 50);
 	endtable();
@@ -952,11 +963,24 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->invisible_mode, "invisible", $user['invisible']);
 	makeyesnocode($lang->admin_emails, "allownotices", $user['allownotices']);
 	makeyesnocode($lang->hide_email, "hideemail", $user['hideemail']);
-	makeyesnocode($lang->email_notify, "emailnotify", $user['emailnotify']);
+	$subscribe_selected[$user['subscriptionmethod']] = "selected=\"selected\"";
+	$select = "<select name=\"subscriptionmethod\">\n";
+	$select .= "<option value=\"2\" {$subscribe_selected['2']}>Instant Email Notification</option>\n";
+	$select .= "<option value=\"1\" {$subscribe_selected['1']}>Subscribe with no notification</option>\n";
+	$select .= "<option value=\"0\" {$subscribe_selected['0']}>Do not subscribe at all</option>\n";
+	$select .= "</select>";
+	makelabelcode($lang->email_notify, $select);
 	makeyesnocode($lang->enable_pms, "receivepms", $user['receivepms']);
 	makeyesnocode($lang->pm_notice, "pmnotice", $user['pmnotice']);
 	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['emailpmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
+	$dst_selected[$user['dstcorrect']] = "selected=\"selected\"";
+	$select = "<select name=\"dstcorrection\">\n";
+	$select .= "<option value=\"2\" {$dst_selected['2']}>Automatic</option>\n";
+	$select .= "<option value=\"1\" {$dst_selected['1']}>Enabled</option>\n";
+	$select .= "<option value=\"0\" {$dst_selected['0']}>Disabled</option>\n";
+	$select .= "</select>";
+	makelabelcode("DST Correction", $select);
 	if(!$user['style'])
 	{
 		$user['style'] = 0;

@@ -127,7 +127,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"pmnotice" => $mybb->input['pmnotice'],
 		"emailpmnotify" => $mybb->input['emailpmnotify'],
 		"invisible" => $mybb->input['invisible'],
-		"dst" => $mybb->input['enabledst']
+		"dstcorrection" => $mybb->input['dstcorrection']
 	);
 
 	$userhandler->set_data($user);
@@ -202,9 +202,17 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$invisiblecheck = "checked=\"checked\"";
 		}
 
-		if($mybb->input['enabledst'] == "yes")
+		if($mybb->input['dstcorrection'] == 2)
 		{
-			$enabledstcheck = "checked=\"checked\"";
+			$dst_auto_selected = "selected=\"selected\"";
+		}
+		else if($mybb->input['dstcorrection'] == 1)
+		{
+			$dst_enabled_selected = "selected=\"selected\"";
+		}
+		else
+		{
+			$dst_disabled_selected = "selected=\"selected\"";
 		}
 
 		$regerrors = inline_error($errors);

@@ -483,7 +483,6 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'pmnotify', 'yes');
 		$this->verify_yesno_option($options, 'invisible', 'no');
 		$this->verify_yesno_option($options, 'remember', 'yes');
-		$this->verify_yesno_option($options, 'dst', 'no');
 		$this->verify_yesno_option($options, 'showsigs', 'yes');
 		$this->verify_yesno_option($options, 'showavatars', 'yes');
 		$this->verify_yesno_option($options, 'showquickreply', 'yes');
@@ -496,6 +495,16 @@ class UserDataHandler extends DataHandler
 			if($options['subscriptionmethod'] < 0 || $options['subscriptionmethod'] > 2)
 			{
 				$options['subscriptionmethod'] = 0;
+			}
+		}
+
+		if(array_key_exists('dstcorrection', $options))
+		{
+			// Value out of range
+			$options['dstcorrection'] = intval($options['dstcorrection']);
+			if($options['dstcorrection'] < 0 || $options['dstcorrection'] > 2)
+			{
+				$options['dstcorrection'] = 0;
 			}
 		}
 
@@ -830,7 +839,7 @@ class UserDataHandler extends DataHandler
 			"invisible" => $user['options']['invisible'],
 			"style" => intval($user['style']),
 			"timezone" => $db->escape_string($user['timezone']),
-			"dst" => $user['options']['dst'],
+			"dstcorrection" => $user['options']['dstcorrection'],
 			"threadmode" => $user['options']['threadmode'],
 			"daysprune" => intval($user['options']['daysprune']),
 			"dateformat" => $db->escape_string($user['dateformat']),

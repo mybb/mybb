@@ -297,7 +297,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 		}
 
 		// If DST correction is enabled, add an additional hour to the timezone.
-		if($dstcorrection == "yes")
+		if($dstcorrection == 1 || $dst_correction == "yes")
 		{
 			++$offset;
 			if(my_substr($offset, 0, 1) != "-")

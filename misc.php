@@ -22,6 +22,30 @@ $lang->load("misc");
 
 $plugins->run_hooks("misc_start");
 
+if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $mybb->user['uid'] > 0)
+{
+	if($mybb->user['dstcorrection'] == 2)
+	{
+		if($mybb->user['dst'] == 1)
+		{
+			$update_array = array("dst" => 0);
+		}
+		else
+		{
+			$update_array = array("dst" => 1);
+		}
+	}
+	$db->update_query("users", $update_array, "uid='{$mybb->user['uid']}'");
+	if(!$mybb->input['ajax'])
+	{
+		redirect("index.php", $lang->dst_settings_updated);
+	}
+	else
+	{
+		echo "done";
+		exit;
+	}
+}
 if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])

@@ -583,7 +583,7 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"hideemail" => $mybb->input['hideemail'],
 		"subscriptionmethod" => $mybb->input['subscriptionmethod'],
 		"invisible" => $mybb->input['invisible'],
-		"dst" => $mybb->input['dst'],
+		"dstcorrection" => $mybb->input['dstcorrection'],
 		"threadmode" => $mybb->input['threadmode'],
 		"showsigs" => $mybb->input['showsigs'],
 		"showavatars" => $mybb->input['showavatars'],
@@ -762,15 +762,19 @@ if($mybb->input['action'] == "options")
 		$pmnoticecheck = "";
 	}
 
-	if($user['dst'] == "yes")
+	if($user['dstcorrection'] == 2)
 	{
-		$dstcheck = "checked=\"checked\"";
-		--$mybb->user['timezone'];
+		$dst_auto_selected = "selected=\"selected\"";
+	}
+	else if($user['dstcorrection'] == 1)
+	{
+		$dst_enabled_selected = "selected=\"selected\"";
 	}
 	else
 	{
-		$dstcheck = "";
+		$dst_disabled_selected = "selected=\"selected\"";
 	}
+
 	if($user['showcodebuttons'] == 1)
 	{
 		$showcodebuttonscheck = "checked=\"checked\"";
@@ -805,6 +809,11 @@ if($mybb->input['action'] == "options")
 
 	$dateselect[$user['dateformat']] = "selected";
 	$timeselect[$user['timeformat']] = "selected";
+
+	if($user['dst'] == 1)
+	{
+		--$mybb->user['timezone'];
+	}
 	$user['timezone'] = $user['timezone']*10;
 	$user['timezone'] = str_replace("-", "n", $user['timezone']);
 	$timezoneselect[$user['timezone']] = "selected";

@@ -208,6 +208,29 @@ var MyBB = {
 		}
 	},
 
+	detectDSTChange: function(timezone_with_dst)
+	{
+		var date = new Date();
+		var local_offset = date.getTimezoneOffset() / 60;
+		if(Math.abs(parseInt(timezone_with_dst) + local_offset) == 1)
+		{
+			if(!new ajax('misc.php?action=dstswitch&ajax=1', {method: 'post'})) // Ajax update failed? (No ajax support) Fake it
+			{
+				form = document.createElement("form");
+				form.setAttribute("method", "post");
+				form.setAttribute("action", "misc.php");
+				form.setAttribute("style", "display: none;");
+				var input = document.createElement("input");
+				input.setAttribute("name", "action");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("value", "dstswitch");
+				form.appendChild(input);
+				document.getElementsByTagName("body")[0].appendChild(form);
+				form.submit();
+			}
+		}
+	},
+
 	unHTMLchars: function(text)
 	{
 		text = text.replace(/&lt;/g, "<");
