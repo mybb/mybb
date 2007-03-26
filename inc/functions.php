@@ -886,6 +886,7 @@ function usergroup_permissions($gid=0)
 			}
 		}
 	}
+
 	return $usergroup;
 }
 
