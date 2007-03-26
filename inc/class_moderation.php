@@ -1530,13 +1530,24 @@ class Moderation
 			while($group = $db->fetch_array($query))
 			{
 				$groups[] = $group['gid'];
-				$additional_groups .= " OR CONCAT(',',u.additionalgroups,',') LIKE ',{$group['gid']},'";
+				switch($db->type)
+				{
+					case "sqlite":
+						$additional_groups .= " OR ','||u.additionalgroups||',' LIKE ',{$group['gid']},'";
+						break;
+					default:
+						$additional_groups .= " OR CONCAT(',',u.additionalgroups,',') LIKE ',{$group['gid']},'";
+				}
 			}
 			// If there are groups found, delete subscriptions from users in these groups
 			if(count($groups) > 0)
 			{
 				$groups_csv = implode(',', $groups);
-				$db->query("DELETE s FROM (".TABLE_PREFIX."threadsubscriptions s, ".TABLE_PREFIX."users u) WHERE s.tid IN ({$tids_csv}) AND s.uid=u.uid AND (u.usergroup IN ({$groups_csv}){$additional_groups})");
+				$db->query("
+					DELETE s FROM ".TABLE_PREFIX."threadsubscriptions s 
+					LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+					WHERE s.tid IN ({$tids_csv}) AND (u.usergroup IN ({$groups_csv}){$additional_groups})
+				");
 			}
 		}
 		// Delete all subscriptions of this thread

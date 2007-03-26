@@ -9,7 +9,7 @@
 			<font-style><![CDATA[]]></font-style>
 			<font-weight><![CDATA[]]></font-weight>
 			<extra><![CDATA[text-align: center; /* IE 5 fix */
-line-height: 1.4]]></extra>
+line-height: 1.4;]]></extra>
 			<a_link>
 				<color><![CDATA[#026CB1]]></color>
 				<text-decoration><![CDATA[none]]></text-decoration>
@@ -1305,7 +1305,7 @@ form {
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td><san class="smalltext">{$lang->dst_correction}</span></td>
+<td><span class="smalltext">{$lang->dst_correction}</span></td>
 </tr>
 <tr>
 <td>
@@ -1313,7 +1313,7 @@ form {
 		<option value="2" {$dst_auto_selected}>{$lang->dst_correction_auto}</option>
 		<option value="1" {$dst_enabled_selected}>{$lang->dst_correction_enabled}</option>
 		<option value="0" {$dst_disabled_selected}>{$lang->dst_correction_disabled}</option>
-	</seelct>
+	</select>
 </td>
 </tr>
 </table>
@@ -7031,7 +7031,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$tzselect}</td>
 </tr>
 <tr>
-<td><san class="smalltext">{$lang->dst_correction}</span></td>
+<td><span class="smalltext">{$lang->dst_correction}</span></td>
 </tr>
 <tr>
 <td>
@@ -7039,7 +7039,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<option value="2" {$dst_auto_selected}>{$lang->dst_correction_auto}</option>
 		<option value="1" {$dst_enabled_selected}>{$lang->dst_correction_enabled}</option>
 		<option value="0" {$dst_disabled_selected}>{$lang->dst_correction_disabled}</option>
-	</seelct>
+	</select>
 </td>
 </tr>
 </table>

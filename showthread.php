@@ -421,10 +421,20 @@ if($mybb->input['action'] == "thread")
 	if($mybb->settings['threadreadcut'] && $mybb->user['uid'] != 0)
 	{
 		// For registered users, store the information in the database.
-		$db->shutdown_query("
-			REPLACE INTO ".TABLE_PREFIX."threadsread
-			SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'
-		");
+		switch($db->type)
+		{
+			case "sqlite":
+				$db->shutdown_query("
+					REPLACE INTO ".TABLE_PREFIX."threadsread (tid, uid, dateline)
+					VALUES('$tid', '".$mybb->user['uid']."', '".time()."')
+				");
+				break;
+			default:
+				$db->shutdown_query("
+					REPLACE INTO ".TABLE_PREFIX."threadsread
+					SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'
+				");
+		}
 	}
 	else
 	{	
@@ -831,7 +841,15 @@ if($mybb->input['action'] == "thread")
 	if($ismod)
 	{
 		$customthreadtools = $customposttools = '';
-		$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%'");
+		switch($db->type)
+		{
+			case "sqlite":
+				$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%'");
+				break;
+			default:
+				$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%'");
+		}
+		
 		while($tool = $db->fetch_array($query))
 		{
 			if($tool['type'] == 'p')

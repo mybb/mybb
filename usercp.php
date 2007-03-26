@@ -2115,15 +2115,33 @@ if($mybb->input['action'] == "usergroups")
 
 	// List of groups this user is a leader of
 	$groupsledlist = '';
-	$query = $db->query("
-		SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
-		FROM ".TABLE_PREFIX."groupleaders l
-		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=l.gid)
-		LEFT JOIN ".TABLE_PREFIX."users u ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
-		LEFT JOIN ".TABLE_PREFIX."joinrequests j ON (j.gid=g.gid)
-		WHERE l.uid='".$mybb->user['uid']."'
-		GROUP BY l.gid
-	");
+	
+	
+	switch($db->type)
+	{
+		case "sqlite":
+			$query = $db->query("
+				SELECT g.title, g.gid, g.type, COUNT(u.uid) AS users, COUNT(j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				FROM ".TABLE_PREFIX."groupleaders l
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON(((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
+				LEFT JOIN ".TABLE_PREFIX."joinrequests j ON(j.gid=g.gid)
+				WHERE l.uid='".$mybb->user['uid']."'
+				GROUP BY l.gid
+			");
+			break;
+		default:
+			$query = $db->query("
+				SELECT g.title, g.gid, g.type, COUNT(DISTINCT u.uid) AS users, COUNT(DISTINCT j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
+				FROM ".TABLE_PREFIX."groupleaders l
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON(g.gid=l.gid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON(((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
+				LEFT JOIN ".TABLE_PREFIX."joinrequests j ON(j.gid=g.gid)
+				WHERE l.uid='".$mybb->user['uid']."'
+				GROUP BY l.gid
+			");
+	}
+	
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = '';

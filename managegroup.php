@@ -182,7 +182,15 @@ else
 	}
 		
 
-	$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+	switch($db->type)
+	{
+		case "sqlite":
+			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+			break;
+		default:
+			$query = $db->simple_select("users", "*", "CONCAT(',',additionalgroups,',') LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));
+	}
+	
 	$numusers = $db->num_rows($query);
 	/*if(!$numusers && !$numrequests)
 	{

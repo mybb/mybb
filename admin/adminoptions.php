@@ -108,7 +108,7 @@ if($mybb->input['action'] == "do_updateperms")
 		);
 		$db->insert_query("adminoptions", $options_update);
 	}
-
+	
 	// Update the admin to the new permissions.
 	$newperms = $mybb->input['newperms'];
 	$sqlarray = array(
@@ -166,9 +166,9 @@ if($mybb->input['action'] == "updateperms")
 	{
 		$query = $db->query("
 			SELECT u.uid, u.username, g.cancp, g.gid
-			FROM (".TABLE_PREFIX."users u, ".TABLE_PREFIX."usergroups g)
+			FROM ".TABLE_PREFIX."users u
+			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (u.usergroup = g.gid)
 			WHERE u.uid='$uid'
-			AND u.usergroup=g.gid
 			AND g.cancp='yes'
 			LIMIT 1
 		");
@@ -255,7 +255,15 @@ if($mybb->input['action'] == "adminpermissions")
 	foreach($usergroups as $gid => $group_info)
 	{
 		$primary_group_list .= $comma.$gid;
-		$secondary_group_list .= " OR CONCAT(',', u.additionalgroups,',') LIKE '%,{$gid},%'";
+		switch($db->type)
+		{
+			case "sqlite":
+				$secondary_group_list .= " OR ','|| u.additionalgroups||',' LIKE '%,{$gid},%'";
+				break;
+			default:
+				$secondary_group_list .= " OR CONCAT(',', u.additionalgroups,',') LIKE '%,{$gid},%'";
+		}
+		
 		$comma = ',';
 	}
 	$group_list = implode(',', array_keys($usergroups));
@@ -322,9 +330,8 @@ if($mybb->input['action'] == "adminpermissions")
 	echo "</tr>\n";
 	$query = $db->query("
 		SELECT g.title, g.cancp, a.permsset, g.gid
-		FROM (".TABLE_PREFIX."usergroups g)
-		LEFT JOIN ".TABLE_PREFIX."adminoptions a
-		ON (a.uid = -g.gid)
+		FROM ".TABLE_PREFIX."usergroups g
+		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
 		WHERE g.cancp='yes'
 		ORDER BY g.title ASC
 	");

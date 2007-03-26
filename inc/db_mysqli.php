@@ -17,6 +17,13 @@ class databaseEngine
 	 * @var string
 	 */
 	var $title = "MySQLi";
+	
+	/**
+	 * The type of db software being used.
+	 *
+	 * @var string
+	 */
+	var $type;
 
 	/**
 	 * A count of the number of queries.
@@ -764,6 +771,58 @@ class databaseEngine
 	function drop_index($table, $name)
 	{
 		$this->query("ALTER TABLE {$this->table_prefix}$table DROP INDEX $name");
+	}
+	
+	/**
+	 * Drop an table with the specified table
+	 *
+	 * @param boolean hard drop - no checking
+	 * @param boolean use table prefix
+	 */
+	function drop_table($table, $hard=false, $table_prefix=true)
+	{
+		if($table_prefix == false)
+		{
+			$table_prefix = "";
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+		
+		if($hard == false)
+		{
+			$this->query('DROP TABLE IF EXISTS'.$table_prefix.$table);
+		}
+		else
+		{
+			$this->query('DROP TABLE '.$table_prefix.$table);
+		}
+	}
+	
+	/**
+	 * Replace contents of table with values
+	 *
+	 * @param string The table
+	 * @param array The values
+	 */
+	function replace_query($table, $values=array())
+	{
+		$values = '';
+		$comma = '';
+		foreach($values as $column => $value)
+		{
+			$values .= $comma.$column."='".$value."'";
+			
+			$comma = ',';
+		}
+		
+		if(empty($values))
+		{
+			 return false;
+		}
+		
+		return $this->query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
 	}
 
 	/**

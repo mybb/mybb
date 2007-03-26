@@ -28,7 +28,7 @@ function upgrade2_dbchanges()
 
 	$contents .= "<p>Making necessary database modifications...";
 	
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."badwords");
+	$db->drop_table("badwords");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."badwords (
 	  bid smallint(6) NOT NULL auto_increment,
 	  badword varchar(100) NOT NULL,
@@ -79,7 +79,7 @@ function upgrade2_dbchanges()
 	
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET outerwidth='0', bodybgcolor='#e3e3e3', bodybgimage='images/Light/logo_bg.png', bodybgimageattributes='repeat-x'");
 	
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."regimages;");
+	$db->drop_table("regimages");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."regimages (
 	  imagehash varchar(32) NOT NULL,
 	  imagestring varchar(8) NOT NULL,
@@ -112,7 +112,7 @@ function upgrade2_dbchanges()
 	}
 	$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE type='e'");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settings;");
+	$db->drop_table("settings");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
 	  sid smallint(6) NOT NULL auto_increment,
 	  name varchar(120) NOT NULL default '',
@@ -125,7 +125,7 @@ function upgrade2_dbchanges()
 	  PRIMARY KEY  (sid)
 	);");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reportedposts;");
+	$db->drop_table("reportedposts");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."reportedposts (
 	  rid smallint(6) NOT NULL auto_increment,
 	  pid smallint(6) NOT NULL,
@@ -138,7 +138,7 @@ function upgrade2_dbchanges()
 	  PRIMARY KEY (rid)
 	);");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."threadsread;");
+	$db->drop_table("threadsread");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."threadsread (
 	  tid smallint(6) NOT NULL,
 	  uid smallint(6) NOT NULL,

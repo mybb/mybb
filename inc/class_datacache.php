@@ -152,10 +152,12 @@ class datacache
 
 		// We ALWAYS keep a running copy in the db just incase we need it
 		$dbcontents = $db->escape_string(serialize($contents));
-		$db->query("
-			REPLACE INTO ".TABLE_PREFIX."datacache (title, cache)
-			VALUES ('$name','$dbcontents')
-		");
+		
+		$replace_array = array(
+			"title" => $db->escape_string($name),
+			"cache" => $dbcontents
+		);		
+		$db->replace_query("datacache", $replace_array);
 
 		// Do we have a cache handler we're using?
 		if(is_object($this->handler))

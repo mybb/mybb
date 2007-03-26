@@ -80,7 +80,7 @@ else
 	{
 		$output->print_header();
 
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."upgrade_data");
+		$db->drop_table("upgrade_data");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
@@ -191,7 +191,7 @@ function upgradethemes()
 
 	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templates;");
+		$db->drop_table("templates");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."templates (
 		  tid int unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
@@ -206,7 +206,7 @@ function upgradethemes()
 
 	if($system_upgrade_detail['revert_all_themes'] > 0)
 	{
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."themes");
+		$db->drop_table("themes");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."themes (
 		  tid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
@@ -248,7 +248,7 @@ function upgradethemes()
 		$db->update_query("users", array('style' => $sid));
 		$db->update_query("forums", array('style' => 0));
 		
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templatesets;");
+		$db->drop_table("templatesets");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."templatesets (
 		  sid smallint unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
@@ -450,7 +450,11 @@ function add_upgrade_store($title, $contents)
 {
 	global $db;
 	
-	$db->query("REPLACE INTO ".TABLE_PREFIX."upgrade_data (title,contents) VALUES ('".$db->escape_string($title)."', '".$db->escape_string(serialize($contents))."')");
+	$replace_array = array(
+		"title" => $db->escape_string($title),
+		"contents" => $db->escape_string(serialize($contents))
+	);		
+	$db->replace_query("upgrade_data", $replace_array);
 }
 
 function sync_settings($redo=0)
@@ -460,7 +464,7 @@ function sync_settings($redo=0)
 	$settingcount = $groupcount = 0;
 	if($redo == 2)
 	{
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settinggroups");
+		$db->drop_table("settinggroups");
 		$db->query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
 		  gid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
@@ -471,7 +475,7 @@ function sync_settings($redo=0)
 		  PRIMARY KEY  (gid)
 		) TYPE=MyISAM;");
 
-		$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settings");
+		$db->drop_table("settings");
 
 		$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
 		  sid smallint(6) NOT NULL auto_increment,

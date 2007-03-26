@@ -953,7 +953,15 @@ if(is_array($threadcache))
 	$customthreadtools = '';
 	if($ismod)
 	{
-		$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
+		switch($db->type)
+		{
+			case "sqlite":
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',') LIKE '%,-1,%' AND type = 't'");
+				break;
+			default:
+				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
+		}
+		
 		
 		while($tool = $db->fetch_array($query))
 		{

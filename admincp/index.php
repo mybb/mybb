@@ -33,16 +33,31 @@ define('MYBB_ADMIN_DIR', MYBB_ROOT."admincp/");
 // Check installation (TEMPORARY)
 if(!$db->table_exists('adminlog2'))
 {
-	$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
-	  uid int unsigned NOT NULL default '0',
-	  ipaddress varchar(50) NOT NULL default '',
-	  dateline bigint(30) NOT NULL default '0',
-	  module varchar(50) NOT NULL default '',
-	  action varchar(50) NOT NULL default '',
-	  data text NOT NULL default '',
-	  KEY module (module, action)
-	) TYPE=MyISAM;");
+	switch($config['dbtype'])
+	{
+		case "sqlite":
+			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
+			  uid int unsigned NOT NULL default '0',
+			  ipaddress varchar(50) NOT NULL default '',
+			  dateline bigint(30) NOT NULL default '0',
+			  module varchar(50) NOT NULL default '',
+			  action varchar(50) NOT NULL default '',
+			  data text NOT NULL default ''
+			);");
+			 break;
+		default:
+			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
+			  uid int unsigned NOT NULL default '0',
+			  ipaddress varchar(50) NOT NULL default '',
+			  dateline bigint(30) NOT NULL default '0',
+			  module varchar(50) NOT NULL default '',
+			  action varchar(50) NOT NULL default '',
+			  data text NOT NULL default '',
+			  KEY module (module, action)
+			) TYPE=MyISAM;");
+	}
 }
+
 if(!$db->field_exists('data', 'adminsessions'))
 {
 	$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
@@ -199,6 +214,7 @@ if($mybb->usergroup['cancp'] != "yes" || !$mybb->user['uid'])
 	unset($mybb->user);
 }
 
+
 if($mybb->user['uid'])
 {
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
@@ -216,7 +232,7 @@ if($mybb->user['uid'])
 			"lastactive" => time(),
 			"ip" => $ip_address
 		);
-		$db->update_query("adminsessions", $updated_session, "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$db->update_query("adminsessions", $updated_session, "sid='".$db->escape_string($admin_session['sid'])."'");
 	}
 	define("SID", "adminsid={$admin_session['sid']}");	
 }
@@ -230,12 +246,12 @@ else
 	{
 		$page->show_login($login_message, "error");
 	}
-}
+} // olivia hussley
 
 if($rand == 2 || $rand == 5)
 {
 	$stamp = time()-604800;
-	$db->delete_query("adminsessions", "lastactive<'$stamp'");
+	$db->delete_query("adminsessions", "lastactive < '{$stamp}'");
 }
 
 $page->add_breadcrumb_item("Home", "index.php?".SID);

@@ -557,7 +557,14 @@ if($mybb->input['action'] == "do_email")
 		$conditions .= " AND (1=0";
 		foreach($search['usergroups'] as $group)
 		{
-			$conditions .= " OR (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			switch($db->type)
+			{
+				case "sqlite":
+					$conditions .= " OR (usergroup='".intval($group)."' OR ','||additionalgroups||',' LIKE '%,".intval($group).",%')";
+					break;
+				default:
+					$conditions .= " OR (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			}
 		}
 		$conditions .= ")";
 	}
@@ -972,7 +979,7 @@ if($mybb->input['action'] == "edit")
 	makelabelcode($lang->email_notify, $select);
 	makeyesnocode($lang->enable_pms, "receivepms", $user['receivepms']);
 	makeyesnocode($lang->pm_notice, "pmnotice", $user['pmnotice']);
-	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['emailpmnotify']);
+	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['pmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
 	$dst_selected[$user['dstcorrect']] = "selected=\"selected\"";
 	$select = "<select name=\"dstcorrection\">\n";
@@ -1342,7 +1349,14 @@ if($mybb->input['action'] == "find")
 		// Searching for users in secondary usergroups
 		foreach($search['additionalgroups'] as $group)
 		{
-			$conditions .= " AND CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%'";
+			switch($db->type)
+			{
+				case "sqlite":
+					$conditions .= " AND ','||additionalgroups||',' LIKE '%,".intval($group).",%'";
+					break;
+				default:
+					$conditions .= " AND CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%'";
+			}
 		}
 	}
     if(is_array($search['usergroups']) && count($search['usergroups']) > 0)
@@ -1350,7 +1364,14 @@ if($mybb->input['action'] == "find")
 		// Searching for users in both primary usergroups and secondary usergroups
 		foreach($search['usergroups'] as $group)
 		{
-			$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			switch($db->type)
+			{
+				case "sqlite":
+					$conditions .= " AND (usergroup='".intval($group)."' OR ','||additionalgroups||',' LIKE '%,".intval($group).",%')";
+					break;
+				default:
+					$conditions .= " AND (usergroup='".intval($group)."' OR CONCAT(',',additionalgroups,',') LIKE '%,".intval($group).",%')";
+			}			
 		}
 	}
 	if($search['email'])
@@ -1417,7 +1438,16 @@ if($mybb->input['action'] == "find")
 		{
 			$uids .= $u['uid'] . ',';
 		}
-		$conditions .= " AND '$uids' LIKE CONCAT('%,',uid,',%')";
+		
+		switch($db->type)
+		{
+			case "sqlite":
+				$conditions .= " AND '$uids' LIKE '%,'||uid||',%'";
+				break;
+			default:
+				$conditions .= " AND '$uids' LIKE CONCAT('%,',uid,',%')";
+		}
+		
 	}
 	if(is_array($search['profilefields']))
 	{

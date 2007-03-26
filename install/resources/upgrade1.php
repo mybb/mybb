@@ -157,7 +157,7 @@ function upgrade1_dbchanges()
 
 	$contents .= "done</p>";
 
-	$db->query("DROP TABLE IF EXISTS settinggroups;");
+	$db->drop_table("settinggroups", false, false);
 	$db->query("CREATE TABLE settinggroups (
 	  gid smallint(6) NOT NULL auto_increment,
 	  name varchar(220) NOT NULL default '',
@@ -167,7 +167,7 @@ function upgrade1_dbchanges()
 	  PRIMARY KEY  (gid)
 	);");
 
-	$db->query("DROP TABLE IF EXISTS settings;");
+	$db->drop_table("settings", false, false);
 	$db->query("CREATE TABLE settings (
 	  sid smallint(6) NOT NULL auto_increment,
 	  name varchar(120) NOT NULL default '',

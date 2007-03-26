@@ -311,7 +311,15 @@ if($mybb->input['action'] == "do_delete")
 	{
 		$fid = intval($mybb->input['fid']);
 		$db->delete_query("forums", "fid='$fid'");
-		$query = $db->simple_select("forums", "*", "CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
+		switch($db->type)
+		{
+			case "sqlite":
+				$query = $db->simple_select("forums", "*", "','|| parentlist|| ',' LIKE '%,$fid,%'");
+				break;
+			default:
+				$query = $db->simple_select("forums", "*", "CONCAT(',', parentlist, ',') LIKE '%,$fid,%'");
+		}
+		
 		while($f = $db->fetch_array($query))
 		{
 			$fids[$f['fid']] = $fid;
@@ -351,7 +359,15 @@ if($mybb->input['action'] == "do_delete")
 				$db->update_query("users", $updatequery, "uid IN ($mod_list) AND usergroup='6'");
 			}
 		}
-		$db->delete_query("forums", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+		switch($db->type)
+		{
+			case "sqlite":
+				$db->delete_query("forums", "','||parentlist||',' LIKE '%,$fid,%'");
+				break;
+			default:
+				$db->delete_query("forums", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+		}
+		
 		$db->delete_query("threads", "fid='$fid' $delquery");
 		$db->delete_query("posts", "fid='$fid' $delquery");
 		$db->delete_query("moderators", "fid='$fid' $delquery");
@@ -474,7 +490,15 @@ if($mybb->input['action'] == "do_edit")
 			);
 			$db->update_query("forums", $sql_array, "fid='$fid'", 1);
 			// Rebuild the parentlist of all of the subforums of this forum
-			$query = $db->simple_select("forums", "fid", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+			switch($db->type)
+			{
+				case "sqlite":
+					$query = $db->simple_select("forums", "fid", "','||parentlist||',' LIKE '%,$fid,%'");
+					break;
+				default:
+					$query = $db->simple_select("forums", "fid", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+			}
+			
 			while($childforum = $db->fetch_array($query))
 			{
 				$sql_array = array(

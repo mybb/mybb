@@ -114,26 +114,11 @@ function upgrade9_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_mins varchar(2) NOT NULL");
 	}
 	
-	if($db->table_exists("maillogs"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."maillogs");
-	}
-	
-	if($db->table_exists("mailerrors"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."mailerrors");
-	}
-	
-	if($db->table_exists("promotions"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."promotions");
-	}
-	
-	if($db->table_exists("promotionlogs"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."promotionlogs");
-	}
-	
+	$db->drop_table("maillogs");	
+	$db->drop_table("mailerrors");
+	$db->drop_table("promotions");
+	$db->drop_table("promotionlogs");
+		
 	$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
@@ -209,15 +194,8 @@ function upgrade9_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
 	}
 	
-	if($db->table_exists("tasks"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."tasks");
-	}
-	
-	if($db->table_exists("tasklog"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."tasklog");
-	}
+	$db->drop_table("tasks");
+	$db->drop_table("tasklog");
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."tasks (
 		tid int unsigned NOT NULL auto_increment,
@@ -322,10 +300,7 @@ function upgrade9_dbchanges2()
 
 	echo "<p>Converting existing banned IP addresses, email addresses and usernames..</p>";
 	
-	if($db->table_exists("banfilters"))
-	{
-		$db->query("DROP TABLE ".TABLE_PREFIX."banfilters");
-	}
+	$db->drop_table("banfilters");
 	
 	$db->query("CREATE TABLE ".TABLE_PREFIX."banfilters (
 	  fid int unsigned NOT NULL auto_increment,
@@ -379,7 +354,7 @@ function upgrade9_dbchanges3()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."spiders");
+	$db->drop_table("spiders");
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."spiders (
 		sid int unsigned NOT NULL auto_increment,

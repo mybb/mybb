@@ -145,7 +145,7 @@ function upgrade5_dbchanges()
 	$db->query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET name='maxmessagelength' WHERE name='messagelength'");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mycode");
+	$db->drop_table("mycode");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mycode (
 		    cid int unsigned NOT NULL auto_increment,
 		    title varchar(100) NOT NULL default '',
@@ -156,7 +156,7 @@ function upgrade5_dbchanges()
 			PRIMARY KEY(cid)
 		) TYPE=MyISAM;");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."templategroups");
+	$db->drop_table("templategroups");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."templategroups (
 			gid int unsigned NOT NULL auto_increment,
 			prefix varchar(50) NOT NULL default '',
@@ -191,7 +191,7 @@ function upgrade5_dbchanges()
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('25','newreply','<lang:group_newreply>');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','member','<lang:group_member>');");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."searchlog");
+	$db->drop_table("searhlog");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."searchlog (
 		  sid varchar(32) NOT NULL default '',
 		  uid int unsigned NOT NULL default '0',
@@ -227,8 +227,7 @@ function upgrade5_dbchanges()
 	$bannedips = implode(",", $bannedips);
 	$db->query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."reputation");
-
+	$db->drop_table("reputation");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."reputation (
 	  rid int unsigned NOT NULL auto_increment,
 	  uid int unsigned NOT NULL default '0',
@@ -239,7 +238,7 @@ function upgrade5_dbchanges()
       PRIMARY KEY(rid)
 	) TYPE=MyISAM;");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."mailqueue");
+	$db->drop_table("mailqueue");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
 		mid int unsigned NOT NULL auto_increment,
 		mailto varchar(200) NOT NULL,
@@ -297,7 +296,7 @@ function upgrade5_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."forumpermissions ADD canviewthreads char(3) NOT NULL default '' AFTER canview");
 	}
 	
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."captcha");
+	$db->drop_table("captcha");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."captcha (
 	  imagehash varchar(32) NOT NULL default '',
 	  imagestring varchar(8) NOT NULL default '',
@@ -309,7 +308,7 @@ function upgrade5_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."moderatorlog ADD data text NOT NULL AFTER action;");
 	}
 	
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."adminsessions");
+	$db->drop_table("adminsessions");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."adminsessions (
 		sid varchar(32) NOT NULL default '',
 		uid int unsigned NOT NULL default '0',
@@ -319,7 +318,7 @@ function upgrade5_dbchanges()
 		lastactive bigint(30) NOT NULL default '0'
 	) TYPE=MyISAM;");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."modtools");
+	$db->drop_table("modtools");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."modtools (
 		tid smallint unsigned NOT NULL auto_increment,
 		name varchar(200) NOT NULL,

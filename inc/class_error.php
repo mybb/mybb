@@ -120,7 +120,7 @@ class errorHandler {
 				$this->email_error($type, $message, $file, $line);
 			}
 			
-			if($type == MYBB_SQL) 
+			if($type == MYBB_SQL)
 			{
 				$this->output_error($type, $message, $file, $line);
 			}
@@ -234,7 +234,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		if($type == MYBB_SQL) 
+		if($type == MYBB_SQL)
 		{
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}

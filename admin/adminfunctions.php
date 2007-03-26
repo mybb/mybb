@@ -1211,7 +1211,7 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 	{
 		$startforum = $cforumcache['fid'][$fid];
 		$forumchecklist .= "$depth<input type=\"checkbox\" name=\"{$name}[]\" value=\"$startforum[fid]\"";
-		if(in_array($startforum['fid'], $selected) || (is_array($selected) && in_array($forum['fid'], $selected)))
+		if(is_array($selected) && (in_array($startforum['fid'], $selected) || in_array($forum['fid'], $selected)))
 		{
 			$forumchecklist .= ' checked="checked"';
 		}

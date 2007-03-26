@@ -223,7 +223,8 @@ class session
 		// Choose time format.
 		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != '')
 		{
-			switch($mybb->user['timeformat']) {
+			switch($mybb->user['timeformat'])
+			{
 				case "1":
 					$mybb->settings['timeformat'] = "h:i a";
 					break;
@@ -363,6 +364,7 @@ class session
 		// Gather a full permission set for this guest
 		$mybb->usergroup = usergroup_permissions($mybbgroups);
 		$mydisplaygroup = usergroup_displaygroup($mybb->user['displaygroup']);
+		
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update the online data.

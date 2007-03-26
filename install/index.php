@@ -508,7 +508,7 @@ function create_tables()
 		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
 		if($match[1])
 		{
-			$db->query('DROP TABLE IF EXISTS '.$match[1]);
+			$db->drop_table($match[1], false, false);
 			echo sprintf($lang->tablecreate_step_created, $match[1]);
 		}
 		$db->query($val);

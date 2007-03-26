@@ -150,9 +150,11 @@ if($mybb->input['action'] == "attachments")
 {
 	$query = $db->query("
 		SELECT a.*, p.subject AS postsubject, p.pid AS postpid, p.tid, p.username AS postusername, p.uid AS postuid, t.subject AS threadsubject, f.name AS forumname, p.fid
-		FROM (".TABLE_PREFIX."attachments a, ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t)
-		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
-		WHERE a.pid=p.pid AND t.tid=p.tid AND a.visible != '1'
+		FROM ".TABLE_PREFIX."attachments a
+		LEFT JOIN ".TABLE_PREFIX."posts p ON(a.pid=p.pid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON(t.tid=p.tid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON(f.fid=t.fid)
+		WHERE a.visible != '1'
 		ORDER BY p.dateline DESC
 	");
 	$count = $db->num_rows($query);
@@ -210,10 +212,11 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 
 	$query = $db->query("
 		SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username
-		FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p)
+		FROM ".TABLE_PREFIX."threads t
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE t.visible='0' AND p.tid=t.tid
+		WHERE t.visible='0'
 		ORDER BY t.lastpost DESC
 	");
 	$tcount = $db->num_rows($query);

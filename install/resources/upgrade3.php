@@ -291,10 +291,7 @@ function upgrade3_convertavatars()
 	}
 	else
 	{
-		if($db->table_exists("attachments"))
-		{
-			$db->query("DROP TABLE ".TABLE_PREFIX."avatars");
-		}
+		$db->drop_table("avatars");
 		$nextact = "3_dbchanges2";
 		$contents .= "<p>Done</p><p>All avatars have been moved to the file system. The next step is performing the necessary database modifications for MyBB Gold.</p>";
 	}
@@ -374,7 +371,7 @@ function upgrade3_dbchanges2()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD cancustomtitle varchar(3) NOT NULL;");
 	}
 	
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."groupleaders;");
+	$db->drop_table("groupleaders");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."groupleaders (
 	 lid smallint(6) NOT NULL auto_increment,
 	 gid smallint(6) NOT NULL,
@@ -382,7 +379,7 @@ function upgrade3_dbchanges2()
 	 PRIMARY KEY(lid)
 	);");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."joinrequests;");
+	$db->drop_table("joinrequests");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."joinrequests (
 	 rid smallint(6) NOT NULL auto_increment,
 	 uid smallint(6) NOT NULL,
@@ -392,7 +389,7 @@ function upgrade3_dbchanges2()
 	 PRIMARY KEY(rid)
 	);");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."online;");
+	$db->drop_table("online");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."sessions (
 	  sid varchar(32) NOT NULL default '',
 	  uid int unsigned NOT NULL default '0',
@@ -429,8 +426,7 @@ function upgrade3_dbchanges2()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD pmnotify varchar(3) NOT NULL AFTER pmpopup;");
 	}
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settinggroups");
-
+	$db->drop_table("settinggroups");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
 	  gid smallint(6) NOT NULL auto_increment,
 	  name varchar(220) NOT NULL default '',
@@ -440,8 +436,7 @@ function upgrade3_dbchanges2()
 	  PRIMARY KEY  (gid)
 	) TYPE=MyISAM;");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."settings");
-
+	$db->drop_table("settings");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
 	  sid smallint(6) NOT NULL auto_increment,
 	  name varchar(120) NOT NULL default '',
@@ -454,7 +449,7 @@ function upgrade3_dbchanges2()
 	  PRIMARY KEY  (sid)
 	) TYPE=MyISAM;");
 
-	$db->query("DROP TABLE IF EXISTS ".TABLE_PREFIX."datacache;");
+	$db->drop_table("datacache");
 	$db->query("CREATE TABLE ".TABLE_PREFIX."datacache (
 	  title varchar(30) NOT NULL default '',
 	  cache mediumtext NOT NULL,

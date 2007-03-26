@@ -1047,7 +1047,15 @@ if($mybb->input['action'] == "profile")
 		elseif($mybb->input['fid'])
 		{
 			$flist = '';
-			$query = $db->simple_select("forums", "fid", "INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
+			switch($db->type)
+			{
+				case "sqlite":
+					$query = $db->simple_select("forums", "fid", "INSTR(','||parentlist||',',',".intval($mybb->input['fid']).",') > 0");
+					break;
+				default:
+					$query = $db->simple_select("forums", "fid", "INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
+			}
+			
 			while($forum = $db->fetch_array($query))
 			{
 				if($forum['fid'] == $mybb->input['fid'])

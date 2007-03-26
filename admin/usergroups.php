@@ -592,7 +592,12 @@ if($mybb->input['action'] == "editgroupleader")
 {
 	$lid = intval($mybb->input['lid']);
 
-	$query = $db->query("SELECT l.*, u.username FROM (".TABLE_PREFIX."groupleaders l, ".TABLE_PREFIX."users u) WHERE l.uid=u.uid AND l.lid='$lid'");
+	$query = $db->query("
+		SELECT l.*, u.username 
+		FROM ".TABLE_PREFIX."groupleaders l
+		LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)
+		WHERE l.lid='$lid'
+	");
 	$leader = $db->fetch_array($query);
 	if(!$leader['uid'])
 	{
@@ -748,7 +753,14 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		$primaryusers[$groupcount['gid']] = $groupcount['users'];
 	}
 
-	$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.gid!='' GROUP BY gid;");
+	switch($db->type)
+	{
+		case "sqlite":
+			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')) WHERE g.gid!='' GROUP BY gid;");
+			break;
+		default:
+			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.gid!='' GROUP BY gid;");
+	}
 	while($groupcount = $db->fetch_array($query))
 	{
 		$secondaryusers[$groupcount['gid']] = $groupcount['users'];

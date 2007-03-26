@@ -63,7 +63,7 @@ class UserDataHandler extends DataHandler
 		require_once MYBB_ROOT.'inc/functions_user.php';
 
 		// Fix bad characters
-		$username = str_replace(array(chr(160), chr(173)), array(" ", "-"), $username);
+		$username = str_replace(array(chr(160), chr(173), chr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237)), array(" ", "-", "", "", ""), $username);
 
 		// Remove multiple spaces from the username
 		$username = preg_replace("#\s{2,}#", " ", $username);
