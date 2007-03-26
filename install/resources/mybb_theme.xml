@@ -9,7 +9,7 @@
 			<font-style><![CDATA[]]></font-style>
 			<font-weight><![CDATA[]]></font-weight>
 			<extra><![CDATA[text-align: center; /* IE 5 fix */
-line-height: 1.4]]></extra>
+line-height: 1.4;]]></extra>
 			<a_link>
 				<color><![CDATA[#026CB1]]></color>
 				<text-decoration><![CDATA[none]]></text-decoration>

@@ -957,7 +957,7 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->email_notify, "emailnotify", $user['emailnotify']);
 	makeyesnocode($lang->enable_pms, "receivepms", $user['receivepms']);
 	makeyesnocode($lang->pm_popup, "pmpopup", $user['pmpopup']);
-	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['emailpmnotify']);
+	makeyesnocode($lang->pm_notify, "emailpmnotify", $user['pmnotify']);
 	makeinputcode($lang->time_offset, "timezoneoffset", $user['timezone']);
 	if(!$user['style'])
 	{
