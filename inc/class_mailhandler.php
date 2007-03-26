@@ -250,6 +250,7 @@ class MailHandler
 		
 		$mail_error = array(
 			"subject" => $db->escape_string($this->subject),
+			"message" => $db->escape_string($this->message),
 			"toaddress" => $db->escape_string($this->to),
 			"fromaddress" => $db->escape_string($this->from),
 			"dateline" => time(),

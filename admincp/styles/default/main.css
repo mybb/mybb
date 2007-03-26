@@ -3,7 +3,7 @@
  * Main CSS
  */
 
-body {
+body, td {
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 12px;
 	background: #fff;
@@ -245,7 +245,6 @@ html>body #menu ul {
 	border: 1px solid #0F5C8E;
 	margin: 0;
 	padding: 0;
-	height: 100%;
 	margin-top: 14px;
 }
 

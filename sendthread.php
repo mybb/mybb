@@ -113,7 +113,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		// Log the message
 		$log_entry = array(
 			"subject" => $db->escape_string($mybb->input['subject']),
-			"message" => $db->escape_string($mybb->input['message']),
+			"message" => $db->escape_string($message),
 			"dateline" => time(),
 			"fromuid" => $mybb->user['uid'],
 			"fromemail" => $db->escape_string($mybb->user['email']),

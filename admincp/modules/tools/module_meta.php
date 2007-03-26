@@ -46,6 +46,14 @@ function tools_action_handler($action)
 			$page->active_action = "recount_rebuild";
 			$action_file = "recount_rebuild.php";
 			break;
+		case "maillogs":
+			$page->active_action = "maillogs";
+			$action_file = "maillogs.php";
+			break;
+		case "mailerrors":
+			$page->active_action = "mailerrors";
+			$action_file = "mailerrors.php";
+			break;
 		default:
 			$page->active_action = "stats";
 			$action_file = "index.php";

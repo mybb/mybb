@@ -1509,21 +1509,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
 		
 		$message = sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
-		
-		// Send the actual message
-		require_once MYBB_ROOT."inc/class_mailhandler.php";
-		if($mybb->settings['mail_handler'] == 'smtp')
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/smtp.php";
-			$mail = new SmtpMail();
-		}
-		else
-		{
-			require_once MYBB_ROOT."inc/mailhandlers/php.php";
-			$mail = new PhpMail();
-		}
-		$mail->make_message($mybb->input['email'], $mybb->input['subject'], $message, $from);
-		$mail->send();
+		my_mail($to_user['email'], $mybb->input['subject'], $message, $from);
 		
 		// Log the message
 		$log_entry = array(

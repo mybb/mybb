@@ -136,6 +136,7 @@ function upgrade9_dbchanges()
 	$db->query("CREATE TABLE ".TABLE_PREFIX."mailerrors(
 		eid int unsigned NOT NULL auto_increment,
 		subject varchar(200) NOT NULL default '',
+		message TEXT NOT NULL,
 		toaddress varchar(150) NOT NULL default '',
 		fromaddress varchar(150) NOT NULL default '',
 		dateline bigint(30) NOT NULL default '0',
