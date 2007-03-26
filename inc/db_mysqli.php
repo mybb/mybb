@@ -792,7 +792,7 @@ class databaseEngine
 		
 		if($hard == false)
 		{
-			$this->query('DROP TABLE IF EXISTS'.$table_prefix.$table);
+			$this->query('DROP TABLE IF EXISTS '.$table_prefix.$table);
 		}
 		else
 		{
@@ -804,20 +804,20 @@ class databaseEngine
 	 * Replace contents of table with values
 	 *
 	 * @param string The table
-	 * @param array The values
+	 * @param array The replacements
 	 */
-	function replace_query($table, $values=array())
+	function replace_query($table, $replacements=array())
 	{
 		$values = '';
 		$comma = '';
-		foreach($values as $column => $value)
+		foreach($replacements as $column => $value)
 		{
 			$values .= $comma.$column."='".$value."'";
 			
 			$comma = ',';
 		}
 		
-		if(empty($values))
+		if(empty($replacements))
 		{
 			 return false;
 		}

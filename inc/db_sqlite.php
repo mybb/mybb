@@ -825,12 +825,12 @@ class databaseEngine
 	 * @param string The table
 	 * @param array The values
 	 */
-	function replace_query($table, $values=array())
+	function replace_query($table, $replacements=array())
 	{
 		$columns = '';
 		$values = '';
 		$comma = '';
-		foreach($values as $column => $value)
+		foreach($replacements as $column => $value)
 		{
 			$columns .= $comma.$column;
 			$values .= $comma."'".$value."'";
