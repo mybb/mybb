@@ -287,7 +287,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=config/profile_fields&action=delete&bid={$profile_field['fid']}", "Are you sure you wish to delete this profile field?");
+		$page->output_confirm_action("index.php?".SID."&module=config/profile_fields&amp;action=delete&amp;fid={$profile_field['fid']}", "Are you sure you wish to delete this profile field?");
 	}
 }
 
