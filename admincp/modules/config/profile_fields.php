@@ -17,7 +17,7 @@ if($mybb->input['action'] == "add")
 {
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if(!trim($mybb->input['name']))
 		{
 			$errors[] = "You did not enter a title for this custom profile field";
 		}
@@ -25,11 +25,6 @@ if($mybb->input['action'] == "add")
 		if(!trim($mybb->input['description']))
 		{
 			$errors[] = "You did not enter a description for this custom profile field";
-		}
-
-		if(!trim($mybb->input['disporder']))
-		{
-			$errors[] = "You did not enter a display order for this custom profile field";
 		}
 
 		if(!trim($mybb->input['fieldtype']))
@@ -66,7 +61,7 @@ if($mybb->input['action'] == "add")
 			}
 	
 			$new_profile_field = array(
-				"name" => $db->escape_string($mybb->input['title']),
+				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
 				"type" => $db->escape_string($thing),
@@ -83,21 +78,21 @@ if($mybb->input['action'] == "add")
 			
 			$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
 					
-			flash_message("The custom profile field has been added successfully.", 'success');
+			flash_message("The profile field has successfully been created.", 'success');
 			admin_redirect("index.php?".SID."&module=config/profile_fields");
 		}
 	}
 	
-	$page->add_breadcrumb_item("Add Custom Profile Field");
-	$page->output_header("Custom Profile Field - Add Custom Profile Field");
+	$page->add_breadcrumb_item("Add Profile Field");
+	$page->output_header("Custom Profile Fielsd - Add Profile Field");
 	
-	$sub_tabs['add_custom_profile_field'] = array(
-		'title' => "Add New Field",
+	$sub_tabs['add_profile_field'] = array(
+		'title' => "Add New Profile Field",
 		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",
 		'description' => 'Here you can add a new custom profile field.'
 	);
 	
-	$page->output_nav_tabs($sub_tabs, 'add_custom_profile_field');
+	$page->output_nav_tabs($sub_tabs, 'add_profile_field');
 	$form = new Form("index.php?".SID."&amp;module=config/profile_fields&amp;action=add", "post", "add");
 	
 	if($errors)
@@ -112,8 +107,8 @@ if($mybb->input['action'] == "add")
 		$mybb->input['hidden'] = 'no';
 	}
 	
-	$form_container = new FormContainer("Add New Custom Profile Field");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container = new FormContainer("Add New Profile Field");
+	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row("Short Description <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 	$form_container->output_row("Maximum Length", "This maximum number of characters that can be entered. This only applies to textboxes and textareas.", $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
 	$form_container->output_row("Field Length", "This length of the field. This only applies to single and multiple select boxes.", $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
@@ -134,7 +129,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row("Hide on profile? <em>*</em>", "Should this field be hidden on the user's profile? If it is hidden, it can only be viewed by administrators/moderators.", $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save New Profile Field");
+	$buttons[] = $form->generate_submit_button("Save Profile Field");
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -144,15 +139,18 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
-	if(!trim($mybb->input['fid']))
+	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
+	$profile_field = $db->fetch_array($query);
+
+	if(!$profile_field['fid'])
 	{
-		flash_message("You have input an invalid profile field.", 'error');
+		flash_message("The selected profile field does not exist.", 'error');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
 		
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['title']))
+		if(!trim($mybb->input['name']))
 		{
 			$errors[] = "You did not enter a title for this custom profile field";
 		}
@@ -160,11 +158,6 @@ if($mybb->input['action'] == "edit")
 		if(!trim($mybb->input['description']))
 		{
 			$errors[] = "You did not enter a description for this custom profile field";
-		}
-
-		if(!trim($mybb->input['disporder']))
-		{
-			$errors[] = "You did not enter a display order for this custom profile field";
 		}
 
 		if(!trim($mybb->input['fieldtype']))
@@ -190,7 +183,7 @@ if($mybb->input['action'] == "edit")
 		if(!$errors)
 		{
 			$profile_field = array(
-				"name" => $db->escape_string($mybb->input['title']),
+				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
 				"type" => $db->escape_string($thing),
@@ -208,28 +201,20 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	
-	$page->add_breadcrumb_item("Edit Field");
-	$page->output_header("Custom Profile Fields - Edit Field");
+	$page->add_breadcrumb_item("Edit Profile Field");
+	$page->output_header("Custom Profile Fields - Edit Profile Field");
 	
-	$sub_tabs['edit_custom_profile_field'] = array(
-		'title' => "Edit Field",
+	$sub_tabs['edit_profile_field'] = array(
+		'title' => "Edit Profile Field",
 		'link' => "index.php?".SID."&amp;module=config/&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
 		'description' => 'Here you can edit a custom profile field.'
 	);
 	
-	$page->output_nav_tabs($sub_tabs, 'edit_custom_profile_field');
+	$page->output_nav_tabs($sub_tabs, 'edit_profile_field');
 	$form = new Form("index.php?".SID."&amp;module=config/profile_fields&amp;action=edit", "post", "edit");
 	
-	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
-	$field = $db->fetch_array($query);
 	
-	if(empty($field))
-	{
-		flash_message("You have input an invalid profile field.", 'error');
-		admin_redirect("index.php?".SID."&module=config/profile_fields");
-	}
-	
-	echo $form->generate_hidden_field("fid", $field['fid']);
+	echo $form->generate_hidden_field("fid", $profile_field['fid']);
 	
 	if($errors)
 	{
@@ -237,22 +222,15 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$type = explode("\n", $field['type'], "2");
+		$type = explode("\n", $profile_field['type'], "2");
 	
-		$mybb->input['title'] = $field['name'];
-		$mybb->input['description'] = $field['description'];
-		$mybb->input['maxlength'] = $field['maxlength'];
-		$mybb->input['length'] = $field['length'];
-		$mybb->input['disporder'] = $field['disporder'];
+		$mybb->input = $profile_field;
 		$mybb->input['fieldtype'] = $type[0];
 		$mybb->input['options'] = $type[1];
-		$mybb->input['required'] = $field['required'];
-		$mybb->input['editable'] = $field['editable'];
-		$mybb->input['hidden'] = $field['hidden'];
 	}
 	
-	$form_container = new FormContainer("Edit Custom Profile Field");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container = new FormContainer("Edit Profile Field");
+	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row("Short Description <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 	$form_container->output_row("Maximum Length", "This maximum number of characters that can be entered. This only applies to textboxes and textareas.", $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
 	$form_container->output_row("Field Length", "This length of the field. This only applies to single and multiple select boxes.", $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
@@ -283,54 +261,52 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no']) 
-	{ 
-		admin_redirect("index.php?".SID."&module=config/profile_fields"); 
-	}
-	
-	if(!trim($mybb->input['fid']))
+	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
+	$profile_field = $db->fetch_array($query);
+
+	// Does the profile field not exist?
+	if(!$profile_field['fid'])
 	{
-		flash_message('You did not enter a profile field to delete', 'error');
+		flash_message('The specified profile field does not exist.', 'error');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
-	
-	$fid = intval($mybb->input['fid']);
-	
-	$query = $db->simple_select("profilefields", "COUNT(fid) as profilefields", "fid = '{$fid}'");
-	if($db->fetch_field($query, "profilefields") == 0)
+
+	// User clicked no
+	if($mybb->input['no'])
 	{
-		flash_message('You did not enter a valid profile field', 'error');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
-	
+
 	if($mybb->request_method == "post")
 	{
-		$db->delete_query("profilefields", "fid = '{$fid}'", 1);
-		flash_message('Custom Profile Field Delete Successfully', 'success');
+		// Delete the profile field
+		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
+
+		flash_message('The profile field has been deleted.', 'success');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/profile_fields&amp;action=delete&amp;fid={$mybb->input['fid']}", "Are you sure you wish to delete this profile field?"); 
+		$page->output_confirm_action("index.php?".SID."&module=config/profile_fields&action=delete&bid={$profile_field['fid']}", "Are you sure you wish to delete this profile field?");
 	}
 }
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Manage Custom Profile Fields");
+	$page->output_header("Custom Profile Fields");
 
-	$sub_tabs['manage_custom_profile_fields'] = array(
-		'title' => "Manage Custom Profile Fields",
+	$sub_tabs['custom_profile_fields'] = array(
+		'title' => "Custom Profile Fields",
 		'link' => "index.php?".SID."&amp;module=config/profile_fields",
 		'description' => "This section allows you to edit, delete, and manage your custom profile fields."
 	);
 	$sub_tabs['add_profile_field'] = array(
-		'title' => "Add New Field",
+		'title' => "Add New Profile Field",
 		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",
 	);
 
 	
-	$page->output_nav_tabs($sub_tabs, 'manage_custom_profile_fields');
+	$page->output_nav_tabs($sub_tabs, 'custom_profile_fields');
 	
 	$table = new Table;
 	$table->construct_header("Name");

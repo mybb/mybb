@@ -84,6 +84,7 @@ class Page
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
+		exit;
 	}
 	
 	function add_breadcrumb_item($name, $url="")

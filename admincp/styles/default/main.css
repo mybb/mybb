@@ -583,40 +583,6 @@ input.radio_input {
 	margin-right: 9px;
 }
 
-div.error {
-	margin: 10px 0;
-	padding: 5px 10px;
-	border: #FC6 1px solid;
-	background-color: #FFC;
-}
-
-div.error p {
-	margin: 0;
-}
-
-div.error p em {
-	color: #C00;
-	font-style: normal;
-	font-weight: bold;
-}
-
-div.success{
-	margin: 10px 0;
-	padding: 5px 10px;
-	border: #080 1px solid;
-	background-color: #E8FCDC;
-}
-
-div.success p {
-	margin: 0;
-}
-
-div.success p em {
-	color: #080;
-	font-style: normal;
-	font-weight: bold;
-}
-
 #flash_message {
 	margin: 10px 0;
 	padding: 10px;
@@ -636,6 +602,46 @@ div.success p em {
 	background-color: #E8FCDC;
 	color: #080;
 }	
+
+
+
+div.error {
+	margin: 10px 0;
+	padding: 5px 10px;
+	border: #FC6 1px solid;
+	background-color: #FFC;
+}
+
+div.error p {
+	margin: 0;
+	color: #000;
+	font-weight: normal;
+}
+
+div.error p em {
+	color: #C00;
+	font-style: normal;
+	font-weight: bold;
+}
+
+div.success{
+	margin: 10px 0;
+	padding: 5px 10px;
+	border: #080 1px solid;
+	background-color: #E8FCDC;
+}
+
+div.success p {
+	margin: 0;
+	color: #000;
+	font-weight: normal;
+}
+
+div.success p em {
+	color: #080;
+	font-style: normal;
+	font-weight: bold;
+}
 
 .nav_tabs ul {
 	list-style: none;

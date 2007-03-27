@@ -22,12 +22,12 @@ if($mybb->input['action'] == "add")
 			$errors[] = "You did not enter a name for this smilie";
 		}
 
-		if(!trim($mybb->input['replacement']))
+		if(!trim($mybb->input['find']))
 		{
 			$errors[] = "You did not enter a text replacement for this smilie";
 		}
 
-		if(!trim($mybb->input['path']))
+		if(!trim($mybb->input['image']))
 		{
 			$errors[] = "You did not enter a path for this smilie";
 		}
@@ -46,13 +46,15 @@ if($mybb->input['action'] == "add")
 		{
 			$new_smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"find" => $db->escape_string($mybb->input['replacement']),
-				"image" => $db->escape_string($mybb->input['path']),
+				"find" => $db->escape_string($mybb->input['find']),
+				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => intval($mybb->input['disporder']),
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 			
 			$db->insert_query("smilies", $new_smilie);
+
+			$cache->update_smilies();
 			
 			flash_message("The smilie has been added successfully.", 'success');
 			admin_redirect("index.php?".SID."&module=config/smilies");
@@ -81,7 +83,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input['path'] = 'images/smilies/';
+		$mybb->input['image'] = 'images/smilies/';
 		$mybb->input['showclickable'] = 'yes';
 	}
 	
@@ -93,14 +95,13 @@ if($mybb->input['action'] == "add")
 	
 	$form_container = new FormContainer("Add Smilie");
 	$form_container->output_row("Name", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row("Text to Replace", "", $form->generate_text_box('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
-	$form_container->output_row("Image Path", "This is the path to the smilie image.", $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container->output_row("Text to Replace", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
+	$form_container->output_row("Image Path", "This is the path to the smilie image.", $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 	$form_container->output_row("Display Order", "The order on the smilies list that this will appear. This number should not be the same as another smilie's.", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row("Show on clickable list?", "Do you want this smilie to show on the clickable smilie list on the post editor?", $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']), 'showclickable');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button("Save Smilie");
-	$buttons[] = $form->generate_reset_button("Reset");
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -110,25 +111,29 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
+	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
+	$smilie = $db->fetch_array($query);
+
+	// Does the smilie not exist?
+	if(!$smilie['sid'])
+	{
+		flash_message('The specified smilie does not exist.', 'error');
+		admin_redirect("index.php?".SID."&module=config/smilies");
+	}
+
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['sid']))
-		{
-			flash_message("You have input an invalid smilie.", 'error');
-			admin_redirect("index.php?".SID."&module=config/smilies");
-		}
-		
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = "You did not enter a name for this smilie";
 		}
 
-		if(!trim($mybb->input['replacement']))
+		if(!trim($mybb->input['find']))
 		{
 			$errors[] = "You did not enter a text replacement for this smilie";
 		}
 
-		if(!trim($mybb->input['path']))
+		if(!trim($mybb->input['image']))
 		{
 			$errors[] = "You did not enter a path for this smilie";
 		}
@@ -147,15 +152,17 @@ if($mybb->input['action'] == "edit")
 		{
 			$smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
-				"find" => $db->escape_string($mybb->input['replacement']),
-				"image" => $db->escape_string($mybb->input['path']),
+				"find" => $db->escape_string($mybb->input['find']),
+				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => intval($mybb->input['disporder']),
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 			
 			$db->update_query("smilies", $smilie, "sid = '".intval($mybb->input['sid'])."'");
 			
-			flash_message("The smilie has been saved successfully.", 'success');
+			$cache->update_smilies();
+
+			flash_message("The smilie has successfully been updated.", 'success');
 			admin_redirect("index.php?".SID."&module=config/smilies");
 		}
 	}
@@ -176,15 +183,6 @@ if($mybb->input['action'] == "edit")
 	$page->output_nav_tabs($sub_tabs, 'edit_smilie');
 	$form = new Form("index.php?".SID."&amp;module=config/smilies&amp;action=edit", "post", "edit");
 	
-	$query = $db->simple_select("smilies", "*", "sid = '".intval($mybb->input['sid'])."'");
-	$smilie = $db->fetch_array($query);
-	
-	if(empty($smilie))
-	{
-		flash_message("You have input an invalid smilie.", 'error');
-		admin_redirect("index.php?".SID."&module=config/smilies");
-	}
-	
 	echo $form->generate_hidden_field("sid", $smilie['sid']);
 	
 	if($errors)
@@ -193,17 +191,13 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input['name'] = $smilie['name'];
-		$mybb->input['replacement'] = $smilie['find'];
-		$mybb->input['path'] = $smilie['image'];
-		$mybb->input['disporder'] = $smilie['disporder'];
-		$mybb->input['showclickable'] = $smilie['showclickable'];
+		$mybb->input['name'] = $smilie;
 	}
 
 	$form_container = new FormContainer("Edit Smilie");
 	$form_container->output_row("Name", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row("Text to Replace", "", $form->generate_text_box('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
-	$form_container->output_row("Image Path", "This is the path to the smilie image.", $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container->output_row("Text to Replace", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
+	$form_container->output_row("Image Path", "This is the path to the smilie image.", $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 	$form_container->output_row("Display Order", "The order on the smilies list that this will appear. This number should not be the same as another smilie's.", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row("Show on clickable list?", "Do you want this smilie to show on the clickable smilie list on the post editor?", $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']), 'showclickable');
 	$form_container->end();
@@ -219,37 +213,36 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	if($mybb->input['no']) 
-	{ 
-		admin_redirect("index.php?".SID."&module=config/smilies"); 
-	}
-	
-	if(!trim($mybb->input['sid']))
+	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
+	$smilie = $db->fetch_array($query);
+
+	// Does the smilie not exist?
+	if(!$smilie['sid'])
 	{
-		flash_message('You did not enter a smilie to delete', 'error');
+		flash_message('The specified smilie does not exist.', 'error');
 		admin_redirect("index.php?".SID."&module=config/smilies");
 	}
-	
-	$sid = intval($mybb->input['sid']);
-	
-	$query = $db->simple_select("smilies", "COUNT(sid) as smilies", "sid = '{$sid}'");
-	if($db->fetch_field($query, "smilies") == 0)
+
+	// User clicked no
+	if($mybb->input['no'])
 	{
-		flash_message('You did not enter a valid smilie', 'error');
 		admin_redirect("index.php?".SID."&module=config/smilies");
 	}
-	
+
 	if($mybb->request_method == "post")
 	{
-		$db->delete_query("smilies", "sid = '{$sid}'", 1);
-		flash_message('Smilie Delete Successfully', 'success');
+		// Delete the smilie
+		$db->delete_query("smilies", "sid='{$smilie['sid']}'");
+
+		$cache->update_smilies();
+
+		flash_message('The specified smilie has been deleted.', 'success');
 		admin_redirect("index.php?".SID."&module=config/smilies");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/smilies&amp;action=delete&amp;sid={$mybb->input['sid']}", "Are you sure you wish to delete this smilie?"); 
-	}
-}
+		$page->output_confirm_action("index.php?".SID."&amp;module=config/smilies&amp;action=delete&amp;sid={$smilie['sid']}", "Are you sure you wish to delete this smilie?");
+	}}
 
 if($mybb->input['action'] == "add_multiple")
 {
@@ -329,9 +322,9 @@ if($mybb->input['action'] == "add_multiple")
 				$find = str_replace(".".$ext, "", $file);
 				$name = ucfirst($find);
 			
-				$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center"));
+				$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
 				$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
-				$form_container->output_cell($form->generate_text_box("replacement[{$file}]", ":".$find.":", array('id' => 'replacement', 'style' => 'width: 95%')));
+				$form_container->output_cell($form->generate_text_box("find[{$file}]", ":".$find.":", array('id' => 'find', 'style' => 'width: 95%')));
 				$form_container->output_cell($form->generate_check_box("include[{$file}]", "yes", "", array('checked' => 1)), array("class" => "align_center"));
 				$form_container->construct_row();
 			}
@@ -356,7 +349,7 @@ if($mybb->input['action'] == "add_multiple")
 		{
 			$path = $mybb->input['pathfolder'];
 			reset($mybb->input['include']);
-			$find = $mybb->input['replacement'];
+			$find = $mybb->input['find'];
 			$name = $mybb->input['name'];
 			
 			if(empty($mybb->input['include']))
@@ -378,9 +371,10 @@ if($mybb->input['action'] == "add_multiple")
 					$db->insert_query("smilies", $new_smilie);
 				}
 			}
+
 			$cache->update_smilies();
 			
-			flash_message('Successfully added the selected smilies.', 'success');
+			flash_message('The selected smilies have successfully been created.', 'success');
 			admin_redirect("index.php?".SID."&module=config/smilies");
 		}
 	}
@@ -433,7 +427,7 @@ if($mybb->input['action'] == "mass_edit")
 			{
 				$smilie = array(
 					"name" => $db->escape_string($mybb->input['name'][$sid]),
-					"find" => $db->escape_string($mybb->input['replacement'][$sid]),
+					"find" => $db->escape_string($mybb->input['find'][$sid]),
 					"disporder" => intval($mybb->input['disporder'][$sid]),
 					"showclickable" => $db->escape_string($mybb->input['showclickable'][$sid])
 				);
@@ -442,7 +436,9 @@ if($mybb->input['action'] == "mass_edit")
 			}
 		}
 		
-		flash_message("The smilies has been saved or removed successfully.", 'success');
+		$cache->update_smilies();
+
+		flash_message("The smilies have successfully been updated.", 'success');
 		admin_redirect("index.php?".SID."&module=config/smilies");
 	}
 	
@@ -476,11 +472,11 @@ if($mybb->input['action'] == "mass_edit")
 	}
 	
 	$form_container = new FormContainer("Manage Smilie");
-	$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '10%'));
+	$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '1'));
 	$form_container->output_row_header("Name");
 	$form_container->output_row_header("Text to Replace", array('width' => '20%'));
 	$form_container->output_row_header("Order", array('width' => '5%'));
-	$form_container->output_row_header("Show on clickable list?", array("width" => 135));
+	$form_container->output_row_header("Show on Clickable?", array("width" => 135));
 	$form_container->output_row_header("Delete?", array("class" => "align_center", 'width' => '5%'));
 	
 	$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));
@@ -496,9 +492,9 @@ if($mybb->input['action'] == "mass_edit")
 			$image = "../".$smilie['image'];
 		}
 		
-		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$form_container->output_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", "width" => 1));
 		$form_container->output_cell($form->generate_text_box("name[{$smilie['sid']}]", $smilie['name'], array('id' => 'name', 'style' => 'width: 98%')));
-		$form_container->output_cell($form->generate_text_box("replacement[{$smilie['sid']}]", $smilie['find'], array('id' => 'replacement', 'style' => 'width: 95%')));
+		$form_container->output_cell($form->generate_text_box("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
 		$form_container->output_cell($form->generate_text_box("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')));
 		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center"));
 		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", "yes", $mybb->input['delete']), array("class" => "align_center"));
@@ -559,9 +555,9 @@ if(!$mybb->input['action'])
 	
 	
 	$table = new Table;
-	$table->construct_header("Image", array("class" => "align_center"));
-	$table->construct_header("Name");
-	$table->construct_header("Text to Replace");
+	$table->construct_header("Image", array("class" => "align_center", "width" => 1));
+	$table->construct_header("Name", array("width" => "40%"));
+	$table->construct_header("Text to Replace", array("width" => "40%"));
 	$table->construct_header("Controls", array("class" => "align_center", "colspan" => 2));
 	
 	$query = $db->simple_select("smilies", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'disporder'));
@@ -577,9 +573,9 @@ if(!$mybb->input['action'])
 			$image = "../".$smilie['image'];
 		}
 		
-		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center", 'width' => '10%'));
-		$table->construct_cell("{$smilie['name']}", array('width' => '60%'));
-		$table->construct_cell($smilie['find'], array('width' => '20%'));
+		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
+		$table->construct_cell("{$smilie['name']}");
+		$table->construct_cell($smilie['find']);
 		
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/smilies&amp;action=edit&amp;sid={$smilie['sid']}\">Edit</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/smilies&amp;action=delete&amp;sid={$smilie['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this smilie?')\">Delete</a>", array("class" => "align_center"));

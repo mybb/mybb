@@ -373,7 +373,7 @@ function upgrade9_dbchanges3()
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Ask Jeeves','ask jeeves');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Hot Bot','slurp@inktomi');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('What You Seek','whatuseek');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('is_archiver','Archive.org');");
+	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Archive.org','is_archiver');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Altavista','scooter');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Alexa','ia_archiver');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('MSN Search','msnbot');");

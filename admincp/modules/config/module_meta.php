@@ -47,6 +47,10 @@ function config_action_handler($manage)
 			$page->active_action = "spiders";
 			$action_file = "spiders.php";
 			break;
+		case "attachment_types":
+			$page->active_action = "attachment_types";
+			$action_file = "attachment_types.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";

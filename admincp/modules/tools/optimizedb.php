@@ -15,15 +15,17 @@ if(!$mybb->input['action'])
 {
 	if($mybb->request_method == "post")
 	{
-		$db->set_table_prefix('');
 		
 		if(!is_array($mybb->input['tables']))
 		{
-			$page->output_error("You did not select any tables.");
+			flash_message("You did not select any database tables to optimize.", 'error');
+			admin_redirect("index.php?".SID."&module=tools/optimizedb");
 		}
 		
 		@set_time_limit(0);
 		
+		$db->set_table_prefix('');
+
 		foreach($mybb->input['tables'] as $table)
 		{			
 			$db->optimize_table($table);

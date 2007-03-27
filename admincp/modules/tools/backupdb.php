@@ -47,7 +47,7 @@ if($mybb->input['action'] == "dlbackup")
 {
 	if(empty($mybb->input['file']))
 	{
-		flash_message('You did not specify a database backup to download, so your request could not be performed.', 'error');
+		flash_message('You did not specify a database backup to download.', 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 	
@@ -63,7 +63,7 @@ if($mybb->input['action'] == "dlbackup")
 	}
 	else
 	{
-		flash_message('An error occured while attempting to download your database backup.', 'error');
+		flash_message('The back up file you selected is either invalid or does not exist.', 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 }
@@ -75,17 +75,9 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?".SID."&module=tools/backupdb"); 
 	}
 	
-	if(!trim($mybb->input['file']))
+	if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 	{
-		flash_message('You did not enter a file to delete', 'error');
-		admin_redirect("index.php?".SID."&module=tools/backupdb");
-	}
-	
-	$file = basename($mybb->input['file']);
-	
-	if(!file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
-	{
-		flash_message('You did not enter a valid promotion', 'error');
+		flash_message('The specified backup does not exist', 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 	
@@ -95,12 +87,12 @@ if($mybb->input['action'] == "delete")
 			
 		if($delete)
 		{
-			flash_message('Backup Delete Successfully', 'success');
+			flash_message('The backup has successfully been deleted.', 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 		else
 		{
-			flash_message('Could not delete selected backup.', 'error');
+			flash_message('The backup has not been deleted.', 'error');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 	}
@@ -114,11 +106,10 @@ if($mybb->input['action'] == "backup")
 {
 	if($mybb->request_method == "post")
 	{
-		$db->set_table_prefix('');
-		
 		if(!is_array($mybb->input['tables']))
 		{
-			$page->output_error("You did not select any tables.");
+			flash_message('You did not select any tables to backup.', 'error');
+			admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 		}
 		
 		@set_time_limit(0);
@@ -131,7 +122,8 @@ if($mybb->input['action'] == "backup")
 			{
 				if(!function_exists('gzopen')) // check zlib-ness
 				{
-					$page->output_error("The zlib library for PHP is not enabled, so your request could not be performed.");
+					flash_message('The zlib library for PHP is not enabled - you cannot create GZIP compressed backups.', 'error');
+					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 				}
 				
 				$fp = gzopen($file.'.gz', 'w9');
@@ -148,7 +140,8 @@ if($mybb->input['action'] == "backup")
 			{
 				if(!function_exists('gzopen')) // check zlib-ness
 				{
-					$page->output_error("The zlib library for PHP is not enabled, so your request could not be performed.");
+					flash_message('The zlib library for PHP is not enabled - you cannot create GZIP compressed backups.', 'error');
+					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 				}
 
 				// Send headers for gzip file (do ob_start too)
@@ -163,7 +156,8 @@ if($mybb->input['action'] == "backup")
 				header('Content-Disposition: attachment; filename="'.$file.'.sql"');
 			}
 		}
-		
+		$db->set_table_prefix('');
+
 		$time = date('dS F Y \a\t H:i', time());
 		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
 		$contents = $header;
@@ -241,7 +235,7 @@ if($mybb->input['action'] == "backup")
 			$db->set_table_prefix(TABLE_PREFIX);
 			
 			$file_from_admindir = 'index.php?'.SID.'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
-			flash_message("Backup generated successfully.<br /><br />The backup was saved to:<br />{$file}{$ext}<br /><br /><a href=\"{$file_from_admindir}\">Download this backup</a>.", 'success');
+			flash_message("<p><em>The backup has successfully been created.</em></p><p>The backup was saved to:<br />{$file}{$ext} (<a href=\"{$file_from_admindir}\">Download</a>)</p>", 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 		else

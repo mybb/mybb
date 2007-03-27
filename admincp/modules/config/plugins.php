@@ -165,8 +165,8 @@ if(!$mybb->input['action'])
 {
 	$page->output_header("Plugins");
 
-	$sub_tabs['manage_plugins'] = array(
-		'title' => "Manage Plugins",
+	$sub_tabs['plugins'] = array(
+		'title' => "Plugins",
 		'link' => "index.php?".SID."&amp;module=config/plugins",
 		'description' => "This section allows you to activate, deactivate, and manage the plugins that you have uploaded to your forum's <strong>inc/plugins</strong> directory."
 	);
@@ -176,7 +176,7 @@ if(!$mybb->input['action'])
 		'description' => "This section allows you to check for updates on all your plugins."
 	);
 	
-	$page->output_nav_tabs($sub_tabs, 'manage_plugins');
+	$page->output_nav_tabs($sub_tabs, 'plugins');
 	
 	$plugins_cache = $cache->read("plugins");
 	$active_plugins = $plugins_cache['active'];

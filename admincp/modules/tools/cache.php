@@ -54,23 +54,17 @@ if($mybb->input['action'] == 'view')
 
 if($mybb->input['action'] == "rebuild")
 {
-	if(!trim($mybb->input['title']))
-	{
-		flash_message('You did not specify a cache to rebuild.', 'error');
-		admin_redirect("index.php?".SID."&module=tools/cache");
-	}
-	
 	if(method_exists($cache, "update_{$mybb->input['title']}"))
 	{
 		$func = "update_{$mybb->input['title']}";
 		$cache->$func();
 		
-		flash_message('The cache has been updated successfully.', 'success');
+		flash_message('The cache has been rebuilt successfully.', 'success');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}
 	else
 	{
-		flash_message('You cannot update that cache.', 'error');
+		flash_message('This cache cannot be rebuilt.', 'error');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}
 }
