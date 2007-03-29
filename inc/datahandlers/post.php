@@ -1412,7 +1412,7 @@ class PostDataHandler extends DataHandler
 			$db->delete_query("threadsubscriptions", "uid='{$post['uid']}' AND tid='{$post['tid']}'");
 		}
 
-		update_forum_count($post['fid']);
+		update_forum_lastpost($post['fid']);
 
 		return array(
 			'visible' => $visible,
