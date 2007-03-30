@@ -924,7 +924,7 @@ function install_done()
 		'invisible' => 'no',
 		'style' => '0',
 		'timezone' => 0,
-		'dst' => 'no',
+		'dst' => 0,
 		'threadmode' => '',
 		'daysprune' => 0,
 		'regip' => $db->escape_string(get_ip()),
