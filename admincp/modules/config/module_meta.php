@@ -20,7 +20,7 @@ function config_action_handler($manage)
 {
 	global $page;
 	$page->active_module = "config";
-	
+
 	switch($manage)
 	{
 		case "plugins":
@@ -50,6 +50,10 @@ function config_action_handler($manage)
 		case "attachment_types":
 			$page->active_action = "attachment_types";
 			$action_file = "attachment_types.php";
+			break;
+		case "post_icons":
+			$page->active_action = "post_icons";
+			$action_file = "post_icons.php";
 			break;
 		default:
 			$page->active_action = "settings";
