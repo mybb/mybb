@@ -83,6 +83,9 @@ if($mybb->usergroup['maxemails'] > 0)
 
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
 	
 	if(!validate_email_format($mybb->input['email']))

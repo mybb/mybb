@@ -144,6 +144,15 @@ var Thread = {
 			form.setAttribute("action", "editpost.php?action=deletepost&delete=yes");
 			form.setAttribute("style", "display: none;");
 
+			if(my_post_key)
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "my_post_key");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("value", my_post_key);
+				form.appendChild(input);
+			}
+
 			var input = document.createElement("input");
 			input.setAttribute("name", "pid");
 			input.setAttribute("type", "hidden");
@@ -219,7 +228,7 @@ var Thread = {
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		
 		postData = "value="+encodeURIComponent(message).replace(/\+/g, "%2B");
-		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});
+		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid+"&my_post_key="+my_post_key, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});
 	},
 
 	quickEditCancel: function(pid)

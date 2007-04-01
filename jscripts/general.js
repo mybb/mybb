@@ -98,6 +98,15 @@ var MyBB = {
 			input.setAttribute("value", "do_editevent");
 			form.appendChild(input);
 
+			if(my_post_key)
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "my_post_key");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("value", my_post_key);
+				form.appendChild(input);
+			}
+
 			var input = document.createElement("input");
 			input.setAttribute("name", "eid");
 			input.setAttribute("type", "hidden");
@@ -147,6 +156,14 @@ var MyBB = {
 			input.setAttribute("value", rid);
 			form.appendChild(input);
 
+			if(my_post_key)
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "my_post_key");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("value", my_post_key);
+				form.appendChild(input);
+			}
 			var input = document.createElement("input");
 			input.setAttribute("name", "uid");
 			input.setAttribute("type", "hidden");

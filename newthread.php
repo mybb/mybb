@@ -176,6 +176,9 @@ if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != "yes")
 // Performing the posting of a new thread.
 if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("newthread_do_newthread_start");
 
 	// If this isn't a logged in user, then we need to do some special validation.

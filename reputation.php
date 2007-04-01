@@ -99,6 +99,9 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 // Saving the new reputation
 if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("reputation_do_add_start");
 
 	// Check if the reputation power they're trying to give is within their "power limit"
@@ -230,6 +233,9 @@ if($mybb->input['action'] == "add")
 // Delete a specific reputation from a user.
 if($mybb->input['action'] == "delete")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	// Fetch the existing reputation for this user given by our current user if there is one.
 	$query = $db->simple_select("reputation", "*", "rid='".intval($mybb->input['rid'])."'");
 	$existing_reputation = $db->fetch_array($query);

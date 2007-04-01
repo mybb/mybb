@@ -43,6 +43,9 @@ $session = new session;
 $session->init();
 $mybb->session = &$session;
 
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
 // Run global_start plugin hook now that the basics are set up
 $plugins->run_hooks("global_start");
 

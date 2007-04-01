@@ -41,6 +41,9 @@ if(!$groupleader['uid'])
 
 if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	if($groupleader['canmanagemembers'] == "no")
 	{
 		error_no_permission();
@@ -67,6 +70,9 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 }
 elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	if($groupleader['canmanagerequests'] == "no")
 	{
 		error_no_permission();
@@ -132,6 +138,9 @@ elseif($mybb->input['action'] == "joinrequests")
 }
 elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	if($groupleader['canmanagemembers'] == "no")
 	{
 		error_no_permission();

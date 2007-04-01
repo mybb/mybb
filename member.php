@@ -1461,6 +1461,9 @@ if($mybb->input['action'] == "profile")
 
 if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("member_do_emailuser_start");
 
 	// Guests or those without permission can't email other users

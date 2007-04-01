@@ -291,4 +291,6 @@ $l['ajax_loading'] = "Loading. <br />Please Wait..";
 $l['saving_changes'] = "Saving changes..";
 $l['refresh'] = "Refresh";
 $l['select_language'] = "Quick Language Select";
+
+$l['invalid_post_code'] = "Authorisation code mismatch. Are you accessing this function correctly? Please go back and try again.";
 ?>

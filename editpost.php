@@ -177,6 +177,9 @@ if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact'])) // Let
 
 if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("editpost_deletepost");
 
 	if($mybb->input['delete'] == "yes")
@@ -241,6 +244,8 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("editpost_do_editpost_start");
 

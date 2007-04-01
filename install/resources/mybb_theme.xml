@@ -704,6 +704,7 @@ form {
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation" version="140"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="modtype" value="inlinepost" />
 <span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
@@ -863,6 +864,7 @@ form {
 {$post_errors}
 {$attacherror}
 <form action="editpost.php" method="post" name="editpost">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->delete_post}</strong></td>
@@ -878,6 +880,7 @@ form {
 </form>
 <br />
 <form action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_post}</strong></td>
@@ -931,6 +934,7 @@ form {
 {$attacherror}
 {$reply_errors}
 <form action="newreply.php?tid={$tid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_reply}</strong></td>
@@ -981,7 +985,7 @@ form {
 </html>]]></template>
 		<template name="newreply_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="usercp_drafts" version="120"><![CDATA[<html>
+		<template name="usercp_drafts" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->drafts}</title>
 {$headerinclude}
@@ -989,6 +993,7 @@ form {
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -1035,6 +1040,7 @@ form {
 {$thread_errors}
 {$attacherror}
 <form action="newthread.php?fid={$fid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_thread}</strong></td>
@@ -1196,6 +1202,7 @@ form {
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -1490,6 +1497,7 @@ form {
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="forumdisplay_inlinemoderation" version="140"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
 		<form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
 <br />
@@ -1560,6 +1568,7 @@ form {
 <br />
 <strong>{$lang->report_to_mod}</strong>
 <form action="report.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="pid" value="{$pid}" />
 <blockquote>{$lang->only_report}</blockquote>
@@ -1723,6 +1732,7 @@ form {
 <body>
 {$header}
 <form action="private.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -1866,7 +1876,7 @@ form {
 <td class="trow1" align="center" colspan="5">{$lang->no_attachments}</td>
 </tr>]]></template>
 		<template name="usercp_nav_changename" version="120"><![CDATA[<li><a href="usercp.php?action=changename">{$lang->ucp_nav_change_username}</a><br /></li>]]></template>
-		<template name="usercp_profile" version="120"><![CDATA[<html>
+		<template name="usercp_profile" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}
@@ -1874,6 +1884,7 @@ form {
 <body>
 {$header}
 <form action="usercp.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -2000,7 +2011,7 @@ form {
 </table>
 </td>
 </tr>]]></template>
-		<template name="usercp_attachments" version="120"><![CDATA[<html>
+		<template name="usercp_attachments" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
 {$headerinclude}
@@ -2008,6 +2019,7 @@ form {
 <body>
 {$header}
 <form action="usercp.php" method="post" name="attachmentsmanager">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -2131,7 +2143,7 @@ form {
 </td>
 </tr></table>
 </fieldset>]]></template>
-		<template name="usercp_usergroups_joingroup" version="120"><![CDATA[<html>
+		<template name="usercp_usergroups_joingroup" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->request_join_usergroup}</title>
 {$headerinclude}
@@ -2139,6 +2151,7 @@ form {
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -2205,6 +2218,7 @@ form {
 <td class="trow2"><strong>{$lang->gallery}</strong></td>
 <td class="trow2">
 <form method="post" action="usercp.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="avatar" />
 <select name="gallery">
 {$galleries}
@@ -2220,6 +2234,7 @@ form {
 <td class="trow1" width="40%"><strong>{$lang->avatar_upload}</strong></td>
 <td class="trow1" width="60%">
 <form enctype="multipart/form-data" action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="file" name="avatarupload" size="25" />
 {$auto_resize}
 </td>
@@ -2264,6 +2279,7 @@ form {
 <tr>
 <td class="trow1" align="center">
 <form method="post" action="usercp.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="avatar" />
 <select name="gallery">
 {$galleries}
@@ -2278,6 +2294,7 @@ form {
 <tr>
 <td class="trow2">
 <form method="post" action="usercp.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_avatar" />
 <input type="hidden" name="gallery" value="{$gallery}" />
 <table width="100%" cellpadding="4">
@@ -2318,6 +2335,7 @@ form {
 	var loading_text = '{$lang->ajax_loading}';
 	var saving_changes = '{$lang->saving_changes}';
 	var use_xmlhttprequest = "{$mybb->settings['use_xmlhttprequest']}";
+	var my_post_key = "{$mybb->post_code}";
 // -->
 </script>
 {$newpmmsg}]]></template>
@@ -2542,7 +2560,8 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_usergroups_memberof" version="120"><![CDATA[<form method="post" action="usercp.php">
+		<template name="usercp_usergroups_memberof" version="140"><![CDATA[<form method="post" action="usercp.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="usergroups" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -2561,7 +2580,7 @@ form {
 </table>
 </form>
 <br />]]></template>
-		<template name="managegroup" version="120"><![CDATA[<html>
+		<template name="managegroup" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->members_of}</title>
 {$headerinclude}
@@ -2571,6 +2590,7 @@ form {
 {$joinrequests}
 <p>{$usergrouptype}</p>
 <form method="post" action="managegroup.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_manageusers" />
 <input type="hidden" name="gid" value="{$gid}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -2595,8 +2615,9 @@ form {
 </body>
 </html>]]></template>
 		<template name="managegroup_removeusers" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->remove_selected}" />]]></template>
-		<template name="managegroup_adduser" version="120"><![CDATA[<br />
+		<template name="managegroup_adduser" version="140"><![CDATA[<br />
 <form method="post" action="managegroup.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_add" />
 <input type="hidden" name="gid" value="{$gid}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -2625,7 +2646,7 @@ form {
 <strong><a href="managegroup.php?action=joinrequests&amp;gid={$gid}">{$lang->pending_requests}</a></strong><br />
 {$lang->num_requests_pending}
 </p>]]></template>
-		<template name="managegroup_joinrequests" version="120"><![CDATA[<html>
+		<template name="managegroup_joinrequests" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->join_requests}</title>
 {$headerinclude}
@@ -2634,6 +2655,7 @@ form {
 {$header}
 {$joinrequests}
 <form method="post" action="managegroup.php">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_joinrequests" />
 <input type="hidden" name="gid" value="{$gid}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -2671,6 +2693,7 @@ form {
 <body>
 {$header}
 <form action="private.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -2754,7 +2777,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="showthread_newreply_closed" version="120"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" alt="{$lang->thread_closed}" /></a>&nbsp;]]></template>
-		<template name="polls_editpoll" version="120"><![CDATA[<html>
+		<template name="polls_editpoll" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_poll}</title>
 {$headerinclude}
@@ -2763,6 +2786,7 @@ form {
 {$header}
 {$preview}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->delete_poll}</strong></td>
@@ -2777,6 +2801,7 @@ form {
 </form>
 <br />
 <form action="polls.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->edit_poll}</strong></td>
@@ -3119,7 +3144,7 @@ form {
 {$customfields}
 </table>
 </fieldset>]]></template>
-		<template name="private_archive" version="120"><![CDATA[<html>
+		<template name="private_archive" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->archive_messages}</title>
 {$headerinclude}
@@ -3127,6 +3152,7 @@ form {
 <body>
 {$header}
 <form action="private.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -3180,6 +3206,7 @@ form {
 {$header}
 {$event_errors}
 <form action="calendar.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
@@ -3333,7 +3360,7 @@ form {
 <td width="10%" class="{$bgcolor}">{$pmcode}</td>
 </tr>]]></template>
 		<template name="showteam_moderators_forum" version="140"><![CDATA[<a href="{$forum_url}">{$forum['name']}</a><br/>]]></template>
-		<template name="moderation_inline_deleteposts" version="120"><![CDATA[<html>
+		<template name="moderation_inline_deleteposts" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_posts}</title>
 {$headerinclude}
@@ -3341,6 +3368,7 @@ form {
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->delete_posts}</strong></td>
@@ -3428,7 +3456,7 @@ form {
 </html>]]></template>
 		<template name="forumdisplay_thread_modbit" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$multitid}" id="inlinemod_{$multitid}" value="1" {$inlinecheck}  /></td>]]></template>
 		<template name="forumdisplay_thread_gotounread" version="140"><![CDATA[<a href="{$thread['newpostlink']}"><img src="{$theme['imgdir']}/jump.gif" alt="{$lang->goto_first_unread}" /></a> ]]></template>
-		<template name="private_tracking" version="120"><![CDATA[<html>
+		<template name="private_tracking" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_tracking}</title>
 {$headerinclude}
@@ -3436,6 +3464,7 @@ form {
 <body>
 {$header}
 <form action="private.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_tracking" />
 <table width="100%" border="0" align="center">
 <tr>
@@ -3459,6 +3488,7 @@ form {
 </form>
 <br />
 <form action="private.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_tracking" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -3480,7 +3510,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_threadnotes" version="120"><![CDATA[<html>
+		<template name="moderation_threadnotes" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->thread_notes_editor}</title>
 {$headerinclude}
@@ -3488,6 +3518,7 @@ form {
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->thread_notes_editor}</strong></td>
@@ -3652,6 +3683,7 @@ form {
 </script>]]></template>
 		<template name="showthread_quickreply" version="140"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="input" id="quick_reply_form">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
 <input type="hidden" name="posthash" value="{$posthash}" id="posthash" />
@@ -3858,6 +3890,7 @@ form {
 <body>
 {$header}
 <form action="private.php" method="post" name="pmForm">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -4146,6 +4179,7 @@ form {
 {$header}
 {$errors}
 <form action="member.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->email_user}</strong></td>
@@ -4240,7 +4274,7 @@ form {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="moderation_reports" version="120"><![CDATA[<html>
+		<template name="moderation_reports" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
 {$headerinclude}
@@ -4248,6 +4282,7 @@ form {
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="6"><strong>{$lang->reported_posts}</strong></td>
@@ -4514,7 +4549,7 @@ form {
 </span>
 </td>
 </tr>]]></template>
-		<template name="moderation_deletethread" version="120"><![CDATA[<html>
+		<template name="moderation_deletethread" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_thread}</title>
 {$headerinclude}
@@ -4522,6 +4557,7 @@ form {
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$thread['subject']} - {$lang->delete_thread}</strong></td>
@@ -4619,7 +4655,7 @@ form {
 {$post['imagelist']}
 <br />]]></template>
 		<template name="post_attachments_attachment_postinsert" version="120"><![CDATA[<input type="button" name="insert" value="{$lang->insert_attachment_post}" onclick="clickableEditor.insertAttachment({$attachment['aid']});" />]]></template>
-		<template name="moderation_mergeposts" version="120"><![CDATA[<html>
+		<template name="moderation_mergeposts" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->merge_posts}</title>
 {$headerinclude}
@@ -4627,6 +4663,7 @@ form {
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
 <td class="thead" colspan="2"><strong>{$lang->merge_posts}</strong></td>
 </tr>
@@ -4716,7 +4753,7 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="polls_newpoll" version="120"><![CDATA[<html>
+		<template name="polls_newpoll" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->post_new_poll}</title>
 {$headerinclude}
@@ -4725,6 +4762,7 @@ form {
 {$header}
 {$preview}
 <form action="polls.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_new_poll}</strong></td>
@@ -5012,7 +5050,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_nothreads" version="120"><![CDATA[<tr>
 <td colspan="{$colspan}" class="trow1">{$lang->nothreads}</td>
 </tr>]]></template>
-		<template name="usercp_password" version="120"><![CDATA[<html>
+		<template name="usercp_password" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_password}</title>
 {$headerinclude}
@@ -5020,6 +5058,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -5059,7 +5098,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_email" version="120"><![CDATA[<html>
+		<template name="usercp_email" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_email}</title>
 {$headerinclude}
@@ -5067,6 +5106,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -5213,6 +5253,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<td class="trow1" style="padding: 20px">
 			<strong>{$vote_title}</strong><br /><br />
 			<form action="reputation.php" method="post">
+				<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 				<input type="hidden" name="action" value="do_add" />
 				<input type="hidden" name="uid" value="{$user['uid']}" />
 				<select name="reputation" id="reputation">
@@ -5327,6 +5368,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_subscriptions" />
 <table width="100%" border="0" align="center">
 <tr>
@@ -5421,7 +5463,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
-		<template name="moderation_deletepoll" version="120"><![CDATA[<html>
+		<template name="moderation_deletepoll" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_poll}</title>
 {$headerinclude}
@@ -5429,6 +5471,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->delete_poll}</strong></td>
@@ -5571,7 +5614,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_changeavatar" version="120"><![CDATA[<html>
+		<template name="usercp_changeavatar" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
 {$headerinclude}
@@ -5579,6 +5622,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form enctype="multipart/form-data" action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -5632,7 +5676,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_notepad" version="120"><![CDATA[<html>
+		<template name="usercp_notepad" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->personal_notepad}</title>
 {$headerinclude}
@@ -5640,6 +5684,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -5744,7 +5789,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_changename" version="120"><![CDATA[<html>
+		<template name="usercp_changename" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>
 {$headerinclude}
@@ -5752,6 +5797,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -5829,7 +5875,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="{$altbg}" valign="top" align="center" style="width:5%"><input type="checkbox" class="checkbox" name="deletepost[{$post['pid']}]" value="yes" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
-		<template name="moderation_deleteposts" version="120"><![CDATA[<html>
+		<template name="moderation_deleteposts" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_posts}</title>
 {$headerinclude}
@@ -5837,6 +5883,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->delete_posts}</strong></td>
@@ -5851,7 +5898,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_split" version="120"><![CDATA[<html>
+		<template name="moderation_split" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
@@ -5859,6 +5906,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->split_thread}</strong></td>
@@ -5917,6 +5965,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$header}
 {$errors}
 <form action="sendthread.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->send_thread}</strong></td>
@@ -5951,6 +6000,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -6086,7 +6136,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </ol>
 <br />
 {$lang->error_nopermission_user_5}]]></template>
-		<template name="private_folders" version="120"><![CDATA[<html>
+		<template name="private_folders" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->pm_folders}</title>
 {$headerinclude}
@@ -6094,6 +6144,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="private.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -6133,7 +6184,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$forumjumpbits}
 </select>
 ]]></template>
-		<template name="moderation_move" version="120"><![CDATA[<html>
+		<template name="moderation_move" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->move_copy_thread}</title>
 {$headerinclude}
@@ -6141,6 +6192,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->move_copy_thread}</strong></td>
@@ -6167,7 +6219,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_merge" version="120"><![CDATA[<html>
+		<template name="moderation_merge" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->merge_threads}</title>
 {$headerinclude}
@@ -6175,6 +6227,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->merge_threads}</strong></td>
@@ -6273,7 +6326,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$getmore}
 </table>]]></template>
 		<template name="misc_buddypopup_user_sendpm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank">{$lang->pm_buddy}</a>&nbsp;&nbsp;]]></template>
-		<template name="usercp_editlists" version="120"><![CDATA[<html>
+		<template name="usercp_editlists" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
 {$headerinclude}
@@ -6288,6 +6341,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td align="left" valign="top" width="50%">
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$lang->edit_buddy_list}</strong></td>
@@ -6312,6 +6366,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 <td align="left" valign="top" width="50%">
 <form action="usercp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center"><strong>{$lang->edit_ignore_list}</strong></td>
@@ -6386,6 +6441,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$header}
 {$event_errors}
 <form action="calendar.php" method="post" name="input">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
@@ -6780,7 +6836,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </div>]]></template>
 		<template name="nav_bit" version="120"><![CDATA[<a href="{$navbit['url']}">{$navbit['name']}</a>{$sep}]]></template>
 		<template name="nav_bit_active" version="120"><![CDATA[<span class="active">{$navbit['name']}</span>]]></template>
-		<template name="moderation_inline_deletethreads" version="120"><![CDATA[<html>
+		<template name="moderation_inline_deletethreads" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->delete_threads}</title>
 {$headerinclude}
@@ -6788,6 +6844,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->delete_threads}</strong></td>
@@ -6806,7 +6863,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="postbit_inlinecheck" version="120"><![CDATA[| <input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  />]]></template>
-		<template name="moderation_inline_movethreads" version="120"><![CDATA[<html>
+		<template name="moderation_inline_movethreads" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->move_threads}</title>
 {$headerinclude}
@@ -6814,6 +6871,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->move_threads}</strong></td>
@@ -6833,7 +6891,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_mergeposts" version="120"><![CDATA[<html>
+		<template name="moderation_inline_mergeposts" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->merge_posts}</title>
 {$headerinclude}
@@ -6841,6 +6899,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->merge_posts}</strong></td>
@@ -6861,7 +6920,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_splitposts" version="120"><![CDATA[<html>
+		<template name="moderation_inline_splitposts" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
@@ -6869,6 +6928,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 {$header}
 <form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->split_thread}</strong></td>

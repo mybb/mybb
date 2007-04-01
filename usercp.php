@@ -162,6 +162,9 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_profile_start");
 
 	if($mybb->input['away'] == "yes" && $mybb->settings['allowaway'] != "no")
@@ -563,6 +566,9 @@ if($mybb->input['action'] == "profile")
 
 if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_options_start");
 
 	// Set up user handler.
@@ -896,6 +902,9 @@ if($mybb->input['action'] == "options")
 
 if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$errors = array();
 
 	$plugins->run_hooks("usercp_do_email_start");
@@ -983,6 +992,9 @@ if($mybb->input['action'] == "email")
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$errors = array();
 
 	$plugins->run_hooks("usercp_do_password_start");
@@ -1033,6 +1045,9 @@ if($mybb->input['action'] == "password")
 
 if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != "yes")
 	{
@@ -1089,6 +1104,9 @@ if($mybb->input['action'] == "changename")
 
 if($mybb->input['action'] == "do_subscriptions")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_subscriptions_start");
 
 	if(!is_array($mybb->input['check']))
@@ -1441,6 +1459,9 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_editsig_start");
 	if($mybb->input['updateposts'] == "enable")
 	{
@@ -1541,6 +1562,9 @@ if($mybb->input['action'] == "editsig")
 
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	
@@ -1818,6 +1842,9 @@ if($mybb->input['action'] == "notepad")
 }
 if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_notepad_start");
 	$db->update_query("users", array('notepad' => $db->escape_string($mybb->input['notepad'])), "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_notepad_end");
@@ -1877,6 +1904,9 @@ if($mybb->input['action'] == "editlists")
 }
 if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_editlists_start");
 	$comma = '';
 	$users = '';
@@ -1960,6 +1990,9 @@ if($mybb->input['action'] == "drafts")
 }
 if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_drafts_start");
 	if(!$mybb->input['deletedraft'])
 	{
@@ -2008,6 +2041,9 @@ if($mybb->input['action'] == "usergroups")
 	// Changing our display group
 	if($mybb->input['displaygroup'])
 	{
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+
 		if(!my_strpos($ingroups, ",".$mybb->input['displaygroup'].","))
 		{
 			error($lang->not_member_of_group);
@@ -2027,6 +2063,9 @@ if($mybb->input['action'] == "usergroups")
 	// Leaving a group
 	if($mybb->input['leavegroup'])
 	{
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+
 		if(!my_strpos($ingroups, ",".$mybb->input['leavegroup'].","))
 		{
 			error($lang->not_member_of_group);
@@ -2049,6 +2088,9 @@ if($mybb->input['action'] == "usergroups")
 	// Joining a group
 	if($mybb->input['joingroup'])
 	{
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+
 		$mybb->input['joingroup'] = intval($mybb->input['joingroup']);
 		$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['joingroup'])."'");
 		$usergroup = $db->fetch_array($query);
@@ -2196,7 +2238,7 @@ if($mybb->input['action'] == "usergroups")
 			}
 			else
 			{
-				$leavelink = "<div align=\"center\"><a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."\">".$lang->usergroup_leave."</a></div>";
+				$leavelink = "<div align=\"center\"><a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."&amp;my_post_key={$mybb->post_code}\">".$lang->usergroup_leave."</a></div>";
 			}
 			if($usergroup['description'])
 			{
@@ -2270,7 +2312,7 @@ if($mybb->input['action'] == "usergroups")
 		}
 		else
 		{
-			$joinlink = "<a href=\"usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}\">{$lang->join_group}</a>";
+			$joinlink = "<a href=\"usercp.php?action=usergroups&amp;joingroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->join_group}</a>";
 		}
 		$usergroupleaders = '';
 		if($groupleaders[$usergroup['gid']])
@@ -2364,6 +2406,9 @@ if($mybb->input['action'] == "attachments")
 }
 if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("usercp_do_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	if(!is_array($mybb->input['attachments']))

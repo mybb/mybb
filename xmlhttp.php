@@ -336,6 +336,12 @@ else if($mybb->input['action'] == "edit_post")
 	}
 	else if($mybb->input['do'] == "update_post")
 	{
+		// Verify POST request
+		if(!verify_post_code($mybb->input['my_post_key'], true))
+		{
+			xmlhttp_error($lang->invalid_post_code);
+		}
+
 		$message = strval($_POST['value']);
 		if(my_strtolower($charset) != "utf-8")
 		{

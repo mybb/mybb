@@ -62,6 +62,9 @@ if($mybb->input['action'] == "report")
 }
 elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	$plugins->run_hooks("report_do_report_start");
 	if(!trim($mybb->input['reason']))
 	{
