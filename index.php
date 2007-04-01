@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = "index,index_whosonline,index_welcomemembertext,index_welcomeguest,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,index_modcolumn,forumbit_moderators,forumbit_subforums,index_welcomeguesttext";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon";
+$templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
 
 require_once "./global.php";
 
@@ -173,7 +173,7 @@ if($mybb->settings['showbirthdays'] != "no")
 	$year = my_date("Y", $bdaytime, '', 0);
 
 	// Select all users who have their birthday today.
-	$query = $db->simple_select("users", "uid, username, birthday", "birthday LIKE '$bdaydate-%'");
+	$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, birthday", "birthday LIKE '$bdaydate-%'");
 	$comma = '';
 	while($bdayuser = $db->fetch_array($query))
 	{
@@ -186,6 +186,7 @@ if($mybb->settings['showbirthdays'] != "no")
 		{
 			$age = '';
 		}
+		$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
 		$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
 		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
 		++$bdaycount;
@@ -219,7 +220,7 @@ if($mybb->settings['showindexstats'] != "no")
 	$lang->stats_posts_threads = sprintf($lang->stats_posts_threads, my_number_format($stats['numposts']), my_number_format($stats['numthreads']));
 	$lang->stats_numusers = sprintf($lang->stats_numusers, my_number_format($stats['numusers']));
 	$lang->stats_newestuser = sprintf($lang->stats_newestuser, $newestmember);
-	
+
 	// Find out what the highest users online count is.
 	$mostonline = $cache->read("mostonline");
 	if($onlinecount > $mostonline['numusers'])
@@ -237,6 +238,12 @@ if($mybb->settings['showindexstats'] != "no")
 	$lang->stats_mostonline = sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
 
 	eval("\$forumstats = \"".$templates->get("index_stats")."\";");
+}
+
+// Show the board statistics table only if one or more index statistics are enabled.
+if($mybb->settings['showwol'] != "no" || $mybb->settings['showbirthdays'] != "no" || $mybb->settings['showindexstats'] != "no")
+{
+	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
 }
 
 // Get the forums we will need to show.
