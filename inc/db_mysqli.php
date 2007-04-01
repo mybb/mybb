@@ -136,12 +136,17 @@ class databaseEngine
 	 */
 	function explain_query($string, $qtime)
 	{
+		global $plugins;
+		if($plugins->current_hook)
+		{
+			$debug_extra = "<div style=\"float_right\">(Plugin Hook: {$plugins->current_hook})</div>";
+		}
 		if(preg_match("#^\s*select#i", $string))
 		{
 			$query = mysqli_query($this->link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
+				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
 				"</tr>\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
@@ -182,7 +187,7 @@ class databaseEngine
 		{
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
-				"<td style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Write Query</strong></td>\n".
+				"<td style=\"background-color: #ccc;\">{$debug_extra}><div><strong>#".$this->query_count." - Write Query</strong></div></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #fefefe;\">\n".
 				"<td><span style=\"font-family: Courier; font-size: 14px;\">".htmlspecialchars_uni($string)."</span></td>\n".

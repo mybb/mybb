@@ -20,6 +20,13 @@ class pluginSystem
 	var $hooks;
 
 	/**
+	 * The current hook which we're in (if any)
+	 *
+	 * @var string
+	 */
+	var $current_hook;
+
+	/**
 	 * Load all plugins.
 	 *
 	 */
@@ -77,6 +84,7 @@ class pluginSystem
 		{
 			return $arguments;
 		}
+		$this->current_hook = $hook;
 
 		ksort($this->hooks[$hook]);
 		foreach($this->hooks[$hook] as $priority => $hooks)
@@ -98,6 +106,7 @@ class pluginSystem
 				}
 			}
 		}
+		$this->current_hook = '';
 		return $arguments;
 	}
 	
@@ -114,7 +123,7 @@ class pluginSystem
 		{
 			return $arguments;
 		}
-
+		$this->current_hook = $hook;
 		ksort($this->hooks[$hook]);
 		foreach($this->hooks[$hook] as $priority => $hooks)
 		{
@@ -130,6 +139,7 @@ class pluginSystem
 				}
 			}
 		}
+		$this->current_hook = '';
 	}	
 
 	/**
