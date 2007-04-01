@@ -219,6 +219,8 @@ class datacache
 	{
 		global $db;
 		
+		$types = array();
+
 		$query = $db->simple_select("attachtypes", "atid, name, mimetype, extension, maxsize, icon");
 		while($type = $db->fetch_array($query))
 		{
@@ -237,6 +239,8 @@ class datacache
 	{
 		global $db;
 		
+		$smilies = array();
+
 		$query = $db->simple_select("smilies", "sid, name, find, image, disporder, showclickable", "", array('order_by' => 'LENGTH(find)', 'order_dir' => 'DESC'));
 		while($smilie = $db->fetch_array($query))
 		{
@@ -254,6 +258,8 @@ class datacache
 	{
 		global $db;
 		
+		$icons = array();
+
 		$query = $db->simple_select("icons", "iid, name, path");
 		while($icon = $db->fetch_array($query))
 		{
@@ -271,6 +277,8 @@ class datacache
 	{
 		global $db;
 		
+		$badwords = array();
+
 		$query = $db->simple_select("badwords", "bid, badword, replacement");
 		while($badword = $db->fetch_array($query)) 
 		{
@@ -305,6 +313,8 @@ class datacache
 	function update_forumpermissions()
 	{
 		global $forum_cache, $db;
+
+		$this->built_forum_permissions = array();
 
 		// Get our forum list
 		cache_forums(true);
@@ -392,6 +402,8 @@ class datacache
 	function update_moderators()
 	{
 		global $forum_cache, $db;
+		
+		$this->built_moderators = array();
 
 		// Get our forum list
 		cache_forums(true);
@@ -474,7 +486,7 @@ class datacache
 	function update_forums()
 	{
 		global $db;
-		
+		$forums = array();
 		// Things we don't want to cache
 		$exclude = array("threads", "posts", "lastpost", "lastposter", "lastposttid");
 		
@@ -501,7 +513,7 @@ class datacache
 	function update_usertitles()
 	{
 		global $db;
-		
+		$usertitles = array();
 		$query = $db->simple_select("usertitles", "utid, posts, title, stars, starimage", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($usertitle = $db->fetch_array($query))
 		{
@@ -518,6 +530,7 @@ class datacache
 	function update_reportedposts()
 	{
 		global $db;
+		$reports = array();
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
 		
@@ -543,7 +556,7 @@ class datacache
 	function update_mycode()
 	{
 		global $db;
-		
+		$mycodes = array();
 		$query = $db->simple_select("mycode", "regex, replacement", "active='yes'", array('order_by' => 'parseorder'));
 		while($mycode = $db->fetch_array($query))
 		{
@@ -564,6 +577,10 @@ class datacache
 		$queue_size = $db->fetch_field($query, "queue_size");
 		
 		$mailqueue = $this->read("mailqueue");
+		if(!is_array($mailqueue))
+		{
+			$mailqueue = array();
+		}
 		$mailqueue['queue_size'] = $queue_size;
 		if($last_run > 0)
 		{
@@ -596,6 +613,10 @@ class datacache
 		$next_task = $db->fetch_array($query);
 		
 		$task_cache = $this->read("tasks");
+		if(!is_array($task_cache))
+		{
+			$task_cache = array();
+		}
 		$task_cache['nextrun'] = $next_task['nextrun'];
 
 		if(!$task_cache['nextrun'])
@@ -628,7 +649,7 @@ class datacache
 	function update_spiders()
 	{
 		global $db;
-		$banned_ips = array();
+		$spiders = array();
 		$query = $db->simple_select("spiders", "sid,name,useragent", "", array("order_by" => "LENGTH(useragent)", "order_dir" => "DESC"));
 		while($spider = $db->fetch_array($query))
 		{

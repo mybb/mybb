@@ -1002,6 +1002,8 @@ function install_done()
 	$cache->update_posticons();
 	$cache->update_update_check();
 	$cache->update_tasks();
+	$cache->update_spiders();
+	$cache->update_bannedips();
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

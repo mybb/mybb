@@ -349,6 +349,9 @@ function buildcaches()
 	$cache->update_posticons();
 	$cache->update_update_check();
 	$cache->update_tasks();
+	$cache->update_spiders();
+	$cache->update_bannedips();
+
 	$contents .= $lang->done."</p>";
 
 	$output->print_contents("$contents<p>".$lang->upgrade_continue."</p>");
