@@ -56,7 +56,7 @@ class Page extends DefaultPage
 
 	function output_nav_tabs($tabs=array(), $active='')
 	{
-		if(count($tabs) > 0)
+		if(count($tabs) > 1)
 		{
 			$first = true;
 			echo "<div class=\"nav_tabs\">";
