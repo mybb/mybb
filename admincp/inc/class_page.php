@@ -9,7 +9,7 @@
  * $Id$
  */
 
-class Page
+class DefaultPage
 {
 	var $style;
 
@@ -329,12 +329,12 @@ EOF;
 	
 }
 
-class sideBarItem
+class DefaultSidebarItem
 {
 	var $title;
 	var $menu_contents;
 	
-	function sideBarItem($title="")
+	function DefaultSidebarItem($title="")
 	{
 		$this->title = $title;
 	}
@@ -368,13 +368,13 @@ class sideBarItem
 	}
 }
 
-class PopupMenu
+class DefaultPopupMenu
 {
 	var $title;
 	var $id;
 	var $items;
 
-	function PopupMenu($id, $title='')
+	function DefaultPopupMenu($id, $title='')
 	{
 		$this->id = $id;
 		$this->title = $title;

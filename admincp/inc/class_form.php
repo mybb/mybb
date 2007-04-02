@@ -10,9 +10,9 @@
  */
 
 
-class Form
+class DefaultForm
 {
-	function Form($script, $method, $allow_uploads=0, $name="", $id="")
+	function DefaultForm($script, $method, $allow_uploads=0, $name="", $id="")
 	{
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
 		if($allow_uploads != 0)
@@ -335,12 +335,12 @@ class Form
 	}
 }
 
-class FormContainer
+class DefaultFormContainer
 {
 	var $container;
 	var $title;
 
-	function FormContainer($title='')
+	function DefaultFormContainer($title='')
 	{
 		$this->container = new Table();
 		$this->title = $title;

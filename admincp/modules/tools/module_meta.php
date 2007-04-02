@@ -69,7 +69,7 @@ function tools_action_handler($action)
 	$sub_menu['70'] = array("id" => "optimizedb", "title" => "Optimize Database", "link" => "index.php?".SID."&module=tools/optimizedb");
 
 
-	$sidebar = new sideBarItem("Maintenance");
+	$sidebar = new SidebarItem("Maintenance");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
@@ -81,7 +81,7 @@ function tools_action_handler($action)
 	$sub_menu['30'] = array("id" => "maillogs", "title" => "User Email Log", "link" => "index.php?".SID."&module=tools/maillogs");
 	$sub_menu['40'] = array("id" => "mailerrors", "title" => "System Mail Log", "link" => "index.php?".SID."&module=tools/mailerrors");
 	
-	$sidebar = new sideBarItem("Logs");
+	$sidebar = new SidebarItem("Logs");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();

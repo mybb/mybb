@@ -34,7 +34,7 @@ function forum_action_handler($action)
 	$sub_menu['30'] = array("id" => "moderation_queue", "title" => "Moderation Queue", "link" => "index.php?".SID."&module=forum/moderation_queue");
 	$sub_menu['40'] = array("id" => "attachments", "title" => "Attachments", "link" => "index.php?".SID."&module=forum/attachments");
 
-	$sidebar = new sideBarItem("Forums and Posts");
+	$sidebar = new SidebarItem("Forums and Posts");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();

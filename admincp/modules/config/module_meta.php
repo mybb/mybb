@@ -74,7 +74,7 @@ function config_action_handler($manage)
 	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
 	$sub_menu['120'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
 
-	$sidebar = new sideBarItem("Configuration");
+	$sidebar = new SidebarItem("Configuration");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 
 	$page->sidebar .= $sidebar->get_markup();

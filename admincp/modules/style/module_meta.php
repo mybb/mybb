@@ -31,7 +31,7 @@ function style_action_handler($action)
 	$sub_menu['10'] = array("id" => "themes", "title" => "Themes", "link" => "index.php?".SID."&module=style/themes");
 	$sub_menu['20'] = array("id" => "templates", "title" => "Templates", "link" => "index.php?".SID."&module=style/templates");
 
-	$sidebar = new sideBarItem("Templates and Style");
+	$sidebar = new SidebarItem("Templates and Style");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();

@@ -45,7 +45,7 @@ function user_action_handler($action)
 	$sub_menu['70'] = array("id" => "group_promotions", "title" => "Group Promotions", "link" => "index.php?".SID."&module=user/group_promotions");
 	$sub_menu['80'] = array("id" => "stats_and_logging", "title" => "Statistics and Logging", "link" => "index.php?".SID."&module=user/stats_and_logging");
 
-	$sidebar = new sideBarItem("Users and Groups");
+	$sidebar = new SidebarItem("Users and Groups");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();

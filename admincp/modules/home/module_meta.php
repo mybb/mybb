@@ -45,7 +45,7 @@ function home_action_handler($action)
 	$sub_menu['30'] = array("id" => "version_check", "title" => "Version Check", "link" => "index.php?".SID."&module=home/version_check");
 	$sub_menu['40'] = array("id" => "credits", "title" => "MyBB Credits", "link" => "index.php?".SID."&module=home/credits");
 
-	$sidebar = new sideBarItem("Home");
+	$sidebar = new SidebarItem("Home");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
@@ -59,7 +59,7 @@ function home_action_handler($action)
 	$sub_menu['50'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
 	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database backups", "link" => "index.php?".SID."&module=tools/backupdb");
 	
-	$sidebar = new sideBarItem("Quick Access");
+	$sidebar = new SidebarItem("Quick Access");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();

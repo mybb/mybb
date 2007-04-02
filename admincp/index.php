@@ -69,16 +69,41 @@ require_once MYBB_ADMIN_DIR."/inc/class_table.php";
 require_once MYBB_ADMIN_DIR."/inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-$page = new Page;
-
-if($mybb->settings['cpstyle'] && is_dir($config['admindir']."/styles/".$mybb->settings['cpstyle']))
+if($mybb->settings['cpstyle'] && is_dir(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']))
 {
-	$page->style = $mybb->settings['cpstyle'];
+	$cp_style = $mybb->settings['cpstyle'];
 }
 else
 {
-	$page->style = "default";
+	$cp_style = "default";
 }
+
+// Include the layout generation class overrides for this style
+if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
+{
+	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
+}
+
+// Check if any of the layout generation classes we can override exist in the style file
+$classes = array(
+	"Page" => "DefaultPage",
+	"SidebarItem" => "DefaultSidebarItem",
+	"PopupMenu" => "DefaultPopupMenu",
+	"Table" => "DefaultTable",
+	"Form" => "DefaultForm",
+	"FormContainer" => "DefaultFormContainer"
+);
+foreach($classes as $style_name => $default_name)
+{
+	// Style does not have this layout generation class, create it
+	if(!class_exists($style_name))
+	{
+		eval("class {$style_name} extends {$default_name} { }");
+	}
+}
+
+$page = new Page;
+$page->style = $cp_style;
 
 $lang->set_language($mybb->settings['cplanguage'], "admincp");
 

@@ -9,7 +9,7 @@
  * $Id$
  */
 
-class Table
+class DefaultTable
 {
 	var $cells = array();
 	var $rows = array();
