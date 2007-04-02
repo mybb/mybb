@@ -7435,6 +7435,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$forumstats}
 </tbody>
 </table>
-<br />]]></template></template>
+<br />]]></template>
 	</templates>
 </theme>
