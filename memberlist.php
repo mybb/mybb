@@ -9,6 +9,7 @@
  * $Id$
  */
 
+//test
 define("IN_MYBB", 1);
 
 $templatelist = "memberlist,memberlist_member,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar";
