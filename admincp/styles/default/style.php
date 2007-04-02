@@ -4,7 +4,7 @@
  *
  * It allows you to override our existing layout generation
  * classes with your own to further customise the Admin CP
- * layout beyond CSS
+ * layout beyond CSS.
  *
  * Your class name      Should extend
  * ---------------      -------------
@@ -15,7 +15,7 @@
  * Form                 DefaultForm
  * FormContainer        DefaultFormContainer
  *
- * For example, to output my own custom header:
+ * For example, to output your own custom header:
  *
  * class Page extends DefaultPage
  * {

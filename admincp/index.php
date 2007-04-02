@@ -69,42 +69,6 @@ require_once MYBB_ADMIN_DIR."/inc/class_table.php";
 require_once MYBB_ADMIN_DIR."/inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-if($mybb->settings['cpstyle'] && is_dir(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']))
-{
-	$cp_style = $mybb->settings['cpstyle'];
-}
-else
-{
-	$cp_style = "default";
-}
-
-// Include the layout generation class overrides for this style
-if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
-{
-	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
-}
-
-// Check if any of the layout generation classes we can override exist in the style file
-$classes = array(
-	"Page" => "DefaultPage",
-	"SidebarItem" => "DefaultSidebarItem",
-	"PopupMenu" => "DefaultPopupMenu",
-	"Table" => "DefaultTable",
-	"Form" => "DefaultForm",
-	"FormContainer" => "DefaultFormContainer"
-);
-foreach($classes as $style_name => $default_name)
-{
-	// Style does not have this layout generation class, create it
-	if(!class_exists($style_name))
-	{
-		eval("class {$style_name} extends {$default_name} { }");
-	}
-}
-
-$page = new Page;
-$page->style = $cp_style;
-
 $lang->set_language($mybb->settings['cplanguage'], "admincp");
 
 // Load global language phrases
@@ -245,9 +209,9 @@ if($mybb->user['uid'])
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
 	
-	if($admin_options['cpstyle'] && is_dir(MYBB_ADMIN_DIR."styles/{$admin_options['cpstyle']}"))
+	if($admin_options['cpstyle'] && is_dir(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}"))
 	{
-		$style = $admin_options['cpstyle'];
+		$cp_style = $admin_options['cpstyle'];
 	}
 
 	// Update the session information in the DB
@@ -261,7 +225,50 @@ if($mybb->user['uid'])
 	}
 	define("SID", "adminsid={$admin_session['sid']}");	
 }
-else
+
+// Load Admin CP style
+if(!$cp_style)
+{
+	if($mybb->settings['cpstyle'] && is_dir(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']))
+	{
+		$cp_style = $mybb->settings['cpstyle'];
+	}
+	else
+	{
+		$cp_style = "default";
+	}
+}
+
+// Include the layout generation class overrides for this style
+if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
+{
+	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
+}
+
+// Check if any of the layout generation classes we can override exist in the style file
+$classes = array(
+	"Page" => "DefaultPage",
+	"SidebarItem" => "DefaultSidebarItem",
+	"PopupMenu" => "DefaultPopupMenu",
+	"Table" => "DefaultTable",
+	"Form" => "DefaultForm",
+	"FormContainer" => "DefaultFormContainer"
+);
+foreach($classes as $style_name => $default_name)
+{
+	// Style does not have this layout generation class, create it
+	if(!class_exists($style_name))
+	{
+		eval("class {$style_name} extends {$default_name} { }");
+	}
+}
+
+$page = new Page;
+$page->style = $cp_style;
+
+
+// Do not have a valid Admin user, throw back to login page.
+if(!$mybb->user['uid'])
 {
 	if($fail_check == 1)
 	{
@@ -271,7 +278,7 @@ else
 	{
 		$page->show_login($login_message, "error");
 	}
-} // olivia hussley
+} // Olivia Hussley
 
 if($rand == 2 || $rand == 5)
 {

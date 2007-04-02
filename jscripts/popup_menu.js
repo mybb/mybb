@@ -28,14 +28,15 @@ PopupMenu.prototype = {
 	openMenu: function(e)
 	{
 		Event.stop(e);
+		Event.element(e).blur()
 		if(document.currentMenu == this.id)
 		{
-			this.closeMenu(document.currentMenu);
+			this.closeMenu();
 			return false;
 		}
 		else if(document.currentMenu != "")
 		{
-			this.closeMenu(document.currentMenu);
+			this.closeMenu();
 		}
 
 		offsetTop = offsetLeft = 0;
@@ -88,11 +89,14 @@ PopupMenu.prototype = {
 	},
 
 	closeMenu: function()
-	{
+	{	
 		menu = document.currentMenu;
-		menu = $(menu+"_popup");
-		this.menu.style.display = "none";
+		if(document.currentMenu)
+		{
+			menu = $(menu+"_popup");
+			menu.style.display = "none";
+		}
 		document.currentMenu = "";
-		document.onclick = function() { };
+		Event.stopObserving(document, 'click', this.closeMenu.bindAsEventListener(this));
 	}
 };

@@ -31,7 +31,7 @@ class DefaultTable
 			{
 				$cell['extra']['class'] .= " first";
 			}
-			elseif(!$data[$key+1])
+			elseif(!$this->cells[$key+1])
 			{
 				$cell['extra']['class'] .= " last";
 			}
@@ -103,7 +103,7 @@ class DefaultTable
 				{
 					$data['extra']['class'] .= " first";
 				}
-				elseif(!$data[$key+1])
+				elseif(!$this->headers[$key+1])
 				{
 					$data['extra']['class'] .= " last";
 				}
@@ -133,7 +133,7 @@ class DefaultTable
 			{
 				$table_row['class'] .= " first";
 			}
-			elseif(!$this->rows[$key+1])
+			else if(!$this->rows[$key+1])
 			{
 				$table_row['class'] .= " last";
 			}

@@ -61,6 +61,7 @@ class DefaultPage
 		echo "			<div class=\"breadcrumb\">\n";
 		echo $this->generate_breadcrumb();
 		echo "			</div>\n";
+		echo "           <div id=\"inner\">\n";
 		if($admin_session['data']['flash_message'])
 		{
 			$message = $admin_session['data']['flash_message']['message'];
@@ -77,6 +78,7 @@ class DefaultPage
 		global $maintimer, $db;
 		$totaltime = $maintimer->stop();
 		$querycount = $db->query_count;
+		echo "			</div>\n";
 		echo "		</div>\n";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
