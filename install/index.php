@@ -66,7 +66,7 @@ if(function_exists('sqlite_open'))
 {
 	$dboptions['sqlite2'] = array(
 		'title' => 'SQLite 2',
-		'structure_file' => 'sqlite_db_tables.php',
+		'structure_file' => 'sqlite2_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
 }
@@ -78,7 +78,7 @@ if(class_exists('PDO'))
 	{
 		$dboptions['sqlite3'] = array(
 			'title' => 'SQLite 3',
-			'structure_file' => 'sqlite_db_tables.php',
+			'structure_file' => 'sqlite3_db_tables.php',
 			'population_file' => 'mysql_db_inserts.php'
 		);
 	}
