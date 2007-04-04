@@ -224,7 +224,11 @@ if($mybb->user['uid'])
 		);
 		$db->update_query("adminsessions", $updated_session, "sid='".$db->escape_string($admin_session['sid'])."'");
 	}
-	define("SID", "adminsid={$admin_session['sid']}");	
+	define("SID", "adminsid={$admin_session['sid']}");
+
+	// Fetch administrator permissions
+	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
+
 }
 
 // Load Admin CP style
@@ -296,12 +300,16 @@ while(($module = readdir($dir)) !== false)
 {
 	if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
 	{
-		require_once $modules_dir."/".$module."/module_meta.php";
-		$meta_function = $module."_meta";
-		$initialized = $meta_function();
-		if($initialized == true)
+		// Do we have permissions to run this module (Note: home is accessible by all)
+		if($module == "home" || $mybb->admin['permissions'][$module])
 		{
-			$modules[$module] = 1;
+			require_once $modules_dir."/".$module."/module_meta.php";
+			$meta_function = $module."_meta";
+			$initialized = $meta_function();
+			if($initialized == true)
+			{
+				$modules[$module] = 1;
+			}
 		}
 	}
 }

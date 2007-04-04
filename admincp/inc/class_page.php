@@ -41,11 +41,11 @@ class DefaultPage
 			echo "	<link rel=\"stylesheet\" href=\"styles/{$this->style}/{$this->active_module}.css\" type=\"text/css\" />\n";
 		}
 
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.lite.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/general.js\"></script>\n";
-		echo "	<script type=\"text/javascript\" src=\"../jscripts/moo.ajax.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
+		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 		echo $this->extra_header;
 		echo "</head>\n";
 		echo "<body>\n";
@@ -267,15 +267,22 @@ EOF;
 		}
 	}
 	
-	function output_tab_control($name, $tabs=array())
+	function output_tab_control($tabs=array())
 	{
 		echo "<script type=\"text/javascript\">\n";
-		echo "  {$name} = new TabControl();\n";
-		foreach($tabs as $tab => $title)
-		{
-			echo "  {$name}.register('{$tab}', '{$title}');\n";			
-		}
+		echo "Event.observe(window,'load',function(){\n";
+		echo "	\$\$('.tabs').each(function(tabs)\n";
+		echo "	{\n";
+		echo "		new Control.Tabs(tabs);\n";
+		echo "	});\n";
+		echo "});\n";
 		echo "</script>\n";
+		echo "<ul class=\"tabs\">\n";
+		foreach($tabs as $anchor => $title)
+		{
+			echo "<li><a href=\"#tab_{$anchor}\">{$title}</a></li>\n";
+		}
+		echo "</ul>\n";
 	}
 
 	function output_nav_tabs($tabs=array(), $active='')

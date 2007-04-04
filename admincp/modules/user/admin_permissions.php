@@ -9,8 +9,28 @@
  * $Id$
  */
 
-
 $page->add_breadcrumb_item("Admin Permissions", "index.php?".SID."&amp;module=user/admin_permissions");
+
+if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->input['action'] == "group" || !$mybb->input['action'])
+{
+	$sub_tabs['user_permissions'] = array(
+		'title' => "User Permissions",
+		'link' => "index.php?".SID."&amp;module=user/admin_permissions",
+		'description' => "Here you can manage the administrator permissions for individual users. This effectively allows you to lock certain administrators out of different areas of the Admin CP."
+	);
+
+	$sub_tabs['group_permissions'] = array(
+		'title' => "Group Permissions",
+		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group",
+		'description' => "Administrator permissions can also be applied to user groups that have permission to access the Admin CP. Similarly you can use this tool to lock out entire administrative groups from accessing the different areas of the Admin CP."
+	);
+
+	$sub_tabs['default_permissions'] = array(
+		'title' => "Default Permissions",
+		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid=0",
+		'description' => "The default administrative permissions are those applied to users who do not have custom administrator permissions set for them or are not inheriting group administrator permissions."
+	);
+}
 
 if($mybb->input['action'] == "delete")
 {
@@ -58,6 +78,23 @@ if($mybb->input['action'] == "edit")
 {
 	if($mybb->request_method == "post")
 	{
+		foreach($mybb->input['permissions'] as $module => $actions)
+		{
+			$no_access = 0;
+			foreach($actions as $action => $access)
+			{
+				if($access == 0)
+				{
+					++$no_access;
+				}
+			}
+			// User can't access any actions in this module - just disallow it completely
+			if($no_access == count($actions))
+			{
+				unset($mybb->input['permissions'][$module]);
+			}
+		}
+
 		$db->update_query("adminoptions", array('permsset' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
 				
 		flash_message("The admin permissions have been successfully updated.", 'success');
@@ -93,29 +130,32 @@ if($mybb->input['action'] == "edit")
 	else
 	{
 		$query = $db->simple_select("adminoptions", "permsset", "uid='0'");
-		$permission_data = $db->fetch_array($query);
-		$permission_data['permsset'] = unserialize($permission_data['permsset']);
+		$admin_options = $db->fetch_array($query);
+		$permission_data = unserialize($admin_options['permsset']);
 		$page->add_breadcrumb_item("Default Permissions");
 		$title = "Default";
 	}
-	$permission_data = $permission_data['permsset'];
-	
+
 	$page->add_breadcrumb_item("Edit Permissions: {$title}");
 	
 	$page->output_header("Edit Permissions");
 	
-	$sub_tabs['edit_permissions'] = array(
-		'title' => "Edit Permissions",
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}",
-		'description' => "Here you can restrict access to entire tabs or individual pages. Be aware that the \"Home\" tab is accessible to all administrators."
-	);
+	if($uid != 0)
+	{
+		$sub_tabs['edit_permissions'] = array(
+			'title' => "Edit Permissions",
+			'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}",
+			'description' => "Here you can restrict access to entire tabs or individual pages. Be aware that the \"Home\" tab is accessible to all administrators."
+		);
 
-	$page->output_nav_tabs($sub_tabs, 'edit_permissions');
+		$page->output_nav_tabs($sub_tabs, 'edit_permissions');
+	}
 	
 	$form = new Form("index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit", "post", "edit");
 
 	echo $form->generate_hidden_field("uid", $uid);
 
+	// Fetch all of the modules we have
 	$modules_dir = MYBB_ADMIN_DIR."modules";
 	$dir = opendir($modules_dir);
 	while(($module = readdir($dir)) !== false)
@@ -124,29 +164,30 @@ if($mybb->input['action'] == "edit")
 		{
 			require_once $modules_dir."/".$module."/module_meta.php";
 			$meta_function = $module."_admin_permissions";
-			if(function_exists($meta_function))
+
+			// Module has no permissions, skip it
+			if(function_exists($meta_function) && is_array($meta_function()))
 			{
-				$permissions = $meta_function();
-				if(is_array($permissions))
-				{		
-					$form_container = new FormContainer("Tab: {$permissions['name']}");
-					$form_container->output_row("Can Access Tab? <em>*</em>", "If set to \"No,\" all other permissions for this tab are ignored.", $form->generate_yes_no_radio('permissions['.$module.'][tab]', intval($permission_data[$module]['tab']), array('yes' => 1, 'no' => 0)), 'permissions['.$module.'][tab]');
-					
-					foreach($permissions['permissions'] as $name => $title)
-					{
-						if($name == "tab")
-						{
-							continue;
-						}
-						$form_container->output_row("{$title} <em>*</em>", "", $form->generate_yes_no_radio('permissions['.$module.']['.$name.']', intval($permission_data[$module][$name]), array('yes' => 1, 'no' => 0)), 'permissions['.$module.']['.$name.']');
-					}
-					
-					$form_container->end();
-				}
+				$permission_modules[$module] = $meta_function();
+				$module_tabs[$module] = $permission_modules[$module]['name'];
 			}
 		}
 	}
-	closedir($dir);
+	closedir($modules_dir);
+	
+	$page->output_tab_control($module_tabs);
+
+	foreach($permission_modules as $key => $module)
+	{
+		echo "<div id=\"tab_{$key}\">\n";
+		$form_container = new FormContainer("{$module['name']}");
+		foreach($module['permissions'] as $action => $title)
+		{
+			$form_container->output_row("{$title} <em>*</em>", "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', intval($permission_data[$module][$name]), true), 'permissions['.$key.']['.$action.']');
+		}
+		$form_container->end();
+		echo "</div>\n";
+	}
 
 	$buttons[] = $form->generate_submit_button("Update Permissions");
 	$form->output_submit_wrapper($buttons);
@@ -160,12 +201,6 @@ if($mybb->input['action'] == "group")
 	$page->add_breadcrumb_item("Group Permissions");
 	$page->output_header("Group Permissions");
 	
-	$sub_tabs['group_permissions'] = array(
-		'title' => "Group Permissions",
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group",
-		'description' => "Here you can manage admin permissions for each administrator user group."
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'group_permissions');
 
 	$table = new Table;
@@ -237,22 +272,6 @@ if(!$mybb->input['action'])
 	$page->add_breadcrumb_item("User Permissions");
 	$page->output_header("User Permissions");
 	
-	$sub_tabs['user_permissions'] = array(
-		'title' => "User Permissions",
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions",
-		'description' => "Here you can manage admin permissions for individual users."
-	);
-
-	$sub_tabs['group_permissions'] = array(
-		'title' => "Group Permissions",
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group"
-	);
-
-	$sub_tabs['default_permissions'] = array(
-		'title' => "Default Permissions",
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid=0"
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'user_permissions');
 
 	$table = new Table;

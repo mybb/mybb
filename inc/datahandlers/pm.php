@@ -9,10 +9,11 @@
  * $Id$
  */
 
- /*
-EXAMPLE USE:
-
-*/
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
 
 /**
  * PM handling class, provides common structure to handle private messaging data.

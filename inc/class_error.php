@@ -101,6 +101,12 @@ class errorHandler {
 	{
 		global $mybb;
 
+		// Error reporting turned off (either globally or by @ before erroring statement
+		if(error_reporting() == 0)
+		{
+			return;
+		}
+
 		if(in_array($type, $this->ignore_types))
 		{
 			return;

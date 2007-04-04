@@ -211,9 +211,7 @@ function is_super_admin($uid)
 function check_admin_permissions($action)
 {
 	global $mybb, $page;
-	
-	$perms = get_admin_permissions($mybb->user['uid']);
-	if($perms['permsset'][$action['module']][$action['action']] != "1" || $perms['permsset'][$action['module']]['tab'] != "1")
+	if($mybb->admin['permissions'][$action['module']][$action['action']] != 1)
 	{
 		$page->output_header("Access Denied");
 		$page->add_breadcrumb_item("Access Denied", "index.php?".SID."&amp;module=home/index");
@@ -267,11 +265,11 @@ function get_admin_permissions($get_uid="", $get_gid="")
 			"limit" => "1"
 		);
 
-		$query = $db->simple_select("adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "permsset", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
 		$perms = $db->fetch_array($query);
 		$perms['permsset'] = unserialize($perms['permsset']);
 		
-		return $perms;
+		return $perms['permsset'];
 	}
 	else
 	{
@@ -299,15 +297,15 @@ function get_admin_permissions($get_uid="", $get_gid="")
 			if($perm['uid'] > 0)
 			{
 				$perms_user = $perm;
-				return $perms_user;
+				return $perms_user['permsset'];
 			}
 			elseif($perm['uid'] < 0)
 			{
-				$perms_group[] = $perm;
+				$perms_group[] = $perm['permsset'];
 			}
 			else
 			{
-				$perms_def = $perm;
+				$perms_def = $perm['permsset'];
 			}
 		}
 

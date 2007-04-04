@@ -7,7 +7,7 @@ var captcha = {
 	{
 		var imagehash = $('imagehash').value;
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=refresh_captcha&imagehash='+imagehash, {method: 'get', onComplete: function(request) { captcha.refresh_complete(request); }});
+		new Ajax.Request('xmlhttp.php?action=refresh_captcha&imagehash='+imagehash, {method: 'get', onComplete: function(request) { captcha.refresh_complete(request); }});
 		return false;
 	},
 

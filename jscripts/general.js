@@ -211,7 +211,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		new ajax('misc.php?action=markread&fid='+fid+'&ajax=1', {method: 'get', onComplete: function(request) {MyBB.forumMarkedRead(fid, request); }});
+		new Ajax.Request('misc.php?action=markread&fid='+fid+'&ajax=1', {method: 'get', onComplete: function(request) {MyBB.forumMarkedRead(fid, request); }});
 	},
 
 	forumMarkedRead: function(fid, request)
@@ -231,7 +231,7 @@ var MyBB = {
 		var local_offset = date.getTimezoneOffset() / 60;
 		if(Math.abs(parseInt(timezone_with_dst) + local_offset) == 1)
 		{
-			if(!new ajax('misc.php?action=dstswitch&ajax=1', {method: 'post'})) // Ajax update failed? (No ajax support) Fake it
+			if(!new Ajax.Request('misc.php?action=dstswitch&ajax=1', {method: 'post'})) // Ajax update failed? (No ajax support) Fake it
 			{
 				form = document.createElement("form");
 				form.setAttribute("method", "post");

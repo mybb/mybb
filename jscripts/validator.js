@@ -180,7 +180,7 @@ FormValidator.prototype = {
 						extra = "&" + options.extra_body + "=" + this.getValue(options.extra_body);
 					}
 
-					new ajax(options.url, {method:'post', postBody:"value=" + value + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
+					new Ajax.Request(options.url, {method:'post', postBody:"value=" + value + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
 
 					return "loading";
 					break;

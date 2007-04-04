@@ -282,15 +282,10 @@ class DefaultForm
 			$yes_checked = 1;
 			$no_checked = 0;
 		}
-		if($int == true && !is_array($int))
+		if($int == true)
 		{
-			$yes_value = 'yes';
-			$no_value = 'no';
-		}
-		else
-		{
-			$yes_value = $int['yes'];
-			$no_value = $int['no'];
+			$yes_value = 1;
+			$no_value = 0;
 		}
 		
 		$yes = $this->generate_radio_button($name, $yes_value, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
@@ -341,9 +336,10 @@ class DefaultFormContainer
 	var $container;
 	var $title;
 
-	function DefaultFormContainer($title='')
+	function DefaultFormContainer($title='', $extra_class='')
 	{
-		$this->container = new Table();
+		$this->container = new Table;
+		$this->extra_class = $extra_class;
 		$this->title = $title;
 	}
 
@@ -381,7 +377,7 @@ class DefaultFormContainer
 
 	function end()
 	{
-		$this->container->output($this->title, 1, "general form_container");
+		$this->container->output($this->title, 1, "general form_container {$this->extra_class}");
 	}
 }
 

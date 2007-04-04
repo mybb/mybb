@@ -245,7 +245,7 @@ html>body #menu ul {
 	border: 1px solid #0F5C8E;
 	margin: 0;
 	padding: 0;
-	margin-top: 14px;
+	margin-bottom: 14px;
 }
 
 .border_wrapper div.title {
@@ -642,7 +642,9 @@ div.success p em {
 	font-style: normal;
 	font-weight: bold;
 }
-
+.nav_tabs {
+margin-bottom: 10px;
+}
 .nav_tabs ul {
 	list-style: none;
 	padding: 0;
@@ -712,4 +714,39 @@ a img {
 
 option { 
 	padding-right: 10px;
+}
+
+ul.tabs {
+	width: 100%;
+	margin: 10px 0 0;
+	padding: 0;
+	list-style: none;
+height: 27px;
+border-left: 1px solid #0F5C8E;
+}
+
+ul.tabs li {
+	float: left;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+ul.tabs a {
+	float: left;
+	padding: 6px 10px;
+	text-decoration: none;
+	color: #577ED1;
+border: 1px solid #0F5C8E;
+border-left: 0;
+background: #efefef;
+border-bottom: 0;
+}
+ul.tabs a.active {
+	background: #0F5C8E repeat-x top left;
+	color: #fff;
+	font-size: 100%;
+	text-align: left;
+	font-weight: bold;
+	border: 1px solid #0F5C8E;
 }

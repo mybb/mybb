@@ -2306,10 +2306,9 @@ form {
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.lite.js?ver=120"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/moo.ajax.js?ver=120"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=120"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=120"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.js?ver=140"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=140"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=140"></script>
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script type="text/javascript">
 <!--

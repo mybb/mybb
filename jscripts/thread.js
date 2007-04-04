@@ -75,7 +75,7 @@ var Thread = {
 		if(use_xmlhttprequest == "yes")
 		{
 			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-			new ajax('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});
+			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});
 			return false;
 		}
 		else
@@ -183,7 +183,7 @@ var Thread = {
 
 		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
+		new Ajax.Request('xmlhttp.php?action=edit_post&do=get_post&pid='+pid, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
 		return false;
 	},
 
@@ -228,7 +228,7 @@ var Thread = {
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		
 		postData = "value="+encodeURIComponent(message).replace(/\+/g, "%2B");
-		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid+"&my_post_key="+my_post_key, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});
+		new Ajax.Request('xmlhttp.php?action=edit_post&do=update_post&pid='+pid+"&my_post_key="+my_post_key, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});
 	},
 
 	quickEditCancel: function(pid)
@@ -282,7 +282,7 @@ var Thread = {
 		this.quick_replying = 1;
 		var post_body = Form.serialize('quick_reply_form');
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('newreply.php?ajax=1', {method: 'post', postBody: post_body, onComplete: function(request) { Thread.quickReplyDone(request); }});
+		new Ajax.Request('newreply.php?ajax=1', {method: 'post', postBody: post_body, onComplete: function(request) { Thread.quickReplyDone(request); }});
 		return false;
 	},
 

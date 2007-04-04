@@ -221,7 +221,7 @@ autoComplete.prototype = {
 			}
 			else
 			{
-				new ajax(this.buildURL(value), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
+				new Ajax.Request(this.buildURL(value), {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
 			}
 		}
 		else

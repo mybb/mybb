@@ -181,19 +181,19 @@ class MailHandler
 	 */
 	function set_html_headers($message)
 	{
-		$mime_boundary = "----=_NextPart".md5(time());
+		$mime_boundary = "=_NextPart".md5(time());
 
-		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}{$this->delimiter}";
+		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}";
 		$this->message = "This is a multi-part message in MIME format.{$this->delimiter}{$this->delimiter}";
 
 		$this->message .= "--{$mime_boundary}{$this->delimiter}";
 		$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
-		$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
+		$this->message .= "Content-Transfer-Encoding: 7bit{$this->delimiter}{$this->delimiter}";
 		$this->message .= strip_tags($message)."{$this->delimiter}{$this->delimiter}";
 		
 		$this->message .= "--{$mime_boundary}{$this->delimiter}{$this->delimiter}";
 		$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
-		$this->message .= "Content-Transfer-Encoding: quoted-printable{$this->delimiter}{$this->delimiter}";
+		$this->message .= "Content-Transfer-Encoding: 7bit{$this->delimiter}{$this->delimiter}";
 		$this->message .= $message."{$this->delimiter}{$this->delimiter}";
 		
 		$this->message .= "--{$mime_boundary}--{$this->delimiter}{$this->delimiter}";
@@ -231,11 +231,11 @@ class MailHandler
 		$msg_id = md5(uniqid(time())) . "@" . $http_host;
 
 		$this->headers .= "Message-ID: <{$msg_id}>{$this->delimiter}";
-		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 		$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}";
 		$this->headers .= "X-Priority: 3{$this->delimiter}";
 		$this->headers .= "X-MSMail-Priority: Normal{$this->delimiter}";
 		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
+		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}
 	
 	/**

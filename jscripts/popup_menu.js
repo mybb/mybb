@@ -41,6 +41,7 @@ PopupMenu.prototype = {
 
 		offsetTop = offsetLeft = 0;
 		var element = $(this.id);
+		var width = Event.element(e).offsetWidth;
 		do
 		{
 			offsetTop += element.offsetTop || 0;
@@ -75,7 +76,7 @@ PopupMenu.prototype = {
 		pageSize = DomLib.getPageSize();
 		if(offsetLeft+menuWidth >= pageSize[0])
 		{
-			this.menu.style.left = (offsetLeft-menuWidth-2)+"px";
+			this.menu.style.left = (offsetLeft+width-menuWidth)+"px";
 			if(MyBB.browser == "ie")
 			{
 				this.menu.style.left = (parseInt(this.menu.style.left)-2)+"px";

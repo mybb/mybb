@@ -181,7 +181,7 @@ inlineEditor.prototype = {
 			{
 				postData = postData+"&"+idInfo[0]+"="+idInfo[1];
 			}
-			new ajax(this.url, {method: 'post', postBody: postData, onComplete: this.onComplete.bind(this)});
+			new Ajax.Request(this.url, {method: 'post', postBody: postData, onComplete: this.onComplete.bind(this)});
 		}
 		else
 		{
