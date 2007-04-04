@@ -60,4 +60,13 @@ function style_format_admin_log_data($action, $data)
 			break;
 	}
 }
+
+function style_admin_permissions()
+{
+	$admin_permissions = array(
+		"themes" => "Can Manage Themes?",
+		"templates" => "Can Manage Templates?",
+	);
+	return array("name" => "Templates &amp; Style", "permissions" => $admin_permissions);
+}
 ?>

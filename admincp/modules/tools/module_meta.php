@@ -55,12 +55,12 @@ function tools_action_handler($action)
 			$action_file = "mailerrors.php";
 			break;
 		default:
-			$page->active_action = "stats";
+			$page->active_action = "system_health";
 			$action_file = "index.php";
 	}
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "stats", "title" => "System Health", "link" => "index.php?".SID."&module=tools/stats");
+	$sub_menu['10'] = array("id" => "system_health", "title" => "System Health", "link" => "index.php?".SID."&module=tools/system_health");
 	$sub_menu['20'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
 	$sub_menu['30'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
 	$sub_menu['40'] = array("id" => "recould_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
@@ -127,5 +127,22 @@ function tools_format_admin_log_data($action, $data)
 			}
 			break;
 	}
+}
+
+function tools_admin_permissions()
+{
+	$admin_permissions = array(
+		"system_health" => "Can Access System Health?",
+		"cache" => "Can Manage Cache?",
+		"tasks" => "Can Manage Scheduled Tasks?",
+		"backupdb" => "Can Manage Backup Database?",
+		"optimize" => "Can Manage Optimize Database?",
+		"recount_rebuild" => "Can Recount and Rebuild?",
+		"adminlog" => "Can Manage Administrator Log?",
+		"modlog" => "Can Manage Moderator Log?",
+		"maillogs" => "Can Manage User Mail Log?",
+		"mailerrors" => "Can Manage System Mail Log?"
+	);
+	return array("name" => "Maintenance &amp; Tools", "permissions" => $admin_permissions);
 }
 ?>

@@ -257,7 +257,8 @@ if($mybb->input['action'] == "adminpermissions")
 		$primary_group_list .= $comma.$gid;
 		switch($db->type)
 		{
-			case "sqlite":
+			case "sqlite3":
+			case "sqlite2":
 				$secondary_group_list .= " OR ','|| u.additionalgroups||',' LIKE '%,{$gid},%'";
 				break;
 			default:

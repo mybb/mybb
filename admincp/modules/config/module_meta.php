@@ -103,4 +103,23 @@ function config_format_admin_log_data($action, $data)
 			break;
 	}
 }
+
+function config_admin_permissions()
+{
+	$admin_permissions = array(
+		"settings" => "Can Manage Settings?",
+		"banning" => "Can Manage Banned Accounts?",
+		"profile_fields" => "Can Manage Custom Profile Fields?",
+		"smilies" => "Can Manage Smilies?",
+		"badwords" => "Can Manage Bad Words?",
+		"mycode" => "Can Manage Custom MyCode?",
+		"languages" => "Can Manage Language Packs?",
+		"post_icons" => "Can Manage Post Icons?",
+		"help_documents" => "Can Manage Help Documents?",
+		"plugins" => "Can Manage Plugins?",
+		"attachment_types" => "Can Manage Attachment Types?",
+		"spiders" => "Can Manage Spiders / Bots?"
+	);
+	return array("name" => "Configuration", "permissions" => $admin_permissions);
+}
 ?>

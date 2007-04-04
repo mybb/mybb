@@ -955,7 +955,8 @@ if(is_array($threadcache))
 	{
 		switch($db->type)
 		{
-			case "sqlite":
+			case "sqlite3":
+			case "sqlite2":
 				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',') LIKE '%,-1,%' AND type = 't'");
 				break;
 			default:

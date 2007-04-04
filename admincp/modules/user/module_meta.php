@@ -74,4 +74,19 @@ function user_format_admin_log_data($action, $data)
 			break;
 	}
 }
+
+function user_admin_permissions()
+{
+	$admin_permissions = array(
+		"view" => "Can Manage Users?",
+		"groups" => "Can Manage User Groups?",
+		"titles" => "Can Manage User Titles?",
+		"banning" => "Can Manage User Bans?",
+		"admin_permissions" => "Can Manage Admin Permissoins?",
+		"mass_mail" => "Can Send Mass Mail?",
+		"group_promotions" => "Can Manage Group Promotoins?",
+		"stats_and_logging" => "Can Manage Statistics and Logs?",
+	);
+	return array("name" => "Users &amp; Groups", "permissions" => $admin_permissions);
+}
 ?>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adminoptions>
+	<user uid="0">
+		<permissions>
+			<module name="config">
+				<permission name="tab">0</permission>
+				<permission name="settings">0</permission>
+				<permission name="banning">0</permission>
+				<permission name="profile_fields">0</permission>
+				<permission name="smilies">0</permission>
+				<permission name="badwords">0</permission>
+				<permission name="mycode">0</permission>
+				<permission name="languages">0</permission>
+				<permission name="post_icons">0</permission>
+				<permission name="help_documents">0</permission>
+				<permission name="plugins">0</permission>
+				<permission name="attachment_types">0</permission>
+				<permission name="spiders">0</permission>
+			</module>			
+			<module name="forum">
+				<permission name="tab">0</permission>
+				<permission name="management">0</permission>
+				<permission name="announcements">0</permission>
+				<permission name="moderation_queue">0</permission>
+				<permission name="attachments">0</permission>
+			</module>
+			<module name="style">
+				<permission name="tab">0</permission>
+				<permission name="themes">0</permission>
+				<permission name="templates">0</permission>
+			</module>
+			<module name="tools">
+				<permission name="tab">0</permission>
+				<permission name="system_health">0</permission>
+				<permission name="cache">0</permission>
+				<permission name="tasks">0</permission>
+				<permission name="backupdb">0</permission>
+				<permission name="optimize">0</permission>
+				<permission name="adminlog">0</permission>
+				<permission name="modlog">0</permission>
+				<permission name="recount_rebuild">0</permission>
+				<permission name="maillogs">0</permission>
+				<permission name="mailerrors">0</permission>
+			</module>
+			<module name="user">
+				<permission name="tab">0</permission>
+				<permission name="view">0</permission>
+				<permission name="groups">0</permission>
+				<permission name="titles">0</permission>
+				<permission name="banning">0</permission>
+				<permission name="admin_permissions">0</permission>
+				<permission name="mass_mail">0</permission>
+				<permission name="group_promotions">0</permission>
+				<permission name="stats_and_logging">0</permission>
+			</module>
+		</permissions>
+	</user>
+	<user uid="-4">
+		<permissions>
+			<module name="config">
+				<permission name="tab">1</permission>
+				<permission name="settings">1</permission>
+				<permission name="banning">1</permission>
+				<permission name="profile_fields">1</permission>
+				<permission name="smilies">1</permission>
+				<permission name="badwords">1</permission>
+				<permission name="mycode">1</permission>
+				<permission name="languages">1</permission>
+				<permission name="post_icons">1</permission>
+				<permission name="help_documents">1</permission>
+				<permission name="plugins">1</permission>
+				<permission name="attachment_types">1</permission>
+				<permission name="spiders">1</permission>
+			</module>			
+			<module name="forum">
+				<permission name="tab">1</permission>
+				<permission name="management">1</permission>
+				<permission name="announcements">1</permission>
+				<permission name="moderation_queue">1</permission>
+				<permission name="attachments">1</permission>
+			</module>
+			<module name="style">
+				<permission name="tab">1</permission>
+				<permission name="themes">1</permission>
+				<permission name="templates">1</permission>
+			</module>
+			<module name="tools">
+				<permission name="tab">1</permission>
+				<permission name="system_health">1</permission>
+				<permission name="cache">1</permission>
+				<permission name="tasks">1</permission>
+				<permission name="backupdb">1</permission>
+				<permission name="optimize">1</permission>
+				<permission name="adminlog">1</permission>
+				<permission name="modlog">1</permission>
+				<permission name="recount_rebuild">1</permission>
+				<permission name="maillogs">1</permission>
+				<permission name="mailerrors">1</permission>
+			</module>
+			<module name="user">
+				<permission name="tab">1</permission>
+				<permission name="view">1</permission>
+				<permission name="groups">1</permission>
+				<permission name="titles">1</permission>
+				<permission name="banning">1</permission>
+				<permission name="admin_permissions">1</permission>
+				<permission name="mass_mail">1</permission>
+				<permission name="group_promotions">1</permission>
+				<permission name="stats_and_logging">1</permission>
+			</module>
+		</permissions>
+	</user>
+	<user uid="1">
+		<permissions>
+			<module name="config">
+				<permission name="tab">1</permission>
+				<permission name="settings">1</permission>
+				<permission name="banning">1</permission>
+				<permission name="profile_fields">1</permission>
+				<permission name="smilies">1</permission>
+				<permission name="badwords">1</permission>
+				<permission name="mycode">1</permission>
+				<permission name="languages">1</permission>
+				<permission name="post_icons">1</permission>
+				<permission name="help_documents">1</permission>
+				<permission name="plugins">1</permission>
+				<permission name="attachment_types">1</permission>
+				<permission name="spiders">1</permission>
+			</module>			
+			<module name="forum">
+				<permission name="tab">1</permission>
+				<permission name="management">1</permission>
+				<permission name="announcements">1</permission>
+				<permission name="moderation_queue">1</permission>
+				<permission name="attachments">1</permission>
+			</module>
+			<module name="style">
+				<permission name="tab">1</permission>
+				<permission name="themes">1</permission>
+				<permission name="templates">1</permission>
+			</module>
+			<module name="tools">
+				<permission name="tab">1</permission>
+				<permission name="system_health">1</permission>
+				<permission name="cache">1</permission>
+				<permission name="tasks">1</permission>
+				<permission name="backupdb">1</permission>
+				<permission name="optimize">1</permission>
+				<permission name="recount_rebuild">1</permission>
+				<permission name="adminlog">1</permission>
+				<permission name="modlog">1</permission>
+				<permission name="maillogs">1</permission>
+				<permission name="mailerrors">1</permission>
+			</module>
+			<module name="user">
+				<permission name="tab">1</permission>
+				<permission name="view">1</permission>
+				<permission name="groups">1</permission>
+				<permission name="titles">1</permission>
+				<permission name="banning">1</permission>
+				<permission name="admin_permissions">1</permission>
+				<permission name="mass_mail">1</permission>
+				<permission name="group_promotions">1</permission>
+				<permission name="stats_and_logging">1</permission>
+			</module>
+		</permissions>
+	</user>
+</adminoptions>

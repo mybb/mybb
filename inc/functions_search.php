@@ -452,7 +452,8 @@ function perform_search_mysql($search)
 				$forum = intval($forum);
 				switch($db->type)
 				{
-					case "sqlite":
+					case "sqlite3":
+					case "sqlite2":
 						$query = $db->query("
 							SELECT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
@@ -730,7 +731,8 @@ function perform_search_mysql_ft($search)
 			{
 				switch($db->type)
 				{
-					case "sqlite":
+					case "sqlite3":
+					case "sqlite2":
 						$query = $db->query("
 							SELECT f.fid 
 							FROM ".TABLE_PREFIX."forums f 

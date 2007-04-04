@@ -1232,13 +1232,6 @@ function forum_checkbox_list($name, $selected="", $fid="0", $depth="", $extra=""
 
 function checkadminpermissions($action)
 {
-	global $mybb, $lang;
-	$perms = getadminpermissions($mybb->user['uid']);
-	if($perms[$action] != "yes")
-	{
-		cperror($lang->access_denied);
-		exit;
-	}
 }
 
 function getadminpermissions($get_uid="", $get_gid="")

@@ -559,7 +559,8 @@ if($mybb->input['action'] == "do_email")
 		{
 			switch($db->type)
 			{
-				case "sqlite":
+				case "sqlite3":
+				case "sqlite2":
 					$conditions .= " OR (usergroup='".intval($group)."' OR ','||additionalgroups||',' LIKE '%,".intval($group).",%')";
 					break;
 				default:
@@ -1351,7 +1352,8 @@ if($mybb->input['action'] == "find")
 		{
 			switch($db->type)
 			{
-				case "sqlite":
+				case "sqlite3":
+				case "sqlite2":
 					$conditions .= " AND ','||additionalgroups||',' LIKE '%,".intval($group).",%'";
 					break;
 				default:
@@ -1366,7 +1368,8 @@ if($mybb->input['action'] == "find")
 		{
 			switch($db->type)
 			{
-				case "sqlite":
+				case "sqlite3":
+				case "sqlite2":
 					$conditions .= " AND (usergroup='".intval($group)."' OR ','||additionalgroups||',' LIKE '%,".intval($group).",%')";
 					break;
 				default:
@@ -1441,7 +1444,8 @@ if($mybb->input['action'] == "find")
 		
 		switch($db->type)
 		{
-			case "sqlite":
+			case "sqlite3":
+			case "sqlite2":
 				$conditions .= " AND '$uids' LIKE '%,'||uid||',%'";
 				break;
 			default:

@@ -18,7 +18,7 @@ function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
-
+	
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
 

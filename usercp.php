@@ -2161,7 +2161,8 @@ if($mybb->input['action'] == "usergroups")
 	
 	switch($db->type)
 	{
-		case "sqlite":
+		case "sqlite3":
+		case "sqlite2":
 			$query = $db->query("
 				SELECT g.title, g.gid, g.type, COUNT(u.uid) AS users, COUNT(j.rid) AS joinrequests, l.canmanagerequests, l.canmanagemembers
 				FROM ".TABLE_PREFIX."groupleaders l

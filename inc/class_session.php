@@ -98,7 +98,7 @@ class session
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
 		if((!$_COOKIE['sid'] || !$session['sid']) && $this->sid && $this->is_spider != true)
 		{
-			//my_setcookie("sid", $this->sid, -1, true);
+			my_setcookie("sid", $this->sid, -1, true);
 		}
 	}
 

@@ -192,4 +192,156 @@ function make_parent_list($fid, $navsep=",")
 	return $navigation;
 }
 
+function is_super_admin($uid)
+{
+	global $config;
+	
+	$config['super_admins'] = str_replace(" ", "", $config['super_admins']);
+	if(my_strpos(",{$config['super_admins']},", ",{$uid},") === false)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+
+function check_admin_permissions($action)
+{
+	global $mybb, $page;
+	
+	$perms = get_admin_permissions($mybb->user['uid']);
+	if($perms['permsset'][$action['module']][$action['action']] != "1" || $perms['permsset'][$action['module']]['tab'] != "1")
+	{
+		$page->output_header("Access Denied");
+		$page->add_breadcrumb_item("Access Denied", "index.php?".SID."&amp;module=home/index");
+		$page->output_error("<b>Access Denied</b><ul>You do not have permission to access this part of the administration control panel.");
+		$page->output_footer();
+		exit;
+	}
+}
+
+function get_admin_permissions($get_uid="", $get_gid="")
+{
+	global $db, $mybb;
+	
+	// Set UID and GID if none
+	$uid = $get_uid;
+	$gid = $get_gid;
+	
+	$gid_array = array();
+	
+	if($uid === "")
+	{
+		$uid = $mybb->user['uid'];
+	}
+	
+	if(!$gid)
+	{
+		// Prepare user's groups since the group isn't specified
+		$gid_array[] = (-1) * intval($mybb->user['usergroup']);
+		$additional_groups = explode(',', $mybb->user['additionalgroups']);
+		// Make sure gids are negative
+		foreach($additional_groups as $g)
+		{
+			$gid_array[] = (-1) * abs($g);
+		}
+	}
+	else
+	{
+		// Group is specified
+		// Make sure gid is negative
+		$gid = (-1) * abs($gid);
+	}
+
+	// What are we trying to find?
+	if($get_gid && !$get_uid)
+	{
+		// A group only
+		
+		$options = array(
+			"order_by" => "uid",
+			"order_dir" => "ASC",
+			"limit" => "1"
+		);
+
+		$query = $db->simple_select("adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
+		$perms = $db->fetch_array($query);
+		$perms['permsset'] = unserialize($perms['permsset']);
+		
+		return $perms;
+	}
+	else
+	{
+		// A user and/or group
+		
+		$options = array(
+			"order_by" => "uid",
+			"order_dir" => "DESC"
+		);
+		
+		// Prepare user's groups into SQL format
+		$group_sql = '';
+		foreach($gid_array as $gid)
+		{
+			$group_sql .= " OR uid='{$gid}'";
+		}
+		
+		$perms_group = array();
+		$query = $db->simple_select("adminoptions", "permsset, uid", "(uid='{$uid}'{$group_sql}) AND permsset != ''", $options);
+		while($perm = $db->fetch_array($query))
+		{
+			$perm['permsset'] = unserialize($perm['permsset']);
+			
+			// Sorting out which permission is which
+			if($perm['uid'] > 0)
+			{
+				$perms_user = $perm;
+				return $perms_user;
+			}
+			elseif($perm['uid'] < 0)
+			{
+				$perms_group[] = $perm;
+			}
+			else
+			{
+				$perms_def = $perm;
+			}
+		}
+
+		// Figure out group permissions...ugh.
+		foreach($perms_group['permsset'] as $gperms)
+		{
+			if(!isset($final_group_perms))
+			{
+				// Use this group as the base for admin group permissions
+				$final_group_perms = $gperms;
+				continue;
+			}
+			
+			// Loop through each specific permission to find the highest permission
+			foreach($gperms as $perm_name => $perm_value)
+			{
+				if($final_group_perms[$perm_name] != '1' && $perm_value == '1')
+				{
+					$final_group_perms[$perm_name] = '1';
+				}
+			}
+		}
+
+		// Send specific user, or group permissions before default.
+		// If user's permission are explicitly set, they've already been returned above.
+		if(isset($final_group_perms))
+		{
+			return $final_group_perms;
+		}
+		else
+		{
+			return $perms_def;
+		}
+	}
+}
+
 ?>

@@ -64,4 +64,15 @@ function forum_format_admin_log_data($action, $data)
 	}
 }
 
+function forum_admin_permissions()
+{
+	$admin_permissions = array(
+		"management" => "Can Manage Forums?",
+		"announcements" => "Can Manage Forum Announcements?",
+		"moderation_queue" => "Can Moderate Posts, Threads, and Attachments?",
+		"attachments" => "Can Manage Attachments?",
+	);
+	return array("name" => "Forum &amp; Posts", "permissions" => $admin_permissions);
+}
+
 ?>

@@ -282,7 +282,7 @@ class DefaultForm
 			$yes_checked = 1;
 			$no_checked = 0;
 		}
-		if($int == true)
+		if($int == true && !is_array($int))
 		{
 			$yes_value = 'yes';
 			$no_value = 'no';
@@ -292,6 +292,7 @@ class DefaultForm
 			$yes_value = $int['yes'];
 			$no_value = $int['no'];
 		}
+		
 		$yes = $this->generate_radio_button($name, $yes_value, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
 		$no = $this->generate_radio_button($name, $no_value, "No", array("class" => "radio_no", "checked" => $no_checked));
 		return $yes." ".$no;

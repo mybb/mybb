@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <settings version="120" exported="1129013345">
 	<settinggroup name="banning" title="Banning Options" description="Here you can ban IP addresses, email addresses, and usernames from being used." disporder="15" isdefault="yes">
 		<setting name="bannedusernames">

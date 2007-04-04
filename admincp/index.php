@@ -35,7 +35,8 @@ if(!$db->table_exists('adminlog2'))
 {
 	switch($config['dbtype'])
 	{
-		case "sqlite":
+		case "sqlite3":
+		case "sqlite2":
 			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
 			  uid int unsigned NOT NULL default '0',
 			  ipaddress varchar(50) NOT NULL default '',
@@ -318,6 +319,11 @@ else
 
 $action_handler = $run_module."_action_handler";
 $action_file = $action_handler($current_module[1]);
+
+if($run_module != "home")
+{
+	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
+}
 
 // Log the action this user is trying to perform
 log_admin_action();

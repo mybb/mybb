@@ -64,11 +64,24 @@ if(function_exists('mysql_connect'))
 
 if(function_exists('sqlite_open'))
 {
-	$dboptions['sqlite'] = array(
-		'title' => 'SQLite',
+	$dboptions['sqlite2'] = array(
+		'title' => 'SQLite 2',
 		'structure_file' => 'sqlite_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
+}
+
+if(class_exists('PDO'))
+{
+	$supported_dbs = PDO::getAvailableDrivers();
+	if(in_array('sqlite', $supported_dbs))
+	{
+		$dboptions['sqlite3'] = array(
+			'title' => 'SQLite 3',
+			'structure_file' => 'sqlite_db_tables.php',
+			'population_file' => 'mysql_db_inserts.php'
+		);
+	}
 }
 
 if(file_exists('lock'))
@@ -361,8 +374,6 @@ function database_info()
 		$dbengine = '';
 	}
 	
-	echo $dbengine;
-
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
 	{
@@ -615,7 +626,7 @@ function insert_templates()
 			'version' => $template['attributes']['version'],
 			'dateline' => time(),
 		);
-			
+		
 		$db->insert_query("templates", $insert_array);
 	}
 	update_theme(1, 0, $themebits, $css, 0);
@@ -939,32 +950,35 @@ function install_done()
 		'notepad' => ''
 	);
 	$db->insert_query('users', $newuser);
-	$uid = $db->insert_id();
+
+	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
+	$parser = new XMLParser($adminoptions);
+	$parser->collapse_dups = 0;
+	$tree = $parser->get_tree();
+	$insertmodule = array();
 	
-	$insert_array = array(
-		'uid' => $uid,
-		'permsset' => 1,
-		'caneditsettings' => 'yes',
-		'caneditann' => 'yes',
-		'caneditforums' => 'yes',
-		'canmodposts' => 'yes',
-		'caneditsmilies' => 'yes',
-		'caneditpicons' => 'yes',
-		'caneditthemes' => 'yes',
-		'canedittemps' => 'yes',
-		'caneditusers' => 'yes',
-		'caneditpfields' => 'yes',
-		'caneditugroups' => 'yes',
-		'caneditaperms' => 'yes',
-		'caneditutitles' => 'yes',
-		'caneditattach' => 'yes',
-		'canedithelp' => 'yes',
-		'caneditlangs' => 'yes',
-		'canrunmaint' => 'yes',
-		'canrundbtools' => 'yes',
-		'notes' => ''
-	);
-	$db->insert_query("adminoptions", $insert_array);
+	// Insert all the settings
+	foreach($tree['adminoptions'][0]['user'] as $users)
+	{			
+		$uid = $users['attributes']['uid'];
+		
+		foreach($users['permissions'][0]['module'] as $module)
+		{
+			foreach($module['permission'] as $permission)
+			{
+				$insertmodule[$module['attributes']['name']][$permission['attributes']['name']] = $permission['value'];
+			}
+		}
+		
+		$adminoptiondata = array(
+			'uid' => intval($uid),
+			'permsset' => $db->escape_string(serialize($insertmodule)),
+		);
+
+		$insertmodule = array();
+
+		$db->insert_query('adminoptions', $adminoptiondata);
+	}
 
 	// Automatic Login
 	my_unsetcookie('mybbuser');

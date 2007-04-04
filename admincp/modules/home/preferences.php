@@ -71,7 +71,7 @@ if(!$mybb->input['action'])
 	
 	$table->output("Personal Notes");	
 	
-	$buttons[] = $form->generate_submit_button("Save Personal Notes");
+	$buttons[] = $form->generate_submit_button("Save Personal Notes and Preferences");
 	$form->output_submit_wrapper($buttons);
 	
 	$form->end();

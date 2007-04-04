@@ -313,7 +313,8 @@ if($mybb->input['action'] == "do_delete")
 		$db->delete_query("forums", "fid='$fid'");
 		switch($db->type)
 		{
-			case "sqlite":
+			case "sqlite3":
+			case "sqlite2":
 				$query = $db->simple_select("forums", "*", "','|| parentlist|| ',' LIKE '%,$fid,%'");
 				break;
 			default:
@@ -361,7 +362,8 @@ if($mybb->input['action'] == "do_delete")
 		}
 		switch($db->type)
 		{
-			case "sqlite":
+			case "sqlite3":
+			case "sqlite2":
 				$db->delete_query("forums", "','||parentlist||',' LIKE '%,$fid,%'");
 				break;
 			default:
@@ -492,7 +494,8 @@ if($mybb->input['action'] == "do_edit")
 			// Rebuild the parentlist of all of the subforums of this forum
 			switch($db->type)
 			{
-				case "sqlite":
+				case "sqlite3":
+				case "sqlite2":
 					$query = $db->simple_select("forums", "fid", "','||parentlist||',' LIKE '%,$fid,%'");
 					break;
 				default:

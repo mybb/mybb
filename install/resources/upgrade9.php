@@ -383,8 +383,150 @@ function upgrade9_dbchanges3()
 	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=1 WHERE dst='yes'");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=0 WHERE dst='no'");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");
+	if(!$db->field_exists('dstcorrection', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
+	}
+	$db->query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permsset text NOT NULL default ''");
+	
+	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
+	$parser = new XMLParser($adminoptions);
+	$parser->collapse_dups = 0;
+	$tree = $parser->get_tree();
+	
+	// Fetch default permissions list
+	$default_permissions = array();
+	foreach($tree['adminoptions'][0]['user'] as $users)
+	{
+		$uid = $users['attributes']['uid'];
+		if($uid == 0)
+		{
+			foreach($users['permissions'][0]['module'] as $module)
+			{
+				foreach($module['permission'] as $permission)
+				{
+					$default_permissions[$module['attributes']['name']][$permission['attributes']['name']] = $permission['value'];
+				}
+			}
+			break;
+		}
+	}
+	
+	$convert_permissions = array(
+		"caneditsettings" => array(
+				"module" => "config",
+				"permission" => "settings"
+			),
+		"caneditann" => array(
+				"module" => "forum",
+				"permission" => "announcements",
+			),
+		"caneditforums" => array(
+				"module" => "forum",
+				"permission" => "management",
+			),
+		"canmodposts" => array(
+				"module" => "forum",
+				"permission" => "moderation_queue",
+			),
+		"caneditsmilies" => array(
+				"module" => "config",
+				"permission" => "smilies",
+			),
+		"caneditpicons" => array(
+				"module" => "config",
+				"permission" => "post_icons",
+			),
+		"caneditthemes" => array(
+				"module" => "style",
+				"permission" => "themes",
+			),
+		"canedittemps" => array(
+				"module" => "style",
+				"permission" => "templates",
+			),
+		"caneditusers" => array(
+				"module" => "user",
+				"permission" => "view",
+			),
+		"caneditpfields" => array(
+				"module" => "config",
+				"permission" => "profile_fields",
+			),
+		"caneditugroups" => array(
+				"module" => "user",
+				"permission" => "groups",
+			),
+		"caneditaperms" => array(
+				"module" => "user",
+				"permission" => "admin_permissions",
+			),
+		"caneditutitles" => array(
+				"module" => "user",
+				"permission" => "titles",
+			),
+		"caneditattach" => array(
+				"module" => "forum",
+				"permission" => "attachments",
+			),
+		"canedithelp" => array(
+				"module" => "config",
+				"permission" => "help_documents",
+			),
+		"caneditlangs" => array(
+				"module" => "config",
+				"permission" => "languages",
+			),
+		"canrunmaint" => array(
+				"module" => "tools",
+				"permission" => "recount_rebuild",
+			),
+		"canrundbtools" => array(
+				"module" => "tools",
+				"permission" => "backupdb",
+			),
+	);
+	
+	$new_permissions = $default_permissions;
+	
+	$query = $db->simple_select("adminoptions");
+	while($adminoption = $db->fetch_array($query))
+	{
+		foreach($adminoption as $field => $value)
+		{
+			if(strtolower(substr($field, 0, 3)) != "can")
+			{
+				continue;
+			}
+			
+			if(array_key_exists($field, $convert_permissions))
+			{
+				if($value == "yes")
+				{
+					$value = 1;
+				}
+				else
+				{
+					$value = $default_permissions[$convert_permissions[$field]['module']][$convert_permissions[$field]['permission']];
+				}
+				$new_permissions[$convert_permissions[$field]['module']][$convert_permissions[$field]['permission']] = $value;
+			}
+		}
+		
+		$db->update_query("adminoptions", array('permsset' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
+		
+		$new_permissions = array();	
+	}
+	
+	foreach($convert_permissions as $field => $value)
+	{
+		if($db->field_exists($field, "adminoptions"))
+		{
+			$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP {$field}");
+		}
+	}
+	
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

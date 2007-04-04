@@ -1532,7 +1532,8 @@ class Moderation
 				$groups[] = $group['gid'];
 				switch($db->type)
 				{
-					case "sqlite":
+					case "sqlite3":
+					case "sqlite2":
 						$additional_groups .= " OR ','||u.additionalgroups||',' LIKE ',{$group['gid']},'";
 						break;
 					default:
