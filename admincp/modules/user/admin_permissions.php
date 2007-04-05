@@ -175,6 +175,7 @@ if($mybb->input['action'] == "edit")
 	}
 	closedir($modules_dir);
 	
+	
 	$page->output_tab_control($module_tabs);
 
 	foreach($permission_modules as $key => $module)
@@ -183,7 +184,7 @@ if($mybb->input['action'] == "edit")
 		$form_container = new FormContainer("{$module['name']}");
 		foreach($module['permissions'] as $action => $title)
 		{
-			$form_container->output_row("{$title} <em>*</em>", "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', intval($permission_data[$module][$name]), true), 'permissions['.$key.']['.$action.']');
+			$form_container->output_row("{$title} <em>*</em>", "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', intval($permission_data[$key][$action]), array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
 		}
 		$form_container->end();
 		echo "</div>\n";

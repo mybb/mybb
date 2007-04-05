@@ -211,6 +211,7 @@ function is_super_admin($uid)
 function check_admin_permissions($action)
 {
 	global $mybb, $page;
+	
 	if($mybb->admin['permissions'][$action['module']][$action['action']] != 1)
 	{
 		$page->output_header("Access Denied");
@@ -310,7 +311,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 		}
 
 		// Figure out group permissions...ugh.
-		foreach($perms_group['permsset'] as $gperms)
+		foreach($perms_group as $gperms)
 		{
 			if(!isset($final_group_perms))
 			{
