@@ -23,7 +23,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int(10) NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
   notes text NOT NULL,
-  permsset text NOT NULL default '',
+  permissions text NOT NULL default '',
   PRIMARY KEY  (uid)
 ) TYPE=MyISAM;";
 

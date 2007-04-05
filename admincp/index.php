@@ -228,7 +228,6 @@ if($mybb->user['uid'])
 
 	// Fetch administrator permissions
 	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
-
 }
 
 // Load Admin CP style

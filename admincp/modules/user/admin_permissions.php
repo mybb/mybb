@@ -62,7 +62,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$newperms = array(
-			"permsset" => 0
+			"permissions" => 0
 		);
 		$db->update_query("adminoptions", $newperms, "uid = '{$mybb->input['uid']}'");
 		flash_message('The admin user/usergroup permissions has successfully been revoked.', 'success');
@@ -95,7 +95,7 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		$db->update_query("adminoptions", array('permsset' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
+		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
 				
 		flash_message("The admin permissions have been successfully updated.", 'success');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
@@ -129,9 +129,8 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$query = $db->simple_select("adminoptions", "permsset", "uid='0'");
-		$admin_options = $db->fetch_array($query);
-		$permission_data = unserialize($admin_options['permsset']);
+		$query = $db->simple_select("adminoptions", "permissions", "uid='0'");
+		$permission_data = unserialize($db->fetch_field($query, "permissions"));
 		$page->add_breadcrumb_item("Default Permissions");
 		$title = "Default";
 	}
@@ -210,7 +209,7 @@ if($mybb->input['action'] == "group")
 	
 	// Get usergroups with ACP access
 	$query = $db->query("
-		SELECT g.title, g.cancp, a.permsset, g.gid
+		SELECT g.title, g.cancp, a.permissions, g.gid
 		FROM ".TABLE_PREFIX."usergroups g
 		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
 		WHERE g.cancp = 'yes'
@@ -218,7 +217,7 @@ if($mybb->input['action'] == "group")
 	");
 	while($group = $db->fetch_array($query))
 	{
-		if($admin['permsset'])
+		if($admin['permissions'])
 		{
 			$perm_type = "group";
 		}
@@ -232,7 +231,7 @@ if($mybb->input['action'] == "group")
 		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"Permission type of the group\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/groups&amp;action=edit&amp;gid={$group['gid']}\" title=\"Edit Group\">{$group['title']}</a></strong><br /></div>");
 		
 		
-		if($group['permsset'])
+		if($group['permissions'])
 		{
 			$popup = new PopupMenu("groupperm_{$uid}", "Options");
 			$popup->add_item("Edit Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}");
@@ -309,7 +308,7 @@ if(!$mybb->input['action'])
 	$group_list = implode(',', array_keys($usergroups));
 	$secondary_groups = ','.$group_list.',';
 	$query = $db->query("
-		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permsset
+		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permissions
 		FROM ".TABLE_PREFIX."users u
 		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid=u.uid)
 		WHERE u.usergroup IN ({$primary_group_list}) {$secondary_group_list}
@@ -317,7 +316,7 @@ if(!$mybb->input['action'])
 	");
 	while($admin = $db->fetch_array($query))
 	{
-		if($admin['permsset'])
+		if($admin['permissions'])
 		{
 			$perm_type = "user";
 		}
@@ -368,7 +367,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
 		
 		$popup = new PopupMenu("adminperm_{$admin['uid']}", "Options");
-		if($admin['permsset'])
+		if($admin['permissions'])
 		{
 			$popup->add_item("Edit Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
 			

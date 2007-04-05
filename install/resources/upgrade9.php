@@ -388,7 +388,7 @@ function upgrade9_dbchanges3()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
 	}
 	$db->query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permsset text NOT NULL default ''");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
 	
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
 	$parser = new XMLParser($adminoptions);
@@ -514,7 +514,7 @@ function upgrade9_dbchanges3()
 			}
 		}
 		
-		$db->update_query("adminoptions", array('permsset' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
+		$db->update_query("adminoptions", array('permissions' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
 		
 		$new_permissions = array();	
 	}

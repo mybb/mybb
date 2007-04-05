@@ -972,7 +972,7 @@ function install_done()
 		
 		$adminoptiondata = array(
 			'uid' => intval($uid),
-			'permsset' => $db->escape_string(serialize($insertmodule)),
+			'permissions' => $db->escape_string(serialize($insertmodule)),
 		);
 
 		$insertmodule = array();

@@ -1278,7 +1278,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 			"limit" => "1"
 		);
 
-		$query = $db->simple_select("adminoptions", "*", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='$gid' OR uid='0') AND permissions != ''", $options);
 		$perms = $db->fetch_array($query);
 		return $perms;
 	}
@@ -1299,7 +1299,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 		}
 		
 		$perms_group = array();
-		$query = $db->simple_select("adminoptions", "*", "(uid='{$uid}'{$group_sql}) AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "*", "(uid='{$uid}'{$group_sql}) AND permissions != ''", $options);
 		while($perm = $db->fetch_array($query))
 		{
 			// Sorting out which permission is which

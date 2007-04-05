@@ -266,11 +266,10 @@ function get_admin_permissions($get_uid="", $get_gid="")
 			"limit" => "1"
 		);
 
-		$query = $db->simple_select("adminoptions", "permsset", "(uid='$gid' OR uid='0') AND permsset != ''", $options);
-		$perms = $db->fetch_array($query);
-		$perms['permsset'] = unserialize($perms['permsset']);
+		$query = $db->simple_select("adminoptions", "permissions", "(uid='$gid' OR uid='0') AND permissions != ''", $options);
+		$perms = unserialize($db->fetch_field($query, "permissions"));
 		
-		return $perms['permsset'];
+		return $perms;
 	}
 	else
 	{
@@ -289,24 +288,24 @@ function get_admin_permissions($get_uid="", $get_gid="")
 		}
 		
 		$perms_group = array();
-		$query = $db->simple_select("adminoptions", "permsset, uid", "(uid='{$uid}'{$group_sql}) AND permsset != ''", $options);
+		$query = $db->simple_select("adminoptions", "permissions, uid", "(uid='{$uid}'{$group_sql}) AND permissions != ''", $options);
 		while($perm = $db->fetch_array($query))
 		{
-			$perm['permsset'] = unserialize($perm['permsset']);
+			$perm['permissions'] = unserialize($perm['permissions']);
 			
 			// Sorting out which permission is which
 			if($perm['uid'] > 0)
 			{
 				$perms_user = $perm;
-				return $perms_user['permsset'];
+				return $perms_user['permissions'];
 			}
 			elseif($perm['uid'] < 0)
 			{
-				$perms_group[] = $perm['permsset'];
+				$perms_group[] = $perm['permissions'];
 			}
 			else
 			{
-				$perms_def = $perm['permsset'];
+				$perms_def = $perm['permissions'];
 			}
 		}
 
