@@ -1838,7 +1838,6 @@ function get_reputation($reputation, $uid=0)
  */
 function get_ip()
 {
-	global $db;
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 	{
 		if(preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses))
@@ -1865,7 +1864,7 @@ function get_ip()
 		}
 	}
 
-	$ip = $db->escape_string(preg_replace("#([^.0-9 ]*)#", $ip, ""));
+	$ip = preg_replace("#([^.0-9 ]*)#", $ip, "");
 
 	return $ip;
 }

@@ -330,6 +330,10 @@ if($mybb->input['action'] == "send")
 
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
+	if($do != "forward" || $do != "reply")
+	{
+		$do = "";
+	}
 	eval("\$send = \"".$templates->get("private_send")."\";");
 	$plugins->run_hooks("private_send_end");
 	output_page($send);
