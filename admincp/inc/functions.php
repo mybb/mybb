@@ -267,9 +267,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 		);
 
 		$query = $db->simple_select("adminoptions", "permissions", "(uid='$gid' OR uid='0') AND permissions != ''", $options);
-		$perms = unserialize($db->fetch_field($query, "permissions"));
-		
-		return $perms;
+		return unserialize($db->fetch_field($query, "permissions"));
 	}
 	else
 	{

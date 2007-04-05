@@ -405,6 +405,10 @@ if($mybb->input['action'] == "send")
 
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
+	if($do != "forward" && $do != "reply")
+	{
+		$do = "";
+	}
 	eval("\$send = \"".$templates->get("private_send")."\";");
 	$plugins->run_hooks("private_send_end");
 	output_page($send);
@@ -467,7 +471,20 @@ if($mybb->input['action'] == "read")
 		// Update the unread count - it has now changed.
 		update_pm_count($mybb->user['uid'], 6);
 	}
-	
+	// Replied PM?
+	else if($pm['status'] == 3 && $pm['statustime'])
+	{
+		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']).", ".my_date($mybb->settings['timeformat'], $pm['statustime']);
+		$actioned_on = sprintf($lang->you_replied_on, $reply_date);
+		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
+	}
+	else if($pm['status'] == 4 && $pm['statustime'])
+	{
+		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']).", ".my_date($mybb->settings['timeformat'], $pm['statustime']);
+		$actioned_on = sprintf($lang->you_forwarded_on, $forward_date);
+		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
+	}
+	print_r($pm);	
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 	if($pm['fromid'] == -2)
@@ -518,17 +535,14 @@ if($mybb->input['action'] == "read")
 		$bcc_recipients = implode(", ", $bcc_recipients);
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
 	}
-	
+
 	if(count($to_recipients) > 0)
 	{
 		$to_recipients = implode(", ", $to_recipients);
 	}
-	
-	$from_link = build_profile_link($pm['username'], $pm['fromid']);
-	
-	$sent_date = my_date($mybb->settings['dateformat'], $pm['dateline']);
-	$sent_time = my_date($mybb->settings['timeformat'], $pm['dateline']);
 
+	eval("\$pm['subject_extra'] = \"".$templates->get("private_read_to")."\";");
+	
 	add_breadcrumb($pm['subject']);
 	$message = build_postbit($pm, "2");
 	eval("\$read = \"".$templates->get("private_read")."\";");

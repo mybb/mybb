@@ -347,6 +347,7 @@ function build_postbit($post, $post_type=0)
 	$post['button_quickquote'] = '';
 	$post['button_report'] = '';
 	
+	// For private messages, fetch the reply/forward/delete icons
 	if($post_type == 2)
 	{
 		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");

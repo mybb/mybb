@@ -531,6 +531,22 @@ function upgrade9_dbchanges3()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+	$output->print_footer("9_dbchanges4");
+}
+
+function upgrade9_dbchanges4()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
+
+	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
+
+	$contents = "Done</p>";
+	$contents .= "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
 	$output->print_footer("9_done");
 }
 ?>

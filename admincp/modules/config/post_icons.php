@@ -9,6 +9,12 @@
  * $Id$
  */
 
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
+
 $page->add_breadcrumb_item("Post Icons", "index.php?".SID."&amp;module=config/post_icons");
 
 if($mybb->input['action'] == "add")

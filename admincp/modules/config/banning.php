@@ -9,6 +9,12 @@
  * $Id: settings.php 2918 2007-03-05 00:50:41Z Tikitiki $
  */
 
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
+
 $page->add_breadcrumb_item("Banning", "index.php?".SID."&amp;module=config/banning");
 
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")

@@ -526,14 +526,16 @@ class PMDataHandler extends DataHandler
 			if($pm['do'] == "reply")
 			{
 				$sql_array = array(
-					'status' => 3
+					'status' => 3,
+					'statustime' => time()
 				);
 				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
 			elseif($pm['do'] == "forward")
 			{
 				$sql_array = array(
-					'status' => 4
+					'status' => 4,
+					'statustime' => time()
 				);
 				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}

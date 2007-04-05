@@ -686,10 +686,18 @@ function configure()
 		}
 		
 		$currentlocation = get_current_location();
-		
+		echo $currentlocation;
 		if($currentlocation)
 		{
-			$cookiepath = my_substr($currentlocation, 0, my_strpos($currentlocation, '/install/')).'/';
+			$pos = my_strpos($currentlocation, '/install/');
+			if($pos === 0)
+			{
+				$cookiepath = "/";
+			}
+			else
+			{
+				$cookiepath = my_substr($currentlocation, 0, $pos).'/';
+			}
 		}
 		
 		$currentscript = $hostname.get_current_location();

@@ -9,6 +9,12 @@
  * $Id: group_promotions.php 2932 2007-03-10 05:48:55Z chris $
  */
 
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
+
 $page->add_breadcrumb_item("User Email Log", "index.php?".SID."&amp;module=tools/maillogs");
 
 if($mybb->input['action'] == "view")

@@ -3977,7 +3977,7 @@ form {
 </td>
 <td class="{$altbg}" width="85%" valign="top">
 <table width="100%">
-<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']}</strong></span>
+<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']} {$post['subject_extra']}</strong></span>
 <br />
 <div id="pid_{$post['pid']}">
 <p>
@@ -6027,9 +6027,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=yes">{$lang->deny_receipt}</a></span>]]></template>
-		<template name="private_read_bcc" version="140"><![CDATA[<tr>
-	<td class="trow1"><strong>{$lang->bcc}</strong></td>
-	<td class="trow1">{$bcc_recipients}</td>
+		<template name="private_read_to" version="140"><![CDATA[<br />
+To: {$to_recipients}
+{$bcc}]]></template>
+		<template name="private_read_bcc" version="140"><![CDATA[<br />{$lang->bcc} {$bcc_recipients}]]></template>
+		<template name="private_read_action" version="140"><![CDATA[<tr>
+	<td class="tcat" align="center"><strong>{$actioned_on}</strong></td>
 </tr>]]></template>
 		<template name="private_read" version="140"><![CDATA[<html>
 <head>
@@ -6044,34 +6047,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
-<td class="thead" colspan="2">
+<td class="thead">
 <strong>{$pm['subject']}</strong>
 </td>
 </tr>
-<tr>
-	<td class="tcat" colspan="2"><strong>{$lang->details}</strong></td>
-</tr>
-<tr>
-	<td class="trow1"><strong>{$lang->subject}</strong></td>
-	<td class="trow1">{$pm['subject']}</td>
-</tr>
-<tr>
-	<td class="trow2"><strong>{$lang->from}</strong></td>
-	<td class="trow2">{$from_link}</td>
-</tr>
-<tr>
-	<td class="trow1"><strong>{$lang->sent}</strong></td>
-	<td class="trow1">{$sent_date}, {$sent_time}</td>
-</tr>
-<tr>
-	<td class="trow2"><strong>{$lang->to}</strong></td>
-	<td class="trow2">{$to_recipients}</td>
-</tr>
-{$bcc}
-<tr>
-	<td class="tcat" colspan="2"><strong>{$lang->message}</strong></td>
-</tr>
-</table>
+{$action_time}
 {$message}
 {$footer}
 </body>

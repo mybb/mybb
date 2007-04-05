@@ -9,8 +9,11 @@
  * $Id$
  */
 
-// TODO: (Chris)
-// -- Task logs
+// Disallow direct access to this file for security reasons
+if(!defined("IN_MYBB"))
+{
+	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
+}
 
 require_once MYBB_ROOT."/inc/functions_task.php";
 
