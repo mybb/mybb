@@ -2309,7 +2309,7 @@ function get_ip()
 		}
 	}
 
-	$ip = preg_replace("#([^.0-9 ]*)#", $ip, "");
+	$ip = preg_replace("#([^.0-9 ]*)#", "", $ip);
 	return $ip;
 }
 
