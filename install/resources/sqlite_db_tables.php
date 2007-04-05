@@ -386,6 +386,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   dateline bigint(30) NOT NULL default '0',
   deletetime bigint(30) NOT NULL default '0',
   status int(1) NOT NULL default '0',
+  status bigint(30) NOT NULL default '0',
   includesig char(3) NOT NULL default '',
   smilieoff char(3) NOT NULL default '',
   receipt int(1) NOT NULL default '0',
