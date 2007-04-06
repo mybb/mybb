@@ -167,7 +167,7 @@ class databaseEngine
 		}
 	  	else
 	  	{
-			$query = @$this->db->query($string);
+			$query = $this->db->query($string);
 		}
 		
 		if($this->error_number($query) > 0 && !$hide_errors)
@@ -676,7 +676,7 @@ class databaseEngine
 	 */
 	function escape_string($string)
 	{
-		$string = sqlite_escape_string($string);
+		$string = $this->db->escape_string($string);
 		return $string;
 	}
 	

@@ -628,7 +628,6 @@ class postParser
 			return;
 		}
 
-		$code = str_replace('&amp;', '&', $code);
 		$code = str_replace('$', '&#36;', $code);
 		$code = preg_replace('#\$([0-9])#', '\\\$\\1', $code);
 		$code = str_replace('\\', '&#92;', $code);

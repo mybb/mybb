@@ -22,7 +22,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int(10) NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
   notes text NOT NULL,
-  permissions text NOT NULL default '0',
+  permissions text NOT NULL,
 );";
 
 $tables[] = "CREATE TABLE mybb_adminsessions (
@@ -386,7 +386,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   dateline bigint(30) NOT NULL default '0',
   deletetime bigint(30) NOT NULL default '0',
   status int(1) NOT NULL default '0',
-  status bigint(30) NOT NULL default '0',
+  statustime bigint(30) NOT NULL default '0',
   includesig char(3) NOT NULL default '',
   smilieoff char(3) NOT NULL default '',
   receipt int(1) NOT NULL default '0',

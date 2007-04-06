@@ -5443,8 +5443,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 ]]></template>
-		<template name="showthread_multipage" version="120"><![CDATA[<tr>
-<td class="tcat" colspan="2"><span class="smalltext"> {$multipage}</span></td>
+		<template name="showthread_multipage" version="125"><![CDATA[<tr>
+<td class="tcat" colspan="2"> {$multipage}</td>
 </tr>]]></template>
 		<template name="forumbit_moderators" version="120"><![CDATA[<br />{$lang->forumbit_moderated_by} {$moderators}]]></template>
 		<template name="moderation_deletepoll" version="140"><![CDATA[<html>

@@ -190,6 +190,11 @@ class pdoEngine {
 		return $query->columnCount();
 	}
 	
+	function escape_string($string)
+	{
+		return $this->db->quote($string);
+	}
+	
 	/**
 	 * Return a selected attribute
 	 *
