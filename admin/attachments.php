@@ -542,6 +542,10 @@ if($mybb->input['action'] == "stats")
 		while($attachment = $db->fetch_array($query))
 		{
 			$bgcolor = getaltbg();
+			if(!$attachment['username'])
+			{
+				$attachment['username'] = "<s>".$lang->unknown."</s>";
+			}
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
@@ -572,6 +576,10 @@ if($mybb->input['action'] == "stats")
 		{
 			$bgcolor = getaltbg();
 			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+			if(!$attachment['username'])
+			{
+				$attachment['username'] = "<s>".$lang->unknown."</s>";
+			}
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../attachment.php?aid=".$attachment['aid']."\">".$attachment['filename']."</a></td>\n";
 			echo "<td class=\"$bgcolor\" align=\"center\"><a href=\"../showthread.php?tid=".$attachment['tid']."&amp;pid=".$attachment['pid']."#pid".$attachment['pid']."\">".$attachment['subject']."</a></td>\n";
@@ -602,6 +610,10 @@ if($mybb->input['action'] == "stats")
 		{
 			$bgcolor = getaltbg();
 			$user['totalsize'] = get_friendly_size($user['totalsize']);
+			if(!$user['username'])
+			{
+				$user['username'] = "<s>".$lang->unknown."</s>";
+			}
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"../member.php?action=profile&amp;uid=".$user['uid']."\">".$user['username']."</a></td>\n";
 			echo "<td class=\"$bgcolor\"><a href=\"attachments.php?".SID."&amp;action=do_search&amp;username=".urlencode($user['username'])."\">".$user['totalsize']."</a></td>\n";
