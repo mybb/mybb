@@ -34,85 +34,102 @@ function upgrade9_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
 	
-	if(!$db->field_exists('recipients', "privatemessages"))
+	if($db->field_exists('recipients', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
-	}
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
+	}	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
 	
-	if(!$db->field_exists('deletetime', "privatemessages"))
+	if($db->field_exists('deletetime', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP deletetime;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
 	
-	if(!$db->field_exists('maxpmrecipients', "usergroups"))
+	
+	if($db->field_exists('maxpmrecipients', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxpmrecipients;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 
 	if($db->field_exists('newpms', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");
 	}
 	
-	if(!$db->field_exists('keywords', "searchlog"))
+	if($db->field_exists('keywords', "searchlog"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog DROP keywords;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
 	
-	if(!$db->field_exists('start_day', "events"))
+	if($db->field_exists('start_day', "events"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_day tinyint(2) unsigned NOT NULL");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_day;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_day tinyint(2) unsigned NOT NULL");
+	
 
-  	if(!$db->field_exists('start_month', "events"))
+  	if($db->field_exists('start_month', "events"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_month tinyint(2) unsigned NOT NULL");
-  	}
-	
-	if(!$db->field_exists('start_year', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_year smallint(4) unsigned NOT NULL");
-  	}
-	
-	if(!$db->field_exists('end_day', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_day tinyint(2) unsigned NOT NULL");
-  	}
-	
-	if(!$db->field_exists('end_month', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_month tinyint(2) unsigned NOT NULL");
-  	}
-	
-	if(!$db->field_exists('end_year', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_year smallint(4) unsigned NOT NULL");
-  	}
-	
-	if(!$db->field_exists('repeat_days', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD repeat_days varchar(20) NOT NULL");
-  	}
-	
-	if(!$db->field_exists('start_time_hours', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_hours varchar(2) NOT NULL");
-  	}
-	
-	if(!$db->field_exists('start_time_mins', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_mins varchar(2) NOT NULL");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_month;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_month tinyint(2) unsigned NOT NULL");
+	
+	if($db->field_exists('start_year', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_key;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_year smallint(4) unsigned NOT NULL");
+	
+	if($db->field_exists('end_day', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_day;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_day tinyint(2) unsigned NOT NULL");
+	
+	if($db->field_exists('end_month', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_month;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_month tinyint(2) unsigned NOT NULL");
+	
+	if($db->field_exists('end_year', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_year;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_year smallint(4) unsigned NOT NULL");
+	
+	if($db->field_exists('repeat_days', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP repeat_days;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD repeat_days varchar(20) NOT NULL");
+	
+	if($db->field_exists('start_time_hours', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_time_hours;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_hours varchar(2) NOT NULL");
+	
+	if($db->field_exists('start_time_mins', "events"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_time_mins;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_mins varchar(2) NOT NULL");
   	
-	if(!$db->field_exists('end_time_hours', "events"))
+	if($db->field_exists('end_time_hours', "events"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_hours varchar(2) NOT NULL");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_time_hours;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_hours varchar(2) NOT NULL");
   	
-	if(!$db->field_exists('end_time_mins', "events"))
+	if($db->field_exists('end_time_mins', "events"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_mins varchar(2) NOT NULL");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_time_mins");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_mins varchar(2) NOT NULL");
 	
 	$db->drop_table("maillogs");	
 	$db->drop_table("mailerrors");
@@ -175,25 +192,29 @@ function upgrade9_dbchanges()
 		PRIMARY KEY(plid)
  	) TYPE=MyISAM;");
 
-	if(!$db->field_exists('maxemails', "usergroups"))
+	if($db->field_exists('maxemails', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER cansendemail");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxemails;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER cansendemail");
 	
-	if(!$db->field_exists('parseorder', "mycode"))
+	if($db->field_exists('parseorder', "mycode"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."mycode DROP parseorder;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
 	
-	if(!$db->field_exists('mod_edit_posts', "forums"))
+	if($db->field_exists('mod_edit_posts', "forums"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts char(3) NOT NULL default '' AFTER modthreads");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP mod_edit_posts;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts char(3) NOT NULL default '' AFTER modthreads");
 
-	if(!$db->field_exists('pmnotice', "users"))
+	if($db->field_exists('pmnotice', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP pmnotice;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
 	
 	$db->drop_table("tasks");
 	$db->drop_table("tasklog");
@@ -261,6 +282,8 @@ function upgrade9_dbchanges()
 	
 	if($db->field_exists('fid', "threadsubscriptions"))
 	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
+	}
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
 	}
 	
@@ -271,14 +294,17 @@ function upgrade9_dbchanges()
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
 	}
 	
-	if(!$db->field_exists('dateline', "threadsubscriptions"))
+	if($db->field_exists('dateline', "threadsubscriptions"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP dateline;");
 	}
-	if(!$db->field_exists('dateline', "threadsubscriptions"))
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
+		
+	if($db->field_exists('dateline', "threadsubscriptions"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD subscriptionkey varchar(32) NOT NULL default ''");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."threadssubscriptions DROP dateline;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD subscriptionkey varchar(32) NOT NULL default ''");
 
 	if($db->field_exists('emailnotify', "users"))
 	{
@@ -383,10 +409,12 @@ function upgrade9_dbchanges3()
 	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=1 WHERE dst='yes'");
 	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=0 WHERE dst='no'");
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
-	if(!$db->field_exists('dstcorrection', "users"))
+	if($db->field_exists('dstcorrection', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP dstcorrection;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
+
 	$db->query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
 	
@@ -542,6 +570,10 @@ function upgrade9_dbchanges4()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 
+	if($db->field_exists('statustime', "privatemessages"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP statustime;");
+	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
 
 	$contents = "Done</p>";

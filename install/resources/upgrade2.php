@@ -36,10 +36,12 @@ function upgrade2_dbchanges()
 	  PRIMARY KEY(bid)
 	);");
 
-	if(!$db->field_exists("icon", TABLE_PREFIX."attachtypes"))
+	if($db->field_exists("icon", TABLE_PREFIX."attachtypes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes ADD icon varchar(100) NOT NULL;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes DROP icon;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."attachtypes ADD icon varchar(100) NOT NULL;");
+	
 	$db->query("DELETE FROM ".TABLE_PREFIX."attachtypes;");
 
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'Zip File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');");
@@ -58,24 +60,32 @@ function upgrade2_dbchanges()
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (15, '', 'application/pdf', 'pdf', 2048, 'images/attachtypes/pdf.gif');");
 	$db->query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (16, '', 'image/bmp', 'bmp', 500, 'images/attachtypes/image.gif');");
 
-	if(!$db->field_exists("outerwidth", TABLE_PREFIX."themes"))
+	if($db->field_exists("outerwidth", TABLE_PREFIX."themes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD outerwidth varchar(15) NOT NULL;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes DROP outerwidth;");
 	}
-	if(!$db->field_exists("icon", TABLE_PREFIX."themes"))
+	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD outerwidth varchar(15) NOT NULL;");
+	
+	if($db->field_exists("icon", TABLE_PREFIX."themes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD outercolor varchar(15) NOT NULL;");
-	}	
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes DROP icon;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD outercolor varchar(15) NOT NULL;");
+	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE body bodybgcolor varchar(15) NOT NULL;");
 	
-	if(!$db->field_exists("bodybgimage", TABLE_PREFIX."themes"))
+	if($db->field_exists("bodybgimage", TABLE_PREFIX."themes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD bodybgimage varchar(100) NOT NULL default '' AFTER bodybgcolor;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes DROP bodybgimage;");
 	}
-	if(!$db->field_exists("bodybgimageattributes", TABLE_PREFIX."themes"))
+	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD bodybgimage varchar(100) NOT NULL default '' AFTER bodybgcolor;");
+	
+	if($db->field_exists("bodybgimageattributes", TABLE_PREFIX."themes"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD bodybgimageattributes varchar(100) NOT NULL default '' AFTER bodybgimage;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."themes DROP bodydbimageattributes;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."themes ADD bodybgimageattributes varchar(100) NOT NULL default '' AFTER bodybgimage;");
+	
 	
 	$db->query("UPDATE ".TABLE_PREFIX."themes SET outerwidth='0', bodybgcolor='#e3e3e3', bodybgimage='images/Light/logo_bg.png', bodybgimageattributes='repeat-x'");
 	
@@ -88,28 +98,38 @@ function upgrade2_dbchanges()
 
 	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET cpstyle=''");
 
-	if(!$db->field_exists("language", TABLE_PREFIX."users"))
+	if($db->field_exists("language", TABLE_PREFIX."users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD language varchar(50) NOT NULL;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP language;");
 	}
-	if(!$db->field_exists("timeonline", TABLE_PREFIX."users"))
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD language varchar(50) NOT NULL;");
+	
+	if($db->field_exists("timeonline", TABLE_PREFIX."users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD timeonline bigint(30) NOT NULL default '0';");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP timeonline;");
 	}
-	if(!$db->field_exists("showcodebuttons", TABLE_PREFIX."users"))
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD timeonline bigint(30) NOT NULL default '0';");
+	
+	if($db->field_exists("showcodebuttons", TABLE_PREFIX."users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD showcodebuttons int(1) NOT NULL default '1';");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."user DROP showcodebuttons;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD showcodebuttons int(1) NOT NULL default '1';");
+	
 	$db->query("UPDATE ".TABLE_PREFIX."users SET language='english', showcodebuttons=1");
 
-	if(!$db->field_exists("oldgroup", TABLE_PREFIX."awaitingactivation"))
+	if($db->field_exists("oldgroup", TABLE_PREFIX."awaitingactivation"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation ADD oldgroup bigint(30) NOT NULL;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation DROP oldgroup;");
 	}
-	if(!$db->field_exists("misc", TABLE_PREFIX."awaitingactivation"))
+	$db->query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation ADD oldgroup bigint(30) NOT NULL;");
+	
+	if($db->field_exists("misc", TABLE_PREFIX."awaitingactivation"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation ADD misc varchar(255) NOT NULL;");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation DROP misc;");
 	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."awaitingactivation ADD misc varchar(255) NOT NULL;");
+	
 	$db->query("DELETE FROM ".TABLE_PREFIX."awaitingactivation WHERE type='e'");
 
 	$db->drop_table("settings");
