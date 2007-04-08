@@ -107,6 +107,16 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 $plugins->run_hooks("portal_start");
 
+// First validate announcement fids:
+$mybb->settings['portal_announcementsfid'] = explode(',', $mybb->settings['portal_announcementsfid']);
+if(is_array($mybb->settings['portal_announcementsfid']))
+{
+	foreach($mybb->settings['portal_announcementsfid'] as $fid)
+	{
+		$fid_array[] = intval($fid);
+	}
+	$mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
+}
 
 // get forums user cannot view
 $unviewable = get_unviewable_forums();
@@ -363,17 +373,6 @@ if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_
 }
 
 // Get latest news announcements
-// First validate announcement fids:
-$mybb->settings['portal_announcementsfid'] = explode(',', $mybb->settings['portal_announcementsfid']);
-if(is_array($mybb->settings['portal_announcementsfid']))
-{
-	foreach($mybb->settings['portal_announcementsfid'] as $fid)
-	{
-		$fid_array[] = intval($fid);
-	}
-	$mybb->settings['portal_announcementsfid'] = implode(',', $fid_array);
-}
-// And get them!
 $query = $db->simple_select(TABLE_PREFIX."forums", "*", "fid IN (".$mybb->settings['portal_announcementsfid'].")");
 while($forumrow = $db->fetch_array($query))
 {
