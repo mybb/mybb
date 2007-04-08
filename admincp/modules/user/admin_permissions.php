@@ -40,7 +40,7 @@ if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->inpu
 
 if($mybb->input['action'] == "delete")
 {
-	$uid = $mybb->input['uid'];
+	$uid = intval($mybb->input['uid']);
 	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
 	{
 		flash_message('Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.', 'error');
@@ -68,7 +68,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$newperms = array(
-			"permissions" => 0
+			"permissions" => ''
 		);
 		$db->update_query("adminoptions", $newperms, "uid = '{$mybb->input['uid']}'");
 		flash_message('The admin user/usergroup permissions has successfully been revoked.', 'success');
@@ -101,7 +101,17 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 
-		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
+		// Does an options row exist for this admin already?
+		$query = $db->simple_select("adminoptions", "COUNT(uid) AS existing_options", "uid='".intval($mybb->input['uid'])."'");
+		$existing_options = $db->fetch_field($query, "existing_options");
+		if($existing_options > 0)
+		{
+			$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($mybb->input['permissions']))), "uid = '".intval($mybb->input['uid'])."'");
+		}
+		else
+		{
+			$db->insert_query("adminoptions", array('uid' => intval($mybb->input['uid']), 'permissions' => $db->escape_string(serialize($mybb->input['permissions']))));
+		}
 				
 		flash_message("The admin permissions have been successfully updated.", 'success');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
@@ -122,7 +132,7 @@ if($mybb->input['action'] == "edit")
 		$admin = $db->fetch_array($query);
 		$permission_data = get_admin_permissions($uid, $admin['gid']);
 		$title = $admin['username'];
-		$page->add_breadcrumb_item("User Permissions");
+		$page->add_breadcrumb_item("User Permissions", "index.php?".SID."&amp;module=user/admin_permissions");
 	}
 	elseif($uid < 0)
 	{
@@ -131,7 +141,7 @@ if($mybb->input['action'] == "edit")
 		$group = $db->fetch_array($query);
 		$permission_data = get_admin_permissions("", $gid);
 		$title = $group['title'];
-		$page->add_breadcrumb_item("Group Permissions");
+		$page->add_breadcrumb_item("Group Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=groups");
 	}
 	else
 	{
@@ -140,8 +150,10 @@ if($mybb->input['action'] == "edit")
 		$page->add_breadcrumb_item("Default Permissions");
 		$title = "Default";
 	}
-
-	$page->add_breadcrumb_item("Edit Permissions: {$title}");
+	if($uid != 0)
+	{
+		$page->add_breadcrumb_item("Edit Permissions: {$title}");
+	}
 	
 	$page->output_header("Edit Permissions");
 	
@@ -223,7 +235,7 @@ if($mybb->input['action'] == "group")
 	");
 	while($group = $db->fetch_array($query))
 	{
-		if($admin['permissions'])
+		if($group['permissions'] != "")
 		{
 			$perm_type = "group";
 		}
@@ -231,26 +243,22 @@ if($mybb->input['action'] == "group")
 		{
 			$perm_type = "default";
 		}
-		
 		$uid = -$group['gid'];
-		
 		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"Permission type of the group\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/groups&amp;action=edit&amp;gid={$group['gid']}\" title=\"Edit Group\">{$group['title']}</a></strong><br /></div>");
-		
-		
-		if($group['permissions'])
+
+		if($group['permissions'] != "")
 		{
 			$popup = new PopupMenu("groupperm_{$uid}", "Options");
 			$popup->add_item("Edit Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}");
 			
 			// Check permissions for Revoke
-			$popup->add_item("Revoke Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$uid}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revolke this group\'s permissions?')");
+			$popup->add_item("Revoke Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$uid}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		}
 		else
 		{
 			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}\">Set Permissions</a>", array("class" => "align_center"));
 		}
-		
 		$table->construct_row();
 	}
 		
@@ -313,6 +321,20 @@ if(!$mybb->input['action'])
 	
 	$group_list = implode(',', array_keys($usergroups));
 	$secondary_groups = ','.$group_list.',';
+
+	// Get usergroups with ACP access
+	$query = $db->query("
+		SELECT g.title, g.cancp, a.permissions, g.gid
+		FROM ".TABLE_PREFIX."usergroups g
+		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
+		WHERE g.cancp = 'yes'
+		ORDER BY g.title ASC
+	");
+	while($group = $db->fetch_array($query))
+	{
+		$group_permissions[$group['gid']] = $group['permissions'];
+	}
+
 	$query = $db->query("
 		SELECT u.uid, u.username, u.lastactive, u.usergroup, u.additionalgroups, a.permissions
 		FROM ".TABLE_PREFIX."users u
@@ -322,7 +344,7 @@ if(!$mybb->input['action'])
 	");
 	while($admin = $db->fetch_array($query))
 	{
-		if($admin['permissions'])
+		if($admin['permissions'] != "")
 		{
 			$perm_type = "user";
 		}
@@ -332,7 +354,7 @@ if(!$mybb->input['action'])
 			foreach($groups as $group)
 			{
 				if($group == "") continue;
-				if($group_permissions[$group])
+				if($group_permissions[$group] != "")
 				{
 					$perm_type = "group";
 					break;
@@ -373,12 +395,10 @@ if(!$mybb->input['action'])
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
 		
 		$popup = new PopupMenu("adminperm_{$admin['uid']}", "Options");
-		if($admin['permissions'])
+		if($admin['permissions'] != "")
 		{
 			$popup->add_item("Edit Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
-			
-			// Check permissions for Revoke
-			$popup->add_item("Revoke Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$admin['uid']}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revolke this user\'s permissions?')");
+			$popup->add_item("Revoke Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$admin['uid']}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this user\'s permissions?')");
 		}
 		else
 		{

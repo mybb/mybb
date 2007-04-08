@@ -88,9 +88,9 @@ function user_admin_permissions()
 		"groups" => "Can Manage User Groups?",
 		"titles" => "Can Manage User Titles?",
 		"banning" => "Can Manage User Bans?",
-		"admin_permissions" => "Can Manage Admin Permissoins?",
+		"admin_permissions" => "Can Manage Admin Permissions?",
 		"mass_mail" => "Can Send Mass Mail?",
-		"group_promotions" => "Can Manage Group Promotoins?",
+		"group_promotions" => "Can Manage Group Promotions?",
 		"stats_and_logging" => "Can Manage Statistics and Logs?",
 	);
 	return array("name" => "Users &amp; Groups", "permissions" => $admin_permissions);
