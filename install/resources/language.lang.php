@@ -285,6 +285,7 @@ $l['admin_step_error_noemail'] = 'You did not enter your email address for the A
 
 $l['done_step_usergroupsinserted'] = "<p>Importing user groups...";
 $l['done_step_admincreated'] = '<p>Creating Administrator account...';
+$l['done_step_adminoptions'] = '<p>Building Administrator permissions\'s...';
 $l['done_step_cachebuilding'] = '<p>Building data cache\'s...';
 $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully been installed and configured correctly.</p>
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';

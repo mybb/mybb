@@ -35,10 +35,11 @@
 				<permission name="cache">0</permission>
 				<permission name="tasks">0</permission>
 				<permission name="backupdb">0</permission>
-				<permission name="optimize">0</permission>
+				<permission name="optimizedb">0</permission>
 				<permission name="adminlog">0</permission>
 				<permission name="modlog">0</permission>
 				<permission name="recount_rebuild">0</permission>
+				<permission name="php_info">1</permission>
 				<permission name="maillogs">0</permission>
 				<permission name="mailerrors">0</permission>
 			</module>
@@ -90,10 +91,11 @@
 				<permission name="cache">1</permission>
 				<permission name="tasks">1</permission>
 				<permission name="backupdb">1</permission>
-				<permission name="optimize">1</permission>
+				<permission name="optimizedb">1</permission>
 				<permission name="adminlog">1</permission>
 				<permission name="modlog">1</permission>
 				<permission name="recount_rebuild">1</permission>
+				<permission name="php_info">1</permission>
 				<permission name="maillogs">1</permission>
 				<permission name="mailerrors">1</permission>
 			</module>
@@ -145,8 +147,9 @@
 				<permission name="cache">1</permission>
 				<permission name="tasks">1</permission>
 				<permission name="backupdb">1</permission>
-				<permission name="optimize">1</permission>
+				<permission name="optimizedb">1</permission>
 				<permission name="recount_rebuild">1</permission>
+				<permission name="php_info">1</permission>
 				<permission name="adminlog">1</permission>
 				<permission name="modlog">1</permission>
 				<permission name="maillogs">1</permission>

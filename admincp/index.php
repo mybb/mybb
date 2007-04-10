@@ -46,6 +46,16 @@ if(!$db->table_exists('adminlog2'))
 			  data text NOT NULL default ''
 			);");
 			 break;
+		case "pgsql":
+			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
+			  uid int NOT NULL default '0',
+			  ipaddress varchar(50) NOT NULL default '',
+			  dateline bigint NOT NULL default '0',
+			  module varchar(50) NOT NULL default '',
+			  action varchar(50) NOT NULL default '',
+			  data text NOT NULL default ''
+			);");
+			 break;
 		default:
 			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
 			  uid int unsigned NOT NULL default '0',
@@ -61,7 +71,15 @@ if(!$db->table_exists('adminlog2'))
 
 if(!$db->field_exists('data', 'adminsessions'))
 {
-	$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
+	switch($config['dbtype'])
+	{
+		case "pgsql":
+			$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT");
+			$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ALTER COLUMN data SET NOT NULL");
+			break;
+		default:
+			$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
+	}
 }
 
 require_once MYBB_ADMIN_DIR."/inc/class_page.php";

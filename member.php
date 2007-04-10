@@ -963,7 +963,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	$newsession = array(
 		"uid" => $user['uid'],
 		"loginattempts" => 1,
-		);
+	);
 	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 
 	// Temporarily set the cookie remember option for the login cookies

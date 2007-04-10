@@ -1857,14 +1857,14 @@ if($mybb->input['action'] == "editlists")
 	$comma = '';
 	$buddysql = '';
 	$buddylist = '';
-	if(is_array($buddyarray))
+	if(!empty($buddyarray) && !empty($mybb->user['buddylist']))
 	{
 		foreach($buddyarray as $key => $buddyid)
 		{
-			$buddysql .= "$comma'$buddyid'";
+			$buddysql .= "{$comma}'{$buddyid}'";
 			$comma = ",";
 		}
-		$query = $db->simple_select("users", "username, uid", "uid IN ($buddysql)");
+		$query = $db->simple_select("users", "username, uid", "uid IN ({$buddysql})");
 		while($buddy = $db->fetch_array($query))
 		{
 			$uid = $buddy['uid'];
@@ -1876,7 +1876,7 @@ if($mybb->input['action'] == "editlists")
 	$ignoresql = '';
 	$ignorelist = '';
 	$ignorearray = explode(",", $mybb->user['ignorelist']);
-	if(is_array($ignorearray))
+	if(!empty($ignorearray) && !empty($mybb->user['ignorelist']))
 	{
 		foreach($ignorearray as $key => $ignoreid)
 		{

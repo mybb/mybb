@@ -2441,7 +2441,7 @@ function update_css_file($tid)
 	$update_theme = array(
 		"csscached" => 0
 	);
-	$db->update_query("themes", $update_theme, "tid='{$theme['tid']}'");
+	$db->update_query("themes", $update_theme, "tid='{$tid}'");
 	return false;
 }
 

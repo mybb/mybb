@@ -69,7 +69,7 @@ function tools_action_handler($action)
 	$sub_menu['10'] = array("id" => "system_health", "title" => "System Health", "link" => "index.php?".SID."&module=tools/system_health");
 	$sub_menu['20'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
 	$sub_menu['30'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
-	$sub_menu['40'] = array("id" => "recould_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
+	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
 	$sub_menu['50'] = array("id" => "php_info", "title" => "View PHP Info", "link" => "index.php?".SID."&module=tools/php_info");
 	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database Backups", "link" => "index.php?".SID."&module=tools/backupdb");
 	$sub_menu['70'] = array("id" => "optimizedb", "title" => "Optimize Database", "link" => "index.php?".SID."&module=tools/optimizedb");

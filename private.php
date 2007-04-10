@@ -484,7 +484,7 @@ if($mybb->input['action'] == "read")
 		$actioned_on = sprintf($lang->you_forwarded_on, $forward_date);
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
-	print_r($pm);	
+	
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 	if($pm['fromid'] == -2)

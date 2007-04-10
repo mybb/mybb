@@ -899,7 +899,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[Do you want to compress pages in GZip format when they are sent to the browser? This means quicker downloads for your visitors, and less traffic usage for you.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="gziplevel">

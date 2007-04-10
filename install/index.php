@@ -71,6 +71,15 @@ if(function_exists('sqlite_open'))
 	);
 }
 
+if(function_exists('pg_connect'))
+{
+	$dboptions['pgsql'] = array(
+		'title' => 'PostgreSQL',
+		'structure_file' => 'pgsql_db_tables.php',
+		'population_file' => 'mysql_db_inserts.php'
+	);
+}
+
 if(class_exists('PDO'))
 {
 	$supported_dbs = PDO::getAvailableDrivers();
@@ -377,7 +386,7 @@ function database_info()
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
 	{
-		if($dbengine != '' && $dbenginge == $dbfile)
+		if($dbengine != '' && $dbengine == $dbfile)
 		{
 			$dbengines .= "<option value=\"{$dbfile}\" selected=\"selected\">{$dbtype['title']}</option>";
 		}
@@ -958,14 +967,18 @@ function install_done()
 		'notepad' => ''
 	);
 	$db->insert_query('users', $newuser);
+	echo $lang->done . '</p>';
 
+	echo $lang->done_step_adminoptions;
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
 	$parser = new XMLParser($adminoptions);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 	$insertmodule = array();
 	
-	// Insert all the settings
+	$db->delete_query("adminoptions");
+	
+	// Insert all the admin permissions
 	foreach($tree['adminoptions'][0]['user'] as $users)
 	{			
 		$uid = $users['attributes']['uid'];
@@ -987,6 +1000,7 @@ function install_done()
 
 		$db->insert_query('adminoptions', $adminoptiondata);
 	}
+	echo $lang->done . '</p>';
 
 	// Automatic Login
 	my_unsetcookie('mybbuser');
