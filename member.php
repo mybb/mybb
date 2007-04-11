@@ -1342,12 +1342,11 @@ if($mybb->input['action'] == "profile")
 		$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
 	}
 	
-	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
 	// User is currently online and this user has permissions to view the user on the WOL
-	if($memprofile['lastactive'] > $timesearch && ($memprofile['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $memprofile['uid'] == $mybb->user['uid']))
+	$query = $db->simple_select("sessions", "location", "uid='$uid'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
+	if($db->num_rows($query) > 0 && ($memprofile['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $memprofile['uid'] == $mybb->user['uid']))
 	{
 		// Fetch location
-		$query = $db->simple_select("sessions", "location", "uid='$uid'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
 		$location = $db->fetch_field($query, "location");
 
 		// Fetch their current location
