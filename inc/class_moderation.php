@@ -929,7 +929,7 @@ class Moderation
 			"posts" => "+".($mergethread['replies']+1),
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
 		);
-		update_forum_counters($fiid, $updated_stats);
+		update_forum_counters($fid, $updated_stats);
 
 		return true;
 	}
