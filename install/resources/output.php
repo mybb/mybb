@@ -100,12 +100,16 @@ END;
 	}
 
 
-	function print_footer($nextact="")
+	function print_footer($nextact="", $refresh=true)
 	{
 		global $lang;
 		if($nextact && $this->openedform)
 		{
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
+			if($refresh == true)
+			{
+				echo "\n <meta http-equiv=\"Refresh\" content=\"4;url={$this->script}?action={$nextact}\">";
+			}
 			echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"".$lang->next." &raquo;\" /></div><br style=\"clear: both;\" />\n";
 			$formend = "</form>";
 		}

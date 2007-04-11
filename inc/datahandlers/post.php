@@ -769,18 +769,23 @@ class PostDataHandler extends DataHandler
 			{
 				$cache->updatemailqueue();
 			}
+			$thread_update = array("replies" => "+1"); 
+ 		 
+			$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'"); 
+			$attachmentcount = $db->fetch_field($query, "attachmentcount"); 
+
+			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 
 			// Update forum count
-			update_thread_count($post['tid']);
-			update_forum_count($post['fid']);
-			$cache->updatestats();
+			update_thread_counters($post['tid'], $thread_update); 
+ 			update_forum_counters($post['fid'], array("posts" => "+1"));
 		}
 		// Post is stuck in moderation queue
 		else if($visible == 0)
 		{
 			// Update the unapproved posts count for the current thread and current forum
-			update_thread_count($post['tid']);
-			update_forum_count($post['fid']);
+			update_thread_counters($post['tid'], array("unapprovedposts" => "+1")); 
+ 			update_forum_counters($post['fid'], array("unapprovedposts" => "+1"));
 		}
 
 		// Return the post's pid and whether or not it is visible.
@@ -1147,12 +1152,23 @@ class PostDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
 
-		// Thread is public - update the forum counts.
-		if($visible == 1 || $visible == 0)
-		{
-			$cache->updatestats();
-			update_thread_count($this->tid);
-			update_forum_count($thread['fid']);
+		$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'"); 
+		$attachmentcount = $db->fetch_field($query, "attachmentcount"); 
+		if($attachmentcount > 0) 
+		{ 
+			update_thread_counters($this->tid, array("attachmentcount" => "+{$attachmentcount}")); 
+		} 
+
+		if($visible == 1) 
+		{ 
+			update_thread_data($this->tid); 
+			update_forum_counters($thread['fid'], array("threads" => "+1", "posts" => "+1")); 
+		} 
+		else if($visible == 0) 
+		{ 
+			update_thread_data($this->tid); 
+			update_thread_counters($thread['tid'], array("replies" => 0, "unapprovedposts" => 1)); 
+			update_forum_counters($thread['fid'], array("unapprovedthreads" => "+1", "unapprovedposts" => "+1"));
 		}
 
 		// Return the post's pid and whether or not it is visible.
@@ -1293,7 +1309,6 @@ class PostDataHandler extends DataHandler
 		{
 			$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='{$post['uid']}' AND tid='{$post['tid']}'");
 		}
-		update_thread_attachment_count($post['tid']);
 
 		update_forum_count($post['fid']);
 	}

@@ -20,6 +20,12 @@
 function remove_attachment($pid, $posthash, $aid)
 {
 	global $db, $mybb;
+	
+	if($pid) 
+	{ 
+		$post = get_post($pid); 
+	} 
+	
 	$aid = intval($aid);
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
@@ -38,6 +44,10 @@ function remove_attachment($pid, $posthash, $aid)
 	{
 		@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
 	}
+	if($attachment['visible'] == 1 && $post['pid']) 
+	{ 
+ 		update_thread_counters($post['tid'], array("attachmentcount" => "-1")); 
+	}
 }
 
 /**
@@ -49,6 +59,12 @@ function remove_attachment($pid, $posthash, $aid)
 function remove_attachments($pid, $posthash="")
 {
 	global $db, $mybb;
+	
+	if($pid) 
+	{ 
+		$post = get_post($pid); 
+	} 
+	
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
@@ -58,14 +74,23 @@ function remove_attachments($pid, $posthash="")
 	{
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "pid='$pid'");
 	}
+	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
 	{
+		if($attachment['visible'] == 1) 
+		{ 
+			$num_attachments++; 
+		}
 		$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
 		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
 			@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
 		}
+	}
+	if($post['pid']) 
+ 	{ 
+ 		update_thread_counters($post['tid'], array("attachmentcount" => "-{$num_attachments}"));
 	}
 }
 
@@ -372,6 +397,12 @@ function upload_attachment($attachment)
 	}
 
 	$db->insert_query(TABLE_PREFIX."attachments", $attacharray);
+	
+	if($attacharray['pid'] > 0) 
+	{
+		$post = get_post($attacharray['pid']); 
+		update_thread_counters($post['tid'], array("attachmentcount" => +1)); 
+	}
 
 	$aid = $db->insert_id();
 	$ret['aid'] = $aid;

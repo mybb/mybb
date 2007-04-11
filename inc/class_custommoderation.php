@@ -17,12 +17,6 @@
 class CustomModeration extends Moderation
 {
 	/**
-	 * The thread IDs and forum IDs to be updated
-	 */
-	var $update_tids = array();
-	var $update_fids = array();
-
-	/**
 	 * Get info on a tool
 	 *
 	 * @param int Tool ID
@@ -89,9 +83,6 @@ class CustomModeration extends Moderation
 		// Always execute thead moderation
 		$this->execute_thread_moderation($thread_options, $tids);
 
-		// Update counts
-		$this->update_counts();
-
 		// If the thread is deleted, indicate to the calling script to redirect to the forum, and not the nonexistant thread
 		if($thread_options['deletethread'] == 'yes')
 		{
@@ -117,11 +108,8 @@ class CustomModeration extends Moderation
 			$tid = intval($tid[0]); // There's only 1 thread when doing inline post moderation
 		}
 
-		$this->update_tids[$tid] = 1;
-
 		// Get the information about thread
 		$thread = get_thread($tid);
-		$this->update_fids[$thread['fid']] = 1;
 
 		// If deleting posts, only do that
 		if($post_options['deleteposts'] == 'yes')
@@ -164,8 +152,6 @@ class CustomModeration extends Moderation
 				}
 				$new_subject = str_replace('{subject}', $thread['subject'], $post_options['splitpostsnewsubject']);
 				$new_tid = $this->split_posts($pids, $tid, $post_options['splitposts'], $new_subject);
-				$this->update_tids[$new_tid] = 1;
-				$this->update_fids[$post_options['splitposts']] = 1;
 				if($post_options['splitpostsclose'] == 'close') // Close new thread
 				{
 					$this->close_threads($new_tid);
@@ -231,8 +217,6 @@ class CustomModeration extends Moderation
 		$tid = intval($tids[0]); // Take the first thread to get thread data from
 		$query = $db->simple_select(TABLE_PREFIX."threads", 'fid', "tid='$tid'");
 		$thread = $db->fetch_array($query);
-
-		$this->update_fids[$thread['fid']] = 1;
 
 		// If deleting threads, only do that
 		if($thread_options['deletethread'] == 'yes')
@@ -314,7 +298,6 @@ class CustomModeration extends Moderation
 				{
 					$this->move_threads($tids, $thread_options['movethread']);
 				}
-				$this->update_fids[$thread_options['movethread']] = 1;
 			}
 			if($thread_options['copythread'] > 0 || $thread_options['copythread'] == -2) // Copy thread
 			{
@@ -322,13 +305,10 @@ class CustomModeration extends Moderation
 				{
 					$thread_options['copythread'] = $thread['fid'];
 				}
-				//var_dump($tids);
 				foreach($tids as $tid)
 				{
 					$new_tid = $this->move_thread($tid, $thread_options['copythread'], 'copy');
-					$this->update_tids[$new_tid] = 1;
 				}
-				$this->update_fids[$thread_options['copythread']] = 1;
 			}
 			if(trim($thread_options['newsubject']) != '{subject}') // Update thread subjects
 			{
@@ -374,29 +354,6 @@ class CustomModeration extends Moderation
 					}
 				}
 			}
-		}
-		foreach($tids as $tid)
-		{
-			$this->update_tids[$tid] = 1;
-		}
-		return true;
-	}
-
-	/**
-	 * Update Forum/Thread Counts
-	 *
-	 * @return boolean true
-	 */
-	function update_counts()
-	{
-		global $db;
-		foreach($this->update_tids as $tid => $val)
-		{
-			update_thread_count($tid);
-		}
-		foreach($this->update_fids as $fid => $val)
-		{
-			update_forum_count($fid);
 		}
 		return true;
 	}

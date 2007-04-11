@@ -384,13 +384,11 @@ switch($mybb->input['action'])
 		}
 		else
 		{
-			update_thread_count($tid);
 			$url = "showthread.php?tid=$tid";
 			mark_reports($tid, "thread");
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
-		update_forum_count($fid);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
 
@@ -1057,13 +1055,11 @@ switch($mybb->input['action'])
 		}
 		else
 		{
-			update_thread_count($tid);
 			mark_reports($plist, "posts");
 			$url = "showthread.php?tid=$tid";
 		}
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
-		update_forum_count($fid);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
 
