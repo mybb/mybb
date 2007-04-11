@@ -137,6 +137,7 @@ function run_shutdown()
 			$db = new databaseEngine;
 			$db->connect($config['hostname'], $config['username'], $config['password']);
 			$db->select_db($config['database']);
+			define("TABLE_PREFIX", $config['table_prefix']);
 			$db->set_table_prefix(TABLE_PREFIX);
 		}
 	}

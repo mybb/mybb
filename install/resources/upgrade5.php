@@ -543,7 +543,7 @@ function upgrade5_lastposts()
 
 		while($thread = $db->fetch_array($query))
 		{
-			update_thread_count($thread['tid']);
+			rebuild_thread_counters($thread['tid']);
 			if($thread['firstpost'] == 0)
 			{
 				update_first_post($thread['tid']);
