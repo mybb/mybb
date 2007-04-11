@@ -134,6 +134,8 @@ if($mybb->input['action'] == "edit")
 	$buttons[] = $form->generate_submit_button("Save Bad Word");
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+	
+	$page->output_footer();
 }
 
 if(!$mybb->input['action'])

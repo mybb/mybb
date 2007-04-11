@@ -298,7 +298,8 @@ if($mybb->input['action'] == "edit")
 			admin_redirect('index.php?'.SID.'&module=config/post_icons');
 		}
 	}
-
+	
+	$page->add_breadcrumb_item("Edit Post Icon");
 	$page->output_header("Post Icons - Edit");
 
 	$sub_tabs['edit_icon'] = array(

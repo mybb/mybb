@@ -9,11 +9,6 @@
  * $Id$
  */
 
-// Disallow direct access to this file for security reasons
-if(!defined("IN_MYBB"))
-{
-	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
-}
 
 $page->add_breadcrumb_item("Smilies", "index.php?".SID."&amp;module=config/smilies");
 
@@ -196,7 +191,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$mybb->input['name'] = $smilie;
+		$mybb->input = $smilie;
 	}
 
 	$form_container = new FormContainer("Edit Smilie");
@@ -255,100 +250,109 @@ if($mybb->input['action'] == "add_multiple")
 	{
 		if($mybb->input['step'] == 1)
 		{
-			$page->add_breadcrumb_item("Add Multiple Smilie");
-			$page->output_header("Smilies - Add Multiple Smilies");
-			
-			$sub_tabs['add_smilie'] = array(
-				'title' => "Add Smilie",
-				'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add"
-			);
-			$sub_tabs['add_multiple_smilies'] = array(
-				'title' => "Add Multiple Smilies",
-				'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
-				'description' => 'Here you can add multiple new smilie.'
-			);
-			
-			$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
-			$form = new Form("index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple", "post", "add_multiple");
-			echo $form->generate_hidden_field("step", "2");
-	
 			if(!trim($mybb->input['pathfolder']))
 			{
-				flash_message('You did not enter a path', 'error');
-				admin_redirect("index.php?".SID."&module=config/smilies&action=add_multiple");
+				$errors[] = "You did not enter a path";
 			}
 			
 			$path = $mybb->input['pathfolder'];
 			$dir = @opendir(MYBB_ROOT.$path);
+			
 			if(!$dir)
 			{
-				flash_message('You did not enter a valid path', 'error');
-				admin_redirect("index.php?".SID."&module=config/smilies&action=add_multiple");
+				$errors[] = "You did not enter a valid path";
 			}
 			
-			if(substr($path, -1, 1) !== "/")
+			if($path)
 			{
-				$path .= "/";
-			}
-			
-			echo $form->generate_hidden_field("pathfolder", $path);
-			
-			$query = $db->simple_select("smilies");
-			while($smilie = $db->fetch_array($query))
-			{
-				$asmilies[$smilie['image']] = 1;
-			}
-			
-			while($file = readdir($dir))
-			{
-				if($file != ".." && $file != ".")
+				if(substr($path, -1, 1) !== "/")
 				{
-					$ext = get_extension($file);
-					if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
+					$path .= "/";
+				}
+				
+				$query = $db->simple_select("smilies");
+				while($smilie = $db->fetch_array($query))
+				{
+					$asmilies[$smilie['image']] = 1;
+				}
+				
+				while($file = readdir($dir))
+				{
+					if($file != ".." && $file != ".")
 					{
-						if(!$asmilies[$path."/".$file])
+						$ext = get_extension($file);
+						if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 						{
-							$smilies[] = $file;
+							if(!$asmilies[$path.$file])
+							{
+								$smilies[] = $file;
+							}
 						}
 					}
 				}
-			}
-			closedir($dir);
+				closedir($dir);
 				
-			$form_container = new FormContainer("Add Multiple Smilies");
-			$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '10%'));
-			$form_container->output_row_header("Name");
-			$form_container->output_row_header("Text to Replace", array('width' => '20%'));
-			$form_container->output_row_header("Include?", array("class" => "align_center", 'width' => '5%'));			
-	
-			foreach($smilies as $key => $file)
-			{
-				$ext = get_extension($file);
-				$find = str_replace(".".$ext, "", $file);
-				$name = ucfirst($find);
-			
-				$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
-				$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
-				$form_container->output_cell($form->generate_text_box("find[{$file}]", ":".$find.":", array('id' => 'find', 'style' => 'width: 95%')));
-				$form_container->output_cell($form->generate_check_box("include[{$file}]", "yes", "", array('checked' => 1)), array("class" => "align_center"));
-				$form_container->construct_row();
+				if(count($smilies) == 0)
+				{
+					$errors[] = "There are no smilies in the specified directory, or all smilies in the directory have already been added.";
+				}
 			}
 			
-			if(count($form_container->container->rows) == 0)
+			if(!$errors)
 			{
-				flash_message('There are no images in the specified directory', 'error');
-				admin_redirect("index.php?".SID."&module=config/smilies&action=add_multiple");
-			}
-			
-			$form_container->end();
-			
-			$buttons[] = $form->generate_submit_button("Add Smilies");
+				$page->add_breadcrumb_item("Add Multiple Smilie");
+				$page->output_header("Smilies - Add Multiple Smilies");
+				
+				$sub_tabs['add_smilie'] = array(
+					'title' => "Add Smilie",
+					'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add"
+				);
+				$sub_tabs['add_multiple_smilies'] = array(
+					'title' => "Add Multiple Smilies",
+					'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
+					'description' => 'Here you can add multiple new smilie.'
+				);
+				
+				$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
+				$form = new Form("index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple", "post", "add_multiple");
+				echo $form->generate_hidden_field("step", "2");
+				echo $form->generate_hidden_field("pathfolder", $path);
+				
+				$form_container = new FormContainer("Add Multiple Smilies");
+				$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '10%'));
+				$form_container->output_row_header("Name");
+				$form_container->output_row_header("Text to Replace", array('width' => '20%'));
+				$form_container->output_row_header("Include?", array("class" => "align_center", 'width' => '5%'));			
 		
-			$form->output_submit_wrapper($buttons);
-			$form->end();
+				foreach($smilies as $key => $file)
+				{
+					$ext = get_extension($file);
+					$find = str_replace(".".$ext, "", $file);
+					$name = ucfirst($find);
+				
+					$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
+					$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
+					$form_container->output_cell($form->generate_text_box("find[{$file}]", ":".$find.":", array('id' => 'find', 'style' => 'width: 95%')));
+					$form_container->output_cell($form->generate_check_box("include[{$file}]", "yes", "", array('checked' => 1)), array("class" => "align_center"));
+					$form_container->construct_row();
+				}
+				
+				if(count($form_container->container->rows) == 0)
+				{
+					flash_message('There are no images in the specified directory', 'error');
+					admin_redirect("index.php?".SID."&module=config/smilies&action=add_multiple");
+				}
+				
+				$form_container->end();
+				
+				$buttons[] = $form->generate_submit_button("Add Smilies");
 			
-			$page->output_footer();
-			exit;
+				$form->output_submit_wrapper($buttons);
+				$form->end();
+				
+				$page->output_footer();
+				exit;
+			}
 		}
 		else
 		{

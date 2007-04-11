@@ -191,7 +191,7 @@ if($mybb->input['action'] == "edit")
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
-				"type" => $db->escape_string($thing),
+				"type" => $db->escape_string($mybb->input['fieldtype']),
 				"length" => intval($mybb->input['length']),
 				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),
