@@ -1436,7 +1436,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 				{
 					$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
 				}
-				$lastpostlink = get_thread_link($forum['lastposttid'], 0, "lastpost");
+				$lastpost_link = get_thread_link($forum['lastposttid'], 0, "lastpost");
 				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
 			}
 		}
