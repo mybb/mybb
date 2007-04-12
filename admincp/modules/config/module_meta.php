@@ -61,6 +61,10 @@ function config_action_handler($manage)
 			$page->active_action = "post_icons";
 			$action_file = "post_icons.php";
 			break;
+		case "help_documents":
+			$page->active_action = "help_documents";
+			$action_file = "help_documents.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
