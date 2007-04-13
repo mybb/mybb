@@ -456,7 +456,7 @@ function create_tables()
 
 function populate_tables()
 {
-	global $output, $lang;
+	global $output, $lang, $config;
 
 	require_once MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
@@ -485,7 +485,7 @@ function populate_tables()
 
 function insert_templates()
 {
-	global $output, $cache, $db, $lang;
+	global $output, $cache, $db, $lang, $config;
 
 	require_once MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
@@ -581,7 +581,7 @@ function configure()
 
 function create_admin_user()
 {
-	global $output, $mybb, $errors, $db, $lang;
+	global $output, $mybb, $errors, $db, $lang, $config;
 	$mybb->input['action'] = "adminuser";
 	// If no errors then check for errors from last step
 	if(!is_array($errors))
@@ -675,7 +675,7 @@ function create_admin_user()
 
 function install_done()
 {
-	global $output, $db, $mybb, $errors, $cache, $lang;
+	global $output, $db, $mybb, $errors, $cache, $lang, $config;
 
 	if(empty($mybb->input['adminuser']))
 	{

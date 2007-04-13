@@ -1047,15 +1047,6 @@ elseif($mybb->input['action'] == "profile")
 	$lang->users_signature = sprintf($lang->users_signature, $memprofile['username']);
 	$lang->send_user_email = sprintf($lang->send_user_email, $memprofile['username']);
 
-	if(!empty($memprofile['awayreason']))
-	{
-		$awayreason = $memprofile['awayreason'];
-	}
-	else
-	{
-		$awayreason = $lang->away_no_reason;
-	}
-
 	if($memprofile['avatar'])
 	{
 		$memprofile['avatar'] = htmlspecialchars_uni($memprofile['avatar']);
@@ -1138,7 +1129,14 @@ elseif($mybb->input['action'] == "profile")
 	{
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
-		$memprofile['awayreason'] = htmlspecialchars_uni($memprofile['awayreason']);
+		if(!empty($memprofile['awayreason']))
+		{
+			$awayreason = htmlspecialchars_uni($memprofile['awayreason']);
+		}
+		else
+		{
+			$awayreason = $lang->away_no_reason;
+		}
 		if($memprofile['returndate'] == '')
 		{
 			$returndate = "$lang->unknown";

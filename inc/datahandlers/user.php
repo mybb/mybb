@@ -870,7 +870,7 @@ class UserDataHandler extends DataHandler
 		$db->insert_query(TABLE_PREFIX."userfields", $user['user_fields']);
 
 		// Update forum stats
-		$cache->updatestats();
+		update_stats(array('numusers' => '+1'));
 
 		return array(
 			"uid" => $this->uid,

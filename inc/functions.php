@@ -1212,6 +1212,59 @@ function get_server_load()
 }
 
 /**
+ * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
+ *
+ * @param array Array of items being updated (numthreads,numposts,numusers)
+ */
+function update_stats($changes=array())
+{
+	global $cache, $db;
+
+	$stats = $cache->read("stats");
+
+	$counters = array('numthreads','numposts','numusers');
+	$update = array();
+	foreach($counters as $counter)
+	{
+		if(array_key_exists($counter, $changes))
+		{
+			// Adding or subtracting from previous value?
+			if(substr($changes[$counter], 0, 1) == "+" || substr($changes[$counter], 0, 1) == "-")
+			{
+				$new_stats[$counter] = $stats[$counter] + $changes[$counter];
+			}
+			else
+			{
+				$new_stats[$counter] = $changes[$counter];
+			}
+			// Less than 0? That's bad
+			if($new_stats[$counter] < 0)
+			{
+				$new_stats[$counter] = 0;
+			}
+		}
+	}
+
+	// Fetch latest user if the user count is changing
+	if(array_key_exists('numusers', $changes))
+	{
+		$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "", array('order_by' => 'uid', 'order_dir' => 'DESC', 'limit' => 1));
+		$lastmember = $db->fetch_array($query);
+		$new_stats['lastuid'] = $lastmember['uid'];
+		$new_stats['lastusername'] = $lastmember['username'];
+	}
+	if(is_array($stats))
+	{
+		$stats = array_merge($stats, $new_stats);
+	}
+	else
+	{
+		$stats = $new_stats;
+	}
+	$cache->update("stats", $stats);
+}
+
+/**
  * Updates the forum counters with a specific value (or addition/subtraction of the previous value)
  *
  * @param int The forum ID

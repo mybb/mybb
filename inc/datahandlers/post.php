@@ -1310,7 +1310,7 @@ class PostDataHandler extends DataHandler
 			$db->delete_query(TABLE_PREFIX."favorites", "type='s' AND uid='{$post['uid']}' AND tid='{$post['tid']}'");
 		}
 
-		update_forum_count($post['fid']);
+		update_forum_lastpost($post['fid']);
 	}
 }
 ?>

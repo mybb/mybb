@@ -616,7 +616,7 @@ switch($mybb->input['action'])
 
 		// Admin options
 		$adminoptions = "";
-		if($mybb->usergroup['cancp'] == "yes")
+		if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hide_admin_links'] != 1)
 		{
 			eval("\$adminoptions = \"".$templates->get("moderation_getip_adminoptions")."\";");
 		}

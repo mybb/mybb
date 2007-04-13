@@ -510,7 +510,7 @@ function upgrade5_forumlastposts()
 	$query = $db->simple_select(TABLE_PREFIX."forums", "fid");
 	while($forum = $db->fetch_array($query))
 	{
-		update_forum_count($forum['fid']);
+		update_forum_lastpost($forum['fid']);
 	}
 	echo "<p>Done";
 	echo "<p>Click next to continue with the upgrade process.</p>";
