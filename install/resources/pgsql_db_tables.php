@@ -667,7 +667,7 @@ $tables[] = "CREATE TABLE mybb_threads (
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0'
+  dateline int NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (

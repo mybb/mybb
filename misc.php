@@ -290,7 +290,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	$buddies = $mybb->user['buddylist'];
 	$buddys = array();
 	$namesarray = explode(',', $buddies);
-	if(is_array($namesarray))
+	if(is_array($namesarray) && !empty($buddies))
 	{
 		$comma = '';
 		$sql = '';

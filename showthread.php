@@ -423,6 +423,9 @@ if($mybb->input['action'] == "thread")
 		// For registered users, store the information in the database.
 		switch($db->type)
 		{
+			case "pgsql":
+				$db->shutdown_query($db->build_replace_query("threadsread", array('tid' => $tid, 'uid' => $mybb->user['uid'], 'dateline' => time()), "tid"));
+				break;
 			case "sqlite3":
 			case "sqlite2":
 				$db->shutdown_query("
@@ -844,6 +847,7 @@ if($mybb->input['action'] == "thread")
 		$customthreadtools = $customposttools = '';
 		switch($db->type)
 		{
+			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
 				$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%'");

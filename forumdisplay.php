@@ -334,7 +334,6 @@ if($datecut != 9999)
 	$checkdate = time() - ($datecut * 86400);
 	$datecutsql = "AND (lastpost >= '$checkdate' OR sticky = '1')";
 	$datecutsql2 = "AND (t.lastpost >= '$checkdate' OR t.sticky = '1')";
-	//$datecutsql = "AND lastpost >= '$checkdate'";
 }
 else
 {
@@ -462,7 +461,34 @@ $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
 if($foruminfo['allowtratings'] != "no")
 {
-	$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";
+	switch($db->type)
+	{
+		case "pgsql":
+			$ratingadd = "";
+			$query = $db->query("
+				SELECT t.numratings, t.totalratings, t.tid
+				FROM ".TABLE_PREFIX."threads t
+				WHERE t.fid='$fid' $visibleonly $datecutsql2
+				ORDER BY t.sticky DESC, t.$sortfield $sortordernow $sortfield2
+				LIMIT $start, $perpage
+			");
+			while($thread = $db->fetch_array($query))
+			{
+				if($thread['totalratings'] == 0)
+				{
+					$rating = 0;
+				}
+				else				
+				{
+					$rating = $thread['totalratings'] / $thread['numratings'];
+				}
+				
+				$avaragerating[$thread['tid']] = $rating;
+			}
+			break;
+		default:
+			$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";
+	}
 	$lpbackground = "trow2";
 	eval("\$ratingcol = \"".$templates->get("forumdisplay_threadlist_rating")."\";");
 	eval("\$ratingsort = \"".$templates->get("forumdisplay_threadlist_sortrating")."\";");
@@ -497,7 +523,6 @@ $query = $db->query("
 	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
 	ORDER BY a.startdate DESC $limit
 ");
-
 while($announcement = $db->fetch_array($query))
 {
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
@@ -561,6 +586,11 @@ $query = $db->query("
 ");
 while($thread = $db->fetch_array($query))
 {
+	if($db->type == "pgsql")
+	{
+		$thread['averagerating'] = $averagerating[$thread['tid']];
+	}
+	
 	$threadcache[$thread['tid']] = $thread;
 	
 	// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
@@ -955,9 +985,10 @@ if(is_array($threadcache))
 	{
 		switch($db->type)
 		{
+			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',') LIKE '%,-1,%' AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%') AND type = 't'");
 				break;
 			default:
 				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");

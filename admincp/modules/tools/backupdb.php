@@ -175,7 +175,7 @@ if($mybb->input['action'] == "backup")
 			}
 			
 			$field_list = array();
-			$query = $db->query("SHOW FIELDS FROM ".$table);
+			$query = $db->show_fields_from($table);
 			while($row = $db->fetch_array($query))
 			{
 				$field_list[] = $row['Field'];

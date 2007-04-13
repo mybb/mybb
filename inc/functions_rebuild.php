@@ -19,11 +19,26 @@ function rebuild_stats()
 	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "visible='1' AND closed NOT LIKE 'moved|%'");
 	$stats['numthreads'] = $db->fetch_field($query, 'threads');
 	
+	if(!$stats['numthreads'])
+	{
+		$stats['numthreads'] = 0;
+	}
+	
 	$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible='1'");
 	$stats['numposts'] = $db->fetch_field($query, 'posts');
+	
+	if(!$stats['numposts'])
+	{
+		$stats['numposts'] = 0;
+	}
 
 	$query = $db->simple_select("users", "COUNT(uid) AS users");
 	$stats['numusers'] = $db->fetch_field($query, 'users');
+	
+	if(!$stats['numusers'])
+	{
+		$stats['numusers'] = 0;
+	}
 
 	update_stats($stats);
 }
@@ -43,6 +58,11 @@ function rebuild_forum_counters($fid)
 	");
 	$count = $db->fetch_array($query);
 	$count['posts'] = $count['threads'] + $count['replies'];
+	
+	if(!$count['posts'])
+	{
+		$count['posts'] = 0;
+	}
 
 	// Fetch the number of threads and replies in this forum (Unapproved only)
 	$query = $db->query("
@@ -51,6 +71,11 @@ function rebuild_forum_counters($fid)
 		WHERE fid='$fid' AND visible='0' AND closed NOT LIKE 'moved|%'
 	");
 	$count['unapprovedthreads'] = $db->fetch_field($query, "threads");
+	
+	if(!$count['unapprovedthreads'])
+	{
+		$count['unapprovedthreads'] = 0;
+	}
 
 	$query = $db->query("
 		SELECT SUM(unapprovedposts) AS posts
@@ -58,6 +83,11 @@ function rebuild_forum_counters($fid)
 		WHERE fid='$fid' AND closed NOT LIKE 'moved|%'
 	");
 	$count['unapprovedposts'] = $db->fetch_field($query, "posts");
+	
+	if(!$count['unapprovedposts'])
+	{
+		$count['unapprovedposts'] = 0;
+	}
 
 	update_forum_counters($fid, $count);
 }
@@ -79,6 +109,11 @@ function rebuild_thread_counters($tid)
 	// Unapproved posts
 	$query = $db->simple_select("posts", "COUNT(*) AS totunposts", "tid='{$tid}' AND visible='0'");
 	$count['unapprovedposts'] = $db->fetch_field($query, "totunposts");
+	
+	if(!$count['unapprovedposts'])
+	{
+		$count['unapprovedposts'] = 0;
+	}
 
 	// Attachment count
 	$query = $db->query("
@@ -88,6 +123,11 @@ function rebuild_thread_counters($tid)
 			WHERE p.tid='$tid'
 	");
 	$count['attachmentcount'] = $db->fetch_field($query, "attachment_count");
+	
+	if(!$count['attachmentcount'])
+	{
+		$count['attachmentcount'] = 0;
+	}
 
 	update_thread_counters($tid, $count);
 }

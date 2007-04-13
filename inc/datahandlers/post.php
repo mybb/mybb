@@ -719,8 +719,16 @@ class PostDataHandler extends DataHandler
 
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
-		$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
-		$draft_check = $db->fetch_field($query, "tid");
+		var_dump($post['pid']);
+		if($post['pid'] > 0)
+		{
+			$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
+			$draft_check = $db->fetch_field($query, "tid");
+		}
+		else
+		{
+			$draft_check = false;
+		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($draft_check)
@@ -999,8 +1007,15 @@ class PostDataHandler extends DataHandler
 			$thread['tid'] = $db->fetch_field($query, "tid");
 		}
 
-		$query = $db->simple_select("posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
-		$draft_check = $db->fetch_field($query, "pid");
+		if($thread['pid'] > 0)
+		{
+			$query = $db->simple_select("posts", "pid", "pid='{$thread['pid']}' AND uid='{$thread['uid']}' AND visible='-2'");
+			$draft_check = $db->fetch_field($query, "pid");
+		}
+		else
+		{
+			$draft_check = false;
+		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
 		if($draft_check)
@@ -1082,8 +1097,8 @@ class PostDataHandler extends DataHandler
 			$this->pid = $db->insert_id();
 
 			// Now that we have the post id for this first post, update the threads table.
-			$firstpostup = array("firstpost" => $pid);
-			$db->update_query("threads", $firstpostup, "tid='{$tid}'");
+			$firstpostup = array("firstpost" => $this->pid);
+			$db->update_query("threads", $firstpostup, "tid='{$this->tid}'");
 		}
 
 		// If we're not saving a draft there are some things we need to check now
@@ -1162,16 +1177,21 @@ class PostDataHandler extends DataHandler
 					$db->query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
 				}
 			}
+			
+			if(!$forum['lastpost'])
+			{
+				$forum['lastpost'] = 0;
+			}
 
 			// Queue up any forum subscription notices to users who are subscribed to this forum.
 			$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
-				FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u
+				FROM ".TABLE_PREFIX."forumsubscriptions fs
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=fs.uid)
 				WHERE fs.fid='".intval($thread['fid'])."'
-				AND u.uid=fs.uid
-				AND fs.uid!='".intval($thread['uid'])."'
-				AND u.lastactive>'{$forum['lastpost']}'
+				AND fs.uid != '".intval($thread['uid'])."'
+				AND u.lastactive > '{$forum['lastpost']}'
 			");
 			while($subscribedmember = $db->fetch_array($query))
 			{

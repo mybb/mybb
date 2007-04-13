@@ -103,12 +103,14 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 $ip_address = get_ip();
 unset($user);
 
+$logged_out = false;
+
 if($mybb->input['action'] == "logout")
 {
 	// Delete session from the database
 	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
 	
-	$page->show_login("You have successfully been logged out.");
+	$logged_out = true;
 }
 elseif($mybb->input['do'] == "login")
 {
@@ -290,9 +292,13 @@ $page->style = $cp_style;
 
 
 // Do not have a valid Admin user, throw back to login page.
-if(!$mybb->user['uid'])
+if(!$mybb->user['uid'] || $logged_out == false)
 {
-	if($fail_check == 1)
+	if($logged_out == false)
+	{
+		$page->show_login("You have successfully been logged out.");
+	}
+	elseif($fail_check == 1)
 	{
 		$page->show_login("The username and password you entered are invalid or the account is not a valid administrator", "error");
 	}

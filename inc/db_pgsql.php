@@ -449,12 +449,13 @@ class databaseEngine
 	 */
 	function list_tables($database)
 	{
-		$query = $this->query("SELECT * FROM information_schema.tables WHERE table_schema='public'");
+		$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
 		
-		while(list($table) = pg_fetch_array($query))
+		while($table = $this->fetch_array($query))
 		{
-			$tables[] = $table;
+			$tables[] = $table['table_name'];
 		}
+
 		return $tables;
 	}
 
@@ -595,6 +596,34 @@ class databaseEngine
 			VALUES (".$query2.")
 		");
 	}
+	
+	/**
+	 * Build an insert query from an array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of fields and their values.
+	 * @return string The query string.
+	 */
+	function build_insert_query($table, $array)
+	{
+		$comma = $query1 = $query2 = "";
+		if(!is_array($array))
+		{
+			return false;
+		}
+		$comma = "";
+		$query1 = "";
+		$query2 = "";
+		foreach($array as $field => $value)
+		{
+			$query1 .= $comma.$field;
+			$query2 .= $comma."'".$value."'";
+			$comma = ", ";
+		}
+		return "INSERT 
+			INTO ".TABLE_PREFIX.$table." (".$query1.") 
+			VALUES (".$query2.")";
+	}
 
 	/**
 	 * Build an update query from an array.
@@ -606,6 +635,42 @@ class databaseEngine
 	 * @return resource The query data.
 	 */
 	function update_query($table, $array, $where="", $limit="")
+	{
+		if(!is_array($array))
+		{
+			return false;
+		}
+		$comma = "";
+		$query = "";
+		foreach($array as $field => $value)
+		{
+			$query .= $comma.$field."='".$value."'";
+			$comma = ", ";
+		}
+		if(!empty($where))
+		{
+			$query .= " WHERE $where";
+		}
+		if(!empty($limit))
+		{
+			$query .= " LIMIT $limit";
+		}
+		return $this->query("
+			UPDATE {$this->table_prefix}$table 
+			SET $query
+		");
+	}
+	
+	/**
+	 * Build an update query from an array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of fields and their values.
+	 * @param string An optional where clause for the query.
+	 * @param string An optional limit clause for the query.
+	 * @return string The query string.
+	 */
+	function build_update_query($table, $array, $where="", $limit="")
 	{
 		if(!is_array($array))
 		{
@@ -756,11 +821,22 @@ class databaseEngine
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->query("SHOW FIELDS FROM ".$this->table_prefix.$table."");
+		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+		$primary_key = $this->fetch_field($query, 'column_name');
 		
+		$query = $this->query("
+			SELECT column_name as Field, data_type as Extra
+			FROM information_schema.columns 
+			WHERE table_name = '{$this->table_prefix}{$table}'
+		");		
 		while($field = $this->fetch_array($query))
 		{
-			$field_info[] = $field;
+			if($field['field'] == $primary_key)
+			{
+				$field['extra'] = 'auto_increment';
+			}
+			
+			$field_info[] = array('Extra' => $field['extra'], 'Field' => $field['field']);
 		}
 		
 		return $field_info;
@@ -864,14 +940,22 @@ class databaseEngine
 	 * @param string The table
 	 * @param array The replacements
 	 */
-	function replace_query($table, $replacements=array())
+	function replace_query($table, $replacements=array(), $default_field="")
 	{
 		$i = 0;		
 		
-		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
-		$main_field = $this->fetch_field($query, 'column_name');
+		if($default_field == "")
+		{
+			$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+			$main_field = $this->fetch_field($query, 'column_name');
+		}
+		else
+		{
+			$main_field = $default_field;
+		}
 		
 		$query = $this->query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
+		
 		while($column = $this->fetch_array($query))
 		{
 			if($column[$main_field] == $replacements[$main_field])
@@ -888,6 +972,60 @@ class databaseEngine
 		{
 			return $this->insert_query($table, $replacements);
 		}
+	}
+	
+	/**
+	 * Replace contents of table with values
+	 *
+	 * @param string The table
+	 * @param array The replacements
+	 */
+	function build_replace_query($table, $replacements=array(), $default_field="")
+	{
+		$i = 0;		
+		
+		if($default_field == "")
+		{
+			$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+			$main_field = $this->fetch_field($query, 'column_name');
+		}
+		else
+		{
+			$main_field = $default_field;
+		}
+		
+		$query = $this->query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
+		
+		while($column = $this->fetch_array($query))
+		{
+			if($column[$main_field] == $replacements[$main_field])
+			{				
+				++$i;
+			}
+		}
+		
+		if($i > 0)
+		{
+			return $this->build_update_query($table, $replacements, "{$main_field}='".$replacements[$main_field]."'");
+		}
+		else
+		{
+			return $this->build_insert_query($table, $replacements);
+		}
+	}
+	
+	function build_fields_string($table, $append="")
+	{
+		$fields = $this->show_fields_from($table);
+		$comma = '';
+		
+		foreach($fields as $key => $field)
+		{
+			$fieldstring .= $comma.$append.$field['Field'];
+			$comma = ',';
+		}
+		
+		return $fieldstring;
 	}
 	
 	/**
@@ -910,16 +1048,16 @@ class databaseEngine
 	{
 		if($table != '')
 		{
-			$query = $this->query("SHOW TABLE STATUS LIKE '".$this->table_prefix.$table."'");
+			$query = $this->query("SELECT reltuples, relpages FROM pg_class WHERE relname = '".$this->table_prefix.$table."'");
 		}
 		else
 		{
-			$query = $this->query("SHOW TABLE STATUS");
+			$query = $this->query("SELECT reltuples, relpages FROM pg_class");
 		}
 		$total = 0;
 		while($table = $this->fetch_array($query))
 		{
-			$total += $table['Data_length']+$table['Index_length'];
+			$total += $table['relpages']+$table['reltuples'];
 		}
 		return $total;
 	}

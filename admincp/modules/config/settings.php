@@ -477,13 +477,26 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header("Setting Groups");
 
-	$query = $db->query("
-		SELECT g.*, COUNT(s.sid) AS settingcount 
-		FROM ".TABLE_PREFIX."settinggroups g 
-		LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
-		GROUP BY s.gid 
-		ORDER BY g.disporder
-	");
+	switch($db->type)
+	{
+		case "pgsql":
+			$query = $db->query("
+				SELECT g.*, COUNT(s.sid) AS settingcount 
+				FROM ".TABLE_PREFIX."settinggroups g 
+				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+				GROUP BY ".$db->build_fields_string("settinggroups", "g.")."
+				ORDER BY g.disporder
+			");
+			break;
+		default:
+			$query = $db->query("
+				SELECT g.*, COUNT(s.sid) AS settingcount 
+				FROM ".TABLE_PREFIX."settinggroups g 
+				LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
+				GROUP BY g.gid
+				ORDER BY g.disporder
+			");
+	}
 	while($group = $db->fetch_array($query))
 	{
 		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} Settings)<br /><small>{$group['description']}</small>");

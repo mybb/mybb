@@ -335,7 +335,7 @@ if($mybb->input['action'] == "edit")
 		
 		echo $form->generate_hidden_field("sid", $section['sid']);
 		
-		$form_container = new FormContainer("Edit Section");
+		$form_container = new FormContainer("Edit Section (ID {$section['sid']})");
 		$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row("Short Description <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row("Display Order", "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
@@ -459,7 +459,7 @@ if($mybb->input['action'] == "edit")
 		
 		echo $form->generate_hidden_field("hid", $doc['hid']);
 				
-		$form_container = new FormContainer("Edit Document");
+		$form_container = new FormContainer("Edit Document (ID {$doc['hid']})");
 		
 		$query = $db->simple_select("helpsections", "sid, name");
 		while($section = $db->fetch_array($query))

@@ -308,6 +308,7 @@ if(!$mybb->input['action'])
 		$primary_group_list .= $comma.$gid;
 		switch($db->type)
 		{
+			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
 				$secondary_group_list .= " OR ','|| u.additionalgroups||',' LIKE '%,{$gid},%'";
