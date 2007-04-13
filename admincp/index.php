@@ -292,9 +292,9 @@ $page->style = $cp_style;
 
 
 // Do not have a valid Admin user, throw back to login page.
-if(!$mybb->user['uid'] || $logged_out == false)
+if(!$mybb->user['uid'] || $logged_out == true)
 {
-	if($logged_out == false)
+	if($logged_out == true)
 	{
 		$page->show_login("You have successfully been logged out.");
 	}
