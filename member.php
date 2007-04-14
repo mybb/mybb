@@ -563,7 +563,7 @@ if($mybb->input['action'] == "register")
 			$emailnotifycheck = '';
 			$receivepmscheck = "checked=\"checked\"";
 			$pmpopupcheck = "checked=\"checked\"";
-			$pmnotifycheck = '';
+			$emailpmnotifycheck = '';
 			$invisiblecheck = '';
 			if($mybb->settings['dstcorrection'] == "yes")
 			{
