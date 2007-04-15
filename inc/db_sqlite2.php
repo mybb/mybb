@@ -423,7 +423,7 @@ class databaseEngine
 	 */
 	function list_tables($database)
 	{
-		$query = $this->query("SELECT * FROM sqlite_master WHERE (type = 'table')");
+		$query = $this->query("SELECT * FROM sqlite_master WHERE type = 'table'");
 		while(list($table) = sqlite_fetch_array($query))
 		{
 			$tables[] = $table;
@@ -575,6 +575,8 @@ class databaseEngine
 			$comma = ", ";
 		}
 		
+		echo "INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");<br />";
+		
 		return $this->query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
 	}
 
@@ -707,10 +709,9 @@ class databaseEngine
 	 */
 	function show_create_table($table)
 	{
-		$query = $this->query("SHOW CREATE TABLE ".$this->table_prefix.$table."");
-		$structure = $this->fetch_array($query);
+		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}' ORDER BY type DESC, name");
 		
-		return $structure['Create Table'];
+		return $this->fetch_field($query, 'sql');
 	}
 
 	/**
@@ -721,10 +722,19 @@ class databaseEngine
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->query("SHOW FIELDS FROM ".$this->table_prefix.$table."");
-		while($field = $this->fetch_array($query))
+		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}'");
+		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
+
+		preg_match('#\((.*)\)#s', $table, $matches);
+
+		$field_info = array();
+		$table_cols = explode(',', trim($matches[1]));
+		foreach($table_cols as $declaration)
 		{
-			$field_info[] = $field;
+			$entities = preg_split('#\s+#', trim($declaration));
+			$column_name = preg_replace('/"?([^"]+)"?/', '\1', $entities[0]);
+
+			$field_info[] = array('Extra' => $entities[1], 'Field' => $column_name);
 		}
 		
 		return $field_info;

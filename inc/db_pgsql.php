@@ -806,11 +806,105 @@ class databaseEngine
 	 * @return string The pg command to create the specified table.
 	 */
 	function show_create_table($table)
-	{
-		$query = $this->query("SHOW CREATE TABLE ".$this->table_prefix.$table."");
-		$structure = $this->fetch_array($query);
+	{		
+		$query = $this->query("
+			SELECT a.attnum, a.attname as field, t.typname as type, a.attlen as length, a.atttypmod as lengthvar, a.attnotnull as notnull
+			FROM pg_class c
+			LEFT JOIN pg_attribute a ON (a.attrelid = c.oid)
+			LEFT JOIN pg_type t ON (a.atttypid = t.oid)
+			WHERE c.relname = '{$this->table_prefix}{$table}' AND a.attnum > 0 
+			ORDER BY a.attnum
+		");
+
+		$table .= "CREATE TABLE {$this->table_prefix}{$table} (\n";
+		$lines = array();
 		
-		return $structure['Create Table'];
+		while($row = $this->fetch_array($query))
+		{
+			// Get the data from the table
+			$query2 = $this->query("
+				SELECT pg_get_expr(d.adbin, d.adrelid) as rowdefault
+				FROM pg_attrdef d
+				LEFT JOIN pg_class c ON (c.oid = d.adrelid)
+				WHERE c.relname = '{$this->table_prefix}{$table}' AND d.adnum = '{$row['attnum']}'
+			");
+
+			if(!$query2)
+			{
+				unset($row['rowdefault']);
+			}
+			else
+			{
+				$row['rowdefault'] = $this->fetch_field($query2, 'rowdefault');
+			}
+
+			if($row['type'] == 'bpchar')
+			{
+				// Stored in the engine as bpchar, but in the CREATE TABLE statement it's char
+				$row['type'] = 'char';
+			}
+
+			$line = "  {$row['field']} {$row['type']}";
+
+			if(strpos($row['type'], 'char') !== false)
+			{
+				if($row['lengthvar'] > 0)
+				{
+					$line .= '('.($row['lengthvar'] - 4).')';
+				}
+			}
+
+			if strpos($row['type'], 'numeric') !== false)
+			{
+				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
+			}
+
+			if(!empty($row['rowdefault']))
+			{
+				$line .= " DEFAULT {$row['rowdefault']}";
+			}
+
+			if($row['notnull'] == 't')
+			{
+				$line .= ' NOT NULL';
+			}
+			
+			$lines[] = $line;
+		}
+
+		// Get the listing of primary keys.
+		$query = $this->query("
+			SELECT ic.relname as index_name, bc.relname as tab_name, ta.attname as column_name, i.indisunique as unique_key, i.indisprimary as primary_key
+			FROM pg_class bc
+			LEFT JOIN pg_class ic ON (ic.oid = i.indexrelid)
+			LEFT JOIN pg_index i ON (bc.oid = i.indrelid)
+			LEFT JOIN pg_attribute ta ON (ta.attrelid = bc.oid AND ta.attrelid = i.indrelid AND ta.attnum = i.indkey[ia.attnum-1])
+			LEFT JOIN pg_attribute ia ON (ia.attrelid = i.indexrelid)
+			WHERE bc.relname = '{$this->table_prefix}{$table}'
+			ORDER BY index_name, tab_name, column_name
+		");
+
+		$primary_key = array();
+
+		// We do this in two steps. It makes placing the comma easier
+		while($row = $this->fetch_array($query))
+		{
+			if($row['primary_key'] == 't')
+			{
+				$primary_key[] = $row['column_name'];
+				$primary_key_name = $row['index_name'];
+			}
+		}
+
+		if(!empty($primary_key))
+		{
+			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
+		}
+
+		$table .= implode(", \n", $lines);
+		$table .= "\n);\n";
+		
+		return $table;
 	}
 
 	/**

@@ -671,6 +671,7 @@ class databaseEngine
 	{
 		$query = $this->query("SHOW CREATE TABLE ".$this->table_prefix.$table."");
 		$structure = $this->fetch_array($query);
+		
 		return $structure['Create Table'];
 	}
 

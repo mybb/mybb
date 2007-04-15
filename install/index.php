@@ -993,6 +993,8 @@ function install_done()
 		
 		$adminoptiondata = array(
 			'uid' => intval($uid),
+			'cpstyle' => '',
+			'notes' => '',
 			'permissions' => $db->escape_string(serialize($insertmodule)),
 		);
 

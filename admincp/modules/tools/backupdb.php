@@ -175,10 +175,10 @@ if($mybb->input['action'] == "backup")
 			}
 			
 			$field_list = array();
-			$query = $db->show_fields_from($table);
-			while($row = $db->fetch_array($query))
+			$fields_array = $db->show_fields_from($table);
+			foreach($fields_array as $field)
 			{
-				$field_list[] = $row['Field'];
+				$field_list[] = $field['Field'];
 			}
 			
 			$fields = implode(",", $field_list);

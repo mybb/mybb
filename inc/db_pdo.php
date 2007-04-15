@@ -192,7 +192,13 @@ class pdoEngine {
 	
 	function escape_string($string)
 	{
-		return $this->db->quote($string);
+		$string = $this->db->quote($string);	
+		
+		// Remove ' from the begginging of the string and at the end of the string, because we already use it in insert_query
+		$string = substr($string, 1);
+		$string = substr($string, 0, -1);
+		
+		return $string;
 	}
 	
 	/**
