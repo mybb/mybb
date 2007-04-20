@@ -872,6 +872,7 @@ if($mybb->input['action'] == "add")
 	makelabelcode($lang->birthday, $birthday_dropdown);
 	make_profile_field_input();
 	tablesubheader($lang->account_prefs);
+	makeyesnocode($lang->enable_dst, "enabledst", 'no');
 	makeyesnocode($lang->invisible_mode, "invisible", 'no');
 	makeyesnocode($lang->admin_emails, "allownotices", 'yes');
 	makeyesnocode($lang->hide_email, "hideemail", 'no');
@@ -950,6 +951,7 @@ if($mybb->input['action'] == "edit")
 	makelabelcode($lang->birthday, $birthday_dropdown);
 	make_profile_field_input(0, $user['uid']);
 	tablesubheader($lang->account_prefs);
+	makeyesnocode($lang->enable_dst, "enabledst", $user['dst']);
 	makeyesnocode($lang->invisible_mode, "invisible", $user['invisible']);
 	makeyesnocode($lang->admin_emails, "allownotices", $user['allownotices']);
 	makeyesnocode($lang->hide_email, "hideemail", $user['hideemail']);

@@ -115,6 +115,7 @@ $l['time_offset'] = "Time Offset (from GMT)";
 $l['style'] = "Style";
 $l['signature'] = "Signature";
 $l['reg_ip'] = "Registration IP";
+$l['enable_dst'] = "Enable Daylight Savings Time correction.";
 
 $l['posts'] = "Posts";
 $l['reg_date'] = "Reg. Date";
