@@ -655,7 +655,7 @@ class databaseEngine
 	}
 	
 	/**
-	 * Servers no purposes except compatibility
+	 * Serves no purposes except compatibility
 	 *
 	 */
 	function free_result($query)
