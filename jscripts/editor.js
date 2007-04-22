@@ -47,21 +47,21 @@ messageEditor.prototype = {
 
 		// An array of colours to be shown.
 		this.colors = new Array();
-		this.colors["white"] = this.options.lang.color_white;
-		this.colors["black"] = this.options.lang.color_black;
-		this.colors["red"] = this.options.lang.color_red;
-		this.colors["yellow"] = this.options.lang.color_yellow;
-		this.colors["pink"] = this.options.lang.color_pink;
-		this.colors["green"] = this.options.lang.color_green;
-		this.colors["orange"] = this.options.lang.color_orange;
-		this.colors["purple"] = this.options.lang.color_purple;
-		this.colors["blue"] = this.options.lang.color_blue;
-		this.colors["beige"] = this.options.lang.color_beige;
-		this.colors["brown"] = this.options.lang.color_brown;
-		this.colors["teal"] = this.options.lang.color_teal;
-		this.colors["navy"] = this.options.lang.color_navy;
-		this.colors["maroon"] = this.options.lang.color_maroon;
-		this.colors["limegreen"] = this.options.lang.color_limegreen;
+        this.colors["#ffffff"] = this.options.lang.color_white;
+        this.colors["#000"] = this.options.lang.color_black;
+        this.colors["#FF0000"] = this.options.lang.color_red;
+        this.colors["#FFFF00"] = this.options.lang.color_yellow;
+        this.colors["#FFC0CB"] = this.options.lang.color_pink;
+        this.colors["#008000"] = this.options.lang.color_green;
+        this.colors["#FFA500"] = this.options.lang.color_orange;
+        this.colors["#800080"] = this.options.lang.color_purple;
+        this.colors["#0000FF"] = this.options.lang.color_blue;
+        this.colors["#F5F5DC"] = this.options.lang.color_beige;
+        this.colors["#A52A2A"] = this.options.lang.color_brown;
+        this.colors["#008080"] = this.options.lang.color_teal;
+        this.colors["#000080"] = this.options.lang.color_navy;
+        this.colors["#800000"] = this.options.lang.color_maroon;
+        this.colors["#32CD32"] = this.options.lang.color_limegreen; 
 	
 		// Here we get the ID of the textarea we're replacing and store it.
 		this.textarea = textarea;
