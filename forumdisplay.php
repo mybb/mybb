@@ -172,6 +172,7 @@ if($modlist)
 if($mybb->settings['browsingthisforum'] != "off")
 {
 	$timecut = time() - $mybb->settings['wolcutoff'];
+	echo $timecut;
 	$comma = '';
 	$guestcount = 0;
 	$membercount = 0;
@@ -181,11 +182,14 @@ if($mybb->settings['browsingthisforum'] != "off")
 		SELECT s.ip, s.uid, u.username, s.time, u.invisible, u.usergroup, u.usergroup, u.displaygroup
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time>'$timecut' AND location1='$fid' AND nopermission!=1
+		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
 		ORDER BY u.username
 	");
 	while($user = $db->fetch_array($query))
 	{
+		echo "<pre>";
+		print_r($user);
+		echo "</pre>";
 		if($user['uid'] == 0)
 		{
 			++$guestcount;
@@ -206,7 +210,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 					$invisiblemark = '';
 				}
 				
-				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] =="yes" || $user['uid'] == $mybb->user['uid'])
+				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);

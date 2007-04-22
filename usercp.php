@@ -2436,8 +2436,8 @@ if(!$mybb->input['action'])
 		$perday = $mybb->user['postnum'];
 	}
 
-	$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible > 0");
-	$posts = $db->fetch_field($query, "posts");
+	$stats = $cache->read("stats");
+	$posts = $stats['numposts'];
 	if($posts == 0)
 	{
 		$percent = "0";

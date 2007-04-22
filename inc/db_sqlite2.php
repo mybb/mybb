@@ -655,6 +655,15 @@ class databaseEngine
 	}
 	
 	/**
+	 * Servers no purposes except compatibility
+	 *
+	 */
+	function free_result($query)
+	{
+		return;
+	}
+	
+	/**
 	 * Escape a string used within a like command.
 	 *
 	 * @param string The string to be escaped.

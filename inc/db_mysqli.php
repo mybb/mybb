@@ -610,6 +610,17 @@ class databaseEngine
 	}
 	
 	/**
+	 * Frees the resources of a MySQLi query.
+	 *
+	 * @param object The query to destroy.
+	 * @return boolean Returns true on success, false on faliure
+	 */
+	function free_result($query)
+	{
+		return mysqli_free_result($query);
+	}
+	
+	/**
 	 * Escape a string used within a like command.
 	 *
 	 * @param string The string to be escaped.

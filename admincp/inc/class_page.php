@@ -73,7 +73,7 @@ class DefaultPage
 		}
 	}
 
-	function output_footer()
+	function output_footer($quit=true)
 	{
 		global $maintimer, $db;
 		$totaltime = $maintimer->stop();
@@ -86,7 +86,11 @@ class DefaultPage
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
-		exit;
+		
+		if($quit != false)
+		{
+			exit;
+		}
 	}
 	
 	function add_breadcrumb_item($name, $url="")

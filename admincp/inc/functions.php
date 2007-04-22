@@ -38,7 +38,14 @@ function log_admin_action()
 
 function admin_redirect($url)
 {
-	header("Location: $url");
+	if(!headers_sent())
+	{
+		header("Location: $url");
+	}
+	else
+	{
+		echo "<meta http-equiv=\"refresh\" content=\"0;url={$url}\">";
+	}
 	exit;
 }
 
@@ -338,6 +345,22 @@ function get_admin_permissions($get_uid="", $get_gid="")
 			return $perms_def;
 		}
 	}
+}
+
+function fetch_iconv_encoding($mysql_encoding)
+{
+    $mysql_encoding = explode("_", $mysql_encoding);
+    switch($mysql_encoding[0])
+    {
+        case "utf8":
+            return "utf-8";
+			break;
+        case "latin1":
+            return "iso-8859-1";
+			break;
+		default:
+			return $mysql_encoding[0];
+    }
 }
 
 ?>
