@@ -172,7 +172,7 @@ if($modlist)
 if($mybb->settings['browsingthisforum'] != "off")
 {
 	$timecut = time() - $mybb->settings['wolcutoff'];
-	echo $timecut;
+
 	$comma = '';
 	$guestcount = 0;
 	$membercount = 0;
@@ -187,9 +187,6 @@ if($mybb->settings['browsingthisforum'] != "off")
 	");
 	while($user = $db->fetch_array($query))
 	{
-		echo "<pre>";
-		print_r($user);
-		echo "</pre>";
 		if($user['uid'] == 0)
 		{
 			++$guestcount;
