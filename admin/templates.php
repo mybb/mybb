@@ -482,8 +482,8 @@ if($mybb->input['action'] == "deleteset")
 	makehiddencode("setid", $mybb->input['setid']);
 	starttable();
 	tableheader($lang->delete_template_set, "", 1);
-	$yes = makebuttoncode("deletesubmit", "Yes");
-	$no = makebuttoncode("no", "No");
+	$yes = makebuttoncode("deletesubmit", $lang->yes);
+	$no = makebuttoncode("no", $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_set_notice {$templateset['title']}?<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
