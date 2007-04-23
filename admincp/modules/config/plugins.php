@@ -38,8 +38,8 @@ if($mybb->input['action'] == "check")
 			
 			if(trim($plugininfo['guid']) != "")
 			{
-				$info[$plugininfo['guid']] = $plugininfo['version'];
-				$names[$plugininfo['guid']] = $plugininfo['name'];
+				$info[] = $plugininfo['guid'];
+				$names[$plugininfo['guid']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
 			}
 		}
 	}
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "check")
 	}
 	
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = @implode("", @file("http://mods.mybboard.com/version_check.php?info=".urlencode(serialize($info))));
+	$contents = @implode("", @file("http://mods.mybboard.com/version_check.php?info=".serialize($info)));
 	
 	if(!$contents)
 	{
@@ -88,17 +88,24 @@ if($mybb->input['action'] == "check")
 	$table->construct_header("Your Version", array("class" => "align_center", 'width' => 125));
 	$table->construct_header("Latest Version", array("class" => "align_center", 'width' => 125));
 	$table->construct_header("Controls", array("class" => "align_center", 'width' => 125));
-
-	foreach($tree['plugins'][0]['plugin'] as $plugin)
+	
+	if(array_key_exists("tag", $tree['plugins']['plugin']))
 	{
-		if(version_compare($info[$plugin['attributes']['guid']], $plugin['version'][0]['value'], ">="))
+		$only_plugin = $tree['plugins']['plugin'];
+	 	unset($tree['plugins']['plugin']);
+	 	$tree['plugins']['plugin'][0] = $only_plugin;
+	}
+
+	foreach($tree['plugins']['plugin'] as $plugin)
+	{
+		if(version_compare($names[$plugin['attributes']['guid']]['version'], $plugin['version'][0]['value'], ">="))
 		{
-			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]}</strong>");
-			$table->construct_cell("{$info[$plugin['attributes']['guid']]}", array("class" => "align_center"));
-			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version'][0]['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybboard.com/view.php?did={$plugin['download_url'][0]['value']}\" target=\"_blank\">Download</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
+			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
+			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://mods.mybboard.com/view.php?did={$plugin['download_url']['value']}\" target=\"_blank\">Download</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
-		}		
+		}
 	}
 	
 	if(count($table->rows) == 0)
