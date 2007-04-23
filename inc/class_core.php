@@ -298,6 +298,7 @@ class MyBB {
 	function trigger_generic_error($code, $halt=true)
 	{
 		global $error_handler;
+		
 		switch($code)
 		{
 			case "cache_no_write":
