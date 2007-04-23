@@ -249,11 +249,11 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<img src=\"\" alt\"X\" /> <a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\">Convert Now</a>";
+			$status = "<img src=\"styles/{$page->style}/images/icons/cross.gif\" alt\"X\" /> <a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\">Convert Now</a>";
 		}
 		else
 		{
-			$status = "<img src=\"\" alt\"OK\" />";
+			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt\"OK\" />";
 		}
 		$table->construct_cell("<strong>{$tablename}</strong>");
 		$table->construct_cell($status, array("class" => "align_center", 'width' => '15%'));
