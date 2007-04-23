@@ -27,7 +27,7 @@ function hello_info()
 		"author"		=> "MyBB Group",
 		"authorsite"	=> "http://www.mybboard.net",
 		"version"		=> "1.0",
-		"pid" 			=> "0",
+		"guid" 			=> "",
 	);
 }
 
