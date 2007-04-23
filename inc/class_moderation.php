@@ -460,7 +460,7 @@ class Moderation
 		{
 			$num_approved_posts++;
 		}
-		$plugins->run_hooks("delete_post", $post['tid']);
+		$plugins->run_hooks("delete_post", $post['pid']);
 		// Update stats 
 		$update_array = array( 
 			"replies" => "-{$num_approved_posts}", 

@@ -1506,7 +1506,7 @@ function delete_thread($tid)
 		require_once MYBB_ROOT."inc/class_moderation.php";
 		$moderation = new Moderation;
 	}
-	return $moderation->delete_thread($tid);
+	return $moderation->delete_post($tid);
 }
 
 /**
