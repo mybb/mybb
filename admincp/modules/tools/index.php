@@ -79,7 +79,27 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		// Set table default charset
 		$db->query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET utf8");
-		
+
+		// Fetch any fulltext keys
+		if($db->supports_fulltext($mybb->input['table']))
+		{
+			$table_structure = $db->show_create_table($mybb->input['table']);
+			switch($db->type)
+			{
+				case "mysql":
+				case "mysqli":
+					preg_match_all("#FULLTEXT KEY `?([a-zA-Z0-9_]+)`? \(([a-zA-Z0-9_`,']+)\)#i", $table_structure, $matches);
+					if(is_array($matches))
+					{
+						foreach($matches[0] as $key => $matched)
+						{
+							$db->query("ALTER TABLE {$mybb->input['table']} DROP INDEX {$matches[1][$key]}");
+							$fulltext_to_create[$matches[1][$key]] = $matches[2][$key];
+						}
+					}
+			}
+		}
+
 		// Find out which columns need converting and build SQL statements
 		$query = $db->query("SHOW FULL COLUMNS FROM {$mybb->input['table']}");
 		while($column = $db->fetch_array($query))
@@ -121,6 +141,15 @@ if($mybb->input['action'] == "utf8_conversion")
 			// This converts the columns to UTF-8 while also doing the same for data
 			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_binary}");
 			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_utf8}");
+		}
+
+		// Any fulltext indexes to recreate?
+		if(is_array($fulltext_to_create))
+		{
+			foreach($fulltext_to_create as $name => $fields)
+			{
+				$db->create_fulltext_index($mybb->input['table'], $fields, $name);
+			}
 		}
 		
 		$db->set_table_prefix($old_table_prefix);

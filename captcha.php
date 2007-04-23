@@ -30,7 +30,7 @@ if($mybb->input['imagehash'] == "test")
 }
 elseif($mybb->input['imagehash'])
 {
-	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string($mybb->input['imagehash'])."'", array("limit" => 1));
+	$query = $db->simple_select("captcha", "*", "imagehash='".$db->escape_string(strval($mybb->input['imagehash']))."'", array("limit" => 1));
 	$regimage = $db->fetch_array($query);
 	$imagestring = $regimage['imagestring'];
 }

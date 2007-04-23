@@ -32,7 +32,7 @@ $fpermissioncache = $cache->read("forumpermissions");
 send_page_headers();
 
 // Do not use session system for defined pages
-if((isset($mybb->input['action']) && isset($nosession[$mybb->input['action']])) || (isset($mybb->input['thumbnail']) && my_strpos($_SERVER['PHP_SELF'], 'attachment.php')))
+if((@isset($mybb->input['action']) && @isset($nosession[$mybb->input['action']])) || (@isset($mybb->input['thumbnail']) && my_strpos($_SERVER['PHP_SELF'], 'attachment.php')))
 {
 	define("NO_ONLINE", 1);
 }

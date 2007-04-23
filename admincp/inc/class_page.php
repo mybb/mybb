@@ -282,9 +282,21 @@ EOF;
 		echo "});\n";
 		echo "</script>\n";
 		echo "<ul class=\"tabs\">\n";
+		$tab_count = count($tabs);
+		$done = 1;
 		foreach($tabs as $anchor => $title)
 		{
-			echo "<li><a href=\"#tab_{$anchor}\">{$title}</a></li>\n";
+			$class = "";
+			if($tab_count == $done)
+			{
+				$class .= " last";
+			}
+			if($done == 1)
+			{
+				$class .= " first";
+			}
+			++$done;
+			echo "<li class=\"{$class}\"><a href=\"#tab_{$anchor}\">{$title}</a></li>\n";
 		}
 		echo "</ul>\n";
 	}
