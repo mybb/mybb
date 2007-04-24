@@ -38,6 +38,7 @@ $l['email_address'] = "Email Address:";
 $l['request_user_pass'] = "Request Username / Password";
 $l['profile'] = "Profile";
 $l['registration_date'] = "Registration Date:";
+$l['date_of_birth'] = "Date of Birth:";
 $l['birthday'] ="Birthday:";
 $l['local_time'] = "Local Time:";
 $l['local_time_format'] = "{1} at {2}";

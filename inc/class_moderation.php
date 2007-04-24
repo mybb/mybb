@@ -792,7 +792,7 @@ class Moderation
 
 		// Do post count changes if changing between countable and non-countable forums
 		$query = $db->query("
-			SELECT COUNT(p.pid) AS posts, u.uid
+			SELECT COUNT(p.pid) AS posts, u.uid, p.visible
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE tid='$tid'
@@ -801,15 +801,15 @@ class Moderation
 		");
 		while($posters = $db->fetch_array($query))
 		{
-			if($method == "copy" && $newforum['usepostcounts'] != "no")
+			if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
 			{
 				$pcount = "+{$posters['posts']}";
 			}
-			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no" && $posters['visible'] != "no"))
 			{
 				$pcount = "+{$posters['posts']}";
 			}
-			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no" && $posters['visible'] != "no"))
 			{
 				$pcount = "-{$posters['posts']}";
 			}

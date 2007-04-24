@@ -15,13 +15,13 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Cache Manager", "index.php?".SID."&amp;module=tools/cache");
+$page->add_breadcrumb_item($lang->cache_manager, "index.php?".SID."&amp;module=tools/cache");
 
 if($mybb->input['action'] == 'view')
 {
 	if(!trim($mybb->input['title']))
 	{
-		flash_message('You did not specify a cache to view.', 'error');
+		flash_message($lang->error_no_cache_specified, 'error');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}
 	
@@ -30,29 +30,29 @@ if($mybb->input['action'] == 'view')
 	
 	if(!$cacheitem)
 	{
-		flash_message('Incorrect cache specified.', 'error');
+		flash_message($lang->error_incorrect_cache, 'error');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}
 	
 	$cachecontents = unserialize($cacheitem['cache']);
 	if(empty($cachecontents))
 	{
-		$cachecontents = "Cache is empty.";
+		$cachecontents = $lang->error_empty_cache;
 	}
 	ob_start();
 	print_r($cachecontents);
 	$cachecontents = htmlspecialchars_uni(ob_get_contents());
 	ob_end_clean();
 	
-	$page->add_breadcrumb_item("View");	
-	$page->output_header("Cache Manager");
+	$page->add_breadcrumb_item($lang->view);	
+	$page->output_header($lang->cache_manager);
 
 
 	$table = new Table;
 
 	$table->construct_cell("<pre>\n{$cachecontents}\n</pre>");
 	$table->construct_row();
-	$table->output("Cache: {$cacheitem['title']}");
+	$table->output($lang->cache." {$cacheitem['title']}");
 	
 	$page->output_footer();
 	
@@ -65,32 +65,32 @@ if($mybb->input['action'] == "rebuild")
 		$func = "update_{$mybb->input['title']}";
 		$cache->$func();
 		
-		flash_message('The cache has been rebuilt successfully.', 'success');
+		flash_message($lang->success_cache_rebuilt, 'success');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}
 	else
 	{
-		flash_message('This cache cannot be rebuilt.', 'error');
+		flash_message($lang->error_cannot_rebuild, 'error');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}
 }
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Cache Manager");
+	$page->output_header($lang->cache_manager);
 	
 	$sub_tabs['cache_manager'] = array(
-		'title' => "Cache Manager",
+		'title' => $lang->cache_manager,
 		'link' => "index.php?".SID."&amp;module=tools/cache",
-		'description' => "Here you can manage caches which are used as a method of optimizing MyBB."
+		'description' => $lang->cache_manager_description
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'cache_manager');
 
 	$table = new Table;
-	$table->construct_header("Name");
-	$table->construct_header("Size", array("class" => "align_center", "width" => 100));
-	$table->construct_header("Controls", array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->name);
+	$table->construct_header($lang->size, array("class" => "align_center", "width" => 100));
+	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
 	$query = $db->simple_select("datacache");
 	while($cacheitem = $db->fetch_array($query))
@@ -100,17 +100,16 @@ if(!$mybb->input['action'])
 		
 		if(method_exists($cache, "update_".$cacheitem['title']))
 		{
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."\">Rebuild Cache</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
 		}
 		else
 		{
 			$table->construct_cell("");
-		}
-		
+		}		
 		
 		$table->construct_row();
 	}
-	$table->output("Cache Manager");
+	$table->output($lang->cache_manager);
 	
 	$page->output_footer();
 }

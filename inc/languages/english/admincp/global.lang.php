@@ -13,4 +13,10 @@ $l['size_gb'] = "GB";
 $l['size_mb'] = "MB";
 $l['size_kb'] = "KB";
 $l['size_bytes'] = "bytes";
+
+// Common words and phrases
+$l['name'] = "Name";
+$l['size'] = "Size";
+$l['controls'] = "Controls";
+$l['view'] = "View";
 ?>

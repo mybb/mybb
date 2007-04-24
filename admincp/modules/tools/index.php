@@ -46,6 +46,10 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$table = new Table;
 		
+		$table = $db->show_create_table($db->escape_string($mybb->input['table']));
+        preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
+		$charset = $matches[1];
+		
 		$table->construct_cell("<strong>MyBB is currently converting \"{$mybb->input['table']}\" table to UTF-8 language encoding from {$charset} encoding.</strong>");
 		$table->construct_row();
 		
@@ -154,9 +158,6 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$db->set_table_prefix($old_table_prefix);
 		
-		
-		sleep(5);
-		
 		flash_message('The specified table "'.$mybb->input['table'].'" has been sucessfully converted to UTF-8.', 'success');
 		admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
 		
@@ -249,7 +250,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<img src=\"styles/{$page->style}/images/icons/cross.gif\" alt\"X\" /> <a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\">Convert Now</a>";
+			$status = "<a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">Convert Now</a>";
 		}
 		else
 		{

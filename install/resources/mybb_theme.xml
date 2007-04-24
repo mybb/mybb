@@ -2362,7 +2362,7 @@ form {
 {$userstars}<br />
 <br />
 <strong>{$lang->registration_date}</strong> {$memregdate}<br />
-<strong>{$lang->birthday}</strong> {$membday} {$membdayage}<br />
+<strong>{$lang->date_of_birth}</strong> {$membday} {$membdayage}<br />
 <strong>{$lang->local_time}</strong> {$localtime}<br />
 <strong>{$lang->postbit_status}</strong> {$online_status}
 </span>

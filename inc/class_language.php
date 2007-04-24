@@ -118,8 +118,10 @@ class MyLanguage
 	 * Load the language variables for a section.
 	 *
 	 * @param string The section name.
+	 * @param boolean Is this a datahandler?
+	 * @param boolean supress the error if the file doesn't exist?
 	 */
-	function load($section, $isdatahandler=false)
+	function load($section, $isdatahandler=false, $supress_error=false)
 	{
 		// Assign language variables.
 		// Datahandlers are never in admin lang directory.
@@ -138,7 +140,10 @@ class MyLanguage
 		}
 		else
 		{
-			die("$lfile does not exist");
+			if($supress_error != true)
+			{
+				die("$lfile does not exist");
+			}
 		}
 		if(is_array($l))
 		{
