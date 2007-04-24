@@ -42,6 +42,8 @@ if($mybb->usergroup['canviewcalendar'] == "no")
 // Make $eid an easy-to-use variable.
 $eid = intval($mybb->input['eid']);
 
+$mybb->input['day'] = intval($mybb->input['day']);
+
 /* If we are looking at an event, select the date for that event first. */
 if($mybb->input['action'] == "event")
 {
