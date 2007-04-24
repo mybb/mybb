@@ -792,15 +792,15 @@ class Moderation
 		");
 		while($posters = $db->fetch_array($query))
 		{
-			if($method == "copy" && $newforum['usepostcounts'] != "no")
+			if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
 			{
 				$pcount = "+{$posters['posts']}";
 			}
-			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no" && $posters['visible'] != "no"))
 			{
 				$pcount = "+{$posters['posts']}";
 			}
-			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no" && $posters['visible'] != "no"))
 			{
 				$pcount = "-{$posters['posts']}";
 			}
