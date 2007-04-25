@@ -79,7 +79,7 @@ function output_page($contents)
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if(($mybb->settings['useshutdownfunc'] == "no") && $mybb->use_shutdown != true) 
+	if(($mybb->settings['useshutdownfunc'] == "no"|| phpversion() >= '5.0.5') && $mybb->use_shutdown != true) 
 	{
 		run_shutdown();
 	}
@@ -1506,7 +1506,7 @@ function delete_thread($tid)
 		require_once MYBB_ROOT."inc/class_moderation.php";
 		$moderation = new Moderation;
 	}
-	return $moderation->delete_post($tid);
+	return $moderation->delete_thread($tid);
 }
 
 /**
