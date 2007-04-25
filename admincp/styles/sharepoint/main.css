@@ -54,6 +54,12 @@ a:hover {
 	background: url(images/icons/logout.gif) no-repeat right;
 }
 
+#welcome .forum {
+	margin-left: 4px;
+	padding: 1px 0 2px 20px;
+	background: url(images/icons/world.png) no-repeat left;
+}
+
 #welcome .username {
 	margin-left: 4px;
 	padding: 0 0 2px 18px;

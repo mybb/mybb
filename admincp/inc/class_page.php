@@ -51,7 +51,7 @@ class DefaultPage
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
 		echo "	<div id=\"logo\"><h1><span class=\"invisible\">MyBB Admin CP</span></h1></div>\n";
-		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">Logged in as <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">Logout</a></div>\n";
+		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">Logged in as <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">View Forum</a> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">Logout</a></div>\n";
 		echo $this->build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";

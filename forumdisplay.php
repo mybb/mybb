@@ -993,8 +993,7 @@ if(is_array($threadcache))
 				break;
 			default:
 				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
-		}
-		
+		}	
 		
 		while($tool = $db->fetch_array($query))
 		{
