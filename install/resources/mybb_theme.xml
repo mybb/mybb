@@ -5404,11 +5404,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_split_post" version="120"><![CDATA[<tr>
+		<template name="moderation_split_post" version="127"><![CDATA[<tr>
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="yes" /></td>
+<td class="{$altbg}" valign="top" align="center" width="5%"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="yes" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="newreply_threadreview_more" version="120"><![CDATA[<tr>

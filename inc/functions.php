@@ -2539,7 +2539,7 @@ function nice_time($stamp)
 
 	if($seconds == 1)
 	{
-		$nicetime['seconds'] = "1 ".$lang->seconds;
+		$nicetime['seconds'] = "1 ".$lang->second;
 	}
 	elseif($seconds > 1)
 	{
