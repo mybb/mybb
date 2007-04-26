@@ -245,19 +245,19 @@ if($mybb->input['action'] == "send")
 
 		if($options['signature'] == "yes")
 		{
-			$optionschecked['signature'] = "checked";
+			$optionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($options['disablesmilies'] == "yes")
 		{
-			$optionschecked['disablesmilies'] = "checked";
+			$optionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
 		if($options['savecopy'] != "no")
 		{
-			$optionschecked['savecopy'] = "checked";
+			$optionschecked['savecopy'] = "checked=\"checked\"";
 		}
 		if($options['readreceipt'] != "no")
 		{
-			$optionschecked['readreceipt'] = "checked";
+			$optionschecked['readreceipt'] = "checked=\"checked\"";
 		}
 		$to = htmlspecialchars_uni($mybb->input['to']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
@@ -266,13 +266,13 @@ if($mybb->input['action'] == "send")
 	{
 		if($mybb->user['signature'] != "")
 		{
-			$optionschecked['signature'] = "checked";
+			$optionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($mybb->usergroup['cantrackpms'] == "yes")
 		{
-			$optionschecked['readreceipt'] = "checked";
+			$optionschecked['readreceipt'] = "checked=\"checked\"";
 		}
-		$optionschecked['savecopy'] = "checked";
+		$optionschecked['savecopy'] = "checked=\"checked\"";
 	}
 	
 	if($mybb->input['pmid'] && !$mybb->input['preview'])

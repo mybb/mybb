@@ -19,6 +19,8 @@ define("ADMIN_IP_SEGMENTS", 3);
 
 require_once dirname(dirname(__FILE__))."/inc/init.php";
 
+send_page_headers();
+
 if(!isset($config['admin_dir']))
 {
 	$config['admin_dir'] = "admin";
