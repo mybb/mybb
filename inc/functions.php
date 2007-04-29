@@ -3554,7 +3554,7 @@ function rebuildsettings()
 
 	while($setting = $db->fetch_array($query))
 	{
-		$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
+		$setting['value'] = preg_replace("#(\\*?)\\\"#i", "$1$1\\\"", $setting['value']);
 		$settings .= "\$settings['".$setting['name']."'] = \"".$setting['value']."\";\n";
 		$mybb->settings[$setting['name']] = $setting['value'];
 	}

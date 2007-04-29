@@ -803,6 +803,7 @@ class Moderation
 			{
 				$pcount = "-{$posters['posts']}";
 			}
+			
 			if(!empty($pcount))
 			{
 				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
@@ -1101,11 +1102,15 @@ class Moderation
 		global $db;
 
 		$tid_list = implode(",", $tids);
+			
+		$newforum = get_forum($moveto);
 		
 		$total_posts = $total_unapproved_posts = $total_threads = $total_unapproved_threads = 0; 
  		$query = $db->simple_select(TABLE_PREFIX."threads", "fid, visible, replies, unapprovedposts", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
+			$forum = get_forum($thread['fid']);
+			
 			$total_posts += $thread['replies']+1; 
 			$total_unapproved_posts += $thread['unapproved_posts']; 
 			$forum_counters[$thread['fid']] = array( 
@@ -1122,6 +1127,35 @@ class Moderation
 			{ 
 				$forum_counters[$thread['fid']]['unapprovedthreads']++; 
 				++$total_unapproved_threads; 
+			}
+			
+			$query = $db->query("
+				SELECT COUNT(p.pid) AS posts, u.uid
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+				WHERE tid='{$thread['tid']}'
+				GROUP BY u.uid
+				ORDER BY posts DESC
+			");
+			while($posters = $db->fetch_array($query))
+			{
+				if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
+				{
+					$pcount = "+{$posters['posts']}";
+				}
+				elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no" && $posters['visible'] != "no"))
+				{
+					$pcount = "+{$posters['posts']}";
+				}
+				elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no" && $posters['visible'] != "no"))
+				{
+					$pcount = "-{$posters['posts']}";
+				}
+				
+				if(!empty($pcount))
+				{
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
+				}
 			}
 		}
 
@@ -1145,7 +1179,9 @@ class Moderation
 			{ 
 				$updated_count['unapprovedthreads'] = "-{$counter['unapprovedthreads']}"; 
 			} 
-			update_forum_counters($fid, $updated_count); 
+			update_forum_counters($fid, $updated_count);
+			
+			// Do post count changes if changing between countable and non-countable forums
 		} 
 
 		$updated_count = array( 
