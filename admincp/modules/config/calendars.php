@@ -339,7 +339,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
-	$query = $db->simple_select("calendars", "*", "sid='".intval($mybb->input['cid'])."'");
+	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 
 	// Does the calendar not exist?

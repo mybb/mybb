@@ -50,7 +50,7 @@ if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])
 	{
-		$mybb->input['fid'] = intval($mybb->input['fid'])
+		$mybb->input['fid'] = intval($mybb->input['fid']);
 		$validforum = get_forum($mybb->input['fid']);
 		if(!$validforum && !$mybb->input['ajax'])
 		{

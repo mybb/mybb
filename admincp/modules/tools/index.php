@@ -46,8 +46,8 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$table = new Table;
 		
-		$table = $db->show_create_table($db->escape_string($mybb->input['table']));
-        preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
+		$table1 = $db->show_create_table($db->escape_string($mybb->input['table']));
+        preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table1, $matches);
 		$charset = $matches[1];
 		
 		$table->construct_cell("<strong>MyBB is currently converting \"{$mybb->input['table']}\" table to UTF-8 language encoding from {$charset} encoding.</strong>");

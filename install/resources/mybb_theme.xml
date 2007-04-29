@@ -7182,7 +7182,7 @@ To: {$to_recipients}
 											<tr>
 												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[4]" value="1" {$repeats_3_days[4]} style="vertical-align: middle;" /> {$lang->thursday}</label></td>
 												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[5]" value="1" {$repeats_3_days[5]} style="vertical-align: middle;" /> {$lang->friday}</label></td>
-												<td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1" {$repeats_3_days[6]} style="vertical-align: middle;" /> {$lang->sunday}</label></td>
+												<td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1" {$repeats_3_days[6]} style="vertical-align: middle;" /> {$lang->saturday}</label></td>
 											</tr>
 										</table>
 									</div>

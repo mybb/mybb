@@ -1296,7 +1296,7 @@ if($mybb->input['action'] == "event")
 	$repeats = fetch_friendly_repitition($event);
 	if($repeats)
 	{
-		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong>{$repeats}</span>";
+		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong> {$repeats}</span>";
 	}
 
 	if($calendar_permissions['canmoderateevents'] == "yes" || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
@@ -1912,7 +1912,7 @@ if(!$mybb->input['action'])
 	// Showing the default calendar
 	else
 	{
-		$query = $db->simple_select("calendars", "*", "disporder='1'");
+		$query = $db->simple_select("calendars", "*", "", array('order_by' => 'disporder', 'order_dir' => 'ASC', 'limit' => 1));
 		$calendar = $db->fetch_array($query);
 	}
 

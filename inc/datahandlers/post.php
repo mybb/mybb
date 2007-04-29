@@ -719,7 +719,7 @@ class PostDataHandler extends DataHandler
 
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
-		var_dump($post['pid']);
+		
 		if($post['pid'] > 0)
 		{
 			$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");

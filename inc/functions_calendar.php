@@ -582,6 +582,8 @@ function fetch_weekday_structure($week_start)
  */
 function fetch_weekday_name($weekday, $short=false)
 {
+	global $lang;
+	
 	switch($weekday)
 	{
 		case 1:
@@ -613,6 +615,7 @@ function fetch_weekday_name($weekday, $short=false)
 			$short_weekday_name = $lang->short_sunday;
 			break;
 	}
+	
 	if($short == true)
 	{
 		return $short_weekday_name;
@@ -873,11 +876,11 @@ function fetch_friendly_repitition($event)
 				foreach($event['repeats']['days'] as $id => $weekday)
 				{
 					$weekday_name = fetch_weekday_name($weekday);
-					if($event['repeats']['days'][$id+2])
+					if($event['repeats']['days'][$id+1] && $weekdays)
 					{
 						$weekdays .= ", ";
 					}
-					else if($event['repeats']['days'][$id+1])
+					else if(!$event['repeats']['days'][$id+2])
 					{
 						$weekdays .= " {$lang->and} ";
 					}
