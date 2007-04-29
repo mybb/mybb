@@ -88,7 +88,7 @@ if($mybb->input['action'] == "do_change")
 		}
 	}
 	
-	rebuildsettings();
+	rebuild_settings();
 	// Check if we need to create our fulltext index after changing the search mode
 	if($mybb->settings['searchtype'] == "fulltext")
 	{
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "do_add")
 		);
 		$plugins->run_hooks("admin_settings_do_add_setting");
 		$db->insert_query("settings", $settingarray);
-		rebuildsettings();
+		rebuild_settings();
 		cpredirect("settings.php?".SID, $lang->setting_added);
 	}
 	else if($mybb->input['add'] == "group")
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "do_add")
 		}
 		$plugins->run_hooks("admin_settings_do_add_group");
 		$db->insert_query("settinggroups", $settinggrouparray);
-		rebuildsettings();
+		rebuild_settings();
 		cpredirect("settings.php?".SID, $lang->group_added);
 	}
 }
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "do_delete")
 		{
 			$plugins->run_hooks("admin_settings_do_delete_setting");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
-			rebuildsettings();
+			rebuild_settings();
 			cpredirect("settings.php?".SID, $lang->setting_deleted);
 		}
 		else if($mybb->input['gid'])
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "do_delete")
 			$plugins->run_hooks("admin_settings_do_delete_group");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
 			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."'");
-			rebuildsettings();
+			rebuild_settings();
 			cpredirect("settings.php?".SID, $lang->group_deleted);
 		}
 	}
@@ -237,7 +237,7 @@ if($mybb->input['action'] == "do_edit")
 		);
 		$plugins->run_hooks("admin_settings_do_edit_setting");
 		$db->update_query("settings", $settingarray, "sid='".intval($mybb->input['sid'])."'");
-		rebuildsettings();
+		rebuild_settings();
 		cpredirect("settings.php?".SID, $lang->setting_edited);
 	}
 	else if($mybb->input['gid'])
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "do_edit")
 		}
 		$plugins->run_hooks("admin_setings_do_edit_group");
 		$db->update_query("settinggroups", $settinggrouparray, "gid='".intval($mybb->input['gid'])."'");
-		rebuildsettings();
+		rebuild_settings();
 		cpredirect("settings.php?".SID, $lang->group_edited);
 	}
 }

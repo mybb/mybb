@@ -23,9 +23,14 @@ class DefaultPage
 	
 	var $extra_header = "";
 
-	function output_header($title="MyBB Administration Panel")
+	function output_header($title="")
 	{
-		global $mybb, $admin_session;
+		global $mybb, $admin_session, $lang;
+		
+		if(!$title)
+		{
+			$title = $lang->mybb_admin_panel;
+		}
 		
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 		echo "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
@@ -50,8 +55,8 @@ class DefaultPage
 		echo "</head>\n";
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
-		echo "	<div id=\"logo\"><h1><span class=\"invisible\">MyBB Admin CP</span></h1></div>\n";
-		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">Logged in as <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">View Forum</a> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">Logout</a></div>\n";
+		echo "	<div id=\"logo\"><h1><span class=\"invisible\">{$lang->mybb_admin_cp}</span></h1></div>\n";
+		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_forum}</a> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">{$lang->logout}</a></div>\n";
 		echo $this->build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";
@@ -75,14 +80,15 @@ class DefaultPage
 
 	function output_footer($quit=true)
 	{
-		global $maintimer, $db;
+		global $maintimer, $db, $lang;
+		
 		$totaltime = $maintimer->stop();
 		$querycount = $db->query_count;
 		echo "			</div>\n";
 		echo "		</div>\n";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">Generated in {$totaltime} seconds with {$querycount} queries.</p><p class=\"powered\">Powered By MyBB. &copy; ".date("Y")." MyBB Group. All Rights Reserved.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".sprintf($lang->generated_in, $totaltime, $querycount)."</p><p class=\"powered\">Powered By MyBB. &copy; ".date("Y")." MyBB Group. All Rights Reserved.</p></div>\n";
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
@@ -157,12 +163,14 @@ class DefaultPage
 
 	function output_inline_error($errors)
 	{
+		global $lang;
+		
 		if(!is_array($errors))
 		{
 			$errors = array($errors);
 		}
 		echo "<div class=\"error\">\n";
-		echo "<p><em>The following errors were encountered:</em></p>\n";
+		echo "<p><em>{$lang->encountered_errors}</em></p>\n";
 		echo "<ul>\n";
 		foreach($errors as $error)
 		{
@@ -172,13 +180,20 @@ class DefaultPage
 		echo "</div>\n";
 	}
 
-	function show_login($message="Please enter your username and password to continue.", $class="success")
+	function show_login($message="", $class="success")
 	{
+		global $lang;
+		
+		if(!$message)
+		{
+			$message = $lang->enter_username_and_password;
+		}
+		
 print <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head profile="http://gmpg.org/xfn/1">
-<title>MyBB Administration - Login</title>
+<title>{$lang->mybb_admin_login}</title>
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright 2006 MyBB Group." />
 <link rel="stylesheet" href="./styles/default/login.css" type="text/css" />
@@ -187,26 +202,26 @@ print <<<EOF
 <div id="container">
 	<div id="header">
 		<div id="logo">
-			<h1><a href="../" title="Return to forum"><span class="invisible">MyBB Admin CP</span></a></h1>
+			<h1><a href="../" title="{$lang->return_to_forum}"><span class="invisible">{$lang->mybb_acp}</span></a></h1>
 
 		</div>
 	</div>
 	<div id="content">
-		<h2>Please Login</h2>
-					<p id="message" class="{$class}"><span class="text">{$message}</span><br />Please enter your username and password to continue.</p>
+		<h2>{$lang->please_login}</h2>
+					<p id="message" class="{$class}"><span class="text">{$message}</span><br />{$lang->enter_username_and_password}</p>
 		
 		<form method="post" action="{$_SERVER['PHP_SELF']}">
 		<div class="form_container">
 
-			<div class="label"><label for="username">Username:</label></div>
+			<div class="label"><label for="username">{$lang->username}</label></div>
 
 			<div class="field"><input type="text" name="username" id="username" class="text_input" /></div>
 
-			<div class="label"><label for="password">Password:</label></div>
+			<div class="label"><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
 		</div>
 		<p class="submit">
-			<input type="submit" value="Login" />
+			<input type="submit" value="{$lang->login}" />
 
 			<input type="hidden" name="do" value="login" />
 		</p>
@@ -331,12 +346,13 @@ EOF;
 		echo "</div>";
 	}
 
-	function output_confirm_action($url, $message='')
+	function output_confirm_action($url, $message="")
 	{
 		global $lang;
+		
 		if(!$message)
 		{
-			$message = 'Are you sure you wish to perform this action?';
+			$message = $lang->confirm_action;
 		}
 		$this->output_header();
 		$form = new Form($url, 'post');
@@ -344,8 +360,8 @@ EOF;
 		echo "<p>{$message}</p>\n";
 		echo "<br />\n";
 		echo "<p class=\"buttons\">\n";
-		echo $form->generate_submit_button("Yes", array('class' => 'button_yes'));
-		echo $form->generate_submit_button("No", array("name" => "no", 'class' => 'button_no'));
+		echo $form->generate_submit_button($lang->yes, array('class' => 'button_yes'));
+		echo $form->generate_submit_button($lang->no, array("name" => "no", 'class' => 'button_no'));
 		echo "</p>\n";
 		echo "</div>\n";
 		$form->end();

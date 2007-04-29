@@ -4136,11 +4136,19 @@ function validate_email_format($email)
 	return preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
 }
 
-/**
-* Rebuilds settings.php
-*
-*/
+/*
+ * DEPRECIATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
+ */
 function rebuildsettings()
+{
+	rebuild_settings();
+}
+
+/**
+ * Rebuilds settings.php
+ *
+ */
+function rebuild_settings()
 {
 	global $db, $mybb;
 

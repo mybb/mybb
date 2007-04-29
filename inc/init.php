@@ -126,9 +126,9 @@ if(file_exists(MYBB_ROOT."inc/settings.php"))
 
 if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 {
-	if(function_exists('rebuildsettings'))
+	if(function_exists('rebuild_settings'))
 	{
-		rebuildsettings();
+		rebuild_settings();
 	}
 	else
 	{

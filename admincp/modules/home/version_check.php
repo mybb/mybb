@@ -15,26 +15,26 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Version Check", "index.php?".SID."&amp;module=home/version_check");
+$page->add_breadcrumb_item($lang->version_check, "index.php?".SID."&amp;module=home/version_check");
 
 if(!$mybb->input['action'])
 {	
-	$page->output_header("Version Check");
+	$page->output_header($lang->version_check);
 	
 	$sub_tabs['version_check'] = array(
-		'title' => "Version Check",
+		'title' => $lang->version_check,
 		'link' => "index.php?".SID."&amp;module=home/version_check",
-		'description' => "Here you can check that you are currently running the latest copy of MyBB and see the latest announcements directly from MyBB."
+		'description' => $lang->version_check_description
 	);
 	
 	$sub_tabs['download_mybb'] = array(
-		'title' => "Download the Latest MyBB",
+		'title' => $lang->dl_the_latest_mybb,
 		'link' => "http://mybboard.net/downloads",
 		'link_target' => '_blank'
 	);
 	
 	$sub_tabs['check_plugins'] = array(
-		'title' => "Check your Plugin Versions",
+		'title' => $lang->check_plugin_versions,
 		'link' => "index.php?".SID."&amp;module=config/plugins&amp;action=check",
 	);
 	
@@ -50,7 +50,7 @@ if(!$mybb->input['action'])
 	$contents = @implode("", @file("http://mybboard.net/version_check.php"));
 	if(!$contents)
 	{
-		$page->output_inline_error("There was a problem communicating with the version server. Please try again in a few minutes.");
+		$page->output_inline_error($lang->error_communication);
 		$page->output_footer();
 		exit;
 	}
@@ -80,22 +80,22 @@ if(!$mybb->input['action'])
 	echo $feed_parser->error;
 	
 	$table = new Table;
-	$table->construct_header("Your Version");
-	$table->construct_header("Latest Version");
+	$table->construct_header($lang->your_version);
+	$table->construct_header($lang->latest_version);
 	
 	$table->construct_cell("<strong>".$mybb->version."</strong> (".$mybb->version_code.")");
 	$table->construct_cell($latest_version);
 	$table->construct_row();
 	
-	$table->output("Version Check");
+	$table->output($lang->version_check);
 	
 	if($version_warn)
 	{
-		$page->output_error("<p><em>Your copy of MyBB is out of date.</em> Please upgrade to the latest version of MyBB by visiting the <a href=\"http://mybboard.net\" target=\"_blank\">MyBB Website</a>.</p>");
+		$page->output_error("<p><em>{$lang->error_out_of_date}</em> {$lang->update_forum}</p>");
 	}
 	else
 	{
-		$page->output_success("<p><em>Congratulations, you are running the latest version of MyBB.</em></p>");
+		$page->output_success("<p><em>{$lang->success_up_to_date}</em></p>");
 	}
 	
 	if($feed_parser->error == '')
@@ -118,17 +118,17 @@ if(!$mybb->input['action'])
 			{
 				$content = $item['description'];
 			}
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span>{$content}<strong><span style=\"float: right;\">{$stamp}</span><a href=\"{$item['link']}\" target=\"_blank\">&raquo; Read more</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span>{$content}<strong><span style=\"float: right;\">{$stamp}</span><a href=\"{$item['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}
 	else
 	{
-		$table->construct_cell("MyBB was unable to successfully fetch the latest announcements from the MyBB website. <!-- error code: {$feed_parser->error} -->");
+		$table->construct_cell("{$lang->error_fetch_news} <!-- error code: {$feed_parser->error} -->");
 		$table->construct_row();
 	}
 	
-	$table->output("Lastest MyBB Announcements");
+	$table->output($lang->latest_mybb_announcements);
 	
 	$page->output_footer();
 }

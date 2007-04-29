@@ -26,17 +26,17 @@ if(!$mybb->input['action'])
 		
 		$cache->update("adminnotes", $update_cache);
 	
-		flash_message("The Admin Notes have been successfully updated.", 'success');
+		flash_message($lang->success_notes_updated, 'success');
 		admin_redirect("index.php?".SID);
 	}
 	
-	$page->add_breadcrumb_item("Dashboard");
-	$page->output_header("Dashboard", array("stylesheets" => array("home.css")));
+	$page->add_breadcrumb_item($lang->dashboard);
+	$page->output_header($lang->dashboard, array("stylesheets" => array("home.css")));
 	
 	$sub_tabs['dashboard'] = array(
-		'title' => "Dashboard",
+		'title' => $lang->dashboard,
 		'link' => "index.php?".SID,
-		'description' => "This section allows you to see some of the various statistics relating to your board. You may also add other notes for other administrators to see."
+		'description' => $lang->dashboard_description
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'dashboard');
@@ -117,44 +117,44 @@ if(!$mybb->input['action'])
 	$adminmessage = $cache->read("adminnotes");
 
 	$table = new Table;
-	$table->construct_header("MyBB and Server Statistics", array("colspan" => 2));
-	$table->construct_header("Forum Statistics", array("colspan" => 2));
+	$table->construct_header($lang->mybb_server_stats, array("colspan" => 2));
+	$table->construct_header($lang->forum_stats, array("colspan" => 2));
 	
-	$table->construct_cell("<strong>MyBB Version</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->mybb_version}</strong>", array('width' => '25%'));
 	$table->construct_cell($mybb->version, array('width' => '25%'));
-	$table->construct_cell("<strong>Threads</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$threads['numthreads']}</strong> Threads<br /><strong>{$newthreads}</strong> New Today<br /><a href=\"\"><strong>{$unapproved_threads}</strong> Unapproved</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->threads}</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$threads['numthreads']}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>PHP Version</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(phpversion(), array('width' => '25%'));
-	$table->construct_cell("<strong>Posts</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$posts['numposts']}</strong> Posts<br /><strong>{$newposts}</strong> New Today<br /><a href=\"\"><strong>{$unapproved_posts}</strong> Unapproved</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$posts['numposts']}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>MySQL Engine</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));
 	$table->construct_cell($db->title." ".$db->get_version(), array('width' => '25%'));
-	$table->construct_cell("<strong>Users</strong>", array('width' => '25%'));
-	$table->construct_cell("<a href=\"\"><strong>{$users}</strong> Registered Users</a><br /><strong>{$activeusers}</strong> Active Users<br /><strong>{$newusers}</strong> Registrations Today<br /><a href=\"\"><strong>{$awaitingusers}</strong> Awaiting Activation</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->users}</strong>", array('width' => '25%'));
+	$table->construct_cell("<a href=\"\"><strong>{$users}</strong> {$lang->registered_users}</a><br /><strong>{$activeusers}</strong> {$lang->active_users}<br /><strong>{$newusers}</strong> {$lang->registrations_today}<br /><a href=\"\"><strong>{$awaitingusers}</strong> {$lang->awaiting_activation}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Server Load</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->server_load}</strong>", array('width' => '25%'));
 	$table->construct_cell($serverload, array('width' => '25%'));
-	$table->construct_cell("<strong>Attachments</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> Attachments<br /><a href=\"\"><strong>{$unapproved_attachs}</strong> Unapproved</a><br /><strong>{$attachs['spaceused']}</strong> Used", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->attachments}</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> {$lang->attachments}<br /><a href=\"\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->output("Dashboard");
+	$table->output($lang->dashboard);
 	
-	$table->construct_header("These admin notes are public to all administrators");
+	$table->construct_header($lang->admin_notes_public);
 	
 	$form = new Form("index.php?".SID, "post");
 	$table->construct_cell($form->generate_text_area("adminnotes", $adminmessage['adminmessage'], array('style' => 'width: 99%; height: 200px;')));
 	$table->construct_row();
 	
-	$table->output("Administrator Notes");	
+	$table->output($lang->admin_notes);	
 	
-	$buttons[] = $form->generate_submit_button("Save Notes");
+	$buttons[] = $form->generate_submit_button($lang->save_notes);
 	$form->output_submit_wrapper($buttons);
 	
 	$form->end();

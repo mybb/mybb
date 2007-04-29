@@ -308,7 +308,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 	{
 		$page->show_login($login_message, "error");
 	}
-} // Olivia Hussley
+}
 
 if($rand == 2 || $rand == 5)
 {

@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Preferences", "index.php?".SID."&amp;module=home/preferences");
+$page->add_breadcrumb_item($lang->preferences_and_personal_notes, "index.php?".SID."&amp;module=home/preferences");
 
 if(!$mybb->input['action'])
 {
@@ -33,12 +33,12 @@ if(!$mybb->input['action'])
 		admin_redirect("index.php?".SID."&module=home/preferences");
 	}
 	
-	$page->output_header("Preferences");
+	$page->output_header($lang->preferences_and_personal_notes);
 	
 	$sub_tabs['preferences'] = array(
-		'title' => "Preferences &amp; Personal Notes",
+		'title' => $lang->preferences_and_personal_notes,
 		'link' => "index.php?".SID."&amp;module=home/preferences",
-		'description' => "Here you can manage your Admin Control Panel preferences and leave personal notes for yourself."
+		'description' => $lang->prefs_and_personal_notes_description
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'preferences');
@@ -62,21 +62,21 @@ if(!$mybb->input['action'])
 	$setting_code = $form->generate_select_box("cpstyle", $folders, $admin_options['cpstyle']);
 	
 	$table = new Table;
-	$table->construct_header("Admin Control Panel Theme");
+	$table->construct_header($lang->acp_theme);
 	
-	$table->construct_cell("Please select a theme to use in the Admin Control Panel<br />{$setting_code}");
+	$table->construct_cell($lang->select_acp_theme."<br />{$setting_code}");
 	$table->construct_row();
 	
-	$table->output("Preferences");
+	$table->output($lang->preferences);
 	
-	$table->construct_header("These notes are not shared with other Administrators.");
+	$table->construct_header($lang->notes_not_shared);
 	
 	$table->construct_cell($form->generate_text_area("notes", $admin_options['notes'], array('style' => 'width: 99%; height: 300px;')));
 	$table->construct_row();
 	
-	$table->output("Personal Notes");	
+	$table->output($lang->personal_notes);	
 	
-	$buttons[] = $form->generate_submit_button("Save Personal Notes and Preferences");
+	$buttons[] = $form->generate_submit_button($lang->save_notes_and_prefs);
 	$form->output_submit_wrapper($buttons);
 	
 	$form->end();
