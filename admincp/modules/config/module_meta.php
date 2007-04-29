@@ -65,6 +65,10 @@ function config_action_handler($manage)
 			$page->active_action = "help_documents";
 			$action_file = "help_documents.php";
 			break;
+		case "calendars":
+			$page->active_action = "calendars";
+			$action_file = "calendars.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
@@ -83,6 +87,7 @@ function config_action_handler($manage)
 	$sub_menu['100'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
 	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
 	$sub_menu['120'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
+	$sub_menu['130'] = array("id" => "calendars", "title" => "Calendars", "link" => "index.php?".SID."&module=config/calendars");
 
 	$sidebar = new SidebarItem("Configuration");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
@@ -128,7 +133,8 @@ function config_admin_permissions()
 		"help_documents" => "Can Manage Help Documents?",
 		"plugins" => "Can Manage Plugins?",
 		"attachment_types" => "Can Manage Attachment Types?",
-		"spiders" => "Can Manage Spiders / Bots?"
+		"spiders" => "Can Manage Spiders / Bots?",
+		"calendars" => "Can Manage Calendars?"
 	);
 	return array("name" => "Configuration", "permissions" => $admin_permissions);
 }

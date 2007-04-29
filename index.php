@@ -246,14 +246,17 @@ if($mybb->settings['showwol'] != "no" || $mybb->settings['showbirthdays'] != "no
 	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
 }
 
-// Get the forums we will need to show.
-$query = $db->simple_select("forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
-
 // Build a forum cache.
+$query = $db->query("
+	SELECT f.*, fr.dateline AS lastread
+	FROM ".TABLE_PREFIX."forums f
+	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid)
+	WHERE f.active != 'no'
+	ORDER BY pid, disporder
+");
 while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-
 }
 $forumpermissions = forum_permissions();
 

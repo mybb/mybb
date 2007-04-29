@@ -74,13 +74,6 @@ class MyBB {
 	var $config = array();
 	
 	/**
-	 * The debug information.
-	 *
-	 * @var unknown_type
-	 */
-	var $debug;
-	
-	/**
 	 * The request method that called this page.
 	 *
 	 * @var string.
@@ -108,6 +101,11 @@ class MyBB {
 	 */
 	var $use_shutdown = false;
 	
+	/**
+	 * Debug mode?
+	 */
+	var $debug_mode = false;
+
 	/**
 	 * Constructor of class.
 	 *
@@ -169,11 +167,13 @@ class MyBB {
 			$this->unset_globals($_FILES);
 			$this->unset_globals($_COOKIE);
 		}
-		if(isset($this->input['debug']))
-		{
-			$this->debug = 1;
-		}
 		$this->clean_input();
+
+		// Are we running in debug mode?
+		if(isset($mybb->input['debug']) || preg_match("#[?&]debug=1#", $_SERVER['REQUEST_URI']))
+		{
+			$this->debug_mode = true;
+		}
 
 		// Old version of PHP, need to register_shutdown_function
 		if(phpversion() < '5.0.5')

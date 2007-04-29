@@ -36,8 +36,9 @@
 		<maxemails><![CDATA[5]]></maxemails>
 		<canviewmemberlist><![CDATA[yes]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[yes]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[yes]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[no]]></canaddprivateevents>
+		<canaddevents><![CDATA[no]]></canaddevents>
+		<canbypasseventmod><![CDATA[no]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[no]]></canmoderateevents>
 		<canviewonline><![CDATA[yes]]></canviewonline>
 		<canviewwolinvis><![CDATA[no]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[no]]></canviewonlineips>
@@ -93,8 +94,9 @@
 		<maxemails><![CDATA[5]]></maxemails>
 		<canviewmemberlist><![CDATA[yes]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[yes]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[yes]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[yes]]></canaddprivateevents>
+		<canaddevents><![CDATA[yes]]></canaddevents>
+		<canbypasseventmod><![CDATA[no]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[no]]></canmoderateevents>
 		<canviewonline><![CDATA[yes]]></canviewonline>
 		<canviewwolinvis><![CDATA[no]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[no]]></canviewonlineips>
@@ -150,8 +152,9 @@
 		<maxemails><![CDATA[10]]></maxemails>
 		<canviewmemberlist><![CDATA[yes]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[yes]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[yes]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[yes]]></canaddprivateevents>
+		<canaddevents><![CDATA[yes]]></canaddevents>
+		<canbypasseventmod><![CDATA[yes]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[yes]]></canmoderateevents>
 		<canviewonline><![CDATA[yes]]></canviewonline>
 		<canviewwolinvis><![CDATA[yes]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[yes]]></canviewonlineips>
@@ -207,8 +210,9 @@
 		<maxemails><![CDATA[0]]></maxemails>
 		<canviewmemberlist><![CDATA[yes]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[yes]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[yes]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[yes]]></canaddprivateevents>
+		<canaddevents><![CDATA[yes]]></canaddevents>
+		<canbypasseventmod><![CDATA[yes]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[yes]]></canmoderateevents>
 		<canviewonline><![CDATA[yes]]></canviewonline>
 		<canviewwolinvis><![CDATA[yes]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[yes]]></canviewonlineips>
@@ -264,8 +268,9 @@
 		<maxemails><![CDATA[5]]></maxemails>
 		<canviewmemberlist><![CDATA[yes]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[yes]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[no]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[no]]></canaddprivateevents>
+		<canaddevents><![CDATA[no]]></canaddevents>
+		<canbypasseventmod><![CDATA[no]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[no]]></canmoderateevents>
 		<canviewonline><![CDATA[yes]]></canviewonline>
 		<canviewwolinvis><![CDATA[no]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[no]]></canviewonlineips>
@@ -321,8 +326,9 @@
 		<maxemails><![CDATA[5]]></maxemails>
 		<canviewmemberlist><![CDATA[yes]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[yes]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[no]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[no]]></canaddprivateevents>
+		<canaddevents><![CDATA[no]]></canaddevents>
+		<canbypasseventmod><![CDATA[no]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[no]]></canmoderateevents>
 		<canviewonline><![CDATA[yes]]></canviewonline>
 		<canviewwolinvis><![CDATA[no]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[no]]></canviewonlineips>
@@ -378,8 +384,9 @@
 		<maxemails><![CDATA[5]]></maxemails>
 		<canviewmemberlist><![CDATA[no]]></canviewmemberlist>
 		<canviewcalendar><![CDATA[no]]></canviewcalendar>
-		<canaddpublicevents><![CDATA[no]]></canaddpublicevents>
-		<canaddprivateevents><![CDATA[no]]></canaddprivateevents>
+		<canaddevents><![CDATA[no]]></canaddevents>
+		<canbypasseventmod><![CDATA[no]]></canbypasseventmod>
+		<canmoderateevents><![CDATA[no]]></canmoderateevents>
 		<canviewonline><![CDATA[no]]></canviewonline>
 		<canviewwolinvis><![CDATA[no]]></canviewwolinvis>
 		<canviewonlineips><![CDATA[no]]></canviewonlineips>

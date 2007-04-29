@@ -31,9 +31,15 @@ class DefaultForm
 		echo $form;
 	}
 
-	function generate_hidden_field($name, $value)
+	function generate_hidden_field($name, $value, $options=array())
 	{
-		return "<input type=\"hidden\" name=\"{$name}\" value=\"".htmlspecialchars($value)."\" />";
+		$input = "<input type=\"hidden\" name=\"{$name}\" value=\"".htmlspecialchars($value)."\"";
+		if(isset($options['id']))
+		{
+			$input .= " id=\"".$options['id']."\"";
+		}
+		$input .= " />";
+		return $input;
 	}
 	
 	function generate_text_box($name, $value="", $options=array())
@@ -177,6 +183,10 @@ class DefaultForm
 		{
 			$input .= " checked=\"checked\"";
 		}
+		if(isset($options['onclick']))
+		{
+			$input .= " onclick=\"{$options['onclick']}\"";
+		}
 		$input .= " />";
 		if($label != "")
 		{
@@ -212,7 +222,7 @@ class DefaultForm
 		foreach($option_list as $value => $option)
 		{
 			$select_add = '';
-			if($value === $selected || (is_array($selected) && in_array($value, $selected, true)))
+			if($value == $selected || (is_array($selected) && in_array($value, $selected, true)))
 			{
 				$select_add = " selected=\"selected\"";
 			}
@@ -270,9 +280,9 @@ class DefaultForm
 		return $input;
 	}
 
-	function generate_yes_no_radio($name, $value="yes", $int=true)
+	function generate_yes_no_radio($name, $value="yes", $int=false)
 	{
-		if($value == "no" || $value === 0)
+		if($value == "no" || $value === '0')
 		{
 			$no_checked = 1;
 			$yes_checked = 0;
@@ -286,6 +296,11 @@ class DefaultForm
 		{
 			$yes_value = 1;
 			$no_value = 0;
+		}
+		else
+		{
+			$yes_value = "yes";
+			$no_value = "no";
 		}
 		
 		$yes = $this->generate_radio_button($name, $yes_value, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));

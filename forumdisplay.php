@@ -72,13 +72,17 @@ $parentlist = $foruminfo['parentlist'];
 $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 
-// Get the forums we will need to show.
-$query = $db->simple_select("forums", "*", "active != 'no'", array('order_by' => 'pid, disporder'));
 // Build a forum cache.
+$query = $db->query("
+	SELECT f.*, fr.dateline AS lastread
+	FROM ".TABLE_PREFIX."forums f
+	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid)
+	WHERE f.active != 'no'
+	ORDER BY pid, disporder
+");
 while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-
 }
 $forumpermissions = forum_permissions();
 
@@ -641,12 +645,21 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 	}
 }
 
-$forumread = my_get_array_cookie("forumread", $fid);
-if($mybb->user['lastvisit'] > $forumread)
+if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
-	$forumread = $mybb->user['lastvisit'];
-}
+	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
+	$forum_read = $db->fetch_field($query, "dateline");
 
+	$read_cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+	if($forum_read == 0 || $forum_read < $read_cutoff)
+	{
+		$forum_read = $read_cutoff;
+	}
+}
+else
+{
+	$forum_read = my_get_array_cookie("forumread", $fid);
+}
 
 $unreadpost = 0;
 $threads = '';
@@ -823,42 +836,29 @@ if(is_array($threadcache))
 		$gotounread = '';
 		$isnew = 0;
 		$donenew = 0;
-		$lastread = 0;
 		
-		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
+		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 		{
-			$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
-		}
-		
-		if($thread['lastpost'] > $cutoff)
-		{
-			if($thread['lastpost'] > $cutoff)
+			if($thread['lastread'])
 			{
-				if($thread['lastread'])
-				{
-						$lastread = $thread['lastread'];
-				}
-				else
-				{
-						$lastread = 1;
-				}
-			}
-		} 
-		
-		if(!$lastread) 
-		{
-			$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']); 
-			if($readcookie > $forumread) 
-			{ 
-				$lastread = $readcookie; 
+				$last_read = $thread['lastread'];
 			}
 			else
 			{
-				$lastread = $forumread;
+				$last_read = $read_cutoff;
 			}
 		}
+		else
+		{
+			$last_read = my_get_array_cookie("threadread", $thread['tid']);
+		}
+
+		if($forum_read > $last_read)
+		{
+			$last_read = $forum_read;
+		}
 		
-		if($thread['lastpost'] > $lastread && $lastread)
+		if($thread['lastpost'] > $last_read)
 		{
 			$folder .= "new";
 			$folder_label .= $lang->icon_new;
@@ -975,10 +975,11 @@ if(is_array($threadcache))
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}
 
-	// Set the forum read cookie if all posts are read.
-	if($unreadpost == 0 && ($page == 1 || !$page)) // Cheap modification
+	// If there are no unread threads in this forum and no unread child forums - mark it as read
+	require_once MYBB_ROOT."inc/functions_indicators.php";
+	if(fetch_unread_count($fid) == 0 && $unread_forums == 0)
 	{
-		my_set_array_cookie("forumread", $fid, time());
+		mark_forum_read($fid);
 	}
 
 	$customthreadtools = '';

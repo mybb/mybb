@@ -19,6 +19,7 @@ $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attac
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
+require_once MYBB_ROOT."/inc/functions_indicators.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
@@ -417,34 +418,8 @@ if($mybb->input['action'] == "thread")
 	$next_oldest_link = get_thread_link($tid, 0, "nextoldest");
 	$next_newest_link = get_thread_link($tid, 0, "nextnewest");
 
-	// Mark this thread read for the currently logged in user.
-	if($mybb->settings['threadreadcut'] && $mybb->user['uid'] != 0)
-	{
-		// For registered users, store the information in the database.
-		switch($db->type)
-		{
-			case "pgsql":
-				$db->shutdown_query($db->build_replace_query("threadsread", array('tid' => $tid, 'uid' => $mybb->user['uid'], 'dateline' => time()), "tid"));
-				break;
-			case "sqlite3":
-			case "sqlite2":
-				$db->shutdown_query("
-					REPLACE INTO ".TABLE_PREFIX."threadsread (tid, uid, dateline)
-					VALUES('$tid', '".$mybb->user['uid']."', '".time()."')
-				");
-				break;
-			default:
-				$db->shutdown_query("
-					REPLACE INTO ".TABLE_PREFIX."threadsread
-					SET tid='$tid', uid='".$mybb->user['uid']."', dateline='".time()."'
-				");
-		}
-	}
-	else
-	{	
-		// For guests, store the information in a cookie.
-		my_set_array_cookie("threadread", $tid, time());
-	}
+	// Mark this thread as read
+	mark_thread_read($tid, $fid);
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
 	if($forum['open'] != "no")
@@ -941,5 +916,4 @@ function buildtree($replyto="0", $indent="0")
 	}
 	return $posts;
 }
-
 ?>

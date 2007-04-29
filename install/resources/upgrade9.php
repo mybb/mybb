@@ -64,73 +64,14 @@ function upgrade9_dbchanges()
 	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
 	
-	if($db->field_exists('start_day', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_day;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_day tinyint(2) unsigned NOT NULL");
-	
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents char(3) NOT NULL default '';");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canaddprivateevents;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod char(3) NOT NULL default '' AFTER canaddevents;");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents char(3) NOT NULL default '' AFTER canbypasseventmod;");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='yes', canmoderateevents='yes' WHERE cancp='yes' OR issupermod='yes'");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='no', canmoderateevents='no' WHERE cancp='no' AND issupermod='no'");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canaddevents='no' WHERE gid=1;");
 
-  	if($db->field_exists('start_month', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_month;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_month tinyint(2) unsigned NOT NULL");
-	
-	if($db->field_exists('start_year', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_key;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_year smallint(4) unsigned NOT NULL");
-	
-	if($db->field_exists('end_day', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_day;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_day tinyint(2) unsigned NOT NULL");
-	
-	if($db->field_exists('end_month', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_month;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_month tinyint(2) unsigned NOT NULL");
-	
-	if($db->field_exists('end_year', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_year;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_year smallint(4) unsigned NOT NULL");
-	
-	if($db->field_exists('repeat_days', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP repeat_days;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD repeat_days varchar(20) NOT NULL");
-	
-	if($db->field_exists('start_time_hours', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_time_hours;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_hours varchar(2) NOT NULL");
-	
-	if($db->field_exists('start_time_mins', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP start_time_mins;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD start_time_mins varchar(2) NOT NULL");
-  	
-	if($db->field_exists('end_time_hours', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_time_hours;");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_hours varchar(2) NOT NULL");
-  	
-	if($db->field_exists('end_time_mins', "events"))
-	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP end_time_mins");
-	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD end_time_mins varchar(2) NOT NULL");
-	
 	$db->drop_table("maillogs");	
 	$db->drop_table("mailerrors");
 	$db->drop_table("promotions");
@@ -576,9 +517,135 @@ function upgrade9_dbchanges4()
 	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
 
+	$db->query("CREATE TABLE ".TABLE_PREFIX."calendars (
+	  cid int unsigned NOT NULL auto_increment,
+	  name varchar(100) NOT NULL default '',
+	  disporder int unsigned NOT NULL default '0',
+	  startofweek int(1) NOT NULL default '0',
+	  showbirthdays int(1) NOT NULL default '0',
+	  eventlimit int(3) NOT NULL default '0',
+	  moderation int(1) NOT NULL default '0',
+	  allowhtml char(3) NOT NULL default '',
+	  allowmycode char(3) NOT NULL default '',
+	  allowimgcode char(3) NOT NULL default '',
+	  allowsmilies char(3) NOT NULL default '',
+	  PRIMARY KEY(cid)
+	) TYPE=MyISAM;");
+
+	$db->query("INSERT INTO ".TABLE_PREFIX."calendars (name,disporder,startofweek,showbirthdays,eventlimit,moderation,allowhtml,allowmycode,allowimgcode,allowsmilies) VALUES ('Default Calendar',1,0,1,4,0,'no','yes','yes','yes');");
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."calendarpermissions (
+	  cid int unsigned NOT NULL default '0',
+	  gid int unsigned NOT NULL default '0',
+	  canviewcalendar char(3) NOT NULL default '',
+	  canaddevents char(3) NOT NULL default '',
+	  canbypasseventmod char(3) NOT NULL default '',
+	  canmoderateevents char(3) NOT NULL default ''
+	) TYPE=MyISAM;");
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."forumsread (
+	  fid int unsigned NOT NULL default '0',
+	  uid int unsigned NOT NULL default '0',
+	  dateline int(10) NOT NULL default '0',
+	  KEY dateline (dateline),
+	  UNIQUE KEY fid (fid,uid)
+	) TYPE=MyISAM;");
+
+
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("9_done");
+}
+
+function upgrade9_dbchanges5()
+{
+	global $db, $output;
+
+	$output->print_header("Event Conversion");
+
+	if(!$_POST['eventspage'])
+	{
+		$epp = 50;
+	}
+	else
+	{
+		$epp = $_POST['eventspage'];
+	}
+
+	if($_POST['eventstart'])
+	{
+		$startat = $_POST['eventstart'];
+		$upper = $startat+$epp;
+		$lower = $startat;
+	}
+	else
+	{
+		$startat = 0;
+		$upper = $epp;
+		$lower = 1;
+	}
+
+	$query = $db->query("SELECT COUNT(eid) AS eventcount FROM ".TABLE_PREFIX."events");
+	$cnt = $db->fetch_array($query);
+
+	$contents .= "<p>Converting events $lower to $upper (".$cnt['attachcount']." Total)</p>";
+	echo "<p>Converting events $lower to $upper (".$cnt['attachcount']." Total)</p>";
+	
+	// Just started - add fields
+	if(!$db->field_exists("donecon", "events"))
+	{
+		// Add temporary column
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD donecon smallint(1) NOT NULL;");
+
+		// Got structural changes?		
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD cid int unsigned NOT NULL default '0' AFTER eid");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
+		$db->query("UPDATE ".TABLE_PREIX."events SET private=1 WHERE private='yes'");
+		$db->query("UPDATE ".TABLE_PREIX."events SET private=0 WHERE private='no'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events CHANGE private int(1) NOT NULL default '0'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD dateline int(10) unsigned NOT NULL default '0' AFTER private");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD starttime int(10) unsigned NOT NULL default '0' AFTER dateline");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD endtime int(10) unsigned NOT NULL default '0' AFTER starttime");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD timezone int(3) NOT NULL default '0' AFTER endtime");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD ignoretimezone int(1) NOT NULL default '0' AFTER timezone");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD usingtime int(1) NOT NULL default '0' AFTER dst");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD repeats text NOT NULL AFTER usingtime");
+	}
+
+	$query = $db->simple_select("events", "*", "donecon!=1", array("order_by" => "eid", "limit" => $epp));
+	while($event = $db->fetch_array($query))
+	{
+		$e_date = explode("-", $event['date']);
+		$starttime = gmmktime(0, 0, 0, $e_date[1], $e_date[0], $e_date[1]);
+		$updated_event = array(
+			"cid" => 1,
+			"visible" => 1,
+			"starttime" => $starttime,
+			"dateline" => $starttime
+		);
+	}
+	
+	echo "<p>Done.</p>";
+	$query = $db->query("events", "COUNT(eid) AS remaining", "donecon!=1");
+	$remaining = $db->fetch_field($query, "remaining");	
+	if($remaining)
+	{
+		$nextact = "9_dbchanges5";
+		$startat = $startat+$epp;
+		$contents .= "<p><input type=\"hidden\" name=\"eventspage\" value=\"$epp\" /><input type=\"hidden\" name=\"eventstart\" value=\"$startat\" />Done. Click Next to move on to the next set of events.</p>";
+	}
+	else
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
+		$nextact = "9_done";
+		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
+	}
+	$output->print_contents($contents);
+	$output->print_footer($nextact);
+
 }
 ?>

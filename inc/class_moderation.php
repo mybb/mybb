@@ -208,16 +208,15 @@ class Moderation
 			else
 			{
 				$num_approved_posts++;
-			}
-			
-			// Count the post counts for each user to be subtracted
-			if($userposts[$post['uid']])
-			{
-				$userposts[$post['uid']]--;
-			}
-			else
-			{
-				$userposts[$post['uid']] = -1;
+				// Count the post counts for each user to be subtracted
+				if($userposts[$post['uid']])
+				{
+					$userposts[$post['uid']]--;
+				}
+				else
+				{
+					$userposts[$post['uid']] = -1;
+				}
 			}
 		}
 		// Remove post count from users
@@ -920,7 +919,7 @@ class Moderation
 		$this->delete_thread($mergetid);
 
 		$updated_stats = array(
-			"replies" => "+{$mergethread['replies']}",
+			"replies" => "+".$mergethread['replies']+1, 
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
@@ -1062,8 +1061,8 @@ class Moderation
 		{
 			// Update old forum stats
 			$update_array = array(
-				"posts" => "-{$num_visible}",
-				"unapprovedposts" => "-{$num_unapproved}"
+				"posts" => $num_visible-1,
+				"unapprovedposts" => $num_unapproved
 			);
 			update_forum_counters($thread['fid'], $update_array);
 
@@ -1257,13 +1256,12 @@ class Moderation
 		$first_post = $db->fetch_array($query);
 		if($first_post['tid'])
 		{
-			if(in_array($first_post['pid'], $pids))
-			{
-				$is_first = true;
+			if(in_array($first_post['pid'], $pids)) 
+			{ 
+				$is_first = true; 
+				$db->update_query("threads", $approve, "tid='{$first_post['tid']}'");
 			}
-			$db->update_query("threads", $approve, "tid='{$first_post['tid']}'");
 		}
-
 		$updated_thread_stats = array(
 			"unapprovedposts" => "-{$num_posts}"
 		);
@@ -1335,15 +1333,15 @@ class Moderation
 
 		$is_first = false;
 		// If this is the first post of the thread, also unapprove the thread
-		$query = $db->simple_select("posts", "tid", "pid='{$thread['firstpost']}' AND visible='0'");
+		$query = $db->simple_select("posts", "tid,tid", "pid='{$thread['firstpost']}' AND visible='0'");
 		$first_post = $db->fetch_array($query);
 		if($first_post['tid'])
 		{
 			if(in_array($first_post['pid'], $pids))
 			{
 				$is_first = true;
+				$db->update_query("threads", $unapprove, "tid='{$first_post['tid']}'");
 			}
-			$db->update_query("threads", $unapprove, "tid='{$first_post['tid']}'");
 		}
 
 

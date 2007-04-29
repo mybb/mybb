@@ -361,6 +361,10 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		$thread_info = $posthandler->insert_thread();
 		$tid = $thread_info['tid'];
 		$visible = $thread_info['visible'];
+
+		// Mark thread as read
+		require_once MYBB_ROOT."inc/functions_indicators.php";
+		mark_thread_read($tid, $fid);
 		
 		// We were updating a draft thread, send them back to the draft listing.
 		if($new_thread['savedraft'] == 1)

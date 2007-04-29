@@ -173,18 +173,21 @@ $rand = rand(0, 10);
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
 {
-	define('FORUM_URL', "forum{fid}.html");
-	define('FORUM_URL_PAGED', "forum{fid}-{page}.html");
-	define('THREAD_URL', "thread{tid}.html");
-	define('THREAD_URL_PAGED', "thread{tid}-{page}.html");
-	define('THREAD_URL_ACTION', 'thread{tid}-{action}.html');
-	define('THREAD_URL_POST', 'thread{tid}-p{pid}.html');
-	define('POST_URL', "post{pid}.html");
-	define('PROFILE_URL', "user{uid}.html");
-	define('ANNOUNCEMENT_URL', "announcement{aid}.html");
-	define('CALENDAR_URL', "calendar{year}-{month}.html");
-	define('CALENDAR_URL_DAY', 'calendar{year}-{month}-{day}.html');
-	define('EVENT_URL', "event{eid}.html");
+	define('FORUM_URL', "forum-{fid}.html");
+	define('FORUM_URL_PAGED', "forum-{fid}-page-{page}.html");
+	define('THREAD_URL', "thread-{tid}.html");
+	define('THREAD_URL_PAGED', "thread-{tid}-page-{page}.html");
+	define('THREAD_URL_ACTION', 'thread-{tid}-{action}.html');
+	define('THREAD_URL_POST', 'thread-{tid}-post-{pid}.html');
+	define('POST_URL', "post-{pid}.html");
+	define('PROFILE_URL', "user-{uid}.html");
+	define('ANNOUNCEMENT_URL', "announcement-{aid}.html");
+	define('CALENDAR_URL', "calendar-{calendar}.html");
+	define('CALENDAR_URL_YEAR', 'calendar-{calendar}-year-{year}.html');
+	define('CALENDAR_URL_MONTH', 'calendar-{calendar}-year-{year}-month-{month}.html');
+	define('CALENDAR_URL_DAY', 'calendar-{calendar}-year-{year}-month-{month}-day-{day}.html');
+	define('CALENDAR_URL_WEEK', 'calendar-{calendar}-week-{week}.html');
+	define('EVENT_URL', "event-{eid}.html");
 	define('INDEX_URL', "index.php");
 }
 else
@@ -198,8 +201,11 @@ else
 	define('POST_URL', "showthread.php?pid={pid}");
 	define('PROFILE_URL', "member.php?action=profile&uid={uid}");
 	define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
-	define('CALENDAR_URL', "calendar.php?year={year}&month={month}");
-	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&year={year}&month={month}&day={day}');
+	define('CALENDAR_URL', "calendar.php?calendar={calendar}");
+	define('CALENDAR_URL_YEAR', "calendar.php?action=yearview&calendar={calendar}&year={year}");
+	define('CALENDAR_URL_MONTH', "calendar.php?calendar={calendar}&year={year}&month={month}");
+	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
+	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');
 	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
 	define('INDEX_URL', "index.php");
 }

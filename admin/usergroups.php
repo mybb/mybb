@@ -167,8 +167,9 @@ if($mybb->input['action'] == "do_add")
 		"maxemails" => intval($mybb->input['maxemails']),
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
-		"canaddpublicevents" => $db->escape_string($mybb->input['canaddpublicevents']),
-		"canaddprivateevents" => $db->escape_string($mybb->input['canaddprivateevents']),
+		"canaddevents" => $db->escape_string($mybb->input['canaddevents']),
+		"canbypasseventmod" => $db->escape_string($mybb->input['canbypasseventmod']),
+		"canmoderateevents" => $db->escape_string($mybb->input['canmoderateevents']),
 		"canviewonline" => $db->escape_string($mybb->input['canviewonline']),
 		"canviewwolinvis" => $db->escape_string($mybb->input['canviewwolinvis']),
 		"canviewonlineips" => $db->escape_string($mybb->input['canviewonlineips']),
@@ -327,8 +328,9 @@ if($mybb->input['action'] == "do_edit")
 		"maxemails" => intval($mybb->input['maxemails']),		
 		"canviewmemberlist" => $db->escape_string($mybb->input['canviewmemberlist']),
 		"canviewcalendar" => $db->escape_string($mybb->input['canviewcalendar']),
-		"canaddpublicevents" => $db->escape_string($mybb->input['canaddpublicevents']),
-		"canaddprivateevents" => $db->escape_string($mybb->input['canaddprivateevents']),
+		"canaddevents" => $db->escape_string($mybb->input['canaddevents']),
+		"canbypasseventmod" => $db->escape_string($mybb->input['canbypasseventmod']),
+		"canmoderateevents" => $db->escape_string($mybb->input['canmoderateevents']),
 		"canviewonline" => $db->escape_string($mybb->input['canviewonline']),
 		"canviewwolinvis" => $db->escape_string($mybb->input['canviewwolinvis']),
 		"canviewonlineips" => $db->escape_string($mybb->input['canviewonlineips']),
@@ -423,8 +425,9 @@ if($mybb->input['action'] == "add")
 
 	tablesubheader($lang->perms_calendar);
 	makeyesnocode($lang->can_view_calendar, "canviewcalendar", "yes");
-	makeyesnocode($lang->can_add_public, "canaddpublicevents", "no");
-	makeyesnocode($lang->can_add_private, "canaddprivateevents", "no");
+	makeyesnocode($lang->can_add_public, "canaddevents", "no");
+	makeyesnocode("Can bypass event moderation queue?", "canbypasseventmod", "no");
+	makeyesnocode("Can moderate events?", "canmoderateevents", "no");
 
 	tablesubheader($lang->perms_wol);
 	makeyesnocode($lang->can_view_wol, "canviewonline", "yes");
@@ -561,8 +564,9 @@ if($mybb->input['action'] == "edit")
 
 	tablesubheader($lang->perms_calendar);
 	makeyesnocode($lang->can_view_calendar, "canviewcalendar", $usergroup['canviewcalendar']);
-	makeyesnocode($lang->can_add_public, "canaddpublicevents", $usergroup['canaddpublicevents']);
-	makeyesnocode($lang->can_add_private, "canaddprivateevents", $usergroup['canaddprivateevents']);
+	makeyesnocode($lang->can_add_public, "canaddevents", $usergroup['canaddevents']);
+	makeyesnocode("Can bypass event moderation queue?", "canbypasseventmod", $usergroup['canbypasseventmod']);
+	makeyesnocode("Can moderate events?", "canmoderateevents", $usergroup['canmoderateevents']);
 
 	tablesubheader($lang->perms_wol);
 	makeyesnocode($lang->can_view_wol, "canviewonline", $usergroup['canviewonline']);

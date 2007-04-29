@@ -820,39 +820,8 @@ if($mybb->input['action'] == "options")
 	{
 		--$mybb->user['timezone'];
 	}
-	$user['timezone'] = $user['timezone']*10;
-	$user['timezone'] = str_replace("-", "n", $user['timezone']);
-	$timezoneselect[$user['timezone']] = "selected";
-	// We need to revisit this to see if it can be optomitized and made smaller
-	// maybe in version 5
-	$tempzone = $user['timezone'];
-	$user['timezone'] = "";
-	$timenow = my_date($mybb->settings['timeformat'], time(), "-");
-	for($i = -12; $i <= 12; ++$i)
-	{
-		if($i == 0)
-		{
-			$i2 = "-";
-		}
-		else
-		{
-			$i2 = $i;
-		}
-		$temptime = my_date($mybb->settings['timeformat'], time(), $i2);
-		$zone = $i*10;
-		$zone = str_replace("-", "n", $zone);
-		$timein[$zone] = $temptime;
-	}
-	// Sad code for all the weird timezones
-	$timein['n35'] = my_date($mybb->settings['timeformat'], time(), -3.5);
-	$timein[35] = my_date($mybb->settings['timeformat'], time(), 3.5);
-	$timein[45] = my_date($mybb->settings['timeformat'], time(), 4.5);
-	$timein[55] = my_date($mybb->settings['timeformat'], time(), 5.5);
-	$timein[575] = my_date($mybb->settings['timeformat'], time(), 5.75);
-	$timein[95] = my_date($mybb->settings['timeformat'], time(), 9.5);
-	$timein[105] = my_date($mybb->settings['timeformat'], time(), 10.5);
-	$mybb->user['timezone'] = $tempzone;
-	eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
+
+	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
 
 	$threadview[$user['threadmode']] = 'selected="selected"';
 	$daysprunesel[$user['daysprune']] = 'selected="selected"';

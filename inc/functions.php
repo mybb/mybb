@@ -63,8 +63,7 @@ function output_page($contents)
 			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
-
-		if(isset($mybb->input['debug']))
+		if($mybb->debug_mode == true)
 		{
 			debug_page();
 		}
@@ -89,7 +88,7 @@ function output_page($contents)
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown != true)
+	if(($mybb->settings['useshutdownfunc'] == "no"|| phpversion() >= '5.0.5') && $mybb->use_shutdown != true)
 	{
 		run_shutdown();
 	}
@@ -534,6 +533,45 @@ function cache_forums($force=false)
 		}
 	}
 	return $forum_cache;
+}
+
+/**
+ * Generate an array of all child and descendant forums for a specific forum.
+ *
+ * @param int The forum ID
+ * @param return Array of descendants
+ */
+function get_child_list($fid)
+{
+	static $forums_by_parent;
+
+	$forums = array();
+	if(!is_array($forums_by_parent))
+	{
+		$forum_cache = cache_forums();
+		foreach($forum_cache as $forum)
+		{
+			if($forum['active'] != "no")
+			{
+				$forums_by_parent[$forum['pid']][$forum['fid']] = $forum;
+			}
+		}
+	}
+	if(!is_array($forums_by_parent[$fid]))
+	{
+		return;
+	}
+	$pid = $forum['fid'];
+	foreach($forums_by_parent[$fid] as $forum)
+	{
+		$forums[] = $forum['fid'];
+		$children = get_child_list($forum['fid']);
+		if(is_array($children))
+		{
+			$forums = array_merge($forums, $children);
+		}
+	}
+	return $forums;
 }
 
 /**
@@ -3758,26 +3796,55 @@ function get_event_link($eid)
 /**
  * Build the link to a specified date on the calendar
  *
+ * @param int The ID of the calendar
  * @param int The year
  * @param int The month
  * @param int The day (optional)
  * @return string The URL of the calendar
  */
-function get_calendar_link($year, $month, $day=0)
+function get_calendar_link($calendar, $year=0, $month=0, $day=0)
 {
 	if($day > 0)
 	{
 		$link = str_replace("{month}", $month, CALENDAR_URL_DAY);
 		$link = str_replace("{year}", $year, $link);
 		$link = str_replace("{day}", $day, $link);
+		$link = str_replace("{calendar}", $calendar, $link);
+		return htmlspecialchars_uni($link);
+	}
+	else if($month > 0)
+	{
+		$link = str_replace("{month}", $month, CALENDAR_URL_MONTH);
+		$link = str_replace("{year}", $year, $link);
+		$link = str_replace("{calendar}", $calendar, $link);
+		return htmlspecialchars_uni($link);
+	}
+	else if($year > 0)
+	{
+		$link = str_replace("{year}", $year, CALENDAR_URL_YEAR);
+		$link = str_replace("{calendar}", $calendar, $link);
 		return htmlspecialchars_uni($link);
 	}
 	else
 	{
-		$link = str_replace("{month}", $month, CALENDAR_URL);
-		$link = str_replace("{year}", $year, $link);
+		$link = str_replace("{calendar}", $calendar, CALENDAR_URL);
 		return htmlspecialchars_uni($link);
 	}
+}
+
+/**
+ * Build the link to a specified week on the calendar
+ *
+ * @param int The ID of the calendar
+ * @param int The year
+ * @param int The week
+ * @return string The URL of the calendar
+ */
+function get_calendar_week_link($calendar, $week)
+{
+	$link = str_replace("{week}", $week, CALENDAR_URL_WEEK);
+	$link = str_replace("{calendar}", $calendar, $link);
+	return htmlspecialchars_uni($link);
 }
 
 /**
@@ -3809,6 +3876,7 @@ function get_user($uid)
 		return $user_cache[$uid];
 	}
 }
+
 
 /**
  * Get the forum of a specific forum id.
@@ -4260,6 +4328,88 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 	}
 	// Still here - good ip
 	return false;
+}
+
+/**
+ * Build a time zone selection list.
+ *
+ * @param string The name of the select
+ * @param int The selected time zone (defaults to GMT)
+ * @param boolean True to generate a "short" list with just timezone and current time
+ */
+function build_timezone_select($name, $selected=0, $short=false)
+{
+	global $mybb, $lang;
+
+	$timezones = array(
+		"-12" => $lang->timezone_gmt_minus_1200,
+		"-11" => $lang->timezone_gmt_minus_1100,
+		"-10" => $lang->timezone_gmt_minus_1000,
+		"-9" => $lang->timezone_gmt_minus_900,
+		"-8" => $lang->timezone_gmt_minus_800,
+		"-7" => $lang->timezone_gmt_minus_700,
+		"-6" => $lang->timezone_gmt_minus_600,
+		"-5" => $lang->timezone_gmt_minus_500,
+		"-4" => $lang->timezone_gmt_minus_400,
+		"-3.5" => $lang->timezone_gmt_minus_350,
+		"-3" => $lang->timezone_gmt_minus_300,
+		"-2" => $lang->timezone_gmt_minus_200,
+		"-1" => $lang->timezone_gmt_minus_100,
+		"0" => $lang->timezone_gmt,
+		"1" => $lang->timezone_gmt_100,
+		"2" => $lang->timezone_gmt_200,
+		"3" => $lang->timezone_gmt_300,
+		"3.5" => $lang->timezone_gmt_350,
+		"4" => $lang->timezone_gmt_400,
+		"4.5" => $lang->timezone_gmt_450,
+		"5" => $lang->timezone_gmt_500,
+		"5.5" => $lang->timezone_gmt_550,
+		"6" => $lang->timezone_gmt_600,
+		"7" => $lang->timezone_gmt_700,
+		"8" => $lang->timezone_gmt_800,
+		"9" => $lang->timezone_gmt_900,
+		"9.5" => $lang->timezone_gmt_950,
+		"10" => $lang->timezone_gmt_1000,
+		"11" => $lang->timezone_gmt_1100,
+		"12" => $lang->timezone_gmt_1200
+	);
+
+	$selected = str_replace("+", "", $selected);
+	$select = "<select name=\"{$name}\" id=\"{$name}\">\n";
+	foreach($timezones as $timezone => $label)
+	{
+		$selected_add = "";
+		if($selected == $timezone)
+		{
+			$selected_add = " selected=\"selected\"";
+		}
+		if($short == true)
+		{
+			$label = '';
+			if($timezone != 0)
+			{
+				$label = $timezone;
+				if($timezone > 0)
+				{
+					$label = "+{$label}";
+				}
+				if(strpos($timezone, "."))
+				{
+					$label = str_replace(".", ":", $label);
+					$label = str_replace(":5", ":30", $label);
+				}
+				else
+				{
+					$label .= ":00";
+				}
+			}
+			$time_in_zone = my_date($mybb->settings['timeformat'], time(), $timezone);
+			$label = sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
+		}
+		$select .= "<option value=\"{$timezone}\"{$selected_add}>{$label}</option>\n";
+	}
+	$select .= "</select>";
+	return $select;
 }
 
 /**

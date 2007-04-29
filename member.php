@@ -302,57 +302,13 @@ if($mybb->input['action'] == "register")
 
 		if(isset($mybb->input['timezoneoffset']))
 		{
-			$timezoneoffset = $mybb->input['timezoneoffset']*10;
-			$timezoneoffset = str_replace("-", "n", $timezoneoffset);
-			$timezoneselect[$timezoneoffset] = "selected=\"selected\"";
+			$timezoneoffset = $mybb->input['timezoneoffset'];
 		}
 		else
 		{
-			// Replace any 'n' with - ... don't know why anyone would use a n, except someone who knows the system anyway
-			$mybb->settings['timezoneoffset'] = str_replace("n", "-", $mybb->settings['timezoneoffset']);
-			// Multiply it by 10 as required by the system and make any negative disappear
-			$selzonetime = abs(intval($mybb->settings['timezoneoffset'])*10);
-			// If the timezone is negative, use a prefix n, else no prefix.
-			if(my_substr($mybb->settings['timezoneoffset'], 0, 1) == "-")
-			{
-				$selzoneway = "n";
-			}
-			else
-			{
-				$selzoneway = '';
-			}
-			// Couple the prefix and offset together and make it selected!
-			$selzone = $selzoneway.$selzonetime;
-			$timezoneselect[$selzone] = "selected=\"selected\"";
+			$timezoneoffset = $mybb->settings['timezoneoffset'];
 		}
-		$timenow = my_date($mybb->settings['timeformat'], time(), "-");
-		$lang->time_offset_desc = sprintf($lang->time_offset_desc, $timenow);
-		for($i = -12; $i <= 12; ++$i)
-		{
-			if($i == 0)
-			{
-				$i2 = "-";
-			}
-			else
-			{
-				$i2 = $i;
-			}
-			$temptime = my_date($mybb->settings['timeformat'], time(), $i2);
-			$zone = $i*10;
-			$zone = str_replace("-", "n", $zone);
-			$timein[$zone] = $temptime;
-		}
-		// Sad code for all the weird timezones
-		$timein['n35'] = my_date($mybb->settings['timeformat'], time(), -3.5);
-		$timein['35'] = my_date($mybb->settings['timeformat'], time(), 3.5);
-		$timein['45'] = my_date($mybb->settings['timeformat'], time(), 4.5);
-		$timein['55'] = my_date($mybb->settings['timeformat'], time(), 5.5);
-		$timein['575'] = my_date($mybb->settings['timeformat'], time(), 5.75);
-		$timein['95'] = my_date($mybb->settings['timeformat'], time(), 9.5);
-		$timein['105'] = my_date($mybb->settings['timeformat'], time(), 10.5);
-		$mybb->user['timezone'] = $tempzone;
-
-		eval("\$tzselect = \"".$templates->get("usercp_options_timezoneselect")."\";");
+		$tzselect = build_timezone_select("timezoneoffset", $timezoneoffset, true);
 
 		$stylelist = build_theme_select("style");
 

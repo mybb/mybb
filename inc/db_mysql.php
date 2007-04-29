@@ -147,7 +147,7 @@ class databaseEngine
 		$qtimer->remove();
 		$this->query_count++;
 		
-		if($mybb->debug)
+		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $qtime);
 		}

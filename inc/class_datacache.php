@@ -314,7 +314,7 @@ class datacache
 	{
 		global $forum_cache, $db;
 
-		$this->built_forum_permissions = array();
+		$this->built_forum_permissions = array(0);
 
 		// Get our forum list
 		cache_forums(true);
@@ -403,7 +403,7 @@ class datacache
 	{
 		global $forum_cache, $db;
 		
-		$this->built_moderators = array();
+		$this->built_moderators = array(0);
 
 		// Get our forum list
 		cache_forums(true);

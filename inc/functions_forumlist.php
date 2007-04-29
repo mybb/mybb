@@ -1,5 +1,15 @@
 <?php
 /**
+ * MyBB 1.2
+ * Copyright © 2007 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/license.php
+ *
+ * $Id$
+ */
+
+/**
 * Build a list of forum bits.
 *
 * @param int The parent forum to fetch the child forums for (0 assumes all)
@@ -297,7 +307,7 @@ function build_forumbits($pid=0, $depth=1)
  */
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
-	global $mybb, $lang, $db;
+	global $mybb, $lang, $db, $unread_forums;
 	
 	if($forum['type'] == 'c')
 	{
@@ -312,12 +322,25 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	}
 	else
 	{
-		// Fetch the last read date for this forum 
-	 	$forumread = my_get_array_cookie("forumread", $forum['fid']); 
+		// Fetch the last read date for this forum
+		if($forum['lastread'])
+		{
+			$forum_read = $forum['lastread'];
+		}
+		else
+		{
+		 	$forum_read = my_get_array_cookie("forumread", $forum['fid']);
+		}
+
+		if(!$forum_read)
+		{
+			$forum_read = $mybb->user['lastvisit'];
+		}
 	 	 
  	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post 
-		if($lastpost['lastpost'] > $mybb->user['lastvisit'] && $lastpost['lastpost'] > $forumread && $lastpost['lastpost'] != 0) 
+		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0) 
 		{
+			$unread_forums++;
 			$folder = "on";
 			$altonoff = $lang->new_posts;
 		}

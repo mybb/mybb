@@ -22,6 +22,7 @@ function task_dailycleanup($task)
 	{
 		$cut = time()-($mybb->settings['threadreadcut']*60*60*24);
 		$db->delete_query("threadsread", "dateline < '{$cut}'");
+		$db->delete_query("forumsread", "dateline < '{$cut}'");
 	}
 }
 ?>

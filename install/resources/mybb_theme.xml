@@ -487,12 +487,12 @@ form {
 	font-weight: bold;
 }
 
-.alert {
+.pm_alert {
 	background: #FFF6BF;
-	border-top: 2px solid #FFD324;
-	border-bottom: 2px solid #FFD324;
+	border: 1px solid #FFD324;
 	text-align: center;
 	padding: 5px 20px;
+	font-size: 11px;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -601,7 +601,7 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="global_pm_alert" version="140"><![CDATA[<div class="alert">{$privatemessage_text}</div><br class="clear" />]]></template>
+		<template name="global_pm_alert" version="140"><![CDATA[<div class="pm_alert">{$privatemessage_text}</div><br />]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
 		<template name="index" version="140"><![CDATA[<html>
 <head>
@@ -1421,40 +1421,6 @@ form {
 	</td>
 	<td class="{$bgcolor}" align="center"><input type="checkbox" class="checkbox" name="check[{$thread['tid']}]" value="{$thread['tid']}" /></td>
 </tr>]]></template>
-		<template name="usercp_options_timezoneselect" version="120"><![CDATA[<select name="timezoneoffset">
-<option value="-12" {$timezoneselect['n120']}>{$lang->gmt} -12:00 {$lang->hours} ({$timein['n120']})</option>
-<option value="-11" {$timezoneselect['n110']}>{$lang->gmt} -11:00 {$lang->hours} ({$timein['n110']})</option>
-<option value="-10" {$timezoneselect['n100']}>{$lang->gmt} -10:00 {$lang->hours} ({$timein['n100']})</option>
-<option value="-9" {$timezoneselect['n90']}>{$lang->gmt} -9:00 {$lang->hours} ({$timein['n90']})</option>
-<option value="-8" {$timezoneselect['n80']}>{$lang->gmt} -8:00 {$lang->hours} ({$timein['n80']})</option>
-<option value="-7" {$timezoneselect['n70']}>{$lang->gmt} -7:00 {$lang->hours} ({$timein['n70']})</option>
-<option value="-6" {$timezoneselect['n60']}>{$lang->gmt} -6:00 {$lang->hours} ({$timein['n60']})</option>
-<option value="-5" {$timezoneselect['n50']}>{$lang->gmt} -5:00 {$lang->hours} ({$timein['n50']})</option>
-<option value="-4" {$timezoneselect['n40']}>{$lang->gmt} -4:00 {$lang->hours} ({$timein['n40']})</option>
-<option value="-3.5" {$timezoneselect['n35']}>{$lang->gmt} -3:30 {$lang->hours} ({$timein['n35']})</option>
-<option value="-3" {$timezoneselect['n30']}>{$lang->gmt} -3:00 {$lang->hours} ({$timein['n30']})</option>
-<option value="-2" {$timezoneselect['n20']}>{$lang->gmt} -2:00 {$lang->hours} ({$timein['n20']})</option>
-<option value="-1" {$timezoneselect['n10']}>{$lang->gmt} -1:00 {$lang->hours} ({$timein['n10']})</option>
-<option value="0" {$timezoneselect['0']}>{$lang->gmt} ({$timein['0']})</option>
-<option value="+1" {$timezoneselect['10']}>{$lang->gmt} +1:00 {$lang->hours} ({$timein['10']})</option>
-<option value="+2" {$timezoneselect['20']}>{$lang->gmt} +2:00 {$lang->hours} ({$timein['20']})</option>
-<option value="+3" {$timezoneselect['30']}>{$lang->gmt} +3:00 {$lang->hours} ({$timein['30']})</option>
-<option value="+3.5" {$timezoneselect['35']}>{$lang->gmt} +3:30 {$lang->hours} ({$timein['35']})</option>
-<option value="+4" {$timezoneselect['40']}>{$lang->gmt} +4:00 {$lang->hours} ({$timein['40']})</option>
-<option value="+4.5" {$timezoneselect['45']}>{$lang->gmt} +4:30 {$lang->hours} ({$timein['45']})</option>
-<option value="+5" {$timezoneselect['50']}>{$lang->gmt} +5:00 {$lang->hours} ({$timein['50']})</option>
-<option value="+5.5" {$timezoneselect['55']}>{$lang->gmt} +5:30 {$lang->hours} ({$timein['55']})</option>
-<option value="+5.75" {$timezoneselect['575']}>{$lang->gmt} +5:45 {$lang->hours} ({$timein['575']})</option>
-<option value="+6" {$timezoneselect['60']}>{$lang->gmt} +6:00 {$lang->hours} ({$timein['60']})</option>
-<option value="+7" {$timezoneselect['70']}>{$lang->gmt} +7:00 {$lang->hours} ({$timein['70']})</option>
-<option value="+8" {$timezoneselect['80']}>{$lang->gmt} +8:00 {$lang->hours} ({$timein['80']})</option>
-<option value="+9" {$timezoneselect['90']}>{$lang->gmt} +9:00 {$lang->hours} ({$timein['90']})</option>
-<option value="+9.5" {$timezoneselect['95']}>{$lang->gmt} +9:30 {$lang->hours} ({$timein['95']})</option>
-<option value="+10" {$timezoneselect['100']}>{$lang->gmt} +10:00 {$lang->hours} ({$timein['100']})</option>
-<option value="+10.5" {$timezoneselect['105']}>{$lang->gmt} +10:30 {$lang->hours} ({$timein['105']})</option>
-<option value="+11" {$timezoneselect['110']}>{$lang->gmt} +11:00 {$lang->hours} ({$timein['110']})</option>
-<option value="+12" {$timezoneselect['120']}>{$lang->gmt} +12:00 {$lang->hours} ({$timein['120']})</option>
-</select>]]></template>
 		<template name="header_welcomeblock_member_admin" version="120"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php">{$lang->welcome_admin}</a>]]></template>
 		<template name="forumdisplay_newthread" version="120"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" alt="{$lang->post_thread}" /></a>]]></template>
 		<template name="showthread_threaded_bitactive" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
@@ -1617,7 +1583,6 @@ form {
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
 		<template name="postbit_away" version="140"><![CDATA[<a href="{$post['profilelink_plain']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
-		<template name="calendar_dayview_birthdays_bday" version="140"><![CDATA[{$comma}{$bdays['profilelink']}{$age}]]></template>
 		<template name="misc_imcenter_icq" version="120"><![CDATA[<html>
 <head>
 <title>{$lang->icq_message_center}</title>
@@ -2908,38 +2873,6 @@ form {
 {$usergrouprows}
 </table>
 <br />]]></template>
-		<template name="calendar_event" version="140"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->view_event}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2">
-<strong>{$event['subject']}</strong></td>
-</tr>
-{$event_dates}
-{$event_times}
-<tr>
-<td width="30%" class="trow2"><strong>{$lang->event_author}</strong></td>
-<td width="70%" class="trow2">{$eventposter}</td>
-</tr>
-<tr>
-<td width="30%" class="trow1" valign="top"><strong>{$lang->event_details}</strong></td>
-<td width="70%" class="trow1">
-{$event['description']}
-<div style="float: right; width: auto; clear: both;">{$editbutton} {$deletebutton}</div></td>
-</tr>
-</table>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="calendar_eventbit_dates" version="140"><![CDATA[<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr>]]></template>
 		<template name="showteam_moderators" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="4"><strong>{$lang->moderators}</strong></td>
@@ -3189,156 +3122,6 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_addevent" version="140"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-{$event_errors}
-<form action="calendar.php" method="post" name="input">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
-<tr>
-<td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
-</tr>
-{$event_dates}
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td class="trow2"><input type="text" class="textbox" size="50" name="subject" maxlength="120" value="{$subject}"/></td>
-</tr>
-<tr>
-<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
-<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
-{$codebuttons}</td>
-</tr>
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
-<td class="trow2">
-<input type="checkbox" class="checkbox" name=thread value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
-</td>
-</tr>
-</table>
-<br />
-<input type="hidden" name="action" value="do_addevent" />
-<input type="hidden" name="recurring" value="{$mybb->input['recurring']}" />
-<div align="center"><input type="submit" class="button" value="{$lang->post_event}" /></div>
-</form>
-{$footer}
-</body>
-</html>]]></template>
-	<template name="calendar_addevent_normal" version="140"><![CDATA[<tr>
-<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td class="trow1">
-<select name="month">
-<option value="1"{$month_start['1']}>{$lang->month_1}</option>
-<option value="2"{$month_start['2']}>{$lang->month_2}</option>
-<option value="3"{$month_start['3']}>{$lang->month_3}</option>
-<option value="4"{$month_start['4']}>{$lang->month_4}</option>
-<option value="5"{$month_start['5']}>{$lang->month_5}</option>
-<option value="6"{$month_start['6']}>{$lang->month_6}</option>
-<option value="7"{$month_start['7']}>{$lang->month_7}</option>
-<option value="8"{$month_start['8']}>{$lang->month_8}</option>
-<option value="9"{$month_start['9']}>{$lang->month_9}</option>
-<option value="10"{$month_start['10']}>{$lang->month_10}</option>
-<option value="11"{$month_start['11']}>{$lang->month_11}</option>
-<option value="12"{$month_start['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="day">
-{$start_dayopts}
-</select>
-&nbsp;
-<select name="year">
-{$start_yearopts}
-</select>
-{$lang->event_add_make_recurring}
-</td>
-</tr>
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_start_time}</strong></td>
-<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
-</tr>
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_end_time}</strong></td>
-<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
-</tr>]]></template>
-		<template name="calendar_addevent_recurring" version="120"><![CDATA[<tr>
-<td width="20%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
-<td class="trow1">
-<select name="month">
-<option value="1"{$month_start['1']}>{$lang->month_1}</option>
-<option value="2"{$month_start['2']}>{$lang->month_2}</option>
-<option value="3"{$month_start['3']}>{$lang->month_3}</option>
-<option value="4"{$month_start['4']}>{$lang->month_4}</option>
-<option value="5"{$month_start['5']}>{$lang->month_5}</option>
-<option value="6"{$month_start['6']}>{$lang->month_6}</option>
-<option value="7"{$month_start['7']}>{$lang->month_7}</option>
-<option value="8"{$month_start['8']}>{$lang->month_8}</option>
-<option value="9"{$month_start['9']}>{$lang->month_9}</option>
-<option value="10"{$month_start['10']}>{$lang->month_10}</option>
-<option value="11"{$month_start['11']}>{$lang->month_11}</option>
-<option value="12"{$month_start['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="day">
-{$start_dayopts}
-</select>
-&nbsp;
-<select name="year">
-{$start_yearopts}
-</select>
-{$lang->event_add_make_normal}
-</td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->event_recurring_end_date}</strong></td>
-<td class="trow1">
-<select name="end_month">
-<option value="1"{$month_end['1']}>{$lang->month_1}</option>
-<option value="2"{$month_end['2']}>{$lang->month_2}</option>
-<option value="3"{$month_end['3']}>{$lang->month_3}</option>
-<option value="4"{$month_end['4']}>{$lang->month_4}</option>
-<option value="5"{$month_end['5']}>{$lang->month_5}</option>
-<option value="6"{$month_end['6']}>{$lang->month_6}</option>
-<option value="7"{$month_end['7']}>{$lang->month_7}</option>
-<option value="8"{$month_end['8']}>{$lang->month_8}</option>
-<option value="9"{$month_end['9']}>{$lang->month_9}</option>
-<option value="10"{$month_end['10']}>{$lang->month_10}</option>
-<option value="11"{$month_end['11']}>{$lang->month_11}</option>
-<option value="12"{$month_end['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="end_day">
-{$end_dayopts}
-</select>
-&nbsp;
-<select name="end_year">
-{$end_yearopts}
-</select>
-</td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->event_recurring_repeat_days}</strong></td>
-<td class="trow1">
-<label><input type="checkbox" name="repeat_days[0]" value="1" {$day_repeat[0]} />{$lang->sunday}</label>
-<br/><label><input type="checkbox" name="repeat_days[1]" value="1" {$day_repeat[1]} />{$lang->monday}</label>
-<br/><label><input type="checkbox" name="repeat_days[2]" value="1" {$day_repeat[2]} />{$lang->tuesday}</label>
-<br/><label><input type="checkbox" name="repeat_days[3]" value="1" {$day_repeat[3]} />{$lang->wednesday}</label>
-<br/><label><input type="checkbox"name="repeat_days[4]" value="1"  {$day_repeat[4]} />{$lang->thursday}</label>
-<br/><label><input type="checkbox" name="repeat_days[5]" value="1" {$day_repeat[5]} />{$lang->friday}</label>
-<br/><label><input type="checkbox" name="repeat_days[6]" value="1" {$day_repeat[6]} />{$lang->saturday}</label>
-</td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->event_start_time_recurring}</strong></td>
-<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->event_end_time_recurring}</strong></td>
-<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
-</tr>]]></template>
 		<template name="private_folders_folder" version="120"><![CDATA[<tr>
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /></td>
 </tr>]]></template>
@@ -3378,54 +3161,6 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_dayview_birthdays" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead"><strong>{$lang->birthdays_on_day}</strong></td>
-</tr>
-<tr>
-<td class="trow1"><span class="smalltext">{$birthdays}</span></td>
-</tr>
-</table>
-<br />
-]]></template>
-		<template name="calendar_dayview_event" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>{$event['subject']}</strong></td>
-</tr>
-{$event_dates}
-{$event_times}
-<tr>
-<td width="30%" class="trow2"><strong>{$lang->event_author}</strong></td>
-<td width="70%" class="trow2">{$eventposter}</td>
-</tr>
-<tr>
-<td width="30%" class="trow1" valign="top"><strong>{$lang->event_details}</strong></td>
-<td width="70%" class="trow1">
-{$event['description']}
-<div style="float: right; width: auto; clear: both;">{$editbutton} {$deletebutton}</div></td>
-</tr>
-</table>
-<br />]]></template>
-		<template name="calendar_dayview_event_normal" version="140"><![CDATA[<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr>]]></template>
-		<template name="calendar_dayview_event_recurring" version="120"><![CDATA[<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr>
-<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_recurring_end_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate_end}</td>
-</tr>
-<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_recurring_repeat_days}</strong></td>
-<td width="70%" class="trow1">{$repeat_days}</td>
-</tr>]]></template>
-		<template name="calendar_dayview_event_times" version="120"><![CDATA[<tr>
-<td width="30%" class="trow2"><strong>{$lang->event_duration}</strong></td>
-<td width="70%" class="trow2">{$event['start_time_hours']}:{$event['start_time_mins']} - {$event['end_time_hours']}:{$event['end_time_mins']}</td>
-</tr>]]></template>
 		<template name="online_today" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->online_today}</title>
@@ -3553,77 +3288,6 @@ form {
 </tr>
 </table>
 <br />]]></template>
-		<template name="calendar" version="140"><![CDATA[<html>
-<head>
-	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
-	{$headerinclude}
-</head>
-<body>
-	{$header}
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-		<tr>
-			<td class="thead" width="14%" align="center">{$lang->sunday}</td>
-			<td class="thead" width="14%" align="center">{$lang->monday}</td>
-			<td class="thead" width="14%" align="center">{$lang->tuesday}</td>
-			<td class="thead" width="14%" align="center">{$lang->wednesday}</td>
-			<td class="thead" width="14%" align="center">{$lang->thursday}</td>
-			<td class="thead" width="14%" align="center">{$lang->friday}</td>
-			<td class="thead" width="14%" align="center">{$lang->saturday}</td>
-		</tr>
-		{$daybits}
-	</table>
-
-	<table width="100%" align="center">
-		<tr>
-			<td><span class="smalltext"><a href="{$prev_link}">&laquo; {$monthnames[$prevmonth]} {$prevyear}</a></span></td>
-			<td align="right"><span class="smalltext"><a href="{$next_link}">{$monthnames[$nextmonth]} {$nextyear} &raquo;</a></span></td>
-		</tr>
-	</table>
-
-	<br />
-
-	<form action="calendar.php" method="post">
-		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-			<tr>
-				<td class="trow1">
-					<table width="100%" cellspacing="0" cellpadding="0" border="0">
-						<tr>
-							<td class="trow1">{$addpublicevent}{$neweventsep}{$addprivateevent}</td>
-							<td class="trow1" align="right"><span class="smalltext"><strong>{$lang->jump_month}</strong>
-							<select name="month">
-								<option value="{$month}">{$monthnames[$month]}</option>
-								<option value="{$month}">----------</option>
-								<option value="1">{$lang->alt_month_1}</option>
-								<option value="2">{$lang->alt_month_2}</option>
-								<option value="3">{$lang->alt_month_3}</option>
-								<option value="4">{$lang->alt_month_4}</option>
-								<option value="5">{$lang->alt_month_5}</option>
-								<option value="6">{$lang->alt_month_6}</option>
-								<option value="7">{$lang->alt_month_7}</option>
-								<option value="8">{$lang->alt_month_8}</option>
-								<option value="9">{$lang->alt_month_9}</option>
-								<option value="10">{$lang->alt_month_10}</option>
-								<option value="11">{$lang->alt_month_11}</option>
-								<option value="12">{$lang->alt_month_12}</option>
-							</select>
-							&nbsp;
-							<select name="year">
-								<option value="{$year}">{$year}</option>
-								<option value="{$year}">----------</option>
-								{$yearsel}
-							</select>
-							&nbsp;
-							{$gobutton}
-						</span></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-	</form>
-{$footer}
-</body>
-</html>]]></template>
 		<template name="private_archive_html" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messages_for}</title>
@@ -4538,11 +4202,6 @@ form {
 		<template name="usercp_forumsubscriptions_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="5">{$lang->no_forum_subscriptions}</td>
 </tr>]]></template>
-		<template name="calendar_dayview_noevents" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">{$lang->no_events}</td>
-</tr>
-</table>]]></template>
 		<template name="index_whosonline" version="120"><![CDATA[<tr>
 <td class="tcat"><strong>{$lang->whos_online}</strong> [<a href="online.php">{$lang->complete_list}</a>]</td>
 </tr>
@@ -5441,8 +5100,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td width="100%" class="{$altbg}"><a href="misc.php?action=help&amp;hid={$helpdoc['hid']}">{$helpdoc['name']}</a><br /><span class="smalltext">{$helpdoc['description']}</span></td>
 </tr>
 ]]></template>
-		<template name="calendar_addpublicevent" version="120"><![CDATA[<a href="calendar.php?action=addevent&amp;type=public">{$lang->add_public_event}</a>]]></template>
-		<template name="calendar_addprivateevent" version="120"><![CDATA[<a href="calendar.php?action=addevent&amp;type=private">{$lang->add_private_event}</a>]]></template>
 		<template name="index_birthdays_birthday" version="140"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
 		<template name="private_tracking_readmessage" version="140"><![CDATA[<tr>
 <td align="center" class="trow1"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
@@ -5612,18 +5269,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="index_logoutlink" version="120"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="postbit_iplogged_show" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</div>]]></template>
-		<template name="calendar_dayview" version="120"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->day_view}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-{$bdaylist}
-{$events}
-{$footer}
-</body>
-</html>]]></template>
 		<template name="usercp_changeavatar" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
@@ -6252,16 +5897,6 @@ To: {$to_recipients}
 		<a href="{$similar_thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 	</tr>]]></template>
-		<template name="calendar_eventbit_public" version="140"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['publiceventcolor']};">{$event['subject']}</span></a><br />]]></template>
-		<template name="calendar_eventbit_private" version="140"><![CDATA[<a href="{$event['eventlink']}" title="{$event['fullsubject']}"><span class="smalltext" style="color:{$mybb->settings['privateeventcolor']};">{$event['subject']}</span></a><br />]]></template>
-		<template name="calendar_daybit_today" version="120"><![CDATA[<td width="14%" height="90" class="trow2" valign="top">
-<strong><a href="$day_url">{$i}</a></strong>
-<br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
-</td>]]></template>
-		<template name="calendar_daybit" version="120"><![CDATA[<td width="14%" height="90" class="trow1" valign="top">
-<strong><a href="$day_url">{$i}</a></strong>
-<br /><span class="smalltext">{$birthdays}{$events[$i]}</span>
-</td>]]></template>
 		<template name="polls_newpoll_option" version="120"><![CDATA[<tr>
 <td>{$lang->option} {$i}:&nbsp;</td>
 <td><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
@@ -6422,176 +6057,6 @@ To: {$to_recipients}
 <td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
 		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
-		<template name="calendar_editevent" version="140"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-{$event_errors}
-<form action="calendar.php" method="post" name="input">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
-</tr>
-{$event_dates}
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_name}</strong></td>
-<td  class="trow2"><input type="text" class="textbox" size="50" name="subject" value="{$event['subject']}" /></td>
-</tr>
-<tr>
-<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
-<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$event['description']}</textarea>
-{$codebuttons}</td>
-</tr>
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
-<td class="trow2">
-<input type="checkbox" class="checkbox" name="private" value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
-<input type="checkbox" class="checkbox" name="delete" value="yes" /><span class="smalltext">{$lang->delete_option}</span>
-</td>
-</tr>
-</table>
-<br />
-<input type="hidden" name="action" value="do_editevent" /><input type="hidden" name="eid" value="{$eid}" />
-<div align="center"><input type="submit" class="button" value="{$lang->edit_event}" />
-</div>
-</form>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="calendar_eventbit_dates" version="140"><![CDATA[<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr>]]></template>
-		<template name="calendar_eventbit_dates_recurring" version="140"><![CDATA[<tr>
-<td width="30%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate}</td>
-</tr><tr>
-<td width="30%" class="trow1"><strong>{$lang->event_recurring_end_date}</strong></td>
-<td width="70%" class="trow1">{$eventdate_end}</td>
-</tr>
-<tr>
-<td width="30%" class="trow2"><strong>{$lang->event_recurring_repeat_days}</strong></td>
-<td width="70%" class="trow2">{$repeat_days}</td>
-</tr>]]></template>
-		<template name="calendar_eventbit_times" version="140"><![CDATA[<tr>
-<td width="30%" class="trow2"><strong>{$lang->event_duration}</strong></td>
-<td width="70%" class="trow2">{$event['start_time_hours']}:{$event['start_time_mins']} - {$event['end_time_hours']}:{$event['end_time_mins']}</td>
-</tr>]]></template>
-		<template name="calendar_editevent_normal" version="140"><![CDATA[<tr>
-<td width="20%" class="trow1"><strong>{$lang->event_date}</strong></td>
-<td class="trow1">
-<select name="month">
-<option value="1"{$month_start['1']}>{$lang->month_1}</option>
-<option value="2"{$month_start['2']}>{$lang->month_2}</option>
-<option value="3"{$month_start['3']}>{$lang->month_3}</option>
-<option value="4"{$month_start['4']}>{$lang->month_4}</option>
-<option value="5"{$month_start['5']}>{$lang->month_5}</option>
-<option value="6"{$month_start['6']}>{$lang->month_6}</option>
-<option value="7"{$month_start['7']}>{$lang->month_7}</option>
-<option value="8"{$month_start['8']}>{$lang->month_8}</option>
-<option value="9"{$month_start['9']}>{$lang->month_9}</option>
-<option value="10"{$month_start['10']}>{$lang->month_10}</option>
-<option value="11"{$month_start['11']}>{$lang->month_11}</option>
-<option value="12"{$month_start['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="day">
-{$start_dayopts}
-</select>
-&nbsp;
-<select name="year">
-{$start_yearopts}
-</select>
-{$lang->event_edit_make_recurring}
-</td>
-</tr>
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_start_time}</strong></td>
-<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
-</tr>
-<tr>
-<td width="20%" class="trow2"><strong>{$lang->event_end_time}</strong></td>
-<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
-</tr>]]></template>
-		<template name="calendar_editevent_recurring" version="120"><![CDATA[<tr>
-<td width="20%" class="trow1"><strong>{$lang->event_recurring_start_date}</strong></td>
-<td class="trow1">
-<select name="month">
-<option value="1"{$month_start['1']}>{$lang->month_1}</option>
-<option value="2"{$month_start['2']}>{$lang->month_2}</option>
-<option value="3"{$month_start['3']}>{$lang->month_3}</option>
-<option value="4"{$month_start['4']}>{$lang->month_4}</option>
-<option value="5"{$month_start['5']}>{$lang->month_5}</option>
-<option value="6"{$month_start['6']}>{$lang->month_6}</option>
-<option value="7"{$month_start['7']}>{$lang->month_7}</option>
-<option value="8"{$month_start['8']}>{$lang->month_8}</option>
-<option value="9"{$month_start['9']}>{$lang->month_9}</option>
-<option value="10"{$month_start['10']}>{$lang->month_10}</option>
-<option value="11"{$month_start['11']}>{$lang->month_11}</option>
-<option value="12"{$month_start['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="day">
-{$start_dayopts}
-</select>
-&nbsp;
-<select name="year">
-{$start_yearopts}
-</select>
-{$lang->event_edit_make_normal}
-</td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->event_recurring_end_date}</strong></td>
-<td class="trow1">
-<select name="end_month">
-<option value="1"{$month_end['1']}>{$lang->month_1}</option>
-<option value="2"{$month_end['2']}>{$lang->month_2}</option>
-<option value="3"{$month_end['3']}>{$lang->month_3}</option>
-<option value="4"{$month_end['4']}>{$lang->month_4}</option>
-<option value="5"{$month_end['5']}>{$lang->month_5}</option>
-<option value="6"{$month_end['6']}>{$lang->month_6}</option>
-<option value="7"{$month_end['7']}>{$lang->month_7}</option>
-<option value="8"{$month_end['8']}>{$lang->month_8}</option>
-<option value="9"{$month_end['9']}>{$lang->month_9}</option>
-<option value="10"{$month_end['10']}>{$lang->month_10}</option>
-<option value="11"{$month_end['11']}>{$lang->month_11}</option>
-<option value="12"{$month_end['12']}>{$lang->month_12}</option>
-</select>
-&nbsp;
-<select name="end_day">
-{$end_dayopts}
-</select>
-&nbsp;
-<select name="end_year">
-{$end_yearopts}
-</select>
-</td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->event_recurring_repeat_days}</strong></td>
-<td class="trow1">
-<label><input type="checkbox" name="repeat_days[0]" value="1" {$day_repeat[0]} />{$lang->sunday}</label>
-<br/><label><input type="checkbox" name="repeat_days[1]" value="1" {$day_repeat[1]} />{$lang->monday}</label>
-<br/><label><input type="checkbox" name="repeat_days[2]" value="1" {$day_repeat[2]} />{$lang->tuesday}</label>
-<br/><label><input type="checkbox" name="repeat_days[3]" value="1" {$day_repeat[3]} />{$lang->wednesday}</label>
-<br/><label><input type="checkbox"name="repeat_days[4]" value="1"  {$day_repeat[4]} />{$lang->thursday}</label>
-<br/><label><input type="checkbox" name="repeat_days[5]" value="1" {$day_repeat[5]} />{$lang->friday}</label>
-<br/><label><input type="checkbox" name="repeat_days[6]" value="1" {$day_repeat[6]} />{$lang->saturday}</label>
-</td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->event_start_time_recurring}</strong></td>
-<td class="trow2"><select name="start_time_hours">{$start_time_hours}</select> : <select name="start_time_mins">{$start_time_mins}</select></td>
-</tr>
-<tr>
-<td class="trow2"><strong>{$lang->event_end_time_recurring}</strong></td>
-<td class="trow2"><select name="end_time_hours">{$end_time_hours}</select> : <select name="end_time_mins">{$end_time_mins}</select></td>
-</tr>]]></template>
 		<template name="postbit_offline" version="140"><![CDATA[<span style="color:#C7C7C7;"><strong>{$lang->postbit_status_offline}</strong></span>]]></template>
 		<template name="postbit_editedby" version="140"><![CDATA[<p class="smalltext">{$post['editnote']} {$post['editedprofilelink']}.</p>
 
@@ -7441,5 +6906,1051 @@ To: {$to_recipients}
 </tbody>
 </table>
 <br />]]></template>
+		<template name="calendar" version="140"><![CDATA[<html>
+<head>
+	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
+	{$headerinclude}
+</head>
+<body>
+	{$header}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="8">
+					<div class="float_right">
+						<a href="{$prev_link}">&laquo; {$monthnames[$prev_month['month']]} {$prev_month['year']}</a> | <a href="{$next_link}">{$monthnames[$next_month['month']]} {$next_month['year']} &raquo;</a>
+					</div>
+					<div><strong>{$monthnames[$month]} {$year}</strong></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="tcat">&nbsp;</td>
+			{$weekday_headers}
+			</tr>
+		</thead>
+		<tbody>
+		{$calendar_rows}
+		</tbody>
+	</table>
+<br />
+<form action="calendar.php" method="post">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="trow1">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tr>
+						<td class="trow1" valign="top">{$addevent}</td>
+						<td class="trow1" align="right">
+						<span class="smalltext"><strong>{$lang->jump_month}</strong></span>
+						<select name="month">
+							<option value="{$month}">{$monthnames[$month]}</option>
+							<option value="{$month}">----------</option>
+							<option value="1">{$lang->alt_month_1}</option>
+							<option value="2">{$lang->alt_month_2}</option>
+							<option value="3">{$lang->alt_month_3}</option>
+							<option value="4">{$lang->alt_month_4}</option>
+							<option value="5">{$lang->alt_month_5}</option>
+							<option value="6">{$lang->alt_month_6}</option>
+							<option value="7">{$lang->alt_month_7}</option>
+							<option value="8">{$lang->alt_month_8}</option>
+							<option value="9">{$lang->alt_month_9}</option>
+							<option value="10">{$lang->alt_month_10}</option>
+							<option value="11">{$lang->alt_month_11}</option>
+							<option value="12">{$lang->alt_month_12}</option>
+						</select>
+						<select name="year">
+							<option value="{$year}">{$year}</option>
+							<option value="{$year}">----------</option>
+							{$yearsel}
+						</select>
+						{$gobutton}
+						<br /><br />
+						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+						{$calendar_jump}
+						{$gobutton}							
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+	</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_weekdayheader" version="140"><![CDATA[				<td class="tcat" align="center" width="14%"><strong>{$weekday_name}</strong></td>]]></template>
+		<template name="calendar_weekrow" version="140"><![CDATA[			<tr>
+				<td class="tcat" align="center" width="1"><a href="{$week_link}">&raquo;</a></td>
+				{$day_bits}
+			</tr>]]></template>
+		<template name="calendar_weekrow_day_today" version="140"><![CDATA[				<td class="calendar_daybit_today">
+					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
+					<div>
+					{$day_events}
+					{$day_birthdays}
+					</div>
+				</td>]]></template>
+		<template name="calendar_weekrow_day" version="140"><![CDATA[				<td class="{$day_class}" height="100" valign="top">
+					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
+					<div style="clear: both;">
+					{$day_birthdays}
+					{$day_events}
+					</div>
+				</td>
+]]></template>
+		<template name="calendar_weekrow_day_external" version="140"><![CDATA[				<td class="calendar_daybit_external">
+					<div class="float_right smalltext"><a href="{$day_link}">{$day}</a></div>
+					<div>
+					{$day_events}
+					{$day_birthdays}
+					</div>
+				</td>
+]]></template>
+		<template name="calendar_addevent" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+{$event_errors}
+<form action="calendar.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+		<tr>
+			<td colspan="2" width="100%" class="thead"><strong>{$lang->add_event}</strong></td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow1"><strong>{$lang->event_name}</strong></td>
+			<td class="trow1"><input type="text" class="textbox" size="50" name="name" maxlength="120" value="{$name}"/></td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow1"><strong>{$lang->select_calendar}</strong></td>
+			<td class="trow1">
+				<select name="calendar">
+					{$calendar_select}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow2" style="vertical-align: top;"><strong>{$lang->event_date}</strong></td>
+			<td class="trow1">
+				<script type="text/javascript">
+				function toggleType()
+				{
+					if($('type_single').checked == true)
+					{
+						Element.hide('ranged_selects');
+						Element.show('single_selects');
+					}
+					else
+					{
+						Element.hide('single_selects');
+						Element.show('ranged_selects');
+						toggleRepeats();
+					}
+				}
+				function toggleRepeats()
+				{
+					var repeats = $('repeats').options[$('repeats').selectedIndex].value;
+					document.getElementsByClassName('repeats_type').each(function(e)
+					{
+						Element.hide(e);
+					});
+					if($('repeats_type_'+repeats))
+					{
+						Element.show('repeats_type_'+repeats);
+					}
+				}	
+				</script>
+				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
+					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
+					<dd style="margin-top: 4px;" id="single_selects">
+						<select name="single_day">
+							{$single_days}
+						</select>
+						&nbsp;
+						<select name="single_month">
+							<option value="1"{$single_month['1']}>{$lang->month_1}</option>
+							<option value="2"{$single_month['2']}>{$lang->month_2}</option>
+							<option value="3"{$single_month['3']}>{$lang->month_3}</option>
+							<option value="4"{$single_month['4']}>{$lang->month_4}</option>
+							<option value="5"{$single_month['5']}>{$lang->month_5}</option>
+							<option value="6"{$single_month['6']}>{$lang->month_6}</option>
+							<option value="7"{$single_month['7']}>{$lang->month_7}</option>
+							<option value="8"{$single_month['8']}>{$lang->month_8}</option>
+							<option value="9"{$single_month['9']}>{$lang->month_9}</option>
+							<option value="10"{$single_month['10']}>{$lang->month_10}</option>
+							<option value="11"{$single_month['11']}>{$lang->month_11}</option>
+							<option value="12"{$single_month['12']}>{$lang->month_12}</option>
+						</select>
+						&nbsp;
+						<select name="single_year">
+							{$single_years}
+						</select>
+					</dd>
+					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
+					<dd style="margin-top: 4px;" id="ranged_selects" width="100%">
+						<table width="100%">
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right;">{$lang->start_time}</td>
+								<td style="padding: 4px;">
+									<select name="start_day">
+										{$start_days}
+									</select>
+									<select name="start_month">
+										<option value="1"{$start_month['1']}>{$lang->month_1}</option>
+										<option value="2"{$start_month['2']}>{$lang->month_2}</option>
+										<option value="3"{$start_month['3']}>{$lang->month_3}</option>
+										<option value="4"{$start_month['4']}>{$lang->month_4}</option>
+										<option value="5"{$start_month['5']}>{$lang->month_5}</option>
+										<option value="6"{$start_month['6']}>{$lang->month_6}</option>
+										<option value="7"{$start_month['7']}>{$lang->month_7}</option>
+										<option value="8"{$start_month['8']}>{$lang->month_8}</option>
+										<option value="9"{$start_month['9']}>{$lang->month_9}</option>
+										<option value="10"{$start_month['10']}>{$lang->month_10}</option>
+										<option value="11"{$start_month['11']}>{$lang->month_11}</option>
+										<option value="12"{$start_month['12']}>{$lang->month_12}</option>
+									</select>
+									<select name="start_year">
+										{$start_years}
+									</select>
+									<span class="smalltext">&nbsp;&nbsp;&nbsp;{$lang->enter_time}</span>
+									<input type="text" class="textbox" name="start_time" value="{$start_time}" size="7" />
+								</td>
+							</tr>
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right;">{$lang->end_time}</td>
+								<td style="padding: 4px;">
+									<select name="end_day">
+										{$end_days}
+									</select>
+									<select name="end_month">
+										<option value="1"{$end_month['1']}>{$lang->month_1}</option>
+										<option value="2"{$end_month['2']}>{$lang->month_2}</option>
+										<option value="3"{$end_month['3']}>{$lang->month_3}</option>
+										<option value="4"{$end_month['4']}>{$lang->month_4}</option>
+										<option value="5"{$end_month['5']}>{$lang->month_5}</option>
+										<option value="6"{$end_month['6']}>{$lang->month_6}</option>
+										<option value="7"{$end_month['7']}>{$lang->month_7}</option>
+										<option value="8"{$end_month['8']}>{$lang->month_8}</option>
+										<option value="9"{$end_month['9']}>{$lang->month_9}</option>
+										<option value="10"{$end_month['10']}>{$lang->month_10}</option>
+										<option value="11"{$end_month['11']}>{$lang->month_11}</option>
+										<option value="12"{$end_month['12']}>{$lang->month_12}</option>
+									</select>
+									<select name="end_year">
+										{$end_years}
+									</select>
+									<span class="smalltext">&nbsp;&nbsp;&nbsp;{$lang->enter_time}</span>
+									<input type="text" class="textbox" name="end_time" value="{$end_time}" size="7" />
+								</td>
+							</tr>
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right; vertical-align: top;">{$lang->time_zone}</td>
+								<td style="padding: 4px;">
+									{$timezones}<br />
+									<label class="smalltext" style="display: block;padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {$ignore_timezone}" style="vertical-align: middle;" /> {$lang->ignore_timezone}
+								</td>
+							</tr>
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right; vertical-align:top;">{$lang->repeats}</td>
+								<td class="smalltext" style="padding: 4px;">
+									<select name="repeats" id="repeats" onchange="toggleRepeats();">
+										<option value="0">{$lang->does_not_repeat}</option>
+										<option value="1"{$repeats_sel[1]}>{$lang->repeats_daily}</option>
+										<option value="2"{$repeats_sel[2]}>{$lang->repeats_weekdays}</option>
+										<option value="3"{$repeats_sel[3]}>{$lang->repeats_weekly}</option>
+										<option value="4"{$repeats_sel[4]}>{$lang->repeats_monthly}</option>
+										<option value="5"{$repeats_sel[5]}>{$lang->repeats_yearly}</option>
+									</select>
+									<div class="repeats_type" id="repeats_type_1" style="padding: 4px;">
+										{$lang->repeats_every}
+										<input type="text" class="textbox" name="repeats_1_days" value="{$repeats_1_days}" size="2" /> {$lang->day_or_days}
+									</div>
+									<div class="repeats_type" id="repeats_type_3" style="padding: 4px;">
+										{$lang->repeats_every}
+										<input type="text" class="textbox" name="repeats_3_weeks" value="{$repeats_3_weeks}" size="2" /> {$lang->week_or_weeks_on}
+										<br />
+										<table style="padding: 4px;">
+											<tr>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[0]" value="1" {$repeats_3_days[0]} style="vertical-align: middle;" /> {$lang->sunday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[1]" value="1" {$repeats_3_days[1]} style="vertical-align: middle;" /> {$lang->monday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[2]" value="1" {$repeats_3_days[2]} style="vertical-align: middle;" /> {$lang->tuesday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[3]" value="1" {$repeats_3_days[3]} style="vertical-align: middle;" /> {$lang->wednesday}</label></td>
+											</tr>
+											<tr>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[4]" value="1" {$repeats_3_days[4]} style="vertical-align: middle;" /> {$lang->thursday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[5]" value="1" {$repeats_3_days[5]} style="vertical-align: middle;" /> {$lang->friday}</label></td>
+												<td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1" {$repeats_3_days[6]} style="vertical-align: middle;" /> {$lang->sunday}</label></td>
+											</tr>
+										</table>
+									</div>
+									<div class="repeats_type" id="repeats_type_4" style="padding: 4px;">
+										<div class="smalltext"><label>
+											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
+											{$lang->repeats_on_day}</label>
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
+										</div>
+										<div class="smalltext" style="margin-top: 5px;"><label>
+											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
+											{$lang->repeats_on_the}</label>
+											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
+												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
+												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
+												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
+												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
+												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
+											</select>
+											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
+												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
+												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
+												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
+												<option value="3"{$repeats_4_weekday[3]}>{$lang->wednesday}</option>
+												<option value="4"{$repeats_4_weekday[4]}>{$lang->thursday}</option>
+												<option value="5"{$repeats_4_weekday[5]}>{$lang->friday}</option>
+												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
+											</select>
+											{$lang->of_every}
+											{$lang->day_of_every} <input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
+										</div>
+									</div>
+									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
+										<div class="smalltext"><label>
+											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
+											{$lang->repeats_on}</label>
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
+												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
+												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
+												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
+												<option value="4"{$repeats_5_month['4']}>{$lang->month_4}</option>
+												<option value="5"{$repeats_5_month['5']}>{$lang->month_5}</option>
+												<option value="6"{$repeats_5_month['6']}>{$lang->month_6}</option>
+												<option value="7"{$repeats_5_month['7']}>{$lang->month_7}</option>
+												<option value="8"{$repeats_5_month['8']}>{$lang->month_8}</option>
+												<option value="9"{$repeats_5_month['9']}>{$lang->month_9}</option>
+												<option value="10"{$repeats_5_month['10']}>{$lang->month_10}</option>
+												<option value="11"{$repeats_5_month['11']}>{$lang->month_11}</option>
+												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
+											</select>
+											{$lang->every}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
+										</div>
+										<div class="smalltext" style="margin-top: 5px;"><label>
+											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
+											{$lang->repeats_on_the}</label>
+											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
+												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
+												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
+												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
+												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
+												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
+											</select>
+											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
+												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
+												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
+												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
+												<option value="3"{$repeats_5_weekday[3]}>{$lang->wednesday}</option>
+												<option value="4"{$repeats_5_weekday[4]}>{$lang->thursday}</option>
+												<option value="5"{$repeats_5_weekday[5]}>{$lang->friday}</option>
+												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
+											</select>
+											{$lang->of}
+											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
+												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
+												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
+												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
+												<option value="4"{$repeats_5_month2['4']}>{$lang->month_4}</option>
+												<option value="5"{$repeats_5_month2['5']}>{$lang->month_5}</option>
+												<option value="6"{$repeats_5_month2['6']}>{$lang->month_6}</option>
+												<option value="7"{$repeats_5_month2['7']}>{$lang->month_7}</option>
+												<option value="8"{$repeats_5_month2['8']}>{$lang->month_8}</option>
+												<option value="9"{$repeats_5_month2['9']}>{$lang->month_9}</option>
+												<option value="10"{$repeats_5_month2['10']}>{$lang->month_10}</option>
+												<option value="11"{$repeats_5_month2['11']}>{$lang->month_11}</option>
+												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
+											</select>
+											{$lang->every}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+				<script type="text/javascript">
+					toggleType();
+					toggleRepeats();
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
+			<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
+			{$codebuttons}</td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
+			<td class="trow2">
+				<input type="checkbox" class="checkbox" name=thread value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
+			</td>
+		</tr>
+	</table>
+	<br />
+	<input type="hidden" name="action" value="do_addevent" />
+	<div align="center"><input type="submit" class="button" value="{$lang->post_event}" /></div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_addprivateevent" version="140"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}&amp;private=1">{$lang->add_private_event}</a>]]></template>
+		<template name="calendar_addpublicevent" version="140"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}">{$lang->add_public_event}</a>]]></template>
+		<template name="calendar_eventbit_private" version="140"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext eventbit_private"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['fullname']}</a></div>]]></template>
+		<template name="calendar_eventbit" version="140"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['fullname']}</a></div>]]></template>
+		<template name="calendar_weekview" version="140"><![CDATA[<html>
+<head>
+	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
+	{$headerinclude}
+</head>
+<body>
+	{$header}
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td width="100%">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="2">
+					<div class="float_right">
+						<a href="{$prev_link}">&laquo; {$lang->previous_week}</a> | <a href="{$next_link}">{$lang->next_week} &raquo;</a>
+					</div>
+					<div><strong>{$lang->weekly_overview} {$friendly_week_from} - {$friendly_week_to}</div>
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			{$weekday_bits}
+		</tbody>
+	</table>
+</td>
+<td style="padding-left: 10px; vertical-align: top;">{$mini_calendars}</td>
+</tr>
+</table>
+	<br />
+	<form action="calendar.php" method="post">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+			<tr>
+				<td class="trow1">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0">
+						<tr>
+						<td class="trow1" valign="top">{$addevent}</td>
+							<td class="trow1" align="right">
+							<span class="smalltext"><strong>{$lang->jump_month}</strong></span>
+							<select name="month">
+								<option value="{$week_from[1]}">{$monthnames[$week_from[1]]}</option>
+								<option value="{$week_from[1]}">----------</option>
+								<option value="1">{$lang->alt_month_1}</option>
+								<option value="2">{$lang->alt_month_2}</option>
+								<option value="3">{$lang->alt_month_3}</option>
+								<option value="4">{$lang->alt_month_4}</option>
+								<option value="5">{$lang->alt_month_5}</option>
+								<option value="6">{$lang->alt_month_6}</option>
+								<option value="7">{$lang->alt_month_7}</option>
+								<option value="8">{$lang->alt_month_8}</option>
+								<option value="9">{$lang->alt_month_9}</option>
+								<option value="10">{$lang->alt_month_10}</option>
+								<option value="11">{$lang->alt_month_11}</option>
+								<option value="12">{$lang->alt_month_12}</option>
+							</select>
+							<select name="year">
+								<option value="{$week_from[2]}">{$week_from[2]}</option>
+								<option value="{$week_from[2]}">----------</option>
+								{$yearsel}
+							</select>
+							{$gobutton}
+							<br /><br />
+							<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+							{$calendar_jump}
+							{$gobutton}							
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_weekview_month" version="140"><![CDATA[			<tr>
+				<td class="tcat" colspan="2"><strong>{$weekday_month} {$weekday_year}</strong></td>
+			</tr>
+			{$days}]]></template>
+		<template name="calendar_weekview_day" version="140"><![CDATA[			<tr>
+				<td class="trow_sep" colspan="2">{$weekday_name}</td>
+			</tr>
+			<tr>
+				<td class="trow2" style="text-align: center; padding: 8px;"><span class="largetext">{$weekday_day}</span></td>
+				<td class="trow1" width="100%">{$day_birthdays}{$day_events}</td>
+			</tr>]]></template>
+		<template name="calendar_weekview_day_event" version="140"><![CDATA[<a href="{$event['eventlink']}" class="{$event_class}" title="{$event['fullname']}">{$event['fullname']}</a>{$event_time}<br />]]></template>
+		<template name="calendar_mini" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="width: 180px;">
+	<thead>
+		<tr>
+			<td class="thead" colspan="8">
+				<strong><a href="{$month_link}">{$monthnames[$month]} {$year}</a></strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="tcat">&nbsp;</td>
+		{$weekday_headers}
+		</tr>
+	</thead>
+	<tbody>
+	{$calendar_rows}
+	</tbody>
+</table>]]></template>
+		<template name="calendar_mini_weekdayheader" version="140"><![CDATA[				<td class="tcat" align="center" width="14%"><strong>{$weekday_name}</strong></td>]]></template>
+		<template name="calendar_mini_weekrow" version="140"><![CDATA[			<tr>
+				<td class="tcat" align="center" width="1"><a href="{$week_link}">&raquo;</a></td>
+				{$day_bits}
+			</tr>]]></template>
+		<template name="calendar_mini_weekrow_day" version="140"><![CDATA[				<td class="{$day_class}" valign="middle" align="center">
+					{$day_link}
+				</td>]]></template>
+		<template name="calendar_addeventlink" version="140"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}">{$lang->add_public_event}</a> | <a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}&amp;private=1">{$lang->add_private_event}</a>]]></template>
+		<template name="calendar_editevent" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+{$event_errors}
+<form action="calendar.php" method="post">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="3"><strong>{$lang->delete_event}</strong></td>
+		</tr>
+		<tr>
+			<td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="yes" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
+			<td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
+			<td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
+		</tr>
+	</table>
+	<input type="hidden" name="action" value="do_editevent" />
+	<input type="hidden" name="eid" value="{$event['eid']}" />
+</form>
+<br />
+<form action="calendar.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+		<tr>
+			<td colspan="2" width="100%" class="thead"><strong>{$lang->edit_event}</strong></td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow1"><strong>{$lang->event_name}</strong></td>
+			<td class="trow1"><input type="text" class="textbox" size="50" name="name" maxlength="120" value="{$name}"/></td>
+		</tr>
+		<tr>
+			<td class="trow2" style="vertical-align: top;"><strong>{$lang->event_date}</strong></td>
+			<td class="trow1">
+				<script type="text/javascript">
+				function toggleType()
+				{
+					if($('type_single').checked == true)
+					{
+						Element.hide('ranged_selects');
+						Element.show('single_selects');
+					}
+					else
+					{
+						Element.hide('single_selects');
+						Element.show('ranged_selects');
+						toggleRepeats();
+					}
+				}
+				function toggleRepeats()
+				{
+					var repeats = $('repeats').options[$('repeats').selectedIndex].value;
+					document.getElementsByClassName('repeats_type').each(function(e)
+					{
+						Element.hide(e);
+					});
+					if($('repeats_type_'+repeats))
+					{
+						Element.show('repeats_type_'+repeats);
+					}
+				}	
+				</script>
+				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
+					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
+					<dd style="margin-top: 4px;" id="single_selects">
+						<select name="single_day">
+							{$single_days}
+						</select>
+						&nbsp;
+						<select name="single_month">
+							<option value="1"{$single_month['1']}>{$lang->month_1}</option>
+							<option value="2"{$single_month['2']}>{$lang->month_2}</option>
+							<option value="3"{$single_month['3']}>{$lang->month_3}</option>
+							<option value="4"{$single_month['4']}>{$lang->month_4}</option>
+							<option value="5"{$single_month['5']}>{$lang->month_5}</option>
+							<option value="6"{$single_month['6']}>{$lang->month_6}</option>
+							<option value="7"{$single_month['7']}>{$lang->month_7}</option>
+							<option value="8"{$single_month['8']}>{$lang->month_8}</option>
+							<option value="9"{$single_month['9']}>{$lang->month_9}</option>
+							<option value="10"{$single_month['10']}>{$lang->month_10}</option>
+							<option value="11"{$single_month['11']}>{$lang->month_11}</option>
+							<option value="12"{$single_month['12']}>{$lang->month_12}</option>
+						</select>
+						&nbsp;
+						<select name="single_year">
+							{$single_years}
+						</select>
+					</dd>
+					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
+					<dd style="margin-top: 4px;" id="ranged_selects" width="100%">
+						<table width="100%">
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right;">{$lang->start_time}</td>
+								<td style="padding: 4px;">
+									<select name="start_day">
+										{$start_days}
+									</select>
+									<select name="start_month">
+										<option value="1"{$start_month['1']}>{$lang->month_1}</option>
+										<option value="2"{$start_month['2']}>{$lang->month_2}</option>
+										<option value="3"{$start_month['3']}>{$lang->month_3}</option>
+										<option value="4"{$start_month['4']}>{$lang->month_4}</option>
+										<option value="5"{$start_month['5']}>{$lang->month_5}</option>
+										<option value="6"{$start_month['6']}>{$lang->month_6}</option>
+										<option value="7"{$start_month['7']}>{$lang->month_7}</option>
+										<option value="8"{$start_month['8']}>{$lang->month_8}</option>
+										<option value="9"{$start_month['9']}>{$lang->month_9}</option>
+										<option value="10"{$start_month['10']}>{$lang->month_10}</option>
+										<option value="11"{$start_month['11']}>{$lang->month_11}</option>
+										<option value="12"{$start_month['12']}>{$lang->month_12}</option>
+									</select>
+									<select name="start_year">
+										{$start_years}
+									</select>
+									<span class="smalltext">&nbsp;&nbsp;&nbsp;{$lang->enter_time}</span>
+									<input type="text" class="textbox" name="start_time" value="{$start_time}" size="7" />
+								</td>
+							</tr>
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right;">{$lang->end_time}</td>
+								<td style="padding: 4px;">
+									<select name="end_day">
+										{$end_days}
+									</select>
+									<select name="end_month">
+										<option value="1"{$end_month['1']}>{$lang->month_1}</option>
+										<option value="2"{$end_month['2']}>{$lang->month_2}</option>
+										<option value="3"{$end_month['3']}>{$lang->month_3}</option>
+										<option value="4"{$end_month['4']}>{$lang->month_4}</option>
+										<option value="5"{$end_month['5']}>{$lang->month_5}</option>
+										<option value="6"{$end_month['6']}>{$lang->month_6}</option>
+										<option value="7"{$end_month['7']}>{$lang->month_7}</option>
+										<option value="8"{$end_month['8']}>{$lang->month_8}</option>
+										<option value="9"{$end_month['9']}>{$lang->month_9}</option>
+										<option value="10"{$end_month['10']}>{$lang->month_10}</option>
+										<option value="11"{$end_month['11']}>{$lang->month_11}</option>
+										<option value="12"{$end_month['12']}>{$lang->month_12}</option>
+									</select>
+									<select name="end_year">
+										{$end_years}
+									</select>
+									<span class="smalltext">&nbsp;&nbsp;&nbsp;{$lang->enter_time}</span>
+									<input type="text" class="textbox" name="end_time" value="{$end_time}" size="7" />
+								</td>
+							</tr>
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right; vertical-align: top;">{$lang->time_zone}</td>
+								<td style="padding: 4px;">
+									{$timezones}<br />
+									<label class="smalltext" style="display: block;padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {$ignore_timezone}" style="vertical-align: middle;" /> {$lang->ignore_timezone}
+								</td>
+							</tr>
+							<tr>
+								<td class="smalltext" style="padding: 4px; text-align: right; vertical-align:top;">{$lang->repeats}</td>
+								<td class="smalltext" style="padding: 4px;">
+									<select name="repeats" id="repeats" onchange="toggleRepeats();">
+										<option value="0">{$lang->does_not_repeat}</option>
+										<option value="1"{$repeats_sel[1]}>{$lang->repeats_daily}</option>
+										<option value="2"{$repeats_sel[2]}>{$lang->repeats_weekdays}</option>
+										<option value="3"{$repeats_sel[3]}>{$lang->repeats_weekly}</option>
+										<option value="4"{$repeats_sel[4]}>{$lang->repeats_monthly}</option>
+										<option value="5"{$repeats_sel[5]}>{$lang->repeats_yearly}</option>
+									</select>
+									<div class="repeats_type" id="repeats_type_1" style="padding: 4px;">
+										{$lang->repeats_every}
+										<input type="text" class="textbox" name="repeats_1_days" value="{$repeats_1_days}" size="2" /> {$lang->day_or_days}
+									</div>
+									<div class="repeats_type" id="repeats_type_3" style="padding: 4px;">
+										{$lang->repeats_every}
+										<input type="text" class="textbox" name="repeats_3_weeks" value="{$repeats_3_weeks}" size="2" /> {$lang->week_or_weeks_on}
+										<br />
+										<table style="padding: 4px;">
+											<tr>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[0]" value="1" {$repeats_3_days[0]} style="vertical-align: middle;" /> {$lang->sunday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[1]" value="1" {$repeats_3_days[1]} style="vertical-align: middle;" /> {$lang->monday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[2]" value="1" {$repeats_3_days[2]} style="vertical-align: middle;" /> {$lang->tuesday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[3]" value="1" {$repeats_3_days[3]} style="vertical-align: middle;" /> {$lang->wednesday}</label></td>
+											</tr>
+											<tr>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[4]" value="1" {$repeats_3_days[4]} style="vertical-align: middle;" /> {$lang->thursday}</label></td>
+												<td style="padding: 2px;" class="smalltext"><label><input type="checkbox" name="repeats_3_days[5]" value="1" {$repeats_3_days[5]} style="vertical-align: middle;" /> {$lang->friday}</label></td>
+												<td style="padding: 2px;" class="smalltext" colspan="2"><label><input type="checkbox" name="repeats_3_days[6]" value="1" {$repeats_3_days[6]} style="vertical-align: middle;" /> {$lang->sunday}</label></td>
+											</tr>
+										</table>
+									</div>
+									<div class="repeats_type" id="repeats_type_4" style="padding: 4px;">
+										<div class="smalltext"><label>
+											<input type="radio" name="repeats_4_type" id="repeats_4_type_1" value="1" style="vertical-align: middle;" {$repeats_4_type[1]} />
+											{$lang->repeats_on_day}</label>
+											<input type="text" class="textbox" name="repeats_4_day" value="{$repeats_4_day}" onfocus="$('repeats_4_type_1').checked=true;" size="2" /> {$lang->of_every} <input type="text" class="textbox" name="repeats_4_months" value="{$repeats_4_months}" size="2" onfocus="$('repeats_4_type_1').checked=true;" /> {$lang->month_or_months}
+										</div>
+										<div class="smalltext" style="margin-top: 5px;"><label>
+											<input type="radio" name="repeats_4_type" id="repeats_4_type_2" value="2" style="vertical-align: middle;" {$repeats_4_type[2]} />
+											{$lang->repeats_on_the}</label>
+											<select name="repeats_4_occurance" onfocus="$('repeats_4_type_2').checked=true;">
+												<option value="1"{$repeats_4_occurance[1]}>{$lang->first}</option>
+												<option value="2"{$repeats_4_occurance[2]}>{$lang->second}</option>
+												<option value="3"{$repeats_4_occurance[3]}>{$lang->third}</option>
+												<option value="4"{$repeats_4_occurance[4]}>{$lang->fourth}</option>
+												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
+											</select>
+											<select name="repeats_4_weekday" onfocus="$('repeats_4_type_2').checked=true;">
+												<option value="0"{$repeats_4_weekday[0]}>{$lang->sunday}</option>
+												<option value="1"{$repeats_4_weekday[1]}>{$lang->monday}</option>
+												<option value="2"{$repeats_4_weekday[2]}>{$lang->tuesday}</option>
+												<option value="3"{$repeats_4_weekday[3]}>{$lang->wednesday}</option>
+												<option value="4"{$repeats_4_weekday[4]}>{$lang->thursday}</option>
+												<option value="5"{$repeats_4_weekday[5]}>{$lang->friday}</option>
+												<option value="6"{$repeats_4_weekday[6]}>{$lang->saturday}</option>
+											</select>
+											{$lang->of_every}
+											{$lang->day_of_every} <input type="text" class="textbox" name="repeats_4_months2" value="{$repeats_4_months2}" size="2" onfocus="$('repeats_4_type_2').checked=true;" /> {$lang->month_or_months}
+										</div>
+									</div>
+									<div class="repeats_type" id="repeats_type_5" style="padding: 4px;">
+										<div class="smalltext"><label>
+											<input type="radio" name="repeats_5_type" value="1" id="repeats_5_type_1" style="vertical-align: middle;" {$repeats_5_type[1]} />
+											{$lang->repeats_on}</label>
+											<input type="text" class="textbox" name="repeats_5_day" onfocus="$('repeats_5_type_1').checked=true;" value="{$repeats_5_day}" size="2" />
+											<select name="repeats_5_month" onfocus="$('repeats_5_type_1').checked=true;" >
+												<option value="1"{$repeats_5_month['1']}>{$lang->month_1}</option>
+												<option value="2"{$repeats_5_month['2']}>{$lang->month_2}</option>
+												<option value="3"{$repeats_5_month['3']}>{$lang->month_3}</option>
+												<option value="4"{$repeats_5_month['4']}>{$lang->month_4}</option>
+												<option value="5"{$repeats_5_month['5']}>{$lang->month_5}</option>
+												<option value="6"{$repeats_5_month['6']}>{$lang->month_6}</option>
+												<option value="7"{$repeats_5_month['7']}>{$lang->month_7}</option>
+												<option value="8"{$repeats_5_month['8']}>{$lang->month_8}</option>
+												<option value="9"{$repeats_5_month['9']}>{$lang->month_9}</option>
+												<option value="10"{$repeats_5_month['10']}>{$lang->month_10}</option>
+												<option value="11"{$repeats_5_month['11']}>{$lang->month_11}</option>
+												<option value="12"{$repeats_5_month['12']}>{$lang->month_12}</option>
+											</select>
+											{$lang->every}
+											<input type="text" class="textbox" name="repeats_5_years" value="{$repeats_5_years}" onfocus="$('repeats_5_type_1').checked=true;" size="2" /> {$lang->year_or_years}
+										</div>
+										<div class="smalltext" style="margin-top: 5px;"><label>
+											<input type="radio" name="repeats_5_type" value="2" id="repeats_5_type_2" style="vertical-align: middle;" {$repeats_5_type[2]} />
+											{$lang->repeats_on_the}</label>
+											<select name="repeats_5_occurance" onfocus="$('repeats_5_type_2').checked=true;" >
+												<option value="1"{$repeats_5_occurance[1]}>{$lang->first}</option>
+												<option value="2"{$repeats_5_occurance[2]}>{$lang->second}</option>
+												<option value="3"{$repeats_5_occurance[3]}>{$lang->third}</option>
+												<option value="4"{$repeats_5_occurance[4]}>{$lang->fourth}</option>
+												<option value="last"{$repeats_4_occurance['last']}>{$lang->last}</option>
+											</select>
+											<select name="repeats_5_weekday" onfocus="$('repeats_5_type_2').checked=true;" >
+												<option value="0"{$repeats_5_weekday[0]}>{$lang->sunday}</option>
+												<option value="1"{$repeats_5_weekday[1]}>{$lang->monday}</option>
+												<option value="2"{$repeats_5_weekday[2]}>{$lang->tuesday}</option>
+												<option value="3"{$repeats_5_weekday[3]}>{$lang->wednesday}</option>
+												<option value="4"{$repeats_5_weekday[4]}>{$lang->thursday}</option>
+												<option value="5"{$repeats_5_weekday[5]}>{$lang->friday}</option>
+												<option value="6"{$repeats_5_weekday[6]}>{$lang->saturday}</option>
+											</select>
+											{$lang->of}
+											<select name="repeats_5_month2" onfocus="$('repeats_5_type_2').checked=true;" >
+												<option value="1"{$repeats_5_month2['1']}>{$lang->month_1}</option>
+												<option value="2"{$repeats_5_month2['2']}>{$lang->month_2}</option>
+												<option value="3"{$repeats_5_month2['3']}>{$lang->month_3}</option>
+												<option value="4"{$repeats_5_month2['4']}>{$lang->month_4}</option>
+												<option value="5"{$repeats_5_month2['5']}>{$lang->month_5}</option>
+												<option value="6"{$repeats_5_month2['6']}>{$lang->month_6}</option>
+												<option value="7"{$repeats_5_month2['7']}>{$lang->month_7}</option>
+												<option value="8"{$repeats_5_month2['8']}>{$lang->month_8}</option>
+												<option value="9"{$repeats_5_month2['9']}>{$lang->month_9}</option>
+												<option value="10"{$repeats_5_month2['10']}>{$lang->month_10}</option>
+												<option value="11"{$repeats_5_month2['11']}>{$lang->month_11}</option>
+												<option value="12"{$repeats_5_month2['12']}>{$lang->month_12}</option>
+											</select>
+											{$lang->every}
+											<input type="text" class="textbox" name="repeats_5_years2" value="{$repeats_5_years}" size="2" onfocus="$('repeats_5_type_2').checked=true;" /> {$lang->year_or_years}
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</dd>
+				</dl>
+				<script type="text/javascript">
+					toggleType();
+					toggleRepeats();
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
+			<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
+			{$codebuttons}</td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
+			<td class="trow2">
+				<input type="checkbox" class="checkbox" name=thread value="yes"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
+			</td>
+		</tr>
+	</table>
+	<br />
+	<input type="hidden" name="action" value="do_editevent" />
+	<input type="hidden" name="eid" value="{$event['eid']}" />
+	<div align="center"><input type="submit" class="button" value="{$lang->edit_event}" /></div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_move" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->move_event}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="calendar.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+		<tr>
+			<td colspan="2" width="100%" class="thead"><strong>{$lang->move_event}: {$event['name']}</strong></td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow1"><strong>Move to Calendar:</strong></td>
+			<td class="trow1">
+				<select name="new_calendar">
+					{$calendar_select}
+				</select>
+			</td>
+		</tr>
+	</table>
+	<br />
+	<input type="hidden" name="action" value="do_move" />
+	<input type="hidden" name="eid" value="{$event['eid']}" />
+	<div align="center"><input type="submit" class="button" value="{$lang->move_event}" /></div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_event" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->calendar} - {$event['name']}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="thead"><strong>{$event['name']}</strong></td>
+	</tr>
+	<tr>
+		<td class="tcat"><strong>{$time_period}</strong></td>
+	</tr>
+	<tr>
+		<td class="trow1{$event_class}">
+			<div style="float: left;">
+				<strong><span class="largetext">{$event['profilelink']}</span></strong><br />
+				<span class="smalltext">
+					{$event['usertitle']}<br />
+					{$event['userstars']}
+				</span>
+			</div>
+			<div style="float: right">
+				{$moderator_options}
+				{$repeats}
+			</div>
+			<br style="clear: both;" />
+		</td>
+	</tr>
+	<tr>
+		<td class="trow2{$event_class}">
+			<p>{$event['description']}</p>
+			{$edit_event}
+		</td>
+	</tr>
+</table>
+<br />
+<form action="calendar.php" method="post">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="trow1">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tr>
+					<td class="trow1" valign="top">{$addevent}</td>
+						<td class="trow1" align="right">
+						<span class="smalltext"><strong>{$lang->jump_month}</strong></span>
+						<select name="month">
+							<option value="{$month}">{$monthnames[$month]}</option>
+							<option value="{$week_from[1]}">----------</option>
+							<option value="1">{$lang->alt_month_1}</option>
+							<option value="2">{$lang->alt_month_2}</option>
+							<option value="3">{$lang->alt_month_3}</option>
+							<option value="4">{$lang->alt_month_4}</option>
+							<option value="5">{$lang->alt_month_5}</option>
+							<option value="6">{$lang->alt_month_6}</option>
+							<option value="7">{$lang->alt_month_7}</option>
+							<option value="8">{$lang->alt_month_8}</option>
+							<option value="9">{$lang->alt_month_9}</option>
+							<option value="10">{$lang->alt_month_10}</option>
+							<option value="11">{$lang->alt_month_11}</option>
+							<option value="12">{$lang->alt_month_12}</option>
+						</select>
+						<select name="year">
+							{$yearsel}
+						</select>
+						{$gobutton}
+						<br /><br />
+						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+						{$calendar_jump}
+						{$gobutton}							
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_event_modoptions" version="140"><![CDATA[				<form method="post" action="calendar.php">
+					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+					<input type="hidden" name="eid" value="{$event['eid']}">
+					<select name="action" onchange="if(this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={$event['eid']}&my_post_key={$mybb->post_code}') }">
+						<option value="" style="font-weight: bold;">{$lang->moderator_options}</option>
+						<option value="{$approve_value}">{$approve}</option>
+						<option value="move">{$lang->move_event}</option>
+					</select>
+					{$gobutton}
+				</form>
+				<br />]]></template>
+		<template name="calendar_dayview" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+{$birthdays}
+{$events}
+<br />
+<form action="calendar.php" method="post">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="trow1">
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tr>
+					<td class="trow1" valign="top">{$addevent}</td>
+						<td class="trow1" align="right">
+						<span class="smalltext"><strong>{$lang->jump_month}</strong></span>
+						<select name="month">
+							<option value="{$month}">{$monthnames[$month]}</option>
+							<option value="{$month}">----------</option>
+							<option value="1">{$lang->alt_month_1}</option>
+							<option value="2">{$lang->alt_month_2}</option>
+							<option value="3">{$lang->alt_month_3}</option>
+							<option value="4">{$lang->alt_month_4}</option>
+							<option value="5">{$lang->alt_month_5}</option>
+							<option value="6">{$lang->alt_month_6}</option>
+							<option value="7">{$lang->alt_month_7}</option>
+							<option value="8">{$lang->alt_month_8}</option>
+							<option value="9">{$lang->alt_month_9}</option>
+							<option value="10">{$lang->alt_month_10}</option>
+							<option value="11">{$lang->alt_month_11}</option>
+							<option value="12">{$lang->alt_month_12}</option>
+						</select>
+						<select name="year">
+							{$yearsel}
+						</select>
+						{$gobutton}
+						<br /><br />
+						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
+						{$calendar_jump}
+						{$gobutton}							
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="calendar_dayview_event" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<tr>
+		<td class="thead"><strong>{$event['name']}</strong></td>
+	</tr>
+	<tr>
+		<td class="tcat"><strong>{$time_period}</strong></td>
+	</tr>
+	<tr>
+		<td class="trow1{$event_class}">
+			<div style="float: left;">
+				<strong><span class="largetext">{$event['profilelink']}</span></strong><br />
+				<span class="smalltext">
+					{$event['usertitle']}<br />
+					{$event['userstars']}
+				</span>
+			</div>
+			<div style="float: right">
+				{$moderator_options}
+				{$repeats}
+			</div>
+			<br style="clear: both;" />
+		</td>
+	</tr>
+	<tr>
+		<td class="trow2{$event_class}">
+			<p>{$event['description']}</p>
+			{$edit_event}
+		</td>
+	</tr>
+</table>
+<br />
+]]></template>
+		<template name="calendar_event_editbutton" version="140"><![CDATA[<div style="text-align: right; vertical-align: bottom;">
+	<a href="calendar.php?action=editevent&amp;eid={$event['eid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->alt_edit}" /></a>
+	<a href="javascript:MyBB.deleteEvent({$event['eid']});"><img src="{$theme['imglangdir']}/postbit_delete.gif" border="0" alt="{$lang->alt_delete}" /></a>
+</div>
+]]></template>
+		<template name="calendar_dayview_birthdays" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead"><strong>{$lang->birthdays_on_day}</strong></td>
+</tr>
+<tr>
+<td class="trow1"><span class="smalltext">{$birthday_list}</span></td>
+</tr>
+</table>
+<br />
+]]></template>
+		<template name="calendar_dayview_birthdays_bday" version="140"><![CDATA[{$comma}{$birthday['profilelink']}{$age}]]></template>
 	</templates>
 </theme>

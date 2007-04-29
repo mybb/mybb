@@ -50,12 +50,15 @@ if($mybb->input['action'] == "markread")
 {
 	if($mybb->input['fid'])
 	{
-		$validforum = get_forum($db->escape_string($mybb->input['fid']));
+		$mybb->input['fid'] = intval($mybb->input['fid'])
+		$validforum = get_forum($mybb->input['fid']);
 		if(!$validforum && !$mybb->input['ajax'])
 		{
 			error($lang->error_invalidforum);
 		}
-		my_set_array_cookie("forumread", $mybb->input['fid'], time());
+
+		require_once MYBB_ROOT."/inc/functions_indicators.php";
+		mark_forum_read($mybb->input['fid']);
 
 		$plugins->run_hooks("misc_markread_forum");
 

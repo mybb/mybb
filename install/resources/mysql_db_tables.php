@@ -121,6 +121,30 @@ $tables[] = "CREATE TABLE mybb_banned (
   KEY dateline (dateline)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_calendars (
+  cid int unsigned NOT NULL auto_increment,
+  name varchar(100) NOT NULL default '',
+  disporder int unsigned NOT NULL default '0',
+  startofweek int(1) NOT NULL default '0',
+  showbirthdays int(1) NOT NULL default '0',
+  eventlimit int(3) NOT NULL default '0',
+  moderation int(1) NOT NULL default '0',
+  allowhtml char(3) NOT NULL default '',
+  allowmycode char(3) NOT NULL default '',
+  allowimgcode char(3) NOT NULL default '',
+  allowsmilies char(3) NOT NULL default '',
+  PRIMARY KEY(cid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_calendarpermissions (
+  cid int unsigned NOT NULL default '0',
+  gid int unsigned NOT NULL default '0',
+  canviewcalendar char(3) NOT NULL default '',
+  canaddevents char(3) NOT NULL default '',
+  canbypasseventmod char(3) NOT NULL default '',
+  canmoderateevents char(3) NOT NULL default ''
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_captcha (
   imagehash varchar(32) NOT NULL default '',
   imagestring varchar(8) NOT NULL default '',
@@ -137,21 +161,20 @@ $tables[] = "CREATE TABLE mybb_datacache (
 
 $tables[] = "CREATE TABLE mybb_events (
   eid int unsigned NOT NULL auto_increment,
-  subject varchar(120) NOT NULL default '',
-  author int unsigned NOT NULL default '0',
-  start_day tinyint(2) unsigned NOT NULL,
-  start_month tinyint(2) unsigned NOT NULL,
-  start_year smallint(4) unsigned NOT NULL,
-  end_day tinyint(2) unsigned NOT NULL,
-  end_month tinyint(2) unsigned NOT NULL,
-  end_year smallint(4) unsigned NOT NULL,
-  repeat_days varchar(20) NOT NULL,
-  start_time_hours varchar(2) NOT NULL,
-  start_time_mins varchar(2) NOT NULL,
-  end_time_hours varchar(2) NOT NULL,
-  end_time_mins varchar(2) NOT NULL,
+  cid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  name varchar(120) NOT NULL default '',
   description text NOT NULL,
-  private char(3) NOT NULL default '',
+  visible int(1) NOT NULL default '0',
+  private int(1) NOT NULL default '0',
+  dateline int(10) unsigned NOT NULL default '0',
+  starttime int(10) unsigned NOT NULL default '0',
+  endtime int(10) unsigned NOT NULL default '0',
+  timezone int(3) NOT NULL default '0',
+  ignoretimezone int(1) NOT NULL default '0',
+  usingtime int(1) NOT NULL default '0',
+  repeats text NOT NULL,
+  KEY daterange (starttime, endtime),
   KEY private (private),
   PRIMARY KEY  (eid)
 ) TYPE=MyISAM;";
@@ -221,6 +244,15 @@ $tables[] = "CREATE TABLE mybb_forums (
   defaultsortorder varchar(4) NOT NULL default '',
   PRIMARY KEY  (fid)
 ) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_forumsread (
+  fid int unsigned NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  dateline int(10) NOT NULL default '0',
+  KEY dateline (dateline),
+  UNIQUE KEY fid (fid,uid)
+) TYPE=MyISAM;";
+
 
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
   fsid int unsigned NOT NULL auto_increment,
@@ -761,8 +793,9 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   maxemails int(3) NOT NULL default '5',
   canviewmemberlist char(3) NOT NULL default '',
   canviewcalendar char(3) NOT NULL default '',
-  canaddpublicevents char(3) NOT NULL default '',
-  canaddprivateevents char(3) NOT NULL default '',
+  canaddevents char(3) NOT NULL default '',
+  canbypasseventmod char(3) NOT NULL default '',
+  canmoderateevents char(3) NOT NULL default '',
   canviewonline char(3) NOT NULL default '',
   canviewwolinvis char(3) NOT NULL default '',
   canviewonlineips char(3) NOT NULL default '',
