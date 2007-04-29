@@ -87,6 +87,13 @@ class databaseEngine
 	 * @var string
 	 */
 	var $table_prefix;
+	
+	/**
+	 * The extension used to run the SQL database
+	 *
+	 * @var string
+	 */
+	var $engine = "pdo";
 
 	/**
 	 * Connect to the database server.

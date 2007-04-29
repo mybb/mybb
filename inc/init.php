@@ -51,7 +51,7 @@ require_once MYBB_ROOT."inc/config.php";
 
 if(!isset($config['dbtype']))
 {
-	$mybb->trigger_generic_error("board_not_installed", true);
+	$mybb->trigger_generic_error("board_not_installed");
 }
 
 if(empty($config['admin_dir']))
@@ -62,40 +62,34 @@ if(empty($config['admin_dir']))
 // Trigger an error if the installation directory exists
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
-	$mybb->trigger_generic_error("install_directory", true);
+	$mybb->trigger_generic_error("install_directory");
 }
 
 $mybb->config = $config;
 
-// This stuff is killing me for the moment. We need a better way of checking :S
-/*
-if($config['dbtype'] == 'pgsql')
-{
-	if(!extension_loaded('pgsql')) 
-	{
-   		if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
-		{
-       		@dl('php_pgsql.dll');
-   		} 
-		else 
-		{
-       		@dl('pgsql.so');
-   		}
-	}
-	
-	if(!function_exists('pg_connect'))
-	{
-		$config['dbtype'] = "mysql";
-	}
-}
-elseif(!function_exists($config['dbtype']."_connect") && !function_exists($config['dbtype']."_open"))
-{
-	$config['dbtype'] = "mysql";
-}
-*/
-
 require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 $db = new databaseEngine;
+
+// Check if our DB engine is loaded
+if(!extension_loaded($db->engine))
+{
+	// Try and manually load it
+	if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
+	{
+		@dl('php_'.$db->engine.'.dll');
+	} 
+	else 
+	{
+		@dl($db->engine.'.so');
+	}
+	
+	// Check again to see if we've been able to load it
+	if(!extension_loaded($db->engine))
+	{
+		// Throw our super awesome db loading error
+		$mybb->trigger_generic_error("sql_load_error");
+	}
+}
 
 require_once MYBB_ROOT."inc/class_templates.php";
 $templates = new templates;

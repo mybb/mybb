@@ -250,7 +250,7 @@ if($mybb->settings['showwol'] != "no" || $mybb->settings['showbirthdays'] != "no
 $query = $db->query("
 	SELECT f.*, fr.dateline AS lastread
 	FROM ".TABLE_PREFIX."forums f
-	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid)
+	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
 	WHERE f.active != 'no'
 	ORDER BY pid, disporder
 ");

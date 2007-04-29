@@ -287,6 +287,7 @@ if($mybb->input['action'] == "change")
 				$db->update_query("settings", array('value' => $value), "sid='$sid'");
 			}
 		}
+		
 		rebuild_settings();
 		// Check if we need to create our fulltext index after changing the search mode
 		if($mybb->settings['searchtype'] == "fulltext")
@@ -315,7 +316,7 @@ if($mybb->input['action'] == "change")
 	
 	if(!$groupinfo['gid'])
 	{
-		$page->error("You have followed a link to an invalid setting group. Please ensure it exists.");
+		$page->output_error("You have followed a link to an invalid setting group. Please ensure it exists.");
 	}
 	$page->add_breadcrumb_item($groupinfo['title']);
 	$page->output_header("Board Settings - {$groupinfo['title']}");

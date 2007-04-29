@@ -293,9 +293,8 @@ class MyBB {
 	 * Triggers a generic error.
 	 *
 	 * @param string The error code.
-	 * @param boolean Halt code execution, true for halt.
 	 */
-	function trigger_generic_error($code, $halt=true)
+	function trigger_generic_error($code)
 	{
 		global $error_handler;
 		
@@ -309,6 +308,9 @@ class MyBB {
 				break;
 			case "board_not_installed":
 				$message = "Your board has not yet been installed and configured. Please do so before attempting to browse it.";
+				break;
+			case "sql_load_error":
+				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.net\">MyBB Website</a>";
 				break;
 			default:
 				$message = "MyBB has experienced an internal error. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.net\">MyBB Website</a>";

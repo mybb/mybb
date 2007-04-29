@@ -52,7 +52,7 @@ $time = time();
 
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
-	$mybb->trigger_generic_error("install_directory", true);
+	$mybb->trigger_generic_error("install_directory");
 }
 
 $plugins->run_hooks("admin_global_start");

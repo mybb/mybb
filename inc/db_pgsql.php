@@ -101,7 +101,14 @@ class databaseEngine
 	 * @var string
 	 */
 	var $pconnect;
-
+	
+	/**
+	 * The engine used to run the SQL database
+	 *
+	 * @var string
+	 */
+	var $engine = "pgsql";
+	
 	/**
 	 * Connect to the database server.
 	 *

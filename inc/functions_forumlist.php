@@ -336,7 +336,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		{
 			$forum_read = $mybb->user['lastvisit'];
 		}
-	 	 
+		
  	    // If the lastpost is greater than the last visit and is greater than the forum read date, we have a new post 
 		if($lastpost['lastpost'] > $forum_read && $lastpost['lastpost'] != 0) 
 		{

@@ -1333,7 +1333,7 @@ class Moderation
 
 		$is_first = false;
 		// If this is the first post of the thread, also unapprove the thread
-		$query = $db->simple_select("posts", "tid,tid", "pid='{$thread['firstpost']}' AND visible='0'");
+		$query = $db->simple_select("posts", "tid", "pid='{$thread['firstpost']}' AND visible='0'");
 		$first_post = $db->fetch_array($query);
 		if($first_post['tid'])
 		{
