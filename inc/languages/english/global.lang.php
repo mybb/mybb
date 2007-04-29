@@ -83,6 +83,13 @@ $l['wednesday'] = "Wednesday";
 $l['thursday'] = "Thursday";
 $l['friday'] = "Friday";
 $l['saturday'] = "Saturday";
+$l['short_monday'] = "M";
+$l['short_tuesday'] = "T";
+$l['short_wednesday'] = "W";
+$l['short_thursday'] = "T";
+$l['short_friday'] = "F";
+$l['short_saturday'] = "S";
+$l['short_sunday'] = "S";
 
 $l['yes'] = "Yes";
 $l['no'] = "No";

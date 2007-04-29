@@ -582,37 +582,35 @@ function fetch_weekday_structure($week_start)
  */
 function fetch_weekday_name($weekday, $short=false)
 {
-	$var = "weekdays_".$weekday;
-	$weekday_name = $lang->$var;
 	switch($weekday)
 	{
 		case 1:
-			$weekday_name = "Monday";
-			$short_weekday_name = "M";
+			$weekday_name = $lang->monday;
+			$short_weekday_name = $lang->short_monday;
 			break;
 		case 2:
-			$weekday_name = "Tuesday";
-			$short_weekday_name = "T";
+			$weekday_name = $lang->tuesday;
+			$short_weekday_name = $lang->short_tuesday;
 			break;
 		case 3:
-			$weekday_name = "Wednesday";
-			$short_weekday_name = "W";
+			$weekday_name = $lang->wednesday;
+			$short_weekday_name = $lang->short_wednesday;
 			break;
 		case 4:
-			$weekday_name = "Thursday";
-			$short_weekday_name = "T";
+			$weekday_name = $lang->thursday;
+			$short_weekday_name = $lang->short_thursday;
 			break;
 		case 5:
-			$weekday_name = "Friday";
-			$short_weekday_name = "F";
+			$weekday_name = $lang->friday;
+			$short_weekday_name = $lang->short_friday;
 			break;
 		case 6:
-			$weekday_name = "Saturday";
-			$short_weekday_name = "S";
+			$weekday_name = $lang->saturday;
+			$short_weekday_name = $lang->short_saturday;
 			break;
 		case 0:
-			$weekday_name = "Sunday";
-			$short_weekday_name = "S";
+			$weekday_name = $lang->sunday;
+			$short_weekday_name = $lang->short_sunday;
 			break;
 	}
 	if($short == true)

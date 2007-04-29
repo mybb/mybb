@@ -9,11 +9,6 @@
  * $Id$
  */
 
-/*
- * TODO:
- * - Monthly repetition
- * - Yearly repetition
- */
 define("IN_MYBB", 1);
 
 $templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar_eventbit_public,calendar_eventbit_private,calendar";
