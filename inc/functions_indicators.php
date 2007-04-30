@@ -65,27 +65,69 @@ function fetch_unread_count($fid)
 
 	$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
 
-	switch($db->type)
+	if($mybb->user['uid'] == 0)
 	{
-		case "postgresql":
-			$query = $db->query("
-				SELECT COUNT(t.tid) AS unread_count
-				FROM ".TABLE_PREFIX."threads t
-				LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
-				LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-				WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
-			");
-			break;
-		default:
-			$query = $db->query("
-				SELECT COUNT(t.tid) AS unread_count
-				FROM ".TABLE_PREFIX."threads t
-				LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
-				LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
-				WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
-			");
+		$comma = '';
+		$tids = '';
+		$threadsread = unserialize($_COOKIE['mybb']['threadread']);
+		if(is_array($threadsread))
+		{
+			foreach($threadsread as $key => $value)
+			{
+				$tids .= $comma.$key;
+				$comma = ',';
+			}
+		}
+		
+		if(!empty($tids))
+		{
+			switch($db->type)
+			{
+				case "postgresql":
+					$query = $db->query("
+						SELECT COUNT(t.tid) AS unread_count
+						FROM ".TABLE_PREFIX."threads t
+						LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid)
+						LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid)
+						WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.tid IN($tids) AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+					");
+					break;
+				default:
+					$query = $db->query("
+						SELECT COUNT(t.tid) AS unread_count
+						FROM ".TABLE_PREFIX."threads t
+						LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid)
+						LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid)
+						WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.tid IN($tids) AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+					");
+			}
+			return $db->fetch_field($query, "unread_count");
+		}
 	}
-	return $db->fetch_field($query, "unread_count");
+	else
+	{
+		switch($db->type)
+		{
+			case "postgresql":
+				$query = $db->query("
+					SELECT COUNT(t.tid) AS unread_count
+					FROM ".TABLE_PREFIX."threads t
+					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
+					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
+					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+				");
+				break;
+			default:
+				$query = $db->query("
+					SELECT COUNT(t.tid) AS unread_count
+					FROM ".TABLE_PREFIX."threads t
+					LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid AND tr.uid='{$mybb->user['uid']}')
+					LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid AND fr.uid='{$mybb->user['uid']}')
+					WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
+				");
+		}
+		return $db->fetch_field($query, "unread_count");
+	}
 }
 
 /**

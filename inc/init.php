@@ -162,7 +162,7 @@ if(!defined("NO_PLUGINS"))
 add_shutdown('send_mail_queue');
 
 // Generate a random number for performing random actions.
-$rand = rand(0, 10);
+$rand = mt_rand(0, 10);
 
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))

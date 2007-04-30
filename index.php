@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2007 MyBB Group, All Rights Reserved
+ * Copyright Â© 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/license.php
@@ -246,16 +246,38 @@ if($mybb->settings['showwol'] != "no" || $mybb->settings['showbirthdays'] != "no
 	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
 }
 
-// Build a forum cache.
-$query = $db->query("
-	SELECT f.*, fr.dateline AS lastread
-	FROM ".TABLE_PREFIX."forums f
-	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-	WHERE f.active != 'no'
-	ORDER BY pid, disporder
-");
+if($mybb->user['uid'] == 0)
+{
+	// Build a forum cache.
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."forums
+		WHERE active != 'no'
+		ORDER BY pid, disporder
+	");
+	
+	$forumsread = unserialize($_COOKIE['mybb']['forumread']);
+}
+else
+{
+	// Build a forum cache.
+	$query = $db->query("
+		SELECT f.*, fr.dateline AS lastread
+		FROM ".TABLE_PREFIX."forums f
+		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+		WHERE f.active != 'no'
+		ORDER BY pid, disporder
+	");
+}
 while($forum = $db->fetch_array($query))
 {
+	if($mybb->user['uid'] == 0)
+	{
+		if($forumsread[$forum['fid']])
+		{
+			$forum['lastread'] = $forumsread[$forum['fid']];
+		}
+	}
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
 $forumpermissions = forum_permissions();
