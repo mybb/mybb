@@ -46,4 +46,5 @@ $l['controls'] = "Controls";
 $l['view'] = "View";
 $l['yes'] = "Yes";
 $l['no'] = "No";
+$l['options'] = "Options";
 ?>

@@ -15,26 +15,26 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Admin Permissions", "index.php?".SID."&amp;module=user/admin_permissions");
+$page->add_breadcrumb_item($lang->admin_permissions, "index.php?".SID."&amp;module=user/admin_permissions");
 
 if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->input['action'] == "group" || !$mybb->input['action'])
 {
 	$sub_tabs['user_permissions'] = array(
-		'title' => "User Permissions",
+		'title' => $lang->user_permissions,
 		'link' => "index.php?".SID."&amp;module=user/admin_permissions",
-		'description' => "Here you can manage the administrator permissions for individual users. This effectively allows you to lock certain administrators out of different areas of the Admin CP."
+		'description' => $lang->user_permissions_desc
 	);
 
 	$sub_tabs['group_permissions'] = array(
-		'title' => "Group Permissions",
+		'title' => $lang->group_permissions,
 		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group",
-		'description' => "Administrator permissions can also be applied to user groups that have permission to access the Admin CP. Similarly you can use this tool to lock out entire administrative groups from accessing the different areas of the Admin CP."
+		'description' => $lang->group_permissions_desc
 	);
 
 	$sub_tabs['default_permissions'] = array(
-		'title' => "Default Permissions",
+		'title' => $lang->default_permissions,
 		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid=0",
-		'description' => "The default administrative permissions are those applied to users who do not have custom administrator permissions set for them or are not inheriting group administrator permissions."
+		'description' => $lang->default_permissions_desc
 	);
 }
 
@@ -43,7 +43,7 @@ if($mybb->input['action'] == "delete")
 	$uid = intval($mybb->input['uid']);
 	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
 	{
-		flash_message('Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.', 'error');
+		flash_message($lang->error_delete_super_admin, 'error');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
 	}
 	
@@ -54,14 +54,14 @@ if($mybb->input['action'] == "delete")
 	
 	if(!trim($mybb->input['uid']))
 	{
-		flash_message('You did not enter a admin user/usergroup permission id', 'error');
+		flash_message($lang->error_delete_no_uid, 'error');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
 	}
 	
 	$query = $db->simple_select("adminoptions", "COUNT(uid) as adminoptions", "uid = '{$mybb->input['uid']}'");
 	if($db->fetch_field($query, 'adminoptions') == 0)
 	{
-		flash_message('You did not enter a valid admin user/usergroup permission id', 'error');
+		flash_message($lang->error_delete_invalid_uid, 'error');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
 	}
 	
@@ -71,12 +71,12 @@ if($mybb->input['action'] == "delete")
 			"permissions" => ''
 		);
 		$db->update_query("adminoptions", $newperms, "uid = '{$mybb->input['uid']}'");
-		flash_message('The admin user/usergroup permissions has successfully been revoked.', 'success');
+		flash_message($lang->success_perms_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$mybb->input['uid']}", "Are you sure you wish to revoked this admin user/usergroup permissions?"); 
+		$page->output_confirm_action("index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$mybb->input['uid']}", $lang->confirm_perms_deletion); 
 	}
 }
 
@@ -113,7 +113,7 @@ if($mybb->input['action'] == "edit")
 			$db->insert_query("adminoptions", array('uid' => intval($mybb->input['uid']), 'permissions' => $db->escape_string(serialize($mybb->input['permissions']))));
 		}
 				
-		flash_message("The admin permissions have been successfully updated.", 'success');
+		flash_message($lang->admin_permissions_updated, 'success');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
 	}
 	
@@ -132,7 +132,7 @@ if($mybb->input['action'] == "edit")
 		$admin = $db->fetch_array($query);
 		$permission_data = get_admin_permissions($uid, $admin['gid']);
 		$title = $admin['username'];
-		$page->add_breadcrumb_item("User Permissions", "index.php?".SID."&amp;module=user/admin_permissions");
+		$page->add_breadcrumb_item($lang->user_permissions, "index.php?".SID."&amp;module=user/admin_permissions");
 	}
 	elseif($uid < 0)
 	{
@@ -141,28 +141,28 @@ if($mybb->input['action'] == "edit")
 		$group = $db->fetch_array($query);
 		$permission_data = get_admin_permissions("", $gid);
 		$title = $group['title'];
-		$page->add_breadcrumb_item("Group Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=groups");
+		$page->add_breadcrumb_item($lang->group_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=groups");
 	}
 	else
 	{
 		$query = $db->simple_select("adminoptions", "permissions", "uid='0'");
 		$permission_data = unserialize($db->fetch_field($query, "permissions"));
-		$page->add_breadcrumb_item("Default Permissions");
-		$title = "Default";
+		$page->add_breadcrumb_item($lang->default_permissions);
+		$title = $lang->default;
 	}
 	if($uid != 0)
 	{
-		$page->add_breadcrumb_item("Edit Permissions: {$title}");
+		$page->add_breadcrumb_item($lang->edit_permissions.": {$title}");
 	}
 	
-	$page->output_header("Edit Permissions");
+	$page->output_header($lang->edit_permissions);
 	
 	if($uid != 0)
 	{
 		$sub_tabs['edit_permissions'] = array(
-			'title' => "Edit Permissions",
+			'title' => $lang->edit_permissions,
 			'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}",
-			'description' => "Here you can restrict access to entire tabs or individual pages. Be aware that the \"Home\" tab is accessible to all administrators."
+			'description' => $lang->edit_permissions_desc
 		);
 
 		$page->output_nav_tabs($sub_tabs, 'edit_permissions');
@@ -207,7 +207,7 @@ if($mybb->input['action'] == "edit")
 		echo "</div>\n";
 	}
 
-	$buttons[] = $form->generate_submit_button("Update Permissions");
+	$buttons[] = $form->generate_submit_button($lang->update_permissions);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
@@ -216,14 +216,14 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "group")
 {
-	$page->add_breadcrumb_item("Group Permissions");
-	$page->output_header("Group Permissions");
+	$page->add_breadcrumb_item($lang->group_permissions);
+	$page->output_header($lang->group_permissions);
 	
 	$page->output_nav_tabs($sub_tabs, 'group_permissions');
 
 	$table = new Table;
-	$table->construct_header("Group");
-	$table->construct_header("Controls", array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->group);
+	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 	
 	// Get usergroups with ACP access
 	$query = $db->query("
@@ -244,15 +244,15 @@ if($mybb->input['action'] == "group")
 			$perm_type = "default";
 		}
 		$uid = -$group['gid'];
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"Permission type of the group\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/groups&amp;action=edit&amp;gid={$group['gid']}\" title=\"Edit Group\">{$group['title']}</a></strong><br /></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/groups&amp;action=edit&amp;gid={$group['gid']}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
 
 		if($group['permissions'] != "")
 		{
-			$popup = new PopupMenu("groupperm_{$uid}", "Options");
-			$popup->add_item("Edit Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}");
+			$popup = new PopupMenu("groupperm_{$uid}", $lang->options);
+			$popup->add_item($lang->edit_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}");
 			
 			// Check permissions for Revoke
-			$popup->add_item("Revoke Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$uid}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
+			$popup->add_item($lang->revoke_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$uid}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		}
 		else
@@ -264,7 +264,7 @@ if($mybb->input['action'] == "group")
 		
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are currently no set group permissions.", array("colspan" => "2"));
+		$table->construct_cell($lang->no_group_perms, array("colspan" => "2"));
 		$table->construct_row();
 	}
 	
@@ -273,9 +273,9 @@ if($mybb->input['action'] == "group")
 	echo <<<LEGEND
 <br />
 <fieldset>
-<legend>Legend</legend>
-<img src="styles/{$page->style}/images/icons/group.gif" alt="Using Custom Permissions" style="vertical-align: middle;" /> Using Custom Permissions<br />
-<img src="styles/{$page->style}/images/icons/default.gif" alt="Using Default Permissions" style="vertical-align: middle;" /> Using Default Permissions</fieldset>
+<legend>{$lang->legend}</legend>
+<img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->using_custom_perms}" style="vertical-align: middle;" /> {$lang->using_custom_perms}<br />
+<img src="styles/{$page->style}/images/icons/default.gif" alt="{$lang->using_default_perms}" style="vertical-align: middle;" /> {$lang->using_default_perms}</fieldset>
 LEGEND;
 	
 	$page->output_footer();
@@ -283,15 +283,15 @@ LEGEND;
 
 if(!$mybb->input['action'])
 {	
-	$page->add_breadcrumb_item("User Permissions");
-	$page->output_header("User Permissions");
+	$page->add_breadcrumb_item($lang->user_permissions);
+	$page->output_header($lang->user_permissions);
 	
 	$page->output_nav_tabs($sub_tabs, 'user_permissions');
 
 	$table = new Table;
-	$table->construct_header("User");
-	$table->construct_header("Last Active", array("class" => "align_center", "width" => 200));
-	$table->construct_header("Controls", array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->user);
+	$table->construct_header($lang->last_active, array("class" => "align_center", "width" => 200));
+	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 	
 	// Get usergroups with ACP access
 	$usergroups = array();
@@ -391,40 +391,40 @@ if(!$mybb->input['action'])
 		}
 		$usergroup_list = implode(", ", $usergroup_list);
 		
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"Permission type of the user\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/view&amp;action=edit&amp;uid={$admin['uid']}\" title=\"Edit User Profile\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/view&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
 		
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
 		
-		$popup = new PopupMenu("adminperm_{$admin['uid']}", "Options");
+		$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
 		if($admin['permissions'] != "")
 		{
-			$popup->add_item("Edit Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
-			$popup->add_item("Revoke Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$admin['uid']}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this user\'s permissions?')");
+			$popup->add_item($lang->edit_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+			$popup->add_item($lang->revoke_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$admin['uid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
 		}
 		else
 		{
-			$popup->add_item("Set Permissions", "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+			$popup->add_item($lang->set_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
 		}
-		$popup->add_item("View Log", "index.php?".SID."&amp;module=user/stats_and_logging&amp;uid={$admin['uid']}");
+		$popup->add_item($lang->view_log, "index.php?".SID."&amp;module=user/stats_and_logging&amp;uid={$admin['uid']}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
 		
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are currently no set user permissions.", array("colspan" => "2"));
+		$table->construct_cell($lang->no_user_perms, array("colspan" => "2"));
 		$table->construct_row();
 	}
 	
-	$table->output("User Permissions");
+	$table->output($lang->user_permissions);
 	
 	echo <<<LEGEND
 <br />
 <fieldset>
-<legend>Legend</legend>
-<img src="styles/{$page->style}/images/icons/user.gif" alt="Using Individual Permissions" style="vertical-align: middle;" /> Using Individual Permissions<br />
-<img src="styles/{$page->style}/images/icons/group.gif" alt="Using Group Permissions" style="vertical-align: middle;" /> Using Group Permissions<br />
-<img src="styles/{$page->style}/images/icons/default.gif" alt="Using Default Permissions" style="vertical-align: middle;" /> Using Default Permissions</fieldset>
+<legend>{$lang->legend}</legend>
+<img src="styles/{$page->style}/images/icons/user.gif" alt="{$lang->using_individual_perms}" style="vertical-align: middle;" /> {$lang->using_individual_perms}<br />
+<img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->using_group_perms}" style="vertical-align: middle;" /> {$lang->using_group_perms}<br />
+<img src="styles/{$page->style}/images/icons/default.gif" alt="{$lang->using_default_perms}" style="vertical-align: middle;" /> {$lang->using_default_perms}</fieldset>
 LEGEND;
 	$page->output_footer();
 }
