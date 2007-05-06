@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("User Email Log", "index.php?".SID."&amp;module=tools/maillogs");
+$page->add_breadcrumb_item($lang->user_email_log, "index.php?".SID."&amp;module=tools/maillogs");
 
 if($mybb->input['action'] == "view")
 {
@@ -36,42 +36,42 @@ if($mybb->input['action'] == "view")
 	?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head profile="http://gmpg.org/xfn/1">
-	<title><?php echo "User Email Log Viewer"; ?></title>
+	<title><?php echo $lang->user_email_log_viewer; ?></title>
 	<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/main.css" type="text/css" />
 	<link rel="stylesheet" href="styles/<?php echo $page->style; ?>/popup.css" type="text/css" />
 </head>
 <body id="popup">
 	<div id="popup_container">
-	<div class="popup_title"><a href="#" onclick="window.close();" class="close_link">Close Window</a><?php echo "User Email Log Viewer"; ?></div>
+	<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a><?php echo $lang->user_email_log_viewer; ?></div>
 
 	<div id="content">
 	<?php
 	$table = new Table();
 
-	$table->construct_cell("To:");
+	$table->construct_cell($lang->to.":");
 	$table->construct_cell("<a href=\"mailto:{$log['toemail']}\">{$log['toemail']}</a>");
 	$table->construct_row();
 
-	$table->construct_cell("From:");
+	$table->construct_cell($lang->from.":");
 	$table->construct_cell("<a href=\"mailto:{$log['fromemail']}\">{$log['fromemail']}</a>");
 	$table->construct_row();
 
-	$table->construct_cell("IP Address:");
+	$table->construct_cell($lang->ip_address.":");
 	$table->construct_cell($log['ipaddress']);
 	$table->construct_row();
 
-	$table->construct_cell("Subject:");
+	$table->construct_cell($lang->subject.":");
 	$table->construct_cell($log['subject']);
 	$table->construct_row();
 
-	$table->construct_cell("Date:");
+	$table->construct_cell($lang->date.":");
 	$table->construct_cell($log['dateline']);
 	$table->construct_row();
 
 	$table->construct_cell($log['message'], array("colspan" => 2));
 	$table->construct_row();
 
-	$table->output("Email");
+	$table->output($lang->email);
 
 	?>
 	</div>
@@ -124,7 +124,7 @@ if(!$mybb->input['action'])
 	if($mybb->input['subject'])
 	{
 		$additional_sql_criteria .= " AND l.subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
-		$additional_criteria[] = "subject=".htmlspecialchars_uni($mybb->input['subject']);
+		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
 	}
 
 	if($mybb->input['fromuid'])
@@ -133,7 +133,7 @@ if(!$mybb->input['action'])
 		$user = $db->fetch_array($query);
 		$from_filter = $user['username'];
 		$additional_sql_criteria .= " AND l.fromuid='".intval($mybb->input['fromuid'])."'";
-		$additional_criteria[] = "fromuid=".intval($mybb->input['fromuid']);
+		$additional_criteria[] = "fromuid='".intval($mybb->input['fromuid'])."'";
 	}
 	else if($mybb->input['fromname'])
 	{
@@ -143,7 +143,7 @@ if(!$mybb->input['action'])
 
 		if(!$user['uid'])
 		{
-			flash_message('The username you entered does not exist.', 'error');
+			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?".SID."&module=tools/maillogs");
 		}
 		$additional_sql_criteria .= "AND l.fromuid='{$user['uid']}'";
@@ -163,7 +163,7 @@ if(!$mybb->input['action'])
 		$user = $db->fetch_array($query);
 		$to_filter = $user['username'];
 		$additional_sql_criteria .= " AND l.touid='".intval($mybb->input['touid'])."'";
-		$additional_criteria[] = "touid=".intval($mybb->input['touid']);
+		$additional_criteria[] = "touid='".intval($mybb->input['touid'])."'";
 	}
 	else if($mybb->input['toname'])
 	{
@@ -173,40 +173,40 @@ if(!$mybb->input['action'])
 
 		if(!$user['uid'])
 		{
-			flash_message('The username you entered does not exist.', 'error');
+			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?".SID."&module=tools/maillogs");
 		}
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
-		$additional_criteria = "touid={$user['uid']}";
+		$additional_criteria = "touid='{$user['uid']}'";
 	}
 
 	if($mybb->input['toemail'])
 	{
 		$additional_sql_criteria .= " AND l.toemail LIKE '%".$db->escape_string($mybb->input['toemail'])."%'";
-		$additional_criteria[] = "toemail=".urlencode($mybb->input['toemail']);
+		$additional_criteria[] = "toemail='".urlencode($mybb->input['toemail'])."'";
 		$to_filter = $mybb->input['toemail'];
 	}
 
 	$additional_criteria = implode("&amp;", $additional_criteria);	
 
-	$page->output_header("User Email Log");
+	$page->output_header($lang->user_email_log);
 	
 	$sub_tabs['maillogs'] = array(
-		'title' => "User Email Log",
-		'description' => "All emails sent from one member to another member as well as emails sent by the 'Send Thread to a Friend' feature are logged and shown below. Here you can identify potential abusers of this functionality."
+		'title' => $lang->user_email_log,
+		'description' => $lang->user_email_log_desc
 	);
 	$sub_tabs['prune_maillogs'] = array(
-		'title' => "Prune User Email Log",
+		'title' => $lang->prune_user_email_log,
 		'link' => "index.php?".SID."&amp;module=tools/maillogs&amp;action=prune"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'maillogs');
 
 	$table = new Table;
-	$table->construct_header("Subject", array("colspan" => 2));
-	$table->construct_header("From", array("class" => "align_center", "width" => "20%"));
-	$table->construct_header("To", array("class" => "align_center", "width" => "20%"));
-	$table->construct_header("Date Sent", array("class" => "align_center", "width" => "20%"));
+	$table->construct_header($lang->subject, array("colspan" => 2));
+	$table->construct_header($lang->from, array("class" => "align_center", "width" => "20%"));
+	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
+	$table->construct_header($lang->date_sent, array("class" => "align_center", "width" => "20%"));
 
 	$query = $db->query("
 		SELECT l.*, r.username AS to_username, f.username AS from_username, t.subject AS thread_subject
@@ -231,14 +231,14 @@ if(!$mybb->input['action'])
 			}
 			else
 			{
-				$thread_link = "Deleted";
+				$thread_link = $lang->deleted;
 			}
-			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.gif\" title=\"Sent using the Send Thread to Friend feature\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&action=view&mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>Thread: {$thread_link}</small>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"Find all emails sent by this user\" alt=\"Find\" /></a></div>";
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.gif\" title=\"{$lang->sent_using_send_thread_feature}\" />", array("width" => 1));
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&action=view&mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
+			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
-				$table->construct_cell("{$find_from}<div>Deleted User</div>");
+				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
 			}
 			else
 			{
@@ -250,21 +250,21 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.gif\" title=\"Email sent to user\" />", array("width" => 1));
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.gif\" title=\"{$lang->email_sent_to_user}\" />", array("width" => 1));
 			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&action=view&mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"Find all emails sent by this user\" alt=\"Find\" /></a></div>";
+			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
-				$table->construct_cell("{$find_from}<div>Deleted User</div>");
+				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
 			}
 			else
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
-			$find_to = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"Find all emails received by this user\" alt=\"Find\" /></a></div>";
+			$find_to = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['to_username'])
 			{
-				$table->construct_cell("{$find_to}<div>Deleted User</div>");
+				$table->construct_cell("{$find_to}<div>{$lang->deleted_user}</div>");
 			}
 			else
 			{
@@ -277,11 +277,11 @@ if(!$mybb->input['action'])
 	
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are no log entries with the selected criteria.", array("colspan" => "5"));
+		$table->construct_cell($lang->no_logs, array("colspan" => "5"));
 		$table->construct_row();
 	}
 	
-	$table->output("User Email Log");
+	$table->output($lang->user_email_log);
 	
 	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");
@@ -289,12 +289,12 @@ if(!$mybb->input['action'])
 	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?".SID."&amp;module=tools/maillogs&amp;page={page}{$additional_criteria}");
 	
 	$form = new Form("index.php?".SID."&amp;module=tools/maillogs", "post");
-	$form_container = new FormContainer("Filter User Email Log");
+	$form_container = new FormContainer($lang->filter_user_email_log);
 	$user_email = array(
-		"user" => "Username is",
-		"email" => "Email Address contains"
+		"user" => $lang->username_is,
+		"email" => $lang->email_contains
 	);
-	$form_container->output_row("Subject contains", "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');	
+	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');	
 	if($from_username)
 	{
 		$from_type = "user";
@@ -303,7 +303,7 @@ if(!$mybb->input['action'])
 	{
 		$from_type = "email";
 	}
-	$form_container->output_row("From", "", $form->generate_select_box('from_type', $user_email, $from_type)." ".$form->generate_text_box('from_value', $from_filter, array('id' => 'from_value')), 'from_value');
+	$form_container->output_row($lang->from, "", $form->generate_select_box('from_type', $user_email, $from_type)." ".$form->generate_text_box('from_value', $from_filter, array('id' => 'from_value')), 'from_value');
 	if($to_username)
 	{
 		$to_type = "user";
@@ -312,9 +312,9 @@ if(!$mybb->input['action'])
 	{
 		$to_type = "email";
 	}
-	$form_container->output_row("To", "", $form->generate_select_box('to_type', $user_email, $to_type)." ".$form->generate_text_box('to_value', $to_filter, array('id' => 'to_value')), 'to_value');
+	$form_container->output_row($lang->to, "", $form->generate_select_box('to_type', $user_email, $to_type)." ".$form->generate_text_box('to_value', $to_filter, array('id' => 'to_value')), 'to_value');
 	$form_container->end();
-	$buttons[] = $form->generate_submit_button("Filter User Email Log");
+	$buttons[] = $form->generate_submit_button($lang->filter_user_email_log);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

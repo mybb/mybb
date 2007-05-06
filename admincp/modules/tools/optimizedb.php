@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Optimize Database", "index.php?".SID."&amp;module=tools/optimizedb");
+$page->add_breadcrumb_item($lang->optimize_database, "index.php?".SID."&amp;module=tools/optimizedb");
 
 if(!$mybb->input['action'])
 {
@@ -24,7 +24,7 @@ if(!$mybb->input['action'])
 		
 		if(!is_array($mybb->input['tables']))
 		{
-			flash_message("You did not select any database tables to optimize.", 'error');
+			flash_message($lang->error_no_tables_selected, 'error');
 			admin_redirect("index.php?".SID."&module=tools/optimizedb");
 		}
 		
@@ -40,7 +40,7 @@ if(!$mybb->input['action'])
 		
 		$db->set_table_prefix(TABLE_PREFIX);
 		
-		flash_message("The selected tables have been optimized and analyzed successfully.", 'success');
+		flash_message($lang->success_tables_optimized, 'success');
 		admin_redirect("index.php?".SID."&module=tools/optimizedb");
 	}
 	
@@ -72,10 +72,10 @@ if(!$mybb->input['action'])
 	}
 	</script>\n";
 	
-	$page->output_header("Optimize Database");
+	$page->output_header($lang->optimize_database);
 
 	$table = new Table;
-	$table->construct_header("Table Selection");
+	$table->construct_header($lang->table_selection);
 	
 	$table_selects = array();
 	$table_list = $db->list_tables($config['database']);
@@ -86,12 +86,12 @@ if(!$mybb->input['action'])
 	
 	$form = new Form("index.php?".SID."&amp;module=tools/optimizedb", "post", 0, "table_selection", "table_selection");
 	
-	$table->construct_cell("You may select the database tables you wish to perform this action on here. Hold down CTRL to select multiple tables.\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">Select All</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">Deselect All</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">Select Forum Tables</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
+	$table->construct_cell("{$lang->tables_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
 	$table->construct_row();
 		
-	$table->output("Optimize Database");
+	$table->output($lang->optimize_database);
 	
-	$buttons[] = $form->generate_submit_button("Optimize Selected Tables");
+	$buttons[] = $form->generate_submit_button($lang->optimize_selected_tables);
 	$form->output_submit_wrapper($buttons);
 	
 	$form->end();

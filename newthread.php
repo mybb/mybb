@@ -752,7 +752,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft")
+		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
 		{
 			$attachwhere = "pid='$pid'";
 		}

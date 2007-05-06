@@ -70,38 +70,35 @@ function fetch_unread_count($fid)
 		$comma = '';
 		$tids = '';
 		$threadsread = unserialize($_COOKIE['mybb']['threadread']);
+		$forumsread = unserialize($_COOKIE['mybb']['forumread']);
 		if(is_array($threadsread))
 		{
 			foreach($threadsread as $key => $value)
 			{
-				$tids .= $comma.$key;
+				$tids .= $comma.intval($key);
 				$comma = ',';
 			}
 		}
 		
 		if(!empty($tids))
 		{
-			switch($db->type)
+			$count = 0;
+			
+			// We set a limit to 100 otherwise it'll become too proccessor intesive, especially if we have many thredas.
+			$query = $db->query("
+				SELECT lastpost, tid
+				FROM ".TABLE_PREFIX."threads
+				WHERE visible=1 AND closed NOT LIKE 'moved|%' AND fid IN ($fid) AND tid IN ($tids) AND lastpost > '{$cutoff}'
+				LIMIT 100
+			");
+			while($thread = $db->fetch_array($query))
 			{
-				case "postgresql":
-					$query = $db->query("
-						SELECT COUNT(t.tid) AS unread_count
-						FROM ".TABLE_PREFIX."threads t
-						LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid)
-						LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid)
-						WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.tid IN($tids) AND t.lastpost > COALESCE(tr.dateline,$cutoff) AND t.lastpost > COALESCE(fr.dateline,$cutoff) AND t.lastpost>$cutoff
-					");
-					break;
-				default:
-					$query = $db->query("
-						SELECT COUNT(t.tid) AS unread_count
-						FROM ".TABLE_PREFIX."threads t
-						LEFT JOIN ".TABLE_PREFIX."threadsread tr ON (tr.tid=t.tid)
-						LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=t.fid)
-						WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' AND t.fid IN ($fid) AND t.tid IN($tids) AND t.lastpost > IFNULL(tr.dateline,$cutoff) AND t.lastpost > IFNULL(fr.dateline,$cutoff) AND t.lastpost>$cutoff
-					");
+				if($thread['lastpost'] > intval($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($forumsread[$thread['tid']]))
+				{
+					++$count;
+				}
 			}
-			return $db->fetch_field($query, "unread_count");
+			return $count;
 		}
 	}
 	else

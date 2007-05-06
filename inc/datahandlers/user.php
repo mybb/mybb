@@ -222,6 +222,16 @@ class UserDataHandler extends DataHandler
 			$this->set_error('banned_email');
 			return false;
 		}
+		
+		// Check signed up emails
+		if($mybb->settings['allowmultipleemails'] == "no")
+		{
+			if(email_already_in_use($user['email']))
+			{
+				$this->set_error('email_already_in_use');
+				return false;
+			}
+		}
 
 		// If we have an "email2", verify it matches the existing email
 		if(isset($user['email2']) && $user['email'] != $user['email2'])

@@ -46,13 +46,13 @@ function clear_overflow($fp, &$contents)
 	$contents = '';	
 }
 
-$page->add_breadcrumb_item("Database Backups", "index.php?".SID."&amp;module=tools/backupdb");
+$page->add_breadcrumb_item($lang->database_backups, "index.php?".SID."&amp;module=tools/backupdb");
 
 if($mybb->input['action'] == "dlbackup")
 {
 	if(empty($mybb->input['file']))
 	{
-		flash_message('You did not specify a database backup to download.', 'error');
+		flash_message($lang->error_file_not_specified, 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 	
@@ -68,7 +68,7 @@ if($mybb->input['action'] == "dlbackup")
 	}
 	else
 	{
-		flash_message('The back up file you selected is either invalid or does not exist.', 'error');
+		flash_message($lang->error_invalid_backup, 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 }
@@ -80,9 +80,11 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?".SID."&module=tools/backupdb"); 
 	}
 	
+	$file = basename($mybb->input['file']);
+	
 	if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 	{
-		flash_message('The specified backup does not exist', 'error');
+		flash_message($lang->error_backup_doesnt_exist, 'error');
 		admin_redirect("index.php?".SID."&module=tools/backupdb");
 	}
 	
@@ -92,18 +94,18 @@ if($mybb->input['action'] == "delete")
 			
 		if($delete)
 		{
-			flash_message('The backup has successfully been deleted.', 'success');
+			flash_message($lang->success_backup_deleted, 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 		else
 		{
-			flash_message('The backup has not been deleted.', 'error');
+			flash_message($lang->error_backup_not_deleted, 'error');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=tools/backupdb&amp;action=delete&amp;file={$mybb->input['file']}", "Are you sure you wish to delete this backup?"); 
+		$page->output_confirm_action("index.php?".SID."&amp;module=tools/backupdb&amp;action=delete&amp;file={$mybb->input['file']}", $lang->confirm_backup_deletion); 
 	}
 }
 
@@ -113,7 +115,7 @@ if($mybb->input['action'] == "backup")
 	{
 		if(!is_array($mybb->input['tables']))
 		{
-			flash_message('You did not select any tables to backup.', 'error');
+			flash_message($lang->error_tables_not_selected, 'error');
 			admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 		}
 		
@@ -127,7 +129,7 @@ if($mybb->input['action'] == "backup")
 			{
 				if(!function_exists('gzopen')) // check zlib-ness
 				{
-					flash_message('The zlib library for PHP is not enabled - you cannot create GZIP compressed backups.', 'error');
+					flash_message($lang->error_no_zlib, 'error');
 					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 				}
 				
@@ -145,7 +147,7 @@ if($mybb->input['action'] == "backup")
 			{
 				if(!function_exists('gzopen')) // check zlib-ness
 				{
-					flash_message('The zlib library for PHP is not enabled - you cannot create GZIP compressed backups.', 'error');
+					flash_message($lang->error_no_zlib, 'error');
 					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 				}
 
@@ -240,7 +242,7 @@ if($mybb->input['action'] == "backup")
 			$db->set_table_prefix(TABLE_PREFIX);
 			
 			$file_from_admindir = 'index.php?'.SID.'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
-			flash_message("<p><em>The backup has successfully been created.</em></p><p>The backup was saved to:<br />{$file}{$ext} (<a href=\"{$file_from_admindir}\">Download</a>)</p>", 'success');
+			flash_message("<p><em>{$lang->success_backup_created}</em></p><p>{$lang->backup_saved_to}<br />{$file}{$ext} (<a href=\"{$file_from_admindir}\">{$lang->download}</a>)</p>", 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 		else
@@ -286,13 +288,13 @@ if($mybb->input['action'] == "backup")
 	}
 	</script>\n";
 	
-	$page->add_breadcrumb_item("New Database Backup");
-	$page->output_header("New Database Backup");
+	$page->add_breadcrumb_item($lang->new_database_backup);
+	$page->output_header($lang->new_database_backup);
 	
 	$sub_tabs['new_backup'] = array(
-		'title' => "New Backup",
+		'title' => $lang->new_backup,
 		'link' => "index.php?".SID."&amp;module=tools/backupdb&amp;action=backup",
-		'description' => 'Here you can make new backups of your database'
+		'description' => $lang->new_backup_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'new_backup');
@@ -301,13 +303,13 @@ if($mybb->input['action'] == "backup")
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
 		$lang->update_button = '';
-		$page->output_alert("Your backups directory (within the Admin CP directory) is not writable. You cannot save backups on the server.");
+		$page->output_alert($lang->alter_not_writable);
 		$cannot_write = true;
 	}
 	
 	$table = new Table;
-	$table->construct_header("Table Selection");
-	$table->construct_header("Backup Options");
+	$table->construct_header($lang->table_selectiona);
+	$table->construct_header($lang->backup_options);
 	
 	$table_selects = array();
 	$table_list = $db->list_tables($config['database']);
@@ -318,21 +320,21 @@ if($mybb->input['action'] == "backup")
 	
 	$form = new Form("index.php?".SID."&amp;module=tools/backupdb&amp;action=backup", "post", 0, "table_selection", "table_selection");
 	
-	$table->construct_cell("You may select the database tables you wish to perform this action on here. Hold down CTRL to select multiple tables.\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">Select All</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">Deselect All</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">Select Forum Tables</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
+	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>File Type</strong><br />\nSelect the file type you would like the database backup saved as.<br />\n<div class=\"form_row\">".$form->generate_radio_button("filetype", "gzip", "GZIP Compressed", array('checked' => 1))."<br />\n".$form->generate_radio_button("filetype", "plain", "Plain Text")."</div>", array('width' => '50%'));
+	$table->construct_cell("<strong>{$lang->file_type}</strong><br />\n{$lang->file_type_desc}<br />\n<div class=\"form_row\">".$form->generate_radio_button("filetype", "gzip", $lang->gzip_compressed, array('checked' => 1))."<br />\n".$form->generate_radio_button("filetype", "plain", $lang->plain_text)."</div>", array('width' => '50%'));
 	$table->construct_row();
-	$table->construct_cell("<strong>Save Method</strong><br />\nSelect the method you would like to use to save the backup.<br /><div class=\"form_row\">".$form->generate_radio_button("method", "disk", "Backup Directory")."<br />\n".$form->generate_radio_button("method", "download", "Download", array('checked' => 1))."</div>", array('width' => '50%'));
+	$table->construct_cell("<strong>{$lang->save_method}</strong><br />\n{$lang->save_method_desc}<br /><div class=\"form_row\">".$form->generate_radio_button("method", "disk", $lang->backup_directory)."<br />\n".$form->generate_radio_button("method", "download", $lang->download, array('checked' => 1))."</div>", array('width' => '50%'));
 	$table->construct_row();
-	$table->construct_cell("<strong>Backup Contents</strong><br />\nSelect the information that you would like included in the backup.<br /><div class=\"form_row\">".$form->generate_radio_button("contents", "both", "Structure and Data", array('checked' => 1))."<br />\n".$form->generate_radio_button("contents", "structure", "Structure Only")."<br />\n".$form->generate_radio_button("contents", "data", "Data only")."</div>", array('width' => '50%'));
+	$table->construct_cell("<strong>{$lang->backup_contents}</strong><br />\n{$lang->backup_contents_desc}<br /><div class=\"form_row\">".$form->generate_radio_button("contents", "both", $lang->structure_and_data, array('checked' => 1))."<br />\n".$form->generate_radio_button("contents", "structure", $lang->structure_only)."<br />\n".$form->generate_radio_button("contents", "data", $lang->data_only)."</div>", array('width' => '50%'));
 	$table->construct_row();
-	$table->construct_cell("<strong>Analyze and Optimize Selected Tables</strong><br />\nWould you like the selected tables to be analyzed and optimized during the backup?<br /><div class=\"form_row\">".$form->generate_yes_no_radio("analyzeoptimize")."</div>", array('width' => '50%'));
+	$table->construct_cell("<strong>{$lang->analyze_and_optimize}</strong><br />\n{$lang->analyze_and_optimize_desc}<br /><div class=\"form_row\">".$form->generate_yes_no_radio("analyzeoptimize")."</div>", array('width' => '50%'));
 	$table->construct_row();
 		
-	$table->output("New Database Backup");
+	$table->output($lang->new_database_backup);
 	
-	$buttons[] = $form->generate_submit_button("Perform Backup");
+	$buttons[] = $form->generate_submit_button($lang->perform_backup);
 	$form->output_submit_wrapper($buttons);
 	
 	$form->end();
@@ -342,17 +344,17 @@ if($mybb->input['action'] == "backup")
 
 if(!$mybb->input['action'])
 {	
-	$page->add_breadcrumb_item("Backups");
-	$page->output_header("Database Backups");
+	$page->add_breadcrumb_item($lang->backups);
+	$page->output_header($lang->database_backups);
 	
 	$sub_tabs['database_backup'] = array(
-		'title' => "Database Backups",
+		'title' => $lang->database_backups,
 		'link' => "index.php?".SID."&amp;module=tools/backupdb",
-		'description' => "Here you find a listing of the database backups that are currently stored on your web server in the MyBB Backups directory."
+		'description' => $lang->database_backups_desc
 	);
 	
 	$sub_tabs['new_backup'] = array(
-		'title' => "New Backup",
+		'title' => $lang->new_backup,
 		'link' => "index.php?".SID."&amp;module=tools/backupdb&amp;action=backup",
 	);
 	
@@ -381,10 +383,10 @@ if(!$mybb->input['action'])
 	krsort($backups);
 	
 	$table = new Table;
-	$table->construct_header("Backup Filename");
-	$table->construct_header("File Size");
-	$table->construct_header("Creation Date");
-	$table->construct_header("Controls");
+	$table->construct_header($lang->backup_filename);
+	$table->construct_header($lang->file_size);
+	$table->construct_header($lang->creation_date);
+	$table->construct_header($lang->controls);
 	
 	foreach($backups as $backup)
 	{
@@ -400,18 +402,18 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
 		$table->construct_cell(get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$backup['file'])));
 		$table->construct_cell($time);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this backup?')\">Delete</a>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_backup_deletion}')\">Delete</a>");
 		$table->construct_row();
 	}
 	
 	if($count == 0)
 	{
-		$table->construct_cell("There are currently no backups made yet.", array('colspan' => 4));
+		$table->construct_cell($lang->no_backups, array('colspan' => 4));
 		$table->construct_row();
 	}
 	
 	
-	$table->output("Existing Database Backups");
+	$table->output($lang->existing_database_backups);
 		
 	$page->output_footer();
 }

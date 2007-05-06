@@ -1185,10 +1185,18 @@ admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="allowmultipleemails">
+			<title>Allow emails to be registered multiple times?</title>
+			<description><!CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
+			<disporder>9</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[no]]><settingvalue>
+			<helpkey></helpkey>
+		</seting>
 		<setting name="maxregsbetweentime">
 			<title>Maximum Registrations Per IP Address</title>
 			<description><![CDATA[This option allows you to set the maximum amount of times a certain user can register within the timeframe specified above.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<helpkey></helpkey>
@@ -1196,7 +1204,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="failedlogincount">
 			<title>Number of times to allow failed logins</title>
 			<description><![CDATA[The number of times to allow someone to attempt to login. 0 to disable]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
 			<helpkey></helpkey>
@@ -1204,7 +1212,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="failedlogintime">
 			<title>Time between failed logins</title>
 			<description><![CDATA[The amount of time (in minutes) before someone can try to login again, after they have failed to login the first time. Used if value above is not 0.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<helpkey></helpkey>
@@ -1212,7 +1220,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -1220,7 +1228,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="usereferrals">
 			<title>Use Referrals System</title>
 			<description><![CDATA[Do you want to use the user referrals system on these forums?]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -1228,7 +1236,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigmycode">
 			<title>Allow myCode in Signatures</title>
 			<description><![CDATA[Do you want to allow myCode to be used in users' signatures?]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -1236,7 +1244,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="maxsigimages">
 			<title>Maximum Number of Images per Signature</title>
 			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their signature. Set to 0 to disable images in signatures altogether.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<helpkey></helpkey>
@@ -1244,7 +1252,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigsmilies">
 			<title>Allow Smilies in Signatures</title>
 			<description><![CDATA[Do you want to allow smilies to be used in users' signatures?]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -1252,7 +1260,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sightml">
 			<title>Allow HTML in Signatures</title>
 			<description><![CDATA[Do you want to allow HTML to be used in users' signatures?]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
@@ -1260,7 +1268,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigimgcode">
 			<title>Allow [img] Code in Signatures</title>
 			<description><![CDATA[Do you want to allow [img] code to be used in users' signatures?]]></description>
-			<disporder>18</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -1268,7 +1276,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="siglength">
 			<title>Length limit in Signatures</title>
 			<description><![CDATA[The maximum number of characters a user can place in a signature.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<helpkey></helpkey>
@@ -1276,7 +1284,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigcountmycode">
 			<title>MyCode affects signature length</title>
 			<description><![CDATA[Do you want myCode to be counted as part of the limit when users use myCode in their signature?]]></description>
-			<disporder>20</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -1284,7 +1292,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
 			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
-			<disporder>21</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<helpkey></helpkey>
@@ -1292,7 +1300,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
-			<disporder>22</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
@@ -1300,7 +1308,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avatarresizing">
 			<title>Avatar Resizing Mode</title>
 			<description><![CDATA[If you wish to automatically resize all large avatars, provide users the option of resizing their avatar, or not resize avatars at all you can change this setting.]]></description>
-			<disporder>23</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[select
 auto=Automatically resize large avatars
 user=Give users the choice of resizing large avatars
@@ -1311,7 +1319,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avatardir">
 			<title>Avatar Directory</title>
 			<description><![CDATA[The directory where your avatars are stored. These are used in the avatar list in the User CP.]]></description>
-			<disporder>24</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/avatars]]></settingvalue>
 			<helpkey></helpkey>
@@ -1319,7 +1327,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
 			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
-			<disporder>25</disporder>
+			<disporder>26</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<helpkey></helpkey>

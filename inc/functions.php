@@ -4122,11 +4122,11 @@ function login_attempt_check($fatal = true)
 }
 
 /**
-* Validates the format of an email address.
-*
-* @param string The string to check.
-* @return boolean True when valid, false when invalid.
-*/
+ * Validates the format of an email address.
+ *
+ * @param string The string to check.
+ * @return boolean True when valid, false when invalid.
+ */
 function validate_email_format($email)
 {
 	if(strpos($email, ' ') !== false)
@@ -4134,6 +4134,26 @@ function validate_email_format($email)
 		return false;
 	}
 	return preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
+}
+
+/**
+ * Checks to see if the email is already in use by another
+ *
+ * @param string The email to check.
+ * @return boolean True when in use, false when not.
+ */
+function email_already_in_use($email)
+{
+	global $db;
+	
+	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string(my_strtolower($email))."'");
+	
+	if($db->fetch_field($query, "emails") > 0)
+	{
+		return true;
+	}
+	
+	return false;
 }
 
 /*

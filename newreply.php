@@ -862,7 +862,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	if($forumpermissions['canpostattachments'] != "no")
 	{
 		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft")
+		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
 		{
 			$attachwhere = "pid='$pid'";
 		}

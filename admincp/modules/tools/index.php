@@ -15,13 +15,13 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("System Health", "index.php?".SID."&amp;module=tools/index");
+$page->add_breadcrumb_item($lang->system_health, "index.php?".SID."&amp;module=tools/index");
 
 if($mybb->input['action'] == "utf8_conversion")
 {
-	$page->add_breadcrumb_item("UTF-8 Conversion", "index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion");
+	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion");
 	
-	$page->output_header("System Health - UTF-8 Conversion");
+	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 	
 	if($mybb->request_method == "post")
 	{
@@ -32,14 +32,14 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		if(!$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
-			flash_message('The specified table does not exist.', 'error');
+			flash_message($lang->error_invalid_table, 'error');
 			admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
 		}
 		
 		$sub_tabs['utf8_conversion'] = array(
-			'title' => "UTF-8 Conversion",
+			'title' => $lang->system_health,
 			'link' => "index.php?".SID."&amp;module=tools/stats&action=utf8_conversion",
-			'description' => 'You are currently converting a database table to the UTF-8 format. Be aware that this proccess may take up to several hours depending on the size of your forum and this table. When the process is complete, you will be returned to the UTF-8 Conversion main page.'
+			'description' => $lang->system_health_desc
 		);
 		
 		$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
@@ -50,13 +50,13 @@ if($mybb->input['action'] == "utf8_conversion")
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table1, $matches);
 		$charset = $matches[1];
 		
-		$table->construct_cell("<strong>MyBB is currently converting \"{$mybb->input['table']}\" table to UTF-8 language encoding from {$charset} encoding.</strong>");
+		$table->construct_cell("<strong>".sprintf($lang->converting_to_utf8, $mybb->input['table'], $charset)."</strong>");
 		$table->construct_row();
 		
-		$table->construct_cell("Please wait...");
+		$table->construct_cell($lang->please_wait);
 		$table->construct_row();
 		
-		$table->output("Converting Table: {$mybb->input['table']}");
+		$table->output($converting_table." {$mybb->input['table']}");
 		
 		$db->set_table_prefix($old_table_prefix);
 		
@@ -158,16 +158,16 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$db->set_table_prefix($old_table_prefix);
 		
-		flash_message('The specified table "'.$mybb->input['table'].'" has been sucessfully converted to UTF-8.', 'success');
+		flash_message(sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
 		admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
 		
 		exit;
 	}
 	
 	$sub_tabs['utf8_conversion'] = array(
-		'title' => "UTF-8 Conversion",
+		'title' => $lang->utf8_conversion,
 		'link' => "index.php?".SID."&amp;module=tools/stats&action=utf8_conversion",
-		'description' => 'This tool checks the database tables to make sure they are in the UTF-8 format and allows you to convert them if they are not.'
+		'description' => $lang->utf8_conversion_desc2
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		if(!$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
 			$db->set_table_prefix($old_table_prefix);
-			flash_message('The specified table does not exist.', 'error');
+			flash_message($lang->error_invalid_table, 'error');
 			admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
 		}
 		
@@ -193,15 +193,15 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$table = new Table;
 		
-		$table->construct_cell("<strong>You are about to convert the \"{$mybb->input['table']}\" table to UTF-8 language encoding from {$charset} encoding.</strong>");
+		$table->construct_cell("<strong>".sprintf($lang->convert_to_utf8, $mybb->input['table'], $charset)."</strong>");
 		$table->construct_row();
 		
-		$table->construct_cell("This proccess may take up to several hours depending on the size of your forum and this table.");
+		$table->construct_cell($lang->notice_proccess_long_time);
 		$table->construct_row();
 		
-		$table->output("Convert Table: {$mybb->input['table']}");
+		$table->output($lang->convert_table." {$mybb->input['table']}");
 		
-		$buttons[] = $form->generate_submit_button("Convert Database Table");
+		$buttons[] = $form->generate_submit_button($lang->convert_database_table);
 		$form->output_submit_wrapper($buttons);
 		
 		$form->end();
@@ -243,76 +243,76 @@ if($mybb->input['action'] == "utf8_conversion")
 	asort($mybb_tables);
 	
 	$table = new Table;
-	$table->construct_header("Table");
-	$table->construct_header("Status", array("class" => "align_center"));
+	$table->construct_header($lang->table);
+	$table->construct_header($lang->status, array("class" => "align_center"));
 	
 	foreach($mybb_tables as $key => $tablename)
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">Convert Now</a>";
+			$status = "<a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
 		else
 		{
-			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt\"OK\" />";
+			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt\"{$lang->ok}\" />";
 		}
 		$table->construct_cell("<strong>{$tablename}</strong>");
 		$table->construct_cell($status, array("class" => "align_center", 'width' => '15%'));
 		$table->construct_row();
 	}
 	
-	$table->output("UTF-8 Conversion");
+	$table->output($lang->utf8_conversion);
 	
 	$page->output_footer();
 }
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("System Health");
+	$page->output_header($lang->system_health);
 	
 	$sub_tabs['system_health'] = array(
-		'title' => "System Health",
+		'title' => $lang->system_health,
 		'link' => "index.php?".SID."&amp;module=tools/stats",
-		'description' => 'Here you can view information on your system\'s health.'
+		'description' => $lang->system_health_desc
 	);
 	
 	$sub_tabs['utf8_conversion'] = array(
-		'title' => "UTF-8 Conversion",
+		'title' => $lang->utf8_conversion,
 		'link' => "index.php?".SID."&amp;module=tools/stats&action=utf8_conversion",
-		'description' => 'This tool checks the database tables to make sure they are in the UTF-8 format and allows you to convert them if they are not.'
+		'description' => $lang->utf8_conversion_desc2
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'system_health');
 	
 	$table = new Table;
-	$table->construct_header("Totals", array("colspan" => 2));
-	$table->construct_header("Attachments", array("colspan" => 2));
+	$table->construct_header($lang->totals, array("colspan" => 2));
+	$table->construct_header($lang->attachments, array("colspan" => 2));
 	
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused, SUM(downloads) as downloadsused", "visible='1' AND pid > '0'");
 	$attachs = $db->fetch_array($query);
 	
-	$table->construct_cell("<strong>Total Database Size</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->total_database_size}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size($db->fetch_size()), array('width' => '25%'));
-	$table->construct_cell("<strong>Attachment Space used</strong>", array('width' => '200'));
+	$table->construct_cell("<strong>{$lang->attachment_space_used}</strong>", array('width' => '200'));
 	$table->construct_cell(get_friendly_size($attachs['spaceused']), array('width' => '200'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Total Cache Size</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->total_cache_size}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size($cache->size_of()), array('width' => '25%'));
-	$table->construct_cell("<strong>Estimated Attachment Bandwidth Usage</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->estimated_attachment_bandwidth_usage}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size(round($attachs['spaceused']*$attachs['downloadsused'])), array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Max Upload / POST Size</strong>", array('width' => '200'));
+	$table->construct_cell("<strong>{$lang->max_upload_post_size}</strong>", array('width' => '200'));
 	$table->construct_cell(@ini_get('upload_max_filesize').' / '.@ini_get('post_max_size'), array('width' => '200'));
-	$table->construct_cell("<strong>Average Attachment Size</strong>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->average_attachment_size}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size(round($attachs['spaceused']/$attachs['numattachs'])), array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->output("Stats");
+	$table->output($lang->stats);
 	
-	$table->construct_header("Task");
-	$table->construct_header("Run Time", array("width" => 200, "class" => "align_center"));
+	$table->construct_header($lang->task);
+	$table->construct_header($lang->run_time, array("width" => 200, "class" => "align_center"));
 	
 	$task_cache = $cache->read("tasks");
 	$nextrun = $task_cache['nextrun'];
@@ -328,7 +328,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	$table->output("Next 3 Tasks");
+	$table->output($lang->next_3_tasks);
 	
 	$backups = array();
 	$dir = MYBB_ADMIN_DIR.'backups/';
@@ -353,8 +353,8 @@ if(!$mybb->input['action'])
 	krsort($backups);
 	
 	$table = new Table;
-	$table->construct_header("Name");
-	$table->construct_header("Backup Time", array("width" => 200, "class" => "align_center"));
+	$table->construct_header($lang->name);
+	$table->construct_header($lang->backup_time, array("width" => 200, "class" => "align_center"));
 	
 	$backupscnt = 0;
 	foreach($backups as $backup)
@@ -382,102 +382,102 @@ if(!$mybb->input['action'])
 	
 	if($count == 0)
 	{
-		$table->construct_cell("There are currently no backups made yet.", array('colspan' => 2));
+		$table->construct_cell($lang->no_backups, array('colspan' => 2));
 		$table->construct_row();
 	}
 	
 	
-	$table->output("Existing Database Backups");
+	$table->output($lang->existing_db_backups);
 	
 	if(is_writable(MYBB_ROOT.'inc/settings.php'))
 	{
-		$message_settings = "<span style=\"color: green;\">Writable</span>";
+		$message_settings = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
 	else
 	{
-		$message_settings = "<strong><span style=\"color: #C00\">Not Writable</span></strong><br />Please CHMOD to 777.";
+		$message_settings = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 	}
 	
 	if(is_writable('.'.$mybb->settings['uploadspath']))
 	{
-		$message_upload = "<span style=\"color: green;\">Writable</span>";
+		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
 	else
 	{
-		$message_upload = "<strong><span style=\"color: #C00\">Not Writable</span></strong><br />Please CHMOD to 777.";
+		$message_upload = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
 	
 	if(is_writable('../'.$mybb->settings['avataruploadpath']))
 	{
-		$message_avatar = "<span style=\"color: green;\">Writable</span>";
+		$message_avatar = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
 	else
 	{
-		$message_avatar = "<strong><span style=\"color: #C00\">Not Writable</span></strong><br />Please CHMOD to 777.";
+		$message_avatar = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
 	
 	if(is_writable(MYBB_ROOT.'inc/languages/'))
 	{
-		$message_language = "<span style=\"color: green;\">Writable</span>";
+		$message_language = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
 	else
 	{
-		$message_language = "<strong><span style=\"color: #C00\">Not Writable</span></strong><br />Please CHMOD to 777.";
+		$message_language = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
 	
 	if(is_writable(MYBB_ROOT.$config['admin_dir'].'/backups/'))
 	{
-		$message_backup = "<span style=\"color: green;\">Writable</span>";
+		$message_backup = "<span style=\"color: green;\">{$lang->writable}</span>";
 	}
 	else
 	{
-		$message_backup = "<strong><span style=\"color: #C00\">Not Writable</span></strong><br />Please CHMOD to 777.";
+		$message_backup = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
 	
 	
 	if($errors)
 	{
-		$page->output_error("<strong><span style=\"color: #C00\">{$errors} of the required files and directories do not have proper CHMOD settings.</span></strong> Please change the CHMOD settings to the ones specified with the file below. For more information on CHMODing, see the <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.");
+		$page->output_error("<strong><span style=\"color: #C00\">{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.");
 	}
 	else
 	{
-		$page->output_success("<strong><span style=\"color: green;\">All of the required files and directories have the proper CHMOD settings.</span></strong>");
+		$page->output_success("<strong><span style=\"color: green;\">{$lang->success_chmod}</span></strong>");
 	}
 	
 	$table = new Table;
-	$table->construct_header("File");
-	$table->construct_header("Location", array("colspan" => 2, 'width' => 250));
+	$table->construct_header($lang->file);
+	$table->construct_header($lang->location, array("colspan" => 2, 'width' => 250));
 	
-	$table->construct_cell("<strong>Settings File</strong>");
+	$table->construct_cell("<strong>{$lang->settings_file}</strong>");
 	$table->construct_cell("./inc/settings.php");
 	$table->construct_cell($message_settings);
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>File Uploads Directory</strong>");
+	$table->construct_cell("<strong>{$lang->file_upload_dir}</strong>");
 	$table->construct_cell($mybb->settings['uploadspath']);
 	$table->construct_cell($message_upload);
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Avatar Uploads Directory</strong>");
-	$table->construct_cell('./'.$mybb->settings['avataruploadpath']);
+	$table->construct_cell("<strong>{$lang->avatar_upload_dir}</strong>");
+	$table->construct_cell($mybb->settings['avataruploadpath']);
 	$table->construct_cell($message_avatar);
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Language Files</strong>");
+	$table->construct_cell("<strong>{$lang->language_files}</strong>");
 	$table->construct_cell("./inc/languages");
 	$table->construct_cell($message_language);
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Backups Directory</strong>");
+	$table->construct_cell("<strong>{$lang->backup_dir}</strong>");
 	$table->construct_cell('./'.$config['admin_dir'].'/backups');
 	$table->construct_cell($message_backup);
 	$table->construct_row();
 	
-	$table->output("CHMOD Files and Directories");
+	$table->output($lang->chmod_files_and_dirs);
 	
 	$page->output_footer();
 }

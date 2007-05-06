@@ -20,6 +20,7 @@ $l['userdata_missing_email'] = 'You did not enter an email address. Please enter
 $l['userdata_invalid_email_format'] = 'The email address you entered is invalid. Please enter a valid email address.';
 $l['userdata_emails_dont_match'] = 'The email address you entered as confirmation does not match the original one. Please confirm your email address correctly.';
 $l['userdata_banned_email'] = "The email address you have entered is currently disallowed from being used. Please enter a different email address.";
+$l['userdata_email_already_in_use'] = "You have entered an email address that is already in use by another member. Please enter a different email address.";
 
 $l['userdata_invalid_website'] = 'The website address you entered is invalid. Please enter a valid website address or leave the field empty.';
 $l['userdata_invalid_icq_number'] = 'The ICQ number you entered is invalid. Please enter a valid ICQ number or leave the field empty.';

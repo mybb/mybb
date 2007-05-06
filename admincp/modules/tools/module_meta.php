@@ -97,6 +97,7 @@ function tools_action_handler($action)
 function tools_admin_log_data()
 {
 	global $mybb;
+	
 	switch($page->active_action)
 	{
 		case "tasks":
