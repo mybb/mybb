@@ -626,7 +626,7 @@ if(is_array($threadcache))
 		}
 		elseif($thread['sticky'] == 0 && $shownormalsep)
 		{
-			eval("\$threads  .= \"".$templates->get("forumdisplay_threads_sep")."\";");
+			eval("\$threads .= \"".$templates->get("forumdisplay_threads_sep")."\";");
 			$shownormalsep = false;
 		}
 

@@ -539,12 +539,11 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				$post['includesig'] = "no";
 			}
-	
-	
+
 			// Fetch attachments assigned to this post
 			if($mybb->input['pid'])
 			{
-				$attachwhere = "pid='".intval($mybb->input['pid'])."'";
+				$attachwhere = "pid='".intval($mybb->input['pid'])."'";				
 			}
 			else
 			{
@@ -563,7 +562,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$message = htmlspecialchars_uni($mybb->input['message']);
 		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
-	
+
 	// Removing an attachment or adding a new one, or showting thread errors.
 	else if($mybb->input['attachmentaid'] || $mybb->input['newattachment'] || $thread_errors) 
 	{
@@ -625,7 +624,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	if($forumpermissions['canpostattachments'] != "no")
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
-		if($mybb->input['action'] == "editdraft")
+		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
 		{
 			$attachwhere = "pid='$pid'";
 		}

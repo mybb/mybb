@@ -776,6 +776,7 @@ if($mybb->input['action'] == "do_do_merge")
 		cperror($lang->error_invalid_destination);
 	}
 	$plugins->run_hooks("admin_users_do_do_merge");
+	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."adminlog SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."announcements SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
 	$db->query("UPDATE ".TABLE_PREFIX."events SET author='".$destuser['uid']."' WHERE author='".$sourceuser['uid']."'");

@@ -411,28 +411,64 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 
-	if($mybb->input['previewpost'] || $post_errors)
+	if($mybb->input['previewpost'] && !$post_errors)
 	{
-		$previewmessage = $message;
-		$message = htmlspecialchars_uni($message);
-		$subject = htmlspecialchars_uni($subject);
-
-		$postoptions = $mybb->input['postoptions'];
-
-		if($postoptions['signature'] == "yes")
+		// Set up posthandler.
+		require_once MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("update");
+		$posthandler->action = "post";
+	
+		// Set the post data that came from the input to the $post array.
+		$post = array(
+			"pid" => $mybb->input['pid'],
+			"subject" => $mybb->input['subject'],
+			"icon" => $mybb->input['icon'],
+			"uid" => $mybb->user['uid'],
+			"username" => $mybb->user['username'],
+			"edit_uid" => $mybb->user['uid'],
+			"message" => $mybb->input['message'],
+		);
+	
+		// Set up the post options from the input.
+		$post['options'] = array(
+			"signature" => $mybb->input['postoptions']['signature'],
+			"emailnotify" => $mybb->input['postoptions']['emailnotify'],
+			"disablesmilies" => $mybb->input['postoptions']['disablesmilies']
+		);
+	
+		$posthandler->set_data($post);
+	
+		// Now let the post handler do all the hard work.
+		if(!$posthandler->validate_post())
 		{
-			$postoptionschecked['signature'] = "checked=\"checked\"";
+			$post_errors = $posthandler->get_friendly_errors();
+			$post_errors = inline_error($post_errors);
+			$mybb->input['action'] = "editpost";
+			$mybb->input['previewpost'] = 0;
 		}
-		if($postoptions['emailnotify'] == "yes")
+		else
 		{
-			$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			$previewmessage = $message;
+			$message = htmlspecialchars_uni($message);
+			$subject = htmlspecialchars_uni($subject);
+	
+			$postoptions = $mybb->input['postoptions'];
+	
+			if($postoptions['signature'] == "yes")
+			{
+				$postoptionschecked['signature'] = "checked=\"checked\"";
+			}
+			if($postoptions['emailnotify'] == "yes")
+			{
+				$postoptionschecked['emailnotify'] = "checked=\"checked\"";
+			}
+			if($postoptions['disablesmilies'] == "yes")
+			{
+				$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
+			}
+	
+			$pid = intval($mybb->input['pid']);
 		}
-		if($postoptions['disablesmilies'] == "yes")
-		{
-			$postoptionschecked['disablesmilies'] = "checked=\"checked\"";
-		}
-
-		$pid = intval($mybb->input['pid']);
 	}
 
 	if($mybb->input['previewpost'])
@@ -466,7 +502,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$postbit = build_postbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
-	elseif(!$post_errors)
+	else if(!$post_errors)
 	{
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
