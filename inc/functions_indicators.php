@@ -84,7 +84,7 @@ function fetch_unread_count($fid)
 		{
 			$count = 0;
 			
-			// We set a limit to 100 otherwise it'll become too proccessor intesive, especially if we have many thredas.
+			// We set a limit to 100 otherwise it'll become too processor intensive, especially if we have many threads.
 			$query = $db->query("
 				SELECT lastpost, tid
 				FROM ".TABLE_PREFIX."threads
