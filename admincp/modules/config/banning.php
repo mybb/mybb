@@ -15,13 +15,13 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Banning", "index.php?".SID."&amp;module=config/banning");
+$page->add_breadcrumb_item($lang->banning, "index.php?".SID."&amp;module=config/banning");
 
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
 	if(!trim($mybb->input['filter']))
 	{
-		$errors[] = "You did not enter a value to ban";
+		$errors[] = $lang->error_missing_ban_input;
 	}
 
 
@@ -37,17 +37,17 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		if($mybb->input['type'] == 1)
 		{
 			$cache->update_bannedips();
-			flash_message('The IP address has successfully been banned.', 'success');
+			flash_message($lang->success_ip_banned, 'success');
 			admin_redirect("index.php?".SID."&module=config/banning");
 		}
 		else if($mybb->input['type'] == 2)
 		{
-			flash_message('The username has successfully been disallowed.', 'success');
+			flash_message($lang->success_username_disallowed, 'success');
 			admin_redirect("index.php?".SID."&module=config/banning&type=usernames");
 		}
 		else if($mybb->input['type'] == 3)
 		{
-			flash_message('The email address has successfully been disallowed.', 'success');
+			flash_message($lang->success_email_disallowed, 'success');
 			admin_redirect("index.php?".SID."&module=config/banning&type=emails");
 		}		
 	}
@@ -77,7 +77,7 @@ if($mybb->input['action'] == "delete")
 	// Does the filter not exist?
 	if(!$filter['fid'])
 	{
-		flash_message('The specified filter does not exist.', 'error');
+		flash_message($lang->error_invalid_filter, 'error');
 		admin_redirect("index.php?".SID."&module=config/banning");
 	}
 
@@ -111,12 +111,12 @@ if($mybb->input['action'] == "delete")
 			$cache->update_bannedips();
 		}
 
-		flash_message('The specified ban has been deleted.', 'success');
+		flash_message($lang->success_ban_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/banning&type={$type}");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}", "Are you sure you wish to delete this ban?");
+		$page->output_confirm_action("index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}", $lang->confirm_ban_deletion);
 	}
 }
 
@@ -126,41 +126,41 @@ if(!$mybb->input['action'])
 	{
 		case "emails":
 			$type = "3";
-			$title = "Disallowed Email Addresses";
+			$title = $lang->disallowed_email_addresses;
 			break;
 		case "usernames":
 			$type = "2";
-			$title = "Disallowed Usernames";
+			$title = $lang->disallowed_usernames;
 			break;
 		default:
 			$type = "1";
-			$title = "Banned IP Addresses";
+			$title = $lang->banned_ip_addresses;
 			$mybb->input['type'] = "ips";
 	}
 
 	$page->output_header($title);
 
 	$sub_tabs['ips'] = array(
-		'title' => "Banned IPs",
+		'title' => $lang->banned_ips,
 		'link' => "index.php?".SID."&amp;module=config/banning",
-		'description' => "Here you can manage IP addresses which are banned from accessing your board."
+		'description' => $lang->banned_ips_desc
 	);
 
 	$sub_tabs['users'] = array(
-		'title' => "Banned Accounts",
+		'title' => $lang->banned_accounts,
 		'link' => "index.php?".SID."&amp;module=user/banning"
 	);
 
 	$sub_tabs['usernames'] = array(
-		'title' => "Disallowed Usernames",
+		'title' => $lang->disallowed_usernames,
 		'link' => "index.php?".SID."&amp;module=config/banning&amp;type=usernames",
-		'description' => "Here you manage a list of usernames which cannot be registered or used by users. This feature is also particularly useful for reserving usernames."
+		'description' => $lang->disallowed_usernames_desc
 	);
 
 	$sub_tabs['emails'] = array(
-		'title' => "Disallowed Email Addresses",
+		'title' => $lang->disallowed_email_addresses,
 		'link' => "index.php?".SID."&amp;module=config/banning&amp;type=emails",
-		'description' => "Here you manage a list of email addresses which cannot be registered or used by users."
+		'description' => $lang->disallowed_email_addresses_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, $mybb->input['type']);
@@ -168,21 +168,21 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	if($mybb->input['type'] == "usernames")
 	{
-		$table->construct_header("Username");
-		$table->construct_header("Date Disallowed", array("class" => "align_center", "width" => 200));
-		$table->construct_header("Last Attempted Use", array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->username);
+		$table->construct_header($lang->date_disallowed, array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->last_attempted_use, array("class" => "align_center", "width" => 200));
 	}
 	else if($mybb->input['type'] == "emails")
 	{
-		$table->construct_header("Email Address");
-		$table->construct_header("Date Disallowed", array("class" => "align_center", "width" => 200));
-		$table->construct_header("Last Attempted Use", array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->email_address);
+		$table->construct_header($lang->date_disallowed, array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->last_attempted_use, array("class" => "align_center", "width" => 200));
 	}
 	else
 	{
-		$table->construct_header("IP Address");
-		$table->construct_header("Ban Date", array("class" => "align_center", "width" => 200));
-		$table->construct_header("Last Access", array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->ip_address);
+		$table->construct_header($lang->ban_date, array("class" => "align_center", "width" => 200));
+		$table->construct_header($lang->last_access, array("class" => "align_center", "width" => 200));
 	}
 	$table->construct_header("&nbsp;", array("width" => 1));
 
@@ -196,19 +196,19 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$last_use = "Never";
+			$last_use = $lang->never;
 		}
 		$date = my_date($mybb->settings['dateformat'], $filter['dateline']).", ".my_date($mybb->settings['timeformat'], $filter['dateline']);
 		$table->construct_cell($filter['filter']);
 		$table->construct_cell($date, array("class" => "align_center"));
 		$table->construct_cell($last_use, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this ban?');\"><img src=\"styles/{$page->style}/images/icons/delete.gif\" title=\"Delete\" alt=\"Delete\" /></a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_ban_deletion}');\"><img src=\"styles/{$page->style}/images/icons/delete.gif\" title=\"{$lang->delete}\" alt=\"{$lang->delete}\" /></a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are no bans currently set at this time.", array("colspan" => 4));
+		$table->construct_cell($lang->no_bans, array("colspan" => 4));
 		$table->construct_row();
 	}
 	
@@ -219,28 +219,31 @@ if(!$mybb->input['action'])
 	{
 		$page->output_inline_error($errors);
 	}
+	
 	if($mybb->input['type'] == "usernames")
 	{
-		$form_container = new FormContainer("Add a Disallowed Username");
-		$form_container->output_row("Username <em>*</em>", "Note: To indicate a wildcard match, use *", $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
-		$buttons[] = $form->generate_submit_button("Disallow Username");
+		$form_container = new FormContainer($lang->add_disallowed_username);
+		$form_container->output_row($lang->username." <em>*</em>", $lang->username_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$buttons[] = $form->generate_submit_button($lang->disallow_username);
 	}
 	else if($mybb->input['type'] == "emails")
 	{
-		$form_container = new FormContainer("Add a Disallowed Email Address");
-		$form_container->output_row("Email Address <em>*</em>", "Note: To indicate a wildcard match, use *", $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
-		$buttons[] = $form->generate_submit_button("Disallow Email Address");
+		$form_container = new FormContainer($lang->add_disallowed_email_address);
+		$form_container->output_row($lang->email_address." <em>*</em>", $lang->email_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$buttons[] = $form->generate_submit_button($lang->disallow_email_address);
 	}
 	else
 	{
-		$form_container = new FormContainer("Ban an IP Address");
-		$form_container->output_row("IP Address <em>*</em>", "Note: To ban a range of IP addresses use * (Ex: 127.0.0.*)", $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
-		$buttons[] = $form->generate_submit_button("Ban IP Address");
+		$form_container = new FormContainer($lang->ban_ip_address);
+		$form_container->output_row($lang->ip_address." <em>*</em>", $lang->ip_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
+		$buttons[] = $form->generate_submit_button($lang->ban_ip_address);
 	}
+	
 	$form_container->end();
 	echo $form->generate_hidden_field("type", $type);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
 	$page->output_footer();
- }
+}
+?>

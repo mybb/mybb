@@ -93,6 +93,11 @@ var Thread = {
 			{
 				message[1] = "An unknown error occurred.";
 			}
+			if(this.spinner)
+			{
+				this.spinner.destroy();
+				this.spinner = '';
+			}
 			alert('There was an error fetching the posts.\n\n'+message[1]);
 		}
 		else if(request.responseText)
@@ -111,8 +116,11 @@ var Thread = {
 		Thread.clearMultiQuoted();
 		$('quickreply_multiquote').style.display = 'none';
 		document.input.quoted_ids.value = 'all';
-		this.spinner.destroy();	
-		this.spinner = '';
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
 		$('message').focus();	
 	},
 
@@ -196,6 +204,11 @@ var Thread = {
 			{
 				message[1] = "An unknown error occurred.";
 			}
+			if(this.spinner)
+			{
+				this.spinner.destroy();
+				this.spinner = '';
+			}
 			alert('There was an error performing the update.\n\n'+message[1]);
 			Thread.qeCache[pid] = "";
 		}
@@ -214,8 +227,11 @@ var Thread = {
 
 			scrollTo(0, offsetTop);
 		}
-		this.spinner.destroy();	
-		this.spinner = '';	
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
 	},
 
 	quickEditSave: function(pid)
@@ -251,15 +267,24 @@ var Thread = {
 			{
 				message[1] = "An unknown error occurred.";
 			}
+			if(this.spinner)
+			{
+				this.spinner.destroy();
+				this.spinner = '';
+			}
 			alert('There was an error performing the update.\n\n'+message[1]);
 		}
 		else if(request.responseText)
 		{
 			$("pid_"+pid).innerHTML = request.responseText;
+			Thread.qeCache[pid] = "";
 		}
-		Thread.qeCache[pid] = "";
-		this.spinner.destroy();
-		this.spinner = '';
+		
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
 	},
 
 	initQuickReply: function()
@@ -297,6 +322,11 @@ var Thread = {
 				message[1] = "An unknown error occurred.";
 			}
 
+			if(this.spinner)
+			{
+				this.spinner.destroy();
+				this.spinner = '';
+			}
 			alert('There was an error posting your reply:\n\n'+message[1]);
 		}
 		else if(request.responseText.match(/id="post_([0-9]+)"/))

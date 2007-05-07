@@ -42,7 +42,11 @@ var Post = {
 			{
 				message[1] = "An unknown error occurred.";
 			}
-
+			if(this.spinner)
+			{
+				this.spinner.destroy();
+				this.spinner = '';
+			}
 			alert('There was an error fetching the posts.\n\n'+message[1]);
 		}
 		else if(request.responseText)
@@ -60,8 +64,11 @@ var Post = {
 		}
 		$('multiquote_unloaded').style.display = 'none';
 		document.input.quoted_ids.value = 'all';
-		this.spinner.destroy();
-		this.spinner = '';
+		if(this.spinner)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
 	},
 
 	clearMultiQuoted: function()

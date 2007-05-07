@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Plugins", "index.php?".SID."&amp;module=config/plugins");
+$page->add_breadcrumb_item($lang->plugins, "index.php?".SID."&amp;module=config/plugins");
 
 if($mybb->input['action'] == "check")
 {		
@@ -46,7 +46,7 @@ if($mybb->input['action'] == "check")
 	
 	if(empty($info))
 	{
-		flash_message("There are no supported plugins available to check for updates.", 'error');
+		flash_message($lang->error_vcheck_no_supported_plugins, 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
 	
@@ -55,7 +55,7 @@ if($mybb->input['action'] == "check")
 	
 	if(!$contents)
 	{
-		flash_message("There was a problem communicating with the mod version server. Please try again in a few minutes.", 'error');
+		flash_message($lang->error_vcheck_communications_problem, 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
 	
@@ -67,27 +67,24 @@ if($mybb->input['action'] == "check")
 		switch($tree['plugins'][0]['error'])
 		{
 			case "1":
-				$error_msg = "Error code 1: No input specified.";
+				$error_msg = $lang->error_no_input;
 				break;
 			case "2":
-				$error_msg = "Error code 2: No plugin ids specified.";
-				break;
-			case "3":
-				$error_msg = "Error code 1: No input specified.";
+				$error_msg = $lang->error_no_pids;
 				break;
 			default:
 				$error_msg = "";
 		}
 		
-		flash_message("There was a problem communicating with the mod version server.".$error_msg, 'error');
+		flash_message($lang->error_communication_problem.$error_msg, 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
 	
 	$table = new Table;
-	$table->construct_header("Plugin");
-	$table->construct_header("Your Version", array("class" => "align_center", 'width' => 125));
-	$table->construct_header("Latest Version", array("class" => "align_center", 'width' => 125));
-	$table->construct_header("Controls", array("class" => "align_center", 'width' => 125));
+	$table->construct_header($lang->plugin);
+	$table->construct_header($lang->your_version, array("class" => "align_center", 'width' => 125));
+	$table->construct_header($lang->latest_version, array("class" => "align_center", 'width' => 125));
+	$table->construct_header($lang->controls, array("class" => "align_center", 'width' => 125));
 	
 	if(array_key_exists("tag", $tree['plugins']['plugin']))
 	{
@@ -103,30 +100,30 @@ if($mybb->input['action'] == "check")
 			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
 			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybboard.com/view.php?did={$plugin['download_url']['value']}\" target=\"_blank\">Download</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://mods.mybboard.net/view.php?did={$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
 	
 	if(count($table->rows) == 0)
 	{
-		flash_message("Congratulations, all of your plugins are up to date.", 'success');
+		flash_message($lang->success_plugins_up_to_date, 'success');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
 	
-	$page->add_breadcrumb_item("Plugin Updates");
+	$page->add_breadcrumb_item($lang->plugin_updates);
 	
-	$page->output_header("Plugins Updates");
+	$page->output_header($lang->plugin_updates);
 	
 	$sub_tabs['update_plugins'] = array(
-		'title' => "Plugin Updates",
+		'title' => $lang->plugin_updates,
 		'link' => "index.php?".SID."&amp;module=config/plugin&amp;action=check",
-		'description' => "This section allows you to check for updates on all your plugins."
+		'description' => $lang->plugin_updates_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'update_plugins');
 	
-	$table->output("Plugins Updates");
+	$table->output($lang->plugin_updates);
 	
 	$page->output_footer();
 }
@@ -141,19 +138,19 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	{
 		$active_plugins[$codename] = $codename;
 		$userfunc = $codename."_activate";
-		$message = "The plugin has been successfully activated.";
+		$message = $lang->success_plugin_activated;
 	}
 	else if($mybb->input['action'] == "deactivate")
 	{
 		unset($active_plugins[$codename]);
 		$userfunc = $codename."_deactivate";
-		$message = "The plugin has been successfully deactivated.";
+		$message = $lang->success_plugin_deactivated;
 	}
 
 	// Check if the file exists and throw an error if it doesn't
 	if(!file_exists(MYBB_ROOT."inc/plugins/$file"))
 	{
-		flash_message('The specified plugin does not exist', 'error');
+		flash_message($lang->error_invalid_plugin, 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
 
@@ -175,17 +172,17 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Plugins");
+	$page->output_header($lang->plugins);
 
 	$sub_tabs['plugins'] = array(
-		'title' => "Plugins",
+		'title' => $lang->plugins,
 		'link' => "index.php?".SID."&amp;module=config/plugins",
-		'description' => "This section allows you to activate, deactivate, and manage the plugins that you have uploaded to your forum's <strong>inc/plugins</strong> directory."
+		'description' => $lang->plugins_desc
 	);
 	$sub_tabs['update_plugins'] = array(
-		'title' => "Plugin Updates",
+		'title' => $lang->plugin_updates,
 		'link' => "index.php?".SID."&amp;module=config/plugins&amp;action=check",
-		'description' => "This section allows you to check for updates on all your plugins."
+		'description' => $lang->plugin_updates_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'plugins');
@@ -196,8 +193,8 @@ if(!$mybb->input['action'])
 	$plugins_list = get_plugins_list();
 
 	$table = new Table;
-	$table->construct_header("Plugin");
-	$table->construct_header("Controls", array("class" => "align_center"));
+	$table->construct_header($lang->plugin);
+	$table->construct_header($lang->controls, array("class" => "align_center"));
 	
 	if($plugins_list)
 	{
@@ -221,24 +218,24 @@ if(!$mybb->input['action'])
 			}
 			if(isset($active_plugins[$codename]))
 			{
-				$pluginbuttons = "<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">Deactivate</a>";
+				$pluginbuttons = "<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">{$lang->deactivate}</a>";
 			}
 			else
 			{
-				$pluginbuttons = "<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">Activate</a>";
+				$pluginbuttons = "<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->activate}</a>";
 			}
 			
-			$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>Created by {$plugininfo['author']}</small></i>");
+			$table->construct_cell("<strong>{$plugininfo['name']}</strong> ({$plugininfo['version']})<br /><small>{$plugininfo['description']}</small><br /><i><small>{$lang->created_by} {$plugininfo['author']}</small></i>");
 			$table->construct_cell($pluginbuttons, array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
 	else
 	{
-		$table->contruct_cell("There are no plugins on your forum at this time.", array('colspan' => 2));
+		$table->contruct_cell($lang->no_plugins, array('colspan' => 2));
 		$table->construct_row();
 	}
-	$table->output("Plugins");
+	$table->output($lang->plugins);
 
 	$page->output_footer();
 }

@@ -1187,7 +1187,7 @@ admin=Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="allowmultipleemails">
 			<title>Allow emails to be registered multiple times?</title>
-			<description><!CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description>
+			<description><!CDATA[Select yes if you wish to allow users to sign up with the same email more than once. Otherwise, select no.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]><settingvalue>

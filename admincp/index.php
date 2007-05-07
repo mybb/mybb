@@ -328,6 +328,7 @@ while(($module = readdir($dir)) !== false)
 		// Do we have permissions to run this module (Note: home is accessible by all)
 		if($module == "home" || $mybb->admin['permissions'][$module])
 		{
+			$lang->load($module."_module_meta", false, true);
 			require_once $modules_dir."/".$module."/module_meta.php";
 			$meta_function = $module."_meta";
 			$initialized = $meta_function();

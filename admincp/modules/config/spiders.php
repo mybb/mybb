@@ -258,5 +258,5 @@ if(!$mybb->input['action'])
 	$table->output("Spiders / Bots");
 
 	$page->output_footer();
- }
+}
 ?>

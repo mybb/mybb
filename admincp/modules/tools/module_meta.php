@@ -17,14 +17,17 @@ if(!defined("IN_MYBB"))
 
 function tools_meta()
 {
-	global $page;
-	$page->add_menu_item("Tools &amp; Maintenance", "tools", "index.php?".SID."&module=tools", 50);
+	global $page, $lang;
+	
+	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?".SID."&module=tools", 50);
+	
 	return true;
 }
 
 function tools_action_handler($action)
 {
-	global $page;
+	global $page, $lang;
+	
 	$page->active_module = "tools";
 	switch($action)
 	{
@@ -66,28 +69,28 @@ function tools_action_handler($action)
 	}
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "system_health", "title" => "System Health", "link" => "index.php?".SID."&module=tools/system_health");
-	$sub_menu['20'] = array("id" => "cache", "title" => "Cache Manager", "link" => "index.php?".SID."&module=tools/cache");
-	$sub_menu['30'] = array("id" => "tasks", "title" => "Task Manager", "link" => "index.php?".SID."&module=tools/tasks");
-	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => "Recount &amp; Rebuild", "link" => "index.php?".SID."&module=tools/recount_rebuild");
-	$sub_menu['50'] = array("id" => "php_info", "title" => "View PHP Info", "link" => "index.php?".SID."&module=tools/php_info");
-	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database Backups", "link" => "index.php?".SID."&module=tools/backupdb");
-	$sub_menu['70'] = array("id" => "optimizedb", "title" => "Optimize Database", "link" => "index.php?".SID."&module=tools/optimizedb");
+	$sub_menu['10'] = array("id" => "system_health", "title" => $lang->system_health, "link" => "index.php?".SID."&module=tools/system_health");
+	$sub_menu['20'] = array("id" => "cache", "title" => $lang->cache_manager, "link" => "index.php?".SID."&module=tools/cache");
+	$sub_menu['30'] = array("id" => "tasks", "title" => $lang->task_manager, "link" => "index.php?".SID."&module=tools/tasks");
+	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => $lang->recount_and_rebuild, "link" => "index.php?".SID."&module=tools/recount_rebuild");
+	$sub_menu['50'] = array("id" => "php_info", "title" => $lang->view_php_info, "link" => "index.php?".SID."&module=tools/php_info");
+	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
+	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?".SID."&module=tools/optimizedb");
 
 
-	$sidebar = new SidebarItem("Maintenance");
+	$sidebar = new SidebarItem($lang->maintenance);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
 	
 
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "adminlog", "title" => "Administrator Log", "link" => "index.php?".SID."&module=tools/adminlog");
-	$sub_menu['20'] = array("id" => "modlog", "title" => "Moderator Log", "link" => "index.php?".SID."&module=tools/modlog");
-	$sub_menu['30'] = array("id" => "maillogs", "title" => "User Email Log", "link" => "index.php?".SID."&module=tools/maillogs");
-	$sub_menu['40'] = array("id" => "mailerrors", "title" => "System Mail Log", "link" => "index.php?".SID."&module=tools/mailerrors");
+	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?".SID."&module=tools/adminlog");
+	$sub_menu['20'] = array("id" => "modlog", "title" => $lang->moderator_log, "link" => "index.php?".SID."&module=tools/modlog");
+	$sub_menu['30'] = array("id" => "maillogs", "title" => $lang->user_email_log, "link" => "index.php?".SID."&module=tools/maillogs");
+	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?".SID."&module=tools/mailerrors");
 	
-	$sidebar = new SidebarItem("Logs");
+	$sidebar = new SidebarItem($lang->logs);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
@@ -138,17 +141,19 @@ function tools_format_admin_log_data($action, $data)
 
 function tools_admin_permissions()
 {
+	global $lang;
+	
 	$admin_permissions = array(
-		"system_health" => "Can Access System Health?",
-		"cache" => "Can Manage Cache?",
-		"tasks" => "Can Manage Scheduled Tasks?",
-		"backupdb" => "Can Manage Backup Database?",
-		"optimize" => "Can Manage Optimize Database?",
-		"recount_rebuild" => "Can Recount and Rebuild?",
-		"adminlog" => "Can Manage Administrator Log?",
-		"modlog" => "Can Manage Moderator Log?",
-		"maillogs" => "Can Manage User Mail Log?",
-		"mailerrors" => "Can Manage System Mail Log?"
+		"system_health" => $lang->can_access_system_health,
+		"cache" => $lang->can_manage_cache,
+		"tasks" => $lang->can_manage_tasks,
+		"backupdb" => $lang->can_manage_db_backup,
+		"optimize" => $lang->can_optimize_db,
+		"recount_rebuild" => $lang->can_recount_and_rebuild,
+		"adminlog" => $lang->can_manage_admin_logs,
+		"modlog" => $lang->can_manage_mod_logs,
+		"maillogs" => $lang->can_manage_user_mail_log,
+		"mailerrors" => $lang->can_manage_system_mail_log
 	);
 	return array("name" => "Maintenance &amp; Tools", "permissions" => $admin_permissions);
 }
