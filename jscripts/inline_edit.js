@@ -196,6 +196,11 @@ inlineEditor.prototype = {
 			{
 				message[1] = "An unknown error occurred.";
 			}
+			
+			if(this.spinnerImage)
+			{
+				this.hideSpinner();
+			}
 			alert('There was an error performing the update.\n\n'+message[1]);
 		}
 		else if(request.responseText)
