@@ -52,4 +52,5 @@ $l['ok'] = "OK";
 $l['error'] = "Error";
 $l['edit'] = "Edit";
 $l['delete'] = "Delete";
+$l['never'] = "Never";
 ?>
