@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright Œ 2007 MyBB Group, All Rights Reserved
+ * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/license.php
