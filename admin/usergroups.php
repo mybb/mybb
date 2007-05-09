@@ -884,7 +884,7 @@ function usergroup_hop(gid)
 			$modrequests = '';
 			if($joinrequests[$usergroup['gid']] > 0)
 			{
-				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&amp;=joinrequests&amp;gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
+				$usergroup['joinrequests'] = "<a href=\"usergroups.php?".SID."&amp;action=joinrequests&amp;gid={$usergroup['gid']}\"><span class=\"highlight1\">".$joinrequests[$usergroup['gid']]."</span></a>";
 				$modrequests = "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
 			}
 			echo "</td>\n";
