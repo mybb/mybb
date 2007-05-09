@@ -90,7 +90,7 @@ $bg_color = imagecolorallocate($im, 255, 255, 255);
 imagefill($im, 0, 0, $bg_color);
 
 // Draw random circles, squares or lines?
-$to_draw = my_rand(0, 2);
+$to_draw = mt_rand(0, 2);
 if($to_draw == 1)
 {
 	draw_circles($im);

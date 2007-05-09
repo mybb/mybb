@@ -873,7 +873,7 @@ class UserDataHandler extends DataHandler
 			"ignorelist" => '',
 			"pmfolders" => '',
 			"notepad" => '',
-			"warninglevel" => 0,
+			"warningpoints" => 0,
 			"moderateposts" => 0,
 			"moderationtime" => 0,
 			"suspendposting" => 0,
