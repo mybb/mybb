@@ -24,4 +24,15 @@
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
+	<task>
+		<title>Half-hourly User Cleanup</title>
+		<description><![CDATA[Automatically expires bans, warnings and posting suspension and moderation times for users]]></description>
+		<file>usercleanup</file>
+		<minute>30,59</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
 </tasks>

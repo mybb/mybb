@@ -493,6 +493,27 @@ form {
 	text-align: center;
 	padding: 5px 20px;
 	font-size: 11px;
+}
+
+.red_alert {
+	background: #FBE3E4;
+	border: 1px solid #A5161A;
+	color: #A5161A;
+	text-align: center;
+	padding: 5px 20px;
+	font-size: 11px;
+}
+
+.high_warning {
+	color: #CC0000;
+}
+
+.moderate_warning {
+	color: #F3611B;
+}
+
+.low_warning {
+	color: #AE5700;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -1754,6 +1775,7 @@ form {
 </tr>
 {$reputation}
 </table>
+{$latest_warnings}
 </td>
 </tr>
 </table>
@@ -2370,6 +2392,7 @@ form {
 <td class="trow2">{$timeonline}</td>
 </tr>
 {$reputation}
+{$warning_level}
 </table>
 <br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -3690,7 +3713,7 @@ form {
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="bottom">
 		<td align="left" ><span class="smalltext">{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}</span></td>
-		<td align="right"><span class="smalltext">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</span></td>
+		<td align="right"><span class="smalltext">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</span></td>
 	</tr>
 	</table>
 </td>
@@ -6593,15 +6616,11 @@ To: {$to_recipients}
 {$footer}
 </body>
 </html>]]></template>
-		<template name="global_bannedwarning" version="140"><![CDATA[<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1" align="center"><span style="color:#FF0000;"><strong>{$lang->banned_warning}</strong><br />
+		<template name="global_bannedwarning" version="140"><![CDATA[<div class="red_alert">
+<strong>{$lang->banned_warning}</strong>
 {$lang->banned_warning2}: {$reason}<br />
 {$lang->banned_warning3}: {$banlift}<br />
-</span></td>
-</tr>
-</table>
+</div>
 <br />]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_multiquote" version="140"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
@@ -6772,7 +6791,7 @@ To: {$to_recipients}
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	<template name="newreply_multiquote_external" version="140"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="newthread_multiquote_external" version="140"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
-	<template name="postbit_author_user" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
+	<template name="postbit_author_user" version="140"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
 	{$post['usertitle']}<br />
 	{$post['userstars']}
@@ -6781,7 +6800,7 @@ To: {$to_recipients}
 	{$lang->postbit_posts} {$post['postnum']}<br />
 	{$lang->postbit_group} {$usergroup['title']}<br />
 	{$lang->postbit_joined} {$post['userregdate']}<br />
-	{$lang->postbit_status} {$post['onlinestatus']}{$post['replink']}<br />
+	{$lang->postbit_status} {$post['onlinestatus']}{$post['replink']}{$post['warninglevel']}<br />
 </span>]]></template>
 	<template name="postbit_author_guest" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
 <span class="smalltext">
@@ -6790,7 +6809,7 @@ To: {$to_recipients}
 	{$post['groupimage']}<br />
 	{$post['useravatar']}<br />
 </span>]]></template>
-	<template name="warnings" version="140"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" align="center" class="tborder">
+	<template name="php_warnings" version="140"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" align="center" class="tborder">
 <tr>
 <td class="tcat">
 <strong>{$lang->warnings}</strong>
@@ -7952,5 +7971,339 @@ To: {$to_recipients}
 <br />
 ]]></template>
 		<template name="calendar_dayview_birthdays_bday" version="140"><![CDATA[{$comma}{$birthday['profilelink']}{$age}]]></template>
+		<template name="warnings" version="140"><![CDATA[<html>
+<head>
+	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
+	{$headerinclude}
+</head>
+<body>
+	{$header}
+
+	{$multipage}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="5">
+					<div class="float_right">{$lang->current_warning_level}</div>
+					<div><strong>{$lang->warning_log}</strong></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="tcat"><span class="smalltext"><strong>{$lang->warning}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->date_issued}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->expiry_date}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->issued_by}</strong></span></td>
+				<td class="tcat" width="1" align="center"><span class="smalltext"><strong>{$lang->details}</strong></span></td>
+			</tr>
+		</thead>
+		<tbody>
+		{$warnings}
+		</tbody>
+	</table>
+	{$multipage}
+
+{$footer}
+</body>
+</html>]]></template>
+		<template name="warnings_warning" version="140"><![CDATA[			<tr>
+				<td class="{$alt_bg}">{$warning_type} {$points}{$post_link}</td>
+				<td class="{$alt_bg}" align="center">{$date_issued}</td>
+				<td class="{$alt_bg}" align="center">{$expires}</td>
+				<td class="{$alt_bg}" align="center">{$issuedby}</td>
+				<td class="{$alt_bg}" align="center"><a href="warnings.php?action=view&amp;wid={$warning['wid']}">{$lang->view}</a></td>
+			</tr>]]></template>
+		<template name="warnings_active_header" version="140"><![CDATA[			<tr>
+				<td class="trow_sep" colspan="5">{$lang->active_warnings}</td>
+			</tr>]]></template>
+		<template name="warnings_expired_header" version="140"><![CDATA[			<tr>
+				<td class="trow_sep" colspan="5">{$lang->expired_warnings}</td>
+			</tr>]]></template>
+		<template name="warnings_no_warnings" version="140"><![CDATA[			<tr>
+				<td class="trow1" colspan="5" align="center">{$lang->no_warnings}</td>
+			</tr>]]></template>
+		<template name="warnings_warn" version="140"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->warn_user}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+{$warn_errors}
+<form action="warnings.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="action" value="do_warn" />
+	<input type="hidden" name="uid" value="{$user['uid']}" />
+
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+		<tr>
+			<td colspan="2" width="100%" class="thead"><strong>{$lang->warn_user}</strong></td>
+		</tr>
+		<tr>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->warn_user_desc}</strong></span></td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow1"><strong>{$lang->username}</strong></td>
+			<td class="trow1">{$user_link}</td>
+		</tr>
+{$post}
+		<tr>
+			<td width="20%" class="trow1" valign="top"><strong>{$lang->warning_note}</strong></td>
+			<td class="trow1"><textarea name="notes" cols="60" rows="4">{$notes}</textarea></td>
+		</tr>
+		<tr>
+			<td width="20%" class="trow2" valign="top"><strong>{$lang->warning_type}</strong></td>
+			<td class="trow2">
+				<script type="text/javascript">
+				function checkType()
+				{
+					var checked = '';
+					document.getElementsByClassName('types_check').each(function(e)
+					{
+						if(e.checked == true)
+						{
+							checked = e.value;
+						}
+					});
+					document.getElementsByClassName('types').each(function(e)
+					{
+						Element.hide(e);
+					});
+					if($('type_'+checked))
+					{
+						Element.show('type_'+checked);
+					}
+				}	
+				</script>
+				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
+					{$types}
+					{$custom_warning}
+				</dl>
+				<script type="text/javascript">
+				checkType();
+				</script>
+			</td>
+		</tr>
+		{$pm_notify}
+	</table>
+	<br />
+	<div align="center"><input type="submit" class="button" value="{$lang->warn_user}" /></div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="warnings_warn_type" version="140"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$type_checked[$type['tid']]} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> $points</label></dt>
+					<dd style="margin-top: 4px;" id="type_{$type['tid']}" class="types">
+						<div class="smalltext">New warning level:</div>
+						<div class="tborder" style="width: 150px; float: left; margin: 0; padding: 1px;">
+							<div class="trow1" style="width: {$current_level}%; float: left; ">&nbsp;</div>
+							<div class="trow2" style="width: {$level_diff}%; float: left;">&nbsp;</div>
+						</div>
+						<div style="padding-left: 10px; font-weight: bold; float: left;">{$new_warning_level}%</div><br style="clear: left;" />
+						{$result}
+					</dd>]]></template>
+		<template name="warnings_warn_custom" version="140"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="custom" {$type_checked['custom']} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$lang->custom}</strong></label></dt>
+					<dd style="margin-top: 4px;" id="type_custom" class="types">
+						<table>
+						<tr>
+							<td class="smalltext">{$lang->reason}</td>
+							<td class="smalltext">{$lang->points}</td>
+						</tr>
+						<tr>
+							<td><input type="text" class="textbox" name="custom_reason" size="50" maxlength="120" value="{$custom_reason}" /></td>
+							<td><input type="text" class="textbox" name="custom_points" size="2" value="{$custom_points}" /></td>
+						</tr>
+						<tr>
+							<td class="smalltext" colspan="2" style="padding-top: 4px;">{$lang->expires}</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<input type="text" class="textbox" name="expires" size="2" value="{$expires}" />
+								<select name="expires_period">
+									<option value="hours" {$expires_period['hours']}>{$lang->hour_or_hours}</option>
+									<option value="days" {$expires_period['days']}>{$lang->day_or_days}</option>
+									<option value="weeks" {$expires_period['weeks']}>{$lang->week_or_weeks}</option>
+									<option value="months" {$expires_period['months']}>{$lang->month_or_months}</option>
+									<option value="never" {$expires_period['never']}>{$lang->never}</option>
+								</select>
+							</td>
+						</tr>
+						</table>
+					</dd>]]></template>
+		<template name="warnings_warn_pm" version="140"><![CDATA[		<tr>
+			<td width="20%" class="trow1" valign="top">
+				<strong>{$lang->send_pm}</strong>
+				<div style="margin:auto" id="pm_smilie_insert"><br /><br />{$smilieinserter}</div>
+			</td>
+			<td class="trow1">
+				<script type="text/javascript">
+				function togglePM()
+				{
+					if($('send_pm').checked == true)
+					{
+						$('pm_input').show();
+						$('pm_smilie_insert').show();
+					}
+					else
+					{
+						$('pm_input').hide();
+						$('pm_smilie_insert').hide();
+					}
+				}
+				</script>
+				<label style="display: block;"><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" style="vertical-align: middle;" {$send_pm_checked} /> {$lang->send_user_warning_pm}</label>
+				<table id="pm_input" cellpadding="{$theme['tablespace']}">
+					<tr>
+						<td><strong>{$lang->send_pm_subject}</strong></td>
+						<td><input type="text" class="textbox" name="pm_subject" size="40" maxlength="85" value="{$pm_subject}" /></td>
+					</tr>
+					<tr>
+						<td valign="top"><strong>{$lang->send_pm_message}</strong></td>
+						<td><textarea name="pm_message" id="message" rows="15" cols="60">{$message}</textarea>
+						{$codebuttons}</td>
+					</tr>
+				</table>
+				<script type="text/javascript">togglePM();</script>
+			</td>
+		</tr>]]></template>
+		<template name="warnings_warn_post" version="140"><![CDATA[		<tr>
+			<td width="20%" class="trow2"><strong>{$lang->post}</strong></td>
+			<td class="trow2"><input type="hidden" name="pid" value="{$post['pid']}" /><a href="{$post_link}">{$post['subject']}</a></td>
+		</tr>]]></template>
+		<template name="usercp_warnings" version="140"><![CDATA[	<br />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="4">
+					<div class="float_right">{$lang->current_warning_level}</div>
+					<div><strong>{$lang->latest_warnings}</strong></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="tcat"><span class="smalltext"><strong>{$lang->warning}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->date_issued}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->expiry_date}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->issued_by}</strong></span></td>
+			</tr>
+		</thead>
+		<tbody>
+		{$warnings}
+		</tbody>
+	</table>
+]]></template>
+	<template name="usercp_warnings_warning" version="140"><![CDATA[			<tr>
+				<td class="{$alt_bg}">{$warning_type} {$points}{$post_link}</td>
+				<td class="{$alt_bg}" align="center">{$date_issued}</td>
+				<td class="{$alt_bg}" align="center">{$expires}</td>
+				<td class="{$alt_bg}" align="center">{$issuedby}</td>
+	</tr>]]></template>
+	<template name="postbit_warninglevel" version="140"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}%</a>]]></template>
+	<template name="postbit_warn" version="140"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_warn.gif" alt="{$lang->postbit_warn}" title="{$lang->postbit_warn}" /></a>]]></template>
+	<template name="member_profile_warninglevel" version="140"><![CDATA[<tr>
+	<td class="trow2"><strong>{$lang->warning_level}</strong></td>
+	<td class="trow2"><a href="{$warning_link}">{$warning_level}%</a> {$warn_user}</td>
+</tr>]]></template>
+		<template name="member_profile_warn" version="140"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
+		<template name="warnings_view" version="140"><![CDATA[<html>
+<head>
+	<title>{$mybb->settings['bbname']} - {$lang->warning_log}</title>
+	{$headerinclude}
+</head>
+<body>
+	{$header}
+
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="2">
+				<div class="float_right">{$status}</div>
+				<div><strong>{$lang->warning_details}</strong></div>
+			</td>
+		</tr>
+		{$warning_info}
+		<tr>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->warning}</strong></span></td>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->date_issued}<strong></span></td>
+		</tr>
+		<tr>
+			<td class="trow2">{$warning_type} {$points}</td>
+			<td class="trow2">{$date_issued}</td>
+		</tr>
+		<tr>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->issued_by}</strong></span></td>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->expiry_date}<strong></span></td>
+		</tr>
+		<tr>
+			<td class="trow1">{$issuedby}</td>
+			<td class="trow1">{$expires}</td>
+		</tr>
+		<tr>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->warning_note}</strong></span></td>
+		</tr>
+		<tr>
+			<td class="trow2" colspan="2">{$notes}</td>
+		</tr>
+	</table>
+	
+	{$revoke}
+
+{$footer}
+</body>
+</html>]]></template>
+		<template name="warnings_view_post" version="140"><![CDATA[		<tr>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->post}<strong></span></td>
+		</tr>
+		<tr>
+			<td class="trow1">{$user_link}</td>
+			<td class="trow1"><a href="{$post_link}">{$warning['post_subject']}</a></td>
+		</tr>]]></template>
+		<template name="warnings_view_user" version="140"><![CDATA[		<tr>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+		</tr>
+		<tr>
+			<td class="trow1" colspan="2">{$user_link}</td>
+		</tr>
+]]></template>
+		<template name="warnings_view_revoke" version="140"><![CDATA[<br />
+{$warn_errors}
+<form action="warnings.php" method="post" name="input">
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="action" value="do_revoke" />
+	<input type="hidden" name="wid" value="{$warning['wid']}" />
+
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+		<tr>
+			<td colspan="2" class="thead"><strong>{$lang->revoke_warning}</strong></td>
+		</tr>
+		<tr>
+			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->revoke_warning_desc}</strong></span></td>
+		</tr>
+		<tr>
+			<td class="trow1" width="20%" valign="top"><strong>{$lang->reason}</strong></td>
+			<td class="trow1"><textarea name="reason" cols="60" rows="4"></textarea></td>
+		</tr>
+	</table>
+	<br />
+	<div align="center"><input type="submit" class="button" value="{$lang->revoke_warning}" /></div>
+</form>]]></template>
+		<template name="warnings_view_revoked" version="140"><![CDATA[<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
+	<tr>
+		<td class="thead" colspan="2"><strong>{$lang->warning_is_revoked}</strong></td>
+	</tr>
+	<tr>
+		<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->revoked_by}</strong></span></td>
+		<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->date_revoked}</strong></span></td>
+	</tr>
+	<tr>
+		<td class="trow1">{$revoked_by}</td>
+		<td class="trow1">{$date_revoked}</td>
+	</tr>
+	<tr>
+		<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->reason}</strong></span></td>
+	</tr>
+	<tr>
+		<td class="trow2" colspan="2">{$revoke_reason}</td>
+	</tr>
+</table>]]></template>
 	</templates>
 </theme>

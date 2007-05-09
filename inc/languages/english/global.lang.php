@@ -212,6 +212,8 @@ $l['postbit_quick_edit'] = "Quick Edit";
 $l['postbit_full_edit'] = "Full Edit";
 $l['postbit_show_ignored_post'] = "Show this Post";
 $l['postbit_currently_ignoring_user'] = "The contents of this message is hidden because {1} is on your <a href=\"usercp.php?action=editlists\">ignore list</a>.";
+$l['postbit_warning_level'] = "Warning Level:";
+$l['postbit_warn'] = "Warn the author for this post";
 
 $l['forumjump'] = "Forum Jump:";
 $l['forumjump_select'] = "Please select one:";
@@ -272,8 +274,8 @@ $l['slaps'] = "slaps";
 $l['with_trout'] = "around a bit with a large trout.";
 
 $l['quickdelete_confirm'] = "Are you sure you want to delete this post?";
-$l['newpm_notice_one'] = "<strong>You have received a new private message</strong> from <a href=\"{1}\">{2}</a> titled <a href=\"private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>.";
-$l['newpm_notice_multiple'] = "<strong>You have received {1} new private messages.</strong> The most recent one is from <a href=\"{2}\">{3}</a> titled <a href=\"private.php?action=read&amp;pmid={4}\" style=\"font-weight: bold;\">{5}</a>.";
+$l['newpm_notice_one'] = "<strong>You have one unread private message</strong> from <a href=\"{1}\">{2}</a> titled <a href=\"private.php?action=read&amp;pmid={3}\" style=\"font-weight: bold;\">{4}</a>";
+$l['newpm_notice_multiple'] = "<strong>You have {1} unread private messages.</strong> The most recent is from <a href=\"{2}\">{3}</a> titled <a href=\"private.php?action=read&amp;pmid={4}\" style=\"font-weight: bold;\">{5}</a>";
 $l['deleteevent_confirm'] = "Are you sure you want to delete this event?";
 $l['removeattach_confirm'] = "Are you sure you want to remove the selected attachment from this post?";
 

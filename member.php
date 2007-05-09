@@ -1332,6 +1332,27 @@ if($mybb->input['action'] == "profile")
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
+	if($mybb->settings['enablewarningsystem'] != "no" && $usergroup['canreceivewarnings'] != "no" && ($mybb->usergroup['canwarnusers'] != "no" || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != "no")))
+	{
+		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+		if($warning_level > 100)
+		{
+			$warning_level = 100;
+		}
+		$warning_level = get_colored_warning_level($warning_level);
+		if($mybb->usergroup['canwarnusers'] != "no")
+		{
+			eval("\$warn_user = \"".$templates->get("member_profile_warn")."\";");
+			$warning_link = "warnings.php?uid={$memprofile['uid']}";
+		}
+		else
+		{
+			$warning_link = "usercp.php";
+		}
+		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
+	}
+
+
 	$query = $db->simple_select("userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';

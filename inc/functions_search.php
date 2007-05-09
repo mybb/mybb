@@ -418,6 +418,7 @@ function perform_search_mysql($search)
 		{
 			$datecut = ">=";
 		}
+		$now = time();
 		$datelimit = $now-(86400 * $search['postdate']);
 		$datecut .= "'$datelimit'";
 		$post_datecut = " AND p.dateline $datecut";
@@ -697,6 +698,7 @@ function perform_search_mysql_ft($search)
 		{
 			$datecut = ">=";
 		}
+		$now = time();
 		$datelimit = $now-(86400 * $search['postdate']);
 		$datecut .= "'$datelimit'";
 		$post_datecut = " AND p.dateline $datecut";

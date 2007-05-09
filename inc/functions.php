@@ -2315,6 +2315,32 @@ function get_reputation($reputation, $uid=0)
 }
 
 /**
+ * Fetch a color coded version of a warning level (based on it's percentage)
+ *
+ * @param int The warning level (percentage of 100)
+ * @return string Formatted warning level
+ */
+function get_colored_warning_level($level)
+{
+	if($level >= 80)
+	{
+		return "<span class=\"high_warning\">{$level}</span>";
+	}
+	else if($level >= 50)
+	{
+		return "<span class=\"moderate_warning\">{$level}</span>";
+	}
+	else if($level >= 25)
+	{
+		return "<span class=\"low_warning\">{$level}</span>";
+	}
+	else
+	{
+		return $level;
+	}
+}
+
+/**
  * Fetch the IP address of the current user.
  *
  * @return string The IP address.

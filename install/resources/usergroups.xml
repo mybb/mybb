@@ -57,6 +57,9 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[no]]></cancustomtitle>
+		<canwarnusers><![CDATA[no]]></canwarnusers>
+		<canreceivewarnings><![CDATA[no]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[2]]></gid>
@@ -115,6 +118,9 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<canwarnusers><![CDATA[no]]></canwarnusers>
+		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -173,6 +179,9 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<canwarnusers><![CDATA[yes]]></canwarnusers>
+		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[3]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -231,6 +240,9 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[yes]]></cancustomtitle>
+		<canwarnusers><![CDATA[yes]]></canwarnusers>
+		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -289,6 +301,9 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<canwarnusers><![CDATA[no]]></canwarnusers>
+		<canreceivewarnings><![CDATA[no]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -347,6 +362,9 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<canwarnusers><![CDATA[yes]]></canwarnusers>
+		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[3]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -405,5 +423,8 @@
 		<candisplaygroup><![CDATA[yes]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
 		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<canwarnusers><![CDATA[no]]></canwarnusers>
+		<canreceivewarnings><![CDATA[no]]></canreceivewarnings>
+		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 	</usergroup>
 </usergroups>

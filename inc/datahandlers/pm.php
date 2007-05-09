@@ -193,22 +193,25 @@ class PMDataHandler extends DataHandler
 					$this->set_error("no_recipients");
 					return false;
 				}
-				foreach($pm[$recipient_type] as $uid)
+				if(is_array($pm[$recipient_type]))
 				{
-					// Check that this recipient actually exists
-					$query = $db->simple_select("users", "*", "username='".intval($uid)."'");
-					$user = $db->fetch_array($query);
-					if($recipient_type == "bcc")
+					foreach($pm[$recipient_type] as $uid)
 					{
-						$user['bcc'] = 1;
-					}
-					if($user['uid'])
-					{
-						$recipients[] = $user;
-					}
-					else
-					{
-						$invalid_recipients[] = $uid;
+						// Check that this recipient actually exists
+						$query = $db->simple_select("users", "*", "uid='".intval($uid)."'");
+						$user = $db->fetch_array($query);
+						if($recipient_type == "bcc")
+						{
+							$user['bcc'] = 1;
+						}
+						if($user['uid'])
+						{
+							$recipients[] = $user;
+						}
+						else
+						{
+							$invalid_recipients[] = $uid;
+						}
 					}
 				}
 			}
@@ -517,6 +520,7 @@ class PMDataHandler extends DataHandler
 			$this->pmid = $db->insert_id();
 
 			// Update private message count (total, new and unread) for recipient
+			require_once MYBB_ROOT."/inc/functions_user.php";
 			update_pm_count($recipient['uid'], 7, $recipient['lastactive']);
 		}
 
@@ -560,6 +564,7 @@ class PMDataHandler extends DataHandler
 			$db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// Because the sender saved a copy, update their total pm count
+			require_once MYBB_ROOT."/inc/functions_user.php";
 			update_pm_count($pm['sender']['uid'], 1);
 		}
 

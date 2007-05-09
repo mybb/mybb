@@ -322,4 +322,14 @@ $l['update_no_notification'] = "Change to no notification";
 $l['update_instant_notification'] = "Change to instant notification";
 $l['no_subscriptions_selected'] = "You did not select any subscriptions to perform the selected action on.";
 $l['redirect_subscriptions_updated'] = "The selected subscriptions have been updated.";
+$l['latest_warnings'] = "Latest Warnings Received";
+$l['current_warning_level'] = "Current warning level: <strong>{1}%</strong> ({2}/{3})";
+$l['warning'] = "Warning";
+$l['date_issued'] = "Date Issued";
+$l['expiry_date'] = "Expiry Date";
+$l['issued_by'] = "Issued By";
+$l['warning_for_post'] = "for post: {1}";
+$l['warning_revoked'] = "Revoked";
+$l['already_expired'] = "Expired";
+$l['warning_points'] = "({1} points)";
 ?>

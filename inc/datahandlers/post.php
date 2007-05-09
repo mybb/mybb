@@ -672,13 +672,19 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == "yes" && !is_moderator($thread['fid'], "", $thread['uid']))
+			if($forum['modposts'] == "yes" && !is_moderator($thread['fid'], "", $post['uid']))
 			{
 				$visible = 0;
 			}
 			else
 			{
 				$visible = 1;
+			}
+
+			// Are posts from this user being moderated? Change visibility
+			if($mybb->user['uid'] == $post['uid'] && $mybb->user['moderateposts'] == 1)
+			{
+				$visible = 0;
 			}
 		}
 		
@@ -719,7 +725,7 @@ class PostDataHandler extends DataHandler
 
 		$post['pid'] = intval($post['pid']);
 		$post['uid'] = intval($post['uid']);
-		
+
 		if($post['pid'] > 0)
 		{
 			$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
@@ -997,6 +1003,12 @@ class PostDataHandler extends DataHandler
 			else
 			{
 				$visible = 1;
+			}
+
+			// Are posts from this user being moderated? Change visibility
+			if($mybb->user['uid'] == $thread['uid'] && $mybb->user['moderateposts'] == 1)
+			{
+				$visible = 0;
 			}
 		}
 

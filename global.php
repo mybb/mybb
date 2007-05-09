@@ -370,7 +370,7 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
+if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->usergroup['canview'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
 {
 	$query = $db->query("
 		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
@@ -560,5 +560,4 @@ $archive_url = $mybb->settings['bburl']."/archive/index.php";
 $plugins->run_hooks("global_end");
 
 $globaltime = $maintimer->gettime();
-
 ?>

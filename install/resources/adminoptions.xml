@@ -17,6 +17,7 @@
 				<permission name="attachment_types">0</permission>
 				<permission name="spiders">0</permission>
 				<permission name="calendars">0</permission>
+				<permission name="warning">0</permission>
 			</module>			
 			<module name="forum">
 				<permission name="tab">0</permission>
@@ -74,6 +75,7 @@
 				<permission name="attachment_types">1</permission>
 				<permission name="spiders">1</permission>
 				<permission name="calendars">1</permission>
+				<permission name="warning">1</permission>
 			</module>			
 			<module name="forum">
 				<permission name="tab">1</permission>
@@ -131,6 +133,7 @@
 				<permission name="attachment_types">1</permission>
 				<permission name="spiders">1</permission>
 				<permission name="calendars">1</permission>
+				<permission name="warning">1</permission>
 			</module>			
 			<module name="forum">
 				<permission name="tab">1</permission>

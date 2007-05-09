@@ -19,7 +19,7 @@ require_once MYBB_ROOT."inc/functions_task.php";
 
 // Are tasks set to run via cron instead & are we accessing this file via the CLI?
 // php task.php [tid]
-if($mybb->settings['taskscron'] == "yes" && PHP_SAPI == "cli")
+if(PHP_SAPI == "cli")
 {
 	// Passing a specific task ID
 	if($_SERVER['argc'] == 2)

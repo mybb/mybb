@@ -151,8 +151,13 @@ class MyLanguage
 			{
 				if(empty($this->$key) || $this->$key != $val)
 				{
-					$val = preg_replace("#\{([0-9]+)\}#", "%$1\$s", $val);
-					$this->$key = $val;
+					$new_val = preg_replace("#\{([0-9]+)\}#", "%$1\$s", $val);
+					if($new_val != $val)
+					{
+						$new_val = str_replace("%", "%%", $new_val);
+						$new_val = preg_replace("#%%([0-9]+)#", "%$1", $new_val);
+					}
+					$this->$key = $new_val;
 				}
 			}
 		}

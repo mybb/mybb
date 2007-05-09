@@ -186,7 +186,10 @@ if($mybb->input['action'] == "do_add")
 		"maxreputationsday" => intval($mybb->input['maxreputationsday']),
 		"candisplaygroup" => $db->escape_string($mybb->input['candisplaygroup']),
 		"attachquota" => intval($mybb->input['attachquota']),
-		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle'])
+		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle']),
+		"canwarnusers" => $db->escape_string($mybb->input['canwarnusers']),
+		"canreceivewarnings" => $db->escape_string($mybb->input['canreceivewarnings']),
+		"maxwarningsday" => intval($mybb->input['maxwarningsday'])
 	);
 	$plugins->run_hooks("admin_usergroups_do_add");
 	$db->insert_query("usergroups", $grouparray);
@@ -346,7 +349,10 @@ if($mybb->input['action'] == "do_edit")
 		"reputationpower" => intval($mybb->input['reputationpower']),
 		"maxreputationsday" => intval($mybb->input['maxreputationsday']),
 		"attachquota" => $db->escape_string($mybb->input['attachquota']),
-		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle'])
+		"cancustomtitle" => $db->escape_string($mybb->input['cancustomtitle']),
+		"canwarnusers" => $db->escape_string($mybb->input['canwarnusers']),
+		"canreceivewarnings" => $db->escape_string($mybb->input['canreceivewarnings']),
+		"maxwarningsday" => intval($mybb->input['maxwarningsday'])
 	);
 	// Only update the candisplaygroup setting if not a core usergroup
 	if($usergroup['type'] != 1)
@@ -410,6 +416,12 @@ if($mybb->input['action'] == "add")
 	makeyesnocode($lang->can_give_reputations, "cangivereputations", "yes");
 	makeinputcode($lang->reputation_points, "reputationpower", "3", 4);
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", "5", 4);
+
+	// No point in lang strings - will be for new admin cp
+	tablesubheader("Warning System");
+	makeyesnocode("Can warn other users?", "canwarnusers", "no");
+	makeyesnocode("Can receive warnings?", "canreceivewarnings", "yes");
+	makeinputcode("Maximum warnings can give per day", "maxwarningsday", 3);
 
 	tablesubheader($lang->perms_polls);
 	makeyesnocode($lang->can_post_polls, "canpostpolls", "yes");
@@ -549,6 +561,13 @@ if($mybb->input['action'] == "edit")
 	makeyesnocode($lang->can_give_reputations, "cangivereputations", $usergroup['cangivereputations']);
 	makeinputcode($lang->reputation_points, "reputationpower", $usergroup['reputationpower'], 4);
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", $usergroup['maxreputationsday'], 4);
+
+	// No point in lang strings - will be for new admin cp
+	tablesubheader("Warning System");
+	makeyesnocode("Can warn other users?", "canwarnusers", $usergroup['canwarnusers']);
+	makeyesnocode("Can receive warnings?", "canreceivewarnings", $usergroup['canreceivewarnings']);
+	makeinputcode("Maximum warnings can give per day", "maxwarningsday", $usergroup['maxwarningsday']);
+
 
 	tablesubheader($lang->perms_polls);
 	makeyesnocode($lang->can_post_polls, "canpostpolls", $usergroup['canpostpolls']);

@@ -2449,6 +2449,78 @@ if(!$mybb->input['action'])
 		eval("\$reputation = \"".$templates->get("usercp_reputation")."\";");
 	}
 
+	if($mybb->settings['enablewarningsystem'] != "no" && $mybb->settings['canviewownwarning'] != "no")
+	{
+		$warning_level = round($mybb->user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+		if($warning_level > 100)
+		{
+			$warning_level = 100;
+		}
+		if($warning_level > 0)
+		{
+			$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
+			// Fetch latest warnings
+			$query = $db->query("
+				SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
+				FROM ".TABLE_PREFIX."warnings w
+				LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
+				WHERE w.uid='{$mybb->user['uid']}'
+				ORDER BY w.expired ASC, w.dateline DESC
+				LIMIT 5
+			");
+			while($warning = $db->fetch_array($query))
+			{
+				$post_link = "";
+				if($warning['post_subject'])
+				{
+					$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
+					$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
+					$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."\">{$warning['post_subject']}</a></small>";
+				}
+				$issuedby = build_profile_link($warning['username'], $warning['uid']);
+				$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+				if($warning['type_title'])
+				{
+					$warning_type = $warning['type_title'];
+				}
+				else
+				{
+					$warning_type = $warning['title'];
+				}
+				$warning_type = htmlspecialchars_uni($warning_type);
+				if($warning['points'] > 0)
+				{
+					$warning['points'] = "+{$warning['points']}";
+				}
+				$points = sprintf($lang->warning_points, $warning['points']);
+				if($warning['expired'] != 1)
+				{
+					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+				}
+				else
+				{
+					if($warning['daterevoked'])
+					{
+						$expires = $lang->warning_revoked;
+					}
+					else if($warning['expires'])
+					{
+						$expires = $lang->already_expired;
+					}
+					else
+					{
+						$expires = $lang->never;
+					}
+				}
+				$alt_bg = alt_trow();
+				eval("\$warnings .= \"".$templates->get("usercp_warnings_warning")."\";");
+			}
+			eval("\$latest_warnings = \"".$templates->get("usercp_warnings")."\";");
+		}
+	}
+
 	// Format username
 	$username = format_name($mybb->user['username'], $mybb->user['usergroup'], $mybb->user['displaygroup']);
 	$username = build_profile_link($username, $mybb->user['uid']);

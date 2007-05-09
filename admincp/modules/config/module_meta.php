@@ -69,6 +69,10 @@ function config_action_handler($manage)
 			$page->active_action = "calendars";
 			$action_file = "calendars.php";
 			break;
+		case "warning":
+			$page->active_action = "warning";
+			$action_file = "warning.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
@@ -88,6 +92,7 @@ function config_action_handler($manage)
 	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
 	$sub_menu['120'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
 	$sub_menu['130'] = array("id" => "calendars", "title" => "Calendars", "link" => "index.php?".SID."&module=config/calendars");
+	$sub_menu['140'] = array("id" => "warning", "title" => "Warning System", "link" => "index.php?".SID."&module=config/warning");
 
 	$sidebar = new SidebarItem("Configuration");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
@@ -134,7 +139,8 @@ function config_admin_permissions()
 		"plugins" => "Can Manage Plugins?",
 		"attachment_types" => "Can Manage Attachment Types?",
 		"spiders" => "Can Manage Spiders / Bots?",
-		"calendars" => "Can Manage Calendars?"
+		"calendars" => "Can Manage Calendars?",
+		"warning" => "Can Manage Warning System?"
 	);
 	return array("name" => "Configuration", "permissions" => $admin_permissions);
 }

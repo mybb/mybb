@@ -53,6 +53,12 @@ function upgrade9_dbchanges()
 	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 
+
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers char(3) NOT NULL default '' AFTER cancustomtitle");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings char(3) NOT NULL default '' AFTER canwarnusers");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canreceivewarnings='no' WHERE cancp='yes' OR gid=1");
+	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET maxwarningsday=3, canwarnusers='yes' WHERE cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
 	if($db->field_exists('newpms', "users"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");
@@ -253,6 +259,49 @@ function upgrade9_dbchanges()
 		$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='2' WHERE emailnotify='yes'");
 		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
 	}
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."warninglevels (
+		lid int unsigned NOT NULL auto_increment,
+		percentage int(3) NOT NULL default '0',
+		action text NOT NULL,
+		PRIMARY KEY(lid)
+	) TYPE=MyISAM;");
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."warningtypes (
+		tid int unsigned NOT NULL auto_increment,
+		title varchar(120) NOT NULL default '',
+		points int unsigned NOT NULL default '0',
+		expirationtime bigint(30) NOT NULL default '0',
+		PRIMARY KEY(tid)
+	) TYPE=MyISAM;");
+
+	$db->query("CREATE TABLE ".TABLE_PREFIX."warnings (
+		wid int unsigned NOT NULL auto_increment,
+		uid int unsigned NOT NULL default '0',
+		tid int unsigned NOT NULL default '0',
+		pid int unsigned NOT NULL default '0',
+		title varchar(120) NOT NULL default '',
+		points int unsigned NOT NULL default '0',
+		dateline bigint(30) NOT NULL default '0',
+		issuedby int unsigned NOT NULL default '0',
+		expires bigint(30) NOT NULL default '0',
+		expired int(1) NOT NULL default '0',
+		daterevoked bigint(30) NOT NULL default '0',
+		revokedby int unsigned NOT NULL default '0',
+		revokereason text NOT NULL,
+		notes text NOT NULL,
+		PRIMARY KEY(wid)
+	) TYPE=MyISAM;");
+
+	if($db->field_exists('warningpoints', "users"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP warningpoints;");
+	}
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD warningpoints int(3) NOT NULL default '0' AFTER unreadpms");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD moderateposts int(1) NOT NULL default '0' AFTER warningpoints");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD moderationtime bigint(30) NOT NULL default '0' AFTER moderateposts");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD suspendposting int(1) NOT NULL default '0' AFTER moderationtime");
+	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

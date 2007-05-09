@@ -308,6 +308,27 @@ function build_postbit($post, $post_type=0)
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
+
+		// Showing the warning level?
+		if($mybb->settings['enablewarningsystem'] != "no" && $usergroup['canreceivewarnings'] != "no" && ($mybb->usergroup['canwarnusers'] != "no" || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != "no")))
+		{
+			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+			if($warning_level > 100)
+			{
+				$warning_level = 100;
+			}
+			$warning_level = get_colored_warning_level($warning_level);
+			if($mybb->usergroup['canwarnusers'] != "no")
+			{
+				eval("\$post['button_warn'] = \"".$templates->get("postbit_warn")."\";");
+				$warning_link = "warnings.php?uid={$post['uid']}";
+			}
+			else
+			{
+				$warning_link = "usercp.php";
+			}
+			eval("\$post['warninglevel'] = \"".$templates->get("postbit_warninglevel")."\";");
+		}
 		
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_user")."\";");
 	}

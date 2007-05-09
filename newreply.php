@@ -91,7 +91,7 @@ if($forum['open'] == "no" || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] == "no")
+if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] == "no" || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
 }

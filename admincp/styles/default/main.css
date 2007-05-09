@@ -309,7 +309,7 @@ table.general th a, table.general th {
 }
 
 
-table .alt_row td {
+table.general .alt_row td {
 	background: #f1f1f1;
 }
 /*

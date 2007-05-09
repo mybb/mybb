@@ -723,7 +723,10 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   maxreputationsday bigint(30) NOT NULL default '0',
   candisplaygroup char(3) NOT NULL default '',
   attachquota bigint(30) NOT NULL default '0',
-  cancustomtitle char(3) NOT NULL default ''
+  cancustomtitle char(3) NOT NULL default '',
+  canwarnusers char(3) NOT NULL default '',
+  canreceivewarnings char(3) NOT NULL default '',
+  maxwarningsday int NOT NULL default '3',
 );";
 
 
@@ -790,7 +793,12 @@ $tables[] = "CREATE TABLE mybb_users (
   timeonline bigint(30) NOT NULL default '0',
   showcodebuttons int(1) NOT NULL default '1',
   totalpms int(10) NOT NULL default '0',
-  unreadpms int(10) NOT NULL default '0'
+  unreadpms int(10) NOT NULL default '0',
+  warningpoints int(3) NOT NULL default '0',
+  moderateposts int(1) NOT NULL default '0',
+  moderationtime bigint(30) NOT NULL default '0',
+  suspendposting int(1) NOT NULL default '0',
+  suspensiontime bigint(30) NOT NULL default '0'
 );";
 
 
@@ -802,4 +810,33 @@ $tables[] = "CREATE TABLE mybb_usertitles (
   starimage varchar(120) NOT NULL default ''
 );";
 
+$tables[] = "CREATE TABLE mybb_warninglevels (
+	lid INTEGER PRIMARY KEY,
+	percentage int(2) NOT NULL default '0',
+	action text NOT NULL
+);";
+
+$tables[] = "CREATE TABLE mybb_warningtypes (
+	tid INTEGER PRIMARY KEY,
+	title varchar(120) NOT NULL default '',
+	points int NOT NULL default '0',
+	expirationtime bigint(30) NOT NULL default '0'
+);";
+
+$tables[] = "CREATE TABLE mybb_warnings (
+	wid INTEGER PRIMARY KEY,
+	uid int NOT NULL default '0',
+	tid int NOT NULL default '0',
+	tid int NOT NULL default '0',
+	title varchar(120) NOT NULL default '',
+	points int NOT NULL default '0',
+	dateline bigint(30) NOT NULL default '0',
+	issuedby int NOT NULL default '0',
+	expires bigint(30) NOT NULL default '0',
+	expired int(1) NOT NULL default '0',
+	daterevoked bigint(30) NOT NULL default '0',
+	revokedby int unsigned NOT NULL default '0',
+	revokereason text NOT NULL,
+	notes text NOT NULL
+);";
 ?>

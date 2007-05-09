@@ -1,3 +1,4 @@
+
 <?php
 /**
  * MyBB 1.2
@@ -114,6 +115,29 @@ $tables[] = "CREATE TABLE mybb_banned (
   reason varchar(255) NOT NULL default ''
 );";
 
+$tables[] = "CREATE TABLE mybb_calendars (
+  cid serial,
+  name varchar(100) NOT NULL default '',
+  disporder int NOT NULL default '0',
+  startofweek int NOT NULL default '0',
+  showbirthdays int NOT NULL default '0',
+  eventlimit int NOT NULL default '0',
+  moderation int NOT NULL default '0',
+  allowhtml char(3) NOT NULL default '',
+  allowmycode char(3) NOT NULL default '',
+  allowimgcode char(3) NOT NULL default '',
+  allowsmilies char(3) NOT NULL default '',
+  PRIMARY KEY(cid)
+);";
+
+$tables[] = "CREATE TABLE mybb_calendarpermissions (
+  cid serial,
+  gid int NOT NULL default '0',
+  canviewcalendar char(3) NOT NULL default '',
+  canaddevents char(3) NOT NULL default '',
+  canbypasseventmod char(3) NOT NULL default '',
+  canmoderateevents char(3) NOT NULL default ''
+);";
 $tables[] = "CREATE TABLE mybb_captcha (
   imagehash varchar(32) NOT NULL default '',
   imagestring varchar(8) NOT NULL default '',
@@ -128,22 +152,22 @@ $tables[] = "CREATE TABLE mybb_datacache (
 
 $tables[] = "CREATE TABLE mybb_events (
   eid serial,
-  subject varchar(120) NOT NULL default '',
-  author int NOT NULL default '0',
-  start_day smallint NOT NULL,
-  start_month smallint NOT NULL,
-  start_year smallint NOT NULL,
-  end_day smallint NOT NULL,
-  end_month smallint NOT NULL,
-  end_year smallint NOT NULL,
-  repeat_days varchar(20) NOT NULL,
-  start_time_hours varchar(2) NOT NULL,
-  start_time_mins varchar(2) NOT NULL,
-  end_time_hours varchar(2) NOT NULL,
-  end_time_mins varchar(2) NOT NULL,
-  description text NOT NULL default '',
-  private char(3) NOT NULL default '',
-  PRIMARY KEY (eid)
+  cid int NOT NULL default '0',
+  uid int NOT NULL default '0',
+  name varchar(120) NOT NULL default '',
+  description text NOT NULL,
+  visible int NOT NULL default '0',
+  private int NOT NULL default '0',
+  dateline int unsigned NOT NULL default '0',
+  starttime int unsigned NOT NULL default '0',
+  endtime int unsigned NOT NULL default '0',
+  timezone int NOT NULL default '0',
+  ignoretimezone int NOT NULL default '0',
+  usingtime int NOT NULL default '0',
+  repeats text NOT NULL,
+  KEY daterange (starttime, endtime),
+  KEY private (private),
+  PRIMARY KEY  (eid)
 );";
 
 $tables[] = "CREATE TABLE mybb_forumpermissions (
@@ -744,6 +768,9 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   candisplaygroup char(3) NOT NULL default '',
   attachquota bigint NOT NULL default '0',
   cancustomtitle char(3) NOT NULL default '',
+  canwarnusers char(3) NOT NULL default '',
+  canreceivewarnings char(3) NOT NULL default '',
+  maxwarningsday int NOT NULL default '3',
   PRIMARY KEY (gid)
 );";
 
@@ -812,6 +839,11 @@ $tables[] = "CREATE TABLE mybb_users (
   showcodebuttons int NOT NULL default '1',
   totalpms int NOT NULL default '0',
   unreadpms int NOT NULL default '0',
+  warningpoints int NOT NULL default '0',
+  moderateposts int NOT NULL default '0',
+  moderationtime bigint NOT NULL default '0',
+  suspendposting int NOT NULL default '0',
+  suspensiontime bigint NOT NULL default '0',
   PRIMARY KEY (uid)
 );";
 
@@ -823,6 +855,39 @@ $tables[] = "CREATE TABLE mybb_usertitles (
   stars smallint NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
   PRIMARY KEY (utid)
+);";
+
+$tables[] = "CREATE TABLE mybb_warninglevels (
+	lid serial,
+	percentage int NOT NULL default '0',
+	action text NOT NULL,
+	PRIMARY KEY(lid)
+);";
+
+$tables[] = "CREATE TABLE mybb_warningtypes (
+	tid serial,
+	title varchar(120) NOT NULL default '',
+	points int unsigned NOT NULL default '0',
+	expirationtime bigint NOT NULL default '0',
+	PRIMARY KEY(tid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_warnings (
+	wid serial,
+	uid int NOT NULL default '0',
+	tid int NOT NULL default '0',
+	pid int NOT NULL default '0',
+	title varchar(120) NOT NULL default '',
+	points int NOT NULL default '0',
+	dateline bigint NOT NULL default '0',
+	issuedby int NOT NULL default '0',
+	expires bigint NOT NULL default '0',
+	expired int NOT NULL default '0',
+	daterevoked bigint NOT NULL default '0',
+	revokedby int unsigned NOT NULL default '0',
+	revokereason text NOT NULL,
+	notes text NOT NULL,
+	PRIMARY KEY(wid)
 );";
 
 ?>

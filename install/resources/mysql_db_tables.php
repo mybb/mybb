@@ -814,6 +814,9 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   candisplaygroup char(3) NOT NULL default '',
   attachquota bigint(30) NOT NULL default '0',
   cancustomtitle char(3) NOT NULL default '',
+  canwarnusers char(3) NOT NULL default '',
+  canreceivewarnings char(3) NOT NULL default '',
+  maxwarningsday int(3) NOT NULL default '3',
   PRIMARY KEY  (gid)
 ) TYPE=MyISAM;";
 
@@ -882,12 +885,16 @@ $tables[] = "CREATE TABLE mybb_users (
   showcodebuttons int(1) NOT NULL default '1',
   totalpms int(10) NOT NULL default '0',
   unreadpms int(10) NOT NULL default '0',
+  warningpoints int(3) NOT NULL default '0',
+  moderateposts int(1) NOT NULL default '0',
+  moderationtime bigint(30) NOT NULL default '0',
+  suspendposting int(1) NOT NULL default '0',
+  suspensiontime bigint(30) NOT NULL default '0',
   KEY username (username),
   KEY usergroup (usergroup),
   KEY birthday (birthday),
   PRIMARY KEY  (uid)
 ) TYPE=MyISAM;";
-
 
 $tables[] = "CREATE TABLE mybb_usertitles (
   utid smallint unsigned NOT NULL auto_increment,
@@ -896,6 +903,39 @@ $tables[] = "CREATE TABLE mybb_usertitles (
   stars smallint(4) NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
   PRIMARY KEY  (utid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_warninglevels (
+	lid int unsigned NOT NULL auto_increment,
+	percentage int(3) NOT NULL default '0',
+	action text NOT NULL,
+	PRIMARY KEY(lid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_warningtypes (
+	tid int unsigned NOT NULL auto_increment,
+	title varchar(120) NOT NULL default '',
+	points int unsigned NOT NULL default '0',
+	expirationtime bigint(30) NOT NULL default '0',
+	PRIMARY KEY(tid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_warnings (
+	wid int unsigned NOT NULL auto_increment,
+	uid int unsigned NOT NULL default '0',
+	tid int unsigned NOT NULL default '0',
+	pid int unsigned NOT NULL default '0',
+	title varchar(120) NOT NULL default '',
+	points int unsigned NOT NULL default '0',
+	dateline bigint(30) NOT NULL default '0',
+	issuedby int unsigned NOT NULL default '0',
+	expires bigint(30) NOT NULL default '0',
+	expired int(1) NOT NULL default '0',
+	daterevoked bigint(30) NOT NULL default '0',
+	revokedby int unsigned NOT NULL default '0',
+	revokereason text NOT NULL,
+	notes text NOT NULL,
+	PRIMARY KEY(wid)
 ) TYPE=MyISAM;";
 
 ?>

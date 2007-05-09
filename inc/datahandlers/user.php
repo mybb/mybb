@@ -872,7 +872,12 @@ class UserDataHandler extends DataHandler
 			"buddylist" => '',
 			"ignorelist" => '',
 			"pmfolders" => '',
-			"notepad" => ''
+			"notepad" => '',
+			"warninglevel" => 0,
+			"moderateposts" => 0,
+			"moderationtime" => 0,
+			"suspendposting" => 0,
+			"suspensiontime" => 0
 		);
 
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);

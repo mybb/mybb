@@ -583,7 +583,6 @@ function fetch_weekday_structure($week_start)
 function fetch_weekday_name($weekday, $short=false)
 {
 	global $lang;
-	
 	switch($weekday)
 	{
 		case 1:

@@ -55,7 +55,7 @@ if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forum['open'] == "no")
+if($forum['open'] == "no" || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
 }

@@ -265,7 +265,7 @@ table.general th a, table.general th {
 	text-decoration: none;
 }*/
 
-table {
+table.general {
 border-top: 1px solid #B3BECB;
 }
 
@@ -289,7 +289,7 @@ table.general th a, table.general th {
 }
 
 
-table .alt_row td {
+table.general .alt_row td {
 	background: #F9F9F9;
 }
 /*
