@@ -292,7 +292,7 @@
 			<description><![CDATA[The url to your forums.<br />Include the http://. Do NOT include a trailing slash.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[http://192.168.0.5]]></settingvalue>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="homename">
@@ -300,7 +300,7 @@
 			<description><![CDATA[The name of your homepage. This will appear in the footer with a link to it.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[Your Website]]></settingvalue>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="homeurl">
@@ -316,7 +316,7 @@
 			<description><![CDATA[The administrator's email address. This will be used for outgoing emails sent via the forums.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[admin@boulton]]></settingvalue>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="contactlink">
@@ -324,7 +324,7 @@
 			<description><![CDATA[This will be used for the Contact Us link on the bottom of all the forum pages. Can either be an email address (using mailto:email@website.com) or a hyperlink.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[admin@boulton]]></settingvalue>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="bblanguage">
@@ -360,7 +360,7 @@
 			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaimage">
-			<title>CAPTCHA Images for Registration & Posting</title>
+			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
 			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration and posting where users are required to enter the text contained within the image to continue. This helps prevent automated registrations and postings.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
@@ -544,13 +544,13 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="allowmultipleemails"> 
-			<title>Allow emails to be registered multiple times?</title> 
-			<description><!CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description> 
+			<title><![CDATA[Allow emails to be registered multiple times?]]></title> 
+			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description> 
 			<disporder>9</disporder> 
 			<optionscode><![CDATA[yesno]]></optionscode> 
-			<settingvalue><![CDATA[no]]><settingvalue> 
+			<settingvalue><![CDATA[no]]></settingvalue> 
 			<helpkey></helpkey> 
-		</seting> 
+		</setting> 
 		<setting name="maxregsbetweentime">
 			<title>Maximum Registrations Per IP Address</title>
 			<description><![CDATA[This option allows you to set the maximum amount of times a certain user can register within the timeframe specified above.]]></description>
