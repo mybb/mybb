@@ -547,6 +547,36 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 				}
 				$repeats['days'] = $days;
 				break;
+			case 4:
+				$repeats['repeats'] = 4;
+				if($mybb->input['repeats_4_type'] == 1)
+				{
+					$repeats['day'] = $mybb->input['repeats_4_day'];
+					$repeats['months'] = $mybb->input['repeats_4_months'];
+				}
+				else
+				{
+					$repeats['months'] = $mybb->input['repeats_4_months2'];
+					$repeats['occurance'] = $mybb->input['repeats_4_occurance'];
+					$repeats['weekday'] = $mybb->input['repeats_4_weekday'];
+				}
+				break;
+			case 5:
+				$repeats['repeats'] = 5;
+				if($mybb->input['repeats_5_type'] == 1)
+				{
+					$repeats['day'] = $mybb->input['repeats_5_day'];
+					$repeats['month'] = $mybb->input['repeats_5_month'];
+					$repeats['years'] = $mybb->input['repeats_5_years'];
+				}
+				else
+				{
+					$repeats['occurance'] = $mybb->input['repeats_5_occurance'];
+					$repeats['weekday'] = $mybb->input['repeats_5_weekday'];
+					$repeats['month'] = $mybb->input['repeats_5_month2'];
+					$repeats['years'] = $mybb->input['repeats_5_years'];
+				}
+				break;
 			default:
 				$repeats['repeats'] = 0;
 		}

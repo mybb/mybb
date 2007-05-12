@@ -200,7 +200,7 @@ if($mybb->input['action'] == "export")
 			foreach($settinglist[$settinggroup['gid']] as $setting)
 			{
 				$xml .= "\t\t<setting name=\"".$setting['name']."\">\n";
-				$xml .= "\t\t\t<title>".$setting['title']."</title>\n";
+				$xml .= "\t\t\t<title><![CDATA[".$setting['title']."]]></title>\n";
 				$xml .= "\t\t\t<description><![CDATA[".$setting['description']."]]></description>\n";
 				$xml .= "\t\t\t<disporder>".$setting['disporder']."</disporder>\n";
 				$xml .= "\t\t\t<optionscode><![CDATA[".$setting['optionscode']."]]></optionscode>\n";

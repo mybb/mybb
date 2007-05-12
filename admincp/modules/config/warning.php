@@ -581,13 +581,13 @@ if($mybb->input['action'] == "delete_type")
 	if(!$type['tid'])
 	{
 		flash_message('The specified warning type does not exist.', 'error');
-		admin_redirect("index.php?".SID."&module=config/warning&action=types");
+		admin_redirect("index.php?".SID."&module=config/warning");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/warning&action=types");
+		admin_redirect("index.php?".SID."&module=config/warning");
 	}
 
 	if($mybb->request_method == "post")
@@ -596,7 +596,7 @@ if($mybb->input['action'] == "delete_type")
 		$db->delete_query("warningtypes", "tid='{$type['tid']}'");
 
 		flash_message('The specified warning type has been deleted.', 'success');
-		admin_redirect("index.php?".SID."&module=config/warning&action=types");
+		admin_redirect("index.php?".SID."&module=config/warning");
 	}
 	else
 	{

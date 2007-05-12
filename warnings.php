@@ -39,7 +39,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
 		$timecut = time()-60*60*24;
-		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}'");
+		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
@@ -358,7 +358,7 @@ if($mybb->input['action'] == "warn")
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
 		$timecut = time()-60*60*24;
-		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}'");
+		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
@@ -513,6 +513,7 @@ if($mybb->input['action'] == "warn")
 		}
 		eval("\$types .= \"".$templates->get("warnings_warn_type")."\";");
 		unset($new_level);
+		unset($result);
 	}
 
 	if($mybb->settings['allowcustomwarnings'] != "no")
