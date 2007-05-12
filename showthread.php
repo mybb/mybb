@@ -814,6 +814,19 @@ if($mybb->input['action'] == "thread")
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc"));
 		$last_pid = $db->fetch_field($query, "pid");
 		
+		// Show captcha image for guests if enabled
+		if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+		{
+			$randomstr = random_str(5);
+			$imagehash = md5($randomstr);
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => time()
+			);
+			$db->insert_query("captcha", $imagearray);
+			eval("\$captcha = \"".$templates->get("post_captcha")."\";");
+		}
 		if($mybb->user['signature'])
 		{
 			$postoptionschecked['signature'] = "checked";

@@ -4166,13 +4166,19 @@ function validate_email_format($email)
  * Checks to see if the email is already in use by another
  *
  * @param string The email to check.
+ * @param string User ID of the user (updating only)
  * @return boolean True when in use, false when not.
  */
-function email_already_in_use($email)
+function email_already_in_use($email, $uid="")
 {
 	global $db;
 	
-	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string(my_strtolower($email))."'");
+	$uid_string = "";
+	if($uid)
+	{
+		$uid_string = " AND uid != '".intval($uid)."'";
+	}
+	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string(my_strtolower($email))."'{$uid_string}");
 	
 	if($db->fetch_field($query, "emails") > 0)
 	{

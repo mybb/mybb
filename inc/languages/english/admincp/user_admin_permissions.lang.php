@@ -31,7 +31,6 @@ $l['using_custom_perms'] = "Using Custom Permissions";
 $l['using_group_perms'] = "Using Group Permissions";
 $l['using_default_perms'] = "Using Default Permissions";
 $l['last_active'] = "Last Active";
-$l['legend'] = "Legend";
 $l['user'] = "User";
 $l['edit_group'] = "Edit Group";
 $l['default'] = "Default";

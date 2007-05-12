@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Custom Profile fields", "index.php?".SID."&amp;module=config/profile_fields");
+$page->add_breadcrumb_item($lang->custom_profile_fields, "index.php?".SID."&amp;module=config/profile_fields");
 
 
 if($mybb->input['action'] == "add")
@@ -24,32 +24,32 @@ if($mybb->input['action'] == "add")
 	{
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = "You did not enter a title for this custom profile field";
+			$errors[] = $lang->error_missing_name;
 		}
 
 		if(!trim($mybb->input['description']))
 		{
-			$errors[] = "You did not enter a description for this custom profile field";
+			$errors[] = $lang->error_missing_description;
 		}
 
 		if(!trim($mybb->input['fieldtype']))
 		{
-			$errors[] = "You did not enter a field type for this custom profile field";
+			$errors[] = $lang->error_missing_fieldtype;
 		}
 		
 		if(!trim($mybb->input['required']))
 		{
-			$errors[] = "You did not select Yes or No for the \"Required?\" option";
+			$errors[] = $lang->error_missing_required;
 		}
 		
 		if(!trim($mybb->input['editable']))
 		{
-			$errors[] = "You did not select Yes or No for the \"Editable by user?\" option";
+			$errors[] = $lang->error_missing_editable;
 		}
 		
 		if(!trim($mybb->input['hidden']))
 		{
-			$errors[] = "You did not select Yes or No for the \"Hide on profile?\" option";
+			$errors[] = $lang->error_missing_hidden;
 		}
 
 		if(!$errors)
@@ -83,18 +83,18 @@ if($mybb->input['action'] == "add")
 			
 			$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
 					
-			flash_message("The profile field has successfully been created.", 'success');
+			flash_message($lang->success_profile_field_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/profile_fields");
 		}
 	}
 	
-	$page->add_breadcrumb_item("Add Profile Field");
-	$page->output_header("Custom Profile Fielsd - Add Profile Field");
+	$page->add_breadcrumb_item($lang->add_profile_field);
+	$page->output_header($lang->custom_profile_fields." - ".$lang->add_profile_field);
 	
 	$sub_tabs['add_profile_field'] = array(
-		'title' => "Add New Profile Field",
+		'title' => $lang->add_new_profile_field,
 		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",
-		'description' => 'Here you can add a new custom profile field.'
+		'description' => $lang->add_new_profile_field_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_profile_field');
@@ -112,29 +112,29 @@ if($mybb->input['action'] == "add")
 		$mybb->input['hidden'] = 'no';
 	}
 	
-	$form_container = new FormContainer("Add New Profile Field");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row("Short Description <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row("Maximum Length", "This maximum number of characters that can be entered. This only applies to textboxes and textareas.", $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
-	$form_container->output_row("Field Length", "This length of the field. This only applies to single and multiple select boxes.", $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
-	$form_container->output_row("Display Order <em>*</em>", "This is the order of custom profile fields in relation to other custom profile fields. This number should not be the same as another field.", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container = new FormContainer($lang->add_new_profile_field);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	
 	$select_list = array(
-		"text" => "Textbox",
-		"textarea" => "Textarea",
-		"select" => "Select Box",
-		"multiselect" => "Multiple Option Selection Box",
-		"radio" => "Radio Buttons",
-		"checkbox" => "Check Boxes"
+		"text" => $lang->text,
+		"textarea" => $lang->textarea,
+		"select" => $lang->select,
+		"multiselect" => $lang->multiselect,
+		"radio" => $lang->radio,
+		"checkbox" => $lang->checkbox
 	);
-	$form_container->output_row("Field Type <em>*</em>", "This is the field type that will be shown.", $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
-	$form_container->output_row("Selectable Options?", "Please enter each option on a seperate line. This only applies to the select boxes, check boxes, and radio buttons types.", $form->generate_text_area('options', $mybb->input['options']), 'options');
-	$form_container->output_row("Required? <em>*</em>", "Is this field required to be filled in during registration or profile editing? Note that this does not apply if the field is hidden.", $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
-	$form_container->output_row("Editable by user? <em>*</em>", "Should this field be editable by the user? If not, administrators/moderators can still edit the field.", $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
-	$form_container->output_row("Hide on profile? <em>*</em>", "Should this field be hidden on the user's profile? If it is hidden, it can only be viewed by administrators/moderators.", $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
+	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options');
+	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
+	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
+	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save Profile Field");
+	$buttons[] = $form->generate_submit_button($lang->save_profile_field);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -149,7 +149,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$profile_field['fid'])
 	{
-		flash_message("The selected profile field does not exist.", 'error');
+		flash_message($lang->error_invalid_fid, 'error');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
 		
@@ -157,32 +157,32 @@ if($mybb->input['action'] == "edit")
 	{
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = "You did not enter a title for this custom profile field";
+			$errors[] = $lang->error_missing_name;
 		}
 
 		if(!trim($mybb->input['description']))
 		{
-			$errors[] = "You did not enter a description for this custom profile field";
+			$errors[] = $lang->error_missing_description;
 		}
 
 		if(!trim($mybb->input['fieldtype']))
 		{
-			$errors[] = "You did not enter a field type for this custom profile field";
+			$errors[] = $lang->error_missing_fieldtype;
 		}
 		
 		if(!trim($mybb->input['required']))
 		{
-			$errors[] = "You did not select Yes or No for the \"Required?\" option";
+			$errors[] = $lang->error_missing_required;
 		}
 		
 		if(!trim($mybb->input['editable']))
 		{
-			$errors[] = "You did not select Yes or No for the \"Editable by user?\" option";
+			$errors[] = $lang->error_missing_editable;
 		}
 		
 		if(!trim($mybb->input['hidden']))
 		{
-			$errors[] = "You did not select Yes or No for the \"Hide on profile?\" option";
+			$errors[] = $lang->error_missing_hidden;
 		}
 
 		if(!$errors)
@@ -201,18 +201,18 @@ if($mybb->input['action'] == "edit")
 			
 			$db->update_query("profilefields", $profile_field, "fid = '".intval($mybb->input['fid'])."'");
 			
-			flash_message("The custom profile field has been saved successfully.", 'success');
+			flash_message($lang->success_profile_field_saved, 'success');
 			admin_redirect("index.php?".SID."&module=config/profile_fields");
 		}
 	}
 	
-	$page->add_breadcrumb_item("Edit Profile Field");
-	$page->output_header("Custom Profile Fields - Edit Profile Field");
+	$page->add_breadcrumb_item($lang->edit_profile_field);
+	$page->output_header($lang->custom_profile_fields." - ".$lang->edit_profile_field);
 	
 	$sub_tabs['edit_profile_field'] = array(
-		'title' => "Edit Profile Field",
+		'title' => $lang->edit_profile_field,
 		'link' => "index.php?".SID."&amp;module=config/&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
-		'description' => 'Here you can edit a custom profile field.'
+		'description' => $lang->edit_profile_field_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_profile_field');
@@ -234,29 +234,29 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['options'] = $type[1];
 	}
 	
-	$form_container = new FormContainer("Edit Profile Field");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row("Short Description <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row("Maximum Length", "This maximum number of characters that can be entered. This only applies to textboxes and textareas.", $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
-	$form_container->output_row("Field Length", "This length of the field. This only applies to single and multiple select boxes.", $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
-	$form_container->output_row("Display Order <em>*</em>", "This is the order of custom profile fields in relation to other custom profile fields. This number should not be the same as another field.", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container = new FormContainer($lang->edit_profile_field);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	
 	$select_list = array(
-		"text" => "Textbox",
-		"textarea" => "Textarea",
-		"select" => "Select Box",
-		"multiselect" => "Multiple Option Selection Box",
-		"radio" => "Radio Buttons",
-		"checkbox" => "Check Boxes"
+		"text" => $lang->text,
+		"textarea" => $lang->textarea,
+		"select" => $lang->select,
+		"multiselect" => $lang->multiselect,
+		"radio" => $lang->radio,
+		"checkbox" => $lang->checkbox
 	);
-	$form_container->output_row("Field Type <em>*</em>", "This is the field type that will be shown.", $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
-	$form_container->output_row("Selectable Options?", "Please enter each option on a seperate line. This only applies to the select boxes, check boxes, and radio buttons types.", $form->generate_text_area('options', $mybb->input['options']), 'options');
-	$form_container->output_row("Required? <em>*</em>", "Is this field required to be filled in during registration or profile editing? Note that this does not apply if the field is hidden.", $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
-	$form_container->output_row("Editable by user? <em>*</em>", "Should this field be editable by the user? If not, administrators/moderators can still edit the field.", $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
-	$form_container->output_row("Hide on profile? <em>*</em>", "Should this field be hidden on the user's profile? If it is hidden, it can only be viewed by administrators/moderators.", $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
+	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options');
+	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
+	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
+	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save Profile Field");
+	$buttons[] = $form->generate_submit_button($lang->save_profile_field);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -272,7 +272,7 @@ if($mybb->input['action'] == "delete")
 	// Does the profile field not exist?
 	if(!$profile_field['fid'])
 	{
-		flash_message('The specified profile field does not exist.', 'error');
+		flash_message($lang->error_invalid_fid, 'error');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
 
@@ -287,26 +287,26 @@ if($mybb->input['action'] == "delete")
 		// Delete the profile field
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
 
-		flash_message('The profile field has been deleted.', 'success');
+		flash_message($lang->success_profile_field_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=config/profile_fields&amp;action=delete&amp;fid={$profile_field['fid']}", "Are you sure you wish to delete this profile field?");
+		$page->output_confirm_action("index.php?".SID."&module=config/profile_fields&amp;action=delete&amp;fid={$profile_field['fid']}", $lang->confirm_profile_field_deletion);
 	}
 }
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Custom Profile Fields");
+	$page->output_header($lang->custom_profile_fields);
 
 	$sub_tabs['custom_profile_fields'] = array(
-		'title' => "Custom Profile Fields",
+		'title' => $lang->custom_profile_fields,
 		'link' => "index.php?".SID."&amp;module=config/profile_fields",
-		'description' => "This section allows you to edit, delete, and manage your custom profile fields."
+		'description' => $lang->custom_profile_fields_desc
 	);
 	$sub_tabs['add_profile_field'] = array(
-		'title' => "Add New Profile Field",
+		'title' => $lang->add_new_profile_field,
 		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",
 	);
 
@@ -314,12 +314,12 @@ if(!$mybb->input['action'])
 	$page->output_nav_tabs($sub_tabs, 'custom_profile_fields');
 	
 	$table = new Table;
-	$table->construct_header("Name");
-	$table->construct_header("ID", array("class" => "align_center"));
-	$table->construct_header("Required?", array("class" => "align_center"));
-	$table->construct_header("Editable?", array("class" => "align_center"));
-	$table->construct_header("Hidden?", array("class" => "align_center"));
-	$table->construct_header("Controls", array("class" => "align_center"));
+	$table->construct_header($lang->name);
+	$table->construct_header($lang->id, array("class" => "align_center"));
+	$table->construct_header($lang->required, array("class" => "align_center"));
+	$table->construct_header($lang->editable, array("class" => "align_center"));
+	$table->construct_header($lang->hidden, array("class" => "align_center"));
+	$table->construct_header($lang->controls, array("class" => "align_center"));
 	
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($field = $db->fetch_array($query))
@@ -330,20 +330,20 @@ if(!$mybb->input['action'])
 		$table->construct_cell(ucfirst($field['editable']), array("class" => "align_center", 'width' => '10%'));		
 		$table->construct_cell(ucfirst($field['hidden']), array("class" => "align_center", 'width' => '10%'));
 		
-		$popup = new PopupMenu("field_{$field['fid']}", "Options");
-		$popup->add_item("Edit Field", "index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}");
-		$popup->add_item("Delete Field", "index.php?".SID."&amp;module=config/profile_fields&amp;action=delete&amp;fid={$field['fid']}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this custom profile field?')");
+		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
+		$popup->add_item($lang->edit_field, "index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}");
+		$popup->add_item($lang->delete_field, "index.php?".SID."&amp;module=config/profile_fields&amp;action=delete&amp;fid={$field['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_profile_field_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center", 'width' => '20%'));
 		$table->construct_row();
 	}
 	
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are no custom profile fields on your forum at this time.", array('colspan' => 6));
+		$table->construct_cell($lang->no_profile_fields, array('colspan' => 6));
 		$table->construct_row();
 	}
 	
-	$table->output("Custom Profile Fields");
+	$table->output($lang->custom_profile_fields);
 	
 	$page->output_footer();
 }

@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 //   Delete setting page
 //   Add / edit group pages
 
-$page->add_breadcrumb_item("Board Settings", "index.php?".SID."&amp;module=config/settings");
+$page->add_breadcrumb_item($lang->board_settings, "index.php?".SID."&amp;module=config/settings");
 
 // Creating a new setting
 if($mybb->input['action'] == "add")
@@ -29,24 +29,24 @@ if($mybb->input['action'] == "add")
 	{
 		if(!trim($mybb->input['title']))
 		{
-			$errors[] = "You did not enter a title for this setting";
+			$errors[] = $lang->error_missing_title;
 		}
 
 		$query = $db->simple_select("settinggroups", "gid", "gid='".intval($mybb->input['gid'])."'");
 		$gid = $db->fetch_field($query, 'gid');
 		if(!$gid)
 		{
-			$errors[] = "You did not select a valid group to place this setting in";
+			$errors[] = $lang->error_invalid_gid;
 		}
 
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = "You did not enter a name for this setting";
+			$errors[] = $lang->error_missing_name;
 		}
 
 		if(!$mybb->input['type'])
 		{
-			$errors[] = "You did not select a valid type for this setting";
+			$errors[] = $lang->error_invalid_type;
 		}
 
 		if(!$errors)
@@ -63,6 +63,7 @@ if($mybb->input['action'] == "add")
 			{
 				$options_code = $mybb->input['type'];
 			}
+			
 			$new_setting = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"title" => $db->escape_string($mybb->input['title']),
@@ -72,20 +73,21 @@ if($mybb->input['action'] == "add")
 				"disporder" => intval($mybb->input['disporder']),
 				"gid" => intval($mybb->input['gid'])
 			);
+			
 			$db->insert_query("settings", $new_setting);
 			rebuild_settings();
-			flash_message('The setting has successfully been created', 'success');
+			flash_message($lang->success_setting_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings");
 		}
 	}
 
-	$page->add_breadcrumb_item("Add New Setting");
-	$page->output_header("Board Settings - Add New Setting");
+	$page->add_breadcrumb_item($lang->add_new_setting);
+	$page->output_header($lang->board_settings." - ".$lang->add_new_setting);
 	
 	$sub_tabs['add_setting'] = array(
-		'title' => "Add New Setting",
+		'title' => $lang->add_new_setting,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add",
-		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+		'description' => $lang->add_new_setting_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_setting');
@@ -97,40 +99,40 @@ if($mybb->input['action'] == "add")
 		$page->output_inline_error($errors);
 	}
 
-	$form_container = new FormContainer("Add New Setting");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row("Description", "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container = new FormContainer($lang->add_new_setting);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
 	
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
 		$options[$group['gid']] = $group['title'];
 	}
-	$form_container->output_row("Group <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row("Display Order", "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $mybb->input['gid'], array('id' => 'gid')), 'gid');
+	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 
-	$form_container->output_row("Name <em>*</em>", 'The setting name the key name of the settings array used in scripts and templates.', $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 
 	$setting_types = array(
-		"text" => "Text",
-		"textarea" => "Textarea",
-		"yesno" => "Yes / No Choice",
-		"onoff" => "On / Off Choice",
-		"select" => "Selection Box",
-		"radio" => "Radio Buttons",
-		"checkbox" => "Checkboxes",
-		"language" => "Language Selection Box",
-		"adminlanguage" => "Administration Language Selection Box",
-		"cpstyle" => "Control Panel Style Selection Box",
-		"php" => "Evaluated PHP"
+		"text" => $lang->text,
+		"textarea" => $lang->textarea,
+		"yesno" => $lang->yesno,
+		"onoff" => $lang->onoff,
+		"select" => $lang->select,
+		"radio" => $lang->radio,
+		"checkbox" => $lang->checkbox,
+		"language" => $lang->language,
+		"adminlanguage" => $lang->adminlanguage,
+		"cpstyle" => $lang->cpstyle,
+		"php" => $lang->php
 	);
 
-	$form_container->output_row("Type <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
-	$form_container->output_row("Extra", 'If this setting is a select, radio or check box enter a key paired (key=Item) list of items to show. Separate items with a new line. If PHP, enter the PHP to be evaluated.', $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra');
-	$form_container->output_row("Value", "", $form->generate_text_area('value', $mybb->input['value'], array('id' => 'value')), 'value');
+	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra');
+	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->input['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Insert New Setting");
+	$buttons[] = $form->generate_submit_button($lang->insert_new_setting);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -146,7 +148,7 @@ if($mybb->input['action'] == "edit")
 	// Does the setting not exist?
 	if(!$setting['sid'])
 	{
-		flash_message('The specified setting does not exist', 'error');
+		flash_message($lang->error_invalid_sid, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}
 	
@@ -154,24 +156,24 @@ if($mybb->input['action'] == "edit")
 	{
 		if(!trim($mybb->input['title']))
 		{
-			$errors[] = "You did not enter a title for this setting";
+			$errors[] = $lang->error_missing_title;
 		}
 
 		$query = $db->simple_select("settinggroups", "gid", "gid='".intval($mybb->input['gid'])."'");
 		$gid = $db->fetch_field($query, 'gid');
 		if(!$gid)
 		{
-			$errors[] = "You did not select a valid group to place this setting in";
+			$errors[] = $lang->error_invalid_gid;
 		}
 
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = "You did not enter a name for this setting";
+			$errors[] = $lang->error_missing_name;
 		}
 
 		if(!$mybb->input['type'])
 		{
-			$errors[] = "You did not select a valid type for this setting";
+			$errors[] = $lang->error_invalid_type;
 		}
 
 		if(!$errors)
@@ -199,18 +201,18 @@ if($mybb->input['action'] == "edit")
 			);
 			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
 			rebuild_settings();
-			flash_message('The setting has successfully been updated.', 'success');
+			flash_message($lang->success_setting_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings");
 		}
 	}
 
-	$page->add_breadcrumb_item("Edit Setting");
-	$page->output_header("Board Settings - Edit Setting");
+	$page->add_breadcrumb_item($lang->edit_setting);
+	$page->output_header($lang->board_settings." - ".$lang->edit_setting);
 	
 	$sub_tabs['modify_setting'] = array(
-		'title' => "Modify Existing Settings",
+		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit",
-		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+		'description' => $lang->modify_existing_settings_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'modify_setting');
@@ -232,41 +234,42 @@ if($mybb->input['action'] == "edit")
 		$setting_data['extra'] = trim($type[1]);
 	}
 
-	$form_container = new FormContainer("Modify Setting");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
-	$form_container->output_row("Description", "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
+	$form_container = new FormContainer($lang->modify_setting);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $setting_data['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $setting_data['description'], array('id' => 'description')), 'description');
 	
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
 	while($group = $db->fetch_array($query))
 	{
 		$options[$group['gid']] = $group['title'];
 	}
-	$form_container->output_row("Group <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
-	$form_container->output_row("Display Order", "", $form->generate_text_box('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->group." <em>*</em>", "", $form->generate_select_box("gid", $options, $setting_data['gid'], array('id' => 'gid')), 'gid');
+	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $setting_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 
-	$form_container = new FormContainer("Setting Configuration", 1);
-	$form_container->output_row("Name <em>*</em>", 'The setting name the key name of the settings array used in scripts and templates.', $form->generate_text_box('name', $setting_data['name'], array('id' => 'name')), 'name');
+	$form_container = new FormContainer($lang->setting_configuration, 1);
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $setting_data['name'], array('id' => 'name')), 'name');
 
 	$setting_types = array(
-		"text" => "Text",
-		"textarea" => "Textarea",
-		"yesno" => "Yes / No Choice",
-		"onoff" => "On / Off Choice",
-		"select" => "Selection Box",
-		"radio" => "Radio Buttons",
-		"checkbox" => "Checkboxes",
-		"language" => "Language Selection Box",
-		"adminlanguage" => "Administration Language Selection Box",
-		"cpstyle" => "Control Panel Style Selection Box",
-		"php" => "Evaluated PHP"
+		"text" => $lang->text,
+		"textarea" => $lang->textarea,
+		"yesno" => $lang->yesno,
+		"onoff" => $lang->onoff,
+		"select" => $lang->select,
+		"radio" => $lang->radio,
+		"checkbox" => $lang->checkbox,
+		"language" => $lang->language,
+		"adminlanguage" => $lang->adminlanguage,
+		"cpstyle" => $lang->cpstyle,
+		"php" => $lang->php
 	);
-	$form_container->output_row("Type <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
-	$form_container->output_row("Extra", 'If this setting is a select, radio or check box enter a key paired (key=Item) list of items to show. Separate items with a new line. If PHP, enter the PHP to be evaluated.', $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra');
-	$form_container->output_row("Value", '', $form->generate_text_area('value', $setting_data['value'], array('id' => 'value')), 'value');
+
+	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra');
+	$form_container->output_row($lang->value, '', $form->generate_text_area('value', $setting_data['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Update Setting");
+	$buttons[] = $form->generate_submit_button($lang->update_setting);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -301,7 +304,7 @@ if($mybb->input['action'] == "change")
 				$db->create_fulltext_index("threads", "subject");
 			}
 		}
-		flash_message('The settings have successfully been updated.', 'success');
+		flash_message($lang->success_settings_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}
 
@@ -316,10 +319,10 @@ if($mybb->input['action'] == "change")
 	
 	if(!$groupinfo['gid'])
 	{
-		$page->output_error("You have followed a link to an invalid setting group. Please ensure it exists.");
+		$page->output_error($lang->error_invalid_gid2);
 	}
 	$page->add_breadcrumb_item($groupinfo['title']);
-	$page->output_header("Board Settings - {$groupinfo['title']}");
+	$page->output_header($lang->board_settings." - {$groupinfo['title']}");
 	
 	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
 
@@ -439,7 +442,7 @@ if($mybb->input['action'] == "change")
 	}
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save Settings");
+	$buttons[] = $form->generate_submit_button($lang->save_settings);
 	
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -449,34 +452,32 @@ if($mybb->input['action'] == "change")
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Board Settings");
+	$page->output_header($lang->board_settings);
 	if($message)
 	{
 		$page->output_inline_message($message);
 	}
 
 	$sub_tabs['change_settings'] = array(
-		'title' => "Change Settings",
+		'title' => $lang->change_settings,
 		'link' => "index.php?".SID."&amp;module=config/settings",
-		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+		'description' => $lang->change_settings_desc
 	);
 	$sub_tabs['add_setting'] = array(
-		'title' => "Add New Setting",
-		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add",
-		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
+		'title' => $lang->add_new_setting,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add"
 	);
 	
 	$sub_tabs['modify_setting'] = array(
-		'title' => "Modify Existing Settings",
+		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage",
-		'description' => "This section allows you to manage all of the various settings relating to your board. To begin, select a group below to manage settings relating to that group."
 	);
 	
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
 
 	$table = new Table;
-	$table->construct_header("Setting Groups");
+	$table->construct_header($lang->setting_groups);
 
 	switch($db->type)
 	{
@@ -500,10 +501,10 @@ if(!$mybb->input['action'])
 	}
 	while($group = $db->fetch_array($query))
 	{
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} Settings)<br /><small>{$group['description']}</small>");
+		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} {$lang->settings})<br /><small>{$group['description']}</small>");
 		$table->construct_row();
 	}
-	$table->output("Board Settings");
+	$table->output($lang->board_settings);
 
 	$page->output_footer();
 }

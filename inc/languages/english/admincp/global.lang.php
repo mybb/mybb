@@ -53,4 +53,5 @@ $l['error'] = "Error";
 $l['edit'] = "Edit";
 $l['delete'] = "Delete";
 $l['never'] = "Never";
+$l['legend'] = "Legend";
 ?>
