@@ -480,7 +480,7 @@ function upgrade5_lastposts()
 		$query = $db->simple_select(TABLE_PREFIX."threads", "tid, firstpost", "closed NOT LIKE 'moved|%'", array("order_by" => "tid", "order_dir" => "asc", "limit" => $tpp, "limit_start" => $start));
 		while($thread = $db->fetch_array($query))
 		{
-			update_thread_count($thread['tid']);
+			update_thread_counters($thread['tid']);
 			if($thread['firstpost'] == 0)
 			{
 				update_first_post($thread['tid']);
