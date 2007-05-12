@@ -81,7 +81,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	}
 	if($addselect)
 	{
-		$forumlist = "<select name=\"forums[]\" size=\"15\" multiple=\"multiple\">\n<option value=\"all\" selected=\"selected\">$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
+		$forumlist = "<select name=\"forums\" size=\"15\" multiple=\"multiple\">\n<option value=\"all\" selected=\"selected\">$lang->search_all_forums</option>\n<option value=\"all\">----------------------</option>\n$forumlistbits\n</select>";
 	}
 	return $forumlist;
 }
@@ -416,6 +416,7 @@ function perform_search_mysql($search)
 		{
 			$datecut = ">=";
 		}
+		$now = time();
 		$datelimit = $now-(86400 * $search['postdate']);
 		$datecut .= "'$datelimit'";
 		$post_datecut = " AND p.dateline $datecut";
@@ -670,6 +671,7 @@ function perform_search_mysql_ft($search)
 		{
 			$datecut = ">=";
 		}
+		$now = time();
 		$datelimit = $now-(86400 * $search['postdate']);
 		$datecut .= "'$datelimit'";
 		$post_datecut = " AND p.dateline $datecut";

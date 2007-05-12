@@ -70,6 +70,6 @@ $l['redirect_markforumsread'] = "All the forums have been marked as read.";
 $l['redirect_forumpasscleared'] = "The stored password for this forum has been cleared.";
 $l['redirect_cookiescleared'] = "All cookies have been cleared.";
 
-$l['error_invalidimtype'] = "This user does not have a {1} instant messenger account specified in their profile.";
+$l['error_invalidimtype'] = "This user does not have this type of instant messenger account specified in their profile.";
 $l['error_invalidhelpdoc'] = "The specified help document does not appear to exist.";
 ?>

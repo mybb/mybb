@@ -803,7 +803,6 @@ class Moderation
 			{
 				$pcount = "-{$posters['posts']}";
 			}
-			
 			if(!empty($pcount))
 			{
 				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
@@ -909,7 +908,7 @@ class Moderation
 
 		$this->delete_thread($mergetid);
 		$updated_stats = array( 
-			"replies" => "+{$mergethread['replies']}", 
+			"replies" => "+".($mergethread['replies']+1), 
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}" 
 		); 
 		update_thread_counters($tid, $updated_stats); 
