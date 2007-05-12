@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Attachment Types", "index.php?".SID."&amp;module=config/attachment_types");
+$page->add_breadcrumb_item($lang->attachment_types, "index.php?".SID."&amp;module=config/attachment_types");
 
 
 if($mybb->input['action'] == "add")
@@ -24,12 +24,12 @@ if($mybb->input['action'] == "add")
 	{
 		if(!trim($mybb->input['mimetype']))
 		{
-			$errors[] = "You did not enter a MIME type for this attachment type";
+			$errors[] = $lang->error_missing_mime_type;
 		}
 
 		if(!trim($mybb->input['extension']))
 		{
-			$errors[] = "You did not enter a file extension for this attachment type";
+			$errors[] = $lang->error_missing_extension;
 		}
 
 		if(!$errors)
@@ -50,18 +50,18 @@ if($mybb->input['action'] == "add")
 
 			$cache->update_attachtypes();
 
-			flash_message("The attachment type has successfully been created.", 'success');
+			flash_message($lang->attachment_type_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/attachment_types");
 		}
 	}
 
 	
-	$page->add_breadcrumb_item("Add Attachment Type");
-	$page->output_header("Attachment Types - Add Attachment Type");
+	$page->add_breadcrumb_item($lang->add_attachment_type);
+	$page->output_header($lang->attachment_types." - ".$lang->add_attachment_type);
 	
 	$sub_tabs['add_attachment_type'] = array(
-		'title' => "Add Attachment Type",
-		'description' => 'Adding a new attachment type will allow members to attach files of this type to their posts. You have the ability to control the extension, MIME type, maximum size and show a small icon for each attachment type.'
+		'title' => $lang->add_attachment_type,
+		'description' => $lang->add_attachment_type_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_attachment_type');
@@ -75,18 +75,18 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input['maxsize'] = '1024';
-		$mybb->input['mimetype'] = "images/attachtypes/";
+		$mybb->input['icon'] = "images/attachtypes/";
 	}
 	
-	$form_container = new FormContainer("Add New Attachment Type");
-	$form_container->output_row("File Extension <em>*</em>", "Enter the file extension you wish to allow uploads for here (Do not include the period before the extension) (Example: txt)", $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
-	$form_container->output_row("MIME Type <em>*</em>", "Enter the MIME type sent by the server when downloading files of this type (<a href=\"http://www.webmaster-toolkit.com/mime-types.shtml\">See a list here</a>)", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row("Maximum File Size (Kilobytes)", "The maximum file size for uploads of this attachment type in Kilobytes (1 MB = 1024 KB)", $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
-	$form_container->output_row("Attachment Icon", "If you wish to show a small attachment icon for attachments of this type then enter the path to it here", $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
+	$form_container = new FormContainer($lang->add_new_attachment_type);
+	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
+	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save Attachment Type");
+	$buttons[] = $form->generate_submit_button($lang->save_attachment_type);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -101,7 +101,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$attachment_type['atid'])
 	{
-		flash_message("You have selected an invalid attachment type.", 'error');
+		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?".SID."&module=config/attachment_types");
 	}
 		
@@ -109,12 +109,12 @@ if($mybb->input['action'] == "edit")
 	{
 		if(!trim($mybb->input['mimetype']))
 		{
-			$errors[] = "You did not enter a MIME type for this attachment type";
+			$errors[] = $lang->error_missing_mime_type;
 		}
 
 		if(!trim($mybb->input['extension']))
 		{
-			$errors[] = "You did not enter a file extension for this attachment type";
+			$errors[] = $lang->error_missing_extension;
 		}
 
 		if(!$errors)
@@ -135,17 +135,17 @@ if($mybb->input['action'] == "edit")
 
 			$cache->update_attachtypes();
 
-			flash_message("The attachment type has successfully been updated.", 'success');
+			flash_message($lang->success_attachment_type_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/attachment_types");
 		}
 	}
 	
-	$page->add_breadcrumb_item("Edit Attachment Type");
-	$page->output_header("Attachment Types - Edit Attachment Type");
+	$page->add_breadcrumb_item($lang->edit_attachment_type);
+	$page->output_header($lang->attachment_types." - ".$lang->edit_attachment_type);
 	
 	$sub_tabs['edit_attachment_type'] = array(
-		'title' => "Edit Attachment Type",
-		'description' => 'You have the ability to control the extension, MIME type, maximum size and show a small mimetype for this attachment type.'
+		'title' => $lang->edit_attachment_type,
+		'description' => $lang->edit_attachment_type_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_attachment_type');
@@ -161,15 +161,15 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $attachment_type;
 	}
 	
-	$form_container = new FormContainer("Edit Attachment Type");
-	$form_container->output_row("File Extension <em>*</em>", "Enter the file extension you wish to allow uploads for here (Do not include the period before the extension) (Example: txt)", $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
-	$form_container->output_row("MIME Type <em>*</em>", "Enter the MIME type sent by the server when downloading files of this type (<a href=\"http://www.webmaster-toolkit.com/mime-types.shtml\">See a list here</a>)", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row("Maximum File Size (Kilobytes)", "The maximum file size for uploads of this attachment type in Kilobytes (1 MB = 1024 KB)", $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
-	$form_container->output_row("Attachment Icon", "If you wish to show a small attachment icon for attachments of this type then enter the path to it here", $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
+	$form_container = new FormContainer($lang->edit_attachment_type);
+	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
+	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save Attachment Type");
+	$buttons[] = $form->generate_submit_button($lang->save_attachment_type);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -189,7 +189,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!$atid)
 	{
-		flash_message("You have selected an invalid attachment type.", 'error');
+		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?".SID."&module=config/attachment_types");
 	}
 	
@@ -199,12 +199,12 @@ if($mybb->input['action'] == "delete")
 
 		$cache->update_attachtypes();
 
-		flash_message("The attachment type has successfully been deleted.", 'success');
+		flash_message($lang->success_attachment_type_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/attachment_types");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$mybb->input['atid']}", "Are you sure you wish to delete this attachment type?"); 
+		$page->output_confirm_action("index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$mybb->input['atid']}", $lang->confirm_attachment_type_deletion); 
 	}
 }
 
@@ -213,22 +213,22 @@ if(!$mybb->input['action'])
 	$page->output_header("Attachment Types");
 
 	$sub_tabs['attachment_types'] = array(
-		'title' => "Attachment Types",
+		'title' => $lang->attachment_types,
 		'link' => "index.php?".SID."&amp;module=config/attachment_types",
-		'description' => "Here you can create and manage attachment types which define which types of files users can attach to posts."
+		'description' => $lang->attachment_types_desc
 	);
 	$sub_tabs['add_attachment_type'] = array(
-		'title' => "Add New Attachment Type",
+		'title' => $lang->add_new_attachment_type,
 		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=add",
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'attachment_types');
 	
 	$table = new Table;
-	$table->construct_header("Extension", array("colspan" => 2));
-	$table->construct_header("MIME Type");
-	$table->construct_header("Maximum Size", array("class" => "align_center"));
-	$table->construct_header("Controls", array("class" => "align_center", "colspan" => 2));
+	$table->construct_header($lang->extension, array("colspan" => 2));
+	$table->construct_header($lang->mime_type);
+	$table->construct_header($lang->maximum_size, array("class" => "align_center"));
+	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2));
 	
 	$query = $db->simple_select("attachtypes", "*", "", array('order_by' => 'extension'));
 	while($attachment_type = $db->fetch_array($query))
@@ -245,18 +245,18 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
 		$table->construct_cell($attachment_type['mimetype']);
 		$table->construct_cell(get_friendly_size($attachment_type['maxsize']), array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">Edit</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this attachment type?')\">Delete</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are no attachment types on your forum at this time.", array('colspan' => 6));
+		$table->construct_cell($lang->no_attachment_types, array('colspan' => 6));
 		$table->construct_row();
 	}
 	
-	$table->output("Attachment Types");
+	$table->output($lang->attachment_types);
 	
 	$page->output_footer();
 }
