@@ -82,4 +82,6 @@ $l['quickreply_multiquote_selected'] = "You have selected one or more posts to q
 $l['quickreply_multiquote_now'] = "Quote these posts now";
 $l['or'] ="or";
 $l['quickreply_multiquote_deselect'] = "deselect them";
+$l['image_verification'] = "Image Verification";
+$l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
 ?>

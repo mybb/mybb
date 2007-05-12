@@ -481,6 +481,19 @@ if($mybb->input['action'] == "thread")
 	// Decide whether or not to include signatures.
 	if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid) == "yes") && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
 	{
+		// Show captcha image for guests if enabled
+		if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+		{
+			$randomstr = random_str(5);
+			$imagehash = md5($randomstr);
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => time()
+			);
+			$db->insert_query(TABLE_PREFIX."captcha", $imagearray);
+			eval("\$captcha = \"".$templates->get("post_captcha")."\";");
+		}
 		if($mybb->user['signature'])
 		{
 			$postoptionschecked['signature'] = "checked";
