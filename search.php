@@ -62,8 +62,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("search_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = strtolower($mybb->input['order']);
-	$sortby = $mybb->input['sortby'];
+	$order = strtolower(htmlspecialchars($mybb->input['order']));
+	$sortby = htmlspecialchars($mybb->input['sortby']);
 
 	switch($sortby)
 	{
@@ -857,7 +857,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 
 	$db->insert_query(TABLE_PREFIX."searchlog", $searcharray);
 
-	if(strtolower($mybb->input['sortordr']) == "asc" || strtolower($mybb->input['sortordr'] == "desc"))
+	if(strtolower($mybb->input['sortordr']) == "asc" || strtolower($mybb->input['sortordr']) == "desc")
 	{
 		$sortorder = $mybb->input['sortordr'];
 	}
