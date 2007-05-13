@@ -62,8 +62,8 @@ if($mybb->input['action'] == "results")
 	$plugins->run_hooks("search_results_start");
 
 	// Decide on our sorting fields and sorting order.
-	$order = my_strtolower($mybb->input['order']);
-	$sortby = $mybb->input['sortby'];
+	$order = my_strtolower(htmlspecialchars($mybb->input['order']));
+	$sortby = my_strtolower(htmlspecialchars($mybb->input['sortby']));
 
 	switch($sortby)
 	{

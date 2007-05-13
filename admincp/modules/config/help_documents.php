@@ -615,7 +615,7 @@ if(!$mybb->input['action'])
 			{
 				$icon = '<img src="styles/default/images/icons/default.gif" alt="{$lang->default_doc_sec}" style="vertical-align: middle;" />';
 			}
-			$table->construct_cell("<div class=\"float_right\">{$icon}</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>{$doc['name']}</strong><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>{$doc['description']}</small></div>");
+			$table->construct_cell("<div style=\"padding-left: 40px;\"><div class=\"float_right\">{$icon}</div><div><strong>{$doc['name']}</strong><br /><small>{$doc['description']}</small></div></div>");
 
 			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
 			

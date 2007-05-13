@@ -320,9 +320,9 @@ function upload_attachment($attachment)
 		$query = $db->simple_select("attachments", "SUM(filesize) AS ausage", "uid='".$mybb->user['uid']."'");
 		$usage = $db->fetch_array($query);
 		$usage = $usage['ausage']+$attachment['size'];
-		if($usage > ($mybb->usergroup['attachquota']*1000))
+		if($usage > ($mybb->usergroup['attachquota']*1024))
 		{
-			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1000);
+			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 			$ret['error'] = sprintf($lang->error_reachedattachquota, $friendlyquota);
 			return $ret;
 		}

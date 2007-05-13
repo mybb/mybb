@@ -352,6 +352,8 @@ if(!isset($mybb->input['order']) && !empty($foruminfo['defaultsortorder']))
 	$mybb->input['order'] = $foruminfo['defaultsortorder'];
 }
 
+$mybb->input['order'] = htmlspecialchars($mybb->input['order']);
+
 switch(my_strtolower($mybb->input['order']))
 {
 	case "asc":
@@ -374,7 +376,7 @@ if(!isset($mybb->input['sortby']) && !empty($foruminfo['defaultsortby']))
 	$mybb->input['sortby'] = $foruminfo['defaultsortby'];
 }
 
-$sortby = $mybb->input['sortby'];
+$sortby = htmlspecialchars($mybb->input['sortby']);
 switch($mybb->input['sortby'])
 {
 	case "subject":

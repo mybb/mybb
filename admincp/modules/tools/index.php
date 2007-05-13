@@ -37,9 +37,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 		
 		$sub_tabs['utf8_conversion'] = array(
-			'title' => $lang->system_health,
+			'title' => $lang->utf8_conversion,
 			'link' => "index.php?".SID."&amp;module=tools/stats&amp;action=utf8_conversion",
-			'description' => $lang->system_health_desc
+			'description' => $lang->utf8_conversion_desc2
 		);
 		
 		$page->output_nav_tabs($sub_tabs, 'utf8_conversion');

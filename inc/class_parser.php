@@ -264,7 +264,7 @@ class postParser
 		$standard_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
 
 		$standard_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
-		$standard_mycode['align']['replacement'] = "<p style=\"text-align: $1;\">$2</p>";
+		$standard_mycode['align']['replacement'] = "<div style=\"text-align: $1;\">$2</div>";
 
 		$standard_mycode['hr']['regex'] = "#\[hr\]#si";
 		$standard_mycode['hr']['replacement'] = "<hr />";
@@ -511,7 +511,7 @@ class postParser
 		{
 			$replace = array(
 				"\$this->mycode_parse_post_quotes(\"$2\",\"$1\")",
-				"</p>\n<blockquote><cite>$lang->quote</cite>$1</blockquote>\n<p>\n"
+				"<blockquote><cite>$lang->quote</cite>$1</blockquote>\n"
 			);
 		}
 		else
@@ -598,7 +598,7 @@ class postParser
 			{
 				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
 			}
-			return "</p>\n<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote>\n<p>\n";
+			return "<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote>\n";
 		}
 	}
 
@@ -634,7 +634,7 @@ class postParser
 		$code = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $code);
 		$code = str_replace("  ", '&nbsp;&nbsp;', $code);
 
-		return "</p>\n<div class=\"codeblock\">\n<div class=\"title\">".$lang->code."\n</div><div class=\"body\" dir=\"ltr\"><code>".$code."</code></div></div>\n<p>\n";
+		return "<div class=\"codeblock\">\n<div class=\"title\">".$lang->code."\n</div><div class=\"body\" dir=\"ltr\"><code>".$code."</code></div></div>\n";
 	}
 
 	/**
@@ -745,7 +745,7 @@ class postParser
 		}
 
 		// Send back the code all nice and pretty
-		return "</p>\n<div class=\"codeblock phpcodeblock\"><div class=\"title\">$lang->php_code\n</div><div class=\"body\">".$code."</div></div>\n<p>\n";
+		return "<div class=\"codeblock phpcodeblock\"><div class=\"title\">$lang->php_code\n</div><div class=\"body\">".$code."</div></div>\n";
 	}
 
 	/**
