@@ -852,7 +852,7 @@ var inlineId = {$tid};
 </html>]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="yes" tabindex="8" {$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
-		<template name="newreply" version="120"><![CDATA[<html>
+		<template name="newreply" version="127"><![CDATA[<html>
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
@@ -3407,7 +3407,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	var clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 </script>]]></template>
-		<template name="showthread_quickreply" version="120"><![CDATA[<br />
+		<template name="showthread_quickreply" version="127"><![CDATA[<br />
 <form method="post" action="newreply.php" name="input">
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
@@ -4454,7 +4454,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <strong>&raquo;</strong> {$lang->new_posts}<br /><br />
 <a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->view_new}</a><br /><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->view_todays}</a>
 </span>]]></template>
-		<template name="portal" version="120"><![CDATA[<html>
+		<template name="portal" version="127"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
@@ -5294,7 +5294,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$lang->votes}&nbsp;</td>
 <td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
-		<template name="member_resetpassword" version="120"><![CDATA[<html>
+		<template name="member_resetpassword" version="127"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reset_password}</title>
 {$headerinclude}
@@ -6103,7 +6103,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
-		<template name="previewpost" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="previewpost" version="127"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->post_preview}</strong></td>
 </tr>
