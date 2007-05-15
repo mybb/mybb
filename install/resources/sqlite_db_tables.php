@@ -448,9 +448,9 @@ $tables[] = "CREATE TABLE mybb_promotions (
   reputations int NOT NULL default '0',
   reputationtype varchar(120) NOT NULL default '',
   requirements varchar(200) NOT NULL default '',
-  originalusergroup varchar(200) NOT NULL default '0',
+  originalusergroup smallint NOT NULL default '0',
   newusergroup smallint NOT NULL default '0',
-  usergrouptype varchar(120) NOT NULL default '0'
+  usergrouptype varchar(120) NOT NULL default '0',
 );";
 	
 $tables[] = "CREATE TABLE mybb_promotionlogs (

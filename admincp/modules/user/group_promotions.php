@@ -126,7 +126,7 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_no_new_usergroup;
 		}
-		
+
 		if(!trim($mybb->input['usergroupchangetype']))
 		{
 			$errors[] = $lang->error_no_usergroup_change_type;
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "edit")
 				"reputations" => intval($mybb->input['reputationcount']),
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
-				"originalusergroup" => $db->escape_string(implode(",", $mybb->input['originalusergroup'])),
+				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
 				"newusergroup" => intval($mybb->input['newusergroup']),
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
 				"enabled" => intval($mybb->input['enabled']),
@@ -219,11 +219,11 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true)), 'requirements');
 	
 	$options_type = array(
-		"greatthanorequalto" => $lang->greater_than_or_equal_to,
-		"greaterthank" => $lang->greater_than,
-		"equalto" => $lang->equal_to,
-		"lessthanorequalto" => $lang->less_than_or_equal_to,
-		"lessthan" => $lang->less_so
+		">=" => $lang->greater_than_or_equal_to,
+		">" => $lang->greater_than,
+		"=" => $lang->equal_to,
+		"<=" => $lang->less_than_or_equal_to,
+		"<" => $lang->less_than
 	);
 	
 	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_text_box('reputationcount', $mybb->input['reputationcount'], array('id' => 'reputationcount'))." ".$form->generate_select_box("reputationtype", $options_type, $mybb->input['reputationtype'], array('id' => 'reputationtype')), 'reputationcount');
@@ -239,9 +239,8 @@ if($mybb->input['action'] == "edit")
 	);	
 	
 	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
-	$options = array(
-		'*' => $lang->all_user_groups
-	);
+	
+	$options = array();
 	
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'");
 	while($usergroup = $db->fetch_array($query))
@@ -249,12 +248,10 @@ if($mybb->input['action'] == "edit")
 		$options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true)), 'originalusergroup');
-
-	unset($options['*']);
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup')), 'originalusergroup');
 
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
-	
+
 	$options = array(
 		'primary' => $lang->primary_user_group,
 		'secondary' => $lang->secondary_user_group
@@ -308,7 +305,7 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_no_usergroup_change_type;
 		}
-
+		
 		if(!$errors)
 		{
 			$new_promotion = array(
@@ -321,9 +318,9 @@ if($mybb->input['action'] == "add")
 				"reputations" => intval($mybb->input['reputationcount']),
 				"reputationtype" => $db->escape_string($mybb->input['reputationtype']),
 				"requirements" => $db->escape_string(implode(",", $mybb->input['requirements'])),
-				"originalusergroup" => $db->escape_string(implode(",", $mybb->input['originalusergroup'])),
-				"newusergroup" => intval($mybb->input['newusergroup']),
+				"originalusergroup" => $db->escape_string($mybb->input['originalusergroup']),
 				"usergrouptype" => $db->escape_string($mybb->input['usergroupchangetype']),
+				"newusergroup" => intval($mybb->input['newusergroup']),
 				"enabled" => intval($mybb->input['enabled']),
 				"logging" => intval($mybb->input['logging'])
 			);
@@ -369,19 +366,19 @@ if($mybb->input['action'] == "add")
 		"timeregistered" => $lang->time_registered
 	);
 	
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true)), 'requirements');
 	
 	$options_type = array(
-		"greatthanorequalto" => $lang->greater_than_or_equal_to,
-		"greaterthank" => $lang->greater_than,
-		"equalto" => $lang->equal_to,
-		"lessthanorequalto" => $lang->less_than_or_equal_to,
-		"lessthan" => $lang->less_so
+		">=" => $lang->greater_than_or_equal_to,
+		">" => $lang->greater_than,
+		"=" => $lang->equal_to,
+		"<=" => $lang->less_than_or_equal_to,
+		"<" => $lang->less_than
 	);
 	
-	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_text_box('reputationcount', $mybb->input['reputationcount'], array('id' => 'reputationcount'))." ".$form->generate_select_box("reputationtype", $options_type, $mybb->input['reputationtype'], array('id' => 'reputationtype')), 'reputationcount');
+	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_text_box('reputationcount', $mybb->input['reputationcount'], array('id' => 'reputationcount'))." ".$form->generate_select_box("reputationtype[]", $options_type, $mybb->input['reputationtype'], array('id' => 'reputationtype')), 'reputationcount');
 	
-	$form_container->output_row($lang->post_count, $lang->post_count_desc, $form->generate_text_box('postcount', $mybb->input['postcount'], array('id' => 'postcount'))." ".$form->generate_select_box("posttype", $options_type, $mybb->input['posttype'], array('id' => 'posttype')), 'postcount');
+	$form_container->output_row($lang->post_count, $lang->post_count_desc, $form->generate_text_box('postcount', $mybb->input['postcount'], array('id' => 'postcount'))." ".$form->generate_select_box("posttype[]", $options_type, $mybb->input['posttype'], array('id' => 'posttype')), 'postcount');
 	
 	$options = array(
 		"hours" => $lang->hours,
@@ -391,10 +388,8 @@ if($mybb->input['action'] == "add")
 		"years" => $lang->years
 	);	
 	
-	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
-	$options = array(
-		'*' => $lang->all_user_groups
-	);
+	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype[]", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
+	$options = array();
 	
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'");
 	while($usergroup = $db->fetch_array($query))
@@ -402,9 +397,7 @@ if($mybb->input['action'] == "add")
 		$options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true)), 'originalusergroup');
-
-	unset($options['*']);
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup')), 'originalusergroup');
 
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
 	
@@ -414,7 +407,7 @@ if($mybb->input['action'] == "add")
 	);
 	
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
-
+	
 	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
 	
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
