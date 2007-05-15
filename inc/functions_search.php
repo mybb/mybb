@@ -639,8 +639,11 @@ function perform_search_mysql_ft($search)
 					}
 					if(my_strlen($word) < $mybb->settings['minsearchword'])
 					{
-						$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
-						error($lang->error_minsearchlength);
+						$all_too_short = true;
+					}
+					else
+					{
+						$all_too_short = false;
 					}
 				}
 			}
@@ -649,11 +652,20 @@ function perform_search_mysql_ft($search)
 				$phrase = str_replace(array("+", "-", "*"), "", $phrase);
 				if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 				{
-					$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
-					error($lang->error_minsearchlength);
+					$all_too_short = true;
+				}
+				else
+				{
+					$all_too_short = false;
 				}
 			}
 			$inquote = !$inquote;
+		}
+		// Show the minimum search term error only if all search terms are too short
+		if($all_too_short == true)
+		{
+			$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+			error($lang->error_minsearchlength);
 		}
 		$message_lookin = "AND MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
 		$subject_lookin = "AND MATCH(subject) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
