@@ -234,6 +234,7 @@ else
 				$language = $mybb->settings['bblanguage'];
 			}
 			$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
+			$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
 			eval("\$usergroup['groupimage'] = \"".$templates->get("memberlist_user_groupimage")."\";");
 		}
 
@@ -272,6 +273,7 @@ else
 		{
 			$user['starimage'] = $usergroup['starimage'];
 		}
+		$user['starimage'] = str_replace("{theme}", $theme['imgdir'], $user['starimage']);
 
 		for($i = 0; $i < $user['stars']; ++$i)
 		{

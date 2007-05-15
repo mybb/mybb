@@ -25,7 +25,7 @@ $l['mime_type_desc'] = "Enter the MIME type sent by the server when downloading 
 $l['maximum_file_size'] = "Maximum File Size (Kilobytes)";
 $l['maximum_file_size_desc'] = "The maximum file size for uploads of this attachment type in Kilobytes (1 MB = 1024 KB)";
 $l['attachment_icon'] = "Attachment Icon";
-$l['attachment_icon_desc'] = "If you wish to show a small attachment icon for attachments of this type then enter the path to it here";
+$l['attachment_icon_desc'] = "If you wish to show a small attachment icon for attachments of this type then enter the path to it here. {theme} will be replaced by the image directory for the viewers theme allowing you to specify per-theme attachment icons.";
 $l['save_attachment_type'] = "Save Attachment Type";
 
 $l['error_invalid_attachment_type'] = "You have selected an invalid attachment type.";

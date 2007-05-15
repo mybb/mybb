@@ -2420,7 +2420,7 @@ function get_friendly_size($size)
  */
 function get_attachment_icon($ext)
 {
-	global $cache, $attachtypes;
+	global $cache, $attachtypes, $theme;
 
 	if(!$attachtypes)
 	{
@@ -2431,11 +2431,12 @@ function get_attachment_icon($ext)
 
 	if($attachtypes[$ext]['icon'])
 	{
+		$attachtypes[$ext]['icon'] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".{$ext} File\" />";
 	}
 	else
 	{
-		return "<img src=\"images/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext} File\" />";
+		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext} File\" />";
 	}
 }
 

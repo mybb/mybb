@@ -1279,6 +1279,7 @@ if($mybb->input['action'] == "profile")
 			$language = $mybb->settings['bblanguage'];
 		}
 		$displaygroup['image'] = str_replace("{lang}", $language, $displaygroup['image']);
+		$displaygroup['image'] = str_replace("{theme}", $theme['imgdir'], $displaygroup['image']);
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
@@ -1290,6 +1291,7 @@ if($mybb->input['action'] == "profile")
 	{
 		$starimage = $displaygroup['starimage'];
 	}
+	$starimage = str_replace("{theme}", $theme['imgdir'], $starimage);
 	$userstars = '';
 	for($i = 0; $i < $stars; ++$i)
 	{

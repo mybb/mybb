@@ -1244,6 +1244,7 @@ if($mybb->input['action'] == "event")
 		{
 			$event['starimage'] = $user_usergroup['starimage'];
 		}
+		$event['starimage'] = str_replace("{theme}", $theme['imgdir'], $event['starimage']);
 		
 		for($i = 0; $i < $post['stars']; ++$i)
 		{

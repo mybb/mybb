@@ -181,6 +181,7 @@ function build_postbit($post, $post_type=0)
 			$language = $mybb->settings['bblanguage'];
 		}
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
+		$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
 		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
 	}
 
@@ -227,6 +228,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['starimage'] = $usergroup['starimage'];
 		}
+		$post['starimage'] = str_replace("{theme}", $theme['imgdir'], $post['starimage']);
 		
 		for($i = 0; $i < $post['stars']; ++$i)
 		{
