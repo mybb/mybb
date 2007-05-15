@@ -161,19 +161,11 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $attachment_type;
 	}
 	
-<<<<<<< .mine
-	$form_container = new FormContainer("Edit Attachment Type");
-	$form_container->output_row("File Extension <em>*</em>", "Enter the file extension you wish to allow uploads for here (Do not include the period before the extension) (Example: txt)", $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
-	$form_container->output_row("MIME Type <em>*</em>", "Enter the MIME type sent by the server when downloading files of this type (<a href=\"http://www.webmaster-toolkit.com/mime-types.shtml\">See a list here</a>)", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row("Maximum File Size (Kilobytes)", "The maximum file size for uploads of this attachment type in Kilobytes (1 MB = 1024 KB)", $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
-	$form_container->output_row("Attachment Icon", "If you wish to show a small attachment icon for attachments of this type then enter the path to it here. {theme} will be replaced by the image directory for the viewers theme allowing you to specify per-theme attachment icons.", $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
-=======
 	$form_container = new FormContainer($lang->edit_attachment_type);
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
 	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
->>>>>>> .r3056
 
 	$form_container->end();
 

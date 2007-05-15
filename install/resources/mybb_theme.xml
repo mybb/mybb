@@ -4568,7 +4568,7 @@ form {
 <strong>&raquo;</strong> {$lang->new_posts}<br /><br />
 <a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->view_new}</a><br /><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->view_todays}</a>
 </span>]]></template>
-		<template name="portal" version="120"><![CDATA[<html>
+		<template name="portal" version="127"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
@@ -5398,7 +5398,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$lang->votes}&nbsp;</td>
 <td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
-		<template name="member_resetpassword" version="120"><![CDATA[<html>
+		<template name="member_resetpassword" version="127"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reset_password}</title>
 {$headerinclude}
