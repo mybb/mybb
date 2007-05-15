@@ -6,11 +6,11 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id: upgrade7.php 2676 2007-01-27 16:52:06Z Tikitiki $
+ * $Id$
  */
 
 /**
- * Upgrade Script: 1.2.3
+ * Upgrade Script: 1.2.6
  */
 
 
@@ -22,6 +22,6 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-/* Nothing to do from 1.2.3 to 1.2.4 */
+/* Nothing to do from 1.2.6 to 1.2.7 */
 
 ?>
