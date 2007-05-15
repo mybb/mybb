@@ -113,7 +113,14 @@ class databaseEngine
 		}
 		else
 		{
-			$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->error();
+			if(phpversion() < '4.2.0')
+			{
+				$this->link = @mysql_connect($hostname, $username, $password) or $this->dberror();
+			}
+			else
+			{
+				$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->dberror();
+			}
 		}
 		return $this->link;
 	}
