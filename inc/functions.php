@@ -353,6 +353,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 	$headers .= "X-Priority: 3\n";
 	$headers .= "X-MSMail-Priority: Normal\n";
 	$headers .= "X-Mailer: MyBB\n";
+	$headers .= "X-MyBB-Script: {$http_host}/{$_SERVER['PHP_SELF']}\n";
 
 	// For some reason sendmail/qmail doesn't like \r\n
 	$sendmail = @ini_get('sendmail_path');

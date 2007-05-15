@@ -655,6 +655,11 @@ messageEditor.prototype = {
 					}
 				}
 		}
+		
+		if(this.openTags.length == 0) 
+ 		{ 
+			$('close_tags').style.visibility = 'hidden'; 
+ 		}
 	},
 
 	getSelectedText: function(element)
