@@ -617,6 +617,7 @@ function perform_search_mysql_ft($search)
 					else
 					{
 						$all_too_short = false;
+						break;
 					}
 				}
 			}
@@ -630,6 +631,7 @@ function perform_search_mysql_ft($search)
 				else
 				{
 					$all_too_short = false;
+					break;
 				}
 			}
 			$inquote = !$inquote;
@@ -657,6 +659,7 @@ function perform_search_mysql_ft($search)
 			$search['author'] = strtolower($search['author']);
 			$query = $db->query("SELECT uid FROM ".TABLE_PREFIX."users WHERE LOWER(username) LIKE '%".$db->escape_string($search['author'])."%'");
 		}
+		
 		while($user = $db->fetch_array($query))
 		{
 			$userids[] = $user['uid'];
