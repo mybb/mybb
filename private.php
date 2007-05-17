@@ -409,6 +409,18 @@ if($mybb->input['action'] == "send")
 	{
 		$do = "";
 	}
+	
+	/*
+	 * See if it's actually worth showing the buddylist icon.
+	 */
+	$buddies = $mybb->user['buddylist'];
+	$namesarray = explode(',', $buddies);
+	$buddylist = "";
+	if(is_array($namesarray) && !empty($buddies))
+	{
+		eval("\$buddylist = \"".$templates->get("private_send_buddylist")."\";");
+	}
+
 	eval("\$send = \"".$templates->get("private_send")."\";");
 	$plugins->run_hooks("private_send_end");
 	output_page($send);

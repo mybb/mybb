@@ -21,13 +21,23 @@ PopupMenu.prototype = {
 
 		this.menu = $(popupMenu);
 		this.menu.style.display = "none";
+		this.options = options;
 		Event.observe(element, "click", this.openMenu.bindAsEventListener(this));
 	},
 
 	openMenu: function(e)
 	{
+		if(
+			typeof this.options != 'undefined' && typeof this.options.ajax != 'undefined' &&
+			(this.options.update == false && this.menu.innerHTML != "") == false
+		)
+		{
+			this.spinner = new ActivityIndicator(this.menu, {image: "images/spinner.gif"});
+			new Ajax.Request(this.options.ajax, {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
+		}
+
 		Event.stop(e);
-		Event.element(e).blur()
+		Event.element(e).blur();
 		if(document.currentMenu == this.id)
 		{
 			this.closeMenu();
@@ -86,6 +96,27 @@ PopupMenu.prototype = {
 
 		document.currentMenu = element.id;
 		Event.observe(document, 'click', this.closeMenu.bindAsEventListener(this));
+	},
+	
+	onComplete: function(request)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
+		{
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+
+			alert(message[1]);
+		}
+		else if(request.responseText)
+		{
+			this.menu.innerHTML = request.responseText;
+		}
+		this.spinner.destroy();
+		this.spinner = '';
 	},
 
 	closeMenu: function()

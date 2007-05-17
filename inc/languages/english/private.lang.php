@@ -116,6 +116,7 @@ $l['at'] = "at";
 $l['nomessages'] = "There are no private messages in this folder.";
 $l['details'] = "Details";
 $l['message'] = "Message";
+$l['buddy_list'] = "Buddy List";
 $l['multiple_recipients'] = "<em>Multiple recipients</em>";
 $l['bcc'] = "BCC:";
 $l['reply_title'] = "Reply to this private message";

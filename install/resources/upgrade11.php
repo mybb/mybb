@@ -230,7 +230,6 @@ function upgrade9_dbchanges()
 	if($db->field_exists('fid', "threadsubscriptions"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
-	}
 		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
 	}
 	

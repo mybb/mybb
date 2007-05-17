@@ -28,4 +28,5 @@ $l['username_taken'] = "{1} is already registered by another member";
 $l['username_available'] = "{1} is available";
 $l['invalid_username'] = "{1} is not the username of a registered member";
 $l['valid_username'] = "{1} is a valid referrer.";
+$l['buddylist_error'] = "It seems like you do not have any buddies on your buddy list. Please add some before trying to use this.";
 ?>

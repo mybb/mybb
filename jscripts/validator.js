@@ -2,17 +2,7 @@ var FormValidator = Class.create();
 
 FormValidator.prototype = {
 	validation_fields: new Object(),
-
-	returned: false,
-
-	old_value: null,
-
-	old_type: null,
 	
-	old_id: null,
-
-	is_same: false,
-
 	initialize: function(form, options)
 	{
 		if(!$(form))
@@ -71,33 +61,24 @@ FormValidator.prototype = {
 				}
 			}
 			
-			this.returned = this.checkValidation(id, validation_field[i].validation_type, validation_field[i].options, submit_call);
+			result = this.checkValidation(id, validation_field[i].validation_type, validation_field[i].options, submit_call);
 			options = validation_field[i].options;
-			if(this.returned == false)
+			if(result == false)
 			{
-				if(this.is_same == false)
-				{
-					this.showError(id, options.status_field, options.failure_message);
-				}
-				this.old_id = id;
+				this.showError(id, options.status_field, options.failure_message);
 				// don't run any further validation routines
 				return false;
 			}
-			else if(this.returned == "loading")
+			else if(result == "loading")
 			{
 				this.showLoading(id, options.status_field, options.loading_message);
 				$(id).className = "";
-				this.old_id = id;
 				return false;
 			}
 			else
 			{
 				ret = true;
-				if(this.is_same == false)
-				{
-					this.showSuccess(id, options.status_field, options.success_message);
-				}
-				this.old_id = id;
+				this.showSuccess(id, options.status_field, options.success_message);
 				// Has match field
 				if(options.match_field && !twin_call)
 				{
@@ -134,23 +115,7 @@ FormValidator.prototype = {
 		{
 			value = this.getValue(id);
 		}
-
-		type = type.toLowerCase();
-
-		if(this.old_value != null && this.old_type == type && this.old_value == value && this.old_id == id)
-		{
-			this.is_same = true;
-			return this.returned;
-		}
-		else
-		{
-			this.is_same = false;
-		}
-
-		this.old_value = value;
-		this.old_type = type;
-
-		switch(type)
+		switch(type.toLowerCase())
 		{
 			case "ajax":
 				if(use_xmlhttprequest == "yes")
@@ -238,7 +203,6 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showSuccess(id, options.status_field, response);
-			this.returned = true;
 		}
 		else if(request.responseXML.getElementsByTagName("fail").length > 0)
 		{
@@ -248,7 +212,6 @@ FormValidator.prototype = {
 				response = response.data;
 			}
 			this.showError(id, options.status_field, response);
-			this.returned = false;
 		}
 	},
 

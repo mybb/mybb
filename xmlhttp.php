@@ -624,6 +624,51 @@ else if($mybb->input['action'] == "username_exists")
 		exit;
 	}
 }
+else if($mybb->input['action'] == "get_buddylist")
+{
+	// Send our headers.
+	header("Content-type: text/html; charset={$charset}");
+
+	$buddies = $mybb->user['buddylist'];
+	$namesarray = explode(',', $buddies);
+	if(is_array($namesarray) && !empty($buddies))
+	{
+		$comma = '';
+		$sql = '';
+		foreach($namesarray as $key => $buddyid)
+		{
+			$sql[] .= $buddyid;
+		}
+		$sql = "'".implode("','", $sql)."'";
+		$timecut = time() - $mybb->settings['wolcutoff'];
+
+		$query_options = array(
+			"order_by" => "username",
+			"order_dir" => "asc"
+		);
+
+		$query = $db->simple_select("users", "username, invisible, lastactive, lastvisit, usergroup", "uid IN($sql)", $query_options);
+		$online = $offline = array();
+		while($buddy = $db->fetch_array($query))
+		{
+			$buddy_name = htmlspecialchars_uni($buddy['username']);
+			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
+			{
+				eval("\$online[] = \"".$templates->get("private_buddy_online")."\";");
+			}
+			else
+			{
+				eval("\$offline[] = \"".$templates->get("private_buddy_offline")."\";");
+			}
+		}
+	}
+	else
+	{
+		xmlhttp_error($lang->buddylist_error);
+	}
+	echo implode("\n", $online);
+	echo implode("\n", $offline);
+}
 
 /**
  * Spits an XML Http based error message back to the browser
