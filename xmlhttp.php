@@ -637,7 +637,7 @@ else if($mybb->input['action'] == "get_buddylist")
 		$sql = '';
 		foreach($namesarray as $key => $buddyid)
 		{
-			$sql[] .= $buddyid;
+			$sql[] = $buddyid;
 		}
 		$sql = "'".implode("','", $sql)."'";
 		$timecut = time() - $mybb->settings['wolcutoff'];
