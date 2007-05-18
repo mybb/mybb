@@ -3446,7 +3446,7 @@ function get_age($birthday)
 
 	$age = $year-$bday[2];
 
-	if(($month == $bday[1] && $bday[1] < $day) || $month < $bday[1])
+	if(($month == $bday[1] && $day < $bday[1]) || $month < $bday[1])
 	{
 		--$age;
 	}
