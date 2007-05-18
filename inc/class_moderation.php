@@ -1577,7 +1577,7 @@ class Moderation
 			{
 				$groups_csv = implode(',', $groups);
 				$db->query("
-					DELETE s FROM ".TABLE_PREFIX."threadsubscriptions s 
+					DELETE FROM ".TABLE_PREFIX."threadsubscriptions s 
 					LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 					WHERE s.tid IN ({$tids_csv}) AND (u.usergroup IN ({$groups_csv}){$additional_groups})
 				");
