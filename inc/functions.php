@@ -353,7 +353,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 	$headers .= "X-Priority: 3\n";
 	$headers .= "X-MSMail-Priority: Normal\n";
 	$headers .= "X-Mailer: MyBB\n";
-	$headers .= "X-MyBB-Script: {$http_host}/{$_SERVER['PHP_SELF']}\n";
+	$headers .= "X-MyBB-Script: {$http_host}{$_SERVER['PHP_SELF']}\n";
 
 	// For some reason sendmail/qmail doesn't like \r\n
 	$sendmail = @ini_get('sendmail_path');
@@ -1192,11 +1192,6 @@ function get_server_load()
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
 		}
-	}
-	else if(function_exists("shell_exec"))
-	{
-		$load = explode(' ', `uptime`);
-		$serverload[0] = $load[count($load)-1];
 	}
 	else
 	{
@@ -2962,19 +2957,21 @@ function format_bdays($display, $bm, $bd, $by, $wd)
  */
 function get_age($birthday)
 {
-        $bday = explode("-", $birthday);
-        if($bday[2] < 1970)
-        {
-                $years = 1970-$bday[2];
-                $year = $bday[2]+($years*2);
-                $stamp = mktime(0, 0, 0, $bday[1], $bday[0], $year)-($years*31556926*2);
-        }
-        else
-        {
-                $stamp = mktime(0, 0, 0, $bday[1], $bday[0], $bday[2]);
-        }
-        $age = floor((time()-$stamp)/31556926);
-        return $age;
+	$bday = explode("-", $birthday);
+	if(!$bday[2])
+	{
+		return;
+	}
+
+	list($day, $month, $year) = explode("-", my_date("j-n-Y", time(), 0, 0));
+
+	$age = $year-$bday[2];
+
+	if(($month == $bday[1] && $bday[1] < $day) || $month < $bday[1])
+	{
+		--$age;
+	}
+	return $age;
 }
 
 /**
