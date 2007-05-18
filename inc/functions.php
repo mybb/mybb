@@ -1451,12 +1451,6 @@ function get_server_load()
 			$serverload = explode(" ", $load);
 			$serverload[0] = round($serverload[0], 4);
 		}
-		else if(function_exists("shell_exec"))
-		{
-			$load = explode(' ', `uptime`);
-			$serverload[0] = $load[count($load)-1];
-		}
-
 		if(!$serverload)
 		{
 			$load = @exec("uptime");
@@ -3442,22 +3436,21 @@ function format_bdays($display, $bm, $bd, $by, $wd)
  */
 function get_age($birthday)
 {
-        $bday = explode("-", $birthday);
+	$bday = explode("-", $birthday);
+	if(!$bday[2])
+	{
+		return;
+	}
 
-        if($bday[2] < 1970)
-        {
-                $years = 1970 - $bday[2];
-                $year = $bday[2] + ($years * 2);
-                $stamp = mktime(0, 0, 0, $bday[1], $bday[0], $year) - ($years * 31556926 * 2);
-        }
-        else
-        {
-                $stamp = mktime(0, 0, 0, $bday[1], $bday[0], $bday[2]);
-        }
+	list($day, $month, $year) = explode("-", my_date("j-n-Y", time(), 0, 0));
 
-        $age = floor((time() - $stamp) / 31556926);
+	$age = $year-$bday[2];
 
-        return $age;
+	if(($month == $bday[1] && $bday[1] < $day) || $month < $bday[1])
+	{
+		--$age;
+	}
+	return $age;
 }
 
 /**
