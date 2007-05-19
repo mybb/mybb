@@ -525,7 +525,7 @@ form {
 }]]></extracss>
 	</themebits>
 	<templates>
-		    <template name="forumdisplay_threadlist" version="122"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
+			<template name="forumdisplay_threadlist" version="122"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
 	{$newthread}
 </div>
 {$multipage}
@@ -2764,15 +2764,14 @@ form {
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_buddy_offline" version="140"><![CDATA[<div class="popup_item_container"><a href="#" onclick="PopupMenu.add_buddy('{$buddy_name}'); return false;" class="popup_item"><span class="offline" style="font-weight: bold;">{$buddy_name}</span></a></div>]]></template>
-		<template name="private_buddy_online" version="140"><![CDATA[<div class="popup_item_container"><a href="#" onclick="PopupMenu.add_buddy('{$buddy_name}'); return false;" class="popup_item"><span class="online" style="font-weight: bold;">{$buddy_name}</span></a></div>]]></template>
-		<template name="private_send_buddylist" version="140"><![CDATA[<a href="misc.php?action=buddypopup" id="private_buddylist"><img src="{$theme['imgdir']}/buddies.gif" alt="{$lang->buddy_list}" style="vertical-align: 50%" /></a>
+		<template name="private_buddy" version="140"><![CDATA[<div class="popup_item_container"><a href="#" onclick="PopupMenu.add_buddy('{$buddy_name}'); return false;" class="popup_item"><span style="font-weight: bold;">{$buddy_name}</span></a></div>]]></template>
+		<template name="private_send_buddylist" version="140"><![CDATA[<a href="misc.php?action=buddypopup" id="private_buddylist"><img src="{$theme['imgdir']}/buddies.gif" alt="{$lang->buddy_list}" style="vertical-align: 50%" id="private_buddylist_image" /></a>
 <div id="private_buddylist_popup" class="popup_menu" style="display: none"></div>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "yes")
 	{
-		new PopupMenu("private_buddylist",  {ajax: "xmlhttp.php?action=get_buddylist", update: false});
+		new PopupMenu("private_buddylist",  {ajax: "xmlhttp.php?action=get_buddylist", update: false, ActivityIndicator: false, ImageIndicator: true});
 		PopupMenu.add_buddy = function(username)
 		{
 			$('to').value += username + ', ';

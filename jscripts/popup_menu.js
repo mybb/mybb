@@ -32,7 +32,15 @@ PopupMenu.prototype = {
 			(this.options.update == false && this.menu.innerHTML != "") == false
 		)
 		{
-			this.spinner = new ActivityIndicator(this.menu, {image: "images/spinner.gif"});
+			if(this.options.ActivityIndicator == true)
+			{
+				this.spinner = new ActivityIndicator(this.menu, {image: "images/spinner.gif"});
+			}
+			else if(this.options.ImageIndicator == true)
+			{
+				this.old_src = $(this.id+"_image").src;
+				$(this.id+"_image").src = "images/spinner.gif";
+			}
 			new Ajax.Request(this.options.ajax, {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
 		}
 
@@ -115,8 +123,16 @@ PopupMenu.prototype = {
 		{
 			this.menu.innerHTML = request.responseText;
 		}
-		this.spinner.destroy();
-		this.spinner = '';
+
+		if(this.options.ActivityIndicator == true)
+		{
+			this.spinner.destroy();
+			this.spinner = '';
+		}
+		else if(this.options.ImageIndicator == true)
+		{
+			$(this.id+"_image").src = this.old_src;
+		}
 	},
 
 	closeMenu: function()

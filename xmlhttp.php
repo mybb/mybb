@@ -648,26 +648,18 @@ else if($mybb->input['action'] == "get_buddylist")
 		);
 
 		$query = $db->simple_select("users", "username, invisible, lastactive, lastvisit, usergroup", "uid IN($sql)", $query_options);
-		$online = $offline = array();
+		$buddy_array = array();
 		while($buddy = $db->fetch_array($query))
 		{
 			$buddy_name = htmlspecialchars_uni($buddy['username']);
-			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
-			{
-				eval("\$online[] = \"".$templates->get("private_buddy_online")."\";");
-			}
-			else
-			{
-				eval("\$offline[] = \"".$templates->get("private_buddy_offline")."\";");
-			}
+			eval("\$buddy_array[] = \"".$templates->get("private_buddy")."\";");
 		}
 	}
 	else
 	{
 		xmlhttp_error($lang->buddylist_error);
 	}
-	echo implode("\n", $online);
-	echo implode("\n", $offline);
+	echo implode("\n", $buddy_array);
 }
 
 /**
