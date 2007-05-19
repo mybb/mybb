@@ -410,9 +410,7 @@ if($mybb->input['action'] == "send")
 		$do = "";
 	}
 	
-	/*
-	 * See if it's actually worth showing the buddylist icon.
-	 */
+	//See if it's actually worth showing the buddylist icon.
 	$buddies = $mybb->user['buddylist'];
 	$namesarray = explode(',', $buddies);
 	$buddylist = "";

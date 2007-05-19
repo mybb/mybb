@@ -3497,7 +3497,7 @@ function my_strlen($string)
         $string = str_replace(dec_to_utf8(8238), "", $string);
         $string = str_replace(dec_to_utf8(8237), "", $string);
 
-        // Remove dodgy whitspaces
+        // Remove dodgy whitespaces
         $string = str_replace(chr(0xCA), "", $string);
     }
 	$string = trim($string);
