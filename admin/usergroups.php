@@ -371,8 +371,6 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->perms_reputations);
 	makeyesnocode($lang->show_reputations, "usereputationsystem", "yes");
 	makeyesnocode($lang->can_give_reputations, "cangivereputations", "yes");
-	$reputation_power = array(1 => 1, 2 => 2, 3 => 3);
-	makeselectcode_array($lang->reputation_points, "reputationpower", $reputation_power, 1);
 	makeinputcode($lang->reputation_points, "reputationpower", 1, 4);
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", "5", 4);
 
