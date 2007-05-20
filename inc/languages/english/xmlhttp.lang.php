@@ -29,4 +29,12 @@ $l['username_available'] = "{1} is available";
 $l['invalid_username'] = "{1} is not the username of a registered member";
 $l['valid_username'] = "{1} is a valid referrer.";
 $l['buddylist_error'] = "It seems like you do not have any buddies on your buddy list. Please add some before trying to use this.";
+$l['close'] = "Close";
+$l['select_buddies'] = "Select Buddies";
+$l['select_buddies_desc'] = "To add one or more of your buddies as recipients, select them below and click OK.";
+$l['selected_recipients'] = "Selected recipients";
+$l['ok'] = "OK";
+$l['cancel'] = "Cancel";
+$l['online'] = "Online";
+$l['offline'] = "Offline";
 ?>

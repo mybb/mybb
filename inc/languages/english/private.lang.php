@@ -124,6 +124,7 @@ $l['forward_title'] = "Forward this private message to another user";
 $l['delete_title'] = "Delete this private message";
 $l['you_replied_on'] = "You replied to this message on {1}";
 $l['you_forwarded_on'] = "You forwarded this message on {1}";
+$l['select_from_buddies'] = "Select from Buddies";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";

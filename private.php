@@ -410,13 +410,13 @@ if($mybb->input['action'] == "send")
 		$do = "";
 	}
 	
-	//See if it's actually worth showing the buddylist icon.
-	$buddies = $mybb->user['buddylist'];
-	$namesarray = explode(',', $buddies);
-	$buddylist = "";
-	if(is_array($namesarray) && !empty($buddies))
+	// See if it's actually worth showing the buddylist icon.
+	if($mybb->user['buddylist'] != "")
 	{
-		eval("\$buddylist = \"".$templates->get("private_send_buddylist")."\";");
+		$buddy_select = 'to';
+		eval("\$buddy_select_to = \"".$templates->get("private_send_buddyselect")."\";");
+		$buddy_select = 'bcc';
+		eval("\$buddy_select_bcc = \"".$templates->get("private_send_buddyselect")."\";");
 	}
 
 	eval("\$send = \"".$templates->get("private_send")."\";");

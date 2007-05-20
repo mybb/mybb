@@ -404,14 +404,27 @@ function usercp_menu()
  */
 function usercp_menu_messenger()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed;
 
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
 		$folderinfo = explode("**", $folders, 2);
 		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
-		$folderlinks .= "<li class=\"pmfolders\"><a href=\"private.php?fid=$folderinfo[0]\">$folderinfo[1]</a></li>\n";
+		if($folderinfo[0] == 4)
+		{
+			$class = "usercp_nav_trash_pmfolder";
+		}
+		else if($folderlinks)
+		{
+			$class = "usercp_nav_sub_pmfolder";
+		}
+		else
+		{
+			$class = "usercp_nav_pmfolder";
+		}
+
+		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
 	}
 	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
@@ -423,7 +436,7 @@ function usercp_menu_messenger()
  */
 function usercp_menu_profile()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed;
 
 	if($mybb->usergroup['canchangename'] != "no")
 	{
@@ -439,7 +452,7 @@ function usercp_menu_profile()
  */
 function usercp_menu_misc()
 {
-	global $db, $mybb, $templates, $theme, $usercpmenu, $lang;
+	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed;
 
 	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
 	$count = $db->fetch_array($query);

@@ -6,7 +6,7 @@
  * $Id$
  */
 
-$l['ucp_nav_width'] = "150";
+$l['ucp_nav_width'] = "180";
 $l['ucp_nav_menu'] = "Menu";
 $l['ucp_nav_messenger'] = "Messenger";
 $l['ucp_nav_compose'] = "Compose";

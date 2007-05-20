@@ -624,42 +624,41 @@ else if($mybb->input['action'] == "username_exists")
 		exit;
 	}
 }
-else if($mybb->input['action'] == "get_buddylist")
+else if($mybb->input['action'] == "get_buddyselect")
 {
 	// Send our headers.
 	header("Content-type: text/html; charset={$charset}");
 
-	$buddies = $mybb->user['buddylist'];
-	$namesarray = explode(',', $buddies);
-	if(is_array($namesarray) && !empty($buddies))
+	if($mybb->user['buddylist'] != "")
 	{
-		$comma = '';
-		$sql = '';
-		foreach($namesarray as $key => $buddyid)
-		{
-			$sql[] = $buddyid;
-		}
-		$sql = "'".implode("','", $sql)."'";
-		$timecut = time() - $mybb->settings['wolcutoff'];
-
 		$query_options = array(
 			"order_by" => "username",
 			"order_dir" => "asc"
 		);
-
-		$query = $db->simple_select("users", "username, invisible, lastactive, lastvisit, usergroup", "uid IN($sql)", $query_options);
+		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, lastactive, lastvisit, invisible", "uid IN ({$mybb->user['buddylist']})", $query_options);
 		$buddy_array = array();
 		while($buddy = $db->fetch_array($query))
 		{
-			$buddy_name = htmlspecialchars_uni($buddy['username']);
-			eval("\$buddy_array[] = \"".$templates->get("private_buddy")."\";");
+			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
+			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
+			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
+			{
+				eval("\$online[] = \"".$templates->get("xmlhttp_buddyselect_online")."\";");
+			}
+			else
+			{
+				eval("\$offline[] = \"".$templates->get("xmlhttp_buddyselect_offline")."\";");
+			}
 		}
+		$online = implode("", $online);
+		$offline = implode("", $offline);
+		eval("\$buddy_select = \"".$templates->get("xmlhttp_buddyselect")."\";");
+		echo $buddy_select;
 	}
 	else
 	{
 		xmlhttp_error($lang->buddylist_error);
 	}
-	echo implode("\n", $buddy_array);
 }
 
 /**

@@ -346,6 +346,7 @@ padding-left: 22px;]]></extra>
 	float: right;
 	width: auto;
 	vertical-align: middle;
+	margin-top: 3px;
 }
 
 img.attachment {
@@ -522,6 +523,106 @@ form {
 
 .offline {
 	color: #C7C7C7;
+}
+
+/** WILL BE SPLIT INTO usercp.css IN NEW THEME SYSTEM **/
+.usercp_nav_item {
+	display: block;
+	padding: 1px 0 1px 23px;
+}
+.usercp_nav_composepm {
+	background: url('images/usercp/composepm.gif') no-repeat left center;
+}
+
+.usercp_nav_pmfolder {
+	background: url('images/usercp/composepm.gif') no-repeat left center;
+}
+
+.usercp_nav_sub_pmfolder {
+	padding-left: 40px;
+	background: url('images/usercp/sub_pmfolder.gif') no-repeat left center;
+}
+
+.usercp_nav_trash_pmfolder {
+	padding-left: 40px;
+	background: url('images/usercp/trash_pmfolder.gif') no-repeat left center;
+}
+
+.usercp_nav_pmtracking {
+	background: url('images/usercp/pmtracking.gif') no-repeat left center;
+}
+
+.usercp_nav_pmfolders {
+	background: url('images/usercp/editfolders.gif') no-repeat left center;
+}
+
+.usercp_nav_profile {
+	background: url('images/usercp/profile.gif') no-repeat left center;
+}
+
+.usercp_nav_email {
+	padding-left: 40px;
+	background: url('images/usercp/email.gif') no-repeat left center;
+}
+
+.usercp_nav_password {
+	padding-left: 40px;
+	background: url('images/usercp/password.gif') no-repeat left center;
+}
+
+.usercp_nav_username {
+	padding-left: 40px;
+	background: url('images/usercp/username.gif') no-repeat left center;
+}
+
+.usercp_nav_editsig {
+	padding-left: 40px;
+	background: url('images/usercp/editsig.gif') no-repeat left center;
+}
+
+.usercp_nav_avatar {
+	padding-left: 40px;
+	background: url('images/usercp/avatar.gif') no-repeat left center;
+}
+
+.usercp_nav_options {
+	background: url('images/usercp/options.gif') no-repeat left center;
+}
+
+.usercp_nav_usergroups {
+	background: url('images/usercp/usergroups.gif') no-repeat left center;
+}
+
+.usercp_nav_editlists {
+	background: url('images/usercp/editlists.gif') no-repeat left center;
+}
+
+.usercp_nav_attachments {
+	background: url('images/usercp/attachments.gif') no-repeat left center;
+}
+
+.usercp_nav_drafts {
+	background: url('images/usercp/drafts.gif') no-repeat left center;
+}
+
+.usercp_nav_subscriptions {
+	background: url('images/usercp/subscriptions.gif') no-repeat left center;
+}
+
+.usercp_nav_fsubscriptions {
+	background: url('images/usercp/fsubscriptions.gif') no-repeat left center;
+}
+
+.usercp_nav_notepad {
+	background: url('images/usercp/notepad.gif') no-repeat left center;
+}
+
+.usercp_nav_viewprofile {
+	background: url('images/usercp/viewprofile.gif') no-repeat left center;
+}
+
+.usercp_nav_home {
+	background: url('images/usercp/home.gif') no-repeat left center;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -1108,54 +1209,55 @@ form {
 {$usercpmenu}
 </table>
 </td>]]></template>
-		<template name="usercp_nav_messenger" version="120"><![CDATA[<tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></td></tr>
-<tr>
-<td class="trow1">
-<ul class="usercpnav">
-{$folderlinks}
-<li class="separator">&nbsp;</li>
-<li><a href="private.php?action=send">{$lang->ucp_nav_compose}</a></li>
-<li><a href="private.php?action=tracking">{$lang->ucp_nav_tracking}</a></li>
-<li><a href="private.php?action=folders">{$lang->ucp_nav_edit_folders}</a></li>
-<li><a href="private.php?action=empty">{$lang->ucp_nav_empty_folders}</a></li>
-<li><a href="private.php?action=export">{$lang->ucp_nav_export_messages}</a></li>
-</ul>
-</td>
-</tr>]]></template>
-		<template name="usercp_nav_profile" version="120"><![CDATA[<tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></td></tr>
-<tr>
-<td class="trow1">
-<ul class="usercpnav">
-<li><a href="usercp.php?action=profile">{$lang->ucp_nav_edit_profile}</a></li>
-<li><a href="usercp.php?action=options">{$lang->ucp_nav_edit_options}</a></li>
-<li><a href="usercp.php?action=email">{$lang->ucp_nav_change_email}</a></li>
-<li><a href="usercp.php?action=password">{$lang->ucp_nav_change_pass}</a></li>
-{$changenameop}
-<li><a href="usercp.php?action=editsig">{$lang->ucp_nav_edit_sig}</a></li>
-<li><a href="usercp.php?action=avatar">{$lang->ucp_nav_change_avatar}</a></li>
-</ul>
-</td>
-</tr>]]></template>
-		<template name="usercp_nav_misc" version="120"><![CDATA[<tr>
-<td class="tcat"><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></td></tr>
-<tr>
-<td class="trow1">
-<ul class="usercpnav">
-<li><a href="usercp.php?action=usergroups">{$lang->ucp_nav_usergroups}</a></li>
-<li><a href="usercp.php?action=editlists">{$lang->ucp_nav_editlists}</a></li>
-<li><a href="usercp.php?action=attachments">{$lang->ucp_nav_attachments}</a></li>
-<li>{$draftstart}<a href="usercp.php?action=drafts">{$lang->ucp_nav_drafts}</a> {$draftcount}{$draftend}</li>
-<li><a href="usercp.php?action=subscriptions">{$lang->ucp_nav_subscribed_threads}</a></li>
-<li><a href="usercp.php?action=forumsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></li>
-<li><a href="usercp.php?action=notepad">{$lang->ucp_nav_notepad}</a></li>
-<li class="separator">&nbsp;</li>
-<li><a href="{$profile_link}">{$lang->ucp_nav_view_profile}</a></li>
-<li><a href="usercp.php">{$lang->ucp_nav_home}</a></li>
-</ul>
-</td>
-</tr>]]></template>
+		<template name="usercp_nav_messenger" version="140"><![CDATA[<tr>
+	<td class="tcat">
+		<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.gif" id="usercppms_img" class="expander" alt="[-]"/></div>
+		<div><strong>{$lang->ucp_nav_messenger}</strong></span></div>
+	</td>
+</tr>
+<tbody style="{$collapsed['usercppms_e']}" id="usercppms_e">
+	<tr><td class="trow1 smalltext"><a href="private.php?action=send" class="usercp_nav_item usercp_nav_composepm">{$lang->ucp_nav_compose}</a></td></tr>
+	<tr>
+		<td class="trow1 smalltext">
+			{$folderlinks}
+		</td>
+	</tr>
+	<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="private.php?action=folders" class="usercp_nav_item usercp_nav_pmfolders">{$lang->ucp_nav_edit_folders}</a></td></tr>
+</tbody>
+]]></template>
+		<template name="usercp_nav_profile" version="140"><![CDATA[<tr>
+	<td class="tcat">
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpprofile']}.gif" id="usercpprofile_img" class="expander" alt="[-]"/></div>
+		<div><span class="smalltext"><strong>{$lang->ucp_nav_profile}</strong></span></div>
+	</td>
+</tr>
+<tbody style="{$collapsed['usercpprofile_e']}" id="usercpprofile_e">
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=profile" class="usercp_nav_item usercp_nav_profile">{$lang->ucp_nav_edit_profile}</a></td></tr>
+	{$changenameop}
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=password" class="usercp_nav_item usercp_nav_password">{$lang->ucp_nav_change_pass}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=email" class="usercp_nav_item usercp_nav_email">{$lang->ucp_nav_change_email}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=avatar" class="usercp_nav_item usercp_nav_avatar">{$lang->ucp_nav_change_avatar}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=options" class="usercp_nav_item usercp_nav_options">{$lang->ucp_nav_edit_options}</a></td></tr>
+</tbody>]]></template>
+		<template name="usercp_nav_misc" version="140"><![CDATA[<tr>
+	<td class="tcat">
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.gif" id="usercpmisc_img" class="expander" alt="[-]"/></div>
+		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
+	</td>
+</tr>
+<tbody style="{$collapsed['usercpmisc_e']}" id="usercpmisc_e">
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=usergroups" class="usercp_nav_item usercp_nav_usergroups">{$lang->ucp_nav_usergroups}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=editlists" class="usercp_nav_item usercp_nav_editlists">{$lang->ucp_nav_editlists}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>
+	<tr><td class="trow1 smalltext">{$draftstart}<a href="usercp.php?action=drafts" class="usercp_nav_item usercp_nav_drafts">{$lang->ucp_nav_drafts} {$draftcount}</a>{$draftend}</td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=subscriptions" class="usercp_nav_item usercp_nav_subscriptions">{$lang->ucp_nav_subscribed_threads}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=forumsubscriptions" class="usercp_nav_item usercp_nav_fsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php?action=notepad" class="usercp_nav_item usercp_nav_notepad">{$lang->ucp_nav_notepad}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="{$profile_link}" class="usercp_nav_item usercp_nav_viewprofile">{$lang->ucp_nav_view_profile}</a></td></tr>
+	<tr><td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td></tr>
+</tbody>]]></template>
 		<template name="usercp_profile_away" version="120"><![CDATA[<br />
 <fieldset class="trow2">
 <legend><strong>{$lang->away_information}</strong></legend>
@@ -1854,7 +1956,7 @@ form {
 		<template name="usercp_attachments_none" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="5">{$lang->no_attachments}</td>
 </tr>]]></template>
-		<template name="usercp_nav_changename" version="120"><![CDATA[<li><a href="usercp.php?action=changename">{$lang->ucp_nav_change_username}</a><br /></li>]]></template>
+		<template name="usercp_nav_changename" version="140"><![CDATA[<tr><td class="trow1 smalltext"><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></td></tr>]]></template>
 		<template name="usercp_profile" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
@@ -2677,6 +2779,7 @@ form {
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
+<script type="text/javascript" src="jscripts/usercp.js?ver=140"></script>
 </head>
 <body>
 {$header}
@@ -2699,11 +2802,11 @@ form {
 		document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}</a>)');
 	// -->
 	</script>
-	<br /><span class="smalltext">{$lang->separate_names}</span></td>
-<td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" tabindex="1">{$to}</textarea>{$buddylist}{$max_recipients}</td>
+	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
+<td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
 </tr>
 <tr id="bcc_area">
-<td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong></td>
+<td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong>{$buddy_select_bcc}</td>
 <td class="trow2"><textarea name="bcc" id="bcc" rows="1" cols="38" tabindex="1">{$bcc}</textarea></td>
 </tr>
 <tr>
@@ -2764,21 +2867,6 @@ form {
 {$autocompletejs}
 </body>
 </html>]]></template>
-		<template name="private_buddy" version="140"><![CDATA[<div class="popup_item_container"><a href="#" onclick="PopupMenu.add_buddy('{$buddy_name}'); return false;" class="popup_item"><span style="font-weight: bold;">{$buddy_name}</span></a></div>]]></template>
-		<template name="private_send_buddylist" version="140"><![CDATA[<a href="misc.php?action=buddypopup" id="private_buddylist"><img src="{$theme['imgdir']}/buddies.gif" alt="{$lang->buddy_list}" style="vertical-align: 50%" id="private_buddylist_image" /></a>
-<div id="private_buddylist_popup" class="popup_menu" style="display: none"></div>
-<script type="text/javascript">
-<!--
-	if(use_xmlhttprequest == "yes")
-	{
-		new PopupMenu("private_buddylist",  {ajax: "xmlhttp.php?action=get_buddylist", update: false, ActivityIndicator: false, ImageIndicator: true});
-		PopupMenu.add_buddy = function(username)
-		{
-			$('to').value += username + ', ';
-		}
-	}
-// -->
-</script>]]></template>
 		<template name="showthread_newreply_closed" version="120"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" alt="{$lang->thread_closed}" /></a>&nbsp;]]></template>
 		<template name="polls_editpoll" version="140"><![CDATA[<html>
 <head>
@@ -3374,7 +3462,6 @@ form {
 		<template name="private_nomessages" version="120"><![CDATA[<tr>
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="private_send_buddyselect" version="120"><![CDATA[<br /><span class="smalltext">{$lang->select_buddy}<br /><select name="buddy" onchange="document.input.to.value=this.options[this.selectedIndex].value"><option value="" tabindex="2">&nbsp;</option>{$buddies}</select>]]></template>
 		<template name="codebuttons" version="140"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
 <script type="text/javascript">
 <!--
@@ -8327,5 +8414,46 @@ To: {$to_recipients}
 		<td class="trow2" colspan="2">{$revoke_reason}</td>
 	</tr>
 </table>]]></template>
+		<template name="xmlhttp_buddyselect" version="140"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" class="tborder" style="width: 300px;">
+	<thead>
+		<tr>
+			<td class="thead">
+				<div class="float_right" style="margin-top: 3px;"><span class="smalltext"><a href="#" onclick="UserCP.closeBuddySelect(true); return false;">{$lang->close}</a></span></div>
+				<div><strong>{$lang->select_buddies}</strong></div>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="trow1 smalltext">{$lang->select_buddies_desc}</td>
+		</tr>
+		<tr>
+			<td class="trow2">
+				<div style="height: 200px; overflow: auto;" >
+				<table border="0" cellspacing="1" cellpadding="4" class="tborder" style="border: 0; width: 270px;" align="right">
+				{$online}
+				{$offline}
+				</table>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="trow1">
+				<div class="smalltext"><strong>{$lang->selected_recipients}</strong></div>
+				<div id="buddyselect_buddies" class="smalltext" style="padding-left: 10px; height: 50px; overflow: auto;"></div>
+				<div style="text-align: right;"><input type="button" value="{$lang->ok}" onclick="UserCP.closeBuddySelect();" /> <input type="button" value="{$lang->cancel}" onclick="UserCP.closeBuddySelect(true);" /></div>
+			</td>
+		</tr>
+	</tbody>
+</table>]]></template>
+		<template name="xmlhttp_buddyselect_online" version="140"><![CDATA[					<tr>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_online.gif" alt="" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+					</tr>]]></template>
+		<template name="xmlhttp_buddyselect_offline" version="140"><![CDATA[					<tr>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_offline.gif" alt="" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+					</tr>]]></template>
+		<template name="private_send_buddyselect" version="140"><![CDATA[<script type="text/javascript"><!--
+document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.gif" alt="" style="vertical-align: middle;" /> {$lang->select_from_buddies}</a></span>');
+// --></script>]]></template>
 	</templates>
 </theme>
