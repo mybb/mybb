@@ -33,7 +33,8 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	loginkey varchar(50) NOT NULL default '',
 	ip varchar(40) NOT NULL default '',
 	dateline bigint NOT NULL default '0',
-	lastactive bigint NOT NULL default '0'
+	lastactive bigint NOT NULL default '0',
+	data text DEFAULT ''::text NOT NULL
 );";
 
 $tables[] = "CREATE TABLE mybb_announcements (
@@ -158,15 +159,13 @@ $tables[] = "CREATE TABLE mybb_events (
   description text NOT NULL,
   visible int NOT NULL default '0',
   private int NOT NULL default '0',
-  dateline int unsigned NOT NULL default '0',
-  starttime int unsigned NOT NULL default '0',
-  endtime int unsigned NOT NULL default '0',
+  dateline int NOT NULL default '0',
+  starttime int NOT NULL default '0',
+  endtime int  NOT NULL default '0',
   timezone int NOT NULL default '0',
   ignoretimezone int NOT NULL default '0',
   usingtime int NOT NULL default '0',
   repeats text NOT NULL,
-  KEY daterange (starttime, endtime),
-  KEY private (private),
   PRIMARY KEY  (eid)
 );";
 
@@ -234,6 +233,12 @@ $tables[] = "CREATE TABLE mybb_forums (
   defaultsortby varchar(10) NOT NULL default '',
   defaultsortorder varchar(4) NOT NULL default '',
   PRIMARY KEY (fid)
+);";
+
+$tables[] = "CREATE TABLE mybb_forumsread (
+  fid int NOT NULL default '0',
+  uid int NOT NULL default '0',
+  dateline int NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
@@ -691,7 +696,7 @@ $tables[] = "CREATE TABLE mybb_threads (
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  dateline int NOT NULL default '0',
+  dateline int NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (
@@ -748,8 +753,9 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   maxemails int NOT NULL default '5',
   canviewmemberlist char(3) NOT NULL default '',
   canviewcalendar char(3) NOT NULL default '',
-  canaddpublicevents char(3) NOT NULL default '',
-  canaddprivateevents char(3) NOT NULL default '',
+  canaddevents char(3) NOT NULL default '',
+  canbypasseventmod char(3) NOT NULL default '',
+  canmoderateevents char(3) NOT NULL default '',
   canviewonline char(3) NOT NULL default '',
   canviewwolinvis char(3) NOT NULL default '',
   canviewonlineips char(3) NOT NULL default '',
@@ -867,10 +873,10 @@ $tables[] = "CREATE TABLE mybb_warninglevels (
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid serial,
 	title varchar(120) NOT NULL default '',
-	points int unsigned NOT NULL default '0',
+	points int NOT NULL default '0',
 	expirationtime bigint NOT NULL default '0',
 	PRIMARY KEY(tid)
-) TYPE=MyISAM;";
+);";
 
 $tables[] = "CREATE TABLE mybb_warnings (
 	wid serial,
@@ -884,7 +890,7 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	expires bigint NOT NULL default '0',
 	expired int NOT NULL default '0',
 	daterevoked bigint NOT NULL default '0',
-	revokedby int unsigned NOT NULL default '0',
+	revokedby int NOT NULL default '0',
 	revokereason text NOT NULL,
 	notes text NOT NULL,
 	PRIMARY KEY(wid)

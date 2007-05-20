@@ -70,7 +70,7 @@ class templates
 			$query = $db->simple_select("templates", "template", "title='$title' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 
 			$gettemplate = $db->fetch_array($query);
-			if($mybb->debug)
+			if($mybb->debug_mode)
 			{
 				$this->uncached_templates[$title] = $title;
 			}

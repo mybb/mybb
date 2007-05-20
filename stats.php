@@ -99,14 +99,28 @@ else
 
 // Today's top poster
 $timesearch = time() - 86400;
-$query = $db->query("
-	SELECT u.uid, u.username, COUNT(*) AS poststoday
-	FROM ".TABLE_PREFIX."posts p
-	LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-	WHERE p.dateline > $timesearch
-	GROUP BY p.uid ORDER BY poststoday DESC
-	LIMIT 1
-");
+switch($db->type)
+{
+	case "pgsql":
+		$query = $db->query("
+			SELECT u.uid, u.username, COUNT(*) AS poststoday
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE p.dateline > $timesearch
+			GROUP BY ".$db->build_fields_string("users", "u.")." ORDER BY poststoday DESC
+			LIMIT 1
+		");
+		break;
+	default:
+		$query = $db->query("
+			SELECT u.uid, u.username, COUNT(*) AS poststoday
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
+			WHERE p.dateline > $timesearch
+			GROUP BY p.uid ORDER BY poststoday DESC
+			LIMIT 1
+		");
+}
 $user = $db->fetch_array($query);
 if(!$user['poststoday'])
 {

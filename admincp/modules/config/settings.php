@@ -308,13 +308,7 @@ if($mybb->input['action'] == "change")
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}
 
-	$query = $db->query("
-		SELECT g.*, COUNT(s.sid) AS settingcount 
-		FROM ".TABLE_PREFIX."settinggroups g 
-		LEFT JOIN ".TABLE_PREFIX."settings s ON (s.gid=g.gid) 
-		WHERE g.gid='".intval($mybb->input['gid'])."' 
-		GROUP BY s.gid
-	");
+	$query = $db->simple_select("settinggroups", "*", "gid = '".intval($mybb->input['gid'])."'");
 	$groupinfo = $db->fetch_array($query);
 	
 	if(!$groupinfo['gid'])

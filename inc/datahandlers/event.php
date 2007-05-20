@@ -378,7 +378,7 @@ class EventDataHandler extends DataHandler
 		$user_permissions = user_permissions($event['uid']);
 
 		// If a private event
-		if($event['private'] == "yes")
+		if($event['private'] == "1")
 		{
 			// Can the user add private events?
 			if($event['uid'] == 0 || $user_permissions['canaddprivateevents'] == "no")
@@ -396,7 +396,7 @@ class EventDataHandler extends DataHandler
 				return false;
 			}
 			// Default value
-			$event['private'] = 'no';
+			$event['private'] = '0';
 		}
 		return true;
 	}
@@ -503,11 +503,11 @@ class EventDataHandler extends DataHandler
 			'visible' => $visible,
 			'private' => intval($event['private']),
 			'dateline' => time(),
-			'starttime' => $event['starttime'],
-			'endtime' => $event['endtime'],
+			'starttime' => intval($event['starttime']),
+			'endtime' => intval($event['endtime']),
 			'timezone' => intval($event['timezone']),
 			'ignoretimezone' => intval($event['ignoretimezone']),
-			'usingtime' => $event['usingtime'],
+			'usingtime' => intval($event['usingtime']),
 			'repeats' => $db->escape_string(serialize($event['repeats']))
 		);
 
@@ -566,13 +566,13 @@ class EventDataHandler extends DataHandler
 		if(isset($event['starttime']))
 		{
 			$this->event_update_data['starttime'] = intval($event['starttime']);
-			$this->event_update_data['usingtime'] = $event['usingtime'];
+			$this->event_update_data['usingtime'] = intval($event['usingtime']);
 		}
 
 		if(isset($event['endtime']))
 		{
 			$this->event_update_data['endtime'] = intval($event['endtime']);
-			$this->event_update_data['usingtime'] = $event['usingtime'];
+			$this->event_update_data['usingtime'] = intval($event['usingtime']);
 		}
 
 		if(isset($event['repeats']))
@@ -587,7 +587,7 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['private']))
 		{
-			$this->event_update_data['private'] = $db->escape_string($event['private']);
+			$this->event_update_data['private'] = intval($event['private']);
 		}
 
 		if(isset($event['visible']))

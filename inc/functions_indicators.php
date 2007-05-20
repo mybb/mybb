@@ -105,7 +105,7 @@ function fetch_unread_count($fid)
 	{
 		switch($db->type)
 		{
-			case "postgresql":
+			case "pgsql":
 				$query = $db->query("
 					SELECT COUNT(t.tid) AS unread_count
 					FROM ".TABLE_PREFIX."threads t
@@ -142,7 +142,7 @@ function mark_forum_read($fid)
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->shutdown_query($db->build_replace_query("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => time()), "tid"));
+				$db->shutdown_query($db->build_replace_query("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => time()), "fid"));
 				break;
 			default:
 				$db->query("

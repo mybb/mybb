@@ -212,7 +212,7 @@ class databaseEngine
 		$qtimer->remove();
 		$this->query_count++;
 		
-		if($mybb->debug)
+		if($mybb->debug_mode)
 		{
 			$this->explain_query($string, $qtime);
 		}
@@ -872,7 +872,7 @@ class databaseEngine
 				}
 			}
 
-			if strpos($row['type'], 'numeric') !== false)
+			if(strpos($row['type'], 'numeric') !== false)
 			{
 				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
 			}
