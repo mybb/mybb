@@ -50,7 +50,11 @@ if((preg_match("#win#i", PHP_OS) && stripos($_SERVER['SERVER_SOFTWARE'], "apache
 // Otherwise, we're using 100% friendly URLs
 else
 {
-	if($_SERVER['REDIRECT_URL'])
+	if($_SERVER['REQUEST_URI'])
+    {
+        $url = $_SERVER['REQUEST_URI'];
+    }
+    elseif($_SERVER['REDIRECT_URL'])
 	{
 		$url = $_SERVER['REDIRECT_URL'];
 	}
