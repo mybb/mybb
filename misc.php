@@ -366,7 +366,11 @@ elseif($mybb->input['action'] == "whoposted")
 			$poster['username'] = $poster['postusername'];
 		}
 		$poster_name = format_name($poster['username'], $poster['usergroup'], $poster['displaygroup']);
-		$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank');
+		if($poster['uid'])
+		{
+			$onclick = "opener.location.href='".get_profile_link($poster['uid'])."'; return false;";
+		}
+		$profile_link = build_profile_link($poster_name, $poster['uid'], '_blank', $onclick);
 		$numposts += $poster['posts'];
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();

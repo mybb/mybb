@@ -105,6 +105,7 @@ $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('23','r
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('24','newthread','<lang:group_newthread>');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('25','newreply','<lang:group_newreply>');";
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('26','member','<lang:group_member>');";
+$inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('27','warning','<lang:group_warning>');";
 
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (1, 0, 'Newbie', 1, '');";
 $inserts[] = "INSERT INTO mybb_usertitles (utid, posts, title, stars, starimage) VALUES (2, 1, 'Junior Member', 2, '');";

@@ -42,6 +42,7 @@ $l['group_reputation'] = "Reputation";
 $l['group_newthread'] = "New Thread";
 $l['group_newreply'] = "New Reply";
 $l['group_member'] = "Member";
+$l['group_warning'] = "Warning System";
 
 
 $l['templates'] = "Templates";

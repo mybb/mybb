@@ -27,23 +27,6 @@ PopupMenu.prototype = {
 
 	openMenu: function(e)
 	{
-		if(
-			typeof this.options != 'undefined' && typeof this.options.ajax != 'undefined' &&
-			(this.options.update == false && this.menu.innerHTML != "") == false
-		)
-		{
-			if(this.options.ActivityIndicator == true)
-			{
-				this.spinner = new ActivityIndicator(this.menu, {image: "images/spinner.gif"});
-			}
-			else if(this.options.ImageIndicator == true)
-			{
-				this.old_src = $(this.id+"_image").src;
-				$(this.id+"_image").src = "images/spinner.gif";
-			}
-			new Ajax.Request(this.options.ajax, {method: 'get', onComplete: this.onComplete.bindAsEventListener(this)});
-		}
-
 		Event.stop(e);
 		Event.element(e).blur();
 		if(document.currentMenu == this.id)
@@ -99,42 +82,12 @@ PopupMenu.prototype = {
 				this.menu.style.left = (parseInt(this.menu.style.left)-2)+"px";
 			}
 		}
-		//this.menu.style.display = '';	
 		this.menu.style.visibility = 'visible';
 
 		document.currentMenu = element.id;
 		Event.observe(document, 'click', this.closeMenu.bindAsEventListener(this));
 	},
 	
-	onComplete: function(request)
-	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
-		{
-			message = request.responseText.match(/<error>(.*)<\/error>/);
-
-			if(!message[1])
-			{
-				message[1] = "An unknown error occurred.";
-			}
-
-			alert(message[1]);
-		}
-		else if(request.responseText)
-		{
-			this.menu.innerHTML = request.responseText;
-		}
-
-		if(this.options.ActivityIndicator == true)
-		{
-			this.spinner.destroy();
-			this.spinner = '';
-		}
-		else if(this.options.ImageIndicator == true)
-		{
-			$(this.id+"_image").src = this.old_src;
-		}
-	},
-
 	closeMenu: function()
 	{	
 		menu = document.currentMenu;

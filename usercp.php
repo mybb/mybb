@@ -1609,11 +1609,32 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
 		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = get_extension($mybb->input['avatarurl']);
-		list($width, $height, $type) = @getimagesize($mybb->input['avatarurl']);
 
-		if(!$type)
+		// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
+		$file = fetch_remote_file($mybb->input['avatarurl']);
+		if(!$file)
 		{
 			$avatar_error = $lang->error_invalidavatarurl;
+		}
+		else
+		{
+			$tmp_name = $mybb->settings['avataruploadpath']."/remote_".md5(uniqid(rand(), true));
+			$fp = @fopen($tmp_name, "wb");
+			if(!$fp)
+			{
+				$avatar_error = $lang->error_invalidavatarurl;
+			}
+			else
+			{
+				fwrite($fp, $file);
+				fclose($fp);
+				list($width, $height, $type) = @getimagesize($tmp_name);
+				@unlink($tmp_name);
+				if(!$type)
+				{
+					$avatar_error = $lang->error_invalidavatarurl;
+				}
+			}
 		}
 
 		if(empty($avatar_error))

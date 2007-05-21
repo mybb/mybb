@@ -51,7 +51,7 @@ if($mybb->input['action'] == "check")
 	}
 	
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = @implode("", @file("http://mods.mybboard.com/version_check.php?info=".serialize($info)));
+	$contents = fetch_remote_file("http://mods.mybboard.com/version_check.php?info=".serialize($info));
 	
 	if(!$contents)
 	{

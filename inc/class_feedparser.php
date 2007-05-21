@@ -44,7 +44,7 @@ class FeedParser
 		require_once MYBB_ROOT."inc/class_xml.php";
 
 		// Load the feed we want to parse
-		$contents = @implode("", @file($feed));
+		$contents = fetch_remote_file($feed);
 
 		// Could not load the feed, return an error
 		if(!$contents)

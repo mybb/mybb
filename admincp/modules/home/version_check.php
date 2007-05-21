@@ -47,7 +47,7 @@ if(!$mybb->input['action'])
 	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = @implode("", @file("http://mybboard.net/version_check.php"));
+	$contents = fetch_remote_file("http://mybboard.net/version_check.php");
 	if(!$contents)
 	{
 		$page->output_inline_error($lang->error_communication);
