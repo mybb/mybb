@@ -100,6 +100,12 @@ var UserCP = {
 		if($('buddyselect_buddies_'+uid))
 		{
 			Element.remove('buddyselect_buddies_'+uid);
+			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
+			if(buddies.charAt(0) == ",")
+			{
+				first_buddy = $('buddyselect_buddies').childNodes[0];
+				first_buddy.innerHTML = first_buddy.innerHTML.substr(1, first_buddy.innerHTML.length);
+			}
 		}
 		// Add buddy to list
 		else
@@ -107,7 +113,7 @@ var UserCP = {
 			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
 			if(buddies != "")
 			{
-				$('buddyselect_buddies').innerHTML += ", ";
+				username = ", "+username;
 			}
 			var buddy = document.createElement('span');
 			buddy.id = "buddyselect_buddies_"+uid;
@@ -132,6 +138,10 @@ var UserCP = {
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
 					if((", "+existing_buddies+", ").toLowerCase().indexOf(", "+buddy.toLowerCase()+", ") == -1)
 					{
+						if(existing_buddies)
+						{
+							existing_buddies += ", ";
+						}
 						existing_buddies += buddy;
 					}
 				});
