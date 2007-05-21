@@ -229,7 +229,7 @@ class databaseEngine
 	{
 		if(preg_match("#^\s*select#i", $string))
 		{
-			$query = pg_query("EXPLAIN $string", $this->link);
+			$query = pg_query($this->link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
