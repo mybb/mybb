@@ -2246,12 +2246,11 @@ if($mybb->input['action'] == "usergroups")
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == "yes" && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
-				$displaycode = "<input type=\"radio\" name=\"displaygroup\" value=\"{$usergroup['gid']}\" checked=\"checked\" />";
+				$displaycode = "({$lang->display_group})";
 			}
 			elseif($usergroup['candisplaygroup'] == "yes")
 			{
-				$displaycode = "(<a href=\"
-				$displaycode = "<input type=\"radio\" name=\"displaygroup\" value=\"{$usergroup['gid']}\" />";
+				$displaycode = "(<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
 			}
 			else
 			{

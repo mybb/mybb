@@ -2579,7 +2579,7 @@ form {
 <td class="{$trow}" align="center">{$usergroup['users']} {$memberlistlink}</td>
 <td class="{$trow}" align="center">{$usergroup['joinrequests']} {$moderaterequestslink}</td>
 </tr>]]></template>
-		<template name="usercp_usergroups_leader" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="usercp_usergroups_leader" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_leader}</strong></td>
 </tr>
@@ -2591,7 +2591,7 @@ form {
 {$groupsledlist}
 </table>
 <br />]]></template>
-		<template name="usercp_usergroups_joinable" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="usercp_usergroups_joinable" version="140"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" colspan="3"><strong>{$lang->usergroups_joinable}</strong></td>
 </tr>
@@ -5241,7 +5241,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 
 ]]></template>
-		<template name="misc_help_section_bit" version="120"><![CDATA[<tr>
+		<template name="misc_help_section_bit" version="140"><![CDATA[<tr>
 <td width="100%" class="{$altbg}"><strong><a href="misc.php?action=help&amp;hid={$helpdoc['hid']}">{$helpdoc['name']}</a></strong><br /><span class="smalltext">{$helpdoc['description']}</span></td>
 </tr>
 ]]></template>
@@ -6095,7 +6095,7 @@ To: {$to_recipients}
 </tr>
 {$getmore}
 </table>]]></template>
-		<template name="misc_buddypopup_user_sendpm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank">{$lang->pm_buddy}</a>]]></template>
+		<template name="misc_buddypopup_user_sendpm" version="140"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank">{$lang->pm_buddy}</a>]]></template>
 		<template name="usercp_editlists" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
