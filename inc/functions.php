@@ -1456,6 +1456,10 @@ function get_server_load()
 			$load = @exec("uptime");
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
+			if(!is_array($serverload))
+			{
+				return $lang->unknown;
+			}
 		}
 	}
 	else if(class_exists('COM'))
@@ -1488,6 +1492,7 @@ function get_server_load()
 		{
 			$serverload[0] = round($serverload[0] / $cpu_count, 2);
 		}
+		$serverload[0] .= "%";
 	}
 	else
 	{
@@ -1496,12 +1501,7 @@ function get_server_load()
 
 	$returnload = trim($serverload[0]);
 
-	if(!$returnload)
-	{
-		return $lang->unknown;
-	}
-
-	return $returnload . ' %';
+	return $returnload;
 }
 
 /**
