@@ -218,7 +218,7 @@ elseif($mybb->input['action'] == "vercheck")
 	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = @implode("", @file("http://mybboard.net/version_check.php"));
+	$contents = fetch_remote_file("http://mybboard.net/version_check.php");
 	if(!$contents)
 	{
 		cperror($lang->vercheck_error);

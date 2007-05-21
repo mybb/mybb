@@ -3210,9 +3210,10 @@ function get_profile_link($uid=0)
  * @param string The Username of the profile.
  * @param int The user id of the profile.
  * @param string The target frame
+ * @param string Any onclick javascript.
  * @return string The url to the profile.
  */
-function build_profile_link($username="", $uid=0, $target="")
+function build_profile_link($username="", $uid=0, $target="", $onclick="")
 {
 	global $lang;
 
@@ -3233,7 +3234,11 @@ function build_profile_link($username="", $uid=0, $target="")
 		{
 			$target = " target=\"{$target}\"";
 		}
-		return "<a href=\"".get_profile_link($uid)."\"{$target}>{$username}</a>";
+		if(!empty($onclick))
+		{
+			$onclick = " onclick=\"{$onclick}\"";
+		}
+		return "<a href=\"".get_profile_link($uid)."\"{$target}{$onclick}>{$username}</a>";
 	}
 }
 
@@ -3703,6 +3708,71 @@ function is_banned_ip($ip_address)
 		}
 	}
 	return false;	
+}
+
+/**
+ * Fetch the contents of a remote fle.
+ *
+ * @param string The URL of the remote file
+ * @return string The remote file contents.
+ */
+function fetch_remote_file($url)
+{
+	if(function_exists("curl_init"))
+	{
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return $data;
+	}
+	else if(function_exists("fsockopen"))
+	{
+		$url = parse_url($url);
+		if(!$url['host'])
+		{
+			return false;
+		}
+		if(!$url['port'])
+		{
+			$url['port'] = 80;
+		}
+		if(!$url['path'])
+		{
+			$url['path'] = "/";
+		}
+		if($url['query'])
+		{
+			$url['path'] .= "?{$url['path']}";
+		}
+		$fp = @fsockopen($url['host'], $url['port'], $error_no, $error, 10);
+		@stream_set_timeout($fp, 10);
+		if(!$fp)
+		{
+			return false;
+		}
+		$headers = "GET {$url['path']} HTTP/1.1\r\n";
+		$headers .= "Host: {$url['host']}\r\n";
+		$headers .= "Connection: Close\r\n\r\n";
+		if(!@fwrite($fp, $headers))
+		{
+			return false;
+		}
+		while(!feof($fp))
+		{
+			$data .= fgets($fp, 12800);
+		}
+		fclose($fp);
+		$data = explode("\r\n\r\n", $data, 2);
+		return $data[1];
+	}
+	else
+	{
+		return @implode("", @file($url));
+	}
 }
 
 /**
