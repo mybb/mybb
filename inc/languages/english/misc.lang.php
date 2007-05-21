@@ -30,7 +30,10 @@ $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
 $l['offline'] = "Offline";
 $l['delete_buddy'] = "X";
-$l['pm_buddy'] = "PM";
+$l['pm_buddy'] = "Send Private Message";
+$l['last_active'] = "<strong>Last Active:</strong> {1}";
+$l['never'] = "Never";
+$l['close'] = "Close";
 
 $l['help_docs'] = "Help Documents";
 

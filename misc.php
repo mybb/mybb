@@ -290,24 +290,15 @@ elseif($mybb->input['action'] == "buddypopup")
 		}
 	}
 	// Load Buddies
-	$buddies = $mybb->user['buddylist'];
-	$buddys = array();
-	$namesarray = explode(',', $buddies);
-	if(is_array($namesarray) && !empty($buddies))
+	if($mybb->user['buddylist'] != "")
 	{
-		$comma = '';
-		$sql = '';
-		foreach($namesarray as $key => $buddyid)
-		{
-			$sql .= "$comma'$buddyid'";
-			$comma = ",";
-		}
 		$timecut = time() - $mybb->settings['wolcutoff'];
 		$query = $db->query("
 			SELECT u.*, g.canusepms
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-			WHERE u.uid IN ($sql)
+			WHERE u.uid IN ({$mybb->user['buddylist']})
+			ORDER BY u.lastactive
 		");
 		while($buddy = $db->fetch_array($query))
 		{
@@ -315,12 +306,46 @@ elseif($mybb->input['action'] == "buddypopup")
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
 			if($mybb->user['receivepms'] != "no" && $buddy['receivepms'] != "no" && $buddy['canusepms'] != "no")
 			{
-				eval("\$pmbuddy = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
+				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
 			}
 			else
 			{
-				$pmbuddy = '';
+				$send_pm = '';
 			}
+			if($buddy['lastactive'])
+			{
+				$last_active = sprintf($lang->last_active, my_date($mybb->settings['dateformat'], $buddy['lastactive']).", ".my_date($mybb->settings['timeformat'], $buddy['lastactive']));
+			}
+			else
+			{
+				$last_active = sprintf($lang->last_active, $lang->never);
+			}
+
+			if($buddy['avatar'])
+			{
+				if($buddy['avatardimensions'])
+				{
+					require_once MYBB_ROOT."inc/functions_image.php";
+					list($width, $height) = explode("|", $buddy['avatardimensions']);
+					$scaled_dimensions = scale_image($width, $height, 44, 44);
+				}
+				else
+				{
+					$scaled_dimensions = array(
+						"width" => 44,
+						"height" => 44
+					);
+				}
+			}
+			else
+			{
+				$buddy['avatar'] = "images/default_avatar.gif";
+				$scaled_dimensions = array(
+					"width" => 44,
+					"height" => 44
+				);
+			}
+			$margin_top = ceil((50-$scaled_dimensions['height'])/2);
 			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
