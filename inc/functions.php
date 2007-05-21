@@ -1178,34 +1178,69 @@ function my_set_array_cookie($name, $id, $value)
 function get_server_load()
 {
 	global $lang;
-	if(strtolower(substr(PHP_OS, 0, 3)) === 'win')
+
+	$serverload = array();
+
+	if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
 	{
-		return $lang->unknown;
-	}
-	elseif(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
-	{
-		$serverload = explode(" ", $load);
-		$serverload[0] = round($serverload[0], 4);
+		if(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
+		{
+			$serverload = explode(" ", $load);
+			$serverload[0] = round($serverload[0], 4);
+		}
 		if(!$serverload)
 		{
 			$load = @exec("uptime");
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
+			if(!is_array($serverload))
+			{
+				return $lang->unknown;
+			}
 		}
+	}
+	else if(class_exists('COM'))
+	{
+		$wmi = new COM("WinMgmts:\\\\.");
+		$cpus = $wmi->InstancesOf("Win32_Processor");
+
+		$cpu_count = 0;
+
+		if(version_compare(PHP_VERSION, '5.0.0', '>='))
+		{
+			// PHP 5
+			foreach($cpus as $cpu)
+			{
+				$serverload[0] += $cpu->LoadPercentage;
+				++$cpu_count;
+			}
+		}
+		else
+		{
+			// PHP 4
+			while ($cpu = $cpus->Next())
+			{
+				$serverload[0] += $cpu->LoadPercentage;
+				++$cpu_count;
+			}
+		}
+
+		if($cpu_count > 1)
+		{
+			$serverload[0] = round($serverload[0] / $cpu_count, 2);
+		}
+		$serverload[0] .= "%";
 	}
 	else
 	{
-		$load = @exec("uptime");
-		$load = split("load averages?: ", $load);
-		$serverload = explode(",", $load[1]);
+		return $lang->unknown;
 	}
+
 	$returnload = trim($serverload[0]);
-	if(!$returnload)
-	{
-		$returnload = $lang->unknown;
-	}
+
 	return $returnload;
 }
+
 
 /**
  * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
