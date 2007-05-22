@@ -344,7 +344,7 @@ function upgrade3_dbchanges2()
 	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD candisplaygroup varchar(3) NOT NULL;");
 	
-	if!$db->field_exists("reason", TABLE_PREFIX."banned"))
+	if(!$db->field_exists("reason", TABLE_PREFIX."banned"))
 	{
 		$db->query("ALTER TABLE ".TABLE_PREFIX."banned DROP reason;");
 	}

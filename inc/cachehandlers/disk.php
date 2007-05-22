@@ -118,7 +118,7 @@ class diskCacheHandler
 		{
 			$total = 0;
 			$dir = opendir(MYBB_ROOT."/inc/cache");
-			while(($file = readdir($dir) !== false)
+			while(($file = readdir($dir)) !== false)
 			{
 				$total += @filesize(MYBB_ROOT."/inc/cache/{$name}.php");
 			}
