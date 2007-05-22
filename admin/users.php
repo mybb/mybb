@@ -1164,7 +1164,7 @@ if($mybb->input['action'] == "stats")
 		{
 			$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
 			$membday = gmdate("F j", $membday);
-			$membdayage = '';
+			$membdayage = $lang->not_specified;
 		}
 	}
 	else
