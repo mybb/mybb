@@ -1791,6 +1791,12 @@ if($mybb->input['action'] == "weekview")
 		$weekday_year = gmdate("Y", $weekday_date);
 		$weekday_day = gmdate("j", $weekday_date);
 
+		// Special shading for today
+		$day_shaded = '';
+		if(gmdate("dnY", $weekday_date) == $today)
+		{
+			$day_shaded = ' trow_shaded';
+		}
 
 		// Any events on this specific day?
 		if(is_array($events_cache) && array_key_exists("{$weekday_day}-{$weekday_month}-{$weekday_year}", $events_cache))
