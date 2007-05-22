@@ -15,6 +15,7 @@ $l['icq'] = "ICQ";
 $l['msn'] = "MSN Messenger";
 $l['yahoo_im'] = "Yahoo IM";
 $l['icq_message_center'] = "ICQ Message Center";
+$l['send_icq_message'] = "Send {1} an ICQ Message.";
 $l['your_name'] = "Your Name:";
 $l['your_email'] = "Your Email Address";
 $l['your_message'] = "Your Message";
