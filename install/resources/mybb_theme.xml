@@ -1704,36 +1704,23 @@ form {
 {$headerinclude}
 </head>
 <body style="margin:0;top:0;left:0;" class="trow2">
-<form action="http://msg.mirabilis.com/scripts/WWPMsg.dll" method="get" name="frmPager">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="2"><strong>{$user['username']} - {$lang->icq_message_center}</strong></td>
+<td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
 </tr>
 <tr>
-<td class="tcat" align="center" colspan="2"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>
 </tr>
 <tr>
-<td class="trow2" align="center" colspan="2">#{$user['icq']} - {$user['username']}</td>
+<td class="trow1" align="center" colspan="2"><strong>{$user['icq']}</strong></td>
 </tr>
 <tr>
-<td class="trow1"><strong>{$lang->your_name}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="from" style="width:100%" value="{$mybb->user['username']}" /></td>
+<td class="trow1" align="center" colspan="2"><strong><img src="http://status.icq.com/online.gif?icq={$user['icq']}&img=2" /></strong></td>
 </tr>
 <tr>
-<td class="trow1"><strong>{$lang->your_email}</strong></td>
-<td class="trow1"><input type="text" class="textbox" name="fromemail" style="width:100%" value="{$mybb->user['email']}" /></td>
-</tr>
-<tr>
-<td class="trow1" valign="top"><strong>{$lang->your_message}</strong></td>
-<td class="trow1"><textarea style="width:100%" rows="12" name="body"></textarea></td>
-</tr>
-<tr>
-<td class="trow1" align="center" colspan="2"><input type="submit" class="button" name="submit" value="{$lang->send_message}"></td>
+<td class="trow1" align="center" colspan="2"><span class="smalltext"><a href="http://www.icq.com/people/webmsg.php?to={$user['icq']}&amp;from={$mybb->user['username']}&amp;fromemail={$mybb->user['email']}">{$lang->send_icq_message}</a></span></td>
 </tr>
 </table>
-<input type="hidden" name="subject" value="From WebPager Panel" />
-<input type="hidden" name="to" value="{$user['icq']}" />
-</form>
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_rating" version="120"><![CDATA[<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$thread['rating']}" alt="{$ratingvotesav}" /></td>

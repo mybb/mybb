@@ -457,9 +457,8 @@ elseif($mybb->input['action'] == "imcenter")
 	{
 		error($lang->error_invalidimtype);
 	}
-	$uid = intval($mybb->input['uid']);
-	$query = $db->simple_select("users", "*", "uid='".$uid."'", array('limit' => 1));
-	$user = $db->fetch_array($query);
+	$uid = $mybb->input['uid'];
+	$user = get_user($uid);
 
 	if(!$user['username'])
 	{
@@ -474,26 +473,28 @@ elseif($mybb->input['action'] == "imcenter")
 	$navigationbar = $navsep = '';
 	if($user['aim'])
 	{
-		$navigationbar .= "<a href=\"misc.php?action=imcenter&imtype=aim&uid=$uid\">$lang->aol_im</a>";
+		$navigationbar .= "<a href=\"misc.php?action=imcenter&amp;imtype=aim&amp;uid=$uid\">$lang->aol_im</a>";
 		$navsep = ' - ';
 	}
 	if($user['icq'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&imtype=icq&uid=$uid\">$lang->icq</a>";
+		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=icq&amp;uid=$uid\">$lang->icq</a>";
 		$navsep = ' - ';
 	}
 	if($user['msn'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&imtype=msn&uid=$uid\">$lang->msn</a>";
+		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=msn&amp;uid=$uid\">$lang->msn</a>";
 		$navsep = ' - ';
 	}
 	if($user['yahoo'])
 	{
-		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&imtype=yahoo&uid=$uid\">$lang->yahoo_im</a>";
+		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
 	}
 	$lang->msn_address_is = sprintf($lang->msn_address_is, $user['username']);
 	$lang->send_y_message = sprintf($lang->send_y_message, $user['username']);
 	$lang->view_y_profile = sprintf($lang->view_y_profile, $user['username']);
+	$lang->send_icq_message = sprintf($lang->send_icq_message, $user['username']);
+	
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");
 	output_page($imcenter);
