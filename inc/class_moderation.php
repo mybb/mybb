@@ -1138,7 +1138,7 @@ class Moderation
 				++$total_unapproved_threads;
 			}
 			
-			$query = $db->query("
+			$query1 = $db->query("
 				SELECT COUNT(p.pid) AS posts, u.uid
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -1146,7 +1146,7 @@ class Moderation
 				GROUP BY u.uid
 				ORDER BY posts DESC
 			");
-			while($posters = $db->fetch_array($query))
+			while($posters = $db->fetch_array($query1))
 			{
 				if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
 				{
