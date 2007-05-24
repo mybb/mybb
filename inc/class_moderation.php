@@ -1105,17 +1105,17 @@ class Moderation
 		$newforum = get_forum($moveto);
 		
 		$total_posts = $total_unapproved_posts = $total_threads = $total_unapproved_threads = 0; 
+		var_dump($tid_list);
  		$query = $db->simple_select(TABLE_PREFIX."threads", "fid, visible, replies, unapprovedposts", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
 			$forum = get_forum($thread['fid']);
 			
 			$total_posts += $thread['replies']+1; 
-			$total_unapproved_posts += $thread['unapproved_posts']; 
-			$forum_counters[$thread['fid']] = array( 
-				"posts" => $forum_counters[$thread['fid']]['posts']+$thread['replies']+1, 
-				"unapprovedposts" => $forum_counters[$thread['fid']]['posts']+$thread['unapprovedposts'] 
-			); 
+			$total_unapproved_posts += $thread['unapprovedposts']; 
+			
+			$forum_counters[$thread['fid']]['posts'] += $thread['replies']+1;
+			$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['unapprovedposts'];
 			
 			if($thread['visible'] == 1) 
 			{ 
@@ -1128,7 +1128,7 @@ class Moderation
 				++$total_unapproved_threads; 
 			}
 			
-			$query = $db->query("
+			$query1 = $db->query("
 				SELECT COUNT(p.pid) AS posts, u.uid
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -1136,7 +1136,7 @@ class Moderation
 				GROUP BY u.uid
 				ORDER BY posts DESC
 			");
-			while($posters = $db->fetch_array($query))
+			while($posters = $db->fetch_array($query1))
 			{
 				if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
 				{
@@ -1156,8 +1156,10 @@ class Moderation
 					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 				}
 			}
+			
+			var_dump($forum_counters);
 		}
-
+		
 		$sqlarray = array(
 			"fid" => $moveto,
 		);
@@ -1168,7 +1170,7 @@ class Moderation
 		{ 
 			$updated_count = array( 
 				"posts" => "-{$counter['posts']}", 
-				"unapprovedposts" => "-{$counter['unapproved_posts']}" 
+				"unapprovedposts" => "-{$counter['unapprovedposts']}" 
 			); 
 			if($counter['threads']) 
 			{ 
