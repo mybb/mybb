@@ -1122,11 +1122,10 @@ class Moderation
 			$forum = get_forum($thread['fid']);
 			
 			$total_posts += $thread['replies']+1;
-			$total_unapproved_posts += $thread['unapproved_posts'];
-			$forum_counters[$thread['fid']] = array(
-				"posts" => $forum_counters[$thread['fid']]['posts']+$thread['replies']+1,
-				"unapprovedposts" => $forum_counters[$thread['fid']]['posts']+$thread['unapprovedposts']
-			);
+			$total_unapproved_posts += $thread['unapprovedposts'];
+			
+			$forum_counters[$thread['fid']]['posts'] += $thread['replies']+1;
+			$forum_counters[$thread['fid']]['unapprovedposts'] += $thread['unapprovedposts'];
 			
 			if($thread['visible'] == 1)
 			{
@@ -1179,7 +1178,7 @@ class Moderation
 		{
 			$updated_count = array(
 				"posts" => "-{$counter['posts']}",
-				"unapprovedposts" => "-{$counter['unapproved_posts']}"
+				"unapprovedposts" => "-{$counter['unapprovedposts']}"
 			);
 			if($counter['threads'])
 			{
