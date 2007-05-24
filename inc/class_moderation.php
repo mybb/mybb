@@ -1105,7 +1105,6 @@ class Moderation
 		$newforum = get_forum($moveto);
 		
 		$total_posts = $total_unapproved_posts = $total_threads = $total_unapproved_threads = 0; 
-		var_dump($tid_list);
  		$query = $db->simple_select(TABLE_PREFIX."threads", "fid, visible, replies, unapprovedposts", "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
