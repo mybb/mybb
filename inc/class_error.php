@@ -255,11 +255,11 @@ class errorHandler {
 
 		if(trim($mybb->settings['errorloglocation']) != "")
 		{
-			error_log($error_data, 3, $mybb->settings['errorloglocation']);
+			@error_log($error_data, 3, $mybb->settings['errorloglocation']);
 		}
 		else
 		{
-			error_log($error_data, 0);
+			@error_log($error_data, 0);
 		}
 	}
 
