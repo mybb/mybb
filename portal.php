@@ -204,9 +204,9 @@ if($mybb->settings['portal_showwelcome'] != "no")
 if($mybb->settings['portal_showstats'] != "no")
 {
 	$stats = $cache->read("stats");
-	$threadsnum = $stats['numthreads'];
-	$postsnum = $stats['numposts'];
-	$membersnum = $stats['numusers'];
+	$stats['numthreads'] = my_number_format($stats['numthreads']);
+	$stats['numposts'] = my_number_format($stats['numposts']);
+	$stats['numusers'] = my_number_format($stats['numusers']);
 	if(!$stats['lastusername'])
 	{
 		$newestmember = "<strong>" . $lang->no_one . "</strong>";
