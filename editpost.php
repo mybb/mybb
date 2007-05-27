@@ -222,13 +222,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 				$next_post = $db->fetch_array($query);
 				if($next_post['pid'])
 				{
-					$redir = get_post_link($next_post['pid'], $tid)."#pid{$next_post['pid']}";
+					$redirect = get_post_link($next_post['pid'], $tid)."#pid{$next_post['pid']}";
 				}
 				else
 				{
-					$redir = get_thread_link($tid);
+					$redirect = get_thread_link($tid);
 				}
-				redirect($redir, $lang->redirect_postdeleted);
+				redirect($redirect, $lang->redirect_postdeleted);
 			}
 			else
 			{
@@ -474,13 +474,14 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$previewmessage = $message;
 			$message = htmlspecialchars_uni($message);
 			$subject = htmlspecialchars_uni($subject);
-	
+
 			$postoptions = $mybb->input['postoptions'];
-	
+
 			if($postoptions['signature'] == "yes")
 			{
 				$postoptionschecked['signature'] = " checked=\"checked\"";
 			}
+
 			if($postoptions['subscriptionmethod'] == "none")
 			{
 				$postoptions_subscriptionmethod_none = "selected=\"selected\"";
@@ -488,11 +489,13 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			else if($postoptions['subscriptionmethod'] == "instant")
 			{
 				$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
-			}		if($postoptions['disablesmilies'] == "yes")
+			}
+
+			if($postoptions['disablesmilies'] == "yes")
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
-	
+
 			$pid = intval($mybb->input['pid']);
 		}
 	}
@@ -501,10 +504,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		// Figure out the poster's other information.
 		$query = $db->query("
-			SELECT u.*, f.*
+			SELECT u.*, f.*, p.dateline
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			WHERE u.uid='".$post['uid']."'
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.uid=u.uid)
+			WHERE u.uid='{$post['uid']}' AND p.pid='{$pid}'
 			LIMIT 1
 		");
 		$postinfo = $db->fetch_array($query);
@@ -516,14 +520,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 
 		// Set the values of the post info array.
-		$postinfo['username'] = $postinfo['username'];
 		$postinfo['userusername'] = $postinfo['username'];
-		$postinfo['uid'] = $postinfo['uid'];
 		$postinfo['message'] = $previewmessage;
 		$postinfo['subject'] = $subject;
 		$postinfo['icon'] = $icon;
 		$postinfo['smilieoff'] = $postoptions['disablesmilies'];
-		$postinfo['dateline'] = time();
 
 		$postbit = build_postbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
