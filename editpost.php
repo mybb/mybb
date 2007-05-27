@@ -475,10 +475,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	{
 		// Figure out the poster's other information.
 		$query = $db->query("
-			SELECT u.*, f.*
+			SELECT u.*, f.*, p.dateline
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			WHERE u.uid='".$post['uid']."'
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.uid=u.uid)
+			WHERE u.uid='{$post['uid']}' AND p.pid='{$pid}'
 			LIMIT 1
 		");
 		$postinfo = $db->fetch_array($query);
@@ -490,14 +491,11 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 
 		// Set the values of the post info array.
-		$postinfo['username'] = $postinfo['username'];
 		$postinfo['userusername'] = $postinfo['username'];
-		$postinfo['uid'] = $postinfo['uid'];
 		$postinfo['message'] = $previewmessage;
 		$postinfo['subject'] = $subject;
 		$postinfo['icon'] = $icon;
 		$postinfo['smilieoff'] = $postoptions['disablesmilies'];
-		$postinfo['dateline'] = time();
 
 		$postbit = build_postbit($postinfo, 1);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
