@@ -16,7 +16,8 @@ require_once "./global.php";
 
 $lang->load("ratethread");
 
-$query = $db->simple_select("threads", "*", "tid='".intval($mybb->input['tid'])."'");
+$tid = intval($mybb->input['tid']);
+$query = $db->simple_select("threads", "*", "tid='{$tid}'");
 $thread = $db->fetch_array($query);
 if(!$thread['tid'])
 {
@@ -50,54 +51,50 @@ if($mybb->input['rating'] < 1 || $mybb->input['rating'] > 5)
 }
 $plugins->run_hooks("ratethread_start");
 
-if($mybb->user['uid'] != "0")
+if($mybb->user['uid'] != 0)
 {
-	$whereclause = "uid='".$mybb->user['uid']."'";
+	$whereclause = "uid='{$mybb->user['uid']}'";
 }
 else
 {
 	$whereclause = "ipaddress='".$db->escape_string($session->ipaddress)."'";
 }
-$query = $db->simple_select("threadratings", "*", "$whereclause AND tid='".intval($mybb->input['tid'])."'");
+$query = $db->simple_select("threadratings", "*", "{$whereclause} AND tid='{$tid}'");
 $ratecheck = $db->fetch_array($query);
 
-if($ratecheck['rid'])
+if($ratecheck['rid'] || $_COOKIE['mybbthreadrate'][$tid])
 {
 	error($lang->error_alreadyratedthread);
 }
 else
 {
-	if($_COOKIE['mybbthreadrate'][$mybb->input['tid']])
-	{
-		error($lang->error_alreadyratedthread);
-	}
 	$plugins->run_hooks("ratethread_process");
 
 	$db->query("
 		UPDATE ".TABLE_PREFIX."threads
-		SET numratings=numratings+1, totalratings=totalratings+'".$mybb->input['rating']."'
-		WHERE tid='".intval($mybb->input['tid'])."'
+		SET numratings=numratings+1, totalratings=totalratings+'{$mybb->input['rating']}'
+		WHERE tid='{$tid}'
 	");
-	if($mybb->user['uid'] != "0")
+	if($mybb->user['uid'] != 0)
 	{
-		$updatearray = array(
+		$insertarray = array(
 			'tid' => intval($mybb->input['tid']),
 			'uid' => $mybb->user['uid'],
 			'rating' => $mybb->input['rating'],
 			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
-		$db->insert_query("threadratings", $updatearray);
+		$db->insert_query("threadratings", $insertarray);
 	}
 	else
 	{
-		$updatearray = array(
+		$insertarray = array(
 			'tid' => intval($mybb->input['tid']),
 			'rating' => $mybb->input['rating'],
 			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
-		$db->insert_query("threadratings", $updatearray);
+		$db->insert_query("threadratings", $insertarray);
 		$time = time();
-		my_setcookie("mybbratethread[".$mybb->input['tid']."]", $mybb->input['rating']);
+		my_setcookie("mybbratethread[{$tid}]", $mybb->input['rating']);
 	}
 }
 $plugins->run_hooks("ratethread_end");

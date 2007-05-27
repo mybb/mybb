@@ -48,7 +48,7 @@ messageEditor.prototype = {
 		// An array of colours to be shown.
 		this.colors = new Array();
         this.colors["#ffffff"] = this.options.lang.color_white;
-        this.colors["#000"] = this.options.lang.color_black;
+        this.colors["#000000"] = this.options.lang.color_black;
         this.colors["#FF0000"] = this.options.lang.color_red;
         this.colors["#FFFF00"] = this.options.lang.color_yellow;
         this.colors["#FFC0CB"] = this.options.lang.color_pink;
