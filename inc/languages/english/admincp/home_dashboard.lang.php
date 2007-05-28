@@ -27,10 +27,10 @@ $l['server_load'] = "Server Load";
 $l['attachments'] = "Attachments";
 $l['used'] = "Used";
 
-$l['admin_notes_public'] = "These admin notes are public to all administrators";
+$l['admin_notes_public'] = "These notes are public to all administrators.";
 $l['admin_notes'] = "Administrator Notes";
 $l['save_notes'] = "Save Notes";
 
-$l['success_notes_updated'] = "The Admin Notes have been successfully updated.";
+$l['success_notes_updated'] = "The administrator notes have been successfully updated.";
 
 ?>
