@@ -695,9 +695,9 @@ function configure()
 		}
 		
 		$currentlocation = get_current_location();
-		echo $currentlocation;
 		if($currentlocation)
 		{
+			// TODO: Change this to find the last position of /install/
 			$pos = my_strpos($currentlocation, '/install/');
 			if($pos === 0)
 			{
