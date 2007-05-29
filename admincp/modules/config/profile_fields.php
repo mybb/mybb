@@ -115,10 +115,6 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->add_new_profile_field);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	
 	$select_list = array(
 		"text" => $lang->text,
 		"textarea" => $lang->textarea,
@@ -128,7 +124,10 @@ if($mybb->input['action'] == "add")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
-	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options');
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
 	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
@@ -139,6 +138,19 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
+	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript">
+		Event.observe(window, "load", function() {
+				var maxlength_peeker = new Peeker("fieldtype", "row_maxlength", /text|textarea/);
+				var fieldlength_peeker = new Peeker("fieldtype", "row_fieldlength", /select|multiselect/);
+				var options_peeker = new Peeker("fieldtype", "row_options", /select|radio|checkbox/);
+				// Add a star to the extra row since the "extra" is required if the box is shown
+				add_star("row_maxlength");
+				add_star("row_fieldlength");
+				add_star("row_options");
+		});
+	</script>';
+	
 	$page->output_footer();
 }
 
@@ -237,10 +249,6 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_profile_field);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength');
-	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length');
-	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	
 	$select_list = array(
 		"text" => $lang->text,
 		"textarea" => $lang->textarea,
@@ -250,7 +258,10 @@ if($mybb->input['action'] == "edit")
 		"checkbox" => $lang->checkbox
 	);
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
-	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options');
+	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
+	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
 	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
@@ -261,6 +272,19 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
+	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript">
+		Event.observe(window, "load", function() {
+				var maxlength_peeker = new Peeker("fieldtype", "row_maxlength", /text|textarea/);
+				var fieldlength_peeker = new Peeker("fieldtype", "row_fieldlength", /select|multiselect/);
+				var options_peeker = new Peeker("fieldtype", "row_options", /select|radio|checkbox/);
+				// Add a star to the extra row since the "extra" is required if the box is shown
+				add_star("row_maxlength");
+				add_star("row_fieldlength");
+				add_star("row_options");
+		});
+	</script>';
+	
 	$page->output_footer();
 }
 

@@ -215,7 +215,11 @@ if($mybb->input['action'] == "add")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
-	echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", SettingType.init);</script>';
+	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker("type", "row_extra", /select|radio|checkbox|php/);});
+		// Add a star to the extra row since the "extra" is required if the box is shown
+		add_star("row_extra");
+	</script>';
 
 	$page->output_footer();
 }
@@ -360,7 +364,11 @@ if($mybb->input['action'] == "edit")
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
-	echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", SettingType.init);</script>';
+	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker("type", "row_extra", /select|radio|checkbox|php/);});
+		// Add a star to the extra row since the "extra" is required if the box is shown
+		add_star("row_extra");
+	</script>';
 
 	$page->output_footer();
 }

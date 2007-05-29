@@ -375,7 +375,7 @@ class DefaultFormContainer
 		$this->container->construct_header($title, $extra);
 	}
 
-	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_id="")
+	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_options=array())
 	{
 		if($label_for != '')
 		{
@@ -392,7 +392,7 @@ class DefaultFormContainer
 		
 		if(!isset($options['skip_construct']))
 		{
-			$this->container->construct_row($row_id);
+			$this->container->construct_row($row_options);
 		}
 	}
 	
