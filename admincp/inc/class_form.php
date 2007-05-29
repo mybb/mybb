@@ -390,10 +390,6 @@ class DefaultFormContainer
 		
 		$this->container->construct_cell($row, $options);
 		
-		if(!isset($options['skip_construct']))
-		{
-			$this->container->construct_row();
-		}
 		$this->container->construct_row($row_id);
 	}
 	
