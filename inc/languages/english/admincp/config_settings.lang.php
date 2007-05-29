@@ -13,13 +13,16 @@ $l['add_new_setting'] = "Add New Setting";
 $l['add_new_setting_desc'] = "This section allows you to add a new setting to your board.";
 $l['modify_existing_settings'] = "Modify Existing Settings";
 $l['modify_existing_settings_desc'] = "This section allows you to modify an existing setting on your forum.";
+$l['add_new_setting_group'] = "Add New Setting Group";
+$l['add_new_setting_group_desc'] = "This section allows you to create a setting group to categorize individual settings.";
 
 $l['title'] = "Title";
 $l['description'] = "Description";
 $l['group'] = "Group";
 $l['display_order'] = "Display Order";
-$l['name'] = "Name";
-$l['name_desc'] = "The setting name the key name of the settings array used in scripts and templates.";
+$l['name'] = "Identifier";
+$l['name_desc'] = "This unique identifier is used in the settings array to reference this setting (in scripts, translations, and templates).";
+$l['group_name_desc'] = "This unique identifier is used for the translation system.";
 $l['text'] = "Text";
 $l['textarea'] = "Textarea";
 $l['yesno'] = "Yes / No Choice";
@@ -42,15 +45,18 @@ $l['update_setting'] = "Update Setting";
 $l['save_settings'] = "Save Settings";
 $l['setting_groups'] = "Setting Groups";
 $l['settings'] = "Settings";
+$l['insert_new_setting_group'] = "Insert New Setting Group";
 
 $l['error_missing_title'] = "You did not enter a title for this setting";
 $l['error_invalid_gid'] = "You did not select a valid group to place this setting in";
 $l['error_invalid_gid2'] = "You have followed a link to an invalid setting group. Please ensure it exists.";
-$l['error_missing_name'] = "You did not enter a name for this setting";
+$l['error_missing_name'] = "You did not enter an identifier for this setting";
 $l['error_invalid_type'] = "You did not select a valid type for this setting";
 $l['error_invalid_sid'] = "The specified setting does not exist";
+$l['error_duplicate_name'] = "The identifier specified has already been used for \"{1}\" -- it must be unique";
 
-$l['success_setting_added'] = "The setting has successfully been created";
+$l['success_setting_added'] = "The setting has successfully been created.";
 $l['success_setting_updated'] = "The setting has successfully been updated.";
 $l['success_settings_updated'] = "The settings have successfully been updated.";
+$l['success_setting_group_added'] = "The setting group has successfully been created.";
 ?>

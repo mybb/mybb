@@ -22,6 +22,79 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->board_settings, "index.php?".SID."&amp;module=config/settings");
 
+// Creating a new setting group
+if($mybb->input['action'] == "addgroup")
+{
+	if($mybb->request_method == "post")
+	{
+		// Validate title
+		if(!trim($mybb->input['title']))
+		{
+			$errors[] = $lang->error_missing_title;
+		}
+		
+		// Validate identifier
+		if(!trim($mybb->input['name']))
+		{
+			$errors[] = $lang->error_missing_name;
+		}
+		$query = $db->simple_select("settinggroups", "title", "name='".$db->escape_string($mybb->input['name'])."'");
+		if($db->num_rows($query) > 0)
+		{
+			$dup_group_title = $db->fetch_field($query, 'title');
+			$errors[] = sprintf($lang->error_duplicate_name, $dup_group_title);
+		}
+
+		if(!$errors)
+		{
+			$new_setting_group = array(
+				"name" => $db->escape_string($mybb->input['name']),
+				"title" => $db->escape_string($mybb->input['title']),
+				"description" => $db->escape_string($mybb->input['description']),
+				"disporder" => intval($mybb->input['disporder']),
+				"isdefault" => 'no'
+			);
+			
+			$db->insert_query("settinggroups", $new_setting_group);
+			rebuild_settings();
+			flash_message($lang->success_setting_group_added, 'success');
+			admin_redirect("index.php?".SID."&module=config/settings");
+		}
+	}
+
+	$page->add_breadcrumb_item($lang->add_new_setting_group);
+	$page->output_header($lang->board_settings." - ".$lang->add_new_setting_group);
+	
+	$sub_tabs['add_setting_group'] = array(
+		'title' => $lang->add_new_setting_group,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=addgroup",
+		'description' => $lang->add_new_setting_group_desc
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'add_setting_group');
+
+	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=addgroup", "post", "add");
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
+	$form_container = new FormContainer($lang->add_new_setting_group);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->end();
+
+	$buttons[] = $form->generate_submit_button($lang->insert_new_setting_group);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+
+	$page->output_footer();
+}
+
+
 // Creating a new setting
 if($mybb->input['action'] == "add")
 {
@@ -42,6 +115,12 @@ if($mybb->input['action'] == "add")
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = $lang->error_missing_name;
+		}
+		$query = $db->simple_select("settings", "title", "name='".$db->escape_string($mybb->input['name'])."'");
+		if($db->num_rows($query) > 0)
+		{
+			$dup_setting_title = $db->fetch_field($query, 'title');
+			$errors[] = sprintf($lang->error_duplicate_name, $dup_setting_title);
 		}
 
 		if(!$mybb->input['type'])
@@ -457,9 +536,15 @@ if(!$mybb->input['action'])
 		'link' => "index.php?".SID."&amp;module=config/settings",
 		'description' => $lang->change_settings_desc
 	);
+	
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add"
+	);
+	
+	$sub_tabs['add_setting_group'] = array(
+		'title' => $lang->add_new_setting_group,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=addgroup"
 	);
 	
 	$sub_tabs['modify_setting'] = array(
