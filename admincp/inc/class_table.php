@@ -20,7 +20,7 @@ class DefaultTable
 		$this->cells[] = array("data" => $data, "extra" => $extra);
 	}
 
-	function construct_row($id = '')
+	function construct_row($extra = array())
 	{
 		$i = 1;
 		// We construct individual cells here
@@ -45,6 +45,14 @@ class DefaultTable
 			{
 				$cells .= " class=\"".$cell['extra']['class']."\" ";
 			}
+			if($cell['extra']['style'])
+			{
+				$cells .= " style=\"".$cell['extra']['style']."\" ";
+			}
+			if($cell['extra']['id'])
+			{
+				$cells .= " id=\"".$cell['extra']['id']."\" ";
+			}
 			if(isset($cell['extra']['colspan']) && $cell['extra']['colspan'] > 1)
 			{
 				$cells .= " colspan=\"".$cell['extra']['colspan']."\"";
@@ -62,7 +70,7 @@ class DefaultTable
 			$cells .= "</td>\n";
 		}
 		$data['cells'] = $cells;
-		$data['id'] = $id;
+		$data['extra'] = $extra;
 		$this->rows[] = $data;
 		
 		$this->cells = array();
@@ -131,31 +139,27 @@ class DefaultTable
 		foreach($this->rows as $key => $table_row)
 		{
 			$table .= "\t\t<tr ";
-			if($table_row['id'])
+			if($table_row['extra']['id'])
 			{
-				$table .= "id=\"{$table_row['id']}\" ";
+				$table .= "id=\"{$table_row['extra']['id']}\" ";
 			}
 			if($key == 0)
 			{
-				$table_row['class'] .= " first";
+				$table_row['extra']['class'] .= " first";
 			}
 			else if(!$this->rows[$key+1])
 			{
-				$table_row['class'] .= " last";
+				$table_row['extra']['class'] .= " last";
 			}
-			if($i == 2)
+			if($i == 2 && !isset($table_row['extra']['no_alt_row']))
 			{
-				$table_row['class'] .= " alt_row";
+				$table_row['extra']['class'] .= " alt_row";
 				$i = 0;
 			}
 			$i++;
-			if($table_row['class'])
+			if($table_row['extra']['class'])
 			{
-				$table .= "class=\"".$table_row['class']."\" ";
-			}
-			if(isset($table_row['colspan']) && $table_row['colspan'] > 1)
-			{
-				$table .= "colspan=\"".$table_row['colspan']."\"";
+				$table .= "class=\"".$table_row['extra']['class']."\" ";
 			}
 			$table .= ">\n";
 			$table .= $table_row['cells'];

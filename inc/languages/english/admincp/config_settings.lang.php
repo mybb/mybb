@@ -40,12 +40,20 @@ $l['extra_desc'] = "If this setting is a select, radio or check box enter a key 
 $l['value'] = "Value";
 $l['insert_new_setting'] = "Insert New Setting";
 $l['edit_setting'] = "Edit Setting";
+$l['delete_setting'] = "Delete Setting";
 $l['setting_configuration'] = "Setting Configuration";
 $l['update_setting'] = "Update Setting";
 $l['save_settings'] = "Save Settings";
 $l['setting_groups'] = "Setting Groups";
 $l['settings'] = "Settings";
 $l['insert_new_setting_group'] = "Insert New Setting Group";
+$l['setting_group_setting'] = "Setting Group / Setting";
+$l['edit_setting_group'] = "Edit Setting Group";
+$l['delete_setting_group'] = "Delete Setting Group";
+$l['save_display_orders'] = "Save Display Orders";
+
+$l['confirm_setting_group_deletion'] = "Are you sure you wish to delete this setting group?";
+$l['confirm_setting_deletion'] = "Are you sure you wish to delete this setting?";
 
 $l['error_missing_title'] = "You did not enter a title for this setting";
 $l['error_missing_group_title'] = "You did not enter a title for this setting group";
@@ -62,4 +70,5 @@ $l['success_setting_added'] = "The setting has successfully been created.";
 $l['success_setting_updated'] = "The setting has successfully been updated.";
 $l['success_settings_updated'] = "The settings have successfully been updated.";
 $l['success_setting_group_added'] = "The setting group has successfully been created.";
+$l['success_display_orders_updated'] = "The display orders have successfully been updated.";
 ?>

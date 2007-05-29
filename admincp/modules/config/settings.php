@@ -207,7 +207,7 @@ if($mybb->input['action'] == "add")
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra', array(), 'row_extra');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
 	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->input['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
@@ -304,7 +304,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->output_nav_tabs($sub_tabs, 'modify_setting');
 
-	$form = new Form("index.php?module=config/settings", "post", "edit");
+	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=edit", "post", "edit");
 
 	echo $form->generate_hidden_field("sid", $setting['sid']);
 	
@@ -352,7 +352,7 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra', array(), 'row_extra');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra', array(), array('id' => 'row_extra'));
 	$form_container->output_row($lang->value, '', $form->generate_text_area('value', $setting_data['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
@@ -362,6 +362,135 @@ if($mybb->input['action'] == "edit")
 	
 	echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", SettingType.init);</script>';
 
+	$page->output_footer();
+}
+
+// Modify Existing Settings
+if($mybb->input['action'] == "manage")
+{
+	// Update orders
+	if($mybb->request_method == "post")
+	{
+		if(is_array($mybb->input['group_disporder']))
+		{
+			foreach($mybb->input['group_disporder'] as $gid => $new_order)
+			{
+				$gid = intval($gid);
+				$update_group = array('disporder' => intval($new_order));
+				$db->update_query("settinggroups", $update_group, "gid={$gid}");
+			}
+		}
+		
+		if(is_array($mybb->input['setting_disporder']))
+		{
+			foreach($mybb->input['setting_disporder'] as $sid => $new_order)
+			{
+				$sid = intval($sid);
+				$update_setting = array('disporder' => intval($new_order));
+				$db->update_query("settings", $update_setting, "sid={$sid}");
+			}
+		}
+		
+		flash_message($lang->success_display_orders_updated, 'success');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	
+	$page->add_breadcrumb_item($lang->modify_existing_settings);
+	$page->output_header($lang->board_settings." - ".$lang->modify_existing_settings);
+	
+	$sub_tabs['modify_setting'] = array(
+		'title' => $lang->modify_existing_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage",
+		'description' => $lang->modify_existing_settings_desc
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'modify_setting');
+	
+	// Cache settings
+	$settings_cache = array();
+	$query = $db->simple_select("settings", "sid, name, title, disporder, gid", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
+	while($setting = $db->fetch_array($query))
+	{
+		$settings_cache[$setting['gid']][] = $setting;
+	}
+
+	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=manage", "post", "edit");
+	
+	$table = new Table;
+
+	$table->construct_header($lang->setting_group_setting, array('width' => '80%'));
+	$table->construct_header($lang->display_order, array('width' => '10%', 'class' => 'align_center'));
+	$table->construct_header($lang->controls, array('width' => '10%', 'class' => 'align_center'));
+	
+	// Generate table
+	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
+	while($group = $db->fetch_array($query))
+	{
+		// Make setting group row
+		// Translated?
+		$group_lang_var = "setting_group_{$group['name']}";
+		if($lang->$group_lang_var)
+		{
+			$group_title = htmlspecialchars_uni($lang->$group_lang_var);
+		}
+		else
+		{
+			$group_title = htmlspecialchars_uni($group['title']);
+		}
+		$table->construct_cell("<strong>{$group_title}</strong>", array('id' => "group{$group['gid']}"));
+		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 25px; font-weight: bold', 'class' => 'align_center')), array('class' => 'align_center'));
+		// Only show options if not a default setting group
+		if($group['isdefault'] != "yes")
+		{
+			$popup = new PopupMenu("group_{$group['gid']}", $lang->options);
+			$popup->add_item($lang->edit_setting_group, "index.php?".SID."&amp;module=config/settings&amp;action=editgroup&amp;gid={$group['gid']}");
+			$popup->add_item($lang->delete_setting_group, "index.php?".SID."&amp;module=config/settings&amp;action=deletegroup&amp;gid={$group['gid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_group_deletion}')");
+			$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
+		}
+		else
+		{
+			$table->construct_cell('');
+		}
+		$table->construct_row(array('class' => 'alt_row', 'no_alt_row' => 1));
+		
+		// Make rows for each setting in the group
+		foreach($settings_cache[$group['gid']] as $setting)
+		{
+			$setting_lang_var = "setting_group_{$group['name']}";
+			if($lang->$setting_lang_var)
+			{
+				$group_title = htmlspecialchars_uni($lang->$setting_lang_var);
+			}
+			else
+			{
+				$group_title = htmlspecialchars_uni($setting['title']);
+			}
+			$table->construct_cell($setting['title'], array('style' => 'padding-left: 30px;'));
+			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 25px', 'class' => 'align_center')), array('class' => 'align_center'));
+			// Only show options if not a default setting group
+			if($group['isdefault'] != "yes")
+			{
+				$popup = new PopupMenu("setting_{$setting['sid']}", $lang->options);
+				$popup->add_item($lang->edit_setting, "index.php?".SID."&amp;module=config/settings&amp;action=edit&amp;sid={$setting['sid']}");
+				$popup->add_item($lang->delete_setting, "index.php?".SID."&amp;module=config/settings&amp;action=delete&amp;sid={$setting['sid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_deletion}')");
+				$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
+			}
+			else
+			{
+				$table->construct_cell('');
+			}
+			$table->construct_row(array('no_alt_row' => 1, 'class' => "group{$group['gid']}"));
+		}
+	}
+	
+	$table->output($lang->modify_existing_settings);
+	
+	$buttons[] = $form->generate_submit_button($lang->save_display_orders);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+	
+	echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", ManageSettings.init);</script>';
+	
 	$page->output_footer();
 }
 
@@ -511,7 +640,7 @@ if($mybb->input['action'] == "change")
 			$option_list = array();
 		}
 		// Do we have a custom language variable for this title or description?
-		$title_lang = "setting_".$setting->name;
+		$title_lang = "setting_".$setting['name'];
 		$desc_lang = $title_lang."_desc";
 		if($lang->$title_lang)
 		{
