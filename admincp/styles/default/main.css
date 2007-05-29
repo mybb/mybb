@@ -476,7 +476,6 @@ legend {
 	color: #444;
 }
 
-
 input.text_input {
 	border: 1px solid #0F5C8E;
 	background: #fff;
@@ -493,6 +492,16 @@ textarea {
 	font-size: 12px;
 	font-family: Verdana;
 }
+
+textarea[disabled=disabled] {
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 4px;
+	color: #666;
+	font-size: 12px;
+	font-family: Verdana;
+}
+
 
 select {
 	border: 1px solid #0F5C8E;

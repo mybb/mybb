@@ -57,6 +57,10 @@ function config_action_handler($manage)
 			$page->active_action = "attachment_types";
 			$action_file = "attachment_types.php";
 			break;
+		case "languages":
+			$page->active_action = "languages";
+			$action_file = "languages.php";
+			break;
 		case "post_icons":
 			$page->active_action = "post_icons";
 			$action_file = "post_icons.php";

@@ -91,7 +91,11 @@ class DefaultForm
 
 	function generate_text_area($name, $value="", $options=array())
 	{
-		$textarea = "<textarea name=\"{$name}\"";
+		$textarea = "<textarea";
+		if(!empty($name))
+		{
+			$textarea .= " name=\"{$name}\"";
+		}
 		if(isset($options['class']))
 		{
 			$textarea .= " class=\"{$options['class']}\"";
@@ -99,6 +103,14 @@ class DefaultForm
 		if(isset($options['id']))
 		{
 			$textarea .= " id=\"{$options['id']}\"";
+		}
+		if($options['style'])
+		{
+			$textarea .= " style=\"{$options['style']}\"";
+		}
+		if($options['disabled'])
+		{
+			$textarea .= " disabled=\"disabled\"";
 		}
 		if(!$options['rows'])
 		{
@@ -108,11 +120,7 @@ class DefaultForm
 		{
 			$options['cols'] = 45;
 		}
-		if($options['style'])
-		{
-			$options['style'] = " style=\"{$options['style']}\"";
-		}
-		$textarea .= " rows=\"{$options['rows']}\" cols=\"{$options['cols']}\"{$options['style']}>";
+		$textarea .= " rows=\"{$options['rows']}\" cols=\"{$options['cols']}\">";
 		$textarea .= htmlspecialchars_uni($value);
 		$textarea .= "</textarea>";
 		return $textarea;
@@ -252,6 +260,10 @@ class DefaultForm
 		{
 			$input .= " name=\"".$options['name']."\"";
 		}
+		if($options['disabled'])
+		{
+			$input .= " disabled=\"disabled\"";
+		}
 		$input .= " />";
 		return $input;
 	}
@@ -363,7 +375,7 @@ class DefaultFormContainer
 		$this->container->construct_header($title, $extra);
 	}
 
-	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_id = '')
+	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_id="")
 	{
 		if($label_for != '')
 		{
@@ -377,6 +389,11 @@ class DefaultFormContainer
 		$row .= "<div class=\"form_row\">{$content}</div>\n";
 		
 		$this->container->construct_cell($row, $options);
+		
+		if(!isset($options['skip_construct']))
+		{
+			$this->container->construct_row();
+		}
 		$this->container->construct_row($row_id);
 	}
 	

@@ -54,4 +54,7 @@ $l['edit'] = "Edit";
 $l['delete'] = "Delete";
 $l['never'] = "Never";
 $l['legend'] = "Legend";
+$l['version'] = "Version";
+$l['languagevar'] = "Language";
+$l['file'] = "File";
 ?>

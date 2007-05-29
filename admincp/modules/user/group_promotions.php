@@ -189,7 +189,7 @@ if($mybb->input['action'] == "edit")
 		$page->output_inline_error($errors);
 	}
 	else
-	{	
+	{
 		$mybb->input['title'] = $promotion['title'];
 		$mybb->input['description'] = $promotion['description'];
 		$mybb->input['requirements'] = explode(',', $promotion['requirements']);
