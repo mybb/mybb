@@ -207,13 +207,15 @@ if($mybb->input['action'] == "add")
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $mybb->input['extra'], array('id' => 'extra')), 'extra', array(), 'row_extra');
 	$form_container->output_row($lang->value, "", $form->generate_text_area('value', $mybb->input['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+	
+	echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", SettingType.init);</script>';
 
 	$page->output_footer();
 }
@@ -249,7 +251,13 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_missing_name;
 		}
-
+		$query = $db->simple_select("settings", "title", "name='".$db->escape_string($mybb->input['name'])."'");
+		if($db->num_rows($query) > 0)
+		{
+			$dup_setting_title = $db->fetch_field($query, 'title');
+			$errors[] = sprintf($lang->error_duplicate_name, $dup_setting_title);
+		}
+		
 		if(!$mybb->input['type'])
 		{
 			$errors[] = $lang->error_invalid_type;
@@ -344,13 +352,15 @@ if($mybb->input['action'] == "edit")
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');
-	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra');
+	$form_container->output_row($lang->extra, $lang->extra_desc, $form->generate_text_area('extra', $setting_data['extra'], array('id' => 'extra')), 'extra', array(), 'row_extra');
 	$form_container->output_row($lang->value, '', $form->generate_text_area('value', $setting_data['value'], array('id' => 'value')), 'value');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_setting);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+	
+	echo '<script type="text/javascript" src="./jscripts/config_settings.js"></script><script type="text/javascript">Event.observe(window, "load", SettingType.init);</script>';
 
 	$page->output_footer();
 }

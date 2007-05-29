@@ -363,7 +363,7 @@ class DefaultFormContainer
 		$this->container->construct_header($title, $extra);
 	}
 
-	function output_row($title, $description="", $content="", $label_for="", $options=array())
+	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_id = '')
 	{
 		if($label_for != '')
 		{
@@ -377,7 +377,7 @@ class DefaultFormContainer
 		$row .= "<div class=\"form_row\">{$content}</div>\n";
 		
 		$this->container->construct_cell($row, $options);
-		$this->container->construct_row();
+		$this->container->construct_row($row_id);
 	}
 	
 	function output_cell($data, $options=array())

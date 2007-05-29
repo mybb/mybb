@@ -20,10 +20,16 @@ class DefaultTable
 		$this->cells[] = array("data" => $data, "extra" => $extra);
 	}
 
-	function construct_row()
+	function construct_row($id = '')
 	{
+		// Figure out the id of the row
+		if(empty($id))
+		{
+			$id = 'row'.count($this->rows);
+		}
+		
 		$i = 1;
-		// We contruct individual cells here
+		// We construct individual cells here
 		foreach($this->cells as $key => $cell)
 		{
 			$cells .= "\t<td ";
@@ -62,7 +68,7 @@ class DefaultTable
 			$cells .= "</td>\n";
 		}
 		$data['cells'] = $cells;
-		$this->rows[] = $data;
+		$this->rows[$id] = $data;
 		$this->cells = array();
 	}
 
@@ -128,7 +134,7 @@ class DefaultTable
 		$i = 1;
 		foreach($this->rows as $key => $table_row)
 		{
-			$table .= "\t\t<tr ";
+			$table .= "\t\t<tr id=\"{$key}\" ";
 			if($key == 0)
 			{
 				$table_row['class'] .= " first";
