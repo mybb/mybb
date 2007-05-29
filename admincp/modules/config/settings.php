@@ -30,19 +30,19 @@ if($mybb->input['action'] == "addgroup")
 		// Validate title
 		if(!trim($mybb->input['title']))
 		{
-			$errors[] = $lang->error_missing_title;
+			$errors[] = $lang->error_missing_group_title;
 		}
 		
 		// Validate identifier
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = $lang->error_missing_name;
+			$errors[] = $lang->error_missing_group_name;
 		}
 		$query = $db->simple_select("settinggroups", "title", "name='".$db->escape_string($mybb->input['name'])."'");
 		if($db->num_rows($query) > 0)
 		{
 			$dup_group_title = $db->fetch_field($query, 'title');
-			$errors[] = sprintf($lang->error_duplicate_name, $dup_group_title);
+			$errors[] = sprintf($lang->error_duplicate_group_name, $dup_group_title);
 		}
 
 		if(!$errors)
