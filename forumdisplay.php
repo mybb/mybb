@@ -80,7 +80,6 @@ while($forum = $db->fetch_array($query))
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 
 }
-$forumpermissions = forum_permissions();
 
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != "off")

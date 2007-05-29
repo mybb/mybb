@@ -330,7 +330,7 @@ if($mybb->input['action'] == "send")
 
 	$pmid = $mybb->input['pmid'];
 	$do = $mybb->input['do'];
-	if($do != "forward" || $do != "reply")
+	if($do != "forward" && $do != "reply")
 	{
 		$do = "";
 	}

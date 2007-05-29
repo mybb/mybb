@@ -1388,6 +1388,12 @@ class Moderation
 			);
 			$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid='{$thread['tid']}'", 1);
 			$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
+			
+			$lastpost_subject = array(				
+				"lastpostsubject" => $new_subject['subject']				
+			);
+				
+			$db->update_query(TABLE_PREFIX."forums", $lastpost_subject, "lastposttid='{$thread['tid']}");
 		}
 	
 		return true;
