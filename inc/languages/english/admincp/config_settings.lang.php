@@ -71,8 +71,10 @@ $l['error_duplicate_group_name'] = "The identifier specified has already been us
 
 $l['success_setting_added'] = "The setting has successfully been created.";
 $l['success_setting_updated'] = "The setting has successfully been updated.";
+$l['success_setting_deleted'] = "The setting has successfully been deleted.";
 $l['success_settings_updated'] = "The settings have successfully been updated.";
 $l['success_display_orders_updated'] = "The display orders have successfully been updated.";
 $l['success_setting_group_added'] = "The setting group has successfully been created.";
 $l['success_setting_group_updated'] = "The setting group has successfully been updated.";
+$l['success_setting_group_deleted'] = "The setting group has successfully been deleted.";
 ?>

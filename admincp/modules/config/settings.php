@@ -15,11 +15,6 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// TODO
-//   Manage settings and groups page - lists the groups and has edit/delete for both groups and settings
-//   Delete setting page
-//   Add / edit group pages
-
 $page->add_breadcrumb_item($lang->board_settings, "index.php?".SID."&amp;module=config/settings");
 
 // Creating a new setting group
@@ -57,7 +52,7 @@ if($mybb->input['action'] == "addgroup")
 			
 			$db->insert_query("settinggroups", $new_setting_group);
 			flash_message($lang->success_setting_group_added, 'success');
-			admin_redirect("index.php?".SID."&module=config/settings");
+			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
 	}
 
@@ -181,6 +176,41 @@ if($mybb->input['action'] == "editgroup")
 	$page->output_footer();
 }
 
+// Delete Setting Group
+if($mybb->input['action'] == "deletegroup")
+{
+	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
+	$group = $db->fetch_array($query);
+
+	// Does the setting group not exist?
+	if(!$group['gid'])
+	{
+		flash_message($lang->error_invalid_gid2, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	
+	// User clicked no
+	if($mybb->input['no'])
+	{
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+
+	if($mybb->request_method == "post")
+	{
+		// Delete the setting group and its settings
+		$db->delete_query("settinggroups", "gid='{$group['gid']}'");
+		$db->delete_query("settings", "gid='{$group['gid']}'");
+		
+		rebuild_settings();
+
+		flash_message($lang->success_setting_group_deleted, 'success');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?".SID."&module=config/settings&amp;action=deletegroup&amp;gid={$group['gid']}", $lang->confirm_setting_group_deletion);
+	}
+}
 
 // Creating a new setting
 if($mybb->input['action'] == "add")
@@ -243,7 +273,7 @@ if($mybb->input['action'] == "add")
 			$db->insert_query("settings", $new_setting);
 			rebuild_settings();
 			flash_message($lang->success_setting_added, 'success');
-			admin_redirect("index.php?".SID."&module=config/settings");
+			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
 	}
 
@@ -373,7 +403,7 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
 			rebuild_settings();
 			flash_message($lang->success_setting_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/settings");
+			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
 	}
 
@@ -451,6 +481,41 @@ if($mybb->input['action'] == "edit")
 	</script>';
 
 	$page->output_footer();
+}
+
+// Delete Setting
+if($mybb->input['action'] == "delete")
+{
+	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
+	$setting = $db->fetch_array($query);
+
+	// Does the setting not exist?
+	if(!$setting['sid'])
+	{
+		flash_message($lang->error_invalid_sid, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	
+	// User clicked no
+	if($mybb->input['no'])
+	{
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+
+	if($mybb->request_method == "post")
+	{
+		// Delete the setting
+		$db->delete_query("settings", "sid='{$setting['sid']}'");
+		
+		rebuild_settings();
+
+		flash_message($lang->success_setting_deleted, 'success');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?".SID."&module=config/settings&amp;action=delete&amp;sid={$setting['sid']}", $lang->confirm_setting_deletion);
+	}
 }
 
 // Modify Existing Settings
