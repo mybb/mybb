@@ -56,7 +56,6 @@ if($mybb->input['action'] == "addgroup")
 			);
 			
 			$db->insert_query("settinggroups", $new_setting_group);
-			rebuild_settings();
 			flash_message($lang->success_setting_group_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings");
 		}
@@ -88,6 +87,94 @@ if($mybb->input['action'] == "addgroup")
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->insert_new_setting_group);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+
+	$page->output_footer();
+}
+
+// Edit setting group
+if($mybb->input['action'] == "editgroup")
+{
+	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
+	$group = $db->fetch_array($query);
+
+	// Does the setting not exist?
+	if(!$group['gid'])
+	{
+		flash_message($lang->error_invalid_gid2, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	
+	// Do edit?
+	if($mybb->request_method == "post")
+	{
+		// Validate title
+		if(!trim($mybb->input['title']))
+		{
+			$errors[] = $lang->error_missing_group_title;
+		}
+		
+		// Validate identifier
+		if(!trim($mybb->input['name']))
+		{
+			$errors[] = $lang->error_missing_group_name;
+		}
+		$query = $db->simple_select("settinggroups", "title", "name='".$db->escape_string($mybb->input['name'])."' AND gid != '{$group['gid']}'");
+		if($db->num_rows($query) > 0)
+		{
+			$dup_group_title = $db->fetch_field($query, 'title');
+			$errors[] = sprintf($lang->error_duplicate_group_name, $dup_group_title);
+		}
+
+		if(!$errors)
+		{
+			$update_setting_group = array(
+				"name" => $db->escape_string($mybb->input['name']),
+				"title" => $db->escape_string($mybb->input['title']),
+				"description" => $db->escape_string($mybb->input['description']),
+				"disporder" => intval($mybb->input['disporder']),
+			);
+			
+			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
+			flash_message($lang->success_setting_group_updated, 'success');
+			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+		}
+	}
+
+	$page->add_breadcrumb_item($lang->edit_setting_group);
+	$page->output_header($lang->board_settings." - ".$lang->edit_setting_group);
+	
+	$sub_tabs['edit_setting_group'] = array(
+		'title' => $lang->edit_setting_group,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=editgroup&amp;gid={$group['gid']}",
+		'description' => $lang->edit_setting_group_desc
+	);
+
+	$page->output_nav_tabs($sub_tabs, 'edit_setting_group');
+
+	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=editgroup", "post", "editgroup");
+
+	echo $form->generate_hidden_field("gid", $group['gid']);
+	
+	if($errors)
+	{
+		$group_data = $mybb->input;
+		$page->output_inline_error($errors);
+	}
+	else
+	{
+		$group_data = $group;
+	}
+
+	$form_container = new FormContainer($lang->edit_setting_group);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $group_data['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $group_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $group_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->name." <em>*</em>", $lang->group_name_desc, $form->generate_text_box('name', $group_data['name'], array('id' => 'name')), 'name');
+	$form_container->end();
+
+	$buttons[] = $form->generate_submit_button($lang->update_setting_group);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -244,18 +331,11 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_title;
 		}
 
-		$query = $db->simple_select("settinggroups", "gid", "gid='".intval($mybb->input['gid'])."'");
-		$gid = $db->fetch_field($query, 'gid');
-		if(!$gid)
-		{
-			$errors[] = $lang->error_invalid_gid;
-		}
-
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = $lang->error_missing_name;
 		}
-		$query = $db->simple_select("settings", "title", "name='".$db->escape_string($mybb->input['name'])."'");
+		$query = $db->simple_select("settings", "title", "name='".$db->escape_string($mybb->input['name'])."' AND sid != '{$setting['sid']}'");
 		if($db->num_rows($query) > 0)
 		{
 			$dup_setting_title = $db->fetch_field($query, 'title');
@@ -302,7 +382,7 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
-		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit&amp;sid={$setting['sid']}",
 		'description' => $lang->modify_existing_settings_desc
 	);
 

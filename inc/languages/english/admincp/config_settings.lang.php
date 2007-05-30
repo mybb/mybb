@@ -15,6 +15,8 @@ $l['modify_existing_settings'] = "Modify Existing Settings";
 $l['modify_existing_settings_desc'] = "This section allows you to modify an existing setting on your forum.";
 $l['add_new_setting_group'] = "Add New Setting Group";
 $l['add_new_setting_group_desc'] = "This section allows you to create a setting group to categorize individual settings.";
+$l['edit_setting_group'] = "Edit Setting Group";
+$l['edit_setting_group_desc'] = "This section allows you to edit an existing setting group.";
 
 $l['title'] = "Title";
 $l['description'] = "Description";
@@ -51,6 +53,7 @@ $l['setting_group_setting'] = "Setting Group / Setting";
 $l['edit_setting_group'] = "Edit Setting Group";
 $l['delete_setting_group'] = "Delete Setting Group";
 $l['save_display_orders'] = "Save Display Orders";
+$l['update_setting_group'] = "Update Setting Group";
 
 $l['confirm_setting_group_deletion'] = "Are you sure you wish to delete this setting group?";
 $l['confirm_setting_deletion'] = "Are you sure you wish to delete this setting?";
@@ -69,6 +72,7 @@ $l['error_duplicate_group_name'] = "The identifier specified has already been us
 $l['success_setting_added'] = "The setting has successfully been created.";
 $l['success_setting_updated'] = "The setting has successfully been updated.";
 $l['success_settings_updated'] = "The settings have successfully been updated.";
-$l['success_setting_group_added'] = "The setting group has successfully been created.";
 $l['success_display_orders_updated'] = "The display orders have successfully been updated.";
+$l['success_setting_group_added'] = "The setting group has successfully been created.";
+$l['success_setting_group_updated'] = "The setting group has successfully been updated.";
 ?>
