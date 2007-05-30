@@ -17,10 +17,13 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->help_documents, "index.php?".SID."&amp;module=config/help_documents");
 
+// Add something
 if($mybb->input['action'] == "add")
 {
+	// Add section
 	if($mybb->input['type'] == "section")
 	{
+		// Do add?
 		if($mybb->request_method == "post")
 		{
 			if(empty($mybb->input['name']))
@@ -43,20 +46,12 @@ if($mybb->input['action'] == "add")
 				$errors[] = $lang->error_section_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] == 1)
-			{
-				$mybb->input['enabled'] = "yes";
-			}
-			else
+			if($mybb->input['enabled'] != 'yes')
 			{
 				$mybb->input['enabled'] = "no";
 			}
 			
-			if($mybb->input['translation'] == 1)
-			{
-				$mybb->input['translation'] = "yes";
-			}
-			else
+			if($mybb->input['translation'] != 'yes')
 			{
 				$mybb->input['translation'] = "no";
 			}
@@ -116,8 +111,11 @@ if($mybb->input['action'] == "add")
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
+	
+	// Add page
 	else
 	{
+		// Do add?
 		if($mybb->request_method == "post")
 		{
 			if(empty($mybb->input['sid']))
@@ -150,20 +148,12 @@ if($mybb->input['action'] == "add")
 				$errors[] = $lang->error_document_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] == 1)
-			{
-				$mybb->input['enabled'] = "yes";
-			}
-			else
+			if($mybb->input['enabled'] != 'yes')
 			{
 				$mybb->input['enabled'] = "no";
 			}
 			
-			if($mybb->input['translation'] == 1)
-			{
-				$mybb->input['translation'] = "yes";
-			}
-			else
+			if($mybb->input['translation'] != 'yes')
 			{
 				$mybb->input['translation'] = "no";
 			}
@@ -205,6 +195,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
+			// Select the largest existing display order
 			$query = $db->simple_select("helpdocs", "MAX(disporder) as maxdisp");
 			$mybb->input['disporder'] = $db->fetch_field($query, "maxdisp")+1;
 			$mybb->input['enabled'] = 1;
@@ -212,7 +203,7 @@ if($mybb->input['action'] == "add")
 		}
 	
 		$form = new Form("index.php?".SID."&amp;module=config/help_documents&amp;action=add&amp;type=document", "post", "add");
-		$form_container = new FormContainer($lang>add_new_document);
+		$form_container = new FormContainer($lang->add_new_document);
 		$query = $db->simple_select("helpsections", "sid, name");
 		while($section = $db->fetch_array($query))
 		{
@@ -236,10 +227,13 @@ if($mybb->input['action'] == "add")
 	$page->output_footer();
 }
 
+// Edit something
 if($mybb->input['action'] == "edit")
 {
+	// Edit a section
 	if($mybb->input['sid'] && !$mybb->input['hid'])
 	{
+		// Do edit?
 		if($mybb->request_method == "post")
 		{
 			$sid = intval($mybb->input['sid']);
@@ -269,20 +263,12 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_section_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] == 1)
-			{
-				$mybb->input['enabled'] = "yes";
-			}
-			else
+			if($mybb->input['enabled'] != 'yes')
 			{
 				$mybb->input['enabled'] = "no";
 			}
 			
-			if($mybb->input['translation'] == 1)
-			{
-				$mybb->input['translation'] = "yes";
-			}
-			else
+			if($mybb->input['translation'] != 'yes')
 			{
 				$mybb->input['translation'] = "no";
 			}
@@ -305,7 +291,7 @@ if($mybb->input['action'] == "edit")
 		}
 	
 		$page->add_breadcrumb_item($lang->edit_section);
-		$page->output_header($lang->help_sections." - ".$lang->edit_section);
+		$page->output_header($lang->help_documents." - ".$lang->edit_section);
 		
 		
 		$sub_tabs['edit_help_section'] = array(
@@ -348,8 +334,11 @@ if($mybb->input['action'] == "edit")
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
+	
+	// Edit document
 	else
 	{
+		// Do edit?
 		if($mybb->request_method == "post")
 		{
 			$hid = intval($mybb->input['hid']);
@@ -384,20 +373,12 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_document_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] == 1)
-			{
-				$mybb->input['enabled'] = "yes";
-			}
-			else
+			if($mybb->input['enabled'] != 'yes')
 			{
 				$mybb->input['enabled'] = "no";
 			}
 			
-			if($mybb->input['translation'] == 1)
-			{
-				$mybb->input['translation'] = "yes";
-			}
-			else
+			if($mybb->input['translation'] != 'yes')
 			{
 				$mybb->input['translation'] = "no";
 			}
@@ -479,6 +460,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_footer();
 }
 
+// Delete something
 if($mybb->input['action'] == "delete")
 {
 	// User clicked no
@@ -487,8 +469,10 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?".SID."&module=config/help_documents");
 	}
 
+	// Do delete something?
 	if($mybb->request_method == "post")
 	{
+		// Delete section
 		if(isset($mybb->input['sid']))
 		{
 			$sid = intval($mybb->input['sid']);
@@ -496,24 +480,29 @@ if($mybb->input['action'] == "delete")
 			$query = $db->simple_select("helpsections", "*", "sid='{$sid}'");
 			$section = $db->fetch_array($query);
 	
+			// Invalid section?
 			if(!$section['sid'])
 			{
 				flash_message($lang->error_missing_section_id, 'error');
 				admin_redirect("index.php?".SID."&module=config/help_documents");
 			}
 			
+			// Default section?
 			if($sid <= 2)
 			{
 				flash_message($lang->error_cannot_delete_section, 'error');
 				admin_redirect("index.php?".SID."&module=config/help_documents");
 			}
 			
+			// Delete section and its documents
 			$db->delete_query("helpsections", "sid = '{$sid}'", 1);
 			$db->delete_query("helpdocs", "sid = '{$sid}'");
 			
 			flash_message($lang->success_section_deleted, 'success');
 			admin_redirect("index.php?".SID."&module=config/help_documents");
 		}
+		
+		// Delete document
 		else
 		{
 			$hid = intval($mybb->input['hid']);
@@ -521,12 +510,14 @@ if($mybb->input['action'] == "delete")
 			$query = $db->simple_select("helpdocs", "*", "hid='{$hid}'");
 			$doc = $db->fetch_array($query);
 	
+			// Invalid document?
 			if(!$doc['hid'])
 			{
 				flash_message($lang->error_missing_hid, 'error');
 				admin_redirect("index.php?".SID."&module=config/help_documents");
 			}			
 			
+			// Default document?
 			if($hid <= 7)
 			{
 				flash_message($lang->error_cannot_delete_document, 'error');
@@ -539,13 +530,16 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?".SID."&module=config/help_documents");
 		}
 	}
+	// Show form for deletion
 	else
 	{
+		// Section
 		if(isset($mybb->input['sid']))
 		{
 			$sid = intval($mybb->input['sid']);
 			$page->output_confirm_action("index.php?".SID."&amp;module=config/help_documents&amp;action=delete&amp;sid={$sid}", $lang->confirm_section_deletion);
 		}
+		// Document
 		else
 		{
 			$hid = intval($mybb->input['hid']);
@@ -554,6 +548,7 @@ if($mybb->input['action'] == "delete")
 	}
 }
 
+// List document and sections
 if(!$mybb->input['action'])
 {
 	$page->output_header($lang->help_documents);
@@ -583,17 +578,20 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("helpsections", "*", "", array('order_by' => "disporder"));
 	while($section = $db->fetch_array($query))
 	{
+		// Icon to differentiate section type
 		if($section['sid'] > 2)
 		{
-			$icon = '<img src="styles/default/images/icons/custom.gif" alt="{$lang->custom_doc_sec}" style="vertical-align: middle;" />';
+			$icon = "<img src=\"styles/default/images/icons/custom.gif\" title=\"{$lang->custom_doc_sec}\" alt=\"{$lang->custom_doc_sec}\" style=\"vertical-align: middle;\" />";
 		}
 		else
 		{
-			$icon = '<img src="styles/default/images/icons/default.gif" alt="{$lang->default_doc_sec}" style="vertical-align: middle;" />';
+			$icon = "<img src=\"styles/default/images/icons/default.gif\" title=\"{$lang->default_doc_sec}\" alt=\"{$lang->default_doc_sec}\" style=\"vertical-align: middle;\" />";
 		}
 		$table->construct_cell("<div class=\"float_right\">{$icon}</div><div><strong>{$section['name']}</strong><br /><small>{$section['description']}</small></div>");
  
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
+		
+		// Show delete only if not a default section
 		if($section['sid'] > 2)
 		{
 			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=delete&amp;sid={$section['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
@@ -607,18 +605,20 @@ if(!$mybb->input['action'])
 		$query2 = $db->simple_select("helpdocs", "*", "sid='{$section['sid']}'", array('order_by' => "disporder"));
 		while($doc = $db->fetch_array($query2))
 		{
+			// Icon to differentiate document type
 			if($doc['hid'] > 7)
 			{
-				$icon = '<img src="styles/default/images/icons/custom.gif" alt="{$lang->custom_doc_sec}" style="vertical-align: middle;" />';
+				$icon = "<img src=\"styles/default/images/icons/custom.gif\" title=\"{$lang->custom_doc_sec}\" alt=\"{$lang->custom_doc_sec}\" style=\"vertical-align: middle;\" />";
 			}
 			else
 			{
-				$icon = '<img src="styles/default/images/icons/default.gif" alt="{$lang->default_doc_sec}" style="vertical-align: middle;" />';
+				$icon = "<img src=\"styles/default/images/icons/default.gif\" title=\"{$lang->default_doc_sec}\" alt=\"{$lang->default_doc_sec}\" style=\"vertical-align: middle;\" />";
 			}
 			$table->construct_cell("<div style=\"padding-left: 40px;\"><div class=\"float_right\">{$icon}</div><div><strong>{$doc['name']}</strong><br /><small>{$doc['description']}</small></div></div>");
 
 			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
 			
+			// Only show delete if not a default document
 			if($doc['hid'] > 7)
 			{
 				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=delete&amp;hid={$doc['hid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
@@ -630,7 +630,8 @@ if(!$mybb->input['action'])
 			$table->construct_row();
 		}
 	}
-
+	
+	// No documents message
 	if(count($table->rows) == 0)
 	{
 		$table->construct_cell($lang->no_help_documents, array('colspan' => 3));

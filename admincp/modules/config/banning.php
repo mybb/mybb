@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/license.php
  *
- * $Id: settings.php 2918 2007-03-05 00:50:41Z Tikitiki $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

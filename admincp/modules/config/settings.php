@@ -9,6 +9,8 @@
  * $Id$
  */
 
+// TODO: Edit & delete setting/group iff not default
+
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
