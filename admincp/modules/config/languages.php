@@ -181,8 +181,6 @@ if($mybb->input['action'] == "edit")
 	
 	$page->add_breadcrumb_item($languages[$editlang], "index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$editlang}");
 	
-	$page->output_header($lang->languages);
-	
 	$editwith = basename($mybb->input['editwith']);
 	$editwithfolder = '';
 	
@@ -225,22 +223,28 @@ if($mybb->input['action'] == "edit")
 		if($mybb->request_method == "post")
 		{
 			// Make the contents of the new file
-			$newfile = "<"."?php\n";
+			
+			// Load the old file
+			$contents = implode('', file($editfile));
+			
+			// Loop through and change entries
 			foreach($mybb->input['edit'] as $key => $phrase)
 			{
+				// Sanitize (but it doesn't work well)
 				$phrase = str_replace("\\", "\\\\", $phrase);
 				$phrase = str_replace("\"", '\"', $phrase);
 				$key = str_replace("\\", '', $key);
 				$key = str_replace("'", '', $key);
-				$newfile .= "\$l['$key'] = \"$phrase\";\n";
+				
+				// Ugly regexp to find a variable and replace it.
+				$contents = preg_replace('@\n\$l\[\''.$key.'\']([\s]*)=([\s]*)("(.*?)"|\'(.*?)\');([\s]*)\n@si', "\n\$l['{$key}'] = \"{$phrase}\";\n", $contents);
 			}
-			$newfile .= "?".">";
 			
-			// Put it in!
-			if($file = fopen($editfile, "w"))
+			// Put it back!
+			if($fp = @fopen($editfile, "w"))
 			{
-				fwrite($file, $newfile);
-				fclose($file);
+				fwrite($fp, $contents);
+				fclose($fp);
 				flash_message($lang->success_langfile_updated, 'success');
 				admin_redirect("index.php?".SID."&module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
 			}
@@ -273,7 +277,10 @@ if($mybb->input['action'] == "edit")
 		}
 
 		// Start output
-		$form = new Form("index.php?".SID."&amp;module=user/group_promotions&amp;action=edit", "post", "edit");
+		
+		$page->output_header($lang->languages);
+		
+		$form = new Form("index.php?".SID."&amp;module=config/languages&amp;action=edit", "post", "edit");
 		echo $form->generate_hidden_field("file", $file);
 		echo $form->generate_hidden_field("lang", $editlang);
 		echo $form->generate_hidden_field("editwith", $editwith);
@@ -311,8 +318,8 @@ if($mybb->input['action'] == "edit")
 					$withvars[$key] = preg_replace("#%u([0-9A-F]{1,4})#ie", "dec_to_utf8(hexdec('$1'));", $withvars[$key]);
 					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
 				}
-				$form_container->output_row($key, "", $form->generate_text_area("", htmlspecialchars($withvars[$key]), array('disabled' => true, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), "", array('width' => '50%', 'skip_construct' => true));
-				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", htmlspecialchars($value), array('id' => $key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), $key, array('width' => '50%'));
+				$form_container->output_row($key, "", $form->generate_text_area("", $withvars[$key], array('disabled' => true, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), "", array('width' => '50%', 'skip_construct' => true));
+				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $value, array('id' => $key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), $key, array('width' => '50%'));
 			}
 		}
 		else
@@ -331,7 +338,7 @@ if($mybb->input['action'] == "edit")
 				{
 					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
 				}
-				$form_container->output_row($key, "", $form->generate_text_box("edit[$key]", htmlspecialchars($value), array('id' => $key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), $key, array('width' => '50%'));
+				$form_container->output_row($key, "", $form->generate_text_box("edit[$key]", $value, array('id' => $key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), $key, array('width' => '50%'));
 			}
 		}
 		$form_container->end();
@@ -343,6 +350,8 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
+		$page->output_header($lang->languages);
+		
 		$sub_tabs['language_files'] = array(
 			'title' => $lang->language_files,
 			'link' => "index.php?".SID."&amp;module=config/languages",
