@@ -26,7 +26,7 @@ class DefaultTable
 		// We construct individual cells here
 		foreach($this->cells as $key => $cell)
 		{
-			$cells .= "\t<td ";
+			$cells .= "\t<td";
 			if($key == 0)
 			{
 				$cell['extra']['class'] .= " first";
@@ -43,15 +43,15 @@ class DefaultTable
 			$i++;
 			if($cell['extra']['class'])
 			{
-				$cells .= " class=\"".$cell['extra']['class']."\" ";
+				$cells .= " class=\"".$cell['extra']['class']."\"";
 			}
 			if($cell['extra']['style'])
 			{
-				$cells .= " style=\"".$cell['extra']['style']."\" ";
+				$cells .= " style=\"".$cell['extra']['style']."\"";
 			}
 			if($cell['extra']['id'])
 			{
-				$cells .= " id=\"".$cell['extra']['id']."\" ";
+				$cells .= " id=\"".$cell['extra']['id']."\"";
 			}
 			if(isset($cell['extra']['colspan']) && $cell['extra']['colspan'] > 1)
 			{
@@ -96,19 +96,19 @@ class DefaultTable
 				$table .= "	<div class=\"title\">".$heading."</div>\n";
 			}
 		}
-		$table .= "<table ";
+		$table .= "<table";
 		if($class != "")
 		{
-			$table .= "class=\"".$class."\"";
+			$table .= " class=\"".$class."\"";
 		}
-		$table .= " cellspacing=\"0\">";
+		$table .= " cellspacing=\"0\">\n";
 		if($this->headers)
 		{
 			$table .= "\t<thead>\n";
 			$table .= "\t\t<tr>\n";
 			foreach($this->headers as $key => $data)
 			{
-				$table .= "\t\t\t<th ";
+				$table .= "\t\t\t<th";
 				if($key == 0)
 				{
 					$data['extra']['class'] .= " first";
@@ -119,15 +119,15 @@ class DefaultTable
 				}
 				if($data['extra']['class'])
 				{
-					$table .= "class=\"".$data['extra']['class']."\" ";
+					$table .= " class=\"".$data['extra']['class']."\"";
 				}
 				if($data['extra']['width'])
 				{
-					$table .= "width=\"".$data['extra']['width']."\" ";
+					$table .= " width=\"".$data['extra']['width']."\"";
 				}
 				if(isset($data['extra']['colspan']) && $data['extra']['colspan'] > 1)
 				{
-					$table .= "colspan=\"".$data['extra']['colspan']."\"";
+					$table .= " colspan=\"".$data['extra']['colspan']."\"";
 				}
 				$table .= ">".$data['data']."</th>\n";
 			}
@@ -138,10 +138,10 @@ class DefaultTable
 		$i = 1;
 		foreach($this->rows as $key => $table_row)
 		{
-			$table .= "\t\t<tr ";
+			$table .= "\t\t<tr";
 			if($table_row['extra']['id'])
 			{
-				$table .= "id=\"{$table_row['extra']['id']}\" ";
+				$table .= " id=\"{$table_row['extra']['id']}\"";
 			}
 			if($key == 0)
 			{
@@ -159,7 +159,8 @@ class DefaultTable
 			$i++;
 			if($table_row['extra']['class'])
 			{
-				$table .= "class=\"".$table_row['extra']['class']."\" ";
+				$table_row['extra']['class'] = trim($table_row['extra']['class']);
+				$table .= " class=\"".$table_row['extra']['class']."\"";
 			}
 			$table .= ">\n";
 			$table .= $table_row['cells'];
