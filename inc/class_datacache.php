@@ -59,16 +59,13 @@ class datacache
 		global $db, $mybb;
 		if($mybb->config['cache_store'] == "files")
 		{
-			if($hard)
+			if(!isset($this->cache[$name]) || $hard)
 			{
 				@include(MYBB_ROOT."inc/cache/".$name.".php");
+				$this->cache[$name] = $$name;
+				
+				unset($$name);
 			}
-			else
-			{
-				@include_once(MYBB_ROOT."inc/cache/".$name.".php");
-			}
-			$this->cache[$name] = $$name;
-			unset($$name);
 		}
 		else
 		{
@@ -79,6 +76,7 @@ class datacache
 				$this->cache[$data['title']] = unserialize($data['cache']);
 			}
 		}
+		
 		if(isset($this->cache[$name]))
 		{
 			return $this->cache[$name];
