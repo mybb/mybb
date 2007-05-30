@@ -44,7 +44,7 @@ class diskCacheHandler
 			return false;
 		}
 		
-		if($hard_refresh == true)
+		if(!isset($this->cache[$name]) || $hard_refresh == true)
 		{
 			@include(MYBB_ROOT."/inc/cache/{$name}.php");
 		}

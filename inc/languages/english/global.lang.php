@@ -18,7 +18,6 @@ $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_returncontent'] = "Return to Content";
 $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
-$l['bottomlinks_portal'] = "Portal";
 
 $l['welcome_usercp'] = "User CP";
 $l['welcome_admin'] = "Admin CP";

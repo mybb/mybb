@@ -1868,11 +1868,11 @@ form {
 <td class="trow2" width="50%">{$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]</td>
 </tr>]]></template>
 		<template name="usercp_currentavatar" version="120"><![CDATA[<td class="trow1" rowspan="6" valign="middle" align="center" width="1"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" {$avatar_width_height} /></td>]]></template>
-		<template name="footer" version="140"><![CDATA[			<br />
+		<template name="footer" version="120"><![CDATA[			<br />
 			<div class="bottommenu">
 				<div class="float_right">{$lang_select}</div>
 				<div>
-					<span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span> | <a href="{$mybb->settings['bburl']}/portal.php">{$lang->bottomlinks_portal}</a></span>
+					<span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
 				</div>
 			</div>
 			</div>
