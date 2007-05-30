@@ -26,7 +26,7 @@ class DefaultTable
 		// We construct individual cells here
 		foreach($this->cells as $key => $cell)
 		{
-			$cells .= "\t<td";
+			$cells .= "\t\t\t<td";
 			if($key == 0)
 			{
 				$cell['extra']['class'] .= " first";
@@ -43,7 +43,7 @@ class DefaultTable
 			$i++;
 			if($cell['extra']['class'])
 			{
-				$cells .= " class=\"".$cell['extra']['class']."\"";
+				$cells .= " class=\"".trim($cell['extra']['class'])."\"";
 			}
 			if($cell['extra']['style'])
 			{
@@ -159,8 +159,7 @@ class DefaultTable
 			$i++;
 			if($table_row['extra']['class'])
 			{
-				$table_row['extra']['class'] = trim($table_row['extra']['class']);
-				$table .= " class=\"".$table_row['extra']['class']."\"";
+				$table .= " class=\"".trim($table_row['extra']['class'])."\"";
 			}
 			$table .= ">\n";
 			$table .= $table_row['cells'];
