@@ -19,21 +19,34 @@ require_once MYBB_ROOT."/inc/functions_task.php";
 
 $page->add_breadcrumb_item($lang->task_manager, "index.php?".SID."&amp;module=tools/tasks");
 
-function check_time_values($value, $min, $max)
+/**
+ * Validates a string or array of values
+ * 
+ * @param mixed Comma-separated list or array of values
+ * @param int Minimum value
+ * @param int Maximum value
+ * @param string Set "string" to return in a comma-separated list, or "array" to return in an array
+ * @return mixed String or array of valid values OR false if string/array is invalid
+ */
+function check_time_values($value, $min, $max, $return_type)
 {
+	// If the values aren't in an array form, make them into an array
 	if(!is_array($value))
 	{
+		// Empty value == *
 		if($value === '')
 		{
-			return '*';
+			return ($return_type == 'string') ? '*' : array('*');
 		}
 		$implode = 1;
-		$value = explode(",", $value);
+		$value = explode(',', $value);
 	}
+	// If * is in the array, always return with * because it overrides all
 	if(in_array('*', $value))
 	{
-		return '*';
+		return ($return_type == 'string') ? '*' : array('*');
 	}
+	// Validate each value in array
 	foreach($value as $time)
 	{
 		if($time < $min || $time > $max)
@@ -41,9 +54,10 @@ function check_time_values($value, $min, $max)
 			return false;
 		}
 	}
-	if($implode == 1)
+	// Return based on return type
+	if($return_type == 'string')
 	{
-		$value = implode(",", $value);
+		$value = implode(',', $value);
 	}
 	return $value;
 }
@@ -67,13 +81,13 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_invalid_task_file;
 		}
 
-		$mybb->input['minute'] = check_time_values($mybb->input['minute'], 0, 59);
+		$mybb->input['minute'] = check_time_values($mybb->input['minute'], 0, 59, 'string');
 		if($mybb->input['minute'] === false)
 		{
 			$errors[] = $lang->error_invalid_minute;
 		}
 
-		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59);
+		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59, 'string');
 		if($mybb->input['hour'] === false)
 		{
 			$errors[] = $lang->error_invalid_hour;
@@ -81,7 +95,7 @@ if($mybb->input['action'] == "add")
 
 		if($mybb->input['day'] != "*" && $mybb->input['day'] != '')
 		{
-			$mybb->input['day'] = check_time_values($mybb->input['day'], 1, 31);
+			$mybb->input['day'] = check_time_values($mybb->input['day'], 1, 31, 'string');
 			if($mybb->input['day'] === false)
 			{
 				$errors[] = $lang->error_invalid_day;
@@ -90,7 +104,7 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6);
+			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6, 'array');
 			if($mybb->input['weekday'] === false)
 			{
 				$errors[] = $lang->error_invalid_weekday;
@@ -98,7 +112,7 @@ if($mybb->input['action'] == "add")
 			$mybb->input['day'] = '*';
 		}
 
-		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12);
+		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12, 'array');
 		if($mybb->input['month'] === false)
 		{
 			$errors[] = $lang->error_invalid_month;
@@ -113,8 +127,8 @@ if($mybb->input['action'] == "add")
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),
-				"month" => $db->escape_string(implode(",", $mybb->input['month'])),
-				"weekday" => $db->escape_string(implode(",", $mybb->input['weekday'])),
+				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
+				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
 				"enabled" => intval($mybb->input['enabled']),
 				"logging" => intval($mybb->input['logging'])
 			);
@@ -178,7 +192,7 @@ if($mybb->input['action'] == "add")
 		"5" => $lang->friday,
 		"6" => $lang->saturday
 	);
-	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
+	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
 
 	$options = array(
 		"*" => $lang->every_month,
@@ -195,11 +209,11 @@ if($mybb->input['action'] == "add")
 		"11" => $lang->november,
 		"12" => $lang->december
 	);
-	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true)), 'month');
-
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
+	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true)), 'month');
 
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
+	
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_new_task);
@@ -239,13 +253,13 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_invalid_task_file;
 		}
 
-		$mybb->input['minute'] = check_time_values($mybb->input['minute'], 0, 59);
+		$mybb->input['minute'] = check_time_values($mybb->input['minute'], 0, 59, 'string');
 		if($mybb->input['minute'] === false)
 		{
 			$errors[] = $lang->error_invalid_minute;
 		}
 
-		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59);
+		$mybb->input['hour'] = check_time_values($mybb->input['hour'], 0, 59, 'string');
 		if($mybb->input['hour'] === false)
 		{
 			$errors[] = $lang->error_invalid_hour;
@@ -253,7 +267,7 @@ if($mybb->input['action'] == "edit")
 
 		if($mybb->input['day'] != "*" && $mybb->input['day'] != '')
 		{
-			$mybb->input['day'] = check_time_values($mybb->input['day'], 1, 31);
+			$mybb->input['day'] = check_time_values($mybb->input['day'], 1, 31, 'string');
 			if($mybb->input['day'] === false)
 			{
 				$errors[] = $lang->error_invalid_day;
@@ -262,7 +276,7 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 1, 31);
+			$mybb->input['weekday'] = check_time_values($mybb->input['weekday'], 0, 6, 'array');
 			if($mybb->input['weekday'] === false)
 			{
 				$errors[] = $lang->error_invalid_weekday;
@@ -270,7 +284,7 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['day'] = '*';
 		}
 
-		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12);
+		$mybb->input['month'] = check_time_values($mybb->input['month'], 1, 12, 'array');
 		if($mybb->input['month'] === false)
 		{
 			$errors[] = $lang->error_invalid_month;
@@ -285,8 +299,8 @@ if($mybb->input['action'] == "edit")
 				"minute" => $db->escape_string($mybb->input['minute']),
 				"hour" => $db->escape_string($mybb->input['hour']),
 				"day" => $db->escape_string($mybb->input['day']),
-				"month" => $db->escape_string($mybb->input['month']),
-				"weekday" => $db->escape_string($mybb->input['weekday']),
+				"month" => $db->escape_string(implode(',', $mybb->input['month'])),
+				"weekday" => $db->escape_string(implode(',', $mybb->input['weekday'])),
 				"enabled" => intval($mybb->input['enabled']),
 				"logging" => intval($mybb->input['logging'])
 			);
@@ -318,17 +332,9 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$task_data = array(
-			'title' => $task['title'],
-			'description' => $task['description'],
-			'minute' => $task['minute'],
-			'hour' => $task['hour'],
-			'day' => $task['day'],
-			'weekday' => explode(",", $task['weekday']),
-			'month' => explode(",", $task['month']),
-			'enabled' => $task['enabled'],
-			'logging' => $task['logging']
-		);
+		$task_data = $task;
+		$task_data['weekday'] = explode(',', $task['weekday']);
+		$task_data['month'] = explode(',', $task['month']);
 	}
 
 	$form_container = new FormContainer($lang->edit_task);
@@ -361,7 +367,7 @@ if($mybb->input['action'] == "edit")
 		"5" => $lang->friday,
 		"6" => $lang->saturday
 	);
-	$form_container->output_row($lang->time_weedays, $lang->time_weedays_desc, $form->generate_select_box('weekday', $options, $task_data['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
+	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $task_data['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
 
 	$options = array(
 		"*" => $lang->every_month,
@@ -378,11 +384,11 @@ if($mybb->input['action'] == "edit")
 		"11" => $lang->november,
 		"12" => $lang->december
 	);
-	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month', $options, $task_data['month'], array('id' => 'month', 'multiple' => true)), 'month');
+	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $task_data['month'], array('id' => 'month', 'multiple' => true)), 'month');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled']));
-
-	$form_container->output_row($lang->enabled_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging']));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $task_data['logging'], true));
+	
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $task_data['enabled'], true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_task);

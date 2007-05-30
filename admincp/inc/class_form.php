@@ -204,7 +204,7 @@ class DefaultForm
 		return $input;
 	}
 	
-	function generate_select_box($name, $option_list, $selected=false, $options=array())
+	function generate_select_box($name, $option_list, $selected=array(), $options=array())
 	{
 		if(!isset($options['multiple']))
 		{
@@ -230,7 +230,7 @@ class DefaultForm
 		foreach($option_list as $value => $option)
 		{
 			$select_add = '';
-			if($value == $selected || (is_array($selected) && in_array($value, $selected, true)))
+			if($value == $selected || (is_array($selected) && in_array($value, $selected)))
 			{
 				$select_add = " selected=\"selected\"";
 			}
