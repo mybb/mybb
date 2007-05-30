@@ -151,7 +151,7 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->bad_word);
-	$table->construct_header($lang->replacements, array("width" => "50%"));
+	$table->construct_header($lang->replacement, array("width" => "50%"));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150, "colspan" => 2));
 
 	$query = $db->simple_select("badwords", "*", "", array("order_by" => "badword", "order_dir" => "asc"));

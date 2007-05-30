@@ -87,7 +87,7 @@ function config_action_handler($manage)
 	$sub_menu['20'] = array("id" => "banning", "title" => "Banning", "link" => "index.php?".SID."&module=config/banning");
 	$sub_menu['30'] = array("id" => "profile_fields", "title" => "Custom Profile Fields", "link" => "index.php?".SID."&module=config/profile_fields");
 	$sub_menu['40'] = array("id" => "smilies", "title" => "Smilies", "link" => "index.php?".SID."&module=config/smilies");
-	$sub_menu['50'] = array("id" => "badwords", "title" => "Bad Words", "link" => "index.php?".SID."&module=config/badwords");
+	$sub_menu['50'] = array("id" => "badwords", "title" => "Word Filters", "link" => "index.php?".SID."&module=config/badwords");
 	$sub_menu['60'] = array("id" => "mycode", "title" => "MyCode", "link" => "index.php?".SID."&module=config/mycode");
 	$sub_menu['70'] = array("id" => "languages", "title" => "Languages", "link" => "index.php?".SID."&module=config/languages");
 	$sub_menu['80'] = array("id" => "post_icons", "title" => "Post Icons", "link" => "index.php?".SID."&module=config/post_icons");
