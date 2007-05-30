@@ -338,7 +338,7 @@ if($mybb->input['action'] == "edit")
 				{
 					$value = preg_replace("#%u([0-9A-F]{1,4})#ie", "'&#'.hexdec('$1').';'", $value);
 				}
-				$form_container->output_row($key, "", $form->generate_text_box("edit[$key]", $value, array('id' => $key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), $key, array('width' => '50%'));
+				$form_container->output_row($key, "", $form->generate_text_area("edit[$key]", $value, array('id' => $key, 'rows' => 2, 'style' => "width: 98%; padding: 4px;")), $key, array('width' => '50%'));
 			}
 		}
 		$form_container->end();
