@@ -52,7 +52,7 @@ $l['november'] = "November";
 $l['december'] = "December";
 $l['time_months'] = "Time: Months";
 $l['time_months_desc'] = "Select which months this task should run on. Holding down CTRL selects multiple months. Select 'Every month' if you want this task to run each month.";
-$l['enabled'] = "Enabled?";
+$l['enabled'] = "Task enabled?";
 $l['enable_logging'] = "Enable Logging?";
 $l['save_new_task'] = "Save New Task";
 $l['save_task'] = "Save Task";
@@ -71,18 +71,18 @@ $l['error_invalid_task'] = "The specified task does not exist.";
 $l['error_missing_title'] = "You did not enter a title for this scheduled task";
 $l['error_missing_description'] = "You did not enter a description for this scheduled task";
 $l['error_invalid_task_file'] = "The task file you selected does not exist.";
-$l['error_invalid_minute'] = "The value you've entered for the run minute is invalid";
-$l['error_invalid_hour'] = "The value you've entered for the run hour is invalid";
-$l['error_invalid_day'] = "The value you've entered for the run day is invalid";
-$l['error_invalid_weekday'] = "The value you've selected for the run weekday is invalid";
-$l['error_invalid_month'] = "The value you've entered for the run month is invalid";
+$l['error_invalid_minute'] = "The minute you've entered is invalid.";
+$l['error_invalid_hour'] = "The hour you've entered is invalid.";
+$l['error_invalid_day'] = "The day you've entered is invalid.";
+$l['error_invalid_weekday'] = "The weekday you've selected is invalid.";
+$l['error_invalid_month'] = "The month you've selected is invalid.";
 
 $l['success_task_created'] = "The task has successfully been created.";
 $l['success_task_updated'] = "The task has successfully been updated.";
 $l['success_task_deleted'] = "The specified task has been deleted.";
-$l['success_task_enabled'] = "The speicified task has now been enabled.";
-$l['success_task_disabled'] = "The speicified task has now been disabled.";
-$l['success_task_run'] = "The speicified task has been run.";
+$l['success_task_enabled'] = "The specified task has now been enabled.";
+$l['success_task_disabled'] = "The specified task has now been disabled.";
+$l['success_task_run'] = "The specified task has been run.";
 
 $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled task?";
 

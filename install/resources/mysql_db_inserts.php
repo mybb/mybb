@@ -49,10 +49,10 @@ $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (5, 'Sad', 'images
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (6, 'Wink', 'images/icons/wink.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (7, 'Cool', 'images/icons/cool.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (8, 'Big Grin', 'images/icons/biggrin.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (9, 'Toungue', 'images/icons/tongue.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (10, 'Rolleyes', 'images/icons/rolleyes.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (9, 'Tongue', 'images/icons/tongue.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (10, 'Roll Eyes', 'images/icons/rolleyes.gif');";
 $inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (11, 'Shy', 'images/icons/shy.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (16, 'At', 'images/icons/at.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (12, 'At', 'images/icons/at.gif');";
 
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (1, 'Location', 'Where in the world do you live?', 1, 'text', 0, 255, 'no', 'yes', 'no');";
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (2, 'Bio', 'Enter a few short details about yourself, your life story etc.', 2, 'textarea', 0, 0, 'no', 'yes', 'no');";

@@ -121,6 +121,10 @@ class DefaultTable
 				{
 					$table .= " class=\"".$data['extra']['class']."\"";
 				}
+				if($data['extra']['style'])
+				{
+					$table .= " style=\"".$data['extra']['style']."\"";
+				}
 				if($data['extra']['width'])
 				{
 					$table .= " width=\"".$data['extra']['width']."\"";

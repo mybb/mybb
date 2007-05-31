@@ -573,9 +573,9 @@ if($mybb->input['action'] == "manage")
 	
 	$table = new Table;
 
-	$table->construct_header($lang->setting_group_setting, array('width' => '80%'));
-	$table->construct_header($lang->display_order, array('width' => '10%', 'class' => 'align_center'));
-	$table->construct_header($lang->controls, array('width' => '10%', 'class' => 'align_center'));
+	$table->construct_header($lang->setting_group_setting);
+	$table->construct_header($lang->order, array('class' => 'align_center', 'style' => 'width: 5%'));
+	$table->construct_header($lang->controls, array('class' => 'align_center', 'style' => 'width: 200px'));
 	
 	// Generate table
 	$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
@@ -593,7 +593,7 @@ if($mybb->input['action'] == "manage")
 			$group_title = htmlspecialchars_uni($group['title']);
 		}
 		$table->construct_cell("<strong>{$group_title}</strong>", array('id' => "group{$group['gid']}"));
-		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 25px; font-weight: bold', 'class' => 'align_center')), array('class' => 'align_center'));
+		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold')), array('class' => 'align_center'));
 		// Only show options if not a default setting group
 		if($group['isdefault'] != "yes")
 		{
@@ -621,7 +621,7 @@ if($mybb->input['action'] == "manage")
 				$group_title = htmlspecialchars_uni($setting['title']);
 			}
 			$table->construct_cell($setting['title'], array('style' => 'padding-left: 40px;'));
-			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 25px', 'class' => 'align_center')), array('class' => 'align_center'));
+			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%')), array('class' => 'align_center'));
 			// Only show options if not a default setting group
 			if($group['isdefault'] != "yes")
 			{

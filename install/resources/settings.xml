@@ -1335,7 +1335,7 @@ both=Warnings and Errors
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="11" isdefault="">
+	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="11" isdefault="yes">
 		<setting name="enablewarningsystem">
 			<title>Enable Warning System?</title>
 			<description><![CDATA[Set to no to completely disable the warning system.]]></description>

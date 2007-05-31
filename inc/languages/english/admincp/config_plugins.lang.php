@@ -20,7 +20,7 @@ $l['activate'] = "Activate";
 $l['created_by'] = "Created by";
 $l['no_plugins'] = "There are no plugins on your forum at this time.";
 
-$l['error_vcheck_no_supported_plugins'] = "There are no supported plugins available to check for updates.";
+$l['error_vcheck_no_supported_plugins'] = "None of the plugins installed support version checking.";
 $l['error_vcheck_communications_problem'] = "There was a problem communicating with the mod version server. Please try again in a few minutes.";
 $l['error_no_input'] = "Error code 1: No input specified.";
 $l['error_no_pids'] = "Error code 2: No plugin ids specified.";

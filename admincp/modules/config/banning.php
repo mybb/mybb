@@ -184,7 +184,7 @@ if(!$mybb->input['action'])
 		$table->construct_header($lang->ban_date, array("class" => "align_center", "width" => 200));
 		$table->construct_header($lang->last_access, array("class" => "align_center", "width" => 200));
 	}
-	$table->construct_header("&nbsp;", array("width" => 1));
+	$table->construct_header($lang->controls, array("width" => 1));
 
 	$query = $db->simple_select("banfilters", "*", "type='{$type}'", array("order_by" => "filter", "order_dir" => "asc"));
 	while($filter = $db->fetch_array($query))

@@ -4595,4 +4595,28 @@ if(!function_exists('htmlspecialchars_decode'))
 		return strtr($text, array_flip(get_html_translation_table(HTML_SPECIALCHARS)));
 	}
 }
+
+if(!function_exists('scandir'))
+{
+	function scandir($directory, $sorting_order=0)
+	{
+		if($handle = opendir($directory))
+		{
+			while(false !== ($file = readdir($handle)))
+			{
+				$files[] = $file;
+    		}
+    		closedir($handle);
+    		if($sorting_order == 1)
+    		{
+    			return rsort($files);
+    		}
+    		else
+    		{
+    			return sort($files);
+    		}
+		}
+		return false;
+	}
+}
 ?>

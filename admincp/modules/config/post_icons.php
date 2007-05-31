@@ -161,7 +161,7 @@ if($mybb->input['action'] == "add_multiple")
 				$form_container = new FormContainer("Add Multiple Post Icons");
 				$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '10%'));
 				$form_container->output_row_header("Name");
-				$form_container->output_row_header("Include?", array("class" => "align_center", 'width' => '5%'));
+				$form_container->output_row_header("Add?", array("class" => "align_center", 'width' => '5%'));
 
 				foreach($icons as $key => $file)
 				{
