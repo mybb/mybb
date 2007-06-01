@@ -1155,8 +1155,6 @@ class Moderation
 					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 				}
 			}
-			
-			var_dump($forum_counters);
 		}
 		
 		$sqlarray = array(
