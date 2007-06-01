@@ -213,7 +213,8 @@ if($mybb->input['action'] == "send")
 	$posticons = get_post_icons();
 	$previewmessage = $mybb->input['message'];
 	$message = htmlspecialchars_uni($mybb->input['message']);
-
+	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
+	
 	if($mybb->input['preview'])
 	{
 		$options = $mybb->input['options'];
@@ -228,7 +229,7 @@ if($mybb->input['action'] == "send")
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
 		$post['message'] = $previewmessage;
-		$post['subject'] = htmlspecialchars_uni($mybb->input['subject']);
+		$post['subject'] = $previewsubject;
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = time();
@@ -260,7 +261,6 @@ if($mybb->input['action'] == "send")
 			$optionschecked['readreceipt'] = "checked=\"checked\"";
 		}
 		$to = htmlspecialchars_uni($mybb->input['to']);
-		$subject = htmlspecialchars_uni($mybb->input['subject']);
 	}
 	else
 	{
