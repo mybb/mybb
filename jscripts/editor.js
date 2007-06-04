@@ -656,7 +656,7 @@ messageEditor.prototype = {
 
 	getSelectedText: function(element)
 	{
-		//element.focus();
+		element.focus();
 		if(document.selection)
 		{
 			var selection = document.selection;
