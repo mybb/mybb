@@ -387,11 +387,19 @@ class databaseEngine
 	 * Lists all functions in the database.
 	 *
 	 * @param string The database name.
+	 * @param string Prefix of the table (optional)
 	 * @return array The table list.
 	 */
-	function list_tables($database)
+	function list_tables($database, $prefix='')
 	{
-		$query = $this->query("SHOW TABLES FROM `$database`");
+		if($prefix)
+		{
+			$query = $this->query("SHOW TABLES FROM `$database` LIKE '".$this->escape_string($prefix)."%'");
+		}
+		else
+		{
+			$query = $this->query("SHOW TABLES FROM `$database`");
+		}
 		
 		while(list($table) = mysqli_fetch_array($query))
 		{

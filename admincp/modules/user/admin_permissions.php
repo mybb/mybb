@@ -141,7 +141,7 @@ if($mybb->input['action'] == "edit")
 		$group = $db->fetch_array($query);
 		$permission_data = get_admin_permissions("", $gid);
 		$title = $group['title'];
-		$page->add_breadcrumb_item($lang->group_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=groups");
+		$page->add_breadcrumb_item($lang->group_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group");
 	}
 	else
 	{

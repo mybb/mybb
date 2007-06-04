@@ -360,7 +360,7 @@
 			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaimage">
-			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
+			<title><![CDATA[CAPTCHA Images for Registration &amp; Posting]]></title>
 			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration and posting where users are required to enter the text contained within the image to continue. This helps prevent automated registrations and postings.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>

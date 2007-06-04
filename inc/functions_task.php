@@ -57,7 +57,7 @@ function run_task($tid=0)
 	{
 		if($task['logging'] == 1)
 		{
-			add_task_log($task['id'], "Task file does not exist");
+			add_task_log($task['id'], $lang->missing_task);
 		}
 		$cache->update_tasks();
 		return false;

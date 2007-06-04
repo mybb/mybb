@@ -1,11 +1,4 @@
 <?php
-/**
- * MyBB 1.2 English Language Pack
- * Copyright © 2007 MyBB Group, All Rights Reserved
- * 
- * $Id$
- */
-
 // The friendly name of the language
 $langinfo['name'] = "English (American)";
 
@@ -28,5 +21,4 @@ $langinfo['rtl'] = 0;
 $langinfo['htmllang'] = "en";
 
 // Sets the character set, blank uses the default.
-$langinfo['charset'] = "UTF-8";
-?>
+$langinfo['charset'] = "UTF-8";?>

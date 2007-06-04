@@ -35,4 +35,15 @@
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
+	<task>
+		<title>Weekly Backup</title>
+		<description><![CDATA[Automatically backups your MyBB tables to your backups directory.]]></description>
+		<file>backupdb</file>
+		<minute>0</minute>
+		<hour>0</hour>
+		<day>*</day>
+		<weekday>0</weekday>
+		<enabled>0</enabled>
+		<logging>1</logging>
+	</task>
 </tasks>

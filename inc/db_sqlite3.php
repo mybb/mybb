@@ -121,9 +121,9 @@ class databaseEngine
 		// $database ($config['database']) should be a full path to the file; i.e. C:\temp\test_db.db
 		// To be changed before 1.4 release
 		
-		require MYBB_ROOT."inc/db_pdo.php";		
+		require_once MYBB_ROOT."inc/db_pdo.php";
 		
-		$this->db = new pdoEngine("sqlite:{$database}");
+		$this->db = new dbpdoEngine("sqlite:{$database}");
 		@$this->query('PRAGMA short_column_names = 1');
 		
 		if($this->db)
@@ -454,11 +454,20 @@ class databaseEngine
 	 * Lists all functions in the database.
 	 *
 	 * @param string The database name.
+	 * @param string Prefix of the table (optional)
 	 * @return array The table list.
 	 */
-	function list_tables($database)
+	function list_tables($database, $prefix='')
 	{
-		$query = $this->query("SELECT tbl_name FROM sqlite_master WHERE type = 'table'");
+		if($prefix)
+		{
+			$query = $this->query("SELECT tbl_name FROM sqlite_master WHERE type = 'table' AND tbl_name LIKE '".$this->escape_string($prefix)."%'");
+		}
+		else
+		{
+			$query = $this->query("SELECT tbl_name FROM sqlite_master WHERE type = 'table'");
+		}
+		
 		while($table = $this->fetch_array($query))
 		{
 			$tables[] = $table['tbl_name'];

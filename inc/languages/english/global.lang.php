@@ -336,4 +336,7 @@ $l['timezone_gmt_1000'] = "(GMT +10:00) Melbourne, Papua New Guinea, Sydney, Vla
 $l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, New Caledonia, Solomon Islands";
 $l['timezone_gmt_1200'] = "(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island";
 $l['timezone_gmt_short'] = "GMT {1}({2})";
+
+$l['missing_task'] = "Task file does not exist";
+$l['task_backup_cannot_write_backup'] = "Database backup task cannot write to backups directory.";
 ?>

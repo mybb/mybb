@@ -1,6 +1,6 @@
 <?php
 
-class pdoEngine {
+class dbpdoEngine {
 
 	/**
 	 * The database class to store PDO objects

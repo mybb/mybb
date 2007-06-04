@@ -8,6 +8,9 @@
  *
  * $Id: css.php 2685 2007-02-01 05:44:58Z Tikitiki $
  */
+ 
+ignore_user_abort(true);
+set_time_limit(0);
 
 define("IN_MYBB", 1);
 

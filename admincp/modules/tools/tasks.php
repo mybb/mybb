@@ -318,7 +318,8 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_task'] = array(
 		'title' => $lang->edit_task,
-		'description' => $lang->edit_task_desc
+		'description' => $lang->edit_task_desc,
+		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_task');

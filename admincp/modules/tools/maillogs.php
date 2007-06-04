@@ -42,7 +42,7 @@ if($mybb->input['action'] == "view")
 </head>
 <body id="popup">
 	<div id="popup_container">
-	<div class="popup_title"><a href="#" onClick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a><?php echo $lang->user_email_log_viewer; ?></div>
+	<div class="popup_title"><a href="#" onclick="window.close();" class="close_link"><?php echo $lang->close_window; ?></a><?php echo $lang->user_email_log_viewer; ?></div>
 
 	<div id="content">
 	<?php

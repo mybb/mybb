@@ -426,14 +426,22 @@ class databaseEngine
 	 * Lists all functions in the database.
 	 *
 	 * @param string The database name.
+	 * @param string Prefix of the table (optional)
 	 * @return array The table list.
 	 */
-	function list_tables($database)
+	function list_tables($database, $prefix='')
 	{
-		$query = $this->query("SELECT * FROM sqlite_master WHERE type = 'table'");
-		while(list($table) = sqlite_fetch_array($query))
+		if($prefix)
 		{
-			$tables[] = $table;
+			$query = $this->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE '".$this->escape_string($prefix)."%'");
+		}
+		else
+		{
+			$query = $this->query("SELECT name FROM sqlite_master WHERE type = 'table'");
+		}
+		while($table = sqlite_fetch_array($query))
+		{
+			$tables[] = $table['name'];
 		}
 		return $tables;
 	}

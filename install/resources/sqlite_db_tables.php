@@ -110,7 +110,7 @@ $tables[] = "CREATE TABLE mybb_banned (
 $tables[] = "CREATE TABLE mybb_calendars (
   cid INTEGER PRIMARY_KEY,
   name varchar(100) NOT NULL default '',
-  disporder int unsigned NOT NULL default '0',
+  disporder int NOT NULL default '0',
   startofweek int(1) NOT NULL default '0',
   showbirthdays int(1) NOT NULL default '0',
   eventlimit int(3) NOT NULL default '0',
@@ -143,15 +143,15 @@ $tables[] = "CREATE TABLE mybb_datacache (
 
 $tables[] = "CREATE TABLE mybb_events (
   eid INTEGER PRIMARY KEY,
-  cid int unsigned NOT NULL default '0',
-  uid int unsigned NOT NULL default '0',
+  cid int NOT NULL default '0',
+  uid int NOT NULL default '0',
   name varchar(120) NOT NULL default '',
   description text NOT NULL,
   visible int(1) NOT NULL default '0',
   private int(1) NOT NULL default '0',
-  dateline int(10) unsigned NOT NULL default '0',
-  starttime int(10) unsigned NOT NULL default '0',
-  endtime int(10) unsigned NOT NULL default '0',
+  dateline int(10) NOT NULL default '0',
+  starttime int(10) NOT NULL default '0',
+  endtime int(10) NOT NULL default '0',
   timezone int(3) NOT NULL default '0',
   ignoretimezone int(1) NOT NULL default '0',
   usingtime int(1) NOT NULL default '0',
@@ -450,7 +450,7 @@ $tables[] = "CREATE TABLE mybb_promotions (
   requirements varchar(200) NOT NULL default '',
   originalusergroup smallint NOT NULL default '0',
   newusergroup smallint NOT NULL default '0',
-  usergrouptype varchar(120) NOT NULL default '0',
+  usergrouptype varchar(120) NOT NULL default '0'
 );";
 	
 $tables[] = "CREATE TABLE mybb_promotionlogs (
@@ -726,7 +726,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   cancustomtitle char(3) NOT NULL default '',
   canwarnusers char(3) NOT NULL default '',
   canreceivewarnings char(3) NOT NULL default '',
-  maxwarningsday int NOT NULL default '3',
+  maxwarningsday int NOT NULL default '3'
 );";
 
 
@@ -827,7 +827,6 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	wid INTEGER PRIMARY KEY,
 	uid int NOT NULL default '0',
 	tid int NOT NULL default '0',
-	tid int NOT NULL default '0',
 	title varchar(120) NOT NULL default '',
 	points int NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',
@@ -835,7 +834,7 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	expires bigint(30) NOT NULL default '0',
 	expired int(1) NOT NULL default '0',
 	daterevoked bigint(30) NOT NULL default '0',
-	revokedby int unsigned NOT NULL default '0',
+	revokedby int NOT NULL default '0',
 	revokereason text NOT NULL,
 	notes text NOT NULL
 );";

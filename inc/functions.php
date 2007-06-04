@@ -1775,15 +1775,15 @@ function update_thread_data($tid)
 
 function update_forum_count($fid)
 {
-	die("Depreciated function call: update_forum_count");
+	die("Deprecated function call: update_forum_count");
 }
 function update_thread_count($tid)
 {
-	die("Depreciated function call: update_thread_count");
+	die("Deprecated function call: update_thread_count");
 }
 function update_thread_attachment_count($tid)
 {
-	die("Depreciated function call: update_thread_attachment_count");
+	die("Deprecated function call: update_thread_attachment_count");
 }
 
 /**
@@ -4190,7 +4190,7 @@ function email_already_in_use($email, $uid="")
 }
 
 /*
- * DEPRECIATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
+ * DEPRECATED! ONLY INCLUDED FOR COMPATIBILITY PURPOSES.
  */
 function rebuildsettings()
 {
@@ -4494,7 +4494,7 @@ function fetch_remote_file($url)
 	}
 	else if(function_exists("fsockopen"))
 	{
-		$url = parse_url($url);
+		$url = @parse_url($url);
 		if(!$url['host'])
 		{
 			return false;

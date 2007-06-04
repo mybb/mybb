@@ -1196,7 +1196,7 @@ form {
 		<template name="usercp_nav_messenger" version="140"><![CDATA[<tr>
 	<td class="tcat">
 		<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.gif" id="usercppms_img" class="expander" alt="[-]"/></div>
-		<div><strong>{$lang->ucp_nav_messenger}</strong></span></div>
+		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
 </tr>
 <tbody style="{$collapsed['usercppms_e']}" id="usercppms_e">
@@ -3725,7 +3725,7 @@ body {
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 <td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onClick="MyBB.checkAll(this.form)" /></span></td>
+<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onclick="MyBB.checkAll(this.form)" /></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -5184,7 +5184,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->replies}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->views}</strong></span></td>
 		<td class="tcat" align="center" width="200"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
-		<td class="tcat" align="center" width="1"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="1" onClick="MyBB.checkAll(this.form)" /></td>
+		<td class="tcat" align="center" width="1"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="1" onclick="MyBB.checkAll(this.form)" /></td>
 	</tr>
 	{$threads}
 	<tr>

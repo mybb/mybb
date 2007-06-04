@@ -452,11 +452,19 @@ class databaseEngine
 	 * Lists all functions in the database.
 	 *
 	 * @param string The database name.
+	 * @param string Prefix of the table (optional)
 	 * @return array The table list.
 	 */
-	function list_tables($database)
+	function list_tables($database, $prefix='')
 	{
-		$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+		if($prefix)
+		{
+			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name LIKE '".$this->escape_string($prefix)."%'");
+		}
+		else
+		{
+			$query = $this->query("SELECT table_name FROM information_schema.tables WHERE table_schema='public'");
+		}		
 		
 		while($table = $this->fetch_array($query))
 		{
