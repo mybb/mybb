@@ -50,7 +50,6 @@ $l['users_browsing_forum'] = "User(s) browsing this forum:";
 $l['users_browsing_forum_guests'] = "{1} Guest(s)";
 $l['users_browsing_forum_invis'] = "{1} Invisible User(s)";
 $l['inline_thread_moderation'] = "Inline Thread Moderation:";
-$l['rating_votes_average'] = "{1} Votes - {2} Average";
 $l['close_threads'] = "Close Threads";
 $l['open_threads'] = "Open Threads";
 $l['stick_threads'] = "Stick Threads";
@@ -85,5 +84,4 @@ $l['thread_unapproved_posts_count'] = "There are currently {1} unapproved posts 
 $l['thread_unapproved_post_count'] = "There is currently 1 unapproved post in this thread.";
 
 $l['error_containsnoforums'] = "Sorry but the forum you are currently viewing does not contain any child forums.";
-
 ?>

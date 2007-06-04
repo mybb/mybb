@@ -78,7 +78,7 @@ else
 	if($mybb->user['uid'] != 0)
 	{
 		$insertarray = array(
-			'tid' => intval($mybb->input['tid']),
+			'tid' => $tid,
 			'uid' => $mybb->user['uid'],
 			'rating' => $mybb->input['rating'],
 			'ipaddress' => $db->escape_string($session->ipaddress)
@@ -88,7 +88,7 @@ else
 	else
 	{
 		$insertarray = array(
-			'tid' => intval($mybb->input['tid']),
+			'tid' => $tid,
 			'rating' => $mybb->input['rating'],
 			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
@@ -98,5 +98,20 @@ else
 	}
 }
 $plugins->run_hooks("ratethread_end");
+
+if($mybb->input['ajax'])
+{
+	echo "<success>{$lang->rating_added}</success>\n";
+	$query = $db->query("SELECT totalratings, numratings FROM ".TABLE_PREFIX."threads WHERE tid='$tid' LIMIT 1");
+	$fetch = $db->fetch_array($query);
+	$width = 0;
+	if($fetch['numratings'] >= 0)
+	{
+		$width = round($fetch['totalratings']/$fetch['numratings'], 2)*20;
+	}
+	echo "<width>{$width}</width>";
+	exit;
+}
+
 redirect(get_thread_link($thread['tid']), $lang->redirect_threadrated);
 ?>

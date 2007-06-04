@@ -675,6 +675,9 @@ function error_no_permission()
 
 	if($mybb->input['ajax'])
 	{
+		// Send our headers.
+		header("Content-type: text/html; charset={$lang->settings['charset']}");
+		echo "<error>{$lang->error_nopermission_user_ajax}</error>\n";
 		exit;
 	}
 
@@ -3673,6 +3676,18 @@ function get_event_date($event)
 function get_profile_link($uid=0)
 {
 	$link = str_replace("{uid}", $uid, PROFILE_URL);
+	return htmlspecialchars_uni($link);
+}
+
+/**
+ * Get the announcement link.
+ *
+ * @param int The announement id of the announcement.
+ * @return string The url to the announcement.
+ */
+function get_announcement_link($aid=0)
+{
+	$link = str_replace("{uid}", $aid, ANNOUNCEMENT_URL);
 	return htmlspecialchars_uni($link);
 }
 

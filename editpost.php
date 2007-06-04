@@ -495,8 +495,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
-
-			$pid = intval($mybb->input['pid']);
 		}
 	}
 
@@ -513,7 +511,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		");
 		$postinfo = $db->fetch_array($query);
 
-		$query = $db->simple_select("attachments", "*", "pid='".intval($mybb->input['pid'])."'");
+		$query = $db->simple_select("attachments", "*", "pid='{$pid}'");
 		while($attachment = $db->fetch_array($query))
 		{
 			$attachcache[0][$attachment['aid']] = $attachment;
@@ -538,14 +536,17 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
+
 		if($post['smilieoff'] == "yes")
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
+
 		$query = $db->simple_select("threadsubscriptions", "notification", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
 		if($db->num_rows($query) > 0)
 		{
 			$notification = $db->fetch_field($query, 'notification');
+
 			if($notification ==  0)
 			{
 				$postoptions_subscriptionmethod_none = "selected=\"selected\"";
@@ -559,7 +560,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
-
 
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != "no")

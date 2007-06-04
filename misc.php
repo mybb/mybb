@@ -339,7 +339,7 @@ elseif($mybb->input['action'] == "buddypopup")
 			}
 			else
 			{
-				$buddy['avatar'] = "images/default_avatar.gif";
+				$buddy['avatar'] = $theme['imgdir'] . "/default_avatar.gif";
 				$scaled_dimensions = array(
 					"width" => 44,
 					"height" => 44

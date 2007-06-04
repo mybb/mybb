@@ -53,6 +53,7 @@ $l['login'] = "Login";
 $l['need_reg'] = "Need to register?";
 $l['forgot_password'] = "Forgotten your password?";
 $l['error_nopermission_user_1'] = "You do not have permission to access this page. This could be because of one of the following reasons:";
+$l['error_nopermission_user_ajax'] = "You do not have permission to access this page.";
 $l['error_nopermission_user_2'] = "Your account has either been suspended or you have been banned from accessing this resource.";
 $l['error_nopermission_user_3'] = "You do not have permission to access this page. Are you trying to access administrative pages or a resource that you shouldn't be? Check in the forum rules that you are allowed to perform this action.";
 $l['error_nopermission_user_4'] = "Your account may still be awaiting activation or moderation.";

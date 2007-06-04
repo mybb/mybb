@@ -6,7 +6,7 @@ var captcha = {
 	refresh: function()
 	{
 		var imagehash = $('imagehash').value;
-		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
+		this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 		new Ajax.Request('xmlhttp.php?action=refresh_captcha&imagehash='+imagehash, {method: 'get', onComplete: function(request) { captcha.refresh_complete(request); }});
 		return false;
 	},

@@ -608,6 +608,90 @@ form {
 
 .usercp_nav_home {
 	background: url('images/usercp/home.gif') no-repeat left center;
+}
+
+/** Not sure where to add this as I don't know how the new ACP will handle themes **/
+.star_rating,
+.star_rating li a:hover,
+.star_rating .current_rating {
+	background: url(images/star_rating.gif) left -1000px repeat-x;
+	vertical-align: middle;
+}
+
+.star_rating {
+	position: relative;
+	width:80px;
+	height:16px;
+	overflow: hidden;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	background-position: left top;
+}
+
+.star_rating li {
+	display: inline;
+}
+
+.star_rating li a,
+.star_rating .current_rating {
+	position: absolute;
+	text-indent: -1000px;
+	height: 16px;
+	line-height: 16px;
+	outline: none;
+	overflow: hidden;
+	border: none;
+	top:0;
+	left:0;
+}
+
+.star_rating_notrated li a:hover {
+	background-position: left bottom;
+}
+
+.star_rating li a.one_star {
+	width:20%;
+	z-index:6;
+}
+
+.star_rating li a.two_stars {
+	width:40%;
+	z-index:5;
+}
+
+.star_rating li a.three_stars {
+	width:60%;
+	z-index:4;
+}
+
+.star_rating li a.four_stars {
+	width:80%;
+	z-index:3;
+}
+
+.star_rating li a.five_stars {
+	width:100%;
+	z-index:2;
+}
+
+.star_rating .current_rating {
+	z-index:1;
+	background-position: left center;
+}
+
+.star_rating_success {
+	color: #00b200;
+	font-weight: bold;
+	font-size: 10px;
+	margin-bottom: 10px;
+}
+
+.inline_rating {
+	margin-top: 15px;
+	float: left;
+	vertical-align: middle;
+	padding-right: 5px;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -615,7 +699,7 @@ form {
 	{$newthread}
 </div>
 {$multipage}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" >
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 	<tr>
 		<td class="thead" colspan="{$colspan}">
 			<div style="float: right;">
@@ -844,6 +928,7 @@ form {
 <div style="float: right; padding-bottom: 4px;">
 	{$newreply}{$newthread}
 </div>
+{$ratethread}
 {$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
@@ -852,7 +937,7 @@ form {
 		<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
 	</div>
 	<div>
-		<strong>{$rating} {$thread['subject']}</strong>
+		<strong>{$thread['subject']}</strong>
 	</div>
 </td>
 </tr>
@@ -896,8 +981,6 @@ form {
 						</span>
 					</td>
 					<td align="right">
-						{$ratethread}
-						<br />
 						{$forumjump}
 					</td>
 				</tr>
@@ -908,20 +991,17 @@ form {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showthread_ratethread" version="120"><![CDATA[<form action="ratethread.php" method="post">
-	<span class="smalltext"><strong>{$lang->rate_thread}</strong></span>
-	<select name="rating">
-		<option value="">{$lang->select_rating}</option>
-		<option value="5">{$lang->rating_5}</option>
-		<option value="4">{$lang->rating_4}</option>
-		<option value="3">{$lang->rating_3}</option>
-		<option value="2">{$lang->rating_2}</option>
-		<option value="1">{$lang->rating_1}</option>
-	</select>
-	<input type="hidden" name="tid" value="{$tid}" />
-	{$gobutton}
-</form>
-]]></template>
+		<template name="showthread_ratethread" version="140"><![CDATA[		<script type="text/javascript" src="jscripts/rating.js?ver=140"></script>
+		<div class="inline_rating">
+			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
+				<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
+				<li><a class="one_star" title="{$lang->one_star}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=1">1</a></li>
+				<li><a class="two_stars" title="{$lang->two_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=2">2</a></li>
+				<li><a class="three_stars" title="{$lang->three_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=3">3</a></li>
+				<li><a class="four_stars" title="{$lang->four_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=4">4</a></li>
+				<li><a class="five_stars" title="{$lang->five_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=5">5</a></li>
+			</ul>
+		</div>]]></template>
 		<template name="forumjump_advanced" version="120"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
@@ -1723,8 +1803,18 @@ form {
 </table>
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_rating" version="120"><![CDATA[<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$thread['rating']}" alt="{$ratingvotesav}" /></td>
+		<template name="forumdisplay_thread_rating" version="140"><![CDATA[	<td class="{$bgcolor}" align="center">
+		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
+			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
+			<li><a class="one_star" title="{$lang->one_star}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=1">1</a></li>
+			<li><a class="two_stars" title="{$lang->two_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=2">2</a></li>
+			<li><a class="three_stars" title="{$lang->three_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=3">3</a></li>
+			<li><a class="four_stars" title="{$lang->four_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=4">4</a></li>
+			<li><a class="five_stars" title="{$lang->five_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=5">5</a></li>
+		</ul>
+	</td>
 ]]></template>
+	<template name="forumdisplay_announcement_rating" version="140"><![CDATA[	<td class="{$bgcolor}" align="center"><img src="{$theme['imgdir']}/pixel.gif" alt="" /></td>]]></template>
 		<template name="forumdisplay_password" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->password_required} </title>
@@ -2396,6 +2486,7 @@ form {
 	var saving_changes = '{$lang->saving_changes}';
 	var use_xmlhttprequest = "{$mybb->settings['use_xmlhttprequest']}";
 	var my_post_key = "{$mybb->post_code}";
+	var imagepath = "{$theme['imgdir']}";
 // -->
 </script>
 {$newpmmsg}]]></template>
@@ -3467,7 +3558,7 @@ body {
 <script type="text/javascript">
 <!--
 	{$editor_language}
-	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}, imagepath: '{$theme['imgdir']}'});
+	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}});
 	clickableEditor.bindSmilieInserter("clickable_smilies");
 // -->
 </script>]]></template>
@@ -3773,13 +3864,13 @@ body {
 <td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}">
-	<a href="announcements.php?aid={$announcement['aid']}" class="{$new_class}">{$announcement['subject']}</a>
+	<a href="announcements.php?aid={$announcement['aid']}"{$new_class}>{$announcement['subject']}</a>
 	<div class="author smalltext">{$announcement['profilelink']}</div>
 </td>
 <td align="center" class="{$bgcolor}">-</td>
 <td align="center" class="{$bgcolor}">-</td>
 {$rating}
-<td class="{$bgcolor}" style="white-space: nowrap">{$postdate} {$posttime}</td>
+<td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$postdate} {$posttime}</span></td>
 {$modann}
 </tr>
 ]]></template>
@@ -4393,7 +4484,10 @@ body {
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_threadlist_rating" version="140"><![CDATA[<td class="tcat" align="center" width="70"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span></td>
+		<template name="forumdisplay_threadlist_rating" version="140"><![CDATA[	<td class="tcat" align="center" width="70">
+		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
+		<script type="text/javascript" src="jscripts/rating.js?ver=140"></script>
+	</td>
 ]]></template>
 		<template name="forumdisplay_thread" version="140"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt="{$folder_label}" title="{$folder_label}" /></td>
@@ -4416,7 +4510,6 @@ body {
 </tr>
 ]]></template>
 		<template name="forumdisplay_orderarrow" version="120"><![CDATA[<span class="smalltext">[<a href="{$sorturl}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
-		<template name="showthread_ratingdisplay" version="120"><![CDATA[<img src="{$theme['imgdir']}/{$thread['rating']}" alt="{$ratingav}" />&nbsp;&nbsp;]]></template>
 		<template name="postbit_posturl" version="140"><![CDATA[<div style="float: right; width: auto; vertical-align: top"><span class="smalltext"><strong>{$lang->postbit_post} <a href="{$post['postlink']}#pid{$post['pid']}">#{$postcounter}</a></strong>{$post['inlinecheck']}</span></div>]]></template>
 		<template name="postbit_attachments_thumbnails_thumbnail" version="120"><![CDATA[<a href="attachment.php?aid={$attachment['aid']}" target="_blank"><img src="attachment.php?thumbnail={$attachment['aid']}" class="attachment" alt="" /></a>&nbsp;&nbsp;&nbsp;]]></template>
 		<template name="postbit_attachments_images_image" version="120"><![CDATA[<img src="attachment.php?aid={$attachment['aid']}" class="attachment" alt="" />&nbsp;&nbsp;&nbsp;]]></template>
@@ -6789,11 +6882,6 @@ To: {$to_recipients}
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
-<script type="text/javascript">
-<!--
-	var showBack = {$show_back};
-// -->
-</script>
 </head>
 <body>
 <br />
@@ -6806,6 +6894,7 @@ To: {$to_recipients}
 				<div style="text-align: center;">
 					<script type="text/javascript">
 					<!--
+						var showBack = {$show_back};
 						if(showBack == 1)
 						{
 							document.write('[<a href="javascript:history.go(-1);">{$lang->go_back}</a>]');
@@ -6948,7 +7037,7 @@ To: {$to_recipients}
 		<div style="float: right; width: auto; vertical-align: top; display: none;" id="show_ignored_link_{$post['pid']}"><span class="smalltext"><a href="#" onclick="Thread.showIgnoredPost({$post['pid']}); return false;">{$lang->postbit_show_ignored_post}</a></span></div>
 <script type="text/javascript">
 <!--
-	$('show_ignored_link_{$post['pid']}').style.display = '';
+	$('show_ignored_link_{$post['pid']}').show();
 // -->
 </script>
 		<span class="smalltext">{$lang->postbit_currently_ignoring_user}</span>
@@ -7164,32 +7253,35 @@ To: {$to_recipients}
 			<td class="trow2" style="vertical-align: top;"><strong>{$lang->event_date}</strong></td>
 			<td class="trow1">
 				<script type="text/javascript">
-				function toggleType()
-				{
-					if($('type_single').checked == true)
+				<!--
+					function toggleType()
 					{
-						Element.hide('ranged_selects');
-						Element.show('single_selects');
+						if($('type_single').checked == true)
+						{
+							Element.hide('ranged_selects');
+							Element.show('single_selects');
+						}
+						else
+						{
+							Element.hide('single_selects');
+							Element.show('ranged_selects');
+							toggleRepeats();
+						}
 					}
-					else
+
+					function toggleRepeats()
 					{
-						Element.hide('single_selects');
-						Element.show('ranged_selects');
-						toggleRepeats();
+						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
+						document.getElementsByClassName('repeats_type').each(function(e)
+						{
+							Element.hide(e);
+						});
+						if($('repeats_type_'+repeats))
+						{
+							Element.show('repeats_type_'+repeats);
+						}
 					}
-				}
-				function toggleRepeats()
-				{
-					var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-					document.getElementsByClassName('repeats_type').each(function(e)
-					{
-						Element.hide(e);
-					});
-					if($('repeats_type_'+repeats))
-					{
-						Element.show('repeats_type_'+repeats);
-					}
-				}	
+				// -->
 				</script>
 				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
 					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
@@ -7409,8 +7501,10 @@ To: {$to_recipients}
 					</dd>
 				</dl>
 				<script type="text/javascript">
+				<!--
 					toggleType();
 					toggleRepeats();
+				// -->
 				</script>
 			</td>
 		</tr>
@@ -7587,32 +7681,35 @@ To: {$to_recipients}
 			<td class="trow2" style="vertical-align: top;"><strong>{$lang->event_date}</strong></td>
 			<td class="trow1">
 				<script type="text/javascript">
-				function toggleType()
-				{
-					if($('type_single').checked == true)
+				<!--
+					function toggleType()
 					{
-						Element.hide('ranged_selects');
-						Element.show('single_selects');
+						if($('type_single').checked == true)
+						{
+							Element.hide('ranged_selects');
+							Element.show('single_selects');
+						}
+						else
+						{
+							Element.hide('single_selects');
+							Element.show('ranged_selects');
+							toggleRepeats();
+						}
 					}
-					else
+
+					function toggleRepeats()
 					{
-						Element.hide('single_selects');
-						Element.show('ranged_selects');
-						toggleRepeats();
+						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
+						document.getElementsByClassName('repeats_type').each(function(e)
+						{
+							Element.hide(e);
+						});
+						if($('repeats_type_'+repeats))
+						{
+							Element.show('repeats_type_'+repeats);
+						}
 					}
-				}
-				function toggleRepeats()
-				{
-					var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-					document.getElementsByClassName('repeats_type').each(function(e)
-					{
-						Element.hide(e);
-					});
-					if($('repeats_type_'+repeats))
-					{
-						Element.show('repeats_type_'+repeats);
-					}
-				}	
+				// -->
 				</script>
 				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
 					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
@@ -7832,8 +7929,10 @@ To: {$to_recipients}
 					</dd>
 				</dl>
 				<script type="text/javascript">
+				<!--
 					toggleType();
 					toggleRepeats();
+				// -->
 				</script>
 			</td>
 		</tr>
@@ -8163,32 +8262,36 @@ To: {$to_recipients}
 			<td width="20%" class="trow2" valign="top"><strong>{$lang->warning_type}</strong></td>
 			<td class="trow2">
 				<script type="text/javascript">
-				function checkType()
-				{
-					var checked = '';
-					document.getElementsByClassName('types_check').each(function(e)
+				<!--
+					function checkType()
 					{
-						if(e.checked == true)
+						var checked = '';
+						document.getElementsByClassName('types_check').each(function(e)
 						{
-							checked = e.value;
+							if(e.checked == true)
+							{
+								checked = e.value;
+							}
+						});
+						document.getElementsByClassName('types').each(function(e)
+						{
+							Element.hide(e);
+						});
+						if($('type_'+checked))
+						{
+							Element.show('type_'+checked);
 						}
-					});
-					document.getElementsByClassName('types').each(function(e)
-					{
-						Element.hide(e);
-					});
-					if($('type_'+checked))
-					{
-						Element.show('type_'+checked);
 					}
-				}	
+				// -->
 				</script>
 				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
 					{$types}
 					{$custom_warning}
 				</dl>
 				<script type="text/javascript">
-				checkType();
+				<!--
+					checkType();
+				// -->
 				</script>
 			</td>
 		</tr>
@@ -8245,19 +8348,21 @@ To: {$to_recipients}
 			</td>
 			<td class="trow1">
 				<script type="text/javascript">
-				function togglePM()
-				{
-					if($('send_pm').checked == true)
+				<!--
+					function togglePM()
 					{
-						$('pm_input').show();
-						$('pm_smilie_insert').show();
+						if($('send_pm').checked == true)
+						{
+							$('pm_input').show();
+							$('pm_smilie_insert').show();
+						}
+						else
+						{
+							$('pm_input').hide();
+							$('pm_smilie_insert').hide();
+						}
 					}
-					else
-					{
-						$('pm_input').hide();
-						$('pm_smilie_insert').hide();
-					}
-				}
+				// -->
 				</script>
 				<label style="display: block;"><input type="checkbox" class="checkbox" value="1" name="send_pm" id="send_pm" onclick="togglePM();" style="vertical-align: middle;" {$send_pm_checked} /> {$lang->send_user_warning_pm}</label>
 				<table id="pm_input" cellpadding="{$theme['tablespace']}">
@@ -8271,7 +8376,11 @@ To: {$to_recipients}
 						{$codebuttons}</td>
 					</tr>
 				</table>
-				<script type="text/javascript">togglePM();</script>
+				<script type="text/javascript">
+				<!--
+					togglePM();
+				// -->
+				</script>
 			</td>
 		</tr>]]></template>
 		<template name="warnings_warn_post" version="140"><![CDATA[		<tr>

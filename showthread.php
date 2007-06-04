@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-$templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_sig,showthread_newpoll,postbit_avatar,postbit_profile,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature, postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratingdisplay,showthread_ratethread,showthread_moderationoptions";
+$templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,showthread_newthread,showthread_newreply,showthread_newreply_closed,postbit_sig,showthread_newpoll,postbit_avatar,postbit_profile,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_edit,postbit_quote,postbit_report,postbit_signature, postbit_online,postbit_offline,postbit_away,postbit_gotopost,showthread_ratethread,showthread_inline_ratethread,showthread_moderationoptions";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl";
@@ -454,14 +454,14 @@ if($mybb->input['action'] == "thread")
 		}
 		if($thread['closed'] == "yes")
 		{
-			$closelinkch = "checked";
+			$closelinkch = ' checked="checked"';
 		}
 		if($thread['sticky'])
 		{
-			$stickch = "checked";
+			$stickch = ' checked="checked"';
 		}
-		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"yes\" $closelinkch />&nbsp;<strong>".$lang->close_thread."</strong></label>";
-		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"yes\" $stickch />&nbsp;<strong>".$lang->stick_thread."</strong></label>";
+		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"yes\"{$closelinkch} />&nbsp;<strong>".$lang->close_thread."</strong></label>";
+		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"yes\"{$stickch} />&nbsp;<strong>".$lang->stick_thread."</strong></label>";
 		$inlinecount = "0";
 		$inlinecookie = "inlinemod_thread".$tid;
 		$plugins->run_hooks("showthread_ismod");
@@ -477,21 +477,34 @@ if($mybb->input['action'] == "thread")
 	++$thread['views'];
 
 	// Work out the thread rating for this thread.
-	if($forum['allowtratings'] != "no" && $thread['numratings'] > 0)
+	$rating = '';
+	if($forum['allowtratings'] != "no")
 	{
-		$thread['averagerating'] = round(($thread['totalratings']/$thread['numratings']), 2);
-		$rateimg = intval(round($thread['averagerating']));
-		$thread['rating'] = $rateimg."stars.gif";
-		$thread['numratings'] = intval($thread['numratings']);
-		$ratingav = sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
-		eval("\$rating = \"".$templates->get("showthread_ratingdisplay")."\";");
-	}
-	else
-	{
-		$rating = "";
-	}
-	if($forum['allowtratings'] == "yes" && $forumpermissions['canratethreads'] == "yes")
-	{
+		$lang->load("ratethread");
+		if($thread['numratings'] <= 0)
+		{
+			$thread['width'] = 0;
+			$thread['averagerating'] = 0;
+			$thread['numratings'] = 0;
+		}
+		else
+		{
+			$thread['averagerating'] = intval(round($thread['totalratings']/$thread['numratings'], 2));
+			$thread['width'] = $thread['averagerating']*20;
+			$thread['numratings'] = intval($thread['numratings']);
+		}
+
+		// Check if we have already voted on this thread - it won't show hover effect then.
+		$query = $db->simple_select("threadratings", "uid", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+		$rated = $db->fetch_field($query, 'uid');
+
+		$not_rated = '';
+		if(!$rated)
+		{
+			$not_rated = ' star_rating_notrated';
+		}
+
+		$ratingvotesav = sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)

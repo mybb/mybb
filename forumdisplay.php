@@ -16,7 +16,7 @@ $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_forumlist.php";
@@ -468,10 +468,11 @@ $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
 if($foruminfo['allowtratings'] != "no")
 {
+	$lang->load("ratethread");
 	switch($db->type)
 	{
 		case "pgsql":
-			$ratingadd = "";
+			$ratingadd = '';
 			$query = $db->query("
 				SELECT t.numratings, t.totalratings, t.tid
 				FROM ".TABLE_PREFIX."threads t
@@ -489,7 +490,7 @@ if($foruminfo['allowtratings'] != "no")
 				{
 					$rating = $thread['totalratings'] / $thread['numratings'];
 				}
-				
+
 				$avaragerating[$thread['tid']] = $rating;
 			}
 			break;
@@ -500,6 +501,8 @@ if($foruminfo['allowtratings'] != "no")
 	eval("\$ratingcol = \"".$templates->get("forumdisplay_threadlist_rating")."\";");
 	eval("\$ratingsort = \"".$templates->get("forumdisplay_threadlist_sortrating")."\";");
 	$colspan = "7";
+	$select_voting = "\nLEFT JOIN ".TABLE_PREFIX."threadratings r ON(r.tid=t.tid AND r.uid='{$mybb->user['uid']}')";
+	$select_rating_user = "r.uid AS rated, ";
 }
 else
 {
@@ -534,25 +537,25 @@ while($announcement = $db->fetch_array($query))
 {
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
 	{
-		$new_class = "subject_new";
+		$new_class = ' class="subject_new"';
 		$folder = "newfolder.gif";
 	}
 	else
 	{
-		$new_class = "";
+		$new_class = '';
 		$folder = "folder.gif";
 	}
 	
 	$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
-	$announcement['profilelink'] = build_profile_link($announcement['uid']);
+	$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
+	$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
 	
 	if($foruminfo['allowtratings'] != "no")
 	{
-		$thread['rating'] = "pixel.gif";
-		eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
+		eval("\$rating = \"".$templates->get("forumdisplay_announcement_rating")."\";");
 		$lpbackground = "trow2";
 	}
 	else
@@ -563,7 +566,7 @@ while($announcement = $db->fetch_array($query))
 	
 	if($ismod)
 	{
-		$modann = "<td align=\"center\" class=\"$bgcolor\">-</td>";
+		$modann = "<td align=\"center\" class=\"{$bgcolor}\">-</td>";
 	}
 	else
 	{
@@ -584,9 +587,9 @@ $icon_cache = $cache->read("posticons");
 
 // Start Getting Threads
 $query = $db->query("
-	SELECT t.*, $ratingadd t.username AS threadusername, u.username
+	SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username
 	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
 	WHERE t.fid='$fid' $visibleonly $datecutsql2
 	ORDER BY t.sticky DESC, t.$sortfield $sortordernow $sortfield2
 	LIMIT $start, $perpage
@@ -728,24 +731,21 @@ if(is_array($threadcache))
 			$shownormalsep = false;
 		}
 
+		$rating = '';
 		if($foruminfo['allowtratings'] != "no")
 		{
-			$thread['averagerating'] = round($thread['averagerating'], 2);
-			$rateimg = intval(round($thread['averagerating']));
-			$thread['rating'] = $rateimg."stars.gif";
+			$thread['averagerating'] = intval(round($thread['averagerating'], 2));
+			$thread['width'] = $thread['averagerating']*20;
 			$thread['numratings'] = intval($thread['numratings']);
-			
-			if($thread['averagerating'] == 0 && $thread['numratings'] == 0)
+
+			$not_rated = '';
+			if(!$thread['rated'])
 			{
-				$thread['rating'] = "pixel.gif";
+				$not_rated = ' star_rating_notrated';
 			}
-			
+
 			$ratingvotesav = sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
 			eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
-		}
-		else
-		{
-			$rating = '';
 		}
 
 		$thread['pages'] = 0;
