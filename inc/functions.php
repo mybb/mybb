@@ -720,8 +720,8 @@ function usergroup_permissions($gid=0)
 					if($access == 0)
 					{
 						$usergroup[$perm] = 0;
-						$zerogreater = 1;
 					}
+					$zerogreater = 1;
 				}
 				if(($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) && $zerogreater != 1)
 				{
@@ -767,7 +767,7 @@ function usergroup_displaygroup($gid)
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
 	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybb, $usercache, $fpermissionscache;
-
+	static $cached_forum_permissions;
 	if($uid == 0)
 	{
 		$uid = $mybb->user['uid'];
@@ -808,16 +808,23 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	}
 	if($fid) // Fetch the permissions for a single forum
 	{
-		$permissions = fetch_forum_permissions($fid, $gid, $groupperms);
+		if(!$cached_forum_permissions[$gid][$fid])
+		{
+			$cached_forum_permissions_permissions[$gid][$fid] = fetch_forum_permissions($fid, $gid, $groupperms);
+		}
+		return $cached_forum_permissions_permissions[$gid][$fid];
 	}
 	else
 	{
-		foreach($forum_cache as $forum)
+		if(!$cached_forum_permissions[$gid])
 		{
-			$permissions[$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
+			foreach($forum_cache as $forum)
+			{
+				$cached_forum_permissions[$gid][$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
+			}
 		}
+		return $cached_forum_permissions[$gid];
 	}
-	return $permissions;
 }
 
 /**
@@ -2847,7 +2854,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 	
-	if($tid)
+	if($tid == 0)
 	{
 		$themeselect .= "</select>";
 	}

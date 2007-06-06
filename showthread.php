@@ -410,7 +410,10 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
-	$forumjump = build_forum_jump("", $fid, 1);
+	if($mybb->settings['enableforumjump'] != "no")
+	{
+		$forumjump = build_forum_jump("", $fid, 1);
+	}
 
 	// Mark this thread read for the currently logged in user.
 	if($mybb->settings['threadreadcut'] && ($mybb->user['uid'] != 0))

@@ -131,7 +131,10 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
-$forumjump = build_forum_jump("", $fid, 1);
+if($mybb->settings['enableforumjump'] != "no")
+{
+	$forumjump = build_forum_jump("", $fid, 1);
+}
 
 if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
 {

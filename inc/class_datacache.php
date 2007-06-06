@@ -63,8 +63,6 @@ class datacache
 			{
 				@include(MYBB_ROOT."inc/cache/".$name.".php");
 				$this->cache[$name] = $$name;
-				
-				unset($$name);
 			}
 		}
 		else

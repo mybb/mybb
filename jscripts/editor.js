@@ -614,6 +614,11 @@ messageEditor.prototype = {
 								$(this.openTags[i]).className = "toolbar_normal";
 							}
 							
+							if($(exploded_tag[0]) && $(exploded_type[0]).type == "select-one")
+							{
+								$(exploded_tag[0]).selectedIndex = 0;
+							}					
+							
 							if(this.openTags[i] == full_tag)
 							{
 								no_insert = true;
@@ -653,6 +658,11 @@ messageEditor.prototype = {
 					{
 						DomLib.removeClass($(full_tag), "toolbar_clicked");
 					}
+					else if($(code) && $(code).type == "select-one")
+					{
+						$(code).selectedIndex = 0;
+					}
+					
 				}
 		}
 		
@@ -805,10 +815,12 @@ messageEditor.prototype = {
 				tag = MyBB.arrayPop(this.openTags);
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
-				
 				if($(exploded_tag[0]))
 				{
 					tag = $(exploded_tag[0]);
+				}
+				if($(tag))
+				{
 					if(tag.type == "select-one")
 					{
 						tag.selectedIndex = 0;
@@ -818,6 +830,7 @@ messageEditor.prototype = {
 						DomLib.removeClass($(tag), "toolbar_clicked");
 					}
 				}
+				
 			}
 		}
 		$(this.textarea).focus();
