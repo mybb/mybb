@@ -62,7 +62,7 @@ var Post = {
 			}
 			$(id).value += request.responseText;
 		}
-		$('multiquote_unloaded').style.display = 'none';
+		$('multiquote_unloaded').hide();
 		document.input.quoted_ids.value = 'all';
 		if(this.spinner)
 		{
@@ -73,7 +73,7 @@ var Post = {
 
 	clearMultiQuoted: function()
 	{
-		$('multiquote_unloaded').style.display = 'none';
+		$('multiquote_unloaded').hide();
 		Cookie.unset('multiquote');
 	},
 

@@ -49,20 +49,18 @@ FormValidator.prototype = {
 			return false;
 		}
 		validation_field = this.validation_fields[id];
-
-		for(i = 0; i < validation_field.length; ++i)
-		{
-			if(validation_field[i].validation_type == "matches")
+		validation_field.each(function(field) {
+			if(field.validation_type == "matches")
 			{
-				twin = validation_field[i].options.match_field;
+				twin = field.options.match_field;
 				if(Element.hasClassName(twin, "invalid_field"))
 				{
 					return false;
 				}
 			}
 			
-			result = this.checkValidation(id, validation_field[i].validation_type, validation_field[i].options, submit_call);
-			options = validation_field[i].options;
+			result = this.checkValidation(id, field.validation_type, field.options, submit_call);
+			options = field.options;
 			if(result == false)
 			{
 				this.showError(id, options.status_field, options.failure_message);
@@ -82,7 +80,7 @@ FormValidator.prototype = {
 				// Has match field
 				if(options.match_field && !twin_call)
 				{
-					if(validation_field[i].validation_type != "matches")
+					if(field.validation_type != "matches")
 					{
 						return true;
 					}
@@ -94,7 +92,7 @@ FormValidator.prototype = {
 					}
 				}
 			}
-		}
+		}.bind(this));
 	},
 
 	checkValidation: function(id, type, options, submit_call)
@@ -240,7 +238,7 @@ FormValidator.prototype = {
 		element = $(id);
 		status_field = document.createElement("div");
 		status_field.id = id+"_status";
-		status_field.style.display = "none";
+		status_field.hide();
 		switch(element.type.toLowerCase())
 		{
 			case "radio":
@@ -263,7 +261,7 @@ FormValidator.prototype = {
 			message = "The value you entered is invalid";
 		}
 		$(area).innerHTML = message;
-		$(area).style.display = "";
+		$(area).show();
 	},
 
 	showSuccess: function(field, area, message)
@@ -275,11 +273,11 @@ FormValidator.prototype = {
 		if(message)
 		{
 			$(area).innerHTML = message;
-			$(area).style.display = "";
+			$(area).show();
 		}
 		else
 		{
-			$(area).style.display = "none";
+			$(area).hide();
 		}
 	},
 
@@ -295,15 +293,12 @@ FormValidator.prototype = {
 		}
 
 		$(area).innerHTML = message;
-		$(area).style.display = "";
+		$(area).show();
 	},
 	
 	getValue: function(element)
 	{
-		if(typeof element == "string")
-		{
-			element = $(element);
-		}
+		element = $(element);
 
 		if(!element)
 		{
@@ -332,13 +327,12 @@ FormValidator.prototype = {
 				break;
 			case "select-multiple":
 				var value = new Array();
-				for(var i=0;i<element.options.length;i++)
-				{
-					if(element.options[i].selected)
+				element.options.each(function(option) {
+					if(option.checked == true)
 					{
-						value.push(element.options[i].value);
+						value.push(option.value);
 					}
-				}
+				});
 				return value;
 				break;
 		}
@@ -347,10 +341,7 @@ FormValidator.prototype = {
 	/* Fetch the text value from a series of radio or checkbuttons. Pass one of the radio or check buttons within a group */
 	getCheckedValue: function(element)
 	{
-		if(typeof element == "string")
-		{
-			element = $(element);
-		}
+		element = $(element);
 
 		if(!element)
 		{
@@ -364,13 +355,13 @@ FormValidator.prototype = {
 
 		var value = new Array();
 		inputs = element.parentNode.getElementsByTagName('INPUT');
-		for(var i=0;i<inputs.length;i++)
-		{
-			if(inputs[i].checked == true)
+		inputs.each(function(input) {
+			if(input.checked == true)
 			{
-				value.push(inputs[i].value);
+				value.push(input.value);
 			}
-		}
+		});
+
 		// No matches, no return value
 		if(value.length == 0)
 		{

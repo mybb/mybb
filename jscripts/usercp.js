@@ -50,7 +50,7 @@ var UserCP = {
 				}
 				var container = document.createElement('DIV');
 				container.id = "buddyselect_container";
-				container.style.display = "none";
+				container.hide();
 				container.innerHTML = request.responseText;
 				$('container').appendChild(container);
 			}
@@ -153,6 +153,6 @@ var UserCP = {
 			}
 			$(this.buddy_field).focus();
 		}
-		$('buddyselect_container').style.display = "none";
+		$('buddyselect_container').hide();
 	}
 };

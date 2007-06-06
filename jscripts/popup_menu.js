@@ -20,7 +20,7 @@ PopupMenu.prototype = {
 		}
 
 		this.menu = $(popupMenu);
-		this.menu.style.display = "none";
+		this.menu.hide();
 		this.options = options;
 		Event.observe(element, "click", this.openMenu.bindAsEventListener(this));
 	},
@@ -62,7 +62,7 @@ PopupMenu.prototype = {
 
 		this.menu.style.left = offsetLeft+"px";
 		this.menu.style.visibility = 'hidden';
-		this.menu.style.display = '';
+		this.menu.show();
 
 		if(this.menu.style.width)
 		{
@@ -89,14 +89,14 @@ PopupMenu.prototype = {
 	},
 	
 	closeMenu: function()
-	{	
+	{
 		menu = document.currentMenu;
 		if(document.currentMenu)
 		{
 			menu = $(menu+"_popup");
-			menu.style.display = "none";
+			menu.hide();
 		}
-		document.currentMenu = "";
+		document.currentMenu = '';
 		Event.stopObserving(document, 'click', this.closeMenu.bindAsEventListener(this));
 	}
 };

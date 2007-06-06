@@ -61,7 +61,7 @@ autoComplete.prototype = {
 		this.popup = document.createElement("div");
 		this.popup.style.position = "absolute";
 		this.popup.className = "autocomplete";
-		this.popup.style.display = "none";
+		this.popup.hide();
 		document.body.appendChild(this.popup);
 
 		this.textbox.popup = this;
@@ -71,7 +71,7 @@ autoComplete.prototype = {
 
 	onFormSubmit: function(e)
 	{
-		if(this.lastKeycode == 13 && this.menuOpen == true)
+		if(this.lastKeycode == Event.KEY_RETURN && this.menuOpen == true)
 		{
 			setTimeout(function() { this.textbox.focus() }.bind(this), 10);
 			this.menuOpen = false;
@@ -109,7 +109,7 @@ autoComplete.prototype = {
 			case Event.KEY_RIGHT:
 				break;
 			case Event.KEY_UP:
-				if(this.popup.display != "none")
+				if(this.popup.visible())
 				{
 					if(this.currentIndex > 0)
 					{
@@ -126,7 +126,7 @@ autoComplete.prototype = {
 				Event.stop(e);
 				break;
 			case Event.KEY_DOWN:
-				if(this.currentIndex+1 < this.popup.childNodes.length && this.popup.display != "none")
+				if(this.currentIndex+1 < this.popup.childNodes.length && this.popup.visible())
 				{
 					this.scrollToItem(this.currentIndex+1);
 					this.highlightItem(this.currentIndex+1);
@@ -135,7 +135,7 @@ autoComplete.prototype = {
 				Event.stop(e);
 				break;
 			case Event.KEY_TAB:
-				if(this.popup.display != "none" && this.currentIndex > -1)
+				if(this.popup.visible() && this.currentIndex > -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
@@ -226,7 +226,7 @@ autoComplete.prototype = {
 		}
 		else
 		{
-			if(this.popup.style.display != "none")
+			if(this.popup.visible())
 			{
 				this.hidePopup();
 			}
@@ -240,7 +240,7 @@ autoComplete.prototype = {
 		{
 			if(request.responseText.charAt(0) != "<")
 			{
-				if(this.popup.style.display != "none")
+				if(this.popup.visible())
 				{
 					this.hidePopup();
 				}
@@ -268,7 +268,7 @@ autoComplete.prototype = {
 
 		if(this.popup.childNodes.length < 1)
 		{
-			if(this.popup.style.display != "none")
+			if(this.popup.visible())
 			{
 				this.hidePopup();
 			}
@@ -335,7 +335,7 @@ autoComplete.prototype = {
 		Event.observe(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		Event.observe(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.observe(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
-		this.popup.style.display = "";
+		this.popup.show();
 		this.menuOpen = true;
 		this.overPopup = 0;
 
@@ -348,7 +348,7 @@ autoComplete.prototype = {
 
 	hidePopup: function()
 	{
-		this.popup.style.display = "none";
+		this.popup.hide();
 		Event.stopObserving(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));

@@ -504,14 +504,14 @@ var expandables = {
 		{
 			if(expandedItem.style.display == "none")
 			{
-				expandedItem.style.display = "";
-				collapsedItem.style.display = "none";
+				expandedItem.show();
+				collapsedItem.hide();
 				this.saveCollapsed(element.controls);
 			}
 			else
 			{
-				expandedItem.style.display = "none";
-				collapsedItem.style.display = "";
+				expandedItem.hide();
+				collapsedItem.show();
 				this.saveCollapsed(element.controls, 1);
 			}
 		}
@@ -519,14 +519,14 @@ var expandables = {
 		{
 			if(expandedItem.style.display == "none")
 			{
-				expandedItem.style.display = "";
+				expandedItem.show();
 				element.src = element.src.replace("collapse_collapsed.gif", "collapse.gif");
 				element.alt = "[-]";
 				this.saveCollapsed(element.controls);
 			}
 			else
 			{
-				expandedItem.style.display = "none";
+				expandedItem.hide();
 				element.src = element.src.replace("collapse.gif", "collapse_collapsed.gif");
 				element.alt = "[+]";
 				this.saveCollapsed(element.controls, 1);

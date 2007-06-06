@@ -21,7 +21,7 @@ var Thread = {
 			});
 			if($('quickreply_multiquote'))
 			{
-				$('quickreply_multiquote').style.display = '';
+				$('quickreply_multiquote').show();
 			}
 		}
 		return true;
@@ -60,11 +60,11 @@ var Thread = {
 		{
 			if(new_post_ids.length > 0)
 			{
-				$('quickreply_multiquote').style.display = '';
+				$('quickreply_multiquote').show();
 			}
 			else
 			{
-				$('quickreply_multiquote').style.display = 'none';
+				$('quickreply_multiquote').hide();
 			}
 		}
 		Cookie.set("multiquote", new_post_ids.join("|"));
@@ -114,7 +114,7 @@ var Thread = {
 			$(id).value += request.responseText;
 		}
 		Thread.clearMultiQuoted();
-		$('quickreply_multiquote').style.display = 'none';
+		$('quickreply_multiquote').hide();
 		document.input.quoted_ids.value = 'all';
 		if(this.spinner)
 		{
@@ -126,7 +126,7 @@ var Thread = {
 
 	clearMultiQuoted: function()
 	{
-		$('quickreply_multiquote').style.display = 'none';
+		$('quickreply_multiquote').hide();
 		var quoted = Cookie.get("multiquote");
 		if(quoted)
 		{
@@ -359,8 +359,8 @@ var Thread = {
 
 	showIgnoredPost: function(pid)
 	{
-		$('ignored_post_'+pid).style.display = 'none';
-		$('post_'+pid).style.display = '';
+		$('ignored_post_'+pid).hide();
+		$('post_'+pid).show();
 	}
 };
 Event.observe(window, 'load', Thread.init);
