@@ -4,7 +4,6 @@ var Rating = {
 		var rating_elements = document.getElementsByClassName('star_rating');
 		rating_elements.each(function(rating_element) {
 			var elements = Element.getElementsBySelector(rating_element, 'li a');
-			alert(rating_element.className);
 			if(Element.hasClassName(rating_element, 'star_rating_notrated'))
 			{
 				elements.each(function(element) {
