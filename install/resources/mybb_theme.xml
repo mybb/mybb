@@ -8418,7 +8418,7 @@ To: {$to_recipients}
 	<template name="postbit_warn" version="140"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_warn.gif" alt="{$lang->postbit_warn}" title="{$lang->postbit_warn}" /></a>]]></template>
 	<template name="member_profile_warninglevel" version="140"><![CDATA[<tr>
 	<td class="trow2"><strong>{$lang->warning_level}</strong></td>
-	<td class="trow2"><a href="{$warning_link}">{$warning_level}%</a> {$warn_user}</td>
+	<td class="trow2"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
 		<template name="member_profile_warn" version="140"><![CDATA[[<a href="warnings.php?action=warn&amp;uid={$memprofile['uid']}">{$lang->warn}</a>]]]></template>
 		<template name="warnings_view" version="140"><![CDATA[<html>
