@@ -167,9 +167,9 @@ function build_forumbits($pid=0, $depth=1)
 				// No posts have been made in this forum - show never text
 				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
 				{
-					$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
+					$lastpost = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
 				}
-				elseif($hideinfo != 1)
+				elseif($hideinfo != true)
 				{
 					// Format lastpost date and time
 					$lastpost_date = my_date($mybb->settings['dateformat'], $lastpost_data['lastpost']);
@@ -194,7 +194,7 @@ function build_forumbits($pid=0, $depth=1)
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost and counters to "-"
 			if($forum['linkto'] != '' || $hideinfo == true)
 			{
-				$lastpost = "<span style=\"text-align: center;\">-</span>";
+				$lastpost = "<div style=\"text-align: center;\">-</div>";
 				$posts = "-";
 				$threads = "-";
 			}
