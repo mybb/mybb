@@ -527,7 +527,7 @@ if($mybb->settings['announcementlimit'])
 $sql = build_parent_list($fid, "fid", "OR", $parentlist);
 $time = time();
 $query = $db->query("
-	SELECT a.*, u.username, u.usergroup, u.displaygroup
+	SELECT a.*, u.username
 	FROM ".TABLE_PREFIX."announcements a
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
@@ -551,7 +551,6 @@ while($announcement = $db->fetch_array($query))
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
 	$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
-	$announcement['username'] = format_name($announcement['username'], $announcement['usergroup'], $announcement['displaygroup']);
 	$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 	
 	if($foruminfo['allowtratings'] != "no")
@@ -588,11 +587,9 @@ $icon_cache = $cache->read("posticons");
 
 // Start Getting Threads
 $query = $db->query("
-	SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username, u.usergroup, u.displaygroup,
-	lu.usergroup AS lastposter_usergroup, lu.displaygroup AS lastposter_displaygroup
+	SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username
 	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-	LEFT JOIN ".TABLE_PREFIX."users lu ON (lu.uid = t.lastposteruid){$select_voting}
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
 	WHERE t.fid='$fid' $visibleonly $datecutsql2
 	ORDER BY t.sticky DESC, t.$sortfield $sortordernow $sortfield2
 	LIMIT $start, $perpage
@@ -698,7 +695,6 @@ if(is_array($threadcache))
 		}
 		else
 		{
-			$thread['username'] = format_name($thread['username'], $thread['usergroup'], $thread['displaygroup']);
 			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		}
 
@@ -929,7 +925,6 @@ if(is_array($threadcache))
 		}
 		else
 		{
-			$lastposter = format_name($lastposter, $thread['lastposter_usergroup'], $thread['lastposter_displaygroup']);
 			$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 		}
 
