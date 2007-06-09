@@ -713,6 +713,9 @@ function redirect($url, $message="", $title="")
 		{
 			echo "alert('{$message}');\n";
 		}
+		$url = str_replace("#", "&#", $url);
+		$url = htmlspecialchars_decode($url);
+		$url = str_replace(array("\n","\r",";"), "", $url);
 		echo "window.location = '{$url}';\n";
 		echo "</script>\n";
 		exit;
@@ -1908,7 +1911,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 				$selitem = "default";
 			}
 
-			$jumpsel[$selitem] = "selected";
+			$jumpsel[$selitem] = 'selected="selected"';
 		}
 
 		if($showextras == 0)
@@ -2321,19 +2324,19 @@ function get_colored_warning_level($level)
 {
 	if($level >= 80)
 	{
-		return "<span class=\"high_warning\">{$level}</span>";
+		return "<span class=\"high_warning\">{$level}%</span>";
 	}
 	else if($level >= 50)
 	{
-		return "<span class=\"moderate_warning\">{$level}</span>";
+		return "<span class=\"moderate_warning\">{$level}%</span>";
 	}
 	else if($level >= 25)
 	{
-		return "<span class=\"low_warning\">{$level}</span>";
+		return "<span class=\"low_warning\">{$level}%</span>";
 	}
 	else
 	{
-		return $level;
+		return $level."%";
 	}
 }
 

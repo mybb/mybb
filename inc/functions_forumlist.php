@@ -184,9 +184,9 @@ function build_forumbits($pid=0, $depth=1)
 				// No posts have been made in this forum - show never text
 				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
 				{
-					$lastpost = "<span style=\"text-align: center;\">".$lang->lastpost_never."</span>";
+					$lastpost = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
 				}
-				elseif($hideinfo != 1)
+				elseif($hideinfo != true)
 				{
 					// Format lastpost date and time
 					$lastpost_date = my_date($mybb->settings['dateformat'], $lastpost_data['lastpost']);
@@ -205,20 +205,18 @@ function build_forumbits($pid=0, $depth=1)
 
 					// Call lastpost template
 					eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
-
 				}
-				
+
 				$forum_viewers_text = '';
 				if($mybb->settings['showforumviewing'] != "no" && $forum['viewers'] > 0)
 				{
 					$forum_viewers_text = sprintf($lang->viewing, $forum['viewers']);
 				}
-				
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost and counters to "-"
 			if($forum['linkto'] != '' || $hideinfo == true)
 			{
-				$lastpost = "<span style=\"text-align: center;\">-</span>";
+				$lastpost = "<div style=\"text-align: center;\">-</div>";
 				$posts = "-";
 				$threads = "-";
 			}
@@ -289,7 +287,7 @@ function build_forumbits($pid=0, $depth=1)
 			eval("\$forum_list .= \"".$templates->get("forumbit_depth$depth$forumcat")."\";");
 		}
 	}
-	
+
 	// Return an array of information to the parent forum including child forums list, counters and lastpost information
 	return array(
 		"forum_list" => $forum_list,

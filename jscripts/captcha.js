@@ -1,8 +1,4 @@
 var captcha = {
-	init: function()
-	{
-	},
-
 	refresh: function()
 	{
 		var imagehash = $('imagehash').value;

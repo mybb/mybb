@@ -27,7 +27,7 @@ var Rating = {
 	{
 		if(use_xmlhttprequest == 'yes')
 		{
-			this.spinner = new ActivityIndicator('body', {image: imagepath + "/spinner.gif"});
+			this.spinner = new ActivityIndicator('body', {image: imagepath + "/spinner_big.gif"});
 			var element_id = parameterString.match(/tid=(.*)&/)[1];
 			new Ajax.Request('ratethread.php?ajax=1', {
 				method: 'post',

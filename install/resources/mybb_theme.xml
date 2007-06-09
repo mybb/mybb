@@ -688,7 +688,7 @@ form {
 }
 
 .inline_rating {
-	margin-top: 15px;
+	margin: 15px 0 5px 0;
 	float: left;
 	vertical-align: middle;
 	padding-right: 5px;
@@ -928,8 +928,8 @@ form {
 <div style="float: right; padding-bottom: 4px;">
 	{$newreply}{$newthread}
 </div>
-{$ratethread}
 {$multipage}
+{$ratethread}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
 <tr>
 <td class="thead" colspan="2">
@@ -5388,11 +5388,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1">{$memprofile['signature']}</td>
 </tr>
 </table>]]></template>
-		<template name="newreply_modoptions" version="120"><![CDATA[<tr>
+		<template name="newreply_modoptions" version="140"><![CDATA[<tr>
 <td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="{$bgcolor}"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="yes" {$closecheck} />{$lang->close_thread}</label><br />
-<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="yes" {$stickycheck} />{$lang->stick_thread}</label>
+<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="yes"{$closecheck} />{$lang->close_thread}</label><br />
+<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="yes"{$stickycheck} />{$lang->stick_thread}</label>
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
@@ -8414,7 +8414,7 @@ To: {$to_recipients}
 				<td class="{$alt_bg}" align="center">{$expires}</td>
 				<td class="{$alt_bg}" align="center">{$issuedby}</td>
 	</tr>]]></template>
-	<template name="postbit_warninglevel" version="140"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}%</a>]]></template>
+	<template name="postbit_warninglevel" version="140"><![CDATA[<br />{$lang->postbit_warning_level} <a href="{$warning_link}">{$warning_level}</a>]]></template>
 	<template name="postbit_warn" version="140"><![CDATA[<a href="warnings.php?action=warn&amp;uid={$post['uid']}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_warn.gif" alt="{$lang->postbit_warn}" title="{$lang->postbit_warn}" /></a>]]></template>
 	<template name="member_profile_warninglevel" version="140"><![CDATA[<tr>
 	<td class="trow2"><strong>{$lang->warning_level}</strong></td>

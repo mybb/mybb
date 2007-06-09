@@ -527,7 +527,7 @@ if($mybb->settings['announcementlimit'])
 $sql = build_parent_list($fid, "fid", "OR", $parentlist);
 $time = time();
 $query = $db->query("
-	SELECT a.*, u.username
+	SELECT a.*, u.username, u.usergroup, u.displaygroup
 	FROM ".TABLE_PREFIX."announcements a
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
@@ -545,13 +545,14 @@ while($announcement = $db->fetch_array($query))
 		$new_class = '';
 		$folder = "folder.gif";
 	}
-	
+
 	$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
-	$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
 	$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
+	$announcement['username'] = format_name($announcement['username'], $announcement['usergroup'], $announcement['displaygroup']);
+	$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 	
 	if($foruminfo['allowtratings'] != "no")
 	{
@@ -587,9 +588,11 @@ $icon_cache = $cache->read("posticons");
 
 // Start Getting Threads
 $query = $db->query("
-	SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username
+	SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username, u.usergroup, u.displaygroup,
+	lu.usergroup AS lastposter_usergroup, lu.displaygroup AS lastposter_displaygroup
 	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+	LEFT JOIN ".TABLE_PREFIX."users lu ON (lu.uid = t.lastposteruid){$select_voting}
 	WHERE t.fid='$fid' $visibleonly $datecutsql2
 	ORDER BY t.sticky DESC, t.$sortfield $sortordernow $sortfield2
 	LIMIT $start, $perpage
@@ -600,9 +603,9 @@ while($thread = $db->fetch_array($query))
 	{
 		$thread['averagerating'] = $averagerating[$thread['tid']];
 	}
-	
+
 	$threadcache[$thread['tid']] = $thread;
-	
+
 	// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
 	if(substr($thread['closed'], 0, 5) == "moved")
 	{
@@ -683,7 +686,7 @@ if(is_array($threadcache))
 		{
 			$bgcolor = alt_trow();
 		}
-		
+
 		$folder = '';
 		$prefix = '';
 
@@ -695,14 +698,15 @@ if(is_array($threadcache))
 		}
 		else
 		{
+			$thread['username'] = format_name($thread['username'], $thread['usergroup'], $thread['displaygroup']);
 			$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
 		}
-		
+
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-		
+
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
 			$icon = $icon_cache[$thread['icon']];
@@ -712,13 +716,13 @@ if(is_array($threadcache))
 		{
 			$icon = "&nbsp;";
 		}
-		
+
 		$prefix = '';
 		if($thread['poll'])
 		{
 			$prefix = $lang->poll_prefix;
 		}
-		
+
 		if($thread['sticky'] == "1" && !$donestickysep)
 		{
 			eval("\$threads .= \"".$templates->get("forumdisplay_sticky_sep")."\";");
@@ -753,22 +757,22 @@ if(is_array($threadcache))
 		$threadpages = '';
 		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
-		
+
 		if(!$mybb->settings['postsperpage'])
 		{
 			$mybb->settings['postperpage'] = 20;
 		}
-		
+
 		if($thread['unapprovedposts'] > 0 && $ismod)
 		{
 			$thread['posts'] += $thread['unapprovedposts'];
 		}
-		
+
 		if($thread['posts'] > $mybb->settings['postsperpage'])
 		{
 			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
 			$thread['pages'] = ceil($thread['pages']);
-			
+
 			if($thread['pages'] > 4)
 			{
 				$pagesstop = 4;
@@ -779,13 +783,13 @@ if(is_array($threadcache))
 			{
 				$pagesstop = $thread['pages'];
 			}
-			
+
 			for($i = 1; $i <= $pagesstop; ++$i)
 			{
 				$page_link = get_thread_link($thread['tid'], $i);
 				eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 			}
-			
+
 			eval("\$thread['multipage'] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
 		}
 		else
@@ -806,7 +810,7 @@ if(is_array($threadcache))
 			{
 				$inlinecheck = '';
 			}
-			
+
 			$multitid = $thread['tid'];
 			eval("\$modbit = \"".$templates->get("forumdisplay_thread_modbit")."\";");
 		}
@@ -828,17 +832,17 @@ if(is_array($threadcache))
 		// Determine the folder
 		$folder = '';
 		$folder_label = '';
-		
+
 		if($thread['doticon'])
 		{
 			$folder = "dot_";
 			$folder_label .= $lang->icon_dot;
 		}
-		
+
 		$gotounread = '';
 		$isnew = 0;
 		$donenew = 0;
-		
+
 		if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 		{
 			if($thread['lastread'])
@@ -859,7 +863,7 @@ if(is_array($threadcache))
 		{
 			$last_read = $forum_read;
 		}
-		
+
 		if($thread['lastpost'] > $last_read)
 		{
 			$folder .= "new";
@@ -880,7 +884,7 @@ if(is_array($threadcache))
 			$folder .= "hot";
 			$folder_label .= $lang->icon_hot;
 		}
-		
+
 		if($thread['closed'] == "yes")
 		{
 			$folder .= "lock";
@@ -925,9 +929,10 @@ if(is_array($threadcache))
 		}
 		else
 		{
+			$lastposter = format_name($lastposter, $thread['lastposter_usergroup'], $thread['lastposter_displaygroup']);
 			$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 		}
-		
+
 		$thread['replies'] = my_number_format($thread['replies']);
 		$thread['views'] = my_number_format($thread['views']);
 
@@ -936,7 +941,7 @@ if(is_array($threadcache))
 		{
 			--$thread['unapprovedposts'];
 		}
-		
+
 		if($thread['unapprovedposts'] > 0 && $ismod)
 		{
 			if($thread['unapprovedposts'] > 1)
@@ -947,7 +952,7 @@ if(is_array($threadcache))
 			{
 				$unapproved_posts_count = sprintf($lang->thread_unapproved_post_count, 1);
 			}
-			
+
 			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($thread['unapprovedposts']).")</span>";
 		}
 		else
@@ -966,7 +971,7 @@ if(is_array($threadcache))
 			{
 				$attachment_count = $lang->attachment_count;
 			}
-			
+
 			eval("\$attachment_count = \"".$templates->get("forumdisplay_thread_attachment_count")."\";");
 		}
 		else
@@ -997,12 +1002,12 @@ if(is_array($threadcache))
 			default:
 				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
 		}	
-		
+
 		while($tool = $db->fetch_array($query))
 		{
 			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
 		}
-		
+
 		if(!empty($customthreadtools))
 		{
 			eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
@@ -1018,17 +1023,17 @@ if($foruminfo['type'] != "c")
 	{
 		eval("\$threads = \"".$templates->get("forumdisplay_nothreads")."\";");
 	}
-	
+
 	if($foruminfo['password'] != '')
 	{
 		eval("\$clearstoredpass = \"".$templates->get("forumdisplay_threadlist_clearpass")."\";");
 	}
-	
+
 	if($load_inline_edit_js == 1)
 	{
 		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
-	
+
 	$lang->rss_discovery_forum = sprintf($lang->rss_discovery_forum, htmlspecialchars_uni($foruminfo['name']));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
@@ -1037,7 +1042,7 @@ else
 {
 	$rssdiscovery = '';
 	$threadslist = '';
-	
+
 	if(empty($forums))
 	{
 		error($lang->error_containsnoforums);

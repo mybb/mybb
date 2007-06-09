@@ -472,7 +472,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				// Set post counter
 				$postcounter = $thread['replies'] + 1;
-								
+
 				// Was there a new post since we hit the quick reply button?
 				if($mybb->input['lastpid'])
 				{
@@ -483,9 +483,9 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 						redirect(get_thread_link($tid, 0, "lastpost"));
 					}
 				}
-				
+
 				// Lets see if this post is on the same page as the one we're viewing or not
-				// if it isn't, redirect us				
+				// if it isn't, redirect us
 				if($perpage > 0 && (($postcounter+1) % $perpage) == 0)
 				{
 					$post_page = ($postcounter+1) / $mybb->settings['postsperpage'];
@@ -494,10 +494,12 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				{
 					$post_page = intval(($postcounter+1) / $mybb->settings['postsperpage']) + 1;
 				}
+
 				if($mybb->input['from_page'] && $post_page > $mybb->input['from_page'])
 				{
 					redirect(get_thread_link($tid, 0, "lastpost"));
 				}
+
 				// Return the post HTML and display it inline
 				$query = $db->query("
 					SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername
@@ -515,7 +517,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				{
 					$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
 				}
-				
+
 				// Is the currently logged in user a moderator of this forum?
 				if(is_moderator($fid))
 				{
@@ -525,7 +527,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				{
 					$ismod = false;
 				}
-				
+
 				// Establish altbg - may seem like this is backwards, but build_postbit reverses it
 				if(($postcounter - $mybb->settings['postsperpage']) % 2 != 0)
 				{
@@ -535,6 +537,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				{
 					$altbg = "trow2";
 				}
+
 				require_once MYBB_ROOT."inc/functions_post.php";
 				$post = build_postbit($post);
 				echo $post;
@@ -1060,20 +1063,22 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		if($thread['closed'] == "yes")
 		{
-			$closecheck = "checked";
+			$closecheck = ' checked="checked"';
 		}
 		else
 		{
 			$closecheck = '';
 		}
+
 		if($thread['sticky'])
 		{
-			$stickycheck = "checked";
+			$stickycheck = ' checked="checked"';
 		}
 		else
 		{
 			$stickycheck = '';
 		}
+
 		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
 	}
 	$lang->post_reply_to = sprintf($lang->post_reply_to, $thread['subject']);
