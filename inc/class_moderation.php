@@ -946,14 +946,14 @@ class Moderation
 		// Create the new thread
 		$newsubject = $db->escape_string($newsubject);
 		$query = array(
-			"fid" => $moveto,
-			"subject" => $newsubject,
-			"icon" => $thread['icon'],
-			"uid" => $thread['uid'],
-			"username" => $thread['username'],
-			"dateline" => $thread['dateline'],
-			"lastpost" => $thread['lastpost'],
-			"lastposter" => $thread['lastposter'],
+			"fid" => intval($moveto),
+			"subject" => $db->escape_string($newsubject),
+			"icon" => $db->escape_string($thread['icon']),
+			"uid" => $db->escape_string($thread['uid']),
+			"username" => $db->escape_string($thread['username']),
+			"dateline" => $db->escape_string($thread['dateline']),
+			"lastpost" => $db->escape_string($thread['lastpost']),
+			"lastposter" => $db->escape_string($thread['lastposter']),
 			"replies" => count($pids)-1,
 			"visible" => "1",
 			"notes" => ''
