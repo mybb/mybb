@@ -19,7 +19,7 @@
  */
 function remove_attachment($pid, $posthash, $aid)
 {
-	global $db, $mybb;
+	global $db, $mybb, $plugins;
 	
 	if($pid) 
 	{ 
@@ -38,6 +38,9 @@ function remove_attachment($pid, $posthash, $aid)
 		$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "aid='$aid' AND pid='$pid'");
 		$attachment = $db->fetch_array($query);
 	}
+	
+	$plugins->add_hook("remove_attachment_do_delete", $attachment);
+	
 	$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
 	@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 	if($attachment['thumbnail'])
@@ -58,7 +61,7 @@ function remove_attachment($pid, $posthash, $aid)
  */
 function remove_attachments($pid, $posthash="")
 {
-	global $db, $mybb;
+	global $db, $mybb, $plugins;
 	
 	if($pid) 
 	{ 
@@ -81,6 +84,9 @@ function remove_attachments($pid, $posthash="")
 		{ 
 			$num_attachments++; 
 		}
+		
+		$plugins->add_hook("remove_attachments_do_delete", $attachment);
+		
 		$db->delete_query(TABLE_PREFIX."attachments", "aid='".$attachment['aid']."'");
 		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
@@ -102,12 +108,13 @@ function remove_attachments($pid, $posthash="")
  */
 function remove_avatars($uid, $exclude="")
 {
-	global $mybb;
+	global $mybb, $plugins;
 	$dir = opendir($mybb->settings['avataruploadpath']);
 	if($dir)
 	{
 		while($file = @readdir($dir))
 		{
+			$plugins->add_hook("remove_avatars_do_delete", $file);
 			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($mybb->settings['avataruploadpath']."/".$file) && $file != $exclude)
 			{
 				@unlink($mybb->settings['avataruploadpath']."/".$file);
@@ -125,7 +132,7 @@ function remove_avatars($uid, $exclude="")
  */
 function upload_avatar()
 {
-	global $db, $mybb, $lang, $_FILES;
+	global $db, $mybb, $lang, $_FILES, $plugins;
 	$avatar = $_FILES['avatarupload'];
 	if(!is_uploaded_file($avatar['tmp_name']))
 	{
@@ -218,6 +225,7 @@ function upload_avatar()
 		"width" => intval($img_dimensions[0]),
 		"height" => intval($img_dimensions[1])
 	);
+	$plugins->add_hook_by_ref("upload_avatar_end", $ret);
 	return $ret;
 }
 
@@ -229,7 +237,7 @@ function upload_avatar()
  */
 function upload_attachment($attachment)
 {
-	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang;
+	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins;
 
 	$posthash = $db->escape_string($mybb->input['posthash']);
 
@@ -395,6 +403,8 @@ function upload_attachment($attachment)
 	{
 		$attacharray['visible'] = 1;
 	}
+	
+	$plugins->add_hook_by_ref("upload_attachment_do_insert", $attacharray);
 
 	$db->insert_query(TABLE_PREFIX."attachments", $attacharray);
 	
@@ -418,6 +428,7 @@ function upload_attachment($attachment)
  */
 function upload_file($file, $path, $filename="")
 {
+	global $plugins;
 	if(empty($file['name']) || $file['name'] == "none" || $file['size'] < 1)
 	{
 		$upload['error'] = 1;
@@ -441,6 +452,7 @@ function upload_file($file, $path, $filename="")
 	$upload['path'] = $path;
 	$upload['type'] = $file['type'];
 	$upload['size'] = $file['size'];
+	$plugins->add_hook_by_ref("upload_file_end", $upload);
 	return $upload;
 }
 ?>
