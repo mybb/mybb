@@ -1010,7 +1010,7 @@ function usergroup_displaygroup($gid)
  * Build the forum permissions for a specific forum, user or group
  *
  * @param int The forum ID to build permissions for (0 builds for all forums)
- * @param int The user to build the permissions for (0 assumes current logged in user)
+ * @param int The user to build the permissions for (0 will select the uid automatically)
  * @param int The group of the user to build permissions for (0 will fetch it)
  * @return array Forum permissions for the specific forum or forums
  */

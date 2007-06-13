@@ -46,4 +46,15 @@
 		<enabled>0</enabled>
 		<logging>1</logging>
 	</task>
+	<task>
+		<title>Promotion System</title>
+		<description><![CDATA[Automatically runs the promotion system every 20 minutes.]]></description>
+		<file>promotions</file>
+		<minute>5,25,45</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<enabled>0</enabled>
+		<logging>1</logging>
+	</task>
 </tasks>

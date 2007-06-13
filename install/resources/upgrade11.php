@@ -54,9 +54,24 @@ function upgrade9_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 
 
+	if($db->field_exists('canwarnusers', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canwarnusers;");
+	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers char(3) NOT NULL default '' AFTER cancustomtitle");
+	
+	if($db->field_exists('canrecievewarnings', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canrecievewarnings;");
+	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings char(3) NOT NULL default '' AFTER canwarnusers");
+	
+	if($db->field_exists('maxwarningsday', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxwarningsday;");
+	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
+	
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canreceivewarnings='no' WHERE cancp='yes' OR gid=1");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET maxwarningsday=3, canwarnusers='yes' WHERE cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
 	if($db->field_exists('newpms', "users"))
@@ -71,8 +86,22 @@ function upgrade9_dbchanges()
 	$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents char(3) NOT NULL default '';");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canaddprivateevents;");
+	
+	if($db->field_exists('canaddprivateevents', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canaddprivateevents;");
+	}
+	
+	if($db->field_exists('canbypasseventmod', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canbypasseventmod;");
+	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod char(3) NOT NULL default '' AFTER canaddevents;");
+	
+	if($db->field_exists('canmoderateevents', "usergroups"))
+	{
+		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
+	}
 	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents char(3) NOT NULL default '' AFTER canbypasseventmod;");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='yes', canmoderateevents='yes' WHERE cancp='yes' OR issupermod='yes'");
 	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='no', canmoderateevents='no' WHERE cancp='no' AND issupermod='no'");
@@ -471,6 +500,10 @@ function upgrade9_dbchanges3()
 				"module" => "config",
 				"permission" => "profile_fields",
 			),
+		"caneditmodactions" => array(
+				"module" => "config",
+				"permission" => "mod_tools",
+			),
 		"caneditugroups" => array(
 				"module" => "user",
 				"permission" => "groups",
@@ -637,8 +670,8 @@ function upgrade9_dbchanges5()
 	$query = $db->query("SELECT COUNT(eid) AS eventcount FROM ".TABLE_PREFIX."events");
 	$cnt = $db->fetch_array($query);
 
-	$contents .= "<p>Converting events $lower to $upper (".$cnt['attachcount']." Total)</p>";
-	echo "<p>Converting events $lower to $upper (".$cnt['attachcount']." Total)</p>";
+	$contents .= "<p>Converting events {$lower} to {$upper} ({$cnt['attachcount']} Total)</p>";
+	echo "<p>Converting events {$lower} to {$upper} ({$cnt['attachcount']} Total)</p>";
 	
 	// Just started - add fields
 	if(!$db->field_exists("donecon", "events"))
