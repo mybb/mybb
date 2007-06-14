@@ -655,9 +655,12 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="attachthumbnails">
 			<title>Show Attached Thumbnails in Posts</title>
-			<description><![CDATA[Do you want to show the generated thumbnails for attached images inside the posts?]]></description>
+			<description><![CDATA[How do you want images to be shown in posts?]]></description>
 			<disporder>12</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
+			<optionscode><![CDATA[radio
+yes=Thumbnail
+no=Full Size Image
+download=As Download Link]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>

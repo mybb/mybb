@@ -496,26 +496,30 @@ function get_post_attachments($id, &$post)
 				// Support for [attachment=id] code
 				if(stripos($post['message'], "[attachment=".$attachment['aid']."]") !== false)
 				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
-					{ // We have a thumbnail to show (and its not the "SMALL" enough image
+					// Show as thumbnail IF image is big && thumbnail exists && setting=='yes'
+					// Show as full size image IF setting=='no' || (image is small && permissions allow)
+					// Show as download for all other cases 
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 'yes')
+					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					elseif(($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no')
 					{
-						// Image is small enough to show - no thumbnail
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
 					else
 					{
-						// Show standard link to attachment
 						eval("\$attbit = \"".$templates->get("postbit_attachments_attachment")."\";");
 					}
 					$post['message'] = preg_replace("#\[attachment=".$attachment['aid']."]#si", $attbit, $post['message']);
 				}
 				else
 				{
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "")
-					{ // We have a thumbnail to show
+					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
+					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
+					// Show as download for all other cases 
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 'yes')
+					{
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
 						{
@@ -524,9 +528,8 @@ function get_post_attachments($id, &$post)
 						}
 						$tcount++;
 					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes")
+					elseif(($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no')
 					{
-						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
 					else
