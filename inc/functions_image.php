@@ -9,8 +9,19 @@
  * $Id$
  */
 
+/**
+ * Generates a thumbnail
+ * 
+ * @param string filename
+ * @param string upload path
+ * @param string thumbnail filename
+ * @param int maximum thumbnail height
+ * @param int maximum thumbnail width
+ * @return array returns an array with error code and filename (Code 1: Thumbnail generated; Code 3: Could not create thumbnail; Code 4: Image does not need to be scaled)
+ */
 function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 {
+	// Check if thumbnail can be generated and if the file is valid image
 	if(!function_exists("imagecreate"))
 	{
 		$thumb['code'] = 3;
@@ -21,11 +32,15 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	{
 		$thumb['code'] = 3;
 		return $thumb;
-	}		
+	}
+	
+	// Only generate a thumbnail if image is larger than maximum thumbnail size
 	if(($imgwidth >= $maxwidth) || ($imgheight >= $maxheight))
 	{
+		// Up the memory limit if needed
 		check_thumbnail_memory($imgwidth, $imgheight, $imgtype, $imgbits, $imgchan);
 		
+		// Get the image into memory based on file type
 		if($imgtype == 3)
 		{
 			if(@function_exists("imagecreatefrompng"))
@@ -57,6 +72,8 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			$thumb['code'] = 3;
 			return $thumb;
 		}
+		
+		// Scale the image and resample
 		$scale = scale_image($imgwidth, $imgheight, $maxwidth, $maxheight);
 		$thumbwidth = $scale['width'];
 		$thumbheight = $scale['height'];
@@ -71,6 +88,8 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
 		@imagedestroy($im);
+		
+		// Output image to file based on file type
 		if(!function_exists("imagegif") && $imgtype == 1)
 		{
 			$filename = str_replace(".gif", ".jpg", $filename);
