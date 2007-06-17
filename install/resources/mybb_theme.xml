@@ -629,6 +629,10 @@ form {
 	background-position: left top;
 }
 
+td .star_rating {
+	margin: auto;
+}
+
 .star_rating li {
 	display: inline;
 }
@@ -1803,7 +1807,7 @@ form {
 </table>
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_rating" version="140"><![CDATA[	<td class="{$bgcolor}" align="center">
+		<template name="forumdisplay_thread_rating" version="140"><![CDATA[	<td class="{$bgcolor}">
 		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
 			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
 			<li><a class="one_star" title="{$lang->one_star}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=1">1</a></li>
