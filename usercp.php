@@ -333,7 +333,7 @@ if($mybb->input['action'] == "profile")
 		}
 		else
 		{
-
+			$user['awayreason'] = htmlspecialchars_uni($user['awayreason']);
 			if($mybb->user['away'] == "yes")
 			{
 				$awaydate = my_date($mybb->settings['dateformat'], $mybb->user['awaydate']);
