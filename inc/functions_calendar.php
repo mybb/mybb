@@ -18,7 +18,7 @@
  * @param array Optional events cache for this calendar
  * @return string The built mini calendar
  */
-function build_mini_calendar($calendar, $month, $year, $events_cache)
+function build_mini_calendar($calendar, $month, $year, &$events_cache)
 {
 	global $events_cache, $mybb, $templates, $theme, $monthnames;
 

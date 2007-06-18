@@ -14,6 +14,7 @@ set_time_limit(0);
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 define("INSTALL_ROOT", dirname(__FILE__)."/");
+define("TIME_NOW", time());
 
 require_once MYBB_ROOT.'inc/class_core.php';
 $mybb = new MyBB;
