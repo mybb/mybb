@@ -1015,6 +1015,7 @@ class Moderation
 				if($post['aid'])
 				{
 					$num_attachments++;
+				}
 			}
 			else if($post['visible'] == 0)
 			{
