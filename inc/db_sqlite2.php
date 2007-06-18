@@ -921,7 +921,7 @@ class databaseEngine
 			if($this->num_rows($result) > 0)
 			{
 				$row = $this->fetch_array($result); // Table sql
-				$tmpname = 't'.time();
+				$tmpname = 't'.TIME_NOW;
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/","( ", $row['sql'], 1))));
 				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'{$table}'", $tmpname, $origsql, 1)), 6);
 				$createindexsql = array();

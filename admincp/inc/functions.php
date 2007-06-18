@@ -27,7 +27,7 @@ function log_admin_action()
 	$log_entry = array(
 		"uid" => $mybb->user['uid'],
 		"ipaddress" => $db->escape_string(get_ip()),
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"module" => $page->active_module,
 		"action" => $page->active_action,
 		"data" => $db->escape_string(serialize($data))
@@ -200,13 +200,13 @@ function is_super_admin($uid)
 
 function check_admin_permissions($action)
 {
-	global $mybb, $page;
+	global $mybb, $page, $lang;
 	
 	if($mybb->admin['permissions'][$action['module']][$action['action']] != 1)
 	{
-		$page->output_header("Access Denied");
-		$page->add_breadcrumb_item("Access Denied", "index.php?".SID."&amp;module=home/index");
-		$page->output_error("<b>Access Denied</b><ul>You do not have permission to access this part of the administration control panel.");
+		$page->output_header($lang->access_denied);
+		$page->add_breadcrumb_item($lang->access_denied, "index.php?".SID."&amp;module=home/index");
+		$page->output_error("<b>{$lang->access_denied}</b><ul>{$lang->access_denied_desc}</ul>");
 		$page->output_footer();
 		exit;
 	}

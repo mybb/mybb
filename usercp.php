@@ -169,7 +169,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 
 	if($mybb->input['away'] == "yes" && $mybb->settings['allowaway'] != "no")
 	{
-		$awaydate = time();
+		$awaydate = TIME_NOW;
 		if($mybb->input['awayday'])
 		{
 			if(!$mybb->input['awaymonth'])
@@ -904,11 +904,11 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 			if($mybb->user['usergroup'] != "5" && $mybb->usergroup['cancp'] != "yes")
 			{
 				$activationcode = random_str();
-				$now = time();
+				$now = TIME_NOW;
 				$db->delete_query("awaitingactivation", "uid='".$mybb->user['uid']."'");
 				$newactivation = array(
 					"uid" => $mybb->user['uid'],
-					"dateline" => time(),
+					"dateline" => TIME_NOW,
 					"code" => $activationcode,
 					"type" => "e",
 					"oldgroup" => $mybb->user['usergroup'],
@@ -1252,7 +1252,7 @@ if($mybb->input['action'] == "subscriptions")
 			
 			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forumread)
 			{
-				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 			}
 			
 			if($thread['lastpost'] > $cutoff)
@@ -2104,12 +2104,12 @@ if($mybb->input['action'] == "usergroups")
 		if($mybb->input['do'] == "joingroup" && $usergroup['type'] == 4)
 		{
 			$reason = $db->escape_string($reason);
-			$now = time();
+			$now = TIME_NOW;
 			$joinrequest = array(
 				"uid" => $mybb->user['uid'],
 				"gid" => intval($mybb->input['joingroup']),
 				"reason" => $db->escape_string($mybb->input['reason']),
-				"dateline" => time()
+				"dateline" => TIME_NOW
 				);
 
 			$db->insert_query("joinrequests", $joinrequest);
@@ -2418,7 +2418,7 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 if(!$mybb->input['action'])
 {
 	// Get posts per day
-	$daysreg = (time() - $mybb->user['regdate']) / (24*3600);
+	$daysreg = (TIME_NOW - $mybb->user['regdate']) / (24*3600);
 	$perday = $mybb->user['postnum'] / $daysreg;
 	$perday = round($perday, 2);
 	if($perday > $mybb->user['postnum'])

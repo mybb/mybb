@@ -240,6 +240,100 @@ class DefaultForm
 		return $select;
 	}
 	
+	function generate_forum_select($name, $selected, $options=array(), $is_first=1)
+	{
+		global $fselectcache, $forum_cache, $selectoptions;
+		
+		if(!$selectoptions)
+		{
+			$selectoptions = '';
+		}
+		
+		if(!$options['depth'])
+		{
+			$options['depth'] = 0;
+		}
+		
+		$options['depth'] = intval($options['depth']);
+		
+		if(!$options['pid'])
+		{
+			$pid = 0;
+		}
+		
+		$pid = intval($options['pid']);
+		
+		if(!is_array($fselectcache))
+		{
+			if(!is_array($forum_cache))
+			{
+				$forum_cache = cache_forums();
+			}
+	
+			foreach($forum_cache as $fid => $forum)
+			{
+				if($forum['active'] != 'no')
+				{
+					$fselectcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+				}
+			}
+		}
+		
+		if(is_array($fselectcache[$pid]))
+		{
+			foreach($fselectcache[$pid] as $main)
+			{
+				foreach($main as $forum)
+				{
+					if($forum['fid'] != "0" && $forum['linkto'] == '')
+					{
+						$select_add = '';
+	
+						if(in_array($forum['fid'], $selected))
+						{
+							$select_add = " selected=\"selected\"";
+						}
+
+						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add} style=\"padding-left: {$options['depth']}px;\">{$forum['name']}</option>\n";
+	
+						if($forum_cache[$forum['fid']])
+						{
+							$options['depth'] += 15;
+							$options['pid'] = $forum['fid'];
+							$this->generate_forum_select($forum['fid'], $selected, $options, 0);
+						}
+					}
+				}
+			}
+		}
+		
+		if($is_first == 1)
+		{
+			if(!isset($options['multiple']))
+			{
+				$select = "<select name=\"{$name}\"";
+			}
+			else
+			{
+				$select = "<select name=\"{$name}\" multiple=\"multiple\"";
+			}
+			if(isset($options['class']))
+			{
+				$select .= " class=\"{$options['class']}\"";
+			}
+			if(isset($options['id']))
+			{
+				$select .= " id=\"{$options['id']}\"";
+			}
+			if(isset($options['size']))
+			{
+				$select .= " size=\"{$options['size']}\"";
+			}
+			$select .= ">\n".$selectoptions."</select>\n";
+			return $select;
+		}
+	}
+	
 	function generate_submit_button($value, $options=array())
 	{
 		$input = "<input type=\"submit\" value=\"".htmlspecialchars($value)."\"";

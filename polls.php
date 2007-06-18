@@ -230,7 +230,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$newpoll = array(
 		"tid" => $thread['tid'],
 		"question" => $db->escape_string($mybb->input['question']),
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"options" => $db->escape_string($optionslist),
 		"votes" => $db->escape_string($voteslist),
 		"numoptions" => intval($optioncount),
@@ -742,7 +742,7 @@ if($mybb->input['action'] == "vote")
 	}
 
 	$expiretime = $poll['dateline'] + $poll['timeout'];
-	$now = time();
+	$now = TIME_NOW;
 	if($poll['closed'] == 'yes' || $thread['closed'] == 'yes' || ($expiretime < $now && $poll['timeout']))
 	{
 		error($lang->error_pollclosed);
@@ -771,7 +771,7 @@ if($mybb->input['action'] == "vote")
 	}
 	
 	$votesql = '';
-	$now = time();
+	$now = TIME_NOW;
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
 	$numvotes = $poll['numvotes'];

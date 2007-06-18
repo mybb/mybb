@@ -129,7 +129,7 @@ class FeedGenerator
 
 			if(empty($item['date']))
 			{
-				$item['date'] = time();
+				$item['date'] = TIME_NOW;
 			}
 			switch($this->feed_format)
 			{

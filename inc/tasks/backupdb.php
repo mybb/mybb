@@ -25,7 +25,7 @@ function task_backupdb($task)
 	{
 		$db->set_table_prefix('');
 		
-		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
+		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW.random_str()), 0, 10);
 		
 		if(function_exists('gzopen'))
 		{
@@ -38,7 +38,7 @@ function task_backupdb($task)
 		
 		$tables = $db->list_tables($config['database'], $config['table_prefix']);
 	
-		$time = date('dS F Y \a\t H:i', time());
+		$time = date('dS F Y \a\t H:i', TIME_NOW);
 		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
 		$contents = $header;
 		foreach($tables as $table)

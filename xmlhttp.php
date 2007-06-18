@@ -202,7 +202,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			xmlhttp_error($lang->no_permission_edit_subject);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))
+		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
 		{
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
@@ -315,7 +315,7 @@ else if($mybb->input['action'] == "edit_post")
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
 		// If we're past the edit time limit - don't allow editing.
-		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (time()-($mybb->settings['edittimelimit']*60)))
+		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
 		{
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
@@ -520,7 +520,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 	$regimagearray = array(
 		"imagehash" => $imagehash,
 		"imagestring" => $randomstr,
-		"dateline" => time()
+		"dateline" => TIME_NOW
 	);
 	$db->insert_query("captcha", $regimagearray);
 	header("Content-type: text/plain; charset={$charset}");

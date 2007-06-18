@@ -514,7 +514,7 @@ if(!$mybb->input['action'])
 		$promotion['description'] = htmlspecialchars_uni($promotion['description']);
 		$table->construct_cell("<div><strong><a href=\"index.php?".SID."&amp;module=users/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
 
-		$popup = new PopupMenu("promotion_{$promotion['pid']}", "Options");
+		$popup = new PopupMenu("promotion_{$promotion['pid']}", $lang->options);
 		$popup->add_item($lang->edit_promotion, "index.php?".SID."&amp;module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");
 		if($promotion['enabled'] == 1)
 		{

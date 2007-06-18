@@ -502,7 +502,7 @@ class EventDataHandler extends DataHandler
 			'description' => $db->escape_string($event['description']),
 			'visible' => $visible,
 			'private' => intval($event['private']),
-			'dateline' => time(),
+			'dateline' => TIME_NOW,
 			'starttime' => intval($event['starttime']),
 			'endtime' => intval($event['endtime']),
 			'timezone' => intval($event['timezone']),

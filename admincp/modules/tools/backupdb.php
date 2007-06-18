@@ -123,7 +123,7 @@ if($mybb->input['action'] == "backup")
 		
 		if($mybb->input['method'] == 'disk')
 		{
-			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW.random_str()), 0, 10);
 			
 			if($mybb->input['filetype'] == 'gzip')
 			{
@@ -142,7 +142,7 @@ if($mybb->input['action'] == "backup")
 		}
 		else
 		{
-			$file = 'backup_'.substr(md5($mybb->user['uid'].time().random_str()), 0, 10);
+			$file = 'backup_'.substr(md5($mybb->user['uid'].TIME_NOW.random_str()), 0, 10);
 			if($mybb->input['filetype'] == 'gzip')
 			{
 				if(!function_exists('gzopen')) // check zlib-ness
@@ -165,7 +165,7 @@ if($mybb->input['action'] == "backup")
 		}
 		$db->set_table_prefix('');
 
-		$time = date('dS F Y \a\t H:i', time());
+		$time = date('dS F Y \a\t H:i', TIME_NOW);
 		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
 		$contents = $header;
 		foreach($mybb->input['tables'] as $table)

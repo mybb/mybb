@@ -288,7 +288,7 @@ class CustomModeration extends Moderation
 			{
 				if($thread_options['movethreadredirect'] == 'yes') // Move Thread with redirect
 				{
-					$time = time() + ($thread_options['movethreadredirectexpire'] * 86400);
+					$time = TIME_NOW + ($thread_options['movethreadredirectexpire'] * 86400);
 					foreach($tids as $tid)
 					{
 						$this->move_thread($tid, $thread_options['movethread'], 'redirect', $time);

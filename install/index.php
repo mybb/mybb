@@ -633,7 +633,7 @@ function insert_templates()
 			'template' => $db->escape_string($template['value']),
 			'sid' => $sid,
 			'version' => $template['attributes']['version'],
-			'dateline' => time(),
+			'dateline' => TIME_NOW,
 		);
 		
 		$db->insert_query("templates", $insert_array);
@@ -917,7 +917,7 @@ function install_done()
 	echo $lang->done . '</p>';
 	
 	echo $lang->done_step_admincreated;
-	$now = time();
+	$now = TIME_NOW;
 	$salt = random_str();
 	$loginkey = generate_loginkey();
 	$saltedpw = md5(md5($salt).md5($mybb->input['adminpass']));

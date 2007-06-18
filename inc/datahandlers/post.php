@@ -280,10 +280,10 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 
 			// A little bit of calculation magic and moderator status checking.
-			if(time()-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
+			if(TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
 			{
 				// Oops, user has been flooding - throw back error message.
-				$time_to_wait = ($mybb->settings['postfloodsecs'] - (time()-$user['lastpost'])) + 1;
+				$time_to_wait = ($mybb->settings['postfloodsecs'] - (TIME_NOW-$user['lastpost'])) + 1;
 				if($time_to_wait == 1)
 				{
 					$this->set_error("post_flooding_one_second");
@@ -342,7 +342,7 @@ class PostDataHandler extends DataHandler
 		$thread = $db->fetch_array($query);
 		
 		// Check to see if the same author has posted within the merge post time limit
-		if((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergehrs']) != "") && (time()-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
+		if((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergehrs']) != "") && (TIME_NOW-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
 		{
 			return true;
 		}
@@ -495,7 +495,7 @@ class PostDataHandler extends DataHandler
 		// The date has to be numeric and > 0.
 		if($dateline < 0 || is_numeric($dateline) == false)
 		{
-			$dateline = time();
+			$dateline = TIME_NOW;
 		}
 	}
 
@@ -509,7 +509,7 @@ class PostDataHandler extends DataHandler
 		global $mybb, $db, $plugins;
 
 		$post = &$this->data;
-		$time = time();
+		$time = TIME_NOW;
 		
 		if($this->method != "update" && !$post['savedraft'])
 		{
@@ -690,7 +690,7 @@ class PostDataHandler extends DataHandler
 		
 		if($visible != -2)
 		{
-			$now = time();
+			$now = TIME_NOW;
 			if($forum['usepostcounts'] != "no")
 			{
 				$queryadd = ",postnum=postnum+1";
@@ -1422,7 +1422,7 @@ class PostDataHandler extends DataHandler
 		if(($mybb->settings['showeditedby'] == "yes" && !is_moderator($post['fid'], "caneditposts", $post['edit_uid'])) || ($mybb->settings['showeditedbyadmin'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid'])))
 		{
 			$this->post_update_data['edituid'] = intval($post['edit_uid']);
-			$this->post_update_data['edittime'] = time();
+			$this->post_update_data['edittime'] = TIME_NOW;
 		}
 
 		$this->post_update_data['visible'] = $visible;

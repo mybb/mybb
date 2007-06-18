@@ -106,7 +106,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					"folder" => 1,
 					"subject" => $db->escape_string($emailsubject),
 					"message" => $db->escape_string($emailmessage),
-					"dateline" => time(),
+					"dateline" => TIME_NOW,
 					"status" => 0,
 					"readtime" => 0
 					);
@@ -126,7 +126,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			"tid" => $thread['tid'],
 			"fid" => $thread['fid'],
 			"uid" => $mybb->user['uid'],
-			"dateline" => time(),
+			"dateline" => TIME_NOW,
 			"reportstatus" => 0,
 			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
 			);

@@ -44,7 +44,7 @@ $whosonline = '';
 if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "no")
 {
 	// Get the online users.
-	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
+	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 	$comma = '';
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
@@ -168,7 +168,7 @@ if($mybb->settings['showbirthdays'] != "no")
 {
 	// First, see what day this is.
 	$bdaycount = 0;
-	$bdaytime = time();
+	$bdaytime = TIME_NOW;
 	$bdaydate = my_date("j-n", $bdaytime, '', 0);
 	$year = my_date("Y", $bdaytime, '', 0);
 
@@ -225,7 +225,7 @@ if($mybb->settings['showindexstats'] != "no")
 	$mostonline = $cache->read("mostonline");
 	if($onlinecount > $mostonline['numusers'])
 	{
-		$time = time();
+		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
 		$mostonline['time'] = $time;
 		$cache->update("mostonline", $mostonline);

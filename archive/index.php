@@ -255,7 +255,7 @@ switch($action)
 		if($forum['type'] == 'f')
 		{
 			$sql = build_parent_list($forum['fid'], "fid", "OR", $forum['parentlist']);
-			$time = time();
+			$time = TIME_NOW;
 			$query = $db->simple_select("announcements", "*", "startdate < '{$time}' AND (enddate > '{$time}' OR enddate=0) AND ({$sql} OR fid='-1')");
 			if($db->num_rows($query) > 0)
 			{

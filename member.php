@@ -63,7 +63,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 	}
 	if($mybb->settings['betweenregstime'] && $mybb->settings['maxregsbetweentime'])
 	{
-		$time = time();
+		$time = TIME_NOW;
 		$datecut = $time-(60*60*$mybb->settings['betweenregstime']);
 		$query = $db->simple_select("users", "*", "regip='".$db->escape_string($session->ipaddress)."' AND regdate > '$datecut'");
 		$regcount = $db->num_rows($query);
@@ -232,10 +232,10 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		if($mybb->settings['regtype'] == "verify")
 		{
 			$activationcode = random_str();
-			$now = time();
+			$now = TIME_NOW;
 			$activationarray = array(
 				"uid" => $user_info['uid'],
-				"dateline" => time(),
+				"dateline" => TIME_NOW,
 				"code" => $activationcode,
 				"type" => "r"
 			);
@@ -568,7 +568,7 @@ if($mybb->input['action'] == "register")
 			$regimagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
-				"dateline" => time()
+				"dateline" => TIME_NOW
 			);
 			$db->insert_query("captcha", $regimagearray);
 			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
@@ -728,11 +728,11 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 				if(!$user['code'])
 				{
 					$user['code'] = random_str();
-					$now = time();
+					$now = TIME_NOW;
 					$uid = $user['uid'];
 					$awaitingarray = array(
 						"uid" => $uid,
-						"dateline" => time(),
+						"dateline" => TIME_NOW,
 						"code" => $user['code'],
 						"type" => "r"
 					);
@@ -777,11 +777,11 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 		{
 			$db->delete_query("awaitingactivation", "uid='{$user['uid']}' AND type='p'");
 			$user['activationcode'] = random_str();
-			$now = time();
+			$now = TIME_NOW;
 			$uid = $user['uid'];
 			$awaitingarray = array(
 				"uid" => $user['uid'],
-				"dateline" => time(),
+				"dateline" => TIME_NOW,
 				"code" => $user['activationcode'],
 				"type" => "p"
 			);
@@ -821,7 +821,7 @@ if($mybb->input['action'] == "resetpassword")
 	{
 		$query = $db->simple_select("awaitingactivation", "*", "uid='".$user['uid']."' AND type='p'");
 		$activation = $db->fetch_array($query);
-		$now = time();
+		$now = TIME_NOW;
 		if($activation['code'] != $mybb->input['code'])
 		{
 			error($lang->error_badlostpwcode);
@@ -960,7 +960,7 @@ if($mybb->input['action'] == "logout")
 		my_unsetcookie("sid");
 		if($mybb->user['uid'])
 		{
-			$time = time();
+			$time = TIME_NOW;
 			$lastvisit = array(
 				"lastactive" => $time-900,
 				"lastvisit" => $time,
@@ -1118,7 +1118,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$signature = \"".$templates->get("member_profile_signature")."\";");
 	}
 
-	$daysreg = (time() - $memprofile['regdate']) / (24*3600);
+	$daysreg = (TIME_NOW - $memprofile['regdate']) / (24*3600);
 	$ppd = $memprofile['postnum'] / $daysreg;
 	$ppd = round($ppd, 2);
 	if($ppd > $memprofile['postnum'])
@@ -1191,8 +1191,8 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 	$memregdate = my_date($mybb->settings['dateformat'], $memprofile['regdate']);
-	$memlocaldate = gmdate($mybb->settings['dateformat'], time() + ($memprofile['timezone'] * 3600));
-	$memlocaltime = gmdate($mybb->settings['timeformat'], time() + ($memprofile['timezone'] * 3600));
+	$memlocaldate = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
+	$memlocaltime = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 
 	$localtime = sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
 
@@ -1496,7 +1496,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$log_entry = array(
 			"subject" => $db->escape_string($mybb->input['subject']),
 			"message" => $db->escape_string($mybb->input['message']),
-			"dateline" => time(),
+			"dateline" => TIME_NOW,
 			"fromuid" => $mybb->user['uid'],
 			"fromemail" => $db->escape_string($mybb->user['email']),
 			"touid" => $to_user['uid'],

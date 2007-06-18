@@ -15,6 +15,7 @@
 				<permission name="help_documents">0</permission>
 				<permission name="plugins">0</permission>
 				<permission name="attachment_types">0</permission>
+				<permission name="mod_tools">0</permission>
 				<permission name="spiders">0</permission>
 				<permission name="calendars">0</permission>
 				<permission name="warning">0</permission>
@@ -73,6 +74,7 @@
 				<permission name="help_documents">1</permission>
 				<permission name="plugins">1</permission>
 				<permission name="attachment_types">1</permission>
+				<permission name="mod_tools">1</permission>
 				<permission name="spiders">1</permission>
 				<permission name="calendars">1</permission>
 				<permission name="warning">1</permission>
@@ -131,6 +133,7 @@
 				<permission name="help_documents">1</permission>
 				<permission name="plugins">1</permission>
 				<permission name="attachment_types">1</permission>
+				<permission name="mod_tools">1</permission>
 				<permission name="spiders">1</permission>
 				<permission name="calendars">1</permission>
 				<permission name="warning">1</permission>

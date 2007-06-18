@@ -54,7 +54,7 @@ if($rand == 5)
 	update_pm_count();
 }
 
-$timecut = time()-(60*60*24*7);
+$timecut = TIME_NOW-(60*60*24*7);
 $db->delete_query("privatemessages", "deletetime <= '{$timecut}' AND folder='4' AND uid='".$mybb->user['uid']."'");
 
 $folderjump = "<select name=\"jumpto\">\n";
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	// REVISE
 	//
 	// Attempt to see if this PM is a duplicate or not
-	$time_cutoff = time() - (5 * 60 * 60);
+	$time_cutoff = TIME_NOW - (5 * 60 * 60);
 	$query = $db->query("
 		SELECT pm.pmid
 		FROM ".TABLE_PREFIX."privatemessages pm
@@ -232,7 +232,7 @@ if($mybb->input['action'] == "send")
 		$post['subject'] = $previewsubject;
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
-		$post['dateline'] = time();
+		$post['dateline'] = TIME_NOW;
 		if(!$options['signature'])
 		{
 			$post['includesig'] = 'no';
@@ -465,7 +465,7 @@ if($mybb->input['action'] == "read")
 	
 	if($pm['status'] == "0")
 	{
-		$time = time();
+		$time = TIME_NOW;
 		$updatearray = array(
 			'status' => 1,
 			'readtime' => $time
@@ -925,7 +925,7 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 				{
 					$sql_array = array(
 						"folder" => 4,
-						"deletetime" => time()
+						"deletetime" => TIME_NOW
 					);
 					$db->update_query("privatemessages", $sql_array, "pmid='".$key."' AND uid='".$mybb->user['uid']."'");
 				}
@@ -947,7 +947,7 @@ if($mybb->input['action'] == "delete")
 
 	$sql_array = array(
 		"folder" => 4,
-		"deletetime" => time()
+		"deletetime" => TIME_NOW
 	);
 	$db->update_query("privatemessages", $sql_array, "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'");
 
@@ -987,8 +987,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$plugins->run_hooks("private_do_export_start");
 	
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
-	$exdate = my_date($mybb->settings['dateformat'], time(), 0, 0);
-	$extime = my_date($mybb->settings['timeformat'], time(), 0, 0);
+	$exdate = my_date($mybb->settings['dateformat'], TIME_NOW, 0, 0);
+	$extime = my_date($mybb->settings['timeformat'], TIME_NOW, 0, 0);
 	$lang->exported_date = sprintf($lang->exported_date, $exdate, $extime);
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	if($mybb->input['pmid'])
@@ -999,7 +999,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	{
 		if($mybb->input['daycut'] && ($mybb->input['dayway'] != "disregard"))
 		{
-			$datecut = time()-($mybb->input['daycut'] * 86400);
+			$datecut = TIME_NOW-($mybb->input['daycut'] * 86400);
 			$wsql = "pm.dateline";
 			if($mybb->input['dayway'] == "older")
 			{

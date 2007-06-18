@@ -95,7 +95,7 @@ $lang->set_language($mybb->settings['cplanguage'], "admincp");
 // Load global language phrases
 $lang->load("global");
 
-$time = time();
+$time = TIME_NOW;
 
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -134,8 +134,8 @@ elseif($mybb->input['do'] == "login")
 			"uid" => $mybb->user['uid'],
 			"loginkey" => $mybb->user['loginkey'],
 			"ip" => $db->escape_string(get_ip()),
-			"dateline" => time(),
-			"lastactive" => time()
+			"dateline" => TIME_NOW,
+			"lastactive" => TIME_NOW
 		);
 		$db->insert_query("adminsessions", $admin_session);
 	}
@@ -174,7 +174,7 @@ else
 			else
 			{
 				// Admin CP sessions 2 hours old are expired
-				if($admin_session['lastactive'] < time()-7200)
+				if($admin_session['lastactive'] < TIME_NOW-7200)
 				{
 					$login_message = "Your administration session has expired";
 					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
@@ -241,7 +241,7 @@ if($mybb->user['uid'])
 	if($admin_session['sid'])
 	{
 		$updated_session = array(
-			"lastactive" => time(),
+			"lastactive" => TIME_NOW,
 			"ip" => $ip_address
 		);
 		$db->update_query("adminsessions", $updated_session, "sid='".$db->escape_string($admin_session['sid'])."'");
@@ -312,7 +312,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 
 if($rand == 2 || $rand == 5)
 {
-	$stamp = time()-604800;
+	$stamp = TIME_NOW-604800;
 	$db->delete_query("adminsessions", "lastactive < '{$stamp}'");
 }
 

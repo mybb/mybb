@@ -18,7 +18,7 @@ function task_usercleanup($task)
 		SELECT w.wid, w.uid, w.points, u.warningpoints
 		FROM ".TABLE_PREFIX."warnings w
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.uid)
-		WHERE expires<".time()." AND expires!=0 AND expired!=1
+		WHERE expires<".TIME_NOW." AND expires!=0 AND expired!=1
 	");
 	while($warning = $db->fetch_array($query))
 	{
@@ -38,16 +38,16 @@ function task_usercleanup($task)
 	}
 
 	// Expire any post moderation or suspension limits
-	$query = $db->simple_select("users", "uid, moderationtime, suspensiontime", "(moderationtime!=0 AND moderationtime<".time().") OR (suspensiontime!=0 AND suspensiontime<".time().")");
+	$query = $db->simple_select("users", "uid, moderationtime, suspensiontime", "(moderationtime!=0 AND moderationtime<".TIME_NOW.") OR (suspensiontime!=0 AND suspensiontime<".TIME_NOW.")");
 	while($user = $db->fetch_array($query))
 	{
 		$updated_user = array();
-		if($user['moderationtime'] != 0 && $user['moderationtime'] < time())
+		if($user['moderationtime'] != 0 && $user['moderationtime'] < TIME_NOW)
 		{
 			$updated_user['moderateposts'] = 0;
 			$updated_user['moderationtime'] = 0;
 		}
-		if($user['suspensiontime'] != 0 && $user['suspensiontime'] < time())
+		if($user['suspensiontime'] != 0 && $user['suspensiontime'] < TIME_NOW)
 		{
 			$updated_user['suspendposting'] = 0;
 			$updated_user['suspensiontime'] = 0;
@@ -56,7 +56,7 @@ function task_usercleanup($task)
 	}
 
 	// Expire bans
-	$query = $db->simple_select("banned", "*", "lifted!=0 AND lifted<".time());
+	$query = $db->simple_select("banned", "*", "lifted!=0 AND lifted<".TIME_NOW);
 	while($ban = $db->fetch_array($query))
 	{
 		$updated_user = array(

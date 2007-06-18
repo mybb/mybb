@@ -57,7 +57,7 @@ function task_promotions($task)
 				default:
 					$regdate = $promotion['registered']*60*60*24;
 			}
-			$sql_where .= "regdate >= '".time()-$regdate."'{$and}";
+			$sql_where .= "regdate >= '".TIME_NOW-$regdate."'{$and}";
 			
 			$and = " AND ";
 		}

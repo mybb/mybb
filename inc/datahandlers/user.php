@@ -599,7 +599,7 @@ class UserDataHandler extends DataHandler
 		// If the timestamp is below 0, set it to the current time.
 		if($regdate <= 0)
 		{
-			$regdate = time();
+			$regdate = TIME_NOW;
 		}
 		return true;
 
@@ -618,7 +618,7 @@ class UserDataHandler extends DataHandler
 		// If the timestamp is below 0, set it to the current time.
 		if($lastvisit <= 0)
 		{
-			$lastvisit = time();
+			$lastvisit = TIME_NOW;
 		}
 		return true;
 
@@ -637,7 +637,7 @@ class UserDataHandler extends DataHandler
 		// If the timestamp is below 0, set it to the current time.
 		if($lastactive <= 0)
 		{
-			$lastactive = time();
+			$lastactive = TIME_NOW;
 		}
 		return true;
 

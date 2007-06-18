@@ -439,7 +439,7 @@ class PMDataHandler extends DataHandler
 			'subject' => $db->escape_string($pm['subject']),
 			'icon' => intval($pm['icon']),
 			'message' => $db->escape_string($pm['message']),
-			'dateline' => time(),
+			'dateline' => TIME_NOW,
 			'status' => 0,
 			'includesig' => $pm['options']['signature'],
 			'smilieoff' => $pm['options']['disablesmilies'],
@@ -531,7 +531,7 @@ class PMDataHandler extends DataHandler
 			{
 				$sql_array = array(
 					'status' => 3,
-					'statustime' => time()
+					'statustime' => TIME_NOW
 				);
 				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}
@@ -539,7 +539,7 @@ class PMDataHandler extends DataHandler
 			{
 				$sql_array = array(
 					'status' => 4,
-					'statustime' => time()
+					'statustime' => TIME_NOW
 				);
 				$db->update_query("privatemessages", $sql_array, "pmid={$pm['pmid']} AND uid={$pm['sender']['uid']}");
 			}

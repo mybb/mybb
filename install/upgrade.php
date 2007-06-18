@@ -276,7 +276,7 @@ function upgradethemes()
 		$templatename = $template['attributes']['name'];
 		$templateversion = $template['attributes']['version'];
 		$templatevalue = $db->escape_string($template['value']);
-		$time = time();
+		$time = TIME_NOW;
 		$query = $db->simple_select("templates", "tid", "sid='-2' AND title='$templatename'");
 		$oldtemp = $db->fetch_array($query);
 		if($oldtemp['tid'])

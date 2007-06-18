@@ -43,7 +43,7 @@ if(!$mybb->input['action'])
 	$current_version = rawurlencode($mybb->version_code);
 
 	$updated_cache = array(
-		"last_check" => time()
+		"last_check" => TIME_NOW
 	);
 
 	require_once MYBB_ROOT."inc/class_xml.php";

@@ -268,7 +268,7 @@ if($mybb->input['action'] == "group")
 		$table->construct_row();
 	}
 	
-	$table->output("Group Permissions");
+	$table->output($lang->group_permissions);
 	
 	echo <<<LEGEND
 <br />

@@ -8309,7 +8309,7 @@ To: {$to_recipients}
 </html>]]></template>
 		<template name="warnings_warn_type" version="140"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$type_checked[$type['tid']]} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> $points</label></dt>
 					<dd style="margin-top: 4px;" id="type_{$type['tid']}" class="types">
-						<div class="smalltext">New warning level:</div>
+						<div class="smalltext">{$lang->new_warning_level}</div>
 						<div class="tborder" style="width: 150px; float: left; margin: 0; padding: 1px;">
 							<div class="trow1" style="width: {$current_level}%; float: left; ">&nbsp;</div>
 							<div class="trow2" style="width: {$level_diff}%; float: left;">&nbsp;</div>

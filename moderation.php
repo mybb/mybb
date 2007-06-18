@@ -549,7 +549,7 @@ switch($mybb->input['action'])
 		$expire = 0;
 		if(intval($mybb->input['redirect_expire']) > 0)
 		{
-			$expire = time() + (intval($mybb->input['redirect_expire']) * 86400);
+			$expire = TIME_NOW + (intval($mybb->input['redirect_expire']) * 86400);
 		}
 
 		$the_thread = $tid;
@@ -1711,7 +1711,7 @@ function clearinline($id, $type)
 function extendinline($id, $type)
 {
 	global $_COOKIE;
-	setcookie("inlinemod_$type$id", '', time()+3600);
+	setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
 }
 
 ?>

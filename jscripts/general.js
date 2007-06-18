@@ -332,7 +332,7 @@ var Cookie = {
 		else 
 		{
 			expire = new Date();
-			expire.setTime(expire.getTime()+(expires*1000));
+			expire.setTime(expire.gettime()+(expires*1000));
 			expires = "; expires="+expire.toGMTString();
 		}
 

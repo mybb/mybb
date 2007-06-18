@@ -949,7 +949,7 @@ class databaseEngine
 			{
 				echo $this->num_rows($result);
 				$row = $this->fetch_array($result); // Table sql
-				$tmpname = 't'.time();
+				$tmpname = 't'.TIME_NOW;
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/","( ", $row['sql'], 1))));
 				//echo "meep:";
 				//echo "<pre>";

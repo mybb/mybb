@@ -77,7 +77,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	// Check if this user has reached their "maximum reputations per day" quota
 	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 	{
-		$timesearch = time() - (60 * 60 * 24);
+		$timesearch = TIME_NOW - (60 * 60 * 24);
 		$query = $db->simple_select("reputation", "*", "adduid='".$mybb->user['uid']."' AND dateline>'$timesearch'");
 		$numtoday = $db->num_rows($query);
 
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		"uid" => $uid,
 		"adduid" => $mybb->user['uid'],
 		"reputation" => intval($mybb->input['reputation']),
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"comments" => $db->escape_string($mybb->input['comments'])
 	);
 
@@ -359,9 +359,9 @@ if(!$mybb->input['action'])
 	$positive_6months = $negative_6months = $neutral_6months = 0;
 
 	// Unix timestamps for when this week, month and last 6 months started
-	$last_week = time()-604800;
-	$last_month = time()-2678400;
-	$last_6months = time()-16070400;
+	$last_week = TIME_NOW-604800;
+	$last_month = TIME_NOW-2678400;
+	$last_6months = TIME_NOW-16070400;
 
 	// Query reputations for the "reputation card"
 	$query = $db->simple_select("reputation", "reputation, dateline", "uid='{$user['uid']}'");

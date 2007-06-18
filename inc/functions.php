@@ -192,10 +192,10 @@ function send_mail_queue($count=10)
 
 	// Check to see if the mail queue has messages needing to be sent
 	$mailcache = $cache->read("mailqueue");
-	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < time()-300))
+	if($mailcache['queue_size'] > 0 && ($mailcache['locked'] == 0 || $mailcache['locked'] < TIME_NOW-300))
 	{
 		// Lock the queue so no other messages can be sent whilst these are (for popular boards)
-		$cache->update_mailqueue(0, time());
+		$cache->update_mailqueue(0, TIME_NOW);
 
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
@@ -210,7 +210,7 @@ function send_mail_queue($count=10)
 			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
 		// Update the mailqueue cache and remove the lock
-		$cache->update_mailqueue(time(), 0);
+		$cache->update_mailqueue(TIME_NOW, 0);
 	}
 
 	$plugins->run_hooks("send_mail_queue_end");
@@ -272,10 +272,10 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 {
 	global $mybb, $lang, $mybbadmin, $plugins;
 
-	// If the stamp isn't set, use time()
+	// If the stamp isn't set, use TIME_NOW
 	if(empty($stamp))
 	{
-		$stamp = time();
+		$stamp = TIME_NOW;
 	}
 
 	if(!$offset && $offset != '0')
@@ -323,7 +323,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 	
 	if($mybb->settings['dateformat'] == $format && $ty)
 	{
-		$stamp = time();
+		$stamp = TIME_NOW;
 		
 		if($adodb == true && function_exists('adodb_date'))
 		{
@@ -603,7 +603,7 @@ function error($error="", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 
-	$timenow = my_date($mybb->settings['dateformat'], time()) . " " . my_date($mybb->settings['timeformat'], time());
+	$timenow = my_date($mybb->settings['dateformat'], TIME_NOW) . " " . my_date($mybb->settings['timeformat'], TIME_NOW);
 	reset_breadcrumb();
 	add_breadcrumb($lang->error);
 
@@ -661,7 +661,7 @@ function error_no_permission()
 {
 	global $mybb, $theme, $templates, $db, $lang, $plugins, $session;
 
-	$time = time();
+	$time = TIME_NOW;
 	$plugins->run_hooks("no_permission");
 
 	$noperm_array = array (
@@ -726,7 +726,7 @@ function redirect($url, $message="", $title="")
 		$message = $lang->redirect;
 	}
 
-	$time = time();
+	$time = TIME_NOW;
 	$timenow = my_date($mybb->settings['dateformat'], $time) . " " . my_date($mybb->settings['timeformat'], $time);
 	$plugins->run_hooks("redirect");
 
@@ -1348,12 +1348,12 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 		}
 		else
 		{
-			$expires = time() + (60*60*24*365); // Make the cookie expire in a years time
+			$expires = TIME_NOW + (60*60*24*365); // Make the cookie expire in a years time
 		}
 	}
 	else
 	{
-		$expires = time() + intval($expires);
+		$expires = TIME_NOW + intval($expires);
 	}
 
 	$mybb->settings['cookiepath'] = str_replace(array("\n","\r"), "", $mybb->settings['cookiepath']);
@@ -1450,7 +1450,8 @@ function get_server_load()
 
 	$serverload = array();
 
-	if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
+	// DIRECTORY_SEPARATOR checks if running windows
+	if(DIRECTORY_SEPARATOR != '\\')
 	{
 		if(@file_exists("/proc/loadavg") && $load = @file_get_contents("/proc/loadavg"))
 		{
@@ -1842,7 +1843,7 @@ function delete_post($pid, $tid="")
  */
 function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
 {
-	global $db, $forum_cache, $fjumpcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
+	global $forum_cache, $fjumpcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = intval($pid);
 
@@ -2259,7 +2260,7 @@ function log_moderator_action($data, $action="")
 		$data = serialize($data);
 	}
 
-	$time = time();
+	$time = TIME_NOW;
 
 	$sql_array = array(
 		"uid" => $mybb->user['uid'],
@@ -2502,7 +2503,7 @@ function get_unviewable_forums()
 }
 
 /**
- * Fixes mktime() for dates earlier than 1970
+ * Fixes mkTIME_NOW for dates earlier than 1970
  *
  * @param string The date format to use
  * @param int The year of the date
@@ -2662,9 +2663,9 @@ function reset_breadcrumb()
 function build_archive_link($type, $id="")
 {
 	global $mybb;
-
-	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
-	if((preg_match("#win#i", PHP_OS) && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
+	
+	// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
+	if((DIRECTORY_SEPARATOR == '\\' && is_numeric(stripos($_SERVER['SERVER_SOFTWARE'], "apache")) == false) || is_numeric(stripos(SAPI_NAME, "cgi")) !== false || defined("ARCHIVE_QUERY_STRINGS"))
 	{
 		$base_url = $mybb->settings['bburl']."/archive/index.php?";
 	}
@@ -3448,7 +3449,7 @@ function get_age($birthday)
 		return;
 	}
 
-	list($day, $month, $year) = explode("-", my_date("j-n-Y", time(), 0, 0));
+	list($day, $month, $year) = explode("-", my_date("j-n-Y", TIME_NOW, 0, 0));
 
 	$age = $year-$bday[2];
 
@@ -4110,7 +4111,7 @@ function login_attempt_check($fatal = true)
 	{
 		// If so, then we need to work out if they can try to login again
 		// Some maths to work out how long they have left and display it to them
-		$now = time();
+		$now = TIME_NOW;
 
 		if(empty($_COOKIE['failedlogin']))
 		{
@@ -4341,7 +4342,7 @@ function is_banned_username($username, $update_lastuse=false)
 			// Updating last use
 			if($update_lastuse == true)
 			{
-				$db->update_query("banfilters", array("lastuse" => time()), "fid='{$banned_username['fid']}'");
+				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_username['fid']}'");
 			}
 			return true;
 		}
@@ -4370,7 +4371,7 @@ function is_banned_email($email, $update_lastuse=false)
 			// Updating last use
 			if($update_lastuse == true)
 			{
-				$db->update_query("banfilters", array("lastuse" => time()), "fid='{$banned_email['fid']}'");
+				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_email['fid']}'");
 			}
 			return true;
 		}
@@ -4400,7 +4401,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 			// Updating last use
 			if($update_lastuse == true)
 			{
-				$db->update_query("banfilters", array("lastuse" => time()), "fid='{$banned_ip['fid']}'");
+				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_ip['fid']}'");
 			}
 			return true;
 		}
@@ -4482,7 +4483,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 					$label .= ":00";
 				}
 			}
-			$time_in_zone = my_date($mybb->settings['timeformat'], time(), $timezone);
+			$time_in_zone = my_date($mybb->settings['timeformat'], TIME_NOW, $timezone);
 			$label = sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
 		$select .= "<option value=\"{$timezone}\"{$selected_add}>{$label}</option>\n";

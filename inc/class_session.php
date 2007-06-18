@@ -155,7 +155,7 @@ class session
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
 		// If the last visit was over 900 seconds (session time out) ago then update lastvisit.
-		$time = time();
+		$time = TIME_NOW;
 		if($time - $mybb->user['lastactive'] > 900)
 		{
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' WHERE uid='{$mybb->user['uid']}'");
@@ -165,7 +165,7 @@ class session
 		}
 		else
 		{
-			$timespent = time() - $mybb->user['lastactive'];
+			$timespent = TIME_NOW - $mybb->user['lastactive'];
 			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent WHERE uid='{$mybb->user['uid']}'");
 		}
 
@@ -321,7 +321,7 @@ class session
 		global $mybb, $time, $db, $lang;
 
 		// Set up some defaults
-		$time = time();
+		$time = TIME_NOW;
 		$mybb->user['usergroup'] = 1;
 		$mybb->user['username'] = '';
 		$mybb->user['uid'] = 0;
@@ -395,7 +395,7 @@ class session
 		$spider = $db->fetch_array($query);
 
 		// Set up some defaults
-		$time = time();
+		$time = TIME_NOW;
 		$this->is_spider = true;
 		if($spider['usergroup'])
 		{
@@ -427,10 +427,10 @@ class session
 		$mybb->usergroup = array_merge($mybb->usergroup, $mydisplaygroup);
 
 		// Update spider last minute (only do so on two minute intervals - decrease load for quick spiders)
-		if($spider['lastvisit'] < time()-120)
+		if($spider['lastvisit'] < TIME_NOW-120)
 		{
 			$updated_spider = array(
-				"lastvisit" => time()
+				"lastvisit" => TIME_NOW
 			);
 			$db->update_query("spiders", $updated_spider, "sid='{$spider_id}'");
 		}
@@ -464,7 +464,7 @@ class session
 		{
 			$onlinedata['uid'] = 0;
 		}
-		$onlinedata['time'] = time();
+		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['location'] = $db->escape_string(get_current_location());
 		$onlinedata['useragent'] = $db->escape_string($this->useragent);
 		$onlinedata['location1'] = intval($speciallocs['1']);
@@ -512,7 +512,7 @@ class session
 		{
 			$onlinedata['sid'] = md5(uniqid(microtime()));
 		}
-		$onlinedata['time'] = time();
+		$onlinedata['time'] = TIME_NOW;
 		$onlinedata['ip'] = $db->escape_string($this->ipaddress);
 		$onlinedata['location'] = $db->escape_string(get_current_location());
 		$onlinedata['useragent'] = $db->escape_string($this->useragent);

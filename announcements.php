@@ -59,7 +59,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 }
 
 // Get announcement info
-$time = time();
+$time = TIME_NOW;
 
 $query = $db->query("
 	SELECT u.*, u.username AS userusername, a.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem

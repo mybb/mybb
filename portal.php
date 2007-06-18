@@ -227,7 +227,7 @@ if($mybb->settings['portal_showsearch'] != "no")
 // Get the online users
 if($mybb->settings['portal_showwol'] != "no")
 {
-	$timesearch = time() - $mybb->settings['wolcutoff'];
+	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$comma = '';
 	$guestcount = 0;
 	$membercount = 0;
@@ -308,7 +308,7 @@ if($mybb->settings['portal_showwol'] != "no")
 	$mostonline = $cache->read("mostonline");
 	if($onlinecount > $mostonline['numusers'])
 	{
-		$time = time();
+		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
 		$mostonline['time'] = $time;
 		$cache->update("mostonline", $mostonline);

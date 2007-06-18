@@ -38,7 +38,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
-		$timecut = time()-60*60*24;
+		$timecut = TIME_NOW-60*60*24;
 		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
@@ -99,7 +99,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		$warning_title = "";
 		if($warning_type['expirationtime'])
 		{
-			$warning_expires = time()+$warning_type['expirationtime'];
+			$warning_expires = TIME_NOW+$warning_type['expirationtime'];
 		}
 	}
 	else
@@ -148,7 +148,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				// Add on current time and we're there!
 				if($mybb->input['expires_period'] != "never" && $warning_expires)
 				{
-					$warning_expires += time();
+					$warning_expires += TIME_NOW;
 				}
 			}
 		}
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			"pid" => $post['pid'],
 			"title" => $db->escape_string($warning_title),
 			"points" => intval($points),
-			"dateline" => time(),
+			"dateline" => TIME_NOW,
 			"issuedby" => $mybb->user['uid'],
 			"expires" => $warning_expires,
 			"expired" => 0,
@@ -237,10 +237,10 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				case 1:
 					if($action['length'] != 0)
 					{
-						$expiration = time()+$action['length'];
+						$expiration = TIME_NOW+$action['length'];
 					}
 					// Fetch any previous bans for this user
-					$query = $db->simple_select("banned", "*", "uid='{$user['uid']}' AND gid='{$action['usergroup']}' AND lifted>".time());
+					$query = $db->simple_select("banned", "*", "uid='{$user['uid']}' AND gid='{$action['usergroup']}' AND lifted>".TIME_NOW);
 					$existing_ban = $db->fetch_array($query);
 
 					// Only perform if no previous ban or new ban expires later than existing ban
@@ -257,7 +257,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							"oldadditionalgroups" => $user['additionalgroups'],
 							"olddisplaygroup" => $user['displaygroup'],
 							"admin" => $mybb->user['uid'],
-							"dateline" => time(),
+							"dateline" => TIME_NOW,
 							"bantime" => "",
 							"lifted" => $expiration,
 							"reason" => $db->escape_string($warning_title)
@@ -286,7 +286,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				case 2:
 					if($action['length'] != 0)
 					{
-						$expiration = time()+$action['length'];
+						$expiration = TIME_NOW+$action['length'];
 					}
 					// Only perform if the expiration time is greater than the users current suspension period
 					if($expiration == 0 || $expiration > $user['suspensiontime'])
@@ -306,7 +306,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				case 3:
 					if($action['length'] != 0)
 					{
-						$expiration = time()+$action['length'];
+						$expiration = TIME_NOW+$action['length'];
 					}
 					// Only perform if the expiration time is greater than the users current suspension period
 					if($expiration == 0 || $expiration > $user['moderationtime'])
@@ -357,7 +357,7 @@ if($mybb->input['action'] == "warn")
 	
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
-		$timecut = time()-60*60*24;
+		$timecut = TIME_NOW-60*60*24;
 		$query = $db->simple_select("warnings", "COUNT(wid) AS given_today", "issuedby='{$mybb->user['uid']}' AND dateline>'$timecut'");
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
@@ -601,7 +601,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 		// Update warning
 		$updated_warning = array(
 			"expired" => 1,
-			"daterevoked" => time(),
+			"daterevoked" => TIME_NOW,
 			"revokedby" => $mybb->user['uid'],
 			"revokereason" => $db->escape_string($mybb->input['reason'])
 		);

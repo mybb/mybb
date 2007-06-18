@@ -26,12 +26,12 @@ function mark_thread_read($tid, $fid)
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->shutdown_query($db->build_replace_query("threadsread", array('tid' => $tid, 'uid' => $mybb->user['uid'], 'dateline' => time()), "tid"));
+				$db->shutdown_query($db->build_replace_query("threadsread", array('tid' => $tid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), "tid"));
 				break;
 			default:
 				$db->query("
 					REPLACE INTO ".TABLE_PREFIX."threadsread (tid, uid, dateline)
-					VALUES('$tid', '{$mybb->user['uid']}', '".time()."')
+					VALUES('$tid', '{$mybb->user['uid']}', '".TIME_NOW."')
 				");
 		}
 
@@ -49,7 +49,7 @@ function mark_thread_read($tid, $fid)
 	// Default back to cookie marking
 	else
 	{
-		my_set_array_cookie("threadread", $tid, time());
+		my_set_array_cookie("threadread", $tid, TIME_NOW);
 	}
 }
 
@@ -63,7 +63,7 @@ function fetch_unread_count($fid)
 {
 	global $db, $mybb;
 
-	$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+	$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 
 	if($mybb->user['uid'] == 0)
 	{
@@ -142,12 +142,12 @@ function mark_forum_read($fid)
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->shutdown_query($db->build_replace_query("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => time()), "fid"));
+				$db->shutdown_query($db->build_replace_query("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), "fid"));
 				break;
 			default:
 				$db->query("
 					REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-					VALUES('$fid', '{$mybb->user['uid']}', '".time()."')
+					VALUES('$fid', '{$mybb->user['uid']}', '".TIME_NOW."')
 				");
 		}
 
@@ -163,13 +163,13 @@ function mark_forum_read($fid)
 
 		$db->shutdown_query("
 			REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-			VALUES('{$fid}', '{$mybb->user['uid']}', '".time()."')
+			VALUES('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')
 		");
 	}
 	// Mark in a cookie
 	else
 	{
-		my_set_array_cookie("forumread", $fid, time());
+		my_set_array_cookie("forumread", $fid, TIME_NOW);
 	}
 }
 ?>

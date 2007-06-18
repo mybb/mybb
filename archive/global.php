@@ -40,8 +40,8 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 	exit;
 }
 
-// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings
-if((preg_match("#win#i", PHP_OS) && stripos($_SERVER['SERVER_SOFTWARE'], "apache") == false) || stripos(SAPI_NAME, "cgi") !== false || defined("ARCHIVE_QUERY_STRINGS"))
+// If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
+if((DIRECTORY_SEPARATOR == '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || stripos(SAPI_NAME, 'cgi') !== false || defined("ARCHIVE_QUERY_STRINGS"))
 {
 	$url = $_SERVER['QUERY_STRING'];
 	$base_url = $mybb->settings['bburl']."/archive/index.php?";
@@ -89,7 +89,7 @@ if($endpart != "index.php")
 	// Get the thread, announcement or forum information.
 	if($action == "announcement")
 	{
-		$time = time();
+		$time = TIME_NOW;
 		$query = $db->query("
 			SELECT a.*, u.username
 			FROM ".TABLE_PREFIX."announcements a
@@ -179,8 +179,8 @@ if($mybb->settings['boardclosed'] == "yes")
 	}
 }
 
-// Load Limiting
-if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
+// Load Limiting - DIRECTORY_SEPARATOR checks if running windows
+if(DIRECTORY_SEPARATOR != '\\')
 {
 	if($uptime = @exec('uptime'))
 	{

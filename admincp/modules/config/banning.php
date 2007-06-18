@@ -30,7 +30,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$new_filter = array(
 			"filter" => $db->escape_string($mybb->input['filter']),
 			"type" => intval($mybb->input['type']),
-			"dateline" => time()
+			"dateline" => TIME_NOW
 		);
 		$db->insert_query("banfilters", $new_filter);
 

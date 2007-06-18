@@ -14,14 +14,14 @@ function task_hourlycleanup($task)
 	global $db;
 
 	// Expire thread redirects
-	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".time()."'");
+	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".TIME_NOW."'");
 
 	// Delete old searches
-	$cut = time()-(60*60*24);
+	$cut = TIME_NOW-(60*60*24);
 	$db->delete_query("searchlog", "dateline < '{$cut}'");
 
 	// Delete old captcha images
-	$cut = time()-(60*60*12);
+	$cut = TIME_NOW-(60*60*12);
 	$db->delete_query("captcha", "dateline < '{$cut}'");
 
 }

@@ -242,7 +242,7 @@ function build_postbit($post, $post_type=0)
 		$post['postnum'] = my_number_format($post['postnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
-		$timecut = time() - $mybb->settings['wolcutoff'];
+		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		if($post['lastactive'] > $timecut && ($post['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes") && $post['lastvisit'] != $post['lastactive'])
 		{
 			eval("\$post['onlinestatus'] = \"".$templates->get("postbit_online")."\";");

@@ -35,6 +35,8 @@ if(!defined('MYBB_ROOT'))
 	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 }
 
+define("TIME_NOW", TIME_NOW);
+
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
@@ -73,8 +75,8 @@ $db = new databaseEngine;
 // Check if our DB engine is loaded
 if(!extension_loaded($db->engine))
 {
-	// Try and manually load it
-	if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') 
+	// Try and manually load it - DIRECTORY_SEPARATOR checks if running windows
+	if(DIRECTORY_SEPARATOR == '\\')
 	{
 		@dl('php_'.$db->engine.'.dll');
 	} 

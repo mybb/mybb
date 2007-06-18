@@ -29,7 +29,7 @@ function run_task($tid=0)
 	// Run the next task due to be run
 	else
 	{
-		$query = $db->simple_select("tasks", "*", "enabled=1 AND nextrun<='".time()."'", array("order_by" => "nextrun", "order_dir" => "asc", "limit" => 1));
+		$query = $db->simple_select("tasks", "*", "enabled=1 AND nextrun<='".TIME_NOW."'", array("order_by" => "nextrun", "order_dir" => "asc", "limit" => 1));
 		$task = $db->fetch_array($query);
 	}
 
@@ -41,7 +41,7 @@ function run_task($tid=0)
 	}
 
 	// Is this task locked less than 5 minutes ago? Must still be running.
-	if($task['locked'] != 0 && $task['locked'] < time()-300)
+	if($task['locked'] != 0 && $task['locked'] < TIME_NOW-300)
 	{
 		$cache->update_tasks();
 		return false;
@@ -49,7 +49,7 @@ function run_task($tid=0)
 	// Lock it! It' mine, all mine!
 	else
 	{
-		$db->update_query("tasks", array("locked" => time()), "tid='{$task['tid']}'");
+		$db->update_query("tasks", array("locked" => TIME_NOW), "tid='{$task['tid']}'");
 	}
 
 	// The task file does not exist
@@ -78,7 +78,7 @@ function run_task($tid=0)
 
 	$updated_task = array(
 		"nextrun" => $nextrun,
-		"lastrun" => time(),
+		"lastrun" => TIME_NOW,
 		"locked" => 0
 	);
 	$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
@@ -98,7 +98,7 @@ function add_task_log($tid, $message)
 	global $db;
 	$log_entry = array(
 		"tid" => intval($tid),
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"message" => $db->escape_string($message)
 	);
 	$db->insert_query("tasklog", $log_entry);
@@ -112,7 +112,7 @@ function add_task_log($tid, $message)
  */
 function fetch_next_run($task)
 {
-	$time = time();
+	$time = TIME_NOW;
 	$next_minute = $current_minute = date("i", $time);
 	$next_hour = $current_hour = date("H", $time);
 	$next_day = $current_day = date("d", $time);

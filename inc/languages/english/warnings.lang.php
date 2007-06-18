@@ -77,4 +77,5 @@ $l['day_or_days'] = "Day(s)";
 $l['week_or_weeks'] = "Week(s)";
 $l['month_or_months'] = "Month(s)";
 $l['expires'] = "Expires:";
+$l['new_warning_level'] = "New warning level:";
 ?>

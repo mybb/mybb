@@ -597,7 +597,7 @@ class datacache
 	function update_update_check()
 	{
 		$update_cache = array(
-			"dateline" => time()
+			"dateline" => TIME_NOW
 		);
 		
 		$this->update("update_check", $update_cache);
@@ -621,7 +621,7 @@ class datacache
 
 		if(!$task_cache['nextrun'])
 		{
-			$task_cache['nextrun'] = time()+3600;
+			$task_cache['nextrun'] = TIME_NOW+3600;
 		}
 
 		$this->update("tasks", $task_cache);

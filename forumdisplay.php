@@ -175,7 +175,7 @@ if($modlist)
 // Get the users browsing this forum.
 if($mybb->settings['browsingthisforum'] != "off")
 {
-	$timecut = time() - $mybb->settings['wolcutoff'];
+	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
 	$comma = '';
 	$guestcount = 0;
@@ -336,7 +336,7 @@ $datecut = intval($datecut);
 $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != 9999)
 {
-	$checkdate = time() - ($datecut * 86400);
+	$checkdate = TIME_NOW - ($datecut * 86400);
 	$datecutsql = "AND (lastpost >= '$checkdate' OR sticky = '1')";
 	$datecutsql2 = "AND (t.lastpost >= '$checkdate' OR t.sticky = '1')";
 }
@@ -525,7 +525,7 @@ if($mybb->settings['announcementlimit'])
 }
 
 $sql = build_parent_list($fid, "fid", "OR", $parentlist);
-$time = time();
+$time = TIME_NOW;
 $query = $db->query("
 	SELECT a.*, u.username
 	FROM ".TABLE_PREFIX."announcements a
@@ -655,7 +655,7 @@ if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
 	$forum_read = $db->fetch_field($query, "dateline");
 
-	$read_cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)
 	{
 		$forum_read = $read_cutoff;

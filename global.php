@@ -253,8 +253,8 @@ $templatelist .= ",nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_lang
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
-$datenow = my_date($mybb->settings['dateformat'], time(), '', false);
-$timenow = my_date($mybb->settings['timeformat'], time());
+$datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
+$timenow = my_date($mybb->settings['timeformat'], TIME_NOW);
 $lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
 
 // Format the last visit date of this user appropriately
@@ -398,7 +398,7 @@ eval("\$gobutton = \"".$templates->get("gobutton")."\";");
 eval("\$htmldoctype = \"".$templates->get("htmldoctype", 1, 0)."\";");
 eval("\$header = \"".$templates->get("header")."\";");
 
-$copy_year = my_date("Y", time());
+$copy_year = my_date("Y", TIME_NOW);
 
 // Are we showing version numbers in the footer?
 if($mybb->settings['showvernum'] == "on")
@@ -416,9 +416,9 @@ if($mybb->settings['taskscron'] != "yes")
 	$task_cache = $cache->read("tasks");
 	if(!$task_cache['nextrun'])
 	{
-		$task_cache['nextrun'] = time();
+		$task_cache['nextrun'] = TIME_NOW;
 	}
-	if($task_cache['nextrun'] <= time())
+	if($task_cache['nextrun'] <= TIME_NOW)
 	{
 		$task_image = "<img src=\"{$mybb->settings['bburl']}/task.php\" border=\"0\" width=\"1\" height=\"1\" alt=\"\" />";
 	}
@@ -477,8 +477,8 @@ if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes"
 	exit;
 }
 
-// Load Limiting
-if(my_strtolower(substr(PHP_OS, 0, 3)) !== 'win')
+// Load Limiting - DIRECTORY_SEPARATOR checks if running windows
+if(DIRECTORY_SEPARATOR != '\\')
 {
 	if($uptime = @exec('uptime'))
 	{
@@ -559,5 +559,5 @@ $archive_url = $mybb->settings['bburl']."/archive/index.php";
 // Run hooks for end of global.php
 $plugins->run_hooks("global_end");
 
-$globaltime = $maintimer->gettime();
+$globaltime = $maintimer->getTime();
 ?>

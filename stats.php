@@ -37,7 +37,7 @@ $postspermember = my_number_format(round(($stats['numposts'] / $stats['numusers'
 // Get number of days since board start (might need improvement)
 $query = $db->simple_select("users", "regdate", "", array('order_by' => 'regdate', 'limit' => 1));
 $result = $db->fetch_array($query);
-$days = (time() - $result['regdate']) / 86400;
+$days = (TIME_NOW - $result['regdate']) / 86400;
 if($days < 1)
 {
 	$days = 1;
@@ -98,7 +98,7 @@ else
 }
 
 // Today's top poster
-$timesearch = time() - 86400;
+$timesearch = TIME_NOW - 86400;
 switch($db->type)
 {
 	case "pgsql":

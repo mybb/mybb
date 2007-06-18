@@ -76,13 +76,13 @@ if($mybb->input['action'] == "markread")
 	{
 		if($mybb->user['uid'] != 0)
 		{
-			$db->update_query("users", array('lastvisit' => time()), "uid='".$mybb->user['uid']."'");
+			$db->update_query("users", array('lastvisit' => TIME_NOW), "uid='".$mybb->user['uid']."'");
 			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
 		}
 		else
 		{
-			my_setcookie("mybb[lastvisit]", time());
+			my_setcookie("mybb[lastvisit]", TIME_NOW);
 		}
 
 		$plugins->run_hooks("misc_markread_end");
@@ -292,7 +292,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	// Load Buddies
 	if($mybb->user['buddylist'] != "")
 	{
-		$timecut = time() - $mybb->settings['wolcutoff'];
+		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 		$query = $db->query("
 			SELECT u.*, g.canusepms
 			FROM ".TABLE_PREFIX."users u
@@ -615,14 +615,14 @@ if($mybb->input['action'] == "clearcookies")
 	{
 		foreach($remove_cookies as $name)
 		{
-			@setcookie($name, '', time()-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+			@setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 		}
 	}
 	else
 	{
 		foreach($remove_cookies as $name)
 		{
-			@setcookie($name, '', time()-1, $mybb->settings['cookiepath']);
+			@setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath']);
 		}
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);

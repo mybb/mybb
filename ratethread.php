@@ -93,7 +93,7 @@ else
 			'ipaddress' => $db->escape_string($session->ipaddress)
 		);
 		$db->insert_query("threadratings", $insertarray);
-		$time = time();
+		$time = TIME_NOW;
 		my_setcookie("mybbratethread[{$tid}]", $mybb->input['rating']);
 	}
 }

@@ -245,7 +245,7 @@ class errorHandler {
 			$message = "SQL Error: {$message['error_no']} - {$message['error']}\nQuery: {$message['query']}";
 		}
 		$error_data = "<error>\n";
-		$error_data .= "\t<dateline>".time()."</dateline>\n";
+		$error_data .= "\t<dateline>".TIME_NOW."</dateline>\n";
 		$error_data .= "\t<script>".$file."</script>\n";
 		$error_data .= "\t<line>".$line."</line>\n";
 		$error_data .= "\t<type>".$type."</type>\n";

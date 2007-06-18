@@ -39,12 +39,12 @@ if($mybb->usergroup['cansearch'] == "no")
 	error_no_permission();
 }
 
-$now = time();
+$now = TIME_NOW;
 
 // Clear out searches older than a month
 if($rand == 3)
 {
-	$timecut = time()-60*60*24*30;
+	$timecut = TIME_NOW-60*60*24*30;
 	$db->delete_query("searchlog", "dateline<='$timecut'");
 }
 
@@ -274,7 +274,7 @@ if($mybb->input['action'] == "results")
 
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 			{
-				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				if($thread['lastpost'] > $cutoff)
 				{
 					if($thread['lastread'])
@@ -521,7 +521,7 @@ if($mybb->input['action'] == "results")
 			$post['thread_lastread'] = $readthreads[$post['tid']];
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forumread)
 			{
-				$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				if($post['thread_lastpost'] > $cutoff)
 				{
 					if($post['thread_lastread'])
@@ -653,7 +653,7 @@ elseif($mybb->input['action'] == "findguest")
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
@@ -685,7 +685,7 @@ elseif($mybb->input['action'] == "finduser")
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
@@ -717,7 +717,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
@@ -755,7 +755,7 @@ elseif($mybb->input['action'] == "getnew")
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
@@ -779,7 +779,7 @@ elseif($mybb->input['action'] == "getdaily")
 	{
 		$days = intval($mybb->input['days']);
 	}
-	$datecut = time()-(86400*$days);
+	$datecut = TIME_NOW-(86400*$days);
 
 	$where_sql = "t.lastpost >='".$datecut."'";
 
@@ -804,7 +804,7 @@ elseif($mybb->input['action'] == "getdaily")
 	$searcharray = array(
 		"sid" => $db->escape_string($sid),
 		"uid" => $mybb->user['uid'],
-		"dateline" => time(),
+		"dateline" => TIME_NOW,
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
@@ -834,13 +834,13 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		{
 			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
-		$timecut = time()-$mybb->settings['searchfloodtime'];
+		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
 		{
-			$remaining_time = $mybb->settings['searchfloodtime']-(time()-$last_search['dateline']);
+			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
 			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			error($lang->error_searchflooding);
 		}
@@ -951,13 +951,13 @@ else if($mybb->input['action'] == "thread")
 		{
 			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
-		$timecut = time()-$mybb->settings['searchfloodtime'];
+		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
 		{
-			$remaining_time = $mybb->settings['searchfloodtime']-(time()-$last_search['dateline']);
+			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
 			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			error($lang->error_searchflooding);
 		}

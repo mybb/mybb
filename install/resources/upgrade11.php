@@ -379,7 +379,7 @@ function upgrade9_dbchanges2()
 			$new_ban = array(
 				"filter" => $db->escape_string($banned_ip),
 				"type" => $ban_type,
-				"dateline" => time()
+				"dateline" => TIME_NOW
 			);
 			$db->insert_query("banfilters", $new_ban);
 		}

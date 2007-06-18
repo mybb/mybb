@@ -257,7 +257,10 @@ class SmtpMail extends MailHandler
 		global $lang, $mybb;
 
 		$this->connection = @fsockopen($this->host, $this->port, $error_number, $error_string, $this->timeout);
-		if(function_exists('stream_set_timeout') && substr(PHP_OS, 0, 3) != "WIN")
+		
+		// DIRECTORY_SEPARATOR checks if running windows
+		if(function_exists('stream_set_timeout') && DIRECTORY_SEPARATOR != '\\')
+		{
 		{
 			@stream_set_timeout($this->connection, $this->timeout, 0);
 		}

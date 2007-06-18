@@ -55,7 +55,7 @@ if(!$mybb->input['action'])
 	$awaitingusers = $db->fetch_field($query, "awaitingusers");
 
 	// Get the number of new users for today
-	$timecut = time() - 86400;
+	$timecut = TIME_NOW - 86400;
 	$query = $db->simple_select("users", "COUNT(*) AS newusers", "regdate > '$timecut'");
 	$newusers = $db->fetch_field($query, "newusers");
 
@@ -101,7 +101,7 @@ if(!$mybb->input['action'])
 	$update_check = $cache->read("update_check");
 
 	// If last update check was greater than two weeks ago (14 days) show an alert
-	if($update_check['last_check'] <= time()-60*60*24*14)
+	if($update_check['last_check'] <= TIME_NOW-60*60*24*14)
 	{
 		$lang->last_update_check_two_weeks = sprintf($lang->last_update_check_two_weeks, "index.php?".SID."&amp;action=vercheck");
 		makewarning($lang->last_update_check_two_weeks);

@@ -44,7 +44,7 @@ if($mybb->input['action'] == "today")
 	$plugins->run_hooks("online_today_start");
 
 	$todaycount = 0;
-	$stime = time()-(60*60*24);
+	$stime = TIME_NOW-(60*60*24);
 	$todayrows = '';
 	$query = $db->query("
 		SELECT u.*
@@ -132,7 +132,7 @@ else
 		$refresh_string = '';
 	}
 
-	$timesearch = time() - $mybb->settings['wolcutoffmins']*60;
+	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 
 	// Query for active sessions
 	$query = $db->query("

@@ -181,7 +181,7 @@ class MailHandler
 	 */
 	function set_html_headers($message)
 	{
-		$mime_boundary = "=_NextPart".md5(time());
+		$mime_boundary = "=_NextPart".md5(TIME_NOW);
 
 		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}";
 		$this->message = "This is a multi-part message in MIME format.{$this->delimiter}{$this->delimiter}";
@@ -228,7 +228,7 @@ class MailHandler
 			$http_host = "unknown.local";
 		}
 
-		$msg_id = md5(uniqid(time())) . "@" . $http_host;
+		$msg_id = md5(uniqid(TIME_NOW)) . "@" . $http_host;
 
 		$this->headers .= "Message-ID: <{$msg_id}>{$this->delimiter}";
 		$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}";
@@ -254,7 +254,7 @@ class MailHandler
 			"message" => $db->escape_string($this->message),
 			"toaddress" => $db->escape_string($this->to),
 			"fromaddress" => $db->escape_string($this->from),
-			"dateline" => time(),
+			"dateline" => TIME_NOW,
 			"error" => $db->escape_string($error),
 			"smtperror" => $db->escape_string($this->data),
 			"smtpcode" => intval($this->code)

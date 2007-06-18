@@ -209,7 +209,7 @@ $hide_captcha = false;
 // Check the maximum posts per day for this user
 if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != "yes")
 {
-	$daycut = time()-60*60*24;
+	$daycut = TIME_NOW-60*60*24;
 	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible='1' AND dateline>{$daycut}");
 	$post_count = $db->fetch_field($query, "posts_today");
 	if($post_count >= $mybb->settings['maxposts'])
@@ -817,7 +817,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$post['subject'] = $subject;
 			$post['icon'] = $mybb->input['icon'];
 			$post['smilieoff'] = $postoptions['disablesmilies'];
-			$post['dateline'] = time();
+			$post['dateline'] = TIME_NOW;
 			$post['includesig'] = $mybb->input['postoptions']['signature'];
 			if($post['includesig'] != "yes")
 			{
@@ -953,7 +953,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$imagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
-				"dateline" => time()
+				"dateline" => TIME_NOW
 			);
 			$db->insert_query("captcha", $imagearray);
 			eval("\$captcha = \"".$templates->get("post_captcha")."\";");

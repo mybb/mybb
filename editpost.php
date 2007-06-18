@@ -117,7 +117,7 @@ else
 			error_no_permission();
 		}
 		// Edit time limit
-		$time = time();
+		$time = TIME_NOW;
 		if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < ($time-($mybb->settings['edittimelimit']*60)))
 		{
 			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);

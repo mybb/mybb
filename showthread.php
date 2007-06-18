@@ -204,7 +204,7 @@ if($mybb->input['action'] == "newpost")
 	}
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
 	{
-		$cutoff = time()-$mybb->settings['threadreadcut']*60*60*24;
+		$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 		if($thread['lastpost'] > $cutoff)
 		{
 			if($thread_read)
@@ -268,7 +268,7 @@ if($mybb->input['action'] == "thread")
 		$poll = $db->fetch_array($query);
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
-		$now = time();
+		$now = TIME_NOW;
 
 		// If the poll or the thread is closed or if the poll is expired, show the results.
 		if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout'] > 0))
@@ -835,7 +835,7 @@ if($mybb->input['action'] == "thread")
 			$imagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
-				"dateline" => time()
+				"dateline" => TIME_NOW
 			);
 			$db->insert_query("captcha", $imagearray);
 			eval("\$captcha = \"".$templates->get("post_captcha")."\";");
