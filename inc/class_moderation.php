@@ -241,10 +241,10 @@ class Moderation
 		$query = $db->simple_select("threads", "*", "tid='$tid'");
 		$thread = $db->fetch_array($query);
 
-		// Delete threads, redirects, favorites, polls, and poll votes
+		// Delete threads, redirects, subscriptions, polls, and poll votes
 		$db->delete_query("threads", "tid='$tid'");
 		$db->delete_query("threads", "closed='moved|$tid'");
-		$db->delete_query("favorites", "tid='$tid'");
+		$db->delete_query("threadsubscriptions", "tid='$tid'");
 		$db->delete_query("polls", "tid='$tid'");
 		$db->delete_query("pollvotes", "pid='".$thread['poll']."'");
 		$db->delete_query("threadsread", "tid='$tid'");
@@ -913,7 +913,7 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $tid,
 		);
-		$db->update_query("favorites", $sqlarray, "tid='$mergetid'");
+		$db->update_query("threadsubscriptions", $sqlarray, "tid='$mergetid'");
 		update_first_post($tid);
 
 		$this->delete_thread($mergetid);
