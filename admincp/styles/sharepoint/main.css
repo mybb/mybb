@@ -752,6 +752,7 @@ border-left: 0;
 background: #efefef;
 border-bottom: 0;
 }
+
 ul.tabs a.active {
 	background: #0F5C8E repeat-x top left;
 	color: #fff;
@@ -759,4 +760,30 @@ ul.tabs a.active {
 	text-align: left;
 	font-weight: bold;
 	border: 1px solid #0F5C8E;
+}
+
+
+.editor {
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+}
+
+.editor_control_bar {
+	background: #fff;
+	border: 1px solid #0f5c8e;
+}
+
+.toolbar_normal {
+	background: #f0f0f0;
+	border: 1px solid #f0f0f0;
+}
+
+.toolbar_hover {
+	background: #c1d2ee;
+	border: 1px solid #5296f7;
+}
+
+.toolbar_clicked {
+	background: #e1F2fe;
+	border: 1px solid #5296f7;
 }

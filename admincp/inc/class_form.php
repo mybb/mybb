@@ -330,6 +330,7 @@ class DefaultForm
 				$select .= " size=\"{$options['size']}\"";
 			}
 			$select .= ">\n".$selectoptions."</select>\n";
+			$selectoptions = '';
 			return $select;
 		}
 	}

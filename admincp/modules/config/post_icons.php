@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Post Icons", "index.php?".SID."&amp;module=config/post_icons");
+$page->add_breadcrumb_item($lang->post_icons, "index.php?".SID."&amp;module=config/post_icons");
 
 if($mybb->input['action'] == "add")
 {
@@ -23,12 +23,12 @@ if($mybb->input['action'] == "add")
 	{
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = "You did not enter a name for this post icon";
+			$errors[] = $lang->error_missing_name;
 		}
 
 		if(!trim($mybb->input['path']))
 		{
-			$errors[] = "You did not enter a path to this post icon";
+			$errors[] = $lang->error_missing_path;
 		}
 
 		if(!$errors)
@@ -42,22 +42,22 @@ if($mybb->input['action'] == "add")
 
 			$cache->update_posticons();
 
-			flash_message('The post icon has been added successfully.', 'success');
+			flash_message($lang->success_post_icon_added, 'success');
 			admin_redirect('index.php?'.SID.'&module=config/post_icons');
 		}
 	}
 
-	$page->add_breadcrumb_item("Add Post Icon");
-	$page->output_header("Post Icons - Add New Post Icon");
+	$page->add_breadcrumb_item($lang->add_post_icon);
+	$page->output_header($lang->post_icons." - ".$lang->add_post_icon);
 
 	$sub_tabs['add_icon'] = array(
-		'title'	=> "Add New Post Icon",
+		'title'	=> $lang->add_post_icon,
 		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add",
-		'description'	=> "Here you can add a new post icon."
+		'description'	=> $lang->add_post_icon_desc
 	);
 
 	$sub_tabs['add_multiple'] = array(
-		'title' => "Add Multiple Post Icons",
+		'title' => $lang->add_multiple_post_icons,
 		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple"
 	);
 
@@ -73,12 +73,12 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form = new Form("index.php?".SID."&amp;module=config/post_icons&amp;action=add", "post", "add");
-	$form_container = new FormContainer("Add New Post Icon");
-	$form_container->output_row("Name", "This is a name for the post icon.", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row("Image Path", "This is the path to the post icon image.", $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container = new FormContainer($lang->add_post_icon);
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Add Post Icon");
+	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
 
 	$form->output_submit_wrapper($buttons);
 
@@ -93,14 +93,14 @@ if($mybb->input['action'] == "add_multiple")
 		{
 			if(!trim($mybb->input['pathfolder']))
 			{
-				$errors[] = "You did not enter a path";
+				$errors[] = $lang->error_missing_path_multiple;
 			}
 
 			$path = $mybb->input['pathfolder'];
 			$dir = @opendir(MYBB_ROOT.$path);
 			if(!$dir)
 			{
-				$errors[] = "You did not enter a valid path";
+				$errors[] = $lang->error_invalid_path;
 			}
 
 			if(substr($path, -1, 1) !== "/")
@@ -132,24 +132,24 @@ if($mybb->input['action'] == "add_multiple")
 
 			if(count($icons) == 0)
 			{
-				$errors[] = "There are no post icons in the specified directory, or all post icons in the directory have already been added.";
+				$errors[] = $lang->error_no_images;
 			}
 
 			if(!$errors)
 			{
 				// We have no errors so let's proceed!
-				$page->add_breadcrumb_item("Add Post Icon");
-				$page->output_header("Post Icons - Add New Post Icon");
+				$page->add_breadcrumb_item($lang->add_multiple_post_icons);
+				$page->output_header($lang->post_icons." - ".$lang->add_multiple_post_icons);
 
 				$sub_tabs['add_icon'] = array(
-					'title'	=> "Add New Post Icon",
+					'title'	=> $lang->add_post_icon,
 					'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
 				);
 
 				$sub_tabs['add_multiple'] = array(
-					'title' => "Add Multiple Post Icons",
+					'title' => $lang->add_multiple_post_icons,
 					'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple",
-					'description'	=> "Here you can add multiple new post icons."
+					'description'	=> $lang->add_multiple_post_icons_desc
 				);
 
 				$page->output_nav_tabs($sub_tabs, 'add_multiple');
@@ -158,10 +158,10 @@ if($mybb->input['action'] == "add_multiple")
 				echo $form->generate_hidden_field("step", "2");
 				echo $form->generate_hidden_field("pathfolder", $path);
 
-				$form_container = new FormContainer("Add Multiple Post Icons");
-				$form_container->output_row_header("Image", array("class" => "align_center", 'width' => '10%'));
-				$form_container->output_row_header("Name");
-				$form_container->output_row_header("Add?", array("class" => "align_center", 'width' => '5%'));
+				$form_container = new FormContainer($lang->add_multiple_post_icons);
+				$form_container->output_row_header($lang->image, array("class" => "align_center", 'width' => '10%'));
+				$form_container->output_row_header($lang->name);
+				$form_container->output_row_header($lang->add, array("class" => "align_center", 'width' => '5%'));
 
 				foreach($icons as $key => $file)
 				{
@@ -177,13 +177,13 @@ if($mybb->input['action'] == "add_multiple")
 
 				if(count($form_container->container->rows) == 0)
 				{
-					flash_message('There are no post icons in the specified directory, or all post icons in the directory have already been added.', 'error');
+					flash_message($lang->error_no_images, 'error');
 					admin_redirect("index.php?".SID."&module=config/post_icons&action=add_multiple");
 				}
 
 				$form_container->end();
 
-				$buttons[] = $form->generate_submit_button("Add Post Icons");
+				$buttons[] = $form->generate_submit_button($lang->save_post_icons);
 				$form->output_submit_wrapper($buttons);
 
 				$form->end();
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "add_multiple")
 
 			if(empty($mybb->input['include']))
 			{
-				flash_message('You did not select any post icons to include.', 'error');
+				flash_message($lang->error_none_included, 'error');
 				admin_redirect("index.php?".SID."&module=config/post_icons&action=add_multiple");
 			}
 
@@ -219,23 +219,23 @@ if($mybb->input['action'] == "add_multiple")
 
 			$cache->update_posticons();
 
-			flash_message('The selected post icons have successfully been added.', 'success');
+			flash_message($lang->success_post_icons_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/post_icons");
 		}
 	}
 
-	$page->add_breadcrumb_item("Add Post Icon");
-	$page->output_header("Post Icons - Add New Post Icon");
+	$page->add_breadcrumb_item($lang->add_multiple_post_icons);
+	$page->output_header($lang->post_icons." - ".$lang->add_multiple_post_icons);
 
 	$sub_tabs['add_icon'] = array(
-		'title'	=> "Add New Post Icon",
+		'title'	=> $lang->add_post_icon,
 		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
 	);
 
 	$sub_tabs['add_multiple'] = array(
-		'title' => "Add Multiple Post Icons",
+		'title' => $lang->add_multiple_post_icons,
 		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple",
-		'description'	=> "Here you can add multiple new post icons."
+		'description'	=> $lang->add_multiple_post_icons_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_multiple');
@@ -248,11 +248,11 @@ if($mybb->input['action'] == "add_multiple")
 		$page->output_inline_error($errors);
 	}
 
-	$form_container = new FormContainer("Add Multiple Post Icons");
-	$form_container->output_row("Path to Images", "This is the path to the folder that the images are in.", $form->generate_text_box('pathfolder', $mybb->input['pathfolder'], array('id' => 'pathfolder')), 'pathfolder');
+	$form_container = new FormContainer($lang->add_multiple_post_icons);
+	$form_container->output_row($lang->path_to_images." <em>*</em>", $lang->path_to_images_desc, $form->generate_text_box('pathfolder', $mybb->input['pathfolder'], array('id' => 'pathfolder')), 'pathfolder');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Show Post Icons");
+	$buttons[] = $form->generate_submit_button($lang->show_post_icons);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -267,7 +267,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$icon['iid'])
 	{
-		flash_message('The specified post icon does not exist.', 'error');
+		flash_message($lang->error_invalid_post_icon, 'error');
 		admin_redirect("index.php?".SID."&module=config/post_icons");
 	}
 
@@ -275,12 +275,12 @@ if($mybb->input['action'] == "edit")
 	{
 		if(!trim($mybb->input['name']))
 		{
-			$errors[] = "You did not enter a name for this post icon";
+			$errors[] = $lang->error_missing_name;
 		}
 
 		if(!trim($mybb->input['path']))
 		{
-			$errors[] = "You did not enter a path to this post icon";
+			$errors[] = $lang->error_missing_path;
 		}
 
 		if(!$errors)
@@ -294,18 +294,18 @@ if($mybb->input['action'] == "edit")
 
 			$cache->update_posticons();
 
-			flash_message('The post icon has been added successfully.', 'success');
+			flash_message($lang->success_post_icon_updated, 'success');
 			admin_redirect('index.php?'.SID.'&module=config/post_icons');
 		}
 	}
 	
-	$page->add_breadcrumb_item("Edit Post Icon");
-	$page->output_header("Post Icons - Edit");
+	$page->add_breadcrumb_item($lang->edit_post_icon);
+	$page->output_header($lang->post_icons." - ".$lang->edit_post_icon);
 
 	$sub_tabs['edit_icon'] = array(
-		'title'	=> "Edit Post Icon",
+		'title'	=> $lang->edit_post_icon,
 		'link'	=> "index.php?'.SID.'&amp;module=config/post_icons",
-		'description'	=> "Here you can edit a post icon."
+		'description'	=> $lang->edit_post_icon_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_icon');
@@ -322,13 +322,13 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $icon;
 	}
 
-	$form_container = new FormContainer("Edit Post Icon");
-	$form_container->output_row("Name", "This is a name for the post icon.", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row("Image Path", "This is the path to the post icon image.", $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
+	$form_container = new FormContainer($lang->edit_post_icon);
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
+	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Save Post Icon");
-	$buttons[] = $form->generate_reset_button("Reset");
+	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
+	$buttons[] = $form->generate_reset_button($lang->reset);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -343,7 +343,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!$icon['iid'])
 	{
-		flash_message('The specified post icon does not exist.', 'error');
+		flash_message($lang->error_invalid_post_icon, 'error');
 		admin_redirect("index.php?".SID."&module=config/post_icons");
 	}
 
@@ -359,32 +359,32 @@ if($mybb->input['action'] == "delete")
 
 		$cache->update_posticons();
 
-		flash_message('The specified post icon has been deleted.', 'success');
+		flash_message($lang->success_post_icon_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/post_icons");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}", "Are you sure you wish to delete this post icon?");
+		$page->output_confirm_action("index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}", $lang->confirm_post_icon_deletion);
 	}
 }
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Post Icons");
+	$page->output_header($lang->post_icons);
 
 	$sub_tabs['manage_icons'] = array(
-		'title'	=> "Manage Post Icons",
+		'title'	=> $lang->manage_post_icons,
 		'link'	=> "index.php?".SID."&amp;module=config/post_icons",
-		'description'	=> "This section allows you to edit and delete and manage your post icons."
+		'description'	=> $lang->manage_post_icons_desc
 	);
 
 	$sub_tabs['add_icon'] = array(
-		'title'	=> "Add New Post Icon",
+		'title'	=> $lang->add_post_icon,
 		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
 	);
 
 	$sub_tabs['add_multiple'] = array(
-		'title' => "Add Multiple Post Icons",
+		'title' => $lang->add_multiple_post_icons,
 		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple"
 	);
 
@@ -402,9 +402,9 @@ if(!$mybb->input['action'])
 	}
 
 	$table = new Table;
-	$table->construct_header("Image", array('class' => "align_center", 'width' => 1));
-	$table->construct_header("Name", array('width' => "80%"));
-	$table->construct_header("Controls", array('class' => "align_center", 'colspan' => 2));
+	$table->construct_header($lang->image, array('class' => "align_center", 'width' => 1));
+	$table->construct_header($lang->name, array('width' => "80%"));
+	$table->construct_header($lang->controls, array('class' => "align_center", 'colspan' => 2));
 
 	$query = $db->simple_select("icons", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'name'));
 	while($icon = $db->fetch_array($query))
@@ -421,18 +421,18 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
 		$table->construct_cell("{$icon['name']}");
 
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=edit&amp;iid={$icon['iid']}\">Edit</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you wish to delete this icon?')\">Delete</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("There are no post icons on your forum at this time.", array('colspan' => 4));
+		$table->construct_cell($lang->no_post_icons, array('colspan' => 4));
 		$table->construct_row();
 	}
 
-	$table->output("Manage Post Icons");
+	$table->output($lang->manage_post_icons);
 
 	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
 	$total_rows = $db->fetch_field($query, "icons");

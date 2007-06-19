@@ -639,7 +639,7 @@ div.error p em {
 	font-weight: bold;
 }
 
-div.success{
+div.success {
 	margin: 10px 0;
 	padding: 5px 10px;
 	border: #080 1px solid;
@@ -736,8 +736,7 @@ ul.tabs {
 	margin: 10px 0 0;
 	padding: 0;
 	list-style: none;
-height: 27px;
-border-left: 1px solid #0F5C8E;
+	height: 27px;
 }
 
 ul.tabs li {
@@ -751,17 +750,53 @@ ul.tabs a {
 	float: left;
 	padding: 6px 10px;
 	text-decoration: none;
-	color: #577ED1;
-border: 1px solid #0F5C8E;
-border-left: 0;
-background: #efefef;
-border-bottom: 0;
+	color: #6e6e6e;
+	border: 0;
+	border-top: 1px solid #bdbdbd;
+	background: #efefef;
 }
-ul.tabs a.active {
-	background: #0F5C8E repeat-x top left;
+
+ul.tabs li.first a {
+	border-left: 1px solid #bdbdbd;
+}
+
+ul.tabs li.last a {
+	border-right: 1px solid #bdbdbd;
+}
+
+ul.tabs li a.active,
+ul.tabs li.first a.active,
+ul.tabs li.last a.active {
+	background: #035489 repeat-x top left;
 	color: #fff;
 	font-size: 100%;
 	text-align: left;
 	font-weight: bold;
-	border: 1px solid #0F5C8E;
+	border: 1px solid #035489;
+	border-top: 1px solid #023f66;
+}
+
+.editor {
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+}
+
+.editor_control_bar {
+	background: #fff;
+	border: 1px solid #0f5c8e;
+}
+
+.toolbar_normal {
+	background: #f0f0f0;
+	border: 1px solid #f0f0f0;
+}
+
+.toolbar_hover {
+	background: #c1d2ee;
+	border: 1px solid #5296f7;
+}
+
+.toolbar_clicked {
+	background: #e1F2fe;
+	border: 1px solid #5296f7;
 }

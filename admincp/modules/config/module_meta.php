@@ -77,6 +77,10 @@ function config_action_handler($manage)
 			$page->active_action = "warning";
 			$action_file = "warning.php";
 			break;
+		case "mod_tools":
+			$page->active_action = "mod_tools";
+			$action_file = "mod_tools.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
@@ -94,9 +98,10 @@ function config_action_handler($manage)
 	$sub_menu['90'] = array("id" => "help_documents", "title" => "Help Documents", "link" => "index.php?".SID."&module=config/help_documents");
 	$sub_menu['100'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
 	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
-	$sub_menu['120'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
-	$sub_menu['130'] = array("id" => "calendars", "title" => "Calendars", "link" => "index.php?".SID."&module=config/calendars");
-	$sub_menu['140'] = array("id" => "warning", "title" => "Warning System", "link" => "index.php?".SID."&module=config/warning");
+	$sub_menu['120'] = array("id" => "mod_tools", "title" => "Moderator Tools", "link" => "index.php?".SID."&module=config/mod_tools");
+	$sub_menu['130'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
+	$sub_menu['140'] = array("id" => "calendars", "title" => "Calendars", "link" => "index.php?".SID."&module=config/calendars");
+	$sub_menu['150'] = array("id" => "warning", "title" => "Warning System", "link" => "index.php?".SID."&module=config/warning");
 
 	$sidebar = new SidebarItem("Configuration");
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
