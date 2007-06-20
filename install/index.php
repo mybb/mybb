@@ -755,7 +755,8 @@ function install_done()
 		'buddylist' => '',
 		'ignorelist' => '',
 		'pmfolders' => '',
-		'notepad' => ''
+		'notepad' => '',
+		'showredirect' => 'yes'
 	);
 	$db->insert_query(TABLE_PREFIX.'users', $newuser);
 	$uid = $db->insert_id();
