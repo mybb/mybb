@@ -965,7 +965,8 @@ function install_done()
 		'buddylist' => '',
 		'ignorelist' => '',
 		'pmfolders' => '',
-		'notepad' => ''
+		'notepad' => '',
+		'showredirect' => 'yes'
 	);
 	$db->insert_query('users', $newuser);
 	echo $lang->done . '</p>';
