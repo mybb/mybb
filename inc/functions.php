@@ -2503,7 +2503,7 @@ function get_unviewable_forums()
 }
 
 /**
- * Fixes mkTIME_NOW for dates earlier than 1970
+ * Fixes mktime for dates earlier than 1970
  *
  * @param string The date format to use
  * @param int The year of the date

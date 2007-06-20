@@ -73,7 +73,7 @@ class timer {
 	 *
 	 * @return string|boolean The formatted time up until now or false when timer is no longer running.
 	 */
-	function gettime()
+	function getTime()
 	{
 		if($this->end) // timer has been stopped
 		{

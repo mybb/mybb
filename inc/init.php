@@ -35,7 +35,7 @@ if(!defined('MYBB_ROOT'))
 	define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 }
 
-define("TIME_NOW", TIME_NOW);
+define("TIME_NOW", time());
 
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
