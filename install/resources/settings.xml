@@ -1102,6 +1102,14 @@ download=As Download Link]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="searchhardlimit">
+			<title>Hard Limit for Maximum Search Results</title>
+			<description><![CDATA[Enter the maximum amount of results to be processed. Set to 0 to disable. On larger boards (more than 1 million posts) this should be set to no more than 1000.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="yes">
 		<setting name="seourls">

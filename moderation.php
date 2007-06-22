@@ -695,15 +695,41 @@ switch($mybb->input['action'])
 		}
 
 		$plugins->run_hooks("moderation_do_merge");
-
-		// get thread to merge's tid
-		$splitloc = explode(".php", $mybb->input['threadurl']);
-		$temp = explode("&", my_substr($splitloc[1], 1));
-		for($i = 0; $i < count($temp); ++$i)
+		
+		// explode at # sign in a url (indicates a name reference) and reassign to the url
+		$realurl = explode("#", $mybb->input['threadurl']);
+		$mybb->input['threadurl'] = $realurl[0];
+		
+		// Are we using an SEO URL?
+		if(substr($mybb->input['threadurl'], -4) == "html")
 		{
-			$temp2 = explode("=", $temp[$i], 2);
-			$parameters[$temp2[0]] = $temp2[1];
+			// Get thread to merge's tid the SEO way
+			preg_match("#thread-([0-9]+)?#i", $mybb->input['threadurl'], $threadmatch);
+			preg_match("#post-([0-9]+)?#i", $mybb->input['threadurl'], $postmatch);
+			
+			if($threadmatch[1])
+			{
+				$parameters['tid'] = $threadmatch[1];
+			}
+			
+			if($postmatch[1])
+			{
+				$parameters['pid'] = $postmatch[1];
+			}
 		}
+		else
+		{
+			// Get thread to merge's tid the normal way
+			$splitloc = explode(".php", $mybb->input['threadurl']);
+			$temp = explode("&", my_substr($splitloc[1], 1));
+			
+			for($i = 0; $i < count($temp); ++$i)
+			{
+				$temp2 = explode("=", $temp[$i], 2);
+				$parameters[$temp2[0]] = $temp2[1];
+			}
+		}
+		
 		if($parameters['pid'] && !$parameters['tid'])
 		{
 			$query = $db->simple_select("posts", "*", "pid='".intval($parameters['pid'])."'");

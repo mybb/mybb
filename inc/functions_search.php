@@ -506,6 +506,12 @@ function perform_search_mysql($search)
 	{
 		$tidsql = " AND t.tid='".intval($search['tid'])."'";
 	}
+	
+	$limitsql = "";
+	if(intval($mybb->settings['searchhardlimit']) > 0)
+	{
+		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+	}
 
 	// Searching both posts and thread titles
 	$threads = array();
@@ -520,7 +526,8 @@ function perform_search_mysql($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$forumin} {$thread_usersql} {$permsql} AND t.visible > '0' AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
+				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
 			{
@@ -535,7 +542,8 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql $tidsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			WHERE 1=1 {$post_datecut} {$thread_replycut} {$forumin} {$post_usersql} {$permsql} {$tidsql} AND p.visible > '0' AND t.visible > '0' AND t.closed NOT LIKE 'moved|%' {$message_lookin}
+			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -557,7 +565,8 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$forumin} {$thread_usersql} {$permsql} AND t.visible > '0' {$subject_lookin}
+			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -576,7 +585,7 @@ function perform_search_mysql($search)
 		$firstposts = implode(",", $firstposts);
 		if($firstposts)
 		{
-			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible > '0'");
+			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible > '0' {$limitsql}");
 			while($post = $db->fetch_array($query))
 			{
 				$posts[$post['pid']] = $post['pid'];
@@ -801,6 +810,12 @@ function perform_search_mysql_ft($search)
 	{
 		$tidsql = " AND t.tid='".intval($search['tid'])."'";
 	}
+	
+	$limitsql = "";
+	if(intval($mybb->settings['searchhardlimit']) > 0)
+	{
+		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+	}
 
 	// Searching both posts and thread titles
 	$threads = array();
@@ -816,6 +831,7 @@ function perform_search_mysql_ft($search)
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
 				WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
 			{
@@ -832,6 +848,7 @@ function perform_search_mysql_ft($search)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql $tidsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -854,6 +871,7 @@ function perform_search_mysql_ft($search)
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
 			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -872,7 +890,7 @@ function perform_search_mysql_ft($search)
 		$firstposts = implode(",", $firstposts);
 		if($firstposts)
 		{
-			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible > '0'");
+			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible > '0' {$limitsql}");
 			while($post = $db->fetch_array($query))
 			{
 				$posts[$post['pid']] = $post['pid'];

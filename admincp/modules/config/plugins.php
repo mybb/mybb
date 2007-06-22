@@ -196,7 +196,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->plugin);
 	$table->construct_header($lang->controls, array("class" => "align_center"));
 	
-	if($plugins_list)
+	if(!empty($plugins_list))
 	{
 		foreach($plugins_list as $plugin_file)
 		{
@@ -207,15 +207,18 @@ if(!$mybb->input['action'])
 			{
 				continue;
 			}
+			
 			$plugininfo = $infofunc();
 			if($plugininfo['website'])
 			{
 				$plugininfo['name'] = "<a href=\"".$plugininfo['website']."\">".$plugininfo['name']."</a>";
 			}
+			
 			if($plugininfo['authorsite'])
 			{
 				$plugininfo['author'] = "<a href=\"".$plugininfo['authorsite']."\">".$plugininfo['author']."</a>";
 			}
+			
 			if(isset($active_plugins[$codename]))
 			{
 				$pluginbuttons = "<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">{$lang->deactivate}</a>";
@@ -230,7 +233,8 @@ if(!$mybb->input['action'])
 			$table->construct_row();
 		}
 	}
-	else
+	
+	if(count($table->rows) == 0)
 	{
 		$table->contruct_cell($lang->no_plugins, array('colspan' => 2));
 		$table->construct_row();
