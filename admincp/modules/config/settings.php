@@ -9,8 +9,6 @@
  * $Id$
  */
 
-// TODO: Edit & delete setting/group iff not default
-
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
@@ -102,6 +100,12 @@ if($mybb->input['action'] == "editgroup")
 		flash_message($lang->error_invalid_gid2, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
+	// Prevent editing of default
+	if($group['isdefault'] == 'yes')
+	{
+		flash_message($lang->error_cannot_edit_default, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
 	
 	// Do edit?
 	if($mybb->request_method == "post")
@@ -188,6 +192,12 @@ if($mybb->input['action'] == "deletegroup")
 	if(!$group['gid'])
 	{
 		flash_message($lang->error_invalid_gid2, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	// Prevent deletion of default
+	if($group['isdefault'] == 'yes')
+	{
+		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
 	
@@ -356,6 +366,15 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}
 	
+	$query = $db->simple_select("settinggroups", "isdefault", "gid='{$setting['gid']}'");
+	$group = $db->fetch_array($query);
+	// Prevent editing of default
+	if($group['isdefault'] == 'yes')
+	{
+		flash_message($lang->error_cannot_edit_default, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -495,6 +514,15 @@ if($mybb->input['action'] == "delete")
 	if(!$setting['sid'])
 	{
 		flash_message($lang->error_invalid_sid, 'error');
+		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+	}
+	
+	$query = $db->simple_select("settinggroups", "isdefault", "gid='{$setting['gid']}'");
+	$group = $db->fetch_array($query);
+	// Prevent editing of default
+	if($group['isdefault'] == 'yes')
+	{
+		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
 	

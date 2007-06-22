@@ -56,6 +56,9 @@ $l['delete_setting_group'] = "Delete Setting Group";
 $l['save_display_orders'] = "Save Display Orders";
 $l['update_setting_group'] = "Update Setting Group";
 
+$l['show_all_settings'] = "Show All Settings";
+$l['settings_search'] = "Search For Settings";
+
 $l['confirm_setting_group_deletion'] = "Are you sure you wish to delete this setting group?";
 $l['confirm_setting_deletion'] = "Are you sure you wish to delete this setting?";
 
@@ -69,6 +72,8 @@ $l['error_invalid_type'] = "You did not select a valid type for this setting";
 $l['error_invalid_sid'] = "The specified setting does not exist";
 $l['error_duplicate_name'] = "The identifier specified has already been used for the \"{1}\" setting -- it must be unique";
 $l['error_duplicate_group_name'] = "The identifier specified has already been used for the \"{1}\" setting group -- it must be unique";
+$l['error_no_settings_found'] = "No settings were found for the specified search phrase.";
+$l['error_cannot_edit_default'] = "Default settings and groups may not be edited or removed.";
 
 $l['success_setting_added'] = "The setting has successfully been created.";
 $l['success_setting_updated'] = "The setting has successfully been updated.";
