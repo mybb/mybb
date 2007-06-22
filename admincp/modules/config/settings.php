@@ -335,7 +335,7 @@ if($mybb->input['action'] == "add")
 	$form->end();
 	
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker("type", "row_extra", /select|radio|checkbox|php/);});
+	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
 	</script>';
@@ -477,7 +477,7 @@ if($mybb->input['action'] == "edit")
 	$form->end();
 	
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker("type", "row_extra", /select|radio|checkbox|php/);});
+	<script type="text/javascript">Event.observe(window, "load", function() {var peeker = new Peeker($("type"), $("row_extra"), /select|radio|checkbox|php/, false);});
 		// Add a star to the extra row since the "extra" is required if the box is shown
 		add_star("row_extra");
 	</script>';
@@ -703,21 +703,23 @@ if($mybb->input['action'] == "change")
 		$options = "";
 		$type = explode("\n", $setting['optionscode']);
 		$type[0] = trim($type[0]);
+		$element_name = "upsetting[{$setting['sid']}]";
+		$element_id = "setting_{$setting['name']}";
 		if($type[0] == "text" || $type[0] == "")
 		{
-			$setting_code = $form->generate_text_box("upsetting[{$setting['sid']}]", $setting['value']);
+			$setting_code = $form->generate_text_box($element_name, $setting['value'], array('id' => $element_id));
 		}
 		else if($type[0] == "textarea")
 		{
-			$setting_code = $form->generate_text_area("upsetting[{$setting['sid']}]", $setting['value']);
+			$setting_code = $form->generate_text_area($element_name, $setting['value'], array('id' => $element_id));
 		}
 		else if($type[0] == "yesno")
 		{
-			$setting_code = $form->generate_yes_no_radio("upsetting[{$setting['sid']}]", $setting['value']);
+			$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], false, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
 		}
 		else if($type[0] == "onoff")
 		{
-			$setting_code = $form->generate_on_off_radio("upsetting[{$setting['sid']}]", $setting['value']);
+			$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], false, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
 		}
 		else if($type[0] == "cpstyle")
 		{
@@ -731,17 +733,17 @@ if($mybb->input['action'] == "change")
 			}
 			closedir($dir);
 			ksort($folders);
-			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $folders, $setting['value']);
+			$setting_code = $form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id));
 		}
 		else if($type[0] == "language") 
 		{
 			$languages = $lang->get_languages();
-			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $languages, $setting['value']);
+			$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
 		}
 		else if($type[0] == "adminlanguage") 
 		{
 			$languages = $lang->get_languages(1);
-			$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $languages, $setting['value']);
+			$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
 		}
 		else if($type[0] == "php")
 		{
@@ -765,28 +767,28 @@ if($mybb->input['action'] == "change")
 				{
 					if($setting['value'] == $optionsexp[0])
 					{
-						$option_list[$i] = $form->generate_radio_button("upsetting[{$setting['sid']}]", $optionsexp[0], $optionsexp[1], array("checked" => 1));
+						$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
 					}
 					else
 					{
-						$option_list[$i] = $form->generate_radio_button("upsetting[{$setting['sid']}]", $optionsexp[0], $optionsexp[1]);
+						$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
 					}
 				}
 				else if($type[0] == "checkbox")
 				{
 					if($setting['value'] == $optionsexp[0])
 					{
-						$option_list[$i] = $form->generate_checkbox_input("upsetting[{$setting['sid']}]", $optionsexp[0], $optionsexp[1], array("checked" => 1));
+						$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
 					}
 					else
 					{
-						$option_list[$i] = $form->generate_checkbox_input("upsetting[{$setting['sid']}]", $optionsexp[0], $optionsexp[1]);
+						$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
 					}
 				}
 			}
 			if($type[0] == "select")
 			{
-				$setting_code = $form->generate_select_box("upsetting[{$setting['sid']}]", $option_list, $setting['value']);
+				$setting_code = $form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id));
 			}
 			else
 			{
@@ -805,7 +807,7 @@ if($mybb->input['action'] == "change")
 		{
 			$setting['description'] = $lang->$desc_lang;
 		}
-		$form_container->output_row($setting['title'], $setting['description'], $setting_code);
+		$form_container->output_row($setting['title'], $setting['description'], $setting_code, '', array(), array('id' => 'row_'.$element_id));
 	}
 	$form_container->end();
 
@@ -813,6 +815,51 @@ if($mybb->input['action'] == "change")
 	
 	$form->output_submit_wrapper($buttons);
 	$form->end();
+	
+	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript">
+		Event.observe(window, "load", function() {
+			
+			new Peeker(document.getElementsByClassName("setting_boardclosed"), $("row_setting_boardclosed_reason"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_gzipoutput"), $("row_setting_gziplevel"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorlogmedium"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errortypemedium"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorloglocation"), /on/, true);
+			new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
+			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarityrating"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_disableregs"), $("row_setting_regtype"), /no/, true);
+			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /yes/, true);
+			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
+			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
+			new Peeker(document.getElementsByClassName("setting_postfloodcheck"), $("row_setting_postfloodsecs"), /yes/, true);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false);
+			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_membersperpage"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_default_memberlist_order"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablereputation"), $("row_setting_repsperpage"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowhtml"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowmycode"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowsmilies"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowimgcode"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_publiceventcolor"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_privateeventcolor"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertertot"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertercols"), /on/, true);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
+
+		});
+	</script>';
 	
 	$page->output_footer();
 }

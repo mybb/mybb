@@ -8,17 +8,36 @@
 var Peeker = Class.create();
 Peeker.prototype = {
 	
-    controller: "",
-    domain: "",
-    match: "",
+    controller: null,
+    domain: null,
+    match: null,
+    is_nodelist: null,
 	
     /**
      * Checks the controller and shows/hide
      */
 	check: function()
 	{
-		type = $(this.controller).value;
-		$(this.domain).style.display = (type.match(this.match)) ? '' : 'none';
+		// Array
+		if(this.is_nodelist)
+		{
+            // Find a match (if found show domain)
+            for(i = 0; i < this.controller.length; i++)
+            {
+                if(this.controller[i].checked && this.controller[i].value.match(this.match))
+                {
+                    this.domain.style.display = '';
+                    return;
+                }
+            }
+            // Nothing found
+            this.domain.style.display = 'none';
+		}
+		else
+		{
+		    type = this.controller.value;
+    		this.domain.style.display = (type.match(this.match)) ? '' : 'none';
+		}
 	},
 	
 	/**
@@ -26,16 +45,39 @@ Peeker.prototype = {
 	 * @param string ID of the controlling select menu
 	 * @param string ID of the thing to show/hide
 	 * @param regexp If this regexp matches value of the select menu, then the 'thing' will be shown
+	 * @param boolean Should be set to true for radio/checkboxes
 	 */
-	initialize: function(controller, domain, match)
+	initialize: function(controller, domain, match, is_nodelist)
 	{
-		if($(controller) && $(domain))
+        // Ugly code to differentiate initialization between nodelist and element
+		if(is_nodelist)
+		{
+		    if(controller.length > 0 && domain)
+		    {
+    		    this.controller = controller;
+                this.domain = domain;
+                this.match = match;
+                this.is_nodelist = is_nodelist;
+                
+                for(i = 0; i < controller.length; i++)
+                {
+           			if(controller[i].getAttribute("id") != null)
+           			{
+               			Event.observe(controller[i], "change", this.check.bindAsEventListener(this));
+              			Event.observe(controller[i], "click", this.check.bindAsEventListener(this));
+           			}
+                }
+                this.check();
+		    }
+		}
+	    else if(controller && domain)
 		{
             this.controller = controller;
             this.domain = domain;
             this.match = match;
+            this.is_nodelist = is_nodelist;
             
-			Event.observe($(controller), "change", this.check.bindAsEventListener(this));
+            Event.observe(controller, "change", this.check.bindAsEventListener(this));
             this.check();
 		}
 	}

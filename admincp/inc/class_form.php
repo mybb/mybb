@@ -387,8 +387,9 @@ class DefaultForm
 		return $input;
 	}
 
-	function generate_yes_no_radio($name, $value="yes", $int=false)
+	function generate_yes_no_radio($name, $value="yes", $int=false, $yes_options=array(), $no_options = array())
 	{
+		// Checked status
 		if($value == "no" || $value === '0')
 		{
 			$no_checked = 1;
@@ -399,6 +400,7 @@ class DefaultForm
 			$yes_checked = 1;
 			$no_checked = 0;
 		}
+		// Element value
 		if($int == true)
 		{
 			$yes_value = 1;
@@ -409,14 +411,20 @@ class DefaultForm
 			$yes_value = "yes";
 			$no_value = "no";
 		}
+		// Set the options straight
+		$yes_options['class'] = "radio_yes ".$yes_options['class'];
+		$yes_options['checked'] = $yes_checked;
+		$no_options['class'] = "radio_no ".$no_options['class'];
+		$no_options['checked'] = $no_checked;
 		
-		$yes = $this->generate_radio_button($name, $yes_value, "Yes", array("class" => "radio_yes", "checked" => $yes_checked));
-		$no = $this->generate_radio_button($name, $no_value, "No", array("class" => "radio_no", "checked" => $no_checked));
+		$yes = $this->generate_radio_button($name, $yes_value, "Yes", $yes_options);
+		$no = $this->generate_radio_button($name, $no_value, "No", $no_options);
 		return $yes." ".$no;
 	}
 
-	function generate_on_off_radio($name, $value="yes")
+	function generate_on_off_radio($name, $value="yes", $int=false, $on_options=array(), $off_options = array())
 	{
+		// Checked status
 		if($value == "off")
 		{
 			$off_checked = 1;
@@ -427,8 +435,26 @@ class DefaultForm
 			$on_checked = 1;
 			$off_checked = 0;
 		}
-		$on = $this->generate_radio_button($name, "on", "On", array("class" => "radio_on", "checked" => $on_checked));
-		$off = $this->generate_radio_button($name, "off", "Off", array("class" => "radio_off", "checked" => $off_checked));
+		// Element value
+		if($int == true)
+		{
+			$on_value = 1;
+			$off_value = 0;
+		}
+		else
+		{
+			$on_value = "on";
+			$off_value = "off";
+		}
+		
+		// Set the options straight
+		$on_options['class'] = "radio_on ".$on_options['class'];
+		$on_options['checked'] = $on_checked;
+		$off_options['class'] = "radio_off ".$off_options['class'];
+		$off_options['checked'] = $off_checked;
+		
+		$on = $this->generate_radio_button($name, $on_value, "On", $on_options);
+		$off = $this->generate_radio_button($name, $off_value, "Off", $off_options);
 		return $on." ".$off;
 	}
 	
