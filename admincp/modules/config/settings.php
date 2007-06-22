@@ -680,140 +680,223 @@ if($mybb->input['action'] == "change")
 		flash_message($lang->success_settings_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}
-
-	$query = $db->simple_select("settinggroups", "*", "gid = '".intval($mybb->input['gid'])."'");
-	$groupinfo = $db->fetch_array($query);
 	
-	if(!$groupinfo['gid'])
+	// What type of page
+	$cache_groups = $cache_settings = array();
+	if($mybb->input['search'])
 	{
-		$page->output_error($lang->error_invalid_gid2);
+		// Search
+		
+		// Search for settings
+		$search = $db->escape_string($mybb->input['search']);
+		$query = $db->query("SELECT s.* FROM (".TABLE_PREFIX."settings s, ".TABLE_PREFIX."settinggroups g) WHERE s.gid=g.gid AND (s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%') ORDER BY s.disporder");
+		while($setting = $db->fetch_array($query))
+		{
+			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+		}
+		
+		if(!$db->num_rows($query))
+		{
+			flash_message($lang->error_no_settings_found, 'error');
+			admin_redirect("index.php?".SID."&module=config/settings");
+		}
+		
+		// Cache groups
+		$groups = array_keys($cache_settings);
+		$groups = implode(',', $groups);
+		$query = $db->simple_select("settinggroups", "*", "gid IN ({$groups})", array('order_by' => 'disporder'));
+		while($group = $db->fetch_array($query))
+		{
+			$cache_groups[$group['gid']] = $group;
+		}
+		
+		// Page header
+		$page->add_breadcrumb_item($lang->settings_search);
+		$page->output_header($lang->board_settings." - {$lang->settings_search}");
+		
+		$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
+	
+		echo $form->generate_hidden_field("gid", $group['gid']);
 	}
-	$page->add_breadcrumb_item($groupinfo['title']);
-	$page->output_header($lang->board_settings." - {$groupinfo['title']}");
-	
-	$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
-
-	echo $form->generate_hidden_field("gid", $groupinfo['gid']);
-	
-	$form_container = new FormContainer($groupinfo['title']);
-
-	$query = $db->simple_select("settings", "*", "gid='".intval($mybb->input['gid'])."'", array('order_by' => 'disporder'));
-	while($setting = $db->fetch_array($query))
+	elseif($mybb->input['gid'])
 	{
-		$options = "";
-		$type = explode("\n", $setting['optionscode']);
-		$type[0] = trim($type[0]);
-		$element_name = "upsetting[{$setting['sid']}]";
-		$element_id = "setting_{$setting['name']}";
-		if($type[0] == "text" || $type[0] == "")
+		// Group listing
+		// Cache groups
+		$query = $db->simple_select("settinggroups", "*", "gid = '".intval($mybb->input['gid'])."'");
+		$groupinfo = $db->fetch_array($query);
+		$cache_groups[$groupinfo['gid']] = $groupinfo;
+		
+		if(!$db->num_rows($query))
 		{
-			$setting_code = $form->generate_text_box($element_name, $setting['value'], array('id' => $element_id));
+			$page->output_error($lang->error_invalid_gid2);
 		}
-		else if($type[0] == "textarea")
+		
+		// Cache settings
+		$query = $db->simple_select("settings", "*", "gid='".intval($mybb->input['gid'])."'", array('order_by' => 'disporder'));
+		while($setting = $db->fetch_array($query))
 		{
-			$setting_code = $form->generate_text_area($element_name, $setting['value'], array('id' => $element_id));
+			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
 		}
-		else if($type[0] == "yesno")
+		
+		// Page header
+		$page->add_breadcrumb_item($groupinfo['title']);
+		$page->output_header($lang->board_settings." - {$groupinfo['title']}");
+		
+		$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
+	
+		echo $form->generate_hidden_field("gid", $group['gid']);
+	}
+	else
+	{
+		// All settings list
+		// Cache groups
+		$query = $db->simple_select("settinggroups", "*", "", array('order_by' => 'disporder'));
+		while($group = $db->fetch_array($query))
 		{
-			$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], false, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
+			$cache_groups[$group['gid']] = $group;
 		}
-		else if($type[0] == "onoff")
+		
+		if(!$db->num_rows($query))
 		{
-			$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], false, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
+			$page->output_error($lang->error_invalid_gid2);
 		}
-		else if($type[0] == "cpstyle")
+		
+		// Cache settings
+		$query = $db->simple_select("settings", "*", "", array('order_by' => 'disporder'));
+		while($setting = $db->fetch_array($query))
 		{
-			$dir = @opendir($config['admindir']."/styles");
-			while($folder = readdir($dir))
+			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
+		}
+		
+		// Page header
+		$page->add_breadcrumb_item($lang->show_all_settings);
+		$page->output_header($lang->board_settings." - {$lang->show_all_settings}");
+		
+		$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
+	}
+
+	// Build rest of page
+	$buttons[] = $form->generate_submit_button($lang->save_settings);
+	foreach($cache_groups as $groupinfo)
+	{
+		$form_container = new FormContainer($groupinfo['title']);
+		
+		foreach($cache_settings[$groupinfo['gid']] as $setting)
+		{
+			$options = "";
+			$type = explode("\n", $setting['optionscode']);
+			$type[0] = trim($type[0]);
+			$element_name = "upsetting[{$setting['sid']}]";
+			$element_id = "setting_{$setting['name']}";
+			if($type[0] == "text" || $type[0] == "")
 			{
-				if($file != "." && $file != ".." && @file_exists($config['admindir']."/styles/$folder/main.css"))
-				{
-					$folders[$folder] = $folder;
-				}
+				$setting_code = $form->generate_text_box($element_name, $setting['value'], array('id' => $element_id));
 			}
-			closedir($dir);
-			ksort($folders);
-			$setting_code = $form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id));
-		}
-		else if($type[0] == "language") 
-		{
-			$languages = $lang->get_languages();
-			$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
-		}
-		else if($type[0] == "adminlanguage") 
-		{
-			$languages = $lang->get_languages(1);
-			$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
-		}
-		else if($type[0] == "php")
-		{
-			$setting['optionscode'] = substr($setting['optionscode'], 3);
-			eval("\$setting_code = \"".$setting['optionscode']."\";");
-		}
-		else
-		{
-			for($i=0; $i < count($type); $i++)
+			else if($type[0] == "textarea")
 			{
-				$optionsexp = explode("=", $type[$i]);
-				if(!$optionsexp[1])
-				{
-					continue;
-				}
-				if($type[0] == "select")
-				{
-					$option_list[$optionsexp[0]] = $optionsexp[1];
-				}
-				else if($type[0] == "radio")
-				{
-					if($setting['value'] == $optionsexp[0])
-					{
-						$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
-					}
-					else
-					{
-						$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
-					}
-				}
-				else if($type[0] == "checkbox")
-				{
-					if($setting['value'] == $optionsexp[0])
-					{
-						$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
-					}
-					else
-					{
-						$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
-					}
-				}
+				$setting_code = $form->generate_text_area($element_name, $setting['value'], array('id' => $element_id));
 			}
-			if($type[0] == "select")
+			else if($type[0] == "yesno")
 			{
-				$setting_code = $form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id));
+				$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], false, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
+			}
+			else if($type[0] == "onoff")
+			{
+				$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], false, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
+			}
+			else if($type[0] == "cpstyle")
+			{
+				$dir = @opendir($config['admindir']."/styles");
+				while($folder = readdir($dir))
+				{
+					if($file != "." && $file != ".." && @file_exists($config['admindir']."/styles/$folder/main.css"))
+					{
+						$folders[$folder] = $folder;
+					}
+				}
+				closedir($dir);
+				ksort($folders);
+				$setting_code = $form->generate_select_box($element_name, $folders, $setting['value'], array('id' => $element_id));
+			}
+			else if($type[0] == "language") 
+			{
+				$languages = $lang->get_languages();
+				$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
+			}
+			else if($type[0] == "adminlanguage") 
+			{
+				$languages = $lang->get_languages(1);
+				$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
+			}
+			else if($type[0] == "php")
+			{
+				$setting['optionscode'] = substr($setting['optionscode'], 3);
+				eval("\$setting_code = \"".$setting['optionscode']."\";");
 			}
 			else
 			{
-				$setting_code = implode("<br />", $option_list);
+				for($i=0; $i < count($type); $i++)
+				{
+					$optionsexp = explode("=", $type[$i]);
+					if(!$optionsexp[1])
+					{
+						continue;
+					}
+					if($type[0] == "select")
+					{
+						$option_list[$optionsexp[0]] = $optionsexp[1];
+					}
+					else if($type[0] == "radio")
+					{
+						if($setting['value'] == $optionsexp[0])
+						{
+							$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+						}
+						else
+						{
+							$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
+						}
+					}
+					else if($type[0] == "checkbox")
+					{
+						if($setting['value'] == $optionsexp[0])
+						{
+							$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+						}
+						else
+						{
+							$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
+						}
+					}
+				}
+				if($type[0] == "select")
+				{
+					$setting_code = $form->generate_select_box($element_name, $option_list, $setting['value'], array('id' => $element_id));
+				}
+				else
+				{
+					$setting_code = implode("<br />", $option_list);
+				}
+				$option_list = array();
 			}
-			$option_list = array();
+			// Do we have a custom language variable for this title or description?
+			$title_lang = "setting_".$setting['name'];
+			$desc_lang = $title_lang."_desc";
+			if($lang->$title_lang)
+			{
+				$setting['title'] = $lang->$title_lang;
+			}
+			if($lang->$desc_lang)
+			{
+				$setting['description'] = $lang->$desc_lang;
+			}
+			$form_container->output_row($setting['title'], $setting['description'], $setting_code, '', array(), array('id' => 'row_'.$element_id));
 		}
-		// Do we have a custom language variable for this title or description?
-		$title_lang = "setting_".$setting['name'];
-		$desc_lang = $title_lang."_desc";
-		if($lang->$title_lang)
-		{
-			$setting['title'] = $lang->$title_lang;
-		}
-		if($lang->$desc_lang)
-		{
-			$setting['description'] = $lang->$desc_lang;
-		}
-		$form_container->output_row($setting['title'], $setting['description'], $setting_code, '', array(), array('id' => 'row_'.$element_id));
+		$form_container->end();
+		
+		$form->output_submit_wrapper($buttons);
+		echo '<br />';
 	}
-	$form_container->end();
-
-	$buttons[] = $form->generate_submit_button($lang->save_settings);
-	
-	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
@@ -895,6 +978,19 @@ if(!$mybb->input['action'])
 	
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
+	
+	// Search form
+	echo "<div style=\"text-align: right;\">";
+	$search = new Form("index.php", 'get', 0, 'settings_search', 'settings_search');
+	$sid = explode('=', SID);
+	echo $search->generate_hidden_field('adminsid', $sid[1]);
+	echo $search->generate_hidden_field('module', 'config/settings');
+	echo $search->generate_hidden_field('action', 'change');
+	echo $search->generate_text_box('search', $lang->settings_search, array('id' => 'search'));
+	echo $search->generate_submit_button($lang->go);
+	$search->end();
+	echo "<small><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change\">{$lang->show_all_settings}</a></small>";
+	echo "</div>\n";
 
 	$table = new Table;
 	$table->construct_header($lang->setting_groups);
@@ -926,6 +1022,21 @@ if(!$mybb->input['action'])
 	}
 	$table->output($lang->board_settings);
 
+	echo '<script type="text/javascript">
+	Event.observe($("search"), "click", function() {
+		if($("search").value == "'.$lang->settings_search.'")
+		{
+			$("search").value = "";
+		}
+	});
+	Event.observe($("search"), "blur", function() {
+		if($("search").value == "")
+		{
+			$("search").value = "'.$lang->settings_search.'";
+		}
+	});
+	</script>
+	';
 	$page->output_footer();
 }
 ?>

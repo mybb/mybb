@@ -159,6 +159,10 @@ if(!$mybb->input['action'])
 	{
 		$badword['badword'] = htmlspecialchars_uni($badword['badword']);
 		$badword['replacement'] = htmlspecialchars_uni($badword['replacement']);
+		if(!$badword['replacement'])
+		{
+			$badword['replacement'] = '*****';
+		}
 		$table->construct_cell($badword['badword']);
 		$table->construct_cell($badword['replacement']);
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}\">{$lang->edit}</a>", array("class" => "align_center"));

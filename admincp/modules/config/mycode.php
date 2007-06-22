@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->custom_mycode, "index.php?".SID."&module=config/mycode");
+$page->add_breadcrumb_item($lang->mycode, "index.php?".SID."&module=config/mycode");
 
 if($mybb->input['action'] == "toggle_status")
 {
@@ -139,7 +139,7 @@ if($mybb->input['action'] == "add")
 	echo "<br />\n";
 	$form_container = new FormContainer($lang->sandbox);
 	$form_container->output_row($lang->sandbox_desc);
-	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->input['test_value'], array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value', array('id' => 'spinhere'));
+	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->input['test_value'], array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value');
 	$form_container->output_row($lang->result_html, $lang->result_html_desc, $form->generate_text_area('result_html', $sandbox['html'], array('id' => 'result_html', 'disabled' => 1)), 'result_html');
 	$form_container->output_row($lang->result_actual, $lang->result_actual_desc, "<div id=\"result_actual\">{$sandbox['actual']}</div>");
 	$form_container->end();
@@ -180,6 +180,12 @@ if($mybb->input['action'] == "edit")
 		if(!trim($mybb->input['replacement']))
 		{
 			$errors[] = $lang->error_missing_replacement;
+		}
+		
+		if($mybb->input['test'])
+		{
+			$errors[] = $lang->changes_not_saved;
+			$sandbox = test_regex($mybb->input['regex'], $mybb->input['replacement'], $mybb->input['test_value']);
 		}
 
 		if(!$errors)
@@ -234,7 +240,7 @@ if($mybb->input['action'] == "edit")
 	echo "<br />\n";
 	$form_container = new FormContainer($lang->sandbox);
 	$form_container->output_row($lang->sandbox_desc);
-	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->input['test_value'], array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value', array('id' => 'spinhere'));
+	$form_container->output_row($lang->test_value, $lang->test_value_desc, $form->generate_text_area('test_value', $mybb->input['test_value'], array('id' => 'test_value'))."<br />".$form->generate_submit_button($lang->test, array('id' => 'test', 'name' => 'test')), 'test_value');
 	$form_container->output_row($lang->result_html, $lang->result_html_desc, $form->generate_text_area('result_html', $sandbox['html'], array('id' => 'result_html', 'disabled' => 1)), 'result_html');
 	$form_container->output_row($lang->result_actual, $lang->result_actual_desc, "<div id=\"result_actual\">{$sandbox['actual']}</div>");
 	$form_container->end();
@@ -305,18 +311,20 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("mycode", "*", "", array('order_by' => 'parseorder'));
 	while($mycode = $db->fetch_array($query))
 	{
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br /><small>{$mycode['description']}</small>");
-
-		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
-		$popup->add_item($lang->edit_mycode, "index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}");
 		if($mycode['active'] == 'yes')
 		{
 			$phrase = $lang->deactivate_mycode;
+			$indicator = '';
 		}
 		else
 		{
 			$phrase = $lang->activate_mycode;
+			$indicator = "<div class=\"float_right\"><small>{$lang->deactivated}</small></div>";
 		}
+		$table->construct_cell("{$indicator}<strong><a href=\"index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br /><small>{$mycode['description']}</small>");
+
+		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
+		$popup->add_item($lang->edit_mycode, "index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}");
 		$popup->add_item($phrase, "index.php?".SID."&amp;module=config/mycode&amp;action=toggle_status&amp;cid={$mycode['cid']}");
 		$popup->add_item($lang->delete_mycode, "index.php?".SID."&amp;module=config/mycode&amp;action=delete&amp;cid={$mycode['cid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_mycode_deletion}')");
 		$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
@@ -337,7 +345,7 @@ if(!$mybb->input['action'])
 function test_regex($regex, $replacement, $test)
 {
 	$array = array();
-	$array['actual'] = preg_replace("#".$regex."#si", $replacement, $test);
+	$array['actual'] = @preg_replace("#".$regex."#si", $replacement, $test);
 	$array['html'] = htmlspecialchars($array['actual']);
 	return $array;
 }

@@ -78,10 +78,27 @@ if($mybb->input['action'] == "add")
 		$mybb->input['icon'] = "images/attachtypes/";
 	}
 	
+	// PHP settings
+	$upload_max_filesize = @ini_get('upload_max_filesize');
+	$post_max_size = @ini_get('post_max_size');
+	$limit_string = '';
+	if($upload_max_filesize || $post_max_size)
+	{
+		$limit_string = '<br /><br />'.$lang->limit_intro;
+		if($upload_max_filesize)
+		{
+			$limit_string .= '<br />'.sprintf($lang->limit_upload_max_filesize, $upload_max_filesize);
+		}
+		if($post_max_size)
+		{
+			$limit_string .= '<br />'.sprintf($lang->limit_post_max_size, $post_max_size);
+		}
+	}
+	
 	$form_container = new FormContainer($lang->add_new_attachment_type);
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
@@ -161,10 +178,27 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $attachment_type;
 	}
 	
+	// PHP settings
+	$upload_max_filesize = @ini_get('upload_max_filesize');
+	$post_max_size = @ini_get('post_max_size');
+	$limit_string = '';
+	if($upload_max_filesize || $post_max_size)
+	{
+		$limit_string = '<br /><br />'.$lang->limit_intro;
+		if($upload_max_filesize)
+		{
+			$limit_string .= '<br />'.sprintf($lang->limit_upload_max_filesize, $upload_max_filesize);
+		}
+		if($post_max_size)
+		{
+			$limit_string .= '<br />'.sprintf($lang->limit_post_max_size, $post_max_size);
+		}
+	}
+	
 	$form_container = new FormContainer($lang->edit_attachment_type);
 	$form_container->output_row($lang->file_extension." <em>*</em>", $lang->file_extension_desc, $form->generate_text_box('extension', $mybb->input['extension'], array('id' => 'extension')), 'extension');
 	$form_container->output_row($lang->mime_type." <em>*</em>", $lang->mime_type_desc, $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
+	$form_container->output_row($lang->maximum_file_size, $lang->maximum_file_size_desc.$limit_string, $form->generate_text_box('maxsize', $mybb->input['maxsize'], array('id' => 'maxsize')), 'maxsize');
 	$form_container->output_row($lang->attachment_icon, $lang->attachment_icon_desc, $form->generate_text_box('icon', $mybb->input['icon'], array('id' => 'icon')), 'icon');
 
 	$form_container->end();
