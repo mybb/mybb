@@ -834,7 +834,7 @@ class Moderation
 			$sqlarray = array(
 				"tid" => $tid,
 			);
-			$db->update_query("polls", $sqlarray, "tid='".intval($mergethread['tid'])."'");
+			$db->update_query(TABLE_PREFIX."polls", $sqlarray, "tid='".intval($mergethread['tid'])."'");
 		}
 		else
 		{
@@ -842,8 +842,8 @@ class Moderation
 			$pollcheck = $db->fetch_array($query);
 			if(!$pollcheck['poll'])
 			{
-				$db->delete_query("polls", "pid='{$mergethread['poll']}'");
-				$db->delete_query("pollvotes", "pid='{$mergethread['poll']}'");
+				$db->delete_query(TABLE_PREFIX."polls", "pid='{$mergethread['poll']}'");
+				$db->delete_query(TABLE_PREFIX."pollvotes", "pid='{$mergethread['poll']}'");
 			}
 		}
 
@@ -854,18 +854,18 @@ class Moderation
 			"fid" => $thread['fid'],
 			"replyto" => 0
 		);
-		$db->update_query("posts", $sqlarray, "tid='$mergetid'");
+		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$mergetid'");
 		
 		$pollsql['subject'] = $subject;
-		$db->update_query("threads", $pollsql, "tid='$tid'");
+		$db->update_query(TABLE_PREFIX."threads", $pollsql, "tid='$tid'");
 		$sqlarray = array(
 			"closed" => "moved|$tid",
 		);
-		$db->update_query("threads", $sqlarray, "closed='moved|$mergetid'");
+		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "closed='moved|$mergetid'");
 		$sqlarray = array(
 			"tid" => $tid,
 		);
-		$db->update_query("threadsubscriptions", $sqlarray, "tid='$mergetid'");
+		$db->update_query(TABLE_PREFIX."threadsubscriptions", $sqlarray, "tid='$mergetid'");
 		update_first_post($tid);
 
 		$this->delete_thread($mergetid);
@@ -883,7 +883,7 @@ class Moderation
 			if($mergethread['visible'] == 0)
 			{
 				$updated_stats = array(
-					"unapprovedposts" => "-".($mergethread['replies']+$mergethread['unapprovedposts'])
+					"unapprovedposts" => '-'.($mergethread['replies']+$mergethread['unapprovedposts'])
 				);
 			}
 			else
@@ -899,7 +899,7 @@ class Moderation
 			if($thread['visible'] == 0)
 			{
 				$updated_stats = array(
-					"unapprovedposts" => "+".($mergethread['replies']+$mergethread['unapprovedposts'])
+					"unapprovedposts" => '+'.($mergethread['replies']+$mergethread['unapprovedposts'])
 				);
 			}
 			else
