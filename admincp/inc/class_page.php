@@ -51,6 +51,9 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
+		echo "	<script type=\"text/javascript\">
+loading_text = \"{$lang->loading_text}\";
+</script>\n";
 		echo $this->extra_header;
 		echo "</head>\n";
 		echo "<body>\n";

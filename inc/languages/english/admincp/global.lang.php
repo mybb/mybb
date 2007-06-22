@@ -62,4 +62,7 @@ $l['go'] = "Go";
 // Access Denied
 $l['access_denied'] = "Access Denied";
 $l['access_denied_desc'] = "You do not have permission to access this part of the administration control panel.";
+
+// AJAX
+$l['loading_text'] = "Loading<br />Please wait...";
 ?>

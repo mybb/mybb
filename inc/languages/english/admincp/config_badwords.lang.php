@@ -16,10 +16,10 @@ $l['bad_word_desc'] = "Enter the word which you wish to be filtered";
 $l['replacement'] = "Replacement";
 $l['replacement_desc'] = "Enter the string which will replace the filtered word (If this is blank, asterisks will be shown)";
 $l['save_bad_word'] = "Save Filter";
-$l['no_bad_words'] = "There are no world filters currently set at this time.";
+$l['no_bad_words'] = "There are no word filters currently set at this time.";
 $l['add_bad_word'] = "Add a Filter";
 
-$l['error_missing_bad_word'] = "You did not enter a world filter.";
+$l['error_missing_bad_word'] = "You did not enter a word filter.";
 $l['error_invalid_bid'] = "The specified filter does not exist.";
 
 $l['success_added_bad_word'] = "The filter has successfully been added.";

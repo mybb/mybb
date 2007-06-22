@@ -81,6 +81,10 @@ function config_action_handler($manage)
 			$page->active_action = "mod_tools";
 			$action_file = "mod_tools.php";
 			break;
+		case "mycode":
+			$page->active_action = "mycode";
+			$action_file = "mycode.php";
+			break;
 		default:
 			$page->active_action = "settings";
 			$action_file = "settings.php";
