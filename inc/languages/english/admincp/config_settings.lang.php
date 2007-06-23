@@ -74,6 +74,7 @@ $l['error_duplicate_name'] = "The identifier specified has already been used for
 $l['error_duplicate_group_name'] = "The identifier specified has already been used for the \"{1}\" setting group -- it must be unique";
 $l['error_no_settings_found'] = "No settings were found for the specified search phrase.";
 $l['error_cannot_edit_default'] = "Default settings and groups may not be edited or removed.";
+$l['error_ajax_search'] = "There was a problem searching for settings:";
 
 $l['success_setting_added'] = "The setting has successfully been created.";
 $l['success_setting_updated'] = "The setting has successfully been updated.";

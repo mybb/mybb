@@ -100,6 +100,21 @@ if($mybb->input['action'] == "enable")
 
 if($mybb->input['action'] == "edit")
 {
+	if(!trim($mybb->input['pid']))
+	{
+		flash_message($lang->error_no_promo_id, 'error');
+		admin_redirect("index.php?".SID."&module=user/group_promotions");
+	}
+	
+	$query = $db->simple_select("promotions", "*", "pid = '{$mybb->input['pid']}'");
+	$promotion = $db->fetch_array($query);
+	
+	if(!$promotion)
+	{
+		flash_message($lang->error_invalid_promo_id, 'error');
+		admin_redirect("index.php?".SID."&module=user/group_promotions");
+	}
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -134,6 +149,15 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
+			if(in_array('*', $mybb->input['originalusergroup']))
+			{
+				$mybb->input['originalusergroup'] = '*';
+			}
+			else
+			{
+				$mybb->input['originalusergroup'] = implode(',', array_map('intval', $mybb->input['originalusergroup']));
+			}
+			
 			$update_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -151,25 +175,10 @@ if($mybb->input['action'] == "edit")
 				"logging" => intval($mybb->input['logging'])
 			);
 			
-			$db->update_query("promotions", $update_promotion, "pid = '{$mybb->input['pid']}'");
+			$db->update_query("promotions", $update_promotion, "pid = '".intval($mybb->input['pid'])."'");
 			flash_message($lang->success_promo_updated, 'success');
 			admin_redirect("index.php?".SID."&module=user/group_promotions");
 		}
-	}
-	
-	if(!trim($mybb->input['pid']))
-	{
-		flash_message($lang->error_no_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
-	}
-	
-	$query = $db->simple_select("promotions", "*", "pid = '{$mybb->input['pid']}'");
-	$promotion = $db->fetch_array($query);
-	
-	if(!$promotion)
-	{
-		flash_message($lang->error_invalid_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
 	}
 	
 	$page->add_breadcrumb_item($lang->edit_promotion);
@@ -183,7 +192,7 @@ if($mybb->input['action'] == "edit")
 
 	$page->output_nav_tabs($sub_tabs, 'edit_promotion');
 	$form = new Form("index.php?".SID."&amp;module=user/group_promotions&amp;action=edit", "post", "edit");
-	$form->generate_hidden_field("pid", $mybb->input['pid']);
+	echo $form->generate_hidden_field("pid", $mybb->input['pid']);
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -199,7 +208,7 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['posttype'] = $promotion['posttype'];
 		$mybb->input['timeregistered'] = $promotion['registered'];
 		$mybb->input['timeregisteredtype'] = $promotion['registeredtype'];
-		$mybb->input['originalusergroup'] = $promotion['originalusergroup'];
+		$mybb->input['originalusergroup'] = explode(',', $promotion['originalusergroup']);
 		$mybb->input['usergroupchangetype'] = $promotion['usergrouptype'];
 		$mybb->input['newusergroup'] = $promotion['newusergroup'];
 		$mybb->input['enabled'] = $promotion['enabled'];
@@ -216,11 +225,11 @@ if($mybb->input['action'] == "edit")
 		"timeregistered" => $lang->time_registered
 	);
 	
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 3)), 'requirements');
 	
 	$options_type = array(
-		">=" => $lang->greater_than_or_equal_to,
 		">" => $lang->greater_than,
+		">=" => $lang->greater_than_or_equal_to,
 		"=" => $lang->equal_to,
 		"<=" => $lang->less_than_or_equal_to,
 		"<" => $lang->less_than
@@ -242,14 +251,16 @@ if($mybb->input['action'] == "edit")
 	
 	$options = array();
 	
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'");
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	$options['*'] = $lang->all_user_groups;
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[(string)$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup')), 'originalusergroup');
-
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
+	
+	array_shift($options); // Remove the all usergroups option
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
 
 	$options = array(
@@ -259,9 +270,9 @@ if($mybb->input['action'] == "edit")
 	
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
 	
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->update_promotion);
@@ -308,6 +319,15 @@ if($mybb->input['action'] == "add")
 		
 		if(!$errors)
 		{
+			if(in_array('*', $mybb->input['originalusergroup']))
+			{
+				$mybb->input['originalusergroup'] = '*';
+			}
+			else
+			{
+				$mybb->input['originalusergroup'] = implode(',', array_map('intval', $mybb->input['originalusergroup']));
+			}
+			
 			$new_promotion = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -366,11 +386,11 @@ if($mybb->input['action'] == "add")
 		"timeregistered" => $lang->time_registered
 	);
 	
-	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true)), 'requirements');
+	$form_container->output_row($lang->promo_requirements." <em>*</em>", $lang->promo_requirements_desc, $form->generate_select_box('requirements[]', $options, $mybb->input['requirements'], array('id' => 'requirements', 'multiple' => true, 'size' => 3)), 'requirements');
 	
 	$options_type = array(
-		">=" => $lang->greater_than_or_equal_to,
 		">" => $lang->greater_than,
+		">=" => $lang->greater_than_or_equal_to,
 		"=" => $lang->equal_to,
 		"<=" => $lang->less_than_or_equal_to,
 		"<" => $lang->less_than
@@ -391,14 +411,16 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype[]", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
 	$options = array();
 	
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'");
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	$options['*'] = $lang->all_user_groups;
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[$usergroup['gid']] = $usergroup['title'];
+		$options[(string)$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup')), 'originalusergroup');
+	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
 
+	array_shift($options); // Remove all usergroups option
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
 	
 	$options = array(
@@ -408,9 +430,9 @@ if($mybb->input['action'] == "add")
 	
 	$form_container->output_row($lang->user_group_change_type." <em>*</em>", $lang->user_group_change_type_desc, $form->generate_select_box('usergroupchangetype', $options, $mybb->input['usergroupchangetype'], array('id' => 'usergroupchangetype')), 'usergroupchangetype');
 	
-	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled']));
+	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
 	
-	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging']));
+	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->add_new_promotion);
@@ -512,7 +534,7 @@ if(!$mybb->input['action'])
 	{
 		$promotion['title'] = htmlspecialchars_uni($promotion['title']);
 		$promotion['description'] = htmlspecialchars_uni($promotion['description']);
-		$table->construct_cell("<div><strong><a href=\"index.php?".SID."&amp;module=users/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
+		$table->construct_cell("<div><strong><a href=\"index.php?".SID."&amp;module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
 
 		$popup = new PopupMenu("promotion_{$promotion['pid']}", $lang->options);
 		$popup->add_item($lang->edit_promotion, "index.php?".SID."&amp;module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");

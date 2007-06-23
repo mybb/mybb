@@ -261,7 +261,6 @@ class SmtpMail extends MailHandler
 		// DIRECTORY_SEPARATOR checks if running windows
 		if(function_exists('stream_set_timeout') && DIRECTORY_SEPARATOR != '\\')
 		{
-		{
 			@stream_set_timeout($this->connection, $this->timeout, 0);
 		}
 

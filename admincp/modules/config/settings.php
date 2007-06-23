@@ -725,8 +725,16 @@ if($mybb->input['action'] == "change")
 		
 		if(!$db->num_rows($query))
 		{
-			flash_message($lang->error_no_settings_found, 'error');
-			admin_redirect("index.php?".SID."&module=config/settings");
+			if(isset($mybb->input['ajax_search']))
+			{
+				echo("<error>{$lang->error_no_settings_found}</error>");
+				exit;
+			}
+			else
+			{
+				flash_message($lang->error_no_settings_found, 'error');
+				admin_redirect("index.php?".SID."&module=config/settings");	
+			}
 		}
 		
 		// Cache groups
@@ -738,9 +746,12 @@ if($mybb->input['action'] == "change")
 			$cache_groups[$group['gid']] = $group;
 		}
 		
-		// Page header
-		$page->add_breadcrumb_item($lang->settings_search);
-		$page->output_header($lang->board_settings." - {$lang->settings_search}");
+		// Page header only if not AJAX
+		if(!isset($mybb->input['ajax_search']))
+		{
+			$page->add_breadcrumb_item($lang->settings_search);
+			$page->output_header($lang->board_settings." - {$lang->settings_search}");
+		}
 		
 		$form = new Form("index.php?".SID."&amp;module=config/settings&amp;action=change", "post", "change");
 	
@@ -927,52 +938,12 @@ if($mybb->input['action'] == "change")
 	}
 	$form->end();
 	
-	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
-	<script type="text/javascript">
-		Event.observe(window, "load", function() {
-			
-			new Peeker(document.getElementsByClassName("setting_boardclosed"), $("row_setting_boardclosed_reason"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_gzipoutput"), $("row_setting_gziplevel"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorlogmedium"), /on/, true);
-			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errortypemedium"), /on/, true);
-			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorloglocation"), /on/, true);
-			new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
-			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarityrating"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_disableregs"), $("row_setting_regtype"), /no/, true);
-			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /yes/, true);
-			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
-			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
-			new Peeker(document.getElementsByClassName("setting_postfloodcheck"), $("row_setting_postfloodsecs"), /yes/, true);
-			new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false);
-			new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false);
-			new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false);
-			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_membersperpage"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_default_memberlist_order"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablereputation"), $("row_setting_repsperpage"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowhtml"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowmycode"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowsmilies"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowimgcode"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_publiceventcolor"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_privateeventcolor"), /yes/, true);
-			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertertot"), /on/, true);
-			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertercols"), /on/, true);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
-			new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
-
-		});
-	</script>';
+	print_setting_peekers();
 	
-	$page->output_footer();
+	if(!isset($mybb->input['ajax_search']))
+	{
+		$page->output_footer();
+	}
 }
 
 if(!$mybb->input['action'])
@@ -1019,6 +990,7 @@ if(!$mybb->input['action'])
 	$search->end();
 	echo "</div>\n";
 
+	echo '<div id="search_results">&nbsp;</div><div id="group_list">';
 	$table = new Table;
 	$table->construct_header($lang->setting_groups);
 
@@ -1048,22 +1020,134 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->board_settings}");
+	
+	echo '</div>';
 
+	$sid = explode('=', SID);
 	echo '<script type="text/javascript">
-	Event.observe($("search"), "click", function() {
-		if($("search").value == "'.$lang->settings_search.'")
+var SettingSearch = Class.create();
+SettingSearch.prototype = {
+	
+	spinner: null,
+	form: null,
+	result_div: null,
+	hide_div: null,
+	search_box: null,
+
+	initialize: function(form, search_box, result_div, hide_div)
+	{
+		Event.observe(form, "submit", this.onSubmit.bind(this));
+		this.form = form;
+		this.result_div = result_div;
+		this.hide_div = hide_div;
+		result_div.style.display = "none";
+		this.search_box = search_box;
+		Event.observe(search_box, "click", function() {
+			if($("search").value == "'.$lang->settings_search.'")
+			{
+				$("search").value = "";
+			}
+		});
+		Event.observe(search_box, "blur", function() {
+			if($("search").value == "")
+			{
+				$("search").value = "'.$lang->settings_search.'";
+				$("search_results").style.display = "none";
+				$("group_list").style.display = "";
+			}
+		});
+	},
+	
+	onSubmit: function(e)
+	{
+		Event.stop(e);
+		if(this.search_box.value != "")
 		{
-			$("search").value = "";
+			this.spinner = new ActivityIndicator("body", {image: "../images/spinner_big.gif"});
+			pars = "'.SID.'&module=config/settings&action=change&ajax_search=1&search="+encodeURIComponent(this.search_box.value);
+			new Ajax.Request("index.php", {
+			    method: "get",
+				parameters: pars,
+			    onComplete: this.onComplete.bind(this)
+			});
 		}
-	});
-	Event.observe($("search"), "blur", function() {
-		if($("search").value == "")
+	},
+
+	onComplete: function(request)
+	{
+		if(request.responseText.match(/<error>(.*)<\/error>/))
 		{
-			$("search").value = "'.$lang->settings_search.'";
+			message = request.responseText.match(/<error>(.*)<\/error>/);
+			if(!message[1])
+			{
+				message[1] = "An unknown error occurred.";
+			}
+			alert("'.$lang->error_ajax_search.' "+message[1]);
 		}
-	});
-	</script>
-	';
+		else if(request.responseText)
+		{
+			this.result_div.style.display = "";
+			this.hide_div.style.display = "none";
+			this.result_div.innerHTML = request.responseText;
+			loadPeekers();
+		}
+		this.spinner.destroy();
+	}
+}
+new SettingSearch($("settings_search"), $("search"), $("search_results"), $("group_list"));
+</script>';
+	
+	print_setting_peekers();
 	$page->output_footer();
+}
+
+function print_setting_peekers()
+{
+	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+	<script type="text/javascript">
+		Event.observe(window, "load", function() {
+			loadPeekers();			
+		});
+		function loadPeekers()
+		{
+			new Peeker(document.getElementsByClassName("setting_boardclosed"), $("row_setting_boardclosed_reason"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_gzipoutput"), $("row_setting_gziplevel"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorlogmedium"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errortypemedium"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorloglocation"), /on/, true);
+			new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
+			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarityrating"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_disableregs"), $("row_setting_regtype"), /no/, true);
+			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /yes/, true);
+			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
+			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
+			new Peeker(document.getElementsByClassName("setting_postfloodcheck"), $("row_setting_postfloodsecs"), /yes/, true);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergefignore"), /[^0]/, false);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergeuignore"), /[^0]/, false);
+			new Peeker($("setting_postmergemins"), $("row_setting_postmergesep"), /[^0]/, false);
+			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_membersperpage"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_default_memberlist_sortby"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablememberlist"), $("row_setting_default_memberlist_order"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablereputation"), $("row_setting_repsperpage"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_allowcustomwarnings"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowhtml"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowmycode"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowsmilies"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowimgcode"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_publiceventcolor"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_privateeventcolor"), /yes/, true);
+			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertertot"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertercols"), /on/, true);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
+			new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
+		}
+	</script>';
 }
 ?>

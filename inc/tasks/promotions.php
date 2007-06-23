@@ -21,7 +21,7 @@ function task_promotions($task)
 		$sql_update = array();
 		
 		// Based on the promotion generate criteria for user selection
-		$requirements = explode(',', $promotions['requirements']);
+		$requirements = explode(',', $promotion['requirements']);
 		if(in_array('postcount', $requirements) && intval($promotion['posts']) > 0 && !empty($promotion['posttype']))
 		{
 			$sql_where .= "postnum {$promotion['posttype']} '{$promotion['posts']}'{$and}";
@@ -52,7 +52,7 @@ function task_promotions($task)
 					$regdate = $promotion['registered']*60*60*24*7*30;
 					break;
 				case "years":
-					$regdate = $promotion['registered']*60*60*24*7*30*12;
+					$regdate = $promotion['registered']*60*60*24*7*365;
 					break;
 				default:
 					$regdate = $promotion['registered']*60*60*24;
@@ -62,16 +62,16 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 		
-		if(!empty($promotion['originalusergroup']))
+		if(!empty($promotion['originalusergroup']) && $promotion['originalusergroup'] != '*')
 		{
-			$sql_where .= "usergroup = '{$promotion['originalusergroup']}'{$and}");
+			$sql_where .= "usergroup IN ({$promotion['originalusergroup']}){$and}";
 				
 			$and = " AND ";
 		}
 		
 		if(!empty($promotion['newusergroup']))
 		{
-			$sql_where .= "usergroup != '{$promotion['newusergroup']}'{$and}");
+			$sql_where .= "usergroup != '{$promotion['newusergroup']}'{$and}";
 					
 			$and = " AND ";
 		}

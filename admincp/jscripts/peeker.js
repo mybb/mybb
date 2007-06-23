@@ -26,12 +26,12 @@ Peeker.prototype = {
             {
                 if(this.controller[i].checked && this.controller[i].value.match(this.match))
                 {
-                    this.domain.style.display = '';
+                    Element.show(this.domain);
                     return;
                 }
             }
             // Nothing found
-            this.domain.style.display = 'none';
+            Element.hide(this.domain);
 		}
 		else
 		{
