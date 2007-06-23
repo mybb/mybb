@@ -126,11 +126,11 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
-	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
-	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
-	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
+	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
+	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
+	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_profile_field);
@@ -260,11 +260,11 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->field_type." <em>*</em>", $lang->field_type_desc, $form->generate_select_box('fieldtype', $select_list, $mybb->input['fieldtype'], array('id' => 'fieldtype')), 'fieldtype');
 	$form_container->output_row($lang->maximum_length, $lang->maximum_length_desc, $form->generate_text_box('maxlength', $mybb->input['maxlength'], array('id' => 'maxlength')), 'maxlength', array(), array('id' => 'row_maxlength'));
 	$form_container->output_row($lang->field_length, $lang->field_length_desc, $form->generate_text_box('length', $mybb->input['length'], array('id' => 'length')), 'length', array(), array('id' => 'row_fieldlength'));
-	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options']), 'options', array(), array('id' => 'row_options'));
+	$form_container->output_row($lang->selectable_options, $lang->selectable_options_desc, $form->generate_text_area('options', $mybb->input['options'], array('id' => 'options')), 'options', array(), array('id' => 'row_options'));
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']), 'required');
-	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']), 'editable');
-	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']), 'hidden');
+	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
+	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
+	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_profile_field);

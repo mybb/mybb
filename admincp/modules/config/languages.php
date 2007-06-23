@@ -449,7 +449,7 @@ if(!$mybb->input['action'])
 	);
 	$sub_tabs['find_language'] = array(
 		'title' => $lang->find_language_packs,
-		'link' => "http://newsite.mybboard.net/downloads/translations",
+		'link' => "http://mybboard.net/downloads/translations",
 		'target' => "_blank"
 	);
 

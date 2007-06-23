@@ -102,8 +102,8 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
-		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']), 'translation');
+		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']));
 		$form_container->end();
 	
 		$buttons[] = $form->generate_submit_button($lang->add_section);
@@ -214,8 +214,8 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->input['document'], array('id' => 'document')), 'document');
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
-		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']), 'translation');
+		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']));
 		$form_container->end();
 	
 		$buttons[] = $form->generate_submit_button($lang->add_document);
@@ -325,8 +325,8 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
-		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']), 'translation');
+		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']));
 		$form_container->end();
 	
 		$buttons[] = $form->generate_submit_button($lang->edit_section);
@@ -447,8 +447,8 @@ if($mybb->input['action'] == "edit")
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->input['document'], array('id' => 'document')), 'document');
 		$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']), 'enabled');
-		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']), 'translation');
+		$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio('enabled', $mybb->input['enabled']));
+		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']));
 		$form_container->end();
 	
 		$buttons[] = $form->generate_submit_button($lang->edit_document);

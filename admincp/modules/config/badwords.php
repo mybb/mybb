@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->bad_words, "index.php?".SID."&module=config/badwords");
+$page->add_breadcrumb_item($lang->bad_words, "index.php?".SID."&amp;module=config/badwords");
 
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
@@ -144,7 +144,8 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['badwords'] = array(
 		'title' => $lang->bad_word_filters,
-		'description' => $lang->bad_word_filters_desc
+		'description' => $lang->bad_word_filters_desc,
+		'link' => "index.php?".SID."&amp;module=config/badwords"
 	);
 
 	$page->output_nav_tabs($sub_tabs, "badwords");

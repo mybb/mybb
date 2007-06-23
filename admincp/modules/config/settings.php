@@ -834,10 +834,10 @@ if($mybb->input['action'] == "change")
 			}
 			else if($type[0] == "cpstyle")
 			{
-				$dir = @opendir($config['admindir']."/styles");
+				$dir = @opendir(MYBB_ROOT.$config['admin_dir']."/styles");
 				while($folder = readdir($dir))
 				{
-					if($file != "." && $file != ".." && @file_exists($config['admindir']."/styles/$folder/main.css"))
+					if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
 					{
 						$folders[$folder] = $folder;
 					}
@@ -1017,7 +1017,6 @@ if(!$mybb->input['action'])
 	echo $search->generate_text_box('search', $lang->settings_search, array('id' => 'search'));
 	echo $search->generate_submit_button($lang->go);
 	$search->end();
-	echo "<small><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change\">{$lang->show_all_settings}</a></small>";
 	echo "</div>\n";
 
 	$table = new Table;
@@ -1048,7 +1047,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} {$lang->settings})<br /><small>{$group['description']}</small>");
 		$table->construct_row();
 	}
-	$table->output($lang->board_settings);
+	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?".SID."&amp;module=config/settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->board_settings}");
 
 	echo '<script type="text/javascript">
 	Event.observe($("search"), "click", function() {

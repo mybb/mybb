@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->mycode, "index.php?".SID."&module=config/mycode");
+$page->add_breadcrumb_item($lang->mycode, "index.php?".SID."&amp;module=config/mycode");
 
 if($mybb->input['action'] == "toggle_status")
 {
@@ -126,9 +126,9 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->add_mycode);
 	$form_container->output_row($lang->title." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description, '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'path');
+	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
 	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
-	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']), 'active');
+	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
 	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_text_box('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
 	$form_container->end();
 
@@ -145,9 +145,12 @@ if($mybb->input['action'] == "add")
 	$form_container->end();
 	echo '<script type="text/javascript" src="./jscripts/mycode_sandbox.js"></script>';
 	echo '<script type="text/javascript">
+//<![CDATA[
 Event.observe(window, "load", function() {
     new MyCodeSandbox("index.php?'.SID.'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
-});</script>';
+});
+//]]>
+</script>';
 
 	$form->end();
 
@@ -226,9 +229,9 @@ if($mybb->input['action'] == "edit")
 	$form_container = new FormContainer($lang->edit_mycode);
 	$form_container->output_row($lang->title." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description, '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'path');
+	$form_container->output_row($lang->regular_expression." <em>*</em>", $lang->regular_expression_desc.'<br /><strong>'.$lang->example.'</strong> \[b\](.*?)\[/b\]', $form->generate_text_area('regex', $mybb->input['regex'], array('id' => 'regex')), 'regex');
 	$form_container->output_row($lang->replacement." <em>*</em>", $lang->replacement_desc.'<br /><strong>'.$lang->example.'</strong> &lt;strong&gt;$1&lt;/strong&gt;', $form->generate_text_area('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
-	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']), 'active');
+	$form_container->output_row($lang->enabled." <em>*</em>", '', $form->generate_yes_no_radio('active', $mybb->input['active']));
 	$form_container->output_row($lang->parse_order, $lang->parse_order_desc, $form->generate_text_box('parseorder', $mybb->input['parseorder'], array('id' => 'parseorder')), 'parseorder');
 	$form_container->end();
 
@@ -246,9 +249,13 @@ if($mybb->input['action'] == "edit")
 	$form_container->end();
 	echo '<script type="text/javascript" src="./jscripts/mycode_sandbox.js"></script>';
 	echo '<script type="text/javascript">
+
 Event.observe(window, "load", function() {
+//<![CDATA[
     new MyCodeSandbox("index.php?'.SID.'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
-});</script>';
+});
+//]]>
+</script>';
 
 	$form->end();
 
@@ -293,13 +300,13 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['mycode'] = array(
 		'title'	=> $lang->mycode,
-		'link'	=> "index.php?".SID."&amp;module=config/mycode",
-		'description'	=> $lang->mycode_desc
+		'link' => "index.php?".SID."&amp;module=config/mycode",
+		'description' => $lang->mycode_desc
 	);
 
 	$sub_tabs['add_new_mycode'] = array(
 		'title'	=> $lang->add_new_mycode,
-		'link'	=> "index.php?".SID."&amp;module=config/mycode&amp;action=add"
+		'link' => "index.php?".SID."&amp;module=config/mycode&amp;action=add"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'mycode');

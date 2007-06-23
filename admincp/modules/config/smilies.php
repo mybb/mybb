@@ -98,7 +98,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->text_replace." <em>*</em>", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']), 'showclickable');
+	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_smilie);
@@ -199,7 +199,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->text_replace." <em>*</em>", "", $form->generate_text_box('find', $mybb->input['find'], array('id' => 'find')), 'find');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 	$form_container->output_row($lang->display_order." <em>*</em>", $lang->display_order_desc, $form->generate_text_box('disporder', $mybb->input['disporder'], array('id' => 'disporder')), 'disporder');
-	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']), 'showclickable');
+	$form_container->output_row($lang->show_clickable." <em>*</em>", $lang->show_clickable_desc, $form->generate_yes_no_radio('showclickable', $mybb->input['showclickable']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_smilie);
