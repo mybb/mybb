@@ -84,6 +84,9 @@ function cpheader($title="", $donav=1, $onload="", $extraheaders="")
 	{
 		$htmltag = str_replace("<html", "<html lang=\"".$lang->settings['htmllang']."\"", $htmltag);
 	}
+
+	header("Content-type: text/html; charset={$lang->settings['charset']}");
+
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 	echo $htmltag;
 	echo "<head>\n";

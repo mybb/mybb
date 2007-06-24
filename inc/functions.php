@@ -74,6 +74,9 @@ function output_page($contents)
 			$contents = gzip_encode($contents);
 		}
 	}
+
+	header("Content-type: text/html; charset={$lang->settings['charset']}");
+
 	echo $contents;
 
 	$plugins->run_hooks("post_output_page");
