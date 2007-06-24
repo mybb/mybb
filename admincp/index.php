@@ -95,6 +95,8 @@ $lang->set_language($mybb->settings['cplanguage'], "admincp");
 // Load global language phrases
 $lang->load("global");
 
+header("Content-type: text/html; charset={$lang->settings['charset']}");
+
 $time = TIME_NOW;
 
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
@@ -225,7 +227,6 @@ if($mybb->usergroup['cancp'] != "yes" || !$mybb->user['uid'])
 {
 	unset($mybb->user);
 }
-
 
 if($mybb->user['uid'])
 {

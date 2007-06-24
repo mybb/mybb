@@ -18,42 +18,42 @@ function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
-	
+
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
 
 	if($mybb->usergroup['cancp'] == "yes")
 	{
-		$phptime = $maintimer->format($maintimer->totaltime - $querytime);
-		$querytime = $maintimer->format($querytime);
-
-		$percentphp = number_format((($phptime/$maintimer->totaltime) * 100), 2);
-		$percentsql = number_format((($querytime/$maintimer->totaltime) * 100), 2);
-
-		$phpversion = phpversion();
-
-		$serverload = get_server_load();
-
-		if(my_strpos(getenv("REQUEST_URI"), "?"))
-		{
-			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&amp;debug=1";
-		}
-		else
-		{
-			$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "?debug=1";
-		}
-
-		if($mybb->settings['gzipoutput'] != "no")
-		{
-			$gzipen = "Enabled";
-		}
-		else
-		{
-			$gzipen = "Disabled";
-		}
-
 		if($mybb->settings['extraadmininfo'] != "no")
 		{
+			$phptime = $maintimer->format($maintimer->totaltime - $querytime);
+			$querytime = $maintimer->format($querytime);
+
+			$percentphp = number_format((($phptime/$maintimer->totaltime) * 100), 2);
+			$percentsql = number_format((($querytime/$maintimer->totaltime) * 100), 2);
+
+			$phpversion = phpversion();
+
+			$serverload = get_server_load();
+
+			if(my_strpos(getenv("REQUEST_URI"), "?"))
+			{
+				$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "&amp;debug=1";
+			}
+			else
+			{
+				$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "?debug=1";
+			}
+
+			if($mybb->settings['gzipoutput'] != "no")
+			{
+				$gzipen = "Enabled";
+			}
+			else
+			{
+				$gzipen = "Disabled";
+			}
+
 			if(function_exists("memory_get_usage"))
 			{
 				$memory_usage = " / Memory Usage: ".get_friendly_size(memory_get_usage());
@@ -63,12 +63,13 @@ function output_page($contents)
 			$debugstuff = "Generated in $totaltime seconds ($percentphp% PHP / $percentsql% MySQL)<br />MySQL Queries: $db->query_count /  Global Parsing Time: $globaltime$memory_usage<br />$other<br />[<a href=\"$debuglink\" target=\"_blank\">advanced details</a>]<br />";
 			$contents = str_replace("<debugstuff>", $debugstuff, $contents);
 		}
+
 		if($mybb->debug_mode == true)
 		{
 			debug_page();
 		}
 	}
-	
+
 	$contents = str_replace("<debugstuff>", "", $contents);
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
@@ -83,6 +84,9 @@ function output_page($contents)
 			$contents = gzip_encode($contents);
 		}
 	}
+
+	header("Content-type: text/html; charset={$lang->settings['charset']}");
+
 	echo $contents;
 
 	$plugins->run_hooks("post_output_page");
@@ -1135,7 +1139,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 function check_forum_password($fid, $password="")
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang;
-	$showform = 1;
+	$showform = true;
 
 	if($password)
 	{
@@ -1144,29 +1148,29 @@ function check_forum_password($fid, $password="")
 			if($password == $mybb->input['pwverify'])
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']), null, true);
-				$showform = 0;
+				$showform = false;
 			}
 			else
 			{
 				eval("\$pwnote = \"".$templates->get("forumdisplay_password_wrongpass")."\";");
-				$showform = 1;
+				$showform = true;
 			}
 		}
 		else
 		{
 			if(!$_COOKIE['forumpass'][$fid] || ($_COOKIE['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $_COOKIE['forumpass'][$fid]))
 			{
-				$showform = 1;
+				$showform = true;
 			}
 			else
 			{
-				$showform = 0;
+				$showform = false;
 			}
 		}
 	}
 	else
 	{
-		$showform = 0;
+		$showform = false;
 	}
 
 	if($showform)

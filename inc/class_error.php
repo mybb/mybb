@@ -9,24 +9,26 @@
  * $Id$
  */
  
-// Set to 1 if recieving a blank page (template failure) 
+// Set to 1 if recieving a blank page (template failure).
 define("MANUAL_WARNINGS", 0);
  
-// Define Custom MyBB error handler constants with a value not used by php's error handler
+// Define Custom MyBB error handler constants with a value not used by php's error handler.
 define("MYBB_SQL", 20);
 define("MYBB_TEMPLATE", 30);
 define("MYBB_GENERAL", 40);
+
 if(!defined("E_STRICT"))
 {
-	// This constant has been defined since PHP 5
+	// This constant has been defined since PHP 5.
 	define("E_STRICT", 2048);
 }
+
 if(!defined("E_RECOVERABLE_ERROR"))
 {
-	// This constant has been defined since PHP 5.2 (which hasn't even been released yet)
+	// This constant has been defined since PHP 5.2.
 	define("E_RECOVERABLE_ERROR", 4096);
 }
- 
+
 class errorHandler {
 
 	/**
@@ -77,7 +79,7 @@ class errorHandler {
 	 */
 	function errorHandler()
 	{
-		// Lets set the error handler in here so we can just do $handler = new errorHandler() and be all set up
+		// Lets set the error handler in here so we can just do $handler = new errorHandler() and be all set up.
 		if(version_compare(PHP_VERSION, ">=", "5"))
 		{
 			set_error_handler(array(&$this, "error"), array_diff($this->error_types, $this->ignore_types));
@@ -101,7 +103,7 @@ class errorHandler {
 	{
 		global $mybb;
 
-		// Error reporting turned off (either globally or by @ before erroring statement
+		// Error reporting turned off (either globally or by @ before erroring statement)
 		if(error_reporting() == 0)
 		{
 			return;
@@ -114,7 +116,7 @@ class errorHandler {
 		
 		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
 		{
-			// Saving error to log file
+			// Saving error to log file.
 			if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
 			{
 				$this->log_error($type, $message, $file, $line);
@@ -160,7 +162,7 @@ class errorHandler {
 			return false;
 		}
 		
-		// Incase a template fails and we're recieving a blank page
+		// Incase a template fails and we're recieving a blank page.
 		if(MANUAL_WARNINGS)
 		{
 			echo $this->warnings."<br />";
@@ -393,6 +395,17 @@ class errorHandler {
 			}
 			$error_message .= "</dl>\n";
 		}
+
+		if(isset($lang->settings['charset']))
+		{
+			$charset = $lang->settings['charset'];
+		}
+		else
+		{
+			$charset = 'UTF-8';
+		}
+
+		header("Content-type: text/html; charset={$charset}");
 
 		echo <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">

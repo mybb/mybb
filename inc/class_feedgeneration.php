@@ -155,7 +155,7 @@ class FeedGenerator
 					$this->xml .= "\t\t<updated>{$item['updated']}</updated>\n";
 					$this->xml .= "\t\t<link rel=\"alternate\" type=\"text/html\" href=\"{$item['link']}\" />\n";
 					$this->xml .= "\t\t<id>{$item['link']}</id>\n";
-					$this->xml .= "\t\t<title type=\"html\" xml:space=\"preserve\"><![CDATA[".htmlspecialchars_uni($item['title'])."]]></title>\n";
+					$this->xml .= "\t\t<title type=\"html\" xml:space=\"preserve\">".htmlspecialchars_uni($item['title'])."</title>\n";
 					$this->xml .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".$parser->parse_message($item['description'], $parser_options)."]]></content>\n";
 					$this->xml .= "\t\t<draft xmlns=\"http://purl.org/atom-blog/ns#\">false</draft>\n";
 					$this->xml .= "\t</entry>\n";
@@ -166,7 +166,7 @@ class FeedGenerator
 					$item['date'] = date("D, d M Y H:i:s O", $item['date']);
 					$item['description'] = $parser->parse_message($item['description'], $parser_options);
 					$this->xml .= "\t\t<item>\n";
-					$this->xml .= "\t\t\t<title><![CDATA[".htmlspecialchars_uni($item['title'])."]]></title>\n";
+					$this->xml .= "\t\t\t<title>".htmlspecialchars_uni($item['title'])."</title>\n";
 					$this->xml .= "\t\t\t<link>{$item['link']}</link>\n";
 					$this->xml .= "\t\t\t<pubDate>{$item['date']}</pubDate>\n";
 					if(!empty($item['author']))

@@ -25,22 +25,15 @@ var Rating = {
 
 	add_rating: function(parameterString)
 	{
-		if(use_xmlhttprequest == 'yes')
-		{
-			this.spinner = new ActivityIndicator('body', {image: imagepath + "/spinner_big.gif"});
-			var element_id = parameterString.match(/tid=(.*)&/)[1];
-			new Ajax.Request('ratethread.php?ajax=1', {
-				method: 'post',
-				postBody: parameterString,
-				onComplete: function(request) { Rating.rating_added(request, element_id); }
-			});
-			document.body.style.cursor = 'wait';
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		this.spinner = new ActivityIndicator('body', {image: imagepath + "/spinner_big.gif"});
+		var element_id = parameterString.match(/tid=(.*)&/)[1];
+		new Ajax.Request('ratethread.php?ajax=1', {
+			method: 'post',
+			postBody: parameterString,
+			onComplete: function(request) { Rating.rating_added(request, element_id); }
+		});
+		document.body.style.cursor = 'wait';
+		return false;
 	},
 
 	rating_added: function(request, element_id)
@@ -88,4 +81,7 @@ var Rating = {
 	}
 };
 
-Event.observe(window, 'load', Rating.init);
+if(use_xmlhttprequest == 'yes')
+{
+	Event.observe(window, 'load', Rating.init);
+}
