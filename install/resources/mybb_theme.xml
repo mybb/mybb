@@ -601,7 +601,7 @@ form {
 </body>
 </html>]]></template>
 		<template name="header_welcomeblock_member" version="123"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->welcome_logout}</a>)<br />
+		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->welcome_logout}</a>)<br />
 				<span class="links">
 					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 170, 300);">{$lang->welcome_open_buddy_list}</a>
 				</span>
@@ -3777,7 +3777,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </html>]]></template>
 		<template name="changeuserbox" version="120"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->change_user}</a></strong>]</span></td>
+<td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_results" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -4060,7 +4060,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </table>
 <br />]]></template>
 		<template name="forumdisplay_announcement" version="120"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}" /></td>
+<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
 <td align="center" class="trow1">&nbsp;</td>
 <td width="100%" class="trow1"><strong>{$lang->announcement_prefix}</strong> <a href="announcements.php?fid={$fid}">{$announcement['subject']}</a></td>
 <td align="center" class="trow1"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
@@ -5162,7 +5162,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </select>
 </td>
 </tr>]]></template>
-		<template name="index_logoutlink" version="120"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb->user['uid']}">{$lang->index_logout}</a> | ]]></template>
+		<template name="index_logoutlink" version="120"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->index_logout}</a> | ]]></template>
 		<template name="postbit_iplogged_show" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</div>]]></template>
 		<template name="calendar_dayview" version="120"><![CDATA[<html>
 <head>

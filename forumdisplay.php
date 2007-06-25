@@ -474,11 +474,11 @@ while($announcement = $db->fetch_array($query))
 {
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
 	{
-		$folder = "newfolder.gif";
+		$folder = "newfolder";
 	}
 	else
 	{
-		$folder = "folder.gif";
+		$folder = "folder";
 	}
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);

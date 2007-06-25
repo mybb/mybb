@@ -819,12 +819,12 @@ class Moderation
 
 		if(!isset($mergethread['tid']) || $mergethread['tid'] != $mergetid)
 		{			
-			$query = $db->simple_select("threads", "*", "tid='{$mergetid}'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$mergetid}'");
 			$mergethread = $db->fetch_array($query);
 		}
 		if(!isset($thread['tid']) || $thread['tid'] != $tid)
 		{
-			$query = $db->simple_select("threads", "*", "tid='{$tid}'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$tid}'");
 			$thread = $db->fetch_array($query);
 		}
 		$pollsql = '';
@@ -838,7 +838,7 @@ class Moderation
 		}
 		else
 		{
-			$query = $db->simple_select("threads", "*", "poll='{$mergethread['poll']}' AND tid != '{$mergetid}'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "poll='{$mergethread['poll']}' AND tid != '{$mergetid}'");
 			$pollcheck = $db->fetch_array($query);
 			if(!$pollcheck['poll'])
 			{
@@ -855,7 +855,7 @@ class Moderation
 			"replyto" => 0
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid='$mergetid'");
-		
+
 		$pollsql['subject'] = $subject;
 		$db->update_query(TABLE_PREFIX."threads", $pollsql, "tid='$tid'");
 		$sqlarray = array(
@@ -865,7 +865,7 @@ class Moderation
 		$sqlarray = array(
 			"tid" => $tid,
 		);
-		$db->update_query(TABLE_PREFIX."threadsubscriptions", $sqlarray, "tid='$mergetid'");
+		$db->update_query(TABLE_PREFIX."favorites", $sqlarray, "tid='$mergetid'");
 		update_first_post($tid);
 
 		$this->delete_thread($mergetid);
@@ -1417,12 +1417,12 @@ class Moderation
 			);
 			$db->update_query(TABLE_PREFIX."threads", $new_subject, "tid='{$thread['tid']}'", 1);
 			$db->update_query(TABLE_PREFIX."posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
-			
+
 			$lastpost_subject = array(				
 				"lastpostsubject" => $new_subject['subject']				
 			);
-				
-			$db->update_query(TABLE_PREFIX."forums", $lastpost_subject, "lastposttid='{$thread['tid']}");
+
+			$db->update_query(TABLE_PREFIX."forums", $lastpost_subject, "lastposttid='{$thread['tid']}'");
 		}
 	
 		return true;
