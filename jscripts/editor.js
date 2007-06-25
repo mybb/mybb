@@ -42,7 +42,7 @@ messageEditor.prototype = {
 		this.sizes["x-small"] = this.options.lang.size_x_small;
 		this.sizes["small"] = this.options.lang.size_small;
 		this.sizes["medium"] = this.options.lang.size_medium;
-		this.sizes["medium"] = this.options.lang.size_large;
+		this.sizes["large"] = this.options.lang.size_large;
 		this.sizes["x-large"] = this.options.lang.size_x_large;
 		this.sizes["xx-large"] = this.options.lang.size_xx_large;
 
