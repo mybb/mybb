@@ -1752,6 +1752,7 @@ function build_mycode_inserter()
 			"editor_size_x_small",
 			"editor_size_small",
 			"editor_size_medium",
+			"editor_size_large",
 			"editor_size_x_large",
 			"editor_size_xx_large",
 			"editor_color_white",
