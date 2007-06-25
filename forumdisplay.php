@@ -538,12 +538,12 @@ while($announcement = $db->fetch_array($query))
 	if($announcement['startdate'] > $mybb->user['lastvisit'])
 	{
 		$new_class = ' class="subject_new"';
-		$folder = "newfolder.gif";
+		$folder = "newfolder";
 	}
 	else
 	{
 		$new_class = '';
-		$folder = "folder.gif";
+		$folder = "folder";
 	}
 
 	$announcement['announcementlink'] = get_announcement_link($announcement['aid']);

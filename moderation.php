@@ -722,10 +722,18 @@ switch($mybb->input['action'])
 			// Get thread to merge's tid the normal way
 			$splitloc = explode(".php", $mybb->input['threadurl']);
 			$temp = explode("&", my_substr($splitloc[1], 1));
-			
-			for($i = 0; $i < count($temp); ++$i)
+
+			if(!empty($temp))
 			{
-				$temp2 = explode("=", $temp[$i], 2);
+				for($i = 0; $i < count($temp); $i++)
+				{
+					$temp2 = explode("=", $temp[$i], 2);
+					$parameters[$temp2[0]] = $temp2[1];
+				}
+			}
+			else
+			{
+				$temp2 = explode("=", $splitloc[1], 2);
 				$parameters[$temp2[0]] = $temp2[1];
 			}
 		}

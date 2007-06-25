@@ -961,10 +961,12 @@ else if($mybb->input['action'] == "thread")
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
 		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
-		// Users last search was within the flood time, show the error
-		if($last_search['sid'])
+
+		// We shouldn't show remaining time if time is 0 or under.
+		$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
+		// Users last search was within the flood time, show the error.
+		if($last_search['sid'] && $remaining_time > 0)
 		{
-			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
 			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			error($lang->error_searchflooding);
 		}
