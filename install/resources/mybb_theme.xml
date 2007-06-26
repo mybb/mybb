@@ -858,7 +858,7 @@ td .star_rating {
 <form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="modtype" value="thread" />
 <input type="hidden" name="tid" value="{$tid}" /><span class="smalltext">
-<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread')">
+<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}')">
 <optgroup label="{$lang->standard_mod_tools}">
 	<option value="threadnotes">{$lang->thread_notes}</option>
 	<option value="openclosethread">{$lang->open_close_thread}</option>
