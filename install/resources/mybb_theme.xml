@@ -3546,7 +3546,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 	</tr>
 </table></span>]]></template>
 		<template name="forumdisplay_announcements_announcement" version="120"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}" alt=""/></td>
+<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}"><a href="announcements.php?aid={$announcement['aid']}">{$announcement['subject']}</a></td>
 <td align="center" class="{$bgcolor}"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
@@ -4059,18 +4059,6 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </td></tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay_announcement" version="120"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/{$folder}.gif" /></td>
-<td align="center" class="trow1">&nbsp;</td>
-<td width="100%" class="trow1"><strong>{$lang->announcement_prefix}</strong> <a href="announcements.php?fid={$fid}">{$announcement['subject']}</a></td>
-<td align="center" class="trow1"><a href="member.php?action=profile&amp;uid={$announcement['uid']}">{$announcement['username']}</a></td>
-<td align="center" class="trow1">-</td>
-<td align="center" class="trow1">-</td>
-{$rating}
-<td class="trow1" style="white-space: nowrap">{$postdate} {$posttime}</td>
-{$modann}
-</tr>
-]]></template>
 		<template name="memberlist_row" version="120"><![CDATA[<tr>
 <td class="trow1"><a href="member.php?action=profile&amp;uid={$users['uid']}">{$users['username']}</a></td>
 <td class="trow2" align="center">{$useremail}</td>

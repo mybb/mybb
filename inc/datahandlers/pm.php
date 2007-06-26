@@ -163,7 +163,7 @@ class PMDataHandler extends DataHandler
 			$this->set_error("invalid_recipient");
 			return false;
 		}
-
+		
 		// Collect group permissions for the sender and recipient.
 		$recipient_permissions = user_permissions($touser['uid']);
 		$sender_permissions = user_permissions($pm['fromid']);
@@ -193,7 +193,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// Check to see if the user has reached their private message quota - if they have, email them.
-		if($recipient_permissions['pmquota'] != "0" && $touser['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
+		if($recipient_permissions['pmquota'] != "0" && $touser['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
 		{
 			if(trim($touser['language']) != '' && $lang->language_exists($touser['language']))
 			{

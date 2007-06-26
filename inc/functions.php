@@ -666,7 +666,11 @@ function user_permissions($uid=0)
 		}
 
 		// Collect group permissions.
-		$gid = $user_cache[$uid]['usergroup'].",".$user_cache[$uid]['additionalgroups'];
+		$gid = $user_cache[$uid]['usergroup'];
+		if($user_cache[$uid]['additionalgroups'])
+		{
+			$gid .= ",".$user_cache[$uid]['additionalgroups'];
+		}
 		$groupperms = usergroup_permissions($gid);
 
 		// Store group permissions in user cache.

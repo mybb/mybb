@@ -959,7 +959,7 @@ download=As Download Link]]></optionscode>
 	<settinggroup name="member" title="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="yes">
 		<setting name="disableregs">
 			<title>Disable Registrations</title>
-			<description><![CDATA[Allows you to turn off the capability for users to register with one click.]]></description>
+			<description><![CDATA[Allows you to turn off the capability for users to register.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
