@@ -11,7 +11,7 @@ $l['d1_name'] = "User Registration";
 $l['d1_desc'] = "Perks and privileges to user registration.";
 $l['d1_document'] = "Some parts of this forum may require you to be logged in and registered. Registration is free and takes a few minutes to complete.
 <br /><br />You are encouraged to register; once you register you will be able to post messages, set your own preferences, and maintain a profile.
-<br /><br />Some of the features that generally require registration are subscriptions, favorites, changing of styles, accessing of your myPad (simple notepad) and emailing forum members.";
+<br /><br />Some of the features that generally require registration are subscriptions, favorites, changing of styles, accessing of your Personal Pad (simple notepad) and emailing forum members.";
 
 // Help Document 2
 $l['d2_name'] = "Updating Profile";
