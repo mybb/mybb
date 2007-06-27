@@ -215,6 +215,7 @@ if($mybb->input['action'] == "send")
 	$message = htmlspecialchars_uni($mybb->input['message']);
 	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
 	
+	// Preview
 	if($mybb->input['preview'])
 	{
 		$options = $mybb->input['options'];
@@ -264,6 +265,7 @@ if($mybb->input['action'] == "send")
 	}
 	else
 	{
+		// New PM, so load default settings
 		if($mybb->user['signature'] != "")
 		{
 			$optionschecked['signature'] = "checked=\"checked\"";
@@ -275,6 +277,7 @@ if($mybb->input['action'] == "send")
 		$optionschecked['savecopy'] = "checked=\"checked\"";
 	}
 	
+	// Draft, reply, forward
 	if($mybb->input['pmid'] && !$mybb->input['preview'])
 	{
 		$query = $db->query("
@@ -294,33 +297,33 @@ if($mybb->input['action'] == "send")
 			$mybb->input['uid'] = $pm['toid'];
 			if($pm['includesig'] == "yes")
 			{
-				$optionschecked['signature'] = "checked";
+				$optionschecked['signature'] = 'checked';
 			}
 			if($pm['smilieoff'] == "yes")
 			{
-				$optionschecked['disablesmilies'] = "checked";
+				$optionschecked['disablesmilies'] = 'checked';
 			}
 			if($pm['receipt'])
 			{
-				$optionschecked['readreceipt'] = "checked";
+				$optionschecked['readreceipt'] = 'checked';
 			}
 
 			// Get list of recipients
 			$recipients = unserialize($pm['recipients']);
-			$comma = "";
-			$recipientids = "";
+			$comma = '';
+			$recipientids = '';
 			foreach($recipients['to'] as $recipient)
 			{
 				$recipient_list['to'][] = $recipient;
 				$recipientids .= $comma.$recipient;
-				$comma = ",";
+				$comma = ',';
 			}
 
 			foreach($recipients['bcc'] as $recipient)
 			{
 				$recipient_list['bcc'][] = $recipient;
 				$recipientids .= $comma.$recipient;
-				$comma = ",";
+				$comma = ',';
 			}
 
 			$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
@@ -328,17 +331,17 @@ if($mybb->input['action'] == "send")
 			{
 				if(in_array($user['uid'], $recipient_list['bcc']))
 				{
-					$bcc .= $user['username'].", ";
+					$bcc .= htmlspecialchars_uni($user['username']).', ';
 				}
 				else
 				{
-					$to .= $user['username'].", ";
+					$to .= htmlspecialchars_uni($user['username']).', ';
 				}
 			}
 		}
 		else
-		{
-			$subject = preg_replace("#(FW|RE):( *)#is", "", $subject);
+		{ // forward/reply
+			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote={$pm['quotename']}]\n$message\n[/quote]";
@@ -354,7 +357,7 @@ if($mybb->input['action'] == "send")
 				$uid = $pm['fromid'];
 				$query = $db->simple_select("users", "username", "uid='{$uid}'");
 				$user = $db->fetch_array($query);
-				$to = $user['username'];
+				$to = htmlspecialchars_uni($user['username']);
 			}
 			else if($mybb->input['do'] == "replyall")
 			{
@@ -369,23 +372,24 @@ if($mybb->input['action'] == "send")
 					{
 						continue;
 					}
-					$recipientids .= ",".$recipient;
+					$recipientids .= ','.$recipient;
 				}
 				$comma = '';
 				$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
 				while($user = $db->fetch_array($query))
 				{
-					$to .= $comma.$user['username'];
+					$to .= $comma.htmlspecialchars($user['username']);
 					$comma = ', ';
 				}
 			}
 		}
 	}
-
+	
+	// New PM with recipient preset
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
 		$query = $db->simple_select("users", "username", "uid='".$db->escape_string($mybb->input['uid'])."'");
-		$to = $db->fetch_field($query, "username").', ';
+		$to = htmlspecialchars_uni($db->fetch_field($query, "username")).', ';
 	}
 	
 	$max_recipients = '';
