@@ -76,7 +76,7 @@ function build_forumbits($pid=0, $depth=1)
 				$forum['posts'] += $forum_info['counters']['posts'];
 				$forum['unapprovedthreads'] += $forum_info['counters']['unapprovedthreads'];
 				$forum['unapprovedposts'] += $forum_info['counters']['unapprovedposts'];
-				$forum['viewers'] +- $forum_info['counters']['viewing'];
+				$forum['viewers'] += $forum_info['counters']['viewing'];
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
 				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
@@ -130,6 +130,11 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				unset($unapproved);
 			}
+
+			// Sanitize name and description of forum.
+			$forum['name'] = htmlspecialchars_uni($forum['name']);
+			$forum['description'] = htmlspecialchars_uni($forum['description']);
+
 			// If this is a forum and we've got subforums of it, load the subforums list template
 			if($depth == 2 && $sub_forums)
 			{
@@ -143,7 +148,7 @@ function build_forumbits($pid=0, $depth=1)
 					$statusicon = '';
 
 					// Showing mini status icons for this forum
-					if($mybb->settings['subforumsstatusicons'] == "yes")
+					if($mybb->settings['subforumsstatusicons'] == 'yes')
 					{
 						$lightbulb['folder'] = "mini".$lightbulb['folder'];
 						eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
@@ -151,7 +156,7 @@ function build_forumbits($pid=0, $depth=1)
 
 					// Fetch the template and append it to the list
 					eval("\$forum_list .= \"".$templates->get("forumbit_depth3", 1, 0)."\";");
-					$comma = ", ";
+					$comma = ', ';
 				}
 
 				// Have we reached our max visible subforums? put a nice message and break out of the loop
@@ -168,18 +173,17 @@ function build_forumbits($pid=0, $depth=1)
 
 
 			// Forum is a category, set template type
-			if($forum['type'] == "c")
+			if($forum['type'] == 'c')
 			{
-				$forumcat = "_cat";
+				$forumcat = '_cat';
 			}
 			// Forum is a standard forum, set template type
 			else
 			{
-				$forumcat = "_forum";
+				$forumcat = '_forum';
 			}
 
-
-			if($forum['type'] == "f" && $forum['linkto'] == '')
+			if($forum['type'] == 'f' && $forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
 				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
@@ -228,11 +232,11 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Moderator column is not off
-			if($mybb->settings['modlist'] != "off")
+			if($mybb->settings['modlist'] != 'off')
 			{
 				$moderators = '';
 				// Fetch list of moderators from this forum and its parents
-				$parentlistexploded = explode(",", $forum['parentlist']);
+				$parentlistexploded = explode(',', $forum['parentlist']);
 				foreach($parentlistexploded as $mfid)
 				{
 					// This forum has moderators
@@ -241,8 +245,8 @@ function build_forumbits($pid=0, $depth=1)
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
-							$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['uid'])."\">{$moderator['username']}</a>";
-							$comma = ", ";
+							$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['uid'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
+							$comma = ', ';
 						}
 					}
 				}
@@ -260,7 +264,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Descriptions aren't being shown - blank them
-			if($mybb->settings['showdescriptions'] == "no")
+			if($mybb->settings['showdescriptions'] == 'no')
 			{
 				$forum['description'] = '';
 			}

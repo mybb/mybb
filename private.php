@@ -24,16 +24,16 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("private");
 
-if($mybb->settings['enablepms'] == "no")
+if($mybb->settings['enablepms'] == 'no')
 {
 	error($lang->pms_disabled);
 }
 
-if($mybb->user['uid'] == "/" || $mybb->user['uid'] == "0" || $mybb->usergroup['canusepms'] == "no")
+if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['canusepms'] == 'no')
 {
 	error_no_permission();
 }
-if($mybb->user['receivepms'] == "no")
+if($mybb->user['receivepms'] == 'no')
 {
 	error($lang->error_pmsturnedoff);
 }
@@ -55,7 +55,7 @@ if($rand == 5)
 }
 
 $timecut = TIME_NOW-(60*60*24*7);
-$db->delete_query("privatemessages", "deletetime <= '{$timecut}' AND folder='4' AND uid='".$mybb->user['uid']."'");
+$db->delete_query("privatemessages", "deletetime <= '{$timecut}' AND folder='4' AND uid='{$mybb->user['uid']}'");
 
 $folderjump = "<select name=\"jumpto\">\n";
 $folderoplist = "<input type=\"hidden\" value=\"".intval($mybb->input['fid'])."\" name=\"fromfid\" />\n<select name=\"fid\">\n";
@@ -67,11 +67,11 @@ foreach($foldersexploded as $key => $folders)
 	$folderinfo = explode("**", $folders, 2);
 	if($fid == $folderinfo[0])
 	{
-		$sel = " selected=\"selected\"";
+		$sel = ' selected="selected"';
 	}
 	else
 	{
-		$sel = "";
+		$sel = '';
 	}
 	$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
 	$folderjump .= "<option value=\"$folderinfo[0]\"$sel>$folderinfo[1]</option>\n";
@@ -199,12 +199,12 @@ if($mybb->input['action'] == "send")
 {
 	$plugins->run_hooks("private_send_start");
 
-	$smilieinserter = $codebuttons = "";
+	$smilieinserter = $codebuttons = '';
 
-	if($mybb->settings['bbcodeinserter'] != "off" && $mybb->settings['pmsallowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
+	if($mybb->settings['bbcodeinserter'] != 'off' && $mybb->settings['pmsallowmycode'] != 'no' && $mybb->user['showcodebuttons'] != 0)
 	{
 		$codebuttons = build_mycode_inserter();
-		if($mybb->settings['pmsallowsmilies'] != "no")
+		if($mybb->settings['pmsallowsmilies'] != 'no')
 		{
 			$smilieinserter = build_clickable_smilies();
 		}
@@ -214,7 +214,7 @@ if($mybb->input['action'] == "send")
 	$previewmessage = $mybb->input['message'];
 	$message = htmlspecialchars_uni($mybb->input['message']);
 	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
-	
+
 	// Preview
 	if($mybb->input['preview'])
 	{
@@ -245,36 +245,36 @@ if($mybb->input['action'] == "send")
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 
-		if($options['signature'] == "yes")
+		if($options['signature'] == 'yes')
 		{
-			$optionschecked['signature'] = "checked=\"checked\"";
+			$optionschecked['signature'] = 'checked="checked"';
 		}
-		if($options['disablesmilies'] == "yes")
+		if($options['disablesmilies'] == 'yes')
 		{
-			$optionschecked['disablesmilies'] = "checked=\"checked\"";
+			$optionschecked['disablesmilies'] = 'checked="checked"';
 		}
-		if($options['savecopy'] != "no")
+		if($options['savecopy'] != 'no')
 		{
-			$optionschecked['savecopy'] = "checked=\"checked\"";
+			$optionschecked['savecopy'] = 'checked="checked"';
 		}
-		if($options['readreceipt'] != "no")
+		if($options['readreceipt'] != 'no')
 		{
-			$optionschecked['readreceipt'] = "checked=\"checked\"";
+			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
 		$to = htmlspecialchars_uni($mybb->input['to']);
 	}
 	else
 	{
 		// New PM, so load default settings
-		if($mybb->user['signature'] != "")
+		if($mybb->user['signature'] != '')
 		{
-			$optionschecked['signature'] = "checked=\"checked\"";
+			$optionschecked['signature'] = 'checked="checked"';
 		}
-		if($mybb->usergroup['cantrackpms'] == "yes")
+		if($mybb->usergroup['cantrackpms'] == 'yes')
 		{
-			$optionschecked['readreceipt'] = "checked=\"checked\"";
+			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
-		$optionschecked['savecopy'] = "checked=\"checked\"";
+		$optionschecked['savecopy'] = 'checked="checked"';
 	}
 	
 	// Draft, reply, forward
@@ -287,25 +287,25 @@ if($mybb->input['action'] == "send")
 			WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
 		");
 		$pm = $db->fetch_array($query);
-		$message = $pm['message'];
-		$message = htmlspecialchars_uni($message);
-		$subject = $pm['subject'];
-		$subject = htmlspecialchars_uni($subject);
-		
+
+		$message = htmlspecialchars_uni($pm['message']);
+		$subject = htmlspecialchars_uni($pm['subject']);
+
 		if($pm['folder'] == "3")
 		{ // message saved in drafts
 			$mybb->input['uid'] = $pm['toid'];
-			if($pm['includesig'] == "yes")
+
+			if($pm['includesig'] == 'yes')
 			{
-				$optionschecked['signature'] = 'checked';
+				$optionschecked['signature'] = 'checked="checked"';
 			}
-			if($pm['smilieoff'] == "yes")
+			if($pm['smilieoff'] == 'yes')
 			{
-				$optionschecked['disablesmilies'] = 'checked';
+				$optionschecked['disablesmilies'] = 'checked="checked"';
 			}
 			if($pm['receipt'])
 			{
-				$optionschecked['readreceipt'] = 'checked';
+				$optionschecked['readreceipt'] = 'checked="checked"';
 			}
 
 			// Get list of recipients
@@ -347,19 +347,19 @@ if($mybb->input['action'] == "send")
 			$message = "[quote={$pm['quotename']}]\n$message\n[/quote]";
 			$quoted['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $quoted['message']);
 
-			if($mybb->input['do'] == "forward")
+			if($mybb->input['do'] == 'forward')
 			{
 				$subject = "Fw: $subject";
 			}
-			elseif($mybb->input['do'] == "reply")
+			elseif($mybb->input['do'] == 'reply')
 			{
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
-				$query = $db->simple_select("users", "username", "uid='{$uid}'");
-				$user = $db->fetch_array($query);
-				$to = htmlspecialchars_uni($user['username']);
+				$query = $db->simple_select('users', 'username', "uid='{$uid}'");
+				$to = $db->fetch_field($query, 'username');
+				$to = htmlspecialchars_uni($to);
 			}
-			else if($mybb->input['do'] == "replyall")
+			else if($mybb->input['do'] == 'replyall')
 			{
 				$subject = "Re: $subject";
 
@@ -375,7 +375,7 @@ if($mybb->input['action'] == "send")
 					$recipientids .= ','.$recipient;
 				}
 				$comma = '';
-				$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
+				$query = $db->simple_select('users', 'uid, username', "uid IN ({$recipientids})");
 				while($user = $db->fetch_array($query))
 				{
 					$to .= $comma.htmlspecialchars($user['username']);
@@ -384,20 +384,20 @@ if($mybb->input['action'] == "send")
 			}
 		}
 	}
-	
+
 	// New PM with recipient preset
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
-		$query = $db->simple_select("users", "username", "uid='".$db->escape_string($mybb->input['uid'])."'");
-		$to = htmlspecialchars_uni($db->fetch_field($query, "username")).', ';
+		$query = $db->simple_select('users', 'username', "uid='".$db->escape_string($mybb->input['uid'])."'");
+		$to = htmlspecialchars_uni($db->fetch_field($query, 'username')).', ';
 	}
-	
+
 	$max_recipients = '';
 	if($mybb->usergroup['maxpmrecipients'] > 0)
 	{
 		$max_recipients = sprintf($lang->max_recipients, $mybb->usergroup['maxpmrecipients']);
 	}
-	
+
 	if($send_errors)
 	{
 		$to = htmlspecialchars_uni($mybb->input['to']);
@@ -411,11 +411,11 @@ if($mybb->input['action'] == "send")
 	$do = $mybb->input['do'];
 	if($do != "forward" && $do != "reply")
 	{
-		$do = "";
+		$do = '';
 	}
 	
 	// See if it's actually worth showing the buddylist icon.
-	if($mybb->user['buddylist'] != "")
+	if($mybb->user['buddylist'] != '')
 	{
 		$buddy_select = 'to';
 		eval("\$buddy_select_to = \"".$templates->get("private_send_buddyselect")."\";");
@@ -449,38 +449,38 @@ if($mybb->input['action'] == "read")
 		header("Location: private.php?action=send&pmid={$pm['pmid']}");
 		exit;
 	}
-	
+
 	if(!$pm['pmid'])
 	{
 		error($lang->error_invalidpm);
 	}
-	
-	if($pm['receipt'] == "1")
+
+	if($pm['receipt'] == 1)
 	{
-		if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $mybb->input['denyreceipt'] == "yes")
+		if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $mybb->input['denyreceipt'] == 'yes')
 		{
-			$receiptadd = "0";
+			$receiptadd = 0;
 		}
 		else
 		{
-			$receiptadd = "2";
+			$receiptadd = 2;
 		}
 	}
-	
-	if($pm['status'] == "0")
+
+	if($pm['status'] == 0)
 	{
 		$time = TIME_NOW;
 		$updatearray = array(
 			'status' => 1,
 			'readtime' => $time
 		);
-		
-		if($receiptadd != "")
+
+		if(isset($receiptadd))
 		{
 			$updatearray['receipt'] = $receiptadd;
 		}
 
-		$db->update_query("privatemessages", $updatearray, "pmid='{$pmid}'");
+		$db->update_query('privatemessages', $updatearray, "pmid='{$pmid}'");
 
 		// Update the unread count - it has now changed.
 		update_pm_count($mybb->user['uid'], 6);
@@ -488,48 +488,48 @@ if($mybb->input['action'] == "read")
 	// Replied PM?
 	else if($pm['status'] == 3 && $pm['statustime'])
 	{
-		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']).", ".my_date($mybb->settings['timeformat'], $pm['statustime']);
+		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']).', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 		$actioned_on = sprintf($lang->you_replied_on, $reply_date);
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 	else if($pm['status'] == 4 && $pm['statustime'])
 	{
-		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']).", ".my_date($mybb->settings['timeformat'], $pm['statustime']);
+		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']).', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 		$actioned_on = sprintf($lang->you_forwarded_on, $forward_date);
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
-	
+
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 	if($pm['fromid'] == -2)
 	{
-		$pm['username'] = "MyBB Engine";
+		$pm['username'] = 'MyBB Engine';
 	}
 
 	// Fetch the recipients for this message
 	$pm['recipients'] = @unserialize($pm['recipients']);
-	
+
 	if(is_array($pm['recipients']['to']))
 	{
-		$uid_sql = implode(",", $pm['recipients']['to']);
+		$uid_sql = implode(',', $pm['recipients']['to']);
 	}
 	else
 	{
 		$uid_sql = $pm['toid'];
 	}
-	
+
 	$show_bcc = 0;
-	
+
 	// If we have any BCC recipients and this user is an Administrator, add them on to the query
-	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == "yes")
+	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 'yes')
 	{
 		$show_bcc = 1;
-		$uid_sql .= ",".implode(",", $pm['recipients']['bcc']);
+		$uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
 	}
 
 	// Fetch recipient names from the database
 	$bcc_recipients = $to_recipients = array();
-	$query = $db->simple_select("users", "uid, username", "uid IN ({$uid_sql})");
+	$query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");
 	while($recipient = $db->fetch_array($query))
 	{
 		// User is a BCC recipient
@@ -546,7 +546,7 @@ if($mybb->input['action'] == "read")
 
 	if(count($bcc_recipients) > 0)
 	{
-		$bcc_recipients = implode(", ", $bcc_recipients);
+		$bcc_recipients = implode(', ', $bcc_recipients);
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
 	}
 
@@ -558,7 +558,7 @@ if($mybb->input['action'] == "read")
 	eval("\$pm['subject_extra'] = \"".$templates->get("private_read_to")."\";");
 	
 	add_breadcrumb($pm['subject']);
-	$message = build_postbit($pm, "2");
+	$message = build_postbit($pm, 2);
 	eval("\$read = \"".$templates->get("private_read")."\";");
 	$plugins->run_hooks("private_read_end");
 	output_page($read);
@@ -834,7 +834,7 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 	{
 		foreach($mybb->input['empty'] as $key => $val)
 		{
-			if($val == "yes")
+			if($val == 'yes')
 			{
 				$key = intval($key);
 				if($emptyq)
@@ -847,7 +847,7 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 		
 		if($emptyq != '')
 		{
-			if($mybb->input['keepunread'] == "yes")
+			if($mybb->input['keepunread'] == 'yes')
 			{
 				$keepunreadq = " AND status!='0'";
 			}
@@ -1055,7 +1055,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			error($lang->error_pmnoarchivefolders);
 		}
 		
-		if($mybb->input['exportunread'] != "yes")
+		if($mybb->input['exportunread'] != 'yes')
 		{
 			$wsql .= " AND pm.status!='0'";
 		}
@@ -1143,7 +1143,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$parser_options = array(
 				"allow_html" => $mybb->settings['pmsallowhtml'],
 				"allow_mycode" => $mybb->settings['pmsallowmycode'],
-				"allow_smilies" => "no",
+				"allow_smilies" => 'no',
 				"allow_imgcode" => $mybb->settings['pmsallowimgcode'],
 				"me_username" => $mybb->user['username']
 			);
@@ -1183,7 +1183,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$css = $db->fetch_field($query, "css");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
-	if($mybb->input['deletepms'] == "yes")
+	if($mybb->input['deletepms'] == 'yes')
 	{ // delete the archived pms
 		$db->delete_query("privatemessages", "pmid IN (''$ids)");
 		// Update PM count
@@ -1342,7 +1342,7 @@ if(!$mybb->input['action'])
 						$uids[] = $recipient;
 					}
 
-					$to_users = $bcc_users = "";
+					$to_users = $bcc_users = '';
 					if(count($recipients['bcc']) > 0)
 					{
 						foreach($recipients['bcc'] as $recipient)
@@ -1435,7 +1435,7 @@ if(!$mybb->input['action'])
 		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
 	}
 
-	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != "yes")
+	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != 'yes')
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
@@ -1461,7 +1461,7 @@ if(!$mybb->input['action'])
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
 	}
 	
-	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != "yes")
+	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != 'yes')
 	{
 		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
 	}

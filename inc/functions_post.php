@@ -32,20 +32,20 @@ function build_postbit($post, $post_type=0)
 
 	if($post['visible'] == 0 && $post_type == 0)
 	{
-		$altbg = "trow_shaded";
+		$altbg = 'trow_shaded';
 	}
-	elseif($altbg == "trow1")
+	elseif($altbg == 'trow1')
 	{
-		$altbg = "trow2";
+		$altbg = 'trow2';
 	}
 	else
 	{
-		$altbg = "trow1";
+		$altbg = 'trow1';
 	}
 	$post['fid'] = $fid;
 	switch($post_type)
 	{
-		case "1": // Message preview
+		case 1: // Message preview
 			global $forum;
 			$parser_options['allow_html'] = $forum['allowhtml'];
 			$parser_options['allow_mycode'] = $forum['allowmycode'];
@@ -54,7 +54,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['me_username'] = $post['username'];
 			$id = 0;
 			break;
-		case "2": // Private message
+		case 2: // Private message
 			global $message, $pmid;
 			$parser_options['allow_html'] = $mybb->settings['pmsallowhtml'];
 			$parser_options['allow_mycode'] = $mybb->settings['pmsallowmycode'];
@@ -63,12 +63,12 @@ function build_postbit($post, $post_type=0)
 			$parser_options['me_username'] = $post['username'];
 			$id = $pmid;
 			break;
-		case "3": // Announcement
+		case 3: // Announcement
 			global $announcementarray, $message;
 			$parser_options['allow_html'] = $announcementarray['allowhtml'];
 			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
 			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
-			$parser_options['allow_imgcode'] = "yes";
+			$parser_options['allow_imgcode'] = 'yes';
 			$parser_options['me_username'] = $post['username'];
 			break;
 		default: // Regular post
