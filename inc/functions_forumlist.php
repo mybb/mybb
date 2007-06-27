@@ -113,6 +113,11 @@ function build_forumbits($pid=0, $depth=1)
 			{
 				unset($unapproved);
 			}
+
+			// Sanitize name and description of forum.
+			$forum['name'] = htmlspecialchars_uni($forum['name']);
+			$forum['description'] = htmlspecialchars_uni($forum['description']);
+
 			// If this is a forum and we've got subforums of it, load the subforums list template
 			if($depth == 2 && $sub_forums)
 			{
@@ -219,7 +224,7 @@ function build_forumbits($pid=0, $depth=1)
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
-							$moderators .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$moderator['uid']}\">{$moderator['username']}</a>";
+							$moderators .= "{$comma}<a href=\"member.php?action=profile&amp;uid={$moderator['uid']}\">".htmlspecialchars_uni($moderator['username'])."</a>";
 							$comma = ", ";
 						}
 					}
