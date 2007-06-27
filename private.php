@@ -200,6 +200,7 @@ if($mybb->input['action'] == "send")
 	$message = htmlspecialchars_uni($mybb->input['message']);
 	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
 	
+	// Preview
 	if($mybb->input['preview'])
 	{
 		$options = $mybb->input['options'];
@@ -257,6 +258,7 @@ if($mybb->input['action'] == "send")
 	}
 	else
 	{
+		// New PM, so load default settings
 		if($mybb->user['signature'] != "")
 		{
 			$optionschecked['signature'] = "checked";
@@ -267,6 +269,7 @@ if($mybb->input['action'] == "send")
 		}
 		$optionschecked['savecopy'] = "checked";
 	}
+	// Draft, reply, forward
 	if($mybb->input['pmid'] && !$mybb->input['preview'])
 	{
 		$query = $db->query("
@@ -297,7 +300,7 @@ if($mybb->input['action'] == "send")
 			}
 		}
 		else
-		{
+		{ // forward/reply
 			$subject = preg_replace("#(FW|RE):( *)#is", "", $subject);
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
@@ -314,15 +317,16 @@ if($mybb->input['action'] == "send")
 				$uid = $pm['fromid'];
 				$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".$uid."'");
 				$user = $db->fetch_array($query);
-				$to = $user['username'];
+				$to = htmlspecialchars_uni($user['username']);
 			}
 		}
 	}
+	// New PM with recipient preset
 	if($mybb->input['uid'] && !$mybb->input['preview'])
 	{
 		$query = $db->simple_select(TABLE_PREFIX."users", "username", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
-		$to = $user['username'];
+		$to = htmlspecialchars_uni($user['username']);
 	}
 
 	// Load the auto complete javascript if it is enabled.
