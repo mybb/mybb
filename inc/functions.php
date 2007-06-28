@@ -1526,7 +1526,7 @@ function update_stats($changes=array())
 
 	$stats = $cache->read("stats");
 
-	$counters = array('numthreads','numposts','numusers');
+	$counters = array('numthreads','numunapprovedthreads','numposts','numunapprovedposts','numusers');
 	$update = array();
 	foreach($counters as $counter)
 	{
@@ -1629,6 +1629,20 @@ function update_forum_counters($fid, $changes=array())
 				$new_stats['numthreads'] = "{$threads_diff}";
 			}
 		}
+		
+		if(array_key_exists('unapprovedthreads', $update_query))
+		{
+			$unapprovedthreads_diff = $update_query['unapprovedthreads'] - $forum['unapprovedthreads'];
+			if($unapprovedthreads_diff > -1)
+			{
+				$new_stats['numunapprovedthreads'] = "+{$unapprovedthreads_diff}";
+			}
+			else
+			{
+				$new_stats['numunapprovedthreads'] = "{$unapprovedthreads_diff}";
+			}
+		}
+		
 		if(array_key_exists('posts', $update_query))
 		{
 			$posts_diff = $update_query['posts'] - $forum['posts'];
@@ -1639,6 +1653,19 @@ function update_forum_counters($fid, $changes=array())
 			else
 			{
 				$new_stats['numposts'] = "{$posts_diff}";
+			}
+		}
+		
+		if(array_key_exists('unapprovedposts', $update_query))
+		{
+			$unapprovedposts_diff = $update_query['unapprovedposts'] - $forum['unapprovedposts'];
+			if($unapprovedposts_diff > -1)
+			{
+				$new_stats['numunapprovedposts'] = "+{$unapprovedposts_diff}";
+			}
+			else
+			{
+				$new_stats['numunapprovedposts'] = "{$unapprovedposts_diff}";
 			}
 		}
 		update_stats($new_stats);

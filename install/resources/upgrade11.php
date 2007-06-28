@@ -577,6 +577,8 @@ function upgrade9_dbchanges3()
 		}
 	}
 	
+	require_once MYBB_ROOT."inc/functions_rebuild.php";
+	rebuild_stats();
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

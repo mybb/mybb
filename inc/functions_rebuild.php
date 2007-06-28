@@ -16,20 +16,36 @@ function rebuild_stats()
 {
 	global $db;
 
-	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "visible='1' AND closed NOT LIKE 'moved|%'");
-	$stats['numthreads'] = $db->fetch_field($query, 'threads');
+	$query = $db->simple_select("forums", "SUM(threads) AS numthreads");
+	$stats['numthreads'] = $db->fetch_field($query, 'numthreads');
 	
 	if(!$stats['numthreads'])
 	{
 		$stats['numthreads'] = 0;
 	}
 	
-	$query = $db->simple_select("posts", "COUNT(pid) AS posts", "visible='1'");
-	$stats['numposts'] = $db->fetch_field($query, 'posts');
+	$query = $db->simple_select("forums", "SUM(posts) AS numposts");
+	$stats['numposts'] = $db->fetch_field($query, 'numposts');
 	
 	if(!$stats['numposts'])
 	{
 		$stats['numposts'] = 0;
+	}
+	
+	$query = $db->simple_select("forums", "SUM(unapprovedthreads) AS numunapprovedthreads");
+	$stats['numunapprovedthreads'] = $db->fetch_field($query, 'numunapprovedthreads');
+	
+	if(!$stats['numunapprovedthreads'])
+	{
+		$stats['numunapprovedthreads'] = 0;
+	}
+	
+	$query = $db->simple_select("forums", "SUM(unapprovedposts) AS numunapprovedposts");
+	$stats['numunapprovedposts'] = $db->fetch_field($query, 'numunapprovedposts');
+	
+	if(!$stats['numunapprovedposts'])
+	{
+		$stats['numunapprovedposts'] = 0;
 	}
 
 	$query = $db->simple_select("users", "COUNT(uid) AS users");

@@ -41,51 +41,50 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'dashboard');
 	
+	// Load stats cache
+	$stats = $cache->read("stats");
+	
 	$serverload = get_server_load();
 	if(!$serverload)
 	{
 		$serverload = $lang->unknown;
 	}
 	// Get the number of users
-	$query = $db->simple_select("users", "COUNT(*) AS numusers");
-	$users = $db->fetch_field($query, "numusers");
+	$query = $db->simple_select("users", "COUNT(uid) AS numusers");
+	$users = my_number_format($db->fetch_field($query, "numusers"));
 
 	// Get the number of users awaiting validation
-	$query = $db->simple_select("users", "COUNT(*) AS awaitingusers", "usergroup='5'");
-	$awaitingusers = $db->fetch_field($query, "awaitingusers");
+	$query = $db->simple_select("users", "COUNT(uid) AS awaitingusers", "usergroup='5'");
+	$awaitingusers = my_number_format($db->fetch_field($query, "awaitingusers");
 
 	// Get the number of new users for today
 	$timecut = TIME_NOW - 86400;
-	$query = $db->simple_select("users", "COUNT(*) AS newusers", "regdate > '$timecut'");
-	$newusers = $db->fetch_field($query, "newusers");
+	$query = $db->simple_select("users", "COUNT(uid) AS newusers", "regdate > '$timecut'");
+	$newusers = my_number_format($db->fetch_field($query, "newusers");
 
 	// Get the number of active users today
-	$query = $db->simple_select("users", "COUNT(*) AS activeusers", "lastvisit > '$timecut'");
-	$activeusers = $db->fetch_field($query, "activeusers");
+	$query = $db->simple_select("users", "COUNT(uid) AS activeusers", "lastvisit > '$timecut'");
+	$activeusers = my_number_format($db->fetch_field($query, "activeusers");
 
 	// Get the number of threads
-	$query = $db->simple_select("threads", "COUNT(*) AS numthreads", "visible='1' AND closed NOT LIKE 'moved|%'");
-	$threads = $db->fetch_field($query, "numthreads");
+	$threads = my_number_format($stats['numthreads']);
 
 	// Get the number of unapproved threads
-	$query = $db->simple_select("threads", "COUNT(*) AS numthreads", "visible='0' AND closed NOT LIKE 'moved|%'");
-	$unapproved_threads = $db->fetch_field($query, "numthreads");
+	$unapproved_threads = my_number_format($stats['numunapprovedthreads']);
 
 	// Get the number of new threads for today
 	$query = $db->simple_select("threads", "COUNT(*) AS newthreads", "dateline > '$timecut' AND visible='1' AND closed NOT LIKE 'moved|%'");
-	$newthreads = $db->fetch_field($query, "newthreads");
+	$newthreads = my_number_format($db->fetch_field($query, "newthreads"));
 
 	// Get the number of posts
-	$query = $db->simple_select("posts", "COUNT(*) AS numposts", "visible='1'");
-	$posts = $db->fetch_field($query, "numposts");
+	$posts = my_number_format($stats['numposts']);
 
 	// Get the number of unapproved posts
-	$query = $db->simple_select("posts", "COUNT(*) AS numposts", "visible='0'");
-	$unapproved_posts = $db->fetch_field($query, "numposts");
+	$unapproved_posts = my_number_format($stats['numunapprovedposts']);
 
 	// Get the number of new posts for today
 	$query = $db->simple_select("posts", "COUNT(*) AS newposts", "dateline > '$timecut' AND visible='1'");
-	$newposts = $db->fetch_field($query, "newposts");
+	$newposts = my_number_format($db->fetch_field($query, "newposts"));
 
 	// Get the number and total file size of attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused", "visible='1' AND pid > '0'");
@@ -94,7 +93,7 @@ if(!$mybb->input['action'])
 
 	// Get the number of unapproved attachments
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs", "visible='0' AND pid > '0'");
-	$unapproved_attachs = $db->fetch_field($query, "numattachs");
+	$unapproved_attachs = my_number_format($db->fetch_field($query, "numattachs"));
 
 	/*
 	// Fetch the last time an update check was run
