@@ -19,13 +19,15 @@ class Moderation
 	 */
 	function close_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
 			$tids = array($tids);
 		}
 		$tid_list = implode(",", $tids);
+
+		$plugins->run_hooks("class_moderation_close_threads", $tids);
 
 		$openthread = array(
 			"closed" => "yes",
@@ -44,13 +46,15 @@ class Moderation
 
 	function open_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
 			$tids = array($tids);
 		}
 		$tid_list = implode(",", $tids);
+
+		$plugins->run_hooks("class_moderation_open_threads", $tids);
 
 		$closethread = array(
 			"closed" => "no",
@@ -68,13 +72,15 @@ class Moderation
 	 */
 	function stick_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
 			$tids = array($tids);
 		}
 		$tid_list = implode(",", $tids);
+
+		$plugins->run_hooks("class_moderation_stick_threads", $tids);
 
 		$stickthread = array(
 			"sticky" => 1,
@@ -92,13 +98,15 @@ class Moderation
 	 */
 	function unstick_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
 			$tids = array($tids);
 		}
 		$tid_list = implode(",", $tids);
+
+		$plugins->run_hooks("class_moderation_unstick_threads", $tids);
 
 		$unstickthread = array(
 			"sticky" => 0,
@@ -116,7 +124,9 @@ class Moderation
 	 */
 	function remove_redirects($tid)
 	{
-		global $db;
+		global $db, $plugins;
+
+		$plugins->run_hooks("class_moderation_remove_redirects", $tid);
 
 		// Delete the redirects
 		$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid'");
@@ -225,7 +235,8 @@ class Moderation
 			// Update forum count 
 			update_forum_counters($thread['fid'], $updated_counters); 
 		} 
-		$plugins->run_hooks("delete_thread", $tid);
+
+		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 
 		return true;
 	}
@@ -238,7 +249,9 @@ class Moderation
 	 */
 	function delete_poll($pid)
 	{
-		global $db;
+		global $db, $plugins;
+
+		$plugins->run_hooks("class_moderation_delete_poll", $pid);
 
 		$db->delete_query(TABLE_PREFIX."polls", "pid='$pid'");
 		$db->delete_query(TABLE_PREFIX."pollvotes", "pid='$pid'");
@@ -259,7 +272,7 @@ class Moderation
 	 */
 	function approve_threads($tids, $fid)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -300,6 +313,8 @@ class Moderation
 		);
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN (".implode(",", $posts_to_approve).")");
+
+		$plugins->run_hooks("class_moderation_approve_threads", $tids);
 		
 		// Update stats
 		$update_array = array( 
@@ -322,7 +337,7 @@ class Moderation
 	 */
 	function unapprove_threads($tids, $fid)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -362,7 +377,9 @@ class Moderation
 		);
 		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN (".implode(",", $posts_to_unapprove).")");
-		
+
+		$plugins->run_hooks("class_moderation_unapprove_threads", $tids);
+
 		// Update stats
 		$update_array = array( 
 			"threads" => "-{$num_threads}", 
@@ -415,7 +432,8 @@ class Moderation
 		{
 			$num_approved_posts++;
 		}
-		$plugins->run_hooks("delete_post", $post['pid']);
+		$plugins->run_hooks("class_moderation_delete_post", $post['pid']);
+
 		// Update stats 
 		$update_array = array( 
 			"replies" => "-{$num_approved_posts}", 
@@ -444,7 +462,7 @@ class Moderation
 	 */
 	function merge_posts($pids, $tid, $sep="new_line")
 	{
-		global $db;
+		global $db, $plugins;
 
 		$pidin = implode(",", $pids);
 		$first = 1;
@@ -511,6 +529,8 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."posts", $mergepost2, "pid IN($pidin)");
 		$db->update_query(TABLE_PREFIX."attachments", $mergepost2, "pid IN($pidin)");
 
+		$plugins->run_hooks("class_moderation_merge_posts", array("pids" => $pids, "tid" => $tid));
+
 		// Update stats
 		$update_array = array( 
 			"replies" => "-{$num_approved_posts}", 
@@ -550,7 +570,7 @@ class Moderation
 		switch($method)
 		{
 			case "redirect": // move (and leave redirect) thread
-				$plugins->run_hooks("moderation_do_move_redirect");
+				$plugins->run_hooks("class_moderation_do_move_redirect", array("tid" => $tid, "new_fid" => $new_fid));
 				
 				if($thread['visible'] == 1) 
 				{ 
@@ -628,7 +648,7 @@ class Moderation
 					$num_unapproved_posts = $thread['replies']+1;
 				}
 				
-				$plugins->run_hooks("moderation_do_move_copy");
+				$plugins->run_hooks("class_moderation_do_move_copy", array("tid" => $tid, "new_fid" => $new_fid));
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 				$newtid = $db->insert_id();
 				
@@ -716,7 +736,7 @@ class Moderation
 				break;
 			default:
 			case "move": // plain move thread
-				$plugins->run_hooks("moderation_do_move_simple");
+				$plugins->run_hooks("class_moderation_do_move_simple", array("tid" => $tid, "new_fid" => $new_fid));
 	
 				if($thread['visible'] == 1) 
 				{ 
@@ -812,7 +832,7 @@ class Moderation
 	 */
 	function merge_threads($mergetid, $tid, $subject)
 	{
-		global $db, $mybb, $mergethread, $thread;
+		global $db, $mybb, $mergethread, $thread, $plugins;
 
 		$mergetid = intval($mergetid);
 		$tid = intval($tid);
@@ -867,6 +887,8 @@ class Moderation
 		);
 		$db->update_query(TABLE_PREFIX."favorites", $sqlarray, "tid='$mergetid'");
 		update_first_post($tid);
+
+		$plugins->run_hooks("class_moderation_merge_threads", array("mergetid" => $tid, "tid" => $tid, "subject" => $subject));
 
 		$this->delete_thread($mergetid);
 
@@ -943,7 +965,7 @@ class Moderation
 	 */
 	function split_posts($pids, $tid, $moveto, $newsubject, $destination_tid=0)
 	{
-		global $db, $thread;
+		global $db, $thread, $plugins;
 
 		if(!isset($thread['tid']) || $thread['tid'] != $tid)
 		{
@@ -1050,6 +1072,8 @@ class Moderation
 		);
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "pid='{$oldthread['pid']}'");
 
+		$plugins->run_hooks("class_moderation_split_posts", array("pids" => $pids, "tid" => $tid, "moveto" => $moveto, "newsubject" => $newsubject, "destination_tid" => $destination_tid));
+
 		// Update old thread stats 
 		$update_array = array( 
 			"replies" => "-{$num_visible}", 
@@ -1118,7 +1142,7 @@ class Moderation
 	 */
 	function move_threads($tids, $moveto)
 	{
-		global $db;
+		global $db, $plugins;
 
 		$tid_list = implode(",", $tids);
 			
@@ -1184,6 +1208,8 @@ class Moderation
 		$db->update_query(TABLE_PREFIX."threads", $sqlarray, "tid IN ($tid_list)");
 		$db->update_query(TABLE_PREFIX."posts", $sqlarray, "tid IN ($tid_list)");
 
+		$plugins->run_hooks("class_moderation_move_threads", array("tids" => $tids, "moveto" => $moveto));
+
 		foreach($forum_counters as $fid => $counter) 
 		{ 
 			$updated_count = array( 
@@ -1227,7 +1253,7 @@ class Moderation
 	 */
 	function approve_posts($pids, $tid, $fid)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		$thread = get_thread($tid);
 		
@@ -1258,6 +1284,8 @@ class Moderation
 			"visible" => 1,
 		);
 		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
+
+		$plugins->run_hooks("class_moderation_approve_posts", $pids);
 
 		$is_first = false;
 		// If this is the first post of the thread, also approve the thread
@@ -1312,7 +1340,7 @@ class Moderation
 	 */
 	function unapprove_posts($pids, $tid, $fid)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 		
 		$thread = get_thread($tid);
 		
@@ -1343,6 +1371,8 @@ class Moderation
 			"visible" => 0,
 		);
 		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
+
+		$plugins->run_hooks("class_moderation_unapprove_posts", $pids);
 
 		$is_first = false;
 		// If this is the first post of the thread, also approve the thread
@@ -1398,7 +1428,7 @@ class Moderation
 	 */
 	function change_thread_subject($tids, $format)
 	{
-		global $db;
+		global $db, $plugins;
 
 		// Get tids into list
 		if(!is_array($tids))
@@ -1424,7 +1454,9 @@ class Moderation
 
 			$db->update_query(TABLE_PREFIX."forums", $lastpost_subject, "lastposttid='{$thread['tid']}'");
 		}
-	
+
+		$plugins->run_hooks("class_moderation_change_thread_subject", array("tids" => $tids, "format" => $format));
+
 		return true;
 	}
 
@@ -1437,12 +1469,14 @@ class Moderation
 	 */
 	function expire_thread($tid, $deletetime)
 	{
-		global $db;
+		global $db, $plugins;
 
 		$update_thread = array(
 			"deletetime" => intval($deletetime)
 		);
 		$db->update_query(TABLE_PREFIX."threads", $update_thread, "tid='{$tid}'");
+
+		$plugins->run_hooks("class_moderation_expire_thread", array("tid" => $tid, "deletetime" => $deletetime));
 
 		return true;
 	}
@@ -1556,9 +1590,9 @@ class Moderation
 	 * @param int $fid (Only applies if $all is false) The forum ID of the thread (if 0, will query database)
 	 * @return boolean true
 	 */
-	function remove_thread_subscriptions($tids,$all = true, $fid = 0)
+	function remove_thread_subscriptions($tids, $all = true, $fid = 0)
 	{
-		global $db;
+		global $db, $plugins;
 		
 		// Format thread IDs
 		if(!is_array($tids))
@@ -1597,6 +1631,8 @@ class Moderation
 		{
 			$db->delete_query(TABLE_PREFIX."favorites", "tid IN ({$tids_csv}) AND type='s'");
 		}
+
+		$plugins->run_hooks("class_moderation_remove_thread_subscriptions", array("tids" => $tids, "all" => $all, "fid" => $fid));
 		
 		return true;
 	}

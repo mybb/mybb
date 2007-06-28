@@ -517,6 +517,8 @@ switch($mybb->input['action'])
 
 		$newtid = $moderation->move_thread($tid, $moveto, $method, $expire);
 
+		$plugins->run_hooks("moderation_do_move");
+
 		switch($method)
 		{
 			case "copy":
@@ -762,8 +764,6 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		$plugins->run_hooks("moderation_do_split");
-
 		if(!is_array($mybb->input['splitpost']))
 		{
 			error($lang->error_nosplitposts);
@@ -788,6 +788,8 @@ switch($mybb->input['action'])
 		{
 			error($lang->error_invalidforum);
 		}
+
+		$plugins->run_hooks("moderation_do_split");
 
 		// move the selected posts over
 		$query = $db->simple_select(TABLE_PREFIX."posts", "pid", "tid='$tid'");
@@ -821,6 +823,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $threads);
 		clearinline($fid, "forum");
+		$plugins->run_hooks("moderation_multideletethreads");
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deletethreads")."\";");
 		output_page($multidelete);
 		break;
@@ -838,6 +841,7 @@ switch($mybb->input['action'])
 			$moderation->delete_thread($tid);
 			$tlist[] = $tid;
 		}
+		$plugins->run_hooks("moderation_do_multideletethreads");
 		log_moderator_action($modlogdata, $lang->multi_deleted_threads);
 		clearinline($fid, "forum");
 		mark_reports($tlist, "threads");
@@ -876,7 +880,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->close_threads($threads);
-
+		$plugins->run_hooks("moderation_multiclosethreads");
 		log_moderator_action($modlogdata, $lang->multi_closed_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsclosed);
@@ -895,7 +899,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->approve_threads($threads, $fid);
-
+		$plugins->run_hooks("moderation_multiapprovethreads");
 		log_moderator_action($modlogdata, $lang->multi_approved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
@@ -915,7 +919,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->unapprove_threads($threads, $fid);
-
+		$plugins->run_hooks("moderation_multiunapprovethreads");
 		log_moderator_action($modlogdata, $lang->multi_unapproved_threads);
 		clearinline($fid, "forum");
 		$cache->updatestats();
@@ -935,7 +939,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->stick_threads($threads);
-
+		$plugins->run_hooks("moderation_multistickthreads");
 		log_moderator_action($modlogdata, $lang->multi_stuck_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsstuck);
@@ -954,7 +958,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->unstick_threads($threads);
-
+		$plugins->run_hooks("moderation_multiunstickthreads");
 		log_moderator_action($modlogdata, $lang->multi_unstuck_threads);
 		clearinline($fid, "forum");
 		redirect("forumdisplay.php?fid=$fid", $lang->redirect_inline_threadsunstuck);
@@ -976,6 +980,9 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$forumselect = build_forum_jump("", '', 1, '', 0, '', "moveto");
+
+		$plugins->run_hooks("moderation_multimovethreads");
+
 		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
 		output_page($movethread);
 		break;
@@ -1014,6 +1021,8 @@ switch($mybb->input['action'])
 
 		$moderation->move_threads($tids, $moveto);
 
+		$plugins->run_hooks("moderation_do_multimovethreads");
+
 		log_moderator_action($modlogdata, $lang->multi_moved_threads);
 
 		redirect("forumdisplay.php?fid=$moveto", $lang->redirect_inline_threadsmoved);
@@ -1034,7 +1043,7 @@ switch($mybb->input['action'])
 		$inlineids = implode("|", $posts);
 		//clearinline($pid, "post");
 		clearinline($tid, "thread");
-
+		$plugins->run_hooks("moderation_multideleteposts");
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deleteposts")."\";");
 		output_page($multidelete);
 		break;
@@ -1067,6 +1076,7 @@ switch($mybb->input['action'])
 			mark_reports($plist, "posts");
 			$url = "showthread.php?tid=$tid";
 		}
+		$plugins->run_hooks("moderation_do_multideleteposts");
 		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
 		redirect($url, $lang->redirect_postsdeleted);
@@ -1086,7 +1096,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
-
+		$plugins->run_hooks("moderation_do_multimergeposts");
 		eval("\$multimerge = \"".$templates->get("moderation_inline_mergeposts")."\";");
 		output_page($multimerge);
 		break;
@@ -1105,7 +1115,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->merge_posts($plist, $tid, $mybb->input['sep']);
-
+		$plugins->run_hooks("moderation_do_multimergeposts");
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsmerged);
@@ -1151,6 +1161,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
+		$plugins->run_hooks("moderation_do_multisplitposts");
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
 		output_page($splitposts);
@@ -1185,6 +1196,8 @@ switch($mybb->input['action'])
 
 		$newtid = $moderation->split_posts($plist, $tid, $moveto, $newsubject);
 
+		$plugins->run_hooks("moderation_do_multisplitposts");
+
 		$pid_list = implode(', ', $plist);
 		$lang->split_selective_posts = sprintf($lang->split_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->split_selective_posts);
@@ -1211,7 +1224,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->approve_posts($pids, $tid, $fid);
-
+		$plugins->run_hooks("moderation_do_multiapproveposts");
 		log_moderator_action($modlogdata, $lang->multi_approve_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsapproved);
@@ -1235,7 +1248,7 @@ switch($mybb->input['action'])
 		}
 
 		$moderation->unapprove_posts($pids, $tid, $fid);
-
+		$plugins->run_hooks("moderation_do_multiunapproveposts");
 		log_moderator_action($modlogdata, $lang->multi_unapprove_posts);
 		clearinline($tid, "thread");
 		redirect("showthread.php?tid=$tid", $lang->redirect_inline_postsunapproved);
@@ -1485,6 +1498,7 @@ switch($mybb->input['action'])
 		$tool = $custommod->tool_info(intval($mybb->input['action']));
 		if($tool !== false)
 		{
+			$plugins->run_hooks("moderation_custommod");
 			if($tool['type'] == 't' && $mybb->input['modtype'] == 'inlinethread')
 			{
 				$tids = getids($fid, "forum");
