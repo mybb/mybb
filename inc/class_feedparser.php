@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright Â© 2006 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/eula.html
@@ -45,6 +45,18 @@ class FeedParser
 
 		// Load the feed we want to parse
 		$contents = fetch_remote_file($feed);
+
+		// REALLY Wierd glitchy, dodgy, fix for random characters adding themselves to the beggining and ending of the feed
+		// Which I have no freaking clue about. 
+		// Maybe I just need some hot chocolate
+		if(strpos($contents, "<") !== 0)
+		{
+			$contents = substr($contents, strpos($contents, "<"));
+		}
+		if(strrpos($contents, ">") !== 0)
+		{
+			$contents = substr($contents, strpos($contents, "<"), strrpos($contents, ">")+1);
+		}
 
 		// Could not load the feed, return an error
 		if(!$contents)
