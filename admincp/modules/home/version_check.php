@@ -77,7 +77,6 @@ if(!$mybb->input['action'])
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
 	$feed_parser->parse_feed("http://www.mybboard.net/latest_news.php");
-	echo $feed_parser->error;
 	
 	$table = new Table;
 	$table->construct_header($lang->your_version);
