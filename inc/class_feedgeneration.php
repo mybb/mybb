@@ -91,8 +91,8 @@ class FeedGenerator
 				$this->channel['date'] = gmdate("Y-m-d\TH:i:s\Z", $this->channel['date']);
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
-				$this->xml .= "\t<title type=\"html\"><![CDATA[".htmlspecialchars_uni($this->channel['title'])."]]></title>\n";
-				$this->xml .= "\t<subtitle type=\"html\"><![CDATA[".htmlspecialchars_uni($this->channel['description'])."]]></subtitle>\n";
+				$this->xml .= "\t<title type=\"html\"><![CDATA[".$this->sanitize_content($this->channel['title'])."]]></title>\n";
+				$this->xml .= "\t<subtitle type=\"html\"><![CDATA[".$this->sanitize_content($this->channel['description'])."]]></subtitle>\n";
 				$this->xml .= "\t<link rel=\"self\" href=\"{$this->channel['link']}syndication.php\"/>\n";
 				$this->xml .= "\t<id>{$this->channel['link']}</id>\n";
 				$this->xml .= "\t<link rel=\"alternate\" type=\"text/html\" href=\"{$this->channel['link']}\"/>\n";
@@ -105,9 +105,9 @@ class FeedGenerator
 				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<channel>\n";
-				$this->xml .= "\t\t<title><![CDATA[".htmlspecialchars_uni($this->channel['title'])."]]></title>\n";
+				$this->xml .= "\t\t<title><![CDATA[".$this->sanitize_content($this->channel['title'])."]]></title>\n";
 				$this->xml .= "\t\t<link>".$this->channel['link']."</link>\n";
-				$this->xml .= "\t\t<description><![CDATA[".htmlspecialchars_uni($this->channel['description'])."]]></description>\n";
+				$this->xml .= "\t\t<description><![CDATA[".$this->sanitize_content($this->channel['description'])."]]></description>\n";
 				$this->xml .= "\t\t<pubDate>".$this->channel['date']."</pubDate>\n";
 				$this->xml .= "\t\t<generator>MyBB</generator>\n";
 		}
@@ -128,7 +128,7 @@ class FeedGenerator
 					if(!empty($item['author']))
 					{
 						$this->xml .= "\t\t<author>\n";
-						$this->xml .= "\t\t\t<name>".htmlspecialchars_uni($item['author'])."</name>\n";
+						$this->xml .= "\t\t\t<name>".$this->sanitize_content($item['author'])."</name>\n";
 						$this->xml .= "\t\t</author>\n";
 					}
 					$this->xml .= "\t\t<published>{$item['date']}</published>\n";
@@ -143,8 +143,8 @@ class FeedGenerator
 					$this->xml .= "\t\t<updated>{$item['updated']}</updated>\n";
 					$this->xml .= "\t\t<link rel=\"alternate\" type=\"text/html\" href=\"{$item['link']}\" />\n";
 					$this->xml .= "\t\t<id>{$item['link']}</id>\n";
-					$this->xml .= "\t\t<title type=\"html\" xml:space=\"preserve\"><![CDATA[".htmlspecialchars_uni($item['title'])."]]></title>\n";
-					$this->xml .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".strip_tags($item['description'])."]]></content>\n";
+					$this->xml .= "\t\t<title type=\"html\" xml:space=\"preserve\"><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
+					$this->xml .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".strip_tags(str_replace("]]>", "]]&gt;", $item['description']))."]]></content>\n";
 					$this->xml .= "\t\t<draft xmlns=\"http://purl.org/atom-blog/ns#\">false</draft>\n";
 					$this->xml .= "\t</entry>\n";
 					break;
@@ -153,16 +153,16 @@ class FeedGenerator
 				default:
 					$item['date'] = date("D, d M Y H:i:s O", $item['date']);
 					$this->xml .= "\t\t<item>\n";
-					$this->xml .= "\t\t\t<title><![CDATA[".htmlspecialchars_uni($item['title'])."]]></title>\n";
+					$this->xml .= "\t\t\t<title><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
 					$this->xml .= "\t\t\t<link>".$item['link']."</link>\n";
 					$this->xml .= "\t\t\t<pubDate>".$item['date']."</pubDate>\n";
 					if($item['author'])
 					{
-						$this->xml .= "\t\t\t<dc:creator>".htmlspecialchars_uni($item['author'])."</dc:creator>\n";
+						$this->xml .= "\t\t\t<dc:creator>".$this->sanitize_content($item['author'])."</dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">".$item['link']."</guid>\n";
-					$this->xml .= "\t\t\t<description><![CDATA[".strip_tags($item['description'])."]]></description>\n";
-					$this->xml .= "\t\t\t<content:encoded><![CDATA[".$item['description']."]]></content:encoded>\n";
+					$this->xml .= "\t\t\t<description><![CDATA[".nl2br(strip_tags(str_replace("]]>", "]]&gt;", $item['description'])))."]]></description>\n";
+					$this->xml .= "\t\t\t<content:encoded><![CDATA[".nl2br($item['description'])."]]></content:encoded>\n";
 					$this->xml .= "\t\t</item>\n";
 					break;
 			}
@@ -178,6 +178,19 @@ class FeedGenerator
 				$this->xml .= "\t</channel>\n";
 				$this->xml .= "</rss>";
 		}
+	}
+
+	/**
+	 * Sanitize content suitable for RSS feeds.
+	 *
+	 * @param  string The string we wish to sanitize.
+	 * @return string The cleaned string.
+	 */
+	function sanitize_content($content)
+	{
+		$content = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#x26;$1", $content);
+		$content = str_replace("]]>", "]]&gt;", $content);
+		return htmlspecialchars_uni($content);
 	}
 
 	/**

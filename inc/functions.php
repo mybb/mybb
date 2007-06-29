@@ -2879,7 +2879,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
  */
 function htmlspecialchars_uni($message)
 {
-	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
+	$message = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $message); // Fix & but allow unicode
 	$message = str_replace("<","&lt;",$message);
 	$message = str_replace(">","&gt;",$message);
 	$message = str_replace("\"","&quot;",$message);

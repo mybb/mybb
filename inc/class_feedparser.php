@@ -46,14 +46,15 @@ class FeedParser
 		// Load the feed we want to parse
 		$contents = fetch_remote_file($feed);
 
-		// REALLY Wierd glitchy, dodgy, fix for random characters adding themselves to the beggining and ending of the feed
-		// Which I have no freaking clue about. 
-		// Maybe I just need some hot chocolate
+		// This is to work around some dodgy bug we've detected with certain installations of PHP
+		// where certain characters would automagically appear between the fetch_remote_file call
+		// and here which break the feed being imported.
+		// - It could just be that Chris and Tiki need some hot chocolate.
 		if(strpos($contents, "<") !== 0)
 		{
 			$contents = substr($contents, strpos($contents, "<"));
 		}
-		if(strrpos($contents, "<")+1 !== strlen($contents))
+		if(strrpos($contents, ">")+1 !== strlen($contents))
 		{
 			$contents = substr($contents, 0, strrpos($contents, ">")+1);
 		}
