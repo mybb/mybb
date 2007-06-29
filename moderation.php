@@ -1096,7 +1096,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
-		$plugins->run_hooks("moderation_do_multimergeposts");
+		$plugins->run_hooks("moderation_multimergeposts");
 		eval("\$multimerge = \"".$templates->get("moderation_inline_mergeposts")."\";");
 		output_page($multimerge);
 		break;
@@ -1161,7 +1161,7 @@ switch($mybb->input['action'])
 		}
 		$inlineids = implode("|", $posts);
 		clearinline($tid, "thread");
-		$plugins->run_hooks("moderation_do_multisplitposts");
+		$plugins->run_hooks("moderation_multisplitposts");
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
 		output_page($splitposts);
