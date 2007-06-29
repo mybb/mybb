@@ -6649,5 +6649,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	{$post['groupimage']}<br />
 	{$post['useravatar']}<br />
 </span>]]></template>
+	<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
 	</templates>
 </theme>

@@ -16,7 +16,7 @@ $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcements_announcement_modbit";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_forumlist.php";
@@ -483,6 +483,7 @@ while($announcement = $db->fetch_array($query))
 	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
+	$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
 	if($foruminfo['allowtratings'] != "no")
 	{
 		$thread['rating'] = "pixel.gif";
@@ -496,7 +497,7 @@ while($announcement = $db->fetch_array($query))
 	}
 	if($ismod)
 	{
-		$modann = "<td align=\"center\" class=\"$bgcolor\">-</td>";
+		eval("\$modann = \"".$templates->get("forumdisplay_announcements_announcement_modbit")."\";");
 	}
 	else
 	{

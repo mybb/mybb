@@ -570,7 +570,7 @@ class Moderation
 		switch($method)
 		{
 			case "redirect": // move (and leave redirect) thread
-				$plugins->run_hooks("class_moderation_do_move_redirect", array("tid" => $tid, "new_fid" => $new_fid));
+				$plugins->run_hooks("class_moderation_move_thread_redirect", array("tid" => $tid, "new_fid" => $new_fid));
 				
 				if($thread['visible'] == 1) 
 				{ 
@@ -648,7 +648,7 @@ class Moderation
 					$num_unapproved_posts = $thread['replies']+1;
 				}
 				
-				$plugins->run_hooks("class_moderation_do_move_copy", array("tid" => $tid, "new_fid" => $new_fid));
+				$plugins->run_hooks("class_moderation_copy_thread", array("tid" => $tid, "new_fid" => $new_fid));
 				$db->insert_query(TABLE_PREFIX."threads", $threadarray);
 				$newtid = $db->insert_id();
 				
@@ -736,7 +736,7 @@ class Moderation
 				break;
 			default:
 			case "move": // plain move thread
-				$plugins->run_hooks("class_moderation_do_move_simple", array("tid" => $tid, "new_fid" => $new_fid));
+				$plugins->run_hooks("class_moderation_move_simple", array("tid" => $tid, "new_fid" => $new_fid));
 	
 				if($thread['visible'] == 1) 
 				{ 

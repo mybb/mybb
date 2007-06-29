@@ -74,6 +74,11 @@ if($mybb->input['action'] == "do_add")
 	$enddateampm = $mybb->input['enddateampm'];
 	$enddatehour = intval($mybb->input['enddatehour']);
 
+	if(!$mybb->input['subject'] || !$mybb->input['message'])
+	{
+		cperror($lang->error_fill_form);
+	}
+
 	if($startdateampm == "pm")
 	{
 		$startdatehour = 12+$startdatehour;
@@ -135,6 +140,11 @@ if($mybb->input['action'] == "do_edit")
 	$startdatehour = intval($mybb->input['startdatehour']);
 	$enddateampm = $mybb->input['enddateampm'];
 	$enddatehour = intval($mybb->input['enddatehour']);
+
+	if(!$mybb->input['subject'] || !$mybb->input['message'])
+	{
+		cperror($lang->error_fill_form);
+	}
 
 	if($startdateampm == "pm")
 	{
