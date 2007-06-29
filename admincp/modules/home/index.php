@@ -55,16 +55,16 @@ if(!$mybb->input['action'])
 
 	// Get the number of users awaiting validation
 	$query = $db->simple_select("users", "COUNT(uid) AS awaitingusers", "usergroup='5'");
-	$awaitingusers = my_number_format($db->fetch_field($query, "awaitingusers");
+	$awaitingusers = my_number_format($db->fetch_field($query, "awaitingusers"));
 
 	// Get the number of new users for today
 	$timecut = TIME_NOW - 86400;
 	$query = $db->simple_select("users", "COUNT(uid) AS newusers", "regdate > '$timecut'");
-	$newusers = my_number_format($db->fetch_field($query, "newusers");
+	$newusers = my_number_format($db->fetch_field($query, "newusers"));
 
 	// Get the number of active users today
 	$query = $db->simple_select("users", "COUNT(uid) AS activeusers", "lastvisit > '$timecut'");
-	$activeusers = my_number_format($db->fetch_field($query, "activeusers");
+	$activeusers = my_number_format($db->fetch_field($query, "activeusers"));
 
 	// Get the number of threads
 	$threads = my_number_format($stats['numthreads']);
