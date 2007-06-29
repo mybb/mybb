@@ -245,7 +245,6 @@ elseif($mybb->input['action'] == "vercheck")
 	require_once MYBB_ROOT."inc/class_feedparser.php";
 	$feed_parser = new FeedParser();
 	$feed_parser->parse_feed("http://www.mybboard.net/latest_news.php");
-	echo $feed_parser->error;
 	cpheader();
 	starttable();
 	tableheader($lang->vercheck);
