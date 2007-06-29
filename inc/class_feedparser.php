@@ -53,9 +53,9 @@ class FeedParser
 		{
 			$contents = substr($contents, strpos($contents, "<"));
 		}
-		if(strrpos($contents, ">") !== 0)
+		if(strrpos($contents, "<")+1 !== strlen($contents))
 		{
-			$contents = substr($contents, strpos($contents, "<"), strrpos($contents, ">")+1);
+			$contents = substr($contents, 0, strrpos($contents, ">")+1);
 		}
 
 		// Could not load the feed, return an error
