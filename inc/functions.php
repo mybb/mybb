@@ -698,6 +698,7 @@ function usergroup_permissions($gid=0)
 	{
 		$groupscache = $cache->read("usergroups");
 	}
+
 	$groups = explode(",", $gid);
 	if(count($groups) == 1)
 	{
