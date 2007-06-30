@@ -21,7 +21,7 @@ function build_postbit($post, $post_type=0)
 	global $db, $altbg, $theme, $mybb, $postcounter;
 	global $titlescache, $page, $templates, $forumpermissions, $attachcache;
 	global $lang, $ismod, $inlinecookie, $inlinecount, $groupscache, $fid;
-	global $plugins, $parser, $cache, $ignored_users;
+	global $plugins, $parser, $cache, $ignored_users, $hascustomtitle;
 
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)

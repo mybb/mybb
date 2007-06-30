@@ -1439,7 +1439,14 @@ if(!$mybb->input['action'])
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
-		$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
+		if($pmscount['total'] == 0)
+		{
+			$spaceused = 0;
+		}
+		else
+		{
+			$spaceused = $pmscount['total'] / $mybb->usergroup['pmquota'] * 100;
+		}
 		$spaceused2 = 100 - $spaceused;
 		if($spaceused <= "50")
 		{
