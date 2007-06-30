@@ -42,6 +42,7 @@ $l['modify_group'] = "Modify Setting Group";
 $l['update_group'] = "Update Group";
 $l['group_name'] = "Group Name<br /><small>This is the unique identifying string for this group, which is also used for language variables.</small>";
 $l['group_title'] = "Group Title<br /><small>This is the friendly title to show for this group if a custom language variable does not exist.</small>";
+$l['group_description'] = "Group Description";
 $l['add_setting'] = "Add Setting";
 $l['modify_setting'] = "Modify Setting";
 $l['setting_title'] = "Setting Title";
@@ -65,6 +66,8 @@ $l['group_deleted'] = "The setting group has successfully been deleted.";
 $l['setting_edited'] = "The setting has successfully been modified.";
 $l['group_edited'] = "The setting group has successfully been edited.";
 $l['group_exists'] = "A setting group with that name already exists. Please choose another one.";
+$l['group_add_error'] = "You need to fill in the groups form.";
+$l['setting_add_error'] = "You need to fill in the setting form.";
 
 /**
  * Translation instructions for settings and setting groups:
