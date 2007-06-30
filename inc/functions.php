@@ -4364,11 +4364,11 @@ function dec_to_utf8($src)
 function is_banned_username($username, $update_lastuse=false)
 {
 	global $db;
-	$query = $db->simple_select("banfilters", "*", "type='2'");
+	$query = $db->simple_select('banfilters', 'filter, fid', "type='2'");
 	while($banned_username = $db->fetch_array($query))
 	{
 		// Make regular expression * match
-		$banned_username['filter'] = str_replace('\*', '(.*)', preg_quote($banned_username['filter'], '#'));
+		$banned_username['filter'] = preg_replace('#\*#', '(.*)', preg_quote($banned_username['filter'], '#'));
 		if(preg_match("#{$banned_username['filter']}#i", $username))
 		{
 			// Updating last use

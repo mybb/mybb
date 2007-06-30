@@ -842,11 +842,11 @@ if($mybb->input['action'] == "thread")
 		}
 		if($mybb->user['signature'])
 		{
-			$postoptionschecked['signature'] = "checked";
+			$postoptionschecked['signature'] = 'checked="checked"';
 		}
 		if($mybb->user['emailnotify'] == "yes")
 		{
-			$postoptionschecked['emailnotify'] = "checked";
+			$postoptionschecked['emailnotify'] = 'checked="checked"';
 		}
 	    mt_srand((double) microtime() * 1000000);
 	    $posthash = md5($mybb->user['uid'].mt_rand());
