@@ -940,6 +940,7 @@ else if($mybb->input['action'] == "logout")
 	{
 		redirect("index.php", $lang->redirect_alreadyloggedout);
 	}
+	
 	if($mybb->input['uid'] == $mybb->user['uid'] && $mybb->input['sid'] == $session->sid)
 	{
 		my_unsetcookie("mybbuser");
@@ -1282,7 +1283,7 @@ elseif($mybb->input['action'] == "profile")
 	$query = $db->simple_select(TABLE_PREFIX."userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
-	$bgcolor = trow1;
+	$bgcolor = "trow1";
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
 	if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
 	{
