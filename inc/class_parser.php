@@ -68,7 +68,7 @@ class postParser
 	 */
 	function parse_message($message, $options=array())
 	{
-		global $plugins, $mybb;
+		global $plugins, $mybb, $lang;
 
 		// Set base URL for parsing smilies
 		$this->base_url = $mybb->settings['bburl'];

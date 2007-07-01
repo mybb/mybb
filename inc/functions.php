@@ -75,7 +75,7 @@ function output_page($contents)
 		}
 	}
 
-	header("Content-type: text/html; charset={$lang->settings['charset']}");
+	@header("Content-type: text/html; charset={$lang->settings['charset']}");
 
 	echo $contents;
 
@@ -722,16 +722,17 @@ function usergroup_permissions($gid=0)
 				{
 					$permbit = "";
 				}
-				$zerogreater = 0;
+
 				if(in_array($perm, $groupzerogreater))
 				{
 					if($access == 0)
 					{
 						$usergroup[$perm] = 0;
+						continue;
 					}
-					$zerogreater = 1;
 				}
-				if(($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) && $zerogreater != 1)
+
+				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit)
 				{
 					$usergroup[$perm] = $access;
 				}
