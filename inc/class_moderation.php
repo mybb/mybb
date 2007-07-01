@@ -1594,7 +1594,17 @@ class Moderation
 			if(count($groups) > 0)
 			{
 				$groups_csv = implode(',', $groups);
-				$db->query("DELETE s FROM (".TABLE_PREFIX."favorites s, ".TABLE_PREFIX."users u) WHERE s.type='s' AND s.tid IN ({$tids_csv}) AND s.uid=u.uid AND (u.usergroup IN ({$groups_csv}){$additional_groups})");
+				$query = $db->query("
+					SELECT s.tid, u.uid
+					FROM ".TABLE_PREFIX."threadsubscriptions s
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
+					WHERE s.type='s' AND s.tid IN ({$tids_csv})
+					AND (u.usergroup IN ({$groups_csv}){$additional_groups})
+				");
+				while($subscription = $db->fetch_array($query))
+				{
+					$db->query("DELETE FROM ".TABLE_PREFIX."threadsubscriptions WHERE uid='{$subscription['uid']}' AND tid='{$subscription['tid']}'");
+				}
 			}
 		}
 		// Delete all subscriptions of this thread
