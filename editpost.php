@@ -446,11 +446,16 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			"pid" => $mybb->input['pid'],
 			"subject" => $mybb->input['subject'],
 			"icon" => $mybb->input['icon'],
-			"uid" => $mybb->user['uid'],
-			"username" => $mybb->user['username'],
+			"uid" => $post['uid'],
 			"edit_uid" => $mybb->user['uid'],
 			"message" => $mybb->input['message'],
 		);
+
+		if(!$mybb->input['previewpost'])
+		{
+			$post['uid'] = $mybb->user['uid'];
+			$post['username'] = $mybb->user['username'];
+		}
 	
 		// Set up the post options from the input.
 		$post['options'] = array(
