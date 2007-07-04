@@ -723,7 +723,8 @@ disabled=Disable this feature]]></optionscode>
 			<optionscode><![CDATA[select
 regdate=Registration Date
 postnum=Post Count
-username=Username]]></optionscode>
+username=Username
+lastvisit=Last Visit]]></optionscode>
 			<settingvalue><![CDATA[regdate]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
@@ -1165,7 +1166,7 @@ no=Disabled]]></optionscode>
 		</setting>
 		<setting name="load">
 			<title>*NIX Load Limiting</title>
-			<description><![CDATA[Limit the maximum server load before myBB rejects people.  0 for none.  Recommended limit is 5.0.]]></description>
+			<description><![CDATA[Limit the maximum server load before MyBB rejects people.  0 for none.  Recommended limit is 5.0.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>

@@ -52,6 +52,7 @@ else
 	{
 		$mybb->input['sort'] = $mybb->settings['default_memberlist_sortby'];
 	}
+	
 	switch($mybb->input['sort'])
 	{
 		case "regdate":
@@ -63,7 +64,7 @@ else
 		case "reputation":
 			$sort_field = "u.reputation";
 			break;
-		case "posts":
+		case "postnum":
 			$sort_field = "u.postnum";
 			break;
 		default:
@@ -74,11 +75,19 @@ else
 	$sort_selected[$mybb->input['sort']] = " selected=\"selected\"";
 	
 	// Incoming sort order?
-	$mybb->input['order'] = strtolower($mybb->input['order']);
+	if($mybb->input['order'])
+	{
+		$mybb->input['order'] = strtolower($mybb->input['order']);
+	}
+	else
+	{
+		$mybb->input['order'] = strtolower($mybb->settings['default_memberlist_order']);
+	}
+	
 	if($mybb->input['order'] == "asc" || (!$mybb->input['order'] && $mybb->input['sort'] == 'username'))
 	{
-		$mybb->input['order'] = "asc";
 		$sort_order = "ASC";
+		$mybb->input['order'] = "asc";
 	}
 	else
 	{
