@@ -267,21 +267,17 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("attachtypes", "*", "", array('order_by' => 'extension'));
 	while($attachment_type = $db->fetch_array($query))
 	{
-		if(my_strpos($attachment_type['icon'], "{theme}") !== false)
-		{
-			if(!$attachment_type['icon'] || $attachment_type['icon'] == "images/attachtypes/")
-			{
-				$attachment_type['icon'] = "&nbsp;";
-			}
-			else
-			{
-				$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" alt=\"\" />";
-			}
-		}
-		else
+		// Just show default icons in ACP		
+		$attachment_type['icon'] = str_replace("{theme}", "images", $attachment_type['icon']);
+		if(!$attachment_type['icon'] || $attachment_type['icon'] == "images/attachtypes/")
 		{
 			$attachment_type['icon'] = "&nbsp;";
 		}
+		else
+		{
+			$attachment_type['icon'] = "<img src=\"../{$attachment_type['icon']}\" alt=\"\" />";
+		}
+		
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
 		$table->construct_cell($attachment_type['mimetype']);
