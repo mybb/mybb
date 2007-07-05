@@ -555,7 +555,7 @@ form {
 </table>
 <br />]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
-		<template name="index" version="120"><![CDATA[<html>
+		<template name="index" version="129"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']}</title>
 {$headerinclude}
@@ -563,22 +563,7 @@ form {
 <body>
 {$header}
 {$forums}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<thead>
-<tr>
-<td class="thead">
-<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.gif" id="boardstats_img" class="expander" alt="[-]" /></div>
-<div><strong>{$lang->boardstats}</strong></div>
-</td>
-</tr>
-</thead>
-<tbody style="{$collapsed['boardstats_e']}" id="boardstats_e">
-{$whosonline}
-{$birthdays}
-{$forumstats}
-</tbody>
-</table>
-<br />
+{$boardstats}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
 		<td class="trow1">
@@ -6651,4 +6636,20 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </span>]]></template>
 	<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
 	</templates>
+	<template name="index_boardstats" version="129"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<thead>
+<tr>
+<td class="thead">
+<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.gif" id="boardstats_img" class="expander" alt="[-]" /></div>
+<div><strong>{$lang->boardstats}</strong></div>
+</td>
+</tr>
+</thead>
+<tbody style="{$collapsed['boardstats_e']}" id="boardstats_e">
+{$whosonline}
+{$birthdays}
+{$forumstats}
+</tbody>
+</table>
+<br />]]></template>
 </theme>

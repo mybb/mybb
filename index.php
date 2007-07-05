@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = "index,index_whosonline,index_welcomemembertext,index_welcomeguest,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,index_modcolumn,forumbit_moderators,forumbit_subforums,index_welcomeguesttext";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon";
+$templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
 
 require_once "./global.php";
 
@@ -224,6 +224,12 @@ if($mybb->settings['showindexstats'] != "no")
 	$lang->stats_mostonline = sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
 
 	eval("\$forumstats = \"".$templates->get("index_stats")."\";");
+}
+
+// Show the board statistics table only if one or more index statistics are enabled.
+if($mybb->settings['showwol'] != "no" || $mybb->settings['showindexstats'] != "no" || ($mybb->settings['showbirthdays'] != "no" && $bdaycount > 0))
+{
+	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
 }
 
 // Get the forums we will need to show.
