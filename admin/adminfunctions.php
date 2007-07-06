@@ -387,48 +387,7 @@ function makeselectcode_array($title, $name, $options, $selected="", $blank="", 
 	}
 	echo "</select>\n</td>\n</tr>\n";
 }
-function makedateselect($title, $name, $day, $month, $year)
-{
-	$dname = $name."[day]";
-	$mname = $name."[month]";
-	$yname = $name."[year]";
 
-	for($i = 1; $i <= 31; $i++)
-	{
-		if($day == $i)
-		{
-			$daylist .= "<option value=\"$i\" selected>$i</option>\n";
-		}
-		else
-		{
-			$daylist .= "<option value=\"$i\">$i</option>\n";
-		}
-	}
-
-	$monthsel[$month] = "selected";
-	$monthlist .= "<option value=\"\">------------</option>";
-	$monthlist .= "<option value=\"01\" $monthsel[01]>January</option>\n";
-	$monthlist .= "<option value=\"02\" $monthsel[02]>February</option>\n";
-	$monthlist .= "<option value=\"03\" $monthsel[03]>March</option>\n";
-	$monthlist .= "<option value=\"04\" $monthsel[04]>April</option>\n";
-	$monthlist .= "<option value=\"05\" $monthsel[05]>May</option>\n";
-	$monthlist .= "<option value=\"06\" $monthsel[06]>June</option>\n";
-	$monthlist .= "<option value=\"07\" $monthsel[07]>July</option>\n";
-	$monthlist .= "<option value=\"08\" $monthsel[08]>August</option>\n";
-	$monthlist .= "<option value=\"09\" $monthsel[09]>September</option>\n";
-	$monthlist .= "<option value=\"10\" $monthsel[10]>October</option>\n";
-	$monthlist .= "<option value=\"11\" $monthsel[11]>November</option>\n";
-	$monthlist .= "<option value=\"12\" $monthsel[12]>December</option>\n";
-	$dateselect = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\"><tr>\n";
-	$dateselect .= "<td><b><small>Day</small></b><br />\n<select name=\"$dname\"><option value=\"\">--</option>\n$daylist</select></td>\n";
-	$dateselect .= "<td><b><small>Month</small></b><br />\n<select name=\"$mname\">$monthlist</select></td>\n";
-	$dateselect .= "<td><b><small>Year</small></b><br />\n<input name=\"$yname\" value=\"$year\" size=\"4\"></td>\n";
-	$dateselect .= "</tr></table>";
-
-	$bgcolor = getaltbg();
-
-	echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\" width=\"40%\">$title</td>\n<td class=\"$bgcolor\" valign=\"top\">$dateselect</tr>\n";
-}
 function makebuttoncode($name, $value, $type="submit", $onclick="", $nameid="name")
 {
   if($onclick != '')
