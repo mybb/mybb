@@ -1471,38 +1471,6 @@ function get_server_load()
 			}
 		}
 	}
-	else if(class_exists('COM'))
-	{
-		$wmi = new COM("WinMgmts:\\\\.");
-		$cpus = $wmi->InstancesOf("Win32_Processor");
-
-		$cpu_count = 0;
-
-		if(version_compare(PHP_VERSION, '5.0.0', '>='))
-		{
-			// PHP 5
-			foreach($cpus as $cpu)
-			{
-				$serverload[0] += $cpu->LoadPercentage;
-				++$cpu_count;
-			}
-		}
-		else
-		{
-			// PHP 4
-			while ($cpu = $cpus->Next())
-			{
-				$serverload[0] += $cpu->LoadPercentage;
-				++$cpu_count;
-			}
-		}
-
-		if($cpu_count > 1)
-		{
-			$serverload[0] = round($serverload[0] / $cpu_count, 2);
-		}
-		$serverload[0] .= "%";
-	}
 	else
 	{
 		return $lang->unknown;
