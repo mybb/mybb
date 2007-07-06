@@ -446,7 +446,11 @@ while($announcement = $db->fetch_array($query))
 		if($avatar_dimensions[0] && $avatar_dimensions[1])
 		{
 			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-		}		
+		}
+		if (!stristr($announcement['avatar'], 'http://'))
+		{
+			$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
+		} 		
 		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"$announcement[avatar]\" alt=\"0\" {$avatar_width_height} /></td>";
 	}
 	else

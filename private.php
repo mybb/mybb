@@ -1084,25 +1084,23 @@ if(!$mybb->input['action'])
 			{
 				$msgfolder = 'new_pm.gif';
 				$msgalt = $lang->new_pm;
-				$doneunread = 1;
+				$msgprefix = "<strong>";
+				$msgsuffix = "</strong>";
 			}
 			elseif($message['status'] == 1)
 			{
 				$msgfolder = 'old_pm.gif';
 				$msgalt = $lang->old_pm;
-				$doneread = 1;
 			}
 			elseif($message['status'] == 3)
 			{
 				$msgfolder = 're_pm.gif';
 				$msgalt = $lang->reply_pm;
-				$doneread = 1;
 			}
 			elseif($message['status'] == 4)
 			{
 				$msgfolder = 'fw_pm.gif';
 				$msgalt = $lang->fwd_pm;
-				$doneread = 1;
 			}
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
@@ -1152,12 +1150,6 @@ if(!$mybb->input['action'])
 			else
 			{
 				$senddate = $lang->not_sent;
-			}
-			if($doneunread && $doneread)
-			{
-				eval("\$messagelist .= \"".$templates->get("private_messagebit_sep")."\";");
-				$doneunread = 0;
-				$doneread = 0;
 			}
 			eval("\$messagelist .= \"".$templates->get("private_messagebit")."\";");
 		}

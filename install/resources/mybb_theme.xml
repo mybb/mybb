@@ -3361,10 +3361,10 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 </tr>
 </table>
 </body>]]></template>
-		<template name="private_messagebit" version="120"><![CDATA[<tr>
+		<template name="private_messagebit" version="128"><![CDATA[<tr>
 <td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}"/></td>
 <td align="center" class="trow2" width="5%">{$icon}</td>
-<td class="trow1" width="35%"><a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$denyreceipt}</td>
+<td class="trow1" width="35%">{$msgprefix}<a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$msgsuffix}{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
 <td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate} {$sendtime}</span></td>
 <td class="trow2" align="center"><input type="checkbox" class="checkbox" name="check[{$message['pmid']}]" value="yes" /></td>
