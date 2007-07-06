@@ -241,7 +241,7 @@ if($mybb->settings['showindexstats'] != "no")
 }
 
 // Show the board statistics table only if one or more index statistics are enabled.
-if($mybb->settings['showwol'] != "no" || $mybb->settings['showbirthdays'] != "no" || $mybb->settings['showindexstats'] != "no")
+if($mybb->settings['showwol'] != "no" || $mybb->settings['showindexstats'] != "no" || ($mybb->settings['showbirthdays'] != "no" && $bdaycount > 0))
 {
 	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
 }
