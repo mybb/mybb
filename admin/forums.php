@@ -899,6 +899,8 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 		$new_forum['description'] = $db->escape_string($mybb->input['description']);
 		$new_forum['type'] = $type;
 		$new_forum['pid'] = intval($mybb->input['pid']);
+		$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
+		$new_forum['rules'] = $db->escape_string($new_forum['rules']);
 		
 		$db->insert_query("forums", $new_forum);
 		$to = $db->insert_id();
@@ -926,6 +928,8 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 		$new_forum['description'] = $db->escape_string($to_forum['description']);
 		$new_forum['pid'] = $db->escape_string($to_forum['pid']);
 		$new_forum['parentlist'] = $db->escape_string($to_forum['parentlist']);
+		$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
+		$new_forum['rules'] = $db->escape_string($new_forum['rules']);
 
 		$db->update_query("forums", $new_forum, "fid='{$to}'");
 	}
