@@ -44,7 +44,7 @@ function username_exists($username)
  * Checks a password with a supplied username.
  *
  * @param string The username of the user.
- * @param string The md5()'ed password.
+ * @param string The plain-text password.
  * @return boolean|array False when no match, array with user info when match.
  */
 function validate_password_from_username($username, $password)
@@ -66,7 +66,7 @@ function validate_password_from_username($username, $password)
  * Checks a password with a supplied uid.
  *
  * @param int The user id.
- * @param string The md5()'ed password.
+ * @param string The plain-text password.
  * @param string An optional user data array.
  * @return boolean|array False when not valid, user data array when valid.
  */
