@@ -893,7 +893,7 @@ class Moderation
 		$this->delete_thread($mergetid);
 
 		$updated_stats = array(
-			"replies" => '+'.$mergethread['replies']+1, 
+			"replies" => '+'.($mergethread['replies']+1), 
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
