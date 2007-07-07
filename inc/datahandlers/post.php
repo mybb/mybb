@@ -608,7 +608,7 @@ class PostDataHandler extends DataHandler
 						$notification = 1;
 						break;
 					default:
-						$notification = '0';
+						$notification = 0;
 				}
 
 				require_once MYBB_ROOT."inc/functions_user.php";
@@ -1124,7 +1124,7 @@ class PostDataHandler extends DataHandler
 						$notification = 1;
 						break;
 					default:
-						$notification = '0';
+						$notification = 0;
 				}
 
 				require_once MYBB_ROOT."inc/functions_user.php";
@@ -1440,7 +1440,7 @@ class PostDataHandler extends DataHandler
 					$notification = 1;
 					break;
 				default:
-					$notification = '0';
+					$notification = 0;
 			}
 			require_once MYBB_ROOT."inc/functions_user.php";
 			add_subscribed_thread($post['tid'], $notification, $post['uid']);

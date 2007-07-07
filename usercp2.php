@@ -27,10 +27,7 @@ $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
 if($mybb->input['action'] == "do_addsubscription")
 {
-	if($mybb->input['type'] == "forum")
-	{
-	}
-	else
+	if($mybb->input['type'] != "forum")
 	{
 		$thread  = get_thread($mybb->input['tid']);
 		if(!$thread['tid'])

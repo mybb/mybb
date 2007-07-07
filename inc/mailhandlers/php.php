@@ -61,15 +61,17 @@ class PhpMail extends MailHandler
 			}
 			
 			$sent = mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			$function_used = 'mb_send_mail()';
 		}
 		else
 		{
 			$sent = mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			$function_used = 'mail()';
 		}
 
 		if(!$sent)
 		{
-			$this->fatal_error("MyBB was unable to send the email using the PHP mail() function.");
+			$this->fatal_error("MyBB was unable to send the email using the PHP {$function_used} function.");
 			return false;
 		}
 

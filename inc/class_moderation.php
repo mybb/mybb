@@ -881,7 +881,7 @@ class Moderation
 		$this->delete_thread($mergetid);
 
 		$updated_stats = array(
-			"replies" => '+'.$mergethread['replies']+1, 
+			"replies" => '+'.($mergethread['replies']+1), 
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
@@ -1598,7 +1598,7 @@ class Moderation
 					SELECT s.tid, u.uid
 					FROM ".TABLE_PREFIX."threadsubscriptions s
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
-					WHERE s.type='s' AND s.tid IN ({$tids_csv})
+					WHERE s.tid IN ({$tids_csv})
 					AND (u.usergroup IN ({$groups_csv}){$additional_groups})
 				");
 				while($subscription = $db->fetch_array($query))
