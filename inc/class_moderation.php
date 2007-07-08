@@ -965,16 +965,16 @@ class Moderation
 		// Create the new thread
 		$newsubject = $db->escape_string($newsubject);
 		$query = array(
-			"fid" => $moveto,
+			"fid" => intval($moveto),
 			"subject" => $newsubject,
-			"icon" => $thread['icon'],
-			"uid" => $thread['uid'],
-			"username" => $thread['username'],
-			"dateline" => $thread['dateline'],
-			"lastpost" => $thread['lastpost'],
-			"lastposter" => $thread['lastposter'],
+			"icon" => intval($thread['icon']),
+			"uid" => intval($thread['uid']),
+			"username" => $db->escape_string($thread['username']),
+			"dateline" => intval($thread['dateline']),
+			"lastpost" => intval($thread['lastpost']),
+			"lastposter" => $db->escape_string($thread['lastposter']),
 			"replies" => count($pids)-1,
-			"visible" => "1",
+			"visible" => 1,
 			"notes" => ''
 		);
 		$db->insert_query("threads", $query);
