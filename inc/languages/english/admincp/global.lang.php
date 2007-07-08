@@ -58,6 +58,7 @@ $l['version'] = "Version";
 $l['languagevar'] = "Language";
 $l['file'] = "File";
 $l['go'] = "Go";
+$l['unknown'] = "Unknown";
 
 // Access Denied
 $l['access_denied'] = "Access Denied";

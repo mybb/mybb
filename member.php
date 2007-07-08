@@ -1359,7 +1359,7 @@ if($mybb->input['action'] == "profile")
 	$query = $db->simple_select("userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);
 	$customfields = '';
-	$bgcolor = trow1;
+	$bgcolor = "trow1";
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
 	if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
 	{
