@@ -978,15 +978,15 @@ class Moderation
 		$newsubject = $db->escape_string($newsubject);
 		$query = array(
 			"fid" => intval($moveto),
-			"subject" => $db->escape_string($newsubject),
-			"icon" => $db->escape_string($thread['icon']),
-			"uid" => $db->escape_string($thread['uid']),
+			"subject" => $newsubject,
+			"icon" => intval($thread['icon']),
+			"uid" => intval($thread['uid']),
 			"username" => $db->escape_string($thread['username']),
-			"dateline" => $db->escape_string($thread['dateline']),
-			"lastpost" => $db->escape_string($thread['lastpost']),
+			"dateline" => intval($thread['dateline']),
+			"lastpost" => intval($thread['lastpost']),
 			"lastposter" => $db->escape_string($thread['lastposter']),
 			"replies" => count($pids)-1,
-			"visible" => "1",
+			"visible" => 1,
 			"notes" => ''
 		);
 		$db->insert_query(TABLE_PREFIX."threads", $query);
