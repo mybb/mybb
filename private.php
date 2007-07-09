@@ -1301,7 +1301,7 @@ if(!$mybb->input['action'])
 	{
 		while($message = $db->fetch_array($query))
 		{
-			$msgalt = '';
+			$msgalt = $msgsuffix = $msgprefix = '';
 			// Determine Folder Icon
 			if($message['status'] == 0)
 			{
