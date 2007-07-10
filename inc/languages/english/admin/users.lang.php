@@ -218,6 +218,8 @@ $l['error_not_found'] = "The user could not be found in the database.";
 $l['error_not_banned'] = "The user could not be found in the banned list.";
 $l['error_invalid_source'] = "The source account you entered was not found in the database. Please go back and correct this error.";
 $l['error_invalid_destination'] = "The destination account you entered was not found in the database. Please go bac and correct this error.";
+$l['error_missing_subject'] = "The mass-mail is missing a subject.";
+$l['error_missing_message'] = "The mass-mail is missing a message.";
 
 $l['user_added'] = "The user has successfully been added.";
 $l['profile_updated'] = "The user's profile has successfully been updated.";

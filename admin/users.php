@@ -625,6 +625,15 @@ if($mybb->input['action'] == "do_email")
 	$searchop['page']++;
 
 	$plugins->run_hooks("admin_users_do_email");
+	
+	if(!trim($mybb->input['searchop']['subject']))
+	{
+		cperror($lang->error_missing_subject);
+	}
+	if(!trim($mybb->input['searchop']['message']))
+	{
+		cperror($lang->error_missing_subject);
+	}
 
 	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");
 	$num = $db->fetch_array($query);
