@@ -83,13 +83,14 @@ class FeedGenerator
 	 */
 	function generate_feed()
 	{
+		global $lang;
 		// First, add the feed metadata.
 		switch($this->feed_format)
 		{
 			// Ouput an Atom 1.0 formatted feed.
 			case "atom1.0":
 				$this->channel['date'] = gmdate("Y-m-d\TH:i:s\Z", $this->channel['date']);
-				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+				$this->xml .= "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?>\n";
 				$this->xml .= "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<title type=\"html\"><![CDATA[".$this->sanitize_content($this->channel['title'])."]]></title>\n";
 				$this->xml .= "\t<subtitle type=\"html\"><![CDATA[".$this->sanitize_content($this->channel['description'])."]]></subtitle>\n";
@@ -102,7 +103,7 @@ class FeedGenerator
 			// The default is the RSS 2.0 format.
 			default:
 				$this->channel['date'] = date("D, d M Y H:i:s O", $this->channel['date']);
-				$this->xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+				$this->xml .= "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?>\n";
 				$this->xml .= "<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n";
 				$this->xml .= "\t<channel>\n";
 				$this->xml .= "\t\t<title><![CDATA[".$this->sanitize_content($this->channel['title'])."]]></title>\n";
@@ -198,14 +199,15 @@ class FeedGenerator
 	*/
 	function output_feed()
 	{
+		global $lang;
 		// Send an appropriate header to the browser.
 		switch($this->feed_format)
 		{
 			case "atom1.0":
-				header("Content-Type: application/atom+xml; charset=utf-8");
+				header("Content-Type: application/atom+xml; charset={$lang->settings['charset']}");
 				break;
 			default:
-				header("Content-Type: text/xml; charset=utf-8");
+				header("Content-Type: text/xml; charset={$lang->settings['charset']}");
 		}
 
 		// Output the feed XML. If the feed hasn't been generated, do so.
