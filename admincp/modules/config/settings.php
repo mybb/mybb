@@ -1075,14 +1075,14 @@ SettingSearch.prototype = {
 
 	onComplete: function(request)
 	{
-		if(request.responseText.match(/<error>(.*)<\/error>/))
+		if(request.responseText.match(/<error>(.*)<\/error>/) || request.responseText == "")
 		{
 			message = request.responseText.match(/<error>(.*)<\/error>/);
 			if(!message[1])
 			{
-				message[1] = "An unknown error occurred.";
+				message[1] = "'.$lang->error_ajax_unknown.'";
 			}
-			alert("'.$lang->error_ajax_search.' "+message[1]);
+			alert(message[1]);
 		}
 		else if(request.responseText)
 		{
