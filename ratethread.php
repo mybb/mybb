@@ -107,7 +107,11 @@ if($mybb->input['ajax'])
 	$width = 0;
 	if($fetch['numratings'] >= 0)
 	{
-		$width = round($fetch['totalratings']/$fetch['numratings'], 2)*20;
+		$averagerating = intval(round($fetch['totalratings']/$fetch['numratings'], 2));
+		$width = $averagerating*20;
+		$fetch['numratings'] = intval($fetch['numratings']);
+		$ratingvotesav = sprintf($lang->rating_votes_average, $fetch['numratings'], $averagerating);
+		echo "<average>{$ratingvotesav}</average>\n";
 	}
 	echo "<width>{$width}</width>";
 	exit;

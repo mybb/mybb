@@ -1807,15 +1807,12 @@ td .star_rating {
 </table>
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_rating" version="140"><![CDATA[	<td class="{$bgcolor}">
-		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
-			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
-			<li><a class="one_star" title="{$lang->one_star}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=1">1</a></li>
-			<li><a class="two_stars" title="{$lang->two_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=2">2</a></li>
-			<li><a class="three_stars" title="{$lang->three_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=3">3</a></li>
-			<li><a class="four_stars" title="{$lang->four_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=4">4</a></li>
-			<li><a class="five_stars" title="{$lang->five_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=5">5</a></li>
-		</ul>
+		<template name="forumdisplay_thread_rating" version="140"><![CDATA[	<td class="{$bgcolor}" id="rating_table_{$thread['tid']}">
+		<script type="text/javascript">
+		<!--
+			Rating.build_forumdisplay({$thread['tid']}, { width: '{$thread['width']}', extra_class: '{$not_rated}', current_average: '{$ratingvotesav}' });
+		// -->
+		</script>
 	</td>
 ]]></template>
 	<template name="forumdisplay_announcement_rating" version="140"><![CDATA[	<td class="{$bgcolor}" align="center"><img src="{$theme['imgdir']}/pixel.gif" alt="" /></td>]]></template>
@@ -4491,6 +4488,16 @@ body {
 		<template name="forumdisplay_threadlist_rating" version="140"><![CDATA[	<td class="tcat" align="center" width="70">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="jscripts/rating.js?ver=140"></script>
+		<script type="text/javascript">
+		<!--
+			lang.stars = new Array();
+			lang.stars[1] = "{$lang->one_star}";
+			lang.stars[2] = "{$lang->two_stars}";
+			lang.stars[3] = "{$lang->three_stars}";
+			lang.stars[4] = "{$lang->four_stars}";
+			lang.stars[5] = "{$lang->five_stars}";
+		// -->
+		</script>
 	</td>
 ]]></template>
 		<template name="forumdisplay_thread" version="140"><![CDATA[<tr>

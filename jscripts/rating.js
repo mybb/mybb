@@ -18,9 +18,46 @@ var Rating = {
 				elements.each(function(element) {
 					element.onclick = function() { return false; };
 					element.style.cursor = 'default';
+					var element_id = element.href.replace(/.*\?(.*)/, "$1").match(/tid=(.*)&/)[1];
+					element.title = $('current_rating_'+element_id).innerHTML;
 				});
 			}
 		});
+	},
+	
+	build_forumdisplay: function(tid, options)
+	{
+		var list = document.createElement('ul');
+		list.className = 'star_rating' + options.extra_class;
+		list.id = 'rating_thread_' + tid;
+
+		var current_list_element = document.createElement('li');
+		current_list_element.style.width = options.width + '%';
+		current_list_element.className = 'current_rating';
+		current_list_element.id = 'current_rating_'+tid;
+		current_list_element.innerHTML = options.current_average;
+		list.appendChild(current_list_element);
+		
+		list_classes = new Array();
+		list_classes[1] = 'one_star';
+		list_classes[2] = 'two_stars';
+		list_classes[3] = 'three_stars';
+		list_classes[4] = 'four_stars';
+		list_classes[5] = 'five_stars';
+
+		for(var i = 1; i <= 5; i++)
+		{
+			var list_element = document.createElement('li');
+			var list_element_a = document.createElement('a');
+			list_element_a.className = list_classes[i];
+			list_element_a.title = lang.stars[i];
+			list_element_a.href = './ratethread.php?tid='+tid+'&rating='+i;
+			list_element_a.innerHTML = i;
+			list_element.appendChild(list_element_a);
+			list.appendChild(list_element);
+		}
+
+		$('rating_table_'+tid).appendChild(list);
 	},
 
 	add_rating: function(parameterString)
@@ -63,10 +100,16 @@ var Rating = {
 			element.parentNode.insertBefore(success, element.nextSibling);
 			element.removeClassName('star_rating_notrated');
 
+			if(request.responseText.match(/<average>(.*)<\/average>/))
+			{
+				$('current_rating_' + element_id).innerHTML = request.responseText.match(/<average>(.*)<\/average>/)[1];
+			}
+
 			var rating_elements = Element.getElementsBySelector(element, 'li a');
 			rating_elements.each(function(element) {
 				element.onclick = function() { return false; };
 				element.style.cursor = 'default';
+				element.title = $('current_rating_'+element_id).innerHTML;
 			});
 			window.setTimeout("Element.remove('success_rating_" + element_id + "')", 5000);
 			document.body.style.cursor = 'default';
