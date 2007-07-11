@@ -17,6 +17,8 @@ require_once MYBB_ROOT."inc/functions_post.php";
 // Load global language phrases
 $lang->load("index");
 
+$plugins->run_hooks("archive_start");
+
 switch($action)
 {
 	// Display an announcement.
@@ -59,8 +61,12 @@ switch($action)
 		// Format announcement contents.
 		$announcement['startdate'] = my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $announcement['startdate']);
 
+		$plugins->run_hooks("archive_announcement_start");
+
 		echo "<div class=\"post\">\n<div class=\"header\">\n<h2>{$announcement['subject']} - {$profile_link}</h2>";
 		echo "<div class=\"dateline\">{$announcement['startdate']}</div>\n</div>\n<div class=\"message\">{$announcement['message']}</div>\n</div>\n";
+
+		$plugins->run_hooks("archive_announcement_end");
 
 		archive_footer();
 		break;
@@ -87,6 +93,8 @@ switch($action)
 		add_breadcrumb($thread['subject']);
 
 		archive_header($thread['subject'], $thread['subject'], $mybb->settings['bburl']."/".get_thread_link($thread['tid']));
+
+		$plugins->run_hooks("archive_thread_start");
 
 		// Paginate this thread
 		$perpage = $mybb->settings['postsperpage'];
@@ -171,11 +179,15 @@ switch($action)
 			}
 			$post['username'] = build_profile_link($post['username'], $post['uid']);
 
+			$plugins->run_hooks("archive_thread_post");
+
 			// Finally show the post
 			echo "<div class=\"post\">\n<div class=\"header\">\n<div class=\"author\"><h2>{$post['username']}</h2></div>";
 			echo "<div class=\"dateline\">{$post['date']}</div>\n</div>\n<div class=\"message\">{$post['message']}</div>\n</div>\n";
 		}
 		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
+
+		$plugins->run_hooks("archive_thread_end");
 
 		archive_footer();
 		break;
@@ -205,6 +217,8 @@ switch($action)
 
 		// Build the archive header.
 		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id.""), 1);
+
+		$plugins->run_hooks("archive_forum_start");
 
 		if(!$mybb->settings['threadsperpage'])
 		{
@@ -296,6 +310,9 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}
+
+					$plugins->run_hooks("archive_forum_thread");
+
 					echo "<li><a href=\"{$base_url}thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
 				}
@@ -329,6 +346,9 @@ switch($action)
 					{
 						$lang_reply_text = $lang->archive_reply;
 					}
+
+					$plugins->run_hooks("archive_forum_thread");
+
 					echo "<li><a href=\"{$base_url}thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$thread['replies']} {$lang_reply_text})</span></li>";
 				}
@@ -339,6 +359,9 @@ switch($action)
 		echo "</div>\n";
 
 		archive_multipage($threadcount, $perpage, $page, "{$base_url}forum-$id");
+
+		$plugins->run_hooks("archive_forum_end");
+
 		archive_footer();
 		break;
 
@@ -347,16 +370,23 @@ switch($action)
 		// Build our forum listing
 		$forums = build_archive_forumbits(0);
 		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
+
+		$plugins->run_hooks("archive_index_start");
+
 		echo "<div class=\"listing forumlist\">\n<div class=\"header\">{$mybb->settings['bbname']}</div>\n<div class=\"forums\">\n<ul>\n";
 		echo $forums;
 		echo "\n</ul>\n</div>\n</div>";
+
+		$plugins->run_hooks("archive_index_end");
+
 		archive_footer();
 		break;
 	default:
 		header("HTTP/1.0 404 Not Found");
 		echo $lang->archive_not_found;
-		exit;
 }
+
+$plugins->run_hooks("archive_end");
 
 /**
 * Gets a list of forums and possibly subforums.
