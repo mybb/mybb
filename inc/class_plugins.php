@@ -158,5 +158,54 @@ class pluginSystem
 		}
 		unset($this->hooks[$hook][$priority][$function]);
 	}
+
+	/**
+	 * Establishes if a particular plugin is compatible with this version of MyBB.
+	 *
+	 * @param string The name of the plugin.
+	 * @return boolean TRUE if compatible, FALSE if incompatible.
+	 */
+	function is_compatible($plugin)
+	{
+		global $mybb;
+
+		// Ignore potentially missing plugins.
+		if(!file_exists(MYBB_ROOT."inc/plugins/".$plugin.".php"))
+		{
+			return true;
+		}
+
+		require_once MYBB_ROOT."inc/plugins/".$plugin.".php";
+
+		$info_func = "{$plugin}_info";
+		if(!function_exists($info_func))
+		{
+			return false;
+		}
+		$plugin_info = $info_func();
+		
+		// No compatibility set or compatibility = * - assume compatible
+		if(!$plugin_info['compatibility'] || $plugin_info['compatibility'] == "*")
+		{
+			return true;
+		}
+		$compatibility = explode(",", $plugin_info['compatibility']);
+		foreach($compatibility as $version)
+		{
+			$version = trim($version);
+			$version = str_replace("*", ".+", preg_quote($version));
+			$version = str_replace("\.+", ".+", $version);
+			if(preg_match("#{$version}#i", $mybb->version_code))
+			{
+				return true;
+			}
+		}
+
+		// Nothing matches
+		return false;
+	}
+
+
+
 }
 ?>

@@ -132,8 +132,8 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Sanitize name and description of forum.
-			$forum['name'] = htmlspecialchars_uni($forum['name']);
-			$forum['description'] = htmlspecialchars_uni($forum['description']);
+			$forum['name'] = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $forum['name']);
+			$forum['description'] = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $forum['description']);
 
 			// If this is a forum and we've got subforums of it, load the subforums list template
 			if($depth == 2 && $sub_forums)

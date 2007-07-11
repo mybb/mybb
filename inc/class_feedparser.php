@@ -1,10 +1,10 @@
 <?php
 /**
  * MyBB 1.2
- * Copyright © 2007 MyBB Group, All Rights Reserved
+ * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/eula.html
  *
  * $Id$
  */
@@ -45,6 +45,18 @@ class FeedParser
 
 		// Load the feed we want to parse
 		$contents = fetch_remote_file($feed);
+
+		// This is to work around some dodgy bug we've detected with certain installations of PHP
+		// where certain characters would magically appear between the fetch_remote_file call
+		// and here which break the feed being imported.
+		if(strpos($contents, "<") !== 0)
+		{
+			$contents = substr($contents, strpos($contents, "<"));
+		}
+		if(strrpos($contents, ">")+1 !== strlen($contents))
+		{
+			$contents = substr($contents, 0, strrpos($contents, ">")+1);
+		}
 
 		// Could not load the feed, return an error
 		if(!$contents)
@@ -185,7 +197,7 @@ class FeedParser
 		$new_array = array();
 		foreach($array as $key => $value)
 		{
-			$new_key = my_strtolower($key);
+			$new_key = strtolower($key);
 			if(is_array($value))
 			{
 				$new_array[$new_key] = $this->keys_to_lowercase($value);

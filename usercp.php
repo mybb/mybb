@@ -14,6 +14,7 @@ define("IN_MYBB", 1);
 $templatelist = "usercp,usercp_home,usercp_nav,usercp_profile,error_nopermission,buddy_online,buddy_offline,usercp_changename,usercp_nav_changename";
 $templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_memberof,usercp_usergroups_joinable_usergroup,usercp_usergroups_joinable,usercp_usergroups";
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation";
+$templatelist .= ",usercp_attachments_attachment, usercp_attachments";
 
 
 require_once "./global.php";
@@ -336,7 +337,7 @@ if($mybb->input['action'] == "profile")
 		}
 		else
 		{
-
+			$user['awayreason'] = htmlspecialchars_uni($user['awayreason']);
 			if($mybb->user['away'] == "yes")
 			{
 				$awaydate = my_date($mybb->settings['dateformat'], $mybb->user['awaydate']);
@@ -2333,14 +2334,62 @@ if($mybb->input['action'] == "attachments")
 {
 	$plugins->run_hooks("usercp_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
+
 	$attachments = '';
+
+	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
+	$usage = $db->fetch_array($query);
+	$totalusage = $usage['ausage'];
+	$totalattachments = $usage['acount'];
+	$friendlyusage = get_friendly_size($totalusage);
+	$bandwidth = get_friendly_size($bandwidth);
+	if($mybb->usergroup['attachquota'])
+	{
+		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
+		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
+		$usagenote = sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
+	}
+	else
+	{
+		$percent = $lang->unlimited;
+		$attachquota = $lang->unlimited;
+		$usagenote = sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
+	}
+
+	// Pagination
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+	$perpage = $mybb->settings['threadsperpage'];
+	$page = intval($mybb->input['page']);
+	
+	if(intval($mybb->input['page']) > 0)
+	{
+		$start = ($page-1) *$perpage;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+	
+	$end = $start + $perpage;
+	$lower = $start+1;
+	
+	if($end > $totalattachments)
+	{
+		$upper = $totalattachments;
+	}
+	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
+	
 	$query = $db->query("
 		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
 		FROM ".TABLE_PREFIX."attachments a
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		WHERE a.uid='".$mybb->user['uid']."' AND a.pid!='0'
-		ORDER BY p.dateline DESC
+		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
 	");
 	$bandwidth = $totaldownloads = 0;
 	while($attachment = $db->fetch_array($query))
@@ -2368,24 +2417,7 @@ if($mybb->input['action'] == "attachments")
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
 	}
-	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
-	$usage = $db->fetch_array($query);
-	$totalusage = $usage['ausage'];
-	$totalattachments = $usage['acount'];
-	$friendlyusage = get_friendly_size($totalusage);
-	$bandwidth = get_friendly_size($bandwidth);
-	if($mybb->usergroup['attachquota'])
-	{
-		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
-		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-		$usagenote = sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
-	}
-	else
-	{
-		$percent = $lang->unlimited;
-		$attachquota = $lang->unlimited;
-		$usagenote = sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
-	}
+
 	if(!$attachments)
 	{
 		eval("\$attachments = \"".$templates->get("usercp_attachments_none")."\";");

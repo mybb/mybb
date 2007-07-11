@@ -16,7 +16,7 @@ $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumdisplay_announcements_announcement_modbit";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_forumlist.php";
@@ -84,7 +84,6 @@ while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
-$forumpermissions = forum_permissions();
 
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != "off")
@@ -137,7 +136,11 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
-$forumjump = build_forum_jump("", $fid, 1);
+if($mybb->settings['enableforumjump'] != "no")
+{
+	$forumjump = build_forum_jump("", $fid, 1);
+}
+
 
 if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
 {
@@ -566,7 +569,7 @@ while($announcement = $db->fetch_array($query))
 	
 	if($ismod)
 	{
-		$modann = "<td align=\"center\" class=\"{$bgcolor}\">-</td>";
+		eval("\$modann = \"".$templates->get("forumdisplay_announcements_announcement_modbit")."\";");
 	}
 	else
 	{

@@ -675,7 +675,6 @@ td .star_rating {
 }
 
 .inline_rating {
-	margin: 15px 0 5px 0;
 	float: left;
 	vertical-align: middle;
 	padding-right: 5px;
@@ -1012,7 +1011,9 @@ td .star_rating {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="showthread_ratethread" version="140"><![CDATA[		<script type="text/javascript" src="jscripts/rating.js?ver=140"></script>
+		<template name="showthread_ratethread" version="140"><![CDATA[<div style="margin-top: 15px;">
+		<script type="text/javascript" src="jscripts/rating.js?ver=140"></script>
+		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
 				<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
@@ -1022,7 +1023,9 @@ td .star_rating {
 				<li><a class="four_stars" title="{$lang->four_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=4">4</a></li>
 				<li><a class="five_stars" title="{$lang->five_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=5">5</a></li>
 			</ul>
-		</div>]]></template>
+		</div>
+<span id="success_rating_{$thread['tid']}">&nbsp;</span>
+</div>]]></template>
 		<template name="forumjump_advanced" version="120"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
 <select name="{$name}" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
@@ -2198,6 +2201,7 @@ td .star_rating {
 </tr>
 {$attachments}
 </table>
+{$multipage}
 <br />
 <div align="center">
 <input type="hidden" name="action" value="do_attachments" />
@@ -6208,7 +6212,7 @@ To: {$to_recipients}
 </tr>
 {$getmore}
 </table>]]></template>
-		<template name="misc_buddypopup_user_sendpm" version="140"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank">{$lang->pm_buddy}</a>]]></template>
+		<template name="misc_buddypopup_user_sendpm" version="140"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{$lang->pm_buddy}</a>]]></template>
 		<template name="usercp_editlists" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
@@ -8597,5 +8601,6 @@ To: {$to_recipients}
 		<template name="private_send_buddyselect" version="140"><![CDATA[<script type="text/javascript"><!--
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.gif" alt="" style="vertical-align: middle;" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
+	<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
 	</templates>
 </theme>

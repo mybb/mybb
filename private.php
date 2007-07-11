@@ -215,6 +215,27 @@ if($mybb->input['action'] == "send")
 	$message = htmlspecialchars_uni($mybb->input['message']);
 	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
 
+	if($mybb->input['preview'] || $send_errors)
+	{
+		if($options['signature'] == 'yes')
+		{
+			$optionschecked['signature'] = 'checked="checked"';
+		}
+		if($options['disablesmilies'] == 'yes')
+		{
+			$optionschecked['disablesmilies'] = 'checked="checked"';
+		}
+		if($options['savecopy'] != 'no')
+		{
+			$optionschecked['savecopy'] = 'checked="checked"';
+		}
+		if($options['readreceipt'] != 'no')
+		{
+			$optionschecked['readreceipt'] = 'checked="checked"';
+		}
+		$to = htmlspecialchars_uni($mybb->input['to']);
+	}
+
 	// Preview
 	if($mybb->input['preview'])
 	{
@@ -244,26 +265,8 @@ if($mybb->input['action'] == "send")
 		}
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
-
-		if($options['signature'] == 'yes')
-		{
-			$optionschecked['signature'] = 'checked="checked"';
-		}
-		if($options['disablesmilies'] == 'yes')
-		{
-			$optionschecked['disablesmilies'] = 'checked="checked"';
-		}
-		if($options['savecopy'] != 'no')
-		{
-			$optionschecked['savecopy'] = 'checked="checked"';
-		}
-		if($options['readreceipt'] != 'no')
-		{
-			$optionschecked['readreceipt'] = 'checked="checked"';
-		}
-		$to = htmlspecialchars_uni($mybb->input['to']);
 	}
-	else
+	else if(!$send_errors)
 	{
 		// New PM, so load default settings
 		if($mybb->user['signature'] != '')

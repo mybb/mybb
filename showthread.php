@@ -412,7 +412,10 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
-	$forumjump = build_forum_jump("", $fid, 1);
+	if($mybb->settings['enableforumjump'] != "no")
+	{
+		$forumjump = build_forum_jump("", $fid, 1);
+	}
 	
 	// Fetch some links
 	$next_oldest_link = get_thread_link($tid, 0, "nextoldest");

@@ -1072,16 +1072,23 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 
 	if($fid) // Fetch the permissions for a single forum
 	{
-		$permissions = fetch_forum_permissions($fid, $gid, $groupperms);
+		if(!$cached_forum_permissions[$gid][$fid])
+		{
+			$cached_forum_permissions_permissions[$gid][$fid] = fetch_forum_permissions($fid, $gid, $groupperms);
+		}
+		return $cached_forum_permissions_permissions[$gid][$fid];
 	}
 	else
 	{
-		foreach($forum_cache as $forum)
+		if(!$cached_forum_permissions[$gid])
 		{
-			$permissions[$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
+			foreach($forum_cache as $forum)
+			{
+				$cached_forum_permissions[$gid][$forum['fid']] = fetch_forum_permissions($forum['fid'], $gid, $groupperms);
+			}
 		}
+		return $cached_forum_permissions[$gid];
 	}
-	return $permissions;
 }
 
 /**
@@ -3234,7 +3241,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid)
+	if($tid == 0)
 	{
 		$themeselect .= "</select>";
 	}
@@ -3250,7 +3257,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
  */
 function htmlspecialchars_uni($message)
 {
-	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
+	$message = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $message); // Fix & but allow unicode
 	$message = str_replace("<", "&lt;", $message);
 	$message = str_replace(">", "&gt;", $message);
 	$message = str_replace("\"", "&quot;", $message);
@@ -4181,7 +4188,8 @@ function validate_email_format($email)
 	{
 		return false;
 	}
-	return preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
+	// Valid local characters for email addresses: http://www.remote.org/jochen/mail/info/chars.html
+	return preg_match("/^[a-zA-Z0-9&*+\-_.{}~^?=/]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
 }
 
 /**

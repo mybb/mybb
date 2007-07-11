@@ -1020,13 +1020,22 @@ class Moderation
 			}
 		}
 
-		$num_visible = $num_unnaproved = 0;
-		$query = $db->query("SELECT visible FROM ".TABLE_PREFIX."posts WHERE tid='{$newtid}'");
+		$num_visible = $num_unnaproved = $num_attachments = 0;
+		$query = $db->query("
+			SELECT p.visible, a.aid
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid AND a.visible=1)
+			WHERE p.tid='{$newtid}'
+		");
 		while($post = $db->fetch_array($query))
 		{
 			if($post['visible'] == 1)
 			{
 				$num_visible++;
+				if($post['aid'])
+				{
+					$num_attachments++;
+				}
 			}
 			else if($post['visible'] == 0)
 			{
@@ -1054,14 +1063,16 @@ class Moderation
 		// Update old thread stats
 		$update_array = array(
 			"replies" => "-{$num_visible}",
-			"unapprovedposts" => "-{$num_unapproved}"
+			"unapprovedposts" => "-{$num_unapproved}",
+			"attachmentcount" => "-{$num_attachments}"
 		);
 		update_thread_counters($thread['tid'], $update_array);
 
 		// Update new thread stats
 		$update_array = array(
 			"replies" => "{$num_visible}",
-			"unapprovedposts" => "{$num_unapproved}"
+			"unapprovedposts" => "{$num_unapproved}",
+			"attachmentcount" => "{$num_attachments}",
 		);
 		update_thread_counters($newtid, $update_array);
 

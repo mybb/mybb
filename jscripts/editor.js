@@ -608,6 +608,11 @@ messageEditor.prototype = {
 						{
 							$(tag).className = "toolbar_normal";
 						}
+						
+						if($(exploded_tag[0]) && $(exploded_type[0]).type == "select-one")
+						{
+							$(exploded_tag[0]).selectedIndex = 0;
+						}							
 
 						if(tag == full_tag)
 						{
@@ -646,6 +651,10 @@ messageEditor.prototype = {
 					else if($(full_tag))
 					{
 						Element.removeClassName($(full_tag), "toolbar_clicked");
+					}
+					else if($(code) && $(code).type == "select-one")
+					{
+						$(code).selectedIndex = 0;
 					}
 				}
 		}
@@ -803,6 +812,9 @@ messageEditor.prototype = {
 				if($(exploded_tag[0]))
 				{
 					tag = $(exploded_tag[0]);
+				}
+				if($(tag))
+				{				
 					if(tag.type == "select-one")
 					{
 						tag.selectedIndex = 0;

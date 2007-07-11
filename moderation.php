@@ -107,8 +107,6 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		$plugins->run_hooks("moderation_openclosethread");
-
 		if($thread['closed'] == "yes")
 		{
 			$openclose = $lang->opened;
@@ -1671,6 +1669,10 @@ switch($mybb->input['action'])
 			if($tool['type'] == 't' && $mybb->input['modtype'] == 'inlinethread')
 			{
 				$tids = getids($fid, "forum");
+				if(count($tids) < 1)
+				{
+					error($lang->error_inline_nopostsselected);
+				}
 				$custommod->execute(intval($mybb->input['action']), $tids);
  				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
@@ -1699,6 +1701,10 @@ switch($mybb->input['action'])
 			elseif($tool['type'] == 'p' && $mybb->input['modtype'] == 'inlinepost')
 			{
 				$pids = getids($tid, "thread");
+				if(count($pids) < 1)
+				{
+					error($lang->error_inline_nopostsselected);
+				}
 				$ret = $custommod->execute(intval($mybb->input['action']), $tid, $pids);
  				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);

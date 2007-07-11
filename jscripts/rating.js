@@ -92,13 +92,20 @@ var Rating = {
 		}
 		else if(request.responseText.match(/<success>(.*)<\/success>/))
 		{
-			var success = document.createElement('span');
+			if(!$('success_rating_' + element_id))
+			{
+				var success = document.createElement('span');
+				var element = $("rating_thread_" + element_id);
+				element.parentNode.insertBefore(success, element.nextSibling);
+				element.removeClassName('star_rating_notrated');
+			}
+			else
+			{
+				var success = $('success_rating_' + element_id);
+			}
 			success.className = 'star_rating_success';
 			success.id = 'success_rating_' + element_id;
 			success.innerHTML = request.responseText.match(/<success>(.*)<\/success>/)[1];
-			var element = $('rating_thread_' + element_id);
-			element.parentNode.insertBefore(success, element.nextSibling);
-			element.removeClassName('star_rating_notrated');
 
 			if(request.responseText.match(/<average>(.*)<\/average>/))
 			{

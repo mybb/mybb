@@ -119,7 +119,7 @@ class postParser
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
-			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "{{mybb-code}}\n", $message);
+			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
 
 		// Always fix bad Javascript in the message.
@@ -168,7 +168,7 @@ class postParser
 					{
 						$code = $this->mycode_parse_php($text[2]);
 					}
-					$message = preg_replace("#\{\{mybb-code\}\}\n?#", $code, $message, 1);
+					$message = preg_replace("#\<mybb-code>\n?#", $code, $message, 1);
 				}
 			}
 		}

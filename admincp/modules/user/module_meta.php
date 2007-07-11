@@ -38,6 +38,14 @@ function user_action_handler($action)
 			$page->active_action = "admin_permissions";
 			$action_file = "admin_permissions.php";
 			break;
+		case "titles":
+			$page->active_action = "titles";
+			$action_file = "titles.php";
+			break;
+		case "groups":
+			$page->active_action = "groups";
+			$action_file = "groups.php";
+			break;
 		default:
 			$page->active_action = "users";
 			$action_file = "users.php";
