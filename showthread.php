@@ -554,7 +554,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			$where = " ORDER BY dateline ASC LIMIT 0, 1";
+			$where = " ORDER BY dateline LIMIT 0, 1";
 		}
 		$query = $db->query("
 			SELECT u.*, u.username AS userusername, p.*, f.*, eu.username AS editusername

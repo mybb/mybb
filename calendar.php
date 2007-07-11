@@ -1949,7 +1949,7 @@ if(!$mybb->input['action'])
 	// Showing the default calendar
 	else
 	{
-		$query = $db->simple_select("calendars", "*", "", array('order_by' => 'disporder', 'order_dir' => 'ASC', 'limit' => 1));
+		$query = $db->simple_select("calendars", "*", "", array('order_by' => 'disporder', 'limit' => 1));
 		$calendar = $db->fetch_array($query);
 	}
 

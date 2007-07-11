@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.2.3
+ * Upgrade Script: 1.2.9
  */
 
 /** NEEDS TO BE CHANGED PENDING FINAL RELEASE **/

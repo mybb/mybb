@@ -465,10 +465,7 @@ class UserDataHandler extends DataHandler
 		// Does the referrer exist or not?
 		if($mybb->settings['usereferrals'] == "yes" && $user['referrer'] != '')
 		{
-			$options = array(
-				'limit' => 1
-			);
-			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", $options);
+			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", array('limit' => 1));
 			$referrer = $db->fetch_array($query);
 			if(!$referrer['uid'])
 			{
