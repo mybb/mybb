@@ -110,6 +110,11 @@ h2.license {
 	background: url('images/h2-license.gif') no-repeat;
 }
 
+h2.errormsg {
+	background: url('images/error_bg.gif') no-repeat 0 5px;
+}
+
+
 h2.requirements {
 	background: url('images/h2-requirements.gif') no-repeat;
 }
@@ -171,8 +176,8 @@ h4 {
 
 /* Next Button */
 
-#next_button {
-	float: right;
+#next_button, .next_button {
+	text-align: right;
 	width: auto;
 }
 
@@ -323,4 +328,8 @@ label {
 	margin: 10px auto;
 	padding: 3px 20px;
 	font-weight: bold;
+}
+
+.upgrade_note {
+	background: #efefef;
 }

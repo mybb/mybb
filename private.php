@@ -1164,7 +1164,7 @@ if(!$mybb->input['action'])
 		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
 	}
 
-	if($mybb->usergroup['pmquota'] != 0)
+	if($mybb->usergroup['pmquota'] > 0)
 	{
 		$query = $db->simple_select(TABLE_PREFIX."privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);

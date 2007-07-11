@@ -57,9 +57,27 @@ if(function_exists('mysql_connect'))
 	);
 }
 
+// Perform a check if MyBB is already installed or not
+$installed = false;
+if(file_exists(MYBB_ROOT."/inc/config.php") && file_exists(MYBB_ROOT."/inc/settings.php"))
+{
+	require MYBB_ROOT."/inc/config.php";
+	require MYBB_ROOT."/inc/settings.php";
+	if(is_array($config) && is_array($settings))
+	{
+		$installed = true;
+	}
+}
+
 if(file_exists('lock'))
 {
 	$output->print_error($lang->locked);
+}
+else if($installed == true && !$mybb->input['action'])
+{
+	$output->print_header($lang->already_installed, "errormsg", 0);
+	echo sprintf($lang->mybb_already_installed, $mybb->version);
+	$output->print_footer();
 }
 else
 {
@@ -458,7 +476,7 @@ function populate_tables()
 {
 	global $output, $lang, $config;
 
-	require_once MYBB_ROOT.'inc/config.php';
+	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
 
 	$output->print_header($lang->table_population, 'tablepopulate');
@@ -487,7 +505,7 @@ function insert_templates()
 {
 	global $output, $cache, $db, $lang, $config;
 
-	require_once MYBB_ROOT.'inc/config.php';
+	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
 
 	require_once MYBB_ROOT.'inc/class_datacache.php';
@@ -610,7 +628,7 @@ function create_admin_user()
 	}
 	else
 	{
-		require_once MYBB_ROOT.'inc/config.php';
+		require MYBB_ROOT.'inc/config.php';
 		$db = db_connection($config);
 
 		echo $lang->admin_step_setupsettings;
@@ -698,10 +716,10 @@ function install_done()
 		create_admin_user();
 	}
 
-	require_once MYBB_ROOT.'inc/config.php';
+	require MYBB_ROOT.'inc/config.php';
 	$db = db_connection($config);
 	
-	require_once MYBB_ROOT.'inc/settings.php';
+	require MYBB_ROOT.'inc/settings.php';
 	$mybb->settings = &$settings;
 
 	ob_start();

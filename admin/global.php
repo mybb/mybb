@@ -50,6 +50,8 @@ $mybb->settings['bbname'] = stripslashes($mybb->settings['bbname']);
 
 $time = time();
 
+header("Content-type: text/html; charset={$lang->settings['charset']}");
+
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
 	$mybb->trigger_generic_error("install_directory", true);
