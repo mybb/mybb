@@ -421,12 +421,27 @@ else if($mybb->input['action'] == "edit_post")
 		require_once MYBB_ROOT."inc/functions_post.php";
 		
 		get_post_attachments($post['pid'], $post);
+
+		// Figure out if we need to show an "edited by" message
+		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
+		if($mybb->settings['showeditedby'] != "no" && $mybb->settings['showeditedbyadmin'] != "no")
+		{
+			$post['editdate'] = my_date($mybb->settings['dateformat'], TIME_NOW);
+			$post['edittime'] = my_date($mybb->settings['timeformat'], TIME_NOW);
+			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
+			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
+		}
 		
 		// Send our headers.
 		header("Content-type: text/plain; charset={$charset}");
 		echo "<p>\n";
 		echo $post['message'];
 		echo "</p>\n";
+		if($editedmsg)
+		{
+			echo str_replace(array("\r", "\n"), "", "<editedmsg>{$editedmsg}</editedmsg>");
+		}
 	}
 }
 // Fetch the list of multiquoted posts which are not in a specific thread

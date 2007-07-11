@@ -354,23 +354,6 @@ img.attachment {
 	padding: 2px;
 }
 
-.pagenav {
-	font-weight: bold;
-}
-
-.pagenavbit {
-	padding-left: 3px;
-}
-
-.pagenavbit a {
-	text-decoration: none;
-}
-
-.pagenavcurrent {
-	font-weight: bold;
-	padding-left: 3px;
-}
-
 hr {
 	background-color: #000000;
 	color: #000000;
@@ -696,6 +679,40 @@ td .star_rating {
 	float: left;
 	vertical-align: middle;
 	padding-right: 5px;
+}
+
+
+
+.pagination {
+	font-size: 11px;
+	padding-top: 10px;
+}
+
+.tfoot .pagination, .tcat .pagination {
+	padding-top: 0;
+}
+.pagination .pages {
+	font-weight: bold;
+}
+
+.pagination .pagination_current, .pagination a {
+	padding: 2px 6px;
+	margin-bottom: 3px;
+}
+
+.pagination a {
+	border: 1px solid #81A2C4;
+}
+
+.pagination .pagination_current {
+	background: #F5F5F5;
+	border: 1px solid #81A2C4;
+	font-weight: bold;
+}
+
+.pagination a:hover {
+	background: #F5F5F5;
+	text-decoration: none;
 }]]></extracss>
 	</themebits>
 	<templates>
@@ -929,7 +946,7 @@ td .star_rating {
 <body>
 {$header}
 {$pollbox}
-<div style="float: right; padding-bottom: 4px;">
+<div style="float: right;">
 	{$newreply}{$newthread}
 </div>
 {$multipage}
@@ -1301,12 +1318,14 @@ td .star_rating {
 	</td>
 </tr>
 <tbody style="{$collapsed['usercpprofile_e']}" id="usercpprofile_e">
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=profile" class="usercp_nav_item usercp_nav_profile">{$lang->ucp_nav_edit_profile}</a></td></tr>
-	{$changenameop}
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=password" class="usercp_nav_item usercp_nav_password">{$lang->ucp_nav_change_pass}</a></td></tr>
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=email" class="usercp_nav_item usercp_nav_email">{$lang->ucp_nav_change_email}</a></td></tr>
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=avatar" class="usercp_nav_item usercp_nav_avatar">{$lang->ucp_nav_change_avatar}</a></td></tr>
-	<tr><td class="trow1 smalltext"><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></td></tr>
+	<tr><td class="trow1 smalltext">
+		<div><a href="usercp.php?action=profile" class="usercp_nav_item usercp_nav_profile">{$lang->ucp_nav_edit_profile}</a></div>
+		{$changenameop}
+		<div><a href="usercp.php?action=password" class="usercp_nav_item usercp_nav_password">{$lang->ucp_nav_change_pass}</a></div>
+		<div><a href="usercp.php?action=email" class="usercp_nav_item usercp_nav_email">{$lang->ucp_nav_change_email}</a></div>
+		<div><a href="usercp.php?action=avatar" class="usercp_nav_item usercp_nav_avatar">{$lang->ucp_nav_change_avatar}</a></div>
+		<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>
+	</td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=options" class="usercp_nav_item usercp_nav_options">{$lang->ucp_nav_edit_options}</a></td></tr>
 </tbody>]]></template>
 		<template name="usercp_nav_misc" version="140"><![CDATA[<tr>
@@ -2018,7 +2037,7 @@ td .star_rating {
 		<template name="usercp_attachments_none" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="5">{$lang->no_attachments}</td>
 </tr>]]></template>
-		<template name="usercp_nav_changename" version="140"><![CDATA[<tr><td class="trow1 smalltext"><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></td></tr>]]></template>
+		<template name="usercp_nav_changename" version="140"><![CDATA[<div><a href="usercp.php?action=changename" class="usercp_nav_item usercp_nav_username">{$lang->ucp_nav_change_username}</a></div>]]></template>
 		<template name="usercp_profile" version="140"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
@@ -3900,8 +3919,8 @@ body {
 </div>
 {$post['attachments']}
 {$post['signature']}
-<div style="text-align: right; vertical-align: bottom;">
-{$post['editedmsg']}
+<div style="text-align: right; vertical-align: bottom;" id="post_meta_{$post['pid']}">
+<div id="edited_by_{$post['pid']}">{$post['editedmsg']}</div>
 {$post['iplogged']}
 </div>
 </td></tr>
@@ -4416,13 +4435,16 @@ body {
 	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if(this.value == '{$lang->login_password}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_password}'; }" />
 	{$gobutton}
 </form>]]></template>
-		<template name="multipage" version="120"><![CDATA[<div><span class="smalltext"><span class="pagenav">{$lang->multipage_pages}</span>{$start} {$prevpage} {$mppage} {$nextpage} {$end}</span></div>]]></template>
-		<template name="multipage_end" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">{$lang->multipage_last} &raquo;</a></span>]]></template>
-		<template name="multipage_nextpage" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">{$lang->multipage_next} &gt;</a></span>]]></template>
-		<template name="multipage_page" version="140"><![CDATA[ <span class="pagenavbit"><a href="{$page_url}">{$i}</a></span>]]></template>
-		<template name="multipage_page_current" version="120"><![CDATA[ <span class="pagenavcurrent">[{$i}]</span>]]></template>
-		<template name="multipage_prevpage" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">&lt; {$lang->multipage_previous}</a></span>]]></template>
-		<template name="multipage_start" version="140"><![CDATA[<span class="pagenavbit"><a href="{$page_url}">&laquo; {$lang->multipage_first}</a></span>]]></template>
+		<template name="multipage" version="140"><![CDATA[<div class="pagination">
+<span class="pages">{$lang->multipage_pages}</span>
+{$prevpage}{$start}{$mppage}{$end}{$nextpage}
+</div>]]></template>
+		<template name="multipage_end" version="140"><![CDATA[... <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
+		<template name="multipage_nextpage" version="140"><![CDATA[<a href="{$page_url}" class="pagination_next">Next &raquo;</a>]]></template>
+		<template name="multipage_page" version="140"><![CDATA[<a href="{$page_url}" class="pagination_page">{$i}</a>]]></template>
+		<template name="multipage_page_current" version="140"><![CDATA[ <span class="pagination_current">{$i}</span>]]></template>
+		<template name="multipage_prevpage" version="140"><![CDATA[<a href="{$page_url}" class="pagination_previous">&laquo; Previous</a>]]></template>
+		<template name="multipage_start" version="140"><![CDATA[<a href="{$page_url}" class="pagination_first">1</a> ...]]></template>
 		<template name="usercp_forumsubscriptions_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="5">{$lang->no_forum_subscriptions}</td>
 </tr>]]></template>

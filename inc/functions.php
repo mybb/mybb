@@ -773,76 +773,80 @@ function multipage($count, $perpage, $page, $url)
 {
 	global $theme, $templates, $lang, $mybb;
 
-	if($count > $perpage)
+	if($count <= $perpage)
 	{
-		$pages = $count / $perpage;
-		$pages = ceil($pages);
+		return;
+	}
 
-		if($page > 1)
-		{
-			$prev = $page - 1;
-			$page_url = fetch_page_url($url, $prev);
-			eval("\$prevpage = \"".$templates->get("multipage_prevpage")."\";");
-		}
+	$pages = ceil($count / $perpage);
 
-		if($page < $pages)
-		{
-			$next = $page + 1;
-			$page_url = fetch_page_url($url, $next);
-			eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
-		}
+	if($page > 1)
+	{
+		$prev = $page-1;
+		$page_url = fetch_page_url($url, $prev);
+		eval("\$prevpage = \"".$templates->get("multipage_prevpage")."\";");
+	}
 
-		if($page > 4)
-		{
-			$from = $page-4;
-		}
-		else
-		{
-			$from = $page-1;
-		}
+	// Maximum number of "page bits" to show
+	if(!$mybb->settings['maxmultipagelinks'])
+	{
+		$mybb->settings['maxmultipagelinks'] = 5;
+	}
 
-		if($from < 1)
+	$from = $page-floor($mybb->settings['maxmultipagelinks']/2);
+	$to = $page+floor($mybb->settings['maxmultipagelinks']/2);
+
+	if($from <= 0)
+	{
+		$from = 1;
+		$to = $from+$max_links-1;
+	}
+
+	if($to > $pages)
+	{
+		$to = $pages;
+		$from = $pages-$max_links+1;
+		if($from <= 0)
 		{
 			$from = 1;
 		}
+	}
 
-		if($page == $pages)
+	if($from > 1)
+	{
+		$page_url = fetch_page_url($url, 1);
+		eval("\$start = \"".$templates->get("multipage_start")."\";");
+	}
+
+	for($i = $from; $i <= $to; ++$i)
+	{
+		$page_url = fetch_page_url($url, $i);
+		if($page == $i)
 		{
-			$to = $pages;
-		}
-		elseif($page == $pages-1)
-		{
-			$to = $page+1;
-		}
-		elseif($page == $pages-2)
-		{
-			$to = $page+2;
-		}
-		elseif($page == $pages-3)
-		{
-			$to = $page+3;
+			eval("\$mppage .= \"".$templates->get("multipage_page_current")."\";");
 		}
 		else
 		{
-			$to = $page+4;
+			eval("\$mppage .= \"".$templates->get("multipage_page")."\";");
 		}
+	}
 
-		for($i = $from; $i <= $to; ++$i)
-		{
-			$page_url = fetch_page_url($url, $i);
-			$plate = "multipage_page".(($i==$page) ? "_current":"");
-			eval("\$mppage .= \"".$templates->get($plate)."\";");
-		}
-
-		$lang->multipage_pages = sprintf($lang->multipage_pages, $pages);
-		$page_url = fetch_page_url($url, 1);
-		eval("\$start = \"".$templates->get("multipage_start")."\";");
+	if($to < $pages)
+	{
 		$page_url = fetch_page_url($url, $pages);
 		eval("\$end = \"".$templates->get("multipage_end")."\";");
-		eval("\$multipage = \"".$templates->get("multipage")."\";");
-
-		return $multipage;
 	}
+
+	if($page < $pages)
+	{
+		$next = $page+1;
+		$page_url_page = fetch_page_url($url, $next);
+		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
+	}
+	$lang->multipage_pages = sprintf($lang->multipage_pages, $pages);
+	eval("\$multipage = \"".$templates->get("multipage")."\";");
+
+	return $multipage;
 }
 
 /**

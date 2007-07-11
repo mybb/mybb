@@ -39,12 +39,12 @@ function user_action_handler($action)
 			$action_file = "admin_permissions.php";
 			break;
 		default:
-			$page->active_action = "view";
-			$action_file = "index.php";
+			$page->active_action = "users";
+			$action_file = "users.php";
 	}
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "view", "title" => $lang->users, "link" => "index.php?".SID."&module=user/view");
+	$sub_menu['10'] = array("id" => "users", "title" => $lang->users, "link" => "index.php?".SID."&module=user/users");
 	$sub_menu['20'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?".SID."&module=user/groups");
 	$sub_menu['30'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?".SID."&module=user/titles");
 	$sub_menu['40'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?".SID."&module=user/banning");
@@ -90,7 +90,7 @@ function user_admin_permissions()
 	global $lang;
 	
 	$admin_permissions = array(
-		"view" => $lang->can_manage_users,
+		"users" => $lang->can_manage_users,
 		"groups" => $lang->can_manage_user_groups,
 		"titles" => $lang->can_manage_user_titles,
 		"banning" => $lang->can_manage_user_bans,

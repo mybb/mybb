@@ -276,7 +276,18 @@ var Thread = {
 		}
 		else if(request.responseText)
 		{
-			$("pid_"+pid).innerHTML = request.responseText;
+			var message = request.responseText;
+			var edited_regex = new RegExp("<editedmsg>(.*)</editedmsg>", "m");
+			if(request.responseText.match(edited_regex))
+			{
+				var edited_message = request.responseText.match(edited_regex)[1];
+				if($('edited_by_'+pid))
+				{
+					$('edited_by_'+pid).innerHTML = edited_message;
+				}
+				message = message.replace(edited_regex, '')
+			}
+			$("pid_"+pid).innerHTML = message;
 			Thread.qeCache[pid] = "";
 		}
 		
