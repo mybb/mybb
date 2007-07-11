@@ -21,7 +21,7 @@ $l['admin_user'] = 'Administrator User';
 $l['finish_setup'] = 'Finish Setup';
 
 $l['already_installed'] = "MyBB is already installed";
-$l['mybb_already_installed'] = "<p>Welcome to the installation wizard for MyBB {1}. MyBB has directed it is already configured this directory.</p>
+$l['mybb_already_installed'] = "<p>Welcome to the installation wizard for MyBB {1}. MyBB has detected it is already configured this directory.</p>
 <p>Please choose a suitable action below:</p>
 
 <div class=\"border_wrapper upgrade_note\" style=\"padding: 4px;\">
