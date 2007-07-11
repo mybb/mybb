@@ -108,4 +108,5 @@ $l['rating_thread'] = "Rating thread";
 $l['viewing_imcenter'] = "Viewing IM Center";
 $l['managing_favorites'] = "Managing Favorite Threads";
 $l['managing_subscriptions'] = "Managing Subscribed Threads";
+$l['managing_group'] = "Managing a Usergroup";
 ?>

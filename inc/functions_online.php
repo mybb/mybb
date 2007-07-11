@@ -98,6 +98,9 @@ function fetch_wol_activity($location)
 		case '':
 			$user_activity['activity'] = "index";
 			break;
+		case "managegroup":
+			$user_activity['activity'] = "managegroup";
+			break;
 		case "member":
 			if($parameters['action'] == "activate")
 			{
@@ -526,6 +529,10 @@ function build_friendly_wol_location($user_activity, $return=false)
 		// index.php functions
 		case "index":
 			$location_name = sprintf($lang->viewing_index, $mybb->settings['bbname']);
+			break;
+		// managegroup.php functions
+		case "managegroup":
+			$locationname = $lang->managing_group;
 			break;
 		// member.php functions
 		case "member_activate":
