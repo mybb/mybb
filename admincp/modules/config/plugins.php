@@ -187,7 +187,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 		if($mybb->input['uninstall'] == 1 && function_exists("{$codename}_uninstall"))
 		{
-			call_user_func("{$codename})_uninstall");
+			call_user_func("{$codename}_uninstall");
 			$message = $lang->success_plugin_uninstalled;
 		}
 
@@ -226,7 +226,7 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->plugin);
-	$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center"));
+	$table->construct_header($lang->controls, array("colspan" => 2, "class" => "align_center", "width" => 300));
 	
 	if(!empty($plugins_list))
 	{
@@ -296,27 +296,27 @@ if(!$mybb->input['action'])
 			// Plugin is activated and installed
 			else if($active_plugins[$codename])
 			{
-				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">{$lang->deactivate}</a>", array("class" => "align_center"));
+				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">{$lang->deactivate}</a>", array("class" => "align_center", "width" => 150));
 				if($uninstall_button)
 				{
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center"));
+					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
 				}
 				else
 				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center"));
+					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
 				}
 			}
 			// Plugin is installed but not active
 			else if($installed == true)
 			{
-				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->activate}</a>", array("class" => "align_center"));
+				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
 				if($uninstall_button)
 				{
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center"));
+					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
 				}
 				else
 				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center"));
+					$table->construct_cell("&nbsp;", array("class" => "align_center", "width" => 150));
 				}
 			}
 			$table->construct_row();
