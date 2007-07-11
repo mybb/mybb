@@ -782,6 +782,11 @@ if($mybb->input['action'] == "export")
 
 if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 {
+	if($mybb->input['exporttype'] != "csv" && $mybb->input['exporttype'] != "text" && $mybb->input['exporttype'] != "html")
+	{
+		exit;
+	}
+
 	$plugins->run_hooks("private_do_export_start");
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
 	$exdate = my_date($mybb->settings['dateformat'], time(), 0, 0);

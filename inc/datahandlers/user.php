@@ -116,7 +116,7 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower($username))."'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower($username))."' AND uid!='{$this->data['uid']}'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
@@ -1079,6 +1079,14 @@ class UserDataHandler extends DataHandler
 			$db->update_query(TABLE_PREFIX."threads", $username_update, "uid='{$user['uid']}'");
 			$db->update_query(TABLE_PREFIX."threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
 			$db->update_query(TABLE_PREFIX."forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
+
+			global $cache;
+			$stats = $cache->read("stats");
+			if($stats['lastuid'] == $mybb->input['uid'])
+			{
+				// User was latest to register, update stats
+				update_stats(array("numusers" => "+0"));
+			}
 		}
 
 	}
