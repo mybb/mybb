@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.2.6 or 1.2.7
+ * Upgrade Script: 1.2.6, 1.2.7, or 1.2.8
  */
 
 
@@ -22,6 +22,6 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-/* Nothing to do from 1.2.6 to 1.2.8 */
+/* Nothing to do from 1.2.6 to 1.2.9 */
 
 ?>

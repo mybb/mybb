@@ -27,6 +27,7 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 	$sub_tabs['add_title'] = array(
 		'title' => "Add New User Title",
 		'link' => "index.php?".SID."&amp;module=user/titles&amp;action=add",
+		'description' => "This section allows you to add a new user title. <i>Note: This is <strong>not</strong> not the <u><a href=\"index.php?".SID."&amp;module=user/group_promotions\">promotion system.</a></u><i>"
 	);
 }
 
@@ -94,7 +95,6 @@ if($mybb->input['action'] == "add")
 	$page->output_footer();
 }
 
-
 if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
@@ -136,6 +136,12 @@ if($mybb->input['action'] == "edit")
 
 	$page->add_breadcrumb_item("Edit User Title");
 	$page->output_header("User Titles - Edit User Title");
+	
+	$sub_tabs['edit_title'] = array(
+		'title' => "Edit User Title",
+		'link' => "index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
+		'description' => "This section allows you to edit a user title."
+	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_title');
 	$form = new Form("index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}", "post");
