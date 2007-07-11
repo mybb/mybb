@@ -116,7 +116,7 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower($username))."' AND uid!='{$this->data['uid']}'");
+		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower($username))."' AND uid!='{$this->data['uid']}'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
