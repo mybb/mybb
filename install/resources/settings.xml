@@ -1270,6 +1270,14 @@ both=Warnings and Errors
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="enableforumjump">
+			<title>Enable Forum Jump Menu?</title>
+			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
+			<disporder>18</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[yes]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="showteam" title="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="12" isdefault="yes">
 		<setting name="showteamleaders">

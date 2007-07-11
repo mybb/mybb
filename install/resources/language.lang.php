@@ -26,6 +26,29 @@ $l['table_population'] = 'Table Population';
 $l['theme_installation'] = 'Theme Insertion';
 $l['create_admin'] = 'Create Administrator Account';
 
+$l['already_installed'] = "MyBB is already installed";
+$l['mybb_already_installed'] = "<p>Welcome to the installation wizard for MyBB {1}. MyBB has directed it is already configured this directory.</p>
+<p>Please choose a suitable action below:</p>
+
+<div class=\"border_wrapper upgrade_note\" style=\"padding: 4px;\">
+	<h3>Upgrade my existing copy of MyBB to {1} <span style=\"font-size: 80%; color: maroon;\">(Recommended)</span></h3>
+	<p>This option will upgrade your current version of MyBB to MyBB {1}.</p>
+	<p>You should choose this option when you wish to retain your current forum threads, posts, users and other information.</p>
+	<form method=\"post\" action=\"upgrade.php\">
+		<div class=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Upgrade to MyBB {1} &raquo;\" /></div>
+	</form>
+</div>
+
+<div style=\"padding: 4px;\">
+	<h3>Install a new copy of MyBB</h3>
+	<p>This option will <span style=\"color: red;\">delete any existing forum you may have set up</span> and install a fresh version of MyBB.</p>
+	<p>You should choose this option to erase your existing copy of MyBB if you wish to start again.</p>
+	<form method=\"post\" action=\"index.php\" onsubmit=\"return confirm('Are you sure you wish to install a fresh copy of MyBB?\\n\\nThis will delete your existing forum. THIS PROCESS CANNOT BE UNDONE.');\">
+		<input type=\"hidden\" name=\"action\" value=\"intro\" />
+		<div class=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"Install MyBB {1} &raquo;\" /></div>
+	</form>
+</div>";
+
 $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This wizard will install and configure a copy of MyBB on your server.</p>
 <p>Now that you\'ve uploaded the MyBB files the database and settings need to be created and imported. Below is an outline of what is going to be completed during installation.</p>
 <ul>

@@ -32,6 +32,7 @@
 		<hour>*</hour>
 		<day>*</day>
 		<weekday>*</weekday>
+		<month>*</month>
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
@@ -54,6 +55,7 @@
 		<hour>*</hour>
 		<day>*</day>
 		<weekday>*</weekday>
+		<month>*</month>
 		<enabled>0</enabled>
 		<logging>1</logging>
 	</task>

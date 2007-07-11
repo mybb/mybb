@@ -125,6 +125,10 @@ h2.tablepopulate {
 	background: url('images/h2-tablepopulate.gif') no-repeat;
 }
 
+h2.errormsg {
+	background: url('images/error_bg.gif') no-repeat 0 5px;
+}
+
 h2.theme {
 	background: url('images/h2-theme.gif') no-repeat;
 }
@@ -170,8 +174,8 @@ h4 {
 
 /* Next Button */
 
-#next_button {
-	float: right;
+#next_button, .next_button {
+	text-align: right;
 	width: auto;
 }
 
@@ -322,4 +326,8 @@ label {
 	margin: 10px auto;
 	padding: 3px 20px;
 	font-weight: bold;
+}
+
+.upgrade_note {
+	background: #efefef;
 }
