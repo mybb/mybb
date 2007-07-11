@@ -65,7 +65,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	}
 	else
 	{
-		error($lang->error_invalidpworusername);
+		error($lang->error_invalidusername);
 	}
 }
 elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "post")
