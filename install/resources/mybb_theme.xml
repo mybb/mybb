@@ -1829,7 +1829,10 @@ td .star_rating {
 </table>
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_rating" version="140"><![CDATA[	<td class="{$bgcolor}" id="rating_table_{$thread['tid']}">
+		<template name="forumdisplay_thread_rating" version="140"><![CDATA[<td class="{$bgcolor}" id="rating_table_{$thread['tid']}">
+		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}"> 
+			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li> 
+		</ul>
 		<script type="text/javascript">
 		<!--
 			Rating.build_forumdisplay({$thread['tid']}, { width: '{$thread['width']}', extra_class: '{$not_rated}', current_average: '{$ratingvotesav}' });

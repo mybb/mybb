@@ -27,16 +27,12 @@ var Rating = {
 	
 	build_forumdisplay: function(tid, options)
 	{
-		var list = document.createElement('ul');
+		if(!$('rating_thread_'+tid))
+		{
+			return;
+		}
+		var list = document.getElementById('rating_thread_'+tid);
 		list.className = 'star_rating' + options.extra_class;
-		list.id = 'rating_thread_' + tid;
-
-		var current_list_element = document.createElement('li');
-		current_list_element.style.width = options.width + '%';
-		current_list_element.className = 'current_rating';
-		current_list_element.id = 'current_rating_'+tid;
-		current_list_element.innerHTML = options.current_average;
-		list.appendChild(current_list_element);
 		
 		list_classes = new Array();
 		list_classes[1] = 'one_star';
@@ -56,8 +52,6 @@ var Rating = {
 			list_element.appendChild(list_element_a);
 			list.appendChild(list_element);
 		}
-
-		$('rating_table_'+tid).appendChild(list);
 	},
 
 	add_rating: function(parameterString)
