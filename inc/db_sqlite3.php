@@ -168,7 +168,7 @@ class databaseEngine
 				}
 				else
 				{
-					$query = $this->alter_table($tablename, $alterdefs);
+					$query = $this->alter_table_parse($tablename, $alterdefs);
 				}
 			}
 		}
@@ -940,7 +940,7 @@ class databaseEngine
 	 * @param string The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
-	function alter_table($table, $alterdefs)
+	function alter_table_parse($table, $alterdefs)
 	{
 		if($alterdefs != '')
 		{
@@ -951,11 +951,6 @@ class databaseEngine
 				$row = $this->fetch_array($result); // Table sql
 				$tmpname = 't'.TIME_NOW;
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/","( ", $row['sql'], 1))));
-				//echo "meep:";
-				//echo "<pre>";
-				//print_r($row);
-				//echo "</pre>";
-				//echo "<br />";
 				$createtemptableSQL = 'CREATE TEMPORARY '.substr(trim(preg_replace("'".$table."'", $tmpname, $origsql, 1)), 6);
 				$createindexsql = array();
 				$i = 0;

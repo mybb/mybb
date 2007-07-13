@@ -158,7 +158,7 @@ class databaseEngine
 			else
 			{
 				$alterdefs = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $alterdefs);
-				$query = $this->alter_table($tablename, $alterdefs);
+				$query = $this->alter_table_parse($tablename, $alterdefs);
 			}
 		}
 	  	else
@@ -913,7 +913,7 @@ class databaseEngine
 	 * @param string The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
-	function alter_table($table, $alterdefs)
+	function alter_table_parse($table, $alterdefs)
 	{
 		if($alterdefs != '')
 		{

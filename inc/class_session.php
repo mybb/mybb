@@ -119,6 +119,7 @@ class session
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
 			LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) 
 			WHERE u.uid='$uid'
+			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
 

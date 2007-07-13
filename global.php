@@ -136,6 +136,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 			FROM ".TABLE_PREFIX."forums f
 			LEFT JOIN ".TABLE_PREFIX."posts p ON(f.fid=p.fid) 
 			WHERE p.pid='".intval($mybb->input['pid'])."'
+			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
 		$load_from_forum = 1;
@@ -149,6 +150,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 			FROM ".TABLE_PREFIX."forums f
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (f.fid=t.fid)
 			WHERE t.tid='".intval($mybb->input['tid'])."'
+			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
 		$load_from_forum = 1;
@@ -157,7 +159,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 	// We have a forum id - simply load the theme from it
 	else if(isset($mybb->input['fid']))
 	{
-		$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'");
+		$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'", array('limit' => 1));
 		$style = $db->fetch_array($query);
 		$load_from_forum = 1;
 	}
@@ -180,7 +182,7 @@ if(empty($loadstyle))
 }
 
 // Fetch the theme to load from the database
-$query = $db->simple_select("themes", "name, tid, themebits, csscached", $loadstyle);
+$query = $db->simple_select("themes", "name, tid, themebits, csscached", $loadstyle, array('limit' => 1));
 $theme = $db->fetch_array($query);
 
 // No theme was found - we attempt to load the master or any other theme
@@ -338,7 +340,7 @@ $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == "yes")
 {
 	// Fetch details on their ban
-	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'");
+	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'", array('limit' => 1));
 	$ban = $db->fetch_array($query);
 	if($ban['uid'])
 	{
@@ -503,7 +505,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	{
 		$condition = "uid='".intval($mybb->input['referrer'])."'";
 	}
-	$query = $db->simple_select("users", "uid", $condition);
+	$query = $db->simple_select("users", "uid", $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
 	if($referrer['uid'])
 	{
