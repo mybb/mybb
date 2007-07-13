@@ -127,7 +127,14 @@ class databaseEngine
 		}
 		else
 		{
-			$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->error("Unable to connect to database server");
+			if(phpversion() < '4.2.0')
+			{
+				$this->link = @mysql_connect($hostname, $username, $password) or $this->error("Unable to connect to database server");
+			}
+			else
+			{
+				$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->error("Unable to connect to database server");
+			}
 		}
 		$this->current_link = &$this->link;
 		return $this->link;
