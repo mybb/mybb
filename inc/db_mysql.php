@@ -54,6 +54,20 @@ class databaseEngine
 	var $link;
 
 	/**
+	 * The slave database connection resource (if we have one)
+	 *
+	 * @var resource
+	 */
+	var $slave_link;
+	
+	/**
+	 * Reference to the last database connection resource used.
+	 *
+	 * @var resource
+	 */
+	var $current_link;
+
+	/**
 	 * Explanation of a query.
 	 *
 	 * @var string
@@ -109,20 +123,38 @@ class databaseEngine
 	{
 		if($pconnect)
 		{
-			$this->link = @mysql_pconnect($hostname, $username, $password) or $this->error();
+			$this->link = @mysql_pconnect($hostname, $username, $password) or $this->error("Unable to connect to database server");
 		}
 		else
 		{
-			if(phpversion() < '4.2.0')
-			{
-				$this->link = @mysql_connect($hostname, $username, $password) or $this->dberror();
-			}
-			else
-			{
-				$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->dberror();
-			}
+			$this->link = @mysql_connect($hostname, $username, $password, $newlink) or $this->error("Unable to connect to database server");
 		}
+		$this->current_link = &$this->link;
 		return $this->link;
+	}
+
+	/**
+	 * Connect to the slave (writes only) database server.
+	 *
+	 * @param string 
+	 * @param string The database hostname.
+	 * @param string The database username.
+	 * @param string The database user's password.
+	 * @param integer 1 if persistent connection, 0 if not.
+	 * @return resource The database connection resource.
+	 */
+	function slave_connect($hostname="localhost", $username="root", $password="", $pconnect=0)
+	{
+		if($pconnect)
+		{
+			$this->slave_link = @mysql_pconnect($hostname, $username, $password) or $this->error("Unable to connect to slave database server");
+		}
+		else
+		{
+			$this->slave_link = @mysql_connect($hostname, $username, $password, 1) or $this->error("Unable to connect to slave database server");
+		}
+		$this->current_link = &$this->slave_link;
+		return $this->slave_link;
 	}
 
 	/**
@@ -133,22 +165,41 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
-		return @mysql_select_db($database, $this->link) or $this->error();
+		$this->current_link = &$this->link;
+		$success = @mysql_select_db($database, $this->link) or $this->error("Unable to select database", $this->link);
+		if($this->slave_link)
+		{
+			$this->current_link = &$this->slave_link;
+			$slave_success = @mysql_select_db($database, $this->slave_link) or $this->error("Unable to select slave database", $this->slave_link);
+		}
+		return ($success && $slave_success ? true : false);
 	}
 	
 	/**
 	 * Query the database.
 	 *
 	 * @param string The query SQL.
-	 * @param boolean 1 if hide errors, 0 if not.
+	 * @param integer 1 if hide errors, 0 if not.
+	 * @param integer 1 if executes on slave database, 0 if not.
 	 * @return resource The query data.
 	 */
-	function query($string, $hide_errors=0)
+	function query($string, $hide_errors=0, $write_query=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
 
 		$qtimer = new timer();
-		$query = @mysql_query($string, $this->link);
+		
+		// Only execute write queries on slave server
+		if($write_query && $this->slave_link)
+		{
+			$this->current_link = &$this->slave_link;
+			$query = @mysql_query($string, $this->slave_link);
+		}
+		else
+		{
+			$this->current_link = &$this->link;
+			$query = @mysql_query($string, $this->link);
+		}
 
 		if($this->error_number() && !$hide_errors)
 		{
@@ -170,6 +221,18 @@ class databaseEngine
 	}
 
 	/**
+	 * Execute a write query on the slave database
+	 *
+	 * @param string The query SQL.
+	 * @param boolean 1 if hide errors, 0 if not.
+	 * @return resource The query data.
+	 */
+	function write_query($query, $hide_errors=0)
+	{
+		return $this->query($query, $hide_errors, 1);
+	}
+
+	/**
 	 * Explain a query on the database.
 	 *
 	 * @param string The query SQL.
@@ -184,7 +247,7 @@ class databaseEngine
 		}
 		if(preg_match("#^\s*select#i", $string))
 		{
-			$query = mysql_query("EXPLAIN $string", $this->link);
+			$query = mysql_query("EXPLAIN $string", $this->current_link);
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\">{$debug_extra}<div><strong>#".$this->query_count." - Select Query</strong></div></td>\n".
@@ -307,8 +370,7 @@ class databaseEngine
 	 */
 	function insert_id()
 	{
-		$id = mysql_insert_id($this->link);
-		return $id;
+		return mysql_insert_id($this->current_link);
 	}
 
 	/**
@@ -318,6 +380,10 @@ class databaseEngine
 	function close()
 	{
 		@mysql_close($this->link);
+		if($this->slave_link)
+		{
+			@mysql_close($this->slave_link);
+		}
 	}
 
 	/**
@@ -327,9 +393,9 @@ class databaseEngine
 	 */
 	function error_number()
 	{
-		if($this->link)
+		if($this->current_link)
 		{
-			return @mysql_errno($this->link);
+			return @mysql_errno($this->current_link);
 		}
 		else
 		{
@@ -344,9 +410,9 @@ class databaseEngine
 	 */
 	function error_string()
 	{
-		if($this->link)
+		if($this->current_link)
 		{
-			return @mysql_error($this->link);
+			return @mysql_error($this->current_link);
 		}
 		else
 		{
@@ -372,8 +438,8 @@ class databaseEngine
 			}
 			
 			$error = array(
-				"error_no" => $this->error_number($this->link),
-				"error" => $this->error_string($this->link),
+				"error_no" => $this->error_number(),
+				"error" => $this->error_string(),
 				"query" => $string
 			);
 			$error_handler->error(MYBB_SQL, $error);
@@ -388,7 +454,7 @@ class databaseEngine
 	 */
 	function affected_rows()
 	{
-		return mysql_affected_rows($this->link);
+		return mysql_affected_rows($this->current_link);
 	}
 
 	/**
@@ -438,7 +504,9 @@ class databaseEngine
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("
+		
+		// Execute on slave server to ensure if we've just created a table that we get the correct result
+		$query = $this->write_query("
 			SHOW TABLES 
 			LIKE '{$this->table_prefix}$table'
 		");
@@ -465,7 +533,7 @@ class databaseEngine
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("
+		$query = $this->write_query("
 			SHOW COLUMNS 
 			FROM {$this->table_prefix}$table 
 			LIKE '$field'
@@ -557,7 +625,7 @@ class databaseEngine
 			$query2 .= $comma."'".$value."'";
 			$comma = ", ";
 		}
-		return $this->query("
+		return $this->write_query("
 			INSERT 
 			INTO {$this->table_prefix}{$table} (".$query1.") 
 			VALUES (".$query2.")
@@ -605,7 +673,7 @@ class databaseEngine
 			$query .= " LIMIT $limit";
 		}
 		
-		return $this->query("
+		return $this->write_query("
 			UPDATE {$this->table_prefix}$table 
 			SET $query
 		");
@@ -626,11 +694,13 @@ class databaseEngine
 		{
 			$query .= " WHERE $where";
 		}
+		
 		if(!empty($limit))
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("
+		
+		return $this->write_query("
 			DELETE 
 			FROM {$this->table_prefix}$table 
 			$query
@@ -638,6 +708,7 @@ class databaseEngine
 	}
 
 	/**
+
 	 * Escape a string according to the MySQL escape format.
 	 *
 	 * @param string The string to be escaped.
@@ -706,7 +777,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE {$this->table_prefix}{$table}");
+		$this->write_query("OPTIMIZE TABLE {$this->table_prefix}{$table}");
 	}
 	
 	/**
@@ -716,7 +787,7 @@ class databaseEngine
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE TABLE {$this->table_prefix}{$table}");
+		$this->write_query("ANALYZE TABLE {$this->table_prefix}{$table}");
 	}
 
 	/**
@@ -727,7 +798,7 @@ class databaseEngine
 	 */
 	function show_create_table($table)
 	{
-		$query = $this->query("SHOW CREATE TABLE {$this->table_prefix}{$table}");
+		$query = $this->write_query("SHOW CREATE TABLE {$this->table_prefix}{$table}");
 		$structure = $this->fetch_array($query);
 		return $structure['Create Table'];
 	}
@@ -740,7 +811,7 @@ class databaseEngine
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->query("SHOW FIELDS FROM {$this->table_prefix}{$table}");
+		$query = $this->write_query("SHOW FIELDS FROM {$this->table_prefix}{$table}");
 		while($field = $this->fetch_array($query))
 		{
 			$field_info[] = $field;
@@ -786,7 +857,7 @@ class databaseEngine
 	function supports_fulltext($table)
 	{
 		$version = $this->get_version();
-		$query = $this->query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
+		$query = $this->write_query("SHOW TABLE STATUS LIKE '{$this->table_prefix}$table'");
 		$status = $this->fetch_array($query);
 		if($status['Engine'])
 		{
@@ -829,7 +900,7 @@ class databaseEngine
 	 */
 	function create_fulltext_index($table, $column, $name="")
 	{
-		$this->query("
+		$this->write_query("
 			ALTER TABLE {$this->table_prefix}$table 
 			ADD FULLTEXT $name ($column)
 		");
@@ -843,7 +914,7 @@ class databaseEngine
 	 */
 	function drop_index($table, $name)
 	{
-		$this->query("
+		$this->write_query("
 			ALTER TABLE {$this->table_prefix}$table 
 			DROP INDEX $name
 		");
@@ -868,11 +939,11 @@ class databaseEngine
 		
 		if($hard == false)
 		{
-			$this->query('DROP TABLE IF EXISTS '.$table_prefix.$table);
+			$this->write_query('DROP TABLE IF EXISTS '.$table_prefix.$table);
 		}
 		else
 		{
-			$this->query('DROP TABLE '.$table_prefix.$table);
+			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
 	}
 	
@@ -898,7 +969,7 @@ class databaseEngine
 			 return false;
 		}
 		
-		return $this->query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
+		return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} SET {$values}");
 	}
 	
 	/**

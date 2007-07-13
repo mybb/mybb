@@ -14,7 +14,7 @@ define("IN_MYBB", 1);
 require_once "./global.php";
 
 // Just a little fix here
-$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");
+$db->write_query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");
 
 // Load language packs for this section
 global $lang;
@@ -133,7 +133,7 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_templates_do_delete");
-		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."templates WHERE tid='".$mybb->input['tid']."'");
 		if($mybb->input['group'])
 		{
 			$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
@@ -151,8 +151,8 @@ if($mybb->input['action'] == "do_deleteset")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_templates_do_deleteset");
-		$db->query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."templatesets WHERE sid='".$mybb->input['setid']."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
 		cpredirect("templates.php?".SID."&action=modify", $lang->set_deleted);
 	}
 	else
@@ -163,7 +163,7 @@ if($mybb->input['action'] == "do_deleteset")
 if($mybb->input['action'] == "do_editset")
 {
 	$plugins->run_hooks("admin_templates_do_editset");
-	$db->query("UPDATE ".TABLE_PREFIX."templatesets SET title='".$db->escape_string($mybb->input['title'])."' WHERE sid='".intval($mybb->input['setid'])."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."templatesets SET title='".$db->escape_string($mybb->input['title'])."' WHERE sid='".intval($mybb->input['setid'])."'");
 	cpredirect("templates.php?".SID, $lang->set_edited);
 }
 
@@ -515,7 +515,7 @@ if($mybb->input['action'] == "makeoriginals")
 			$db->insert_query("templates", $newtemplate);
 		}
 	}
-	$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
+	$db->write_query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='".$mybb->input['setid']."'");
 	cpredirect("templates.php?".SID."&expand=$setid", $lang->originals_made);
 }
 

@@ -82,7 +82,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$comma = '';
 		
 		// Set table default charset
-		$db->query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET utf8");
+		$db->write_query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET utf8");
 
 		// Fetch any fulltext keys
 		if($db->supports_fulltext($mybb->input['table']))
@@ -97,7 +97,7 @@ if($mybb->input['action'] == "utf8_conversion")
 					{
 						foreach($matches[0] as $key => $matched)
 						{
-							$db->query("ALTER TABLE {$mybb->input['table']} DROP INDEX {$matches[1][$key]}");
+							$db->write_query("ALTER TABLE {$mybb->input['table']} DROP INDEX {$matches[1][$key]}");
 							$fulltext_to_create[$matches[1][$key]] = $matches[2][$key];
 						}
 					}
@@ -143,8 +143,8 @@ if($mybb->input['action'] == "utf8_conversion")
 		if(!empty($convert_to_binary))
 		{
 			// This converts the columns to UTF-8 while also doing the same for data
-			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_binary}");
-			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_utf8}");
+			$db->write_query("ALTER TABLE {$mybb->input['table']} {$convert_to_binary}");
+			$db->write_query("ALTER TABLE {$mybb->input['table']} {$convert_to_utf8}");
 		}
 
 		// Any fulltext indexes to recreate?

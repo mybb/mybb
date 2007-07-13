@@ -84,7 +84,7 @@ if($mybb->input['action'] == "do_change")
 		{
 			$val = $db->escape_string($val);
 			$key = intval($key);
-			$db->query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE sid='$key'");
+			$db->write_query("UPDATE ".TABLE_PREFIX."settings SET value='$val' WHERE sid='$key'");
 		}
 	}
 	
@@ -158,15 +158,15 @@ if($mybb->input['action'] == "do_delete")
 		if($mybb->input['sid'])
 		{
 			$plugins->run_hooks("admin_settings_do_delete_setting");
-			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
+			$db->write_query("DELETE FROM ".TABLE_PREFIX."settings WHERE sid='".intval($mybb->input['sid'])."'");
 			rebuild_settings();
 			cpredirect("settings.php?".SID, $lang->setting_deleted);
 		}
 		else if($mybb->input['gid'])
 		{
 			$plugins->run_hooks("admin_settings_do_delete_group");
-			$db->query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
-			$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."'");
+			$db->write_query("DELETE FROM ".TABLE_PREFIX."settinggroups WHERE gid='".intval($mybb->input['gid'])."'");
+			$db->write_query("DELETE FROM ".TABLE_PREFIX."settings WHERE gid='".intval($mybb->input['gid'])."'");
 			rebuild_settings();
 			cpredirect("settings.php?".SID, $lang->group_deleted);
 		}
@@ -385,11 +385,11 @@ if($mybb->input['action'] == "do_modify")
 	$plugins->run_hooks("admin_settings_do_modify");
 	foreach($mybb->input['disporder'] as $sid => $order)
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."settings SET disporder='".intval($order)."' WHERE sid='".intval($sid)."'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."settings SET disporder='".intval($order)."' WHERE sid='".intval($sid)."'");
 	}
 	foreach($mybb->input['dispordercats'] as $gid => $order)
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='".intval($order)."' WHERE gid='".intval($gid)."'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."settinggroups SET disporder='".intval($order)."' WHERE gid='".intval($gid)."'");
 	}
 	starttable();
 	tableheader($lang->cp_message_header);

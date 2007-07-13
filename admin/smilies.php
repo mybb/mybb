@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_smilies_do_delete");
-		$db->query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."smilies WHERE sid='".$mybb->input['sid']."'");
 		$cache->update_smilies();
 		cpredirect("smilies.php?".SID, $lang->smilie_deleted);
 	}

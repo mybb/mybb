@@ -124,8 +124,8 @@ if($mybb->input['action'] == "do_delete")
 	if($mybb->input['deletesubmit'])
 	{
 		$plugins->run_hooks("admin_themes_do_delete");
-		$db->query("UPDATE ".TABLE_PREFIX."users SET style='' WHERE style='".intval($mybb->input['tid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET style='' WHERE style='".intval($mybb->input['tid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 		cpredirect("themes.php?".SID, $lang->theme_deleted);
 		@unlink(MYBB_ROOT.'css/theme_'.intval($mybb->input['tid']).'.css');
 	}
@@ -137,14 +137,14 @@ if($mybb->input['action'] == "do_delete")
 if($mybb->input['action'] == "default")
 {
 	$plugins->run_hooks("admin_themes_default");
-	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='0'");
-	$db->query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($mybb->input['tid'])."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."themes SET def='0'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."themes SET def='1' WHERE tid='".intval($mybb->input['tid'])."'");
 	cpredirect("themes.php?".SID, $lang->default_updated);
 }
 if($mybb->input['action'] == "force")
 {
 	$plugins->run_hooks("admin_themes_force");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET style='".intval($mybb->input['tid'])."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET style='".intval($mybb->input['tid'])."'");
 	cpredirect("themes.php?".SID, $lang->theme_forced);
 }
 if($mybb->input['action'] == "do_download")
@@ -364,11 +364,11 @@ if($mybb->input['action'] == "do_import")
 	{
 		$templateset = -2;
 		$tid = 1;
-		$db->query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='-2'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."templates WHERE sid='-2'");
 	}
 	else
 	{
-		$db->query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('$name Templates')");
+		$db->write_query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('$name Templates')");
 		$templateset = $db->insert_id();
 		$tid = "";
 	}
@@ -383,7 +383,7 @@ if($mybb->input['action'] == "do_import")
 			$templatevalue = $db->escape_string($template['value']);
 			$templateversion = $template['attributes']['version'];
 			$time = time();
-			$db->query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$templateset','$templateversion','','$time')");
+			$db->write_query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$templateset','$templateversion','','$time')");
 		}
 	}
 

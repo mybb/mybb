@@ -124,8 +124,8 @@ function checkbanned()
 	$query = $db->simple_select("banned", "*", "lifted<='{$time}' AND lifted!='perm'");
 	while($banned = $db->fetch_array($query))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}', additionalgroups='{$banned['oldadditionalgroups']}', displaygroup='{$banned['olddisplaygroup']}' WHERE uid='{$banned['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='{$banned['uid']}'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET usergroup='{$banned['oldgroup']}', additionalgroups='{$banned['oldadditionalgroups']}', displaygroup='{$banned['olddisplaygroup']}' WHERE uid='{$banned['uid']}'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='{$banned['uid']}'");
 	}
 }
 
@@ -522,15 +522,15 @@ if($mybb->input['action'] == "do_delete")
 		}
 
 		$plugins->run_hooks("admin_users_do_delete");
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE uid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."events WHERE author='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE uid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='".intval($mybb->input['uid'])."'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."events WHERE author='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."moderators WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='".intval($mybb->input['uid'])."'");
+		$db->write_query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".intval($mybb->input['uid'])."'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
@@ -783,30 +783,30 @@ if($mybb->input['action'] == "do_do_merge")
 		cperror($lang->error_invalid_destination);
 	}
 	$plugins->run_hooks("admin_users_do_do_merge");
-	$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."adminlog SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."announcements SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."events SET author='".$destuser['uid']."' WHERE author='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."favorites SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".$destuser['username']."' WHERE lastposter='".$sourceuser['username']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."forumsubscriptions SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."moderatorlog SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."moderators SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."pollvotes SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='".$destuser['uid']."', username='".$destuser['username']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."posts SET edituid='".$destuser['uid']."' WHERE edituid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET toid='".$destuser['uid']."' WHERE toid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."privatemessages SET fromid='".$destuser['uid']."' WHERE fromid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."reputation SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."threadratings SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET uid='".$destuser['uid']."', username='".$destuser['username']."' WHERE uid='".$sourceuser['uid']."'");
-	$db->query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".$destuser['username']."', username='".$destuser['username']."' WHERE lastposter='".$sourceuser['username']."'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".$sourceuser['uid']."'");
-	$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."adminlog SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."announcements SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."events SET author='".$destuser['uid']."' WHERE author='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."favorites SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."forums SET lastposter='".$destuser['username']."' WHERE lastposter='".$sourceuser['username']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."forumsubscriptions SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."moderatorlog SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."moderators SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."pollvotes SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."posts SET uid='".$destuser['uid']."', username='".$destuser['username']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."posts SET edituid='".$destuser['uid']."' WHERE edituid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."privatemessages SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."privatemessages SET toid='".$destuser['uid']."' WHERE toid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."privatemessages SET fromid='".$destuser['uid']."' WHERE fromid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."reputation SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."threadratings SET uid='".$destuser['uid']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."threads SET uid='".$destuser['uid']."', username='".$destuser['username']."' WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."threads SET lastposter='".$destuser['username']."', username='".$destuser['username']."' WHERE lastposter='".$sourceuser['username']."'");
+	$db->write_query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='".$sourceuser['uid']."'");
+	$db->write_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$sourceuser['uid']."'");
 	$query = $db->query("SELECT COUNT(*) AS postnum FROM ".TABLE_PREFIX."posts WHERE uid='".$destuser['uid']."'");
 	$num = $db->fetch_array($query);
-	$db->query("UPDATE ".TABLE_PREFIX."users SET postnum='".$num['postnum']."' WHERE uid='".$destuser['uid']."'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum='".$num['postnum']."' WHERE uid='".$destuser['uid']."'");
 	update_stats(array('numusers' => '-1'));
 	$lang->users_merged = sprintf($lang->users_merged, $sourceuser['username'], $sourceuser['username'], $destuser['username']);
 	cpmessage($lang->users_merged);
@@ -1830,7 +1830,7 @@ if($mybb->input['action'] == "find")
 if($mybb->input['action'] == "activate")
 {
 	$plugins->run_hooks("admin_users_activate");
-	$query = $db->query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid='".intval($mybb->input['uid'])."' AND usergroup = '5'");
+	$query = $db->write_query("UPDATE ".TABLE_PREFIX."users SET usergroup = '2' WHERE uid='".intval($mybb->input['uid'])."' AND usergroup = '5'");
 	cpredirect("users.php?".SID, $lang->activated);
 }
 if($mybb->input['action'] == "do_manageban")

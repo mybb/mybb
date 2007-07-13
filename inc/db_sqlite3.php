@@ -264,7 +264,18 @@ class databaseEngine
 		$this->querylist[$this->query_count]['query'] = $string;
 		$this->querylist[$this->query_count]['time'] = $qtime;
 	}
-
+	
+	/**
+	 * Execute a write query on the database
+	 *
+	 * @param string The query SQL.
+	 * @param boolean 1 if hide errors, 0 if not.
+	 * @return resource The query data.
+	 */
+	function write_query($query, $hide_errors=0)
+	{
+		return $this->query($query, $hide_errors);
+	}
 
 	/**
 	 * Return a result array for a query.

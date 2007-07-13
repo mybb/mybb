@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add")
 			
 			$fid = $db->insert_id();
 			
-			$db->query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
 					
 			flash_message($lang->success_profile_field_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/profile_fields");

@@ -81,7 +81,7 @@ else
 		$output->print_header();
 
 		$db->drop_table("upgrade_data");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
 			PRIMARY KEY(title)
@@ -192,7 +192,7 @@ function upgradethemes()
 	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
 		$db->drop_table("templates");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."templates (
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."templates (
 		  tid int unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  template text NOT NULL,
@@ -207,7 +207,7 @@ function upgradethemes()
 	if($system_upgrade_detail['revert_all_themes'] > 0)
 	{
 		$db->drop_table("themes");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."themes (
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themes (
 		  tid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  pid smallint unsigned NOT NULL default '0',
@@ -249,7 +249,7 @@ function upgradethemes()
 		$db->update_query("forums", array('style' => 0));
 		
 		$db->drop_table("templatesets");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."templatesets (
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."templatesets (
 		  sid smallint unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  PRIMARY KEY  (sid)
@@ -468,7 +468,7 @@ function sync_settings($redo=0)
 	if($redo == 2)
 	{
 		$db->drop_table("settinggroups");
-		$db->query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."settinggroups (
 		  gid smallint unsigned NOT NULL auto_increment,
 		  name varchar(100) NOT NULL default '',
 		  title varchar(220) NOT NULL default '',
@@ -480,7 +480,7 @@ function sync_settings($redo=0)
 
 		$db->drop_table("settings");
 
-		$db->query("CREATE TABLE ".TABLE_PREFIX."settings (
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."settings (
 		  sid smallint(6) NOT NULL auto_increment,
 		  name varchar(120) NOT NULL default '',
 		  title varchar(120) NOT NULL default '',

@@ -699,7 +699,7 @@ class PostDataHandler extends DataHandler
 			{
 				$queryadd = '';
 			}
-			$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
+			$db->write_query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
 		}
 		
 		if($this->method != "update" && $visible != -2)
@@ -1186,7 +1186,7 @@ class PostDataHandler extends DataHandler
 				if(!empty($update_query))
 				{
 					$update_query = implode(", ", $update_query);
-					$db->query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
 				}
 			}
 			

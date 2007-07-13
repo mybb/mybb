@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!username_exists($mybb->input['username']))
 	{
 		my_setcookie('loginattempts', $logins + 1);
-		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -71,7 +71,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!$user['uid'])
 	{
 		my_setcookie('loginattempts', $logins + 1);
-		$db->query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == "yes")
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);

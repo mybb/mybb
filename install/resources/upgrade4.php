@@ -30,48 +30,48 @@ function upgrade4_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET style='0' WHERE style='-1';");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET displaygroup='0' WHERE displaygroup='-1';");
-	$db->query("UPDATE ".TABLE_PREFIX."forums SET style='0' WHERE style='-1';");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET style='0' WHERE style='-1';");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET displaygroup='0' WHERE displaygroup='-1';");
+	$db->write_query("UPDATE ".TABLE_PREFIX."forums SET style='0' WHERE style='-1';");
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='0'");
 	$test = $db->fetch_array($query);
 	if(!isset($test['uid']))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='0' WHERE uid='-1';");
+		$db->write_query("UPDATE ".TABLE_PREFIX."adminoptions SET uid='0' WHERE uid='-1';");
 	}
 
 	if($db->field_exists('messageindex', "threads"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP messageindex;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threads DROP messageindex;");
 	}
 	if($db->field_exists('subjectindex', "threads"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threads DROP subjectindex;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threads DROP subjectindex;");
 	}
 	if($db->field_exists('moderators', "forums"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP moderators;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums DROP moderators;");
 	}
 
 	if($db->field_exists('version', "templates"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."templates DROP version;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP version;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."templates ADD version varchar(20) NOT NULL default '0';");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD version varchar(20) NOT NULL default '0';");
 	
 	if($db->field_exists('status', "templates"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."templates DROP status;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP status;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."templates ADD status varchar(10) NOT NULL default '';");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD status varchar(10) NOT NULL default '';");
 	
 	if($db->field_exists('dateline', "templates"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."templates DROP dateline;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates DROP dateline;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."templates ADD dateline int(10) NOT NULL default '0';");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates ADD dateline int(10) NOT NULL default '0';");
 	
-	$db->query("UPDATE ".TABLE_PREFIX."templates SET version='100.06' WHERE sid>0");
+	$db->write_query("UPDATE ".TABLE_PREFIX."templates SET version='100.06' WHERE sid>0");
 
 	echo "Done</p>";
 	

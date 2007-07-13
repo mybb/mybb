@@ -31,88 +31,88 @@ function upgrade9_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
 	
 	if($db->field_exists('recipients', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
 	}	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD recipients text NOT NULL AFTER fromid");
 	
 	if($db->field_exists('deletetime', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP deletetime;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP deletetime;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
 	
 	
 	if($db->field_exists('maxpmrecipients', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxpmrecipients;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxpmrecipients;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 
 
 	if($db->field_exists('canwarnusers', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canwarnusers;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canwarnusers;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers char(3) NOT NULL default '' AFTER cancustomtitle");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers char(3) NOT NULL default '' AFTER cancustomtitle");
 	
 	if($db->field_exists('canrecievewarnings', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canrecievewarnings;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canrecievewarnings;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings char(3) NOT NULL default '' AFTER canwarnusers");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings char(3) NOT NULL default '' AFTER canwarnusers");
 	
 	if($db->field_exists('maxwarningsday', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxwarningsday;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxwarningsday;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
 	
-	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canreceivewarnings='no' WHERE cancp='yes' OR gid=1");
-	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET maxwarningsday=3, canwarnusers='yes' WHERE cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
+	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canreceivewarnings='no' WHERE cancp='yes' OR gid=1");
+	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET maxwarningsday=3, canwarnusers='yes' WHERE cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
 	if($db->field_exists('newpms', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");
 	}
 	
 	if($db->field_exists('keywords', "searchlog"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog DROP keywords;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."searchlog DROP keywords;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."searchlog ADD keywords text NOT NULL AFTER querycache");
 	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents char(3) NOT NULL default '';");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents char(3) NOT NULL default '';");
 	
 	if($db->field_exists('canaddprivateevents', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canaddprivateevents;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canaddprivateevents;");
 	}
 	
 	if($db->field_exists('canbypasseventmod', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canbypasseventmod;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canbypasseventmod;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod char(3) NOT NULL default '' AFTER canaddevents;");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod char(3) NOT NULL default '' AFTER canaddevents;");
 	
 	if($db->field_exists('canmoderateevents', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents char(3) NOT NULL default '' AFTER canbypasseventmod;");
-	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='yes', canmoderateevents='yes' WHERE cancp='yes' OR issupermod='yes'");
-	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='no', canmoderateevents='no' WHERE cancp='no' AND issupermod='no'");
-	$db->query("UPDATE ".TABLE_PREFIX."usergroups SET canaddevents='no' WHERE gid=1;");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents char(3) NOT NULL default '' AFTER canbypasseventmod;");
+	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='yes', canmoderateevents='yes' WHERE cancp='yes' OR issupermod='yes'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='no', canmoderateevents='no' WHERE cancp='no' AND issupermod='no'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canaddevents='no' WHERE gid=1;");
 
 	$db->drop_table("maillogs");	
 	$db->drop_table("mailerrors");
 	$db->drop_table("promotions");
 	$db->drop_table("promotionlogs");
 		
-	$db->query("CREATE TABLE ".TABLE_PREFIX."maillogs (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
 		message text NOT NULL default '',
@@ -126,7 +126,7 @@ function upgrade9_dbchanges()
 		PRIMARY KEY(mid)
 	) TYPE=MyISAM;");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."mailerrors(
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."mailerrors(
 		eid int unsigned NOT NULL auto_increment,
 		subject varchar(200) NOT NULL default '',
 		message TEXT NOT NULL,
@@ -139,7 +139,7 @@ function upgrade9_dbchanges()
 		PRIMARY KEY(eid)
  	) TYPE=MyISAM;");
 	
-	$db->query("CREATE TABLE ".TABLE_PREFIX."promotions(
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotions(
 		pid int unsigned NOT NULL auto_increment,
 		title varchar(120) NOT NULL default '',
 		description text NOT NULL,
@@ -158,7 +158,7 @@ function upgrade9_dbchanges()
 		PRIMARY KEY(pid)
  	) TYPE=MyISAM;");
 	
-	$db->query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
 		plid int unsigned NOT NULL auto_increment,
 		pid int unsigned NOT NULL default '0',
 		uid int unsigned NOT NULL default '0',
@@ -170,32 +170,32 @@ function upgrade9_dbchanges()
 
 	if($db->field_exists('maxemails', "usergroups"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxemails;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxemails;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER cansendemail");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxemails int(3) NOT NULL default '5' AFTER cansendemail");
 	
 	if($db->field_exists('parseorder', "mycode"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."mycode DROP parseorder;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode DROP parseorder;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."mycode ADD parseorder smallint unsigned NOT NULL default '0' AFTER active");
 	
 	if($db->field_exists('mod_edit_posts', "forums"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."forums DROP mod_edit_posts;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums DROP mod_edit_posts;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts char(3) NOT NULL default '' AFTER modthreads");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts char(3) NOT NULL default '' AFTER modthreads");
 
 	if($db->field_exists('pmnotice', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP pmnotice;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP pmnotice;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice char(3) NOT NULL default ''");
 	
 	$db->drop_table("tasks");
 	$db->drop_table("tasklog");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."tasks (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."tasks (
 		tid int unsigned NOT NULL auto_increment,
 		title varchar(120) NOT NULL default '',
 		description text NOT NULL,
@@ -214,7 +214,7 @@ function upgrade9_dbchanges()
 	) TYPE=MyISAM;");
 
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."tasklog (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."tasklog (
 		lid int unsigned NOT NULL auto_increment,
 		tid int unsigned NOT NULL default '0',
 		dateline bigint(30) NOT NULL default '0',
@@ -258,44 +258,44 @@ function upgrade9_dbchanges()
 	
 	if($db->field_exists('fid', "threadsubscriptions"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP recipients;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE fid sid int unsigned NOT NULL auto_increment");
 	}
 	
 	if($db->field_exists('type', "threadsubscriptions"))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='0' WHERE type='f'");
-		$db->query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='1' WHERE type='s'");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='0' WHERE type='f'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='1' WHERE type='s'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
 	}
 	
 	if($db->field_exists('dateline', "threadsubscriptions"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP dateline;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP dateline;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
 		
 	if($db->field_exists('dateline', "threadsubscriptions"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."threadssubscriptions DROP dateline;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadssubscriptions DROP dateline;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD subscriptionkey varchar(32) NOT NULL default ''");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD subscriptionkey varchar(32) NOT NULL default ''");
 
 	if($db->field_exists('emailnotify', "users"))
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='1' WHERE emailnotify='no'");
-		$db->query("UPDATE ".TABLE_PREFIX."users SET emailnotify='2' WHERE emailnotify='yes'");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET emailnotify='1' WHERE emailnotify='no'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET emailnotify='2' WHERE emailnotify='yes'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
 	}
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."warninglevels (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warninglevels (
 		lid int unsigned NOT NULL auto_increment,
 		percentage int(3) NOT NULL default '0',
 		action text NOT NULL,
 		PRIMARY KEY(lid)
 	) TYPE=MyISAM;");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."warningtypes (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warningtypes (
 		tid int unsigned NOT NULL auto_increment,
 		title varchar(120) NOT NULL default '',
 		points int unsigned NOT NULL default '0',
@@ -303,7 +303,7 @@ function upgrade9_dbchanges()
 		PRIMARY KEY(tid)
 	) TYPE=MyISAM;");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."warnings (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warnings (
 		wid int unsigned NOT NULL auto_increment,
 		uid int unsigned NOT NULL default '0',
 		tid int unsigned NOT NULL default '0',
@@ -323,13 +323,13 @@ function upgrade9_dbchanges()
 
 	if($db->field_exists('warningpoints', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP warningpoints;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP warningpoints;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD warningpoints int(3) NOT NULL default '0' AFTER unreadpms");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD moderateposts int(1) NOT NULL default '0' AFTER warningpoints");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD moderationtime bigint(30) NOT NULL default '0' AFTER moderateposts");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD suspendposting int(1) NOT NULL default '0' AFTER moderationtime");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD warningpoints int(3) NOT NULL default '0' AFTER unreadpms");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD moderateposts int(1) NOT NULL default '0' AFTER warningpoints");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD moderationtime bigint(30) NOT NULL default '0' AFTER moderateposts");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspendposting int(1) NOT NULL default '0' AFTER moderationtime");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -347,7 +347,7 @@ function upgrade9_dbchanges2()
 	
 	$db->drop_table("banfilters");
 	
-	$db->query("CREATE TABLE ".TABLE_PREFIX."banfilters (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."banfilters (
 	  fid int unsigned NOT NULL auto_increment,
 	  filter varchar(200) NOT NULL default '',
 	  type int(1) NOT NULL default '0',
@@ -401,7 +401,7 @@ function upgrade9_dbchanges3()
 	
 	$db->drop_table("spiders");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."spiders (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."spiders (
 		sid int unsigned NOT NULL auto_increment,
 		name varchar(100) NOT NULL default '',
 		theme int unsigned NOT NULL default '0',
@@ -412,29 +412,29 @@ function upgrade9_dbchanges3()
 		PRIMARY KEY(sid)
 	) TYPE=MyISAM;");
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('GoogleBot','google');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Lycos','lycos');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Ask Jeeves','ask jeeves');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Hot Bot','slurp@inktomi');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('What You Seek','whatuseek');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Archive.org','is_archiver');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Altavista','scooter');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Alexa','ia_archiver');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('MSN Search','msnbot');");
-	$db->query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Yahoo!','yahoo slurp');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('GoogleBot','google');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Lycos','lycos');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Ask Jeeves','ask jeeves');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Hot Bot','slurp@inktomi');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('What You Seek','whatuseek');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Archive.org','is_archiver');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Altavista','scooter');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Alexa','ia_archiver');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('MSN Search','msnbot');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Yahoo!','yahoo slurp');");
 
 	// DST correction changes
-	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=1 WHERE dst='yes'");
-	$db->query("UPDATE ".TABLE_PREFIX."users SET dst=0 WHERE dst='no'");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET dst=1 WHERE dst='yes'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET dst=0 WHERE dst='no'");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
 	if($db->field_exists('dstcorrection', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP dstcorrection;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP dstcorrection;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
 
-	$db->query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
+	$db->write_query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");	
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
 	
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
 	$parser = new XMLParser($adminoptions);
@@ -573,7 +573,7 @@ function upgrade9_dbchanges3()
 	{
 		if($db->field_exists($field, "adminoptions"))
 		{
-			$db->query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP {$field}");
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP {$field}");
 		}
 	}
 	
@@ -596,11 +596,11 @@ function upgrade9_dbchanges4()
 
 	if($db->field_exists('statustime', "privatemessages"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP statustime;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP statustime;");
 	}
-	$db->query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."calendars (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendars (
 	  cid int unsigned NOT NULL auto_increment,
 	  name varchar(100) NOT NULL default '',
 	  disporder int unsigned NOT NULL default '0',
@@ -615,9 +615,9 @@ function upgrade9_dbchanges4()
 	  PRIMARY KEY(cid)
 	) TYPE=MyISAM;");
 
-	$db->query("INSERT INTO ".TABLE_PREFIX."calendars (name,disporder,startofweek,showbirthdays,eventlimit,moderation,allowhtml,allowmycode,allowimgcode,allowsmilies) VALUES ('Default Calendar',1,0,1,4,0,'no','yes','yes','yes');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."calendars (name,disporder,startofweek,showbirthdays,eventlimit,moderation,allowhtml,allowmycode,allowimgcode,allowsmilies) VALUES ('Default Calendar',1,0,1,4,0,'no','yes','yes','yes');");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."calendarpermissions (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendarpermissions (
 	  cid int unsigned NOT NULL default '0',
 	  gid int unsigned NOT NULL default '0',
 	  canviewcalendar char(3) NOT NULL default '',
@@ -626,7 +626,7 @@ function upgrade9_dbchanges4()
 	  canmoderateevents char(3) NOT NULL default ''
 	) TYPE=MyISAM;");
 
-	$db->query("CREATE TABLE ".TABLE_PREFIX."forumsread (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."forumsread (
 	  fid int unsigned NOT NULL default '0',
 	  uid int unsigned NOT NULL default '0',
 	  dateline int(10) NOT NULL default '0',
@@ -669,7 +669,7 @@ function upgrade9_dbchanges5()
 		$lower = 1;
 	}
 
-	$query = $db->query("SELECT COUNT(eid) AS eventcount FROM ".TABLE_PREFIX."events");
+	$query = $db->simple_select("SELECT COUNT(eid) AS eventcount FROM ".TABLE_PREFIX."events");
 	$cnt = $db->fetch_array($query);
 
 	$contents .= "<p>Converting events {$lower} to {$upper} ({$cnt['attachcount']} Total)</p>";
@@ -679,23 +679,23 @@ function upgrade9_dbchanges5()
 	if(!$db->field_exists("donecon", "events"))
 	{
 		// Add temporary column
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD donecon smallint(1) NOT NULL;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD donecon smallint(1) NOT NULL;");
 
 		// Got structural changes?		
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD cid int unsigned NOT NULL default '0' AFTER eid");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
-		$db->query("UPDATE ".TABLE_PREIX."events SET private=1 WHERE private='yes'");
-		$db->query("UPDATE ".TABLE_PREIX."events SET private=0 WHERE private='no'");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events CHANGE private int(1) NOT NULL default '0'");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD dateline int(10) unsigned NOT NULL default '0' AFTER private");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD starttime int(10) unsigned NOT NULL default '0' AFTER dateline");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD endtime int(10) unsigned NOT NULL default '0' AFTER starttime");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD timezone int(3) NOT NULL default '0' AFTER endtime");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD ignoretimezone int(1) NOT NULL default '0' AFTER timezone");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD usingtime int(1) NOT NULL default '0' AFTER dst");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events ADD repeats text NOT NULL AFTER usingtime");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD cid int unsigned NOT NULL default '0' AFTER eid");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
+		$db->write_query("UPDATE ".TABLE_PREIX."events SET private=1 WHERE private='yes'");
+		$db->write_query("UPDATE ".TABLE_PREIX."events SET private=0 WHERE private='no'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE private int(1) NOT NULL default '0'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD dateline int(10) unsigned NOT NULL default '0' AFTER private");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD starttime int(10) unsigned NOT NULL default '0' AFTER dateline");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD endtime int(10) unsigned NOT NULL default '0' AFTER starttime");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD timezone int(3) NOT NULL default '0' AFTER endtime");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD ignoretimezone int(1) NOT NULL default '0' AFTER timezone");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD usingtime int(1) NOT NULL default '0' AFTER dst");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD repeats text NOT NULL AFTER usingtime");
 	}
 
 	$query = $db->simple_select("events", "*", "donecon!=1", array("order_by" => "eid", "limit" => $epp));
@@ -712,7 +712,7 @@ function upgrade9_dbchanges5()
 	}
 	
 	echo "<p>Done.</p>";
-	$query = $db->query("events", "COUNT(eid) AS remaining", "donecon!=1");
+	$query = $db->simple_select("events", "COUNT(eid) AS remaining", "donecon!=1");
 	$remaining = $db->fetch_field($query, "remaining");	
 	if($remaining)
 	{
@@ -722,8 +722,8 @@ function upgrade9_dbchanges5()
 	}
 	else
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
 		$nextact = "9_done";
 		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
 	}

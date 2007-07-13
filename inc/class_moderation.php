@@ -180,7 +180,7 @@ class Moderation
 			{
 				foreach($userposts as $uid => $subtract)
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$subtract WHERE uid='$uid'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$subtract WHERE uid='$uid'");
 				}
 			}
 		}
@@ -293,7 +293,7 @@ class Moderation
 				// If post counts enabled in this forum and the post hasn't already been approved, remove 1
 				if($post['usepostcounts'] != "no")
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
 				}
 			}
 			$posts_to_approve[] = $thread['firstpost'];
@@ -358,7 +358,7 @@ class Moderation
 				// If post counts enabled in this forum and the post hasn't already been unapproved, remove 1
 				if($post['usepostcounts'] != "no")
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 				}
 			}
 			$posts_to_unapprove[] = $thread['firstpost'];
@@ -404,7 +404,7 @@ class Moderation
 		// If post counts enabled in this forum and it hasn't already been unapproved, remove 1
 		if($post['usepostcounts'] != "no" && $post['visible'] != 0)
 		{
-			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+			$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 		}
 		// Delete the post
 		$db->delete_query("posts", "pid='$pid'");
@@ -489,7 +489,7 @@ class Moderation
 				if($post['usepostcounts'] != "no" && $post['visible'] == '1')
 				{
 					// Update post count of the user of the merged posts
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
 				}
 				if($post['visible'] == 1)
 				{
@@ -774,7 +774,7 @@ class Moderation
 			}
 			if(!empty($pcount))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
+				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 			}
 		}
 
@@ -1016,7 +1016,7 @@ class Moderation
 
 			if(!empty($pcount))
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
+				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 			}
 		}
 
@@ -1183,7 +1183,7 @@ class Moderation
 				
 				if(!empty($pcount))
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
 				}
 			}
 		}
@@ -1254,7 +1254,7 @@ class Moderation
 				// If post counts enabled in this forum and the post hasn't already been approved, add 1
 				if($post['usepostcounts'] != "no")
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
 				}
 				++$num_posts;
 
@@ -1341,7 +1341,7 @@ class Moderation
 				// If post counts enabled in this forum and the post hasn't already been unapproved, remove 1
 				if($post['usepostcounts'] != "no")
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 				}
 				$num_posts++;
 			}
@@ -1614,7 +1614,7 @@ class Moderation
 				");
 				while($subscription = $db->fetch_array($query))
 				{
-					$db->query("DELETE FROM ".TABLE_PREFIX."threadsubscriptions WHERE uid='{$subscription['uid']}' AND tid='{$subscription['tid']}'");
+					$db->write_query("DELETE FROM ".TABLE_PREFIX."threadsubscriptions WHERE uid='{$subscription['uid']}' AND tid='{$subscription['tid']}'");
 				}
 			}
 		}

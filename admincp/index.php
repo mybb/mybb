@@ -39,7 +39,7 @@ if(!$db->table_exists('adminlog2'))
 	{
 		case "sqlite3":
 		case "sqlite2":
-			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
 			  uid int unsigned NOT NULL default '0',
 			  ipaddress varchar(50) NOT NULL default '',
 			  dateline bigint(30) NOT NULL default '0',
@@ -49,7 +49,7 @@ if(!$db->table_exists('adminlog2'))
 			);");
 			 break;
 		case "pgsql":
-			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
 			  uid int NOT NULL default '0',
 			  ipaddress varchar(50) NOT NULL default '',
 			  dateline bigint NOT NULL default '0',
@@ -59,7 +59,7 @@ if(!$db->table_exists('adminlog2'))
 			);");
 			 break;
 		default:
-			$db->query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
+			$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
 			  uid int unsigned NOT NULL default '0',
 			  ipaddress varchar(50) NOT NULL default '',
 			  dateline bigint(30) NOT NULL default '0',
@@ -76,11 +76,11 @@ if(!$db->field_exists('data', 'adminsessions'))
 	switch($config['dbtype'])
 	{
 		case "pgsql":
-			$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT");
-			$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ALTER COLUMN data SET NOT NULL");
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT");
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ALTER COLUMN data SET NOT NULL");
 			break;
 		default:
-			$db->query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
 	}
 }
 

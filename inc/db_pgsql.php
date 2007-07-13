@@ -45,6 +45,20 @@ class databaseEngine
 	 * @var resource
 	 */
 	var $link;
+	
+	/**
+	 * The slave database connection resource (if we have one)
+	 *
+	 * @var resource
+	 */
+	var $slave_link;
+	
+	/**
+	 * Reference to the last database connection resource used.
+	 *
+	 * @var resource
+	 */
+	var $current_link;
 
 	/**
 	 * Explanation of a query.
@@ -122,12 +136,26 @@ class databaseEngine
 	{
 		if($password)
 		{
-			$this->connection_options['password'] = $password;
+			$this->connection_options['master']['password'] = $password;
 		}
 
-		$this->connection_options['host'] = $hostname;
-		$this->connection_options['user'] = $username;
-		$this->connection_options['pconnect'] = $pconnect;
+		$this->connection_options['master']['host'] = $hostname;
+		$this->connection_options['master']['user'] = $username;
+		$this->connection_options['master']['pconnect'] = $pconnect;
+
+		return true;
+	}
+
+	function slave_connect($hostname="localhost", $username="root", $password="", $pconnect=0)
+	{
+		if($password)
+		{
+			$this->connection_options['slave']['password'] = $password;
+		}
+
+		$this->connection_options['slave']['host'] = $hostname;
+		$this->connection_options['slave']['user'] = $username;
+		$this->connection_options['slave']['pconnect'] = $pconnect;
 
 		return true;
 	}
@@ -140,38 +168,50 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
-		$this->connection_options['database'] = $database;
-		$this->connect_string .= "dbname={$database} user={$this->connection_options['user']}";
-		
-		if($this->connection_options['port'])
+		foreach($this->connection_options as $type => $db_connection)
 		{
-			$connect_string .= "port={$this->connection_options['host']} ";
+			if(!$db_connection['host'])
+			{
+				continue;
+			}
+			$this->connect_string .= "dbname={$database} user={$db_connection['user']}";
+			
+			if($db_connection['port'])
+			{
+				$connect_string .= "port={$db_connection['host']} ";
+			}
+			if(strpos($db_connection['host'], ':') !== false)
+			{
+				list($db_connection['host'], $db_connection['port']) = explode(':', $db_connection['host']);
+			}
+			
+			if($db_connection['host'] != "localhost")
+			{
+				$this->connect_string .= "host={$db_connection['host']} ";
+			}
+			
+			if($db_connection['password'])
+			{
+				$this->connect_string .= " password={$db_connection['password']}";
+			}
+			
+			if($type == "slave")
+			{
+				$link = "slave_link";
+			}
+			else
+			{
+				$link = "link";
+			}
+			if($this->connection_options['pconnect'])
+			{
+				$this->$link = @pg_pconnect($this->connect_string) or $this->error();
+			}
+			else
+			{
+				$this->$link = @pg_connect($this->connect_string);
+			}
 		}
-		
-		if(strpos($this->connection_options['host'], ':') !== false)
-		{
-			list($this->connection_options['host'], $this->connection_options['port']) = explode(':', $this->connection_options['host']);
-		}
-		
-		if($this->connection_options['host'] != "localhost")
-		{
-			$this->connect_string .= "host={$this->connection_options['host']} ";
-		}
-		
-		if($this->connection_options['password'])
-		{
-			$this->connect_string .= " password={$this->connection_options['password']}";
-		}
-		
-		if($this->connection_options['pconnect'])
-		{
-			$this->link = @pg_pconnect($this->connect_string) or $this->error();
-		}
-		else
-		{
-			$this->link = @pg_connect($this->connect_string);
-		}
-		
 		return $this->link;
 	}
 	
@@ -180,9 +220,10 @@ class databaseEngine
 	 *
 	 * @param string The query SQL.
 	 * @param boolean 1 if hide errors, 0 if not.
+	 * @param integer 1 if executes on slave database, 0 if not.
 	 * @return resource The query data.
 	 */
-	function query($string, $hide_errors=0)
+	function query($string, $hide_errors=0, $write_query=0)
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
 		
@@ -198,8 +239,18 @@ class databaseEngine
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
 		}
 
-		pg_send_query($this->link, $string);
-		$query = pg_get_result($this->link);
+		if($write_query && $this->slave_link)
+		{
+			$this->current_link = &$this->slave_link;
+			pg_send_query($this->slave_link, $string);
+			$query = pg_get_result($this->slave_link);					
+		}
+		else
+		{
+			$this->current_link = &$this->link;
+			pg_send_query($this->link, $string);
+			$query = pg_get_result($this->link);
+		}
 		
 		if(pg_result_error($query) && !$hide_errors)
 		{
@@ -218,6 +269,18 @@ class databaseEngine
 		}
 		return $query;
 	}
+	
+	/**
+	 * Execute a write query on the slave database
+	 *
+	 * @param string The query SQL.
+	 * @param boolean 1 if hide errors, 0 if not.
+	 * @return resource The query data.
+	 */
+	function write_query($query, $hide_errors=0)
+	{
+		return $this->query($query, $hide_errors, 1);
+	}
 
 	/**
 	 * Explain a query on the database.
@@ -229,7 +292,7 @@ class databaseEngine
 	{
 		if(preg_match("#^\s*select#i", $string))
 		{
-			$query = pg_query($this->link, "EXPLAIN $string");
+			$query = pg_query($this->current_link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
@@ -371,6 +434,10 @@ class databaseEngine
 	function close()
 	{
 		@pg_close($this->link);
+		if($this->slave_link)
+		{
+			@pg_close($this->slave_link);
+		}
 	}
 
 	/**
@@ -390,9 +457,9 @@ class databaseEngine
 	 */
 	function error_string()
 	{
-		if($this->link)
+		if($this->current_link)
 		{
-			return pg_last_error($this->link);
+			return pg_last_error($this->current_link);
 		}
 		else
 		{
@@ -418,8 +485,8 @@ class databaseEngine
 			}
 			
 			$error = array(
-				"error_no" => $this->error_number($this->link),
-				"error" => $this->error_string($this->link),
+				"error_no" => $this->error_number($this->current_linkk),
+				"error" => $this->error_string($this->current_link),
 				"query" => $string
 			);
 			$error_handler->error(MYBB_SQL, $error);
@@ -434,7 +501,7 @@ class databaseEngine
 	 */
 	function affected_rows()
 	{
-		return pg_affected_rows($this->link);
+		return pg_affected_rows($this->current_link);
 	}
 
 	/**
@@ -485,7 +552,8 @@ class databaseEngine
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
 		
-		$query = $this->query("SELECT COUNT(table_name) as table_names FROM information_schema.tables WHERE table_schema = 'public' AND table_name='{$this->table_prefix}{$table}'");
+		// Execute on slave server to ensure if we've just created a table that we get the correct result
+		$query = $this->write_query("SELECT COUNT(table_name) as table_names FROM information_schema.tables WHERE table_schema = 'public' AND table_name='{$this->table_prefix}{$table}'");
 		
 		$exists = $this->fetch_field($query, 'table_names');
 		$this->error_reporting = $err;
@@ -512,7 +580,7 @@ class databaseEngine
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
 		
-		$query = $this->query("SELECT COUNT(column_name) as column_names FROM information_schema.columns WHERE table_name='{$this->table_prefix}{$table}' AND column_name='{$field}'");
+		$query = $this->write_query("SELECT COUNT(column_name) as column_names FROM information_schema.columns WHERE table_name='{$this->table_prefix}{$table}' AND column_name='{$field}'");
 		
 		$exists = $this->fetch_field($query, "column_names");
 		$this->error_reporting = $err;
@@ -605,7 +673,7 @@ class databaseEngine
 			$query2 .= $comma."'".$value."'";
 			$comma = ", ";
 		}
-		return $this->query("
+		return $this->write_query("
 			INSERT 
 			INTO ".TABLE_PREFIX.$table." (".$query1.") 
 			VALUES (".$query2.")
@@ -670,7 +738,7 @@ class databaseEngine
 		{
 			$query .= " LIMIT $limit";
 		}
-		return $this->query("
+		return $this->write_query("
 			UPDATE {$this->table_prefix}$table 
 			SET $query
 		");
@@ -728,7 +796,7 @@ class databaseEngine
 			$query .= " WHERE $where";
 		}
 		
-		return $this->query("
+		return $this->write_query("
 			DELETE 
 			FROM {$this->table_prefix}$table 
 			$query
@@ -790,7 +858,7 @@ class databaseEngine
 		
 		if(version_compare(phpversion(), '5.0.0', '>='))
 		{
-			$version = pg_version($this->link);
+			$version = pg_version($this->current_link);
  
   			$this->version = $version['client'];
 		}
@@ -799,7 +867,7 @@ class databaseEngine
 			$query = $this->query("select version()");
 			$row = $this->fetch_array($query);
 
-			$this->version =  $row['version'];
+			$this->version = $row['version'];
 		}
 		
 		return $this->version;
@@ -812,7 +880,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".$this->table_prefix.$table."");
+		$this->write_query("OPTIMIZE TABLE ".$this->table_prefix.$table."");
 	}
 	
 	/**
@@ -822,7 +890,7 @@ class databaseEngine
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE TABLE ".$this->table_prefix.$table."");
+		$this->write_query("ANALYZE TABLE ".$this->table_prefix.$table."");
 	}
 
 	/**
@@ -833,7 +901,7 @@ class databaseEngine
 	 */
 	function show_create_table($table)
 	{		
-		$query = $this->query("
+		$query = $this->write_query("
 			SELECT a.attnum, a.attname as field, t.typname as type, a.attlen as length, a.atttypmod as lengthvar, a.attnotnull as notnull
 			FROM pg_class c
 			LEFT JOIN pg_attribute a ON (a.attrelid = c.oid)
@@ -848,7 +916,7 @@ class databaseEngine
 		while($row = $this->fetch_array($query))
 		{
 			// Get the data from the table
-			$query2 = $this->query("
+			$query2 = $this->write_query("
 				SELECT pg_get_expr(d.adbin, d.adrelid) as rowdefault
 				FROM pg_attrdef d
 				LEFT JOIN pg_class c ON (c.oid = d.adrelid)
@@ -899,7 +967,7 @@ class databaseEngine
 		}
 
 		// Get the listing of primary keys.
-		$query = $this->query("
+		$query = $this->write_query("
 			SELECT ic.relname as index_name, bc.relname as tab_name, ta.attname as column_name, i.indisunique as unique_key, i.indisprimary as primary_key
 			FROM pg_class bc
 			LEFT JOIN pg_class ic ON (ic.oid = i.indexrelid)
@@ -941,10 +1009,10 @@ class databaseEngine
 	 */
 	function show_fields_from($table)
 	{
-		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+		$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
 		$primary_key = $this->fetch_field($query, 'column_name');
 		
-		$query = $this->query("
+		$query = $this->write_query("
 			SELECT column_name as Field, data_type as Extra
 			FROM information_schema.columns 
 			WHERE table_name = '{$this->table_prefix}{$table}'
@@ -1017,7 +1085,7 @@ class databaseEngine
 	 */
 	function drop_index($table, $name)
 	{
-		$this->query("
+		$this->write_query("
 			ALTER TABLE {$this->table_prefix}$table 
 			DROP INDEX $name
 		");
@@ -1045,12 +1113,12 @@ class databaseEngine
 		{
 			if($this->table_exists($table))
 			{
-				$this->query('DROP TABLE '.$table_prefix.$table);
+				$this->write_query('DROP TABLE '.$table_prefix.$table);
 			}
 		}
 		else
 		{
-			$this->query('DROP TABLE '.$table_prefix.$table);
+			$this->write_query('DROP TABLE '.$table_prefix.$table);
 		}
 	}
 	
@@ -1066,7 +1134,7 @@ class databaseEngine
 		
 		if($default_field == "")
 		{
-			$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+			$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
 			$main_field = $this->fetch_field($query, 'column_name');
 		}
 		else
@@ -1074,7 +1142,7 @@ class databaseEngine
 			$main_field = $default_field;
 		}
 		
-		$query = $this->query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
+		$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
 		
 		while($column = $this->fetch_array($query))
 		{
@@ -1106,7 +1174,7 @@ class databaseEngine
 		
 		if($default_field == "")
 		{
-			$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
+			$query = $this->write_query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$this->table_prefix}{$table}' and constraint_name = '{$this->table_prefix}{$table}_pkey' LIMIT 1");
 			$main_field = $this->fetch_field($query, 'column_name');
 		}
 		else
@@ -1114,7 +1182,7 @@ class databaseEngine
 			$main_field = $default_field;
 		}
 		
-		$query = $this->query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
+		$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
 		
 		while($column = $this->fetch_array($query))
 		{

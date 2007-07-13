@@ -95,7 +95,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$subject = $db->escape_string($mybb->input['threadsubject'][$tid]);
 					$message = $db->escape_string($mybb->input['threadmessage'][$tid]);
 					
-					$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1', subject='{$subject}', unapprovedposts=unapprovedposts-1 WHERE tid = '".$tid."'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."threads SET visible='1', subject='{$subject}', unapprovedposts=unapprovedposts-1 WHERE tid = '".$tid."'");
 					
 					$sql_array = array(
 						"message" => $message,
@@ -105,7 +105,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$db->update_query("posts", $sql_array, "tid = '".$tid."'");
 
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-1,unapprovedposts=unapprovedposts-1,threads=threads+1, posts=posts+1 WHERE fid='{$thread['fid']}'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."forums SET unapprovedthreads=unapprovedthreads-1,unapprovedposts=unapprovedposts-1,threads=threads+1, posts=posts+1 WHERE fid='{$thread['fid']}'");
 				}
 			}
 		}
@@ -138,8 +138,8 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					);
 					$db->update_query("posts", $sql_array, "pid = '".$pid."'");
 					// Update unapproved thread count
-					$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1, replies=replies+1 WHERE tid='$post[tid]'");
-					$db->query("UPDATE ".TABLE_PREFIX."forums SET posts=posts+1 WHERE fid='$post[fid]'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1, replies=replies+1 WHERE tid='$post[tid]'");
+					$db->write_query("UPDATE ".TABLE_PREFIX."forums SET posts=posts+1 WHERE fid='$post[fid]'");
 				}
 			}
 		}
