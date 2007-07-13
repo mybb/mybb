@@ -632,7 +632,7 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(!trim($mybb->input['searchop']['message']))
 	{
-		cperror($lang->error_missing_subject);
+		cperror($lang->error_missing_message);
 	}
 
 	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");

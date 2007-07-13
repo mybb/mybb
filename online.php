@@ -380,6 +380,10 @@ function show($user)
 		case "index":
 			$locationname = sprintf($lang->viewing_index, $mybb->settings['bbname']);
 			break;
+		// managegroup.php functions
+		case "managegroup":
+			$locationname = $lang->managing_group;
+			break;
 		// member.php functions
 		case "member_activate":
 			$locationname = $lang->activating_account;
@@ -721,6 +725,9 @@ function what($user)
 		case "index":
 		case '':
 			$user['activity'] = "index";
+			break;
+		case "managegroup":
+			$user['activity'] = "managegroup";
 			break;
 		case "member":
 			if($parameters['action'] == "activate")
