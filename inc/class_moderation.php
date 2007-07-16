@@ -864,18 +864,18 @@ class Moderation
 			"fid" => $thread['fid'],
 			"replyto" => 0
 		);
-		$db->update_query("posts", $sqlarray, "tid='$mergetid'");
+		$db->update_query("posts", $sqlarray, "tid='{$mergetid}'");
 		
 		$pollsql['subject'] = $subject;
-		$db->update_query("threads", $pollsql, "tid='$tid'");
+		$db->update_query("threads", $pollsql, "tid='{$tid}'");
 		$sqlarray = array(
-			"closed" => "moved|$tid",
+			"closed" => "moved|{$tid}",
 		);
-		$db->update_query("threads", $sqlarray, "closed='moved|$mergetid'");
+		$db->update_query("threads", $sqlarray, "closed='moved|{$mergetid}'");
 		$sqlarray = array(
 			"tid" => $tid,
 		);
-		$db->update_query("threadsubscriptions", $sqlarray, "tid='$mergetid'");
+		$db->update_query("threadsubscriptions", $sqlarray, "tid='{$mergetid}'");
 		update_first_post($tid);
 
 		$this->delete_thread($mergetid);
@@ -889,22 +889,6 @@ class Moderation
 		// Thread is not in current forum
 		if($mergethread['fid'] != $thread['fid'])
 		{
-			// If old thread was unapproved, implied counter for old forum needs updating
-			if($mergethread['visible'] == 0)
-			{
-				$updated_stats = array(
-					"unapprovedposts" => '-'.($mergethread['replies']+$mergethread['unapprovedposts'])
-				);
-			}
-			else
-			{
-				$updated_stats = array(
-					"posts" => '-'.($mergethread['replies']+1),
-					"unapprovedposts" => "-{$mergethread['unapprovedposts']}"
-				);
-			}
-			update_forum_counters($mergethread['fid'], $updated_stats);
-			
 			// If new thread is unapproved, implied counter comes in to effect
 			if($thread['visible'] == 0)
 			{
@@ -917,23 +901,6 @@ class Moderation
 				$updated_stats = array(
 					"posts" => '+'.($mergethread['replies']+1),
 					"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
-				);
-			}
-			update_forum_counters($thread['fid'], $updated_stats);
-		}
-		// Merged thread and new thread are in the same forum
-		else
-		{
-			if($mergethread['visible'] == 0)
-			{
-				$updated_stats = array(
-					"unapprovedthreads" => "-1"
-				);
-			}
-			else
-			{
-				$updated_stats = array(
-					"threads" => "-1"
 				);
 			}
 			update_forum_counters($thread['fid'], $updated_stats);

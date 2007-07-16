@@ -1591,7 +1591,7 @@ function update_forum_counters($fid, $changes=array())
 	}
 
 	// Guess we should update the statistics too?
-	if($update_query['threads'] || $update_query['posts'] || $update_query['unapprovedthreads'] || $update_query['unapprovedposts'])
+	if(isset($update_query['threads']) || isset($update_query['posts']) || isset($update_query['unapprovedthreads']) || isset($update_query['unapprovedposts']))
 	{
 		$new_stats = array();
 		if(array_key_exists('threads', $update_query))
