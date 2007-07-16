@@ -1324,7 +1324,7 @@ function update_forum_counters($fid, $changes=array())
 	}
 
 	// Guess we should update the statistics too?
-	if($update_query['threads'] || $update_query['posts'])
+	if(isset($update_query['threads']) || isset($update_query['posts']))
 	{
 		$new_stats = array();
 		if(array_key_exists('threads', $update_query))
@@ -1350,10 +1350,11 @@ function update_forum_counters($fid, $changes=array())
 			{
 				$new_stats['numposts'] = "{$posts_diff}";
 			}
-		}
+		}	
+		
 		update_stats($new_stats);
 	}
-
+	
 	// Update last post info
 	update_forum_lastpost($fid);
 }

@@ -216,25 +216,25 @@ class Moderation
 		$db->delete_query(TABLE_PREFIX."favorites", "tid='$tid'");
 		$db->delete_query(TABLE_PREFIX."polls", "tid='$tid'");
 		$db->delete_query(TABLE_PREFIX."pollvotes", "pid='".$thread['poll']."'");
-		$updated_counters = array( 
+		$updated_counters = array(
 			"posts" => "-{$num_approved_posts}", 
 			"unapprovedposts" => "-{$num_unapproved_posts}" 
-		); 
+		);
 		
-		if($thread['visible'] == 1) 
-		{ 
-			$updated_counters['threads'] = -1; 
-		} 
-		else 
-		{ 
-			$updated_counters['unapprovedthreads'] = -1; 
-		} 
+		if($thread['visible'] == 1)
+		{
+			$updated_counters['threads'] = -1;
+		}
+		else
+		{
+			$updated_counters['unapprovedthreads'] = -1;
+		}
 		
 		if(substr($thread['closed'], 0, 5) != "moved") 
-		{ 
+		{
 			// Update forum count 
 			update_forum_counters($thread['fid'], $updated_counters); 
-		} 
+		}
 
 		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 
@@ -897,26 +897,10 @@ class Moderation
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
 		);
 		update_thread_counters($tid, $updated_stats);
-
+		
 		// Thread is not in current forum
 		if($mergethread['fid'] != $thread['fid'])
-		{
-			// If old thread was unapproved, implied counter for old forum needs updating
-			if($mergethread['visible'] == 0)
-			{
-				$updated_stats = array(
-					"unapprovedposts" => '-'.($mergethread['replies']+$mergethread['unapprovedposts'])
-				);
-			}
-			else
-			{
-				$updated_stats = array(
-					"posts" => '-'.($mergethread['replies']+1),
-					"unapprovedposts" => "-{$mergethread['unapprovedposts']}"
-				);
-			}
-			update_forum_counters($mergethread['fid'], $updated_stats);
-			
+		{			
 			// If new thread is unapproved, implied counter comes in to effect
 			if($thread['visible'] == 0)
 			{
@@ -929,23 +913,6 @@ class Moderation
 				$updated_stats = array(
 					"posts" => '+'.($mergethread['replies']+1),
 					"unapprovedposts" => "+{$mergethread['unapprovedposts']}"
-				);
-			}
-			update_forum_counters($thread['fid'], $updated_stats);
-		}
-		// Merged thread and new thread are in the same forum
-		else
-		{
-			if($mergethread['visible'] == 0)
-			{
-				$updated_stats = array(
-					"unapprovedthreads" => "-1"
-				);
-			}
-			else
-			{
-				$updated_stats = array(
-					"threads" => "-1"
 				);
 			}
 			update_forum_counters($thread['fid'], $updated_stats);

@@ -6635,7 +6635,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	{$post['useravatar']}<br />
 </span>]]></template>
 	<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
-	</templates>
 	<template name="index_boardstats" version="1210"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
@@ -6652,4 +6651,5 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tbody>
 </table>
 <br />]]></template>
+</templates>
 </theme>
