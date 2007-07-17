@@ -283,25 +283,19 @@ class Moderation
 		$num_threads = $num_posts = 0;
 		foreach($tids as $tid)
 		{
-			$thread = get_thread($tid); 
+			$thread = get_thread($tid);
+			$forum = get_forum($thread['tid'];
 			
-			if($thread['visible'] == 0) 
+			if($forum['usepostcounts'] != "no") 
 			{ 
 				$num_threads++; 
 				$num_posts += $thread['replies']+1; // Remove implied visible from count
-			}
-			$query = $db->query("
-				SELECT p.tid, f.usepostcounts, p.uid, p.visible
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
-				WHERE p.tid='$tid' AND p.visible = '0'
-			");
-			while($post = $db->fetch_array($query))
-			{
-				// If post counts enabled in this forum and the post hasn't already been approved, remove 1
-				if($post['usepostcounts'] != "no")
+	
+				// On approving thread restore user post counts
+				$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
+				while($counter = $db->fetch_array($query))
 				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
+					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+{$counter['posts']} WHERE uid='".$counter['uid']."'");
 				}
 			}
 			$posts_to_approve[] = $thread['firstpost'];

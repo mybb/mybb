@@ -37,7 +37,7 @@ if(!$forum)
 	error($lang->error_invalidforum);
 }
 // Password protected forums ......... yhummmmy!
-check_forum_password($forum['fid'], $forum['password']);
+check_forum_password($forum['parentlist'], $forum['password']);
 
 if($forum['allowtratings'] == "no")
 {

@@ -82,7 +82,7 @@ $permissions = forum_permissions($fid);
 if($fid)
 {
 	// Password protected forums ......... yhummmmy!
-	check_forum_password($fid, $forum['password']);
+	check_forum_password($forum['parentlist'], $forum['password']);
 }
 
 if($mybb->user['uid'] != 0)

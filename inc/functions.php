@@ -886,13 +886,36 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 /**
  * Check the password given on a certain forum for validity
  *
- * @param int The forum ID
+ * @param int The forum ID(s)
  * @param string The plain text password for the forum
  */
-function check_forum_password($fid, $password="")
+function check_forum_password($fids, $password="")
 {
-	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang;
+	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
 	$showform = 1;
+	
+	if(!is_array($forum_cache))
+	{
+		$forum_cache = cache_forums();
+		if(!$forum_cache)
+		{
+			return false;
+		}
+	}
+	
+	$fidarray = explode(',', $fids);
+	rsort($fidarray);
+	if(!empty($fidarray))
+	{
+		foreach($fidarray as $key => $fid)
+		{
+			if($forum_cache[$fid]['password'] != "")
+			{
+				check_forum_password($fid, $password);
+				return;
+			}
+		}
+	}
 
 	if($password)
 	{
@@ -925,6 +948,7 @@ function check_forum_password($fid, $password="")
 	{
 		$showform = 0;
 	}
+	
 	if($showform)
 	{
 		$_SERVER['REQUEST_URI'] = htmlspecialchars_uni($_SERVER['REQUEST_URI']);

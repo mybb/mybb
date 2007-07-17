@@ -78,7 +78,6 @@ $query = $db->simple_select(TABLE_PREFIX."forums", "*", "active != 'no'", array(
 while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-
 }
 
 // Get the forum moderators if the setting is enabled.
@@ -111,7 +110,7 @@ $forums = $child_forums['forum_list'];
 if($forums)
 {
 	$lang->sub_forums_in = sprintf($lang->sub_forums_in, $foruminfo['name']);
-	eval("\$subforums =\"".$templates->get("forumdisplay_subforums")."\";");
+	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
 }
 
 $excols = "forumdisplay";
@@ -122,7 +121,7 @@ if($fpermissions['canview'] != "yes")
 }
 
 // Password protected forums
-check_forum_password($fid, $foruminfo['password']);
+check_forum_password($foruminfo['parentlist'], $foruminfo['password']);
 
 if($foruminfo['linkto'])
 {

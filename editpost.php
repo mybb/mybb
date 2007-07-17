@@ -127,7 +127,7 @@ else
 }
 
 // Password protected forums
-check_forum_password($fid, $forum['password']);
+check_forum_password($forum['parentlist'], $forum['password']);
 
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
 {

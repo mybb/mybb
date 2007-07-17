@@ -74,7 +74,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] =
 }
 
 // Password protected forums ......... yhummmmy!
-check_forum_password($fid, $forum['password']);
+check_forum_password($forum['parentlist'], $forum['password']);
 
 $postrows = '';
 $query = $db->query("
