@@ -23,7 +23,7 @@ $l['can_manage_user_titles'] = "Can Manage User Titles?";
 $l['can_manage_user_bans'] = "Can Manage User Bans?";
 $l['can_manage_admin_permissions'] = "Can Manage Admin Permissions?";
 $l['can_send_mass_mail'] = "Can Send Mass Mail?";
-$l['can_manage_group_permission'] = "Can Manage Group Promotions?";
+$l['can_manage_group_promotions'] = "Can Manage Group Promotions?";
 $l['can_manage_stats_and_logging'] = "Can Manage Statistics and Logs?";
 
 ?>
