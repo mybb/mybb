@@ -67,7 +67,7 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] =
 	error_no_permission();
 }
 // Check if this forum is password protected and if we've got the right password to access it.
-check_forum_password($fid, $forum['password']);
+check_forum_password($forum['parentlist'], $forum['password']);
 
 // If MyCode is on for this forum and the MyCode editor is enabled in the Admin CP, draw the code buttons and smilie inserter.
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))

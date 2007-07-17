@@ -72,8 +72,8 @@ function upgrade9_dbchanges()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
 	
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canreceivewarnings='no' WHERE cancp='yes' OR gid=1");
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET maxwarningsday=3, canwarnusers='yes' WHERE cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
+	$db->update_query("usergroups", array('canreceivewarnings' => 'no'), "cancp='yes' OR gid='1'");
+	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 'yes', "cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
 	if($db->field_exists('newpms', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");
@@ -103,9 +103,9 @@ function upgrade9_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents char(3) NOT NULL default '' AFTER canbypasseventmod;");
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='yes', canmoderateevents='yes' WHERE cancp='yes' OR issupermod='yes'");
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canbypasseventmod='no', canmoderateevents='no' WHERE cancp='no' AND issupermod='no'");
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET canaddevents='no' WHERE gid=1;");
+	$db->update_query("usergroups", array('canbypasseventmod' => 'yes', 'canmoderateevents' => 'yes'), "cancp='yes' OR issupermod='yes'");
+	$db->update_query("usergroups", array('canbypasseventmod' => 'no', 'canmoderateevents' => 'no'), "cancp='no' AND issupermod='no'");
+	$db->update_query("usergroups", array('canaddevents' => 'no'), "gid='1'");
 
 	$db->drop_table("maillogs");	
 	$db->drop_table("mailerrors");
@@ -264,8 +264,8 @@ function upgrade9_dbchanges()
 	
 	if($db->field_exists('type', "threadsubscriptions"))
 	{
-		$db->write_query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='0' WHERE type='f'");
-		$db->write_query("UPDATE ".TABLE_PREFIX."threadsubscriptions SET type='1' WHERE type='s'");
+		$db->update_query("threadsubscriptions", array('type' => 0), "type='f'");
+		$db->update_query("threadsubscriptions", array('type' => 1), "type='s'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions CHANGE type notification int(1) NOT NULL default '0'");
 	}
 	
@@ -283,8 +283,8 @@ function upgrade9_dbchanges()
 
 	if($db->field_exists('emailnotify', "users"))
 	{
-		$db->write_query("UPDATE ".TABLE_PREFIX."users SET emailnotify='1' WHERE emailnotify='no'");
-		$db->write_query("UPDATE ".TABLE_PREFIX."users SET emailnotify='2' WHERE emailnotify='yes'");
+		$db->update_query("users", array('emailnotify' => 1), "emailnotify='no'");
+		$db->update_query("users", array('emailnotify' => 2), "emailnotify='yes'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
 	}
 
@@ -412,20 +412,20 @@ function upgrade9_dbchanges3()
 		PRIMARY KEY(sid)
 	) TYPE=MyISAM;");
 
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('GoogleBot','google');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Lycos','lycos');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Ask Jeeves','ask jeeves');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Hot Bot','slurp@inktomi');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('What You Seek','whatuseek');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Archive.org','is_archiver');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Altavista','scooter');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Alexa','ia_archiver');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('MSN Search','msnbot');");
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."spiders (name,useragent) VALUES ('Yahoo!','yahoo slurp');");
+	$db->insert_query("spiders", array('name' => 'GoogleBot', 'useragent' => 'google'));
+	$db->insert_query("spiders", array('name' => 'Lycos', 'useragent' => 'lycos'));
+	$db->insert_query("spiders", array('name' => 'Ask Jeeves', 'useragent' => 'ask jeeves'));
+	$db->insert_query("spiders", array('name' => 'Hot Bot', 'useragent' => 'slurp@inktomi'));
+	$db->insert_query("spiders", array('name' => 'What You Seek', 'useragent' => 'whatuseek'));
+	$db->insert_query("spiders", array('name' => 'Archive.org', 'useragent' => 'is_archiver'));
+	$db->insert_query("spiders", array('name' => 'Altavista', 'useragent' => 'scooter'));
+	$db->insert_query("spiders", array('name' => 'Alexa', 'useragent' => 'ia_archiver'));
+	$db->insert_query("spiders", array('name' => 'MSN Search', 'useragent' => 'msnbot'));
+	$db->insert_query("spiders", array('name' => 'Yahoo!', 'useragent' => 'yahoo slurp'));
 
 	// DST correction changes
-	$db->write_query("UPDATE ".TABLE_PREFIX."users SET dst=1 WHERE dst='yes'");
-	$db->write_query("UPDATE ".TABLE_PREFIX."users SET dst=0 WHERE dst='no'");
+	$db->update_query("users", array('dst' => 1), "dst='yes'");
+	$db->update_query("users", array('dst' => 0), "dst='no'");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
 	if($db->field_exists('dstcorrection', "users"))
 	{
@@ -433,7 +433,7 @@ function upgrade9_dbchanges3()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD dstcorrection INT(1) NOT NULL default '0' AFTER dst");
 
-	$db->write_query("UPDATE ".TABLE_PREFIX."users SET dstcorrection=2;");	
+	$db->update_query("users", array('dstcorrection' => 2));
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
 	
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');
@@ -615,7 +615,19 @@ function upgrade9_dbchanges4()
 	  PRIMARY KEY(cid)
 	) TYPE=MyISAM;");
 
-	$db->write_query("INSERT INTO ".TABLE_PREFIX."calendars (name,disporder,startofweek,showbirthdays,eventlimit,moderation,allowhtml,allowmycode,allowimgcode,allowsmilies) VALUES ('Default Calendar',1,0,1,4,0,'no','yes','yes','yes');");
+	$calendar_array = array(
+		'name' => 'Default Calendar',
+		'disporder' => 1,
+		'startofweek' => 0,
+		'showbirthdays' => 1,
+		'eventlimit' => 4,
+		'moderation' => 0,
+		'allowhtml' => 'no',
+		'allowmycode' => 'yes',
+		'allowimgcode' => 'yes',
+		'allowsmilies' => 'yes'
+	);
+	$db->insert_query("calendars", $calendar_array);
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendarpermissions (
 	  cid int unsigned NOT NULL default '0',
@@ -686,8 +698,8 @@ function upgrade9_dbchanges5()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
-		$db->write_query("UPDATE ".TABLE_PREIX."events SET private=1 WHERE private='yes'");
-		$db->write_query("UPDATE ".TABLE_PREIX."events SET private=0 WHERE private='no'");
+		$db->update_query("events", array('private' => 1), "private='yes'");
+		$db->update_query("events", array('private' => 0), "private='no'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE private int(1) NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD dateline int(10) unsigned NOT NULL default '0' AFTER private");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD starttime int(10) unsigned NOT NULL default '0' AFTER dateline");

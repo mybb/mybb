@@ -1149,6 +1149,29 @@ function check_forum_password($fid, $password="")
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang;
 	$showform = true;
+	
+	if(!is_array($forum_cache))
+	{
+		$forum_cache = cache_forums();
+		if(!$forum_cache)
+		{
+			return false;
+		}
+	}
+	
+	$fidarray = explode(',', $fids);
+	rsort($fidarray);
+	if(!empty($fidarray))
+	{
+		foreach($fidarray as $key => $fid)
+		{
+			if($forum_cache[$fid]['password'] != "")
+			{
+				check_forum_password($fid, $password);
+				return;
+			}
+		}
+	}
 
 	if($password)
 	{

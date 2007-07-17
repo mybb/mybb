@@ -16,7 +16,6 @@ $templatelist .= ",usercp_usergroups_memberof_usergroup,usercp_usergroups_member
 $templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_usergroups_leader_usergroup,usercp_usergroups_leader,usercp_currentavatar,usercp_reputation";
 $templatelist .= ",usercp_attachments_attachment, usercp_attachments";
 
-
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";

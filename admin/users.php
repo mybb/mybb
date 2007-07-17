@@ -699,6 +699,9 @@ if($mybb->input['action'] == "do_email")
 					
 					if($uselang == $mybb->settings['bblanguage'])
 					{
+						$lang->set_path("./inc/languages");
+						$lang->set_language($uselang);
+						$lang->load("messages");
 						$emailsubject = $lang->emailsubject_newpm;
 						$emailmessage = $lang->email_newpm;
 					}

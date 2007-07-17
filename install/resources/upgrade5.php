@@ -267,7 +267,7 @@ function upgrade5_dbchanges()
 	$bannedips = $db->fetch_field($query, 'sid');
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);
-	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedips)."' WHERE name='bannedips'");
+	$db->update_query("settings", array('value' => $db->escape_string($bannedips)), "name='bannedips'");
 
 	$db->drop_table("reputation");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."reputation (
@@ -291,10 +291,10 @@ function upgrade5_dbchanges()
 		PRIMARY KEY(mid)
 	) TYPE=MyISAM;");
 
-	$db->write_query("UPDATE ".TABLE_PREFIX."users SET reputation='0'");
+	$db->update_query("users", array('reputation' => 0));
 
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='1'");
-	$db->write_query("UPDATE ".TABLE_PREFIX."usergroups SET reputationpower='2' WHERE cancp='yes'");
+	$db->update_query("usergroups", array('reputationpower' => 1));
+	$db->update_query("usergroups", array('reputationpower' => 2), "cancp='yes'");
 
 	if($db->field_exists('rating', "users"))
 	{
@@ -622,7 +622,7 @@ function upgrade5_indexes()
 function test_shutdown_function()
 {
 	global $db;
-	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET value='yes' WHERE name='useshutdownfunc'");
+	$db->update_query("settings", array('value' => 'yes'), "name='useshutdownfunc'");
 	write_settings();
 }
 ?>

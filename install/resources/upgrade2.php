@@ -42,7 +42,7 @@ function upgrade2_dbchanges()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachtypes ADD icon varchar(100) NOT NULL;");
 	
-	$db->write_query("DELETE FROM ".TABLE_PREFIX."attachtypes;");
+	$db->delete_query("attachtypes");
 
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'Zip File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (2, 'JPEG Image', 'image/jpeg', 'jpg', 500, 'images/attachtypes/image.gif');");

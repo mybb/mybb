@@ -91,7 +91,7 @@ if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] 
 }
 
 // Check that this forum is not password protected.
-check_forum_password($forum['fid'], $forum['password']);
+check_forum_password($forum['parentlist'], $forum['password']);
 
 // If there is no specific action, we must be looking at the thread.
 if(!$mybb->input['action'])

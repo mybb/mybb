@@ -82,7 +82,7 @@ $permissions = forum_permissions($fid);
 if($fid)
 {
 	// Password protected forums ......... yhummmmy!
-	check_forum_password($fid, $forum['password']);
+	check_forum_password($forum['parentlist'], $forum['password']);
 }
 
 if($mybb->user['uid'] != 0)
@@ -637,7 +637,7 @@ switch($mybb->input['action'])
 		log_moderator_action($modlogdata, $lang->thread_notes_edited);
 		$sqlarray = array(
 			"notes" => $db->escape_string($mybb->input['threadnotes']),
-			);
+		);
 		$db->update_query("threads", $sqlarray, "tid='$tid'");
 		redirect(get_thread_link($thread['tid']), $lang->redirect_threadnotesupdated);
 		break;

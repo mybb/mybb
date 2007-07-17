@@ -48,7 +48,7 @@ if(!$forum)
 }
 
 // Password protected forums ......... yhummmmy!
-check_forum_password($forum['fid'], $forum['password']);
+check_forum_password($forum['parentlist'], $forum['password']);
 
 $thread = get_thread($post['tid']);
 

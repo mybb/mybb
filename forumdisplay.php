@@ -127,7 +127,7 @@ if($fpermissions['canview'] != "yes")
 }
 
 // Password protected forums
-check_forum_password($fid, $foruminfo['password']);
+check_forum_password($foruminfo['parentlist'], $foruminfo['password']);
 
 if($foruminfo['linkto'])
 {
