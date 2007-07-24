@@ -123,12 +123,18 @@ class databaseEngine
 		
 		if($this->link == 1)
 		{
-			$this->link = @sqlite_popen($database, 0666) or $this->error();
+			$this->link = @sqlite_popen($database, 0666, $error);
 		}
 		else
 		{
-			$this->link = @sqlite_open($database, 0666) or $this->error();
+			$this->link = @sqlite_open($database, 0666, $error);
 		}
+		
+		if(!$this->link)
+		{
+			$this->error($error);
+		}
+		
 		@sqlite_query('PRAGMA short_column_names = 1', $this->link);
 		return $this->link;
 	}
@@ -145,7 +151,6 @@ class databaseEngine
 		global $pagestarttime, $querytime, $db, $mybb;
 		
 		$qtimer = new timer();
-		@sqlite_query($this->link, 'BEGIN');
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{			
 			$queryparts = preg_split("/[\s]+/", $string, 4, PREG_SPLIT_NO_EMPTY);
@@ -163,10 +168,8 @@ class databaseEngine
 		}
 	  	else
 	  	{
-			$query = @sqlite_query($this->link, $string, SQLITE_BOTH, $this->error_msg);
+			$query = sqlite_query($this->link, $string, SQLITE_BOTH, $this->error_msg);
 		}
-		@sqlite_query($this->link, 'COMMIT');
-		
 		
 		if($this->error_msg && !$hide_errors)
 		{
@@ -174,7 +177,7 @@ class databaseEngine
 			exit;
 		}
 
-		if($this->error_number() && !$hide_errors)
+		if($query === false && !$hide_errors)
 		{
 			$this->error($string);
 			exit;
@@ -381,8 +384,6 @@ class databaseEngine
 	 */
 	function error($string="", $error="", $error_no="")
 	{
-		@sqlite_query($this->link, 'ROLLBACK');
-		
 		if($this->error_reporting)
 		{
 			global $error_handler;
@@ -393,14 +394,14 @@ class databaseEngine
 				$error_handler = new errorHandler();
 			}
 			
-			if($error == "")
-			{
-				$error = $this->error_string($this->link);
-			}
-			
 			if($error_no == "")
 			{
 				$error_no = $this->error_number($this->link);
+			}
+			
+			if($error == "")
+			{
+				$error = $this->error_string($this->link);
 			}
 			
 			$error = array(
@@ -602,7 +603,7 @@ class databaseEngine
 			$comma = ", ";
 		}
 		
-		echo "INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");<br />";
+		//echo "INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");<br />";
 		
 		return $this->query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
 	}
@@ -712,7 +713,7 @@ class databaseEngine
 		{
 			return $this->version;
 		}
-		$this->version = sqlite_libversion();
+		$this->version = "SQLite ".sqlite_libversion();
 		
 		return $this->version;
 	}

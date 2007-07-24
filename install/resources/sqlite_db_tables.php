@@ -31,7 +31,8 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	loginkey varchar(50) NOT NULL default '',
 	ip varchar(40) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
-	lastactive bigint(30) NOT NULL default '0'
+	lastactive bigint(30) NOT NULL default '0',
+	data text NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_announcements (
@@ -827,6 +828,7 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	wid INTEGER PRIMARY KEY,
 	uid int NOT NULL default '0',
 	tid int NOT NULL default '0',
+	pid int NOT NULL default '0',
 	title varchar(120) NOT NULL default '',
 	points int NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',

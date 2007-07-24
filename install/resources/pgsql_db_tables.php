@@ -34,7 +34,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip varchar(40) NOT NULL default '',
 	dateline bigint NOT NULL default '0',
 	lastactive bigint NOT NULL default '0',
-	data text DEFAULT ''::text NOT NULL
+	data text NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_announcements (
