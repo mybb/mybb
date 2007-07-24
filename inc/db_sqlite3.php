@@ -19,6 +19,13 @@ class databaseEngine
 	var $title = "SQLite 3";
 	
 	/**
+	 * The short title of this layer.
+	 *
+	 * @var string
+	 */
+	var $short_title = "SQLite";
+	
+	/**
 	 * The type of db software being used.
 	 *
 	 * @var string
@@ -750,7 +757,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".$this->table_prefix.$table."");
+		$this->query("VACUUM ".$this->table_prefix.$table."");
 	}
 	
 	/**
@@ -760,7 +767,7 @@ class databaseEngine
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE TABLE ".$this->table_prefix.$table."");
+		$this->query("ANALYZE ".$this->table_prefix.$table."");
 	}
 
 	/**
@@ -936,10 +943,12 @@ class databaseEngine
 	 */
 	function fetch_size($table='')
 	{
+		global $config, $lang;
+		
 		$total = @filesize($config['database']);
 		if(!$total || $table != '')
 		{
-			$total = "N/A";
+			$total = $lang->na;
 		}
 		return $total;
 	}

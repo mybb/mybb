@@ -94,6 +94,8 @@ class eacceleratorCacheHandler
 	
 	function size_of($name)
 	{
-		return "N/A";
+		global $lang;
+		
+		return $lang->na;
 	}
 }

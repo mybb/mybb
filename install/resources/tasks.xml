@@ -44,6 +44,7 @@
 		<hour>0</hour>
 		<day>*</day>
 		<weekday>0</weekday>
+		<month>*</month>
 		<enabled>0</enabled>
 		<logging>1</logging>
 	</task>
@@ -56,7 +57,7 @@
 		<day>*</day>
 		<weekday>*</weekday>
 		<month>*</month>
-		<enabled>0</enabled>
+		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
 </tasks>

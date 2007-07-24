@@ -16,7 +16,14 @@ class databaseEngine
 	 *
 	 * @var string
 	 */
-	var $title = "PgSQL";
+	var $title = "PostgreSQL";
+	
+	/**
+	 * The short title of this layer.
+	 *
+	 * @var string
+	 */
+	var $short_title = "PostgreSQL";
 
 	/**
 	 * A count of the number of queries.

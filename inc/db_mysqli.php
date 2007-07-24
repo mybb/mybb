@@ -19,6 +19,13 @@ class databaseEngine
 	var $title = "MySQLi";
 	
 	/**
+	 * The short title of this layer.
+	 *
+	 * @var string
+	 */
+	var $short_title = "MySQLi";
+	
+	/**
 	 * The type of db software being used.
 	 *
 	 * @var string
@@ -151,10 +158,17 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
+		global $lang;
+		
 		$success = @mysqli_select_db($this->link, $database) or $this->error("Unable to select database", $this->link);
 		if($this->slave_link)
 		{
 			$slave_success = @mysqli_select_db($this->slave_link, $database) or $this->error("Unable to select slave database", $this->slave_link);
+		}
+		$success = ($master_success && $slave_success ? true : false);
+		if($success == true && $lang->charset == "UTF-8")
+		{
+			$this->query("SET NAMES 'utf8'");
 		}
 		return $success;
 	}

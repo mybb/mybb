@@ -244,7 +244,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header("&nbsp;");
 	
 	$form_container->output_cell("<label>{$lang->recount_stats}</label><div class=\"description\">{$lang->recount_stats_desc}</div>");
-	$form_container->output_cell("N/A");
+	$form_container->output_cell($lang->na);
 	$form_container->output_cell($form->generate_submit_button("Go", array("name" => "do_recountstats")));
 	$form_container->construct_row();
 	

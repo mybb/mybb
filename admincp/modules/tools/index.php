@@ -82,7 +82,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$comma = '';
 		
 		// Set table default charset
-		$db->write_query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET utf8");
+		$db->write_query("ALTER TABLE {$mybb->input['table']} DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
 
 		// Fetch any fulltext keys
 		if($db->supports_fulltext($mybb->input['table']))
@@ -134,7 +134,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				}
 				
 				$convert_to_binary .= $comma.$names.preg_replace('/'.$type.'/i', $types[$type], $column['Type']).$attributes;
-				$convert_to_utf8 .= "{$comma}{$names}{$column['Type']} CHARACTER SET utf8{$attributes}";
+				$convert_to_utf8 .= "{$comma}{$names}{$column['Type']} CHARACTER SET utf8 COLLATE utf8_general_ci{$attributes}";
 				
 				$comma = ', ';
 			}
@@ -155,6 +155,7 @@ if($mybb->input['action'] == "utf8_conversion")
 				$db->create_fulltext_index($mybb->input['table'], $fields, $name);
 			}
 		}
+		
 		
 		$db->set_table_prefix($old_table_prefix);
 		

@@ -49,6 +49,7 @@ if(function_exists('mysqli_connect'))
 {
 	$dboptions['mysqli'] = array(
 		'title' => 'MySQL Improved',
+		'short_title' => 'MySQLi',
 		'structure_file' => 'mysql_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
@@ -58,6 +59,7 @@ if(function_exists('mysql_connect'))
 {
 	$dboptions['mysql'] = array(
 		'title' => 'MySQL',
+		'short_title' => 'MySQL',
 		'structure_file' => 'mysql_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
@@ -67,6 +69,7 @@ if(function_exists('sqlite_open'))
 {
 	$dboptions['sqlite2'] = array(
 		'title' => 'SQLite 2',
+		'short_title' => 'SQLite',
 		'structure_file' => 'sqlite_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
@@ -76,6 +79,7 @@ if(function_exists('pg_connect'))
 {
 	$dboptions['pgsql'] = array(
 		'title' => 'PostgreSQL',
+		'short_title' => 'PostgreSQL',
 		'structure_file' => 'pgsql_db_tables.php',
 		'population_file' => 'mysql_db_inserts.php'
 	);
@@ -88,6 +92,7 @@ if(class_exists('PDO'))
 	{
 		$dboptions['sqlite3'] = array(
 			'title' => 'SQLite 3',
+			'short_title' => 'SQLite',
 			'structure_file' => 'sqlite_db_tables.php',
 			'population_file' => 'mysql_db_inserts.php'
 		);
@@ -529,7 +534,7 @@ function create_tables()
  	$db->error_reporting = 1;
 
 	$output->print_header($lang->table_creation, 'createtables');
-	echo sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['title'], $db->get_version());
+	echo sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['short_title'], $db->get_version());
 	
 	if($dboptions[$mybb->input['dbengine']]['structure_file'])
 	{

@@ -13,6 +13,7 @@ $l['size_gb'] = "GB";
 $l['size_mb'] = "MB";
 $l['size_kb'] = "KB";
 $l['size_bytes'] = "bytes";
+$l['na'] = "N/A";
 
 // Header language strings
 $l['mybb_admin_panel'] = "MyBB Administration Panel";

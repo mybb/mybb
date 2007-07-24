@@ -19,6 +19,13 @@ class databaseEngine
 	var $title = "MySQL";
 	
 	/**
+	 * The short title of this layer.
+	 *
+	 * @var string
+	 */
+	var $short_title = "MySQL";
+	
+	/**
 	 * The type of db software being used.
 	 *
 	 * @var string
@@ -172,14 +179,21 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
+		global $lang;
+		
 		$this->current_link = &$this->link;
-		$success = @mysql_select_db($database, $this->link) or $this->error("Unable to select database", $this->link);
+		$master_success = @mysql_select_db($database, $this->link) or $this->error("Unable to select database", $this->link);
 		if($this->slave_link)
 		{
 			$this->current_link = &$this->slave_link;
 			$slave_success = @mysql_select_db($database, $this->slave_link) or $this->error("Unable to select slave database", $this->slave_link);
 		}
-		return ($success && $slave_success ? true : false);
+		$success = ($master_success && $slave_success ? true : false);
+		if($success == true && $lang->charset == "UTF-8")
+		{
+			$this->query("SET NAMES 'utf8'");
+		}
+		return $success;
 	}
 	
 	/**

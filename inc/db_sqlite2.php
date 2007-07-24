@@ -19,6 +19,13 @@ class databaseEngine
 	var $title = "SQLite 2";
 	
 	/**
+	 * The short title of this layer.
+	 *
+	 * @var string
+	 */
+	var $short_title = "SQLite";
+	
+	/**
 	 * The type of db software being used.
 	 *
 	 * @var string
@@ -603,8 +610,6 @@ class databaseEngine
 			$comma = ", ";
 		}
 		
-		//echo "INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");<br />";
-		
 		return $this->query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
 	}
 
@@ -713,7 +718,7 @@ class databaseEngine
 		{
 			return $this->version;
 		}
-		$this->version = "SQLite ".sqlite_libversion();
+		$this->version = sqlite_libversion();
 		
 		return $this->version;
 	}
@@ -725,7 +730,7 @@ class databaseEngine
 	 */
 	function optimize_table($table)
 	{
-		$this->query("OPTIMIZE TABLE ".$this->table_prefix.$table."");
+		$this->query("VACUUM ".$this->table_prefix.$table."");
 	}
 	
 	/**
@@ -735,7 +740,7 @@ class databaseEngine
 	 */
 	function analyze_table($table)
 	{
-		$this->query("ANALYZE TABLE ".$this->table_prefix.$table."");
+		return;
 	}
 
 	/**
@@ -904,22 +909,23 @@ class databaseEngine
 	}
 	
 	/**
-	 * Fetched the total size of all mysql tables or a specific table
+	 * Fetched the total size of the sqlite database
 	 *
-	 * @param string The table (optional) (ignored)
+	 * @param string The table (ignored parameter)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
 	function fetch_size($table='')
 	{
-		$total = @filesize($config['database']);
-		if(!$total)
+		global $config, $lang;
+		
+		$total = filesize($config['database']);
+		if(!$total || $table != '')
 		{
-			$total = "N/A";
+			$total = $lang->na;
 		}
 		return $total;
 	}
 	
-	// 
 	/**
 	 * Perform an "Alter Table" query in SQLite < 3.2.0 - Code taken from http://code.jenseng.com/db/
 	 *

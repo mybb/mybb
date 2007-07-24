@@ -2420,6 +2420,11 @@ function get_ip()
 function get_friendly_size($size)
 {
 	global $lang;
+	
+	if(!is_numeric($size))
+	{
+		return $lang->na;
+	}
 
 	if($size >= 1073741824)
 	{

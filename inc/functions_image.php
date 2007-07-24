@@ -9,6 +9,16 @@
  * $Id$
  */
 
+/**
+ * Generates a thumbnail based on specified dimensions (supports png, jpg, and gif)
+ * 
+ * @param string the full path to the original image
+ * @param string the directory path to where to save the new image
+ * @param string the filename to save the new image as
+ * @param integer maximum hight dimension
+ * @param integer maximum width dimension
+ * @return array thumbnail on success, error code 4 on failure
+ */
 function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 {
 	if(!function_exists("imagecreate"))
@@ -106,6 +116,15 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	}
 }
 
+/**
+ * Attempts to allocate enough memory to generate the thumbnail
+ * 
+ * @param integer hight dimension
+ * @param integer width dimension
+ * @param string one of the IMAGETYPE_XXX constants indicating the type of the image
+ * @param string the bits area the number of bits for each color
+ * @param string the channels - 3 for RGB pictures and 4 for CMYK pictures
+ */
 function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 {
 	if(!function_exists("memory_get_usage"))
@@ -147,6 +166,15 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 	}
 }
 
+/**
+ * Figures out the correct dimensions to use
+ * 
+ * @param integer current hight dimension
+ * @param integer current width dimension
+ * @param integer max hight dimension
+ * @param integer max width dimension
+ * @return array correct height & width
+ */
 function scale_image($width, $height, $maxwidth, $maxheight)
 {
 	$newwidth = $width;
