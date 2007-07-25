@@ -399,7 +399,7 @@ class datacache
 	 * Update the second moderators cache.
 	 *
 	 */
-	function update_moderators_2()
+	function updatemoderators_2()
 	{
 		global $db;
 		
@@ -451,7 +451,7 @@ class datacache
 	 * Update the forum jump cache.
 	 *
 	 */
-	function update_forumjump()
+	function updateforumjump()
 	{
 		$forumjump = build_forum_jump("");
 		
