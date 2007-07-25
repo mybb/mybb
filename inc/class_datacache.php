@@ -438,6 +438,21 @@ class datacache
 		$this->build_moderators();
 		
 		$this->update("moderators", $this->built_moderators);
+		
+		// The second moderator cache used in forumdisplay.php
+		$query = $db->query("
+			SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
+			ORDER BY u.username
+		");
+		// Build a moderator cache.
+		while($moderator = $db->fetch_array($query))
+		{
+			$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
+		}
+		
+		$this->update("moderators_2", $moderatorcache);
 	}
 
 	/**
@@ -504,6 +519,10 @@ class datacache
 		}
 		
 		$this->update("forums", $forums);
+		
+		$forumjump = build_forum_jump("");
+		
+		$this->update("forumjump", $forumjump);
 	}
 
 	/**

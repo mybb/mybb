@@ -56,25 +56,60 @@ if($unviewableforums)
 }
 
 // Most replied-to threads
-$query = $db->simple_select("threads", "tid, subject, replies", $fidnot, array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
-while($thread = $db->fetch_array($query))
+$mostrepliedthreads = $cache->read("most_replied_threads");
+
+if(!$mostrepliedthreads || $mostrepliedthreads['lastupdated'] <= time()-60*60*24)
 {
-	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-	$thread['threadlink'] = get_thread_link($thread['tid']);
-	$numberbit = my_number_format($thread['replies']);
-	$numbertype = $lang->replies;
-	eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
+	$mostrepliedthreads = array();
+	$query = $db->simple_select("threads", "tid, subject, replies", $fidnot, array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+	while($thread = $db->fetch_array($query))
+	{
+		$mostrepliedthreads['threads'][] = $thread;
+	}
+	$mostrepliedthreads['lastupdated'] = time();
+	$cache->update("most_replied_threads", $mostrepliedthreads);
+	
+	reset($mostrepliedthreads);
 }
 
-// Most viewed threads
-$query = $db->simple_select("threads", "tid, subject, views", $fidnot, array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
-while($thread = $db->fetch_array($query))
+if(!empty($mostrepliedthreads))
 {
-	$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-	$thread['threadlink'] = get_thread_link($thread['tid']);	
-	$numberbit = my_number_format($thread['views']);
-	$numbertype = $lang->views;
-	eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
+	foreach($mostrepliedthreads['threads'] as $key => $thread)
+	{
+		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+		$numberbit = my_number_format($thread['replies']);
+		$numbertype = $lang->replies;
+		eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
+	}
+}
+
+
+// Most viewed threads
+$mostviewedthreads = $cache->read("most_viewed_threads");
+
+if(!$mostviewedthreads || $mostviewedthreads['lastupdated'] <= time()-60*60*24)
+{
+	$mostviewedthreads = array();
+	$query = $db->simple_select("threads", "tid, subject, views", $fidnot, array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+	while($thread2 = $db->fetch_array($query))
+	{
+		$mostviewedthreads['threads'][] = $thread2;
+	}
+	$mostviewedthreads['lastupdated'] = time();
+	$cache->update("most_viewed_threads", $mostviewedthreads);
+	
+	reset($mostviewedthreads);
+}
+
+if(!empty($mostviewedthreads))
+{
+	foreach($mostviewedthreads['threads'] as $key => $thread)
+	{
+		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+		$numberbit = my_number_format($thread['views']);
+		$numbertype = $lang->views;
+		eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
+	}
 }
 
 // Top forum
