@@ -632,7 +632,7 @@ if($mybb->input['action'] == "do_email")
 	}
 	if(!trim($mybb->input['searchop']['message']))
 	{
-		cperror($lang->error_missing_message);
+		cperror($lang->error_missing_subject);
 	}
 
 	$query = $db->query("SELECT COUNT(*) AS results FROM ".TABLE_PREFIX."users WHERE $conditions ORDER BY uid");
@@ -701,6 +701,9 @@ if($mybb->input['action'] == "do_email")
 					
 					if($uselang == $mybb->settings['bblanguage'])
 					{
+						$lang->set_path("./inc/languages");
+						$lang->set_language($uselang);
+						$lang->load("messages");
 						$emailsubject = $lang->emailsubject_newpm;
 						$emailmessage = $lang->email_newpm;
 					}
