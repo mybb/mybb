@@ -504,10 +504,6 @@ class datacache
 		}
 		
 		$this->update("forums", $forums);
-		
-		$forumjump = build_forum_jump("");
-		
-		$this->update("forumjump", $forumjump);
 	}
 	
 	/**
