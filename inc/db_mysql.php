@@ -187,8 +187,13 @@ class databaseEngine
 		{
 			$this->current_link = &$this->slave_link;
 			$slave_success = @mysql_select_db($database, $this->slave_link) or $this->error("Unable to select slave database", $this->slave_link);
+			$success = ($master_success && $slave_success ? true : false);
 		}
-		$success = ($master_success && $slave_success ? true : false);
+		else
+		{
+			$success = $master_success;
+		}
+		
 		if($success == true && $lang->charset == "UTF-8")
 		{
 			$this->query("SET NAMES 'utf8'");
