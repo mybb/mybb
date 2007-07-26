@@ -117,7 +117,7 @@ if(!$mybb->input['action'])
 			{
 				$content = $item['description'];
 			}
-			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span>{$content}<strong><span style=\"float: right;\">{$stamp}</span><a href=\"{$item['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
+			$table->construct_cell("<span style=\"font-size: 16px;\"><strong>".$item['title']."</strong></span><br /><br />{$content}<strong><span style=\"float: right;\">{$stamp}</span><br /><br /><a href=\"{$item['link']}\" target=\"_blank\">&raquo; {$lang->read_more}</a></strong>");
 			$table->construct_row();
 		}
 	}

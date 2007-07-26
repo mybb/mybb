@@ -193,20 +193,20 @@ if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" 
 else
 {
 	define('FORUM_URL', "forumdisplay.php?fid={fid}");
-	define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&page={page}");
+	define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&amp;page={page}");
 	define('THREAD_URL', "showthread.php?tid={tid}");
-	define('THREAD_URL_PAGED', "showthread.php?tid={tid}&page={page}");
-	define('THREAD_URL_ACTION', 'showthread.php?tid={tid}&action={action}');
-	define('THREAD_URL_POST', 'showthread.php?tid={tid}&pid={pid}');
+	define('THREAD_URL_PAGED', "showthread.php?tid={tid}&amp;page={page}");
+	define('THREAD_URL_ACTION', 'showthread.php?tid={tid}&amp;action={action}');
+	define('THREAD_URL_POST', 'showthread.php?tid={tid}&amp;pid={pid}');
 	define('POST_URL', "showthread.php?pid={pid}");
-	define('PROFILE_URL', "member.php?action=profile&uid={uid}");
+	define('PROFILE_URL', "member.php?action=profile&amp;uid={uid}");
 	define('ANNOUNCEMENT_URL', "announcements.php?aid={aid}");
 	define('CALENDAR_URL', "calendar.php?calendar={calendar}");
-	define('CALENDAR_URL_YEAR', "calendar.php?action=yearview&calendar={calendar}&year={year}");
-	define('CALENDAR_URL_MONTH', "calendar.php?calendar={calendar}&year={year}&month={month}");
-	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
-	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');
-	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
+	define('CALENDAR_URL_YEAR', "calendar.php?action=yearview&amp;calendar={calendar}&amp;year={year}");
+	define('CALENDAR_URL_MONTH', "calendar.php?calendar={calendar}&amp;year={year}&amp;month={month}");
+	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&amp;calendar={calendar}&amp;year={year}&amp;month={month}&amp;day={day}');
+	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&amp;calendar={calendar}&amp;week={week}');
+	define('EVENT_URL', "calendar.php?action=event&amp;eid={eid}");
 	define('INDEX_URL', "index.php");
 }
 ?>
