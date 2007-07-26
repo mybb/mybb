@@ -55,6 +55,8 @@ if($unviewableforums)
 	$fidnot = "fid NOT IN ($unviewableforums)";
 }
 
+$update_stats = false;
+
 // Most replied-to threads
 $mostreplied = $stats['mostreplied'];
 

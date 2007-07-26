@@ -408,7 +408,7 @@ class databaseEngine
 			
 			if(!is_object($error_handler))
 			{
-				require MYBB_ROOT."inc/class_error.php";
+				require_once MYBB_ROOT."inc/class_error.php";
 				$error_handler = new errorHandler();
 			}
 			
