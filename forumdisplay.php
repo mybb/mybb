@@ -88,26 +88,18 @@ while($forum = $db->fetch_array($query))
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != "off")
 {
-	$moderatorcache = $cache->read("moderators_2");
+		
+	$query = $db->query("
+		SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
+		FROM ".TABLE_PREFIX."moderators m
+		LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
+		ORDER BY u.username
+	");
 	
-	if(empty($moderatorcache))
+	// Build a moderator cache.
+	while($moderator = $db->fetch_array($query))
 	{
-		$moderatorcache = array();
-		
-		$query = $db->query("
-			SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
-			FROM ".TABLE_PREFIX."moderators m
-			LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
-			ORDER BY u.username
-		");
-		
-		// Build a moderator cache.
-		while($moderator = $db->fetch_array($query))
-		{
-			$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
-		}
-		
-		$cache->update("moderators_2", $moderatorcache);
+		$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
 	}
 }
 
@@ -147,18 +139,8 @@ if($foruminfo['linkto'])
 // Make forum jump...
 if($mybb->settings['enableforumjump'] != "no")
 {
-	$forumjump = $cache->read("forumjump");
-	if(!$forumjump)
-	{
-		$forumjump = "";
-		$forumjump = build_forum_jump("");
-		
-		$cache->update("forumjump", $forumjump);
-	}
-	
-	$forumjump = str_replace("<option value=\"{$fid}\"", "<option value=\"{$fid}\" selected=\"selected\"", $forumjump);
+	$forumjump = build_forum_jump("", $fid, 1);
 }
-
 
 if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
 {

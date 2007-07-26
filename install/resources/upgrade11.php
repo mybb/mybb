@@ -23,7 +23,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade9_dbchanges()
+function upgrade11_dbchanges()
 {
 	global $db, $output, $mybb;
 
@@ -330,6 +330,8 @@ function upgrade9_dbchanges()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD moderationtime bigint(30) NOT NULL default '0' AFTER moderateposts");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspendposting int(1) NOT NULL default '0' AFTER moderationtime");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
+	
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned CHANGE oldadditionalgroups oldadditionalgroups text NOT NULL default ''");
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -337,7 +339,7 @@ function upgrade9_dbchanges()
 	$output->print_footer("9_dbchanges2");
 }
 
-function upgrade9_dbchanges2()
+function upgrade11_dbchanges2()
 {
 	global $db, $output, $mybb;
 
@@ -391,7 +393,7 @@ function upgrade9_dbchanges2()
 	$output->print_footer("9_dbchanges3");
 }
 
-function upgrade9_dbchanges3()
+function upgrade11_dbchanges3()
 {
 	global $db, $output, $mybb;
 
@@ -586,7 +588,7 @@ function upgrade9_dbchanges3()
 	$output->print_footer("9_dbchanges4");
 }
 
-function upgrade9_dbchanges4()
+function upgrade11_dbchanges4()
 {
 	global $db, $output, $mybb;
 
@@ -653,7 +655,7 @@ function upgrade9_dbchanges4()
 	$output->print_footer("9_done");
 }
 
-function upgrade9_dbchanges5()
+function upgrade11_dbchanges5()
 {
 	global $db, $output;
 
