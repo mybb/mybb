@@ -276,7 +276,7 @@ class Moderation
 		foreach($tids as $tid)
 		{
 			$thread = get_thread($tid);
-			$forum = get_forum($thread['tid'];
+			$forum = get_forum($thread['tid']);
 			
 			if($forum['usepostcounts'] != "no") 
 			{ 
