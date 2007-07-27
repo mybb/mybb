@@ -69,10 +69,9 @@ if(!$mostreplied || $mostreplied['lastupdated'] <= time()-60*60*24)
 		$mostreplied['threads'][] = $thread;
 	}
 	$mostreplied['lastupdated'] = time();
-	$cache->update("most_replied_threads", $mostreplied);
 	
 	$mostreplied['lastupdated'] = time();
-	$stats['mostviewed'] = $mostreplied;
+	$stats['mostreplied'] = $mostreplied;
 	
 	$update_stats = true;
 	
@@ -84,6 +83,7 @@ if(!empty($mostreplied))
 	foreach($mostreplied['threads'] as $key => $thread)
 	{
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$numberbit = my_number_format($thread['replies']);
 		$numbertype = $lang->replies;
 		eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
@@ -115,6 +115,7 @@ if(!empty($mostviewed))
 	foreach($mostviewed['threads'] as $key => $thread)
 	{
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+		$thread['threadlink'] = get_thread_link($thread['tid']);
 		$numberbit = my_number_format($thread['views']);
 		$numbertype = $lang->views;
 		eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");

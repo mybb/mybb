@@ -101,4 +101,7 @@ $l['split_reply_subject'] = "Reply subject";
 $l['split_reply_subject_desc'] = "Only used if a reply is made";
 $l['save_post_tool'] = "Save Post Tool";
 
+$l['error_missing_title'] = "Please enter a name for this tool.";
+$l['error_missing_description'] = "Please enter a short description for this tool.";
+$l['error_no_forums_selected'] = "Please select the forums in which this tool will be available.";
 ?>
