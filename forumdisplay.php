@@ -117,7 +117,7 @@ $forums = $child_forums['forum_list'];
 if($forums)
 {
 	$lang->sub_forums_in = sprintf($lang->sub_forums_in, $foruminfo['name']);
-	eval("\$subforums =\"".$templates->get("forumdisplay_subforums")."\";");
+	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
 }
 
 $excols = "forumdisplay";

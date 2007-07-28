@@ -41,7 +41,7 @@ class session
 		{
 			$this->sid = $db->escape_string($_COOKIE['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
+			$query = $db->simple_select("sessions", "*", "sid='{$this->sid}' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
@@ -49,6 +49,13 @@ class session
 				$this->uid = $session['uid'];
 				$this->logins = $session['loginattempts'];
 				$this->failedlogin = $session['failedlogin'];
+			}
+			else
+			{
+				$this->sid = 0;
+				$this->uid = 0;
+				$this->logins = 1;
+				$this->failedlogin = 0;
 			}
 		}
 

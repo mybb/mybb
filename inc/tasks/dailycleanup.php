@@ -15,7 +15,7 @@ function task_dailycleanup($task)
 
 	// Clear out sessions older than 24h
 	$cut = TIME_NOW-60*60*24;
-	$db->delete_query("sessions", "uid=0 AND time < '{$cut}'");
+	$db->delete_query("sessions", "uid='0' AND time < '{$cut}'");
 
 	// Delete old read topics
 	if($mybb->settings['threadreadcut'] > 0)
