@@ -51,8 +51,8 @@ if($forumpermissions['canview'] != "yes")
 	error_no_permission();
 }
 
-// Password protected forums
-check_forum_password($forum['parentlist'], $forum['password']);
+// Check if this forum is password protected and we have a valid password
+check_forum_password($forum['fid']);
 
 if($mybb->usergroup['cansendemail'] == "no")
 {

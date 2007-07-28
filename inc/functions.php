@@ -886,10 +886,9 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 /**
  * Check the password given on a certain forum for validity
  *
- * @param int The forum ID(s)
- * @param string The plain text password for the forum
+ * @param int The forum ID
  */
-function check_forum_password($fids, $password="")
+function check_forum_password($fid)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
 	$showform = 1;
@@ -902,21 +901,22 @@ function check_forum_password($fids, $password="")
 			return false;
 		}
 	}
-	
-	$fidarray = explode(',', $fids);
-	rsort($fidarray);
-	if(!empty($fidarray))
+
+	// Loop through each of parent forums to ensure we have a password for them too
+	$parents = explode(',', $forum_cache[$fid]['parentlist']);
+	rsort($parents);
+	if(!empty($parents))
 	{
-		foreach($fidarray as $key => $fid)
+		foreach($parents as $parent_id)
 		{
-			if($forum_cache[$fid]['password'] != "")
+			if($forum_cache[$parent_id]['password'] != "")
 			{
-				check_forum_password($fid, $password);
-				return;
+				check_forum_password($parent_id, $forum_cache[$parent_id]['password']);
 			}
 		}
 	}
-
+	
+	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
 		if($mybb->input['pwverify'])
@@ -2872,7 +2872,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
  */
 function htmlspecialchars_uni($message)
 {
-	$message = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $message); // Fix & but allow unicode
+	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
 	$message = str_replace("<","&lt;",$message);
 	$message = str_replace(">","&gt;",$message);
 	$message = str_replace("\"","&quot;",$message);

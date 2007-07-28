@@ -90,8 +90,8 @@ if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] ==
 	error_no_permission();
 }
 
-// Password protected forums ......... yhummmmy!
-check_forum_password($forum['parentlist'], $forum['password']);
+// Check if this forum is password protected and we have a valid password
+check_forum_password($forum['fid']);
 
 if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {

@@ -580,7 +580,7 @@ class Moderation
 				$num_posts = $thread['replies']+1; 
 				$num_unapproved_posts += $thread['unapprovedposts'];
 	
-				$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid' AND fid='$moveto'");
+				$db->delete_query(TABLE_PREFIX."threads", "closed='moved|$tid' AND fid='{$new_fid}'");
 				$changefid = array(
 					"fid" => $new_fid,
 				);

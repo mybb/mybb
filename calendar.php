@@ -46,7 +46,7 @@ $mybb->input['day'] = intval($mybb->input['day']);
 
 
 /* If we are looking at an event, select the date for that event first. */
-if($mybb->input['action'] == "event")
+if($mybb->input['action'] == "event" || $mybb->input['action'] == "editevent" || $mybb->input['action'] == "do_editevent")
 {
 	$options = array(
 		"limit" => 1
