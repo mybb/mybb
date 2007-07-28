@@ -114,7 +114,7 @@ if($mybb->input['action'] == "get_users")
 	}
 	
 	// Send our headers.
-	header("Content-type: text/html; charset={$charset}");
+	header("Content-type: text/plain; charset={$charset}");
 
 	// Sanitize the input.
 	$mybb->input['query'] = str_replace(array("%", "_"), array("\\%", "\\_"), $mybb->input['query']);
@@ -260,7 +260,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	}
 
 	// Send our headers.
-	header("Content-type: text/html; charset={$charset}");
+	header("Content-type: text/plain; charset={$charset}"); 
 	
 	// Spit the subject back to the browser.
 	echo $mybb->input['value'];
@@ -317,7 +317,7 @@ else if($mybb->input['action'] == "edit_post")
 	if($mybb->input['do'] == "get_post")
 	{
 		// Send our headers.
-		header("Content-type: text/html; charset={$charset}");
+		header("Content-type: text/xml; charset={$charset}");
 		
 		$post['message'] = htmlspecialchars_uni($post['message']);
 		
@@ -501,7 +501,7 @@ function xmlhttp_error($message)
 	global $charset;
 	
 	// Send our headers.
-	header("Content-type: text/html; charset={$charset}");
+	header("Content-type: text/xml; charset={$charset}");
 	
 	// Send the error message.
 	echo "<error>".$message."</error>";

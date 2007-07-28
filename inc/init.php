@@ -158,7 +158,7 @@ $fpermfields = array(
 $rand = rand(0, 10);
 
 /* URL Definitions */
-define('PROFILE_URL', "member.php?action=profile&amp;uid={uid}");
+define('PROFILE_URL', "member.php?action=profile&uid={uid}");
 define('FORUM_URL', "forumdisplay.php?fid={fid}");
 define('FORUM_URL_PAGED', "forumdisplay.php?fid={fid}&page={page}");
 define('THREAD_URL', "showthread.php?tid={tid}");

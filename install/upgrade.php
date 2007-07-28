@@ -332,20 +332,7 @@ function upgradedone()
 	global $db, $output, $mybb, $lang, $config;
 
 	$output->print_header("Upgrade Complete");
-	if(is_writable("./"))
-	{
-		$lock = @fopen("./lock", "w");
-		$written = @fwrite($lock, "1");
-		@fclose($lock);
-		if($written)
-		{
-			$lock_note = sprintf($lang->upgrade_locked, $config['admin_dir']);
-		}
-	}
-	if(!$written)
-	{
-		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
-	}
+
 	$output->print_contents(sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }
