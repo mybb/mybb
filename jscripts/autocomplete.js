@@ -81,6 +81,11 @@ autoComplete.prototype = {
 		}
 		else
 		{
+			if(this.oldOnSubmit)
+			{
+				eval('return_value = '+this.oldOnSubmit);
+				return return_value();
+			}
 			return true;
 		}
 		//this.textbox.setAttribute("autocomplete", "on");
@@ -149,7 +154,10 @@ autoComplete.prototype = {
 				}
 				break;
 			case Event.KEY_RETURN:
-				Event.stop(e);
+				if(this.menuOpen == true)
+				{
+					Event.stop(e);
+				}
 				if(this.currentIndex != -1)
 				{
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
@@ -349,6 +357,7 @@ autoComplete.prototype = {
 	hidePopup: function()
 	{
 		this.popup.hide();
+		this.menuOpen = false;
 		Event.stopObserving(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.stopObserving(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));

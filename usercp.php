@@ -1840,96 +1840,244 @@ if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 	$plugins->run_hooks("usercp_do_notepad_end");
 	redirect("usercp.php", $lang->redirect_notepadupdated);
 }
-if($mybb->input['action'] == "editlists")
-{
-	$plugins->run_hooks("usercp_editlists_start");
-	$buddyarray = explode(",", $mybb->user['buddylist']);
-	$comma = '';
-	$buddysql = '';
-	$buddylist = '';
-	if(!empty($buddyarray) && !empty($mybb->user['buddylist']))
-	{
-		foreach($buddyarray as $key => $buddyid)
-		{
-			$buddysql .= "{$comma}'{$buddyid}'";
-			$comma = ",";
-		}
-		$query = $db->simple_select("users", "username, uid", "uid IN ({$buddysql})");
-		while($buddy = $db->fetch_array($query))
-		{
-			$uid = $buddy['uid'];
-			$username = $buddy['username'];
-			eval("\$buddylist .= \"".$templates->get("usercp_editlists_user")."\";");
-		}
-	}
-	$comma2 = '';
-	$ignoresql = '';
-	$ignorelist = '';
-	$ignorearray = explode(",", $mybb->user['ignorelist']);
-	if(!empty($ignorearray) && !empty($mybb->user['ignorelist']))
-	{
-		foreach($ignorearray as $key => $ignoreid)
-		{
-			$ignoresql .= "$comma2'$ignoreid'";
-			$comma2 = ",";
-		}
-		$query = $db->simple_select("users", "username, uid", "uid IN ($ignoresql)");
-		while($ignoreuser = $db->fetch_array($query))
-		{
-			$uid = $ignoreuser['uid'];
-			$username = $ignoreuser['username'];
-			eval("\$ignorelist .= \"".$templates->get("usercp_editlists_user")."\";");
-		}
-	}
-	$newlist = '';
-	for($i = 1; $i <= 2; ++$i)
-	{
-		$uid = "new$i";
-		$username = '';
-		eval("\$newlist .= \"".$templates->get("usercp_editlists_user")."\";");
-	}
-	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
-	$plugins->run_hooks("usercp_editlists_end");
-	output_page($listpage);
-}
-if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
+
+if($mybb->input['action'] == "do_editlists")
 {
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("usercp_do_editlists_start");
-	$comma = '';
-	$users = '';
-	foreach($mybb->input['listuser'] as $key => $val)
+
+	if($mybb->input['manage'] == "ignored")
 	{
-		if(my_strtoupper($mybb->user['username']) != my_strtoupper($val))
-		{
-			$val = $db->escape_string($val);
-			$users .= "$comma'$val'";
-			$comma = ",";
-		}
-	}
-	$comma2 = '';
-	$newlist = '';
-	$query = $db->simple_select("users", "uid", "username IN ($users)");
-	while($user = $db->fetch_array($query))
-	{
-		$newlist .= "$comma2{$user['uid']}";
-		$comma2 = ",";
-	}
-	if($mybb->input['list'] == "ignore")
-	{
-		$type = "ignorelist";
+		$existing_list = explode(",", $mybb->user['ignorelist']);
 	}
 	else
 	{
-		$type = "buddylist";
+		$existing_list  = explode(",", $mybb->user['buddylist']);
 	}
-	$db->update_query("users", array($type => $newlist), "uid='".$mybb->user['uid']."'");
-	$redirecttemplate = "redirect_".$mybb->input['list']."updated";
+
+	// Adding one or more users to this list
+	if($mybb->input['add_username'])
+	{
+		// Split up any usernames we have
+		$users = explode(",", $mybb->input['add_username']);
+		$users = array_map("trim", $users);
+		foreach($users as $key => $username)
+		{
+			if(my_strtoupper($mybb->user['username']) == my_strtoupper($username))
+			{
+				unset($users[$key]);
+				continue;
+			}
+			$users[$key] = $db->escape_string($username);
+		}
+
+		// Fetch out new users
+		if(count($users) > 0)
+		{
+			$query = $db->simple_select("users", "uid", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
+			while($user = $db->fetch_array($query))
+			{
+				// Make sure we're not adding a duplicate
+				if(in_array($user['uid'], $existing_list))
+				{
+					continue;
+				}
+				$existing_list[] = $user['uid'];
+			}
+		}
+
+		if($mybb->input['manage'] == "ignored")
+		{
+			$message = $lang->users_added_to_ignore_list;
+		}
+		else
+		{
+			$message = $lang->users_added_to_buddy_list;
+		}
+	}
+
+	// Removing a user from this list
+	else if($mybb->input['delete'])
+	{
+		// Check if user exists on the list
+		$key = array_search($mybb->input['delete'], $existing_list);
+		if($key !== false)
+		{
+			unset($existing_list[$key]);
+			$user = get_user($mybb->input['delete']);
+			if($mybb->input['manage'] == "ignored")
+			{
+				$message = $lang->removed_from_ignore_list;
+			}
+			else
+			{
+				$message = $lang->removed_from_buddy_list;
+			}
+			$message = sprintf($message, $user['username']);
+		}
+	}
+
+	// Now we have the new list, so throw it all back together
+	$new_list = implode(",", $existing_list);
+
+	// And clean it up a little to ensure there is no possibility of bad values
+	$new_list = preg_replace("#,{2,}#", ",", $new_list);
+	$new_list = preg_replace("#[^0-9,]#", "", $new_list);
+
+	if(my_substr($new_list, 0, 1) == ",")
+	{
+		$new_list = my_substr($new_list, 1);
+	}
+	if(my_substr($new_list, -1) == ",")
+	{
+		$new_list = my_substr($new_list, 0, my_strlen($new_list)-2);
+	}
+
+	// And update
+	$user = array();
+	if($mybb->input['manage'] == "ignored")
+	{
+		$user['ignorelist'] = $db->escape_string($new_list);
+		$mybb->user['ignorelist'] = $user['ignorelist'];
+	}
+	else
+	{
+		$user['buddylist'] = $db->escape_string($new_list);
+		$mybb->user['buddylist'] = $user['buddylist'];
+	}
+
+	$db->update_query("users", $user, "uid='".$mybb->user['uid']."'");
+
 	$plugins->run_hooks("usercp_do_editlists_end");
-	redirect("usercp.php?action=editlists", $lang->$redirecttemplate);
+
+	// Ajax based request, throw new list to browser
+	if($mybb->input['ajax'])
+	{
+		if($mybb->input['manage'] == "ignored")
+		{
+			$list = "ignore";
+		}
+		else
+		{
+			$list = "buddy";
+		}
+
+		$message_js = "var success = document.createElement('span'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
+
+		if($mybb->input['delete'])
+		{
+			header("Content-type: text/javascript");
+			echo "Element.remove('{$mybb->input['manage']}_{$mybb->input['delete']}');\n";
+			if($new_list == "")
+			{
+				echo "\$('{$mybb->input['manage']}_count').innerHTML = '0';\n";
+				if($mybb->input['manage'] == "ignored")
+				{
+					echo "\$('ignore_list').innerHTML = '<li>{$lang->ignore_list_empty}</li>';\n";
+				}
+				else
+				{
+					echo "\$('buddy_list').innerHTML = '<li>{$lang->buddy_list_empty}</li>';\n";
+				}
+			}
+			else
+			{
+				echo "\$('{$mybb->input['manage']}_count').innerHTML = '".count(explode(",", $new_list))."';\n";
+			}
+			echo $message_js;
+			exit;
+		}
+		$mybb->input['action'] = "editlists";
+	}
+	else
+	{
+		redirect("usercp.php?action=editlists#{$mybb->input['manage']}", $message);
+	}
 }
+
+if($mybb->input['action'] == "editlists")
+{
+	$plugins->run_hooks("usercp_editlists_start");
+
+	// Fetch out buddies
+	$buddy_count = 0;
+	if(($mybb->request_method != "post" || $mybb->input['manage'] == "buddy") && $mybb->user['buddylist'])
+	{
+		$type = "buddy";
+		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array("order_by" => "username"));
+		while($user = $db->fetch_array($query))
+		{
+			$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
+			if($user['lastactive'] > $timecut && ($user['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $user['lastvisit'] != $user['lastactive'])
+			{
+				$status = "online";
+			}
+			else
+			{
+				$status = "offline";
+			}
+			eval("\$buddy_list .= \"".$templates->get("usercp_editlists_user")."\";");
+			++$buddy_count;
+		}
+	}
+
+	$lang->current_buddies = sprintf($lang->current_buddies, $buddy_count);
+	if(!$buddy_list)
+	{
+		$buddy_list = "<li>{$lang->buddy_list_empty}</li>";
+	}
+
+	// Fetch out ignore list users
+	$ignore_count = 0;
+	if(($mybb->request_method != "post" || $mybb->input['manage'] == "ignored") && $mybb->user['ignorelist'])
+	{
+		$type = "ignored";
+		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['ignorelist']})", array("order_by" => "username"));
+		while($user = $db->fetch_array($query))
+		{
+			$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
+			if($user['lastactive'] > $timecut && ($user['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $user['lastvisit'] != $user['lastactive'])
+			{
+				$status = "online";
+			}
+			else
+			{
+				$status = "offline";
+			}
+			eval("\$ignore_list .= \"".$templates->get("usercp_editlists_user")."\";");
+			++$ignore_count;
+		}
+	}
+
+	$lang->current_ignored_users = sprintf($lang->current_ignored_users, $ignore_count);
+	if(!$ignore_list)
+	{
+		$ignore_list = "<li>{$lang->ignore_list_empty}</li>";
+	}
+
+	// If an AJAX request from buddy management, echo out whatever the new list is.
+	if($mybb->request_method == "post" && $mybb->input['ajax'] == 1)
+	{
+		if($mybb->input['manage'] == "ignored")
+		{
+			echo $ignore_list;
+			echo "<script type=\"text/javascript\"> $('ignored_count').innerHTML = '{$ignore_count}'; {$message_js}</script>";
+		}
+		else
+		{
+			echo $buddy_list;
+			echo "<script type=\"text/javascript\"> $('buddy_count').innerHTML = '{$buddy_count}'; {$message_js}</script>";
+		}
+		exit;
+	}
+
+	eval("\$listpage = \"".$templates->get("usercp_editlists")."\";");
+	$plugins->run_hooks("usercp_editlists_end");
+	output_page($listpage);
+}
+
 if($mybb->input['action'] == "drafts")
 {
 	$plugins->run_hooks("usercp_drafts_start");

@@ -154,5 +154,58 @@ var UserCP = {
 			$(this.buddy_field).focus();
 		}
 		$('buddyselect_container').hide();
+	},
+
+	addBuddy: function(type)
+	{
+		if(!$(type+'_add_username').value)
+		{
+			return false;
+		}
+		if(use_xmlhttprequest != "yes")
+		{
+			return true;
+		}
+
+		var old_value = $(type+'_submit').value;
+
+		if(type == "ignored")
+		{
+			$(type+'_submit').value = lang.adding_ignored;
+			var list = 'ignore';
+		}
+		else
+		{
+			$(type+'_submit').value = lang.adding_buddy;
+			var list = 'buddy';
+		}
+
+		new Ajax.Updater(list+'_list', 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type, {method: 'post', postBody: 'ajax=1&add_username='+escape($(type+'_add_username').value), evalScripts: true, onComplete: function() { $(type+'_submit').value = old_value; $(type+'_submit').disabled = false; $(type+'_add_username').disabled = false; $(type+'_add_username').value = ''; $(type+'_add_username').focus(); }});
+		$(type+'_add_username').disabled = true;
+		$(type+'_submit').disabled = true;
+		return false;
+	},
+
+	removeBuddy: function(type, uid)
+	{
+		if(type == "ignored")
+		{
+			var message = lang.remove_ignored;
+		}
+		else
+		{
+			var message = lang.remove_buddy;
+		}
+
+		if(confirm(message))
+		{
+			if(use_xmlhttprequest != "yes")
+			{
+				return true;
+			}
+			new Ajax.Request('usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type+'&delete='+uid, {method: 'post', postBody: 'ajax=1'});
+		}
+
+		return false;
 	}
 };

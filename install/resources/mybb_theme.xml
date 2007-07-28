@@ -667,7 +667,7 @@ td .star_rating {
 	background-position: left center;
 }
 
-.star_rating_success {
+.star_rating_success, .success_message {
 	color: #00b200;
 	font-weight: bold;
 	font-size: 10px;
@@ -5380,7 +5380,11 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="yes" /></td>
 </tr>]]></template>
-		<template name="usercp_editlists_user" version="120"><![CDATA[<input type="text" class="textbox" name="listuser[{$uid}]" size="25" value="{$username}" /><br />]]></template>
+		<template name="usercp_editlists_user" version="140"><![CDATA[<li style="width: 33%; float: left; list-type: none; margin-bottom: 4px;" id="{$type}_{$user['uid']}">
+	<a href="usercp.php?action=do_editlists&amp;my_post_key={$mybb->post_code}&amp;manage={$type}&amp;delete={$user['uid']}" onclick="return UserCP.removeBuddy('{$type}', {$user['uid']});" title="{$lang->remove_from_list}"><img src="{$theme['imgdir']}/buddy_delete.gif" alt="[{$lang->delete}]" style="vertical-align: middle;" /></a>
+	<img src="{$theme['imgdir']}/buddy_{$status}.gif" title="{$lang->$status}" alt="" style="vertical-align: middle;" />
+	{$profile_link}
+</li>]]></template>
 		<template name="showthread_threadedbox" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -6218,72 +6222,97 @@ To: {$to_recipients}
 		<template name="misc_buddypopup_user_sendpm" version="140"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{$lang->pm_buddy}</a>]]></template>
 		<template name="usercp_editlists" version="140"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
-{$headerinclude}
+	<title>{$mybb->settings['bbname']} - {$lang->edit_lists}</title>
+	{$headerinclude}
+	<script type="text/javascript" src="jscripts/usercp.js"></script>
+	<script type="text/javascript">
+		lang.remove_buddy = '{$lang->confirm_remove_buddy}';
+		lang.remove_ignored = '{$lang->confirm_remove_ignored}';
+		lang.adding_buddy = '{$lang->adding_buddy}';
+		lang.adding_ignored = '{$lang->adding_ignored}';
+	</script>
 </head>
 <body>
-{$header}
-<table width="100%" border="0" align="center">
-<tr>
-{$usercpnav}
-<td valign="top">
-<table style="width:auto;height:auto;vertical-align:top;" cellpadding="2">
-<tr>
-<td align="left" valign="top" width="50%">
-<form action="usercp.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center"><strong>{$lang->edit_buddy_list}</strong></td>
-</tr>
-<tr>
-<td class="trow1">
-{$buddylist}
-{$newlist}
-</td>
-</tr>
-<tr>
-<td class="trow2" align="center"><span class="smalltext">{$lang->remove_add_note}</span></td>
-</tr>
-</table>
-<br />
-<div align="center">
-<input type="hidden" name="action" value="do_editlists" />
-<input type="hidden" name="list" value="buddy" />
-<input type="submit" class="button" name="submit" value="{$lang->update_buddy_list}" />
-</div>
-</form>
-</td>
-<td align="left" valign="top" width="50%">
-<form action="usercp.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center"><strong>{$lang->edit_ignore_list}</strong></td>
-</tr>
-<tr>
-<td class="trow1">
-{$ignorelist}
-{$newlist}
-</td>
-</tr>
-<tr>
-<td class="trow2" align="center"><span class="smalltext">{$lang->remove_add_note}</span></td>
-</tr>
-</table>
-<br />
-<div align="center">
-<input type="hidden" name="action" value="do_editlists" />
-<input type="hidden" name="list" value="ignore" />
-<input type="submit" class="button" name="submit" value="{$lang->update_ignore_list}" />
-</div>
-</form>
-</td>
-</table>
-</td>
-</tr>
-</table>
-{$footer}
+	{$header}
+	<table width="100%" border="0" align="center">
+	<tr>
+		{$usercpnav}
+		<td valign="top">
+
+		<form action="usercp.php" method="post" id="buddy" onsubmit="return UserCP.addBuddy('buddy');">
+			<input type="hidden" name="action" value="do_editlists" />
+			<input type="hidden" name="manage" value="buddy" />
+			<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+				<tr>
+					<td class="thead" align="center"><strong>{$lang->edit_buddy_list}</strong></td>
+				</tr>
+				<tr>
+					<td class="trow1">
+						<fieldset>
+							<legend><strong>{$lang->add_buddies}</strong></legend>
+							<span class="smalltext">{$lang->add_buddies_desc}</span>
+							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
+							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" /></div>
+							<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+							<script type="text/javascript">
+							<!--
+								if(use_xmlhttprequest == "yes")
+								{
+									new autoComplete("buddy_add_username", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+								}
+							// -->
+							</script>
+						</fieldset>
+						<fieldset id="buddy_container">
+							<legend><strong>{$lang->current_buddies}</strong></legend>
+							<ul id="buddy_list" style="list-style: none;">
+								{$buddy_list}
+							</ul>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<br />
+		<form action="usercp.php" method="post" id="buddy" onsubmit="return UserCP.addBuddy('ignored');">
+			<input type="hidden" name="action" value="do_editlists" />
+			<input type="hidden" name="manage" value="ignored" />
+			<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+				<tr>
+					<td class="thead" align="center"><strong>{$lang->edit_ignore_list}</strong></td>
+				</tr>
+				<tr>
+					<td class="trow1">
+						<fieldset>
+							<legend><strong>{$lang->add_ignored_users}</strong></legend>
+							<span class="smalltext">{$lang->add_ignored_users_desc}</span>
+							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
+							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" /></div>
+							<script type="text/javascript">
+							<!--
+								if(use_xmlhttprequest == "yes")
+								{
+									new autoComplete("ignored_add_username", "xmlhttp.php?action=get_users", {valueSpan: "username", delimChar: ","});
+								}
+							// -->
+							</script>
+						</fieldset>
+						<fieldset id="ignored_container">
+							<legend><strong>{$lang->current_ignored_users}</strong></legend>
+							<ul id="ignore_list" style="list-style: none;">
+								{$ignore_list}
+							</ul>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+		</form>
+
+		</td>
+	</tr>
+	</table>
 </body>
 </html>]]></template>
 		<template name="online_iplookup" version="120"><![CDATA[<html>
