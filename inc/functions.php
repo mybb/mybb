@@ -4303,27 +4303,98 @@ function rebuild_settings()
 	$GLOBALS['settings'] = &$mybb->settings;
 }
 
-function apply_highlight(&$item, $key)
+/**
+ * Build a PREG compatible array of search highlight terms to replace in posts.
+ *
+ * @param string Incoming terms to highlight
+ * @return array PREG compatible array of terms
+ */
+function build_highlight_array($terms)
 {
-	global $highlight_count;
+	$terms = htmlspecialchars_uni($terms);
 
-	$item = htmlspecialchars_uni($item);
-
-	if(my_strlen($item) > 1)
+	// Check if this is a "series of words" - should be treated as an EXACT match
+	if(my_strpos($terms, "\"") !== false)
 	{
-		if(stristr("<span class=\"highlight\"></span>", $item))
+		$inquote = false;
+		$terms = explode("\"", $terms);
+		foreach($terms as $phrase)
 		{
-			unset($item);
+			if($phrase != "")
+			{
+				if($inquote)
+				{
+					$words[] = "\"".trim($phrase)."\"";
+				}
+				else
+				{
+					$split_words = preg_split("#\s{1,}#", $phrase, -1);
+					if(!is_array($split_words))
+					{
+						continue;
+					}
+					foreach($split_words as $word)
+					{
+						if(!$word)
+						{
+							continue;
+						}
+						$words[] = trim($word);
+					}
+				}
+			}
+			$inquote = !$inquote;
 		}
-
-		$item = "<span class=\"highlight\">{$item}</span>";
 	}
+	// Otherwise just a simple search query with no phrases
 	else
 	{
-		unset($item);
+		$split_words = preg_split("#\s{1,}#", $terms, -1);
+		if(!is_array($split_words))
+		{
+			continue;
+		}
+		foreach($split_words as $word)
+		{
+			if(!$word)
+			{
+				continue;
+			}
+			$words[] = trim($word);
+		}
+
 	}
 
+	if(!is_array($words))
+	{
+		return false;
+	}
 
+	// Loop through our words to build the PREG compatible strings
+	foreach($words as $word)
+	{
+		$word = my_strtolower($word);
+
+		// Strip off any search weight modifiers
+		$modifier = substr($word, 0, 1);
+		if($modifier == "+" || $modifier == "-")
+		{
+			$word = substr($word, 1);
+		}
+		
+		// Special boolean operators should be stripped
+		if($word == "" || $word == "or" || $word == "not" || $word == "and")
+		{
+			continue;
+		}
+
+		// Now make PREG compatible
+		$find = "#".preg_quote($word, "#")."#i";
+		$replacement = "<span class=\"highlight\">$0</span>";
+		$highlight_cache[$find] = $replacement;
+	}
+
+	return $highlight_cache;
 }
 
 /**
@@ -4687,4 +4758,25 @@ if(!function_exists('scandir'))
 		return false;
 	}
 }
+
+if(!function_exists('str_ireplace'))
+{
+	function build_str_ireplace(&$pattern, $k)
+	{
+		$pattern = "#".preg_quote($pattern, "#")."#";
+	}
+	function str_ireplace($search, $replace, $subject)
+	{
+		if(is_array($search))
+		{
+			$search = array_walk($search, 'build_str_ireplace');
+		}
+		else
+		{
+			build_str_ireplace($search);
+		}
+		return preg_replace($search, $replace, $subject);
+	}
+}
+
 ?>

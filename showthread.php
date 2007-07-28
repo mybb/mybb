@@ -520,14 +520,6 @@ if($mybb->input['action'] == "thread")
 		$visible = "AND p.visible='1'";
 	}
 	
-	// If we have terms to highlight, fetch them.
-	if(!empty($mybb->input['highlight']))
-	{
-		$highlight_replace = explode(' ', htmlspecialchars_uni($mybb->input['highlight']));
-		$highlight = $highlight_replace;
-		array_walk($highlight_replace, 'apply_highlight');
-	}
-
 	// Can this user perform searches? If so, we can show them the "Search thread" form
 	if($forumpermissions['cansearch'] != "no")
 	{
@@ -608,12 +600,6 @@ if($mybb->input['action'] == "thread")
                 $postsdone[$post['pid']] = 1;
             }
         }
-		
-		if($highlight && $highlight_replace)
-		{
-			$showpost['highlight'] = $highlight;
-			$showpost['highlight_replace'] = $highlight_replace;
-		}
 		
 		$threadedbits = buildtree();
 		$posts = build_postbit($showpost);
@@ -730,11 +716,6 @@ if($mybb->input['action'] == "thread")
 			if($pfirst && $thread['visible'] == 0)
 			{
 				$post['visible'] = 0;
-			}
-			if($highlight && $highlight_replace)
-			{
-				$post['highlight'] = $highlight;
-				$post['highlight_replace'] = $highlight_replace;
 			}
 			$posts .= build_postbit($post);
 			$post = '';

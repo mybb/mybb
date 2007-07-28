@@ -484,11 +484,20 @@ function build_postbit($post, $post_type=0)
 		$parser_options['allow_smilies'] = "no";
 	}
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
-	
-	if($post['highlight'] && $post['highlight_replace'])
+
+	// If we have incoming search terms to highlight - get it done.
+	global $highlight_cache;
+	if($mybb->input['highlight'])
 	{
-		$post['message'] = str_replace($post['highlight'], $post['highlight_replace'], $post['message']);
-		$post['subject'] = str_replace($post['highlight'], $post['highlight_replace'], $post['subject']);
+		if(!is_array($highlight_cache))
+		{
+			$highlight_cache = build_highlight_array($mybb->input['highlight']);
+		}
+		if(is_array($highlight_cache))
+		{
+			$post['message'] = preg_replace(array_keys($highlight_cache), $highlight_cache, $post['message']);
+			$post['subject'] = preg_replace(array_keys($highlight_cache), $highlight_cache, $post['subject']);
+		}
 	}
 
 	get_post_attachments($id, $post);
