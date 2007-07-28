@@ -6309,10 +6309,10 @@ To: {$to_recipients}
 				</tr>
 			</table>
 		</form>
-
 		</td>
 	</tr>
 	</table>
+	{$footer}
 </body>
 </html>]]></template>
 		<template name="online_iplookup" version="120"><![CDATA[<html>
