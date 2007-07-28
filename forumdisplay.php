@@ -128,7 +128,7 @@ if($fpermissions['canview'] != "yes")
 }
 
 // Password protected forums
-check_forum_password($foruminfo['parentlist'], $foruminfo['password']);
+check_forum_password($foruminfo['fid']);
 
 if($foruminfo['linkto'])
 {
@@ -610,13 +610,20 @@ while($thread = $db->fetch_array($query))
 	if(substr($thread['closed'], 0, 5) == "moved")
 	{
 		$tid = substr($thread['closed'], 6);
-		$moved_threads[$tid] = $thread['tid'];
-		$tids[$thread['tid']] = $tid;
+		if(!$tids[$tid])
+		{
+			$moved_threads[$tid] = $thread['tid'];
+			$tids[$thread['tid']] = $tid;
+		}
 	}
 	// Otherwise - set it to the plain thread ID
 	else
 	{
 		$tids[$thread['tid']] = $thread['tid'];
+		if($moved_threads[$tid])
+		{
+			unset($moved_threads[$tid]);
+		}
 	}
 }
 

@@ -2000,7 +2000,7 @@ td .star_rating {
 
 					 Failure to comply with the above will result in prosecution to the full extent of the law.
 					 This is free software, support us and we'll support you. -->
-{$lang->powered_by} <a href="http://www.mybboard.net" target="_blank">MyBB</a>, &copy; 2002-{$copy_year} <a href="http://www.mybboard.net" target="_blank">MyBB Group</a>. {$mybbversion}<br />
+{$lang->powered_by} <a href="http://www.mybboard.net" target="_blank">MyBB {$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybboard.net" target="_blank">MyBB Group</a>.<br />
 				<!-- End copyright -->
 				<br />
 <br class="clear" />

@@ -620,6 +620,14 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	lastvisit bigint(30) NOT NULL default '0',
 	PRIMARY KEY(sid)
 ) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_stats (
+	dateline bigint(30) NOT NULL default '0',
+	numusers int unsigned NOT NULL default '0',
+	numthreads int unsigned NOT NULL default '0',
+	numposts int unsigned NOT NULL default '0',
+	PRIMARY KEY(dateline)
+) TYPE=MyISAM;";
 	
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid int unsigned NOT NULL auto_increment,

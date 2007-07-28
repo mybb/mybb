@@ -609,7 +609,7 @@ messageEditor.prototype = {
 							$(tag).className = "toolbar_normal";
 						}
 						
-						if($(exploded_tag[0]) && $(exploded_type[0]).type == "select-one")
+						if($(exploded_tag[0]) && $(exploded_tag[0]).type == "select-one")
 						{
 							$(exploded_tag[0]).selectedIndex = 0;
 						}							

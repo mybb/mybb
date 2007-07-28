@@ -551,6 +551,13 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	useragent varchar(200) NOT NULL default '',
 	lastvisit bigint(30) NOT NULL default '0'
 );";
+
+$tables[] = "CREATE TABLE mybb_stats (
+	dateline bigint(30) NOT NULL default '0' PRIMARY KEY,
+	numusers int unsigned NOT NULL default '0',
+	numthreads int unsigned NOT NULL default '0',
+	numposts int unsigned NOT NULL default '0'
+);";
 	
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid INTEGER PRIMARY KEY,

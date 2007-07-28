@@ -787,3 +787,33 @@ ul.tabs a.active {
 	background: #e1F2fe;
 	border: 1px solid #5296f7;
 }
+
+.user_avatar {
+    height: 80px;
+    width: 80px;
+    background: #fff;
+    border: 1px solid #ccc;
+    float: left;
+    clear: left;
+    margin-right: 5px;
+    text-align: center;
+}
+
+.user_avatar img {
+    vertical-align: middle;
+}
+
+.user_details {
+    float: left;
+    margin-left: 5px;
+    line-height: 1.7;
+}
+
+.users_quick_search {
+background: #DDE6EE;
+	padding: 4px 7px 5px;
+}
+
+.users_quick_search .form_row {
+margin: 4px 10px;
+}

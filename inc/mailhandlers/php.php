@@ -60,12 +60,12 @@ class PhpMail extends MailHandler
 				@mb_language($language);
 			}
 			
-			$sent = mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			$sent = @mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 			$function_used = 'mb_send_mail()';
 		}
 		else
 		{
-			$sent = mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 			$function_used = 'mail()';
 		}
 

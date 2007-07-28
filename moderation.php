@@ -81,8 +81,8 @@ $permissions = forum_permissions($fid);
 
 if($fid)
 {
-	// Password protected forums ......... yhummmmy!
-	check_forum_password($forum['parentlist'], $forum['password']);
+	// Check if this forum is password protected and we have a valid password
+	check_forum_password($forum['fid']);
 }
 
 if($mybb->user['uid'] != 0)

@@ -53,6 +53,11 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error($lang->error_invalid_user);
 	}
 
+	if($user['uid'] == $mybb->user['uid'])
+	{
+		error($lang->cannot_warn_self);
+	}
+
 	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])
 	{
 		error($lang->user_reached_max_warning);
@@ -370,6 +375,11 @@ if($mybb->input['action'] == "warn")
 	if(!$user['uid'])
 	{
 		error($lang->error_invalid_user);
+	}
+
+	if($user['uid'] == $mybb->user['uid'])
+	{
+		error($lang->cannot_warn_self);
 	}
 
 	if($user['warningpoints'] >= $mybb->settings['maxwarningpoints'])

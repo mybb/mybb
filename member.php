@@ -1343,7 +1343,7 @@ if($mybb->input['action'] == "profile")
 			$warning_level = 100;
 		}
 		$warning_level = get_colored_warning_level($warning_level);
-		if($mybb->usergroup['canwarnusers'] != "no")
+		if($mybb->usergroup['canwarnusers'] != "no" && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			eval("\$warn_user = \"".$templates->get("member_profile_warn")."\";");
 			$warning_link = "warnings.php?uid={$memprofile['uid']}";

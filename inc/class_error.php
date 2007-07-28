@@ -72,6 +72,13 @@ class errorHandler {
 	 * @var string
 	 */
 	var $warnings = "";
+
+	/**
+	 * Is MyBB in an errornous state? (Have we received an error?)
+	 *
+	 * @var boolean
+	 */
+	var $has_errors = false;
 	
 	/**
 	 * Initializes the error handler
@@ -113,6 +120,8 @@ class errorHandler {
 		{
 			return;
 		}
+
+		$this->has_errors = true;
 		
 		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
 		{
@@ -405,10 +414,12 @@ class errorHandler {
 			$charset = 'UTF-8';
 		}
 
-		@header("Content-type: text/html; charset={$charset}");
+		if(!headers_sent())
+		{
+			@header("Content-type: text/html; charset={$charset}");
 
 		echo <<<EOF
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
 <head profile="http://gmpg.org/xfn/11">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -446,6 +457,26 @@ class errorHandler {
 </body>
 </html>
 EOF;
+		}
+		else
+		{
+			echo <<<EOF
+	<style type="text/css">
+		#mybb_error_content { border: 1px solid #B60101; background: #fff; }
+		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
+		#mybb_error_error { padding: 6px; }
+		#mybb_error_footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
+		dt { font-weight: bold; }
+	</style>
+	<div id="mybb_error_content">
+		<h2>{$title}</h2>
+		<div id="mybb_error_error">
+		{$error_message}
+			<p id="mybb_error_footer">Please contact the <a href="http://www.mybboard.net">MyBB Group</a> for support.</p>
+		</div>
+	</div>
+EOF;
+		}
 		exit(1);
 	}
 }

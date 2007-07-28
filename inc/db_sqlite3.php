@@ -68,13 +68,6 @@ class databaseEngine
 	var $explain;
 
 	/**
-	 * Queries to perform prior to shutdown of connection.
-	 *
-	 * @var array
-	 */
-	var $shutdown_queries;
-
-	/**
 	 * The current version of SQLite.
 	 *
 	 * @var string
@@ -559,13 +552,14 @@ class databaseEngine
 	 */
 	function shutdown_query($query, $name=0)
 	{
+		global $shutdown_queries;
 		if($name)
 		{
-			$this->shutdown_queries[$name] = $query;
+			$shutdown_queries[$name] = $query;
 		}
 		else
 		{
-			$this->shutdown_queries[] = $query;
+			$shutdown_queries[] = $query;
 		}
 	}
 

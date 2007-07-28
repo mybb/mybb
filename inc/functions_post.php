@@ -320,7 +320,7 @@ function build_postbit($post, $post_type=0)
 				$warning_level = 100;
 			}
 			$warning_level = get_colored_warning_level($warning_level);
-			if($mybb->usergroup['canwarnusers'] != "no")
+			if($mybb->usergroup['canwarnusers'] != "no" && $post['uid'] != $mybb->user['uid'])
 			{
 				eval("\$post['button_warn'] = \"".$templates->get("postbit_warn")."\";");
 				$warning_link = "warnings.php?uid={$post['uid']}";

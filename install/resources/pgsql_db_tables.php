@@ -590,6 +590,14 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	lastvisit bigint NOT NULL default '0',
 	PRIMARY KEY(sid)
 );";
+
+$tables[] = "CREATE TABLE mybb_stats (
+	dateline bigint(30) NOT NULL default '0',
+	numusers int unsigned NOT NULL default '0',
+	numthreads int unsigned NOT NULL default '0',
+	numposts int unsigned NOT NULL default '0',
+	PRIMARY KEY(dateline)
+);";
 	
 $tables[] = "CREATE TABLE mybb_tasks (
 	tid serial,

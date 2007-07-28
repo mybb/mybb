@@ -78,4 +78,5 @@ $l['week_or_weeks'] = "Week(s)";
 $l['month_or_months'] = "Month(s)";
 $l['expires'] = "Expires:";
 $l['new_warning_level'] = "New warning level:";
+$l['cannot_warn_self'] = "You cannot add to your own warning level.";
 ?>

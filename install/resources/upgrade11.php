@@ -648,6 +648,14 @@ function upgrade11_dbchanges4()
 	  UNIQUE KEY fid (fid,uid)
 	) TYPE=MyISAM;");
 
+	$db->query("CREATE TABLE ".TABLE_PREFIX."stats (
+		dateline bigint(30) NOT NULL default '0',
+		numusers int unsigned NOT NULL default '0',
+		numthreads int unsigned NOT NULL default '0',
+		numposts int unsigned NOT NULL default '0',
+		PRIMARY KEY(dateline)
+	) TYPE=MyISAM;");
+
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

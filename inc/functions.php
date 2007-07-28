@@ -92,7 +92,7 @@ function output_page($contents)
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if(($mybb->settings['useshutdownfunc'] == "no"|| phpversion() >= '5.0.5') && $mybb->use_shutdown != true)
+	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown != true)
 	{
 		run_shutdown();
 	}
@@ -123,9 +123,9 @@ function add_shutdown($name)
  */
 function run_shutdown()
 {
-	global $config, $db, $cache, $plugins, $shutdown_functions, $done_shutdown;
+	global $config, $db, $cache, $plugins, $error_handler, $shutdown_functions, $shutdown_queries, $done_shutdown;
 
-	if($done_shutdown == true || !$config)
+	if($done_shutdown == true || !$config || $error_handler->has_errors)
 	{
 		return;
 	}
@@ -162,10 +162,10 @@ function run_shutdown()
 	}
 
 	// We have some shutdown queries needing to be run
-	if(is_array($db->shutdown_queries))
+	if(is_array($shutdown_queries))
 	{
 		// Loop through and run them all
-		foreach($db->shutdown_queries as $query)
+		foreach($shutdown_queries as $query)
 		{
 			$db->query($query);
 		}
@@ -1143,9 +1143,8 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  * Check the password given on a certain forum for validity
  *
  * @param int The forum ID
- * @param string The plain text password for the forum
  */
-function check_forum_password($fid, $password="")
+function check_forum_password($fid)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang;
 	$showform = true;
@@ -1158,21 +1157,22 @@ function check_forum_password($fid, $password="")
 			return false;
 		}
 	}
-	
-	$fidarray = explode(',', $fids);
-	rsort($fidarray);
-	if(!empty($fidarray))
+
+	// Loop through each of parent forums to ensure we have a password for them too
+	$parents = explode(',', $forum_cache[$fid]['parentlist']);
+	rsort($parents);
+	if(!empty($parents))
 	{
-		foreach($fidarray as $key => $fid)
+		foreach($parents as $parent_id)
 		{
-			if($forum_cache[$fid]['password'] != "")
+			if($forum_cache[$parent_id]['password'] != "")
 			{
-				check_forum_password($fid, $password);
-				return;
+				check_forum_password($parent_id, $forum_cache[$parent_id]['password']);
 			}
 		}
 	}
-
+	
+	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
 		if($mybb->input['pwverify'])
@@ -1565,6 +1565,16 @@ function update_stats($changes=array())
 	{
 		$stats = $new_stats;
 	}
+
+	// Update stats row for today in the database
+	$todays_stats = array(
+		"dateline" => mktime(0, 0, 0, date("m"), date("j"), date("Y")),
+		"numusers" => $stats['numusers'],
+		"numthreads" => $stats['numthreads'],
+		"numposts" => $stats['numposts']
+	);
+	$db->replace_query("stats", $todays_stats);
+
 	$cache->update("stats", $stats);
 }
 
@@ -3285,7 +3295,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
  */
 function htmlspecialchars_uni($message)
 {
-	$message = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $message); // Fix & but allow unicode
+	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
 	$message = str_replace("<", "&lt;", $message);
 	$message = str_replace(">", "&gt;", $message);
 	$message = str_replace("\"", "&quot;", $message);
@@ -4217,7 +4227,8 @@ function validate_email_format($email)
 		return false;
 	}
 	// Valid local characters for email addresses: http://www.remote.org/jochen/mail/info/chars.html
-	return preg_match("/^[a-zA-Z0-9&*+\-_.{}~^?=/]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
+	return preg_match("/^[a-zA-Z0-9&*+\-_.{}~^?=\/]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
+
 }
 
 /**
