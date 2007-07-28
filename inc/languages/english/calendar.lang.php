@@ -54,7 +54,7 @@ $l['birthdays'] = "Birthdays";
 $l['event_author'] = "Event Author:";
 $l['edit_event'] = "Edit Event";
 $l['view_event'] = "View Event";
-$l['no_events'] = "This day does not have any events associated with it.<p>To post an event on this day, click either '<a href=\"calendar.php?action=addevent&amp;single_day={1}&amp;single_month={2}&amp;single_year={3}\">Add Public Event</a>' or '<a href=\"calendar.php?action=addevent&amp;private=1&amp;single_day={1}&amp;single_month={2}&amp;single_year={3}\">Add Private Event</a>'.</p>";
+$l['no_events'] = "This day does not have any events associated with it.<p><a href=\"calendar.php?action=addevent&amp;day={1}&amp;month={2}&amp;year={3}\">Post an Event</a>.</p>";
 $l['years_old'] = "Years Old";
 $l['alt_edit'] = "Edit this event";
 $l['alt_delete'] = "Delete this event";

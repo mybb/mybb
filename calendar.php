@@ -318,10 +318,31 @@ if($mybb->input['action'] == "addevent")
 	}
 	else
 	{
-		$single_day = $start_day = $end_day = my_date("j");
-		$month = my_date("n");
+		if($mybb->input['day'])
+		{
+			$single_day = $start_day = $end_day = intval($mybb->input['day']);
+		}
+		else
+		{
+			$single_day = $start_day = $end_day = my_date("j");
+		}
+		if($mybb->input['month'])
+		{
+			$month = intval($mybb->input['month']);
+		}
+		else
+		{
+			$month = my_date("n");
+		}
 		$single_month[$month] = $start_month[$month] = $end_month[$month] = "selected=\"selected\"";
-		$single_year = $start_year = $end_year = my_date("Y");
+		if($mybb->input['year'])
+		{
+			$single_year = $start_year = $end_year = intval($mybb->input['year']);
+		}
+		else
+		{
+			$single_year = $start_year = $end_year = my_date("Y");
+		}
 		$start_time = $end_time = "";
 		$type_single = "checked=\"checked\"";
 		$type = "single";
