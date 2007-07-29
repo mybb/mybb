@@ -160,7 +160,7 @@ function archive_footer()
 	$totaltime = $maintimer->stop();
 	if($mybb->settings['showvernum'] == "on")
 	{
-		$mybbversion = $mybb->version;
+		$mybbversion = ' '.$mybb->version;
 	}
 	else
 	{
@@ -178,7 +178,7 @@ function archive_footer()
 </div>
 </div>
 <div id="footer">
-<?php echo $lang->powered_by; ?> <a href="http://www.mybboard.net">MyBB</a> <?php echo $mybbversion; ?><br /><?php echo $lang->copyright; ?> &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybboard.net">MyBB Group</a>
+<?php echo $lang->powered_by; ?> <a href="http://www.mybboard.net">MyBB</a><?php echo $mybbversion; ?>, &copy; 2002-<?php echo date("Y"); ?> <a href="http://www.mybboard.net">MyBB Group</a>
 </div>
 </body>
 </html>
