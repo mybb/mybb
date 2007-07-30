@@ -599,10 +599,10 @@ function create_tables()
 
 /**
  * Database Encoding
- * If you wish to set an encoding for MyBB uncomment 
- * the line below (if it isn't already) and change
- * the current value to the mysql charset:
- * http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
+ *  If you wish to set an encoding for MyBB uncomment 
+ *  the line below (if it isn't already) and change
+ *  the current value to the mysql charset:
+ *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
  */
 
 {$db_encoding}
