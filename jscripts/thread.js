@@ -348,6 +348,7 @@ var Thread = {
 			$('posts').appendChild(post);
 			if(MyBB.browser == "ie")
 			{
+				alert(request.responseText.extractScripts());
 				request.responseText.evalScripts();
 			}
 			Form.reset('quick_reply_form');

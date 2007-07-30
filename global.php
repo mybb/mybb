@@ -372,7 +372,7 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->usergroup['canview'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
+if($mybb->user['pmnotice'] == "new" && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->usergroup['canview'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
 {
 	$query = $db->query("
 		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
@@ -380,7 +380,7 @@ if($mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && $myb
 		LEFT JOIN ".TABLE_PREFIX."users fu ON (fu.uid=pm.fromid)
 		WHERE pm.folder='1' AND pm.uid='{$mybb->user['uid']}' AND pm.status='0'
 		ORDER BY pm.dateline DESC
-		LIMIT 0, 1
+		LIMIT 1
 	");
 	$pm = $db->fetch_array($query);
 	if($mybb->user['pms_unread'] == 1)

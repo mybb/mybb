@@ -507,7 +507,7 @@ function get_usertitle($uid="")
  * @param int Bitwise value for what to update. 1 = total, 2 = new, 4 = unread. Combinations accepted.
  * @param int The unix timestamp the user with uid last visited. If not specified, will be queried.
  */
-function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
+function update_pm_count($uid=0, $count_to_update=7)
 {
 	global $db, $mybb;
 	static $pm_lastvisit_cache;
@@ -518,23 +518,6 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 		$uid = $mybb->user['uid'];
 	}
 
-	// If using logged in user, use the last visit
-	if($uid == $mybb->user['uid'])
-	{
-		$lastvisit = $mybb->user['lastvisit'];
-	}
-	// Else, if no last visit is specified, query for it.
-	elseif(intval($lastvisit) < 1)
-	{
-		if(!$pm_lastvisit_cache[$uid])
-		{
-			$query = $db->simple_select("users", "lastvisit", "uid='".intval($uid)."'");
-			$user = $db->fetch_array($query);
-			$pm_lastvisit_cache[$uid] = $user['lastvisit'];
-		}
-		$lastvisit = $pm_lastvisit_cache[$uid];
-	}
-	
 	// Update total number of messages.
 	if($count_to_update & 1)
 	{

@@ -710,8 +710,6 @@ if(is_array($threadcache))
 
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-		$thread['threadlink'] = get_thread_link($thread['tid']);
-		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
 		if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 		{
@@ -834,6 +832,9 @@ if(is_array($threadcache))
 			$thread['replies'] = "-";
 			$thread['views'] = "-";
 		}
+
+		$thread['threadlink'] = get_thread_link($thread['tid']);
+		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 
 		// Determine the folder
 		$folder = '';

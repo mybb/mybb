@@ -49,7 +49,9 @@ FormValidator.prototype = {
 			return false;
 		}
 		validation_field = this.validation_fields[id];
-		validation_field.each(function(field) {
+		for(var i=0; i<validation_field.length;i++)
+		{
+			var field = validation_field[i];
 			if(field.validation_type == "matches")
 			{
 				twin = field.options.match_field;
@@ -58,7 +60,6 @@ FormValidator.prototype = {
 					return false;
 				}
 			}
-			
 			result = this.checkValidation(id, field.validation_type, field.options, submit_call);
 			options = field.options;
 			if(result == false)
@@ -92,7 +93,7 @@ FormValidator.prototype = {
 					}
 				}
 			}
-		}.bind(this));
+		}
 	},
 
 	checkValidation: function(id, type, options, submit_call)
@@ -238,7 +239,7 @@ FormValidator.prototype = {
 		element = $(id);
 		status_field = document.createElement("div");
 		status_field.id = id+"_status";
-		status_field.hide();
+		status_field.style.display = 'none';
 		switch(element.type.toLowerCase())
 		{
 			case "radio":

@@ -50,7 +50,7 @@ var UserCP = {
 				}
 				var container = document.createElement('DIV');
 				container.id = "buddyselect_container";
-				container.hide();
+				container.style.display = 'none';
 				container.innerHTML = request.responseText;
 				$('container').appendChild(container);
 			}

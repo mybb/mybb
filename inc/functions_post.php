@@ -312,7 +312,7 @@ function build_postbit($post, $post_type=0)
 		}
 
 		// Showing the warning level?
-		if($mybb->settings['enablewarningsystem'] != "no" && $usergroup['canreceivewarnings'] != "no" && ($mybb->usergroup['canwarnusers'] != "no" || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != "no")))
+		if(!$post_type && $mybb->settings['enablewarningsystem'] != "no" && $usergroup['canreceivewarnings'] != "no" && ($mybb->usergroup['canwarnusers'] != "no" || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != "no")))
 		{
 			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			if($warning_level > 100)

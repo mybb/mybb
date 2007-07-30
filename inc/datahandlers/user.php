@@ -1056,6 +1056,12 @@ class UserDataHandler extends DataHandler
 		// First, grab the old user details for later use.
 		$old_user = get_user($user['uid']);
 
+		// If old user has new pmnotice and new user has = yes, keep old value
+		if($old_user['pmnotice'] == "new" && $this->user_update_data['pmnotice'] == "yes")
+		{
+			unset($this->user_update_data['pmnotice']);
+		}
+
 		$plugins->run_hooks_by_ref("datahandler_user_update", $this);
 		
 		if(count($this->user_update_data) < 1) 

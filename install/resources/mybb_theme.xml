@@ -452,8 +452,8 @@ form {
 }
 
 .highlight {
-	background: #ffff00;
-	font-weight: bold;
+	background: #FFFFCC;
+	padding: 3px;
 }
 
 .pm_alert {
@@ -819,7 +819,10 @@ td .star_rating {
 </tr>
 </table>
 <br />]]></template>
-		<template name="global_pm_alert" version="140"><![CDATA[<div class="pm_alert">{$privatemessage_text}</div><br />]]></template>
+		<template name="global_pm_alert" version="140"><![CDATA[<div class="pm_alert" id="pm_notice">
+	<div class="float_right"><a href="private.php?action=dismiss_notice&amp;my_post_key={$mybb->post_code}" title="{$lang->dismis_notice}" onclick="return MyBB.dismissPMNotice()"><img src="{$theme['imgdir']}/dismiss_notice.gif" alt="[x]" /></a></div>
+	<div>{$privatemessage_text}</div>
+</div><br />]]></template>
 		<template name="post_savedraftbutton" version="120"><![CDATA[&nbsp;<input type="submit" class="button" name="savedraft" value="{$lang->save_draft}" />]]></template>
 		<template name="index" version="140"><![CDATA[<html>
 <head>
@@ -1209,7 +1212,7 @@ td .star_rating {
 <td class="tcat" align="center"><span class="smalltext"><strong>{$lang->draft_title}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_saved}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->draft_options}</strong></span></td>
-<td class="tcat" align="center" width="1"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></td>
+<td class="tcat" align="center" width="1"><input type="checkbox" class="checkbox checkall" /></td>
 </tr>
 {$drafts}
 </table>
@@ -2200,7 +2203,7 @@ td .star_rating {
 <td class="tcat" colspan="2" width="40%"><span class="smalltext"><strong>{$lang->attachments_attachment}</strong></span></td>
 <td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->attachments_post}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->date_uploaded}</strong></span></td>
-<td class="tcat" width="1"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></td>
+<td class="tcat" width="1"><input type="checkbox" class="checkbox checkall" /></td>
 </tr>
 {$attachments}
 </table>
@@ -3041,7 +3044,7 @@ td .star_rating {
 		<template name="postbit_edit" version="140"><![CDATA[<a href="editpost.php?pid={$post['pid']}" id="edit_post_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" alt="{$lang->postbit_edit}" title="{$lang->postbit_edit}" /></a>
 <div id="edit_post_{$post['pid']}_popup" class="popup_menu" style="display: none;"><div class="popup_item_container"><a href="javascript:;" onclick="Thread.quickEdit({$post['pid']});" class="popup_item">{$lang->postbit_quick_edit}</a></div><div class="popup_item_container"><a href="editpost.php?pid={$post['pid']}" class="popup_item">{$lang->postbit_full_edit}</a></div></div>
 <script type="text/javascript">
-<!--
+// <!--
 	if(use_xmlhttprequest == "yes")
 	{
 		new PopupMenu("edit_post_{$post['pid']}");
@@ -3053,7 +3056,7 @@ td .star_rating {
 		<template name="postbit_pm" version="120"><![CDATA[<a href="private.php?action=send&amp;uid={$post['uid']}"><img src="{$theme['imglangdir']}/postbit_pm.gif" alt="{$lang->postbit_pm}" title="{$lang->postbit_pm}" /></a>]]></template>
 		<template name="postbit_quickdelete" version="140"><![CDATA[<a href="editpost.php?pid={$post['pid']}" onclick="Thread.deletePost({$post['pid']}); return false;" style="display: none;" id="quick_delete_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_delete.gif" alt="{$lang->postbit_qdelete}" title="{$lang->postbit_qdelete}" /></a>
 <script type="text/javascript">
-<!--
+// <!--
 	$('quick_delete_{$post['pid']}').style.display = '';
 // -->
 </script>]]></template>
@@ -3458,7 +3461,7 @@ body {
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->dateread}</strong></span></td>
-<td class="tcat" align="center" width="1"><span class="smalltext"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></span></td>
+<td class="tcat" align="center" width="1"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
 </tr>
 {$readmessages}
 <tr>
@@ -3478,7 +3481,7 @@ body {
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="20%"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
-<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox" name="allbox" onclick="javascript:MyBB.checkAll(this.form);" /></span></td>
+<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkal" /></span></td>
 </tr>
 {$unreadmessages}
 <tr>
@@ -3691,7 +3694,7 @@ body {
 			<option value="username"{$sort_selected['username']}>{$lang->sort_by_username}</option>
 			<option value="regdate"{$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
 			<option value="lastvisit"{$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
-			<option value="posts"{$sort_selected['posts']}>{$lang->sort_by_posts}</option>
+			<option value="postnum"{$sort_selected['postnum']}>{$lang->sort_by_posts}</option>
 		</select><br />
 		<span class="smalltext">
 		<input type="radio" class="radio" name="order" id="order_asc" value="asc"{$order_check['asc']} /> <label for="order_asc">{$lang->order_asc}</label><br />
@@ -3843,7 +3846,7 @@ body {
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 <td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="Check All" onclick="MyBB.checkAll(this.form)" /></span></td>
+<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="Check All" /></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -3914,10 +3917,10 @@ body {
 		<template name="postbit" version="140"><![CDATA[{$ignore_bit}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">
 <tr>
-<td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+<td class="{$altbg}" width="175" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
-<td class="{$altbg}" width="85%" valign="top">
+<td class="{$altbg}" valign="top">
 <table width="100%">
 <tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']} {$post['subject_extra']}</strong></span>
 <br />
@@ -3935,8 +3938,8 @@ body {
 </td>
 </tr>
 <tr>
-<td class="{$altbg}" height="18" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$post['postdate']} {$post['posttime']}</span></td>
-<td class="{$altbg}" width="100%" valign="middle" height="18">
+<td class="{$altbg}" style="white-space: nowrap; text-align: center; vertical-align: middle;"><span class="smalltext">{$post['postdate']} {$post['posttime']}</span></td>
+<td class="{$altbg}" style="vertical-align: middle;">
 	<table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr valign="bottom">
 		<td align="left" ><span class="smalltext">{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}</span></td>
@@ -5317,7 +5320,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->replies}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong>{$lang->views}</strong></span></td>
 		<td class="tcat" align="center" width="200"><span class="smalltext"><strong>{$lang->lastpost}</strong></span></td>
-		<td class="tcat" align="center" width="1"><input name="allbox" title="Select All" type="checkbox" class="checkbox" value="1" onclick="MyBB.checkAll(this.form)" /></td>
+		<td class="tcat" align="center" width="1"><input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="1" /></td>
 	</tr>
 	{$threads}
 	<tr>
@@ -7086,7 +7089,7 @@ To: {$to_recipients}
 <td class="trow1"><span class="smalltext">{$this->warnings}</span><br /></td>
 </tr>
 </table><br /><br />]]></template>
-	<template name="postbit_delete_pm" version="140"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
+	<template name="postbit_delete_pm" version="140"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
 	<template name="postbit_forward_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward"><img src="{$theme['imglangdir']}/pm_forward.gif" alt="{$lang->forward}" title="{$lang->forward_title}" /></a>]]></template>
 	<template name="postbit_reply_pm" version="140"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
 	<template name="showthread_search" version="140"><![CDATA[	<div class="float_right">

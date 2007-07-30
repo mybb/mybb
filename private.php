@@ -112,6 +112,34 @@ if($mybb->input['preview'])
 	$mybb->input['action'] = "send";
 }
 
+// Dismissing a new/unread PM notice
+if($mybb->input['action'] == "dismiss_notice")
+{
+	if($mybb->user['pmnotice'] != "new")
+	{
+		exit;
+	}
+
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
+	$updated_user = array(
+		"pmnotice" => "yes"
+	);
+	$db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
+
+	if($mybb->input['ajax'])
+	{
+		echo 1;
+		exit;
+	}
+	else
+	{
+		header("Location: index.php");
+		exit;
+	}
+}
+
 $send_errors = '';
 
 if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
@@ -487,6 +515,15 @@ if($mybb->input['action'] == "read")
 
 		// Update the unread count - it has now changed.
 		update_pm_count($mybb->user['uid'], 6);
+
+		// Update PM notice value if this is our last unread PM
+		if($mybb->user['pms_unread']-1 <= 0 && $mybb->user['pmnotice'] == "new")
+		{
+			$updated_user = array(
+				"pmnotice" => "yes"
+			);
+			$db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
+		}
 	}
 	// Replied PM?
 	else if($pm['status'] == 3 && $pm['statustime'])

@@ -565,7 +565,7 @@ class postParser
 		if(intval($match[1]))
 		{
 			$pid = intval($match[1]);
-			$url = get_post_link($pid)."#pid$pid";
+			$url = $mybb->settings['bburl'].get_post_link($pid)."#pid$pid";
 			eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
 			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
 			$delete_quote = false;

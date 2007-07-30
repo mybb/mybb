@@ -48,20 +48,15 @@ autoComplete.prototype = {
 
 		if(this.textbox.form)
 		{
-			if(this.textbox.form.onsubmit)
-			{
-				this.oldOnSubmit = this.textbox.form.onsubmit;
-			}
-			
+			Event.observe(this.textbox.form, "submit", this.onFormSubmit.bindAsEventListener(this));
 			this.formSubmit = true;
-			this.textbox.form.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		}
 
 		this.textbox.onsubmit = this.onFormSubmit.bindAsEventListener(this);
 		this.popup = document.createElement("div");
 		this.popup.style.position = "absolute";
 		this.popup.className = "autocomplete";
-		this.popup.hide();
+		this.popup.style.display = 'none';
 		document.body.appendChild(this.popup);
 
 		this.textbox.popup = this;
@@ -81,11 +76,6 @@ autoComplete.prototype = {
 		}
 		else
 		{
-			if(this.oldOnSubmit)
-			{
-				eval('return_value = '+this.oldOnSubmit);
-				return return_value();
-			}
 			return true;
 		}
 		//this.textbox.setAttribute("autocomplete", "on");

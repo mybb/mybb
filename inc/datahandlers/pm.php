@@ -218,7 +218,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// If we have one or more invalid recipients and we're not saving a draft, error
-		if(count($invalid_recipients) > 0)
+		if(count($invalid_recipients) > 0 || !is_array($recipients))
 		{
 			$invalid_recipients = implode(", ", $invalid_recipients);
 			$this->set_error("invalid_recipients", array($invalid_recipients));
@@ -518,6 +518,15 @@ class PMDataHandler extends DataHandler
 			$db->insert_query("privatemessages", $this->pm_insert_data);
 
 			$this->pmid = $db->insert_id();
+
+			// If PM noices/alerts are on, show!
+			if($recipient['pmnotice'] == "yes")
+			{
+				$updated_user = array(
+					"pmnotice" => "new"
+				);
+				$db->update_query("users", $updated_user, "uid='{$recipient['uid']}'");
+			}
 
 			// Update private message count (total, new and unread) for recipient
 			require_once MYBB_ROOT."/inc/functions_user.php";

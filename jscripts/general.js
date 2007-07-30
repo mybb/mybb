@@ -9,6 +9,13 @@ var MyBB = {
 	pageLoaded: function()
 	{
 		expandables.init();
+
+		// Initialise check all boxes
+		checkall = document.getElementsByClassName("checkall", "input");
+		checkall.each(function(element) {
+			Event.observe(element, "click", MyBB.checkAll.bindAsEventListener(this));
+		});
+
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == "yes")
 		{
 			mark_read_imgs = document.getElementsByClassName("ajax_mark_read", "img");
@@ -124,12 +131,18 @@ var MyBB = {
 		}
 	},
 
-	checkAll: function(formName)
+	checkAll: function(e)
 	{
-		formName.elements.each(function(element) {		
-			if((element.name != "allbox") && (element.type == "checkbox"))
+		var allbox = Event.element(e);
+		var form = Event.findElement(e, 'FORM');
+		if(!form)
+		{
+			return false;
+		}
+		form.getElements().each(function(element) {		
+			if(!element.hasClassName("checkall") && element.type == "checkbox")
 			{
-				element.checked = formName.allbox.checked;
+				element.checked = allbox.checked;
 			}
 		});
 	},
@@ -246,6 +259,23 @@ var MyBB = {
 				form.submit();
 			}
 		}
+	},
+
+	dismissPMNotice: function()
+	{
+		if(!$('pm_notice'))
+		{
+			return false;
+		}
+
+		if(use_xmlhttprequest != "yes")
+		{
+			return true;
+		}
+
+		new Ajax.Request('private.php?action=dismiss_notice', {method: 'post', postBody: 'ajax=1&my_post_key='+my_post_key});
+		Element.remove('pm_notice');
+		return false;
 	},
 
 	unHTMLchars: function(text)

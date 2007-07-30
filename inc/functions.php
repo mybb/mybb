@@ -812,6 +812,11 @@ function multipage($count, $perpage, $page, $url)
 		}
 	}
 
+	if($to == 0)
+	{
+		$to = $pages;
+	}
+
 	if($from > 1)
 	{
 		$page_url = fetch_page_url($url, 1);

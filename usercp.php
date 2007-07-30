@@ -759,7 +759,7 @@ if($mybb->input['action'] == "options")
 		$receivepmscheck = "";
 	}
 
-	if($user['pmnotice'] == "yes")
+	if($user['pmnotice'] == "yes" || $user['pmnotice'] == "new")
 	{
 		$pmnoticecheck = " checked=\"checked\"";
 	}
