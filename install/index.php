@@ -463,7 +463,7 @@ function database_info()
 		'eucjpms' => 'UJIS for Windows Japanese',
 	);
 	
-	// Loop through database engines
+	// Loop through database encodings
 	foreach($encodings_array as $key => $encoding)
 	{
 		if($key == $encoding)
