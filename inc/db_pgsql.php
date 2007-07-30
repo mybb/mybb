@@ -858,7 +858,7 @@ class databaseEngine
 			return $this->version;
 		}
 		
-		if(version_compare(phpversion(), '5.0.0', '>='))
+		if(version_compare(PHP_VERSION, '5.0.0', '>='))
 		{
 			$version = pg_version($this->current_link);
  

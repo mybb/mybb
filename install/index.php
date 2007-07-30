@@ -398,6 +398,7 @@ function database_info()
 		$dbname = $mybb->input['dbname'];
 		$tableprefix = $mybb->input['tableprefix'];
 		$dbengine = $mybb->input['dbengine'];
+		$encoding = $mybb->input['encoding'];
 	}
 	else
 	{
@@ -407,6 +408,7 @@ function database_info()
 		$dbuser = '';
 		$dbname = '';
 		$dbengine = '';
+		$encoding = 'utf8';
 	}
 	
 	// Loop through database engines
@@ -421,14 +423,71 @@ function database_info()
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
 		}
 	}
+	
+	$encodings_array = array(
+		'big5' => 'Big5 Traditional Chinese',
+		'dec8' => 'DEC West European',
+		'cp850' => 'DOS West European',
+		'hp8' => 'HP West European',
+		'koi8r' => 'KOI8-R Relcom Russian',
+		'latin1' => 'cp1252 West European',
+		'latin2' => 'ISO 8859-2 Central European',
+		'swe7' => '7bit Swedish',
+		'ascii' => 'US ASCII',
+		'ujis' => 'EUC-JP Japanese',
+		'sjis' => 'Shift-JIS Japanese',
+		'hebrew' => 'ISO 8859-8 Hebrew',
+		'tis620' => 'TIS620 Thai',
+		'euckr' => 'EUC-KR Korean',
+		'koi8u' => 'KOI8-U Ukrainian',
+		'gb2312' => 'GB2312 Simplified Chinese',
+		'greek' => 'ISO 8859-7 Greek',
+		'cp1250' => 'Windows Central European',
+		'gbk' => 'GBK Simplified Chinese',
+		'latin5' => 'ISO 8859-9 Turkish',
+		'armscii8' => 'ARMSCII-8 Armenian',
+		'utf8' => 'UTF-8 Unicode',
+		'ucs2' => 'UCS-2 Unicode',
+		'cp866' => 'DOS Russian',
+		'keybcs2' => 'DOS Kamenicky Czech-Slovak',
+		'macce' => 'Mac Central European',
+		'macroman' => 'Mac West European',
+		'cp852' => 'DOS Central European',
+		'latin7' => 'ISO 8859-13 Baltic',
+		'cp1251' => 'Windows Cyrillic',
+		'cp1256' => 'Windows Arabic',
+		'cp1257' => 'Windows Baltic',
+		'binary' => 'Binary pseudo charset',
+		'geostd8' => 'GEOSTD8 Georgian',
+		'cp932' => 'SJIS for Windows Japanese',
+		'eucjpms' => 'UJIS for Windows Japanese',
+	);
+	
+	// Loop through database engines
+	foreach($encodings_array as $key => $encoding)
+	{
+		if($key == $encoding)
+		{
+			$encodings .= "<option value=\"{$key}\" selected=\"selected\">{$encoding}</option>";
+		}
+		else
+		{
+			$encodings .= "<option value=\"{$key}\">{$encoding}</option>";
+		}
+	}
 
-	echo sprintf($lang->db_step_config_table, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix);
+	echo sprintf($lang->db_step_config_table, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix, $encodings);
 	$output->print_footer('create_tables');
 }
 
 function create_tables()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
+	
+	if(!$mybb->input['encoding'])
+	{
+		$errors[] = $lang->db_step_error_missingencoding;
+	}
 
 	if(!file_exists(MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php"))
 	{
@@ -458,7 +517,19 @@ function create_tables()
 	{
 		database_info();
 	}
-
+	
+	// Decide if we can use a database encoding or not
+	if(($db->short_title == "MySQLi" || $db->short_title == "MySQL") && $db->get_version() >= '4.1.0')
+	{
+		$db_encoding = "\$config['db_encoding'] = '{$mybb->input['encoding']}';";
+		$charset = " CHARACTER SET {$mybb->input['encoding']}";
+	}
+	else
+	{
+		$db_encoding = "// \$config['db_encoding'] = '{$mybb->input['encoding']}';";
+		$charset = "";
+	}
+	
 	// Write the configuration file
 	$configdata = "<?php
 /**
@@ -498,8 +569,8 @@ function create_tables()
  *  of the most commonly accessed data in MyBB.
  *  By default, the database is used to store this data.
  *
- *  If you wish to use the file system (inc/cache directory)
- *  you can change the value below to 'files' from 'db'.
+ *  If you wish to use the file system (inc/cache directory), MemCache or eAccelerator
+ *  you can change the value below to 'files', 'memcache' or 'eaccelerator' from 'db'.
  */
 
 \$config['cache_store'] = 'db';
@@ -513,8 +584,8 @@ function create_tables()
  * If not using memcache, ignore this section.
  */
 
- \$config['memcache_host'] = 'localhost';
- \$config['memcache_port'] = 11211;
+\$config['memcache_host'] = 'localhost';
+\$config['memcache_port'] = 11211;
 
 /**
  * Super Administrators
@@ -525,6 +596,16 @@ function create_tables()
  */
 
 \$config['super_admins'] = '1';
+
+/**
+ * Database Encoding
+ * If you wish to set an encoding for MyBB uncomment 
+ * the line below (if it isn't already) and change
+ * the current value to the mysql charset:
+ * http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
+ */
+
+{$db_encoding}
  
 ?>";
 

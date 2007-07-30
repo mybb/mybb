@@ -165,9 +165,15 @@ $l['db_step_config_table'] = '<div class="border_wrapper">
 <tr>
 	<th colspan="2" class="first last">Table Settings</th>
 </tr>
-<tr class="last">
+<tr class="first">
 	<td class="first"><label for="tableprefix">Table Prefix:</label></td>
 	<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="{5}" /></td>
+</tr>
+<tr class="last">
+	<td class="first"><label for="encoding">Tables Encoding: (MySQL 4.1+ <strong>Only</strong>)</label></td>
+	<td class="last alt_col"><select name="encoding">
+{$encodings}
+</select></td>
 </tr>
 </table>
 </div>
@@ -181,7 +187,7 @@ $l['db_step_error_config'] = '<div class="error">
 $l['db_step_error_invalidengine'] = 'You have selected an invalid database engine. Please make your selection from the list below.';
 $l['db_step_error_noconnect'] = 'Could not connect to the database server at \'{1}\' with the supplied username and password. Are you sure the hostname and user details are correct?';
 $l['db_step_error_nodbname'] = 'Could not select the database \'{1}\'. Are you sure it exists and the specified username and password have access to it?';
-
+$l['db_step_error_missingencoding'] = 'You have not selected an encoding yet. Please make sure you selected an encoding before continuing. (Select \'UTF-8 Unicode\' if you are not sure)';
 
 $l['tablecreate_step_connected'] = '<p>Connection to the database server and table you specified was successful.</p>
 <p>Database Engine: {1} {2}</p>

@@ -151,7 +151,7 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
-		global $lang;
+		global $mybb;
 		
 		$master_success = @mysqli_select_db($this->link, $database) or $this->error("Unable to select database", $this->link);
 		if($this->slave_link)
@@ -165,9 +165,9 @@ class databaseEngine
 			$success = $master_success;
 		}
 		
-		if($success == true && $lang->charset == "UTF-8")
+		if($success && $mybb->config['db_encoding'])
 		{
-			$this->query("SET NAMES 'utf8'");
+			$this->query("SET NAMES '{$mybb->config['db_encoding']}'");
 		}
 		return $success;
 	}

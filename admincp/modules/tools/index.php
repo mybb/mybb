@@ -223,8 +223,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	$not_okey = array();
 	
 	foreach($tables as $key => $tablename)
-	{
-		
+	{		
 		if(substr($tablename, 0, strlen($old_table_prefix)) == $old_table_prefix)
 		{
 			$table = $db->show_create_table($tablename);
