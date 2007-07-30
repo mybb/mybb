@@ -44,7 +44,7 @@ $l['restore_database_desc'] = "Below is a list of the existing database backups 
 $l['no_existing_backups'] = "There are currently no existing database backups stored in the MyBB backups directory.";
 $l['delete'] = "delete";
 
-$l['confirm_delete_text'] = "Are you sure you would like to delete the selected backup?<br >This process cannot be undone.";
+$l['confirm_delete_text'] = "Are you sure you would like to delete the selected backup?<br />This process cannot be undone.";
 
 $l['backup_complete'] = "Backup generated successfully.<br /><br />The backup was saved to:<br />{1}<br /><br /><a href=\"{2}\">Download this backup</a>.";
 $l['backup_deleted'] = "Backup Deleted Successfully";
