@@ -159,10 +159,15 @@ $l['db_step_config_table'] = '<div class="border_wrapper">
 <tr>
 	<th colspan="2" class="first last">Table Settings</th>
 </tr>
-<tr class="last">
+<tr class="first">
 	<td class="first"><label for="tableprefix">Table Prefix:</label></td>
 	<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="{5}" /></td>
 </tr>
+<tr class="last">
+	<td class="first"><label for="encoding">Tables Encoding: (MySQL 4.1+ <strong>Only</strong>)</label></td>
+	<td class="last alt_col"><select name="encoding">
+{$encodings}
+</select>
 </table>
 </div>
 <p>Once you\'ve checked these details are correct, click next to continue.</p>';
