@@ -503,7 +503,7 @@ function get_post_attachments($id, &$post)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif(($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no')
+					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no') && $isimage)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
@@ -528,7 +528,7 @@ function get_post_attachments($id, &$post)
 						}
 						$tcount++;
 					}
-					elseif(($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no')
+					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no') && $isimage)
 					{
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}

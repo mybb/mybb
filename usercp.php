@@ -1484,7 +1484,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 			} 
 			remove_avatars($mybb->user['uid']);
 		}
-	} 
+	}
 	elseif($_FILES['avatarupload']['name']) // upload avatar 
 	{ 
 		if($mybb->usergroup['canuploadavatars'] == "no") 

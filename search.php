@@ -693,8 +693,7 @@ elseif($mybb->input['action'] == "finduserthreads")
 	redirect("search.php?action=results&sid=".$sid, $lang->redirect_searchresults);
 }
 elseif($mybb->input['action'] == "getnew")
-{
-	
+{	
 	$where_sql = "t.lastpost >= '".$mybb->user['lastvisit']."'";
 
 	if($mybb->input['fid'])

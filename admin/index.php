@@ -460,7 +460,7 @@ $menu[160] = array(
 		10 => array("title" => $lang->nav_db_backup, "url" => "dbtools.php?".SID."&amp;action=backup"),
 		20 => array("title" => $lang->nav_db_existing_backups, "url" => "dbtools.php?".SID."&amp;action=existing"),
 		30 => array("title" => $lang->nav_db_optimize, "url" => "dbtools.php?".SID."&amp;action=optimize"),
-
+		40 => array("title" => $lang->nav_db_convert_to_utf8, "url" => "dbtools.php?".SID."&amp;action=utf8_conversion"),
 	)
 );
 

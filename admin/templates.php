@@ -246,7 +246,7 @@ if($mybb->input['action'] == "do_replace")
 			foreach($template_list as $sid => $templates)
 			{
 				// Show group header
-				$search_header = sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
+				$search_header = sprintf($lang->search_header, htmlspecialchars_uni($mybb->input['find']), $template_groups[$sid]);
 				tablesubheader($search_header);
 	
 				foreach($templates as $title => $template)

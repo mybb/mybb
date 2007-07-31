@@ -37,8 +37,28 @@ $l['select_forum_tables'] = "Select Forum Tables";
 $l['perform_backup'] = "Perform Backup";
 $l['sequential_backup'] = "Perform a sequential backup?";
 
+$l['utf8_conversion'] = "UTF-8 Conversion";
+$l['converting_to_utf8'] = "MyBB is currently converting \"{1}\" table to UTF-8 language encoding from {2} encoding.";
+$l['convert_to_utf'] = "You are about to convert the \"{1}\" table to UTF-8 language encoding from {2} encoding.";
+$l['convert_all_to_utf'] = "You are about to convert ALL tables to UTF-8 language encoding from {1} encoding.";
+$l['notice_proccess_long_time'] = "This proccess may take up to several hours depending on the size of your forum and this table.";
+$l['please_wait'] = "Please wait...";
+$l['converting_table'] = "Converting Table:";
+$l['convert_table'] = "Convert Table:";
+$l['convert_tables'] = "Convert All Tables:";
+$l['convert_all'] = "Convert All";
+$l['convert_database_table'] = "Convert Database Table";
+$l['convert_database_tables'] = "Convert All Database Tables";
+$l['table'] = "Table";
+$l['status'] = "Status";
+$l['convert_now'] = "Convert Now";
+$l['error_invalid_table'] = "The specified table does not exist.";
+$l['success_table_converted'] = "The specified table \"{1}\" has been sucessfully converted to UTF-8.";
+
 $l['tables_optimized'] = "The selected database tables have successfully been optimized.";
 $l['optimize_tables'] = "Optimize Database Tables";
+
+$l['convert_to_utf8'] = "Convert to UTF-8";
 
 $l['restore_database_desc'] = "Below is a list of the existing database backups stored in the MyBB backups directory.";
 $l['no_existing_backups'] = "There are currently no existing database backups stored in the MyBB backups directory.";

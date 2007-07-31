@@ -111,7 +111,14 @@ class databaseEngine
 	 */
 	function select_db($database)
 	{
-		return @mysql_select_db($database, $this->link) or $this->dberror();
+		global $config;
+		
+		$success = @mysql_select_db($database, $this->link) or $this->dberror();
+		if($success && $config['db_encoding'])
+		{
+			$this->query("SET NAMES '{$config['db_encoding']}'");
+		}
+		return $success;
 	}
 	
 	/**

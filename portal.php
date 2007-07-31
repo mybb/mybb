@@ -327,7 +327,14 @@ if($mybb->settings['portal_showwol'] != "no")
 	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
 	$recordtime = my_date($mybb->settings['timeformat'], $mostonline['time']);
 
-	$lang->online_users = sprintf($lang->online_users, $onlinecount);
+	if($onlinecount == 1)
+	{
+	  $lang->online_users = $lang->online_user;
+	}
+	else
+	{
+	  $lang->online_users = sprintf($lang->online_users, $onlinecount);
+	}
 	$lang->online_counts = sprintf($lang->online_counts, $membercount, $guestcount);
 	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");
 }

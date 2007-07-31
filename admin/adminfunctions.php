@@ -2421,4 +2421,20 @@ function makeparentlist($fid, $navsep=",")
 	}
 	return $navigation;
 }
+
+function fetch_iconv_encoding($mysql_encoding)
+{
+    $mysql_encoding = explode("_", $mysql_encoding);
+    switch($mysql_encoding[0])
+    {
+        case "utf8":
+            return "utf-8";
+			break;
+        case "latin1":
+            return "iso-8859-1";
+			break;
+		default:
+			return $mysql_encoding[0];
+    }
+}
 ?>
