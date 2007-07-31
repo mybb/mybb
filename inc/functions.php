@@ -4770,6 +4770,7 @@ if(!function_exists('str_ireplace'))
 	{
 		$pattern = "#".preg_quote($pattern, "#")."#";
 	}
+	
 	function str_ireplace($search, $replace, $subject)
 	{
 		if(is_array($search))
