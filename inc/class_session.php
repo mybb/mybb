@@ -138,8 +138,6 @@ class session
 			return false;
 		}
 		$this->uid = $mybb->user['uid'];
-		
-		$mybb->user['logoutkey'] = md5($mybb->user['salt'].$mybb->user['password']);
 
 		// Sort out the private message count for this user.
 		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount

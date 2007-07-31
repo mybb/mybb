@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="14000">
+<theme name="MyBB Master Style" version="1400">
 	<cssbits>
 		<body>
 			<background><![CDATA[#efefef]]></background>
@@ -715,7 +715,7 @@ td .star_rating {
 }]]></extracss>
 	</themebits>
 	<templates>
-			<template name="forumdisplay_threadlist" version="14000"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
+			<template name="forumdisplay_threadlist" version="1400"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
 	{$newthread}
 </div>
 {$multipage}
@@ -812,7 +812,7 @@ td .star_rating {
 </table>
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_sortrating" version="120"><![CDATA[<option value="rating" {$sortsel['rating']}>{$lang->sort_by_rating}</option>]]></template>
-		<template name="global_boardclosed_warning" version="14000"><![CDATA[<br />
+		<template name="global_boardclosed_warning" version="1400"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="center"><strong><span style="color:#FF0000;">{$lang->bbclosed_warning}</span></strong></td>
