@@ -954,7 +954,7 @@ if($mybb->input['action'] == "logout")
 	{
 		redirect("index.php", $lang->redirect_alreadyloggedout);
 	}
-	if($mybb->input['uid'] == $mybb->user['uid'] && $mybb->input['sid'] == $session->sid)
+	if($mybb->input['uid'] == $mybb->user['uid'] && $mybb->input['logoutkey'] == $mybb->user['logoutkey'])
 	{
 		my_unsetcookie("mybbuser");
 		my_unsetcookie("sid");

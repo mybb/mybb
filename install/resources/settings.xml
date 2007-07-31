@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings version="140" exported="1178692706">
+<settings version="1400" exported="1178692706">
 	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="14" isdefault="yes">
 		<setting name="enablecalendar">
 			<title>Enable Calendar Functionality</title>

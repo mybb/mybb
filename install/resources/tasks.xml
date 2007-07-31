@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tasks version="140" exported="">
+<tasks version="1400" exported="">
 	<task>
 		<title>Hourly Cleanup</title>
 		<description><![CDATA[Cleans out old searches, captcha images and expires redirects]]></description>
