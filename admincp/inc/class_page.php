@@ -438,13 +438,13 @@ class DefaultPopupMenu
 	function fetch()
 	{
 		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\">\n{$this->items}</div>\n";
-		$popup .= "<script type=\"text/javascript\">\n<!--\n";
 		if($this->title)
 		{
-			$popup .= "document.write('<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}<\/a>');\n";
+			$popup .= "<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}</a>\n";
 		}
+		$popup .= "<script type=\"text/javascript\">\n";
 		$popup .= "new PopupMenu('{$this->id}');\n";
-		$popup .= "//-->\n</script>\n";
+		$popup .= "</script>\n";
 		return $popup;
 	}
 

@@ -139,6 +139,9 @@ class session
 		}
 		$this->uid = $mybb->user['uid'];
 
+		// Set the logout key for this user
+		$mybb->user['logoutkey'] = md5($mybb->user['loginkey']);
+
 		// Sort out the private message count for this user.
 		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
 		{

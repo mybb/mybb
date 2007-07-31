@@ -86,7 +86,7 @@ class DefaultTable
 		echo $this->construct_html($heading, $border, $class);
 	}
 
-	function construct_html($heading="", $border=1, $class="general")
+	function construct_html($heading="", $border=1, $class=null, $table_id="")
 	{
 		if($border == 1)
 		{
@@ -97,9 +97,17 @@ class DefaultTable
 			}
 		}
 		$table .= "<table";
-		if($class != "")
+		if(!is_null($class))
 		{
+			if(!$class)
+			{
+				$class = "general";
+			}
 			$table .= " class=\"".$class."\"";
+		}
+		if($table_id != "")
+		{
+			$table .= " id=\"".$table_id."\"";
 		}
 		$table .= " cellspacing=\"0\">\n";
 		if($this->headers)

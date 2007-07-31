@@ -517,7 +517,7 @@ if($mybb->input['action'] == "read")
 		update_pm_count($mybb->user['uid'], 6);
 
 		// Update PM notice value if this is our last unread PM
-		if($mybb->user['pms_unread']-1 <= 0 && $mybb->user['pmnotice'] == "new")
+		if($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == "new")
 		{
 			$updated_user = array(
 				"pmnotice" => "yes"

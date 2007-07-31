@@ -860,8 +860,13 @@ td .star_rating {
 {$footer}
 </body>
 </html>]]></template>
+<<<<<<< .mine
+		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
+		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->welcome_logout}</a>)<br />
+=======
 		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->welcome_logout}</a>)<br />
+>>>>>>> .r3252
 				<span class="links">
 					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 350, 350);">{$lang->welcome_open_buddy_list}</a>
 				</span>
@@ -4128,9 +4133,9 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="changeuserbox" version="120"><![CDATA[<tr>
+		<template name="changeuserbox" version="1400"><![CDATA[<tr>
 <td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
-<td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->change_user}</a></strong>]</span></td>
+<td class="trow1">{$mybb->user['username']} <span class="smalltext">[<strong><a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->change_user}</a></strong>]</span></td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_results" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -5539,7 +5544,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </select>
 </td>
 </tr>]]></template>
-		<template name="index_logoutlink" version="120"><![CDATA[<a href="member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->index_logout}</a> | ]]></template>
+		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
 		<template name="postbit_iplogged_show" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</div>]]></template>
 		<template name="usercp_changeavatar" version="1400"><![CDATA[<html>
 <head>
