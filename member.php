@@ -941,34 +941,32 @@ else if($mybb->input['action'] == "logout")
 		redirect("index.php", $lang->redirect_alreadyloggedout);
 	}
 	
-	if($mybb->input['uid'] == $mybb->user['uid'] && $mybb->input['sid'] == $session->sid)
-	{
-		my_unsetcookie("mybbuser");
-		my_unsetcookie("sid");
-		if($mybb->user['uid'])
-		{
-			$time = time();
-			$lastvisit = array(
-				"lastactive" => $time-900,
-				"lastvisit" => $time,
-				);
-			$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
-			$db->delete_query(TABLE_PREFIX."sessions", "sid='".$session->sid."'");
-
-			if(function_exists("loggedOut"))
-			{
-				loggedOut($mybb->user['uid']);
-			}
-		}
-
-		$plugins->run_hooks("member_logout_end");
-
-		redirect("index.php", $lang->redirect_loggedout);
-	}
-	else 
+	// Check session ID if we have one
+	if($mybb->input['sid']) && $mybb->input['sid'] != $session->sid
 	{
 		error($lang->error_notloggedout);
 	}
+	// Otherwise, check logoutkey
+	else if($mybb->input['logoutkey'] != $mybb->user['logoutkey'])
+	{
+		error($lang->error_notloggedout);
+	}
+
+	my_unsetcookie("mybbuser");
+	my_unsetcookie("sid");
+	if($mybb->user['uid'])
+	{
+		$time = time();
+		$lastvisit = array(
+			"lastactive" => $time-900,
+			"lastvisit" => $time,
+			);
+		$db->update_query(TABLE_PREFIX."users", $lastvisit, "uid='".$mybb->user['uid']."'");
+		$db->delete_query(TABLE_PREFIX."sessions", "sid='".$session->sid."'");
+	}
+	$plugins->run_hooks("member_logout_end");
+
+	redirect("index.php", $lang->redirect_loggedout);
 }
 elseif($mybb->input['action'] == "profile")
 {
