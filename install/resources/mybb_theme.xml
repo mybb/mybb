@@ -860,13 +860,8 @@ td .star_rating {
 {$footer}
 </body>
 </html>]]></template>
-<<<<<<< .mine
 		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
 		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->welcome_logout}</a>)<br />
-=======
-		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;uid={$mybb->user['uid']}&amp;sid={$session->sid}">{$lang->welcome_logout}</a>)<br />
->>>>>>> .r3252
 				<span class="links">
 					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 350, 350);">{$lang->welcome_open_buddy_list}</a>
 				</span>
