@@ -942,7 +942,7 @@ else if($mybb->input['action'] == "logout")
 	}
 	
 	// Check session ID if we have one
-	if($mybb->input['sid']) && $mybb->input['sid'] != $session->sid
+	if($mybb->input['sid'] && $mybb->input['sid'] != $session->sid)
 	{
 		error($lang->error_notloggedout);
 	}

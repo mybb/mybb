@@ -166,7 +166,7 @@ $l['db_step_config_table'] = '<div class="border_wrapper">
 <tr class="last">
 	<td class="first"><label for="encoding">Tables Encoding: (MySQL 4.1+ <strong>Only</strong>)</label></td>
 	<td class="last alt_col"><select name="encoding">
-{$encodings}
+{6}
 </select>
 </table>
 </div>
