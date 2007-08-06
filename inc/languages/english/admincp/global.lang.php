@@ -36,6 +36,7 @@ $l['please_login'] = "Please Login";
 $l['username'] = "Username:";
 $l['password'] = "Password:";
 $l['login'] = "Login";
+$l['lost_password'] = "Forgot your password?";
 
 // Action Confirmation
 $l['confirm_action'] = "Are you sure you wish to perform this action?";

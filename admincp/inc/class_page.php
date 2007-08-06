@@ -189,12 +189,7 @@ loading_text = '{$lang->loading_text}';
 	{
 		global $lang;
 		
-		if(!$message)
-		{
-			$message = $lang->enter_username_and_password;
-		}
-		
-print <<<EOF
+		print <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head profile="http://gmpg.org/xfn/1">
@@ -202,6 +197,14 @@ print <<<EOF
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright 2006 MyBB Group." />
 <link rel="stylesheet" href="./styles/default/login.css" type="text/css" />
+<script type="text/javascript" src="../jscripts/prototype.js"></script>
+<script type="text/javascript" src="../jscripts/general.js"></script>
+<script type="text/javascript" src="./jscripts/admincp.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+	loading_text = '{$lang->loading_text}';
+//]]>
+</script>
 </head>
 <body>
 <div id="container">
@@ -213,24 +216,31 @@ print <<<EOF
 	</div>
 	<div id="content">
 		<h2>{$lang->please_login}</h2>
-					<p id="message" class="{$class}"><span class="text">{$message}</span><br />{$lang->enter_username_and_password}</p>
-		
+EOF;
+		if($message)
+		{
+			echo "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
+		}
+print <<<EOF
+		<p>{$lang->enter_username_and_password}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}">
 		<div class="form_container">
 
 			<div class="label"><label for="username">{$lang->username}</label></div>
 
-			<div class="field"><input type="text" name="username" id="username" class="text_input" /></div>
+			<div class="field"><input type="text" name="username" id="username" class="text_input initial_focus" /></div>
 
 			<div class="label"><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
 		</div>
 		<p class="submit">
-			<input type="submit" value="{$lang->login}" />
+			<span class="forgot_password">
+				<a href="../member.php?action=lostpw">{$lang->lost_password}</a>
+			</span>
 
+			<input type="submit" value="{$lang->login}" />
 			<input type="hidden" name="do" value="login" />
 		</p>
-
 		</form>
 	</div>
 </div>

@@ -20,10 +20,6 @@
 function remove_attachment($pid, $posthash, $aid)
 {
 	global $db, $mybb, $plugins;
-	if($pid)
-	{
-		$post = get_post($pid);
-	}
 	$aid = intval($aid);
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
@@ -45,8 +41,9 @@ function remove_attachment($pid, $posthash, $aid)
 	{
 		@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
 	}
-	if($attachment['visible'] == 1 && $post['pid'])
+	if($attachment['visible'] == 1 && $pid)
 	{
+		$post = get_post($pid);
 		update_thread_counters($post['tid'], array("attachmentcount" => "-1"));
 	}
 }
@@ -352,11 +349,11 @@ function upload_attachment($attachment)
 
 	// Check if the attachment directory (YYYYMM) exists, if not, create it
 	$month_dir = gmdate("Ym");
-	if(!@is_dir($mybb->settings['uploadspath'].$month_dir))
+	if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
 	{
-		@mkdir($mybb->settings['uploadspath'].$month_dir);
+		@mkdir($mybb->settings['uploadspath']."/".$month_dir);
 		// Still doesn't exist - oh well, throw it in the main directory
-		if(!@is_dir($mybb->settings['uploadspath'].$month_dir))
+		if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
 		{
 			$month_dir = '';
 		}
@@ -367,7 +364,7 @@ function upload_attachment($attachment)
 
 	if($month_dir)
 	{
-		$filename =$month_dir."/".$filename;
+		$filename = $month_dir."/".$filename;
 	}
 	
 	if($file['error'])
@@ -402,6 +399,7 @@ function upload_attachment($attachment)
 		"filesize" => intval($file['size']),
 		"attachname" => $filename,
 		"downloads" => 0,
+		"dateline" => TIME_NOW
 	);
 
 	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail

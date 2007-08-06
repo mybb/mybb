@@ -16,6 +16,13 @@ var MyBB = {
 			Event.observe(element, "click", MyBB.checkAll.bindAsEventListener(this));
 		});
 
+		// Initialise "initial focus" field if we have one
+		initialfocus = document.getElementsByClassName("initial_focus", "input");
+		if(initialfocus[0])
+		{
+			initialfocus[0].focus();
+		}
+
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == "yes")
 		{
 			mark_read_imgs = document.getElementsByClassName("ajax_mark_read", "img");

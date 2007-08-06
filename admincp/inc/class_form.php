@@ -301,6 +301,7 @@ class DefaultForm
 							$options['depth'] += 15;
 							$options['pid'] = $forum['fid'];
 							$this->generate_forum_select($forum['fid'], $selected, $options, 0);
+							$options['depth'] -= 15;
 						}
 					}
 				}

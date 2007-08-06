@@ -187,7 +187,6 @@ if($mybb->input['action'] == "do_search")
 		case 'forumname':
 			$order_by = 'f.name';
 			break;
-		case 'filename':
 		default:
 			$order_by = 'a.filename';
 			break;

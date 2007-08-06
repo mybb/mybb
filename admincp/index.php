@@ -147,7 +147,7 @@ else
 	// No admin session - show message on the login screen
 	if(!$mybb->input['adminsid'])
 	{
-		$login_message = "No administration session was found";
+		$login_message = "";
 	}
 	// Otherwise, check admin session
 	else
@@ -303,7 +303,7 @@ if(!$mybb->user['uid'] || $logged_out == true)
 	}
 	elseif($fail_check == 1)
 	{
-		$page->show_login("The username and password you entered are invalid or the account is not a valid administrator", "error");
+		$page->show_login("The username and password combination you entered is invalid.", "error");
 	}
 	else
 	{

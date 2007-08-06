@@ -2484,12 +2484,27 @@ function get_attachment_icon($ext)
 
 	if($attachtypes[$ext]['icon'])
 	{
-		$attachtypes[$ext]['icon'] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
-		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".{$ext} File\" />";
+		if(defined("IN_ADMINCP"))
+		{
+			$attachtypes[$ext]['icon'] = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
+			if(my_substr($attachtypes[$ext]['icon'], 0, 1) != "/" && my_substr($attachtypes[$ext]['icon'], 0, 7) != "http://")
+			{
+				$attachtypes[$ext]['icon'] = "../".$attachtypes[$ext]['icon'];
+			}
+		}
+		else
+		{
+			$attachtypes[$ext]['icon'] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+		}
+		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".{$ext}\" />";
 	}
 	else
 	{
-		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext} File\" />";
+		if(defined("IN_ADMINCP"))
+		{
+			$theme['imgdir'] = "../images";
+		}
+		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext}\" />";
 	}
 }
 

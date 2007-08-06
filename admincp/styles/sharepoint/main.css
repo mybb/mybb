@@ -809,11 +809,33 @@ ul.tabs a.active {
     line-height: 1.7;
 }
 
-.users_quick_search {
-background: #DDE6EE;
-	padding: 4px 7px 5px;
+
+.pagination {
+	font-size: 11px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
-.users_quick_search .form_row {
-margin: 4px 10px;
+.pagination .pages {
+	font-weight: bold;
+}
+
+.pagination .pagination_current, .pagination a {
+	padding: 2px 6px;
+	margin-bottom: 3px;
+}
+
+.pagination a {
+	border: 1px solid #81A2C4;
+}
+
+.pagination .pagination_current {
+	background: #F5F5F5;
+	border: 1px solid #81A2C4;
+	font-weight: bold;
+}
+
+.pagination a:hover {
+	background: #F5F5F5;
+	text-decoration: none;
 }

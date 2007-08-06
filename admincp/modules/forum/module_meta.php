@@ -29,6 +29,10 @@ function forum_action_handler($action)
 	$page->active_module = "forum";
 	switch($action)
 	{
+		case "attachments":
+			$page->active_action = "attachments";
+			$action_file = "attachments.php";
+			break;
 		default:
 			$page->active_action = "management";
 			$action_file = "index.php";

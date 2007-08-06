@@ -656,6 +656,12 @@ function upgrade11_dbchanges4()
 		PRIMARY KEY(dateline)
 	) TYPE=MyISAM;");
 
+	if($db->field_exists('dateuploaded', "attachments"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments DROP dateuploaded;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments ADD dateuploaded bigint(30) NOT NULL default '0' AFTER downloads");
+
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

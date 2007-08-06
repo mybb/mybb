@@ -58,6 +58,7 @@ $tables[] = "CREATE TABLE mybb_attachments (
   filesize int(10) NOT NULL default '0',
   attachname varchar(120) NOT NULL default '',
   downloads int NOT NULL default '0',
+  dateuploaded bigint(30) NOT NULL default '0'
   visible int(1) NOT NULL default '0',
   thumbnail varchar(120) NOT NULL default ''
 );";

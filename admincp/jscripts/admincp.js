@@ -1,4 +1,8 @@
 var AdminCP = {
+	init: function()
+	{
+	},
+
 	deleteConfirmation: function(element, message)
 	{
 		if(!element) return false;
@@ -15,3 +19,5 @@ var AdminCP = {
 		return false;
 	}
 };
+
+Event.observe(window, 'load', AdminCP.init);

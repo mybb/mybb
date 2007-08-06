@@ -81,40 +81,44 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	{
 		$prev = $page-1;
 		$prev_page = fetch_page_url($url, $prev);
-		$pagination .= "<a href=\"$prev_page\" class=\"previous\">&laquo; Previous</a> \n";
+		$pagination .= "<a href=\"$prev_page\" class=\"pagination_previous\">&laquo; Previous</a> \n";
 	}
 
-	if($page > 2)
+	// Maximum number of "page bits" to show
+	if(!$mybb->settings['maxmultipagelinks'])
 	{
-		$from = $page-2;
-	}
-	else
-	{
-		$from = $page-1;
+		$mybb->settings['maxmultipagelinks'] = 5;
 	}
 
-	if($from < 1)
+	$from = $page-floor($mybb->settings['maxmultipagelinks']/2);
+	$to = $page+floor($mybb->settings['maxmultipagelinks']/2);
+
+	if($from <= 0)
 	{
 		$from = 1;
+		$to = $from+$max_links-1;
 	}
 
-	if($page == $pages)
+	if($to > $pages)
+	{
+		$to = $pages;
+		$from = $pages-$max_links+1;
+		if($from <= 0)
+		{
+			$from = 1;
+		}
+	}
+
+	if($to == 0)
 	{
 		$to = $pages;
 	}
-	elseif($page == $pages-1)
-	{
-		$to = $page+1;
-	}
-	else
-	{
-		$to = $page+2;
-	}
+
 
 	if($from > 2)
 	{
 		$first = fetch_page_url($url, 1);
-		$pagination .= "<a href=\"{$page_url}\" title=\"Page 1\" class=\"first\">1</a> ... ";
+		$pagination .= "<a href=\"{$page_url}\" title=\"Page 1\" class=\"pagination_first\">1</a> ... ";
 	}
 
 	for($i = $from; $i <= $to; ++$i)
@@ -122,7 +126,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 		$page_url = fetch_page_url($url, $i);
 		if($page == $i)
 		{
-			$pagination .= "<span class=\"current\">{$i}</span> \n";
+			$pagination .= "<span class=\"pagination_current\">{$i}</span> \n";
 		}
 		else
 		{
@@ -133,14 +137,14 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	if($to < $pages)
 	{
 		$last = fetch_page_url($url, $pages);
-		$pagination .= "... <a href=\"{$page_url}\" title=\"Page {$pages}\" class=\"last\">{$pages}</a>";
+		$pagination .= "... <a href=\"{$page_url}\" title=\"Page {$pages}\" class=\"pagination_last\">{$pages}</a>";
 	}
 
 	if($page < $pages)
 	{
 		$next = $page+1;
 		$next_page = fetch_page_url($url, $next);
-		$pagination .= " <a href=\"$next_page\" class=\"next\">Next &raquo;</a>\n";
+		$pagination .= " <a href=\"$next_page\" class=\"pagination_next\">Next &raquo;</a>\n";
 	}
 	$pagination .= "</div>\n";
 	return $pagination;
