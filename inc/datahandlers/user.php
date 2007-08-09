@@ -69,13 +69,14 @@ class UserDataHandler extends DataHandler
 		require_once MYBB_ROOT.'inc/functions_user.php';
 
 		// Fix bad characters
+		$username = trim($username);
 		$username = str_replace(array(chr(160), chr(173), chr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237)), array(" ", "-", "", "", ""), $username);
 
 		// Remove multiple spaces from the username
 		$username = preg_replace("#\s{2,}#", " ", $username);
 
 		// Check if the username is not empty.
-		if(trim($username) == '')
+		if($username == '')
 		{
 			$this->set_error('missing_username');
 			return false;
@@ -116,7 +117,7 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower($username))."' AND uid!='{$this->data['uid']}'");
+		$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."' AND uid!='{$this->data['uid']}'");
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
