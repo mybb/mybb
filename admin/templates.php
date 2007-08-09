@@ -16,6 +16,11 @@ require_once "./global.php";
 // Just a little fix here
 $db->write_query("DELETE FROM ".TABLE_PREFIX."templates WHERE title=''");
 
+if($db->engine == "mysql" || $db->engine == "mysqli")
+{
+	$db->query("SET SQL_BIG_SELECTS=1");
+}
+
 // Load language packs for this section
 global $lang;
 $lang->load("templates");

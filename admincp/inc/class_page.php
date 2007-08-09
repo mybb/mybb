@@ -388,7 +388,7 @@ EOF;
 class DefaultSidebarItem
 {
 	var $title;
-	var $menu_contents;
+	var $contents;
 	
 	function DefaultSidebarItem($title="")
 	{
@@ -397,6 +397,7 @@ class DefaultSidebarItem
 	
 	function add_menu_items($items, $active)
 	{
+		$this->contents = "<ul class=\"menu\">";
 		foreach($items as $item)
 		{
 			$class = "";
@@ -405,19 +406,18 @@ class DefaultSidebarItem
 				$class = "active";
 			}
 			$item['link'] = htmlspecialchars($item['link']);
-			$this->menu_contents .= "<li class=\"{$class}\"><a href=\"{$item['link']}\">{$item['title']}</a></li>\n";
+			$this->contents .= "<li class=\"{$class}\"><a href=\"{$item['link']}\">{$item['title']}</a></li>\n";
 		}
+		$this->contents .= "</ul>";
 	}
 	
 	function get_markup()
 	{
 		$markup = "<div class=\"left_menu_box\">\n";
 		$markup .= "<div class=\"title\">{$this->title}</div>\n";
-		if($this->menu_contents)
+		if($this->contents)
 		{
-			$markup .= "<ul class=\"menu\">\n";
-			$markup .= $this->menu_contents;
-			$markup .= "</ul>\n";
+			$markup .= $this->contents;
 		}
 		$markup .= "</div>\n";
 		return $markup;

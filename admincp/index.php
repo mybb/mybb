@@ -171,7 +171,7 @@ else
 			// Login key has changed - force logout
 			if(!$mybb->user['uid'] && $mybb->user['loginkey'] != $admin_session['loginkey'])
 			{
-				unset($user);
+				unset($mybb->user);
 			}
 			else
 			{
@@ -180,7 +180,7 @@ else
 				{
 					$login_message = "Your administration session has expired";
 					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
-					unset($user);
+					unset($mybb->user);
 				}
 				// If IP matching is set - check IP address against the session IP
 				else if(ADMIN_IP_SEGMENTS > 0)

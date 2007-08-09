@@ -24,7 +24,7 @@ function home_meta()
 
 function home_action_handler($action)
 {
-	global $page;
+	global $page, $db;
 	$page->active_module = "home";
 	switch($action)
 	{
@@ -55,20 +55,55 @@ function home_action_handler($action)
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
-	
-	// Quick Access
-	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "add_forum", "title" => "Add New Forum", "link" => "index.php?".SID."&module=forum/add_forum");
-	$sub_menu['20'] = array("id" => "search", "title" => "Search for Users", "link" => "index.php?".SID."&module=user/search");
-	$sub_menu['30'] = array("id" => "themes", "title" => "Themes", "link" => "index.php?".SID."&module=style/themes");
-	$sub_menu['40'] = array("id" => "templates", "title" => "Templates", "link" => "index.php?".SID."&module=style/templates");
-	$sub_menu['50'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
-	$sub_menu['60'] = array("id" => "backupdb", "title" => "Database backups", "link" => "index.php?".SID."&module=tools/backupdb");
-	
-	$sidebar = new SidebarItem("Quick Access");
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
-	
-	$page->sidebar .= $sidebar->get_markup();
+
+	if($page->active_action == "dashboard")
+	{
+		// Quick Access
+		$sub_menu = array();
+		$sub_menu['10'] = array("id" => "add_forum", "title" => "Add New Forum", "link" => "index.php?".SID."&module=forum/add_forum");
+		$sub_menu['20'] = array("id" => "search", "title" => "Search for Users", "link" => "index.php?".SID."&module=user/search");
+		$sub_menu['30'] = array("id" => "themes", "title" => "Themes", "link" => "index.php?".SID."&module=style/themes");
+		$sub_menu['40'] = array("id" => "templates", "title" => "Templates", "link" => "index.php?".SID."&module=style/templates");
+		$sub_menu['50'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
+		$sub_menu['60'] = array("id" => "backupdb", "title" => "Database backups", "link" => "index.php?".SID."&module=tools/backupdb");
+		
+		$sidebar = new SidebarItem("Quick Access");
+		$sidebar->add_menu_items($sub_menu, $page->active_action);
+		
+		$page->sidebar .= $sidebar->get_markup();
+
+		// Online Administrators
+		$timecut = time()-60*60*15;
+		$query = $db->query("
+			SELECT u.uid, u.username, s.ip
+			FROM ".TABLE_PREFIX."adminsessions s
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
+			WHERE s.lastactive>{$timecut}
+			ORDER BY u.username
+		");
+		$online_users = "<ul class=\"menu online_admins\">";
+		while($user = $db->fetch_array($query))
+		{
+			if(!$done_users["{$user['uid']}.{$user['ip']}"])
+			{
+				if($user['type'] == "mobile")
+				{
+					$class = " class=\"mobile_user\"";
+				}
+				else
+				{
+					$class = "";
+				}
+				$online_users .= "<li{$class}>".build_profile_link($user['username'], $user['uid'])."</li>";
+				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
+			}
+		}
+		$sidebar = new SidebarItem("Online Admins");
+		$sidebar->contents = $online_users;
+
+		$page->sidebar .= $sidebar->get_markup();
+	}
+
 	return $action_file;
 }
 

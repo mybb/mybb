@@ -61,7 +61,7 @@ $tables[] = "CREATE TABLE mybb_attachments (
   filesize int NOT NULL default '0',
   attachname varchar(120) NOT NULL default '',
   downloads int NOT NULL default '0',
-  dateuploaded bigint NOT NULL default '0'
+  dateuploaded bigint NOT NULL default '0',
   visible int NOT NULL default '0',
   thumbnail varchar(120) NOT NULL default '',
   PRIMARY KEY (aid)

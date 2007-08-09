@@ -194,7 +194,7 @@ color: #0033AB;
 
 #left_menu div.left_menu_box ul.menu li a:hover {
 	color: #000;
-	background: #fafafa;
+	background-color: #fafafa;
 	text-decoration: none;
 }
 /* Fix IE. Hide from IE Mac \*/
