@@ -399,7 +399,7 @@ function upload_attachment($attachment)
 		"filesize" => intval($file['size']),
 		"attachname" => $filename,
 		"downloads" => 0,
-		"dateline" => TIME_NOW
+		"dateuploaded" => TIME_NOW
 	);
 
 	// If we're uploading an image, check the MIME type compared to the image type and attempt to generate a thumbnail
