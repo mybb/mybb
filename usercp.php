@@ -1110,6 +1110,7 @@ if($mybb->input['action'] == "favorites")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		WHERE f.type='f' AND f.uid='".$mybb->user['uid']."'
 		ORDER BY t.lastpost DESC
+		LIMIT {$start}, {$perpage}
 	");
 	while($favorite = $db->fetch_array($query))
 	{
