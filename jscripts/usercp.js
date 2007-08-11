@@ -136,16 +136,16 @@ var UserCP = {
 				exp_buddies.each(function(buddy, i)
 				{
 					buddy = buddy.replace(/^\s+|\s+$/g, "");
-					if((", "+existing_buddies+", ").toLowerCase().indexOf(", "+buddy.toLowerCase()+", ") == -1)
+					if((","+existing_buddies+",").toLowerCase().indexOf(","+buddy.toLowerCase()+",") == -1)
 					{
 						if(existing_buddies)
 						{
-							existing_buddies += ", ";
+							existing_buddies += ",";
 						}
 						existing_buddies += buddy;
 					}
 				});
-				$(this.buddy_field).value = existing_buddies;
+				$(this.buddy_field).value = existing_buddies.replace(/,\s?/g, ", ");
 			}
 			else
 			{
