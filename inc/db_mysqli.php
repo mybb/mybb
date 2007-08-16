@@ -9,7 +9,7 @@
  * $Id: db_mysql.php 1370 2006-04-16 13:47:01Z chris $
  */
 
-class databaseEngine
+class DB_MySQLi
 {
 	/**
 	 * The title of this layer.
@@ -110,6 +110,13 @@ class databaseEngine
 	var $engine = "mysqli";
 
 	/**
+	 * The database encoding currently in use (if supported)
+	 *
+	 * @var string
+	 */
+	var $db_encoding = "utf8";
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param string The database hostname.
@@ -123,6 +130,11 @@ class databaseEngine
 	{
 		$this->link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to database server");
 		$this->current_link = &$this->link;
+
+		// Set the DB encoding accordingly
+		global $mybb;
+		$this->db_encoding = $mybb->config['db_encoding'];
+
 		return $this->link;
 	}
 	
@@ -165,9 +177,13 @@ class databaseEngine
 			$success = $master_success;
 		}
 		
-		if($success && $mybb->config['db_encoding'])
+		if($success && $this->db_encoding)
 		{
-			$this->query("SET NAMES '{$mybb->config['db_encoding']}'");
+			$this->query("SET NAMES '{$this->db_encoding}'");
+			if($slave_success)
+			{
+				$this->write_query("SET NAMES '{$this->db_encoding}'");
+			}
 		}
 		return $success;
 	}
@@ -984,6 +1000,136 @@ class databaseEngine
 			$total += $table['Data_length']+$table['Index_length'];
 		}
 		return $total;
+	}
+
+	/**
+	 * Fetch a list of database character sets this DBMS supports
+	 *
+	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 */
+	function fetch_db_charsets()
+	{
+		if($this_link && $this->get_version() < 4.1)
+		{
+			return false;
+		}
+		return array(
+			'big5' => 'Big5 Traditional Chinese',
+			'dec8' => 'DEC West European',
+			'cp850' => 'DOS West European',
+			'hp8' => 'HP West European',
+			'koi8r' => 'KOI8-R Relcom Russian',
+			'latin1' => 'cp1252 West European',
+			'latin2' => 'ISO 8859-2 Central European',
+			'swe7' => '7bit Swedish',
+			'ascii' => 'US ASCII',
+			'ujis' => 'EUC-JP Japanese',
+			'sjis' => 'Shift-JIS Japanese',
+			'hebrew' => 'ISO 8859-8 Hebrew',
+			'tis620' => 'TIS620 Thai',
+			'euckr' => 'EUC-KR Korean',
+			'koi8u' => 'KOI8-U Ukrainian',
+			'gb2312' => 'GB2312 Simplified Chinese',
+			'greek' => 'ISO 8859-7 Greek',
+			'cp1250' => 'Windows Central European',
+			'gbk' => 'GBK Simplified Chinese',
+			'latin5' => 'ISO 8859-9 Turkish',
+			'armscii8' => 'ARMSCII-8 Armenian',
+			'utf8' => 'UTF-8 Unicode',
+			'ucs2' => 'UCS-2 Unicode',
+			'cp866' => 'DOS Russian',
+			'keybcs2' => 'DOS Kamenicky Czech-Slovak',
+			'macce' => 'Mac Central European',
+			'macroman' => 'Mac West European',
+			'cp852' => 'DOS Central European',
+			'latin7' => 'ISO 8859-13 Baltic',
+			'cp1251' => 'Windows Cyrillic',
+			'cp1256' => 'Windows Arabic',
+			'cp1257' => 'Windows Baltic',
+			'binary' => 'Binary pseudo charset',
+			'geostd8' => 'GEOSTD8 Georgian',
+			'cp932' => 'SJIS for Windows Japanese',
+			'eucjpms' => 'UJIS for Windows Japanese',
+		);
+	}
+
+	/**
+	 * Fetch a database collation for a particular database character set
+	 *
+	 * @param string The database character set
+	 * @return string The matching database collation, false if unsupported
+	 */
+	function fetch_charset_collation($charset)
+	{
+		$collations = array(
+			'big5' => 'big5_chinese_ci',
+			'dec8' => 'dec8_swedish_ci',
+			'cp850' => 'cp850_general_ci',
+			'hp8' => 'hp8_english_ci',
+			'koi8r' => 'koi8r_general_ci',
+			'latin1' => 'latin1_swedish_ci',
+			'latin2' => 'latin2_general_ci',
+			'swe7' => 'swe7_swedish_ci',
+			'ascii' => 'ascii_general_ci',
+			'ujis' => 'ujis_japanese_ci',
+			'sjis' => 'sjis_japanese_ci',
+			'hebrew' => 'hebrew_general_ci',
+			'tis620' => 'tis620_thai_ci',
+			'euckr' => 'euckr_korean_ci',
+			'koi8u' => 'koi8u_general_ci',
+			'gb2312' => 'gb2312_chinese_ci',
+			'greek' => 'greek_general_ci',
+			'cp1250' => 'cp1250_general_ci',
+			'gbk' => 'gbk_chinese_ci',
+			'latin5' => 'latin5_turkish_ci',
+			'armscii8' => 'armscii8_general_ci',
+			'utf8' => 'utf8_general_ci',
+			'ucs2' => 'ucs2_general_ci',
+			'cp866' => 'cp866_general_ci',
+			'keybcs2' => 'keybcs2_general_ci',
+			'macce' => 'macce_general_ci',
+			'macroman' => 'macroman_general_ci',
+			'cp852' => 'cp852_general_ci',
+			'latin7' => 'latin7_general_ci',
+			'cp1251' => 'cp1251_general_ci',
+			'cp1256' => 'cp1256_general_ci',
+			'cp1257' => 'cp1257_general_ci',
+			'binary' => 'binary',
+			'geostd8' => 'geostd8_general_ci',
+			'cp932' => 'cp932_japanese_ci',
+			'eucjpms' => 'eucjpms_japanese_ci',
+		);
+		if($collations[$charset])
+		{
+			return $collations[$charset];
+		}
+		return false;
+	}
+
+	/**
+	 * Fetch a character set/collation string for use with CREATE TABLE statements. Uses current DB encoding
+	 *
+	 * @return string The built string, empty if unsupported
+	 */
+	function build_create_table_collation()
+	{
+		if(!$this->db_encoding)
+		{
+			return '';
+		}
+
+		$collation = $this->fetch_charset_collation($this->db_encoding);
+		if(!$collation)
+		{
+			return '';
+		}
+		return " CHARACTER SET {$this->db_encoding} COLLATE {$collation}";
+	}
+}
+
+if(!class_exists('databaseEngine'))
+{
+	class databaseEngine extends DB_MySQLi {
 	}
 }
 ?>

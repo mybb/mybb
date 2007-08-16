@@ -9,7 +9,7 @@
  * $Id$
  */
 
-class databaseEngine
+class DB_PgSQL
 {
 	/**
 	 * The title of this layer.
@@ -122,6 +122,13 @@ class databaseEngine
 	 * @var string
 	 */
 	var $engine = "pgsql";
+
+	/**
+	 * The database encoding currently in use (if supported)
+	 *
+	 * @var string
+	 */
+	var $db_encoding = "utf8";
 	
 	/**
 	 * Connect to the database server.
@@ -142,6 +149,10 @@ class databaseEngine
 		$this->connection_options['master']['host'] = $hostname;
 		$this->connection_options['master']['user'] = $username;
 		$this->connection_options['master']['pconnect'] = $pconnect;
+
+		// Set the DB encoding accordingly
+		global $mybb;
+		$this->db_encoding = $mybb->config['db_encoding'];
 
 		return true;
 	}
@@ -210,6 +221,14 @@ class databaseEngine
 			else
 			{
 				$this->$link = @pg_connect($this->connect_string);
+			}
+		}
+		if($this->link && $this->db_encoding)
+		{
+			$this->query("SET NAMES '{$this->db_encoding}'");
+			if($this->slave_link)
+			{
+				$this->write_query("SET NAMES '{$this->db_encoding}'");
 			}
 		}
 		return $this->link;
@@ -1250,6 +1269,43 @@ class databaseEngine
 			$total += $table['relpages']+$table['reltuples'];
 		}
 		return $total;
+	}
+
+	/**
+	 * Fetch a list of database character sets this DBMS supports
+	 *
+	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 */
+	function fetch_db_charsets()
+	{
+		return false;
+	}
+
+	/**
+	 * Fetch a database collation for a particular database character set
+	 *
+	 * @param string The database character set
+	 * @return string The matching database collation, false if unsupported
+	 */
+	function fetch_charset_collation($charset)
+	{
+		return false;
+	}
+
+	/**
+	 * Fetch a character set/collation string for use with CREATE TABLE statements. Uses current DB encoding
+	 *
+	 * @return string The built string, empty if unsupported
+	 */
+	function build_create_table_collation()
+	{
+		return '';
+	}
+}
+
+if(!class_exists('databaseEngine'))
+{
+	class databaseEngine extends DB_PgSQL {
 	}
 }
 ?>

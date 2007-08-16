@@ -144,40 +144,23 @@ $l['db_step_config_table'] = '<div class="border_wrapper">
 </tr>
 <tr class="first">
 	<td class="first"><label for="dbengine">Database Engine:</label></td>
-	<td class="last alt_col"><select name="dbengine" id="dbengine">{1}</select></td>
+	<td class="last alt_col"><select name="dbengine" id="dbengine" onchange="updateDBSettings();">{1}</select></td>
 </tr>
-<tr class="alt_row">
-	<td class="first"><label for="dbhost">Database Host:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbhost" id="dbhost" value="{2}" /></td>
-</tr>
-<tr>
-	<td class="first"><label for="dbuser">Database Username:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbuser" id="dbuser" value="{3}" /></td>
-</tr>
-<tr class="alt_row">
-	<td class="first"><label for="dbpass">Database Password:</label></td>
-	<td class="last alt_col"><input type="password" class="text_input" name="dbpass" id="dbpass" value="" /></td>
-</tr>
-<tr class="last">
-	<td class="first"><label for="dbname">Database Name:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="dbname" id="dbname" value="{4}" /></td>
-</tr>
-<tr>
-	<th colspan="2" class="first last">Table Settings</th>
-</tr>
-<tr class="first">
-	<td class="first"><label for="tableprefix">Table Prefix:</label></td>
-	<td class="last alt_col"><input type="text" class="text_input" name="tableprefix" id="tableprefix" value="{5}" /></td>
-</tr>
-<tr class="last">
-	<td class="first"><label for="encoding">Tables Encoding: (MySQL 4.1+ <strong>Only</strong>)</label></td>
-	<td class="last alt_col"><select name="encoding">
-{6}
-</select></td>
-</tr>
+{2}
 </table>
 </div>
 <p>Once you\'ve checked these details are correct, click next to continue.</p>';
+
+$l['database_settings'] = "Database Settings";
+$l['database_path'] = "Database Path:";
+$l['database_host'] = "Database Server Hostname:";
+$l['database_user'] = "Database Username:";
+$l['database_pass'] = "Database Password:";
+$l['database_name'] = "Database Name:";
+$l['table_settings'] = "Table Settings";
+$l['table_prefix'] = "Table Prefix:";
+$l['table_encoding'] = "Table Encoding:";
+
 $l['db_step_error_config'] = '<div class="error">
 <h3>Error</h3>
 <p>There seems to be one or more errors with the database configuration information that you supplied:</p>

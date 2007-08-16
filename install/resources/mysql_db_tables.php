@@ -17,7 +17,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   querystring varchar(150) NOT NULL default '',
   ipaddress varchar(50) NOT NULL default '',
   KEY scriptname (scriptname, action)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int(10) NOT NULL default '0',
@@ -25,7 +25,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   notes text NOT NULL,
   permissions text NOT NULL,
   PRIMARY KEY  (uid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_adminsessions (
 	sid varchar(32) NOT NULL default '',
@@ -34,7 +34,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip varchar(40) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0'
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_adminviews (
 	vid int unsigned NOT NULL auto_increment,
@@ -49,7 +49,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	perpage int(4) NOT NULL default '',
 	view_type varchar(6) NOT NULL default '',
 	PRIMARY KEY(vid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_announcements (
   aid int unsigned NOT NULL auto_increment,
@@ -64,7 +64,7 @@ $tables[] = "CREATE TABLE mybb_announcements (
   allowsmilies char(3) NOT NULL default '',
   KEY fid (fid),
   PRIMARY KEY  (aid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_attachments (
   aid int unsigned NOT NULL auto_increment,
@@ -83,7 +83,7 @@ $tables[] = "CREATE TABLE mybb_attachments (
   KEY pid (pid, visible),
   KEY uid (uid),
   PRIMARY KEY  (aid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_attachtypes (
   atid int unsigned NOT NULL auto_increment,
@@ -104,7 +104,7 @@ $tables[] = "CREATE TABLE mybb_awaitingactivation (
   oldgroup bigint(30) NOT NULL default '0',
   misc varchar(255) NOT NULL default '',
   PRIMARY KEY  (aid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_badwords (
   bid int unsigned NOT NULL auto_increment,
@@ -120,7 +120,7 @@ $tables[] = "CREATE TABLE mybb_banfilters (
   lastuse bigint(30) NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
   PRIMARY KEY  (fid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_banned (
   uid int unsigned NOT NULL default '0',
@@ -135,7 +135,7 @@ $tables[] = "CREATE TABLE mybb_banned (
   reason varchar(255) NOT NULL default '',
   KEY uid (uid),
   KEY dateline (dateline)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_calendars (
   cid int unsigned NOT NULL auto_increment,
@@ -150,7 +150,7 @@ $tables[] = "CREATE TABLE mybb_calendars (
   allowimgcode char(3) NOT NULL default '',
   allowsmilies char(3) NOT NULL default '',
   PRIMARY KEY(cid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_calendarpermissions (
   cid int unsigned NOT NULL default '0',
@@ -159,7 +159,7 @@ $tables[] = "CREATE TABLE mybb_calendarpermissions (
   canaddevents char(3) NOT NULL default '',
   canbypasseventmod char(3) NOT NULL default '',
   canmoderateevents char(3) NOT NULL default ''
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_captcha (
   imagehash varchar(32) NOT NULL default '',
@@ -167,13 +167,13 @@ $tables[] = "CREATE TABLE mybb_captcha (
   dateline bigint(30) NOT NULL default '0',
   KEY imagehash (imagehash),
   KEY dateline (dateline)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_datacache (
   title varchar(50) NOT NULL default '',
   cache mediumtext NOT NULL,
   PRIMARY KEY(title)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_events (
   eid int unsigned NOT NULL auto_increment,
@@ -193,7 +193,7 @@ $tables[] = "CREATE TABLE mybb_events (
   KEY daterange (starttime, endtime),
   KEY private (private),
   PRIMARY KEY  (eid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_forumpermissions (
   pid int unsigned NOT NULL auto_increment,
@@ -214,7 +214,7 @@ $tables[] = "CREATE TABLE mybb_forumpermissions (
   canvotepolls char(3) NOT NULL default '',
   cansearch char(3) NOT NULL default '',
   PRIMARY KEY  (pid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_forums (
   fid smallint unsigned NOT NULL auto_increment,
@@ -259,7 +259,7 @@ $tables[] = "CREATE TABLE mybb_forums (
   defaultsortby varchar(10) NOT NULL default '',
   defaultsortorder varchar(4) NOT NULL default '',
   PRIMARY KEY (fid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_forumsread (
   fid int unsigned NOT NULL default '0',
@@ -267,7 +267,7 @@ $tables[] = "CREATE TABLE mybb_forumsread (
   dateline int(10) NOT NULL default '0',
   KEY dateline (dateline),
   UNIQUE KEY fid (fid,uid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_forumsubscriptions (
@@ -275,7 +275,7 @@ $tables[] = "CREATE TABLE mybb_forumsubscriptions (
   fid smallint unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
   PRIMARY KEY  (fsid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_groupleaders (
   lid smallint unsigned NOT NULL auto_increment,
@@ -284,7 +284,7 @@ $tables[] = "CREATE TABLE mybb_groupleaders (
   canmanagemembers char(3) NOT NULL default '',
   canmanagerequests char(3) NOT NULL default '',
   PRIMARY KEY  (lid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_helpdocs (
   hid smallint unsigned NOT NULL auto_increment,
@@ -296,7 +296,7 @@ $tables[] = "CREATE TABLE mybb_helpdocs (
   enabled char(3) NOT NULL default '',
   disporder smallint unsigned NOT NULL default '0',
   PRIMARY KEY  (hid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_helpsections (
@@ -307,7 +307,7 @@ $tables[] = "CREATE TABLE mybb_helpsections (
   enabled char(3) NOT NULL default '',
   disporder smallint unsigned NOT NULL default '0',
   PRIMARY KEY (sid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_icons (
@@ -315,7 +315,7 @@ $tables[] = "CREATE TABLE mybb_icons (
   name varchar(120) NOT NULL default '',
   path varchar(220) NOT NULL default '',
   PRIMARY KEY (iid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_joinrequests (
@@ -325,7 +325,7 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
   reason varchar(250) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
   PRIMARY KEY (rid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_mailerrors (
   eid int unsigned NOT NULL auto_increment,
@@ -338,7 +338,7 @@ $tables[] = "CREATE TABLE mybb_mailerrors (
   smtperror varchar(200) NOT NULL default '',
   smtpcode int(5) NOT NULL default '0',
   PRIMARY KEY (eid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_maillogs (
 	mid int unsigned NOT NULL auto_increment,
@@ -352,7 +352,7 @@ $tables[] = "CREATE TABLE mybb_maillogs (
 	tid int unsigned NOT NULL default '0',
 	ipaddress varchar(20) NOT NULL default '',
 	PRIMARY KEY (mid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_mailqueue (
 	mid int unsigned NOT NULL auto_increment,
@@ -362,7 +362,7 @@ $tables[] = "CREATE TABLE mybb_mailqueue (
 	message text NOT NULL,
 	headers text NOT NULL,
 	PRIMARY KEY (mid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_moderatorlog (
   uid int unsigned NOT NULL default '0',
@@ -374,7 +374,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   data text NOT NULL,
   ipaddress varchar(50) NOT NULL default '',
   KEY tid (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_moderators (
   mid smallint unsigned NOT NULL auto_increment,
@@ -388,7 +388,7 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canmovetononmodforum char(3) NOT NULL default '',
   KEY uid (uid, fid),
   PRIMARY KEY (mid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_modtools (
 	tid smallint unsigned NOT NULL auto_increment,
@@ -399,7 +399,7 @@ $tables[] = "CREATE TABLE mybb_modtools (
 	postoptions text NOT NULL,
 	threadoptions text NOT NULL,
 	PRIMARY KEY (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_mycode (
   cid int unsigned NOT NULL auto_increment,
@@ -410,7 +410,7 @@ $tables[] = "CREATE TABLE mybb_mycode (
   active char(3) NOT NULL default '',
   parseorder smallint unsigned NOT NULL default '0',
   PRIMARY KEY(cid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_polls (
   pid int unsigned NOT NULL auto_increment,
@@ -426,7 +426,7 @@ $tables[] = "CREATE TABLE mybb_polls (
   multiple char(3) NOT NULL default '',
   public char(3) NOT NULL default '',
   PRIMARY KEY (pid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_pollvotes (
   vid int unsigned NOT NULL auto_increment,
@@ -436,7 +436,7 @@ $tables[] = "CREATE TABLE mybb_pollvotes (
   dateline bigint(30) NOT NULL default '0',
   KEY pid (pid, uid),
   PRIMARY KEY (vid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_posts (
   pid int unsigned NOT NULL auto_increment,
@@ -461,7 +461,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   KEY visible (visible),
   KEY dateline (dateline),
   PRIMARY KEY (pid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_privatemessages (
@@ -485,7 +485,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   KEY pmid (pmid),
   KEY uid (uid, folder),
   PRIMARY KEY (pmid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_profilefields (
@@ -500,7 +500,7 @@ $tables[] = "CREATE TABLE mybb_profilefields (
   editable char(3) NOT NULL default '',
   hidden char(3) NOT NULL default '',
   PRIMARY KEY (fid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_promotions (
@@ -520,7 +520,7 @@ $tables[] = "CREATE TABLE mybb_promotions (
   newusergroup smallint unsigned NOT NULL default '0',
   usergrouptype varchar(120) NOT NULL default '0',
   PRIMARY KEY (pid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 	
 $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid int unsigned NOT NULL auto_increment,
@@ -544,7 +544,7 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   KEY fid (fid),
   KEY dateline (dateline),
   PRIMARY KEY (rid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_reputation (
   rid int unsigned NOT NULL auto_increment,
@@ -556,7 +556,7 @@ $tables[] = "CREATE TABLE mybb_reputation (
   KEY uid (uid),
   KEY dateline (dateline),
   PRIMARY KEY (rid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_searchlog (
   sid varchar(32) NOT NULL default '',
@@ -570,7 +570,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   querycache text NOT NULL,
   keywords text NOT NULL,
   PRIMARY KEY (sid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_sessions (
   sid varchar(32) NOT NULL default '',
@@ -590,7 +590,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   KEY location2 (location2),
   KEY time (time),
   KEY uid (uid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
   gid smallint unsigned NOT NULL auto_increment,
@@ -600,7 +600,7 @@ $tables[] = "CREATE TABLE mybb_settinggroups (
   disporder smallint unsigned NOT NULL default '0',
   isdefault char(3) NOT NULL default '',
   PRIMARY KEY (gid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_settings (
@@ -613,7 +613,7 @@ $tables[] = "CREATE TABLE mybb_settings (
   disporder smallint unsigned NOT NULL default '0',
   gid smallint unsigned NOT NULL default '0',
   PRIMARY KEY (sid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_smilies (
@@ -635,7 +635,7 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	useragent varchar(200) NOT NULL default '',
 	lastvisit bigint(30) NOT NULL default '0',
 	PRIMARY KEY (sid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_stats (
 	dateline bigint(30) NOT NULL default '0',
@@ -661,7 +661,7 @@ $tables[] = "CREATE TABLE mybb_tasks (
 	logging int(1) NOT NULL default '0',
 	locked bigint(30) NOT NULL default '0',
 	PRIMARY KEY (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_tasklog (
 	lid int unsigned NOT NULL auto_increment,
@@ -669,7 +669,7 @@ $tables[] = "CREATE TABLE mybb_tasklog (
 	dateline bigint(30) NOT NULL default '0',
 	data text NOT NULL,
 	PRIMARY KEY (lid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_templategroups (
   gid int unsigned NOT NULL auto_increment,
@@ -687,7 +687,7 @@ $tables[] = "CREATE TABLE mybb_templates (
   status varchar(10) NOT NULL default '',
   dateline int(10) NOT NULL default '0',
   PRIMARY KEY (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_templatesets (
   sid smallint unsigned NOT NULL auto_increment,
@@ -708,7 +708,7 @@ $tables[] = "CREATE TABLE mybb_themes (
   allowedgroups text NOT NULL,
   csscached bigint(30) NOT NULL default '0',
   PRIMARY KEY (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_threadratings (
   rid int unsigned NOT NULL auto_increment,
@@ -718,7 +718,7 @@ $tables[] = "CREATE TABLE mybb_threadratings (
   ipaddress varchar(30) NOT NULL default '',
   KEY tid (tid, uid),
   PRIMARY KEY (rid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_threads (
@@ -751,7 +751,7 @@ $tables[] = "CREATE TABLE mybb_threads (
   KEY firstpost (firstpost),
   KEY uid (uid),
   PRIMARY KEY (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_threadsread (
   tid int unsigned NOT NULL default '0',
@@ -759,7 +759,7 @@ $tables[] = "CREATE TABLE mybb_threadsread (
   dateline int(10) NOT NULL default '0',
   KEY dateline (dateline),
   UNIQUE KEY tid (tid,uid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   sid int unsigned NOT NULL auto_increment,
@@ -771,7 +771,7 @@ $tables[] = "CREATE TABLE mybb_threadsubscriptions (
   KEY uid (uid),
   KEY tid (tid,notification),
   PRIMARY KEY (sid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_userfields (
   ufid int unsigned NOT NULL default '0',
@@ -779,7 +779,7 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid2 text NOT NULL,
   fid3 text NOT NULL,
   PRIMARY KEY (ufid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_usergroups (
   gid smallint unsigned NOT NULL auto_increment,
@@ -842,7 +842,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canreceivewarnings char(3) NOT NULL default '',
   maxwarningsday int(3) NOT NULL default '3',
   PRIMARY KEY (gid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 
 $tables[] = "CREATE TABLE mybb_users (
@@ -918,7 +918,7 @@ $tables[] = "CREATE TABLE mybb_users (
   KEY usergroup (usergroup),
   KEY birthday (birthday),
   PRIMARY KEY (uid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_usertitles (
   utid smallint unsigned NOT NULL auto_increment,
@@ -927,14 +927,14 @@ $tables[] = "CREATE TABLE mybb_usertitles (
   stars smallint(4) NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
   PRIMARY KEY (utid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid int unsigned NOT NULL auto_increment,
 	percentage int(3) NOT NULL default '0',
 	action text NOT NULL,
 	PRIMARY KEY (lid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid int unsigned NOT NULL auto_increment,
@@ -942,7 +942,7 @@ $tables[] = "CREATE TABLE mybb_warningtypes (
 	points int unsigned NOT NULL default '0',
 	expirationtime bigint(30) NOT NULL default '0',
 	PRIMARY KEY (tid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_warnings (
 	wid int unsigned NOT NULL auto_increment,
@@ -960,6 +960,6 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	revokereason text NOT NULL,
 	notes text NOT NULL,
 	PRIMARY KEY (wid)
-) TYPE=MyISAM{$charset};";
+) TYPE=MyISAM;";
 
 ?>

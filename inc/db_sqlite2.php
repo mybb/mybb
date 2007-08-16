@@ -9,7 +9,7 @@
  * $Id: db_mysql.php 1370 2006-04-16 13:47:01Z chris $
  */
 
-class databaseEngine
+class DB_SQLite
 {
 	/**
 	 * The title of this layer.
@@ -94,6 +94,13 @@ class databaseEngine
 	 * @var string
 	 */
 	var $engine = "sqlite";
+
+	/**
+	 * The database encoding currently in use (if supported)
+	 *
+	 * @var string
+	 */
+	var $db_encoding = "";
 
 	/**
 	 * Connect to the database server.
@@ -1104,6 +1111,44 @@ class databaseEngine
 			}
 			return true;
 		}
+	}
+
+	/**
+	 * Fetch a list of database character sets this DBMS supports
+	 *
+	 * @return array Array of supported character sets with array key being the name, array value being display name. False if unsupported
+	 */
+	function fetch_db_charsets()
+	{
+		return false;
+	}
+
+	/**
+	 * Fetch a database collation for a particular database character set
+	 *
+	 * @param string The database character set
+	 * @return string The matching database collation, false if unsupported
+	 */
+	function fetch_charset_collation($charset)
+	{
+		return false;
+	}
+
+	/**
+	 * Fetch a character set/collation string for use with CREATE TABLE statements. Uses current DB encoding
+	 *
+	 * @return string The built string, empty if unsupported
+	 */
+	function build_create_table_collation()
+	{
+		return '';
+	}
+
+}
+
+if(!class_exists('databaseEngine'))
+{
+	class databaseEngine extends DB_SQLite {
 	}
 }
 ?>

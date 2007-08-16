@@ -35,6 +35,9 @@ $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources');
 $lang->load('language');
 
+// Prevent any shut down functions from running
+$done_shutdown = 1;
+
 // Include the necessary contants for installation
 $grouppermignore = array('gid', 'type', 'title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image');
 $groupzerogreater = array('pmquota', 'maxreputationsday', 'attachquota');
@@ -50,6 +53,7 @@ $dboptions = array();
 if(function_exists('mysqli_connect'))
 {
 	$dboptions['mysqli'] = array(
+		'class' => 'DB_MySQLi',
 		'title' => 'MySQL Improved',
 		'short_title' => 'MySQLi',
 		'structure_file' => 'mysql_db_tables.php',
@@ -60,6 +64,7 @@ if(function_exists('mysqli_connect'))
 if(function_exists('mysql_connect'))
 {
 	$dboptions['mysql'] = array(
+		'class' => 'DB_MySQL',
 		'title' => 'MySQL',
 		'short_title' => 'MySQL',
 		'structure_file' => 'mysql_db_tables.php',
@@ -70,6 +75,7 @@ if(function_exists('mysql_connect'))
 if(function_exists('sqlite_open'))
 {
 	$dboptions['sqlite2'] = array(
+		'class' => 'DB_SQLite',
 		'title' => 'SQLite 2',
 		'short_title' => 'SQLite',
 		'structure_file' => 'sqlite_db_tables.php',
@@ -80,6 +86,7 @@ if(function_exists('sqlite_open'))
 if(function_exists('pg_connect'))
 {
 	$dboptions['pgsql'] = array(
+		'class' => 'DB_PgSQL',
 		'title' => 'PostgreSQL',
 		'short_title' => 'PostgreSQL',
 		'structure_file' => 'pgsql_db_tables.php',
@@ -93,6 +100,7 @@ if(class_exists('PDO'))
 	if(in_array('sqlite', $supported_dbs))
 	{
 		$dboptions['sqlite3'] = array(
+			'class' => 'DB_SQLite3',
 			'title' => 'SQLite 3',
 			'short_title' => 'SQLite',
 			'structure_file' => 'sqlite_db_tables.php',
@@ -388,33 +396,41 @@ function database_info()
 	$mybb->input['action'] = 'database_info';
 	$output->print_header($lang->db_config, 'dbconfig');
 
+	echo "<script type=\"text/javascript\">
+		function updateDBSettings()
+		{
+			dbengine = \$('dbengine').options[\$('dbengine').selectedIndex].value;
+			document.getElementsByClassName('db_settings').each(function(element)
+			{
+				element.className = 'db_settings';
+				if(dbengine+'_settings' == element.id)
+				{
+					Element.show(element);
+				}
+				else
+				{
+					Element.hide(element);
+				}
+			});
+		}
+		Event.observe(window, 'load', updateDBSettings);
+		</script>";
+
 	// Check for errors from this stage
 	if(is_array($errors))
 	{
 		$error_list = error_list($errors);
 		echo sprintf($lang->db_step_error_config, $error_list);
-		$dbhost = $mybb->input['dbhost'];
-		$dbuser = $mybb->input['dbuser'];
-		$dbname = $mybb->input['dbname'];
-		$tableprefix = $mybb->input['tableprefix'];
-		$dbengine = $mybb->input['dbengine'];
-		$encoding = $mybb->input['encoding'];
 	}
 	else
 	{
 		echo $lang->db_step_config_db;
-		$dbhost = 'localhost';
-		$tableprefix = 'mybb_';
-		$dbuser = '';
-		$dbname = '';
-		$dbengine = '';
-		$encoding = 'utf8';
 	}
 	
 	// Loop through database engines
 	foreach($dboptions as $dbfile => $dbtype)
 	{
-		if($dbengine != '' && $dbengine == $dbfile)
+		if($mybb->input['dbengine'] == $dbfile)
 		{
 			$dbengines .= "<option value=\"{$dbfile}\" selected=\"selected\">{$dbtype['title']}</option>";
 		}
@@ -423,60 +439,111 @@ function database_info()
 			$dbengines .= "<option value=\"{$dbfile}\">{$dbtype['title']}</option>";
 		}
 	}
-	
-	$encodings_array = array(
-		'big5' => 'Big5 Traditional Chinese',
-		'dec8' => 'DEC West European',
-		'cp850' => 'DOS West European',
-		'hp8' => 'HP West European',
-		'koi8r' => 'KOI8-R Relcom Russian',
-		'latin1' => 'cp1252 West European',
-		'latin2' => 'ISO 8859-2 Central European',
-		'swe7' => '7bit Swedish',
-		'ascii' => 'US ASCII',
-		'ujis' => 'EUC-JP Japanese',
-		'sjis' => 'Shift-JIS Japanese',
-		'hebrew' => 'ISO 8859-8 Hebrew',
-		'tis620' => 'TIS620 Thai',
-		'euckr' => 'EUC-KR Korean',
-		'koi8u' => 'KOI8-U Ukrainian',
-		'gb2312' => 'GB2312 Simplified Chinese',
-		'greek' => 'ISO 8859-7 Greek',
-		'cp1250' => 'Windows Central European',
-		'gbk' => 'GBK Simplified Chinese',
-		'latin5' => 'ISO 8859-9 Turkish',
-		'armscii8' => 'ARMSCII-8 Armenian',
-		'utf8' => 'UTF-8 Unicode',
-		'ucs2' => 'UCS-2 Unicode',
-		'cp866' => 'DOS Russian',
-		'keybcs2' => 'DOS Kamenicky Czech-Slovak',
-		'macce' => 'Mac Central European',
-		'macroman' => 'Mac West European',
-		'cp852' => 'DOS Central European',
-		'latin7' => 'ISO 8859-13 Baltic',
-		'cp1251' => 'Windows Cyrillic',
-		'cp1256' => 'Windows Arabic',
-		'cp1257' => 'Windows Baltic',
-		'binary' => 'Binary pseudo charset',
-		'geostd8' => 'GEOSTD8 Georgian',
-		'cp932' => 'SJIS for Windows Japanese',
-		'eucjpms' => 'UJIS for Windows Japanese',
-	);
-	
-	// Loop through database encodings
-	foreach($encodings_array as $key => $encodingtext)
+
+	foreach($dboptions as $dbfile => $dbtype)
 	{
-		if($key == $encoding)
+		require_once MYBB_ROOT."inc/db_{$dbfile}.php";
+		$db = new $dbtype['class'];
+		$encodings = $db->fetch_db_charsets();
+		$encoding_select = '';
+		if(!$mybb->input['config'][$dbfile]['dbhost'])
 		{
-			$encodings .= "<option value=\"{$key}\" selected=\"selected\">{$encodingtext}</option>\n";
+			$mybb->input['config'][$dbfile]['dbhost'] = "localhost";
 		}
+		if(!$mybb->input['config'][$dbfile]['tableprefix'])
+		{
+			$mybb->input['config'][$dbfile]['tableprefix'] = "mybb_";
+		}
+		if(!$mybb->input['config'][$dbfile]['encoding'])
+		{
+			$mybb->input['config'][$dbfile]['encoding'] = "utf8";
+		}
+
+		$class = '';
+		if(!$first && !$mybb->input['dbengine'])
+		{
+			$mybb->input['dbengine'] = $dbfile;
+			$first = true;
+		}
+		if($dbfile == $mybb->input['dbengine'])
+		{
+			$class = "_selected";
+		}
+
+		$db_info[$dbfile] = "
+			<tbody id=\"{$dbfile}_settings\" class=\"db_settings db_type{$class}\">
+				<tr>
+					<th colspan=\"2\" class=\"first last\">{$dbtype['title']} {$lang->database_settings}</th>
+				</tr>";
+			
+		// SQLite gets some special settings
+		if($dbfile == 'sqlite2' || $dbfile == 'sqlite3')
+		{
+			$db_info[$dbfile] .= "
+				<tr class=\"alt_row\">
+					<td class=\"first\"><label for=\"config_{$dbfile}_dbname\">{$lang->database_path}</label></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbname]\" id=\"config_{$dbfile}_dbname\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['dbname'])."\" /></td>
+				</tr>";
+		}
+		// Others get db host, username, password etc
 		else
 		{
-			$encodings .= "<option value=\"{$key}\">{$encodingtext}</option>\n";
+			$db_info[$dbfile] .= "
+				<tr class=\"alt_row\">
+					<td class=\"first\"><label for=\"config_{$dbfile}_dbhost\">{$lang->database_host}</label></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbhost]\" id=\"config_{$dbfile}_dbhost\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['dbhost'])."\" /></td>
+				</tr>
+				<tr>
+					<td class=\"first\"><label for=\"config_{$dbfile}_dbuser\">{$lang->database_user}</label></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\"  name=\"config[{$dbfile}][dbuser]\" id=\"config_{$dbfile}_dbuser\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['dbuser'])."\" /></td>
+				</tr>
+				<tr class=\"alt_row\">
+					<td class=\"first\"><label for=\"config_{$dbfile}_dbpass\">{$lang->database_pass}</label></td>
+					<td class=\"last alt_col\"><input type=\"password\" class=\"text_input\"  name=\"config[{$dbfile}][dbpass]\" id=\"config_{$dbfile}_dbpass\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['dbpass'])."\" /></td>
+				</tr>
+				<tr class=\"last\">
+					<td class=\"first\"><label for=\"config_{$dbfile}_dbname\">{$lang->database_name}</label></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\"  name=\"config[{$dbfile}][dbname]\" id=\"config_{$dbfile}_dbname\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['dbname'])."\" /></td>
+				</tr>";
+		}
+
+		// Now we're up to table settings
+		$db_info[$dbfile] .= "
+			<tr>
+				<th colspan=\"2\" class=\"first last\">{$dbtype['title']} {$lang->table_settings}</th>
+			</tr>
+			<tr class=\"first\">
+				<td class=\"first\"><label for=\"config_{$dbfile}_tableprefix\">{$lang->table_prefix}</label></td>
+				<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\" name=\"config[{$dbfile}][tableprefix]\"\" id=\"config_{$dbfile}_tableprefix\" value=\"".htmlspecialchars_uni($mybb->input['config'][$dbfile]['tableprefix'])."\" /></td>
+			</tr>
+			";
+		
+		// Encoding selection only if supported
+		if(is_array($encodings))
+		{
+			$select_options = "";
+			foreach($encodings as $encoding => $title)
+			{
+				if($mybb->input['config'][$dbfile]['encoding'] == $encoding)
+				{
+					$select_options .= "<option value=\"{$encoding}\" selected=\"selected\">{$title}</option>";
+				}
+				else
+				{
+					$select_options .= "<option value=\"{$encoding}\">{$title}</option>";
+				}
+			}
+			$db_info[$dbfile] .= "
+				<tr class=\"last\">
+					<td class=\"first\"><label for=\"config_{$dbfile}_encoding\">{$lang->table_encoding}</label></td>
+					<td class=\"last alt_col\"><select name=\"config[{$dbfile}][encoding]\" id=\"config_{$dbfile}_encoding\">{$select_options}</select></td>
+				</tr>
+				</tbody>";
 		}
 	}
+	$dbconfig = implode("", $db_info);
 
-	echo sprintf($lang->db_step_config_table, $dbengines, $dbhost, $dbuser, $dbname, $tableprefix, $encodings);
+	echo sprintf($lang->db_step_config_table, $dbengines, $dbconfig);
 	$output->print_footer('create_tables');
 }
 
@@ -484,33 +551,35 @@ function create_tables()
 {
 	global $output, $dbinfo, $errors, $mybb, $dboptions, $lang;
 	
-	if(!$mybb->input['encoding'])
-	{
-		$errors[] = $lang->db_step_error_missingencoding;
-	}
-
 	if(!file_exists(MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php"))
 	{
 		$errors[] = $lang->db_step_error_invalidengine;
 		database_info();
 	}
 
+	$config = $mybb->input['config'][$mybb->input['dbengine']];
+
 	// Attempt to connect to the db
 	require_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";
 	$db = new databaseEngine;
  	$db->error_reporting = 0;
 
-	$connection = $db->connect($mybb->input['dbhost'], $mybb->input['dbuser'], $mybb->input['dbpass']);
+	if($config['encoding'])
+	{
+		$mybb->config['db_encoding'] = $config['encoding'];
+	}
+
+	$connection = $db->connect($config['dbhost'], $config['dbuser'], $config['dbpass']);
 	if(!$connection)
 	{
-		$errors[] = sprintf($lang->db_step_error_noconnect, $mybb->input['dbhost']);
+		$errors[] = sprintf($lang->db_step_error_noconnect, $config['dbhost']);
 	}
 
 	// Select the database
-	$dbselect = $db->select_db($mybb->input['dbname']);
+	$dbselect = $db->select_db($config['dbname']);
 	if(!$dbselect)
 	{
-		$errors[] = sprintf($lang->db_step_error_nodbname, $mybb->input['dbname']);
+		$errors[] = sprintf($lang->db_step_error_nodbname, $config['dbname']);
 	}
 
 	if(is_array($errors))
@@ -518,55 +587,14 @@ function create_tables()
 		database_info();
 	}
 	
-	$collations = array(
-		'big5' => 'big5_chinese_ci',
-		'dec8' => 'dec8_swedish_ci',
-		'cp850' => 'cp850_general_ci',
-		'hp8' => 'hp8_english_ci',
-		'koi8r' => 'koi8r_general_ci',
-		'latin1' => 'latin1_swedish_ci',
-		'latin2' => 'latin2_general_ci',
-		'swe7' => 'swe7_swedish_ci',
-		'ascii' => 'ascii_general_ci',
-		'ujis' => 'ujis_japanese_ci',
-		'sjis' => 'sjis_japanese_ci',
-		'hebrew' => 'hebrew_general_ci',
-		'tis620' => 'tis620_thai_ci',
-		'euckr' => 'euckr_korean_ci',
-		'koi8u' => 'koi8u_general_ci',
-		'gb2312' => 'gb2312_chinese_ci',
-		'greek' => 'greek_general_ci',
-		'cp1250' => 'cp1250_general_ci',
-		'gbk' => 'gbk_chinese_ci',
-		'latin5' => 'latin5_turkish_ci',
-		'armscii8' => 'armscii8_general_ci',
-		'utf8' => 'utf8_general_ci',
-		'ucs2' => 'ucs2_general_ci',
-		'cp866' => 'cp866_general_ci',
-		'keybcs2' => 'keybcs2_general_ci',
-		'macce' => 'macce_general_ci',
-		'macroman' => 'macroman_general_ci',
-		'cp852' => 'cp852_general_ci',
-		'latin7' => 'latin7_general_ci',
-		'cp1251' => 'cp1251_general_ci',
-		'cp1256' => 'cp1256_general_ci',
-		'cp1257' => 'cp1257_general_ci',
-		'binary' => 'binary',
-		'geostd8' => 'geostd8_general_ci',
-		'cp932' => 'cp932_japanese_ci',
-		'eucjpms' => 'eucjpms_japanese_ci',
-	);
-	
 	// Decide if we can use a database encoding or not
-	if(($db->short_title == "MySQLi" || $db->short_title == "MySQL") && $db->get_version() >= '4.1.0')
+	if($db->fetch_db_charsets() != false)
 	{
-		$db_encoding = "\$config['db_encoding'] = '{$mybb->input['encoding']}';";
-		$charset = " CHARACTER SET {$mybb->input['encoding']} COLLATE ".$collations[$mybb->input['encoding']];
+		$db_encoding = "\$config['db_encoding'] = '{$config['encoding']}';";
 	}
 	else
 	{
-		$db_encoding = "// \$config['db_encoding'] = '{$mybb->input['encoding']}';";
-		$charset = "";
+		$db_encoding = "// \$config['db_encoding'] = '{$config['encoding']}';";
 	}
 	
 	// Write the configuration file
@@ -576,11 +604,11 @@ function create_tables()
  */
 
 \$config['dbtype'] = '{$mybb->input['dbengine']}';
-\$config['hostname'] = '{$mybb->input['dbhost']}';
-\$config['username'] = '{$mybb->input['dbuser']}';
-\$config['password'] = '{$mybb->input['dbpass']}';
-\$config['database'] = '{$mybb->input['dbname']}';
-\$config['table_prefix'] = '{$mybb->input['tableprefix']}';
+\$config['hostname'] = '{$config['dbhost']}';
+\$config['username'] = '{$config['dbuser']}';
+\$config['password'] = '{$config['dbpass']}';
+\$config['database'] = '{$config['dbname']}';
+\$config['table_prefix'] = '{$config['tableprefix']}';
 
 /**
  * Admin CP directory
@@ -670,7 +698,9 @@ function create_tables()
 	require_once INSTALL_ROOT."resources/{$structure_file}";
 	foreach($tables as $val)
 	{
-		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $mybb->input['tableprefix'].'\\1\\2', $val);
+		echo $db->build_create_table_collation();
+		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['tableprefix'].'\\1\\2', $val);
+		$val = preg_replace('#;$#', $db->build_create_table_collation().";", $val);
 		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
 		if($match[1])
 		{

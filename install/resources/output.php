@@ -20,13 +20,19 @@ class installerOutput {
 	{
 		global $mybb, $lang;
 		$this->doneheader = 1;
-
+		if($image == "dbconfig")
+		{
+			$dbconfig_add = "<script type=\"text/javascript\">document.write('<style type=\"text/css\">.db_type { display: none; }</style>');</script>";
+		}
 		echo <<<END
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>$this->title &gt; $title</title>
 	<link rel="stylesheet" href="stylesheet.css" type="text/css" />
+	<script type="text/javascript" src="../jscripts/prototype.js"></script>
+	<script type="text/javascript" src="../jscripts/general.js"></script>
+	{$dbconfig_add}
 </head>
 <body>
 END;
