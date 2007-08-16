@@ -698,7 +698,6 @@ function create_tables()
 	require_once INSTALL_ROOT."resources/{$structure_file}";
 	foreach($tables as $val)
 	{
-		echo $db->build_create_table_collation();
 		$val = preg_replace('#mybb_(\S+?)([\s\.,\(]|$)#', $config['tableprefix'].'\\1\\2', $val);
 		$val = preg_replace('#;$#', $db->build_create_table_collation().";", $val);
 		preg_match('#CREATE TABLE (\S+)(\s?|\(?)\(#i', $val, $match);
