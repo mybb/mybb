@@ -11,7 +11,8 @@
 
 define("IN_MYBB", 1);
 
-$templatelist = "";
+$templatelist .= "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -30,8 +31,6 @@ $errors = '';
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
 
 $plugins->run_hooks("modcp_start");
-
-
 
 if($mybb->input['action'] == "do_reports")
 {
@@ -307,7 +306,6 @@ if($mybb->input['action'] == "all_reports")
 
 	eval("\$allreportedposts = \"".$templates->get("modcp_allreports")."\";");
 	output_page($allreportedposts);
-	break;
 }
 
 ?>
