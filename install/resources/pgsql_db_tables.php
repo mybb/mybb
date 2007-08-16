@@ -47,7 +47,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	conditions text NOT NULL,
 	sortby varchar(20) NOT NULL default '',
 	sortorder varchar(4) NOT NULL default '',
-	perpage int(4) NOT NULL default '',
+	perpage int(4) NOT NULL default '0',
 	view_type varchar(6) NOT NULL default '',
 	PRIMARY KEY(vid)
 );";
