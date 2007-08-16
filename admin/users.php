@@ -532,7 +532,7 @@ if($mybb->input['action'] == "do_delete")
 		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='".intval($mybb->input['uid'])."'");
 		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='".intval($mybb->input['uid'])."'");
-
+		$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".intval($mybb->input['uid'])."'");
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
 

@@ -116,6 +116,11 @@ $send_errors = '';
 
 if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
+	if($mybb->usergroup['cansendpms'] == "no")
+	{
+		error_no_permission();
+	}
+
 	$plugins->run_hooks("private_send_do_send");
 
 	// Attempt to see if this PM is a duplicate or not
@@ -183,6 +188,10 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "send")
 {
+	if($mybb->usergroup['cansendpms'] == "no")
+	{
+		error_no_permission();
+	}
 
 	$plugins->run_hooks("private_send_start");
 
