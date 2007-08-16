@@ -4197,7 +4197,7 @@ body {
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
-{$usercpnav}
+{$modcp_nav}
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -4246,7 +4246,7 @@ body {
 {$header}
 <table width="100%" border="0" align="center">
 <tr>
-{$usercpnav}
+{$modcp_nav}
 <td valign="top">
 <p>{$lang->unread_reports_key}</p>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
