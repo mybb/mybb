@@ -309,3 +309,5 @@ if($mybb->input['action'] == "all_reports")
 	output_page($allreportedposts);
 	break;
 }
+
+?>
