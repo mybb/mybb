@@ -662,6 +662,23 @@ function upgrade11_dbchanges4()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."attachments ADD dateuploaded bigint(30) NOT NULL default '0' AFTER downloads");
 
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminviews (
+		vid int unsigned NOT NULL auto_increment,
+		uid int unsigned NOT NULL default '0',
+		title varchar(100) NOT NULL default '',
+		type varchar(6) NOT NULL default '',
+		isdefault int(1) NOT NULL default '0',
+		fields text NOT NULL,
+		conditions text NOT NULL,
+		sortby varchar(20) NOT NULL default '',
+		sortorder varchar(4) NOT NULL default '',
+		perpage int(4) NOT NULL default '',
+		view_type varchar(6) NOT NULL default '',
+		PRIMARY KEY(vid)
+	) TYPE=MyISAM;");
+
+	// Insert default admin views from XML here
+
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

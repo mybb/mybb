@@ -813,8 +813,18 @@ if($mybb->input['action'] == "options")
 		$user['threadmode'] = "linear";
 	}
 
-	$dateselect[$user['dateformat']] = "selected";
-	$timeselect[$user['timeformat']] = "selected";
+
+	$date_format_options = "<option value=\"0\">{$lang->use_default}</option>";
+	foreach($date_formats as $key => $format)
+	{
+		$date_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
+	}
+
+	$time_format_options = "<option value=\"0\">{$lang->use_default}</option>";
+	foreach($time_formats as $key => $format)
+	{
+		$time_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
+	}
 
 	if($user['dst'] == 1)
 	{
@@ -1569,9 +1579,11 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 
 			if(file_exists($avatarpath))
 			{
+				$dimensions = @getimagesize($avatarpath);
+
 				$updated_avatar = array(
 					"avatar" => $avatarpath,
-					"avatardimensions" => "",
+					"avatardimensions" => "{$dimensions[0]}|{$dimensions[1]}",
 					"avatartype" => "gallery"
 				);
 				$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");

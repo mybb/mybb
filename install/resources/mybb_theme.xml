@@ -1485,19 +1485,7 @@ td .star_rating {
 <tr>
 <td>
 <select name="dateformat">
-<option value="">{$lang->use_default}</option>
-<option value="1" {$dateselect['1']}>01-25-2004</option>
-<option value="2" {$dateselect['2']}>01-25-04</option>
-<option value="3" {$dateselect['3']}>01.25.2004</option>
-<option value="4" {$dateselect['4']}>01.25.04</option>
-<option value="5" {$dateselect['5']}>25-01-2004</option>
-<option value="6" {$dateselect['6']}>25-01-04</option>
-<option value="7" {$dateselect['7']}>25.01.2004</option>
-<option value="8" {$dateselect['8']}>25.01.04</option>
-<option value="9" {$dateselect['9']}>January 25th, 2004</option>
-<option value="10" {$dateselect['10']}>Saturday, January 25th, 2004</option>
-<option value="11" {$dateselect['11']}>25th January 1998</option>
-<option value="12" {$dateselect['12']}>Saturday, 25th January 2004</option>
+{$date_format_options}
 </select>
 </td>
 </tr>
@@ -1507,10 +1495,7 @@ td .star_rating {
 <tr>
 <td>
 <select name="timeformat">
-<option value="">{$lang->use_default}</option>
-<option value="1" {$timeselect['1']}>08:15 pm</option>
-<option value="2" {$timeselect['2']}>08:15 PM</option>
-<option value="3" {$timeselect['3']}>20:15</option>
+{$time_format_options}
 </select>
 </td>
 </tr>
@@ -4201,15 +4186,19 @@ body {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="moderation_reports" version="1400"><![CDATA[<html>
+		<template name="modcp_reports" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
 {$headerinclude}
 </head>
 <body>
 {$header}
-<form action="moderation.php" method="post">
+<form action="modcp.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="6"><strong>{$lang->reported_posts}</strong></td>
@@ -4225,16 +4214,19 @@ body {
 {$reports}
 {$reportspages}
 <tr>
-<td class="tfoot" colspan="6" align="right"><span class="smalltext"><strong><a href="moderation.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
+<td class="tfoot" colspan="6" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
 </tr>
 </table>
 <br />
 <div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
+</td>
+</tr>
+</table>
 </form>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_reports_report" version="1400"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1400"><![CDATA[<tr>
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
@@ -4242,7 +4234,7 @@ body {
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</small></td>
 </tr>]]></template>
-	<template name="moderation_reports_multipage" version="120"><![CDATA[<tr>
+	<template name="modcp_reports_multipage" version="120"><![CDATA[<tr>
 <td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 	<template name="moderation_allreports" version="120"><![CDATA[<html>
@@ -4252,6 +4244,10 @@ body {
 </head>
 <body>
 {$header}
+<table width="100%" border="0" align="center">
+<tr>
+{$usercpnav}
+<td valign="top">
 <p>{$lang->unread_reports_key}</p>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -4268,10 +4264,13 @@ body {
 {$allreports}
 {$allreportspages}
 </table>
+</td>
+</tr>
+</table>
 {$footer}
 </body>
 </html>]]></template>
-	<template name="moderation_reports_allreport" version="1400"><![CDATA[<tr>
+	<template name="modcp_reports_allreport" version="1400"><![CDATA[<tr>
 <td class="{$trow}" align="center"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></td>
 <td class="{$trow}" align="center">{$report['postusername']}</td>
 <td class="{$trow}">{$report['threadsubject']}</td>
@@ -4282,10 +4281,10 @@ body {
 	<template name="moderation_allreports_multipage" version="120"><![CDATA[<tr>
 <td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
-	<template name="moderation_reports_allnoreports" version="120"><![CDATA[<tr>
+	<template name="modcp_reports_allnoreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="moderation_reports_noreports" version="120"><![CDATA[<tr>
+		<template name="modcp_reports_noreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="newthread_postpoll" version="120"><![CDATA[<tr>
@@ -4297,9 +4296,9 @@ body {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="global_unreadreports" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="global_unreadreports" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="trow1" align="right"><span class="smalltext"><a href="moderation.php?action=reports">{$lang->unread_reports}</a></span></td>
+<td class="trow1" align="right"><span class="smalltext"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></span></td>
 </tr>
 </table>
 <br />]]></template>
@@ -8642,5 +8641,21 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1">{$lang->no_events}</td>
 </tr>
 </table>]]></template>
+		<template name="usercp_nav" version="1400"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead"><strong>{$lang->ucp_nav_menu}</strong></td>
+</tr>
+<tr>
+	<td class="tcat">
+		<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['modcp']}.gif" id="modcp_img" class="expander" alt="[-]"/></div>
+		<div><span class="smalltext"><strong>Moderator Controls</strong></span></div>
+	</td>
+</tr>
+<tbody style="{$collapsed['modcp_e']}" id="modcp_e">
+	<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="usercp_nav_item modcp_nav_reports">Reported Posts</a></td></tr>
+</tbody>
+</table>
+</td>]]></template>
 	</templates>
 </theme>

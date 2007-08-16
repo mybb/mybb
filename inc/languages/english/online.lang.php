@@ -30,7 +30,7 @@ $l['viewing_profile2'] = "Viewing Profile of <a href=\"member.php?action=profile
 $l['registering'] = "<a href=\"member.php?action=register\">Registering</a>";
 $l['logging_in'] = "<a href=\"member.php?action=login\">Logging In</a>";
 $l['logging_in_plain'] = "Logging In";
-$l['logging_out'] = "<a href=\"member.php?action=logout\">Logging Out</a>";
+$l['logging_out'] = "Logging Out";
 $l['emailing_user'] = "Emailing a User";
 $l['rating_user'] = "Rating User";
 $l['viewing_memberlist'] = "Viewing <a href=\"memberlist.php\">Member List</a>";

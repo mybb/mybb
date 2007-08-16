@@ -53,7 +53,10 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 		echo "	<script type=\"text/javascript\">
 //<![CDATA[
-loading_text = '{$lang->loading_text}';
+var loading_text = '{$lang->loading_text}';
+var cookieDomain = '{$mybb->settings['cookiedomain']}';
+var cookiePath = '{$mybb->settings['cookiepath']}';
+var imagepath = '../images';
 //]]>
 </script>\n";
 		echo $this->extra_header;
@@ -382,7 +385,21 @@ EOF;
 		$form->end();
 		$this->output_footer();
 	}
-	
+
+	function build_codebuttons_editor($bind, $editor_language)
+	{
+		global $lang;
+		if($bind == "signature")
+		{
+			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
+		}
+		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
+				"<script type=\"text/javascript\">".
+				"	{$editor_language}".
+				"	{$tabs_js}".
+				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };".
+				"</script>";
+	}
 }
 
 class DefaultSidebarItem

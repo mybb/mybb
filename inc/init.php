@@ -209,4 +209,27 @@ else
 	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
 	define('INDEX_URL', "index.php");
 }
+
+// An array of valid date formats (Used for user selections etc)
+$date_formats = array(
+	1 => "m-d-Y",
+	2 => "m-d-y",
+	3 => "m.d.Y",
+	4 => "m.d.y",
+	5 => "d-m-Y",
+	6 => "d-m-y",
+	7 => "d.m.Y",
+	8 => "d.m.y",
+	9 => "F jS, Y",
+	10 => "l, F jS, Y",
+	11 => "jS F, Y",
+	12 => "l, jS F, Y"
+);
+
+// An array of valid time formats (Used for user selections etc)
+$time_formats = array(
+	1 => "h:i a",
+	2 => "h:i A",
+	3 => "H:i"
+);
 ?>

@@ -36,6 +36,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 	
+	// Check we haven't exceeded the maximum number of warnings per day
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
 		$timecut = TIME_NOW-60*60*24;
@@ -70,6 +71,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error($lang->error_cant_warn_group);
 	}
 
+	// Is this warning being given for a post?
 	if($mybb->input['pid'])
 	{
 		$post = get_post(intval($mybb->input['pid']));
@@ -92,6 +94,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		$warn_errors[] = $lang->error_no_note;
 	}
 
+	// Using a predefined warning type
 	if($mybb->input['type'] != "custom")
 	{
 		$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['type'])."'");
@@ -107,6 +110,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			$warning_expires = TIME_NOW+$warning_type['expirationtime'];
 		}
 	}
+	// Issuing a custom warning
 	else
 	{
 		if($mybb->settings['allowcustomwarnings'] == "no")
@@ -131,6 +135,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			{
 				$points = $mybb->input['custom_points'];
 			}
+			// Build expiry date
 			if($mybb->input['expires'])
 			{
 				$warning_expires = intval($mybb->input['expires']);
@@ -201,8 +206,10 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		}
 	}
 
+	// No errors - save warning to database
 	if(!is_array($warn_errors))
 	{
+		// Build warning level & ensure it doesn't go over 100.
 		$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		$new_warning_level = round(($user['warningpoints']+$points)/$mybb->settings['maxwarningpoints']*100);
 		if($new_warning_level > 100)
@@ -359,7 +366,8 @@ if($mybb->input['action'] == "warn")
 	{
 		error_no_permission();
 	}
-	
+
+	// Check we haven't exceeded the maximum number of warnings per day
 	if($mybb->usergroup['maxwarningsday'] != 0)
 	{
 		$timecut = TIME_NOW-60*60*24;
@@ -394,6 +402,7 @@ if($mybb->input['action'] == "warn")
 		error($lang->error_cant_warn_group);
 	}
 
+	// Giving a warning for a specific post
 	if($mybb->input['pid'])
 	{
 		$post = get_post(intval($mybb->input['pid']));

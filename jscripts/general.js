@@ -8,6 +8,8 @@ var MyBB = {
 
 	pageLoaded: function()
 	{
+		MyBB.page_loaded = 1;
+
 		expandables.init();
 
 		// Initialise check all boxes

@@ -2122,7 +2122,15 @@ function build_mycode_inserter($bind="message")
 
 		$editor_language .= "};";
 
-		eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
+		if(defined("IN_ADMINCP"))
+		{
+			global $page;
+			$codeinsert = $page->build_codebuttons_editor($bind, $editor_language);
+		}
+		else
+		{
+			eval("\$codeinsert = \"".$templates->get("codebuttons")."\";");
+		}
 	}
 
 	return $codeinsert;
@@ -3299,7 +3307,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		}
 	}
 
-	if($tid == 0)
+	if($tid == 1)
 	{
 		$themeselect .= "</select>";
 	}

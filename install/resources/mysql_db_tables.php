@@ -36,6 +36,21 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	lastactive bigint(30) NOT NULL default '0'
 ) TYPE=MyISAM{$charset};";
 
+$tables[] = "CREATE TABLE mybb_adminviews (
+	vid int unsigned NOT NULL auto_increment,
+	uid int unsigned NOT NULL default '0',
+	title varchar(100) NOT NULL default '',
+	type varchar(6) NOT NULL default '',
+	isdefault int(1) NOT NULL default '0',
+	fields text NOT NULL,
+	conditions text NOT NULL,
+	sortby varchar(20) NOT NULL default '',
+	sortorder varchar(4) NOT NULL default '',
+	perpage int(4) NOT NULL default '',
+	view_type varchar(6) NOT NULL default '',
+	PRIMARY KEY(vid)
+) TYPE=MyISAM{$charset};";
+
 $tables[] = "CREATE TABLE mybb_announcements (
   aid int unsigned NOT NULL auto_increment,
   fid int(10) NOT NULL default '0',

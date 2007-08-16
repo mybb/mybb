@@ -187,64 +187,20 @@ class session
 		}
 		if($mybb->user['dateformat'] != "0" || $mybb->user['dateformat'] != '')
 		{
-			// Choose date format.
-			switch($mybb->user['dateformat'])
+			global $date_formats;
+			if($date_formats[$mybb->user['dateformat']])
 			{
-				case "1":
-					$mybb->settings['dateformat'] = "m-d-Y";
-					break;
-				case "2":
-					$mybb->settings['dateformat'] = "m-d-y";
-					break;
-				case "3":
-					$mybb->settings['dateformat'] = "m.d.Y";
-					break;
-				case "4":
-					$mybb->settings['dateformat'] = "m.d.y";
-					break;
-				case "5":
-					$mybb->settings['dateformat'] = "d-m-Y";
-					break;
-				case "6":
-					$mybb->settings['dateformat'] = "d-m-y";
-					break;
-				case "7":
-					$mybb->settings['dateformat'] = "d.m.Y";
-					break;
-				case "8":
-					$mybb->settings['dateformat'] = "d.m.y";
-					break;
-				case "9":
-					$mybb->settings['dateformat'] = "F jS, Y";
-					break;
-				case "10":
-					$mybb->settings['dateformat'] = "l, F jS, Y";
-					break;
-				case "11":
-					$mybb->settings['dateformat'] = "jS F Y";
-					break;
-				case "12":
-					$mybb->settings['dateformat'] = "l, jS F Y";
-					break;
-				default:
-					break;
+				$mybb->setings['dateformat'] = $date_formats[$mybb->user['dateformat']];
 			}
 		}
 
 		// Choose time format.
 		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != '')
 		{
-			switch($mybb->user['timeformat'])
+			global $time_formats;
+			if($time_formats[$mybb->user['timeformat']])
 			{
-				case "1":
-					$mybb->settings['timeformat'] = "h:i a";
-					break;
-				case "2":
-					$mybb->settings['timeformat'] = "h:i A";
-					break;
-				case "3":
-					$mybb->settings['timeformat'] = "H:i";
-					break;
+				$mybb->setings['timeformat'] = $time_formats[$mybb->user['timeformat']];
 			}
 		}
 

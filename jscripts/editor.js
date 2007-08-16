@@ -68,7 +68,14 @@ messageEditor.prototype = {
 		this.textarea = textarea;
 
 		// Only swap it over once the page has loaded (add event)
-		Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
+		if(MyBB.page_loaded == 1)
+		{
+			this.showEditor();
+		}
+		else
+		{
+			Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
+		}
 	},
 
 	showEditor: function()
@@ -83,37 +90,33 @@ messageEditor.prototype = {
 
 		editor = document.createElement("div");
 		editor.style.position = "relative";
+		editor.style.display = "none";
 		editor.className = "editor";
 
-		// Determine the overall height and width - messy, but works
-		if(this.options && this.options.width)
-		{
-			w = this.options.width;
-		}
-		else if(oldTextarea.style.width)
-		{
-			w = oldTextarea.style.width;
-		}
-		else if(oldTextarea.clientWidth)
-		{
-			w = oldTextarea.clientWidth+"px";
-		}
-		else
-		{
-			w = "560px";
-		}
+		// Append the new editor
+		oldTextarea.parentNode.insertBefore(editor, oldTextarea);
 
+		// Determine the overall height and width - messy, but works
+		w = oldTextarea.getDimensions().width+"px";
+		if(!w || parseInt(w) < 400)
+		{
+			w = "400px";
+		}
 		if(this.options && this.options.height)
 		{
 			w = this.options.height;
 		}
-		else if(oldTextarea.style.height)
+		else if(oldTextarea.offsetHeight)
 		{
-			h = oldTextarea.style.height;
+			h = oldTextarea.offsetHeight+"px";
 		}
 		else if(oldTextarea.clientHeight)
 		{
 			h = oldTextarea.clientHeight+"px";
+		}
+		else if(oldTextarea.style.height)
+		{
+			h = oldTextarea.style.height;
 		}
 		else
 		{
@@ -279,13 +282,9 @@ messageEditor.prototype = {
 		areaContainer.style.clear = "both";
 
 		// Set the width/height of the area
-		subtract = subtract2 = 0;
-		if(MyBB.browser != "ie" || (MyBB.browser == "ie" && MyBB.useragent.indexOf('msie 7.') != -1))
-		{
-			subtract = subtract2 = 8;
-		}
-		areaContainer.style.height = parseInt(editor.style.height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
-		areaContainer.style.width = parseInt(editor.style.width)-subtract2+"px";
+		subtract = subtract2 = 16;
+		areaContainer.style.height = parseInt(Element.getDimensions(editor).height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
+		areaContainer.style.width = parseInt(Element.getDimensions(editor).width)-subtract2+"px";
 
 		// Create text area
 		textInput = document.createElement("textarea");
@@ -312,6 +311,7 @@ messageEditor.prototype = {
 			Event.observe(oldTextarea.form, "submit", this.closeTags.bindAsEventListener(this));
 			Event.observe(oldTextarea.form, "submit", this.updateOldArea.bindAsEventListener(this));
 		}
+
 		// Hide the old editor
 		oldTextarea.style.visibility = "hidden";
 		oldTextarea.style.position = "absolute";
@@ -319,8 +319,7 @@ messageEditor.prototype = {
 		oldTextarea.id += "_old";
 		this.oldTextarea = oldTextarea;
 
-		// Append the new editor
-		oldTextarea.parentNode.insertBefore(editor, oldTextarea);
+		editor.style.display = "";
 
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
@@ -385,7 +384,7 @@ messageEditor.prototype = {
 				Element.addClassName(element, "toolbar_clicked");
 			}
 		}
-		Element.removeClassName(element, "toolbar_hover");
+	Element.removeClassName(element, "toolbar_hover");
 	},
 
 	toolbarItemHover: function(e)

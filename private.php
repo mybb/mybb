@@ -144,6 +144,11 @@ $send_errors = '';
 
 if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
+	if($mybb->usergroup['cansendpms'] == "no")
+	{
+		error_no_permission();
+	}
+
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
@@ -225,6 +230,11 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "send")
 {
+	if($mybb->usergroup['cansendpms'] == "no")
+	{
+		error_no_permission();
+	}
+
 	$plugins->run_hooks("private_send_start");
 
 	$smilieinserter = $codebuttons = '';

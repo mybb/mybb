@@ -127,13 +127,24 @@ function remove_avatars($uid, $exclude="")
 /**
  * Upload a new avatar in to the file system
  *
+ * @param srray incoming FILE array, if we have one - otherwise takes $_FILES['avatarupload']
+ * @param string User ID this avatar is being uploaded for, if not the current user
  * @return array Array of errors if any, otherwise filename of successful.
  */
-function upload_avatar()
+function upload_avatar($avatar=array(), $uid=0)
 {
 	global $db, $mybb, $lang, $plugins;
 	
-	$avatar = $_FILES['avatarupload'];
+	if(!$uid)
+	{
+		$uid = $mybb->user['uid'];
+	}
+
+	if(!$file['name'] || !$file['tmp_name'])
+	{
+		$avatar = $_FILES['avatarupload'];
+	}
+
 	if(!is_uploaded_file($avatar['tmp_name']))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
@@ -148,7 +159,7 @@ function upload_avatar()
 		return $ret;
 	}
 	
-	$filename = "avatar_".$mybb->user['uid'].".".$ext;
+	$filename = "avatar_".$uid.".".$ext;
 	$file = upload_file($avatar, $mybb->settings['avataruploadpath'], $filename);
 	if($file['error'])
 	{
@@ -248,7 +259,7 @@ function upload_avatar()
 		return $ret;		
 	}
 	// Everything is okay so lets delete old avatars for this user
-	remove_avatars($mybb->user['uid'], $filename);
+	remove_avatars($user['uid'], $filename);
 
 	$ret = array(
 		"avatar" => $mybb->settings['avataruploadpath']."/".$filename,

@@ -37,6 +37,21 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	data text NOT NULL default ''
 );";
 
+$tables[] = "CREATE TABLE mybb_adminviews (
+	vid serial,
+	uid int NOT NULL default '0',
+	title varchar(100) NOT NULL default '',
+	type varchar(6) NOT NULL default '',
+	isdefault int(1) NOT NULL default '0',
+	fields text NOT NULL,
+	conditions text NOT NULL,
+	sortby varchar(20) NOT NULL default '',
+	sortorder varchar(4) NOT NULL default '',
+	perpage int(4) NOT NULL default '',
+	view_type varchar(6) NOT NULL default '',
+	PRIMARY KEY(vid)
+);";
+
 $tables[] = "CREATE TABLE mybb_announcements (
   aid serial,
   fid int NOT NULL default '0',

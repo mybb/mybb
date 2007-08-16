@@ -84,8 +84,27 @@ class DefaultForm
 		return $input;
 	}
 
-	function generate_upload_field($name, $options=array())
+	function generate_file_upload_box($name, $options=array())
 	{
+		$input = "<input type=\"file\" name=\"".$name."\"";
+		if(isset($options['class']))
+		{
+			$input .= " class=\"text_input ".$options['class']."\"";
+		}
+		else
+		{
+			$input .= " class=\"text_input\"";
+		}
+		if(isset($options['style']))
+		{
+			$input .= " style=\"".$options['style']."\"";
+		}
+		if(isset($options['id']))
+		{
+			$input .= " id=\"".$options['id']."\"";
+		}
+		$input .= " />";
+		return $input;
 		
 	}
 
