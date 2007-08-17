@@ -304,6 +304,11 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;	
 	}
 	
+	if(!$config['db_encoding'])
+	{
+		cperror($lang->error_db_encoding_not_set);
+	}
+	
 	$tables = $db->list_tables($config['database']);
 	
 	$not_okey_count = 0;
@@ -327,7 +332,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	asort($mybb_tables);
 	
-	$hopto[] = "<input type=\"button\" value=\"$lang->convert_all\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\" />";
+	$hopto[] = "<input type=\"button\" value=\"{$lang->convert_all}\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	
 	starttable();
