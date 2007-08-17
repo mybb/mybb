@@ -719,8 +719,16 @@ function upgrade11_redoconfig()
 	
 	if(!$config['db_encoding'])
 	{
-		$config['db_encoding'] = $db->db_encoding;
+		$config['db_encoding'] = "utf8";
 	}
+	
+	$comma = "";
+	
+	if(!$db->db_encoding)
+	{
+		$comma = " // ";
+	}
+	
 	
 	$configdata = "<?php
 /**
@@ -796,7 +804,7 @@ function upgrade11_redoconfig()
  *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
  */
 
-\$config['db_encoding'] = '{$config['db_encoding']}';
+{$comment}\$config['db_encoding'] = '{$config['db_encoding']}';
 
 ?".">";
 

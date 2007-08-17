@@ -133,10 +133,7 @@ class DB_MySQLi
 
 		// Set the DB encoding accordingly
 		global $mybb;
-		if($mybb->config['db_encoding'])
-		{
-			$this->db_encoding = $mybb->config['db_encoding'];
-		}
+		$this->db_encoding = $mybb->config['db_encoding'];
 
 		return $this->link;
 	}
