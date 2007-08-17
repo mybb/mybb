@@ -111,6 +111,8 @@ function upgrade11_dbchanges()
 	$db->drop_table("mailerrors");
 	$db->drop_table("promotions");
 	$db->drop_table("promotionlogs");
+	
+	$collation = $db->build_create_table_collation();
 		
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
@@ -124,7 +126,7 @@ function upgrade11_dbchanges()
 		tid int unsigned NOT NULL default '0',
 		ipaddress varchar(20) NOT NULL default '',
 		PRIMARY KEY(mid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."mailerrors(
 		eid int unsigned NOT NULL auto_increment,
@@ -137,7 +139,7 @@ function upgrade11_dbchanges()
 		smtperror varchar(200) NOT NULL default '',
 		smtpcode int(5) NOT NULL default '0',
 		PRIMARY KEY(eid)
- 	) TYPE=MyISAM;");
+ 	) TYPE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotions(
 		pid int unsigned NOT NULL auto_increment,
@@ -156,7 +158,7 @@ function upgrade11_dbchanges()
 		newusergroup smallint unsigned NOT NULL default '0',
 		usergrouptype varchar(120) NOT NULL default '0',
 		PRIMARY KEY(pid)
- 	) TYPE=MyISAM;");
+ 	) TYPE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
 		plid int unsigned NOT NULL auto_increment,
@@ -166,7 +168,7 @@ function upgrade11_dbchanges()
 		newusergroup smallint unsigned NOT NULL default '0',
 		dateline bigint(30) NOT NULL default '0',
 		PRIMARY KEY(plid)
- 	) TYPE=MyISAM;");
+ 	) TYPE=MyISAM{$collation};");
 
 	if($db->field_exists('maxemails', "usergroups"))
 	{
@@ -211,7 +213,7 @@ function upgrade11_dbchanges()
 		logging int(1) NOT NULL default '0',
 		locked bigint(30) NOT NULL default '0',
 		PRIMARY KEY(tid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."tasklog (
@@ -220,7 +222,7 @@ function upgrade11_dbchanges()
 		dateline bigint(30) NOT NULL default '0',
 		data text NOT NULL,
 		PRIMARY KEY(lid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 
 	include_once MYBB_ROOT."inc/functions_task.php";
@@ -293,7 +295,7 @@ function upgrade11_dbchanges()
 		percentage int(3) NOT NULL default '0',
 		action text NOT NULL,
 		PRIMARY KEY(lid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warningtypes (
 		tid int unsigned NOT NULL auto_increment,
@@ -301,7 +303,7 @@ function upgrade11_dbchanges()
 		points int unsigned NOT NULL default '0',
 		expirationtime bigint(30) NOT NULL default '0',
 		PRIMARY KEY(tid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warnings (
 		wid int unsigned NOT NULL auto_increment,
@@ -319,7 +321,7 @@ function upgrade11_dbchanges()
 		revokereason text NOT NULL,
 		notes text NOT NULL,
 		PRIMARY KEY(wid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	if($db->field_exists('warningpoints', "users"))
 	{
@@ -336,7 +338,7 @@ function upgrade11_dbchanges()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("9_dbchanges2");
+	$output->print_footer("11_dbchanges2");
 }
 
 function upgrade11_dbchanges2()
@@ -349,14 +351,16 @@ function upgrade11_dbchanges2()
 	
 	$db->drop_table("banfilters");
 	
+	$collation = $db->build_create_table_collation();
+	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."banfilters (
 	  fid int unsigned NOT NULL auto_increment,
 	  filter varchar(200) NOT NULL default '',
 	  type int(1) NOT NULL default '0',
 	  lastuse bigint(30) NOT NULL default '0',
 	  dateline bigint(30) NOT NULL default '0',
-	  PRIMARY KEY  (fid)
-	) TYPE=MyISAM;");
+	  PRIMARY KEY (fid)
+	) TYPE=MyISAM{$collation};");
 
 	// Now we convert all of the old bans in to the new system!
 	$ban_types = array('bannedips','bannedemails','bannedusernames');
@@ -390,7 +394,7 @@ function upgrade11_dbchanges2()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("9_dbchanges3");
+	$output->print_footer("11_dbchanges3");
 }
 
 function upgrade11_dbchanges3()
@@ -402,6 +406,8 @@ function upgrade11_dbchanges3()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	
 	$db->drop_table("spiders");
+	
+	$collation = $db->build_create_table_collation();
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."spiders (
 		sid int unsigned NOT NULL auto_increment,
@@ -412,7 +418,7 @@ function upgrade11_dbchanges3()
 		useragent varchar(200) NOT NULL default '',
 		lastvisit bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->insert_query("spiders", array('name' => 'GoogleBot', 'useragent' => 'google'));
 	$db->insert_query("spiders", array('name' => 'Lycos', 'useragent' => 'lycos'));
@@ -585,7 +591,7 @@ function upgrade11_dbchanges3()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("9_dbchanges4");
+	$output->print_footer("11_dbchanges4");
 }
 
 function upgrade11_dbchanges4()
@@ -601,6 +607,8 @@ function upgrade11_dbchanges4()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP statustime;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD statustime bigint(30) NOT NULL default '0' AFTER status");
+	
+	$collation = $db->build_create_table_collation();
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendars (
 	  cid int unsigned NOT NULL auto_increment,
@@ -615,7 +623,7 @@ function upgrade11_dbchanges4()
 	  allowimgcode char(3) NOT NULL default '',
 	  allowsmilies char(3) NOT NULL default '',
 	  PRIMARY KEY(cid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$calendar_array = array(
 		'name' => 'Default Calendar',
@@ -638,7 +646,7 @@ function upgrade11_dbchanges4()
 	  canaddevents char(3) NOT NULL default '',
 	  canbypasseventmod char(3) NOT NULL default '',
 	  canmoderateevents char(3) NOT NULL default ''
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."forumsread (
 	  fid int unsigned NOT NULL default '0',
@@ -646,7 +654,7 @@ function upgrade11_dbchanges4()
 	  dateline int(10) NOT NULL default '0',
 	  KEY dateline (dateline),
 	  UNIQUE KEY fid (fid,uid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->query("CREATE TABLE ".TABLE_PREFIX."stats (
 		dateline bigint(30) NOT NULL default '0',
@@ -654,7 +662,7 @@ function upgrade11_dbchanges4()
 		numthreads int unsigned NOT NULL default '0',
 		numposts int unsigned NOT NULL default '0',
 		PRIMARY KEY(dateline)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	if($db->field_exists('dateuploaded', "attachments"))
 	{
@@ -675,7 +683,7 @@ function upgrade11_dbchanges4()
 		perpage int(4) NOT NULL default '',
 		view_type varchar(6) NOT NULL default '',
 		PRIMARY KEY(vid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	// Insert default admin views from XML here
 
@@ -683,10 +691,123 @@ function upgrade11_dbchanges4()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("9_done");
+	$output->print_footer("11_redoconfig");
 }
 
-function upgrade11_dbchanges5()
+function upgrade11_redoconfig()
+{
+	global $db, $output, $config, $mybb;
+	$output->print_header("Rewriting config.php");
+
+	$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
+	if(!$fh)
+	{
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
+		$output->print_footer("11_redoconfig");
+		exit;
+	}
+	
+	if(!$config['memcache_host'])
+	{
+		$config['memcache_host'] = "localhost";
+	}
+	
+	if(!$config['memcache_port'])
+	{
+		$config['memcache_port'] = 11211;
+	}
+	
+	if(!$config['db_encoding'])
+	{
+		$config['db_encoding'] = $db->db_encoding;
+	}
+	
+	$configdata = "<?php
+/**
+ * Database configuration
+ */
+
+\$config['dbtype'] = '{$config['dbtype']}';
+\$config['hostname'] = '{$config['hostname']}';
+\$config['username'] = '{$config['username']}';
+\$config['password'] = '{$config['password']}';
+\$config['database'] = '{$config['database']}';
+\$config['table_prefix'] = '{$config['table_prefix']}';
+
+/**
+ * Admin CP directory
+ *  For security reasons, it is recommended you
+ *  rename your Admin CP directory. You then need
+ *  to adjust the value below to point to the
+ *  new directory.
+ */
+
+\$config['admin_dir'] = '{$config['admindir']}';
+
+/**
+ * Hide all Admin CP links
+ *  If you wish to hide all Admin CP links
+ *  on the front end of the board after
+ *  renaming your Admin CP directory, set this
+ *  to 1.
+ */
+
+\$config['hide_admin_links'] = {$config['hide_admin_links']};
+
+/**
+ * Data-cache configuration
+ *  The data cache is a temporary cache
+ *  of the most commonly accessed data in MyBB.
+ *  By default, the database is used to store this data.
+ *
+ *  If you wish to use the file system (inc/cache directory)
+ *  you can change the value below to 'files', 'memcache' or 'eaccelerator' from 'db'.
+ */
+
+\$config['cache_store'] = '{$config['cachestore']}';
+
+/**
+ * Memcache configuration
+ *  If you are using memcache as your data-cache,
+ *  you need to configure the hostname and port
+ *  of your memcache server below.
+ *
+ * If not using memcache, ignore this section.
+ */
+
+\$config['memcache_host'] = '{$config['memcache_host']}';
+\$config['memcache_port'] = {$config['memcache_port']};
+
+/**
+ * Super Administrators
+ *  A comma separated list of user IDs who cannot
+ *  be edited, deleted or banned in the Admin CP.
+ *  The administrator permissions for these users
+ *  cannot be altered either.
+ */
+
+\$config['super_admins'] = '{$config['super_admins']}';
+
+/**
+ * Database Encoding
+ *  If you wish to set an encoding for MyBB uncomment 
+ *  the line below (if it isn't already) and change
+ *  the current value to the mysql charset:
+ *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
+ */
+
+\$config['db_encoding'] = '{$config['db_encoding']}';
+
+?".">";
+
+	fwrite($fh, $configdata);
+	fclose($fh);
+	echo "<p>The configuration file has successfully been rewritten.</p>";
+	echo "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_footer("11_dbchanges6");
+}
+
+function upgrade11_dbchanges6()
 {
 	global $db, $output;
 
@@ -761,7 +882,7 @@ function upgrade11_dbchanges5()
 	$remaining = $db->fetch_field($query, "remaining");	
 	if($remaining)
 	{
-		$nextact = "9_dbchanges5";
+		$nextact = "11_dbchanges6";
 		$startat = $startat+$epp;
 		$contents .= "<p><input type=\"hidden\" name=\"eventspage\" value=\"$epp\" /><input type=\"hidden\" name=\"eventstart\" value=\"$startat\" />Done. Click Next to move on to the next set of events.</p>";
 	}
@@ -769,11 +890,10 @@ function upgrade11_dbchanges5()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
-		$nextact = "9_done";
+		$nextact = "11_done";
 		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
 	$output->print_footer($nextact);
-
 }
 ?>

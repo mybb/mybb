@@ -152,7 +152,10 @@ class DB_PgSQL
 
 		// Set the DB encoding accordingly
 		global $mybb;
-		$this->db_encoding = $mybb->config['db_encoding'];
+		if($mybb->config['db_encoding'])
+		{
+			$this->db_encoding = $mybb->config['db_encoding'];
+		}
 
 		return true;
 	}

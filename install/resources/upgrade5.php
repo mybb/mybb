@@ -187,6 +187,8 @@ function upgrade5_dbchanges()
 	$db->write_query("UPDATE ".TABLE_PREFIX."users SET totalpms='-1', newpms='-1', unreadpms='-1'");
 	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET name='maxmessagelength' WHERE name='messagelength'");
 
+	$collation = $db->build_create_table_collation();
+
 	$db->drop_table("mycode");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."mycode (
 		    cid int unsigned NOT NULL auto_increment,
@@ -196,7 +198,7 @@ function upgrade5_dbchanges()
 		    replacement text NOT NULL,
 		    active char(3) NOT NULL default '',
 			PRIMARY KEY(cid)
-		) TYPE=MyISAM;");
+		) TYPE=MyISAM{$collation};");
 
 	$db->drop_table("templategroups");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."templategroups (
@@ -204,7 +206,7 @@ function upgrade5_dbchanges()
 			prefix varchar(50) NOT NULL default '',
 			title varchar(100) NOT NULL default '',
 			PRIMARY KEY (gid)
-			) TYPE=MyISAM;");
+			) TYPE=MyISAM{$collation};");
 
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('2','editpost','<lang:group_editpost>');");
@@ -246,7 +248,7 @@ function upgrade5_dbchanges()
 		  querycache text NOT NULL,
 		  keywords text NOT NULL,
 		  PRIMARY KEY  (sid)
-		) TYPE=MyISAM;");
+		) TYPE=MyISAM{$collation};");
 
 	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET name='bannedemails' WHERE name='emailban' LIMIT 1");
 	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET name='bannedips' WHERE name='ipban' LIMIT 1");
@@ -278,7 +280,7 @@ function upgrade5_dbchanges()
 	  dateline bigint(30) NOT NULL default '0',
 	  comments text NOT NULL,
       PRIMARY KEY(rid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->drop_table("mailqueue");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."mailqueue (
@@ -289,7 +291,7 @@ function upgrade5_dbchanges()
 		message text NOT NULL,
 		headers text NOT NULL,
 		PRIMARY KEY(mid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->update_query("users", array('reputation' => 0));
 
@@ -357,7 +359,7 @@ function upgrade5_dbchanges()
 	  imagehash varchar(32) NOT NULL default '',
 	  imagestring varchar(8) NOT NULL default '',
 	  dateline bigint(30) NOT NULL default '0'
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	if($db->field_exists('data', "moderatorlog"))
 	{
@@ -374,7 +376,7 @@ function upgrade5_dbchanges()
 		ip varchar(40) NOT NULL default '',
 		dateline bigint(30) NOT NULL default '0',
 		lastactive bigint(30) NOT NULL default '0'
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	$db->drop_table("modtools");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."modtools (
@@ -386,7 +388,7 @@ function upgrade5_dbchanges()
 		postoptions text NOT NULL,
 		threadoptions text NOT NULL,
 		PRIMARY KEY (tid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM{$collation};");
 
 	if($db->field_exists('disporder', "usergroups"))
 	{
