@@ -44,7 +44,7 @@ $l['error_invalid_filter'] =" The specified filter does not exist.";
 $l['success_ip_banned'] = "The IP address has successfully been banned.";
 $l['success_username_disallowed'] = "The username has successfully been disallowed.";
 $l['success_email_disallowed'] = "The email address has successfully been disallowed.";
-$l['success_ban_deleleted'] = "The specified ban has been deleted.";
+$l['success_ban_deleted'] = "The specified ban has been deleted.";
 
 $l['confirm_ban_deletion'] = "Are you sure you wish to delete this ban?";
 

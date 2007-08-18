@@ -98,6 +98,7 @@ function home_action_handler($action)
 				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
 			}
 		}
+		$online_users .= "</ul>";
 		$sidebar = new SidebarItem("Online Admins");
 		$sidebar->contents = $online_users;
 

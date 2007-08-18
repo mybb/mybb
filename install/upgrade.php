@@ -12,6 +12,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 define("INSTALL_ROOT", dirname(__FILE__)."/");
+define("TIME_NOW", time());
 define('IN_MYBB', 1);
 
 require_once MYBB_ROOT."inc/class_core.php";
@@ -28,6 +29,9 @@ require_once MYBB_ROOT.'inc/class_language.php';
 $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources/');
 $lang->load('language');
+
+require_once MYBB_ROOT."inc/class_datacache.php";
+$cache = new datacache;
 
 // If there's a custom admin dir, use it.
 

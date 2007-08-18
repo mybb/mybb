@@ -4538,10 +4538,20 @@ function is_banned_email($email, $update_lastuse=false)
 function is_banned_ip($ip_address, $update_lastuse=false)
 {
 	global $db, $cache;
+	
 	$banned_ips = $cache->read("bannedips");
-	if(!is_array($banned_ips)) return false;
+	if(!is_array($banned_ips))
+	{
+		return false;
+	}
+	
 	foreach($banned_ips as $banned_ip)
 	{
+		if(!$banned_ip['filter'])
+		{
+			continue;
+		}
+		
 		// Make regular expression * match
 		$banned_ip['filter'] = str_replace('\*', '(.*)', preg_quote($banned_ip['filter'], '#'));
 		if(preg_match("#{$banned_ip['filter']}#i", $ip_address))
