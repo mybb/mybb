@@ -297,7 +297,7 @@ function upgrade11_dbchanges2()
 		
 	if($db->field_exists('dateline', "threadsubscriptions"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP dateline;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP subscriptionkey;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD subscriptionkey varchar(32) NOT NULL default ''");
 
