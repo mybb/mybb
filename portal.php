@@ -329,11 +329,11 @@ if($mybb->settings['portal_showwol'] != "no")
 
 	if($onlinecount == 1)
 	{
-	  $lang->online_users = $lang->online_user;
+		$lang->online_users = $lang->online_user;
 	}
 	else
 	{
-	  $lang->online_users = sprintf($lang->online_users, $onlinecount);
+		$lang->online_users = sprintf($lang->online_users, $onlinecount);
 	}
 	$lang->online_counts = sprintf($lang->online_counts, $membercount, $guestcount);
 	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");

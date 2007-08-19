@@ -227,7 +227,7 @@ if($mybb->input['action'] == "do_replace")
 		$query = $db->query("SELECT tid, title, template, sid FROM ".TABLE_PREFIX."templates WHERE template LIKE '%".$db->escape_string($mybb->input['find'])."%' ORDER BY sid,title ASC");
 		if($db->num_rows($query) == 0)
 		{
-			makelabelcode(sprintf($lang->search_noresults, $mybb->input['find']));
+			makelabelcode(sprintf($lang->search_noresults, htmlspecialchars_uni($mybb->input['find'])));
 		}
 		else
 		{
