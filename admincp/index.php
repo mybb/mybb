@@ -10,8 +10,6 @@
  */
 
 define("IN_MYBB", 1);
-
-// Lets pretend we're a level higher
 define("IN_ADMINCP", 1);
 
 // Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (defaults to 3 which matches a.b.c)

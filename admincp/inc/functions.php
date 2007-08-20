@@ -81,7 +81,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	{
 		$prev = $page-1;
 		$prev_page = fetch_page_url($url, $prev);
-		$pagination .= "<a href=\"$prev_page\" class=\"pagination_previous\">&laquo; Previous</a> \n";
+		$pagination .= "<a href=\"{$prev_page}\" class=\"pagination_previous\">&laquo; Previous</a> \n";
 	}
 
 	// Maximum number of "page bits" to show
@@ -118,7 +118,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	if($from > 2)
 	{
 		$first = fetch_page_url($url, 1);
-		$pagination .= "<a href=\"{$page_url}\" title=\"Page 1\" class=\"pagination_first\">1</a> ... ";
+		$pagination .= "<a href=\"{$first}\" title=\"Page 1\" class=\"pagination_first\">1</a> ... ";
 	}
 
 	for($i = $from; $i <= $to; ++$i)
@@ -137,14 +137,14 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	if($to < $pages)
 	{
 		$last = fetch_page_url($url, $pages);
-		$pagination .= "... <a href=\"{$page_url}\" title=\"Page {$pages}\" class=\"pagination_last\">{$pages}</a>";
+		$pagination .= "... <a href=\"{$last}\" title=\"Page {$pages}\" class=\"pagination_last\">{$pages}</a>";
 	}
 
 	if($page < $pages)
 	{
 		$next = $page+1;
 		$next_page = fetch_page_url($url, $next);
-		$pagination .= " <a href=\"$next_page\" class=\"pagination_next\">Next &raquo;</a>\n";
+		$pagination .= " <a href=\"{$next_page}\" class=\"pagination_next\">Next &raquo;</a>\n";
 	}
 	$pagination .= "</div>\n";
 	return $pagination;

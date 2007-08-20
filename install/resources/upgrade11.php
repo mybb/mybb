@@ -295,7 +295,7 @@ function upgrade11_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions ADD dateline bigint(30) NOT NULL default '0'");
 		
-	if($db->field_exists('dateline', "threadsubscriptions"))
+	if($db->field_exists('subscriptionkey', "threadsubscriptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."threadsubscriptions DROP subscriptionkey;");
 	}

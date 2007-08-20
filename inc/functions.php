@@ -799,13 +799,13 @@ function multipage($count, $perpage, $page, $url)
 	if($from <= 0)
 	{
 		$from = 1;
-		$to = $from+$max_links-1;
+		$to = $from+$mybb->settings['maxmultipagelinks']-1;
 	}
 
 	if($to > $pages)
 	{
 		$to = $pages;
-		$from = $pages-$max_links+1;
+		$from = $pages-$mybb->settings['maxmultipagelinks']+1;
 		if($from <= 0)
 		{
 			$from = 1;
@@ -3807,7 +3807,7 @@ function build_profile_link($username="", $uid=0, $target="", $onclick="")
 		}
 
 		// If we're in the archive, link back a directory
-		if(IN_ARCHIVE == 1)
+		if(IN_ARCHIVE == 1 || IN_ADMINCP == 1)
 		{
 			return "<a href=\"../".get_profile_link($uid)."\"{$target}{$onclick}>{$username}</a>";
 		}

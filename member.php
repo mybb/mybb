@@ -1210,8 +1210,12 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
+
 		if($membday[2])
 		{
+			$year = my_date("Y");
+			$lang->membdayage = sprintf($lang->membdayage, ($year - $membday['2']));
+			
 			if($membday[2] < 1970)
 			{
 				$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
@@ -1221,10 +1225,8 @@ if($mybb->input['action'] == "profile")
 			{
 				$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
 				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-				$membday = date($bdayformat, $membday);
+				$membday = date($bdayformat, $membday);;
 			}
-			$year = my_date("Y");
-			$lang->membdayage = sprintf($lang->membdayage, ($year - $membday['2']));
 			$membdayage = $lang->membdayage;
 		}
 		else
