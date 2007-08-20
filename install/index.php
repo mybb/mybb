@@ -600,7 +600,7 @@ function create_tables()
 	// Write the configuration file
 	$configdata = "<?php
 /**
- * Daatabase configuration
+ * Database configuration
  */
 
 \$config['dbtype'] = '{$mybb->input['dbengine']}';

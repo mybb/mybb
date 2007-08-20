@@ -171,7 +171,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 		if(function_exists("{$codename}_activate"))
 		{
-			call_user_func("{$codename})_activate");
+			call_user_func("{$codename}_activate");
 		}
 
 		$active_plugins[$codename] = $codename;
@@ -182,7 +182,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 
 		if(function_exists("{$codename}_deactivate"))
 		{
-			call_user_func("{$codename})_deactivate");
+			call_user_func("{$codename}_deactivate");
 		}
 
 		if($mybb->input['uninstall'] == 1 && function_exists("{$codename}_uninstall"))
