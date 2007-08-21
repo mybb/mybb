@@ -830,6 +830,7 @@ $tables[] = "CREATE TABLE mybb_users (
   yahoo varchar(50) NOT NULL default '',
   msn varchar(75) NOT NULL default '',
   birthday varchar(15) NOT NULL default '',
+  birthdayprivacy varchar(4) NOT NULL default 'all',
   signature text NOT NULL default '',
   allownotices char(3) NOT NULL default '',
   hideemail char(3) NOT NULL default '',

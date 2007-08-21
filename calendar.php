@@ -1462,26 +1462,42 @@ if($mybb->input['action'] == "dayview")
 	if($calendar['showbirthdays'])
 	{
 		$birthdays = get_birthdays($month, $day);
+		$bdayhidden = 0;
 		if(is_array($birthdays))
 		{
 			foreach($birthdays as $birthday)
 			{
-				$bday = explode("-", $birthday['birthday']);
-				if($bday[2] && $bday[2] < $year)
+				if($birthday['birthdayprivacy'] == 'all')
 				{
-					$age = $year - $bday[2];
-					$age = " ($age $lang->years_old)";
+					$bday = explode("-", $birthday['birthday']);
+					if($bday[2] && $bday[2] < $year)
+					{
+						$age = $year - $bday[2];
+						$age = " ($age $lang->years_old)";
+					}
+					else
+					{
+						$age = '';
+					}
+					
+					$birthday['username'] = format_name($birthday['username'], $birthday['usergroup'], $birthday['displaygroup']);
+					$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
+					eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
+					$comma = ", ";
 				}
 				else
 				{
-					$age = '';
+					++$bdayhidden;
 				}
-				
-				$birthday['username'] = format_name($birthday['username'], $birthday['usergroup'], $birthday['displaygroup']);
-				$birthday['profilelink'] = build_profile_link($birthday['username'], $birthday['uid']);
-				eval("\$birthday_list .= \"".$templates->get("calendar_dayview_birthdays_bday", 1, 0)."\";");
-				$comma = ", ";
 			}
+		}
+		if($bdayhidden > 0)
+		{
+			if($birthday_list)
+			{
+				$birthday_list .= " - ";
+			}
+			$birthday_list .= "{$bdayhidden} {$lang->birthdayhidden}";
 		}
 		if($birthday_list)
 		{

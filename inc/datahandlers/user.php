@@ -1011,6 +1011,10 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_update_data['birthday'] = $user['bday'];
 		}
+		if(isset($user['birthdayprivacy']))
+		{
+			$this->user_update_data['birthdayprivacy'] = $user['birthdayprivacy'];
+		}
 		if(isset($user['style']))
 		{
 			$this->user_update_data['style'] = intval($user['style']);

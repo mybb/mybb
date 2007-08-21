@@ -376,6 +376,8 @@ function upgrade11_dbchanges2()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned CHANGE oldadditionalgroups oldadditionalgroups text NOT NULL default ''");
+	
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

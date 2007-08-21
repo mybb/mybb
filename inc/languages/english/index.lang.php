@@ -18,6 +18,7 @@ $l['markread'] = "Mark All Forums Read";
 $l['forumteam'] = "Forum Team";
 $l['forumstats'] = "Forum Statistics";
 $l['todays_birthdays'] = "Today's Birthdays";
+$l['birthdayhidden'] = "Hidden";
 $l['quick_login'] = "Quick Login:";
 $l['login_username'] = "Username";
 $l['login_password'] = "Password";

@@ -514,7 +514,7 @@ function get_birthdays($months, $day="")
 
 	$where = implode(" OR ", $where);
 
-	$query = $db->simple_select("users", "uid, username, birthday, usergroup, displaygroup", $where);
+	$query = $db->simple_select("users", "uid, username, birthday, birthdayprivacy, usergroup, displaygroup", $where);
 	while($user = $db->fetch_array($query))
 	{
 		$bday = explode("-", $user['birthday']);

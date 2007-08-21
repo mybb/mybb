@@ -2097,6 +2097,18 @@ td .star_rating {
 </td>
 </tr>
 <tr>
+<td colspan="3">
+<span class="smalltext">{$lang->birthdayprivacy}</span>
+</td>
+</tr>
+<tr>
+<td colspan="3">
+<select name="birthdayprivacy">
+{$bdayprivacysel}
+</select>
+</td>
+</tr>
+<tr>
 <td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
 </tr>
 <tr>

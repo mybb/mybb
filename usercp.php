@@ -229,6 +229,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 		"yahoo" => $mybb->input['yahoo'],
 		"msn" => $mybb->input['msn'],
 		"birthday" => $bday,
+		"birthdayprivacy" => $mybb->input['birthdayprivacy'],
 		"away" => $away,
 		"profile_fields" => $mybb->input['profile_fields']
 	);
@@ -292,7 +293,27 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 	$bdaymonthsel[$bday[1]] = "selected";
-
+	
+	$bdayprivacysel = '';
+	if($user['birthdayprivacy'] == 'all')
+	{
+		$bdayprivacysel .= "<option value=\"all\" selected=\"selected\">{$lang->birthdayprivacyall}</option>\n";
+		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
+		$bdayprivacysel .= "<option value=\"age\">{$lang->birthdayprivacyage}</option>";
+	}
+	else if($user['birthdayprivacy'] == 'none')
+	{
+		$bdayprivacysel .= "<option value=\"all\">{$lang->birthdayprivacyall}</option>\n";
+		$bdayprivacysel .= "<option value=\"none\" selected=\"selected\">{$lang->birthdayprivacynone}</option>\n";
+		$bdayprivacysel .= "<option value=\"age\">{$lang->birthdayprivacyage}</option>";
+	}
+	else if($user['birthdayprivacy'] == 'age')
+	{
+		$bdayprivacysel .= "<option value=\"all\">{$lang->birthdayprivacyall}</option>\n";
+		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
+		$bdayprivacysel .= "<option value=\"age\" selected=\"selected\">{$lang->birthdayprivacyage}</option>";
+	}
+	
 	if($user['website'] == "" || $user['website'] == "http://")
 	{
 		$user['website'] = "http://";

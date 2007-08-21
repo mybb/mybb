@@ -167,34 +167,50 @@ $bdays = $birthdays = '';
 if($mybb->settings['showbirthdays'] != "no")
 {
 	// First, see what day this is.
-	$bdaycount = 0;
+	$bdaycount = 0; $bdayhidden = 0;
 	$bdaytime = TIME_NOW;
 	$bdaydate = my_date("j-n", $bdaytime, '', 0);
 	$year = my_date("Y", $bdaytime, '', 0);
 
 	// Select all users who have their birthday today.
-	$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, birthday", "birthday LIKE '$bdaydate-%'");
+	$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, birthday, birthdayprivacy", "birthday LIKE '$bdaydate-%'");
 	$comma = '';
 	while($bdayuser = $db->fetch_array($query))
 	{
-		$bday = explode("-", $bdayuser['birthday']);
-		if($year > $bday['2'] && $bday['2'] != '')
+		if($bdayuser['birthdayprivacy'] == 'all')
 		{
-			$age = " (".($year - $bday['2']).")";
+			$bday = explode("-", $bdayuser['birthday']);
+			if($year > $bday['2'] && $bday['2'] != '')
+			{
+				$age = " (".($year - $bday['2']).")";
+			}
+			else
+			{
+				$age = '';
+			}
+			$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
+			$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
+			eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
+			++$bdaycount;
+			$comma = ", ";
 		}
 		else
 		{
-			$age = '';
+			++$bdayhidden;
 		}
-		$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
-		$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
-		eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
-		++$bdaycount;
-		$comma = ", ";
 	}
-
+	
+	if($bdayhidden > 0)
+	{
+		if($bdaycount > 0)
+		{
+			$bdays .= " - ";
+		}
+		$bdays .= "{$bdayhidden} {$lang->birthdayhidden}";
+	}
+	
 	// If there are one or more birthdays, show them.
-	if($bdaycount > 0)
+	if($bdaycount > 0 || $bdayhidden > 0)
 	{
 		eval("\$birthdays = \"".$templates->get("index_birthdays")."\";");
 	}

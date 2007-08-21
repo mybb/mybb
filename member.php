@@ -1210,29 +1210,42 @@ if($mybb->input['action'] == "profile")
 	if($memprofile['birthday'])
 	{
 		$membday = explode("-", $memprofile['birthday']);
-
-		if($membday[2])
+		
+		if($memprofile['birthdayprivacy'] != 'none')
 		{
-			$year = my_date("Y");
-			$lang->membdayage = sprintf($lang->membdayage, ($year - $membday['2']));
-			
-			if($membday[2] < 1970)
+			if($membday[2])
 			{
-				$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
-				$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
+				$year = my_date("Y");
+				$lang->membdayage = sprintf($lang->membdayage, ($year - $membday['2']));
+				
+				if($membday[2] < 1970)
+				{
+					$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
+					$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
+				}
+				else
+				{
+					$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
+					$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
+					$membday = date($bdayformat, $membday);
+				}
+				$membdayage = $lang->membdayage;
 			}
 			else
 			{
-				$bdayformat = fix_mktime($mybb->settings['dateformat'], $membday[2]);
-				$membday = mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]);
-				$membday = date($bdayformat, $membday);;
+				$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
+				$membday = date("F j", $membday);
+				$membdayage = '';
 			}
-			$membdayage = $lang->membdayage;
 		}
-		else
+		
+		if($memprofile['birthdayprivacy'] == 'age')
 		{
-			$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
-			$membday = date("F j", $membday);
+			$membday = $lang->birthdayhidden;
+		}
+		else if($memprofile['birthdayprivacy'] == 'none')
+		{
+			$membday = $lang->birthdayhidden;
 			$membdayage = '';
 		}
 	}
@@ -1241,7 +1254,7 @@ if($mybb->input['action'] == "profile")
 		$membday = $lang->not_specified;
 		$membdayage = '';
 	}
-
+	
 	if(!$memprofile['displaygroup'])
 	{
 		$memprofile['displaygroup'] = $memprofile['usergroup'];
@@ -1430,9 +1443,9 @@ if($mybb->input['action'] == "profile")
 	{
 		$adminoptions = '';
 	}
-
+	
 	$plugins->run_hooks("member_profile_end");
-
+	
 	eval("\$profile = \"".$templates->get("member_profile")."\";");
 	output_page($profile);
 }
