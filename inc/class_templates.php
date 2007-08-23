@@ -64,7 +64,7 @@ class templates
 	 */
 	function get($title, $eslashes=1, $htmlcomments=1)
 	{
-		global $db, $theme, $PHP_SELF, $mybb;
+		global $db, $theme, $mybb;
 		if(!isset($this->cache[$title]))
 		{
 			$query = $db->query("
@@ -73,7 +73,7 @@ class templates
 				WHERE title='$title'
 				AND sid IN ('-2','-1','".$theme['templateset']."')
 				ORDER BY sid DESC
-				LIMIT 0, 1
+				LIMIT 1
 			");
 			$gettemplate = $db->fetch_array($query);
 			if($mybb->debug)

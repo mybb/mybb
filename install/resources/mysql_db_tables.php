@@ -414,7 +414,6 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   smilieoff char(3) NOT NULL default '',
   receipt int(1) NOT NULL default '0',
   readtime bigint(30) NOT NULL default '0',
-  KEY pmid (pmid),
   KEY uid (uid, folder),
   PRIMARY KEY  (pmid)
 ) TYPE=MyISAM{$charset};";

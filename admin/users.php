@@ -701,7 +701,7 @@ if($mybb->input['action'] == "do_email")
 					
 					if($uselang == $mybb->settings['bblanguage'])
 					{
-						$lang->set_path("./inc/languages");
+						$lang->set_path(MYBB_ROOT."inc/languages");
 						$lang->set_language($uselang);
 						$lang->load("messages");
 						$emailsubject = $lang->emailsubject_newpm;
@@ -710,7 +710,7 @@ if($mybb->input['action'] == "do_email")
 					else
 					{
 						$userlang = new MyLanguage;
-						$userlang->set_path("./inc/languages");
+						$userlang->set_path(MYBB_ROOT."inc/languages");
 						$userlang->set_language($uselang);
 						$userlang->load("messages");
 						$emailsubject = $userlang->emailsubject_newpm;

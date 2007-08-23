@@ -262,7 +262,8 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 $bgcolor = "trow1";
 
 // Set here to fetch only approved topics (and then below for a moderator we change this).
-$visibleonly = "AND t.visible='1'";
+$visibleonly = "AND visible='1'";
+$tvisibleonly = "AND t.visible='1'";
 
 // Check if the active user is a moderator and get the inline moderation tools.
 if(is_moderator($fid) == "yes")
@@ -271,7 +272,8 @@ if(is_moderator($fid) == "yes")
 	$ismod = true;
 	$inlinecount = "0";
 	$inlinecookie = "inlinemod_forum".$fid;
-	$visibleonly = " AND (t.visible='1' OR t.visible='0')";
+	$visibleonly = " AND (visible='1' OR visible='0')";
+	$tvisibleonly = " AND (t.visible='1' OR t.visible='0')";
 }
 else
 {
@@ -323,11 +325,13 @@ $datecutsel[$datecut] = "selected=\"selected\"";
 if($datecut != 9999)
 {
 	$checkdate = time() - ($datecut * 86400);
-	$datecutsql = "AND (t.lastpost >= '$checkdate' OR t.sticky = '1')";
+	$datecutsql = "AND (lastpost >= '$checkdate' OR sticky = '1')";
+	$tdatecutsql = "AND (t.lastpost >= '$checkdate' OR t.sticky = '1')";
 }
 else
 {
 	$datecutsql = '';
+	$tdatecutsql = '';
 }
 
 // Pick the sort order.
@@ -403,7 +407,7 @@ else
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 // How many pages are there?
-$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS threads", "t.fid = '$fid' $visibleonly $datecutsql");
+$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='$fid' $visibleonly $datecutsql");
 $threadcount = $db->fetch_field($query, "threads");
 
 $perpage = $mybb->settings['threadsperpage'];
@@ -519,7 +523,7 @@ $query = $db->query("
     SELECT t.*, $ratingadd t.username AS threadusername, u.username
     FROM ".TABLE_PREFIX."threads t
     LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-    WHERE t.fid='$fid' $visibleonly $datecutsql
+    WHERE t.fid='$fid' $tvisibleonly $tdatecutsql
     ORDER BY t.sticky DESC, $sortfield $sortordernow $sortfield2
     LIMIT $start, $perpage
 "); 

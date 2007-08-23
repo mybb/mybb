@@ -63,7 +63,7 @@ class session
 		}
 
 		// Attempt to load the session from the database.
-		$query = $db->simple_select(TABLE_PREFIX."sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
+		$query = $db->simple_select(TABLE_PREFIX."sessions", "*", "sid='".$this->sid."' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
 		$session = $db->fetch_array($query);
 		if($session['sid'])
 		{
@@ -128,6 +128,7 @@ class session
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
 			LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) 
 			WHERE u.uid='$uid'
+			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
 
@@ -187,7 +188,7 @@ class session
 		$time = time();
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='".$mybb->user['lastactive']."', lastactive='$time' $popupadd WHERE uid='".$mybb->user['uid']."' LIMIT 1");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
@@ -195,7 +196,7 @@ class session
 		else
 		{
 			$timespent = time() - $mybb->user['lastactive'];
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent $popupadd WHERE uid='".$mybb->user['uid']."' LIMIT 1");
 		}
 
 		// Sort out the language and forum preferences.
@@ -282,7 +283,7 @@ class session
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".$mybb->user['banoldgroup']."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
@@ -468,7 +469,7 @@ class session
 		$onlinedata['nopermission'] = 0;
 		$sid = $db->escape_string($sid);
 
-		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'");
+		$db->update_query(TABLE_PREFIX."sessions", $onlinedata, "sid='".$sid."'", 1);
 	}
 
 	/**
@@ -484,13 +485,13 @@ class session
 		// If there is a proper uid, delete by uid.
 		if($uid > 0)
 		{
-			$db->delete_query(TABLE_PREFIX."sessions", "uid=".$uid);
+			$db->delete_query(TABLE_PREFIX."sessions", "uid='{$uid}'", 1);
 			$onlinedata['uid'] = $uid;
 		}
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($this->ipaddress)."'");
+			$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($this->ipaddress)."'", 1);
 			$onlinedata['uid'] = 0;
 		}
 
