@@ -251,7 +251,7 @@ function parse_page($contents)
 
 	if($lang->settings['htmllang'])
 	{
-		$contents = str_replace("<html", "<html lang=\"".$lang->settings['htmllang']."\"", $contents);
+		$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"", $contents);
 	}
 
 	if($error_handler->warnings)
@@ -674,7 +674,7 @@ function error_no_permission()
 		"location2" => 0
 	);
 
-	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'");
+	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
 	$url = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
 
 	if($mybb->input['ajax'])

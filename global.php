@@ -46,9 +46,6 @@ $mybb->session = &$session;
 // Set our POST validation code here
 $mybb->post_code = generate_post_check();
 
-// Run global_start plugin hook now that the basics are set up
-$plugins->run_hooks("global_start");
-
 // Set and load the language
 if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
 {
@@ -79,6 +76,9 @@ else if(!isset($mybb->settings['bblanguage']))
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
+
+// Run global_start plugin hook now that the basics are set up
+$plugins->run_hooks("global_start");
 
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {

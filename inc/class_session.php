@@ -41,7 +41,7 @@ class session
 		{
 			$this->sid = $db->escape_string($_COOKIE['sid']);
 			// Load the session
-			$query = $db->simple_select("sessions", "*", "sid='{$this->sid}' AND ip='".$db->escape_string($this->ipaddress)."'", 1);
+			$query = $db->simple_select("sessions", "*", "sid='{$this->sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
 			$session = $db->fetch_array($query);
 			if($session['sid'])
 			{
@@ -169,7 +169,7 @@ class session
 		$time = TIME_NOW;
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' WHERE uid='{$mybb->user['uid']}'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' WHERE uid='{$mybb->user['uid']}' LIMIT 1");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
@@ -177,7 +177,7 @@ class session
 		else
 		{
 			$timespent = TIME_NOW - $mybb->user['lastactive'];
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent WHERE uid='{$mybb->user['uid']}'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent WHERE uid='{$mybb->user['uid']}' LIMIT 1");
 		}
 
 		// Sort out the language and forum preferences.
@@ -220,7 +220,7 @@ class session
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/
 		{
 			// must have been good.. bans up :D
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."'");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET usergroup='".intval($mybb->user['banoldgroup'])."', additionalgroups='".$mybb->user['oldadditionalgroups']."', displaygroup='".intval($mybb->user['olddisplaygroup'])."' WHERE uid='".$mybb->user['uid']."' LIMIT 1");
 			$db->shutdown_query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='".$mybb->user['uid']."'");
 			// we better do this..otherwise they have dodgy permissions
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
@@ -358,7 +358,7 @@ class session
 		global $mybb, $time, $db, $lang;
 
 		// Fetch the spider preferences from the database
-		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'");
+		$query = $db->simple_select("spiders", "*", "sid='{$spider_id}'", array('limit' => 1));
 		$spider = $db->fetch_array($query);
 
 		// Set up some defaults
@@ -399,7 +399,7 @@ class session
 			$updated_spider = array(
 				"lastvisit" => TIME_NOW
 			);
-			$db->update_query("spiders", $updated_spider, "sid='{$spider_id}'");
+			$db->update_query("spiders", $updated_spider, "sid='{$spider_id}'", 1);
 		}
 
 		// Update the online data.
@@ -439,7 +439,7 @@ class session
 		$onlinedata['nopermission'] = 0;
 		$sid = $db->escape_string($sid);
 
-		$db->update_query("sessions", $onlinedata, "sid='".$sid."'");
+		$db->update_query("sessions", $onlinedata, "sid='{$sid}'", 1);
 	}
 
 	/**
@@ -455,7 +455,7 @@ class session
 		// If there is a proper uid, delete by uid.
 		if($uid > 0)
 		{
-			$db->delete_query("sessions", "uid='{$uid}'");
+			$db->delete_query("sessions", "uid='{$uid}'", 1);
 			$onlinedata['uid'] = $uid;
 		}
 		// Is a spider - delete all other spider references
@@ -466,7 +466,7 @@ class session
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip='".$db->escape_string($this->ipaddress)."'");
+			$db->delete_query("sessions", "ip='".$db->escape_string($this->ipaddress)."'", 1);
 			$onlinedata['uid'] = 0;
 		}
 
@@ -509,7 +509,7 @@ class session
 		{
 			global $db;
 			$array[2] = intval($mybb->input['tid']);
-			$query = $db->simple_select("threads", "fid", "tid='".$array[2]."'");
+			$query = $db->simple_select("threads", "fid", "tid='".$array[2]."'", array('limit' => 1));
 			$array[1] = $db->fetch_field($query, "fid");
 		}
 		return $array;
