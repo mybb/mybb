@@ -644,11 +644,6 @@ class DB_SQLite
 			$query .= " WHERE $where";
 		}
 		
-		if(!empty($limit))
-		{
-			$query .= " LIMIT $limit";
-		}
-		
 		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
 	}
 
@@ -657,7 +652,7 @@ class DB_SQLite
 	 *
 	 * @param string The table name to perform the query on.
 	 * @param string An optional where clause for the query.
-	 * @param string An optional limit clause for the query.
+	 * @param string An optional limit clause for the query. (depreciated for sqlite)
 	 * @return resource The query data.
 	 */
 	function delete_query($table, $where="", $limit="")
@@ -666,11 +661,6 @@ class DB_SQLite
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
-		}
-		
-		if(!empty($limit))
-		{
-			$query .= " LIMIT $limit";
 		}
 		
 		return $this->query("DELETE FROM {$this->table_prefix}$table $query");

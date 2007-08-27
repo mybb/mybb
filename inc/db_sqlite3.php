@@ -671,11 +671,6 @@ class DB_SQLite3
 			$query .= " WHERE $where";
 		}
 		
-		if(!empty($limit))
-		{
-			$query .= " LIMIT $limit";
-		}
-		
 		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
 	}
 
@@ -693,11 +688,6 @@ class DB_SQLite3
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
-		}
-		
-		if(!empty($limit))
-		{
-			$query .= " LIMIT $limit";
 		}
 		
 		return $this->query("DELETE FROM {$this->table_prefix}$table $query");

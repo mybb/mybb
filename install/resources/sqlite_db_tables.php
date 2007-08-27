@@ -46,7 +46,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	sortby varchar(20) NOT NULL default '',
 	sortorder varchar(4) NOT NULL default '',
 	perpage int(4) NOT NULL default '0',
-	view_type varchar(6) NOT NULL default '',
+	view_type varchar(6) NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_announcements (
