@@ -860,12 +860,210 @@ td .star_rating {
 {$footer}
 </body>
 </html>]]></template>
+<template name="modcp_reports_allreports" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->all_reported_posts}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="6"><strong>{$lang->all_reported_posts_note}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
+</tr>
+{$allreports}
+{$allreportspages}
+</table>
+</td>
+</tr>
+</table>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_logs" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->modlogs}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="modcp.php?action=modlogs_results" method="post">
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="2"><strong>{$lang->modlogs_access_logs}</strong></td>
+</tr>
+<tr>
+<td class="trow1" width="50%">{$lang->modlogs_entries_per_page}</td>
+<td class="trow1" width="50%">
+<input type="text" class="inputbox" name="perpage" size="4" value="20" />
+</td>
+</tr>
+<tr>
+<td class="trow1" width="50%">{$lang->modlogs_entries_from_moderator}</td>
+<td class="trow1" width="50%">
+<select name="frommod">
+<option value="">{$lang->modlogs_all_mods}</option>
+<option value="">----------</option>
+$uoptions
+</select>
+</td>
+</tr>
+<tr>
+<td class="trow1" width="50%">{$lang->modlogs_order_by}</td>
+<td class="trow1" width="50%">
+<select name="orderby">
+<option value="datedesc">{$lang->modlogs_order_date_desc}</option>
+<option value="nameasc">{$lang->modlogs_order_name_asc}</option>
+</select>
+</td>
+</tr>
+</table>
+<br />
+<div align="center">
+<input type="submit" name="Search Log" value="{$lang->modlogs_search_log}" />&nbsp;&nbsp;<input type="reset" name="Reset" value="{$lang->modlogs_reset}" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_nav" version="1400"><![CDATA[<td width="{$lang->nav_width}" valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead"><strong>{$lang->nav_menu}</strong></td>
+</tr>
+<tr><td class="trow1 smalltext"><a href="modcp.php" class="usercp_nav_item modcp_nav_home">{$lang->nav_home}</a></td></tr>
+<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="usercp_nav_item modcp_nav_home">{$lang->nav_reported_posts}</a></td></tr>
+<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="usercp_nav_item modcp_nav_modlogs">{$lang->nav_modlogs}</a></td></tr>
+</table>
+</td>]]></template>
+		<template name="modcp" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->modcp}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+<strong>Reminder - Put something here!</strong>
+</td>
+</tr>
+</table>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_logs_results" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->modlogs_results}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="5"><strong>{$lang->modlogs_log_viewer}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="center">{$lang->modlogs_username}</td>
+<td class="tcat" align="center">{$lang->modlogs_date}</td>
+<td class="tcat" align="center">{$lang->modlogs_action}</td>
+<td class="tcat" align="center">{$lang->modlogs_information}</td>
+<td class="tcat" align="center">{$lang->modlogs_ipaddress}</td>
+</tr>
+{$results}
+{$resultspages}
+</table>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_reports" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="modcp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="6"><strong>{$lang->reported_posts}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
+<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
+</tr>
+{$reports}
+{$reportspages}
+<tr>
+<td class="tfoot" colspan="6" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
+</tr>
+</table>
+<br />
+<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_logs_results_result" version="1400"><![CDATA[<tr>
+
+<td class="{$trow}" align="center" valign="top"><a href="member.php?&amp;action=profile&amp;uid={$logitem['uid']}">{$logitem['username']}</a></td>
+<td class="{$trow}" align="center" valign="top">{$logitem['dateline']}</td>
+<td class="{$trow}" align="center" valign="top">{$logitem['action']}</td>
+<td class="{$trow}" align="center" valign="top">{$information}</td>
+<td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
+
+</tr>]]></template>
+		<template name="modcp_logs_multipage" version="1400"><![CDATA[<tr>
+<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
+</tr>]]></template>
 		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->welcome_logout}</a>)<br />
+		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$modcplink}{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->welcome_logout}</a>)<br />
 				<span class="links">
 					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 350, 350);">{$lang->welcome_open_buddy_list}</a>
 				</span>
 				<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
+		<template name="header_welcomeblock_member_moderator" version="1400"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/modcp.php">{$lang->welcome_modcp}</a>]]></template>
 		<template name="postbit_online" version="1400"><![CDATA[<a href="online.php"><span class="online"><strong>{$lang->postbit_status_online}</strong></span></a>]]></template>
 		<template name="showthread_moderationoptions" version="120"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">

@@ -289,6 +289,12 @@ if($mybb->user['uid'] != 0)
 	{
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
+	
+	if(is_moderator("", "", $mybb->user['uid']))
+	{
+		eval("\$modcplink = \"".$templates->get("header_welcomeblock_member_moderator")."\";");
+	}
+	
 	// Format the welcome back message
 	$lang->welcome_back = sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
 

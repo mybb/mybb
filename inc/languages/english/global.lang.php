@@ -20,6 +20,7 @@ $l['bottomlinks_syndication'] = "RSS Syndication";
 $l['bottomlinks_litemode'] = "Lite (Archive) Mode";
 
 $l['welcome_usercp'] = "User CP";
+$l['welcome_modcp'] = "Mod CP";
 $l['welcome_admin'] = "Admin CP";
 $l['welcome_logout'] = "Log Out";
 $l['welcome_login'] = "Login";

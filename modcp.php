@@ -16,6 +16,9 @@ $templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/class_parser.php";
+
+$parser = new postParser;
 
 // Load global language phrases
 $lang->load("modcp");
@@ -31,6 +34,9 @@ $errors = '';
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
 
 $plugins->run_hooks("modcp_start");
+
+// Make navigation
+add_breadcrumb($lang->nav_modcp, "modcp.php");
 
 if($mybb->input['action'] == "do_reports")
 {
@@ -72,7 +78,7 @@ if($mybb->input['action'] == "do_reports")
 		);
 	$db->update_query("reportedposts", $sqlarray, "rid IN ($rids)");
 	$cache->update_reportedposts();
-	redirect("moderation.php?action=reports", $lang->redirect_reportsmarked);
+	redirect("modcp.php?action=reports", $lang->redirect_reportsmarked);
 }
 
 if($mybb->input['action'] == "reports")
@@ -81,6 +87,8 @@ if($mybb->input['action'] == "reports")
 	{
 		error_no_permission();
 	}
+	
+	add_breadcrumb($lang->nav_reported_posts, "modcp.php?action=reports");
 
 	if(!$mybb->settings['threadsperpage'])
 	{
@@ -135,7 +143,7 @@ if($mybb->input['action'] == "reports")
 	}
 	$upper = $start+$perpage;
 
-	$multipage = multipage($postcount, $perpage, $page, "moderation.php?action=reports");
+	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
 	if($postcount > $perpage)
 	{
 		eval("\$reportspages = \"".$templates->get("modcp_reports_multipage")."\";");
@@ -155,7 +163,7 @@ if($mybb->input['action'] == "reports")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		WHERE r.reportstatus ='0'
-		ORDER BY r.dateline ASC
+		ORDER BY r.dateline DESC
 		LIMIT $start, $perpage
 	");
 	while($report = $db->fetch_array($query))
@@ -181,12 +189,14 @@ if($mybb->input['action'] == "reports")
 	output_page($reportedposts);
 }
 
-if($mybb->input['action'] == "all_reports")
+if($mybb->input['action'] == "allreports")
 {
 	if(!is_moderator())
 	{
 		error_no_permission();
 	}
+	
+	add_breadcrumb($lang->nav_all_reported_posts, "modcp.php?action=allreports");
 	
 	if(!$mybb->settings['threadsperpage'])
 	{
@@ -241,10 +251,10 @@ if($mybb->input['action'] == "all_reports")
 	}
 	$upper = $start+$perpage;
 
-	$multipage = multipage($postcount, $perpage, $page, "moderation.php?action=allreports");
+	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=allreports");
 	if($postcount > $perpage)
 	{
-		eval("\$allreportspages = \"".$templates->get("modcp_allreports_multipage")."\";");
+		eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
 
 	$query = $db->simple_select("forums", "fid,name");
@@ -260,7 +270,7 @@ if($mybb->input['action'] == "all_reports")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
-		ORDER BY r.dateline ASC
+		ORDER BY r.dateline DESC
 		LIMIT $start, $perpage
 	");
 	while($report = $db->fetch_array($query))
@@ -304,8 +314,157 @@ if($mybb->input['action'] == "all_reports")
 
 	$plugins->run_hooks("modcp_reports");
 
-	eval("\$allreportedposts = \"".$templates->get("modcp_allreports")."\";");
+	eval("\$allreportedposts = \"".$templates->get("modcp_reports_allreports")."\";");
 	output_page($allreportedposts);
+}
+
+if($mybb->input['action'] == "modlogs_results")
+{
+	if(!is_moderator())
+	{
+		error_no_permission();
+	}
+	
+	add_breadcrumb($lang->nav_modlogs_results, "modcp.php?action=modlogs");
+
+	$perpage = intval($mybb->input['perpage']);
+	$fromscript = $db->escape_string($mybb->input['fromscript']);
+	$frommod = intval($mybb->input['frommod']);
+	$orderby = $mybb->input['orderby'];
+	$page = intval($mybb->input['page']);
+
+	if(!$mybb->input['perpage'])
+	{
+		$perpage = 20;
+	}
+	$squery = "";
+	if($mybb->input['frommod'])
+	{
+		$squery .= "l.uid='$frommod'";
+	}
+	if($orderby == "nameasc")
+	{
+		$order = "u.username";
+		$orderdir = "ASC";
+	}
+	else
+	{
+		$order = "l.dateline";
+		$orderdir = "DESC";
+	}
+	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)", "COUNT(dateline) AS count", $squery);
+	$rescount = $db->fetch_field($query, "count");
+	if(!$rescount)
+	{
+		error($lang->error_no_log_results);
+	}
+	
+	// Figure out if we need to display multiple pages.
+	if($mybb->input['page'] != "last")
+	{
+		$page = intval($mybb->input['page']);
+	}
+
+	$postcount = intval($rescount);
+	$pages = $postcount / $perpage;
+	$pages = ceil($pages);
+
+	if($mybb->input['page'] == "last")
+	{
+		$page = $pages;
+	}
+
+	if($page > $pages)
+	{
+		$page = 1;
+	}
+
+	if($page)
+	{
+		$start = ($page-1) * $perpage;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+	$upper = $start+$perpage;
+
+	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modlogs_results&amp;perpage=$perpage&amp;frommod=$frommod&amp;orderby=$orderby");
+	if($postcount > $perpage)
+	{
+		eval("\$resultspages = \"".$templates->get("modcp_logs_multipage")."\";");
+	}
+	
+	$lang->modlogs_results = sprintf($lang->modlogs_results, $page, $pages, $rescount);
+	
+	$options = array(
+		"order_by" => $order,
+		"order_dir" => $orderdir,
+		"limit_start" => $start,
+		"limit" => $perpage
+	);
+	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)", "l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject", $squery, $options);
+	while($logitem = $db->fetch_array($query))
+	{
+		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$trow = alt_trow();
+
+		if($logitem['tsubject'])
+		{
+			$information = "<b>$lang->modlogs_information_thread</b> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+		}
+		if($logitem['fname'])
+		{
+			$information .= "<b>$lang->modlogs_information_forum</b> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
+		}
+		if($logitem['psubject'])
+		{
+			$information .= "<b>$lang->modlogs_information_post</b> <a href=\"".get_post_link($logitem['pid'])."#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+		}
+		
+		eval("\$results .= \"".$templates->get("modcp_logs_results_result")."\";");
+		
+	}
+	
+	eval("\$modlogsresults = \"".$templates->get("modcp_logs_results")."\";");
+	output_page($modlogsresults);
+		
+}
+
+if($mybb->input['action'] == "modlogs")
+{
+	if(!is_moderator())
+	{
+		error_no_permission();
+	}
+
+	add_breadcrumb($lang->nav_modlogs, "modcp.php?action=modlogs");
+	
+	$options = array(
+		"order_by" => "u.username",
+		"order_dir" => "ASC"
+	);
+	
+	$query = $db->simple_select("moderatorlog l LEFT JOIN {$db->table_prefix}users u ON (l.uid=u.uid)", "DISTINCT l.uid, u.username", "", $options);
+	while($user = $db->fetch_array($query))
+	{
+		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";
+	}
+	eval("\$modlogs = \"".$templates->get("modcp_logs")."\";");
+	output_page($modlogs);
+	
+}
+
+if(!$mybb->input['action'])
+{
+	if(!is_moderator())
+	{
+		error_no_permission();
+	}
+	
+	eval("\$modcp = \"".$templates->get("modcp")."\";");
+	output_page($modcp);
 }
 
 ?>
