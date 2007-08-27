@@ -16,7 +16,7 @@ $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcements_announcement_modbit";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcements_announcement_modbit,forumdisplay_rules_link,forumdisplay_thread_gotounread";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_forumlist.php";
@@ -406,10 +406,24 @@ else
 }
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
-// How many pages are there?
-$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid='$fid' $visibleonly $datecutsql");
-$threadcount = $db->fetch_field($query, "threads");
+// How many posts are there?
+if($datecut != 9999)
+{
+	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $datecutsql");
+	$threadcount = $db->fetch_field($query, "threads");
+}
+else
+{
+	$query = $db->simple_select(TABLE_PREFIX."forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
+	$forum_threads = $db->fetch_array($query);
+	$threadcount = $forum_threads['threads'];
+	if($ismod == true)
+	{
+		$threadcount += $forum_threads['unapprovedthreads'];
+	}
+}
 
+// How many pages are there?
 $perpage = $mybb->settings['threadsperpage'];
 
 if(intval($mybb->input['page']) > 0)
@@ -520,12 +534,12 @@ $icon_cache = $cache->read("posticons");
 
 // Start Getting Threads
 $query = $db->query("
-    SELECT t.*, $ratingadd t.username AS threadusername, u.username
+	SELECT t.*, $ratingadd t.username AS threadusername, u.username
     FROM ".TABLE_PREFIX."threads t
-    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-    WHERE t.fid='$fid' $tvisibleonly $tdatecutsql
-    ORDER BY t.sticky DESC, $sortfield $sortordernow $sortfield2
-    LIMIT $start, $perpage
+	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
+	WHERE t.fid='$fid' $tvisibleonly $tdatecutsql
+	ORDER BY t.sticky DESC, $sortfield $sortordernow $sortfield2
+	LIMIT $start, $perpage
 "); 
 while($thread = $db->fetch_array($query))
 {

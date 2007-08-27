@@ -79,7 +79,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			'longtext' => 'longblob',
 			'char' => 'binary',
 			'varchar' => 'varbinary',
-			'tinytext' => 'tinyblob'			
+			'tinytext' => 'tinyblob'
 		);
 		
 		// Get next table in list
@@ -138,6 +138,11 @@ if($mybb->input['action'] == "utf8_conversion")
 				$convert_to_utf8 .= "{$comma}{$names}{$column['Type']} CHARACTER SET utf8 COLLATE utf8_general_ci{$attributes}";
 				
 				$comma = ', ';
+				
+				if($type == "char")
+				{
+					$update_fix_no[] = $column['Field'];
+				}
 			}
 		}
 		
@@ -146,6 +151,12 @@ if($mybb->input['action'] == "utf8_conversion")
 			// This converts the columns to UTF-8 while also doing the same for data
 			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_binary}");
 			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_utf8}");
+		}
+		
+		// A wierd issue where char(3) columns with the value of no are set to no? - This will fix those
+		foreach($update_fix_no as $key => $field)
+		{
+			$db->query("UPDATE TABLE {$mybb->input['table']} SET {$field}='no' WHERE {$field} != 'yes'");
 		}
 
 		// Any fulltext indexes to recreate?
