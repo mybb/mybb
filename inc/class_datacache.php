@@ -487,8 +487,9 @@ class datacache
 	{
 		global $db;
 		$forums = array();
+		
 		// Things we don't want to cache
-		$exclude = array("threads", "posts", "lastpost", "lastposter", "lastposttid");
+		$exclude = array("unapprovedthreads","unapprovedposts", "threads", "posts", "lastpost", "lastposter", "lastposttid");
 		
 		$query = $db->simple_select("forums", "*", "", array('order_by' => 'pid,disporder'));
 		while($forum = $db->fetch_array($query))

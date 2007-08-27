@@ -65,6 +65,7 @@ class templates
 	function get($title, $eslashes=1, $htmlcomments=1)
 	{
 		global $db, $theme, $mybb;
+		
 		if(!isset($this->cache[$title]))
 		{
 			$query = $db->simple_select("templates", "template", "title='$title' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
@@ -82,11 +83,11 @@ class templates
 		{
 			if($mybb->settings['tplhtmlcomments'] == "yes")
 			{
-				$template = "<!-- start: $title -->\n$template\n<!-- end: $title -->";
+				$template = "<!-- start: ".htmlspecialchars_uni($title)." -->\n{$template}\n<!-- end: ".htmlspecialchars_uni($title)." -->";
 			}
 			else
 			{
-				$template = "\n$template\n";
+				$template = "\n{$template}\n";
 			}
 		}
 		

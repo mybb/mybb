@@ -47,36 +47,37 @@ if($mybb->input['action'] == "do_reports")
 	{
 		error_no_permission();
 	}
+	
 	$flist = '';
 	if($mybb->usergroup['issupermod'] != "yes")
 	{
-		$query = $db->simple_select("moderators", "*", "uid='".$mybb->user['uid']."'");
+		$query = $db->simple_select("moderators", "*", "uid='{$mybb->user['uid']}'");
 		while($forum = $db->fetch_array($query))
 		{
-			$flist .= ",'".$forum['fid']."'";
+			$flist .= ",'{$forum['fid']}'";
 		}
 	}
+	
 	if($flist)
 	{
-		$flist = "AND fid IN (0$flist)";
+		$flist = "AND fid IN (0{$flist})";
 	}
+	
 	if(!is_array($mybb->input['reports']))
 	{
 		error($lang->error_noselected_reports);
 	}
+	
 	foreach($mybb->input['reports'] as $rid)
 	{
 		$reports[] = intval($rid);
 	}
 	$rids = implode($reports, "','");
-	$rids = "'0','$rids'";
+	$rids = "'0','{$rids}'";
 
 	$plugins->run_hooks("modcp_do_reports");
 
-	$sqlarray = array(
-		"reportstatus" => 1,
-		);
-	$db->update_query("reportedposts", $sqlarray, "rid IN ($rids)");
+	$db->update_query("reportedposts", array('reportstatus' => 1), "rid IN ({$rids})");
 	$cache->update_reportedposts();
 	redirect("modcp.php?action=reports", $lang->redirect_reportsmarked);
 }
@@ -107,7 +108,7 @@ if($mybb->input['action'] == "reports")
 
 	if($mybb->input['rid'])
 	{
-		$query = $db->simple_select("reportedposts", "COUNT(r.rid) AS count", "r.rid <= '".$mybb->input['rid']."'");
+		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".intval($mybb->input['rid'])."'");
 		$result = $db->fetch_field($query, "count");
 		if(($result % $perpage) == 0)
 		{
@@ -149,11 +150,12 @@ if($mybb->input['action'] == "reports")
 		eval("\$reportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
 
-	$query = $db->simple_select("forums", "fid,name");
+	$query = $db->simple_select("forums", "fid, name");
 	while($forum = $db->fetch_array($query))
 	{
 		$forums[$forum['fid']] = $forum['name'];
 	}
+	
 	$reports = '';
 	$query = $db->query("
 		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
@@ -162,9 +164,9 @@ if($mybb->input['action'] == "reports")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
-		WHERE r.reportstatus ='0'
+		WHERE r.reportstatus='0'
 		ORDER BY r.dateline DESC
-		LIMIT $start, $perpage
+		LIMIT {$start}, {$perpage}
 	");
 	while($report = $db->fetch_array($query))
 	{
@@ -215,7 +217,7 @@ if($mybb->input['action'] == "allreports")
 	
 	if($mybb->input['rid'])
 	{
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
+		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".intval($mybb->input['rid'])."'");
 		$result = $db->fetch_field($query, "count");
 		if(($result % $perpage) == 0)
 		{
@@ -257,11 +259,12 @@ if($mybb->input['action'] == "allreports")
 		eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
 
-	$query = $db->simple_select("forums", "fid,name");
+	$query = $db->simple_select("forums", "fid, name");
 	while($forum = $db->fetch_array($query))
 	{
 		$forums[$forum['fid']] = $forum['name'];
 	}
+	
 	$reports = '';
 	$query = $db->query("
 		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
@@ -304,9 +307,9 @@ if($mybb->input['action'] == "allreports")
 			$report['threadsubject'] = $lang->na;
 		}
 		
-		eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
-		
+		eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");		
 	}
+	
 	if(!$allreports)
 	{
 		eval("\$allreports = \"".$templates->get("modcp_reports_allnoreports")."\";");
@@ -333,14 +336,14 @@ if($mybb->input['action'] == "modlogs_results")
 	$orderby = $mybb->input['orderby'];
 	$page = intval($mybb->input['page']);
 
-	if(!$mybb->input['perpage'])
+	if(!$perpage)
 	{
 		$perpage = 20;
 	}
 	$squery = "";
-	if($mybb->input['frommod'])
+	if($frommod)
 	{
-		$squery .= "l.uid='$frommod'";
+		$squery .= "WHERE l.uid='{$frommod}'";
 	}
 	if($orderby == "nameasc")
 	{
@@ -352,7 +355,12 @@ if($mybb->input['action'] == "modlogs_results")
 		$order = "l.dateline";
 		$orderdir = "DESC";
 	}
-	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)", "COUNT(dateline) AS count", $squery);
+	$query = $db->query("
+		SELECT COUNT(dateline) AS count
+		FROM ".TABLE_PREFIX."moderatorlog l 
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+		{$squery}
+	");
 	$rescount = $db->fetch_field($query, "count");
 	if(!$rescount)
 	{
@@ -398,13 +406,17 @@ if($mybb->input['action'] == "modlogs_results")
 	
 	$lang->modlogs_results = sprintf($lang->modlogs_results, $page, $pages, $rescount);
 	
-	$options = array(
-		"order_by" => $order,
-		"order_dir" => $orderdir,
-		"limit_start" => $start,
-		"limit" => $perpage
-	);
-	$query = $db->simple_select("moderatorlog l LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid) LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid) LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid) LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)", "l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject", $squery, $options);
+	$query = $db->query("
+		SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+		FROM ".TABLE_PREFIX."moderatorlog l
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+		{$squery}
+		ORDER BY {$order} {$orderdir}
+		LIMIT {$start}, {$perpage}
+	");
 	while($logitem = $db->fetch_array($query))
 	{
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
@@ -412,24 +424,22 @@ if($mybb->input['action'] == "modlogs_results")
 
 		if($logitem['tsubject'])
 		{
-			$information = "<b>$lang->modlogs_information_thread</b> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+			$information = "<b>{$lang->modlogs_information_thread}</b> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
 		}
 		if($logitem['fname'])
 		{
-			$information .= "<b>$lang->modlogs_information_forum</b> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
+			$information .= "<b>{$lang->modlogs_information_forum}</b> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
 		}
 		if($logitem['psubject'])
 		{
-			$information .= "<b>$lang->modlogs_information_post</b> <a href=\"".get_post_link($logitem['pid'])."#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			$information .= "<b>{$lang->modlogs_information_post}</b> <a href=\"".get_post_link($logitem['pid'])."#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 		
-		eval("\$results .= \"".$templates->get("modcp_logs_results_result")."\";");
-		
+		eval("\$results .= \"".$templates->get("modcp_logs_results_result")."\";");		
 	}
 	
 	eval("\$modlogsresults = \"".$templates->get("modcp_logs_results")."\";");
-	output_page($modlogsresults);
-		
+	output_page($modlogsresults);		
 }
 
 if($mybb->input['action'] == "modlogs")
@@ -441,19 +451,18 @@ if($mybb->input['action'] == "modlogs")
 
 	add_breadcrumb($lang->nav_modlogs, "modcp.php?action=modlogs");
 	
-	$options = array(
-		"order_by" => "u.username",
-		"order_dir" => "ASC"
-	);
-	
-	$query = $db->simple_select("moderatorlog l LEFT JOIN {$db->table_prefix}users u ON (l.uid=u.uid)", "DISTINCT l.uid, u.username", "", $options);
+	$query = $db->query("
+		SELECT DISTINCT l.uid, u.username
+		FROM ".TABLE_PREFIX."moderatorlog l
+		LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)
+		ORDER BY u.username ASC
+	");
 	while($user = $db->fetch_array($query))
 	{
-		$uoptions .= "<option value=\"$user[uid]\">$user[username]</option>\n";
+		$uoptions .= "<option value=\"{$user['uid']}\">{$user['username']}</option>\n";
 	}
 	eval("\$modlogs = \"".$templates->get("modcp_logs")."\";");
-	output_page($modlogs);
-	
+	output_page($modlogs);	
 }
 
 if(!$mybb->input['action'])

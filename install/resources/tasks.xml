@@ -60,4 +60,16 @@
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
+	<task>
+		<title>Tables Check</title>
+		<description><![CDATA[Automatically runs a table check and attempts to repair any crashed tables.]]></description>
+		<file>checktables</file>
+		<minute>0</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
 </tasks>

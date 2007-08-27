@@ -121,7 +121,6 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 		{
 			$forum_viewers[$user['location1']]++;
 		}
-
 	}
 
 	// Build the who's online bit on the index page.
