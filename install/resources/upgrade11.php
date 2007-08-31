@@ -351,9 +351,9 @@ function upgrade11_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD warningpoints int(3) NOT NULL default '0' AFTER unreadpms");
 	
-	if($db->field_exists('warningposts', "users"))
+	if($db->field_exists('moderateposts', "users"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP warningposts;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP moderateposts;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD moderateposts int(1) NOT NULL default '0' AFTER warningpoints");
 	
@@ -379,7 +379,10 @@ function upgrade11_dbchanges2()
 	
 	$db->drop_index("privatemessages", "pmid");
 	
-	
+	if($db->field_exists('birthdayprivacy', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
+	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
 	
 	$contents = "Done</p>";
@@ -907,6 +910,11 @@ function upgrade11_dbchanges6()
 
 	$query = $db->simple_select("events", "COUNT(eid) AS eventcount");
 	$cnt = $db->fetch_array($query);
+	
+	if($upper > $cnt['eventcount'])
+	{
+		$upper = $cnt['eventcount'];
+	}
 
 	$contents .= "<p>Converting events {$lower} to {$upper} ({$cnt['eventcount']} Total)</p>";
 	
@@ -915,11 +923,64 @@ function upgrade11_dbchanges6()
 	{
 		// Add temporary column
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD donecon smallint(1) NOT NULL;");
+		
+		if($db->field_exists('cid', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP cid;");
+		}
+		
+		if($db->field_exists('visible', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP visible;");
+		}
+		
+		if($db->field_exists('dateline', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP dateline;");
+		}
+		
+		if($db->field_exists('starttime', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP starttime;");
+		}
+		
+		if($db->field_exists('endtime', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP endtime;");
+		}
+		
+		if($db->field_exists('timezone', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP timezone;");
+		}
+		
+		if($db->field_exists('ignoretimezone', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP ignoretimezone;");
+		}
+		
+		if($db->field_exists('usingtime', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP usingtime;");
+		}
+		
+		if($db->field_exists('repeats', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP repeats;");
+		}
 
 		// Got structural changes?		
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD cid int unsigned NOT NULL default '0' AFTER eid");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
+		
+		if($db->field_exists('author', "events") && !$db->field_exists('uid', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE author uid int unsigned NOT NULL default '0'");
+		}
+		
+		if($db->field_exists('subject', "events") && !$db->field_exists('name', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
+		}
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
 		$db->update_query("events", array('private' => 1), "private='yes'");
 		$db->update_query("events", array('private' => 0), "private='no'");
@@ -933,24 +994,33 @@ function upgrade11_dbchanges6()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD repeats text NOT NULL AFTER usingtime");
 	}
 
-	$query = $db->simple_select("events", "*", "donecon!=1", array("order_by" => "eid", "limit" => $epp));
-	while($event = $db->fetch_array($query))
+	if($db->field_exists('date', "events"))
 	{
-		$e_date = explode("-", $event['date']);
-		$starttime = gmmktime(0, 0, 0, $e_date[1], $e_date[0], $e_date[1]);
-		$updated_event = array(
-			"cid" => 1,
-			"visible" => 1,
-			"donecon" => 1,
-			"starttime" => $starttime,
-			"dateline" => $starttime
-		);
-		$db->update_query("events", $updated_event, "eid='{$event['eid']}'", 1);
+		$query = $db->simple_select("events", "*", "donecon!=1", array("order_by" => "eid", "limit" => $epp));
+		while($event = $db->fetch_array($query))
+		{
+			$e_date = explode("-", $event['date']);
+			$starttime = gmmktime(0, 0, 0, $e_date[1], $e_date[0], $e_date[1]);
+			$updated_event = array(
+				"cid" => 1,
+				"visible" => 1,
+				"donecon" => 1,
+				"starttime" => $starttime,
+				"dateline" => $starttime
+			);
+			$db->update_query("events", $updated_event, "eid='{$event['eid']}'", 1);
+		}
+		
+		$date = true;
+	}
+	else
+	{
+		$date = false;
 	}
 	
 	$query = $db->simple_select("events", "COUNT(eid) AS remaining", "donecon!=1");
 	$remaining = $db->fetch_field($query, "remaining");	
-	if($remaining)
+	if($remaining && $date)
 	{
 		$nextact = "11_dbchanges6";
 		$startat = $startat+$epp;
@@ -959,7 +1029,10 @@ function upgrade11_dbchanges6()
 	else
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP donecon");
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
+		if($db->field_exists('date', "events"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
+		}
 		$nextact = "11_done";
 		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
 	}

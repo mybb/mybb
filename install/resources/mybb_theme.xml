@@ -6609,8 +6609,14 @@ To: {$to_recipients}
 		<template name="forumdisplay_moderatedby_moderator" version="1400"><![CDATA[{$modcomma}{$moderator['profilelink']}]]></template>
 		<template name="forumdisplay_moderatedby" version="120"><![CDATA[<span class="smalltext">{$lang->moderated_by} <strong>{$modlist}</strong></span><br />]]></template>
 		<template name="forumbit_depth2_cat" version="1400"><![CDATA[<tr>
-<td class="tcat">&nbsp;</td>
-<td class="tcat" colspan="4"><strong>&raquo;&nbsp;&nbsp;<a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}{$sub_forums}</span></td></tr>]]></template>
+<td class="{$bgcolor}" align="center" valign="top" width="1"><img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="ajax_mark_read" id="mark_read_{$forum['fid']}" /></td>
+<td class="{$bgcolor}" valign="top">
+<strong><a href="{$forum_url}">{$forum['name']}</a></strong>{$forum_viewers_text}<div class="smalltext">{$forum['description']}{$subforums}</div>
+</td>
+<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$threads}{$unapproved['unapproved_threads']}</td>
+<td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
+<td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
+</tr>]]></template>
 		<template name="forumbit_depth1_cat_subforum" version="1400"><![CDATA[<tr>
 <td class="tcat" colspan="6"><strong>&raquo;&nbsp;&nbsp;<a href="{$forum_url}">{$forum['name']}</a></strong><br /><span class="smalltext">{$forum['description']}</span></td></tr>{$sub_forums}]]></template>
 		<template name="misc_help" version="120"><![CDATA[<html>
@@ -8851,5 +8857,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td class="trow1">{$lang->no_events}</td>
 </tr>
 </table>]]></template>
+	<template name="forumbit_depth2_forum_lastpost" version="1400"><![CDATA[<span class="smalltext">
+<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
+<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
+]]></template>
 	</templates>
 </theme>

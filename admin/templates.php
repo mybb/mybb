@@ -613,13 +613,14 @@ if($mybb->input['action'] == "diff")
 		cpmessage($lang->templates_the_same);
 	}
 
-	$template1['template'] = explode("\n", htmlspecialchars($template1['template']));
-	$template2['template'] = explode("\n", htmlspecialchars($template2['template']));
+	$template1['template'] = explode("\n", $template1['template']);
+	$template2['template'] = explode("\n", $template2['template']);
 
 	$plugins->run_hooks("admin_templates_diff");
-	require_once MYBB_ROOT."inc/class_diff.php";
+	require_once MYBB_ROOT."inc/3rdparty/diff/Diff.php";	
+	require_once MYBB_ROOT."inc/3rdparty/diff/Diff/Renderer/inline.php";
 
-	$diff = &new Text_Diff($template1['template'], $template2['template']);
+	$diff = &new Text_Diff('auto', array($template1['template'], $template2['template']));
 	$renderer = &new Text_Diff_Renderer_inline();
 	cpheader();
 	if($mybb->input['sid2'] == -2)

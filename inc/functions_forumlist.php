@@ -183,7 +183,7 @@ function build_forumbits($pid=0, $depth=1)
 				$forumcat = '_forum';
 			}
 
-			if($forum['type'] == 'f' && $forum['linkto'] == '')
+			if($forum['linkto'] == '')
 			{
 				// No posts have been made in this forum - show never text
 				if(($lastpost_data['lastpost'] == 0 || $lastpost_data['lastposter'] == '') && $hideinfo != true)
@@ -310,11 +310,6 @@ function build_forumbits($pid=0, $depth=1)
 function get_forum_lightbulb($forum, $lastpost, $locked=0)
 {
 	global $mybb, $lang, $db, $unread_forums;
-	
-	if($forum['type'] == 'c')
-	{
-		return;
-	}
 
 	// This forum is closed, so override the folder icon with the "offlock" icon.
 	if($forum['open'] == "no" || $locked)
