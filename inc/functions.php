@@ -221,13 +221,16 @@ function parse_page($contents)
 	{
 		$contents = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n".$contents;
 	}
+	
+	$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\"", $contents);
+	
 	if($lang->settings['rtl'] == 1)
 	{
 		$contents = str_replace("<html", "<html dir=\"rtl\"", $contents);
 	}
 	if($lang->settings['htmllang'])
 	{
-		$contents = str_replace("<html", "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"", $contents);
+		$contents = str_replace("<html", "<html xml:lang=\"".$lang->settings['htmllang']."\" lang=\"".$lang->settings['htmllang']."\"", $contents);
 	}
 
 	if($loadpmpopup)
