@@ -4716,6 +4716,27 @@ function fetch_remote_file($url)
 }
 
 /**
+ * Checks if a particular user is a super administrator.
+ *
+ * @param int The user ID to check against the list of super admins
+ * @return boolean True if a super admin, false if not
+ */
+function is_super_admin($uid)
+{
+	global $mybb;
+	
+	$mybb->config['super_admins'] = str_replace(" ", "", $mybb->config['super_admins']);
+	if(my_strpos(",{$mybb->config['super_admins']},", ",{$uid},") === false)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+/**
  * Below are compatibility functions which replicate functions in newer versions of PHP.
  *
  * This allows MyBB to continue working on older installations of PHP without these functions.

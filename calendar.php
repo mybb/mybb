@@ -1722,7 +1722,7 @@ if($mybb->input['action'] == "dayview")
 
 	if(!$events)
 	{
-		$lang->no_events = sprintf($lang->no_events, $day, $month, $year);
+		$lang->no_events = sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
 		eval("\$events = \"".$templates->get("calendar_dayview_noevents")."\";");
 	}
 
@@ -2169,7 +2169,7 @@ if(!$mybb->input['action'])
 				$bday_count = count($birthdays["$day-$calendar_month"]);
 				if($bday_count > 1)
 				{
-					$day_birthdays = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$bdays[$i]} {$lang->birthdays}</a></div>\n";
+					$day_birthdays = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$bday_count} {$lang->birthdays}</a></div>\n";
 				}
 				else
 				{

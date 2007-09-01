@@ -8524,6 +8524,25 @@ To: {$to_recipients}
 		<template name="warnings_no_warnings" version="1400"><![CDATA[			<tr>
 				<td class="trow1" colspan="5" align="center">{$lang->no_warnings}</td>
 			</tr>]]></template>
+		<template name="warnings_warn_existing" version="1400"><![CDATA[	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td class="thead" colspan="5">
+					<div><strong>{$lang->existing_post_warnings}</strong></div>
+				</td>
+			</tr>
+			<tr>
+				<td class="tcat"><span class="smalltext"><strong>{$lang->warning}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->date_issued}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->expiry_date}</strong></span></td>
+				<td class="tcat" width="20%" align="center"><span class="smalltext"><strong>{$lang->issued_by}</strong></span></td>
+				<td class="tcat" width="1" align="center"><span class="smalltext"><strong>{$lang->details}</strong></span></td>
+			</tr>
+		</thead>
+		<tbody>
+		{$warnings}
+		</tbody>
+	</table><br />]]></template>
 		<template name="warnings_warn" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->warn_user}</title>
@@ -8531,6 +8550,7 @@ To: {$to_recipients}
 </head>
 <body>
 {$header}
+{$existing_warnings}
 {$warn_errors}
 <form action="warnings.php" method="post" name="input">
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />

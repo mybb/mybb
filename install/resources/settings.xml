@@ -419,8 +419,8 @@ email=Sent via Email]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="mailingaddress">
-			<title>Maling Adress</title>
-			<description><![CDATA[If you have a mailing, enter it here. This is shown on the COPPA compliance form.]]></description>
+			<title>Mailing Adress</title>
+			<description><![CDATA[If you have a mailing address, enter it here. This is shown on the COPPA compliance form.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>

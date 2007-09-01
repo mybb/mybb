@@ -71,6 +71,11 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error($lang->error_cant_warn_group);
 	}
 
+	if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+	{
+		error($lang->error_cant_warn_user);
+	}
+
 	// Is this warning being given for a post?
 	if($mybb->input['pid'])
 	{
@@ -81,7 +86,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != "yes")
+		if($forum_permissions['canview'] != "yes" || !is_moderator($thread['fid']))
 		{
 			error_no_permission();
 		}
@@ -402,6 +407,11 @@ if($mybb->input['action'] == "warn")
 		error($lang->error_cant_warn_group);
 	}
 
+	if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+	{
+		error($lang->error_cant_warn_user);
+	}
+
 	// Giving a warning for a specific post
 	if($mybb->input['pid'])
 	{
@@ -412,7 +422,7 @@ if($mybb->input['action'] == "warn")
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != "yes")
+		if($forum_permissions['canview'] != "yes" || !is_moderator($thread['fid']))
 		{
 			error_no_permission();
 		}
@@ -420,6 +430,80 @@ if($mybb->input['action'] == "warn")
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post_link = get_post_link($post['pid']);
 		eval("\$post = \"".$templates->get("warnings_warn_post")."\";");
+
+		// Fetch any existing warnings issued for this post
+		$query = $db->query("
+			SELECT w.*, t.title AS type_title, u.username
+			FROM ".TABLE_PREFIX."warnings w
+			LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
+			WHERE w.pid='{$mybb->input['pid']}'
+			ORDER BY w.expired ASC, w.dateline DESC
+		");
+		$first = true;
+		while($warning = $db->fetch_array($query))
+		{
+			if($warning['expired'] != $last_expired || $first)
+			{
+				if($warning['expired'] == 0)
+				{
+					eval("\$warnings .= \"".$templates->get("warnings_active_header")."\";");
+				}
+				else
+				{
+					eval("\$warnings .= \"".$templates->get("warnings_expired_header")."\";");
+				}
+			}
+			$last_expired = $warning['expired'];
+			$first = false;
+
+			$post_link = "";
+			$issuedby = build_profile_link($warning['username'], $warning['uid']);
+			$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+			if($warning['type_title'])
+			{
+				$warning_type = $warning['type_title'];
+			}
+			else
+			{
+				$warning_type = $warning['title'];
+			}
+			$warning_type = htmlspecialchars_uni($warning_type);
+			if($warning['points'] > 0)
+			{
+				$warning['points'] = "+{$warning['points']}";
+			}
+			$points = sprintf($lang->warning_points, $warning['points']);
+			if($warning['expired'] != 1)
+			{
+				if($warning['expires'] == 0)
+				{
+					$expires = $lang->never;
+				}
+				else
+				{
+					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+				}
+			}
+			else
+			{
+				if($warning['daterevoked'])
+				{
+					$expires = $lang->warning_revoked;
+				}
+				else if($warning['expires'])
+				{
+					$expires = $lang->already_expired;
+				}
+			}
+			$alt_bg = alt_trow();
+			$plugins->run_hooks("warnings_warning");
+			eval("\$warnings .= \"".$templates->get("warnings_warning")."\";");
+		}
+		if($warnings)
+		{
+			eval("\$existing_warnings = \"".$templates->get("warnings_warn_existing")."\";");
+		}
 	}
 
 	$plugins->run_hooks("warnings_warn_start");

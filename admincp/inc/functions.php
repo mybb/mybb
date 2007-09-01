@@ -224,27 +224,6 @@ function make_parent_list($fid, $navsep=",")
 }
 
 /**
- * Checks if a particular user is a super administrator.
- *
- * @param int The user ID to check against the list of super admins
- * @return boolean True if a super admin, false if not
- */
-function is_super_admin($uid)
-{
-	global $config;
-	
-	$config['super_admins'] = str_replace(" ", "", $config['super_admins']);
-	if(my_strpos(",{$config['super_admins']},", ",{$uid},") === false)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-/**
  * Checks if a particular user has the necessary permissions to access a particular page.
  *
  * @param array Array containing module and action to check for

@@ -469,6 +469,9 @@ $navbits = array();
 $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
+// Set the link to the archive.
+$archive_url = $mybb->settings['bburl']."/archive/index.php";
+
 // Check banned ip addresses
 if(is_banned_ip($session->ipaddress, true))
 {
@@ -560,9 +563,6 @@ if($_COOKIE['collapsed'])
 		$collapsedimg[$val] = "_collapsed";
 	}
 }
-
-// Set the link to the archive.
-$archive_url = $mybb->settings['bburl']."/archive/index.php";
 
 // Run hooks for end of global.php
 $plugins->run_hooks("global_end");

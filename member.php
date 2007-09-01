@@ -243,7 +243,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$plugins->run_hooks("member_do_register_end");
 			error($lang->redirect_registered_coppa_activate);
 		}
-		if($mybb->settings['regtype'] == "verify")
+		else if($mybb->settings['regtype'] == "verify")
 		{
 			$activationcode = random_str();
 			$now = TIME_NOW;
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "register")
 			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", 0);
 
 			// User is <= 13, we mark as a coppa user
-			if($bdaytime >= mktime(0, 0, 0, my_date('m'), my_date('d'), my_date('y')-13))
+			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
 			{
 				my_setcookie("coppauser", 1, 0);
 			}

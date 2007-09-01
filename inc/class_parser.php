@@ -511,7 +511,7 @@ class postParser
 		{
 			$replace = array(
 				"\$this->mycode_parse_post_quotes(\"$2\",\"$1\")",
-				"<blockquote><cite>$lang->quote</cite>$1</blockquote>\n"
+				"</p>\n<blockquote><cite>$lang->quote</cite>$1</blockquote><p>\n"
 			);
 		}
 		else
@@ -530,8 +530,8 @@ class postParser
 		if($text_only == false)
 		{
 			$find = array(
-				"#(\r\n?|\n?)<\/cite>(\r\n?|\n?)#",
-				"#(\r\n?|\n?)<\/blockquote>#"
+				"#(\r\n*|\n*)<\/cite>(\r\n*|\n*)#",
+				"#(\r\n*|\n*)<\/blockquote>#"
 			);
 
 			$replace = array(
@@ -598,7 +598,7 @@ class postParser
 			{
 				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
 			}
-			return "<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote>\n";
+			return "</p>\n<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote><p>\n";
 		}
 	}
 

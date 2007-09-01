@@ -248,6 +248,11 @@ if($mybb->input['action'] == "newpost")
 	}
 }
 
+if($mybb->input['pid'])
+{
+	$pid = $mybb->input['pid'];
+}
+
 $plugins->run_hooks("showthread_start");
 
 // Show the entire thread (taking into account pagination).

@@ -42,7 +42,7 @@ $l['expiration_hours'] = "hours";
 $l['expiration_days'] = "days";
 $l['expiration_weeks'] = "weeks";
 $l['expiration_months'] = "months";
-$l['redirect_warned_banned'] = "The user has also been moved to the {1} group for {2} {3}";
+$l['redirect_warned_banned'] = "The user has also been moved to the {1} group for {2}.";
 $l['redirect_warned_suspended'] = "This users posting prviledges have been suspended for {1} {2}.";
 $l['redirect_warned_moderate'] = "All posts by this user will now be moderated for {1} {2}.";
 $l['redirect_warned'] = "The warning level of {1} has been increased to {2}%.{3}<br /><br />You will now be taken back to where you came from.";
@@ -79,4 +79,6 @@ $l['month_or_months'] = "Month(s)";
 $l['expires'] = "Expires:";
 $l['new_warning_level'] = "New warning level:";
 $l['cannot_warn_self'] = "You cannot add to your own warning level.";
+$l['error_cant_warn_user'] = "You do not have permission to warn this user.";
+$l['existing_post_warnings'] = "Existing Warnings for this Post";
 ?>

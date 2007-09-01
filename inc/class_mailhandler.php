@@ -235,6 +235,10 @@ class MailHandler
 		$this->headers .= "X-Priority: 3{$this->delimiter}";
 		$this->headers .= "X-MSMail-Priority: Normal{$this->delimiter}";
 		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
+		if(defined("IN_ADMINCP"))
+		{
+			$_SERVER['PHP_SELF'] = str_replace($mybb->config['admin_dir']."/", "admin-", $_SERVER['PHP_SELF']);
+		}
 		$this->headers .= "X-MyBB-Script: {$http_host}{$_SERVER['PHP_SELF']}{$this->delimeter}";
 		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}

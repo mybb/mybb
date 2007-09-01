@@ -120,7 +120,7 @@ $l['parent_details'] = "Parent / Guardian Details";
 $l['full_name'] = "Full Name:";
 $l['relation'] = "Relation:";
 $l['phone_no'] = "Phone #:";
-$l['coppa_parent_agreement'] = "I understand that the information i have provided is truthful, that any information may be changed in the future by entering the supplied password and this user account can be removed by request.";
+$l['coppa_parent_agreement'] = "I understand that the information I have provided is truthful, that any information may be changed in the future by entering the supplied password and this user account can be removed by request.";
 
 $l['coppa_agreement_1'] = "Users under the age of 13 must receive permission from their parent or legal guardian in order to register on {1}.";
 $l['coppa_agreement_2'] = "A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\" target=\"_blank\">COPPA Compliance &amp; Permission form</a> before membership will be granted.";

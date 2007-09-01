@@ -2494,26 +2494,6 @@ function make_usergroup_checkbox_code($name, $checked_groups='', $where='')
 }
 
 /**
- * Checks if a certain user ID is in the list of super administrators
- *
- * @param int The user ID to be checked
- * @return boolean true when the user is a super admin, false when not
- */
-function is_super_admin($uid)
-{
-	global $config;
-	$config['super_admins'] = str_replace(" ", "", $config['super_admins']);
-	if(my_strpos(",{$config['super_admins']},", ",{$uid},") === false)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-/**
  * Makes a parent list for forums
  *
  * @param int The forum ID
