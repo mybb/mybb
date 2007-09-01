@@ -71,6 +71,10 @@ if($mybb->input['action'] == "delete")
 				remove_attachment($attachment['pid'], null, $attachment['aid']);
 			}
 		}
+
+		// Log admin action
+		log_admin_action();
+
 		flash_message('The selected attachments have successfully been deleted', 'success');
 		admin_redirect("index.php?".SID."&module=forum/attachments");
 	}
@@ -226,6 +230,10 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 			}
 		}
 	}
+
+	// Log admin action
+	log_admin_action();
+
 	if($error == true)
 	{
 		flash_message('Only some orphaned attachments were successfully deleted, others could not be removed from the uploads directory.', 'error');

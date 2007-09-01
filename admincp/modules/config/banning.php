@@ -32,7 +32,10 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 			"type" => intval($mybb->input['type']),
 			"dateline" => TIME_NOW
 		);
-		$db->insert_query("banfilters", $new_filter);
+		$fid = $db->insert_query("banfilters", $new_filter);
+
+		// Log admin action
+		log_admin_action($fid, $mybb->input['filter'], $mybb->input['type']);
 
 		if($mybb->input['type'] == 1)
 		{
@@ -104,6 +107,10 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the ban filter
 		$db->delete_query("banfilters", "fid='{$filter['fid']}'");
+
+		// Log admin action
+		log_admin_action($filter['fid'], $filter['filter'], $filter['type']);
+
 
 		// Banned IP? Rebuild banned IP cache
 		if($filter['type'] == 1)

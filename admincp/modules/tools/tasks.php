@@ -134,8 +134,12 @@ if($mybb->input['action'] == "add")
 			);
 
 			$new_task['nextrun'] = fetch_next_run($new_task);
-			$db->insert_query("tasks", $new_task);
+			$tid = $db->insert_query("tasks", $new_task);
 			$cache->update_tasks();
+
+			// Log admin action
+			log_admin_action($tid, $mybb->input['title']);
+
 			flash_message($lang->success_task_created, 'success');
 			admin_redirect("index.php?".SID."&module=tools/tasks");
 		}
@@ -308,6 +312,10 @@ if($mybb->input['action'] == "edit")
 			$updated_task['nextrun'] = fetch_next_run($updated_task);
 			$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
 			$cache->update_tasks();
+
+			// Log admin action
+			log_admin_action($task['tid'], $mybb->input['title']);
+
 			flash_message($lang->success_task_updated, 'success');
 			admin_redirect("index.php?".SID."&module=tools/tasks");
 		}
@@ -427,6 +435,9 @@ if($mybb->input['action'] == "delete")
 		// Fetch next task run
 		$cache->update_tasks();
 
+		// Log admin action
+		log_admin_action($task['title']);
+
 		flash_message($lang->success_task_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=tools/tasks");
 	}
@@ -447,6 +458,9 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?".SID."&module=tools/tasks");
 	}
+
+	// Log admin action
+	log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
 
 	if($mybb->input['action'] == "enable")
 	{
@@ -476,6 +490,9 @@ if($mybb->input['action'] == "run")
 		flash_message($lang->error_invalid_task, 'error');
 		admin_redirect("index.php?".SID."&module=tools/tasks");
 	}
+
+	// Log admin action
+	log_admin_action($task['tid'], $task['title']);
 
 	run_task($task['tid']);
 

@@ -42,6 +42,9 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 
 if($mybb->input['action'] == "export")
 {
+	// Log admin action
+	log_admin_action();
+
 	$gidwhere = "";
 	if($mybb->input['gid'])
 	{
@@ -170,11 +173,14 @@ if($mybb->input['action'] == "add")
 				"maxwarningsday" => intval($mybb->input['maxwarningsday'])
 			);
 			
-			$db->insert_query("usergroups", $new_usergroup);
+			$gid = $db->insert_query("usergroups", $new_usergroup);
 
 			// Update the caches
 			$cache->update_usergroups();
 			$cache->update_forumpermissions();
+
+			// Log admin action
+			log_admin_action($gid, $mybb->input['title']);
 			
 			flash_message("The new user group has successfully been created", 'success');
 			admin_redirect("index.php?".SID."&module=user/groups");
@@ -315,6 +321,9 @@ if($mybb->input['action'] == "edit")
 			// Update the caches
 			$cache->update_usergroups();
 			$cache->update_forumpermissions();
+
+			// Log admin action
+			log_admin_action($usergroup['gid'], $mybb->input['title']);
 			
 			flash_message("The user group has successfully been updated", 'success');
 			admin_redirect("index.php?".SID."&module=user/groups");
@@ -350,6 +359,10 @@ if($mybb->input['action'] == "delete")
 
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
+
+		// Log admin action
+		log_admin_action($usergroup['title']);
+
 
 		flash_message("The specified user group has successfully been deleted.", 'success');
 		admin_redirect("index.php?".SID."&module=user/groups");

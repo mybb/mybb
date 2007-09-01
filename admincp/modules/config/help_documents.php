@@ -66,8 +66,11 @@ if($mybb->input['action'] == "add")
 					"disporder" => intval($mybb->input['disporder'])
 				);
 				
-				$db->insert_query("helpsections", $sql_array);
+				$sid = $db->insert_query("helpsections", $sql_array);
 				
+				// Log admin action
+				log_admin_action($sid, $mybb->input['name']);
+
 				flash_message($lang->success_help_section_added, 'success');
 				admin_redirect('index.php?'.SID.'&module=config/help_documents');
 			}
@@ -170,7 +173,10 @@ if($mybb->input['action'] == "add")
 					"disporder" => intval($mybb->input['disporder'])
 				);
 				
-				$db->insert_query("helpdocs", $sql_array);
+				$hid = $db->insert_query("helpdocs", $sql_array);
+
+				// Log admin action
+				log_admin_action(array($hid, $mybb->input['name']));
 				
 				flash_message($lang->success_help_document_added, 'success');
 				admin_redirect('index.php?'.SID.'&module=config/help_documents');
@@ -284,6 +290,9 @@ if($mybb->input['action'] == "edit")
 				);
 				
 				$db->update_query("helpsections", $sql_array, "sid = '{$sid}'");
+
+				// Log admin action
+				log_admin_action(array($sid, $mybb->input['name']));
 				
 				flash_message($lang->success_help_section_updated, 'success');
 				admin_redirect('index.php?'.SID.'&module=config/help_documents');
@@ -397,6 +406,9 @@ if($mybb->input['action'] == "edit")
 				
 				$db->update_query("helpdocs", $sql_array, "hid = '{$hid}'");
 				
+				// Log admin action
+				log_admin_action(array($hid, $mybb->input['name']));
+
 				flash_message($lang->success_help_document_updated, 'success');
 				admin_redirect('index.php?'.SID.'&module=config/help_documents');
 			}
@@ -497,7 +509,10 @@ if($mybb->input['action'] == "delete")
 			// Delete section and its documents
 			$db->delete_query("helpsections", "sid = '{$sid}'", 1);
 			$db->delete_query("helpdocs", "sid = '{$sid}'");
-			
+
+			// Log admin action
+			log_admin_action(array($section['name']));
+
 			flash_message($lang->success_section_deleted, 'success');
 			admin_redirect("index.php?".SID."&module=config/help_documents");
 		}
@@ -525,6 +540,9 @@ if($mybb->input['action'] == "delete")
 			}
 			
 			$db->delete_query("helpdocs", "hid = '{$hid}'", 1);
+
+			// Log admin action
+			log_admin_action(array($doc['name']));
 			
 			flash_message($lang->success_document_deleted, 'success');
 			admin_redirect("index.php?".SID."&module=config/help_documents");

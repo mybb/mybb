@@ -38,9 +38,12 @@ if($mybb->input['action'] == "add")
 				'path'	=> $db->escape_string($mybb->input['path'])
 			);
 
-			$db->insert_query("icons", $new_icon);
+			$iid = $db->insert_query("icons", $new_icon);
 
 			$cache->update_posticons();
+
+			// Log admin action
+			log_admin_action($iid = $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_added, 'success');
 			admin_redirect('index.php?'.SID.'&module=config/post_icons');
@@ -219,6 +222,9 @@ if($mybb->input['action'] == "add_multiple")
 
 			$cache->update_posticons();
 
+			// Log admin action
+			log_admin_action();
+
 			flash_message($lang->success_post_icons_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/post_icons");
 		}
@@ -292,6 +298,9 @@ if($mybb->input['action'] == "edit")
 
 			$db->update_query("icons", $icon, "iid='".intval($mybb->input['iid'])."'");
 
+			// Log admin action
+			log_admin_action($icon['iid'], $mybb->input['name']);
+
 			$cache->update_posticons();
 
 			flash_message($lang->success_post_icon_updated, 'success');
@@ -358,6 +367,9 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("icons", "iid='{$icon['iid']}'");
 
 		$cache->update_posticons();
+
+		// Log admin action
+		log_admin_action($icon['name']);
 
 		flash_message($lang->success_post_icon_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/post_icons");

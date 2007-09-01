@@ -96,6 +96,10 @@ if($mybb->input['action'] == "edit_properties")
 		{
 			fwrite($file, $newfile);
 			fclose($file);
+
+			// Log admin action
+			log_admin_action($editlang);
+
 			flash_message($lang->success_langprops_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
 		}
@@ -245,6 +249,10 @@ if($mybb->input['action'] == "edit")
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
+
+				// Log admin action
+				log_admin_action($editlang, $editfile);
+
 				flash_message($lang->success_langfile_updated, 'success');
 				admin_redirect("index.php?".SID."&module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
 			}

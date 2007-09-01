@@ -41,9 +41,12 @@ if($mybb->input['action'] == "add")
 				"useragent" => $db->escape_string($mybb->input['useragent']),
 				"lastvisit" => 0
 			);
-			$db->insert_query("spiders", $new_spider);
+			$sid = $db->insert_query("spiders", $new_spider);
 
 			$cache->update_spiders();
+
+			// Log admin action
+			log_admin_action($sid, $mybb->input['name']);
 
 			flash_message($lang->success_bot_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/spiders");
@@ -115,6 +118,9 @@ if($mybb->input['action'] == "delete")
 
 		$cache->update_spiders();
 
+		// Log admin action
+		log_admin_action($mybb->input['name']);
+
 		flash_message($lang->success_bot_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/spiders");
 	}
@@ -160,6 +166,9 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$cache->update_spiders();
+
+			// Log admin action
+			log_admin_action($spider['sid'], $mybb->input['name']);
 
 			flash_message($lang->success_bot_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/spiders");

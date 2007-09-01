@@ -206,7 +206,7 @@ class DefaultForm
 		{
 			$input .= " id=\"".$options['id']."\"";
 		}
-		if(isset($options['checked']) && $options['checked'] != 0)
+		if($options['checked'] === true || $options['checked'] === 1 || $options['checked'] == "yes")
 		{
 			$input .= " checked=\"checked\"";
 		}

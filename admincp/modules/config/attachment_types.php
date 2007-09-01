@@ -46,7 +46,10 @@ if($mybb->input['action'] == "add")
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 
-			$db->insert_query("attachtypes", $new_type);
+			$atid = $db->insert_query("attachtypes", $new_type);
+
+			// Log admin action
+			log_admin_action($atid, $mybb->input['extension']);
 
 			$cache->update_attachtypes();
 
@@ -150,6 +153,9 @@ if($mybb->input['action'] == "edit")
 
 			$db->update_query("attachtypes", $updated_type, "atid='{$attachment_type['atid']}'");
 
+			// Log admin action
+			log_admin_action($attachment_type['atid'], $mybb->input['extension']);
+
 			$cache->update_attachtypes();
 
 			flash_message($lang->success_attachment_type_updated, 'success');
@@ -218,10 +224,10 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?".SID."&module=config/attachment_types"); 
 	}
 	
-	$query = $db->simple_select("attachtypes", "atid", "atid='".intval($mybb->input['atid'])."'");
-	$atid = $db->fetch_field($query, "atid");
+	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
+	$attachment_type = $db->fetch_array($query);
 
-	if(!$atid)
+	if(!$attachment_type['atid'])
 	{
 		flash_message($lang->error_invalid_attachment_type, 'error');
 		admin_redirect("index.php?".SID."&module=config/attachment_types");
@@ -229,16 +235,19 @@ if($mybb->input['action'] == "delete")
 	
 	if($mybb->request_method == "post")
 	{
-		$db->delete_query("attachtypes", "atid='{$atid}'");
+		$db->delete_query("attachtypes", "atid='{$attachment_type['atid']}'");
 
 		$cache->update_attachtypes();
+
+		// Log admin action
+		log_admin_action($atid, $attachment_type['extension']);
 
 		flash_message($lang->success_attachment_type_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/attachment_types");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$mybb->input['atid']}", $lang->confirm_attachment_type_deletion); 
+		$page->output_confirm_action("index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}", $lang->confirm_attachment_type_deletion); 
 	}
 }
 

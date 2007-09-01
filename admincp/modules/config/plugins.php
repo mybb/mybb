@@ -198,6 +198,9 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	$plugins_cache['active'] = $active_plugins;
 	$cache->update("plugins", $plugins_cache);
 
+	// Log admin action
+	log_admin_action($mybb->input['action'], $codename);
+
 	flash_message($message, 'success');
 	admin_redirect("index.php?".SID."&module=config/plugins");
 }

@@ -182,6 +182,11 @@ if(!$mybb->input['action'])
 		
 		if(isset($mybb->input['do_rebuildforumcounters']))
 		{
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("forum");
+			}
 			if(!intval($mybb->input['forumcounters']))
 			{
 				$mybb->input['forumcounters'] = 50;
@@ -191,6 +196,11 @@ if(!$mybb->input['action'])
 		}
 		elseif(isset($mybb->input['do_rebuildthreadcounters']))
 		{
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("thread");
+			}
 			if(!intval($mybb->input['threadcounters']))
 			{
 				$mybb->input['threadcounters'] = 500;
@@ -200,6 +210,11 @@ if(!$mybb->input['action'])
 		}
 		elseif(isset($mybb->input['do_recountuserposts']))
 		{
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("userposts");
+			}
 			if(!intval($mybb->input['userposts']))
 			{
 				$mybb->input['userposts'] = 500;
@@ -209,6 +224,11 @@ if(!$mybb->input['action'])
 		}
 		elseif(isset($mybb->input['do_rebuildattachmentthumbs']))
 		{
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("attachmentthumbs");
+			}
 			if(!intval($mybb->input['attachmentthumbs']))
 			{
 				$mybb->input['attachmentthumbs'] = 500;
@@ -220,6 +240,9 @@ if(!$mybb->input['action'])
 		{
 			$cache->update_stats();
 			
+			// Log admin action
+			log_admin_action("stats");
+
 			flash_message($lang->success_rebuilt_forum_stats, 'success');
 			admin_redirect("index.php?".SID."&module=tools/recount_rebuild");
 		}

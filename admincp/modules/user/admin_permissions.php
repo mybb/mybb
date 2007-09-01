@@ -71,6 +71,10 @@ if($mybb->input['action'] == "delete")
 			"permissions" => ''
 		);
 		$db->update_query("adminoptions", $newperms, "uid = '{$mybb->input['uid']}'");
+
+		// Log admin action
+		log_admin_action($mybb->input['uid']);
+
 		flash_message($lang->success_perms_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");
 	}
@@ -112,6 +116,9 @@ if($mybb->input['action'] == "edit")
 		{
 			$db->insert_query("adminoptions", array('uid' => intval($mybb->input['uid']), 'permissions' => $db->escape_string(serialize($mybb->input['permissions']))));
 		}
+
+		// Log admin action
+		log_admin_action($mybb->input['uid']);
 				
 		flash_message($lang->admin_permissions_updated, 'success');
 		admin_redirect("index.php?".SID."&module=user/admin_permissions");

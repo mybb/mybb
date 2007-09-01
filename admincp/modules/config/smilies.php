@@ -52,9 +52,12 @@ if($mybb->input['action'] == "add")
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 			
-			$db->insert_query("smilies", $new_smilie);
+			$sid = $db->insert_query("smilies", $new_smilie);
 
 			$cache->update_smilies();
+
+			// Log admin action
+			log_admin_action($sid, $mybb->input['name']);
 			
 			flash_message($lang->success_smilie_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/smilies");
@@ -150,7 +153,7 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			$smilie = array(
+			$updated_smilie = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"find" => $db->escape_string($mybb->input['find']),
 				"image" => $db->escape_string($mybb->input['image']),
@@ -158,9 +161,12 @@ if($mybb->input['action'] == "edit")
 				"showclickable" => $db->escape_string($mybb->input['showclickable'])
 			);
 			
-			$db->update_query("smilies", $smilie, "sid = '".intval($mybb->input['sid'])."'");
+			$db->update_query("smilies", $updated_smilie, "sid = '".intval($mybb->input['sid'])."'");
 			
 			$cache->update_smilies();
+
+			// Log admin action
+			log_admin_action($smilie['sid'], $mybb->input['name']);
 
 			flash_message($lang->success_smilie_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/smilies");
@@ -235,6 +241,9 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("smilies", "sid='{$smilie['sid']}'");
 
 		$cache->update_smilies();
+
+		// Log admin action
+		log_admin_action($smilie['name']);
 
 		flash_message($lang->success_smilie_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/smilies");
@@ -382,6 +391,9 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$cache->update_smilies();
+
+			// Log admin action
+			log_admin_action();
 			
 			flash_message($lang->success_multiple_smilies_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/smilies");
@@ -446,6 +458,9 @@ if($mybb->input['action'] == "mass_edit")
 		}
 		
 		$cache->update_smilies();
+
+		// Log admin action
+		log_admin_action($smilie['name']);
 
 		flash_message($lang->success_multiple_smilies_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/smilies");

@@ -67,6 +67,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		flush();
 		
+		// Log admin action
+		log_admin_action($mybb->input['table']);
+
 		$types = array(
 			'text' => 'blob',
 			'mediumtext' => 'mediumblob',

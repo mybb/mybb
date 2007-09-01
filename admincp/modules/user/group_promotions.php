@@ -26,8 +26,10 @@ if($mybb->input['action'] == "disable")
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
 	}
 	
-	$query = $db->simple_select("promotions", "COUNT(pid) as promotions", "pid = '{$mybb->input['pid']}'");
-	if($db->fetch_field($query, 'promotions') == 0)
+	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
+	$promotion = $db->fetch_array($query);
+
+	if(!$promotion['pid'])
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
@@ -36,8 +38,11 @@ if($mybb->input['action'] == "disable")
 	$promotion = array(
 		"enabled" => 0
 	);
-		
 	$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
+
+	// Log admin action
+	log_admin_action($promotion['pid'], $promotion['title']);
+
 	flash_message($lang->success_promo_disabled, 'success');
 	admin_redirect("index.php?".SID."&module=user/group_promotions");
 }
@@ -55,8 +60,10 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
 	}
 	
-	$query = $db->simple_select("promotions", "COUNT(pid) as promotions", "pid = '{$mybb->input['pid']}'");
-	if($db->fetch_field($query, 'promotions') == 0)
+	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
+	$promotion = $db->fetch_array($query);
+
+	if(!$promotion['pid'])
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
@@ -65,6 +72,10 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$db->delete_query("promotions", "pid = '{$mybb->input['pid']}'");
+
+		// Log admin action
+		log_admin_action($promotion['title']);
+
 		flash_message($lang->success_promo_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
 	}
@@ -82,8 +93,10 @@ if($mybb->input['action'] == "enable")
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
 	}
 	
-	$query = $db->simple_select("promotions", "COUNT(pid) as promotions", "pid = '{$mybb->input['pid']}'");
-	if($db->fetch_field($query, 'promotions') == 0)
+	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
+	$promotion = $db->fetch_array($query);
+
+	if(!$promotion['pid'])
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
 		admin_redirect("index.php?".SID."&module=user/group_promotions");
@@ -92,8 +105,12 @@ if($mybb->input['action'] == "enable")
 	$promotion = array(
 		"enabled" => 1
 	);
-		
+	
 	$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
+
+	// Log admin action
+	log_admin_action($promotion['pid'], $promotion['title']);
+
 	flash_message($lang->success_promo_enabled, 'success');
 	admin_redirect("index.php?".SID."&module=user/group_promotions");
 }
@@ -176,6 +193,10 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("promotions", $update_promotion, "pid = '".intval($mybb->input['pid'])."'");
+
+			// Log admin action
+			log_admin_action($promotion['pid'], $mybb->input['title']);
+
 			flash_message($lang->success_promo_updated, 'success');
 			admin_redirect("index.php?".SID."&module=user/group_promotions");
 		}
@@ -345,7 +366,11 @@ if($mybb->input['action'] == "add")
 				"logging" => intval($mybb->input['logging'])
 			);
 			
-			$db->insert_query("promotions", $new_promotion);
+			$pid = $db->insert_query("promotions", $new_promotion);
+
+			// Log admin action
+			log_admin_action($pid, $mybb->input['title']);
+
 			flash_message($lang->success_promo_added, 'success');
 			admin_redirect("index.php?".SID."&module=user/group_promotions");
 		}

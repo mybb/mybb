@@ -17,6 +17,9 @@ if(!defined("IN_MYBB"))
 
 if($mybb->input['action'] == 'phpinfo')
 {
+	// Log admin action
+	log_admin_action();
+
 	phpinfo();
 	exit;
 }

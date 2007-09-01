@@ -358,9 +358,6 @@ if($run_module != "home")
 	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
 }
 
-// Log the action this user is trying to perform
-log_admin_action();
-
 $lang->load("{$run_module}_{$page->active_action}", false, true);
 
 require $modules_dir."/".$run_module."/".$action_file;

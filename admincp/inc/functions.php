@@ -9,33 +9,42 @@
  * $Id$
  */
 
-
+/**
+ * Logs an administrator action taking any arguments as log data.
+ */
 function log_admin_action()
 {
 	global $db, $mybb;
 
-	$log_function = $page->active_module."_admin_log_data";
-	if(function_exists($log_function))
+	$data = func_get_args();
+
+	if(count($data) == 1 && is_array($data[0]))
 	{
-		$data = $log_function();
+		$data = $data[0];
 	}
+
 	if(!is_array($data))
 	{
-		$data = array();
+		$data = array($data);
 	}
 
 	$log_entry = array(
 		"uid" => $mybb->user['uid'],
 		"ipaddress" => $db->escape_string(get_ip()),
 		"dateline" => TIME_NOW,
-		"module" => $page->active_module,
-		"action" => $page->active_action,
-		"data" => $db->escape_string(serialize($data))
+		"module" => $db->escape_string($mybb->input['module']),
+		"action" => $db->escape_string($mybb->input['action']),
+		"data" => $db->escape_string(@serialize($data))
 	);
 
 	$db->insert_query("adminlog2", $log_entry);
 }
 
+/**
+ * Redirects the current user to a specified URL.
+ *
+ * @param string The URL to redirect to
+ */
 function admin_redirect($url)
 {
 	if(!headers_sent())
@@ -50,6 +59,12 @@ function admin_redirect($url)
 	exit;
 }
 
+/**
+ * Updates an administration session data array.
+ *
+ * @param string The name of the item in the data session to update
+ * @param mixed The value
+ */
 function update_admin_session($name, $value)
 {
 	global $db, $admin_session;
@@ -61,12 +76,27 @@ function update_admin_session($name, $value)
 	$db->update_query("adminsessions", $updated_session, "sid='{$admin_session['sid']}'");
 }
 
+/**
+ * Saves a "flash message" for the current user to be shown on their next page visit.
+ *
+ * @param string The message to show
+ * @param string The type of message to be shown (success|eror)
+ */
 function flash_message($message, $type='')
 {
 	$flash = array('message' => $message, 'type' => $type);
 	update_admin_session('flash_message', $flash);
 }
 
+/**
+ * Draw pagination for pages in the Admin CP.
+ *
+ * @param int The current page we're on
+ * @param int The number of items per page
+ * @param int The total number of items in this collection
+ * @param string The URL for pagination of this collection
+ * @return string The built pagination
+ */
 function draw_admin_pagination($page, $per_page, $total_items, $url)
 {
 	if($total_items <= $per_page)
@@ -151,7 +181,13 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	return $pagination;
 }
 
-
+/**
+ * Builds a CSV parent list for a particular forum.
+ *
+ * @param int The forum ID
+ * @param string Optional separator - defaults to comma for CSV list
+ * @return string The built parent list
+ */
 function make_parent_list($fid, $navsep=",")
 {
 	global $pforumcache, $db;
@@ -187,6 +223,12 @@ function make_parent_list($fid, $navsep=",")
 	return $navigation;
 }
 
+/**
+ * Checks if a particular user is a super administrator.
+ *
+ * @param int The user ID to check against the list of super admins
+ * @return boolean True if a super admin, false if not
+ */
 function is_super_admin($uid)
 {
 	global $config;
@@ -202,7 +244,11 @@ function is_super_admin($uid)
 	}
 }
 
-
+/**
+ * Checks if a particular user has the necessary permissions to access a particular page.
+ *
+ * @param array Array containing module and action to check for
+ */
 function check_admin_permissions($action)
 {
 	global $mybb, $page, $lang;
@@ -217,6 +263,13 @@ function check_admin_permissions($action)
 	}
 }
 
+/**
+ * Fetches the list of administrator permissions for a particular user or group
+ *
+ * @param int The user ID to fetch permissions for
+ * @param int The (optional) group ID to fetch permissions for
+ * @return array Array of permissions for specified user or group
+ */
 function get_admin_permissions($get_uid="", $get_gid="")
 {
 	global $db, $mybb;
@@ -335,6 +388,12 @@ function get_admin_permissions($get_uid="", $get_gid="")
 	}
 }
 
+/**
+ * Fetch the iconv/mb encoding for a particular MySQL encoding
+ *
+ * @param string The MySQL encoding
+ * @return string The iconv/mb encoding
+ */
 function fetch_iconv_encoding($mysql_encoding)
 {
     $mysql_encoding = explode("_", $mysql_encoding);

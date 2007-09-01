@@ -82,7 +82,10 @@ if($mybb->input['action'] == "add_level")
 				"action" => serialize($action)
 			);
 			
-			$db->insert_query("warninglevels", $new_level);
+			$lid = $db->insert_query("warninglevels", $new_level);
+
+			// Log admin action
+			log_admin_action($lid, $mybb->input['percentage']);
 			
 			flash_message($lang->success_warning_level_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/warning&action=levels");
@@ -244,7 +247,10 @@ if($mybb->input['action'] == "edit_level")
 			);
 			
 			$db->update_query("warninglevels", $updated_level, "lid='{$level['lid']}'");
-			
+
+			// Log admin action
+			log_admin_action($level['lid'], $mybb->input['percentage']);
+
 			flash_message($lang->success_warning_level_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/warning&action=levels");
 		}
@@ -401,6 +407,9 @@ if($mybb->input['action'] == "delete_level")
 		// Delete the level
 		$db->delete_query("warninglevels", "lid='{$level['lid']}'");
 
+		// Log admin action
+		log_admin_action($level['percentage']);
+
 		flash_message($lang->success_warning_level_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/warning");
 	}
@@ -432,7 +441,10 @@ if($mybb->input['action'] == "add_type")
 				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 			
-			$db->insert_query("warningtypes", $new_type);
+			$tid = $db->insert_query("warningtypes", $new_type);
+
+			// Log admin action
+			log_admin_action($tid, $mybb->input['title']);
 			
 			flash_message($lang->success_warning_type_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/warning");
@@ -518,7 +530,10 @@ if($mybb->input['action'] == "edit_type")
 			);
 			
 			$db->update_query("warningtypes", $updated_type, "tid='{$type['tid']}'");
-			
+
+			// Log admin action
+			log_admin_action($type['tid'], $mybb->input['title']);
+
 			flash_message($lang->success_warning_type_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/warning");
 		}
@@ -594,6 +609,9 @@ if($mybb->input['action'] == "delete_type")
 	{
 		// Delete the type
 		$db->delete_query("warningtypes", "tid='{$type['tid']}'");
+
+		// Log admin action
+		log_admin_action($type['title']);
 
 		flash_message($lang->success_warning_type_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/warning");

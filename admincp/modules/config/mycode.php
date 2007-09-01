@@ -46,6 +46,9 @@ if($mybb->input['action'] == "toggle_status")
 
 	$cache->update_mycode();
 
+	// Log admin action
+	log_admin_action($mycode['cid'], $mycode['title'], $new_status);
+
 	flash_message($phrase, 'success');
 	admin_redirect('index.php?'.SID.'&module=config/mycode');
 }
@@ -101,9 +104,12 @@ if($mybb->input['action'] == "add")
 				'parseorder' => intval($mybb->input['parseorder'])
 			);
 
-			$db->insert_query("mycode", $new_mycode);
+			$cid = $db->insert_query("mycode", $new_mycode);
 
 			$cache->update_mycode();
+
+			// Log admin action
+			log_admin_action($cid, $mybb->input['title']);
 
 			flash_message($lang->success_added_mycode, 'success');
 			admin_redirect('index.php?'.SID.'&module=config/mycode');
@@ -206,6 +212,9 @@ if($mybb->input['action'] == "edit")
 
 			$cache->update_mycode();
 
+			// Log admin action
+			log_admin_action($mycode['cid'], $mybb->input['title']);
+
 			flash_message($lang->success_updated_mycode, 'success');
 			admin_redirect('index.php?'.SID.'&module=config/mycode');
 		}
@@ -284,6 +293,9 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("mycode", "cid='{$mycode['cid']}'");
 
 		$cache->update_mycode();
+
+		// Log admin action
+		log_admin_action($mycode['title']);
 
 		flash_message($lang->success_deleted_mycode, 'success');
 		admin_redirect("index.php?".SID."&module=config/mycode");

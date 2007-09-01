@@ -64,7 +64,10 @@ if($mybb->input['action'] == "rebuild")
 	{
 		$func = "update_{$mybb->input['title']}";
 		$cache->$func();
-		
+
+		// Log admin action
+		log_admin_action($mybb->input['title']);
+
 		flash_message($lang->success_cache_rebuilt, 'success');
 		admin_redirect("index.php?".SID."&module=tools/cache");
 	}

@@ -31,7 +31,10 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 			"replacement" => $db->escape_string($mybb->input['replacement'])
 		);
 
-		$db->insert_query("badwords", $new_badword);
+		$bid = $db->insert_query("badwords", $new_badword);
+
+		// Log admin action
+		log_admin_action($bid, $mybb->input['badword']);
 
 		$cache->update_badwords();
 		flash_message($lang->success_added_bad_word, 'success');
@@ -65,6 +68,9 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the bad word
 		$db->delete_query("badwords", "bid='{$badword['bid']}'");
+
+		// Log admin action
+		log_admin_action($badword['bid'], $badword['badword']);
 
 		$cache->update_badwords();
 
@@ -104,6 +110,9 @@ if($mybb->input['action'] == "edit")
 			);
 
 			$db->update_query("badwords", $updated_badword, "bid='{$badword['bid']}'");
+
+			// Log admin action
+			log_admin_action($badword['bid'], $mybb->input['badword']);
 
 			$cache->update_badwords();
 

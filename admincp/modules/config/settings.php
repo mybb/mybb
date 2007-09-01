@@ -49,8 +49,11 @@ if($mybb->input['action'] == "addgroup")
 				"disporder" => intval($mybb->input['disporder']),
 				"isdefault" => 'no'
 			);
-			
-			$db->insert_query("settinggroups", $new_setting_group);
+			$gid = $db->insert_query("settinggroups", $new_setting_group);
+
+			// Log admin action
+			log_admin_action($gid, $mybb->input['name']);
+
 			flash_message($lang->success_setting_group_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
@@ -138,6 +141,10 @@ if($mybb->input['action'] == "editgroup")
 			);
 			
 			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
+
+			// Log admin action
+			log_admin_action($group['gid'], $mybb->input['name']);
+
 			flash_message($lang->success_setting_group_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
@@ -215,6 +222,9 @@ if($mybb->input['action'] == "deletegroup")
 		
 		rebuild_settings();
 
+		// Log admin action
+		log_admin_action($group['name']);
+
 		flash_message($lang->success_setting_group_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
@@ -282,8 +292,12 @@ if($mybb->input['action'] == "add")
 				"gid" => intval($mybb->input['gid'])
 			);
 			
-			$db->insert_query("settings", $new_setting);
+			$sid = $db->insert_query("settings", $new_setting);
 			rebuild_settings();
+
+			// Log admin action
+			log_admin_action($sid, $mybb->input['title']);
+
 			flash_message($lang->success_setting_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
@@ -423,6 +437,10 @@ if($mybb->input['action'] == "edit")
 			);
 			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
 			rebuild_settings();
+
+			// Log admin action
+			log_admin_action($setting['sid'], $mybb->input['title']);
+
 			flash_message($lang->success_setting_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 		}
@@ -539,6 +557,9 @@ if($mybb->input['action'] == "delete")
 		
 		rebuild_settings();
 
+		// Log admin action
+		log_admin_action($setting['title']);
+
 		flash_message($lang->success_setting_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
@@ -573,6 +594,9 @@ if($mybb->input['action'] == "manage")
 				$db->update_query("settings", $update_setting, "sid={$sid}");
 			}
 		}
+
+		// Log admin action
+		log_admin_action();
 		
 		flash_message($lang->success_display_orders_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
@@ -705,6 +729,10 @@ if($mybb->input['action'] == "change")
 				$db->create_fulltext_index("threads", "subject");
 			}
 		}
+
+		// Log admin action
+		log_admin_action();
+
 		flash_message($lang->success_settings_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/settings");
 	}

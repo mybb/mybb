@@ -54,8 +54,11 @@ if($mybb->input['action'] == "add")
 				"starimage" => $db->escape_string($mybb->input['starimage'])
 			);
 			
-			$db->insert_query("usertitles", $new_title);
-			
+			$utid = $db->insert_query("usertitles", $new_title);
+
+			// Log admin action
+			log_admin_action($utid, $mybb->input['title']);
+
 			flash_message("The new user title has successfully been created", 'success');
 			admin_redirect("index.php?".SID."&module=user/titles");
 		}
@@ -128,6 +131,9 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
+
+			// Log admin action
+			log_admin_action($usertitle['utid'], $mybb->input['title']);
 			
 			flash_message("The user title has successfully been updated.", 'success');
 			admin_redirect("index.php?".SID."&module=user/titles");
@@ -192,6 +198,9 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$db->delete_query("usertitles", "utid='{$usertitle['utid']}'");
+
+		// Log admin action
+		log_admin_action($usertitle['title']);
 
 		flash_message("The specified user title has successfully been deleted.", 'success');
 		admin_redirect("index.php?".SID."&module=user/titles");

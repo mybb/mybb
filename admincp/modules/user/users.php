@@ -165,6 +165,9 @@ if($mybb->input['action'] == "avatar_gallery")
 			);
 
 			$db->update_query("users", $updated_avatar, "uid='".$user['uid']."'");
+
+			// Log admin action
+			log_admin_action($user['uid'], $user['username']);
 		}
 		remove_avatars($mybb->user['uid']);
 		// Now a tad of javascript to submit the parent window form
@@ -346,6 +349,9 @@ if($mybb->input['action'] == "coppa_activate")
 
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
+	// Log admin action
+	log_admin_action($user['uid'], $user['username']);
+
 	flash_message("The COPPA user has successfully been activated.", 'success');
 	admin_redirect("index.php?".SID."&module=user/users&amp;action=edit&amp;uid={$user['uid']}");
 }
@@ -402,6 +408,10 @@ if($mybb->input['action'] == "add")
 		else
 		{
 			$user_info = $userhandler->insert_user();
+
+			// Log admin action
+			log_admin_action($user_info['uid'], $user_info['username']);
+
 			flash_message("The user has successfully been created.", 'success');
 			admin_redirect("index.php?".SID."&module=user/users&action=edit&uid={$user_info['uid']}");
 		}
@@ -424,6 +434,12 @@ if($mybb->input['action'] == "add")
 	if($errors)
 	{
 		$page->output_inline_error($errors);
+	}
+	else
+	{
+		$mybb->input = array(
+			"usergroup" => 2
+		);
 	}
 
 	$form_container = new FormContainer("Required Profile Information");
@@ -686,6 +702,10 @@ if($mybb->input['action'] == "edit")
 			{
 				$user_info = $userhandler->update_user();
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
+
+				// Log admin action
+				log_admin_action($user['uid'], $mybb->input['username']);
+
 				flash_message("The user has successfully been updated.", 'success');
 				admin_redirect("index.php?".SID."&module=user/users");
 			}
@@ -1014,7 +1034,7 @@ if($mybb->input['action'] == "edit")
 
 	$other_options = array(
 		$form->generate_check_box("showredirect", "yes", "Show friendly redirection pages", array("checked" => $mybb->input['showredirect'])),
-		$form->generate_check_box("showcodebuttons", "yes", "Show MyCode formatting options on posting pages", array("checked" => $mybb->input['showcodebuttons'])),
+		$form->generate_check_box("showcodebuttons", "1", "Show MyCode formatting options on posting pages", array("checked" => $mybb->input['showcodebuttons'])),
 		"<label for=\"style\">Theme:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", 1),
 		"<label for=\"language\">Board Language:</label><br />".$form->generate_select_box("language", $lang->get_languages(), $mybb->input['language'], array('id' => 'language'))
 	);
@@ -1177,6 +1197,10 @@ if($mybb->input['action'] == "delete")
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
 
+		// Log admin action
+		log_admin_action($user['username']);
+
+
 		flash_message("The user has successfully been deleted.", 'success');
 		admin_redirect("index.php?".SID."&module=user/users");
 	}
@@ -1225,8 +1249,12 @@ if($mybb->input['action'] == "ipaddresses")
 	
 	$page->output_nav_tabs($sub_tabs, 'ipaddresses');
 	
-	$query = $db->simple_select("users", "regip, username", "uid='{$mybb->input['uid']}'", array('limit' => 1));
+	$query = $db->simple_select("users", "uid, regip, username", "uid='{$mybb->input['uid']}'", array('limit' => 1));
 	$user = $db->fetch_array($query);
+
+	// Log admin action
+	log_admin_action($user['uid'], $user['username']);
+
 	
 	$popup = new PopupMenu("user_{$mybb->input['uid']}", $lang->options);
 	$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
@@ -1358,6 +1386,10 @@ if($mybb->input['action'] == "merge")
 		$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
 		update_stats(array('numusers' => '-1'));
+
+		// Log admin action
+		log_admin_action($source_user['username'], $destination_user['uid'], $destination_user['username']);
+
 
 		// Redirect!
 		flash_message("<strong>{$source_user['username']}</strong> has successfully been merged in to {$destination_user['username']}", "success");
@@ -1554,17 +1586,17 @@ function build_users_view($view)
 	{
 		$view['url'] = "index.php?".SID."&module=user/users";
 	}
+	if(!is_array($view['conditions']))
+	{
+		$view['conditions'] = unserialize($view['conditions']);
+	}
+	if(!is_array($view['fields']))
+	{
+		$view['fields'] = unserialize($view['fields']);
+	}
 	if($view['vid'])
 	{
 		$view['url'] .= "&vid={$view['vid']}";
-		if(!is_array($view['conditions']))
-		{
-			$view['conditions'] = unserialize($view['conditions']);
-		}
-		if(!is_array($view['fields']))
-		{
-			$view['fields'] = unserialize($view['fields']);
-		}
 	}
 	else
 	{

@@ -77,11 +77,12 @@ if($mybb->input['action'] == "add")
 				"hidden" => $db->escape_string($mybb->input['hidden']),
 			);
 			
-			$db->insert_query("profilefields", $new_profile_field);
-			
-			$fid = $db->insert_id();
+			$fid = $db->insert_query("profilefields", $new_profile_field);
 			
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
+
+			// Log admin action
+			log_admin_action($fid, $mybb->input['name']);
 					
 			flash_message($lang->success_profile_field_added, 'success');
 			admin_redirect("index.php?".SID."&module=config/profile_fields");
@@ -213,6 +214,9 @@ if($mybb->input['action'] == "edit")
 			
 			$db->update_query("profilefields", $profile_field, "fid = '".intval($mybb->input['fid'])."'");
 			
+			// Log admin action
+			log_admin_action($profile_field['fid'], $mybb->input['name']);
+
 			flash_message($lang->success_profile_field_saved, 'success');
 			admin_redirect("index.php?".SID."&module=config/profile_fields");
 		}
@@ -310,6 +314,10 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the profile field
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
+		$db->query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
+
+		// Log admin action
+		log_admin_action($profile_field['name']);
 
 		flash_message($lang->success_profile_field_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/profile_fields");

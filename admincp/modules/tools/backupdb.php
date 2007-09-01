@@ -61,6 +61,9 @@ if($mybb->input['action'] == "dlbackup")
 		
 	if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file) && filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file' && ($ext == 'gz' || $ext == 'sql'))
 	{
+		// Log admin action
+		log_admin_action($file);
+
 		header('Content-disposition: attachment; filename='.$file);
 		header("Content-type: ".$ext);
 		header("Content-length: ".filesize(MYBB_ADMIN_DIR.'backups/'.$file));
@@ -89,7 +92,11 @@ if($mybb->input['action'] == "delete")
 	}
 	
 	if($mybb->request_method == "post")
-	{		
+	{
+
+		// Log admin action
+		log_admin_action($file);
+
 		$delete = @unlink(MYBB_ADMIN_DIR.'backups/'.$file);
 			
 		if($delete)
@@ -216,7 +223,7 @@ if($mybb->input['action'] == "backup")
 				}
 			}
 		}
-		
+
 		if($mybb->input['method'] == 'disk')
 		{
 			if($mybb->input['filetype'] == 'gzip')
@@ -241,12 +248,18 @@ if($mybb->input['action'] == "backup")
 			
 			$db->set_table_prefix(TABLE_PREFIX);
 			
+			// Log admin action
+			log_admin_action("disk", $file.$ext);
+
 			$file_from_admindir = 'index.php?'.SID.'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
 			flash_message("<p><em>{$lang->success_backup_created}</em></p><p>{$lang->backup_saved_to}<br />{$file}{$ext} (<a href=\"{$file_from_admindir}\">{$lang->download}</a>)</p>", 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}
 		else
 		{
+			// Log admin action
+			log_admin_action("download");
+
 			if($mybb->input['filetype'] == 'gzip')
 			{
 				echo gzencode($contents);

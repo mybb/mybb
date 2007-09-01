@@ -59,8 +59,11 @@ if($mybb->input['action'] == "add")
 				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies'])
 			);
 			
-			$db->insert_query("calendars", $calendar);
-			
+			$cid = $db->insert_query("calendars", $calendar);
+
+			// Log admin action
+			log_admin_action($cid, $mybb->input['name']);
+
 			flash_message($lang->success_calendar_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/calendars");
 		}
@@ -162,6 +165,10 @@ if($mybb->input['action'] == "permissions")
 				$db->insert_query("calendarpermissions", $permissions_array);
 			}
 		}
+
+		// Log admin action
+		log_admin_action($calendar['cid'], $calendar['name']);
+
 		flash_message($lang->success_calendar_permissions_updated, 'success');
 		admin_redirect("index.php?".SID."&module=config/calendars");
 	}
@@ -286,7 +293,10 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("calendars", $calendar, "cid = '".intval($mybb->input['cid'])."'");
-			
+
+			// Log admin action
+			log_admin_action($calendar['cid'], $mybb->input['name']);
+
 			flash_message($lang->success_calendar_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/calendars");
 		}
@@ -361,6 +371,9 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("calendars", "cid='{$calendar['cid']}'");
 		$db->delete_query("events", "cid='{$calendar['cid']}'");
 
+		// Log admin action
+		log_admin_action($calendar['name']);
+
 		flash_message($lang->success_calendar_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/calendars");
 	}
@@ -384,6 +397,9 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 		);
 		$db->update_query("calendars", $update_query, "cid='".intval($cid)."'");
 	}
+
+	// Log admin action
+	log_admin_action();
 
 	flash_message($lang->sucess_calendar_orders_updated, 'success');
 	admin_redirect("index.php?".SID."&module=config/calendars");

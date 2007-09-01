@@ -42,6 +42,9 @@ if($mybb->input['action'] == "delete_post_tool")
 		// Delete the type
 		$db->delete_query('modtools', "tid='{$tool['tid']}'");
 
+		// Log admin action
+		log_admin_action($tool['name']);
+
 		flash_message($lang->success_post_tool_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
 	}
@@ -73,6 +76,9 @@ if($mybb->input['action'] == "delete_thread_tool")
 	{
 		// Delete the type
 		$db->delete_query('modtools', "tid='{$tool['tid']}'");
+
+		// Log admin action
+		log_admin_action($tool['name']);
 
 		flash_message($lang->success_thread_tool_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=config/mod_tools");
@@ -267,7 +273,10 @@ if($mybb->input['action'] == "edit_thread_tool")
 			}
 		
 			$db->update_query("modtools", $update_tool, "tid='{$mybb->input['tid']}'");
-			
+
+			// Log admin action
+			log_admin_action($mybb->input['tid'], $mybb->input['title']);
+
 			flash_message($lang->success_mod_tool_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/mod_tools");
 		}
@@ -595,7 +604,10 @@ if($mybb->input['action'] == "add_thread_tool")
 				$new_tool['forums'] = implode(',', $checked);
 			}
 		
-			$db->insert_query("modtools", $new_tool);
+			$tid = $db->insert_query("modtools", $new_tool);
+
+			// Log admin action
+			log_admin_action($tid, $mybb->input['title']);
 			
 			flash_message($lang->success_mod_tool_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/mod_tools");
@@ -977,6 +989,9 @@ if($mybb->input['action'] == "edit_post_tool")
 			}
 		
 			$db->update_query("modtools", $update_tool, "tid = '{$mybb->input['tid']}'");
+
+			// Log admin action
+			log_admin_action($mybb->input['tid'], $mybb->input['title']);
 			
 			flash_message($lang->success_mod_tool_updated, 'success');
 			admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
@@ -1439,7 +1454,10 @@ if($mybb->input['action'] == "add_post_tool")
 				$new_tool['forums'] = implode(',', $checked);
 			}
 		
-			$db->insert_query("modtools", $new_tool);
+			$tid = $db->insert_query("modtools", $new_tool);
+
+			// Log admin action
+			log_admin_action($tid, $mybb->input['title']);
 			
 			flash_message($lang->success_mod_tool_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
