@@ -425,6 +425,8 @@ if($mybb->input['action'] == "results")
 				$attachment_count = '';
 			}
 
+			$inline_edit_tid = $thread['tid'];
+
 			$plugins->run_hooks("search_results_thread");
 			eval("\$results .= \"".$templates->get("search_results_threads_thread")."\";");
 		}
