@@ -305,7 +305,7 @@ else
 
 function show($user)
 {
-	global $threads, $forums, $forums_linkto, $posts, $events, $members, $theme, $mybb, $onlinerows, $templates, $lang, $session;
+	global $threads, $forums, $forums_linkto, $posts, $events, $members, $theme, $mybb, $onlinerows, $templates, $lang, $session, $attachments;
 
 	switch($user['activity'])
 	{
@@ -322,12 +322,11 @@ function show($user)
 			break;
 		// attachment.php actions
 		case "attachment":
-			$aid = $posts[$user['aid']];
-			$pid = $attachments[$aid];
+			$pid = $attachments[$user['aid']];
 			$tid = $posts[$pid];
 			if($threads[$tid])
 			{
-				$locationname = sprintf($lang->viewing_attachment2, $tid, $threads[$tid]);
+				$locationname = sprintf($lang->viewing_attachment2, $user['aid'], $threads[$tid]);
 			}
 			else
 			{
@@ -379,10 +378,6 @@ function show($user)
 		// index.php functions
 		case "index":
 			$locationname = sprintf($lang->viewing_index, $mybb->settings['bbname']);
-			break;
-		// managegroup.php functions
-		case "managegroup":
-			$locationname = $lang->managing_group;
 			break;
 		// member.php functions
 		case "member_activate":
@@ -586,6 +581,9 @@ function show($user)
 		case "usercp_notepad":
 			$locationname = $lang->editing_pad;
 			break;
+		case "usercp_password":
+			$location_name = $lang->editing_password;
+			break;
 		case "usercp":
 			$locationname = $lang->user_cp;
 			break;
@@ -650,7 +648,8 @@ function show($user)
 
 function what($user)
 {
-	global $mybb, $theme, $fidsql, $tidsql, $pidsql, $eidsql, $uidsql;
+	global $mybb, $theme, $fidsql, $tidsql, $pidsql, $eidsql, $uidsql, $aidsql;
+	
 	$splitloc = explode(".php", $user['location']);
 	if($splitloc[0] == $user['location'])
 	{
@@ -725,9 +724,6 @@ function what($user)
 		case "index":
 		case '':
 			$user['activity'] = "index";
-			break;
-		case "managegroup":
-			$user['activity'] = "managegroup";
 			break;
 		case "member":
 			if($parameters['action'] == "activate")

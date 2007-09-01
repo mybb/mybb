@@ -85,7 +85,15 @@ class databaseEngine
 	 */
 	function connect($hostname="localhost", $username="root", $password="", $pconnect=0, $newlink=false)
 	{
-		$this->link = @mysqli_connect($hostname, $username, $password) or $this->dberror();
+		list($hostname, $port) = explode(":", $hostname, 2);
+		if($port)
+		{
+			$this->link = @mysqli_connect($hostname, $username, $password, "", $port) or $this->dberror();
+		}
+		else
+		{
+			$this->link = @mysqli_connect($hostname, $username, $password) or $this->dberror();
+		}
 		return $this->link;
 	}
 

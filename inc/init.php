@@ -120,6 +120,12 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 	}
 }
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;
+
+// Fix for people who for some specify a trailing slash on the board URL
+if(substr($settings['bburl'], -1) == "/")
+{
+	$settings['bburl'] = my_substr($settings['bburl'], 0, -1);
+}
 $mybb->settings = $settings;
 
 
