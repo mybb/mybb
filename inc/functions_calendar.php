@@ -814,7 +814,6 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 			{
 				$new_time = gmmktime(0, 0, 0, $repeats['month'], $repeats['day'], $last_year+$repeats['years']);
 			}
-			echo gmdate("r", $new_time)."<br />";
 		}
 		// The 1st/etc (weekday) of (month) every (years)
 		else
