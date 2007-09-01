@@ -201,5 +201,6 @@ if($mybb->input['action'] == "")
 	makeinputcode($lang->prune_days, "days", 30, 4);
 	endtable();
 	endform($lang->prune_log, $lang->reset_button);
+	cpfooter();
 }
 ?>

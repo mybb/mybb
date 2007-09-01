@@ -41,13 +41,6 @@ if($mybb->usergroup['cansearch'] == "no")
 
 $now = time();
 
-// Clear out searches older than a month
-if($rand == 3)
-{
-	$timecut = time()-60*60*24*30;
-	$db->delete_query(TABLE_PREFIX."searchlog", "dateline<='$timecut'");
-}
-
 if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);
@@ -136,6 +129,12 @@ if($mybb->input['action'] == "results")
 	$icon_cache = $cache->read("posticons");
 
 	$threads = array();
+	
+	$limitsql = "";
+	if(intval($mybb->settings['searchhardlimit']) > 0)
+	{
+		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+	}
 
 	// Show search results as 'threads'
 	if($search['resulttype'] == "threads")
@@ -145,7 +144,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%' {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -167,7 +166,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%'");
+			$query = $db->simple_select(TABLE_PREFIX."threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%' {$limitsql}");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -410,6 +409,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE $where_conditions  AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' 
+			{$limitsql}
 		");
 		$count = $db->fetch_array($query);
 

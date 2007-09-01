@@ -1198,5 +1198,13 @@ admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="searchhardlimit">
+			<title>Hard Limit for Maximum Search Results</title>
+			<description><![CDATA[Enter the maximum amount of results to be processed. Set to 0 to disable. On larger boards (more than 1 million posts) this should be set to no more than 1000.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 </settings>

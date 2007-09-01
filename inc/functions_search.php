@@ -309,7 +309,7 @@ function perform_search_mysql($search)
 					$matches = preg_split("#\s{1,}(and|or)\s{1,}#", $phrase, -1, PREG_SPLIT_DELIM_CAPTURE);
 					$count_matches = count($matches);
 					
-					for($i=0;$i<$count_matches;$i++)
+					for($i=0; $i < $count_matches; $i++)
 					{
 						$word = trim($matches[$i]);
 						if(empty($word))
@@ -449,23 +449,23 @@ function perform_search_mysql($search)
 			if(!$searchin[$forum])
 			{
 				$forum = intval($forum);
-				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
-				if($db->num_rows($query) == 1)
+				$query = $db->query("SELECT DISTINCT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
+				while($sforum = $db->fetch_array($query))
 				{
-					$forumin .= " AND t.fid='$forum' ";
-					$searchin[$fid] = 1;
+					$fidlist[] = $sforum['fid'];
 				}
-				else
-				{
-					while($sforum = $db->fetch_array($query))
-					{
-						$fidlist[] = $sforum['fid'];
-					}
-					if(count($fidlist) > 1)
-					{
-						$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
-					}
-				}
+			}
+		}
+		if(count($fidlist) == 1)
+		{
+			$forumin .= " AND t.fid='$forum' ";
+			$searchin[$fid] = 1;
+		}
+		else
+		{		
+			if(count($fidlist) > 1)
+			{
+				$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
 			}
 		}
 	}
@@ -479,6 +479,12 @@ function perform_search_mysql($search)
 	{
 		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
+	
+	$limitsql = "";
+	if(intval($mybb->settings['searchhardlimit']) > 0)
+	{
+		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+	}
 
 	// Searching both posts and thread titles
 	$threads = array();
@@ -491,6 +497,7 @@ function perform_search_mysql($search)
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
 			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -505,6 +512,7 @@ function perform_search_mysql($search)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -527,6 +535,7 @@ function perform_search_mysql($search)
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
 			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -549,6 +558,7 @@ function perform_search_mysql($search)
 				SELECT p.pid
 				FROM ".TABLE_PREFIX."posts p
 				WHERE p.pid IN ($firstposts) AND p.visible>0
+				{$limitsql}
 			");
 			while($post = $db->fetch_array($query))
 			{
@@ -719,23 +729,23 @@ function perform_search_mysql_ft($search)
 			$forum = intval($forum);
 			if(!$searchin[$forum])
 			{
-				$query = $db->query("SELECT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user[usergroup]."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
-				if($db->num_rows($query) == 1)
+				$query = $db->query("SELECT DISTINCT f.fid FROM ".TABLE_PREFIX."forums f LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."') WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')");
+				while($sforum = $db->fetch_array($query))
 				{
-					$forumin .= " AND t.fid='$forum' ";
-					$searchin[$fid] = 1;
+					$fidlist[] = $sforum['fid'];
 				}
-				else
-				{
-					while($sforum = $db->fetch_array($query))
-					{
-						$fidlist[] = $sforum['fid'];
-					}
-					if(count($fidlist) > 1)
-					{
-						$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
-					}
-				}
+			}
+		}
+		if(count($fidlist) == 1)
+		{
+			$forumin .= " AND t.fid='$forum' ";
+			$searchin[$fid] = 1;
+		}
+		else
+		{
+			if(count($fidlist) > 1)
+			{
+				$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
 			}
 		}
 	}
@@ -749,6 +759,12 @@ function perform_search_mysql_ft($search)
 	{
 		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 	}
+	
+	$limitsql = "";
+	if(intval($mybb->settings['searchhardlimit']) > 0)
+	{
+		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
+	}
 
 	// Searching both posts and thread titles
 	$threads = array();
@@ -761,6 +777,7 @@ function perform_search_mysql_ft($search)
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
 			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -775,6 +792,7 @@ function perform_search_mysql_ft($search)
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -797,6 +815,7 @@ function perform_search_mysql_ft($search)
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
 			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
 		{
@@ -819,6 +838,7 @@ function perform_search_mysql_ft($search)
 				SELECT p.pid
 				FROM ".TABLE_PREFIX."posts p
 				WHERE p.pid IN ($firstposts) AND p.visible>0
+				{$limitsql}
 			");
 			while($post = $db->fetch_array($query))
 			{

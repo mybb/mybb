@@ -17,6 +17,10 @@ require_once "./global.php";
 global $lang;
 $lang->load("adminlogs");
 
+if(is_super_admin($mybb->user['uid']))
+{
+	cperror($lang->cannot_perform_action_super_admin);
+}
 logadmin();
 
 addacpnav($lang->nav_admin_logs, "adminlogs.php?".SID);
@@ -242,5 +246,6 @@ else
 	makeinputcode($lang->entries_older, "days", 30, 4);
 	endtable();
 	endform($lang->prune_log, $lang->reset_button);
+	cpfooter();
 }
 ?>
