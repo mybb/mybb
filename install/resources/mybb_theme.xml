@@ -4964,6 +4964,7 @@ body {
 <tr>
 <td class="thead"><strong>{$mybb->settings['bbname']} - {$lang->agreement}</strong></td>
 </tr>
+{$coppa_agreement}
 <tr>
 <td class="trow1">
 <p>{$lang->agreement_1}</p>
@@ -5323,7 +5324,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="search_results_threads_thread" version="1400"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
-	<td class="{$bgcolor}">{$gotounread}{$prefix} <a href="showthread.php?tid={$thread['tid']}{$highlight}">{$thread['subject']}</a>{$thread['multipage']}</td>
+	<td class="{$bgcolor}">
+		{$attachment_count}
+		<div>
+			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}{$highlight}" class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
+			<div class="author smalltext">{$thread['profilelink']}</div>
+		</div>
+	</td>
 	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
@@ -8861,5 +8868,156 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
 ]]></template>
+	<template name="calendar_dayview_noevents" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="trow1">{$lang->no_events}</td>
+</tr>
+</table>]]></template>
+		<template name="member_register_coppa" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<br />
+<form action="member.php" method="post">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead"><strong>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</strong></td>
+</tr>
+<tr>
+<td class="trow1">
+{$lang->coppa_desc}
+<div style="width: 400px; margin: auto; margin-bottom: 15px;">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td colspan="3" class="thead"><strong>{$lang->date_of_birth}</strong></td>
+		</tr>
+		<tr>
+			<td class="trow1">
+				<table cellpadding="4" border="0" align="center">
+					<tr>
+						<td class="smalltext"><label for="day">{$lang->day}:</label></td>
+						<td class="smalltext"><label for="month">{$lang->month}:</label></td>
+						<td class="smalltext"><label for="year">{$lang->year}:</label></td>
+					</tr>
+					<tr>
+						<td>
+							<select name="bday1" id="day">
+								<option value="">&nbsp;</option>
+								{$bdaysel}
+							</select>
+						</td>
+						<td>
+							<select name="bday2" id="month">
+								<option value="">&nbsp;</option>
+								<option value="1" {$bdaymonthsel['1']}>{$lang->month_1}</option>
+								<option value="2" {$bdaymonthsel['2']}>{$lang->month_2}</option>
+								<option value="3" {$bdaymonthsel['3']}>{$lang->month_3}</option>
+								<option value="4" {$bdaymonthsel['4']}>{$lang->month_4}</option>
+								<option value="5" {$bdaymonthsel['5']}>{$lang->month_5}</option>
+								<option value="6" {$bdaymonthsel['6']}>{$lang->month_6}</option>
+								<option value="7" {$bdaymonthsel['7']}>{$lang->month_7}</option>
+								<option value="8" {$bdaymonthsel['8']}>{$lang->month_8}</option>
+								<option value="9" {$bdaymonthsel['9']}>{$lang->month_9}</option>
+								<option value="10" {$bdaymonthsel['10']}>{$lang->month_10}</option>
+								<option value="11" {$bdaymonthsel['11']}>{$lang->month_11}</option>
+								<option value="12" {$bdaymonthsel['12']}>{$lang->month_12}</option>
+							</select>
+						</td>
+						<td>
+							<input type="text" class="textbox" size="4" maxlength="4" name="bday3" id="year" value="{$mybb->input['bday3']}" />
+						</td>
+					</tr>
+				</table>
+				<div class="smalltext" style="text-align: center;">{$lang->hide_dob}</div>
+			</td>
+		</tr>
+	</table>
+</div>
+</td>
+</tr>
+</table>
+<br />
+<div align="center">
+<input type="hidden" name="action" value="register" />
+<input type="submit" class="button" name="agree" value="{$lang->continue_registration}" />
+</div>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="member_coppa_form" version="1400"><![CDATA[<html>
+<head>
+	<title>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</title>
+	<style type="text/css">
+		body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
+		.largetext, h1 { font-family: Verdana, Arial, sans-serif; font-size: medium; font-weight: bold; margin: 0; }
+		.grey { color: #ccc; }
+		dl { margin-left: 40px; }
+		dt { width: 150px; float: left; clear: left; font-weight: bold; }
+		dd { margin-bottom: 20px; margin-left: 150px; }
+		dd.single { margin-left: 0; }
+		input.textbox { border: 0; border-bottom: 1px solid #000; font-size: 16px; width: 350px; }
+		input.date { width: 80px; }
+	</style>
+</head>
+<body>
+	<div style="float: right; text-align: center; padding-bottom: 10px;" class="largetext">
+		{$mybb->settings['bbname']}<br /><span class="grey">{$lang->coppa_registration}</span>
+	</div>
+	<div style="padding-bottom: 10px;"><a href="index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" border="0" /></a></div>
+	<hr size="1" style="clear: both;" />
+
+	<p>{$lang->coppa_form_instructions}</p>
+
+	<dl>
+		<dt>{$lang->fax_number}</dt>
+		<dd>{$mybb->settings['faxno']}</dd>
+
+		<dt>{$lang->mailing_address}</dt>
+		<dd>{$mybb->settings['mailingaddress']}</dd>
+	</dl>
+
+	<h1 style="clear: both;" />{$lang->account_information}</h1>
+	<dl>
+		<dt><label for="username">{$lang->username}</label></dt>
+		<dd><input type="text" class="textbox" id="username" /></dd>
+	
+		<dt><label for="email">{$lang->email}</label></dt>
+		<dd><input type="text" class="textbox" id="email" /></dd>
+	</dl>
+	<h1 style="clear: both;" />{$lang->parent_details}</h1>
+	<dl>
+		<dt><label for="name">{$lang->full_name}</label></dt>
+		<dd><input type="text" class="textbox" id="name" /></dd>
+
+			<dt><label for="relation">{$lang->relation}</label></dt>
+		<dd><input type="text" class="textbox" id="relation" /></dd>
+
+		<dt><label for="phone">{$lang->phone_no}</label></dt>
+		<dd><input type="text" class="textbox" id="phone" /></dd>
+
+		<dt><label for="parent_email">{$lang->email}</label></dt>
+		<dd><input type="text" class="textbox" id="parent_email" /></dd>
+		
+		<dd class="single">{$lang->coppa_parent_agreement}</dd>
+
+		<dt><label for="signature">{$lang->signature}</label></dt>
+		<dd><input type="text" class="textbox" id="signature" /> Date: <input type="text" class="textbox date" id="date" /></dd>
+	</dl>
+</body>
+</html>]]></template>
+		<template name="member_register_agreement_coppa" version="1400"><![CDATA[<tr>
+	<td class="tcat"><strong>{$lang->coppa_compliance}</strong></td>
+</tr>
+<tr>
+	<td class="trow1">
+		<p>{$lang->coppa_agreement_1}</p>
+		<p>{$lang->coppa_agreement_2}</p>
+		<p>{$lang->coppa_agreement_3}</p>
+	</td>
+</tr>]]></template>
 	</templates>
 </theme>

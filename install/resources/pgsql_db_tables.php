@@ -24,6 +24,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   cpstyle varchar(50) NOT NULL default '',
   notes text NOT NULL default '',
   permissions text NOT NULL default '',
+  defaultviews text NOT NULL,
   PRIMARY KEY (uid)
 );";
 
@@ -42,7 +43,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	uid int NOT NULL default '0',
 	title varchar(100) NOT NULL default '',
 	type varchar(6) NOT NULL default '',
-	isdefault int(1) NOT NULL default '0',
+	visibility int(1) NOT NULL default '0',
 	fields text NOT NULL,
 	conditions text NOT NULL,
 	sortby varchar(20) NOT NULL default '',
@@ -865,6 +866,7 @@ $tables[] = "CREATE TABLE mybb_users (
   referrer int NOT NULL default '0',
   reputation bigint NOT NULL default '0',
   regip varchar(50) NOT NULL default '',
+  lastip varchar(50) NOT NULL default '',
   language varchar(50) NOT NULL default '',
   timeonline bigint NOT NULL default '0',
   showcodebuttons int NOT NULL default '1',
@@ -875,6 +877,7 @@ $tables[] = "CREATE TABLE mybb_users (
   moderationtime bigint NOT NULL default '0',
   suspendposting int NOT NULL default '0',
   suspensiontime bigint NOT NULL default '0',
+  coppauser int(1) NOT NULL default '0'
   PRIMARY KEY (uid)
 );";
 

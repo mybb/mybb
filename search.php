@@ -147,6 +147,8 @@ if($mybb->input['action'] == "results")
 		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
 	}
 
+	$fpermissions = forum_permissions();
+
 	// Show search results as 'threads'
 	if($search['resulttype'] == "threads")
 	{
@@ -307,12 +309,14 @@ if($mybb->input['action'] == "results")
 			if($thread['lastpost'] > $lastread && $lastread)
 			{
 				$folder .= "new";
+				$new_class = "subject_new";
 				$folder_label .= $lang->icon_new;
 				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 				$unreadpost = 1;
 			}
 			else
 			{
+				$new_class = '';
 				$folder_label .= $lang->icon_no_new;
 			}
 
@@ -390,12 +394,50 @@ if($mybb->input['action'] == "results")
 			{
 				$thread['forumlink'] = "";
 			}
+
+			// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
+			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0 && $fpermissions[$thread['fid']]['caneditposts'] == "yes") || is_moderator($fid, "caneditposts"))
+			{
+				$inline_edit_class = "subject_editable";
+			}
+			else
+			{
+				$inline_edit_class = "";
+			}
+			$load_inline_edit_js = 1;
+
+			// If this thread has 1 or more attachments show the papperclip
+			if($thread['attachmentcount'] > 0)
+			{
+				if($thread['attachmentcount'] > 1)
+				{
+					$attachment_count = sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
+				}
+				else
+				{
+					$attachment_count = $lang->attachment_count;
+				}
+
+				eval("\$attachment_count = \"".$templates->get("forumdisplay_thread_attachment_count")."\";");
+			}
+			else
+			{
+				$attachment_count = '';
+			}
+
 			$plugins->run_hooks("search_results_thread");
 			eval("\$results .= \"".$templates->get("search_results_threads_thread")."\";");
 		}
 		if(!$results)
 		{
 			error($lang->error_nosearchresults);
+		}
+		else
+		{
+			if($load_inline_edit_js == 1)
+			{
+				eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
+			}
 		}
 		$multipage = multipage($threadcount, $perpage, $page, "search.php?action=results&amp;sid=$sid&amp;sortby=$sortby&amp;order=$order&amp;uid=".$mybb->input['uid']);
 		if($upper > $threadcount)

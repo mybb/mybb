@@ -52,7 +52,7 @@ function validate_password_from_username($username, $password)
 {
 	global $db;
 	
-	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,remember", "username='".$db->escape_string($username)."'", array('limit' => 1));
+	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,remember,coppauser", "username='".$db->escape_string($username)."'", array('limit' => 1));
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{

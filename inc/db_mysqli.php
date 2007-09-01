@@ -128,7 +128,15 @@ class DB_MySQLi
 	 */
 	function connect($hostname="localhost", $username="root", $password="", $pconnect=0, $newlink=false)
 	{
-		$this->link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to database server");
+		list($hostname, $port) = explode(":", $hostname, 2);
+		if($port)
+		{
+			$this->link = @mysqli_connect($hostname, $username, $password, "", $port) or $this->error("Unable to connect to database server");
+		}
+		else
+		{
+			$this->link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to database server");
+		}
 		$this->current_link = &$this->link;
 
 		// Set the DB encoding accordingly
@@ -150,7 +158,15 @@ class DB_MySQLi
 	 */
 	function slave_connect($hostname="localhost", $username="root", $password="", $pconnect=0)
 	{
-		$this->slave_link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to slave database server");
+		list($hostname, $port) = explode(":", $hostname, 2);
+		if($port)
+		{
+			$this->slave_link = @mysqli_connect($hostname, $username, $password, "", $port) or $this->error("Unable to connect to slave database server");
+		}
+		else
+		{
+			$this->slave_link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to slave database server");
+		}
 		$this->current_link = &$this->slave_link;
 		return $this->slave_link;
 	}

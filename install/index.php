@@ -1021,6 +1021,48 @@ function create_admin_user()
 
 		echo sprintf($lang->admin_step_insertedtasks, $taskcount);
 
+		$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
+		$parser = new XMLParser($views);
+		$parser->collapse_dups = 0;
+		$tree = $parser->get_tree();
+
+		// Insert admin views
+		foreach($tree['adminviews'][0]['view'] as $view)
+		{
+			$fields = array();
+			foreach($view['fields'][0]['field'] as $field)
+			{
+				$fields[] = $field['attributes']['name'];
+			}
+			$conditions = array();
+			foreach($view['conditions'][0]['condition'] as $condition)
+			{
+				if(!$condition['value']) continue;
+				if($condition['attributes']['is_serialized'] == 1)
+				{
+					$condition['value'] = unserialize($condition['value']);
+				}
+				$conditions[$condition['attributes']['name']] = $condition['value'];
+			}
+
+			$new_view = array(
+				"uid" => 0,
+				"type" => $db->escape_string($view['attributes']['type']),
+				"visibility" => intval($view['attributes']['visibility']),
+				"title" => $db->escape_string($view['title'][0]['value']),
+				"fields" => $db->escape_string(serialize($fields)),
+				"conditions" => $db->escape_string(serialize($conditions)),
+				"sortby" => $db->escape_string($view['sortby'][0]['value']),
+				"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
+				"perpage" => intval($view['perpage'][0]['value']),
+				"view_type" => $db->escape_string($view['view_type'][0]['value'])
+			);
+			$db->insert_query("adminviews", $new_view);
+			$view_count++;
+		}
+
+		echo sprintf($lang->admin_step_insertedviews, $view_count);
+
 		echo $lang->admin_step_createadmin;
 	}
 
@@ -1166,12 +1208,19 @@ function install_done()
 				$insertmodule[$module['attributes']['name']][$permission['attributes']['name']] = $permission['value'];
 			}
 		}
+
+		$defaultviews = array();
+		foreach($users['defaultviews'][0]['view'] as $view)
+		{
+			$defaultviews[$view['attributes']['type']] = $view['value'];
+		}
 		
 		$adminoptiondata = array(
 			'uid' => intval($uid),
 			'cpstyle' => '',
 			'notes' => '',
 			'permissions' => $db->escape_string(serialize($insertmodule)),
+			'defaultviews' => $db->escape_string(serialize($defaultviews))
 		);
 
 		$insertmodule = array();

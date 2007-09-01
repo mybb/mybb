@@ -85,7 +85,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$mybb->input['password2'] = $mybb->input['password'];
 	}
 
-	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin")
+	if($mybb->settings['regtype'] == "verify" || $mybb->settings['regtype'] == "admin" || $mybb->input['coppa'] == 1)
 	{
 		$usergroup = 5;
 	}
@@ -110,14 +110,20 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"timezone" => $mybb->input['timezoneoffset'],
 		"language" => $mybb->input['language'],
 		"profile_fields" => $mybb->input['profile_fields'],
-		"regip" => $session->ipaddress
+		"regip" => $session->ipaddress,
+		"coppa_user" => intval($_COOKIE['coppauser'])
 	);
 
-	$user['birthday'] = array(
-		"day" => $mybb->input['bday1'],
-		"month" => $mybb->input['bday2'],
-		"year" => $mybb->input['bday3']
-	);
+	// Do we have a saved COPPA DOB?
+	if($_COOKIE['coppadob'])
+	{
+		list($dob_day, $dob_month, $dob_year) = explode("-", $_COOKIE['coppadob']);
+		$user['birthday'] = array(
+			"day" => $dob_day,
+			"month" => $dob_month,
+			"year" => $dob_year
+		);
+	}
 
 	$user['options'] = array(
 		"allownotices" => $mybb->input['allownotices'],
@@ -223,12 +229,20 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$user_info = $userhandler->insert_user();
 
-		if($mybb->settings['regtype'] != "randompass")
+		if($mybb->settings['regtype'] != "randompass" && !$_COOKIE['coppauser'])
 		{
 			// Log them in
 			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true);
 		}
 
+		if($_COOKIE['coppauser'])
+		{
+			$lang->redirect_registered_coppa_activate = sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], $user_info['username']);
+			my_unsetcookie("coppauser");
+			my_unsetcookie("coppadob");
+			$plugins->run_hooks("member_do_register_end");
+			error($lang->redirect_registered_coppa_activate);
+		}
 		if($mybb->settings['regtype'] == "verify")
 		{
 			$activationcode = random_str();
@@ -279,10 +293,78 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 }
 
+if($mybb->input['action'] == "coppa_form")
+{
+	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
+	output_page($coppa_form);
+}
+
 if($mybb->input['action'] == "register")
 {
+	$bdaysel = '';
+	if($mybb->settings['coppa'] == "disabled")
+	{
+		$bdaysel = $bday2blank = "<option value=\"\">&nbsp;</option>";
+	}
+	for($i = 1; $i <= 31; ++$i)
+	{
+		if($mybb->input['bday1'] == $i)
+		{
+			$bdaysel .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$bdaysel .= "<option value=\"$i\">$i</option>\n";
+		}
+	}
+
+	$bdaymonthsel[$mybb->input['bday2']] = "selected=\"selected\"";
+	$mybb->input['bday3'] = intval($mybb->input['bday3']);
+
+	if($mybb->input['bday3'] == 0) $mybb->input['bday3'] = "";
+
+	// Is COPPA checking enabled?
+	if($mybb->settings['coppa'] != "disabled" && !$_COOKIE['coppadob'])
+	{
+		// Just selected DOB, we check
+		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
+		{
+			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
+			
+			// Store DOB in cookie so we can save it with the registration
+			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", 0);
+
+			// User is <= 13, we mark as a coppa user
+			if($bdaytime >= mktime(0, 0, 0, my_date('m'), my_date('d'), my_date('y')-13))
+			{
+				my_setcookie("coppauser", 1, 0);
+			}
+			$mybb->request_method = "";
+		}
+		// Show DOB select form
+		else
+		{
+			$plugins->run_hooks("member_register_coppa");
+			
+			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
+			output_page($coppa);
+			exit;
+		}
+	}
+
 	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
 	{
+		// Is this user a COPPA user? We need to show the COPPA agreement too
+		if($mybb->setings['coppa'] != "disabled" && $_COOKIE['coppauser'] == 1)
+		{
+			if($mybb->settings['coppa'] == "deny")
+			{
+				error($lang->error_need_to_be_thirteen);
+			}
+			$lang->coppa_agreement_1 = sprintf($lang->coppa_agreement_1, $mybb->settings['bbname']);
+			eval("\$coppa_agreement = \"".$templates->get("member_register_agreement_coppa")."\";");
+		}
+
 		$plugins->run_hooks("member_register_agreement");
 
 		eval("\$agreement = \"".$templates->get("member_register_agreement")."\";");
@@ -293,12 +375,6 @@ if($mybb->input['action'] == "register")
 		$plugins->run_hooks("member_register_start");
 		
 		$validator_extra = '';
-
-		$bdaysel = '';
-		for($i = 1; $i <= 31; ++$i)
-		{
-			$bdaysel .= "<option value=\"$i\">$i</option>\n";
-		}
 
 		if(isset($mybb->input['timezoneoffset']))
 		{
@@ -870,7 +946,7 @@ if($mybb->input['action'] == "login")
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
-	if($mybb->input['url'] && !preg_match("/^(member\.php)?([^\?action=login]+)/i", $mybb->input['url']))
+	if($mybb->input['url'] && !preg_match("/action=login/i", $mybb->input['url']))
 	{
 		$redirect_url = htmlentities($mybb->input['url']);
 	}
@@ -914,6 +990,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		error($lang->error_invalidpassword.$login_text);
 	}
 
+	if($user['coppauser'])
+	{
+		error($lang->error_awaitingcoppa);
+	}
+
 	my_setcookie('loginattempts', 1);
 	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 	$newsession = array(
@@ -927,11 +1008,6 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
 	my_setcookie("sid", $session->sid, -1, true);
-
-	if(function_exists("loggedIn"))
-	{
-		loggedIn($user['uid']);
-	}
 
 	$plugins->run_hooks("member_do_login_end");
 

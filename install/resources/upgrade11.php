@@ -76,7 +76,14 @@ function upgrade11_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers char(3) NOT NULL default '' AFTER cancustomtitle");
 	
-	if($db->field_exists('canreceivewarnings', "usergroups"))
+	if($db->field_exists('lastip', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP lastip;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD lastip varchar(11) NOT NULL default '' AFTER regip");
+
+
+	if($db->field_exists('canrecievewarnings', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canreceivewarnings;");
 	}
@@ -644,7 +651,7 @@ function upgrade11_dbchanges4()
 		
 		$new_permissions = array();	
 	}
-	
+
 	foreach($convert_permissions as $field => $value)
 	{
 		if($db->field_exists($field, "adminoptions"))
@@ -653,6 +660,14 @@ function upgrade11_dbchanges4()
 		}
 	}
 	
+	// Set default views
+	if($db->field_exists('defaultviews', "adminoptions"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP defaultviews");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD defaultviews TEXT NOT NULL");
+	$db->update_query("adminoptions", array('defaultviews' => serialize(array('user' => 1)));
+
 	require_once MYBB_ROOT."inc/functions_rebuild.php";
 	rebuild_stats();
 
@@ -740,7 +755,6 @@ function upgrade11_dbchanges5()
 		uid int unsigned NOT NULL default '0',
 		title varchar(100) NOT NULL default '',
 		type varchar(6) NOT NULL default '',
-		isdefault int(1) NOT NULL default '0',
 		fields text NOT NULL,
 		conditions text NOT NULL,
 		sortby varchar(20) NOT NULL default '',
@@ -750,8 +764,45 @@ function upgrade11_dbchanges5()
 		PRIMARY KEY(vid)
 	) TYPE=MyISAM{$collation};");
 
-	// Insert default admin views from XML here
+	$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
+	$parser = new XMLParser($views);
+	$parser->collapse_dups = 0;
+	$tree = $parser->get_tree();
 
+	// Insert admin views
+	foreach($tree['adminviews'][0]['view'] as $view)
+	{
+		$fields = array();
+		foreach($view['fields'][0]['field'] as $field)
+		{
+			$fields[] = $field['attributes']['name'];
+		}
+		$conditions = array();
+		foreach($view['conditions'][0]['condition'] as $condition)
+		{
+			if(!$condition['value']) continue;
+			if($condition['attributes']['is_serialized'] == 1)
+			{
+				$condition['value'] = unserialize($condition['value']);
+			}
+			$conditions[$condition['attributes']['name']] = $condition['value'];
+		}
+
+		$new_view = array(
+			"uid" => 0,
+			"type" => $db->escape_string($view['attributes']['type']),
+			"visibility" => intval($view['attributes']['visibility']),
+			"title" => $db->escape_string($view['title'][0]['value']),
+			"fields" => $db->escape_string(serialize($fields)),
+			"conditions" => $db->escape_string(serialize($conditions)),
+			"sortby" => $db->escape_string($view['sortby'][0]['value']),
+			"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
+			"perpage" => intval($view['perpage'][0]['value']),
+			"view_type" => $db->escape_string($view['view_type'][0]['value'])
+		);
+		$db->insert_query("adminviews", $new_view);
+		$view_count++;
+	}
 
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

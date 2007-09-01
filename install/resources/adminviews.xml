@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adminviews version="1400" exported="1188690537">
+	<view vid="1" uid="0" type="user" visibility="2">
+		<title><![CDATA[All Users]]></title>
+		<fields>
+			<field name="avatar" />
+			<field name="username" />
+			<field name="email" />
+			<field name="regdate" />
+			<field name="lastactive" />
+			<field name="postnum" />
+			<field name="controls" />
+		</fields>
+		<sortby><![CDATA[username]]></sortby>
+		<sortorder><![CDATA[asc]]></sortorder>
+		<perpage><![CDATA[20]]></perpage>
+		<view_type><![CDATA[card]]></view_type>
+	</view>
+</adminviews>

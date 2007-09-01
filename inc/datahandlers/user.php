@@ -314,6 +314,8 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_birthday()
 	{
+		global $mybb;
+
 		$user = &$this->data;
 		$birthday = &$user['birthday'];
 
@@ -875,7 +877,8 @@ class UserDataHandler extends DataHandler
 			"moderateposts" => 0,
 			"moderationtime" => 0,
 			"suspendposting" => 0,
-			"suspensiontime" => 0
+			"suspensiontime" => 0,
+			"coppauser" => intval($user['coppa_user'])
 		);
 
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
@@ -1057,7 +1060,10 @@ class UserDataHandler extends DataHandler
 				$this->user_update_data[$option] = $value;
 			}
 		}
-
+		if(array_key_exists('coppa_user', $user))
+		{
+			$this->user_update_data['coppauser'] = intval($user['coppa_user']);
+		}
 		// First, grab the old user details for later use.
 		$old_user = get_user($user['uid']);
 

@@ -165,11 +165,16 @@ class session
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
+		if($mybb->user['lastip'] != $this->ipaddress)
+		{
+			$lastip_add .= ", lastip='".$db->escape_string($this->ipaddress)."'";
+		}
+
 		// If the last visit was over 900 seconds (session time out) ago then update lastvisit.
 		$time = TIME_NOW;
 		if($time - $mybb->user['lastactive'] > 900)
 		{
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' WHERE uid='{$mybb->user['uid']}' LIMIT 1");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastvisit='{$mybb->user['lastactive']}', lastactive='$time' {$lastip_add} WHERE uid='{$mybb->user['uid']}'");
 			$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			require_once MYBB_ROOT."inc/functions_user.php";
 			update_pm_count('', 2);
@@ -177,7 +182,7 @@ class session
 		else
 		{
 			$timespent = TIME_NOW - $mybb->user['lastactive'];
-			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent WHERE uid='{$mybb->user['uid']}' LIMIT 1");
+			$db->shutdown_query("UPDATE ".TABLE_PREFIX."users SET lastactive='$time', timeonline=timeonline+$timespent {$lastip_add} WHERE uid='{$mybb->user['uid']}'");
 		}
 
 		// Sort out the language and forum preferences.

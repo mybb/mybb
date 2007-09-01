@@ -40,6 +40,7 @@ function admin_redirect($url)
 {
 	if(!headers_sent())
 	{
+		$url = str_replace("&amp;", "&", $url);
 		header("Location: $url");
 	}
 	else

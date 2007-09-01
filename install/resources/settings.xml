@@ -418,6 +418,22 @@ email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="mailingaddress">
+			<title>Maling Adress</title>
+			<description><![CDATA[If you have a mailing, enter it here. This is shown on the COPPA compliance form.]]></description>
+			<disporder>17</disporder>
+			<optionscode><![CDATA[textarea]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="faxno">
+			<title>Contact Fax No</title>
+			<description><![CDATA[If you have a fax number, enter it here. This is shown on the COPPA compliance form.]]></description>
+			<disporder>19</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="22" isdefault="yes">
 		<setting name="mail_handler">
@@ -704,6 +720,17 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>27</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="coppa">
+			<title>COPPA Compliance</title>
+			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
+			<disporder>28</disporder>
+			<optionscode><![CDATA[select
+enabled=Enabled
+deny=Deny users under the age of 13
+disabled=Disable this feature]]></optionscode>
+			<settingvalue><![CDATA[auto]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>

@@ -295,7 +295,7 @@ if($mybb->input['action'] == "profile")
 	$bdaymonthsel[$bday[1]] = "selected";
 	
 	$bdayprivacysel = '';
-	if($user['birthdayprivacy'] == 'all')
+	if($user['birthdayprivacy'] == 'all' || !$user['birthdayprivacy'])
 	{
 		$bdayprivacysel .= "<option value=\"all\" selected=\"selected\">{$lang->birthdayprivacyall}</option>\n";
 		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";

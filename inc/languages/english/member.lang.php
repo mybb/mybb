@@ -100,6 +100,33 @@ $l['dst_correction'] = "Daylight Savings Time correction:";
 $l['dst_correction_auto'] = "Automatically detect DST settings";
 $l['dst_correction_enabled'] = "Always use DST correction";
 $l['dst_correction_disabled'] = "Never use DST correction";
+$l['redirect_registered_coppa_activate'] = "Thank you for registering on {1}, {2}. Your account has successfully been created, however, as the owner of this account is under the age of 13, parental permission needs to be sought before this account can be used.<br /><br />A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\">COPPA Compliance &amp; Permission form</a>.<br /><br />Once we receive a completed copy of this form, the account will be activated.";
+$l['coppa_compliance'] = "COPPA Compliance";
+$l['coppa_desc'] = "In order to register on these forums, we require you to verify your age to comply with <a href=\"http://coppa.org/\" title=\"Children's Online Privacy Protection Act\">COPPA</a>. Please enter your date of birth below.<br /><br />If you are under the age of 13, parental permission must be obtained prior to registration. A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\">COPPA Compliance &amp; Permission form</a>.";
+$l['hide_dob'] = "You can chose to hide your date of birth and age by editing your profile after registering.";
+$l['continue_registration'] = "Continue with Registration";
+$l['date_of_birth'] = "Date of Birth:";
+$l['birthdayprivacy'] = "Date of Birth Privacy:";
+$l['birthdayprivacyall'] = "Display Age and Date of Birth";
+$l['birthdayprivacynone'] = "Hide Age and Date of Birth";
+$l['birthdayprivacyage'] = "Display Only Age";
+$l['error_need_to_be_thirteen'] = "You need to be of thirteen years or older to register on this forum.";
+$l['coppa_registration'] = "COPPA Registration Form";
+$l['coppa_form_instructions'] = "Please print this form, fill it in and either fax it to the number below or mail it to the provided mailing address.";
+$l['fax_number'] = "Fax Number:";
+$l['mailing_address'] = "Mailing Address:";
+$l['account_information'] = "Account Information";
+$l['parent_details'] = "Parent / Guardian Details";
+$l['full_name'] = "Full Name:";
+$l['relation'] = "Relation:";
+$l['phone_no'] = "Phone #:";
+$l['coppa_parent_agreement'] = "I understand that the information i have provided is truthful, that any information may be changed in the future by entering the supplied password and this user account can be removed by request.";
+
+$l['coppa_agreement_1'] = "Users under the age of 13 must receive permission from their parent or legal guardian in order to register on {1}.";
+$l['coppa_agreement_2'] = "A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\">COPPA Compliance &amp; Permission form</a> before membership will be granted.";
+$l['coppa_agreement_3'] = "If you'd like to, you can begin the registration process now, however the account will be inaccessible until the above compliance form is received.";
+
+$l['error_awaitingcoppa'] = "You cannot login using this account as it is still awaiting COPPA validation from a parent or guardian.<br /><br />A parent or legal guardian will need to download, fill in and submit to us a completed copy of our <a href=\"member.php?action=coppa_form\">COPPA Compliance &amp; Permission form</a>.<br /><br />Once we receive a completed copy of this form, the account will be activated.";
 
 $l['lang_select'] = "Language Settings:";
 $l['lang_select_desc'] = "If you live in a country that speaks a language other than the forums default, you may be able to select an installed, read-able language pack below.";
