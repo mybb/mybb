@@ -71,6 +71,7 @@ class MyLanguage
 	function set_language($language="english", $area="user")
 	{
 		global $mybb;
+		
 		$language = str_replace(array("/", "\\", ".."), '', trim($language));
 
 		// Default language is English.
@@ -90,7 +91,7 @@ class MyLanguage
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
-		if($area == "admin" || $area == "admincp")
+		if($area == $mybb->config['admin_dir'] || $area == "admincp") // temporary: "|| $area == "admincp""
 		{
 			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
@@ -123,12 +124,14 @@ class MyLanguage
 	 */
 	function load($section, $isdatahandler=false, $supress_error=false)
 	{
+		global $config;
+		
 		// Assign language variables.
 		// Datahandlers are never in admin lang directory.
 		if($isdatahandler === true)
 		{
-			$this->language = str_replace('/admincp', '', $this->language);
-			$this->language = str_replace('/admin', '', $this->language);
+			$this->language = str_replace('/admincp', '', $this->language); // temporary
+			$this->language = str_replace('/'.$config['admin_dir'], '', $this->language);
 			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		}
 		else
@@ -146,6 +149,7 @@ class MyLanguage
 				die("$lfile does not exist");
 			}
 		}
+		
 		if(is_array($l))
 		{
 			foreach($l as $key => $val)
