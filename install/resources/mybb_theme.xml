@@ -5370,6 +5370,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			</tr>
 			{$results}
 		</table>
+		{$inline_edit_js}
 		<table width="100%" align="center" border="0">
 			<tr>
 				<td align="right" valign="top">{$multipage}</td>
@@ -8859,7 +8860,7 @@ To: {$to_recipients}
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.gif" alt="" style="vertical-align: middle;" /> {$lang->select_from_buddies}</a></span>');
 // --></script>]]></template>
 	<template name="forumdisplay_announcements_announcement_modbit" version="128"><![CDATA[<td align="center" class="{$bgcolor}">-</td>]]></template>
-	<template name="calendar_dayview_noevents" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<template name="calendar_dayview_noevents" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1">{$lang->no_events}</td>
 </tr>
