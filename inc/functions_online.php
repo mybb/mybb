@@ -374,7 +374,7 @@ function fetch_wol_activity($location)
 function build_friendly_wol_location($user_activity, $return=false)
 {
 	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb;
-	static $threads, $forums, $forums_linkto, $posts, $events, $users;
+	static $threads, $forums, $forums_linkto, $posts, $events, $users, $attachments;
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
@@ -472,12 +472,11 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		// attachment.php actions
 		case "attachment":
-			$aid = $posts[$user_activity['aid']];
-			$pid = $attachments[$aid];
+			$pid = $attachments[$user_activity['aid']];
 			$tid = $posts[$pid];
 			if($threads[$tid])
 			{
-				$location_name = sprintf($lang->viewing_attachment2, $tid, $threads[$tid]);
+				$location_name = sprintf($lang->viewing_attachment2, $user_activity['aid'], $threads[$tid]);
 			}
 			else
 			{
@@ -735,6 +734,9 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		case "usercp_notepad":
 			$location_name = $lang->editing_pad;
+			break;
+		case "usercp_password":
+			$location_name = $lang->editing_password;
 			break;
 		case "usercp":
 			$location_name = $lang->user_cp;

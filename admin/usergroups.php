@@ -79,7 +79,7 @@ if($mybb->input['action'] == "export")
 		$gidwhere = "WHERE gid='".intval($mybb->input['gid'])."'";
 	}
 	$plugins->run_hooks("admin_usergroups_export");
-	$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n";
+	$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\n";
 	$xml = "<usergroups version=\"".$mybb->version_code."\" exported=\"".time()."\">\n";
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups $gidwhere ORDER BY gid ASC");
 	while($usergroup = $db->fetch_array($query))

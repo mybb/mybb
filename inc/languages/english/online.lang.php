@@ -13,7 +13,7 @@ $l['nav_iplookup'] = "IP Address Lookup";
 $l['viewing_announcements'] = "Viewing <a href=\"forumdisplay.php?fid={1}\">{2}</a> Announcements";
 $l['viewing_announcements2'] = "Viewing Forum Announcements";
 $l['viewing_attachment'] = "Viewing Attachment";
-$l['viewing_attachment2'] = "Viewing Attachment in Thread <a href=\"showthread.php?tid={1}\">{2}</a>";
+$l['viewing_attachment2'] = "Viewing Attachment in Thread <a href=\"attachment.php?aid={1}\">{2}</a>";
 $l['viewing_calendar'] = "Viewing <a href=\"calendar.php\">Calendar</a>";
 $l['viewing_event'] = "Viewing Event";
 $l['viewing_event2'] = "Viewing Event <a href=\"calendar.php?action=event&amp;eid={1}\">{2}</a>";
@@ -69,6 +69,7 @@ $l['changing_avatar'] = "<a href=\"usercp.php?action=avatar\">Changing Avatar</a
 $l['viewing_subscriptions'] = "Viewing <a href=\"usercp.php?action=subscriptions\">Thread Subscriptions</a>";
 $l['viewing_favorites'] = "Viewing <a href=\"usercp.php?action=favorites\">Favorite Threads</a>";
 $l['editing_pad'] = "Editing <a href=\"usercp.php?action=notepad\">Personal Pad</a>";
+$l['editing_password'] = "Editing <a href=\"usercp.php?action=password\">Password</a>";
 $l['user_cp'] = "Viewing <a href=\"usercp.php\">User Control Panel</a>";
 $l['viewing_portal'] = "Viewing <a href=\"portal.php\">Portal</a> Page";
 $l['viewing_noperms'] = "Viewing No Permissions Page";

@@ -41,13 +41,6 @@ if($mybb->usergroup['cansearch'] == "no")
 
 $now = TIME_NOW;
 
-// Clear out searches older than a month
-if($rand == 3)
-{
-	$timecut = TIME_NOW-60*60*24*30;
-	$db->delete_query("searchlog", "dateline<='$timecut'");
-}
-
 if($mybb->input['action'] == "results")
 {
 	$sid = $db->escape_string($mybb->input['sid']);

@@ -456,7 +456,7 @@ function perform_search_mysql($search)
 					case "sqlite3":
 					case "sqlite2":
 						$query = $db->query("
-							SELECT f.fid 
+							SELECT DISTINCT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."')
 							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
@@ -464,29 +464,29 @@ function perform_search_mysql($search)
 						break;
 					default:
 						$query = $db->query("
-							SELECT f.fid 
+							SELECT DISTINCT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."')
 							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
 						");
 				}
-				
-				if($db->num_rows($query) == 1)
+				while($sforum = $db->fetch_array($query))
 				{
-					$forumin .= " AND t.fid='$forum' ";
-					$searchin[$fid] = 1;
+					$fidlist[] = $sforum['fid'];
 				}
-				else
-				{
-					while($sforum = $db->fetch_array($query))
-					{
-						$fidlist[] = $sforum['fid'];
-					}
-					if(count($fidlist) > 1)
-					{
-						$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
-					}
-				}
+			}
+		}
+		if(count($fidlist) == 1)
+		{
+			$forumin .= " AND t.fid='$forum' ";
+			$searchin[$fid] = 1;
+		}
+		else
+		{
+			
+			if(count($fidlist) > 1)
+			{
+				$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
 			}
 		}
 	}
@@ -775,22 +775,23 @@ function perform_search_mysql_ft($search)
 							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
 						");
 				}
-				if($db->num_rows($query) == 1)
+				while($sforum = $db->fetch_array($query))
 				{
-					$forumin .= " AND t.fid='$forum' ";
-					$searchin[$fid] = 1;
+					$fidlist[] = $sforum['fid'];
 				}
-				else
-				{
-					while($sforum = $db->fetch_array($query))
-					{
-						$fidlist[] = $sforum['fid'];
-					}
-					if(count($fidlist) > 1)
-					{
-						$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
-					}
-				}
+			}
+		}
+		if(count($fidlist) == 1)
+		{
+			$forumin .= " AND t.fid='$forum' ";
+			$searchin[$fid] = 1;
+		}
+		else
+		{
+			
+			if(count($fidlist) > 1)
+			{
+				$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
 			}
 		}
 	}
