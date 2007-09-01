@@ -358,6 +358,10 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 	$headers .= "X-Priority: 3\n";
 	$headers .= "X-MSMail-Priority: Normal\n";
 	$headers .= "X-Mailer: MyBB\n";
+	if(defined("IN_ADMINCP"))
+	{
+		$_SERVER['PHP_SELF'] = str_replace($mybb->config['admin_dir']."/", "admin-", $_SERVER['PHP_SELF']);
+	}
 	$headers .= "X-MyBB-Script: {$http_host}{$_SERVER['PHP_SELF']}\n";
 
 	// For some reason sendmail/qmail doesn't like \r\n

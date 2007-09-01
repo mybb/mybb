@@ -354,6 +354,9 @@ $navbits = array();
 $navbits[0]['name'] = $mybb->settings['bbname'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
+// Set the link to the archive.
+$archive_url = $mybb->settings['bburl']."/archive/index.php";
+
 // Check banned ip addresses
 if(is_banned_ip($session->ipaddress))
 {
@@ -459,9 +462,6 @@ if($rand > 4 && $rand < 8)
 	$db->delete_query(TABLE_PREFIX."sessions", "uid=0 AND time<='$timecut'");
 }
 
-
-// Set the link to the archive.
-$archive_url = $mybb->settings['bburl']."/archive/index.php";
 
 // Run hooks for end of global.php
 $plugins->run_hooks("global_end");
