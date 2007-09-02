@@ -1229,7 +1229,7 @@ function getadminpermissions($get_uid="", $get_gid="")
 function logadmin()
 {
 	global $mybbadmin, $db, $mybb;
-	$scriptname = basename($_SERVER['PHP_SELF']);
+	$scriptname = basename($_SERVER['SCRIPT_NAME']);
 	$qstring = explode("&", $_SERVER['QUERY_STRING']);
 	$sep = '';
 	foreach($qstring as $key => $value)
