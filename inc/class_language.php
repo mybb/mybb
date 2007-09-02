@@ -91,7 +91,7 @@ class MyLanguage
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
-		if($area == $mybb->config['admin_dir'] || $area == "admincp") // temporary: "|| $area == "admincp""
+		if($area == "admin" || $area == "admincp") // temporary: "|| $area == "admincp""
 		{
 			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
@@ -130,8 +130,8 @@ class MyLanguage
 		// Datahandlers are never in admin lang directory.
 		if($isdatahandler === true)
 		{
-			$this->language = str_replace('/admincp', '', $this->language); // temporary
-			$this->language = str_replace('/'.$config['admin_dir'], '', $this->language);
+			$this->language = str_replace('/admincp', '', $this->language); // Remove before 1.4 is released
+			$this->language = str_replace('/admin', '', $this->language);
 			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		}
 		else
