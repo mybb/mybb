@@ -666,7 +666,7 @@ function upgrade11_dbchanges4()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP defaultviews");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD defaultviews TEXT NOT NULL");
-	$db->update_query("adminoptions", array('defaultviews' => serialize(array('user' => 1)));
+	$db->update_query("adminoptions", array('defaultviews' => serialize(array('user' => 1))));
 
 	require_once MYBB_ROOT."inc/functions_rebuild.php";
 	rebuild_stats();
