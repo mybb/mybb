@@ -332,12 +332,13 @@ if($mybb->input['action'] == "register")
 			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
 			
 			// Store DOB in cookie so we can save it with the registration
-			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", 0);
+			my_setcookie("coppadob", "{$mybb->input['bday1']}-{$mybb->input['bday2']}-{$mybb->input['bday3']}", -1);
 
 			// User is <= 13, we mark as a coppa user
 			if($bdaytime >= mktime(0, 0, 0, my_date('n'), my_date('d'), my_date('Y')-13))
 			{
-				my_setcookie("coppauser", 1, 0);
+				my_setcookie("coppauser", 1, -0);
+				$under_thirteen = true;
 			}
 			$mybb->request_method = "";
 		}
@@ -355,7 +356,7 @@ if($mybb->input['action'] == "register")
 	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
 	{
 		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->setings['coppa'] != "disabled" && $_COOKIE['coppauser'] == 1)
+		if($mybb->setings['coppa'] != "disabled" && ($_COOKIE['coppauser'] == 1 || $under_thirteen))
 		{
 			if($mybb->settings['coppa'] == "deny")
 			{
