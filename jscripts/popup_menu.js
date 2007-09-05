@@ -39,20 +39,14 @@ PopupMenu.prototype = {
 			this.closeMenu();
 		}
 
-		offsetTop = offsetLeft = 0;
-		var element = $(this.id);
+		var offset = Position.positionedOffset($(this.id));
+		alert(offset);
 		var width = Event.element(e).offsetWidth;
-		do
-		{
-			offsetTop += element.offsetTop || 0;
-			offsetLeft += element.offsetLeft || 0;
-			element = element.offsetParent;
-		} while(element);
 
 		element = $(this.id);
 		this.menu.style.position = "absolute";
 		this.menu.style.zIndex = 100;
-		this.menu.style.top = (offsetTop+element.offsetHeight-1)+"px";
+		this.menu.style.top = (offset[1]+element.offsetHeight-1)+"px";
 
 		// Bad browser detection - yes, only choice - yes.
 		if(MyBB.browser == "opera" || MyBB.browser == "safari")
@@ -60,7 +54,7 @@ PopupMenu.prototype = {
 			this.menu.style.top = (parseInt(this.menu.style.top)-2)+"px";
 		}
 
-		this.menu.style.left = offsetLeft+"px";
+		this.menu.style.left = offset[0]+"px";
 		this.menu.style.visibility = 'hidden';
 		this.menu.show();
 
@@ -74,9 +68,9 @@ PopupMenu.prototype = {
 		}
 
 		pageSize = DomLib.getPageSize();
-		if(offsetLeft+menuWidth >= pageSize[0])
+		if(offset[0]+menuWidth >= pageSize[0])
 		{
-			this.menu.style.left = (offsetLeft+width-menuWidth)+"px";
+			this.menu.style.left = (offset[0]+width-menuWidth)+"px";
 			if(MyBB.browser == "ie")
 			{
 				this.menu.style.left = (parseInt(this.menu.style.left)-2)+"px";

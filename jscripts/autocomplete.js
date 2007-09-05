@@ -308,26 +308,17 @@ autoComplete.prototype = {
 		}
 
 		this.popup.style.width = this.textbox.offsetWidth-2+"px";
-		element = this.textbox;
-		offsetTop = offsetLeft = 0;
-
-		do
-		{
-			offsetTop += element.offsetTop || 0;
-			offsetLeft += element.offsetLeft || 0;
-			element = element.offsetParent;
-		} while(element);
-
+		var offset = Position.positionedOffset($(this.textbox));
 		this.popup.style.marginTop = "-1px";
 		if(MyBB.browser == "ie")
 		{
-			this.popup.style.left = offsetLeft+1+"px";
+			this.popup.style.left = offset[0]+1+"px";
 		}
 		else
 		{
-			this.popup.style.left = offsetLeft+"px";
+			this.popup.style.left = offset[0]+"px";
 		}
-		this.popup.style.top = offsetTop+this.textbox.offsetHeight+"px";
+		this.popup.style.top = offset[1]+this.textbox.offsetHeight+"px";
 
 		this.popup.scrollTop = 0;
 		Event.observe(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));

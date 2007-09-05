@@ -633,18 +633,9 @@ ActivityIndicator.prototype = {
 				owner = $(owner);
 			}
 
-			element = owner;
-			top = left = 0;
-
-			do
-			{
-				top += element.offsetTop || 0;
-				left += element.offsetLeft || 0;
-				element = element.offsetParent;
-			} while(element);
-
-			left += owner.offsetWidth;
-			top += owner.offsetHeight;
+			var offset = Position.positionedOffset(owner);
+			left = offset[0];
+			top = offset[1];
 		}
 
 		this.spinner = document.createElement("div");
