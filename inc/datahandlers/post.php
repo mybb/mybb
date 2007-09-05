@@ -688,7 +688,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 		
-		if($visible != -2)
+		if($visible == 1)
 		{
 			$now = TIME_NOW;
 			if($forum['usepostcounts'] != "no")
@@ -702,7 +702,7 @@ class PostDataHandler extends DataHandler
 			$db->write_query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
 		}
 		
-		if($this->method != "update" && $visible != -2)
+		if($this->method != "update" && $visible == 1)
 		{
 			$double_post = $this->verify_post_merge();
 
@@ -1166,103 +1166,106 @@ class PostDataHandler extends DataHandler
 					");
 				}
 			}
-			// If we have a registered user then update their post count and last post times.
-			if($thread['uid'] > 0)
+			if($visible == 1)
 			{
-				$user = get_user($thread['uid']);
-				$update_query = array();
-				// Only update the lastpost column of the user if the date of the thread is newer than their last post.
-				if($thread['dateline'] > $user['lastpost'])
+				// If we have a registered user then update their post count and last post times.
+				if($thread['uid'] > 0)
 				{
-					$update_query[] = "lastpost='".$thread['dateline']."'";
-				}
-				// Update the post count if this forum allows post counts to be tracked
-				if($forum['usepostcounts'] != "no")
-				{
-					$update_query[] = "postnum=postnum+1";
-				}
-
-				// Only update the table if we need to.
-				if(!empty($update_query))
-				{
-					$update_query = implode(", ", $update_query);
-					$db->write_query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
-				}
-			}
-			
-			if(!$forum['lastpost'])
-			{
-				$forum['lastpost'] = 0;
-			}
-
-			// Queue up any forum subscription notices to users who are subscribed to this forum.
-			$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-			$query = $db->query("
-				SELECT u.username, u.email, u.uid, u.language
-				FROM ".TABLE_PREFIX."forumsubscriptions fs
-				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=fs.uid)
-				WHERE fs.fid='".intval($thread['fid'])."'
-				AND fs.uid != '".intval($thread['uid'])."'
-				AND u.lastactive > '{$forum['lastpost']}'
-			");
-			while($subscribedmember = $db->fetch_array($query))
-			{
-				if($done_users[$subscribedmember['uid']])
-				{
-					continue;
-				}
-				$done_users[$subscribedmember['uid']] = 1;
-				// Determine the language pack we'll be using to send this email in and load it if it isn't already.
-				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
-				{
-					$uselang = $subscribedmember['language'];
-				}
-				else if($mybb->settings['bblanguage'])
-				{
-					$uselang = $mybb->settings['bblanguage'];
-				}
-				else
-				{
-					$uselang = "english";
-				}
-
-				if($uselang == $mybb->settings['bblanguage'])
-				{
-					$emailsubject = $lang->emailsubject_forumsubscription;
-					$emailmessage = $lang->email_forumsubscription;
-				}
-				else
-				{
-					if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
+					$user = get_user($thread['uid']);
+					$update_query = array();
+					// Only update the lastpost column of the user if the date of the thread is newer than their last post.
+					if($thread['dateline'] > $user['lastpost'])
 					{
-						$userlang = new MyLanguage;
-						$userlang->set_path(MYBB_ROOT."inc/languages");
-						$userlang->set_language($uselang);
-						$userlang->load("messages");
-						$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
-						$langcache[$uselang]['email_forumsubscription'] = $userlang->email_forumsubscription;
-						unset($userlang);
+						$update_query[] = "lastpost='".$thread['dateline']."'";
 					}
-					$emailsubject = $langcache[$uselang]['emailsubject_forumsubscription'];
-					$emailmessage = $langcache[$uselang]['email_forumsubscription'];
+					// Update the post count if this forum allows post counts to be tracked
+					if($forum['usepostcounts'] != "no")
+					{
+						$update_query[] = "postnum=postnum+1";
+					}
+
+					// Only update the table if we need to.
+					if(!empty($update_query))
+					{
+						$update_query = implode(", ", $update_query);
+						$db->write_query("UPDATE ".TABLE_PREFIX."users SET $update_query WHERE uid='".$thread['uid']."'");
+					}
 				}
-				$emailsubject = sprintf($emailsubject, $forum['name']);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $this->tid, $thread['fid']);
-				$new_email = array(
-					"mailto" => $db->escape_string($subscribedmember['email']),
-					"mailfrom" => '',
-					"subject" => $db->escape_string($emailsubject),
-					"message" => $db->escape_string($emailmessage),
-					"headers" => ''
-				);
-				$db->insert_query("mailqueue", $new_email);
-				unset($userlang);
-				$queued_email = 1;
-			}
-			// Have one or more emails been queued? Update the queue count
-			if($queued_email == 1)
-			{
-				$cache->update_mailqueue();
+				
+				if(!$forum['lastpost'])
+				{
+					$forum['lastpost'] = 0;
+				}
+
+				// Queue up any forum subscription notices to users who are subscribed to this forum.
+				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+				$query = $db->query("
+					SELECT u.username, u.email, u.uid, u.language
+					FROM ".TABLE_PREFIX."forumsubscriptions fs
+					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=fs.uid)
+					WHERE fs.fid='".intval($thread['fid'])."'
+					AND fs.uid != '".intval($thread['uid'])."'
+					AND u.lastactive > '{$forum['lastpost']}'
+				");
+				while($subscribedmember = $db->fetch_array($query))
+				{
+					if($done_users[$subscribedmember['uid']])
+					{
+						continue;
+					}
+					$done_users[$subscribedmember['uid']] = 1;
+					// Determine the language pack we'll be using to send this email in and load it if it isn't already.
+					if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
+					{
+						$uselang = $subscribedmember['language'];
+					}
+					else if($mybb->settings['bblanguage'])
+					{
+						$uselang = $mybb->settings['bblanguage'];
+					}
+					else
+					{
+						$uselang = "english";
+					}
+
+					if($uselang == $mybb->settings['bblanguage'])
+					{
+						$emailsubject = $lang->emailsubject_forumsubscription;
+						$emailmessage = $lang->email_forumsubscription;
+					}
+					else
+					{
+						if(!isset($langcache[$uselang]['emailsubject_forumsubscription']))
+						{
+							$userlang = new MyLanguage;
+							$userlang->set_path(MYBB_ROOT."inc/languages");
+							$userlang->set_language($uselang);
+							$userlang->load("messages");
+							$langcache[$uselang]['emailsubject_forumsubscription'] = $userlang->emailsubject_forumsubscription;
+							$langcache[$uselang]['email_forumsubscription'] = $userlang->email_forumsubscription;
+							unset($userlang);
+						}
+						$emailsubject = $langcache[$uselang]['emailsubject_forumsubscription'];
+						$emailmessage = $langcache[$uselang]['email_forumsubscription'];
+					}
+					$emailsubject = sprintf($emailsubject, $forum['name']);
+					$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $this->tid, $thread['fid']);
+					$new_email = array(
+						"mailto" => $db->escape_string($subscribedmember['email']),
+						"mailfrom" => '',
+						"subject" => $db->escape_string($emailsubject),
+						"message" => $db->escape_string($emailmessage),
+						"headers" => ''
+					);
+					$db->insert_query("mailqueue", $new_email);
+					unset($userlang);
+					$queued_email = 1;
+				}
+				// Have one or more emails been queued? Update the queue count
+				if($queued_email == 1)
+				{
+					$cache->update_mailqueue();
+				}
 			}
 		}
 
@@ -1276,15 +1279,15 @@ class PostDataHandler extends DataHandler
 			$db->update_query("attachments", $attachmentassign, "posthash='{$thread['posthash']}'");
 		}
 		
-		$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
-		$attachmentcount = $db->fetch_field($query, "attachmentcount");
-		if($attachmentcount > 0)
-		{
-			update_thread_counters($this->tid, array("attachmentcount" => "+{$attachmentcount}"));
-		}
-
 		if($visible == 1)
 		{
+			$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
+			$attachmentcount = $db->fetch_field($query, "attachmentcount");
+			if($attachmentcount > 0)
+			{
+				update_thread_counters($this->tid, array("attachmentcount" => "+{$attachmentcount}"));
+			}
+
 			update_thread_data($this->tid);
 			update_forum_counters($thread['fid'], array("threads" => "+1", "posts" => "+1"));
 		}
