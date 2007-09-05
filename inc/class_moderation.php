@@ -278,12 +278,17 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
-		$tid_list = implode(",", $tids);
 		
 		$num_threads = $num_posts = 0;
 		foreach($tids as $tid)
 		{
 			$thread = get_thread($tid);
+			if($thread['visible'] == 1 || !$thread['tid'])
+			{
+				continue;
+			}
+			$tid_list[] = $thread['tid'];
+
 			$forum = get_forum($thread['tid']);
 			
 			if($forum['usepostcounts'] != "no") 
@@ -302,23 +307,27 @@ class Moderation
 
 		}
 
-		$approve = array(
-			"visible" => 1,
-		);
-		$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
-		$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN (".implode(",", $posts_to_approve).")");
+		if(is_array($tid_list))
+		{
+			$tid_list = implode(",", $tid_list);
 
-		$plugins->run_hooks("class_moderation_approve_threads", $tids);
-		
-		// Update stats
-		$update_array = array( 
-			"threads" => "+{$num_threads}", 
-			"unapprovedthreads" => "-{$num_threads}", 
-			"posts" => "+{$num_posts}", 
-			"unapprovedposts" => "-{$num_posts}" 
-		); 
-		update_forum_counters($fid, $update_array);
+			$approve = array(
+				"visible" => 1,
+			);
+			$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
+			$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN (".implode(",", $posts_to_approve).")");
 
+			$plugins->run_hooks("class_moderation_approve_threads", $tids);
+			
+			// Update stats
+			$update_array = array( 
+				"threads" => "+{$num_threads}", 
+				"unapprovedthreads" => "-{$num_threads}", 
+				"posts" => "+{$num_posts}", 
+				"unapprovedposts" => "-{$num_posts}" 
+			); 
+			update_forum_counters($fid, $update_array);
+		}
 		return true;
 	}
 
@@ -628,17 +637,24 @@ class Moderation
 					"sticky" => $thread['sticky'],
 					"visible" => $thread['visible'],
 					"unapprovedposts" => $thread['unapprovedposts'],
+					"attachmentcount" => $thread['attachmentcount'],
 					"notes" => ''
 				);
+
 
 				if($thread['visible'] == 1)
 				{
 					++$num_threads;
+					$num_posts = $thread['replies']+1;
+
+					// Fetch count of unapproved posts in this thread
+					$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS unapproved", "tid='{$thread['tid']}' AND visible=0");
+					$num_unapproved_posts = $db->fetch_field($query, "unapproved");
+
 				}
 				else
 				{
 					$num_unapproved_threads++; 
-					// Implied forum unapproved count for unapproved threads
 					$num_unapproved_posts = $thread['replies']+1;
 				}
 				

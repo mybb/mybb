@@ -76,13 +76,15 @@ if($mybb->input['action'] == "do_attachments")
 
 if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts" || $mybb->input['action'] == "do_threadsposts")
 {
+	$forum_cache = $cache->read("forums");
+
 	$plugins->run_hooks("admin_moderate_do_threadsposts");
 	if(is_array($mybb->input['threadvalidate']) && $mybb->input['action'] != "do_posts")
 	{
 		foreach($mybb->input['threadvalidate'] as $tid => $val)
 		{
 			$tid = intval($tid);
-			$query = $db->simple_select(TABLE_PREFIX."threads", "subject, fid", "tid='$tid'");
+			$query = $db->simple_select(TABLE_PREFIX."threads", "subject, fid, dateline, uid", "tid='$tid'");
 			$thread = $db->fetch_array($query);
 			if($mybb->input['threaddelete'][$tid] == "yes")
 			{
@@ -96,6 +98,19 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 					$message = $db->escape_string($mybb->input['threadmessage'][$tid]);
 					
 					$db->query("UPDATE ".TABLE_PREFIX."threads SET visible='1', subject='{$subject}', unapprovedposts=unapprovedposts-1 WHERE tid = '".$tid."'");
+
+					$forum = $forum_cache[$thread['fid']];
+					if($forum['usepostcounts'] != "no")
+					{
+							$queryadd = ",postnum=postnum+1";
+					}
+					else
+					{
+						$queryadd = '';
+					}
+					$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$thread['dateline']}' {$queryadd} WHERE uid='{$thread['uid']}'");
+					$done_firstposts[$thread['firstpost']] = 1;
+
 					
 					$sql_array = array(
 						"message" => $message,
@@ -116,7 +131,7 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 		foreach($mybb->input['postvalidate'] as $pid => $val)
 		{
 			$pid = intval($pid);
-			$query = $db->simple_select(TABLE_PREFIX."posts", "tid", "pid='$pid'");
+			$query = $db->simple_select(TABLE_PREFIX."posts", "tid, uid, dateline", "pid='$pid'");
 			$post = $db->fetch_array($query);
 			$query = $db->simple_select(TABLE_PREFIX."threads", "fid", "tid='$post[tid]'");
 			$thread = $db->fetch_array($query);
@@ -137,6 +152,21 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 						"subject" => $subject
 					);
 					$db->update_query(TABLE_PREFIX."posts", $sql_array, "pid = '".$pid."'");
+
+
+					$forum = $forum_cache[$thread['fid']];
+					if(!$done_firstposts[$post['pid']])
+					{
+						if($forum['usepostcounts'] != "no")
+						{
+								$queryadd = ",postnum=postnum+1";
+						}
+						else
+						{
+							$queryadd = '';
+						}
+						$db->query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$post['dateline']}' {$queryadd} WHERE uid='{$post['uid']}'");
+					}
 
 					// Update unapproved thread count
 					$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1, replies=replies+1 WHERE tid='$post[tid]'");					
