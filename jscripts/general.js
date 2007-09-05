@@ -424,8 +424,20 @@ var DomLib = {
 		}
 		var arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight);
 		return arrayPageSize;
-	}
+	},
 
+	getStyle: function(e, prop)
+	{
+		var e = $(e);
+		if(e.currentStyle)
+		{
+			return e.currentStyle[prop];
+		}
+		else if(window.getComputedStyle)
+		{
+			return document.defaultView.getComputedStyle(e, null).getPropertyValue(prop);
+		}
+	}
 }
 
 var expandables = {
@@ -568,6 +580,10 @@ ActivityIndicator.prototype = {
 				top += element.offsetTop || 0;
 				left += element.offsetLeft || 0;
 				element = element.offsetParent;
+				if(element)
+				{
+					if(element.tagName == "BODY" || DomLib.getStyle(element, 'position') == 'relative' || DomLib.getStyle(element, 'position') == 'absolute') break;
+				}
 			} while(element);
 
 			left += owner.offsetWidth;

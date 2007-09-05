@@ -44,6 +44,10 @@ PopupMenu.prototype = {
 			offsetTop += element.offsetTop || 0;
 			offsetLeft += element.offsetLeft || 0;
 			element = element.offsetParent;
+			if(element)
+			{
+				if(element.tagName == "BODY" || DomLib.getStyle(element, 'position') == 'relative' || DomLib.getStyle(element, 'position') == 'absolute') break;
+			}
 		} while(element);
 		element = $(this.id);
 		this.menu.style.position = "absolute";
