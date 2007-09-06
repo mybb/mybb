@@ -535,6 +535,8 @@ if($mybb->input['action'] == "dlbackup")
 		cperror($lang->error_download_no_file);
 	}
 	
+	@set_time_limit(0);
+	
 	$file = basename($mybb->input['file']);
 	$ext = get_extension($file);	
 		
@@ -559,6 +561,8 @@ if($mybb->input['action'] == "do_optimize")
 	{
 		cperror($lang->error_no_tables_selected);
 	}
+	
+	@set_time_limit(0);
 	
 	foreach($mybb->input['tables'] as $table)
 	{

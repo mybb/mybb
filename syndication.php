@@ -58,11 +58,11 @@ $inactiveforums = get_inactive_forums();
 // If there are any, add SQL to exclude them.
 if($unviewable)
 {
-	$unviewable = "AND f.fid NOT IN($unviewable)";
+	$unviewable = "AND fid NOT IN($unviewable)";
 }
 if($inactiveforums)
 {
-	$unviewable .= " AND f.fid NOT IN($inactiveforums)";
+	$unviewable .= " AND fid NOT IN($inactiveforums)";
 }
 
 // If there are no forums to syndicate, syndicate all viewable.
@@ -73,7 +73,7 @@ if(!empty($forumlist))
 	{
 		$forum_ids .= ",'".intval($fid)."'";
 	}
-	$forumlist = "AND f.fid IN ($forum_ids) $unviewable";
+	$forumlist = "AND fid IN ($forum_ids) $unviewable";
 }
 else
 {
@@ -83,7 +83,7 @@ else
 
 // Find out which title to add to the feed.
 $title = $mybb->settings['bbname'];
-$query = $db->simple_select(TABLE_PREFIX."forums f", "f.name, f.fid", "1=1 ".$forumlist);
+$query = $db->simple_select(TABLE_PREFIX."forums", "name, fid", "1=1 ".$forumlist);
 $comma = " - ";
 while($forum = $db->fetch_array($query))
 {
@@ -98,17 +98,6 @@ if($all_forums)
 	$title = $mybb->settings['bbname']." - ".$lang->all_forums;
 }
 
-// Get the threads to syndicate.
-$query = $db->query("
-	SELECT t.*, f.name AS forumname, p.message AS postmessage, p.edittime
-	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
-	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
-	WHERE t.visible=1 AND t.closed NOT LIKE 'moved|%' ".$forumlist."
-	ORDER BY t.dateline DESC
-	LIMIT 0, ".$thread_limit
-);
-
 // Set the feed type.
 $feedgenerator->set_feed_format($mybb->input['type']);
 
@@ -121,17 +110,30 @@ $channel = array(
 );
 $feedgenerator->set_channel($channel);
 
+// Get the threads to syndicate.
+$query = $db->simple_select(TABLE_PREFIX."threads", "subject, tid, dateline, firstpost", "visible='1' AND closed NOT LIKE 'moved|%' ".$forumlist, array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => $thread_limit));
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-	$item = array(
+	$items[$thread['tid']] = array(
 		"title" => $thread['subject'],
-		"link" => $mybb->settings['bburl']."/showthread.php?tid=".$thread['tid'],
-		"description" => $parser->strip_mycode($thread['postmessage'], $parser_options),
+		"link" => $mybb->settings['bburl']."/showthread.php?tid=".$thread['tid'],		
 		"date" => $thread['dateline'],
-		"updated" => $thread['edittime']
 	);
-	$feedgenerator->add_item($item);
+	
+	$firstposts[] = $thread['firstpost'];
+}
+
+if(!empty($firstposts))
+{
+	$firstpostlist = "pid IN(".implode(',', $firstposts).")";
+	$query = $db->simple_select(TABLE_PREFIX."posts", "message, edittime, tid", $firstpostlist);	
+	while($post = $db->fetch_array($query))
+	{
+		$items[$post['tid']]['description'] = $parser->strip_mycode($post['message'], $parser_options);
+		$items[$post['tid']]['updated'] = $post['edittime'];
+		$feedgenerator->add_item($items[$post['tid']]);
+	}
 }
 
 // Then output the feed XML.

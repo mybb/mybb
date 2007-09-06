@@ -514,24 +514,24 @@ else
 	{
 		$goto = 'index.php?'.SID.'&amp;action=home';
 	}
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">";
 	echo "<html ".($lang->settings['rtl'] ? "dir=\"rtl\" " : "")."lang=\"".($lang->settings['htmllang'])."\">\n";
 	echo "<head>\n";
 	echo "<title>$lang->mybb_admin</title>\n";
 	echo "</head>\n";
 	echo "<frameset rows=\"78, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-	echo "<frame name=\"header\" noresize scrolling=\"no\" src=\"index.php?".SID."&amp;action=header\" />\n";
+	echo "<frame name=\"header\" noresize=\"noresize\" scrolling=\"no\" src=\"index.php?".SID."&amp;action=header\" />\n";
 	if($lang->settings['rtl'])
 	{
 		echo "<frameset cols=\"*,200\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\" />\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\" />\n";
+		echo "<frame name=\"body\" noresize=\"noresize\" scrolling=\"auto\" src=\"".$goto."\" />\n";
+		echo "<frame name=\"nav\" noresize=\"noresize\" scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\" />\n";
 	}
 	else
 	{
 		echo "<frameset cols=\"200, *\" frameborder=\"no\" border=\"0\" framespacing=\"0\">\n";
-		echo "<frame name=\"nav\" noresize scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\" />\n";
-		echo "<frame name=\"body\" noresize scrolling=\"auto\" src=\"".$goto."\" />\n";
+		echo "<frame name=\"nav\" noresize=\"noresize\" scrolling=\"auto\" src=\"index.php?".SID."&amp;action=navigation\" />\n";
+		echo "<frame name=\"body\" noresize=\"noresize\" scrolling=\"auto\" src=\"".$goto."\" />\n";
 	}
 	echo "</frameset>\n";
 	echo "</frameset>\n";

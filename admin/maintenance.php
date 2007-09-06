@@ -128,6 +128,8 @@ if($mybb->input['action'] == "cache")
 
 if($mybb->input['action'] == "do_rebuildstats")
 {
+	@set_time_limit(0);
+	
 	$plugins->run_hooks("admin_maintenance_do_rebuildstats");
 	$cache->updatestats();
 	cpredirect("maintenance.php?".SID."&action=rebuild", $lang->stats_rebuilt);
@@ -135,6 +137,8 @@ if($mybb->input['action'] == "do_rebuildstats")
 
 if($mybb->input['action'] == "do_rebuildforums")
 {
+	@set_time_limit(0);
+	
 	$plugins->run_hooks("admin_maintenance_do_rebuildforums");
 
 	$query = $db->simple_select(TABLE_PREFIX."forums", "COUNT(*) as num_forums");
@@ -182,6 +186,8 @@ if($mybb->input['action'] == "do_rebuildforums")
 
 if($mybb->input['action'] == "do_rebuildthreads")
 {
+	@set_time_limit(0);
+	
 	$plugins->run_hooks("admin_maintenance_do_rebuildthreads");
 
 	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(*) as num_threads");
@@ -227,6 +233,8 @@ if($mybb->input['action'] == "do_rebuildthreads")
 
 if($mybb->input['action'] == "do_recountpostcounts")
 {
+	@set_time_limit(0);
+	
 	$plugins->run_hooks("admin_maintenance_do_recountpostcounts");
 
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) as num_users");
@@ -293,6 +301,8 @@ if($mybb->input['action'] == "do_recountpostcounts")
 
 if($mybb->input['action'] == "do_rebuildthumbnails")
 {
+	@set_time_limit(0);
+	
 	$plugins->run_hooks("admin_maintenance_do_rebuild_thumbnails");
 
 	$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(aid) as num_attachments");
