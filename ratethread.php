@@ -71,7 +71,7 @@ else
 {
 	$plugins->run_hooks("ratethread_process");
 
-	$db->query("
+	$db->write_query("
 		UPDATE ".TABLE_PREFIX."threads
 		SET numratings=numratings+1, totalratings=totalratings+'{$mybb->input['rating']}'
 		WHERE tid='{$tid}'
@@ -103,7 +103,7 @@ $plugins->run_hooks("ratethread_end");
 if($mybb->input['ajax'])
 {
 	echo "<success>{$lang->rating_added}</success>\n";
-	$query = $db->query("SELECT totalratings, numratings FROM ".TABLE_PREFIX."threads WHERE tid='$tid' LIMIT 1");
+	$query = $db->simple_select("threads", "totalratings, numratings", "tid='$tid'", array('limit' => 1));
 	$fetch = $db->fetch_array($query);
 	$width = 0;
 	if($fetch['numratings'] >= 0)

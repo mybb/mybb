@@ -658,6 +658,36 @@ class datacache
 		}
 		$this->update("spiders", $spiders);
 	}
+	
+	function update_stats_most_replied_threads()
+	{
+		global $db, $mybb;
+		
+		$threads = array();
+		
+		$query = $db->simple_select("threads", "tid, subject, replies, fid", "", array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[] = $thread;
+		}
+		
+		$this->update("most_replied_threads", $threads);
+	}
+	
+	function update_stats_most_viewed_threads()
+	{
+		global $db, $mybb;
+		
+		$threads = array();
+		
+		$query = $db->simple_select("threads", "tid, subject, views, fid", "", array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+		while($thread = $db->fetch_array($query))
+		{
+			$threads[] = $thread;
+		}
+		
+		$this->update("most_viewed_threads", $threads);
+	}
 
 }
 ?>

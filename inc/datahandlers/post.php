@@ -660,7 +660,7 @@ class PostDataHandler extends DataHandler
 				}
 				if($newstick || $newclosed)
 				{
-					$db->query("
+					$db->write_query("
 						UPDATE ".TABLE_PREFIX."threads
 						SET {$newclosed}{$sep}{$newstick}
 						WHERE tid='{$thread['tid']}'
@@ -1159,7 +1159,7 @@ class PostDataHandler extends DataHandler
 				}
 				if($newstick || $newclosed)
 				{
-					$db->query("
+					$db->write_query("
 						UPDATE ".TABLE_PREFIX."threads
 						SET $newclosed$sep$newstick
 						WHERE tid='{$this->tid}'

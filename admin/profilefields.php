@@ -63,7 +63,7 @@ if($mybb->input['action'] == "do_add")
 	$db->insert_query("profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
-	$db->query("
+	$db->write_query("
 		ALTER 
 		TABLE ".TABLE_PREFIX."userfields 
 		ADD $fieldname TEXT
@@ -79,7 +79,7 @@ if($mybb->input['action'] == "do_delete")
 		$plugins->run_hooks("admin_profilefields_do_delete");
 		$db->delete_query("profilefields", "fid='$fid'");
 		$fieldname = "fid$fid";
-		$db->query("
+		$db->write_query("
 			ALTER 
 			TABLE ".TABLE_PREFIX."userfields 
 			DROP $fieldname

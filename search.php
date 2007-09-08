@@ -783,6 +783,19 @@ elseif($mybb->input['action'] == "getnew")
 	{
 		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
 	}
+	else if($mybb->input['fids'])
+	{
+		$fids = explode(',', $mybb->input['fids']);
+		foreach($fids as $key => $fid)
+		{
+			$fids[$key] = intval($fid);
+		}
+		
+		if(!empty($fids))
+		{
+			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+		}
+	}
 	
 	$unsearchforums = get_unsearchable_forums();
 	if($unsearchforums)
@@ -830,6 +843,19 @@ elseif($mybb->input['action'] == "getdaily")
 	if($mybb->input['fid'])
 	{
 		$where_sql .= " AND t.fid='".intval($mybb->input['fid'])."'";
+	}
+	else if($mybb->input['fids'])
+	{
+		$fids = explode(',', $mybb->input['fids']);
+		foreach($fids as $key => $fid)
+		{
+			$fids[$key] = intval($fid);
+		}
+		
+		if(!empty($fids))
+		{
+			$where_sql .= " AND t.fid IN (".implode(',', $fids).")";
+		}
 	}
 	
 	$unsearchforums = get_unsearchable_forums();
