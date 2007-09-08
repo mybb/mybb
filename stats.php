@@ -70,7 +70,7 @@ if(!empty($mostrepliedthreads))
 {
 	foreach($mostrepliedthreads['threads'] as $key => $thread)
 	{
-		if(in_array($thread['fid'], $unviewableforumsarray))
+		if(!in_array($thread['fid'], $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
@@ -93,7 +93,7 @@ if(!empty($mostviewedthreads))
 {
 	foreach($mostviewedthreads['threads'] as $key => $thread)
 	{
-		if(in_array($thread['fid'], $unviewableforumsarray))
+		if(!in_array($thread['fid'], $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);
