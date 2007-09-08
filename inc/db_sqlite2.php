@@ -589,7 +589,7 @@ class DB_SQLite
 	 *
 	 * @param string The table name to perform the query on.
 	 * @param array An array of fields and their values.
-	 * @return resource The query data.
+	 * @return int The insert ID if available.
 	 */
 	function insert_query($table, $array)
 	{
@@ -611,7 +611,8 @@ class DB_SQLite
 			$comma = ", ";
 		}
 		
-		return $this->query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
+		$this->query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
+		return $this->insert_id();
 	}
 
 	/**

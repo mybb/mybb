@@ -643,7 +643,7 @@ class DB_MySQL
 	 *
 	 * @param string The table name to perform the query on.
 	 * @param array An array of fields and their values.
-	 * @return resource The query data.
+	 * @return int The insert ID if available
 	 */
 	function insert_query($table, $array)
 	{
@@ -661,11 +661,12 @@ class DB_MySQL
 			$query2 .= $comma."'".$value."'";
 			$comma = ", ";
 		}
-		return $this->write_query("
+		$this->write_query("
 			INSERT 
 			INTO {$this->table_prefix}{$table} (".$query1.") 
 			VALUES (".$query2.")
 		");
+		return $this->insert_id();
 	}
 
 	/**
