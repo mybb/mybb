@@ -241,10 +241,11 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 
 	$query = $db->query("
 		SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username
-		FROM (".TABLE_PREFIX."threads t, ".TABLE_PREFIX."posts p)
+		FROM ".TABLE_PREFIX."threads t
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-		WHERE t.visible='0' AND p.tid=t.tid
+		WHERE t.visible='0'
 		ORDER BY t.lastpost DESC
 	");
 	$tcount = $db->num_rows($query);

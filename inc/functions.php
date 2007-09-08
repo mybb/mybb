@@ -1267,7 +1267,7 @@ function update_stats($changes=array())
 
 	$stats = $cache->read("stats");
 
-	$counters = array('numthreads','numposts','numusers');
+	$counters = array('numthreads', 'numposts', 'numusers');
 	$update = array();
 	foreach($counters as $counter)
 	{
