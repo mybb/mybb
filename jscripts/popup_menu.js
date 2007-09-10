@@ -46,7 +46,7 @@ PopupMenu.prototype = {
 			element = element.offsetParent;
 			if(element)
 			{
-				if(element.tagName == "BODY" || DomLib.getStyle(element, 'position') == 'relative' || DomLib.getStyle(element, 'position') == 'absolute') break;
+				if(DomLib.getStyle(element, 'position') == 'relative' || DomLib.getStyle(element, 'position') == 'absolute') break;
 			}
 		} while(element);
 		element = $(this.id);
@@ -87,7 +87,7 @@ PopupMenu.prototype = {
 	
 	closeMenu: function()
 	{
-		menu = document.currentMenu;
+		var menu = document.currentMenu;
 		menu = $(menu+"_popup");
 		this.menu.style.display = "none";
 		document.currentMenu = "";

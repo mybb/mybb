@@ -270,7 +270,7 @@ autoComplete.prototype = {
 			element = element.offsetParent;
 			if(element)
 			{
-				if(element.tagName == "BODY" || DomLib.getStyle(element, 'position') == 'relative' || DomLib.getStyle(element, 'position') == 'absolute') break;
+				if(DomLib.getStyle(element, 'position') == 'relative' || DomLib.getStyle(element, 'position') == 'absolute') break;
 			}
 		} while(element);
 		

@@ -433,9 +433,11 @@ var DomLib = {
 		{
 			return e.currentStyle[prop];
 		}
-		else if(window.getComputedStyle)
+		else if(document.defaultView && document.defaultView.getComputedStyle)
 		{
-			return document.defaultView.getComputedStyle(e, null).getPropertyValue(prop);
+			prop = prop.replace(/([A-Z])/g,"-$1");
+			prop = prop.toLowerCase();
+			return document.defaultView.getComputedStyle(e, "").getPropertyValue(prop);
 		}
 	}
 }
