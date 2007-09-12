@@ -334,6 +334,24 @@ function requirements_check()
 	}
 	@fclose($settingswritable);
 
+	// Check cache directory is writable
+	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
+	if(!$cachewritable)
+	{
+		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
+		$cachestatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
+		$showerror = 1;
+		@fclose($cachewritable);
+	}
+	else
+	{
+		$cachestatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		@fclose($cachewritable);
+	  	@chmod(MYBB_ROOT.'cache', 0777);
+	  	@chmod(MYBB_ROOT.'cache/test.write', 0777);
+		@unlink(MYBB_ROOT.'cache/test.write');
+	}
+
 	// Check upload directory is writable
 	$uploadswritable = @fopen(MYBB_ROOT.'uploads/test.write', 'w');
 	if(!$uploadswritable)
@@ -372,7 +390,7 @@ function requirements_check()
 
 
 	// Output requirements page
-	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $uploadsstatus, $avatarsstatus);
+	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
 
 	if($showerror == 1)
 	{
@@ -761,30 +779,7 @@ function insert_templates()
 
 	$db->delete_query("themes");
 	$db->delete_query("templates");
-	
-	$insert_array = array(
-		'name' => 'MyBB Master Style',
-		'pid' => 0,
-		'css' => '',
-		'cssbits' => '',
-		'themebits' => '',
-		'extracss' => '',
-		'allowedgroups' => ''
-	);
-	$db->insert_query("themes", $insert_array);
-	
-	$insert_array = array(
-		'name' => 'MyBB Default',
-		'pid' => 1,
-		'def' => 1,
-		'css' => '',
-		'cssbits' => '',
-		'themebits' => '',
-		'extracss' => '',
-		'allowedgroups' => ''
-	);
-	$db->insert_query("themes", $insert_array);
-	
+
 	$insert_array = array(
 		'title' => 'Default Templates'
 	);
@@ -792,28 +787,11 @@ function insert_templates()
 	$templateset = $db->insert_id();
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	$parser = new XMLParser($contents);
-	$tree = $parser->get_tree();
+	require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+	import_theme_xml($contents, array("templateset" => -2));
+	$tid = build_new_theme("Default", null, 1);
 
-	$theme = $tree['theme'];
-	$css = kill_tags($theme['cssbits']);
-	$themebits = kill_tags($theme['themebits']);
-	$templates = $theme['templates']['template'];
-	$themebits['templateset'] = $templateset;
-	$sid = -2;
-	foreach($templates as $template)
-	{
-		$insert_array = array(
-			'title' => $template['attributes']['name'],
-			'template' => $db->escape_string($template['value']),
-			'sid' => $sid,
-			'version' => $template['attributes']['version'],
-			'dateline' => TIME_NOW,
-		);
-		
-		$db->insert_query("templates", $insert_array);
-	}
-	update_theme(1, 0, $themebits, $css, 0);
+	$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
 
 	echo $lang->theme_step_imported;
 	$output->print_footer('configuration');

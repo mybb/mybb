@@ -1231,16 +1231,6 @@ no=Disabled]]></optionscode>
 			<settingvalue><![CDATA[no]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="cssmedium">
-			<title>CSS Medium</title>
-			<description><![CDATA[Please select from the list how you want the theme and CSS data to be stored and retrieved.]]></description>
-			<disporder>11</disporder>
-			<optionscode><![CDATA[php
-<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"db\" ".($setting['value'] == 'db' || !is_writable(MYBB_ROOT."css")?"checked=\"checked\"":"")." /> ".($lang->setting_cssmedium_db?$lang->setting_cssmedium_db:"Database")."<br />
-<input type=\"radio\" name=\"upsetting[{$setting['sid']}]\" value=\"file\" ".($setting['value'] == 'file' && is_writable(MYBB_ROOT."css")?"checked=\"checked\"":"").(!is_writable(MYBB_ROOT."css")?" disabled=\"disabled\"":"")." /> ".($lang->setting_cssmedium_file?$lang->setting_cssmedium_file:"Stored in the file system (In the 'css' folder)").(!is_writable(MYBB_ROOT."css")?"<br /><br />".($lang->setting_cssmedium_file?$lang->setting_cssmedium_file:"To cache CSS to the file system, the CSS folder must be made writable."):"")."]]></optionscode>
-			<settingvalue><![CDATA[db]]></settingvalue>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
 			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>

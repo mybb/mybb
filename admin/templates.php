@@ -692,13 +692,6 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		cpheader();
 	}
-	// Fetch the listing of themes so we can see which template sets are associated to themes
-	$query = $db->query("SELECT name,tid,themebits FROM ".TABLE_PREFIX."themes WHERE tid!='1'");
-	while($theme = $db->fetch_array($query))
-	{
-		$tbits = unserialize($theme['themebits']);
-		$themes[$tbits['templateset']][$theme['tid']] = $theme;
-	}
 
 	if(!$expand) // Build a listing of all of the template sets
 	{

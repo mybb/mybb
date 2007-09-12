@@ -102,13 +102,17 @@ $l['req_step_reqtable'] = '<div class="border_wrapper">
 			<td class="first">Settings File Writable:</td>
 			<td class="last alt_col">{6}</td>
 		</tr>
+		<tr>
+			<td class="first">Cache Directory Writable:</td>
+			<td class="last alt_col">{7}</td>
+		</tr>
 		<tr class="alt_row">
 			<td class="first">File Uploads Directory Writable:</td>
-			<td class="last alt_col">{7}</td>
+			<td class="last alt_col">{8}</td>
 		</tr>
 		<tr class="last">
 			<td class="first">Avatar Uploads Directory Writable:</td>
-			<td class="last alt_col">{8}</td>
+			<td class="last alt_col">{9}</td>
 		</tr>
 		</tbody>
 		</table>
@@ -125,6 +129,7 @@ $l['req_step_error_dboptions'] = 'MyBB requires one or more suitable database ex
 $l['req_step_error_xmlsupport'] = 'MyBB requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
 $l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
+$l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_uploaddir'] = 'The uploads directory (uploads/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_avatardir'] = 'The avatars directory (uploads/avatars/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_cssddir'] = 'The css directory (css/) is not writable. Please adjust the <a href="http://wiki.mybboard.net/index.php/CHMOD%20Files" target="_blank">chmod</a> permissions to allow it to be written to.';

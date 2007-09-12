@@ -169,6 +169,11 @@ class MyBB {
 		}
 		$this->clean_input();
 
+		if(@ini_get("safe_mode") == 1)
+		{
+			$this->safemode = true;
+		}
+
 		// Are we running in debug mode?
 		if(isset($mybb->input['debug']) || preg_match("#[?&]debug=1#", $_SERVER['REQUEST_URI']))
 		{

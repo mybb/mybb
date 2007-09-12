@@ -21,7 +21,7 @@ class diskCacheHandler
 	 */
 	function connect()
 	{
-		if(!@is_writable(MYBB_ROOT."inc/cache"))
+		if(!@is_writable(MYBB_ROOT."cache"))
 		{
 			return false;
 		}
@@ -39,18 +39,18 @@ class diskCacheHandler
 	
 	function fetch($name, $hard_refresh=false)
 	{
-		if(!@file_exists(MYBB_ROOT."/inc/cache/{$name}.php"))
+		if(!@file_exists(MYBB_ROOT."/cache/{$name}.php"))
 		{
 			return false;
 		}
 		
 		if(!isset($this->cache[$name]) || $hard_refresh == true)
 		{
-			@include(MYBB_ROOT."/inc/cache/{$name}.php");
+			@include(MYBB_ROOT."/cache/{$name}.php");
 		}
 		else
 		{
-			@include_once(MYBB_ROOT."/inc/cache/{$name}.php");
+			@include_once(MYBB_ROOT."/cache/{$name}.php");
 		}
 		
 		// Return data
@@ -66,13 +66,13 @@ class diskCacheHandler
 	 */
 	function put($name, $contents)
 	{
-		if(!is_writable(MYBB_ROOT."inc/cache"))
+		if(!is_writable(MYBB_ROOT."cache"))
 		{
 			$mybb->trigger_generic_error("cache_no_write");
 			return false;
 		}
 
-		$cache_file = fopen(MYBB_ROOT."inc/cache/{$name}.php", "w") or $mybb->trigger_generic_error("cache_no_write");
+		$cache_file = fopen(MYBB_ROOT."cache/{$name}.php", "w") or $mybb->trigger_generic_error("cache_no_write");
 		flock($cache_file, LOCK_EX);
 		$cache_contents = "<?php\n\n/** MyBB Generated Cache - Do Not Alter\n * Cache Name: $name\n * Generated: ".gmdate("r")."\n*/\n\n";
 		$cache_contents .= "\$$name = ".var_export($contents, true).";\n\n ?>";
@@ -91,7 +91,7 @@ class diskCacheHandler
 	 */
 	function delete($name)
 	{
-		return @unlink(MYBB_ROOT."/inc/cache{$name}.php");
+		return @unlink(MYBB_ROOT."/cache/{$name}.php");
 	}
 	
 	/**
@@ -112,15 +112,15 @@ class diskCacheHandler
 	{
 		if($name != '')
 		{
-			return @filesize(MYBB_ROOT."/inc/cache/{$name}.php");
+			return @filesize(MYBB_ROOT."/cache/{$name}.php");
 		}
 		else
 		{
 			$total = 0;
-			$dir = opendir(MYBB_ROOT."/inc/cache");
+			$dir = opendir(MYBB_ROOT."/cache");
 			while(($file = readdir($dir)) !== false)
 			{
-				$total += @filesize(MYBB_ROOT."/inc/cache/{$name}.php");
+				$total += @filesize(MYBB_ROOT."/cache/{$name}.php");
 			}
 			return $title;
 		}

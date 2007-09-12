@@ -626,12 +626,18 @@ $tables[] = "CREATE TABLE mybb_themes (
   name varchar(100) NOT NULL default '',
   pid smallint NOT NULL default '0',
   def smallint(1) NOT NULL default '0',
-  css text NOT NULL,
-  cssbits text NOT NULL,
-  themebits text NOT NULL,
-  extracss text NOT NULL,
-  allowedgroups text NOT NULL,
-  csscached bigint(30) NOT NULL default '0'
+  properties text NOT NULL,
+  stylesheets text NOT NULL,
+  allowedgroups text NOT NULL
+);";
+
+$tables[] = "CREATE TABLE mybb_themestylesheets(
+	sid INTEGER PRIMARY KEY,
+	tid int unsigned NOT NULL default '0',
+	attachedto text NOT NULL,
+	stylesheet text NOT NULL,
+	cachefile varchar(100) NOT NULL default '',
+	lastmodified bigint(30) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_threadratings (

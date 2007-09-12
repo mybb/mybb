@@ -182,7 +182,7 @@ if(empty($loadstyle))
 }
 
 // Fetch the theme to load from the database
-$query = $db->simple_select("themes", "name, tid, themebits, csscached", $loadstyle, array('limit' => 1));
+$query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
 $theme = $db->fetch_array($query);
 
 // No theme was found - we attempt to load the master or any other theme
@@ -199,20 +199,36 @@ if(!$theme['tid'])
 		$db->update_query("users", array("style" => 0), "style='{$style['style']}'");
 	}
 	// Attempt to load the master or any other theme if the master is not available
-	$query = $db->simple_select("themes", "name, tid, themebits, csscached", "", array("order_by" => "tid", "limit" => 1));
+	$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "", array("order_by" => "tid", "limit" => 1));
 	$theme = $db->fetch_array($query);
 }
+$theme = @array_merge($theme, unserialize($theme['properties']));
 
-$theme = @array_merge($theme, unserialize($theme['themebits']));
-
-// Loading CSS from a file or from the server?
-if($theme['csscached'] > 0 && $mybb->settings['cssmedium'] == 'file')
+// Fetch all necessary stylesheets
+$theme['stylesheets'] = unserialize($theme['stylesheets']);
+$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
+foreach($stylesheet_scripts as $stylesheet_script)
 {
-	$theme['css_url'] = $mybb->settings['bburl']."/css/theme_{$theme['tid']}.css";
-}
-else
-{
-	$theme['css_url'] = $mybb->settings['bburl']."/css.php?theme={$theme['tid']}";
+	$stylesheet_actions = array("global");
+	if($mybb->input['action'])
+	{
+		$stylesheet_actions[] = $mybb->input['action'];
+	}
+	// Load stylesheets for global actions and the current action
+	foreach($stylesheet_actions as $stylesheet_action)
+	{
+		if(!$stylesheet_action) continue;
+		if($theme['stylesheets'][$stylesheet_script][$stylesheet_action])
+		{
+			// Actually add the stylesheets to the list
+			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
+			{
+				if($already_loaded[$page_stylesheet]) continue;
+				$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+				$already_loaded[$page_stylesheet] = 1;
+			}
+		}
+	}
 }
 
 if(!@is_dir($theme['imgdir']))

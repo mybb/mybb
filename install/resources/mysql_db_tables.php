@@ -701,13 +701,20 @@ $tables[] = "CREATE TABLE mybb_themes (
   name varchar(100) NOT NULL default '',
   pid smallint unsigned NOT NULL default '0',
   def smallint(1) NOT NULL default '0',
-  css text NOT NULL,
-  cssbits text NOT NULL,
-  themebits text NOT NULL,
-  extracss text NOT NULL,
+  properties text NOT NULL,
+  stylesheets text NOT NULL,
   allowedgroups text NOT NULL,
-  csscached bigint(30) NOT NULL default '0',
   PRIMARY KEY (tid)
+) TYPE=MyISAM;";
+
+$tables[] = "CREATE TABLE mybb_themestylesheets(
+	sid int unsigned NOT NULL auto_increment,
+	tid int unsigned NOT NULL default '0',
+	attachedto text NOT NULL,
+	stylesheet text NOT NULL,
+	cachefile varchar(100) NOT NULL default '',
+	lastmodified bigint(30) NOT NULL default '0',
+	PRIMARY KEY(sid)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_threadratings (
