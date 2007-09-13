@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -159,7 +159,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
-
+	
 	if(!$profile_field['fid'])
 	{
 		flash_message($lang->error_invalid_fid, 'error');
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
-
+	
 	// Does the profile field not exist?
 	if(!$profile_field['fid'])
 	{

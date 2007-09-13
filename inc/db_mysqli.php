@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id: db_mysql.php 1370 2006-04-16 13:47:01Z chris $
  */

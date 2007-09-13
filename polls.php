@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -802,7 +802,7 @@ if($mybb->input['action'] == "vote")
 		$numvotes = $numvotes+1;
 	}
 
-	$db->query("
+	$db->write_query("
 		INSERT INTO 
 		".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) 
 		VALUES $votesql

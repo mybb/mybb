@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -184,8 +184,7 @@ if($mybb->input['action'] == "add")
 		}
 	
 		$page->add_breadcrumb_item($lang->add_document);
-		$page->output_header($lang->help_documents." - ".$lang->add_new_document);
-		
+		$page->output_header($lang->help_documents." - ".$lang->add_new_document);		
 		
 		$sub_tabs['add_help_document'] = array(
 			'title'	=> $lang->add_new_document,
@@ -491,7 +490,7 @@ if($mybb->input['action'] == "delete")
 			
 			$query = $db->simple_select("helpsections", "*", "sid='{$sid}'");
 			$section = $db->fetch_array($query);
-	
+			
 			// Invalid section?
 			if(!$section['sid'])
 			{
@@ -524,7 +523,7 @@ if($mybb->input['action'] == "delete")
 			
 			$query = $db->simple_select("helpdocs", "*", "hid='{$hid}'");
 			$doc = $db->fetch_array($query);
-	
+			
 			// Invalid document?
 			if(!$doc['hid'])
 			{

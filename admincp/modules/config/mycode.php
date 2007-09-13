@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -21,7 +21,7 @@ if($mybb->input['action'] == "toggle_status")
 {
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
-
+	
 	if(!$mycode['cid'])
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
@@ -167,7 +167,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
-
+	
 	if(!$mycode['cid'])
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
-
+	
 	if(!$mycode['cid'])
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
@@ -349,7 +349,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
 		$table->construct_row();
 	}
-
+	
 	if(count($table->rows) == 0)
 	{
 		$table->construct_cell($lang->no_mycode, array('colspan' => 2));

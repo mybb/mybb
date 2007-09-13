@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -22,12 +22,12 @@ if($mybb->input['action'] == "add")
 {
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['mimetype']))
+		if(!trim($mybb->input['mimetype']) && !trim($mybb->input['extension']))
 		{
 			$errors[] = $lang->error_missing_mime_type;
 		}
 
-		if(!trim($mybb->input['extension']))
+		if(!trim($mybb->input['extension']) && !trim($mybb->input['mimetype']))
 		{
 			$errors[] = $lang->error_missing_extension;
 		}
@@ -37,6 +37,11 @@ if($mybb->input['action'] == "add")
 			if($mybb->input['mimetype'] == "images/attachtypes/")
 			{
 				$mybb->input['mimetype'] = '';
+			}
+			
+			if($mybb->input['extension']{0} == '.')
+			{
+				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
 			$new_type = array(
@@ -118,7 +123,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
 	$attachment_type = $db->fetch_array($query);
-
+	
 	if(!$attachment_type['atid'])
 	{
 		flash_message($lang->error_invalid_attachment_type, 'error');
@@ -226,7 +231,7 @@ if($mybb->input['action'] == "delete")
 	
 	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
 	$attachment_type = $db->fetch_array($query);
-
+	
 	if(!$attachment_type['atid'])
 	{
 		flash_message($lang->error_invalid_attachment_type, 'error');

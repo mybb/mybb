@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -140,6 +140,7 @@ while($thread = $db->fetch_array($query))
 		$feedgenerator->add_item($thread);
 	}
 }
+$db->free_result($query);
 
 // Then output the feed XML.
 $feedgenerator->output_feed();

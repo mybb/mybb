@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -76,7 +76,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select("banfilters", "*", "fid='".intval($mybb->input['fid'])."'");
 	$filter = $db->fetch_array($query);
-
+	
 	// Does the filter not exist?
 	if(!$filter['fid'])
 	{

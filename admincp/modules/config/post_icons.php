@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -116,7 +116,7 @@ if($mybb->input['action'] == "add_multiple")
 			{
 				$aicons[$icon['path']] = 1;
 			}
-
+			
 			while($file = readdir($dir))
 			{
 				if($file != ".." && $file != ".")
@@ -270,7 +270,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
-
+	
 	if(!$icon['iid'])
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
-
+	
 	if(!$icon['iid'])
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
@@ -437,7 +437,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
-
+	
 	if(count($table->rows) == 0)
 	{
 		$table->construct_cell($lang->no_post_icons, array('colspan' => 4));
@@ -448,7 +448,7 @@ if(!$mybb->input['action'])
 
 	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
 	$total_rows = $db->fetch_field($query, "icons");
-
+	
 	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?".SID."&amp;module=config/post_icons&amp;page={page}");
 
 	$page->output_footer();

@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -42,7 +42,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 	{
 		$query = $db->simple_select("adminviews", "vid", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
-
+		
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
 			flash_message("You selected an invalid administration view.", 'error');
@@ -229,7 +229,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 	{
 		$query = $db->simple_select("adminviews", "*", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
-
+		
 		// Does the view not exist?
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
@@ -430,7 +430,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		
 		$query = $db->simple_select("adminviews", "vid", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
-
+		
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
 			flash_message("You selected an invalid administration view to delete", 'error');
@@ -560,7 +560,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			$table->construct_cell($controls, array("class" => "align_center"));
 			$table->construct_row();
 		}
-			
+		
 		$table->output("Views");
 		
 		echo <<<LEGEND

@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -333,7 +333,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 				$perms_def = $perm['permissions'];
 			}
 		}
-
+		
 		// Figure out group permissions...ugh.
 		foreach($perms_group as $gperms)
 		{

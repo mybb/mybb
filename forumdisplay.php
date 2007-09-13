@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -84,6 +84,7 @@ while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
+$db->free_result($query);
 
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != "off")
@@ -100,6 +101,7 @@ if($mybb->settings['modlist'] != "off")
 	{
 		$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
 	}
+	$db->free_result($query);
 }
 
 $bgcolor = "trow1";
@@ -223,6 +225,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 			}
 		}
 	}
+	$db->free_result($query);
 	
 	if($guestcount)
 	{
@@ -436,6 +439,7 @@ else
 		$threadcount += $forum_threads['unapprovedthreads'];
 	}
 }
+$db->free_result($query);
 
 // How many pages are there?
 if(!$mybb->settings['threadsperpage'])
@@ -510,6 +514,7 @@ if($foruminfo['allowtratings'] != "no")
 
 				$avaragerating[$thread['tid']] = $rating;
 			}
+			$db->free_result($query);
 			break;
 		default:
 			$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";
@@ -593,6 +598,7 @@ while($announcement = $db->fetch_array($query))
 	eval("\$announcements  .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
 	$bgcolor = alt_trow();
 }
+$db->free_result($query);
 
 if($announcements)
 {
@@ -640,6 +646,7 @@ while($thread = $db->fetch_array($query))
 		}
 	}
 }
+$db->free_result($query);
 
 if($tids)
 {
@@ -658,6 +665,7 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 		}
 		$threadcache[$post['tid']]['doticon'] = 1;
 	}
+	$db->free_result($query);
 }
 
 // Read threads
@@ -672,12 +680,14 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 	 	} 
 	 	$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline']; 
 	}
+	$db->free_result($query);
 }
 
 if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
 	$forum_read = $db->fetch_field($query, "dateline");
+	$db->free_result($query);
 
 	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)
@@ -1022,6 +1032,7 @@ if(is_array($threadcache))
 		{
 			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
 		}
+		$db->free_result($query);
 
 		if(!empty($customthreadtools))
 		{

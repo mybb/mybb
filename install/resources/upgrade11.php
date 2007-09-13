@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -697,6 +697,18 @@ function upgrade11_dbchanges5()
 	$db->drop_table("calendarpermissions");
 	$db->drop_table("forumsread");
 	$db->drop_table("adminviews");
+	$db->drop_table("threadviews");
+	$db->drop_table("sph_counter");
+	
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."sph_counter (
+    	counter_id int unsigned NOT NULL default '1',
+    	max_doc_id int unsigned NOT NULL default '0',
+		PRIMARY KEY (counter_id)
+	) TYPE=MyISAM{$collation};");
+	
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."threadviews (
+		tid int unsigned NOT NULL default '0'
+	) TYPE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendars (
 	  cid int unsigned NOT NULL auto_increment,

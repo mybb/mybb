@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -213,6 +213,7 @@ function send_mail_queue($count=10)
 			
 			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
 		}
+		$db->free_result($query);
 		// Update the mailqueue cache and remove the lock
 		$cache->update_mailqueue(TIME_NOW, 0);
 	}
@@ -1285,6 +1286,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 		{
 			$query = $db->simple_select('moderators', 'COUNT(mid) as count', "uid='{$uid}'", array('limit' => 1));
 			$modcheck = $db->fetch_array($query);
+			$db->free_result($query);
 
 			if($modcheck['count'] > 0)
 			{
@@ -1354,6 +1356,7 @@ function get_post_icons()
 			$listed = 0;
 		}
 	}
+	$db->free_result($query);
 
 	eval("\$posticons = \"".$templates->get("posticons")."\";");
 
@@ -1559,6 +1562,7 @@ function update_stats($changes=array())
 	{
 		$query = $db->simple_select("users", "uid, username", "", array('order_by' => 'uid', 'order_dir' => 'DESC', 'limit' => 1));
 		$lastmember = $db->fetch_array($query);
+		$db->free_result($query);
 		$new_stats['lastuid'] = $lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'];
 	}
@@ -1600,6 +1604,7 @@ function update_forum_counters($fid, $changes=array())
 	// Fetch above counters for this forum
 	$query = $db->simple_select("forums", implode(",", $counters), "fid='{$fid}'");
 	$forum = $db->fetch_array($query);
+	$db->free_result($query);
 
 	foreach($counters as $counter)
 	{
@@ -1708,6 +1713,7 @@ function update_forum_lastpost($fid)
 		LIMIT 0, 1
 	");
 	$lastpost = $db->fetch_array($query);
+	$db->free_result($query);
 
 	$updated_forum = array(
 		"lastpost" => intval($lastpost['lastpost']),
@@ -1737,6 +1743,7 @@ function update_thread_counters($tid, $changes=array())
 	// Fetch above counters for this thread
 	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");
 	$thread = $db->fetch_array($query);
+	$db->free_result($query);
 	
 	foreach($counters as $counter)
 	{
@@ -1785,6 +1792,7 @@ function update_thread_data($tid)
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
+	$db->free_result($query);
 
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
@@ -1795,6 +1803,7 @@ function update_thread_data($tid)
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
+	$db->free_result($query);
 
 	if(!$firstpost['username'])
 	{
@@ -2151,6 +2160,7 @@ function build_clickable_smilies()
 		{
 			$query = $db->simple_select("smilies", "COUNT(*) as smilies");
 			$smiliecount = $db->fetch_field($query, "smilies");
+			$db->free_result($query);
 		}
 
 		if(!$smiliecache)
@@ -2161,6 +2171,7 @@ function build_clickable_smilies()
 			{
 				$smiliecache[$smilie['find']] = $smilie['image'];
 			}
+			$db->free_result($query);
 		}
 
 		unset($smilie);
@@ -3088,6 +3099,7 @@ function join_usergroup($uid, $joingroup)
 	{
 		$query = $db->simple_select("users", "additionalgroups, usergroup", "uid='{$uid}'");
 		$user = $db->fetch_array($query);
+		$db->free_result($query);		
 	}
 
 	// Build the new list of additional groups for this user and make sure they're in the right format
@@ -3109,11 +3121,7 @@ function join_usergroup($uid, $joingroup)
 		}
 	}
 
-	$db->query("
-		UPDATE ".TABLE_PREFIX."users
-		SET additionalgroups='$groupslist'
-		WHERE uid='$uid'
-	");
+	$db->update_query("users", array('additionalgroups' => $groupslist), "uid='$uid'");
 }
 
 /**
@@ -3134,6 +3142,7 @@ function leave_usergroup($uid, $leavegroup)
 	{
 		$query = $db->simple_select("users", "*", "uid='{$uid}'");
 		$user = $db->fetch_array($query);
+		$db->free_result($query);
 	}
 
 	$usergroups = "";
@@ -3159,7 +3168,7 @@ function leave_usergroup($uid, $leavegroup)
 		$dispupdate = ", displaygroup=usergroup";
 	}
 
-	$db->query("
+	$db->write_query("
 		UPDATE ".TABLE_PREFIX."users
 		SET additionalgroups='$groupslist' $dispupdate
 		WHERE uid='$uid'
@@ -3255,6 +3264,7 @@ function build_theme_select($name, $selected="", $tid=0, $depth="", $usergroup_o
 		{
 			$tcache[$theme['pid']][$theme['tid']] = $theme;
 		}
+		$db->free_result($query);
 	}
 
 	if(is_array($tcache[$tid]))
@@ -3546,6 +3556,7 @@ function update_first_post($tid)
 
 	$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
+	$db->free_result($query);
 
 	if($post['replyto'] != 0)
 	{
@@ -4058,6 +4069,7 @@ function get_thread($tid)
 	{
 		$query = $db->simple_select("threads", "*", "tid='".intval($tid)."'");
 		$thread = $db->fetch_array($query);
+		$db->free_result($query);
 
 		if($thread)
 		{
@@ -4091,6 +4103,7 @@ function get_post($pid)
 	{
 		$query = $db->simple_select("posts", "*", "pid='".intval($pid)."'");
 		$post = $db->fetch_array($query);
+		$db->free_result($query);
 
 		if($post)
 		{
@@ -4279,8 +4292,10 @@ function email_already_in_use($email, $uid="")
 	
 	if($db->fetch_field($query, "emails") > 0)
 	{
+		$db->free_result($query);
 		return true;
 	}
+	$db->free_result($query);
 	
 	return false;
 }
@@ -4322,6 +4337,7 @@ function rebuild_settings()
 		$setting['value'] = addcslashes($setting['value'], '\\"$');
 		$settings .= "\$settings['{$setting['name']}'] = \"{$setting['value']}\";\n";
 	}
+	$db->free_result($query);
 
 	$settings = "<"."?php\n/*********************************\ \n  DO NOT EDIT THIS FILE, PLEASE USE\n  THE SETTINGS EDITOR\n\*********************************/\n\n$settings\n?".">";
 	$file = @fopen(MYBB_ROOT."inc/settings.php", $mode);
@@ -4492,9 +4508,11 @@ function is_banned_username($username, $update_lastuse=false)
 			{
 				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_username['fid']}'");
 			}
+			$db->free_result($query);
 			return true;
 		}
 	}
+	$db->free_result($query);
 	// Still here - good username
 	return false;
 }
@@ -4521,9 +4539,11 @@ function is_banned_email($email, $update_lastuse=false)
 			{
 				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_email['fid']}'");
 			}
+			$db->free_result($query);
 			return true;
 		}
 	}
+	$db->free_result($query);
 	// Still here - good email
 	return false;
 }
@@ -4734,67 +4754,6 @@ function is_super_admin($uid)
 	{
 		return true;
 	}
-}
-
-/**
- * Split a string based on the specified delimeter, ignoring said delimeter in escaped strings.
- * Ex: the "quick brown fox" jumped, could return 1 => the, 2 => quick brown fox, 3 => jumped
- *
- * @param string The delimeter to split by
- * @param string The string to split
- * @param string The escape character or string if we have one.
- * @return array Array of split string
- */
-function escaped_explode($delimeter, $string, $escape="")
-{
-	$strings = array();
-	$original = $string;
-	$in_escape = false;
-	if($escape)
-	{
-		if(is_array($escape))
-		{
-			function escaped_explode_escape($string)
-			{
-				return preg_quote($string, "#");
-			}
-			$escape_preg = "(".implode("|", array_map("escaped_explode_escape", $escape)).")";
-		}
-		else
-		{
-			$escape_preg = preg_quote($escape, "#");
-		}
-		$quoted_strings = preg_split("#(?<!\\\){$escape_preg}#", $string);
-	}
-	else
-	{
-		$quoted_strings = array($string);
-	}
-	foreach($quoted_strings as $string)
-	{
-		if($string != "") 
-		{
-			if($in_escape)
-			{
-				$strings[] = trim($string);
-			}
-			else
-			{
-				$split_strings = explode($delimeter, $string);
-				foreach($split_strings as $string)
-				{
-					if($string == "") continue;
-					$strings[] = trim($string);
-				}
-			}
-		}
-		$in_escape = !$in_escape;
-	}
-	if(!count($strings))
-	{
-		return $original;
-	}
-	return $strings;
 }
 
 /**

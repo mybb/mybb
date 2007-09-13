@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -500,8 +500,8 @@ class datacache
 				{
 					unset($forum[$key]);
 				}
-				$forums[$forum['fid']] = $forum;
 			}
+			$forums[$forum['fid']] = $forum;
 		}
 		
 		$this->update("forums", $forums);

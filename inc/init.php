@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -149,6 +149,7 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 			$settings[$setting['name']] = $setting['value'];
 		}
+		$db->free_result($query);
 	}	
 }
 

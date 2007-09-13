@@ -5,7 +5,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id: mysql_db_tables.php 2992 2007-04-05 14:43:48Z chris $
  */
@@ -608,6 +608,12 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	PRIMARY KEY(sid)
 );";
 
+$tables[] = "CREATE TABLE mybb_sph_counter (
+    counter_id int unsigned NOT NULL default '1',
+    max_doc_id int unsigned NOT NULL default '0',
+	PRIMARY KEY (counter_id)
+);";
+
 $tables[] = "CREATE TABLE mybb_stats (
 	dateline bigint(30) NOT NULL default '0',
 	numusers int unsigned NOT NULL default '0',
@@ -697,6 +703,9 @@ $tables[] = "CREATE TABLE mybb_threadratings (
   PRIMARY KEY (rid)
 );";
 
+$tables[] = "CREATE TABLE mybb_threadviews (
+	tid int NOT NULL default '0'
+);";
 
 $tables[] = "CREATE TABLE mybb_threads (
   tid serial,

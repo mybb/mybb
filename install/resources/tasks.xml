@@ -61,6 +61,18 @@
 		<logging>1</logging>
 	</task>
 	<task>
+		<title>Thread Views</title>
+		<description><![CDATA[Automatically updates thread views every 15 minutes.]]></description>
+		<file>threadviews</file>
+		<minute>10,25,40,55</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
 		<title>Tables Check</title>
 		<description><![CDATA[Automatically runs a table check and attempts to repair any crashed tables.]]></description>
 		<file>checktables</file>

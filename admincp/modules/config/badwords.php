@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -50,7 +50,7 @@ if($mybb->input['action'] == "delete")
 {
 	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
-
+	
 	// Does the bad word not exist?
 	if(!$badword['bid'])
 	{
@@ -87,7 +87,7 @@ if($mybb->input['action'] == "edit")
 {
 	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
-
+	
 	// Does the bad word not exist?
 	if(!$badword['bid'])
 	{

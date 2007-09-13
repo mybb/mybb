@@ -4,7 +4,7 @@
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
- * License: http://www.mybboard.net/license.php
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
@@ -26,7 +26,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	if(!is_array($pforumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select("forums f", "f.*", "linkto='' AND active!='no'", array('order_by' => "f.pid, f.disporder"));
+		$query = $db->simple_select("forums", "pid,disporder,fid,password,name", "linkto='' AND active!='no'", array('order_by' => "pid, disporder"));
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -102,7 +102,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 	if(!is_array($forum_cache))
 	{
 		// Get Forums
-		$query = $db->simple_select("forums", "*", "", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select("forums", "fid,parentlist,password,active", "", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forum_cache[$forum['fid']] = $forum;
