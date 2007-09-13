@@ -4757,6 +4757,67 @@ function is_super_admin($uid)
 }
 
 /**
+ * Split a string based on the specified delimeter, ignoring said delimeter in escaped strings.
+ * Ex: the "quick brown fox" jumped, could return 1 => the, 2 => quick brown fox, 3 => jumped
+ *
+ * @param string The delimeter to split by
+ * @param string The string to split
+ * @param string The escape character or string if we have one.
+ * @return array Array of split string
+ */
+function escaped_explode($delimeter, $string, $escape="")
+{
+	$strings = array();
+	$original = $string;
+	$in_escape = false;
+	if($escape)
+	{
+		if(is_array($escape))
+		{
+			function escaped_explode_escape($string)
+			{
+				return preg_quote($string, "#");
+			}
+			$escape_preg = "(".implode("|", array_map("escaped_explode_escape", $escape)).")";
+		}
+		else
+		{
+			$escape_preg = preg_quote($escape, "#");
+		}
+		$quoted_strings = preg_split("#(?<!\\\){$escape_preg}#", $string);
+	}
+	else
+	{
+		$quoted_strings = array($string);
+	}
+	foreach($quoted_strings as $string)
+	{
+		if($string != "") 
+		{
+			if($in_escape)
+			{
+				$strings[] = trim($string);
+			}
+			else
+			{
+				$split_strings = explode($delimeter, $string);
+				foreach($split_strings as $string)
+				{
+					if($string == "") continue;
+					$strings[] = trim($string);
+				}
+			}
+		}
+		$in_escape = !$in_escape;
+	}
+	if(!count($strings))
+	{
+		return $original;
+	}
+	return $strings;
+}
+
+/**
  * Below are compatibility functions which replicate functions in newer versions of PHP.
  *
  * This allows MyBB to continue working on older installations of PHP without these functions.
