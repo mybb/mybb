@@ -387,7 +387,7 @@ class postParser
 				{
 					$find = $this->parse_html($find);
 				}
-				$message = str_replace($find, $replace, $message);
+				$message = preg_replace("#(\W|^)".preg_quote($find)."(\W|$)#i", "\\1{$replace}\\2", $message);
 			}
 		}
 		return $message;
