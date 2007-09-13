@@ -894,6 +894,7 @@ function makenavselect($name)
 	echo "<ul>\n";
 	echo $navoptions;
 	echo "</ul>\n</td>\n";
+	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</td>\n</tr>\n</table>\n";
 	echo "<br />\n";

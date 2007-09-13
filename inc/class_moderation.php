@@ -848,14 +848,12 @@ class Moderation
 		$tid = intval($tid);
 
 		if(!isset($mergethread['tid']) || $mergethread['tid'] != $mergetid)
-		{			
-			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$mergetid}'");
-			$mergethread = $db->fetch_array($query);
+		{	
+			$mergethread = get_thread($mergetid);
 		}
 		if(!isset($thread['tid']) || $thread['tid'] != $tid)
 		{
-			$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='{$tid}'");
-			$thread = $db->fetch_array($query);
+			$thread = get_thread($tid);
 		}
 		$pollsql = '';
 		if($mergethread['poll'])
