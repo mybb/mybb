@@ -1379,6 +1379,14 @@ both=Warnings and Errors
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="delayedthreadviews">
+			<title>Delayed Thread View Updates</title>
+			<description><![CDATA[If this setting is enabled, the number of thread views for threads will be updated in the background by the task schedule system. If not enabled, thread view counters are incremented instantly.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[onoff]]></optionscode>
+			<settingvalue><![CDATA[off]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="11" isdefault="yes">
 		<setting name="enablewarningsystem">

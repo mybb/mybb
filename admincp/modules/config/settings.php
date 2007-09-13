@@ -708,17 +708,16 @@ if($mybb->input['action'] == "change")
 	{
 		if(is_array($mybb->input['upsetting']))
 		{
-			foreach($mybb->input['upsetting'] as $sid => $value)
+			foreach($mybb->input['upsetting'] as $name => $value)
 			{
 				$value = $db->escape_string($value);
-				$sid = intval($sid);
-				$db->update_query("settings", array('value' => $value), "sid='$sid'");
+				$db->update_query("settings", array('value' => $value), "name='".$db->escape_string($name)."'");
 			}
 		}
 		
 		rebuild_settings();
 		// Check if we need to create our fulltext index after changing the search mode
-		if($mybb->settings['searchtype'] == "fulltext")
+		if($mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] && $mybb->input['upsetting']['searchtype'] == "fulltext")
 		{
 			if(!$db->is_fulltext("posts") && $db->supports_fulltext_boolean("posts"))
 			{
@@ -730,6 +729,24 @@ if($mybb->input['action'] == "change")
 			}
 		}
 
+		// If the delayedthreadviews setting was changed, enable or disable the tasks for it.
+		if($mybb->input['upsetting']['delayedthreadviews'] && $mybb->settings['delayedthreadviews'] != && $mybb->input['upsetting']['delayedthreadviews'])
+		{
+			if($mybb->input['upsetting']['delayedthreadviews'] == "off")
+			{
+				$updated_task = array(
+					"enabled" => 1
+				);
+			}
+			else
+			{
+				$updated_task = array(
+					"enabled" => 1
+				);
+			}
+			$db->update_query("tasks", $updated_task, "file='threadviews'");
+		}
+			
 		// Log admin action
 		log_admin_action();
 
@@ -853,7 +870,7 @@ if($mybb->input['action'] == "change")
 			$options = "";
 			$type = explode("\n", $setting['optionscode']);
 			$type[0] = trim($type[0]);
-			$element_name = "upsetting[{$setting['sid']}]";
+			$element_name = "upsetting[{$setting['name']}]";
 			$element_id = "setting_{$setting['name']}";
 			if($type[0] == "text" || $type[0] == "")
 			{

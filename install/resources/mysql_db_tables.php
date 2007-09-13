@@ -637,13 +637,6 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	PRIMARY KEY (sid)
 ) TYPE=MyISAM;";
 
-$tables[] = "CREATE TABLE mybb_sph_counter (
-    counter_id int unsigned NOT NULL default '1',
-    max_doc_id int unsigned NOT NULL default '0',
-	PRIMARY KEY (counter_id)
-) TYPE=MyISAM;";
-
-
 $tables[] = "CREATE TABLE mybb_stats (
 	dateline bigint(30) NOT NULL default '0',
 	numusers int unsigned NOT NULL default '0',

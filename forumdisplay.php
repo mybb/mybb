@@ -687,7 +687,6 @@ if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 {
 	$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
 	$forum_read = $db->fetch_field($query, "dateline");
-	$db->free_result($query);
 
 	$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 	if($forum_read == 0 || $forum_read < $read_cutoff)

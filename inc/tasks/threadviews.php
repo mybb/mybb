@@ -11,23 +11,24 @@
 
 function task_threadviews($task)
 {
-	global $db;
+	global $mybb, $db;
 	
 	$threadviews = array();
 
+	if($mybb->settings['delayedthreadviews'] != "on")
+	{
+		return;
+	}
+
 	// Update thread views
-	$query = $db->simple_select("threadviews");
+	$query = $db->query("
+		SELECT tid, COUNT(tid) AS views
+		FROM ".TABLE_PREFIX."threadviews
+		GROUP BY tid
+	");
 	while($threadview = $db->fetch_array($query))
 	{
-		++$threadviews[$threadview['tid']];
-	}
-	
-	if(!empty($threadviews))
-	{
-		foreach($threadviews as $tid => $views)
-		{
-			$db->write_query("UPDATE ".TABLE_PREFIX."threads SET views=views+{$views} WHERE tid='{$tid}' LIMIT 1");
-		}
+		$db->write_query("UPDATE ".TABLE_PREFIX."threads SET views=views+{$threadview['views']} WHERE tid='{$threadview['tid']}' LIMIT 1");
 	}
 	
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");

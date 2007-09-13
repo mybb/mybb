@@ -149,7 +149,6 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 			$settings[$setting['name']] = $setting['value'];
 		}
-		$db->free_result($query);
 	}	
 }
 

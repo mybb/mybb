@@ -140,7 +140,6 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 		");
 		$style = $db->fetch_array($query);
 		$load_from_forum = 1;
-		$db->free_result($query);
 	}
 	
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
@@ -155,7 +154,6 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 		");
 		$style = $db->fetch_array($query);
 		$load_from_forum = 1;
-		$db->free_result($query);
 	}
 	
 	// We have a forum id - simply load the theme from it
@@ -164,7 +162,6 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 		$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'", array('limit' => 1));
 		$style = $db->fetch_array($query);
 		$load_from_forum = 1;
-		$db->free_result($query);
 	}
 }
 
@@ -187,7 +184,6 @@ if(empty($loadstyle))
 // Fetch the theme to load from the database
 $query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
 $theme = $db->fetch_array($query);
-$db->free_result($query);
 
 // No theme was found - we attempt to load the master or any other theme
 if(!$theme['tid'])
@@ -205,7 +201,6 @@ if(!$theme['tid'])
 	// Attempt to load the master or any other theme if the master is not available
 	$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "", array("order_by" => "tid", "limit" => 1));
 	$theme = $db->fetch_array($query);
-	$db->free_result($query);
 }
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
@@ -537,7 +532,6 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($my
 	}
 	$query = $db->simple_select("users", "uid", $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
-	$db->free_result($query);
 	if($referrer['uid'])
 	{
 		my_setcookie("mybb[referrer]", $referrer['uid']);

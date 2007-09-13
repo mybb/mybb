@@ -62,14 +62,14 @@
 	</task>
 	<task>
 		<title>Thread Views</title>
-		<description><![CDATA[Automatically updates thread views every 15 minutes.]]></description>
+		<description><![CDATA[Automatically updates thread views every 15 minutes. This task will automatically be enabled or disabled when changing the 'Delayed Thread Views' setting.]]></description>
 		<file>threadviews</file>
 		<minute>10,25,40,55</minute>
 		<hour>*</hour>
 		<day>*</day>
 		<weekday>*</weekday>
 		<month>*</month>
-		<enabled>1</enabled>
+		<enabled>0</enabled>
 		<logging>1</logging>
 	</task>
 	<task>

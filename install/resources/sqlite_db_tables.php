@@ -568,11 +568,6 @@ $tables[] = "CREATE TABLE mybb_spiders (
 	lastvisit bigint(30) NOT NULL default '0'
 );";
 
-$tables[] = "CREATE TABLE mybb_sph_counter (
-    counter_id int NOT NULL default '1' PRIMARY KEY,
-    max_doc_id int NOT NULL default '0'
-);";
-
 $tables[] = "CREATE TABLE mybb_stats (
 	dateline bigint(30) NOT NULL default '0' PRIMARY KEY,
 	numusers int unsigned NOT NULL default '0',

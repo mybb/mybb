@@ -481,7 +481,14 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+	if($mybb->settings['delayedthreadviews'] == "on")
+	{
+		$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
+	}
+	else
+	{
+		$db->shutdown_query("uPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
+	}
 	++$thread['views'];
 
 	// Work out the thread rating for this thread.
