@@ -72,9 +72,9 @@ else
 	$loadstyle = "def=1";
 }
 
-$query = $db->simple_select("themes", "name, tid, themebits", $loadstyle);
+$query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
 $theme = $db->fetch_array($query);
-$theme = @array_merge($theme, unserialize($theme['themebits']));
+$theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Set the appropriate image language directory for this theme.
 if(!empty($mybb->user['language']) && is_dir($theme['imgdir'].'/'.$mybb->user['language']))
