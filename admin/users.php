@@ -678,12 +678,17 @@ if($mybb->input['action'] == "do_email")
 					'receipt' => 'no'
 				);
 				$db->insert_query("privatemessages", $insert_pm);
-				
+
 				// Update private message count (total, new and unread) for recipient
 				update_pm_count($user['uid'], 7, $user['lastactive']);
-				
+
 				if($user['pmnotify'] == "yes")
 				{
+					$updated_user = array(
+						"pmnotice" => "new"
+					);
+					$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
+
 					if($user['language'] != "" && $lang->language_exists($user['language']))
 					{
 						$uselang = $user['language'];
@@ -699,7 +704,7 @@ if($mybb->input['action'] == "do_email")
 					
 					if($uselang == $mybb->settings['bblanguage'])
 					{
-						$lang->set_path("./inc/languages");
+						$lang->set_path(MYBB_ROOT.'inc/languages');
 						$lang->set_language($uselang);
 						$lang->load("messages");
 						$emailsubject = $lang->emailsubject_newpm;
@@ -708,7 +713,7 @@ if($mybb->input['action'] == "do_email")
 					else
 					{
 						$userlang = new MyLanguage;
-						$userlang->set_path("./inc/languages");
+						$userlang->set_path(MYBB_ROOT.'inc/languages');
 						$userlang->set_language($uselang);
 						$userlang->load("messages");
 						$emailsubject = $userlang->emailsubject_newpm;

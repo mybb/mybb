@@ -486,13 +486,13 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				// Lets see if this post is on the same page as the one we're viewing or not
 				// if it isn't, redirect us
-				if($perpage > 0 && (($postcounter+1) % $perpage) == 0)
+				if($perpage > 0 && (($postcounter) % $perpage) == 0)
 				{
-					$post_page = ($postcounter+1) / $mybb->settings['postsperpage'];
+					$post_page = ($postcounter) / $mybb->settings['postsperpage'];
 				}
 				else
 				{
-					$post_page = intval(($postcounter+1) / $mybb->settings['postsperpage']) + 1;
+					$post_page = intval(($postcounter) / $mybb->settings['postsperpage']) + 1;
 				}
 
 				if($mybb->input['from_page'] && $post_page > $mybb->input['from_page'])

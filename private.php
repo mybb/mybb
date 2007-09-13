@@ -566,6 +566,7 @@ if($mybb->input['action'] == "read")
 	else
 	{
 		$uid_sql = $pm['toid'];
+		$pm['recipients']['to'] = array($pm['toid']);
 	}
 
 	$show_bcc = 0;
