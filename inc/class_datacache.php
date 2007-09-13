@@ -398,11 +398,12 @@ class datacache
 				{
 					unset($forum[$key]);
 				}
-				$forums[$forum['fid']] = $forum;
 			}
+			$forums[$forum['fid']] = $forum;
 		}
 		$this->update("forums", $forums);
 	}
+	
 
 	/**
 	 * Update usertitles cache.

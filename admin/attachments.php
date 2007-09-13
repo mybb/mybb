@@ -57,6 +57,10 @@ if($mybb->input['action'] == "do_add")
 	// add new type to database
 	if(($mybb->input['extension'] || $mybb->input['mimetype']) && $mybb->input['maxsize'])
 	{
+		if($mybb->input['extension'] && $mybb->input['extension']{0} == '.')
+		{
+			$mybb->input['extension'] = substr($mybb->input['extension'], 1);
+		}
 		$sqlarray = array(
 			"mimetype" => $db->escape_string($mybb->input['mimetype']),
 			"extension" => $db->escape_string($mybb->input['extension']),
