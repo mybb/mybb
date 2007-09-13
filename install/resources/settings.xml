@@ -340,7 +340,7 @@
 			<description><![CDATA[The domain which cookies should be set to. This can remain blank. It should also start with a . so it covers all subdomains.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[.192.168.0.5]]></settingvalue>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="cookiepath">
@@ -351,10 +351,18 @@
 			<settingvalue><![CDATA[/]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="cookieprefix">
+			<title>Cookie Prefix</title>
+			<description><![CDATA[A prefix to append to all cookies set by MyBB. This is useful if you wish to install multiple copies of MyBB on the one domain or have other software installed which conflicts with the names of the cookies in MyBB. If not specified, no prefix will be used.]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="showvernum">
 			<title>Show Version Numbers</title>
 			<description><![CDATA[Allows you to turn off the public display of version numbers in MyBB.]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[off]]></settingvalue>
 			<helpkey></helpkey>
@@ -362,7 +370,7 @@
 		<setting name="captchaimage">
 			<title><![CDATA[CAPTCHA Images for Registration &amp; Posting]]></title>
 			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration and posting where users are required to enter the text contained within the image to continue. This helps prevent automated registrations and postings.]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[on]]></settingvalue>
 			<helpkey></helpkey>
@@ -370,7 +378,7 @@
 		<setting name="reportmethod">
 			<title>Reported Posts Medium</title>
 			<description><![CDATA[Please select from the list how you want reported posts to be dealt with. Storing them in the database is probably the better of the options listed.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[radio
 db=Stored in the Database
 pms=Sent as Private Messages
@@ -381,7 +389,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="statslimit">
 			<title>Stats Limit</title>
 			<description><![CDATA[The number of threads to show on the stats page for most replies and most views.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
 			<helpkey></helpkey>
@@ -389,7 +397,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="decpoint">
 			<title>Decimal Point</title>
 			<description><![CDATA[The decimal point you use in your region.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
 			<helpkey></helpkey>
@@ -397,7 +405,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
 			<description><![CDATA[The punctuation you want to use .  (for example, the setting ',' with the number 1200 will give you a number such as 1,200)]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
 			<helpkey></helpkey>
@@ -405,7 +413,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="showlanguageselect">
 			<title>Show Language Selector in Footer</title>
 			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
@@ -413,7 +421,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="maxmultipagelinks">
 			<title>Maximum Page Links in Pagination</title>
 			<description><![CDATA[Here you can set the number of next and previous page links to show in the pagination for threads or forums with more than one page of results.]]></description>
-			<disporder>17</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
 			<helpkey></helpkey>
@@ -421,7 +429,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="mailingaddress">
 			<title>Mailing Adress</title>
 			<description><![CDATA[If you have a mailing address, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>17</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
@@ -429,7 +437,7 @@ email=Sent via Email]]></optionscode>
 		<setting name="faxno">
 			<title>Contact Fax No</title>
 			<description><![CDATA[If you have a fax number, enter it here. This is shown on the COPPA compliance form.]]></description>
-			<disporder>19</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<helpkey></helpkey>
