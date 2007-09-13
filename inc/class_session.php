@@ -486,7 +486,7 @@ class session
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query(TABLE_PREFIX."sessions", "ip='".$this->ipaddress."'");
+			$db->delete_query(TABLE_PREFIX."sessions", "ip='".$db->escape_string($this->ipaddress)."'");
 			$onlinedata['uid'] = 0;
 		}
 
