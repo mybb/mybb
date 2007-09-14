@@ -37,7 +37,7 @@ class DefaultPage
 		echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
 		echo "	<title>".$title."</title>\n";
 		echo "	<meta name=\"author\" content=\"MyBB Group\" />\n";
-		echo "	<meta name=\"copyright\" content=\"Copyright ".date('Y')." MyBB Group.\" />\n";
+		echo "	<meta name=\"copyright\" content=\"Copyright ".COPY_YEAR." MyBB Group.\" />\n";
 		echo "	<link rel=\"stylesheet\" href=\"styles/".$this->style."/main.css\" type=\"text/css\" />\n";
 
 		// Load stylesheet for this module if it has one
@@ -96,7 +96,7 @@ var imagepath = '../images';
 		echo "		</div>\n";
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
-		echo "<div id=\"footer\"><p class=\"generation\">".sprintf($lang->generated_in, $totaltime, $querycount)."</p><p class=\"powered\">Powered By MyBB. &copy; ".date("Y")." MyBB Group. All Rights Reserved.</p></div>\n";
+		echo "<div id=\"footer\"><p class=\"generation\">".sprintf($lang->generated_in, $totaltime, $querycount)."</p><p class=\"powered\">Powered By MyBB. &copy; ".COPY_YEAR." MyBB Group. All Rights Reserved.</p></div>\n";
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
@@ -149,17 +149,17 @@ var imagepath = '../images';
 	
 	function output_success($message)
 	{
-		echo "<div class=\"success\">".$message."</div>\n";
+		echo "<div class=\"success\">{$message}</div>\n";
 	}
 
 	function output_alert($message)
 	{
-		echo "<div class=\"alert\">".$message."</div>\n";
+		echo "<div class=\"alert\">{$message}</div>\n";
 	}
 	
 	function output_inline_message($message)
 	{
-		echo "<div class=\"inline_message\">".$message."</div>\n";
+		echo "<div class=\"inline_message\">{$message}</div>\n";
 	}
 	
 	function output_error($error)
@@ -191,14 +191,16 @@ var imagepath = '../images';
 	function show_login($message="", $class="success")
 	{
 		global $lang;
-		
+
+		$copy_year = COPY_YEAR;
+
 		print <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head profile="http://gmpg.org/xfn/1">
 <title>{$lang->mybb_admin_login}</title>
 <meta name="author" content="MyBB Group" />
-<meta name="copyright" content="Copyright 2006 MyBB Group." />
+<meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
 <link rel="stylesheet" href="./styles/default/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/prototype.js"></script>
 <script type="text/javascript" src="../jscripts/general.js"></script>
@@ -464,7 +466,7 @@ class DefaultPopupMenu
 
 	function fetch()
 	{
-		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\">\n{$this->items}</div>\n";
+		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\" style=\"display: none;\">\n{$this->items}</div>\n";
 		if($this->title)
 		{
 			$popup .= "<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}</a>\n";
