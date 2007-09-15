@@ -30,6 +30,8 @@ if(!isset($config['admin_dir']))
 define('MYBB_ADMIN_DIR', MYBB_ROOT."admincp/");
 //define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 
+define('COPY_YEAR', my_date('Y', TIME_NOW));
+
 // Check installation (TEMPORARY)
 if(!$db->table_exists('adminlog2'))
 {

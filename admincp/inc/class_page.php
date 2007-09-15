@@ -283,11 +283,11 @@ EOF;
 				$menu_item['link'] = htmlspecialchars($menu_item['link']);
 				if($menu_item['id'] == $this->active_module)
 				{
-					$build_menu .= "<li><a href=\"".$menu_item['link']."\" class=\"active\">".$menu_item['title']."</a></li>\n";
+					$build_menu .= "<li><a href=\"{$menu_item['link']}\" class=\"active\">{$menu_item['title']}</a></li>\n";
 				}
 				else
 				{
-					$build_menu .= "<li><a href=\"".$menu_item['link']."\">".$menu_item['title']."</a></li>\n";
+					$build_menu .= "<li><a href=\"{$menu_item['link']}\">{$menu_item['title']}</a></li>\n";
 				}
 			}
 		}
