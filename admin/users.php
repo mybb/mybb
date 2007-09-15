@@ -683,9 +683,14 @@ if($mybb->input['action'] == "do_email")
 				
 				// Update private message count (total, new and unread) for recipient
 				update_pm_count($user['uid'], 7, $user['lastactive']);
-				
+
 				if($user['pmnotify'] == "yes")
 				{
+					$updated_user = array(
+						"pmnotice" => "new"
+					);
+					$db->update_query(TABLE_PREFIX."users", $updated_user, "uid='{$user['uid']}'");
+
 					if($user['language'] != "" && $lang->language_exists($user['language']))
 					{
 						$uselang = $user['language'];
