@@ -51,6 +51,10 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"../jscripts/popup_menu.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/admincp.js\"></script>\n";
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
+
+		// Stop JS elements showing while page is loading (JS supported browsers only)
+		echo "  <script type=\"text/javascript\">document.write('<style type=\"text/css\">.popup_menu { display: none; }</style>');</script>\n";
+
 		echo "	<script type=\"text/javascript\">
 //<![CDATA[
 var loading_text = '{$lang->loading_text}';
@@ -466,7 +470,7 @@ class DefaultPopupMenu
 
 	function fetch()
 	{
-		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\" style=\"display: none;\">\n{$this->items}</div>\n";
+		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\">\n{$this->items}</div>\n";
 		if($this->title)
 		{
 			$popup .= "<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}</a>\n";
