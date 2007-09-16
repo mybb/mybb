@@ -1151,6 +1151,7 @@ function install_done()
 		'threadmode' => '',
 		'daysprune' => 0,
 		'regip' => $db->escape_string(get_ip()),
+		'longregip' => intval(ip2long(get_ip())),
 		'language' => '',
 		'showcodebuttons' => 1,
 		'tpp' => 0,

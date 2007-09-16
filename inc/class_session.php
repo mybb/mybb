@@ -167,7 +167,7 @@ class session
 
 		if($mybb->user['lastip'] != $this->ipaddress)
 		{
-			$lastip_add .= ", lastip='".$db->escape_string($this->ipaddress)."'";
+			$lastip_add .= ", lastip='".$db->escape_string($this->ipaddress)."', longlastip='".intval(ip2long($this->ipaddress))."'";
 		}
 
 		// If the last visit was over 900 seconds (session time out) ago then update lastvisit.
