@@ -1456,7 +1456,7 @@ if($mybb->input['action'] == "find")
 			}
 			else
 			{
-				$ip_sql = "longregip > '{$ip_range[0]}' AND long{$search_field} < '{$ip_range[1]}'";
+				$ip_sql = "longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}'";
 			}
 		}
 		$conditions .= " AND {$ip_sql}";
