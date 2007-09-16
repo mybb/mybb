@@ -397,6 +397,7 @@ function insert_into_css($new_css, $class_id="", $selector="", $css="")
 	// Valid CSS, swap out old, swap in new
 	else
 	{
+		$css = str_replace(array("\r\n", "\n", "\r"), "\n", $css);
 		$css = preg_replace('#(?<!\\")\}#', "}\n", $css);
 		$css = preg_replace("#\s*([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~\^]+)(\s*)\{(\n*)#isu", "\n$1 {\n", $css);
 		$css = preg_replace("#\s{1,}\{#", " {", $css);

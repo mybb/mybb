@@ -20,14 +20,14 @@ PopupMenu.prototype = {
 		}
 		
 		this.menu = $(popupMenu);
-		//this.menu.style.display = "none";
+		this.menu.style.display = "none";
 		element.onclick = this.openMenu.bindAsEventListener(this);
 	},
 	
 	openMenu: function(e)
 	{
 		Event.stop(e);
-		if(document.currentMenu == this.id)
+		if(document.currentMenu && document.currentMenu == this.id)
 		{
 			this.closeMenu(document.currentMenu);
 			return false;
@@ -50,6 +50,7 @@ PopupMenu.prototype = {
 			}
 		} while(element);
 		element = $(this.id);
+		element.blur();
 		this.menu.style.position = "absolute";
 		this.menu.style.zIndex = 100;
 		this.menu.style.top = (offsetTop+element.offsetHeight-1)+"px";
@@ -60,7 +61,7 @@ PopupMenu.prototype = {
 		}
 		this.menu.style.left = offsetLeft+"px";
 		this.menu.style.visibility = 'hidden';
-		this.menu.style.display = '';
+		this.menu.style.display = 'block';
 		if(this.menu.style.width)
 		{
 			menuWidth = parseInt(this.menu.style.width);
@@ -72,20 +73,23 @@ PopupMenu.prototype = {
 		pageSize = DomLib.getPageSize();
 		if(offsetLeft+menuWidth >= pageSize[0])
 		{
-			this.menu.style.left = (offsetLeft-menuWidth-2)+"px";
+			this.menu.style.left = (offsetLeft-element.offsetWidth+1)+"px";
 		}
-		//this.menu.style.display = '';	
+		this.menu.style.display = 'block';	
 		this.menu.style.visibility = 'visible';
 
 		document.currentMenu = element.id;
 		Event.observe(document, 'click', this.closeMenu.bindAsEventListener(this));
 	},
 	
-	closeMenu: function()
+	closeMenu: function(menu)
 	{
-		var menu = document.currentMenu;
+		if(!menu)
+		{
+			var menu = document.currentMenu;
+		}
 		menu = $(menu+"_popup");
-		this.menu.style.display = "none";
+		menu.style.display = "none";
 		document.currentMenu = "";
 		document.onclick = function() { };
 	}
