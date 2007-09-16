@@ -29,12 +29,12 @@ PopupMenu.prototype = {
 		Event.stop(e);
 		if(document.currentMenu && document.currentMenu == this.id)
 		{
-			this.closeMenu(document.currentMenu);
+			this.closeMenu();
 			return false;
 		}
 		else if(document.currentMenu != "")
 		{
-			this.closeMenu(document.currentMenu);
+			this.closeMenu();
 		}
 		
 		offsetTop = offsetLeft = 0;
@@ -82,12 +82,13 @@ PopupMenu.prototype = {
 		Event.observe(document, 'click', this.closeMenu.bindAsEventListener(this));
 	},
 	
-	closeMenu: function(menu)
+	closeMenu: function()
 	{
-		if(!menu)
+		if(!document.currentMenu)
 		{
-			var menu = document.currentMenu;
+			return;
 		}
+		var menu = document.currentMenu;
 		menu = $(menu+"_popup");
 		menu.style.display = "none";
 		document.currentMenu = "";
