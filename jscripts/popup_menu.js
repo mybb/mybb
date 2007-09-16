@@ -73,7 +73,7 @@ PopupMenu.prototype = {
 		pageSize = DomLib.getPageSize();
 		if(offsetLeft+menuWidth >= pageSize[0])
 		{
-			this.menu.style.left = (offsetLeft-element.offsetWidth+1)+"px";
+			this.menu.style.left = (offsetLeft-menuWidth+element.offsetWidth)+"px";
 		}
 		this.menu.style.display = 'block';	
 		this.menu.style.visibility = 'visible';
