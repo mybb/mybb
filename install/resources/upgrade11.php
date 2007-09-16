@@ -1031,73 +1031,6 @@ function upgrade11_dbchanges7()
 {
 	global $db, $output;
 	
-	$output->print_header("User Registration IP Conversion");
-
-	if(!$_POST['ipspage'])
-	{
-		$ipp = 100;
-	}
-	else
-	{
-		$ipp = $_POST['ipspage'];
-	}
-
-	if($_POST['ipstart'])
-	{
-		$startat = $_POST['ipstart'];
-		$upper = $startat+$ipp;
-		$lower = $startat;
-	}
-	else
-	{
-		$startat = 0;
-		$upper = $ipp;
-		$lower = 1;
-	}
-
-	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
-	$cnt = $db->fetch_array($query);
-	
-	if($upper > $cnt['ipcount'])
-	{
-		$upper = $cnt['ipcount'];
-	}
-
-	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
-	
-	$ipaddress = false;
-	
-	$query = $db->simple_select("users", "regip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
-	while($user = $db->fetch_array($query))
-	{
-		// Have we already converted this ip?
-		if(!$user['longregip'])
-		{
-			$db->update_query("users", array('longregip' => ip2long($user['regip'])), "uid = '{$user['uid']}'");
-		}
-		$ipaddress = true;
-	}
-
-	$remaining = $upper-$cnt['ipcount'];
-	if($remaining && $ipaddress)
-	{
-		$nextact = "11_dbchanges7";
-		$startat = $startat+$ipp;
-		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of user ips.</p>";
-	}
-	else
-	{
-		$nextact = "11_dbchanges8";
-		$contents .= "<p>Done</p><p>All user ips have been converted to the new ip format. Click next to continue.</p>";
-	}
-	$output->print_contents($contents);
-	$output->print_footer($nextact);	
-}
-
-function upgrade11_dbchanges7()
-{
-	global $db, $output;
-	
 	$output->print_header("User IP Conversion");
 
 	if(!$_POST['ipspage'])
@@ -1133,35 +1066,48 @@ function upgrade11_dbchanges7()
 	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
 	
 	$ipaddress = false;
+	$update_array = array();
 	
-	$query = $db->simple_select("users", "lastip, longlastip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($user = $db->fetch_array($query))
 	{
 		// Have we already converted this ip?
+		if(!$user['longregip'])
+		{
+			$update_array['longregip'] = ip2long($user['regip']);
+		}
+		
 		if(!$user['longlastip'])
 		{
-			$db->update_query("users", array('longlastip' => ip2long($user['lastip'])), "uid = '{$user['uid']}'");
+			$update_array['longlastip'] = ip2long($user['lastip']);
 		}
+		
+		if(!empty($update_array))
+		{
+			$db->update_query("users", $update_array, "uid = '{$user['uid']}'");
+		}
+		
+		$update_array = array();
 		$ipaddress = true;
 	}
 
 	$remaining = $upper-$cnt['ipcount'];
 	if($remaining && $ipaddress)
 	{
-		$nextact = "11_dbchanges8";
+		$nextact = "11_dbchanges7";
 		$startat = $startat+$ipp;
 		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of user ips.</p>";
 	}
 	else
 	{
-		$nextact = "11_dbchanges9";
+		$nextact = "11_dbchanges8";
 		$contents .= "<p>Done</p><p>All user ips have been converted to the new ip format. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
 	$output->print_footer($nextact);	
 }
 
-function upgrade11_dbchanges9()
+function upgrade11_dbchanges8()
 {
 	global $db, $output;
 
@@ -1303,7 +1249,7 @@ function upgrade11_dbchanges9()
 	$remaining = $db->fetch_field($query, "remaining");	
 	if($remaining && $date)
 	{
-		$nextact = "11_dbchanges9";
+		$nextact = "11_dbchanges8";
 		$startat = $startat+$epp;
 		$contents .= "<p><input type=\"hidden\" name=\"eventspage\" value=\"$epp\" /><input type=\"hidden\" name=\"eventstart\" value=\"$startat\" />Done. Click Next to move on to the next set of events.</p>";
 	}

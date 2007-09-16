@@ -4794,6 +4794,12 @@ function escaped_explode($delimeter, $string, $escape="")
 	return $strings;
 }
 
+/**
+ * Fetch an IPv4 long formatted range for searching IPv4 IP addresses.
+ *
+ * @param string The IP address to convert to a range based LONG
+ * @rturn mixed If a full IP address is provided, the ip2long equivilent, otherwise an array of the upper & lower extremities of the IP
+ */
 function fetch_longipv4_range($ip)
 {
 	$ip_bits = explode(".", $ip);
