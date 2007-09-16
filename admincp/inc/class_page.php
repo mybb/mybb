@@ -53,7 +53,8 @@ class DefaultPage
 		echo "	<script type=\"text/javascript\" src=\"./jscripts/tabs.js\"></script>\n";
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
-		echo "  <script type=\"text/javascript\">document.write('<style type=\"text/css\">.popup_menu { display: none; }</style>');</script>\n";
+		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
+		echo "  <script type=\"text/javascript\">document.write('<style type=\"text/css\">.popup_button { display: inline; } .popup_menu { display: none; }</style>');</script>\n";
 
 		echo "	<script type=\"text/javascript\">
 //<![CDATA[

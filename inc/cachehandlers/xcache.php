@@ -10,9 +10,9 @@
  */
 
 /**
- * eAccelerator Cache Handler
+ * Xcache Cache Handler
  */
-class eacceleratorCacheHandler
+class xcacheCacheHandler
 {
 	/**
 	 * Unique identifier representing this copy of MyBB
@@ -28,9 +28,9 @@ class eacceleratorCacheHandler
 	{
 		global $mybb;
 		
-		if(!function_exists("eaccelerator_get"))
+		if(!function_exists("xcache_get"))
 		{
-			die("eAccelerator needs to be configured with PHP to use the eAccelerator cache support");
+			die("Xcache needs to be configured with PHP to use the Xcache cache support");
 		}
 
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
@@ -49,13 +49,11 @@ class eacceleratorCacheHandler
 	
 	function fetch($name, $hard_refresh=false)
 	{
-		$data = eaccelerator_get($this->unique_id."_".$name);
-		if($data === false)
+		if(!xcache_isset($name))
 		{
 			return false;
 		}
-
-		return @unserialize($data);
+		return @unserialize(xcache_get($this->unique_id."_".$name));
 	}
 	
 	/**
@@ -67,10 +65,7 @@ class eacceleratorCacheHandler
 	 */
 	function put($name, $contents)
 	{
-		eaccelerator_lock($this->unique_id."_".$name);
-		$status = eaccelerator_put($this->unique_id."_".$name, serialize($data));
-		eaccelerator_unlock($this->unique_id."_".$name);
-		return $status;
+		return xcache_set($this->unique_id."_".$name, serialize($data));
 	}
 	
 	/**
@@ -81,7 +76,7 @@ class eacceleratorCacheHandler
 	 */
 	function delete($name)
 	{
-		return eaccelerator_rm($this->unique_id."_".$name);
+		return xcache_set($this->unique_id."_".$name, "", 1);
 	}
 	
 	/**

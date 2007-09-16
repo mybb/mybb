@@ -50,6 +50,11 @@ class datacache
 				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
 				$this->handler = new eacceleratorCacheHandler;
 				break;
+			// Xcache cache
+			case "xcache":
+				require_once MYBB_ROOT."/inc/cachehandlers/xcache.php";
+				$this->handler = new xcacheCacheHandler;
+				break;
 		}
 		if(is_object($this->handler))
 		{
