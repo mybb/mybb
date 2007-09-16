@@ -4794,6 +4794,38 @@ function escaped_explode($delimeter, $string, $escape="")
 	return $strings;
 }
 
+function fetch_longipv4_range($ip)
+{
+	$ip_bits = explode(".", $ip);
+
+	if(strpos($ip, "*") === false)
+	{
+		if(count($ip_bits) == 4)
+		{
+			return ip2long($ip);
+		}
+		else
+		{
+			return array(ip2long($ip.".0"), ip2long($ip.".255"));
+		}
+	}
+	// Wildcard based IP provided
+	else
+	{
+		foreach($ip_bits as $piece)
+		{
+			if($piece == "*")
+			{
+				return array(ip2long($ip_string."0"), ip2long($ip_string."255"));
+			}
+			else
+			{
+				$ip_string .= $piece.".";
+			}
+		}
+	}
+}
+
 /**
  * Below are compatibility functions which replicate functions in newer versions of PHP.
  *

@@ -111,6 +111,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"language" => $mybb->input['language'],
 		"profile_fields" => $mybb->input['profile_fields'],
 		"regip" => $session->ipaddress,
+		"longregip" => ip2long($session->ipaddress),
 		"coppa_user" => intval($_COOKIE['coppauser'])
 	);
 

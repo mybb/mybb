@@ -1254,7 +1254,6 @@ if($mybb->input['action'] == "ipaddresses")
 
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
-
 	
 	$popup = new PopupMenu("user_{$mybb->input['uid']}", $lang->options);
 	$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
@@ -1691,7 +1690,25 @@ function build_users_view($view)
 		if($view['conditions'][$search_field])
 		{
 			$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
-			$search_sql .= " AND u.{$search_field} LIKE '".$db->escape_string_like($view['conditions'][$search_field])."'";
+			
+			// IPv6 IP
+			if(strpos($view['conditions'][$search_field], ":") !== false)
+			{
+				$ip_sql = "{$search_field} LIKE '".$db->escape_string($view['conditions'][$search_field])."'";
+			}
+			else
+			{
+				$ip_range = fetch_longipv4_range($view['conditions'][$search_field]);
+				if(!is_array($ip_range))
+				{
+					$ip_sql = "long{$search_field}='{$ip_range}'";
+				}
+				else
+				{
+					$ip_sql = "long{$search_field} > '{$ip_range[0]}' AND long{$search_field} < '{$ip_range[1]}'";
+				}
+			}
+			$search_sql .= " AND u.{$search_field} {$ip_sql}";
 		}
 	}
 

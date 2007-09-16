@@ -340,6 +340,7 @@ if($mybb->input['action'] == "do_add")
 		"profile_fields" => $mybb->input['profile_fields'],
 		"profile_fields_editable" => true,
 		"regip" => $mybb->input['ipaddress'],
+		"longregip" => intval(ip2long($mybb->input['ipaddress'])),
 		"avatar" => $mybb->input['avatar'],
 		"website" => $mybb->input['website'],
 		"icq" => $mybb->input['icq'],
@@ -454,6 +455,7 @@ if($mybb->input['action'] == "do_edit")
 		"profile_fields" => $mybb->input['profile_fields'],
 		"profile_fields_editable" => true,
 		"regip" => $mybb->input['ipaddress'],
+		"longregip" => intval(ip2long($mybb->input['ipaddress'])),
 		"avatar" => $mybb->input['avatar'],
 		"website" => $mybb->input['website'],
 		"icq" => $mybb->input['icq'],
@@ -1100,6 +1102,7 @@ if($mybb->input['action'] == "findips")
 		makelabelcode($lang->error_no_ips, '', 2);
 	}
 	tablesubheader($lang->post_ip);
+	
 	$query = $db->query("SELECT DISTINCT ipaddress FROM ".TABLE_PREFIX."posts WHERE uid='$uid'");
 	if($db->num_rows($query) > 0)
 	{
@@ -1439,12 +1442,48 @@ if($mybb->input['action'] == "find")
 	if($search['regip'])
 	{
 		$search['regip'] = $db->escape_string($search['regip']);
-		$conditions .= " AND regip LIKE '$search[regip]%'";
+		// IPv6 IP
+		if(strpos($search['regip'], ":") !== false)
+		{
+			$ip_sql = "regip LIKE '".$db->escape_string($search['regip'])."'%";
+		}
+		else
+		{
+			$ip_range = fetch_longipv4_range($search['regip']);
+			if(!is_array($ip_range))
+			{
+				$ip_sql = "longregip='{$ip_range}'";
+			}
+			else
+			{
+				$ip_sql = "longregip > '{$ip_range[0]}' AND long{$search_field} < '{$ip_range[1]}'";
+			}
+		}
+		$conditions .= " AND {$ip_sql}";
 	}
 	if($search['postip'])
 	{
 		$search['postip'] = $db->escape_string($search['postip']);
-		$query = $db->query("SELECT DISTINCT uid FROM ".TABLE_PREFIX."posts WHERE ipaddress LIKE '$search[postip]%'");
+		
+		// IPv6 IP
+		if(strpos($search['postip'], ":") !== false)
+		{
+			$ip_sql = "ipaddress LIKE '".$db->escape_string($search['postip'])."%'";
+		}
+		else
+		{
+			$ip_range = fetch_longipv4_range($search['postip']);
+			if(!is_array($ip_range))
+			{
+				$ip_sql = "longipaddress='{$ip_range}'";
+			}
+			else
+			{
+				$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
+			}
+		}
+
+		$query = $db->query("SELECT DISTINCT uid FROM ".TABLE_PREFIX."posts WHERE {$ip_sql}");
 		$uids = ',';
 		while($u = $db->fetch_array($query))
 		{

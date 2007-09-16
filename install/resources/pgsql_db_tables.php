@@ -435,6 +435,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   dateline bigint NOT NULL default '0',
   message text NOT NULL default '',
   ipaddress varchar(30) NOT NULL default '',
+  longipaddress int NOT NULL default '0'
   includesig char(3) NOT NULL default '',
   smilieoff char(3) NOT NULL default '',
   edituid int NOT NULL default '0',
@@ -877,6 +878,8 @@ $tables[] = "CREATE TABLE mybb_users (
   reputation bigint NOT NULL default '0',
   regip varchar(50) NOT NULL default '',
   lastip varchar(50) NOT NULL default '',
+  longregip int NOT NULL default '0'
+  longlastip int NOT NULL default '0'
   language varchar(50) NOT NULL default '',
   timeonline bigint NOT NULL default '0',
   showcodebuttons int NOT NULL default '1',

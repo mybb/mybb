@@ -861,6 +861,7 @@ class UserDataHandler extends DataHandler
 			"dateformat" => $db->escape_string($user['dateformat']),
 			"timeformat" => $db->escape_string($user['timeformat']),
 			"regip" => $db->escape_string($user['regip']),
+			"longregip" => intval(ip2long($user['regip'])),
 			"language" => $db->escape_string($user['language']),
 			"showcodebuttons" => $user['options']['showcodebuttons'],
 			"away" => $user['away']['away'],

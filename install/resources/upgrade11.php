@@ -33,8 +33,14 @@ function upgrade11_dbchanges()
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 	
-	// This will take a LONG time on huge post databases, so we only run it by itself and private messages
+	// This will take a LONG time on huge post databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
+	
+	if($db->field_exists('longipaddress', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP longipaddress;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(10) NOT NULL default '0' AFTER ipaddress");
 	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -391,6 +397,23 @@ function upgrade11_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
+	if($db->field_exists('birthdayprivacy', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
+	
+	if($db->field_exists('longregip', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longregip;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longregip int(10) NOT NULL default '0' AFTER lastip");
+	
+	if($db->field_exists('longlastip', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longlastip;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longlastip int(10) NOT NULL default '0' AFTER lastip");
 	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -698,13 +721,6 @@ function upgrade11_dbchanges5()
 	$db->drop_table("forumsread");
 	$db->drop_table("adminviews");
 	$db->drop_table("threadviews");
-	$db->drop_table("sph_counter");
-	
-	$db->write_query("CREATE TABLE ".TABLE_PREFIX."sph_counter (
-    	counter_id int unsigned NOT NULL default '1',
-    	max_doc_id int unsigned NOT NULL default '0',
-		PRIMARY KEY (counter_id)
-	) TYPE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."threadviews (
 		tid int unsigned NOT NULL default '0'
@@ -825,6 +841,7 @@ function upgrade11_dbchanges5()
 function upgrade11_redoconfig()
 {
 	global $db, $output, $config, $mybb;
+	
 	$output->print_header("Rewriting config.php");
 
 	$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
@@ -944,6 +961,207 @@ function upgrade11_redoconfig()
 }
 
 function upgrade11_dbchanges6()
+{
+	global $db, $output;
+	
+	$output->print_header("Post IP Conversion");
+
+	if(!$_POST['ipspage'])
+	{
+		$ipp = 100;
+	}
+	else
+	{
+		$ipp = $_POST['ipspage'];
+	}
+
+	if($_POST['ipstart'])
+	{
+		$startat = $_POST['ipstart'];
+		$upper = $startat+$ipp;
+		$lower = $startat;
+	}
+	else
+	{
+		$startat = 0;
+		$upper = $ipp;
+		$lower = 1;
+	}
+
+	$query = $db->simple_select("posts", "COUNT(pid) AS ipcount");
+	$cnt = $db->fetch_array($query);
+	
+	if($upper > $cnt['ipcount'])
+	{
+		$upper = $cnt['ipcount'];
+	}
+
+	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
+	
+	$ipaddress = false;
+	
+	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	while($post = $db->fetch_array($query))
+	{
+		// Have we already converted this ip?
+		if(!$post['longipaddress'])
+		{
+			$db->update_query("posts", array('longipaddress' => ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
+		}
+		$ipaddress = true;
+	}
+	
+	$remaining = $upper-$cnt['ipcount'];
+	if($remaining && $ipaddress)
+	{
+		$nextact = "11_dbchanges6";
+		$startat = $startat+$ipp;
+		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of post ips.</p>";
+	}
+	else
+	{
+		$nextact = "11_dbchanges7";
+		$contents .= "<p>Done</p><p>All post ips have been converted to the new ip format. Click next to continue.</p>";
+	}
+	$output->print_contents($contents);
+	$output->print_footer($nextact);	
+}
+
+function upgrade11_dbchanges7()
+{
+	global $db, $output;
+	
+	$output->print_header("User Registration IP Conversion");
+
+	if(!$_POST['ipspage'])
+	{
+		$ipp = 100;
+	}
+	else
+	{
+		$ipp = $_POST['ipspage'];
+	}
+
+	if($_POST['ipstart'])
+	{
+		$startat = $_POST['ipstart'];
+		$upper = $startat+$ipp;
+		$lower = $startat;
+	}
+	else
+	{
+		$startat = 0;
+		$upper = $ipp;
+		$lower = 1;
+	}
+
+	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
+	$cnt = $db->fetch_array($query);
+	
+	if($upper > $cnt['ipcount'])
+	{
+		$upper = $cnt['ipcount'];
+	}
+
+	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
+	
+	$ipaddress = false;
+	
+	$query = $db->simple_select("users", "regip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	while($user = $db->fetch_array($query))
+	{
+		// Have we already converted this ip?
+		if(!$user['longregip'])
+		{
+			$db->update_query("users", array('longregip' => ip2long($user['regip'])), "uid = '{$user['uid']}'");
+		}
+		$ipaddress = true;
+	}
+
+	$remaining = $upper-$cnt['ipcount'];
+	if($remaining && $ipaddress)
+	{
+		$nextact = "11_dbchanges7";
+		$startat = $startat+$ipp;
+		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of user ips.</p>";
+	}
+	else
+	{
+		$nextact = "11_dbchanges8";
+		$contents .= "<p>Done</p><p>All user ips have been converted to the new ip format. Click next to continue.</p>";
+	}
+	$output->print_contents($contents);
+	$output->print_footer($nextact);	
+}
+
+function upgrade11_dbchanges7()
+{
+	global $db, $output;
+	
+	$output->print_header("User IP Conversion");
+
+	if(!$_POST['ipspage'])
+	{
+		$ipp = 100;
+	}
+	else
+	{
+		$ipp = $_POST['ipspage'];
+	}
+
+	if($_POST['ipstart'])
+	{
+		$startat = $_POST['ipstart'];
+		$upper = $startat+$ipp;
+		$lower = $startat;
+	}
+	else
+	{
+		$startat = 0;
+		$upper = $ipp;
+		$lower = 1;
+	}
+
+	$query = $db->simple_select("users", "COUNT(uid) AS ipcount");
+	$cnt = $db->fetch_array($query);
+	
+	if($upper > $cnt['ipcount'])
+	{
+		$upper = $cnt['ipcount'];
+	}
+
+	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
+	
+	$ipaddress = false;
+	
+	$query = $db->simple_select("users", "lastip, longlastip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	while($user = $db->fetch_array($query))
+	{
+		// Have we already converted this ip?
+		if(!$user['longlastip'])
+		{
+			$db->update_query("users", array('longlastip' => ip2long($user['lastip'])), "uid = '{$user['uid']}'");
+		}
+		$ipaddress = true;
+	}
+
+	$remaining = $upper-$cnt['ipcount'];
+	if($remaining && $ipaddress)
+	{
+		$nextact = "11_dbchanges8";
+		$startat = $startat+$ipp;
+		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of user ips.</p>";
+	}
+	else
+	{
+		$nextact = "11_dbchanges9";
+		$contents .= "<p>Done</p><p>All user ips have been converted to the new ip format. Click next to continue.</p>";
+	}
+	$output->print_contents($contents);
+	$output->print_footer($nextact);	
+}
+
+function upgrade11_dbchanges9()
 {
 	global $db, $output;
 
@@ -1085,7 +1303,7 @@ function upgrade11_dbchanges6()
 	$remaining = $db->fetch_field($query, "remaining");	
 	if($remaining && $date)
 	{
-		$nextact = "11_dbchanges6";
+		$nextact = "11_dbchanges9";
 		$startat = $startat+$epp;
 		$contents .= "<p><input type=\"hidden\" name=\"eventspage\" value=\"$epp\" /><input type=\"hidden\" name=\"eventstart\" value=\"$startat\" />Done. Click Next to move on to the next set of events.</p>";
 	}
