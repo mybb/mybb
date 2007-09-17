@@ -551,7 +551,7 @@ if($mybb->input['action'] == "read")
 
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
-	if($pm['fromid'] == -2)
+	if($pm['fromid'] == 0)
 	{
 		$pm['username'] = 'MyBB Engine';
 	}
@@ -1160,14 +1160,14 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 				$tofromusername = build_profile_link($message['fromusername'], $tofromuid);
 			}
 			
-			if($tofromuid == -2)
+			if($tofromuid == 0)
 			{
 				$tofromusername = "MyBB Engine";
 			}
 			$tofrom = $lang->from;
 		}
 		
-		if($tofromuid == -2)
+		if($tofromuid == 0)
 		{
 			$message['fromusername'] = "MyBB Engine";
 		}
@@ -1433,7 +1433,7 @@ if(!$mybb->input['action'])
 			{
 				$tofromusername = $message['fromusername'];
 				$tofromuid = $message['fromid'];
-				if($tofromuid == -2)
+				if($tofromuid == 0)
 				{
 					$tofromusername = 'MyBB Engine';
 				}

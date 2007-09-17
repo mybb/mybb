@@ -730,7 +730,7 @@ if($mybb->input['action'] == "change")
 		}
 
 		// If the delayedthreadviews setting was changed, enable or disable the tasks for it.
-		if($mybb->input['upsetting']['delayedthreadviews'] && $mybb->settings['delayedthreadviews'] != && $mybb->input['upsetting']['delayedthreadviews'])
+		if($mybb->input['upsetting']['delayedthreadviews'] && $mybb->settings['delayedthreadviews'] != $mybb->input['upsetting']['delayedthreadviews'])
 		{
 			if($mybb->input['upsetting']['delayedthreadviews'] == "off")
 			{

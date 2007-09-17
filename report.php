@@ -73,7 +73,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		exit;
 	}
 	
-	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pm")
+	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
 		$query = $db->query("
 			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
@@ -95,28 +95,45 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		while($mod = $db->fetch_array($query))
 		{
 			$emailsubject = sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-			$emailmessage = sprintf($lang->email_reportpost, $mod['username'], $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], $thread['tid'], $post['pid'], $thread['subject'], $mybb->input['reason']);
+			$emailmessage = sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], $thread['tid'], $post['pid'], $thread['subject'], $mybb->input['reason']);
 			
 			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
 			{
-				$reportpm = array(
-					"uid" => $mod['uid'],
-					"toid" => $mod['uid'],
-					"fromid" => -2,
-					"folder" => 1,
-					"subject" => $db->escape_string($emailsubject),
-					"message" => $db->escape_string($emailmessage),
-					"dateline" => TIME_NOW,
-					"status" => 0,
-					"readtime" => 0
-					);
-				$db->insert_query("privatemessages", $reportpm);
-				$db->update_query("users", array('pmpopup' => 'new'), "uid='{$mod['uid']}'");
+				$pm_recipients[] = $mod['uid'];
 			}
 			else
 			{
 				my_mail($mod['email'], $emailsubject, $emailmessage);
 			}
+		}
+
+		if(count($pm_recipients) > 0)
+		{
+			$emailsubject = sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
+			$emailmessage = sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], $thread['tid'], $post['pid'], $thread['subject'], $mybb->input['reason']);
+
+			require_once MYBB_ROOT."inc/datahandlers/pm.php";
+			$pmhandler = new PMDataHandler();
+
+			$pm = array(
+				"subject" => $emailsubject,
+				"message" => $emailmessage,
+				"icon" => 0,
+				"fromid" => 0,
+				"toid" => $pm_recipients
+			);
+
+			$pmhandler->admin_override = true;
+			$pmhandler->set_data($pm);
+
+			// Now let the pm handler do all the hard work.
+			if(!$pmhandler->validate_pm())
+			{
+				// Force it to valid to just get it out of here
+				$pmhandler->is_validated = true;
+				$pmhandler->errors = array();
+			}
+			$pminfo = $pmhandler->insert_pm();
 		}
 	}
 	else

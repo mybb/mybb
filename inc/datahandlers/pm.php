@@ -107,6 +107,9 @@ class PMDataHandler extends DataHandler
 
 		$pm = &$this->data;
 
+		// Return if we've already validated
+		if($pm['sender']) return true;
+
 		// Fetch the senders profile data.
 		$sender = get_user($pm['fromid']);
 
@@ -228,7 +231,7 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Are we trying to send this message to more users than the permissions allow?
-		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'])
+		if($sender_permissions['maxpmrecipients'] > 0 && count($recipients) > $sender_permissions['maxpmrecipients'] && $this->admin_override != true)
 		{
 			$this->set_error("too_many_recipients", array($sender_permissions['maxpmrecipients']));
 		}
@@ -294,7 +297,10 @@ class PMDataHandler extends DataHandler
 				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
 				my_mail($user['email'], $emailsubject, $emailmessage);
 	
-				$this->set_error("recipient_reached_quota", array($user['username']));
+				if($this->admin_override != true)
+				{
+					$this->set_error("recipient_reached_quota", array($user['username']));
+				}
 			}
 	
 			// Everything looks good, assign some specifics about the recipient

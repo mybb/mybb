@@ -105,9 +105,7 @@ Thank you,
 {2} Staff";
 
 
-$l['email_reportpost'] = "{1},
-
-{2} from {3} has reported this post:
+$l['email_reportpost'] = "{2} from {3} has reported this post:
 
 {4}
 {5}/showthread.php?tid={6}&pid={7}#pid{7}

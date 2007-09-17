@@ -58,17 +58,17 @@ if($unviewableforums)
 }
 
 // Most replied-to threads
-$mostrepliedthreads = $cache->read("most_replied_threads");
+$most_replied = $cache->read("most_replied_threads");
 
-if(!$mostrepliedthreads)
+if(!$most_replied)
 {
 	$cache->update_stats_most_replied_threads();
-	$mostrepliedthreads = $cache->read("most_replied_threads");
+	$most_replied = $cache->read("most_replied_threads", true);
 }
 
-if(!empty($mostrepliedthreads))
+if(!empty($most_replied))
 {
-	foreach($mostrepliedthreads['threads'] as $key => $thread)
+	foreach($most_replied as $key => $thread)
 	{
 		if(!in_array($thread['fid'], $unviewableforumsarray))
 		{
@@ -81,17 +81,18 @@ if(!empty($mostrepliedthreads))
 }
 
 // Most viewed threads
-$mostviewedthreads = $cache->read("most_viewed_threads");
+$most_viewed = $cache->read("most_viewed_threads");
 
-if(!$mostrepliedthreads)
+if(!$most_viewed)
 {
 	$cache->update_stats_most_viewed_threads();
-	$mostrepliedthreads = $cache->read("most_viewed_threads");
+	$most_viewed = $cache->read("most_viewed_threads", true);
 }
 
-if(!empty($mostviewedthreads))
+
+if(!empty($most_viewed))
 {
-	foreach($mostviewedthreads['threads'] as $key => $thread)
+	foreach($most_viewed as $key => $thread)
 	{
 		if(!in_array($thread['fid'], $unviewableforumsarray))
 		{
