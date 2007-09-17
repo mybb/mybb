@@ -69,7 +69,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		output_page($report);
 		exit;
 	}
-	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pm")
+	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
 	{
 		$query = $db->query("
 			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
@@ -81,7 +81,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		{
 			unset($query);
 			$query = $db->query("
-				SELECT u.username, u.email, u.receivepms, u.uid
+				SELECT u.username, u.email, u.receivepms, u.pmpopup, u.uid, u.newpms, u.unreadpms, u.totalpms
 				FROM ".TABLE_PREFIX."users u
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 				WHERE (g.cancp='yes' OR g.issupermod='yes')
@@ -97,7 +97,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 				$reportpm = array(
 					"uid" => $mod['uid'],
 					"toid" => $mod['uid'],
-					"fromid" => -2,
+					"fromid" => 0,
 					"folder" => 1,
 					"subject" => $db->escape_string($emailsubject),
 					"message" => $db->escape_string($emailmessage),
@@ -106,7 +106,16 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					"readtime" => 0
 					);
 				$db->insert_query(TABLE_PREFIX."privatemessages", $reportpm);
-				$db->update_query(TABLE_PREFIX."users", array('pmpopup' => 'new'), "uid='{$mod['uid']}'");
+				$updated_user = array(
+					"newpms" => $mod['newpms']+1,
+					"unreadpms" => $mod['unreadpms']+1,
+					"totalpms" => $mod['totalpms']+1
+				);
+				if($mod['pmpopup'] == "yes")
+				{
+					$updated_user['pmpopup'] = "new";
+				}
+				$db->update_query(TABLE_PREFIX."users", $updated_user, "uid='{$mod['uid']}'");
 			}
 			else
 			{
