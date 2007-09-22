@@ -51,7 +51,7 @@ $mybb = new MyBB;
 // Include the required core files
 require_once MYBB_ROOT."inc/config.php";
 
-if(!isset($config['dbtype']))
+if(!isset($config['database']))
 {
 	$mybb->trigger_generic_error("board_not_installed");
 }
@@ -69,7 +69,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 
 $mybb->config = $config;
 
-require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
+require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 $db = new databaseEngine;
 
 // Check if our DB engine is loaded
@@ -106,13 +106,8 @@ $plugins = new pluginSystem;
 require_once MYBB_ROOT."inc/datahandler.php";
 
 // Connect to Database
-define("TABLE_PREFIX", $config['table_prefix']);
-$db->connect($config['hostname'], $config['username'], $config['password']);
-if($config['slave_hostname'] && $config['slave_username'] && $config['slave_password'] && method_exists($db, "slave_connect"))
-{
-	$db->slave_connect($config['slave_hostname'], $config['slave_username'], $config['slave_password']);
-}
-$db->select_db($config['database']);
+define("TABLE_PREFIX", $config['database']['table_prefix']);
+$db->connect($config['database']);
 $db->set_table_prefix(TABLE_PREFIX);
 $db->type = $config['dbtype'];
 

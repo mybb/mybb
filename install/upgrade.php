@@ -23,7 +23,6 @@ require_once MYBB_ROOT."inc/class_timers.php";
 require_once MYBB_ROOT."inc/functions.php";
 require_once MYBB_ROOT."inc/class_xml.php";
 require_once MYBB_ROOT."inc/config.php";
-require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
@@ -63,13 +62,13 @@ $output = new installerOutput;
 $output->script = "upgrade.php";
 $output->title = "MyBB Upgrade Wizard";
 
+require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 $db = new databaseEngine;
+	
 // Connect to Database
-define("TABLE_PREFIX", $config['table_prefix']);
-$db->connect($config['hostname'], $config['username'], $config['password']);
-$db->select_db($config['database']);
+define('TABLE_PREFIX', $config['database']['table_prefix']);
+$db->connect($config['database']);
 $db->set_table_prefix(TABLE_PREFIX);
-
 
 if(file_exists("lock"))
 {
@@ -187,6 +186,9 @@ else
 	}
 }
 
+//
+// CHRIS TODO - REVISE
+//
 function upgradethemes()
 {
 	global $output, $db, $system_upgrade_detail, $lang;
@@ -212,44 +214,34 @@ function upgradethemes()
 	{
 		$db->drop_table("themes");
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themes (
-		  tid smallint unsigned NOT NULL auto_increment,
-		  name varchar(100) NOT NULL default '',
-		  pid smallint unsigned NOT NULL default '0',
-		  def smallint(1) NOT NULL default '0',
-		  css text NOT NULL,
-		  cssbits text NOT NULL,
-		  themebits text NOT NULL,
-		  extracss text NOT NULL,
-		  allowedgroups text NOT NULL,
-		  csscached bigint(30) NOT NULL default '0',
-		  PRIMARY KEY  (tid)
-		) TYPE=MyISAM;");
-		
-		$insert_array = array(
-			'name' => 'MyBB Master Style',
-			'pid' => 0,
-			'css' => '',
-			'cssbits' => '',
-			'themebits' => '',
-			'extracss' => '',
-			'allowedgroups' => ''
-		);
-		$db->insert_query("themes", $insert_array);
-		
-		$insert_array = array(
-			'name' => 'MyBB Default',
-			'pid' => 1,
-			'def' => 1,
-			'css' => '',
-			'cssbits' => '',
-			'themebits' => '',
-			'extracss' => '',
-			'allowedgroups' => ''
-		);
-		$db->insert_query("themes", $insert_array);
-		$sid = $db->insert_id();
-		
-		$db->update_query("users", array('style' => $sid));
+		 tid smallint unsigned NOT NULL auto_increment,
+		 name varchar(100) NOT NULL default '',
+		 pid smallint unsigned NOT NULL default '0',
+		 def smallint(1) NOT NULL default '0',
+		 properties text NOT NULL,
+		 stylesheets text NOT NULL,
+		 allowedgroups text NOT NULL,
+		 PRIMARY KEY (tid)
+		) TYPE=MyISAM{$charset};");
+
+		$db->drop_table("themestylesheets");
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
+			sid int unsigned NOT NULL auto_increment,
+			tid int unsigned NOT NULL default '0',
+			attachedto text NOT NULL,
+			stylesheet text NOT NULL,
+			cachefile varchar(100) NOT NULL default '',
+			lastmodified bigint(30) NOT NULL default '0',
+			PRIMARY KEY(sid)
+		) TYPE=MyISAM{$charset};";
+
+		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+		require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+		import_theme_xml($contents, array("templateset" => -2, "no_templates" => 1));
+		$tid = build_new_theme("Default", null, 1);
+
+		$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
+		$db->update_query("users", array('style' => $tid));
 		$db->update_query("forums", array('style' => 0));
 		
 		$db->drop_table("templatesets");
@@ -257,56 +249,65 @@ function upgradethemes()
 		  sid smallint unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  PRIMARY KEY  (sid)
-		) TYPE=MyISAM;");
+		) TYPE=MyISAM{$charset};");
 		
 		$db->insert_query("templatesets", array('title' => 'Default Templates'));
 	}
+	else
+	{
+		// Re-import master
+		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+		require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+		
+		// Import master theme
+		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1))
+	}
+
 	$sid = -2;
 
-	$arr = @file(INSTALL_ROOT."resources/mybb_theme.xml");
-	$contents = @implode("", $arr);
-
+	// Now deal with the master templates
+	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 
 	$theme = $tree['theme'];
-	$css = kill_tags($theme['cssbits']);
-	$themebits = kill_tags($theme['themebits']);
-	$templates = $theme['templates']['template'];
-	$themebits['templateset'] = 1;
-	$newcount = 0;
-	foreach($templates as $template)
+
+	if(is_array($theme['templates']))
 	{
-		$templatename = $template['attributes']['name'];
-		$templateversion = $template['attributes']['version'];
-		$templatevalue = $db->escape_string($template['value']);
-		$time = TIME_NOW;
-		$query = $db->simple_select("templates", "tid", "sid='-2' AND title='$templatename'");
-		$oldtemp = $db->fetch_array($query);
-		if($oldtemp['tid'])
+		$templates = $theme['templates']['template'];
+		foreach($templates as $template)
 		{
-			$update_array = array(
-				'template' => $templatevalue,
-				'version' => templateversion,
-				'dateline' => $time
-			);
-			$db->update_query("templates", $update_array, "title='$templatename' AND sid='-2'");
-		}
-		else
-		{
-			$insert_array = array(
-				'title' => $templatename,
-				'template' => $templatevalue,
-				'sid' => $sid,
-				'version' => $templateversion,
-				'dateline' => $time
-			);			
-			
-			$db->insert_query("templates", $insert_array);
-			++$newcount;
+			$templatename = $template['attributes']['name'];
+			$templateversion = $template['attributes']['version'];
+			$templatevalue = $db->escape_string($template['value']);
+			$time = TIME_NOW;
+			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='$templatename'");
+			$oldtemp = $db->fetch_array($query);
+			if($oldtemp['tid'])
+			{
+				$update_array = array(
+					'template' => $templatevalue,
+					'version' => $templateversion,
+					'dateline' => $time
+				);
+				$db->update_query("templates", $update_array, "title='$templatename' AND sid='-2'");
+			}
+			else
+			{
+				$insert_array = array(
+					'title' => $templatename,
+					'template' => $templatevalue,
+					'sid' => $sid,
+					'version' => $templateversion,
+					'dateline' => $time
+				);			
+				
+				$db->insert_query("templates", $insert_array);
+				++$newcount;
+			}
 		}
 	}
-	update_theme(1, 0, $themebits, $css, 0);
+
 	$output->print_contents($lang->upgrade_templates_reverted_success);
 	$output->print_footer("rebuildsettings");
 }

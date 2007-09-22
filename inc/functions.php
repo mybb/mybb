@@ -136,11 +136,10 @@ function run_shutdown()
 		require MYBB_ROOT."inc/config.php";
 		if(isset($config))
 		{
-			require_once MYBB_ROOT."inc/db_".$config['dbtype'].".php";
+			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 			$db = new databaseEngine;
-			$db->connect($config['hostname'], $config['username'], $config['password']);
-			$db->select_db($config['database']);
-			define("TABLE_PREFIX", $config['table_prefix']);
+			$db->connect($config['database']);
+			define("TABLE_PREFIX", $config['database']['table_prefix']);
 			$db->set_table_prefix(TABLE_PREFIX);
 		}
 	}
@@ -2851,6 +2850,15 @@ function debug_page()
 	}
 
 	echo "</table>\n";
+
+	echo "<h2>Database Connections (".count($db->connections)." Total) </h2>\n";
+	echo "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n";
+	echo "<tr>\n";
+	echo "<td style=\"background: #fff;\">".implode("<br />", $db->connections)."</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+	echo "<br />\n";
+
 	echo "<h2>Database Queries (".$db->query_count." Total) </h2>\n";
 	echo $db->explain;
 	echo "<h2>Template Statistics</h2>\n";

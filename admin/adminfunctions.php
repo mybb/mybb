@@ -2448,17 +2448,6 @@ function update_css_file($tid)
 	return false;
 }
 
-function fix_css_urls($url)
-{
-	if(!preg_match("#^(https?://|/)#i", $url))
-	{
-		return "url(../{$url})";
-	}
-	else
-	{
-		return "url({$url})";
-	}
-}
 
 /**
 * Build a checkbox list of usergroups

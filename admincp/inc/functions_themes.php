@@ -20,8 +20,6 @@ function import_theme_xml($xml, $options=array())
 	
 	$theme = $tree['theme'];
 
-	//die(print_r($theme['templates']));
-
 	if(is_array($theme['properties']))
 	{
 		foreach($theme['properties'] as $property => $value)
@@ -31,8 +29,19 @@ function import_theme_xml($xml, $options=array())
 		}
 	}
 
-	// Insert the theme
-	$theme_id = build_new_theme($theme['attributes']['name'], $properties, 0);
+	// Not overriding an existing theme
+	if(!$options['tid'])
+	{
+		// Insert the theme
+		$theme_id = build_new_theme($theme['attributes']['name'], $properties, 0);
+	}
+	// Overriding an existing - delete refs.
+	else
+	{
+		$db->delete_query("themestylesheets", "tid='{$options['tid']}'");
+		$db->update_query("themes", array("properties" => $db->escape_string(serialize($properties))), "tid='{$options['tid']}'");
+		$theme_id = $options['tid'];
+	}
 
 	// If we have any stylesheets, process them
 	if(is_array($theme['stylesheets']))
@@ -44,6 +53,7 @@ function import_theme_xml($xml, $options=array())
 				$stylesheet['attributes']['lastmodified'] = time();
 			}
 			$new_stylesheet = array(
+				"name" => $db->escape_string($stylesheet['attributes']['name']),
 				"tid" => $theme_id,
 				"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
 				"stylesheet" => $db->escape_string($stylesheet['value']),
@@ -86,7 +96,7 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// Do we have any templates to insert?
-	if(is_array($theme['templates']))
+	if(is_array($theme['templates']) && !$options['no_templates'])
 	{
 		if($options['templateset'])
 		{
@@ -168,18 +178,15 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	return "cache/themes/theme{$tid}/{$filename}";
 }
 
-if(!function_exists("fix_css_urls"))
+function fix_css_urls($url)
 {
-	function fix_css_urls($url)
+	if(!preg_match("#^(https?://|/)#i", $url))
 	{
-		if(!preg_match("#^(https?://|/)#i", $url))
-		{
-			return "url(../../../{$url})";
-		}
-		else
-		{
-			return "url({$url})";
-		}
+		return "url(../../../{$url})";
+	}
+	else
+	{
+		return "url({$url})";
 	}
 }
 
@@ -194,6 +201,15 @@ if(!function_exists("fix_css_urls"))
 function build_new_theme($name, $properties=null, $parent=1)
 {
 	global $db;
+
+	$new_theme = array(
+		"name" => $db->escape_string($name),
+		"pid" => intval($parent),
+		"def" => 0,
+		"allowedgroups" => ""
+	);
+	$tid = $db->insert_query("themes", $new_theme);
+
 	if($parent > 0)
 	{
 		$query = $db->simple_select("themes", "*", "tid='".intval($parent)."'");
@@ -225,33 +241,24 @@ function build_new_theme($name, $properties=null, $parent=1)
 				if($location == "inherited") continue;
 				foreach($value as $action => $sheets)
 				{
-					$stylesheets[$location][$action] = $sheets;
-					$inherited_check = "{$location}_{$action}";
-					if($parent_stylesheets['inherited'][$inherited_check])
+					foreach($sheets as $stylesheet)
 					{
-						$stylesheets['inherited'][$inherited_check] = $parent_stylesheets['inherited'][$inherited_check];
-					}
-					else
-					{
-						$stylesheets['inherited'][$inherited_check] = $parent;
+						$stylesheets[$location][$action][] = $stylesheet;
+						$inherited_check = "{$location}_{$action}";
+						if($parent_stylesheets['inherited'][$inherited_check][$stylesheet])
+						{
+							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent_stylesheets['inherited'][$inherited_check][$stylesheet];
+						}
+						else
+						{
+							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent;
+						}
 					}
 				}
 			}
 			$inherited_stylesheets = true;
 		}
 	}
-
-	$new_theme = array(
-		"name" => $db->escape_string($name),
-		"pid" => intval($parent),
-		"def" => 0,
-		"allowedgroups" => ""
-	);
-	if(is_array($stylesheets))
-	{
-		$new_theme['stylesheets'] = $db->escape_string(serialize($stylesheets));
-	}
-	$tid = $db->insert_query("themes", $new_theme);
 
 	if(!$inherited_properties)
 	{
@@ -260,6 +267,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 		);
 		$properties['logo'] = parse_theme_variables($properties['logo'], $theme_vars);
 	}
+	$updated_theme['stylesheets'] = $db->escape_string(serialize($stylesheets));
 	$updated_theme['properties'] = $db->escape_string(serialize($properties));
 
 	if(count($updated_theme) > 0)
@@ -269,6 +277,8 @@ function build_new_theme($name, $properties=null, $parent=1)
 
 	return $tid;
 }
+
+
 
 /**
  * Generates an array from an incoming CSS file.

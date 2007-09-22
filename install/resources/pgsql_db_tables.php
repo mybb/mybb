@@ -681,6 +681,7 @@ $tables[] = "CREATE TABLE mybb_themes (
 
 $tables[] = "CREATE TABLE mybb_themestylesheets(
 	sid serial,
+	name varchar(30) NOT NULL default '',
 	tid int unsigned NOT NULL default '0',
 	attachedto text NOT NULL,
 	stylesheet text NOT NULL,

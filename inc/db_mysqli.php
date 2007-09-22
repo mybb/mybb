@@ -54,18 +54,18 @@ class DB_MySQLi
 	var $error_reporting = 1;
 
 	/**
-	 * The database connection resource.
+	 * The read database connection resource.
 	 *
 	 * @var resource
 	 */
-	var $link;
+	var $read_link;
 	
 	/**
-	 * The slave database connection resource (if we have one)
+	 * The write database connection resource
 	 *
 	 * @var resource
 	 */
-	var $slave_link;
+	var $write_link;
 	
 	/**
 	 * Reference to the last database connection resource used.
@@ -119,56 +119,105 @@ class DB_MySQLi
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param string The database hostname.
-	 * @param string The database username.
-	 * @param string The database user's password.
-	 * @param integer redundant for mysqli, it's there because of mysql.
-	 * @param integer redundant for mysqli, it's there because of mysql.
-	 * @return resource The database connection resource.
+	 * @param array Array of DBMS connection details.
+	 * @return resource The DB connection resource.
 	 */
-	function connect($hostname="localhost", $username="root", $password="", $pconnect=0, $newlink=false)
+	function connect($config)
 	{
-		list($hostname, $port) = explode(":", $hostname, 2);
-		if($port)
+		// Simple connection to one server
+		if(array_key_exists('hostname', $config))
 		{
-			$this->link = @mysqli_connect($hostname, $username, $password, "", $port) or $this->error("Unable to connect to database server");
+			$connections['read'][] = $config;
 		}
-		else
+		// Connecting to more than one server
 		{
-			$this->link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to database server");
+			// Specified multiple servers, but no specific read/write servers
+			if(!array_key_exists('read', $config))
+			{
+				foreach($config as $key => $settings)
+				{
+					if(is_int($key)) $connections['read'][] = $settings;
+				}
+			}
+			// Specified both read & write servers
+			else
+			{
+				$connections = $config;
+			}
 		}
-		$this->current_link = &$this->link;
 
-		// Set the DB encoding accordingly
-		global $mybb;
-		$this->db_encoding = $mybb->config['db_encoding'];
+		$this->db_encoding = $config['encoding'];
 
-		return $this->link;
-	}
-	
-	/**
-	 * Connect to the slave (writes only) database server.
-	 *
-	 * @param string 
-	 * @param string The database hostname.
-	 * @param string The database username.
-	 * @param string The database user's password.
-	 * @param integer redundant for mysqli, it's there because of mysql.
-	 * @return resource The database connection resource.
-	 */
-	function slave_connect($hostname="localhost", $username="root", $password="", $pconnect=0)
-	{
-		list($hostname, $port) = explode(":", $hostname, 2);
-		if($port)
+		// Actually connect to the specified servers
+		foreach(array('read', 'write') as $type)
 		{
-			$this->slave_link = @mysqli_connect($hostname, $username, $password, "", $port) or $this->error("Unable to connect to slave database server");
+			if(!is_array($connections[$type])) break;
+			if(array_key_exists('hostname', $connections[$type])) {
+				$details = $connections[$type];
+				unset($connections);
+				$connections[$type][] = $details;
+			}
+
+			// Shuffle the connections
+			shuffle($connections[$type]);
+
+			// Loop-de-loop
+			foreach($connections[$type] as $single_connection)
+			{
+				$timer = new timer();
+				$connect_function = "mysqli_connect";
+				if($single_connection['pconnect']) $connect_function = "mysqli_pconnect";
+				$link = $type."_link";
+
+				// Specified a custom port for this connection?
+				list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
+				if($port)
+				{
+					$this->$link = @$connect_function($hostname, $single_connection['username'], $single_connection['password'], "", $port);
+				}
+				else
+				{
+					$this->$link = @$connect_function($single_connection['hostname'], $single_connection['username'], $single_connection['password']);
+				}
+
+				// Successful connection? break down brother!
+				if($this->$link)
+				{
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($timer->getTime())."s)";
+					break;
+				}
+				else
+				{
+					$this->connections[] = "<span style=\"color: red\">[FAILED] [".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']}</span>";
+				}
+			}
 		}
-		else
+
+		// No write server was specified (simple connection or just multiple servers) - mirror write link
+		if(!array_key_exists('write', $connections))
 		{
-			$this->slave_link = @mysqli_connect($hostname, $username, $password) or $this->error("Unable to connect to slave database server");
+			$this->write_link = &$this->read_link;
 		}
-		$this->current_link = &$this->slave_link;
-		return $this->slave_link;
+
+		// Have no read connection?
+		if(!$this->read_link)
+		{
+			$this->error("[READ] Unable to connect to MySQL server");
+		}
+		// No write?
+		else if(!$this->write_link)
+		{
+			$this->error("[WRITE] Unable to connect to MySQL server");
+		}
+
+		// Select databases
+		$this->select_db($config['database']);
+
+		$timer->stop();
+		global $querytime;
+		$querytime += $timer->totaltime;
+		$this->current_link = &$this->read_link;
+		return $this->read_link;
 	}
 
 	/**
@@ -181,10 +230,10 @@ class DB_MySQLi
 	{
 		global $mybb;
 		
-		$master_success = @mysqli_select_db($this->link, $database) or $this->error("Unable to select database", $this->link);
-		if($this->slave_link)
+		$master_success = @mysqli_select_db($this->read_link, $database) or $this->error("[READ] Unable to select database", $this->read_link);
+		if($this->write_link)
 		{
-			$slave_success = @mysqli_select_db($this->slave_link, $database) or $this->error("Unable to select slave database", $this->slave_link);
+			$slave_success = @mysqli_select_db($this->write_link, $database) or $this->error("[WRITE] Unable to slave database", $this->write_link);
 			
 			$success = ($master_success && $slave_success ? true : false);
 		}
@@ -218,15 +267,15 @@ class DB_MySQLi
 
 		$qtimer = new timer();
 		// Only execute write queries on slave server
-		if($write_query && $this->slave_link)
+		if($write_query && $this->write_link)
 		{
-			$this->current_link = &$this->slave_link;
-			$query = @mysqli_query($this->slave_link, $string);
+			$this->current_link = &$this->write_link;
+			$query = @mysqli_query($this->write_link, $string);
 		}
 		else
 		{
-			$this->current_link = &$this->link;
-			$query = @mysqli_query($this->link, $string);
+			$this->current_link = &$this->read_link;
+			$query = @mysqli_query($this->read_link, $string);
 		}
 
 		if($this->error_number() && !$hide_errors)
@@ -404,10 +453,10 @@ class DB_MySQLi
 	 */
 	function close()
 	{
-		@mysqli_close($this->link);
-		if($this->slave_link)
+		@mysqli_close($this->read_link);
+		if($this->write_link)
 		{
-			@mysql_close($this->slave_link);
+			@mysql_close($this->write_link);
 		}
 	}
 
@@ -741,9 +790,9 @@ class DB_MySQLi
 	 */
 	function escape_string($string)
 	{
-		if(function_exists("mysql_real_escape_string") && $this->link)
+		if(function_exists("mysql_real_escape_string") && $this->read_link)
 		{
-			$string = mysqli_real_escape_string($this->link, $string);
+			$string = mysqli_real_escape_string($this->read_link, $string);
 		}
 		else
 		{

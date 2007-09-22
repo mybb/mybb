@@ -105,36 +105,18 @@ class DB_SQLite
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param string The database hostname.
-	 * @param string The database username.
-	 * @param string The database user's password.
-	 * @param boolean 1 if persistent connection, 0 if not.
-	 * @return resource The database connection resource.
+	 * @param array Array of DBMS connection details.
+	 * @return resource The DB connection resource.
 	 */
-	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
+	function connect($config)
 	{
-		$this->link = $pconnect;
-		return true;
-	}
-
-	/**
-	 * Selects the database to use.
-	 *
-	 * @param string The database name.
-	 * @return boolean True when successfully connected, false if not.
-	 */
-	function select_db($database)
-	{
-		// $database ($config['database']) should be a full path to the file; i.e. C:\temp\test_db.db
-		// To be changed before 1.4 release
-		
-		if($this->link == 1)
+		if($config['pconnect'] == 1)
 		{
-			$this->link = @sqlite_popen($database, 0666, $error);
+			$this->link = @sqlite_popen($config['database'], 0666, $error);
 		}
 		else
 		{
-			$this->link = @sqlite_open($database, 0666, $error);
+			$this->link = @sqlite_open($config['database'], 0666, $error);
 		}
 		
 		if(!$this->link)
@@ -144,6 +126,9 @@ class DB_SQLite
 		
 		@sqlite_query('PRAGMA short_column_names = 1', $this->link);
 		return $this->link;
+
+		$this->link = $pconnect;
+		return true;
 	}
 
 	/**

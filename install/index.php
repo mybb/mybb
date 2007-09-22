@@ -582,22 +582,18 @@ function create_tables()
 	$db = new databaseEngine;
  	$db->error_reporting = 0;
 
-	if($config['encoding'])
-	{
-		$mybb->config['db_encoding'] = $config['encoding'];
-	}
+	$connect_array = array(
+		"hostname" => $config['dbhost'],
+		"username" => $config['dbuser'],
+		"password" => $config['dbpass'],
+		"database" => $config['dbname'],
+		"encoding" => $config['encoding']
+	);
 
-	$connection = $db->connect($config['dbhost'], $config['dbuser'], $config['dbpass']);
+	$connection = $db->connect($connect_array);
 	if(!$connection)
 	{
 		$errors[] = sprintf($lang->db_step_error_noconnect, $config['dbhost']);
-	}
-
-	// Select the database
-	$dbselect = $db->select_db($config['dbname']);
-	if(!$dbselect)
-	{
-		$errors[] = sprintf($lang->db_step_error_nodbname, $config['dbname']);
 	}
 
 	if(is_array($errors))
@@ -608,25 +604,30 @@ function create_tables()
 	// Decide if we can use a database encoding or not
 	if($db->fetch_db_charsets() != false)
 	{
-		$db_encoding = "\$config['db_encoding'] = '{$config['encoding']}';";
+		$db_encoding = "\$config['database']['encoding'] = '{$config['encoding']}';";
 	}
 	else
 	{
-		$db_encoding = "// \$config['db_encoding'] = '{$config['encoding']}';";
+		$db_encoding = "// \$config['database']['encoding'] = '{$config['encoding']}';";
 	}
 	
 	// Write the configuration file
 	$configdata = "<?php
 /**
  * Database configuration
+ *
+ * Please see the MyBB Wiki for advanced
+ * database configuration for larger installations
+ * http://wiki.mybboard.net/
  */
 
-\$config['dbtype'] = '{$mybb->input['dbengine']}';
-\$config['hostname'] = '{$config['dbhost']}';
-\$config['username'] = '{$config['dbuser']}';
-\$config['password'] = '{$config['dbpass']}';
-\$config['database'] = '{$config['dbname']}';
-\$config['table_prefix'] = '{$config['tableprefix']}';
+\$config['database']['type'] = '{$mybb->input['dbengine']}';
+\$config['database']['database'] = '{$config['dbname']}';
+\$config['database']['table_prefix'] = '{$config['tableprefix']}';
+
+\$config['database']['hostname'] = '{$config['dbhost']}';
+\$config['database']['username'] = '{$config['dbuser']}';
+\$config['database']['password'] = '{$config['dbpass']}';
 
 /**
  * Admin CP directory
@@ -756,7 +757,7 @@ function populate_tables()
 	require_once INSTALL_ROOT."resources/{$population_file}";
 	foreach($inserts as $val)
 	{
-		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['table_prefix'].'\\1\\2', $val);
+		$val = preg_replace('#mybb_(\S+?)([\s\.,]|$)#', $config['database']['table_prefix'].'\\1\\2', $val);
 		$db->query($val);
 	}
 	echo $lang->populate_step_inserted;
@@ -1271,13 +1272,13 @@ function install_done()
 
 function db_connection($config)
 {
-	require_once MYBB_ROOT."inc/db_{$config['dbtype']}.php";
+	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
 	$db = new databaseEngine;
 	
 	// Connect to Database
-	define('TABLE_PREFIX', $config['table_prefix']);
-	$db->connect($config['hostname'], $config['username'], $config['password']);
-	$db->select_db($config['database']);
+	define('TABLE_PREFIX', $config['database']['table_prefix']);
+
+	$db->connect($config['database']);
 	$db->set_table_prefix(TABLE_PREFIX);
 	return $db;
 }

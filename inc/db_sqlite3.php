@@ -105,32 +105,17 @@ class DB_SQLite3
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param string The database hostname.
-	 * @param string The database username.
-	 * @param string The database user's password.
-	 * @param boolean 1 if persistent connection, 0 if not.
-	 * @return resource The database connection resource.
+	 * @param array Array of DBMS connection details.
+	 * @return resource The DB connection resource.
 	 */
-	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
-	{
-		$this->link = $pconnect;
-		return true;
-	}
-
-	/**
-	 * Selects the database to use.
-	 *
-	 * @param string The database name.
-	 * @return boolean True when successfully connected, false if not.
-	 */
-	function select_db($database)
+	function connect($config)
 	{
 		// $database ($config['database']) should be a full path to the file; i.e. C:\temp\test_db.db
 		// To be changed before 1.4 release
 		
 		require_once MYBB_ROOT."inc/db_pdo.php";
 		
-		$this->db = new dbpdoEngine("sqlite:{$database}");
+		$this->db = new dbpdoEngine("sqlite:{$config['database']}");
 		@$this->query('PRAGMA short_column_names = 1');
 		
 		if($this->db)

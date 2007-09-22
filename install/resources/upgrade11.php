@@ -23,6 +23,8 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
+$collation = $db->build_create_table_collation();
+
 function upgrade11_dbchanges()
 {
 	global $db, $output, $mybb;
@@ -144,8 +146,6 @@ function upgrade11_dbchanges2()
 	$db->drop_table("promotions");
 	$db->drop_table("promotionlogs");
 	
-	$collation = $db->build_create_table_collation();
-		
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
@@ -878,14 +878,19 @@ function upgrade11_redoconfig()
 	$configdata = "<?php
 /**
  * Database configuration
+ *
+ * Please see the MyBB Wiki for advanced
+ * database configuration for larger installations
+ * http://wiki.mybboard.net/
  */
 
-\$config['dbtype'] = '{$config['dbtype']}';
-\$config['hostname'] = '{$config['hostname']}';
-\$config['username'] = '{$config['username']}';
-\$config['password'] = '{$config['password']}';
-\$config['database'] = '{$config['database']}';
-\$config['table_prefix'] = '{$config['table_prefix']}';
+\$config['database']['type'] = '{$config['dbtype']}';
+\$config['database']['database'] = '{$config['database']}';
+\$config['database']['table_prefix'] = '{$config['table_prefix']}';
+
+\$config['database']['hostname'] = '{$config['hostname']}';
+\$config['database']['username'] = '{$config['username']}';
+\$config['database']['password'] = '{$config['password']}';
 
 /**
  * Admin CP directory
@@ -949,7 +954,7 @@ function upgrade11_redoconfig()
  *  http://dev.mysql.com/doc/refman/5.1/en/charset-mysql.html
  */
 
-{$comment}\$config['db_encoding'] = '{$config['db_encoding']}';
+{$comment}\$config['database']['encoding'] = '{$config['db_encoding']}';
 
 ?".">";
 
@@ -1260,10 +1265,122 @@ function upgrade11_dbchanges8()
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events DROP date");
 		}
-		$nextact = "11_done";
+		$nextact = "11_redothemes";
 		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
 	$output->print_footer($nextact);
+}
+
+function upgrade11_redothemes()
+{
+	global $db, $output, $config, $mybb;
+	$output->print_header("Converting themes");
+
+	if(!@is_dir(MYBB_ROOT.'cache/'))
+	{
+		@mkdir(MYBB_ROOT.'cache/', 077);
+	}
+	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
+	if(!$cachewritable)
+	{
+		$not_writable = true;
+		@fclose($cachewritable);
+	}
+	else
+	{
+		@fclose($cachewritable);
+	  	@chmod(MYBB_ROOT.'cache', 0777);
+	  	@chmod(MYBB_ROOT.'cache/test.write', 0777);
+		@unlink(MYBB_ROOT.'cache/test.write');
+	}
+
+	if($not_writable)
+	{
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to wrote to the cache/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
+		$output->print_footer("11_redothemes");
+		exit;
+	}
+
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE themebits properties text NOT NULL");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP cssbits");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD stylesheets text NOT NULL AFTER properties");
+
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
+		sid int unsigned NOT NULL auto_increment,
+		name varchar(30) NOT NULL default '',
+		tid int unsigned NOT NULL default '0',
+		attachedto text NOT NULL,
+		stylesheet text NOT NULL,
+		cachefile varchar(100) NOT NULL default '',
+		lastmodified bigint(30) NOT NULL default '0',
+		PRIMARY KEY(sid)
+	) TYPE=MyISAM{$collation};");
+
+	// Delete the master theme - we'll be reimporting it
+	$db->delete_query("themes", "tid='1'");
+
+	// Define our default stylesheets - MyBB 1.4 contains additional stylesheets that our converted themes will also need
+	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
+	require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+	
+	// Import master theme
+	import_theme_xml($contents, array("tid" => 1))
+
+	// Fetch out default stylesheets from master
+	$query = $db->simple_select("themes", "*", "tid=1");
+	$master_theme = $db->fetch_array($query);
+
+	$master_stylesheets = unserialize($master_theme['stylesheets']);
+
+	// Note: 1.4 only ships with one global|global stylesheet
+	foreach($master_stylesheets as $location => $sheets)
+	{
+		foreach($sheets as $action => $sheets)
+		{
+			foreach($sheets as $stylesheet)
+			{
+				if($location == "global" && $action == "global") continue; // Skip global
+				$default_stylesheets[$location][$action][] = $stylesheet;
+				$default_stylesheets['inherited']["{$location}_{$action}"][$stylesheet] = 1; // This stylesheet is inherited from the master
+			}
+		}
+	}
+	
+	$query = $db->query("SELECT * FROM themes");
+	while($theme = $db->fetch_array($query))
+	{
+		// Create stylesheets
+		$cache_file = cache_stylesheet($theme['tid'], "general.css", $theme['css']);
+
+		$new_stylesheet = array(
+			"tid" => $theme['tid'],
+			"attachedto" => "",
+			"stylesheet" => $db->escape_string($theme['css']),
+			"cachefile" => $cache_file,
+			"lastmodified" => time()
+		);
+		$sid = $db->insert_query("themestylesheets", $new_stylesheet);
+		$css_url = "css.php?stylesheet={$sid}";
+		if($cache_file)
+		{
+			$css_url = $cache_file;
+		}
+
+		// Now we go and update the stylesheets column for this theme
+		$stylesheets = $default_stylesheets;
+
+		// Add in our local for this theme
+		$stylesheets['global']['global'][] = $css_url;
+
+		// Update the theme
+		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets)), "tid='{$theme['tid']}'");
+	}
+
+	echo "<p>Your themes have successfully been converted to the new theme system.</p>";
+	echo "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_footer("11_done");
 }
 ?>

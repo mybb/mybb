@@ -47,18 +47,18 @@ class DB_PgSQL
 	var $error_reporting = 1;
 
 	/**
-	 * The database connection resource.
+	 * The read database connection resource.
 	 *
 	 * @var resource
 	 */
-	var $link;
+	var $read_link;
 	
 	/**
-	 * The slave database connection resource (if we have one)
+	 * The write database connection resource
 	 *
 	 * @var resource
 	 */
-	var $slave_link;
+	var $write_link;
 	
 	/**
 	 * Reference to the last database connection resource used.
@@ -133,105 +133,114 @@ class DB_PgSQL
 	/**
 	 * Connect to the database server.
 	 *
-	 * @param string The database hostname.
-	 * @param string The database username.
-	 * @param string The database user's password.
-	 * @param boolean 1 if persistent connection, 0 if not.
-	 * @return resource The database connection resource.
+	 * @param array Array of DBMS connection details.
+	 * @return resource The DB connection resource.
 	 */
-	function connect($hostname="localhost", $username="root", $password="", $pconnect=0)
+	function connect($config)
 	{
-		if($password)
+		// Simple connection to one server
+		if(array_key_exists('hostname', $config))
 		{
-			$this->connection_options['master']['password'] = $password;
+			$connections['read'][] = $config;
 		}
-
-		$this->connection_options['master']['host'] = $hostname;
-		$this->connection_options['master']['user'] = $username;
-		$this->connection_options['master']['pconnect'] = $pconnect;
-
-		// Set the DB encoding accordingly
-		global $mybb;
-		$this->db_encoding = $mybb->config['db_encoding'];
-
-		return true;
-	}
-
-	function slave_connect($hostname="localhost", $username="root", $password="", $pconnect=0)
-	{
-		if($password)
+		// Connecting to more than one server
 		{
-			$this->connection_options['slave']['password'] = $password;
-		}
-
-		$this->connection_options['slave']['host'] = $hostname;
-		$this->connection_options['slave']['user'] = $username;
-		$this->connection_options['slave']['pconnect'] = $pconnect;
-
-		return true;
-	}
-	
-	/**
-	 * Selects the database to use.
-	 *
-	 * @param string The database name.
-	 * @return boolean True when successfully connected, false if not.
-	 */
-	function select_db($database)
-	{
-		foreach($this->connection_options as $type => $db_connection)
-		{
-			if(!$db_connection['host'])
+			// Specified multiple servers, but no specific read/write servers
+			if(!array_key_exists('read', $config))
 			{
-				continue;
+				foreach($config as $key => $settings)
+				{
+					if(is_int($key)) $connections['read'][] = $settings;
+				}
 			}
-			$this->connect_string .= "dbname={$database} user={$db_connection['user']}";
-			
-			if($db_connection['port'])
-			{
-				$connect_string .= "port={$db_connection['host']} ";
-			}
-			if(strpos($db_connection['host'], ':') !== false)
-			{
-				list($db_connection['host'], $db_connection['port']) = explode(':', $db_connection['host']);
-			}
-			
-			if($db_connection['host'] != "localhost")
-			{
-				$this->connect_string .= "host={$db_connection['host']} ";
-			}
-			
-			if($db_connection['password'])
-			{
-				$this->connect_string .= " password={$db_connection['password']}";
-			}
-			
-			if($type == "slave")
-			{
-				$link = "slave_link";
-			}
+			// Specified both read & write servers
 			else
 			{
-				$link = "link";
-			}
-			if($this->connection_options['pconnect'])
-			{
-				$this->$link = @pg_pconnect($this->connect_string) or $this->error();
-			}
-			else
-			{
-				$this->$link = @pg_connect($this->connect_string);
+				$connections = $config;
 			}
 		}
-		if($this->link && $this->db_encoding)
+
+		$this->db_encoding = $config['encoding'];
+
+		// Actually connect to the specified servers
+		foreach(array('read', 'write') as $type)
 		{
-			$this->query("SET NAMES '{$this->db_encoding}'");
-			if($this->slave_link)
+			if(!is_array($connections[$type])) break;
+			if(array_key_exists('hostname', $connections[$type])) {
+				$details = $connections[$type];
+				unset($connections);
+				$connections[$type][] = $details;
+			}
+
+			// Shuffle the connections
+			shuffle($connections[$type]);
+
+			// Loop-de-loop
+			foreach($connections[$type] as $single_connection)
 			{
-				$this->write_query("SET NAMES '{$this->db_encoding}'");
+				$timer = new timer();
+				$connect_function = "pg_connect";
+				if($single_connection['pconnect']) $connect_function = "pg_pconnect";
+				$link = $type."_link";
+
+				$this->connect_string .= "dbname={$single_connection['database']} user={$single_connection['username']}";
+				
+				if(strpos($single_connection['hostname'], ':') !== false)
+				{
+					list($single_connection['hostname'], $single_connection['port']) = explode(':', $single_connection['hostname']);
+				}
+
+				if($single_connection['port'])
+				{
+					$connect_string .= "port={$single_connection['port']} ";
+				}
+				
+				if($single_connection['hostname'] != "localhost")
+				{
+					$connect_string .= "host={$single_connection['hostname']} ";
+				}
+				
+				if($db_connection['password'])
+				{
+					$connect_string .= " password={$single_connection['password']}";
+				}
+				$this->$link = @$connect_function($connect_string);
+
+				// Successful connection? break down brother!
+				if($this->$link)
+				{
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($timer->getTime())."s)";
+					break;
+				}
+				else
+				{
+					$this->connections[] = "<span style=\"color: red\">[FAILED] [".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']}</span>";
+				}
 			}
 		}
-		return $this->link;
+
+		// No write server was specified (simple connection or just multiple servers) - mirror write link
+		if(!array_key_exists('write', $connections))
+		{
+			$this->write_link = &$this->read_link;
+		}
+
+		// Have no read connection?
+		if(!$this->read_link)
+		{
+			$this->error("[READ] Unable to connect to PgSQL server");
+		}
+		// No write?
+		else if(!$this->write_link)
+		{
+			$this->error("[WRITE] Unable to connect to PgSQL server");
+		}
+
+		$timer->stop();
+		global $querytime;
+		$querytime += $timer->totaltime;
+		$this->current_link = &$this->read_link;
+		return $this->read_link;
 	}
 	
 	/**
@@ -258,17 +267,17 @@ class DB_PgSQL
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
 		}
 
-		if($write_query && $this->slave_link)
+		if($write_query && $this->write_link)
 		{
-			$this->current_link = &$this->slave_link;
-			pg_send_query($this->slave_link, $string);
-			$query = pg_get_result($this->slave_link);					
+			$this->current_link = &$this->write_link;
+			pg_send_query($this->write_link, $string);
+			$query = pg_get_result($this->write_link);					
 		}
 		else
 		{
-			$this->current_link = &$this->link;
-			pg_send_query($this->link, $string);
-			$query = pg_get_result($this->link);
+			$this->current_link = &$this->read_link;
+			pg_send_query($this->read_link, $string);
+			$query = pg_get_result($this->read_link);
 		}
 		
 		if(pg_result_error($query) && !$hide_errors)
@@ -452,10 +461,10 @@ class DB_PgSQL
 	 */
 	function close()
 	{
-		@pg_close($this->link);
-		if($this->slave_link)
+		@pg_close($this->read_link);
+		if($this->write_link)
 		{
-			@pg_close($this->slave_link);
+			@pg_close($this->write_link);
 		}
 	}
 
