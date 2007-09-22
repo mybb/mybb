@@ -745,9 +745,9 @@ function populate_tables()
 	$output->print_header($lang->table_population, 'tablepopulate');
 	echo sprintf($lang->populate_step_insert);
 
-	if($dboptions[$config['dbtype']]['population_file'])
+	if($dboptions[$db->type]['population_file'])
 	{
-		$population_file = $dboptions[$config['dbtype']]['population_file'];
+		$population_file = $dboptions[$db->type]['population_file'];
 	}
 	else
 	{

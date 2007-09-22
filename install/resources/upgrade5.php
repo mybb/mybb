@@ -457,7 +457,7 @@ function upgrade5_redoconfig()
  * Database configuration
  */
 
-\$config['dbtype'] = '{$config['dbtype']}';
+\$db->type = '{$db->type}';
 \$config['hostname'] = '{$config['hostname']}';
 \$config['username'] = '{$config['username']}';
 \$config['password'] = '{$config['password']}';

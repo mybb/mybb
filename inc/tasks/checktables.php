@@ -24,7 +24,7 @@ function task_checktables($task)
 	$comma = "";
 	$tables_list = "";
 
-	$tables = $db->list_tables($mybb->config['database'], $mybb->config['table_prefix']);
+	$tables = $db->list_tables($mybb->config['database']['database'], $mybb->config['database']['table_prefix']);
 	foreach($tables as $key => $table)
 	{
 		$tables_list .= "{$comma}{$table} ";		
@@ -38,7 +38,7 @@ function task_checktables($task)
 		{
 			if(!in_array($table['Msg_text'], $ok))
 			{
-				if($table['Table'] != $mybb->config['database'].".".TABLE_PREFIX."settings" && $setting_done != true)
+				if($table['Table'] != $mybb->config['database']['database'].".".TABLE_PREFIX."settings" && $setting_done != true)
 				{
 					$boardclosed = $mybb->settings['boardclosed'];
 					$boardclosed_reason = $mybb->settings['boardclosed_reason'];
@@ -54,7 +54,7 @@ function task_checktables($task)
 			}
 		}
 		
-		if($table['Table'] != $mybb->config['table_prefix'].".".TABLE_PREFIX."settings" && $setting_done == true)
+		if($table['Table'] != $mybb->config['database']['table_prefix'].".".TABLE_PREFIX."settings" && $setting_done == true)
 		{
 			$db->update_query("settings", array('value' => $boardclosed), "name='boardclosed'", 1);
 			$db->update_query("settings", array('value' => $boardclosed_reason), "name='boardclosed_reason'", 1);

@@ -109,7 +109,7 @@ require_once MYBB_ROOT."inc/datahandler.php";
 define("TABLE_PREFIX", $config['database']['table_prefix']);
 $db->connect($config['database']);
 $db->set_table_prefix(TABLE_PREFIX);
-$db->type = $config['dbtype'];
+$db->type = $config['database']['type'];
 
 // Language initialisation
 require_once MYBB_ROOT."inc/class_language.php";

@@ -326,7 +326,7 @@ if($mybb->input['action'] == "allreports")
 
 if($mybb->input['action'] == "modlogs")
 {
-	add_breadcrumb($lang->nav_modlogs, "modcp.php?action=modlogs");
+	add_breadcrumb($lang->mcp_nav_modlogs, "modcp.php?action=modlogs");
 
 	$perpage = intval($mybb->input['perpage']);
 	if(!$perpage)
@@ -614,6 +614,10 @@ if($mybb->input['action'] == "modqueue")
 			$thread['postmessage'] = nl2br($thread['postmessage']);
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
 		}
+		if(!$threads)
+		{
+			eval("\$threads = \"".$templates->get("modcp_modqueue_noresults")."\";");
+		}
 		eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 		output_page($threadqueue);	
 	}
@@ -681,6 +685,10 @@ if($mybb->input['action'] == "modqueue")
 			$profile_link = build_profile_link($post['username'], $post['uid']);
 			$post['message'] = nl2br($post['message']);
 			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
+		}
+		if(!$posts)
+		{
+			eval("\$posts = \"".$templates->get("modcp_modqueue_noresults")."\";");
 		}
 		eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 		output_page($postqueue);	
@@ -1156,6 +1164,197 @@ if($mybb->input['action'] == "warninglogs")
 
 if($mybb->input['action'] == "ipsearch")
 {
+	add_breadcrumb($lang->mcp_nav_ipsearch, "modcp.php?action=ipsearch");
+	
+	if($mybb->input['ipaddress'])
+	{
+		$perpage = intval($mybb->input['perpage']);
+		if(!$perpage)
+		{
+			$perpage = $mybb->settings['threadsperpage'];
+		}
+		
+		// Figure out if we need to display multiple pages.
+		if($mybb->input['page'] != "last")
+		{
+			$page = intval($mybb->input['page']);
+		}
+	
+		$postcount = intval($rescount);
+		$pages = $postcount / $perpage;
+		$pages = ceil($pages);
+	
+		if($mybb->input['page'] == "last")
+		{
+			$page = $pages;
+		}
+	
+		if($page > $pages)
+		{
+			$page = 1;
+		}
+	
+		if($page)
+		{
+			$start = ($page-1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+		
+		if(!is_array($groupscache))
+		{
+			$groupscache = $cache->read("usergroups");
+		}
+		
+		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
+		
+		$mybb->input['ipaddress'] = str_replace("*", "%", $mybb->input['ipaddress']);
+	
+		// Searching for entries in the users table
+		if($mybb->input['options'] == "postsearch")
+		{			
+			// IPv6 IP
+			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			{
+				$ip_sql = "ipaddress LIKE '".$db->escape_string($mybb->input['ipaddress'])."'";
+			}
+			else
+			{
+				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
+				if(!is_array($ip_range))
+				{
+					$ip_sql = "longipaddress='{$ip_range}'";
+				}
+				else
+				{
+					$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
+				}
+			}
+			$query = $db->query("
+				SELECT COUNT(pid) AS count
+				FROM ".TABLE_PREFIX."posts
+				WHERE {$ip_sql}
+			");
+			$rescount = $db->fetch_field($query, "count");
+			
+			$query = $db->query("
+				SELECT p.username, p.subject, p.pid, p.tid, p.ipaddress, u.usergroup, u.displaygroup
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."users u ON(p.uid=u.uid)
+				WHERE {$ip_sql}
+				LIMIT {$start}, {$perpage}
+			");
+		}
+		else
+		{
+			// IPv6 IP
+			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			{
+				$ip_sql = "regip LIKE '".$db->escape_string($mybb->input['ipaddress'])."' OR lastip LIKE '".$db->escape_string($mybb->input['ipaddress'])."'";
+			}
+			else
+			{
+				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
+				if(!is_array($ip_range))
+				{
+					$ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
+				}
+				else
+				{
+					$ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
+				}
+			}
+			$query = $db->query("
+				SELECT COUNT(uid) AS count
+				FROM ".TABLE_PREFIX."users
+				WHERE {$ip_sql}
+			");
+			$rescount = $db->fetch_field($query, "count");
+			
+			$query = $db->query("
+				SELECT username, uid, regip, lastip, usergroup, displaygroup
+				FROM ".TABLE_PREFIX."users
+				WHERE {$ip_sql}
+				LIMIT {$start}, {$perpage}
+			");
+		}
+	
+		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=ipsearch&amp;perpage=$perpage&amp;ipaddress={$mybb->input['ipaddress']}");
+		if($postcount > $perpage)
+		{
+			eval("\$resultspages = \"".$templates->get("modcp_ipsearch_multipage")."\";");
+		}
+		
+		while($ipaddress = $db->fetch_array($query))
+		{
+			$trow = alt_trow();
+			$ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
+			$ipaddress['profilelink'] = format_name($ipaddress['profilelink'], $ipaddress['usergroup'], $ipaddress['displaygroup']);
+			
+			if($ipaddress['displaygroup'] != 0)
+			{
+				$ipaddress['usergroup'] = $ipaddress['displaygroup'];
+			}
+			
+			$ipaddress['usergroup'] = $groupscache[$ipaddress['usergroup']]['title'];
+			
+			if($ipaddress['subject'])
+			{
+				$subject = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($ipaddress['pid'], $ipaddress['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($ipaddress['subject'])."</a><br />";
+			}
+			else
+			{
+				$subject = "<div align=\"center\">{$lang->na}</div>";
+			}
+			
+			if($ipaddress['ipaddress'])
+			{
+				$lang->regip_lastip = $lang->ip_address;
+			}
+			
+			if($ipaddress['regip'])
+			{
+				$ipaddress['ipaddress'] = $ipaddress['regip'];
+			}
+			
+			if($ipaddress['lastip'])
+			{
+				if($ipaddress['ipaddress'])
+				{
+					$ipaddress['ipaddress'] .= " / ";
+				}
+				
+				$ipaddress['ipaddress'] .= $ipaddress['lastip'];
+			}
+			
+			eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");		
+		}
+	}
+	
+	if(!$results)
+	{
+		eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");		
+	}
+
+	// Fetch filter options
+	if(!$mybb->input['options'] || $mybb->input['options'] == "usersearch")
+	{
+		$usersearchselect = "checked=\"checked\"";
+		$postsearchselect = "";
+	}
+	else
+	{
+		$usersearchselect = "";
+		$postsearchselect = "checked=\"checked\"";
+	}
+	
+	$lang->ipsearch_results = sprintf($lang->ipsearch_results, $ipaddressvalue);
+	
+	eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
+	output_page($ipsearch);
 }
 
 if(!$mybb->input['action'])

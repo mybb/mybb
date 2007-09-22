@@ -36,7 +36,7 @@ function task_backupdb($task)
 			$fp = fopen($file.'.sql', 'w');
 		}
 		
-		$tables = $db->list_tables($config['database'], $config['table_prefix']);
+		$tables = $db->list_tables($config['database']['database'], $config['database']['table_prefix']);
 	
 		$time = date('dS F Y \a\t H:i', TIME_NOW);
 		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";

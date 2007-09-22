@@ -1708,7 +1708,7 @@ function build_users_view($view)
 					$ip_sql = "long{$search_field} > '{$ip_range[0]}' AND long{$search_field} < '{$ip_range[1]}'";
 				}
 			}
-			$search_sql .= " AND u.{$search_field} {$ip_sql}";
+			$search_sql .= " AND {$ip_sql}";
 		}
 	}
 

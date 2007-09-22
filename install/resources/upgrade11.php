@@ -892,7 +892,7 @@ function upgrade11_redoconfig()
  * http://wiki.mybboard.net/
  */
 
-\$config['database']['type'] = '{$config['dbtype']}';
+\$config['database']['type'] = '{$db->type}';
 \$config['database']['database'] = '{$config['database']}';
 \$config['database']['table_prefix'] = '{$config['table_prefix']}';
 

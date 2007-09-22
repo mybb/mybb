@@ -325,7 +325,7 @@ if($mybb->input['action'] == "backup")
 	$table->construct_header($lang->backup_options);
 	
 	$table_selects = array();
-	$table_list = $db->list_tables($config['database']);
+	$table_list = $db->list_tables($config['database']['database']);
 	foreach($table_list as $id => $table_name)
 	{
 		$table_selects[$table_name] = $table_name;

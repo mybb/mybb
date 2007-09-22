@@ -35,7 +35,7 @@ define('COPY_YEAR', my_date('Y', TIME_NOW));
 // Check installation (TEMPORARY)
 if(!$db->table_exists('adminlog2'))
 {
-	switch($config['dbtype'])
+	switch($db->type)
 	{
 		case "sqlite3":
 		case "sqlite2":
@@ -73,7 +73,7 @@ if(!$db->table_exists('adminlog2'))
 
 if(!$db->field_exists('data', 'adminsessions'))
 {
-	switch($config['dbtype'])
+	switch($db->type)
 	{
 		case "pgsql":
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT");

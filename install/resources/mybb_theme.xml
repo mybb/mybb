@@ -1151,10 +1151,73 @@ td .star_rating {
 <td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
 </tr>]]></template>
 		<template name="modcp_modlogs_noresults" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="5">{$lang->error_no_log_results}</td>
+	<td class="trow1" align="center" colspan="5">{$lang->error_no_results}</td>
 </tr>]]></template>
-
 		<template name="modcp_modlogs_multipage" version="1400"><![CDATA[<tr>
+<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
+</tr>]]></template>
+		<template name="modcp_ipsearch" version="1400"><![CDATA[
+		<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->ipsearch}</title>
+{$headerinclude}
+</head>
+<body>
+	{$header}
+	<form action="modcp.php?action=ipsearch" method="post">
+		<table width="100%" border="0" align="center">
+			<tr>
+				{$modcp_nav}
+				<td valign="top">
+					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+						<tr>
+							<td class="thead" align="center" colspan="5"><strong>{$lang->ipsearch_results}</strong></td>
+						</tr>
+						<tr>
+							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+							<td class="tcat"  align="center" width="10%"><span class="smalltext"><strong>{$lang->usergroup}</strong></span></td>						
+							<td class="tcat" align="center" width="55%"><span class="smalltext"><strong>{$lang->subject}</strong></span></td>
+							<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->regip_lastip}</strong></span></td>
+						</tr>
+						{$results}
+						{$resultspages}
+					</table>
+					<br />
+					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+						<tr>
+							<td class="thead" colspan="2"><strong>{$lang->ipaddress_search}</strong></td>
+						</tr>
+						<tr>
+							<td class="trow1" width="25%"><strong>{$lang->ip_address}</strong></td>
+							<td class="trow1" width="75%"><input type="text" name="ipaddress" value="{$ipaddressvalue}" size="30" /></td>
+						</tr>
+						<tr>
+							<td class="trow1" width="25%"><strong>{$lang->options}</strong></td>
+							<td class="trow1" width="75%"><input type="radio" name="options" value="usersearch" {$usersearchselect} />{$lang->search_users}<br />
+							<input type="radio" name="options" value="postsearch" {$postsearchselect} />{$lang->search_posts}<br /></td>
+						</tr>
+					</table>
+					<br />
+					<div align="center">
+						<input type="submit" value="{$lang->find}" />
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_ipsearch_result" version="1400"><![CDATA[<tr>
+<td class="{$trow}" valign="top">{$ipaddress['profilelink']}</td>
+<td class="{$trow}" align="center" valign="top">{$ipaddress['usergroup']}</td>
+<td class="{$trow}" valign="top">{$subject}</td>
+<td class="{$trow}" align="center" valign="top">{$ipaddress['ipaddress']}</td>
+</tr>]]></template>
+		<template name="modcp_ipsearch_noresults" version="1400"><![CDATA[<tr>
+	<td class="trow1" align="center" colspan="4">{$lang->error_no_results}</td>
+</tr>]]></template>
+		<template name="modcp_ipsearch_multipage" version="1400"><![CDATA[<tr>
 <td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
 </tr>]]></template>
 		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
@@ -9139,6 +9202,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<p>{$lang->coppa_agreement_2}</p>
 		<p>{$lang->coppa_agreement_3}</p>
 	</td>
+</tr>]]></template>
+		<template name="modcp_modqueue_noresults" version="1400"><![CDATA[<tr>
+	<td class="trow1" align="center" colspan="3">{$lang->error_no_results}</td>
 </tr>]]></template>
 		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
 <head>

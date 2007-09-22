@@ -367,7 +367,7 @@ if($mybb->input['action'] == 'optimize')
 	echo "<td class=\"$bgcolor\" valign=\"top\">".$lang->table_selection_desc."<br /><br /><a href=\"javascript:changeSelection('select', 0);\">".$lang->select_all."</a><br /><a href=\"javascript:changeSelection('deselect', 0);\">".$lang->deselect_all."</a><br /><a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">".$lang->select_forum_tables."</a></td>\n";
 	echo "<td class=\"$bgcolor\">\n";
 	echo "<select id=\"table_select\" name=\"tables[]\" size=\"20\" multiple=\"multiple\">\n";
-	$table_list = $db->list_tables($config['database']);
+	$table_list = $db->list_tables($config['database']['database']);
 	foreach($table_list as $id => $table_name)
 	{
 		echo "<option value=\"".$table_name."\" selected=\"selected\">".$table_name."</option>\n";
@@ -427,7 +427,7 @@ if($mybb->input['action'] == 'backup' || $mybb->input['action'] == '')
 	echo "<td class=\"$bgcolor\" valign=\"top\">".$lang->table_selection_desc."<br /><br /><a href=\"javascript:changeSelection('select', 0);\">".$lang->select_all."</a><br /><a href=\"javascript:changeSelection('deselect', 0);\">".$lang->deselect_all."</a><br /><a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">".$lang->select_forum_tables."</a></td>\n";
 	echo "<td class=\"$bgcolor\">\n";
 	echo "<select id=\"table_select\" name=\"tables[]\" size=\"20\" multiple=\"multiple\">\n";
-	$table_list = $db->list_tables($config['database']);
+	$table_list = $db->list_tables($config['database']['database']);
 	foreach($table_list as $id => $table_name)
 	{
 		echo "<option value=\"".$table_name."\">".$table_name."</option>\n";

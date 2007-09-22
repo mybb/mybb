@@ -228,13 +228,13 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 	
-	if(!$mybb->config['db_encoding'])
+	if(!$mybb->config['database']['encoding'])
 	{
 		flash_message($lang->error_db_encoding_not_set, 'error');
 		admin_redirect("index.php?".SID."&module=tools/index");
 	}
 	
-	$tables = $db->list_tables($config['database']);
+	$tables = $db->list_tables($config['database']['database']);
 	
 	$old_table_prefix = $db->table_prefix;
 	$db->set_table_prefix('');
