@@ -59,6 +59,7 @@
 		<cancustomtitle><![CDATA[no]]></cancustomtitle>
 		<canwarnusers><![CDATA[no]]></canwarnusers>
 		<canreceivewarnings><![CDATA[no]]></canreceivewarnings>
+		<canmodcp><![CDATA[no]]></canmodcp>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 	</usergroup>
 	<usergroup>
@@ -121,6 +122,7 @@
 		<canwarnusers><![CDATA[no]]></canwarnusers>
 		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
+		<canmodcp><![CDATA[no]]></canmodcp>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -182,6 +184,7 @@
 		<canwarnusers><![CDATA[yes]]></canwarnusers>
 		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[3]]></maxwarningsday>
+		<canmodcp><![CDATA[yes]]></canmodcp>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -243,6 +246,7 @@
 		<canwarnusers><![CDATA[yes]]></canwarnusers>
 		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
+		<canmodcp><![CDATA[yes]]></canmodcp>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -304,6 +308,7 @@
 		<canwarnusers><![CDATA[no]]></canwarnusers>
 		<canreceivewarnings><![CDATA[no]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
+		<canmodcp><![CDATA[no]]></canmodcp>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -365,6 +370,7 @@
 		<canwarnusers><![CDATA[yes]]></canwarnusers>
 		<canreceivewarnings><![CDATA[yes]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[3]]></maxwarningsday>
+		<canmodcp><![CDATA[yes]]></canmodcp>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -426,5 +432,6 @@
 		<canwarnusers><![CDATA[no]]></canwarnusers>
 		<canreceivewarnings><![CDATA[no]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
+		<canmodcp><![CDATA[no]]></canmodcp>
 	</usergroup>
 </usergroups>

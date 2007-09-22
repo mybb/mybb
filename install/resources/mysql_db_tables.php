@@ -855,6 +855,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canwarnusers char(3) NOT NULL default '',
   canreceivewarnings char(3) NOT NULL default '',
   maxwarningsday int(3) NOT NULL default '3',
+  canmodcp char(3) NOT NULL default '',
   PRIMARY KEY (gid)
 ) TYPE=MyISAM;";
 

@@ -233,4 +233,12 @@ $time_formats = array(
 	2 => "h:i A",
 	3 => "H:i"
 );
+
+//
+// DEVELOPMENT MODE STUFF (REMOVE BEFORE RELEASE)
+//
+if($_ENV['COMPUTERNAME'] == "ROADRUNNER" || $config['dev_mode'])
+{
+	$mybb->dev_mode = 1;
+}
 ?>

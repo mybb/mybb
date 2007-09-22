@@ -65,6 +65,18 @@ class templates
 	function get($title, $eslashes=1, $htmlcomments=1)
 	{
 		global $db, $theme, $mybb;
+
+		//
+		// DEVELOPMENT MODE
+		//
+		if($mybb->dev_mode == 1)
+		{
+			$template = $this->dev_get($title);
+			if($template !== false)
+			{
+				$this->cache[$title] = $template;
+			}
+		}
 		
 		if(!isset($this->cache[$title]))
 		{
@@ -97,5 +109,28 @@ class templates
 		}
 		return $template;
 	}
+
+	/**
+	 * Fetch a template directly from the install/resources/mybb_theme.xml directory if it exists (DEVELOPMENT MODE)
+	 */
+	function dev_get($title)
+	{
+		static $template_xml;
+
+		if(!$template_xml)
+		{
+			if(@file_exists(MYBB_ROOT."install/resources/mybb_theme.xml"))
+			{
+				$template_xml = simplexml_load_file(MYBB_ROOT."install/resources/mybb_theme.xml");
+			}
+			else
+			{
+				return false;
+			}
+		}
+		$res = $template_xml->xpath("//template[@name='{$title}']");
+		return $res[0];
+	}
+
 }
 ?>

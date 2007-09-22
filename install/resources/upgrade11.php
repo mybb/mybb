@@ -105,6 +105,14 @@ function upgrade11_dbchanges2()
 	
 	$db->update_query("usergroups", array('canreceivewarnings' => 'no'), "cancp='yes' OR gid='1'");
 	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 'yes'), "cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
+
+	if($db->field_exists('canmodcp', "usergroups"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmodcp;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmodcp char(3) NOT NULL default '' AFTER maxwarningsday");
+	$db->update_query("usergroups", array('canmodcp' => 'yes'), "cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
+
 	if($db->field_exists('newpms', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP newpms;");

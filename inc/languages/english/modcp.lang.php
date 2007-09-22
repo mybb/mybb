@@ -7,13 +7,21 @@
  */
 
 $l['nav_width'] = "180";
-$l['nav_modcp'] = "Moderator Control Panel";
+$l['nav_modcp'] = "Mod CP";
 $l['nav_menu'] = "Menu";
-$l['nav_home'] = "Mod CP Home";
-$l['nav_reported_posts'] = "Reported Posts";
-$l['nav_all_reported_posts'] = "All Reported Posts";
 $l['nav_modlogs'] = "Moderator Logs";
-$l['nav_modlogs_results'] = "Moderator Logs Search Results";
+
+$l['mcp_nav_home'] = "Mod CP Home";
+$l['mcp_nav_forums'] = "Forums &amp; Posts";
+$l['mcp_nav_announcements'] = "Announcements";
+$l['mcp_nav_modqueue'] = "Moderation Queue";
+$l['mcp_nav_reported_posts'] = "Reported Posts";
+$l['mcp_nav_modlogs'] = "Moderator Logs";
+$l['mcp_nav_users'] = "Users";
+$l['mcp_nav_editprofile'] = "Profile Editor";
+$l['mcp_nav_banning'] = "Banning";
+$l['mcp_nav_warninglogs'] = "Warning Logs";
+$l['mcp_nav_ipsearch'] = "IP Search";
 
 $l['modcp'] = "Moderator Control Panel";
 
@@ -33,25 +41,25 @@ $l['error_noselected_reports'] = "Sorry, but you did not select any reported pos
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
 
 $l['modlogs'] = "Moderator Logs";
-$l['modlogs_results'] = "Moderator Logs Search Results";
-$l['modlogs_access_logs'] = "View Moderator Access Logs";
-$l['modlogs_log_viewer'] = "Moderator Log Viewer";
-$l['modlogs_entries_per_page'] = "Entries Per Page";
-$l['modlogs_entries_from_moderator'] = "Entries from which Moderator";
-$l['modlogs_order_by'] = "Order By";
-$l['modlogs_all_mods'] = "All Moderators";
-$l['modlogs_order_date_desc'] = "Date Descending";
-$l['modlogs_order_name_asc'] = "Username Ascending";
-$l['modlogs_search_log'] = "Search Log";
-$l['modlogs_reset'] = "Reset";
-$l['modlogs_username'] = "<strong>Username</strong>";
-$l['modlogs_date'] = "<strong>Date</strong>";
-$l['modlogs_action'] = "<strong>Action</strong>";
-$l['modlogs_information'] = "<strong>Information</strong>";
-$l['modlogs_ipaddress'] = "<strong>IP Address</strong>";
+$l['action'] = "Action";
+$l['username'] = "Username";
+$l['all_moderators'] = "All Moderators";
+$l['date'] = "Date";
+$l['ip'] = "IP Address";
+$l['information']  = "Information";
+$l['filter_modlogs'] = "Filter Moderator Logs";
+$l['forum'] = "Forum:";
+$l['from_moderator'] = "From Moderator:";
+$l['sort_by'] = "Sort by:";
+$l['forum_name'] = "Forum Name";
+$l['thread_subject'] = "Thread Subject";
+$l['in'] = "in";
+$l['order'] = "order";
+$l['thread'] = "Thread:";
+$l['asc'] = "Ascending";
+$l['desc'] = "Descending";
+$l['per_page'] = "Results Per Page:";
+$l['filter_logs'] = "Filter Logs";
 $l['error_no_log_results'] = "Sorry, there were no results found with the criteria you selected.";
-$l['modlogs_information_thread'] = "<strong>Thread:</strong> ";
-$l['modlogs_information_forum'] = "<strong>Forum:</strong> ";
-$l['modlogs_information_post'] = "<strong>Post:</strong> ";
 
 ?>

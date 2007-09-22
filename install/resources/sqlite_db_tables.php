@@ -761,7 +761,8 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   cancustomtitle char(3) NOT NULL default '',
   canwarnusers char(3) NOT NULL default '',
   canreceivewarnings char(3) NOT NULL default '',
-  maxwarningsday int NOT NULL default '3'
+  maxwarningsday int NOT NULL default '3',
+  canmodcp char(3) NOT NULL default ''
 );";
 
 
