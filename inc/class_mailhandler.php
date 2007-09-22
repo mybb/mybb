@@ -209,7 +209,7 @@ class MailHandler
 		// Build mail headers
 		if(trim($this->from) == '')
 		{
-			$this->from = "\"{$mybb->settings['bbname']} Mailer\" <{$mybb->settings['adminemail']}>";
+			$this->from = "\"{$mybb->settings['bbname']}\" <{$mybb->settings['adminemail']}>";
 		}
 
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
