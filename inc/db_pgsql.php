@@ -872,7 +872,7 @@ class DB_PgSQL
 	 */
 	function escape_string_like($string)
 	{
-		return str_replace(array('%', '_') , array('\\%' , '\\_') , $string);
+		return $this->escape_string(str_replace(array('%', '_') , array('\\%' , '\\_') , $string));
 	}
 
 	/**

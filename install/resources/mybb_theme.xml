@@ -681,6 +681,10 @@ form {
 	background: url('images/modcp/reports.gif') no-repeat left center;
 }
 
+.modcp_nav_modqueue {
+	background: url('images/modcp/modqueue.gif') no-repeat left center;
+}
+
 .modcp_nav_modlogs {
 	background: url('images/modcp/modlogs.gif') no-repeat left center;
 }
@@ -699,6 +703,11 @@ form {
 
 .modcp_nav_ipsearch {
 	background: url('images/modcp/ipsearch.gif') no-repeat left center;
+}
+
+.modqueue_message {
+	overflow: auto;
+	max-height: 250px;
 }]]></stylesheet>
 		<stylesheet name="star_ratings.css" attachedto="forumdisplay.php|showthread.php" version="1400"><![CDATA[.star_rating,
 .star_rating li a:hover,
@@ -1057,8 +1066,8 @@ td .star_rating {
 		</td>
 	</tr>
 	<tbody style="{$collapsed['modcpforums_e']}" id="modcpforums_e">
-		<tr><td class="trow1 smalltext"><a href="#" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="#" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_reported_posts}</a></td></tr>
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="modcp_nav_item modcp_nav_modlogs">{$lang->mcp_nav_modlogs}</a></td></tr>
 	</tbody>
@@ -1069,10 +1078,10 @@ td .star_rating {
 		</td>
 	</tr>
 	<tbody style="{$collapsed['modcpusers_e']}" id="modcpusers_e">
-		<tr><td class="trow1 smalltext"><a href="#" class="modcp_nav_item modcp_nav_editprofile">{$lang->mcp_nav_editprofile}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="#" class="modcp_nav_item modcp_nav_banning">{$lang->mcp_nav_banning}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="#" class="modcp_nav_item modcp_nav_warninglogs">{$lang->mcp_nav_warninglogs}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="#" class="modcp_nav_item modcp_nav_ipsearch">{$lang->mcp_nav_ipsearch}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=finduser" class="modcp_nav_item modcp_nav_editprofile">{$lang->mcp_nav_editprofile}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=banning" class="modcp_nav_item modcp_nav_banning">{$lang->mcp_nav_banning}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=warninglogs" class="modcp_nav_item modcp_nav_warninglogs">{$lang->mcp_nav_warninglogs}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=ipsearch" class="modcp_nav_item modcp_nav_ipsearch">{$lang->mcp_nav_ipsearch}</a></td></tr>
 	</tbody>
 </table>
 </td>]]></template>
@@ -9131,5 +9140,356 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<p>{$lang->coppa_agreement_3}</p>
 	</td>
 </tr>]]></template>
+		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->threads_awaiting_moderation}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="modcp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="do_modqueue" />
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="6">
+				<div class="float_right">
+					<strong>{$lang->threads}</strong> | 
+					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> | 
+					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
+				</div>
+				<strong>{$lang->threads_awaiting_moderation}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->subject}</strong></span></td>
+			<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
+			<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
+		</tr>
+		{$threads}
+		</table>
+{$multipage}
+<br />
+<div align="center"><input type="submit" class="button" name="reportsubmit" value="{$lang->perform_actions}" /></div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_modqueue_threads_thread" version="1400"><![CDATA[			<tr>
+				<td class="trow1"><a href="{$thread['threadlink']}">{$thread['subject']}</a></td>
+				<td class="trow1" align="center">{$profile_link}</td>
+				<td align="center" class="trow1">{$threaddate}, {$threadtime}</td>
+			</tr>
+			<tr>
+				<td class="trow2" colspan="3">
+					<div class="modqueue_message">
+						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
+							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
+							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="delete" /> {$lang->delete}</label>
+							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="approve" /> {$lang->approve}</label>
+						</div>
+						{$thread['postmessage']}
+					</div>
+				</td>
+			</tr>
+]]></template>
+		<template name="modcp_modqueue_posts" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->posts_awaiting_moderation}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="modcp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="do_modqueue" />
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="6">
+				<div class="float_right">
+					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> | 
+					<strong>{$lang->posts}</strong> | 
+					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
+				</div>
+				<strong>{$lang->posts_awaiting_moderation}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="tcat" width="50%"><span class="smalltext"><strong>{$lang->subject}</strong></span></td>
+			<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
+			<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
+		</tr>
+		{$posts}
+		</table>
+{$multipage}
+<br />
+<div align="center"><input type="submit" class="button" name="reportsubmit" value="{$lang->perform_actions}" /></div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_modqueue_posts_post" version="1400"><![CDATA[			<tr>
+				<td class="trow1"><a href="{$post['postlink']}">{$post['subject']}</a></td>
+				<td class="trow1" align="center">{$profile_link}</td>
+				<td align="center" class="trow1">{$postdate}, {$posttime}</td>
+			</tr>
+			<tr>
+				<td class="trow2" colspan="3">
+					<div class="modqueue_message">
+						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
+							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
+							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="delete" /> {$lang->delete}</label>
+							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="approve" /> {$lang->approve}</label>
+						</div>
+						{$post['message']}
+					</div>
+				</td>
+			</tr>
+]]></template>
+	<template name="modcp_editprofile" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
+{$headerinclude}
+</head>
+<body>
+	{$header}
+	<form action="modcp.php" method="post">
+		<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+		<table width="100%" border="0" align="center">
+			<tr>
+				{$modcp_nav}
+				<td valign="top">
+					{$errors}
+					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+						<tr>
+							<td class="thead" colspan="2"><strong>{$lang->edit_profile}</strong></td>
+						</tr>
+						<tr>
+							<td width="50%" class="trow1" valign="top">
+								<fieldset class="trow2">
+									<legend><strong>{$lang->profile_required}</strong></legend>
+									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+										<tr>
+											<td><span class="smalltext">{$lang->current_username}</span></td>
+										</tr>
+										<tr>
+											<td><strong>{$profile_link}</strong></td>
+										</tr>
+										{$requiredfields}
+									</table>
+								</fieldset>
+								<br />
+								<fieldset class="trow2">
+									<legend><strong>{$lang->profile_optional}</strong></legend>
+									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+										<tr>
+											<td colspan="3"><span class="smalltext"><label><input type="checkbox" name="remove_avatar" value="1" /> {$lang->remove_avatar}</label></span></td>
+										</tr>
+
+										<tr>
+											<td colspan="3"><span class="smalltext">{$lang->birthday}</span></td>
+										</tr>
+										<tr>
+											<td>
+												<select name="birthday_day">
+													<option value="">&nbsp;</option>
+													{$bdaydaysel}
+												</select>
+											</td>
+											<td>
+												<select name="birthday_month">
+													<option value="">&nbsp;</option>
+													<option value="1" {$bdaymonthsel['1']}>{$lang->month_1}</option>
+													<option value="2" {$bdaymonthsel['2']}>{$lang->month_2}</option>
+													<option value="3" {$bdaymonthsel['3']}>{$lang->month_3}</option>
+													<option value="4" {$bdaymonthsel['4']}>{$lang->month_4}</option>
+													<option value="5" {$bdaymonthsel['5']}>{$lang->month_5}</option>
+													<option value="6" {$bdaymonthsel['6']}>{$lang->month_6}</option>
+													<option value="7" {$bdaymonthsel['7']}>{$lang->month_7}</option>
+													<option value="8" {$bdaymonthsel['8']}>{$lang->month_8}</option>
+													<option value="9" {$bdaymonthsel['9']}>{$lang->month_9}</option>
+													<option value="10" {$bdaymonthsel['10']}>{$lang->month_10}</option>
+													<option value="11" {$bdaymonthsel['11']}>{$lang->month_11}</option>
+													<option value="12" {$bdaymonthsel['12']}>{$lang->month_12}</option>
+												</select>
+											</td>
+											<td>
+												<input type="text" class="textbox" size="4" maxlength="4" name="birthday_year" value="{$mybb->input['birthday_year']}" />
+											</td>
+										</tr>
+										<tr>
+											<td colspan="3"><span class="smalltext">{$lang->website_url}</span></td>
+										</tr>
+										<tr>
+											<td colspan="3"><input type="text" class="textbox" name="website" size="25" maxlength="75" value="{$mybb->input['website']}" /></td>
+										</tr>
+									</table>
+								</fieldset>
+								{$customfields}
+							</td>
+							<td width="50%" class="trow1" valign="top">
+								<fieldset class="trow2">
+									<legend><strong>{$lang->custom_usertitle}</strong></legend>
+									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+										<tr>
+											<td><span class="smalltext">{$lang->custom_usertitle_note}</span></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->default_usertitle}</span></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext"><strong>{$defaulttitle}</strong></span></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->current_custom_usertitle}</span></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext"><strong>{$user['usertitle']}</strong></span></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->new_custom_usertitle}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="usertitle" size="25" maxlength="{$mybb->settings['customtitlemaxlength']}" value="{$newtitle}" /></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext"><input type="checkbox" name="reverttitle" id="reverttitle" class="checkbox" /> {$lang->revert_usertitle}</span></td>
+										</tr>
+									</table>
+								</fieldset>
+								<br />
+								<fieldset class="trow2">
+									<legend><strong>{$lang->additional_contact_details}</strong></legend>
+									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+										<tr>
+											<td><span class="smalltext">{$lang->icq_number}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="icq" size="25" value="{$mybb->input['icq']}" /></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->aim_screenname}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="aim" size="25" value="{$mybb->input['aim']}" /></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->msn}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="msn" size="25" value="{$mybb->input['msn']}" /></td>
+										</tr>
+										<tr>
+											<td><span class="smalltext">{$lang->yahoo_id}</span></td>
+										</tr>
+										<tr>
+											<td><input type="text" class="textbox" name="yahoo" size="25" value="{$mybb->input['yahoo']}" /></td>
+										</tr>
+									</table>
+								</fieldset>
+							</td>
+						</tr>
+					</table>
+					<br />
+					<div align="center">
+						<input type="hidden" name="action" value="do_editprofile" />
+						<input type="hidden" name="uid" value="{$user['uid']}" />
+						<input type="submit" class="button" value="{$lang->update_profile}" />
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+	{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_finduser" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->find_users}</title>
+{$headerinclude}
+</head>
+<body>
+	{$header}
+	<form action="modcp.php?action=finduser" method="post">
+		<table width="100%" border="0" align="center">
+			<tr>
+				{$modcp_nav}
+				<td valign="top">
+					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+						<tr>
+							<td class="thead" colspan="5"><strong>{$lang->users}</strong></td>
+						</tr>
+						<tr>
+							<td class="tcat" width="30%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->usergroup}</strong></span></td>
+							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->regdate}</strong></span></td>
+							<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
+							<td class="tcat" align="right" width="10%"><span class="smalltext"><strong>{$lang->postnum}</strong></span></td>
+						</tr>
+						{$users}
+					</table>
+					{$multipage}
+					<br />
+					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+						<tr>
+							<td class="thead" colspan="2"><strong>{$lang->find_users}</strong></td>
+						</tr>
+						<tr>
+							<td class="trow1" width="25%"><strong>{$lang->username_contains}</td>
+							<td class="trow1" width="75%"><input type="text" name="username" value="{$mybb->input['username']}" class="textbox" /></td>
+						</tr>
+						<tr>
+							<td class="trow1" width="25%"><strong>{$lang->sort_by}</strong></td>
+							<td class="trow1" width="75%">
+								<select name="sortby">
+									<option value="username"{$sortbysel['username']}>{$lang->username}</option>
+									<option value="regdate"{$sortbysel['regdate']}>{$lang->regdate}</option>
+									<option value="lastvisit"{$sortbysel['lastvisit']}>{$lang->lastvisit}</option>
+									<option value="postnum"{$sortbysel['postnum']}>{$lang->postnum}</option>
+								</select>
+								{$lang->in}
+								<select name="order">
+									<option value="asc"{$ordersel['asc']}>{$lang->asc}</option>
+									<option value="desc"{$ordersel['desc']}>{$lang->desc}</option>
+								</select>
+								{$lang->order}
+							</td>
+						</tr>
+					</table>
+					<br />
+					<div align="center">
+						<input type="submit" value="{$lang->find_users}" />
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_finduser_user" version="1400"><![CDATA[						<tr>
+							<td class="{$alt_row}"><a href="modcp.php?action=editprofile&amp;uid={$user['uid']}">{$user['username']}</a></td>
+							<td class="{$alt_row}" align="center">{$usergroup}</td>
+							<td class="{$alt_row}" align="center">{$regdate}, {$regtime}</td>
+							<td class="{$alt_row}" align="center">{$lastdate}, {$lasttime}</td>
+							<td class="{$alt_row}" align="right">{$user['postnum']}</td>
+						</tr>]]></template>
+		<template name="modcp_finduser_noresults" version="1400"><![CDATA[						<tr>
+							<td class="trow1" align="center" colspan="5">{$lang->no_user_results}</td>
+						</tr>]]></template>
 	</templates>
 </theme>
