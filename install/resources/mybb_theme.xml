@@ -9666,7 +9666,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-	<template name="modcp_banning_modcp" version="1400"><![CDATA[<tr>
+	<template name="modcp_banning_ban" version="1400"><![CDATA[<tr>
 <td class="{$trow}" align="center">{$banned['uidlink']}</td>
 <td class="{$trow}">{$banned['reason']}</td>
 <td class="{$trow}" align="center">{$banlength} ({$timeremaining})</td>

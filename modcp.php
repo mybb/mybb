@@ -12,8 +12,9 @@
 define("IN_MYBB", 1);
 
 $templatelist .= "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
-$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_banned";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban";
 $templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_banning_auser,modcp_banning_error";
+$templatelist .= ",modcp_banning_edit,modcp_banning_banned_user";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -1471,7 +1472,7 @@ if($mybb->input['action'] == "banning")
 			$timeremaining = modcp_getbanremaining($banned['lifted'])." {$lang->ban_remaining}";
 		}
 		
-		eval("\$allbanned .= \"".$templates->get("modcp_banning_modcp")."\";");
+		eval("\$allbanned .= \"".$templates->get("modcp_banning_ban")."\";");
 	}
 	
 	if(!$allbanned)
