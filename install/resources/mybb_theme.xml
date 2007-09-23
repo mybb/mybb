@@ -9556,6 +9556,137 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>]]></template>
 		<template name="modcp_finduser_noresults" version="1400"><![CDATA[						<tr>
 							<td class="trow1" align="center" colspan="5">{$lang->no_user_results}</td>
-						</tr>]]></template>
+</tr>]]></template>
+		<template name="modcp_banning" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->mcp_nav_banning}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+{$banerror}
+{$bannedusers}
+{$banauser}
+<br />
+<div align="right">
+<input type="submit" class="submitbutton" name="{$lang->ban_auser}" value="{$lang->ban_auser}" />&nbsp;&nbsp;
+<input type="reset" class="submitbutton" name="{$lang->reset}" value="{$lang->reset}" />
+</div>
+</form>
+
+</td>
+</tr>
+</table>
+{$footer}
+</body>
+</html>]]></template>
+	<template name="modcp_banning_banned_users" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="4"><strong>{$lang->ban_banned}</strong></td>
+</tr>
+<tr>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->ban_username}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->ban_reason}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->ban_length}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->ban_bannedby}</strong></span></td>
+</tr>
+{$allbanned}
+{$allbannedpages}
+</table>
+<br />]]></template>
+	<template name="modcp_banning_auser" version="1400"><![CDATA[<form action="modcp.php?action=banning" method="post" enctype="multipart/form-data">
+<input type="hidden" name="action" value="do_banuser" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="2"><strong>{$lang->ban_auser}</strong></td>
+</tr>
+<td class="trow1">{$lang->ban_username}</td>
+<td class="trow1"><input type="text" class="inputbox" name="username" value="{$username}" size="25" /></td>
+</tr>
+<tr>
+<td class="trow2">{$lang->ban_reason}</td>
+<td class="trow2"><input type="text" class="inputbox" name="banreason" value="{$banreason}" size="25" /></td>
+</tr>
+<tr>
+<td class="trow1">{$lang->ban_movegroup}</td>
+<td class="trow1"><select name="usergroup">{$bangroups}</select>
+</td>
+</tr>
+<tr>
+<td class="trow2">{$lang->ban_liftafter}</td>
+<td class="trow2"><select name="liftafter">{$liftlist}<option value="---" {$permsel}>{$lang->permanent}</option></select></td>
+</tr>
+</table>]]></template>
+	<template name="modcp_banning_edit" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->mcp_nav_banning}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+{$banerror}
+<form action="modcp.php?action=banning" method="post" enctype="multipart/form-data">
+<input type="hidden" name="action" value="do_banuser" />
+<input type="hidden" name="uid" value="{$uid}" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="2"><strong>{$lang->ban_auser} - {$username}</strong></td>
+</tr>
+<tr>
+<td class="trow2">{$lang->ban_reason}</td>
+<td class="trow2"><input type="text" class="inputbox" name="banreason" value="{$banreason}" size="25" /></td>
+</tr>
+<tr>
+<td class="trow1">{$lang->ban_movegroup}</td>
+<td class="trow1"><select name="usergroup">{$bangroups}</select>
+</td>
+</tr>
+<tr>
+<td class="trow2">{$lang->ban_liftafter}</td>
+<td class="trow2"><select name="liftafter">{$liftlist}<option value="---" {$permsel}>{$lang->permanent}</option></select></td>
+</tr>
+</table>
+<br />
+<div align="right">
+<input type="submit" class="submitbutton" name="{$lang->edit_ban}" value="{$lang->edit_ban}" />&nbsp;&nbsp;
+<input type="reset" class="submitbutton" name="{$lang->reset}" value="{$lang->reset}" />
+</div>
+</form>
+</td>
+</tr>
+</table>
+{$footer}
+</body>
+</html>]]></template>
+	<template name="modcp_banning_modcp" version="1400"><![CDATA[<tr>
+<td class="{$trow}" align="center">{$banned['uidlink']}</td>
+<td class="{$trow}">{$banned['reason']}</td>
+<td class="{$trow}" align="center">{$banlength} ({$timeremaining})</td>
+<td class="{$trow}" align="center"><a href="{$banned['adminlink']}">{$banned['adminuser']}</a></td>
+</tr>]]></template>
+	<template name="modcp_banning_error" version="1400"><![CDATA[
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center"><strong>{$lang->ban_error}</strong></td>
+</tr>
+<tr>
+<td class="trow1">{$error}</td>
+</tr>
+</table>
+<br />]]></template>
+	<template name="modcp_banning_multipage" version="1400"><![CDATA[<tr>
+<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
+</tr>]]></template>
+	<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
+<td class="trow1" align="center" colspan="6">{$lang->no_banned}</td>
+</tr>]]></template>
 	</templates>
 </theme>

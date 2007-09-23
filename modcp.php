@@ -12,10 +12,12 @@
 define("IN_MYBB", 1);
 
 $templatelist .= "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
-$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,";
+$templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_banned";
+$templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_banning_auser,modcp_banning_error";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_modcp.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 
 $parser = new postParser;
@@ -1355,6 +1357,427 @@ if($mybb->input['action'] == "ipsearch")
 	
 	eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
 	output_page($ipsearch);
+}
+
+if($mybb->input['action'] == "banning")
+{
+	add_breadcrumb($lang->mcp_nav_banning, "modcp.php?action=banning");
+	
+	if(!$mybb->settings['threadsperpage'])
+	{
+		$mybb->settings['threadsperpage'] = 20;
+	}
+	
+	// Set up the array of ban times.
+	$bantimes["1-0-0"] = "1 {$lang->day}";
+	$bantimes["2-0-0"] = "2 {$lang->days}";
+	$bantimes["3-0-0"] = "3 {$lang->days}";
+	$bantimes["4-0-0"] = "4 {$lang->days}";
+	$bantimes["5-0-0"] = "5 {$lang->days}";
+	$bantimes["6-0-0"] = "6 {$lang->days}";
+	$bantimes["7-0-0"] = "1 {$lang->week}";
+	$bantimes["14-0-0"] = "2 {$lang->weeks}";
+	$bantimes["21-0-0"] = "3 {$lang->weeks}";
+	$bantimes["0-1-0"] = "1 {$lang->month}";
+	$bantimes["0-2-0"] = "2 {$lang->months}";
+	$bantimes["0-3-0"] = "3 {$lang->months}";
+	$bantimes["0-4-0"] = "4 {$lang->months}";
+	$bantimes["0-5-0"] = "5 {$lang->months}";
+	$bantimes["0-6-0"] = "6 {$lang->months}";
+	$bantimes["0-0-1"] = "1 {$lang->year}";
+	$bantimes["0-0-2"] = "2 {$lang->years}";
+	
+	// Figure out if we need to display multiple pages.
+	$perpage = $mybb->settings['threadsperpage'];
+	if($mybb->input['page'] != "last")
+	{
+		$page = intval($mybb->input['page']);
+	}
+	
+	$query = $db->simple_select("banned", "COUNT(uid) AS count");
+	$banned_count = $db->fetch_field($query, "count");
+	
+	$postcount = intval($banned_count)+1;
+	$pages = $postcount / $perpage;
+	$pages = ceil($pages);
+
+	if($mybb->input['page'] == "last")
+	{
+		$page = $pages;
+	}
+
+	if($page > $pages)
+	{
+		$page = 1;
+	}
+
+	if($page)
+	{
+		$start = ($page-1) * $perpage;
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+	$upper = $start+$perpage;
+
+	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=banning");
+	if($postcount > $perpage)
+	{
+		eval("\$allbannedpages = \"".$templates->get("modcp_banning_multipage")."\";");
+	}
+
+	$query = $db->simple_select("users", "uid, username");
+	while($user = $db->fetch_array($query))
+	{
+		$users[$user['fid']] = $user['name'];
+	}
+
+	$query = $db->query("
+		SELECT b.*, a.username AS adminuser, u.username
+		FROM ".TABLE_PREFIX."banned b
+		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
+		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) 
+		ORDER BY lifted ASC
+		LIMIT {$start}, {$perpage}
+	");
+	
+	// Get the banned users
+	while($banned = $db->fetch_array($query))
+	{
+		$banned['uidlink'] = "<a href=\"modcp.php?action=banuser_edit&amp;uid={$banned['uid']}\">{$banned['username']}</a>";
+		$banned['adminlink'] = get_profile_link($banned['admin']);
+		
+		$trow = alt_trow();
+		
+		if($banned['reason'])
+		{
+			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+		}
+		else
+		{
+			$banned['reason'] = $lang->na;
+		}
+		
+		if($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
+		{
+			$banlength = $lang->permanent;
+			$timeremaining = $lang->na;
+		}
+		else
+		{
+			$banlength = $bantimes[$banned['bantime']];
+			$timeremaining = modcp_getbanremaining($banned['lifted'])." {$lang->ban_remaining}";
+		}
+		
+		eval("\$allbanned .= \"".$templates->get("modcp_banning_modcp")."\";");
+	}
+	
+	if(!$allbanned)
+	{
+		eval("\$allbanned = \"".$templates->get("modcp_banning_nobanned")."\";");
+	}
+	
+	eval("\$bannedusers = \"".$templates->get("modcp_banning_banned_users")."\";");
+	
+	// Generate the banned times dropdown
+	foreach($bantimes as $time => $title)
+	{
+		$liftlist .= "<option value=\"{$time}\"";
+		$thatime = date("D, jS M Y @ g:ia", modcp_date2timestamp($time));
+		$liftlist .= ">{$title} ({$thatime})</option>\n";
+	}
+	
+	$bangroups = '';
+	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup='yes'");
+	while($item = $db->fetch_array($query))
+	{
+		$bangroups .= "<option value=\"{$item['gid']}\">{$item['title']}</option>\n";
+	}
+	
+	eval("\$banauser = \"".$templates->get("modcp_banning_auser")."\";");
+	
+	$plugins->run_hooks("modcp_banning");
+
+	eval("\$bannedpage = \"".$templates->get("modcp_banning")."\";");
+	output_page($bannedpage);
+}
+
+if($mybb->input['action'] == "banuser_edit")
+{
+	add_breadcrumb($lang->mcp_nav_banning, "modcp.php?action=banning");
+	add_breadcrumb($lang->mcp_nav_editing_ban, "modcp.php?action=banning");
+	
+	if(!$mybb->input['uid'])
+	{
+		error($lang->banerror_notfound);
+	}
+	
+	// Set up the array of ban times.
+	$bantimes["1-0-0"] = "1 {$lang->day}";
+	$bantimes["2-0-0"] = "2 {$lang->days}";
+	$bantimes["3-0-0"] = "3 {$lang->days}";
+	$bantimes["4-0-0"] = "4 {$lang->days}";
+	$bantimes["5-0-0"] = "5 {$lang->days}";
+	$bantimes["6-0-0"] = "6 {$lang->days}";
+	$bantimes["7-0-0"] = "1 {$lang->week}";
+	$bantimes["14-0-0"] = "2 {$lang->weeks}";
+	$bantimes["21-0-0"] = "3 {$lang->weeks}";
+	$bantimes["0-1-0"] = "1 {$lang->month}";
+	$bantimes["0-2-0"] = "2 {$lang->months}";
+	$bantimes["0-3-0"] = "3 {$lang->months}";
+	$bantimes["0-4-0"] = "4 {$lang->months}";
+	$bantimes["0-5-0"] = "5 {$lang->months}";
+	$bantimes["0-6-0"] = "6 {$lang->months}";
+	$bantimes["0-0-1"] = "1 {$lang->year}";
+	$bantimes["0-0-2"] = "2 {$lang->years}";
+	
+	$query = $db->query("
+		SELECT b.*, u.username
+		FROM ".TABLE_PREFIX."banned b
+		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
+		WHERE b.uid='{$mybb->input['uid']}'
+		LIMIT 1
+	");
+	
+	$banned = $db->fetch_array($query);
+	
+	$username = htmlspecialchars_uni($banned['username']);
+	$banreason = htmlspecialchars_uni($banned['reason']);
+	$uid = $mybb->input['uid'];
+	
+	// Generate the banned times dropdown
+	foreach($bantimes as $time => $title)
+	{
+		$liftlist .= "<option value=\"{$time}\"";
+		if($banned['bantime'] == $time)
+		{
+			$liftlist .= " selected=\"selected\"";
+		}
+		$thatime = date("D, jS M Y @ g:ia", modcp_date2timestamp($time));
+		$liftlist .= ">{$title} ({$thatime})</option>\n";
+	}
+	
+	$bangroups = '';
+	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup='yes'");
+	while($item = $db->fetch_array($query))
+	{
+		$selected = "";
+		if($banned['gid'] == $item['gid'])
+		{
+			$selected = " selected=\"selected\"";
+		}
+		$bangroups .= "<option value=\"{$item['gid']}\"{$selected}>{$item['title']}</option>\n";
+	}
+	
+	eval("\$banauser = \"".$templates->get("modcp_banning_edit")."\";");
+	output_page($banauser);
+}
+
+if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
+{	
+	// Check the form has been filled in.
+	$error = '';
+	if(($mybb->input['username'] != '' || $mybb->input['uid']) && $mybb->input['banreason'] != '')
+	{
+		if($mybb->input['username'])
+		{
+			// Get the users info from their Username
+			$query = $db->simple_select('users', 'uid, usergroup, additionalgroups, displaygroup', "username = '".$db->escape_string($mybb->input['username'])."'");
+			$user = $db->fetch_array($query);
+		}
+		else
+		{
+			// Get the users info from their uid
+			$query = $db->query("
+				SELECT b.*, u.uid, u.usergroup, u.additionalgroups, u.displaygroup
+				FROM ".TABLE_PREFIX."banned b
+				LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
+				WHERE b.uid='{$mybb->input['uid']}'
+				LIMIT 1
+			");
+			$user = $db->fetch_array($query);
+		}
+		
+		if($user['uid'] == $mybb->user['uid'])
+		{
+			$error = $lang->redirect_cannotbanself;
+		}
+		
+		// Figure out if we have enough permissions to ban this user.
+		if(is_moderator('', '', $user['uid']) && $mybb->usergroup['cancp'] != "yes")
+		{
+			$permissions = user_permissions($user['uid']);
+			if($permissions['issupermod'] == "yes")
+			{
+				$error = $lang->redirect_cannotbanuser;
+			}
+		}
+		
+		// Check we have a valid user.
+		if($user['uid'] != '')
+		{
+			// Check the user isn't already banned
+			$query = $db->simple_select('banned', 'uid', "uid='{$user['uid']}'");
+			if($db->num_rows($query) > 0 && !$mybb->input['uid'])
+			{
+				redirect("modcp.php?action=banning", $lang->redirect_banuseralreadybanned);
+			}
+			else
+			{
+				// Ban the user
+				if($mybb->input['liftafter'] == '---')
+				{
+					$lifted = 0;
+				}
+				else
+				{
+					$lifted = modcp_date2timestamp($mybb->input['liftafter']);
+				}
+								
+				if($mybb->input['uid'])
+				{
+					$update_array = array(
+						'gid' => intval($mybb->input['usergroup']),
+						'oldgroup' => $user['usergroup'],
+						'oldadditionalgroups' => $user['additionalgroups'],
+						'olddisplaygroup' => $user['displaygroup'],
+						'admin' => intval($mybb->user['uid']),
+						'dateline' => $db->escape_string(time()),
+						'bantime' => $db->escape_string($mybb->input['liftafter']),
+						'lifted' => $db->escape_string($lifted),
+						'reason' => $db->escape_string($mybb->input['banreason'])
+					);
+				
+					$db->update_query('banned', $update_array, "uid='{$user['uid']}'");
+				}
+				else
+				{
+					$insert_array = array(
+						'uid' => $user['uid'],
+						'gid' => intval($mybb->input['usergroup']),
+						'oldgroup' => $user['usergroup'],
+						'oldadditionalgroups' => $user['additionalgroups'],
+						'olddisplaygroup' => $user['displaygroup'],
+						'admin' => intval($mybb->user['uid']),
+						'dateline' => $db->escape_string(time()),
+						'bantime' => $db->escape_string($mybb->input['liftafter']),
+						'lifted' => $db->escape_string($lifted),
+						'reason' => $db->escape_string($mybb->input['banreason'])
+					);
+					
+					$db->insert_query('banned', $insert_array);
+				}
+				
+				// Move the user to the banned group
+				$update_array = array(
+					'usergroup' => intval($mybb->input['usergroup']),
+					'displaygroup' => 0
+				);
+				$db->update_query('users', $update_array, "uid = {$user['uid']}");
+				
+				if($mybb->input['uid'])
+				{
+					redirect("modcp.php?action=banning", $lang->redirect_banuser_updated);
+				}
+				else
+				{
+					redirect("modcp.php?action=banning", $lang->redirect_banuser);
+				}
+			}
+		}
+		else
+		{
+			$error = $lang->banerror_notfound;
+		}
+	}
+	else
+	{
+		$error = $lang->banerror_empty;
+	}
+	
+	// If we have an error, we need to let the user fix it.
+	if($error != '')
+	{
+		add_breadcrumb($lang->mcp_nav_banning, "modcp.php?action=banning");
+		
+		// Set up the array of ban times.
+		$bantimes["1-0-0"] = "1 {$lang->day}";
+		$bantimes["2-0-0"] = "2 {$lang->days}";
+		$bantimes["3-0-0"] = "3 {$lang->days}";
+		$bantimes["4-0-0"] = "4 {$lang->days}";
+		$bantimes["5-0-0"] = "5 {$lang->days}";
+		$bantimes["6-0-0"] = "6 {$lang->days}";
+		$bantimes["7-0-0"] = "1 {$lang->week}";
+		$bantimes["14-0-0"] = "2 {$lang->weeks}";
+		$bantimes["21-0-0"] = "3 {$lang->weeks}";
+		$bantimes["0-1-0"] = "1 {$lang->month}";
+		$bantimes["0-2-0"] = "2 {$lang->months}";
+		$bantimes["0-3-0"] = "3 {$lang->months}";
+		$bantimes["0-4-0"] = "4 {$lang->months}";
+		$bantimes["0-5-0"] = "5 {$lang->months}";
+		$bantimes["0-6-0"] = "6 {$lang->months}";
+		$bantimes["0-0-1"] = "1 {$lang->year}";
+		$bantimes["0-0-2"] = "2 {$lang->years}";
+	
+		// Generate the banned times dropdown
+		foreach($bantimes as $time => $title)
+		{
+			$liftlist .= "<option value=\"{$time}\"";
+			if($time == $mybb->input['liftafter'])
+			{
+				$liftlist .= ' selected="selected"';
+			}
+			$thatime = date("D, jS M Y @ g:ia", modcp_date2timestamp($time));
+			$liftlist .= ">{$title} ({$thatime})</option>\n";
+		}
+		if($mybb->input['liftafter'] == "---")
+		{
+			$permsel = ' selected="selected"';
+		}
+		
+		$bangroups = '';
+		$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup='yes'");
+		while($item = $db->fetch_array($query))
+		{
+			if($mybb->input['usergroup'] == $item['gid'])
+			{
+				$bangroups .= "<option value=\"{$item['gid']}\" selected=\"selected\">{$item['title']}</option>\n";
+			}
+			else
+			{
+				$bangroups .= "<option value=\"{$item['gid']}\">{$item['title']}</option>\n";
+			}
+		}
+		
+		eval("\$banerror = \"".$templates->get("modcp_banning_error")."\";");
+		
+		if($mybb->input['uid'])
+		{
+			// Get the users info from their uid
+			$query = $db->query("
+				SELECT b.*, u.uid, u.username, u.usergroup, u.additionalgroups, u.displaygroup
+				FROM ".TABLE_PREFIX."banned b
+				LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
+				WHERE b.uid='{$mybb->input['uid']}'
+				LIMIT 1
+			");
+			$user = $db->fetch_array($query);
+			
+			$username = htmlspecialchars_uni($user['username']);
+			$banreason = htmlspecialchars_uni($user['banreason']);
+			$uid = $user['uid'];
+			eval("\$banpage = \"".$templates->get("modcp_banning_edit")."\";");
+		}
+		else
+		{
+			eval("\$banauser = \"".$templates->get("modcp_banning_auser")."\";");
+			eval("\$banpage = \"".$templates->get("modcp_banning")."\";");
+		}		
+		
+		output_page($banpage);
+	}
 }
 
 if(!$mybb->input['action'])

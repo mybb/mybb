@@ -21,6 +21,7 @@ $l['mcp_nav_editprofile'] = "Profile Editor";
 $l['mcp_nav_banning'] = "Banning";
 $l['mcp_nav_warninglogs'] = "Warning Logs";
 $l['mcp_nav_ipsearch'] = "IP Search";
+$l['mcp_nav_editing_ban'] = "Edit a Ban";
 
 $l['modcp'] = "Moderator Control Panel";
 
@@ -116,4 +117,27 @@ $l['subject'] = "Subject";
 $l['author'] = "Author";
 $l['threads'] = "Threads";
 $l['posts'] = "Posts";
+
+$l['permanent'] = "Permanent";
+$l['ban_error'] = "Error";
+$l['ban_banned'] = "Banned Users";
+$l['ban_auser'] = "Ban A User";
+$l['ban_username'] = "Username";
+$l['ban_reason'] = "Reason";
+$l['ban_length'] = "Length";
+$l['ban_remaining'] = "Remaining";
+$l['ban_bannedby'] = "Banned By";
+$l['ban_movegroup'] = "Move to Banned Group";
+$l['ban_liftafter'] = "Lift Ban After";
+$l['no_banned'] = "There are currently no banned users.";
+$l['redirect_banuser'] = "The user has been banned.";
+$l['redirect_banuser_updated'] = "The user's ban has been updated.";
+$l['redirect_banuseralreadybanned'] = "This user is already banned.";
+$l['redirect_cannotbanuser'] = "Sorry, this user has higher permissions than you. Please contact your administrator if you wish to ban this user.";
+$l['redirect_cannotbanself'] = "Hey silly! You can't ban yourself!";
+$l['banerror_empty'] = "Some fields were left empty. Please check your information and try again.";
+$l['banerror_notfound'] = "No user could be found for that username. Please check your information and try again.";
+$l['edit_ban'] = "Edit Ban";
+$l['reset'] = "Reset";
+
 ?>
