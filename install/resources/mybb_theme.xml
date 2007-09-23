@@ -9204,7 +9204,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	</td>
 </tr>]]></template>
 		<template name="modcp_modqueue_noresults" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="3">{$lang->error_no_results}</td>
+	<td class="trow1" align="center" colspan="{$colspan}">{$lang->error_no_results}</td>
 </tr>]]></template>
 		<template name="modcp_modqueue_threads" version="1400"><![CDATA[<html>
 <head>
@@ -9222,7 +9222,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td valign="top">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
-			<td class="thead" colspan="6">
+			<td class="thead" colspan="3">
 				<div class="float_right">
 					<strong>{$lang->threads}</strong> | 
 					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> | 
@@ -9249,12 +9249,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="modcp_modqueue_threads_thread" version="1400"><![CDATA[			<tr>
-				<td class="trow1"><a href="{$thread['threadlink']}">{$thread['subject']}</a></td>
-				<td class="trow1" align="center">{$profile_link}</td>
-				<td align="center" class="trow1">{$threaddate}, {$threadtime}</td>
+				<td class="{$altbg}"><a href="{$thread['threadlink']}">{$thread['subject']}</a></td>
+				<td class="{$altbg}" align="center">{$profile_link}</td>
+				<td align="center" class="{$altbg}">{$threaddate}, {$threadtime}</td>
 			</tr>
 			<tr>
-				<td class="trow2" colspan="3">
+				<td class="{$altbg}" colspan="3">
 					<div class="modqueue_message">
 						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
 							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
@@ -9282,7 +9282,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td valign="top">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
-			<td class="thead" colspan="6">
+			<td class="thead" colspan="3">
 				<div class="float_right">
 					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> | 
 					<strong>{$lang->posts}</strong> | 
@@ -9309,12 +9309,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="modcp_modqueue_posts_post" version="1400"><![CDATA[			<tr>
-				<td class="trow1"><a href="{$post['postlink']}">{$post['subject']}</a></td>
-				<td class="trow1" align="center">{$profile_link}</td>
-				<td align="center" class="trow1">{$postdate}, {$posttime}</td>
+				<td class="{$altbg}"><a href="{$post['postlink']}">{$post['subject']}</a></td>
+				<td class="{$altbg}" align="center">{$profile_link}</td>
+				<td align="center" class="{$altbg}">{$postdate}, {$posttime}</td>
 			</tr>
 			<tr>
-				<td class="trow2" colspan="3">
+				<td class="{$altbg}" colspan="3">
 					<div class="modqueue_message">
 						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
 							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
@@ -9326,7 +9326,68 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				</td>
 			</tr>
 ]]></template>
-	<template name="modcp_editprofile" version="1400"><![CDATA[<html>
+		<template name="modcp_modqueue_attachments" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->attachments_awaiting_moderation}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action="modcp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="do_modqueue" />
+<table width="100%" border="0" align="center">
+<tr>
+{$modcp_nav}
+<td valign="top">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="4">
+				<div class="float_right">
+					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> | 
+					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> | 
+					<strong>{$lang->attachments}</strong>
+				</div>
+				<strong>{$lang->attachments_awaiting_moderation}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td class="tcat" width="30%"><span class="smalltext"><strong>{$lang->filename}</strong></span></td>
+			<td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$lang->thread_post}</strong></span></td>
+			<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
+			<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
+		</tr>
+		{$attachments}
+		</table>
+{$multipage}
+<br />
+<div align="center"><input type="submit" class="button" name="reportsubmit" value="{$lang->perform_actions}" /></div>
+</td>
+</tr>
+</table>
+</form>
+{$footer}
+</body>
+</html>]]></template>
+		<template name="modcp_modqueue_attachments_attachment" version="1400"><![CDATA[			<tr>
+				<td class="{$altbg}"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a></td>
+				<td class="{$altbg}"><a href="{$link}">{$attachment['subject']}</a></td>
+				<td class="{$altbg}" align="center">{$profile_link}</td>
+				<td align="center" class="{$altbg}">{$attachdate}, {$attachtime}</td>
+			</tr>
+			<tr>
+				<td class="{$altbg}" colspan="4">
+					<div class="modqueue_message">
+						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
+							<label><input type="radio" class="radio" name="attachments[{$attachment['aid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
+							<label><input type="radio" class="radio" name="attachments[{$attachment['aid']}]" value="delete" /> {$lang->delete}</label>
+							<label><input type="radio" class="radio" name="attachments[{$attachment['aid']}]" value="approve" /> {$lang->approve}</label>
+						</div>
+					</div>
+				</td>
+			</tr>
+]]></template>
+		<template name="modcp_editprofile" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_profile}</title>
 {$headerinclude}

@@ -109,6 +109,7 @@ $l['current_username'] = "Username:";
 $l['usergroup'] = "Primary Group";
 $l['posts_awaiting_moderation'] = "Posts Awaiting Moderation";
 $l['threads_awaiting_moderation'] = "Threads Awaiting Moderation";
+$l['attachments_awaiting_moderation'] = "Attachments Awaiting Moderation";
 $l['approve'] = "Approve";
 $l['ignore'] = "Ignore";
 $l['delete'] = "Delete";
@@ -117,7 +118,8 @@ $l['subject'] = "Subject";
 $l['author'] = "Author";
 $l['threads'] = "Threads";
 $l['posts'] = "Posts";
-
+$l['filename'] = "Filename";
+$l['thread_post'] = "Thread / Post";
 $l['permanent'] = "Permanent";
 $l['ban_error'] = "Error";
 $l['ban_banned'] = "Banned Users";
@@ -139,5 +141,4 @@ $l['banerror_empty'] = "Some fields were left empty. Please check your informati
 $l['banerror_notfound'] = "No user could be found for that username. Please check your information and try again.";
 $l['edit_ban'] = "Edit Ban";
 $l['reset'] = "Reset";
-
 ?>

@@ -18,6 +18,7 @@ $templatelist .= ",modcp_banning_edit,modcp_banning_banned_user";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
+require_once MYBB_ROOT."inc/functions_upload.php";
 require_once MYBB_ROOT."inc/functions_modcp.php";
 require_once MYBB_ROOT."inc/class_parser.php";
 
@@ -44,11 +45,12 @@ if($mybb->usergroup['issupermod'] != "yes")
 	if($flist)
 	{
 		$flist = " AND fid IN (0{$flist})";
+		$tflist = " AND t.fid IN (0{$flist})";
 	}
 }
 else
 {
-	$flist = "";
+	$flist = $tflist = "";
 }
 
 // Fetch the Mod CP menu
@@ -64,21 +66,6 @@ if($mybb->input['action'] == "do_reports")
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	$flist = '';
-	if($mybb->usergroup['issupermod'] != "yes")
-	{
-		$query = $db->simple_select("moderators", "*", "uid='{$mybb->user['uid']}'");
-		while($forum = $db->fetch_array($query))
-		{
-			$flist .= ",'{$forum['fid']}'";
-		}
-	}
-	
-	if($flist)
-	{
-		$flist = " AND fid IN (0{$flist})";
-	}
-	
 	if(!is_array($mybb->input['reports']))
 	{
 		error($lang->error_noselected_reports);
@@ -506,7 +493,7 @@ if($mybb->input['action'] == "do_modqueue")
 	if(is_array($mybb->input['threads']))
 	{
 		// Fetch threads
-		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads']))).") {$flist}");
+		$query = $db->simple_select("threads", "tid", "tid IN (".implode(",", array_map("intval", array_keys($mybb->input['threads'])))."){$flist}");
 		while($thread = $db->fetch_array($query))
 		{
 			$action = $mybb->input['threads'][$thread['tid']];
@@ -525,14 +512,13 @@ if($mybb->input['action'] == "do_modqueue")
 		}
 		redirect("modcp.php?action=modqueue", $lang->redirect_threadsmoderated);
 	}
-
 	else if(is_array($mybb->input['posts']))
 	{
-		// Fetch threads
-		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts']))).") {$flist}");
+		// Fetch posts
+		$query = $db->simple_select("posts", "pid", "pid IN (".implode(",", array_map("intval", array_keys($mybb->input['posts'])))."){$flist}");
 		while($post = $db->fetch_array($query))
 		{
-			$action = $mybb->input['posts'][$post['tid']];
+			$action = $mybb->input['posts'][$post['pid']];
 			if($action == "approve")
 			{
 				$posts_to_approve[] = $post['pid'];
@@ -548,9 +534,21 @@ if($mybb->input['action'] == "do_modqueue")
 		}
 		redirect("modcp.php?action=modqueue&type=posts", $lang->redirect_postsmoderated);
 	}
-
 	else if(is_array($mybb->input['attachments']))
 	{
+		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}");
+		while($attachment = $db->fetch_array($query))
+		{
+			$action = $mybb->input['attachments'][$attachment['aid']];
+			if($action == "approve")
+			{
+				$db->update_query("attachments", array("visible" => 1), "aid='{$attachment['aid']}'");
+			}
+			else if($action == "delete")
+			{
+				remove_attachment($attachment['pid'], '', $attachment['aid']);
+			}
+		}
 		redirect("modcp.php?action=modqueue&type=attachments", $lang->redirect_attachmentsmoderated);
 	}
 }
@@ -570,8 +568,8 @@ if($mybb->input['action'] == "modqueue")
 			$page = intval($mybb->input['page']);
 		}
 
-		$perpage = $mybb->settings['postsperpage'];
-		$pages = $unapprovedthreads / $perpage;
+		$perpage = $mybb->settings['threadsperpage'];
+		$pages = $unapproved_threads / $perpage;
 		$pages = ceil($pages);
 
 		if($mybb->input['page'] == "last")
@@ -601,12 +599,13 @@ if($mybb->input['action'] == "modqueue")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-			WHERE t.visible='0' {$flist}
+			WHERE t.visible='0' {$tflist}
 			ORDER BY t.lastpost DESC
 			LIMIT {$start}, {$perpage}
 		");
 		while($thread = $db->fetch_array($query))
 		{
+			$altbg = alt_trow();
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$thread['threadlink'] = get_thread_link($thread['tid']);
 			$thread['forumlink'] = get_forum_link($thread['fid']);
@@ -619,13 +618,14 @@ if($mybb->input['action'] == "modqueue")
 		}
 		if(!$threads)
 		{
+			$colspan = '3';
 			eval("\$threads = \"".$templates->get("modcp_modqueue_noresults")."\";");
 		}
 		eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
-		output_page($threadqueue);	
+		output_page($threadqueue);
 	}
 
-	if($mybb->input['type'] == "posts" || !$threadqueue)
+	if($mybb->input['type'] == "posts" || !$threadqueue && $mybb->input['type'] == "")
 	{
 		$forum_cache = $cache->read("forums");
 
@@ -633,9 +633,82 @@ if($mybb->input['action'] == "modqueue")
 			SELECT COUNT(pid) AS unapprovedposts
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE p.visible='0' {$flist} AND t.firstpost != p.pid
+			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
 		");
 		$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
+
+		// Figure out if we need to display multiple pages.
+		if($mybb->input['page'] != "last")
+		{
+			$page = intval($mybb->input['page']);
+		}
+
+		$perpage = $mybb->settings['postsperpage'];
+		$pages = $unapproved_posts / $perpage;
+		$pages = ceil($pages);
+
+		if($mybb->input['page'] == "last")
+		{
+			$page = $pages;
+		}
+
+		if($page > $pages)
+		{
+			$page = 1;
+		}
+
+		if($page)
+		{
+			$start = ($page-1) * $perpage;
+		}
+		else
+		{
+			$start = 0;
+			$page = 1;
+		}
+
+		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
+
+		$query = $db->query("
+			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
+			FROM  ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+			ORDER BY p.dateline DESC
+		");
+		while($post = $db->fetch_array($query))
+		{
+			$altbg = alt_trow();
+			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
+			$post['threadlink'] = get_thread_link($post['tid']);
+			$post['forumlink'] = get_forum_link($post['fid']);
+			$forum_name = $forum_cache[$post['fid']]['name'];
+			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
+			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
+			$profile_link = build_profile_link($post['username'], $post['uid']);
+			$post['message'] = nl2br($post['message']);
+			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
+		}
+		if(!$posts)
+		{
+			$colspan = '3';
+			eval("\$posts = \"".$templates->get("modcp_modqueue_noresults")."\";");
+		}
+		eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
+		output_page($postqueue);
+	}
+
+	if($mybb->input['type'] == "attachments" || (!$threadqueue && !$postqueue))
+	{
+		$query = $db->query("
+			SELECT COUNT(aid) AS unapprovedattachments
+			FROM  ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE a.visible='0' {$tflist}
+		");
+		$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
 
 		// Figure out if we need to display multiple pages.
 		if($mybb->input['page'] != "last")
@@ -667,45 +740,45 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
+		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username AS username, p.uid
-			FROM  ".TABLE_PREFIX."posts p
+			SELECT p.pid, p.subject, p.uid, t.tid, u.username, t.firstpost, a.filename, a.dateuploaded, a.aid
+			FROM  ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE p.visible='0' {$flist} AND t.firstpost != p.pid
-			ORDER BY p.dateline DESC
+			WHERE a.visible='0' {$tflist}
+			ORDER BY a.dateuploaded DESC
 		");
-		while($post = $db->fetch_array($query))
-		{
-			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
-			$post['threadlink'] = get_thread_link($post['tid']);
-			$post['forumlink'] = get_forum_link($post['fid']);
-			$forum_name = $forum_cache[$post['fid']]['name'];
-			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
-			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
-			$profile_link = build_profile_link($post['username'], $post['uid']);
-			$post['message'] = nl2br($post['message']);
-			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
-		}
-		if(!$posts)
-		{
-			eval("\$posts = \"".$templates->get("modcp_modqueue_noresults")."\";");
-		}
-		eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
-		output_page($postqueue);	
-	}
 
-	if($mybb->input['type'] == "attachments" || (!$threadqeue && !$postqueue))
-	{
+		while($attachment = $db->fetch_array($query))
+		{
+			$altbg = alt_trow();
+			$attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
+			$attachment['filename'] = htmlspecialchars_uni($parser->parse_badwords($attachment['filename']));
+			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
+			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
+			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+			$profile_link = build_profile_link($attachment['username'], $attachment['uid']);
+			eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
+		}
+
+		if(!$attachments)
+		{
+			$colspan = '4';
+			eval("\$attachments = \"".$templates->get("modcp_modqueue_noresults")."\";");
+		}
+
+		eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
+		output_page($attachmentqueue);
 	}
 
 	// Still nothing? All queues are empty! :-D
-	if(!$threadqueue && !$postqueue && !$attachqueue)
+	if(!$threadqueue && !$postqueue && !$attachmentqueue)
 	{
 		eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
-		output_page($queue);	
+		output_page($queue);
 	}
 }
 

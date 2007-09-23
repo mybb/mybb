@@ -24,23 +24,30 @@ function remove_attachment($pid, $posthash, $aid)
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
 	{
-		$query = $db->simple_select("attachments", "*", "aid='$aid' AND posthash='$posthash'");
+		$query = $db->simple_select("attachments", "aid, attachname, thumbnail", "aid='{$aid}' AND posthash='{$posthash}'");
 		$attachment = $db->fetch_array($query);
 	}
 	else
 	{
-		$query = $db->simple_select("attachments", "*", "aid='$aid' AND pid='$pid'");
+		$query = $db->simple_select("attachments", "aid, attachname, thumbnail", "aid='{$aid}' AND pid='{$pid}'");
 		$attachment = $db->fetch_array($query);
 	}
 	
 	$plugins->run_hooks("remove_attachment_do_delete", $attachment);
 	
-	$db->delete_query("attachments", "aid='".$attachment['aid']."'");
+	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
 	@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
 	if($attachment['thumbnail'])
 	{
 		@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
 	}
+
+	$date_directory = explode('/', $attachment['attachname']);
+	if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+	{
+		@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+	}
+
 	if($attachment['visible'] == 1 && $pid)
 	{
 		$post = get_post($pid);
@@ -71,7 +78,7 @@ function remove_attachments($pid, $posthash="")
 	{
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
-	
+
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
 	{
@@ -88,6 +95,12 @@ function remove_attachments($pid, $posthash="")
 		if($attachment['thumbnail'])
 		{
 			@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
+		}
+
+		$date_directory = explode('/', $attachment['attachname']);
+		if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+		{
+			@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
 		}
 	}
 	
