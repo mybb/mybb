@@ -1271,7 +1271,7 @@ switch($mybb->input['action'])
 		}
 		if($flist)
 		{
-			$flist = "AND fid IN (0$flist)";
+			$flist = " AND fid IN (0$flist)";
 		}
 		if(!is_array($mybb->input['reports']))
 		{
@@ -1288,8 +1288,8 @@ switch($mybb->input['action'])
 
 		$sqlarray = array(
 			"reportstatus" => 1,
-			);
-		$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "rid IN ($rids)");
+		);
+		$db->update_query(TABLE_PREFIX."reportedposts", $sqlarray, "rid IN ($rids){$flist}");
 		$cache->updatereportedposts();
 		redirect("moderation.php?action=reports", $lang->redirect_reportsmarked);
 		break;
