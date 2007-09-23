@@ -215,7 +215,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		}
 		else if(function_exists("mb_convert_encoding"))
 		{
-			$subject = mb_convert_encoding($subject, $charset, "UTF-8");
+			$subject = @mb_convert_encoding($subject, $charset, "UTF-8");
 		}
 		else if(strtolower($charset) == "iso-8859-1")
 		{
@@ -338,7 +338,7 @@ else if($mybb->input['action'] == "edit_post")
 			}
 			else if(function_exists("mb_convert_encoding"))
 			{
-				$message = mb_convert_encoding($message, $charset, "UTF-8");
+				$message = @mb_convert_encoding($message, $charset, "UTF-8");
 			}
 			else if(strtolower($charset) == "iso-8859-1")
 			{
