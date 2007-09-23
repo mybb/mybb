@@ -1354,7 +1354,14 @@ if($mybb->input['action'] == "ipsearch")
 		$postsearchselect = "checked=\"checked\"";
 	}
 	
-	$lang->ipsearch_results = sprintf($lang->ipsearch_results, $ipaddressvalue);
+	if($ipaddressvalue)
+	{
+		$lang->ipsearch_results = sprintf($lang->ipsearch_results, $ipaddressvalue);
+	}
+	else
+	{
+		$lang->ipsearch_results = $lang->ipsearch;
+	}	
 	
 	eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
 	output_page($ipsearch);
