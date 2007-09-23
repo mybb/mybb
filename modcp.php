@@ -73,7 +73,7 @@ if($mybb->input['action'] == "do_reports")
 	
 	if($flist)
 	{
-		$flist = "AND fid IN (0{$flist})";
+		$flist = " AND fid IN (0{$flist})";
 	}
 	
 	if(!is_array($mybb->input['reports']))
@@ -90,14 +90,14 @@ if($mybb->input['action'] == "do_reports")
 
 	$plugins->run_hooks("modcp_do_reports");
 
-	$db->update_query("reportedposts", array('reportstatus' => 1), "rid IN ({$rids})");
+	$db->update_query("reportedposts", array('reportstatus' => 1), "rid IN ({$rids}){$flist}");
 	$cache->update_reportedposts();
 	redirect("modcp.php?action=reports", $lang->redirect_reportsmarked);
 }
 
 if($mybb->input['action'] == "reports")
 {
-	add_breadcrumb($lang->nav_reported_posts, "modcp.php?action=reports");
+	add_breadcrumb($lang->mcp_nav_reported_posts, "modcp.php?action=reports");
 
 	if(!$mybb->settings['threadsperpage'])
 	{
