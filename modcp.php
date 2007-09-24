@@ -1854,6 +1854,9 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 		else
 		{
+			$username = htmlspecialchars_uni($user['username']);
+			$banreason = htmlspecialchars_uni($user['banreason']);
+			
 			eval("\$banauser = \"".$templates->get("modcp_banning_auser")."\";");
 			eval("\$banpage = \"".$templates->get("modcp_banning")."\";");
 		}		
