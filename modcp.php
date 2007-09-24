@@ -1665,7 +1665,13 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		if($mybb->input['username'])
 		{
 			// Get the users info from their Username
-			$query = $db->simple_select('users', 'uid, usergroup, additionalgroups, displaygroup', "username = '".$db->escape_string($mybb->input['username'])."'");
+			$query = $db->query("
+				SELECT b.*, u.uid, u.usergroup, u.additionalgroups, u.displaygroup
+				FROM ".TABLE_PREFIX."banned b
+				LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
+				WHERE u.username = '".$db->escape_string($mybb->input['username'])."'
+				LIMIT 1
+			");
 			$user = $db->fetch_array($query);
 		}
 		else
