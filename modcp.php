@@ -1697,7 +1697,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 		
 		// Check we have a valid user.
-		if($user['uid'] != '')
+		if($user['uid'] != '' && !$error)
 		{
 			// Check the user isn't already banned
 			$query = $db->simple_select('banned', 'uid', "uid='{$user['uid']}'");
@@ -1754,7 +1754,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				// Move the user to the banned group
 				$update_array = array(
 					'usergroup' => intval($mybb->input['usergroup']),
-					'displaygroup' => 0
+					'displaygroup' => 0,
+					'additionalgroups' => '',
 				);
 				$db->update_query('users', $update_array, "uid = {$user['uid']}");
 				
@@ -1768,7 +1769,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 				}
 			}
 		}
-		else
+		else if(!$error)
 		{
 			$error = $lang->banerror_notfound;
 		}
