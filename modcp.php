@@ -1665,13 +1665,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		if($mybb->input['username'])
 		{
 			// Get the users info from their Username
-			$query = $db->query("
-				SELECT b.*, u.uid, u.usergroup, u.additionalgroups, u.displaygroup
-				FROM ".TABLE_PREFIX."banned b
-				LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
-				WHERE u.username = '".$db->escape_string($mybb->input['username'])."'
-				LIMIT 1
-			");
+			$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 			$user = $db->fetch_array($query);
 		}
 		else
@@ -1860,8 +1854,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$username = htmlspecialchars_uni($user['username']);
-			$banreason = htmlspecialchars_uni($user['banreason']);
+			$username = htmlspecialchars_uni($mybb->input['username']);
+			$banreason = htmlspecialchars_uni($mybb->input['banreason']);
 			
 			eval("\$banauser = \"".$templates->get("modcp_banning_auser")."\";");
 			eval("\$banpage = \"".$templates->get("modcp_banning")."\";");
