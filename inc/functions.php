@@ -2959,9 +2959,10 @@ function mark_reports($id, $type="post")
  * Fetch a friendly x days, y months etc date stamp from a timestamp
  *
  * @param int The timestamp
+ * @param array Array of options
  * @return string The friendly formatted timestamp
  */
-function nice_time($stamp)
+function nice_time($stamp, $options=array())
 {
 	global $lang;
 
@@ -2971,6 +2972,41 @@ function nice_time($stamp)
 	$dsecs = 24*60*60;
 	$hsecs = 60*60;
 	$msecs = 60;
+
+	if($options['short'] == true)
+	{
+		$lang_year = $lang->year_short;
+		$lang_years = $lang->years_short;
+		$lang_month = $lang->month_short;
+		$lang_months = $lang->months_short;
+		$lang_week = $lang->week_short;
+		$lang_weeks = $lang->weeks_short;
+		$lang_day = $lang->day_short;
+		$lang_days = $lang->days_short;
+		$lang_hour = $lang->hour_short;
+		$lang_hours = $lang->hours_short;
+		$lang_minute = $lang->minute_short;
+		$lang_minutes = $lang->minutes_short;
+		$lang_second = $lang->second_short;
+		$lang_seconds = $lang->seconds_short;
+	}
+	else
+	{
+		$lang_year = " ".$lang->year;
+		$lang_years = " ".$lang->years;
+		$lang_month = " ".$lang->month;
+		$lang_months = " ".$lang->months;
+		$lang_week = " ".$lang->week;
+		$lang_weeks = " ".$lang->weeks;
+		$lang_day = " ".$lang->day;
+		$lang_days = " ".$lang->days;
+		$lang_hour = " ".$lang->hour;
+		$lang_hours = " ".$lang->hours;
+		$lang_minute = " ".$lang->minute;
+		$lang_minutes = " ".$lang->minutes;
+		$lang_second = " ".$lang->second;
+		$lang_seconds = " ".$lang->seconds;
+	}
 
 	$years = floor($stamp/$ysecs);
 	$stamp %= $ysecs;
@@ -2988,65 +3024,74 @@ function nice_time($stamp)
 
 	if($years == 1)
 	{
-		$nicetime['years'] = "1 ".$lang->year;
+		$nicetime['years'] = "1".$lang_year;
 	}
 	else if($years > 1)
 	{
-		$nicetime['years'] = $years." ".$lang->years;
+		$nicetime['years'] = $years.$lang_years;
 	}
 
 	if($months == 1)
 	{
-		$nicetime['months'] = "1 ".$lang->month;
+		$nicetime['months'] = "1".$lang_month;
 	}
 	else if($months > 1)
 	{
-		$nicetime['months'] = $months." ".$lang->months;
+		$nicetime['months'] = $months.$lang_months;
 	}
 
 	if($weeks == 1)
 	{
-		$nicetime['weeks'] = "1 ".$lang->week;
+		$nicetime['weeks'] = "1".$lang_week;
 	}
 	else if($weeks > 1)
 	{
-		$nicetime['weeks'] = $weeks." ".$lang->weeks;
+		$nicetime['weeks'] = $weeks.$lang_weeks;
 	}
 
 	if($days == 1)
 	{
-		$nicetime['days'] = "1 ".$lang->day;
+		$nicetime['days'] = "1".$lang_day;
 	}
 	else if($days > 1)
 	{
-		$nicetime['days'] = $days." ".$lang->days;
+		$nicetime['days'] = $days.$lang_days;
 	}
 
-	if($hours == 1)
+	if($options['hours'] !== false)
 	{
-		$nicetime['hours'] = "1 ".$lang->hour;
-	}
-	else if($hours > 1)
-	{
-		$nicetime['hours'] = $hours." ".$lang->hours;
-	}
-
-	if($minutes == 1)
-	{
-		$nicetime['minutes'] = "1 ".$lang->minute;
-	}
-	else if($minutes > 1)
-	{
-		$nicetime['minutes'] = $minutes." ".$lang->minutes;
+		if($hours == 1)
+		{
+			$nicetime['hours'] = "1".$lang_hour;
+		}
+		else if($hours > 1)
+		{
+			$nicetime['hours'] = $hours.$lang_hours;
+		}
 	}
 
-	if($seconds == 1)
+	if($options['minutes'] !== false)
 	{
-		$nicetime['seconds'] = "1 ".$lang->second;
+		if($minutes == 1)
+		{
+			$nicetime['minutes'] = "1".$lang_minute;
+		}
+		else if($minutes > 1)
+		{
+			$nicetime['minutes'] = $minutes.$lang_minutes;
+		}
 	}
-	else if($seconds > 1)
+
+	if($options['seconds'] !== false)
 	{
-		$nicetime['seconds'] = $seconds." ".$lang->seconds;
+		if($seconds == 1)
+		{
+			$nicetime['seconds'] = "1".$lang_second;
+		}
+		else if($seconds > 1)
+		{
+			$nicetime['seconds'] = $seconds.$lang_seconds;
+		}
 	}
 
 	if(is_array($nicetime))

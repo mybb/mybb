@@ -1249,13 +1249,16 @@ class Moderation
 				++$thread_counters[$post['tid']]['replies'];
 			}
 
-			++$forum_counters[$post['fid']]['num_posts'];
+			if($post['threadvisible'] == 0)
+			{
+				++$forum_counters[$post['fid']]['num_posts'];
+			}
 
 			// If the first post here matches and thread is invisible, we approve the thread too
 			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 0)
 			{
 				$thread_counters[$post['tid']]['visible'] = 1;
-				$forum_counters[$post['fid']]['num_posts'] += $thread['replies']; 
+				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies']; 
 				$forum_counters[$post['fid']]['num_threads']++;
 			}
 		}
@@ -1333,13 +1336,16 @@ class Moderation
 				$thread_counters[$post['tid']]['replies'] = $thread_counters[$post['tid']]['replies']-1;
 			}
 
-			++$forum_counters[$post['fid']]['num_posts'];
+			if($post['threadvisible'] == 1)
+			{
+				++$forum_counters[$post['fid']]['num_posts'];
+			}
 
 			// If the first post here matches and thread is visible, we unapprove the thread too
 			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 1)
 			{
 				$thread_counters[$post['tid']]['visible'] = 0;
-				$forum_counters[$post['fid']]['num_posts'] += $thread['replies']; 
+				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies']; 
 				$forum_counters[$post['fid']]['num_threads']++;
 			}
 		}

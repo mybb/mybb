@@ -11,77 +11,39 @@
 
 /**
  * Return a timestamp from a date.
- *
- * @param int The ID of the folder.
- * @return string The name of the folder.
  */
-function modcp_date2timestamp($date)
+function modcp_date2timestamp($date, $stamp=0)
 {
-	$d = explode('-', $date);
-	$nowdate = date("H-j-n-Y");
-	$n = explode('-', $nowdate);
-	if($n[0] >= 12)
+	if($stamp == 0)
 	{
-		$n[1] += 1;
+		$stamp = TIME_NOW;
 	}
+	$d = explode('-', $date);
+	$nowdate = date("H-j-n-Y", $stamp);
+	$n = explode('-', $nowdate);
 	$n[1] += $d[0];
 	$n[2] += $d[1];
 	$n[3] += $d[2];
-	return mktime(0, 0, 0, $n[2], $n[1], $n[3]);
+	return mktime(date("G"), date("i"), 0, $n[2], $n[1], $n[3]);
 }
 
-/**
- * Return the ban time remaining.
- *
- * @param string The.
- * @return string The name of the folder.
- */
-function modcp_getbanremaining($lifted)
+function modcp_can_manage_user($uid)
 {
-	global $lang;
-	$remain = $lifted-time();
-	$years = intval($remain/31536000);
-	$months = intval($remain/2592000);
-	$weeks = intval($remain/604800);
-	$days = intval($remain/86400);
-	$hours = intval($remain/3600);
-	if($years > 1)
+	global $mybb;
+
+	$user_permissions = user_permissions($uid);
+
+	// Current user is only a local moderator or use with ModCP permissions, cannot manage super mods or admins
+	if($mybb->usergroup['issupermod'] == "no" && ($user_permissions['issupermod'] == "yes" || $user_permissions['canadmincp'] == "yes"))
 	{
-		$r = "{$years} {$lang->years}";
+		return false;
 	}
-	elseif($years == 1)
+	// Current user is a super mod or is an administrator
+	else if($mybb->usergroup['issupermod'] == "yes" && $user_permissions['canadmincp'] == "yes" || (is_super_admin($uid) && !is_super_admin($uid)))
 	{
-		$r = "1 {$lang->year}";
+		return false;
 	}
-	elseif($months > 1)
-	{
-		$r = "{$months} {$lang->months}";
-	}
-	elseif($months == 1)
-	{
-		$r = "1 {$lang->month}";
-	}
-	elseif($weeks > 1)
-	{
-		$r = "<span class=\"highlight3\">{$weeks} {$lang->weeks}</span>";
-	}
-	elseif($weeks == 1)
-	{
-		$r = "<span class=\"highlight2\">1 {$lang->week}</span>";
-	}
-	elseif($days > 1)
-	{
-		$r = "<span class=\"highlight2\">{$days} {$lang->days}</span>";
-	}
-	elseif($days == 1)
-	{
-		$r = "<span class=\"highlight1\">1 {$lang->day}</span>";
-	}
-	elseif($days < 1)
-	{
-		$r = "<span class=\"highlight1\">{$hours} {$lang->hours}</span>";
-	}
-	return $r;
+	return true;
 }
 
 ?>
