@@ -1176,13 +1176,13 @@ td .star_rating {
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->ip_address}</strong></td>
-							<td class="trow1" width="75%"><input type="text" name="ipaddress" value="{$ipaddressvalue}" size="30" /></td>
+							<td class="trow1" width="75%"><input type="text" class="textbox" name="ipaddress" value="{$ipaddressvalue}" size="30" /></td>
 						</tr>
 						<tr>
 							<td class="trow1" width="25%" valign="top"><strong>{$lang->options}</strong></td>
 							<td class="trow1" width="75%">
-								<label><input type="checkbox" name="search_users" value="1" {$usersearchselect} />{$lang->search_users}</label><br />
-								<label><input type="checkbox" name="search_posts" value="1" {$postsearchselect} />{$lang->search_posts}</label>
+								<label><input type="checkbox" class="checkbox" name="search_users" value="1" {$usersearchselect} />{$lang->search_users}</label><br />
+								<label><input type="checkbox" class="checkbox" name="search_posts" value="1" {$postsearchselect} />{$lang->search_posts}</label>
 							</td>
 						</tr>
 					</table>
