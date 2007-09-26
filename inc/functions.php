@@ -4857,8 +4857,11 @@ function fetch_longipv4_range($ip)
 {
 	$ip_bits = explode(".", $ip);
 
-	if(strpos($ip, "*") === false)
+	if($ip == "*") return array(ip2long(0), ip2long(255));
+
+	if(strpos($ip, ".*") === false)
 	{
+		$ip = str_replace("*", "", $ip);
 		if(count($ip_bits) == 4)
 		{
 			return ip2long($ip);

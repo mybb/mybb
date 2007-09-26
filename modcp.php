@@ -1257,6 +1257,69 @@ if($mybb->input['action'] == "ipsearch")
 	
 	if($mybb->input['ipaddress'])
 	{
+		$groupscache = $cache->read("usergroups");
+
+		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
+
+		// Searching post IP addresses
+		if($mybb->input['search_posts'])
+		{
+			// IPv6 IP
+			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			{
+				$post_ip_sql = "ipaddress LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
+			}
+			else
+			{
+				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
+				if(!is_array($ip_range))
+				{
+					$post_ip_sql = "longipaddress='{$ip_range}'";
+				}
+				else
+				{
+					$post_ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
+				}
+			}
+			$query = $db->query("
+				SELECT COUNT(pid) AS count
+				FROM ".TABLE_PREFIX."posts
+				WHERE {$post_ip_sql}
+			");
+			$post_results = $db->fetch_field($query, "count");
+		}
+
+		// Searching user IP addresses
+		if($mybb->input['search_users'])
+		{
+			// IPv6 IP
+			if(strpos($mybb->input['ipaddress'], ":") !== false)
+			{
+				$user_ip_sql = "regip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."' OR lastip LIKE '".$db->escape_string(str_replace("*", "%", $mybb->input['ipaddress']))."'";
+			}
+			else
+			{
+				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
+				if(!is_array($ip_range))
+				{
+					$user_ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
+				}
+				else
+				{
+					$user_ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
+				}
+			}
+			$query = $db->query("
+				SELECT COUNT(uid) AS count
+				FROM ".TABLE_PREFIX."users
+				WHERE {$user_ip_sql}
+			");
+			$user_results = $db->fetch_field($query, "count");
+		}
+
+		$total_results = $post_results+$user_results;
+
+		// Now we have the result counts, paginate
 		$perpage = intval($mybb->input['perpage']);
 		if(!$perpage)
 		{
@@ -1269,8 +1332,7 @@ if($mybb->input['action'] == "ipsearch")
 			$page = intval($mybb->input['page']);
 		}
 	
-		$postcount = intval($rescount);
-		$pages = $postcount / $perpage;
+		$pages = $total_results / $perpage;
 		$pages = ceil($pages);
 	
 		if($mybb->input['page'] == "last")
@@ -1292,162 +1354,109 @@ if($mybb->input['action'] == "ipsearch")
 			$start = 0;
 			$page = 1;
 		}
-		
-		if(!is_array($groupscache))
+
+		$page_url = "modcp.php?action=ipsearch&amp;perpage={$perpage}&amp;ipaddress={$mybb->input['ipaddress']}";
+		foreach(array('ipaddress', 'search_users', 'search_posts') as $input)
 		{
-			$groupscache = $cache->read("usergroups");
+			if(!$mybb->input[$input]) continue;
+			$page_url .= "&amp;{$input}=".htmlspecialchars_uni($mybb->input[$input]);
 		}
-		
-		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
-		
-		$mybb->input['ipaddress'] = str_replace("*", "%", $mybb->input['ipaddress']);
-	
-		// Searching for entries in the users table
-		if($mybb->input['options'] == "postsearch")
-		{			
-			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
-			{
-				$ip_sql = "ipaddress LIKE '".$db->escape_string($mybb->input['ipaddress'])."'";
-			}
-			else
-			{
-				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-				if(!is_array($ip_range))
-				{
-					$ip_sql = "longipaddress='{$ip_range}'";
-				}
-				else
-				{
-					$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
-				}
-			}
+		$multipage = multipage($total_results, $perpage, $page, $page_url);
+
+		$post_limit = $perpage;
+		if($mybb->input['search_users'] && $start <= $user_results)
+		{
 			$query = $db->query("
-				SELECT COUNT(pid) AS count
-				FROM ".TABLE_PREFIX."posts
-				WHERE {$ip_sql}
-			");
-			$rescount = $db->fetch_field($query, "count");
-			
-			$query = $db->query("
-				SELECT p.username, p.subject, p.pid, p.tid, p.ipaddress, u.usergroup, u.displaygroup
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."users u ON(p.uid=u.uid)
-				WHERE {$ip_sql}
+				SELECT username, uid, regip, lastip
+				FROM ".TABLE_PREFIX."users
+				WHERE {$user_ip_sql}
+				ORDER BY regdate DESC
 				LIMIT {$start}, {$perpage}
 			");
+			while($ipaddress = $db->fetch_array($query))
+			{
+				$profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
+				$trow = alt_trow();
+				$regexp_ip = str_replace("\*", "(.*)", preg_quote($mybb->input['ipaddress'], "#"));
+				// Reg IP matches
+				if(preg_match("#{$regexp_ip}#i", $ipaddress['regip']))
+				{
+					$ip = $ipaddress['regip'];
+					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
+					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+				}
+				// Last known IP matches
+				if(preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
+				{
+					$ip = $ipaddress['lastip'];
+					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
+					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+				}
+				--$post_limit;
+			}
+		}
+		$post_start = 0;
+		if($total_results > $user_results && $post_limit) 
+		{
+			$post_start = $start-$user_results;
+			if($post_start < 0) $post_start = 0;
+		}
+		if($mybb->input['search_posts'] && (!$mybb->input['search_users'] || ($mybb->input['search_users']) && $post_limit > 0))
+		{
+			$query = $db->query("
+				SELECT p.username AS postusername, p.uid, u.username, p.subject, p.pid, p.tid, p.ipaddress, t.subject AS threadsubject
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+				LEFT JOIN ".TABLE_PREFIX."users u ON(p.uid=u.uid)
+				WHERE {$post_ip_sql}
+				ORDER BY p.dateline DESC
+				LIMIT {$post_start}, {$post_limit}
+			");
+			while($ipaddress = $db->fetch_array($query))
+			{
+				$ip = $ipaddress['ipaddress'];
+				if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
+				$trow = alt_trow();
+				if(!$ipaddress['subject'])
+				{
+					$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
+				}
+				$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."<a> by ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
+				eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");		
+			}
+		}
+
+		if(!$results)
+		{
+			eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");		
+		}
+
+		if($ipaddressvalue)
+		{
+			$lang->ipsearch_results = sprintf($lang->ipsearch_results, $ipaddressvalue);
 		}
 		else
 		{
-			// IPv6 IP
-			if(strpos($mybb->input['ipaddress'], ":") !== false)
-			{
-				$ip_sql = "regip LIKE '".$db->escape_string($mybb->input['ipaddress'])."' OR lastip LIKE '".$db->escape_string($mybb->input['ipaddress'])."'";
-			}
-			else
-			{
-				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-				if(!is_array($ip_range))
-				{
-					$ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
-				}
-				else
-				{
-					$ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
-				}
-			}
-			$query = $db->query("
-				SELECT COUNT(uid) AS count
-				FROM ".TABLE_PREFIX."users
-				WHERE {$ip_sql}
-			");
-			$rescount = $db->fetch_field($query, "count");
-			
-			$query = $db->query("
-				SELECT username, uid, regip, lastip, usergroup, displaygroup
-				FROM ".TABLE_PREFIX."users
-				WHERE {$ip_sql}
-				LIMIT {$start}, {$perpage}
-			");
-		}
-	
-		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=ipsearch&amp;perpage=$perpage&amp;ipaddress={$mybb->input['ipaddress']}");
-		if($postcount > $perpage)
-		{
-			eval("\$resultspages = \"".$templates->get("modcp_ipsearch_multipage")."\";");
-		}
+			$lang->ipsearch_results = $lang->ipsearch;
+		}	
 		
-		while($ipaddress = $db->fetch_array($query))
-		{
-			$trow = alt_trow();
-			$ipaddress['profilelink'] = build_profile_link($ipaddress['username'], $ipaddress['uid']);
-			$ipaddress['profilelink'] = format_name($ipaddress['profilelink'], $ipaddress['usergroup'], $ipaddress['displaygroup']);
-			
-			if($ipaddress['displaygroup'] != 0)
-			{
-				$ipaddress['usergroup'] = $ipaddress['displaygroup'];
-			}
-			
-			$ipaddress['usergroup'] = $groupscache[$ipaddress['usergroup']]['title'];
-			
-			if($ipaddress['subject'])
-			{
-				$subject = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($ipaddress['pid'], $ipaddress['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($ipaddress['subject'])."</a><br />";
-			}
-			else
-			{
-				$subject = "<div align=\"center\">{$lang->na}</div>";
-			}
-			
-			if($ipaddress['ipaddress'])
-			{
-				$lang->regip_lastip = $lang->ip_address;
-			}
-			
-			if($ipaddress['regip'])
-			{
-				$ipaddress['ipaddress'] = $ipaddress['regip'];
-			}
-			
-			if($ipaddress['lastip'])
-			{
-				if($ipaddress['ipaddress'])
-				{
-					$ipaddress['ipaddress'] .= " / ";
-				}
-				
-				$ipaddress['ipaddress'] .= $ipaddress['lastip'];
-			}
-			
-			eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");		
-		}
+		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
 	}
 	
-	if(!$results)
-	{
-		eval("\$results = \"".$templates->get("modcp_ipsearch_noresults")."\";");		
-	}
-
 	// Fetch filter options
-	if(!$mybb->input['options'] || $mybb->input['options'] == "usersearch")
+	if(!$mybb->input['ipaddress'])
 	{
-		$usersearchselect = "checked=\"checked\"";
-		$postsearchselect = "";
+		$mybb->input['search_posts'] = 1;
+		$mybb->input['search_users'] = 1;
 	}
-	else
+	if($mybb->input['search_posts'])
 	{
-		$usersearchselect = "";
 		$postsearchselect = "checked=\"checked\"";
 	}
-	
-	if($ipaddressvalue)
+	if($mybb->input['search_users'])
 	{
-		$lang->ipsearch_results = sprintf($lang->ipsearch_results, $ipaddressvalue);
+		$usersearchselect = "checked=\"checked\"";
 	}
-	else
-	{
-		$lang->ipsearch_results = $lang->ipsearch;
-	}	
 	
 	eval("\$ipsearch = \"".$templates->get("modcp_ipsearch")."\";");
 	output_page($ipsearch);
