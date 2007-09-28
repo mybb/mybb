@@ -1249,7 +1249,8 @@ class Moderation
 				++$thread_counters[$post['tid']]['replies'];
 			}
 
-			if($post['threadvisible'] == 0)
+			// Only add to the forum count if the thread is visible
+			if($post['threadvisible'] == 1)
 			{
 				++$forum_counters[$post['fid']]['num_posts'];
 			}
@@ -1268,22 +1269,26 @@ class Moderation
 		$where = "pid IN (".implode(",", $pids).")";		
 		$db->update_query("posts", $approve, $where);
 
-		foreach($thread_counters as $tid => $counters)
+		if(is_array($thread_counters))
 		{
-			$db->update_query("threads", $counters, "tid='{$tid}'");
+			foreach($thread_counters as $tid => $counters)
+			{
+				$db->update_query("threads", $counters, "tid='{$tid}'");
+			}
 		}
-
-		foreach($forum_counters as $fid => $counters)
+		if(is_array($forum_counters))
 		{
-			$updated_forum_stats = array(
-				"posts" => "+{$counters['num_posts']}",
-				"unapprovedposts" => "-{$counters['num_posts']}",
-				"threads" => "+{$counters['num_threads']}",
-				"unapprovedthreads" => "-{$counters['num_threads']}"
-			);
-			update_forum_counters($fid, $updated_forum_stats);
+			foreach($forum_counters as $fid => $counters)
+			{
+				$updated_forum_stats = array(
+					"posts" => "+{$counters['num_posts']}",
+					"unapprovedposts" => "-{$counters['num_posts']}",
+					"threads" => "+{$counters['num_threads']}",
+					"unapprovedthreads" => "-{$counters['num_threads']}"
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+			}
 		}
-
 		return true;
 	}
 
@@ -1355,22 +1360,26 @@ class Moderation
 		$where = "pid IN (".implode(",", $pids).")";		
 		$db->update_query("posts", $approve, $where);
 
-		foreach($thread_counters as $tid => $counters)
+		if(is_array($thread_counters))
 		{
-			$db->update_query("threads", $counters, "tid='{$tid}'");
+			foreach($thread_counters as $tid => $counters)
+			{
+				$db->update_query("threads", $counters, "tid='{$tid}'");
+			}
 		}
-
-		foreach($forum_counters as $fid => $counters)
+		if(is_array($forum_counters))
 		{
-			$updated_forum_stats = array(
-				"posts" => "-{$counters['num_posts']}",
-				"unapprovedposts" => "+{$counters['num_posts']}",
-				"threads" => "-{$counters['num_threads']}",
-				"unapprovedthreads" => "+{$counters['num_threads']}"
-			);
-			update_forum_counters($fid, $updated_forum_stats);
+			foreach($forum_counters as $fid => $counters)
+			{
+				$updated_forum_stats = array(
+					"posts" => "-{$counters['num_posts']}",
+					"unapprovedposts" => "+{$counters['num_posts']}",
+					"threads" => "-{$counters['num_threads']}",
+					"unapprovedthreads" => "+{$counters['num_threads']}"
+				);
+				update_forum_counters($fid, $updated_forum_stats);
+			}
 		}
-
 		return true;
 	}
 

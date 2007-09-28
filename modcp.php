@@ -436,6 +436,7 @@ if($mybb->input['action'] == "modlogs")
 	");
 	while($logitem = $db->fetch_array($query))
 	{
+		$information = '';
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$trow = alt_trow();
 		$logitem['profilelink'] = build_profile_link($logitem['username'], $logitem['uid']);
@@ -1614,7 +1615,7 @@ if($mybb->input['action'] == "liftban")
 		'additionalgroups' => $ban['oldadditionalgroups'],
 		'displaygroup' => $ban['olddisplaygroup']
 	);
-	$db->update_query("users", $groupupdate, "uid='{$ban['uid']}'");
+	$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 	$db->delete_query("banned", "uid='{$ban['uid']}'");
 	redirect("modcp.php?action=banning", $lang->redirect_banlifted);
 }
