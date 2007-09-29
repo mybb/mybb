@@ -42,6 +42,10 @@ function user_action_handler($action)
 			$page->active_action = "titles";
 			$action_file = "titles.php";
 			break;
+		case "banning":
+			$page->active_action = "banning";
+			$action_file = "banning.php";
+			break;
 		case "groups":
 			$page->active_action = "groups";
 			$action_file = "groups.php";

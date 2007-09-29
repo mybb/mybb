@@ -114,7 +114,6 @@ $l['posts_awaiting_moderation'] = "Posts Awaiting Moderation";
 $l['threads_awaiting_moderation'] = "Threads Awaiting Moderation";
 $l['attachments_awaiting_moderation'] = "Attachments Awaiting Moderation";
 $l['mod_queue'] ="Moderation Queue";
-$l['mod_queue_empty'] ="All of the moderation queues are currently empty.";
 $l['approve'] = "Approve";
 $l['ignore'] = "Ignore";
 $l['delete'] = "Delete";
@@ -150,4 +149,14 @@ $l['lift_ban'] = "Lift Ban";
 $l['ban'] = "Ban";
 $l['error_invalidban'] = "You have selected an invalid ban.";
 $l['redirect_banlifted'] = "The ban has successfully been lifted.";
+$l['mark_all_ignored'] = "Mark all as ignored";
+$l['mark_all_deletion'] = "Mark all for deletion";
+$l['mark_all_approved'] = "Mark all as approved";
+$l['meta_forum'] = "Forum:";
+$l['meta_thread'] = "Thread:";
+$l['mod_queue_empty'] ="All of the moderation queues are currently empty.";
+$l['mod_queue_threads_empty'] ="The thread moderation queue is currently empty.";
+$l['mod_queue_posts_empty'] ="The posts moderation queue is currently empty.";
+$l['mod_queue_attachments_empty'] ="The attachment moderation queue is currently empty.";
+
 ?>

@@ -37,6 +37,8 @@ if(!defined('MYBB_ROOT'))
 
 define("TIME_NOW", time());
 
+require_once MYBB_ROOT."inc/functions_compat.php";
+
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 

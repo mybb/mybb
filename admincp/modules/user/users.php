@@ -1929,7 +1929,7 @@ function build_user_view_card($user, $view, $i)
 	global $user_view_fields;
 
 	++$i;
-	if($i == 2)
+	if($i == 3)
 	{
 		$i = 1;
 	}
@@ -1979,7 +1979,7 @@ function build_user_view_card($user, $view, $i)
 	}
 
 	// And build the final card
-	$card = "<fieldset style=\"width: 49%; float: {$float};\">\n";
+	$card = "<fieldset style=\"width: 47%; float: {$float};\">\n";
 	$card .= "<legend>{$user['view']['username']}</legend>\n";
 	if($avatar)
 	{

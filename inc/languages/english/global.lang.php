@@ -263,6 +263,7 @@ $l['second'] = "Second";
 $l['second_short'] ="s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
+$l['permanent'] = "Permanent";
 $l['save_draft'] = "Save as Draft";
 $l['go'] = "Go";
 $l['bbclosed_warning'] = "Your board status is currently set to closed.";

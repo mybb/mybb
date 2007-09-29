@@ -25,24 +25,7 @@ require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
 
 // Set up the array of ban times.
-$bantimes["1-0-0"] = "1 {$lang->day}";
-$bantimes["2-0-0"] = "2 {$lang->days}";
-$bantimes["3-0-0"] = "3 {$lang->days}";
-$bantimes["4-0-0"] = "4 {$lang->days}";
-$bantimes["5-0-0"] = "5 {$lang->days}";
-$bantimes["6-0-0"] = "6 {$lang->days}";
-$bantimes["7-0-0"] = "1 {$lang->week}";
-$bantimes["14-0-0"] = "2 {$lang->weeks}";
-$bantimes["21-0-0"] = "3 {$lang->weeks}";
-$bantimes["0-1-0"] = "1 {$lang->month}";
-$bantimes["0-2-0"] = "2 {$lang->months}";
-$bantimes["0-3-0"] = "3 {$lang->months}";
-$bantimes["0-4-0"] = "4 {$lang->months}";
-$bantimes["0-5-0"] = "5 {$lang->months}";
-$bantimes["0-6-0"] = "6 {$lang->months}";
-$bantimes["0-0-1"] = "1 {$lang->year}";
-$bantimes["0-0-2"] = "2 {$lang->years}";
-
+$bantimes = fetch_ban_times();
 
 // Load global language phrases
 $lang->load("modcp");
@@ -635,16 +618,25 @@ if($mybb->input['action'] == "modqueue")
 			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
 			$profile_link = build_profile_link($thread['username'], $thread['uid']);
 			$thread['postmessage'] = nl2br($thread['postmessage']);
+			$forum = "<strong>{$lang->meta_forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong>";
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
 		}
+
+		if(!$threads && $mybb->input['type'] == "threads")
+		{
+			eval("\$threads = \"".$templates->get("modcp_modqueue_threads_empty")."\";");
+		}
+
 		if($threads)
 		{
+			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 			output_page($threadqueue);	
 		}
+
 	}
 
-	if($mybb->input['type'] == "posts" || !$threadqueue && $mybb->input['type'] == "")
+	if($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue))
 	{
 		$forum_cache = $cache->read("forums");
 
@@ -695,6 +687,7 @@ if($mybb->input['action'] == "modqueue")
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
 			ORDER BY p.dateline DESC
+			LIMIT {$start}, {$perpage}
 		");
 		while($post = $db->fetch_array($query))
 		{
@@ -706,17 +699,26 @@ if($mybb->input['action'] == "modqueue")
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$profile_link = build_profile_link($post['username'], $post['uid']);
+			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
+			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
 			$post['message'] = nl2br($post['message']);
 			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
 		}
+
+		if(!$posts && $mybb->input['type'] == "posts")
+		{
+			eval("\$posts = \"".$templates->get("modcp_modqueue_posts_empty")."\";");
+		}
+
 		if($posts)
 		{
+			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 			output_page($postqueue);	
 		}
 	}
 
-	if($mybb->input['type'] == "attachments" || (!$threadqueue && !$postqueue))
+	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue))
 	{
 		$query = $db->query("
 			SELECT COUNT(aid) AS unapprovedattachments
@@ -760,29 +762,43 @@ if($mybb->input['action'] == "modqueue")
 		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.uid, t.tid, u.username, t.firstpost, a.filename, a.dateuploaded, a.aid
+			SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE a.visible='0' {$tflist}
+			WHERE a.visible='0'
 			ORDER BY a.dateuploaded DESC
+			LIMIT {$start}, {$perpage}
 		");
-
 		while($attachment = $db->fetch_array($query))
 		{
 			$altbg = alt_trow();
-			$attachment['subject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['subject']));
-			$attachment['filename'] = htmlspecialchars_uni($parser->parse_badwords($attachment['filename']));
-			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
+
+			if(!$attachment['dateuploaded']) $attachment['dateuploaded'] = $attachment['dateline'];
 			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
 			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+
+			$attachment['postsubject'] = htmlspecialchars_uni($attachment['postsubject']);
+			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+			$attachment['threadsubject'] = htmlspecialchars_uni($attachment['threadsubject']);
+			$attachment['filesize'] = get_friendly_size($attachment['filesize']);
+
+			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
+			$thread_link = get_thread_link($attachment['tid']);
 			$profile_link = build_profile_link($attachment['username'], $attachment['uid']);
+
 			eval("\$attachments .= \"".$templates->get("modcp_modqueue_attachments_attachment")."\";");
+		}
+
+		if(!$attachments && $mybb->input['type'] == "attachments")
+		{
+			eval("\$attachments = \"".$templates->get("modcp_modqueue_attachments_empty")."\";");
 		}
 
 		if($attachments)
 		{
+			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
 			output_page($attachmentqueue);
 		}
@@ -1697,7 +1713,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lifted = modcp_date2timestamp($mybb->input['liftafter'], $user['dateline']);
+			$lifted = ban_date2timestamp($mybb->input['liftafter'], $user['dateline']);
 		}
 						
 		if($mybb->input['uid'])
@@ -1812,7 +1828,7 @@ if($mybb->input['action'] == "banuser")
 		{
 			$liftlist .= " selected=\"selected\"";
 		}
-		$thatime = my_date("D, jS M Y @ g:ia", modcp_date2timestamp($time, $banned['dateline']));
+		$thatime = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time, $banned['dateline']));
 		$liftlist .= ">{$title} ({$thatime})</option>\n";
 	}
 	

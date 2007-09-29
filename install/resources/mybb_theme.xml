@@ -708,6 +708,54 @@ form {
 .modqueue_message {
 	overflow: auto;
 	max-height: 250px;
+}
+
+.modqueue_controls {
+	width: 250px;
+	float: right;
+	text-align: center;
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 6px;
+	font-weight: bold;
+}
+
+.modqueue_controls label {
+	margin-right: 8px;
+}
+
+.label_radio_ignore, .label_radio_delete, .label_radio_approve {
+	font-weight: bold;
+}
+
+.modqueue_meta {
+	color: #444;
+	font-size: 95%;
+	margin-bottom: 8px;
+}
+
+.modqueue_mass {
+	list-style: none;
+	margin: 0;
+	width: 150px;
+	padding: 0;
+}
+
+.modqueue_mass li {
+	margin-bottom: 4px;
+	padding: 0;
+}
+
+.modqueue_mass li a {
+	display: block;
+	padding: 4px;
+	border: 1px solid transparent;
+}
+
+.modqueue_mass li a:hover {
+	background: #efefef;
+	border: 1px solid #ccc;
+	text-decoration: none;
 }]]></stylesheet>
 		<stylesheet name="star_ratings.css" attachedto="forumdisplay.php|showthread.php" version="1400"><![CDATA[.star_rating,
 .star_rating li a:hover,
@@ -9235,6 +9283,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		{$threads}
 		</table>
 {$multipage}
+{$mass_controls}
 <br />
 <div align="center"><input type="submit" class="button" name="reportsubmit" value="{$lang->perform_actions}" /></div>
 </td>
@@ -9252,10 +9301,13 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<tr>
 				<td class="{$altbg}" colspan="3">
 					<div class="modqueue_message">
-						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
-							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
-							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="delete" /> {$lang->delete}</label>
-							<label><input type="radio" class="radio" name="threads[{$thread['tid']}]" value="approve" /> {$lang->approve}</label>
+						<div class="float_right modqueue_controls">
+							<label class="label_radio_ignore"><input type="radio" class="radio radio_ignore" name="threads[{$thread['tid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
+							<label class="label_radio_delete"><input type="radio" class="radio radio_delete" name="threads[{$thread['tid']}]" value="delete" /> {$lang->delete}</label>
+							<label class="label_radio_approve"><input type="radio" class="radio radio_approve" name="threads[{$thread['tid']}]" value="approve" /> {$lang->approve}</label>
+						</div>
+						<div class="modqueue_meta">
+							{$forum}
 						</div>
 						{$thread['postmessage']}
 					</div>
@@ -9295,6 +9347,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		{$posts}
 		</table>
 {$multipage}
+{$mass_controls}
 <br />
 <div align="center"><input type="submit" class="button" name="reportsubmit" value="{$lang->perform_actions}" /></div>
 </td>
@@ -9312,10 +9365,13 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<tr>
 				<td class="{$altbg}" colspan="3">
 					<div class="modqueue_message">
-						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
-							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
-							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="delete" /> {$lang->delete}</label>
-							<label><input type="radio" class="radio" name="posts[{$post['pid']}]" value="approve" /> {$lang->approve}</label>
+						<div class="float_right modqueue_controls">
+							<label class="label_radio_ignore"><input type="radio" class="radio radio_ignore" name="posts[{$post['pid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
+							<label class="label_radio_delete"><input type="radio" class="radio radio_delete" name="posts[{$post['pid']}]" value="delete" /> {$lang->delete}</label>
+							<label class="label_radio_approve"><input type="radio" class="radio radio_approve" name="posts[{$post['pid']}]" value="approve" /> {$lang->approve}</label>
+						</div>
+						<div class="modqueue_meta">
+							{$forum}{$thread}
 						</div>
 						{$post['message']}
 					</div>
@@ -9338,7 +9394,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <td valign="top">
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
-			<td class="thead" colspan="4">
+			<td class="thead" colspan="6">
 				<div class="float_right">
 					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> | 
 					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> | 
@@ -9348,14 +9404,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			</td>
 		</tr>
 		<tr>
-			<td class="tcat" width="30%"><span class="smalltext"><strong>{$lang->filename}</strong></span></td>
-			<td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$lang->thread_post}</strong></span></td>
+			<td class="tcat"><span class="smalltext"><strong>{$lang->filename}</strong></span></td>
 			<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
 			<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
+			<td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{$lang->controls}</strong></span></td>
 		</tr>
 		{$attachments}
 		</table>
 {$multipage}
+{$mass_controls}
 <br />
 <div align="center"><input type="submit" class="button" name="reportsubmit" value="{$lang->perform_actions}" /></div>
 </td>
@@ -9366,21 +9423,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="modcp_modqueue_attachments_attachment" version="1400"><![CDATA[			<tr>
-				<td class="{$altbg}"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a></td>
-				<td class="{$altbg}"><a href="{$link}">{$attachment['subject']}</a></td>
+				<td class="{$altbg}"><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class="modqueue_meta">Post: <a href="{$link}">{$attachment['postsubject']}</a></small></td>
 				<td class="{$altbg}" align="center">{$profile_link}</td>
 				<td align="center" class="{$altbg}">{$attachdate}, {$attachtime}</td>
-			</tr>
-			<tr>
-				<td class="{$altbg}" colspan="4">
-					<div class="modqueue_message">
-						<div style="padding: 5px; width: 250px; font-weight: bold; margin-right: 4px;" class="float_right tborder trow1">
-							<label><input type="radio" class="radio" name="attachments[{$attachment['aid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label>
-							<label><input type="radio" class="radio" name="attachments[{$attachment['aid']}]" value="delete" /> {$lang->delete}</label>
-							<label><input type="radio" class="radio" name="attachments[{$attachment['aid']}]" value="approve" /> {$lang->approve}</label>
-						</div>
-					</div>
-				</td>
+				<td class="{$altbg}" align="center"><label class="label_radio_ignore"><input type="radio" class="radio radio_ignore" name="attachments[{$attachment['aid']}]" value="ignore" checked="checked" /> {$lang->ignore}</label></td>
+				<td class="{$altbg}" align="center"><label class="label_radio_delete"><input type="radio" class="radio radio_delete" name="attachments[{$attachment['aid']}]" value="delete" /> {$lang->delete}</label></td>
+				<td class="{$altbg}" align="center"><label class="label_radio_approve"><input type="radio" class="radio radio_approve" name="attachments[{$attachment['aid']}]" value="approve" /> {$lang->approve}</label></td>
 			</tr>
 ]]></template>
 		<template name="modcp_editprofile" version="1400"><![CDATA[<html>
@@ -9737,5 +9785,19 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
+	<template name="modcp_modqueue_masscontrols" version="1400"><![CDATA[<ul class="modqueue_mass">
+	<li><a href="#" class="mass_ignore" onclick="document.getElementsByClassName('radio_ignore', 'input').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_ignored}</a></li>
+	<li><a href="#" class="mass_delete" onclick="document.getElementsByClassName('radio_delete', 'input').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
+	<li><a href="#" class="mass_approve" onclick="document.getElementsByClassName('radio_approve', 'input').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
+</ul>]]></template>
+	<template name="modcp_modqueue_threads_empty" version="1400"><![CDATA[<tr>
+		<td class="trow1" align="center" colspan="3">{$lang->mod_queue_threads_empty}</td>
+</tr>]]></template>
+	<template name="modcp_modqueue_posts_empty" version="1400"><![CDATA[<tr>
+		<td class="trow1" align="center" colspan="3">{$lang->mod_queue_posts_empty}</td>
+</tr>]]></template>
+	<template name="modcp_modqueue_attachments_empty" version="1400"><![CDATA[<tr>
+		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
+</tr>]]></template>
 	</templates>
 </theme>

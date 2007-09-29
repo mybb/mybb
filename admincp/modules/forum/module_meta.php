@@ -29,6 +29,10 @@ function forum_action_handler($action)
 	$page->active_module = "forum";
 	switch($action)
 	{
+		case "moderation_queue":
+			$page->active_action = "moderation_queue";
+			$action_file = "moderation_queue.php";
+			break;
 		case "attachments":
 			$page->active_action = "attachments";
 			$action_file = "attachments.php";

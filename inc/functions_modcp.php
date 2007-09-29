@@ -10,23 +10,11 @@
  */
 
 /**
- * Return a timestamp from a date.
+ * Check if the current user has permission to perform a ModCP action on another user
+ *
+ * @param int The user ID to perform the action on.
+ * @return boolean True if the user has necessary permissions
  */
-function modcp_date2timestamp($date, $stamp=0)
-{
-	if($stamp == 0)
-	{
-		$stamp = TIME_NOW;
-	}
-	$d = explode('-', $date);
-	$nowdate = date("H-j-n-Y", $stamp);
-	$n = explode('-', $nowdate);
-	$n[1] += $d[0];
-	$n[2] += $d[1];
-	$n[3] += $d[2];
-	return mktime(date("G"), date("i"), 0, $n[2], $n[1], $n[3]);
-}
-
 function modcp_can_manage_user($uid)
 {
 	global $mybb;
