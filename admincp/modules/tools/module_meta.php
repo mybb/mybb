@@ -63,6 +63,10 @@ function tools_action_handler($action)
 			$page->active_action = "mailerrors";
 			$action_file = "mailerrors.php";
 			break;
+		case "modlog":
+			$page->active_action = "modlog";
+			$action_file = "modlog.php";
+			break;
 		default:
 			$page->active_action = "system_health";
 			$action_file = "index.php";

@@ -367,16 +367,19 @@ class Moderation
 		$db->update_query("threads", $approve, "tid IN ($tid_list)");
 		$db->update_query("posts", $approve, "tid IN (".implode(",", $posts_to_unapprove).")");
 		
-		foreach($forum_counters as $fid => $counters)
+		if(is_array($forum_counters))
 		{
-			// Update stats
-			$update_array = array(
-				"threads" => "-{$counters['num_threads']}",
-				"unapprovedthreads" => "+{$counters['num_threads']}",
-				"posts" => "-{$counters['num_posts']}",
-				"unapprovedposts" => "+{$counters['num_posts']}"
-			);
-			update_forum_counters($fid, $update_array);
+			foreach($forum_counters as $fid => $counters)
+			{
+				// Update stats
+				$update_array = array(
+					"threads" => "-{$counters['num_threads']}",
+					"unapprovedthreads" => "+{$counters['num_threads']}",
+					"posts" => "-{$counters['num_posts']}",
+					"unapprovedposts" => "+{$counters['num_posts']}"
+				);
+				update_forum_counters($fid, $update_array);
+			}
 		}
 
 		return true;

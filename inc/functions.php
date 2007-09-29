@@ -870,7 +870,7 @@ function fetch_page_url($url, $page)
 		}
 		else
 		{
-			$url .= "&";
+			$url .= "&amp;";
 		}
 		$url .= "page=$page";
 	}

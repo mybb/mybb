@@ -308,7 +308,7 @@ class DefaultForm
 					{
 						$select_add = '';
 	
-						if(in_array($forum['fid'], $selected))
+						if(!empty($selected) && ($forum['fid'] == $selected || (is_array($selected) && in_array($forum['fid'], $selected))))
 						{
 							$select_add = " selected=\"selected\"";
 						}
