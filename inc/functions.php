@@ -3579,7 +3579,7 @@ function validate_email_format($email)
 		return false;
 	}
 	// Valid local characters for email addresses: http://www.remote.org/jochen/mail/info/chars.html
-	return preg_match("/^[a-zA-Z0-9&*+\-_.{}~^?=\/]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
+	return preg_match("/^[a-zA-Z0-9&*+\-_.{}~^\?=\/]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $email);
 }
 
 /**

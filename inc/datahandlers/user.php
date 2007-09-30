@@ -214,7 +214,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check if this is a proper email address.
-		if(validate_email_format($user['email']) === false)
+		if(!validate_email_format($user['email']))
 		{
 			$this->set_error('invalid_email_format');
 			return false;
