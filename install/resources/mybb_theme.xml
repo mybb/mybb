@@ -1144,7 +1144,76 @@ td .star_rating {
 <tr>
 {$modcp_nav}
 <td valign="top">
-<strong>Reminder - Put something here!</strong>
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="3"><strong>{$lang->awaiting_moderation}</strong></td>
+</td>
+</tr>
+<tr>
+<td class="tcat" width="23%"><span class="smalltext"><strong>{$lang->type}</strong></span></td>
+<td class="tcat" align="center" width="33%"><span class="smalltext"><strong>{$lang->number_awaiting}</strong></span></td>
+<td class="tcat" align="center" width="44%"><span class="smalltext"><strong>{$lang->latest}</strong></span></td>
+</tr>
+<tr>
+<td class="trow1"><span class="smalltext"><strong>{$lang->threads}</strong></span></td>
+<td class="trow1" align="center"><span class="smalltext">{$unapproved_threads}</span></td>
+<td class="trow1" align="center"><span class="smalltext">{$latest_thread}</span></td>
+</tr>
+<tr>
+<td class="trow2"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
+<td class="trow2" align="center"><span class="smalltext">{$unapproved_posts}</span></td>
+<td class="trow2" align="center"><span class="smalltext">{$latest_post}</span></td>
+</tr>
+<tr>
+<td class="trow1"><span class="smalltext"><strong>{$lang->attachments}</strong></span></td>
+<td class="trow1" align="center"><span class="smalltext">{$unapproved_attachments}</span></td>
+<td class="trow1" align="center"><span class="smalltext">{$latest_attachment}</span></td>
+</tr>
+</table>
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+	<td class="thead" align="center" colspan="5"><strong>{$lang->latest_5_modactions}</strong></td>
+</tr>
+<tr>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->date}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->action}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->information}</strong></span></td>
+<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->ip}</strong></span></td>
+</tr>
+{$modlogresults}
+</table>
+<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="4"><strong>{$lang->bans_ending_soon}</strong></td>
+</tr>
+<tr>
+<td class="tcat" width="25%"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+<td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$lang->reason}</strong></span></td>
+<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->ban_length}</strong></span></td>
+<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->ban_bannedby}</strong></span></td>
+</tr>
+{$bannedusers}
+</table>
+<br />
+<form action="modcp.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="do_modnotes" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" align="center" colspan="4"><strong>{$lang->moderator_notes}</strong></td>
+</tr>
+<tr>
+<td class="tcat"><span class="smalltext"><strong>{$lang->notes_public_all}</strong></span>
+</td>
+<tr>
+<td class="trow1"><textarea name="modnotes" style="width: 99%; height: 200px;" rows="5" cols="45">{$modnotes}</textarea></td>
+</tr>
+</table>
+<br />
+<div align="center"><input type="submit" class="button" name="notessubmit" value="{$lang->save_notes}" /></div>
 </td>
 </tr>
 </table>
@@ -9799,5 +9868,17 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<template name="modcp_modqueue_attachments_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
 </tr>]]></template>
+	<template name="modcp_lastattachment" version="1400"><![CDATA[<span class="smalltext">
+<a href="{$attachment['link']}"><strong>{$attachment['filename']}</strong></a>
+<br />{$attachment['date']} {$attachment['time']}<br />{$lang->by} {$attachment['profilelink']}</span>
+]]></template>
+	<template name="modcp_lastthread" version="1400"><![CDATA[<span class="smalltext">
+<a href="{$thread['link']}" title="{$thread['fullsubject']}"><strong>{$thread['subject']}</strong></a>
+<br />{$thread['date']} {$thread['time']}<br />{$lang->by} {$thread['profilelink']}</span>
+]]></template>
+	<template name="modcp_lastpost" version="1400"><![CDATA[<span class="smalltext">
+<a href="{$post['link']}" title="{$post['fullsubject']}"><strong>{$post['subject']}</strong></a>
+<br />{$post['date']} {$post['time']}<br />{$lang->by} {$post['profilelink']}</span>
+]]></template>
 	</templates>
 </theme>

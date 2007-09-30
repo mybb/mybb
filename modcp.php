@@ -881,7 +881,7 @@ if($mybb->input['action'] == "do_editprofile")
 	$errors = '';
 
 	// Validate the user and get any errors that might have occurred.
-if(!$userhandler->validate_user())
+	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
 		$mybb->input['action'] = "editprofile";
@@ -1261,8 +1261,6 @@ if($mybb->input['action'] == "finduser")
 	eval("\$finduser = \"".$templates->get("modcp_finduser")."\";");
 	output_page($finduser);
 }
-
-// Baning actions
 
 if($mybb->input['action'] == "warninglogs")
 {
@@ -1848,8 +1846,229 @@ if($mybb->input['action'] == "banuser")
 	output_page($banuser);
 }
 
+if($mybb->input['action'] == "do_modnotes")
+{
+	// Update Moderator Notes cache
+	$update_cache = array(
+		"modmessage" => $mybb->input['modnotes']
+	);
+	
+	$cache->update("modnotes", $update_cache);
+	redirect("modcp.php", $lang->redirect_modnotes);
+}
+
 if(!$mybb->input['action'])
 {
+	$query = $db->query("
+		SELECT COUNT(aid) AS unapprovedattachments
+		FROM  ".TABLE_PREFIX."attachments a
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE a.visible='0' {$tflist}
+	");
+	$unapproved_attachments = $db->fetch_field($query, "unapprovedattachments");
+	
+	if($unapproved_attachments > 0)
+	{
+		$query = $db->query("
+			SELECT t.tid, p.pid, t.uid, t.username, a.dateuploaded
+			FROM  ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE a.visible='0' {$tflist}
+			ORDER BY a.dateuploaded DESC
+			LIMIT 1
+		");
+		$attachment = $db->fetch_array($query);
+		$attachment['date'] = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
+		$attachment['time'] = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
+		$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
+		$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
+		$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+		
+		eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
+	}
+	else
+	{
+		$latest_attachment = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+	}
+	
+	$query = $db->query("
+		SELECT COUNT(pid) AS unapprovedposts
+		FROM  ".TABLE_PREFIX."posts p
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+		WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+	");
+	$unapproved_posts = $db->fetch_field($query, "unapprovedposts");
+	
+	if($unapproved_posts > 0)
+	{
+		$query = $db->query("
+			SELECT p.pid, p.subject, p.uid, p.username
+			FROM  ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
+			ORDER BY p.dateline DESC
+			LIMIT 1
+		");
+		$post = $db->fetch_array($query);
+		$post['date'] = my_date($mybb->settings['dateformat'], $post['dateline']);
+		$post['time'] = my_date($mybb->settings['timeformat'], $post['dateline']);
+		$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
+		$post['link'] = get_post_link($post['pid'], $post['tid']);
+		$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
+		if(my_strlen($post['subject']) > 25)
+		{
+			$lastpost_subject = my_substr($post['subject'], 0, 25)."...";
+		}
+		$post['subject'] = htmlspecialchars_uni($post['subject']);
+		$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
+		
+		eval("\$latest_post = \"".$templates->get("modcp_lastpost")."\";");
+	}
+	else
+	{
+		$latest_post =  "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+	}
+	
+	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0 {$flist}");
+	$unapproved_threads = $db->fetch_field($query, "unapprovedthreads");
+	
+	if($unapproved_threads > 0)
+	{
+		$query = $db->simple_select("threads", "tid, subject, uid, username, dateline", "visible=0 {$flist}", array('order_by' =>  'dateline', 'order_dir' => 'DESC', 'limit' => 1));
+		$thread = $db->fetch_array($query);
+		$thread['date'] = my_date($mybb->settings['dateformat'], $thread['dateline']);
+		$thread['time'] = my_date($mybb->settings['timeformat'], $thread['dateline']);
+		$thread['profilelink'] = build_profile_link($thread['username'], $thread['uid']);
+		$thread['link'] = get_thread_link($thread['tid']);
+		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
+		if(my_strlen($thread['subject']) > 25)
+		{
+			$lastpost_subject = my_substr($thread['subject'], 0, 25)."...";
+		}
+		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
+		$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
+		
+		eval("\$latest_thread = \"".$templates->get("modcp_lastthread")."\";");
+	}
+	else
+	{
+		$latest_thread = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+	}
+	
+	$query = $db->query("
+		SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+		FROM ".TABLE_PREFIX."moderatorlog l
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
+		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+		ORDER BY l.dateline DESC
+		LIMIT 5
+	");
+	while($logitem = $db->fetch_array($query))
+	{
+		$information = '';
+		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$trow = alt_trow();
+		$logitem['profilelink'] = build_profile_link($logitem['username'], $logitem['uid']);
+		if($logitem['tsubject'])
+		{
+			$information = "<strong>{$lang->thread}</strong> <a href=\"".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
+		}
+		if($logitem['fname'])
+		{
+			$information .= "<strong>{$lang->forum}</strong> <a href=\"".get_forum_link($logitem['fid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['fname'])."</a><br />";
+		}
+		if($logitem['psubject'])
+		{
+			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+		}
+		
+		eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");		
+	}
+	
+	if(!$modlogresults)
+	{
+		eval("\$modlogresults = \"".$templates->get("modcp_modlogs_noresults")."\";");		
+	}
+	
+	$query = $db->query("
+		SELECT b.*, a.username AS adminuser, u.username, (b.lifted-".TIME_NOW.") AS remaining
+		FROM ".TABLE_PREFIX."banned b
+		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
+		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) 
+		ORDER BY remaining ASC
+		LIMIT 5
+	");
+	
+	// Get the banned users
+	while($banned = $db->fetch_array($query))
+	{
+		$profile_link = build_profile_link($banned['username'], $banned['uid']);
+
+		// Only show the edit & lift links if current user created ban, or is super mod/admin
+		$edit_link = '';
+		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == "yes" || $mybb->uergroup['canadmincp'] == "yes")
+		{
+			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
+		}
+
+		$admin_profile = build_profile_link($banned['adminuser'], $banned['admin']);
+		
+		$trow = alt_trow();
+		
+		if($banned['reason'])
+		{
+			$banned['reason'] = htmlspecialchars_uni($parser->parse_badwords($banned['reason']));
+		}
+		else
+		{
+			$banned['reason'] = $lang->na;
+		}
+		
+		if($banned['lifted'] == 'perm' || $banned['lifted'] == '' || $banned['bantime'] == 'perm' || $banned['bantime'] == '---')
+		{
+			$banlength = $lang->permanent;
+			$timeremaining = $lang->na;
+		}
+		else
+		{
+			$banlength = $bantimes[$banned['bantime']];
+			$remaining = $banned['remaining'];
+
+			$timeremaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
+
+			if($remaining < 3600)
+			{
+				$timeremaining = "<span style=\"color: red;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else if($remaining < 86400)
+			{
+				$timeremaining = "<span style=\"color: maroon;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else if($remaining < 604800)
+			{
+				$timeremaining = "<span style=\"color: green;\">({$timeremaining} {$lang->ban_remaining})</span>";
+			}
+			else
+			{
+				$timeremaining = "({$timeremaining} {$lang->ban_remaining})";
+			}
+		}
+		
+		eval("\$bannedusers .= \"".$templates->get("modcp_banning_ban")."\";");
+	}
+	
+	if(!$bannedusers)
+	{
+		eval("\$bannedusers = \"".$templates->get("modcp_banning_nobanned")."\";");
+	}
+	
+	$modnotes = $cache->read("modnotes");
+	$modnotes = htmlspecialchars_uni($modnotes['modmessage']);
+		
 	eval("\$modcp = \"".$templates->get("modcp")."\";");
 	output_page($modcp);
 }

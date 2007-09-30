@@ -42,7 +42,17 @@ $l['error_noselected_reports'] = "Sorry, but you did not select any reported pos
 $l['error_missing_ipaddress'] = "Sorry, but you did not enter in an IP Address to find.";
 $l['error_no_results'] = "Sorry, there were no results found with the criteria you selected.";
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
+$l['redirect_modnotes'] = "The moderator notes have been updated.";
 
+$l['moderator_notes'] = "Moderator Notes";
+$l['notes_public_all'] = "These notes are public to all moderators.";
+$l['save_notes'] = "Save Notes";
+$l['bans_ending_soon'] = "Bans Ending Soon";
+$l['latest_5_modactions'] = "5 Latest Moderator Actions";
+$l['awaiting_moderation'] = "Awaiting Moderation";
+$l['type'] = "Type";
+$l['number_awaiting'] = "Number Awaiting";
+$l['latest'] = "Latest";
 $l['ipsearch'] = "IP Search";
 $l['ipsearch_results'] = "IP Search Results for '{1}'";
 $l['ipaddress_search'] = "IP Address Search";
