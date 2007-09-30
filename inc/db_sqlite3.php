@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/license.php
  *
- * $Id: db_mysql.php 1370 2006-04-16 13:47:01Z chris $
+ * $Id$
  */
 
 class DB_SQLite3

@@ -60,6 +60,7 @@ $l['subject'] = "Subject:";
 $l['to'] = "To:";
 $l['from'] = "From:";
 $l['sent'] = "Sent:";
+$l['export_messages2'] = "Download Messages";
 $l['empty_folders'] = "Empty Private Messaging Folders";
 $l['empty_folders2'] = "Empty Folders";
 $l['empty_note'] = "Here you can delete private messages from selected folders at one time. Simply select the folders you wish the messages to be deleted from and click 'Delete'. You cannot undo these changes.<br /><strong>Note: Once these messages are deleted there is no way to recover them.</strong>";

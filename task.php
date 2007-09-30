@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
  *
- * $Id: css.php 2685 2007-02-01 05:44:58Z Tikitiki $
+ * $Id$
  */
  
 ignore_user_abort(true);

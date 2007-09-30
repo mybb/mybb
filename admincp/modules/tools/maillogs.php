@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
  *
- * $Id: group_promotions.php 2932 2007-03-10 05:48:55Z chris $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

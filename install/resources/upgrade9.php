@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://www.mybboard.com/eula.html
  *
- * $Id: upgrade7.php 2676 2007-01-27 16:52:06Z Tikitiki $
+ * $Id$
  */
 
 /**

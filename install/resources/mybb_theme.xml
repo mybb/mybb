@@ -4232,7 +4232,7 @@ body {
 <td class="trow1">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
 <tr>
-<td class="trow1">{$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a></span></td>
+<td class="trow1">{$pmspacebar}<span class="smalltext"><a href="private.php">{$lang->inbox}</a> | <a href="private.php?action=send">{$lang->compose_message2}</a> | <a  href="private.php?action=folders">{$lang->manage_folders}</a> | <a  href="private.php?action=empty">{$lang->empty_folders2}</a> | <a href="private.php?action=export">{$lang->export_messages2}</a></span></td>
 </tr>
 </table>
 </td>

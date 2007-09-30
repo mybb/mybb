@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
  *
- * $Id: banning.php 3306 2007-09-13 05:29:43Z Tikitiki $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

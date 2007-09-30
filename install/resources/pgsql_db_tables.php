@@ -7,7 +7,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
  *
- * $Id: mysql_db_tables.php 2992 2007-04-05 14:43:48Z chris $
+ * $Id$
  */
 
 $tables[] = "CREATE TABLE mybb_adminlog (

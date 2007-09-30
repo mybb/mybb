@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
  *
- * $Id: index.php 2992 2007-04-05 14:43:48Z chris $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

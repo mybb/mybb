@@ -307,7 +307,11 @@ autoComplete.prototype = {
 			this.popup.style.overflow = "auto";
 		}
 
+		var offsetTop = 0;
+		var offsetLeft = 0;
+
 		this.popup.style.width = this.textbox.offsetWidth-2+"px";
+		element = this.textbox;
 		do
 		{
 			offsetTop += element.offsetTop || 0;
@@ -328,12 +332,11 @@ autoComplete.prototype = {
 			this.popup.style.left = offsetLeft+"px";
 		}
 		this.popup.style.top = offsetTop+this.textbox.offsetHeight+"px";
-
 		this.popup.scrollTop = 0;
 		Event.observe(this.textbox, "blur", this.hidePopup.bindAsEventListener(this));
 		Event.observe(this.popup, "mouseover", this.popupOver.bindAsEventListener(this));
 		Event.observe(this.popup, "mouseout", this.popupOut.bindAsEventListener(this));
-		this.popup.show();
+		this.popup.style.display = '';
 		this.menuOpen = true;
 		this.overPopup = 0;
 
