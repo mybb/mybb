@@ -74,6 +74,20 @@ if($mybb->input['action'] == "do_change")
 				}
 			}
 		}
+		else if(isset($mybb->input['upsetting']['96']) && $mybb->input['upsetting']['96'] == "db")
+		{
+			$query = $db->simple_select(TABLE_PREFIX."settings", "value", "sid='96'");
+			if($db->fetch_field($query, "value") == "file")
+			{
+				$query = $db->simple_select(TABLE_PREFIX."themes", "tid", "csscached!='0'");
+				while($theme = $db->fetch_array($query))
+				{
+					@unlink(MYBB_ROOT.'css/theme_'.intval($theme['tid']).'.css');
+				}
+				$db->update_query(TABLE_PREFIX."themes", array('csscached' => 0), "csscached != '0'");
+			}
+		}
+		
 		foreach($mybb->input['upsetting'] as $key => $val)
 		{
 			$val = $db->escape_string($val);
