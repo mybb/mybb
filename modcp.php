@@ -1678,7 +1678,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		// Have permissions to ban this user?
 		if(!modcp_can_manage_user($user['uid']))
 		{
-			$erors[] = $lang->error_cannotbanuser;
+			$errors[] = $lang->error_cannotbanuser;
 		}
 	}
 

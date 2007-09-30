@@ -233,7 +233,7 @@ function upgradethemes()
 			cachefile varchar(100) NOT NULL default '',
 			lastmodified bigint(30) NOT NULL default '0',
 			PRIMARY KEY(sid)
-		) TYPE=MyISAM{$charset};";
+		) TYPE=MyISAM{$charset};");
 
 		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 		require_once MYBB_ROOT."admincp/inc/functions_themes.php";
@@ -260,7 +260,7 @@ function upgradethemes()
 		require_once MYBB_ROOT."admincp/inc/functions_themes.php";
 		
 		// Import master theme
-		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1))
+		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1));
 	}
 
 	$sid = -2;

@@ -1335,7 +1335,7 @@ function upgrade11_redothemes()
 	require_once MYBB_ROOT."admincp/inc/functions_themes.php";
 	
 	// Import master theme
-	import_theme_xml($contents, array("tid" => 1))
+	import_theme_xml($contents, array("tid" => 1));
 
 	// Fetch out default stylesheets from master
 	$query = $db->simple_select("themes", "*", "tid=1");
@@ -1384,7 +1384,7 @@ function upgrade11_redothemes()
 		$stylesheets['global']['global'][] = $css_url;
 
 		// Update the theme
-		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets)), "tid='{$theme['tid']}'");
+		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets)), "tid='{$theme['tid']}'"));
 	}
 
 	echo "<p>Your themes have successfully been converted to the new theme system.</p>";
