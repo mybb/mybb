@@ -504,18 +504,13 @@ if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes"
 	exit;
 }
 
-// Load Limiting - DIRECTORY_SEPARATOR checks if running windows
-if(DIRECTORY_SEPARATOR != '\\')
+// Load Limiting
+if($load = get_server_load() && $load != $lang->unknown)
 {
-	if($uptime = @exec('uptime'))
+	// User is not an administrator and the load limit is higher than the limit, show an error
+	if($mybb->usergroup['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
 	{
-		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
-		$load = $regs[1];
-		// User is not an administrator and the load limit is higher than the limit, show an error
-		if($mybb->usergroup['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
-		{
-			error($lang->error_loadlimit);
-		}
+		error($lang->error_loadlimit);
 	}
 }
 
