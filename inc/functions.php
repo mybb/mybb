@@ -1236,6 +1236,22 @@ function get_server_load()
 		}
 		if(!$serverload)
 		{
+			// Suhosin likes to throw a warning if exec is disabled then die - weird
+			if($func_blacklist = @ini_get('suhosin.executor.func.blacklist'))
+			{
+				if(strpos(",".$func_blacklist.",", 'exec') !== false)
+				{
+					return $lang->unknown;
+				}
+			}
+			// PHP disabled functions?
+			if($func_blacklist = @ini_get('disabled_functions'))
+			{
+				if(strpos(",".$func_blacklist.",", 'exec') !== false)
+				{
+					return $lang->unknown;
+				}
+			}
 			$load = @exec("uptime");
 			$load = split("load averages?: ", $load);
 			$serverload = explode(",", $load[1]);
