@@ -23,7 +23,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-//$collation = $db->build_create_table_collation();
+$collation = $db->build_create_table_collation();
 
 // FIRST STEP IS FOR INTEGER CONVERSION PROJECT
 
