@@ -22,9 +22,9 @@ function output_page($contents)
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
 
-	if($mybb->usergroup['cancp'] == "yes")
+	if($mybb->usergroup['cancp'] == 1)
 	{
-		if($mybb->settings['extraadmininfo'] != "no")
+		if($mybb->settings['extraadmininfo'] != 0)
 		{
 			$phptime = $maintimer->format($maintimer->totaltime - $querytime);
 			$querytime = $maintimer->format($querytime);
@@ -45,7 +45,7 @@ function output_page($contents)
 				$debuglink = htmlspecialchars(getenv("REQUEST_URI")) . "?debug=1";
 			}
 
-			if($mybb->settings['gzipoutput'] != "no")
+			if($mybb->settings['gzipoutput'] != 0)
 			{
 				$gzipen = "Enabled";
 			}
@@ -73,7 +73,7 @@ function output_page($contents)
 	$contents = str_replace("<debugstuff>", "", $contents);
 	$contents = $plugins->run_hooks("pre_output_page", $contents);
 
-	if($mybb->settings['gzipoutput'] == "yes")
+	if($mybb->settings['gzipoutput'] == 1)
 	{
 		if(version_compare(PHP_VERSION, '4.2.0', '>='))
 		{
@@ -92,7 +92,7 @@ function output_page($contents)
 	$plugins->run_hooks("post_output_page");
 
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->settings['useshutdownfunc'] == "no" && $mybb->use_shutdown != true)
+	if($mybb->settings['useshutdownfunc'] == 0 && $mybb->use_shutdown != true)
 	{
 		run_shutdown();
 	}
@@ -300,7 +300,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 		}
 
 		// If DST correction is enabled, add an additional hour to the timezone.
-		if($dstcorrection == 1 || $dst_correction == "yes")
+		if($dstcorrection == 1)
 		{
 			++$offset;
 			if(my_substr($offset, 0, 1) != "-")
@@ -554,7 +554,7 @@ function get_child_list($fid)
 		$forum_cache = cache_forums();
 		foreach($forum_cache as $forum)
 		{
-			if($forum['active'] != "no")
+			if($forum['active'] != 0)
 			{
 				$forums_by_parent[$forum['pid']][$forum['fid']] = $forum;
 			}
@@ -738,7 +738,7 @@ function redirect($url, $message="", $title="")
 		$title = $mybb->settings['bbname'];
 	}
 
-	if($mybb->settings['redirects'] == "on" && $mybb->user['showredirect'] != "no")
+	if($mybb->settings['redirects'] == 1 && $mybb->user['showredirect'] != 0)
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars($url);
@@ -979,7 +979,7 @@ function usergroup_permissions($gid=0)
 					}
 				}
 
-				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit)
+				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) // Keep yes/no for compatibility?
 				{
 					$usergroup[$perm] = $access;
 				}
@@ -1274,7 +1274,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 	}
 
 	$user_perms = user_permissions($uid);
-	if($user_perms['issupermod'] == "yes")
+	if($user_perms['issupermod'] == 1)
 	{
 		return true;
 	}
@@ -1304,7 +1304,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 			}
 			else
 			{
-				if($modperms[$action] == "yes")
+				if($modperms[$action] == 1)
 				{
 					return true;
 				}
@@ -1382,7 +1382,7 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	}
 	elseif($expires == "" || $expires == null)
 	{
-		if($mybb->user['remember'] == "no")
+		if($mybb->user['remember'] == 0)
 		{
 			$expires = 0;
 		}
@@ -1924,7 +1924,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 
 		foreach($forum_cache as $fid => $forum)
 		{
-			if($forum['active'] != "no")
+			if($forum['active'] != 0)
 			{
 				$jumpfcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 			}
@@ -1944,7 +1944,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 			{
 				$perms = $permissioncache[$forum['fid']];
 
-				if($forum['fid'] != "0" && ($perms['canview'] != "no" || $mybb->settings['hideprivateforums'] == "no") && $forum['linkto'] == '' && $forum['showinjump'] != "no")
+				if($forum['fid'] != "0" && ($perms['canview'] != 0 || $mybb->settings['hideprivateforums'] == 0) && $forum['linkto'] == '' && $forum['showinjump'] != 0)
 				{
 					$optionselected = "";
 
@@ -2069,7 +2069,7 @@ function build_mycode_inserter($bind="message")
 {
 	global $db, $mybb, $theme, $templates, $lang;
 
-	if($mybb->settings['bbcodeinserter'] != "off")
+	if($mybb->settings['bbcodeinserter'] != 0)
 	{
 		$editor_lang_strings = array(
 			"editor_title_bold",
@@ -2162,7 +2162,7 @@ function build_clickable_smilies()
 {
 	global $db, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
 
-	if($mybb->settings['smilieinserter'] != "off" && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
+	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
 		if(!$smiliecount)
 		{
@@ -2172,7 +2172,7 @@ function build_clickable_smilies()
 
 		if(!$smiliecache)
 		{
-			$query = $db->simple_select("smilies", "*", "showclickable != 'no'", array('order_by' => 'disporder'));
+			$query = $db->simple_select("smilies", "*", "showclickable != 0", array('order_by' => 'disporder'));
 
 			while($smilie = $db->fetch_array($query))
 			{
@@ -2580,7 +2580,7 @@ function get_unviewable_forums()
 			}
 		}
 
-		if($perms['canview'] == "no" || $pwverified == 0)
+		if($perms['canview'] == 0 || $pwverified == 0)
 		{
 			if($unviewableforums)
 			{
@@ -2802,7 +2802,7 @@ function debug_page()
 
 	$serverload = get_server_load();
 
-	if($mybb->settings['gzipoutput'] != "no")
+	if($mybb->settings['gzipoutput'] != 0)
 	{
 		$gzipen = "Enabled";
 	}
@@ -2917,7 +2917,7 @@ function send_page_headers()
 {
 	global $mybb;
 
-	if($mybb->settings['nocacheheaders'] == "yes" && $mybb->settings['standardheaders'] != "yes")
+	if($mybb->settings['nocacheheaders'] == 1 && $mybb->settings['standardheaders'] != 1)
 	{
 		header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
 		header("Last-Modified: ".gmdate("D, d M Y H:i:s")."GMT");
@@ -4095,7 +4095,7 @@ function get_forum($fid, $active_override=0)
 		{
 			foreach($parents as $parent)
 			{
-				if($forum_cache[$parent]['active'] == "no")
+				if($forum_cache[$parent]['active'] == 0)
 				{
 					return false;
 				}
@@ -4190,7 +4190,7 @@ function get_inactive_forums()
 
 	foreach($forum_cache as $fid => $forum)
 	{
-		if($forum['active'] == "no")
+		if($forum['active'] == 0)
 		{
 			$inactive[] = $fid;
 			foreach($forum_cache as $fid1 => $forum1)

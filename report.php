@@ -17,7 +17,7 @@ require_once "./global.php";
 // Load global language phrases
 $lang->load("report");
 
-if($mybb->usergroup['canview'] == "no" || !$mybb->user['uid'])
+if($mybb->usergroup['canview'] == 0 || !$mybb->user['uid'])
 {
 	error_no_permission();
 }
@@ -88,7 +88,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 				SELECT u.username, u.email, u.receivepms, u.uid
 				FROM ".TABLE_PREFIX."users u
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-				WHERE (g.cancp='yes' OR g.issupermod='yes')
+				WHERE (g.cancp=1 OR g.issupermod=1)
 			");
 		}
 		
@@ -97,7 +97,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			$emailsubject = sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
 			$emailmessage = sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], $thread['tid'], $post['pid'], $thread['subject'], $mybb->input['reason']);
 			
-			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
+			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 			{
 				$pm_recipients[] = $mod['uid'];
 			}

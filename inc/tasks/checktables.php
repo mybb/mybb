@@ -43,7 +43,7 @@ function task_checktables($task)
 					$boardclosed = $mybb->settings['boardclosed'];
 					$boardclosed_reason = $mybb->settings['boardclosed_reason'];
 					
-					$db->update_query("settings", array('value' => 'yes'), "name='boardclosed'", 1);
+					$db->update_query("settings", array('value' => 1), "name='boardclosed'", 1);
 					$db->update_query("settings", array('value' => $lang->error_database_repair), "name='boardclosed_reason'", 1);
 					rebuild_settings();
 					

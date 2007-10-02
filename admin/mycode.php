@@ -49,7 +49,7 @@ if($mybb->input['action'] == "add")
 	maketextareacode($lang->mycode_regex_label, "regex", "", "4", "80");
 	maketextareacode($lang->mycode_replacement_label, "replacement", "", "4", "80");
 	makeinputcode($lang->parse_order, "parseorder", "1", "4", $lang->parse_order_description);
-	makeyesnocode($lang->mycode_active_label, "active", "yes");
+	makeyesnocode($lang->mycode_active_label, "active", 1);
 	endtable();
 	endform($lang->insert_mycode);
 	cpfooter();
@@ -143,7 +143,7 @@ if($mybb->input['action'] == "delete")
 	starttable();
 	tableheader($lang->delete_mycode, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();

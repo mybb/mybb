@@ -77,7 +77,7 @@ $query = $db->query("
 	SELECT f.*, fr.dateline AS lastread
 	FROM ".TABLE_PREFIX."forums f
 	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid)
-	WHERE f.active != 'no'
+	WHERE f.active != 0
 	ORDER BY pid, disporder
 ");
 while($forum = $db->fetch_array($query))
@@ -87,7 +87,7 @@ while($forum = $db->fetch_array($query))
 $db->free_result($query);
 
 // Get the forum moderators if the setting is enabled.
-if($mybb->settings['modlist'] != "off")
+if($mybb->settings['modlist'] != 0)
 {
 	$query = $db->query("
 		SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
@@ -123,7 +123,7 @@ if($forums)
 
 $excols = "forumdisplay";
 
-if($fpermissions['canview'] != "yes")
+if($fpermissions['canview'] != 1)
 {
 	error_no_permission();
 }
@@ -138,17 +138,17 @@ if($foruminfo['linkto'])
 }
 
 // Make forum jump...
-if($mybb->settings['enableforumjump'] != "no")
+if($mybb->settings['enableforumjump'] != 0)
 {
 	$forumjump = build_forum_jump("", $fid, 1);
 }
 
-if($foruminfo['type'] == "f" && $foruminfo['open'] != "no")
+if($foruminfo['type'] == "f" && $foruminfo['open'] != 0)
 {
 	eval("\$newthread = \"".$templates->get("forumdisplay_newthread")."\";");
 }
 
-if($fpermissions['cansearch'] != "no" && $foruminfo['type'] == "f")
+if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 {
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
 }
@@ -177,7 +177,7 @@ if($modlist)
 }
 
 // Get the users browsing this forum.
-if($mybb->settings['browsingthisforum'] != "off")
+if($mybb->settings['browsingthisforum'] != 0)
 {
 	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
@@ -205,7 +205,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 			{
 				$doneusers[$user['uid']] = $user['time'];
 				++$membercount;
-				if($user['invisible'] == "yes")
+				if($user['invisible'] == 1)
 				{
 					$invisiblemark = "*";
 					++$inviscount;
@@ -215,7 +215,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 					$invisiblemark = '';
 				}
 				
-				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
@@ -238,7 +238,7 @@ if($mybb->settings['browsingthisforum'] != "off")
 	}
 	
 	$invisonline = '';
-	if($inviscount && $mybb->usergroup['canviewwolinvis'] != "yes" && ($inviscount != 1 && $mybb->user['invisible'] != "yes"))
+	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
 	{
 		$invisonline = sprintf($lang->users_browsing_forum_invis, $inviscount);
 	}
@@ -260,10 +260,10 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	}
 	
 	$rules_parser = array(
-		"allow_html" => "yes",
-		"allow_mycode" => "yes",
-		"allow_smilies" => "yes",
-		"allow_imgcode" => "yes"
+		"allow_html" => 1,
+		"allow_mycode" => 1,
+		"allow_smilies" => 1,
+		"allow_imgcode" => 1
 	);
 
 	$foruminfo['rules'] = $parser->parse_message($foruminfo['rules'], $rules_parser);
@@ -298,7 +298,7 @@ else
 	$ismod = false;
 }
 
-if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == "yes")
+if(is_moderator($fid, "caneditposts") || $fpermissions['caneditposts'] == 1)
 {
 	$can_edit_titles = 1;
 }
@@ -487,7 +487,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
-if($foruminfo['allowtratings'] != "no")
+if($foruminfo['allowtratings'] != 0)
 {
 	$lang->load("ratethread");
 	switch($db->type)
@@ -575,7 +575,7 @@ while($announcement = $db->fetch_array($query))
 	$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
 	$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 	
-	if($foruminfo['allowtratings'] != "no")
+	if($foruminfo['allowtratings'] != 0)
 	{
 		eval("\$rating = \"".$templates->get("forumdisplay_announcement_rating")."\";");
 		$lpbackground = "trow2";
@@ -654,7 +654,7 @@ if($tids)
 }
 
 // Check participation by the current user in any of these threads - for 'dot' folder icons
-if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
+if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $threadcache)
 {
 	$query = $db->simple_select("posts", "tid,uid", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 	while($post = $db->fetch_array($query))
@@ -763,7 +763,7 @@ if(is_array($threadcache))
 		}
 
 		$rating = '';
-		if($foruminfo['allowtratings'] != "no")
+		if($foruminfo['allowtratings'] != 0)
 		{
 			$thread['averagerating'] = intval(round($thread['averagerating'], 2));
 			$thread['width'] = $thread['averagerating']*20;
@@ -915,7 +915,7 @@ if(is_array($threadcache))
 			$folder_label .= $lang->icon_hot;
 		}
 
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			$folder .= "lock";
 			$folder_label .= $lang->icon_lock;
@@ -937,7 +937,7 @@ if(is_array($threadcache))
 		$inline_edit_tid = $thread['tid'];
 
 		// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == true)
+		if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $can_edit_titles == 1) || $ismod == true)
 		{
 			$inline_edit_class = "subject_editable";
 		}

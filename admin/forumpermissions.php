@@ -140,7 +140,7 @@ if($mybb->input['action'] == "do_edit")
 	$pid = intval($mybb->input['pid']);
 	$fid = intval($mybb->input['fid']);
 	$gid = intval($mybb->input['gid']);
-	if($mybb->input['usecustom'] == "no")
+	if($mybb->input['usecustom'] == 0)
 	{
 		if($pid)
 		{

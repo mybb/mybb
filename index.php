@@ -41,7 +41,7 @@ else
 	}
 }
 $whosonline = '';
-if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "no")
+if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	// Get the online users.
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
@@ -77,15 +77,15 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 			if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == "yes")
+				if($user['invisible'] == 1)
 				{
 					++$anoncount;
 				}
 				++$membercount;
-				if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 				{
 					// If this usergroup can see anonymously logged-in users, mark them.
-					if($user['invisible'] == "yes")
+					if($user['invisible'] == 1)
 					{
 						$invisiblemark = "*";
 					}
@@ -163,7 +163,7 @@ if($mybb->settings['showwol'] != "no" && $mybb->usergroup['canviewonline'] != "n
 
 // Build the birthdays for to show on the index page.
 $bdays = $birthdays = '';
-if($mybb->settings['showbirthdays'] != "no")
+if($mybb->settings['showbirthdays'] != 0)
 {
 	// First, see what day this is.
 	$bdaycount = 0; $bdayhidden = 0;
@@ -216,7 +216,7 @@ if($mybb->settings['showbirthdays'] != "no")
 }
 
 // Build the forum statistics to show on the index page.
-if($mybb->settings['showindexstats'] != "no")
+if($mybb->settings['showindexstats'] != 0)
 {
 	// First, load the stats cache.
 	$stats = $cache->read("stats");
@@ -256,7 +256,7 @@ if($mybb->settings['showindexstats'] != "no")
 }
 
 // Show the board statistics table only if one or more index statistics are enabled.
-if($mybb->settings['showwol'] != "no" || $mybb->settings['showindexstats'] != "no" || ($mybb->settings['showbirthdays'] != "no" && $bdaycount > 0))
+if($mybb->settings['showwol'] != 0 || $mybb->settings['showindexstats'] != 0 || ($mybb->settings['showbirthdays'] != 0 && $bdaycount > 0))
 {
 	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
 }
@@ -267,7 +267,7 @@ if($mybb->user['uid'] == 0)
 	$query = $db->query("
 		SELECT *
 		FROM ".TABLE_PREFIX."forums
-		WHERE active != 'no'
+		WHERE active != 0
 		ORDER BY pid, disporder
 	");
 	
@@ -280,7 +280,7 @@ else
 		SELECT f.*, fr.dateline AS lastread
 		FROM ".TABLE_PREFIX."forums f
 		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-		WHERE f.active != 'no'
+		WHERE f.active != 0
 		ORDER BY pid, disporder
 	");
 }

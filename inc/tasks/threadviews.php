@@ -15,7 +15,7 @@ function task_threadviews($task)
 	
 	$threadviews = array();
 
-	if($mybb->settings['delayedthreadviews'] != "on")
+	if($mybb->settings['delayedthreadviews'] != 1)
 	{
 		return;
 	}

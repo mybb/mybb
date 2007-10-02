@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input = array(
-			"allowhtml" => "no",
+			"allowhtml" => 1,
 			"eventlimit" => 4,
 			"disporder" => 1,
 			"moderation" => 0
@@ -153,11 +153,11 @@ if($mybb->input['action'] == "permissions")
 				{
 					if($permissions[$calendar_permission] == 1)
 					{
-						$permissions_array[$calendar_permission] = "yes";
+						$permissions_array[$calendar_permission] = 1;
 					}
 					else
 					{
-						$permissions_array[$calendar_permission] = "no";
+						$permissions_array[$calendar_permission] = 0;
 					}
 				}
 				$permissions_array['gid'] = intval($group_id);
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "permissions")
 		$all_checked = true;
 		foreach(array('canviewcalendar','canaddevents','canbypasseventmod','canmoderateevents') as $calendar_permission)
 		{
-			if($usergroup[$calendar_permission] == "yes")
+			if($usergroup[$calendar_permission] == 1)
 			{
 				$value = "true";
 			}
@@ -213,11 +213,11 @@ if($mybb->input['action'] == "permissions")
 			{
 				$value = "false";
 			}
-			if($perms[$calendar_permission] != "yes")
+			if($perms[$calendar_permission] != 1)
 			{
 				$all_checked = false;
 			}
-			if($perms[$calendar_permission] == "yes")
+			if($perms[$calendar_permission] == 1)
 			{
 				$perms_checked[$calendar_permission] = 1;
 			}

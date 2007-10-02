@@ -84,7 +84,7 @@ function getforums($pid=0, $depth=1)
 			foreach($main as $key => $forum)
 			{
 				$forum['name'] = $forum['name'];
-				if($forum['active'] == "no")
+				if($forum['active'] == 0)
 				{
 					$forum['name'] = "<em>".$forum['name']."</em>";
 				}
@@ -180,7 +180,7 @@ function getforums($pid=0, $depth=1)
 if($mybb->input['action'] == "do_add")
 {
 	$pid = intval($mybb->input['pid']);
-	if($mybb->input['isforum'] == "no")
+	if($mybb->input['isforum'] == 0)
 	{
 		$type = "c";
 	}
@@ -434,7 +434,7 @@ if($mybb->input['action'] == "do_edit")
 				cpmessage($lang->forum_parent_child);
 			}
 		}
-		if($mybb->input['isforum'] == "no")
+		if($mybb->input['isforum'] == 0)
 		{
 			$type = "c";
 		}
@@ -566,25 +566,25 @@ if($mybb->input['action'] == "add")
 	tablesubheader($lang->posting_options);
 	if($mybb->input['type'] == 'c')
 	{
-		$typesel = "no";
+		$typesel = 0;
 	}
 	else
 	{
-		$typesel = "yes";
+		$typesel = 1;
 	}
 	makeyesnocode($lang->act_as_forum, "isforum", $typesel);
-	makeyesnocode($lang->forum_active, "isactive", "yes");
-	makeyesnocode($lang->forum_open, "isopen", "yes");
+	makeyesnocode($lang->forum_active, "isactive", 1);
+	makeyesnocode($lang->forum_open, "isopen", 1);
 
 	tablesubheader($lang->moderation_options);
-	makeyesnocode($lang->moderate_posts, "modposts", "no");
-	makeyesnocode($lang->moderate_threads, "modthreads", "no");
-	makeyesnocode($lang->moderate_edit_posts, "mod_edit_posts", "no");
-	makeyesnocode($lang->moderate_attachments, "modattachments", "no");
+	makeyesnocode($lang->moderate_posts, "modposts", 0);
+	makeyesnocode($lang->moderate_threads, "modthreads", 0);
+	makeyesnocode($lang->moderate_edit_posts, "mod_edit_posts", 0);
+	makeyesnocode($lang->moderate_attachments, "modattachments", 0);
 
 	tablesubheader($lang->style_options);
 	makeselectcode($lang->style, "fstyle", "themes", "tid", "name", "0", $lang->use_default, "", "name!='((master))' AND name!='((master-backup))'");
-	makeyesnocode($lang->override_style, "overridestyle", "no");
+	makeyesnocode($lang->override_style, "overridestyle", 0);
 
 	tablesubheader($lang->forum_rules);
 	makelabelcode($lang->rules_display_method, "<select name=\"rulestype\"><option value=\"0\">".$lang->dont_display_rules."</option><option value=\"1\">".$lang->display_rules_inline."</option><option value=\"2\">".$lang->display_rules_link."</option></select>");
@@ -621,14 +621,14 @@ if($mybb->input['action'] == "add")
 	makeselectcode_array($lang->default_sortorder, "defaultsortorder", $sortorder_array, "", true, $lang->board_default);
 
 	tablesubheader($lang->misc_options);
-	makeyesnocode($lang->allow_html, "allowhtml", "no");
-	makeyesnocode($lang->allow_mycode, "allowmycode", "yes");
-	makeyesnocode($lang->allow_smilies, "allowsmilies", "yes");
-	makeyesnocode($lang->allow_img_code, "allowimgcode", "yes");
-	makeyesnocode($lang->allow_posticons, "allowpicons", "yes");
-	makeyesnocode($lang->allow_ratings, "allowtratings", "yes");
+	makeyesnocode($lang->allow_html, "allowhtml", 0);
+	makeyesnocode($lang->allow_mycode, "allowmycode", 1);
+	makeyesnocode($lang->allow_smilies, "allowsmilies", 1);
+	makeyesnocode($lang->allow_img_code, "allowimgcode", 1);
+	makeyesnocode($lang->allow_posticons, "allowpicons", 1);
+	makeyesnocode($lang->allow_ratings, "allowtratings", 1);
 	makeyesnocode($lang->show_forum_jump, "showinjump");
-	makeyesnocode($lang->use_postcounts, "usepostcounts", "yes");
+	makeyesnocode($lang->use_postcounts, "usepostcounts", 1);
 	endtable();
 	echo "<br />";
 	quickpermissions("", $pid);
@@ -649,12 +649,12 @@ if($mybb->input['action'] == "addmod")
 	makeinputcode($lang->username, "username");
 	makelabelcode($lang->forum, forumselect("fid", intval($mybb->input['fid'])));
 	tablesubheader($lang->mod_perms);
-	makeyesnocode($lang->caneditposts, "caneditposts", "yes");
-	makeyesnocode($lang->candeleteposts, "candeleteposts", "yes");
-	makeyesnocode($lang->canviewips, "canviewips", "yes");
-	makeyesnocode($lang->canopenclose, "canopenclosethreads", "yes");
-	makeyesnocode($lang->canmanage, "canmanagethreads", "yes");
-	makeyesnocode($lang->canmovetononmodforum, "canmovetononmodforum", "yes");
+	makeyesnocode($lang->caneditposts, "caneditposts", 1);
+	makeyesnocode($lang->candeleteposts, "candeleteposts", 1);
+	makeyesnocode($lang->canviewips, "canviewips", 1);
+	makeyesnocode($lang->canopenclose, "canopenclosethreads", 1);
+	makeyesnocode($lang->canmanage, "canmanagethreads", 1);
+	makeyesnocode($lang->canmovetononmodforum, "canmovetononmodforum", 1);
 	endtable();
 	endform($lang->add_moderator, $lang->reset_button);
 	cpfooter();
@@ -673,7 +673,7 @@ if($mybb->input['action'] == "delete")
 	$lang->delete_forum = sprintf($lang->delete_forum, $forum['name']);
 	tableheader($lang->delete_forum, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	$lang->delete_forum_confirm = sprintf($lang->delete_forum_confirm, $forum['name']);
 	makelabelcode("<div align=\"center\">$lang->delete_forum_confirm<br /><br />$yes$no</div>", "");
 	endtable();
@@ -694,7 +694,7 @@ if($mybb->input['action'] == "deletemod")
 	starttable();
 	tableheader($lang->delete_mod, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_mod_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
@@ -714,11 +714,11 @@ if($mybb->input['action'] == "edit")
 	$pid = $forum['pid'];
 	if($forum[type] == "c")
 	{
-		$isforum = "no";
+		$isforum = 0;
 	}
 	else
 	{
-		$isforum = "yes";
+		$isforum = 1;
 	}
 	$plugins->run_hooks("admin_forums_edit");
 	startform("forums.php", "", "do_edit");
@@ -880,7 +880,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 		{
 			cperror($lang->new_forum_needs_name);
 		}
-		if($mybb->input['isforum'] == 'no')
+		if($mybb->input['isforum'] == 0)
 		{
 			$type = 'c';
 		}
@@ -912,7 +912,7 @@ if($mybb->input['action'] == "do_copy") // Actually copy the forum
 		);
 		$db->update_query("forums", $updatearray, "fid='{$to}'");
 	}
-	elseif($mybb->input['copyforumsettings'] == "yes")
+	elseif($mybb->input['copyforumsettings'] == 1)
 	{
 		// Copy settings to existing forum
 		$query = $db->simple_select("forums", '*', "fid='{$to}'");
@@ -980,12 +980,12 @@ if($mybb->input['action'] == "copy") // Show the copy forum form
 	maketextareacode($lang->description, 'description');
 	unset($forumselect);
 	makelabelcode($lang->parentforum, forumselect('pid'));
-	makeyesnocode($lang->act_as_forum, 'isforum', 'yes');
+	makeyesnocode($lang->act_as_forum, 'isforum', 1);
 
 	tablesubheader($lang->copy_settings);
 	if(!isset($mybb->input['copyforumsettings']))
 	{
-		$mybb->input['copyforumsettings'] = 'yes';
+		$mybb->input['copyforumsettings'] = 1;
 	}
 	makeyesnocode($lang->copy_forum_settings, 'copyforumsettings', $mybb->input['copyforumsettings']);
 	$query = $db->query("SELECT gid, title FROM ".TABLE_PREFIX."usergroups ORDER BY title ASC");

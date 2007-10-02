@@ -85,7 +85,7 @@ if(!$forum || $forum['type'] != "f")
 // Does the user have permission to view this thread?
 $forumpermissions = forum_permissions($forum['fid']);
 
-if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != "yes")
+if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 {
 	error_no_permission();
 }
@@ -276,7 +276,7 @@ if($mybb->input['action'] == "thread")
 		$now = TIME_NOW;
 
 		// If the poll or the thread is closed or if the poll is expired, show the results.
-		if($poll['closed'] == "yes" || $thread['closed'] == "yes" || ($expiretime < $now && $poll['timeout'] > 0))
+		if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout'] > 0))
 		{
 			$showresults = 1;
 		}
@@ -353,7 +353,7 @@ if($mybb->input['action'] == "thread")
 			}
 			else
 			{
-				if($poll['multiple'] == "yes")
+				if($poll['multiple'] == 1)
 				{
 					eval("\$polloptions .= \"".$templates->get("showthread_poll_option_multiple")."\";");
 				}
@@ -402,7 +402,7 @@ if($mybb->input['action'] == "thread")
 		else
 		{
 			$publicnote = '&nbsp;';
-			if($poll['public'] == "yes")
+			if($poll['public'] == 1)
 			{
 				$publicnote = $lang->public_note;
 			}
@@ -417,7 +417,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Create the forum jump dropdown box.
-	if($mybb->settings['enableforumjump'] != "no")
+	if($mybb->settings['enableforumjump'] != 0)
 	{
 		$forumjump = build_forum_jump("", $fid, 1);
 	}
@@ -430,12 +430,12 @@ if($mybb->input['action'] == "thread")
 	mark_thread_read($tid, $fid);
 
 	// If the forum is not open, show closed newreply button unless the user is a moderator of this forum.
-	if($forum['open'] != "no")
+	if($forum['open'] != 0)
 	{
 		eval("\$newthread = \"".$templates->get("showthread_newthread")."\";");
 
 		// Show the appropriate reply button if this thread is open or closed
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			eval("\$newreply = \"".$templates->get("showthread_newreply_closed")."\";");
 		}
@@ -460,7 +460,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$approveunapprovethread = "<option value=\"unapprovethread\">".$lang->unapprove_thread."</option>";
 		}
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			$closelinkch = ' checked="checked"';
 		}
@@ -481,7 +481,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Increment the thread view.
-	if($mybb->settings['delayedthreadviews'] == "on")
+	if($mybb->settings['delayedthreadviews'] == 1)
 	{
 		$db->shutdown_query("INSERT INTO ".TABLE_PREFIX."threadviews (tid) VALUES('{$tid}')");
 	}
@@ -493,7 +493,7 @@ if($mybb->input['action'] == "thread")
 
 	// Work out the thread rating for this thread.
 	$rating = '';
-	if($forum['allowtratings'] != "no")
+	if($forum['allowtratings'] != 0)
 	{
 		$lang->load("ratethread");
 		if($thread['numratings'] <= 0)
@@ -533,7 +533,7 @@ if($mybb->input['action'] == "thread")
 	}
 	
 	// Can this user perform searches? If so, we can show them the "Search thread" form
-	if($forumpermissions['cansearch'] != "no")
+	if($forumpermissions['cansearch'] != 0)
 	{
 		eval("\$search_thread = \"".$templates->get("showthread_search")."\";");
 	}
@@ -737,7 +737,7 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Show the similar threads table if wanted.
-	if($mybb->settings['showsimilarthreads'] != "no")
+	if($mybb->settings['showsimilarthreads'] != 0)
 	{
 		switch($db->type)
 		{
@@ -818,13 +818,13 @@ if($mybb->input['action'] == "thread")
 	}
 
 	// Decide whether or not to show quick reply.
-	if($forumpermissions['canpostreplys'] != "no" && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != "yes" || is_moderator($fid)) && $mybb->settings['quickreply'] != "off" && $mybb->user['showquickreply'] != "no" && $forum['open'] != "no")
+	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $forum['open'] != 0)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc"));
 		$last_pid = $db->fetch_field($query, "pid");
 		
 		// Show captcha image for guests if enabled
-		if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
 		{
 			$randomstr = random_str(5);
 			$imagehash = md5($randomstr);
@@ -840,7 +840,7 @@ if($mybb->input['action'] == "thread")
 		{
 			$postoptionschecked['signature'] = 'checked="checked"';
 		}
-		if($mybb->user['emailnotify'] == "yes")
+		if($mybb->user['emailnotify'] == 1)
 		{
 			$postoptionschecked['emailnotify'] = 'checked="checked"';
 		}

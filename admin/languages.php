@@ -52,7 +52,7 @@ if($mybb->input['action'] == "do_editset")
 		$info = str_replace("\\", "\\\\", $info);
 		$newlanginfo[$key] = str_replace("\"", '\"', $info);
 	}
-	if($newlanginfo['admin'] == "yes")
+	if($newlanginfo['admin'] == 1)
 	{
 		$newlanginfo['admin'] = 1;
 	}
@@ -60,7 +60,7 @@ if($mybb->input['action'] == "do_editset")
 	{
 		$newlanginfo['admin'] = 0;
 	}
-	if($newlanginfo['rtl'] == "yes")
+	if($newlanginfo['rtl'] == 1)
 	{
 		$newlanginfo['rtl'] = 1;
 	}
@@ -140,20 +140,20 @@ if($mybb->input['action'] == "editset")
 	makelabelcode($lang->set_mybb_version, $langinfo['version']);
 	if($langinfo['admin'])
 	{
-		$langinfo['admin'] = "yes";
+		$langinfo['admin'] = 1;
 	}
 	else
 	{
-		$langinfo['admin'] = "no";
+		$langinfo['admin'] = 0;
 	}
 	makeyesnocode($lang->set_admin, "info[admin]", $langinfo['admin']);
 	if($langinfo['rtl'])
 	{
-		$langinfo['rtl'] = "yes";
+		$langinfo['rtl'] = 1;
 	}
 	else
 	{
-		$langinfo['rtl'] = "no";
+		$langinfo['rtl'] = 0;
 	}
 	makeyesnocode($lang->set_rtl, "info[rtl]", $langinfo['rtl']);
 	makeinputcode($lang->set_htmllang, "info[htmllang]", $langinfo['htmllang']);

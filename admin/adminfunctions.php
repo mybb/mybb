@@ -306,11 +306,11 @@ function makehiddencode($name, $value="", $nameid="name")
 	$value = htmlspecialchars_uni($value);
 	echo "<input type=\"hidden\" $nameid=\"$name\" value=\"$value\" />\n";
 }
-function makeyesnocode($title, $name, $value="yes")
+function makeyesnocode($title, $name, $value=1)
 {
 	global $lang;
 	$bgcolor = getaltbg();
-	if($value == "no")
+	if($value == 0)
 	{
 		$nocheck = " checked=\"checked\"";
 	}
@@ -1334,9 +1334,9 @@ function getadminpermissions($get_uid="", $get_gid="")
 			// Loop through each specific permission to find the highest permission
 			foreach($gperms as $perm_name => $perm_value)
 			{
-				if($final_group_perms[$perm_name] != 'yes' && $perm_value == 'yes')
+				if($final_group_perms[$perm_name] != 1 && $perm_value == 1)
 				{
-					$final_group_perms[$perm_name] = 'yes';
+					$final_group_perms[$perm_name] = 1;
 				}
 			}
 		}
@@ -1578,7 +1578,7 @@ function getElemRefs(id) {
 			$inheritcheck = " checked=\"checked\"";
 			$inheritclass = "highlight1";
 		}
-		if($perms['canview'] == "yes")
+		if($perms['canview'] == 1)
 		{
 			$canview = " checked=\"checked\"";
 		}
@@ -1586,7 +1586,7 @@ function getElemRefs(id) {
 		{
 			$canview = "";
 		}
-		if($perms['canpostthreads'] == "yes")
+		if($perms['canpostthreads'] == 1)
 		{
 			$canpostthreads = " checked=\"checked\"";
 		}
@@ -1594,7 +1594,7 @@ function getElemRefs(id) {
 		{
 			$canpostthreads = "";
 		}
-		if($perms['canpostreplys'] == "yes")
+		if($perms['canpostreplys'] == 1)
 		{
 			$canpostreplies = " checked=\"checked\"";
 		}
@@ -1602,7 +1602,7 @@ function getElemRefs(id) {
 		{
 			$canpostreplies = "";
 		}
-		if($perms['canpostpolls'] == "yes")
+		if($perms['canpostpolls'] == 1)
 		{
 			$canpostpolls = " checked=\"checked\"";
 		}
@@ -1610,7 +1610,7 @@ function getElemRefs(id) {
 		{
 			$canpostpolls = "";
 		}
-		if($perms['canpostattachments'] == "yes")
+		if($perms['canpostattachments'] == 1)
 		{
 			$canpostattachments = " checked=\"checked\"";
 		}
@@ -1652,55 +1652,55 @@ function savequickperms($fid)
 		$db->delete_query("forumpermissions", "fid='$fid' AND gid='$usergroup[gid]'");
 
 		// Only insert the new ones if we're using custom permissions
-		if($inherit[$usergroup['gid']] != "yes")
+		if($inherit[$usergroup['gid']] != 1)
 		{
-			if($canview[$usergroup['gid']] == "yes")
+			if($canview[$usergroup['gid']] == 1)
 			{
-				$pview = "yes";
+				$pview = 1;
 			}
 			else
 			{
-				$pview = "no";
+				$pview = 0;
 			}
-			if($canpostthreads[$usergroup['gid']] == "yes")
+			if($canpostthreads[$usergroup['gid']] == 1)
 			{
-				$pthreads = "yes";
-			}
-			else
-			{
-				$pthreads = "no";
-			}
-			if($canpostreplies[$usergroup['gid']] == "yes")
-			{
-				$preplies = "yes";
+				$pthreads = 1;
 			}
 			else
 			{
-				$preplies = "no";
+				$pthreads = 0;
 			}
-			if($canpostpolls[$usergroup['gid']] == "yes")
+			if($canpostreplies[$usergroup['gid']] == 1)
 			{
-				$ppolls = "yes";
-			}
-			else
-			{
-				$ppolls = "no";
-			}
-			if($canpostattachments[$usergroup['gid']] == "yes")
-			{
-				$pattachments = "yes";
+				$preplies = 1;
 			}
 			else
 			{
-				$pattachments = "no";
+				$preplies = 0;
+			}
+			if($canpostpolls[$usergroup['gid']] == 1)
+			{
+				$ppolls = 1;
+			}
+			else
+			{
+				$ppolls = 0;
+			}
+			if($canpostattachments[$usergroup['gid']] == 1)
+			{
+				$pattachments = 1;
+			}
+			else
+			{
+				$pattachments = 0;
 			}
 			if(!$preplies && !$pthreads)
 			{
-				$ppost = "no";
+				$ppost = 0;
 			}
 			else
 			{
-				$ppost = "yes";
+				$ppost = 1;
 			}
 
 			$insertquery = array(

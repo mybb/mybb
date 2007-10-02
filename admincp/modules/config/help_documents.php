@@ -46,14 +46,14 @@ if($mybb->input['action'] == "add")
 				$errors[] = $lang->error_section_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] != 'yes')
+			if($mybb->input['enabled'] != 1)
 			{
-				$mybb->input['enabled'] = "no";
+				$mybb->input['enabled'] = 0;
 			}
 			
-			if($mybb->input['translation'] != 'yes')
+			if($mybb->input['translation'] != 1)
 			{
-				$mybb->input['translation'] = "no";
+				$mybb->input['translation'] = 0;
 			}
 			
 			if(!is_array($errors))
@@ -151,14 +151,14 @@ if($mybb->input['action'] == "add")
 				$errors[] = $lang->error_document_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] != 'yes')
+			if($mybb->input['enabled'] != 1)
 			{
-				$mybb->input['enabled'] = "no";
+				$mybb->input['enabled'] = 0;
 			}
 			
-			if($mybb->input['translation'] != 'yes')
+			if($mybb->input['translation'] != 1)
 			{
-				$mybb->input['translation'] = "no";
+				$mybb->input['translation'] = 0;
 			}
 			
 			if(!is_array($errors))
@@ -268,14 +268,14 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_section_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] != 'yes')
+			if($mybb->input['enabled'] != 1)
 			{
-				$mybb->input['enabled'] = "no";
+				$mybb->input['enabled'] = 0;
 			}
 			
-			if($mybb->input['translation'] != 'yes')
+			if($mybb->input['translation'] != 1)
 			{
-				$mybb->input['translation'] = "no";
+				$mybb->input['translation'] = 0;
 			}
 			
 			if(!is_array($errors))
@@ -381,14 +381,14 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_document_missing_translation;
 			}
 			
-			if($mybb->input['enabled'] != 'yes')
+			if($mybb->input['enabled'] != 1)
 			{
-				$mybb->input['enabled'] = "no";
+				$mybb->input['enabled'] = 0;
 			}
 			
-			if($mybb->input['translation'] != 'yes')
+			if($mybb->input['translation'] != 1)
 			{
-				$mybb->input['translation'] = "no";
+				$mybb->input['translation'] = 0;
 			}
 			
 			if(!is_array($errors))

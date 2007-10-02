@@ -50,6 +50,17 @@ else
 	require_once MYBB_ROOT."admin/adminfunctions.php";
 }
 
+if(!is_array($config['database']))
+{
+	$config['database'] = array(
+		"type" => $config['dbtype'],
+		"database" => $config['database'],
+		"table_prefix" => $config['table_prefix'],
+		"hostname" => $config['hostname'],
+		"username" => $config['username'],
+		"password" => $config['password']
+	);
+}
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
@@ -82,8 +93,11 @@ else
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
 		$output->print_header();
-
-		$db->drop_table("upgrade_data");
+		
+		if($db->table_exists("upgrade_data"))
+		{
+			$db->drop_table("upgrade_data");
+		}
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
@@ -96,17 +110,22 @@ else
 			if(preg_match("#upgrade([0-9]+).php$#i", $file, $match))
 			{
 				$upgradescripts[$match[1]] = $file;
+				$key_order[] = $match[1];
 			}
 		}
 		closedir($dh);
-		foreach($upgradescripts as $key => $file)
+		natsort($key_order);
+		$key_order = array_reverse($key_order);
+
+		foreach($key_order as $k => $key)
 		{
+			$file = $upgradescripts[$key];
 			$upgradescript = file_get_contents(INSTALL_ROOT."resources/$file");
 			preg_match("#Upgrade Script:(.*)#i", $upgradescript, $verinfo);
 			preg_match("#upgrade([0-9]+).php$#i", $file, $keynum);
 			if(trim($verinfo[1]))
 			{
-				if(!$upgradescripts[$key+1])
+				if($k == 0)
 				{
 					$vers .= "<option value=\"$keynum[1]\" selected=\"selected\">$verinfo[1]</option>\n";
 				}

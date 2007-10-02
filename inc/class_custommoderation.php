@@ -84,7 +84,7 @@ class CustomModeration extends Moderation
 		$this->execute_thread_moderation($thread_options, $tids);
 
 		// If the thread is deleted, indicate to the calling script to redirect to the forum, and not the nonexistant thread
-		if($thread_options['deletethread'] == 'yes')
+		if($thread_options['deletethread'] == 1)
 		{
 			return 'forum';
 		}
@@ -112,7 +112,7 @@ class CustomModeration extends Moderation
 		$thread = get_thread($tid);
 
 		// If deleting posts, only do that
-		if($post_options['deleteposts'] == 'yes')
+		if($post_options['deleteposts'] == 1)
 		{
 			foreach($pids as $pid)
 			{
@@ -121,7 +121,7 @@ class CustomModeration extends Moderation
 		}
 		else
 		{
-			if($post_options['mergeposts'] == 'yes') // Merge posts
+			if($post_options['mergeposts'] == 1) // Merge posts
 			{
 				$this->merge_posts($pids, $tid);
 			}
@@ -186,9 +186,9 @@ class CustomModeration extends Moderation
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(
-						"signature" => 'yes',
-						"emailnotify" => 'no',
-						"disablesmilies" => 'no'
+						"signature" => 1,
+						"emailnotify" => 0,
+						"disablesmilies" => 0
 					);
 
 					$posthandler->set_data($post);
@@ -219,7 +219,7 @@ class CustomModeration extends Moderation
 		$thread = $db->fetch_array($query);
 
 		// If deleting threads, only do that
-		if($thread_options['deletethread'] == 'yes')
+		if($thread_options['deletethread'] == 1)
 		{
 			foreach($tids as $tid)
 			{
@@ -228,7 +228,7 @@ class CustomModeration extends Moderation
 		}
 		else
 		{
-			if($thread_options['mergethreads'] == 'yes' && count($tids) > 1) // Merge Threads (ugly temp code until find better fix)
+			if($thread_options['mergethreads'] == 1 && count($tids) > 1) // Merge Threads (ugly temp code until find better fix)
 			{
 				$tid_list = implode(',', $tids);
 				$options = array('order_by' => 'dateline', 'order_dir' => 'DESC');
@@ -243,14 +243,14 @@ class CustomModeration extends Moderation
 					$last_tid = $tid['tid'];
 				}
 			}
-			if($thread_options['deletepoll'] == 'yes') // Delete poll
+			if($thread_options['deletepoll'] == 1) // Delete poll
 			{
 				foreach($tids as $tid)
 				{
 					$this->delete_poll($tid);
 				}
 			}
-			if($thread_options['removeredirects'] == 'yes') // Remove redirects
+			if($thread_options['removeredirects'] == 1) // Remove redirects
 			{
 				foreach($tids as $tid)
 				{
@@ -286,7 +286,7 @@ class CustomModeration extends Moderation
 
 			if($thread_options['movethread'] > 0 && $thread_options['movethread'] != $thread['fid']) // Move thread
 			{
-				if($thread_options['movethreadredirect'] == 'yes') // Move Thread with redirect
+				if($thread_options['movethreadredirect'] == 1) // Move Thread with redirect
 				{
 					$time = TIME_NOW + ($thread_options['movethreadredirectexpire'] * 86400);
 					foreach($tids as $tid)
@@ -342,9 +342,9 @@ class CustomModeration extends Moderation
 					);
 					// Set up the post options from the input.
 					$post['options'] = array(
-						"signature" => 'yes',
-						"emailnotify" => 'no',
-						"disablesmilies" => 'no'
+						"signature" => 1,
+						"emailnotify" => 0,
+						"disablesmilies" => 1
 					);
 	
 					$posthandler->set_data($post);

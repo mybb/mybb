@@ -140,11 +140,11 @@ function make_profile_field_input($required=0, $uid=0)
 
 	if($required == 1)
 	{
-		$required = 'yes';
+		$required = 1;
 	}
 	else
 	{
-		$required= 'no';
+		$required= 0;
 	}
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE required='{$required}' ORDER BY disporder");
 	while($profilefield = $db->fetch_array($query))
@@ -612,9 +612,9 @@ if($mybb->input['action'] == "do_email")
 	{
 		$conditions .= " AND postnum<".intval($search['postsless']);
 	}
-	if($search['overridenotice'] != 'yes')
+	if($search['overridenotice'] != 1)
 	{
-		$conditions .= " AND allownotices!='no'";
+		$conditions .= " AND allownotices!=0";
 	}
 
 	$searchop = $mybb->input['searchop'];
@@ -677,14 +677,14 @@ if($mybb->input['action'] == "do_email")
 					'message' => $db->escape_string($sendmessage),
 					'dateline' => time(),
 					'status' => 0,
-					'receipt' => 'no'
+					'receipt' => 0
 				);
 				$db->insert_query("privatemessages", $insert_pm);
 
 				// Update private message count (total, new and unread) for recipient
 				update_pm_count($user['uid'], 7, $user['lastactive']);
 
-				if($user['pmnotify'] == "yes")
+				if($user['pmnotify'] == 1)
 				{
 					$updated_user = array(
 						"pmnotice" => "new"
@@ -845,7 +845,7 @@ if($mybb->input['action'] == "do_merge")
 	starttable();
 	tableheader($lang->merge_accounts, '', 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode('no', $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->confirm_merge<br /><br />$yes$no</div>", '');
 	endtable();
 	endform();
@@ -890,18 +890,18 @@ if($mybb->input['action'] == "add")
 	makelabelcode($lang->birthday, $birthday_dropdown);
 	make_profile_field_input();
 	tablesubheader($lang->account_prefs);
-	makeyesnocode($lang->invisible_mode, "invisible", 'no');
-	makeyesnocode($lang->admin_emails, "allownotices", 'yes');
-	makeyesnocode($lang->hide_email, "hideemail", 'no');
+	makeyesnocode($lang->invisible_mode, "invisible", 0);
+	makeyesnocode($lang->admin_emails, "allownotices", 1);
+	makeyesnocode($lang->hide_email, "hideemail", 0);
 	$select = "<select name=\"subscriptionmethod\">\n";
 	$select .= "<option value=\"2\">Instant Email Notification</option>\n";
 	$select .= "<option value=\"1\">Subscribe with no notification</option>\n";
 	$select .= "<option value=\"0\">Do not subscribe at all</option>\n";
 	$select .= "</select>";
 	makelabelcode($lang->email_notify, $select);
-	makeyesnocode($lang->enable_pms, "receivepms", 'yes');
-	makeyesnocode($lang->pm_notice, "pmnotice", 'yes');
-	makeyesnocode($lang->pm_notify, "emailpmnotify", 'yes');
+	makeyesnocode($lang->enable_pms, "receivepms", 1);
+	makeyesnocode($lang->pm_notice, "pmnotice", 1);
+	makeyesnocode($lang->pm_notify, "emailpmnotify", 1);
 	makeinputcode($lang->time_offset, "timezoneoffset");
 	$select = "<select name=\"dstcorrection\">\n";
 	$select .= "<option value=\"2\">Automatic</option>\n";
@@ -1031,7 +1031,7 @@ if($mybb->input['action'] == "delete")
 	starttable();
 	tableheader($lang->delete_user, '', 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode('no', $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->confirm_delete_user<br /><br />$yes$no</div>", '');
 	endtable();
 	endform();
@@ -1310,7 +1310,7 @@ if($mybb->input['action'] == "email")
 	makeinputcode($lang->and_title, "search[usertitle]");
 	makeinputcode($lang->posts_more, "search[postsgreater]");
 	makeinputcode($lang->posts_less, "search[postsless]");
-	makeyesnocode($lang->override_notice, "search[overridenotice]", 'no');
+	makeyesnocode($lang->override_notice, "search[overridenotice]", 0);
 	endtable();
 	endform($lang->send_mail, $lang->reset_button);
 	cpfooter();
@@ -1328,7 +1328,7 @@ if($mybb->input['action'] == "find")
 	{
 		foreach($mybb->input['searchdisp'] as $disp)
 		{
-			if($disp == 'yes')
+			if($disp == 1)
 			{
 				++$yescount;
 			}
@@ -1336,12 +1336,12 @@ if($mybb->input['action'] == "find")
 	}
 	if($yescount == 0)
 	{
-		$searchdisp['username'] = 'yes';
-		$searchdisp['ops'] = 'yes';
-		$searchdisp['email'] = 'yes';
-		$searchdisp['regdate'] = 'yes';
-		$searchdisp['lastvisit'] = 'yes';
-		$searchdisp['postnum'] = 'yes';
+		$searchdisp['username'] = 1;
+		$searchdisp['ops'] = 1;
+		$searchdisp['email'] = 1;
+		$searchdisp['regdate'] = 1;
+		$searchdisp['lastvisit'] = 1;
+		$searchdisp['postnum'] = 1;
 		$dispcount = count($searchdisp);
 	}
 	$conditions = '1=1';
@@ -1581,71 +1581,71 @@ if($mybb->input['action'] == "find")
 		starttable();
 		echo "<tr>\n";
 
-		if($searchdisp['uid'] == 'yes')
+		if($searchdisp['uid'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->uid_header</td>\n";
 		}
-		if($searchdisp['username'] == 'yes')
+		if($searchdisp['username'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->name_header</td>\n";
 		}
-		if($searchdisp['usergroup'] == 'yes')
+		if($searchdisp['usergroup'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->usergroup</td>\n";
 		}
-		if($searchdisp['email'] == 'yes')
+		if($searchdisp['email'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->email</td>\n";
 		}
-		if($searchdisp['website'] == 'yes')
+		if($searchdisp['website'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->website</td>\n";
 		}
-		if($searchdisp['icq'] == 'yes')
+		if($searchdisp['icq'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->icq_number</td>\n";
 		}
-		if($searchdisp['aim'] == 'yes')
+		if($searchdisp['aim'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->aim_handle</td>\n";
 		}
-		if($searchdisp['yahoo'] == 'yes')
+		if($searchdisp['yahoo'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->yahoo_handle</td>\n";
 		}
-		if($searchdisp['msn'] == 'yes')
+		if($searchdisp['msn'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->msn_address</td>\n";
 		}
-		if($searchdisp['signature'] == 'yes')
+		if($searchdisp['signature'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->signature</td>\n";
 		}
-		if($searchdisp['usertitle'] == 'yes')
+		if($searchdisp['usertitle'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->usertitle</td>\n";
 		}
-		if($searchdisp['regdate'] == 'yes')
+		if($searchdisp['regdate'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->reg_date</td>\n";
 		}
-		if($searchdisp['lastvisit'] == 'yes')
+		if($searchdisp['lastvisit'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->last_visit</td>\n";
 		}
-		if($searchdisp['postnum'] == 'yes')
+		if($searchdisp['postnum'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->posts</td>\n";
 		}
-		if($searchdisp['birthday'] == 'yes')
+		if($searchdisp['birthday'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->birthday</td>\n";
 		}
-		if($searchdisp['regip'] == 'yes')
+		if($searchdisp['regip'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->reg_ip</td>\n";
 		}
-		if($searchdisp['ops'] == 'yes')
+		if($searchdisp['ops'] == 1)
 		{
 			echo "<td class=\"subheader\" align=\"center\">$lang->options</td>\n";
 		}
@@ -1669,15 +1669,15 @@ if($mybb->input['action'] == "find")
 			}
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
-			if($searchdisp['uid'] == 'yes')
+			if($searchdisp['uid'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[uid]</td>\n";
 			}
-			if($searchdisp['username'] == 'yes')
+			if($searchdisp['username'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[username]</td>\n";
 			}
-			if($searchdisp['usergroup'] == 'yes')
+			if($searchdisp['usergroup'] == 1)
 			{
 				echo "<td class=\"$bgcolor\" align=\"center\">";
 				if(isset($usergroups[$user['usergroup']]))
@@ -1699,45 +1699,45 @@ if($mybb->input['action'] == "find")
 				}
 				echo "</td>\n";
 			}
-			if($searchdisp['email'] == 'yes')
+			if($searchdisp['email'] == 1)
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"mailto:$user[email]\">$user[email]</a></td>\n";
 			}
-			if($searchdisp['website'] == 'yes')
+			if($searchdisp['website'] == 1)
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"$user[website]\" target=\"_blank\">$user[website]</a></td>\n";
 			}
-			if($searchdisp['icq'] == 'yes')
+			if($searchdisp['icq'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[icq]</td>\n";
 			}
-			if($searchdisp['aim'] == 'yes')
+			if($searchdisp['aim'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[aim]</td>\n";
 			}
-			if($searchdisp['yahoo'] == 'yes')
+			if($searchdisp['yahoo'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[yahoo]</td>\n";
 			}
-			if($searchdisp['msn'] == 'yes') 
+			if($searchdisp['msn'] == 1) 
 			{
 				echo "<td class=\"$bgcolor\">$user[msn]</td>\n";
 			}
-			if($searchdisp['signature'] == 'yes')
+			if($searchdisp['signature'] == 1)
 			{
 				$user['signature'] = nl2br($user['signature']);
 				echo "<td class=\"$bgcolor\">$user[signature]</td>\n";
 			}
-			if($searchdisp['usertitle'] == 'yes')
+			if($searchdisp['usertitle'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[usertitle]</td>\n";
 			}
-			if($searchdisp['regdate'] == 'yes')
+			if($searchdisp['regdate'] == 1)
 			{
 				$date = gmdate("d-m-Y", $user['regdate']);
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
-			if($searchdisp['lastvisit'] == 'yes')
+			if($searchdisp['lastvisit'] == 1)
 			{
 				if(!$user['lastvisit'])
 				{
@@ -1749,19 +1749,19 @@ if($mybb->input['action'] == "find")
 				}
 				echo "<td class=\"$bgcolor\">$date</td>\n";
 			}
-			if($searchdisp['postnum'] == 'yes')
+			if($searchdisp['postnum'] == 1)
 			{
 				echo "<td class=\"$bgcolor\"><a href=\"../search.php?action=finduser&amp;uid=$user[uid]\">$user[postnum]</a></td>\n";
 			}
-			if($searchdisp['birthday'] == 'yes')
+			if($searchdisp['birthday'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[birthday]</td>\n";
 			}
-			if($searchdisp['regip'] == 'yes')
+			if($searchdisp['regip'] == 1)
 			{
 				echo "<td class=\"$bgcolor\">$user[regip]</td>\n";
 			}
-			if($searchdisp['ops'] == 'yes')
+			if($searchdisp['ops'] == 1)
 			{
 				echo "<td class=\"$bgcolor\" align=\"right\">";
 				startform("users.php");
@@ -2026,7 +2026,7 @@ if($mybb->input['action'] == "manageban")
 		makeinputcode($lang->username, "username", $user['username']);
 	}
 	makeinputcode($lang->ban_reason, "banreason", $ban['reason']);
-	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], '', '', "isbannedgroup='yes'");
+	makeselectcode($lang->move_banned_group, "usergroup", "usergroups", "gid", "title", $user['usergroup'], '', '', "isbannedgroup=1");
 	reset($bantimes);
 	foreach($bantimes as $time => $title)
 	{
@@ -2162,7 +2162,7 @@ if($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->and_reg_ip, "search[regip]");
 	makeinputcode($lang->and_post_ip, "search[postip]");
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable='yes' ORDER BY disporder");
+	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."profilefields WHERE editable=1 ORDER BY disporder");
 	$profilefields = $db->num_rows($query);
 
 	if($profilefields > 0)
@@ -2266,23 +2266,23 @@ if($mybb->input['action'] == "search" || !$mybb->input['action'])
 	makeinputcode($lang->results_per_page, "searchop[perpage]", "30");
 
 	tablesubheader($lang->display_options);
-	makeyesnocode($lang->display_uid, "searchdisp[uid]", 'no');
-	makeyesnocode($lang->display_username, "searchdisp[username]", 'yes');
-	makeyesnocode($lang->display_options_2, "searchdisp[ops]", 'yes');
-	makeyesnocode($lang->display_group, "searchdisp[usergroup]", 'no');
-	makeyesnocode($lang->display_email, "searchdisp[email]", 'yes');
-	makeyesnocode($lang->display_website, "searchdisp[website]", 'no');
-	makeyesnocode($lang->display_icq, "searchdisp[icq]", 'no');
-	makeyesnocode($lang->display_aim, "searchdisp[aim]", 'no');
-	makeyesnocode($lang->display_yahoo, "searchdisp[yahoo]", 'no');
-	makeyesnocode($lang->display_msn, "searchdisp[msn]", 'no');
-	makeyesnocode($lang->display_sig, "searchdisp[signature]", 'no');
-	makeyesnocode($lang->display_title, "searchdisp[usertitle]", 'no');
-	makeyesnocode($lang->display_reg_date, "searchdisp[regdate]", 'yes');
-	makeyesnocode($lang->display_last_visit, "searchdisp[lastvisit]", 'yes');
-	makeyesnocode($lang->display_num_posts, "searchdisp[postnum]", 'yes');
-	makeyesnocode($lang->display_birthday, "searchdisp[birthday]", 'no');
-	makeyesnocode($lang->display_regip, "searchdisp[regip]", 'no');
+	makeyesnocode($lang->display_uid, "searchdisp[uid]", 0);
+	makeyesnocode($lang->display_username, "searchdisp[username]", 1);
+	makeyesnocode($lang->display_options_2, "searchdisp[ops]", 1);
+	makeyesnocode($lang->display_group, "searchdisp[usergroup]", 0);
+	makeyesnocode($lang->display_email, "searchdisp[email]", 1);
+	makeyesnocode($lang->display_website, "searchdisp[website]", 0);
+	makeyesnocode($lang->display_icq, "searchdisp[icq]", 0);
+	makeyesnocode($lang->display_aim, "searchdisp[aim]", 0);
+	makeyesnocode($lang->display_yahoo, "searchdisp[yahoo]", 0);
+	makeyesnocode($lang->display_msn, "searchdisp[msn]", 0);
+	makeyesnocode($lang->display_sig, "searchdisp[signature]", 0);
+	makeyesnocode($lang->display_title, "searchdisp[usertitle]", 0);
+	makeyesnocode($lang->display_reg_date, "searchdisp[regdate]", 1);
+	makeyesnocode($lang->display_last_visit, "searchdisp[lastvisit]", 1);
+	makeyesnocode($lang->display_num_posts, "searchdisp[postnum]", 1);
+	makeyesnocode($lang->display_birthday, "searchdisp[birthday]", 0);
+	makeyesnocode($lang->display_regip, "searchdisp[regip]", 0);
 
 	endtable();
 	endform($lang->search, $lang->reset_button);

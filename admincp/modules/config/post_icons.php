@@ -174,7 +174,7 @@ if($mybb->input['action'] == "add_multiple")
 
 					$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
 					$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
-					$form_container->output_cell($form->generate_check_box("include[{$file}]", "yes", "", array('checked' => 1)), array("class" => "align_center"));
+					$form_container->output_cell($form->generate_check_box("include[{$file}]", 1, "", array('checked' => 1)), array("class" => "align_center"));
 					$form_container->construct_row();
 				}
 

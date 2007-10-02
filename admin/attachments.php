@@ -499,7 +499,7 @@ if($mybb->input['action'] == "delete")
 	$lang->delete_attach_type = sprintf($lang->delete_attach_type, $name);
 	tableheader($lang->delete_attach_type);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	$lang->delete_confirm = sprintf($lang->delete_confirm, $name);
 	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();

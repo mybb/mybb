@@ -55,7 +55,7 @@ if(!$forum || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forum['open'] == "no" || $mybb->user['suspendposting'] == 1)
+if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
 }
@@ -68,11 +68,11 @@ add_breadcrumb($lang->nav_editpost);
 $forumpermissions = forum_permissions($fid);
 
 
-if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
+if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 {
 	$codebuttons = build_mycode_inserter();
 }
-if($mybb->settings['smilieinserter'] != "off")
+if($mybb->settings['smilieinserter'] != 0)
 {
 	$smilieinserter = build_clickable_smilies();
 }
@@ -86,11 +86,11 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 {
 	if(!is_moderator($fid, "candeleteposts"))
 	{
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			error($lang->redirect_threadclosed);
 		}
-		if($forumpermissions['candeleteposts'] == "no")
+		if($forumpermissions['candeleteposts'] == 0)
 		{
 			error_no_permission();
 		}
@@ -104,11 +104,11 @@ else
 {
 	if(!is_moderator($fid, "caneditposts"))
 	{
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			error($lang->redirect_threadclosed);
 		}
-		if($forumpermissions['caneditposts'] == "no")
+		if($forumpermissions['caneditposts'] == 0)
 		{
 			error_no_permission();
 		}
@@ -137,7 +137,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->input['proccessed'] == '1')
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_editpost" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
 	{
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}
@@ -182,7 +182,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("editpost_deletepost");
 
-	if($mybb->input['delete'] == "yes")
+	if($mybb->input['delete'] == 1)
 	{
 		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 		$firstcheck = $db->fetch_array($query);
@@ -198,7 +198,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		$modlogdata['tid'] = $tid;
 		if($firstpost)
 		{
-			if($forumpermissions['candeletethreads'] == "yes")
+			if($forumpermissions['candeletethreads'] == 1)
 			{
 				delete_thread($tid);
 				mark_reports($tid, "thread");
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($forumpermissions['candeleteposts'] == "yes")
+			if($forumpermissions['candeleteposts'] == 1)
 			{
 				// Select the first post before this
 				delete_post($pid, $tid);
@@ -329,7 +329,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$icon = $post['icon'];
 	}
 
-	if($forum['allowpicons'] != "no")
+	if($forum['allowpicons'] != 0)
 	{
 		$posticons = get_post_icons();
 	}
@@ -348,7 +348,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$posthash = $db->fetch_field($query, "posthash");
 
 	$bgcolor = "trow1";
-	if($forumpermissions['canpostattachments'] != "no")
+	if($forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
 		$attachcount = 0;
 		if($posthash)
@@ -365,7 +365,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$attachment['size'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
-			if($forum['allowmycode'] != "no")
+			if($forum['allowmycode'] != 0)
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
@@ -427,7 +427,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
 	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != "no" && $thread['poll'] < 1)
+	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1)
 	{
 		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";
@@ -482,7 +482,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 			$postoptions = $mybb->input['postoptions'];
 
-			if($postoptions['signature'] == "yes")
+			if($postoptions['signature'] == 1)
 			{
 				$postoptionschecked['signature'] = " checked=\"checked\"";
 			}
@@ -496,7 +496,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 				$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 			}
 
-			if($postoptions['disablesmilies'] == "yes")
+			if($postoptions['disablesmilies'] == 1)
 			{
 				$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 			}
@@ -537,12 +537,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$message = htmlspecialchars_uni($message);
 		$subject = htmlspecialchars_uni($subject);
 
-		if($post['includesig'] != "no")
+		if($post['includesig'] != 0)
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
 
-		if($post['smilieoff'] == "yes")
+		if($post['smilieoff'] == 1)
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
@@ -567,7 +567,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
 	// Can we disable smilies or are they disabled already?
-	if($forum['allowsmilies'] != "no")
+	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("editpost_disablesmilies")."\";");
 	}

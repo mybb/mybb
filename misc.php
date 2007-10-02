@@ -118,7 +118,7 @@ elseif($mybb->input['action'] == "rules")
 	{
 		$plugins->run_hooks("misc_rules_start");
 
-		$query = $db->simple_select("forums", "*", "fid='".intval($mybb->input['fid'])."' AND active!='no'");
+		$query = $db->simple_select("forums", "*", "fid='".intval($mybb->input['fid'])."' AND active!=0");
 		$forum = $db->fetch_array($query);
 
 		$forumpermissions = forum_permissions($forum['fid']);
@@ -127,7 +127,7 @@ elseif($mybb->input['action'] == "rules")
 		{
 			error($lang->error_invalidforum);
 		}
-		if($forumpermissions['canview'] != "yes")
+		if($forumpermissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
@@ -139,10 +139,10 @@ elseif($mybb->input['action'] == "rules")
 		require_once MYBB_ROOT."inc/class_parser.php";
 		$parser = new postParser();
 		$parser_options = array(
-			"allow_html" => 'yes',
-			"allow_mycode" => 'yes',
-			"allow_smilies" => 'yes',
-			"allow_imgcode" => 'yes'
+			"allow_html" => 1,
+			"allow_mycode" => 1,
+			"allow_smilies" => 1,
+			"allow_imgcode" => 1
 		);
 
 		$forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);
@@ -176,11 +176,11 @@ elseif($mybb->input['action'] == "help")
 	$helpdoc = $db->fetch_array($query);
 	if($helpdoc['hid'])
 	{
-		if($helpdoc['section'] != "no" && $helpdoc['enabled'] != "no")
+		if($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0)
 		{
 			$plugins->run_hooks("misc_help_helpdoc_start");
 
-			if($helpdoc['usetranslation'] == "yes" || $helpdoc['hid'] <= 7)
+			if($helpdoc['usetranslation'] == 1 || $helpdoc['hid'] <= 7)
 			{
 				$langnamevar = "d".$helpdoc['hid']."_name";
 				$langdescvar = "d".$helpdoc['hid']."_desc";
@@ -212,10 +212,10 @@ elseif($mybb->input['action'] == "help")
 		}
 		unset($helpdoc);
 		$sections = '';
-		$query = $db->simple_select("helpsections", "*", "enabled != 'no'", array('order_by' => 'disporder'));
+		$query = $db->simple_select("helpsections", "*", "enabled != 0", array('order_by' => 'disporder'));
 		while($section = $db->fetch_array($query))
 		{
-			if($section['usetranslation'] == "yes" || $section['sid'] <= 2)
+			if($section['usetranslation'] == 1 || $section['sid'] <= 2)
 			{
 				$langnamevar = "s".$section['sid']."_name";
 				$langdescvar = "s".$section['sid']."_desc";
@@ -240,9 +240,9 @@ elseif($mybb->input['action'] == "help")
 				{
 					foreach($bit as $key => $helpdoc)
 					{
-						if($helpdoc['enabled'] != "no")
+						if($helpdoc['enabled'] != 0)
 						{
-							if($helpdoc['usetranslation'] == "yes" || $helpdoc['hid'] <= 7)
+							if($helpdoc['usetranslation'] == 1 || $helpdoc['hid'] <= 7)
 							{
 								$langnamevar = "d".$helpdoc['hid'].'_name';
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
@@ -316,7 +316,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
-			if($mybb->user['receivepms'] != "no" && $buddy['receivepms'] != "no" && $buddy['canusepms'] != "no")
+			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $buddy['canusepms'] != 0)
 			{
 				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
 			}
@@ -358,7 +358,7 @@ elseif($mybb->input['action'] == "buddypopup")
 				);
 			}
 			$margin_top = ceil((50-$scaled_dimensions['height'])/2);
-			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
+			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				eval("\$buddys['online'] .= \"".$templates->get("misc_buddypopup_user_online")."\";");
 			}
@@ -652,7 +652,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 	if(!is_array($forumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select("forums", "*", "linkto = '' AND active!='no'", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select("forums", "*", "linkto = '' AND active!=0", array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -669,7 +669,7 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 			foreach($main as $key => $forum)
 			{
 				$perms = $permissioncache[$forum['fid']];
-				if($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no")
+				if($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0)
 				{
 					if($flist[$forum['fid']])
 					{

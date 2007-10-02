@@ -22,12 +22,12 @@ function modcp_can_manage_user($uid)
 	$user_permissions = user_permissions($uid);
 
 	// Current user is only a local moderator or use with ModCP permissions, cannot manage super mods or admins
-	if($mybb->usergroup['issupermod'] == "no" && ($user_permissions['issupermod'] == "yes" || $user_permissions['canadmincp'] == "yes"))
+	if($mybb->usergroup['issupermod'] == 0 && ($user_permissions['issupermod'] == 1 || $user_permissions['canadmincp'] == 1))
 	{
 		return false;
 	}
 	// Current user is a super mod or is an administrator
-	else if($mybb->usergroup['issupermod'] == "yes" && $user_permissions['canadmincp'] == "yes" || (is_super_admin($uid) && !is_super_admin($uid)))
+	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($uid) && !is_super_admin($uid)))
 	{
 		return false;
 	}

@@ -61,7 +61,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{
 		my_setcookie('loginattempts', $logins + 1);
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
-		if($mybb->settings['failedlogintext'] == "yes")
+		if($mybb->settings['failedlogintext'] == 1)
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
@@ -72,7 +72,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{
 		my_setcookie('loginattempts', $logins + 1);
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
-		if($mybb->settings['failedlogintext'] == "yes")
+		if($mybb->settings['failedlogintext'] == 1)
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
@@ -113,11 +113,11 @@ if($unviewable)
 	$unviewwhere = " AND fid NOT IN ($unviewable)";
 }
 // If user is known, welcome them
-if($mybb->settings['portal_showwelcome'] != "no")
+if($mybb->settings['portal_showwelcome'] != 0)
 {
 	if($mybb->user['uid'] != 0)
 	{
-		if($mybb->user['receivepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->settings['portal_showpms'] != "no" && $mybb->settings['enablepms'] != "no")
+		if($mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['portal_showpms'] != 0 && $mybb->settings['enablepms'] != 0)
 		{
 			$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
 			$messages = $db->fetch_array($query);
@@ -201,7 +201,7 @@ if($mybb->settings['portal_showwelcome'] != "no")
 	}
 }
 // Get Forum Statistics
-if($mybb->settings['portal_showstats'] != "no")
+if($mybb->settings['portal_showstats'] != 0)
 {
 	$stats = $cache->read("stats");
 	$stats['numthreads'] = my_number_format($stats['numthreads']);
@@ -219,13 +219,13 @@ if($mybb->settings['portal_showstats'] != "no")
 }
 
 // Search box
-if($mybb->settings['portal_showsearch'] != "no")
+if($mybb->settings['portal_showsearch'] != 0)
 {
 	eval("\$search = \"".$templates->get("portal_search")."\";");
 }
 
 // Get the online users
-if($mybb->settings['portal_showwol'] != "no")
+if($mybb->settings['portal_showwol'] != 0)
 {
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$comma = '';
@@ -265,12 +265,12 @@ if($mybb->settings['portal_showwol'] != "no")
 				$doneusers[$user['uid']] = $user['time'];
 				
 				// If the user is logged in anonymously, update the count for that.
-				if($user['invisible'] == "yes")
+				if($user['invisible'] == 1)
 				{
 					++$anoncount;
 				}
 				
-				if($user['invisible'] == "yes")
+				if($user['invisible'] == 1)
 				{
 					$invisiblemark = "*";
 				}
@@ -279,7 +279,7 @@ if($mybb->settings['portal_showwol'] != "no")
 					$invisiblemark = '';
 				}
 				
-				if(($user['invisible'] == "yes" && ($mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != "yes")
+				if(($user['invisible'] == 1 && ($mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])) || $user['invisible'] != 1)
 				{
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = get_profile_link($user['uid']);
@@ -293,13 +293,13 @@ if($mybb->settings['portal_showwol'] != "no")
 	$onlinecount = $membercount + $guestcount + $botcount;
 	
 	// If we can see invisible users add them to the count
-	if($mybb->usergroup['canviewwolinvis'] == "yes")
+	if($mybb->usergroup['canviewwolinvis'] == 1)
 	{
 		$onlinecount += $anoncount;
 	}
 	
 	// If we can't see invisible users but the user is an invisible user incriment the count by one
-	if($mybb->usergroup['canviewwolinvis'] != "yes" && $mybb->user['invisible'] == "yes")
+	if($mybb->usergroup['canviewwolinvis'] != 1 && $mybb->user['invisible'] == 1)
 	{
 		++$onlinecount;
 	}
@@ -330,7 +330,7 @@ if($mybb->settings['portal_showwol'] != "no")
 }
 
 // Latest forum discussions
-if($mybb->settings['portal_showdiscussions'] != "no" && $mybb->settings['portal_showdiscussionsnum'])
+if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_showdiscussionsnum'])
 {
 	$altbg = alt_trow();
 	$threadlist = '';
@@ -489,9 +489,9 @@ while($announcement = $db->fetch_array($query))
 		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
 		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
 	);
-	if($announcement['smilieoff'] == "yes")
+	if($announcement['smilieoff'] == 1)
 	{
-		$parser_options['allow_smilies'] = "no";
+		$parser_options['allow_smilies'] = 0;
 	}
 
 	$message = $parser->parse_message($announcement['message'], $parser_options);
@@ -523,7 +523,7 @@ while($announcement = $db->fetch_array($query))
 					{ // We have a thumbnail to show (and its not the "SMALL" enough image
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == "yes")
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
 					{
 						// Image is small enough to show - no thumbnail
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
@@ -547,7 +547,7 @@ while($announcement = $db->fetch_array($query))
 						}
 						++$tcount;
 					}
-					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == "yes")
+					elseif($attachment['thumbnail'] == "SMALL" && $forumpermissions[$announcement['fid']]['candlattachments'] == 1)
 					{
 						// Image is small enough to show - no thumbnail
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");

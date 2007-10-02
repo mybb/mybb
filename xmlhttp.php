@@ -192,12 +192,12 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
 		// Thread is closed - no editing allowed.
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			xmlhttp_error($lang->thread_closed_edit_subjects);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
-		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
+		else if($forum['open'] == 0 || $forumpermissions['caneditposts'] == 0 || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
 		{
 			xmlhttp_error($lang->no_permission_edit_subject);
 		}
@@ -305,12 +305,12 @@ else if($mybb->input['action'] == "edit_post")
 	if(!is_moderator($forum['fid'], "caneditposts"))
 	{
 		// Thread is closed - no editing allowed.
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			xmlhttp_error($lang->thread_closed_edit_message);
 		}
 		// Forum is not open, user doesn't have permission to edit, or author doesn't match this user - don't allow editing.
-		else if($forum['open'] == "no" || $forumpermissions['caneditposts'] == "no" || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
+		else if($forum['open'] == 0 || $forumpermissions['caneditposts'] == 0 || $mybb->user['uid'] != $post['uid'] || $mybb->user['uid'] == 0)
 		{
 			xmlhttp_error($lang->no_permission_edit_post);
 		}
@@ -404,9 +404,9 @@ else if($mybb->input['action'] == "edit_post")
 			"me_username" => $post['username']
 		);
 		
-		if($post['smilieoff'] == "yes")
+		if($post['smilieoff'] == 1)
 		{
-			$parser_options['allow_smilies'] = "no";
+			$parser_options['allow_smilies'] = 0;
 		}
 	
 		$post['message'] = $parser->parse_message($message, $parser_options);
@@ -424,7 +424,7 @@ else if($mybb->input['action'] == "edit_post")
 
 		// Figure out if we need to show an "edited by" message
 		// Only show if at least one of "showeditedby" or "showeditedbyadmin" is enabled
-		if($mybb->settings['showeditedby'] != "no" && $mybb->settings['showeditedbyadmin'] != "no")
+		if($mybb->settings['showeditedby'] != 0 && $mybb->settings['showeditedbyadmin'] != 0)
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], TIME_NOW);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], TIME_NOW);
@@ -487,6 +487,10 @@ else if($mybb->input['action'] == "get_multiquoted")
 	{
 		$from_tid = '';
 	}
+
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
+
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
 		SELECT p.subject, p.message, p.pid, p.tid, p.username, p.dateline, t.fid, p.visible, u.username AS userusername
@@ -511,7 +515,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
 		$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
 		$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
-		
+		$quoted_post['message'] = $parser->parse_badwords($quoted_post['message']);
+
 		// Tack on to list of messages
 		$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 	}
@@ -656,7 +661,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
-			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == "no" || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
+			if($buddy['lastactive'] > $timecut && ($buddy['invisible'] == 0 || $mybb->user['usergroup'] == 4) && $buddy['lastvisit'] != $buddy['lastactive'])
 			{
 				eval("\$online[] = \"".$templates->get("xmlhttp_buddyselect_online")."\";");
 			}

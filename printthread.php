@@ -68,7 +68,7 @@ if($forum['type'] != "f")
 {
 	error($lang->error_invalidforum);
 }
-if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 {
 	error_no_permission();
 }
@@ -102,11 +102,11 @@ while($postrow = $db->fetch_array($query))
 		"allow_smilies" => $forum['allowsmilies'],
 		"allow_imgcode" => $forum['allowimgcode'],
 		"me_username" => $postrow['username'],
-		"shorten_urls" => "no"
+		"shorten_urls" => 0
 	);
-	if($postrow['smilieoff'] == "yes")
+	if($postrow['smilieoff'] == 1)
 	{
-		$parser_options['allow_smilies'] = "no";
+		$parser_options['allow_smilies'] = 0;
 	}
 
 	$postrow['message'] = $parser->parse_message($postrow['message'], $parser_options);

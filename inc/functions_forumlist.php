@@ -41,7 +41,7 @@ function build_forumbits($pid=0, $depth=1)
 			$permissions = $forumpermissions[$forum['fid']];
 
 			// If this user doesnt have permission to view this forum and we're hiding private forums, skip this forum
-			if($permissions['canview'] != "yes" && $mybb->settings['hideprivateforums'] == "yes")
+			if($permissions['canview'] != 1 && $mybb->settings['hideprivateforums'] == 1)
 			{
 				continue;
 			}
@@ -148,7 +148,7 @@ function build_forumbits($pid=0, $depth=1)
 					$statusicon = '';
 
 					// Showing mini status icons for this forum
-					if($mybb->settings['subforumsstatusicons'] == 'yes')
+					if($mybb->settings['subforumsstatusicons'] == 1)
 					{
 						$lightbulb['folder'] = "mini".$lightbulb['folder'];
 						eval("\$statusicon = \"".$templates->get("forumbit_depth3_statusicon", 1, 0)."\";");
@@ -212,7 +212,7 @@ function build_forumbits($pid=0, $depth=1)
 				}
 
 				$forum_viewers_text = '';
-				if($mybb->settings['showforumviewing'] != "no" && $forum['viewers'] > 0)
+				if($mybb->settings['showforumviewing'] != 0 && $forum['viewers'] > 0)
 				{
 					$forum_viewers_text = sprintf($lang->viewing, $forum['viewers']);
 				}
@@ -232,7 +232,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Moderator column is not off
-			if($mybb->settings['modlist'] != 'off')
+			if($mybb->settings['modlist'] != 0)
 			{
 				$moderators = '';
 				// Fetch list of moderators from this forum and its parents
@@ -264,7 +264,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Descriptions aren't being shown - blank them
-			if($mybb->settings['showdescriptions'] == 'no')
+			if($mybb->settings['showdescriptions'] == 0)
 			{
 				$forum['description'] = '';
 			}
@@ -312,7 +312,7 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 	global $mybb, $lang, $db, $unread_forums;
 
 	// This forum is closed, so override the folder icon with the "offlock" icon.
-	if($forum['open'] == "no" || $locked)
+	if($forum['open'] == 0 || $locked)
 	{
 		$folder = "offlock";
 		$altonoff = $lang->forum_locked;

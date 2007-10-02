@@ -28,7 +28,7 @@ $moderators = array();
 $users = array();
 
 // Fetch the list of groups which are to be shown on the page
-$query = $db->simple_select("usergroups", "gid, title, usertitle", "showforumteam='yes'", array('order_by' => 'disporder'));
+$query = $db->simple_select("usergroups", "gid, title, usertitle", "showforumteam=1", array('order_by' => 'disporder'));
 while($usergroup = $db->fetch_array($query))
 {
 	$usergroups[$usergroup['gid']] = $usergroup;
@@ -47,7 +47,7 @@ if($usergroups[6]['gid'])
 		FROM ".TABLE_PREFIX."moderators m
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=m.fid)
-		WHERE f.active = 'yes'
+		WHERE f.active = 1
 		ORDER BY u.username
 	");
 	while($moderator = $db->fetch_array($query))
@@ -77,7 +77,7 @@ while($user = $db->fetch_array($query))
 	{
 		foreach($moderators[$user['uid']] as $forum)
 		{
-			if($forum_permissions[$forum['fid']]['canview'] == "yes")
+			if($forum_permissions[$forum['fid']]['canview'] == 1)
 			{
 				$forum_url = get_forum_link($forum['fid']);
 				eval("\$forumlist .= \"".$templates->get("showteam_moderators_forum")."\";");
@@ -126,12 +126,12 @@ foreach($usergroups as $usergroup)
 		// For the postbit templates
 		$post['uid'] = $user['uid'];
 		$emailcode = $pmcode = '';
-		if($user['hideemail'] != 'yes')
+		if($user['hideemail'] != 1)
 		{
 			eval("\$emailcode = \"".$templates->get("postbit_email")."\";");
 		}
 		
-		if($user['receivepms'] != 'no' && $mybb->settings['enablepms'] != 'no' && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0 && my_strpos(",".$user['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$pmcode = \"".$templates->get("postbit_pm")."\";");
 		}

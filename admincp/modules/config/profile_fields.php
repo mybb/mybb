@@ -37,21 +37,6 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_fieldtype;
 		}
 		
-		if(!trim($mybb->input['required']))
-		{
-			$errors[] = $lang->error_missing_required;
-		}
-		
-		if(!trim($mybb->input['editable']))
-		{
-			$errors[] = $lang->error_missing_editable;
-		}
-		
-		if(!trim($mybb->input['hidden']))
-		{
-			$errors[] = $lang->error_missing_hidden;
-		}
-
 		if(!$errors)
 		{
 			$type = $mybb->input['type'];
@@ -108,9 +93,9 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input['fieldtype'] = 'textbox';
-		$mybb->input['required'] = 'no';
-		$mybb->input['editable'] = 'yes';
-		$mybb->input['hidden'] = 'no';
+		$mybb->input['required'] = 0;
+		$mybb->input['editable'] = 1;
+		$mybb->input['hidden'] = 0;
 	}
 	
 	$form_container = new FormContainer($lang->add_new_profile_field);
@@ -183,21 +168,6 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_fieldtype;
 		}
 		
-		if(!trim($mybb->input['required']))
-		{
-			$errors[] = $lang->error_missing_required;
-		}
-		
-		if(!trim($mybb->input['editable']))
-		{
-			$errors[] = $lang->error_missing_editable;
-		}
-		
-		if(!trim($mybb->input['hidden']))
-		{
-			$errors[] = $lang->error_missing_hidden;
-		}
-
 		if(!$errors)
 		{
 			$profile_field = array(

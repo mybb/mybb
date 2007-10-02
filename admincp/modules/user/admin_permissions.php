@@ -133,7 +133,7 @@ if($mybb->input['action'] == "edit")
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (u.usergroup=g.gid)
 			WHERE u.uid='$uid'
-			AND g.cancp='yes'
+			AND g.cancp=1
 			LIMIT 1
 		");
 		$admin = $db->fetch_array($query);
@@ -237,7 +237,7 @@ if($mybb->input['action'] == "group")
 		SELECT g.title, g.cancp, a.permissions, g.gid
 		FROM ".TABLE_PREFIX."usergroups g
 		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
-		WHERE g.cancp = 'yes'
+		WHERE g.cancp = 1
 		ORDER BY g.title ASC
 	");
 	while($group = $db->fetch_array($query))
@@ -302,7 +302,7 @@ if(!$mybb->input['action'])
 	
 	// Get usergroups with ACP access
 	$usergroups = array();
-	$query = $db->simple_select("usergroups", "*", "cancp = 'yes'");
+	$query = $db->simple_select("usergroups", "*", "cancp = 1");
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup;
@@ -335,7 +335,7 @@ if(!$mybb->input['action'])
 		SELECT g.title, g.cancp, a.permissions, g.gid
 		FROM ".TABLE_PREFIX."usergroups g
 		LEFT JOIN ".TABLE_PREFIX."adminoptions a ON (a.uid = -g.gid)
-		WHERE g.cancp = 'yes'
+		WHERE g.cancp = 1
 		ORDER BY g.title ASC
 	");
 	while($group = $db->fetch_array($query))
@@ -379,7 +379,7 @@ if(!$mybb->input['action'])
 		
 		// Build a list of group memberships that have access to the Admin CP
 		// Primary usergroup?
-		if($usergroups[$admin['usergroup']]['cancp'] == "yes")
+		if($usergroups[$admin['usergroup']]['cancp'] == 1)
 		{
 			$usergroup_list[] = "<i>".$usergroups[$admin['usergroup']]['title']."</i>";
 		}
@@ -390,7 +390,7 @@ if(!$mybb->input['action'])
 		{
 			foreach($additional_groups as $gid)
 			{
-				if($usergroups[$gid]['cancp'] == "yes")
+				if($usergroups[$gid]['cancp'] == 1)
 				{
 					$usergroup_list[] = $usergroups[$gid]['title'];
 				}

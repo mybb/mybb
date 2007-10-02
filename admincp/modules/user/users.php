@@ -418,7 +418,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	// Fetch custom profile fields - only need required profile fields here
-	$query = $db->simple_select("profilefields", "*", "required='yes'", array('order_by' => 'disporder'));
+	$query = $db->simple_select("profilefields", "*", "required=1", array('order_by' => 'disporder'));
 	while($profile_field = $db->fetch_array($query))
 	{
 		$profile_fields['required'][] = $profile_field;
@@ -725,7 +725,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($profile_field = $db->fetch_array($query))
 	{
-		if($profile_field['required'] == 'yes')
+		if($profile_field['required'] == 1)
 		{
 			$profile_fields['required'][] = $profile_field;
 		}
@@ -816,7 +816,7 @@ if($mybb->input['action'] == "edit")
 		$last_active = "Never";
 	}
 	$reg_date = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
-	if($user['dst'] == "yes")
+	if($user['dst'] == 1)
 	{
 		$timezone = $user['timezone']+1;
 	}
@@ -845,7 +845,7 @@ if($mybb->input['action'] == "edit")
 	$user_permissions = user_permissions($user['uid']);
 
 	// Fetch the reputation for this user
-	if($user_permissions['usereputationsystem'] == "yes" && $mybb->settings['enablereputation'] == "yes")
+	if($user_permissions['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation = get_reputation($user['reputation']);
 	}
@@ -854,7 +854,7 @@ if($mybb->input['action'] == "edit")
 		$reputation = "-";
 	}
 
-	if($mybb->settings['enablewarningsystem'] != "no" && $user_permissions['canreceivewarnings'] != "no")
+	if($mybb->settings['enablewarningsystem'] != 0 && $user_permissions['canreceivewarnings'] != 0)
 	{
 		$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
@@ -940,17 +940,17 @@ if($mybb->input['action'] == "edit")
 	echo "<div id=\"tab_settings\">\n";
 	$form_container = new FormContainer("Account Settings: {$user['username']}");
 	$login_options = array(
-		$form->generate_check_box("invisible", "yes", "Hide from the Who's Online list", array("checked" => $mybb->input['invisible'])),
-		$form->generate_check_box("remember", "yes", "Remember login details for future visits", array("checked" => $mybb->input['remember']))
+		$form->generate_check_box("invisible", 1, "Hide from the Who's Online list", array("checked" => $mybb->input['invisible'])),
+		$form->generate_check_box("remember", 1, "Remember login details for future visits", array("checked" => $mybb->input['remember']))
 	);
 	$form_container->output_row("Login, Cookies &amp; Privacy", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
 
 	$messaging_options = array(
-		$form->generate_check_box("allownotices", "yes", "Receive emails from administrators", array("checked" => $mybb->input['allownotices'])),
-		$form->generate_check_box("hideemail", "yes", "Hide email address from other members", array("checked" => $mybb->input['hideemail'])),
-		$form->generate_check_box("receivepms", "yes", "Receive private messages from other users", array("checked" => $mybb->input['receivepms'])),
-		$form->generate_check_box("pmnotice", "yes", "Alert with notice when new private message is received", array("checked" => $mybb->input['pmnotice'])),
-		$form->generate_check_box("pmnotify", "yes", "Notify by email when new private message is received", array("checked" => $mybb->input['pmnotify'])),
+		$form->generate_check_box("allownotices", 1, "Receive emails from administrators", array("checked" => $mybb->input['allownotices'])),
+		$form->generate_check_box("hideemail", 1, "Hide email address from other members", array("checked" => $mybb->input['hideemail'])),
+		$form->generate_check_box("receivepms", 1, "Receive private messages from other users", array("checked" => $mybb->input['receivepms'])),
+		$form->generate_check_box("pmnotice", 1, "Alert with notice when new private message is received", array("checked" => $mybb->input['pmnotice'])),
+		$form->generate_check_box("pmnotify", 1, "Notify by email when new private message is received", array("checked" => $mybb->input['pmnotify'])),
 		"<label for=\"subscriptionmethod\">Default thread subscription mode:</label><br />".$form->generate_select_box("subscriptionmethod", array("Do not subscribe", "No email notification", "Instant email notification"), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
 	$form_container->output_row("Messaging &amp; Notification", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
@@ -1024,16 +1024,16 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$thread_options = array(
-		$form->generate_check_box("showsigs", "yes", "Display users' signatures in their posts", array("checked" => $mybb->input['showsigs'])),
-		$form->generate_check_box("showavatars", "yes", "Display users' avatars in their posts", array("checked" => $mybb->input['showavatars'])),
-		$form->generate_check_box("showquickreply", "yes", "Show the quick reply box at the bottom of the thread view", array("checked" => $mybb->input['showquickreply'])),
+		$form->generate_check_box("showsigs", 1, "Display users' signatures in their posts", array("checked" => $mybb->input['showsigs'])),
+		$form->generate_check_box("showavatars", 1, "Display users' avatars in their posts", array("checked" => $mybb->input['showavatars'])),
+		$form->generate_check_box("showquickreply", 1, "Show the quick reply box at the bottom of the thread view", array("checked" => $mybb->input['showquickreply'])),
 		"<label for=\"ppp\">Posts Per Page:</label><br />".$form->generate_select_box("ppp", $ppp_options, $mybb->input['ppp'], array('id' => 'ppp')),
 		"<label for=\"threadmode\">Default Thread View Mode:</label><br />".$form->generate_select_box("threadmode", array("" => "Use Default", "linear" => "Linear Mode", "threaded" => "Threaded Mode"), $mybb->input['threadmode'], array('id' => 'threadmode'))
 	);
 	$form_container->output_row("Thread View Options", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
 
 	$other_options = array(
-		$form->generate_check_box("showredirect", "yes", "Show friendly redirection pages", array("checked" => $mybb->input['showredirect'])),
+		$form->generate_check_box("showredirect", 1, "Show friendly redirection pages", array("checked" => $mybb->input['showredirect'])),
 		$form->generate_check_box("showcodebuttons", "1", "Show MyCode formatting options on posting pages", array("checked" => $mybb->input['showcodebuttons'])),
 		"<label for=\"style\">Theme:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", 1),
 		"<label for=\"language\">Board Language:</label><br />".$form->generate_select_box("language", $lang->get_languages(), $mybb->input['language'], array('id' => 'language'))
@@ -1048,23 +1048,23 @@ if($mybb->input['action'] == "edit")
 	//
 	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
 	$sig_smilies = "off";
-	if($mybb->settings['sigsmilies'] == "yes")
+	if($mybb->settings['sigsmilies'] == 1)
 	{
 		$sig_smilies = "on";
 	}
 	$sig_mycode = "off";
-	if($mybb->settings['sigmycode'] == "yes")
+	if($mybb->settings['sigmycode'] == 1)
 	{
 		$sig_mycode = "on";
 		$signature_editor .= build_mycode_inserter("signature");
 	}
 	$sig_html = "off";
-	if($mybb->settings['sightml'] == "yes")
+	if($mybb->settings['sightml'] == 1)
 	{
 		$sig_html = "on";
 	}
 	$sig_imcode = "on";
-	if($mybb->settings['sigimgcode'] == "yes")
+	if($mybb->settings['sigimgcode'] == 1)
 	{
 		$sig_imgcode = "off";
 	}
@@ -1074,7 +1074,7 @@ if($mybb->input['action'] == "edit")
 
 	$signature_options = array(
 		$form->generate_radio_button("update_posts", "enable", "Enable signature in all posts", array("checked" => 0)),
-		$form->generate_radio_button("update_posts", "dusable", "Disable signature in all posts", array("checked" => 0)),
+		$form->generate_radio_button("update_posts", "disable", "Disable signature in all posts", array("checked" => 0)),
 		$form->generate_radio_button("update_posts", "no", "Do not change signature preferences", array("checked" => 1))
 	);
 
@@ -1835,7 +1835,7 @@ function build_users_view($view)
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user
-			if($usergroups[$user['usergroup']]['usereputationsystem'] == "yes" && $mybb->settings['enablereputation'] == "yes")
+			if($usergroups[$user['usergroup']]['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 			{
 				$user['view']['reputation'] = get_reputation($user['reputation']);
 			}
@@ -1844,7 +1844,7 @@ function build_users_view($view)
 				$reputation = "-";
 			}
 
-			if($mybb->settings['enablewarningsystem'] != "no" && $usergroups[$user['usergroup']]['canreceivewarnings'] != "no")
+			if($mybb->settings['enablewarningsystem'] != 0 && $usergroups[$user['usergroup']]['canreceivewarnings'] != 0)
 			{
 				$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 				if($warning_level > 100)

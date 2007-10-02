@@ -28,14 +28,14 @@ if($mybb->input['action'] == "toggle_status")
 		admin_redirect("index.php?".SID."&module=config/mycode");
 	}
 
-	if($mycode['active'] == 'yes')
+	if($mycode['active'] == 1)
 	{
-		$new_status = 'no';
+		$new_status = 0;
 		$phrase = $lang->success_deactivated_mycode;
 	}
 	else
 	{
-		$new_status = 'yes';
+		$new_status = 1;
 		$phrase = $lang->success_activated_mycode;
 	}
 	$mycode = array(
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$mybb->input['active'] = 'yes';
+		$mybb->input['active'] = 1;
 	}
 
 	$form = new Form("index.php?".SID."&amp;module=config/mycode&amp;action=add", "post", "add");
@@ -330,7 +330,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("mycode", "*", "", array('order_by' => 'parseorder'));
 	while($mycode = $db->fetch_array($query))
 	{
-		if($mycode['active'] == 'yes')
+		if($mycode['active'] == 1)
 		{
 			$phrase = $lang->deactivate_mycode;
 			$indicator = '';

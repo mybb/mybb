@@ -18,7 +18,7 @@ require_once "./global.php";
 // Load global language phrases
 $lang->load("memberlist");
 
-if($mybb->settings['enablememberlist'] == "no")
+if($mybb->settings['enablememberlist'] == 0)
 {
 	error($lang->memberlist_disabled);
 }
@@ -27,7 +27,7 @@ $plugins->run_hooks("memberlist_start");
 
 add_breadcrumb($lang->nav_memberlist);
 
-if($mybb->usergroup['canviewmemberlist'] == "no")
+if($mybb->usergroup['canviewmemberlist'] == 0)
 {
 	error_no_permission();
 }

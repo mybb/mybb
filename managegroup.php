@@ -44,7 +44,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($groupleader['canmanagemembers'] == "no")
+	if($groupleader['canmanagemembers'] == 0)
 	{
 		error_no_permission();
 	}
@@ -73,7 +73,7 @@ elseif($mybb->input['action'] == "do_joinrequests" && $mybb->request_method == "
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($groupleader['canmanagerequests'] == "no")
+	if($groupleader['canmanagerequests'] == 0)
 	{
 		error_no_permission();
 	}
@@ -141,7 +141,7 @@ elseif($mybb->input['action'] == "do_manageusers" && $mybb->request_method == "p
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($groupleader['canmanagemembers'] == "no")
+	if($groupleader['canmanagemembers'] == 0)
 	{
 		error_no_permission();
 	}
@@ -223,12 +223,12 @@ else
 		$altbg = alt_trow();
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		$post = $user;
-		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$sendpm = \"".$templates->get("postbit_pm")."\";");
 		}
 		
-		if($user['hideemail'] != "yes")
+		if($user['hideemail'] != 1)
 		{
 			eval("\$email = \"".$templates->get("postbit_email")."\";");
 		}
@@ -251,7 +251,7 @@ else
 
 		// Checkbox for user management - only if current user is allowed
 		$checkbox = '';
-		if($groupleader['canmanagemembers'] == "yes")
+		if($groupleader['canmanagemembers'] == 1)
 		{
 			eval("\$checkbox = \"".$templates->get("managegroup_user_checkbox")."\";");
 		}
@@ -261,7 +261,7 @@ else
 
 	$add_user = '';
 	$remove_users = '';
-	if($groupleader['canmanagemembers'] == "yes")
+	if($groupleader['canmanagemembers'] == 1)
 	{
 		eval("\$add_user = \"".$templates->get("managegroup_adduser")."\";");
 		eval("\$remove_users = \"".$templates->get("managegroup_removeusers")."\";");

@@ -784,10 +784,10 @@ function build_wol_row($user)
 	if($user['uid'] > 0)
 	{
 		// Only those with "canviewwolinvis" permissions can view invisible users
-		if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+		if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 		{
 			// Append an invisible mark if the user is invisible
-			if($user['invisible'] == "yes")
+			if($user['invisible'] == 1)
 			{
 				$invisible_mark = "*";
 			}
@@ -817,7 +817,7 @@ function build_wol_row($user)
 	$location = build_friendly_wol_location($user['activity']);
 
 	// Can view IPs, then fetch the IP template
-	if($mybb->usergroup['canviewonlineips'] == "yes")
+	if($mybb->usergroup['canviewonlineips'] == 1)
 	{
 		eval("\$user_ip = \"".$templates->get("online_row_ip")."\";");
 	}
@@ -827,7 +827,7 @@ function build_wol_row($user)
 	}
 
 	// And finally if we have permission to view this user, return the completed online row
-	if($user['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $user['uid'] == $mybb->user['uid'])
+	if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
 	{
 		eval("\$online_row = \"".$templates->get("online_row")."\";");
 	}

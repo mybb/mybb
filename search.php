@@ -34,7 +34,7 @@ switch($mybb->input['action'])
 		break;
 }
 
-if($mybb->usergroup['cansearch'] == "no")
+if($mybb->usergroup['cansearch'] == 0)
 {
 	error_no_permission();
 }
@@ -212,7 +212,7 @@ if($mybb->input['action'] == "results")
 
 
 		// Fetch dot icons if enabled
-		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $thread_cache)
+		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $thread_cache)
 		{
 			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$thread_ids.")");
 			while($post = $db->fetch_array($query))
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "hot";
 				$folder_label .= $lang->icon_hot;
 			}
-			if($thread['closed'] == "yes")
+			if($thread['closed'] == 1)
 			{
 				$folder .= "lock";
 				$folder_label .= $lang->icon_lock;
@@ -396,7 +396,7 @@ if($mybb->input['action'] == "results")
 			}
 
 			// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != "yes" && $mybb->user['uid'] != 0 && $fpermissions[$thread['fid']]['caneditposts'] == "yes") || is_moderator($fid, "caneditposts"))
+			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $fpermissions[$thread['fid']]['caneditposts'] == 1) || is_moderator($fid, "caneditposts"))
 			{
 				$inline_edit_class = "subject_editable";
 			}
@@ -506,7 +506,7 @@ if($mybb->input['action'] == "results")
 		}
 
 		$dot_icon = array();
-		if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] != 0)
+		if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] != 0)
 		{
 			$query = $db->simple_select("posts", "DISTINCT tid,uid", "uid='".$mybb->user['uid']."' AND tid IN(".$tids.")");
 			while($post = $db->fetch_array($query))
@@ -619,7 +619,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "hot";
 				$folder_label .= $lang->icon_hot;
 			}
-			if($thread['thread_closed'] == "yes")
+			if($thread['thread_closed'] == 1)
 			{
 				$folder .= "lock";
 				$folder_label .= $lang->icon_lock;
@@ -893,7 +893,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 	$plugins->run_hooks("search_do_search_start");
 
 	// Check if search flood checking is enabled and user is not admin
-	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 'yes')
+	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 1)
 	{
 		// Fetch the time this user last searched
 		if($mybb->user['uid'])
@@ -998,11 +998,11 @@ else if($mybb->input['action'] == "thread")
 
 	$forum_permissions = forum_permissions($forum['fid']);
 
-	if($forum['open'] == "no" || $forum['type'] != "f")
+	if($forum['open'] == 0 || $forum['type'] != "f")
 	{
 		error($lang->error_closedinvalidforum);
 	}
-	if($forum_permissions['canview'] == "no" || $forum_permissions['canviewthreads'] != "yes")
+	if($forum_permissions['canview'] == 0 || $forum_permissions['canviewthreads'] != 1)
 	{
 		error_no_permission();
 	}
@@ -1010,7 +1010,7 @@ else if($mybb->input['action'] == "thread")
 	$plugins->run_hooks("search_thread_start");
 
 	// Check if search flood checking is enabled and user is not admin
-	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 'yes')
+	if($mybb->settings['searchfloodtime'] > 0 && $mybb->usergroup['cancp'] != 1)
 	{
 		// Fetch the time this user last searched
 		if($mybb->user['uid'])

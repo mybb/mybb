@@ -37,11 +37,6 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_order;
 		}
 		
-		if(!trim($mybb->input['showclickable']))
-		{
-			$errors[] = $lang->error_missing_clickable;
-		}
-
 		if(!$errors)
 		{
 			$new_smilie = array(
@@ -87,7 +82,7 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input['image'] = 'images/smilies/';
-		$mybb->input['showclickable'] = 'yes';
+		$mybb->input['showclickable'] = 1;
 	}
 	
 	if(!$mybb->input['disporder'])
@@ -146,11 +141,6 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_order;
 		}
 		
-		if(!trim($mybb->input['showclickable']))
-		{
-			$errors[] = $lang->error_missing_clickable;
-		}
-
 		if(!$errors)
 		{
 			$updated_smilie = array(
@@ -342,7 +332,7 @@ if($mybb->input['action'] == "add_multiple")
 					$form_container->output_cell("<img src=\"../".$path.$file."\" alt=\"\" /><br /><small>{$file}</small>", array("class" => "align_center", "width" => 1));
 					$form_container->output_cell($form->generate_text_box("name[{$file}]", $name, array('id' => 'name', 'style' => 'width: 98%')));
 					$form_container->output_cell($form->generate_text_box("find[{$file}]", ":".$find.":", array('id' => 'find', 'style' => 'width: 95%')));
-					$form_container->output_cell($form->generate_check_box("include[{$file}]", "yes", "", array('checked' => 1)), array("class" => "align_center"));
+					$form_container->output_cell($form->generate_check_box("include[{$file}]", 1, "", array('checked' => 1)), array("class" => "align_center"));
 					$form_container->construct_row();
 				}
 				
@@ -384,7 +374,7 @@ if($mybb->input['action'] == "add_multiple")
 						"name" => $db->escape_string($name[$image]),
 						"find" => $db->escape_string($find[$image]),
 						"image" => $db->escape_string($path.$image),
-						"showclickable" => "yes"
+						"showclickable" => 1
 					);
 					$db->insert_query("smilies", $new_smilie);
 				}
@@ -440,7 +430,7 @@ if($mybb->input['action'] == "mass_edit")
 	{
 		foreach($mybb->input['name'] as $sid => $name)
 		{
-			if($mybb->input['delete'][$sid] == "yes")
+			if($mybb->input['delete'][$sid] == 1)
 			{
 				$db->delete_query("smilies", "sid = '{$sid}'", 1);
 			}
@@ -486,7 +476,7 @@ if($mybb->input['action'] == "mass_edit")
 	else
 	{
 		$mybb->input['path'] = 'images/smilies/';
-		$mybb->input['showclickable'] = 'yes';
+		$mybb->input['showclickable'] = 1;
 	}
 	
 	if(!$mybb->input['disporder'])
@@ -521,7 +511,7 @@ if($mybb->input['action'] == "mass_edit")
 		$form_container->output_cell($form->generate_text_box("find[{$smilie['sid']}]", $smilie['find'], array('id' => 'find', 'style' => 'width: 95%')));
 		$form_container->output_cell($form->generate_text_box("disporder[{$smilie['sid']}]", $smilie['disporder'], array('id' => 'disporder', 'style' => 'width: 80%')));
 		$form_container->output_cell($form->generate_yes_no_radio("showclickable[{$smilie['sid']}]", $smilie['showclickable']), array("class" => "align_center"));
-		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", "yes", $mybb->input['delete']), array("class" => "align_center"));
+		$form_container->output_cell($form->generate_check_box("delete[{$smilie['sid']}]", 1, $mybb->input['delete']), array("class" => "align_center"));
 		$form_container->construct_row();
 	}
 	

@@ -245,7 +245,7 @@ if($mybb->input['action'] == "do_recountpostcounts")
 	$start = ($page-1) * $per_page;
 	$end = $start + $per_page;
 	
-	$query = $db->simple_select("forums", "fid", "usepostcounts = 'no'");
+	$query = $db->simple_select("forums", "fid", "usepostcounts = 0");
 	while($forum = $db->fetch_array($query))
 	{
 		$fids[] = $forum['fid'];

@@ -56,7 +56,7 @@ if(!$forum['fid'] || $forum['type'] != "f")
 }
 
 // This user can't view this forum or this thread
-if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != "yes")
+if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 {
 	error_no_permission();
 }
@@ -64,7 +64,7 @@ if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] 
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if($mybb->usergroup['cansendemail'] == "no")
+if($mybb->usergroup['cansendemail'] == 0)
 {
 	error_no_permission();
 }

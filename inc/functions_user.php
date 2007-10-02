@@ -381,7 +381,7 @@ function usercp_menu()
 	$lang->load("usercpnav");
 
 	// Add the default items as plugins with separated priorities of 10
-	if($mybb->settings['enablepms'] != "no")
+	if($mybb->settings['enablepms'] != 0)
 	{
 		$plugins->add_hook("usercp_menu", "usercp_menu_messenger", 10);
 	}
@@ -438,7 +438,7 @@ function usercp_menu_profile()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
-	if($mybb->usergroup['canchangename'] != "no")
+	if($mybb->usergroup['canchangename'] != 0)
 	{
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}

@@ -117,11 +117,11 @@ class PMDataHandler extends DataHandler
 		$sender_permissions = user_permissions($pm['fromid']);
 
 		// Check if the sender is over their quota or not - if they are, disable draft sending
-		if($pm['options']['savecopy'] != "no" && !$pm['saveasdraft'])
+		if($pm['options']['savecopy'] != 0 && !$pm['saveasdraft'])
 		{
 			if($sender_permissions['pmquota'] != "0" && $sender['totalpms'] >= $sender_permissions['pmquota'] && $this->admin_override != true)
 			{
-				$pm['options']['savecopy'] = "no";
+				$pm['options']['savecopy'] = 0;
 			}
 		}
 
@@ -245,7 +245,7 @@ class PMDataHandler extends DataHandler
 			// See if the sender is on the recipients ignore list and that either
 			// - admin_override is set or
 			// - sender is an administrator
-			if($this->admin_override != true && $sender_permissions['cancp'] != "yes")
+			if($this->admin_override != true && $sender_permissions['cancp'] != 1)
 			{
 				$ignorelist = explode(",", $user['ignorelist']);
 				foreach($ignorelist as $uid)
@@ -258,14 +258,14 @@ class PMDataHandler extends DataHandler
 			}
 	
 			// Can the recipient actually receive private messages based on their permissions or user setting?
-			if($user['receivepms'] == "no" || $recipient_permissions['canusepms'] == "no" && !$pm['saveasdraft'])
+			if($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0 && !$pm['saveasdraft'])
 			{
 				$this->set_error("recipient_pms_disabled", array($user['username']));
 				return false;
 			}
 	
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $recipient['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != "yes" && $sender_permissions['cancp'] != "yes" && !$pm['saveasdraft'] && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != "0" && $recipient['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{
@@ -332,11 +332,11 @@ class PMDataHandler extends DataHandler
 	{
 		$options = &$this->data['options'];
 
-		$this->verify_yesno_option($options, 'signature', 'yes');
-		$this->verify_yesno_option($options, 'savecopy', 'yes');
+		$this->verify_yesno_option($options, 'signature', 1);
+		$this->verify_yesno_option($options, 'savecopy', 1);
 
 		// Requesting a read receipt?
-		if(isset($options['readreceipt']) && $options['readreceipt'] == "yes")
+		if(isset($options['readreceipt']) && $options['readreceipt'] == 1)
 		{
 			$options['readreceipt'] = 1;
 		}
@@ -484,7 +484,7 @@ class PMDataHandler extends DataHandler
 			// Send email notification of new PM if it is enabled for the recipient
 			$query = $db->simple_select("privatemessages", "dateline", "uid='".$recipient['uid']."' AND folder='1'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
 			$lastpm = $db->fetch_array($query);
-			if($recipient['pmnotify'] == "yes" && $recipient['lastactive'] > $lastpm['dateline'])
+			if($recipient['pmnotify'] == 1 && $recipient['lastactive'] > $lastpm['dateline'])
 			{
 				if($recipient['language'] != "" && $lang->language_exists($recipient['language']))
 				{
@@ -526,7 +526,7 @@ class PMDataHandler extends DataHandler
 			$this->pmid = $db->insert_id();
 
 			// If PM noices/alerts are on, show!
-			if($recipient['pmnotice'] == "yes")
+			if($recipient['pmnotice'] == 1)
 			{
 				$updated_user = array(
 					"pmnotice" => "new"
@@ -561,7 +561,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// If we're saving a copy
-		if($pm['options']['savecopy'] != "no")
+		if($pm['options']['savecopy'] != 0)
 		{
 			if(count($recipient_list['to']) == 1)
 			{

@@ -129,7 +129,7 @@ if($mybb->input['action'] == "delete")
 	starttable();
 	tableheader($lang->delete_smilie, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
@@ -192,7 +192,7 @@ if($mybb->input['action'] == "do_addmultiple")
 					"name" => $db->escape_string($name[$image]),
 					"find" => $db->escape_string($find[$image]),
 					"image" => $db->escape_string($imageurl),
-					"showclickable" => "yes"
+					"showclickable" => 1
 				);
 				$db->insert_query("smilies", $newsmilie);
 			}

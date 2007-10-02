@@ -30,7 +30,7 @@ $bantimes = fetch_ban_times();
 // Load global language phrases
 $lang->load("modcp");
 
-if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != "yes")
+if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 {
 	error_no_permission();
 }
@@ -38,7 +38,7 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != "yes")
 $errors = '';
 
 // SQL for fetching items only related to forums this user moderates
-if($mybb->usergroup['issupermod'] != "yes")
+if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "uid='{$mybb->user['uid']}'");
 	while($forum = $db->fetch_array($query))
@@ -827,12 +827,12 @@ if($mybb->input['action'] == "do_editprofile")
 	$user_permissions = user_permissions($user['uid']);
 
 	// Current user is only a local moderator, cannot edit super mods or admins
-	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == "yes" || $user_permissions['canadmincp'] == "yes"))
+	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == 1 || $user_permissions['canadmincp'] == 1))
 	{
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if($mybb->usergroup['issupermod'] == "yes" && $user_permissions['canadmincp'] == "yes" || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
+	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
 	{
 		error_no_permission();
 	}
@@ -917,12 +917,12 @@ if($mybb->input['action'] == "editprofile")
 	$user_permissions = user_permissions($user['uid']);
 
 	// Current user is only a local moderator, cannot edit super mods or admins
-	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == "yes" || $user_permissions['canadmincp'] == "yes"))
+	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == 1 || $user_permissions['canadmincp'] == 1))
 	{
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if($mybb->usergroup['issupermod'] == "yes" && $user_permissions['canadmincp'] == "yes" || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
+	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
 	{
 		error_no_permission();
 	}
@@ -995,7 +995,7 @@ if($mybb->input['action'] == "editprofile")
 
 	$requiredfields = '';
 	$customfields = '';
-	$query = $db->simple_select("profilefields", "*", "editable='yes'", array('order_by' => 'disporder'));
+	$query = $db->simple_select("profilefields", "*", "editable=1", array('order_by' => 'disporder'));
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -1132,7 +1132,7 @@ if($mybb->input['action'] == "editprofile")
 			$value = htmlspecialchars_uni($userfield);
 			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
 		}
-		if($profilefield['required'] == "yes")
+		if($profilefield['required'] == 1)
 		{
 			eval("\$requiredfields .= \"".$templates->get("usercp_profile_customfield")."\";");
 		}
@@ -1543,7 +1543,7 @@ if($mybb->input['action'] == "banning")
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
-		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == "yes" || $mybb->uergroup['canadmincp'] == "yes")
+		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->uergroup['canadmincp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}
@@ -1619,7 +1619,7 @@ if($mybb->input['action'] == "liftban")
 	}
 
 	// Permission to edit this ban?
-	if($mybb->user['uid'] != $ban['admin'] && $mybb->usergroup['issupermod'] != "yes" && $mybb->uergroup['canadmincp'] != "yes")
+	if($mybb->user['uid'] != $ban['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->uergroup['canadmincp'] != 1)
 	{
 		error_no_permission();
 	}
@@ -1656,7 +1656,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 
 		// Permission to edit this ban?
-		if($mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != "yes" && $mybb->uergroup['canadmincp'] != "yes")
+		if($mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->uergroup['canadmincp'] != 1)
 		{
 			error_no_permission();
 		}
@@ -1831,7 +1831,7 @@ if($mybb->input['action'] == "banuser")
 	}
 	
 	$bangroups = '';
-	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup='yes'");
+	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
 	while($item = $db->fetch_array($query))
 	{
 		$selected = "";

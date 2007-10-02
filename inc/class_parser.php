@@ -88,19 +88,19 @@ class postParser
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.
-		if($options['filter_badwords'] != "no")
+		if($options['filter_badwords'] != 0)
 		{
 			$message = $this->parse_badwords($message);
 		}
 
-		if($options['allow_html'] != "yes")
+		if($options['allow_html'] != 1)
 		{
 			$message = $this->parse_html($message);
 		}
 		else
 		{		
 			// Strip out any script tags if HTML is enabled
-			if($options['allow_html'] == "yes")
+			if($options['allow_html'] == 1)
 			{
 				while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
 				{
@@ -115,7 +115,7 @@ class postParser
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if($options['allow_mycode'] != "no")
+		if($options['allow_mycode'] != 0)
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
@@ -133,13 +133,13 @@ class postParser
 		}
 
 		// If we can, parse smilies
-		if($options['allow_smilies'] != "no")
+		if($options['allow_smilies'] != 0)
 		{
 			$message = $this->parse_smilies($message, $options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
-		if($options['allow_mycode'] != "no")
+		if($options['allow_mycode'] != 0)
 		{
 			$message = $this->parse_mycode($message, $options);
 		}
@@ -147,7 +147,7 @@ class postParser
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 		
-		if($options['allow_mycode'] != "no")
+		if($options['allow_mycode'] != 0)
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)
@@ -155,7 +155,7 @@ class postParser
 				foreach($code_matches as $text)
 				{
 					// Fix up HTML inside the code tags so it is clean
-					if($options['allow_html'] != "no")
+					if($options['allow_html'] != 0)
 					{
 						$text[2] = $this->parse_html($text[2]);
 					}
@@ -173,7 +173,7 @@ class postParser
 			}
 		}
 
-		if($options['nl2br'] != "no")
+		if($options['nl2br'] != 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -333,7 +333,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if($options['allow_imgcode'] != "no")
+		if($options['allow_imgcode'] != 0)
 		{
 			$message = preg_replace("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$2')\n", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2'));", $message);
@@ -372,7 +372,7 @@ class postParser
 	 * @param string Yes/No if HTML is allowed in the post
 	 * @return string The parsed message.
 	 */
-	function parse_smilies($message, $allow_html="no")
+	function parse_smilies($message, $allow_html=0)
 	{
 		if($this->smilies_cache == 0)
 		{
@@ -383,7 +383,7 @@ class postParser
 			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $find => $replace)
 			{
-				if($allow_html != "yes")
+				if($allow_html != 0)
 				{
 					$find = $this->parse_html($find);
 				}
@@ -431,7 +431,7 @@ class postParser
 				$message = preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
 			}
 		}
-		if($options['strip_tags'] == "yes")
+		if($options['strip_tags'] == 0)
 		{
 			$message = strip_tags($message);
 		}
@@ -777,7 +777,7 @@ class postParser
 		$name = stripslashes($name);
 		$url = stripslashes($url);
 		$fullurl = stripslashes($fullurl);
-		if($name == $url && $this->options['shorten_urls'] != "no")
+		if($name == $url && $this->options['shorten_urls'] != 0)
 		{
 			if(my_strlen($url) > 55)
 			{
@@ -913,12 +913,12 @@ class postParser
 		global $plugins;
 		
 		// Filter bad words if requested.
-		if($options['filter_badwords'] != "no")
+		if($options['filter_badwords'] != 0)
 		{
 			$message = $this->parse_badwords($message);
 		}
 
-		if($options['safe_html'] == "yes")
+		if($options['safe_html'] == 1)
 		{
 			$message = $this->parse_html($message);
 		}

@@ -66,7 +66,7 @@ if($mybb->input['action'] == "delete")
 	$lang->delete_tool_title = sprintf($lang->delete_tool_title, $tool['name']);
 	tableheader($lang->delete_tool_title, '', 1);
 	$yes = makebuttoncode('deletesubmit', $lang->yes);
-	$no = makebuttoncode('no', $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	$lang->delete_tool_confirm = sprintf($lang->delete_tool_confirm, $tool['name']);
 	makelabelcode("<div align=\"center\">$lang->delete_tool_confirm<br /><br />$yes$no</div>", "");
 	endtable();
@@ -363,8 +363,8 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 	{
 		// Add settings for inline post moderation
 		tablesubheader($lang->inline_post_moderation);
-		makeyesnocode($lang->delete_posts, 'deleteposts', 'no');
-		makeyesnocode($lang->merge_posts, 'mergeposts', 'no');
+		makeyesnocode($lang->delete_posts, 'deleteposts', 0);
+		makeyesnocode($lang->merge_posts, 'mergeposts', 0);
 		$approve_options = array(
 			'' => $lang->no_change,
 			'approve' => $lang->approve,
@@ -386,13 +386,13 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 	}
 	// Settings for normal thread moderation
 	tablesubheader($lang->thread_moderation);
-	makeyesnocode($lang->delete_thread, 'deletethread', 'no');
+	makeyesnocode($lang->delete_thread, 'deletethread', 0);
 	if($mode == 't')
 	{
-		makeyesnocode($lang->merge_threads, 'mergethreads', 'no');
+		makeyesnocode($lang->merge_threads, 'mergethreads', 0);
 	}
-	makeyesnocode($lang->delete_poll, 'deletepoll', 'no');
-	makeyesnocode($lang->remove_redirects, 'removeredirects', 'no');
+	makeyesnocode($lang->delete_poll, 'deletepoll', 0);
+	makeyesnocode($lang->remove_redirects, 'removeredirects', 0);
 	$approve_options = array(
 		'' => $lang->no_change,
 		'approve' => $lang->approve,
@@ -409,7 +409,7 @@ if($mybb->input['action'] == "addposttool" || $mybb->input['action'] == "addthre
 	makeselectcode_array($lang->open_close_thread, 'openthread', $open_options);
 	makelabelcode($lang->move_thread, forumselect('movethread', '', '', '', 0, $lang->do_not_move));
 	unset($forumselect);
-	makeyesnocode($lang->leave_redirect, 'movethreadredirect', 'yes');
+	makeyesnocode($lang->leave_redirect, 'movethreadredirect', 1);
 	makeinputcode($lang->redirect_expire, 'movethreadredirectexpire');
 	makelabelcode($lang->copy_thread, forumselect('copythread', '', '', '', 0, $lang->do_not_copy, $lang->copy_to_same_forum));
 	unset($forumselect);

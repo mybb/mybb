@@ -35,7 +35,7 @@ if($mybb->input['action'] == "do_addsubscription")
 			error($lang->error_invalidthread);
 		}
 		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			error_no_permission();
 		}
@@ -62,7 +62,7 @@ if($mybb->input['action'] == "addsubscription")
 			error($lang->error_invalidforum);
 		}
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			error_no_permission();
 		}
@@ -88,7 +88,7 @@ if($mybb->input['action'] == "addsubscription")
 		add_breadcrumb($lang->nav_addsubscription);
 
 		$forumpermissions = forum_permissions($thread['fid']);
-		if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			error_no_permission();
 		}

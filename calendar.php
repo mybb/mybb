@@ -24,12 +24,12 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("calendar");
 
-if($mybb->settings['enablecalendar'] == "no")
+if($mybb->settings['enablecalendar'] == 0)
 {
 	error($lang->calendar_disabled);
 }
 
-if($mybb->usergroup['canviewcalendar'] == "no")
+if($mybb->usergroup['canviewcalendar'] == 0)
 {
 	error_no_permission();
 }
@@ -69,7 +69,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 
 	// Do we have permission to view this calendar or post events?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != "yes" || $calendar_permissions['canaddevents'] != "yes")
+	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
 	{
 		error_no_permission();
 	}
@@ -218,7 +218,7 @@ if($mybb->input['action'] == "addevent")
 
 	// Do we have permission to view this calendar or post events?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar']  != "yes" || $calendar_permissions['canaddevents']  != "yes")
+	if($calendar_permissions['canviewcalendar']  != 1 || $calendar_permissions['canaddevents']  != 1)
 	{
 		error_no_permission();
 	}
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "addevent")
 	$plugins->run_hooks("calendar_addevent_start");
 
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-	if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 	{
 		$codebuttons = build_mycode_inserter();
 		$smilieinserter = build_clickable_smilies();
@@ -479,18 +479,18 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 
 	// Do we have permission to view this calendar or post events?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != "yes" || $calendar_permissions['canaddevents'] != "yes")
+	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
 	{
 		error_no_permission();
 	}
 
-	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != "yes")
+	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
 	{
 		error_no_permission();
 	}
 
 	// Are we going to delete this event or just edit it?
-	if($mybb->input['delete'] == "yes")
+	if($mybb->input['delete'] == 1)
 	{
 		$db->delete_query("events", "eid='{$event['eid']}'");
 
@@ -642,12 +642,12 @@ if($mybb->input['action'] == "editevent")
 
 	// Do we have permission to view this calendar or post events?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != "yes" || $calendar_permissions['canaddevents'] != "yes")
+	if($calendar_permissions['canviewcalendar'] != 1 || $calendar_permissions['canaddevents'] != 1)
 	{
 		error_no_permission();
 	}
 
-	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != "yes")
+	if(($event['uid'] != $mybb->user['uid'] || $mybb->user['uid'] == 0) && $calendar_permissions['canmoderateevents'] != 1)
 	{
 		error_no_permission();
 	}
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "editevent")
 	$plugins->run_hooks("calendar_editevent_start");
 
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-	if($mybb->settings['bbcodeinserter'] != "off" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 	{
 		$codebuttons = build_mycode_inserter();
 		$smilieinserter = build_clickable_smilies();
@@ -963,12 +963,12 @@ if($mybb->input['action'] == "move")
 
 	// Do we have permission to view this calendar or post events?
 	$calendar_permissions = get_calendar_permissions();
-	if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != "yes")
+	if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != 1)
 	{
 		error_no_permission();
 	}
 
-	if($calendar_permissions[$calendar['cid']]['canmoderateevents'] != "yes")
+	if($calendar_permissions[$calendar['cid']]['canmoderateevents'] != 1)
 	{
 		error_no_permission();
 	}
@@ -983,7 +983,7 @@ if($mybb->input['action'] == "move")
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == "yes")
+		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
 		{
 			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
 			$calendar_select .= "<option value=\"{$calendar_option['cid']}\">{$calendar_option['name']}</option>\n";
@@ -1021,12 +1021,12 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions();
-	if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != "yes")
+	if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != 1)
 	{
 		error_no_permission();
 	}
 
-	if($calendar_permissions[$calendar['cid']]['canmoderateevents'] != "yes")
+	if($calendar_permissions[$calendar['cid']]['canmoderateevents'] != 1)
 	{
 		error_no_permission();
 	}
@@ -1040,7 +1040,7 @@ if($mybb->input['action'] == "do_move" && $mybb->request_method == "post")
 		error($lang->invalid_calendar);
 	}
 
-	if($calendar_permissions[$mybb->input['new_calendar']]['canviewcalendar'] != "yes")
+	if($calendar_permissions[$mybb->input['new_calendar']]['canviewcalendar'] != 1)
 	{
 		error_no_permission();
 	}
@@ -1082,12 +1082,12 @@ if($mybb->input['action'] == "approve")
 
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != "yes")
+	if($calendar_permissions['canviewcalendar'] != 1)
 	{
 		error_no_permission();
 	}
 
-	if($calendar_permissions['canmoderateevents'] != "yes")
+	if($calendar_permissions['canmoderateevents'] != 1)
 	{
 		error_no_permission();
 	}
@@ -1129,12 +1129,12 @@ if($mybb->input['action'] == "unapprove")
 
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != "yes")
+	if($calendar_permissions['canviewcalendar'] != 1)
 	{
 		error_no_permission();
 	}
 
-	if($calendar_permissions['canmoderateevents'] != "yes")
+	if($calendar_permissions['canmoderateevents'] != 1)
 	{
 		error_no_permission();
 	}
@@ -1178,7 +1178,7 @@ if($mybb->input['action'] == "event")
 
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar'] != "yes" || ($calendar_permissions['canmoderateevents'] != "yes" && $event['visible'] == 0))
+	if($calendar_permissions['canviewcalendar'] != 1 || ($calendar_permissions['canmoderateevents'] != 1 && $event['visible'] == 0))
 	{
 		error_no_permission();
 	}
@@ -1351,10 +1351,10 @@ if($mybb->input['action'] == "event")
 		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong> {$repeats}</span>";
 	}
 
-	if($calendar_permissions['canmoderateevents'] == "yes" || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
+	if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
 	{
 		eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
-		if($calendar_permissions['canmoderateevents'] == "yes")
+		if($calendar_permissions['canmoderateevents'] == 1)
 		{
 			if($event['visible'] == 1)
 			{
@@ -1383,7 +1383,7 @@ if($mybb->input['action'] == "event")
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
 
-	if($mybb->usergroup['canaddevents'] == "yes")
+	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
 	}
@@ -1418,7 +1418,7 @@ if($mybb->input['action'] == "dayview")
 
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar']  != "yes")
+	if($calendar_permissions['canviewcalendar']  != 1)
 	{
 		no_permission();
 	}
@@ -1680,10 +1680,10 @@ if($mybb->input['action'] == "dayview")
 			}
 
 			$edit_event = $moderator_options = $event_class = "";
-			if($calendar_permissions['canmoderateevents'] == "yes" || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
+			if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
 			{
 				eval("\$edit_event = \"".$templates->get("calendar_event_editbutton")."\";");
-				if($calendar_permissions['canmoderateevents'] == "yes")
+				if($calendar_permissions['canmoderateevents'] == 1)
 				{
 					if($event['visible'] == 1)
 					{
@@ -1715,7 +1715,7 @@ if($mybb->input['action'] == "dayview")
 		}
 	}
 
-	if($mybb->usergroup['canaddevents'] == "yes")
+	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
 	}
@@ -1757,7 +1757,7 @@ if($mybb->input['action'] == "weekview")
 
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
-	if($calendar_permissions['canviewcalendar']  != "yes")
+	if($calendar_permissions['canviewcalendar']  != 1)
 	{
 		no_permission();
 	}
@@ -1957,7 +1957,7 @@ if($mybb->input['action'] == "weekview")
 		eval("\$weekday_bits .= \"".$templates->get("calendar_weekview_month")."\";");
 	}
 
-	if($mybb->usergroup['canaddevents'] == "yes")
+	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
 	}
@@ -1999,7 +1999,7 @@ if(!$mybb->input['action'])
 	// Do we have permission to view this calendar?
 	$calendar_permissions = get_calendar_permissions($calendar['cid']);
 
-	if($calendar_permissions['canviewcalendar'] != "yes")
+	if($calendar_permissions['canviewcalendar'] != 1)
 	{
 		error_no_permission();
 	}
@@ -2211,7 +2211,7 @@ if(!$mybb->input['action'])
 		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
 	
-	if($mybb->usergroup['canaddevents'] == "yes")
+	if($mybb->usergroup['canaddevents'] == 1)
 	{
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
 	}

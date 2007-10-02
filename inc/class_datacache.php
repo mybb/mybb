@@ -563,7 +563,7 @@ class datacache
 	{
 		global $db;
 		$mycodes = array();
-		$query = $db->simple_select("mycode", "regex, replacement", "active='yes'", array('order_by' => 'parseorder'));
+		$query = $db->simple_select("mycode", "regex, replacement", "active=1", array('order_by' => 'parseorder'));
 		while($mycode = $db->fetch_array($query))
 		{
 			$mycodes[] = $mycode;

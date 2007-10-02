@@ -88,11 +88,11 @@ if(!$thread['subject'] || (($thread['visible'] == 0 && !is_moderator($fid)) || $
 {
 	error($lang->error_invalidthread);
 }
-if($forum['open'] == "no" || $forum['type'] != "f")
+if($forum['open'] == 0 || $forum['type'] != "f")
 {
 	error($lang->error_closedinvalidforum);
 }
-if($forumpermissions['canview'] == "no" || $forumpermissions['canpostreplys'] == "no" || $mybb->user['suspendposting'] == 1)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
 {
 	error_no_permission();
 }
@@ -113,10 +113,10 @@ if($mybb->input['method'] == "quickreply")
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if($mybb->settings['bbcodeinserter'] != "off" && $forum['allowmycode'] != "no" && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
 	$codebuttons = build_mycode_inserter();
-	if($forum['allowsmilies'] != "no")
+	if($forum['allowsmilies'] != 0)
 	{
 		$smilieinserter = build_clickable_smilies();
 	}
@@ -143,7 +143,7 @@ else
 // Check to see if the thread is closed, and if the user is a mod.
 if(!is_moderator($fid, "caneditposts"))
 {
-	if($thread['closed'] == "yes")
+	if($thread['closed'] == 1)
 	{
 		error($lang->redirect_threadclosed);
 	}
@@ -169,7 +169,7 @@ if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
 	// If there's an attachment, check it and upload it.
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != "no")
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
 	{
 		require_once MYBB_ROOT."inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
@@ -207,7 +207,7 @@ $reply_errors = "";
 $hide_captcha = false;
 
 // Check the maximum posts per day for this user
-if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != "yes")
+if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
 {
 	$daycut = TIME_NOW-60*60*24;
 	$query = $db->simple_select("posts", "COUNT(*) AS posts_today", "uid='{$mybb->user['uid']}' AND visible='1' AND dateline>{$daycut}");
@@ -250,7 +250,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			{
 				my_setcookie('loginattempts', $logins + 1);
 				$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
-				if($mybb->settings['failedlogintext'] == "yes")
+				if($mybb->settings['failedlogintext'] == 1)
 				{
 					$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 				}				
@@ -371,7 +371,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	}
 
 	// Check captcha image
-	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string($mybb->input['imagestring']);
@@ -421,7 +421,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
-		if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
+		if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != 0)
 		{
 			// We quoted all posts - remove the entire cookie
 			if($mybb->input['quoted_ids'] == "all")
@@ -576,7 +576,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		$message = '';
 		$quoted_posts = array();
 		// Handle multiquote
-		if($_COOKIE['multiquote'] && $mybb->settings['multiquote'] != "off")
+		if($_COOKIE['multiquote'] && $mybb->settings['multiquote'] != 0)
 		{
 			$multiquoted = explode("|", $_COOKIE['multiquote']);
 			foreach($multiquoted as $post)
@@ -634,6 +634,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 					$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
 					$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
+					$quoted_post['message'] = $parser->parse_badwords($quoted_post['message']);
 					$message .= "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 					$quoted_ids[] = $quoted_post['pid'];
 				}
@@ -685,7 +686,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	if($mybb->input['previewpost'] || $maximageserror || $reply_errors != '')
 	{
 		$postoptions = $mybb->input['postoptions'];
-		if($postoptions['signature'] == "yes")
+		if($postoptions['signature'] == 1)
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
@@ -697,7 +698,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 		}
-		if($postoptions['disablesmilies'] == "yes")
+		if($postoptions['disablesmilies'] == 1)
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
@@ -707,11 +708,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	{
 		$message = htmlspecialchars_uni($post['message']);
 		$subject = $post['subject'];
-		if($post['includesig'] != "no")
+		if($post['includesig'] != 0)
 		{
 			$postoptionschecked['signature'] = " checked=\"checked\"";
 		}
-		if($post['smilieoff'] == "yes")
+		if($post['smilieoff'] == 1)
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
@@ -736,7 +737,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
-	if($forum['allowpicons'] != "no")
+	if($forum['allowpicons'] != 0)
 	{
 		$posticons = get_post_icons();
 	}
@@ -819,9 +820,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$post['smilieoff'] = $postoptions['disablesmilies'];
 			$post['dateline'] = TIME_NOW;
 			$post['includesig'] = $mybb->input['postoptions']['signature'];
-			if($post['includesig'] != "yes")
+			if($post['includesig'] != 1)
 			{
-				$post['includesig'] = "no";
+				$post['includesig'] = 0;
 			}
 	
 			// Fetch attachments assigned to this post.
@@ -863,7 +864,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 
 	// Get a listing of the current attachments.
 	$bgcolor = "trow1";
-	if($forumpermissions['canpostattachments'] != "no")
+	if($forumpermissions['canpostattachments'] != 0)
 	{
 		$attachcount = 0;
 		if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
@@ -880,7 +881,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$attachment['size'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
-			if($forum['allowmycode'] != "no")
+			if($forum['allowmycode'] != 0)
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
@@ -926,7 +927,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// Show captcha image for guests if enabled
-	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
+	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
 	{
 		$correct = false;
 		// If previewing a post - check their current captcha input - if correct, hide the captcha input area
@@ -960,7 +961,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 	}
 
-	if($mybb->settings['threadreview'] != "off")
+	if($mybb->settings['threadreview'] != 0)
 	{
 		if(!$mybb->settings['postsperpage'])
 		{
@@ -1024,9 +1025,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				"allow_imgcode" => $forum['allowimgcode'],
 				"me_username" => $post['username']
 			);
-			if($post['smilieoff'] == "yes")
+			if($post['smilieoff'] == 1)
 			{
-				$parser_options['allow_smilies'] = "no";
+				$parser_options['allow_smilies'] = 0;
 			}
 
 			if($post['visible'] != 1)
@@ -1050,7 +1051,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		eval("\$threadreview = \"".$templates->get("newreply_threadreview")."\";");
 	}
 	// Can we disable smilies or are they disabled already?
-	if($forum['allowsmilies'] != "no")
+	if($forum['allowsmilies'] != 0)
 	{
 		eval("\$disablesmilies = \"".$templates->get("newreply_disablesmilies")."\";");
 	}
@@ -1061,7 +1062,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	// Show the moderator options.
 	if(is_moderator($fid))
 	{
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			$closecheck = ' checked="checked"';
 		}

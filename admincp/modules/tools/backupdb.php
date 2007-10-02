@@ -177,7 +177,7 @@ if($mybb->input['action'] == "backup")
 		$contents = $header;
 		foreach($mybb->input['tables'] as $table)
 		{			
-			if($mybb->input['analyzeoptimize'] == "yes")
+			if($mybb->input['analyzeoptimize'] == 1)
 			{
 				$db->optimize_table($table);
 				$db->analyze_table($table);

@@ -274,9 +274,9 @@ if($mybb->input['action'] == "add")
 	makelabelcode($lang->start_date, "<select name=\"startdatehour\">\n$startdatehour</select>\n &nbsp; \n<select name=\"startdatemin\">\n$startdatemin</select>\n &nbsp; \n<select name=\"startdateampm\"><option value=\"am\" $amsel>AM</option><option value=\"pm\" $pmsel>PM</option></select>\n &nbsp; \n<select name=\"startdateday\">\n$startdateday</select>\n &nbsp; \n<select name=\"startdatemonth\">\n$startdatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"startdateyear\" value=\"$startdateyear\" size=\"4\" maxlength=\"4\"> (GMT)\n");
 	makelabelcode($lang->end_date, "<input type=\"radio\" name=\"end\" value=\"selected\" checked=\"checked\" /> <select name=\"enddatehour\">\n$enddatehour</select>\n &nbsp; \n<select name=\"enddatemin\">\n$enddatemin</select>\n &nbsp; \n<select name=\"enddateampm\"><option value=\"am\" $amsel>AM</option><option value=\"pm\" $pmsel>PM</option></select>\n &nbsp; \n<select name=\"enddateday\">\n$enddateday</select>\n &nbsp; \n<select name=\"enddatemonth\">\n$enddatemonth</select>\n &nbsp; \n<input type=\"text\" name=\"enddateyear\" value=\"$enddateyear\" size=\"4\" maxlength=\"4\"> (GMT)<br /><input type=\"radio\" name=\"end\" value=\"never\" /> $lang->never\n");
 	maketextareacode($lang->announcement, "message", "", "10", "50");
-	makeyesnocode($lang->allow_html, "allowhtml", "yes");
-	makeyesnocode($lang->allow_mycode, "allowmycode", "yes");
-	makeyesnocode($lang->allow_smilies, "allowsmilies", "yes");
+	makeyesnocode($lang->allow_html, "allowhtml", 1);
+	makeyesnocode($lang->allow_mycode, "allowmycode", 1);
+	makeyesnocode($lang->allow_smilies, "allowsmilies", 1);
 	makelabelcode($lang->parent_forum, forumselect("fid", $fid, "", "", "0", $lang->global_to_all));
 	$plugins->run_hooks("admin_announcements_add_form");
 	endtable();
@@ -298,7 +298,7 @@ if($mybb->input['action'] == "delete")
 
 	tableheader($lang->delete_announcement2, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_announcement_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();

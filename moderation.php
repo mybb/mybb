@@ -107,7 +107,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		if($thread['closed'] == "yes")
+		if($thread['closed'] == 1)
 		{
 			$openclose = $lang->opened;
 			$redirect = $lang->redirect_openthread;
@@ -185,7 +185,7 @@ switch($mybb->input['action'])
 
 		if(!is_moderator($fid, "candeleteposts"))
 		{
-			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
+			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
 				error_no_permission();
 			}
@@ -207,7 +207,7 @@ switch($mybb->input['action'])
 
 		if(!is_moderator($fid, "candeleteposts"))
 		{
-			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
+			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
 				error_no_permission();
 			}
@@ -234,7 +234,7 @@ switch($mybb->input['action'])
 
 		if(!is_moderator($fid, "candeleteposts"))
 		{
-			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
+			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
 				error_no_permission();
 			}
@@ -265,7 +265,7 @@ switch($mybb->input['action'])
 		}
 		if(!is_moderator($fid, "candeleteposts"))
 		{
-			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
+			if($permissions['candeletethreads'] != 1 || $mybb->user['uid'] != $thread['uid'])
 			{
 				error_no_permission();
 			}
@@ -360,9 +360,9 @@ switch($mybb->input['action'])
 				"allow_smilies" => $forum['allowsmilies'],
 				"allow_imgcode" => $forum['allowimgcode']
 			);
-			if($post['smilieoff'] == "yes")
+			if($post['smilieoff'] == 1)
 			{
-				$parser_options['allow_smilies'] = "no";
+				$parser_options['allow_smilies'] = 0;
 			}
 
 			$message = $parser->parse_message($post['message'], $parser_options);
@@ -394,7 +394,7 @@ switch($mybb->input['action'])
 		$query = $db->simple_select("posts", "*", "tid='$tid'");
 		while($post = $db->fetch_array($query))
 		{
-			if($deletepost[$post['pid']] == "yes")
+			if($deletepost[$post['pid']] == 1)
 			{
 				$moderation->delete_post($post['pid']);
 				$deletecount++;
@@ -448,9 +448,9 @@ switch($mybb->input['action'])
 				"allow_smilies" => $forum['allowsmilies'],
 				"allow_imgcode" => $forum['allowimgcode']
 			);
-			if($post['smilieoff'] == "yes")
+			if($post['smilieoff'] == 1)
 			{
-				$parser_options['allow_smilies'] = "no";
+				$parser_options['allow_smilies'] = 0;
 			}
 
 			$message = $parser->parse_message($post['message'], $parser_options);
@@ -528,7 +528,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no" && !is_moderator($fid, "canmovetononmodforum"))
+		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
 			error_no_permission();
 		}
@@ -658,7 +658,7 @@ switch($mybb->input['action'])
 
 		// Admin options
 		$adminoptions = "";
-		if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hide_admin_links'] != 1)
+		if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 		{
 			eval("\$adminoptions = \"".$templates->get("moderation_getip_adminoptions")."\";");
 		}
@@ -809,9 +809,9 @@ switch($mybb->input['action'])
 				"allow_smilies" => $forum['allowsmilies'],
 				"allow_imgcode" => $forum['allowimgcode']
 			);
-			if($post['smilieoff'] == "yes")
+			if($post['smilieoff'] == 1)
 			{
-				$parser_options['allow_smilies'] = "no";
+				$parser_options['allow_smilies'] = 0;
 			}
 
 			$message = $parser->parse_message($post['message'], $parser_options);
@@ -868,7 +868,7 @@ switch($mybb->input['action'])
 		$query = $db->simple_select("posts", "pid", "tid='$tid'");
 		while($post = $db->fetch_array($query))
 		{
-			if($mybb->input['splitpost'][$post['pid']] == "yes")
+			if($mybb->input['splitpost'][$post['pid']] == 1)
 			{
 				$pids[] = $post['pid'];
 			}
@@ -1120,7 +1120,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == "no" && !is_moderator($fid, "canmovetononmodforum"))
+		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
 		{
 			error_no_permission();
 		}

@@ -381,7 +381,7 @@ class EventDataHandler extends DataHandler
 		if($event['private'] == "1")
 		{
 			// Can the user add private events?
-			if($event['uid'] == 0 || $user_permissions['canaddprivateevents'] == "no")
+			if($event['uid'] == 0 || $user_permissions['canaddprivateevents'] == 0)
 			{
 				$this->set_error("no_permission_private_event");
 				return false;
@@ -390,7 +390,7 @@ class EventDataHandler extends DataHandler
 		else
 		{
 			// Public event, got permission?
-			if($user_permissions['canaddpublicevents'] == "no")
+			if($user_permissions['canaddpublicevents'] == 0)
 			{
 				$this->set_error("no_permission_public_event");
 				return false;
@@ -483,7 +483,7 @@ class EventDataHandler extends DataHandler
 			if($event['uid'] == $mybb->user['uid'])
 			{
 				$calendar_permissions = get_calendar_permissions($event['cid']);
-				if($calendar_permissions['canbypasseventmod'] == "yes")
+				if($calendar_permissions['canbypasseventmod'] == 1)
 				{
 					$visible = 1;
 				}

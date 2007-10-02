@@ -182,24 +182,24 @@ class DataHandler
 	* @param string The specific option to check.
 	* @param string Optionally specify if the default should be used.
 	*/
-	function verify_yesno_option(&$options, $option, $default='yes')
+	function verify_yesno_option(&$options, $option, $default=1)
 	{
 		if($this->method == "insert" || array_key_exists($option, $options))
 		{
 			if($options[$option] != $default && $options[$option] != "")
 			{
-				if($default == 'yes')
+				if($default == 1)
 				{
-					$options[$option] = "no";
+					$options[$option] = 0;
 				}
 				else
 				{
-					$options[$option] = "yes";
+					$options[$option] = 1;
 				}
 			}
 			else if(@array_key_exists($option, $options) && $options[$option] == '')
 			{
-				$options[$option] = "no";
+				$options[$option] = 0;
 			}
 			else
 			{

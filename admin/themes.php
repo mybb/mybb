@@ -158,7 +158,7 @@ if($mybb->input['action'] == "do_download")
 	unset($themebits['inherited']);
 
 	$plugins->run_hooks("admin_themes_do_download");
-	if($mybb->input['customonly'] == "no")
+	if($mybb->input['customonly'] == 0)
 	{
 		$css = build_css_array($mybb->input['tid'], 0);
 	}
@@ -215,7 +215,7 @@ if($mybb->input['action'] == "do_download")
 		}
 		$xml .= "\t</themebits>\r\n";
 	}
-	if($mybb->input['inctemps'] != "no")
+	if($mybb->input['inctemps'] != 0)
 	{
 		$xml .= "\t<templates>\r\n";
 		$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='".$themebits['templateset']."'");
@@ -224,7 +224,7 @@ if($mybb->input['action'] == "do_download")
 			$xml .= "\t\t<template name=\"".$template['title']."\" version=\"".$template['version']."\"><![CDATA[".$template['template']."]]></template>\r\n";
 			$tempsdone[$template['title']] = 1;
 		}
-		if($mybb->input['customtempsonly'] == "no")
+		if($mybb->input['customtempsonly'] == 0)
 		{
 			$query = $db->query("SELECT * FROM ".TABLE_PREFIX."templates WHERE sid='-2'");
 			while($template=$db->fetch_array($query))
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "do_import")
 		cpmessage($lang->theme_exists);
 	}
 
-	if($mybb->version_code != $version && $mybb->input['ignorecompat'] != "yes")
+	if($mybb->version_code != $version && $mybb->input['ignorecompat'] != 1)
 	{
 		$lang->version_warning = sprintf($lang->version_warning, $mybb->version);
 		cperror($lang->version_warning);
@@ -360,7 +360,7 @@ if($mybb->input['action'] == "do_import")
 		}
 	}
 
-	if($master == "yes")
+	if($master == 1)
 	{
 		$templateset = -2;
 		$tid = 1;
@@ -375,7 +375,7 @@ if($mybb->input['action'] == "do_import")
 
 	$themebits['templateset'] = $templateset;
 
-	if($mybb->input['importtemps'] == "yes" && is_array($templates))
+	if($mybb->input['importtemps'] == 1 && is_array($templates))
 	{
 		foreach($templates as $template)
 		{
@@ -548,7 +548,7 @@ if($mybb->input['action'] == "delete")
 	if($theme[def] != 1)
 	{
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
-		$no = makebuttoncode("no", $lang->no);
+		$no = makebuttoncode(0, $lang->no);
 		makelabelcode("<div align=\"center\">".$lang->delete_theme_confirm."<br /><br />$yes$no</div>", "");
 	}
 	else
@@ -573,7 +573,7 @@ if($mybb->input['action'] == "import")
 	makeinputcode($lang->import_name, "name");
 	makelabelcode($lang->theme_parent, make_theme_select("pid", 1));
 	makeyesnocode($lang->import_custom_templates, "importtemps");
-	makeyesnocode($lang->ignore_version, "ignorecompat", "no");
+	makeyesnocode($lang->ignore_version, "ignorecompat", 0);
 	endtable();
 	endform($lang->import_theme, $lang->reset_button);
 	cpfooter();
@@ -590,9 +590,9 @@ if($mybb->input['action'] == "download")
 	tableheader($lang->download_theme, "");
 	tablesubheader($lang->select_download, "");
 	makelabelcode($lang->theme_parent, make_theme_select("tid", $mybb->input['tid']));
-	makeyesnocode($lang->include_custom_only, "customonly", "yes");
-	makeyesnocode($lang->include_templates, "inctemps", "yes");
-	makeyesnocode($lang->include_custom_temps_only, "customtempsonly", "yes");
+	makeyesnocode($lang->include_custom_only, "customonly", 1);
+	makeyesnocode($lang->include_templates, "inctemps", 1);
+	makeyesnocode($lang->include_custom_temps_only, "customtempsonly", 1);
 	endtable();
 	endform($lang->do_download, $lang->reset_button);
 	cpfooter();

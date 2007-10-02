@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings version="1400" exported="1178692706">
-	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="14" isdefault="yes">
+	<settinggroup name="calendar" title="Calendar" description="The board calendar allows the public and private listing of events and members' birthdays. This section allows you to control and manage the settings for the Calendar." disporder="14" isdefault="1">
 		<setting name="enablecalendar">
 			<title>Enable Calendar Functionality</title>
 			<description><![CDATA[If you wish to disable the calendar on your board, set this option to no.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="publiceventcolor">
@@ -26,13 +26,13 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="20" isdefault="yes">
+	<settinggroup name="clickablecode" title="Clickable Smilies and BB Code" description="This section allows you to change how the clickable smilies inserter appears." disporder="20" isdefault="1">
 		<setting name="smilieinserter">
 			<title>Clickable Smilies Inserter</title>
 			<description><![CDATA[Clickable smilies will appear on the posting pages if this option is set to 'on'.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinsertertot">
@@ -52,7 +52,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="21" isdefault="yes">
+	<settinggroup name="cpprefs" title="Control Panel Preferences (Global)" description="This section allows you to set the global preferences for the Admin Control Panel." disporder="21" isdefault="1">
 		<setting name="cplanguage">
 			<title>Control Panel Language</title>
 			<description><![CDATA[The language of the control panel.]]></description>
@@ -70,7 +70,7 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="4" isdefault="yes">
+	<settinggroup name="datetime" title="Date and Time Formats" description="Here you can specify the different date and time formats used to display dates and times on the forums." disporder="4" isdefault="1">
 		<setting name="dateformat">
 			<title>Date Format</title>
 			<description><![CDATA[The format of the dates used on the forum. This format uses the PHP date() function. We recommend not changing this unless you know what you're doing.]]></description>
@@ -142,11 +142,11 @@
 			<description><![CDATA[If times are an hour out above and your timezone is selected correctly, enable day light savings time correction.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="forumdisplay" title="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="6" isdefault="yes">
+	<settinggroup name="forumdisplay" title="Forum Display Options" description="This section allows you to manage the various settings used on the forum display (forumdisplay.php) of your boards such as enabling and disabling different features." disporder="6" isdefault="1">
 		<setting name="threadsperpage">
 			<title>Threads Per Page</title>
 			<description><![CDATA[The number of threads to display per page on the forum display]]></description>
@@ -184,7 +184,7 @@
 			<description><![CDATA[Do you want to show dots on the thread indicators of threads users have participated in.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="browsingthisforum">
@@ -192,7 +192,7 @@
 			<description><![CDATA[Here you can turn off the 'users browsing this forum' feature.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="announcementlimit">
@@ -204,13 +204,13 @@
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="forumhome" title="Forum Home Options" description="This section allows you to manage the various settings used on the forum home (index.php) of your boards such as enabling and disabling different features." disporder="5" isdefault="yes">
+	<settinggroup name="forumhome" title="Forum Home Options" description="This section allows you to manage the various settings used on the forum home (index.php) of your boards such as enabling and disabling different features." disporder="5" isdefault="1">
 		<setting name="showdescriptions">
 			<title>Show Forum Descriptions?</title>
 			<description><![CDATA[This option will allow you to turn off showing the descriptions for forums.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="subforumsindex">
@@ -226,7 +226,7 @@
 			<description><![CDATA[Show icons indicating whether or not a subforum contains new posts or not?  This won't have any effect unless you enabled subforums display on the index.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="hideprivateforums">
@@ -234,7 +234,7 @@
 			<description><![CDATA[You can hide private forums by turning this option on. This option also hides forums on the forum jump and all subforums.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="modlist">
@@ -242,7 +242,7 @@
 			<description><![CDATA[Here you can turn on or off the listing of moderators for each forum on index.php and forumdisplay.php]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showbirthdays">
@@ -250,7 +250,7 @@
 			<description><![CDATA[Do you want to show today's birthdays on the forum homepage?]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showwol">
@@ -258,7 +258,7 @@
 			<description><![CDATA[Display the currently active users on the forum home page.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showindexstats">
@@ -266,7 +266,7 @@
 			<description><![CDATA[Do you want to show the total number of threads, posts, members, and the last member on the forum home?]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showforumviewing">
@@ -274,11 +274,11 @@
 			<description><![CDATA[Displays the currently active users viewing each forum.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="general" title="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="yes">
+	<settinggroup name="general" title="General Configuration" description="This section contains various settings such as your board name and url, as well as your website name and url." disporder="2" isdefault="1">
 		<setting name="bbname">
 			<title>Board Name</title>
 			<description><![CDATA[The name of your message boards. We recommend that it is not over 75 characters.]]></description>
@@ -364,7 +364,7 @@
 			<description><![CDATA[Allows you to turn off the public display of version numbers in MyBB.]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[off]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaimage">
@@ -372,7 +372,7 @@
 			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration and posting where users are required to enter the text contained within the image to continue. This helps prevent automated registrations and postings.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="reportmethod">
@@ -415,7 +415,7 @@ email=Sent via Email]]></optionscode>
 			<description><![CDATA[Set to no if you do not want to show the language selection area in the footer of all pages in the board.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxmultipagelinks">
@@ -443,7 +443,7 @@ email=Sent via Email]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="22" isdefault="yes">
+	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="22" isdefault="1">
 		<setting name="mail_handler">
 			<title>Mail handler</title>
 			<description><![CDATA[The medium through which MyBB will send outgoing emails.]]></description>
@@ -506,13 +506,13 @@ smtp=SMTP mail]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="member" title="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="yes">
+	<settinggroup name="member" title="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="1">
 		<setting name="disableregs">
 			<title>Disable Registrations</title>
 			<description><![CDATA[Allows you to turn off the capability for users to register with one click.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="regtype">
@@ -580,7 +580,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Select yes if you wish to allow users to sign up with the same email more than once otherwise select no.]]></description> 
 			<disporder>9</disporder> 
 			<optionscode><![CDATA[yesno]]></optionscode> 
-			<settingvalue><![CDATA[no]]></settingvalue> 
+			<settingvalue><![CDATA[0]]></settingvalue> 
 			<helpkey></helpkey> 
 		</setting> 
 		<setting name="maxregsbetweentime">
@@ -612,7 +612,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="usereferrals">
@@ -620,7 +620,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want to use the user referrals system on these forums?]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigmycode">
@@ -628,7 +628,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want to allow myCode to be used in users' signatures?]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxsigimages">
@@ -644,7 +644,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want to allow smilies to be used in users' signatures?]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sightml">
@@ -652,7 +652,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want to allow HTML to be used in users' signatures?]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigimgcode">
@@ -660,7 +660,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want to allow [img] code to be used in users' signatures?]]></description>
 			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="siglength">
@@ -676,7 +676,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want myCode to be counted as part of the limit when users use myCode in their signature?]]></description>
 			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxavatardims">
@@ -727,7 +727,7 @@ disabled=Disable this feature]]></optionscode>
 			<description><![CDATA[If a current user has an email already registered in your banned list, should he be allowed to keep it.]]></description>
 			<disporder>27</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="coppa">
@@ -742,13 +742,13 @@ disabled=Disable this feature]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="yes">
+	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="1">
 		<setting name="enablememberlist">
 			<title>Enable Member List Functionality</title>
 			<description><![CDATA[If you wish to disable the member list on your board, set this option to no.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="membersperpage">
@@ -782,7 +782,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="yes">
+	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
 			<title>Board Closed</title>
 			<description><![CDATA[If you need to close your forums to make some changes or perform an upgrade, this is the global switch. Viewers will not be able to view your forums, however, they will see a message with the reason you specify below.<br />
@@ -790,7 +790,7 @@ DESC=Descending]]></optionscode>
 <b>Administrators will still be able to view the forums.</b>]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="boardclosed_reason">
@@ -802,7 +802,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="17" isdefault="yes">
+	<settinggroup name="portal" title="Portal Settings" description="The portal page compiles several different pieces of information about your forum, including latest posts, who's online, forum stats, announcements, and more. This section has settings to control the aspects of the portal page (portal.php)." disporder="17" isdefault="1">
 		<setting name="portal_announcementsfid">
 			<title>Forum ID to pull announcements from</title>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
@@ -824,7 +824,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Do you want to show the welcome box to visitors / users.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showpms">
@@ -832,7 +832,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Do you want to show the number of private messages the current user has in their pm system.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showstats">
@@ -840,7 +840,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Do you want to show the total number of posts, threads, members and the last registered member on the portal page?]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showwol">
@@ -848,7 +848,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Do you want to show the 'Who's online' information to users when they visit the portal page?]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showsearch">
@@ -856,7 +856,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Do you want to show the search box, allowing users to quickly search the forums on the portal?]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showdiscussions">
@@ -864,7 +864,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Do you wish to show the current forum discussions on the portal page?]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showdiscussionsnum">
@@ -876,7 +876,7 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="posting" title="Posting" description="These options control the various elements in relation to posting messages on the forums." disporder="9" isdefault="yes">
+	<settinggroup name="posting" title="Posting" description="These options control the various elements in relation to posting messages on the forums." disporder="9" isdefault="1">
 		<setting name="minmessagelength">
 			<title>Minimum Message Length</title>
 			<description><![CDATA[The minimum number of characters to post.]]></description>
@@ -906,7 +906,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Set to on if you want to enable flood checking for posts. Specify the time between posts below.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postfloodsecs">
@@ -965,7 +965,7 @@ show=Show to all Users]]></optionscode>
 			<description><![CDATA[Once a post is edited by a regular user, do you want to show the edited by message?]]></description>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showeditedbyadmin">
@@ -973,7 +973,7 @@ show=Show to all Users]]></optionscode>
 			<description><![CDATA[Do you want to show edited by messages for forum staff when they edit their posts?]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpostimages">
@@ -1008,7 +1008,7 @@ show=Show to all Users]]></optionscode>
 yes=Thumbnail
 no=Full Size Image
 download=As Download Link]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbh">
@@ -1060,13 +1060,13 @@ download=As Download Link]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="13" isdefault="yes">
+	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="13" isdefault="1">
 		<setting name="enablepms">
 			<title>Enable Private Messaging Functionality</title>
 			<description><![CDATA[If you wish to disable the private messaging system on your board, set this option to no.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowhtml">
@@ -1074,7 +1074,7 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Selecting yes will allow HTML to be used in private messages.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowmycode">
@@ -1082,7 +1082,7 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Selecting yes will allow MyCode to be used in private messages.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowsmilies">
@@ -1090,7 +1090,7 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Selecting yes will allow Smilies to be used in private messages.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowimgcode">
@@ -1098,17 +1098,17 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Selecting yes will allow [img] Code to be used in private messages.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="10" isdefault="yes">
+	<settinggroup name="reputation" title="Reputation" description="The reputation system allows your users to rate others and leave a comment on the user. This section has settings to disable and change other aspects of the reputation page (reputation.php)." disporder="10" isdefault="1">
 		<setting name="enablereputation">
 			<title>Enable Reputation Functionality</title>
 			<description><![CDATA[If you wish to disable the reputation system on your board, set this option to no.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="repsperpage">
@@ -1120,7 +1120,7 @@ download=As Download Link]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB," disporder="18" isdefault="yes">
+	<settinggroup name="search" title="Search System" description="The various settings in this group allow you to make changes to the built in search mechanism for threads and posts in MyBB," disporder="18" isdefault="1">
 		<setting name="searchtype">
 			<title>Search Type</title>
 			<description><![CDATA[Please select the type of search system you wish to use. You can either chose between "Standard", or "Full Text" (depending on your database). Fulltext searching is more powerful than the standard MyBB searching and quicker too.]]></description>
@@ -1155,7 +1155,7 @@ download=As Download Link]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="yes">
+	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="1">
 		<setting name="seourls">
 			<title>Enable search engine friendly URLs?</title>
 			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivilent for your web server). Automatic detection may not work on all servers.</strong> Please see <a href="http://wiki.mybboard.net/index.php/SEF_URLS">The MyBB wiki</a> for assistance.]]></description>
@@ -1172,7 +1172,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[Do you want to compress pages in GZip format when they are sent to the browser? This means quicker downloads for your visitors, and less traffic usage for you.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="gziplevel">
@@ -1188,7 +1188,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[With some web servers, this option can cause problems; with others, it is needed. ]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="nocacheheaders">
@@ -1196,7 +1196,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[With this option you can prevent caching of the page by the browser.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="redirects">
@@ -1204,7 +1204,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="load">
@@ -1220,7 +1220,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[This will enable or disable the output of template start/end comments in the HTML.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="use_xmlhttprequest">
@@ -1228,7 +1228,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[This will enable or disable the XMLHttp request features.]]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="useshutdownfunc">
@@ -1236,7 +1236,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[This setting for the most part is best left at the default which is detected upon installation. If thread indicators are not updating as well as other meta information, set this setting to 'No']]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="extraadmininfo">
@@ -1244,7 +1244,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="uploadspath">
@@ -1260,7 +1260,7 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is reccommended that it stay on]]></description>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="errorlogmedium">
@@ -1300,21 +1300,21 @@ both=Warnings and Errors
 			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="showteam" title="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="12" isdefault="yes">
+	<settinggroup name="showteam" title="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="12" isdefault="1">
 		<setting name="showteamleaders">
 			<title>Separate Group Leaders</title>
 			<description><![CDATA[If set to 'yes,' and if there are group leaders, they will be displayed above the other group members.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="yes">
+	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="1">
 		<setting name="postsperpage">
 			<title>Posts Per Page:</title>
 			<description><![CDATA[The number of posts to display per page. We recommend its not higher than 20 for people with slower connections.]]></description>
@@ -1344,7 +1344,7 @@ both=Warnings and Errors
 			<description><![CDATA[Selecting yes will cause posts to look similar to how posts look in USENET. No will cause posts to look the modern way.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="quickreply">
@@ -1352,7 +1352,7 @@ both=Warnings and Errors
 			<description><![CDATA[Allows you to set whether or not the quick reply form will be shown at the bottom of threads.]]></description>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="multiquote">
@@ -1360,7 +1360,7 @@ both=Warnings and Errors
 			<description><![CDATA[The multi-quote button allows users to select a series of posts then click Reply and have those posts quoted in their message.]]></description>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[on]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showsimilarthreads">
@@ -1368,7 +1368,7 @@ both=Warnings and Errors
 			<description><![CDATA[The Similar Threads table shows threads that are relevant to the thread being read. You can set the relevancy below.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[no]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="similarityrating">
@@ -1392,17 +1392,17 @@ both=Warnings and Errors
 			<description><![CDATA[If this setting is enabled, the number of thread views for threads will be updated in the background by the task schedule system. If not enabled, thread view counters are incremented instantly.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
-			<settingvalue><![CDATA[off]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="11" isdefault="yes">
+	<settinggroup name="warning" title="Warning System Settings" description="The warning system allows forum staff to warn users for rule violations. Here you can manage the settings that control the warning system." disporder="11" isdefault="1">
 		<setting name="enablewarningsystem">
 			<title>Enable Warning System?</title>
 			<description><![CDATA[Set to no to completely disable the warning system.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="allowcustomwarnings">
@@ -1410,7 +1410,7 @@ both=Warnings and Errors
 			<description><![CDATA[Allow a custom reason and amount of points to be specified by those with permissions to warn users.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="canviewownwarning">
@@ -1418,7 +1418,7 @@ both=Warnings and Errors
 			<description><![CDATA[Set to yes to allow users to view recent warnings in their User CP and show their warning level to them in their profile.]]></description>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[yes]]></settingvalue>
+			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxwarningpoints">
@@ -1430,7 +1430,7 @@ both=Warnings and Errors
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="whosonline" title="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="15" isdefault="yes">
+	<settinggroup name="whosonline" title="Who's Online" description="Various settings regarding the Who is Online functionality." disporder="15" isdefault="1">
 		<setting name="wolcutoffmins">
 			<title>Cut-off Time (mins)</title>
 			<description><![CDATA[The number of minutes before a user is marked offline. Recommended: 15.]]></description>

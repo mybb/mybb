@@ -1104,7 +1104,7 @@ function install_done()
 		}
 		$db->insert_query("usergroups", $new_group);
 		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
-		if($new_group['cancp'] == "yes" && !$admin_gid)
+		if($new_group['cancp'] == 1 && !$admin_gid)
 		{
 			$admin_gid = $db->insert_id();
 		}
@@ -1135,17 +1135,17 @@ function install_done()
 		'msn' =>'',
 		'birthday' => '',
 		'signature' => '',
-		'allownotices' => 'yes',
-		'hideemail' => 'no',
+		'allownotices' => 1,
+		'hideemail' => 0,
 		'subscriptionmethod' => '0',
-		'receivepms' => 'yes',
-		'pmnotice' => 'yes',
-		'pmnotify' => 'yes',
-		'remember' => 'yes',
-		'showsigs' => 'yes',
-		'showavatars' => 'yes',
-		'showquickreply' => 'yes',
-		'invisible' => 'no',
+		'receivepms' => 1,
+		'pmnotice' => 1,
+		'pmnotify' => 1,
+		'remember' => 1,
+		'showsigs' => 1,
+		'showavatars' => 1,
+		'showquickreply' => 1,
+		'invisible' => 0,
 		'style' => '0',
 		'timezone' => 0,
 		'dst' => 0,
@@ -1162,7 +1162,7 @@ function install_done()
 		'ignorelist' => '',
 		'pmfolders' => '',
 		'notepad' => '',
-		'showredirect' => 'yes'
+		'showredirect' => 1
 	);
 	$db->insert_query('users', $newuser);
 	echo $lang->done . '</p>';
@@ -1317,7 +1317,7 @@ function test_shutdown_function()
 {
 	global $db;
 	
-	$db->update_query("settings", array('value' => 'yes'), "name='useshutdownfunc'");
+	$db->update_query("settings", array('value' => 1), "name='useshutdownfunc'");
 	write_settings();
 }
 ?>

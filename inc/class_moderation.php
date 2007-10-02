@@ -28,7 +28,7 @@ class Moderation
 		$tid_list = implode(",", $tids);
 
 		$openthread = array(
-			"closed" => "yes",
+			"closed" => 1,
 		);
 		$db->update_query("threads", $openthread, "tid IN ($tid_list)");
 
@@ -53,7 +53,7 @@ class Moderation
 		$tid_list = implode(",", $tids);
 
 		$closethread = array(
-			"closed" => "no",
+			"closed" => 0,
 		);
 		$db->update_query("threads", $closethread, "tid IN ($tid_list)");
 
@@ -175,7 +175,7 @@ class Moderation
 		}
 		
 		// Remove post count from users
-		if($usepostcounts != "no")
+		if($usepostcounts != 0)
 		{
 			if(is_array($userposts))
 			{
@@ -281,7 +281,7 @@ class Moderation
 
 			$forum = get_forum($thread['fid']);
 			
-			if($forum['usepostcounts'] != "no") 
+			if($forum['usepostcounts'] != 0) 
 			{ 
 				$forum_counters[$forum['fid']]['num_threads']++; 
 				$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
@@ -349,7 +349,7 @@ class Moderation
 				$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Add implied invisible to count
 
 				// On unapproving thread restore user post counts
-				if($forum['usepostcounts'] != "no")
+				if($forum['usepostcounts'] != 0)
 				{
 					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND visible='1' AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
@@ -404,7 +404,7 @@ class Moderation
 		");
 		$post = $db->fetch_array($query);
 		// If post counts enabled in this forum and it hasn't already been unapproved, remove 1
-		if($post['usepostcounts'] != "no" && $post['visible'] != 0)
+		if($post['usepostcounts'] != 0 && $post['visible'] != 0)
 		{
 			$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 		}
@@ -488,7 +488,7 @@ class Moderation
 					$message .= "[hr]{$post['message']}";
 				}
 				
-				if($post['usepostcounts'] != "no" && $post['visible'] == '1')
+				if($post['usepostcounts'] != 0 && $post['visible'] == '1')
 				{
 					// Update post count of the user of the merged posts
 					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$post['uid']}'");
@@ -768,15 +768,15 @@ class Moderation
 		");
 		while($posters = $db->fetch_array($query))
 		{
-			if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
+			if($method == "copy" && $newforum['usepostcounts'] != 0 && $posters['visible'] != 0)
 			{
 				$pcount = "+{$posters['posts']}";
 			}
-			elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no" && $posters['visible'] != "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] != 0 && $forum['usepostcounts'] == 0 && $posters['visible'] != 0))
 			{
 				$pcount = "+{$posters['posts']}";
 			}
-			elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no" && $posters['visible'] != "no"))
+			elseif($method != "copy" && ($newforum['usepostcounts'] == 0 && $forum['usepostcounts'] != 0 && $posters['visible'] != 0))
 			{
 				$pcount = "-{$posters['posts']}";
 			}
@@ -980,11 +980,11 @@ class Moderation
 		");
 		while($posters = $db->fetch_array($query))
 		{
-			if($oldusepcounts == "yes" && $newusepcounts == "no")
+			if($oldusepcounts == 1 && $newusepcounts == 0)
 			{
 				$pcount = "-{$posters['posts']}";
 			}
-			elseif($oldusepcounts == "no" && $newusepcounts == "yes")
+			elseif($oldusepcounts == 0 && $newusepcounts == 1)
 			{
 				$pcount = "+{$posters['posts']}";
 			}
@@ -1143,15 +1143,15 @@ class Moderation
 			");
 			while($posters = $db->fetch_array($query1))
 			{
-				if($method == "copy" && $newforum['usepostcounts'] != "no" && $posters['visible'] != "no")
+				if($method == "copy" && $newforum['usepostcounts'] != 0 && $posters['visible'] != 0)
 				{
 					$pcount = "+{$posters['posts']}";
 				}
-				elseif($method != "copy" && ($newforum['usepostcounts'] != "no" && $forum['usepostcounts'] == "no" && $posters['visible'] != "no"))
+				elseif($method != "copy" && ($newforum['usepostcounts'] != 0 && $forum['usepostcounts'] == 0 && $posters['visible'] != 0))
 				{
 					$pcount = "+{$posters['posts']}";
 				}
-				elseif($method != "copy" && ($newforum['usepostcounts'] == "no" && $forum['usepostcounts'] != "no" && $posters['visible'] != "no"))
+				elseif($method != "copy" && ($newforum['usepostcounts'] == 0 && $forum['usepostcounts'] != 0 && $posters['visible'] != 0))
 				{
 					$pcount = "-{$posters['posts']}";
 				}
@@ -1230,7 +1230,7 @@ class Moderation
 		while($post = $db->fetch_array($query))
 		{
 			// If post counts enabled in this forum and the post hasn't already been approved, add 1
-			if($post['usepostcounts'] != "no" && $thread['visible'] == 1)
+			if($post['usepostcounts'] != 0 && $thread['visible'] == 1)
 			{
 				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
 			}
@@ -1323,7 +1323,7 @@ class Moderation
 		while($post = $db->fetch_array($query))
 		{
 			// If post counts enabled in this forum and the post hasn't already been unapproved, subtract 1
-			if($post['usepostcounts'] != "no" && $thread['visible'] == 1)
+			if($post['usepostcounts'] != 0 && $thread['visible'] == 1)
 			{
 				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 			}
@@ -1520,11 +1520,11 @@ class Moderation
 		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
 		{
-			if($thread['closed'] == "yes")
+			if($thread['closed'] == 1)
 			{
 				$open[] = $thread['tid'];
 			}
-			elseif($thread['closed'] == '')
+			elseif($thread['closed'] == 0)
 			{
 				$close[] = $thread['tid'];
 			}
@@ -1570,7 +1570,7 @@ class Moderation
 			
 			// Get groups that cannot view the forum or its threads
 			$forum_parentlist = get_parent_list($fid);
-			$query = $db->simple_select("forumpermissions", "gid", "fid IN ({$forum_parentlist}) AND (canview='no' OR canviewthreads='no')");
+			$query = $db->simple_select("forumpermissions", "gid", "fid IN ({$forum_parentlist}) AND (canview=0 OR canviewthreads=0)");
 			$groups = array();
 			while($group = $db->fetch_array($query))
 			{

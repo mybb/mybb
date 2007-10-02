@@ -25,7 +25,7 @@ if(!$thread['tid'])
 }
 
 $forumpermissions = forum_permissions($thread['fid']);
-if($forumpermissions['canview'] == "no" || $forumpermissions['canratethreads'] == "no" || $mybb->usergroup['canratethreads'] == "no")
+if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0)
 {
 	error_no_permission();
 }
@@ -41,7 +41,7 @@ if(!$forum)
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
-if($forum['allowtratings'] == "no")
+if($forum['allowtratings'] == 0)
 {
 	error_no_permission();
 }

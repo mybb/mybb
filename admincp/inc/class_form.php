@@ -206,7 +206,7 @@ class DefaultForm
 		{
 			$input .= " id=\"".$options['id']."\"";
 		}
-		if($options['checked'] === true || $options['checked'] === 1 || $options['checked'] == "yes")
+		if($options['checked'] === true || $options['checked'] == 1)
 		{
 			$input .= " checked=\"checked\"";
 		}
@@ -291,7 +291,7 @@ class DefaultForm
 	
 			foreach($forum_cache as $fid => $forum)
 			{
-				if($forum['active'] != 'no')
+				if($forum['active'] != 0)
 				{
 					$fselectcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 				}
@@ -407,10 +407,10 @@ class DefaultForm
 		return $input;
 	}
 
-	function generate_yes_no_radio($name, $value="yes", $int=false, $yes_options=array(), $no_options = array())
+	function generate_yes_no_radio($name, $value=1, $int=true, $yes_options=array(), $no_options = array())
 	{
 		// Checked status
-		if($value == "no" || $value === '0')
+		if($value == "yes" || $value === '0')
 		{
 			$no_checked = 1;
 			$yes_checked = 0;
@@ -442,10 +442,10 @@ class DefaultForm
 		return $yes." ".$no;
 	}
 
-	function generate_on_off_radio($name, $value="yes", $int=false, $on_options=array(), $off_options = array())
+	function generate_on_off_radio($name, $value=1, $int=true, $on_options=array(), $off_options = array())
 	{
 		// Checked status
-		if($value == "off")
+		if($value == "off" || $value !== 1)
 		{
 			$off_checked = 1;
 			$on_checked = 0;

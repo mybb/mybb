@@ -319,7 +319,7 @@ if($mybb->input['action'] == "delete")
 		starttable();
 		tableheader($lang->delete_setting, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
-		$no = makebuttoncode("no", $lang->no);
+		$no = makebuttoncode(0, $lang->no);
 		makelabelcode("<div align=\"center\">$lang->delete_setting_confirm<br /><br />$yes$no</div>", "");
 		endtable();
 		endform();
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "delete")
 		starttable();
 		tableheader($lang->delete_group, "", 1);
 		$yes = makebuttoncode("deletesubmit", $lang->yes);
-		$no = makebuttoncode("no", $lang->no);
+		$no = makebuttoncode(0, $lang->no);
 		makelabelcode("<div align=\"center\">$lang->delete_group_confirm<br /><br />$yes$no</div>", "");
 		endtable();
 		endform();
@@ -496,7 +496,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 					}
 					else if($type[0] == "yesno")
 					{
-						if($setting['value'] == "yes")
+						if($setting['value'] == 1)
 						{
 							$yeschecked = "checked";
 							$nochecked = "";
@@ -715,7 +715,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 			$bgcolor = getaltbg();
 			echo "<tr>\n";
 			echo "<td class=\"$bgcolor\" width=\"88%\">\n<strong>\n<a href=\"settings.php?".SID."&amp;action=change&amp;gid=".$group['gid']."\">".$group['title']."</a>\n</strong>\n (".$settings_count.")\n<br />\n".$group['description'];
-			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != "yes")
+			if(md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" || $group['isdefault'] != 1)
 			{
 				$options = array(
 					'change' => $lang->modify_settings,

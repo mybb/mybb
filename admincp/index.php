@@ -223,7 +223,7 @@ else
 }
 $mybb->usergroup = usergroup_permissions($mybbgroups);
 
-if($mybb->usergroup['cancp'] != "yes" || !$mybb->user['uid'])
+if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
 {
 	unset($mybb->user);
 }

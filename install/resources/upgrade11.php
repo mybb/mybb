@@ -23,9 +23,164 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-$collation = $db->build_create_table_collation();
+//$collation = $db->build_create_table_collation();
+
+// FIRST STEP IS FOR INTEGER CONVERSION PROJECT
 
 function upgrade11_dbchanges()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Integer Conversion Project");
+
+	$perpage = 10000;
+
+	$to_int = array(
+		"announcements" => array("aid", "allowhtml", "allowmycode", "allowsmilies"),
+		"forumpermissions" => array("pid", "canview","canviewthreads","candlattachments","canpostthreads","canpostreplys","canpostattachments","canratethreads","caneditposts","candeleteposts","candeletethreads","caneditattachments","canpostpolls","canvotepolls"),
+		"forums" => array("fid", "active","open","allowhtml","allowmycode","allowsmilies","allowimgcode","allowpicons","allowtratings","usepostcounts","showinjump","modposts","modthreads","modattachments","overridestyle"),
+		"groupleaders" => array("lid", "canmanagemembers","canmanagerequests"),
+		"helpdocs" => array("hid", "usetranslation","enabled"),
+		"helpsections" => array("sid", "usetranslation","enabled"),
+		"moderators" => array("mid", "caneditposts","candeleteposts","canviewips","canopenclosethreads","canmanagethreads","canmovetononmodforum"),
+		"mycode" => array("cid", "active"),
+		"polls" => array("pid", "closed","multiple","public"),
+		"posts" => array("pid", "includesig","smilieoff"),
+		"privatemessages" => array("pmid", "includesig","smilieoff"),
+		"profilefields" => array("fid", "required","editable","hidden"),
+		"smilies" => array("sid", "showclickable"),
+		"usergroups" => array("gid","isbannedgroup","canview","canviewthreads","canviewprofiles","candlattachments","canpostthreads","canpostreplys","canpostattachments","canratethreads","caneditposts","candeleteposts","candeletethreads","caneditattachments","canpostpolls","canvotepolls","canusepms","cansendpms","cantrackpms","candenypmreceipts","cansendemail","canviewmemberlist","canviewcalendar","canviewonline","canviewwolinvis","canviewonlineips","cancp","issupermod","cansearch","canusercp","canuploadavatars","canratemembers","canchangename","showforumteam","usereputationsystem","cangivereputations"),
+		"users" => array("uid","allownotices","hideemail","invisible","receivepms","pmpopup","pmnotify","remember","showsigs","showavatars","showquickreply","showredirect","away"),
+		"threads" => array("tid", "closed")
+	);
+
+	// Continuing?
+	if($mybb->input['last_table'])
+	{
+		$current_table = $mybb->input['last_table'];
+	}
+	else
+	{
+		$current_table = array_keys($to_int);
+		$current_table = $current_table[0];
+		echo "<p>MyBB 1.4 represents a huge leap forward for the MyBB project.</p><p>Due to this, lots of information in the database needs to be converted to a new format.</p>";
+	}
+
+	echo "<p>MyBB is now currently converting a section of data to the new format, this may take a while.</p>";
+
+	$remaining = $perpage;
+
+	$final_table = array_keys($to_int);
+	$final_table = $final_table[count($final_table)-1];
+
+	$next_act = "11_dbchanges";
+
+	$start = intval($mybb->input['start']);
+	$count = $mybb->input['count'];
+
+	foreach($to_int as $table => $columns)
+	{
+		if($table == $current_table)
+		{
+			$form_fields['last_table'] = $current_table;
+			if($remaining <= 0)
+			{
+				break;
+			}
+			$columns_sql = implode(",", $columns);
+			$primary_key = $columns[0];
+			if(!$mybb->input['count'])
+			{
+				$query = $db->query("SELECT COUNT({$primary_key}) AS count FROM {$table}");
+				$count = $form_fields['count'] = $db->fetch_field($query, "count");
+			}
+			if($start <= $count)
+			{
+				$end = $start+$perpage;
+				if($end > $count) $end = $count;
+				echo "<p>{$table}: Converting {$start} to {$end} of {$count}</p>";
+				$form_fields['start'] = $perpage+$start;
+
+				$query = $db->query("SELECT {$columns_sql} FROM {$table} ORDER BY {$primary_key} LIMIT {$start}, {$remaining}");
+				while($row = $db->fetch_array($query))
+				{
+					$updated_row = array();
+					foreach($columns as $column)
+					{
+						if($column == $primary_key || is_int($row[$column])) continue;
+						if($row[$column] == "yes" || $row[$column] == "on")
+						{
+							$updated_row[$column] = 1;
+						}
+						else if($row[$column] == "off" || $row[$column] == "no" || $row[$column] == "")
+						{
+							$updated_row[$column] = 0;
+						}
+					}
+					if(count($updated_row) > 0)
+					{
+						$db->update_query($table, $updated_row, "{$primary_key}={$row[$primary_key]}");
+					}
+					--$remaining;
+				}
+			}
+			else
+			{
+			echo "<p>{$table}: Converting column type</p>";
+				$change_column = array();
+				foreach($columns as $column)
+				{
+					if($column == $primary_key) continue;
+					$change_column[] = "MODIFY {$column} int(1) NOT NULL default '0'";
+				}
+				$db->query("ALTER TABLE {$table} ".implode(", ", $change_column));
+
+				if($table == $final_table)
+				{
+					// Finished, after all this!
+					$next_act = "11_dbchanges1";
+				}
+				else
+				{
+					$tbl_keys = array_keys($to_int);
+					$current = array_search($current_table, $tbl_keys);
+					$form_fields['last_table'] = $current_table = $tbl_keys[$current+1];
+					$form_fields['start'] = $start = 0;
+					$form_fields['count'] = $count = $mybb->input['count'] = 0;
+				}
+			}
+		}
+	}
+
+	// Still converting
+	if($next_act == "11_dbchanges")
+	{
+		echo "<p>Done</p>";
+		echo "<p>Click next to continue with the integer conversion process.</p>";
+		foreach($form_fields as $key => $val)
+		{
+			echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$val}\" />";
+		}
+		global $footer_extra;
+		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		$output->print_footer($next_act);
+	}
+	else
+	{
+		// Convert settings table
+		$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=1 WHERE value='yes' OR value='on'");
+		$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=0 WHERE value='no' OR value='off'");
+		echo "<p>Done</p>";
+		echo "<p><strong>The integrer conversion process is now complete.</strong></p>";
+		echo "<p>Click next to continue with the upgrade process.</p>";
+		global $footer_extra;
+		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
+		$output->print_footer($next_act);
+	}
+}
+
+function upgrade11_dbchanges1()
 {
 	global $db, $output, $mybb;
 
@@ -47,6 +202,10 @@ function upgrade11_dbchanges()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("11_dbchanges2");
 }
 
@@ -77,7 +236,6 @@ function upgrade11_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxpmrecipients int(4) NOT NULL default '5' AFTER pmquota");
 
-
 	if($db->field_exists('canwarnusers', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canwarnusers;");
@@ -89,6 +247,13 @@ function upgrade11_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP lastip;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD lastip varchar(11) NOT NULL default '' AFTER regip");
+
+	if($db->field_exists('coppauser', "users"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP coppauser;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD coppauser int(1) NOT NULL default '0'");
+
 
 
 	if($db->field_exists('canrecievewarnings', "usergroups"))
@@ -103,15 +268,15 @@ function upgrade11_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
 	
-	$db->update_query("usergroups", array('canreceivewarnings' => 'no'), "cancp='yes' OR gid='1'");
-	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 'yes'), "cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
+	$db->update_query("usergroups", array('canreceivewarnings' => 1), "cancp=1 OR gid='1'");
+	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 1), "cancp=1 OR issupermod=1 OR gid='6'"); // Admins, Super Mods and Mods
 
 	if($db->field_exists('canmodcp', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmodcp;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmodcp char(3) NOT NULL default '' AFTER maxwarningsday");
-	$db->update_query("usergroups", array('canmodcp' => 'yes'), "cancp='yes' OR issupermod='yes' OR gid='6'"); // Admins, Super Mods and Mods
+	$db->update_query("usergroups", array('canmodcp' => 1), "cancp=1 OR issupermod=1 OR gid='6'"); // Admins, Super Mods and Mods
 
 	if($db->field_exists('newpms', "users"))
 	{
@@ -145,9 +310,9 @@ function upgrade11_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents char(3) NOT NULL default '' AFTER canbypasseventmod;");
-	$db->update_query("usergroups", array('canbypasseventmod' => 'yes', 'canmoderateevents' => 'yes'), "cancp='yes' OR issupermod='yes'");
-	$db->update_query("usergroups", array('canbypasseventmod' => 'no', 'canmoderateevents' => 'no'), "cancp='no' AND issupermod='no'");
-	$db->update_query("usergroups", array('canaddevents' => 'no'), "gid='1'");
+	$db->update_query("usergroups", array('canbypasseventmod' => 1, 'canmoderateevents' => 1), "cancp=1 OR issupermod=1");
+	$db->update_query("usergroups", array('canbypasseventmod' => 0, 'canmoderateevents' => 0), "cancp=0 AND issupermod=0");
+	$db->update_query("usergroups", array('canaddevents' => 0), "gid='1'");
 
 	$db->drop_table("maillogs");	
 	$db->drop_table("mailerrors");
@@ -324,8 +489,8 @@ function upgrade11_dbchanges2()
 
 	if($db->field_exists('emailnotify', "users"))
 	{
-		$db->update_query("users", array('emailnotify' => 1), "emailnotify='no'");
-		$db->update_query("users", array('emailnotify' => 2), "emailnotify='yes'");
+		$db->update_query("users", array('emailnotify' => 1), "emailnotify=0");
+		$db->update_query("users", array('emailnotify' => 2), "emailnotify=1");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
 	}
 	
@@ -487,6 +652,10 @@ function upgrade11_dbchanges3()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("11_dbchanges4");
 }
 
@@ -534,8 +703,8 @@ function upgrade11_dbchanges4()
 	$db->insert_query("spiders", array('name' => 'Yahoo!', 'useragent' => 'yahoo slurp'));
 
 	// DST correction changes
-	$db->update_query("users", array('dst' => 1), "dst='yes'");
-	$db->update_query("users", array('dst' => 0), "dst='no'");
+	$db->update_query("users", array('dst' => 1), "dst=1");
+	$db->update_query("users", array('dst' => 0), "dst=0");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE dst dst INT(1) NOT NULL default '0'");
 	if($db->field_exists('dstcorrection', "users"))
 	{
@@ -666,6 +835,7 @@ function upgrade11_dbchanges4()
 			
 			if(array_key_exists($field, $convert_permissions))
 			{
+				// Note: old adminoptions table is still yes/no - do not change me
 				if($value == "yes")
 				{
 					$value = 1;
@@ -705,6 +875,10 @@ function upgrade11_dbchanges4()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("11_dbchanges5");
 }
 
@@ -742,10 +916,10 @@ function upgrade11_dbchanges5()
 	  showbirthdays int(1) NOT NULL default '0',
 	  eventlimit int(3) NOT NULL default '0',
 	  moderation int(1) NOT NULL default '0',
-	  allowhtml char(3) NOT NULL default '',
-	  allowmycode char(3) NOT NULL default '',
-	  allowimgcode char(3) NOT NULL default '',
-	  allowsmilies char(3) NOT NULL default '',
+	  allowhtml int(1) NOT NULL default '0',
+	  allowmycode int(1) NOT NULL default '0',
+	  allowimgcode int(1) NOT NULL default '0',
+	  allowsmilies int(1) NOT NULL default '0',
 	  PRIMARY KEY(cid)
 	) TYPE=MyISAM{$collation};");
 
@@ -756,20 +930,20 @@ function upgrade11_dbchanges5()
 		'showbirthdays' => 1,
 		'eventlimit' => 4,
 		'moderation' => 0,
-		'allowhtml' => 'no',
-		'allowmycode' => 'yes',
-		'allowimgcode' => 'yes',
-		'allowsmilies' => 'yes'
+		'allowhtml' => 0,
+		'allowmycode' => 1,
+		'allowimgcode' => 1,
+		'allowsmilies' => 1
 	);
 	$db->insert_query("calendars", $calendar_array);
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendarpermissions (
 	  cid int unsigned NOT NULL default '0',
 	  gid int unsigned NOT NULL default '0',
-	  canviewcalendar char(3) NOT NULL default '',
-	  canaddevents char(3) NOT NULL default '',
-	  canbypasseventmod char(3) NOT NULL default '',
-	  canmoderateevents char(3) NOT NULL default ''
+	  canviewcalendar int(1) NOT NULL default '0',
+	  canaddevents int(1) NOT NULL default '0',
+	  canbypasseventmod int(1) NOT NULL default '0',
+	  canmoderateevents int(1) NOT NULL default '0'
 	) TYPE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."forumsread (
@@ -791,6 +965,7 @@ function upgrade11_dbchanges5()
 		uid int unsigned NOT NULL default '0',
 		title varchar(100) NOT NULL default '',
 		type varchar(6) NOT NULL default '',
+		visibility int(1) NOT NULL default '0',
 		fields text NOT NULL,
 		conditions text NOT NULL,
 		sortby varchar(20) NOT NULL default '',
@@ -814,16 +989,18 @@ function upgrade11_dbchanges5()
 			$fields[] = $field['attributes']['name'];
 		}
 		$conditions = array();
-		foreach($view['conditions'][0]['condition'] as $condition)
+		if($view['conditions'][0]['condition'])
 		{
-			if(!$condition['value']) continue;
-			if($condition['attributes']['is_serialized'] == 1)
+			foreach($view['conditions'][0]['condition'] as $condition)
 			{
-				$condition['value'] = unserialize($condition['value']);
+				if(!$condition['value']) continue;
+				if($condition['attributes']['is_serialized'] == 1)
+				{
+					$condition['value'] = unserialize($condition['value']);
+				}
+				$conditions[$condition['attributes']['name']] = $condition['value'];
 			}
-			$conditions[$condition['attributes']['name']] = $condition['value'];
 		}
-
 		$new_view = array(
 			"uid" => 0,
 			"type" => $db->escape_string($view['attributes']['type']),
@@ -843,6 +1020,10 @@ function upgrade11_dbchanges5()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("11_redoconfig");
 }
 
@@ -852,38 +1033,40 @@ function upgrade11_redoconfig()
 	
 	$output->print_header("Rewriting config.php");
 
-	$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
-	if(!$fh)
+	if(!is_array($config['database']))
 	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
-		$output->print_footer("11_redoconfig");
-		exit;
-	}
-	
-	if(!$config['memcache_host'])
-	{
-		$config['memcache_host'] = "localhost";
-	}
-	
-	if(!$config['memcache_port'])
-	{
-		$config['memcache_port'] = 11211;
-	}
-	
-	if(!$config['db_encoding'])
-	{
-		$config['db_encoding'] = "utf8";
-	}
-	
-	$comma = "";
-	
-	if(!$db->db_encoding)
-	{
-		$comma = " // ";
-	}
-	
-	
-	$configdata = "<?php
+		$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
+		if(!$fh)
+		{
+			echo "<p><span style=\"color: red; font-weight: bold;\">Unable to open inc/config.php</span><br />Before the upgrade process can continue, you need to changes the permissions of inc/config.php so it is writable.</p>";
+			$output->print_footer("11_redoconfig");
+			exit;
+		}
+
+		if(!$config['memcache_host'])
+		{
+			$config['memcache_host'] = "localhost";
+		}
+		
+		if(!$config['memcache_port'])
+		{
+			$config['memcache_port'] = 11211;
+		}
+		
+		if(!$config['db_encoding'])
+		{
+			$config['db_encoding'] = "utf8";
+		}
+		
+		$comma = "";
+		
+		if(!$db->db_encoding)
+		{
+			$comma = " // ";
+		}
+		
+		
+		$configdata = "<?php
 /**
  * Database configuration
  *
@@ -965,11 +1148,15 @@ function upgrade11_redoconfig()
 {$comment}\$config['database']['encoding'] = '{$config['db_encoding']}';
 
 ?".">";
-
-	fwrite($fh, $configdata);
-	fclose($fh);
+		fwrite($fh, $configdata);
+		fclose($fh);
+	}
 	echo "<p>The configuration file has successfully been rewritten.</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("11_dbchanges6");
 }
 
@@ -981,7 +1168,7 @@ function upgrade11_dbchanges6()
 
 	if(!$_POST['ipspage'])
 	{
-		$ipp = 100;
+		$ipp = 5000;
 	}
 	else
 	{
@@ -1037,7 +1224,11 @@ function upgrade11_dbchanges6()
 		$contents .= "<p>Done</p><p>All post ips have been converted to the new ip format. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
-	$output->print_footer($nextact);	
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
+	$output->print_footer($nextact);
 }
 
 function upgrade11_dbchanges7()
@@ -1048,7 +1239,7 @@ function upgrade11_dbchanges7()
 
 	if(!$_POST['ipspage'])
 	{
-		$ipp = 100;
+		$ipp = 5000;
 	}
 	else
 	{
@@ -1117,6 +1308,10 @@ function upgrade11_dbchanges7()
 		$contents .= "<p>Done</p><p>All user ips have been converted to the new ip format. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer($nextact);	
 }
 
@@ -1222,8 +1417,8 @@ function upgrade11_dbchanges8()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
 		}
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
-		$db->update_query("events", array('private' => 1), "private='yes'");
-		$db->update_query("events", array('private' => 0), "private='no'");
+		$db->update_query("events", array('private' => 1), "private=1");
+		$db->update_query("events", array('private' => 0), "private=0");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE private private int(1) NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD dateline int(10) unsigned NOT NULL default '0' AFTER private");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD starttime int(10) unsigned NOT NULL default '0' AFTER dateline");
@@ -1240,7 +1435,10 @@ function upgrade11_dbchanges8()
 		while($event = $db->fetch_array($query))
 		{
 			$e_date = explode("-", $event['date']);
-			$starttime = gmmktime(0, 0, 0, $e_date[1], $e_date[0], $e_date[1]);
+			if(!$e_date[2]) $e_date[2] = 2005;
+			print_r($e_date);
+			echo "<br />";
+			$starttime = gmmktime(0, 0, 0, $e_date[1], $e_date[0], $e_date[2]);
 			$updated_event = array(
 				"cid" => 1,
 				"visible" => 1,
@@ -1277,6 +1475,10 @@ function upgrade11_dbchanges8()
 		$contents .= "<p>Done</p><p>All events have been converted to the new calendar system. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer($nextact);
 }
 
@@ -1309,7 +1511,6 @@ function upgrade11_redothemes()
 		$output->print_footer("11_redothemes");
 		exit;
 	}
-
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE themebits properties text NOT NULL");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP cssbits");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached");
@@ -1328,7 +1529,7 @@ function upgrade11_redothemes()
 	) TYPE=MyISAM{$collation};");
 
 	// Delete the master theme - we'll be reimporting it
-	$db->delete_query("themes", "tid='1'");
+	//$db->delete_query("themes", "tid='1'");
 
 	// Define our default stylesheets - MyBB 1.4 contains additional stylesheets that our converted themes will also need
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
@@ -1384,11 +1585,17 @@ function upgrade11_redothemes()
 		$stylesheets['global']['global'][] = $css_url;
 
 		// Update the theme
-		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets)), "tid='{$theme['tid']}'"));
+		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets))), "tid='{$theme['tid']}'");
 	}
+
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP css");
 
 	echo "<p>Your themes have successfully been converted to the new theme system.</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";
+
+	global $footer_extra;
+	//$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("11_done");
 }
 ?>

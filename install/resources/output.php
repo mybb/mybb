@@ -108,7 +108,7 @@ END;
 
 	function print_footer($nextact="")
 	{
-		global $lang;
+		global $lang, $footer_extra;
 		if($nextact && $this->openedform)
 		{
 			echo "\n			<input type=\"hidden\" name=\"action\" value=\"$nextact\" />";
@@ -134,6 +134,7 @@ END;
 		</div>
 		</div>
 		$formend
+		$footer_extra
 </body>
 </html>
 END;

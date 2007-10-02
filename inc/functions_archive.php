@@ -158,7 +158,7 @@ function archive_footer()
 {
 	global $mybb, $lang, $db, $nav, $maintimer, $fulltitle, $fullurl, $sent_header;
 	$totaltime = $maintimer->stop();
-	if($mybb->settings['showvernum'] == "on")
+	if($mybb->settings['showvernum'] == 1)
 	{
 		$mybbversion = ' '.$mybb->version;
 	}

@@ -92,7 +92,7 @@ if(!isset($mybb->input['mode']))
 	{
 		$mybb->input['mode'] = $mybb->user['threadmode'];
 	}
-	else if($mybb->settings['threadusenetstyle'] == "yes")
+	else if($mybb->settings['threadusenetstyle'] == 1)
 	{
 		$mybb->input['mode'] = "threaded";
 	}
@@ -169,7 +169,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 if(isset($style['style']) && $style['style'] > 0)
 {
 	// This theme is forced upon the user, overriding their selection
-	if($style['overridestyle'] == "yes" || !isset($mybb->user['style']))
+	if($style['overridestyle'] == 1 || !isset($mybb->user['style']))
 	{
 		$loadstyle = "tid='".intval($style['style'])."'";
 	}
@@ -289,7 +289,7 @@ else
 
 // If the board is closed and we have an Administrator, show board closed warning
 $bbclosedwarning = '';
-if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] == "yes")
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] == 1)
 {
 	eval("\$bbclosedwarning = \"".$templates->get("global_boardclosed_warning")."\";");
 }
@@ -301,7 +301,7 @@ unset($admincplink);
 if($mybb->user['uid'] != 0)
 {
 	// User can access the admin cp and we're not hiding admin cp links, fetch it
-	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hide_admin_links'] != 1)
+	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
@@ -326,7 +326,7 @@ else
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->user['usergroup'] == 6)
+if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $mybb->user['usergroup'] == 6)
 {
 	// Read the reported posts cache
 	$reported = $cache->read("reportedposts");
@@ -359,7 +359,7 @@ else
 
 // Is this user apart of a banned group?
 $bannedwarning = '';
-if($mybb->usergroup['isbannedgroup'] == "yes")
+if($mybb->usergroup['isbannedgroup'] == 1)
 {
 	// Fetch details on their ban
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'", array('limit' => 1));
@@ -394,7 +394,7 @@ if($mybb->usergroup['isbannedgroup'] == "yes")
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-if($mybb->user['pmnotice'] == "new" && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != "no" && $mybb->usergroup['canusepms'] != "no" && $mybb->usergroup['canview'] != "no" && my_strpos(get_current_location(), 'private.php?action=read') === false)
+if($mybb->user['pmnotice'] == "new" && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && my_strpos(get_current_location(), 'private.php?action=read') === false)
 {
 	$query = $db->query("
 		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
@@ -425,7 +425,7 @@ eval("\$header = \"".$templates->get("header")."\";");
 $copy_year = my_date("Y", TIME_NOW);
 
 // Are we showing version numbers in the footer?
-if($mybb->settings['showvernum'] == "on")
+if($mybb->settings['showvernum'] == 1)
 {
 	$mybbversion = ' '.$mybb->version;
 }
@@ -435,7 +435,7 @@ else
 }
 
 // Check to see if we have any tasks to run
-if($mybb->settings['taskscron'] != "yes")
+if($mybb->settings['taskscron'] != 1)
 {
 	$task_cache = $cache->read("tasks");
 	if(!$task_cache['nextrun'])
@@ -454,7 +454,7 @@ if($mybb->settings['taskscron'] != "yes")
 
 // Are we showing the quick language selection box?
 $lang_select = '';
-if($mybb->settings['showlanguageselect'] != "no")
+if($mybb->settings['showlanguageselect'] != 0)
 {
 	$languages = $lang->get_languages();
 	foreach($languages as $key => $language)
@@ -496,7 +496,7 @@ if(is_banned_ip($session->ipaddress, true))
 }
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes" && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
@@ -508,14 +508,14 @@ if($mybb->settings['boardclosed'] == "yes" && $mybb->usergroup['cancp'] != "yes"
 if($load = get_server_load() && $load != $lang->unknown)
 {
 	// User is not an administrator and the load limit is higher than the limit, show an error
-	if($mybb->usergroup['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+	if($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
 	{
 		error($lang->error_loadlimit);
 	}
 }
 
 // If there is a valid referrer in the URL, cookie it
-if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == "yes" && (isset($mybb->input['referrer']) || isset($mybb->input['referrername'])))
+if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->input['referrer']) || isset($mybb->input['referrername'])))
 {
 	if(isset($mybb->input['referrername']))
 	{
@@ -549,7 +549,7 @@ $allowable_actions = array(
 		"resetpassword"
 	),
 );
-if($mybb->usergroup['canview'] != "yes" && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && my_strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
+if($mybb->usergroup['canview'] != 1 && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && my_strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
 {
 	error_no_permission();
 }

@@ -113,7 +113,7 @@ if($endpart != "index.php")
 	}
 	elseif($action == "forum")
 	{
-		$query = $db->simple_select("forums", "*", "fid='{$id}' AND active!='no' AND password=''");
+		$query = $db->simple_select("forums", "*", "fid='{$id}' AND active!=0 AND password=''");
 		$forum = $db->fetch_array($query);
 		if(!$forum['fid'])
 		{
@@ -170,9 +170,9 @@ if(is_banned_ip($session->ipaddress))
 }
 
 // If our board is closed..
-if($mybb->settings['boardclosed'] == "yes")
+if($mybb->settings['boardclosed'] == 1)
 {
-	if($mybb->usergroup['cancp'] != "yes")
+	if($mybb->usergroup['cancp'] != 1)
 	{
 		$lang->error_boardclosed .= "<blockquote>".$mybb->settings['boardclosed_reason']."</blockquote>";
 		archive_error($lang->error_boardclosed);
@@ -186,14 +186,14 @@ if(DIRECTORY_SEPARATOR != '\\')
 	{
 		preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $regs);
 		$load = $regs[1];
-		if($mybb->usergroup['cancp'] != "yes" && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
+		if($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
 		{
 			archive_error($lang->error_loadlimit);
 		}
 	}
 }
 
-if($mybb->usergroup['canview'] == "no")
+if($mybb->usergroup['canview'] == 0)
 {
 	archive_error_no_permission();
 }

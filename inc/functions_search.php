@@ -26,7 +26,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 	if(!is_array($pforumcache))
 	{
 		// Get Forums
-		$query = $db->simple_select("forums", "pid,disporder,fid,password,name", "linkto='' AND active!='no'", array('order_by' => "pid, disporder"));
+		$query = $db->simple_select("forums", "pid,disporder,fid,password,name", "linkto='' AND active!=0", array('order_by' => "pid, disporder"));
 		while($forum = $db->fetch_array($query))
 		{
 			$pforumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -43,7 +43,7 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 			foreach($main as $key => $forum)
 			{
 				$perms = $permissioncache[$forum['fid']];
-				if(($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no") && $perms['cansearch'] != "no")
+				if(($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) && $perms['cansearch'] != 0)
 				{
 					if($selitem == $forum['fid'])
 					{
@@ -137,14 +137,14 @@ function get_unsearchable_forums($pid="0", $first=1)
 		{
 			foreach($parents as $parent)
 			{
-				if($forum_cache[$parent]['active'] == "no")
+				if($forum_cache[$parent]['active'] == 0)
 				{
-					$forum['active'] = "no";
+					$forum['active'] = 0;
 				}
 			}
 		}
 
-		if($perms['canview'] != "yes" || $perms['cansearch'] != "yes" || $pwverified == 0 || $forum['active'] == "no")
+		if($perms['canview'] != 1 || $perms['cansearch'] != 1 || $pwverified == 0 || $forum['active'] == 0)
 		{
 			if($unsearchableforums)
 			{
@@ -459,7 +459,7 @@ function perform_search_mysql($search)
 							SELECT DISTINCT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."')
-							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
+							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
 						");
 						break;
 					default:
@@ -467,7 +467,7 @@ function perform_search_mysql($search)
 							SELECT DISTINCT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."')
-							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
+							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
 						");
 				}
 				while($sforum = $db->fetch_array($query))
@@ -764,7 +764,7 @@ function perform_search_mysql_ft($search)
 							SELECT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."') 
-							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
+							WHERE INSTR(','||parentlist||',',',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
 						");
 						break;
 					default:
@@ -772,7 +772,7 @@ function perform_search_mysql_ft($search)
 							SELECT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."') 
-							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!='no' AND (ISNULL(p.fid) OR p.cansearch='yes')
+							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
 						");
 				}
 				while($sforum = $db->fetch_array($query))

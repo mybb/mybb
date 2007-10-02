@@ -62,7 +62,7 @@ if($mybb->input['action'] == "newpoll")
 	add_breadcrumb($lang->nav_postpoll);
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
-	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no" || $forumpermissions['canpostpolls'] == "no"))
+	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] == 0))
 	{
 		error_no_permission();
 	}
@@ -93,11 +93,11 @@ if($mybb->input['action'] == "newpoll")
 	$question = htmlspecialchars_uni($mybb->input['question']);
 
 	$postoptions = $mybb->input['postoptions'];
-	if($postoptions['multiple'] == "yes")
+	if($postoptions['multiple'] == 1)
 	{
 		$postoptionschecked['multiple'] = 'checked="checked"';
 	}
-	if($postoptions['public'] == "yes")
+	if($postoptions['public'] == 1)
 	{
 		$postoptionschecked['public'] = 'checked="checked"';
 	}
@@ -144,7 +144,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 
 	// No permission if: Not thread author; not moderator; no forum perms to view, post threads, post polls
-	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == "no" || $forumpermissions['canpostthreads'] == "no" || $forumpermissions['canpostpolls'] == "no"))
+	if(($thread['uid'] != $mybb->user['uid'] && !is_moderator($fid)) || ($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0 || $forumpermissions['canpostpolls'] == 0))
 	{
 		error_no_permission();
 	}
@@ -161,14 +161,14 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 
 	$postoptions = $mybb->input['postoptions'];
-	if($postoptions['multiple'] != "yes")
+	if($postoptions['multiple'] != 1)
 	{
-		$postoptions['multiple'] = "no";
+		$postoptions['multiple'] = 0;
 	}
 
-	if($postoptions['public'] != "yes")
+	if($postoptions['public'] != 1)
 	{
-		$postoptions['public'] = "no";
+		$postoptions['public'] = 0;
 	}
 	
 	if($polloptions < 2)
@@ -236,7 +236,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 		"numoptions" => intval($optioncount),
 		"numvotes" => 0,
 		"timeout" => $timeout,
-		"closed" => "no",
+		"closed" => 0,
 		"multiple" => $postoptions['multiple'],
 		"public" => $postoptions['public']
 	);
@@ -299,17 +299,17 @@ if($mybb->input['action'] == "editpoll")
 	$polldate = my_date($mybb->settings['dateformat'], $poll['dateline']);
 	if(!$mybb->input['preview'] && !$mybb->input['updateoptions'])
 	{
-		if($poll['closed'] == 'yes')
+		if($poll['closed'] == 1)
 		{
 			$postoptionschecked['closed'] = 'checked="checked"';
 		}
 		
-		if($poll['multiple'] == 'yes')
+		if($poll['multiple'] == 1)
 		{
 			$postoptionschecked['multiple'] = 'checked="checked"';
 		}
 		
-		if($poll['public'] == 'yes')
+		if($poll['public'] == 1)
 		{
 			$postoptionschecked['public'] = 'checked="checked"';
 		}
@@ -369,17 +369,17 @@ if($mybb->input['action'] == "editpoll")
 		$question = htmlspecialchars_uni($mybb->input['question']);
 
 		$postoptions = $mybb->input['postoptions'];
-		if($postoptions['multiple'] == 'yes')
+		if($postoptions['multiple'] == 1)
 		{
 			$postoptionschecked['multiple'] = 'checked="checked"';
 		}
 		
-		if($postoptions['public'] == 'yes')
+		if($postoptions['public'] == 1)
 		{
 			$postoptionschecked['public'] = 'checked="checked"';
 		}
 		
-		if($postoptions['closed'] == 'yes')
+		if($postoptions['closed'] == 1)
 		{
 			$postoptionschecked['closed'] = 'checked="checked"';
 		}
@@ -437,7 +437,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$query = $db->simple_select("forums", "*", "fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
 
-	if($thread['visible'] == "no" || !$thread['tid'])
+	if($thread['visible'] == 0 || !$thread['tid'])
 	{
 		error($lang->error_invalidthread);
 	}
@@ -461,19 +461,19 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	}
 
 	$postoptions = $mybb->input['postoptions'];
-	if($postoptions['multiple'] != "yes")
+	if($postoptions['multiple'] != 1)
 	{
-		$postoptions['multiple'] = "no";
+		$postoptions['multiple'] = 0;
 	}
 	
-	if($postoptions['public'] != "yes")
+	if($postoptions['public'] != 1)
 	{
-		$postoptions['public'] = "no";
+		$postoptions['public'] = 0;
 	}
 	
-	if($postoptions['closed'] != "yes")
+	if($postoptions['closed'] != 1)
 	{
-		$postoptions['closed'] = "no";
+		$postoptions['closed'] = 0;
 	}
 	$optioncount = "0";
 	$options = $mybb->input['options'];
@@ -576,7 +576,7 @@ if($mybb->input['action'] == "showresults")
 
 	$plugins->run_hooks("polls_showresults_start");
 
-	if($forumpermissions['canviewthreads'] == "no" || $forumpermissions['canview'] == "no")
+	if($forumpermissions['canviewthreads'] == 0 || $forumpermissions['canview'] == 0)
 	{
 		error($lang->error_pollpermissions);
 	}
@@ -672,7 +672,7 @@ if($mybb->input['action'] == "showresults")
 		$guest_comma = '';
 		$userlist = '';
 		$guest_count = 0;
-		if($poll['public'] == 'yes' || is_moderator($fid))
+		if($poll['public'] == 1 || is_moderator($fid))
 		{
 			if(is_array($voters[$number]))
 			{
@@ -736,14 +736,14 @@ if($mybb->input['action'] == "vote")
 	
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
-	if($forumpermissions['canvotepolls'] == 'no')
+	if($forumpermissions['canvotepolls'] == 0)
 	{
 		error_no_permission();
 	}
 
 	$expiretime = $poll['dateline'] + $poll['timeout'];
 	$now = TIME_NOW;
-	if($poll['closed'] == 'yes' || $thread['closed'] == 'yes' || ($expiretime < $now && $poll['timeout']))
+	if($poll['closed'] == 1 || $thread['closed'] == 1 || ($expiretime < $now && $poll['timeout']))
 	{
 		error($lang->error_pollclosed);
 	}
@@ -775,11 +775,11 @@ if($mybb->input['action'] == "vote")
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
 	$numvotes = $poll['numvotes'];
-	if($poll['multiple'] == 'yes')
+	if($poll['multiple'] == 1)
 	{
 		foreach($option as $voteoption => $vote)
 		{
-			if($vote == 'yes' && isset($votesarray[$voteoption-1]))
+			if($vote == 1 && isset($votesarray[$voteoption-1]))
 			{
 				if($votesql)
 				{

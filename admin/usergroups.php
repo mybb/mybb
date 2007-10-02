@@ -108,9 +108,9 @@ if($mybb->input['action'] == "do_add")
 	{
 		cperror($lang->grouptitle_empty);
 	}
-	if($mybb->input['joinable'] == "yes")
+	if($mybb->input['joinable'] == 1)
 	{
-		if($mybb->input['moderate'] == "yes")
+		if($mybb->input['moderate'] == 1)
 		{
 			$mybb->input['type'] = "4";
 		}
@@ -215,13 +215,13 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 	{
 		cperror($lang->add_leader_no_user);
 	}
-	if($mybb->input['canmanagemembers'] != "yes")
+	if($mybb->input['canmanagemembers'] != 1)
 	{
-		$mybb->input['canmanagemembers'] = "no";
+		$mybb->input['canmanagemembers'] = 0;
 	}
-	if($mybb->input['canmanagerequests'] != "yes")
+	if($mybb->input['canmanagerequests'] != 1)
 	{
-		$mybb->input['canmanagerequests'] = "no";
+		$mybb->input['canmanagerequests'] = 0;
 	}
 	$leaderarray = array(
 		"gid" => $mybb->input['gid'],
@@ -269,9 +269,9 @@ if($mybb->input['action'] == "do_edit")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 
-	if($mybb->input['joinable'] == "yes")
+	if($mybb->input['joinable'] == 1)
 	{
-		if($mybb->input['moderate'] == "yes")
+		if($mybb->input['moderate'] == 1)
 		{
 			$mybb->input['type'] = "4";
 		}
@@ -381,85 +381,85 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->group_image, "image");
 
 	tablesubheader($lang->group_options);
-	makeyesnocode($lang->show_team_page, "showforumteam", "no");
-	makeyesnocode($lang->banned_group, "isbannedgroup", "no");
+	makeyesnocode($lang->show_team_page, "showforumteam", 0);
+	makeyesnocode($lang->banned_group, "isbannedgroup", 0);
 
 	tablesubheader($lang->perms_joinable);
-	makeyesnocode($lang->can_join_group, "joinable", "no");
-	makeyesnocode($lang->moderate_joins, "moderate", "no");
-	makeyesnocode($lang->can_display_group, "candisplaygroup", "no");
+	makeyesnocode($lang->can_join_group, "joinable", 0);
+	makeyesnocode($lang->moderate_joins, "moderate", 0);
+	makeyesnocode($lang->can_display_group, "candisplaygroup", 0);
 
 	tablesubheader($lang->perms_viewing);
-	makeyesnocode($lang->can_view_board, "canview", "yes");
-	makeyesnocode($lang->can_view_threads, 'canviewthreads', 'yes');
-	makeyesnocode($lang->can_search_forums, "cansearch", "yes");
-	makeyesnocode($lang->can_view_profiles, "canviewprofiles", "yes");
-	makeyesnocode($lang->can_download_attachments, "candlattachments", "yes");
+	makeyesnocode($lang->can_view_board, "canview", 1);
+	makeyesnocode($lang->can_view_threads, 'canviewthreads', 1);
+	makeyesnocode($lang->can_search_forums, "cansearch", 1);
+	makeyesnocode($lang->can_view_profiles, "canviewprofiles", 1);
+	makeyesnocode($lang->can_download_attachments, "candlattachments", 1);
 
 	tablesubheader($lang->perms_posting);
-	makeyesnocode($lang->can_post_threads, "canpostthreads", "yes");
-	makeyesnocode($lang->can_post_replies, "canpostreplys", "yes");
-	makeyesnocode($lang->can_rate_threads, "canratethreads", "yes");
+	makeyesnocode($lang->can_post_threads, "canpostthreads", 1);
+	makeyesnocode($lang->can_post_replies, "canpostreplys", 1);
+	makeyesnocode($lang->can_rate_threads, "canratethreads", 1);
 
 	tablesubheader($lang->perms_attachments);
-	makeyesnocode($lang->can_post_attachments, "canpostattachments", "yes");
+	makeyesnocode($lang->can_post_attachments, "canpostattachments", 1);
 	makeinputcode($lang->attach_quota, "attachquota", "10000");
 
 	tablesubheader($lang->perms_editing);
-	makeyesnocode($lang->can_edit_posts, "caneditposts", "yes");
-	makeyesnocode($lang->can_delete_posts, "candeleteposts", "yes");
-	makeyesnocode($lang->can_delete_threads, "candeletethreads", "yes");
-	makeyesnocode($lang->can_edit_attachments, "caneditattachments", "yes");
+	makeyesnocode($lang->can_edit_posts, "caneditposts", 1);
+	makeyesnocode($lang->can_delete_posts, "candeleteposts", 1);
+	makeyesnocode($lang->can_delete_threads, "candeletethreads", 1);
+	makeyesnocode($lang->can_edit_attachments, "caneditattachments", 1);
 
 	tablesubheader($lang->perms_reputations);
-	makeyesnocode($lang->show_reputations, "usereputationsystem", "yes");
-	makeyesnocode($lang->can_give_reputations, "cangivereputations", "yes");
+	makeyesnocode($lang->show_reputations, "usereputationsystem", 1);
+	makeyesnocode($lang->can_give_reputations, "cangivereputations", 1);
 	makeinputcode($lang->reputation_points, "reputationpower", "3", 4);
 	makeinputcode($lang->max_reputations_day, "maxreputationsday", "5", 4);
 
 	// No point in lang strings - will be for new admin cp
 	tablesubheader("Warning System");
-	makeyesnocode("Can warn other users?", "canwarnusers", "no");
-	makeyesnocode("Can receive warnings?", "canreceivewarnings", "yes");
+	makeyesnocode("Can warn other users?", "canwarnusers", 0);
+	makeyesnocode("Can receive warnings?", "canreceivewarnings", 1);
 	makeinputcode("Maximum warnings can give per day", "maxwarningsday", 3);
 
 	tablesubheader($lang->perms_polls);
-	makeyesnocode($lang->can_post_polls, "canpostpolls", "yes");
-	makeyesnocode($lang->can_vote_polls, "canvotepolls", "yes");
+	makeyesnocode($lang->can_post_polls, "canpostpolls", 1);
+	makeyesnocode($lang->can_vote_polls, "canvotepolls", 1);
 
 	tablesubheader($lang->perms_pms);
-	makeyesnocode($lang->can_use_pms, "canusepms", "yes");
-	makeyesnocode($lang->can_send_pms, "cansendpms", "yes");
-	makeyesnocode($lang->can_track_pms, "cantrackpms", "yes");
-	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", "yes");
+	makeyesnocode($lang->can_use_pms, "canusepms", 1);
+	makeyesnocode($lang->can_send_pms, "cansendpms", 1);
+	makeyesnocode($lang->can_track_pms, "cantrackpms", 1);
+	makeyesnocode($lang->can_deny_pms, "candenypmreceipts", 1);
 	makeinputcode($lang->pm_quota, "pmquota", "50", 4);
 	makeinputcode($lang->max_pm_recipients, "maxpmrecipients", 5, 4);
 
 	tablesubheader($lang->perms_calendar);
-	makeyesnocode($lang->can_view_calendar, "canviewcalendar", "yes");
-	makeyesnocode($lang->can_add_public, "canaddevents", "no");
-	makeyesnocode("Can bypass event moderation queue?", "canbypasseventmod", "no");
-	makeyesnocode("Can moderate events?", "canmoderateevents", "no");
+	makeyesnocode($lang->can_view_calendar, "canviewcalendar", 1);
+	makeyesnocode($lang->can_add_public, "canaddevents", 0);
+	makeyesnocode("Can bypass event moderation queue?", "canbypasseventmod", 0);
+	makeyesnocode("Can moderate events?", "canmoderateevents", 0);
 
 	tablesubheader($lang->perms_wol);
-	makeyesnocode($lang->can_view_wol, "canviewonline", "yes");
-	makeyesnocode($lang->can_view_invisible, "canviewwolinvis", "no");
-	makeyesnocode($lang->can_view_ips, "canviewonlineips", "no");
+	makeyesnocode($lang->can_view_wol, "canviewonline", 1);
+	makeyesnocode($lang->can_view_invisible, "canviewwolinvis", 0);
+	makeyesnocode($lang->can_view_ips, "canviewonlineips", 0);
 
 	tablesubheader($lang->perms_account);
-	makeyesnocode($lang->can_access_ucp, "canusercp", "yes");
-	makeyesnocode($lang->can_change_name, "canchangename", "no");
-	makeyesnocode($lang->can_custom_titles, "cancustomtitle", "no");
-	makeyesnocode($lang->can_upload_avatars, "canuploadavatars", "yes");
+	makeyesnocode($lang->can_access_ucp, "canusercp", 1);
+	makeyesnocode($lang->can_change_name, "canchangename", 0);
+	makeyesnocode($lang->can_custom_titles, "cancustomtitle", 0);
+	makeyesnocode($lang->can_upload_avatars, "canuploadavatars", 1);
 
 
 	tablesubheader($lang->perms_admin);
-	makeyesnocode($lang->can_access_acp, "cancp", "no");
-	makeyesnocode($lang->is_smod, "issupermod", "no");
+	makeyesnocode($lang->can_access_acp, "cancp", 0);
+	makeyesnocode($lang->is_smod, "issupermod", 0);
 
 	tablesubheader($lang->perms_misc);
-	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", "yes");
-	makeyesnocode($lang->can_send_emails, "cansendemail", "yes");
+	makeyesnocode($lang->can_view_mlist, "canviewmemberlist", 1);
+	makeyesnocode($lang->can_send_emails, "cansendemail", 1);
 	makeinputcode($lang->max_emails_day, "maxemails", 5, 4);
 	endtable();
 	endform($lang->add_group, $lang->reset_button);
@@ -478,7 +478,7 @@ if($mybb->input['action'] == "delete")
 	starttable();
 	tableheader($lang->delete_group, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->confirm_delete_group<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
@@ -490,18 +490,18 @@ if($mybb->input['action'] == "edit")
 	$usergroup = $db->fetch_array($query);
 	if($usergroup['type'] == "3")
 	{
-		$joinable = "yes";
-		$moderate = "no";
+		$joinable = 1;
+		$moderate = 0;
 	}
 	elseif($usergroup['type'] == "4")
 	{
-		$joinable = "yes";
-		$moderate = "yes";
+		$joinable = 1;
+		$moderate = 1;
 	}
 	else
 	{
-		$joinable = "no";
-		$moderate = "no";
+		$joinable = 0;
+		$moderate = 0;
 	}
 	$plugins->run_hooks("admin_usergroups_edit");
 	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
@@ -851,7 +851,7 @@ function usergroup_hop(gid)
 		echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
 		echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
 		echo "</select>\n&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\" /></td>\n";
-		if($usergroup['showforumteam'] == 'yes')
+		if($usergroup['showforumteam'] == 1)
 			{
 				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
 			}
@@ -906,7 +906,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"listsecondaryusers\">{$lang->list_secondary_users}</option>\n";
 			echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
 			echo "</select>\n&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\" /></td>\n";
-			if($usergroup['showforumteam'] == 'yes')
+			if($usergroup['showforumteam'] == 1)
 			{
 				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
 			}
@@ -971,7 +971,7 @@ function usergroup_hop(gid)
 			echo "<option value=\"groupleaders\">{$lang->group_leaders}</option>\n";
 			echo "<option value=\"joinrequests\">{$lang->moderate_join_requests}</option>\n";
 			echo "</select>\n&nbsp;<input type=\"button\" onclick=\"usergroup_hop({$usergroup['gid']});\" value=\"{$lang->go}\" /></td>\n";
-			if($usergroup['showforumteam'] == 'yes')
+			if($usergroup['showforumteam'] == 1)
 			{
 				echo "<td align=\"center\"><input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" /></td>\n";
 			}

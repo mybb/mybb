@@ -24,16 +24,16 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("private");
 
-if($mybb->settings['enablepms'] == 'no')
+if($mybb->settings['enablepms'] == 0)
 {
 	error($lang->pms_disabled);
 }
 
-if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['canusepms'] == 'no')
+if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['canusepms'] == 0)
 {
 	error_no_permission();
 }
-if($mybb->user['receivepms'] == 'no')
+if($mybb->user['receivepms'] == 0)
 {
 	error($lang->error_pmsturnedoff);
 }
@@ -124,7 +124,7 @@ if($mybb->input['action'] == "dismiss_notice")
 	verify_post_check($mybb->input['my_post_key']);
 
 	$updated_user = array(
-		"pmnotice" => "yes"
+		"pmnotice" => 1
 	);
 	$db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
 
@@ -144,7 +144,7 @@ $send_errors = '';
 
 if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 {
-	if($mybb->usergroup['cansendpms'] == "no")
+	if($mybb->usergroup['cansendpms'] == 0)
 	{
 		error_no_permission();
 	}
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "send")
 {
-	if($mybb->usergroup['cansendpms'] == "no")
+	if($mybb->usergroup['cansendpms'] == 0)
 	{
 		error_no_permission();
 	}
@@ -239,10 +239,10 @@ if($mybb->input['action'] == "send")
 
 	$smilieinserter = $codebuttons = '';
 
-	if($mybb->settings['bbcodeinserter'] != 'off' && $mybb->settings['pmsallowmycode'] != 'no' && $mybb->user['showcodebuttons'] != 0)
+	if($mybb->settings['bbcodeinserter'] != 'off' && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 	{
 		$codebuttons = build_mycode_inserter();
-		if($mybb->settings['pmsallowsmilies'] != 'no')
+		if($mybb->settings['pmsallowsmilies'] != 0)
 		{
 			$smilieinserter = build_clickable_smilies();
 		}
@@ -255,19 +255,19 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['preview'] || $send_errors)
 	{
-		if($options['signature'] == 'yes')
+		if($options['signature'] == 1)
 		{
 			$optionschecked['signature'] = 'checked="checked"';
 		}
-		if($options['disablesmilies'] == 'yes')
+		if($options['disablesmilies'] == 1)
 		{
 			$optionschecked['disablesmilies'] = 'checked="checked"';
 		}
-		if($options['savecopy'] != 'no')
+		if($options['savecopy'] != 0)
 		{
 			$optionschecked['savecopy'] = 'checked="checked"';
 		}
-		if($options['readreceipt'] != 'no')
+		if($options['readreceipt'] != 0)
 		{
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
@@ -295,11 +295,11 @@ if($mybb->input['action'] == "send")
 		$post['dateline'] = TIME_NOW;
 		if(!$options['signature'])
 		{
-			$post['includesig'] = 'no';
+			$post['includesig'] = 0;
 		}
 		else
 		{
-			$post['includesig'] = 'yes';
+			$post['includesig'] = 1;
 		}
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "send")
 		{
 			$optionschecked['signature'] = 'checked="checked"';
 		}
-		if($mybb->usergroup['cantrackpms'] == 'yes')
+		if($mybb->usergroup['cantrackpms'] == 1)
 		{
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
@@ -336,11 +336,11 @@ if($mybb->input['action'] == "send")
 		{ // message saved in drafts
 			$mybb->input['uid'] = $pm['toid'];
 
-			if($pm['includesig'] == 'yes')
+			if($pm['includesig'] == 1)
 			{
 				$optionschecked['signature'] = 'checked="checked"';
 			}
-			if($pm['smilieoff'] == 'yes')
+			if($pm['smilieoff'] == 1)
 			{
 				$optionschecked['disablesmilies'] = 'checked="checked"';
 			}
@@ -498,7 +498,7 @@ if($mybb->input['action'] == "read")
 
 	if($pm['receipt'] == 1)
 	{
-		if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $mybb->input['denyreceipt'] == 'yes')
+		if($mybb->usergroup['cantrackpms'] == 1 && $mybb->usergroup['candenypmreceipts'] == 1 && $mybb->input['denyreceipt'] == 1)
 		{
 			$receiptadd = 0;
 		}
@@ -530,7 +530,7 @@ if($mybb->input['action'] == "read")
 		if($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == "new")
 		{
 			$updated_user = array(
-				"pmnotice" => "yes"
+				"pmnotice" => 1
 			);
 			$db->update_query("users", $updated_user, "uid='{$mybb->user['uid']}'");
 		}
@@ -572,7 +572,7 @@ if($mybb->input['action'] == "read")
 	$show_bcc = 0;
 
 	// If we have any BCC recipients and this user is an Administrator, add them on to the query
-	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 'yes')
+	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1)
 	{
 		$show_bcc = 1;
 		$uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
@@ -885,7 +885,7 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 	{
 		foreach($mybb->input['empty'] as $key => $val)
 		{
-			if($val == 'yes')
+			if($val == 1)
 			{
 				$key = intval($key);
 				if($emptyq)
@@ -898,7 +898,7 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 		
 		if($emptyq != '')
 		{
-			if($mybb->input['keepunread'] == 'yes')
+			if($mybb->input['keepunread'] == 1)
 			{
 				$keepunreadq = " AND status!='0'";
 			}
@@ -1106,7 +1106,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			error($lang->error_pmnoarchivefolders);
 		}
 		
-		if($mybb->input['exportunread'] != 'yes')
+		if($mybb->input['exportunread'] != 1)
 		{
 			$wsql .= " AND pm.status!='0'";
 		}
@@ -1194,7 +1194,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$parser_options = array(
 				"allow_html" => $mybb->settings['pmsallowhtml'],
 				"allow_mycode" => $mybb->settings['pmsallowmycode'],
-				"allow_smilies" => 'no',
+				"allow_smilies" => 0,
 				"allow_imgcode" => $mybb->settings['pmsallowimgcode'],
 				"me_username" => $mybb->user['username']
 			);
@@ -1234,7 +1234,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$css = $db->fetch_field($query, "css");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
-	if($mybb->input['deletepms'] == 'yes')
+	if($mybb->input['deletepms'] == 1)
 	{ // delete the archived pms
 		$db->delete_query("privatemessages", "pmid IN (''$ids)");
 		// Update PM count
@@ -1444,7 +1444,7 @@ if(!$mybb->input['action'])
 				$tofromusername = build_profile_link($tofromusername, $tofromuid);
 			}
 			
-			if($mybb->usergroup['cantrackpms'] == 'yes' && $mybb->usergroup['candenypmreceipts'] == 'yes' && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
+			if($mybb->usergroup['cantrackpms'] == 1 && $mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
 			{
 				eval("\$denyreceipt = \"".$templates->get("private_messagebit_denyreceipt")."\";");
 			}
@@ -1482,7 +1482,7 @@ if(!$mybb->input['action'])
 		eval("\$messagelist .= \"".$templates->get("private_nomessages")."\";");
 	}
 
-	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != 'yes')
+	if($mybb->usergroup['pmquota'] != '0' && $mybb->usergroup['cancp'] != 1)
 	{
 		$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='".$mybb->user['uid']."'");
 		$pmscount = $db->fetch_array($query);
@@ -1515,7 +1515,7 @@ if(!$mybb->input['action'])
 		eval("\$pmspacebar = \"".$templates->get("private_pmspace")."\";");
 	}
 	
-	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != 'yes')
+	if($mybb->usergroup['pmquota'] != "0" && $pmscount['total'] >= $mybb->usergroup['pmquota'] && $mybb->usergroup['cancp'] != 1)
 	{
 		eval("\$limitwarning = \"".$templates->get("private_limitwarning")."\";");
 	}

@@ -228,7 +228,7 @@ if($mybb->input['action'] == "delete")
 			starttable();
 			tableheader($lang->delete_doc, "", 1);
 			$yes = makebuttoncode("deletesubmit", $lang->yes);
-			$no = makebuttoncode("no", $lang->no);
+			$no = makebuttoncode(0, $lang->no);
 			makelabelcode("<div align=\"center\">$lang->delete_doc_confirm<br /><br />$yes$no</div>", "");
 			endtable();
 			endform();
@@ -249,7 +249,7 @@ if($mybb->input['action'] == "delete")
 			starttable();
 			tableheader($lang->delete_section, "", 1);
 			$yes = makebuttoncode("deletesubmit", $lang->yes);
-			$no = makebuttoncode("no", $lang->no);
+			$no = makebuttoncode(0, $lang->no);
 			makelabelcode("<div align=\"center\">$lang->delete_section_confirm<br /><br />$yes$no</div>", "");
 			endtable();
 			endform();
@@ -268,7 +268,7 @@ if($mybb->input['action'] == "add")
 	tableheader($lang->add_section);
 	makeinputcode($lang->section_name, "name");
 	maketextareacode($lang->description, "description");
-	makeyesnocode($lang->use_translation, "usetranslation", "no");
+	makeyesnocode($lang->use_translation, "usetranslation", 0);
 	makeyesnocode($lang->enabled, "enabled");
 	makeinputcode($lang->disporder, "disporder", "1", "4");
 	endtable();
@@ -282,7 +282,7 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->doc_title, "name");
 	maketextareacode($lang->description, "description");
 	maketextareacode($lang->document, "document", "", "8", "60");
-	makeyesnocode($lang->use_translation, "usetranslation", "no");
+	makeyesnocode($lang->use_translation, "usetranslation", 0);
 	makeyesnocode($lang->enabled, "enabled");
 	makeinputcode($lang->disporder, "disporder", "1", "4");
 	makeselectcode($lang->doc_section, "sid", "helpsections", "sid", "name");
@@ -307,7 +307,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($section = $db->fetch_array($query)) 
 	{
 		$disablednote = "";
-		if($section['enabled'] == "no")
+		if($section['enabled'] == 0)
 		{
 			$disablednote = $lang->disabled_note;
 		}
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		while($doc = $db->fetch_array($query2))
 		{
 			$disablednote = "";
-			if($doc['enabled'] == "no")
+			if($doc['enabled'] == 0)
 			{
 				$disablednote = $lang->disabled_note;
 			}
@@ -343,7 +343,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($section = $db->fetch_array($query))
 	{
 		$disablednote = "";
-		if($section['enabled'] == "no")
+		if($section['enabled'] == 0)
 		{
 			$disablednote = $lang->disabled_note;
 		}
@@ -358,7 +358,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		while($doc = $db->fetch_array($query2))
 		{
 			$disablednote = "";
-			if($doc['enabled'] == "no")
+			if($doc['enabled'] == 0)
 			{
 				$disablednote = $lang->disabled_note;
 			}

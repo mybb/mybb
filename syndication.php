@@ -57,7 +57,7 @@ if(is_array($permissions))
 {
 	foreach($permissions as $fid => $forum_permission)
 	{
-		if($forum_permission['canview'] == "no" || $forum_permission['canviewthreads'] == "no")
+		if($forum_permission['canview'] == 0 || $forum_permission['canviewthreads'] == 0)
 		{
 			$unviewable[] = $fid;
 		}

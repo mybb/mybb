@@ -178,7 +178,7 @@ if(!$user['usergroup'])
 $groupscache = $cache->read("usergroups");
 $admingroup = usergroup_permissions($mybbgroups);
 
-if($admingroup['cancp'] != "yes" || !$user['uid'])
+if($admingroup['cancp'] != 1 || !$user['uid'])
 {
 	unset($user);
 }

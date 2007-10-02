@@ -51,9 +51,9 @@ switch($mybb->input['action'])
 		break;
 }
 
-if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_register") && $mybb->usergroup['cancp'] != "yes")
+if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_register") && $mybb->usergroup['cancp'] != 1)
 {
-	if($mybb->settings['disableregs'] == "yes")
+	if($mybb->settings['disableregs'] == 1)
 	{
 		error($lang->registrations_disabled);
 	}
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors = $userhandler->get_friendly_errors();
 	}
 
-	if($mybb->settings['captchaimage'] == "on" && function_exists("imagecreatefrompng"))
+	if($mybb->settings['captchaimage'] == 1 && function_exists("imagecreatefrompng"))
 	{
 		$imagehash = $db->escape_string($mybb->input['imagehash']);
 		$imagestring = $db->escape_string(my_strtolower($mybb->input['imagestring']));
@@ -166,12 +166,12 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$email2 = htmlspecialchars_uni($mybb->input['email']);
 		$referrername = htmlspecialchars_uni($mybb->input['referrername']);
 
-		if($mybb->input['allownotices'] == "yes")
+		if($mybb->input['allownotices'] == 1)
 		{
 			$allownoticescheck = "checked=\"checked\"";
 		}
 
-		if($mybb->input['hideemail'] == "yes")
+		if($mybb->input['hideemail'] == 1)
 		{
 			$hideemailcheck = "checked=\"checked\"";
 		}
@@ -189,22 +189,22 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			$no_subscribe_selected = "selected=\"selected\"";
 		}
 
-		if($mybb->input['receivepms'] == "yes")
+		if($mybb->input['receivepms'] == 1)
 		{
 			$receivepmscheck = "checked=\"checked\"";
 		}
 
-		if($mybb->input['pmnotice'] == "yes")
+		if($mybb->input['pmnotice'] == 1)
 		{
 			$pmnoticecheck = " checked=\"checked\"";
 		}
 
-		if($mybb->input['emailpmnotify'] == "yes")
+		if($mybb->input['emailpmnotify'] == 1)
 		{
 			$emailpmnotifycheck = "checked=\"checked\"";
 		}
 
-		if($mybb->input['invisible'] == "yes")
+		if($mybb->input['invisible'] == 1)
 		{
 			$invisiblecheck = "checked=\"checked\"";
 		}
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "register")
 			}
 			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
 		}
-		if($mybb->settings['usereferrals'] == "yes" && !$mybb->user['uid'])
+		if($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid'])
 		{
 			if($_COOKIE['mybb']['referrer'])
 			{
@@ -460,7 +460,7 @@ if($mybb->input['action'] == "register")
 		}
 		// Custom profile fields baby!
 		$altbg = "trow1";
-		$query = $db->simple_select("profilefields", "*", "editable='yes'", array('order_by' => 'disporder'));
+		$query = $db->simple_select("profilefields", "*", "editable=1", array('order_by' => 'disporder'));
 		while($profilefield = $db->fetch_array($query))
 		{
 			$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -596,7 +596,7 @@ if($mybb->input['action'] == "register")
 				$value = htmlspecialchars_uni($userfield);
 				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
 			}
-			if($profilefield['required'] == "yes")
+			if($profilefield['required'] == 1)
 			{
 				// JS validator extra
 				if($type == "checkbox" || $type == "radio")
@@ -632,14 +632,14 @@ if($mybb->input['action'] == "register")
 			$pmnoticecheck = " checked=\"checked\"";
 			$emailpmnotifycheck = '';
 			$invisiblecheck = '';
-			if($mybb->settings['dstcorrection'] == "yes")
+			if($mybb->settings['dstcorrection'] == 1)
 			{
 				$enabledstcheck = "checked=\"checked\"";
 			}
 			
 		}
 		// Spambot registration image thingy
-		if($mybb->settings['captchaimage'] == "on" && function_exists("imagecreatefrompng"))
+		if($mybb->settings['captchaimage'] == 1 && function_exists("imagecreatefrompng"))
 		{
 			$randomstr = random_str(5);
 			$imagehash = md5($randomstr);
@@ -663,7 +663,7 @@ if($mybb->input['action'] == "register")
 			$validator_extra .= "\tregValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
 
 			// See if the board has "require complex passwords" enabled.
-			if($mybb->settings['requirecomplexpasswords'] == "yes")
+			if($mybb->settings['requirecomplexpasswords'] == 1)
 			{
 				$validator_extra .= "\tregValidator.register('password', 'regexp', {match_field:'password2', regexp:'[\W]+', failure_message:'{$lang->js_validator_password_complexity}'});\n";
 			}
@@ -974,7 +974,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{
 		my_setcookie('loginattempts', $logins + 1);
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
-		if($mybb->settings['failedlogintext'] == "yes")
+		if($mybb->settings['failedlogintext'] == 1)
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
@@ -985,7 +985,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{
 		my_setcookie('loginattempts', $logins + 1);
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
-		if($mybb->settings['failedlogintext'] == "yes")
+		if($mybb->settings['failedlogintext'] == 1)
 		{
 			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
@@ -1064,7 +1064,7 @@ if($mybb->input['action'] == "profile")
 {
 	$plugins->run_hooks("member_profile_start");
 
-	if($mybb->usergroup['canviewprofiles'] == "no")
+	if($mybb->usergroup['canviewprofiles'] == 0)
 	{
 		error_no_permission();
 	}
@@ -1134,7 +1134,7 @@ if($mybb->input['action'] == "profile")
 	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
 
-	if($mybb->settings['enablepms'] != "no" && $memprofile['receivepms'] != "no" && $memperms['canusepms'] != "no" && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	if($mybb->settings['enablepms'] != 0 && $memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 	{
 		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
 	}
@@ -1162,7 +1162,7 @@ if($mybb->input['action'] == "profile")
 		$avatar = '';
 	}
 
-	if($memprofile['hideemail'] != "yes")
+	if($memprofile['hideemail'] != 1)
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
@@ -1225,7 +1225,7 @@ if($mybb->input['action'] == "profile")
 		$memprofile['icq'] = '';
 	}
 
-	if($memprofile['away'] == "yes" && $mybb->settings['allowaway'] != "no")
+	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
 	{
 		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
@@ -1258,7 +1258,7 @@ if($mybb->input['action'] == "profile")
 		}
 		eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
 	}
-	if($memprofile['dst'] == "yes")
+	if($memprofile['dst'] == 1)
 	{
 		$memprofile['timezone']++;
 		if(my_substr($memprofile['timezone'], 0, 1) != "-")
@@ -1392,7 +1392,7 @@ if($mybb->input['action'] == "profile")
 	
 	// User is currently online and this user has permissions to view the user on the WOL
 	$query = $db->simple_select("sessions", "location", "uid='$uid'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
-	if($db->num_rows($query) > 0 && ($memprofile['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $memprofile['uid'] == $mybb->user['uid']))
+	if($db->num_rows($query) > 0 && ($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']))
 	{
 		// Fetch location
 		$location = $db->fetch_field($query, "location");
@@ -1413,12 +1413,12 @@ if($mybb->input['action'] == "profile")
 	}
 
 	// Fetch the reputation for this user
-	if($memperms['usereputationsystem'] == "yes" && $mybb->settings['enablereputation'] == "yes")
+	if($memperms['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
 	{
 		$reputation = get_reputation($memprofile['reputation']);
 
 		// If this user has permission to give reputations show the vote link
-		if($mybb->usergroup['cangivereputations'] == "yes" && $memprofile['uid'] != $mybb->user['uid'])
+		if($mybb->usergroup['cangivereputations'] == 1 && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			$vote_link = "[<a href=\"javascript:MyBB.reputation({$memprofile['uid']});\">{$lang->reputation_vote}</a>]";
 		}
@@ -1426,7 +1426,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
 
-	if($mybb->settings['enablewarningsystem'] != "no" && $usergroup['canreceivewarnings'] != "no" && ($mybb->usergroup['canwarnusers'] != "no" || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != "no")))
+	if($mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 	{
 		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
@@ -1434,7 +1434,7 @@ if($mybb->input['action'] == "profile")
 			$warning_level = 100;
 		}
 		$warning_level = get_colored_warning_level($warning_level);
-		if($mybb->usergroup['canwarnusers'] != "no" && $memprofile['uid'] != $mybb->user['uid'])
+		if($mybb->usergroup['canwarnusers'] != 0 && $memprofile['uid'] != $mybb->user['uid'])
 		{
 			eval("\$warn_user = \"".$templates->get("member_profile_warn")."\";");
 			$warning_link = "warnings.php?uid={$memprofile['uid']}";
@@ -1452,13 +1452,13 @@ if($mybb->input['action'] == "profile")
 	$customfields = '';
 	$bgcolor = "trow1";
 	// If this user is an Administrator or a Moderator then we wish to show all profile fields
-	if($mybb->usergroup['cancp'] == "yes" || $mybb->usergroup['issupermod'] == "yes" || $mybb->usergroup['gid'] == 6)
+	if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['gid'] == 6)
 	{
 		$field_hidden = '1=1';
 	}
 	else
 	{
-		$field_hidden = "hidden='no'";
+		$field_hidden = "hidden=0";
 	}
 	$query = $db->simple_select("profilefields", "*", "{$field_hidden}", array('order_by' => 'disporder'));
 	while($customfield = $db->fetch_array($query))
@@ -1513,7 +1513,7 @@ if($mybb->input['action'] == "profile")
 		$timeonline = $lang->none_registered;
 	}
 
-	if($mybb->usergroup['cancp'] == "yes" && $mybb->config['hide_admin_links'] != 1)
+	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}
@@ -1536,7 +1536,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	$plugins->run_hooks("member_do_emailuser_start");
 
 	// Guests or those without permission can't email other users
-	if($mybb->usergroup['cansendemail'] == "no" || !$mybb->user['uid'])
+	if($mybb->usergroup['cansendemail'] == 0 || !$mybb->user['uid'])
 	{
 		error_no_permission();
 	}
@@ -1561,7 +1561,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		error($lang->error_invalidusername);
 	}
 	
-	if($to_user['hideemail'] != "no")
+	if($to_user['hideemail'] != 0)
 	{
 		error($lang->error_hideemail);
 	}
@@ -1612,7 +1612,7 @@ if($mybb->input['action'] == "emailuser")
 	$plugins->run_hooks("member_emailuser_start");
 
 	// Guests or those without permission can't email other users
-	if($mybb->usergroup['cansendemail'] == "no" || !$mybb->user['uid'])
+	if($mybb->usergroup['cansendemail'] == 0 || !$mybb->user['uid'])
 	{
 		error_no_permission();
 	}
@@ -1639,7 +1639,7 @@ if($mybb->input['action'] == "emailuser")
 		error($lang->error_invaliduser);
 	}
 	
-	if($to_user['hideemail'] != "no")
+	if($to_user['hideemail'] != 0)
 	{
 		error($lang->error_hideemail);
 	}

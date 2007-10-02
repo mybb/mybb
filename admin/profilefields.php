@@ -134,9 +134,9 @@ if($mybb->input['action'] == "add")
 	makeinputcode($lang->field_disporder, "disporder", "", 4);
 	makelabelcode($lang->field_type, "<select name=\"type\"><option value=\"text\">$lang->field_type_textbox</option><option value=\"textarea\">$lang->field_type_textarea</option><option value=\"select\">$lang->field_type_select</option><option value=\"multiselect\">$lang->field_type_multiselect</option><option value=\"radio\">$lang->field_type_radio</option><option value=\"checkbox\">$lang->field_type_checkbox</option></select>");
 	maketextareacode($lang->field_options, "options", "", 6, 50);
-	makeyesnocode($lang->field_required, "required", "no");
-	makeyesnocode($lang->field_editable, "editable", "yes");
-	makeyesnocode($lang->field_hidden, "hidden", "no");
+	makeyesnocode($lang->field_required, "required", 0);
+	makeyesnocode($lang->field_editable, "editable", 1);
+	makeyesnocode($lang->field_hidden, "hidden", 0);
 	endtable();
 	endform($lang->add_field, $lang->reset_button);
 	cpfooter();
@@ -154,7 +154,7 @@ if($mybb->input['action'] == "delete")
 	$lang->delete_field = sprintf($lang->delete_field, $profilefield['name']);
 	tableheader($lang->delete_field, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	$lang->delete_confirm = sprintf($lang->delete_confirm, $profilefield['name']);
 	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
@@ -224,9 +224,9 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	while($profilefield = $db->fetch_array($query))
 	{
 		$bgcolor = getaltbg();
-		$profilefield['required'] = ($profilefield['required'] == "yes") ? $lang->yes : $lang->no;
-		$profilefield['editable'] = ($profilefield['editable'] == "yes") ? $lang->yes : $lang->no;
-		$profilefield['hidden'] = ($profilefield['hidden'] == "yes") ? $lang->yes : $lang->no;
+		$profilefield['required'] = ($profilefield['required'] == 1) ? $lang->yes : $lang->no;
+		$profilefield['editable'] = ($profilefield['editable'] == 1) ? $lang->yes : $lang->no;
+		$profilefield['hidden'] = ($profilefield['hidden'] == 1) ? $lang->yes : $lang->no;
 		echo "<tr>\n";
 		echo "<td class=\"$bgcolor\">$profilefield[name]</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">$profilefield[fid]</td>\n";

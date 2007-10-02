@@ -20,7 +20,7 @@ $parser = new postParser;
 
 $lang->load("warnings");
 
-if($mybb->settings['enablewarningsystem'] == "no")
+if($mybb->settings['enablewarningsystem'] == 0)
 {
 	error($lang->error_warning_system_disabled);
 }
@@ -31,7 +31,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->usergroup['canwarnusers'] != "yes")
+	if($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -66,7 +66,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 	$group_permissions = user_permissions($user['uid']);
 
-	if($group_permissions['canreceivewarnings'] != "yes")
+	if($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
@@ -86,7 +86,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != "yes" || !is_moderator($thread['fid']))
+		if($forum_permissions['canview'] != 1 || !is_moderator($thread['fid']))
 		{
 			error_no_permission();
 		}
@@ -118,7 +118,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	// Issuing a custom warning
 	else
 	{
-		if($mybb->settings['allowcustomwarnings'] == "no")
+		if($mybb->settings['allowcustomwarnings'] == 0)
 		{
 			$warn_errors[] = $lang->error_cant_custom_warn;
 		}
@@ -170,7 +170,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	}
 
 	// Are we notifying the user?
-	if(!$warn_errors && $mybb->input['send_pm'] == 1 && $group_permissions['canusepms']  != "no" && $user['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
+	if(!$warn_errors && $mybb->input['send_pm'] == 1 && $group_permissions['canusepms']  != 0 && $user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
 		// Bring up the PM handler
 		require_once MYBB_ROOT."inc/datahandlers/pm.php";
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 // Warn a user
 if($mybb->input['action'] == "warn")
 {
-	if($mybb->usergroup['canwarnusers'] != "yes")
+	if($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -402,7 +402,7 @@ if($mybb->input['action'] == "warn")
 
 	$group_permissions = user_permissions($user['uid']);
 
-	if($group_permissions['canreceivewarnings'] != "yes")
+	if($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
@@ -422,7 +422,7 @@ if($mybb->input['action'] == "warn")
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != "yes" || !is_moderator($thread['fid']))
+		if($forum_permissions['canview'] != 1 || !is_moderator($thread['fid']))
 		{
 			error_no_permission();
 		}
@@ -619,19 +619,19 @@ if($mybb->input['action'] == "warn")
 		unset($result);
 	}
 
-	if($mybb->settings['allowcustomwarnings'] != "no")
+	if($mybb->settings['allowcustomwarnings'] != 0)
 	{
 		eval("\$custom_warning = \"".$templates->get("warnings_warn_custom")."\";");
 	}
 
-	if($group_permissions['canusepms']  != "no" && $mybb->user['receivepms'] != "no" && $mybb->settings['enablepms'] != "no")
+	if($group_permissions['canusepms']  != 0 && $mybb->user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
 		$smilieinserter = $codebuttons = "";
 
-		if($mybb->settings['bbcodeinserter'] != "off" && $mybb->settings['pmsallowmycode'] != "no" && $mybb->user['showcodebuttons'] != 0)
+		if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 		{
 			$codebuttons = build_mycode_inserter();
-			if($mybb->settings['pmsallowsmilies'] != "no")
+			if($mybb->settings['pmsallowsmilies'] != 0)
 			{
 				$smilieinserter = build_clickable_smilies();
 			}
@@ -650,7 +650,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
-	if($mybb->usergroup['canwarnusers'] != "yes")
+	if($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -670,7 +670,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	$user = get_user($warning['uid']);
 
 	$group_permissions = user_permissions($user['uid']);
-	if($group_permissions['canreceivewarnings'] != "yes")
+	if($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
@@ -717,7 +717,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 // Detailed view of a warning
 if($mybb->input['action'] == "view")
 {
-	if($mybb->usergroup['canwarnusers'] != "yes")
+	if($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -740,7 +740,7 @@ if($mybb->input['action'] == "view")
 	$user = get_user(intval($warning['uid']));
 
 	$group_permissions = user_permissions($user['uid']);
-	if($group_permissions['canreceivewarnings'] != "yes")
+	if($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}
@@ -830,7 +830,7 @@ if($mybb->input['action'] == "view")
 // Showing list of warnings for a particular user
 if(!$mybb->input['action'])
 {
-	if($mybb->usergroup['canwarnusers'] != "yes")
+	if($mybb->usergroup['canwarnusers'] != 1)
 	{
 		error_no_permission();
 	}
@@ -841,7 +841,7 @@ if(!$mybb->input['action'])
 		error($lang->error_invalid_user);
 	}
 	$group_permissions = user_permissions($user['uid']);
-	if($group_permissions['canreceivewarnings'] != "yes")
+	if($group_permissions['canreceivewarnings'] != 1)
 	{
 		error($lang->error_cant_warn_group);
 	}

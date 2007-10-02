@@ -471,7 +471,7 @@ function upload_attachment($attachment)
 			$attacharray['thumbnail'] = "SMALL";
 		}
 	}
-	if($forum['modattachments'] == "yes" && !is_moderator($forum['fid'], "", $mybb->user['uid']))
+	if($forum['modattachments'] == 0 && !is_moderator($forum['fid'], "", $mybb->user['uid']))
 	{
 		$attacharray['visible'] = 0;
 	}

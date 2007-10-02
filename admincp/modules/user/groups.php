@@ -87,9 +87,9 @@ if($mybb->input['action'] == "add")
 
 		if(!$errors)
 		{
-			if($mybb->input['joinable'] == "yes")
+			if($mybb->input['joinable'] == 1)
 			{
-				if($mybb->input['moderate'] == "yes")
+				if($mybb->input['moderate'] == 1)
 				{
 					$mybb->input['type'] = "4";
 				}
@@ -221,9 +221,9 @@ if($mybb->input['action'] == "edit")
 
 		if(!$errors)
 		{
-			if($mybb->input['joinable'] == "yes")
+			if($mybb->input['joinable'] == 1)
 			{
-				if($mybb->input['moderate'] == "yes")
+				if($mybb->input['moderate'] == 1)
 				{
 					$mybb->input['type'] = "4";
 				}

@@ -53,7 +53,7 @@ $archive_url = build_archive_link("announcement", $aid);
 $forumpermissions = forum_permissions($forum['fid']);
 $parentlist = $forum['parentlist'];
 
-if($forumpermissions['canview'] == "no" || $forumpermissions['canviewthreads'] == "no")
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 {
 	error_no_permission();
 }

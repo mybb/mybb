@@ -190,9 +190,9 @@ if($mybb->input['action'] == "edit_thread_tool")
 				$errors[] = $lang->error_no_move_forum_selected;
 			}
 			
-			if($mybb->input['move_2_redirect'] != 'yes' && $mybb->input['move_2_redirect'] != 'no')
+			if($mybb->input['move_2_redirect'] != 1 && $mybb->input['move_2_redirect'] != 0)
 			{
-				$mybb->input['move_2_redirect'] = 'no';
+				$mybb->input['move_2_redirect'] = 0;
 			}
 			
 			if(!isset($mybb->input['move_3_redirecttime']))
@@ -203,7 +203,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		else
 		{
 			$mybb->input['move_1_forum'] = '';
-			$mybb->input['move_2_redirect'] = 'no';
+			$mybb->input['move_2_redirect'] = 0;
 			$mybb->input['move_3_redirecttime'] = '';
 		}
 		
@@ -219,26 +219,6 @@ if($mybb->input['action'] == "edit_thread_tool")
 			$mybb->input['copy_1_forum'] = '';
 		}
 		
-		if($mybb->input['deletethread'] != 'yes' && $mybb->input['deletethread'] != 'no')
-		{
-			$mybb->input['deletethread'] = 'no';
-		}
-		
-		if($mybb->input['mergethread'] != 'yes' && $mybb->input['mergethread'] != 'no')
-		{
-			$mybb->input['mergethread'] = 'no';
-		}
-		
-		if($mybb->input['deletepoll'] != 'yes' && $mybb->input['deletepoll'] != 'no')
-		{
-			$mybb->input['deletepoll'] = 'no';
-		}
-		
-		if($mybb->input['deleteredirects'] != 'yes' && $mybb->input['deleteredirects'] != 'no')
-		{
-			$mybb->input['deleteredirects'] = 'no';
-		}
-
 		if(!$errors)
 		{
 			$thread_options = array(
@@ -521,21 +501,11 @@ if($mybb->input['action'] == "add_thread_tool")
 			{
 				$errors[] = $lang->error_no_move_forum_selected;
 			}
-			
-			if($mybb->input['move_2_redirect'] != 'yes' && $mybb->input['move_2_redirect'] != 'no')
-			{
-				$mybb->input['move_2_redirect'] = 'no';
-			}
-			
-			if(!isset($mybb->input['move_3_redirecttime']))
-			{
-				$mybb->input['move_3_redirecttime'] = '';
-			}
 		}
 		else
 		{
 			$mybb->input['move_1_forum'] = '';
-			$mybb->input['move_2_redirect'] = 'no';
+			$mybb->input['move_2_redirect'] = 0;
 			$mybb->input['move_3_redirecttime'] = '';
 		}
 		
@@ -551,26 +521,6 @@ if($mybb->input['action'] == "add_thread_tool")
 			$mybb->input['copy_1_forum'] = '';
 		}
 		
-		if($mybb->input['deletethread'] != 'yes' && $mybb->input['deletethread'] != 'no')
-		{
-			$mybb->input['deletethread'] = 'no';
-		}
-		
-		if($mybb->input['mergethread'] != 'yes' && $mybb->input['mergethread'] != 'no')
-		{
-			$mybb->input['mergethread'] = 'no';
-		}
-		
-		if($mybb->input['deletepoll'] != 'yes' && $mybb->input['deletepoll'] != 'no')
-		{
-			$mybb->input['deletepoll'] = 'no';
-		}
-		
-		if($mybb->input['deleteredirects'] != 'yes' && $mybb->input['deleteredirects'] != 'no')
-		{
-			$mybb->input['deleteredirects'] = 'no';
-		}
-
 		if(!$errors)
 		{
 			$thread_options = array(
@@ -839,21 +789,11 @@ if($mybb->input['action'] == "edit_post_tool")
 			{
 				$errors[] = $lang->error_no_move_forum_selected;
 			}
-			
-			if($mybb->input['move_2_redirect'] != 'yes' && $mybb->input['move_2_redirect'] != 'no')
-			{
-				$mybb->input['move_2_redirect'] = 'no';
-			}
-			
-			if(!isset($mybb->input['move_3_redirecttime']))
-			{
-				$mybb->input['move_3_redirecttime'] = '';
-			}
 		}
 		else
 		{
 			$mybb->input['move_1_forum'] = '';
-			$mybb->input['move_2_redirect'] = 'no';
+			$mybb->input['move_2_redirect'] = 0;
 			$mybb->input['move_3_redirecttime'] = '';
 		}
 		
@@ -869,36 +809,6 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['copy_1_forum'] = '';
 		}
 		
-		if($mybb->input['deletethread'] != 'yes' && $mybb->input['deletethread'] != 'no')
-		{
-			$mybb->input['deletethread'] = 'no';
-		}
-		
-		if($mybb->input['mergethread'] != 'yes' && $mybb->input['mergethread'] != 'no')
-		{
-			$mybb->input['mergethread'] = 'no';
-		}
-		
-		if($mybb->input['deletepoll'] != 'yes' && $mybb->input['deletepoll'] != 'no')
-		{
-			$mybb->input['deletepoll'] = 'no';
-		}
-		
-		if($mybb->input['deleteredirects'] != 'yes' && $mybb->input['deleteredirects'] != 'no')
-		{
-			$mybb->input['deleteredirects'] = 'no';
-		}
-		
-		if($mybb->input['deleteposts'] != 'yes' && $mybb->input['deleteposts'] != 'no')
-		{
-			$mybb->input['deleteposts'] = 'no';
-		}
-		
-		if($mybb->input['mergeposts'] != 'yes' && $mybb->input['mergeposts'] != 'no')
-		{
-			$mybb->input['mergeposts'] = 'no';
-		}
-
 		if($mybb->input['approveposts'] != '' && $mybb->input['approveposts'] != 'approve' && $mybb->input['approveposts'] != 'unapprove' && $mybb->input['approveposts'] != 'toggle')
 		{
 			$mybb->input['approveposts'] = '';
@@ -909,7 +819,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['splitposts'] = -1;
 		}
 		
-		if($mybb->input['splitpostsclose'] == 'yes')
+		if($mybb->input['splitpostsclose'] == 1)
 		{
 			$mybb->input['splitpostsclose'] = 'close';
 		}
@@ -918,7 +828,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['splitpostsclose'] = '';
 		}
 		
-		if($mybb->input['splitpostsstick'] == 'yes')
+		if($mybb->input['splitpostsstick'] == 1)
 		{
 			$mybb->input['splitpostsstick'] = 'stick';
 		}
@@ -927,7 +837,7 @@ if($mybb->input['action'] == "edit_post_tool")
 			$mybb->input['splitpostsstick'] = '';
 		}
 		
-		if($mybb->input['splitpostsunapprove'] == 'yes')
+		if($mybb->input['splitpostsunapprove'] == 1)
 		{
 			$mybb->input['splitpostsunapprove'] = 'unapprove';
 		}
@@ -1304,22 +1214,12 @@ if($mybb->input['action'] == "add_post_tool")
 			if(!$mybb->input['move_1_forum'])
 			{
 				$errors[] = $lang->error_no_move_forum_selected;
-			}
-			
-			if($mybb->input['move_2_redirect'] != 'yes' && $mybb->input['move_2_redirect'] != 'no')
-			{
-				$mybb->input['move_2_redirect'] = 'no';
-			}
-			
-			if(!isset($mybb->input['move_3_redirecttime']))
-			{
-				$mybb->input['move_3_redirecttime'] = '';
-			}
+			}			
 		}
 		else
 		{
 			$mybb->input['move_1_forum'] = '';
-			$mybb->input['move_2_redirect'] = 'no';
+			$mybb->input['move_2_redirect'] = 0;
 			$mybb->input['move_3_redirecttime'] = '';
 		}
 		
@@ -1335,36 +1235,6 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['copy_1_forum'] = '';
 		}
 		
-		if($mybb->input['deletethread'] != 'yes' && $mybb->input['deletethread'] != 'no')
-		{
-			$mybb->input['deletethread'] = 'no';
-		}
-		
-		if($mybb->input['mergethread'] != 'yes' && $mybb->input['mergethread'] != 'no')
-		{
-			$mybb->input['mergethread'] = 'no';
-		}
-		
-		if($mybb->input['deletepoll'] != 'yes' && $mybb->input['deletepoll'] != 'no')
-		{
-			$mybb->input['deletepoll'] = 'no';
-		}
-		
-		if($mybb->input['deleteredirects'] != 'yes' && $mybb->input['deleteredirects'] != 'no')
-		{
-			$mybb->input['deleteredirects'] = 'no';
-		}
-		
-		if($mybb->input['deleteposts'] != 'yes' && $mybb->input['deleteposts'] != 'no')
-		{
-			$mybb->input['deleteposts'] = 'no';
-		}
-		
-		if($mybb->input['mergeposts'] != 'yes' && $mybb->input['mergeposts'] != 'no')
-		{
-			$mybb->input['mergeposts'] = 'no';
-		}
-
 		if($mybb->input['approveposts'] != '' && $mybb->input['approveposts'] != 'approve' && $mybb->input['approveposts'] != 'unapprove' && $mybb->input['approveposts'] != 'toggle')
 		{
 			$mybb->input['approveposts'] = '';
@@ -1375,7 +1245,7 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['splitposts'] = -1;
 		}
 		
-		if($mybb->input['splitpostsclose'] == 'yes')
+		if($mybb->input['splitpostsclose'] == 1)
 		{
 			$mybb->input['splitpostsclose'] = 'close';
 		}
@@ -1384,7 +1254,7 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['splitpostsclose'] = '';
 		}
 		
-		if($mybb->input['splitpostsstick'] == 'yes')
+		if($mybb->input['splitpostsstick'] == 1)
 		{
 			$mybb->input['splitpostsstick'] = 'stick';
 		}
@@ -1393,7 +1263,7 @@ if($mybb->input['action'] == "add_post_tool")
 			$mybb->input['splitpostsstick'] = '';
 		}
 		
-		if($mybb->input['splitpostsunapprove'] == 'yes')
+		if($mybb->input['splitpostsunapprove'] == 1)
 		{
 			$mybb->input['splitpostsunapprove'] = 'unapprove';
 		}

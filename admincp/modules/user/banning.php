@@ -30,7 +30,7 @@ $sub_tabs['ban'] = array(
 );
 
 // Fetch banned groups
-$query = $db->simple_select("usergroups", "gid,title", "isbannedgroup='yes'", array('order_by' => 'title'));
+$query = $db->simple_select("usergroups", "gid,title", "isbannedgroup=1", array('order_by' => 'title'));
 while($group = $db->fetch_array($query))
 {
 	$banned_groups[$group['gid']] = $group['title'];

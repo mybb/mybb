@@ -319,7 +319,7 @@ if($mybb->input['action'] == 'delete')
 	starttable();
 	tableheader($lang->confirm_delete);
 	$yes_button = makebuttoncode('deletesubmit', $lang->yes);
-	$no_button = makebuttoncode('no', $lang->no);
+	$no_button = makebuttoncode(0, $lang->no);
 	makelabelcode('<div align="center">'.$lang->confirm_delete_text.'<br /><br />'.$yes_button.$no_button.'</div>');
 	endtable();
 	endform();
@@ -480,7 +480,7 @@ function seq_backup($fp, &$contents)
 {
 	global $mybb;
 	
-	if($mybb->input['sequential_backup'] == 'yes') 
+	if($mybb->input['sequential_backup'] == 1) 
 	{
 		if($mybb->input['write'] == 'disk') 
 		{

@@ -256,8 +256,8 @@ class PostDataHandler extends DataHandler
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
-		$this->verify_yesno_option($options, 'signature', 'no');
-		$this->verify_yesno_option($options, 'disablesmilies', 'no');
+		$this->verify_yesno_option($options, 'signature', 0);
+		$this->verify_yesno_option($options, 'disablesmilies', 0);
 
 		return true;
 	}
@@ -274,7 +274,7 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['postfloodcheck'] == "on" && $post['uid'] != 0 && $this->admin_override == false)
+		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0 && $this->admin_override == false)
 		{
 			// Fetch the user information for this post - used to check their last post date.
 			$user = get_user($post['uid']);
@@ -388,7 +388,7 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 
 		// Check if this post contains more images than the forum allows
-		if($post['savedraft'] != 1 && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != "yes")
+		if($post['savedraft'] != 1 && $mybb->settings['maxpostimages'] != 0 && $permissions['cancp'] != 1)
 		{
 			require_once MYBB_ROOT."inc/class_parser.php";
 			$parser = new postParser;
@@ -400,13 +400,13 @@ class PostDataHandler extends DataHandler
 				"allow_imgcode" => $forum['allowimgcode']
 			);
 
-			if($post['options']['disablesmilies'] != "yes")
+			if($post['options']['disablesmilies'] != 1)
 			{
 				$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			}
 			else
 			{
-				$parser_options['allow_smilies'] = "no";
+				$parser_options['allow_smilies'] = 0;
 			}
 
 			$image_check = $parser->parse_message($post['message'], $parser_options);
@@ -626,28 +626,28 @@ class PostDataHandler extends DataHandler
 				$modlogdata['tid'] = $thread['tid'];
 
 				// Close the thread.
-				if($modoptions['closethread'] == "yes" && $thread['closed'] != "yes")
+				if($modoptions['closethread'] == 1 && $thread['closed'] != 1)
 				{
-					$newclosed = "closed='yes'";
+					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Open the thread.
-				if($modoptions['closethread'] != "yes" && $thread['closed'] == "yes")
+				if($modoptions['closethread'] != 1 && $thread['closed'] == 1)
 				{
-					$newclosed = "closed='no'";
+					$newclosed = "closed=0";
 					log_moderator_action($modlogdata, $lang->thread_opened);
 				}
 
 				// Stick the thread.
-				if($modoptions['stickthread'] == "yes" && $thread['sticky'] != 1)
+				if($modoptions['stickthread'] == 1 && $thread['sticky'] != 1)
 				{
 					$newstick = "sticky='1'";
 					log_moderator_action($modlogdata, $lang->thread_stuck);
 				}
 
 				// Unstick the thread.
-				if($modoptions['stickthread'] != "yes" && $thread['sticky'])
+				if($modoptions['stickthread'] != 1 && $thread['sticky'])
 				{
 					$newstick = "sticky='0'";
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
@@ -672,7 +672,7 @@ class PostDataHandler extends DataHandler
 			$forum = get_forum($post['fid']);
 
 			// Decide on the visibility of this post.
-			if($forum['modposts'] == "yes" && !is_moderator($thread['fid'], "", $post['uid']))
+			if($forum['modposts'] == 1 && !is_moderator($thread['fid'], "", $post['uid']))
 			{
 				$visible = 0;
 			}
@@ -691,7 +691,7 @@ class PostDataHandler extends DataHandler
 		if($visible == 1)
 		{
 			$now = TIME_NOW;
-			if($forum['usepostcounts'] != "no")
+			if($forum['usepostcounts'] != 0)
 			{
 				$queryadd = ",postnum=postnum+1";
 			}
@@ -806,6 +806,11 @@ class PostDataHandler extends DataHandler
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->text_parse_message($post['message']);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+
+			// Parse badwords
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+			$excerpt = $parser->parse_badwords($excerpt);
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("
@@ -998,7 +1003,7 @@ class PostDataHandler extends DataHandler
 		{
 
 			// Decide on the visibility of this post.
-			if(($forum['modthreads'] == "yes" || $forum['modposts'] == "yes") && !is_moderator($thread['fid'], "", $thread['uid']))
+			if(($forum['modthreads'] == 1 || $forum['modposts'] == 1) && !is_moderator($thread['fid'], "", $thread['uid']))
 			{
 				$visible = 0;
 			}
@@ -1142,14 +1147,14 @@ class PostDataHandler extends DataHandler
 				$modlogdata['tid'] = $thread['tid'];
 
 				// Close the thread.
-				if($modoptions['closethread'] == "yes")
+				if($modoptions['closethread'] == 1)
 				{
-					$newclosed = "closed='yes'";
+					$newclosed = "closed=1";
 					log_moderator_action($modlogdata, $lang->thread_closed);
 				}
 
 				// Stick the thread.
-				if($modoptions['stickthread'] == "yes")
+				if($modoptions['stickthread'] == 1)
 				{
 					$newstick = "sticky='1'";
 					log_moderator_action($modlogdata, $lang->thread_stuck);
@@ -1182,7 +1187,7 @@ class PostDataHandler extends DataHandler
 						$update_query[] = "lastpost='".$thread['dateline']."'";
 					}
 					// Update the post count if this forum allows post counts to be tracked
-					if($forum['usepostcounts'] != "no")
+					if($forum['usepostcounts'] != 0)
 					{
 						$update_query[] = "postnum=postnum+1";
 					}
@@ -1202,6 +1207,12 @@ class PostDataHandler extends DataHandler
 
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
 				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+				
+				// Parse badwords
+				require_once MYBB_ROOT."inc/class_parser.php";
+				$parser = new postParser;
+				$excerpt = $parser->parse_badwords($excerpt);
+
 				$query = $db->query("
 					SELECT u.username, u.email, u.uid, u.language
 					FROM ".TABLE_PREFIX."forumsubscriptions fs
@@ -1425,7 +1436,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		// If we need to show the edited by, let's do so.
-		if(($mybb->settings['showeditedby'] == "yes" && !is_moderator($post['fid'], "caneditposts", $post['edit_uid'])) || ($mybb->settings['showeditedbyadmin'] == "yes" && is_moderator($post['fid'], "caneditposts", $post['edit_uid'])))
+		if(($mybb->settings['showeditedby'] == 1 && !is_moderator($post['fid'], "caneditposts", $post['edit_uid'])) || ($mybb->settings['showeditedbyadmin'] == 1 && is_moderator($post['fid'], "caneditposts", $post['edit_uid'])))
 		{
 			$this->post_update_data['edituid'] = intval($post['edit_uid']);
 			$this->post_update_data['edittime'] = TIME_NOW;

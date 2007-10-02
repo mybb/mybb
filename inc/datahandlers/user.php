@@ -149,7 +149,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// See if the board has "require complex passwords" enabled.
-		if($mybb->settings['requirecomplexpasswords'] == "yes")
+		if($mybb->settings['requirecomplexpasswords'] == 1)
 		{
 			// Complex passwords required, do some extra checks.
 			// First, see if there is one or more complex character(s) in the password.
@@ -225,7 +225,7 @@ class UserDataHandler extends DataHandler
 		}
 		
 		// Check signed up emails
-		if($mybb->settings['allowmultipleemails'] == "no")
+		if($mybb->settings['allowmultipleemails'] == 0)
 		{
 			if(email_already_in_use($user['email'], $user['uid']))
 			{
@@ -392,7 +392,7 @@ class UserDataHandler extends DataHandler
 		
 		if(!$this->data['profile_fields_editable'])
 		{
-			$editable = "editable='yes'";
+			$editable = "editable=1";
 		}
 
 		// Fetch all profile fields first.
@@ -410,7 +410,7 @@ class UserDataHandler extends DataHandler
 			$field = "fid{$profilefield['fid']}";
 
 			// If the profile field is required, but not filled in, present error.
-			if(trim($profile_fields[$field]) == "" && $profilefield['required'] == "yes" && !$proferror && !defined('IN_ADMINCP'))
+			if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !$proferror && !defined('IN_ADMINCP'))
 			{
 				$this->set_error('missing_required_profile_field', array($profilefield['name']));
 			}
@@ -466,7 +466,7 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 
 		// Does the referrer exist or not?
-		if($mybb->settings['usereferrals'] == "yes" && $user['referrer'] != '')
+		if($mybb->settings['usereferrals'] == 1 && $user['referrer'] != '')
 		{
 			$query = $db->simple_select('users', 'uid', "username='".$db->escape_string($user['referrer'])."'", array('limit' => 1));
 			$referrer = $db->fetch_array($query);
@@ -491,18 +491,18 @@ class UserDataHandler extends DataHandler
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
-		$this->verify_yesno_option($options, 'allownotices', 'yes');
-		$this->verify_yesno_option($options, 'hideemail', 'no');
-		$this->verify_yesno_option($options, 'emailpmnotify', 'no');
-		$this->verify_yesno_option($options, 'receivepms', 'yes');
-		$this->verify_yesno_option($options, 'pmnotice', 'yes');
-		$this->verify_yesno_option($options, 'pmnotify', 'yes');
-		$this->verify_yesno_option($options, 'invisible', 'no');
-		$this->verify_yesno_option($options, 'remember', 'yes');
-		$this->verify_yesno_option($options, 'showsigs', 'yes');
-		$this->verify_yesno_option($options, 'showavatars', 'yes');
-		$this->verify_yesno_option($options, 'showquickreply', 'yes');
-		$this->verify_yesno_option($options, 'showredirect', 'yes');
+		$this->verify_yesno_option($options, 'allownotices', 1);
+		$this->verify_yesno_option($options, 'hideemail', 0);
+		$this->verify_yesno_option($options, 'emailpmnotify', 0);
+		$this->verify_yesno_option($options, 'receivepms', 1);
+		$this->verify_yesno_option($options, 'pmnotice', 1);
+		$this->verify_yesno_option($options, 'pmnotify', 1);
+		$this->verify_yesno_option($options, 'invisible', 0);
+		$this->verify_yesno_option($options, 'remember', 1);
+		$this->verify_yesno_option($options, 'showsigs', 1);
+		$this->verify_yesno_option($options, 'showavatars', 1);
+		$this->verify_yesno_option($options, 'showquickreply', 1);
+		$this->verify_yesno_option($options, 'showredirect', 1);
 
 		if(array_key_exists('subscriptionmethod', $options))
 		{
@@ -654,9 +654,9 @@ class UserDataHandler extends DataHandler
 
 		$user = &$this->data;
 		// If the board does not allow "away mode" or the user is marking as not away, set defaults.
-		if($mybb->settings['allowaway'] == "no" || $user['away']['away'] != 'yes')
+		if($mybb->settings['allowaway'] == 0 || $user['away']['away'] != 1)
 		{
-			$user['away']['away'] = "no";
+			$user['away']['away'] = 0;
 			$user['away']['date'] = 0;
 			$user['away']['returndate'] = 0;
 			$user['away']['reason'] = '';
@@ -1069,7 +1069,7 @@ class UserDataHandler extends DataHandler
 		$old_user = get_user($user['uid']);
 
 		// If old user has new pmnotice and new user has = yes, keep old value
-		if($old_user['pmnotice'] == "new" && $this->user_update_data['pmnotice'] == "yes")
+		if($old_user['pmnotice'] == "new" && $this->user_update_data['pmnotice'] == 1)
 		{
 			unset($this->user_update_data['pmnotice']);
 		}
@@ -1126,7 +1126,7 @@ class UserDataHandler extends DataHandler
 
 			global $cache;
 			$stats = $cache->read("stats");
-			if($stats['lastuid'] == $mybb->input['uid'])
+			if($stats['lastuid'] == $user['uid'])
 			{
 				// User was latest to register, update stats
 				update_stats(array("numusers" => "+0"));

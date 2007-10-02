@@ -20,7 +20,7 @@ $parser = new postParser;
 // Load global language phrases
 $lang->load("online");
 
-if($mybb->usergroup['canviewonline'] == "no")
+if($mybb->usergroup['canviewonline'] == 0)
 {
 	error_no_permission();
 }
@@ -55,9 +55,9 @@ if($mybb->input['action'] == "today")
 	");
 	while($online = $db->fetch_array($query))
 	{
-		if($online['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes" || $online['uid'] == $mybb->user['uid'])
+		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-			if($online['invisible'] == "yes")
+			if($online['invisible'] == 1)
 			{
 				$invisiblemark = "*";
 			}
@@ -89,7 +89,7 @@ if($mybb->input['action'] == "today")
 }
 elseif($mybb->input['action'] == "iplookup")
 {
-	if($mybb->usergroup['canviewonlineips'] == "no")
+	if($mybb->usergroup['canviewonlineips'] == 0)
 	{
 		error_no_permission();
 	}
@@ -103,7 +103,7 @@ elseif($mybb->input['action'] == "iplookup")
 
 	// Admin options
 	$adminoptions = "";
-	if($mybb->usergroup['cancp'] == "yes")
+	if($mybb->usergroup['cancp'] == 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("online_iplookup_adminoptions")."\";");
 	}
@@ -164,7 +164,7 @@ else
 		{
 			if($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
 			{
-				if($user['invisible'] == "yes")
+				if($user['invisible'] == 1)
 				{
 					++$invisible_count;
 				}

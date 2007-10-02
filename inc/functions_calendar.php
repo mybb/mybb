@@ -307,7 +307,7 @@ function build_calendar_jump($selected=0)
 
 	foreach($calendars as $calendar)
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != "yes")
+		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != 0)
 		{
 			continue;
 		}
@@ -372,18 +372,18 @@ function get_prev_month($month, $year)
  * @param int The calendar ID
  * @param int Start time stamp
  * @param int End time stmap
- * @param string Yes to fetch unapproved events too (for moderators)
+ * @param int 1 to fetch unapproved events too
  * @param int The user ID to fetch private events for (0 fetches none)
  * @return array Array of events
  */
-function get_events($calendar, $start, $end, $unapproved="no", $private=1)
+function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db;
 	// We take in to account timezones here - we add/subject 12 hours from our GMT time ranges
 	$start -= 12*3600;
 	$end += 12*3600;
 
-	if($unapproved != "yes")
+	if($unapproved != 1)
 	{
 		$visible_where = " AND e.visible='1'";
 	}

@@ -47,7 +47,7 @@ if($mybb->input['action'] == "addgroup")
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
-				"isdefault" => 'no'
+				"isdefault" => 0
 			);
 			$gid = $db->insert_query("settinggroups", $new_setting_group);
 
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "editgroup")
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
 	// Prevent editing of default
-	if($group['isdefault'] == 'yes')
+	if($group['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
@@ -202,7 +202,7 @@ if($mybb->input['action'] == "deletegroup")
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 	}
 	// Prevent deletion of default
-	if($group['isdefault'] == 'yes')
+	if($group['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
@@ -383,7 +383,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("settinggroups", "isdefault", "gid='{$setting['gid']}'");
 	$group = $db->fetch_array($query);
 	// Prevent editing of default
-	if($group['isdefault'] == 'yes')
+	if($group['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
@@ -538,7 +538,7 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("settinggroups", "isdefault", "gid='{$setting['gid']}'");
 	$group = $db->fetch_array($query);
 	// Prevent editing of default
-	if($group['isdefault'] == 'yes')
+	if($group['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?".SID."&module=config/settings&action=manage");
@@ -647,7 +647,7 @@ if($mybb->input['action'] == "manage")
 		$table->construct_cell("<strong>{$group_title}</strong>", array('id' => "group{$group['gid']}"));
 		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold')), array('class' => 'align_center'));
 		// Only show options if not a default setting group
-		if($group['isdefault'] != "yes")
+		if($group['isdefault'] != 1)
 		{
 			$popup = new PopupMenu("group_{$group['gid']}", $lang->options);
 			$popup->add_item($lang->edit_setting_group, "index.php?".SID."&amp;module=config/settings&amp;action=editgroup&amp;gid={$group['gid']}");
@@ -675,7 +675,7 @@ if($mybb->input['action'] == "manage")
 			$table->construct_cell($setting['title'], array('style' => 'padding-left: 40px;'));
 			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%')), array('class' => 'align_center'));
 			// Only show options if not a default setting group
-			if($group['isdefault'] != "yes")
+			if($group['isdefault'] != 1)
 			{
 				$popup = new PopupMenu("setting_{$setting['sid']}", $lang->options);
 				$popup->add_item($lang->edit_setting, "index.php?".SID."&amp;module=config/settings&amp;action=edit&amp;sid={$setting['sid']}");
@@ -732,7 +732,7 @@ if($mybb->input['action'] == "change")
 		// If the delayedthreadviews setting was changed, enable or disable the tasks for it.
 		if($mybb->input['upsetting']['delayedthreadviews'] && $mybb->settings['delayedthreadviews'] != $mybb->input['upsetting']['delayedthreadviews'])
 		{
-			if($mybb->input['upsetting']['delayedthreadviews'] == "off")
+			if($mybb->input['upsetting']['delayedthreadviews'] == 0)
 			{
 				$updated_task = array(
 					"enabled" => 1
@@ -882,11 +882,11 @@ if($mybb->input['action'] == "change")
 			}
 			else if($type[0] == "yesno")
 			{
-				$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], false, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
+				$setting_code = $form->generate_yes_no_radio($element_name, $setting['value'], true, array('id' => $element_id.'_yes', 'class' => $element_id), array('id' => $element_id.'_no', 'class' => $element_id));
 			}
 			else if($type[0] == "onoff")
 			{
-				$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], false, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
+				$setting_code = $form->generate_on_off_radio($element_name, $setting['value'], true, array('id' => $element_id.'_on', 'class' => $element_id), array('id' => $element_id.'_off', 'class' => $element_id));
 			}
 			else if($type[0] == "cpstyle")
 			{

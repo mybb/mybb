@@ -48,11 +48,11 @@ if($mybb->input['action'] == "do_attachments")
 		foreach($mybb->input['attachvalidate'] as $aid => $val)
 		{
 			$aid = intval($aid);
-			if($attachdelete[$aid] == 'yes')
+			if($attachdelete[$aid] == 1)
 			{
 				$delete_aids[] = $aid;
 			}
-			elseif($val != 'no')
+			elseif($val != 0)
 			{					
 				$approve_aids[] = $aid;
 			}
@@ -84,13 +84,13 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			$tid = intval($tid);
 			$query = $db->simple_select("threads", "subject, fid", "tid='$tid'");
 			$thread = $db->fetch_array($query);
-			if($mybb->input['threaddelete'][$tid] == "yes")
+			if($mybb->input['threaddelete'][$tid] == 1)
 			{
 				delete_thread($tid);
 			}
 			else
 			{
-				if($val != "no")
+				if($val != 0)
 				{
 					$subject = $db->escape_string($mybb->input['threadsubject'][$tid]);
 					$message = $db->escape_string($mybb->input['threadmessage'][$tid]);
@@ -120,13 +120,13 @@ if($mybb->input['action'] == "do_threads" || $mybb->input['action'] == "do_posts
 			$post = $db->fetch_array($query);
 			$query = $db->simple_select("threads", "fid", "tid='$post[tid]'");
 			$thread = $db->fetch_array($query);
-			if($mybb->input['postdelete'][$pid] == "yes")
+			if($mybb->input['postdelete'][$pid] == 1)
 			{
 				delete_post($pid);
 			}
 			else
 			{
-				if($val != "no")
+				if($val != 0)
 				{
 					$message = $db->escape_string($mybb->input['postmessage'][$pid]);
 					$subject = $db->escape_string($mybb->input['postsubject'][$pid]);
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "attachments")
 		makelabelcode($lang->posted_by, build_profile_link($attachment['postusername'], $attachment['postuid']));
 		makelabelcode($lang->forum, "<a href=\"../".get_forum_link($attachment['fid'])."\" target=\"_blank\">$attachment[forumname]</a>");
 		makeyesnocode($lang->validate_attachment, "attachvalidate[$attachment[aid]]");
-		makeyesnocode($lang->delete_attachment, "attachdelete[$attachment[aid]]", "no");
+		makeyesnocode($lang->delete_attachment, "attachdelete[$attachment[aid]]", 0);
 		makehiddencode("attachpid[$attachment[aid]]", "$attachment[postpid]");
 		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 	}
@@ -245,7 +245,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 		makelabelcode($lang->forum, "<a href=\"../".get_forum_link($attachment['fid'])."\" target=\"_blank\">$thread[forumname]</a>");
 		maketextareacode($lang->message, "threadmessage[$thread[tid]]", $thread['postmessage'], 5);
 		makeyesnocode($lang->validate_thread, "threadvalidate[$thread[tid]]");
-		makeyesnocode($lang->delete_thread, "threaddelete[$thread[tid]]", "no");
+		makeyesnocode($lang->delete_thread, "threaddelete[$thread[tid]]", 0);
 		$donepid[$thread['postpid']] = 1;
 		echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 	}
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 			makelabelcode($lang->forum, "<a href=\"../".get_forum_link($post['fid'])."\" target=\"_blank\">$post[forumname]</a>");
 			maketextareacode($lang->message, "postmessage[$post[pid]]", $post[message], 5);
 			makeyesnocode($lang->validate_post, "postvalidate[$post[pid]]");
-			makeyesnocode($lang->delete_post, "postdelete[$post[pid]]", "no");
+			makeyesnocode($lang->delete_post, "postdelete[$post[pid]]", 0);
 			echo "<tr>\n<td class=\"subheader\" align=\"center\" colspan=\"2\" height=\"2\"><img src=\"pixel.gif\" width=\"1\" height=\"1\" alt=\"\" /></td>\n</tr>\n";
 		  	++$postscount;
 		}

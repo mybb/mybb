@@ -93,7 +93,7 @@ class templates
 
 		if($htmlcomments)
 		{
-			if($mybb->settings['tplhtmlcomments'] == "yes")
+			if($mybb->settings['tplhtmlcomments'] == 1)
 			{
 				$template = "<!-- start: ".htmlspecialchars_uni($title)." -->\n{$template}\n<!-- end: ".htmlspecialchars_uni($title)." -->";
 			}

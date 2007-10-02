@@ -128,7 +128,7 @@ if($mybb->input['action'] == "delete")
 	starttable();
 	tableheader($lang->delete_icon, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_icon_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();

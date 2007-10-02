@@ -68,7 +68,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_html'] = $announcementarray['allowhtml'];
 			$parser_options['allow_mycode'] = $announcementarray['allowmycode'];
 			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
-			$parser_options['allow_imgcode'] = 'yes';
+			$parser_options['allow_imgcode'] = 1;
 			$parser_options['me_username'] = $post['username'];
 			break;
 		default: // Regular post
@@ -243,13 +243,13 @@ function build_postbit($post, $post_type=0)
 
 		// Determine the status to show for the user (Online/Offline/Away)
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
-		if($post['lastactive'] > $timecut && ($post['invisible'] != "yes" || $mybb->usergroup['canviewwolinvis'] == "yes") && $post['lastvisit'] != $post['lastactive'])
+		if($post['lastactive'] > $timecut && ($post['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1) && $post['lastvisit'] != $post['lastactive'])
 		{
 			eval("\$post['onlinestatus'] = \"".$templates->get("postbit_online")."\";");
 		}
 		else
 		{
-			if($post['away'] == "yes" && $mybb->settings['allowaway'] != "no")
+			if($post['away'] == 1 && $mybb->settings['allowaway'] != 0)
 			{
 				eval("\$post['onlinestatus'] = \"".$templates->get("postbit_away")."\";");
 			}
@@ -259,7 +259,7 @@ function build_postbit($post, $post_type=0)
 			}
 		}
 
-		if($post['avatar'] != "" && $mybb->user['showavatars'] != "no")
+		if($post['avatar'] != "" && $mybb->user['showavatars'] != 0)
 		{
 			$post['avatar'] = htmlspecialchars_uni($post['avatar']);
 			$avatar_dimensions = explode("|", $post['avatardimensions']);
@@ -278,7 +278,7 @@ function build_postbit($post, $post_type=0)
 		
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 		
-		if($mybb->settings['enablepms'] == "yes" && $post['receivepms'] != "no" && $mybb->usergroup['cansendpms'] == "yes" && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 		{
 			eval("\$post['button_pm'] = \"".$templates->get("postbit_pm")."\";");
 		}
@@ -293,7 +293,7 @@ function build_postbit($post, $post_type=0)
 			$post['button_www'] = "";
 		}
 		
-		if($post['hideemail'] != "yes" && $mybb->usergroup['cansendemail'] == "yes")
+		if($post['hideemail'] != 1 && $mybb->usergroup['cansendemail'] == 1)
 		{
 			eval("\$post['button_email'] = \"".$templates->get("postbit_email")."\";");
 		}
@@ -305,14 +305,14 @@ function build_postbit($post, $post_type=0)
 		$post['userregdate'] = my_date($mybb->settings['regdateformat'], $post['regdate']);
 
 		// Work out the reputation this user has
-		if($usergroup['usereputationsystem'] != "no" && $mybb->settings['enablereputation'] == "yes")
+		if($usergroup['usereputationsystem'] != 0 && $mybb->settings['enablereputation'] == 1)
 		{
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
 
 		// Showing the warning level?
-		if(!$post_type && $mybb->settings['enablewarningsystem'] != "no" && $usergroup['canreceivewarnings'] != "no" && ($mybb->usergroup['canwarnusers'] != "no" || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != "no")))
+		if(!$post_type && $mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 		{
 			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			if($warning_level > 100)
@@ -320,7 +320,7 @@ function build_postbit($post, $post_type=0)
 				$warning_level = 100;
 			}
 			$warning_level = get_colored_warning_level($warning_level);
-			if($mybb->usergroup['canwarnusers'] != "no" && $post['uid'] != $mybb->user['uid'])
+			if($mybb->usergroup['canwarnusers'] != 0 && $post['uid'] != $mybb->user['uid'])
 			{
 				eval("\$post['button_warn'] = \"".$templates->get("postbit_warn")."\";");
 				$warning_link = "warnings.php?uid={$post['uid']}";
@@ -380,7 +380,7 @@ function build_postbit($post, $post_type=0)
 	if(!$post_type)
 	{
 		// Figure out if we need to show an "edited by" message
-		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != "no" && $usergroup['cancp'] == "no" || $mybb->settings['showeditbyadmin'] != "no" && $usergroup['cancp'] == "yes"))
+		if($post['edituid'] != 0 && $post['edittime'] != 0 && $post['editusername'] != "" && ($mybb->settings['showeditedby'] != 0 && $usergroup['cancp'] == 0 || $mybb->settings['showeditbyadmin'] != 0 && $usergroup['cancp'] == 1))
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
@@ -389,26 +389,26 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
 		
-		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 'yes' && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "caneditposts") || ($forumpermissions['caneditposts'] == 1 && $mybb->user['uid'] == $post['uid'])) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_edit'] = \"".$templates->get("postbit_edit")."\";");
 		}
 		
 		// Quick Delete button
-		$can_delete = 'no';
+		$can_delete = 0;
 		if($mybb->user['uid'] == $post['uid'])
 		{
-			if($forumpermissions['candeletethreads'] == "yes" && $postcounter == 1)
+			if($forumpermissions['candeletethreads'] == 1 && $postcounter == 1)
 			{
-				$can_delete = 'yes';
+				$can_delete = 1;
 			}
-			else if($forumpermissions['candeleteposts'] == "yes" && $postcounter != 1)
+			else if($forumpermissions['candeleteposts'] == 1 && $postcounter != 1)
 			{
-				$can_delete = 'yes';
+				$can_delete = 1;
 			}
 		}
 		
-		if((is_moderator($fid, "candeleteposts") || $can_delete == "yes") && $mybb->user['uid'] != 0)
+		if((is_moderator($fid, "candeleteposts") || $can_delete == 1) && $mybb->user['uid'] != 0)
 		{
 			eval("\$post['button_quickdelete'] = \"".$templates->get("postbit_quickdelete")."\";");
 		}
@@ -441,12 +441,12 @@ function build_postbit($post, $post_type=0)
 		eval("\$post['posturl'] = \"".$templates->get("postbit_posturl")."\";");
 		global $forum, $thread;
 		
-		if($forum['open'] != "no" && ($thread['closed'] != "yes" || is_moderator($forum['fid'])))
+		if($forum['open'] != 0 && ($thread['closed'] != 1 || is_moderator($forum['fid'])))
 		{
 			eval("\$post['button_quote'] = \"".$templates->get("postbit_quote")."\";");
 		}
 		
-		if($forumpermissions['canpostreplys'] != "no" && ($thread['closed'] != "yes" || is_moderator($fid)) && $mybb->settings['multiquote'] != "off" && $forum['open'] != "no" && !$post_type)
+		if($forumpermissions['canpostreplys'] != 0 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['multiquote'] != 0 && $forum['open'] != 0 && !$post_type)
 		{
 			eval("\$post['button_multiquote'] = \"".$templates->get("postbit_multiquote")."\";");
 		}
@@ -456,7 +456,7 @@ function build_postbit($post, $post_type=0)
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
 
-		if($mybb->settings['logip'] != "no")
+		if($mybb->settings['logip'] != 0)
 		{
 			if($mybb->settings['logip'] == "show")
 			{
@@ -478,9 +478,9 @@ function build_postbit($post, $post_type=0)
 
 	}
 	
-	if($post['smilieoff'] == "yes")
+	if($post['smilieoff'] == 1)
 	{
-		$parser_options['allow_smilies'] = "no";
+		$parser_options['allow_smilies'] = 0;
 	}
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
@@ -501,7 +501,7 @@ function build_postbit($post, $post_type=0)
 
 	get_post_attachments($id, $post);
 
-	if($post['includesig'] != "no" && $post['username'] && $post['signature'] != "" && $mybb->user['showsigs'] != "no")
+	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && $mybb->user['showsigs'] != 0)
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -600,11 +600,11 @@ function get_post_attachments($id, &$post)
 					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
 					// Show as download for all other cases 
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 'yes')
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 1)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no') && $isimage)
+					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == 0) && $isimage)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}
@@ -619,7 +619,7 @@ function get_post_attachments($id, &$post)
 					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
 					// Show as download for all other cases 
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 'yes')
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 1)
 					{
 						eval("\$post['thumblist'] .= \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 						if($tcount == 5)
@@ -629,7 +629,7 @@ function get_post_attachments($id, &$post)
 						}
 						++$tcount;
 					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == "yes") || $mybb->settings['attachthumbnails'] == 'no') && $isimage)
+					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == 0) && $isimage)
 					{
 						eval("\$post['imagelist'] .= \"".$templates->get("postbit_attachments_images_image")."\";");
 					}

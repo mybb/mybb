@@ -113,7 +113,7 @@ if($mybb->input['action'] == "add_level")
 	$form_container = new FormContainer($lang->add_warning_level);
 	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_text_box('percentage', $mybb->input['percentage'], array('id' => 'percentage')), 'percentage');
 
-	$query = $db->simple_select("usergroups", "*", "isbannedgroup='yes'");
+	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
 	{
 		$banned_groups[$group['gid']] = $group['title'];
@@ -302,7 +302,7 @@ if($mybb->input['action'] == "edit_level")
 	$form_container = new FormContainer($lang->edit_warning_level);
 	$form_container->output_row($lang->warning_points_percentage, $lang->warning_points_percentage_desc, $form->generate_text_box('percentage', $mybb->input['percentage'], array('id' => 'percentage')), 'percentage');
 
-	$query = $db->simple_select("usergroups", "*", "isbannedgroup='yes'");
+	$query = $db->simple_select("usergroups", "*", "isbannedgroup=1");
 	while($group = $db->fetch_array($query))
 	{
 		$banned_groups[$group['gid']] = $group['title'];

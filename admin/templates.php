@@ -112,7 +112,7 @@ if($mybb->input['action'] == "do_add")
 	{
 		$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
 	}
-	if($mybb->input['continue'] != "yes")
+	if($mybb->input['continue'] != 1)
 	{
 		$editurl = "templates.php?".SID."&expand=".$mybb->input['setid'].$opengroup;
 	}
@@ -195,7 +195,7 @@ if($mybb->input['action'] == "do_edit")
 	{
 		$opengroup = "&amp;group=".$mybb->input['group']."#".$mybb->input['group'];
 	}
-	if($mybb->input['continue'] != "yes")
+	if($mybb->input['continue'] != 1)
 	{
 		$editurl = "templates.php?".SID."&expand=".$mybb->input['setid'].$opengroup;
 	}
@@ -415,11 +415,11 @@ if($mybb->input['action'] == "edit")
 	}
 	if($mybb->input['continue'])
 	{
-		$continue = "yes";
+		$continue = 1;
 	}
 	else
 	{
-		$continue = "no";
+		$continue = 0;
 	}
 	if(($template['sid'] != -2) || (md5($debugmode) == "0100e895f975e14f4193538dac4d0dc7" && $template['sid'] == -2))
 	{
@@ -459,7 +459,7 @@ if($mybb->input['action'] == "delete" || $mybb->input['action'] == "revert")
 	makehiddencode("tid", $mybb->input['tid']);
 	starttable();
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	if($mybb->input['action'] == "revert")
 	{
 		tableheader($lang->revert_template, "", 1);
@@ -488,7 +488,7 @@ if($mybb->input['action'] == "deleteset")
 	starttable();
 	tableheader($lang->delete_template_set, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
-	$no = makebuttoncode("no", $lang->no);
+	$no = makebuttoncode(0, $lang->no);
 	makelabelcode("<div align=\"center\">$lang->delete_set_notice {$templateset['title']}?<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
@@ -553,7 +553,7 @@ if($mybb->input['action'] == "add")
 	{
 		makeselectcode($lang->template_set, "setid", "templatesets", "sid", "title", $mybb->input['sid'], "-1=".$lang->global_sel);
 	}
-	makeyesnocode($lang->continue_editing, "continue", "no");
+	makeyesnocode($lang->continue_editing, "continue", 0);
 	endtable();
 	makehiddencode("group", $mybb->input['group']);
 	endform($lang->add_template, $lang->reset_button);

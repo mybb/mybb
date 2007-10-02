@@ -143,7 +143,7 @@ class session
 		$mybb->user['logoutkey'] = md5($mybb->user['loginkey']);
 
 		// Sort out the private message count for this user.
-		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != "no") // Forced recount
+		if(($mybb->user['totalpms'] == -1 || $mybb->user['unreadpms'] == -1) && $mybb->settings['enablepms'] != 0) // Forced recount
 		{
 			$update = 0;
 			if($mybb->user['totalpms'] == -1)

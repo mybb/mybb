@@ -43,24 +43,6 @@ if($mybb->input['action'] == "edit_properties")
 			$newlanginfo[$key] = str_replace("\"", '\"', $info);
 		}
 		
-		if($newlanginfo['admin'] == "yes")
-		{
-			$newlanginfo['admin'] = 1;
-		}
-		else
-		{
-			$newlanginfo['admin'] = 0;
-		}
-		
-		if($newlanginfo['rtl'] == "yes")
-		{
-			$newlanginfo['rtl'] = 1;
-		}
-		else
-		{
-			$newlanginfo['rtl'] = 0;
-		}
-	
 		// Get contents of existing file
 		require $file;
 	
@@ -131,20 +113,20 @@ if($mybb->input['action'] == "edit_properties")
 	{
 		if($langinfo['admin'])
 		{
-			$mybb->input['info']['admin'] = "yes";
+			$mybb->input['info']['admin'] = 1;
 		}
 		else
 		{
-			$mybb->input['info']['admin'] = "no";
+			$mybb->input['info']['admin'] = 0;
 		}
 		
 		if($langinfo['rtl'])
 		{
-			$mybb->input['info']['rtl'] = "yes";
+			$mybb->input['info']['rtl'] = 1;
 		}
 		else
 		{
-			$mybb->input['info']['rtl'] = "no";
+			$mybb->input['info']['rtl'] = 0;
 		}
 		
 		$mybb->input['info']['name'] = $langinfo['name'];

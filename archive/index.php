@@ -34,7 +34,7 @@ switch($action)
 
 			// Check if we have permission to view this thread
 			$forumpermissions = forum_permissions($forum['fid']);
-			if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != 'yes')
+			if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 			{
 				archive_error_no_permission();
 			}
@@ -84,7 +84,7 @@ switch($action)
 
 		// Check if we have permission to view this thread
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes" || $forumpermissions['canviewthreads'] != 'yes')
+		if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
 		{
 			archive_error_no_permission();
 		}
@@ -156,9 +156,9 @@ switch($action)
 				"allow_imgcode" => $forum['allowimgcode'],
 				"me_username" => $post['username']
 			);
-			if($post['smilieoff'] == "yes")
+			if($post['smilieoff'] == 1)
 			{
-				$parser_options['allow_smilies'] = "no";
+				$parser_options['allow_smilies'] = 0;
 			}
 
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
@@ -196,7 +196,7 @@ switch($action)
 	case "forum":
 		// Check if we have permission to view this forum
 		$forumpermissions = forum_permissions($forum['fid']);
-		if($forumpermissions['canview'] != "yes")
+		if($forumpermissions['canview'] != 1)
 		{
 			archive_error_no_permission();
 		}
@@ -403,7 +403,7 @@ function build_archive_forumbits($pid=0)
 	if(!is_array($fcache))
 	{
 		// Fetch forums
-		$query = $db->simple_select("forums", "*", "active!='no' AND password=''", array('order_by' =>'pid, disporder'));
+		$query = $db->simple_select("forums", "*", "active!=0 AND password=''", array('order_by' =>'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
@@ -419,7 +419,7 @@ function build_archive_forumbits($pid=0)
 			foreach($main as $key => $forum)
 			{
 				$perms = $forumpermissions[$forum['fid']];
-				if(($perms['canview'] == "yes" || $mybb->settings['hideprivateforums'] == "no") && $forum['active'] != "no")
+				if(($perms['canview'] == 1 || $mybb->settings['hideprivateforums'] == 0) && $forum['active'] != 0)
 				{
 					if($forum['linkto'])
 					{
