@@ -1433,7 +1433,6 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
  */
 function my_unsetcookie($name)
 {
-	global $mybb;
 	$expires = -3600;
 	my_setcookie($name, "", $expires);
 }

@@ -4490,7 +4490,7 @@ body {
 <br />
 <select name="postdate">
 <option value="0">{$lang->find_anydate}</option>
-<option value="1">{$lang->find_'1'terday}</option>
+<option value="1">{$lang->find_yesterday}</option>
 <option value="7">{$lang->find_lastweek}</option>
 <option value="14">{$lang->find_2weeks}</option>
 <option value="30">{$lang->find_month}</option>

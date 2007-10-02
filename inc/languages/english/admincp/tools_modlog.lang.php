@@ -10,6 +10,8 @@
 $l['mod_logs'] = "Moderator Logs";
 $l['mod_logs_desc'] = "Here you can view, prune, and search the moderator logs. These logs contain the actions any user may take (deletion of their own posts/threads) and all other actions by moderators.";
 
+$l['no_modlogs'] = "There are no log entries with the selected criteria.";
+
 $l['username'] = "Username";
 $l['date'] = "Date";
 $l['action'] = "Action";

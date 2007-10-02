@@ -152,6 +152,12 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
+	if(count($table->rows) == 0)
+	{
+		$table->construct_cell($lang->no_modlogs, array("colspan" => "5"));
+		$table->construct_row();
+	}
+	
 	$table->output($lang->mod_logs);
 	
 	// Do we need to construct the pagination?

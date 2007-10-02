@@ -1210,7 +1210,8 @@ function install_done()
 	echo $lang->done . '</p>';
 
 	// Automatic Login
-	my_unsetcookie('mybbuser');
+	my_unsetcookie("sid");
+	my_unsetcookie("mybbuser");
 	my_setcookie('mybbuser', $uid.'_'.$loginkey, null, true);
 	ob_end_flush();
 
