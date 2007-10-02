@@ -702,6 +702,12 @@ class PostDataHandler extends DataHandler
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
+			// Parse badwords
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+			$excerpt = $parser->parse_badwords($excerpt);
+
+
 			// Fetch any users subscribed to this thread and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language
@@ -1076,6 +1082,12 @@ class PostDataHandler extends DataHandler
 
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
 				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
+
+				// Parse badwords
+				require_once MYBB_ROOT."inc/class_parser.php";
+				$parser = new postParser;
+				$excerpt = $parser->parse_badwords($excerpt);
+
 				$query = $db->query("
 					SELECT u.username, u.email, u.uid, u.language
 					FROM ".TABLE_PREFIX."forumsubscriptions fs, ".TABLE_PREFIX."users u

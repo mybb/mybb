@@ -1275,7 +1275,7 @@ function get_server_load()
 /**
  * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
  *
- * @param array Array of items being updated (numthreads,numposts,numusers)
+ * @param array Array of items being updated (numthreads,numposts,numusers,lastuser
  */
 function update_stats($changes=array())
 {
@@ -1307,7 +1307,7 @@ function update_stats($changes=array())
 	}
 
 	// Fetch latest user if the user count is changing
-	if(array_key_exists('numusers', $changes))
+	if(array_key_exists('numusers', $changes) || array_key_exists('lastuser', $changes))
 	{
 		$query = $db->simple_select(TABLE_PREFIX."users", "uid, username", "", array('order_by' => 'uid', 'order_dir' => 'DESC', 'limit' => 1));
 		$lastmember = $db->fetch_array($query);

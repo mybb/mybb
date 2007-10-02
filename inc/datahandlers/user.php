@@ -1083,7 +1083,7 @@ class UserDataHandler extends DataHandler
 
 			global $cache;
 			$stats = $cache->read("stats");
-			if($stats['lastuid'] == $mybb->input['uid'])
+			if($stats['lastuid'] == $user['uid'])
 			{
 				// User was latest to register, update stats
 				update_stats(array("numusers" => "+0"));

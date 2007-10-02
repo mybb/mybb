@@ -457,6 +457,9 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$from_tid = '';
 	}
 
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
+
 	// Query for any posts in the list which are not within the specified thread
 	$query = $db->query("
 		SELECT p.subject, p.message, p.pid, p.tid, p.username, t.fid, p.visible, u.username AS userusername
@@ -481,7 +484,8 @@ else if($mybb->input['action'] == "get_multiquoted")
 		$quoted_post['message'] = preg_replace('#(^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} \\2", $quoted_post['message']);
 		$quoted_post['message'] = preg_replace('#(^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$quoted_post['username']} {$lang->slaps} \\2 {$lang->with_trout}", $quoted_post['message']);
 		$quoted_post['message'] = preg_replace("#\[attachment=([0-9]+?)\]#i", '', $quoted_post['message']);
-		
+		$quoted_post['message'] = $parser->parse_badwords($quoted_post['message']);	
+
 		// Tack on to list of messages
 		$message .= "[quote={$quoted_post['username']}]\n{$quoted_post['message']}\n[/quote]\n\n";
 	}
