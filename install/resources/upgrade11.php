@@ -1437,8 +1437,6 @@ function upgrade11_dbchanges8()
 		{
 			$e_date = explode("-", $event['date']);
 			if(!$e_date[2]) $e_date[2] = 2005;
-			print_r($e_date);
-			echo "<br />";
 			$starttime = gmmktime(0, 0, 0, $e_date[1], $e_date[0], $e_date[2]);
 			$updated_event = array(
 				"cid" => 1,
@@ -1528,9 +1526,6 @@ function upgrade11_redothemes()
 		lastmodified bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
 	) TYPE=MyISAM{$collation};");
-
-	// Delete the master theme - we'll be reimporting it
-	//$db->delete_query("themes", "tid='1'");
 
 	// Define our default stylesheets - MyBB 1.4 contains additional stylesheets that our converted themes will also need
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
