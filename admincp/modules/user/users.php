@@ -1249,37 +1249,47 @@ if($mybb->input['action'] == "ipaddresses")
 	
 	$page->output_nav_tabs($sub_tabs, 'ipaddresses');
 	
-	$query = $db->simple_select("users", "uid, regip, username", "uid='{$mybb->input['uid']}'", array('limit' => 1));
+	$query = $db->simple_select("users", "uid, regip, username, lastip", "uid='{$mybb->input['uid']}'", array('limit' => 1));
 	$user = $db->fetch_array($query);
 
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
-	
-	$popup = new PopupMenu("user_{$mybb->input['uid']}", $lang->options);
-	$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
-	$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['regip']}");
-	$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['regip']}");
-	$controls = $popup->fetch();
 	
 	$table = new Table;
 	
 	$table->construct_header("IP Address");
 	$table->construct_header($lang->controls, array('width' => 200, 'class' => "align_center"));
 	
-	$popup = new PopupMenu("user_last", $lang->options);
-	$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['lastip']}");
-	$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['lastip']}");
-	$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['lastip']}");
-	$controls = $popup->fetch();
+	if(empty($user['lastip']))
+	{
+		$user['lastip'] = $lang->unknown;
+		$controls = '';
+	}
+	else
+	{
+		$popup = new PopupMenu("user_last", $lang->options);
+		$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['lastip']}");
+		$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['lastip']}");
+		$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['lastip']}");
+		$controls = $popup->fetch();
+	}
 	$table->construct_cell("<strong>Last Known IP:</strong> {$user['lastip']}");
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
-	$popup = new PopupMenu("user_reg", $lang->options);
-	$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
-	$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['regip']}");
-	$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['regip']}");
-	$controls = $popup->fetch();
+	if(empty($user['regip']))
+	{
+		$user['regip'] = $lang->unknown;
+		$controls = '';
+	}
+	else
+	{
+		$popup = new PopupMenu("user_reg", $lang->options);
+		$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
+		$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['regip']}");
+		$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['regip']}");
+		$controls = $popup->fetch();
+	}
 	$table->construct_cell("<strong>Registration IP:</strong> {$user['regip']}");
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
