@@ -738,7 +738,7 @@ disabled=Disable this feature]]></optionscode>
 enabled=Enabled
 deny=Deny users under the age of 13
 disabled=Disable this feature]]></optionscode>
-			<settingvalue><![CDATA[auto]]></settingvalue>
+			<settingvalue><![CDATA[disabled]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
