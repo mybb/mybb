@@ -106,10 +106,11 @@ if($mybb->input['action'] == "lastpost")
 	{
 		$query = $db->query("
 			SELECT p.pid
-			FROM ".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t
-			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%' AND p.tid=t.tid
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON(p.tid=t.tid)
+			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%'
 			ORDER BY p.dateline DESC
-			LIMIT 0, 1
+			LIMIT 1
 		");
 		$pid = $db->fetch_field($query, "pid");
 	}
@@ -487,7 +488,7 @@ if($mybb->input['action'] == "thread")
 	}
 	else
 	{
-		$db->shutdown_query("uPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
+		$db->shutdown_query("UPDATE ".TABLE_PREFIX."threads SET views=views+1 WHERE tid='{$tid}'");
 	}
 	++$thread['views'];
 

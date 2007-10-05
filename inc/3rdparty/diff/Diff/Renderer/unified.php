@@ -50,3 +50,4 @@ class Text_Diff_Renderer_unified extends Text_Diff_Renderer {
     }
 
 }
+?>

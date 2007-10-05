@@ -17,16 +17,19 @@ if(!defined("IN_MYBB"))
 
 function forum_meta()
 {
-	global $page;
-	$page->add_menu_item("Forums &amp; Posts", "forum", "index.php?".SID."&module=forum", 20);
+	global $page, $lang;
+	
+	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?".SID."&module=forum", 20);
 
 	return true;
 }
 
 function forum_action_handler($action)
 {
-	global $page;
+	global $page, $lang;
+	
 	$page->active_module = "forum";
+	
 	switch($action)
 	{
 		case "moderation_queue":
@@ -43,12 +46,12 @@ function forum_action_handler($action)
 	}
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "management", "title" => "Forum Management", "link" => "index.php?".SID."&module=forum/management");
-	$sub_menu['20'] = array("id" => "announcements", "title" => "Forum Announcements", "link" => "index.php?".SID."&module=forum/announcements");
-	$sub_menu['30'] = array("id" => "moderation_queue", "title" => "Moderation Queue", "link" => "index.php?".SID."&module=forum/moderation_queue");
-	$sub_menu['40'] = array("id" => "attachments", "title" => "Attachments", "link" => "index.php?".SID."&module=forum/attachments");
+	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?".SID."&module=forum/management");
+	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcement, "link" => "index.php?".SID."&module=forum/announcements");
+	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?".SID."&module=forum/moderation_queue");
+	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?".SID."&module=forum/attachments");
 
-	$sidebar = new SidebarItem("Forums and Posts");
+	$sidebar = new SidebarItem($lang->forums_and_posts);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
@@ -80,13 +83,15 @@ function forum_format_admin_log_data($action, $data)
 
 function forum_admin_permissions()
 {
+	global $lang;
+	
 	$admin_permissions = array(
-		"management" => "Can Manage Forums?",
-		"announcements" => "Can Manage Forum Announcements?",
-		"moderation_queue" => "Can Moderate Posts, Threads, and Attachments?",
-		"attachments" => "Can Manage Attachments?",
+		"management" => $lang->can_manage_forums,
+		"announcements" => $lang->can_manage_forum_announcements,
+		"moderation_queue" => $lang->can_moderate,
+		"attachments" => $lang->can_manage_attachments,
 	);
-	return array("name" => "Forum &amp; Posts", "permissions" => $admin_permissions);
+	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions);
 }
 
 ?>

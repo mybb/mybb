@@ -17,14 +17,17 @@ if(!defined("IN_MYBB"))
 
 function config_meta()
 {
-	global $page;
-	$page->add_menu_item("Configuration", "config", "index.php?".SID."&module=config", 10);
+	global $page, $lang;
+	
+	$page->add_menu_item($lang->configuration, "config", "index.php?".SID."&module=config", 10);
+	
 	return true;
 }
 
 function config_action_handler($manage)
 {
-	global $page;
+	global $page, $lang;
+	
 	$page->active_module = "config";
 
 	switch($manage)
@@ -91,23 +94,23 @@ function config_action_handler($manage)
 	}
 
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "settings", "title" => "Settings", "link" => "index.php?".SID."&module=config/settings");
-	$sub_menu['20'] = array("id" => "banning", "title" => "Banning", "link" => "index.php?".SID."&module=config/banning");
-	$sub_menu['30'] = array("id" => "profile_fields", "title" => "Custom Profile Fields", "link" => "index.php?".SID."&module=config/profile_fields");
-	$sub_menu['40'] = array("id" => "smilies", "title" => "Smilies", "link" => "index.php?".SID."&module=config/smilies");
-	$sub_menu['50'] = array("id" => "badwords", "title" => "Word Filters", "link" => "index.php?".SID."&module=config/badwords");
-	$sub_menu['60'] = array("id" => "mycode", "title" => "MyCode", "link" => "index.php?".SID."&module=config/mycode");
-	$sub_menu['70'] = array("id" => "languages", "title" => "Languages", "link" => "index.php?".SID."&module=config/languages");
-	$sub_menu['80'] = array("id" => "post_icons", "title" => "Post Icons", "link" => "index.php?".SID."&module=config/post_icons");
-	$sub_menu['90'] = array("id" => "help_documents", "title" => "Help Documents", "link" => "index.php?".SID."&module=config/help_documents");
-	$sub_menu['100'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
-	$sub_menu['110'] = array("id" => "attachment_types", "title" => "Attachment Types", "link" => "index.php?".SID."&module=config/attachment_types");
-	$sub_menu['120'] = array("id" => "mod_tools", "title" => "Moderator Tools", "link" => "index.php?".SID."&module=config/mod_tools");
-	$sub_menu['130'] = array("id" => "spiders", "title" => "Spiders / Bots", "link" => "index.php?".SID."&module=config/spiders");
-	$sub_menu['140'] = array("id" => "calendars", "title" => "Calendars", "link" => "index.php?".SID."&module=config/calendars");
-	$sub_menu['150'] = array("id" => "warning", "title" => "Warning System", "link" => "index.php?".SID."&module=config/warning");
+	$sub_menu['10'] = array("id" => "settings", "title" => $lang->settings, "link" => "index.php?".SID."&module=config/settings");
+	$sub_menu['20'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?".SID."&module=config/banning");
+	$sub_menu['30'] = array("id" => "profile_fields", "title" => $lang->custom_profile_fields, "link" => "index.php?".SID."&module=config/profile_fields");
+	$sub_menu['40'] = array("id" => "smilies", "title" => $lang->smilies, "link" => "index.php?".SID."&module=config/smilies");
+	$sub_menu['50'] = array("id" => "badwords", "title" => $lang->word_filters, "link" => "index.php?".SID."&module=config/badwords");
+	$sub_menu['60'] = array("id" => "mycode", "title" => $lang->mycode, "link" => "index.php?".SID."&module=config/mycode");
+	$sub_menu['70'] = array("id" => "languages", "title" => $lang->languages, "link" => "index.php?".SID."&module=config/languages");
+	$sub_menu['80'] = array("id" => "post_icons", "title" => $lang->post_icons, "link" => "index.php?".SID."&module=config/post_icons");
+	$sub_menu['90'] = array("id" => "help_documents", "title" => $lang->help_documents, "link" => "index.php?".SID."&module=config/help_documents");
+	$sub_menu['100'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?".SID."&module=config/plugins");
+	$sub_menu['110'] = array("id" => "attachment_types", "title" => $lang->attachment_types, "link" => "index.php?".SID."&module=config/attachment_types");
+	$sub_menu['120'] = array("id" => "mod_tools", "title" => $lang->moderator_tools, "link" => "index.php?".SID."&module=config/mod_tools");
+	$sub_menu['130'] = array("id" => "spiders", "title" => $lang->spiders_bots, "link" => "index.php?".SID."&module=config/spiders");
+	$sub_menu['140'] = array("id" => "calendars", "title" => $lang->calendars, "link" => "index.php?".SID."&module=config/calendars");
+	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?".SID."&module=config/warning");
 
-	$sidebar = new SidebarItem("Configuration");
+	$sidebar = new SidebarItem($lang->configuration);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 
 	$page->sidebar .= $sidebar->get_markup();
@@ -139,21 +142,23 @@ function config_format_admin_log_data($action, $data)
 
 function config_admin_permissions()
 {
+	global $lang;
+	
 	$admin_permissions = array(
-		"settings" => "Can Manage Settings?",
-		"banning" => "Can Manage Banned Accounts?",
-		"profile_fields" => "Can Manage Custom Profile Fields?",
-		"smilies" => "Can Manage Smilies?",
-		"badwords" => "Can Manage Bad Words?",
-		"mycode" => "Can Manage Custom MyCode?",
-		"languages" => "Can Manage Language Packs?",
-		"post_icons" => "Can Manage Post Icons?",
-		"help_documents" => "Can Manage Help Documents?",
-		"plugins" => "Can Manage Plugins?",
-		"attachment_types" => "Can Manage Attachment Types?",
-		"spiders" => "Can Manage Spiders / Bots?",
-		"calendars" => "Can Manage Calendars?",
-		"warning" => "Can Manage Warning System?"
+		"settings" => $lang->can_manage_settings,
+		"banning" => $lang->can_manage_banned_accounts,
+		"profile_fields" => $lang->can_manage_custom_profile_fields,
+		"smilies" => $lang->can_manage_smilies,
+		"badwords" => $lang->can_manage_bad_words,
+		"mycode" => $lang->can_manage_custom_mycode,
+		"languages" => $lang->can_manage_language_packs,
+		"post_icons" => $lang->can_manage_post_icons,
+		"help_documents" => $lang->can_manage_help_documents,
+		"plugins" => $lang->can_manage_plugins,
+		"attachment_types" => $lang->can_manage_attachment_types,
+		"spiders" => $lang->can_manage_spiders_bots,
+		"calendars" => $lang->can_manage_calendars,
+		"warning" => $lang->can_manage_warning_system
 	);
 	return array("name" => "Configuration", "permissions" => $admin_permissions);
 }

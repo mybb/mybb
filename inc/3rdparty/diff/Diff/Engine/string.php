@@ -214,3 +214,4 @@ class Text_Diff_Engine_string {
         return $edits;
     }
 }
+?>

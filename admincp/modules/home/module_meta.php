@@ -17,15 +17,19 @@ if(!defined("IN_MYBB"))
 
 function home_meta()
 {
-	global $page;
-	$page->add_menu_item("Home", "home", "index.php?".SID, 1);
+	global $page, $lang;
+	
+	$page->add_menu_item($lang->home, "home", "index.php?".SID, 1);
+	
 	return true;
 }
 
 function home_action_handler($action)
 {
-	global $page, $db;
+	global $page, $db, $lang;
+	
 	$page->active_module = "home";
+	
 	switch($action)
 	{
 		case "preferences":
@@ -46,12 +50,12 @@ function home_action_handler($action)
 	}
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "dashboard", "title" => "Dashboard", "link" => "index.php?".SID."&module=home/dashboard");
-	$sub_menu['20'] = array("id" => "preferences", "title" => "Preferences", "link" => "index.php?".SID."&module=home/preferences");
-	$sub_menu['30'] = array("id" => "version_check", "title" => "Version Check", "link" => "index.php?".SID."&module=home/version_check");
-	$sub_menu['40'] = array("id" => "credits", "title" => "MyBB Credits", "link" => "index.php?".SID."&module=home/credits");
+	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?".SID."&module=home/dashboard");
+	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?".SID."&module=home/preferences");
+	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?".SID."&module=home/version_check");
+	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?".SID."&module=home/credits");
 
-	$sidebar = new SidebarItem("Home");
+	$sidebar = new SidebarItem($lang->home);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
@@ -60,14 +64,14 @@ function home_action_handler($action)
 	{
 		// Quick Access
 		$sub_menu = array();
-		$sub_menu['10'] = array("id" => "add_forum", "title" => "Add New Forum", "link" => "index.php?".SID."&module=forum/add_forum");
-		$sub_menu['20'] = array("id" => "search", "title" => "Search for Users", "link" => "index.php?".SID."&module=user/search");
-		$sub_menu['30'] = array("id" => "themes", "title" => "Themes", "link" => "index.php?".SID."&module=style/themes");
-		$sub_menu['40'] = array("id" => "templates", "title" => "Templates", "link" => "index.php?".SID."&module=style/templates");
-		$sub_menu['50'] = array("id" => "plugins", "title" => "Plugins", "link" => "index.php?".SID."&module=config/plugins");
-		$sub_menu['60'] = array("id" => "backupdb", "title" => "Database backups", "link" => "index.php?".SID."&module=tools/backupdb");
+		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?".SID."&module=forum/add_forum");
+		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?".SID."&module=user/search");
+		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?".SID."&module=style/themes");
+		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");
+		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?".SID."&module=config/plugins");
+		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
 		
-		$sidebar = new SidebarItem("Quick Access");
+		$sidebar = new SidebarItem($lang->quick_access);
 		$sidebar->add_menu_items($sub_menu, $page->active_action);
 		
 		$page->sidebar .= $sidebar->get_markup();
@@ -99,7 +103,7 @@ function home_action_handler($action)
 			}
 		}
 		$online_users .= "</ul>";
-		$sidebar = new SidebarItem("Online Admins");
+		$sidebar = new SidebarItem($lang->online_admins);
 		$sidebar->contents = $online_users;
 
 		$page->sidebar .= $sidebar->get_markup();

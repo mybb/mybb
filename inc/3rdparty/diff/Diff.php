@@ -375,3 +375,4 @@ class Text_Diff_Op_change extends Text_Diff_Op {
     }
 
 }
+?>

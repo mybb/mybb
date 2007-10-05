@@ -260,3 +260,4 @@ class Text_Diff3_BlockBuilder {
     }
 
 }
+?>

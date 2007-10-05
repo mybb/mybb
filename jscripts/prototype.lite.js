@@ -924,4 +924,4 @@ Object.extend(String.prototype, {
   evalScripts: function() {
     return this.extractScripts().map(function(script) { return eval(script) });
   }
-});	
+});

@@ -159,6 +159,6 @@ function tools_admin_permissions()
 		"maillogs" => $lang->can_manage_user_mail_log,
 		"mailerrors" => $lang->can_manage_system_mail_log
 	);
-	return array("name" => "Maintenance &amp; Tools", "permissions" => $admin_permissions);
+	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions);
 }
 ?>
