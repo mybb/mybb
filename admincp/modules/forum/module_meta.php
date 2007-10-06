@@ -47,7 +47,7 @@ function forum_action_handler($action)
 	
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?".SID."&module=forum/management");
-	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcement, "link" => "index.php?".SID."&module=forum/announcements");
+	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcements, "link" => "index.php?".SID."&module=forum/announcements");
 	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?".SID."&module=forum/moderation_queue");
 	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?".SID."&module=forum/attachments");
 

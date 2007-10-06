@@ -10,7 +10,7 @@ $l['forums_and_posts'] = "Forums &amp; Posts";
 
 $l['forum_management'] = "Forum Management";
 $l['forum_announcements'] = "Forum Announcements";
-$l['moderator_queue'] = "Moderation Queue";
+$l['moderation_queue'] = "Moderation Queue";
 $l['attachments'] = "Attachments";
 
 $l['can_manage_forums'] = "Can Manage Forums?";
