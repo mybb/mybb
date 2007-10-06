@@ -15,26 +15,26 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Attachments", "index.php?".SID."&amp;module=forum/attachments");
+$page->add_breadcrumb_item($lang->attachments, "index.php?".SID."&amp;module=forum/attachments");
 
 if($mybb->input['action'] == "stats" || $mybb->input['action'] == "orphans" || !$mybb->input['action'])
 {
 	$sub_tabs['find_attachments'] = array(
-		'title' => "Find Attachments",
+		'title' => $lang->find_attachments,
 		'link' => "index.php?".SID."&amp;module=forum/attachments",
-		'description' => "Using the attachments search system you can search for specific files users have attached to your forums. Begin by entering some search terms below. All fields are optional and won't be included in the criteria unless they contain a value."
+		'description' => $lang->find_attachments_desc
 	);
 
 	$sub_tabs['find_orphans'] = array(
-		'title' => "Find Orphaned Attachments",
+		'title' => $lang->find_orphans,
 		'link' => "index.php?".SID."&amp;module=forum/attachments&amp;action=orphans",
-		'description' => "Orphaned attachments are attachments which are for some reason missing in the database or the file system. This utility will assist you in locating and removing them."
+		'description' => $lang->find_orphans_desc
 	);
 
 	$sub_tabs['stats'] = array(
-		'title' => "Attachment Statistics",
+		'title' => $lang->attachment_stats,
 		'link' => "index.php?".SID."&amp;module=forum/attachments&amp;action=stats",
-		'description' => "Below are some general statistics for the attachments currently on your forum."
+		'description' => $lang->attachment_stats_desc
 	);
 }
 
@@ -51,8 +51,8 @@ if($mybb->input['action'] == "delete")
 
 	if(count($mybb->input['aids']) < 1)
 	{
-		flash_message('You did not select any attachments to delete', 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		flash_message($lang->error_nothing_selected, 'error');
+		admin_redirect("index.php?".SID."&module=forum/attachments");
 	}
 
 	if($mybb->request_method == "post")
@@ -75,7 +75,7 @@ if($mybb->input['action'] == "delete")
 		// Log admin action
 		log_admin_action();
 
-		flash_message('The selected attachments have successfully been deleted', 'success');
+		flash_message($lang->success_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=forum/attachments");
 	}
 	else
@@ -84,7 +84,7 @@ if($mybb->input['action'] == "delete")
 		{
 			$aids .= "&amp;aids[]=$aid";
 		}
-		$page->output_confirm_action("index.php?".SID."&amp;module=forum/attachments&amp;action=delete&amp;aids={$aids}", 'Are you sure you wish to delete the selected attachments?'); 
+		$page->output_confirm_action("index.php?".SID."&amp;module=forum/attachments&amp;action=delete&amp;aids={$aids}", $lang->confirm_delete); 
 	}
 }
 
@@ -94,41 +94,41 @@ if($mybb->input['action'] == "stats")
 	$query = $db->simple_select("attachments", "COUNT(*) AS total_attachments, SUM(filesize) as disk_usage, SUM(downloads) as total_downloads", "visible='1'");
 	$attachment_stats = $db->fetch_array($query);
 
-		$page->add_breadcrumb_item("Statistics");
-		$page->output_header("Attachments - Attachment Statistics");
+		$page->add_breadcrumb_item($lang->stats);
+		$page->output_header($lang->stats_attachment_stats);
 		
 		$page->output_nav_tabs($sub_tabs, 'stats');
 
 	if($attachment_stats['total_attachments'] == 0)
 	{
-		$page->output_inline_error(array("There aren't any attachments on your forum yet. Once an attachment is posted you'll be able to access this section."));
+		$page->output_inline_error(array($lang->error_no_attachments));
 		$page->output_footer();
 		exit;
 	}
 
 	$table = new Table;
 
-	$table->construct_cell("<strong>No. Uploaded Attachments</strong>", array('width' => '25%'));
+	$table->construct_cell($lang->num_uploaded, array('width' => '25%'));
 	$table->construct_cell(my_number_format($attachment_stats['total_attachments']), array('width' => '25%'));
-	$table->construct_cell("<strong>Attachment Space Used</strong>", array('width' => '200'));
+	$table->construct_cell($lang->space_used, array('width' => '200'));
 	$table->construct_cell(get_friendly_size($attachment_stats['disk_usage']), array('width' => '200'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>Estimated Bandwidth Usage</strong>", array('width' => '25%'));
+	$table->construct_cell($lang->bandwidth_used, array('width' => '25%'));
 	$table->construct_cell(get_friendly_size(round($attachment_stats['disk_usage']*$attachment_stats['total_downloads'])), array('width' => '25%'));
-	$table->construct_cell("<strong>Average Attachment Size</strong>", array('width' => '25%'));
+	$table->construct_cell($lang->average_size, array('width' => '25%'));
 	$table->construct_cell(get_friendly_size(round($attachment_stats['disk_usage']/$attachment_stats['total_attachments'])), array('width' => '25%'));
 	$table->construct_row();
 	
-	$table->output("General Statistics");
+	$table->output($lang->general_stats);
 
 	// Fetch the most popular attachments
 	$table = new Table;
-	$table->construct_header("<span class=\"float_right\">Size</span>Attachment", array('colspan' => 2));
-	$table->construct_header("Posted By", array('width' => '20%', 'class' => 'align_center'));
-	$table->construct_header("Thread", array('width' => '25%', 'class' => 'align_center'));
-	$table->construct_header("Downloads", array('width' => '10%', 'class' => 'align_center'));
-	$table->construct_header("Date Uploaded", array("class" => "align_center"));
+	$table->construct_header($lang->size_attachments, array('colspan' => 2));
+	$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));
+	$table->construct_header($lang->thread, array('width' => '25%', 'class' => 'align_center'));
+	$table->construct_header($lang->downloads, array('width' => '10%', 'class' => 'align_center'));
+	$table->construct_header($lang->date_uploaded, array("class" => "align_center"));
 
 	$query = $db->query("
 		SELECT a.*, p.tid, p.fid, t.subject, p.uid, p.username, u.username AS user_username
@@ -143,15 +143,15 @@ if($mybb->input['action'] == "stats")
 	{
 		build_attachment_row($attachment, &$table);
 	}
-	$table->output("Top 5 Most Popular Attachments");
+	$table->output($lang->popular_attachments);
 
 	// Fetch the largest attachments
 	$table = new Table;
-	$table->construct_header("<span class=\"float_right\">Size</span>Attachment", array('colspan' => 2));
-	$table->construct_header("Posted By", array('width' => '20%', 'class' => 'align_center'));
-	$table->construct_header("Thread", array('width' => '25%', 'class' => 'align_center'));
-	$table->construct_header("Downloads", array('width' => '10%', 'class' => 'align_center'));
-	$table->construct_header("Date Uploaded", array("class" => "align_center"));
+	$table->construct_header($lang->size_attachments, array('colspan' => 2));
+	$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));
+	$table->construct_header($lang->thread, array('width' => '25%', 'class' => 'align_center'));
+	$table->construct_header($lang->downloads, array('width' => '10%', 'class' => 'align_center'));
+	$table->construct_header($lang->date_uploaded, array("class" => "align_center"));
 
 	$query = $db->query("
 		SELECT a.*, p.tid, p.fid, t.subject, p.uid, p.username, u.username AS user_username
@@ -166,12 +166,12 @@ if($mybb->input['action'] == "stats")
 	{
 		build_attachment_row($attachment, &$table);
 	}
-	$table->output("Top 5 Largest Attacments");
+	$table->output($lang->largest_attachments);
 
 	// Fetch users who've uploaded the most attachments
 	$table = new Table;
-	$table->construct_header("Username");
-	$table->construct_header("Total Size", array('width' => '20%', 'class' => 'align_center'));
+	$table->construct_header($lang->username);
+	$table->construct_header($lang->total_size, array('width' => '20%', 'class' => 'align_center'));
 
 	$query = $db->query("
 		SELECT a.*, u.uid, u.username, SUM(a.filesize) as totalsize
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "stats")
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/attachments&results=1&username=".urlencode($user['username'])."\">".get_friendly_size($user['totalsize'])."</a>", array('class' => 'align_center'));
 		$table->construct_row();
 	}
-	$table->output("Top 5 Users Using the Most Disk Space");
+	$table->output($lang->users_diskspace);
 
 	$page->output_footer();
 }
@@ -236,11 +236,11 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 
 	if($error == true)
 	{
-		flash_message('Only some orphaned attachments were successfully deleted, others could not be removed from the uploads directory.', 'error');
+		flash_message($lang->error_not_all_removed, 'error');
 	}
 	else
 	{
-		flash_message('The selected orphaned attachments have been deleted.', 'success');
+		flash_message($lang->success_orphan_deleted, 'success');
 	}
 	admin_redirect("index.php?".SID."&module=forum/attachments");
 }
@@ -288,20 +288,20 @@ if($mybb->input['action'] == "orphans")
 
 		if($results == 0)
 		{
-			flash_message('You do not have any orphaned attachments on your forums', 'success');
+			flash_message($lang->success_no_orphans, 'success');
 			admin_redirect("index.php?".SID."&module=forum/attachments");
 		}
 
-		$page->output_header("Orphaned Attachment Search - Results");
+		$page->output_header($lang->orphan_results);
 		$page->output_nav_tabs($sub_tabs, 'find_orphans');
 
 		$form = new Form("index.php?".SID."&amp;module=forum/attachments&amp;action=delete_orphans", "post");
 
 		$table = new Table;
 		$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
-		$table->construct_header("<span class=\"float_right\">Size</span>Attachment", array('colspan' => 2));
-		$table->construct_header("Reason Orphaned", array('width' => '20%', 'class' => 'align_center'));
-		$table->construct_header("Date Uploaded", array("class" => "align_center"));
+		$table->construct_header($lang->size_attachments, array('colspan' => 2));
+		$table->construct_header($lang->reason_orphaned, array('width' => '20%', 'class' => 'align_center'));
+		$table->construct_header($lang->date_uploaded, array("class" => "align_center"));
 
 		if(is_array($bad_attachments))
 		{
@@ -312,7 +312,7 @@ if($mybb->input['action'] == "orphans")
 				$table->construct_cell($form->generate_check_box('orphaned_files[]', $file, '', array('checked' => true)));
 				$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
 				$table->construct_cell("<span class=\"float_right\">{$filesize}</span>{$file}");
-				$table->construct_cell("Not in attachments table", array('class' => 'align_center'));
+				$table->construct_cell($lang->reason_not_in_table, array('class' => 'align_center'));
 				$table->construct_cell(my_date($mybb->settings['dateformat'], filemtime($file_path)).", ".my_date($mybb->settings['timeformat'], filemtime($file_path)), array('class' => 'align_center'));
 				$table->construct_row();
 			}
@@ -325,15 +325,15 @@ if($mybb->input['action'] == "orphans")
 			{
 				if($missing_attachment_files[$attachment['aid']])
 				{
-					$reason = "Attached file missing";
+					$reason = $lang->reason_file_missing;
 				}
 				else if($missing_threads[$attachment['aid']])
 				{
-					$reason = "Thread been deleted";
+					$reason = $lang->reason_thread_deleted;
 				}
 				else if($incomplete_attachments[$attachment['aid']])
 				{
-					$reason = "Post never made";
+					$reason = $lang->reason_post_never_made;
 				}
 				$table->construct_cell($form->generate_check_box('orphaned_attachments[]', $attachment['aid'], '', array('checked' => true)));
 				$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
@@ -345,15 +345,15 @@ if($mybb->input['action'] == "orphans")
 				}
 				else
 				{
-					$table->construct_cell("Unknown", array('class' => 'align_center'));
+					$table->construct_cell($lang->unknown, array('class' => 'align_center'));
 				}
 				$table->construct_row();
 			}
 		}
 
-		$table->output("Orphaned Attachments Search - {$results} Results");
+		$table->output("{$lang->orphan_attachments_search} - {$results} {$lang->results}");
 
-		$buttons[] = $form->generate_submit_button("Delete Checked Orphans");
+		$buttons[] = $form->generate_submit_button($lang->button_delete_orphans);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 		$page->output_footer();
@@ -362,12 +362,12 @@ if($mybb->input['action'] == "orphans")
 	// Running second step - scan the database
 	else if($mybb->input['step'] == 2)
 	{
-		$page->output_header("Orphaned Attachment Search - Step 2");
+		$page->output_header("{$lang->orphan_attachments_search} - {$lang->step2}");
 	
 		$page->output_nav_tabs($sub_tabs, 'find_orphans');
-		echo "<h3>Step 2 of 2 - Database Scan</h3>";
-		echo "<p class=\"align_center\">Please wait, the database is currently being scanned for orphaned attachments.</p>";
-		echo "<p class=\"align_center\">You'll automatically be redirected to the next step once this process is complete.</p>";
+		echo "<h3>{$lang->step2of2}</h3>";
+		echo "<p class=\"align_center\">{$lang->step2of2_line1}</p>";
+		echo "<p class=\"align_center\">{$lang->step_line2}</p>";
 		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"Scanning..\" id=\"spinner\" /></p>";
 
 		$page->output_footer(false);
@@ -515,12 +515,12 @@ if($mybb->input['action'] == "orphans")
 			}
 		}
 	
-		$page->output_header("Orphaned Attachment Search - Step 1");
+		$page->output_header("{$lang->orphan_attachments_search} - {$lang->step1}");
 	
 		$page->output_nav_tabs($sub_tabs, 'find_orphans');
-		echo "<h3>Step 1 of 2 - File System Scan</h3>";
-		echo "<p class=\"align_center\">Please wait, the file system is currently being scanned for orphaned attachments.</p>";
-		echo "<p class=\"align_center\">You'll automatically be redirected to the next step once this process is complete.</p>";
+		echo "<h3>{$lang->step1of2}</h3>";
+		echo "<p class=\"align_center\">{$lang->step1of2_line1}</p>";
+		echo "<p class=\"align_center\">{$lang->step_line2}</p>";
 		echo "<p class=\"align_center\"><img src=\"styles/{$page->style}/images/spinner_big.gif\" alt=\"Scanning..\" id=\"spinner\" /></p>";
 
 		$page->output_footer(false);
@@ -574,7 +574,7 @@ if(!$mybb->input['action'])
 			$user = $db->fetch_array($query);
 			if(!$user['uid'])
 			{
-				$errors[] = "The username you entered is invalid.";
+				$errors[] = $lang->error_invalid_username;
 			}
 			else
 			{
@@ -597,7 +597,7 @@ if(!$mybb->input['action'])
 			{
 				if(!$forum_cache[$fid])
 				{
-					$errors[] = "One or more forums you selected are invalid.";
+					$errors[] = $lang->error_invalid_forums;
 					break;
 				}
 				$child_forums = get_child_list($fid);
@@ -655,7 +655,7 @@ if(!$mybb->input['action'])
 			// No matching results then show an error
 			if(!$num_results)
 			{
-				$errors[] = "No results were found with the specified search criteria.";
+				$errors[] = $lang->error_no_results;
 			}
 		}
 
@@ -703,8 +703,8 @@ if(!$mybb->input['action'])
 				$mybb->input['sortorder'] = "asc";
 			}
 
-			$page->add_breadcrumb_item("Results");
-			$page->output_header("Attachments - Find Attachments");
+			$page->add_breadcrumb_item($lang->results);
+			$page->output_header($lang->index_find_attachments);
 			
 			$page->output_nav_tabs($sub_tabs, 'find_attachments');
 			
@@ -712,11 +712,11 @@ if(!$mybb->input['action'])
 
 			$table = new Table;
 			$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
-			$table->construct_header("<span class=\"float_right\">Size</span>Attachment", array('colspan' => 2));
-			$table->construct_header("Posted By", array('width' => '20%', 'class' => 'align_center'));
-			$table->construct_header("Thread", array('width' => '25%', 'class' => 'align_center'));
-			$table->construct_header("Downloads", array('width' => '10%', 'class' => 'align_center'));
-			$table->construct_header("Date Uploaded", array("class" => "align_center"));
+			$table->construct_header($lang->size_attachments, array('colspan' => 2));
+			$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));
+			$table->construct_header($lang->thread, array('width' => '25%', 'class' => 'align_center'));
+			$table->construct_header($lang->downloads, array('width' => '10%', 'class' => 'align_center'));
+			$table->construct_header($lang->date_uploaded, array("class" => "align_center"));
 
 			// Fetch matching attachments
 			$query = $db->query("
@@ -750,10 +750,10 @@ if(!$mybb->input['action'])
 			}
 
 			echo $pagination;
-			$table->output("Results");
+			$table->output($lang->results);
 			echo $pagination;
 			
-			$buttons[] = $form->generate_submit_button("Delete Checked Attachments");
+			$buttons[] = $form->generate_submit_button($lang->button_delete_attachments);
 
 			$form->output_submit_wrapper($buttons);
 			$form->end();
@@ -762,7 +762,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$page->output_header("Find Attachments");
+	$page->output_header($lang->find_attachments);
 	
 	$page->output_nav_tabs($sub_tabs, 'find_attachments');
 
@@ -774,45 +774,45 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?".SID."&module=forum/attachments", "post");
 
-	$form_container = new FormContainer("Find attachments where...");
-	$form_container->output_row("File name contains", "To search by wildcard enter *.[file extension]. Example: *.zip.", $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');
-	$form_container->output_row("File type contains", "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row("Forum is", "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5)), 'forum');
-	$form_container->output_row("Posters' username is", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container = new FormContainer($lang->find_where);
+	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');
+	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
+	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5)), 'forum');
+	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 
 	$more_options = array(
-		"greater_than" => "More than",
-		"less_than" => "Less than"
+		"greater_than" => $lang->more_than,
+		"less_than" => $lang->less_than
 	);
 
 	$greater_options = array(
-		"greater_than" => "Greater than",
-		"is_exactly" => "Is exactly",
-		"less_than" => "Less than"
+		"greater_than" => $lang->greater_than,
+		"is_exactly" => $lang->is_exactly,
+		"less_than" => $lang->less_than
 	);
 
-	$form_container->output_row("Date posted is", "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_text_box('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded'))." days ago", 'dateuploaded');
-	$form_container->output_row("File size is", "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_text_box('filesize', $mybb->input['filesize'], array('id' => 'filesize'))." KB", 'dateuploaded');
-	$form_container->output_row("Download count is", "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_text_box('downloads', $mybb->input['downloads'], array('id' => 'downloads'))."", 'dateuploaded');
+	$form_container->output_row($lang->date_posted_is, "", $form->generate_select_box('dateuploaded_dir', $more_options, $mybb->input['dateuploaded_dir'], array('id' => 'dateuploaded_dir'))." ".$form->generate_text_box('dateuploaded', $mybb->input['dateuploaded'], array('id' => 'dateuploaded'))." {$lang->days_ago}", 'dateuploaded');
+	$form_container->output_row($lang->file_size_is, "", $form->generate_select_box('filesize_dir', $greater_options, $mybb->input['filesize_dir'], array('id' => 'filesize_dir'))." ".$form->generate_text_box('filesize', $mybb->input['filesize'], array('id' => 'filesize'))." {$lang->kb}", 'dateuploaded');
+	$form_container->output_row($lang->download_count_is, "", $form->generate_select_box('downloads_dir', $greater_options, $mybb->input['downloads_dir'], array('id' => 'downloads_dir'))." ".$form->generate_text_box('downloads', $mybb->input['downloads'], array('id' => 'downloads'))."", 'dateuploaded');
 	$form_container->end();
 
-	$form_container = new FormContainer("Display Options");
+	$form_container = new FormContainer($lang->display_options);
 	$sort_options = array(
-		"filename" => "File Name",
-		"filesize" => "File Size",
-		"downloads" => "Download Count",
-		"dateuploaded" => "Date Uploaded",
-		"username" => "Post Username"
+		"filename" => $lang->filename,
+		"filesize" => $lang->filesize,
+		"downloads" => $lang->download_count,
+		"dateuploaded" => $lang->date_uploaded,
+		"username" => $lang->post_username
 	);
 	$sort_directions = array(
-		"asc" => "Ascending",
-		"desc" => "Descending"
+		"asc" => $lang->asc,
+		"desc" => $lang->desc
 	);
-	$form_container->output_row("Sort results by", "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." in ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row("Results per page", "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." in ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Find Attachments");
+	$buttons[] = $form->generate_submit_button($lang->button_find_attachments);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -831,19 +831,19 @@ function build_attachment_row($attachment, $table, $form=null)
 	if(!file_exists(MYBB_ROOT.$mybb->settings['uploadspath']."/{$attachment['attachname']}"))
 	{
 		$cell_class = "bad_attachment";
-		$title = "Attachment file could not be found in the uploads directory.";
+		$title = $lang->error_not_found;
 		$checked = true;
 	}
 	elseif(!$attachment['pid'] && $attachment['dateuploaded'] < time()-60*60*24 && $attachment['dateuploaded'] != 0)
 	{
 		$cell_class = "bad_attachment";
-		$title = "Attaachment was uploaded over 24 hours ago but not attached to a post.";
+		$title = $lang->error_not_attached;
 		$checked = true;
 	}
 	else if(!$attachment['tid'] && $attachment['pid'])
 	{
 		$cell_class = "bad_attachment";
-		$title = "Thread or post for this attachment no longer exists.";
+		$title = $lang->error_does_not_exist;
 		$checked = true;
 	}
 	elseif($attachment['visible'] == 0)
