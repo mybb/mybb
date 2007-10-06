@@ -15,22 +15,22 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Moderation Queue", "index.php?".SID."&amp;module=forum/moderation_queue");
+$page->add_breadcrumb_item($lang->moderation_queue, "index.php?".SID."&amp;module=forum/moderation_queue");
 
 $sub_tabs['threads'] = array(
-	'title' => "Threads",
+	'title' => $lang->threads,
 	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=threads",
 	'description' => ""
 );
 
 $sub_tabs['posts'] = array(
-	'title' => "Posts",
+	'title' => $lang->posts,
 	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=posts",
 	'description' => ""
 );
 
 $sub_tabs['attachments'] = array(
-	'title' => "Attachments",
+	'title' => $lang->attachments,
 	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=attachments",
 	'description' => ""
 );
@@ -66,7 +66,7 @@ if($mybb->request_method == "post")
 		// Log admin action
 		log_admin_action('threads');
 
-		flash_message("The selected threads have successfully been moderated.", 'success');
+		flash_message($lang->success_threads, 'success');
 		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=threads");
 	}
 	else if(is_array($mybb->input['posts']))
@@ -93,7 +93,7 @@ if($mybb->request_method == "post")
 		// Log admin action
 		log_admin_action('posts');
 
-		flash_message("The selected posts have successfully been moderated.", 'success');
+		flash_message($lang->success_posts, 'success');
 		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=posts");
 
 	}
@@ -116,16 +116,16 @@ if($mybb->request_method == "post")
 		// Log admin action
 		log_admin_action('attachments');
 
-		flash_message("The selected attachments have successfully been moderated.", 'success');
+		flash_message($lang->success_attachments, 'success');
 		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=attachments");
 
 	}
 }
 
 $all_options = "<ul class=\"modqueue_mass\">\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"document.getElementsByClassName('radio_ignore', 'input').each(function(e) { e.checked = true; }); return false;\">Mark all as ignored</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"document.getElementsByClassName('radio_delete', 'input').each(function(e) { e.checked = true; }); return false;\">Mark all for deletion</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"document.getElementsByClassName('radio_approve', 'input').each(function(e) { e.checked = true; }); return false;\">Mark all as approved</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"document.getElementsByClassName('radio_ignore', 'input').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_ignored}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"document.getElementsByClassName('radio_delete', 'input').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_deleted}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"document.getElementsByClassName('radio_approve', 'input').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_approved}</a></li>\n";
 $all_options .= "</ul>\n";
 
 // Threads awaiting moderation
@@ -160,16 +160,16 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 
 		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_threads, "index.php?".SID."&amp;module=forum/moderation_queue&amp;page={page}");
 
-		$page->add_breadcrumb_item("Threads Awaiting Moderation");
-		$page->output_header("Threads Awaiting Moderation");
+		$page->add_breadcrumb_item($lang->threads_awaiting_moderation);
+		$page->output_header($lang->threads_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "threads");
 
 		$form = new Form("index.php?".SID."&module=forum/moderation_queue", "post");
 
 		$table = new Table;
-		$table->construct_header("Subject");
-		$table->construct_header("Author", array("class" => "align_center", "width" => "20%"));
-		$table->construct_header("Posted", array("class" => "align_center", "width" => "20%"));
+		$table->construct_header($lang->subject);
+		$table->construct_header($lang->author, array("class" => "align_center", "width" => "20%"));
+		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
 
 		$query = $db->query("
 			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
@@ -197,22 +197,22 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "ignore", "Ignore", array('class' => 'radio_ignore', 'checked' => true))." ";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "delete", "Delete", array('class' => 'radio_delete', 'checked' => false))." ";
-			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", "Approve", array('class' => 'radio_approve', 'checked' => false));
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true))." ";
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false))." ";
+			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
 
-			$forum = "<strong>Forum: <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong><br />";
+			$forum = "<strong>{$lang->forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong><br />";
 
 			$table->construct_cell("<div class=\"modqueue_message\">{$controls}<div class=\"modqueue_meta\">{$forum}</div>{$thread['postmessage']}</div>", array("colspan" => 3));
 			$table->construct_row();
 		}
 
-		$table->output("Threads Awaiting Moderation");
+		$table->output($lang->threads_awaiting_moderation);
 		echo $all_options;
 		echo $pagination;
 
-		$buttons[] = $form->generate_submit_button("Perform Actions");
+		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 		$page->output_footer();
@@ -257,16 +257,16 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_posts, "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=posts&amp;page={page}");
 
 
-		$page->add_breadcrumb_item("Posts Awaiting Moderation");
-		$page->output_header("Posts Awaiting Moderation");
+		$page->add_breadcrumb_item($lang->posts_awaiting_moderation);
+		$page->output_header($lang->posts_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "posts");
 
 		$form = new Form("index.php?".SID."&module=forum/moderation_queue", "post");
 
 		$table = new Table;
-		$table->construct_header("Subject");
-		$table->construct_header("Author", array("class" => "align_center", "width" => "20%"));
-		$table->construct_header("Posted", array("class" => "align_center", "width" => "20%"));
+		$table->construct_header($lang->subject);
+		$table->construct_header($lang->author, array("class" => "align_center", "width" => "20%"));
+		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
 
 		$query = $db->query("
 			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
@@ -285,7 +285,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			
 			if(!$post['subject'])
 			{
-				$post['subject'] = "RE: ".$post['threadsubject'];
+				$post['subject'] = $lang->re." ".$post['threadsubject'];
 			}
 
 			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
@@ -303,23 +303,23 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$table->construct_row();
 
 			$controls = "<div class=\"modqueue_controls\">\n";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "ignore", "Ignore", array('class' => 'radio_ignore', 'checked' => true))." ";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "delete", "Delete", array('class' => 'radio_delete', 'checked' => false))." ";
-			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", "Approve", array('class' => 'radio_approve', 'checked' => false));
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true))." ";
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "delete",$lang->delete, array('class' => 'radio_delete', 'checked' => false))." ";
+			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
 
-			$thread = "<strong>Thread: <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
-			$forum = "<strong>Forum: <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
+			$thread = "<strong>{$lang->thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
+			$forum = "<strong>{$lang->forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
 
 			$table->construct_cell("<div class=\"modqueue_message\">{$controls}<div class=\"modqueue_meta\">{$forum}{$thread}</div>{$post['message']}</div>", array("colspan" => 3));
 			$table->construct_row();
 		}
 
-		$table->output("Posts Awaiting Moderation");
+		$table->output($lang->posts_awaiting_moderation);
 		echo $all_options;
 		echo $pagination;
 
-		$buttons[] = $form->generate_submit_button("Perform Actions");
+		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 		$page->output_footer();
@@ -328,7 +328,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 	{
 		$page->output_header("Moderation Queue");
 		$page->output_nav_tabs($sub_tabs, "posts");
-		echo "<p class=\"notice\">There are currently no posts awaiting moderation.</p>";
+		echo "<p class=\"notice\">{$lang->error_no_posts}</p>";
 		$page->output_footer();
 	}
 }
@@ -369,17 +369,17 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 
 		$pagination = draw_admin_pagination($current_page, $per_page, $unapproved_attachments, "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=attachments&amp;page={page}");
 
-		$page->add_breadcrumb_item("Attachments Awaiting Moderation");
-		$page->output_header("Attachments Awaiting Moderation");
+		$page->add_breadcrumb_item($lang->attachments_awaiting_moderation);
+		$page->output_header($lang->attachments_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "attachments");
 
 		$form = new Form("index.php?".SID."&module=forum/moderation_queue", "post");
 
 		$table = new Table;
-		$table->construct_header("File Name");
-		$table->construct_header("Uploaded by", array("class" => "align_center", "width" => "20%"));
-		$table->construct_header("Posted", array("class" => "align_center", "width" => "20%"));
-		$table->construct_header("Controls", array("class" => "align_center", "colspan" => 3));
+		$table->construct_header($lang->filename);
+		$table->construct_header($lang->uploadedby, array("class" => "align_center", "width" => "20%"));
+		$table->construct_header($lang->posted, array("class" => "align_center", "width" => "20%"));
+		$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 3));
 
 		$query = $db->query("
 			SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
@@ -407,36 +407,36 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 			$thread_link = get_thread_link($attachment['tid']);
 			$profile_link = build_profile_link($attachment['username'], $attachment['uid']);
 
-			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">Post: <a href=\"{$link}\">{$attachment['postsubject']}</a></small>");
+			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">{$lang->post} <a href=\"{$link}\">{$attachment['postsubject']}</a></small>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$attachdate}, {$attachtime}", array("class" => "align_center"));
 
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", "Ignore", array('class' => 'radio_ignore', 'checked' => true)), array("class" => "align_center"));
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "delete", "Delete", array('class' => 'radio_delete', 'checked' => false)), array("class" => "align_center"));
-			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "approve", "Approve", array('class' => 'radio_approve', 'checked' => false)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "ignore", $lang->ignore, array('class' => 'radio_ignore', 'checked' => true)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "delete", $lang->delete, array('class' => 'radio_delete', 'checked' => false)), array("class" => "align_center"));
+			$table->construct_cell($form->generate_radio_button("attachments[{$attachment['aid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false)), array("class" => "align_center"));
 			$table->construct_row();
 		}
-		$table->output("Attachments Awaiting Moderation");
+		$table->output($lang->attachments_awaiting_moderation);
 		echo $all_options;
 		echo $pagination;
 
-		$buttons[] = $form->generate_submit_button("Perform Actions");
+		$buttons[] = $form->generate_submit_button($lang->perform_action);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 		$page->output_footer();
 	}
 	else if($mybb->input['type'] == "attachments")
 	{
-		$page->output_header("Moderation Queue");
+		$page->output_header($lang->moderation_queue);
 		$page->output_nav_tabs($sub_tabs, "attachments");
-		echo "<p class=\"notice\">There are currently no attachments awaiting moderation.</p>";
+		echo "<p class=\"notice\">{$lang->error_no_attachments}</p>";
 		$page->output_footer();
 	}
 }
 
 // Still nothing? All queues are empty! :-D
-$page->output_header("Moderation Queue");
-echo "<p class=\"notice\">There are currently no threads, posts or attachments awaiting moderation.</p>";
+$page->output_header($lang->moderation_queue);
+echo "<p class=\"notice\">{$lang->error_no_threads}</p>";
 $page->output_footer();
 
 ?>
