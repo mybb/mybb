@@ -19,122 +19,122 @@ if(!defined("IN_MYBB"))
 require_once MYBB_ROOT."inc/functions_upload.php";
 
 
-$page->add_breadcrumb_item("Users", "index.php?".SID."&amp;module=user/users");
+$page->add_breadcrumb_item($lang->users, "index.php?".SID."&amp;module=user/users");
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "merge" || $mybb->input['action'] == "search" || !$mybb->input['action'])
 {
 	$sub_tabs['browse_users'] = array(
-		'title' => "Browse Users",
+		'title' => $lang->browse_users,
 		'link' => "index.php?".SID."&amp;module=user/users",
-		'description' => "Below you can browse users of your forums in different defined views. Views are particularly useful for generating different result sets with different information - think of them as saved live searches."
+		'description' => $lang->browse_users_desc
 	);
 
 	$sub_tabs['find_users'] = array(
-		'title' => "Find Users",
+		'title' => $lang->find_users,
 		'link' => "index.php?".SID."&amp;module=user/users&amp;action=search",
-		'description' => "Here you can search for users of your forum. The fewer fields you fill in, the broader your search is; the more you fill in, the narrower your search is."
+		'description' => $lang->find_users_desc
 	);
 
 	$sub_tabs['create_user'] = array(
-		'title' => "Create New User",
+		'title' => $lang->create_user,
 		'link' => "index.php?".SID."&amp;module=user/users&amp;action=add",
-		'description' => "Here you can create a new user."
+		'description' => $lang->create_user_desc
 	);
 
 	$sub_tabs['merge_users'] = array(
-		'title' => "Merge Users",
+		'title' => $lang->merge_users,
 		'link' => "index.php?".SID."&module=user/users&action=merge",
-		'description' => "Here you can merge two user accounts in to one. The \"Source Account\" will  be merged in to the \"Destination Account\" leaving <strong>only</strong> the destination account. The source accounts posts, threads, private messages, calendar events, post count and buddy list will be merged in to the destination account.<br /><span style=\"font-size: 15px;\">Please be aware that this process cannot be undone.</span>"
+		'description' => $lang->merge_users_desc
 	);
 }
 
 $user_view_fields = array(
 	"avatar" => array(
-		"title" => "Avatar",
+		"title" => $lang->avatar,
 		"width" => "24",
 		"align" => ""
 	),
 
 	"username" => array(
-		"title" => "Username",
+		"title" => $lang->username,
 		"width" => "",
 		"align" => ""
 	),
 
 	"email" => array(
-		"title" => "Email",
+		"title" => $lang->email,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"usergroup" => array(
-		"title" => "Primary Group",
+		"title" => $lang->primary_group,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"additionalgroups" => array(
-		"title" => "Additional Groups",
+		"title" => $lang->additional_groups,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"regdate" => array(
-		"title" => "Registered",
+		"title" => $lang->registered,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"lastactive" => array(
-		"title" => "Last Active",
+		"title" => $lang->last_active,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"postnum" => array(
-		"title" => "Post Count",
+		"title" => $lang->post_count,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"reputation" => array(
-		"title" => "Reputation",
+		"title" => $lang->reputation,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"warninglevel" => array(
-		"title" => "Warning Level",
+		"title" => $lang->warning_level,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"regip" => array(
-		"title" => "Registration IP",
+		"title" => $lang->registration_ip,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"lastip" => array(
-		"title" => "Last Known IP",
+		"title" => $lang->last_known_ip,
 		"width" => "",
 		"align" => "center"
 	),
 
 	"controls" => array(
-		"title" => "Controls",
+		"title" => $lang->controls,
 		"width" => "",
 		"align" => "center"
 	)
 );
 
 $sort_options = array(
-	"username" => "Username",
-	"regdate" => "Registration Date",
-	"lastactive" => "Last Active",
-	"numposts" => "Post Count",
-	"reputation" => "Reputation",
-	"warninglevel" => "Warning Level"
+	"username" => $lang->username,
+	"regdate" => $lang->registration_date,
+	"lastactive" => $lang->last_active,
+	"numposts" => $lang->post_count,
+	"reputation" => $lang->reputation,
+	"warninglevel" => $lang->warning_level
 );
 
 // Initialise the views manager for user based views
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "avatar_gallery")
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
 	echo "<head profile=\"http://gmpg.org/xfn/1\">\n";
-	echo "	<title>Avatar Gallery</title>\n";
+	echo "	<title>{$lang->avatar_gallery}</title>\n";
 	echo "	<link rel=\"stylesheet\" href=\"styles/".$page->style."/main.css\" type=\"text/css\" />\n";
 	echo "	<link rel=\"stylesheet\" href=\"styles/".$page->style."/avatar_gallery.css\" type=\"text/css\" />\n";
 	echo "	<script type=\"text/javascript\" src=\"../jscripts/prototype.js\"></script>\n";
@@ -332,7 +332,7 @@ if($mybb->input['action'] == "coppa_activate")
 	// Does the user not exist?
 	if(!$user['uid'] || $user['coppauser'] != 1)
 	{
-		flash_message("You have selected an invalid user.", 'error');
+		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?".SID."&module=user/users");
 	}
 
@@ -352,7 +352,7 @@ if($mybb->input['action'] == "coppa_activate")
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
-	flash_message("The COPPA user has successfully been activated.", 'success');
+	flash_message($lang->success_coppa_activated, 'success');
 	admin_redirect("index.php?".SID."&module=user/users&amp;action=edit&amp;uid={$user['uid']}");
 }
 
@@ -412,7 +412,7 @@ if($mybb->input['action'] == "add")
 			// Log admin action
 			log_admin_action($user_info['uid'], $user_info['username']);
 
-			flash_message("The user has successfully been created.", 'success');
+			flash_message($lang->success_user_created, 'success');
 			admin_redirect("index.php?".SID."&module=user/users&action=edit&uid={$user_info['uid']}");
 		}
 	}
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "add")
 		$profile_fields['required'][] = $profile_field;
 	}
 
-	$page->output_header("Create New User");
+	$page->output_header($lang->create_user);
 		
 	$form = new Form("index.php?".SID."&module=user/users&action=add", "post");
 
@@ -442,13 +442,13 @@ if($mybb->input['action'] == "add")
 		);
 	}
 
-	$form_container = new FormContainer("Required Profile Information");
-	$form_container->output_row("Username <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row("Password", "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password')), 'password');
-	$form_container->output_row("Confirm Password", "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_password')), 'confirm_new_password');
-	$form_container->output_row("Email Address <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
+	$form_container = new FormContainer($lang->required_profile_info);
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->password, "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password')), 'password');
+	$form_container->output_row($lang->confirm_password, "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_password')), 'confirm_new_password');
+	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
-	$display_group_options[0] = "Use Primary User Group";
+	$display_group_options[0] = $lang->user_primary_user_group;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -456,15 +456,15 @@ if($mybb->input['action'] == "add")
 		$display_group_options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row("Primary User Group <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
-	$form_container->output_row("Additional User Groups", "Use CTRL to select multiple groups", $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
-	$form_container->output_row("Display User Group <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
+	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
+	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
 
 	// Output custom profile fields - required
 	output_custom_profile_fields($profile_fields['required'], $mybb->input['profile_fields'], $form_container, $form);
 
 	$form_container->end();
-	$buttons[] = $form->generate_submit_button("Save User");
+	$buttons[] = $form->generate_submit_button($lang->save_user);
 	$form->output_submit_wrapper($buttons);
 
 	$form->end();
@@ -479,7 +479,7 @@ if($mybb->input['action'] == "edit")
 	// Does the user not exist?
 	if(!$user['uid'])
 	{
-		flash_message("You have selected an invalid user", 'error');
+		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?".SID."&module=user/users");
 	}
 
@@ -487,7 +487,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 		{
-			flash_message("You do not have permission to edit this user because you are not a super administrator.", 'error');
+			flash_message($lang->error_no_perms_super_admin, 'error');
 			admin_redirect("index.php?".SID."&module=user/users");
 		}
 
@@ -706,7 +706,7 @@ if($mybb->input['action'] == "edit")
 				// Log admin action
 				log_admin_action($user['uid'], $mybb->input['username']);
 
-				flash_message("The user has successfully been updated.", 'success');
+				flash_message($lang->success_user_updated, 'success');
 				admin_redirect("index.php?".SID."&module=user/users");
 			}
 		}
@@ -735,11 +735,11 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$page->output_header("Edit User");
+	$page->output_header($lang->edit_user);
 		
 	$sub_tabs['edit_user'] = array(
-		'title' => "Edit User",
-		'description' => "Here you can edit this users profile, settings, and signature; see general statistics; and visit other pages for further information relating to this user."
+		'title' => $lang->edit_user,
+		'description' => $lang->edit_user_desc
 	);
 
 	$form = new Form("index.php?".SID."&module=user/users&action=edit&uid={$user['uid']}", "post");
@@ -754,18 +754,18 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$tabs = array(
-		"overview" => "Overview",
-		"profile" => "Profile",
-		"settings" => "Account Settings",
-		"signature" => "Signature",
-		"avatar" => "Avatar"
+		"overview" => $lang->overview,
+		"profile" => $lang->profile,
+		"settings" => $lang->account_settings,
+		"signature" => $lang->signature,
+		"avatar" => $lang->avatar
 	);
 	$page->output_tab_control($tabs);
 
 	// Is this user a COPPA user? We show a warning & activate link
 	if($user['coppauser'])
 	{
-		echo "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?".SID."&module=user/users&action=coppa_activate&uid={$user['uid']}\">Activate Account</a></p>";
+		echo $lang->warning_coppa_user;
 	}
 
 	//
@@ -773,8 +773,8 @@ if($mybb->input['action'] == "edit")
 	//
 	echo "<div id=\"tab_overview\">\n";
 	$table = new Table;
-	$table->construct_header("Avatar", array('class' => 'align_center'));
-	$table->construct_header("General Account Statistics", array('colspan' => '2', 'class' => 'align_center'));
+	$table->construct_header($lang->avatar, array('class' => 'align_center'));
+	$table->construct_header($lang->general_account_stats, array('colspan' => '2', 'class' => 'align_center'));
 
 	// Avatar
 	$avatar_dimensions = explode("|", $user['avatardimensions']);
@@ -865,26 +865,26 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"{$user['avatar']}\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => 6, 'width' => 1));
-	$table->construct_cell("<strong>Email Address:</strong> <a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>");
-	$table->construct_cell("<strong>Last Active:</strong> {$last_active}");
+	$table->construct_cell("<strong>{$lang->email_address}:</strong> <a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>");
+	$table->construct_cell("<strong>{$lang->last_active}:</strong> {$last_active}");
 	$table->construct_row();
-	$table->construct_cell("<strong>Registration Date:</strong> {$reg_date}");
-	$table->construct_cell("<strong>Local Time:</strong> {$local_time}");
+	$table->construct_cell("<strong>{$lang->registration_date}:</strong> {$reg_date}");
+	$table->construct_cell("<strong>{$lang->local_time}:</strong> {$local_time}");
 	$table->construct_row();
-	$table->construct_cell("<strong>Posts:</strong> {$user['postnum']}");
-	$table->construct_cell("<strong>Age:</strong> {$age}");
+	$table->construct_cell("<strong>{$lang->posts}:</strong> {$user['postnum']}");
+	$table->construct_cell("<strong>{$lang->age}:</strong> {$age}");
 	$table->construct_row();
-	$table->construct_cell("<strong>Posts per day:</strong> {$posts_per_day}");
-	$table->construct_cell("<strong>Reputation:</strong> {$reputation}");
+	$table->construct_cell("<strong>{$lang->posts_per_day}:</strong> {$posts_per_day}");
+	$table->construct_cell("<strong>{$lang->reputation}:</strong> {$reputation}");
 	$table->construct_row();
-	$table->construct_cell("<strong>Percent of total posts:</strong> {$percent_posts}");
-	$table->construct_cell("<strong>Warning Level:</strong> {$warning_level}");
+	$table->construct_cell("<strong>{$lang->percent_of_total_posts}:</strong> {$percent_posts}");
+	$table->construct_cell("<strong>{$lang->warning_level}:</strong> {$warning_level}");
 	$table->construct_row();
-	$table->construct_cell("<strong>Registration IP:</strong> {$user['regip']}");
-	$table->construct_cell("<strong>Last Known IP:</strong> {$user['lastip']}");
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> {$user['regip']}");
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> {$user['lastip']}");
 	$table->construct_row();
 	
-	$table->output("User Overview: {$user['username']}");
+	$table->output("{$lang->user_overview}: {$user['username']}");
 	echo "</div>\n";
 
 	//
@@ -892,13 +892,13 @@ if($mybb->input['action'] == "edit")
 	//
 	echo "<div id=\"tab_profile\">\n";
 
-	$form_container = new FormContainer("Required Profile Information: {$user['username']}");
-	$form_container->output_row("Username <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row("New Password", "Only required if changing", $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password')), 'new_password');
-	$form_container->output_row("Confirm New Password", "Only required if changing", $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
-	$form_container->output_row("Email Address <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
+	$form_container = new FormContainer($lang->required_profile_info.": {$user['username']}");
+	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->new_password, $lang->new_password_desc, $form->generate_password_box('new_password', $mybb->input['new_password'], array('id' => 'new_password')), 'new_password');
+	$form_container->output_row($lang->confirm_new_password, $lang->new_password_desc, $form->generate_password_box('confirm_new_password', $mybb->input['confirm_new_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
+	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
-	$display_group_options[0] = "Use Primary User Group";
+	$display_group_options[0] = $lang->use_primary_user_group;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
@@ -906,23 +906,23 @@ if($mybb->input['action'] == "edit")
 		$display_group_options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row("Primary User Group <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
-	$form_container->output_row("Additional User Groups", "Use CTRL to select multiple groups", $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
-	$form_container->output_row("Display User Group <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
-	$form_container->output_row("Post Count <em>*</em>", "", $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
+	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
+	$form_container->output_row($lang->display_user_group." <em>*</em>", "", $form->generate_select_box('displaygroup', $display_group_options, $mybb->input['displaygroup'], array('id' => 'displaygroup')), 'displaygroup');
+	$form_container->output_row($lang->post_count." <em>*</em>", "", $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 
 	// Output custom profile fields - required
 	output_custom_profile_fields($profile_fields['required'], $mybb->input['profile_fields'], $form_container, $form);
 
 	$form_container->end();
 	
-	$form_container = new FormContainer("Optional Profile Information: {$user['username']}");
-	$form_container->output_row("Custom User Title", "If empty, the group user title will be used", $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
-	$form_container->output_row("Website", "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
-	$form_container->output_row("ICQ Number", "", $form->generate_text_box('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
-	$form_container->output_row("AIM Handle", "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
-	$form_container->output_row("Yahoo! Messenger Handle", "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row("MSN Messenger Handle", "", $form->generate_text_box('msn', $mybb->input['msn'], array('id' => 'msn')), 'msn');
+	$form_container = new FormContainer($lang->optional_profile_info.": {$user['username']}");
+	$form_container->output_row($lang->custom_user_title, $lang->custom_user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
+	$form_container->output_row($lang->website, "", $form->generate_text_box('website', $mybb->input['website'], array('id' => 'website')), 'website');
+	$form_container->output_row($lang->icq_number, "", $form->generate_text_box('icq', $mybb->input['icq'], array('id' => 'icq')), 'icq');
+	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
+	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
+	$form_container->output_row($lang->msn_messanger_handle, "", $form->generate_text_box('msn', $mybb->input['msn'], array('id' => 'msn')), 'msn');
 	// Birthday
 
 	// Output custom profile fields - optional
@@ -938,42 +938,42 @@ if($mybb->input['action'] == "edit")
 	// Plugin hook note - we should add hooks in above each output_row for the below so users can add their own options to each group :>
 
 	echo "<div id=\"tab_settings\">\n";
-	$form_container = new FormContainer("Account Settings: {$user['username']}");
+	$form_container = new FormContainer($lang->account_settings.": {$user['username']}");
 	$login_options = array(
-		$form->generate_check_box("invisible", 1, "Hide from the Who's Online list", array("checked" => $mybb->input['invisible'])),
-		$form->generate_check_box("remember", 1, "Remember login details for future visits", array("checked" => $mybb->input['remember']))
+		$form->generate_check_box("invisible", 1, $lang->hide_from_whos_online, array("checked" => $mybb->input['invisible'])),
+		$form->generate_check_box("remember", 1, $lang->remember_login_details, array("checked" => $mybb->input['remember']))
 	);
-	$form_container->output_row("Login, Cookies &amp; Privacy", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
+	$form_container->output_row($lang->login_cookies_privacy, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
 
 	$messaging_options = array(
-		$form->generate_check_box("allownotices", 1, "Receive emails from administrators", array("checked" => $mybb->input['allownotices'])),
-		$form->generate_check_box("hideemail", 1, "Hide email address from other members", array("checked" => $mybb->input['hideemail'])),
-		$form->generate_check_box("receivepms", 1, "Receive private messages from other users", array("checked" => $mybb->input['receivepms'])),
-		$form->generate_check_box("pmnotice", 1, "Alert with notice when new private message is received", array("checked" => $mybb->input['pmnotice'])),
-		$form->generate_check_box("pmnotify", 1, "Notify by email when new private message is received", array("checked" => $mybb->input['pmnotify'])),
-		"<label for=\"subscriptionmethod\">Default thread subscription mode:</label><br />".$form->generate_select_box("subscriptionmethod", array("Do not subscribe", "No email notification", "Instant email notification"), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
+		$form->generate_check_box("allownotices", 1, $lang->recieve_admin_emails, array("checked" => $mybb->input['allownotices'])),
+		$form->generate_check_box("hideemail", 1, $lang->hide_email_from_others, array("checked" => $mybb->input['hideemail'])),
+		$form->generate_check_box("receivepms", 1, $lang->recieve_pms_from_others, array("checked" => $mybb->input['receivepms'])),
+		$form->generate_check_box("pmnotice", 1, $lang->alert_new_pms, array("checked" => $mybb->input['pmnotice'])),
+		$form->generate_check_box("pmnotify", 1, $lang->email_notify_new_pms, array("checked" => $mybb->input['pmnotify'])),
+		"<label for=\"subscriptionmethod\">{$lang->default_thread_subscription_mode}:</label><br />".$form->generate_select_box("subscriptionmethod", array($lang->do_not_subscribe, $lang->no_email_notification, $lang->instant_email_notification), $mybb->input['subscriptionmethod'], array('id' => 'subscriptionmethod'))
 	);
-	$form_container->output_row("Messaging &amp; Notification", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
+	$form_container->output_row($lang->messaging_and_notification, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $messaging_options)."</div>");
 
-	$date_format_options = array("Use Default");
+	$date_format_options = array($lang->use_default);
 	foreach($date_formats as $key => $format)
 	{
 		$date_format_options[$key] = my_date($format, TIME_NOW, "", 0);
 	}
 
-	$time_format_options = array("Use Default");
+	$time_format_options = array($lang->use_default);
 	foreach($time_formats as $key => $format)
 	{
 		$time_format_options[$key] = my_date($format, TIME_NOW, "", 0);
 	}
 
 	$date_options = array(
-		"<label for=\"dateformat\">Date Format:</label><br />".$form->generate_select_box("dateformat", $date_format_options, $mybb->input['dateformat'], array('id' => 'dateformat')),
-		"<label for=\"dateformat\">Time Format:</label><br />".$form->generate_select_box("timeformat", $time_format_options, $mybb->input['timeformat'], array('id' => 'timeformat')),
-		"<label for=\"timezone\">Time Zone:</label><br />".build_timezone_select("timezone", $mybb->user['timezone']),
-		"<label for=\"dstcorrection\">Daylight Savings Time correction:</label><br />".$form->generate_select_box("dstcorrection", array(2 => "Automatically detect DST settings", 1 => "Always use DST correction", 1 => "Never use DST correction"), $mybb->input['dstcorrection'], array('id' => 'dstcorrection'))
+		"<label for=\"dateformat\">{$lang->date_format}:</label><br />".$form->generate_select_box("dateformat", $date_format_options, $mybb->input['dateformat'], array('id' => 'dateformat')),
+		"<label for=\"dateformat\">{$lang->time_format}:</label><br />".$form->generate_select_box("timeformat", $time_format_options, $mybb->input['timeformat'], array('id' => 'timeformat')),
+		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".build_timezone_select("timezone", $mybb->user['timezone']),
+		"<label for=\"dstcorrection\">{$lang->daylight_savings_time_correction}:</label><br />".$form->generate_select_box("dstcorrection", array(2 => $lang->automatically_detect, 1 => $lang->always_use_dst_correction, 0 => $lang->never_use_dst_correction), $mybb->input['dstcorrection'], array('id' => 'dstcorrection'))
 	);
-	$form_container->output_row("Date &amp; Time Options", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $date_options)."</div>");
+	$form_container->output_row($lang->date_and_time_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $date_options)."</div>");
 
 
 	$tpp_options = array("Use Default");
@@ -991,25 +991,25 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$thread_age_options = array(
-		0 => "Use Default",
-		1 => "Show threads from the last day",
-		5 => "Show threads from the last 5 days",
-		10 => "Show threads from the last 10 days",
-		20 => "Show threads from the last 20 days",
-		50 => "Show threads from the last 50 days",
-		75 => "Show threads from the last 75 days",
-		100 => "Show threads from the last 100 days",
-		365 => "Show threads from the last 100 days",
-		9999 => "Show all threads"
+		0 => $lang->use_default,
+		1 => $lang->show_threads_last_day,
+		5 => $lang->show_threads_last_5_days,
+		10 => $lang->show_threads_last_10_days,
+		20 => $lang->show_threads_last_20_days,
+		50 => $lang->show_threads_last_50_days,
+		75 => $lang->show_threads_last_75_days,
+		100 => $lang->show_threads_last_100_days,
+		365 => $lang->show_threads_last_year,
+		9999 => $lang->show_all_threads
 	);
 
 	$forum_options = array(
-		"<label for=\"tpp\">Threads Per Page:</label><br />".$form->generate_select_box("tpp", $tpp_options, $mybb->input['tpp'], array('id' => 'tpp')),
-		"<label for=\"daysprune\">Default Thread Age View:</label><br />".$form->generate_select_box("daysprune", $thread_age_options, $mybb->input['daysprune'], array('id' => 'daysprune'))
+		"<label for=\"tpp\">{$lang->threads_per_page}:</label><br />".$form->generate_select_box("tpp", $tpp_options, $mybb->input['tpp'], array('id' => 'tpp')),
+		"<label for=\"daysprune\">{$lang->default_thread_age_view}:</label><br />".$form->generate_select_box("daysprune", $thread_age_options, $mybb->input['daysprune'], array('id' => 'daysprune'))
 	);
-	$form_container->output_row("Forum Display Options", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $forum_options)."</div>");
+	$form_container->output_row($lang->forum_display_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $forum_options)."</div>");
 
-	$ppp_options = array("Use Default");
+	$ppp_options = array($lang->use_default);
 	if($mybb->settings['userpppoptions'])
 	{
 		$explodedppp = explode(",", $mybb->settings['userpppoptions']);
@@ -1024,21 +1024,21 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$thread_options = array(
-		$form->generate_check_box("showsigs", 1, "Display users' signatures in their posts", array("checked" => $mybb->input['showsigs'])),
-		$form->generate_check_box("showavatars", 1, "Display users' avatars in their posts", array("checked" => $mybb->input['showavatars'])),
-		$form->generate_check_box("showquickreply", 1, "Show the quick reply box at the bottom of the thread view", array("checked" => $mybb->input['showquickreply'])),
-		"<label for=\"ppp\">Posts Per Page:</label><br />".$form->generate_select_box("ppp", $ppp_options, $mybb->input['ppp'], array('id' => 'ppp')),
-		"<label for=\"threadmode\">Default Thread View Mode:</label><br />".$form->generate_select_box("threadmode", array("" => "Use Default", "linear" => "Linear Mode", "threaded" => "Threaded Mode"), $mybb->input['threadmode'], array('id' => 'threadmode'))
+		$form->generate_check_box("showsigs", 1, $lang->display_users_sigs, array("checked" => $mybb->input['showsigs'])),
+		$form->generate_check_box("showavatars", 1, $lang->display_users_avatars, array("checked" => $mybb->input['showavatars'])),
+		$form->generate_check_box("showquickreply", 1, $lang->show_quick_reply, array("checked" => $mybb->input['showquickreply'])),
+		"<label for=\"ppp\">{$lang->posts_per_page}:</label><br />".$form->generate_select_box("ppp", $ppp_options, $mybb->input['ppp'], array('id' => 'ppp')),
+		"<label for=\"threadmode\">{$lang->default_thread_view_mode}:</label><br />".$form->generate_select_box("threadmode", array("" => $lang->use_default, "linear" => $lang->linear_mode, "threaded" => $lang->threaded_mode), $mybb->input['threadmode'], array('id' => 'threadmode'))
 	);
-	$form_container->output_row("Thread View Options", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
+	$form_container->output_row($lang->thread_view_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
 
 	$other_options = array(
-		$form->generate_check_box("showredirect", 1, "Show friendly redirection pages", array("checked" => $mybb->input['showredirect'])),
-		$form->generate_check_box("showcodebuttons", "1", "Show MyCode formatting options on posting pages", array("checked" => $mybb->input['showcodebuttons'])),
-		"<label for=\"style\">Theme:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", 1),
-		"<label for=\"language\">Board Language:</label><br />".$form->generate_select_box("language", $lang->get_languages(), $mybb->input['language'], array('id' => 'language'))
+		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->input['showredirect'])),
+		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->input['showcodebuttons'])),
+		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", 1),
+		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $lang->get_languages(), $mybb->input['language'], array('id' => 'language'))
 	);
-	$form_container->output_row("Other Options", "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
+	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
 
 	$form_container->end();
 	echo "</div>\n";
@@ -1069,16 +1069,16 @@ if($mybb->input['action'] == "edit")
 		$sig_imgcode = "off";
 	}
 	echo "<div id=\"tab_signature\">\n";
-	$form_container = new FormContainer("Signature: {$user['username']}");
-	$form_container->output_row("Signature", "Formatting options: MyCode is {$sig_mycode}, smilies are {$sig_smilies}, IMG code is {$sig_imgcode}, HTML is {$sig_html}", $signature_editor, 'signature');
+	$form_container = new FormContainer("{$lang->signature}: {$user['username']}");
+	$form_container->output_row($lang->signature, sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
 
 	$signature_options = array(
-		$form->generate_radio_button("update_posts", "enable", "Enable signature in all posts", array("checked" => 0)),
-		$form->generate_radio_button("update_posts", "disable", "Disable signature in all posts", array("checked" => 0)),
-		$form->generate_radio_button("update_posts", "no", "Do not change signature preferences", array("checked" => 1))
+		$form->generate_radio_button("update_posts", "enable", $lang->enable_sig_in_all_posts, array("checked" => 0)),
+		$form->generate_radio_button("update_posts", "disable", $lang->disable_sig_in_all_posts, array("checked" => 0)),
+		$form->generate_radio_button("update_posts", "no", $lang->do_nothing, array("checked" => 1))
 	);
 
-	$form_container->output_row("Signature Preferences", "", implode("<br />", $signature_options));
+	$form_container->output_row($lang->singature_preferences, "", implode("<br />", $signature_options));
 
 	$form_container->end();
 	echo "</div>\n";
@@ -1088,21 +1088,21 @@ if($mybb->input['action'] == "edit")
 	//
 	echo "<div id=\"tab_avatar\">\n";
 	$table = new Table;
-	$table->construct_header("Current Avatar", array('colspan' => 2));
+	$table->construct_header($lang->current_avatar, array('colspan' => 2));
 
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"{$user['avatar']}\" width=\"{$scaled_dimensions['width']}\" style=\"margin-top: {$avatar_top}px\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('width' => 1));
 
 	if($user['avatartype'] == "upload" || stristr($user['avatar'], $mybb->settings['avataruploadpath']))
 	{
-		$current_avatar_msg = "<br /><strong>This user is currently using an uploaded avatar.</strong>";
+		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_uploaded_avatar}</strong>";
 	}
 	else if($user['avatartype'] == "gallery" || stristr($user['avatar'], $mybb->settings['avatardir']))
 	{
-		$current_avatar_msg = "<br /><strong>This user is currently using an avatar from the avatar gallery.</strong>";
+		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_gallery_avatar}</strong>";
 	}
 	elseif($user['avatartype'] == "remote" || my_strpos(my_strtolower($user['avatar']), "http://") !== false)
 	{
-		$current_avatar_msg = "<br /><strong>This user is currently using a remotely linked avatar.</strong>";
+		$current_avatar_msg = "<br /><strong>{$lang->user_current_using_remote_avatar}</strong>";
 		$avatar_url = $user['avatar'];
 	}
 
@@ -1114,47 +1114,47 @@ if($mybb->input['action'] == "edit")
 	if($mybb->settings['maxavatardims'] != "")
 	{
 		list($max_width, $max_height) = explode("x", $mybb->settings['maxavatardims']);
-		$max_size = "<br />The maximum dimensions for avatars are {$max_width}x{$max_height}";
+		$max_size = "<br />{$lang->max_dimensions_are} {$max_width}x{$max_height}";
 	}
 
 	if($mybb->settings['avatarsize'])
 	{
 		$maximum_size = get_friendly_size($mybb->settings['avatarsize']*1024);
-		$max_size .= "<br />Avatars can be a maximum of {$maximum_size}";
+		$max_size .= "<br />{$lang->avatar_max_size} {$maximum_size}";
 	}
 
 	if($user['avatar'])
 	{
-		$remove_avatar = "<br /><br />".$form->generate_check_box("remove_avatar", 1, "<strong>Remove current avatar?</strong>");
+		$remove_avatar = "<br /><br />".$form->generate_check_box("remove_avatar", 1, "<strong>{$lang->remove_avatar}</strong>");
 	}
 
-	$table->construct_cell("Below you can manage the avatar for this user. Avatars are small identifying images which are placed under the authors username when they make a post.{$remove_avatar}<br /><small>{$max_size}</small>");
+	$table->construct_cell($lang->avatar_desc."{$remove_avatar}<br /><small>{$max_size}</small>");
 	$table->construct_row();
 	
-	$table->output("Avatar: {$user['username']}");
+	$table->output($lang->avatar.": {$user['username']}");
 
 	// Custom avatar
 	if($mybb->settings['avatarresizing'] == "auto")
 	{
-		$auto_resize = "If the avatar is too large, it will automatically be resized";
+		$auto_resize = $lang->avatar_auto_resize;
 	}
 	else if($mybb->settings['avatarresizing'] == "user")
 	{
-		$auto_resize = "<input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">Attempt to resize this avatar if it is too large?</label></span>";
+		$auto_resize = "<input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->attempt_to_auto_resize}</label></span>";
 	}
-	$form_container = new FormContainer("Specify Custom Avatar");
-	$form_container->output_row("Upload Avatar", $auto_resize, $form->generate_file_upload_box('avatar_upload', array('id' => 'avatar_upload')), 'avatar_upload');
-	$form_container->output_row("or Specify Avatar URL", "", $form->generate_text_box('avatar_url', $avatar_url, array('id' => 'avatar_url')), 'avatar_url');
+	$form_container = new FormContainer($lang->specify_custom_avatar);
+	$form_container->output_row($lang->upload_avatar, $auto_resize, $form->generate_file_upload_box('avatar_upload', array('id' => 'avatar_upload')), 'avatar_upload');
+	$form_container->output_row($lang->or_specify_avatar_url, "", $form->generate_text_box('avatar_url', $avatar_url, array('id' => 'avatar_url')), 'avatar_url');
 	$form_container->end();
 
 	// Select an image from the gallery
 	echo "<div class=\"border_wrapper\">";
-	echo "<div class=\"title\">.. or select from Avatar Gallery</div>";
+	echo "<div class=\"title\">.. {$lang->or_select_avatar_gallery}</div>";
 	echo "<iframe src=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}\" width=\"100%\" height=\"350\" frameborder=\"0\"></iframe>";
 	echo "</div>";
 	echo "</div>";
 
-	$buttons[] = $form->generate_submit_button("Save User");
+	$buttons[] = $form->generate_submit_button($lang->save_user);
 	$form->output_submit_wrapper($buttons);
 
 	$form->end();
@@ -1170,7 +1170,7 @@ if($mybb->input['action'] == "delete")
 	// Does the user not exist?
 	if(!$user['uid'])
 	{
-		flash_message("You have selected an invalid user.", 'error');
+		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?".SID."&module=user/users");
 	}
 
@@ -1201,23 +1201,23 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($user['username']);
 
 
-		flash_message("The user has successfully been deleted.", 'success');
+		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=user/users");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=user/users&action=delete&uid={$user['uid']}", $lang->confirm_bot_deletion);
+		$page->output_confirm_action("index.php?".SID."&module=user/users&action=delete&uid={$user['uid']}", $lang->user_deletion_confirmation);
 	}
 }
 
 if($mybb->input['action'] == "referrers")
 {
-	$page->output_header("Show Referrers");
+	$page->output_header($lang->show_referrers);
 	
 	$sub_tabs['referrers'] = array(
-		'title' => "Show Referrers Users",
+		'title' => $lang->show_referrers,
 		'link' => "index.php?".SID."&amp;module=user/users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
-		'description' => "The results to your search criteria are shown below. You can view the results in either a table view or business card view."
+		'description' => $lang->show_referrers_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'referrers');
@@ -1239,12 +1239,12 @@ if($mybb->input['action'] == "referrers")
 
 if($mybb->input['action'] == "ipaddresses")
 {
-	$page->output_header("IP Addresses");
+	$page->output_header($lang->ip_addresses);
 	
 	$sub_tabs['ipaddresses'] = array(
-		'title' => "Show IP Addresses",
+		'title' => $lang->show_ip_addresses,
 		'link' => "index.php?".SID."&amp;module=user/users&amp;action=ipaddresses&amp;uid={$mybb->input['uid']}",
-		'description' => "The registration IP address and the post IPs for the selected users are shown below. The first IP address is the registration IP (it is marked as such). Any other IP addresses are IP addresses the user has posted with."
+		'description' => $lang->show_ip_addresses_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'ipaddresses');
@@ -1257,7 +1257,7 @@ if($mybb->input['action'] == "ipaddresses")
 	
 	$table = new Table;
 	
-	$table->construct_header("IP Address");
+	$table->construct_header($lang->ip_address);
 	$table->construct_header($lang->controls, array('width' => 200, 'class' => "align_center"));
 	
 	if(empty($user['lastip']))
@@ -1268,12 +1268,12 @@ if($mybb->input['action'] == "ipaddresses")
 	else
 	{
 		$popup = new PopupMenu("user_last", $lang->options);
-		$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['lastip']}");
-		$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['lastip']}");
-		$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['lastip']}");
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['lastip']}");
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['lastip']}");
+		$popup->add_item($lang->ban_ip, "index.php?".SID."&amp;module=config/banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>Last Known IP:</strong> {$user['lastip']}");
+	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> {$user['lastip']}");
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 
@@ -1285,12 +1285,12 @@ if($mybb->input['action'] == "ipaddresses")
 	else
 	{
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
-		$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['regip']}");
-		$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$user['regip']}");
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['regip']}");
+		$popup->add_item($lang->ban_ip, "index.php?".SID."&amp;module=config/banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
-	$table->construct_cell("<strong>Registration IP:</strong> {$user['regip']}");
+	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> {$user['regip']}");
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 	
@@ -1300,9 +1300,9 @@ if($mybb->input['action'] == "ipaddresses")
 		if(!$done_ip[$ip['ipaddress']])
 		{
 			$popup = new PopupMenu("post_{$ip['pid']}", $lang->options);
-			$popup->add_item("Show users who have registered with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$ip['ipaddress']}");
-			$popup->add_item("Show users who have posted with this IP", "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$ip['ipaddress']}");
-			$popup->add_item("Ban IP", "index.php?".SID."&amp;module=config/banning&amp;filter={$ip['ipaddress']}");
+			$popup->add_item($lang->show_users_regged_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$ip['ipaddress']}");
+			$popup->add_item($lang->show_users_posted_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$ip['ipaddress']}");
+			$popup->add_item($lang->ban_ip, "index.php?".SID."&amp;module=config/banning&amp;filter={$ip['ipaddress']}");
 			$controls = $popup->fetch();
 		
 			$table->construct_cell($ip['ipaddress']);
@@ -1312,7 +1312,7 @@ if($mybb->input['action'] == "ipaddresses")
 		}
 	}
 	
-	$table->output("IP Addresses for {$user['username']}");
+	$table->output($lang->ip_address_for." {$user['username']}");
 	
 	$page->output_footer();
 }
@@ -1325,14 +1325,14 @@ if($mybb->input['action'] == "merge")
 		$source_user = $db->fetch_array($query);
 		if(!$source_user['uid'])
 		{
-			$errors[] = "The source account username you entered does not exist";
+			$errors[] = $lang->error_invalid_user_source;
 		}
 
 		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['destination_username']))."'");
 		$destination_user = $db->fetch_array($query);
 		if(!$destination_user['uid'])
 		{
-			$errors[] = "The destination account username you entered does not exist";
+			$errors[] = $lang->error_invalid_user_destination;
 		}
 
 		// Begin to merge the accounts
@@ -1387,7 +1387,7 @@ if($mybb->input['action'] == "merge")
 		$db->delete_query("banned", "uid='{$source_user['uid']}'");
 		
 		// Update user post count
-		$query = $db->query("SELECT COUNT(*) AS postnum FROM ".TABLE_PREFIX."posts WHERE uid='".$destuser['uid']."'");
+		$query = $db->simple_select("posts", "COUNT(*) AS postnum", "uid='".$destuser['uid']."'");
 		$num = $db->fetch_array($query);
 		$updated_count = array(
 			"postnum" => $num['postnum']
@@ -1401,12 +1401,12 @@ if($mybb->input['action'] == "merge")
 
 
 		// Redirect!
-		flash_message("<strong>{$source_user['username']}</strong> has successfully been merged in to {$destination_user['username']}", "success");
+		flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");
 		admin_redirect("index.php?".SID."&module=user/users");
 		exit;
 	}
 
-	$page->output_header("Merge Users");
+	$page->output_header($lang->merge_users);
 	
 	$page->output_nav_tabs($sub_tabs, 'merge_users');
 
@@ -1418,9 +1418,9 @@ if($mybb->input['action'] == "merge")
 
 	$form = new Form("index.php?".SID."&module=user/users&action=merge", "post");
 
-	$form_container = new FormContainer("Merge Users");
-	$form_container->output_row("Source Account <em>*</em>", "This is the account that will be merged in to the destination account. It will be removed after this process.", $form->generate_text_box('source_username', $mybb->input['source_username'], array('id' => 'source_username')), 'source_username');
-	$form_container->output_row("Destination Account <em>*</em>", "This is the account that the source account will be merged in to. It will remain after this process.", $form->generate_text_box('destination_username', $mybb->input['destination_username'], array('id' => 'destination_username')), 'destination_username');
+	$form_container = new FormContainer($lang->merge_users);
+	$form_container->output_row($lang->source_account." <em>*</em>", $lang->source_account_desc, $form->generate_text_box('source_username', $mybb->input['source_username'], array('id' => 'source_username')), 'source_username');
+	$form_container->output_row($lang->destination_account." <em>*</em>", $lang->destination_account_desc, $form->generate_text_box('destination_username', $mybb->input['destination_username'], array('id' => 'destination_username')), 'destination_username');
 	$form_container->end();
 
 	// Autocompletion for usernames
@@ -1433,7 +1433,7 @@ if($mybb->input['action'] == "merge")
 	// -->
 	</script>';
 
-	$buttons[] = $form->generate_submit_button("Merge User Accounts");
+	$buttons[] = $form->generate_submit_button($lang->merge_user_accounts);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -1480,7 +1480,7 @@ if($mybb->input['action'] == "search")
 
 		if($results)
 		{
-			$page->output_header("Find Users");
+			$page->output_header($lang->find_users);
 			echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
 			$page->output_nav_tabs($sub_tabs, 'find_users');
 			echo $results;
@@ -1488,11 +1488,11 @@ if($mybb->input['action'] == "search")
 		}
 		else
 		{
-			$errors[] = "No users were found matching the specified search criteria. Please modify your search criteria and try again.";
+			$errors[] = $lang->error_no_users_found;
 		}
 	}
 
-	$page->output_header("Find Users");
+	$page->output_header($lang->find_users);
 	
 	$page->output_nav_tabs($sub_tabs, 'find_users');
 
@@ -1506,17 +1506,17 @@ if($mybb->input['action'] == "search")
 
 	user_search_conditions($mybb->input, $form);
 
-	$form_container = new FormContainer("Display Options");
+	$form_container = new FormContainer($lang->display_options);
 	$sort_directions = array(
-		"asc" => "Ascending",
-		"desc" => "Descending"
+		"asc" => $lang->ascending,
+		"desc" => $lang->descending
 	);
-	$form_container->output_row("Sort results by", "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." in ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
-	$form_container->output_row("Results per page", "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
-	$form_container->output_row("Display results as", "", $form->generate_radio_button('displayas', 'table', 'Table', array('checked' => ($mybb->input['displayas'] != "card" ? "checked" : "")))."<br />".$form->generate_radio_button('displayas', 'card', 'Business cards', array('checked' => ($mybb->input['displayas'] == "card" ? "checked" : ""))));
+	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
+	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', 'Table', array('checked' => ($mybb->input['displayas'] != "card" ? "checked" : "")))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? "checked" : ""))));
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Find Users");
+	$buttons[] = $form->generate_submit_button($lang->find_users);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -1525,20 +1525,20 @@ if($mybb->input['action'] == "search")
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Browse Users");
+	$page->output_header($lang->browse_users);
 	echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
 	
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
 
 	// Fetch a list of all of the views for this user
-	$popup = new PopupMenu("views", "Views");
+	$popup = new PopupMenu("views", $lang->views);
 
 	$query = $db->simple_select("adminviews", "*", "type='user' AND (visibility=2 OR uid={$mybb->user['uid']})", array("order_by" => "title"));
 	while($view = $db->fetch_array($query))
 	{
 		$popup->add_item(htmlspecialchars_uni($view['title']), "index.php?".SID."&amp;module=user/users&amp;vid={$view['vid']}");
 	}
-	$popup->add_item("<em>Manage Views</em>", "index.php?".SID."&amp;module=user/users&amp;action=views");
+	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?".SID."&amp;module=user/users&amp;action=views");
 	echo "<div style=\"text-align: right; margin-bottom: 10px;\">".$popup->fetch()."</div>";
 
 	if($mybb->input['view'])
@@ -1828,7 +1828,7 @@ function build_users_view($view)
 				$comma = ", ";
 			}
 			$comma = $groups_list = '';
-			if(!$groups_list) $groups_list = "None";
+			if(!$groups_list) $groups_list = $lang->none;
 			$user['view']['additionalgroups'] = "<small>{$groups_list}</small>";
 			$user['view']['email'] = "<a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>";
 			$user['view']['regdate'] = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
@@ -1836,12 +1836,12 @@ function build_users_view($view)
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
-			$popup->add_item("Edit Profile &amp; Settings", "index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$user['uid']}");
-			$popup->add_item("Ban User", "index.php?".SID."&amp;module=user/users&amp;action=ban&amp;uid={$user['uid']}");
-			$popup->add_item("Delete User", "index.php?".SID."&amp;module=user/users&amp;action=delete&amp;uid={$user['uid']}");
-			$popup->add_item("Show Referred Users", "index.php?".SID."&amp;module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
-			$popup->add_item("Show IP Addresses", "index.php?".SID."&amp;module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
-			$popup->add_item("Show Attachments", "index.php?".SID."&amp;module=user/users&amp;action=attachments&amp;uid={$user['uid']}");
+			$popup->add_item($lang->edit_profile_and_settings, "index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$user['uid']}");
+			$popup->add_item($lang->ban_user, "index.php?".SID."&amp;module=user/users&amp;action=ban&amp;uid={$user['uid']}");
+			$popup->add_item($lang->delete_user, "index.php?".SID."&amp;module=user/users&amp;action=delete&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_referred_users, "index.php?".SID."&amp;module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_ip_addresses, "index.php?".SID."&amp;module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_attachments, "index.php?".SID."&amp;module=user/users&amp;action=attachments&amp;uid={$user['uid']}");
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user
@@ -1913,11 +1913,11 @@ function build_users_view($view)
 	}
 	if($view['view_type'] != "card")
 	{
-		$switch_view .= "<strong>Table View</strong> | <a href=\"{$switch_url}&amp;type=card\" style=\"font-weight: normal;\">Card View</a>";
+		$switch_view .= "<strong>{$lang->table_view}</strong> | <a href=\"{$switch_url}&amp;type=card\" style=\"font-weight: normal;\">{$lang->card_view}</a>";
 	}
 	else
 	{
-		$switch_view .= "<a href=\"{$switch_url}&amp;type=table\" style=\"font-weight: normal;\">Table View</a> | <strong>Card View</strong>";
+		$switch_view .= "<a href=\"{$switch_url}&amp;type=table\" style=\"font-weight: normal;\">{$lang->table_view}</a> | <strong>{$lang->card_view}</strong>";
 	}
 	$switch_view .= "</div>";
 
@@ -1928,7 +1928,7 @@ function build_users_view($view)
 	}
 
 	$built_view = $pagination;
-	$built_view .= $table->construct_html("{$switch_view}Users{$view_title}", 1, "", $view['table_id']);
+	$built_view .= $table->construct_html("{$switch_view}{$lang->users}{$view_title}", 1, "", $view['table_id']);
 	$built_view .= $pagination;
 
 	return $built_view;
@@ -2164,9 +2164,9 @@ function user_search_conditions($input=array(), &$form)
 		$input = $mybb->input;
 	}
 
-	$form_container = new FormContainer("Find users where...");
-	$form_container->output_row("Username contains", "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
-	$form_container->output_row("Email address contains", "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
+	$form_container = new FormContainer($lang->find_users_where);
+	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->email_address_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');
 
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
@@ -2174,25 +2174,25 @@ function user_search_conditions($input=array(), &$form)
 		$options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row("Is member of these user groups", "Use CTRL to select multiple groups", $form->generate_select_box('conditions[usergroups][]', $options, $input['conditions']['usergroups'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
+	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroups][]', $options, $input['conditions']['usergroups'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
-	$form_container->output_row("Website contains", "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website')), 'website');
-	$form_container->output_row("ICQ number contains", "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq')), 'icq');
-	$form_container->output_row("AIM handle contains", "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim')), 'aim');
-	$form_container->output_row("Yahoo! Messenger handle contains", "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row("MSN Messenger handle contains", "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn')), 'msn');
-	$form_container->output_row("Signature contains", "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature')), 'signature');
-	$form_container->output_row("Custom user title contains", "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle')), 'usertitle');
+	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website')), 'website');
+	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq')), 'icq');
+	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim')), 'aim');
+	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo')), 'yahoo');
+	$form_container->output_row($lang->msn_contains, "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn')), 'msn');
+	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature')), 'signature');
+	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle')), 'usertitle');
 	$greater_options = array(
-		"greater_than" => "Greater than",
-		"is_exactly" => "Is exactly",
-		"less_than" => "Less than"
+		"greater_than" => $lang->greater_than,
+		"is_exactly" => $lang->is_exactly,
+		"less_than" => $lang->less_than
 	);
-	$form_container->output_row("Post count is", "", $form->generate_select_box('conditions[numposts_dir]', $greater_options, $input['conditions']['numposts_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[numposts_dir]', $greater_options, $input['conditions']['numposts_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
 
-	$form_container->output_row("Registration IP address matches", "* denominates a wildcard", $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
-	$form_container->output_row("Last known IP address matches", "* denominates a wildcard", $form->generate_text_box('conditions[lastip]', $input['conditions']['lastip'], array('id' => 'lastip')), 'lastip');
-	$form_container->output_row("Has posted with the IP address", "* denominates a wildcard", $form->generate_text_box('conditions[postip]', $input['conditions']['postip'], array('id' => 'postip')), 'postip');
+	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
+	$form_container->output_row($lang->last_known_ip, $lang->wildcard, $form->generate_text_box('conditions[lastip]', $input['conditions']['lastip'], array('id' => 'lastip')), 'lastip');
+	$form_container->output_row($lang->posted_with_ip, $lang->wildcard, $form->generate_text_box('conditions[postip]', $input['conditions']['postip'], array('id' => 'postip')), 'postip');
 
 	$form_container->end();
 

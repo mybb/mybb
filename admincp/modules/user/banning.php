@@ -15,16 +15,16 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("Banning", "index.php?".SID."&amp;module=user/banning");
+$page->add_breadcrumb_item($lang->banning, "index.php?".SID."&amp;module=user/banning");
 
 $sub_tabs['bans'] = array(
-	'title' => "Banned Accounts",
+	'title' => $lang->banned_accounts,
 	'link' => "index.php?".SID."&amp;module=user/banning",
-	'description' => "Here you can manage user accounts which are banned from access to the board."
+	'description' => $lang->banned_accounts_desc
 );
 
 $sub_tabs['ban'] = array(
-	'title' => "Ban a User",
+	'title' => $lang->ban_a_user,
 	'link' => "index.php?".SID."&amp;module=user/banning&amp;action=ban",
 	'description' => ""
 );
@@ -47,7 +47,7 @@ if($mybb->input['action'] == "lift")
 
 	if(!$ban['uid'])
 	{
-		flash_message("You have selected an invalid ban to edit.", 'error');
+		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?".SID."&module=user/banning");
 	}
 
@@ -70,12 +70,12 @@ if($mybb->input['action'] == "lift")
 		// Log admin action
 		log_admin_action($mybb->input['uid'], $user['username']);
 
-		flash_message("The ban has successfully been lifted.", 'success');
+		flash_message($lang->success_ban_lifted, 'success');
 		admin_redirect("index.php?".SID."&module=user/banning");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/banning&amp;action=lift&amp;uid={$ban['uid']}", "Are you sure you want to lift this ban?");
+		$page->output_confirm_action("index.php?".SID."&amp;module=user/banning&amp;action=lift&amp;uid={$ban['uid']}", $lang->confirm_lift_ban);
 	}
 }
 
@@ -88,31 +88,31 @@ if($mybb->input['action'] == "ban")
 
 		if(!$user['uid'])
 		{
-			$errors[] = "The username you have entered is invalid and does not exist.";
+			$errors[] = $lang->error_invalid_username;
 		}
 		// Is the user we're trying to ban a super admin and we're not?
 		else if(is_super_admin($user['uid']) && !is_super_admin($user['uid']))
 		{
-			$errors[] = "You do not have permission to ban this user.";
+			$errors[] = $lang->error_no_perm_to_ban;
 		}
 		else
 		{
 			$query = $db->simple_select("banned", "uid", "uid='{$user['uid']}'");
 			if($db->fetch_field($query, "uid"))
 			{
-				$errors[] = "This user already belongs to a banned group and cannot be added to a new one.";
+				$errors[] = $lang->error_already_banned;
 			}
 		}
 
 		if($user['uid'] == $mybb->user['uid'])
 		{
-			$errors[] = "You cannot ban yourself.";
+			$errors[] = $lang->error_ban_self;
 		}
 
 		// Reason?
 		if(!$mybb->input['reason'])
 		{
-			$errors[] = "You did not enter a reason to ban this user.";
+			$errors[] = $lang->error_no_reason;
 		}
 
 		// No errors? Insert
@@ -159,12 +159,12 @@ if($mybb->input['action'] == "ban")
 			// Log admin action
 			log_admin_action($user['uid'], $user['username']);
 
-			flash_message("The user has successfully been banned", 'success');
+			flash_message($lang->success_banned, 'success');
 			admin_redirect("index.php?".SID."&module=user/banning");
 		}
 	}
-	$page->add_breadcrumb_item("Ban a User");
-	$page->output_header("Ban a User");
+	$page->add_breadcrumb_item($lang->ban_a_user);
+	$page->output_header($lang->ban_a_user);
 	$page->output_nav_tabs($sub_tabs, "ban");
 
 	$form = new Form("index.php?".SID."&amp;module=user/banning&amp;action=ban", "post");
@@ -173,12 +173,12 @@ if($mybb->input['action'] == "ban")
 		$page->output_inline_error($errors);
 	}
 	
-	$form_container = new FormContainer("Ban a User");
-	$form_container->output_row("Username <em>*</em>", "Auto-complete is enabled in this field.", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row("Ban Reason <em>*</em>", "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
+	$form_container = new FormContainer($lang->ban_a_user);
+	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
 	if(count($banned_groups) > 1)
 	{
-		$form_container->output_row("Banned Group <em>*</em>", "In order for this user to be banned they must be moved to a banned group", $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+		$form_container->output_row($lang->ban_group, $lang->add_ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	}
 	foreach($ban_times as $time => $period)
 	{
@@ -189,11 +189,11 @@ if($mybb->input['action'] == "ban")
 		}
 		$length_list[$time] = $period;
 	}
-	$form_container->output_row("Ban Length <em>*</em>", "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');	
+	$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');	
 
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Ban User");
+	$buttons[] = $form->generate_submit_button($lang->ban_user);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$ban['uid'])
 	{
-		flash_message("You have selected an invalid ban to edit.", 'error');
+		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?".SID."&module=user/banning");
 	}
 
@@ -218,7 +218,7 @@ if($mybb->input['action'] == "edit")
 		// Reason?
 		if(!$mybb->input['reason'])
 		{
-			$errors[] = "You did not enter a reason to ban this user.";
+			$errors[] = $lang->error_no_reason;
 		}
 
 		// No errors? Update
@@ -261,16 +261,16 @@ if($mybb->input['action'] == "edit")
 			// Log admin action
 			log_admin_action($mybb->input['uid'], $user['username']);
 
-			flash_message("The ban has successfully been updated.", 'success');
+			flash_message($lang->success_ban_updated, 'success');
 			admin_redirect("index.php?".SID."&module=user/banning");
 		}
 	}
-	$page->add_breadcrumb_item("Edit Ban");
-	$page->output_header("Edit Ban");
+	$page->add_breadcrumb_item($lang->edit_ban);
+	$page->output_header($lang->edit_ban);
 
 	$sub_tabs = array();
 	$sub_tabs['edit'] = array(
-		'title' => "Edit Ban",
+		'title' => $lang->edit_ban,
 		'description' => ""
 	);
 	$page->output_nav_tabs($sub_tabs, "edit");
@@ -285,12 +285,12 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $ban;
 	}
 	
-	$form_container = new FormContainer("Edit Ban");
-	$form_container->output_row("Username <em>*</em>", "", $user['username']);
-	$form_container->output_row("Ban Reason <em>*</em>", "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
+	$form_container = new FormContainer($lang->edit_ban);
+	$form_container->output_row($lang->ban_username, "", $user['username']);
+	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');
 	if(count($banned_groups) > 1)
 	{
-		$form_container->output_row("Banned Group <em>*</em>", "In order for this user to be banned they must be moved to a banned group", $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+		$form_container->output_row($lang->ban_group, $lang->ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	}
 	foreach($ban_times as $time => $period)
 	{
@@ -301,11 +301,11 @@ if($mybb->input['action'] == "edit")
 		}
 		$length_list[$time] = $period;
 	}
-	$form_container->output_row("Ban Length <em>*</em>", "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');	
+	$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');	
 
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button("Update Ban");
+	$buttons[] = $form->generate_submit_button($lang->update_ban);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Banned Accounts");
+	$page->output_header($lang->banned_accounts);
 
 	$page->output_nav_tabs($sub_tabs, "bans");
 
@@ -344,9 +344,9 @@ if(!$mybb->input['action'])
 	$pagination = draw_admin_pagination($current_page, $per_page, $ban_count, "index.php?".SID."&amp;module=user/banning&amp;page={page}");
 
 	$table = new Table;
-	$table->construct_header("User");
-	$table->construct_header("Ban Lifts On", array("class" => "align_center", "width" => 150));
-	$table->construct_header("Time Left", array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->user);
+	$table->construct_header($lang->ban_lifts_on, array("class" => "align_center", "width" => 150));
+	$table->construct_header($lang->time_left, array("class" => "align_center", "width" => 150));
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
 
 	// Fetch bans
@@ -366,12 +366,12 @@ if(!$mybb->input['action'])
 		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
 		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{
-			$ban_peiod = "permanently";
-			$time_remaning = $lifts_on = "N/A";
+			$ban_period = $lang->permenantly;
+			$time_remaning = $lifts_on = $lang->na;
 		}
 		else
 		{
-			$ban_period = "for ".$ban_times[$ban['bantime']];
+			$ban_period = $lang->for." ".$ban_times[$ban['bantime']];
 
 			$remaining = $ban['lifted']-TIME_NOW;
 			$time_remaining = nice_time($remaining, array('short' => 1, 'seconds' => false))."";
@@ -395,20 +395,20 @@ if(!$mybb->input['action'])
 			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
 		}
 
-		$table->construct_cell("<strong>{$profile_link}</strong><br /><small>Banned by {$ban['adminuser']} on {$ban_date} {$ban_period}</small>");
+		$table->construct_cell(sprintf($lang->bannedby_x_on_x, $profile_link, $ban['adminuser'], $ban_date, $ban_period));
 		$table->construct_cell($lifts_on, array("class" => "align_center"));
 		$table->construct_cell($time_remaining, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/banning&amp;action=lift&amp;uid={$ban['uid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you want to lift this ban?');\">Lift</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/banning&amp;action=lift&amp;uid={$ban['uid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell("You don't have any banned users at the moment.", array("colspan" => "5"));
+		$table->construct_cell($lang->no_banned_users, array("colspan" => "5"));
 		$table->construct_row();
 	}
-	$table->output("Banned Accounts");
+	$table->output($lang->banned_accounts);
 	echo $pagination;
 
 	$page->output_footer();

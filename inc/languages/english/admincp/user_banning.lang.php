@@ -1,0 +1,57 @@
+<?php
+/**
+ * MyBB 1.2 English Language Pack
+ * Copyright © 2007 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+
+// Tabs
+$l['banning'] = "Banning";
+$l['banned_accounts'] = "Banned Accounts";
+$l['banned_accounts_desc'] = "Here you can manage user accounts which are banned from access to the board.";
+$l['ban_a_user'] = "Ban A User";
+$l['edit_ban'] = "Edit Ban";
+
+// Errors
+$l['error_invalid_ban'] = "You have selected an invalid ban to edit.";
+$l['error_invalid_username'] = "The username you have entered is invalid and does not exist.";
+$l['error_no_perm_to_ban'] = "You do not have permission to ban this user.";
+$l['error_already_banned'] = "This user already belongs to a banned group and cannot be added to a new one.";
+$l['error_ban_self'] = "You cannot ban yourself.";
+$l['error_no_reason'] = "You did not enter a reason to ban this user.";
+$l['error_invalid_ban'] = "You have selected an invalid ban to edit.";
+
+// Success
+$l['success_ban_lifted'] = "The ban has successfully been lifted.";
+$l['success_banned'] = "The user has successfully been banned.";
+$l['success_ban_updated'] = "The ban has successfully been updated.";
+
+// Confirm
+$l['confirm_lift_ban'] = "Are you sure you want to lift this ban?";
+
+//== Pages
+//= Add / Edit
+$l['ban_username'] = "Username <em>*</em>";
+$l['autocomplete_enabled'] = "Auto-complete is enabled in this field.";
+$l['ban_reason'] = "Ban Reason <em>*</em>";
+$l['ban_group'] = "Banned Group <em>*</em>";
+$l['ban_group_desc'] = "In order for this user to be banned they must be moved to a banned group.";
+$l['ban_time'] = "Ban Length <em>*</em>";
+
+//= Index
+$l['user'] = "User";
+$l['ban_lifts_on'] = "Ban Lifts On";
+$l['time_left'] = "Time Left";
+$l['permenantly'] = "permanently";
+$l['na'] = "N/A";
+$l['for'] = "for";
+$l['bannedby_x_on_x'] = "<strong>{1}</strong><br /><small>Banned by {2} on {3} {4}</small>";
+$l['lift'] = "Lift";
+$l['no_banned_users'] = "You don't have any banned users at the moment.";
+
+// Buttons
+$l['ban_user'] = "Ban User";
+$l['update_ban'] = "Update Ban";
+
+?>

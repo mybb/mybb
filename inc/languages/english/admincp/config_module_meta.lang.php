@@ -19,12 +19,12 @@ $l['post_icons'] = "Post Icons";
 $l['help_documents'] = "Help Documents";
 $l['plugins'] = "Plugins";
 $l['attachment_types'] = "Attachment Types";
-$l['moderator_tools'] = "Moderator Tools"
+$l['moderator_tools'] = "Moderator Tools";
 $l['spiders_bots'] = "Spiders / Bots";
 $l['calendars'] = "Calendars";
 $l['warning_system'] = "Warning System";
 
-$l['can_manage_settings'] = "Can Manage Settings?"
+$l['can_manage_settings'] = "Can Manage Settings?";
 $l['can_manage_banned_accounts'] = "Can Manage Banned Accounts?";
 $l['can_manage_custom_profile_fields'] = "Can Manage Custom Profile Fields?";
 $l['can_manage_smilies'] = "Can Manage Smilies?";
@@ -37,6 +37,6 @@ $l['can_manage_plugins'] = "Can Manage Plugins?";
 $l['can_manage_attachment_types'] = "Can Manage Attachment Types?";
 $l['can_manage_spiders_bots'] = "Can Manage Spiders / Bots?";
 $l['can_manage_calendars'] = "Can Manage Calendars?";
-$l['can_manage_warning_system'] = "Can Manage Warning System?"
+$l['can_manage_warning_system'] = "Can Manage Warning System?";
 
 ?>
