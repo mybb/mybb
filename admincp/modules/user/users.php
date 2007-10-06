@@ -1934,7 +1934,7 @@ function build_users_view($view)
 	return $built_view;
 }
 
-function build_user_view_card($user, $view, &7$i)
+function build_user_view_card($user, $view, &$i)
 {
 	global $user_view_fields;
 
