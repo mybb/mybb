@@ -72,7 +72,7 @@ var Thread = {
 
 	loadMultiQuoted: function()
 	{
-		if(use_xmlhttprequest == "yes")
+		if(use_xmlhttprequest == 1)
 		{
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) {Thread.multiQuotedLoaded(request); }});
@@ -300,7 +300,7 @@ var Thread = {
 
 	initQuickReply: function()
 	{
-		if($('quick_reply_form') && use_xmlhttprequest == "yes")
+		if($('quick_reply_form') && use_xmlhttprequest == 1)
 		{
 			Event.observe($('quick_reply_submit'), "click", Thread.quickReply.bindAsEventListener(this));
 		}

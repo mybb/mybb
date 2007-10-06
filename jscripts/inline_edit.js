@@ -3,7 +3,7 @@ var inlineEditor = Class.create();
 inlineEditor.prototype = {
 	initialize: function(url, options)
 	{
-		if(use_xmlhttprequest != "yes")
+		if(use_xmlhttprequest != 1)
 		{
 			return false;
 		}

@@ -15,7 +15,7 @@ var UserCP = {
 			UserCP.buddySelectLoaded();
 			return false;
 		}
-		if(use_xmlhttprequest == "yes")
+		if(use_xmlhttprequest == 1)
 		{
 			this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_buddyselect', {method: 'get', onComplete: function(request) { UserCP.buddySelectLoaded(request); }});
@@ -162,7 +162,7 @@ var UserCP = {
 		{
 			return false;
 		}
-		if(use_xmlhttprequest != "yes")
+		if(use_xmlhttprequest != 1)
 		{
 			return true;
 		}
@@ -199,7 +199,7 @@ var UserCP = {
 
 		if(confirm(message))
 		{
-			if(use_xmlhttprequest != "yes")
+			if(use_xmlhttprequest != 1)
 			{
 				return true;
 			}

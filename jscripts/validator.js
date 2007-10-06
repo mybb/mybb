@@ -117,7 +117,7 @@ FormValidator.prototype = {
 		switch(type.toLowerCase())
 		{
 			case "ajax":
-				if(use_xmlhttprequest == "yes")
+				if(use_xmlhttprequest == 1)
 				{
 					if(!options.url)
 					{

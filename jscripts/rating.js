@@ -125,7 +125,7 @@ var Rating = {
 	}
 };
 
-if(use_xmlhttprequest == 'yes')
+if(use_xmlhttprequest == 1)
 {
 	Event.observe(window, 'load', Rating.init);
 }

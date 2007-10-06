@@ -364,45 +364,6 @@ class EventDataHandler extends DataHandler
 	}
 
 	/**
-	 * Verifies if the user is allowed to add public or private events.
-	 *
-	 * @param string If the event is private (yes) or not (no).
-	 * @return boolean True or false depending on their permission.
-	 */
-	function verify_scope()
-	{
-		global $mybb;
-
-		$event = &$this->data;
-
-		$user_permissions = user_permissions($event['uid']);
-
-		// If a private event
-		if($event['private'] == "1")
-		{
-			// Can the user add private events?
-			if($event['uid'] == 0 || $user_permissions['canaddprivateevents'] == 0)
-			{
-				$this->set_error("no_permission_private_event");
-				return false;
-			}
-		}
-		else
-		{
-			// Public event, got permission?
-			if($user_permissions['canaddpublicevents'] == 0)
-			{
-				$this->set_error("no_permission_public_event");
-				return false;
-			}
-			// Default value
-			$event['private'] = '0';
-		}
-		return true;
-	}
-
-
-	/**
 	 * Validate an event.
 	 *
 	 * @param array The event data array.
@@ -431,11 +392,6 @@ class EventDataHandler extends DataHandler
 		if(($this->method == "insert" && $events['endtime']) || array_key_exists('repeats', $event))
 		{
 			$this->verify_repeats();
-		}
-
-		if($this->method == "insert" || array_key_exists('private', $event))
-		{
-			$this->verify_scope();
 		}
 		
 		$plugins->run_hooks_by_ref("datahandler_event_validate", $this);

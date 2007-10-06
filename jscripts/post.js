@@ -5,7 +5,7 @@ var Post = {
 
 	loadMultiQuoted: function()
 	{
-		if(use_xmlhttprequest == "yes")
+		if(use_xmlhttprequest == 1)
 		{
 			tid = document.input.tid.value;
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
@@ -20,7 +20,7 @@ var Post = {
 
 	loadMultiQuotedAll: function()
 	{
-		if(use_xmlhttprequest == "yes")
+		if(use_xmlhttprequest == 1)
 		{
 			this.spinner = new ActivityIndicator("body", {image: imagepath + "/spinner_big.gif"});
 			new Ajax.Request('xmlhttp.php?action=get_multiquoted&load_all=1', {method: 'get', onComplete: function(request) { Post.multiQuotedLoaded(request); }});

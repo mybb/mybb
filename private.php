@@ -238,9 +238,10 @@ if($mybb->input['action'] == "send")
 	$plugins->run_hooks("private_send_start");
 
 	$smilieinserter = $codebuttons = '';
-
-	if($mybb->settings['bbcodeinserter'] != 'off' && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
+echo "{$mybb->settings[bbcodeinserter]} != 0 && {$mybb->settings[pmsallowmycode]} != 0 && {$mybb->user[showcodebuttons]} != 0";
+	if($mybb->settings['bbcodeinserter'] != 0 && $mybb->settings['pmsallowmycode'] != 0 && $mybb->user['showcodebuttons'] != 0)
 	{
+		echo "A";
 		$codebuttons = build_mycode_inserter();
 		if($mybb->settings['pmsallowsmilies'] != 0)
 		{

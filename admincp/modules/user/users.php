@@ -1884,11 +1884,11 @@ function build_users_view($view)
 
 			if($view['view_type'] == "card")
 			{
-				$users .= build_user_view_card($user, $view, &$i);
+				$users .= build_user_view_card($user, $view, $i);
 			}
 			else
 			{
-				build_user_view_table($user, $view, &$table);
+				build_user_view_table($user, $view, $table);
 			}
 		}
 
@@ -1934,7 +1934,7 @@ function build_users_view($view)
 	return $built_view;
 }
 
-function build_user_view_card($user, $view, $i)
+function build_user_view_card($user, $view, &7$i)
 {
 	global $user_view_fields;
 
@@ -2008,7 +2008,7 @@ function build_user_view_card($user, $view, $i)
 
 }
 
-function build_user_view_table($user, $view, $table)
+function build_user_view_table($user, $view, &$table)
 {
 	global $user_view_fields;
 

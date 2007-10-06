@@ -6747,7 +6747,7 @@ To: {$to_recipients}
 					<td class="trow1">
 						<fieldset>
 							<legend><strong>{$lang->add_buddies}</strong></legend>
-							<span class="smalltext">{$lang->add_buddies_desc}</span>
+							<span class="smalltext">{$lang->add_buddies_desc}</span><br />
 							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" /></div>
 							<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
@@ -6783,7 +6783,7 @@ To: {$to_recipients}
 					<td class="trow1">
 						<fieldset>
 							<legend><strong>{$lang->add_ignored_users}</strong></legend>
-							<span class="smalltext">{$lang->add_ignored_users_desc}</span>
+							<span class="smalltext">{$lang->add_ignored_users_desc}</span><br />
 							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="ignored_add_username" style="width: 60%;" /> <input type="submit" value="{$lang->ignore_users}" id="ignored_submit" /></div>
 							<script type="text/javascript">
