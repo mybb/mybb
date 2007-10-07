@@ -30,7 +30,7 @@ function output_page($contents)
 			$query_time = $maintimer->format($db->query_time);
 
 			$percentphp = number_format((($phptime/$maintimer->totaltime) * 100), 2);
-			$percentsql = number_format((($querytime/$maintimer->totaltime) * 100), 2);
+			$percentsql = number_format((($query_time/$maintimer->totaltime) * 100), 2);
 
 			$phpversion = phpversion();
 
@@ -2795,7 +2795,7 @@ function debug_page()
 	$query_time = $maintimer->format($db->query_time);
 
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
-	$percentsql = number_format((($querytime/$maintimer->totaltime)*100), 2);
+	$percentsql = number_format((($query_time/$maintimer->totaltime)*100), 2);
 
 	$phpversion = phpversion();
 

@@ -126,7 +126,11 @@ class DB_SQLite3
 		
 		$this->db = new dbpdoEngine("sqlite:{$config['database']}");
 
-		$this->query_time += $this->get_execution_time();
+		$query_time = $this->get_execution_time();
+
+		$this->query_time += $query_time;
+
+		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".my_number_format($query_time)."s)";
 
 		@$this->query('PRAGMA short_column_names = 1');
 		
@@ -230,6 +234,7 @@ class DB_SQLite3
 
 			while($table = $this->fetch_array($query))
 			{
+				// NOTE: Doesn't work
 				$this->explain .=
 					"<tr bgcolor=\"#ffffff\">\n".
 					"<td>".$table['table']."</td>\n".

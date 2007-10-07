@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-$templatelist .= "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
+$templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
 $templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban";
 $templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_banning_auser,modcp_banning_error";
 $templatelist .= ",modcp_banning_edit,modcp_banning_banned_user";
