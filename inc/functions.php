@@ -17,7 +17,7 @@
 function output_page($contents)
 {
 	global $db, $lang, $theme, $plugins, $mybb;
-	global $querytime, $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
+	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
 	$contents = parse_page($contents);
 	$totaltime = $maintimer->stop();
@@ -26,8 +26,8 @@ function output_page($contents)
 	{
 		if($mybb->settings['extraadmininfo'] != 0)
 		{
-			$phptime = $maintimer->format($maintimer->totaltime - $querytime);
-			$querytime = $maintimer->format($querytime);
+			$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
+			$query_time = $maintimer->format($db->query_time);
 
 			$percentphp = number_format((($phptime/$maintimer->totaltime) * 100), 2);
 			$percentsql = number_format((($querytime/$maintimer->totaltime) * 100), 2);
@@ -2788,11 +2788,11 @@ function build_archive_link($type, $id="")
  */
 function debug_page()
 {
-	global $db, $querytime, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
+	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
 
 	$totaltime = $maintimer->totaltime;
-	$phptime = $maintimer->format($maintimer->totaltime - $querytime);
-	$querytime = $maintimer->format($querytime);
+	$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
+	$query_time = $maintimer->format($db->query_time);
 
 	$percentphp = number_format((($phptime/$maintimer->totaltime)*100), 2);
 	$percentsql = number_format((($querytime/$maintimer->totaltime)*100), 2);
@@ -2825,18 +2825,18 @@ function debug_page()
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Page Generation Time:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$totaltime seconds</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. MySQL Queries:</font></b></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">No. DB Queries:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$db->query_count</font></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">PHP Processing Time:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$phptime seconds ($percentphp%)</font></td>\n";
-	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">MySQL Processing Time:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$querytime seconds ($percentsql%)</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">DB Processing Time:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$query_time seconds ($percentsql%)</font></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Extensions Used:</font></b></td>\n";
-	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$mybb->config['dbtype']}, xml</font></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$mybb->config['database']['type']}, xml</font></td>\n";
 	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Global.php Processing Time:</font></b></td>\n";
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">$globaltime seconds</font></td>\n";
 	echo "</tr>\n";

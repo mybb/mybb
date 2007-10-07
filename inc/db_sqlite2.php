@@ -103,6 +103,13 @@ class DB_SQLite
 	var $db_encoding = "";
 
 	/**
+	 * The time spent performing queries
+	 *
+	 * @var float
+	 */
+	var $query_time = 0;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
@@ -110,6 +117,8 @@ class DB_SQLite
 	 */
 	function connect($config)
 	{
+		$this->get_execution_time();
+
 		if($config['pconnect'] == 1)
 		{
 			$this->link = @sqlite_popen($config['database'], 0666, $error);
@@ -123,6 +132,8 @@ class DB_SQLite
 		{
 			$this->error($error);
 		}
+
+		$this->query_time += $this->get_execution_time();
 		
 		@sqlite_query('PRAGMA short_column_names = 1', $this->link);
 		return $this->link;
@@ -139,7 +150,7 @@ class DB_SQLite
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
 		
-		$qtimer = new timer();
+		$this->get_execution_time();
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{			
 			$queryparts = preg_split("/[\s]+/", $string, 4, PREG_SPLIT_NO_EMPTY);
@@ -172,14 +183,13 @@ class DB_SQLite
 			exit;
 		}
 		
-		$qtime = $qtimer->stop();
-		$querytime += $qtimer->totaltime;
-		$qtimer->remove();
+		$query_time = $this->get_execution_time();
+		$this->query_time += $query_time;
 		$this->query_count++;
 		
 		if($mybb->debug_mode)
 		{
-			$this->explain_query($string, $qtime);
+			$this->explain_query($string, $query_time);
 		}
 		return $query;
 	}
@@ -375,14 +385,6 @@ class DB_SQLite
 	{
 		if($this->error_reporting)
 		{
-			global $error_handler;
-			
-			if(!is_object($error_handler))
-			{
-				require_once MYBB_ROOT."inc/class_error.php";
-				$error_handler = new errorHandler();
-			}
-			
 			if($error_no == "")
 			{
 				$error_no = $this->error_number($this->link);
@@ -392,16 +394,30 @@ class DB_SQLite
 			{
 				$error = $this->error_string($this->link);
 			}
-			
-			$error = array(
-				"error_no" => $error_no,
-				"error" => $error,
-				"query" => $string
-			);
-			$error_handler->error(MYBB_SQL, $error);
+
+			if(class_exists("errorHandler"))
+			{
+				global $error_handler;
+				
+				if(!is_object($error_handler))
+				{
+					require_once MYBB_ROOT."inc/class_error.php";
+					$error_handler = new errorHandler();
+				}
+				
+				$error = array(
+					"error_no" => $error_no,
+					"error" => $error,
+					"query" => $string
+				);
+				$error_handler->error(MYBB_SQL, $error);
+			}
+			else
+			{
+				trigger_error("<strong>[SQL] [{$error_no}] {$error}</strong><br />{$string}", E_USER_ERROR);
+			}
 		}
 	}
-
 
 	/**
 	 * Returns the number of affected rows in a query.
@@ -1121,6 +1137,33 @@ class DB_SQLite
 		return '';
 	}
 
+	/**
+	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
+	 *
+	 * @return float The time taken
+	 */
+	function get_execution_time()
+	{
+		static $time_start;
+
+		$time = strtok(microtime(), ' ') + strtok('');
+
+
+		// Just starting timer, init and return
+		if(!$time_start)
+		{
+			$time_start = $time;
+			return;
+		}
+		// Timer has run, return execution time
+		else
+		{
+			$total = $time-$time_start;
+			if($total < 0) $total = 0;
+			$time_start = 0;
+			return $total;
+		}
+	}
 }
 
 if(!class_exists('databaseEngine'))

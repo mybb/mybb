@@ -131,6 +131,13 @@ class DB_PgSQL
 	var $db_encoding = "utf8";
 	
 	/**
+	 * The time spent performing queries
+	 *
+	 * @var float
+	 */
+	var $query_time = 0;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
@@ -178,10 +185,11 @@ class DB_PgSQL
 			// Loop-de-loop
 			foreach($connections[$type] as $single_connection)
 			{
-				$timer = new timer();
 				$connect_function = "pg_connect";
 				if($single_connection['pconnect']) $connect_function = "pg_pconnect";
 				$link = $type."_link";
+
+				$this->get_execution_time();
 
 				$this->connect_string .= "dbname={$single_connection['database']} user={$single_connection['username']}";
 				
@@ -206,10 +214,13 @@ class DB_PgSQL
 				}
 				$this->$link = @$connect_function($connect_string);
 
+				$time_spent = $this->get_execution_time();
+				$this->query_time += $time_spent;
+
 				// Successful connection? break down brother!
 				if($this->$link)
 				{
-					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($timer->getTime())."s)";
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($time_spent)."s)";
 					break;
 				}
 				else
@@ -236,9 +247,6 @@ class DB_PgSQL
 			$this->error("[WRITE] Unable to connect to PgSQL server");
 		}
 
-		$timer->stop();
-		global $querytime;
-		$querytime += $timer->totaltime;
 		$this->current_link = &$this->read_link;
 		return $this->read_link;
 	}
@@ -259,8 +267,7 @@ class DB_PgSQL
 		
 		$this->last_query = $string;
 		
-		$qtimer = new timer();
-		
+		$this->get_execution_time();
 		
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{			
@@ -286,14 +293,13 @@ class DB_PgSQL
 			 exit;
 		}
 		
-		$qtime = $qtimer->stop();
-		$querytime += $qtimer->totaltime;
-		$qtimer->remove();
+		$query_time = $this->get_execution_time();
+		$this->query_time += $query_time;
 		$this->query_count++;
 		
 		if($mybb->debug_mode)
 		{
-			$this->explain_query($string, $qtime);
+			$this->explain_query($string, $query_time);
 		}
 		return $query;
 	}
@@ -504,20 +510,27 @@ class DB_PgSQL
 	{
 		if($this->error_reporting)
 		{
-			global $error_handler;
-			
-			if(!is_object($error_handler))
+			if(class_exists("errorHandler"))
 			{
-				require_once MYBB_ROOT."inc/class_error.php";
-				$error_handler = new errorHandler();
+				global $error_handler;
+				
+				if(!is_object($error_handler))
+				{
+					require_once MYBB_ROOT."inc/class_error.php";
+					$error_handler = new errorHandler();
+				}
+				
+				$error = array(
+					"error_no" => $this->error_number(),
+					"error" => $this->error_string(),
+					"query" => $string
+				);
+				$error_handler->error(MYBB_SQL, $error);
 			}
-			
-			$error = array(
-				"error_no" => $this->error_number($this->current_linkk),
-				"error" => $this->error_string($this->current_link),
-				"query" => $string
-			);
-			$error_handler->error(MYBB_SQL, $error);
+			else
+			{
+				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
+			}
 		}
 	}
 
@@ -1310,6 +1323,34 @@ class DB_PgSQL
 	function build_create_table_collation()
 	{
 		return '';
+	}
+
+	/**
+	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
+	 *
+	 * @return float The time taken
+	 */
+	function get_execution_time()
+	{
+		static $time_start;
+
+		$time = strtok(microtime(), ' ') + strtok('');
+
+
+		// Just starting timer, init and return
+		if(!$time_start)
+		{
+			$time_start = $time;
+			return;
+		}
+		// Timer has run, return execution time
+		else
+		{
+			$total = $time-$time_start;
+			if($total < 0) $total = 0;
+			$time_start = 0;
+			return $total;
+		}
 	}
 }
 

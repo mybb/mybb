@@ -117,6 +117,13 @@ class DB_MySQLi
 	var $db_encoding = "utf8";
 
 	/**
+	 * The time spent performing queries
+	 *
+	 * @var float
+	 */
+	var $query_time = 0;
+
+	/**
 	 * Connect to the database server.
 	 *
 	 * @param array Array of DBMS connection details.
@@ -164,10 +171,11 @@ class DB_MySQLi
 			// Loop-de-loop
 			foreach($connections[$type] as $single_connection)
 			{
-				$timer = new timer();
 				$connect_function = "mysqli_connect";
 				if($single_connection['pconnect']) $connect_function = "mysqli_pconnect";
 				$link = $type."_link";
+
+				$this->get_execution_time();
 
 				// Specified a custom port for this connection?
 				list($hostname, $port) = explode(":", $single_connection['hostname'], 2);
@@ -180,10 +188,13 @@ class DB_MySQLi
 					$this->$link = @$connect_function($single_connection['hostname'], $single_connection['username'], $single_connection['password']);
 				}
 
+				$time_spent = $this->get_execution_time();
+				$this->query_time += $time_spent;
+
 				// Successful connection? break down brother!
 				if($this->$link)
 				{
-					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($timer->getTime())."s)";
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($time_spent)."s)";
 					break;
 				}
 				else
@@ -213,9 +224,6 @@ class DB_MySQLi
 		// Select databases
 		$this->select_db($config['database']);
 
-		$timer->stop();
-		global $querytime;
-		$querytime += $timer->totaltime;
 		$this->current_link = &$this->read_link;
 		return $this->read_link;
 	}
@@ -265,7 +273,8 @@ class DB_MySQLi
 	{
 		global $pagestarttime, $querytime, $db, $mybb;
 
-		$qtimer = new timer();
+		$this->get_execution_time();
+
 		// Only execute write queries on slave server
 		if($write_query && $this->write_link)
 		{
@@ -284,14 +293,13 @@ class DB_MySQLi
 			exit;
 		}
 		
-		$qtime = $qtimer->stop();
-		$querytime += $qtimer->totaltime;
-		$qtimer->remove();
+		$query_time = $this->get_execution_time();
+		$this->query_time += $query_time;
 		$this->query_count++;
 		
 		if($mybb->debug_mode)
 		{
-			$this->explain_query($string, $qtime);
+			$this->explain_query($string, $query_time);
 		}
 		return $query;
 	}
@@ -503,22 +511,30 @@ class DB_MySQLi
 	{
 		if($this->error_reporting)
 		{
-			global $error_handler;
-			
-			if(!is_object($error_handler))
+			if(class_exists("errorHandler"))
 			{
-				require_once MYBB_ROOT."inc/class_error.php";
-				$error_handler = new errorHandler();
+				global $error_handler;
+				
+				if(!is_object($error_handler))
+				{
+					require_once MYBB_ROOT."inc/class_error.php";
+					$error_handler = new errorHandler();
+				}
+				
+				$error = array(
+					"error_no" => $this->error_number(),
+					"error" => $this->error_string(),
+					"query" => $string
+				);
+				$error_handler->error(MYBB_SQL, $error);
 			}
-			
-			$error = array(
-				"error_no" => $this->error_number(),
-				"error" => $this->error_string(),
-				"query" => $string
-			);
-			$error_handler->error(MYBB_SQL, $error);	
+			else
+			{
+				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
+			}
 		}
 	}
+
 
 	/**
 	 * Returns the number of affected rows in a query.
@@ -1190,6 +1206,34 @@ class DB_MySQLi
 			return '';
 		}
 		return " CHARACTER SET {$this->db_encoding} COLLATE {$collation}";
+	}
+
+	/**
+	 * Time how long it takes for a particular piece of code to run. Place calls above & below the block of code.
+	 *
+	 * @return float The time taken
+	 */
+	function get_execution_time()
+	{
+		static $time_start;
+
+		$time = strtok(microtime(), ' ') + strtok('');
+
+
+		// Just starting timer, init and return
+		if(!$time_start)
+		{
+			$time_start = $time;
+			return;
+		}
+		// Timer has run, return execution time
+		else
+		{
+			$total = $time-$time_start;
+			if($total < 0) $total = 0;
+			$time_start = 0;
+			return $total;
+		}
 	}
 }
 
