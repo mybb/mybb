@@ -8,7 +8,6 @@ $l['warning_for_post'] = ".. Post:";
 $l['already_expired'] = "Expired";
 $l['warning_active'] = "Active";
 $l['warning_revoked'] = "Revoked";
-$l['never'] = "Never";
 $l['warning_log'] = "Warning Log";
 $l['warning'] = "Warning";
 $l['issued_by'] = "Issued By";

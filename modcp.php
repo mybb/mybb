@@ -1827,7 +1827,14 @@ if($mybb->input['action'] == "banuser")
 			$liftlist .= " selected=\"selected\"";
 		}
 		$thatime = my_date("D, jS M Y @ g:ia", ban_date2timestamp($time, $banned['dateline']));
-		$liftlist .= ">{$title} ({$thatime})</option>\n";
+		if($time == '---')
+		{
+			$liftlist .= ">{$title}</option>\n";
+		}
+		else
+		{
+			$liftlist .= ">{$title} ({$thatime})</option>\n";
+		}
 	}
 	
 	$bangroups = '';

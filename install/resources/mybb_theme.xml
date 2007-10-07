@@ -9798,7 +9798,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							</tr>
 							<tr>
 								<td class="trow2" width="25%"><strong>{$lang->ban_liftafter}</strong></td>
-								<td class="trow2" width="75%"><select name="liftafter">{$liftlist}<option value="---" {$permsel}>{$lang->permanent}</option></select></td>
+								<td class="trow2" width="75%"><select name="liftafter">{$liftlist}</select></td>
 							</tr>
 						</table>
 					<br />

@@ -25,7 +25,6 @@ $l['email_address'] = "Email Address";
 $l['ip_address'] = "IP Address";
 $l['ban_date'] = "Ban Date";
 $l['last_access'] = "Last Access";
-$l['never'] = "Never";
 $l['delete'] = "Delete";
 $l['no_bans'] = "There are no bans currently set at this time.";
 $l['add_disallowed_username'] = "Add a Disallowed Username";

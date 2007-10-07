@@ -181,6 +181,7 @@ $l['at'] = "at";
 $l['na'] = "N/A";
 $l['guest'] = "Guest";
 $l['unknown'] = "Unknown";
+$l['never'] = "Never";
 $l['postbit_posts'] = "Posts:";
 $l['postbit_group'] = "Group:";
 $l['postbit_joined'] = "Joined:";
