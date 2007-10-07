@@ -1079,7 +1079,7 @@ else if($mybb->input['action'] == "thread")
 else
 {
 	$plugins->run_hooks("search_start");
-	$srchlist = make_searchable_forums("", "$fid");
+	$srchlist = make_searchable_forums("", $fid);
 	eval("\$search = \"".$templates->get("search")."\";");
 	$plugins->run_hooks("search_end");
 	output_page($search);

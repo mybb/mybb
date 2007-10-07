@@ -3826,11 +3826,11 @@ body {
 </tr>
 <tr>
 <td class="trow1" valign="top" width="30%"><strong>{$lang->export_unread}</strong></td>
-<td class="trow1"><input type="radio" class="radio" name="exportunread" value="1" /> {$lang->'1'} <input type="radio" class="radio" name="exportunread" value="0" checked="checked" /> {$lang->no} </td>
+<td class="trow1"><input type="radio" class="radio" name="exportunread" value="1" /> {$lang->yes} <input type="radio" class="radio" name="exportunread" value="0" checked="checked" /> {$lang->no} </td>
 </tr>
 <tr>
 <td class="trow2" valign="top" width="30%"><strong>{$lang->delete_archived}</strong><br /><span class="smalltext">{$lang->delete_archived_note}</span></td>
-<td class="trow2"><input type="radio" class="radio" name="deletepms" value="1" /> {$lang->'1'} <input type="radio" class="radio" name="deletepms" value="0" checked="checked" /> {$lang->no} </td>
+<td class="trow2"><input type="radio" class="radio" name="deletepms" value="1" /> {$lang->yes} <input type="radio" class="radio" name="deletepms" value="0" checked="checked" /> {$lang->no} </td>
 </tr>
 <tr>
 <td class="trow1" valign="top" width="30%"><strong>{$lang->export_format}</strong><br /><span class="smalltext">{$lang->export_format_note}</span></td>

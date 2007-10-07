@@ -23,6 +23,12 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 	
+	if($db->type == "sqlite2" || $db->type == "sqlite3")
+	{
+		flash_message($lang->error_not_supported, 'error');
+		admin_redirect("index.php?".SID."&module=tools/index");
+	}
+	
 	if($mybb->request_method == "post")
 	{
 		@set_time_limit(0);

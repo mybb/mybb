@@ -215,7 +215,7 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."users f ON (f.uid=l.fromuid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		WHERE 1=1 {$additional_sql_criteria}
-		ORDER BY dateline DESC
+		ORDER BY l.dateline DESC
 		LIMIT {$start}, {$per_page}
 	");
 	while($log = $db->fetch_array($query))

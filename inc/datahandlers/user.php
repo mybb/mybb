@@ -889,7 +889,7 @@ class UserDataHandler extends DataHandler
 
 		$user['user_fields']['ufid'] = $this->uid;
 		
-		$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
+		$query = $db->show_fields_from("userfields");
 		while($field = $db->fetch_array($query))
 		{
 			if($field['Field'] == 'ufid' || array_key_exists($field['Field'], $user['user_fields']))
@@ -1095,7 +1095,7 @@ class UserDataHandler extends DataHandler
 					'ufid' => $user['uid']
 				);
 
-				$query = $db->query("SHOW FIELDS FROM ".TABLE_PREFIX."userfields");
+				$query = $db->show_fields_from("userfields");
 				while($field = $db->fetch_array($query))
 				{
 					if($field['Field'] == 'ufid')

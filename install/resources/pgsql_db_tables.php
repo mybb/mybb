@@ -880,8 +880,8 @@ $tables[] = "CREATE TABLE mybb_users (
   reputation bigint NOT NULL default '0',
   regip varchar(50) NOT NULL default '',
   lastip varchar(50) NOT NULL default '',
-  longregip int NOT NULL default '0'
-  longlastip int NOT NULL default '0'
+  longregip int NOT NULL default '0',
+  longlastip int NOT NULL default '0',
   language varchar(50) NOT NULL default '',
   timeonline bigint NOT NULL default '0',
   showcodebuttons int NOT NULL default '1',
