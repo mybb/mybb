@@ -473,7 +473,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong>{$langinfo['name']}</strong><br /><span class=\"smalltext\">{$author}</span>");
 		$table->construct_cell($langinfo['version'], array("class" => "align_center"));
 		
-		$popup = new PopupMenu("laguage_{$key}", "Options");
+		$popup = new PopupMenu("laguage_{$key}", $lang->options);
 		$popup->add_item($lang->edit_language_variables, "index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$key}");
 		foreach($langselectlangs as $key1 => $langname1)
 		{
