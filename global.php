@@ -16,7 +16,6 @@ $shutdown_queries = array();
 
 // Read the usergroups cache as well as the moderators cache
 $groupscache = $cache->read("usergroups");
-$mcache = $cache->read("moderators");
 
 // If the groups cache doesn't exist, update it and re-read it
 if(!is_array($groupscache))
@@ -24,9 +23,6 @@ if(!is_array($groupscache))
 	$cache->update_usergroups();
 	$groupscache = $cache->read("usergroups");
 }
-
-// Read forum permissions cache
-$fpermissioncache = $cache->read("forumpermissions");
 
 // Send page headers
 send_page_headers();
@@ -83,23 +79,6 @@ $plugins->run_hooks("global_start");
 if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
 {
 	@mb_internal_encoding($lang->settings['charset']);
-}
-
-// Which thread mode is our user using?
-if(!isset($mybb->input['mode']))
-{
-	if(isset($mybb->user['threadmode']))
-	{
-		$mybb->input['mode'] = $mybb->user['threadmode'];
-	}
-	else if($mybb->settings['threadusenetstyle'] == 1)
-	{
-		$mybb->input['mode'] = "threaded";
-	}
-	else
-	{
-		$mybb->input['mode'] = "linear";
-	}
 }
 
 // Select the board theme to use.
@@ -556,8 +535,9 @@ if($mybb->usergroup['canview'] != 1 && !(my_strtolower(basename($_SERVER['PHP_SE
 
 // work out which items the user has collapsed
 $colcookie = $_COOKIE['collapsed'];
+
 // set up collapsable items (to automatically show them us expanded)
-if($_COOKIE['collapsed'])
+if($colcookie)
 {
 	$col = explode("|", $colcookie);
 	if(!is_array($col))

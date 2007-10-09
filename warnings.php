@@ -288,7 +288,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							$new_ban['oldadditionalgroups'] = $existing_ban['oldadditionalgroups'];
 							$new_ban['olddisplaygroup'] = $existing_ban['olddisplaygroup'];
 						}
-
+						
 						$db->insert_query("banned", $new_ban);
 						$updated_user['usergroup'] = $action['usergroup'];
 						$updated_user['additionalgroups'] = $updated_user['displaygroup'] = "";

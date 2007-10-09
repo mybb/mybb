@@ -37,8 +37,6 @@ if(!is_array($groupscache))
 	$cache->update_usergroups();
 	$groupscache = $cache->read("usergroups");
 }
-$fpermissioncache = $cache->read("forumpermissions");
-
 
 // Send no cache headers
 header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");

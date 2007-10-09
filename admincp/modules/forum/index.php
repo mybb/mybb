@@ -64,12 +64,6 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 			'link' => "index.php?".SID."&amp;module=forum/management&amp;action=copy",
 			'description' => $lang->copy_forum_desc
 		);
-		
-		$sub_tabs['forum_permissions'] = array(
-			'title' => $lang->forum_permissions,
-			'link' => "index.php?".SID."&amp;module=forum/management&amp;action=permissions",
-			'description' => $lang->forum_permissions_desc
-		);
 	}
 }
 
@@ -359,8 +353,8 @@ if(!$mybb->input['action'])
 				{
 					$perms_checked[$forum_permission] = 0;
 				}
-				$all_check .= "\$('permissions_{$usergroup['gid']}_{$calendar_permission}').checked = \$('permissions_{$usergroup['gid']}_all').checked;\n";
-				$perm_check .= "\$('permissions_{$usergroup['gid']}_{$calendar_permission}').checked = $value;\n";
+				$all_check .= "\$('permissions_{$usergroup['gid']}_{$forum_permission}').checked = \$('permissions_{$usergroup['gid']}_all').checked;\n";
+				$perm_check .= "\$('permissions_{$usergroup['gid']}_{$forum_permission}').checked = $value;\n";
 			}
 			$default_click = "if(this.checked == true) { $perm_check }";
 			$reset_default = "\$('default_permissions_{$usergroup['gid']}').checked = false; if(this.checked == false) { \$('permissions_{$usergroup['gid']}_all').checked = false; }\n";

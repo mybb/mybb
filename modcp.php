@@ -1272,7 +1272,10 @@ if($mybb->input['action'] == "ipsearch")
 	
 	if($mybb->input['ipaddress'])
 	{
-		$groupscache = $cache->read("usergroups");
+		if(!is_array($groupscache))
+		{
+			$groupscache = $cache->read("usergroups");
+		}
 
 		$ipaddressvalue = htmlspecialchars_uni($mybb->input['ipaddress']);
 

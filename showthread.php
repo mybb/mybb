@@ -549,6 +549,23 @@ if($mybb->input['action'] == "thread")
 			$ignored_users[$uid] = 1;
 		}
 	}
+	
+	// Which thread mode is our user using?
+	if(!isset($mybb->input['mode']))
+	{
+		if(isset($mybb->user['threadmode']))
+		{
+			$mybb->input['mode'] = $mybb->user['threadmode'];
+		}
+		else if($mybb->settings['threadusenetstyle'] == 1)
+		{
+			$mybb->input['mode'] = "threaded";
+		}
+		else
+		{
+			$mybb->input['mode'] = "linear";
+		}
+	}
 
 	// Threaded or lineair display?
 	if($mybb->input['mode'] == "threaded")

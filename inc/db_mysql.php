@@ -245,7 +245,7 @@ class DB_MySQL
 		if($success && $this->db_encoding)
 		{
 			$this->query("SET NAMES '{$this->db_encoding}'");
-			if($slave_success)
+			if($write_success && count($this->connections) > 1)
 			{
 				$this->write_query("SET NAMES '{$this->db_encoding}'");
 			}
