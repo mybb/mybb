@@ -239,7 +239,7 @@ $time_formats = array(
 //
 // DEVELOPMENT MODE STUFF (REMOVE BEFORE RELEASE)
 //
-if($_ENV['COMPUTERNAME'] == "ROADRUNNER" || $config['dev_mode'])
+if($_ENV['COMPUTERNAME'] == "ROADRUNNER" || $_ENV['COMPUTERNAME'] == "DT100VISTATAB" || $config['dev_mode'])
 {
 	$mybb->dev_mode = 1;
 }

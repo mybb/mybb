@@ -169,4 +169,20 @@ $l['mod_queue_threads_empty'] ="The thread moderation queue is currently empty."
 $l['mod_queue_posts_empty'] ="The posts moderation queue is currently empty.";
 $l['mod_queue_attachments_empty'] ="The attachment moderation queue is currently empty.";
 
+$l['warning_logs'] = "Warning Logs";
+$l['warned_user'] = "Warned User";
+$l['warning'] = "Warning";
+$l['date_issued'] = "Date Issued";
+$l['expires'] = "Expires";
+$l['expiry_date'] = "Expiry Date";
+$l['issued_date'] = "Issued Date";
+$l['issued_by'] = "Issued By";
+$l['details'] = "Details";
+$l['filter_warning_logs'] = "Filter Warning Logs";
+$l['filter_warned_user'] = "Warned user:";
+$l['filter_issued_by'] = "Warning issued by:";
+$l['filter_reason'] = "Reason contains:";
+$l['view'] = "View";
+$l['no_warning_logs'] = "There are no warning logs to view.";
+$l['revoked'] = "Revoked ";
 ?>

@@ -1425,8 +1425,8 @@ if($mybb->input['action'] == "profile")
 
 		eval("\$reputation = \"".$templates->get("member_profile_reputation")."\";");
 	}
-
-	if($mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
+	
+	if($mybb->settings['enablewarningsystem'] != 0 && $memperms['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $memprofile['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 	{
 		$warning_level = round($memprofile['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 		if($warning_level > 100)
