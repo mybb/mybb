@@ -58,12 +58,6 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 			'link' => "index.php?".SID."&amp;module=forum/management&amp;action=add",
 			'description' => $lang->add_forum_desc
 		);
-	
-		$sub_tabs['copy_forum'] = array(
-			'title' => $lang->copy_forum,
-			'link' => "index.php?".SID."&amp;module=forum/management&amp;action=copy",
-			'description' => $lang->copy_forum_desc
-		);
 	}
 }
 

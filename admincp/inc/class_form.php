@@ -298,6 +298,13 @@ class DefaultForm
 			}
 		}
 		
+		if($options['allforums_option'] == true && $is_first)
+		{
+			global $lang;
+			
+			$selectoptions .= "<option value=\"-1\">{$lang->all_forums}</option>\n";
+		}
+		
 		if(is_array($fselectcache[$pid]))
 		{
 			foreach($fselectcache[$pid] as $main)

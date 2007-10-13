@@ -90,6 +90,21 @@ $l['second_short'] ="s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 $l['permanent'] = "Permanent";
+$l['all_forums'] = "All Forums";
+
+// The months of the year
+$l['january'] = "January";
+$l['february'] = "February";
+$l['march'] = "March";
+$l['april'] = "April";
+$l['may'] = "May";
+$l['june'] = "June";
+$l['july'] = "July";
+$l['august'] = "August";
+$l['september'] = "September";
+$l['october'] = "October";
+$l['november'] = "November";
+$l['december'] = "December";
 
 // Access Denied
 $l['access_denied'] = "Access Denied";
