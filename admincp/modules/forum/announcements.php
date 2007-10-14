@@ -623,59 +623,46 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("announcements", "aid, fid, subject, enddate");
 	while($announcement = $db->fetch_array($query))
 	{
-		if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
-		{
-			$icon_status[$announcement['aid']] = 1;
-		}
-		else
-		{
-			$icon_status[$announcement['aid']] = 0;
-		}
-			
 		if($announcement['fid'] == -1)
 		{			
-			$global_announcements[$announcement['aid']] = $announcement['subject'];
+			$global_announcements[$announcement['aid']] = $announcement;
 			continue;
 		}
-		$announcements[$announcement['fid']][$announcement['aid']] = $announcement['subject'];
+		$announcements[$announcement['fid']][$announcement['aid']] = $announcement;
 	}
 	
-	$table = new Table;
-	$table->construct_header($lang->announcement);
-	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
-	
-	// Get the global announcements
-	foreach($global_announcements as $aid => $subject)
+	if($global_announcements)
 	{
-		if($icon_status[$aid] == 1)
-		{
-			$icon = "<img src=\"../images/minioff.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
-		}
-		else
-		{
-			$icon = "<img src=\"../images/minion.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
-		}
+		$table = new Table;
+		$table->construct_header($lang->announcement);
+		$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
 		
-		$table->construct_cell($icon."<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$subject}</a>");
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
-		$table->construct_row();
+		// Get the global announcements
+		foreach($global_announcements as $aid => $announcement)
+		{
+			if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+			{
+				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
+			}
+			else
+			{
+				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
+			}
+			
+			$table->construct_cell($icon."<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a>");
+			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+			$table->construct_row();
+		}
+		$table->output($lang->global_announcements);
 	}
-
-	if(count($table->rows) == 0)
-	{
-		$table->construct_cell($lang->no_global_announcements, array("colspan" => "3"));
-		$table->construct_row();
-	}
-	
-	$table->output($lang->global_announcements);
 	
 	
 	$table = new Table;
 	$table->construct_header($lang->announcement);
 	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
 	
-	get_forums();
+	fetch_forum_announcements($table);
 	
 	if(count($table->rows) == 0)
 	{
@@ -688,68 +675,63 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-function get_forums($pid=0, $depth=1)
+function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 {
-	global $db, $iforumcache, $lang, $forum_cache, $comma, $table, $announcements, $icon_status;
-	
-	if(!is_array($iforumcache))
-	{
-		if(!is_array($forum_cache))
-		{
-			cache_forums();
-		}
-		if(!is_array($forum_cache))
-		{
-			return false;
-		}
+	global $mybb, $db, $lang, $announcements;
+	static $forums_by_parent;
 
-		reset($forum_cache);
-		foreach($forum_cache as $key => $val)
+	if(!is_array($forums_by_parent))
+	{
+		$forum_cache = cache_forums();
+
+		foreach($forum_cache as $forum)
 		{
-			$iforumcache[$val['pid']][$val['disporder']][$val['fid']] = $val;
+			$forums_by_parent[$forum['pid']][$val['disporder']][$forum['fid']] = $forum;
 		}
 	}
-	reset($iforumcache);
-	if(is_array($iforumcache[$pid]))
+
+	if(!is_array($forums_by_parent[$pid]))
 	{
-		$comma = "";
-		foreach($iforumcache[$pid] as $key => $main)
+		return;
+	}
+
+	foreach($forums_by_parent[$pid] as $children)
+	{
+		foreach($children as $forum)
 		{
-			foreach($main as $key => $forum)
+			if($forum['active'] == 0)
 			{
-				if($forum['active'] == 0)
-				{
-					$forum['name'] = "<em>".$forum['name']."</em>";
-				}
+				$forum['name'] = "<em>".$forum['name']."</em>";
+			}
 				
-				$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\">{$forum['name']}</div>");
-				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$key}\">{$lang->add_announcement}", array("class" => "align_center", "colspan" => 2));
-				$table->construct_row();
+			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><strong>{$forum['name']}</strong></div>");
+			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$key}\">{$lang->add_announcement}", array("class" => "align_center", "colspan" => 2));
+			$table->construct_row();
 				
-				if($announcements[$key])
+			if($announcements[$forum['fid']])
+			{
+				foreach($announcements[$key] as $aid => $announcement)
 				{
-					foreach($announcements[$key] as $aid => $announcement)
+					if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 					{
-						if($icon_status[$aid] == 1)
-						{
-							$icon = "<img src=\"../images/minioff.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
-						}
-						else
-						{
-							$icon = "<img src=\"../images/minion.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
-						}
-						
-						$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement}</a></div>");
-						$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-						$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
-						$table->construct_row();
+						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Expired)\" title=\"Expired Announcement\"  style=\"vertical-align: middle;\" /> ";
 					}
+					else
+					{
+						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
+					}
+							
+					$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a></div>");
+					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
+					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+					$table->construct_row();
 				}
-				
-				if(isset($iforumcache[$forum['fid']]))
-				{
-					get_forums($forum['fid'], $depth+1);
-				}
+			}
+
+			// Build the list for any sub forums of this forum
+			if($forums_by_parent[$forum['fid']])
+			{
+				fetch_forum_announcements($table, $forum['fid'], ++$depth);
 			}
 		}
 	}

@@ -61,6 +61,14 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 	}
 }
 
+if($mybb->input['action'] == "add")
+{
+}
+
+if($mybb->input['action'] == "edit")
+{
+}
+
 if($mybb->input['action'] == "deletemod")
 {
 	$query = $db->simple_select("moderators", "*", "uid='{$mybb->input['uid']}' AND fid='{$mybb->input['fid']}'");
@@ -268,7 +276,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'width' => '200px'));
 	
-	get_forums($fid);
+	build_admincp_forums_list($form_container, $fid);
 	
 	if(count($form_container->container->rows) == 0)
 	{
@@ -412,135 +420,124 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-function get_forums($pid=0, $depth=1)
+/**
+ *
+ */
+function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 {
-	global $db, $iforumcache, $lang, $forum_cache, $comma, $form_container, $subforumlist, $mybb;
-	
-	if(!is_array($iforumcache))
-	{
-		if(!is_array($forum_cache))
-		{
-			cache_forums();
-		}
-		if(!is_array($forum_cache))
-		{
-			return false;
-		}
+	global $mybb, $lang, $db;
+	static $forums_by_parent;
 
-		reset($forum_cache);
-		foreach($forum_cache as $key => $val)
+	if(!is_array($forums_by_parent))
+	{
+		$forum_cache = cache_forums();
+
+		foreach($forum_cache as $forum)
 		{
-			$iforumcache[$val['pid']][$val['disporder']][$val['fid']] = $val;
+			$forums_by_parent[$forum['pid']][$val['disporder']][$forum['fid']] = $forum;
 		}
 	}
-	reset($iforumcache);
-	if(is_array($iforumcache[$pid]))
-	{
-		$comma = "";
-		foreach($iforumcache[$pid] as $key => $main)
-		{
-			foreach($main as $key => $forum)
-			{
-				if($forum['active'] == 0)
-				{
-					$forum['name'] = "<em>".$forum['name']."</em>";
-				}
-				
-				if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
-				{
-					$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>");
 
-					$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
-					
-					$popup = new PopupMenu("forum_{$key}", $lang->options);
-					$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$key}");
-					$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$key}");
-					$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$key}");
-					$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$key}");
-					$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$key}");
-					$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$key}");
-					$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$key}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
-					
-					$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
-					
-					$form_container->construct_row();
-					
-					if(isset($iforumcache[$forum['fid']]))
-					{
-						get_forums($forum['fid'], $depth+1);
-					}
-				}
-				elseif($forum['type'] == "f" && ($depth == 1 || $depth == 2))
+	if(!is_array($forums_by_parent[$pid]))
+	{
+		return;
+	}
+
+	foreach($forums_by_parent[$pid] as $children)
+	{
+		foreach($children as $forum)
+		{
+			if($forum['active'] == 0)
+			{
+				$forum['name'] = "<em>".$forum['name']."</em>";
+			}
+				
+			if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
+			{
+				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>");
+
+				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
+				
+				$popup = new PopupMenu("forum_{$key}", $lang->options);
+				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$key}");
+				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$key}");
+				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$key}");
+				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$key}");
+				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$key}");
+				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$key}");
+				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$key}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
+				
+				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
+				
+				$form_container->construct_row();
+				
+				// Does this category have any sub forums?
+				if($forums_by_parent[$forum['fid']])
 				{
-					if($forum['description'])
-					{
-						if(my_strlen($forum['description']) > 100)
-						{
-							$forum['description'] = my_substr($forum['description'], 0, 98)."...";
-						}
-            			$forum['description'] = "<br /><small>".$forum['description']."</small>";
-          			}
-					
-					if(isset($iforumcache[$forum['fid']]) && $depth == 2)
-					{
-						$subforumlist = "";
-						get_forums($forum['fid'], $depth+1);
-						if($subforumlist)
-						{
-							$subforumlist = "<br /><small>{$lang->sub_forums}: {$subforumlist}</small>";
-						}
-					}
-					
-					if($depth == 2)
-					{
-						$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>{$forum['description']}{$subforumlist}</div>");
-					}
-					else
-					{
-						$form_container->output_cell("{$forum['name']}{$forum['description']}{$subforumlist}");
-					}
-					
-					$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
-					
-					$popup = new PopupMenu("forum_{$key}", $lang->options);
-					$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$key}");
-					$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$key}");
-					$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$key}");
-					$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$key}");
-					$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$key}");
-					$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$key}");
-					$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$key}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
-					
-					$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
-					
-					$form_container->construct_row();
-					
-					if(isset($iforumcache[$forum['fid']]) && $depth == 1)
-					{
-						$subforumlist = "";
-						get_forums($forum['fid'], $depth+1);
-						if($subforumlist)
-						{
-							$subforumlist = "<br /><small>{$lang->sub_forums}: {$subforumlist}</small>";
-						}
-					}
+					build_admincp_forums_list($form_container, $forum['fid'], ++$depth);
 				}
-				else if($depth == 3)
+			}
+			elseif($forum['type'] == "f" && ($depth == 1 || $depth == 2))
+			{
+				if($forum['description'])
 				{
-					if($donecount < $mybb->settings['subforumsindex'])
+					if(my_strlen($forum['description']) > 100)
 					{
-						$subforumlist .= "{$comma} <a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>";
-						$comma = ', ';
+						$forum['description'] = my_substr($forum['description'], 0, 98)."...";
 					}
+           			$forum['description'] = "<br /><small>".$forum['description']."</small>";
+       			}
+			
+				$sub_forums = '';
+				if(isset($forums_by_parent[$forum['fid']]) && $depth == 2)
+				{
+					$sub_forums = build_admincp_forums_list($form_container, $forum['fid'], ++$depth);
+				}
+				if($sub_forums)
+				{
+					$sub_forums = "<br /><small>{$lang->sub_forums}: {$subforumlist}</small>";
+				}
+					
+				if($depth == 2)
+				{
+					$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>{$forum['description']}{$subforumlist}</div>");
+				}
+				else
+				{
+					$form_container->output_cell("{$forum['name']}{$forum['description']}{$subforumlist}");
+				}
+					
+				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
+					
+				$popup = new PopupMenu("forum_{$key}", $lang->options);
+				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$key}");
+				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$key}");
+				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$key}");
+				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$key}");
+				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$key}");
+				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$key}");
+				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$key}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
+				
+				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
+				
+				$form_container->construct_row();
+			}
+			else if($depth == 3)
+			{
+				if($donecount < $mybb->settings['subforumsindex'])
+				{
+					$sub_forums .= "{$comma} <a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>";
+					$comma = ', ';
+				}
 	
-					// Have we reached our max visible subforums? put a nice message and break out of the loop
-					++$donecount;
-					if($donecount == $mybb->settings['subforumsindex'])
+				// Have we reached our max visible subforums? put a nice message and break out of the loop
+				++$donecount;
+				if($donecount == $mybb->settings['subforumsindex'])
+				{
+					if(count($main) > $donecount)
 					{
-						if(count($main) > $donecount)
-						{
-							$subforumlist .= $comma.sprintf($lang->more_subforums, (count($main) - $donecount));
-						}
+						$sub_forums .= $comma.sprintf($lang->more_subforums, (count($main) - $donecount));
+						return $sub_forums;
 					}
 				}
 			}

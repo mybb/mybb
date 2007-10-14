@@ -46,7 +46,7 @@ function forum_action_handler($action)
 			break;
 		default:
 			$page->active_action = "management";
-			$action_file = "index.php";
+			$action_file = "management.php";
 	}
 	
 	$sub_menu = array();
