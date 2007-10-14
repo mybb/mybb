@@ -10,7 +10,7 @@
 $langinfo['name'] = "English (American)";
 
 // The author of the language
-$langinfo['author'] = "MyBulletinBoard";
+$langinfo['author'] = "MyBB Group";
 
 // The language authors website
 $langinfo['website'] = "http://www.mybboard.net/";
