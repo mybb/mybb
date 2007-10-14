@@ -189,7 +189,7 @@ if($mybb->input['action'] == "avatar_gallery")
 	// Sanitize incoming path if we have one
 	$gallery = str_replace(array("..", "\x0"), "", $mybb->input['gallery']);
 	
-	$breadcrumb = "<a href=\"index.php?".SID."&amp;module=user/users&action=avatar_gallery&uid={$user['uid']}\">Default Gallery</a>";
+	$breadcrumb = "<a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}\">Default Gallery</a>";
 
 	$mybb->settings['avatardir'] = "../".$mybb->settings['avatardir'];
 
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "avatar_gallery")
 
 				if($gallery_path[$key+1])
 				{
-					$breadcrumb .= " &raquo; <a href=\"index.php?".SID."&amp;module=user/users&action=avatar_gallery&uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
+					$breadcrumb .= " &raquo; <a href=\"index.php?".SID."&amp;module=user/users&action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
 				}
 				else
 				{
@@ -295,12 +295,12 @@ if($mybb->input['action'] == "avatar_gallery")
 			}
 			else
 			{
-				$gallery['thumb'] = "../{$mybb->settings['avatardir']}/{$gallery['thumb']}";
+				$gallery['thumb'] = "{$mybb->settings['avatardir']}/{$gallery['thumb']}";
 			}
 			$scaled_dimensions = scale_image($gallery['thumb_width'], $gallery['thumb_height'], 80, 80);
 			$top = ceil((80-$scaled_dimensions['height'])/2);
 			$left = ceil((80-$scaled_dimensions['width'])/2);
-			echo "<li><a href=\"index.php?".SID."&amp;module=user/users&action=avatar_gallery&uid={$user['uid']}&gallery={$gallery['path']}\"><span class=\"image\"><img src=\"{$gallery['thumb']}\" alt=\"\" style=\"margin-top: {$top}px;\" align=\"center\"  height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\"></span><span class=\"title\">{$gallery['friendly_name']}</span></a></li>\n";
+			echo "<li><a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$gallery['path']}\"><span class=\"image\"><img src=\"{$gallery['thumb']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\"></span><span class=\"title\">{$gallery['friendly_name']}</span></a></li>\n";
 		}
 	}
 	echo "</ul>\n";
@@ -313,11 +313,10 @@ if($mybb->input['action'] == "avatar_gallery")
 			$scaled_dimensions = scale_image($avatar['width'], $avatar['height'], 80, 80);
 			$top = ceil((80-$scaled_dimensions['height'])/2);
 			$left = ceil((80-$scaled_dimensions['width'])/2);
-			echo "<li><a href=\"index.php?".SID."&amp;module=user/users&action=avatar_gallery&uid={$user['uid']}&avatar={$avatar['path']}\"><span class=\"image\"><img src=\"../{$mybb->settings['avatardir']}/{$avatar['path']}\" alt=\"\" style=\"margin-top: {$top}px;\" align=\"center\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\" /></span><span class=\"title\">{$avatar['friendly_name']}</span></a></li>\n";
+			echo "<li><a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;avatar={$avatar['path']}\"><span class=\"image\"><img src=\"{$mybb->settings['avatardir']}/{$avatar['path']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\" /></span><span class=\"title\">{$avatar['friendly_name']}</span></a></li>\n";
 		}
 	}
 	echo "</ul>\n";
-	echo "</div>";
 	echo "</div>";
 	echo "</body>";
 	echo "</html>";
@@ -1736,9 +1735,9 @@ function build_users_view($view)
 			{
 				case "sqlite3":
 				case "sqlite2":
-					$additional_sql .= " OR ','||additionalgroups||',' LIKE '%,{$usergroup},%')";
+					$additional_sql .= " OR ','||additionalgroups||',' LIKE '%,{$usergroup},%'";
 				default:
-					$additional_sql .= "OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%')";
+					$additional_sql .= "OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%'";
 			}
 		}
 		$search_sql .= " AND (u.usergroup IN (".implode(",", $view['conditions']['usergroup']).") {$additional_sql})";
@@ -2174,7 +2173,7 @@ function user_search_conditions($input=array(), &$form)
 		$options[$usergroup['gid']] = $usergroup['title'];
 	}
 
-	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroups][]', $options, $input['conditions']['usergroups'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
+	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
 	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website')), 'website');
 	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq')), 'icq');
@@ -2188,7 +2187,7 @@ function user_search_conditions($input=array(), &$form)
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[numposts_dir]', $greater_options, $input['conditions']['numposts_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
 
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
 	$form_container->output_row($lang->last_known_ip, $lang->wildcard, $form->generate_text_box('conditions[lastip]', $input['conditions']['lastip'], array('id' => 'lastip')), 'lastip');

@@ -52,6 +52,7 @@ border: 1px solid #f00;
 #avatars li span.image, #galleries li span.image {
 display: block;
 height: 80px;
+text-align: center;
 }
 
 #avatars li span.title, #galleries li span.title {
