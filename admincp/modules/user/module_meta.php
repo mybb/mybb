@@ -63,7 +63,6 @@ function user_action_handler($action)
 	$sub_menu['50'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?".SID."&module=user/admin_permissions");
 	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?".SID."&module=user/mass_mail");
 	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?".SID."&module=user/group_promotions");
-	$sub_menu['80'] = array("id" => "stats_and_logging", "title" => $lang->stats_and_logging, "link" => "index.php?".SID."&module=user/stats_and_logging");
 
 	$sidebar = new SidebarItem($lang->users_and_groups);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);

@@ -677,7 +677,7 @@ if(!$mybb->input['action'])
 
 function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 {
-	global $mybb, $db, $lang, $announcements;
+	global $mybb, $db, $lang, $announcements, $page;
 	static $forums_by_parent;
 
 	if(!is_array($forums_by_parent))

@@ -58,7 +58,6 @@
 				<permission name="admin_permissions">0</permission>
 				<permission name="mass_mail">0</permission>
 				<permission name="group_promotions">0</permission>
-				<permission name="stats_and_logging">0</permission>
 			</module>
 		</permissions>
 	</user>
@@ -120,7 +119,6 @@
 				<permission name="admin_permissions">1</permission>
 				<permission name="mass_mail">1</permission>
 				<permission name="group_promotions">1</permission>
-				<permission name="stats_and_logging">1</permission>
 			</module>
 		</permissions>
 	</user>
@@ -182,7 +180,6 @@
 				<permission name="admin_permissions">1</permission>
 				<permission name="mass_mail">1</permission>
 				<permission name="group_promotions">1</permission>
-				<permission name="stats_and_logging">1</permission>
 			</module>
 		</permissions>
 	</user>
