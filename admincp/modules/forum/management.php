@@ -454,18 +454,18 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				
 			if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 			{
-				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>");
+				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>");
 
 				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 				
-				$popup = new PopupMenu("forum_{$key}", $lang->options);
-				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$key}");
-				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$key}");
-				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$key}");
-				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$key}");
-				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$key}");
-				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$key}");
-				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$key}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
+				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
+				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
 				
 				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
 				
@@ -500,7 +500,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 					
 				if($depth == 2)
 				{
-					$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>{$forum['description']}{$subforumlist}</div>");
+					$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$subforumlist}</div>");
 				}
 				else
 				{
@@ -509,14 +509,14 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 					
 				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 					
-				$popup = new PopupMenu("forum_{$key}", $lang->options);
-				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$key}");
-				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$key}");
-				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$key}");
-				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$key}");
-				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$key}");
-				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$key}");
-				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$key}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
+				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
+				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
 				
 				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
 				
@@ -526,7 +526,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 			{
 				if($donecount < $mybb->settings['subforumsindex'])
 				{
-					$sub_forums .= "{$comma} <a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$key}\">{$forum['name']}</a>";
+					$sub_forums .= "{$comma} <a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>";
 					$comma = ', ';
 				}
 	

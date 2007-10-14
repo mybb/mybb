@@ -705,12 +705,12 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			}
 				
 			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><strong>{$forum['name']}</strong></div>");
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$key}\">{$lang->add_announcement}", array("class" => "align_center", "colspan" => 2));
+			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}", array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
 				
 			if($announcements[$forum['fid']])
 			{
-				foreach($announcements[$key] as $aid => $announcement)
+				foreach($announcements[$forum['fid']] as $aid => $announcement)
 				{
 					if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
 					{
