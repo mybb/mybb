@@ -307,7 +307,7 @@ function build_calendar_jump($selected=0)
 
 	foreach($calendars as $calendar)
 	{
-		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] != 0)
+		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 0)
 		{
 			continue;
 		}

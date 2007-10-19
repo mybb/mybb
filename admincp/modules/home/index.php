@@ -122,25 +122,25 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->mybb_version}</strong>", array('width' => '25%'));
 	$table->construct_cell($mybb->version, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->threads}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$threads['numthreads']}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$threads['numthreads']}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"index.php?".SID."&amp;module=forum/moderation_queue&amp;type=threads\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(phpversion(), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$posts['numposts']}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$posts['numposts']}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?".SID."&amp;module=forum/moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));
 	$table->construct_cell($db->short_title." ".$db->get_version(), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->users}</strong>", array('width' => '25%'));
-	$table->construct_cell("<a href=\"\"><strong>{$users}</strong> {$lang->registered_users}</a><br /><strong>{$activeusers}</strong> {$lang->active_users}<br /><strong>{$newusers}</strong> {$lang->registrations_today}<br /><a href=\"\"><strong>{$awaitingusers}</strong> {$lang->awaiting_activation}</a>", array('width' => '25%'));
+	$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/users\"><strong>{$users}</strong> {$lang->registered_users}</a><br /><strong>{$activeusers}</strong> {$lang->active_users}<br /><strong>{$newusers}</strong> {$lang->registrations_today}<br /><a href=\"index.php?".SID."&amp;module=user/users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array('usergroup' => '5')))."\"><strong>{$awaitingusers}</strong> {$lang->awaiting_activation}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->construct_cell("<strong>{$lang->server_load}</strong>", array('width' => '25%'));
 	$table->construct_cell($serverload, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->attachments}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> {$lang->attachments}<br /><a href=\"\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
+	$table->construct_cell("<strong>{$attachs['numattachs']}</strong> {$lang->attachments}<br /><a href=\"index.php?".SID."&amp;module=forum/moderation_queue&amp;type=attachments\"><strong>{$unapproved_attachs}</strong> {$lang->unapproved}</a><br /><strong>{$attachs['spaceused']}</strong> {$lang->used}", array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->output($lang->dashboard);

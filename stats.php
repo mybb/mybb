@@ -75,6 +75,7 @@ if(!empty($most_replied))
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
 			$numbertype = $lang->replies;
+			$thread['threadlink'] = get_thread_link($thread['tid']);
 			eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
 		}
 	}
@@ -99,6 +100,7 @@ if(!empty($most_viewed))
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);
 			$numbertype = $lang->views;
+			$thread['threadlink'] = get_thread_link($thread['tid']);
 			eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
 		}
 	}

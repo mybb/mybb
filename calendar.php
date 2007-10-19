@@ -439,14 +439,17 @@ if($mybb->input['action'] == "addevent")
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{
-		$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
-		if($calendar_option['cid'] == $mybb->input['calendar'])
+		if($calendar_permissions[$calendar['cid']]['canviewcalendar'] == 1)
 		{
-			$calendar_select .= "<option value=\"{$calendar_option['cid']}\" selected=\"selected\">{$calendar_option['name']}</option>\n";
-		}
-		else
-		{
-			$calendar_select .= "<option value=\"{$calendar_option['cid']}\">{$calendar_option['name']}</option>\n";
+			$calendar_option['name'] = htmlspecialchars_uni($calendar_option['name']);
+			if($calendar_option['cid'] == $mybb->input['calendar'])
+			{
+				$calendar_select .= "<option value=\"{$calendar_option['cid']}\" selected=\"selected\">{$calendar_option['name']}</option>\n";
+			}
+			else
+			{
+				$calendar_select .= "<option value=\"{$calendar_option['cid']}\">{$calendar_option['name']}</option>\n";
+			}
 		}
 	}
 

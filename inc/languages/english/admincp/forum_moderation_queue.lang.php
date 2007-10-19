@@ -9,8 +9,11 @@
 // Tabs
 $l['moderation_queue'] = "Moderation Queue";
 $l['threads'] = "Threads";
+$l['threads_desc'] = "Here you can view and approve threads in the moderation queue.";
 $l['posts'] = "Posts";
+$l['posts_desc'] = "Here you can view and approve posts in the moderation queue.";
 $l['attachments'] = "Attachments";
+$l['attachments_desc'] = "Here you can view and approve attachments in the moderation queue.";
 $l['threads_awaiting_moderation'] = "Threads Awaiting Moderation";
 $l['posts_awaiting_moderation'] = "Posts Awaiting Moderation";
 $l['attachments_awaiting_moderation'] = "Attachments Awaiting Moderation";

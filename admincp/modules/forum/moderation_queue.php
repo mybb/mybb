@@ -20,19 +20,19 @@ $page->add_breadcrumb_item($lang->moderation_queue, "index.php?".SID."&amp;modul
 $sub_tabs['threads'] = array(
 	'title' => $lang->threads,
 	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=threads",
-	'description' => ""
+	'description' => $lang->threads_desc
 );
 
 $sub_tabs['posts'] = array(
 	'title' => $lang->posts,
 	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=posts",
-	'description' => ""
+	'description' => $lang->posts_desc
 );
 
 $sub_tabs['attachments'] = array(
 	'title' => $lang->attachments,
 	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=attachments",
-	'description' => ""
+	'description' => $lang->attachments_desc
 );
 
 
@@ -326,8 +326,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 	}
 	else if($mybb->input['type'] == "posts")
 	{
-		$page->output_header("Moderation Queue");
-		$page->output_nav_tabs($sub_tabs, "posts");
+		$page->output_header($lang->moderation_queue);
 		echo "<p class=\"notice\">{$lang->error_no_posts}</p>";
 		$page->output_footer();
 	}
@@ -428,7 +427,6 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 	else if($mybb->input['type'] == "attachments")
 	{
 		$page->output_header($lang->moderation_queue);
-		$page->output_nav_tabs($sub_tabs, "attachments");
 		echo "<p class=\"notice\">{$lang->error_no_attachments}</p>";
 		$page->output_footer();
 	}

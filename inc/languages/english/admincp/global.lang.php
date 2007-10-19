@@ -91,6 +91,7 @@ $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 $l['permanent'] = "Permanent";
 $l['all_forums'] = "All Forums";
+$l['mybb_acp'] = "MyBB ACP";
 
 // The months of the year
 $l['january'] = "January";

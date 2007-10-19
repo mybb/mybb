@@ -54,7 +54,11 @@ class DefaultPage
 
 		// Stop JS elements showing while page is loading (JS supported browsers only)
 		echo "  <style type=\"text/css\">.popup_button { display: none; } </style>\n";
-		echo "  <script type=\"text/javascript\">document.write('<style type=\"text/css\">.popup_button { display: inline; } .popup_menu { display: none; }</style>');</script>\n";
+		echo "  <script type=\"text/javascript\">\n".
+				"//<![CDATA[\n".
+				"	document.write('<style type=\"text/css\">.popup_button { display: inline; } .popup_menu { display: none; }<\/style>');\n".
+                "//]]>\n".
+                "</script>\n";
 
 		echo "	<script type=\"text/javascript\">
 //<![CDATA[
@@ -402,9 +406,11 @@ EOF;
 		}
 		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
 				"<script type=\"text/javascript\">".
+				"//<![CDATA[".
 				"	{$editor_language}".
 				"	{$tabs_js}".
 				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };".
+				"//]]>".
 				"</script>";
 	}
 }

@@ -776,6 +776,8 @@ function multipage($count, $perpage, $page, $url)
 	{
 		return;
 	}
+	
+	$url = htmlspecialchars_uni($url);
 
 	$pages = ceil($count / $perpage);
 

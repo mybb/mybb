@@ -1182,16 +1182,16 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		// Delete the user
-		$db->query("UPDATE ".TABLE_PREFIX."posts SET uid='0' WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."users WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."userfields WHERE ufid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."privatemessages WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."events WHERE author='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."moderators WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."forumsubscriptions WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."favorites WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."sessions WHERE uid='{$user['uid']}'");
-		$db->query("DELETE FROM ".TABLE_PREFIX."banned WHERE uid='{$user['uid']}'");
+		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
+		$db->delete_query("users", "uid='{$user['uid']}'");
+		$db->delete_query("userfields", "ufid='{$user['uid']}'");
+		$db->delete_query("privatemessages", "uid='{$user['uid']}'");
+		$db->delete_query("events", "uid='{$user['uid']}'");
+		$db->delete_query("moderators", "uid='{$user['uid']}'");
+		$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
+		$db->delete_query("favorites", "uid='{$user['uid']}'");
+		$db->delete_query("sessions", "uid='{$user['uid']}'");
+		$db->delete_query("banned", "uid='{$user['uid']}'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
@@ -2162,7 +2162,17 @@ function user_search_conditions($input=array(), &$form)
 	{
 		$input = $mybb->input;
 	}
-
+	
+	if(!is_array($input['conditions']))
+	{
+		$input['conditions'] = unserialize($input['conditions']);
+	}
+	
+	if(!is_array($input['fields']))
+	{
+		$input['fields'] = unserialize($input['fields']);
+	}
+	
 	$form_container = new FormContainer($lang->find_users_where);
 	$form_container->output_row($lang->username_contains, "", $form->generate_text_box('conditions[username]', $input['conditions']['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->email_address_contains, "", $form->generate_text_box('conditions[email]', $input['conditions']['email'], array('id' => 'email')), 'email');

@@ -4064,7 +4064,7 @@ body {
 // -->
 </script>]]></template>
 		<template name="showthread_quickreply" version="1400"><![CDATA[<br />
-<form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="input" id="quick_reply_form">
+<form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="subject" value="RE: {$thread['subject']}" />
 <input type="hidden" name="action" value="do_newreply" />
