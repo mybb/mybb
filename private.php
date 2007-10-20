@@ -55,9 +55,6 @@ if($rand == 5)
 	update_pm_count();
 }
 
-$timecut = TIME_NOW-(60*60*24*7);
-$db->delete_query("privatemessages", "deletetime <= '{$timecut}' AND folder='4' AND uid='{$mybb->user['uid']}'");
-
 $folderjump = "<select name=\"jumpto\">\n";
 $folderoplist = "<input type=\"hidden\" value=\"".intval($mybb->input['fid'])."\" name=\"fromfid\" />\n<select name=\"fid\">\n";
 $folderjump2 = "<select name=\"jumpto2\">\n";
