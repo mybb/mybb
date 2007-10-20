@@ -49,6 +49,7 @@ if(!$mybb->user['pmfolders'])
 }
 
 // On a random occassion, recount the users pm's just to make sure everything is in sync.
+$rand = rand(0, 9);
 if($rand == 5)
 {
 	update_pm_count();
