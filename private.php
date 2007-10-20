@@ -48,6 +48,15 @@ if(!$mybb->user['pmfolders'])
 	$db->update_query(TABLE_PREFIX."users", $sql_array, "uid = ".$mybb->user['uid']);
 }
 
+$timecut = time()-(60*60*24*7); 
+$db->delete_query(TABLE_PREFIX."privatemessages", "dateline <= $timecut AND folder='4' AND uid='".$mybb->user['uid']."'"); 
+
+// On a random occassion, recount the users pm's just to make sure everything is in sync. 
+if($rand == 5 || $db->affected_rows() > 0) 
+{ 
+	update_pm_count(); 
+} 
+
 $folderjump = "<select name=\"jumpto\">\n";
 $folderoplist = "<select name=\"fid\">\n";
 $folderjump2 = "<select name=\"jumpto2\">\n";

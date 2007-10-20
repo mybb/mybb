@@ -518,7 +518,7 @@ function update_pm_count($uid=0, $count_to_update=7, $lastvisit=0)
 	}
 
 	// If using logged in user, use the last visit
-	if($uid != 0)
+	if($uid == $mybb->user['uid'])
 	{
 		$lastvisit = $mybb->user['lastvisit'];
 	}
