@@ -140,7 +140,7 @@ if($mybb->input['action'] == "backup")
 					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
 				}
 				
-				$fp = gzopen($file.'.gz', 'w9');
+				$fp = gzopen($file.'.sql.gz', 'w9');
 			}
 			else
 			{

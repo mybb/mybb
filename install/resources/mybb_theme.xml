@@ -2724,7 +2724,7 @@ td .star_rating {
 <td class="{$altbg}" align="center">{$attachdate}, {$attachtime}</td>
 <td class="{$altbg}" width="1"><input type="checkbox" class="checkbox" name="attachments[{$attachment['aid']}]" value="{$attachment['aid']}" /></td>
 </tr>]]></template>
-		<template name="misc_rules_forum" version="120"><![CDATA[<html>
+		<template name="misc_rules_forum" version="1210"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$forum['rulestitle']}</title>
 {$headerinclude}
@@ -2733,7 +2733,7 @@ td .star_rating {
 {$header}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="{$colspan}"><strong>{$forum['rulestitle']}</td>
+<td class="thead" colspan="{$colspan}"><strong>{$forum['rulestitle']}</strong></td>
 </tr>
 <tr>
 <td class="trow1">{$forum['rules']}</td>

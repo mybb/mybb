@@ -29,7 +29,7 @@ function task_backupdb($task)
 		
 		if(function_exists('gzopen'))
 		{
-			$fp = gzopen($file.'.gz', 'w9');
+			$fp = gzopen($file.'.sql.gz', 'w9');
 		}
 		else
 		{

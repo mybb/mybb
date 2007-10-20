@@ -846,6 +846,9 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	);	
 	$db->update_query("users", $sql_array, "uid='".$mybb->user['uid']."'");
 	
+	// Update PM count
+	update_pm_count();
+	
 	$plugins->run_hooks("private_do_folders_end");
 	
 	redirect("private.php", $lang->redirect_pmfoldersupdated);
