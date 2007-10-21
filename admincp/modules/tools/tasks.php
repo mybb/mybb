@@ -604,7 +604,15 @@ if(!$mybb->input['action'])
 		$task['title'] = htmlspecialchars_uni($task['title']);
 		$task['description'] = htmlspecialchars_uni($task['description']);
 		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
-		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div><strong><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
+		if($task['enabled'] == 1)
+		{
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(EEnabled)\" title=\"Enabled\"  style=\"vertical-align: middle;\" /> ";
+		}
+		else
+		{
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Disabled)\" title=\"Disabled\"  style=\"vertical-align: middle;\" /> ";
+		}
+		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 
 		$popup = new PopupMenu("task_{$task['tid']}", "Options");
