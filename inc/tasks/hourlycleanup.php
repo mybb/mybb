@@ -16,24 +16,9 @@ function task_hourlycleanup($task)
 	$threads = array();
 	$posts = array();
 
-	// Expire thread redirects
-	$query = $db->simple_select("threads", "fid, replies", "deletetime != '0' AND deletetime < '".TIME_NOW."'");
-	while($thread = $db->fetch_array($query))
-	{
-		++$threads[$thread['fid']];
-		$posts[$thread['fid']] += $thread['replies'];
-	}
-	
+	// Delete moved threads with time limits
 	$db->delete_query("threads", "deletetime != '0' AND deletetime < '".TIME_NOW."'");
 	
-	if(!empty($threads))
-	{
-		foreach($threads as $fid => $count)
-		{
-			update_forum_counters($fid, array('threads' => "-".$count, 'posts' => "-".$posts[$fid]));
-		}
-	}
-
 	// Delete old searches
 	$cut = TIME_NOW-(60*60*24);
 	$db->delete_query("searchlog", "dateline < '{$cut}'");
