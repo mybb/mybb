@@ -606,7 +606,7 @@ if(!$mybb->input['action'])
 		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
 		if($task['enabled'] == 1)
 		{
-			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(EEnabled)\" title=\"Enabled\"  style=\"vertical-align: middle;\" /> ";
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Enabled)\" title=\"Enabled\"  style=\"vertical-align: middle;\" /> ";
 		}
 		else
 		{
