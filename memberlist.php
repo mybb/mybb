@@ -247,7 +247,7 @@ else
 			eval("\$usergroup['groupimage'] = \"".$templates->get("memberlist_user_groupimage")."\";");
 		}
 
-		if(trim($post['usertitle']) != "")
+		if(trim($user['usertitle']) != "")
 		{
 			$has_custom_title = 1;
 		}
@@ -260,7 +260,7 @@ else
 		{
 			foreach($usertitles_cache as $posts => $titleinfo)
 			{
-				if($post['postnum'] >= $posts)
+				if($user['postnum'] >= $posts)
 				{
 					if(!$has_custom_title)
 					{
