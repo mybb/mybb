@@ -315,7 +315,7 @@ elseif($mybb->input['action'] == "buddypopup")
 		while($buddy = $db->fetch_array($query))
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
-			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank');
+			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
 			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $buddy['canusepms'] != 0)
 			{
 				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");

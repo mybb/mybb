@@ -214,6 +214,8 @@ function upgradethemes()
 
 	$output->print_header($lang->upgrade_templates_reverted);
 
+	$charset = $db->build_create_table_collation();
+
 	if($system_upgrade_detail['revert_all_templates'] > 0)
 	{
 		$db->drop_table("templates");
@@ -226,7 +228,7 @@ function upgradethemes()
 		  status varchar(10) NOT NULL default '',
 		  dateline int(10) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
-		) TYPE=MyISAM;");
+		) TYPE=MyISAM;{$charset}");
 	}
 
 	if($system_upgrade_detail['revert_all_themes'] > 0)
@@ -246,6 +248,7 @@ function upgradethemes()
 		$db->drop_table("themestylesheets");
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
 			sid int unsigned NOT NULL auto_increment,
+			name varchar(30) NOT NULL default '',
 			tid int unsigned NOT NULL default '0',
 			attachedto text NOT NULL,
 			stylesheet text NOT NULL,

@@ -151,26 +151,17 @@ class errorHandler {
 				}
 				else
 				{
-					// REMOVE ME BEFORE RELEASE
-					echo "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-					if(function_exists("debug_backtrace"))
+					global $templates;
+					$warning = "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+					if(is_object($templates) && method_exists($templates, "get") && !defined("IN_ADMINCP"))
 					{
-						$trace = debug_backtrace();
-						$error_message .= "<dt>Backrace:</dt><dd><table class=\"backtrace\"><thead><tr><th>File</th><th>Line</th><th>Function</th></tr></thead><tbody>\n";
-						foreach($trace as $call)
-						{
-							if(!$call['file']) $call['file'] = "[PHP]";
-							if(!$call['line']) $call['line'] = "&nbsp;";
-							$error_message .= "<tr><td>{$call['file']}</td><td>{$call['line']}</td><td>{$call['function']}</td></tr>\n";
-						}
-						$error_message .= "</tbody></table></dd>\n";
+						$this->warnings .= $warning;
+						$this->warnings .= $this->generate_backtrace();
 					}
-
-					// UNCOMMENT ME BEFORE RELEASE
-					//$this->warnings .= "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
-
-			echo $error_message;
-
+					else
+					{
+						echo "<div class=\"php_warning\">{$warning}".$this->generate_backtrace()."</div>";
+					}
 				}
 			}
 		}
@@ -423,17 +414,10 @@ class errorHandler {
 					$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 				}
 			}
-			if(function_exists("debug_backtrace"))
+			$backtrace = $this->generate_backtrace();
+			if($backtrace)
 			{
-				$trace = debug_backtrace();
-				$error_message .= "<dt>Backrace:</dt><dd><table class=\"backtrace\"><thead><tr><th>File</th><th>Line</th><th>Function</th></tr></thead><tbody>\n";
-				foreach($trace as $call)
-				{
-					if(!$call['file']) $call['file'] = "[PHP]";
-					if(!$call['line']) $call['line'] = "&nbsp;";
-					$error_message .= "<tr><td>{$call['file']}</td><td>{$call['line']}</td><td>{$call['function']}</td></tr>\n";
-				}
-				$error_message .= "</tbody></table></dd>\n";
+				$error_message .= "<dt>Backrace:</dt><dd>{$backtrace}/dd>\n";
 			}
 			$error_message .= "</dl>\n";
 
@@ -500,7 +484,7 @@ EOF;
 		#mybb_error_content h2 { font-size: 12px; padding: 4px; background: #B60101; color: #fff; margin: 0; }
 		#mybb_error_error { padding: 6px; }
 		#mybb_error_footer { font-size: 11px; border-top: 1px solid #ccc; padding-top: 10px; }
-		dt { font-weight: bold; }
+		#mybb_error_content dt { font-weight: bold; }
 	</style>
 	<div id="mybb_error_content">
 		<h2>{$title}</h2>
@@ -512,6 +496,43 @@ EOF;
 EOF;
 		}
 		exit(1);
+	}
+
+	/**
+	 * Generates a backtrace if the server supports it.
+	 *
+	 * @return string The generated backtrace
+	 */
+	function generate_backtrace()
+	{
+		if(function_exists("debug_backtrace"))
+		{
+			$trace = debug_backtrace();
+			$backtrace = "<table style=\"width: 100%; margin: 10px 0; border: 1px solid #aaa; border-collapse: collapse; border-bottom: 0;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
+			$backtrace .= "<thead><tr>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
+			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
+			$backtrace .= "</tr></thead\n<tbody>\n";
+
+			// Strip off this function from trace
+			array_shift($trace);
+
+			foreach($trace as $call)
+			{
+				if(!$call['file']) $call['file'] = "[PHP]";
+				if(!$call['line']) $call['line'] = "&nbsp;";
+				if($call['class']) $call['function'] = $call['class'].$call['type'].$call['function'];
+				$call['file'] = str_replace(MYBB_ROOT, "/", $call['file']);
+				$backtrace .= "<tr>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['file']}</td>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['line']}</td>\n";
+				$backtrace .= "<td style=\"font-size: 11px; padding: 4px; border-bottom: 1px solid #ccc;\">{$call['function']}</td>\n";
+				$backtrace .= "</tr>\n";
+			}
+			$backtrace .= "</tbody></table>\n";
+		}
+		return $backtrace;
 	}
 }
 ?>

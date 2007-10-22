@@ -1276,11 +1276,12 @@ no=Disabled]]></optionscode>
 			<description><![CDATA[The type of the error handling to use.]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[select
+none=Neither
 log=Log errors
 email=Email errors
 both=Log and email errors
 ]]></optionscode>
-			<settingvalue><![CDATA[log]]></settingvalue>
+			<settingvalue><![CDATA[none]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="errortypemedium">

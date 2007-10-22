@@ -1698,7 +1698,7 @@ function build_users_view($view)
 
 	// IP searching
 	$ip_fields = array("regip", "lastip");
-	foreach($ipfields as $search_field)
+	foreach($ip_fields as $search_field)
 	{
 		if($view['conditions'][$search_field])
 		{
