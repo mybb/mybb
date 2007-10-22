@@ -17,6 +17,48 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->system_email_log, "index.php?".SID."&amp;module=tools/mailerrors");
 
+if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
+{
+	// Begin criteria filtering
+	$additional_sql_criteria = '';
+	if($mybb->input['subject'])
+	{
+		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
+	}
+
+	if($mybb->input['fromaddress'])
+	{
+		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string($mybb->input['fromaddress'])."%'";
+	}
+
+	if($mybb->input['toaddress'])
+	{
+		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string($mybb->input['toaddress'])."%'";
+	}
+
+	if($mybb->input['error'])
+	{
+		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string($mybb->input['error'])."%'";
+	}
+
+	if($mybb->input['delete_all'])
+	{
+		$db->delete_query("mailerrors");
+		flash_message($lang->all_logs_deleted, 'error');
+		admin_redirect("index.php?".SID."&module=tools/mailerrors");
+	}
+	else if(is_array($mybb->input['log']))
+	{
+		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
+		if($log_ids)
+		{
+			$db->delete_query("mailerrors", "eid IN ({$log_ids})");
+		}
+	}
+	flash_message($lang->selected_logs_deleted, 'error');
+	admin_redirect("index.php?".SID."&module=tools/mailerrors");
+}
+
 if($mybb->input['action'] == "view")
 {
 	$query = $db->simple_select("mailerrors", "*", "eid='".intval($mybb->input['eid'])."'");
@@ -116,34 +158,6 @@ if(!$mybb->input['action'])
 
 	$additional_criteria = array();
 
-
-	// Begin criteria filtering
-	if($mybb->input['subject'])
-	{
-		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
-		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
-	}
-
-	if($mybb->input['fromaddress'])
-	{
-		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string($mybb->input['fromaddress'])."%'";
-		$additional_criteria[] = "fromaddress='".urlencode($mybb->input['fromaddress'])."'";
-	}
-
-	if($mybb->input['toaddress'])
-	{
-		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string($mybb->input['toaddress'])."%'";
-		$additional_criteria[] = "toaddress='".urlencode($mybb->input['toaddress'])."'";
-	}
-
-	if($mybb->input['error'])
-	{
-		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string($mybb->input['error'])."%'";
-		$additional_criteria[] = "error='".urlencode($mybb->input['error'])."'";
-	}
-
-	$additional_criteria = implode("&amp;", $additional_criteria);	
-
 	$page->output_header($lang->system_email_log);
 	
 	$sub_tabs['mailerrors'] = array(
@@ -151,14 +165,43 @@ if(!$mybb->input['action'])
 		'description' => $lang->system_email_log_desc
 	);
 	
-	$sub_tabs['prune_mailerrors'] = array(
-		'title' => $lang->prune_system_email_log,
-		'link' => "index.php?".SID."&amp;module=tools/mailerrors&amp;action=prune"
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'mailerrors');
 
+	$form = new Form("index.php?".SID."&amp;module=tools/mailerrors&amp;action=prune", "post");
+
+	// Begin criteria filtering
+	if($mybb->input['subject'])
+	{
+		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
+		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
+		$form->generate_hidden_field("subject", $mybb->input['subject']);
+	}
+
+	if($mybb->input['fromaddress'])
+	{
+		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string($mybb->input['fromaddress'])."%'";
+		$additional_criteria[] = "fromaddress='".urlencode($mybb->input['fromaddress'])."'";
+		$form->generate_hidden_field("fromaddress", $mybb->input['fromaddress']);
+	}
+
+	if($mybb->input['toaddress'])
+	{
+		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string($mybb->input['toaddress'])."%'";
+		$additional_criteria[] = "toaddress='".urlencode($mybb->input['toaddress'])."'";
+		$form->generate_hidden_field("toaddress", $mybb->input['toaddress']);
+	}
+
+	if($mybb->input['error'])
+	{
+		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string($mybb->input['error'])."%'";
+		$additional_criteria[] = "error='".urlencode($mybb->input['error'])."'";
+		$form->generate_hidden_field("error", $mybb->input['error']);
+	}
+
+	$additional_criteria = implode("&amp;", $additional_criteria);	
+
 	$table = new Table;
+	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject);
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->error_message, array("class" => "align_center", "width" => "30%"));
@@ -178,6 +221,7 @@ if(!$mybb->input['action'])
 		$log['error'] = htmlspecialchars_uni($log['error']);
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 
+		$table->construct_cell($form->generate_check_box("log[{$log['eid']}]", 1, ''));
 		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/mailerrors&action=view&eid={$log['eid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
 		$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/mailerrors&amp;toaddress={$log['toaddress']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->fine_emails_to_addr}\" alt=\"{$lang->find}\" /></a></div>";
 		$table->construct_cell("{$find_from}<div>{$log['toaddress']}</div>");
@@ -188,11 +232,19 @@ if(!$mybb->input['action'])
 	
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell($lang->no_logs, array("colspan" => "4"));
+		$table->construct_cell($lang->no_logs, array("colspan" => 5));
 		$table->construct_row();
+	}
+	else
+	{
+		$buttons[] = $form->generate_submit_button($lang->delete_selected, array('onclick' => "return confirm('{$lang->confirm_delete_logs}');"));
+		$buttons[] = $form->generate_submit_button($lang->delete_all, array('name' => 'delete_all', 'onclick' => "return confirm('{$lang->confirm_delete_all_logs}');"));
+		$form->output_submit_wrapper($buttons);
 	}
 	
 	$table->output($lang->system_email_log);
+
+	$form->end();
 	
 	$query = $db->simple_select("mailerrors l", "COUNT(eid) AS logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");

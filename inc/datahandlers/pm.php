@@ -529,7 +529,7 @@ class PMDataHandler extends DataHandler
 			if($recipient['pmnotice'] == 1)
 			{
 				$updated_user = array(
-					"pmnotice" => "new"
+					"pmnotice" => 2
 				);
 				$db->update_query("users", $updated_user, "uid='{$recipient['uid']}'");
 			}

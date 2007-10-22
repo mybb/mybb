@@ -386,6 +386,10 @@ class DefaultForm
 		{
 			$input .= " disabled=\"disabled\"";
 		}
+		if($options['onclick'])
+		{
+			$input .= " onclick=\"".str_replace('"', '\"', $options['onclick'])."\"";
+		}
 		$input .= " />";
 		return $input;
 	}

@@ -1148,6 +1148,24 @@ function upgrade11_redoconfig()
 
 {$comment}\$config['database']['encoding'] = '{$config['db_encoding']}';
 
+/**
+ * Automatic Log Pruning
+ *  The MyBB task system can automatically prune
+ *  various log files created by MyBB.
+ *  To enable this functionality for the logs below, set the
+ *  the number of days before each log should be pruned.
+ *  If you set the value to 0, the logs will not be pruned.
+ */
+
+\$config['log_pruning'] = array(
+	'admin_logs' => 365, // Administrator logs
+	'mod_logs' => 0, // Moderator logs
+	'task_logs' => 30, // Scheduled task logs
+	'mail_logs' => 180, // Mail error logs
+	'user_mail_logs' => 180, // User mail logs
+	'promotion_logs' => 180 // Promotion logs
+);
+
 ?".">";
 		fwrite($fh, $configdata);
 		fclose($fh);

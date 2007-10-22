@@ -146,4 +146,12 @@ $l['timezone_gmt_1000'] = "(GMT +10:00) Melbourne, Papua New Guinea, Sydney, Vla
 $l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, New Caledonia, Solomon Islands";
 $l['timezone_gmt_1200'] = "(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island";
 $l['timezone_gmt_short'] = "GMT {1}({2})";
+
+// Global language strings used for log deletion pages
+$l['confirm_delete_logs'] = "Prune the selected log entries?";
+$l['confirm_delete_all_logs'] = "Prune all log entries?";
+$l['selected_logs_deleted'] = "The selected log entries have been deleted.";
+$l['all_logs_deleted'] = "All log entries have been deleted.";
+$l['delete_selected'] = "Delete Selected";
+$l['delete_all'] = "Delete All Filtered";
 ?>
