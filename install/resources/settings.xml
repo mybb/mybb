@@ -1016,7 +1016,7 @@ show=Show to all Users]]></optionscode>
 yes=Thumbnail
 no=Full Size Image
 download=As Download Link]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
+			<settingvalue><![CDATA[yes]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbh">
