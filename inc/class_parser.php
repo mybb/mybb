@@ -88,7 +88,7 @@ class postParser
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.
-		if($options['filter_badwords'] != 0)
+		if($options['filter_badwords'] !== 0)
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -115,7 +115,7 @@ class postParser
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if($options['allow_mycode'] != 0)
+		if($options['allow_mycode'] !== 0)
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
@@ -126,20 +126,20 @@ class postParser
 		$message = $this->fix_javascript($message);
 		
 		// Replace "me" code and slaps if we have a username
-		if($options['me_username'])
+		if($options['me_username'] !== 0)
 		{
 			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
 		// If we can, parse smilies
-		if($options['allow_smilies'] != 0)
+		if($options['allow_smilies'] !== 0)
 		{
 			$message = $this->parse_smilies($message, $options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
-		if($options['allow_mycode'] != 0)
+		if($options['allow_mycode'] !== 0)
 		{
 			$message = $this->parse_mycode($message, $options);
 		}
@@ -147,7 +147,7 @@ class postParser
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 		
-		if($options['allow_mycode'] != 0)
+		if($options['allow_mycode'] !== 0)
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)
@@ -173,7 +173,7 @@ class postParser
 			}
 		}
 
-		if($options['nl2br'] != 0)
+		if($options['nl2br'] !== 0)
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -333,7 +333,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if($options['allow_imgcode'] != 0)
+		if($options['allow_imgcode'] !== 0)
 		{
 			$message = preg_replace("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$2')\n", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2'));", $message);
@@ -383,7 +383,7 @@ class postParser
 			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $find => $replace)
 			{
-				if($allow_html != 0)
+				if($allow_html !== 0)
 				{
 					$find = $this->parse_html($find);
 				}
