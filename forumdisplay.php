@@ -803,7 +803,7 @@ if(is_array($threadcache))
 			if($thread['pages'] > 4)
 			{
 				$pagesstop = 4;
-				$page_link = get_thread_link($thread['tid'], "last");				
+				$page_link = get_thread_link($thread['tid'], $thread['pages']);				
 				eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
 			}
 			else
