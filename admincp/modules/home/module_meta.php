@@ -76,8 +76,8 @@ function home_action_handler($action)
 		
 		$page->sidebar .= $sidebar->get_markup();
 
-		// Online Administrators
-		$timecut = time()-60*60*15;
+		// Online Administrators in the last 3 hours
+		$timecut = time()-60*60*3;
 		$query = $db->query("
 			SELECT u.uid, u.username, s.ip
 			FROM ".TABLE_PREFIX."adminsessions s

@@ -31,7 +31,7 @@ function style_action_handler($action)
 	{
 		default:
 			$page->active_action = "themes";
-			$action_file = "index.php";
+			$action_file = "themes.php";
 	}
 	
 	$sub_menu = array();

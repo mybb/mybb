@@ -47,6 +47,7 @@ $l['posting_thread'] = "Posting New Thread";
 $l['posting_thread2'] = "Posting New Thread in <a href=\"forumdisplay.php?fid={1}\">{2}</a>";
 $l['viewing_wol'] = "Viewing <a href=\"online.php\">Who's Online</a>";
 $l['viewing_woltoday'] = "Viewing <a href=\"online.php?action=today\">Who Was Online Today</a>";
+$l['viewing_iplookup'] = "Viewing IP Address Lookup";
 $l['creating_poll'] = "Creating New Poll";
 $l['editing_poll'] = "Editing a Poll";
 $l['viewing_pollresults'] = "Viewing Poll Results";

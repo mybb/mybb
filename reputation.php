@@ -21,13 +21,13 @@ $parser = new postParser;
 $lang->load("reputation");
 
 // Check if the reputation system is globally disabled or not.
-if($mybb->settings['enablereputation'] != "yes")
+if($mybb->settings['enablereputation'] != 1)
 {
 	error($lang->reputation_disabled);
 }
 
 // Does this user have permission to view the board?
-if($mybb->usergroup['canview'] != "yes")
+if($mybb->usergroup['canview'] != 1)
 {
 	error_no_permission();
 }
@@ -48,7 +48,7 @@ $show_back = '0';
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 {
 	// This user doesn't have permission to give reputations.
-	if($mybb->usergroup['cangivereputations'] != "yes")
+	if($mybb->usergroup['cangivereputations'] != 1)
 	{
 		$message = $lang->add_no_permission;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
@@ -57,7 +57,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	}
 
 	// The user we're trying to give a reputation to doesn't have permission to receive reps.
-	if($user_permissions['usereputationsystem'] != "yes")
+	if($user_permissions['usereputationsystem'] != 1)
 	{
 		$message = $lang->add_disabled;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "delete")
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators as well as users who gave a specifc vote can delete one.
-	if($mybb->usergroup['cancp'] != "yes" || $existing_reputation['adduid'] != $mybb->user['uid'])
+	if($mybb->usergroup['cancp'] != 1 || $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
 		error_no_permission();
 	}
@@ -261,7 +261,7 @@ if($mybb->input['action'] == "delete")
 // Otherwise, show a listing of reputations for the given user.
 if(!$mybb->input['action'])
 {
-	if($user_permissions['usereputationsystem'] != "yes")
+	if($user_permissions['usereputationsystem'] != 1)
 	{
 		error($lang->reputations_disabled_group);
 	}
@@ -300,7 +300,7 @@ if(!$mybb->input['action'])
 	}
 
 	// If the user has permission to add reputations - show the image
-	if($mybb->usergroup['cangivereputations'] == "yes")
+	if($mybb->usergroup['cangivereputations'] == 1)
 	{
 		eval("\$add_reputation = \"".$templates->get("reputation_addlink")."\";");
 	}
@@ -509,7 +509,7 @@ if(!$mybb->input['action'])
 		$last_updated = sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 
 		// Does the current user have permission to delete this reputation? Show delete link
-		if($mybb->usergroup['cancp'] == "yes" || ($mybb->usergroup['cangivereputations'] == "yes" && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
+		if($mybb->usergroup['cancp'] == 1 || ($mybb->usergroup['cangivereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))
 		{
 			$delete_link = "[<a href=\"reputation.php?action=delete&amp;uid={$reputation_vote['rated_uid']}&amp;rid={$reputation_vote['rid']}\" onclick=\"MyBB.deleteReputation({$reputation_vote['rated_uid']}, {$reputation_vote['rid']}); return false;\">{$lang->delete_vote}</a>]";
 		}

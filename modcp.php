@@ -2247,7 +2247,7 @@ if(!$mybb->input['action'])
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
-		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == "yes" || $mybb->uergroup['canadmincp'] == "yes")
+		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->uergroup['canadmincp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}

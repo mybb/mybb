@@ -184,9 +184,9 @@ if(!$mybb->input['action'])
 	$table->output("Themes");
 }
 
-function buid_theme_list($parent=0, $depth=0)
+function build_theme_list($parent=0, $depth=0)
 {
-	global $mybb, $db, $table; // Global $table is bad, but it will have to do for now
+	global $mybb, $db, $table, $lang; // Global $table is bad, but it will have to do for now
 	static $theme_cache;
 
 	$padding = $depth*20; // Padding
@@ -201,7 +201,7 @@ function buid_theme_list($parent=0, $depth=0)
 		");
 		while($user_themes = $db->fetch_array($query))
 		{
-			$themes[$user_themes['style']]['users'] = intval($user_themes['users'];
+			$themes[$user_themes['style']]['users'] = intval($user_themes['users']);
 		}
 
 		// Restrucure the theme array to something we can "loop-de-loop" with
@@ -237,12 +237,27 @@ function buid_theme_list($parent=0, $depth=0)
 		}
 		$popup->add_item("Export Theme", "");
 		$table->construct_cell("<div class=\"float_right;\">{$set_default}</div><div style=\"margin-left: {$padding}px\"><strong>{$theme['name']}</strong></div>");
-		$table->construct_cell(my_number_format($theme['users']) array("class" => "align_center"));
+		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 
 		// Fetch & build any child themes
 		build_theme_list($theme['tid'], ++$depth);
 	}
+}
+
+function cache_themes()
+{
+	global $db, $theme_cache;
+
+	$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
+	while($theme = $db->fetch_array($query))
+	{
+		$theme['themebits'] = unserialize($theme['themebits']);
+		$theme['cssbits'] = unserialize($theme['cssbits']);
+		$theme_cache[$theme['tid']] = $theme;
+	}
+	
+	return $theme_cache;
 }
 ?>

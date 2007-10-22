@@ -205,6 +205,10 @@ function fetch_wol_activity($location)
 			{
 				$user_activity['activity'] = "woltoday";
 			}
+			elseif($parameters['action'] == "iplookup")
+			{
+				$user_activity['activity'] = "iplookup";
+			}
 			else
 			{
 				$user_activity['activity'] = "wol";
@@ -646,6 +650,9 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		case "woltoday":
 			$location_name = $lang->viewing_woltoday;
+			break;
+		case "iplookup":
+			$location_name = $lang->viewing_iplookup;
 			break;
 		// polls.php functions
 		case "newpoll":

@@ -113,7 +113,7 @@ if($mybb->input['preview'])
 // Dismissing a new/unread PM notice
 if($mybb->input['action'] == "dismiss_notice")
 {
-	if($mybb->user['pmnotice'] != "new")
+	if($mybb->user['pmnotice'] != 2)
 	{
 		exit;
 	}
@@ -525,7 +525,7 @@ if($mybb->input['action'] == "read")
 		update_pm_count($mybb->user['uid'], 6);
 
 		// Update PM notice value if this is our last unread PM
-		if($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == "new")
+		if($mybb->user['unreadpms']-1 <= 0 && $mybb->user['pmnotice'] == 2)
 		{
 			$updated_user = array(
 				"pmnotice" => 1

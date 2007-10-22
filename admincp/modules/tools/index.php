@@ -72,9 +72,6 @@ if($mybb->input['action'] == "utf8_conversion")
 		$db->set_table_prefix('');
 		
 		flush();
-		
-		// Log admin action
-		log_admin_action($mybb->input['table']);
 
 		$types = array(
 			'text' => 'blob',
@@ -167,6 +164,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		
 		$db->set_table_prefix($old_table_prefix);
+		
+		// Log admin action
+		log_admin_action($mybb->input['table']);
 		
 		flash_message(sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
 		admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
