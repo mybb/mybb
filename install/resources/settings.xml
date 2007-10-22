@@ -1024,7 +1024,7 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Enter the height that attached thumbnails should be generated at.]]></description>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[60]]></settingvalue>
+			<settingvalue><![CDATA[96]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbw">
@@ -1032,7 +1032,7 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Enter the width that attached thumbnails should be generated at.]]></description>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[60]]></settingvalue>
+			<settingvalue><![CDATA[96]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="edittimelimit">

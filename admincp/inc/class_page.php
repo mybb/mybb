@@ -405,11 +405,11 @@ EOF;
 			$tabs_js = "Control.Tabs.observe('afterChange', function(instance, new_tab) { if(new_tab.id == \"tab_signature\") { initEditor() }});";
 		}
 		return "<script type=\"text/javascript\" src=\"../jscripts/editor.js\"></script>\n".
-				"<script type=\"text/javascript\">".
-				"//<![CDATA[".
+				"<script type=\"text/javascript\">\n".
+				"//<![CDATA[\n".
 				"	{$editor_language}".
 				"	{$tabs_js}".
-				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };".
+				"	var clickableEditor = ''; function initEditor() { if(!clickableEditor) { clickableEditor = new messageEditor(\"{$bind}\", {lang: editor_language, rtl: {$lang->settings['rtl']}})}; };\n".
 				"//]]>".
 				"</script>";
 	}

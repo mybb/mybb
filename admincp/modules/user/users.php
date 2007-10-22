@@ -825,10 +825,14 @@ if($mybb->input['action'] == "edit")
 	}
 	$local_time = gmdate($mybb->settings['dateformat'], TIME_NOW + ($timezone * 3600)).", ".gmdate($mybb->settings['timeformat'], TIME_NOW + ($timezone * 3600));
 	$days_registered = (TIME_NOW - $user['regdate']) / (24*3600);
-	$posts_per_day = round($user['postnum'] / $daysreg, 2);
-	if($posts_per_day > $user['postnum'])
+	$posts_per_day = 0;
+	if($days_registered > 0)
 	{
-		$posts_per_day = $user['postnum'];
+		$posts_per_day = round($user['postnum'] / $days_registered, 2);
+		if($posts_per_day > $user['postnum'])
+		{
+			$posts_per_day = $user['postnum'];
+		}
 	}
 	$stats = $cache->read("stats");
 	$posts = $stats['numposts'];
@@ -1694,7 +1698,7 @@ function build_users_view($view)
 
 	// IP searching
 	$ip_fields = array("regip", "lastip");
-	foreach($like_fields as $search_field)
+	foreach($ipfields as $search_field)
 	{
 		if($view['conditions'][$search_field])
 		{

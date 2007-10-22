@@ -76,7 +76,7 @@ $fpermissions = $forumpermissions[$fid];
 $query = $db->query("
 	SELECT f.*, fr.dateline AS lastread
 	FROM ".TABLE_PREFIX."forums f
-	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid)
+	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
 	WHERE f.active != 0
 	ORDER BY pid, disporder
 ");

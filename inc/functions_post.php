@@ -600,11 +600,11 @@ function get_post_attachments($id, &$post)
 					// Show as thumbnail IF image is big && thumbnail exists && setting=='thumb'
 					// Show as full size image IF setting=='fullsize' || (image is small && permissions allow)
 					// Show as download for all other cases 
-					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == 1)
+					if($attachment['thumbnail'] != "SMALL" && $attachment['thumbnail'] != "" && $mybb->settings['attachthumbnails'] == "yes")
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_thumbnails_thumbnail")."\";");
 					}
-					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == 0) && $isimage)
+					elseif((($attachment['thumbnail'] == "SMALL" && $forumpermissions['candlattachments'] == 1) || $mybb->settings['attachthumbnails'] == "no") && $isimage)
 					{
 						eval("\$attbit = \"".$templates->get("postbit_attachments_images_image")."\";");
 					}

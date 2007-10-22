@@ -566,7 +566,7 @@ form {
 	text-decoration: none;
 }]]>
 		</stylesheet>
-		<stylesheet name="usercp.css" attachedto="usercp.php|private.php" version="1400"><![CDATA[.usercp_nav_item {
+		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1400"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
 }
@@ -4716,7 +4716,7 @@ body {
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
-<td class="{$trow}" align="center"><a href="{$thread['reporterlink']}" target="_blank">{$report['username']}</a></td>
+<td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</small></td>
 </tr>]]></template>

@@ -132,7 +132,7 @@ var MyBB = {
 			var input = document.createElement("input");
 			input.setAttribute("name", "delete");
 			input.setAttribute("type", "hidden");
-			input.setAttribute("value", "yes");
+			input.setAttribute("value", 1);
 			form.appendChild(input);
 
 			document.getElementsByTagName("body")[0].appendChild(form);

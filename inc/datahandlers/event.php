@@ -262,7 +262,7 @@ class EventDataHandler extends DataHandler
 			return false;
 		}
 
-		if(!is_array($event['repeats']))
+		if(!is_array($event['repeats']) || !$event['repeats']['repeats'])
 		{
 			return true;
 		}

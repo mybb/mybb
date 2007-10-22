@@ -777,6 +777,7 @@ function multipage($count, $perpage, $page, $url)
 		return;
 	}
 	
+	$url = str_replace("&amp;", "&", $url);
 	$url = htmlspecialchars_uni($url);
 
 	$pages = ceil($count / $perpage);

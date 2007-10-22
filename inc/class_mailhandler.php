@@ -97,11 +97,18 @@ class MailHandler
 		$this->message = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $this->message);
 
 		$this->headers = $headers;
-		$this->from = $from;
+
+		if($from)
+		{
+			$this->from = $from;
+		}
 
 		$this->set_to($to);
 		$this->set_subject($subject);
-		$this->set_charset($charset);
+		if($charset)
+		{
+			$this->set_charset($charset);
+		}
 		$this->set_common_headers();
 		$this->set_message($message);
 
@@ -207,7 +214,7 @@ class MailHandler
 		global $mybb;
 
 		// Build mail headers
-		if(trim($this->from) == '')
+		if(!trim($this->from))
 		{
 			$this->from = "\"{$mybb->settings['bbname']}\" <{$mybb->settings['adminemail']}>";
 		}
