@@ -3400,7 +3400,7 @@ td .star_rating {
 {$footer}
 <script type="text/javascript">
 <!--
-	if($('bcc_area'))
+	if($('bcc_area') && $('bcc').value != "")
 	{
 		$('bcc_area').style.display = 'none';
 	}

@@ -888,15 +888,15 @@ class UserDataHandler extends DataHandler
 		$this->uid = $db->insert_id();
 
 		$user['user_fields']['ufid'] = $this->uid;
-		
-		$query = $db->show_fields_from("userfields");
-		while($field = $db->fetch_array($query))
+
+		$query = $db->simple_select("profilefields", "fid");
+		while($profile_field = $db->fetch_array($query))
 		{
-			if($field['Field'] == 'ufid' || array_key_exists($field['Field'], $user['user_fields']))
+			if(array_key_exists("fid{$profile_field['fid']}", $user['user_fields']))
 			{
 				continue;
 			}
-			$user['user_fields'][$field['Field']] = '';
+			$user['user_fields']["ufid{$profile_field['fid']}"] = '';
 		}
 
 		$db->insert_query("userfields", $user['user_fields']);

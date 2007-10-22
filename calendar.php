@@ -436,6 +436,7 @@ if($mybb->input['action'] == "addevent")
 	}
 
 	// Build calendar select
+	$calendar_permissions = get_calendar_permissions();
 	$query = $db->simple_select("calendars", "*", "", array("order_by" => "name", "order_dir" => "asc"));
 	while($calendar_option = $db->fetch_array($query))
 	{

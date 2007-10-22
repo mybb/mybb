@@ -71,7 +71,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canpostthreads'] == 0
 check_forum_password($forum['fid']);
 
 // If MyCode is on for this forum and the MyCode editor is enabled in the Admin CP, draw the code buttons and smilie inserter.
-if($mybb->settings['bbcodeinserter'] != 1 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 {
 	$codebuttons = build_mycode_inserter();
 	if($forum['allowsmilies'] != 0)

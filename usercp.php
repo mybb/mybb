@@ -2385,11 +2385,11 @@ if($mybb->input['action'] == "usergroups")
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 	{
-		$displaycode = "({$lang->display_group})";
+		$displaycode = " ({$lang->display_group})";
 	}
 	elseif($usergroup['candisplaygroup'] == 1)
 	{
-		$displaycode = "(<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
+		$displaycode = " (<a href=\"usercp.php?action=usergroups&amp;displaygroup={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}\">{$lang->set_as_display_group}</a>)";
 	}
 	else
 	{

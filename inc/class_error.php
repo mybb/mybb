@@ -121,6 +121,8 @@ class errorHandler {
 			return;
 		}
 
+		$file = str_replace(MYBB_ROOT, "", $file);
+
 		$this->has_errors = true;
 		
 		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
@@ -149,7 +151,26 @@ class errorHandler {
 				}
 				else
 				{
-					$this->warnings .= "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+					// REMOVE ME BEFORE RELEASE
+					echo "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+					if(function_exists("debug_backtrace"))
+					{
+						$trace = debug_backtrace();
+						$error_message .= "<dt>Backrace:</dt><dd><table class=\"backtrace\"><thead><tr><th>File</th><th>Line</th><th>Function</th></tr></thead><tbody>\n";
+						foreach($trace as $call)
+						{
+							if(!$call['file']) $call['file'] = "[PHP]";
+							if(!$call['line']) $call['line'] = "&nbsp;";
+							$error_message .= "<tr><td>{$call['file']}</td><td>{$call['line']}</td><td>{$call['function']}</td></tr>\n";
+						}
+						$error_message .= "</tbody></table></dd>\n";
+					}
+
+					// UNCOMMENT ME BEFORE RELEASE
+					//$this->warnings .= "<strong>{$this->error_types[$type]}</strong> [$type] $message - Line: $line - File: $file PHP ".PHP_VERSION." (".PHP_OS.")<br />\n";
+
+			echo $error_message;
+
 				}
 			}
 		}
@@ -402,7 +423,20 @@ class errorHandler {
 					$error_message .= "<dt>Code:</dt><dd>{$code}</dd>\n";
 				}
 			}
+			if(function_exists("debug_backtrace"))
+			{
+				$trace = debug_backtrace();
+				$error_message .= "<dt>Backrace:</dt><dd><table class=\"backtrace\"><thead><tr><th>File</th><th>Line</th><th>Function</th></tr></thead><tbody>\n";
+				foreach($trace as $call)
+				{
+					if(!$call['file']) $call['file'] = "[PHP]";
+					if(!$call['line']) $call['line'] = "&nbsp;";
+					$error_message .= "<tr><td>{$call['file']}</td><td>{$call['line']}</td><td>{$call['function']}</td></tr>\n";
+				}
+				$error_message .= "</tbody></table></dd>\n";
+			}
 			$error_message .= "</dl>\n";
+
 		}
 
 		if(isset($lang->settings['charset']))
