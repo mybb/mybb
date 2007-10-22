@@ -1768,9 +1768,12 @@ td .star_rating {
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="9"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="usercp_nav" version="1400"><![CDATA[<td width="{$lang->ucp_nav_width}" valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead"><strong>{$lang->ucp_nav_menu}</strong></td>
-</tr>
+	<tr>
+		<td class="thead"><strong>{$lang->ucp_nav_menu}</strong></td>
+	</tr>
+	<tr>
+		<td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td>
+	</tr>
 {$usercpmenu}
 </table>
 </td>]]></template>
@@ -1823,7 +1826,6 @@ td .star_rating {
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=forumsubscriptions" class="usercp_nav_item usercp_nav_fsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=notepad" class="usercp_nav_item usercp_nav_notepad">{$lang->ucp_nav_notepad}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="{$profile_link}" class="usercp_nav_item usercp_nav_viewprofile">{$lang->ucp_nav_view_profile}</a></td></tr>
-	<tr><td class="trow1 smalltext"><a href="usercp.php" class="usercp_nav_item usercp_nav_home">{$lang->ucp_nav_home}</a></td></tr>
 </tbody>]]></template>
 		<template name="usercp_profile_away" version="120"><![CDATA[<br />
 <fieldset class="trow2">

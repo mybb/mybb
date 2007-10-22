@@ -417,7 +417,7 @@ class errorHandler {
 			$backtrace = $this->generate_backtrace();
 			if($backtrace)
 			{
-				$error_message .= "<dt>Backrace:</dt><dd>{$backtrace}/dd>\n";
+				$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}/dd>\n";
 			}
 			$error_message .= "</dl>\n";
 
