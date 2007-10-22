@@ -9971,5 +9971,64 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						<td class="{$trow}" align="center"><a href="warnings.php?action=view&amp;wid={$row['wid']}">{$lang->view}</a></td>
 					</tr>]]></template>
 	<template name="modcp_warninglogs_warning_revoked" version="1400"><![CDATA[<br /><span class="smalltext"><strong>{$lang->revoked}</strong> {$revoked_date}</span>]]></template>
+	<template name="modcp_announcements_forum" version="1400"><![CDATA[					<tr>
+						<td class="{$trow}"><div style="padding-left: {$padding}px;"><strong>{$forum['name']}</strong></div></td>
+						<td class="{$trow}" colspan="2" align="center"><a href="modcp.php?action=new_announcement&amp;fid={$forum['fid']}">{$lang->add_announcement}</a></td>
+					</tr>]]></template>
+	<template name="modcp_announcements_announcement" version="1400"><![CDATA[					<tr>
+						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$announcement['subject']}</a></div></td>
+						<td class="{$trow}" align="center"><a href="index.php?".SID."modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
+						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
+					</tr>]]></template>
+	<template name="modcp_no_announcements_forum" version="1400"><![CDATA[					<tr>
+						<td class="{$trow}" colspan="3">{$lang->no_forums}</td>
+					</tr>]]></template>
+	<template name="modcp_no_announcements_global" version="1400"><![CDATA[					<tr>
+						<td class="{$trow}" colspan="3">{$lang->no_global_announcements}</td>
+					</tr>]]></template>
+	<template name="modcp_announcements_announcement_global" version="1400"><![CDATA[					<tr>
+						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$announcement['subject']}</a></div></td>
+						<td class="{$trow}" align="center"><a href="index.php?".SID."modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
+						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
+					</tr>]]></template>
+	<template name="modcp_announcements_global" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+					<tr>
+						<td class="thead" colspan="6"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
+					</tr>
+					<tr>
+						<td class="tcat"><strong>{$lang->announcement}</strong></td>
+						<td class="tcat" width="200" colspan="2" align="center"><strong>{$lang->controls}</strong></td>
+					</tr>
+					{$announcements_global}
+				</table>
+				<br />]]></template>
+	<template name="modcp_announcements" version="1400"><![CDATA[<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+{$headerinclude}
+</head>
+<body>
+	{$header}
+	<table width="100%" border="0" align="center">
+		<tr>
+			{$modcp_nav}
+			<td valign="top">
+				{$announcements_global}
+				<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+					<tr>
+						<td class="thead" colspan="6"><strong>{$lang->forum_announcements}</strong></td>
+					</tr>
+					<tr>
+						<td class="tcat"><strong>{$lang->announcement}</strong></td>
+						<td class="tcat" width="200" colspan="2" align="center"><strong>{$lang->controls}</strong></td>
+					</tr>
+					{$announcements_forum}
+				</table>
+			</td>
+		</tr>
+	</table>
+	{$footer}
+</body>
+</html>]]></template>
 	</templates>
 </theme>

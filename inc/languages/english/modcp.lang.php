@@ -185,4 +185,19 @@ $l['filter_reason'] = "Reason contains:";
 $l['view'] = "View";
 $l['no_warning_logs'] = "There are no warning logs to view.";
 $l['revoked'] = "Revoked ";
+
+$l['manage_announcement'] = "Manage Announcements";
+$l['forum_announcements'] = "Forum Announcements";
+$l['announcement'] = "Announcement";
+$l['controls'] = "Controls";
+$l['expired_announcement'] = "Expired Announcement";
+$l['active_announcement'] = "Active Announcement";
+$l['active'] = "Active";
+$l['expired'] = "Expired";
+$l['edit'] = "Edit";
+$l['add_announcement'] = "Add Announcement";
+$l['no_forums'] = "Three are currently no forums on your board.";
+$l['no_global_announcements'] = "There are currently no global announcements on your board.";
+$l['add_global_announcement'] = "Add Global Announcement";
+$l['global_announcements'] = "Global Announcements";
 ?>

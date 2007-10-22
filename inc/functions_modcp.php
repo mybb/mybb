@@ -34,4 +34,67 @@ function modcp_can_manage_user($uid)
 	return true;
 }
 
+function fetch_forum_announcements($pid=0, $depth=1)
+{
+	global $mybb, $db, $lang, $announcements, $templates, $announcements_forum;
+	static $forums_by_parent;
+
+	if(!is_array($forums_by_parent))
+	{
+		$forum_cache = cache_forums();
+
+		foreach($forum_cache as $forum)
+		{
+			$forums_by_parent[$forum['pid']][$val['disporder']][$forum['fid']] = $forum;
+		}
+	}
+
+	if(!is_array($forums_by_parent[$pid]))
+	{
+		return;
+	}
+
+	foreach($forums_by_parent[$pid] as $children)
+	{
+		foreach($children as $forum)
+		{
+			if($forum['active'] == 0 || !is_moderator($forum['fid']))
+			{
+				continue;
+			}
+			
+			$trow = alt_trow();
+			
+			$padding = 40*($depth-1);
+			
+			eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
+				
+			if($announcements[$forum['fid']])
+			{
+				foreach($announcements[$forum['fid']] as $aid => $announcement)
+				{
+					$trow = alt_trow();
+					
+					if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+					{
+						$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+					}
+					else
+					{
+						$icon = "<img src=\"images/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+					}
+							
+					eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
+				}
+			}
+
+			// Build the list for any sub forums of this forum
+			if($forums_by_parent[$forum['fid']])
+			{
+				fetch_forum_announcements($forum['fid'], ++$depth);
+			}
+		}
+	}
+}
+
 ?>

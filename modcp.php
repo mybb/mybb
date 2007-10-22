@@ -466,6 +466,14 @@ if($mybb->input['action'] == "modlogs")
 	output_page($modlogs);	
 }
 
+if($mybb->input['action'] == "do_delete_announcement")
+{
+}
+
+if($mybb->input['action'] == "delete_announcement")
+{
+}
+
 if($mybb->input['action'] == "do_new_announcement")
 {
 }
@@ -484,6 +492,54 @@ if($mybb->input['action'] == "edit_announcement")
 
 if($mybb->input['action'] == "announcements")
 {
+	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=modlogs");
+	
+	// Fetch announcements into their proper arrays
+	$query = $db->simple_select("announcements", "aid, fid, subject, enddate");
+	while($announcement = $db->fetch_array($query))
+	{
+		if($announcement['fid'] == -1)
+		{			
+			$global_announcements[$announcement['aid']] = $announcement;
+			continue;
+		}
+		$announcements[$announcement['fid']][$announcement['aid']] = $announcement;
+	}
+	
+	if($global_announcements && $mybb->usergroup['issupermod'] == 1)
+	{		
+		// Get the global announcements
+		foreach($global_announcements as $aid => $announcement)
+		{
+			$trow = alt_trow();
+			if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+			{
+				$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+			}
+			else
+			{
+				$icon = "<img src=\"images/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+			}
+			
+			eval("\$announcements_global .= \"".$templates->get("modcp_announcements_announcement_global")."\";");
+		}
+	}
+	else
+	{
+		eval("\$announcements_global = \"".$templates->get("modcp_no_announcements_global")."\";");
+	}
+	
+	eval("\$announcements_global = \"".$templates->get("modcp_announcements_global")."\";");
+	
+	fetch_forum_announcements();
+	
+	if(!$announcements_forum)
+	{
+		eval("\$announcements_forum = \"".$templates->get("modcp_no_announcements_forum")."\";");
+	}
+	
+	eval("\$announcements = \"".$templates->get("modcp_announcements")."\";");
+	output_page($announcements);	
 }
 
 if($mybb->input['action'] == "do_modqueue")

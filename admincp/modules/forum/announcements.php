@@ -178,7 +178,7 @@ if($mybb->input['action'] == "add")
 	{
 		if($startday == $i)
 		{
-			$startdateday .= "<option value=\"$i\" selected>$i</option>\n";
+			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
 		else
 		{
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "add")
 		
 		if($endday == $i)
 		{
-			$enddateday .= "<option value=\"$i\" selected>$i</option>\n";
+			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
 		else
 		{
@@ -474,7 +474,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if($startday == $i)
 		{
-			$startdateday .= "<option value=\"$i\" selected>$i</option>\n";
+			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
 		else
 		{
@@ -483,7 +483,7 @@ if($mybb->input['action'] == "edit")
 		
 		if($endday == $i)
 		{
-			$enddateday .= "<option value=\"$i\" selected>$i</option>\n";
+			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
 		}
 		else
 		{
@@ -705,7 +705,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			}
 				
 			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><strong>{$forum['name']}</strong></div>");
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}", array("class" => "align_center", "colspan" => 2));
+			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}</a>", array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
 				
 			if($announcements[$forum['fid']])
