@@ -4020,7 +4020,8 @@ body {
 		<template name="private_archive_html" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messages_for}</title>
-<style type="text/css">{$css}</style>
+<style type="text/css">{$css}
+* {text-align: left}</style>
 </head>
 <body>
 <br />

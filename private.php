@@ -1231,8 +1231,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$ids .= ",'{$message['pmid']}'";
 	}
 	
-	$query = $db->simple_select("themes", "css", "tid='{$theme['tid']}'");
-	$css = $db->fetch_field($query, "css");
+	$query = $db->simple_select("themestylesheets", "stylesheet", "sid=1", array('limit' => 1));
+	$css = $db->fetch_field($query, "stylesheet");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
 	if($mybb->input['deletepms'] == 1)
