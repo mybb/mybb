@@ -240,7 +240,7 @@ if($mybb->input['action'] == "threads" || $mybb->input['action'] == "threadspost
 	$done = 0;
 
 	$query = $db->query("
-		SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username
+		SELECT t.tid, t.fid, t.subject, p.message AS postmessage, p.pid AS postpid, f.name AS forumname, u.username AS username, u.uid
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
@@ -296,7 +296,7 @@ if($mybb->input['action'] == "posts" || $mybb->input['action'] == "threadsposts"
 		"order_dir" => "DESC"
 	);
 	$query = $db->query("
-		SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username
+		SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, f.name AS forumname, u.username AS username, u.uid
 		FROM  ".TABLE_PREFIX."posts p
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
