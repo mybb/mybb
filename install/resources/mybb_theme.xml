@@ -861,11 +861,11 @@ td .star_rating {
 		</td>
 	</tr>
 	<tr>
-		<td class="tcat" width="45%" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']} / <a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
+		<td class="tcat" colspan="3"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']} / <a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
 		<td class="tcat" align="center" width="7%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a> {$orderarrow['views']}</strong></span></td>
 		{$ratingcol}
-		<td class="tcat" align="center" width="170"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
+		<td class="tcat" align="right" width="200"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
 		{$inlinemodcol}
 	</tr>
 	{$announcementlist}
@@ -4064,54 +4064,58 @@ body {
 <!--
 	{$editor_language}
 	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}});
-	clickableEditor.bindSmilieInserter("clickable_smilies");
+	if(clickableEditor)
+	{
+		clickableEditor.bindSmilieInserter("clickable_smilies");
+	}
 // -->
 </script>]]></template>
 		<template name="showthread_quickreply" version="1400"><![CDATA[<br />
 <form method="post" action="newreply.php?tid={$tid}&amp;processed=1" name="quick_reply_form" id="quick_reply_form">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<input type="hidden" name="subject" value="RE: {$thread['subject']}" />
-<input type="hidden" name="action" value="do_newreply" />
-<input type="hidden" name="posthash" value="{$posthash}" id="posthash" />
-<input type="hidden" name="quoted_ids" value="" />
-<input type="hidden" name="lastpid" id="lastpid" value="{$last_pid}" />
-<input type="hidden" name="from_page" value="{$page}" />
-<input type="hidden" name="tid" value="{$tid}" />
-<input type="hidden" name="method" value="quickreply" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<thead>
-<tr>
-<td colspan="2" class="thead">
-<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" alt="[-]"/></div>
-<div><strong>{$lang->quick_reply}</strong></div>
-</td>
-</tr>
-</thead>
-<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
-<tr>
-<td class="trow1" valign="top" width="22%">
-<strong>{$lang->message}</strong><br />
-<span class="smalltext">{$lang->message_note}<br /><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
-<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
-</td>
-<td class="trow1">
-	<div>
-		<textarea style="width: 90%; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
-	</div>
-	<div class="editor_control_bar" style="width: 90%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote">
-		<span class="smalltext">
-			{$lang->quickreply_multiquote_selected} <a href="./newreply.php?tid={$tid}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}</a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}</a>.
-		</span>
-	</div>
-</td>
-</tr>
-{$captcha}
-<tr>
-<td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->post_reply}" tabindex="2" accesskey="s" id="quick_reply_submit" /> <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="3" /></td>
-</tr>
-</tbody>
-</table>
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+	<input type="hidden" name="subject" value="RE: {$thread['subject']}" />
+	<input type="hidden" name="action" value="do_newreply" />
+	<input type="hidden" name="posthash" value="{$posthash}" id="posthash" />
+	<input type="hidden" name="quoted_ids" value="" id="quoted_ids" />
+	<input type="hidden" name="lastpid" id="lastpid" value="{$last_pid}" />
+	<input type="hidden" name="from_page" value="{$page}" />
+	<input type="hidden" name="tid" value="{$tid}" />
+	<input type="hidden" name="method" value="quickreply" />
+
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<thead>
+			<tr>
+				<td colspan="2" class="thead">
+					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" alt="[-]"/></div>
+					<div><strong>{$lang->quick_reply}</strong></div>
+				</td>
+			</tr>
+		</thead>
+		<tbody style="{$collapsed['quickreply_e']}" id="quickreply_e">
+			<tr>
+				<td class="trow1" valign="top" width="22%">
+					<strong>{$lang->message}</strong><br />
+					<span class="smalltext">{$lang->message_note}<br /><br />
+					<label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" {$postoptionschecked['signature']} />&nbsp;<strong>{$lang->signature}</strong></label><br />
+					<label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" />&nbsp;<strong>{$lang->disable_smilies}</strong></label>{$closeoption}</span>
+				</td>
+				<td class="trow1">
+					<div style="width: 95%">
+						<textarea style="width: 100%; padding: 4px; margin: 0;" rows="8" cols="80" name="message" id="message" tabindex="1"></textarea>
+					</div>
+					<div class="editor_control_bar" style="width: 95%; padding: 4px; margin-top: 3px; display: none;" id="quickreply_multiquote">
+						<span class="smalltext">
+							{$lang->quickreply_multiquote_selected} <a href="./newreply.php?tid={$tid}&amp;load_all_quotes=1" onclick="return Thread.loadMultiQuoted();">{$lang->quickreply_multiquote_now}</a> {$lang->or} <a href="javascript:Thread.clearMultiQuoted();">{$lang->quickreply_multiquote_deselect}</a>.
+						</span>
+					</div>
+				</td>
+			</tr>
+			{$captcha}
+			<tr>
+				<td colspan="2" align="center" class="tfoot"><input type="submit" class="button" value="{$lang->post_reply}" tabindex="2" accesskey="s" id="quick_reply_submit" /> <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="3" /></td>
+			</tr>
+		</tbody>
+	</table>
 </form>]]></template>
 		<template name="memberlist" version="1400"><![CDATA[<html>
 <head>
@@ -5006,7 +5010,7 @@ body {
 {$forums}
 </table>
 <br />]]></template>
-		<template name="forumdisplay_threadlist_rating" version="1400"><![CDATA[	<td class="tcat" align="center" width="70">
+		<template name="forumdisplay_threadlist_rating" version="1400"><![CDATA[	<td class="tcat" align="center" width="100">
 		<span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=rating&amp;order=desc">{$lang->rating}</a> {$orderarrow['rating']}</strong></span>
 		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
 		<script type="text/javascript">
@@ -5034,7 +5038,7 @@ body {
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a>{$unapproved_posts}</td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	{$rating}
-	<td class="{$bgcolor}" style="white-space: nowrap">
+	<td class="{$bgcolor}" style="white-space: nowrap; text-align: right;">
 		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
 		<a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
@@ -7431,11 +7435,11 @@ To: {$to_recipients}
 		<template name="xmlhttp_inline_post_editor" version="120"><![CDATA[<br />
 		<div style="clear: both;">
 			<div>
-				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}">{$post['message']}</textarea>
+				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}" tabindex="999">{$post['message']}</textarea>
 			</div>
 			<div class="editor_control_bar" style="width: 99%; padding: 4px; margin-top: 3px; text-align: right;">
-				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="{$lang->save_changes}" />
-				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="{$lang->cancel_edit}" />
+				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="{$lang->save_changes}" tabindex="1000" />
+				<input type="button" class="button" onclick="Thread.quickEditCancel({$post['pid']});" value="{$lang->cancel_edit}" tabindex="1001" />
 			</div>
 			<br style="clear: both;" />
 		</div>]]></template>
@@ -8944,10 +8948,17 @@ To: {$to_recipients}
 			<td class="trow1">
 				<script type="text/javascript">
 				<!--
+					var mybb_editor_disabled = true;
+					var clickableEditor = '';
 					function togglePM()
 					{
 						if($('send_pm').checked == true)
 						{
+							if(!clickableEditor && editor_language)
+							{
+								mybb_editor_disabled = false;
+								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: 0});
+							}
 							$('pm_input').show();
 							$('pm_smilie_insert').show();
 						}
@@ -9895,7 +9906,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			{$modcp_nav}
 			<td valign="top">
-				{$multipage}
 				<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
 						<td class="thead" colspan="6"><strong>{$lang->warning_logs}</strong></td>

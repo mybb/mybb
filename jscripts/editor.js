@@ -7,7 +7,7 @@ messageEditor.prototype = {
 	{
 		// Sorry Konqueror, but due to a browser bug out of control with textarea values
 		// you do not get to use the fancy editor.
-		if(MyBB.browse == "konqueror")
+		if(MyBB.browse == "konqueror" || typeof('mybb_editor_disabled') != 'undefined')
 		{
 			return false;
 		}

@@ -99,19 +99,14 @@ class postParser
 		}
 		else
 		{		
-			// Strip out any script tags if HTML is enabled
-			if($options['allow_html'] == 1)
+			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
 			{
-				while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
-				{
-					$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
-				}
-				// Remove these completely
-				$message = preg_replace("#\s*<base[^>]*>\s*#is", "", $message);
-				$message = preg_replace("#\s*<meta[^>]*>\s*#is", "", $message);
-
-				$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
+				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
 			}
+			// Remove these completely
+			$message = preg_replace("#\s*<base[^>]*>\s*#is", "", $message);
+			$message = preg_replace("#\s*<meta[^>]*>\s*#is", "", $message);
+			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.

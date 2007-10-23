@@ -735,7 +735,7 @@ if($mybb->input['action'] == "change")
 			if($mybb->input['upsetting']['delayedthreadviews'] == 0)
 			{
 				$updated_task = array(
-					"enabled" => 1
+					"enabled" => 0
 				);
 			}
 			else

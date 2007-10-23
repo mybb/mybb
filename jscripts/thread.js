@@ -115,7 +115,7 @@ var Thread = {
 		}
 		Thread.clearMultiQuoted();
 		$('quickreply_multiquote').hide();
-		document.input.quoted_ids.value = 'all';
+		$('quoted_ids').value = 'all';
 		if(this.spinner)
 		{
 			this.spinner.destroy();
@@ -348,7 +348,6 @@ var Thread = {
 			$('posts').appendChild(post);
 			if(MyBB.browser == "ie")
 			{
-				alert(request.responseText.extractScripts());
 				request.responseText.evalScripts();
 			}
 			Form.reset('quick_reply_form');

@@ -1446,45 +1446,43 @@ if($mybb->input['action'] == "warninglogs")
 	
 
 	$warning_list = '';
-	if($db->num_rows($query) > 0)
+	while($row = $db->fetch_array($query))
 	{
-		while($row = $db->fetch_array($query))
+		$trow = alt_trow();
+		$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
+		$username_link = build_profile_link($username, $row['uid']);
+		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
+		$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
+		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
+		$revoked_text = '';
+		if($row['daterevoked'] > 0)
 		{
-			$trow = alt_trow();
-			$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
-			$username_link = build_profile_link($username, $row['uid']);
-			$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
-			$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
-			$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
-			$revoked_text = '';
-			if($row['daterevoked'] > 0)
-			{
-				$revoked_date = my_date($mybb->settings['dateformat'], $row['daterevoked']).' '.my_date($mybb->settings['timeformat'], $row['daterevoked']);
-				eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
-			}
-			if($row['expires'] > 0)
-			{
-				$expire_date = my_date($mybb->settings['dateformat'], $row['expires']).' '.my_date($mybb->settings['timeformat'], $row['expires']);
-			}
-			else
-			{
-				$expire_date = $lang->never;
-			}
-			$title = $row['title'];
-			if(empty($row['title']))
-			{
-				$title = $row['custom_title'];
-			}
-			$title = htmlspecialchars_uni($title);
-			if($row['points'] > 0)
-			{
-				$points = '+'.$row['points'];
-			}
-			 
-			eval("\$warning_list .= \"".$templates->get("modcp_warninglogs_warning")."\";");
+			$revoked_date = my_date($mybb->settings['dateformat'], $row['daterevoked']).' '.my_date($mybb->settings['timeformat'], $row['daterevoked']);
+			eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
 		}
+		if($row['expires'] > 0)
+		{
+			$expire_date = my_date($mybb->settings['dateformat'], $row['expires']).' '.my_date($mybb->settings['timeformat'], $row['expires']);
+		}
+		else
+		{
+			$expire_date = $lang->never;
+		}
+		$title = $row['title'];
+		if(empty($row['title']))
+		{
+			$title = $row['custom_title'];
+		}
+		$title = htmlspecialchars_uni($title);
+		if($row['points'] > 0)
+		{
+			$points = '+'.$row['points'];
+		}
+		 
+		eval("\$warning_list .= \"".$templates->get("modcp_warninglogs_warning")."\";");
 	}
-	else
+	
+	if(!$warning_list)
 	{
 		eval("\$warning_list = \"".$templates->get("modcp_warninglogs_nologs")."\";");
 	}
@@ -1919,6 +1917,12 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	if(!$mybb->input['banreason'])
 	{
 		$errors[] = $lang->error_nobanreason;
+	}
+
+	// Check banned group
+	if(!$db->fetch_field($db->simple_select("usergroups", "gid", "isbannedgroup=1 AND gid='".intval($mybb->input['usergroup'])."'"), "gid"))
+	{
+		$errors[] = $lang->error_nobangroup;
 	}
 
 	// If this is a new ban, we check the user isn't already part of a banned group

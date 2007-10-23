@@ -134,7 +134,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			}
 			if(!is_numeric($mybb->input['custom_points']) || $mybb->input['custom_points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['custom_points'] < 0)
 			{
-				$warn_errors[] = sprintf($lang->error_invalid_custom_points, $mybb->settings['maxwarnpoints']);
+				$warn_errors[] = sprintf($lang->error_invalid_custom_points, $mybb->settings['maxwarningpoints']);
 			}
 			else
 			{
@@ -167,6 +167,11 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 				}
 			}
 		}
+	}
+
+	if($warning_expires <= TIME_NOW)
+	{
+		$warning_expires = 0;
 	}
 
 	// Are we notifying the user?

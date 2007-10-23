@@ -69,7 +69,7 @@
 		<day>*</day>
 		<weekday>*</weekday>
 		<month>*</month>
-		<enabled>0</enabled>
+		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
 	<task>

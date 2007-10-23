@@ -2712,7 +2712,7 @@ if(!$mybb->input['action'])
 					$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 					$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."\">{$warning['post_subject']}</a></small>";
 				}
-				$issuedby = build_profile_link($warning['username'], $warning['uid']);
+				$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 				$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
 				if($warning['type_title'])
 				{
