@@ -1395,7 +1395,7 @@ class Moderation
 	 */
 	function change_thread_subject($tids, $format)
 	{
-		global $db;
+		global $db, $mybb;
 
 		// Get tids into list
 		if(!is_array($tids))
@@ -1409,8 +1409,10 @@ class Moderation
 		while($thread = $db->fetch_array($query))
 		{
 			// Update threads and first posts with new subject
+			$subject = str_replace('{subject}', $thread['subject'], $format);
+			$subject = str_replace('{username}', $mybb->user['username'], $subject);
 			$new_subject = array(
-				"subject" => $db->escape_string(str_replace('{subject}', $thread['subject'], $format))
+				"subject" => $db->escape_string($subject)
 			);
 			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'", 1);
 			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);

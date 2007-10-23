@@ -327,7 +327,12 @@ class CustomModeration extends Moderation
 					if(empty($thread_options['replysubject']))
 					{
 						$thread_options['replysubject'] = 'RE: '.$thread['subject'];
-					}	
+					}
+					else
+					{
+						$thread_options['replysubject'] = str_replace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+						$thread_options['replysubject'] = str_replace('{subject}', $thread['subject'], $thread_options['replysubject']);
+					}
 	
 					// Set the post data that came from the input to the $post array.
 					$post = array(

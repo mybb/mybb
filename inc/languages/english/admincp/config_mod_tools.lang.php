@@ -70,12 +70,12 @@ $l['merge_thread_desc'] = "Only if used in inline moderation.";
 $l['delete_poll'] = "Delete poll?";
 $l['delete_redirects'] = "Delete redirects?";
 $l['new_subject'] = "New subject?";
-$l['new_subject_desc'] = "{subject} represents the original subject.";
+$l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";
 
 $l['add_new_reply'] = "Add new reply.";
 $l['add_new_reply_desc'] = "Leave blank for no reply.";
 $l['reply_subject'] = "Reply subject.";
-$l['reply_subject_desc'] = "Only used if a reply was made.";
+$l['reply_subject_desc'] = "Only used if a reply was made.<br />{subject} represents the original subject. {username} represents the moderator's username.";
 
 $l['success_mod_tool_created'] = "Successfully created the moderation tool.";
 $l['success_mod_tool_updated'] = "Successfully updated the moderation tool.";
