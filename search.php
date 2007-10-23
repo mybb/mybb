@@ -349,6 +349,7 @@ if($mybb->input['action'] == "results")
 				if($thread['pages'] > 4)
 				{
 					$pagesstop = 4;
+					$page_link = get_thread_link($thread['tid'], $thread['pages']);
 					eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
 				}
 				else
@@ -357,6 +358,7 @@ if($mybb->input['action'] == "results")
 				}
 				for($i = 1; $i <= $pagesstop; ++$i)
 				{
+					$page_link = get_thread_link($thread['tid'], $i);
 					eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 				}
 				eval("\$thread[multipage] = \"".$templates->get("forumdisplay_thread_multipage")."\";");

@@ -552,6 +552,10 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$db->update_query("polls", $updatedpoll, "pid='".intval($mybb->input['pid'])."'");
 
 	$plugins->run_hooks("polls_do_editpoll_end");
+	
+	$modlogdata['fid'] = $thread['fid'];
+	$modlogdata['tid'] = $thread['tid'];
+	log_moderator_action($modlogdata, $lang->poll_edited);
 
 	redirect(get_thread_link($thread['tid']), $lang->redirect_pollupdated);
 }

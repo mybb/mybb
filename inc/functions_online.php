@@ -453,10 +453,10 @@ function build_friendly_wol_location($user_activity, $return=false)
 	if(!is_array($events) && count($eid_list) > 0)
 	{
 		$eid_sql = implode(",", $eid_list);
-		$query = $db->simple_select("events", "eid,subject", "eid IN ($eid_sql)");
+		$query = $db->simple_select("events", "eid,name", "eid IN ($eid_sql)");
 		while($event = $db->fetch_array($query))
 		{
-			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['subject']));
+			$events[$event['eid']] = htmlspecialchars_uni($parser->parse_badwords($event['name']));
 		}
 	}
 

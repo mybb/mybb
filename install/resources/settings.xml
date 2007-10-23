@@ -1143,7 +1143,7 @@ download=As Download Link]]></optionscode>
 			<description><![CDATA[Enter the time in seconds for the minimum allowed interval for searching. This prevents users from overloading your server by constantly performing searches. Set to 0 to disable.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[60]]></settingvalue>
+			<settingvalue><![CDATA[30]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="minsearchword">

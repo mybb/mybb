@@ -358,17 +358,20 @@ if($mybb->input['action'] == "send")
 				$comma = ',';
 			}
 
-			foreach($recipients['bcc'] as $recipient)
+			if(isset($recipients['bcc']) && is_array($recipients['bcc']))
 			{
-				$recipient_list['bcc'][] = $recipient;
-				$recipientids .= $comma.$recipient;
-				$comma = ',';
+				foreach($recipients['bcc'] as $recipient)
+				{
+					$recipient_list['bcc'][] = $recipient;
+					$recipientids .= $comma.$recipient;
+					$comma = ',';
+				}	
 			}
-
+			
 			$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
 			while($user = $db->fetch_array($query))
 			{
-				if(in_array($user['uid'], $recipient_list['bcc']))
+				if(isset($recipients['bcc']) && is_array($recipients['bcc']) && in_array($user['uid'], $recipient_list['bcc']))
 				{
 					$bcc .= htmlspecialchars_uni($user['username']).', ';
 				}

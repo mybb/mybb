@@ -51,4 +51,6 @@ $l['error_alreadyvoted'] = "You have already voted in this poll.";
 $l['error_invalidpoll'] = "The specified poll is invalid or does not exist.";
 $l['error_pollclosed'] = "You cannot vote in a poll that has been closed.";
 
+$l['poll_deleted'] = "Deleted Poll";
+$l['poll_edited'] = "Edited Poll";
 ?>

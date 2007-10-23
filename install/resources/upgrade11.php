@@ -131,7 +131,10 @@ function upgrade11_dbchanges()
 				foreach($columns as $column)
 				{
 					// Closed does not get converted to an int
-					if($column == $primary_key || ($table == "threads" && $column == "closed") continue;
+					if($column == $primary_key || ($table == "threads" && $column == "closed"))
+					{
+						continue;
+					}
 					$change_column[] = "MODIFY {$column} int(1) NOT NULL default '0'";
 				}
 				$db->query("ALTER TABLE {$table} ".implode(", ", $change_column));
