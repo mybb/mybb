@@ -39,7 +39,7 @@ $l['success_user_updated'] = "The user has successfully been updated.";
 $l['success_user_deleted'] = "The user has successfully been deleted.";
 $l['success_merged'] = "has successfully been merged in to";
 
-$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?".SID."&module=user/users&action=coppa_activate&uid={$user['uid']}\">Activate Account</a></p>";
+$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?".SID."&amp;module=user/users&amp;action=coppa_activate&amp;uid={1}\">Activate Account</a></p>";
 
 $l['required_profile_info'] = "Required Profile Information";
 $l['password'] = "Password";

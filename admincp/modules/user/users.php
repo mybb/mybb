@@ -751,6 +751,12 @@ if($mybb->input['action'] == "edit")
 	{
 		$page->output_inline_error($errors);
 	}
+	
+	// Is this user a COPPA user? We show a warning & activate link
+	if($user['coppauser'])
+	{
+		echo sprintf($lang->warning_coppa_user, $user['uid']);
+	}
 
 	$tabs = array(
 		"overview" => $lang->overview,
@@ -760,12 +766,6 @@ if($mybb->input['action'] == "edit")
 		"avatar" => $lang->avatar
 	);
 	$page->output_tab_control($tabs);
-
-	// Is this user a COPPA user? We show a warning & activate link
-	if($user['coppauser'])
-	{
-		echo $lang->warning_coppa_user;
-	}
 
 	//
 	// OVERVIEW
