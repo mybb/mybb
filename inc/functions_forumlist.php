@@ -220,8 +220,9 @@ function build_forumbits($pid=0, $depth=1)
 					}
 					else
 					{
-						$forum_viewers_text = "<span class=\"smalltext\">".sprintf($lang->viewing_multiple, $forum['viewers'])."</span>";
+						$forum_viewers_text = sprintf($lang->viewing_multiple, $forum['viewers']);
 					}
+					$forum_viewers_text = "<span class=\"smalltext\">{$forum_viewers_text}</span>";
 				}
 			}
 			// If this forum is a link or is password protected and the user isn't authenticated, set lastpost and counters to "-"
