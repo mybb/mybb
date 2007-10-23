@@ -847,7 +847,7 @@ function multipage($count, $perpage, $page, $url)
 	if($page < $pages)
 	{
 		$next = $page+1;
-		$page_url_page = fetch_page_url($url, $next);
+		$page_url = fetch_page_url($url, $next);
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
 	$lang->multipage_pages = sprintf($lang->multipage_pages, $pages);
@@ -1150,10 +1150,12 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  * Check the password given on a certain forum for validity
  *
  * @param int The forum ID
+ * @param boolean The Parent ID
  */
-function check_forum_password($fid)
+function check_forum_password($fid, $pid=0)
 {
-	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang;
+	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
+	
 	$showform = true;
 	
 	if(!is_array($forum_cache))
@@ -1172,9 +1174,14 @@ function check_forum_password($fid)
 	{
 		foreach($parents as $parent_id)
 		{
+			if($parent_id == $fid || $parent_id == $pid)
+			{
+				continue;
+			}
+			
 			if($forum_cache[$parent_id]['password'] != "")
 			{
-				check_forum_password($parent_id, $forum_cache[$parent_id]['password']);
+				check_forum_password($parent_id, $fid);
 			}
 		}
 	}

@@ -1391,8 +1391,10 @@ if($mybb->input['action'] == "profile")
 		$userstars .= "<img src=\"$starimage\" border=\"0\" alt=\"*\" />";
 	}
 	
+	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
+	
 	// User is currently online and this user has permissions to view the user on the WOL
-	$query = $db->simple_select("sessions", "location", "uid='$uid'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
+	$query = $db->simple_select("sessions", "location", "uid='$uid' AND time>'{$timesearch}", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
 	if($db->num_rows($query) > 0 && ($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']))
 	{
 		// Fetch location
@@ -1446,7 +1448,6 @@ if($mybb->input['action'] == "profile")
 		}
 		eval("\$warning_level = \"".$templates->get("member_profile_warninglevel")."\";");
 	}
-
 
 	$query = $db->simple_select("userfields", "*", "ufid='$uid'");
 	$userfields = $db->fetch_array($query);

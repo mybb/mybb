@@ -537,6 +537,7 @@ form {
 .pagination {
 	font-size: 11px;
 	padding-top: 10px;
+	margin-bottom: 5px;
 }
 
 .tfoot .pagination, .tcat .pagination {
@@ -4938,10 +4939,10 @@ body {
 {$prevpage}{$start}{$mppage}{$end}{$nextpage}
 </div>]]></template>
 		<template name="multipage_end" version="1400"><![CDATA[... <a href="{$page_url}" class="pagination_last">{$pages}</a>]]></template>
-		<template name="multipage_nextpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_next">Next &raquo;</a>]]></template>
+		<template name="multipage_nextpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_next">{$lang->next} &raquo;</a>]]></template>
 		<template name="multipage_page" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_page">{$i}</a>]]></template>
 		<template name="multipage_page_current" version="1400"><![CDATA[ <span class="pagination_current">{$i}</span>]]></template>
-		<template name="multipage_prevpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_previous">&laquo; Previous</a>]]></template>
+		<template name="multipage_prevpage" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_previous">&laquo; {$lang->previous}</a>]]></template>
 		<template name="multipage_start" version="1400"><![CDATA[<a href="{$page_url}" class="pagination_first">1</a> ...]]></template>
 		<template name="usercp_forumsubscriptions_none" version="120"><![CDATA[<tr>
 <td class="trow1" colspan="5">{$lang->no_forum_subscriptions}</td>
@@ -9894,7 +9895,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			{$modcp_nav}
 			<td valign="top">
-				{$multipage}<br />
+				{$multipage}
 				<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
 						<td class="thead" colspan="6"><strong>{$lang->warning_logs}</strong></td>

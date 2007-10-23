@@ -382,6 +382,8 @@ if(!isset($mybb->input['sortby']) && !empty($foruminfo['defaultsortby']))
 	$mybb->input['sortby'] = $foruminfo['defaultsortby'];
 }
 
+$t = "t.";
+
 $sortby = htmlspecialchars($mybb->input['sortby']);
 switch($mybb->input['sortby'])
 {
@@ -398,6 +400,7 @@ switch($mybb->input['sortby'])
 		$sortfield = "username";
 		break;
 	case "rating":
+		$t = "";
 		$sortfield = "averagerating";
 		$sortfield2 = ", t.totalratings DESC";
 		break;
@@ -614,7 +617,7 @@ $query = $db->query("
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
 	WHERE t.fid='$fid' $tvisibleonly $datecutsql2
-	ORDER BY t.sticky DESC, t.$sortfield $sortordernow $sortfield2
+	ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 	LIMIT $start, $perpage
 ");
 while($thread = $db->fetch_array($query))

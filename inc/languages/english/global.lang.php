@@ -360,4 +360,7 @@ $l['missing_task'] = "Task file does not exist";
 $l['task_backup_cannot_write_backup'] = "Database backup task cannot write to backups directory.";
 
 $l['dismiss_notice'] = "Dismiss this notice";
+
+$l['next'] = "Next";
+$l['previous'] = "Previous";
 ?>

@@ -431,7 +431,7 @@ class postParser
 				$message = preg_replace("#(\W|^)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement']."\\2", $message);
 			}
 		}
-		if($options['strip_tags'] == 0)
+		if($options['strip_tags'] == 1)
 		{
 			$message = strip_tags($message);
 		}

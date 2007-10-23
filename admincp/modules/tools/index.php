@@ -318,10 +318,19 @@ if(!$mybb->input['action'])
 	$table->construct_cell(get_friendly_size(round($attachs['spaceused']*$attachs['downloadsused'])), array('width' => '25%'));
 	$table->construct_row();
 	
+	if($attachs['spaceused'] > 0)
+	{
+		$attach_average_size = round($attachs['spaceused']/$attachs['numattachs']);
+	}
+	else
+	{
+		$attach_average_size = 0;
+	}
+	
 	$table->construct_cell("<strong>{$lang->max_upload_post_size}</strong>", array('width' => '200'));
 	$table->construct_cell(@ini_get('upload_max_filesize').' / '.@ini_get('post_max_size'), array('width' => '200'));
 	$table->construct_cell("<strong>{$lang->average_attachment_size}</strong>", array('width' => '25%'));
-	$table->construct_cell(get_friendly_size(round($attachs['spaceused']/$attachs['numattachs'])), array('width' => '25%'));
+	$table->construct_cell(get_friendly_size($attach_average_size), array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->output($lang->stats);

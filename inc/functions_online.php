@@ -771,7 +771,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 	}
 	if(!$location_name)
 	{
-		$location_name = sprintf($lang->unknown_location, $user_activity['location']);
+		$location_name = sprintf($lang->unknown_location, $location);
 	}
 
 	return $location_name;
