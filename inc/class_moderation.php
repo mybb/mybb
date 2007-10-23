@@ -1409,8 +1409,8 @@ class Moderation
 		while($thread = $db->fetch_array($query))
 		{
 			// Update threads and first posts with new subject
-			$subject = str_replace('{subject}', $thread['subject'], $format);
-			$subject = str_replace('{username}', $mybb->user['username'], $subject);
+			$subject = str_replace('{username}', $mybb->user['username'], $format);
+			$subject = str_replace('{subject}', $thread['subject'], $subject);
 			$new_subject = array(
 				"subject" => $db->escape_string($subject)
 			);
