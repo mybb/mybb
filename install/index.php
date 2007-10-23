@@ -1032,14 +1032,18 @@ function create_admin_user()
 				$fields[] = $field['attributes']['name'];
 			}
 			$conditions = array();
-			foreach($view['conditions'][0]['condition'] as $condition)
+			
+			if(is_array($view['conditions'][0]['condition']))
 			{
-				if(!$condition['value']) continue;
-				if($condition['attributes']['is_serialized'] == 1)
+				foreach($view['conditions'][0]['condition'] as $condition)
 				{
-					$condition['value'] = unserialize($condition['value']);
+					if(!$condition['value']) continue;
+					if($condition['attributes']['is_serialized'] == 1)
+					{
+						$condition['value'] = unserialize($condition['value']);
+					}
+					$conditions[$condition['attributes']['name']] = $condition['value'];
 				}
-				$conditions[$condition['attributes']['name']] = $condition['value'];
 			}
 
 			$new_view = array(

@@ -7431,7 +7431,7 @@ To: {$to_recipients}
 		<template name="xmlhttp_inline_post_editor" version="120"><![CDATA[<br />
 		<div style="clear: both;">
 			<div>
-				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}" />{$post['message']}</textarea>
+				<textarea style="width: 99%; padding: 4px; margin: 0;" rows="12" cols="80" id="quickedit_{$post['pid']}">{$post['message']}</textarea>
 			</div>
 			<div class="editor_control_bar" style="width: 99%; padding: 4px; margin-top: 3px; text-align: right;">
 				<input type="button" class="button" onclick="Thread.quickEditSave({$post['pid']});" value="{$lang->save_changes}" />
