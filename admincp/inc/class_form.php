@@ -456,7 +456,7 @@ class DefaultForm
 	function generate_on_off_radio($name, $value=1, $int=true, $on_options=array(), $off_options = array())
 	{
 		// Checked status
-		if($value == "off" || $value !== 1)
+		if($value == "off" || (int) $value !== 1)
 		{
 			$off_checked = 1;
 			$on_checked = 0;
