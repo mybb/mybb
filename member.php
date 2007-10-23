@@ -1394,16 +1394,20 @@ if($mybb->input['action'] == "profile")
 	// User is currently online and this user has permissions to view the user on the WOL
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 	$query = $db->simple_select("sessions", "location", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
-	if($location = $db->fetch_field($query, 'location') && ($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']))
+	if($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid'])
 	{
-		// Fetch their current location
-		$lang->load("online");
-		require_once MYBB_ROOT."inc/functions_online.php";
-		$activity = fetch_wol_activity($location);
-		$location = build_friendly_wol_location($activity);
-		$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
+		$location = $db->fetch_field($query, 'location');
+		if($location)
+		{
+			// Fetch their current location
+			$lang->load("online");
+			require_once MYBB_ROOT."inc/functions_online.php";
+			$activity = fetch_wol_activity($location);
+			$location = build_friendly_wol_location($activity);
+			$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
 
-		eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+			eval("\$online_status = \"".$templates->get("member_profile_online")."\";");
+		}
 	}
 	// User is offline
 	else

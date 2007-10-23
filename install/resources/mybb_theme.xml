@@ -8861,7 +8861,7 @@ To: {$to_recipients}
 			<td width="20%" class="trow2" valign="top"><strong>{$lang->warning_type}</strong></td>
 			<td class="trow2">
 				<script type="text/javascript">
-				<!--
+				// <!--
 					function checkType()
 					{
 						var checked = '';
@@ -8888,7 +8888,7 @@ To: {$to_recipients}
 					{$custom_warning}
 				</dl>
 				<script type="text/javascript">
-				<!--
+				// <!--
 					checkType();
 				// -->
 				</script>
@@ -8947,20 +8947,24 @@ To: {$to_recipients}
 			</td>
 			<td class="trow1">
 				<script type="text/javascript">
-				<!--
+				// <!--
 					var mybb_editor_disabled = true;
 					var clickableEditor = '';
 					function togglePM()
 					{
 						if($('send_pm').checked == true)
 						{
-							if(!clickableEditor && editor_language)
+							$('pm_input').show();
+							$('pm_smilie_insert').show();
+							if(mybb_editor_disabled == true && editor_language)
 							{
 								mybb_editor_disabled = false;
 								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: 0});
+								if(clickableEditor)
+								{
+									clickableEditor.bindSmilieInserter("clickable_smilies");
+								}
 							}
-							$('pm_input').show();
-							$('pm_smilie_insert').show();
 						}
 						else
 						{
