@@ -4,7 +4,7 @@
 		<gid><![CDATA[1]]></gid>
 		<type><![CDATA[1]]></type>
 		<title><![CDATA[Guests]]></title>
-		<description><![CDATA[The default group that all visitors are asigned to unless they're logged in.]]></description>
+		<description><![CDATA[The default group that all visitors are assigned to unless they're logged in.]]></description>
 		<namestyle><![CDATA[{username}]]></namestyle>
 		<usertitle><![CDATA[Unregistered]]></usertitle>
 		<stars><![CDATA[0]]></stars>
