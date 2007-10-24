@@ -152,7 +152,7 @@ function tools_admin_permissions()
 		"cache" => $lang->can_manage_cache,
 		"tasks" => $lang->can_manage_tasks,
 		"backupdb" => $lang->can_manage_db_backup,
-		"optimize" => $lang->can_optimize_db,
+		"optimizedb" => $lang->can_optimize_db,
 		"recount_rebuild" => $lang->can_recount_and_rebuild,
 		"adminlog" => $lang->can_manage_admin_logs,
 		"modlog" => $lang->can_manage_mod_logs,

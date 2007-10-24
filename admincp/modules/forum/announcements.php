@@ -703,8 +703,13 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			{
 				$forum['name'] = "<em>".$forum['name']."</em>";
 			}
+			
+			if($forum['type'] == "c")
+			{
+				$forum['name'] = "<strong>".$forum['name']."</strong>";
+			}
 				
-			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><strong>{$forum['name']}</strong></div>");
+			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\">{$forum['name']}</div>");
 			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}</a>", array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
 				
@@ -731,7 +736,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			// Build the list for any sub forums of this forum
 			if($forums_by_parent[$forum['fid']])
 			{
-				fetch_forum_announcements($table, $forum['fid'], ++$depth);
+				fetch_forum_announcements($table, $forum['fid'], $depth+1);
 			}
 		}
 	}

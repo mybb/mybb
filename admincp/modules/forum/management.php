@@ -425,7 +425,7 @@ if(!$mybb->input['action'])
  */
 function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 {
-	global $mybb, $lang, $db;
+	global $mybb, $lang, $db, $sub_forums;
 	static $forums_by_parent;
 
 	if(!is_array($forums_by_parent))
@@ -454,7 +454,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				
 			if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 			{
-				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>");
+				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a>");
 
 				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 				
@@ -474,7 +474,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				// Does this category have any sub forums?
 				if($forums_by_parent[$forum['fid']])
 				{
-					build_admincp_forums_list($form_container, $forum['fid'], ++$depth);
+					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
 				}
 			}
 			elseif($forum['type'] == "f" && ($depth == 1 || $depth == 2))
@@ -491,20 +491,20 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$sub_forums = '';
 				if(isset($forums_by_parent[$forum['fid']]) && $depth == 2)
 				{
-					$sub_forums = build_admincp_forums_list($form_container, $forum['fid'], ++$depth);
+					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
 				}
 				if($sub_forums)
 				{
-					$sub_forums = "<br /><small>{$lang->sub_forums}: {$subforumlist}</small>";
+					$sub_forums = "<br /><small>{$lang->sub_forums}: {$sub_forums}</small>";
 				}
 					
 				if($depth == 2)
 				{
-					$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$subforumlist}</div>");
+					$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 				}
 				else
 				{
-					$form_container->output_cell("{$forum['name']}{$forum['description']}{$subforumlist}");
+					$form_container->output_cell("{$forum['name']}{$forum['description']}{$sub_forums}");
 				}
 					
 				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
@@ -534,10 +534,10 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				++$donecount;
 				if($donecount == $mybb->settings['subforumsindex'])
 				{
-					if(count($main) > $donecount)
+					if(count($children) > $donecount)
 					{
-						$sub_forums .= $comma.sprintf($lang->more_subforums, (count($main) - $donecount));
-						return $sub_forums;
+						$sub_forums .= $comma.sprintf($lang->more_subforums, (count($children) - $donecount));
+						return;
 					}
 				}
 			}

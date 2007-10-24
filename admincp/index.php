@@ -128,6 +128,8 @@ elseif($mybb->input['do'] == "login")
 
 	if($mybb->user['uid'])
 	{
+		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
+		
 		$sid = md5(uniqid(microtime()));
 		
 		// Create a new admin session for this user

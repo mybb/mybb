@@ -197,7 +197,7 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 	}
-	closedir($modules_dir);
+	closedir($dir);
 	
 	
 	$page->output_tab_control($module_tabs);

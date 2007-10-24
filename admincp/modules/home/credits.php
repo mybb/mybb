@@ -65,6 +65,11 @@ if(!$mybb->input['action'])
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&uid=1653\" target=\"_blank\">DrPoodle</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+	
 	$table->output($lang->mybb_credits);
 	
 	$page->output_footer();

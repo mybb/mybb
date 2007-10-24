@@ -107,8 +107,7 @@ function user_admin_permissions()
 		"banning" => $lang->can_manage_user_bans,
 		"admin_permissions" => $lang->can_manage_admin_permissions,
 		"mass_mail" => $lang->can_send_mass_mail,
-		"group_promotions" => $lang->can_manage_group_permissions,
-		"stats_and_logging" => $lang->can_manage_stats_and_logging,
+		"group_promotions" => $lang->can_manage_group_promotions
 	);
 	return array("name" => $lang->users_and_groups, "permissions" => $admin_permissions);
 }
