@@ -289,14 +289,14 @@ $l['email_emailuser'] = "{1},
 ------------------------------------------
 
 Thank you,
-{2} Staff
-{3}
+{3} Staff
+{4}
 
 ------------------------------------------
 Don't want to receive email messages from other members?
 
 If you don't want other members to be able to email you please visit your User Control Panel and enable the option 'Hide your email from other members':
-{3}/usercp.php?action=options
+{4}/usercp.php?action=options
 
 ------------------------------------------";
 ?>

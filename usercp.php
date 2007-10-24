@@ -2728,25 +2728,25 @@ if(!$mybb->input['action'])
 					$warning['points'] = "+{$warning['points']}";
 				}
 				$points = sprintf($lang->warning_points, $warning['points']);
-				if($warning['expired'] != 1)
+				
+				// Figure out expiration time
+				if($warning['daterevoked'])
 				{
-					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+					$expires = $lang->warning_revoked;
+				}
+				elseif($warning['expired'])
+				{
+					$expires = $lang->already_expired;
+				}
+				elseif($warning['expires'] == 0)
+				{
+					$expires = $lang->never;
 				}
 				else
 				{
-					if($warning['daterevoked'])
-					{
-						$expires = $lang->warning_revoked;
-					}
-					else if($warning['expires'])
-					{
-						$expires = $lang->already_expired;
-					}
-					else
-					{
-						$expires = $lang->never;
-					}
+					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
 				}
+				
 				$alt_bg = alt_trow();
 				eval("\$warnings .= \"".$templates->get("usercp_warnings_warning")."\";");
 			}

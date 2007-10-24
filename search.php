@@ -311,6 +311,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "new";
 				$new_class = "subject_new";
 				$folder_label .= $lang->icon_new;
+				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
 				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 				$unreadpost = 1;
 			}

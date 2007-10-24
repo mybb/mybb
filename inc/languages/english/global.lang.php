@@ -59,7 +59,7 @@ $l['password_required'] = "Password Required";
 $l['forum_password_note'] = "The administrator has required it so that a password is required for access to this forum.";
 $l['enter_password_below'] = "Please enter the Password Below:";
 $l['verify_forum_password'] = "Verify Forum Password";
-$l['wrong_forum_password'] = "The password you entered seems to be wrong. Please try again.";
+$l['wrong_forum_password'] = "The password you entered is incorrect. Please try again.";
 
 $l['reset_button'] = "Reset";
 $l['username'] = "Username:";
