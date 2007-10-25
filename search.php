@@ -111,6 +111,13 @@ if($mybb->input['action'] == "results")
 	if($order != "asc")
 	{
 		$order = "desc";
+		$oppsortnext = "asc";
+		$oppsort = $lang->asc;
+	}
+	else
+	{
+		$oppsortnext = "desc";
+		$oppsort = $lang->desc;		
 	}
 
 	// Work out pagination, which page we're at, as well as the limits.
@@ -130,6 +137,8 @@ if($mybb->input['action'] == "results")
 	$upper = $end;
 
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
+	
+	eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");
