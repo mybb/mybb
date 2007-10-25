@@ -8949,7 +8949,7 @@ To: {$to_recipients}
 			<td class="trow1">
 				<script type="text/javascript">
 				// <!--
-					mybb_editor_disabled = true;
+					var mybb_editor_disabled = true;
 					var clickableEditor = '';
 					function togglePM()
 					{
