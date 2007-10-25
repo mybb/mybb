@@ -284,32 +284,6 @@ class CustomModeration extends Moderation
 				$this->toggle_thread_status($tids);
 			}
 
-			if($thread_options['movethread'] > 0 && $thread_options['movethread'] != $thread['fid']) // Move thread
-			{
-				if($thread_options['movethreadredirect'] == 1) // Move Thread with redirect
-				{
-					$time = TIME_NOW + ($thread_options['movethreadredirectexpire'] * 86400);
-					foreach($tids as $tid)
-					{
-						$this->move_thread($tid, $thread_options['movethread'], 'redirect', $time);
-					}
-				}
-				else // Normal move
-				{
-					$this->move_threads($tids, $thread_options['movethread']);
-				}
-			}
-			if($thread_options['copythread'] > 0 || $thread_options['copythread'] == -2) // Copy thread
-			{
-				if($thread_options['copythread'] == -2)
-				{
-					$thread_options['copythread'] = $thread['fid'];
-				}
-				foreach($tids as $tid)
-				{
-					$new_tid = $this->move_thread($tid, $thread_options['copythread'], 'copy');
-				}
-			}
 			if(trim($thread_options['newsubject']) != '{subject}') // Update thread subjects
 			{
 				$this->change_thread_subject($tids, $thread_options['newsubject']);
@@ -357,6 +331,32 @@ class CustomModeration extends Moderation
 					{
 						$posthandler->insert_post($post);
 					}
+				}
+			}
+			if($thread_options['movethread'] > 0 && $thread_options['movethread'] != $thread['fid']) // Move thread
+			{
+				if($thread_options['movethreadredirect'] == 1) // Move Thread with redirect
+				{
+					$time = TIME_NOW + ($thread_options['movethreadredirectexpire'] * 86400);
+					foreach($tids as $tid)
+					{
+						$this->move_thread($tid, $thread_options['movethread'], 'redirect', $time);
+					}
+				}
+				else // Normal move
+				{
+					$this->move_threads($tids, $thread_options['movethread']);
+				}
+			}
+			if($thread_options['copythread'] > 0 || $thread_options['copythread'] == -2) // Copy thread
+			{
+				if($thread_options['copythread'] == -2)
+				{
+					$thread_options['copythread'] = $thread['fid'];
+				}
+				foreach($tids as $tid)
+				{
+					$new_tid = $this->move_thread($tid, $thread_options['copythread'], 'copy');
 				}
 			}
 		}

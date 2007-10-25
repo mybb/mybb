@@ -1441,7 +1441,7 @@ td .star_rating {
 </tr>
 <tr>
 <td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
-<td class="tcat" width="85%"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 </tr>
 </table>
 <div id="posts">
@@ -4396,7 +4396,7 @@ body {
 		<template name="postbit" version="1400"><![CDATA[{$ignore_bit}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">
 <tr>
-<td class="{$altbg}" width="175" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+<td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
 {$post['user_details']}
 </td>
 <td class="{$altbg}" valign="top">

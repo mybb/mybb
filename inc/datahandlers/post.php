@@ -801,16 +801,11 @@ class PostDataHandler extends DataHandler
 		{
 			$thread = get_thread($post['tid']);
 			require_once MYBB_ROOT.'inc/class_parser.php';
-			$parser = new Postparser();
+			$parser = new Postparser;
 
 			$subject = $parser->parse_badwords($thread['subject']);
-			$excerpt = $parser->text_parse_message($post['message']);
+			$excerpt = $parser->text_parse_message($post['message'], array('me_username' => $post['username'], 'filter_badwords' => 1, 'safe_html' => 1));
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
-
-			// Parse badwords
-			require_once MYBB_ROOT."inc/class_parser.php";
-			$parser = new postParser;
-			$excerpt = $parser->parse_badwords($excerpt);
 
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("

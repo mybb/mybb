@@ -943,6 +943,15 @@ class postParser
 			"$4"
 		);
 		$message = preg_replace($find, $replace, $message);
+		
+		// Replace "me" code and slaps if we have a username
+		if($options['me_username'])
+		{
+			global $lang;
+			
+			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1* {$options['me_username']} \\2", $message);
+			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
+		}
 
 		// Special code requiring special attention
 		while(preg_match("#\[list\](.*?)\[/list\]#si", $message))
