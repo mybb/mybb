@@ -1015,6 +1015,11 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	if($mybb->input['url'] != "" && my_strpos(basename($mybb->input['url']), 'member.php') === false)
 	{
+		if((my_strpos(basename($mybb->input['url']), 'newthread.php') !== false || my_strpos(basename($mybb->input['url']), 'newreply.php') !== false) && my_strpos($mybb->input['url'], '&processed=1') !== false)
+		{
+			$mybb->input['url'] = str_replace('&processed=1', '', $mybb->input['url']);
+		}
+		
 		// Redirect to the URL if it is not member.php
 		redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
 	}
