@@ -182,6 +182,8 @@ if(!$mybb->input['action'])
 	build_theme_list();
 
 	$table->output("Themes");
+	
+	$page->output_footer();
 }
 
 function build_theme_list($parent=0, $depth=0)

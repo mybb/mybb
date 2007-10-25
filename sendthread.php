@@ -108,7 +108,9 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	{
 		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
 		
-		$message = sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $thread['tid'], $mybb->input['message']);
+		$threadlink = get_thread_link($thread['tid']);
+		
+		$message = sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
 		
 		// Send the actual message
 		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from);

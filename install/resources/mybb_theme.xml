@@ -1942,7 +1942,7 @@ td .star_rating {
 </tr>
 <tr>
 <td colspan="2">
-	<select name="subscriptionmethod">
+	<select name="subscriptionmethod" id="subscriptionmethod">
 		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
 		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
 		<option value="2" {$instant_email_subscribe_selected}>{$lang->instant_email_subscribe}</option>
@@ -2355,7 +2355,7 @@ td .star_rating {
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="forumbit_depth3" version="1400"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text}">{$forum['name']}</a>]]></template>
-		<template name="forumbit_depth3_statusicon" version="1400"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon" class="ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
+		<template name="forumbit_depth3_statusicon" version="1400"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
 <head>
@@ -4325,7 +4325,7 @@ body {
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 <td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="Check All" /></span></td>
+<td class="tcat" align="center" width="5%" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="Check All" /></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -4428,7 +4428,7 @@ body {
 </td>
 </tr>
 </table>]]></template>
-		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" style="vertical-align: middle" /></a>]]></template>
+		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" style="vertical-align: middle; border: none;" /></a>]]></template>
 		<template name="postbit_seperator" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
@@ -6497,6 +6497,7 @@ To: {$to_recipients}
 </tr>
 {$action_time}
 {$message}
+</table>
 {$footer}
 </body>
 </html>]]></template>
@@ -7329,7 +7330,7 @@ To: {$to_recipients}
 </tr>
 <tr>
 <td colspan="2">
-	<select name="subscriptionmethod">
+	<select name="subscriptionmethod" id="subscriptionmethod">
 		<option value="0" {$no_subscribe_selected}>{$lang->no_auto_subscribe}</option>
 		<option value="1" {$no_email_subscribe_selected}>{$lang->no_email_subscribe}</option>
 		<option value="2" {$instant_email_subscribe_selected}>{$lang->instant_email_subscribe}</option>
@@ -10048,5 +10049,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 </body>
 </html>]]></template>
+	<template name="search_orderarrow" version="120"><![CDATA[<span class="smalltext">[<a href="{$sorturl}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
 	</templates>
 </theme>

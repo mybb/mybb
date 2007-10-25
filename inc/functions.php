@@ -1962,6 +1962,8 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 						$optionselected = "selected=\"selected\"";
 						$selecteddone = 1;
 					}
+					
+					$forum['name'] = htmlspecialchars_uni($forum['name']);
 
 					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
 
@@ -4492,8 +4494,8 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "#".preg_quote($word, "#")."#i";
-		$replacement = "<span class=\"highlight\">$0</span>";
+		$find = "#(^|>)([^<]+)".preg_quote($word, "#")."#i";
+		$replacement = "$1$2<span class=\"highlight\">".$word."</span>";
 		$highlight_cache[$find] = $replacement;
 	}
 

@@ -2034,6 +2034,8 @@ if($mybb->input['action'] == "editlists")
 {
 	$plugins->run_hooks("usercp_editlists_start");
 
+	$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
+
 	// Fetch out buddies
 	$buddy_count = 0;
 	if(($mybb->request_method != "post" || $mybb->input['manage'] == "buddy") && $mybb->user['buddylist'])

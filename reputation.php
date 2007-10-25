@@ -241,7 +241,7 @@ if($mybb->input['action'] == "delete")
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators as well as users who gave a specifc vote can delete one.
-	if($mybb->usergroup['cancp'] != 1 || $existing_reputation['adduid'] != $mybb->user['uid'])
+	if($mybb->usergroup['cancp'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid'])
 	{
 		error_no_permission();
 	}

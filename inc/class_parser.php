@@ -553,7 +553,7 @@ class postParser
 		$linkback = $date = "";
 
 		$message = stripslashes($message);
-		$username = stripslashes($username) . "'";
+		$username = stripslashes($username)."'";
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
@@ -561,7 +561,15 @@ class postParser
 		{
 			$pid = intval($match[1]);
 			$url = $mybb->settings['bburl']."/".get_post_link($pid)."#pid$pid";
-			eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
+			if(defined("IN_ARCHIVE"))
+			{
+				$linkback = " <a href=\"{$url}\">[ -> ]</a>";
+			}
+			else
+			{
+				eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
+			}
+			
 			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
 			$delete_quote = false;
 		}
@@ -593,7 +601,7 @@ class postParser
 			{
 				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
 			}
-			return "</p>\n<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote><p>\n";
+			return "<p>\n<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote></p>\n";
 		}
 	}
 

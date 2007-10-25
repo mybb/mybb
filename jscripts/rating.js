@@ -106,11 +106,16 @@ var Rating = {
 				$('current_rating_' + element_id).innerHTML = request.responseText.match(/<average>(.*)<\/average>/)[1];
 			}
 
-			var rating_elements = Element.getElementsBySelector(element, 'li a');
-			rating_elements.each(function(element) {
-				element.onclick = function() { return false; };
-				element.style.cursor = 'default';
-				element.title = $('current_rating_'+element_id).innerHTML;
+			var rating_elements = document.getElementsByClassName('star_rating');
+			rating_elements.each(function(rating_element) {
+				var elements = Element.getElementsBySelector(rating_element, 'li a');
+				elements.each(function(element) {
+					if(element.id == "rating_thread_" + element_id) {
+						element.onclick = function() { return false; };
+						element.style.cursor = 'default';
+						element.title = $('current_rating_'+element_id).innerHTML;
+					}
+				});
 			});
 			window.setTimeout("Element.remove('success_rating_" + element_id + "')", 5000);
 			document.body.style.cursor = 'default';

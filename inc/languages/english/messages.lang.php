@@ -148,11 +148,11 @@ $l['email_sendtofriend'] = "Hello,
 
 {1} from {2} thought you may be interested in reading the following web page:
 
-{3}/showthread.php?tid={4}
+{3}
 
 {1} included the following message:
 ------------------------------------------
-{5}
+{4}
 ------------------------------------------
 
 Thank you,

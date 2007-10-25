@@ -104,6 +104,13 @@ if($mybb->input['action'] == "results")
 	if($order != "asc")
 	{
 		$order = "desc";
+		$oppsortnext = "asc";
+		$oppsort = $lang->asc;
+	}
+	else
+	{
+		$oppsortnext = "desc";
+		$oppsort = $lang->desc;		
 	}
 	
 	if(!$mybb->settings['threadsperpage'])
@@ -134,6 +141,8 @@ if($mybb->input['action'] == "results")
 	}
 
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
+	
+	eval("\$orderarrow['$sortby'] = \"".$templates->get("search_orderarrow")."\";");
 
 	// Read some caches we will be using
 	$forumcache = $cache->read("forums");

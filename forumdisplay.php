@@ -897,7 +897,7 @@ if(is_array($threadcache))
 			$last_read = $forum_read;
 		}
 
-		if($thread['lastpost'] > $last_read)
+		if($thread['lastpost'] > $last_read && $moved[0] != "moved")
 		{
 			$folder .= "new";
 			$folder_label .= $lang->icon_new;

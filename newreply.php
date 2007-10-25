@@ -106,7 +106,7 @@ if($mybb->input['method'] == "quickreply")
 	}
 	else if($mybb->user['subscriptionmethod'] == 2)
 	{
-		$mybb->input['postoptions']['subscriptinmethod'] = "instant";
+		$mybb->input['postoptions']['subscriptionmethod'] = "instant";
 	}
 }
 
