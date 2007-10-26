@@ -63,6 +63,141 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 
 if($mybb->input['action'] == "add")
 {
+	if($mybb->request_method == "post")
+	{
+	}
+	
+	$page->output_header($lang->add_forum);	
+	$page->output_nav_tabs($sub_tabs, 'add_forum');
+	
+	$form = new Form("index.php?".SID."&amp;module=forum/management&amp;action=add", "post");
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+		$forum_data = $mybb->input;
+	}
+	else
+	{
+		$forum_data['type'] = "f";
+		$forum_data['title'] = "";
+		$forum_data['description'] = "";
+		$forum_data['pid'] = "-1";
+		$forum_data['disporder'] = "";
+		$forum_data['linkto'] = "";
+		$forum_data['password'] = "";
+	}
+	
+	$types = array(
+		'f' => $lang->forum,
+		'c' => $lang->category
+	);
+	
+	$create_a_options_f = array(
+		'id' => 'type'
+	);
+	
+	$create_a_options_c = array(
+		'id' => 'type'
+	);
+	
+	if($forum_data['type'] == "f")
+	{
+		$create_a_options_f['checked'] = true;
+	}
+	else
+	{
+		$create_a_options_c['checked'] = true;
+	}
+
+	$form_container = new FormContainer($lang->add_forum);
+	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c), 'type');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
+	$form_container->output_row($lang->display_order." <em>*</em>", "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->end();
+	
+	$form_container = new FormContainer($lang->additional_forum_options);
+	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $lang->forum, array('id' => 'linkto')), 'linkto');
+	$form_container->output_row($lang->forum_password, $lang->forum_password_desc, $form->generate_text_box('password', $forum_data['password'], array('id' => 'password')), 'password');
+	$form_container->output_row($lang->access_options, "", $form->generate_check_box('active', $forum_data['active'], $lang->forum_is_active."<br />\n<span class=\"smalltext\">{$lang->forum_is_active_desc}</span>", array('id' => 'active'))."<br />\n".$form->generate_check_box('open', $forum_data['open'], $lang->forum_is_open."<br />\n<span class=\"smalltext\">\t{$lang->forum_is_open_desc}</span>", array('id' => 'open')));
+	$form_container->output_row($lang->parent_forum, $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
+	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->end();
+
+	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
+	while($usergroup = $db->fetch_array($query))
+	{
+		$usergroups[$usergroup['gid']] = $usergroup;
+	}
+	
+	$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','candlattachments');
+	
+	$form_container = new FormContainer($lang->forum_permissions);
+	$form_container->output_row_header($lang->permissions_group);
+	$form_container->output_row_header($lang->permissions_canview, array("class" => "align_center", "width" => "10%"));
+	$form_container->output_row_header($lang->permissions_canpostthreads, array("class" => "align_center", "width" => "10%"));
+	$form_container->output_row_header($lang->permissions_canpostreplys, array("class" => "align_center", "width" => "10%"));
+	$form_container->output_row_header($lang->permissions_canpostpolls, array("class" => "align_center", "width" => "10%"));
+	$form_container->output_row_header($lang->permissions_candlattachments, array("class" => "align_center", "width" => "11%"));
+	$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
+	foreach($usergroups as $usergroup)
+	{
+		$perms = $usergroup;
+		$default_checked = true;
+		
+		$perm_check = "";
+		$all_checked = true;
+		foreach($field_list as $forum_permission)
+		{
+			if($usergroup[$forum_permission] == 1)
+			{
+				$value = "true";
+			}
+			else
+			{
+				$value = "false";
+			}
+			
+			if($mybb->input['permissions'][$usergroup['gid']][$forum_permission])
+			{
+				$value = $mybb->input['permissions'][$usergroup['gid']][$forum_permission];
+			}
+			
+			if($perms[$forum_permission] != 1)
+			{
+				$all_checked = false;
+			}
+			if($perms[$forum_permission] == 1)
+			{
+				$perms_checked[$forum_permission] = 1;
+			}
+			else
+			{
+				$perms_checked[$forum_permission] = 0;
+			}
+			$all_check .= "\$('permissions_{$usergroup['gid']}_{$forum_permission}').checked = \$('permissions_{$usergroup['gid']}_all').checked;\n";
+			$perm_check .= "\$('permissions_{$usergroup['gid']}_{$forum_permission}').checked = $value;\n";
+		}
+		$default_click = "if(this.checked == true) { $perm_check }";
+		$reset_default = "\$('default_permissions_{$usergroup['gid']}').checked = false; if(this.checked == false) { \$('permissions_{$usergroup['gid']}_all').checked = false; }\n";
+		$usergroup['title'] = htmlspecialchars_uni($usergroup['title']);
+		$form_container->output_cell("<strong>{$usergroup['title']}</strong><br /><small style=\"vertical-align: middle;\">".$form->generate_check_box("default_permissions[{$usergroup['gid']}];", 1, "", array("id" => "default_permissions_{$usergroup['gid']}", "checked" => $default_checked, "onclick" => $default_click))." <label for=\"default_permissions_{$usergroup['gid']}\">{$lang->permissions_use_group_default}</label></small>");
+		foreach($field_list as $forum_permission)
+		{
+			$form_container->output_cell($form->generate_check_box("permissions[{$usergroup['gid']}][{$forum_permission}]", 1, "", array("id" => "permissions_{$usergroup['gid']}_{$forum_permission}", "checked" => $perms_checked[$forum_permission], "onclick" => $reset_default)), array('class' => 'align_center'));
+		}
+		$form_container->output_cell($form->generate_check_box("permissions[{$usergroup['gid']}][all]", 1, "", array("id" => "permissions_{$usergroup['gid']}_all", "checked" => $all_checked, "onclick" => $all_check)), array('class' => 'align_center'));
+		$form_container->construct_row();
+	}
+	$form_container->end();
+	
+	$buttons[] = $form->generate_submit_button($lang->save_forum);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+	
+	$page->output_footer();	
 }
 
 if($mybb->input['action'] == "edit")

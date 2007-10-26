@@ -1877,7 +1877,7 @@ function build_users_view($view)
 			}
 			else
 			{
-				$scaled_avatar = fetch_scaled_avatar($user, 24, 24);
+				$scaled_avatar = fetch_scaled_avatar($user, 34, 34);
 			}
 			if(!$user['avatar'])
 			{
@@ -1927,7 +1927,7 @@ function build_users_view($view)
 	// Do we need to construct the pagination?
 	if($num_results > $view['perpage'])
 	{
-		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&type={$view['type']}");
+		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&type={$view['view_type']}");
 	}
 
 	$built_view = $pagination;
@@ -2055,7 +2055,7 @@ function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 		{
 			require_once MYBB_ROOT."inc/functions_image.php";
 			list($width, $height) = explode("|", $user['avatardimensions']);
-			$scaled_dimensions = scale_image($width, $height, 44, 44);
+			$scaled_dimensions = scale_image($width, $height, $max_width, $max_height);
 		}
 	}
 

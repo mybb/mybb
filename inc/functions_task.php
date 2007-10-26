@@ -41,7 +41,7 @@ function run_task($tid=0)
 	}
 
 	// Is this task locked less than 5 minutes ago? Must still be running.
-	if($task['locked'] != 0 && $task['locked'] < TIME_NOW-300)
+	if($task['locked'] != 0 && $task['locked'] > TIME_NOW-300)
 	{
 		$cache->update_tasks();
 		return false;
@@ -84,6 +84,7 @@ function run_task($tid=0)
 	$db->update_query("tasks", $updated_task, "tid='{$task['tid']}'");
 
 	$cache->update_tasks();
+
 	return true;
 }
 

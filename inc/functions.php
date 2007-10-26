@@ -4494,7 +4494,7 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "#(^|>)([^<]+)".preg_quote($word, "#")."#i";
+		$find = "#(>[^<]*)".preg_quote($word, "#")."#i";
 		$replacement = "$1$2<span class=\"highlight\">".$word."</span>";
 		$highlight_cache[$find] = $replacement;
 	}

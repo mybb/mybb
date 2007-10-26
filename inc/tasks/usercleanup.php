@@ -65,7 +65,7 @@ function task_usercleanup($task)
 			"displaygroup" => $ban['displaygroup']
 		);
 		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
-		$db->delete_query("banned", "bid='{$ban['bid']}'");
+		$db->delete_query("banned", "uid='{$ban['uid']}'");
 	}
 }
 ?>

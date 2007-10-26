@@ -214,7 +214,7 @@ class DefaultForm
 		{
 			$input .= " onclick=\"{$options['onclick']}\"";
 		}
-		$input .= " />";
+		$input .= " /> ";
 		if($label != "")
 		{
 			$input .= $label;
@@ -298,11 +298,9 @@ class DefaultForm
 			}
 		}
 		
-		if($options['allforums_option'] == true && $is_first)
+		if($options['main_option'] && $is_first)
 		{
-			global $lang;
-			
-			$selectoptions .= "<option value=\"-1\">{$lang->all_forums}</option>\n";
+			$selectoptions .= "<option value=\"-1\">{$options['main_option']}</option>\n";
 		}
 		
 		if(is_array($fselectcache[$pid]))
