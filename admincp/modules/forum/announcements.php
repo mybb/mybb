@@ -304,7 +304,7 @@ if($mybb->input['action'] == "add")
 
 	$form_container->output_row($lang->message." <em>*</em>", "", $form->generate_text_area('message', $mybb->input['message'], array('id' => 'message')), 'message');
 	
-	$form_container->output_row($lang->forums_to_appear_in." <em>*</em>", $lang->forums_to_appear_in_desc, $form->generate_forum_select('fid', $mybb->input['fid'], array('size' => 5, 'allforums_option' => true)));
+	$form_container->output_row($lang->forums_to_appear_in." <em>*</em>", $lang->forums_to_appear_in_desc, $form->generate_forum_select('fid', $mybb->input['fid'], array('size' => 5, 'main_option' => $lang->all_forums)));
 
 	$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
 
@@ -560,7 +560,7 @@ if($mybb->input['action'] == "edit")
 
 	$form_container->output_row($lang->message." <em>*</em>", "", $form->generate_text_area('message', $mybb->input['message'], array('id' => 'message')), 'message');
 	
-	$form_container->output_row($lang->forums_to_appear_in." <em>*</em>", $lang->forums_to_appear_in_desc, $form->generate_forum_select('fid', $mybb->input['fid'], array('size' => 5, 'allforums_option' => true)));
+	$form_container->output_row($lang->forums_to_appear_in." <em>*</em>", $lang->forums_to_appear_in_desc, $form->generate_forum_select('fid', $mybb->input['fid'], array('size' => 5, 'main_option' => $lang->all_forums)));
 
 	$form_container->output_row($lang->allow_html." <em>*</em>", "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml'], array('style' => 'width: 2em;')));
 
