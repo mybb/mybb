@@ -127,6 +127,8 @@ $l['delete_title'] = "Delete this private message";
 $l['you_replied_on'] = "You replied to this message on {1}";
 $l['you_forwarded_on'] = "You forwarded this message on {1}";
 $l['select_from_buddies'] = "Select from Buddies";
+$l['no_readmessages'] = "You currently do not have any read messages being tracked.";
+$l['no_unreadmessages'] = "You currently do not have any unread messages being tracked.";
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";

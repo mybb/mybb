@@ -638,6 +638,11 @@ if($mybb->input['action'] == "tracking")
 		eval("\$readmessages .= \"".$templates->get("private_tracking_readmessage")."\";");
 	}
 	
+	if(!$readmessages)
+	{
+		eval("\$readmessages = \"".$templates->get("private_tracking_nomessage")."\";");
+	}
+	
 	$query = $db->query("
 		SELECT pm.*, u.username AS tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
@@ -652,6 +657,12 @@ if($mybb->input['action'] == "tracking")
 		$senddate = my_date($mybb->settings['dateformat'], $unreadmessage['dateline']);
 		$sendtime = my_date($mybb->settings['timeformat'], $unreadmessage['dateline']);
 		eval("\$unreadmessages .= \"".$templates->get("private_tracking_unreadmessage")."\";");
+	}
+	
+	if(!$unreadmessages)
+	{
+		$lang->no_readmessages = $lang->no_unreadmessages;
+		eval("\$unreadmessages = \"".$templates->get("private_tracking_nomessage")."\";");
 	}
 	
 	eval("\$tracking = \"".$templates->get("private_tracking")."\";");

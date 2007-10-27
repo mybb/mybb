@@ -314,6 +314,8 @@ var Thread = {
 		{
 			return false;
 		}
+		
+		alert("zomg");
 
 		this.quick_replying = 1;
 		var post_body = Form.serialize('quick_reply_form');
@@ -346,9 +348,10 @@ var Thread = {
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
 			$('posts').appendChild(post);
-			if(MyBB.browser == "ie")
+			if(MyBB.browser == "ie" && request.responseText.match(/<posthash>(.*)<\/posthash>/))
 			{
-				request.responseText.evalScripts();
+				var new_posthash = request.responseText.match(/<posthash>(.*)<\/posthash>/)[1];
+				$('posthash').value = new_posthash;
 			}
 			Form.reset('quick_reply_form');
 			if($('lastpid'))
@@ -356,10 +359,12 @@ var Thread = {
 				$('lastpid').value = pid;
 			}
 		}
-		else
+		else if(request.responseText.match(/<redirect>(.*)<\/redirect>/))
 		{
-			request.responseText.evalScripts();
+			var redirect_url = request.responseText.match(/<redirect>(.*)<\/redirect>/)[1];
+			window.location = redirect_url;
 		}
+		
 		if(this.spinner)
 		{
 			this.spinner.destroy();

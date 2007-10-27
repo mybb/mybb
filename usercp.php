@@ -2524,7 +2524,6 @@ if($mybb->input['action'] == "attachments")
 	$totalusage = $usage['ausage'];
 	$totalattachments = $usage['acount'];
 	$friendlyusage = get_friendly_size($totalusage);
-	$bandwidth = get_friendly_size($bandwidth);
 	if($mybb->usergroup['attachquota'])
 	{
 		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
@@ -2599,6 +2598,7 @@ if($mybb->input['action'] == "attachments")
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
 	}
+	$bandwidth = get_friendly_size($bandwidth);
 
 	if(!$attachments)
 	{
@@ -2609,6 +2609,7 @@ if($mybb->input['action'] == "attachments")
 	$plugins->run_hooks("usercp_attachments_end");
 	output_page($manageattachments);
 }
+
 if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
 	// Verify incoming POST request

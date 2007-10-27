@@ -3920,13 +3920,13 @@ body {
 </head>
 <body>
 {$header}
-<form action="private.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<input type="hidden" name="action" value="do_tracking" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
 <td valign="top">
+<form action="private.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="action" value="do_tracking" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="5"><strong>{$lang->read_messages}</strong></td>
@@ -3935,7 +3935,7 @@ body {
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->dateread}</strong></span></td>
-<td class="tcat" align="center" width="1"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
+<td class="tcat" align="center" width="1%"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
 </tr>
 {$readmessages}
 <tr>
@@ -3955,7 +3955,7 @@ body {
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="20%"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
-<td class="tcat" align="center" width="1" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkal" /></span></td>
+<td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkal" /></span></td>
 </tr>
 {$unreadmessages}
 <tr>
@@ -5871,18 +5871,21 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 ]]></template>
 		<template name="index_birthdays_birthday" version="1400"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
 		<template name="private_tracking_readmessage" version="1400"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
+<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
 <td class="trow2">{$readmessage['subject']}</td>
 <td class="trow1">{$readmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="1400"><![CDATA[<tr>
-<td align="center" class="trow1"><img src="{$theme['imgdir']}/new_pm.gif" alt="" /></td>
+<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/new_pm.gif" alt="" /></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1">{$unreadmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="unreadcheck[{$unreadmessage['pmid']}]" value="1" /></td>
+</tr>]]></template>
+		<template name="private_tracking_nomessage" version="1400"><![CDATA[<tr>
+<td align="center" class="trow1" colspan="5">{$lang->no_readmessages}</td>
 </tr>]]></template>
 		<template name="usercp_editlists_user" version="1400"><![CDATA[<li style="width: 33%; float: left; list-type: none; margin-bottom: 4px;" id="{$type}_{$user['uid']}">
 	<a href="usercp.php?action=do_editlists&amp;my_post_key={$mybb->post_code}&amp;manage={$type}&amp;delete={$user['uid']}" onclick="return UserCP.removeBuddy('{$type}', {$user['uid']});" title="{$lang->remove_from_list}"><img src="{$theme['imgdir']}/buddy_delete.gif" alt="[{$lang->delete}]" style="vertical-align: middle;" /></a>
