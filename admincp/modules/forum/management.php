@@ -29,7 +29,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 	
 		$sub_tabs['add_child_forum'] = array(
 			'title' => $lang->add_child_forum,
-			'link' => "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid=".$mybb->input['fid'],
+			'link' => "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;pid=".$mybb->input['fid'],
 			'description' => $lang->add_child_forum_desc
 		);
 		
@@ -65,6 +65,89 @@ if($mybb->input['action'] == "add")
 {
 	if($mybb->request_method == "post")
 	{
+		if(!trim($mybb->input['title']))
+		{
+			$errors[] = $lang->error_missing_title;
+		}
+		
+		$pid = intval($mybb->input['pid']);
+		$type = $mybb->input['type'];
+		
+		if($mybb->input['pid'] == 0 && $type == "f")
+		{
+			$errors[] = $lang->error_no_parent;
+		}
+		
+		if(!$errors)
+		{
+			$insert_array = array(
+				"name" => $db->escape_string($mybb->input['title']),
+				"description" => $db->escape_string($mybb->input['description']),
+				"linkto" => $db->escape_string($mybb->input['linkto']),
+				"type" => $db->escape_string($type),
+				"pid" => $pid,
+				"disporder" => intval($mybb->input['disporder']),
+				"active" => intval($mybb->input['isactive']),
+				"open" => intval($mybb->input['isopen']),
+				"allowhtml" => intval($mybb->input['allowhtml']),
+				"allowmycode" => intval($mybb->input['allowmycode']),
+				"allowsmilies" => intval($mybb->input['allowsmilies']),
+				"allowimgcode" => intval($mybb->input['allowimgcode']),
+				"allowpicons" => intval($mybb->input['allowpicons']),
+				"allowtratings" => intval($mybb->input['allowtratings']),
+				"usepostcounts" => intval($mybb->input['usepostcounts']),
+				"password" => $db->escape_string($mybb->input['password']),
+				"showinjump" => intval($mybb->input['showinjump']),
+				"modposts" => intval($mybb->input['modposts']),
+				"modthreads" => intval($mybb->input['modthreads']),
+				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
+				"modattachments" => intval($mybb->input['modattachments']),
+				"style" => intval($mybb->input['fstyle']),
+				"overridestyle" => intval($mybb->input['overridestyle']),
+				"rulestype" => intval($mybb->input['rulestype']),
+				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
+				"rules" => $db->escape_string($mybb->input['rules']),
+				"defaultdatecut" => intval($mybb->input['defaultdatecut']),
+				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
+				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
+			);
+			$db->insert_query("forums", $insert_array);
+			
+			$fid = $db->insert_id();
+			$parentlist = make_parent_list($fid);
+			$updatearray = array(
+				"parentlist" => $parentlist
+			);
+			$db->update_query("forums", $updatearray, "fid='$fid'");
+			$inherit = $mybb->input['default_permissions'];
+			
+			foreach($mybb->input['permissions'] as $gid => $permission)
+			{
+				foreach(array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments') as $name)
+				{
+					if($permission[$name])
+					{
+						$permissions[$name][$gid] = 1;
+					}
+					else
+					{
+						$permissions[$name][$gid] = 0;
+					}
+				}			
+			}
+			
+			$canview = $permissions['canview'];
+			$canpostthreads = $permissions['canpostthreads'];
+			$canpostreplies = $permissions['canpostreplies'];
+			$canpostpolls = $permissions['canpostpolls'];
+			$canpostattachments = $permissions['canpostattachments'];
+			$canpostreplies = $permissions['canpostreplys'];
+			save_quick_perms($fid);
+			$cache->update_forums();
+			
+			flash_message($lang->success_forum_added, 'success');
+			admin_redirect("index.php?".SID."&module=forum/management");
+		}
 	}
 	
 	$page->output_header($lang->add_forum);	
@@ -82,10 +165,40 @@ if($mybb->input['action'] == "add")
 		$forum_data['type'] = "f";
 		$forum_data['title'] = "";
 		$forum_data['description'] = "";
-		$forum_data['pid'] = "-1";
+		
+		if(!$mybb->input['pid'])
+		{
+			$forum_data['pid'] = "-1";
+		}
+		else
+		{
+			$forum_data['pid'] = intval($mybb->input['pid']);
+		}
 		$forum_data['disporder'] = "";
 		$forum_data['linkto'] = "";
 		$forum_data['password'] = "";
+		$forum_data['active'] = 1;
+		$forum_data['open'] = 1;
+		$forum_data['modposts'] = "";
+		$forum_data['modthreads'] = "";
+		$forum_data['modattachments'] = "";
+		$forum_data['mod_edit_posts'] = "";
+		$forum_data['overridestyle'] = "";
+		$forum_data['style'] = "";
+		$forum_data['rulestype'] = "";
+		$forum_data['rulestitle'] = "";
+		$forum_data['rules'] = "";
+		$forum_data['defaultdatecut'] = "";
+		$forum_data['defaultsortby'] = "";
+		$forum_data['defaultsortorder'] = "";
+		$forum_data['allowhtml'] = "";
+		$forum_data['allowmycode'] = 1;
+		$forum_data['allowsmilies'] = 1;
+		$forum_data['allowimgcode'] = 1;
+		$forum_data['allowpicons'] = 1;
+		$forum_data['allowtratings'] = 1;
+		$forum_data['showinjump'] = 1;
+		$forum_data['usepostcounts'] = 1;
 	}
 	
 	$types = array(
@@ -113,17 +226,113 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->add_forum);
 	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c), 'type');
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order." <em>*</em>", "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 	
 	$form_container = new FormContainer($lang->additional_forum_options);
-	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $lang->forum, array('id' => 'linkto')), 'linkto');
+	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $forum_data['linkto'], array('id' => 'linkto')), 'linkto');
 	$form_container->output_row($lang->forum_password, $lang->forum_password_desc, $form->generate_text_box('password', $forum_data['password'], array('id' => 'password')), 'password');
-	$form_container->output_row($lang->access_options, "", $form->generate_check_box('active', $forum_data['active'], $lang->forum_is_active."<br />\n<span class=\"smalltext\">{$lang->forum_is_active_desc}</span>", array('id' => 'active'))."<br />\n".$form->generate_check_box('open', $forum_data['open'], $lang->forum_is_open."<br />\n<span class=\"smalltext\">\t{$lang->forum_is_open_desc}</span>", array('id' => 'open')));
-	$form_container->output_row($lang->parent_forum, $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
-	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
+	
+	$access_options = array(
+		$form->generate_check_box('active', $forum_data['active'], $lang->forum_is_active."<br />\n<small>{$lang->forum_is_active_desc}</small>", array('checked' => $forum_data['active'], 'id' => 'active')),
+		$form->generate_check_box('open', $forum_data['open'], $lang->forum_is_open."<br />\n<small>{$lang->forum_is_open_desc}</small>", array('checked' => $forum_data['open'], 'id' => 'open'))
+	);
+		
+	
+	$form_container->output_row($lang->access_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $access_options)."</div>");
+	
+	$moderator_options = array(
+		$form->generate_check_box('modposts', $forum_data['modposts'], $lang->mod_new_posts, array('checked' => $forum_data['modposts'], 'id' => 'modposts')),
+		$form->generate_check_box('modthreads', $forum_data['modthreads'], $lang->mod_new_threads, array('checked' => $forum_data['modthreads'], 'id' => 'modthreads')),
+		$form->generate_check_box('modattachments', $forum_data['modattachments'], $lang->mod_new_attachments, array('checked' => $forum_data['modattachments'], 'id' => 'modattachments')),
+		$form->generate_check_box('mod_edit_posts', $forum_data['mod_edit_posts'], $lang->mod_after_edit, array('checked' => $forum_data['mod_edit_posts'], 'id' => 'mod_edit_posts'))
+	);
+	
+	$form_container->output_row($lang->moderation_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_options)."</div>");
+	
+	$styles = array(
+		'0' => $lang->use_default
+	);
+	
+	$query = $db->simple_select("themes", "tid,name", "name!='((master))' AND name!='((master-backup))'", array('order_by' => 'name'));
+	while($style = $db->fetch_array($query))
+	{
+		$styles[$style['tid']] = $style['name'];
+	}
+	
+	$style_options = array(
+		$form->generate_check_box('overridestyle', $forum_data['overridestyle'], $lang->override_user_style, array('checked' => $forum_data['overridestyle'], 'id' => 'overridestyle')),
+		$lang->forum_specific_style."<br />\n".$form->generate_select_box('style', $styles, $forum_data['style'], array('id' => 'style'))
+	);
+	
+	$form_container->output_row($lang->style_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $style_options)."</div>");
+	
+	$display_methods = array(
+		'0' => $lang->dont_display_rules,
+		'1' => $lang->display_rules_inline,
+		'2' => $lang->display_rules_link
+	);
+	
+	$forum_rules = array(
+		$lang->display_method."<br />\n".$form->generate_select_box('rulestype', $display_methods, $forum_data['rulestype'], array('checked' => $forum_data['rulestype'], 'id' => 'rulestype')),
+		$lang->title."<br />\n".$form->generate_text_box('rulestitle', $forum_data['rulestitle'], array('checked' => $forum_data['rulestitle'], 'id' => 'rulestitle')),
+		$lang->rules."<br />\n".$form->generate_text_area('rules', $forum_data['rules'], array('checked' => $forum_data['rules'], 'id' => 'rules'))
+	);
+	
+	$form_container->output_row($lang->forum_rules, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $forum_rules)."</div>");
+	
+	$default_date_cut = array(
+		0 => $lang->board_default,
+		1 => $lang->datelimit_1day,
+		5 => $lang->datelimit_5days,
+		10 => $lang->datelimit_10days,
+		20 => $lang->datelimit_20days,
+		50 => $lang->datelimit_50days,
+		75 => $lang->datelimit_75days,
+		100 => $lang->datelimit_100days,
+		365 => $lang->datelimit_lastyear,
+		9999 => $lang->datelimit_beginning,
+	);
+	
+	$default_sort_by = array(
+		"" => $lang->board_default,
+		"subject" => $lang->sort_by_subject,
+		"lastpost" => $lang->sort_by_lastpost,
+		"starter" => $lang->sort_by_starter,
+		"started" => $lang->sort_by_started,
+		"rating" => $lang->sort_by_rating,
+		"replies" => $lang->sort_by_replies,
+		"views" => $lang->sort_by_views,
+	);
+	
+	$default_sort_order = array(
+		"" => $lang->board_default,
+		"asc" => $lang->sort_order_asc,
+		"desc" => $lang->sort_order_desc,
+	);
+	
+	$view_options = array(
+		$lang->default_date_cut."<br />\n".$form->generate_select_box('defaultdatecut', $default_date_cut, $forum_data['defaultdatecut'], array('checked' => $forum_data['defaultdatecut'], 'id' => 'defaultdatecut')),
+		$lang->default_sort_by."<br />\n".$form->generate_select_box('defaultsortby', $default_sort_by, $forum_data['defaultsortby'], array('checked' => $forum_data['defaultsortby'], 'id' => 'defaultsortby')),
+		$lang->default_sort_order."<br />\n".$form->generate_select_box('defaultsortorder', $default_sort_order, $forum_data['defaultsortorder'], array('checked' => $forum_data['defaultsortorder'], 'id' => 'defaultsortorder')),
+	);
+	
+	$form_container->output_row($lang->default_view_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $view_options)."</div>");
+	
+	$misc_options = array(
+		$form->generate_check_box('allowhtml', $forum_data['allowhtml'], $lang->allow_html, array('checked' => $forum_data['allowhtml'], 'id' => 'allowhtml')),
+		$form->generate_check_box('allowmycode', $forum_data['allowmycode'], $lang->allow_mycode, array('checked' => $forum_data['allowmycode'], 'id' => 'allowmycode')),
+		$form->generate_check_box('allowsmilies', $forum_data['allowsmilies'], $lang->allow_smilies, array('checked' => $forum_data['allowsmilies'], 'id' => 'allowsmilies')),
+		$form->generate_check_box('allowimgcode', $forum_data['allowimgcode'], $lang->allow_img_code, array('checked' => $forum_data['allowimgcode'], 'id' => 'allowimgcode')),
+		$form->generate_check_box('allowpicons', $forum_data['allowpicons'], $lang->allow_post_icons, array('checked' => $forum_data['allowpicons'], 'id' => 'allowpicons')),
+		$form->generate_check_box('allowtratings', $forum_data['allowtratings'], $lang->allow_thread_ratings, array('checked' => $forum_data['allowtratings'], 'id' => 'allowtratings')),
+		$form->generate_check_box('showinjump', $forum_data['showinjump'], $lang->show_forum_jump, array('checked' => $forum_data['showinjump'], 'id' => 'showinjump')),
+		$form->generate_check_box('usepostcounts', $forum_data['usepostcounts'], $lang->use_postcounts, array('checked' => $forum_data['usepostscounts'], 'id' => 'usepostcounts'))
+	);
+	
+	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");
 	$form_container->end();
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
@@ -132,7 +341,7 @@ if($mybb->input['action'] == "add")
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
 	
-	$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','candlattachments');
+	$field_list = array('canview', 'canpostthreads', 'canpostreplys', 'canpostpolls', 'canpostattachments');
 	
 	$form_container = new FormContainer($lang->forum_permissions);
 	$form_container->output_row_header($lang->permissions_group);
@@ -140,7 +349,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row_header($lang->permissions_canpostthreads, array("class" => "align_center", "width" => "10%"));
 	$form_container->output_row_header($lang->permissions_canpostreplys, array("class" => "align_center", "width" => "10%"));
 	$form_container->output_row_header($lang->permissions_canpostpolls, array("class" => "align_center", "width" => "10%"));
-	$form_container->output_row_header($lang->permissions_candlattachments, array("class" => "align_center", "width" => "11%"));
+	$form_container->output_row_header($lang->permissions_canuploadattachments, array("class" => "align_center", "width" => "11%"));
 	$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
 	foreach($usergroups as $usergroup)
 	{
@@ -358,15 +567,51 @@ if(!$mybb->input['action'])
 {
 	if($mybb->request_method == "post")
 	{
-		foreach($mybb->input['disporder'] as $fid => $order)
+		if($mybb->input['permissions'])
 		{
-			$db->update_query("forums", array('disporder' => intval($order)), "fid='".intval($fid)."'");
+			$inherit = $mybb->input['default_permissions'];
+			
+			foreach($mybb->input['permissions'] as $gid => $permission)
+			{
+				foreach(array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments') as $name)
+				{
+					if($permission[$name])
+					{
+						$permissions[$name][$gid] = 1;
+					}
+					else
+					{
+						$permissions[$name][$gid] = 0;
+					}
+				}			
+			}
+			
+			$canview = $permissions['canview'];
+			$canpostthreads = $permissions['canpostthreads'];
+			$canpostreplies = $permissions['canpostreplies'];
+			$canpostpolls = $permissions['canpostpolls'];
+			$canpostattachments = $permissions['canpostattachments'];
+			$canpostreplies = $permissions['canpostreplys'];
+			save_quick_perms($mybb->input['fid']);
+			
+			flash_message($lang->success_forum_permissions_updated, 'success');
+			admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']);
 		}
-		
-		$cache->update_forums();
-		
-		flash_message($lang->success_forum_disporder_updated, 'success');
-		admin_redirect("index.php?".SID."&module=forum/management");
+		else
+		{
+			if(!empty($mybb->input['disporder']))
+			{
+				foreach($mybb->input['disporder'] as $fid => $order)
+				{
+					$db->update_query("forums", array('disporder' => intval($order)), "fid='".intval($fid)."'");
+				}
+						
+				$cache->update_forums();
+			
+				flash_message($lang->success_forum_disporder_updated, 'success');
+				admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']);
+			}
+		}
 	}
 	
 	$fid = intval($mybb->input['fid']);
@@ -385,6 +630,7 @@ if(!$mybb->input['action'])
 	}
 
 	$form = new Form("index.php?".SID."&amp;module=forum/management", "post", "management");
+	echo $form->generate_hidden_field("fid", $mybb->input['fid']);	
 	
 	if($fid)
 	{
@@ -413,15 +659,18 @@ if(!$mybb->input['action'])
 	
 	build_admincp_forums_list($form_container, $fid);
 	
+	$submit_options = array();
+	
 	if(count($form_container->container->rows) == 0)
 	{
 		$form_container->output_cell($lang->no_forums, array('colspan' => 3));
 		$form_container->construct_row();
+		$submit_options = array('disabled' => true);
 	}
 	
 	$form_container->end();
 	
-	$buttons[] = $form->generate_submit_button($lang->update_forum_orders);
+	$buttons[] = $form->generate_submit_button($lang->update_forum_orders, $submit_options);
 	$buttons[] = $form->generate_reset_button($lang->reset);	
 	
 	$form->output_submit_wrapper($buttons);
@@ -442,7 +691,7 @@ if(!$mybb->input['action'])
 			$existing_permissions[$existing['gid']] = $existing;
 		}
 		
-		$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','candlattachments');
+		$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments');
 				
 		echo "<div id=\"tab_permissions\">\n";
 		$form_container = new FormContainer(sprintf($lang->forum_permissions_in, $forum_cache[$fid]['name']));
@@ -451,7 +700,7 @@ if(!$mybb->input['action'])
 		$form_container->output_row_header($lang->permissions_canpostthreads, array("class" => "align_center", "width" => "10%"));
 		$form_container->output_row_header($lang->permissions_canpostreplys, array("class" => "align_center", "width" => "10%"));
 		$form_container->output_row_header($lang->permissions_canpostpolls, array("class" => "align_center", "width" => "10%"));
-		$form_container->output_row_header($lang->permissions_candlattachments, array("class" => "align_center", "width" => "11%"));
+		$form_container->output_row_header($lang->permissions_canuploadattachments, array("class" => "align_center", "width" => "11%"));
 		$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
 		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'width' => '150px'));
 		foreach($usergroups as $usergroup)
@@ -505,7 +754,7 @@ if(!$mybb->input['action'])
 			
 			if(!$default_checked)
 			{
-				$form_container->output_cell("<a href=\"index.php?".SID."&amp;action=permissions&amp;gid={$group['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>");
+				$form_container->output_cell("<a href=\"index.php?".SID."&amp;action=permissions&amp;gid={$group['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 			}
 			else
 			{
@@ -589,7 +838,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				
 			if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 			{
-				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a>");
+				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a></div>");
 
 				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 				
@@ -635,7 +884,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 					
 				if($depth == 2)
 				{
-					$form_container->output_cell("<div style=\"padding-left: 40px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
+					$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 				}
 				else
 				{

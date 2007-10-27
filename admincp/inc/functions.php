@@ -223,6 +223,98 @@ function make_parent_list($fid, $navsep=",")
 	return $navigation;
 }
 
+function save_quick_perms($fid)
+{
+	global $db, $inherit, $canview, $canpostthreads, $canpostreplies, $canpostpolls, $canpostattachments, $cache;
+
+	$query = $db->simple_select("usergroups", "gid");
+	while($usergroup = $db->fetch_array($query))
+	{
+		// Delete existing permissions
+		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
+
+		// Only insert the new ones if we're using custom permissions
+		if($inherit[$usergroup['gid']] != 1)
+		{
+			if($canview[$usergroup['gid']] == 1)
+			{
+				$pview = 1;
+			}
+			else
+			{
+				$pview = 0;
+			}
+			
+			if($canpostthreads[$usergroup['gid']] == 1)
+			{
+				$pthreads = 1;
+			}
+			else
+			{
+				$pthreads = 0;
+			}
+			
+			if($canpostreplies[$usergroup['gid']] == 1)
+			{
+				$preplies = 1;
+			}
+			else
+			{
+				$preplies = 0;
+			}
+			
+			if($canpostpolls[$usergroup['gid']] == 1)
+			{
+				$ppolls = 1;
+			}
+			else
+			{
+				$ppolls = 0;
+			}
+			
+			if($canpostattachments[$usergroup['gid']] == 1)
+			{
+				$pattachments = 1;
+			}
+			else
+			{
+				$pattachments = 0;
+			}
+			
+			if(!$preplies && !$pthreads)
+			{
+				$ppost = 0;
+			}
+			else
+			{
+				$ppost = 1;
+			}
+
+			$insertquery = array(
+				"fid" => $fid,
+				"gid" => $usergroup['gid'],
+				"canview" => $pview,
+				"canviewthreads" => $pview,
+				"candlattachments" => $pview,
+				"canpostthreads" => $pthreads,
+				"canpostreplys" => $preplies,
+				"canpostattachments" => $pattachments,
+				"canratethreads" => $pview,
+				"caneditposts" => $ppost,
+				"candeleteposts" => $ppost,
+				"candeletethreads" => $pthreads,
+				"caneditattachments" => $pattachments,
+				"canpostpolls" => $ppolls,
+				"canvotepolls" => $pview,
+				"cansearch" => $pview
+			);
+			
+			$db->insert_query("forumpermissions", $insertquery);
+		}
+	}
+	$cache->update_forumpermissions();
+}
+
 /**
  * Checks if a particular user has the necessary permissions to access a particular page.
  *

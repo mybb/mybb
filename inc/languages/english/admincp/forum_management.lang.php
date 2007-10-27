@@ -53,7 +53,7 @@ $l['permissions_canview'] = "Can View";
 $l['permissions_canpostthreads'] = "Can Post Threads";
 $l['permissions_canpostreplys'] = "Can Post Replies";
 $l['permissions_canpostpolls'] = "Can Post Polls";
-$l['permissions_candlattachments'] = "Can Download Attachments";
+$l['permissions_canuploadattachments'] = "Can Upload Attachments";
 $l['permissions_all'] = "All?";
 
 $l['no_forums'] = "There are no forums found.";
@@ -62,6 +62,7 @@ $l['no_moderators'] = "There are no moderators found.";
 $l['success_forum_disporder_updated'] = "Succesfully updated the forum display order.";
 $l['success_forum_deleted'] = "Successfully delete the specified forum.";
 $l['success_moderator_deleted'] = "Successfully delete the specified moderator.";
+$l['success_forum_permissions_updated'] = "Succesfully updated the forum permissions order.";
 
 $l['error_invalid_forum'] = "Please input a valid forum to delete.";
 $l['error_invalid_moderator'] = "Please input a valid moderator to delete.";
@@ -91,5 +92,65 @@ $l['forum_is_active'] = "Forum is Active";
 $l['forum_is_active_desc'] = "If unselected, this forum will not be shown to users and will not \"exist\".";
 $l['forum_is_open'] = "Forum is Open";
 $l['forum_is_open_desc'] = "If unselected, users will not be able to post in this forum regardless of permissions.";
+
+$l['moderation_options'] = "Moderation Options";
+$l['mod_new_posts'] = "Moderate New Posts";
+$l['mod_new_threads'] = "Moderate New Threads";
+$l['mod_new_attachments'] = "Moderate New Attachments";
+$l['mod_after_edit'] = "Moderate After Edit";
+$l['override_user_style'] = "Override User's Selected Style";
+$l['style_options'] = "Style Options";
+$l['forum_specific_style'] = "Forum-Specific Style:";
+$l['use_default'] = "Use Default";
+$l['dont_display_rules'] = "Don't Display Rules";
+$l['display_rules_inline'] = "Display Rules Inline";
+$l['display_rules_link'] = "Display Rules Link";
+$l['display_method'] = "Display Method:";
+$l['title'] = "Title";
+$l['rules'] = "Rules:";
+$l['forum_rules'] = "Forum Rules";
+
+$l['default_view_options'] = "Default View Options";
+$l['default_date_cut'] = "Default Date Cut:";
+$l['default_sort_by'] = "Default Sort By:";
+$l['default_sort_order'] = "Default Sort Order:";
+
+$l['board_default'] = "Board Default";
+
+$l['datelimit_1day'] = "Last day";
+$l['datelimit_5days'] = "Last 5 days";
+$l['datelimit_10days'] = "Last 10 days";
+$l['datelimit_20days'] = "Last 20 days";
+$l['datelimit_50days'] = "Last 50 days";
+$l['datelimit_75days'] = "Last 75 days";
+$l['datelimit_100days'] = "Last 100 days";
+$l['datelimit_lastyear'] = "Last year";
+$l['datelimit_beginning'] = "The beginning";
+
+$l['sort_by_subject'] = "Thread subject";
+$l['sort_by_lastpost'] = "Last post time";
+$l['sort_by_starter'] = "Thread starter";
+$l['sort_by_started'] = "Thread creation time";
+$l['sort_by_rating'] = "Thread rating";
+$l['sort_by_replies'] = "Number of replies";
+$l['sort_by_views'] = "Number of views";
+
+$l['sort_order_asc'] = "Ascending";
+$l['sort_order_desc'] = "Descending";
+
+$l['misc_options'] = "Miscellaneous Options";
+$l['allow_html'] = "Allow HTML";
+$l['allow_mycode'] = "Allow MyCode";
+$l['allow_smilies'] = "Allow Smilies";
+$l['allow_img_code'] = "Allow [img] Code";
+$l['allow_post_icons'] = "Allow Post Icons";
+$l['allow_thread_ratings'] = "Allow Thread Ratings";
+$l['show_forum_jump'] = "Show in Forum Jump";
+$l['use_postcounts'] = "Make posts in this forum count towards user post counts";
+
+$l['error_missing_title'] = "You must enter in a title.";
+$l['error_no_parent'] = "You must select a parent forum.";
+
+$l['success_forum_added'] = "Successfully added the forum.";
 
 ?>
