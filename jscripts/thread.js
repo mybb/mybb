@@ -314,8 +314,6 @@ var Thread = {
 		{
 			return false;
 		}
-		
-		alert("zomg");
 
 		this.quick_replying = 1;
 		var post_body = Form.serialize('quick_reply_form');
