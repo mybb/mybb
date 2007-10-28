@@ -443,10 +443,7 @@ class DB_SQLite3
 				trigger_error("<strong>[SQL] [{$error_no}] {$error}</strong><br />{$string}", E_USER_ERROR);
 			}
 		}
-	}
-
-	}
-
+	}
 
 	/**
 	 * Returns the number of affected rows in a query.
