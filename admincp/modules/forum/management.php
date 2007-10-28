@@ -655,7 +655,7 @@ if(!$mybb->input['action'])
 	}
 	$form_container->output_row_header($lang->forum);
 	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
-	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'width' => '200px'));
+	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px'));
 	
 	build_admincp_forums_list($form_container, $fid);
 	
@@ -702,7 +702,7 @@ if(!$mybb->input['action'])
 		$form_container->output_row_header($lang->permissions_canpostpolls, array("class" => "align_center", "width" => "10%"));
 		$form_container->output_row_header($lang->permissions_canuploadattachments, array("class" => "align_center", "width" => "11%"));
 		$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
-		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'width' => '150px'));
+		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 150px'));
 		foreach($usergroups as $usergroup)
 		{
 			if($existing_permissions[$usergroup['gid']])
@@ -774,7 +774,7 @@ if(!$mybb->input['action'])
 		echo "<div id=\"tab_moderators\">\n";
 		$form_container = new FormContainer(sprintf($lang->moderators_assigned_to, $forum_cache[$fid]['name']));
 		$form_container->output_row_header($lang->add_moderator, array('width' => '75%'));
-		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'width' => '200px', 'colspan' => 2));
+		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px', 'colspan' => 2));
 		$query = $db->query("
 			SELECT m.uid, u.username
 			FROM ".TABLE_PREFIX."moderators m
@@ -840,7 +840,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 			{
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a></div>");
 
-				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
+				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 				
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
@@ -882,16 +882,9 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 					$sub_forums = "<br /><small>{$lang->sub_forums}: {$sub_forums}</small>";
 				}
 					
-				if($depth == 2)
-				{
-					$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
-				}
-				else
-				{
-					$form_container->output_cell("{$forum['name']}{$forum['description']}{$sub_forums}");
-				}
+				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 					
-				$form_container->output_cell("<input type=\"textbox\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
+				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 					
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
@@ -905,6 +898,11 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
 				
 				$form_container->construct_row();
+				
+				if(isset($forums_by_parent[$forum['fid']]) && $depth == 1)
+				{
+					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
+				}
 			}
 			else if($depth == 3)
 			{
