@@ -253,6 +253,7 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['preview'] || $send_errors)
 	{
+		$options = $mybb->input['options'];
 		if($options['signature'] == 1)
 		{
 			$optionschecked['signature'] = 'checked="checked"';
@@ -270,6 +271,7 @@ if($mybb->input['action'] == "send")
 			$optionschecked['readreceipt'] = 'checked="checked"';
 		}
 		$to = htmlspecialchars_uni($mybb->input['to']);
+		$bcc = htmlspecialchars_uni($mybb->input['bcc']);
 	}
 
 	// Preview
@@ -626,7 +628,7 @@ if($mybb->input['action'] == "tracking")
 		SELECT pm.*, u.username as tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-		WHERE receipt='2' AND status!='0' AND fromid='".$mybb->user['uid']."'
+		WHERE receipt='2' AND folder!='3'  AND status!='0' AND fromid='".$mybb->user['uid']."'
 		ORDER BY pm.readtime DESC
 	");
 	while($readmessage = $db->fetch_array($query))
@@ -647,7 +649,7 @@ if($mybb->input['action'] == "tracking")
 		SELECT pm.*, u.username AS tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.toid)
-		WHERE receipt='1' AND status='0' AND fromid='".$mybb->user['uid']."'
+		WHERE receipt='1' AND folder!='3' AND status='0' AND fromid='".$mybb->user['uid']."'
 		ORDER BY pm.dateline DESC
 	");
 	while($unreadmessage = $db->fetch_array($query))

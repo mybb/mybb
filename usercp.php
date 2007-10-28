@@ -1997,7 +1997,7 @@ if($mybb->input['action'] == "do_editlists")
 			$list = "buddy";
 		}
 
-		$message_js = "var success = document.createElement('span'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
+		$message_js = "var success = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
 
 		if($mybb->input['delete'])
 		{

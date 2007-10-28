@@ -247,6 +247,7 @@ else
 			eval("\$usergroup['groupimage'] = \"".$templates->get("memberlist_user_groupimage")."\";");
 		}
 
+		$has_custom_title = 0;
 		if(trim($user['usertitle']) != "")
 		{
 			$has_custom_title = 1;

@@ -146,7 +146,7 @@ class FeedGenerator
 					$this->xml .= "\t\t<link rel=\"alternate\" type=\"text/html\" href=\"{$item['link']}\" />\n";
 					$this->xml .= "\t\t<id>{$item['link']}</id>\n";
 					$this->xml .= "\t\t<title type=\"html\" xml:space=\"preserve\"><![CDATA[".$this->sanitize_content($item['title'])."]]></title>\n";
-					$this->xml .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".strip_tags(str_replace("]]>", "]]&gt;", $item['description']))."]]></content>\n";
+					$this->xml .= "\t\t<content type=\"html\" xml:space=\"preserve\" xml:base=\"{$item['link']}\"><![CDATA[".strip_tags($this->sanitize_content($item['description']))."]]></content>\n";
 					$this->xml .= "\t\t<draft xmlns=\"http://purl.org/atom-blog/ns#\">false</draft>\n";
 					$this->xml .= "\t</entry>\n";
 					break;
@@ -163,7 +163,7 @@ class FeedGenerator
 						$this->xml .= "\t\t\t<dc:creator>".$this->sanitize_content($item['author'])."</dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">".$item['link']."</guid>\n";
-					$this->xml .= "\t\t\t<description><![CDATA[".nl2br(strip_tags(str_replace("]]>", "]]&gt;", $item['description'])))."]]></description>\n";
+					$this->xml .= "\t\t\t<description><![CDATA[".nl2br(strip_tags($this->sanitize_content($item['description'])))."]]></description>\n";
 					$this->xml .= "\t\t\t<content:encoded><![CDATA[".nl2br($item['description'])."]]></content:encoded>\n";
 					$this->xml .= "\t\t</item>\n";
 					break;
@@ -192,6 +192,7 @@ class FeedGenerator
 	{
 		$content = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#x26;$1", $content);
 		$content = str_replace("]]>", "]]&gt;", $content);
+		$content = str_replace("]", "&91;", $content);
 		return htmlspecialchars_uni($content);
 	}
 

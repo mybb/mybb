@@ -346,10 +346,9 @@ var Thread = {
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
 			$('posts').appendChild(post);
-			if(MyBB.browser == "ie" && request.responseText.match(/<posthash>(.*)<\/posthash>/))
+			if(MyBB.browser == "ie")
 			{
-				var new_posthash = request.responseText.match(/<posthash>(.*)<\/posthash>/)[1];
-				$('posthash').value = new_posthash;
+				request.responseText.evalScripts(); 
 			}
 			Form.reset('quick_reply_form');
 			if($('lastpid'))
@@ -357,10 +356,9 @@ var Thread = {
 				$('lastpid').value = pid;
 			}
 		}
-		else if(request.responseText.match(/<redirect>(.*)<\/redirect>/))
+		else
 		{
-			var redirect_url = request.responseText.match(/<redirect>(.*)<\/redirect>/)[1];
-			window.location = redirect_url;
+			request.responseText.evalScripts(); 
 		}
 		
 		if(this.spinner)

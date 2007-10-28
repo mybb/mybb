@@ -749,6 +749,14 @@ disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[disabled]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="allowaway">
+			<title>Allow Away Statuses?</title>
+			<description><![CDATA[Should users be allowed to set their status to 'Away' with a custom reason & return date?]]></description>
+			<disporder>29</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="memberlist" title="Member List" description="This section allows you to control various aspects of the board member listing (memberlist.php), such as how many members to show per page, and which features to enable or disable." disporder="10" isdefault="1">
 		<setting name="enablememberlist">

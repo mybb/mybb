@@ -3955,7 +3955,7 @@ body {
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="30%"><span class="smalltext"><strong>{$lang->sentto}</strong></span></td>
 <td class="tcat" align="center" style="white-space: nowrap" width="20%"><span class="smalltext"><strong>{$lang->datesent}</strong></span></td>
-<td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkal" /></span></td>
+<td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input type="checkbox" class="checkbox checkall" /></span></td>
 </tr>
 {$unreadmessages}
 <tr>
@@ -4130,11 +4130,11 @@ body {
 <td class="thead" colspan="5"><strong>{$lang->member_list}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="1"><strong>{$lang->avatar}</strong></td>
-<td class="tcat"><strong>{$lang->username}</strong></td>
-<td class="tcat" width="15%" align="center"><strong>{$lang->joined}</strong></td>
-<td class="tcat" width="15%" align="center"><strong>{$lang->lastvisit}</strong></td>
-<td class="tcat" width="10%" align="center"><strong>{$lang->posts}</strong></td>
+<td class="tcat" width="1"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
+<td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
+<td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->joined}</strong></span></td>
+<td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
+<td class="tcat" width="10%" align="center"><span class="smalltext"><strong>{$lang->posts}</strong></span></td>
 </tr>
 {$users}
 </table>
@@ -7410,7 +7410,7 @@ To: {$to_recipients}
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="postbit_multiquote" version="1400"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
 <script type="text/javascript">
-<!--
+//<!--
 	$('multiquote_link_{$post['pid']}').style.display = '';
 // -->
 </script>]]></template>

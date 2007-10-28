@@ -370,7 +370,7 @@ function build_postbit($post, $post_type=0)
 	$post['button_report'] = '';
 	
 	// For private messages, fetch the reply/forward/delete icons
-	if($post_type == 2)
+	if($post_type == 2 && $post['pmid'])
 	{
 		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
 		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");

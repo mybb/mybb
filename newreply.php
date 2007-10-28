@@ -497,7 +497,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 
 				if($mybb->input['from_page'] && $post_page > $mybb->input['from_page'])
 				{
-					echo "<redirect>".get_thread_link($tid, 0, "lastpost")."</redirect>";
+					redirect(get_thread_link($tid, 0, "lastpost"));
 					exit;
 				}
 
@@ -546,19 +546,22 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				// Build a new posthash incase the user wishes to quick reply again
 				mt_srand((double) microtime() * 1000000);
 			    $new_posthash = md5($mybb->user['uid'].mt_rand());
-				echo "<!-- <posthash>{$new_posthash}</posthash> -->\n";
+				echo "<script type=\"text/javascript\">\n"; 
+				echo "$('posthash').value = '{$new_posthash}';\n"; 
+				echo "</script>\n"; 
 				exit;				
 			}
 			// Post is in the moderation queue
 			else
 			{
-				echo "<redirect>".get_thread_link($tid, 0, "lastpost")."</redirect>";	
+				redirect(get_thread_link($tid, 0, "lastpost"), $lang->redirect_newreply_moderation);
 				exit;
 			}
 		}
 		else
 		{
-			echo "<redirect>{$url}</redirect>";
+			$lang->redirect_newreply .= sprintf($lang->redirect_return_forum, $fid); 
+			redirect($url, $lang->redirect_newreply); 
 			exit;
 		}
 	}
