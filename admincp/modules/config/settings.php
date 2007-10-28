@@ -1157,13 +1157,13 @@ function print_setting_peekers()
 		{
 			new Peeker(document.getElementsByClassName("setting_boardclosed"), $("row_setting_boardclosed_reason"), /1/, true);
 			new Peeker(document.getElementsByClassName("setting_gzipoutput"), $("row_setting_gziplevel"), /1/, true);
-			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorlogmedium"), /on/, true);
-			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errortypemedium"), /on/, true);
-			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorloglocation"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorlogmedium"), /1/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errortypemedium"), /1/, true);
+			new Peeker(document.getElementsByClassName("setting_useerrorhandling"), $("row_setting_errorloglocation"), /1/, true);
 			new Peeker($("setting_subforumsindex"), $("row_setting_subforumsstatusicons"), /[^0]/, false);
 			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true);
 			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
-			new Peeker(document.getElementsByClassName("setting_disableregs"), $("row_setting_regtype"), /no/, true);
+			new Peeker(document.getElementsByClassName("setting_disableregs"), $("row_setting_regtype"), /0/, true);
 			new Peeker(document.getElementsByClassName("setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
 			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
 			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);
@@ -1184,8 +1184,8 @@ function print_setting_peekers()
 			new Peeker(document.getElementsByClassName("setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true);
 			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_publiceventcolor"), /1/, true);
 			new Peeker(document.getElementsByClassName("setting_enablecalendar"), $("row_setting_privateeventcolor"), /1/, true);
-			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertertot"), /on/, true);
-			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertercols"), /on/, true);
+			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true);
+			new Peeker(document.getElementsByClassName("setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true);
 			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);
 			new Peeker($("setting_mail_handler"), $("row_setting_smtp_port"), /smtp/, false);
 			new Peeker($("setting_mail_handler"), $("row_setting_smtp_user"), /smtp/, false);
