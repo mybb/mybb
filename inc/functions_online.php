@@ -161,8 +161,7 @@ function fetch_wol_activity($location)
 				}
 				$user_activity['activity'] = "misc_whoposted";
 				$user_activity['tid'] = $parameters['tid'];
-			}
-			
+			}			
 			elseif(in_array($parameters['action'], $accepted_parameters))
 			{
 				$user_activity['activity'] = "misc_".$parameters['action'];
@@ -170,6 +169,41 @@ function fetch_wol_activity($location)
 			else
 			{
 				$user_activity['activity'] = "misc";
+			}
+			break;
+		case "modcp":
+			$accepted_parameters = array("modlogs", "announcements", "finduser", "warninglogs", "ipsearch");
+			
+			foreach($accepted_parameters as $action)
+			{
+				if($parameters['action'] == $action)
+				{
+					$user_activity['activity'] = "modcp_".$action;
+					break;
+				}
+			}
+			
+			$accepted_parameters = array();
+			$accepted_parameters['report'] = array("do_reports", "reports", "allreports");			
+			$accepted_parameters['new_annoucement'] = array("do_new_announcement", "new_announcement");
+			$accepted_parameters['delete_announcement'] = array("do_delete_announcement", "delete_announcement");
+			$accepted_parameters['edit_announcement'] = array("do_edit_announcement", "edit_announcement");
+			$accepted_parameters['mod_queue'] = array("do_modqueue", "modqueue");
+			$accepted_parameters['editprofile'] = array("do_editprofile", "editprofile");
+			$accepted_parameters['banning'] = array("do_banuser", "banning", "liftban", "banuser");
+			
+			foreach($accepted_parameters as $name => $actions)
+			{
+				if(in_array($parameters['action'], $actions))
+				{					
+					$user_activity['activity'] = "modcp_".$name;
+					break;
+				}
+			}
+			
+			if(!$user_activity['activity'])
+			{
+				$user_activity['activity'] = "modcp";
 			}
 			break;
 		case "moderation":
@@ -613,6 +647,46 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		case "misc_imcenter":
 			$location_name = $lang->viewing_imcenter;
+			break;						
+		// modcp.php functions
+		case "modlogs":
+			$location_name = $lang->viewing_modlogs;
+			break;
+		case "announcements":
+			$location_name = $lang->managing_announcements;
+			break;
+		case "finduser":
+			$location_name = $lang->search_for_user;
+			break;
+		case "warninglogs":
+			$location_name = $lang->managing_warninglogs;
+			break;
+		case "ipsearch":
+			$location_name = $lang->searching_ips;
+			break;
+		case "report":
+			$location_name = $lang->viewing_reports;
+			break;
+		case "new_announcement":
+			$location_name = $lang->adding_announcement;
+			break;
+		case "delete_announcement":
+			$location_name = $lang->deleting_announcement;
+			break;
+		case "edit_announcement":
+			$location_name = $lang->editing_announcement;
+			break;
+		case "mod_queue":
+			$location_name = $lang->managing_modqueue;
+			break;
+		case "editprofile":
+			$location_name = $lang->editing_user_profiles;
+			break;
+		case "banning":
+			$location_name = $lang->managing_bans;
+			break;
+		case "modcp":
+			$location_name = $lang->viewing_modcp;
 			break;
 		// moderation.php functions
 		case "moderation":

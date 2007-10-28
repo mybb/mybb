@@ -111,4 +111,17 @@ $l['viewing_imcenter'] = "Viewing IM Center";
 $l['managing_favorites'] = "Managing Favorite Threads";
 $l['managing_subscriptions'] = "Managing Subscribed Threads";
 $l['managing_group'] = "Managing a Usergroup";
+$l['viewing_modcp'] = "Viewing Moderator CP";
+$l['viewing_modlogs'] = "Viewing Moderator Logs";
+$l['managing_announcements'] = "Managing Announcements";
+$l['search_for_user'] = "Searching for users";
+$l['managing_warninglogs'] = "Managing Warning Logs";
+$l['searching_ips'] = "Searching IPs";
+$l['viewing_reports'] = "Viewing Reported Posts";
+$l['adding_announcement'] = "Adding an Announcement";
+$l['deleting_announcement'] = "Deleting an Announcement";
+$l['editing_announcement'] = "Editing an Announcement";
+$l['managing_modqueue'] = "Managing Moderation Queue";
+$l['editing_user_profiles'] = "Editing User Profiles";
+$l['managing_bans'] = "Managing Bans";
 ?>

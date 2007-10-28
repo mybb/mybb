@@ -4130,7 +4130,7 @@ body {
 <td class="thead" colspan="5"><strong>{$lang->member_list}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="1"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
+<td class="tcat" width="5%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->joined}</strong></span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>

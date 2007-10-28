@@ -885,14 +885,14 @@ if(!$mybb->input['action'])
 
 	$multipage = multipage($warning_count, $perpage, $page, "warnings.php?uid={$user['uid']}");
 
-	$warning_level = round($mybb->user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+	$warning_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 	if($warning_level > 100)
 	{
 		$warning_level = 100;
 	}
 	if($warning_level > 0)
 	{
-		$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
+		$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
 	}
 	else
 	{

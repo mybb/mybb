@@ -3885,7 +3885,18 @@ function build_profile_link($username="", $uid=0, $target="", $onclick="")
 		}
 
 		// If we're in the archive, link back a directory
-		if(IN_ARCHIVE == 1 || IN_ADMINCP == 1)
+		if(IN_ARCHIVE == 1)
+		{
+			global $mybb;
+			
+			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+			{
+				return "<a href=\"../../".get_profile_link($uid)."\"{$target}{$onclick}>{$username}</a>";
+			}
+			
+			return "<a href=\"../".get_profile_link($uid)."\"{$target}{$onclick}>{$username}</a>";
+		}
+		elseif(IN_ADMINCP == 1)
 		{
 			return "<a href=\"../".get_profile_link($uid)."\"{$target}{$onclick}>{$username}</a>";
 		}
