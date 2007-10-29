@@ -561,6 +561,7 @@ var expandables = {
 				expandedItem.show();
 				element.src = element.src.replace("collapse_collapsed.gif", "collapse.gif");
 				element.alt = "[-]";
+				element.title = "[-]";
 				this.saveCollapsed(element.controls);
 			}
 			else
@@ -568,6 +569,7 @@ var expandables = {
 				expandedItem.hide();
 				element.src = element.src.replace("collapse.gif", "collapse_collapsed.gif");
 				element.alt = "[+]";
+				element.title = "[+]";
 				this.saveCollapsed(element.controls, 1);
 			}
 		}

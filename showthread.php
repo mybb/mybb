@@ -913,6 +913,20 @@ if($mybb->input['action'] == "thread")
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}
 	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
+	
+	// Subscription status
+	$query = $db->simple_select("threadsubscriptions", "COUNT(tid) as count", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
+	if($db->fetch_field($query, 'count'))
+	{
+		$add_remove_subscription = 'remove';
+		$add_remove_subscription_text = $lang->unsubscribe_thread;
+	}
+	else
+	{
+		$add_remove_subscription = 'add';
+		$add_remove_subscription_text = $lang->subscribe_thread;
+	}
+	 
 	eval("\$showthread = \"".$templates->get("showthread")."\";");
 	$plugins->run_hooks("showthread_end");
 	output_page($showthread);

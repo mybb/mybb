@@ -853,7 +853,7 @@ td .star_rating {
 	<tr>
 		<td class="thead" colspan="{$colspan}">
 			<div style="float: right;">
-				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}">{$lang->markforum_read}</a> | <a href="usercp2.php?action=addsubscription&amp;type=forum&amp;fid={$fid}">{$lang->subscribe_forum}</a>{$clearstoredpass}</strong></span>
+				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}">{$lang->markforum_read}</a> | <a href="usercp2.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
 			</div>
 			<div>
 				<strong>{$foruminfo['name']}</strong>
@@ -1475,7 +1475,7 @@ td .star_rating {
 						<span class="smalltext">
 							<a href="printthread.php?tid={$tid}">{$lang->view_printable}</a><br />
 							<a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a><br />
-							<a href="usercp2.php?action=addsubscription&amp;tid={$tid}">{$lang->subscribe_thread}</a>
+							<a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}">{$add_remove_subscription_text}</a>
 						</span>
 					</td>
 					<td align="right">
@@ -5887,7 +5887,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_tracking_nomessage" version="1400"><![CDATA[<tr>
 <td align="center" class="trow1" colspan="5">{$lang->no_readmessages}</td>
 </tr>]]></template>
-		<template name="usercp_editlists_user" version="1400"><![CDATA[<li style="width: 33%; float: left; list-type: none; margin-bottom: 4px;" id="{$type}_{$user['uid']}">
+		<template name="usercp_editlists_user" version="1400"><![CDATA[<li style="width: 33%; float: left; list-style-type: none; margin-bottom: 4px;" id="{$type}_{$user['uid']}">
 	<a href="usercp.php?action=do_editlists&amp;my_post_key={$mybb->post_code}&amp;manage={$type}&amp;delete={$user['uid']}" onclick="return UserCP.removeBuddy('{$type}', {$user['uid']});" title="{$lang->remove_from_list}"><img src="{$theme['imgdir']}/buddy_delete.gif" title="[{$lang->delete}]" alt="{$lang->$status}" style="vertical-align: middle;" /></a>
 	<img src="{$theme['imgdir']}/buddy_{$status}.gif" title="{$lang->$status}" alt="" style="vertical-align: middle;" />
 	{$profile_link}
@@ -7694,7 +7694,7 @@ To: {$to_recipients}
 <thead>
 <tr>
 <td class="thead">
-<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.gif" id="boardstats_img" class="expander" alt="[-]" /></div>
+<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['boardstats']}.gif" id="boardstats_img" class="expander" alt="[-]" title="[-]" /></div>
 <div><strong>{$lang->boardstats}</strong></div>
 </td>
 </tr>
@@ -8747,8 +8747,8 @@ To: {$to_recipients}
 <br />
 ]]></template>
 		<template name="calendar_event_editbutton" version="1400"><![CDATA[<div style="text-align: right; vertical-align: bottom;">
-	<a href="calendar.php?action=editevent&amp;eid={$event['eid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->alt_edit}" /></a>
-	<a href="javascript:MyBB.deleteEvent({$event['eid']});"><img src="{$theme['imglangdir']}/postbit_delete.gif" border="0" alt="{$lang->alt_delete}" /></a>
+	<a href="calendar.php?action=editevent&amp;eid={$event['eid']}"><img src="{$theme['imglangdir']}/postbit_edit.gif" border="0" alt="{$lang->alt_edit}" title="{$lang->alt_edit}" /></a>
+	<a href="javascript:MyBB.deleteEvent({$event['eid']});"><img src="{$theme['imglangdir']}/postbit_delete.gif" border="0" alt="{$lang->alt_delete}" title="{$lang->alt_delete}" /></a>
 </div>
 ]]></template>
 		<template name="calendar_dayview_birthdays" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -9170,10 +9170,10 @@ To: {$to_recipients}
 	</tbody>
 </table>]]></template>
 		<template name="xmlhttp_buddyselect_online" version="1400"><![CDATA[					<tr>
-						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_online.gif" alt="" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_online.gif" alt="({$lang->online})" title="{$lang->online}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
 		<template name="xmlhttp_buddyselect_offline" version="1400"><![CDATA[					<tr>
-						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_offline.gif" alt="" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
+						<td class="trow1" onmouseover="this.className='trow2';" onmouseout="this.className='trow1';"><label><input type="checkbox" style="vertical-align: middle;" id="checkbox_{$buddy['uid']}" onclick="UserCP.selectBuddy('{$buddy['uid']}', '{$buddy['username']}');" /> <img src="{$theme['imgdir']}/buddy_offline.gif" alt="({$lang->offline})" title="{$lang->offline}" style="vertical-align: middle;" /> {$buddy_name}</label></td>
 					</tr>]]></template>
 		<template name="private_send_buddyselect" version="1400"><![CDATA[<script type="text/javascript"><!--
 document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBuddySelect(\'{$buddy_select}\');"><img src="{$theme['imgdir']}/buddies.gif" alt="" style="vertical-align: middle;" /> {$lang->select_from_buddies}</a></span>');

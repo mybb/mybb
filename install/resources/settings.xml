@@ -824,7 +824,7 @@ DESC=Descending]]></optionscode>
 			<description><![CDATA[Please enter the forum ids (fid) of the forum(s) you wish to pull the announcements from.  Separate them with a comma (,).]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
+			<settingvalue><![CDATA[2]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_numannouncements">

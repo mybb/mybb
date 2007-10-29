@@ -138,7 +138,7 @@ elseif($mybb->input['action'] == "removesubscription")
 	}
 	else
 	{
-		$thread  = get_thread($mybb->input['tid']);
+		$thread = get_thread($mybb->input['tid']);
 		if(!$thread['tid'])
 		{
 			error($lang->error_invalidthread);

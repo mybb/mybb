@@ -1044,6 +1044,20 @@ if(is_array($threadcache))
 	}
 }
 
+// Subscription status
+$query = $db->simple_select("forumsubscriptions", "COUNT(fid) as count", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
+if($db->fetch_field($query, 'count'))
+{
+	$add_remove_subscription = 'remove';
+	$add_remove_subscription_text = $lang->unsubscribe_forum;
+}
+else
+{
+	$add_remove_subscription = 'add';
+	$add_remove_subscription_text = $lang->subscribe_forum;
+}
+
+
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")
 {
