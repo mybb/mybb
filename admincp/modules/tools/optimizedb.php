@@ -37,11 +37,11 @@ if(!$mybb->input['action'])
 			$db->optimize_table($table);
 			$db->analyze_table($table);
 		}
-
-		// Log admin action
-		log_admin_action();
 		
 		$db->set_table_prefix(TABLE_PREFIX);
+		
+		// Log admin action
+		log_admin_action();
 		
 		flash_message($lang->success_tables_optimized, 'success');
 		admin_redirect("index.php?".SID."&module=tools/optimizedb");

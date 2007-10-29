@@ -147,7 +147,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array("class" => "align_center"));
 		$table->construct_cell($logitem['action'], array("class" => "align_center"));
-		$table->construct_cell($information, array("class" => "align_center"));
+		$table->construct_cell($information);
 		$table->construct_cell($logitem['ipaddress'], array("class" => "align_center"));
 		$table->construct_row();
 	}
