@@ -109,12 +109,6 @@ if($mybb->input['action'] == "ban")
 			$errors[] = $lang->error_ban_self;
 		}
 
-		// Reason?
-		if(!$mybb->input['reason'])
-		{
-			$errors[] = $lang->error_no_reason;
-		}
-
 		// No errors? Insert
 		if(!$errors)
 		{

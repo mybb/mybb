@@ -49,6 +49,11 @@ $l['mybb_already_installed'] = "<p>Welcome to the installation wizard for MyBB {
 	</form>
 </div>";
 
+$l['mybb_incorrect_folder'] = "<div class=\"border_wrapper upgrade_note\" style=\"padding: 4px;\">
+	<h3>MyBB has detected that it is running from the \"Upload\" directory.</h3>
+	<p>While there is nothing wrong with this, it is recommended that your upload the contents of the \"Upload\" directory and not the directory itself.<br /><br />For more information see our <a href=\"http://wiki.mybboard.net/index.php/Help:Upload_Directory\" target=\"_blank\">wiki page</a>.</p>
+</div>";
+
 $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This wizard will install and configure a copy of MyBB on your server.</p>
 <p>Now that you\'ve uploaded the MyBB files the database and settings need to be created and imported. Below is an outline of what is going to be completed during installation.</p>
 <ul>

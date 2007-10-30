@@ -191,6 +191,10 @@ function intro()
 	global $output, $mybb, $lang;
 	
 	$output->print_header($lang->welcome, 'welcome');
+	if(strpos(strtolower($_SERVER['PHP_SELF']), "upload/") !== false)
+	{
+		echo sprintf($lang->mybb_incorrect_folder);
+	}
 	echo sprintf($lang->welcome_step, $mybb->version);
 	$output->print_footer('license');
 }
