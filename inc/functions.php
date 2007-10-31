@@ -3296,7 +3296,7 @@ function get_current_location($fields=false, $ignore=array())
 					continue;
 				}
 				
-				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars($name)."\" value=\"".htmlspecialchars($value)."\" />\n";
+				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars((string)$name)."\" value=\"".htmlspecialchars((string)$value)."\" />\n";
 			}
 		}
 		

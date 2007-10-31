@@ -115,6 +115,10 @@ function build_postbit($post, $post_type=0)
 		}
 		$post_extra_style = "border-top-width: 0;";
 	}
+	elseif($mybb->input['mode'] == "threaded")
+	{
+		$post_extra_style = "border-top-width: 0;";
+	}
 	else
 	{
 		$post_extra_style = "margin-top: 5px;";

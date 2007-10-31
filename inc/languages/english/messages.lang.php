@@ -162,8 +162,7 @@ Thank you,
 
 $l['email_forumsubscription'] = "{1},
 
-{2} has just started a new thread in {3}
-This is a forum you have subscribed to at {4}.
+{2} has just started a new thread in {3}. This is a forum you have subscribed to at {4}.
 
 The thread is titled {5}
 

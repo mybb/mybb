@@ -624,6 +624,7 @@ if($mybb->input['action'] == "thread")
             {
                 if($post['pid'] == $mybb->input['pid'] || ($isfirst && !$mybb->input['pid']))
                 {
+					$postcounter = count($postsdone);
                     $isfirst = 0;
                 }
                 $tree[$post['replyto']][$post['pid']] = $post;

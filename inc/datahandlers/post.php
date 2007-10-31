@@ -1212,9 +1212,11 @@ class PostDataHandler extends DataHandler
 					SELECT u.username, u.email, u.uid, u.language
 					FROM ".TABLE_PREFIX."forumsubscriptions fs
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=fs.uid)
+					LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 					WHERE fs.fid='".intval($thread['fid'])."'
 					AND fs.uid != '".intval($thread['uid'])."'
 					AND u.lastactive > '{$forum['lastpost']}'
+					AND g.isbannedgroup != 1
 				");
 				while($subscribedmember = $db->fetch_array($query))
 				{

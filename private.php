@@ -608,6 +608,10 @@ if($mybb->input['action'] == "read")
 	{
 		$to_recipients = implode(", ", $to_recipients);
 	}
+	else
+	{
+		$to_recipients = $lang->nobody;
+	}
 
 	eval("\$pm['subject_extra'] = \"".$templates->get("private_read_to")."\";");
 	
@@ -1397,13 +1401,16 @@ if(!$mybb->input['action'])
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
 				$recipients = unserialize($message['recipients']);
-				if(count($recipients['to']) > 1)
+				if(count($recipients['to']) > 1 || (count($recipients['to']) == 0 && count($recipients['bcc']) > 0))
 				{
 					$uids = array();
-					foreach($recipients['to'] as $recipient)
+					if(count($recipients['to']) > 1)
 					{
-						$recipientsids['to'][] = $recipient;
-						$uids[] = $recipient;
+						foreach($recipients['to'] as $recipient)
+						{
+							$recipientsids['to'][] = $recipient;
+							$uids[] = $recipient;
+						}
 					}
 
 					$to_users = $bcc_users = '';
@@ -1424,14 +1431,24 @@ if(!$mybb->input['action'])
 					{
 						$profilelink = get_profile_link($user['uid']);
 						$username = htmlspecialchars_uni($user['username']);
-						if(in_array($user['uid'], $recipientsids['to']))
+						if(is_array($recipientsids['to']) && in_array($user['uid'], $recipientsids['to']))
 						{
 							eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user", 1, 0)."\";");
 						}
-						else if(in_array($user['uid'], $recipientsids['bcc']))
+						else if(is_array($recipientsids['bcc']) && in_array($user['uid'], $recipientsids['bcc']))
 						{
 							eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user", 1, 0)."\";");
 						}
+					}
+					
+					if(!$to_users)
+					{
+						$to_users = $lang->nobody;
+					}
+					
+					if(!$bcc_users)
+					{
+						$bcc_users = $lang->nobody;
 					}
 
 					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");

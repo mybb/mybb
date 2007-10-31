@@ -530,8 +530,12 @@ $allowable_actions = array(
 		"do_resendactivation",
 		"resetpassword"
 	),
+	"usercp2.php" => array(
+		"removesubscription",
+		"removesubscriptions"
+	),
 );
-if($mybb->usergroup['canview'] != 1 && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && my_strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
+if($mybb->usergroup['canview'] != 1 && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "usercp2.php" && in_array($mybb->input['action'], $allowable_actions['usercp2.php'])) && my_strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
 {
 	error_no_permission();
 }

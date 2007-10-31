@@ -23,6 +23,13 @@ $l['send_y_message'] = "Send {1} a Yahoo! Message.";
 $l['view_y_profile'] = "View {1}'s Yahoo! Profile.";
 $l['aim_center'] = "AOL IM Center";
 
+$l['download_aim'] = "Download AIM";
+$l['aim_remote'] = "AIM Remote";
+$l['send_me_instant'] = "Send me an Instant Message";
+$l['add_me_buddy_list'] = "Add me to Your Buddy List";
+$l['add_remote_to_page'] = "Add Remote to Your Page";
+$l['download_aol_im'] = "Download AOL Instant Messenger";
+
 $l['buddy_list'] = "Buddy List";
 $l['online'] = "Online";
 $l['offline'] = "Offline";
