@@ -129,16 +129,16 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
 
-		// If we can, parse smilies
-		if($options['allow_smilies'] !== 0)
-		{
-			$message = $this->parse_smilies($message, $options['allow_html']);
-		}
-
 		// Replace MyCode if requested.
 		if($options['allow_mycode'] !== 0)
 		{
 			$message = $this->parse_mycode($message, $options);
+		}
+		
+		// If we can, parse smilies
+		if($options['allow_smilies'] !== 0)
+		{
+			$message = $this->parse_smilies($message, $options['allow_html']);
 		}
 
 		// Run plugin hooks
@@ -558,7 +558,7 @@ class postParser
 		$username = stripslashes($username)."'";
 		$delete_quote = true;
 
-		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#", $username, $match);
+		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
 		if(intval($match[1]))
 		{
 			$pid = intval($match[1]);
@@ -572,7 +572,7 @@ class postParser
 				eval("\$linkback = \" ".$templates->get("postbit_gotopost", 1, 0)."\";");
 			}
 			
-			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#", '', $username);
+			$username = preg_replace("#(?:&quot;|\"|')? pid=(?:&quot;|\"|')?[0-9]+[\"']?(?:&quot;|\"|')?#i", '', $username);
 			$delete_quote = false;
 		}
 
@@ -583,7 +583,7 @@ class postParser
 			$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
 			$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
 			$date = " ({$postdate} {$posttime})";
-			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#", '', $username);
+			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#i", '', $username);
 			$delete_quote = false;
 		}
 

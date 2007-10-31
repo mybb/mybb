@@ -3247,9 +3247,11 @@ function leave_usergroup($uid, $leavegroup)
 /**
  * Get the current location taking in to account different web serves and systems
  *
+ * @param boolean True to return as "hidden" fields
+ * @param array Array of fields to ignore if first argument is true
  * @return string The current URL being accessed
  */
-function get_current_location()
+function get_current_location($fields=false, $ignore=array())
 {
 	if(defined("MYBB_LOCATION"))
 	{
@@ -3273,34 +3275,65 @@ function get_current_location()
 		$location = $_SERVER['PHP_SELF'];
 	}
 
-	if(isset($_SERVER['QUERY_STRING']))
+	if($fields == true)
 	{
-		$location .= "?".$_SERVER['QUERY_STRING'];
-	}
-	else if(isset($_ENV['QUERY_STRING']))
-	{
-		$location = "?".$_ENV['QUERY_STRING'];
-	}
-
-	if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
-	{
-		$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
-
-		foreach($post_array as $var)
+		global $mybb;
+		
+		if(!is_array($ignore))
 		{
-			if(isset($_POST[$var]))
+			$ignore = array($ignore);
+		}
+		
+		$form_html = "";
+		$field_parts = explode('&', $field_parts);
+		
+		if(!empty($mybb->input))
+		{
+			foreach($mybb->input as $name => $value)
 			{
-				$addloc[] = $var.'='.$_POST[$var];
+				if(in_array($name, $ignore))
+				{
+					continue;
+				}
+				
+				$form_html .= "<input type=\"hidden\" name=\"".htmlspecialchars($name)."\" value=\"".htmlspecialchars($value)."\" />\n";
 			}
 		}
-
-		if(isset($addlock) && is_array($addloc))
-		{
-			$location .= "?".implode("&", $addloc);
-		}
+		
+		return array('location' => $location, 'form_html' => $form_html);
 	}
-
-	return $location;
+	else
+	{
+		if(isset($_SERVER['QUERY_STRING']))
+		{
+			$location .= "?".$_SERVER['QUERY_STRING'];
+		}
+		else if(isset($_ENV['QUERY_STRING']))
+		{
+			$location = "?".$_ENV['QUERY_STRING'];
+		}
+		
+		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
+		{
+			$post_array = array('action', 'fid', 'pid', 'tid', 'uid', 'eid');
+	
+			foreach($post_array as $var)
+			{
+				if(isset($_POST[$var]))
+				{
+					$addloc[] = $var.'='.$_POST[$var];
+				}
+			}
+	
+			if(isset($addlock) && is_array($addloc))
+			{
+				$location .= "?".implode("&", $addloc);
+			}
+		}
+	
+	
+		return $location;
+	}
 }
 
 /**

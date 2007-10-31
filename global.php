@@ -448,6 +448,9 @@ if($mybb->settings['showlanguageselect'] != 0)
 			$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
 		}
 	}
+	
+	$lang_redirect_url = get_current_location(true, 'language');
+	
 	eval("\$lang_select = \"".$templates->get("footer_languageselect")."\";");
 }
 

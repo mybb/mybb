@@ -417,7 +417,7 @@ class errorHandler {
 			$backtrace = $this->generate_backtrace();
 			if($backtrace)
 			{
-				$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}/dd>\n";
+				$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}</dd>\n";
 			}
 			$error_message .= "</dl>\n";
 
@@ -513,7 +513,7 @@ EOF;
 			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">File</th>\n";
 			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Line</th>\n";
 			$backtrace .= "<th style=\"border-bottom: 1px solid #aaa; background: #ccc; padding: 4px; text-align: left; font-size: 11px;\">Function</th>\n";
-			$backtrace .= "</tr></thead\n<tbody>\n";
+			$backtrace .= "</tr></thead>\n<tbody>\n";
 
 			// Strip off this function from trace
 			array_shift($trace);
