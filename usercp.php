@@ -838,13 +838,27 @@ if($mybb->input['action'] == "options")
 	$date_format_options = "<option value=\"0\">{$lang->use_default}</option>";
 	foreach($date_formats as $key => $format)
 	{
-		$date_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
+		if($user['dateformat'] == $key)
+		{
+			$date_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
+		}
+		else
+		{
+			$date_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
+		}
 	}
 
 	$time_format_options = "<option value=\"0\">{$lang->use_default}</option>";
 	foreach($time_formats as $key => $format)
 	{
-		$time_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
+		if($user['dateformat'] == $key)
+		{
+			$time_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
+		}
+		else
+		{
+			$time_format_options .= "<option value=\"$key\">".my_date($format, TIME_NOW, "", 0)."</option>";
+		}
 	}
 
 	if($user['dst'] == 1)

@@ -4656,8 +4656,8 @@ body {
 <td><span class="smalltext">{$lang->confirm_password}</span></td>
 </tr>
 <tr>
-<td><input type="password" class="textbox" name="password" id="password" size="20" style="width: 100%;" /></td>
-<td><input type="password" class="textbox" name="password2" id="password2" size="20" style="width: 100%;" /></td>
+<td><input type="password" class="textbox" name="password" id="password" size="40" /></td>
+<td><input type="password" class="textbox" name="password2" id="password2" size="40" /></td>
 </tr>
 <tr>
 	<td colspan="2" style="display: none;" id="password_status">&nbsp;</td>
@@ -7280,7 +7280,7 @@ To: {$to_recipients}
 <td colspan="2"><span class="smalltext"><label for="username">{$lang->username}</label></span></td>
 </tr>
 <tr>
-<td colspan="2"><input type="text" class="textbox" name="username" id="username" size="40" value="{$username}" style="width: 100%;" /></td>
+<td colspan="2"><input type="text" class="textbox" name="username" id="username" size="88" value="{$username}" /></td>
 </tr>
 {$passboxes}
 <tr>
@@ -7288,8 +7288,8 @@ To: {$to_recipients}
 <td><span class="smalltext"><label for="email2">{$lang->confirm_email}</label></span></td>
 </tr>
 <tr>
-<td><input type="text" class="textbox" name="email" id="email" size="20" maxlength="50" value="{$email}" style="width: 100%;" /></td>
-<td><input type="text" class="textbox" name="email2" id="email2" size="20" maxlength="50" value="{$email2}" style="width: 100%;" /></td>
+<td><input type="text" class="textbox" name="email" id="email" size="40" maxlength="50" value="{$email}" /></td>
+<td><input type="text" class="textbox" name="email2" id="email2" size="40" maxlength="50" value="{$email2}" /></td>
 </tr>
 <tr>
 	<td colspan="2" style="display: none;" id="email_status">&nbsp;</td>
