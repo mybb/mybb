@@ -67,6 +67,10 @@ function tools_action_handler($action)
 			$page->active_action = "modlog";
 			$action_file = "modlog.php";
 			break;
+		case "warninglog":
+			$page->active_action = "warninglog";
+			$action_file = "warninglog.php";
+			break;
 		default:
 			$page->active_action = "system_health";
 			$action_file = "index.php";
@@ -93,6 +97,7 @@ function tools_action_handler($action)
 	$sub_menu['20'] = array("id" => "modlog", "title" => $lang->moderator_log, "link" => "index.php?".SID."&module=tools/modlog");
 	$sub_menu['30'] = array("id" => "maillogs", "title" => $lang->user_email_log, "link" => "index.php?".SID."&module=tools/maillogs");
 	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?".SID."&module=tools/mailerrors");
+	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?".SID."&module=tools/warninglog");
 	
 	$sidebar = new SidebarItem($lang->logs);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
@@ -157,7 +162,8 @@ function tools_admin_permissions()
 		"adminlog" => $lang->can_manage_admin_logs,
 		"modlog" => $lang->can_manage_mod_logs,
 		"maillogs" => $lang->can_manage_user_mail_log,
-		"mailerrors" => $lang->can_manage_system_mail_log
+		"mailerrors" => $lang->can_manage_system_mail_log,
+		"warninglog" => $lang->can_manage_user_warning_log
 	);
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions);
 }

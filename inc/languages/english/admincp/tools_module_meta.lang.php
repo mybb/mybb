@@ -23,6 +23,7 @@ $l['administrator_log'] = "Administrator Log";
 $l['moderator_log'] = "Moderator Log";
 $l['user_email_log'] = "User Email Log";
 $l['system_mail_log'] = "System Mail Log";
+$l['user_warning_log'] = "User Warning Log";
 
 $l['can_access_system_health'] = "Can Access System Health?";
 $l['can_manage_cache'] = "Can Manage Cache?";
@@ -34,5 +35,6 @@ $l['can_manage_admin_logs'] = "Can Manage Administrator Log?";
 $l['can_manage_mod_logs'] = "Can Manage Moderator Log?";
 $l['can_manage_user_mail_log'] = "Can Manage User Mail Log?";
 $l['can_manage_system_mail_log'] = "Can Manage System Mail Log?";
+$l['can_manage_user_warning_log'] = "Can Manage User Warning Logs?";
 
 ?>
