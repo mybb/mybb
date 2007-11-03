@@ -20,6 +20,7 @@ $l['add_child_forum'] = "Add Child Forum";
 $l['add_child_forum_desc'] = "";
 $l['edit_forum_settings'] = "Edit Forum Settings";
 $l['edit_forum_setings_desc'] = "";
+$l['edit_forum'] = "Edit Forum";
 
 $l['manage_forums'] = "Manage Forums";
 $l['forum'] = "Forum";

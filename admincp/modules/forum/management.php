@@ -546,7 +546,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	
-	$page->output_header($lang->add_forum);
+	$page->output_header($lang->edit_forum);
 	
 	$form = new Form("index.php?".SID."&amp;module=forum/management&amp;action=edit", "post");
 	echo $form->generate_hidden_field("fid", $fid);
@@ -597,7 +597,7 @@ if($mybb->input['action'] == "edit")
 		$create_a_options_c['checked'] = true;
 	}
 
-	$form_container = new FormContainer($lang->add_forum);
+	$form_container = new FormContainer($lang->edit_forum);
 	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c), 'type');
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');

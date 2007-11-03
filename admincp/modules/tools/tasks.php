@@ -615,7 +615,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 
-		$popup = new PopupMenu("task_{$task['tid']}", "Options");
+		$popup = new PopupMenu("task_{$task['tid']}", $lang->options);
 		$popup->add_item($lang->edit_task, "index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}");
 		if($task['enabled'] == 1)
 		{

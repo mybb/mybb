@@ -25,18 +25,19 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item("User Groups", "index.php?".SID."&amp;module=user/groups");
+$page->add_breadcrumb_item($lang->user_groups, "index.php?".SID."&amp;module=user/groups");
 
 if($mybb->input['action'] == "add" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_groups'] = array(
-		'title' => "User Groups",
+		'title' => $lang->manage_user_groups,
 		'link' => "index.php?".SID."&amp;module=user/groups",
-		'description' => ""
+		'description' => $lang->manage_user_groups_desc
 	);
 	$sub_tabs['add_group'] = array(
-		'title' => "Add New User Group",
+		'title' => $lang->add_user_group,
 		'link' => "index.php?".SID."&amp;module=user/groups&amp;action=add",
+		'description' => $lang->add_user_group_desc
 	);
 }
 
@@ -48,12 +49,12 @@ if($mybb->input['action'] == "export")
 	$gidwhere = "";
 	if($mybb->input['gid'])
 	{
-		$gidwhere = "WHERE gid='".intval($mybb->input['gid'])."'";
+		$gidwhere = "gid='".intval($mybb->input['gid'])."'";
 	}
 	$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\n";
 	$xml = "<usergroups version=\"{$mybb->version_code}\" exported=\"".time()."\">\n";
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups $gidwhere ORDER BY gid ASC");
+	$query = $db->simple_select("usergroups", "*", $gidwhere, array('order_by' => 'gid', 'order_dir' => 'ASC'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$xml .= "\t\t<usergroup>\n";
@@ -82,7 +83,7 @@ if($mybb->input['action'] == "add")
 	{
 		if(!trim($mybb->input['title']))
 		{
-			$errors[] = "You did not enter a title for this new user group";
+			$errors[] = $lang->error_missing_title;
 		}
 
 		if(!$errors)
@@ -182,17 +183,16 @@ if($mybb->input['action'] == "add")
 			// Log admin action
 			log_admin_action($gid, $mybb->input['title']);
 			
-			flash_message("The new user group has successfully been created", 'success');
+			flash_message($lang->success_group_created, 'success');
 			admin_redirect("index.php?".SID."&module=user/groups");
 		}
 	}
 
-		$page->add_breadcrumb_item("Add New User Title");
-	$page->output_header("User Titles - Add User Title");
+	$page->add_breadcrumb_item($lang->add_user_group);
+	$page->output_header($lang->user_group." - ".$lang->add_user_group);
 	
-	$page->output_nav_tabs($sub_tabs, 'add_title');
-	$form = new Form("index.php?".SID."&amp;module=user/titles&amp;action=add", "post");
-	
+	$page->output_nav_tabs($sub_tabs, 'add_group');
+	$form = new Form("index.php?".SID."&amp;module=user/groups&amp;action=add", "post");
 	
 	if($errors)
 	{
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$usergroup['gid'])
 	{
-		flash_message("You have specified an invalid user group", 'error');
+		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?".SID."&module=user/group");
 	}
 
@@ -216,7 +216,7 @@ if($mybb->input['action'] == "edit")
 	{
 		if(!trim($mybb->input['title']))
 		{
-			$errors[] = "You did not enter a title for this user group";
+			$errors[] = $lang->error_missing_title;
 		}
 
 		if(!$errors)
@@ -325,7 +325,7 @@ if($mybb->input['action'] == "edit")
 			// Log admin action
 			log_admin_action($usergroup['gid'], $mybb->input['title']);
 			
-			flash_message("The user group has successfully been updated", 'success');
+			flash_message($lang->success_group_updated, 'success');
 			admin_redirect("index.php?".SID."&module=user/groups");
 		}
 	}	
@@ -338,7 +338,7 @@ if($mybb->input['action'] == "delete")
 
 	if(!$usergroup['gid'])
 	{
-		flash_message("You have specified an invalid user group", 'error');
+		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?".SID."&module=user/groups");
 	}
 
@@ -364,12 +364,12 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($usergroup['title']);
 
 
-		flash_message("The specified user group has successfully been deleted.", 'success');
+		flash_message($lang->success_group_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=user/groups");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/groups&amp;action=delete&amp;gid={$usergroup['gid']}", "Are you sure you want to delete this user group?");
+		$page->output_confirm_action("index.php?".SID."&amp;module=user/groups&amp;action=delete&amp;gid={$usergroup['gid']}", $lang->confirm_group_deletion);
 	}
 }
 
@@ -382,5 +382,134 @@ if($mybb->input['action'] == "disporder")
 
 if(!$mybb->input['action'])
 {
+	if($mybb->request_method == "post")
+	{
+		if(!empty($mybb->input['disporder']))
+		{
+			foreach($mybb->input['disporder'] as $gid => $order)
+			{
+				$db->update_query("usergroups", array('disporder' => intval($order)), "gid='".intval($gid)."'");
+			}
+					
+			$cache->update_usergroups();
+		
+			flash_message($lang->success_groups_disporder_updated, 'success');
+			admin_redirect("index.php?".SID."&module=user/groups");
+		}
+	}
+	
+	$page->output_header($lang->manage_user_groups);
+	$page->output_nav_tabs($sub_tabs, 'manage_groups');
+	
+	$form = new Form("index.php?".SID."&amp;module=user/groups", "post", "groups");
+	
+	$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) GROUP BY gid;");
+	while($groupcount = $db->fetch_array($query))
+	{
+		$primaryusers[$groupcount['gid']] = $groupcount['users'];
+	}
+
+	switch($db->type)
+	{
+		case "sqlite3":
+		case "sqlite2":
+			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')) WHERE g.gid!='' GROUP BY gid;");
+			break;
+		default:
+			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.gid!='' GROUP BY gid;");
+	}
+	while($groupcount = $db->fetch_array($query))
+	{
+		$secondaryusers[$groupcount['gid']] = $groupcount['users'];
+	}
+
+	$query = $db->query("SELECT g.gid, COUNT(r.uid) AS users FROM ".TABLE_PREFIX."joinrequests r LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=r.gid) GROUP BY gid;");
+	while($joinrequest = $db->fetch_array($query))
+	{
+		$joinrequests[$joinrequest['gid']] = $joinrequest['users'];
+	}
+	
+	$form_container = new FormContainer($lang->user_groups);
+	$form_container->output_row_header($lang->group);
+	$form_container->output_row_header($lang->number_of_users);
+	$form_container->output_row_header($lang->order);
+	$form_container->output_row_header($lang->controls, array("class" => "align_center"));
+	$query = $db->simple_select("usergroups", "*", "", array('order_by' => 'disporder'));
+	while($usergroup = $db->fetch_array($query))
+	{
+		if($usergroup['type'] > 1)
+		{
+			$icon = "<img src=\"styles/default/images/icons/custom.gif\" alt=\"{$lang->custom_user_group}\" style=\"vertical-align: middle;\" />";
+		}
+		else
+		{
+			$icon = "<img src=\"styles/default/images/icons/default.gif\" alt=\"{$lang->default_user_group}\" style=\"vertical-align: middle;\" />";
+		}
+		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$moderator['uid']}\">{$usergroup['title']}</a></strong><br /><small>{$usergroup['description']}</small></div>");
+		
+		if(!$primaryusers[$usergroup['gid']])
+		{
+			$primaryusers[$usergroup['gid']] = 0;
+		}
+		$numusers = $primaryusers[$usergroup['gid']];
+		if($secondaryusers[$usergroup['gid']])
+		{
+			$numusers .= " ({$secondaryusers[$usergroup['gid']]})";
+		}
+		if($joinrequests[$usergroup['gid']] > 0)
+		{
+			$numusers .= " <a href=\"index.php?".SID."&amp;module=user/groups&amp;action=joinrequests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">{$joinrequests[$usergroup['gid']]}</span></a>";
+		}
+		$form_container->output_cell($numusers, array("class" => "align_center"));
+		
+		if($usergroup['showforumteam'] == 1)
+		{
+			$form_container->output_cell("<input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" />", array("class" => "align_center"));
+		}
+		else
+		{
+			$form_container->output_cell("&nbsp;", array("class" => "align_center"));
+		}
+		
+		$popup = new PopupMenu("usergroup_{$usergroup['gid']}", $lang->options);
+		$popup->add_item($lang->edit_group, "index.php?".SID."&amp;module=user/groups&amp;action=edit&amp;gid={$usergroup['gid']}");
+		if($joinrequests[$usergroup['gid']] > 0)
+		{
+			$popup->add_item($lang->moderate_join_requests, "index.php?".SID."&amp;module=user/groups&amp;action=joinrequests&amp;gid={$usergroup['gid']}");
+		}
+		if($usergroup['type'] > 1)
+		{
+			$popup->add_item($lang->delete_group, "index.php?".SID."&amp;module=user/groups&amp;action=delete&amp;gid={$usergroup['gid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_deletion}')");
+		}
+		$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
+		$form_container->construct_row();
+	}
+	
+	if(count($form_container->container->rows) == 0)
+	{
+		$form_container->output_cell($lang->no_groups, array('colspan' => 4));
+		$form_container->construct_row();
+	}
+	
+	$form_container->end();
+	
+	$buttons = array();
+	$buttons[] = $form->generate_submit_button($lang->update_groups_order);
+	$buttons[] = $form->generate_reset_button($lang->reset);	
+	
+	$form->output_submit_wrapper($buttons);
+	
+	$form->end();
+	
+	echo <<<LEGEND
+	<br />
+	<fieldset>
+<legend>{$lang->legend}</legend>
+<img src="styles/default/images/icons/custom.gif" alt="{$lang->custom_user_group}" style="vertical-align: middle;" /> {$lang->custom_user_group}<br />
+<img src="styles/default/images/icons/default.gif" alt="{$lang->default_user_group}" style="vertical-align: middle;" /> {$lang->default_user_group}
+</fieldset>
+LEGEND;
+	
+	$page->output_footer();
 }
 ?>
