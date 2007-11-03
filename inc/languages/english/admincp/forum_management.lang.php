@@ -63,9 +63,13 @@ $l['success_forum_disporder_updated'] = "Succesfully updated the forum display o
 $l['success_forum_deleted'] = "Successfully delete the specified forum.";
 $l['success_moderator_deleted'] = "Successfully delete the specified moderator.";
 $l['success_forum_permissions_updated'] = "Succesfully updated the forum permissions order.";
+$l['success_forum_updated'] = "Succesfully updated the forum.";
 
 $l['error_invalid_forum'] = "Please input a valid forum to delete.";
 $l['error_invalid_moderator'] = "Please input a valid moderator to delete.";
+$l['error_invalid_fid'] = "Invalid Forum ID selected.";
+$l['error_forum_parent_child'] = "You can't set the parent forum to one of the forums own children.";
+$l['error_forum_parent_itself'] = "The forum parent cannot be the forum itself.";
 
 $l['confirm_moderator_deletion'] = "Are you sure you wish to remove this moderator from this forum?";
 $l['confirm_forum_deletion'] = "Are you sure you wish to delete this forum?";
