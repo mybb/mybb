@@ -152,7 +152,7 @@ class DB_SQLite
 	 */
 	function query($string, $hide_errors=0)
 	{
-		global $pagestarttime, $querytime, $db, $mybb;
+		global $pagestarttime, $db, $mybb;
 		
 		$this->get_execution_time();
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')

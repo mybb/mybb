@@ -261,7 +261,7 @@ class DB_PgSQL
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
 	{
-		global $pagestarttime, $querytime, $db, $mybb;
+		global $pagestarttime, $db, $mybb;
 		
 		$string = preg_replace("#LIMIT ([0-9]+),([ 0-9]+)#i", "LIMIT $2 OFFSET $1", $string);
 		

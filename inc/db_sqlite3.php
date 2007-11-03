@@ -153,7 +153,7 @@ class DB_SQLite3
 	 */
 	function query($string, $hide_errors=0)
 	{
-		global $pagestarttime, $querytime, $db, $mybb;
+		global $pagestarttime, $db, $mybb;
 		
 		$this->get_execution_time();
 
@@ -443,7 +443,8 @@ class DB_SQLite3
 				trigger_error("<strong>[SQL] [{$error_no}] {$error}</strong><br />{$string}", E_USER_ERROR);
 			}
 		}
-	}
+	}
+
 
 	/**
 	 * Returns the number of affected rows in a query.

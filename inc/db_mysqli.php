@@ -272,7 +272,7 @@ class DB_MySQLi
 	 */
 	function query($string, $hide_errors=0, $write_query=0)
 	{
-		global $pagestarttime, $querytime, $db, $mybb;
+		global $pagestarttime, $db, $mybb;
 
 		$this->get_execution_time();
 
