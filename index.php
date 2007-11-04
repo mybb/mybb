@@ -44,7 +44,7 @@ $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	// Get the online users.
-	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
+	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
 	$comma = '';
 	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup

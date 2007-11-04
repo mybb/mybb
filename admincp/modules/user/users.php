@@ -1193,9 +1193,10 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("events", "uid='{$user['uid']}'");
 		$db->delete_query("moderators", "uid='{$user['uid']}'");
 		$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
-		$db->delete_query("favorites", "uid='{$user['uid']}'");
+		$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
 		$db->delete_query("sessions", "uid='{$user['uid']}'");
 		$db->delete_query("banned", "uid='{$user['uid']}'");
+		$db->delete_query("threadratings", "uid='{$user['uid']}'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
@@ -1354,7 +1355,7 @@ if($mybb->input['action'] == "merge")
 		$db->update_query("adminlog", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("announcements", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("events", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("favorites", $uid_update, "uid='{$source_user['uid']}'");
+		$db->update_query("threadsubscriptions", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("forumsubscriptions", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("moderatorlog", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");

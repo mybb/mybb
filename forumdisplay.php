@@ -191,7 +191,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 		FROM ".TABLE_PREFIX."sessions s
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time > '$timecut' AND location1='$fid' AND nopermission != 1
-		ORDER BY u.username
+		ORDER BY u.username ASC, s.time DESC
 	");
 	while($user = $db->fetch_array($query))
 	{
