@@ -476,10 +476,149 @@ if($mybb->input['action'] == "delete_announcement")
 
 if($mybb->input['action'] == "do_new_announcement")
 {
+	verify_post_check($mybb->input['my_post_key']);
+
+	if(!trim($mybb->input['title']))
+	{
+		$errors[] = $lang->error_missing_title;
+	}
+	
+	if(!trim($mybb->input['message']))
+	{
+		$errors[] = $lang->error_missing_message;
+	}
+	
+	if(!trim($mybb->input['fid']))
+	{
+		$errors[] = $lang->error_missing_forum;
+	}
+	
+	if(!$errors)
+	{
+		$startdate = @explode(" ", $mybb->input['starttime_time']);
+		$startdate = @explode(":", $startdate[0]);
+		$enddate = @explode(" ", $mybb->input['endtime_time']);
+		$enddate = @explode(":", $enddate[0]);
+	
+		if(stristr($mybb->input['starttime_time'], "pm"))
+		{
+			$startdate[0] = 12+$startdate[0];
+			if($startdate[0] >= 24)
+			{
+				$startdate[0] = "00";
+			}
+		}
+		
+		if(stristr($mybb->input['endtime_time'], "pm"))
+		{
+			$enddate[0] = 12+$enddate[0];
+			if($enddate[0] >= 24)
+			{
+				$enddate[0] = "00";
+			}
+		}
+		
+		$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+		
+		if($mybb->input['endtime_type'] == "2")
+		{
+			$enddate = '0';
+		}
+		else
+		{
+			$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+		}
+		
+		$insert_announcement = array(
+			"fid" => $mybb->input['fid'],
+			"uid" => $mybb->user['uid'],
+			"subject" => $db->escape_string($mybb->input['title']),
+			"message" => $db->escape_string($mybb->input['message']),
+			"startdate" => $startdate,
+			"enddate" => $enddate,
+			"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
+			"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
+			"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+		);
+		
+		$aid = $db->insert_query("announcements", $insert_announcement);
+		redirect("modcp.php?action=announcements", $lang->redirect_add_announcement);
+	}
 }
 
 if($mybb->input['action'] == "new_announcement")
 {
+	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
+	add_breadcrumb($lang->add_announcement, "modcp.php?action=new_announcements");
+
+	$announcement_fid = $mybb->input['fid'];
+
+	$start_time = explode("-", gmdate("g-i-a", time()));
+	$starttime_time = $start_time[0].":".$start_time[1]." ".$start_time[2];
+
+	$end_time = explode("-", gmdate("g-i-a", time()));
+	$endtime_time = $end_time[0].":".$end_time[1]." ".$end_time[2];
+	
+	$startday = gmdate("j", time());	
+	$endday = gmdate("j", time());
+	
+	for($i = 1; $i <= 31; ++$i)
+	{
+		if($startday == $i)
+		{
+			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$startdateday .= "<option value=\"$i\">$i</option>\n";
+		}
+		
+		if($endday == $i)
+		{
+			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$enddateday .= "<option value=\"$i\">$i</option>\n";
+		}
+	}
+	
+	$startmonth = gmdate("m", time());
+	$startmonthsel[$startmonth] = "selected=\"selected\"";
+
+	$endmonth = gmdate("m", time());
+	$endmonthsel[$endmonth] = "selected=\"selected\"";
+	
+	$startdatemonth .= "<option value=\"01\" $startmonthsel[01]>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" $endmonthsel[01]>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" $startmonthsel[02]>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" $endmonthsel[02]>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" $startmonthsel[03]>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" $endmonthsel[03]>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" $startmonthsel[04]>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" $endmonthsel[04]>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" $startmonthsel[05]>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" $endmonthsel[05]>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" $startmonthsel[06]>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" $endmonthsel[06]>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" $startmonthsel[07]>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" $endmonthsel[07]>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" $startmonthsel[08]>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" $endmonthsel[08]>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" $startmonthsel[09]>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" $endmonthsel[09]>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"10\" $startmonthsel[10]>{$lang->october}</option>\n";
+	$enddatemonth .= "<option value=\"10\" $endmonthsel[10]>{$lang->october}</option>\n";
+	$startdatemonth .= "<option value=\"11\" $startmonthsel[11]>{$lang->november}</option>\n";
+	$enddatemonth .= "<option value=\"11\" $endmonthsel[11]>{$lang->november}</option>\n";
+	$startdatemonth .= "<option value=\"12\" $startmonthsel[12]>{$lang->december}</option>\n";
+	$enddatemonth .= "<option value=\"12\" $endmonthsel[12]>{$lang->december}</option>\n";
+	
+	$startdateyear = gmdate("Y", time());
+	$enddateyear = gmdate("Y", time()) + 1;
+	
+	eval("\$announcements = \"".$templates->get("modcp_announcements_new")."\";");
+	output_page($announcements);
 }
 
 if($mybb->input['action'] == "do_edit_announcement")
@@ -492,7 +631,7 @@ if($mybb->input['action'] == "edit_announcement")
 
 if($mybb->input['action'] == "announcements")
 {
-	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=modlogs");
+	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 	
 	// Fetch announcements into their proper arrays
 	$query = $db->simple_select("announcements", "aid, fid, subject, enddate");
