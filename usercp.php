@@ -1920,7 +1920,7 @@ if($mybb->input['action'] == "usergroups")
 	// Changing our display group
 	if($mybb->input['displaygroup'])
 	{
-		if(!strstr($ingroups, ",".$mybb->input['displaygroup'].","))
+		if(strpos($ingroups, ",".$mybb->input['displaygroup'].",") === false)
 		{
 			error($lang->not_member_of_group);
 		}
@@ -1939,7 +1939,7 @@ if($mybb->input['action'] == "usergroups")
 	// Leaving a group
 	if($mybb->input['leavegroup'])
 	{
-		if(!strstr($ingroups, ",".$mybb->input['leavegroup'].","))
+		if(strpos($ingroups, ",".$mybb->input['leavegroup'].",") === false)
 		{
 			error($lang->not_member_of_group);
 		}
@@ -1956,6 +1956,7 @@ if($mybb->input['action'] == "usergroups")
 		leave_usergroup($mybb->user['uid'], $mybb->input['leavegroup']);
 		$plugins->run_hooks("usercp_usergroups_leave_group");
 		redirect("usercp.php?action=usergroups", $lang->left_group);
+		exit;
 	}
 
 	// Joining a group
@@ -1970,7 +1971,7 @@ if($mybb->input['action'] == "usergroups")
 			error($lang->cannot_join_group);
 		}
 
-		if(strstr($ingroups, ",".intval($mybb->input['joingroup']).",") || $mybb->user['usergroup'] == $mybb->input['joingroup'] || $mybb->user['displaygroup'] == $mybb->input['joingroup'])
+		if(strpos($ingroups, ",".intval($mybb->input['joingroup']).",") !== false)
 		{
 			error($lang->already_member_of_group);
 		}

@@ -3350,10 +3350,10 @@ function get_thread_link($tid, $page=0)
 }
 
 /**
- * Get the username of a user id.
+ * Get the user data of a user id.
  *
  * @param int The user id of the user.
- * @return string The username of the user.
+ * @return array The user data.
  */
 function get_user($uid)
 {

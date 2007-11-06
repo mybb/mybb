@@ -59,7 +59,7 @@ if($mybb->input['action'] == "do_add")
 		"editable" => $db->escape_string($mybb->input['editable']),
 		"hidden" => $db->escape_string($mybb->input['hidden']),
 	);
-	$plugins->run_hooks("admin_profilefields_do_ad");
+	$plugins->run_hooks("admin_profilefields_do_add");
 	$db->insert_query(TABLE_PREFIX."profilefields", $sqlarray);
 	$fid = $db->insert_id();
 	$fieldname = "fid$fid";
