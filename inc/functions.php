@@ -404,6 +404,11 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 		}
 	}
 	
+	if(!$from)
+	{
+		$from = $mybb->settings['adminemail'];
+	}
+	
 	// Build and send
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers);
 	return $mail->send();
@@ -4091,10 +4096,10 @@ function get_calendar_week_link($calendar, $week)
 }
 
 /**
- * Get the username of a user id.
+ * Get the user data of a user id.
  *
  * @param int The user id of the user.
- * @return string The username of the user.
+ * @return array The users data
  */
 function get_user($uid)
 {

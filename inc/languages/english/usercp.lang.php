@@ -240,6 +240,7 @@ $l['usergroup_leave'] = "Leave Group";
 $l['usergroup_leave_primary'] = "(You cannot leave your primary group)";
 $l['usergroup_leave_leader'] = "(You are a leader of this group)";
 $l['usergroup_joins_moderated'] = "A group leader is required to moderate joins to this group.";
+$l['usergroup_cannot_leave'] = "(You cannot leave this usergroup)";
 $l['usergroup_joins_anyone'] = "Anyone is free to join this group.";
 $l['usergroup_leaders'] = "Group led by:";
 $l['usergroups_joinable'] = "Groups You Can Join";

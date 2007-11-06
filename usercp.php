@@ -2231,7 +2231,7 @@ if($mybb->input['action'] == "usergroups")
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!my_strpos($ingroups, ",".$mybb->input['displaygroup'].","))
+		if(my_strpos($ingroups, ",".$mybb->input['displaygroup'].",") === false)
 		{
 			error($lang->not_member_of_group);
 		}
@@ -2253,7 +2253,7 @@ if($mybb->input['action'] == "usergroups")
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!my_strpos($ingroups, ",".$mybb->input['leavegroup'].","))
+		if(my_strpos($ingroups, ",".$mybb->input['leavegroup'].",") === false)
 		{
 			error($lang->not_member_of_group);
 		}
@@ -2270,6 +2270,7 @@ if($mybb->input['action'] == "usergroups")
 		leave_usergroup($mybb->user['uid'], $mybb->input['leavegroup']);
 		$plugins->run_hooks("usercp_usergroups_leave_group");
 		redirect("usercp.php?action=usergroups", $lang->left_group);
+		exit;
 	}
 
 	// Joining a group
@@ -2287,7 +2288,7 @@ if($mybb->input['action'] == "usergroups")
 			error($lang->cannot_join_group);
 		}
 
-		if(my_strpos($ingroups, ",".intval($mybb->input['joingroup']).",") || $mybb->user['usergroup'] == $mybb->input['joingroup'] || $mybb->user['displaygroup'] == $mybb->input['joingroup'])
+		if(my_strpos($ingroups, ",".intval($mybb->input['joingroup']).",") !== false)
 		{
 			error($lang->already_member_of_group);
 		}
@@ -2307,7 +2308,7 @@ if($mybb->input['action'] == "usergroups")
 				"gid" => intval($mybb->input['joingroup']),
 				"reason" => $db->escape_string($mybb->input['reason']),
 				"dateline" => TIME_NOW
-				);
+			);
 
 			$db->insert_query("joinrequests", $joinrequest);
 			$plugins->run_hooks("usercp_usergroups_join_group_request");
@@ -2420,13 +2421,17 @@ if($mybb->input['action'] == "usergroups")
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
+			if($usergroup['type'] != 4 && $usergroup['type'] != 3)
+			{
+				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">{$lang->usergroup_cannot_leave}</span></div>";
+			}
 			if($groupleader[$usergroup['gid']])
 			{
-				$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
+				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
 			}
 			else
 			{
-				$leavelink = "<div align=\"center\"><a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."&amp;my_post_key={$mybb->post_code}\">".$lang->usergroup_leave."</a></div>";
+				$leavelink = "<div style=\"text-align: center;\"><a href=\"usercp.php?action=usergroups&leavegroup=".$usergroup['gid']."&amp;my_post_key={$mybb->post_code}\">".$lang->usergroup_leave."</a></div>";
 			}
 			if($usergroup['description'])
 			{
@@ -2443,7 +2448,7 @@ if($mybb->input['action'] == "usergroups")
 			$trow = alt_trow();
 			if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
 			{
-				$displaycode = "({$lang->display_group})";
+				$displaycode = " ({$lang->display_group})";
 			}
 			elseif($usergroup['candisplaygroup'] == 1)
 			{
