@@ -507,7 +507,7 @@ function build_postbit($post, $post_type=0)
 
 	get_post_attachments($id, $post);
 
-	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && (!$mybb->user || $mybb->user['showsigs'] != 0)
+	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && (!$mybb->user || $mybb->user['showsigs'] != 0))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
