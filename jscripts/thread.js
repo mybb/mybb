@@ -348,7 +348,14 @@ var Thread = {
 			$('posts').appendChild(post);
 			if(MyBB.browser == "ie")
 			{
-				request.responseText.evalScripts(); 
+				var scripts = request.responseText.extractScripts();
+				scripts.each(function(script)
+				{
+//					alert('evaluating '+script);
+					eval(script);
+//					alert('performed eval for '+script);
+				});
+//				alert('eval done');
 			}
 			Form.reset('quick_reply_form');
 			if($('lastpid'))

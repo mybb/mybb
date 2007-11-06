@@ -128,17 +128,17 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/me ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} \\2</span>", $message);
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1<span style=\"color: red;\">* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}</span>", $message);
 		}
-
-		// Replace MyCode if requested.
-		if($options['allow_mycode'] !== 0)
-		{
-			$message = $this->parse_mycode($message, $options);
-		}
 		
 		// If we can, parse smilies
 		if($options['allow_smilies'] !== 0)
 		{
 			$message = $this->parse_smilies($message, $options['allow_html']);
+		}
+
+		// Replace MyCode if requested.
+		if($options['allow_mycode'] !== 0)
+		{
+			$message = $this->parse_mycode($message, $options);
 		}
 
 		// Run plugin hooks
@@ -375,18 +375,32 @@ class postParser
 		{
 			$this->cache_smilies();
 		}
+
+		// First we take out any of the tags we don't want parsed between (url= etc)
+		preg_match_all("#\[(url=([^\]]*])|url\].*\[\/url\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
+		$message = preg_replace("#\[(url=([^\]]*])|url\].*\[\/url\])#si", "<mybb-bad-sm>", $message);
+
+		// Impose a hard limit of 500 smilies per message as to not overload the parser
+		$remaining = 500;
 		if(is_array($this->smilies_cache))
 		{
-			reset($this->smilies_cache);
 			foreach($this->smilies_cache as $find => $replace)
 			{
-				if($allow_html !== 0)
-				{
-					$find = $this->parse_html($find);
-				}
-				$message = str_replace($find, $replace, $message);
+				$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", $replace, $message, $remaining, $replacements);
+				$remaining -= $replacements;
+				if($remaining <= 0) break; // Reached the limit
 			}
 		}
+
+		// If we matched any tags previously, swap them back in
+		if(count($bad_matches[0]) > 0)
+		{
+			foreach($bad_matches[0] as $match)
+			{
+				$message = preg_replace("#<mybb-bad-sm>#", $match, $message, 1);
+			}
+		}
+
 		return $message;
 	}
 
@@ -507,14 +521,14 @@ class postParser
 		if($text_only == false)
 		{
 			$replace = array(
-				"\$this->mycode_parse_post_quotes(\"$2\",\"$1\")",
+				"\$this->mycode_parse_post_quotes('$2','$1')",
 				"</p>\n<blockquote><cite>$lang->quote</cite>$1</blockquote><p>\n"
 			);
 		}
 		else
 		{
 			$replace = array(
-				"\$this->mycode_parse_post_quotes(\"$2\", \"$1\", true)",
+				"\$this->mycode_parse_post_quotes('$2', '$1', true)",
 				"\n{$lang->quote}\n--\n$1\n--\n"
 			);
 		}
