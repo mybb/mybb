@@ -618,6 +618,8 @@ class PostDataHandler extends DataHandler
 			// Perform any selected moderation tools.
 			if(is_moderator($post['fid'], "", $post['uid']))
 			{
+				$lang->load($this->language_file, true);
+				
 				// Fetch the thread
 				$thread = get_thread($post['tid']);
 
@@ -649,7 +651,7 @@ class PostDataHandler extends DataHandler
 				// Unstick the thread.
 				if($modoptions['stickthread'] != 1 && $thread['sticky'])
 				{
-					$newstick = "sticky='0'";
+					$newstick = "sticky='0'";					
 					log_moderator_action($modlogdata, $lang->thread_unstuck);
 				}
 
@@ -1137,6 +1139,8 @@ class PostDataHandler extends DataHandler
 			// Perform any selected moderation tools.
 			if(is_moderator($thread['fid'], "", $thread['uid']) && is_array($thread['modoptions']))
 			{
+				$lang->load($this->language_file, true);
+				
 				$modoptions = $thread['modoptions'];
 				$modlogdata['fid'] = $this->tid;
 				$modlogdata['tid'] = $thread['tid'];

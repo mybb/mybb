@@ -564,7 +564,7 @@ if($mybb->input['action'] == "read")
 
 	if(is_array($pm['recipients']['to']))
 	{
-		$uid_sql = implode(',', $pm['recipients']['to']);
+		$uid_sql = implode(',', array_keys($pm['recipients']['to']));
 	}
 	else
 	{
@@ -578,9 +578,9 @@ if($mybb->input['action'] == "read")
 	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1)
 	{
 		$show_bcc = 1;
-		$uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
+		$uid_sql .= ','.implode(',', array_keys($pm['recipients']['bcc']));
 	}
-
+	
 	// Fetch recipient names from the database
 	$bcc_recipients = $to_recipients = array();
 	$query = $db->simple_select('users', 'uid, username', "uid IN ({$uid_sql})");

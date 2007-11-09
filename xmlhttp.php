@@ -260,7 +260,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 				"pid" => $post['pid'],
 				"fid" => $forum['fid']
 			);
-			log_moderator_action($modlogdata, "Edited Post");
+			log_moderator_action($modlogdata, $lang->edited_post);
 		}
 	}
 

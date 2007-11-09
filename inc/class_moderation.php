@@ -1550,7 +1550,7 @@ class Moderation
 	 * @param int $fid (Only applies if $all is false) The forum ID of the thread (if 0, will query database)
 	 * @return boolean true
 	 */
-	function remove_thread_subscriptions($tids,$all = true, $fid = 0)
+	function remove_thread_subscriptions($tids, $all = true, $fid = 0)
 	{
 		global $db;
 		
