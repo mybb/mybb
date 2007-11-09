@@ -648,7 +648,7 @@ form {
 {$customposttools}
 </select>
 <input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
-<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
+<input type="button" class="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
 </form>
 <script language="JavaScript" type="text/javascript">
 var go_text = "{$lang->inline_go}";
