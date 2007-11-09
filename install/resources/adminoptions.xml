@@ -48,6 +48,7 @@
 				<permission name="php_info">1</permission>
 				<permission name="maillogs">0</permission>
 				<permission name="mailerrors">0</permission>
+				<permission name="warninglog">0</permission>
 			</module>
 			<module name="user">
 				<permission name="tab">0</permission>
@@ -109,6 +110,7 @@
 				<permission name="php_info">1</permission>
 				<permission name="maillogs">1</permission>
 				<permission name="mailerrors">1</permission>
+				<permission name="warninglog">1</permission>
 			</module>
 			<module name="user">
 				<permission name="tab">1</permission>
@@ -170,6 +172,7 @@
 				<permission name="modlog">1</permission>
 				<permission name="maillogs">1</permission>
 				<permission name="mailerrors">1</permission>
+				<permission name="warninglog">1</permission>
 			</module>
 			<module name="user">
 				<permission name="tab">1</permission>
