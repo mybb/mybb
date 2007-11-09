@@ -17,6 +17,205 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->warning_logs, "index.php?".SID."&amp;module=tools/warninglog");
 
+// Revoke a warning
+if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
+{
+	$query = $db->simple_select("warnings", "*", "wid='".intval($mybb->input['wid'])."'");
+	$warning = $db->fetch_array($query);
+
+	if(!$warning['wid'])
+	{
+		flash_message($lang->error_invalid_warning, 'error');
+		admin_redirect("index.php?".SID."&module=tools/warninglog");
+	}
+	else if($warning['daterevoked'])
+	{
+		flash_message($lang->error_already_revoked, 'error');
+		admin_redirect("index.php?".SID."&module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
+	}
+
+	$user = get_user($warning['uid']);
+
+	if(!trim($mybb->input['reason']))
+	{
+		$warn_errors[] = $lang->error_no_revoke_reason;
+		$mybb->input['action'] = "view";
+	}
+	else
+	{
+		// Warning is still active, lower users point count
+		if($warning['expired'] != 1)
+		{
+			$new_warning_points = $user['warningpoints']-$warning['points'];
+			if($new_warning_points < 0)
+			{
+				$new_warning_points = 0;
+			}
+
+			// Update user
+			$updated_user = array(
+				"warningpoints" => $new_warning_points
+			);
+			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
+		}
+
+		// Update warning
+		$updated_warning = array(
+			"expired" => 1,
+			"daterevoked" => TIME_NOW,
+			"revokedby" => $mybb->user['uid'],
+			"revokereason" => $db->escape_string($mybb->input['reason'])
+		);
+		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
+
+		flash_message($lang->redirect_warning_revoked, 'success');
+		admin_redirect("index.php?".SID."&module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
+	}
+}
+
+// Detailed view of a warning
+if($mybb->input['action'] == "view")
+{
+	$query = $db->query("
+		SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
+		FROM ".TABLE_PREFIX."warnings w
+		LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (t.tid=w.tid)
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.issuedby)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=w.pid)
+		WHERE w.wid='".intval($mybb->input['wid'])."'
+	");
+	$warning = $db->fetch_array($query);
+
+	if(!$warning['wid'])
+	{
+		flash_message($lang->error_invalid_warning, 'error');
+		admin_redirect("index.php?".SID."&module=tools/warninglog");
+	}
+
+	$user = get_user(intval($warning['uid']));
+
+	$page->add_breadcrumb_item($lang->warning_details, "index.php?".SID."&amp;module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
+	
+	$page->output_header($lang->warning_details);
+
+	$user_link = build_profile_link($user['username'], $user['uid']);
+
+	if(is_array($warn_errors))
+	{
+		$page->output_inline_error($warn_errors);
+		$mybb->input['reason'] = htmlspecialchars_uni($mybb->input['reason']);
+	}
+	
+	$table = new Table;
+
+	$post_link = "";
+	if($warning['post_subject'])
+	{
+		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
+		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
+		$post_link = get_post_link($warning['pid']);
+		$table->construct_cell("<strong>{$lang->warned_user}</strong><br /><br />{$user_link}");
+		$table->construct_cell("<strong>{$lang->post}</strong><br /><br /><a href=\"{$post_link}\">{$warning['post_subject']}</a>");
+		$table->construct_row();
+	}
+	else
+	{
+		$table->construct_cell("<strong>{$lang->warned_user}</strong><br /><br />{$user_link}", array('colspan' => 2));
+		$table->construct_row();
+	}
+	
+
+	$issuedby = build_profile_link($warning['username'], $warning['uid']);
+	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
+	
+	$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
+	if($warning['type_title'])
+	{
+		$warning_type = $warning['type_title'];
+	}
+	else
+	{
+		$warning_type = $warning['title'];
+	}
+	$warning_type = htmlspecialchars_uni($warning_type);
+	if($warning['points'] > 0)
+	{
+		$warning['points'] = "+{$warning['points']}";
+	}
+	
+	$points = sprintf($lang->warning_points, $warning['points']);
+	if($warning['expired'] != 1)
+	{
+		if($warning['expires'] == 0)
+		{
+			$expires = $lang->never;
+		}
+		else
+		{
+			$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
+		}
+		$status = $lang->warning_active;
+	}
+	else
+	{
+		if($warning['daterevoked'])
+		{
+			$expires = $status = $lang->warning_revoked;
+		}
+		else if($warning['expires'])
+		{
+			$expires = $status = $lang->already_expired;
+		}
+	}
+	
+	$table->construct_cell("<strong>{$lang->warning}</strong><br /><br />{$warning_type} {$points}", array('width' => '50%'));
+	$table->construct_cell("<strong>{$lang->date_issued}</strong><br /><br />{$date_issued}", array('width' => '50%'));
+	$table->construct_row();
+	
+	$table->construct_cell("<strong>{$lang->issued_by}</strong><br /><br />{$issuedby}", array('width' => '50%'));
+	$table->construct_cell("<strong>{$lang->expires}</strong><br /><br />{$expires}", array('width' => '50%'));
+	$table->construct_row();
+	
+	$table->construct_cell("<strong>{$lang->warning_note}</strong><br /><br />{$notes}", array('colspan' => 2));
+	$table->construct_row();
+	
+	$table->output("<div class=\"float_right\" style=\"font-weight: normal;\">{$status}</div>".$lang->warning_details);
+
+	if(!$warning['daterevoked'])
+	{
+		$form = new Form("index.php?".SID."&amp;module=tools/warninglog", "post");
+		$form_container = new FormContainer($lang->revoke_warning);
+		echo $form->generate_hidden_field('action', 'do_revoke');
+		echo $form->generate_hidden_field('wid', $warning['wid']);
+		$form_container->output_row("", $lang->revoke_warning_desc, $form->generate_text_area('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');	
+		
+		$form_container->end();
+		$buttons[] = $form->generate_submit_button($lang->revoke_warning);
+		$form->output_submit_wrapper($buttons);
+		$form->end();
+	}
+	else
+	{
+		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
+		$revoked_user = get_user($warning['revokedby']);
+		$revoked_by = build_profile_link($warning['username'], $warning['uid']);
+		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
+		
+		$revoke_table = new Table;
+		$revoke_table->construct_cell("<strong>{$lang->revoked_by}</strong><br /><br />{$revoked_by}", array('width' => '50%'));
+		$revoke_table->construct_cell("<strong>{$lang->date_revoked}</strong><br /><br />{$date_revoked}", array('width' => '50%'));
+		$revoke_table->construct_row();
+		
+		$revoke_table->construct_cell("<strong>{$lang->reason}</strong><br /><br />{$revoke_reason}", array('colspan' => 2));
+		$revoke_table->construct_row();
+		
+		$revoke_table->output($lang->warning_is_revoked);
+	}
+
+	eval("\$warning = \"".$templates->get("warnings_view")."\";");
+	$page->output_footer();
+}
+
 if(!$mybb->input['action'])
 {
 	$page->output_header($lang->warning_logs);
@@ -122,7 +321,7 @@ if(!$mybb->input['action'])
 	}
 	$start = ($view_page-1) * $per_page;
 	// Build the base URL for pagination links
-	$url = 'modcp.php?action=warninglogs';
+	$url = 'index.php?'.SID.'&amp;module=tools/warninglog';
 	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))
 	{
 		foreach($mybb->input['filter'] as $field => $value)
@@ -131,7 +330,6 @@ if(!$mybb->input['action'])
 			$url .= "&amp;filter[{$field}]={$value}";
 		}		
 	}
-	$multipage = multipage($total_warnings, $per_page, $view_page, $url);
 
 	// The actual query
 	$sql = "
@@ -172,7 +370,7 @@ if(!$mybb->input['action'])
 		if($row['daterevoked'] > 0)
 		{
 			$revoked_date = my_date($mybb->settings['dateformat'], $row['daterevoked']).' '.my_date($mybb->settings['timeformat'], $row['daterevoked']);
-			eval("\$revoked_text = \"".$templates->get("modcp_warninglogs_warning_revoked")."\";");
+			$revoked_text = "<br /><small><strong>{$lang->revoked}</strong> {$revoked_date}</small>";
 		}
 		if($row['expires'] > 0)
 		{
@@ -198,7 +396,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($issued_date, array("class" => "align_center"));
 		$table->construct_cell($expire_date.$revoked_text, array("class" => "align_center"));
 		$table->construct_cell($mod_username_link);
-		$table->construct_cell("<a href=\"warnings.php?action=view&amp;wid={$row['wid']}\">{$lang->view}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/warninglog&amp;action=view&amp;wid={$row['wid']}\">{$lang->view}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -211,9 +409,9 @@ if(!$mybb->input['action'])
 	$table->output($lang->warning_logs);
 	
 	// Do we need to construct the pagination?
-	if($rescount > $perpage)
+	if($total_warnings > $per_page)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?".SID."&amp;module=tools/modlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($view_page, $per_page, $total_warnings, $url)."<br />";
 	}
 	
 	$sort_by = array(
@@ -228,12 +426,12 @@ if(!$mybb->input['action'])
 		'desc' => $lang->desc
 	);
 
-	$form = new Form("index.php?".SID."&amp;module=tools/modlog", "post");
+	$form = new Form("index.php?".SID."&amp;module=tools/warninglog", "post");
 	$form_container = new FormContainer($lang->filter_warning_logs);
 	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $mybb->input['filter']['username'], array('id' => 'filter_username')), 'filter_username');	
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $mybb->input['filter']['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');
 	$form_container->output_row($lang->filter_reason, "", $form->generate_text_box('filter[reason]', $mybb->input['filter']['reason'], array('id' => 'filter_reason')), 'filter_reason');
-	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $mybb->input['filter']['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');	
+	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('filter[sortby]', $sort_by, $mybb->input['filter']['sortby'], array('id' => 'filter_sortby'))." {$lang->in} ".$form->generate_select_box('filter[order]', $order_array, $order, array('id' => 'filter_order'))." {$lang->order}", 'filter_order');	
 	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('filter[per_page]', $per_page, array('id' => 'filter_per_page')), 'filter_per_page');	
 
 	$form_container->end();

@@ -227,7 +227,7 @@ $l['october'] = "October";
 $l['november'] = "November";
 $l['december'] = "December";
 $l['redirect_add_announcement'] = "The announcement has been created.";
-$l['error_missing_title'] = "You did not enter a title."
+$l['error_missing_title'] = "You did not enter a title.";
 $l['error_missing_message'] = "You did not enter a message.";
 $l['error_missing_forum'] = "You did not select a forum.";
 ?>
