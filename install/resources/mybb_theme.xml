@@ -10074,11 +10074,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="thead" colspan="6"><strong>{$lang->add_announcement}</strong></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">Title</td>
+							<td class="trow1" valign="top" width="40%">{$lang->title}</td>
 							<td class="trow1" valign="top" width="60%"><input type="text" class="inputbox" name="title" size="25" /></td>
 						</tr>
 						<tr>
-							<td class="trow1" colspan="1" valign="top" width="40%">Start Date</td>
+							<td class="trow1" colspan="1" valign="top" width="40%">{$lang->start_date}</td>
 							<td class="trow1" valign="top"  width="60%">
 								<select name="starttime_day">
 								{$startdateday}
@@ -10089,11 +10089,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</select>
 								&nbsp; 
 								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
-								 - Time: <input type="text" name="starttime_time" value="{$starttime_time}" style="width: 50px;"/>
+								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" style="width: 50px;"/>
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" colspan="1" valign="top" width="40%">End Date</td>
+							<td class="trow1" colspan="1" valign="top" width="40%">{$lang->end_date}</td>
 							<td class="trow1" valign="top"  width="60%">
 								<input type="radio" name="endtime_type" value="1"/>
 								<select name="endtime_day">
@@ -10105,31 +10105,31 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</select>
 								&nbsp; 
 								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
-								 - Time: <input type="text" name="endtime_time" value="{$endtime_time}" style="width: 50px;"/>
-								<br /><input type="radio" name="endtime_type" value="2" checked="checked"/> Never
+								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" style="width: 50px;"/>
+								<br /><input type="radio" name="endtime_type" value="2" checked="checked"/> {$lang->never}
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">Announcement</td>
+							<td class="trow1" valign="top" width="40%">{$lang->announcement}</td>
 							<td class="trow1" valign="top" width="60%"><textarea name="message" rows="10" cols="50"></textarea></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">Allow HTML</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowhtml" value="1" checked="checked"/>&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="1" />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="40%">{$lang->allow_html}</td>
+							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowhtml" value="1" checked="checked"/>&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0" />&nbsp;No</label></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">Allow MyCode</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowmycode" value="1" checked="checked"/>&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="no" />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="40%">{$lang->allow_mycode}</td>
+							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowmycode" value="1" checked="checked"/>&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0" />&nbsp;No</label></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">Allow Smilies</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowsmilies" value="yes" checked="checked"/>&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="no" />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="40%">{$lang->allow_smilies}</td>
+							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowsmilies" value="1" checked="checked"/>&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0" />&nbsp;No</label></td>
 						</tr>
 					</table>
 					<br />
 					<div align="center">
-						<input type="submit" class="submitbutton" name="Add Announcement" value="Add Announcement" />&nbsp;&nbsp;
-						<input type="reset" class="submitbutton" name="Reset" value="Reset" />
+						<input type="submit" class="submitbutton" name="Add Announcement" value="{$lang->add_announcement}" />&nbsp;&nbsp;
+						<input type="reset" class="submitbutton" name="Reset" value="{$lang->reset}" />
 					</div>
 				</td>
 			</tr>
