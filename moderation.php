@@ -577,7 +577,7 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 		$thread['notes'] = htmlspecialchars_uni($parser->parse_badwords($thread['notes']));
-		$trow = "trow1";
+		$trow = alt_trow(1);
 		$query = $db->query("
 			SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
 			FROM ".TABLE_PREFIX."moderatorlog l
