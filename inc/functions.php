@@ -5007,9 +5007,6 @@ function fetch_ban_times()
  * @param int The optional UNIX timestamp, if 0, current time is used.
  * @return int The UNIX timestamp when the ban will be lifted
  */
-/**
- * Return a timestamp from a date.
- */
 function ban_date2timestamp($date, $stamp=0)
 {
 	if($stamp == 0)
@@ -5023,5 +5020,38 @@ function ban_date2timestamp($date, $stamp=0)
 	$n[2] += $d[1];
 	$n[3] += $d[2];
 	return mktime(date("G"), date("i"), 0, $n[2], $n[1], $n[3]);
+}
+
+/**
+ * Unicode function for php function chr()
+ *
+ * @param string The character
+ * @return mixed The unicoded chr()
+ */
+function unicode_chr($c)
+{
+    if($c <= 0x7F)
+    {
+        return chr($c);
+    }
+    elseif($c <= 0x7FF)
+    {
+        return chr(0xC0 | $c >> 6) . chr(0x80 | $c & 0x3F);
+    }
+    elseif($c <= 0xFFFF)
+    {
+        return chr(0xE0 | $c >> 12) . chr(0x80 | $c >> 6 & 0x3F)
+                                    . chr(0x80 | $c & 0x3F);
+    }
+    elseif($c <= 0x10FFFF) 
+    {
+        return chr(0xF0 | $c >> 18) . chr(0x80 | $c >> 12 & 0x3F)
+                                    . chr(0x80 | $c >> 6 & 0x3F)
+                                    . chr(0x80 | $c & 0x3F);
+    }
+    else
+    {
+        return false;
+    }
 }
 ?>
