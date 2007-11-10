@@ -64,6 +64,7 @@ $l['error_minsearchlength'] = "One or more of your search terms were shorter tha
 $l['error_nosearchresults'] = "Sorry, but no results were returned using the query information you provided. Please redefine your search terms and try again.";
 $l['error_no_search_support'] = "This database engine does not support searching.";
 $l['error_nosearchterms'] = "You did not enter any search terms. At a minimum, you must enter either some search terms or a username to search by.";
+$l['error_searchflooding_1'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another 1 second before attempting to search again.";
 $l['error_searchflooding'] = "Sorry, but you can only perform one search every {1} seconds. Please wait another {2} seconds before attempting to search again.";
 $l['error_invalidsearch'] = "An invalid search was specified.  Please go back and try again.";
 ?>

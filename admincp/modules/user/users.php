@@ -1373,7 +1373,7 @@ if($mybb->input['action'] == "merge")
 		$db->update_query("forums", $last_poster, "lastposteruid='{$source_user['uid']}'");
 		$db->update_query("threads", $last_poster, "lastposteruid='{$source_user['uid']}'");
 		$edit_uid = array(
-			"edit_uid" => $destination_user['uid']
+			"edituid" => $destination_user['uid']
 		);
 		$db->update_query("posts", $edit_uid, "edituid='{$source_user['uid']}'");
 

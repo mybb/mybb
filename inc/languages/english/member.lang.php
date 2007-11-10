@@ -163,7 +163,7 @@ $l['reputation_vote'] = "Rate";
 $l['reputation_details'] = "Details";
 $l['already_logged_in'] = "Notice: You are already currently logged in as {1}.";
 
-$l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
+$l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, please check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
 $l['redirect_emailupdated'] = "Your email has been successfully changed.<br />You will now be taken back to the main page.";
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";

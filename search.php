@@ -936,7 +936,14 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		if($last_search['sid'])
 		{
 			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
-			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+			if($remaining_time == 1)
+			{
+				$lang->error_searchflooding = sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+			}
+			else
+			{
+				$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+			}
 			error($lang->error_searchflooding);
 		}
 	}
@@ -1055,7 +1062,14 @@ else if($mybb->input['action'] == "thread")
 		// Users last search was within the flood time, show the error.
 		if($last_search['sid'] && $remaining_time > 0)
 		{
-			$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+			if($remaining_time == 1)
+			{
+				$lang->error_searchflooding = sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+			}
+			else
+			{
+				$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+			}
 			error($lang->error_searchflooding);
 		}
 	}
