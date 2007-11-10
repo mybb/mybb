@@ -141,6 +141,8 @@ if($mybb->input['action'] == "results")
 	}
 
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
+	$thread_url = "";
+	$post_url = "";
 	
 	eval("\$orderarrow['$sortby'] = \"".$templates->get("search_orderarrow")."\";");
 
@@ -384,6 +386,7 @@ if($mybb->input['action'] == "results")
 			$lastposter = $thread['lastposter'];
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 			$lastposteruid = $thread['lastposteruid'];
+			$thread_link = get_thread_link($thread['tid']);
 
 			// Don't link to guest's profiles (they have no profile).
 			if($lastposteruid == 0)
@@ -671,6 +674,9 @@ if($mybb->input['action'] == "results")
 				$prev = htmlspecialchars_uni($post['message']);
 			}
 			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
+			
+			$thread_url = get_thread_link($post['tid']);
+			$post_url = get_post_link($post['pid'], $post['tid']);
 
 			$plugins->run_hooks("search_results_post");
 			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");

@@ -2059,10 +2059,10 @@ if(!$mybb->input['action'])
 
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
 	$start_timestamp = gmmktime(0, 0, 0, $prev_month['month'], $day, $prev_month['year']);
-	$num_days = my_date("t", mktime(0, 0, 0, $next_month['month'], 1, $next_month['year']));
+	$num_days = gmdate("t", mktime(0, 0, 0, $next_month['month'], 1, $next_month['year']));
 	$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $num_days, $next_month['year']);
 
-	$num_days = my_date("t", mktime(0, 0, 0, $month, 1, $year));
+	$num_days = gmdate("t", mktime(0, 0, 0, $month, 1, $year));
 
 	$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 

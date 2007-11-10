@@ -61,7 +61,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 
 	// So now we fetch events for this month
 	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
-	$num_days = my_date("t", mktime(0, 0, 0, $month, 1, $year));
+	$num_days = gmdate("t", mktime(0, 0, 0, $month, 1, $year));
 	$end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
 
 	if(!$events_cache)

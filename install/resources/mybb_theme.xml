@@ -5611,7 +5611,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}">
 		{$attachment_count}
 		<div>
-			<span>{$prefix} {$gotounread}<a href="showthread.php?tid={$thread['tid']}{$highlight}" class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
+			<span>{$prefix} {$gotounread}<a href="{$thread_link}{$highlight}" class="{$inline_edit_class} {$new_class}" id="tid_{$inline_edit_tid}">{$thread['subject']}</a>{$thread['multipage']}</span>
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
@@ -5668,8 +5668,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
 		<span class="smalltext">
-			{$lang->post_thread} <a href="showthread.php?tid={$post['tid']}{$highlight}">{$post['thread_subject']}</a><br />
-			{$lang->post_subject} <a href="showthread.php?tid={$post['tid']}{$highlight}&amp;pid={$post['pid']}#pid{$post['pid']}">{$post['subject']}</a>
+			{$lang->post_thread} <a href="{$thread_url}{$highlight}">{$post['thread_subject']}</a><br />
+			{$lang->post_subject} <a href="{$post_url}{$highlight}">{$post['subject']}</a>
 		</span><br />
 		<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table>
 	</td>
