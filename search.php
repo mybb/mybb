@@ -137,7 +137,14 @@ if($mybb->input['action'] == "results")
 	// Work out if we have terms to highlight
 	if($search['keywords'])
 	{
-		$highlight = "&amp;highlight=".urlencode($search['keywords']);
+		if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+		{
+			$highlight = "?highlight=".urlencode($search['keywords']);
+		}
+		else
+		{
+			$highlight = "&amp;highlight=".urlencode($search['keywords']);
+		}
 	}
 
 	$sorturl = "search.php?action=results&amp;sid={$sid}";
