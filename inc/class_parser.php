@@ -174,8 +174,8 @@ class postParser
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
-			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote)[^>]*>)\s*<br />#i", "$1", $message);
-			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote)[^>]*>)#i", "$2", $message);
+			$message = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $message);
+			$message = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $message);
 		}
 
 		$message = my_wordwrap($message);
@@ -377,8 +377,8 @@ class postParser
 		}
 
 		// First we take out any of the tags we don't want parsed between (url= etc)
-		preg_match_all("#\[(url=([^\]]*])|url\].*\[\/url\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
-		$message = preg_replace("#\[(url=([^\]]*])|url\].*\[\/url\])#si", "<mybb-bad-sm>", $message);
+		preg_match_all("#\[(url=([^\]]*])|url\].*\[\/url\]|quote=([^\]]*)\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
+		$message = preg_replace("#\[(url=([^\]]*])|url\].*\[\/url\]|quote=([^\]]*)\])#si", "<mybb-bad-sm>", $message);
 
 		// Impose a hard limit of 500 smilies per message as to not overload the parser
 		$remaining = 500;
@@ -386,7 +386,7 @@ class postParser
 		{
 			foreach($this->smilies_cache as $find => $replace)
 			{
-				$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", $replace, $message, $remaining, $replacements);
+				$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining, $replacements);
 				$remaining -= $replacements;
 				if($remaining <= 0) break; // Reached the limit
 			}
@@ -568,6 +568,10 @@ class postParser
 
 		$linkback = $date = "";
 
+		$message = trim(trim($message), "<br />");
+
+		if(!$message) return '';
+
 		$message = stripslashes($message);
 		$username = stripslashes($username)."'";
 		$delete_quote = true;
@@ -591,12 +595,15 @@ class postParser
 		}
 
 		unset($match);
-		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#", $username, $match);
+		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#i", $username, $match);
 		if(intval($match[1]))
 		{
-			$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
-			$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
-			$date = " ({$postdate} {$posttime})";
+			if($match[1] < time())
+			{
+				$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
+				$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));
+				$date = " ({$postdate} {$posttime})";
+			}
 			$username = preg_replace("#(?:&quot;|\"|')? dateline=(?:&quot;|\"|')?[0-9]+(?:&quot;|\"|')?#i", '', $username);
 			$delete_quote = false;
 		}

@@ -145,31 +145,70 @@ function mark_forum_read($fid)
 				$db->shutdown_query($db->build_replace_query("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), "fid"));
 				break;
 			default:
-				$db->query("
+				$db->shutdown_query("
 					REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-					VALUES('$fid', '{$mybb->user['uid']}', '".TIME_NOW."')
+					VALUES('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')
 				");
 		}
-
-		/**
-		 * What needs to be done here is some sort of checking for:
-		 *
-		 *   Establish which sibling forums of each parent forum have
-		 *   new posts or not to mark parent forums as read.
-		 *
-		 *   It's tricky and quite difficult to do especially
-		 *   with performance/optimisation in mind.
-		 */
-
-		$db->shutdown_query("
-			REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-			VALUES('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')
-		");
 	}
 	// Mark in a cookie
 	else
 	{
 		my_set_array_cookie("forumread", $fid, TIME_NOW);
+	}
+}
+
+/**
+ * Marks all forums as read.
+ *
+ */
+function mark_all_forums_read()
+{
+	global $mybb, $db, $cache;
+
+	// Can only do "true" tracking for registered users
+	if($mybb->user['uid'] > 0)
+	{
+		$db->update_query("users", array('lastvisit' => TIME_NOW), "uid='".$mybb->user['uid']."'");
+		require_once MYBB_ROOT."inc/functions_user.php";
+		update_pm_count('', 2);
+
+		if($mybb->settings['threadreadcut'] > 0)
+		{
+			// Need to loop through all forums and mark them as read
+			$forums = $cache->read('forums');
+			$mark_query = '';
+			$done = 0;
+			foreach(array_keys($forums) as $fid)
+			{
+				if($mark_query != '') $mark_query .= ', ';
+
+				$mark_query .= "('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')";
+				++$done;
+				// Only do this in loops of 10, save query time
+				if($done == 10)
+				{
+					$db->shutdown_query("
+						REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
+						VALUES {$mark_query}
+					");
+					$mark_query = '';
+				}
+			}
+			if($mark_query != '')
+			{
+				$db->shutdown_query("
+					REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
+					VALUES {$mark_query}
+				");
+			}
+		}
+	}
+	else
+	{
+		my_setcookie("mybb[lastvisit]", TIME_NOW);
+		my_unsetcookie("mybb[threadread]");
+		my_unsetcookie("mybb[forumread]");
 	}
 }
 ?>

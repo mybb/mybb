@@ -82,23 +82,10 @@ if($mybb->input['action'] == "markread")
 	}
 	else
 	{
-		if($mybb->user['uid'] != 0)
-		{
-			$db->update_query("users", array('lastvisit' => TIME_NOW), "uid='".$mybb->user['uid']."'");
-			$db->delete_query("forumsread", "uid='{$mybb->user['uid']}'");
-			$db->delete_query("threadsread", "uid='{$mybb->user['uid']}'");
-			require_once MYBB_ROOT."inc/functions_user.php";
-			update_pm_count('', 2);
-		}
-		else
-		{
-			my_setcookie("mybb[lastvisit]", TIME_NOW);
-			my_unsetcookie("mybb[threadread]");
-			my_unsetcookie("mybb[forumread]");
-		}
 
 		$plugins->run_hooks("misc_markread_end");
-
+		require_once MYBB_ROOT."/inc/functions_indicators.php";
+		mark_all_forums_read();
 		redirect("index.php", $lang->redirect_markforumsread);
 	}
 }

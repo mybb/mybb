@@ -192,8 +192,7 @@ class FeedGenerator
 	{
 		$content = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#x26;$1", $content);
 		$content = str_replace("]]>", "]]&gt;", $content);
-		$content = str_replace("]", "&91;", $content);
-		return htmlspecialchars_uni($content);
+		return  str_replace("]", "&91;", htmlspecialchars_uni($content));
 	}
 
 	/**
