@@ -894,11 +894,13 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
  * Check the password given on a certain forum for validity
  *
  * @param int The forum ID
+ * @param boolean The Parent ID
  */
-function check_forum_password($fid)
+function check_forum_password($fid, $pid=0)
 {
 	global $mybb, $header, $footer, $headerinclude, $theme, $templates, $lang, $forum_cache;
-	$showform = 1;
+	
+	$showform = true;
 	
 	if(!is_array($forum_cache))
 	{
@@ -916,9 +918,14 @@ function check_forum_password($fid)
 	{
 		foreach($parents as $parent_id)
 		{
+			if($parent_id == $fid || $parent_id == $pid)
+			{
+				continue;
+			}
+			
 			if($forum_cache[$parent_id]['password'] != "")
 			{
-				check_forum_password($parent_id, $forum_cache[$parent_id]['password']);
+				check_forum_password($parent_id, $fid);
 			}
 		}
 	}
@@ -931,31 +938,31 @@ function check_forum_password($fid)
 			if($password == $mybb->input['pwverify'])
 			{
 				my_setcookie("forumpass[$fid]", md5($mybb->user['uid'].$mybb->input['pwverify']), null, true);
-				$showform = 0;
+				$showform = false;
 			}
 			else
 			{
 				eval("\$pwnote = \"".$templates->get("forumdisplay_password_wrongpass")."\";");
-				$showform = 1;
+				$showform = true;
 			}
 		}
 		else
 		{
 			if(!$_COOKIE['forumpass'][$fid] || ($_COOKIE['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $_COOKIE['forumpass'][$fid]))
 			{
-				$showform = 1;
+				$showform = true;
 			}
 			else
 			{
-				$showform = 0;
+				$showform = false;
 			}
 		}
 	}
 	else
 	{
-		$showform = 0;
+		$showform = false;
 	}
-	
+
 	if($showform)
 	{
 		$_SERVER['REQUEST_URI'] = htmlspecialchars_uni($_SERVER['REQUEST_URI']);
