@@ -177,6 +177,14 @@ function mark_all_forums_read()
 		{
 			// Need to loop through all forums and mark them as read
 			$forums = $cache->read('forums');
+			
+			$update_count = ceil(count($forums)/20);
+			
+			if($update_count < 15)
+			{
+				$update_count = 15;
+			}
+			
 			$mark_query = '';
 			$done = 0;
 			foreach(array_keys($forums) as $fid)
@@ -185,8 +193,8 @@ function mark_all_forums_read()
 
 				$mark_query .= "('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')";
 				++$done;
-				// Only do this in loops of 10, save query time
-				if($done == 10)
+				// Only do this in loops of $update_count, save query time
+				if($done % $update_count)
 				{
 					$db->shutdown_query("
 						REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
