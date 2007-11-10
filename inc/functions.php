@@ -4757,7 +4757,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 				{
 					$label = "+{$label}";
 				}
-				if(strpos($timezone, "."))
+				if(strpos($timezone, ".") !== false)
 				{
 					$label = str_replace(".", ":", $label);
 					$label = str_replace(":5", ":30", $label);

@@ -861,11 +861,6 @@ if($mybb->input['action'] == "options")
 		}
 	}
 
-	if($user['dst'] == 1)
-	{
-		--$mybb->user['timezone'];
-	}
-
 	$tzselect = build_timezone_select("timezoneoffset", $mybb->user['timezone'], true);
 
 	$threadview[$user['threadmode']] = 'selected="selected"';
