@@ -890,3 +890,15 @@ ul.tabs li.last a.active {
 	margin-bottom: 2px;
 	margin-right: 10px;
 }
+
+/* Auto Complete */
+.autocomplete {
+	background: #fff;
+	border: 1px solid #000;
+	color: black;
+}
+
+.autocomplete_selected {
+	background: #adcee7;
+	color: #000;
+}

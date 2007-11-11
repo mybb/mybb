@@ -23,6 +23,10 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
+// We need to globalize $db here because when this script is called 
+// during load_module $db is not globalized in the function
+global $db;
+
 $collation = $db->build_create_table_collation();
 
 // FIRST STEP IS FOR INTEGER CONVERSION PROJECT
@@ -91,7 +95,7 @@ function upgrade11_dbchanges()
 			$primary_key = $columns[0];
 			if(!$mybb->input['count'])
 			{
-				$query = $db->query("SELECT COUNT({$primary_key}) AS count FROM {$table}");
+				$query = $db->simple_select($table, "COUNT({$primary_key}) AS count");
 				$count = $form_fields['count'] = $db->fetch_field($query, "count");
 			}
 			if($start <= $count)
@@ -99,9 +103,10 @@ function upgrade11_dbchanges()
 				$end = $start+$perpage;
 				if($end > $count) $end = $count;
 				echo "<p>{$table}: Converting {$start} to {$end} of {$count}</p>";
+				flush();
 				$form_fields['start'] = $perpage+$start;
 
-				$query = $db->query("SELECT {$columns_sql} FROM {$table} ORDER BY {$primary_key} LIMIT {$start}, {$remaining}");
+				$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $pimary_key, 'limit_start' => $start, 'limit' => $remaining));
 				while($row = $db->fetch_array($query))
 				{
 					$updated_row = array();
@@ -126,7 +131,8 @@ function upgrade11_dbchanges()
 			}
 			else
 			{
-			echo "<p>{$table}: Converting column type</p>";
+				echo "<p>{$table}: Converting column type</p>";
+				flush();
 				$change_column = array();
 				foreach($columns as $column)
 				{
@@ -137,7 +143,7 @@ function upgrade11_dbchanges()
 					}
 					$change_column[] = "MODIFY {$column} int(1) NOT NULL default '0'";
 				}
-				$db->query("ALTER TABLE {$table} ".implode(", ", $change_column));
+				$db->query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 
 				if($table == $final_table)
 				{
@@ -191,13 +197,14 @@ function upgrade11_dbchanges1()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
+	flush();
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 	
 	// This will take a LONG time on huge post databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
 	
-	if($db->field_exists('longipaddress', "users"))
+	if($db->field_exists('longipaddress', "posts"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP longipaddress;");
 	}
@@ -220,6 +227,7 @@ function upgrade11_dbchanges2()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
+	flush();
 	
 	if($db->field_exists('recipients', "privatemessages"))
 	{
@@ -259,8 +267,7 @@ function upgrade11_dbchanges2()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD coppauser int(1) NOT NULL default '0'");
 
 
-
-	if($db->field_exists('canrecievewarnings', "usergroups"))
+	if($db->field_exists('canreceivewarnings', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canreceivewarnings;");
 	}
@@ -567,13 +574,12 @@ function upgrade11_dbchanges2()
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned CHANGE oldadditionalgroups oldadditionalgroups text NOT NULL default ''");
 	
-	$db->drop_index("privatemessages", "pmid");
-	
 	if($db->field_exists('birthdayprivacy', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD birthdayprivacy varchar(4) NOT NULL default 'all' AFTER birthday");
+	
 	if($db->field_exists('birthdayprivacy', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP birthdayprivacy;");
@@ -595,6 +601,10 @@ function upgrade11_dbchanges2()
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+	
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	
 	$output->print_footer("11_dbchanges3");
 }
 
@@ -605,6 +615,7 @@ function upgrade11_dbchanges3()
 	$output->print_header("Converting Ban Filters");
 
 	echo "<p>Converting existing banned IP addresses, email addresses and usernames..</p>";
+	flush();
 	
 	$db->drop_table("banfilters");
 	
@@ -670,6 +681,7 @@ function upgrade11_dbchanges4()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
+	flush();
 	
 	$db->drop_table("spiders");
 	$db->drop_table("stats");
@@ -893,6 +905,7 @@ function upgrade11_dbchanges5()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
+	flush();
 
 	if($db->field_exists('statustime', "privatemessages"))
 	{
@@ -1531,11 +1544,37 @@ function upgrade11_redothemes()
 		$output->print_footer("11_redothemes");
 		exit;
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE themebits properties text NOT NULL");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP cssbits");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
+	
+	if($db->field_exists('themebits', "themes") && !$db->field_exists('properties', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes CHANGE themebits properties text NOT NULL");
+	}
+	
+	if($db->field_exists('cssbits', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP cssbits");
+	}
+	
+	if($db->field_exists('csscached', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached");
+	}
+	
+	if($db->field_exists('extracss', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
+	}	
+	
+	if($db->field_exists('stylesheets', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP stylesheets");
+	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes ADD stylesheets text NOT NULL AFTER properties");
+	
+	if($db->table_exists("themestylesheets"))
+	{
+		$db->drop_table("themestylesheets");
+	}
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
 		sid int unsigned NOT NULL auto_increment,
@@ -1575,7 +1614,7 @@ function upgrade11_redothemes()
 		}
 	}
 	
-	$query = $db->query("SELECT * FROM themes");
+	$query = $db->simple_select("themes");
 	while($theme = $db->fetch_array($query))
 	{
 		// Create stylesheets
@@ -1605,7 +1644,10 @@ function upgrade11_redothemes()
 		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets))), "tid='{$theme['tid']}'");
 	}
 
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP css");
+	if($db->field_exists('css', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP css");
+	}
 
 	echo "<p>Your themes have successfully been converted to the new theme system.</p>";
 	echo "<p>Click next to continue with the upgrade process.</p>";

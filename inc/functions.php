@@ -133,7 +133,11 @@ function run_shutdown()
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
 	{
-		require MYBB_ROOT."inc/config.php";
+		if(!isset($config))
+		{
+			require MYBB_ROOT."inc/config.php";
+		}
+		
 		if(isset($config))
 		{
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";

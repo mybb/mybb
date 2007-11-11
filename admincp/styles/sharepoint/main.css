@@ -839,3 +839,15 @@ ul.tabs a.active {
 	background: #F5F5F5;
 	text-decoration: none;
 }
+
+/* Auto Complete */
+.autocomplete {
+	background: #fff;
+	border: 1px solid #000;
+	color: black;
+}
+
+.autocomplete_selected {
+	background: #adcee7;
+	color: #000;
+}

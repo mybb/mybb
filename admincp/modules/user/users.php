@@ -1432,8 +1432,8 @@ if($mybb->input['action'] == "merge")
 	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
 	<script type="text/javascript">
 	<!--
-		new autoComplete("source_username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
-		new autoComplete("destination_username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+		new autoComplete("source_username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+		new autoComplete("destination_username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
 	// -->
 	</script>';
 

@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.2.6, 1.2.7, or 1.2.8
+ * Upgrade Script: 1.2.7, 1.2.8, or 1.2.9
  */
 
 
@@ -18,10 +18,10 @@ $upgrade_detail = array(
 	"revert_all_templates" => 0,
 	"revert_all_themes" => 0,
 	"revert_all_settings" => 0
-	);
+);
 
 @set_time_limit(0);
 
-/* Nothing to do from 1.2.6 to 1.2.9 */
+/* Nothing to do from 1.2.7 to 1.2.10 */
 
 ?>

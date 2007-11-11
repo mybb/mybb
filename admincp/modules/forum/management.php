@@ -61,6 +61,224 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 	}
 }
 
+if($mybb->input['action'] == "permissions")
+{
+	if($mybb->request_method == "post")
+	{
+		$pid = intval($mybb->input['pid']);
+		$fid = intval($mybb->input['fid']);
+		$gid = intval($mybb->input['gid']);
+		
+		if(!$fid && $pid)
+		{
+			$query = $db->simple_select("forumpermissions", "fid", "pid='{$pid}'");
+			$fid = $db->fetch_field($query, "fid");
+		}
+		
+		if($mybb->input['usecustom'] == 0)
+		{
+			if($pid)
+			{
+				$db->delete_query("forumpermissions", "pid='{$pid}'");
+			}
+			else
+			{
+				$db->delete_query("forumpermissions", "gid='{$gid}' AND fid='{$fid}'");
+			}
+		}
+		else
+		{
+			if(is_array($mybb->input['permissions']))
+			{
+				foreach($mybb->input['permissions'] as $permission => $value)
+				{
+					$update_array[$db->escape_string($permission)] = intval($value);
+				}
+				
+				if($fid)
+				{
+					$update_array['fid'] = $fid;
+					$update_array['gid'] = intval($mybb->input['gid']);
+					$db->insert_query("forumpermissions", $update_array);
+				}
+				else
+				{
+					$db->update_query("forumpermissions", $update_array, "pid='{$pid}'");
+				}
+			}
+		}
+		$cache->update_forumpermissions();
+		
+		flash_message($lang->success_forum_permissions_saved, 'success');
+		admin_redirect("index.php?".SID."&module=forum/management&fid={$fid}#tab_permissions");
+	}
+	
+	$sub_tabs = array();
+	$sub_tabs['edit_permissions'] = array(
+		'title' => $lang->forum_permissions,
+		'link' => "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid=".$mybb->input['fid'],
+		'description' => $lang->forum_permissions_desc
+	);
+	
+	$page->output_header($lang->permissions);	
+	$page->output_nav_tabs($sub_tabs, 'edit_permissions');
+	
+	if($mybb->input['pid'] || ($mybb->input['gid'] && $mybb->input['fid']))
+	{
+		$form = new Form("index.php?".SID."&amp;module=forum/management&amp;action=permissions", "post");
+	
+		if($errors)
+		{
+			$page->output_inline_error($errors);
+			$permission_data = $mybb->input;
+		}
+		else
+		{
+			$pid = intval($mybb->input['pid']);
+			$gid = intval($mybb->input['gid']);
+			$fid = intval($mybb->input['fid']);
+			
+			if($pid)
+			{
+				$query = $db->simple_select("forumpermissions", "*", "pid='{$pid}'");
+			}
+			else
+			{
+				$query = $db->simple_select("forumpermissions", "*", "fid='{$fid}' AND gid='{$gid}'", array('limit' => 1));
+			}
+			
+			$permission_data = $db->fetch_array($query);
+			
+			if(!$fid)
+			{
+				$fid = $permission_data['fid'];
+			}
+			
+			if(!$gid)
+			{
+				$gid = $permission_data['gid'];
+			}
+			
+			if(!$pid)
+			{
+				$pid = $permission_data['pid'];
+			}
+			
+			$query = $db->simple_select("usergroups", "*", "gid='$gid'");
+			$usergroup = $db->fetch_array($query);
+			
+			$query = $db->simple_select("forums", "*", "fid='$fid'");
+			$forum = $db->fetch_array($query);
+	
+			$sperms = $permission_data;
+		
+			$sql = build_parent_list($fid);
+			$query = $db->simple_select("forumpermissions", "*", "$sql AND gid='$gid'");
+			$customperms = $db->fetch_array($query);
+		
+			if($permission_data['pid'])
+			{
+				$permission_data['usecustom'] = 1;
+				echo $form->generate_hidden_field("pid", $pid);
+			}
+			else
+			{
+				echo $form->generate_hidden_field("fid", $fid);
+				echo $form->generate_hidden_field("gid", $gid);
+				if(!$customperms['pid'])
+				{
+					$permission_data = usergroup_permissions($gid);
+				}
+				else
+				{
+					$permission_data = forum_permissions($fid, 0, $gid);
+				}
+				$permission_data['usecustom'] = 0;
+			}
+		}
+		
+		$use_perms_options_inherit = array(
+			'id' => 'inherit'
+		);
+		
+		$use_perms_options_custom = array(
+			'id' => 'custom'
+		);
+		
+		if($permission_data['usecustom'] == 1)
+		{
+			$use_perms_options_custom['checked'] = true;
+		}
+		else
+		{
+			$use_perms_options_inherit['checked'] = true;	
+		}
+		
+		$form_container = new FormContainer($lang->forum_permissions);
+		$form_container->output_row($lang->use_permissions, $lang->use_permissions_desc, $form->generate_radio_button('usecustom', '0', $lang->inherit_permissions, $use_perms_options_inherit)."<br />\n".$form->generate_radio_button('usecustom', '1', $lang->custom_permissions, $use_perms_options_custom));
+		
+		$groups = array(
+			'canviewthreads' => 'viewing',
+			'canview' => 'viewing',
+			'candlattachments' => 'viewing',
+			
+			'canpostthreads' => 'posting_rating',
+			'canpostreplys' => 'posting_rating',
+			'canpostattachments' => 'posting_rating',
+			'canratethreads' => 'posting_rating',
+			
+			'caneditposts' => 'editing',
+			'candeleteposts' => 'editing',
+			'candeletethreads' => 'editing',
+			'caneditattachments' => 'editing',
+			
+			'canpostpolls' => 'polls',
+			'canvotepolls' => 'polls',
+			'cansearch' => 'misc',
+		);
+		
+		$field_list = array();
+		$fields_array = $db->show_fields_from("forumpermissions");
+		foreach($fields_array as $field)
+		{
+			if(strpos($field['Field'], 'can') !== false)
+			{
+				if(array_key_exists($field['Field'], $groups))
+				{
+					$field_list[$groups[$field['Field']]][] = $field['Field'];
+				}
+				else
+				{
+					$field_list['misc'][] = $field['Field'];
+				}
+			}
+		}
+		
+		foreach(array_unique(array_values($groups)) as $group)
+		{
+			$lang_group = "group_".$group;
+			$fields = array();
+			foreach($field_list[$group] as $field)
+			{
+				$lang_field = $group."_field_".$field;
+				$fields[] = $form->generate_check_box("permissions[{$field}]", 1, $lang->$lang_field, array('checked' => $permission_data[$field], 'id' => $field));
+			}
+			$form_container->output_row($lang->$lang_group, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $fields)."</div>");
+		}	
+		
+		$form_container->end();
+		
+		$buttons[] = $form->generate_submit_button($lang->save_permissions);
+		$form->output_submit_wrapper($buttons);
+		$form->end();
+	}
+	else
+	{
+	}
+	
+	$page->output_footer();	
+}
+
 if($mybb->input['action'] == "add")
 {
 	if($mybb->request_method == "post")
@@ -207,11 +425,11 @@ if($mybb->input['action'] == "add")
 	);
 	
 	$create_a_options_f = array(
-		'id' => 'type'
+		'id' => 'forum'
 	);
 	
 	$create_a_options_c = array(
-		'id' => 'type'
+		'id' => 'category'
 	);
 	
 	if($forum_data['type'] == "f")
@@ -224,7 +442,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_forum);
-	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c), 'type');
+	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
@@ -718,7 +936,6 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row_header($lang->permissions_canpostpolls, array("class" => "align_center", "width" => "10%"));
 	$form_container->output_row_header($lang->permissions_canuploadattachments, array("class" => "align_center", "width" => "11%"));
 	$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
-	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 150px'));
 	foreach($usergroups as $usergroup)
 	{
 		if(isset($mybb->input['default_permissions']))
@@ -809,14 +1026,6 @@ if($mybb->input['action'] == "edit")
 		}
 		$form_container->output_cell($form->generate_check_box("permissions[{$usergroup['gid']}][all]", 1, "", array("id" => "permissions_{$usergroup['gid']}_all", "checked" => $all_checked, "onclick" => $all_check)), array('class' => 'align_center'));
 		
-		if(!$default_checked)
-		{
-			$form_container->output_cell("<a href=\"index.php?".SID."&amp;action=permissions&amp;gid={$group['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
-		}
-		else
-		{
-			$form_container->output_cell("<a href=\"index.php?".SID."&amp;action=permissions&amp;gid={$group['gid']}&amp;fid={$fid}\">{$lang->set_permissions}</a>", array("class" => "align_center"));
-		}
 		$form_container->construct_row();
 	}
 	$form_container->end();
@@ -868,7 +1077,7 @@ if($mybb->input['action'] == "deletemod")
 		}
 		$cache->update_moderators();
 		flash_message($lang->success_moderator_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']);
+		admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']."#tab_moderators");
 	}
 	else
 	{
@@ -982,7 +1191,7 @@ if(!$mybb->input['action'])
 {
 	if($mybb->request_method == "post")
 	{
-		if($mybb->input['permissions'])
+		if($mybb->input['update'] == "permissions")
 		{
 			$inherit = $mybb->input['default_permissions'];
 			
@@ -1010,7 +1219,47 @@ if(!$mybb->input['action'])
 			save_quick_perms($mybb->input['fid']);
 			
 			flash_message($lang->success_forum_permissions_updated, 'success');
-			admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']);
+			admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']."#tab_permissions");
+		}
+		elseif($mybb->input['add'] == "moderators")
+		{
+			$fid = intval($mybb->input['fid']);
+			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+			$user = $db->fetch_array($query);
+			if($user['uid'])
+			{
+				$query = $db->simple_select("moderators", "uid", "uid='".$user['uid']."' AND fid='".$fid."'", array('limit' => 1));
+				$mod = $db->fetch_array($query);
+				if(!$mod['uid'])
+				{
+					$new_mod = array(
+						"fid" => $fid,
+						"uid" => $user['uid'],
+						"caneditposts" => 1,
+						"candeleteposts" => 1,
+						"canviewips" => 1,
+						"canopenclosethreads" => 1,
+						"canmanagethreads" => 1,
+						"canmovetononmodforum" => 1
+					);
+					$db->insert_query("moderators", $new_mod);
+					$db->update_query("users", array('usergroup' => 6), "uid='{$user['uid']}' AND usergroup='2'");
+					$cache->update_moderators();
+					
+					flash_message($lang->success_moderator_added, 'success');
+					admin_redirect("index.php?".SID."&module=forum/management&action=editmod&uid={$user['uid']}");
+				}
+				else
+				{
+					flash_message($lang->error_moderator_already_added, 'error');
+					admin_redirect("index.php?".SID."&module=forum/management&fid={$fid}#tab_moderators");
+				}
+			}
+			else
+			{
+				flash_message($lang->error_moderator_not_found, 'error');
+				admin_redirect("index.php?".SID."&module=forum/management&fid={$fid}#tab_moderators");
+			}
 		}
 		else
 		{
@@ -1043,9 +1292,9 @@ if(!$mybb->input['action'])
 	{
 		$page->output_nav_tabs($sub_tabs, 'forum_management');
 	}
-
+	
 	$form = new Form("index.php?".SID."&amp;module=forum/management", "post", "management");
-	echo $form->generate_hidden_field("fid", $mybb->input['fid']);	
+	echo $form->generate_hidden_field("fid", $mybb->input['fid']);
 	
 	if($fid)
 	{
@@ -1090,9 +1339,15 @@ if(!$mybb->input['action'])
 	
 	$form->output_submit_wrapper($buttons);
 	
+	if(!$fid)
+	{
+		$form->end();
+	}
+	
 	if($fid)
 	{
 		echo "</div>\n";
+		$form->end();
 		
 		$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
 		while($usergroup = $db->fetch_array($query))
@@ -1107,8 +1362,13 @@ if(!$mybb->input['action'])
 		}
 		
 		$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments');
+		
+		$form = new Form("index.php?".SID."&amp;module=forum/management", "post", "management");
+		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
+		echo $form->generate_hidden_field("update", "permissions");
 				
 		echo "<div id=\"tab_permissions\">\n";
+		
 		$form_container = new FormContainer(sprintf($lang->forum_permissions_in, $forum_cache[$fid]['name']));
 		$form_container->output_row_header($lang->permissions_group);
 		$form_container->output_row_header($lang->permissions_canview, array("class" => "align_center", "width" => "10%"));
@@ -1169,11 +1429,11 @@ if(!$mybb->input['action'])
 			
 			if(!$default_checked)
 			{
-				$form_container->output_cell("<a href=\"index.php?".SID."&amp;action=permissions&amp;gid={$group['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 			}
 			else
 			{
-				$form_container->output_cell("<a href=\"index.php?".SID."&amp;action=permissions&amp;gid={$group['gid']}&amp;fid={$fid}\">{$lang->set_permissions}</a>", array("class" => "align_center"));
+				$form_container->output_cell("<a href=\"index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\">{$lang->set_permissions}</a>", array("class" => "align_center"));
 			}
 			$form_container->construct_row();
 		}
@@ -1186,9 +1446,10 @@ if(!$mybb->input['action'])
 		$form->output_submit_wrapper($buttons);
 		
 		echo "</div>\n";
+		$form->end();
 		echo "<div id=\"tab_moderators\">\n";
 		$form_container = new FormContainer(sprintf($lang->moderators_assigned_to, $forum_cache[$fid]['name']));
-		$form_container->output_row_header($lang->add_moderator, array('width' => '75%'));
+		$form_container->output_row_header($lang->username, array('width' => '75%'));
 		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px', 'colspan' => 2));
 		$query = $db->query("
 			SELECT m.uid, u.username
@@ -1211,10 +1472,28 @@ if(!$mybb->input['action'])
 		}
 		
 		$form_container->end();
+		
+		$buttons = array();
+		// Autocompletion for usernames
+		echo '
+		<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+		<script type="text/javascript">
+		<!--
+			new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+		// -->
+		</script>';
+		$form = new Form("index.php?".SID."&amp;module=forum/management", "post", "management");
+		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
+		echo $form->generate_hidden_field("add", "moderators");
+		$form_container = new FormContainer($lang->add_moderator);
+		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+		$form_container->end();
+		$buttons[] = $form->generate_submit_button($lang->add_moderator);
+		$form->output_submit_wrapper($buttons);
+		$form->end();
+		
 		echo "</div>\n";
 	}
-	
-	$form->end();
 	
 	$page->output_footer();
 }
@@ -1260,8 +1539,8 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}");
-				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$forum['fid']}");
-				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;pid={$forum['fid']}");
+				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}#tab_moderators");
+				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}#tab_permissions");
 				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
@@ -1304,8 +1583,8 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}");
-				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;action=moderators&amp;fid={$forum['fid']}");
-				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;action=permissions&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}#tab_moderators");
+				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}#tab_permissions");
 				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");

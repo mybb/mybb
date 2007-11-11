@@ -18,11 +18,24 @@ define('IN_MYBB', 1);
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
+require_once MYBB_ROOT."inc/config.php";
+
+if(!is_array($config['database']))
+{
+	$config['database'] = array(
+		"type" => $config['dbtype'],
+		"database" => $config['database'],
+		"table_prefix" => $config['table_prefix'],
+		"hostname" => $config['hostname'],
+		"username" => $config['username'],
+		"password" => $config['password']
+	);
+}
+
 // Include the files necessary for installation
 require_once MYBB_ROOT."inc/class_timers.php";
 require_once MYBB_ROOT."inc/functions.php";
 require_once MYBB_ROOT."inc/class_xml.php";
-require_once MYBB_ROOT."inc/config.php";
 require_once MYBB_ROOT.'inc/class_language.php';
 
 $lang = new MyLanguage();
@@ -50,17 +63,6 @@ else
 	require_once MYBB_ROOT."admin/adminfunctions.php";
 }
 
-if(!is_array($config['database']))
-{
-	$config['database'] = array(
-		"type" => $config['dbtype'],
-		"database" => $config['database'],
-		"table_prefix" => $config['table_prefix'],
-		"hostname" => $config['hostname'],
-		"username" => $config['username'],
-		"password" => $config['password']
-	);
-}
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");
@@ -87,7 +89,6 @@ if(file_exists("lock"))
 }
 else
 {
-
 	$output->steps = array($lang->upgrade);
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
@@ -198,7 +199,7 @@ else
 		}
 	}
 	// Fetch current script we're in
-
+	
 	if(function_exists($runfunction))
 	{
 		$runfunction();
@@ -452,6 +453,7 @@ function next_function($from, $func="dbchanges")
 function load_module($module)
 {
 	global $system_upgrade_detail, $currentscript, $upgrade_detail;
+	
 	require_once INSTALL_ROOT."resources/".$module;
 	if($currentscript != $module)
 	{
