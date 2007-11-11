@@ -11,7 +11,12 @@ $l['banning'] = "Banning";
 $l['banned_accounts'] = "Banned Accounts";
 $l['banned_accounts_desc'] = "Here you can manage user accounts which are banned from access to the board.";
 $l['ban_a_user'] = "Ban A User";
+$l['ban_a_user_desc'] = "Here you can ban a user.";
 $l['edit_ban'] = "Edit Ban";
+$l['edit_ban_desc'] = "Here you can edit the reason and length of currently banned users.";
+$l['banned_ips'] = "Banned IPs";
+$l['disallowed_usernames'] = "Disallowed Usernames";
+$l['disallowed_email_addresses'] = "Disallowed Email Addresses";
 
 // Errors
 $l['error_invalid_ban'] = "You have selected an invalid ban to edit.";

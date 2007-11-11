@@ -2378,7 +2378,8 @@ if(!$mybb->input['action'])
 		SELECT b.*, a.username AS adminuser, u.username, (b.lifted-".TIME_NOW.") AS remaining
 		FROM ".TABLE_PREFIX."banned b
 		LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid) 
-		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid) 
+		LEFT JOIN ".TABLE_PREFIX."users a ON (b.admin=a.uid)
+		WHERE b.bantime != 'perm'
 		ORDER BY remaining ASC
 		LIMIT 5
 	");

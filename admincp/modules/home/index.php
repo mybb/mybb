@@ -95,23 +95,22 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs", "visible='0' AND pid > '0'");
 	$unapproved_attachs = my_number_format($db->fetch_field($query, "numattachs"));
 
-	/*
 	// Fetch the last time an update check was run
 	$update_check = $cache->read("update_check");
 
 	// If last update check was greater than two weeks ago (14 days) show an alert
 	if($update_check['last_check'] <= TIME_NOW-60*60*24*14)
 	{
-		$lang->last_update_check_two_weeks = sprintf($lang->last_update_check_two_weeks, "index.php?".SID."&amp;action=vercheck");
-		makewarning($lang->last_update_check_two_weeks);
+		$lang->last_update_check_two_weeks = sprintf($lang->last_update_check_two_weeks, "index.php?".SID."&amp;module=home/version_check");
+		$page->output_error("<p>{$lang->last_update_check_two_weeks}</p>");
 	}
 
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
-		makewarning($lang->new_version_available);
-	}*/
+		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
+		$page->output_error("<p>{$lang->new_version_available}</p>");
+	}
 	
 	$adminmessage = $cache->read("adminnotes");
 

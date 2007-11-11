@@ -17,16 +17,32 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->banning, "index.php?".SID."&amp;module=user/banning");
 
+
+$sub_tabs['ips'] = array(
+	'title' => $lang->banned_ips,
+	'link' => "index.php?".SID."&amp;module=config/banning",
+);
+	
 $sub_tabs['bans'] = array(
 	'title' => $lang->banned_accounts,
 	'link' => "index.php?".SID."&amp;module=user/banning",
 	'description' => $lang->banned_accounts_desc
 );
+	
+$sub_tabs['usernames'] = array(
+	'title' => $lang->disallowed_usernames,
+	'link' => "index.php?".SID."&amp;module=config/banning&amp;type=usernames",
+);
+	
+$sub_tabs['emails'] = array(
+	'title' => $lang->disallowed_email_addresses,
+	'link' => "index.php?".SID."&amp;module=config/banning&amp;type=emails",
+);
 
 $sub_tabs['ban'] = array(
 	'title' => $lang->ban_a_user,
 	'link' => "index.php?".SID."&amp;module=user/banning&amp;action=ban",
-	'description' => ""
+	'description' => $lang->ban_a_user_desc
 );
 
 // Fetch banned groups
@@ -273,7 +289,7 @@ if($mybb->input['action'] == "edit")
 	$sub_tabs = array();
 	$sub_tabs['edit'] = array(
 		'title' => $lang->edit_ban,
-		'description' => ""
+		'description' => $lang->edit_ban_desc
 	);
 	$page->output_nav_tabs($sub_tabs, "edit");
 

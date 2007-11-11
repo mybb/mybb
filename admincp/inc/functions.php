@@ -99,6 +99,8 @@ function flash_message($message, $type='')
  */
 function draw_admin_pagination($page, $per_page, $total_items, $url)
 {
+	global $mybb, $lang;
+	
 	if($total_items <= $per_page)
 	{
 		return;
@@ -106,13 +108,13 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 
 	$pages = ceil($total_items / $per_page);
 
-	$pagination = "<div class=\"pagination\"><span class=\"pages\">Pages: </span>\n";
+	$pagination = "<div class=\"pagination\"><span class=\"pages\">{$lang->pages}: </span>\n";
 
 	if($page > 1)
 	{
 		$prev = $page-1;
 		$prev_page = fetch_page_url($url, $prev);
-		$pagination .= "<a href=\"{$prev_page}\" class=\"pagination_previous\">&laquo; Previous</a> \n";
+		$pagination .= "<a href=\"{$prev_page}\" class=\"pagination_previous\">&laquo; {$lang->previous}</a> \n";
 	}
 
 	// Maximum number of "page bits" to show
@@ -120,6 +122,8 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	{
 		$mybb->settings['maxmultipagelinks'] = 5;
 	}
+	
+	$max_links = $mybb->settings['maxmultipagelinks'];
 
 	$from = $page-floor($mybb->settings['maxmultipagelinks']/2);
 	$to = $page+floor($mybb->settings['maxmultipagelinks']/2);
@@ -161,21 +165,21 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 		}
 		else
 		{
-			$pagination .= "<a href=\"{$page_url}\" title=\"Page {$i}\">{$i}</a> \n";
+			$pagination .= "<a href=\"{$page_url}\" title=\"{$lang->page} {$i}\">{$i}</a> \n";
 		}
 	}
 
 	if($to < $pages)
 	{
 		$last = fetch_page_url($url, $pages);
-		$pagination .= "... <a href=\"{$last}\" title=\"Page {$pages}\" class=\"pagination_last\">{$pages}</a>";
+		$pagination .= "... <a href=\"{$last}\" title=\"{$lang->page} {$pages}\" class=\"pagination_last\">{$pages}</a>";
 	}
 
 	if($page < $pages)
 	{
 		$next = $page+1;
 		$next_page = fetch_page_url($url, $next);
-		$pagination .= " <a href=\"{$next_page}\" class=\"pagination_next\">Next &raquo;</a>\n";
+		$pagination .= " <a href=\"{$next_page}\" class=\"pagination_next\">{$lang->next} &raquo;</a>\n";
 	}
 	$pagination .= "</div>\n";
 	return $pagination;

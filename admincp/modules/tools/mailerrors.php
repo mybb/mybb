@@ -44,6 +44,10 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	if($mybb->input['delete_all'])
 	{
 		$db->delete_query("mailerrors");
+		
+		// Log admin action
+		log_admin_action();
+		
 		flash_message($lang->all_logs_deleted, 'error');
 		admin_redirect("index.php?".SID."&module=tools/mailerrors");
 	}
@@ -55,6 +59,10 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 			$db->delete_query("mailerrors", "eid IN ({$log_ids})");
 		}
 	}
+	
+	// Log admin action
+	log_admin_action();
+	
 	flash_message($lang->selected_logs_deleted, 'error');
 	admin_redirect("index.php?".SID."&module=tools/mailerrors");
 }

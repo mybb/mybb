@@ -745,7 +745,7 @@ function upgrade11_dbchanges4()
 	foreach($tree['adminoptions'][0]['user'] as $users)
 	{
 		$uid = $users['attributes']['uid'];
-		if($uid == 0)
+		if($uid == -4)
 		{
 			foreach($users['permissions'][0]['module'] as $module)
 			{

@@ -402,7 +402,7 @@ if(!$mybb->input['action'])
 	
 	if(count($table->rows) == 0)
 	{
-		$table->construct_cell($lang->no_warning_logs, array("colspan" => "5"));
+		$table->construct_cell($lang->no_warning_logs, array("colspan" => "6"));
 		$table->construct_row();
 	}
 	

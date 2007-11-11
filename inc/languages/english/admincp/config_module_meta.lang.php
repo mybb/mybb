@@ -38,5 +38,6 @@ $l['can_manage_attachment_types'] = "Can Manage Attachment Types?";
 $l['can_manage_spiders_bots'] = "Can Manage Spiders / Bots?";
 $l['can_manage_calendars'] = "Can Manage Calendars?";
 $l['can_manage_warning_system'] = "Can Manage Warning System?";
+$l['can_manage_mod_tools'] = "Can Manage Moderator Tools?";
 
 ?>

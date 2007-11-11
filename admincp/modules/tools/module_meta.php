@@ -163,7 +163,8 @@ function tools_admin_permissions()
 		"modlog" => $lang->can_manage_mod_logs,
 		"maillogs" => $lang->can_manage_user_mail_log,
 		"mailerrors" => $lang->can_manage_system_mail_log,
-		"warninglog" => $lang->can_manage_user_warning_log
+		"warninglog" => $lang->can_manage_user_warning_log,
+		"phpinfo" => $lang->can_view_php_info
 	);
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions);
 }

@@ -27,6 +27,9 @@ $l['server_load'] = "Server Load";
 $l['attachments'] = "Attachments";
 $l['used'] = "Used";
 
+$l['last_update_check_two_weeks'] = "Your last <a href=\"{1}\">MyBB version check</a> was more than two weeks ago.";
+$l['new_version_available'] = "You are currently running {1} whilst the latest generally available release is {2}.";
+
 $l['admin_notes_public'] = "These notes are public to all administrators.";
 $l['admin_notes'] = "Administrator Notes";
 $l['save_notes'] = "Save Notes";

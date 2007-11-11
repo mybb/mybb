@@ -258,7 +258,7 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
-	$page->output_header("Attachment Types");
+	$page->output_header($lang->attachment_types);
 
 	$sub_tabs['attachment_types'] = array(
 		'title' => $lang->attachment_types,

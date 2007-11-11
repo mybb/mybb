@@ -43,6 +43,7 @@ $l['chmod_info'] = "Please change the CHMOD settings to the ones specified with 
 $l['file'] = "File";
 $l['location'] = "Location";
 $l['settings_file'] = "Settings File";
+$l['config_file'] = "Configuration File";
 $l['file_upload_dir'] = "File Uploads Directory";
 $l['avatar_upload_dir'] = "Avatar Uploads Directory";
 $l['language_files'] = "Language Files";

@@ -422,6 +422,15 @@ if(!$mybb->input['action'])
 		$message_settings = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 	}
 	
+	if(is_writable(MYBB_ROOT.'inc/config.php'))
+	{
+		$message_config = "<span style=\"color: green;\">{$lang->writable}</span>";
+	}
+	else
+	{
+		$message_config = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
+	}
+	
 	if(is_writable('.'.$mybb->settings['uploadspath']))
 	{
 		$message_upload = "<span style=\"color: green;\">{$lang->writable}</span>";
@@ -475,6 +484,11 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header($lang->file);
 	$table->construct_header($lang->location, array("colspan" => 2, 'width' => 250));
+	
+	$table->construct_cell("<strong>{$lang->config_file}</strong>");
+	$table->construct_cell("./inc/config.php");
+	$table->construct_cell($message_config);
+	$table->construct_row();
 	
 	$table->construct_cell("<strong>{$lang->settings_file}</strong>");
 	$table->construct_cell("./inc/settings.php");

@@ -36,5 +36,6 @@ $l['can_manage_mod_logs'] = "Can Manage Moderator Log?";
 $l['can_manage_user_mail_log'] = "Can Manage User Mail Log?";
 $l['can_manage_system_mail_log'] = "Can Manage System Mail Log?";
 $l['can_manage_user_warning_log'] = "Can Manage User Warning Logs?";
+$l['can_view_php_info'] = "Can View PHP Info?";
 
 ?>

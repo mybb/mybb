@@ -91,7 +91,7 @@ function fetch_forum_announcements($pid=0, $depth=1)
 			// Build the list for any sub forums of this forum
 			if($forums_by_parent[$forum['fid']])
 			{
-				fetch_forum_announcements($forum['fid'], ++$depth);
+				fetch_forum_announcements($forum['fid'], $depth+1);
 			}
 		}
 	}

@@ -109,6 +109,9 @@ if($mybb->input['action'] == "permissions")
 		}
 		$cache->update_forumpermissions();
 		
+		// Log admin action
+		log_admin_action($fid);
+		
 		flash_message($lang->success_forum_permissions_saved, 'success');
 		admin_redirect("index.php?".SID."&module=forum/management&fid={$fid}#tab_permissions");
 	}
@@ -362,6 +365,9 @@ if($mybb->input['action'] == "add")
 			$canpostreplies = $permissions['canpostreplys'];
 			save_quick_perms($fid);
 			$cache->update_forums();
+			
+			// Log admin action
+			log_admin_action($fid);
 			
 			flash_message($lang->success_forum_added, 'success');
 			admin_redirect("index.php?".SID."&module=forum/management");
@@ -759,6 +765,9 @@ if($mybb->input['action'] == "edit")
 			save_quick_perms($fid);
 			$cache->update_forums();
 			
+			// Log admin action
+			log_admin_action($fid);
+			
 			flash_message($lang->success_forum_updated, 'success');
 			admin_redirect("index.php?".SID."&module=forum/management");
 		}
@@ -1076,6 +1085,10 @@ if($mybb->input['action'] == "deletemod")
 			$db->update_query("users", $updatequery, "uid='{$mod['uid']}' AND usergroup != '4' AND usergroup != '3'");
 		}
 		$cache->update_moderators();
+		
+		// Log admin action
+		log_admin_action($mod['uid'], $mybb->input['fid']);
+		
 		flash_message($lang->success_moderator_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']."#tab_moderators");
 	}
@@ -1218,6 +1231,9 @@ if(!$mybb->input['action'])
 			$canpostreplies = $permissions['canpostreplys'];
 			save_quick_perms($mybb->input['fid']);
 			
+			// Log admin action
+			log_admin_action($mybb->input['fid']);
+			
 			flash_message($lang->success_forum_permissions_updated, 'success');
 			admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']."#tab_permissions");
 		}
@@ -1246,6 +1262,9 @@ if(!$mybb->input['action'])
 					$db->update_query("users", array('usergroup' => 6), "uid='{$user['uid']}' AND usergroup='2'");
 					$cache->update_moderators();
 					
+					// Log admin action
+					log_admin_action($user['fid']);
+					
 					flash_message($lang->success_moderator_added, 'success');
 					admin_redirect("index.php?".SID."&module=forum/management&action=editmod&uid={$user['uid']}");
 				}
@@ -1271,6 +1290,9 @@ if(!$mybb->input['action'])
 				}
 						
 				$cache->update_forums();
+				
+				// Log admin action
+				log_admin_action($mybb->input['fid']);
 			
 				flash_message($lang->success_forum_disporder_updated, 'success');
 				admin_redirect("index.php?".SID."&module=forum/management&fid=".$mybb->input['fid']);
@@ -1532,7 +1554,17 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				
 			if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 			{
-				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a></div>");
+				$sub_forums = '';
+				if(isset($forums_by_parent[$forum['fid']]) && $depth == 2)
+				{
+					build_admincp_forums_list($form_container, $forum['fid'], $depth+1);
+				}
+				if($sub_forums)
+				{
+					$sub_forums = "<br /><small>{$lang->sub_forums}: {$sub_forums}</small>";
+				}
+				
+				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a>{$sub_forums}</div>");
 
 				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" size=\"2\" />", array("class" => "align_center"));
 				

@@ -158,7 +158,8 @@ function config_admin_permissions()
 		"attachment_types" => $lang->can_manage_attachment_types,
 		"spiders" => $lang->can_manage_spiders_bots,
 		"calendars" => $lang->can_manage_calendars,
-		"warning" => $lang->can_manage_warning_system
+		"warning" => $lang->can_manage_warning_system,
+		"mod_tools" => $lang->can_manage_mod_tools
 	);
 	return array("name" => "Configuration", "permissions" => $admin_permissions);
 }

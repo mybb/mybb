@@ -1529,10 +1529,6 @@ td .star_rating {
 </form>
 </td></tr>
 </table>]]></template>
-		<template name="forumbit_depth2_forum_lastpost" version="1400"><![CDATA[<span class="smalltext">
-<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
-<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
-]]></template>
 		<template name="editpost" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
@@ -9186,6 +9182,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 </table>]]></template>
 	<template name="forumbit_depth2_forum_lastpost" version="1400"><![CDATA[<span class="smalltext">
+<a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
+<br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
+]]></template>
+	<template name="forumbit_depth1_forum_lastpost" version="1400"><![CDATA[<span class="smalltext">
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
 ]]></template>
