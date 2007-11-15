@@ -1648,6 +1648,9 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 						$optionselected = "selected=\"selected\"";
 						$selecteddone = 1;
 					}
+					
+					$forum['name'] = htmlspecialchars_uni($forum['name']);
+					
 					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
 					if($forum_cache[$forum['fid']])
 					{

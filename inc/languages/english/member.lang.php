@@ -111,7 +111,7 @@ $l['reset_password'] = "Reset Password";
 $l['send_password'] = "Send New Password!";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text contained within the image on the right in to the textbox below it. This process is used to prevent automated signups.";
-$l['verification_subnote'] = "(case in-sensitive)";
+$l['verification_subnote'] = "(case insensitive)";
 $l['registration_errors'] = "The following errors occurred with your registration:";
 $l['timeonline'] = "Time Spent Online:";
 $l['registrations_disabled'] = "Sorry but you cannot register at this time because the administrator has disabled new account registrations.";
@@ -127,7 +127,7 @@ $l['reputation'] = "Reputation:";
 $l['reputation_vote'] = "Vote";
 $l['reputation_details'] = "Details";
 
-$l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
+$l['redirect_registered_activation'] = "Thank you for registering on {1}, {2}.<p>To complete your registration, please check your email for account activation instructions. Until you activate your account you may not be able to post on these forums";
 $l['redirect_emailupdated'] = "Your email has been successfully changed.<br />You will now be taken back to the main page.";
 $l['redirect_accountactivated'] = "Your account has successfully been activated.<br />You will now be taken back to the main page.";
 $l['redirect_registered'] = "Thank you for registering on {1}, {2}.<br />You will now be taken back to the main page.";

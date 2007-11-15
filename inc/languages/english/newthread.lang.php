@@ -28,7 +28,7 @@ $l['stick_thread'] = "<b>Stick Thread:</b> stick this thread to the top of the f
 $l['draft_saved'] = "The new thread has successfully been saved as a draft.<br />You will now be taken to your draft listing.";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
-$l['verification_subnote'] = "(case in-sensitive)";
+$l['verification_subnote'] = "(case insensitive)";
 $l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this thread in this forum. Please visit the forum to see your thread.";
 
