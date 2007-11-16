@@ -1901,7 +1901,6 @@ if($mybb->input['action'] == "weekview")
 					// Event is in the middle
 					else
 					{
-						$time_period = gmdate($mybb->settings['timeformat']
 						$time_period = $lang->all_day;
 					}
 				}
