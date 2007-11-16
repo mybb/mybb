@@ -382,6 +382,7 @@ class postParser
 
 		// Impose a hard limit of 500 smilies per message as to not overload the parser
 		$remaining = 500;
+		$message = ' '.$message.' ';
 		if(is_array($this->smilies_cache))
 		{
 			foreach($this->smilies_cache as $find => $replace)
@@ -391,6 +392,7 @@ class postParser
 				if($remaining <= 0) break; // Reached the limit
 			}
 		}
+		$message = trim($message);
 
 		// If we matched any tags previously, swap them back in
 		if(count($bad_matches[0]) > 0)
