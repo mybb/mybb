@@ -154,9 +154,12 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 		
 		// A wierd issue where char(3) columns with the value of no are set to no? - This will fix those
-		foreach($update_fix_no as $key => $field)
+		if(is_array($update_fix_no))
 		{
-			$db->query("UPDATE TABLE {$mybb->input['table']} SET {$field}='no' WHERE {$field} != 'yes'");
+			foreach($update_fix_no as $key => $field)
+			{
+				$db->query("UPDATE {$mybb->input['table']} SET {$field}='no' WHERE {$field} != 'yes'");
+			}
 		}
 
 		// Any fulltext indexes to recreate?
