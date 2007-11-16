@@ -468,15 +468,54 @@ if($mybb->input['action'] == "modlogs")
 
 if($mybb->input['action'] == "do_delete_announcement")
 {
+	verify_post_check($mybb->input['my_post_key']);
+	
+	$aid = intval($mybb->input['aid']);
+	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
+	$announcement = $db->fetch_array($query);
+	
+	if(!$announcement['aid'])
+	{
+		error($lang->error_invalid_announcement);
+	}
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])))
+	{
+		error_no_permission();
+	}
+	
+	$db->delete_query("announcements", "aid='{$aid}'");
+	
+	redirect("modcp.php?action=announcements", $lang->redirect_delete_announcement);
 }
 
 if($mybb->input['action'] == "delete_announcement")
 {
+	$aid = intval($mybb->input['aid']);
+	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
+	$announcement = $db->fetch_array($query);
+
+	if(!$announcement['aid'])
+	{
+		error($lang->error_invalid_announcement);
+	}	
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])))
+	{
+		error_no_permission();
+	}
+	
+	eval("\$announcements = \"".$templates->get("modcp_announcements_delete")."\";");
+	output_page($announcements);
 }
 
 if($mybb->input['action'] == "do_new_announcement")
 {
 	verify_post_check($mybb->input['my_post_key']);
+	
+	$announcement_fid = intval($mybb->input['fid']);
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement['fid'])))
+	{
+		error_no_permission();
+	}
 
 	if(!trim($mybb->input['title']))
 	{
@@ -493,56 +532,49 @@ if($mybb->input['action'] == "do_new_announcement")
 		$errors[] = $lang->error_missing_forum;
 	}
 	
-	if(!$errors)
+	$startdate = strtotime(intval($mybb->input['starttime_year']).'-'.intval($mybb->input['starttime_month']).'-'.intval($mybb->input['starttime_day']).' '.$mybb->input['starttime_time'].' GMT');
+	if($startdate < 0 || $startdate == false)
 	{
-		$startdate = @explode(" ", $mybb->input['starttime_time']);
-		$startdate = @explode(":", $startdate[0]);
-		$enddate = @explode(" ", $mybb->input['endtime_time']);
-		$enddate = @explode(":", $enddate[0]);
+		$errors[] = $lang->error_invalid_start_date;
+	}
 	
-		if(stristr($mybb->input['starttime_time'], "pm"))
+	if($mybb->input['endtime_type'] == "2")
+	{
+		$enddate = '0';
+	}
+	else
+	{
+		$enddate = strtotime(intval($mybb->input['endtime_year']).'-'.intval($mybb->input['endtime_month']).'-'.intval($mybb->input['endtime_day']).' '.$mybb->input['endtime_time'].' GMT');
+		if($enddate < 0 || $enddate == false)
 		{
-			$startdate[0] = 12+$startdate[0];
-			if($startdate[0] >= 24)
-			{
-				$startdate[0] = "00";
-			}
+			$errors[] = $lang->error_invalid_end_date;
 		}
-		
-		if(stristr($mybb->input['endtime_time'], "pm"))
+		elseif($enddate < $startdate)
 		{
-			$enddate[0] = 12+$enddate[0];
-			if($enddate[0] >= 24)
-			{
-				$enddate[0] = "00";
-			}
+			$errors[] = $lang->error_end_before_start;
 		}
-		
-		$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-		
-		if($mybb->input['endtime_type'] == "2")
-		{
-			$enddate = '0';
-		}
-		else
-		{
-			$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		}
-		
+	}	
+	
+	if(!$errors)
+	{		
 		$insert_announcement = array(
-			"fid" => $mybb->input['fid'],
-			"uid" => $mybb->user['uid'],
-			"subject" => $db->escape_string($mybb->input['title']),
-			"message" => $db->escape_string($mybb->input['message']),
-			"startdate" => $startdate,
-			"enddate" => $enddate,
-			"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-			"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-			"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+			'fid' => $announcement_fid,
+			'uid' => $mybb->user['uid'],
+			'subject' => $db->escape_string($mybb->input['title']),
+			'message' => $db->escape_string($mybb->input['message']),
+			'startdate' => $startdate,
+			'enddate' => $enddate,
+			'allowhtml' => $db->escape_string($mybb->input['allowhtml']),
+			'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
+			'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
 		);
 		
 		$aid = $db->insert_query("announcements", $insert_announcement);
 		redirect("modcp.php?action=announcements", $lang->redirect_add_announcement);
+	}
+	else
+	{
+		$mybb->input['action'] = 'new_announcement';
 	}
 }
 
@@ -553,15 +585,43 @@ if($mybb->input['action'] == "new_announcement")
 
 	$announcement_fid = $mybb->input['fid'];
 
-	$start_time = explode("-", gmdate("g-i-a", time()));
-	$starttime_time = $start_time[0].":".$start_time[1]." ".$start_time[2];
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement['fid'])))
+	{
+		error_no_permission();
+	}
 
-	$end_time = explode("-", gmdate("g-i-a", time()));
-	$endtime_time = $end_time[0].":".$end_time[1]." ".$end_time[2];
+	// Deal with inline errors
+	if(is_array($errors))
+	{
+		$errors = inline_error($errors);
+		
+		// Set $announcement to input stuff
+		$title = $mybb->input['title'];
+		$message = $mybb->input['message'];
+		$startmonth = intval($mybb->input['starttime_month']);
+		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
+		$startday = intval($mybb->input['starttime_day']);
+		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+		$endmonth = intval($mybb->input['endtime_month']);
+		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
+		$endday = intval($mybb->input['endtime_day']);
+		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+	}
+	else
+	{
+		// Note: dates are in user's timezone
+		$starttime_time = my_date('g:i a');
+		$endtime_time = my_date('g:i a');
 	
-	$startday = gmdate("j", time());	
-	$endday = gmdate("j", time());
+		$startday = $endday = my_date('j');	
+		
+		$startmonth = $endmonth = my_date('m');
+		
+		$startdateyear = my_date('Y');
+		$enddateyear = my_date('Y')+1;
+	}
 	
+	// Generate form elements
 	for($i = 1; $i <= 31; ++$i)
 	{
 		if($startday == $i)
@@ -583,10 +643,8 @@ if($mybb->input['action'] == "new_announcement")
 		}
 	}
 	
-	$startmonth = gmdate("m", time());
+	$startmonthsel = $endmonthsel = array();
 	$startmonthsel[$startmonth] = "selected=\"selected\"";
-
-	$endmonth = gmdate("m", time());
 	$endmonthsel[$endmonth] = "selected=\"selected\"";
 	
 	$startdatemonth .= "<option value=\"01\" $startmonthsel[01]>{$lang->january}</option>\n";
@@ -614,19 +672,287 @@ if($mybb->input['action'] == "new_announcement")
 	$startdatemonth .= "<option value=\"12\" $startmonthsel[12]>{$lang->december}</option>\n";
 	$enddatemonth .= "<option value=\"12\" $endmonthsel[12]>{$lang->december}</option>\n";
 	
-	$startdateyear = gmdate("Y", time());
-	$enddateyear = gmdate("Y", time()) + 1;
+	$title = htmlspecialchars_uni($announcement['subject']);
+	$message = htmlspecialchars_uni($announcement['message']);
 	
+	$html_sel = $mycode_sel = $smilies_sel = array();
+	if($mybb->input['allowhtml'] || !isset($mybb->input['allowhtml']))
+	{
+		$html_sel['yes'] = ' checked="checked"';
+	}
+	else
+	{
+		$html_sel['no'] = ' checked="checked"';
+	}
+	
+	if($mybb->input['allowmycode'] || !isset($mybb->input['allowmycode']))
+	{
+		$mycode_sel['yes'] = ' checked="checked"';
+	}
+	else
+	{
+		$mycode_sel['no'] = ' checked="checked"';
+	}
+	
+	if($mybb->input['allowsmilies'] || !isset($mybb->input['allowsmilies']))
+	{
+		$smilies_sel['yes'] = ' checked="checked"';
+	}
+	else
+	{
+		$smilies_sel['no'] = ' checked="checked"';
+	}
+	
+	if($mybb->input['endtime_type'] == 2 || !isset($mybb->input['endtime_type']))
+	{
+		$end_type_sel['infinite'] = ' checked="checked"';
+	}
+	else
+	{
+		$end_type_sel['finite'] = ' checked="checked"';
+	}
+
 	eval("\$announcements = \"".$templates->get("modcp_announcements_new")."\";");
 	output_page($announcements);
 }
 
 if($mybb->input['action'] == "do_edit_announcement")
 {
+	verify_post_check($mybb->input['my_post_key']);
+	
+	// Get the announcement
+	$aid = intval($mybb->input['aid']);
+	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
+	$announcement = $db->fetch_array($query);
+
+	// Check that it exists
+	if(!$announcement['aid'])
+	{
+		error($lang->error_invalid_announcement);
+	}	
+	
+	// Mod has permissions to edit this announcement
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])))
+	{
+		error_no_permission();
+	}
+
+	// Basic error checking
+	if(!trim($mybb->input['title']))
+	{
+		$errors[] = $lang->error_missing_title;
+	}
+	
+	if(!trim($mybb->input['message']))
+	{
+		$errors[] = $lang->error_missing_message;
+	}
+	
+	if(!trim($mybb->input['fid']))
+	{
+		$errors[] = $lang->error_missing_forum;
+	}
+	
+	$startdate = strtotime(intval($mybb->input['starttime_year']).'-'.intval($mybb->input['starttime_month']).'-'.intval($mybb->input['starttime_day']).' '.$mybb->input['starttime_time'].' GMT');
+	if($startdate < 0 || $startdate == false)
+	{
+		$errors[] = $lang->error_invalid_start_date;
+	}
+	
+	if($mybb->input['endtime_type'] == "2")
+	{
+		$enddate = '0';
+	}
+	else
+	{
+		$enddate = strtotime(intval($mybb->input['endtime_year']).'-'.intval($mybb->input['endtime_month']).'-'.intval($mybb->input['endtime_day']).' '.$mybb->input['endtime_time'].' GMT');
+		if($enddate < 0 || $enddate == false)
+		{
+			$errors[] = $lang->error_invalid_end_date;
+		}
+		elseif($enddate < $startdate)
+		{
+			$errors[] = $lang->error_end_before_start;
+		}
+	}	
+	
+	// Proceed to update if no errors
+	if(!$errors)
+	{	
+		$update_announcement = array(
+			'uid' => $mybb->user['uid'],
+			'subject' => $db->escape_string($mybb->input['title']),
+			'message' => $db->escape_string($mybb->input['message']),
+			'startdate' => $startdate,
+			'enddate' => $enddate,
+			'allowhtml' => $db->escape_string($mybb->input['allowhtml']),
+			'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
+			'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
+		);
+		
+		$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
+		redirect("modcp.php?action=announcements", $lang->redirect_edit_announcement);
+	}
+	else
+	{
+		$mybb->input['action'] = 'edit_announcement';
+	}
 }
 
 if($mybb->input['action'] == "edit_announcement")
 {
+	$announcement_fid = intval($mybb->input['fid']);
+	$aid = intval($mybb->input['aid']);
+	
+	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
+	add_breadcrumb($lang->edit_announcement, "modcp.php?action=edit_announcements&amp;aid={$aid}");
+	
+	// Get announcement
+	$query = $db->simple_select("announcements", "*", "aid='{$aid}'");
+	$announcement = $db->fetch_array($query);
+	
+	if(!$announcement['fid'])
+	{
+		error($lang->error_invalid_announcement);
+	}
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])))
+	{
+		error_no_permission();
+	}
+
+	// Deal with inline errors
+	if(is_array($errors))
+	{
+		$errors = inline_error($errors);
+		
+		// Set $announcement to input stuff
+		$announcement['subject'] = $mybb->input['title'];
+		$announcement['message'] = $mybb->input['message'];
+		$announcement['allowhtml'] = $mybb->input['allowhtml'];
+		$announcement['allowmycode'] = $mybb->input['allowmycode'];
+		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
+		$startmonth = intval($mybb->input['starttime_month']);
+		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
+		$startday = intval($mybb->input['starttime_day']);
+		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+		$endmonth = intval($mybb->input['endtime_month']);
+		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
+		$endday = intval($mybb->input['endtime_day']);
+		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		
+		$errored = true;
+	}
+	else
+	{
+		// Note: dates are in user's timezone
+		$starttime_time = my_date('g:i a', $announcement['startdate']);
+		$endtime_time = my_date('g:i a', $announcement['enddate']);
+	
+		$startday = my_date('j', $announcement['startdate']);	
+		$endday = my_date('j', $announcement['enddate']);
+		
+		$startmonth = my_date('m', $announcement['startdate']);
+		$endmonth = my_date('m', $announcement['enddate']);
+		
+		$startdateyear = my_date('Y', $announcement['startdate']);
+		$enddateyear = my_date('Y', $announcement['enddate']);
+		
+		$errored = false;
+	}
+	
+	// Generate form elements
+	for($i = 1; $i <= 31; ++$i)
+	{
+		if($startday == $i)
+		{
+			$startdateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$startdateday .= "<option value=\"$i\">$i</option>\n";
+		}
+		
+		if($endday == $i)
+		{
+			$enddateday .= "<option value=\"$i\" selected=\"selected\">$i</option>\n";
+		}
+		else
+		{
+			$enddateday .= "<option value=\"$i\">$i</option>\n";
+		}
+	}
+	
+	$startmonthsel = $endmonthsel = array();
+	$startmonthsel[$startmonth] = "selected=\"selected\"";
+	$endmonthsel[$endmonth] = "selected=\"selected\"";
+	
+	$startdatemonth .= "<option value=\"01\" $startmonthsel[01]>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" $endmonthsel[01]>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" $startmonthsel[02]>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" $endmonthsel[02]>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" $startmonthsel[03]>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" $endmonthsel[03]>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" $startmonthsel[04]>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" $endmonthsel[04]>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" $startmonthsel[05]>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" $endmonthsel[05]>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" $startmonthsel[06]>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" $endmonthsel[06]>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" $startmonthsel[07]>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" $endmonthsel[07]>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" $startmonthsel[08]>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" $endmonthsel[08]>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" $startmonthsel[09]>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" $endmonthsel[09]>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"10\" $startmonthsel[10]>{$lang->october}</option>\n";
+	$enddatemonth .= "<option value=\"10\" $endmonthsel[10]>{$lang->october}</option>\n";
+	$startdatemonth .= "<option value=\"11\" $startmonthsel[11]>{$lang->november}</option>\n";
+	$enddatemonth .= "<option value=\"11\" $endmonthsel[11]>{$lang->november}</option>\n";
+	$startdatemonth .= "<option value=\"12\" $startmonthsel[12]>{$lang->december}</option>\n";
+	$enddatemonth .= "<option value=\"12\" $endmonthsel[12]>{$lang->december}</option>\n";
+	
+	$title = htmlspecialchars_uni($announcement['subject']);
+	$message = htmlspecialchars_uni($announcement['message']);
+	
+	$html_sel = $mycode_sel = $smilies_sel = array();
+	if($announcement['allowhtml'])
+	{
+		$html_sel['yes'] = ' checked="checked"';
+	}
+	else
+	{
+		$html_sel['no'] = ' checked="checked"';
+	}
+	
+	if($announcement['allowmycode'])
+	{
+		$mycode_sel['yes'] = ' checked="checked"';
+	}
+	else
+	{
+		$mycode_sel['no'] = ' checked="checked"';
+	}
+	
+	if($announcement['allowsmilies'])
+	{
+		$smilies_sel['yes'] = ' checked="checked"';
+	}
+	else
+	{
+		$smilies_sel['no'] = ' checked="checked"';
+	}
+	
+	if(($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0))
+	{
+		$end_type_sel['infinite'] = ' checked="checked"';
+	}
+	else
+	{
+		$end_type_sel['finite'] = ' checked="checked"';
+	}
+
+	eval("\$announcements = \"".$templates->get("modcp_announcements_edit")."\";");
+	output_page($announcements);
 }
 
 if($mybb->input['action'] == "announcements")
@@ -651,7 +977,7 @@ if($mybb->input['action'] == "announcements")
 		foreach($global_announcements as $aid => $announcement)
 		{
 			$trow = alt_trow();
-			if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+			if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
 			{
 				$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
 			}
