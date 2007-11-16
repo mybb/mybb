@@ -8589,7 +8589,7 @@ To: {$to_recipients}
 					{$event['userstars']}
 				</span>
 			</div>
-			<div style="float: right">
+			<div style="float: right; text-align: right;">
 				{$moderator_options}
 				{$repeats}
 			</div>
@@ -8727,7 +8727,7 @@ To: {$to_recipients}
 					{$event['userstars']}
 				</span>
 			</div>
-			<div style="float: right">
+			<div style="float: right; text-align: right;">
 				{$moderator_options}
 				{$repeats}
 			</div>

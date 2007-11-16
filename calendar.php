@@ -1324,7 +1324,7 @@ if($mybb->input['action'] == "event")
 		$end_time = gmdate("Hi", $event['endtime_user']);
 	
 		// Event only runs over one day
-		if($start_day == $end_day)
+		if($start_day == $end_day || $event['repeats'] > 0)
 		{
 			$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
 			// Event runs all day
@@ -1334,7 +1334,7 @@ if($mybb->input['action'] == "event")
 			}
 			else
 			{
-				$time_period .= ", All day";
+				$time_period .= ", {$lang->all_day}";
 			}
 		}
 		else
@@ -1352,7 +1352,7 @@ if($mybb->input['action'] == "event")
 	$repeats = fetch_friendly_repitition($event);
 	if($repeats)
 	{
-		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong> {$repeats}</span>";
+		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
 	}
 
 	if($calendar_permissions['canmoderateevents'] == 1 || ($mybb->user['uid'] > 0 && $mybb->user['uid'] == $event['uid']))
@@ -1652,7 +1652,7 @@ if($mybb->input['action'] == "dayview")
 				$end_time = gmdate("Hi", $event['endtime_user']);
 			
 				// Event only runs over one day
-				if($start_day == $end_day)
+				if($start_day == $end_day || $event['repeats'] > 0)
 				{
 					$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
 					// Event runs all day
@@ -1662,7 +1662,7 @@ if($mybb->input['action'] == "dayview")
 					}
 					else
 					{
-						$time_period .= ", All day";
+						$time_period .= ", {$lang->all_day}";
 					}
 				}
 				else
@@ -1680,7 +1680,7 @@ if($mybb->input['action'] == "dayview")
 			$repeats = fetch_friendly_repitition($event);
 			if($repeats)
 			{
-				$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong>{$repeats}</span>";
+			$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
 			}
 
 			$edit_event = $moderator_options = $event_class = "";
@@ -1860,12 +1860,12 @@ if($mybb->input['action'] == "weekview")
 					$start_time = gmdate("Hi", $event['starttime_user']);
 					$end_time = gmdate("Hi", $event['endtime_user']);
 					// Event only runs over one day
-					if($start_day == $end_day)
+					if($start_day == $end_day || $event['repeats'] > 0)
 					{
 						// Event runs all day
 						if($start_time == 0000 && $end_time == 2359)
 						{
-							$time_period = "All day";
+							$time_period = $lang->all_day;
 						}
 						else
 						{
@@ -1878,11 +1878,11 @@ if($mybb->input['action'] == "weekview")
 						// Event runs all day
 						if($start_time == 0000)
 						{
-							$time_period = "All day";
+							$time_period = $lang->all_day;
 						}
 						else
 						{
-							$time_period = "Starts: ".gmdate($mybb->settings['timeformat'], $event['starttime_user']);
+							$time_period = $lang->starts.gmdate($mybb->settings['timeformat'], $event['starttime_user']);
 						}
 					}
 					// Event finishes on this day
@@ -1891,17 +1891,18 @@ if($mybb->input['action'] == "weekview")
 						// Event runs all day
 						if($end_time == 2359)
 						{
-							$time_period = "All day";
+							$time_period = $lang->all_day;
 						}
 						else
 						{
-							$time_period = "Finishes: ".gmdate($mybb->settings['timeformat'], $event['endtime_user']);
+							$time_period = $lang->finishes.gmdate($mybb->settings['timeformat'], $event['endtime_user']);
 						}
 					}
 					// Event is in the middle
 					else
 					{
-						$time_period = "All day";
+						$time_period = gmdate($mybb->settings['timeformat']
+						$time_period = $lang->all_day;
 					}
 				}
 				$event_time = '';

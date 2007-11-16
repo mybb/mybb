@@ -885,7 +885,7 @@ function fetch_friendly_repitition($event)
 					$weekdays .= $weekday_name;
 				}
 			}
-			if($repeat['repeats']['weeks'] == 1)
+			if($event['repeats']['weeks'] == 1)
 			{
 				if($weekdays)
 				{
