@@ -2085,7 +2085,7 @@ function build_user_view_card($user, $view, &$i)
 	}
 	if($controls)
 	{
-		$card .= "<div class=\"float_right\">{$controls}</div>\n";
+		$card .= "<div class=\"float_right\" style=\"padding: 4px;\">{$controls}</div>\n";
 	}
 	$card .= "</fieldset>";
 	return $card;

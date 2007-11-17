@@ -195,12 +195,12 @@ html>body #menu ul {
 }
 
 #left_menu {
-	float: left;
 	width: 200px;
 	color: #000;
 	padding: 0;
 	margin: 0;
-	font-size: 96%;
+	float: left;
+	font-size: 11px;
 }
 
 #left_menu div.left_menu_box {
@@ -252,6 +252,10 @@ html>body #menu ul {
 	margin: 0;
 	padding: 0;
 	margin-bottom: 14px;
+}
+
+* html .border_wrapper {
+	height: 1px;	
 }
 
 .border_wrapper div.title {
@@ -578,22 +582,27 @@ input.button_no {
 	font-weight: bold;
 }
 
-.label_radio_yes, .label_radio_on {
-	background: #D6ECA6;
-	border: 1px solid #8DC93E;
+.label_radio_yes, .label_radio_on, .label_radio_no, .label_radio_off {
 	padding: 4px 6px;
 	margin-right: 5px;
 	margin-top: 5px;
+	display: block;
+	width: 60px;
+	float: left;
+}
+
+.label_radio_yes, .label_radio_on {
+	background: #D6ECA6;
+	border: 1px solid #8DC93E;
 }
 
 .label_radio_no, .label_radio_off {
 	background: #ECA6D6;
 	border: 1px solid #C93E8D;
-	padding: 4px 6px ;
 }
 
 input.radio_input {
-	vertical-align: top;
+	vertical-align: middle;
 	margin: 0;
 	margin-right: 9px;
 }
@@ -684,6 +693,7 @@ div.success ul, div.error.ul {
 }
 
 .nav_tabs li a {
+	float: left;
 	border: 1px solid #ccc;
 	border-bottom: 0;
 	display: block;
@@ -695,7 +705,6 @@ div.success ul, div.error.ul {
 	background: #f7f7f7;
 	height: 24px;
 }
-
 
 .nav_tabs li a:hover {
 	background: #f1f1f1;
@@ -719,6 +728,9 @@ div.success ul, div.error.ul {
 	font-size: 95%; 
 } 
 
+* html .nav_tabs .tab_description {
+	margin-left: 3px;	
+}
 *.align_center, table.general th.align_center, input.align_center {
 	text-align: center;
 }
