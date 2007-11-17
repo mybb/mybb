@@ -97,7 +97,7 @@ var imagepath = '../images';
 
 	function output_footer($quit=true)
 	{
-		global $maintimer, $db, $lang;
+		global $mybb, $maintimer, $db, $lang;
 		
 		$totaltime = $maintimer->stop();
 		$querycount = $db->query_count;
@@ -106,6 +106,10 @@ var imagepath = '../images';
 		echo "	<br style=\"clear: both;\" />";
 		echo "	</div>\n";
 		echo "<div id=\"footer\"><p class=\"generation\">".sprintf($lang->generated_in, $totaltime, $querycount)."</p><p class=\"powered\">Powered By MyBB. &copy; ".COPY_YEAR." MyBB Group. All Rights Reserved.</p></div>\n";
+		if($mybb->debug_mode)
+		{
+			echo $db->explain;
+		}
 		echo "</div>\n";
 		echo "</body>\n";
 		echo "</html>\n";
@@ -163,7 +167,7 @@ var imagepath = '../images';
 
 	function output_alert($message)
 	{
-		echo "<div class=\"alert\">{$message}</div>\n";
+		echo "<div class=\"warning\">{$message}</div>\n";
 	}
 	
 	function output_inline_message($message)

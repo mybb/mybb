@@ -208,7 +208,10 @@ function build_forumbits($pid=0, $depth=1)
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
 
 					// Call lastpost template
-					eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
+					if($depth != 1 && $forumcat != "cat")
+					{
+						eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
+					}
 				}
 
 				$forum_viewers_text = '';

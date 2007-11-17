@@ -178,12 +178,15 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		echo "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 		$field_select .= "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">Enabled</div><ul id=\"fields_enabled\">\n";
-		foreach($mybb->input['fields'] as $field)
+		if(is_array($mybb->input['fields']))
 		{
-			if($fields[$field])
+			foreach($mybb->input['fields'] as $field)
 			{
-				$field_select .= "<li id=\"field-{$field}\">{$fields[$field]['title']}</li>";
-				$active[$field] = 1;
+				if($fields[$field])
+				{
+					$field_select .= "<li id=\"field-{$field}\">{$fields[$field]['title']}</li>";
+					$active[$field] = 1;
+				}
 			}
 		}
 		$field_select .= "</ul></div>\n";

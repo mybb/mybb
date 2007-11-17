@@ -474,11 +474,11 @@ if(!$mybb->input['action'])
 	
 	if($errors)
 	{
-		$page->output_error("<strong><span style=\"color: #C00\">{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.");
+		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.</p></em>");
 	}
 	else
 	{
-		$page->output_success("<strong><span style=\"color: green;\">{$lang->success_chmod}</span></strong>");
+		$page->output_success("<p><em>{$lang->success_chmod}</p></em>");
 	}
 	
 	$table = new Table;

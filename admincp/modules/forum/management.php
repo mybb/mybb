@@ -1566,7 +1566,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\"><strong>{$forum['name']}</strong></a>{$sub_forums}</div>");
 
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input\" style=\"width: 80%; font-weight: bold;\" />", array("class" => "align_center"));
+				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input\" style=\"width: 80%; font-weight: bold;\" class=\"align_center\"  />", array("class" => "align_center"));
 				
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");

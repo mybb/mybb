@@ -87,6 +87,19 @@ class templates
 			{
 				$this->uncached_templates[$title] = $title;
 			}
+			///
+			// REMOVE BEFORE RELEASE
+			//
+			if((is_writeable(MYBB_ROOT) && !file_exists(MYBB_ROOT."/uncached_templates.log") || is_writeable(MYBB_ROOT."/uncached_templates.log")))
+			{
+				if(!$this->fp)
+				{
+					$this->fp = fopen(MYBB_ROOT."/uncached_templates.log", "a+");
+					fwrite($this->fp, "\n\nSELF: {$_SERVER['PHP_SELF']}\nQUERY: {$_SERVER['QUERY_STRING']}\n---\n");
+				}
+				fwrite($this->fp, $title."\n");
+			}
+
 			$this->cache[$title] = $gettemplate['template'];
 		}
 		$template = $this->cache[$title];

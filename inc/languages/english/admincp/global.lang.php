@@ -158,4 +158,7 @@ $l['selected_logs_deleted'] = "The selected log entries have been deleted.";
 $l['all_logs_deleted'] = "All log entries have been deleted.";
 $l['delete_selected'] = "Delete Selected";
 $l['delete_all'] = "Delete All Filtered";
+
+// Misc
+$l['encountered_errors'] = "The following errors were encountered:";
 ?>

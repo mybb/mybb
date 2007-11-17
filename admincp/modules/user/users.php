@@ -1534,17 +1534,6 @@ if(!$mybb->input['action'])
 	
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
 
-	// Fetch a list of all of the views for this user
-	$popup = new PopupMenu("views", $lang->views);
-
-	$query = $db->simple_select("adminviews", "*", "type='user' AND (visibility=2 OR uid={$mybb->user['uid']})", array("order_by" => "title"));
-	while($view = $db->fetch_array($query))
-	{
-		$popup->add_item(htmlspecialchars_uni($view['title']), "index.php?".SID."&amp;module=user/users&amp;vid={$view['vid']}");
-	}
-	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?".SID."&amp;module=user/users&amp;action=views");
-	echo "<div style=\"text-align: right; margin-bottom: 10px;\">".$popup->fetch()."</div>";
-
 	if($mybb->input['view'])
 	{
 		$admin_view = $mybb->input['view'];
@@ -1575,12 +1564,45 @@ if(!$mybb->input['action'])
 		}
 	}
 
+	// Fetch a list of all of the views for this user
+	$popup = new PopupMenu("views", $lang->views);
+
+	$query = $db->simple_select("adminviews", "*", "type='user' AND (visibility=2 OR uid={$mybb->user['uid']})", array("order_by" => "title"));
+	while($view = $db->fetch_array($query))
+	{
+		$popup->add_item(htmlspecialchars_uni($view['title']), "index.php?".SID."&amp;module=user/users&amp;vid={$view['vid']}");
+	}
+	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?".SID."&amp;module=user/users&amp;action=views");
+	$admin_view['popup'] = $popup->fetch();
+
 	if($mybb->input['type'])
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
 
-	echo build_users_view($admin_view);
+	if($mybb->input['username'])
+	{
+		if(!is_array($admin_view['conditions']))
+		{
+			$admin_view['conditions'] = unserialize($admin_view['conditions']);
+		}
+		$admin_view['conditions']['username'] = $mybb->input['username'];
+	}
+
+	$results = build_users_view($admin_view);
+
+	if(!$results)
+	{
+			$errors[] = $lang->error_no_users_found;
+	}
+
+	// If we have any error messages, show them
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
+	echo $results;
 
 	$page->output_footer();
 }
@@ -1929,7 +1951,65 @@ function build_users_view($view)
 	if($num_results > $view['perpage'])
 	{
 		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&type={$view['view_type']}");
+		$search_class = "float_right";
+		$search_style = "";
 	}
+	else
+	{
+		$search_class = '';
+		$search_style = "text-align: right;";
+	}
+
+	echo "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
+	$search = new Form($view['url'], 'POST', 0, '', 'search_form');
+	$sid = explode('=', SID);
+	if($view['conditions']['username'])
+	{
+		$default_class = '';
+		$value = $view['conditions']['username'];
+	}
+	else
+	{
+		$default_class = "search_default";
+		$value = $lang->search_for_user;
+	}
+	echo $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"));
+	echo "<script type='text/javascript'>
+		var form = document.getElementById('search_form');
+		form.onsubmit = function() {
+			var search = document.getElementById('search_keywords');
+			if(search.value == '' || search.value == '{$lang->search_for_user}')
+			{
+				search.focus();
+				return false;
+			}
+		}
+
+		var search = document.getElementById('search_keywords');
+		search.onfocus = function()
+		{
+			if(this.value == '{$lang->search_for_user}')
+			{
+				this.removeClassName('search_default');
+				this.value = '';
+			}
+		}
+		search.onblur = function()
+		{
+			if(this.value == '')
+			{
+				this.addClassName('search_default');
+				this.value = '{$lang->search_for_user}';
+			}
+		}
+		</script>";
+	echo "<input type='image' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
+	if($view['popup'])
+	{
+		echo " <div style=\"display: inline\">{$view['popup']}</div>";
+	}
+	$search->end();
+	echo "</div>\n";
 
 	$built_view = $pagination;
 	$built_view .= $table->construct_html("{$switch_view}{$lang->users}{$view_title}", 1, "", $view['table_id']);

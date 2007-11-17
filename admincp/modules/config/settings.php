@@ -1024,14 +1024,14 @@ if(!$mybb->input['action'])
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
 	
 	// Search form
-	echo "<div style=\"text-align: right;\">";
+	echo "<div style=\"text-align: right; margin-bottom: 3px;\">";
 	$search = new Form("index.php", 'get', 0, 'settings_search', 'settings_search');
 	$sid = explode('=', SID);
 	echo $search->generate_hidden_field('adminsid', $sid[1]);
 	echo $search->generate_hidden_field('module', 'config/settings');
 	echo $search->generate_hidden_field('action', 'change');
-	echo $search->generate_text_box('search', $lang->settings_search, array('id' => 'search'));
-	echo $search->generate_submit_button($lang->go);
+	echo $search->generate_text_box('search', $lang->settings_search, array('id' => 'search', 'class' => 'search_default field150 field_small'));
+	echo "<input type='image' border='0' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
 	$search->end();
 	echo "</div>\n";
 
@@ -1087,15 +1087,17 @@ SettingSearch.prototype = {
 		this.hide_div = hide_div;
 		result_div.style.display = "none";
 		this.search_box = search_box;
-		Event.observe(search_box, "click", function() {
+		Event.observe(search_box, "focus", function() {
 			if($("search").value == "'.$lang->settings_search.'")
 			{
+				$("search").removeClassName("search_default");
 				$("search").value = "";
 			}
 		});
 		Event.observe(search_box, "blur", function() {
 			if($("search").value == "")
 			{
+				$("search").addClassName("search_default");
 				$("search").value = "'.$lang->settings_search.'";
 				$("search_results").style.display = "none";
 				$("group_list").style.display = "";

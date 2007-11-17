@@ -8,6 +8,7 @@
 
 $l['users'] = "Users";
 
+$l['search_fur_user'] = "Search for a User";
 $l['browse_users'] = "Browse Users";
 $l['browse_users_desc'] = "Below you can browse users of your forums in different defined views. Views are particularly useful for generating different result sets with different information - think of them as saved live searches.";
 $l['find_users'] = "Find Users";

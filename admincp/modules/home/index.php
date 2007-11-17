@@ -109,7 +109,7 @@ if(!$mybb->input['action'])
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
 		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/downloads\" target=\"_blank\">MyBB {$update_check['latest_version']}</a>");
-		$page->output_error("<p>{$lang->new_version_available}</p>");
+		$page->output_error("<p><em>{$lang->new_version_available}</em></p>");
 	}
 	
 	$adminmessage = $cache->read("adminnotes");
