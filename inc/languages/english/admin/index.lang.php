@@ -135,7 +135,7 @@ $l['nav_db_backup'] = "Backup Database";
 $l['nav_db_existing_backups'] = "Existing Backups";
 $l['nav_db_tools'] = "Database Tools";
 $l['nav_db_optimize'] = "Optimize Database";
-$l['nav_recount_rebuild'] = "Recount &amp; Rebuild";
+$l['nav_recount_rebuild'] = "Re-Count &amp; Rebuild";
 $l['mybb_admin'] = "MyBB Administration";
 
 ?>

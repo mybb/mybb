@@ -487,7 +487,7 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !(ba
 }
 
 // Load Limiting
-if($load = get_server_load() && $load != $lang->unknown)
+if(($load = get_server_load()) && $load != $lang->unknown)
 {
 	// User is not an administrator and the load limit is higher than the limit, show an error
 	if($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)

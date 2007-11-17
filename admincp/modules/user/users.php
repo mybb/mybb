@@ -1391,7 +1391,7 @@ if($mybb->input['action'] == "merge")
 		$db->delete_query("banned", "uid='{$source_user['uid']}'");
 		
 		// Update user post count
-		$query = $db->simple_select("posts", "COUNT(*) AS postnum", "uid='".$destuser['uid']."'");
+		$query = $db->simple_select("posts", "COUNT(*) AS postnum", "uid='".$destination_user['uid']."'");
 		$num = $db->fetch_array($query);
 		$updated_count = array(
 			"postnum" => $num['postnum']

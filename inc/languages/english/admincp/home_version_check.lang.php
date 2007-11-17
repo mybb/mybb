@@ -8,7 +8,7 @@
 
 $l['version_check'] = "Version Check";
 $l['version_check_description'] = "Here you can check that you are currently running the latest copy of MyBB and see the latest announcements directly from MyBB.";
-$l['latest_mybb_announcements'] = "Lastest MyBB Announcements";
+$l['latest_mybb_announcements'] = "Latest MyBB Announcements";
 
 $l['dl_the_latest_mybb'] = "Download the Latest MyBB";
 $l['check_plugin_versions'] = "Check your Plugin Versions";

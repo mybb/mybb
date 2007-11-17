@@ -7,7 +7,7 @@
  */
 
 $l['user_email_log'] = "User Email Log";
-$l['user_email_log_desc'] = "All emails sent from one member to another member as well as emails sent by the 'Send Thread to a Friend' feature are logged and shown below. Here you can identify potential abusers of this functionality.";
+$l['user_email_log_desc'] = "All emails sent from one member to another member as well as emails sent by the 'Send Thread to a Friend' feature are logged and shown below. Here you can identify potential abusers of this function.";
 $l['prune_user_email_log'] = "Prune User Email Log";
 
 $l['close_window'] = "Close Window";

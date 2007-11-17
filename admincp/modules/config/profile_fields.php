@@ -168,13 +168,20 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_fieldtype;
 		}
 		
+		$type = $mybb->input['type'];
+		$options = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['options']));
+		if($type != "text" && $type != "textarea")
+		{
+			$type = "$type\n$options";
+		}
+		
 		if(!$errors)
 		{
 			$profile_field = array(
 				"name" => $db->escape_string($mybb->input['name']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"disporder" => intval($mybb->input['disporder']),
-				"type" => $db->escape_string($mybb->input['fieldtype']),
+				"type" => $db->escape_string($type),
 				"length" => intval($mybb->input['length']),
 				"maxlength" => intval($mybb->input['maxlength']),
 				"required" => $db->escape_string($mybb->input['required']),

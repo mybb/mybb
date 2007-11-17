@@ -212,7 +212,7 @@ $l['is_exactly'] = "Is exactly";
 $l['less_than'] = "Less than";
 $l['post_count_is'] = "Post count is";
 $l['reg_ip_matches'] = "Registration IP address matches";
-$l['wildcard'] = "* denominates a wildcard";
+$l['wildcard'] = "* denotes a wildcard";
 $l['last_known_ip'] = "Last known IP address matches";
 $l['posted_with_ip'] = "Has posted with the IP address";
 

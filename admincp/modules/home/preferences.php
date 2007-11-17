@@ -24,9 +24,10 @@ if(!$mybb->input['action'])
 		$sqlarray = array(
 			"notes" => $db->escape_string($mybb->input['notes']),
 			"cpstyle" => $db->escape_string($mybb->input['cpstyle']),
+			"uid" => $mybb->user['uid']
 		);
 
-		$db->update_query("adminoptions", $sqlarray, "uid='".$mybb->user['uid']."'");
+		$db->replace_query("adminoptions", $sqlarray);
 
 	
 		flash_message("The Preferences have been successfully updated.", 'success');
@@ -41,9 +42,7 @@ if(!$mybb->input['action'])
 		'description' => $lang->prefs_and_personal_notes_description
 	);
 
-	$page->output_nav_tabs($sub_tabs, 'preferences');
-	
-	
+	$page->output_nav_tabs($sub_tabs, 'preferences');	
 	
 	$query = $db->simple_select("adminoptions", "cpstyle, notes", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
