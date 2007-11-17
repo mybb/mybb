@@ -703,8 +703,6 @@ class PostDataHandler extends DataHandler
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 
 			// Parse badwords
-			require_once MYBB_ROOT."inc/class_parser.php";
-			$parser = new postParser;
 			$excerpt = $parser->parse_badwords($excerpt);
 
 

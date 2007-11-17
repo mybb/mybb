@@ -1282,7 +1282,7 @@ function get_server_load()
 /**
  * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
  *
- * @param array Array of items being updated (numthreads,numposts,numusers,lastuser
+ * @param array Array of items being updated (numthreads,numposts,numusers,lastuser)
  */
 function update_stats($changes=array())
 {
