@@ -19,6 +19,8 @@ $l['view_forum_desc'] = "Here you can view sub forums, quickly edit permissions 
 $l['add_child_forum'] = "Add Child Forum";
 $l['edit_forum_settings'] = "Edit Forum Settings";
 $l['edit_forum'] = "Edit Forum";
+$l['edit_mod'] = "Edit Moderator";
+$l['edit_mod_desc'] = "Here you can modify a particular moderator's settings.";
 
 $l['manage_forums'] = "Manage Forums";
 $l['forum'] = "Forum";
@@ -55,20 +57,33 @@ $l['permissions_canpostpolls'] = "Can Post Polls";
 $l['permissions_canuploadattachments'] = "Can Upload Attachments";
 $l['permissions_all'] = "All?";
 
+$l['moderator_permissions'] = "Moderator Permissions";
+$l['forum_desc'] = "Forum the moderator manages.";
+$l['edit_mod_for'] = "Edit moderator options for \"{1}\"";
+$l['can_edit_posts'] = "Can edit posts";
+$l['can_delete_posts'] = "Can delete posts";
+$l['can_view_ips'] = "Can view IPs";
+$l['can_open_close_threads'] = "Can open/close threads";
+$l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)";
+$l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate";
+$l['save_mod'] = "Save Moderator";
+
 $l['no_forums'] = "There are no forums found.";
 $l['no_moderators'] = "There are no moderators found.";
 
-$l['success_forum_disporder_updated'] = "Succesfully updated the forum display order.";
+$l['success_forum_disporder_updated'] = "Successfully updated the forum display order.";
 $l['success_forum_deleted'] = "Successfully delete the specified forum.";
 $l['success_moderator_deleted'] = "Successfully delete the specified moderator.";
-$l['success_forum_permissions_updated'] = "Succesfully updated the forum permissions.";
-$l['success_forum_updated'] = "Succesfully updated the forum.";
+$l['success_forum_permissions_updated'] = "Successfully updated the forum permissions.";
+$l['success_forum_updated'] = "Successfully updated the forum.";
+$l['success_moderator_updated'] = "Successfully updated the moderator.";
 
 $l['error_invalid_forum'] = "Please input a valid forum to delete.";
 $l['error_invalid_moderator'] = "Please input a valid moderator to delete.";
 $l['error_invalid_fid'] = "Invalid Forum ID selected.";
 $l['error_forum_parent_child'] = "You can't set the parent forum to one of the forums own children.";
 $l['error_forum_parent_itself'] = "The forum parent cannot be the forum itself.";
+$l['error_incorrect_moderator'] = "Please input a valid moderator.";
 
 $l['confirm_moderator_deletion'] = "Are you sure you wish to remove this moderator from this forum?";
 $l['confirm_forum_deletion'] = "Are you sure you wish to delete this forum?";

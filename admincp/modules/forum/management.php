@@ -61,6 +61,97 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 	}
 }
 
+if($mybb->input['action'] == "editmod")
+{
+	if($mybb->input['uid'])
+	{
+		$query = $db->simple_select("moderators", "*", "uid='{$mybb->input['uid']}'");
+		$mod_data = $db->fetch_array($query);
+	}
+	else
+	{
+		$query = $db->simple_select("moderators", "*", "uid='".intval($mybb->input['mid'])."'");
+		$mod_data = $db->fetch_array($query);
+	}
+	
+	if(!$mod_data['uid'])
+	{
+		flash_message($lang->error_incorrect_moderator, 'error');
+		admin_redirect("index.php?".SID."&module=forum/management");
+	}
+	
+	if($mybb->request_method == "post")
+	{
+		if(!$mybb->input['mid'])
+		{
+			flash_message($lang->error_incorrect_moderator, 'error');
+			admin_redirect("index.php?".SID."&module=forum/management");
+		}
+	
+		if(!$errors)
+		{
+			$update_array = array(
+				'fid' => intval($mybb->input['fid']),
+				'caneditposts' => intval($mybb->input['caneditposts']),
+				'candeleteposts' => intval($mybb->input['candeleteposts']),
+				'canviewips' => intval($mybb->input['canviewips']),
+				'canopenclosethreads' => intval($mybb->input['canopenclosethreads']),
+				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
+				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum'])
+			);
+			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
+			
+			flash_message($lang->success_moderator_updated, 'success');
+			admin_redirect("index.php?".SID."&module=forum/management&fid=".intval($mybb->input['fid'])."#tab_moderators");
+		}
+	}
+	
+	$query = $db->simple_select("users", "username", "uid='{$mod_data['uid']}'");
+	$mod_data['username'] = $db->fetch_field($query, 'username');
+		
+	$sub_tabs = array();
+	
+	$sub_tabs['edit_mod'] = array(
+		'title' => $lang->edit_mod,
+		'link' => "index.php?".SID."&amp;module=forum/management&amp;action=editmod&amp;uid=".$mybb->input['uid'],
+		'description' => $lang->edit_mod_desc
+	);
+	
+	$page->output_header($lang->edit_mod);	
+	$page->output_nav_tabs($sub_tabs, 'edit_mod');
+	
+	$form = new Form("index.php?".SID."&amp;module=forum/management&amp;action=editmod", "post");
+	echo $form->generate_hidden_field("mid", $mod_data['mid']);
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+		$mod_data = $mybb->input;
+	}	
+
+	$form_container = new FormContainer(sprintf($lang->edit_mod_for, $mod_data['username']));
+	$form_container->output_row($lang->forum, $lang->forum_desc, $form->generate_forum_select('fid', $mod_data['fid'], array('id' => 'fid')), 'fid');
+	
+	$moderator_permissions = array(
+		$form->generate_check_box('caneditposts', 1, $lang->can_edit_posts, array('checked' => $mod_data['caneditposts'], 'id' => 'caneditposts')),
+		$form->generate_check_box('candeleteposts', 1, $lang->can_delete_posts, array('checked' => $mod_data['candeleteposts'], 'id' => 'candeleteposts')),
+		$form->generate_check_box('canviewips', 1, $lang->can_view_ips, array('checked' => $mod_data['canviewips'], 'id' => 'canviewips')),
+		$form->generate_check_box('canopenclosethreads', 1, $lang->can_open_close_threads, array('checked' => $mod_data['canopenclosethreads'], 'id' => 'canopenclosethreads')),
+		$form->generate_check_box('canmanagethreads', 1, $lang->can_manage_threads, array('checked' => $mod_data['canmanagethreads'], 'id' => 'canmanagethreads')),
+		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum'))
+	);
+	
+	$form_container->output_row($lang->moderator_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_permissions)."</div>");
+	
+	$form_container->end();
+	
+	$buttons[] = $form->generate_submit_button($lang->save_mod);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+	
+	$page->output_footer();	
+}
+
 if($mybb->input['action'] == "permissions")
 {
 	if($mybb->request_method == "post")
@@ -1610,7 +1701,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 					
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 					
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input\" style=\"width: 80%; font-weight: bold;\" />", array("class" => "align_center"));
+				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%; font-weight: bold;\" />", array("class" => "align_center"));
 					
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");
