@@ -123,8 +123,8 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 	{
 		$bgcolor = getaltbg();
 		echo "<tr>\n";
-		echo "<td class=\"$bgcolor\" width=\"42%\">".$badword['badword']."</td>\n";
-		echo "<td class=\"$bgcolor\" width=\"42%\">".$badword['replacement']."</td>\n";
+		echo "<td class=\"$bgcolor\" width=\"42%\">".htmlspecialchars_uni($badword['badword'])."</td>\n";
+		echo "<td class=\"$bgcolor\" width=\"42%\">".htmlspecialchars_uni($badword['replacement'])."</td>\n";
 		echo "<td class=\"$bgcolor\" align=\"center\">";
 		startform("badwords.php", "", "edit");
 		makehiddencode("bid", $badword['bid']);
