@@ -432,7 +432,7 @@ if(!$mybb->input['action'])
 	$form_container = new FormContainer($lang->user_groups);
 	$form_container->output_row_header($lang->group);
 	$form_container->output_row_header($lang->number_of_users);
-	$form_container->output_row_header($lang->order);
+	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center"));
 	$query = $db->simple_select("usergroups", "*", "", array('order_by' => 'disporder'));
 	while($usergroup = $db->fetch_array($query))
@@ -464,7 +464,7 @@ if(!$mybb->input['action'])
 		
 		if($usergroup['showforumteam'] == 1)
 		{
-			$form_container->output_cell("<input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" size=\"2\" />", array("class" => "align_center"));
+			$form_container->output_cell("<input type=\"text\" name=\"disporder[{$usergroup['gid']}]\" value=\"{$usergroup['disporder']}\" class=\"text_input\" style=\"width: 80%;\" />", array("class" => "align_center"));
 		}
 		else
 		{

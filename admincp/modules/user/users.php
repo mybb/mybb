@@ -447,7 +447,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->confirm_password, "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
-	$display_group_options[0] = $lang->user_primary_user_group;
+	$display_group_options[0] = $lang->use_primary_user_group;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{

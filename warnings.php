@@ -823,7 +823,7 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
-		$revoked_by = build_profile_link($warning['username'], $warning['uid']);
+		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");
 	}
@@ -890,6 +890,12 @@ if(!$mybb->input['action'])
 	{
 		$warning_level = 100;
 	}
+	
+	if($user['warningpoints'] > $mybb->settings['maxwarningpoints'])
+	{
+		$user['warningpoints'] = $mybb->settings['maxwarningpoints'];
+	}
+	
 	if($warning_level > 0)
 	{
 		$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
@@ -932,7 +938,7 @@ if(!$mybb->input['action'])
 		{
 			$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 			$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-			$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."\">{$warning['post_subject']}</a></small>";
+			$post_link = "<br /><small>{$lang->warning_for_post} <a href=\"".get_post_link($warning['pid'])."#pid{$warning['pid']}\">{$warning['post_subject']}</a></small>";
 		}
 		$issuedby = build_profile_link($warning['username'], $warning['uid']);
 		$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);

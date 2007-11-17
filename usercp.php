@@ -2416,13 +2416,14 @@ if($mybb->input['action'] == "usergroups")
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
-			if($usergroup['type'] != 4 && $usergroup['type'] != 3)
-			{
-				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">{$lang->usergroup_cannot_leave}</span></div>";
-			}
+			
 			if($groupleader[$usergroup['gid']])
 			{
 				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
+			}
+			elseif($usergroup['type'] != 4 && $usergroup['type'] != 3)
+			{
+				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">{$lang->usergroup_cannot_leave}</span></div>";
 			}
 			else
 			{
@@ -2706,6 +2707,12 @@ if(!$mybb->input['action'])
 		{
 			$warning_level = 100;
 		}
+		
+		if($mybb->user['warningpoints'] > $mybb->settings['maxwarningpoints'])
+		{
+			$mybb->user['warningpoints'] = $mybb->settings['maxwarningpoints'];
+		}
+		
 		if($warning_level > 0)
 		{
 			$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
