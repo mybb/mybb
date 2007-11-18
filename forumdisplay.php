@@ -926,12 +926,7 @@ if(is_array($threadcache))
 
 		if($moved[0] == "moved")
 		{
-			if($thread['doticon'])
-			{
-				$folder = "dot_";
-				$folder_label .= $lang->icon_dot;
-			}
-			$folder .= "move";
+			$folder = "move";
 			$gotounread = '';
 		}
 
