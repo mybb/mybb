@@ -39,6 +39,7 @@ $sub_tabs['attachments'] = array(
 // Actually performing our moderation choices
 if($mybb->request_method == "post")
 {
+	require_once MYBB_ROOT."inc/functions_upload.php";
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
 

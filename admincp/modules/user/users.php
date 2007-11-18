@@ -378,7 +378,7 @@ if($mybb->input['action'] == "add")
 
 		// Set up user handler.
 		require_once MYBB_ROOT."inc/datahandlers/user.php";
-		$userhandler = new UserDataHandler('update');
+		$userhandler = new UserDataHandler('insert');
 
 		// Set the data for the new user.
 		$new_user = array(
@@ -2219,12 +2219,10 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 					$selected_options[$val] = $val;
 				}
 				$select_options = explode("\n", $options);
-				$options = array();
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$options[$val] = $val;
-					$code .= $form->generate_check_box('profile_fields[{$field_name}][]', $options, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
+					$code .= $form->generate_check_box('profile_fields[{$field_name}][]', $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
 				}
 				break;
 			case "textarea":

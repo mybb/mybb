@@ -597,7 +597,6 @@ class UserDataHandler extends DataHandler
 			$regdate = TIME_NOW;
 		}
 		return true;
-
 	}
 
 	/**

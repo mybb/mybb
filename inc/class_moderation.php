@@ -150,6 +150,11 @@ class Moderation
 			$pids[] = $post['pid'];
 			$usepostcounts = $post['usepostcounts'];
 			
+			if(!function_exists("remove_attachments"))
+			{
+				require MYBB_ROOT."inc/functions_upload.php";
+			}
+			
 			// Remove attachments
 			remove_attachments($post['pid']);
 			
