@@ -1357,12 +1357,12 @@ function get_post_icons()
 	{
 		if($icon == $dbicon['iid'])
 		{
-			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" />";
+			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
 			$no_icons_checked = "";
 		}
 		else
 		{
-			$iconlist .= "<input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" />";
+			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";
 		}
 
 		++$listed;
@@ -2230,7 +2230,7 @@ function build_clickable_smilies()
 					}
 
 					$find = htmlspecialchars_uni($find);
-					$smilies .= "<td><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
+					$smilies .= "<td style=\"text-align: center\"><img src=\"{$image}\" border=\"0\" class=\"smilie\" alt=\"{$find}\" /></td>\n";
 					++$i;
 					++$counter;
 

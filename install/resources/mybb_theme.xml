@@ -1626,7 +1626,7 @@ td .star_rating {
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><div style="margin:auto">{$smilieinserter}</div></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br />{$smilieinserter}</td>
 <td class="trow2">
 <textarea id="message" name="message" rows="20" cols="70" tabindex="2" >{$message}</textarea>
 {$codebuttons}
@@ -1729,7 +1729,7 @@ td .star_rating {
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}</strong><br /><div style="margin:auto">{$smilieinserter}</div></td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong>{$smilieinserter}/td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="2">{$message}</textarea>
 {$codebuttons}
@@ -3368,7 +3368,7 @@ td .star_rating {
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->compose_message}</strong><br/><br/><div style="margin:auto">{$smilieinserter}</div></td>
+<td class="trow2" valign="top"><strong>{$lang->compose_message}</strong>{$smilieinserter}</td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="60" tabindex="4">{$message}</textarea>
 {$codebuttons}
@@ -6439,8 +6439,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="2"><strong>{$lang->edit_sig}</strong></td>
 </tr>
 <tr>
-<td class="trow1" valign="top" width="20%"><span class="smalltext">{$lang->edit_sig_note}</span><br /><br />
-<div style="margin:auto">{$smilieinserter}</div></td>
+<td class="trow1" valign="top" width="20%"><span class="smalltext">{$lang->edit_sig_note}</span>
+{$smilieinserter}</td>
 <td class="trow1" width="80%">
 <textarea rows="15" cols="70" id="signature" name="signature">{$sig}</textarea>
 {$codebuttons}
@@ -6710,7 +6710,9 @@ To: {$to_recipients}
 {$footer}
 </body>
 </html>]]></template>
-		<template name="smilieinsert" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" width="150">
+		<template name="smilieinsert" version="120"><![CDATA[
+<div style="margin:auto; width: 170px; margin-top: 20px;">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" width="150">
 <tr>
 <td class="thead"><span class="smalltext"><strong>{$lang->smilieinsert}</strong></span></td>
 </tr>
@@ -6722,7 +6724,9 @@ To: {$to_recipients}
 </td>
 </tr>
 {$getmore}
-</table>]]></template>
+</table>
+</div>
+]]></template>
 		<template name="misc_buddypopup_user_sendpm" version="1400"><![CDATA[<a href="private.php?action=send&amp;uid={$buddy['uid']}" target="_blank" onclick="window.opener.location.href=this.href; return false;">{$lang->pm_buddy}</a>]]></template>
 		<template name="usercp_editlists" version="1400"><![CDATA[<html>
 <head>
@@ -6923,7 +6927,7 @@ To: {$to_recipients}
 </body>
 </html>]]></template>
 		<template name="posticons" version="120"><![CDATA[<tr>
-<td class="trow1"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</span></td>
+<td class="trow1" style="vertical-align: top"><strong>{$lang->post_icon}</strong><br /><span class="smalltext"><input type="radio" class="radio" name="icon" value="-1"{$no_icons_checked} />{$lang->no_post_icon}</span></td>
 <td class="trow1" valign="top">{$iconlist}</td>
 </tr>
 ]]></template>
@@ -8089,7 +8093,7 @@ To: {$to_recipients}
 			</td>
 		</tr>
 		<tr>
-			<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
+			<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong>{$smilieinserter}</td>
 			<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
 			{$codebuttons}</td>
 		</tr>
@@ -8517,7 +8521,7 @@ To: {$to_recipients}
 			</td>
 		</tr>
 		<tr>
-			<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong><div style="text-align: center;">{$smilieinserter}</div></td>
+			<td valign="top" width="20%" class="trow1"><strong>{$lang->event_details}</strong>{$smilieinserter}</td>
 			<td class="trow1"><textarea name="description" id="message" rows="20" cols="70">{$description}</textarea>
 			{$codebuttons}</td>
 		</tr>
@@ -8944,7 +8948,7 @@ To: {$to_recipients}
 		<template name="warnings_warn_pm" version="1400"><![CDATA[		<tr>
 			<td width="20%" class="trow1" valign="top">
 				<strong>{$lang->send_pm}</strong>
-				<div style="margin:auto" id="pm_smilie_insert"><br /><br />{$smilieinserter}</div>
+				<div style="margin:auto" id="pm_smilie_insert">{$smilieinserter}</div>
 			</td>
 			<td class="trow1">
 				<script type="text/javascript">
