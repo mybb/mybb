@@ -52,7 +52,9 @@ $l['footer_stats'] = "Generated in: {1} seconds with {2} queries.";
 $l['invalidlogin_subject'] = "Warning: {1} Login Attempt";
 $l['invalidlogin_message'] = "A user has tried to access the Administration Control Panel for {1}. They were unable to succeed in doing so.\nBelow are the login details:\n\nUsername: {2}\nPassword: {3} (MD5: {4})\n\nIP Address: {5}\nHostname: {6}\n\nThank you.";
 
-$l['cannot_perform_action_super_admin'] = "Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
+$l['cannot_perform_action_super_admin'] = "Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to contact your super administrator.";
+
+$l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform this actionas you are not a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
 
 $l['error_fill_form'] = "One or more form fields were invalid or left blank.  Please go back and try again.";
 

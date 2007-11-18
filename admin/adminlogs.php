@@ -17,10 +17,6 @@ require_once "./global.php";
 global $lang;
 $lang->load("adminlogs");
 
-if(is_super_admin($mybb->user['uid']))
-{
-	cperror($lang->cannot_perform_action_super_admin);
-}
 logadmin();
 
 addacpnav($lang->nav_admin_logs, "adminlogs.php?".SID);
@@ -36,6 +32,11 @@ $plugins->run_hooks("admin_adminlogs_start");
 
 if($mybb->input['action'] == "do_prune")
 {
+	if(!is_super_admin($mybb->user['uid']))
+	{
+		cperror($lang->cannot_perform_action_super_admin_general);
+	}
+
 	$time = time();
 	$days = intval($mybb->input['days']);
 	$fromscript = $db->escape_string($mybb->input['fromscript']);
@@ -236,16 +237,20 @@ else
 	makelabelcode($lang->order_by, "<select name=\"orderby\"><option value=\"datedesc\">$lang->date_desc</option>\n<option value=\"nameasc\">$lang->username_asc</option><option value=\"scriptasc\">$lang->script_asc</option>\n</select>");
 	endtable();
 	endform($lang->view_log, $lang->reset_button);
-	echo "<br />\n";
-	echo "<br />\n";
-	startform("adminlogs.php", "", "do_prune");
-	starttable();
-	tableheader($lang->prune_admin_logs);
-	makelabelcode($lang->entries_script, "<select name=\"fromscript\">\n<option value=\"\">$lang->all_scripts</option>\n<option value=\"\">----------</option>\n$soptions</select>");
-	makelabelcode($lang->entries_admin, "<select name=\"fromadmin\">\n<option value=\"\">$lang->all_admins</option>\n<option value=\"\">----------</option>\n$uoptions</select>");
-	makeinputcode($lang->entries_older, "days", 30, 4);
-	endtable();
-	endform($lang->prune_log, $lang->reset_button);
+	
+	if(is_super_admin($mybb->user['uid']))
+	{
+		echo "<br />\n";
+		echo "<br />\n";
+		startform("adminlogs.php", "", "do_prune");
+		starttable();
+		tableheader($lang->prune_admin_logs);
+		makelabelcode($lang->entries_script, "<select name=\"fromscript\">\n<option value=\"\">$lang->all_scripts</option>\n<option value=\"\">----------</option>\n$soptions</select>");
+		makelabelcode($lang->entries_admin, "<select name=\"fromadmin\">\n<option value=\"\">$lang->all_admins</option>\n<option value=\"\">----------</option>\n$uoptions</select>");
+		makeinputcode($lang->entries_older, "days", 30, 4);
+		endtable();
+		endform($lang->prune_log, $lang->reset_button);
+	}
 	cpfooter();
 }
 ?>
