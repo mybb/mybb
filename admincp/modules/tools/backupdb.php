@@ -161,7 +161,7 @@ if($mybb->input['action'] == "backup")
 				// Send headers for gzip file (do ob_start too)
 				header('Content-Encoding: x-gzip');
 				header('Content-Type: application/x-gzip');
-				header('Content-Disposition: attachment; filename="'.$file.'.gz"');
+				header('Content-Disposition: attachment; filename="'.$file.'.sql.gz"');
 			}
 			else
 			{

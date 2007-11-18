@@ -1729,7 +1729,7 @@ td .star_rating {
 </tr>
 {$posticons}
 <tr>
-<td class="trow2" valign="top"><strong>{$lang->your_message}</strong>{$smilieinserter}/td>
+<td class="trow2" valign="top"><strong>{$lang->your_message}</strong>{$smilieinserter}</td>
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="2">{$message}</textarea>
 {$codebuttons}

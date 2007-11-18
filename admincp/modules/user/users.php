@@ -1362,6 +1362,7 @@ if($mybb->input['action'] == "merge")
 		$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("reputation", $uid_update, "uid='{$source_user['uid']}'");
+		$db->update_query("reputation", array('adduid' => $destination_user['uid']), "adduid='{$source_user['uid']}'");
 		$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 		$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 
