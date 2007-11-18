@@ -708,26 +708,49 @@ class DB_MySQLi
 	 */
 	function insert_query($table, $array)
 	{
-		$comma = $query1 = $query2 = "";
-		
 		if(!is_array($array))
 		{
 			return false;
 		}
-		
-		$comma = "";
-		$query1 = "";
-		$query2 = "";
-		
-		foreach($array as $field => $value)
-		{
-			$query1 .= $comma.$field;
-			$query2 .= $comma."'".$value."'";
-			$comma = ", ";
-		}
-		
-		$this->write_query("INSERT INTO ".$this->table_prefix.$table." (".$query1.") VALUES (".$query2.");");
+		$fields = implode(",", array_keys($array));
+		$values = implode("','", $array);
+		$this->write_query("
+			INSERT 
+			INTO {$this->table_prefix}{$table} (".$fields.") 
+			VALUES ('".$values."')
+		");
 		return $this->insert_id();
+	}
+	
+	/**
+	 * Build one query for multiple inserts from a multidimensional array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of inserts.
+	 * @return int The insert ID if available
+	 */
+	function insert_query_multiple($table, $array)
+	{
+		if(!is_array($array))
+		{
+			return false;
+		}
+		// Field names
+		$fields = array_keys($array[0]);
+		$fields = implode(",", $fields);
+
+		$insert_rows = array();
+		foreach($array as $values)
+		{
+			$insert_rows[] = "('".implode("','", $values)."')";
+		}
+		$insert_rows = implode(", ", $insert_rows);
+
+		$this->write_query("
+			INSERT 
+			INTO {$this->table_prefix}{$table} ({$fields}) 
+			VALUES {$insert_rows}
+		");
 	}
 
 	/**

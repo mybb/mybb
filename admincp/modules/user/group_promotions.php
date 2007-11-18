@@ -276,12 +276,12 @@ if($mybb->input['action'] == "edit")
 	$options['*'] = $lang->all_user_groups;
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[(string)$usergroup['gid']] = $usergroup['title'];
+		$options[(int)$usergroup['gid']] = $usergroup['title'];
 	}
 
 	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
 	
-	array_shift($options); // Remove the all usergroups option
+	unset($options['*']); // Remove the all usergroups option
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
 
 	$options = array(
@@ -370,7 +370,7 @@ if($mybb->input['action'] == "add")
 
 			// Log admin action
 			log_admin_action($pid, $mybb->input['title']);
-
+			
 			flash_message($lang->success_promo_added, 'success');
 			admin_redirect("index.php?".SID."&module=user/group_promotions");
 		}
@@ -421,9 +421,9 @@ if($mybb->input['action'] == "add")
 		"<" => $lang->less_than
 	);
 	
-	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_text_box('reputationcount', $mybb->input['reputationcount'], array('id' => 'reputationcount'))." ".$form->generate_select_box("reputationtype[]", $options_type, $mybb->input['reputationtype'], array('id' => 'reputationtype')), 'reputationcount');
+	$form_container->output_row($lang->reputation_count, $lang->reputation_count_desc, $form->generate_text_box('reputationcount', $mybb->input['reputationcount'], array('id' => 'reputationcount'))." ".$form->generate_select_box("reputationtype", $options_type, $mybb->input['reputationtype'], array('id' => 'reputationtype')), 'reputationcount');
 	
-	$form_container->output_row($lang->post_count, $lang->post_count_desc, $form->generate_text_box('postcount', $mybb->input['postcount'], array('id' => 'postcount'))." ".$form->generate_select_box("posttype[]", $options_type, $mybb->input['posttype'], array('id' => 'posttype')), 'postcount');
+	$form_container->output_row($lang->post_count, $lang->post_count_desc, $form->generate_text_box('postcount', $mybb->input['postcount'], array('id' => 'postcount'))." ".$form->generate_select_box("posttype", $options_type, $mybb->input['posttype'], array('id' => 'posttype')), 'postcount');
 	
 	$options = array(
 		"hours" => $lang->hours,
@@ -433,19 +433,19 @@ if($mybb->input['action'] == "add")
 		"years" => $lang->years
 	);	
 	
-	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype[]", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
+	$form_container->output_row($lang->time_registered, $lang->time_registered_desc, $form->generate_text_box('timeregistered', $mybb->input['timeregistered'], array('id' => 'timeregistered'))." ".$form->generate_select_box("timeregisteredtype", $options, $mybb->input['timeregisteredtype'], array('id' => 'timeregisteredtype')), 'timeregistered');
 	$options = array();
 	
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	$options['*'] = $lang->all_user_groups;
 	while($usergroup = $db->fetch_array($query))
 	{
-		$options[(string)$usergroup['gid']] = $usergroup['title'];
+		$options[(int)$usergroup['gid']] = $usergroup['title'];
 	}
 
 	$form_container->output_row($lang->orig_user_group." <em>*</em>", $lang->orig_user_group_desc, $form->generate_select_box('originalusergroup[]', $options, $mybb->input['originalusergroup'], array('id' => 'originalusergroup', 'multiple' => true, 'size' => 5)), 'originalusergroup');
 
-	array_shift($options); // Remove all usergroups option
+	unset($options['*']);
 	$form_container->output_row($lang->new_user_group." <em>*</em>", $lang->new_user_group_desc, $form->generate_select_box('newusergroup', $options, $mybb->input['newusergroup'], array('id' => 'newusergroup')), 'newusergroup');
 	
 	$options = array(
@@ -498,17 +498,23 @@ if($mybb->input['action'] == "logs")
 	$table->construct_header($lang->new_user_group, array("class" => "align_center", "width" => '25%'));
 	$table->construct_header($lang->time_promoted, array("class" => "align_center", "width" => '25%'));
 
-	$query = $db->simple_select("promotionlogs", "*", "", array("order_by" => "dateline", "order_dir" => "desc", "limit_start" => $start, "limit" => "20"));
+	$query = $db->query("
+		SELECT pl.*,u.username
+		FROM ".TABLE_PREFIX."promotionlogs pl
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pl.uid)
+		ORDER BY dateline DESC 
+		LIMIT {$start}, 20
+	");
 	while($log = $db->fetch_array($query))
 	{
-		$log['username'] = "<a href=\"index.php?".SID."&amp;module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($promotion['username'])."</a>";
-		$log['oldusergroup'] = htmlspecialchars_uni($log['oldusergroup']);
-		$log['newusergroup'] = htmlspecialchars_uni($log['newusergroup']);
+		$log['username'] = "<a href=\"index.php?".SID."&amp;module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($log['username'])."</a>";
+		$log['oldusergroup'] = htmlspecialchars_uni($groupscache[$log['oldusergroup']]['title']);
+		$log['newusergroup'] = htmlspecialchars_uni($groupscache[$log['newusergroup']]['title']);
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 		$table->construct_cell($log['username']);
-		$table->construct_cell($log['oldusergroup']);
-		$table->construct_cell($log['newusergroup']);
-		$table->construct_cell($log['dateline']);
+		$table->construct_cell($log['oldusergroup'], array('style' => 'text-align: center;'));
+		$table->construct_cell($log['newusergroup'], array('style' => 'text-align: center;'));
+		$table->construct_cell($log['dateline'], array('style' => 'text-align: center;'));
 		$table->construct_row();
 	}
 	
