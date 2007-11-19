@@ -281,6 +281,7 @@ $bgcolor = "trow1";
 
 // Set here to fetch only approved topics (and then below for a moderator we change this).
 $visibleonly = "AND visible='1'";
+$tvisibleonly = "AND t.visible='1'";
 
 // Check if the active user is a moderator and get the inline moderation tools.
 if(is_moderator($fid))

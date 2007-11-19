@@ -11,7 +11,7 @@ $l['forum_management_desc'] = "This section allows you to manage the categories 
 $l['add_forum'] = "Add Forum";
 $l['add_forum_desc'] = "Here you can add a new forum or category to your board. You may also set initial permissions for this forum.";
 $l['copy_forum'] = "Copy Forum";
-$l['copy_forum_desc'] = "";
+$l['copy_forum_desc'] = "Here you can copy forum settings or permissions from an existing forum to another or to a new forum.";
 $l['forum_permissions'] = "Permissions";
 $l['forum_permissions_desc'] = "Here you can modify the full permissions for an individual group for a single forum";
 $l['view_forum'] = "View Forum";
@@ -111,6 +111,17 @@ $l['forum_is_active_desc'] = "If unselected, this forum will not be shown to use
 $l['forum_is_open'] = "Forum is Open";
 $l['forum_is_open_desc'] = "If unselected, users will not be able to post in this forum regardless of permissions.";
 
+$l['copy_to_new_forum'] = "Copy to new forum";
+$l['source_forum'] = "Source forum";
+$l['source_forum_desc'] = "Forum to copy settings and/or permissions from.";
+$l['destination_forum'] = "Destination forum";
+$l['destination_forum_desc'] = "Forum to copy settings and/or permissions to.";
+$l['new_forum_settings'] = "New Fourm Settings";
+$l['copy_settings_and_properties'] = "Copy Forum Settings and Propeties";
+$l['copy_settings_and_properties_desc'] = "Only applies if the destination forum exists.";
+$l['copy_user_group_permissions'] = "Copy User Group Permissions";
+$l['copy_user_group_permissions_desc'] = "Use CTRL to select multiple groups.";
+
 $l['moderation_options'] = "Moderation Options";
 $l['mod_new_posts'] = "Moderate New Posts";
 $l['mod_new_threads'] = "Moderate New Threads";
@@ -181,10 +192,14 @@ $l['error_no_parent'] = "You must select a parent forum.";
 
 $l['success_forum_added'] = "Successfully added the forum.";
 $l['success_moderator_added'] = "The moderator has sucessfully been added to the forum.";
-$l['success_forum_permissions_saved'] = "Succesffully saved the forum permissions.";
+$l['success_forum_permissions_saved'] = "Succesfully saved the forum permissions.";
+$l['success_forum_copied'] = "Forum copied successfully";
 
 $l['error_moderator_already_added'] = "The specified moderator is already a moderator of the forum.";
 $l['error_moderator_not_found'] = "The specified username was not found.";
+$l['error_new_forum_needs_name'] = "You need to give your new forum a name.";
+$l['error_invalid_source_forum'] = "Invalid source forum.";
+$l['error_invalid_destination_forum'] = "Invalid destination forum.";
 
 $l['group_viewing'] = "Viewing";
 $l['group_posting_rating'] = "Posting / Rating";

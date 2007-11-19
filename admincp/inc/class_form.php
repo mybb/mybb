@@ -418,6 +418,8 @@ class DefaultForm
 
 	function generate_yes_no_radio($name, $value=1, $int=true, $yes_options=array(), $no_options = array())
 	{
+		global $lang;
+		
 		// Checked status
 		if($value == "yes" || $value === '0')
 		{
@@ -446,8 +448,8 @@ class DefaultForm
 		$no_options['class'] = "radio_no ".$no_options['class'];
 		$no_options['checked'] = $no_checked;
 		
-		$yes = $this->generate_radio_button($name, $yes_value, "Yes", $yes_options);
-		$no = $this->generate_radio_button($name, $no_value, "No", $no_options);
+		$yes = $this->generate_radio_button($name, $yes_value, $lang->yes, $yes_options);
+		$no = $this->generate_radio_button($name, $no_value, $lang->no, $no_options);
 		return $yes." ".$no;
 	}
 

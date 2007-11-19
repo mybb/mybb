@@ -1254,7 +1254,12 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 	{
 		$uid = $mybb->user['uid'];
 	}
-
+	
+	if($uid == 0)
+	{
+		return false;
+	}
+	
 	if(!isset($modpermscache[$fid][$uid]))
 	{
 		if(!$parentslist)
@@ -1265,6 +1270,12 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 		$sql = build_parent_list($fid, "fid", "OR", $parentslist);
 		$query = $db->simple_select("moderators", "*", "uid='{$uid}' AND {$sql}");
 		$perms = $db->fetch_array($query);
+		
+		if(!$perms)
+		{
+			return false;
+		}
+		
 		$modpermscache[$fid][$uid] = $perms;
 	}
 	else
@@ -1291,6 +1302,11 @@ function is_moderator($fid="0", $action="", $uid="0")
 	{
 		$uid = $mybb->user['uid'];
 	}
+	
+	if($uid == 0)
+	{
+		return false;
+	}
 
 	$user_perms = user_permissions($uid);
 	if($user_perms['issupermod'] == 1)
@@ -1316,7 +1332,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 		else
 		{
 			$modperms = get_moderator_permissions($fid, $uid);
-
+			
 			if(!$action && $modperms)
 			{
 				return true;

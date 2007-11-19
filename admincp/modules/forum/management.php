@@ -19,7 +19,7 @@ $page->add_breadcrumb_item($lang->forum_management, "index.php?".SID."&amp;modul
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
 {
-	if($mybb->input['fid'] && ($mybb->input['action'] == "management" || !$mybb->input['action']))
+	if($mybb->input['fid'] && ($mybb->input['action'] == "management" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
 	{
 		$sub_tabs['view_forum'] = array(
 			'title' => $lang->view_forum,
@@ -59,6 +59,192 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb-
 			'description' => $lang->add_forum_desc
 		);
 	}
+}
+
+if($mybb->input['action'] == "copy")
+{
+	if($mybb->request_method == "post")
+	{
+		$from = intval($mybb->input['from']);
+		$to = intval($mybb->input['to']);
+	
+		// Find the source forum
+		$query = $db->simple_select("forums", '*', "fid='{$from}'");
+		$from_forum = $db->fetch_array($query);
+		if(!$db->num_rows($query))
+		{
+			$errors[] = $lang->error_invalid_source_forum;
+		}
+	
+		if($to == -1)
+		{
+			// Create a new forum
+			if(empty($mybb->input['title']))
+			{
+				$errors[] = $lang->error_new_forum_needs_name;
+			}
+			
+			if($mybb->input['pid'] == 0 && $mybb->input['type'] == 'f')
+			{
+				$errors[] = $lang->error_forum_noparent;
+			}
+	
+			if(!$errors)
+			{
+				$new_forum = $from_forum;
+				unset($new_forum['fid']);
+				$new_forum['name'] = $db->escape_string($mybb->input['title']);
+				$new_forum['description'] = $db->escape_string($mybb->input['description']);
+				$new_forum['type'] = $db->escape_string($mybb->input['type']);
+				$new_forum['pid'] = intval($mybb->input['pid']);
+				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
+				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
+						
+				$db->insert_query("forums", $new_forum);
+				$to = $db->insert_id();
+		
+				// Generate parent list
+				$parentlist = make_parent_list($to);
+				$updatearray = array(
+					'parentlist' => $parentlist
+				);
+				$db->update_query("forums", $updatearray, "fid='{$to}'");
+			}
+		}
+		elseif($mybb->input['copyforumsettings'] == 1)
+		{
+			// Copy settings to existing forum
+			$query = $db->simple_select("forums", '*', "fid='{$to}'");
+			$to_forum = $db->fetch_array($query);
+			if(!$db->num_rows($query))
+			{
+				$errors[] = $lang->error_invalid_destination_forum;
+			}
+			
+			if(!$errors)
+			{
+				$new_forum = $from_forum;
+				unset($new_forum['fid']);
+				$new_forum['name'] = $db->escape_string($to_forum['title']);
+				$new_forum['description'] = $db->escape_string($to_forum['description']);
+				$new_forum['pid'] = $db->escape_string($to_forum['pid']);
+				$new_forum['parentlist'] = $db->escape_string($to_forum['parentlist']);
+				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
+				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
+				
+				$db->update_query("forums", $new_forum, "fid='{$to}'");
+			}
+		}
+		
+		if(!$errors)
+		{
+			// Copy permissions
+			if(is_array($mybb->input['copygroups']) && count($mybb->input['copygroups'] > 0))
+			{
+				foreach($mybb->input['copygroups'] as $gid)
+				{
+					$groups[] = intval($gid);
+				}
+				$groups = implode(',', $groups);
+				$query = $db->simple_select("forumpermissions", '*', "fid='{$from}' AND gid IN ({$groups})");
+				$db->delete_query("forumpermissions", "fid='{$to}' AND gid IN ({$groups})", 1);
+				while($permissions = $db->fetch_array($query))
+				{
+					unset($permissions['pid']);
+					$permissions['fid'] = $to;
+		
+					$db->insert_query("forumpermissions", $permissions);
+				}
+			}
+			$cache->update_forums();
+			$cache->update_forumpermissions();
+		
+			flash_message($lang->success_forum_copied, 'success');
+			admin_redirect("index.php?".SID."&module=forum/management&action=edit&fid={$to}");
+		}
+	}
+	
+	$page->output_header($lang->copy_forum);	
+	$page->output_nav_tabs($sub_tabs, 'copy_forum');
+	
+	$form = new Form("index.php?".SID."&amp;module=forum/management&amp;action=copy", "post");
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+		$copy_data = $mybb->input;
+	}
+	else
+	{		
+		$copy_data['type'] = "f";
+		$copy_data['title'] = "";
+		$copy_data['description'] = "";
+		
+		if(!$mybb->input['pid'])
+		{
+			$copy_data['pid'] = "-1";
+		}
+		else
+		{
+			$copy_data['pid'] = intval($mybb->input['pid']);
+		}
+		$copy_data['disporder'] = "1";
+		$copy_data['sfid'] = $mybb->input['fid'];
+		$copy_data['copyforumsettings'] = 0;
+		$copy_data['pid'] = 0;
+	}
+	
+	$types = array(
+		'f' => $lang->forum,
+		'c' => $lang->category
+	);
+	
+	$create_a_options_f = array(
+		'id' => 'forum'
+	);
+	
+	$create_a_options_c = array(
+		'id' => 'category'
+	);
+	
+	if($copy_data['type'] == "f")
+	{
+		$create_a_options_f['checked'] = true;
+	}
+	else
+	{
+		$create_a_options_c['checked'] = true;
+	}
+	
+	$usergroups = array();
+	
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	while($usergroup = $db->fetch_array($query))
+	{
+		$usergroups[$usergroup['gid']] = $usergroup['title'];
+	}
+	
+	$form_container = new FormContainer($lang->copy_forum);
+	$form_container->output_row($lang->source_forum." <em>*</em>", $lang->source_forum_desc, $form->generate_forum_select('from', $copy_data['from'], array('id' => 'from')), 'from');
+	$form_container->output_row($lang->destination_forum." <em>*</em>", $lang->destination_forum_desc, $form->generate_forum_select('to', $copy_data['to'], array('id' => 'to', 'main_option' => $lang->copy_to_new_forum)), 'to');
+	$form_container->output_row($lang->copy_settings_and_properties, $lang->copy_settings_and_properties_desc, $form->generate_yes_no_radio('copyforumsettings', $copy_data['copyforumsettings']), 'copyforumsettings');
+	$form_container->output_row($lang->copy_user_group_permissions, $lang->copy_user_group_permissions_desc, $form->generate_select_box('copygroups[]', $usergroups, $mybb->input['copygroups'], array('id' => 'copygroups', 'multiple' => true, 'size' => 5)), 'acopygroups');
+	
+	$form_container->end();
+
+	$form_container = new FormContainer($lang->new_forum_settings);
+	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $copy_data['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $copy_data['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $copy_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
+	
+	$form_container->end();
+	
+	$buttons[] = $form->generate_submit_button($lang->copy_forum);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+	
+	$page->output_footer();	
 }
 
 if($mybb->input['action'] == "editmod")
