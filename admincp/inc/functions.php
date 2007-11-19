@@ -349,15 +349,6 @@ function get_admin_permissions($get_uid="", $get_gid="")
 {
 	global $db, $mybb;
 	
-	global $run;
-	
-	if(!$run)
-	{
-		$run = 0;
-	}
-	
-	++$run;
-	
 	// Set UID and GID if none
 	$uid = $get_uid;
 	$gid = $get_gid;
