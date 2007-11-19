@@ -108,7 +108,7 @@
 			<description><![CDATA[Here you can set the default timezone offset for guests and members using the default offset.]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[php
-<select name=\"upsetting[{$setting['sid']}]\">
+<select name=\"upsetting[{$setting['name']}]\">
 <option value=\"-12\" ".($setting['value'] == -12?"selected=\"selected\"":"").">GMT -12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -12).")</option>
 <option value=\"-11\" ".($setting['value'] == -11?"selected=\"selected\"":"").">GMT -11:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -11).")</option>
 <option value=\"-10\" ".($setting['value'] == -10?"selected=\"selected\"":"").">GMT -10:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, -10).")</option>

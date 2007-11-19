@@ -349,6 +349,15 @@ function get_admin_permissions($get_uid="", $get_gid="")
 {
 	global $db, $mybb;
 	
+	global $run;
+	
+	if(!$run)
+	{
+		$run = 0;
+	}
+	
+	++$run;
+	
 	// Set UID and GID if none
 	$uid = $get_uid;
 	$gid = $get_gid;
@@ -364,18 +373,26 @@ function get_admin_permissions($get_uid="", $get_gid="")
 	{
 		// Prepare user's groups since the group isn't specified
 		$gid_array[] = (-1) * intval($mybb->user['usergroup']);
-		$additional_groups = explode(',', $mybb->user['additionalgroups']);
-		// Make sure gids are negative
-		foreach($additional_groups as $g)
+		
+		if($mybb->user['additionalgroups'])
 		{
-			$gid_array[] = (-1) * abs($g);
+			$additional_groups = explode(',', $mybb->user['additionalgroups']);
+			
+			if(!empty($additional_groups))
+			{
+				// Make sure gids are negative
+				foreach($additional_groups as $g)
+				{
+					$gid_array[] = (-1) * abs($g);
+				}
+			}
 		}
 	}
 	else
 	{
 		// Group is specified
 		// Make sure gid is negative
-		$gid = (-1) * abs($gid);
+		$gid_array[] = (-1) * abs($gid);
 	}
 
 	// What are we trying to find?
@@ -393,7 +410,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 		return unserialize($db->fetch_field($query, "permissions"));
 	}
 	else
-	{
+	{		
 		// A user and/or group
 		
 		$options = array(

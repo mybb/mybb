@@ -204,7 +204,7 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
-		'link' => "index.php?".SID."&amp;module=config/&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
+		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
 		'description' => $lang->edit_profile_field_desc
 	);
 	

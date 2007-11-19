@@ -157,6 +157,7 @@ if($mybb->input['action'] == "edit")
 		$page->add_breadcrumb_item($lang->default_permissions);
 		$title = $lang->default;
 	}
+	
 	if($uid != 0)
 	{
 		$page->add_breadcrumb_item($lang->edit_permissions.": {$title}");
@@ -199,7 +200,6 @@ if($mybb->input['action'] == "edit")
 	}
 	closedir($dir);
 	
-	
 	$page->output_tab_control($module_tabs);
 
 	foreach($permission_modules as $key => $module)
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "edit")
 		$form_container = new FormContainer("{$module['name']}");
 		foreach($module['permissions'] as $action => $title)
 		{
-			$form_container->output_row("{$title} <em>*</em>", "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', intval($permission_data[$key][$action]), array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
+			$form_container->output_row($title, "", $form->generate_yes_no_radio('permissions['.$key.']['.$action.']', intval($permission_data[$key][$action]), array('yes' => 1, 'no' => 0)), 'permissions['.$key.']['.$action.']');
 		}
 		$form_container->end();
 		echo "</div>\n";
@@ -398,7 +398,7 @@ if(!$mybb->input['action'])
 		}
 		$usergroup_list = implode(", ", $usergroup_list);
 		
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/view&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
 		
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
 		
