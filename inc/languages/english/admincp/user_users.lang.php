@@ -31,6 +31,13 @@ $l['error_no_perms_super_admin'] = "You do not have permission to edit this user
 $l['error_invalid_user_source'] = "The source account username you entered does not exist";
 $l['error_invalid_user_destination'] = "The destination account username you entered does not exist";
 $l['error_no_users_found'] = "No users were found matching the specified search criteria. Please modify your search criteria and try again.";
+$l['error_invalid_admin_view'] = "You selected an invalid administration view.";
+$l['error_missing_view_title'] = "You did not enter a title for this view.";
+$l['error_no_view_fields'] = "You did not select any fields to display on this view";
+$l['error_invalid_view_perpage'] = "You have entered an invalid number of results to show per page";
+$l['error_invalid_view_sortby'] = "You have selected an invalid field to sort results by";
+$l['error_invalid_view_sortorder'] = "You have selected an invalid sort order";
+$l['error_invalid_view_delete'] = "You selected an invalid administration view to delete";
 
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
@@ -39,6 +46,12 @@ $l['success_user_created'] = "The user has successfully been created.";
 $l['success_user_updated'] = "The user has successfully been updated.";
 $l['success_user_deleted'] = "The user has successfully been deleted.";
 $l['success_merged'] = "has successfully been merged in to";
+$l['succuss_view_set_as_default'] = "The administration view has successfully been set as your default";
+$l['success_view_created'] = "The administration view has successfully been created";
+$l['success_view_updated'] = "The administration view has successfully been updated";
+$l['success_view_deleted'] = "The administration view has successfully been deleted";
+
+$l['confirm_view_deletion'] = "Are you sure you want to delete the selected view?";
 
 $l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?".SID."&amp;module=user/users&amp;action=coppa_activate&amp;uid={1}\">Activate Account</a></p>";
 
@@ -185,6 +198,7 @@ $l['results_per_page'] = "Results per page";
 $l['display_results_as'] = "Display results as";
 $l['business_card'] = "Business cards";
 $l['views'] = "Views";
+$l['views_desc'] = "The view manager allows you to create different kinds of views for this specific area. Different views are useful for generating a variety of reports.";
 $l['manage_views'] = "Manage Views";
 $l['none'] = "None";
 
@@ -215,5 +229,32 @@ $l['reg_ip_matches'] = "Registration IP address matches";
 $l['wildcard'] = "* denotes a wildcard";
 $l['last_known_ip'] = "Last known IP address matches";
 $l['posted_with_ip'] = "Has posted with the IP address";
+
+$l['view'] = "View";
+$l['create_new_view'] = "Create New View";
+$l['create_new_view_desc'] = "Here you can define a new view for this area. You can define which fields you want to be shown, any search criteria and sorting options.";
+$l['view_manager'] = "View Manager";
+$l['set_as_default_view'] = "Set as Default View?";
+$l['enabled'] = "Enabled";
+$l['disabled'] = "Disabled";
+$l['fields_to_show'] = "Fields to Show";
+$l['fields_to_show_desc'] = "Please select the fields you wish to display";
+$l['edit_view'] = "Edit View";
+$l['edit_view_desc'] = "Whilst editing a view you can define which fields you want to be shown, any search criteria and sorting options.";
+$l['private'] = "Private";
+$l['private_desc'] = "This view is only visible to you";
+$l['public'] = "Public";
+$l['public_desc'] = "All other administrators can see this view";
+$l['visibility'] = "Visibility";
+$l['save_view'] = "Save View";
+$l['created_by'] = "Created by";
+$l['default'] = "Default";
+$l['this_is_a_view'] = "This is a {1} view";
+$l['set_as_default'] = "Set as Default";
+$l['delete_view'] = "Delete View";
+$l['default_view_desc'] = "Default view created by MyBB. Cannot be edited or removed.";
+$l['public_view_desc'] = "Public view visible to all administrators.";
+$l['private_view_desc'] = "Private view visible only to yourself.";
+$l['table'] = "Table";
 
 ?>

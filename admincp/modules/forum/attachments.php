@@ -737,7 +737,7 @@ if(!$mybb->input['action'])
 			// Need to draw pagination for this result set
 			if($num_results > $mybb->input['perpage'])
 			{
-				$pagination_url = "index.php?".SID."&module=forum/attachments&results=1";
+				$pagination_url = "index.php?".SID."&amp;module=forum/attachments&amp;results=1";
 				$pagination_vars = array('filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
@@ -772,12 +772,12 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?".SID."&module=forum/attachments", "post");
+	$form = new Form("index.php?".SID."&amp;module=forum/attachments", "post");
 
 	$form_container = new FormContainer($lang->find_where);
 	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');
 	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
-	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5)), 'forum');
+	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
 	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 
 	$more_options = array(

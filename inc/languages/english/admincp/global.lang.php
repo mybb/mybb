@@ -58,6 +58,7 @@ $l['never'] = "Never";
 $l['legend'] = "Legend";
 $l['version'] = "Version";
 $l['languagevar'] = "Language";
+$l['use_default'] = "Use Default";
 $l['file'] = "File";
 $l['go'] = "Go";
 $l['unknown'] = "Unknown";

@@ -214,7 +214,7 @@ if($mybb->input['action'] == "add")
 		{
 			$sections[$section['sid']] = $section['name'];
 		}
-		$form_container->output_row($lang->section." <em>*</em>", "", $form->generate_select_box("sid", $sections, $mybb->input['sid']), 'sid');
+		$form_container->output_row($lang->section." <em>*</em>", "", $form->generate_select_box("sid", $sections, $mybb->input['sid'], array('id' => 'sid')), 'sid');
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
 		$form_container->output_row($lang->document." <em>*</em>", "", $form->generate_text_area('document', $mybb->input['document'], array('id' => 'document')), 'document');

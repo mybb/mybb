@@ -43,7 +43,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "merge" || $mybb
 
 	$sub_tabs['merge_users'] = array(
 		'title' => $lang->merge_users,
-		'link' => "index.php?".SID."&module=user/users&action=merge",
+		'link' => "index.php?".SID."&amp;module=user/users&amp;action=merge",
 		'description' => $lang->merge_users_desc
 	);
 }
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "avatar_gallery")
 
 				if($gallery_path[$key+1])
 				{
-					$breadcrumb .= " &raquo; <a href=\"index.php?".SID."&amp;module=user/users&action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
+					$breadcrumb .= " &raquo; <a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
 				}
 				else
 				{
@@ -425,7 +425,7 @@ if($mybb->input['action'] == "add")
 
 	$page->output_header($lang->create_user);
 		
-	$form = new Form("index.php?".SID."&module=user/users&action=add", "post");
+	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=add", "post");
 
 	$page->output_nav_tabs($sub_tabs, 'create_user');
 
@@ -444,7 +444,7 @@ if($mybb->input['action'] == "add")
 	$form_container = new FormContainer($lang->required_profile_info);
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->password, "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password')), 'password');
-	$form_container->output_row($lang->confirm_password, "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_password')), 'confirm_new_password');
+	$form_container->output_row($lang->confirm_password, "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
 	$display_group_options[0] = $lang->use_primary_user_group;
@@ -741,7 +741,7 @@ if($mybb->input['action'] == "edit")
 		'description' => $lang->edit_user_desc
 	);
 
-	$form = new Form("index.php?".SID."&module=user/users&action=edit&uid={$user['uid']}", "post");
+	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$user['uid']}", "post");
 	echo "<script type=\"text/javascript\">\n function submitUserForm() { $('tab_overview').up('FORM').submit(); }</script>\n";
 
 	$page->output_nav_tabs($sub_tabs, 'edit_user');
@@ -1421,7 +1421,7 @@ if($mybb->input['action'] == "merge")
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?".SID."&module=user/users&action=merge", "post");
+	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=merge", "post");
 
 	$form_container = new FormContainer($lang->merge_users);
 	$form_container->output_row($lang->source_account." <em>*</em>", $lang->source_account_desc, $form->generate_text_box('source_username', $mybb->input['source_username'], array('id' => 'source_username')), 'source_username');
@@ -1474,7 +1474,7 @@ if($mybb->input['action'] == "search")
 		$admin_view['sortby'] = $mybb->input['sortby'];
 		$admin_view['sortorder'] = $mybb->input['order'];
 		$admin_view['conditions'] = $mybb->input['conditions'];
-		$admin_view['url'] = "index.php?".SID."&module=user/users&action=search&results=1";
+		$admin_view['url'] = "index.php?".SID."&amp;module=user/users&amp;action=search&amp;results=1";
 
 		if($mybb->input['type'])
 		{
@@ -1507,7 +1507,7 @@ if($mybb->input['action'] == "search")
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?".SID."&module=user/users&action=search", "post");
+	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=search", "post");
 
 	user_search_conditions($mybb->input, $form);
 
@@ -1620,7 +1620,7 @@ function build_users_view($view)
 	// Build the URL to this view
 	if(!$view['url'])
 	{
-		$view['url'] = "index.php?".SID."&module=user/users";
+		$view['url'] = "index.php?".SID."&amp;module=user/users";
 	}
 	if(!is_array($view['conditions']))
 	{
@@ -1632,7 +1632,7 @@ function build_users_view($view)
 	}
 	if($view['vid'])
 	{
-		$view['url'] .= "&vid={$view['vid']}";
+		$view['url'] .= "&amp;vid={$view['vid']}";
 	}
 	else
 	{
@@ -1644,7 +1644,7 @@ function build_users_view($view)
 			{
 				$val = base64_encode(serialize($val));
 			}
-			$view['url'] .= "&view[{$key}]=".urlencode($val);
+			$view['url'] .= "&amp;view[{$key}]=".urlencode($val);
 		}
 	}
 
@@ -1936,7 +1936,7 @@ function build_users_view($view)
 	$switch_url = $view['url'];
 	if($mybb->input['page'] > 0)
 	{
-		$switch_url .= "&page=".intval($mybb->input['page']);
+		$switch_url .= "&amp;page=".intval($mybb->input['page']);
 	}
 	if($view['view_type'] != "card")
 	{
@@ -1951,7 +1951,7 @@ function build_users_view($view)
 	// Do we need to construct the pagination?
 	if($num_results > $view['perpage'])
 	{
-		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&type={$view['view_type']}");
+		$pagination = draw_admin_pagination($mybb->input['page'], $view['perpage'], $num_results, $view['url']."&amp;type={$view['view_type']}");
 		$search_class = "float_right";
 		$search_style = "";
 	}
@@ -1962,7 +1962,7 @@ function build_users_view($view)
 	}
 
 	echo "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
-	$search = new Form($view['url'], 'POST', 0, '', 'search_form');
+	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 0, '', 'search_form');
 	$sid = explode('=', SID);
 	if($view['conditions']['username'])
 	{

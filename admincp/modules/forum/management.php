@@ -227,8 +227,8 @@ if($mybb->input['action'] == "copy")
 	$form_container = new FormContainer($lang->copy_forum);
 	$form_container->output_row($lang->source_forum." <em>*</em>", $lang->source_forum_desc, $form->generate_forum_select('from', $copy_data['from'], array('id' => 'from')), 'from');
 	$form_container->output_row($lang->destination_forum." <em>*</em>", $lang->destination_forum_desc, $form->generate_forum_select('to', $copy_data['to'], array('id' => 'to', 'main_option' => $lang->copy_to_new_forum)), 'to');
-	$form_container->output_row($lang->copy_settings_and_properties, $lang->copy_settings_and_properties_desc, $form->generate_yes_no_radio('copyforumsettings', $copy_data['copyforumsettings']), 'copyforumsettings');
-	$form_container->output_row($lang->copy_user_group_permissions, $lang->copy_user_group_permissions_desc, $form->generate_select_box('copygroups[]', $usergroups, $mybb->input['copygroups'], array('id' => 'copygroups', 'multiple' => true, 'size' => 5)), 'acopygroups');
+	$form_container->output_row($lang->copy_settings_and_properties, $lang->copy_settings_and_properties_desc, $form->generate_yes_no_radio('copyforumsettings', $copy_data['copyforumsettings']));
+	$form_container->output_row($lang->copy_user_group_permissions, $lang->copy_user_group_permissions_desc, $form->generate_select_box('copygroups[]', $usergroups, $mybb->input['copygroups'], array('id' => 'copygroups', 'multiple' => true, 'size' => 5)), 'copygroups');
 	
 	$form_container->end();
 
@@ -1824,11 +1824,13 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 	{
 		foreach($children as $forum)
 		{
+			$forum['name'] = htmlspecialchars_uni($forum['name']);
+			
 			if($forum['active'] == 0)
 			{
 				$forum['name'] = "<em>".$forum['name']."</em>";
 			}
-				
+			
 			if($forum['type'] == "c" && ($depth == 1 || $depth == 2))
 			{
 				$sub_forums = '';

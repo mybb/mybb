@@ -83,6 +83,7 @@ if($mybb->input['action'] == "add")
 	
 	$sub_tabs['add_calendar'] = array(
 		'title' => $lang->add_calendar,
+		'link' => "index.php?".SID."&amp;module=config/calendars&amp;action=add",
 		'description' => $lang->add_calendar_desc
 	);
 	
@@ -101,12 +102,12 @@ if($mybb->input['action'] == "add")
 	$select_list = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->input['startofweek'], array('id' => 'startofweek')), 'startofweek');
 	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_text_box('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
-	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true), 'showbirthdays');
-	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true), 'moderation');
-	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']), 'allowhtml');
-	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode']), 'allowmycode');
-	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->input['allowimgcode']), 'allowimgcode');
-	$form_container->output_row($lang->allow_smilies, "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies']), 'allowsmilies');
+	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true));
+	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true));
+	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']));
+	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode']));
+	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->input['allowimgcode']));
+	$form_container->output_row($lang->allow_smilies, "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_calendar);
@@ -331,12 +332,12 @@ if($mybb->input['action'] == "edit")
 	$select_list = array($lang->sunday, $lang->monday, $lang->tuesday, $lang->wednesday, $lang->thursday, $lang->friday, $lang->saturday);
 	$form_container->output_row($lang->week_start, $lang->week_start_desc, $form->generate_select_box('startofweek', $select_list, $mybb->input['startofweek'], array('id' => 'startofweek')), 'startofweek');
 	$form_container->output_row($lang->event_limit, $lang->event_limit_desc, $form->generate_text_box('eventlimit', $mybb->input['eventlimit'], array('id' => 'eventlimit')), 'eventlimit');
-	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true), 'showbirthdays');
-	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true), 'moderation');
-	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']), 'allowhtml');
-	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode']), 'allowmycode');
-	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->input['allowimgcode']), 'allowimgcode');
-	$form_container->output_row($lang->allow_smilies, "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies']), 'allowsmilies');
+	$form_container->output_row($lang->show_birthdays, $lang->show_birthdays_desc, $form->generate_yes_no_radio('showbirthdays', $mybb->input['showbirthdays'], true));
+	$form_container->output_row($lang->moderate_events, $lang->moderate_events_desc, $form->generate_yes_no_radio('moderation', $mybb->input['moderation'], true));
+	$form_container->output_row($lang->allow_html, "", $form->generate_yes_no_radio('allowhtml', $mybb->input['allowhtml']));
+	$form_container->output_row($lang->allow_mycode, "", $form->generate_yes_no_radio('allowmycode', $mybb->input['allowmycode']));
+	$form_container->output_row($lang->allow_img, "", $form->generate_yes_no_radio('allowimgcode', $mybb->input['allowimgcode']));
+	$form_container->output_row($lang->allow_smilies, "", $form->generate_yes_no_radio('allowsmilies', $mybb->input['allowsmilies']));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_calendar);

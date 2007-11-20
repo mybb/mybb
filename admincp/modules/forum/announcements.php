@@ -198,23 +198,23 @@ if($mybb->input['action'] == "add")
 	if($mybb->input['starttime_month'])
 	{
 		$startmonth = intval($mybb->input['starttime_month']);
-		$startmonthsel[$startmonth] = "selected";
+		$startmonthsel[$startmonth] = "selected=\"selected\"";
 	}
 	else
 	{
 		$startmonth = gmdate("m", time());
-		$startmonthsel[$startmonth] = "selected";
+		$startmonthsel[$startmonth] = "selected=\"selected\"";
 	}
 	
 	if($mybb->input['endtime_month'])
 	{
 		$endmonth = intval($mybb->input['endtime_month']);
-		$endmonthsel[$endmonth] = "selected";
+		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	else
 	{
 		$endmonth = gmdate("m", time());
-		$endmonthsel[$endmonth] = "selected";
+		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	
 	$startdatemonth .= "<option value=\"01\" $startmonthsel[01]>{$lang->january}</option>\n";
@@ -262,7 +262,7 @@ if($mybb->input['action'] == "add")
 	
 	$form_container = new FormContainer($lang->add_an_announcement);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\">\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')), 'start_date');
+	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
 
 	$actions = "<script type=\"text/javascript\">
     function checkAction(id)
@@ -291,7 +291,7 @@ if($mybb->input['action'] == "add")
 		<dd style=\"margin-top: 4px;\" id=\"endtime_1\" class=\"endtimes\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\">\n - {$lang->time} ".$form->generate_text_box('endtime_time', $mybb->input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 50px;'))."</td>
+					<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $mybb->input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 50px;'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -432,7 +432,7 @@ if($mybb->input['action'] == "edit")
 		$startday = gmdate("j", $announcement['startdate']);
 		
 		$startmonth = gmdate("m", $announcement['startdate']);
-		$startmonthsel[$startmonth] = "selected";
+		$startmonthsel[$startmonth] = "selected=\"selected\"";
 		
 		$startdateyear = gmdate("Y", $announcement['startdate']);
 		
@@ -518,7 +518,7 @@ if($mybb->input['action'] == "edit")
 	
 	$form_container = new FormContainer($lang->add_an_announcement);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\">\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')), 'start_date');
+	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
 
 	$actions = "<script type=\"text/javascript\">
     function checkAction(id)
@@ -547,7 +547,7 @@ if($mybb->input['action'] == "edit")
 		<dd style=\"margin-top: 4px;\" id=\"endtime_1\" class=\"endtimes\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\">\n - {$lang->time} ".$form->generate_text_box('endtime_time', $mybb->input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 50px;'))."</td>
+					<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $mybb->input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 50px;'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -699,6 +699,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 	{
 		foreach($children as $forum)
 		{
+			$forum['name'] = htmlspecialchars_uni($forum['name']);
 			if($forum['active'] == 0)
 			{
 				$forum['name'] = "<em>".$forum['name']."</em>";

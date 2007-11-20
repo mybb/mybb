@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add")
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
 	
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", 1), 'theme');
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", 1));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
 	while($usergroup = $db->fetch_array($query))
@@ -82,7 +82,7 @@ if($mybb->input['action'] == "add")
 	{
 		$mybb->input['usergroup'] = 1;
 	}
-	$form_container->output_row($lang->user_group, $lang->user_group_desc, $form->generate_select_box("usergroup", $usergroups, $mybb->input['usergroup'], array("id" => "usergroup")), 'usergroup');
+	$form_container->output_row($lang->user_group, $lang->user_group_desc, $form->generate_select_box("usergroup", $usergroups, $spider_data['usergroup'], array("id" => "usergroup")), 'usergroup');
 
 
 	$form_container->end();
@@ -198,18 +198,18 @@ if($mybb->input['action'] == "edit")
 	$languages = array_merge($languages, $lang->get_languages());
 	$form_container->output_row($lang->language, $lang->language_desc, $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
 
-	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", 1), 'theme');
+	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", 1));
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_by" => "title", "order_dir" => "asc"));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$usergroups[$usergroup['gid']] = $usergroup['title'];
 	}
-	if(!$mybb->input['usergroup'])
+	if(!$spider_data['usergroup'])
 	{
-		$mybb->input['usergroup'] = 1;
+		$spider_data['usergroup'] = 1;
 	}
-	$form_container->output_row($lang->user_group, $lang->user_group_desc, $form->generate_select_box("usergroup", $usergroups, $mybb->input['usergroup'], array("id" => "usergroup")), 'usergroup');
+	$form_container->output_row($lang->user_group, $lang->user_group_desc, $form->generate_select_box("usergroup", $usergroups, $spider_data['usergroup'], array("id" => "usergroup")), 'usergroup');
 
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->save_bot);
@@ -225,6 +225,7 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['spiders'] = array(
 		'title' => $lang->spiders_bots,
+		'link' => "index.php?".SID."&amp;module=config/spiders",
 		'description' => $lang->spiders_bots_desc
 	);
 	$sub_tabs['add_spider'] = array(

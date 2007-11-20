@@ -193,6 +193,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['maillogs'] = array(
 		'title' => $lang->user_email_log,
+		'link' => "index.php?".SID."&amp;module=tools/maillogs",
 		'description' => $lang->user_email_log_desc
 	);
 	$sub_tabs['prune_maillogs'] = array(
@@ -226,15 +227,15 @@ if(!$mybb->input['action'])
 		{
 			if($log['thread_subject'])
 			{
-				$log['thread_subject'] = htmlspecialchars($log['thread_subject']);
+				$log['thread_subject'] = htmlspecialchars_uni($log['thread_subject']);
 				$thread_link = "<a href=\"../".get_thread_link($log['tid'])."\">".$log['thread_subject']."</a>";
 			}
 			else
 			{
 				$thread_link = $lang->deleted;
 			}
-			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.gif\" title=\"{$lang->sent_using_send_thread_feature}\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&action=view&mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.gif\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
 			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
@@ -250,8 +251,8 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.gif\" title=\"{$lang->email_sent_to_user}\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&action=view&mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
+			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.gif\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
 			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{

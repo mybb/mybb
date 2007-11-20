@@ -269,7 +269,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 		else
 		{
-			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt\"{$lang->ok}\" />";
+			$status = "<img src=\"styles/{$page->style}/images/icons/tick.gif\" alt=\"{$lang->ok}\" />";
 		}
 		$table->construct_cell("<strong>{$tablename}</strong>");
 		$table->construct_cell($status, array("class" => "align_center", 'width' => '15%'));
@@ -474,11 +474,11 @@ if(!$mybb->input['action'])
 	
 	if($errors)
 	{
-		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.</p></em>");
+		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.</em></p>");
 	}
 	else
 	{
-		$page->output_success("<p><em>{$lang->success_chmod}</p></em>");
+		$page->output_success("<p><em>{$lang->success_chmod}</em></p>");
 	}
 	
 	$table = new Table;

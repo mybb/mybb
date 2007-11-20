@@ -84,6 +84,8 @@ if($mybb->input['action'] == "add")
 	$buttons[] = $form->generate_submit_button($lang->save_post_icon);
 
 	$form->output_submit_wrapper($buttons);
+	
+	$form->end();
 
 	$page->output_footer();
 }

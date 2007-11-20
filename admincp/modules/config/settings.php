@@ -974,7 +974,7 @@ if($mybb->input['action'] == "change")
 			{
 				$setting['description'] = $lang->$desc_lang;
 			}
-			$form_container->output_row($setting['title'], $setting['description'], $setting_code, '', array(), array('id' => 'row_'.$element_id));
+			$form_container->output_row(htmlspecialchars_uni($setting['title']), $setting['description'], $setting_code, '', array(), array('id' => 'row_'.$element_id));
 		}
 		$form_container->end();
 		

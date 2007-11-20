@@ -27,6 +27,7 @@ $l['theme_desc'] = "Select the theme the bot will use when viewing the board.";
 $l['user_group'] = "User Group";
 $l['user_group_desc'] = "Select the user group permissions will be applied from for this board (Note: It is not recommended you change this from the default Guests group)";
 $l['save_bot'] = "Save Bot";
+$l['use_board_default'] = "Use Board Default";
 
 $l['error_invalid_bot'] = "The specified bot does not exist.";
 $l['error_missing_name'] = "You did not enter a name for this bot";

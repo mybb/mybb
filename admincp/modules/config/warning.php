@@ -464,6 +464,7 @@ if($mybb->input['action'] == "add_type")
 	
 	$sub_tabs['add_type'] = array(
 		'title' => $lang->add_warning_type,
+		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_type",
 		'description' => $lang->add_warning_type_desc
 	);
 	

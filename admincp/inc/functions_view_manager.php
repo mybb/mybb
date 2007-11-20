@@ -23,18 +23,18 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 	global $mybb, $db, $page, $lang;
 
 	$sub_tabs['views'] = array(
-		'title' => "Views",
+		'title' => $lang->views,
 		'link' => "{$base_url}&amp;action=views",
-		'description' => "The view manager allows you to create different kinds of views for this specific area. Different views are useful for generating a variety of reports."
+		'description' => $lang->views_desc
 	);
 
 	$sub_tabs['create_view'] = array(
-		'title' => "Create New View",
+		'title' => $lang->create_new_view,
 		'link' => "{$base_url}&amp;action=views&amp;do=add",
-		'description' => "Here you can define a new view for this area. You can define which fields you want to be shown, any search criteria and sorting options."
+		'description' => $lang->create_new_view_desc
 	);
 
-	$page->add_breadcrumb_item("View Manager");
+	$page->add_breadcrumb_item($lang->view_manager);
 
 	// Lang strings should be in global lang file
 
@@ -45,11 +45,11 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
-			flash_message("You selected an invalid administration view.", 'error');
+			flash_message($lang->error_invalid_admin_view, 'error');
 			admin_redirect($base_url."&action=views");
 		}
 		set_default_view($type, $admin_view['vid']);
-		flash_message("The administration view has successfully been set as your default", 'success');
+		flash_message($lang->success_view_set_as_default, 'success');
 		admin_redirect($base_url."&action=views");
 	}
 	
@@ -59,7 +59,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		{
 			if(!trim($mybb->input['title']))
 			{
-				$errors[] = "You did not enter a title for this view.";
+				$errors[] = $lang->error_missing_view_title;
 			}
 			if($mybb->input['fields_js'])
 			{
@@ -67,22 +67,22 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			}
 			if(count($mybb->input['fields']) <= 0)
 			{
-				$errors[] = "You did not select any fields to display on this view";
+				$errors[] = $lang->eror_no_view_fields;
 			}
 
 			if(intval($mybb->input['perpage']) <= 0)
 			{
-				$errors[] = "You have entered an invalid number of results to show per page";
+				$errors[] = $lang->error_invalid_view_perpage;
 			}
 
 			if(!in_array($mybb->input['sortby'], array_keys($sort_options)))
 			{
-				$errors[] = "You have selected an invalid field to sort results by";
+				$errors[] = $lang->error_invalid_view_sortby;
 			}
 
 			if($mybb->input['sortorder'] != "asc" && $mybb->input['sortorder'] != "desc")
 			{
-				$errors[] = "You have selected an invalid sort order";
+				$errors[] = $lang->error_invalid_view_sortorder;
 			}
 
 			if($mybb->input['visibility'] == 0)
@@ -112,7 +112,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 				{
 					set_default_view($type, $vid);
 				}
-				flash_message("The administration view has successfully been created", "success");
+				flash_message($lang->success_view_created, "success");
 				admin_redirect($base_url."&vid={$vid}");
 			}
 		}
@@ -123,9 +123,9 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			);
 		}
 
-		$page->output_header("Create New View");
+		$page->output_header($lang->create_new_view);
 			
-		$form = new Form($base_url."&action=views&do=add", "post");
+		$form = new Form($base_url."&amp;action=views&amp;do=add", "post");
 
 		$page->output_nav_tabs($sub_tabs, 'create_view');
 
@@ -135,7 +135,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			$page->output_inline_error($errors);
 		}
 
-		$form_container = new FormContainer("Create New View");
+		$form_container = new FormContainer($lang->create_new_view);
 		$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 
 		if($mybb->input['visibility'] == 2)
@@ -153,22 +153,22 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		);
 		$form_container->output_row("Visibility", "", implode("<br />", $visibility_options));
 
-		$form_container->output_row("Set as Default View?", "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)), "isdefault");
+		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
 
 		if(count($sort_options) > 0)
 		{
 			$sort_directions = array(
-				"asc" => "Ascending",
-				"desc" => "Descending"
+				"asc" => $lang->ascending,
+				"desc" => $lang->descending
 			);
-			$form_container->output_row("Sort results by", "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." in ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
+			$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
 		}
 
-		$form_container->output_row("Results per page", "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+		$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
 
 		if($type == "user")
 		{
-			$form_container->output_row("Display results as", "", $form->generate_radio_button('view_type', 'table', 'Table', array('checked' => ($mybb->input['view_type'] != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', 'Business cards', array('checked' => ($mybb->input['view_type'] == "card" ? true : false))));
+			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->input['view_type'] != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->input['view_type'] == "card" ? true : false))));
 		}
 
 		$form_container->end();
@@ -177,7 +177,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		echo "<script src=\"../jscripts/scriptaculous.js?load=dragdrop\" type=\"text/javascript\"></script>\n";
 		echo "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 		$field_select .= "<div class=\"view_fields\">\n";
-		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">Enabled</div><ul id=\"fields_enabled\">\n";
+		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
 		if(is_array($mybb->input['fields']))
 		{
 			foreach($mybb->input['fields'] as $field)
@@ -190,7 +190,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			}
 		}
 		$field_select .= "</ul></div>\n";
-		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">Disabled</div><ul id=\"fields_disabled\">\n";
+		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled\">\n";
 		foreach($fields as $key => $field)
 		{
 			if($active[$key]) continue;
@@ -201,7 +201,11 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$field_select = str_replace("'", "\\'", $field_select);
 		$field_select = str_replace("\n", "", $field_select);
 		
-		$field_select = "<script type=\"text/javascript\">document.write('{$field_select}');</script>\n";
+		$field_select = "<script type=\"text/javascript\">
+//<![CDATA[
+document.write('".str_replace("/", "\/", $field_select)."');
+//]]>
+</script>\n";
 		
 		foreach($fields as $key => $field)
 		{
@@ -210,8 +214,8 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		
 		$field_select .= "<noscript>".$form->generate_select_box('fields', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
-		$form_container = new FormContainer("Fields to Show");
-		$form_container->output_row("Please select the fields you wish to display", $description, $field_select);
+		$form_container = new FormContainer($lang->fields_to_show);
+		$form_container->output_row($lang->fields_to_show_desc, $description, $field_select);
 		$form_container->end();
 
 		// Build the search conditions
@@ -236,7 +240,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		// Does the view not exist?
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
-			flash_message("You have selected an invalid view", 'error');
+			flash_message($lang->error_invalid_admin_view, 'error');
 			admin_redirect($base_url."&action=views");
 		}
 
@@ -244,7 +248,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		{
 			if(!trim($mybb->input['title']))
 			{
-				$errors[] = "You did not enter a title for this view.";
+				$errors[] = $lang->error_missing_view_title;
 			}
 			if($mybb->input['fields_js'])
 			{
@@ -253,22 +257,22 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 			if(count($mybb->input['fields']) <= 0)
 			{
-				$errors[] = "You did not select any fields to display on this view";
+				$errors[] = $lang->error_no_view_fields;
 			}
 
 			if(intval($mybb->input['perpage']) <= 0)
 			{
-				$errors[] = "You have entered an invalid number of results to show per page";
+				$errors[] = $lang->error_invalid_view_perpage;
 			}
 
 			if(!in_array($mybb->input['sortby'], array_keys($sort_options)))
 			{
-				$errors[] = "You have selected an invalid field to sort results by";
+				$errors[] = $lang->error_invalid_view_sortby;
 			}
 
 			if($mybb->input['sortorder'] != "asc" && $mybb->input['sortorder'] != "desc")
 			{
-				$errors[] = "You have selected an invalid sort order";
+				$errors[] = $lang->error_invalid_view_sortorder;
 			}
 
 			if($mybb->input['visibility'] == 0)
@@ -297,7 +301,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 					set_default_view($type, $view['vid']);
 				}
 
-				flash_message("The administration view has successfully been updated", "success");
+				flash_message($lang->success_view_updated, "success");
 				admin_redirect($base_url."&vid={$vid}");
 			}
 		}
@@ -310,14 +314,15 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			}
 		}
 
-		$page->output_header("Edit View");
+		$page->output_header($lang->edit_view);
 			
-		$form = new Form($base_url."&action=views&do=edit&vid={$admin_view['vid']}", "post");
+		$form = new Form($base_url."&amp;action=views&amp;do=edit&amp;vid={$admin_view['vid']}", "post");
 
 		$sub_tabs = array();
 		$sub_tabs['edit_view'] = array(
-			'title' => "Edit View",
-			'description' => "Whilst editing a view you can define which fields you want to be shown, any search criteria and sorting options."
+			'title' => $lang->edit_view,
+			'link' => $base_url."&amp;action=views&amp;do=edit&amp;vid={$admin_view['vid']}",
+			'description' => $lang->edit_view_desc
 		);
 
 		$page->output_nav_tabs($sub_tabs, 'edit_view');
@@ -334,7 +339,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			$mybb->input = $admin_view;
 		}
 
-		$form_container = new FormContainer("Edit View");
+		$form_container = new FormContainer($lang->edit_view);
 		$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 
 		if($mybb->input['visibility'] == 2)
@@ -347,27 +352,27 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 
 		$visibility_options = array(
-			$form->generate_radio_button("visibility", "1", "<strong>Private</strong> - This view is only visible to you", array("checked" => $visibility_private_checked)),
-			$form->generate_radio_button("visibility", "2", "<strong>Public</strong> - All other administrators can see this view", array("checked" => $visibility_public_checked))
+			$form->generate_radio_button("visibility", "1", "<strong>{$lang->private}</strong> - {$lang->private_desc}", array("checked" => $visibility_private_checked)),
+			$form->generate_radio_button("visibility", "2", "<strong>{$lang->public}</strong> - {$lang->public_desc}", array("checked" => $visibility_public_checked))
 		);
-		$form_container->output_row("Visibility", "", implode("<br />", $visibility_options));
+		$form_container->output_row($lang->visibility, "", implode("<br />", $visibility_options));
 
-		$form_container->output_row("Set as Default View?", "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)), "isdefault");
+		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
 
 		if(count($sort_options) > 0)
 		{
 			$sort_directions = array(
-				"asc" => "Ascending",
-				"desc" => "Descending"
+				"asc" => $lang->ascending,
+				"desc" => $lang->descending
 			);
-			$form_container->output_row("Sort results by", "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." in ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
+			$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('sortorder', $sort_directions, $mybb->input['sortorder'], array('id' => 'sortorder')), 'sortby');
 		}
 
-		$form_container->output_row("Results per page", "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
+		$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
 
 		if($type == "user")
 		{
-			$form_container->output_row("Display results as", "", $form->generate_radio_button('view_type', 'table', 'Table', array('checked' => ($mybb->input['view_type'] != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', 'Business cards', array('checked' => ($mybb->input['view_type'] == "card" ? true : false))));
+			$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('view_type', 'table', $lang->table, array('checked' => ($mybb->input['view_type'] != "card" ? true : false)))."<br />".$form->generate_radio_button('view_type', 'card', $lang->business_card, array('checked' => ($mybb->input['view_type'] == "card" ? true : false))));
 		}
 
 		$form_container->end();
@@ -376,7 +381,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		echo "<script src=\"../jscripts/scriptaculous.js?load=dragdrop\" type=\"text/javascript\"></script>\n";
 		echo "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 		$field_select .= "<div class=\"view_fields\">\n";
-		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">Enabled</div><ul id=\"fields_enabled\">\n";
+		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
 		foreach($mybb->input['fields'] as $field)
 		{
 			if($fields[$field])
@@ -386,7 +391,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			}
 		}
 		$field_select .= "</ul></div>\n";
-		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">Disabled</div><ul id=\"fields_disabled\">\n";
+		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled\">\n";
 		foreach($fields as $key => $field)
 		{
 			if($active[$key]) continue;
@@ -397,7 +402,10 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$field_select = str_replace("'", "\\'", $field_select);
 		$field_select = str_replace("\n", "", $field_select);
 		
-		$field_select = "<script type=\"text/javascript\">document.write('{$field_select}');</script>\n";
+		$field_select = "<script type=\"text/javascript\">
+//<![CDATA[
+document.write('".str_replace("/", "\/", $field_select)."');
+//]]></script>\n";
 		
 		foreach($fields as $key => $field)
 		{
@@ -406,8 +414,8 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		
 		$field_select .= "<noscript>".$form->generate_select_box('fields', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
-		$form_container = new FormContainer("Fields to Show");
-		$form_container->output_row("Please select the fields you wish to display", $description, $field_select);
+		$form_container = new FormContainer($lang->fields_to_show);
+		$form_container->output_row($lang->fields_to_show_desc, $description, $field_select);
 		$form_container->end();
 
 		// Build the search conditions
@@ -417,7 +425,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 
 
-		$buttons[] = $form->generate_submit_button("Save View");
+		$buttons[] = $form->generate_submit_button($lang->save_view);
 		$form->output_submit_wrapper($buttons);
 
 		$form->end();
@@ -436,19 +444,19 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
-			flash_message("You selected an invalid administration view to delete", 'error');
+			flash_message($lang->error_invalid_view_delete, 'error');
 			admin_redirect($base_url."&action=views");
 		}
 		
 		if($mybb->request_method == "post")
 		{
 			$db->delete_query("adminviews", "vid='{$admin_view['vid']}");
-			flash_message("The administration view has successfully been deleted", 'success');
+			flash_message($lang->success_view_deleted, 'success');
 			admin_redirect($base_url."&action=views");
 		}
 		else
 		{
-			$page->output_confirm_action($base_url."&amp;action=views&amp;do=delete&amp;vid={$admin_view['vid']}", "Are you sure you want to delete the selected view?"); 
+			$page->output_confirm_action($base_url."&amp;action=views&amp;do=delete&amp;vid={$admin_view['vid']}", $lang->confirm_view_deletion); 
 		}
 	}
 
@@ -508,12 +516,12 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 	// Generate a listing of all current views
 	else
 	{
-		$page->output_header("View Manager");
+		$page->output_header($lang->view_manager);
 		
 		$page->output_nav_tabs($sub_tabs, 'views');
 
 		$table = new Table;
-		$table->construct_header("View");
+		$table->construct_header($lang->view);
 		$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150));
 
 		$default_view = fetch_default_view($type);
@@ -534,45 +542,45 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			}
 			else if($view['visibility'] == 2)
 			{
-				$view_type = "public";
+				$view_type = "group";
 				if($view['username'])
 				{
-					$created = "<br /><small>Created by {$view['username']}</small>";
+					$created = "<br /><small>{$lang->created_by} {$view['username']}</small>";
 				}
 			}
 			else
 			{
-				$view_type = "private";
+				$view_type = "user";
 			}
 
 			if($default_view == $view['vid'])
 			{
-				$default_add = " (Default)";
+				$default_add = " ({$lang->default})";
 			}
 
-			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/view_{$perm_type}.gif\" title=\"This is a {$view_type} view\" alt=\"{$view_type}\" /></div><div class=\{$default_class}\"><strong><a href=\"{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}\" >{$view['title']}</a></strong>{$default_add}{$created}</div>");
+			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$view_type}.gif\" title=\"".sprintf($lang->this_is_a_view, $view_type)."\" alt=\"{$view_type}\" /></div><div class=\"{$default_class}\"><strong><a href=\"{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}\" >{$view['title']}</a></strong>{$default_add}{$created}</div>");
 			
 			$popup = new PopupMenu("view_{$view['vid']}", $lang->options);
-			$popup->add_item("Edit View", "{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}");
+			$popup->add_item($lang->edit_view, "{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}");
 			if($view['vid'] != $default_view)
 			{
-				$popup->add_item("Set as Default", "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
+				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
 			}
-			$popup->add_item("Delete View", "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}", "return AdminCP.deleteConfirmation(this, 'Delete this view?')");
+			$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
 			$controls = $popup->fetch();
 			$table->construct_cell($controls, array("class" => "align_center"));
 			$table->construct_row();
 		}
 		
-		$table->output("Views");
+		$table->output($lang->view);
 		
 		echo <<<LEGEND
 <br />
 <fieldset>
 <legend>{$lang->legend}</legend>
-<img src="styles/{$page->style}/images/icons/view_default.gif" alt="default" style="vertical-align: middle;" /> Default view created by MyBB. Cannot be edited or removed.<br />
-<img src="styles/{$page->style}/images/icons/view_public.gif" alt="public" style="vertical-align: middle;" /> Public view visible to all administrators.<br />
-<img src="styles/{$page->style}/images/icons/view_private.gif" alt="private" style="vertical-align: middle;" /> Private view visible only to yourself.</fieldset>
+<img src="styles/{$page->style}/images/icons/default.gif" alt="{$lang->default}" style="vertical-align: middle;" /> {$lang->default_view_desc}<br />
+<img src="styles/{$page->style}/images/icons/group.gif" alt="{$lang->public}" style="vertical-align: middle;" /> {$lang->public_view_desc}<br />
+<img src="styles/{$page->style}/images/icons/user.gif" alt="{$lang->private}" style="vertical-align: middle;" /> {$lang->private_view_desc}</fieldset>
 LEGEND;
 		$page->output_footer();	
 	}

@@ -340,7 +340,13 @@ if(!$mybb->input['action'])
 			$phrase = $lang->activate_mycode;
 			$indicator = "<div class=\"float_right\"><small>{$lang->deactivated}</small></div>";
 		}
-		$table->construct_cell("{$indicator}<strong><a href=\"index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br /><small>{$mycode['description']}</small>");
+		
+		if($mycode['description'])
+		{
+			$mycode['description'] = "<small>{$mycode['description']}</small>";
+		}
+		
+		$table->construct_cell("{$indicator}<strong><a href=\"index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}");
 
 		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
 		$popup->add_item($lang->edit_mycode, "index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}");

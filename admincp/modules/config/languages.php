@@ -139,8 +139,8 @@ if($mybb->input['action'] == "edit_properties")
 	$form_container->output_row($lang->friendly_name." <em>*</em>", "", $form->generate_text_box('info[name]', $mybb->input['info']['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->language_in_html." <em>*</em>", "", $form->generate_text_box('info[htmllang]', $mybb->input['info']['htmllang'], array('id' => 'htmllang')), 'htmllang');
 	$form_container->output_row($lang->charset." <em>*</em>", "", $form->generate_text_box('info[charset]', $mybb->input['info']['charset'], array('id' => 'charset')), 'charset');
-	$form_container->output_row($lang->rtl." <em>*</em>", "", $form->generate_yes_no_radio('info[rtl]', $mybb->input['info']['rtl']), 'rtl');
-	$form_container->output_row($lang->admin." <em>*</em>", "", $form->generate_yes_no_radio('info[admin]', $mybb->input['info']['admin']), 'admin');
+	$form_container->output_row($lang->rtl." <em>*</em>", "", $form->generate_yes_no_radio('info[rtl]', $mybb->input['info']['rtl'], array('id' => 'rtl')), 'rtl');
+	$form_container->output_row($lang->admin." <em>*</em>", "", $form->generate_yes_no_radio('info[admin]', $mybb->input['info']['admin'], array('id' => 'admin')), 'admin');
 
 	// Check if file is writable, before allowing submission
 	if(!is_writable($file))

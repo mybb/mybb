@@ -170,6 +170,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['mailerrors'] = array(
 		'title' => $lang->system_email_log,
+		'link' => "index.php?adminsid=".SID."&amp;module=tools/mailerrors",
 		'description' => $lang->system_email_log_desc
 	);
 	
@@ -230,7 +231,7 @@ if(!$mybb->input['action'])
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 
 		$table->construct_cell($form->generate_check_box("log[{$log['eid']}]", 1, ''));
-		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/mailerrors&action=view&eid={$log['eid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
+		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/mailerrors&amp;action=view&amp;eid={$log['eid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
 		$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/mailerrors&amp;toaddress={$log['toaddress']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->fine_emails_to_addr}\" alt=\"{$lang->find}\" /></a></div>";
 		$table->construct_cell("{$find_from}<div>{$log['toaddress']}</div>");
 		$table->construct_cell($log['error']);
@@ -242,15 +243,15 @@ if(!$mybb->input['action'])
 	{
 		$table->construct_cell($lang->no_logs, array("colspan" => 5));
 		$table->construct_row();
+		$table->output($lang->system_email_log);
 	}
 	else
 	{
+		$table->output($lang->system_email_log);
 		$buttons[] = $form->generate_submit_button($lang->delete_selected, array('onclick' => "return confirm('{$lang->confirm_delete_logs}');"));
 		$buttons[] = $form->generate_submit_button($lang->delete_all, array('name' => 'delete_all', 'onclick' => "return confirm('{$lang->confirm_delete_all_logs}');"));
 		$form->output_submit_wrapper($buttons);
 	}
-	
-	$table->output($lang->system_email_log);
 
 	$form->end();
 	
@@ -267,6 +268,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->from_address_contains, "", $form->generate_text_box('fromaddress', $mybb->input['fromaddress'], array('id' => 'fromaddress')), 'fromaddress');	
 
 	$form_container->end();
+	$buttons = array();
 	$buttons[] = $form->generate_submit_button($lang->filter_system_email_log);
 	$form->output_submit_wrapper($buttons);
 	$form->end();

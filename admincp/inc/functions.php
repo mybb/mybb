@@ -332,7 +332,7 @@ function check_admin_permissions($action)
 	{
 		$page->output_header($lang->access_denied);
 		$page->add_breadcrumb_item($lang->access_denied, "index.php?".SID."&amp;module=home/index");
-		$page->output_error("<b>{$lang->access_denied}</b><ul>{$lang->access_denied_desc}</ul>");
+		$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
 		$page->output_footer();
 		exit;
 	}
@@ -396,8 +396,7 @@ function get_admin_permissions($get_uid="", $get_gid="")
 			"order_dir" => "ASC",
 			"limit" => "1"
 		);
-
-		$query = $db->simple_select("adminoptions", "permissions", "(uid='$gid' OR uid='0') AND permissions != ''", $options);
+		$query = $db->simple_select("adminoptions", "permissions", "(uid='-{$get_gid}' OR uid='0') AND permissions != ''", $options);
 		return unserialize($db->fetch_field($query, "permissions"));
 	}
 	else

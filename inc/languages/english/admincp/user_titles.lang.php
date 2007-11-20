@@ -9,7 +9,7 @@
 $l['user_titles'] = "User Titles";
 $l['user_titles_desc'] = "This section allows management of user titles. User titles are assigned to users based on the number of posts they make and also allow a custom 'Star' image to be shown based on the number of posts the user has.";
 $l['add_new_user_title'] = "Add New User Title";
-$l['add_new_user_title_desc'] = "This section allows you to add a new user title. <i>Note: This is <strong>not</strong> not the <u><a href=\"index.php?".SID."&amp;module=user/group_promotions\">promotion system.</a></u><i>";
+$l['add_new_user_title_desc'] = "This section allows you to add a new user title. <i>Note: This is <strong>not</strong> not the <u><a href=\"index.php?".SID."&amp;module=user/group_promotions\">promotion system.</a></u></i>";
 
 $l['error_missing_title'] = "You did not enter a title for this user title";
 $l['error_missing_posts'] = "You did not enter the minimum number of posts for this user title";

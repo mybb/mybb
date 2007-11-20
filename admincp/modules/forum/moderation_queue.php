@@ -165,7 +165,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 		$page->output_header($lang->threads_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "threads");
 
-		$form = new Form("index.php?".SID."&module=forum/moderation_queue", "post");
+		$form = new Form("index.php?".SID."&amp;module=forum/moderation_queue", "post");
 
 		$table = new Table;
 		$table->construct_header($lang->subject);
@@ -262,7 +262,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 		$page->output_header($lang->posts_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "posts");
 
-		$form = new Form("index.php?".SID."&module=forum/moderation_queue", "post");
+		$form = new Form("index.php?".SID."&amp;module=forum/moderation_queue", "post");
 
 		$table = new Table;
 		$table->construct_header($lang->subject);
@@ -373,7 +373,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 		$page->output_header($lang->attachments_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "attachments");
 
-		$form = new Form("index.php?".SID."&module=forum/moderation_queue", "post");
+		$form = new Form("index.php?".SID."&amp;module=forum/moderation_queue", "post");
 
 		$table = new Table;
 		$table->construct_header($lang->filename);

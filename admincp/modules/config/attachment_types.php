@@ -69,6 +69,7 @@ if($mybb->input['action'] == "add")
 	
 	$sub_tabs['add_attachment_type'] = array(
 		'title' => $lang->add_attachment_type,
+		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=add",
 		'description' => $lang->add_attachment_type_desc
 	);
 	
@@ -173,6 +174,7 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_attachment_type'] = array(
 		'title' => $lang->edit_attachment_type,
+		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}",
 		'description' => $lang->edit_attachment_type_desc
 	);
 	

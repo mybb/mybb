@@ -318,7 +318,7 @@ class DefaultForm
 							$select_add = " selected=\"selected\"";
 						}
 
-						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add} style=\"padding-left: {$options['depth']}px;\">{$forum['name']}</option>\n";
+						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add} style=\"padding-left: {$options['depth']}px;\">".htmlspecialchars_uni($forum['name'])."</option>\n";
 	
 						if($forum_cache[$forum['fid']])
 						{
