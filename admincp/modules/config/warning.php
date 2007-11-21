@@ -148,7 +148,7 @@ if($mybb->input['action'] == "add_level")
 		}
 	}	
 	</script>
-	<dl style=\"margin-top: 0; margin-bottom: 0;\" width=\"100%\">
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "edit_level")
 		}
 	}	
 	</script>
-	<dl style=\"margin-top: 0; margin-bottom: 0;\" width=\"100%\">
+	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_type\" value=\"1\" {$action_checked[1]} class=\"actions_check\" onclick=\"checkAction();\" style=\"vertical-align: middle;\" /> <strong>{$lang->ban_user}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">

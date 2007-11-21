@@ -1161,7 +1161,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	
 	$form_container = new FormContainer($lang->add_new_reply);
 	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply']), 'newreply');
-	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject']), 'newreplysubject');
+	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);
@@ -1527,8 +1527,8 @@ if($mybb->input['action'] == "add_post_tool")
 	$form_container->end();
 	
 	$form_container = new FormContainer($lang->add_new_reply);
-	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply']), 'newreply');
-	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject']), 'newreplysubject');
+	$form_container->output_row($lang->add_new_reply, $lang->add_new_reply_desc, $form->generate_text_area('newreply', $mybb->input['newreply'], array('id' => 'newreply')), 'newreply');
+	$form_container->output_row($lang->reply_subject, $lang->reply_subject_desc, $form->generate_text_box('newreplysubject', $mybb->input['newreplysubject'], array('id' => 'newreplysubject')), 'newreplysubject');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_post_tool);

@@ -7867,7 +7867,7 @@ To: {$to_recipients}
 					}
 				// -->
 				</script>
-				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
+				<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
 					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
 					<dd style="margin-top: 4px;" id="single_selects">
 						<select name="single_day">
@@ -8295,7 +8295,7 @@ To: {$to_recipients}
 					}
 				// -->
 				</script>
-				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
+				<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
 					<dt><input type="radio" name="type" value="single" {$type_single} id="type_single" onclick="toggleType();" /> <label for="type_single"><strong>{$lang->type_single}</strong></label></dt>
 					<dd style="margin-top: 4px;" id="single_selects">
 						<select name="single_day">
@@ -8888,7 +8888,7 @@ To: {$to_recipients}
 					}
 				// -->
 				</script>
-				<dl style="margin-top: 0; margin-bottom: 0;" width="100%">
+				<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
 					{$types}
 					{$custom_warning}
 				</dl>

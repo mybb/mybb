@@ -175,7 +175,7 @@ if($mybb->input['action'] == "permissions")
 	}
 	
 	$calendar['name'] = htmlspecialchars_uni($calendar['name']);
-	$page->add_breadcrumb_item($calendar['name'], "index.php?".SID."&amp;module=config/calendars&action=edit&cid={$calendar['cid']}");
+	$page->add_breadcrumb_item($calendar['name'], "index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}");
 	$page->add_breadcrumb_item($lang->permissions);
 	$page->output_header($lang->calendars." - ".$lang->edit_permissions);
 

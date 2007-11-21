@@ -1031,7 +1031,7 @@ if(!$mybb->input['action'])
 	echo $search->generate_hidden_field('module', 'config/settings');
 	echo $search->generate_hidden_field('action', 'change');
 	echo $search->generate_text_box('search', $lang->settings_search, array('id' => 'search', 'class' => 'search_default field150 field_small'));
-	echo "<input type='image' border='0' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
+	echo "<input type='image' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
 	$search->end();
 	echo "</div>\n";
 
