@@ -10,7 +10,7 @@
  */
 
 define("IN_MYBB", 1);
-
+define("IN_PORTAL", 1);
 
 // set the path to your forums directory here (without trailing slash)
 $forumdir = "./";
@@ -33,7 +33,7 @@ if(!@chdir($forumdir) && !empty($forumdir))
 
 $templatelist = "portal_welcome,portal_welcome_membertext,portal_stats,portal_search,portal_whosonline_memberbit,portal_whosonline,portal_latestthreads_thread_lastpost,portal_latestthreads_thread,portal_latestthreads,portal_announcement_numcomments_no,portal_announcement,portal_announcement_numcomments,portal";
 
-require_once $change_dir."global.php";
+require_once $change_dir."/global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 require_once MYBB_ROOT."inc/class_parser.php";

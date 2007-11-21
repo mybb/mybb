@@ -83,7 +83,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			$query = $db->query("
 				SELECT u.username, u.email, u.receivepms, u.pmpopup, u.uid, u.newpms, u.unreadpms, u.totalpms
 				FROM ".TABLE_PREFIX."users u
-				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
 				WHERE (g.cancp='yes' OR g.issupermod='yes')
 			");
 		}

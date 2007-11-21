@@ -2121,14 +2121,23 @@ function get_attachment_icon($ext)
 	{
 		$attachtypes = $cache->read("attachtypes");
 	}
+	
+	$directory = "";
+	
+	if(defined("IN_PORTAL"))
+	{
+		global $change_dir;
+		$directory = $change_dir."/";
+	}
+	
 	$ext = strtolower($ext);
 	if($attachtypes[$ext]['icon'])
 	{
-		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".$ext File\" />";
+		return "<img src=\"{$directory}".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".$ext File\" />";
 	}
 	else
 	{
-		return "<img src=\"images/attachtypes/unknown.gif\" border=\"0\" alt=\".$ext File\" />";
+		return "<img src=\"{$directory}images/attachtypes/unknown.gif\" border=\"0\" alt=\".$ext File\" />";
 	}
 }
 
