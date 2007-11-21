@@ -193,6 +193,7 @@ else
 
 	switch($db->type)
 	{
+		case "pgsql":
 		case "sqlite3":
 		case "sqlite2":
 			$query = $db->simple_select("users", "*", "','||additionalgroups||',' LIKE '%,".$mybb->input['gid'].",%' OR usergroup='".$mybb->input['gid']."'", array('order_by' => 'username'));

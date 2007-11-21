@@ -2344,6 +2344,7 @@ if($mybb->input['action'] == "usergroups")
 	
 	switch($db->type)
 	{
+		case "pgsql":
 		case "sqlite3":
 		case "sqlite2":
 			$query = $db->query("

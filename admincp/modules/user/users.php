@@ -1761,6 +1761,7 @@ function build_users_view($view)
 		{
 			switch($db->type)
 			{
+				case "pgsql":
 				case "sqlite3":
 				case "sqlite2":
 					$additional_sql .= " OR ','||additionalgroups||',' LIKE '%,{$usergroup},%'";

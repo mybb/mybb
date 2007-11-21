@@ -1400,6 +1400,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("forums", "fid='$fid'");
 		switch($db->type)
 		{
+			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
 				$query = $db->simple_select("forums", "*", "','|| parentlist|| ',' LIKE '%,$fid,%'");
@@ -1449,6 +1450,7 @@ if($mybb->input['action'] == "delete")
 		
 		switch($db->type)
 		{
+			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
 				$db->delete_query("forums", "','||parentlist||',' LIKE '%,$fid,%'");

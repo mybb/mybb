@@ -77,19 +77,34 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	{
 		$query = $db->query("
 			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-			FROM ".TABLE_PREFIX."moderators m, ".TABLE_PREFIX."users u
-			WHERE u.uid=m.uid AND m.fid IN (".$forum['parentlist'].")
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
+			WHERE m.fid IN (".$forum['parentlist'].")
 		");
 		$nummods = $db->num_rows($query);
 		if(!$nummods)
 		{
 			unset($query);
-			$query = $db->query("
-				SELECT u.username, u.email, u.receivepms, u.uid
-				FROM ".TABLE_PREFIX."users u
-				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-				WHERE (g.cancp=1 OR g.issupermod=1)
-			");
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite3":
+				case "sqlite2":
+					$query = $db->query("
+						SELECT u.username, u.email, u.receivepms, u.uid
+						FROM ".TABLE_PREFIX."users u
+						LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(','|| u.additionalgroups|| ',') LIKE CONCAT('%,'|| g.gid|| ',%')) OR u.usergroup = g.gid))
+						WHERE (g.cancp=1 OR g.issupermod=1)
+					");
+					break;
+				default:
+					$query = $db->query("
+						SELECT u.username, u.email, u.receivepms, u.uid
+						FROM ".TABLE_PREFIX."users u
+						LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
+						WHERE (g.cancp=1 OR g.issupermod=1)
+					");
+			}
 		}
 		
 		while($mod = $db->fetch_array($query))
@@ -146,7 +161,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			"dateline" => TIME_NOW,
 			"reportstatus" => 0,
 			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
-			);
+		);
 		$db->insert_query("reportedposts", $reportedpost);
 		$cache->update_reportedposts();
 	}

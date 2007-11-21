@@ -1086,6 +1086,7 @@ if($mybb->input['action'] == "profile")
 			$flist = '';
 			switch($db->type)
 			{
+				case "pgsql":
 				case "sqlite3":
 				case "sqlite2":
 					$query = $db->simple_select("forums", "fid", "INSTR(','||parentlist||',',',".intval($mybb->input['fid']).",') > 0");

@@ -760,7 +760,8 @@ if($mybb->input['action'] == "thread")
 	{
 		switch($db->type)
 		{
-			case "sqlite":
+			case "sqlite3":
+			case "sqlite2":
 			case "pgsql":
 			$query = $db->query("
 				SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."' WITH QUERY EXPANSION) AS relevance

@@ -2553,6 +2553,11 @@ function get_attachment_icon($ext)
 				$attachtypes[$ext]['icon'] = "../".$attachtypes[$ext]['icon'];
 			}
 		}
+		elseif(defined("IN_PORTAL"))
+		{
+			global $change_dir;
+			$attachtypes[$ext]['icon'] = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+		}
 		else
 		{
 			$attachtypes[$ext]['icon'] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
@@ -2565,6 +2570,12 @@ function get_attachment_icon($ext)
 		{
 			$theme['imgdir'] = "../images";
 		}
+		else if(defined("IN_PORTAL"))
+		{
+			global $change_dir;
+			$theme['imgdir'] = "{$change_dir}/images";
+		}
+		
 		return "<img src=\"{$theme['imgdir']}/attachtypes/unknown.gif\" border=\"0\" alt=\".{$ext}\" />";
 	}
 }

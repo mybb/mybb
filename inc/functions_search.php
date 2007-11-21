@@ -453,6 +453,7 @@ function perform_search_mysql($search)
 				$forum = intval($forum);
 				switch($db->type)
 				{
+					case "pgsql":
 					case "sqlite3":
 					case "sqlite2":
 						$query = $db->query("
@@ -758,6 +759,7 @@ function perform_search_mysql_ft($search)
 			{
 				switch($db->type)
 				{
+					case "pgsql":
 					case "sqlite3":
 					case "sqlite2":
 						$query = $db->query("

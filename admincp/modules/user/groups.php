@@ -411,6 +411,7 @@ if(!$mybb->input['action'])
 
 	switch($db->type)
 	{
+		case "pgsql":
 		case "sqlite3":
 		case "sqlite2":
 			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')) WHERE g.gid!='' GROUP BY gid;");
