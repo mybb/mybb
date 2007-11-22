@@ -19,7 +19,7 @@ require_once MYBB_ROOT."inc/functions_warnings.php";
 
 $page->add_breadcrumb_item($lang->warning_system, "index.php?".SID."&amp;module=config/warning");
 
-if($mybb->input['action'] == "levels" || !$mybb->input['action'])
+if($mybb->input['action'] == "levels" || $mybb->input['action'] == "add_type" || $mybb->input['action'] == "add_level" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_types'] = array(
 		'title' => $lang->warning_types,
@@ -28,7 +28,8 @@ if($mybb->input['action'] == "levels" || !$mybb->input['action'])
 	);
 	$sub_tabs['add_type'] = array(
 		'title'=> $lang->add_warning_type,
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_type"
+		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_type",
+		'description' => $lang->add_warning_type_desc
 	);
 	$sub_tabs['manage_levels'] = array(
 		'title' => $lang->warning_levels,
@@ -37,7 +38,8 @@ if($mybb->input['action'] == "levels" || !$mybb->input['action'])
 	);
 	$sub_tabs['add_level'] = array(
 		'title'=> $lang->add_warning_level,
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_level"
+		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_level",
+		'description' => $lang->add_warning_level_desc
 	);
 }
 
@@ -94,11 +96,6 @@ if($mybb->input['action'] == "add_level")
 	
 	$page->add_breadcrumb_item($lang->add_warning_level);
 	$page->output_header($lang->warning_levels." - ".$lang->add_warning_level);
-	
-	$sub_tabs['add_level'] = array(
-		'title' => $lang->add_warning_level,
-		'description' => $lang->add_warning_level_desc
-	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_level');
 	$form = new Form("index.php?".SID."&amp;module=config/warning&amp;action=add_level", "post");
@@ -260,6 +257,7 @@ if($mybb->input['action'] == "edit_level")
 	$page->output_header($lang->warning_levels." - ".$lang->edit_warning_level);
 	
 	$sub_tabs['edit_level'] = array(
+		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}",
 		'title' => $lang->edit_warning_level,
 		'description' => $lang->edit_warning_level_desc
 	);
@@ -462,12 +460,6 @@ if($mybb->input['action'] == "add_type")
 	$page->add_breadcrumb_item($lang->add_warning_type);
 	$page->output_header($lang->warning_types." - ".$lang->add_warning_type);
 	
-	$sub_tabs['add_type'] = array(
-		'title' => $lang->add_warning_type,
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_type",
-		'description' => $lang->add_warning_type_desc
-	);
-	
 	$page->output_nav_tabs($sub_tabs, 'add_type');
 	$form = new Form("index.php?".SID."&amp;module=config/warning&amp;action=add_type", "post");
 	
@@ -554,6 +546,7 @@ if($mybb->input['action'] == "edit_type")
 	$page->output_header($lang->warning_types." - ".$lang->edit_warning_type);
 	
 	$sub_tabs['edit_type'] = array(
+		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}",
 		'title' => $lang->edit_warning_type,
 		'description' => $lang->edit_warning_type_desc
 	);
@@ -637,7 +630,7 @@ if($mybb->input['action'] == "levels")
 	$query = $db->simple_select("warninglevels", "*", "", array('order_by' => 'percentage'));
 	while($level = $db->fetch_array($query))
 	{
-		$table->construct_cell($level['percentage']."%", array("class" => "align_center"));
+		$table->construct_cell("<strong>{$level['percentage']}%</strong>", array("class" => "align_center"));
 		$action = unserialize($level['action']);
 		// Ban user
 		if($action['type'] == 1)
@@ -693,7 +686,7 @@ if(!$mybb->input['action'])
 	while($type = $db->fetch_array($query))
 	{
 		$type['name'] = htmlspecialchars_uni($type['title']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\">{$type['title']}</a>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\"><strong>{$type['title']}</strong></a>");
 		$table->construct_cell("{$type['points']}", array("class" => "align_center"));
 		$expiration = fetch_friendly_expiration($type['expirationtime']);
 		$lang_str = "expiration_".$expiration['period'];

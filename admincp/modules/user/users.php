@@ -423,6 +423,7 @@ if($mybb->input['action'] == "add")
 		$profile_fields['required'][] = $profile_field;
 	}
 
+	$page->add_breadcrumb_item($lang->create_user);
 	$page->output_header($lang->create_user);
 		
 	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=add", "post");
@@ -734,6 +735,7 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
+	$page->add_breadcrumb_item($lang->edit_user.": ".htmlspecialchars_uni($user['username']));
 	$page->output_header($lang->edit_user);
 		
 	$sub_tabs['edit_user'] = array(
@@ -1216,8 +1218,9 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "referrers")
 {
+	$page->add_breadcrumb_item($lang->show_referrers);
 	$page->output_header($lang->show_referrers);
-	
+		
 	$sub_tabs['referrers'] = array(
 		'title' => $lang->show_referrers,
 		'link' => "index.php?".SID."&amp;module=user/users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
@@ -1229,12 +1232,15 @@ if($mybb->input['action'] == "referrers")
 	// Fetch default admin view
 	$default_view = fetch_default_view("user");
 	$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
-	$admin_view = $db->fetch_field($query);
+	$admin_view = $db->fetch_array($query);
 
 	if($mybb->input['type'])
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
 	}
+	
+	$admin_view['conditions'] = unserialize($admin_view['conditions']);
+	$admin_view['conditions']['referrer'] = $mybb->input['uid'];
 
 	echo build_users_view($admin_view);
 	
@@ -1243,7 +1249,8 @@ if($mybb->input['action'] == "referrers")
 
 if($mybb->input['action'] == "ipaddresses")
 {
-	$page->output_header($lang->ip_addresses);
+	$page->add_breadcrumb_item($lang->ip_addresses);
+	$page->output_header($lang->ip_addresses);	
 	
 	$sub_tabs['ipaddresses'] = array(
 		'title' => $lang->show_ip_addresses,
@@ -1411,6 +1418,7 @@ if($mybb->input['action'] == "merge")
 		exit;
 	}
 
+	$page->add_breadcrumb_item($lang->merge_users);
 	$page->output_header($lang->merge_users);
 	
 	$page->output_nav_tabs($sub_tabs, 'merge_users');
@@ -1497,6 +1505,7 @@ if($mybb->input['action'] == "search")
 		}
 	}
 
+	$page->add_breadcrumb_item($lang->find_users);
 	$page->output_header($lang->find_users);
 	
 	$page->output_nav_tabs($sub_tabs, 'find_users');

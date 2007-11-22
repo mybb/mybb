@@ -422,7 +422,7 @@ if(!$mybb->input['action'])
 	while($calendar = $db->fetch_array($query))
 	{
 		$calendar['name'] = htmlspecialchars_uni($calendar['name']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\">{$calendar['name']}</a>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\"><strong>{$calendar['name']}</strong></a>");
 		$table->construct_cell($form->generate_text_box("disporder[{$calendar['cid']}]", $calendar['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'class' => 'align_center')));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=permissions&amp;cid={$calendar['cid']}\">{$lang->permissions}</a>", array("width" => 100, "class" => "align_center"));

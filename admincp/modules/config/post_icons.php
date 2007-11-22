@@ -53,10 +53,15 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item($lang->add_post_icon);
 	$page->output_header($lang->post_icons." - ".$lang->add_post_icon);
 
+	$sub_tabs['manage_icons'] = array(
+		'title'	=> $lang->manage_post_icons,
+		'link' => "index.php?".SID."&amp;module=config/post_icons"
+	);
+
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
-		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add",
-		'description'	=> $lang->add_post_icon_desc
+		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add",
+		'description' => $lang->add_post_icon_desc
 	);
 
 	$sub_tabs['add_multiple'] = array(
@@ -146,15 +151,20 @@ if($mybb->input['action'] == "add_multiple")
 				$page->add_breadcrumb_item($lang->add_multiple_post_icons);
 				$page->output_header($lang->post_icons." - ".$lang->add_multiple_post_icons);
 
+				$sub_tabs['manage_icons'] = array(
+					'title'	=> $lang->manage_post_icons,
+					'link' => "index.php?".SID."&amp;module=config/post_icons"
+				);
+
 				$sub_tabs['add_icon'] = array(
 					'title'	=> $lang->add_post_icon,
-					'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
+					'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
 				);
 
 				$sub_tabs['add_multiple'] = array(
 					'title' => $lang->add_multiple_post_icons,
 					'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple",
-					'description'	=> $lang->add_multiple_post_icons_desc
+					'description' => $lang->add_multiple_post_icons_desc
 				);
 
 				$page->output_nav_tabs($sub_tabs, 'add_multiple');
@@ -235,6 +245,11 @@ if($mybb->input['action'] == "add_multiple")
 	$page->add_breadcrumb_item($lang->add_multiple_post_icons);
 	$page->output_header($lang->post_icons." - ".$lang->add_multiple_post_icons);
 
+	$sub_tabs['manage_icons'] = array(
+		'title'	=> $lang->manage_post_icons,
+		'link'	=> "index.php?".SID."&amp;module=config/post_icons"
+	);
+	
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
 		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
@@ -388,13 +403,13 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['manage_icons'] = array(
 		'title'	=> $lang->manage_post_icons,
-		'link'	=> "index.php?".SID."&amp;module=config/post_icons",
-		'description'	=> $lang->manage_post_icons_desc
+		'link' => "index.php?".SID."&amp;module=config/post_icons",
+		'description' => $lang->manage_post_icons_desc
 	);
 
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
-		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
+		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
 	);
 
 	$sub_tabs['add_multiple'] = array(
@@ -417,7 +432,7 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->image, array('class' => "align_center", 'width' => 1));
-	$table->construct_header($lang->name, array('width' => "80%"));
+	$table->construct_header($lang->name, array('width' => "70%"));
 	$table->construct_header($lang->controls, array('class' => "align_center", 'colspan' => 2));
 
 	$query = $db->simple_select("icons", "*", "", array('limit_start' => $start, 'limit' => 20, 'order_by' => 'name'));

@@ -11,7 +11,7 @@ $l['edit_bad_word'] = "Edit Filter";
 $l['bad_word_filters'] = "Word Filters";
 $l['bad_word_filters_desc'] = "This feature allows you to manage a listing of words or phrases which are automatically replaced in posts on your forum. It is useful for replacing swear words and such.";
 
-$l['bad_word'] = "Bad Word";
+$l['bad_word'] = "Word";
 $l['bad_word_desc'] = "Enter the word which you wish to be filtered";
 $l['replacement'] = "Replacement";
 $l['replacement_desc'] = "Enter the string which will replace the filtered word (If this is blank, asterisks will be shown)";

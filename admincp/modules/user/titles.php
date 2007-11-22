@@ -226,7 +226,7 @@ if(!$mybb->input['action'])
 	while($usertitle = $db->fetch_array($query))
 	{
 		$usertitle['title'] = htmlspecialchars_uni($usertitle['title']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\">{$usertitle['title']}</a>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\"><strong>{$usertitle['title']}</strong></a>");
 		$table->construct_cell($usertitle['posts'], array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->user_title_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));

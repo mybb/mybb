@@ -19,7 +19,7 @@ $l['nocache_update'] = "The cache was not able to be rebuilt because the require
 $l['cache_updated'] = "The cache has been rebuilt. You will now be taken to the cache manager.";
 $l['cache_empty'] = "Cache is empty.";
 
-$l['rebuildstats'] = "Re-Count Statistics";
+$l['rebuildstats'] = "Recount Statistics";
 $l['rebuildstats_notice'] = "When you run the re-count statistics function, your forum statistics will be re-counted and updated on the forum index and statistics page.";
 $l['stats_rebuilt'] = "The forum statistics have successfully been rebuilt.";
 
@@ -33,7 +33,7 @@ $l['rebuild_thread_counters_note'] = "When you run this function, the counters a
 $l['threads_rebuilt'] = "The thread counters have successfully been rebuilt.";
 $l['threads_per_page'] = "Threads to Process Per Page";
 
-$l['recount_user_post_counts'] = "Re-Count User Post Counts";
+$l['recount_user_post_counts'] = "Recount User Post Counts";
 $l['recount_user_post_counts_note'] = "When you run this function, the post count for each user will be updated to reflect its current live value based on the posts in the database.";
 $l['users_per_page'] = "Users to Process Per Page";
 $l['user_post_counts_rebuilt'] = "The user post counts have successfully been rebuilt.";

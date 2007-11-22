@@ -377,11 +377,21 @@ if($mybb->input['action'] == "add")
 	}
 	$page->add_breadcrumb_item($lang->add_new_promotion);
 	$page->output_header($lang->user_group_promotions." - ".$lang->add_new_promotion);
+	
+	$sub_tabs['usergroup_promotions'] = array(
+		'title' => $lang->user_group_promotions,
+		'link' => "index.php?".SID."&amp;module=user/group_promotions"
+	);
 
 	$sub_tabs['add_promotion'] = array(
 		'title' => $lang->add_new_promotion,
 		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add",
 		'description' => $lang->add_new_promotion_desc
+	);
+
+	$sub_tabs['promotion_logs'] = array(
+		'title' => $lang->view_promotion_logs,
+		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_promotion');
@@ -460,7 +470,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button($lang->add_new_promotion);
+	$buttons[] = $form->generate_submit_button($lang->update_promotion);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -483,6 +493,16 @@ if($mybb->input['action'] == "logs")
 	
 	$page->add_breadcrumb_item($lang->promotion_logs);
 	$page->output_header($lang->user_group_promotions." - ".$lang->promotion_logs);
+	
+	$sub_tabs['usergroup_promotions'] = array(
+		'title' => $lang->user_group_promotions,
+		'link' => "index.php?".SID."&amp;module=user/group_promotions"
+	);
+
+	$sub_tabs['add_promotion'] = array(
+		'title' => $lang->add_new_promotion,
+		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add"
+	);
 	
 	$sub_tabs['promotion_logs'] = array(
 		'title' => $lang->view_promotion_logs,

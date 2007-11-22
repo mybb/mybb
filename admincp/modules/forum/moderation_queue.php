@@ -328,6 +328,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 	else if($mybb->input['type'] == "posts")
 	{
 		$page->output_header($lang->moderation_queue);
+		$page->output_nav_tabs($sub_tabs, "posts");
 		echo "<p class=\"notice\">{$lang->error_no_posts}</p>";
 		$page->output_footer();
 	}
@@ -428,6 +429,7 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 	else if($mybb->input['type'] == "attachments")
 	{
 		$page->output_header($lang->moderation_queue);
+		$page->output_nav_tabs($sub_tabs, "attachments");
 		echo "<p class=\"notice\">{$lang->error_no_attachments}</p>";
 		$page->output_footer();
 	}

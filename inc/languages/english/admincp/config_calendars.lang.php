@@ -9,7 +9,7 @@
 $l['calendars'] = "Calendars";
 $l['manage_calendars'] = "Manage Calendars";
 $l['manage_calendars_desc'] = "This section allows you to manage the calendars on your board. If you change the display order for one or more calendars make sure you submit the form at the bottom of the page.";
-$l['add_calendar'] = "Add Calendar";
+$l['add_calendar'] = "Add New Calendar";
 $l['add_calendar_desc'] = "Here you can create a new calendar.";
 $l['edit_calendar'] = "Edit Calendar";
 $l['edit_calendar_desc'] = "Here you can edit the settings for this calendar.";

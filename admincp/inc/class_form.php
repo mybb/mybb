@@ -249,7 +249,7 @@ class DefaultForm
 		foreach($option_list as $value => $option)
 		{
 			$select_add = '';
-			if(!empty($selected) && ($value == $selected || (is_array($selected) && in_array($value, $selected))))
+			if(!empty($selected) && ((string)$value == (string)$selected || (is_array($selected) && in_array($value, $selected))))
 			{
 				$select_add = " selected=\"selected\"";
 			}

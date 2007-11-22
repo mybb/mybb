@@ -197,7 +197,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row($lang->bad_word." <em>*</em>", $lang->bad_word_desc, $form->generate_text_box('badword', $mybb->input['badword'], array('id' => 'badword')), 'badword');
 	$form_container->output_row($lang->replacement, $lang->replacement_desc, $form->generate_text_box('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
 	$form_container->end();
-	$buttons[] = $form->generate_submit_button($lang->add_bad_word);
+	$buttons[] = $form->generate_submit_button($lang->save_bad_word);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

@@ -122,7 +122,7 @@ if($mybb->input['action'] == "post_tools")
 	$query = $db->simple_select('modtools', 'tid, name, description, type', "type='p'", array('order_by' => 'name'));
 	while($tool = $db->fetch_array($query))
 	{
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\">".htmlspecialchars_uni($tool['name'])."</a><br /><span class=\"smalltext\">".htmlspecialchars_uni($tool['description'])."</span>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=delete_post_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_row();
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->move_thread}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -564,17 +564,24 @@ if($mybb->input['action'] == "add_thread_tool")
 		}
 	}
 	
-	$page->add_breadcrumb_item($lang->add_thread_tool);
-	$page->output_header($lang->mod_tools." - ".$lang->add_thread_tool);
+	$page->add_breadcrumb_item($lang->add_new_thread_tool);
+	$page->output_header($lang->mod_tools." - ".$lang->add_new_thread_tool);
 	
+	$sub_tabs['thread_tools'] = array(
+		'title' => $lang->thread_tools,
+		'link' => "index.php?".SID."&amp;module=config/mod_tools"
+	);
 	$sub_tabs['add_thread_tool'] = array(
-		'title'=> $lang->add_thread_tool,
+		'title'=> $lang->add_new_thread_tool,
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool",
 		'description' => $lang->add_thread_tool_desc
 	);
-	
+	$sub_tabs['post_tools'] = array(
+		'title' => $lang->post_tools,
+		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
+	);
 	$sub_tabs['add_post_tool'] = array(
-		'title'=> $lang->add_post_tool,
+		'title'=> $lang->add_new_post_tool,
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool"
 	);
 		
@@ -705,7 +712,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->move_thread}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -1138,7 +1145,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->move_thread}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -1334,15 +1341,23 @@ if($mybb->input['action'] == "add_post_tool")
 		}
 	}
 	
-	$page->add_breadcrumb_item($lang->add_post_tool);
-	$page->output_header($lang->mod_tools." - ".$lang->add_post_tool);
+	$page->add_breadcrumb_item($lang->add_new_post_tool);
+	$page->output_header($lang->mod_tools." - ".$lang->add_new_post_tool);
 	
+	$sub_tabs['thread_tools'] = array(
+		'title' => $lang->thread_tools,
+		'link' => "index.php?".SID."&amp;module=config/mod_tools"
+	);
 	$sub_tabs['add_thread_tool'] = array(
-		'title'=> $lang->add_thread_tool,
+		'title'=> $lang->add_new_thread_tool,
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool"
 	);
+	$sub_tabs['post_tools'] = array(
+		'title' => $lang->post_tools,
+		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
+	);
 	$sub_tabs['add_post_tool'] = array(
-		'title'=> $lang->add_post_tool,
+		'title'=> $lang->add_new_post_tool,
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool",
 		'description' => $lang->add_post_tool_desc
 	);
@@ -1505,7 +1520,7 @@ if($mybb->input['action'] == "add_post_tool")
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->move_thread}</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -1549,7 +1564,7 @@ if(!$mybb->input['action'])
 		'description' => $lang->thread_tools_desc
 	);
 	$sub_tabs['add_thread_tool'] = array(
-		'title'=> $lang->add_thread_tool,
+		'title'=> $lang->add_new_thread_tool,
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool"
 	);
 	$sub_tabs['post_tools'] = array(
@@ -1557,7 +1572,7 @@ if(!$mybb->input['action'])
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
 	);
 	$sub_tabs['add_post_tool'] = array(
-		'title'=> $lang->add_post_tool,
+		'title'=> $lang->add_new_post_tool,
 		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool"
 	);
 		
@@ -1570,7 +1585,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select('modtools', 'tid, name, description, type', "type='t'", array('order_by' => 'name'));
 	while($tool = $db->fetch_array($query))
 	{
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\">".htmlspecialchars_uni($tool['name'])."</a><br /><span class=\"smalltext\">".htmlspecialchars_uni($tool['description'])."</span>");
+		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_row();

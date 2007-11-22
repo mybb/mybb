@@ -251,7 +251,7 @@ if($mybb->input['action'] == "group")
 			$perm_type = "default";
 		}
 		$uid = -$group['gid'];
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=users/groups&amp;action=edit&amp;gid={$group['gid']}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
 
 		if($group['permissions'] != "")
 		{
@@ -412,7 +412,7 @@ if(!$mybb->input['action'])
 		{
 			$popup->add_item($lang->set_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
 		}
-		$popup->add_item($lang->view_log, "index.php?".SID."&amp;module=user/stats_and_logging&amp;uid={$admin['uid']}");
+		$popup->add_item($lang->view_log, "index.php?".SID."&amp;module=tools/adminlog&amp;uid={$admin['uid']}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

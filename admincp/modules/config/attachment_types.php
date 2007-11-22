@@ -64,11 +64,16 @@ if($mybb->input['action'] == "add")
 	}
 
 	
-	$page->add_breadcrumb_item($lang->add_attachment_type);
-	$page->output_header($lang->attachment_types." - ".$lang->add_attachment_type);
+	$page->add_breadcrumb_item($lang->add_new_attachment_type);
+	$page->output_header($lang->attachment_types." - ".$lang->add_new_attachment_type);
+	
+	$sub_tabs['attachment_types'] = array(
+		'title' => $lang->attachment_types,
+		'link' => "index.php?".SID."&amp;module=config/attachment_types"
+	);
 	
 	$sub_tabs['add_attachment_type'] = array(
-		'title' => $lang->add_attachment_type,
+		'title' => $lang->add_new_attachment_type,
 		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=add",
 		'description' => $lang->add_attachment_type_desc
 	);

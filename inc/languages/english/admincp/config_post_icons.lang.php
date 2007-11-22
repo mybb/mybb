@@ -7,7 +7,7 @@
  */
 
 $l['post_icons'] = "Post Icons";
-$l['add_post_icon'] = "Add Post Icon";
+$l['add_post_icon'] = "Add New Post Icon";
 $l['add_post_icon_desc'] = "Here you can add a single new post icon.";
 $l['add_multiple_post_icons'] = "Add Multiple Post Icons";
 $l['add_multiple_post_icons_desc'] = "Here you can add multiple new post icons.";

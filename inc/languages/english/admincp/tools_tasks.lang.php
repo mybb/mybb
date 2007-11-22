@@ -42,7 +42,6 @@ $l['time_months'] = "Time: Months";
 $l['time_months_desc'] = "Select which months this task should run on. Holding down CTRL selects multiple months. Select 'Every month' if you want this task to run each month.";
 $l['enabled'] = "Task enabled?";
 $l['enable_logging'] = "Enable Logging?";
-$l['save_new_task'] = "Save New Task";
 $l['save_task'] = "Save Task";
 $l['task'] = "Task";
 $l['date'] = "Date";

@@ -74,8 +74,13 @@ if($mybb->input['action'] == "add")
 		}
 	}
 	
-	$page->add_breadcrumb_item($lang->add_profile_field);
-	$page->output_header($lang->custom_profile_fields." - ".$lang->add_profile_field);
+	$page->add_breadcrumb_item($lang->add_new_profile_field);
+	$page->output_header($lang->custom_profile_fields." - ".$lang->add_new_profile_field);
+	
+	$sub_tabs['custom_profile_fields'] = array(
+		'title' => $lang->custom_profile_fields,
+		'link' => "index.php?".SID."&amp;module=config/profile_fields"
+	);
 	
 	$sub_tabs['add_profile_field'] = array(
 		'title' => $lang->add_new_profile_field,
@@ -314,6 +319,7 @@ if(!$mybb->input['action'])
 		'link' => "index.php?".SID."&amp;module=config/profile_fields",
 		'description' => $lang->custom_profile_fields_desc
 	);
+	
 	$sub_tabs['add_profile_field'] = array(
 		'title' => $lang->add_new_profile_field,
 		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",

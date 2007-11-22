@@ -12,12 +12,14 @@ $l['thread_tools'] = "Thread Tools";
 $l['thread_tools_desc'] = "Custom moderator tools allows you to create combinations of moderator actions to both threads and posts. These can then be used like the default tools when managing your forum. Here you can manage your custom thread tools.";
 
 $l['add_thread_tool'] = "Add Thread Tool";
+$l['add_new_thread_tool'] = "Add New Thread Tool";
 $l['add_thread_tool_desc'] = "Here you can add a new custom thread moderation tool. This tool will be accessible from both inline thread moderation and from within threads themselves, listed with the default moderation tools.";
 
 $l['post_tools'] = "Post Tools";
 $l['post_tools_desc'] = "Custom moderator tools allows you to create combinations of moderator actions to both threads and posts. These can then be used like the default tools when managing your forum. Here you can manage your custom post tools.";
 
 $l['add_post_tool'] = "Add Post Tool";
+$l['add_new_post_tool'] = "Add New Post Tool";
 $l['add_post_tool_desc'] = "Here you can add a new custom post moderation tool. This tool will be accessible from within threads themselves, listed with the default moderation tools.";
 
 $l['edit_post_tool'] = "Edit Post Tool";
@@ -41,6 +43,8 @@ $l['available_in_forums'] = "Available in forums";
 $l['all_forums'] = "All forums";
 $l['select_forums'] = "Select forums";
 $l['save_thread_tool'] = "Save Thread Tool";
+
+$l['title'] = "Title";
 
 $l['thread_moderation'] = "Thread Moderation";
 $l['approve_unapprove'] = "Approve/Unapprove thread?";
@@ -72,7 +76,7 @@ $l['delete_redirects'] = "Delete redirects?";
 $l['new_subject'] = "New subject?";
 $l['new_subject_desc'] = "{subject} represents the original subject. {username} represents the moderator's username.";
 
-$l['add_new_reply'] = "Add new reply.";
+$l['add_new_reply'] = "Add New Reply";
 $l['add_new_reply_desc'] = "Leave blank for no reply.";
 $l['reply_subject'] = "Reply subject.";
 $l['reply_subject_desc'] = "Only used if a reply was made.<br />{subject} represents the original subject. {username} represents the moderator's username.";
@@ -80,13 +84,13 @@ $l['reply_subject_desc'] = "Only used if a reply was made.<br />{subject} repres
 $l['success_mod_tool_created'] = "Successfully created the moderation tool.";
 $l['success_mod_tool_updated'] = "Successfully updated the moderation tool.";
 
-$l['inline_post_moderation'] = "Inline post moderation";
+$l['inline_post_moderation'] = "Inline Post Moderation";
 $l['delete_posts'] = "Delete posts?";
 $l['merge_posts'] = "Merge posts?";
 $l['merge_posts_desc'] = "Only if used from inline moderation.";
 $l['approve_unapprove_posts'] = "Approve/unapprove posts?";
 
-$l['split_posts'] = "Split posts";
+$l['split_posts'] = "Split Posts";
 $l['split_posts2'] = "Split posts?";
 $l['do_not_split'] = "Do not split posts";
 $l['split_to_same_forum'] = "Split to same forum";

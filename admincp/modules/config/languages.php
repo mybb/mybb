@@ -470,7 +470,7 @@ if(!$mybb->input['action'])
 			$author = $langinfo['author'];
 		}
 		
-		$table->construct_cell("<strong>{$langinfo['name']}</strong><br /><span class=\"smalltext\">{$author}</span>");
+		$table->construct_cell("<strong>{$langinfo['name']}</strong><br /><small>{$author}</small>");
 		$table->construct_cell($langinfo['version'], array("class" => "align_center"));
 		
 		$popup = new PopupMenu("laguage_{$key}", $lang->options);

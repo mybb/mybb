@@ -62,10 +62,25 @@ if($mybb->input['action'] == "addgroup")
 	$page->add_breadcrumb_item($lang->add_new_setting_group);
 	$page->output_header($lang->board_settings." - ".$lang->add_new_setting_group);
 	
+	$sub_tabs['change_settings'] = array(
+		'title' => $lang->change_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings"
+	);
+	
+	$sub_tabs['add_setting'] = array(
+		'title' => $lang->add_new_setting,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add"
+	);
+	
 	$sub_tabs['add_setting_group'] = array(
 		'title' => $lang->add_new_setting_group,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=addgroup",
 		'description' => $lang->add_new_setting_group_desc
+	);
+	
+	$sub_tabs['modify_setting'] = array(
+		'title' => $lang->modify_existing_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_setting_group');
@@ -306,10 +321,25 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item($lang->add_new_setting);
 	$page->output_header($lang->board_settings." - ".$lang->add_new_setting);
 	
+	$sub_tabs['change_settings'] = array(
+		'title' => $lang->change_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings"
+	);
+	
 	$sub_tabs['add_setting'] = array(
 		'title' => $lang->add_new_setting,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add",
 		'description' => $lang->add_new_setting_desc
+	);
+	
+	$sub_tabs['add_setting_group'] = array(
+		'title' => $lang->add_new_setting_group,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=addgroup"
+	);
+	
+	$sub_tabs['modify_setting'] = array(
+		'title' => $lang->modify_existing_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_setting');
@@ -449,9 +479,24 @@ if($mybb->input['action'] == "edit")
 	$page->add_breadcrumb_item($lang->edit_setting);
 	$page->output_header($lang->board_settings." - ".$lang->edit_setting);
 	
+	$sub_tabs['change_settings'] = array(
+		'title' => $lang->change_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings",
+	);
+	
+	$sub_tabs['add_setting'] = array(
+		'title' => $lang->add_new_setting,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add"
+	);
+	
+	$sub_tabs['add_setting_group'] = array(
+		'title' => $lang->add_new_setting_group,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=addgroup"
+	);
+	
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
-		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=edit&amp;sid={$setting['sid']}",
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage",
 		'description' => $lang->modify_existing_settings_desc
 	);
 
@@ -605,6 +650,21 @@ if($mybb->input['action'] == "manage")
 	$page->add_breadcrumb_item($lang->modify_existing_settings);
 	$page->output_header($lang->board_settings." - ".$lang->modify_existing_settings);
 	
+	$sub_tabs['change_settings'] = array(
+		'title' => $lang->change_settings,
+		'link' => "index.php?".SID."&amp;module=config/settings",
+	);
+	
+	$sub_tabs['add_setting'] = array(
+		'title' => $lang->add_new_setting,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=add"
+	);
+	
+	$sub_tabs['add_setting_group'] = array(
+		'title' => $lang->add_new_setting_group,
+		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=addgroup"
+	);
+	
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage",
@@ -645,7 +705,7 @@ if($mybb->input['action'] == "manage")
 			$group_title = htmlspecialchars_uni($group['title']);
 		}
 		$table->construct_cell("<strong>{$group_title}</strong>", array('id' => "group{$group['gid']}"));
-		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold')), array('class' => 'align_center'));
+		$table->construct_cell($form->generate_text_box("group_disporder[{$group['gid']}]", $group['disporder'], array('style' => 'width: 80%; font-weight: bold', 'class' => 'align_center')));
 		// Only show options if not a default setting group
 		if($group['isdefault'] != 1)
 		{
@@ -1018,8 +1078,7 @@ if(!$mybb->input['action'])
 	$sub_tabs['modify_setting'] = array(
 		'title' => $lang->modify_existing_settings,
 		'link' => "index.php?".SID."&amp;module=config/settings&amp;action=manage",
-	);
-	
+	);	
 
 	$page->output_nav_tabs($sub_tabs, 'change_settings');
 	

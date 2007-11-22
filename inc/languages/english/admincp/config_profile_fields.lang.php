@@ -6,7 +6,7 @@
  * $Id$
  */
  
-$l['custom_profile_fields'] = "Custom Profile fields";
+$l['custom_profile_fields'] = "Custom Profile Fields";
 $l['custom_profile_fields_desc'] = "This section allows you to edit, delete, and manage your custom profile fields.";
 $l['add_profile_field'] = "Add Profile Field";
 $l['add_new_profile_field'] = "Add New Profile Field";

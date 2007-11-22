@@ -17,9 +17,9 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->forum_management, "index.php?".SID."&amp;module=forum/management");
 
-if($mybb->input['action'] == "add" || $mybb->input['action'] == "copy" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
+if($mybb->input['action'] == "add" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
 {
-	if($mybb->input['fid'] && ($mybb->input['action'] == "management" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
+	if($mybb->input['fid'] && ($mybb->input['action'] == "management" || $mybb->input['action'] == "edit" || $mybb->input['action'] == "copy" || !$mybb->input['action']))
 	{
 		$sub_tabs['view_forum'] = array(
 			'title' => $lang->view_forum,
@@ -164,6 +164,7 @@ if($mybb->input['action'] == "copy")
 		}
 	}
 	
+	$page->add_breadcrumb_item($lang->copy_forum);
 	$page->output_header($lang->copy_forum);	
 	$page->output_nav_tabs($sub_tabs, 'copy_forum');
 	
@@ -303,6 +304,8 @@ if($mybb->input['action'] == "editmod")
 		'description' => $lang->edit_mod_desc
 	);
 	
+	$page->add_breadcrumb_item($lang->forum_moderators, "index.php?".SID."&amp;module=forum/management&amp;fid={$mod_data['fid']}#tab_moderators");
+	$page->add_breadcrumb_item($lang->edit_forum);
 	$page->output_header($lang->edit_mod);	
 	$page->output_nav_tabs($sub_tabs, 'edit_mod');
 	
@@ -400,7 +403,9 @@ if($mybb->input['action'] == "permissions")
 		'description' => $lang->forum_permissions_desc
 	);
 	
-	$page->output_header($lang->permissions);	
+	$page->add_breadcrumb_item($lang->forum_permissions2, "index.php?".SID."&amp;module=forum/management&amp;fid=".$mybb->input['fid']."#tab_permissions");
+	$page->add_breadcrumb_item($lang->forum_permissions);
+	$page->output_header($lang->forum_permissions);	
 	$page->output_nav_tabs($sub_tabs, 'edit_permissions');
 	
 	if($mybb->input['pid'] || ($mybb->input['gid'] && $mybb->input['fid']))
@@ -651,6 +656,7 @@ if($mybb->input['action'] == "add")
 		}
 	}
 	
+	$page->add_breadcrumb_item($lang->add_forum);
 	$page->output_header($lang->add_forum);	
 	$page->output_nav_tabs($sub_tabs, 'add_forum');
 	
@@ -1050,7 +1056,10 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	
+	$page->add_breadcrumb_item($lang->edit_forum);
 	$page->output_header($lang->edit_forum);
+		
+	$page->output_nav_tabs($sub_tabs, 'edit_forum_settings');
 	
 	$form = new Form("index.php?".SID."&amp;module=forum/management&amp;action=edit", "post");
 	echo $form->generate_hidden_field("fid", $fid);
@@ -1581,7 +1590,10 @@ if(!$mybb->input['action'])
 	
 	$fid = intval($mybb->input['fid']);
 	
-	$page->add_breadcrumb_item($lang->view_forum, "index.php?".SID."&amp;module=forum/management");
+	if($fid)
+	{
+		$page->add_breadcrumb_item($lang->view_forum, "index.php?".SID."&amp;module=forum/management");
+	}
 	
 	$page->output_header($lang->forum_management);
 	
@@ -1891,7 +1903,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 					
 				$form_container->output_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\"><a href=\"index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}\">{$forum['name']}</a>{$forum['description']}{$sub_forums}</div>");
 					
-				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%; font-weight: bold;\" />", array("class" => "align_center"));
+				$form_container->output_cell("<input type=\"text\" name=\"disporder[".$forum['fid']."]\" value=\"".$forum['disporder']."\" class=\"text_input align_center\" style=\"width: 80%;\" />", array("class" => "align_center"));
 					
 				$popup = new PopupMenu("forum_{$forum['fid']}", $lang->options);
 				$popup->add_item($lang->edit_forum, "index.php?".SID."&amp;module=forum/management&amp;action=edit&amp;fid={$forum['fid']}");

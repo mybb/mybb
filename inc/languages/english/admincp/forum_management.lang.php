@@ -8,7 +8,7 @@
 
 $l['forum_management'] = "Forum Management";
 $l['forum_management_desc'] = "This section allows you to manage the categories and forums on your board. You can manage forum permissions and forum-specific moderators as well. If you change the display order for one or more forums or categories, make sure you submit the form at the bottom of the page.";
-$l['add_forum'] = "Add Forum";
+$l['add_forum'] = "Add New Forum";
 $l['add_forum_desc'] = "Here you can add a new forum or category to your board. You may also set initial permissions for this forum.";
 $l['copy_forum'] = "Copy Forum";
 $l['copy_forum_desc'] = "Here you can copy forum settings or permissions from an existing forum to another or to a new forum.";
@@ -18,9 +18,12 @@ $l['view_forum'] = "View Forum";
 $l['view_forum_desc'] = "Here you can view sub forums, quickly edit permissions and add moderators to your forum.";
 $l['add_child_forum'] = "Add Child Forum";
 $l['edit_forum_settings'] = "Edit Forum Settings";
+$l['edit_forum_settings_desc'] = "Here you can edit an existing forums settings and permissions.";
 $l['edit_forum'] = "Edit Forum";
 $l['edit_mod'] = "Edit Moderator";
 $l['edit_mod_desc'] = "Here you can modify a particular moderator's settings.";
+$l['forum_moderators'] = "Forum Moderators";
+$l['forum_permissions2'] = "Forum Permissions";
 
 $l['manage_forums'] = "Manage Forums";
 $l['forum'] = "Forum";
@@ -35,8 +38,8 @@ $l['copy_forum'] = "Copy Forum";
 $l['delete_forum'] = "Delete Forum";
 
 $l['sub_forums'] = "Sub Forums";
-$l['update_forum_orders'] = "Update Forum Orders";
-$l['update_forum_permissions'] = "Update Forum Permissions";
+$l['update_forum_orders'] = "Save Forum Orders";
+$l['update_forum_permissions'] = "Save Forum Permissions";
 $l['reset'] = "Reset";
 $l['in_forums'] = "Forums in \"{1}\"";
 $l['forum_permissions_in'] = "Forum Permissions in \"{1}\"";

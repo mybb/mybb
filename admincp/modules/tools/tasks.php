@@ -147,11 +147,22 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item($lang->add_new_task);
 	$page->output_header($lang->scheduled_tasks." - ".$lang->add_new_task);
 
+
+	$sub_tabs['scheduled_tasks'] = array(
+		'title' => $lang->scheduled_tasks,
+		'link' => "index.php?".SID."&amp;module=tools/tasks"
+	);
+
 	$sub_tabs['add_task'] = array(
 		'title' => $lang->add_new_task,
 		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add",
 		'description' => $lang->add_new_task_desc
 	);
+
+	$sub_tabs['task_logs'] = array(
+		'title' => $lang->view_task_logs,
+		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs"
+	);	
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
 	$form = new Form("index.php?".SID."&amp;module=tools/tasks&amp;action=add", "post", "add");
@@ -220,7 +231,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->enabled." <em>*</em>", "", $form->generate_yes_no_radio("enabled", $mybb->input['enabled'], true));
 	$form_container->end();
 
-	$buttons[] = $form->generate_submit_button($lang->save_new_task);
+	$buttons[] = $form->generate_submit_button($lang->save_task);
 
 	$form->output_submit_wrapper($buttons);
 	$form->end();
@@ -504,6 +515,16 @@ if($mybb->input['action'] == "logs")
 {
 	$page->output_header($lang->task_logs);
 
+	$sub_tabs['scheduled_tasks'] = array(
+		'title' => $lang->scheduled_tasks,
+		'link' => "index.php?".SID."&amp;module=tools/tasks"
+	);
+
+	$sub_tabs['add_task'] = array(
+		'title' => $lang->add_new_task,
+		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add"
+	);
+	
 	$sub_tabs['task_logs'] = array(
 		'title' => $lang->view_task_logs,
 		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs",

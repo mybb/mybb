@@ -42,6 +42,12 @@ if($mybb->input['action'] == "utf8_conversion")
 			admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
 		}
 		
+		$sub_tabs['system_health'] = array(
+			'title' => $lang->system_health,
+			'link' => "index.php?".SID."&amp;module=tools/stats",
+			'description' => $lang->system_health_desc
+		);
+		
 		$sub_tabs['utf8_conversion'] = array(
 			'title' => $lang->utf8_conversion,
 			'link' => "index.php?".SID."&amp;module=tools/stats&amp;action=utf8_conversion",
@@ -173,6 +179,12 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		exit;
 	}
+	
+	$sub_tabs['system_health'] = array(
+		'title' => $lang->system_health,
+		'link' => "index.php?".SID."&amp;module=tools/stats",
+		'description' => $lang->system_health_desc
+	);
 	
 	$sub_tabs['utf8_conversion'] = array(
 		'title' => $lang->utf8_conversion,

@@ -9,7 +9,7 @@
 $l['smilies'] = "Smilies";
 $l['manage_smilies'] = "Manage Smilies";
 $l['manage_smilies_desc'] = "This section allows you to edit and delete your smilies.";
-$l['add_smilie'] = "Add Smilie";
+$l['add_smilie'] = "Add New Smilie";
 $l['add_smilie_desc'] = "Here you can add a single new smilie.";
 $l['add_multiple_smilies'] = "Add Multiple Smilies";
 $l['add_multiple_smilies_desc'] = "Here you can add multiple new smilies at once.";

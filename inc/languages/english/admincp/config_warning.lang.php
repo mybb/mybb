@@ -9,13 +9,13 @@
 $l['warning_system'] = "Warning System";
 $l['warning_types'] = "Warning Types";
 $l['warning_types_desc'] = "Here you can manage the list of different warning types staff are allowed to issue to users.";
-$l['add_warning_type'] = "Add Warning Type";
+$l['add_warning_type'] = "Add New Warning Type";
 $l['add_warning_type_desc'] = "Here you can create a new predefined warning type. Warning types are selectable when warning users and you can define the number of points to add for this type as well as the time period before warnings of this type expire.";
 $l['edit_warning_type'] = "Edit Warning Type";
 $l['edit_warning_type_desc'] = "Here you can edit this warning type. Warning types are selectable when warning users and you can define the number of points to add for this type as well as the time period before warnings of this type expire.";
 $l['warning_levels'] = "Warning Levels";
 $l['warning_levels_desc'] = "Warning Levels define what happens to a user when they reach a particular warning level (percentage of maximum warning points). You can ban users or suspend their privledges.";
-$l['add_warning_level'] = "Add Warning Level";
+$l['add_warning_level'] = "Add New Warning Level";
 $l['add_warning_level_desc'] = "Here you can create a new warning level. Warning levels are actions to be taken against users when they reach a specific percentage of the maximum warning level.";
 $l['edit_warning_level'] = "Edit Warning Level";
 $l['edit_warning_level_desc'] = "Warning levels are actions to be taken against users when they reach a specific percentage of the maximum warning level.";

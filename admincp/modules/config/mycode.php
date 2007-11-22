@@ -115,9 +115,22 @@ if($mybb->input['action'] == "add")
 			admin_redirect('index.php?'.SID.'&module=config/mycode');
 		}
 	}
+	
+	$sub_tabs['mycode'] = array(
+		'title'	=> $lang->mycode,
+		'link' => "index.php?".SID."&amp;module=config/mycode",
+		'description' => $lang->mycode_desc
+	);
 
-	$page->add_breadcrumb_item($lang->add_mycode);
-	$page->output_header($lang->custom_mycode." - ".$lang->add_mycode);
+	$sub_tabs['add_new_mycode'] = array(
+		'title'	=> $lang->add_new_mycode,
+		'link' => "index.php?".SID."&amp;module=config/mycode&amp;action=add",
+		'description' => $lang->add_new_mycode_desc
+	);
+
+	$page->add_breadcrumb_item($lang->add_new_mycode);
+	$page->output_header($lang->custom_mycode." - ".$lang->add_new_mycode);
+	$page->output_nav_tabs($sub_tabs, 'add_new_mycode');
 
 	if($errors)
 	{
@@ -219,9 +232,16 @@ if($mybb->input['action'] == "edit")
 			admin_redirect('index.php?'.SID.'&module=config/mycode');
 		}
 	}
+
+	$sub_tabs['edit_mycode'] = array(
+		'title'	=> $lang->edit_mycode,
+		'link' => "index.php?".SID."&amp;module=config/mycode&amp;action=edit",
+		'description' => $lang->edit_mycode_desc
+	);
 	
 	$page->add_breadcrumb_item($lang->edit_mycode);
 	$page->output_header($lang->custom_mycode." - ".$lang->edit_mycode);
+	$page->output_nav_tabs($sub_tabs, 'edit_mycode');
 
 	$form = new Form("index.php?".SID."&amp;module=config/mycode&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field('cid', $mycode['cid']);

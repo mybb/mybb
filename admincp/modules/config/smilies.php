@@ -62,6 +62,10 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item($lang->add_smilie);
 	$page->output_header($lang->smilies." - ".$lang->add_smilie);
 	
+	$sub_tabs['manage_smilies'] = array(
+		'title' => $lang->manage_smilies,
+		'link' => "index.php?".SID."&amp;module=config/smilies",
+	);
 	$sub_tabs['add_smilie'] = array(
 		'title' => $lang->add_smilie,
 		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add",
@@ -70,6 +74,10 @@ if($mybb->input['action'] == "add")
 	$sub_tabs['add_multiple_smilies'] = array(
 		'title' => $lang->add_multiple_smilies,
 		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
+	);
+	$sub_tabs['mass_edit'] = array(
+		'title' => $lang->mass_edit,
+		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=mass_edit"
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_smilie');
@@ -172,7 +180,7 @@ if($mybb->input['action'] == "edit")
 		'description' => $lang->edit_smilie_desc
 	);
 	$sub_tabs['mass_edit'] = array(
-		'title' => "Mass Edit",
+		'title' => $lang->mass_edit,
 		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=mass_edit",
 	);
 	
@@ -302,6 +310,10 @@ if($mybb->input['action'] == "add_multiple")
 				$page->add_breadcrumb_item($lang->add_multiple_smilies);
 				$page->output_header($lang->smilies." - ".$lang->add_multiple_smilies);
 				
+				$sub_tabs['manage_smilies'] = array(
+					'title' => $lang->manage_smilies,
+					'link' => "index.php?".SID."&amp;module=config/smilies",
+				);
 				$sub_tabs['add_smilie'] = array(
 					'title' => $lang->add_smilie,
 					'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add"
@@ -310,6 +322,10 @@ if($mybb->input['action'] == "add_multiple")
 					'title' => $lang->add_multiple_smilies,
 					'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
 					'description' => $lang->add_multiple_smilies_desc
+				);
+				$sub_tabs['mass_edit'] = array(
+					'title' => $lang->mass_edit,
+					'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=mass_edit"
 				);
 				
 				$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
@@ -393,6 +409,10 @@ if($mybb->input['action'] == "add_multiple")
 	$page->add_breadcrumb_item($lang->add_multiple_smilies);
 	$page->output_header($lang->smilies." - ".$lang->add_multiple_smilies);
 	
+	$sub_tabs['manage_smilies'] = array(
+		'title' => $lang->manage_smilies,
+		'link' => "index.php?".SID."&amp;module=config/smilies",
+	);
 	$sub_tabs['add_smilie'] = array(
 		'title' => $lang->add_smilie,
 		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add"
@@ -401,6 +421,10 @@ if($mybb->input['action'] == "add_multiple")
 		'title' => $lang->add_multiple_smilies,
 		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
 		'description' => $lang->add_multiple_smilies_desc
+	);
+	$sub_tabs['mass_edit'] = array(
+		'title' => $lang->mass_edit,
+		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=mass_edit"
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_multiple_smilies');
@@ -459,6 +483,18 @@ if($mybb->input['action'] == "mass_edit")
 	$page->add_breadcrumb_item($lang->mass_edit);
 	$page->output_header($lang->smilies." - ".$lang->mass_edit);
 
+	$sub_tabs['manage_smilies'] = array(
+		'title' => $lang->manage_smilies,
+		'link' => "index.php?".SID."&amp;module=config/smilies",
+	);
+	$sub_tabs['add_smilie'] = array(
+		'title' => $lang->add_smilie,
+		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add",
+	);
+	$sub_tabs['add_multiple_smilies'] = array(
+		'title' => $lang->add_multiple_smilies,
+		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=add_multiple",
+	);
 	$sub_tabs['mass_edit'] = array(
 		'title' => $lang->mass_edit,
 		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=mass_edit",
@@ -490,7 +526,7 @@ if($mybb->input['action'] == "mass_edit")
 	$form_container->output_row_header($lang->name);
 	$form_container->output_row_header($lang->text_replace, array('width' => '20%'));
 	$form_container->output_row_header($lang->order, array('width' => '5%'));
-	$form_container->output_row_header($lang->mass_edit_show_clickable, array("width" => 135));
+	$form_container->output_row_header($lang->mass_edit_show_clickable, array("width" => 165));
 	$form_container->output_row_header($lang->smilie_delete, array("class" => "align_center", 'width' => '5%'));
 	
 	$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder'));

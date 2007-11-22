@@ -76,9 +76,18 @@ if($mybb->input['action'] == "add")
 			}
 		}
 	
-		$page->add_breadcrumb_item($lang->add_section);
+		$page->add_breadcrumb_item($lang->add_new_section);
 		$page->output_header($lang->help_documents." - ".$lang->add_new_section);
 		
+		$sub_tabs['manage_help_documents'] = array(
+			'title'	=> $lang->manage_help_documents,
+			'link'	=> "index.php?".SID."&amp;module=config/help_documents"
+		);
+	
+		$sub_tabs['add_help_document'] = array(
+			'title'	=> $lang->add_new_document,
+			'link'	=> "index.php?".SID."&amp;module=config/help_documents&amp;action=add&amp;type=document"
+		);
 		
 		$sub_tabs['add_help_section'] = array(
 			'title'	=> $lang->add_new_section,
@@ -109,7 +118,7 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']));
 		$form_container->end();
 	
-		$buttons[] = $form->generate_submit_button($lang->add_section);
+		$buttons[] = $form->generate_submit_button($lang->save_section);
 	
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -183,13 +192,23 @@ if($mybb->input['action'] == "add")
 			}
 		}
 	
-		$page->add_breadcrumb_item($lang->add_document);
+		$page->add_breadcrumb_item($lang->add_new_document);
 		$page->output_header($lang->help_documents." - ".$lang->add_new_document);		
 		
+		$sub_tabs['manage_help_documents'] = array(
+			'title'	=> $lang->manage_help_documents,
+			'link'	=> "index.php?".SID."&amp;module=config/help_documents"
+		);
+	
 		$sub_tabs['add_help_document'] = array(
 			'title'	=> $lang->add_new_document,
 			'link'	=> "index.php?".SID."&amp;module=config/help_documents&amp;action=add&amp;type=document",
 			'description' => $lang->add_new_document_desc
+		);
+		
+		$sub_tabs['add_help_section'] = array(
+			'title'	=> $lang->add_new_section,
+			'link'	=> "index.php?".SID."&amp;module=config/help_documents&amp;action=add&amp;type=section"
 		);
 	
 		$page->output_nav_tabs($sub_tabs, 'add_help_document');
@@ -223,7 +242,7 @@ if($mybb->input['action'] == "add")
 		$form_container->output_row($lang->use_translation." <em>*</em>", "", $form->generate_yes_no_radio('translation', $mybb->input['translation']));
 		$form_container->end();
 	
-		$buttons[] = $form->generate_submit_button($lang->add_document);
+		$buttons[] = $form->generate_submit_button($lang->save_document);
 	
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -604,7 +623,7 @@ if(!$mybb->input['action'])
 		{
 			$icon = "<img src=\"styles/default/images/icons/default.gif\" title=\"{$lang->default_doc_sec}\" alt=\"{$lang->default_doc_sec}\" style=\"vertical-align: middle;\" />";
 		}
-		$table->construct_cell("<div class=\"float_right\">{$icon}</div><div><strong>{$section['name']}</strong><br /><small>{$section['description']}</small></div>");
+		$table->construct_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$section['name']}</a></strong><br /><small>{$section['description']}</small></div>");
  
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
 		
@@ -631,7 +650,7 @@ if(!$mybb->input['action'])
 			{
 				$icon = "<img src=\"styles/default/images/icons/default.gif\" title=\"{$lang->default_doc_sec}\" alt=\"{$lang->default_doc_sec}\" style=\"vertical-align: middle;\" />";
 			}
-			$table->construct_cell("<div style=\"padding-left: 40px;\"><div class=\"float_right\">{$icon}</div><div><strong>{$doc['name']}</strong><br /><small>{$doc['description']}</small></div></div>");
+			$table->construct_cell("<div style=\"padding-left: 40px;\"><div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$doc['name']}</a></strong><br /><small>{$doc['description']}</small></div></div>");
 
 			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
 			

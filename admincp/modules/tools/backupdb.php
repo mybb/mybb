@@ -304,6 +304,11 @@ if($mybb->input['action'] == "backup")
 	$page->add_breadcrumb_item($lang->new_database_backup);
 	$page->output_header($lang->new_database_backup);
 	
+	$sub_tabs['database_backup'] = array(
+		'title' => $lang->database_backups,
+		'link' => "index.php?".SID."&amp;module=tools/backupdb"
+	);
+	
 	$sub_tabs['new_backup'] = array(
 		'title' => $lang->new_backup,
 		'link' => "index.php?".SID."&amp;module=tools/backupdb&amp;action=backup",

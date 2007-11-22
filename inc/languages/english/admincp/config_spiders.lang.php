@@ -9,8 +9,10 @@
 $l['spiders_bots'] = "Spiders / Bots";
 $l['spiders_bots_desc'] = "This section allows you to manage the search engine spiders &amp; bots automatically detected by your forum. You're also able to see when a particular bot last visited.";
 $l['add_new_bot'] = "Add New Bot";
+$l['add_new_bot_desc'] = "Here you can add a new bot that you would like to be detected by your forum.";
 
 $l['edit_bot'] = "Edit Bot";
+$l['edit_bot_desc'] = "Here you can edit an existing bot.";
 
 $l['bot'] = "Bot";
 $l['last_visit'] = "Last Visit";
