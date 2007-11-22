@@ -124,4 +124,8 @@ $l['editing_announcement'] = "Editing an Announcement";
 $l['managing_modqueue'] = "Managing Moderation Queue";
 $l['editing_user_profiles'] = "Editing User Profiles";
 $l['managing_bans'] = "Managing Bans";
+$l['revoking_warning'] = "Revoking a warning";
+$l['warning_user'] = "Warning a user";
+$l['viewing_warning'] = "Viewing a warning";
+$l['managing_warnings'] = "Managing warnings";
 ?>

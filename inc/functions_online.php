@@ -390,6 +390,24 @@ function fetch_wol_activity($location)
 		case "portal":
 			$user_activity['activity'] = "portal";
 			break;
+		case "warnings":
+			if($parameters['action'] == "warn" || $parameters['action'] == "do_warn")
+			{
+				$user_activity['activity'] = "warnings_warn";
+			}
+			elseif($parameters['action'] == "do_revoke")
+			{
+				$user_activity['activity'] = "warnings_revoke";
+			}
+			elseif($parameters['action'] == "view")
+			{
+				$user_activity['activity'] == "warnings_view";
+			}
+			else
+			{
+				$user_activity['activity'] = "warnings";
+			}
+			break;
 		case "nopermission":
 			$user_activity['activity'] = "nopermission";
 			break;
@@ -834,6 +852,19 @@ function build_friendly_wol_location($user_activity, $return=false)
 		// sendthread.php functions
 		case "sendthread":
 			$locationname = $lang->sending_thread;
+			break;
+		// warnings.php functions
+		case "warnings_revoke":
+			$locationname = $lang->revoking_warning;
+			break;
+		case "warnings_warn":
+			$locationname = $lang->warning_user;
+			break;
+		case "warnings_view":
+			$locationname = $lang->viewing_warning;
+			break;
+		case "warnings":
+			$locationname = $lang->managing_warnings;
 			break;
 	}
 	
