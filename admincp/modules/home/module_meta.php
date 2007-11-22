@@ -64,7 +64,7 @@ function home_action_handler($action)
 	{
 		// Quick Access
 		$sub_menu = array();
-		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?".SID."&module=management&action=add");
+		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?".SID."&module=forum/management&action=add");
 		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?".SID."&module=user/users&action=search");
 		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?".SID."&module=style/themes");
 		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");

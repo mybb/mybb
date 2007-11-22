@@ -53,7 +53,7 @@ if(!$mybb->input['action'])
 	{
 		if($file != "." && $file != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/main.css"))
 		{
-			$folders[$folder] = $folder;
+			$folders[$folder] = ucfirst($folder);
 		}
 	}
 	closedir($dir);
