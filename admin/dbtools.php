@@ -41,6 +41,7 @@ if($mybb->input['action'] == "utf8_conversion")
 {	
 	cpheader();
 	
+	// The last step where we do the actual conversion process.
 	if($mybb->request_method == "post" || ($mybb->input['table'] == "all" && isset($mybb->input['table2'])))
 	{
 		@set_time_limit(0);
@@ -240,6 +241,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 	
+	// This is the second step where we confirm the table we're about to convert.
 	if($mybb->input['table'])
 	{
 		if($mybb->input['table'] != "all" && !$db->table_exists($db->escape_string($mybb->input['table'])))
@@ -260,14 +262,21 @@ if($mybb->input['action'] == "utf8_conversion")
 					{
 						continue;
 					}
-					$mybb_tables[$key] = $tablename;		
+					$mybb_tables[$key] = $tablename;
 				}
 			}
 			
-			asort($mybb_tables);
-			reset($mybb_tables);
-			$nexttable = current($mybb_tables);
-			$table = $db->show_create_table($db->escape_string($nexttable));
+			if(is_array($mybb_tables))
+			{
+				asort($mybb_tables);
+				reset($mybb_tables);
+				$nexttable = current($mybb_tables);
+				$table = $db->show_create_table($db->escape_string($nexttable));
+			}
+			else
+			{
+				cperror($lang->error_all_tables_already_converted);
+			}
 		}
 		else
 		{
@@ -318,6 +327,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;	
 	}
 	
+	// From here we display a list of tables to convert. This is the first step
 	if(!$config['db_encoding'])
 	{
 		cperror($lang->error_db_encoding_not_set);
@@ -346,7 +356,12 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	asort($mybb_tables);
 	
-	$hopto[] = "<input type=\"button\" value=\"{$lang->convert_all}\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\" />";
+	if($not_okey_count == count($mybb_tables))
+	{
+		$disabled = " disabled=\"disabled\"";
+	}
+	
+	$hopto[] = "<input type=\"button\" value=\"{$lang->convert_all}\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\"{$disabled} />";
 	makehoptolinks($hopto);
 	
 	starttable();
