@@ -86,7 +86,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != 1 || !is_moderator($thread['fid']))
+		if($forum_permissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
@@ -427,7 +427,7 @@ if($mybb->input['action'] == "warn")
 			error($lang->error_invalid_post);
 		}
 		$forum_permissions = forum_permissions($thread['fid']);
-		if($forum_permissions['canview'] != 1 || !is_moderator($thread['fid']))
+		if($forum_permissions['canview'] != 1)
 		{
 			error_no_permission();
 		}

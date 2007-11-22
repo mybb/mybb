@@ -541,14 +541,36 @@ if($mybb->input['action'] == "read")
 	// Replied PM?
 	else if($pm['status'] == 3 && $pm['statustime'])
 	{
-		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']).', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
-		$actioned_on = sprintf($lang->you_replied_on, $reply_date);
+		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime'])
+		
+		if($reply_date == $lang->today || $reply_date == $lang->yesturday)
+		{
+			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
+			$actioned_on = sprintf($lang->you_replied, $reply_date);
+		}
+		else
+		{
+			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
+			$actioned_on = sprintf($lang->you_replied_on, $reply_date);
+		}
+		
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 	else if($pm['status'] == 4 && $pm['statustime'])
 	{
-		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']).', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
-		$actioned_on = sprintf($lang->you_forwarded_on, $forward_date);
+		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
+		
+		if($forward_date == $lang->today || $forward_date == $lang->yesturday)
+		{
+			$forward_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
+			$actioned_on = sprintf($lang->you_forwarded, $forward_date);
+		}
+		else
+		{
+			$forward_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
+			$actioned_on = sprintf($lang->you_forwarded_on, $forward_date);
+		}
+		
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
 	}
 
