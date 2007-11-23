@@ -438,6 +438,7 @@ function perform_search_mysql($search)
 
 	$forumin = "";
 	$fidlist = array();
+	$searchin = array();
 	if($search['forums'] != "all")
 	{
 		if(!is_array($search['forums']))
@@ -718,6 +719,7 @@ function perform_search_mysql_ft($search)
 
 	$forumin = "";
 	$fidlist = array();
+	$searchin = array();
 	if($search['forums'] != "all")
 	{
 		if(!is_array($search['forums']))

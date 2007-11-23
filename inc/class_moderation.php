@@ -145,6 +145,8 @@ class Moderation
 		
 		$thread = get_thread($tid);
 
+		$userposts = array();
+
 		// Find the pid, uid, visibility, and forum post count status
 		$query = $db->query("
 			SELECT p.pid, p.uid, p.visible, f.usepostcounts

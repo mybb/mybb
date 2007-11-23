@@ -698,6 +698,8 @@ class PostDataHandler extends DataHandler
 			require_once MYBB_ROOT.'inc/class_parser.php';
 			$parser = new Postparser();
 
+			$done_users = array();
+
 			$subject = $parser->parse_badwords($thread['subject']);
 			$excerpt = $parser->strip_mycode($post['message']);
 			$excerpt = my_substr($excerpt, 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
@@ -997,8 +999,8 @@ class PostDataHandler extends DataHandler
 			$this->pid = $db->insert_id();
 
 			// Now that we have the post id for this first post, update the threads table.
-			$firstpostup = array("firstpost" => $pid);
-			$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='{$tid}'");
+			$firstpostup = array("firstpost" => $this->pid);
+			$db->update_query(TABLE_PREFIX."threads", $firstpostup, "tid='{$this->tid}'");
 		}
 
 		// If we're not saving a draft there are some things we need to check now

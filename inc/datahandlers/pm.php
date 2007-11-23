@@ -345,9 +345,9 @@ class PMDataHandler extends DataHandler
 		$lastpm = $db->fetch_array($query);
 		if($pm['recipient']['pmnotify'] == "yes" && $pm['recipient']['lastactive'] > $lastpm['dateline'] && !$mybb->input['saveasdraft'])
 		{
-			if($pm['recipient']['language'] != "" && $lang->language_exists($touser['language']))
+			if($pm['recipient']['language'] != "" && $lang->language_exists($pm['recipient']['language']))
 			{
-				$uselang = $touser['language'];
+				$uselang = $pm['recipient']['language'];
 			}
 			elseif($mybb->settings['bblanguage'])
 			{

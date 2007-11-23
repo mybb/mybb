@@ -97,7 +97,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Check if the username is of the correct length.
-		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']) && !$bannedusername && !$missingname)
+		if(($mybb->settings['maxnamelength'] != 0 && my_strlen($username) > $mybb->settings['maxnamelength']) || ($mybb->settings['minnamelength'] != 0 && my_strlen($username) < $mybb->settings['minnamelength']))
 		{
 			$this->set_error('invalid_username_length', array($mybb->settings['minnamelength'], $mybb->settings['maxnamelength']));
 			return false;
@@ -401,7 +401,7 @@ class UserDataHandler extends DataHandler
 			$field = "fid{$profilefield['fid']}";
 
 			// If the profile field is required, but not filled in, present error.
-			if(trim($profile_fields[$field]) == "" && $profilefield['required'] == "yes" && !$proferror && !defined('IN_ADMINCP'))
+			if(trim($profile_fields[$field]) == "" && $profilefield['required'] == "yes" && !defined('IN_ADMINCP'))
 			{
 				$this->set_error('missing_required_profile_field', array($profilefield['name']));
 			}
