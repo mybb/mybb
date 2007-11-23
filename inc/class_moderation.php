@@ -301,28 +301,30 @@ class Moderation
 				}
 			}
 			$posts_to_approve[] = $thread['firstpost'];
-
 		}
 
 		if(is_array($tid_list))
 		{
 			$tid_list = implode(",", $tid_list);
 			$approve = array(
-				"visible" => 1,
+				"visible" => 1
 			);
 			$db->update_query("threads", $approve, "tid IN ($tid_list)");
-			$db->update_query("posts", $approve, "tid IN (".implode(",", $posts_to_approve).")");
+			$db->update_query("posts", $approve, "pid IN (".implode(",", $posts_to_approve).")");
 			
-			foreach($forum_counters as $fid => $counters)
+			if(is_array($forum_counters))
 			{
-				// Update stats
-				$update_array = array(
-					"threads" => "+{$counters['num_threads']}",
-					"unapprovedthreads" => "-{$counters['num_threads']}",
-					"posts" => "+{$counters['num_posts']}",
-					"unapprovedposts" => "-{$counters['num_posts']}"
-				);
-				update_forum_counters($fid, $update_array);
+				foreach($forum_counters as $fid => $counters)
+				{
+					// Update stats
+					$update_array = array(
+						"threads" => "+{$counters['num_threads']}",
+						"unapprovedthreads" => "-{$counters['num_threads']}",
+						"posts" => "+{$counters['num_posts']}",
+						"unapprovedposts" => "-{$counters['num_posts']}"
+					);
+					update_forum_counters($fid, $update_array);
+				}
 			}
 		}
 		return true;
@@ -1360,6 +1362,7 @@ class Moderation
 			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 1)
 			{
 				$thread_counters[$post['tid']]['visible'] = 0;
+				$thread_counters[$post['tid']]['unapprovedposts'] -= 1;
 				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies']; 
 				$forum_counters[$post['fid']]['num_threads']++;
 			}
@@ -1377,6 +1380,7 @@ class Moderation
 				$db->update_query("threads", $counters, "tid='{$tid}'");
 			}
 		}
+		
 		if(is_array($forum_counters))
 		{
 			foreach($forum_counters as $fid => $counters)
