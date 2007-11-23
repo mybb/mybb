@@ -1368,31 +1368,48 @@ class Moderation
 				$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$first_post['tid']}'");
 			}
 		}
-		$updated_thread_stats = array( 
-			"unapprovedposts" => "+{$num_posts}" 
-		); 
+		
 		if($is_first) 
 		{ 
 			$num_posts -= 1;
-			$updated_thread_stats['replies'] = $num_posts;			
+			
+			$updated_thread_stats = array( 
+				"unapprovedposts" => "+{$num_posts}",
+				"replies" => $num_posts
+			); 
 		} 
 		else 
-		{ 
-			$updated_thread_stats['replies'] = "-{$num_posts}"; 
-		} 
-		update_thread_counters($tid, $updated_thread_stats); 
-
-		$updated_forum_stats = array( 
-			"posts" => "-{$num_posts}", 
-			"unapprovedposts" => "+{$num_posts}" 
-		); 
-
+		{
+			$updated_thread_stats = array( 
+				"unapprovedposts" => "+{$num_posts}",
+				"replies" => "-{$num_posts}"
+			);
+		}
+		
+		update_thread_counters($tid, $updated_thread_stats);
+		
 		if($is_first) 
 		{ 
+			$updated_forum_stats = array( 
+				"posts" => "-"($num_posts+1), 
+				"unapprovedposts" => "+{$num_posts}" 
+			);
+		
 			$updated_forum_stats['threads'] = "-1"; 
 			$updated_forum_stats['unapprovedthreads'] = "+1"; 
-		} 
-		update_forum_counters($fid, $updated_forum_stats); 
+		}
+		else
+		{
+			$updated_forum_stats = array( 
+				"posts" => "-{$num_posts}", 
+				"unapprovedposts" => "+{$num_posts}" 
+			);
+		}
+		
+		if(is_array($updated_forum_stats))
+		{
+			update_forum_counters($fid, $updated_forum_stats);
+		}
 
 		return true;
 	}
