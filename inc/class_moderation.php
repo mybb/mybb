@@ -135,6 +135,8 @@ class Moderation
 		global $db, $cache, $plugins;
 
 		$thread = get_thread($tid);
+		
+		$userposts = array();
 
 		// Find the pid, uid, visibility, and forum post count status
 		$query = $db->query("

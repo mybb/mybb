@@ -582,6 +582,7 @@ function get_post_attachments($id, &$post)
 	global $attachcache, $mybb, $theme, $templates, $forumpermissions, $lang;
 
 	$validationcount = 0;
+	$tcount = 0;
 	if(is_array($attachcache[$id]))
 	{ // This post has 1 or more attachments
 		foreach($attachcache[$id] as $aid => $attachment)

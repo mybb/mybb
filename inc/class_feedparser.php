@@ -177,7 +177,7 @@ class FeedParser
 			// Otherwise, attempt to use the author if we have it
 			else if(array_key_exists("author", $feed_item))
 			{
-				$item['author'] = $fed_item['author']['value'];
+				$item['author'] = $feed_item['author']['value'];
 			}
 
 			// Assign the item to our list of items
