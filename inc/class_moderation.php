@@ -317,7 +317,7 @@ class Moderation
 				"visible" => 1,
 			);
 			$db->update_query(TABLE_PREFIX."threads", $approve, "tid IN ($tid_list)");
-			$db->update_query(TABLE_PREFIX."posts", $approve, "tid IN (".implode(",", $posts_to_approve).")");
+			$db->update_query(TABLE_PREFIX."posts", $approve, "pid IN (".implode(",", $posts_to_approve).")");
 
 			$plugins->run_hooks("class_moderation_approve_threads", $tids);
 			
@@ -1373,7 +1373,8 @@ class Moderation
 		); 
 		if($is_first) 
 		{ 
-			$updated_thread_stats['replies'] = "-".($num_posts-1); 
+			$num_posts -= 1;
+			$updated_thread_stats['replies'] = $num_posts;			
 		} 
 		else 
 		{ 
