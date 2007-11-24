@@ -1262,8 +1262,8 @@ class Moderation
 				++$thread_counters[$post['tid']]['replies'];
 			}
 
-			// Only add to the forum count if the thread is visible
-			if($post['threadvisible'] == 1)
+			// Only add to the forum count if the thread is invisible
+			if($post['threadvisible'] == 0)
 			{
 				++$forum_counters[$post['fid']]['num_posts'];
 			}
