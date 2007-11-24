@@ -1223,7 +1223,7 @@ switch($mybb->input['action'])
 			$pids[] = intval($pid);
 		}
 
-		$moderation->approve_posts($pids, $tid, $fid);
+		$moderation->approve_posts($pids);
 		$plugins->run_hooks("moderation_do_multiapproveposts");
 		log_moderator_action($modlogdata, $lang->multi_approve_posts);
 		clearinline($tid, "thread");
@@ -1247,7 +1247,7 @@ switch($mybb->input['action'])
 			$pids[] = intval($pid);
 		}
 
-		$moderation->unapprove_posts($pids, $tid, $fid);
+		$moderation->unapprove_posts($pids);
 		$plugins->run_hooks("moderation_do_multiunapproveposts");
 		log_moderator_action($modlogdata, $lang->multi_unapprove_posts);
 		clearinline($tid, "thread");

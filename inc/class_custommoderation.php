@@ -128,15 +128,15 @@ class CustomModeration extends Moderation
 
 			if($post_options['approveposts'] == 'approve') // Approve posts
 			{
-				$this->approve_posts($pids, $tid, $thread['fid']);
+				$this->approve_posts($pids);
 			}
 			elseif($post_options['approveposts'] == 'unapprove') // Unapprove posts
 			{
-				$this->unapprove_posts($pids, $tid, $thread['fid']);
+				$this->unapprove_posts($pids);
 			}
 			elseif($post_options['approveposts'] == 'toggle') // Toggle post visibility
 			{
-				$this->toggle_post_visibility($pids, $tid, $thread['fid']);
+				$this->toggle_post_visibility($pids);
 			}
 
 			if($post_options['splitposts'] > 0 || $post_options['splitposts'] == -2) // Split posts

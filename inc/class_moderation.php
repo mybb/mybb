@@ -1477,11 +1477,9 @@ class Moderation
 	 * Toggle post visibility (approved/unapproved)
 	 *
 	 * @param array Post IDs
-	 * @param int Thread ID
-	 * @param int Forum ID
 	 * @return boolean true
 	 */
-	function toggle_post_visibility($pids, $tid, $fid)
+	function toggle_post_visibility($pids)
 	{
 		global $db;
 		$pid_list = implode(',', $pids);
@@ -1499,11 +1497,11 @@ class Moderation
 		}
 		if(is_array($unapprove))
 		{
-			$this->unapprove_posts($unapprove, $tid, $fid);
+			$this->unapprove_posts($unapprove);
 		}
 		if(is_array($approve))
 		{
-			$this->approve_posts($approve, $tid, $fid);
+			$this->approve_posts($approve);
 		}
 		return true;
 	}
