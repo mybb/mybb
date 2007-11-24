@@ -288,11 +288,12 @@ class Moderation
 
 			$forum = get_forum($thread['fid']);
 			
-			if($forum['usepostcounts'] != 0) 
-			{ 
-				$forum_counters[$forum['fid']]['num_threads']++; 
-				$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
+			
+			$forum_counters[$forum['fid']]['num_threads']++; 
+			$forum_counters[$forum['fid']]['num_posts'] += $thread['replies']+1; // Remove implied visible from count
 	
+			if($forum['usepostcounts'] != 0)
+			{
 				// On approving thread restore user post counts
 				$query = $db->simple_select("posts", "COUNT(pid) as posts, uid", "tid='{$tid}' AND (visible='1' OR pid='{$thread['firstpost']}') AND uid > 0 GROUP BY uid");
 				while($counter = $db->fetch_array($query))
@@ -374,7 +375,7 @@ class Moderation
 			"visible" => 0
 		);
 		$db->update_query("threads", $approve, "tid IN ($tid_list)");
-		$db->update_query("posts", $approve, "tid IN (".implode(",", $posts_to_unapprove).")");
+		$db->update_query("posts", $approve, "pid IN (".implode(",", $posts_to_unapprove).")");
 		
 		if(is_array($forum_counters))
 		{
@@ -1288,6 +1289,7 @@ class Moderation
 				$db->update_query("threads", $counters, "tid='{$tid}'");
 			}
 		}
+		
 		if(is_array($forum_counters))
 		{
 			foreach($forum_counters as $fid => $counters)
