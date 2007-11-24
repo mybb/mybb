@@ -40,8 +40,8 @@ function run_task($tid=0)
 		return false;
 	}
 
-	// Has an unlock failed? Task has been locked for longer than 5 minutes? Unlock & update task cache
-	if($task['locked'] != 0 && $task['locked'] < TIME_NOW-300)
+	// Is this task still running and locked less than 5 minutes ago? Well don't run it now - clearly it isn't broken!
+	if($task['locked'] != 0 && $task['locked'] > TIME_NOW-300)
 	{
 		$cache->update_tasks();
 		return false;
