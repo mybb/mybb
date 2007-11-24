@@ -581,7 +581,7 @@ if($mybb->input['action'] == "logs")
 		$table->construct_row();
 	}
 
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_task_logs, array("colspan" => "3"));
 		$table->construct_row();

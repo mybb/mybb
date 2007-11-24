@@ -10,12 +10,12 @@
  */
 
 $tables[] = "CREATE TABLE mybb_adminlog (
-  uid int NOT NULL default '0',
+  uid int unsigned NOT NULL default '0',
+  ipaddress varchar(50) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
-  scriptname varchar(50) NOT NULL default '',
+  module varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
-  querystring varchar(150) NOT NULL default '',
-  ipaddress varchar(50) NOT NULL default ''
+  data text NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_adminoptions (
@@ -33,7 +33,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip varchar(40) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0',
-	data text NOT NULL default ''
+	data text NOT NULL default '',
 );";
 
 $tables[] = "CREATE TABLE mybb_adminviews (

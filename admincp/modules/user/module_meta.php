@@ -19,7 +19,16 @@ function user_meta()
 {
 	global $page, $lang;
 	
-	$page->add_menu_item($lang->users_and_groups, "user", "index.php?".SID."&module=user", 30);
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "users", "title" => $lang->users, "link" => "index.php?".SID."&module=user/users");
+	$sub_menu['20'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?".SID."&module=user/groups");
+	$sub_menu['30'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?".SID."&module=user/titles");
+	$sub_menu['40'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?".SID."&module=user/banning");
+	$sub_menu['50'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?".SID."&module=user/admin_permissions");
+	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?".SID."&module=user/mass_mail");
+	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?".SID."&module=user/group_promotions");
+
+	$page->add_menu_item($lang->users_and_groups, "user", "index.php?".SID."&module=user", 30, $sub_menu);
 	return true;
 }
 
@@ -55,19 +64,6 @@ function user_action_handler($action)
 			$action_file = "users.php";
 	}
 	
-	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "users", "title" => $lang->users, "link" => "index.php?".SID."&module=user/users");
-	$sub_menu['20'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?".SID."&module=user/groups");
-	$sub_menu['30'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?".SID."&module=user/titles");
-	$sub_menu['40'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?".SID."&module=user/banning");
-	$sub_menu['50'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?".SID."&module=user/admin_permissions");
-	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?".SID."&module=user/mass_mail");
-	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?".SID."&module=user/group_promotions");
-
-	$sidebar = new SidebarItem($lang->users_and_groups);
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
-	
-	$page->sidebar .= $sidebar->get_markup();
 	return $action_file;
 }
 

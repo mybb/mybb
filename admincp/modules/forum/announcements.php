@@ -664,7 +664,7 @@ if(!$mybb->input['action'])
 	
 	fetch_forum_announcements($table);
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_forums, array("colspan" => "3"));
 		$table->construct_row();

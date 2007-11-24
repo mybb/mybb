@@ -18,8 +18,17 @@ if(!defined("IN_MYBB"))
 function tools_meta()
 {
 	global $page, $lang;
+
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "system_health", "title" => $lang->system_health, "link" => "index.php?".SID."&module=tools/system_health");
+	$sub_menu['20'] = array("id" => "cache", "title" => $lang->cache_manager, "link" => "index.php?".SID."&module=tools/cache");
+	$sub_menu['30'] = array("id" => "tasks", "title" => $lang->task_manager, "link" => "index.php?".SID."&module=tools/tasks");
+	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => $lang->recount_and_rebuild, "link" => "index.php?".SID."&module=tools/recount_rebuild");
+	$sub_menu['50'] = array("id" => "php_info", "title" => $lang->view_php_info, "link" => "index.php?".SID."&module=tools/php_info");
+	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
+	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?".SID."&module=tools/optimizedb");
 	
-	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?".SID."&module=tools", 50);
+	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?".SID."&module=tools", 50, $sub_menu);
 	
 	return true;
 }
@@ -75,22 +84,6 @@ function tools_action_handler($action)
 			$page->active_action = "system_health";
 			$action_file = "index.php";
 	}
-	
-	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "system_health", "title" => $lang->system_health, "link" => "index.php?".SID."&module=tools/system_health");
-	$sub_menu['20'] = array("id" => "cache", "title" => $lang->cache_manager, "link" => "index.php?".SID."&module=tools/cache");
-	$sub_menu['30'] = array("id" => "tasks", "title" => $lang->task_manager, "link" => "index.php?".SID."&module=tools/tasks");
-	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => $lang->recount_and_rebuild, "link" => "index.php?".SID."&module=tools/recount_rebuild");
-	$sub_menu['50'] = array("id" => "php_info", "title" => $lang->view_php_info, "link" => "index.php?".SID."&module=tools/php_info");
-	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
-	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?".SID."&module=tools/optimizedb");
-
-
-	$sidebar = new SidebarItem($lang->maintenance);
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
-	
-	$page->sidebar .= $sidebar->get_markup();
-	
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?".SID."&module=tools/adminlog");

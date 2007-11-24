@@ -37,7 +37,7 @@ function log_admin_action()
 		"data" => $db->escape_string(@serialize($data))
 	);
 
-	$db->insert_query("adminlog2", $log_entry);
+	$db->insert_query("adminlog", $log_entry);
 }
 
 /**

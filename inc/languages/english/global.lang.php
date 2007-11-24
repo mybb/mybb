@@ -13,6 +13,7 @@ $l['toplinks_memberlist'] = "Member List";
 $l['toplinks_search'] = "Search";
 $l['toplinks_calendar'] = "Calendar";
 $l['toplinks_help'] = "Help";
+$l['toplinks_portal'] = "Portal";
 $l['bottomlinks_contactus'] = "Contact Us";
 $l['bottomlinks_returntop'] = "Return to Top";
 $l['bottomlinks_returncontent'] = "Return to Content";

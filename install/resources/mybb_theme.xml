@@ -138,8 +138,13 @@ table {
 }
 
 .trow_shaded {
-	background: #eea8a1;
+	background: #ffdde0;
 }
+
+.trow_selected td {
+	background: #FFFBD9;
+}
+
 
 .trow_sep {
 	background: #e5e5e5;

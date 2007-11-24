@@ -352,7 +352,7 @@ if($mybb->input['action'] == "add_multiple")
 					$form_container->construct_row();
 				}
 				
-				if(count($form_container->container->rows) == 0)
+				if($form_container->num_rows() == 0)
 				{
 					flash_message($lang->error_no_images, 'error');
 					admin_redirect("index.php?".SID."&module=config/smilies&action=add_multiple");
@@ -551,7 +551,7 @@ if($mybb->input['action'] == "mass_edit")
 		$form_container->construct_row();
 	}
 	
-	if(count($form_container->container->rows) == 0)
+	if($form_container->num_rows() == 0)
 	{
 		$form_container->output_cell($lang->no_smilies, array('colspan' => 6));
 		$form_container->construct_row();
@@ -632,7 +632,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_smilies, array('colspan' => 4));
 		$table->construct_row();

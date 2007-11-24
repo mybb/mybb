@@ -5054,6 +5054,36 @@ function ban_date2timestamp($date, $stamp=0)
 }
 
 /**
+ * Expire old warnings in the database.
+ *
+ */
+function expire_warnings()
+{
+	$query = $db->query("
+		SELECT w.wid, w.uid, w.points, u.warningpoints
+		FROM ".TABLE_PREFIX."warnings w
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=w.uid)
+		WHERE expires<".TIME_NOW." AND expires!=0 AND expired!=1
+	");
+	while($warning = $db->fetch_array($query))
+	{
+		$updated_warning = array(
+			"expired" => 1
+		);
+		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
+		$warning['warningpoints'] -= $warning['points'];
+		if($warning['warningpoints'] < 0)
+		{
+			$warning['warningpoints'] = 0;
+		}
+		$updated_user = array(
+			"warningpoints" => intval($warning['warningpoints'])
+		);
+		$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
+	}
+}
+
+/**
  * Unicode function for php function chr()
  *
  * @param string The character
@@ -5085,4 +5115,5 @@ function unicode_chr($c)
         return false;
     }
 }
+
 ?>

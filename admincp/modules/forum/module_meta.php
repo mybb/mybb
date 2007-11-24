@@ -19,7 +19,13 @@ function forum_meta()
 {
 	global $page, $lang;
 	
-	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?".SID."&module=forum", 20);
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?".SID."&module=forum/management");
+	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcements, "link" => "index.php?".SID."&module=forum/announcements");
+	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?".SID."&module=forum/moderation_queue");
+	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?".SID."&module=forum/attachments");
+
+	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?".SID."&module=forum", 20, $sub_menu);
 
 	return true;
 }
@@ -49,16 +55,6 @@ function forum_action_handler($action)
 			$action_file = "management.php";
 	}
 	
-	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?".SID."&module=forum/management");
-	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcements, "link" => "index.php?".SID."&module=forum/announcements");
-	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?".SID."&module=forum/moderation_queue");
-	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?".SID."&module=forum/attachments");
-
-	$sidebar = new SidebarItem($lang->forums_and_posts);
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
-	
-	$page->sidebar .= $sidebar->get_markup();
 	return $action_file;
 }
 

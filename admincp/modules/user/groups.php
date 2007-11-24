@@ -486,7 +486,7 @@ if(!$mybb->input['action'])
 		$form_container->construct_row();
 	}
 	
-	if(count($form_container->container->rows) == 0)
+	if($form_container->num_rows() == 0)
 	{
 		$form_container->output_cell($lang->no_groups, array('colspan' => 4));
 		$form_container->construct_row();

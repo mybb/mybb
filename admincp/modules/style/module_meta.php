@@ -18,7 +18,12 @@ if(!defined("IN_MYBB"))
 function style_meta()
 {
 	global $page, $lang;
-	$page->add_menu_item($lang->templates_and_style, "style", "index.php?".SID."&module=style", 40);
+
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?".SID."&module=style/themes");
+	$sub_menu['20'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");
+
+	$page->add_menu_item($lang->templates_and_style, "style", "index.php?".SID."&module=style", 40, $sub_menu);
 	return true;
 }
 
@@ -34,14 +39,6 @@ function style_action_handler($action)
 			$action_file = "themes.php";
 	}
 	
-	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?".SID."&module=style/themes");
-	$sub_menu['20'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");
-
-	$sidebar = new SidebarItem($lang->templates_and_style);
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
-	
-	$page->sidebar .= $sidebar->get_markup();
 	return $action_file;
 }
 

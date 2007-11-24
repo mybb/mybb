@@ -9,29 +9,54 @@
  * $Id$
  */
 
+/**
+ * Generate a data grid/table.
+ */
 class DefaultTable
 {
-	var $cells = array();
-	var $rows = array();
-	var $headers = array();
+	/**
+	 * @var array Array of cells for the current row.
+	 */
+	var $_cells = array();
 
+	/**
+	 * @var array Array of rows for the current table.
+	 */
+	var $_rows = array();
+
+	/**
+	 * @var array Array of headers for the current table.
+	 */
+	var $_headers = array();
+
+	/**
+	 * Construct an individual cell for this table.
+	 *
+	 * @param string The HTML content for this cell.
+	 * @param array Array of extra information about this cell (class, id, colspan, rowspan, width)
+	 */
 	function construct_cell($data, $extra=array())
 	{
-		$this->cells[] = array("data" => $data, "extra" => $extra);
+		$this->_cells[] = array("data" => $data, "extra" => $extra);
 	}
 
+	/**
+	 * Construct a row from the earlier defined constructed cells for the table.
+	 *
+	 * @param array Array of extra information about this row (class, id)
+	 */
 	function construct_row($extra = array())
 	{
 		$i = 1;
 		// We construct individual cells here
-		foreach($this->cells as $key => $cell)
+		foreach($this->_cells as $key => $cell)
 		{
 			$cells .= "\t\t\t<td";
 			if($key == 0)
 			{
 				$cell['extra']['class'] .= " first";
 			}
-			elseif(!$this->cells[$key+1])
+			elseif(!$this->_cells[$key+1])
 			{
 				$cell['extra']['class'] .= " last";
 			}
@@ -71,21 +96,52 @@ class DefaultTable
 		}
 		$data['cells'] = $cells;
 		$data['extra'] = $extra;
-		$this->rows[] = $data;
+		$this->_rows[] = $data;
 		
-		$this->cells = array();
+		$this->_cells = array();
 	}
 
+	/**
+	 * Count the number of rows in the table. Useful for displaying a 'no rows' message.
+	 *
+	 * @return int The number of rows in the table.
+	 */
+	function num_rows()
+	{
+		return count($this->_rows);
+	}
+
+	/**
+	 * Construct a header cell for this table.
+	 *
+	 * @param string The HTML content for this header cell.
+	 * @param array Array of extra information for this header cell (class, style, colspan, width)
+	 */
 	function construct_header($data, $extra=array())
 	{
-		$this->headers[] = array("data" => $data, "extra" => $extra);
+		$this->_headers[] = array("data" => $data, "extra" => $extra);
 	}
 
+	/**
+	 * Output this table to the browser.
+	 *
+	 * @param string The heading for this table.
+	 * @param int The border width for this table.
+	 * @param string The class for this table.
+	 */
 	function output($heading="", $border=1, $class="general")
 	{
 		echo $this->construct_html($heading, $border, $class);
 	}
 
+	/**
+	 * Fetch the built HTML for this table.
+	 *
+	 * @param string The heading for this table.
+	 * @param int The border width for this table.
+	 * @param string The class for this table.
+	 * @return string The built HTML.
+	 */
 	function construct_html($heading="", $border=1, $class=null, $table_id="")
 	{
 		if($border == 1)
@@ -110,18 +166,18 @@ class DefaultTable
 			$table .= " id=\"".$table_id."\"";
 		}
 		$table .= " cellspacing=\"0\">\n";
-		if($this->headers)
+		if($this->_headers)
 		{
 			$table .= "\t<thead>\n";
 			$table .= "\t\t<tr>\n";
-			foreach($this->headers as $key => $data)
+			foreach($this->_headers as $key => $data)
 			{
 				$table .= "\t\t\t<th";
 				if($key == 0)
 				{
 					$data['extra']['class'] .= " first";
 				}
-				elseif(!$this->headers[$key+1])
+				elseif(!$this->_headers[$key+1])
 				{
 					$data['extra']['class'] .= " last";
 				}
@@ -148,7 +204,7 @@ class DefaultTable
 		}
 		$table .= "\t<tbody>\n";
 		$i = 1;
-		foreach($this->rows as $key => $table_row)
+		foreach($this->_rows as $key => $table_row)
 		{
 			$table .= "\t\t<tr";
 			if($table_row['extra']['id'])
@@ -159,7 +215,7 @@ class DefaultTable
 			{
 				$table_row['extra']['class'] .= " first";
 			}
-			else if(!$this->rows[$key+1])
+			else if(!$this->_rows[$key+1])
 			{
 				$table_row['extra']['class'] .= " last";
 			}
@@ -180,7 +236,7 @@ class DefaultTable
 		$table .= "\t</tbody>\n";
 		$table .= "</table>\n";
 		// Clean up
-		$this->cells = $this->rows = $this->headers = array();
+		$this->_cells = $this->_rows = $this->_headers = array();
 		if($border == 1)
 		{
 			$table .= "</div>";

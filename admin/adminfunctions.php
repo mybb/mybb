@@ -1357,33 +1357,6 @@ function getadminpermissions($get_uid="", $get_gid="")
 function logadmin()
 {
 	global $mybbadmin, $db, $mybb;
-	$scriptname = basename($_SERVER['PHP_SELF']);
-	$qstring = explode("&", $_SERVER['QUERY_STRING']);
-	$sep = '';
-	foreach($qstring as $key => $value)
-	{
-		$vale = explode("=", $value, 2);
-		if(trim($vale[0]) != "" && trim($vale[1]) != "")
-		{
-			if($vale[0] != "action" && $vale[0] != "adminsid")
-			{
-				$querystring .= "$sep$vale[0] = $vale[1]";
-				$sep = " / ";
-			}
-		}
-	}
-	$now = time();
-
-	$insertquery = array(
-		"uid" => $mybbadmin['uid'],
-		"dateline" => $now,
-		"scriptname" => $db->escape_string($scriptname),
-		"action" => $db->escape_string($mybb->input['action']),
-		"querystring" => $db->escape_string($querystring),
-		"ipaddress" => $db->escape_string(get_ip())
-	);
-
-	$db->insert_query("adminlog", $insertquery);
 }
 
 function buildacpnav()

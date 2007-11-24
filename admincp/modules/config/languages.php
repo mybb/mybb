@@ -378,7 +378,7 @@ if($mybb->input['action'] == "edit")
 			$table->construct_row();
 		}
 		
-		if(count($table->rows) == 0)
+		if($table->num_rows()  == 0)
 		{
 			$table->construct_cell($lang->no_language_files_front_end, array('colspan' => 3));
 			$table->construct_row();
@@ -414,7 +414,7 @@ if($mybb->input['action'] == "edit")
 				$table->construct_row();
 			}
 			
-			if(count($table->rows) == 0)
+			if($table->num_rows()  == 0)
 			{
 				$table->construct_cell($lang->no_language_files_admin_cp, array('colspan' => 3));
 				$table->construct_row();
@@ -484,7 +484,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows()  == 0)
 	{
 		$table->construct_cell($lang->no_language, array('colspan' => 3));
 		$table->construct_row();

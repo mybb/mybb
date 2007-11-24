@@ -9,20 +9,52 @@
  * $Id$
  */
 
+/*
+ * MyBB Admin CP Page Generation Class
+ */
 class DefaultPage
 {
+
+	/**
+	 * @var string The current style in use.
+	 */
 	var $style;
 
+	/**
+	 * @var array The primary menu items.
+	 */
 	var $menu = array();
+
+	/**
+	 * @var string The module we're currently in.
+	 */
 	var $active_module;
+
+	/**
+	 * @var string The action we're currently performing.
+	 */
 	var $active_action;
 	
+	/**
+	 * @var string Content for the side bar of the page if we have one.
+	 */
 	var $sidebar;
 
-	var $breadcrumb_trail = array();
+	/**
+	 * @var array The breadcrumb trail leading up to this page.
+	 */
+	var $_breadcrumb_trail = array();
 	
+	/**
+	 * @var string Any additional information to add between the <head> tags.
+	 */
 	var $extra_header = "";
 
+	/**
+	 * Output the page header.
+	 *
+	 * @param string The title of the page.
+	 */
 	function output_header($title="")
 	{
 		global $mybb, $admin_session, $lang;
@@ -74,14 +106,14 @@ var imagepath = '../images';
 		echo "<div id=\"container\">\n";
 		echo "	<div id=\"logo\"><h1><span class=\"invisible\">{$lang->mybb_admin_cp}</span></h1></div>\n";
 		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_forum}</a> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">{$lang->logout}</a></div>\n";
-		echo $this->build_menu();
+		echo $this->_build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";
 		echo $this->sidebar;
 		echo "		</div>\n";
 		echo "		<div id=\"content\">\n";
 		echo "			<div class=\"breadcrumb\">\n";
-		echo $this->generate_breadcrumb();
+		echo $this->_generate_breadcrumb();
 		echo "			</div>\n";
 		echo "           <div id=\"inner\">\n";
 		if($admin_session['data']['flash_message'])
@@ -95,6 +127,9 @@ var imagepath = '../images';
 		}
 	}
 
+	/**
+	 * Output the page footer.
+	 */
 	function output_footer($quit=true)
 	{
 		global $mybb, $maintimer, $db, $lang;
@@ -121,24 +156,33 @@ var imagepath = '../images';
 		}
 	}
 	
+	/**
+	 * Add an item to the page breadcrumb trail.
+	 *
+	 * @param string The name of the item to add.
+	 * @param string The URL to the item we're adding (if there is one)
+	 */
 	function add_breadcrumb_item($name, $url="")
 	{
-		$this->breadcrumb_trail[] = array("name" => $name, "url" => $url);
+		$this->_breadcrumb_trail[] = array("name" => $name, "url" => $url);
 	}
 	
-	function generate_breadcrumb()
+	/**
+	 * Generate a breadcrumb trail.
+	 */
+	function _generate_breadcrumb()
 	{
-		if(!is_array($this->breadcrumb_trail))
+		if(!is_array($this->_breadcrumb_trail))
 		{
 			return false;
 		}
 		$trail = "";
-		foreach($this->breadcrumb_trail as $key => $crumb)
+		foreach($this->_breadcrumb_trail as $key => $crumb)
 		{
-			if($this->breadcrumb_trail[$key+1])
+			if($this->_breadcrumb_trail[$key+1])
 			{
 				$trail .= "<a href=\"".$crumb['url']."\">".$crumb['name']."</a>";
-				if($this->breadcrumb_trail[$key+2])
+				if($this->_breadcrumb_trail[$key+2])
 				{
 					$trail .= " &raquo; ";
 				}
@@ -151,6 +195,13 @@ var imagepath = '../images';
 		return $trail;
 	}	
 	
+	/**
+	 * Output an introductory message.
+	 *
+	 * @param string The title of the introductory message.
+	 * @param string The introductory message.
+	 * @param string An additional class name to add to the message if there is one.
+	 */
 	function output_intro($title, $description, $class="")
 	{
 		echo "		<div class=\"intro_description\">\n";
@@ -161,21 +212,41 @@ var imagepath = '../images';
 		echo "</div>\n";	
 	}
 	
+	/**
+	 * Output a success message.
+	 *
+	 * @param string The message to output.
+	 */
 	function output_success($message)
 	{
 		echo "<div class=\"success\">{$message}</div>\n";
 	}
 
+	/**
+	 * Output an alert/warning message.
+	 *
+	 * @param string The message to output.
+	 */
 	function output_alert($message)
 	{
 		echo "<div class=\"warning\">{$message}</div>\n";
 	}
 	
+	/**
+	 * Output an inline message.
+	 *
+	 * @param string The message to output.
+	 */
 	function output_inline_message($message)
 	{
 		echo "<div class=\"inline_message\">{$message}</div>\n";
 	}
 	
+	/**
+	 * Output a single error message.
+	 *
+	 * @param string The message to output.
+	 */
 	function output_error($error)
 	{
 		echo "<div class=\"error\">\n";
@@ -183,6 +254,11 @@ var imagepath = '../images';
 		echo "</div>\n";
 	}
 
+	/**
+	 * Output one or more inline error messages.
+	 *
+	 * @param array Array of error messages to output.
+	 */
 	function output_inline_error($errors)
 	{
 		global $lang;
@@ -202,6 +278,13 @@ var imagepath = '../images';
 		echo "</div>\n";
 	}
 
+
+	/**
+	 * Generate the login page.
+	 *
+	 * @param string The any message to output on the page if there is one.
+	 * @param string The class name of the message (defaults to success)
+	 */
 	function show_login($message="", $class="success")
 	{
 		global $lang;
@@ -269,31 +352,47 @@ EOF;
 	exit;
 	}
 
-	function add_menu_item($title, $id, $link, $order=10)
+	/**
+	 * Add an item to the primary navigation menu.
+	 *
+	 * @param string The title of the menu item.
+	 * @param string The ID of the menu item. This should correspond with the module the menu will run.
+	 * @param string The link to follow when the menu item is clicked.
+	 * @param int The display order of the menu item. Lower display order means closer to start of the menu.
+	 * @param array Array of sub menu items if there are any.
+	 */
+	function add_menu_item($title, $id, $link, $order=10, $submenu=array())
 	{
-		$this->menu[$order][] = array(
+		$this->_menu[$order][] = array(
 			"title" => $title,
 			"id" => $id,
-			"link" => $link
+			"link" => $link,
+			"submenu" => $submenu
 		);
 	}
 
-	function build_menu()
+	/**
+	 * Build the actual navigation menu.
+	 */
+	function _build_menu()
 	{
-		if(!is_array($this->menu))
+		if(!is_array($this->_menu))
 		{
 			return false;
 		}
 		$build_menu = "<div id=\"menu\">\n<ul>\n";
-		ksort($this->menu);
-		foreach($this->menu as $items)
+		ksort($this->_menu);
+		foreach($this->_menu as $items)
 		{
 			foreach($items as $menu_item)
 			{
 				$menu_item['link'] = htmlspecialchars($menu_item['link']);
 				if($menu_item['id'] == $this->active_module)
 				{
+					$sub_menu = $menu_item['submenu'];
+					$sub_menu_title = $menu_item['title'];
 					$build_menu .= "<li><a href=\"{$menu_item['link']}\" class=\"active\">{$menu_item['title']}</a></li>\n";
+
 				}
 				else
 				{
@@ -302,9 +401,34 @@ EOF;
 			}
 		}
 		$build_menu .= "</ul>\n</div>";
+
+		if($sub_menu)
+		{
+			$this->_build_submenu($sub_menu_title, $sub_menu);
+		}
 		return $build_menu;
 	}
 	
+
+	/**
+	 * Build a navigation sub menu if we have one.
+	 *
+	 * @param string A title for the sub menu.
+	 * @param array Array of items for the sub menu.
+	 */
+	function _build_submenu($title, $items)
+	{
+		if(is_array($items))
+		{
+			$sidebar = new sideBarItem($title);
+			$sidebar->add_menu_items($items, $this->active_action);
+			$this->sidebar .= $sidebar->get_markup();
+		}
+	}
+
+	/**
+	 * Switch between two different alternating background colours.
+	 */
 	function get_alt_bg()
 	{
 		static $alt_bg;
@@ -319,7 +443,12 @@ EOF;
 			return $alt_bg;
 		}
 	}
-	
+
+	/**
+	 * Output a Javascript based tab control on to the page.
+	 *
+	 * @param array Array of tabs in name => title format. Name should correspond to the name of a DIV containing the tab content.
+	 */
 	function output_tab_control($tabs=array())
 	{
 		echo "<script type=\"text/javascript\">\n";
@@ -350,6 +479,12 @@ EOF;
 		echo "</ul>\n";
 	}
 
+	/**
+	 * Output a series of primary navigation tabs for swithcing between items within a particular module/action.
+	 *
+	 * @param array Nested array of tabs containing possible keys of align, link_target, link, title.
+	 * @param string The name of the active tab. Corresponds with the key of each tab item.
+	 */
 	function output_nav_tabs($tabs=array(), $active='')
 	{
 		echo "<div class=\"nav_tabs\">";
@@ -380,6 +515,12 @@ EOF;
 		echo "</div>";
 	}
 
+	/**
+	 * Output a page asking if a user wishes to continue performing a specific action.
+	 *
+	 * @param string The URL to be forwarded to.
+	 * @param string The confirmation message to output.
+	 */
 	function output_confirm_action($url, $message="")
 	{
 		global $lang;
@@ -402,6 +543,13 @@ EOF;
 		$this->output_footer();
 	}
 
+	/**
+	 * Build a clickable MyCode editor for the Admin CP.
+	 *
+	 * @param string The ID of the textarea to bind the editor to.
+	 * @param string The language string for the editor.
+	 * @return string The build MyCode editor Javascript.
+	 */
 	function build_codebuttons_editor($bind, $editor_language)
 	{
 		global $lang;
@@ -420,19 +568,44 @@ EOF;
 	}
 }
 
+/**
+ * A class for generating side bar blocks.
+ */
 class DefaultSidebarItem
 {
-	var $title;
-	var $contents;
+	/**
+	 * @var The title of the side bar block.
+	 */
+	var $_title;
+
+	/**
+	 * @var string The contents of the side bar block.
+	 */
+	var $_contents;
 	
+	/**
+	 * Constructor. Set the title of the side bar block.
+	 *
+	 * @param string The title of the side bar block.
+	 */
+	function __construct($title="") {
+		$this->_title = $title;
+	}
+
 	function DefaultSidebarItem($title="")
 	{
-		$this->title = $title;
+		$this->__construct($title);
 	}
 	
+	/**
+	 * Add menus item to the side bar block.
+	 *
+	 * @param array Array of menu items to add. Each menu item should be a nested array of id, link and title.
+	 * @param string The ID of the active menu item if there is one.
+	 */
 	function add_menu_items($items, $active)
 	{
-		$this->contents = "<ul class=\"menu\">";
+		$this->_contents = "<ul class=\"menu\">";
 		foreach($items as $item)
 		{
 			$class = "";
@@ -441,58 +614,101 @@ class DefaultSidebarItem
 				$class = "active";
 			}
 			$item['link'] = htmlspecialchars($item['link']);
-			$this->contents .= "<li class=\"{$class}\"><a href=\"{$item['link']}\">{$item['title']}</a></li>\n";
+			$this->_contents .= "<li class=\"{$class}\"><a href=\"{$item['link']}\">{$item['title']}</a></li>\n";
 		}
-		$this->contents .= "</ul>";
+		$this->_contents .= "</ul>";
 	}
 	
+	/**
+	 * Fetch the HTML markup for the side bar box.
+	 */
 	function get_markup()
 	{
 		$markup = "<div class=\"left_menu_box\">\n";
-		$markup .= "<div class=\"title\">{$this->title}</div>\n";
-		if($this->contents)
+		$markup .= "<div class=\"title\">{$this->_title}</div>\n";
+		if($this->_contents)
 		{
-			$markup .= $this->contents;
+			$markup .= $this->_contents;
 		}
 		$markup .= "</div>\n";
 		return $markup;
 	}
 }
 
+/**
+ * Generate a Javascript based popup menu.
+ */
 class DefaultPopupMenu
 {
-	var $title;
-	var $id;
-	var $items;
+	/**
+	 * @var string The title of the popup menu to be shown on the button.
+	 */
+	var $_title;
+
+	/**
+	 * @var string The ID of this popup menu. Must be unique.
+	 */
+	var $_id;
+
+	/**
+	 * @var string Built HTML for the items in the popup menu.
+	 */
+	var $_items;
+
+	/**
+	 * Initialise a new popup menu.
+	 *
+	 * @var string The ID of the popup menu.
+	 * @var string The title of the popup menu.
+	 */
+	function __construct($id, $title='')
+	{
+		$this->_id = $id;
+		$this->_title = $title;
+	}
 
 	function DefaultPopupMenu($id, $title='')
 	{
-		$this->id = $id;
-		$this->title = $title;
+		$this->__construct($id, $title);
 	}
 
+	/**
+	 * Add an item to the popup menu.
+	 *
+	 * @param string The title of this item.
+	 * @param string The page this item should link to.
+	 * @param string The onclick event handler if we have one.
+	 */
 	function add_item($text, $link, $onclick='')
 	{
 		if($onclick)
 		{
 			$onclick = " onclick=\"{$onclick}\"";
 		}
-		$this->items .= "<div class=\"popup_item_container\"><a href=\"{$link}\"{$onclick} class=\"popup_item\">{$text}</a></div>\n";
+		$this->_items .= "<div class=\"popup_item_container\"><a href=\"{$link}\"{$onclick} class=\"popup_item\">{$text}</a></div>\n";
 	}
 
+	/**
+	 * Fetch the contents of the popup menu.
+	 *
+	 * @return string The popup menu.
+	 */
 	function fetch()
 	{
-		$popup = "<div class=\"popup_menu\" id=\"{$this->id}_popup\">\n{$this->items}</div>\n";
-		if($this->title)
+		$popup = "<div class=\"popup_menu\" id=\"{$this->_id}_popup\">\n{$this->_items}</div>\n";
+		if($this->_title)
 		{
-			$popup .= "<a href=\"javascript:;\" id=\"{$this->id}\" class=\"popup_button\">{$this->title}</a>\n";
+			$popup .= "<a href=\"javascript:;\" id=\"{$this->_id}\" class=\"popup_button\">{$this->_title}</a>\n";
 		}
 		$popup .= "<script type=\"text/javascript\">\n";
-		$popup .= "new PopupMenu('{$this->id}');\n";
+		$popup .= "new PopupMenu('{$this->_id}');\n";
 		$popup .= "</script>\n";
 		return $popup;
 	}
 
+	/**
+	 * Outputs a popup menu to the browser.
+	 */
 	function output()
 	{
 		echo $this->fetch();

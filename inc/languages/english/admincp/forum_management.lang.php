@@ -103,6 +103,8 @@ $l['parent_forum_desc'] = "The Forum that contains this forum. Categories do not
 $l['none'] = "None";
 $l['display_order'] = "Display Order";
 
+$l['show_additional_options'] = "Show Additional Options";
+$l['hide_additional_options'] = "Hide Additional Options";
 $l['additional_forum_options'] = "Additional Forum Options";
 $l['forum_link'] = "Forum Link";
 $l['forum_link_desc'] = "To make a forum redirect to another location, enter the URL to the destination you wish to redirect to. Entering a URL in this field will remove the forum functionality; however, permissions can still be set for it.";

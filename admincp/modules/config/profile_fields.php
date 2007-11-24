@@ -378,7 +378,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_profile_fields, array('colspan' => 6));
 		$table->construct_row();

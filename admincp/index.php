@@ -32,58 +32,6 @@ define('MYBB_ADMIN_DIR', MYBB_ROOT."admincp/");
 
 define('COPY_YEAR', my_date('Y', TIME_NOW));
 
-// Check installation (TEMPORARY)
-if(!$db->table_exists('adminlog2'))
-{
-	switch($db->type)
-	{
-		case "sqlite3":
-		case "sqlite2":
-			$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
-			  uid int unsigned NOT NULL default '0',
-			  ipaddress varchar(50) NOT NULL default '',
-			  dateline bigint(30) NOT NULL default '0',
-			  module varchar(50) NOT NULL default '',
-			  action varchar(50) NOT NULL default '',
-			  data text NOT NULL default ''
-			);");
-			 break;
-		case "pgsql":
-			$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
-			  uid int NOT NULL default '0',
-			  ipaddress varchar(50) NOT NULL default '',
-			  dateline bigint NOT NULL default '0',
-			  module varchar(50) NOT NULL default '',
-			  action varchar(50) NOT NULL default '',
-			  data text NOT NULL default ''
-			);");
-			 break;
-		default:
-			$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog2 (
-			  uid int unsigned NOT NULL default '0',
-			  ipaddress varchar(50) NOT NULL default '',
-			  dateline bigint(30) NOT NULL default '0',
-			  module varchar(50) NOT NULL default '',
-			  action varchar(50) NOT NULL default '',
-			  data text NOT NULL default '',
-			  KEY module (module, action)
-			) TYPE=MyISAM;");
-	}
-}
-
-if(!$db->field_exists('data', 'adminsessions'))
-{
-	switch($db->type)
-	{
-		case "pgsql":
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT");
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ALTER COLUMN data SET NOT NULL");
-			break;
-		default:
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
-	}
-}
-
 require_once MYBB_ADMIN_DIR."/inc/class_page.php";
 require_once MYBB_ADMIN_DIR."/inc/class_form.php";
 require_once MYBB_ADMIN_DIR."/inc/class_table.php";
@@ -243,11 +191,7 @@ if($mybb->user['uid'])
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
-		$updated_session = array(
-			"lastactive" => TIME_NOW,
-			"ip" => $ip_address
-		);
-		$db->update_query("adminsessions", $updated_session, "sid='".$db->escape_string($admin_session['sid'])."'");
+		$db->shutdown_query("UPDATE ".TABLE_PREFIX."adminsessions SET lastactive='".TIME_NOW."', ip='".$ipaddress."' WHERE sid='".$db->escape_string($admin_session['sid'])."'");
 	}
 	define("SID", "adminsid={$admin_session['sid']}");
 

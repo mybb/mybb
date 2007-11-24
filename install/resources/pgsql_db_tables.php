@@ -1,4 +1,3 @@
-
 <?php
 /**
  * MyBB 1.2
@@ -12,11 +11,11 @@
 
 $tables[] = "CREATE TABLE mybb_adminlog (
   uid int NOT NULL default '0',
+  ipaddress varchar(50) NOT NULL default '',
   dateline bigint NOT NULL default '0',
-  scriptname varchar(50) NOT NULL default '',
+  module varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
-  querystring varchar(150) NOT NULL default '',
-  ipaddress varchar(50) NOT NULL default ''
+  data text NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_adminoptions (

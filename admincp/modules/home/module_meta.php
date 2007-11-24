@@ -18,8 +18,14 @@ if(!defined("IN_MYBB"))
 function home_meta()
 {
 	global $page, $lang;
+
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?".SID."&module=home/dashboard");
+	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?".SID."&module=home/preferences");
+	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?".SID."&module=home/version_check");
+	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?".SID."&module=home/credits");
 	
-	$page->add_menu_item($lang->home, "home", "index.php?".SID, 1);
+	$page->add_menu_item($lang->home, "home", "index.php?".SID, 1, $sub_menu);
 	
 	return true;
 }
@@ -49,17 +55,6 @@ function home_action_handler($action)
 			$action_file = "index.php";
 	}
 	
-	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?".SID."&module=home/dashboard");
-	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?".SID."&module=home/preferences");
-	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?".SID."&module=home/version_check");
-	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?".SID."&module=home/credits");
-
-	$sidebar = new SidebarItem($lang->home);
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
-	
-	$page->sidebar .= $sidebar->get_markup();
-
 	if($page->active_action == "dashboard")
 	{
 		// Quick Access

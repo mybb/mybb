@@ -128,7 +128,7 @@ if($mybb->input['action'] == "post_tools")
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_post_tools, array('colspan' => 3));
 		$table->construct_row();
@@ -1591,7 +1591,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_thread_tools, array('colspan' => 3));
 		$table->construct_row();

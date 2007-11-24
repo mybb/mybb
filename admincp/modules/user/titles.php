@@ -233,7 +233,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_user_titles, array('colspan' => 4));
 		$table->construct_row();

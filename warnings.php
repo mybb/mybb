@@ -25,6 +25,9 @@ if($mybb->settings['enablewarningsystem'] == 0)
 	error($lang->error_warning_system_disabled);
 }
 
+// Expire old warnings
+expire_warnings();
+
 // Actually warn a user
 if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 {

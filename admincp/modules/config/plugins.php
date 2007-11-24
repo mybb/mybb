@@ -105,7 +105,7 @@ if($mybb->input['action'] == "check")
 		}
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		flash_message($lang->success_plugins_up_to_date, 'success');
 		admin_redirect("index.php?".SID."&module=config/plugins");
@@ -326,7 +326,7 @@ if(!$mybb->input['action'])
 		}
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->contruct_cell($lang->no_plugins, array('colspan' => 2));
 		$table->construct_row();

@@ -38,10 +38,20 @@ var inlineModeration = {
 				if(inlineIds.indexOf(id) != -1)
 				{
 					element.checked = true;
+					var tr = element.up('tr');
+					if(tr)
+					{
+						tr.addClassName('trow_selected');
+					}
 				}
 				else
 				{
 					element.checked = false;
+					var tr = element.up('tr');
+					if(tr)
+					{
+						tr.removeClassName('trow_selected');
+					}
 				}
 			}
 		}
@@ -100,10 +110,20 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount++;
 			newIds[newIds.length] = id;
+			var tr = element.up('tr');
+			if(tr)
+			{
+				tr.addClassName('trow_selected');
+			}
 		}
 		else
 		{
 			inlineModeration.inlineCount--;
+			var tr = element.up('tr');
+			if(tr)
+			{
+				tr.removeClassName('trow_selected');
+			}
 		}
 
 		inlineData = "|"+newIds.join("|")+"|";
@@ -136,6 +156,10 @@ var inlineModeration = {
 			{
 				element.checked = false;
 			}
+		});
+
+		$$('tr.trow_selected').each(function(element) {
+			element.removeClassName('trow_selected');
 		});
 
 		inlineModeration.inlineCount = 0;
@@ -171,6 +195,12 @@ var inlineModeration = {
 			{
 				id = inlineCheck[1];
 				element.checked = master.checked;
+
+				var tr = element.up('tr');
+				if(tr)
+				{
+					tr.addClassName('trow_selected');
+				}
 
 				if(master.checked == true)
 				{

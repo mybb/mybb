@@ -738,7 +738,9 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->display_order, "", $form->generate_text_box('disporder', $forum_data['disporder'], array('id' => 'disporder')), 'disporder');
 	$form_container->end();
 	
-	$form_container = new FormContainer($lang->additional_forum_options);
+	echo "<div id=\"additional_options_link\"><strong><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->show_additional_options}</a></strong><br /><br /></div>";
+	echo "<div id=\"additional_options\" style=\"display: none;\">";
+	$form_container = new FormContainer("<div class=\"float_right\" style=\"font-weight: normal;\"><a href=\"#\" onclick=\"$('additional_options_link').toggle(); $('additional_options').toggle(); return false;\">{$lang->hide_additional_options}</a></div>".$lang->additional_forum_options);
 	$form_container->output_row($lang->forum_link, $lang->forum_link_desc, $form->generate_text_box('linkto', $forum_data['linkto'], array('id' => 'linkto')), 'linkto');
 	$form_container->output_row($lang->forum_password, $lang->forum_password_desc, $form->generate_text_box('password', $forum_data['password'], array('id' => 'password')), 'password');
 	
@@ -841,6 +843,7 @@ if($mybb->input['action'] == "add")
 	
 	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");
 	$form_container->end();
+	echo "</div>";
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
 	while($usergroup = $db->fetch_array($query))
@@ -1638,7 +1641,7 @@ if(!$mybb->input['action'])
 	
 	$submit_options = array();
 	
-	if(count($form_container->container->rows) == 0)
+	if($form_container->num_rows() == 0)
 	{
 		$form_container->output_cell($lang->no_forums, array('colspan' => 3));
 		$form_container->construct_row();
@@ -1778,7 +1781,7 @@ if(!$mybb->input['action'])
 			$form_container->construct_row();
 		}
 		
-		if(count($form_container->container->rows) == 0)
+		if($form_container->num_rows() == 0)
 		{
 			$form_container->output_cell($lang->no_moderators, array('colspan' => 3));
 			$form_container->construct_row();

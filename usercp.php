@@ -2716,6 +2716,8 @@ if(!$mybb->input['action'])
 		
 		if($warning_level > 0)
 		{
+			expire_warnings();
+
 			$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
 			// Fetch latest warnings
 			$query = $db->query("
@@ -2775,7 +2777,10 @@ if(!$mybb->input['action'])
 				$alt_bg = alt_trow();
 				eval("\$warnings .= \"".$templates->get("usercp_warnings_warning")."\";");
 			}
-			eval("\$latest_warnings = \"".$templates->get("usercp_warnings")."\";");
+			if($warnings)
+			{
+				eval("\$latest_warnings = \"".$templates->get("usercp_warnings")."\";");
+			}	
 		}
 	}
 

@@ -668,7 +668,7 @@ if(!$mybb->input['action'])
 	}
 	
 	// No documents message
-	if(count($table->rows) == 0)
+	if($table->num_rows()  == 0)
 	{
 		$table->construct_cell($lang->no_help_documents, array('colspan' => 3));
 		$table->construct_row();

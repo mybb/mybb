@@ -597,6 +597,19 @@ function upgrade11_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longlastip;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longlastip int(10) NOT NULL default '0' AFTER lastip");
+
+	$db->drop_table("adminlog");
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog (
+	  uid int unsigned NOT NULL default '0',
+	  ipaddress varchar(50) NOT NULL default '',
+	  dateline bigint(30) NOT NULL default '0',
+	  module varchar(50) NOT NULL default '',
+	  action varchar(50) NOT NULL default '',
+	  data text NOT NULL default '',
+	  KEY module (module, action)
+	) TYPE=MyISAM{$collation};");
+
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
 	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

@@ -298,6 +298,9 @@ if(!$mybb->input['action'])
 		$ordersel['asc'] = ' selected="selected"';
 	}
 	
+	// Expire any warnings past their expiration date
+	expire_warnings();
+
 	// Pagination stuff
 	$sql = "
 		SELECT COUNT(wid) as count
@@ -400,7 +403,7 @@ if(!$mybb->input['action'])
 		$table->construct_row();
 	}
 	
-	if(count($table->rows) == 0)
+	if($table->num_rows() == 0)
 	{
 		$table->construct_cell($lang->no_warning_logs, array("colspan" => "6"));
 		$table->construct_row();
