@@ -1224,86 +1224,96 @@ class Moderation
 	 * Approve multiple posts
 	 *
 	 * @param array PIDs
-	 * @param int Thread ID
-	 * @param int Forum ID
 	 * @return boolean true
 	 */
-	function approve_posts($pids, $tid, $fid)
+	function approve_posts($pids)
 	{
-		global $db, $cache, $plugins;
+		global $db, $cache;
 
-		$thread = get_thread($tid);
-		
 		$num_posts = 0;
-		foreach($pids as $pid)
-		{
-			$query = $db->query("
-				SELECT p.tid, f.usepostcounts, p.uid, p.visible
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
-				WHERE p.pid='{$pid}' AND p.visible = '0'
-			");
-			while($post = $db->fetch_array($query))
-			{
-				// If post counts enabled in this forum and the post hasn't already been approved, add 1
-				if($post['usepostcounts'] != "no")
-				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
-				}
-			}
-			++$num_posts;
-		}
-		
-		$where = "pid IN (".implode(",", $pids).")";
+		$pid_list = implode(",", $pids);
+		$pids = array();
 
 		// Make visible
 		$approve = array(
 			"visible" => 1,
 		);
-		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
-
-		$plugins->run_hooks("class_moderation_approve_posts", $pids);
-
-		$is_first = false;
-		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid, pid", "pid='{$thread['firstpost']}' AND visible='1'");
-		$first_post = $db->fetch_array($query);
-		if($first_post['tid'])
+		
+		$query = $db->query("
+			SELECT p.pid, p.tid, f.fid, f.usepostcounts, p.uid, p.visible, t.visible AS threadvisible, t.replies AS threadreplies, t.firstpost AS threadfirstpost, t.unapprovedposts AS threadunapprovedposts
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+			WHERE p.pid IN ($pid_list) AND p.visible = '0'
+		");
+		while($post = $db->fetch_array($query))
 		{
-			if(in_array($first_post['pid'], $pids)) 
-			{ 
-				$is_first = true; 
-				// Thread is invisible, update impled counters
-				if($thread['visible'] == 0)
+			// If post counts enabled in this forum and the post hasn't already been approved, add 1
+			if($post['usepostcounts'] != "no" && $thread['visible'] == 1)
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='".$post['uid']."'");
+			}
+
+			$pids[] = $post['pid'];
+
+			if(!$thread_counters[$post['tid']]['unapprovedposts'])
+			{
+				$thread_counters[$post['tid']]['unapprovedposts'] = $post['threadunapprovedposts'];
+			}
+			--$thread_counters[$post['tid']]['unapprovedposts'];
+
+			if($post['threadfirstpost'] != $post['pid'])
+			{
+				if(!$thread_counters[$post['tid']]['replies'])
 				{
-					$num_posts += $thread['replies'];
+					$thread_counters[$post['tid']]['replies'] = $post['threadreplies'];
 				}
-				$db->update_query(TABLE_PREFIX."threads", $approve, "tid='{$first_post['tid']}'");
+				++$thread_counters[$post['tid']]['replies'];
+			}
+
+			// Only add to the forum count if the thread is invisible
+			if($post['threadvisible'] == 0)
+			{
+				++$forum_counters[$post['fid']]['num_posts'];
+			}
+
+			// If the first post here matches and thread is invisible, we approve the thread too
+			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 0)
+			{
+				$thread_counters[$post['tid']]['visible'] = 1;
+				$thread_counters[$post['tid']]['unapprovedposts'] += 1;
+				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies']; 
+				$forum_counters[$post['fid']]['num_threads']++;
 			}
 		}
-		if($is_first) 
-		{
-			$updated_thread_stats['replies'] = $num_posts-1; 
-		} 
-		else 
-		{ 
-			$updated_thread_stats['replies'] = "+{$num_posts}"; 
-		}
-		$updated_thread_stats['unapprovedposts'] = "-".$num_posts;
-		update_thread_counters($tid, $updated_thread_stats); 
-	
-		$updated_forum_stats = array( 
-			"posts" => "+{$num_posts}", 
-			"unapprovedposts" => "-{$num_posts}" 
-		); 
-	
-		if($is_first) 
-		{ 
-			$updated_forum_stats['threads'] = "+1"; 
-			$updated_forum_stats['unapprovedthreads'] = "-1"; 
-		} 
-		update_forum_counters($fid, $updated_forum_stats);
+		
+		if(!count($pids)) return false;
 
+		$where = "pid IN (".implode(",", $pids).")";		
+		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
+
+		if(is_array($thread_counters))
+		{
+			foreach($thread_counters as $tid => $counters)
+			{
+				$db->update_query(TABLE_PREFIX."threads", $counters, "tid='{$tid}'");
+			}
+		}
+		
+		if(is_array($forum_counters))
+		{
+			foreach($forum_counters as $fid => $counters)
+			{
+				$updated_forum_stats = array(
+					"posts" => "+{$counters['num_posts']}",
+					"unapprovedposts" => "-{$counters['num_posts']}",
+					"threads" => "+{$counters['num_threads']}",
+					"unapprovedthreads" => "-{$counters['num_threads']}"
+				);
+				
+				update_forum_counters($fid, $updated_forum_stats);
+			}
+		}
 		return true;
 	}
 
@@ -1311,95 +1321,93 @@ class Moderation
 	 * Unapprove multiple posts
 	 *
 	 * @param array PIDs
-	 * @param int Thread ID
-	 * @param int Forum ID
 	 * @return boolean true
 	 */
 	function unapprove_posts($pids, $tid, $fid)
 	{
-		global $db, $cache, $plugins;
-		
-		$thread = get_thread($tid);
-		
-		$num_posts = 0;
-		foreach($pids as $pid)
-		{
-			$query = $db->query("
-				SELECT p.tid, f.usepostcounts, p.uid
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
-				WHERE p.pid='{$pid}' AND p.visible = '1'
-			");
-			while($post = $db->fetch_array($query))
-			{
-				// If post counts enabled in this forum and the post hasn't already been unapproved, remove 1
-				if($post['usepostcounts'] != "no")
-				{
-					$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
-				}
-				$num_posts++;
-			}
-		}
+		global $db, $cache;
 
-		$where = "pid IN (".implode(",", $pids).")";
+		$pid_list = implode(",", $pids);
+		$pids = array();
 
-		// Make visible
-		$unapprove = array(
+		// Make invisible
+		$approve = array(
 			"visible" => 0,
 		);
-		$db->update_query(TABLE_PREFIX."posts", $unapprove, $where);
-
-		$plugins->run_hooks("class_moderation_unapprove_posts", $pids);
-
-		$is_first = false;
-		// If this is the first post of the thread, also approve the thread
-		$query = $db->simple_select(TABLE_PREFIX."posts", "tid,pid", "pid='{$thread['firstpost']}' AND visible='0'");
-		$first_post = $db->fetch_array($query);
-		if($first_post['tid'])
+		
+		$query = $db->query("
+			SELECT p.pid, p.tid, f.fid, f.usepostcounts, p.uid, p.visible, t.visible AS threadvisible, t.replies AS threadreplies, t.firstpost AS threadfirstpost, t.unapprovedposts AS threadunapprovedposts
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=p.fid)
+			WHERE p.pid IN ($pid_list) AND p.visible = '1'
+		");
+		while($post = $db->fetch_array($query))
 		{
-			if(in_array($first_post['pid'], $pids))
-			{ 
-				$is_first = true; 
-				// Thread is visible, update impled counters
-				if($thread['visible'] == 1)
+			// If post counts enabled in this forum and the post hasn't already been unapproved, subtract 1
+			if($post['usepostcounts'] != "no" && $thread['visible'] == 1)
+			{
+				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
+			}
+
+			$pids[] = $post['pid'];
+
+			if(!$thread_counters[$post['tid']]['unapprovedposts'])
+			{
+				$thread_counters[$post['tid']]['unapprovedposts'] = $post['threadunapprovedposts'];
+			}
+			++$thread_counters[$post['tid']]['unapprovedposts'];
+			if($post['threadfirstpost'] != $post['pid'])
+			{
+				if(!$thread_counters[$post['tid']]['replies'])
 				{
-					$num_posts += $thread['replies'];
+					$thread_counters[$post['tid']]['replies'] = $post['threadreplies'];
 				}
-				$db->update_query(TABLE_PREFIX."threads", $unapprove, "tid='{$first_post['tid']}'");
+				$thread_counters[$post['tid']]['replies'] = $thread_counters[$post['tid']]['replies']-1;
+			}
+
+			if($post['threadvisible'] == 1)
+			{
+				++$forum_counters[$post['fid']]['num_posts'];
+			}
+
+			// If the first post here matches and thread is visible, we unapprove the thread too
+			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 1)
+			{
+				$thread_counters[$post['tid']]['visible'] = 0;
+				$thread_counters[$post['tid']]['unapprovedposts'] -= 1;
+				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies']; 
+				$forum_counters[$post['fid']]['num_threads']++;
+			}
+		}
+
+		if(!count($pids)) return false;
+
+		$where = "pid IN (".implode(",", $pids).")";		
+		$db->update_query(TABLE_PREFIX."posts", $approve, $where);
+
+		if(is_array($thread_counters))
+		{
+			foreach($thread_counters as $tid => $counters)
+			{
+				$db->update_query(TABLE_PREFIX."threads", $counters, "tid='{$tid}'");
 			}
 		}
 		
-		$updated_thread_stats = array( 
-			"unapprovedposts" => "+{$num_posts}",
-		);
-		
-		if($is_first) 
-		{ 
-			$updated_thread_stats['replies'] = "-".($num_posts-1);
-		} 
-		else 
+		if(is_array($forum_counters))
 		{
-			$updated_thread_stats['replies'] = "-{$num_posts}";
+			foreach($forum_counters as $fid => $counters)
+			{
+				$updated_forum_stats = array(
+					"posts" => "-{$counters['num_posts']}",
+					"unapprovedposts" => "+{$counters['num_posts']}",
+					"threads" => "-{$counters['num_threads']}",
+					"unapprovedthreads" => "+{$counters['num_threads']}"
+				);
+				
+				update_forum_counters($fid, $updated_forum_stats);
+			}
 		}
-		
-		update_thread_counters($tid, $updated_thread_stats);
-		
-		$updated_forum_stats = array( 
-			"posts" => "-{$num_posts}", 
-			"unapprovedposts" => "+{$num_posts}" 
-		);
-		
-		if($is_first) 
-		{ 
-			$updated_forum_stats['threads'] = "-1"; 
-			$updated_forum_stats['unapprovedthreads'] = "+1"; 
-		}			
-		
-		if(is_array($updated_forum_stats))
-		{
-			update_forum_counters($fid, $updated_forum_stats);
-		}
-
 		return true;
 	}
 

@@ -890,7 +890,6 @@ class UserDataHandler extends DataHandler
 	{
 		global $db, $plugins;
 
-
 		// Yes, validating is required.
 		if(!$this->get_validated())
 		{

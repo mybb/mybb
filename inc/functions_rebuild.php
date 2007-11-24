@@ -16,14 +16,29 @@ function rebuild_stats()
 {
 	global $db;
 
-	$query = $db->simple_select(TABLE_PREFIX."threads", "COUNT(tid) AS threads", "visible='1' AND closed NOT LIKE 'moved|%'");
-	$stats['numthreads'] = $db->fetch_field($query, 'threads');
+	$query = $db->simple_select(TABLE_PREFIX."forums", "SUM(threads) AS numthreads");
+	$stats['numthreads'] = $db->fetch_field($query, 'numthreads');
 	
-	$query = $db->simple_select(TABLE_PREFIX."posts", "COUNT(pid) AS posts", "visible='1'");
-	$stats['numposts'] = $db->fetch_field($query, 'posts');
-
+	if(!$stats['numthreads'])
+	{
+		$stats['numthreads'] = 0;
+	}
+	
+	$query = $db->simple_select(TABLE_PREFIX."forums", "SUM(posts) AS numposts");
+	$stats['numposts'] = $db->fetch_field($query, 'numposts');
+	
+	if(!$stats['numposts'])
+	{
+		$stats['numposts'] = 0;
+	}
+	
 	$query = $db->simple_select(TABLE_PREFIX."users", "COUNT(uid) AS users");
 	$stats['numusers'] = $db->fetch_field($query, 'users');
+	
+	if(!$stats['numusers'])
+	{
+		$stats['numusers'] = 0;
+	}
 
 	update_stats($stats);
 }
