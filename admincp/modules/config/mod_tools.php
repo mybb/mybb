@@ -545,13 +545,20 @@ if($mybb->input['action'] == "add_thread_tool")
 			$new_tool['description'] = $db->escape_string($mybb->input['description']);
 			$new_tool['forums'] = '';
 			
-			if(is_array($mybb->input['forum_1_forums']))
+			if($mybb->input['forum_type'] == 2)
 			{
-				foreach($mybb->input['forum_1_forums'] as $fid)
+				if(is_array($mybb->input['forum_1_forums']))
 				{
-					$checked[] = intval($fid);
+					foreach($mybb->input['forum_1_forums'] as $fid)
+					{
+						$checked[] = intval($fid);
+					}
+					$new_tool['forums'] = implode(',', $checked);
 				}
-				$new_tool['forums'] = implode(',', $checked);
+			}
+			else
+			{
+				$new_tools['forums'] = "-1";
 			}
 		
 			$tid = $db->insert_query("modtools", $new_tool);

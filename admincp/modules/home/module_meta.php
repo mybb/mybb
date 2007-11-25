@@ -99,7 +99,7 @@ function home_action_handler($action)
 		}
 		$online_users .= "</ul>";
 		$sidebar = new SidebarItem($lang->online_admins);
-		$sidebar->contents = $online_users;
+		$sidebar->_contents = $online_users;
 
 		$page->sidebar .= $sidebar->get_markup();
 	}

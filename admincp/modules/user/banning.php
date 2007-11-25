@@ -175,14 +175,6 @@ if($mybb->input['action'] == "ban")
 	}
 	$page->add_breadcrumb_item($lang->ban_a_user);
 	$page->output_header($lang->ban_a_user);
-	// Autocompletion for usernames
-	echo '
-	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
-	<script type="text/javascript">
-	<!--
-		new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
-	// -->
-	</script>';
 	$page->output_nav_tabs($sub_tabs, "ban");
 
 	$form = new Form("index.php?".SID."&amp;module=user/banning&amp;action=ban", "post");
@@ -210,6 +202,15 @@ if($mybb->input['action'] == "ban")
 	$form_container->output_row($lang->ban_time, "", $form->generate_select_box('bantime', $length_list, $mybb->input['bantime'], array('id' => 'bantime')), 'bantime');	
 
 	$form_container->end();
+
+	// Autocompletion for usernames
+	echo '
+	<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
+	<script type="text/javascript">
+	<!--
+		new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
+	// -->
+	</script>';
 
 	$buttons[] = $form->generate_submit_button($lang->ban_user);
 	$form->output_submit_wrapper($buttons);

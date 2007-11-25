@@ -422,7 +422,7 @@ EOF;
 		{
 			$sidebar = new sideBarItem($title);
 			$sidebar->add_menu_items($items, $this->active_action);
-			$this->sidebar .= $sidebar->get_markup();
+			$this->sidebar = $sidebar->get_markup().$this->sidebar;
 		}
 	}
 

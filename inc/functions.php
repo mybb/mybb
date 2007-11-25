@@ -4641,7 +4641,7 @@ function is_banned_username($username, $update_lastuse=false)
 	while($banned_username = $db->fetch_array($query))
 	{
 		// Make regular expression * match
-		$banned_username['filter'] = preg_replace('#\*#', '(.*)', preg_quote($banned_username['filter'], '#'));
+		$banned_username['filter'] = str_replace('\*', '(.*)', preg_quote($banned_username['filter'], '#'));
 		if(preg_match("#{$banned_username['filter']}#i", $username))
 		{
 			// Updating last use

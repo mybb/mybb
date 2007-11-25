@@ -58,7 +58,7 @@ if($mybb->input['action'] == "add")
 
 			$cache->update_attachtypes();
 
-			flash_message($lang->attachment_type_created, 'success');
+			flash_message($lang->success_attachment_type_created, 'success');
 			admin_redirect("index.php?".SID."&module=config/attachment_types");
 		}
 	}
@@ -138,12 +138,12 @@ if($mybb->input['action'] == "edit")
 		
 	if($mybb->request_method == "post")
 	{
-		if(!trim($mybb->input['mimetype']))
+		if(!trim($mybb->input['mimetype']) && !trim($mybb->input['extension']))
 		{
 			$errors[] = $lang->error_missing_mime_type;
 		}
 
-		if(!trim($mybb->input['extension']))
+		if(!trim($mybb->input['extension']) && !trim($mybb->input['mimetype']))
 		{
 			$errors[] = $lang->error_missing_extension;
 		}
@@ -153,6 +153,11 @@ if($mybb->input['action'] == "edit")
 			if($mybb->input['mimetype'] == "images/attachtypes/")
 			{
 				$mybb->input['mimetype'] = '';
+			}
+			
+			if($mybb->input['extension']{0} == '.')
+			{
+				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
 
 			$updated_type = array(
@@ -302,7 +307,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($attachment_type['icon'], array("width" => 1));
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
 		$table->construct_cell($attachment_type['mimetype']);
-		$table->construct_cell(get_friendly_size($attachment_type['maxsize']), array("class" => "align_center"));
+		$table->construct_cell(get_friendly_size(($attachment_type['maxsize']*1024)), array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();

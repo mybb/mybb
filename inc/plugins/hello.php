@@ -33,7 +33,7 @@ function hello_info()
 	 */
 	return array(
 		"name"			=> "Hello World!",
-		"description"	=> "A sample plugin that prints hello world and changes the content of each post to 'Hello world!'",
+		"description"	=> "A sample plugin that prints hello world and prepends the content of each post to 'Hello world!'",
 		"website"		=> "http://www.mybboard.net",
 		"author"		=> "MyBB Group",
 		"authorsite"	=> "http://www.mybboard.net",

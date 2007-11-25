@@ -1790,6 +1790,13 @@ if(!$mybb->input['action'])
 		$form_container->end();
 		
 		$buttons = array();
+		$form = new Form("index.php?".SID."&amp;module=forum/management", "post", "management");
+		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
+		echo $form->generate_hidden_field("add", "moderators");
+		$form_container = new FormContainer($lang->add_moderator);
+		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
+		$form_container->end();
+		
 		// Autocompletion for usernames
 		echo '
 		<script type="text/javascript" src="../jscripts/autocomplete.js?ver=140"></script>
@@ -1798,12 +1805,7 @@ if(!$mybb->input['action'])
 			new autoComplete("username", "../xmlhttp.php?action=get_users", {valueSpan: "username"});
 		// -->
 		</script>';
-		$form = new Form("index.php?".SID."&amp;module=forum/management", "post", "management");
-		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
-		echo $form->generate_hidden_field("add", "moderators");
-		$form_container = new FormContainer($lang->add_moderator);
-		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-		$form_container->end();
+		
 		$buttons[] = $form->generate_submit_button($lang->add_moderator);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -1869,7 +1871,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$popup->add_item($lang->subforums, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->moderators, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}#tab_moderators");
 				$popup->add_item($lang->permissions, "index.php?".SID."&amp;module=forum/management&amp;fid={$forum['fid']}#tab_permissions");
-				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;fid={$forum['fid']}");
+				$popup->add_item($lang->add_child_forum, "index.php?".SID."&amp;module=forum/management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?".SID."&amp;module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
 				$popup->add_item($lang->delete_forum, "index.php?".SID."&amp;module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
 				

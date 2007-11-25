@@ -2192,7 +2192,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$profile_field['length'] = 3;
 				}
-				$code = $form->generate_select_box('profile_fields[{$field_name}][]', $options, $selected_options, array('id' => "profile_field_{$field_name}", 'multiple' => true, 'size' => $profile_field['length']));
+				$code = $form->generate_select_box("profile_fields[{$field_name}][]", $options, $selected_options, array('id' => "profile_field_{$field_name}", 'multiple' => true, 'size' => $profile_field['length']));
 				break;
 			case "select":
 				$select_options = explode("\n", $options);
@@ -2206,14 +2206,14 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$profile_field['length'] = 1;
 				}
-				$code = $form->generate_select_box('profile_fields[{$field_name}]', $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+				$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
 				break;
 			case "radio":
 				$radio_options = explode("\n", $options);
 				foreach($radio_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_radio_button('profile_fields[{$field_name}]', $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
+					$code .= $form->generate_radio_button("profile_fields[{$field_name}]", $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
 				}
 				break;
 			case "checkbox":
@@ -2233,14 +2233,14 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				foreach($select_options as $val)
 				{
 					$val = trim($val);
-					$code .= $form->generate_check_box('profile_fields[{$field_name}][]', $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
+					$code .= $form->generate_check_box("profile_fields[{$field_name}][]", $val, $val, array('id' => "profile_field_{$field_name}", 'checked' => ($val == $values[$field_name] ? true : false)))."<br />";
 				}
 				break;
 			case "textarea":
-				$code = $form->generate_text_area('profile_fields[{$field_name}]', $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50));
+				$code = $form->generate_text_area("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50));
 				break;
 			default:
-				$code = $form->generate_text_box('profile_fields[{$field_name}]', $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length']));
+				$code = $form->generate_text_box("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length']));
 				break;
 		}
 		$form_container->output_row($profile_field['name'], $profile_field['description'], $code, array('id' => "profile_field_{$field_name}"));
