@@ -70,6 +70,7 @@ else
 	$loadstyle = "def=1";
 }
 
+// Load basic theme information that we could be needing.
 $query = $db->simple_select("themes", "name, tid, properties", $loadstyle);
 $theme = $db->fetch_array($query);
 $theme = @array_merge($theme, unserialize($theme['properties']));
@@ -103,8 +104,6 @@ else
 
 $lang->load("global");
 $lang->load("xmlhttp");
-
-// Load basic theme information that we could be needing.
 
 $plugins->run_hooks("xmlhttp");
 
