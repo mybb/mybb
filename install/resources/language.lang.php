@@ -168,6 +168,8 @@ $l['db_step_config_table'] = '<div class="border_wrapper">
 	<td class="last alt_col"><select name="encoding">
 {6}
 </select>
+</td>
+</tr>
 </table>
 </div>
 <p>Once you\'ve checked these details are correct, click next to continue.</p>';

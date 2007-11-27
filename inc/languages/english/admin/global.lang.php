@@ -54,7 +54,7 @@ $l['invalidlogin_message'] = "A user has tried to access the Administration Cont
 
 $l['cannot_perform_action_super_admin'] = "Sorry, but you cannot perform this action on the specified user as they are a super administrator.<br /><br />To be able to perform this action, you need to contact your super administrator.";
 
-$l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform this actionas you are not a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
+$l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform this actions you are not a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
 
 $l['error_fill_form'] = "One or more form fields were invalid or left blank.  Please go back and try again.";
 

@@ -74,6 +74,7 @@ else
 	$loadstyle = "def=1";
 }
 
+// Load basic theme information that we could be needing.
 $query = $db->simple_select(TABLE_PREFIX."themes", "name, tid, themebits", $loadstyle);
 $theme = $db->fetch_array($query);
 $theme = @array_merge($theme, unserialize($theme['themebits']));
@@ -99,8 +100,6 @@ $charset = $lang->settings['charset'];
 
 $lang->load("global");
 $lang->load("xmlhttp");
-
-// Load basic theme information that we could be needing.
 
 $plugins->run_hooks("xmlhttp");
 
