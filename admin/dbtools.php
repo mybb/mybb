@@ -78,7 +78,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			'text' => 'blob',
 			'mediumtext' => 'mediumblob',
 			'longtext' => 'longblob',
-			'char' => 'binary',
+			'char' => 'varbinary',
 			'varchar' => 'varbinary',
 			'tinytext' => 'tinyblob'
 		);
@@ -139,11 +139,6 @@ if($mybb->input['action'] == "utf8_conversion")
 				$convert_to_utf8 .= "{$comma}{$names}{$column['Type']} CHARACTER SET utf8 COLLATE utf8_general_ci{$attributes}";
 				
 				$comma = ', ';
-				
-				if($type == "char")
-				{
-					$update_fix_no[] = $column['Field'];
-				}
 			}
 		}
 		
@@ -152,15 +147,6 @@ if($mybb->input['action'] == "utf8_conversion")
 			// This converts the columns to UTF-8 while also doing the same for data
 			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_binary}");
 			$db->query("ALTER TABLE {$mybb->input['table']} {$convert_to_utf8}");
-		}
-		
-		// A wierd issue where char(3) columns with the value of no are set to no? - This will fix those
-		if(is_array($update_fix_no))
-		{
-			foreach($update_fix_no as $key => $field)
-			{
-				$db->query("UPDATE {$mybb->input['table']} SET {$field}='no' WHERE {$field} != 'yes'");
-			}
 		}
 
 		// Any fulltext indexes to recreate?
@@ -327,16 +313,11 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;	
 	}
 	
-	// From here we display a list of tables to convert. This is the first step
-	if(!$config['db_encoding'])
-	{
-		cperror($lang->error_db_encoding_not_set);
-	}
-	
 	$tables = $db->list_tables($config['database']);
 	
 	$not_okey_count = 0;
 	$not_okey = array();
+	$okay_count = 0;
 	
 	foreach($tables as $key => $tablename)
 	{		
@@ -349,6 +330,10 @@ if($mybb->input['action'] == "utf8_conversion")
 				$not_okey[$key] = $tablename;
 				++$not_okey_count;
 			}
+			else
+			{
+				++$okay_count;
+			}
 			
 			$mybb_tables[$key] = $tablename;		
 		}
@@ -360,7 +345,18 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		$disabled = " disabled=\"disabled\"";
 	}
+	else if($okay_count == count($mybb_tables))
+	{
+		cperror($lang->error_all_tables_already_converted);
+	}
 	
+	// From here we display a list of tables to convert. This is the first step
+	if(!$config['db_encoding'])
+	{
+		cperror($lang->error_db_encoding_not_set);
+	}
+	
+
 	$hopto[] = "<input type=\"button\" value=\"{$lang->convert_all}\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\"{$disabled} />";
 	makehoptolinks($hopto);
 	
