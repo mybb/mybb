@@ -733,7 +733,7 @@ if($mybb->input['action'] == "manage")
 				$group_title = htmlspecialchars_uni($setting['title']);
 			}
 			$table->construct_cell($setting['title'], array('style' => 'padding-left: 40px;'));
-			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%')), array('class' => 'align_center'));
+			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
 			// Only show options if not a default setting group
 			if($group['isdefault'] != 1)
 			{
