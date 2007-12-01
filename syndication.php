@@ -127,7 +127,7 @@ while($thread = $db->fetch_array($query))
 if(!empty($firstposts))
 {
 	$firstpostlist = "pid IN(".implode(',', $firstposts).")";
-	$query = $db->simple_select(TABLE_PREFIX."posts", "message, edittime, tid", $firstpostlist);	
+	$query = $db->simple_select(TABLE_PREFIX."posts", "message, edittime, tid", $firstpostlist, array('order_by' => 'dateline', 'order_dir' => 'desc'));	
 	while($post = $db->fetch_array($query))
 	{
 		$items[$post['tid']]['description'] = $parser->strip_mycode($post['message'], $parser_options);
