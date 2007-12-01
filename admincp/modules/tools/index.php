@@ -83,7 +83,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			'text' => 'blob',
 			'mediumtext' => 'mediumblob',
 			'longtext' => 'longblob',
-			'char' => 'binary',
+			'char' => 'varbinary',
 			'varchar' => 'varbinary',
 			'tinytext' => 'tinyblob'			
 		);
@@ -124,7 +124,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			if(array_key_exists($type, $types))
 			{
 				// Build the actual strings for converting the columns
-				$names = "CHANGE {$column['Field']} {$column['Field']} ";
+				$names = "CHANGE `{$column['Field']}` `{$column['Field']}` ";
 				
 				$attributes = " DEFAULT ";
 				if($column['Default'] == 'NULL')
@@ -235,12 +235,6 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 	
-	if(!$mybb->config['database']['encoding'])
-	{
-		flash_message($lang->error_db_encoding_not_set, 'error');
-		admin_redirect("index.php?".SID."&module=tools/index");
-	}
-	
 	$tables = $db->list_tables($config['database']['database']);
 	
 	$old_table_prefix = $db->table_prefix;
@@ -248,6 +242,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	$not_okey_count = 0;
 	$not_okey = array();
+	$okey_count = 0;
 	
 	foreach($tables as $key => $tablename)
 	{		
@@ -260,12 +255,27 @@ if($mybb->input['action'] == "utf8_conversion")
 				$not_okey[$key] = $tablename;
 				++$not_okey_count;
 			}
+			else
+			{
+				++$okay_count;
+			}
 			
 			$mybb_tables[$key] = $tablename;		
 		}
 	}
 	
 	$db->set_table_prefix($old_table_prefix);
+	
+	if($okay_count == count($mybb_tables))
+	{
+		cperror($lang->error_all_tables_already_converted);
+	}
+	
+	if(!$mybb->config['database']['encoding'])
+	{
+		flash_message($lang->error_db_encoding_not_set, 'error');
+		admin_redirect("index.php?".SID."&module=tools/index");
+	}
 	
 	asort($mybb_tables);
 	

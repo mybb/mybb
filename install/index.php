@@ -27,7 +27,30 @@ $error_handler = new errorHandler();
 // Include the files necessary for installation
 require_once MYBB_ROOT.'inc/class_timers.php';
 require_once MYBB_ROOT.'inc/functions.php';
-require_once MYBB_ROOT.'admin/adminfunctions.php';
+
+$admin_dir = "admin";
+
+// Perform a check if MyBB is already installed or not
+$installed = false;
+if(file_exists(MYBB_ROOT."/inc/config.php") && file_exists(MYBB_ROOT."/inc/settings.php"))
+{
+	require MYBB_ROOT."/inc/config.php";
+	require MYBB_ROOT."/inc/settings.php";
+	if(is_array($config) && is_array($settings))
+	{
+		$installed = true;
+		if(isset($config['admindir']))
+		{
+			$admin_dir = $config['admindir'];
+		}
+		else if(isset($config['admin_dir']))
+		{
+			$admin_dir = $config['admin_dir'];
+		}
+	}
+}
+
+require_once MYBB_ROOT.$admin_dir.'/adminfunctions.php';
 require_once MYBB_ROOT.'inc/class_xml.php';
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';
@@ -106,18 +129,6 @@ if(class_exists('PDO'))
 			'structure_file' => 'sqlite_db_tables.php',
 			'population_file' => 'mysql_db_inserts.php'
 		);
-	}
-}
-
-// Perform a check if MyBB is already installed or not
-$installed = false;
-if(file_exists(MYBB_ROOT."/inc/config.php") && file_exists(MYBB_ROOT."/inc/settings.php"))
-{
-	require MYBB_ROOT."/inc/config.php";
-	require MYBB_ROOT."/inc/settings.php";
-	if(is_array($config) && is_array($settings))
-	{
-		$installed = true;
 	}
 }
 
