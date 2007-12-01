@@ -211,21 +211,22 @@ if($mybb->input['action'] == "send")
 
 	if($mybb->input['preview'] || $send_errors)
 	{
+		$options = $mybb->input['options'];
 		if($options['signature'] == "yes")
 		{
-			$optionschecked['signature'] = "checked";
+			$optionschecked['signature'] = "checked=\"checked\"";
 		}
 		if($options['disablesmilies'] == "yes")
 		{
-			$optionschecked['disablesmilies'] = "checked";
+			$optionschecked['disablesmilies'] = "checked=\"checked\"";
 		}
 		if($options['savecopy'] != "no")
 		{
-			$optionschecked['savecopy'] = "checked";
+			$optionschecked['savecopy'] = "checked=\"checked\"";
 		}
 		if($options['readreceipt'] != "no")
 		{
-			$optionschecked['readreceipt'] = "checked";
+			$optionschecked['readreceipt'] = "checked=\"checked\"";
 		}
 		$to = htmlspecialchars_uni($mybb->input['to']);
 	}
@@ -233,7 +234,6 @@ if($mybb->input['action'] == "send")
 	// Preview
 	if($mybb->input['preview'])
 	{
-		$options = $mybb->input['options'];
 		$query = $db->query("
 			SELECT u.username AS userusername, u.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem
 			FROM ".TABLE_PREFIX."users u
