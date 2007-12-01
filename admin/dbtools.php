@@ -114,7 +114,7 @@ if($mybb->input['action'] == "utf8_conversion")
 			if(array_key_exists($type, $types))
 			{
 				// Build the actual strings for converting the columns
-				$names = "CHANGE {$column['Field']} {$column['Field']} ";
+				$names = "CHANGE `{$column['Field']}` `{$column['Field']}` ";
 				
 				$attributes = " DEFAULT ";
 				if($column['Default'] == 'NULL')
@@ -341,11 +341,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	asort($mybb_tables);
 	
-	if($not_okey_count == count($mybb_tables))
-	{
-		$disabled = " disabled=\"disabled\"";
-	}
-	else if($okay_count == count($mybb_tables))
+	if($okay_count == count($mybb_tables))
 	{
 		cperror($lang->error_all_tables_already_converted);
 	}
@@ -357,7 +353,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	}
 	
 
-	$hopto[] = "<input type=\"button\" value=\"{$lang->convert_all}\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\"{$disabled} />";
+	$hopto[] = "<input type=\"button\" value=\"{$lang->convert_all}\" onclick=\"hopto('dbtools.php?".SID."&amp;action=utf8_conversion&amp;table=all');\" class=\"hoptobutton\" />";
 	makehoptolinks($hopto);
 	
 	starttable();
