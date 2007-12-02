@@ -378,6 +378,8 @@ class postParser
 		{
 			$this->cache_smilies();
 		}
+		
+		$message = ' ' . $message . ' ';
 
 		// First we take out any of the tags we don't want parsed between (url= etc)
 		preg_match_all("#\[(url=([^\]]*])|url\].*\[\/url\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
@@ -391,13 +393,13 @@ class postParser
 			{
 				if(version_compare(PHP_VERSION, "5.1.0", ">="))
 				{
-					$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message,	$remaining, $replacements);
+					$message = preg_replace('#([^<])(?<!"|&amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message,	$remaining, $replacements);
 					$remaining -= $replacements;
 					if($remaining <= 0) break; // Reached the limit
 				}
 				else
 				{
-					$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message,	$remaining);
+					$message = preg_replace('#([^<])(?<!"|&amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message,	$remaining);
 				}
 			}
 		}
@@ -411,7 +413,7 @@ class postParser
 			}
 		}
 
-		return $message;
+		return trim($message);
 	}
 
 	/**

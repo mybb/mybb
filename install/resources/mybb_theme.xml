@@ -5920,7 +5920,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="online_iplookup_adminoptions"><![CDATA[<tr>
+		<template name="online_iplookup_adminoptions" version="120"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->admin_options}</strong></td>
 <td class="trow2">
 	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[regip]={$ip}">{$lang->search_regip_users}</a><br />

@@ -185,7 +185,7 @@ function upgradethemes()
 		  title varchar(120) NOT NULL default '',
 		  template text NOT NULL,
 		  sid int(10) NOT NULL default '0',
-		  version varchar(20) NOT NULL default '0',
+		  version int unsigned NOT NULL default '0',
 		  status varchar(10) NOT NULL default '',
 		  dateline int(10) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
@@ -260,7 +260,7 @@ function upgradethemes()
 	foreach($templates as $template)
 	{
 		$templatename = $template['attributes']['name'];
-		$templateversion = $template['attributes']['version'];
+		$templateversion = intval($template['attributes']['version']);
 		$templatevalue = $db->escape_string($template['value']);
 		$time = time();
 		$query = $db->query("SELECT tid FROM ".TABLE_PREFIX."templates WHERE sid='-2' AND title='$templatename'");

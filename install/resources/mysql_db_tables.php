@@ -539,7 +539,7 @@ $tables[] = "CREATE TABLE mybb_templates (
   title varchar(120) NOT NULL default '',
   template text NOT NULL,
   sid int(10) NOT NULL default '0',
-  version varchar(20) NOT NULL default '0',
+  version int unsigned NOT NULL default '0',
   status varchar(10) NOT NULL default '',
   dateline int(10) NOT NULL default '0',
   PRIMARY KEY  (tid)
