@@ -815,12 +815,12 @@ if($mybb->input['action'] == "edit")
 		if($usergroup['type'] == "3")
 		{
 			$usergroup['joinable'] = 1;
-			$usergroup['moderate'] = 0 = 0;
+			$usergroup['moderate'] = 0;
 		}
 		elseif($usergroup['type'] == "4")
 		{
 			$usergroup['joinable'] = 1;
-			$usergroup['moderate'] = 0 = 1;
+			$usergroup['moderate'] = 1;
 		}
 		else
 		{
@@ -1162,7 +1162,7 @@ if(!$mybb->input['action'])
 			$join_requests = " <small><a href=\"index.php?".SID."&amp;module=user/groups&amp;action=join_requests&amp;gid={$usergroup['gid']}\"><span style=\"color: red;\">({$joinrequests[$usergroup['gid']]} outstanding join request)</span></a></small>";			
 		}
 		
-		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?".SID."&amp;module=user/groups&amp;action=edit&amp;uid={$usergroup['gid']}\">{$usergroup['title']}</a></strong>{$join_requests}<br /><small>{$usergroup['description']}{$leaders_list}</small></div>");
+		$form_container->output_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?".SID."&amp;module=user/groups&amp;action=edit&amp;gid={$usergroup['gid']}\">{$usergroup['title']}</a></strong>{$join_requests}<br /><small>{$usergroup['description']}{$leaders_list}</small></div>");
 		
 		if(!$primaryusers[$usergroup['gid']])
 		{
