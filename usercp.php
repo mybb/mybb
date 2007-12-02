@@ -1913,7 +1913,7 @@ if($mybb->input['action'] == "do_editlists")
 	if($mybb->input['add_username'])
 	{
 		// Split up any usernames we have
-		$adding_self = true;
+		$adding_self = false;
 		$users = explode(",", $mybb->input['add_username']);
 		$users = array_map("trim", $users);
 		foreach($users as $key => $username)
