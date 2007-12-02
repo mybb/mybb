@@ -157,6 +157,6 @@ function config_admin_permissions()
 		"warning" => $lang->can_manage_warning_system,
 		"mod_tools" => $lang->can_manage_mod_tools
 	);
-	return array("name" => "Configuration", "permissions" => $admin_permissions);
+	return array("name" => "Configuration", "permissions" => $admin_permissions, "disporder" => 10);
 }
 ?>

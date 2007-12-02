@@ -2491,17 +2491,27 @@ if($mybb->input['action'] == "banuser")
 			WHERE b.uid='{$mybb->input['uid']}'
 		");
 		$banned = $db->fetch_array($query);
-	
-		$username = htmlspecialchars_uni($banned['username']);
-		$banreason = htmlspecialchars_uni($banned['reason']);
-		$uid = $mybb->input['uid'];
-		$lang->ban_user = $lang->edit_ban; // Swap over lang variables
-		eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
+		if($banned['username'])
+		{
+			$username = htmlspecialchars_uni($banned['username']);
+			$banreason = htmlspecialchars_uni($banned['reason']);
+			$uid = $mybb->input['uid'];
+			$lang->ban_user = $lang->edit_ban; // Swap over lang variables
+			eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
+		}
 	}
 	// New ban!
-	else
+	if(!$banuer_username)
 	{
-		$username = htmlspecialchars_uni($mybb->input['username']);
+		if($mybb->input['uid'])
+		{
+			$user = get_user($mybb->input['uid']);
+			$username = $user['username'];
+		}
+		else
+		{
+			$username = htmlspecialchars_uni($mybb->input['username']);
+		}
 		eval("\$banuser_username = \"".$templates->get("modcp_banuser_addusername")."\";");
 	}
 	

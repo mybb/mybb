@@ -220,6 +220,12 @@ class session
 		{
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
+		
+		// DOes this user prefer posts in classic mode?
+		if($mybb->user['classicpostbit'])
+		{
+			$mybb->settings['postlayout'] = 'classic';
+		}
 
 		// Check if this user is currently banned and if we have to lift it.
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/

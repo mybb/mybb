@@ -621,7 +621,8 @@ if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 		"daysprune" => $mybb->input['daysprune'],
 		"showcodebuttons" => intval($mybb->input['showcodebuttons']),
 		"pmnotify" => $mybb->input['pmnotify'],
-		"showredirect" => $mybb->input['showredirect']
+		"showredirect" => $mybb->input['showredirect'],
+		"classicpostbit" => $mybb->input['classicpostbit']
 	);
 
 	if($mybb->settings['usertppoptions'])
@@ -832,6 +833,15 @@ if($mybb->input['action'] == "options")
 	if($user['threadmode'] != "threaded")
 	{
 		$user['threadmode'] = "linear";
+	}
+	
+	if($user['classicpostbit'] != 0)
+	{
+		$classicpostbitcheck = "checked=\"checked\"";
+	}
+	else
+	{
+		$classicpostbitcheck = '';
 	}
 
 
@@ -1903,12 +1913,14 @@ if($mybb->input['action'] == "do_editlists")
 	if($mybb->input['add_username'])
 	{
 		// Split up any usernames we have
+		$adding_self = true;
 		$users = explode(",", $mybb->input['add_username']);
 		$users = array_map("trim", $users);
 		foreach($users as $key => $username)
 		{
 			if(my_strtoupper($mybb->user['username']) == my_strtoupper($username))
 			{
+				$adding_self = true;
 				unset($users[$key]);
 				continue;
 			}
@@ -1930,13 +1942,28 @@ if($mybb->input['action'] == "do_editlists")
 			}
 		}
 
-		if($mybb->input['manage'] == "ignored")
+		if($adding_self != true || ($adding_self == true && count($users) > 0))
 		{
-			$message = $lang->users_added_to_ignore_list;
+			if($mybb->input['manage'] == "ignored")
+			{
+				$message = $lang->users_added_to_ignore_list;
+			}
+			else
+			{
+				$message = $lang->users_added_to_buddy_list;
+			}
 		}
-		else
+		
+		if($adding_self == true)
 		{
-			$message = $lang->users_added_to_buddy_list;
+			if($mybb->input['manage'] == "ignored")
+			{
+				$error_message = $lang->cant_add_self_to_ignore_list;
+			}
+			else
+			{
+				$error_message = $lang->cant_add_self_to_buddy_list;
+			}
 		}
 	}
 
@@ -2006,7 +2033,15 @@ if($mybb->input['action'] == "do_editlists")
 			$list = "buddy";
 		}
 
-		$message_js = "var success = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
+		if($message)
+		{
+			$message_js = "var success = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
+		}
+		
+		if($error_message)
+		{
+			$message_js .= " var error = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(error, element); 	error.innerHTML = '{$error_message}'; error.className = 'error_message'; window.setTimeout(function() { Element.remove(error) }, 5000);";
+		}
 
 		if($mybb->input['delete'])
 		{
@@ -2035,6 +2070,10 @@ if($mybb->input['action'] == "do_editlists")
 	}
 	else
 	{
+		if($error_message)
+		{
+			$message .= "<br />".$error_message;
+		}
 		redirect("usercp.php?action=editlists#{$mybb->input['manage']}", $message);
 	}
 }

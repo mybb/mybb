@@ -283,7 +283,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			if(!$errors)
 			{
 				$updated_view = array(
-					"uid" => $mybb->user['uid'],
 					"title" => $db->escape_string($mybb->input['title']),
 					"type" => $type,
 					"visibility" => intval($mybb->input['visibility']),

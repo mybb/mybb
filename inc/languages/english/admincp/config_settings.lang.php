@@ -85,4 +85,5 @@ $l['success_display_orders_updated'] = "The display orders have successfully bee
 $l['success_setting_group_added'] = "The setting group has successfully been created.";
 $l['success_setting_group_updated'] = "The setting group has successfully been updated.";
 $l['success_setting_group_deleted'] = "The setting group has successfully been deleted.";
+$l['success_duplicate_settings_deleted'] = "All duplicate setting groups have been deleted successfully."
 ?>

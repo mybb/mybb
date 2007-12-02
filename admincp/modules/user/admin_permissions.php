@@ -194,12 +194,21 @@ if($mybb->input['action'] == "edit")
 			if(function_exists($meta_function) && is_array($meta_function()))
 			{
 				$permission_modules[$module] = $meta_function();
-				$module_tabs[$module] = $permission_modules[$module]['name'];
+				$modules[$module['disporder']][] = $module;
 			}
 		}
 	}
 	closedir($dir);
 	
+	ksort($modules);
+	foreach($modules as $disp_order => $mod)
+	{
+		if(!is_array($mod)) continue;
+		foreach($mod as $module)
+		{
+			$module_tabs[$module] = $permission_modules[$module]['name'];
+		}
+	}
 	$page->output_tab_control($module_tabs);
 
 	foreach($permission_modules as $key => $module)

@@ -222,7 +222,7 @@ else
 
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 
-		$user['profilelink'] = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
+		$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
 		
 		// Get the display usergroup
 		if(!$user['displaygroup'])
@@ -303,8 +303,19 @@ else
 			
 			if($avatar_dimensions[0] && $avatar_dimensions[1])
 			{
-				$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+				list($max_width, $max_height) = explode("x", $mybb->settings['memberlistmaxavatarsize']);
+			 	if($avatar_dimensions[0] > $max_width || $avatar_dimensions[1] > $max_height)
+				{
+					require_once MYBB_ROOT."inc/functions_image.php";
+					$scaled_dimensions = scale_image($avatar_dimensions[0], $avatar_dimensions[1], $max_width, $max_height);
+					$avatar_width_height = "width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\"";
+				}
+				else
+				{
+					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";	
+				}
 			}
+			
 			eval("\$user['avatar'] = \"".$templates->get("memberlist_user_avatar")."\";");
 		}
 		else

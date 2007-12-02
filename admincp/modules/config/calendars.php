@@ -202,7 +202,7 @@ if($mybb->input['action'] == "permissions")
 			$perms = $usergroup;
 			$default_checked = true;
 		}
-		$perm_check = "";
+		$perm_check = $all_check = "";
 		$all_checked = true;
 		foreach(array('canviewcalendar','canaddevents','canbypasseventmod','canmoderateevents') as $calendar_permission)
 		{

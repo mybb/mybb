@@ -122,6 +122,9 @@ switch($action)
 		{
 			$pids[$post['pid']] = $post['pid'];
 		}
+		
+		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
+		
 
 		$pids = implode(",", $pids);
 
@@ -264,7 +267,9 @@ switch($action)
 			echo $forums;
 			echo "</ol>\n</div>\n";
 		}
-
+		
+		archive_multipage($threadcount, $perpage, $page, "{$base_url}forum-$id");
+	
 		// Get the announcements if the forum is not a category.
 		if($forum['type'] == 'f')
 		{

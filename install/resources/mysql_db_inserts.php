@@ -9,21 +9,26 @@
  * $Id$
  */
 
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'Zip File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (2, 'JPEG Image', 'image/jpeg', 'jpg', 500, 'images/attachtypes/image.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (1, 'ZIP File', 'application/zip', 'zip', 1024, 'images/attachtypes/zip.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (2, 'JPG Image', 'image/jpeg', 'jpg', 500, 'images/attachtypes/image.gif');";
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (3, 'Text Document', 'text/plain', 'txt', 200, 'images/attachtypes/txt.gif');";
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (4, 'GIF Image', 'image/gif', 'gif', 500, 'images/attachtypes/image.gif');";
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (6, 'PHP File', 'application/octet-stream', 'php', 500, 'images/attachtypes/php.gif');";
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (7, 'PNG Image', 'image/png', 'png', 500, 'images/attachtypes/image.gif');";
 $inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (8, 'Microsoft Word Document', 'application/msword', 'doc', 1024, 'images/attachtypes/doc.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (9, '', 'application/octet-stream', 'htm', 100, 'images/attachtypes/html.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (10, '', 'application/octet-stream', 'html', 100, 'images/attachtypes/html.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (11, '', 'image/jpeg', 'jpeg', 500, 'images/attachtypes/image.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (12, '', 'application/x-gzip', 'gz', 1024, 'images/attachtypes/tgz.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (13, '', 'application/x-tar', 'tar', 1024, 'images/attachtypes/tar.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (14, '', 'text/css', 'css', 100, 'images/attachtypes/css.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (15, '', 'application/pdf', 'pdf', 2048, 'images/attachtypes/pdf.gif');";
-$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (16, '', 'image/bmp', 'bmp', 500, 'images/attachtypes/image.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (9, 'HTM File', 'application/octet-stream', 'htm', 100, 'images/attachtypes/html.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (10, 'HTML File', 'application/octet-stream', 'html', 100, 'images/attachtypes/html.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (11, 'JPEG Image', 'image/jpeg', 'jpeg', 500, 'images/attachtypes/image.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (12, 'GZIP Compressed File', 'application/x-gzip', 'gz', 1024, 'images/attachtypes/tgz.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (13, 'TAR Compressed File', 'application/x-tar', 'tar', 1024, 'images/attachtypes/tar.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (14, 'CSS Stylesheet', 'text/css', 'css', 100, 'images/attachtypes/css.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (15, 'Adobe Acrobat PDF', 'application/pdf', 'pdf', 2048, 'images/attachtypes/pdf.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (16, 'Bitmap Image', 'image/bmp', 'bmp', 500, 'images/attachtypes/image.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (17, 'Microsoft Word 2007 Document', 'application/msword', 'docx', 1024, 'images/attachtypes/doc.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (18, 'Microsoft Excel Document', 'application/msexcel', 'xls', 1024, 'images/attachtypes/xls.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (19, 'Microsoft Excel 2007 Document', 'application/msword', 'xlsx', 1024, 'images/attachtypes/xls.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (20, 'Microsoft PowerPoint Document', 'application/mspowerpoint', 'ppt', 1024, 'images/attachtypes/ppt.gif');";
+$inserts[] = "INSERT INTO mybb_attachtypes (atid, name, mimetype, extension, maxsize, icon) VALUES (21, 'Microsoft PowerPoint 2007 Document', 'application/mspowerpoint', 'pptx', 1024, 'images/attachtypes/ppt.gif');";
 
 $inserts[] = "INSERT INTO mybb_calendars (name,disporder,startofweek,showbirthdays,eventlimit,moderation,allowhtml,allowmycode,allowimgcode,allowsmilies) VALUES ('Default Calendar',1,0,1,4,0,0,1,1,1);";
 
@@ -41,32 +46,52 @@ $inserts[] = "INSERT INTO mybb_helpdocs (hid, sid, name, description, document, 
 $inserts[] = "INSERT INTO mybb_helpsections (sid, name, description, usetranslation, enabled, disporder) VALUES (1, 'User Maintenance', 'Basic instructions for maintaining a forum account.', 1, 1, 1);";
 $inserts[] = "INSERT INTO mybb_helpsections (sid, name, description, usetranslation, enabled, disporder) VALUES (2, 'Posting', 'Posting, replying, and basic usage of forum.', 1, 1, 2);";
 
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (1, 'MyBB', 'images/icons/my.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (2, 'Exclamation', 'images/icons/exclamation.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (3, 'Question', 'images/icons/question.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (4, 'Smile', 'images/icons/smile.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (5, 'Sad', 'images/icons/sad.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (6, 'Wink', 'images/icons/wink.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (7, 'Cool', 'images/icons/cool.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (8, 'Big Grin', 'images/icons/biggrin.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (9, 'Tongue', 'images/icons/tongue.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (10, 'Roll Eyes', 'images/icons/rolleyes.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (11, 'Shy', 'images/icons/shy.gif');";
-$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES (12, 'At', 'images/icons/at.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(1, 'Bug', 'images/icons/bug.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(2, 'Exclamation', 'images/icons/exclamation.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(3, 'Question', 'images/icons/question.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(4, 'Smile', 'images/icons/smile.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(5, 'Sad', 'images/icons/sad.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(6, 'Wink', 'images/icons/wink.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(7, 'Big Grin', 'images/icons/biggrin.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(8, 'Tongue', 'images/icons/tongue.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(9, 'Brick', 'images/icons/brick.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(10, 'Heart', 'images/icons/heart.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(11, 'Information', 'images/icons/information.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(12, 'Lightbulb', 'images/icons/lightbulb.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(13, 'Music', 'images/icons/music.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(14, 'Photo', 'images/icons/photo.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(15, 'Rainbow', 'images/icons/rainbow.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(16, 'Shocked', 'images/icons/shocked.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(17, 'Star', 'images/icons/star.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(18, 'Thumbs Down', 'images/icons/thumbsdown.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(19, 'Thumbs Up', 'images/icons/thumbsup.gif');";
+$inserts[] = "INSERT INTO mybb_icons (iid, name, path) VALUES(20, 'Video', 'images/icons/video.gif');";
 
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (1, 'Location', 'Where in the world do you live?', 1, 'text', 0, 255, 0, 1, 0);";
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (2, 'Bio', 'Enter a few short details about yourself, your life story etc.', 2, 'textarea', 0, 0, 0, 1, 0);";
 $inserts[] = "INSERT INTO mybb_profilefields (fid, name, description, disporder, type, length, maxlength, required, editable, hidden) VALUES (3, 'Sex', 'Please select your sex from the list below.', 0, 'select\nUndisclosed\nMale\nFemale\nOther', 0, 0, 0, 1, 0);";
 
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (1, 'Smile', ':)', 'images/smilies/smile.gif', 1, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (2, 'Wink', ';)', 'images/smilies/wink.gif', 2, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (3, 'Cool', ':cool:', 'images/smilies/cool.gif', 3, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (4, 'Big Grin', ':D', 'images/smilies/biggrin.gif', 4, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (5, 'Tongue', ':P', 'images/smilies/tongue.gif', 5, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (6, 'Rolleyes', ':rolleyes:', 'images/smilies/rolleyes.gif', 6, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (7, 'Shy', ':shy:', 'images/smilies/shy.gif', 7, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (8, 'Sad', ':(', 'images/smilies/sad.gif', 8, 1);";
-$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES (9, 'At', ':at:', 'images/smilies/at.gif', 9, 0);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(1, 'Smile', ':)', 'images/smilies/smile.gif', 1, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(2, 'Wink', ';)', 'images/smilies/wink.gif', 2, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(3, 'Cool', ':cool:', 'images/smilies/cool.gif', 3, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(4, 'Big Grin', ':D', 'images/smilies/biggrin.gif', 4, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(5, 'Tongue', ':P', 'images/smilies/tongue.gif', 5, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(6, 'Rolleyes', ':rolleyes:', 'images/smilies/rolleyes.gif', 6, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(7, 'Shy', ':shy:', 'images/smilies/shy.gif', 7, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(8, 'Sad', ':(', 'images/smilies/sad.gif', 8, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(9, 'At', ':at:', 'images/smilies/at.gif', 9, 0);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(10, 'Angel', ':angel:', 'images/smilies/angel.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(11, 'Angry', ':@', 'images/smilies/angry.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(12, 'Blush', ':blush:', 'images/smilies/blush.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(13, 'Confused', ':s', 'images/smilies/confused.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(14, 'Dodgy', ':dodgy:', 'images/smilies/dodgy.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(15, 'Exclamation', ':exclamation:', 'images/smilies/exclamation.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(16, 'Heart', ':heart:', 'images/smilies/heart.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(17, 'Huh', ':huh:', 'images/smilies/huh.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(18, 'Idea', ':idea:', 'images/smilies/lightbulb.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(19, 'Sleepy', ':sleepy:', 'images/smilies/sleepy.gif', 0, 1);";
+$inserts[] = "INSERT INTO mybb_smilies (sid, name, find, image, disporder, showclickable) VALUES(20, 'Undecided', ':-/', 'images/smilies/undecided.gif', 0, 1);";
+
 
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('GoogleBot','google');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Lycos','lycos');";

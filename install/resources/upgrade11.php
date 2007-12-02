@@ -265,7 +265,12 @@ function upgrade11_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP coppauser;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD coppauser int(1) NOT NULL default '0'");
-
+	
+	if($db->field_exists('classicpostbit', 'users'))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP classicpostbit;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD classicpostbit int(1) NOT NULL  default '0'");
 
 	if($db->field_exists('canreceivewarnings', "usergroups"))
 	{

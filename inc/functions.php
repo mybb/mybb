@@ -1382,7 +1382,7 @@ function get_post_icons()
 		}
 
 		++$listed;
-		if($listed == 9)
+		if($listed == 10)
 		{
 			$iconlist .= "<br />";
 			$listed = 0;

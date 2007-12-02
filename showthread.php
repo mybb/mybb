@@ -469,8 +469,8 @@ if($mybb->input['action'] == "thread")
 		{
 			$stickch = ' checked="checked"';
 		}
-		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"1\"{$closelinkch} />&nbsp;<strong>".$lang->close_thread."</strong></label>";
-		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"1\"{$stickch} />&nbsp;<strong>".$lang->stick_thread."</strong></label>";
+		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"1\"{$closelinkch} />&nbsp;".$lang->close_thread."</label>";
+		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"1\"{$stickch} />&nbsp;".$lang->stick_thread."</label>";
 		$inlinecount = "0";
 		$inlinecookie = "inlinemod_thread".$tid;
 		$plugins->run_hooks("showthread_ismod");
@@ -927,6 +927,11 @@ if($mybb->input['action'] == "thread")
 	{
 		$add_remove_subscription = 'add';
 		$add_remove_subscription_text = $lang->subscribe_thread;
+	}
+	
+	if($mybb->settings['postlayout'] == "classic")
+	{
+		eval("\$classic_header = \"".$templates->get("showthread_classic_header")."\";");		
 	}
 	 
 	eval("\$showthread = \"".$templates->get("showthread")."\";");

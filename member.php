@@ -1125,6 +1125,8 @@ if($mybb->input['action'] == "profile")
 
 	$query = $db->simple_select("users", "*", "uid='$uid'");
 	$memprofile = $db->fetch_array($query);
+	
+	$lang->profile = sprintf($lang->profile, $memprofile['username']);
 
 	if(!$memprofile['uid'])
 	{
@@ -1519,7 +1521,7 @@ if($mybb->input['action'] == "profile")
 		$timeonline = $lang->none_registered;
 	}
 
-	if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
+	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
 	}

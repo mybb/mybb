@@ -75,6 +75,6 @@ function style_admin_permissions()
 		"themes" => $lang->can_manage_themes,
 		"templates" => $lang->can_manage_templates,
 	);
-	return array("name" => $lang->templates_and_style, "permissions" => $admin_permissions);
+	return array("name" => $lang->templates_and_style, "permissions" => $admin_permissions, "disporder" => 40);
 }
 ?>

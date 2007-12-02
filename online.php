@@ -131,8 +131,35 @@ else
 		$sql = "s.time DESC";
 		$refresh_string = '';
 	}
-
+	
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
+
+	// Exactly how many users are currently online?
+	$query = $db->simple_select("sessions", "COUNT(DISTINCT sid) as online", "time > {$timesearch}");
+	$online_count = $db->fetch_field($query, "online");
+	
+	// How many pages are there?
+	$perpage = $mybb->settings['threadsperpage'];
+
+	if(intval($mybb->input['page']) > 0)
+	{
+		$page = intval($mybb->input['page']);
+		$start = ($page-1) * $perpage;
+		$pages = ceil($online_count / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+
+	// Assemble page URL
+	$multipage = multipage($online_count, $perpage, $page, "online.php".$refresh_string);	
 
 	// Query for active sessions
 	$query = $db->query("
@@ -141,6 +168,7 @@ else
 		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 		WHERE s.time>'$timesearch'
 		ORDER BY $sql
+		LIMIT {$start}, {$perpage}
 	");
 
 	$user_count = 0;

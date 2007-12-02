@@ -485,7 +485,7 @@ input.text_input {
 	background: #fff;
 	width: 300px;
 	padding: 3px;
-	font-size: 15px;
+	font-size: 13px;
 }
 
 textarea {
@@ -919,6 +919,9 @@ ul.tabs li.last a.active {
 	color: #000;
 }
 
+input.field50 {
+	width: 50px;
+}
 input.field150 {
 	width: 150px;
 }

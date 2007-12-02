@@ -697,11 +697,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		if($postoptions['subscriptionmethod'] == "none")
 		{
-			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 		}
 		else if($postoptions['subscriptionmethod'] == "instant")
 		{
-			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
+			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+		}
+		else
+		{
+			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == 1)
 		{
@@ -738,9 +742,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
 		}
 	}
-
-	// Fetch subscription select box
-	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
 	if($forum['allowpicons'] != 0)
 	{
@@ -868,7 +869,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	}
 
 	// Get a listing of the current attachments.
-	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != 0)
 	{
 		$attachcount = 0;
@@ -922,7 +922,6 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
 		eval("\$attachbox = \"".$templates->get("post_attachments")."\";");
-		$bgcolor = "trow2";
 	}
 
 	// If the user is logged in, provide a save draft button.
@@ -1086,7 +1085,16 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 
 		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
+		$bgcolor = "trow1";
 	}
+	else
+	{
+		$bgcolor = "trow2";
+	}
+	
+	// Fetch subscription select box
+	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
+	
 	$lang->post_reply_to = sprintf($lang->post_reply_to, $thread['subject']);
 	$lang->reply_to = sprintf($lang->reply_to, $thread['subject']);
 

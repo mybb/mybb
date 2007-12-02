@@ -17,6 +17,24 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->board_settings, "index.php?".SID."&amp;module=config/settings");
 
+// Delete all duplicate settings and setting groups
+if($mybb->inpu['action'] == "delete_duplicates")
+{
+	$query = $db->query("
+		DELETE s1
+		FROM ".TABLE_PREFIX."settings s1
+		INNER JOIN ".TABLE_PREFIX."settings s2 ON (s2.name=s1.name AND s2.sid!=s1.sid)
+	");
+	$query = $db->query("
+		DELETE g1
+		FROM ".TABLE_PREFIX."settinggroups g1
+		INNER JOIN ".TABLE_PREFIX."settinggroups g2 ON (g2.title=g1.title AND g2.gid!=g1.gid)
+	");
+	rebuild_settings();
+	flash_message($lang->success_duplicate_settings_deleted, 'success');
+	admin_redirect("index.php?".SID."&module=config/settings&action=manage");
+}
+
 // Creating a new setting group
 if($mybb->input['action'] == "addgroup")
 {

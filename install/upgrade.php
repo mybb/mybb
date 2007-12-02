@@ -301,7 +301,7 @@ function upgradethemes()
 		foreach($templates as $template)
 		{
 			$templatename = $template['attributes']['name'];
-			$templateversion = $template['attributes']['version'];
+			$templateversion = intval($template['attributes']['version']);
 			$templatevalue = $db->escape_string($template['value']);
 			$time = TIME_NOW;
 			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='$templatename'");

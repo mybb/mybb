@@ -159,6 +159,6 @@ function tools_admin_permissions()
 		"warninglog" => $lang->can_manage_user_warning_log,
 		"phpinfo" => $lang->can_view_php_info
 	);
-	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions);
+	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }
 ?>

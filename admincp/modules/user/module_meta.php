@@ -105,6 +105,6 @@ function user_admin_permissions()
 		"mass_mail" => $lang->can_send_mass_mail,
 		"group_promotions" => $lang->can_manage_group_promotions
 	);
-	return array("name" => $lang->users_and_groups, "permissions" => $admin_permissions);
+	return array("name" => $lang->users_and_groups, "permissions" => $admin_permissions, "disporder" => 30);
 }
 ?>

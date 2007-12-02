@@ -272,10 +272,21 @@ function build_postbit($post, $post_type=0)
 			
 			if($avatar_dimensions[0] && $avatar_dimensions[1])
 			{
-				$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+				list($max_width, $max_height) = explode("x", $mybb->settings['postmaxavatarsize']);
+			 	if($avatar_dimensions[0] > $max_width || $avatar_dimensions[1] > $max_height)
+				{
+					require_once MYBB_ROOT."inc/functions_image.php";
+					$scaled_dimensions = scale_image($avatar_dimensions[0], $avatar_dimensions[1], $max_width, $max_height);
+					$avatar_width_height = "width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\"";
+				}
+				else
+				{
+					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";	
+				}
 			}
 			
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
+			$post['avatar_padding'] = "padding-right: 10px;";
 		}
 		else
 		{
@@ -364,7 +375,7 @@ function build_postbit($post, $post_type=0)
 		$post['signature'] = '';
 		$post['button_pm'] = '';
 		$post['button_find'] = '';
-		$post['onlinestatus'] = $lang->unknown;
+		$post['onlinestatus'] = '';
 		$post['replink'] = '';
 		eval("\$post['user_details'] = \"".$templates->get("postbit_author_guest")."\";");
 	}
@@ -563,8 +574,14 @@ function build_postbit($post, $post_type=0)
 			break;
 	}
 	
-	eval("\$postbit = \"".$templates->get("postbit")."\";");
-	
+	if($mybb->settings['postlayout'] == "classic")
+	{
+		eval("\$postbit = \"".$templates->get("postbit_classic")."\";");
+	}
+	else
+	{
+		eval("\$postbit = \"".$templates->get("postbit")."\";");		
+	}
 	$GLOBALS['post'] = "";
 	
 	return $postbit;

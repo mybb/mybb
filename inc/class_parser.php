@@ -88,7 +88,7 @@ class postParser
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.
-		if($options['filter_badwords'] !== 0)
+		if($options['filter_badwords'] != 0)
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -108,9 +108,8 @@ class postParser
 			$message = preg_replace("#\s*<meta[^>]*>\s*#is", "", $message);
 			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
 		}
-		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if($options['allow_mycode'] !== 0)
+		if($options['allow_mycode'] != 0)
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
@@ -130,13 +129,13 @@ class postParser
 		}
 		
 		// If we can, parse smilies
-		if($options['allow_smilies'] !== 0)
+		if($options['allow_smilies'] != 0)
 		{
 			$message = $this->parse_smilies($message, $options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
-		if($options['allow_mycode'] !== 0)
+		if($options['allow_mycode'] != 0)
 		{
 			$message = $this->parse_mycode($message, $options);
 		}
@@ -144,7 +143,7 @@ class postParser
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 		
-		if($options['allow_mycode'] !== 0)
+		if($options['allow_mycode'] != 0)
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)
@@ -375,7 +374,9 @@ class postParser
 		{
 			$this->cache_smilies();
 		}
-
+		
+		$message = ' ' . $message . ' ';
+		
 		// First we take out any of the tags we don't want parsed between (url= etc)
 		preg_match_all("#\[(url=([^\]]*])|url\].*\[\/url\]|quote=([^\]]*)\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
 		$message = preg_replace("#\[(url=([^\]]*])|url\].*\[\/url\]|quote=([^\]]*)\])#si", "<mybb-bad-sm>", $message);
@@ -389,13 +390,13 @@ class postParser
 			{
 				if(version_compare(PHP_VERSION, "5.1.0", ">="))
 				{
-					$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining, $replacements);
+					$message = preg_replace('#([^<])(?<!"|&amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining, $replacements);
 					$remaining -= $replacements;
 					if($remaining <= 0) break; // Reached the limit
 				}
 				else
 				{
-					$message = preg_replace('#([^<])(?<!amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining);
+					$message = preg_replace('#([^<])(?<!"|&amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining);
 				}
 			}
 		}
@@ -409,7 +410,7 @@ class postParser
 			}
 		}
 
-		return $message;
+		return trim($message);
 	}
 
 	/**

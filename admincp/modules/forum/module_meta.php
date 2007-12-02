@@ -91,7 +91,7 @@ function forum_admin_permissions()
 		"moderation_queue" => $lang->can_moderate,
 		"attachments" => $lang->can_manage_attachments,
 	);
-	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions);
+	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions, "disporder" => 20);
 }
 
 ?>

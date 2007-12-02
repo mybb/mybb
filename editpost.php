@@ -425,15 +425,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$subject = $mybb->input['subject'];
 	}
 
-	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
-	$firstcheck = $db->fetch_array($query);
-	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1)
-	{
-		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
-		$numpolloptions = "2";
-		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
-	}
-
 	if($mybb->input['previewpost'] || $post_errors)
 	{
 		// Set up posthandler.
@@ -489,11 +480,15 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 
 			if($postoptions['subscriptionmethod'] == "none")
 			{
-				$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+				$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 			}
 			else if($postoptions['subscriptionmethod'] == "instant")
 			{
-				$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
+				$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+			}
+			else
+			{
+				$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
 			}
 
 			if($postoptions['disablesmilies'] == 1)
@@ -564,8 +559,19 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Fetch subscription select box
+	$bgcolor = "trow1";
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
+	$bgcolor2 = "trow2";
+	$query = $db->simple_select("posts", "*", "tid='{$tid}'", array("limit" => 1, "order_by" => "dateline", "order_dir" => "asc"));
+	$firstcheck = $db->fetch_array($query);
+	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1)
+	{
+		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
+		$numpolloptions = "2";
+		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
+	}
+	
 	// Can we disable smilies or are they disabled already?
 	if($forum['allowsmilies'] != 0)
 	{

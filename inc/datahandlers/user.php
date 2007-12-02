@@ -498,6 +498,7 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
+		$this->verify_yesno_option($options, 'classicpostbit', 0);
 
 		if(array_key_exists('subscriptionmethod', $options))
 		{
@@ -873,7 +874,8 @@ class UserDataHandler extends DataHandler
 			"moderationtime" => 0,
 			"suspendposting" => 0,
 			"suspensiontime" => 0,
-			"coppauser" => intval($user['coppa_user'])
+			"coppauser" => intval($user['coppa_user']),
+			"classicpostbit" => $user['options']['classicpostbit']
 		);
 
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);

@@ -1467,15 +1467,19 @@ if($mybb->input['action'] == "search")
 			{
 				unset($admin_view);
 			}
+			echo 'b';
 		}
+		echo 'a';
 
 		// Don't have a view? Fetch the default
-		if(!$admin_view)
+		if(!$admin_view['vid'])
 		{
+			echo 'geting default';
 			$default_view = fetch_default_view("user");
 			$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
 			$admin_view = $db->fetch_array($query);
 		}
+		print_r($admin_view);
 
 		// Override specific parts of the view
 		unset($admin_view['vid']);

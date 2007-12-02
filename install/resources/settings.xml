@@ -797,6 +797,14 @@ DESC=Descending]]></optionscode>
 			<settingvalue><![CDATA[ASC]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="postmaxavatarsize">
+			<title>Maximum Display Avatar Dimensions</title>
+			<description><![CDATA[The maximum dimensions for avatars when being displayed in the member list. If an avatar is too large, it will automatically be scaled down.]]></description>
+			<disporder>5</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[70x70]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>		
 	</settinggroup>
 	<settinggroup name="onlineoffline" title="Board Online / Offline" description="These settings allow you to globally turn your forums online or offline, and allow you to specify a reason for turning them off." disporder="1" isdefault="1">
 		<setting name="boardclosed">
@@ -1332,10 +1340,20 @@ both=Warnings and Errors
 		</setting>
 	</settinggroup>
 	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="1">
+		<setting name="postlayout">
+			<title>Post Layout</title>
+			<description><![CDATA[Allows you to switch between the classic and new vertical layout modes. Classic mode shows the author information to the left of the post, vertical shows the author information above the post.]]></description>
+			<disporder>1</disporder>
+			<optionscode><![CDATA[radio
+vertical=Display posts using the vertical post layout
+classic=Display posts using the classic layout]]></optionscode>
+			<settingvalue><![CDATA[vertical]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>		
 		<setting name="postsperpage">
 			<title>Posts Per Page:</title>
 			<description><![CDATA[The number of posts to display per page. We recommend its not higher than 20 for people with slower connections.]]></description>
-			<disporder>1</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
@@ -1343,15 +1361,23 @@ both=Warnings and Errors
 		<setting name="userpppoptions">
 			<title>User Selectable Posts Per Page</title>
 			<description><![CDATA[If you would like to allow users to select how many posts are shown per page in a thread, enter the options they should be able to select separated with commas. If this is left blank they will not be able to choose how many posts are shown per page.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5,10,20,25,30,40,50]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="postmaxavatarsize">
+			<title>Maximum Avatar Dimensions in Posts</title>
+			<description><![CDATA[The maximum dimensions for avatars when being displayed in a post. If an avatar is too large, it will automatically be scaled down.]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[70x70]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>		
 		<setting name="threadreadcut">
 			<title>Read Threads in Database (Days)</title>
 			<description><![CDATA[The number of days that you wish to keep thread read information in the database. For large boards, we do not recommend a high number as the board will become slower. Set to 0 to disable.]]></description>
-			<disporder>3</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
 			<helpkey></helpkey>
@@ -1359,7 +1385,7 @@ both=Warnings and Errors
 		<setting name="threadusenetstyle">
 			<title>Usenet Style Thread View</title>
 			<description><![CDATA[Selecting yes will cause posts to look similar to how posts look in USENET. No will cause posts to look the modern way.]]></description>
-			<disporder>4</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
@@ -1367,7 +1393,7 @@ both=Warnings and Errors
 		<setting name="quickreply">
 			<title>Show Quick Reply Form</title>
 			<description><![CDATA[Allows you to set whether or not the quick reply form will be shown at the bottom of threads.]]></description>
-			<disporder>5</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
@@ -1375,7 +1401,7 @@ both=Warnings and Errors
 		<setting name="multiquote">
 			<title>Show Multi-quote Buttons</title>
 			<description><![CDATA[The multi-quote button allows users to select a series of posts then click Reply and have those posts quoted in their message.]]></description>
-			<disporder>6</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
@@ -1383,7 +1409,7 @@ both=Warnings and Errors
 		<setting name="showsimilarthreads">
 			<title>Show 'Similar Threads' Table</title>
 			<description><![CDATA[The Similar Threads table shows threads that are relevant to the thread being read. You can set the relevancy below.]]></description>
-			<disporder>7</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>
@@ -1391,7 +1417,7 @@ both=Warnings and Errors
 		<setting name="similarityrating">
 			<title>Similar Threads Relevancy Rating</title>
 			<description><![CDATA[This allows you to limit similar threads to ones more relevant (0 being not relevant). This number should not be over 10 and should not be set low (<5) for large forums.]]></description>
-			<disporder>8</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<helpkey></helpkey>
@@ -1399,7 +1425,7 @@ both=Warnings and Errors
 		<setting name="similarlimit">
 			<title>Similar Threads Limit</title>
 			<description><![CDATA[Here you can change the total amount of similar threads to be shown in the similar threads table. It is recommended that it is not over 15 for 56k users.]]></description>
-			<disporder>9</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
@@ -1407,7 +1433,7 @@ both=Warnings and Errors
 		<setting name="delayedthreadviews">
 			<title>Delayed Thread View Updates</title>
 			<description><![CDATA[If this setting is enabled, the number of thread views for threads will be updated in the background by the task schedule system. If not enabled, thread view counters are incremented instantly.]]></description>
-			<disporder>10</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<helpkey></helpkey>

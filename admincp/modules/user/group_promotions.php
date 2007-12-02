@@ -15,8 +15,23 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-
 $page->add_breadcrumb_item($lang->user_group_promotions, "index.php?".SID."&amp;module=user/group_promotions");
+
+$sub_tabs['usergroup_promotions'] = array(
+	'title' => $lang->user_group_promotions,
+	'link' => "index.php?".SID."&amp;module=user/group_promotions",
+	'description' => $lang->user_group_promotions_desc
+);
+
+$sub_tabs['add_promotion'] = array(
+	'title' => $lang->add_new_promotion,
+	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add"
+);
+
+$sub_tabs['promotion_logs'] = array(
+	'title' => $lang->view_promotion_logs,
+	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs"
+);
 
 if($mybb->input['action'] == "disable")
 {
@@ -205,6 +220,7 @@ if($mybb->input['action'] == "edit")
 	$page->add_breadcrumb_item($lang->edit_promotion);
 	$page->output_header($lang->user_group_promotions." - ".$lang->edit_promotion);
 
+	$sub_tabs = array();
 	$sub_tabs['edit_promotion'] = array(
 		'title' => $lang->edit_promotion,
 		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=edit",
@@ -494,22 +510,6 @@ if($mybb->input['action'] == "logs")
 	$page->add_breadcrumb_item($lang->promotion_logs);
 	$page->output_header($lang->user_group_promotions." - ".$lang->promotion_logs);
 	
-	$sub_tabs['usergroup_promotions'] = array(
-		'title' => $lang->user_group_promotions,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions"
-	);
-
-	$sub_tabs['add_promotion'] = array(
-		'title' => $lang->add_new_promotion,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add"
-	);
-	
-	$sub_tabs['promotion_logs'] = array(
-		'title' => $lang->view_promotion_logs,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs",
-		'description' => $lang->view_promotion_logs_desc
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'promotion_logs');
 
 	$table = new Table;
@@ -558,22 +558,6 @@ if(!$mybb->input['action'])
 {	
 	$page->output_header($lang->promotion_manager);
 	
-	$sub_tabs['usergroup_promotions'] = array(
-		'title' => $lang->user_group_promotions,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions",
-		'description' => $lang->user_group_promotions_desc
-	);
-
-	$sub_tabs['add_promotion'] = array(
-		'title' => $lang->add_new_promotion,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add"
-	);
-
-	$sub_tabs['promotion_logs'] = array(
-		'title' => $lang->view_promotion_logs,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs"
-	);
-
 	$page->output_nav_tabs($sub_tabs, 'usergroup_promotions');
 
 	$table = new Table;

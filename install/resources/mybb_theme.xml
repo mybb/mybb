@@ -531,6 +531,33 @@ form {
 	color: #AE5700;
 }
 
+div.error {
+	padding: 5px 10px;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	background: #FFF6BF;
+	font-size: 12px;
+}
+
+div.error p {
+	margin: 0;
+	color: #000;
+	font-weight: normal;
+}
+
+div.error p em {
+	font-style: normal;
+	font-weight: bold;
+	padding-left: 24px;
+	display: block;
+	color: #C00;
+	background: url('images/error.gif') no-repeat 0;
+}
+
+div.error.ul {
+	margin-left: 24px;
+}
+
 .online {
 	color: #15A018;
 }
@@ -570,7 +597,59 @@ form {
 .pagination a:hover {
 	background: #F5F5F5;
 	text-decoration: none;
-}]]>
+}
+
+.thread_legend, .thread_legend dt, .thread_legend dd {
+	margin: 0;
+	padding: 0;
+}
+
+.thread_legend {
+	width: 350px;
+}
+
+.thread_legend dd {
+	width: 150px;
+}
+
+.thread_legend dt {
+	width: 20px;
+	margin-bottom: 4px;
+	text-align: left;
+}
+.thread_legend dt, .thread_legend dd {
+	float: left;
+}
+
+.forum_legend, .forum_legend dt, .forum_legend dd {
+	margin: 0;
+	padding: 0;
+}
+
+.forum_legend dd {
+	float: left;
+	margin-right: 10px;
+}
+
+.forum_legend dt {
+	margin-right: 10px;
+	float: left;
+}
+
+.success_message {
+	color: #00b200;
+	font-weight: bold;
+	font-size: 10px;
+	margin-bottom: 10px;
+}
+
+.error_message {
+	color: #C00;
+	font-weight: bold;
+	font-size: 10px;
+	margin-bottom: 10px;
+}
+]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1400"><![CDATA[.usercp_nav_item {
 	display: block;
@@ -848,12 +927,50 @@ td .star_rating {
 	vertical-align: middle;
 	padding-right: 5px;
 }]]></stylesheet>
+		<stylesheet name="showthread.css" attachedto="showthread.php" version="1400"><![CDATA[ul.thread_tools, ul.thread_tools li {
+	list-style: none;
+	padding: 0;
+	marign: 0;
+}
+
+ul.thread_tools li {
+	padding-left: 26px;
+	padding-bottom: 4px;
+	margin-bottom: 3px;
+	font-size: 11px;
+}
+
+ul.thread_tools li.printable {
+	background: url('images/printable.gif') no-repeat 0px 0px;
+}
+
+ul.thread_tools li.sendthread {
+	background: url('images/send.gif') no-repeat 0px 0px;
+}
+
+ul.thread_tools li.subscription_add {
+	background: url('images/subscribe.gif') no-repeat 0px 0px;
+}
+
+ul.thread_tools li.subscription_remove {
+	background: url('images/unsubscribe.gif') no-repeat 0px 0px;
+}
+
+.post_body {
+	padding: 5px;
+}
+
+.post_content {
+	padding: 5px 10px;
+}}]]></stylesheet>
 	</stylesheets>
 	<templates>
-			<template name="forumdisplay_threadlist" version="1400"><![CDATA[<div class="float_right" style="padding-bottom: 4px;">
+			<template name="forumdisplay_threadlist" version="1400"><![CDATA[<div class="float_left">
+	{$multipage}
+</div>
+<div class="float_right">
 	{$newthread}
 </div>
-{$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
 	<tr>
 		<td class="thead" colspan="{$colspan}">
@@ -877,74 +994,73 @@ td .star_rating {
 	{$threads}
 	<tr>
 		<td class="tfoot" align="right" colspan="{$colspan}">
-		<form action="forumdisplay.php" method="get">
-			<input type="hidden" name="fid" value="{$fid}" />
-			<select name="sortby">
-				<option value="subject" {$sortsel['subject']}>{$lang->sort_by_subject}</option>
-				<option value="lastpost" {$sortsel['lastpost']}>{$lang->sort_by_lastpost}</option>
-				<option value="starter" {$sortsel['starter']}>{$lang->sort_by_starter}</option>
-				<option value="started" {$sortsel['started']}>{$lang->sort_by_started}</option>
-				{$ratingsort}
-				<option value="replies" {$sortsel['replies']}>{$lang->sort_by_replies}</option>
-				<option value="views" {$sortsel['views']}>{$lang->sort_by_views}</option>
-			</select>
-			<select name="order">
-				<option value="asc" {$ordersel['asc']}>{$lang->sort_order_asc}</option>
-				<option value="desc" {$ordersel['desc']}>{$lang->sort_order_desc}</option>
-			</select>
-			<select name="datecut">
-				<option value="1" {$datecutsel['1']}>{$lang->datelimit_1day}</option>
-				<option value="5" {$datecutsel['5']}>{$lang->datelimit_5days}</option>
-				<option value="10" {$datecutsel['10']}>{$lang->datelimit_10days}</option>
-				<option value="20" {$datecutsel['20']}>{$lang->datelimit_20days}</option>
-				<option value="50" {$datecutsel['50']}>{$lang->datelimit_50days}</option>
-				<option value="75" {$datecutsel['75']}>{$lang->datelimit_75days}</option>
-				<option value="100" {$datecutsel['100']}>{$lang->datelimit_100days}</option>
-				<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
-				<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
-			</select>
-			{$gobutton}
-		</form>
+			<form action="forumdisplay.php" method="get">
+				<input type="hidden" name="fid" value="{$fid}" />
+				<select name="sortby">
+					<option value="subject" {$sortsel['subject']}>{$lang->sort_by_subject}</option>
+					<option value="lastpost" {$sortsel['lastpost']}>{$lang->sort_by_lastpost}</option>
+					<option value="starter" {$sortsel['starter']}>{$lang->sort_by_starter}</option>
+					<option value="started" {$sortsel['started']}>{$lang->sort_by_started}</option>
+					{$ratingsort}
+					<option value="replies" {$sortsel['replies']}>{$lang->sort_by_replies}</option>
+					<option value="views" {$sortsel['views']}>{$lang->sort_by_views}</option>
+				</select>
+				<select name="order">
+					<option value="asc" {$ordersel['asc']}>{$lang->sort_order_asc}</option>
+					<option value="desc" {$ordersel['desc']}>{$lang->sort_order_desc}</option>
+				</select>
+				<select name="datecut">
+					<option value="1" {$datecutsel['1']}>{$lang->datelimit_1day}</option>
+					<option value="5" {$datecutsel['5']}>{$lang->datelimit_5days}</option>
+					<option value="10" {$datecutsel['10']}>{$lang->datelimit_10days}</option>
+					<option value="20" {$datecutsel['20']}>{$lang->datelimit_20days}</option>
+					<option value="50" {$datecutsel['50']}>{$lang->datelimit_50days}</option>
+					<option value="75" {$datecutsel['75']}>{$lang->datelimit_75days}</option>
+					<option value="100" {$datecutsel['100']}>{$lang->datelimit_100days}</option>
+					<option value="365" {$datecutsel['365']}>{$lang->datelimit_lastyear}</option>
+					<option value="9999" {$datecutsel['9999']}>{$lang->datelimit_beginning}</option>
+				</select>
+				{$gobutton}
+			</form>
 		</td>
 	</tr>
 </table>
-<div class="float_right" style="padding-top: 4px;">
+<div class="float_left">
+	{$multipage}
+</div>
+<div class="float_right" style="margin-top: 4px;">
 	{$newthread}
 </div>
-{$multipage}
 <br style="clear: both;" />
-{$inlinemod}
+<br />
+<div class="float_left">
+	<dl class="thread_legend smalltext">
+		<dt><img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" title="{$lang->new_thread}" /></dt>
+		<dd>{$lang->new_thread}</dd>
+		
+		<dt><img src="{$theme['imgdir']}/folder.gif" alt="{$lang->no_new_thread}" title="{$lang->no_new_thread}" /></dt>
+		<dd>{$lang->no_new_thread}</dd>
 
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;" >
-	<tr>
-		<td class="trow1">
-			<table width="100%" border="0">
-				<tr>
-					<td>
-						<table cellspacing="0" cellpadding="2" style="white-space: nowrap; border: none">
-							<tr>
-								<td>
-								<img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" title="{$lang->new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_thread}</span><br />
-								<img src="{$theme['imgdir']}/newhotfolder.gif" alt="{$lang->new_hot_thread}" title="{$lang->new_hot_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->new_hot_thread}</span><br />
-								<img src="{$theme['imgdir']}/dot_folder.gif" alt="{$lang->posts_by_you}" title="{$lang->posts_by_you}" />&nbsp;&nbsp;<span class="smalltext">{$lang->posts_by_you}</span>
-								</td>
-								<td>
-									<img src="{$theme['imgdir']}/folder.gif" alt="{$lang->no_new_thread}" title="{$lang->no_new_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->no_new_thread}</span><br />
-									<img src="{$theme['imgdir']}/hotfolder.gif" alt="{$lang->hot_thread}" title="{$lang->hot_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->hot_thread}</span><br />
-									<img src="{$theme['imgdir']}/lockfolder.gif" alt="{$lang->locked_thread}" title="{$lang->locked_thread}" />&nbsp;&nbsp;<span class="smalltext">{$lang->locked_thread}</span>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td align="right">
-						{$searchforum}<br /><br />
-						{$forumjump}
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+		<dt style="clear: left;"><img src="{$theme['imgdir']}/newhotfolder.gif" alt="{$lang->new_hot_thread}" title="{$lang->new_hot_thread}" /></dt>
+		<dd>{$lang->new_hot_thread}</dd>
+
+		<dt><img src="{$theme['imgdir']}/hotfolder.gif" alt="{$lang->hot_thread}" title="{$lang->hot_thread}" /></dt>
+		<dd>{$lang->hot_thread}</dd>
+
+		<dt style="clear: left;"><img src="{$theme['imgdir']}/dot_folder.gif" alt="{$lang->posts_by_you}" title="{$lang->posts_by_you}" /></dt>
+		<dd>{$lang->posts_by_you}</dd>
+
+		<dt><img src="{$theme['imgdir']}/lockfolder.gif" alt="{$lang->locked_thread}" title="{$lang->locked_thread}" /></dt>
+		<dd>{$lang->locked_thread}</dd>
+	</dl>
+</div>
+
+<div class="float_right" style="text-align: right;">
+	{$inlinemod}
+	{$searchforum}
+	{$forumjump}
+</div>
+<br style="clear: both" />
 {$inline_edit_js}]]></template>
 		<template name="forumdisplay_threadlist_sortrating" version="120"><![CDATA[<option value="rating" {$sortsel['rating']}>{$lang->sort_by_rating}</option>]]></template>
 		<template name="global_boardclosed_warning" version="1400"><![CDATA[<br />
@@ -974,24 +1090,18 @@ td .star_rating {
 {$header}
 {$forums}
 {$boardstats}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-	<tr>
-		<td class="trow1">
-			<table width="100%">
-				<tr>
-					<td>
-						<img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /> <span class="smalltext">{$lang->new_posts}</span><br />
-						<img src="{$theme['imgdir']}/off.gif" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /> <span class="smalltext">{$lang->no_new_posts}</span><br />
-						<img src="{$theme['imgdir']}/offlock.gif" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /> <span class="smalltext">{$lang->forum_locked}</span>
-					</td>
-					<td style="vertical-align: top; text-align: right;"><span class="smalltext">{$logoutlink}<a href="misc.php?action=markread">{$lang->markread}</a> | <a href="showteam.php">{$lang->forumteam}</a> | <a href="stats.php">{$lang->forumstats}</a></span>
-						{$loginform}
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+
+<dl class="forum_legend smalltext">
+	<dt><img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dd>{$lang->new_posts}</dt>
+	
+	<dt><img src="{$theme['imgdir']}/off.gif" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
+	<dd>{$lang->no_new_posts}</dd>
+	
+	<dt><img src="{$theme['imgdir']}/offlock.gif" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
+	<dd>{$lang->forum_locked}
+</dl>
+<br style="clear: both" />
 {$footer}
 </body>
 </html>]]></template>
@@ -1346,44 +1456,33 @@ td .star_rating {
 				</span>
 				<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1400"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/modcp.php">{$lang->welcome_modcp}</a>]]></template>
-		<template name="postbit_online" version="1400"><![CDATA[<a href="online.php"><span class="online"><strong>{$lang->postbit_status_online}</strong></span></a>]]></template>
-		<template name="showthread_moderationoptions" version="120"><![CDATA[<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">
-<table cellspacing="0" cellpadding="0" border="0" width="100%">
-<tr>
-<td>
+		<template name="postbit_online" version="1400"><![CDATA[<a href="online.php" title="{$lang->postbit_status_online}"><img src="{$theme['imgdir']}/buddy_online.gif" border="0" alt="{$lang->postbit_status_online}" /></a>]]></template>
+		<template name="showthread_moderationoptions" version="1400"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
-<input type="hidden" name="modtype" value="thread" />
-<input type="hidden" name="tid" value="{$tid}" /><span class="smalltext">
-<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}')">
-<optgroup label="{$lang->standard_mod_tools}">
-	<option value="threadnotes">{$lang->thread_notes}</option>
-	<option value="openclosethread">{$lang->open_close_thread}</option>
-	<option value="deletethread">{$lang->delete_thread}</option>
-	{$adminpolloptions}
-	<option value="deleteposts">{$lang->delete_posts}</option>
-	<option value="move">{$lang->move_thread}</option>
-	<option value="stick">{$lang->stick_unstick_thread}</option>
-	<option value="split">{$lang->split_thread}</option>
-	<option value="merge">{$lang->merge_threads}</option>
-	<option value="mergeposts">{$lang->merge_posts}</option>
-	<option value="removeredirects">{$lang->remove_redirects}</option>
-	<option value="removesubscriptions">{$lang->remove_subscriptions}</option>
-	{$approveunapprovethread}
-</optgroup>
-{$customthreadtools}
-</select>
-{$gobutton}
+	<input type="hidden" name="modtype" value="thread" />
+	<input type="hidden" name="tid" value="{$tid}" /><span class="smalltext">
+	<strong>{$lang->moderation_options}</strong></span>
+	<select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}')">
+		<optgroup label="{$lang->standard_mod_tools}">
+			<option value="threadnotes">{$lang->thread_notes}</option>
+			<option value="openclosethread">{$lang->open_close_thread}</option>
+			<option value="deletethread">{$lang->delete_thread}</option>
+			{$adminpolloptions}
+			<option value="deleteposts">{$lang->delete_posts}</option>
+			<option value="move">{$lang->move_thread}</option>
+			<option value="stick">{$lang->stick_unstick_thread}</option>
+			<option value="split">{$lang->split_thread}</option>
+			<option value="merge">{$lang->merge_threads}</option>
+			<option value="mergeposts">{$lang->merge_posts}</option>
+			<option value="removeredirects">{$lang->remove_redirects}</option>
+			<option value="removesubscriptions">{$lang->remove_subscriptions}</option>
+			{$approveunapprovethread}
+		</optgroup>
+		{$customthreadtools}
+	</select>
+	{$gobutton}
 </form>
-</td>
-<td align="right">{$inlinemod}</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>]]></template>
+<br />]]></template>
 		<template name="showthread_moderationoptions_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
@@ -1413,7 +1512,12 @@ td .star_rating {
 	var inlineType = "thread";
 	var inlineId = {$tid};
 // -->
-</script>]]></template>
+</script><br />]]></template>
+		<template name="showthread_classic_header" version="1400"><![CDATA[<tr>
+			<td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
+			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
+		</tr>
+		]]></template>
 		<template name="showthread" version="1400"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
@@ -1426,76 +1530,71 @@ td .star_rating {
 <script type="text/javascript" src="jscripts/thread.js?ver=120"></script>
 </head>
 <body>
-{$header}
-{$pollbox}
-<div style="float: right;">
-	{$newreply}{$newthread}
-</div>
-{$multipage}
-{$ratethread}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
-<tr>
-<td class="thead" colspan="2">
-	<div style="float: right;">
-		<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
+	{$header}
+	{$pollbox}
+	<div class="float_left">
+		{$multipage}
 	</div>
-	<div>
-		<strong>{$thread['subject']}</strong>
+	<div class="float_right">
+		{$newreply}
 	</div>
-</td>
-</tr>
-<tr>
-<td class="tcat" width="15%"><span class="smalltext"><strong>{$lang->author}</strong></span></td>
-<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
-</tr>
-</table>
-<div id="posts">
-{$posts}
-</div>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="border-top-width: 0;">
-{$threadpages}
-<tr>
-<td colspan="2" class="tfoot">
-	{$search_thread}
-	<div>
-		<strong>&laquo; <a href="{$next_oldest_link}">{$lang->next_oldest}</a> | <a href="{$next_newest_link}">{$lang->next_newest}</a> &raquo;</strong>
+	{$ratethread}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
+		<tr>
+			<td class="thead" colspan="2">
+				<div style="float: right;">
+					<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
+				</div>
+				<div>
+					<strong>{$thread['subject']}</strong>
+				</div>
+			</td>
+		</tr>
+		{$classic_header}
+	</table>
+	<div id="posts">
+		{$posts}
 	</div>
-</td>
-</tr>
-</table>
-<div style="padding-top: 4px;">
-	{$newreply}{$newthread}
-</div>
-{$threadexbox}
-{$quickreply}
-{$moderationoptions}
-{$similarthreads}
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both;">
- 	<tr>
-		<td class="trow1">
-			<table width="100%">
-				<tr>
-					<td>
-						<span class="smalltext">
-							<a href="printthread.php?tid={$tid}">{$lang->view_printable}</a><br />
-							<a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a><br />
-							<a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}">{$add_remove_subscription_text}</a>
-						</span>
-					</td>
-					<td align="right">
-						{$forumjump}
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-{$footer}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="border-top-width: 0;">
+		<tr>
+			<td colspan="2" class="tfoot">
+				{$search_thread}
+				<div>
+					<strong>&laquo; <a href="{$next_oldest_link}">{$lang->next_oldest}</a> | <a href="{$next_newest_link}">{$lang->next_newest}</a> &raquo;</strong>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<div class="float_left">
+		{$multipage}
+	</div>
+	<div style="padding-top: 4px;" class="float_right">
+		{$newreply}
+	</div>
+	<br style="clear: both;" />
+	{$quickreply}
+	{$threadexbox}
+	{$similarthreads}
+	<br />
+	<div class="float_left">
+		<ul class="thread_tools">
+			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
+			<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>
+			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}">{$add_remove_subscription_text}</a></li>
+		</ul>
+	</div>
+
+	<div class="float_right" style="text-align: right;">
+		{$moderationoptions}
+		{$forumjump}
+	</div>
+	<br style="clear: both;" />
+	{$footer}
 </body>
 </html>]]></template>
-		<template name="showthread_ratethread" version="1400"><![CDATA[<div style="margin-top: 15px;">
+		<template name="showthread_ratethread" version="1400"><![CDATA[<div style="margin-top: 6px;" class="float_right">
 		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
+		<div id="success_rating_{$thread['tid']}" style="float: left; padding-top: 2px; padding-right: 10px;">&nbsp;</div>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
 		<div class="inline_rating">
 			<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
@@ -1507,7 +1606,6 @@ td .star_rating {
 				<li><a class="five_stars" title="{$lang->five_stars}" href="./ratethread.php?tid={$thread['tid']}&amp;rating=5">5</a></li>
 			</ul>
 		</div>
-<span id="success_rating_{$thread['tid']}">&nbsp;</span>
 </div>]]></template>
 		<template name="forumjump_advanced" version="120"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
@@ -1524,16 +1622,13 @@ td .star_rating {
 {$gobutton}
 </form>
 ]]></template>
-		<template name="forumdisplay_searchforum" version="120"><![CDATA[<table cellspacing="0" cellpadding="0" border="0">
-<tr><td>
-<form action="search.php" method="post">
-<span class="smalltext"><strong>{$lang->search_forum}</strong></span> <input type="text" class="textbox" name="keywords" /> {$gobutton}
-<input type="hidden" name="action" value="do_search" />
-<input type="hidden" name="forums" value="{$fid}" />
-<input type="hidden" name="postthread" value="1" />
-</form>
-</td></tr>
-</table>]]></template>
+		<template name="forumdisplay_searchforum" version="120"><![CDATA[<form action="search.php" method="post">
+	<span class="smalltext"><strong>{$lang->search_forum}</strong></span>
+	<input type="text" class="textbox" name="keywords" /> {$gobutton}
+	<input type="hidden" name="action" value="do_search" />
+	<input type="hidden" name="forums" value="{$fid}" />
+	<input type="hidden" name="postthread" value="1" />
+	</form><br />]]></template>
 		<template name="editpost" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
@@ -1588,9 +1683,9 @@ td .star_rating {
 </td>
 </tr>
 {$subscriptionmethod}
-{$attachbox}
 {$pollbox}
 </table>
+{$attachbox}
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->update_post}" tabindex="3" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" /></div>
 <input type="hidden" name="action" value="do_editpost" />
@@ -1645,11 +1740,11 @@ td .star_rating {
 {$disablesmilies}
 </span></td>
 </tr>
-{$subscriptionmethod}
-{$attachbox}
 {$modoptions}
+{$subscriptionmethod}
 {$captcha}
 </table>
+{$attachbox}
 <br />
 <div align="center"><input type="submit" class="button" name="submit" value="{$lang->post_reply}" tabindex="3" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="4" />{$savedraftbutton}</div>
 <input type="hidden" name="action" value="do_newreply" />
@@ -1747,12 +1842,12 @@ td .star_rating {
 <label><input type="checkbox" class="checkbox" name="postoptions[signature]" value="1" tabindex="7"{$postoptionschecked['signature']} /> {$lang->options_sig}</label>
 {$disablesmilies}</span></td>
 </tr>
-{$subscriptionmethod}
 {$modoptions}
-{$attachbox}
+{$subscriptionmethod}
 {$pollbox}
 {$captcha}
 </table>
+{$attachbox}
 <br />
 <div style="text-align:center"><input type="submit" class="button" name="submit" value="{$lang->post_thread}" tabindex="4" accesskey="s" />  <input type="submit" class="button" name="previewpost" value="{$lang->preview_post}" tabindex="5" />{$savedraftbutton}</div>
 <input type="hidden" name="action" value="do_newthread" />
@@ -2028,6 +2123,10 @@ td .star_rating {
 <fieldset class="trow2">
 <legend><strong>{$lang->thread_view_options}</strong></legend>
 <table cellspacing="0" cellpadding="2">
+	<tr>
+	<td valign="top" width="1"><input type="checkbox" class="checkbox" name="classicpostbit" id="classicpostbit" value="1" {$classicpostbitcheck} /></td>
+	<td><span class="smalltext"><label for="classicpostbit">{$lang->show_classic_postbit}</label></span></td>
+	</tr>
 <tr>
 <td valign="top" width="1"><input type="checkbox" class="checkbox" name="showsigs" id="showsigs" value="1" {$showsigscheck} /></td>
 <td><span class="smalltext"><label for="showsigs">{$lang->show_sigs}</label></span></td>
@@ -2138,25 +2237,22 @@ td .star_rating {
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="modtype" value="inlinethread" />
-<br />
-<div style="text-align: right; clear: both;">
-	<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
-	<select name="action">
-		<optgroup label="{$lang->standard_mod_tools}">
-			<option value="multiclosethreads">{$lang->close_threads}</option>
-			<option value="multiopenthreads">{$lang->open_threads}</option>
-			<option value="multistickthreads">{$lang->stick_threads}</option>
-			<option value="multiunstickthreads">{$lang->unstick_threads}</option>
-			<option value="multideletethreads">{$lang->delete_threads}</option>
-			<option value="multimovethreads">{$lang->move_threads}</option>
-			<option value="multiapprovethreads">{$lang->approve_threads}</option>
-			<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
-		</optgroup>
-		{$customthreadtools}
-	</select>
-	<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
-	<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" class="button" />
-</div>
+<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
+<select name="action">
+	<optgroup label="{$lang->standard_mod_tools}">
+		<option value="multiclosethreads">{$lang->close_threads}</option>
+		<option value="multiopenthreads">{$lang->open_threads}</option>
+		<option value="multistickthreads">{$lang->stick_threads}</option>
+		<option value="multiunstickthreads">{$lang->unstick_threads}</option>
+		<option value="multideletethreads">{$lang->delete_threads}</option>
+		<option value="multimovethreads">{$lang->move_threads}</option>
+		<option value="multiapprovethreads">{$lang->approve_threads}</option>
+		<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
+	</optgroup>
+	{$customthreadtools}
+</select>
+<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
+<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" class="button" />
 </form>
 <script type="text/javascript">
 <!--
@@ -2269,7 +2365,7 @@ td .star_rating {
 </body>
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
-		<template name="postbit_away" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}"><span style="color:#800000;">{$lang->postbit_status_away}</span></a>]]></template>
+		<template name="postbit_away" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.gif" border="0" alt="{$lang->postbit_status_away}" /></a>]]></template>
 		<template name="misc_imcenter_icq" version="120"><![CDATA[<html>
 <head>
 <title>{$lang->icq_message_center}</title>
@@ -2643,20 +2739,17 @@ td .star_rating {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="post_attachments" version="120"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top"><strong>{$lang->attachments}</strong><br /><span class="smalltext">{$lang->attachments_desc}</span></td>
-<td class="{$bgcolor}" valign="top">
-<table cellspacing="3" cellpadding="0" border="0">
+		<template name="post_attachments" version="120"><![CDATA[<br />
+			<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td colspan="3">
-<span class="smalltext">{$lang->attach_quota} <a href="usercp.php?action=attachments">{$lang->view_attachments}</a></span>
-</td>
+	<td class="thead" colspan="3"><strong>{$lang->attachments}</strong></td>
+</tr>
+<tr>
+	<td class="tcat smalltext" colspan="3">{$lang->attach_quota} <a href="usercp.php?action=attachments">{$lang->view_attachments}</a></td>
 </tr>
 {$newattach}
 {$attachments}
-</table>
-</td>
-</tr>]]></template>
+</table>]]></template>
 		<template name="usercp_attachments" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->attachments_manager}</title>
@@ -2770,7 +2863,7 @@ td .star_rating {
 <body>
 {$header}
 {$moderatedby}
-{$usersbrowsing}<br /><br />
+{$usersbrowsing}
 {$rules}
 {$subforums}
 {$threadslist}
@@ -3011,7 +3104,8 @@ td .star_rating {
 </table>]]></template>
 		<template name="nav_sep" version="120"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new" version="120"><![CDATA[<tr>
-<td colspan="3" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /> <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
+<td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.gif" alt="" /></td>
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" style="width: 100%" /></td><td class="trow1" align="center"><input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
@@ -3122,8 +3216,8 @@ td .star_rating {
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dedit%26uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dmanageban%26auid={$uid}">{$lang->admin_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&uid={$uid}">{$lang->admin_edit_in_mcp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&uid={$uid}>{$lang->admin_ban_in_mcp}</a></li>
 </ul>
 </td>
 </tr>
@@ -3156,7 +3250,8 @@ td .star_rating {
 			{$bbclosedwarning}
 			{$unreadreports}
 			<navigation>
-			<br class="clear" />]]></template>
+			<br />
+]]></template>
 		<template name="usercp_usergroups_leader_usergroup" version="120"><![CDATA[<tr>
 <td class="{$trow}"><strong>{$usergroup['title']}</strong></td>
 <td class="{$trow}" align="center">{$usergroup['users']} {$memberlistlink}</td>
@@ -3246,10 +3341,10 @@ td .star_rating {
 <td class="thead" colspan="6"><strong>{$lang->members_of}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="40%"><strong>{$lang->user_name}</strong></td>
-<td class="tcat" colspan="2" align="center" width="30%"><strong>{$lang->contact}</strong></td>
-<td class="tcat" align="center" width="15%"><strong>{$lang->reg_date}</strong></td>
-<td class="tcat" align="center" width="15%"><strong>{$lang->post_count}</strong></td>
+<td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->user_name}</strong></span></td>
+<td class="tcat" colspan="2" align="center"><span class="smalltext"><strong>{$lang->contact}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reg_date}</strong></span></td>
+<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->post_count}</strong></span></td>
 <td class="tcat" width="1">&nbsp;</td>
 </tr>
 {$users}
@@ -3282,8 +3377,8 @@ td .star_rating {
 </form>]]></template>
 		<template name="managegroup_user" version="1400"><![CDATA[<tr>
 <td class="{$altbg}">{$user['profilelink']} {$leader}</td>
-<td class="{$altbg}" align="center">{$email}</td>
-<td class="{$altbg}" align="center">{$sendpm}</td>
+<td class="{$altbg}" align="center" width="100">{$email}</td>
+<td class="{$altbg}" align="center" width="100">{$sendpm}</td>
 <td class="{$altbg}" align="center">{$regdate}</td>
 <td class="{$altbg}" align="center">{$user['postnum']}</td>
 <td class="{$altbg}" align="center">{$checkbox}</td>
@@ -3404,7 +3499,7 @@ td .star_rating {
 {$footer}
 <script type="text/javascript">
 <!--
-	if($('bcc_area') && $('bcc').value != "")
+	if($('bcc_area') && $('bcc').value == "")
 	{
 		$('bcc_area').style.display = 'none';
 	}
@@ -4086,7 +4181,7 @@ body {
 	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<thead>
 			<tr>
-				<td colspan="2" class="thead">
+				<td class="thead" colspan="2">
 					<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['quickreply']}.gif" id="quickreply_img" class="expander" alt="[-]" title="[-]" /></div>
 					<div><strong>{$lang->quick_reply}</strong></div>
 				</td>
@@ -4396,37 +4491,107 @@ body {
 </tr>]]></template>
 		<template name="postbit" version="1400"><![CDATA[{$ignore_bit}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">
-<tr>
-<td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
-{$post['user_details']}
-</td>
-<td class="{$altbg}" valign="top">
-<table width="100%">
-<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']} {$post['subject_extra']}</strong></span>
-<br />
-<div id="pid_{$post['pid']}" style="padding: 5px 0 5px 0;">
-{$post['message']}
-</div>
-{$post['attachments']}
-{$post['signature']}
-<div style="text-align: right; vertical-align: bottom;" id="post_meta_{$post['pid']}">
-<div id="edited_by_{$post['pid']}">{$post['editedmsg']}</div>
-{$post['iplogged']}
-</div>
-</td></tr>
-</table>
+	<tbody>
+		<tr>
+			<td class="tcat">
+				<div class="float_left smalltext">
+					{$post['postdate']}, {$post['posttime']}
+				</div>
+				{$post['posturl']}
+			</td>
+		</tr>
+		
+		<tr>
+			<td class="trow1">
+				<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+					<tr>
+						<td class="post_avatar" width="1" style="{$post['avatar_padding']}">
+							{$post['useravatar']}
+						</td>
+						<td class="post_author">
+							<strong><span class="largetext">{$post['profilelink']}</span></strong> {$post['onlinestatus']}<br />
+							<span class="smalltext">
+								{$post['usertitle']}<br />
+								{$post['userstars']}
+								{$post['groupimage']}
+							</span>
+						</td>
+						<td class="smalltext post_author_info" width="150">
+							{$post['user_details']}
+						</td>
+					</tr>
+				</table>
+			</tr>
+		</tr>
+		
+		<tr>
+			<td class="trow2 post_content">
+				<span class="smalltext"><strong>{$post['subject']} {$post['subject_extra']}</strong></span>
+				
+				<div class="post_body" id="pid_{$post['pid']}">
+					{$post['message']}
+				</div>
+				{$post['attachments']}
+				{$post['signature']}
+
+				<div class="post_meta" id="post_meta_{$post['pid']}">
+				<div id="edited_by_{$post['pid']}">{$post['editedmsg']}</div>
+					{$post['iplogged']}
+				</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<td class="trow1" class="post_buttons">
+				<div class="author_buttons float_left">
+					{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}
+				</div>
+				<div class="post_management_buttons float_right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>]]></template>
+		<template name="postbit_classic" version="1400"><![CDATA[{$ignore_bit}
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">
+	<tr>
+		<td class="{$altbg}" width="15%" valign="top" style="white-space: nowrap; text-align: center;"><a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
+		<strong><span class="largetext">{$post['profilelink']}</span></strong> {$post['onlinestatus']}<br />
+		<span class="smalltext">
+			{$post['usertitle']}<br />
+			{$post['userstars']}
+			{$post['groupimage']}
+			{$post['useravatar']}<br />
+			{$post['user_details']}
+		</span>
+	</td>
+	<td class="{$altbg}" valign="top">
+		<table width="100%">
+			<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']} {$post['subject_extra']}</strong></span>
+			<br />
+			<div id="pid_{$post['pid']}" style="padding: 5px 0 5px 0;">
+				{$post['message']}
+			</div>
+			{$post['attachments']}
+			{$post['signature']}
+			<div style="text-align: right; vertical-align: bottom;" id="post_meta_{$post['pid']}">
+				<div id="edited_by_{$post['pid']}">{$post['editedmsg']}</div>
+				{$post['iplogged']}
+			</div>
+		</td></tr>
+	</table>
 </td>
 </tr>
 <tr>
-<td class="{$altbg}" style="white-space: nowrap; text-align: center; vertical-align: middle;"><span class="smalltext">{$post['postdate']} {$post['posttime']}</span></td>
-<td class="{$altbg}" style="vertical-align: middle;">
-	<table width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr valign="bottom">
-		<td align="left" ><span class="smalltext">{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}</span></td>
-		<td align="right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</td>
-	</tr>
-	</table>
-</td>
+	<td class="{$altbg}" style="white-space: nowrap; text-align: center; vertical-align: middle;"><span class="smalltext">{$post['postdate']} {$post['posttime']}</span></td>
+	<td class="{$altbg}" style="vertical-align: middle;">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr valign="bottom">
+				<td align="left" ><span class="smalltext">{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}</span></td>
+				<td align="right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</td>
+			</tr>
+		</table>
+	</td>
 </tr>
 </table>]]></template>
 		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" style="vertical-align: middle; border: none;" /></a>]]></template>
@@ -4673,10 +4838,10 @@ body {
 <td class="trow2" valign="top" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
 		<template name="newthread_postpoll" version="120"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top">
+<td class="{$bgcolor2}" valign="top">
 <strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
 </td>
-<td class="{$bgcolor}" valign="top">
+<td class="{$bgcolor2}" valign="top">
 <span class="smalltext"><label><input type="checkbox" class="checkbox" name="postpoll" value="1" {$postpollchecked} /><strong>{$lang->poll_check}</strong></label><br />
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
@@ -5053,14 +5218,14 @@ body {
 		<template name="postbit_signature" version="120"><![CDATA[<hr size="1" width="25%"  align="left" />
 {$post['signature']}]]></template>
 		<template name="post_attachments_attachment" version="120"><![CDATA[<tr>
-<td width="5%" align="center">{$attachment['icon']}</td>
-<td style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
-<td style="white-space: nowrap; text-align: right;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
+<td class="trow2" width="1" align="center">{$attachment['icon']}</td>
+<td class="trow2" width="100%" style="white-space: nowrap">{$attachment['filename']} ({$attachment['size']})</td>
+<td class="trow2" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
 		<template name="post_attachments_attachment_unapproved" version="120"><![CDATA[<tr>
-<td width="5%" align="center">{$attachment['icon']}</td>
-<td style="white-space: nowrap"><em>{$attachment['filename']} ({$attachment['size']})</em></td>
-<td style="white-space: nowrap; text-align: right;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
+<td class="trow_shaded" width="1" align="center">{$attachment['icon']}</td>
+<td class="trow_shaded" style="white-space: nowrap"><em><a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$attachment['size']})</em></td>
+<td class="trow_shaded" style="white-space: nowrap; text-align: center;">{$attach_mod_options} <input type="submit" class="button" name="rem" value="{$lang->remove_attachment}" onclick="return Post.removeAttachment({$attachment['aid']});" /> {$postinsert}</td>
 </tr>]]></template>
 	<template name="post_attachments_attachment_mod_approve" version="120"><![CDATA[<input type="submit" class="button" name="approveattach" value="{$lang->approve_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'approve');" />]]></template>
 	<template name="post_attachments_attachment_mod_unapprove" version="120"><![CDATA[<input type="submit" class="button" name="unapproveattach" value="{$lang->unapprove_attachment}" onclick="return Post.attachmentAction({$attachment['aid']},'unapprove');" />]]></template>
@@ -5278,28 +5443,30 @@ body {
 {$refresh}
 </head>
 <body>
-{$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="3"><strong>{$lang->users_online}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center"><a href="online.php?sortby=username"><span class="smalltext"><strong>{$lang->on_username}</strong></span></a></td>
-<td class="tcat" align="center"><a href="online.php?sortby=time"><span class="smalltext"><strong>{$lang->time}</strong></span></a></td>
-<td class="tcat" align="center" width="50%"><a href="online.php?sortby=location"><span class="smalltext"><strong>{$lang->location}</strong></span></a></td>
-</tr>
-{$online_rows}
-<tr>
-<td class="tfoot" colspan="3" align="right"><span class="smalltext"><strong><a href="online.php?action=today">{$lang->online_today}</a> | <a href="online.php">{$lang->refresh_page}</a></strong></span></td>
-</tr>
-</table>
-<br />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td align="center" class="trow1"><span class="smalltext">{$lang->online_count}</span></td>
-</tr>
-</table>
-{$footer}
+	{$header}
+	{$multipage}
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="3"><strong>{$lang->users_online}</strong></td>
+		</tr>
+		<tr>
+			<td class="tcat" align="center"><a href="online.php?sortby=username"><span class="smalltext"><strong>{$lang->on_username}</strong></span></a></td>
+			<td class="tcat" align="center"><a href="online.php?sortby=time"><span class="smalltext"><strong>{$lang->time}</strong></span></a></td>
+			<td class="tcat" width="50%"><a href="online.php?sortby=location"><span class="smalltext"><strong>{$lang->location}</strong></span></a></td>
+		</tr>
+		{$online_rows}
+		<tr>
+			<td class="tfoot" colspan="3" align="right"><span class="smalltext"><strong><a href="online.php?action=today">{$lang->online_today}</a> | <a href="online.php">{$lang->refresh_page}</a></strong></span></td>
+		</tr>
+	</table>
+	<br />
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td align="center" class="trow1"><span class="smalltext">{$lang->online_count}</span></td>
+		</tr>
+	</table>
+	{$multipage}	
+	{$footer}
 </body>
 </html>]]></template>
 		<template name="portal_welcome_membertext" version="120"><![CDATA[<span class="smalltext"><em>{$lang->member_welcome_lastvisit}</em> {$lastvisit}<br />
@@ -5941,8 +6108,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>]]></template>
 		<template name="newreply_modoptions" version="1400"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top"><strong>{$lang->mod_options}</strong></td>
-<td class="{$bgcolor}"><span class="smalltext">
+<td class="trow2" valign="top"><strong>{$lang->mod_options}</strong></td>
+<td class="trow2"><span class="smalltext">
 <label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />{$lang->close_thread}</label><br />
 <label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />{$lang->stick_thread}</label>
 </span></td>
@@ -6851,7 +7018,7 @@ To: {$to_recipients}
 {$footer}
 </body>
 </html>]]></template>
-		<template name="online_iplookup_adminoptions"><![CDATA[<tr>
+		<template name="online_iplookup_adminoptions" version="120"><![CDATA[<tr>
 <td class="trow1"><strong>{$lang->admin_options}</strong></td>
 <td class="trow2">
 	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[regip]={$ip}">{$lang->search_regip_users}</a><br />
@@ -6864,7 +7031,7 @@ To: {$to_recipients}
 <td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
 		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
-		<template name="postbit_offline" version="1400"><![CDATA[<span class="offline"><strong>{$lang->postbit_status_offline}</strong></span>]]></template>
+		<template name="postbit_offline" version="1400"><![CDATA[<img src="{$theme['imgdir']}/buddy_offline.gif" title="{$lang->postbit_status_offline}" alt="{$lang->postbit_status_offline}" />]]></template>
 		<template name="postbit_editedby" version="1400"><![CDATA[<p class="smalltext">{$post['editnote']} {$post['editedprofilelink']}.</p>
 
 ]]></template>
@@ -7235,7 +7402,7 @@ To: {$to_recipients}
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		document.write('<br \/><br \/><input type="button" class="button" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
+		document.write('<br \/><br \/><input type="button" class="button" tabindex="10000" name="refresh" value="{$lang->refresh}" onclick="return captcha.refresh();" \/>');
 	}
 // -->
 </script>
@@ -7249,17 +7416,12 @@ To: {$to_recipients}
 </tr>
 </table>
 </fieldset>]]></template>
-		<template name="error_inline" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder"><tr>
-<td class="thead"><strong>{$title}</strong></td>
-</tr>
-<tr>
-<td class="trow1">
-<ul>
-{$errorlist}
-</ul>
-</td>
-</tr>
-</table>
+		<template name="error_inline" version="120"><![CDATA[<div class="error">
+	<p><em>{$title}</em></p>
+	<ul>
+		{$errorlist}
+	</ul>
+</div>
 <br />]]></template>
 		<template name="member_register" version="1400"><![CDATA[<html>
 <head>
@@ -7577,24 +7739,11 @@ To: {$to_recipients}
 	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
 	<template name="newreply_multiquote_external" version="1400"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="newthread_multiquote_external" version="1400"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
-	<template name="postbit_author_user" version="1400"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
-<span class="smalltext">
-	{$post['usertitle']}<br />
-	{$post['userstars']}
-	{$post['groupimage']}<br />
-	{$post['useravatar']}<br />
+	<template name="postbit_author_user" version="1400"><![CDATA[
 	{$lang->postbit_posts} {$post['postnum']}<br />
-	{$lang->postbit_group} {$usergroup['title']}<br />
-	{$lang->postbit_joined} {$post['userregdate']}<br />
-	{$lang->postbit_status} {$post['onlinestatus']}{$post['replink']}{$post['warninglevel']}<br />
-</span>]]></template>
-	<template name="postbit_author_guest" version="120"><![CDATA[<strong><span class="largetext">{$post['profilelink']}</span></strong><br />
-<span class="smalltext">
-	{$post['usertitle']}<br />
-	{$post['userstars']}
-	{$post['groupimage']}<br />
-	{$post['useravatar']}<br />
-</span>]]></template>
+	{$lang->postbit_joined} {$post['userregdate']}
+	{$post['replink']}{$post['warninglevel']}]]></template>
+	<template name="postbit_author_guest" version="120"><![CDATA[&nbsp;]]></template>
 	<template name="php_warnings" version="1400"><![CDATA[<table border="0" cellspacing="1" cellpadding="4" align="center" class="tborder">
 <tr>
 <td class="tcat">
@@ -7687,13 +7836,11 @@ To: {$to_recipients}
 </body>
 </html>]]></template>
 	<template name="post_subscription_method" version="1400"><![CDATA[<tr>
-<td class="trow2">{$lang->thread_subscription_method}</td>
-<td class="trow2">
-	<select name="postoptions[subscriptionmethod]" id="subscriptionmethod">
-		<option value="">{$lang->no_subscribe}</option>
-		<option value="none" {$postoptions_subscriptionmethod_none}>{$lang->no_email_subscribe}</option>
-		<option value="instant" {$postoptions_subscriptionmethod_instant}>{$lang->instant_email_subscribe}</option>
-	</select>
+<td class="{$bgcolor}" valign="top">{$lang->thread_subscription_method}</td>
+<td class="{$bgcolor} smalltext">
+	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_dont} value="" style="vertical-align: middle;" /> {$lang->no_subscribe}</label><br />
+	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_none} value="none" style="vertical-align: middle;" /> {$lang->no_email_subscribe}</label><br />
+	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_instant} value="instant" style="vertical-align: middle;" /> {$lang->instant_email_subscribe}</label><br />
 </td>
 </tr>]]></template>
 	<template name="index_boardstats" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -7709,6 +7856,16 @@ To: {$to_recipients}
 {$whosonline}
 {$birthdays}
 {$forumstats}
+<tr>
+	<td class="tfoot" style="text-align: right">
+		<span class="smalltext">
+			{$logoutlink}
+			<a href="misc.php?action=markread">{$lang->markread}</a> | 
+			<a href="showteam.php">{$lang->forumteam}</a> | 
+			<a href="stats.php">{$lang->forumstats}</a>
+		</span>
+	</td>
+</tr>
 </tbody>
 </table>
 <br />]]></template>

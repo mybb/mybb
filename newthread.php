@@ -532,11 +532,15 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		if($postoptions['subscriptionmethod'] == "none")
 		{
-			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 		}
 		else if($postoptions['subscriptionmethod'] == "instant")
 		{
-			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
+			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+		}
+		else
+		{
+			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
 		}
 		if($postoptions['disablesmilies'] == 1)
 		{
@@ -582,9 +586,6 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		}
 		$numpolloptions = "2";
 	}
-
-	// Fetch subscription select box
-	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
 	
 	// If we're preving a post then generate the preview.
@@ -741,14 +742,18 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$stickycheck = '';
 		}
 		unset($modoptions);
-		$bgcolor = "trow1";
 		eval("\$modoptions = \"".$templates->get("newreply_modoptions")."\";");
-		$bgcolor = "trow2";
+		$bgcolor = "trow1";
+		$bgcolor2 = "trow2";
 	}
 	else
 	{
-		$bgcolor = "trow1";
+		$bgcolor = "trow2";
+		$bgcolor2 = "trow2";
 	}
+
+	// Fetch subscription select box
+	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 
 	if($forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any

@@ -541,7 +541,7 @@ if($mybb->input['action'] == "read")
 	// Replied PM?
 	else if($pm['status'] == 3 && $pm['statustime'])
 	{
-		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime'])
+		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
 		
 		if($reply_date == $lang->today || $reply_date == $lang->yesturday)
 		{
