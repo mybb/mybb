@@ -4526,7 +4526,7 @@ body {
 		
 		<tr>
 			<td class="trow2 post_content">
-				<span class="smalltext"><strong>{$post['subject']} {$post['subject_extra']}</strong></span>
+				<span class="smalltext"><strong>{$post['icon']}{$post['subject']} {$post['subject_extra']}</strong></span>
 				
 				<div class="post_body" id="pid_{$post['pid']}">
 					{$post['message']}
@@ -4567,7 +4567,7 @@ body {
 	</td>
 	<td class="{$altbg}" valign="top">
 		<table width="100%">
-			<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong> {$post['subject']} {$post['subject_extra']}</strong></span>
+			<tr><td>{$post['posturl']}{$post['icon']}<span class="smalltext"><strong>{$post['icon']}{$post['subject']} {$post['subject_extra']}</strong></span>
 			<br />
 			<div id="pid_{$post['pid']}" style="padding: 5px 0 5px 0;">
 				{$post['message']}
