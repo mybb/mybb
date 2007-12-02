@@ -735,11 +735,15 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		}
 		if($mybb->user['subscriptionmethod'] ==  1)
 		{
-			$postoptions_subscriptionmethod_none = "selected=\"selected\"";
+			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
 		}
 		else if($mybb->user['subscriptionmethod'] == 2)
 		{
-			$postoptions_subscriptionmethod_instant = "selected=\"selected\"";
+			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+		}
+		else
+		{
+			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
 		}
 	}
 
