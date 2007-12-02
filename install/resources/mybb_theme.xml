@@ -4495,7 +4495,7 @@ body {
 		<tr>
 			<td class="tcat">
 				<div class="float_left smalltext">
-					{$post['postdate']}, {$post['posttime']}
+					<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>{$post['postdate']}, {$post['posttime']}
 				</div>
 				{$post['posturl']}
 			</td>
