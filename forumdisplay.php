@@ -579,7 +579,10 @@ if($mybb->settings['dotfolders'] != "no" && $mybb->user['uid'] && $threadcache)
 		{
 			$post['tid'] = $moved_threads[$post['tid']];
 		}
-		$threadcache[$post['tid']]['doticon'] = 1;
+		if($threadcache[$post['tid']])
+		{
+			$threadcache[$post['tid']]['doticon'] = 1;
+		}
 	}
 }
 
@@ -593,7 +596,10 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 		{
 			$readthread['tid'] = $moved_threads[$readthread['tid']];
 		}
-		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
+		if($threadcache[$readthread['tid']])
+		{
+			$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline'];
+		}
 	}
 }
 
