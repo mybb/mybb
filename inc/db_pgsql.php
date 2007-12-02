@@ -191,7 +191,7 @@ class DB_PgSQL
 
 				$this->get_execution_time();
 
-				$this->connect_string .= "dbname={$single_connection['database']} user={$single_connection['username']}";
+				$this->connect_string = "dbname={$single_connection['database']} user={$single_connection['username']}";
 				
 				if(strpos($single_connection['hostname'], ':') !== false)
 				{
@@ -200,19 +200,19 @@ class DB_PgSQL
 
 				if($single_connection['port'])
 				{
-					$connect_string .= "port={$single_connection['port']} ";
+					$this->connect_string .= "port={$single_connection['port']} ";
 				}
 				
 				if($single_connection['hostname'] != "localhost")
 				{
-					$connect_string .= "host={$single_connection['hostname']} ";
+					$this->connect_string .= "host={$single_connection['hostname']} ";
 				}
 				
 				if($db_connection['password'])
 				{
-					$connect_string .= " password={$single_connection['password']}";
+					$this->connect_string .= " password={$single_connection['password']}";
 				}
-				$this->$link = @$connect_function($connect_string);
+				$this->$link = @$connect_function($this->connect_string);
 
 				$time_spent = $this->get_execution_time();
 				$this->query_time += $time_spent;
