@@ -5059,6 +5059,7 @@ function ban_date2timestamp($date, $stamp=0)
  */
 function expire_warnings()
 {
+	global $db;
 	$query = $db->query("
 		SELECT w.wid, w.uid, w.points, u.warningpoints
 		FROM ".TABLE_PREFIX."warnings w
