@@ -1323,7 +1323,7 @@ class Moderation
 	 * @param array PIDs
 	 * @return boolean true
 	 */
-	function unapprove_posts($pids, $tid, $fid)
+	function unapprove_posts($pids)
 	{
 		global $db, $cache;
 
