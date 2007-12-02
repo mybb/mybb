@@ -797,7 +797,7 @@ DESC=Descending]]></optionscode>
 			<settingvalue><![CDATA[ASC]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="postmaxavatarsize">
+		<setting name="memberlistmaxavatarsize">
 			<title>Maximum Display Avatar Dimensions</title>
 			<description><![CDATA[The maximum dimensions for avatars when being displayed in the member list. If an avatar is too large, it will automatically be scaled down.]]></description>
 			<disporder>5</disporder>
