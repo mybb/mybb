@@ -2965,7 +2965,14 @@ function my_wordwrap($message)
 
 	if($mybb->settings['wordwrap'] > 0)
 	{
-		$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#", "$0 ", $message);
+		if($mybb->config['db_encoding'] == "utf8")
+		{
+			$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#u", "$0 ", $message);
+		}
+		else
+		{
+			$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#", "$0 ", $message);
+		}
 	}
 	return $message;
 }

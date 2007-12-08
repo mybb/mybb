@@ -54,6 +54,11 @@ if($unviewableforums)
 {
 	$fidnot = "fid NOT IN ($unviewableforums)";
 }
+if($unviewableforums)
+{
+	$fidnot = "fid NOT IN ($unviewableforums)";
+	$unviewableforumsarray = explode(',', $unviewableforums);
+}
 
 // Most replied-to threads
 $mostrepliedthreads = $cache->read("most_replied_threads");
