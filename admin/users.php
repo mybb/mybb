@@ -687,7 +687,7 @@ if($mybb->input['action'] == "do_email")
 				if($user['pmnotify'] == "yes")
 				{
 					$updated_user = array(
-						"pmnotice" => "new"
+						"pmnotify" => "new"
 					);
 					$db->update_query(TABLE_PREFIX."users", $updated_user, "uid='{$user['uid']}'");
 

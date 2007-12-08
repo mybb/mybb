@@ -61,7 +61,7 @@ $mostrepliedthreads = $cache->read("most_replied_threads");
 if(!$mostrepliedthreads || $mostrepliedthreads['lastupdated'] <= time()-60*60*24)
 {
 	$mostrepliedthreads = array();
-	$query = $db->simple_select(TABLE_PREFIX."threads", "tid, subject, replies", $fidnot, array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+	$query = $db->simple_select(TABLE_PREFIX."threads", "tid, subject, replies", "", array('order_by' => 'replies', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
 	while($thread = $db->fetch_array($query))
 	{
 		$mostrepliedthreads['threads'][] = $thread;
@@ -76,10 +76,13 @@ if(!empty($mostrepliedthreads))
 {
 	foreach($mostrepliedthreads['threads'] as $key => $thread)
 	{
-		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-		$numberbit = my_number_format($thread['replies']);
-		$numbertype = $lang->replies;
-		eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
+		if(!in_array($thread['fid'], $unviewableforumsarray))
+		{
+			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+			$numberbit = my_number_format($thread['replies']);
+			$numbertype = $lang->replies;
+			eval("\$mostreplies .= \"".$templates->get("stats_thread")."\";");
+		}
 	}
 }
 
@@ -89,7 +92,7 @@ $mostviewedthreads = $cache->read("most_viewed_threads");
 if(!$mostviewedthreads || $mostviewedthreads['lastupdated'] <= time()-60*60*24)
 {
 	$mostviewedthreads = array();
-	$query = $db->simple_select(TABLE_PREFIX."threads", "tid, subject, views", $fidnot, array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
+	$query = $db->simple_select(TABLE_PREFIX."threads", "tid, subject, views", "", array('order_by' => 'views', 'order_dir' => 'DESC', 'limit_start' => 0, 'limit' => $mybb->settings['statslimit']));
 	while($thread2 = $db->fetch_array($query))
 	{
 		$mostviewedthreads['threads'][] = $thread2;
@@ -104,10 +107,13 @@ if(!empty($mostviewedthreads))
 {
 	foreach($mostviewedthreads['threads'] as $key => $thread)
 	{
-		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
-		$numberbit = my_number_format($thread['views']);
-		$numbertype = $lang->views;
-		eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
+		if(!in_array($thread['fid'], $unviewableforumsarray))
+		{
+			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
+			$numberbit = my_number_format($thread['views']);
+			$numbertype = $lang->views;
+			eval("\$mostviews .= \"".$templates->get("stats_thread")."\";");
+		}
 	}
 }
 
