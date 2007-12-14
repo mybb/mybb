@@ -255,7 +255,7 @@ class Moderation
 		$db->delete_query("polls", "pid='$pid'");
 		$db->delete_query("pollvotes", "pid='$pid'");
 		$pollarray = array(
-			"poll" => '',
+			'poll' => '0',
 		);
 		$db->update_query("threads", $pollarray, "poll='$pid'");
 		
