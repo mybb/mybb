@@ -4475,7 +4475,7 @@ body {
 <td align="center" class="{$bgcolor}">-</td>
 <td align="center" class="{$bgcolor}">-</td>
 {$rating}
-<td class="{$bgcolor}" style="white-space: nowrap"><span class="smalltext">{$postdate} {$posttime}</span></td>
+<td class="{$bgcolor}" style="white-space: nowrap; text-align: right"><span class="smalltext">{$postdate} {$posttime}</span></td>
 {$modann}
 </tr>
 ]]></template>
@@ -10240,12 +10240,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="thead" colspan="6"><strong>{$lang->add_announcement}</strong></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->title}</td>
-							<td class="trow1" valign="top" width="60%"><input type="text" class="inputbox" name="title" size="25" value="{$title}" /></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->title}</strong></td>
+							<td class="trow1" valign="top" width="75%"><input type="text" class="inputbox" name="title" size="40" value="{$title}" /></td>
 						</tr>
 						<tr>
-							<td class="trow1" colspan="1" valign="top" width="40%">{$lang->start_date}</td>
-							<td class="trow1" valign="top"  width="60%">
+							<td class="trow1" colspan="1" valign="top" width="25%"><strong>{$lang->start_date}</strong></td>
+							<td class="trow1" valign="top"  width="75%">
 								<select name="starttime_day">
 								{$startdateday}
 								</select>
@@ -10255,12 +10255,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</select>
 								&nbsp; 
 								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" style="width: 50px;"/>
+								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" />
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" colspan="1" valign="top" width="40%">{$lang->end_date}</td>
-							<td class="trow1" valign="top"  width="60%">
+							<td class="trow1" colspan="1" valign="top" width="25%"><strong>{$lang->end_date}</strong></td>
+							<td class="trow1" valign="top"  width="75%">
 								<input type="radio" name="endtime_type" value="1"{$end_type_sel['finite']} />
 								<select name="endtime_day">
 								{$enddateday}
@@ -10271,25 +10271,25 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</select>
 								&nbsp; 
 								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" style="width: 50px;"/>
+								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" />
 								<br /><input type="radio" name="endtime_type" value="2"{$end_type_sel['infinite']} /> {$lang->never}
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->announcement}</td>
-							<td class="trow1" valign="top" width="60%"><textarea name="message" rows="10" cols="50">{$message}</textarea></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->announcement}</strong><br />{$smilieinserter}</td>
+							<td class="trow1" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{$message}</textarea>{$codebuttons}</td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->allow_html}</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;No</label></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->allow_mycode}</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;No</label></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->allow_smilies}</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_smilies}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;No</label></td>
 						</tr>
 					</table>
 					<br />
@@ -10326,12 +10326,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="thead" colspan="6"><strong>{$lang->edit_announcement}</strong></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->title}</td>
-							<td class="trow1" valign="top" width="60%"><input type="text" class="inputbox" name="title" size="25" value="{$title}" /></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->title}</strong></td>
+							<td class="trow1" valign="top" width="75%"><input type="text" class="inputbox" name="title" size="40" value="{$title}" /></td>
 						</tr>
 						<tr>
-							<td class="trow1" colspan="1" valign="top" width="40%">{$lang->start_date}</td>
-							<td class="trow1" valign="top"  width="60%">
+							<td class="trow1" colspan="1" valign="top" width="25%"><strong>{$lang->start_date}</strong></td>
+							<td class="trow1" valign="top"  width="75%">
 								<select name="starttime_day">
 								{$startdateday}
 								</select>
@@ -10341,12 +10341,12 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</select>
 								&nbsp; 
 								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" style="width: 50px;"/>
+								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" />
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" colspan="1" valign="top" width="40%">{$lang->end_date}</td>
-							<td class="trow1" valign="top"  width="60%">
+							<td class="trow1" colspan="1" valign="top" width="25%"><strong>{$lang->end_date}</strong></td>
+							<td class="trow1" valign="top"  width="75%">
 								<input type="radio" name="endtime_type" value="1"{$end_type_sel['finite']} />
 								<select name="endtime_day">
 								{$enddateday}
@@ -10357,25 +10357,25 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</select>
 								&nbsp; 
 								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
-								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" style="width: 50px;"/>
+								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" />
 								<br /><input type="radio" name="endtime_type" value="2"{$end_type_sel['infinite']} /> {$lang->never}
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->announcement}</td>
-							<td class="trow1" valign="top" width="60%"><textarea name="message" rows="10" cols="50">{$message}</textarea></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->announcement}</strong><br />{$smilieinserter}</td>
+							<td class="trow1" valign="top" width="75%"><textarea id="message" name="message" rows="20" cols="70">{$message}</textarea>{$codebuttons}</td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->allow_html}</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;No</label></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->allow_mycode}</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;No</label></td>
 						</tr>
 						<tr>
-							<td class="trow1" valign="top" width="40%">{$lang->allow_smilies}</td>
-							<td class="trow1" valign="top" width="60%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_smilies}</strong></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;No</label></td>
 						</tr>
 					</table>
 					<br />

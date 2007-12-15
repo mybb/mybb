@@ -711,6 +711,10 @@ if($mybb->input['action'] == "new_announcement")
 	{
 		$end_type_sel['finite'] = ' checked="checked"';
 	}
+	
+	// MyCode editor
+	$codebuttons = build_mycode_inserter();
+	$smilieinserter = build_clickable_smilies();
 
 	eval("\$announcements = \"".$templates->get("modcp_announcements_new")."\";");
 	output_page($announcements);
@@ -950,6 +954,10 @@ if($mybb->input['action'] == "edit_announcement")
 	{
 		$end_type_sel['finite'] = ' checked="checked"';
 	}
+	
+	// MyCode editor
+	$codebuttons = build_mycode_inserter();
+	$smilieinserter = build_clickable_smilies();
 
 	eval("\$announcements = \"".$templates->get("modcp_announcements_edit")."\";");
 	output_page($announcements);
