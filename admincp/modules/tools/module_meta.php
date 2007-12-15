@@ -72,6 +72,10 @@ function tools_action_handler($action)
 			$page->active_action = "mailerrors";
 			$action_file = "mailerrors.php";
 			break;
+		case "adminlog":
+			$page->active_action = "adminlog";
+			$action_file = "adminlog.php";
+			break;
 		case "modlog":
 			$page->active_action = "modlog";
 			$action_file = "modlog.php";
@@ -129,15 +133,26 @@ function tools_format_admin_log_data($action, $data)
 			{
 				return "Deleted task #{$data['tid']}'";
 			}
-			else if($data['action'] == "enable")
+			else if($data[2] == "enable")
 			{
-				return "Enabled task #{$data['tid']}'";
+				return "Enabled task #{$data[0]} ({$data[1]})";
 			}
-			else if($data['action'] == "disable")
+			else if($data[2] == "disable")
 			{
-				return "Disabled task #{$data['tid']}'";
+				return "Disabled task #{$data[0]} ({$data[1]})";
 			}
 			break;
+		case "adminlog":
+			$str = "Pruned {$data[3]} logs older than {$data[0]} days";
+			if($data[1])
+			{
+				$str .= " for user #{$data[1]}";
+			}
+			if($data[2])
+			{
+				$str .= " for module '{$data[2]}'";
+			}
+			return $str;
 	}
 }
 
