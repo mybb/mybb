@@ -32,9 +32,10 @@ function build_postbit($post, $post_type=0)
 		$parser = new postParser;
 	}
 
+	$unapproved_shade = '';
 	if($post['visible'] == 0 && $post_type == 0)
 	{
-		$altbg = 'trow_shaded';
+		$altbg = $unapproved_shade = 'trow_shaded';
 	}
 	elseif($altbg == 'trow1')
 	{

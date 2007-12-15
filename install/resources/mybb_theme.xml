@@ -4502,7 +4502,7 @@ body {
 		</tr>
 		
 		<tr>
-			<td class="trow1">
+			<td class="trow1 {$unapproved_shade}">
 				<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
 					<tr>
 						<td class="post_avatar" width="1" style="{$post['avatar_padding']}">
@@ -4525,7 +4525,7 @@ body {
 		</tr>
 		
 		<tr>
-			<td class="trow2 post_content">
+			<td class="trow2 post_content {$unapproved_shade}">
 				<span class="smalltext"><strong>{$post['icon']}{$post['subject']} {$post['subject_extra']}</strong></span>
 				
 				<div class="post_body" id="pid_{$post['pid']}">
@@ -4542,7 +4542,7 @@ body {
 		</tr>
 		
 		<tr>
-			<td class="trow1" class="post_buttons">
+			<td class="trow1 post_buttons {$unapproved_shade}">
 				<div class="author_buttons float_left">
 					{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}
 				</div>
