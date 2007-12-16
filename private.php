@@ -543,7 +543,7 @@ if($mybb->input['action'] == "read")
 	{
 		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
 		
-		if($reply_date == $lang->today || $reply_date == $lang->yesterday);
+		if($reply_date == $lang->today || $reply_date == $lang->yesterday)
 		{
 			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 			$actioned_on = sprintf($lang->you_replied, $reply_date);
