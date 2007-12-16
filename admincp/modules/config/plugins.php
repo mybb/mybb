@@ -141,6 +141,9 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		flash_message($lang->error_invalid_plugin, 'error');
 		admin_redirect("index.php?".SID."&module=config/plugins");
 	}
+	
+	$plugins_cache = $cache->read("plugins");
+	$active_plugins = $plugins_cache['active'];
 
 	require_once MYBB_ROOT."inc/plugins/$file";
 
