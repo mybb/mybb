@@ -116,6 +116,9 @@ $l['december'] = "December";
 $l['access_denied'] = "Access Denied";
 $l['access_denied_desc'] = "You do not have permission to access this part of the administration control panel.";
 
+// Super Administrator required
+$l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform this actions you are not a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
+
 // AJAX
 $l['loading_text'] = "Loading<br />Please wait...";
 

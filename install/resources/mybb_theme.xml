@@ -1093,13 +1093,13 @@ ul.thread_tools li.subscription_remove {
 
 <dl class="forum_legend smalltext">
 	<dt><img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
-	<dd>{$lang->new_posts}</dt>
+	<dd>{$lang->new_posts}</dd>
 	
 	<dt><img src="{$theme['imgdir']}/off.gif" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
 	<dd>{$lang->no_new_posts}</dd>
 	
 	<dt><img src="{$theme['imgdir']}/offlock.gif" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
-	<dd>{$lang->forum_locked}
+	<dd>{$lang->forum_locked}</dd>
 </dl>
 <br style="clear: both" />
 {$footer}

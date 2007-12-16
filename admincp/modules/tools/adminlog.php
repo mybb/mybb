@@ -30,6 +30,12 @@ $sub_tabs['prune_admin_logs'] = array(
 
 if($mybb->input['action'] == 'prune')
 {
+	if(!is_super_admin($mybb->user['uid']))
+	{
+		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
+		admin_redirect("index.php?".SID."&module=tools/adminlog");
+	}
+	
 	if($mybb->request_method == 'post')
 	{
 		$where = 'dateline < '.(time()-(intval($mybb->input['older_than'])*86400));

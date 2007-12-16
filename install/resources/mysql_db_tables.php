@@ -528,9 +528,10 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid int unsigned NOT NULL auto_increment,
   pid int unsigned NOT NULL default '0',
   uid int unsigned NOT NULL default '0',
-  oldusergroup smallint unsigned NOT NULL default '0',
-  newusergroup smallint unsigned NOT NULL default '0',
+  oldusergroup varchar(200) NOT NULL default '0',
+  newusergroup smallint NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
+  type varchar(9) NOT NULL default 'primary',
   PRIMARY KEY(plid)
 ) TYPE=MyISAM;";
 

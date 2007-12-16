@@ -476,9 +476,10 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid INTEGER PRIMARY KEY,
   pid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  oldusergroup smallint NOT NULL default '0',
+  oldusergroup varchar(200) NOT NULL default '0',
   newusergroup smallint NOT NULL default '0',
-  dateline bigint(30) NOT NULL default '0'
+  dateline bigint(30) NOT NULL default '0',
+  type varchar(9) NOT NULL default 'primary'
 );";
 
 $tables[] = "CREATE TABLE mybb_reportedposts (

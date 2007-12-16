@@ -25,12 +25,14 @@ $sub_tabs['usergroup_promotions'] = array(
 
 $sub_tabs['add_promotion'] = array(
 	'title' => $lang->add_new_promotion,
-	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add"
+	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add",
+	'description' => $lang->add_new_promotion_desc
 );
 
 $sub_tabs['promotion_logs'] = array(
 	'title' => $lang->view_promotion_logs,
-	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs"
+	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs",
+	'description' => $lang->view_promotion_logs_desc
 );
 
 if($mybb->input['action'] == "disable")
@@ -393,22 +395,6 @@ if($mybb->input['action'] == "add")
 	}
 	$page->add_breadcrumb_item($lang->add_new_promotion);
 	$page->output_header($lang->user_group_promotions." - ".$lang->add_new_promotion);
-	
-	$sub_tabs['usergroup_promotions'] = array(
-		'title' => $lang->user_group_promotions,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions"
-	);
-
-	$sub_tabs['add_promotion'] = array(
-		'title' => $lang->add_new_promotion,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add",
-		'description' => $lang->add_new_promotion_desc
-	);
-
-	$sub_tabs['promotion_logs'] = array(
-		'title' => $lang->view_promotion_logs,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs"
-	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_promotion');
 	$form = new Form("index.php?".SID."&amp;module=user/group_promotions&amp;action=add", "post", "add");
@@ -513,10 +499,11 @@ if($mybb->input['action'] == "logs")
 	$page->output_nav_tabs($sub_tabs, 'promotion_logs');
 
 	$table = new Table;
-	$table->construct_header($lang->promoted_user, array("class" => "align_center", "width" => '25%'));
-	$table->construct_header($lang->orig_user_group, array("class" => "align_center", "width" => '25%'));
-	$table->construct_header($lang->new_user_group, array("class" => "align_center", "width" => '25%'));
-	$table->construct_header($lang->time_promoted, array("class" => "align_center", "width" => '25%'));
+	$table->construct_header($lang->promoted_user, array("class" => "align_center", "width" => '20%'));
+	$table->construct_header($lang->user_group_change_type, array("class" => "align_center", "width" => '20%'));
+	$table->construct_header($lang->orig_user_group, array("class" => "align_center", "width" => '20%'));
+	$table->construct_header($lang->new_user_group, array("class" => "align_center", "width" => '20%'));
+	$table->construct_header($lang->time_promoted, array("class" => "align_center", "width" => '20%'));
 
 	$query = $db->query("
 		SELECT pl.*,u.username
@@ -528,10 +515,30 @@ if($mybb->input['action'] == "logs")
 	while($log = $db->fetch_array($query))
 	{
 		$log['username'] = "<a href=\"index.php?".SID."&amp;module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($log['username'])."</a>";
-		$log['oldusergroup'] = htmlspecialchars_uni($groupscache[$log['oldusergroup']]['title']);
-		$log['newusergroup'] = htmlspecialchars_uni($groupscache[$log['newusergroup']]['title']);
+		
+		if($log['type'] == "secondary" || (!empty($log['oldusergroup']) && strstr(",", $log['oldusergroup'])))
+		{
+			$log['oldusergroup'] = "<i>".$lang->multiple_usergroups."</i>";
+			$log['newusergroup'] = htmlspecialchars_uni($groupscache[$log['newusergroup']]['title']);
+		}
+		else
+		{
+			$log['oldusergroup'] = htmlspecialchars_uni($groupscache[$log['oldusergroup']]['title']);
+			$log['newusergroup'] = htmlspecialchars_uni($groupscache[$log['newusergroup']]['title']);
+		}
+		
+		if($log['type'] == "secondary")
+		{
+			$log['type'] = $lang->secondary;
+		}
+		else
+		{
+			$log['type'] = $lang->primary;
+		}
+		
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 		$table->construct_cell($log['username']);
+		$table->construct_cell($log['type'], array('style' => 'text-align: center;'));
 		$table->construct_cell($log['oldusergroup'], array('style' => 'text-align: center;'));
 		$table->construct_cell($log['newusergroup'], array('style' => 'text-align: center;'));
 		$table->construct_cell($log['dateline'], array('style' => 'text-align: center;'));
@@ -540,7 +547,7 @@ if($mybb->input['action'] == "logs")
 	
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_promotion_logs, array("colspan" => "4"));
+		$table->construct_cell($lang->no_promotion_logs, array("colspan" => "5"));
 		$table->construct_row();
 	}
 	

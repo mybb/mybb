@@ -690,7 +690,7 @@ class PostDataHandler extends DataHandler
 			}
 		}
 		
-		if($visible == 1)
+		if($thread['visible'] == 1)
 		{
 			$now = TIME_NOW;
 			if($forum['usepostcounts'] != 0)

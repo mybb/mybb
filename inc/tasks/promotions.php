@@ -80,21 +80,56 @@ function task_promotions($task)
 		$uid = array();
 		$log_inserts = array();
 		
-		$query = $db->simple_select("users", "uid,usergroup", $sql_where);
+		if($promotion['usergrouptype'] == "secondary")
+		{
+			$usergroup_select = "additionalgroups";
+		}
+		else
+		{
+			$usergroup_select = "usergroup";
+		}
+		
+		$query = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
 		while($user = $db->fetch_array($query))
 		{
+			if($usergroup_select == "additionalgroups")
+			{
+				$log_inserts[] = array(
+					'pid' => $promotion['pid'],
+					'uid' => $user['uid'],
+					'oldusergroup' => $user['additionalgroups'],
+					'newusergroup' => $promotion['newusergroup'],
+					'dateline' => TIME_NOW,
+					'type' => "secondary",
+				);
+			}
+			else
+			{
+				$log_inserts[] = array(
+					'pid' => $promotion['pid'],
+					'uid' => $user['uid'],
+					'oldusergroup' => $user['usergroup'],
+					'newusergroup' => $promotion['newusergroup'],
+					'dateline' => TIME_NOW,
+					'type' => "primary",
+				);
+			}
+		
 			$uids[] = $user['uid'];
-			$log_inserts[] = array(
-				'pid' => $promotion['pid'],
-				'uid' => $user['uid'],
-				'oldusergroup' => $user['usergroup'],
-				'newusergroup' => $promotion['newusergroup'],
-				'dateline' => TIME_NOW
-			);			
+			
+			
+			if($usergroup_select == "additionalgroups")
+			{
+				join_usergroup($user['uid'], $promotion['newusergroup']);
+			}
 			
 			if((count($uids) % 20) == 0)
 			{
-				$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+				if($usergroup_select == "usergroup")
+				{
+					$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+				}
+				
 				$db->insert_query_multiple("promotionlogs", $log_inserts);
 				
 				$uids = array();
@@ -104,7 +139,11 @@ function task_promotions($task)
 		
 		if(count($uids) > 0)
 		{
-			$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+			if($usergroup_select == "usergroup")
+			{
+				$db->update_query("users", array('usergroup' => $promotion['newusergroup']), "uid IN(".implode(",", $uids).")");
+			}
+			
 			$db->insert_query_multiple("promotionlogs", $log_inserts);
 				
 			$uids = array();

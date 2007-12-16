@@ -268,7 +268,8 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	if($okay_count == count($mybb_tables))
 	{
-		cperror($lang->error_all_tables_already_converted);
+		flash_message($lang->error_all_tables_already_converted, 'error');
+		admin_redirect("index.php?".SID."&module=tools/index");
 	}
 	
 	if(!$mybb->config['database']['encoding'])

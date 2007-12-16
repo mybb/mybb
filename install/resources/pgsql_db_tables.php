@@ -49,7 +49,7 @@ $tables[] = "CREATE TABLE mybb_adminviews (
 	sortorder varchar(4) NOT NULL default '',
 	perpage int(4) NOT NULL default '0',
 	view_type varchar(6) NOT NULL default '',
-	PRIMARY KEY(vid)
+	PRIMARY KEY (vid)
 );";
 
 $tables[] = "CREATE TABLE mybb_announcements (
@@ -505,9 +505,10 @@ $tables[] = "CREATE TABLE mybb_promotionlogs (
   plid serial,
   pid int NOT NULL default '0',
   uid int NOT NULL default '0',
-  oldusergroup smallint NOT NULL default '0',
+  oldusergroup varchar(200) NOT NULL default '0',
   newusergroup smallint NOT NULL default '0',
   dateline bigint NOT NULL default '0',
+  type varchar(9) NOT NULL default 'primary',
   PRIMARY KEY(plid)
 );";
 

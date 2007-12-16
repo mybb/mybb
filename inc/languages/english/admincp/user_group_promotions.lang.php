@@ -61,6 +61,9 @@ $l['enable_promotion'] = "Enable Promotion";
 $l['delete_promotion'] = "Delete Promotion";
 $l['no_promotions_set'] = "There are currently no set promotions.";
 $l['update_promotion'] = "Save Promotion";
+$l['multiple_usergroups'] = "Multiple User Groups";
+$l['secondary'] = "Secondary";
+$l['primary'] = "Primary";
 
 $l['error_no_promo_id'] = 'You did not enter a promotion id';
 $l['error_invalid_promo_id'] = 'You did not enter a valid promotion id';
