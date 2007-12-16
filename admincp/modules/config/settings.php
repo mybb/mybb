@@ -1006,28 +1006,28 @@ if($mybb->input['action'] == "change")
 					}
 					if($type[0] == "select")
 					{
-						$option_list[$optionsexp[0]] = $optionsexp[1];
+						$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
 					}
 					else if($type[0] == "radio")
 					{
 						if($setting['value'] == $optionsexp[0])
 						{
-							$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+							$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
 						}
 						else
 						{
-							$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
+							$option_list[$i] = $form->generate_radio_button($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 						}
 					}
 					else if($type[0] == "checkbox")
 					{
 						if($setting['value'] == $optionsexp[0])
 						{
-							$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
+							$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, "checked" => 1, 'class' => $element_id));
 						}
 						else
 						{
-							$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], $optionsexp[1], array('id' => $element_id.'_'.$i, 'class' => $element_id));
+							$option_list[$i] = $form->generate_checkbox_input($element_name, $optionsexp[0], htmlspecialchars_uni($optionsexp[1]), array('id' => $element_id.'_'.$i, 'class' => $element_id));
 						}
 					}
 				}

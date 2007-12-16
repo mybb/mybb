@@ -3201,23 +3201,23 @@ ul.thread_tools li.subscription_remove {
 <td width="50%" valign="top">
 {$profilefields}
 {$signature}
-{$adminoptions}
+{$modoptions}
 </td>
 </tr>
 </table>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_profile_adminoptions" version="120"><![CDATA[
+		<template name="member_profile_modoptions" version="1400"><![CDATA[
 <br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
-<td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
+<td colspan="2" class="thead"><strong>{$lang->mod_options}</strong></td>
 </tr>
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&uid={$uid}">{$lang->admin_edit_in_mcp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&uid={$uid}>{$lang->admin_ban_in_mcp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/modcp.php?action=editprofile&amp;uid={$uid}">{$lang->edit_in_mcp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/modcp.php?action=banuser&amp;uid={$uid}">{$lang->ban_in_mcp}</a></li>
 </ul>
 </td>
 </tr>
@@ -6187,16 +6187,16 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="trow1"><strong>{$lang->hostname}<br /><span class="smalltext">{$lang->if_resolvable}</span></strong></td>
 <td class="trow2">{$hostname}</td>
 </tr>
-{$adminoptions}
+{$modoptions}
 </table>
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_getip_adminoptions" version="120"><![CDATA[<tr>
-<td class="trow2"><strong>{$lang->admin_options}</strong></td>
+		<template name="moderation_getip_modoptions" version="1400"><![CDATA[<tr>
+<td class="trow2"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2">
-	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bregip%5D%3D{$post['ipaddress']}">{$lang->search_regip_users}</a><br />
-	<a href="{$config['admin_dir']}/index.php?goto=users%2Ephp%3Faction%3Dfind%26searchop%5Bsortby%5D%3Dusername%26searchop%5Border%5D%3Dasc%26search%5Bpostip%5D%3D{$post['ipaddress']}">{$lang->search_postip_users}</a>
+	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_users=1">{$lang->search_ip_users}</a><br />
+	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_posts=1">{$lang->search_ip_posts}</a>
 </td>
 </tr>]]></template>
 		<template name="postbit_iplogged_hiden" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></div>]]></template>
@@ -6995,42 +6995,12 @@ To: {$to_recipients}
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="online_iplookup" version="120"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->ip_lookup}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="2"><strong>{$lang->ip_lookup}</strong></td>
-</tr>
-<td class="trow2"><strong>{$lang->ip}</strong></td>
-<td class="trow2">{$ip}</td>
-</tr>
-<tr>
-<td class="trow1"><strong>{$lang->resolves_to}<br /><span class="smalltext">{$lang->if_resolvable}</span></strong></td>
-<td class="trow2">{$host}</td>
-</tr>
-{$adminoptions}
-</table>
-{$footer}
-</body>
-</html>]]></template>
-		<template name="online_iplookup_adminoptions" version="120"><![CDATA[<tr>
-<td class="trow1"><strong>{$lang->admin_options}</strong></td>
-<td class="trow2">
-	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[regip]={$ip}">{$lang->search_regip_users}</a><br />
-	<a href="{$config['admin_dir']}/users.php?action=find&searchop[sortby]=username&searchop[order]=asc&search[postip]={$ip}">{$lang->search_postip_users}</a>
-</td>
-</tr>]]></template>
 		<template name="online_row" version="1400"><![CDATA[<tr>
 <td class="trow1">{$online_name}{$user_ip}</td>
 <td align="center" class="trow2">{$online_time}</td>
 <td class="trow1" width="50%">{$location}</td>
 </tr>]]></template>
-		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="online.php?action=iplookup&amp;ip={$user['ip']}">{$lang->lookup}</a></span>]]></template>
+		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="modcp.php?action=ipsearch&amp;ipaddress={$user['ip']}&amp;search_users=1">{$lang->lookup}</a></span>]]></template>
 		<template name="postbit_offline" version="1400"><![CDATA[<img src="{$theme['imgdir']}/buddy_offline.gif" title="{$lang->postbit_status_offline}" alt="{$lang->postbit_status_offline}" />]]></template>
 		<template name="postbit_editedby" version="1400"><![CDATA[<p class="smalltext">{$post['editnote']} {$post['editedprofilelink']}.</p>
 

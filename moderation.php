@@ -656,11 +656,11 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
-		// Admin options
-		$adminoptions = "";
-		if($mybb->usergroup['cancp'] == 1 && $mybb->config['hide_admin_links'] != 1)
+		// Moderator options
+		$modoptions = "";
+		if($mybb->usergroup['canmodcp'] == 1)
 		{
-			eval("\$adminoptions = \"".$templates->get("moderation_getip_adminoptions")."\";");
+			eval("\$modoptions = \"".$templates->get("moderation_getip_modoptions")."\";");
 		}
 
 		eval("\$getip = \"".$templates->get("moderation_getip")."\";");

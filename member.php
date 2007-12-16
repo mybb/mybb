@@ -1523,11 +1523,11 @@ if($mybb->input['action'] == "profile")
 
 	if($mybb->usergroup['canmodcp'] == 1)
 	{
-		eval("\$adminoptions = \"".$templates->get("member_profile_adminoptions")."\";");
+		eval("\$modoptions = \"".$templates->get("member_profile_modoptions")."\";");
 	}
 	else
 	{
-		$adminoptions = '';
+		$modoptions = '';
 	}
 	
 	$plugins->run_hooks("member_profile_end");

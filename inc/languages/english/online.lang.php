@@ -8,7 +8,6 @@
 
 $l['nav_online'] = "Who's Online";
 $l['nav_onlinetoday'] = "Who Was Online Today";
-$l['nav_iplookup'] = "IP Address Lookup";
 
 $l['viewing_announcements'] = "Viewing <a href=\"{1}\">{2}</a> Announcements";
 $l['viewing_announcements2'] = "Viewing Forum Announcements";
@@ -47,7 +46,6 @@ $l['posting_thread'] = "Posting New Thread";
 $l['posting_thread2'] = "Posting New Thread in <a href=\"{1}\">{2}</a>";
 $l['viewing_wol'] = "Viewing <a href=\"online.php\">Who's Online</a>";
 $l['viewing_woltoday'] = "Viewing <a href=\"online.php?action=today\">Who Was Online Today</a>";
-$l['viewing_iplookup'] = "Viewing IP Address Lookup";
 $l['creating_poll'] = "Creating New Poll";
 $l['editing_poll'] = "Editing a Poll";
 $l['viewing_pollresults'] = "Viewing Poll Results";
@@ -96,7 +94,6 @@ $l['online_anon_singular'] = "is";
 $l['online_guest_plural'] = "guests";
 $l['online_guest_singular'] = "guest";
 $l['online_count'] = "{1} {2} active in the past {3} minutes ({4} {5}, {6} of whom {7} invisible, and {8} {9}).";
-$l['ip_lookup'] = "IP Address Lookup";
 $l['ip'] = "IP:";
 $l['resolves_to'] = "Hostname:";
 $l['if_resolvable'] = "(if resolvable)";

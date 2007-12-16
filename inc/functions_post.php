@@ -473,8 +473,8 @@ function build_postbit($post, $post_type=0)
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
-
-		if($mybb->settings['logip'] != 0)
+		
+		if($mybb->settings['logip'] != "no")
 		{
 			if($mybb->settings['logip'] == "show")
 			{
@@ -491,7 +491,7 @@ function build_postbit($post, $post_type=0)
 		}
 		else
 		{
-				$post['iplogged'] = "";
+			$post['iplogged'] = "";
 		}
 
 	}

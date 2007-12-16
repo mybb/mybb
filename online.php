@@ -28,18 +28,9 @@ if($mybb->usergroup['canviewonline'] == 0)
 // Make navigation
 add_breadcrumb($lang->nav_online, "online.php");
 
-switch($mybb->input['action'])
-{
-	case "today":
-		add_breadcrumb($lang->nav_onlinetoday);
-		break;
-	case "iplookup":
-		add_breadcrumb($lang->nav_iplookup);
-		break;
-}
-
 if($mybb->input['action'] == "today")
 {
+	add_breadcrumb($lang->nav_onlinetoday);
 
 	$plugins->run_hooks("online_today_start");
 
@@ -86,29 +77,6 @@ if($mybb->input['action'] == "today")
 
 	eval("\$today = \"".$templates->get("online_today")."\";");
 	output_page($today);
-}
-elseif($mybb->input['action'] == "iplookup")
-{
-	if($mybb->usergroup['canviewonlineips'] == 0)
-	{
-		error_no_permission();
-	}
-	$ip = $mybb->input['ip'];
-	$host = @gethostbyaddr($ip);
-	$ip = htmlspecialchars($ip);
-	if(!$host || $host == $ip)
-	{
-		error($lang->error_nohostname);
-	}
-
-	// Admin options
-	$adminoptions = "";
-	if($mybb->usergroup['cancp'] == 1)
-	{
-		eval("\$adminoptions = \"".$templates->get("online_iplookup_adminoptions")."\";");
-	}
-	eval("\$iplookup = \"".$templates->get("online_iplookup")."\";");
-	output_page($iplookup);
 }
 else
 {

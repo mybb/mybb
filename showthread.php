@@ -477,7 +477,7 @@ if($mybb->input['action'] == "thread")
 	}
 	else
 	{
-		$adminoptions = "&nbsp;";
+		$modoptions = "&nbsp;";
 		$inlinemod = "";
 	}
 
