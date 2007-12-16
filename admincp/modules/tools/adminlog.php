@@ -30,12 +30,16 @@ $sub_tabs['prune_admin_logs'] = array(
 
 if($mybb->input['action'] == 'prune')
 {
+	if($config['log_pruning']['admin_logs'])
+	{
+		flash_message($lang->error_logs_automatically_pruned, 'error');
+		admin_redirect("index.php?".SID."&amp;module=tools/adminlog");
+	}
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
-		admin_redirect("index.php?".SID."&module=tools/adminlog");
+		admin_redirect("index.php?".SID."&amp;module=tools/adminlog");
 	}
-	
 	if($mybb->request_method == 'post')
 	{
 		$where = 'dateline < '.(time()-(intval($mybb->input['older_than'])*86400));
@@ -143,23 +147,11 @@ if(!$mybb->input['action'])
 		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
 	}
 
-	// Searching for entries in a specific module
-	if($mybb->input['filter_module'])
-	{
-		$where .= " AND l.module='".$db->escape_string($mybb->input['filter_module'])."'";
-	}
-
 	// Order?
 	switch($mybb->input['sortby'])
 	{
 		case "username":
 			$sortby = "u.username";
-			break;
-		case "module":
-			$sortby = "l.module";
-			break;
-		case "thread":
-			$sortby = "t.subject";
 			break;
 		default:
 			$sortby = "l.dateline";
@@ -211,9 +203,7 @@ if(!$mybb->input['action'])
 	$table = new Table;
 	$table->construct_header($lang->username, array('width' => '10%'));
 	$table->construct_header($lang->date, array('class' => 'align_center', 'width' => '15%'));
-	$table->construct_header($lang->page, array('class' => 'align_center', 'width' => '20%'));
-	$table->construct_header($lang->action, array('class' => 'align_center', 'width' => '10%'));
-	$table->construct_header($lang->information, array('class' => 'align_center', 'width' => '35%'));
+	$table->construct_header($lang->information, array('class' => 'align_center', 'width' => '65%'));
 	$table->construct_header($lang->ipaddress, array('class' => 'align_center', 'width' => '10%'));
 
 	$query = $db->query("
@@ -252,8 +242,6 @@ if(!$mybb->input['action'])
 		
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array('class' => 'align_center'));
-		$table->construct_cell(str_replace(' ', ' -> ', ucwords(str_replace('/', ' ', $logitem['module']))), array('class' => 'align_center'));
-		$table->construct_cell(ucfirst($logitem['action']), array('class' => 'align_center'));
 		$table->construct_cell($information);
 		$table->construct_cell($logitem['ipaddress'], array('class' => 'align_center'));
 		$table->construct_row();
@@ -261,7 +249,7 @@ if(!$mybb->input['action'])
 	
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_adminlogs, array('colspan' => '6'));
+		$table->construct_cell($lang->no_adminlogs, array('colspan' => '4'));
 		$table->construct_row();
 	}
 	
