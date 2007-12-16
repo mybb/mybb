@@ -11,6 +11,7 @@ $l['nav_viewevent'] = "View Event";
 $l['nav_dayview'] = "Day View";
 $l['nav_addevent'] = "Add Event";
 $l['nav_editevent'] = "Edit Event";
+$l['nav_move_event'] = "Move Event";
 
 $l['calendar_disabled'] = "You cannot use the calendar functionality as it has been disabled by the Administrator.";
 
@@ -38,6 +39,8 @@ $l['jump_month'] ="Jump to month:";
 $l['birthdays_on_day'] = "Birthdays on {1}";
 $l['birthdayhidden'] = "Hidden";
 
+$l['event'] = "event";
+$l['events'] = "events";
 $l['add_event'] = "Add Event";
 $l['event_date'] = "Event Date:";
 $l['event_recurring_start_date'] = "Start Date:";

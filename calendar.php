@@ -2135,11 +2135,11 @@ if(!$mybb->input['action'])
 				{
 					if($total_events > 1)
 					{
-						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day)."\" class=\"smalltext\">{$total_events} {$lang->events}</a></div>\n";
+						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">{$total_events} {$lang->events}</a></div>\n";
 					}
 					else
 					{
-						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $weekday_year, $weekday_month, $weekday_day)."\" class=\"smalltext\">1 {$lang->event}</a></div>\n";
+						$day_events = "<div style=\"margin-bottom: 4px;\"><a href=\"".get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day)."\" class=\"smalltext\">1 {$lang->event}</a></div>\n";
 					}
 				}
 				else

@@ -543,7 +543,7 @@ if($mybb->input['action'] == "read")
 	{
 		$reply_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
 		
-		if($reply_date == $lang->today || $reply_date == $lang->yesturday)
+		if($reply_date == $lang->today || $reply_date == $lang->yesterday);
 		{
 			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 			$actioned_on = sprintf($lang->you_replied, $reply_date);
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "read")
 
 	if(is_array($pm['recipients']['to']))
 	{
-		$uid_sql = implode(',', array_keys($pm['recipients']['to']));
+		$uid_sql = implode(',', $pm['recipients']['to']);
 	}
 	else
 	{
@@ -600,7 +600,7 @@ if($mybb->input['action'] == "read")
 	if(count($pm['recipients']['bcc']) > 0 && $mybb->usergroup['cancp'] == 1)
 	{
 		$show_bcc = 1;
-		$uid_sql .= ','.implode(',', array_keys($pm['recipients']['bcc']));
+		$uid_sql .= ','.implode(',', $pm['recipients']['bcc']);
 	}
 	
 	// Fetch recipient names from the database
@@ -1423,10 +1423,10 @@ if(!$mybb->input['action'])
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
 				$recipients = unserialize($message['recipients']);
-				if(count($recipients['to']) > 1 || (count($recipients['to']) == 0 && count($recipients['bcc']) > 0))
+				if(count($recipients['to']) > 0 || (count($recipients['to']) == 0 && count($recipients['bcc']) > 0))
 				{
 					$uids = array();
-					if(count($recipients['to']) > 1)
+					if(count($recipients['to']) > 0)
 					{
 						foreach($recipients['to'] as $recipient)
 						{

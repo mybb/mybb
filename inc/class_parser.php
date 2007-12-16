@@ -577,7 +577,8 @@ class postParser
 
 		$linkback = $date = "";
 
-		$message = trim(trim($message), "<br />");
+		$message = trim($message);
+		$message = preg_replace("#(^<br(\s?)(\/?)>|<br(\s?)(\/?)>$)#i", "", $message);
 
 		if(!$message) return '';
 
