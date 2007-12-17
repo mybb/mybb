@@ -325,7 +325,7 @@ EOF;
 		}
 print <<<EOF
 		<p>{$lang->enter_username_and_password}</p>
-		<form method="post" action="{$_SERVER['PHP_SELF']}">
+		<form method="post" action="{$_SERVER['PHP_SELF']}?{$_SERVER['QUERY_STRING']}">
 		<div class="form_container">
 
 			<div class="label"><label for="username">{$lang->username}</label></div>
