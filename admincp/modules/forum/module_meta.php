@@ -58,29 +58,6 @@ function forum_action_handler($action)
 	return $action_file;
 }
 
-function forum_admin_log_data()
-{
-	switch($page->active_action)
-	{
-		case "dashboard":
-			return array(
-				"data" => array("uid" => "1234", "username" => "Test")
-			);
-			break;
-	
-	}
-}
-
-function forum_format_admin_log_data($action, $data)
-{
-	switch($action)
-	{
-		case "dashboard":
-			return "Edit profile of {$data['username']} ({$data['uid']})";
-			break;
-	}
-}
-
 function forum_admin_permissions()
 {
 	global $lang;

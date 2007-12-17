@@ -42,31 +42,6 @@ function style_action_handler($action)
 	return $action_file;
 }
 
-function style_admin_log_data()
-{
-	global $lang;
-	
-	switch($page->active_action)
-	{
-		case "dashboard":
-			return array(
-				"data" => array("uid" => $mybb->user['uid'], "username" => $mybb->user['username'])
-			);
-			break;
-
-	}
-}
-
-function style_format_admin_log_data($action, $data)
-{
-	switch($action)
-	{
-		case "dashboard":
-			return "Edit profile of {$data['username']} ({$data['uid']})";
-			break;
-	}
-}
-
 function style_admin_permissions()
 {
 	global $lang;

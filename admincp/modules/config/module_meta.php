@@ -113,29 +113,6 @@ function config_action_handler($manage)
 	return $action_file;
 }
 
-function config_admin_log_data()
-{
-	switch($page->active_action)
-	{
-		case "dashboard":
-			return array(
-				"data" => array("uid" => "1234", "username" => "Test")
-			);
-			break;
-
-	}
-}
-
-function config_format_admin_log_data($action, $data)
-{
-	switch($action)
-	{
-		case "dashboard":
-			return "Edit profile of {$data['username']} ({$data['uid']})";
-			break;
-	}
-}
-
 function config_admin_permissions()
 {
 	global $lang;

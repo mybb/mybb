@@ -103,59 +103,6 @@ function tools_action_handler($action)
 	return $action_file;
 }
 
-function tools_admin_log_data()
-{
-	global $mybb;
-	
-	switch($page->active_action)
-	{
-		case "tasks":
-			if($mybb->input['action'] == "edit" || $mybb->input['action'] == "delete" || $mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
-			{
-				return array(
-					"data" => array("action" => $mybb->input['action'], "tid" => intval($mybb->input['tid']))
-				);
-			}
-			break;
-	}
-}
-
-function tools_format_admin_log_data($action, $data)
-{
-	switch($action)
-	{
-		case "tasks":
-			if($data['action'] == "edit")
-			{
-				return "Edited task #{$data['tid']}";
-			}
-			else if($data['action'] == "delete")
-			{
-				return "Deleted task #{$data['tid']}'";
-			}
-			else if($data[2] == "enable")
-			{
-				return "Enabled task #{$data[0]} ({$data[1]})";
-			}
-			else if($data[2] == "disable")
-			{
-				return "Disabled task #{$data[0]} ({$data[1]})";
-			}
-			break;
-		case "adminlog":
-			$str = "Pruned {$data[3]} logs older than {$data[0]} days";
-			if($data[1])
-			{
-				$str .= " for user #{$data[1]}";
-			}
-			if($data[2])
-			{
-				$str .= " for module '{$data[2]}'";
-			}
-			return $str;
-	}
-}
-
 function tools_admin_permissions()
 {
 	global $lang;
