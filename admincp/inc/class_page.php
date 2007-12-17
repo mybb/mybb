@@ -323,9 +323,19 @@ EOF;
 		{
 			echo "<p id=\"message\" class=\"{$class}\"><span class=\"text\">{$message}</span></p>";
 		}
+		// Make query string nice and pretty so that user can go to his/her preferred destination
+		$query_string = '';
+		if($_SERVER['QUERY_STRING'])
+		{
+			$query_string = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
+			$query_string = str_replace('action=logout', '', $query_string);
+			$query_string = preg_replace('#&+#', '&', $query_string);
+			$query_string = str_replace('?&', '?', $query_string);
+			$query_string = htmlspecialchars_uni($query_string);
+		}
 print <<<EOF
 		<p>{$lang->enter_username_and_password}</p>
-		<form method="post" action="{$_SERVER['PHP_SELF']}?{$_SERVER['QUERY_STRING']}">
+		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
 
 			<div class="label"><label for="username">{$lang->username}</label></div>
