@@ -81,13 +81,13 @@ $l['days_short'] = "d";
 $l['hour'] = "Hour";
 $l['hour_short'] = "h";
 $l['hours'] = "Hours";
-$l['hours_short'] ="h";
+$l['hours_short'] = "h";
 $l['minute'] = "Minute";
-$l['minute_short'] ="m";
+$l['minute_short'] = "m";
 $l['minutes'] = "Minutes";
 $l['minutes_short'] = "m";
 $l['second'] = "Second";
-$l['second_short'] ="s";
+$l['second_short'] = "s";
 $l['seconds'] = "Seconds";
 $l['seconds_short'] = "s";
 $l['permanent'] = "Permanent";
@@ -117,7 +117,7 @@ $l['access_denied'] = "Access Denied";
 $l['access_denied_desc'] = "You do not have permission to access this part of the administration control panel.";
 
 // Super Administrator required
-$l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform this actions you are not a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
+$l['cannot_perform_action_super_admin_general'] = "Sorry, but you cannot perform this action because you are not a super administrator.<br /><br />To be able to perform this action, you need to add your user ID to the list of super administrators in inc/config.php.";
 
 // AJAX
 $l['loading_text'] = "Loading<br />Please wait...";

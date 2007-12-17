@@ -221,25 +221,11 @@ if(!$mybb->input['action'])
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		$logitem['data'] = unserialize($logitem['data']);
 		
 		// Get detailed information from meta
-		$data = unserialize($logitem['data']);
-		$information = '';
-		
-		$module = explode('/', $logitem['module']);
-		$action = $module[1];
-		$module = preg_replace('#[^a-z0-9-_]#i', '', $module[0]);
-		$page_file = MYBB_ADMIN_DIR."/modules/{$module}/module_meta.php";
-		if(file_exists($page_file))
-		{
-			require_once $page_file;
-			$function_name = $module.'_format_admin_log_data';
-			if(function_exists($function_name))
-			{
-				$information = call_user_func($function_name, $action, $data);
-			}
-		}
-		
+		$information = get_admin_log_action($logitem);
+	
 		$table->construct_cell($logitem['profilelink']);
 		$table->construct_cell($logitem['dateline'], array('class' => 'align_center'));
 		$table->construct_cell($information);
@@ -318,4 +304,63 @@ if(!$mybb->input['action'])
 	
 	$page->output_footer();
 }
+
+/**
+ * Returns language-friendly string describing $logitem
+ * @param array The log item (one row from mybb_adminlogs)
+ * @return string The description
+ */
+function get_admin_log_action($logitem)
+{
+	global $lang;
+	
+	list($module, $action) = explode('/', $logitem['module']);
+	$lang_string = 'admin_log_'.$module.'_'.$action.'_'.$logitem['action'];
+	
+	// Specific page overrides
+	switch($lang_string)
+	{
+		// == CONFIG ==
+		// == FORUM ==
+		// == HOME ==
+		// == STYLE ==
+		// == TOOLS ==
+		case 'admin_log_tools_adminlog_prune': // Admin Log Pruning
+			if($logitem['data'][1] && !$logitem['data'][2])
+			{
+				$lang_string = 'admin_log_tools_adminlog_prune_user';
+			}
+			elseif($logitem['data'][2] && !$logitem['data'][1])
+			{
+				$lang_string = 'admin_log_tools_adminlog_prune_module';
+			}
+			elseif($logitem['data'][1] && $logitem['data'][2])
+			{
+				$lang_string = 'admin_log_tools_adminlog_prune_user_module';
+			}
+			break;
+	}
+	if(isset($lang->$lang_string))
+	{
+		array_unshift($logitem['data'], $lang->$lang_string); // First parameter for sprintf is the format string
+		print_r($logitem['data']);
+		$string = call_user_func_array('sprintf', $logitem['data']);
+		var_dump($string);
+		if(!$string)
+		{
+			$string = $lang->$lang_string; // Fall back to the one in the language pack
+		}
+	}
+	else
+	{
+		// Build a default string
+		$string = $logitem['module'].' - '.$logitem['action'];
+		if(is_array($logitem['data']) && count($logitem['data']) > 0)
+		{
+			$string .= '('.implode(', ', $logitem['data']).')';
+		}
+	}
+	return $string;
+}
+
 ?>
