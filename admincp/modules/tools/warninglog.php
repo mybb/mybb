@@ -67,7 +67,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 			"revokereason" => $db->escape_string($mybb->input['reason'])
 		);
 		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
-
+		
 		flash_message($lang->redirect_warning_revoked, 'success');
 		admin_redirect("index.php?".SID."&module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
 	}

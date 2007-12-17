@@ -447,7 +447,7 @@ if($mybb->input['action'] == "delete")
 		$cache->update_tasks();
 
 		// Log admin action
-		log_admin_action($task['title']);
+		log_admin_action($task['tid'], $task['title']);
 
 		flash_message($lang->success_task_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=tools/tasks");

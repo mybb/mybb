@@ -93,14 +93,13 @@ if($mybb->input['action'] == "delete")
 	
 	if($mybb->request_method == "post")
 	{
-
-		// Log admin action
-		log_admin_action($file);
-
 		$delete = @unlink(MYBB_ADMIN_DIR.'backups/'.$file);
 			
 		if($delete)
 		{
+			// Log admin action
+			log_admin_action($file);
+			
 			flash_message($lang->success_backup_deleted, 'success');
 			admin_redirect("index.php?".SID."&module=tools/backupdb");
 		}

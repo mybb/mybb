@@ -339,13 +339,27 @@ function get_admin_log_action($logitem)
 				$lang_string = 'admin_log_tools_adminlog_prune_user_module';
 			}
 			break;
+		case 'admin_log_tools_backupdb_backup': // Create backup
+			if($logitem['data'][0] == 'download')
+			{
+				$lang_string = 'admin_log_tools_backupdb_backup_download';
+			}
+			break;
+		case 'admin_log_tools_optimizedb_': // Optimize DB
+			$logitem['data'][0] = @implode(', ', unserialize($logitem['data'][0]));
+			break;
+		case 'admin_log_tools_recount_rebuild_': // Recount and rebuild
+			$detail_lang_string = $lang_string.$logitem['data'][0];
+			if(isset($lang->$detail_lang_string))
+			{
+				$lang_string = $detail_lang_string;
+			}
+			break;
 	}
 	if(isset($lang->$lang_string))
 	{
 		array_unshift($logitem['data'], $lang->$lang_string); // First parameter for sprintf is the format string
-		print_r($logitem['data']);
 		$string = call_user_func_array('sprintf', $logitem['data']);
-		var_dump($string);
 		if(!$string)
 		{
 			$string = $lang->$lang_string; // Fall back to the one in the language pack

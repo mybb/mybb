@@ -41,7 +41,7 @@ if(!$mybb->input['action'])
 		$db->set_table_prefix(TABLE_PREFIX);
 		
 		// Log admin action
-		log_admin_action();
+		log_admin_action(serialize($mybb->input['tables']));
 		
 		flash_message($lang->success_tables_optimized, 'success');
 		admin_redirect("index.php?".SID."&module=tools/optimizedb");

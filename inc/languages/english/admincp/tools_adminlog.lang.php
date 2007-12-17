@@ -44,4 +44,33 @@ $l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} logs older than {1} days
 $l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} logs older than {1} days for module {3}";
 $l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} logs older than {1} days for user {2} and module {3}";
 
+$l['admin_log_tools_backupdb_dlbackup'] = "Downloaded a backup: {1}";
+$l['admin_log_tools_backupdb_delete'] = "Deleted a backup: {1}";
+$l['admin_log_tools_backupdb_backup'] = "Created a backup: {1}";
+$l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup";
+
+$l['admin_log_tools_cache_rebuild'] = "Rebuilt cache: {1}";
+
+$l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
+
+$l['admin_log_tools_mailerrors_prune'] = "Pruned {1} email error logs";
+
+$l['admin_log_tools_optimizedb_'] = "Optimized database tables: {1}";
+
+$l['admin_log_tools_php_info_phpinfo'] = "Viewed PHP Info";
+
+$l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt: {1}";
+$l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics";
+$l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
+$l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";
+$l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
+$l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails"; 
+
+$l['admin_log_tools_tasks_add'] = "Added task #{1}: {2}";
+$l['admin_log_tools_tasks_edit'] = "Edited task #{1}: {2}";
+$l['admin_log_tools_tasks_delete'] = "Deleted task #{1}: {2}";
+$l['admin_log_tools_tasks_enable'] = "Enabled task #{1}: {2}";
+$l['admin_log_tools_tasks_disable'] = "Disabled task #{1}: {2}";
+$l['admin_log_tools_tasks_run'] = "Executed task #{1}: {2}";
+
 ?>
