@@ -66,11 +66,11 @@ $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread cou
 $l['admin_log_tools_recount_rebuild_userposts'] = "Recounted and rebuilt user post counts";
 $l['admin_log_tools_recount_rebuild_attachmentthumbs'] = "Recounted and rebuilt attachment thumbnails"; 
 
-$l['admin_log_tools_tasks_add'] = "Added task #{1}: {2}";
-$l['admin_log_tools_tasks_edit'] = "Edited task #{1}: {2}";
-$l['admin_log_tools_tasks_delete'] = "Deleted task #{1}: {2}";
-$l['admin_log_tools_tasks_enable'] = "Enabled task #{1}: {2}";
-$l['admin_log_tools_tasks_disable'] = "Disabled task #{1}: {2}";
-$l['admin_log_tools_tasks_run'] = "Executed task #{1}: {2}";
+$l['admin_log_tools_tasks_add'] = "Added task #{1} ({2})";
+$l['admin_log_tools_tasks_edit'] = "Edited task #{1} ({2})";
+$l['admin_log_tools_tasks_delete'] = "Deleted task #{1} ({2})";
+$l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
+$l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
+$l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
 ?>
