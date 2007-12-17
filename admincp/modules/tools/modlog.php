@@ -115,7 +115,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->ipaddress, array("class" => "align_center", 'width' => '10%'));
 	
 	$query = $db->query("
-		SELECT l.*, u.username, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
+		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
@@ -130,7 +130,8 @@ if(!$mybb->input['action'])
 		$information = '';
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$trow = alt_trow();
-		$logitem['profilelink'] = build_profile_link($logitem['username'], $logitem['uid']);
+		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
+		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
 		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"../".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
