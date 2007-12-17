@@ -7079,6 +7079,7 @@ To: {$to_recipients}
 </tr>
 </table>
 {$postbit}
+<br />
 ]]></template>
 		<template name="misc_help_helpdoc" version="120"><![CDATA[<html>
 <head>

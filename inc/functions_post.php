@@ -322,15 +322,15 @@ function build_postbit($post, $post_type=0)
 		
 		$post['userregdate'] = my_date($mybb->settings['regdateformat'], $post['regdate']);
 
-		// Work out the reputation this user has
-		if($usergroup['usereputationsystem'] != 0 && $mybb->settings['enablereputation'] == 1)
+		// Work out the reputation this user has (only show if not announcement)
+		if($post_type != 3 && $usergroup['usereputationsystem'] != 0 && $mybb->settings['enablereputation'] == 1)
 		{
 			$post['userreputation'] = get_reputation($post['reputation'], $post['uid']);
 			eval("\$post['replink'] = \"".$templates->get("postbit_reputation")."\";");
 		}
 
-		// Showing the warning level?
-		if(!$post_type && $mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != 0)))
+		// Showing the warning level? (only show if not announcement)
+		if($post_type != 3 && $mybb->settings['enablewarningsystem'] != 0 && $usergroup['canreceivewarnings'] != 0 && ($mybb->usergroup['canwarnusers'] != 0 || ($mybb->user['uid'] == $post['uid'] && $mybb->settings['canviewownwarning'] != 0)))
 		{
 			$warning_level = round($post['warningpoints']/$mybb->settings['maxwarningpoints']*100);
 			if($warning_level > 100)
