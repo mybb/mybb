@@ -4660,7 +4660,7 @@ body {
 <select name="findthreadst">
 <option value="1">{$lang->threads_at_least}</option>
 <option value="2">{$lang->threads_at_most}</option>
-</select> <input type="text" class="textbox" name="numreplies" size="2" maxlength="4" />{$lang->replies2}<br />
+</select> <input type="text" class="textbox" name="numreplies" size="2" maxlength="4" />&nbsp;{$lang->replies2}<br />
 <br />
 <select name="postdate">
 <option value="0">{$lang->find_anydate}</option>
@@ -6110,8 +6110,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="newreply_modoptions" version="1400"><![CDATA[<tr>
 <td class="trow2" valign="top"><strong>{$lang->mod_options}</strong></td>
 <td class="trow2"><span class="smalltext">
-<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />{$lang->close_thread}</label><br />
-<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />{$lang->stick_thread}</label>
+<label><input type="checkbox" class="checkbox" name="modoptions[closethread]" value="1"{$closecheck} />&nbsp;{$lang->close_thread}</label><br />
+<label><input type="checkbox" class="checkbox" name="modoptions[stickthread]" value="1"{$stickycheck} />&nbsp;{$lang->stick_thread}</label>
 </span></td>
 </tr>]]></template>
 		<template name="smilieinsert_getmore" version="120"><![CDATA[<tr>
