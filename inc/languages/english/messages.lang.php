@@ -157,7 +157,6 @@ $l['email_sendtofriend'] = "Hello,
 
 Thank you,
 {2} Staff
-{3}
 ";
 
 $l['email_forumsubscription'] = "{1},

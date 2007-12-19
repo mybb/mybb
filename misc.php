@@ -367,6 +367,30 @@ elseif($mybb->input['action'] == "whoposted")
 	$altbg = "trow1";
 	$whoposted = '';
 	$tid = intval($mybb->input['tid']);
+	$thread = get_thread($tid);
+	// Make sure we are looking at a real thread here.
+	if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+	{
+		error($lang->error_invalidthread);
+	}
+	// Does the thread belong to a valid forum?
+	$forum = get_forum($thread['fid']);
+	if(!$forum || $forum['type'] != "f")
+	{
+		error($lang->error_invalidforum);
+	}
+	
+	// Does the user have permission to view this thread?
+	$forumpermissions = forum_permissions($forum['fid']);
+	
+	if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+	{
+		error_no_permission();
+	}
+	
+	// Check if this forum is password protected and we have a valid password
+	check_forum_password($forum['fid']);
+	
 	if($mybb->input['sort'] != 'username')
 	{
 		$sortsql = ' ORDER BY posts DESC';

@@ -36,13 +36,24 @@ function modcp_can_manage_user($uid)
 
 function fetch_forum_announcements($pid=0, $depth=1)
 {
-	global $mybb, $db, $lang, $announcements, $templates, $announcements_forum;
-	static $forums_by_parent;
+	global $mybb, $db, $lang, $announcements, $templates, $announcements_forum, $moderated_forums;
+	static $forums_by_parent, $forum_cache, $parent_forums;
 
-	if(!is_array($forums_by_parent))
+	if(!is_array($forum_cache))
 	{
 		$forum_cache = cache_forums();
-
+	}
+	if(!is_array($parent_forums) && $mybb->user['issupermod'] != 1)
+	{
+		// Get a list of parentforums to show for normal moderators
+		$parent_forums = array();
+		foreach($moderated_forums as $mfid)
+		{
+			$parent_forums = array_merge($parent_forums, explode(',', $forum_cache[$mfid]['parentlist']));
+		}
+	}
+	if(!is_array($forums_by_parent))
+	{
 		foreach($forum_cache as $forum)
 		{
 			$forums_by_parent[$forum['pid']][$val['disporder']][$forum['fid']] = $forum;
@@ -60,31 +71,47 @@ function fetch_forum_announcements($pid=0, $depth=1)
 		{
 			if($forum['active'] == 0 || !is_moderator($forum['fid']))
 			{
-				continue;
-			}
-			
-			$trow = alt_trow();
-			
-			$padding = 40*($depth-1);
-			
-			eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
-				
-			if($announcements[$forum['fid']])
-			{
-				foreach($announcements[$forum['fid']] as $aid => $announcement)
+				// Check if this forum is a parent of a moderated forum
+				if(in_array($forum['fid'], $parent_forums))
 				{
+					// A child is moderated, so print out this forum's title.  RECURSE!
 					$trow = alt_trow();
+					eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum_nomod")."\";");
+				}
+				else
+				{
+					// No subforum is moderated by this mod, so safely continue
+					continue;
+				}
+			}
+			else
+			{
+				// This forum is moderated by the user, so print out the forum's title, and its announcements
+				$trow = alt_trow();
+				
+				$padding = 40*($depth-1);
+				
+				eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_forum")."\";");
 					
-					if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+				if($announcements[$forum['fid']])
+				{
+					foreach($announcements[$forum['fid']] as $aid => $announcement)
 					{
-						$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+						$trow = alt_trow();
+						
+						if($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0)
+						{
+							$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+						}
+						else
+						{
+							$icon = "<img src=\"images/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+						}
+						
+						$subject = htmlspecialchars_uni($announcement['subject']);
+								
+						eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
 					}
-					else
-					{
-						$icon = "<img src=\"images/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
-					}
-							
-					eval("\$announcements_forum .= \"".$templates->get("modcp_announcements_announcement")."\";");
 				}
 			}
 

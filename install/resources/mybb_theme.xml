@@ -1351,7 +1351,7 @@ ul.thread_tools li.subscription_remove {
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="6"><strong>{$lang->reported_posts}</strong></td>
+<td class="thead" align="center" colspan="6"><strong>{$lang->reported_posts_note}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
@@ -1378,7 +1378,7 @@ ul.thread_tools li.subscription_remove {
 </html>]]></template>
 		<template name="modcp_modlogs_result" version="1400"><![CDATA[<tr>
 <td class="{$trow}" valign="top">{$logitem['profilelink']}</td>
-<td class="{$trow}" align="center" valign="top">{$logitem['dateline']}</td>
+<td class="{$trow}" align="center" valign="top">{$log_date}, {$log_time}</td>
 <td class="{$trow}" align="center" valign="top">{$logitem['action']}</td>
 <td class="{$trow}" align="center" valign="top">{$information}</td>
 <td class="{$trow}" align="center" valign="top">{$logitem['ipaddress']}</td>
@@ -4846,46 +4846,6 @@ body {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="modcp_reports" version="1400"><![CDATA[<html>
-<head>
-<title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<form action="modcp.php" method="post">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table width="100%" border="0" align="center">
-<tr>
-{$modcp_nav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="6"><strong>{$lang->reported_posts}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
-</tr>
-{$reports}
-{$reportspages}
-<tr>
-<td class="tfoot" colspan="6" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
-</tr>
-</table>
-<br />
-<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
-</td>
-</tr>
-</table>
-</form>
-{$footer}
-</body>
-</html>]]></template>
 		<template name="modcp_reports_report" version="1400"><![CDATA[<tr>
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" />&nbsp;<a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
@@ -10135,19 +10095,23 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						<td class="{$trow}"><div style="padding-left: {$padding}px;"><strong>{$forum['name']}</strong></div></td>
 						<td class="{$trow}" colspan="2" align="center"><a href="modcp.php?action=new_announcement&amp;fid={$forum['fid']}">{$lang->add_announcement}</a></td>
 					</tr>]]></template>
+	<template name="modcp_announcements_forum_nomod" version="1400"><![CDATA[					<tr>
+						<td class="{$trow}"><div style="padding-left: {$padding}px;"><strong>{$forum['name']}</strong></div></td>
+						<td class="{$trow}" colspan="2" align="center">&nbsp;</td>
+					</tr>]]></template>
 	<template name="modcp_announcements_announcement" version="1400"><![CDATA[					<tr>
-						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$announcement['subject']}</a></div></td>
+						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$subject}</a></div></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>
 	<template name="modcp_no_announcements_forum" version="1400"><![CDATA[					<tr>
-						<td class="{$trow}" colspan="3">{$lang->no_forums}</td>
+						<td class="trow1" colspan="3">{$lang->no_forum_announcements}</td>
 					</tr>]]></template>
 	<template name="modcp_no_announcements_global" version="1400"><![CDATA[					<tr>
-						<td class="{$trow}" colspan="3">{$lang->no_global_announcements}</td>
+						<td class="trow1" colspan="3">{$lang->no_global_announcements}</td>
 					</tr>]]></template>
 	<template name="modcp_announcements_announcement_global" version="1400"><![CDATA[					<tr>
-						<td class="{$trow}"><div style="padding-left: {$padding}px;">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$announcement['subject']}</a></div></td>
+						<td class="{$trow}">{$icon}<a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$subject}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=edit_announcement&amp;aid={$aid}">{$lang->edit}</a></td>
 						<td class="{$trow}" align="center"><a href="modcp.php?action=delete_announcement&amp;aid={$aid}">{$lang->delete}</a></td>
 					</tr>]]></template>

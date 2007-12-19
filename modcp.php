@@ -36,24 +36,25 @@ if($mybb->user['uid'] == 0 || $mybb->usergroup['canmodcp'] != 1)
 }
 
 $errors = '';
-
 // SQL for fetching items only related to forums this user moderates
+$moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
 	$query = $db->simple_select("moderators", "*", "uid='{$mybb->user['uid']}'");
 	while($forum = $db->fetch_array($query))
 	{
 		$flist .= ",'{$forum['fid']}'";
+		$moderated_forums[] = $forum['fid'];
 	}
 	if($flist)
 	{
-		$flist = " AND fid IN (0{$flist})";
 		$tflist = " AND t.fid IN (0{$flist})";
+		$flist = " AND fid IN (0{$flist})";
 	}
 }
 else
 {
-	$flist = $tflist = "";
+	$flist = $tflist = '';
 }
 
 // Fetch the Mod CP menu
@@ -172,6 +173,10 @@ if($mybb->input['action'] == "reports")
 	while($report = $db->fetch_array($query))
 	{
 		$trow = alt_trow();
+		if(is_moderator($report['fid']))
+		{
+			$trow = 'trow_shaded';
+		}
 		$report['postlink'] = get_post_link($report['pid'], $report['tid']);
 		$report['threadlink'] = get_thread_link($report['tid']);
 		$report['posterlink'] = get_profile_link($report['postuid']);
@@ -194,7 +199,7 @@ if($mybb->input['action'] == "reports")
 
 if($mybb->input['action'] == "allreports")
 {
-	add_breadcrumb($lang->nav_all_reported_posts, "modcp.php?action=allreports");
+	add_breadcrumb($lang->mcp_nav_all_reported_posts, "modcp.php?action=allreports");
 	
 	if(!$mybb->settings['threadsperpage'])
 	{
@@ -513,7 +518,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	verify_post_check($mybb->input['my_post_key']);
 	
 	$announcement_fid = intval($mybb->input['fid']);
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement['fid'])))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)))
 	{
 		error_no_permission();
 	}
@@ -584,9 +589,9 @@ if($mybb->input['action'] == "new_announcement")
 	add_breadcrumb($lang->mcp_nav_announcements, "modcp.php?action=announcements");
 	add_breadcrumb($lang->add_announcement, "modcp.php?action=new_announcements");
 
-	$announcement_fid = $mybb->input['fid'];
+	$announcement_fid = intval($mybb->input['fid']);
 
-	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement['fid'])))
+	if(($mybb->usergroup['issupermod'] != 1 && $announcement_fid == -1) || ($announcement_fid != -1 && !is_moderator($announcement_fid)))
 	{
 		error_no_permission();
 	}
@@ -980,30 +985,40 @@ if($mybb->input['action'] == "announcements")
 		$announcements[$announcement['fid']][$announcement['aid']] = $announcement;
 	}
 	
-	if($global_announcements && $mybb->usergroup['issupermod'] == 1)
-	{		
-		// Get the global announcements
-		foreach($global_announcements as $aid => $announcement)
-		{
-			$trow = alt_trow();
-			if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
+	if($mybb->usergroup['issupermod'] == 1)
+	{
+		if($global_announcements && $mybb->usergroup['issupermod'] == 1)
+		{		
+			// Get the global announcements
+			foreach($global_announcements as $aid => $announcement)
 			{
-				$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+				$trow = alt_trow();
+				if($announcement['startdate'] > TIME_NOW || ($announcement['enddate'] < TIME_NOW && $announcement['enddate'] != 0))
+				{
+					$icon = "<img src=\"images/minioff.gif\" alt=\"({$lang->expired})\" title=\"{$lang->expired_announcement}\"  style=\"vertical-align: middle;\" /> ";
+				}
+				else
+				{
+					$icon = "<img src=\"images/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
+				}
+				
+				$subject = htmlspecialchars_uni($announcement['subject']);
+				
+				eval("\$announcements_global .= \"".$templates->get("modcp_announcements_announcement_global")."\";");
 			}
-			else
-			{
-				$icon = "<img src=\"images/minion.gif\" alt=\"({$lang->active})\" title=\"{$lang->active_announcement}\"  style=\"vertical-align: middle;\" /> ";
-			}
-			
-			eval("\$announcements_global .= \"".$templates->get("modcp_announcements_announcement_global")."\";");
 		}
+		else
+		{
+			// No global announcements
+			eval("\$announcements_global = \"".$templates->get("modcp_no_announcements_global")."\";");
+		}
+		eval("\$announcements_global = \"".$templates->get("modcp_announcements_global")."\";");
 	}
 	else
 	{
-		eval("\$announcements_global = \"".$templates->get("modcp_no_announcements_global")."\";");
+		// Moderator is not super, so don't show global annnouncemnets
+		$announcements_global = '';
 	}
-	
-	eval("\$announcements_global = \"".$templates->get("modcp_announcements_global")."\";");
 	
 	fetch_forum_announcements();
 	
@@ -1159,11 +1174,12 @@ if($mybb->input['action'] == "modqueue")
 
 		if($threads)
 		{
+			add_breadcrumb($lang->mcp_nav_modqueue_threads, "modcp.php?action=modqueue&amp;type=threads");
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$threadqueue = \"".$templates->get("modcp_modqueue_threads")."\";");
 			output_page($threadqueue);	
 		}
-
+		$type = 'threads';
 	}
 
 	if($mybb->input['type'] == "posts" || (!$mybb->input['type'] && !$threadqueue))
@@ -1211,7 +1227,7 @@ if($mybb->input['action'] == "modqueue")
 		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid
+			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
@@ -1242,6 +1258,7 @@ if($mybb->input['action'] == "modqueue")
 
 		if($posts)
 		{
+			add_breadcrumb($lang->mcp_nav_modqueue_posts, "modcp.php?action=modqueue&amp;type=posts");
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$postqueue = \"".$templates->get("modcp_modqueue_posts")."\";");
 			output_page($postqueue);	
@@ -1249,7 +1266,7 @@ if($mybb->input['action'] == "modqueue")
 	}
 
 	if($mybb->input['type'] == "attachments" || (!$mybb->input['type'] && !$postqueue && !$threadqueue))
-	{
+	{		
 		$query = $db->query("
 			SELECT COUNT(aid) AS unapprovedattachments
 			FROM  ".TABLE_PREFIX."attachments a
@@ -1328,6 +1345,7 @@ if($mybb->input['action'] == "modqueue")
 
 		if($attachments)
 		{
+			add_breadcrumb($lang->mcp_nav_modqueue_attachments, "modcp.php?action=modqueue&amp;type=attachments");
 			eval("\$mass_controls = \"".$templates->get("modcp_modqueue_masscontrols")."\";");
 			eval("\$attachmentqueue = \"".$templates->get("modcp_modqueue_attachments")."\";");
 			output_page($attachmentqueue);
@@ -1337,6 +1355,7 @@ if($mybb->input['action'] == "modqueue")
 	// Still nothing? All queues are empty! :-D
 	if(!$threadqueue && !$postqueue && !$attachmentqueue)
 	{
+		add_breadcrumb($lang->mcp_nav_modqueue, "modcp.php?action=modqueue");
 		eval("\$queue = \"".$templates->get("modcp_modqueue_empty")."\";");
 		output_page($queue);
 	}
@@ -2695,7 +2714,8 @@ if(!$mybb->input['action'])
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
-		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
+		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);

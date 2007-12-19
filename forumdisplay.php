@@ -411,6 +411,7 @@ switch($mybb->input['sortby'])
 	default:
 		$sortby = "lastpost";
 		$sortfield = "lastpost";
+		$mybb->input['sortby'] = "lastpost";
 		break;
 }
 
