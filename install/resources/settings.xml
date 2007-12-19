@@ -1083,6 +1083,14 @@ download=As Download Link]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="threadreview">
+			<title>Show Thread Review</title>
+			<description><![CDATA[Show recent posts when creating a new reply?]]></description>
+			<disporder>22</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="privatemessaging" title="Private Messaging" description="Various options with relation to the MyBB Private Messaging system (private.php) can be managed and set here." disporder="13" isdefault="1">
 		<setting name="enablepms">
