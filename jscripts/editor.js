@@ -106,7 +106,7 @@ messageEditor.prototype = {
 		}
 		if(this.options && this.options.height)
 		{
-			w = this.options.height;
+			h = this.options.height;
 		}
 		else if(oldTextarea.offsetHeight)
 		{
