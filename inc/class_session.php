@@ -326,7 +326,7 @@ class session
 		// Update or create the session.
 		if(!defined("NO_ONLINE"))
 		{
-			if($this->sid > 0)
+			if(!empty($this->sid))
 			{
 				$this->update_session($this->sid, $mybb->user['uid']);
 			}
@@ -395,7 +395,7 @@ class session
 		// Update the online data.
 		if(!defined("NO_ONLINE"))
 		{
-			if($this->sid > 0)
+			if(!empty($this->sid))
 			{
 				$this->update_session($this->sid);
 			}
