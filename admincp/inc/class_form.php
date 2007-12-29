@@ -692,7 +692,12 @@ class DefaultFormContainer
 		{
 			$for = " for=\"{$label_for}\"";
 		}
-		$row = "<label{$for}>{$title}</label>";
+		
+		if($title)
+		{
+			$row = "<label{$for}>{$title}</label>";
+		}
+		
 		if($description != '')
 		{
 			$row .= "\n<div class=\"description\">{$description}</div>\n";

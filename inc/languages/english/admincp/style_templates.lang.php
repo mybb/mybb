@@ -85,7 +85,7 @@ $l['expand'] = "Expand";
 $l['collapse'] = "Collapse";
 
 $l['save_continue'] = "Save and Continue Editing";
-$l['save_close'] = "Save and Close";
+$l['save_close'] = "Save and Return to Listing";
 
 $l['template_name'] = "Template Name";
 $l['template_name_desc'] = "Name of the template. If you change this on the default template, it will save the template as a custom template under the new name.";
@@ -95,10 +95,14 @@ $l['no_global_templates'] = "There are currently no global templates added yet."
 
 $l['confirm_template_set_deletion'] = "Are you sure you want to delete this template set?";
 $l['confirm_template_deletion'] = "Are you sure you want to delete this template?"; 
+$l['confirm_template_revertion'] = "Are you sure you want to revert this template?"; 
 
 $l['error_missing_input'] = "Please make sure you have all the input required to edit this template (tid and sid)";
 $l['error_already_exists'] = "The template title is already in use. Please use a different title.";
+$l['error_invalid_template'] = "Please input a valid template.";
 
 $l['success_template_saved'] = "Successfully saved the template.";
+$l['success_template_deleted'] = "Successfully deleted the template.";
+$l['success_template_reverted'] = "Successfully reverted the template.";
 
 ?>
