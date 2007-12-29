@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
  *
- * $Id$
+ * $Id: index.php 3554 2007-12-16 06:06:35Z Tikitiki $
  */
 
 // Disallow direct access to this file for security reasons
@@ -15,18 +15,18 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->system_health, "index.php?".SID."&amp;module=tools/index");
+$page->add_breadcrumb_item($lang->system_health, "index.php?".SID."&amp;module=tools/system_health");
 
 if($mybb->input['action'] == "utf8_conversion")
 {
-	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion");
+	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion");
 	
 	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 	
 	if($db->type == "sqlite2" || $db->type == "sqlite3")
 	{
 		flash_message($lang->error_not_supported, 'error');
-		admin_redirect("index.php?".SID."&module=tools/index");
+		admin_redirect("index.php?".SID."&module=tools/system_health");
 	}
 	
 	if($mybb->request_method == "post")
@@ -39,7 +39,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		if(!$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
 			flash_message($lang->error_invalid_table, 'error');
-			admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
+			admin_redirect("index.php?".SID."&module=tools/system_health&action=utf8_conversion");
 		}
 		
 		$sub_tabs['system_health'] = array(
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		log_admin_action($mybb->input['table']);
 		
 		flash_message(sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
-		admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
+		admin_redirect("index.php?".SID."&module=tools/system_health&action=utf8_conversion");
 		
 		exit;
 	}
@@ -203,14 +203,14 @@ if($mybb->input['action'] == "utf8_conversion")
 		{
 			$db->set_table_prefix($old_table_prefix);
 			flash_message($lang->error_invalid_table, 'error');
-			admin_redirect("index.php?".SID."&module=tools/index&action=utf8_conversion");
+			admin_redirect("index.php?".SID."&module=tools/system_health&action=utf8_conversion");
 		}
 		
 		$table = $db->show_create_table($db->escape_string($mybb->input['table']));
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 		$charset = $matches[1];
 		
-		$form = new Form("index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion", "post", "utf8_conversion");
+		$form = new Form("index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion", "post", "utf8_conversion");
 		echo $form->generate_hidden_field("table", $mybb->input['table']);
 		
 		$table = new Table;
@@ -269,13 +269,13 @@ if($mybb->input['action'] == "utf8_conversion")
 	if($okay_count == count($mybb_tables))
 	{
 		flash_message($lang->error_all_tables_already_converted, 'error');
-		admin_redirect("index.php?".SID."&module=tools/index");
+		admin_redirect("index.php?".SID."&module=tools/system_health");
 	}
 	
 	if(!$mybb->config['database']['encoding'])
 	{
 		flash_message($lang->error_db_encoding_not_set, 'error');
-		admin_redirect("index.php?".SID."&module=tools/index");
+		admin_redirect("index.php?".SID."&module=tools/system_health");
 	}
 	
 	asort($mybb_tables);
@@ -288,7 +288,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<a href=\"index.php?".SID."&amp;module=tools/index&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
+			$status = "<a href=\"index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
 		else
 		{

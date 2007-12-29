@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: 1.2.9
+ * Upgrade Script: 1.2.10
  */
 
 /** NEEDS TO BE CHANGED PENDING FINAL RELEASE **/
@@ -925,6 +925,54 @@ function upgrade11_dbchanges5()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
+	
+	$db->drop_table("templategroups");
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."templategroups (
+		gid int unsigned NOT NULL auto_increment,
+		prefix varchar(50) NOT NULL default '',
+		title varchar(100) NOT NULL default '',
+		PRIMARY KEY (gid)
+		) TYPE=MyISAM{$collation};");
+	
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('2','editpost','<lang:group_editpost>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('3','forumbit','<lang:group_forumbit>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('4','forumjump','<lang:group_forumjump>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('5','forumdisplay','<lang:group_forumdisplay>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('6','index','<lang:group_index>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('7','error','<lang:group_error>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('8','memberlist','<lang:group_memberlist>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('9','multipage','<lang:group_multipage>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('10','private','<lang:group_private>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('11','portal','<lang:group_portal>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('12','postbit','<lang:group_postbit>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('13','redirect','<lang:group_redirect>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('14','showthread','<lang:group_showthread>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('15','usercp','<lang:group_usercp>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('16','online','<lang:group_online>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('17','moderation','<lang:group_moderation>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('18','nav','<lang:group_nav>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('19','search','<lang:group_search>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('20','showteam','<lang:group_showteam>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('21','reputation','<lang:group_reputation>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('22','newthread','<lang:group_newthread>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('23','newreply','<lang:group_newreply>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('24','member','<lang:group_member>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('25','warnings','<lang:group_warning>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','global','<lang:group_global>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('27','header','<lang:group_header>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('28','managegroup','<lang:group_managegroup>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('29','misc','<lang:group_misc>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('30','modcp','<lang:group_modcp>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('31','php','<lang:group_php>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('32','polls','<lang:group_polls>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('33','post','<lang:group_post>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('34','printthread','<lang:group_printthread>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('35','report','<lang:group_report>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('36','smilieinsert','<lang:group_smilieinsert>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('37','stats','<lang:group_stats>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('38','xmlhttp','<lang:group_xmlhttp>');");
+$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('39','footer','<lang:group_footer>');");
 
 	if($db->field_exists('statustime', "privatemessages"))
 	{

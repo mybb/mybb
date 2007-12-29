@@ -34,6 +34,10 @@ function style_action_handler($action)
 	$page->active_module = "style";
 	switch($action)
 	{
+		case "templates":
+			$page->active_action = "templates";
+			$action_file = "templates.php";
+			break;
 		default:
 			$page->active_action = "themes";
 			$action_file = "themes.php";

@@ -86,7 +86,7 @@ function tools_action_handler($action)
 			break;
 		default:
 			$page->active_action = "system_health";
-			$action_file = "index.php";
+			$action_file = "system_health.php";
 	}
 
 	$sub_menu = array();

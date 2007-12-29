@@ -19,20 +19,15 @@ class DefaultForm
 	 *
 	 * @param string The action for the form.
 	 * @param string The method (get or post) for this form.
-	 * @param boolean Should file uploads be allowed for this form?
-	 * @param string The name of the form for the form tag.
 	 * @param string The ID of the form.
+	 * @param boolean Should file uploads be allowed for this form?
 	 */
-	function __construct($script, $method, $allow_uploads=0, $name="", $id="")
+	function __construct($script, $method, $id="", $allow_uploads=0)
 	{
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
 		if($allow_uploads != 0)
 		{
 			$form .= " type=\"multipart/form-data\"";
-		}
-		if($name != "")
-		{
-			$form .= " name=\"{$name}\"";
 		}
 		if($id != "")
 		{
@@ -42,9 +37,9 @@ class DefaultForm
 		echo $form;
 	}
 
-	function DefaultForm($script, $method, $allow_uploads=0, $name="", $id="")
+	function DefaultForm($script, $method, $id="", $allow_uploads=0)
 	{
-		$this->__construct($script, $method, $allow_uploads, $name, $id);
+		$this->__construct($script, $method, $id, $allow_uploads);
 	}
 
 
