@@ -374,7 +374,7 @@ if($mybb->input['action'] == "edit_template")
 	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template['title']);
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->template_set, $lang->template_set_desc, $form->generate_select_box('sid', $template_sets, $sid));
-	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => 'codepress php', 'style' => 'width: 100%; height: 500px;')));
+	$form_container->output_row("", "", $form->generate_text_area('template', $template['template'], array('id' => 'template', 'class' => 'codepress mybb', 'style' => 'width: 100%; height: 500px;')));
 	$form_container->end();
 	
 	$buttons[] = $form->generate_submit_button($lang->save_continue, array('name' => 'continue'));
@@ -617,75 +617,86 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		$page->output_footer();
 	}
 	
+	$expand_array = array();
+	if(isset($mybb->input['expand']))
+	{
+		$expand_array = explode("|", $mybb->input['expand']);
+		array_map("intval", $expand_array);
+		$expand_str = "&amp;expand=".implode("|", $expand_array);
+	}
+	
 	// Fetch Groups
-	$query = $db->simple_select("templategroups", "*", "", array('order_by' => 'title', 'order_dir' => 'ASC'));
+	$template_sql = '';
+	$query = $db->simple_select("templategroups", "*", "");
 	while($templategroup = $db->fetch_array($query))
 	{
+		$templategroup['title'] = $lang->parse($templategroup['title'])." ".$lang->templates;
+		if(in_array($templategroup['gid'], $expand_array))
+		{
+			$templategroup['expanded'] = 1;
+			$template_sql .= " OR title LIKE '{$templategroup['prefix']}%'";
+		}
 		$template_groups[$templategroup['prefix']] = $templategroup;
 	}
 	
-	$templates_list = array();
-	$unordered_list = array();
-	$master_list = array();
-	$true_custom = array();
-	$custom_list = array();
-	$done = array();
-	
-	// Fetch Templates
-	$query = $db->simple_select("templates", "*", "sid='".intval($mybb->input['sid'])."' OR sid='-2'", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
-	while($template = $db->fetch_array($query))
+	function sort_template_groups($a, $b)
 	{
-		if($template['sid'] == -2)
-		{
-			$master_list[$template['title']] = $template['template'];
-		}
-	
-		if($template['sid'] == -2 && array_key_exists($template['title'], $done))
-		{
-			continue;
-		}
-		
-		$exploded = explode("_", $template['title'], 2);
-		
-		if(array_key_exists($exploded[0], $template_groups))
-		{
-			$templates_list[$exploded[0]][] = $template;
-		}
-		else
-		{
-			$unordered_list[] = $template;
-		}
-		
-		$done[$template['title']] = array('tid' => $template['tid'], 'template' => $template['template']);
+		return strcasecmp($a['title'], $b['title']);
 	}
+	uasort($template_groups, "sort_template_groups");
 	
-	// Find truely custom templates
-	foreach($done as $title => $template)
-	{
-		if(!$master_list[$title])
-		{
-			$true_custom[$template['tid']] = 1;
-		}
-		else if(!array_search($template['template'], $master_list))
-		{
-			$custom_list[$template['tid']] = 1;
-		}
-	}
+	// Add the ungrouped templates group at the bottom
+	$template_groups['-1'] = array(
+		"prefix" => "",
+		"title" => "Ungrouped Templates",
+		"gid" => -1
+	);
 	
-	$expand_str = "";
-	$expand_array = array();
-	if($mybb->input['expand'])
+	if(count($expand_array) > 0)
 	{
-		if(strstr($mybb->input['expand'], "|"))
-		{
-			$expand_array = explode("|", $mybb->input['expand']);
-			array_map("intval", $expand_array);
-		}
+		// The ungrouped list is expanded so we need to load all templates
+		if(in_array('-1', $expand_array))
+			$template_sql = '';
 		else
+			$template_sql = " AND (1=0{$template_sql})";
+					
+		// Load the list of templates
+		$query = $db->simple_select("templates", "*", "(sid='".intval($mybb->input['sid'])."' OR sid='-2') {$template_sql}", array('order_by' => 'sid DESC, title', 'order_dir' => 'ASC'));
+		while($template = $db->fetch_array($query))
 		{
-			$expand_array = array(intval($mybb->input['expand']));
-		}
-		$expand_str = "&amp;expand=".implode("|", $expand_array);
+			$exploded = explode("_", $template['title'], 2);
+			
+			if(isset($template_groups[$exploded[0]]))
+				$group = $exploded[0];
+			else
+				$group = -1;
+							
+			// If this template is not a master template, we simple add it to the list
+			if($template['sid'] != -2)
+			{
+				$template['original'] = false;
+				$template['modified'] = false;
+				$template_groups[$group]['templates'][$template['title']] = $template;
+			}
+			// Otherwise, if we are down to master templates we need to do a few extra things
+			else
+			{
+				// Master template that hasn't been customised in the set we have expanded
+				if(!isset($template_groups[$group]['templates'][$template['title']]))
+				{
+					$template['original'] = true;
+					$template_groups[$group]['templates'][$template['title']] = $template;
+				}
+				// Template has not been modified in the set we have expanded (it matches the master)
+				else if($template_groups[$group]['templates'][$template['title']]['template'] != $template['template'] &&$template_groups[$group]['templates'][$template['title']]['sid'] != -2)
+				{
+					$template_groups[$group]['templates'][$template['title']]['modified'] = true;
+				}
+				
+				// Save some memory!
+				unset($template_groups[$group]['templates'][$template['title']]['template']);
+			}
+		}		
 	}
 	
 	foreach($template_groups as $prefix => $group)
@@ -714,82 +725,44 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$group['expand_str'] .= $group['gid'];
 		}
 		
-		$groupname = $lang->parse($group['title'])." ".$lang->templates;
 				
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=style/templates&amp;sid={$mybb->input['sid']}&amp;expand={$group['expand_str']}\" onclick=\"\">{$groupname}</a></strong>");
+		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=style/templates&amp;sid={$mybb->input['sid']}&amp;expand={$group['expand_str']}\" onclick=\"\">{$group['title']}</a></strong>");
 		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=style/templates&amp;sid={$mybb->input['sid']}&amp;expand={$group['expand_str']}\" onclick=\"\">{$expand}</a>", array("class" => "align_center"));
 		$table->construct_row(array("class" => "alt_row"));
 		
-		if(!empty($templates_list[$prefix]) && $expanded == true)
+		if($expanded == true && isset($group['templates']) && count($group['templates']) > 0)
 		{
-			foreach($templates_list[$prefix] as $key => $template)
+			$templates = $group['templates'];
+			foreach($templates as $template)
 			{
 				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
 				$popup->add_item($lang->inline_edit, "javascript:;");
 				$popup->add_item($lang->full_edit, "index.php?".SID."&amp;module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid']).$expand_str);
-				
-				if($mybb->input['sid'] > 0 && $custom_list[$template['tid']] == 1)
-				{			
-					$popup->add_item($lang->diff_report, "index.php?".SID."&amp;module=style/templates&amp;delete_set&amp;sid={$set['sid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_set_deletion}')");
-					
-					$popup->add_item($lang->revert_to_orig, "index.php?".SID."&amp;module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
-				}
-				
-				if($true_custom[$template['tid']] == 1)
-				{
-					$template['title'] = "<span style=\"color: green;\"><strong>{$template['title']}</strong></span>";
-				}
-				else if($custom_list[$template['tid']] == 1)
+
+				if(isset($template['modified']) && $template['modified'] == true)
 				{
 					$template['title'] = "<span style=\"color: green;\">{$template['title']}</span>";
-				}
-				
-				if($true_custom[$template['tid']])
-				{
 					$popup->add_item($lang->delete_template, "index.php?".SID."&amp;module=style/templates&amp;delete_template&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 				}
+				// This template does not exist in the master list
+				else if(!isset($template['original']) || $template['original'] == false)
+				{
+					$template['title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 					
+					if($mybb->input['sid'] > 0)
+					{
+						$popup->add_item($lang->diff_report, "index.php?".SID."&amp;module=style/templates&amp;delete_set&amp;sid={$set['sid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_set_deletion}')");
+					
+						$popup->add_item($lang->revert_to_orig, "index.php?".SID."&amp;module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+					}
+
+				}
+									
 				$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?".SID."&amp;module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}\" onclick=\"return false;\">{$template['title']}</a></span>");
 				$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 				
 				$table->construct_row();
 			}
-		}
-	}
-	
-	if(!empty($unordered_list))
-	{
-		foreach($unordered_list as $key => $template)
-		{
-			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-			$popup->add_item($lang->inline_edit, "javascript:;");
-			$popup->add_item($lang->full_edit, "index.php?".SID."&amp;module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid']).$expand_str);
-			
-			if($mybb->input['sid'] > 0 && $custom_list[$template['tid']] == 1)
-			{			
-				$popup->add_item($lang->diff_report, "index.php?".SID."&amp;module=style/templates&amp;action=delete_set&amp;sid={$set['sid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_set_deletion}')");
-				
-				$popup->add_item($lang->revert_to_orig, "index.php?".SID."&amp;module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
-			}
-			
-			if($true_custom[$template['tid']] == 1)
-			{
-				$template['title'] = "<span style=\"color: green;\"><strong>{$template['title']}</strong></span>";
-			}
-			else if($custom_list[$template['tid']] == 1)
-			{
-				$template['title'] = "<span style=\"color: green;\">{$template['title']}</span>";
-			}
-			
-			if($true_custom[$template['tid']])
-			{
-				$popup->add_item($lang->delete_template, "index.php?".SID."&amp;module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
-			}
-				
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".intval($mybb->input['sid'])."{$expand_str}\" onclick=\"return false;\">{$template['title']}</a>");
-			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
-			
-			$table->construct_row();
 		}
 	}
 	
