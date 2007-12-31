@@ -51,7 +51,7 @@ if($mybb->input['action'] == "check")
 	}
 	
 	require_once MYBB_ROOT."inc/class_xml.php";
-	$contents = fetch_remote_file("http://mods.mybboard.com/version_check.php?info=".serialize($info));
+	$contents = fetch_remote_file("http://mods.mybboard.net/version_check.php?info=".serialize($info));
 	
 	if(!$contents)
 	{
@@ -100,7 +100,7 @@ if($mybb->input['action'] == "check")
 			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
 			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybboard.net/view.php?did={$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://mods.mybboard.net/download/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
