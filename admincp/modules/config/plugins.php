@@ -96,11 +96,10 @@ if($mybb->input['action'] == "check")
 	 	unset($tree['plugins']['plugin']);
 	 	$tree['plugins']['plugin'][0] = $only_plugin;
 	}
-	//die;
 
 	foreach($tree['plugins']['plugin'] as $plugin)
 	{
-		if(version_compare($names[$plugin['attributes']['guid']]['version'], $plugin['version'][0]['value'], ">="))
+		if(version_compare($names[$plugin['attributes']['guid']]['version'], $plugin['version']['value'], "<"))
 		{
 			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
 			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
