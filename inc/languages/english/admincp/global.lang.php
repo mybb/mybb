@@ -166,4 +166,6 @@ $l['delete_all'] = "Delete All Filtered";
 
 // Misc
 $l['encountered_errors'] = "The following errors were encountered:";
+$l['invalid_post_verify_key'] = "An authorization code mismatch occurred. Please confirm that you wish to perform the action below.";
+$l['forums_colon'] = "Forums:";
 ?>

@@ -176,6 +176,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	$file = upload_file($avatar, $mybb->settings['avataruploadpath'], $filename);
 	if($file['error'])
 	{
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);		
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}	
@@ -185,6 +186,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if(!file_exists($mybb->settings['avataruploadpath']."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);
 		return $ret;
 	}
 	
@@ -269,6 +271,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if($img_dimensions[2] != $img_type || $img_type == 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed;
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);
 		return $ret;		
 	}
 	// Everything is okay so lets delete old avatars for this user

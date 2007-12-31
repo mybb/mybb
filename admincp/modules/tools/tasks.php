@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 require_once MYBB_ROOT."/inc/functions_task.php";
 
-$page->add_breadcrumb_item($lang->task_manager, "index.php?".SID."&amp;module=tools/tasks");
+$page->add_breadcrumb_item($lang->task_manager, "index.php?module=tools/tasks");
 
 $plugins->run_hooks("admin_tools_tasks_begin");
 
@@ -147,7 +147,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($tid, $mybb->input['title']);
 
 			flash_message($lang->success_task_created, 'success');
-			admin_redirect("index.php?".SID."&module=tools/tasks");
+			admin_redirect("index.php?module=tools/tasks");
 		}
 	}
 	$page->add_breadcrumb_item($lang->add_new_task);
@@ -156,22 +156,22 @@ if($mybb->input['action'] == "add")
 
 	$sub_tabs['scheduled_tasks'] = array(
 		'title' => $lang->scheduled_tasks,
-		'link' => "index.php?".SID."&amp;module=tools/tasks"
+		'link' => "index.php?module=tools/tasks"
 	);
 
 	$sub_tabs['add_task'] = array(
 		'title' => $lang->add_new_task,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add",
+		'link' => "index.php?module=tools/tasks&amp;action=add",
 		'description' => $lang->add_new_task_desc
 	);
 
 	$sub_tabs['task_logs'] = array(
 		'title' => $lang->view_task_logs,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs"
+		'link' => "index.php?module=tools/tasks&amp;action=logs"
 	);	
 
 	$page->output_nav_tabs($sub_tabs, 'add_task');
-	$form = new Form("index.php?".SID."&amp;module=tools/tasks&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=tools/tasks&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -256,7 +256,7 @@ if($mybb->input['action'] == "edit")
 	if(!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 
 	if($mybb->request_method == "post")
@@ -338,7 +338,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($task['tid'], $mybb->input['title']);
 
 			flash_message($lang->success_task_updated, 'success');
-			admin_redirect("index.php?".SID."&module=tools/tasks");
+			admin_redirect("index.php?module=tools/tasks");
 		}
 	}
 
@@ -348,12 +348,12 @@ if($mybb->input['action'] == "edit")
 	$sub_tabs['edit_task'] = array(
 		'title' => $lang->edit_task,
 		'description' => $lang->edit_task_desc,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}"
+		'link' => "index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_task');
 
-	$form = new Form("index.php?".SID."&amp;module=tools/tasks&amp;action=edit", "post");
+	$form = new Form("index.php?module=tools/tasks&amp;action=edit", "post");
 
 	if($errors)
 	{
@@ -440,13 +440,13 @@ if($mybb->input['action'] == "delete")
 	if(!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 	
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 
 	if($mybb->request_method == "post")
@@ -464,11 +464,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($task['tid'], $task['title']);
 
 		flash_message($lang->success_task_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", $lang->confirm_task_deletion);
+		$page->output_confirm_action("index.php?module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", $lang->confirm_task_deletion);
 	}
 }
 
@@ -490,7 +490,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	if(!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 
 	if($mybb->input['action'] == "enable")
@@ -505,7 +505,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
 		
 		flash_message($lang->success_task_enabled, 'success');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 	else
 	{
@@ -518,7 +518,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
 		
 		flash_message($lang->success_task_disabled, 'success');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 }
 
@@ -533,7 +533,7 @@ if($mybb->input['action'] == "run")
 	if(!$task['tid'])
 	{
 		flash_message($lang->error_invalid_task, 'error');
-		admin_redirect("index.php?".SID."&module=tools/tasks");
+		admin_redirect("index.php?module=tools/tasks");
 	}
 	
 	run_task($task['tid']);
@@ -544,7 +544,7 @@ if($mybb->input['action'] == "run")
 	log_admin_action($task['tid'], $task['title']);
 
 	flash_message($lang->success_task_run, 'success');
-	admin_redirect("index.php?".SID."&module=tools/tasks");
+	admin_redirect("index.php?module=tools/tasks");
 }
 
 if($mybb->input['action'] == "logs")
@@ -555,17 +555,17 @@ if($mybb->input['action'] == "logs")
 
 	$sub_tabs['scheduled_tasks'] = array(
 		'title' => $lang->scheduled_tasks,
-		'link' => "index.php?".SID."&amp;module=tools/tasks"
+		'link' => "index.php?module=tools/tasks"
 	);
 
 	$sub_tabs['add_task'] = array(
 		'title' => $lang->add_new_task,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add"
+		'link' => "index.php?module=tools/tasks&amp;action=add"
 	);
 	
 	$sub_tabs['task_logs'] = array(
 		'title' => $lang->view_task_logs,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs",
+		'link' => "index.php?module=tools/tasks&amp;action=logs",
 		'description' => $lang->view_task_logs_desc
 	);
 
@@ -599,7 +599,7 @@ if($mybb->input['action'] == "logs")
 		$current_page = 1;
 	}
 
-	$pagination = draw_admin_pagination($current_page, $per_page, $log_count, "index.php?".SID."&amp;module=tools/tasks&amp;action=logs&amp;page={page}");
+	$pagination = draw_admin_pagination($current_page, $per_page, $log_count, "index.php?module=tools/tasks&amp;action=logs&amp;page={page}");
 
 	$query = $db->query("
 		SELECT l.*, t.title
@@ -613,7 +613,7 @@ if($mybb->input['action'] == "logs")
 		$log_entry['title'] = htmlspecialchars_uni($log_entry['title']);
 		$log_entry['data'] = htmlspecialchars_uni($log_entry['data']);
 		$date = my_date($mybb->settings['dateformat'], $log_entry['dateline']).", ".my_date($mybb->settings['timeformat'], $log_entry['dateline']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$log_entry['tid']}\">{$log_entry['title']}</a>");
+		$table->construct_cell("<a href=\"index.php?module=tools/tasks&amp;action=edit&amp;tid={$log_entry['tid']}\">{$log_entry['title']}</a>");
 		$table->construct_cell($date, array("class" => "align_center"));
 		$table->construct_cell($log_entry['data']);
 		$table->construct_row();
@@ -638,18 +638,18 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['scheduled_tasks'] = array(
 		'title' => $lang->scheduled_tasks,
-		'link' => "index.php?".SID."&amp;module=tools/tasks",
+		'link' => "index.php?module=tools/tasks",
 		'description' => $lang->scheduled_tasks_desc
 	);
 
 	$sub_tabs['add_task'] = array(
 		'title' => $lang->add_new_task,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=add"
+		'link' => "index.php?module=tools/tasks&amp;action=add"
 	);
 
 	$sub_tabs['task_logs'] = array(
 		'title' => $lang->view_task_logs,
-		'link' => "index.php?".SID."&amp;module=tools/tasks&amp;action=logs"
+		'link' => "index.php?module=tools/tasks&amp;action=logs"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'scheduled_tasks');
@@ -673,20 +673,20 @@ if(!$mybb->input['action'])
 		{
 			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Disabled)\" title=\"Disabled\"  style=\"vertical-align: middle;\" /> ";
 		}
-		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 
 		$popup = new PopupMenu("task_{$task['tid']}", $lang->options);
-		$popup->add_item($lang->edit_task, "index.php?".SID."&amp;module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}");
+		$popup->add_item($lang->edit_task, "index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}");
 		if($task['enabled'] == 1)
 		{
-			$popup->add_item($lang->disable_task, "index.php?".SID."&amp;module=tools/tasks&amp;action=disable&amp;tid={$task['tid']}");
+			$popup->add_item($lang->disable_task, "index.php?module=tools/tasks&amp;action=disable&amp;tid={$task['tid']}");
 		}
 		else
 		{
-			$popup->add_item($lang->enable_task, "index.php?".SID."&amp;module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}");
+			$popup->add_item($lang->enable_task, "index.php?module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}");
 		}
-		$popup->add_item($lang->delete_task, "index.php?".SID."&amp;module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_task_deletion}')");
+		$popup->add_item($lang->delete_task, "index.php?module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_task_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

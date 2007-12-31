@@ -46,7 +46,8 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$month_start_weekday = my_date("w", mktime(0, 0, 0, $month, 1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
-		$day = my_date("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']))-(array_search($month_start_weekday, $weekdays)-1);
+		$day = gmdate("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$day -= array_search($month_start_weekday, $weekdays);		
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
 	}
@@ -402,7 +403,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		}
 		else
 		{
-			$offset = $mybb->user['timezone'];
+			$offset = 0;
 		}
 		$event['starttime_user'] = $event['starttime']+$offset*3600;
 
@@ -718,19 +719,25 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 	else if($repeats['repeats'] == 3)
 	{
 		$weekdays = fetch_weekday_structure($event['weekday_start']);
-		if($first == false)
-		{
-		}
 		$last_dow = gmdate("w", $last_occurance);
-		foreach($repeats['days'] as $weekday)
-		{
-			if($weekday > $last_dow)
-			{
-				$next_dow = $weekday;
-				break;
+		if($first == true) {
+			$last_dow = -1;
+			$start_day = gmdate('w', $last_occurance);
+			if(in_array($start_day, $weekdays)) {
+				$next_dow = 0;
 			}
 		}
-		if(!$next_dow)
+		else {
+			foreach($repeats['days'] as $weekday)
+			{
+				if($weekday > $last_dow)
+				{
+					$next_dow = $weekday;
+					break;
+				}
+			}
+		}
+		if(!isset($next_dow))
 		{
 			// Fetch first weekday
 			$first = $repeats['days'][0]*86400;
@@ -742,7 +749,14 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 		else
 		{
 			// Next day of week exists
-			$day_diff = $next_dow-$last_dow;
+			if($last_dow > 0)
+			{
+				$day_diff = $next_dow-$last_dow;
+			}
+			else
+			{
+				$day_diff = $next_dow;
+			}
 			$new_time += $day_diff*86400;
 		}
 	}

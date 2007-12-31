@@ -26,7 +26,7 @@ if($mybb->input['action'] == 'phpinfo')
 	exit;
 }
 
-$page->add_breadcrumb_item($lang->php_info, "index.php?".SID."&amp;module=tools/php_info");
+$page->add_breadcrumb_item($lang->php_info, "index.php?module=tools/php_info");
 
 $plugins->run_hooks("admin_tools_php_info_begin");
 
@@ -36,7 +36,7 @@ if(!$mybb->input['action'])
 	
 	$page->output_header($lang->php_info);
 	
-	echo "<iframe src=\"index.php?".SID."&amp;module=tools/php_info&amp;action=phpinfo\" width=\"100%\" height=\"500\" frameborder=\"0\">{$lang->browser_no_iframe_support}</iframe>";
+	echo "<iframe src=\"index.php?module=tools/php_info&amp;action=phpinfo\" width=\"100%\" height=\"500\" frameborder=\"0\">{$lang->browser_no_iframe_support}</iframe>";
 	
 	$page->output_footer();
 }

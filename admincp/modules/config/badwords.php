@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->bad_words, "index.php?".SID."&amp;module=config/badwords");
+$page->add_breadcrumb_item($lang->bad_words, "index.php?module=config/badwords");
 
 $plugins->run_hooks("admin_config_badwords_begin");
 
@@ -44,7 +44,7 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 		$cache->update_badwords();
 		flash_message($lang->success_added_bad_word, 'success');
-		admin_redirect("index.php?".SID."&module=config/badwords");
+		admin_redirect("index.php?module=config/badwords");
 	}
 	else
 	{
@@ -63,13 +63,13 @@ if($mybb->input['action'] == "delete")
 	if(!$badword['bid'])
 	{
 		flash_message($lang->error_invalid_bid, 'error');
-		admin_redirect("index.php?".SID."&module=config/badwords");
+		admin_redirect("index.php?module=config/badwords");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/badwords");
+		admin_redirect("index.php?module=config/badwords");
 	}
 
 	if($mybb->request_method == "post")
@@ -85,11 +85,11 @@ if($mybb->input['action'] == "delete")
 		$cache->update_badwords();
 
 		flash_message($lang->success_deleted_bad_word, 'success');
-		admin_redirect("index.php?".SID."&module=config/badwords");
+		admin_redirect("index.php?module=config/badwords");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=config/badwords&action=delete&bid={$badword['bid']}", $lang->confirm_bad_word_deletion);
+		$page->output_confirm_action("index.php?module=config/badwords&action=delete&bid={$badword['bid']}", $lang->confirm_bad_word_deletion);
 	}
 }
 
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "edit")
 	if(!$badword['bid'])
 	{
 		flash_message($lang->error_invalid_bid, 'error');
-		admin_redirect("index.php?".SID."&module=config/badwords");
+		admin_redirect("index.php?module=config/badwords");
 	}
 
 	if($mybb->request_method == "post")
@@ -131,14 +131,14 @@ if($mybb->input['action'] == "edit")
 			$cache->update_badwords();
 
 			flash_message($lang->success_updated_bad_word, 'success');
-			admin_redirect("index.php?".SID."&module=config/badwords");
+			admin_redirect("index.php?module=config/badwords");
 		}
 	}
 
 	$page->add_breadcrumb_item($lang->edit_bad_word);
 	$page->output_header($lang->bad_words." - ".$lang->edit_bad_word);
 	
-	$form = new Form("index.php?".SID."&amp;module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}", "post");
+	$form = new Form("index.php?module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}", "post");
 
 	if($errors)
 	{
@@ -170,7 +170,7 @@ if(!$mybb->input['action'])
 	$sub_tabs['badwords'] = array(
 		'title' => $lang->bad_word_filters,
 		'description' => $lang->bad_word_filters_desc,
-		'link' => "index.php?".SID."&amp;module=config/badwords"
+		'link' => "index.php?module=config/badwords"
 	);
 
 	$page->output_nav_tabs($sub_tabs, "badwords");
@@ -191,8 +191,8 @@ if(!$mybb->input['action'])
 		}
 		$table->construct_cell($badword['badword']);
 		$table->construct_cell($badword['replacement']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/badwords&amp;action=delete&amp;bid={$badword['bid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bad_word_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/badwords&amp;action=delete&amp;bid={$badword['bid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bad_word_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -204,7 +204,7 @@ if(!$mybb->input['action'])
 	
 	$table->output($lang->bad_word_filters);
 
-	$form = new Form("index.php?".SID."&amp;module=config/badwords&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=config/badwords&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);

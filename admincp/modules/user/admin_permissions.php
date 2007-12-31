@@ -15,25 +15,25 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->admin_permissions, "index.php?".SID."&amp;module=user/admin_permissions");
+$page->add_breadcrumb_item($lang->admin_permissions, "index.php?module=user/admin_permissions");
 
 if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->input['action'] == "group" || !$mybb->input['action'])
 {
 	$sub_tabs['user_permissions'] = array(
 		'title' => $lang->user_permissions,
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions",
+		'link' => "index.php?module=user/admin_permissions",
 		'description' => $lang->user_permissions_desc
 	);
 
 	$sub_tabs['group_permissions'] = array(
 		'title' => $lang->group_permissions,
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group",
+		'link' => "index.php?module=user/admin_permissions&amp;action=group",
 		'description' => $lang->group_permissions_desc
 	);
 
 	$sub_tabs['default_permissions'] = array(
 		'title' => $lang->default_permissions,
-		'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid=0",
+		'link' => "index.php?module=user/admin_permissions&amp;action=edit&amp;uid=0",
 		'description' => $lang->default_permissions_desc
 	);
 }
@@ -48,25 +48,25 @@ if($mybb->input['action'] == "delete")
 	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
 	{
 		flash_message($lang->error_delete_super_admin, 'error');
-		admin_redirect("index.php?".SID."&module=user/admin_permissions");
+		admin_redirect("index.php?module=user/admin_permissions");
 	}
 	
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=user/admin_permissions");
+		admin_redirect("index.php?module=user/admin_permissions");
 	}
 	
 	if(!trim($mybb->input['uid']))
 	{
 		flash_message($lang->error_delete_no_uid, 'error');
-		admin_redirect("index.php?".SID."&module=user/admin_permissions");
+		admin_redirect("index.php?module=user/admin_permissions");
 	}
 	
 	$query = $db->simple_select("adminoptions", "COUNT(uid) as adminoptions", "uid = '{$mybb->input['uid']}'");
 	if($db->fetch_field($query, 'adminoptions') == 0)
 	{
 		flash_message($lang->error_delete_invalid_uid, 'error');
-		admin_redirect("index.php?".SID."&module=user/admin_permissions");
+		admin_redirect("index.php?module=user/admin_permissions");
 	}
 	
 	if($mybb->request_method == "post")
@@ -82,11 +82,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($mybb->input['uid']);
 
 		flash_message($lang->success_perms_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=user/admin_permissions");
+		admin_redirect("index.php?module=user/admin_permissions");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$mybb->input['uid']}", $lang->confirm_perms_deletion); 
+		$page->output_confirm_action("index.php?module=user/admin_permissions&amp;action=delete&amp;uid={$mybb->input['uid']}", $lang->confirm_perms_deletion); 
 	}
 }
 
@@ -131,7 +131,7 @@ if($mybb->input['action'] == "edit")
 		log_admin_action($mybb->input['uid']);
 				
 		flash_message($lang->admin_permissions_updated, 'success');
-		admin_redirect("index.php?".SID."&module=user/admin_permissions");
+		admin_redirect("index.php?module=user/admin_permissions");
 	}
 	
 	$uid = intval($mybb->input['uid']);
@@ -149,7 +149,7 @@ if($mybb->input['action'] == "edit")
 		$admin = $db->fetch_array($query);
 		$permission_data = get_admin_permissions($uid, $admin['gid']);
 		$title = $admin['username'];
-		$page->add_breadcrumb_item($lang->user_permissions, "index.php?".SID."&amp;module=user/admin_permissions");
+		$page->add_breadcrumb_item($lang->user_permissions, "index.php?module=user/admin_permissions");
 	}
 	elseif($uid < 0)
 	{
@@ -158,7 +158,7 @@ if($mybb->input['action'] == "edit")
 		$group = $db->fetch_array($query);
 		$permission_data = get_admin_permissions("", $gid);
 		$title = $group['title'];
-		$page->add_breadcrumb_item($lang->group_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=group");
+		$page->add_breadcrumb_item($lang->group_permissions, "index.php?module=user/admin_permissions&amp;action=group");
 	}
 	else
 	{
@@ -179,14 +179,14 @@ if($mybb->input['action'] == "edit")
 	{
 		$sub_tabs['edit_permissions'] = array(
 			'title' => $lang->edit_permissions,
-			'link' => "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}",
+			'link' => "index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$uid}",
 			'description' => $lang->edit_permissions_desc
 		);
 
 		$page->output_nav_tabs($sub_tabs, 'edit_permissions');
 	}
 	
-	$form = new Form("index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit", "post", "edit");
+	$form = new Form("index.php?module=user/admin_permissions&amp;action=edit", "post", "edit");
 
 	echo $form->generate_hidden_field("uid", $uid);
 
@@ -272,20 +272,20 @@ if($mybb->input['action'] == "group")
 			$perm_type = "default";
 		}
 		$uid = -$group['gid'];
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->permissions_type_group}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$uid}\" title=\"{$lang->edit_group}\">{$group['title']}</a></strong><br /></div>");
 
 		if($group['permissions'] != "")
 		{
 			$popup = new PopupMenu("groupperm_{$uid}", $lang->options);
-			$popup->add_item($lang->edit_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}");
+			$popup->add_item($lang->edit_permissions, "index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$uid}");
 			
 			// Check permissions for Revoke
-			$popup->add_item($lang->revoke_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$uid}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
+			$popup->add_item($lang->revoke_permissions, "index.php?module=user/admin_permissions&amp;action=delete&amp;uid={$uid}", "return AdminCP.deleteConfirmation(this, 'Are you sure you wish to revoke this group\'s permissions?')");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		}
 		else
 		{
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$uid}\">Set Permissions</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$uid}\">Set Permissions</a>", array("class" => "align_center"));
 		}
 		$table->construct_row();
 	}
@@ -421,21 +421,21 @@ if(!$mybb->input['action'])
 		}
 		$usergroup_list = implode(", ", $usergroup_list);
 		
-		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$perm_type}.gif\" title=\"{$lang->perms_type_user}\" alt=\"{$perm_type}\" /></div><div><strong><a href=\"index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}\" title=\"{$lang->edit_user}\">{$admin['username']}</a></strong><br /><small>{$usergroup_list}</small></div>");
 		
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $admin['lastactive']), array("class" => "align_center"));
 		
 		$popup = new PopupMenu("adminperm_{$admin['uid']}", $lang->options);
 		if($admin['permissions'] != "")
 		{
-			$popup->add_item($lang->edit_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
-			$popup->add_item($lang->revoke_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=delete&amp;uid={$admin['uid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
+			$popup->add_item($lang->edit_permissions, "index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+			$popup->add_item($lang->revoke_permissions, "index.php?module=user/admin_permissions&amp;action=delete&amp;uid={$admin['uid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_perms_deletion2}')");
 		}
 		else
 		{
-			$popup->add_item($lang->set_permissions, "index.php?".SID."&amp;module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
+			$popup->add_item($lang->set_permissions, "index.php?module=user/admin_permissions&amp;action=edit&amp;uid={$admin['uid']}");
 		}
-		$popup->add_item($lang->view_log, "index.php?".SID."&amp;module=tools/adminlog&amp;uid={$admin['uid']}");
+		$popup->add_item($lang->view_log, "index.php?module=tools/adminlog&amp;uid={$admin['uid']}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

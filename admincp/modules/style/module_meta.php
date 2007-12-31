@@ -20,12 +20,12 @@ function style_meta()
 	global $page, $lang, $plugins;
 
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?".SID."&module=style/themes");
-	$sub_menu['20'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");
+	$sub_menu['10'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style/themes");
+	$sub_menu['20'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style/templates");
 	
 	$plugins->run_hooks_by_ref("admin_style_menu", $sub_menu);
 
-	$page->add_menu_item($lang->templates_and_style, "style", "index.php?".SID."&module=style", 40, $sub_menu);
+	$page->add_menu_item($lang->templates_and_style, "style", "index.php?module=style", 40, $sub_menu);
 	return true;
 }
 

@@ -382,7 +382,7 @@ function parse_css_properties($values)
  * @param string The existing CSS if we have any
  * @param string (Optional) The optional friendly selector value just incase the CSS is not found in the file
  */
-function insert_into_css($new_css, $class_id="", $selector="", $css="")
+function insert_into_css($new_css, $class_id="", $css="", $selector="")
 {
 	$new_css = str_replace(array("\r\n", "\n", "\r"), "\n", $new_css);
 

@@ -15,7 +15,7 @@ $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,sho
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator,postbit_groupimage,postbit_multiquote,showthread_search";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -469,8 +469,8 @@ if($mybb->input['action'] == "thread")
 		{
 			$stickch = ' checked="checked"';
 		}
-		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"1\"{$closelinkch} />&nbsp;".$lang->close_thread."</label>";
-		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"1\"{$stickch} />&nbsp;".$lang->stick_thread."</label>";
+		$closeoption = "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[closethread]\" value=\"1\"{$closelinkch} />&nbsp;<strong>".$lang->close_thread."</strong></label>";
+		$closeoption .= "<br /><label><input type=\"checkbox\" class=\"checkbox\" name=\"modoptions[stickthread]\" value=\"1\"{$stickch} />&nbsp;<strong>".$lang->stick_thread."</strong></label>";
 		$inlinecount = "0";
 		$inlinecookie = "inlinemod_thread".$tid;
 		$plugins->run_hooks("showthread_ismod");
@@ -883,10 +883,10 @@ if($mybb->input['action'] == "thread")
 			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
-				$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%'");
+				$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums=''");
 				break;
 			default:
-				$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%'");
+				$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
 		}
 		
 		while($tool = $db->fetch_array($query))
@@ -917,8 +917,8 @@ if($mybb->input['action'] == "thread")
 	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
 	
 	// Subscription status
-	$query = $db->simple_select("threadsubscriptions", "COUNT(tid) as count", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
-	if($db->fetch_field($query, 'count'))
+	$query = $db->simple_select("threadsubscriptions", "tid", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
+	if($db->fetch_field($query, 'tid'))
 	{
 		$add_remove_subscription = 'remove';
 		$add_remove_subscription_text = $lang->unsubscribe_thread;

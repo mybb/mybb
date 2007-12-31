@@ -150,7 +150,7 @@ class CustomModeration extends Moderation
 					// Enter in a subject if a predefined one does not exist.
 					$post_options['splitpostsnewsubject'] = '[split] '.$thread['subject'];
 				}
-				$new_subject = str_replace('{subject}', $thread['subject'], $post_options['splitpostsnewsubject']);
+				$new_subject = str_ireplace('{subject}', $thread['subject'], $post_options['splitpostsnewsubject']);
 				$new_tid = $this->split_posts($pids, $tid, $post_options['splitposts'], $new_subject);
 				if($post_options['splitpostsclose'] == 'close') // Close new thread
 				{
@@ -173,7 +173,12 @@ class CustomModeration extends Moderation
 					{
 						$post_options['splitpostsreplysubject'] = 'RE: '.$new_subject;
 					}	
-
+					else
+					{
+						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+						$post_options['splitpostsreplysubject'] = str_ireplace('{subject}', $new_subject, $post_options['splitpostsreplysubject']);
+					}
+					
 					// Set the post data that came from the input to the $post array.
 					$post = array(
 						"tid" => $new_tid,
@@ -197,6 +202,11 @@ class CustomModeration extends Moderation
 					{
 						$posthandler->insert_post($post);
 					}
+					
+					else {
+						echo '<pre>';
+						die(print_r($posthandler));
+					}					
 				}
 			}
 		}
@@ -273,6 +283,7 @@ class CustomModeration extends Moderation
 
 			if($thread_options['openthread'] == 'open') // Open thread
 			{
+				echo "opening";
 				$this->open_threads($tids);
 			}
 			elseif($thread_options['openthread'] == 'close') // Close thread
@@ -284,7 +295,7 @@ class CustomModeration extends Moderation
 				$this->toggle_thread_status($tids);
 			}
 
-			if(trim($thread_options['newsubject']) != '{subject}') // Update thread subjects
+			if(my_strtolower(trim($thread_options['newsubject'])) != '{subject}') // Update thread subjects
 			{
 				$this->change_thread_subject($tids, $thread_options['newsubject']);
 			}
@@ -304,8 +315,8 @@ class CustomModeration extends Moderation
 					}
 					else
 					{
-						$thread_options['replysubject'] = str_replace('{username}', $mybb->user['username'], $thread_options['replysubject']);
-						$thread_options['replysubject'] = str_replace('{subject}', $thread['subject'], $thread_options['replysubject']);
+						$thread_options['replysubject'] = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+						$thread_options['replysubject'] = str_ireplace('{subject}', $thread['subject'], $thread_options['replysubject']);
 					}
 	
 					// Set the post data that came from the input to the $post array.

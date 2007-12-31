@@ -132,5 +132,5 @@ var Rating = {
 
 if(use_xmlhttprequest == 1)
 {
-	Event.observe(window, 'load', Rating.init);
+	Event.observe(window, 'dom:loaded', Rating.init);
 }

@@ -59,7 +59,7 @@ else
 			$sort_field = "u.regdate";
 			break;
 		case "lastvisit":
-			$sort_field = "u.lastvisit";
+			$sort_field = "u.lastactive";
 			break;
 		case "reputation":
 			$sort_field = "u.reputation";

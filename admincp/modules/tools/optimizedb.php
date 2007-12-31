@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->optimize_database, "index.php?".SID."&amp;module=tools/optimizedb");
+$page->add_breadcrumb_item($lang->optimize_database, "index.php?module=tools/optimizedb");
 
 $plugins->run_hooks("admin_tools_optimizedb_begin");
 
@@ -28,7 +28,7 @@ if(!$mybb->input['action'])
 		if(!is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_no_tables_selected, 'error');
-			admin_redirect("index.php?".SID."&module=tools/optimizedb");
+			admin_redirect("index.php?module=tools/optimizedb");
 		}
 		
 		@set_time_limit(0);
@@ -49,7 +49,7 @@ if(!$mybb->input['action'])
 		log_admin_action(serialize($mybb->input['tables']));
 		
 		flash_message($lang->success_tables_optimized, 'success');
-		admin_redirect("index.php?".SID."&module=tools/optimizedb");
+		admin_redirect("index.php?module=tools/optimizedb");
 	}
 	
 	$page->extra_header = "	<script type=\"text/javascript\" language=\"Javascript\">
@@ -92,7 +92,7 @@ if(!$mybb->input['action'])
 		$table_selects[$table_name] = $table_name;
 	}
 	
-	$form = new Form("index.php?".SID."&amp;module=tools/optimizedb", "post", 0, "table_selection", "table_selection");
+	$form = new Form("index.php?module=tools/optimizedb", "post", 0, "table_selection", "table_selection");
 	
 	$table->construct_cell("{$lang->tables_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
 	$table->construct_row();

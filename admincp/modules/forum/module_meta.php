@@ -20,14 +20,14 @@ function forum_meta()
 	global $page, $lang, $plugins;
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?".SID."&module=forum/management");
-	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcements, "link" => "index.php?".SID."&module=forum/announcements");
-	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?".SID."&module=forum/moderation_queue");
-	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?".SID."&module=forum/attachments");
+	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?module=forum/management");
+	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcements, "link" => "index.php?module=forum/announcements");
+	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?module=forum/moderation_queue");
+	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?module=forum/attachments");
 	
 	$plugins->run_hooks_by_ref("admin_forum_menu", $sub_menu);
 
-	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?".SID."&module=forum", 20, $sub_menu);
+	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?module=forum", 20, $sub_menu);
 
 	return true;
 }

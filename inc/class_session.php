@@ -190,22 +190,22 @@ class session
 		{
 			$mybb->settings['bblanguage'] = $mybb->user['language'];
 		}
-		if($mybb->user['dateformat'] != "0" || $mybb->user['dateformat'] != '')
+		if($mybb->user['dateformat'] != 0 && $mybb->user['dateformat'] != '')
 		{
 			global $date_formats;
 			if($date_formats[$mybb->user['dateformat']])
 			{
-				$mybb->setings['dateformat'] = $date_formats[$mybb->user['dateformat']];
+				$mybb->settings['dateformat'] = $date_formats[$mybb->user['dateformat']];
 			}
 		}
 
 		// Choose time format.
-		if($mybb->user['timeformat'] != "0" || $mybb->user['timeformat'] != '')
+		if($mybb->user['timeformat'] != 0 && $mybb->user['timeformat'] != '')
 		{
 			global $time_formats;
 			if($time_formats[$mybb->user['timeformat']])
 			{
-				$mybb->setings['timeformat'] = $time_formats[$mybb->user['timeformat']];
+				$mybb->settings['timeformat'] = $time_formats[$mybb->user['timeformat']];
 			}
 		}
 

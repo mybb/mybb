@@ -329,6 +329,22 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
   PRIMARY KEY (rid)
 ) TYPE=MyISAM;";
 
+$tables[] = "CREATE TABLE mybb_massemails (
+	mid int unsigned NOT NULL auto_increment,
+	subject varchar(200) NOT NULL default '',
+	message text NOT NULL,
+	htmlmessage text NOT NULL,
+	format tinyint(1) NOT NULL default '0',
+	dateline bigint(30) NOT NULL default '0',
+	senddate bigint(30) NOT NULL default '0',
+	status tinyint(1) NOT NULL default '0',
+	sentcount int unsigned NOT NULL default '0',
+	totalcount int unsigned NOT NULL default '0',
+	conditions text NOT NULL,
+	perpage smallint(4) NOT NULL default '50',
+	PRIMARY KEY(mid)
+) TYPE=MyISAM;";
+
 $tables[] = "CREATE TABLE mybb_mailerrors (
   eid int unsigned NOT NULL auto_increment,
   subject varchar(200) NOT NULL default '',

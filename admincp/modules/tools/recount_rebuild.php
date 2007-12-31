@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->recount_rebuild, "index.php?".SID."&amp;module=tools/recount_rebuild");
+$page->add_breadcrumb_item($lang->recount_rebuild, "index.php?module=tools/recount_rebuild");
 
 $plugins->run_hooks("admin_tools_recount_rebuild");
 
@@ -145,13 +145,13 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 	if($finish >= $current)
 	{
 		flash_message($message, 'success');
-		admin_redirect("index.php?".SID."&module=tools/recount_rebuild");
+		admin_redirect("index.php?module=tools/recount_rebuild");
 	}
 	else
 	{
 		$page->output_header();
 		
-		$form = new Form("index.php?".SID."&amp;module=tools/recount_rebuild", 'post');
+		$form = new Form("index.php?module=tools/recount_rebuild", 'post');
 		
 		echo $form->generate_hidden_field("page", $next_page);
 		echo $form->generate_hidden_field($name, $per_page);
@@ -259,7 +259,7 @@ if(!$mybb->input['action'])
 			log_admin_action("stats");
 
 			flash_message($lang->success_rebuilt_forum_stats, 'success');
-			admin_redirect("index.php?".SID."&module=tools/recount_rebuild");
+			admin_redirect("index.php?module=tools/recount_rebuild");
 		}
 	}	
 	
@@ -267,13 +267,13 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['recount_rebuild'] = array(
 		'title' => $lang->recount_rebuild,
-		'link' => "index.php?".SID."&amp;module=tools/recount_rebuild",
+		'link' => "index.php?module=tools/recount_rebuild",
 		'description' => $lang->recount_rebuild_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'recount_rebuild');
 
-	$form = new Form("index.php?".SID."&amp;module=tools/recount_rebuild", "post");
+	$form = new Form("index.php?module=tools/recount_rebuild", "post");
 	
 	$form_container = new FormContainer($lang->recount_rebuild);
 	$form_container->output_row_header($lang->name);

@@ -17,28 +17,28 @@ if(!defined("IN_MYBB"))
 
 require_once MYBB_ROOT."inc/functions_warnings.php";
 
-$page->add_breadcrumb_item($lang->warning_system, "index.php?".SID."&amp;module=config/warning");
+$page->add_breadcrumb_item($lang->warning_system, "index.php?module=config/warning");
 
 if($mybb->input['action'] == "levels" || $mybb->input['action'] == "add_type" || $mybb->input['action'] == "add_level" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_types'] = array(
 		'title' => $lang->warning_types,
-		'link' => "index.php?".SID."&amp;module=config/warning",
+		'link' => "index.php?module=config/warning",
 		'description' => $lang->warning_types_desc
 	);
 	$sub_tabs['add_type'] = array(
 		'title'=> $lang->add_warning_type,
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_type",
+		'link' => "index.php?module=config/warning&amp;action=add_type",
 		'description' => $lang->add_warning_type_desc
 	);
 	$sub_tabs['manage_levels'] = array(
 		'title' => $lang->warning_levels,
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=levels",
+		'link' => "index.php?module=config/warning&amp;action=levels",
 		'description' => $lang->warning_levels_desc,
 	);
 	$sub_tabs['add_level'] = array(
 		'title'=> $lang->add_warning_level,
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=add_level",
+		'link' => "index.php?module=config/warning&amp;action=add_level",
 		'description' => $lang->add_warning_level_desc
 	);
 }
@@ -96,7 +96,7 @@ if($mybb->input['action'] == "add_level")
 			log_admin_action($lid, $mybb->input['percentage']);
 			
 			flash_message($lang->success_warning_level_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/warning&action=levels");
+			admin_redirect("index.php?module=config/warning&action=levels");
 		}
 	}
 	
@@ -104,7 +104,7 @@ if($mybb->input['action'] == "add_level")
 	$page->output_header($lang->warning_levels." - ".$lang->add_warning_level);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_level');
-	$form = new Form("index.php?".SID."&amp;module=config/warning&amp;action=add_level", "post");
+	$form = new Form("index.php?module=config/warning&amp;action=add_level", "post");
 	
 	
 	if($errors)
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "edit_level")
 	if(!$level['lid'])
 	{
 		flash_message($lang->error_invalid_warning_level, 'error');
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 
 	if($mybb->request_method == "post")
@@ -259,7 +259,7 @@ if($mybb->input['action'] == "edit_level")
 			log_admin_action($level['lid'], $mybb->input['percentage']);
 
 			flash_message($lang->success_warning_level_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/warning&action=levels");
+			admin_redirect("index.php?module=config/warning&action=levels");
 		}
 	}
 	
@@ -267,13 +267,13 @@ if($mybb->input['action'] == "edit_level")
 	$page->output_header($lang->warning_levels." - ".$lang->edit_warning_level);
 	
 	$sub_tabs['edit_level'] = array(
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}",
+		'link' => "index.php?module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}",
 		'title' => $lang->edit_warning_level,
 		'description' => $lang->edit_warning_level_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_level');
-	$form = new Form("index.php?".SID."&amp;module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}", "post");
+	$form = new Form("index.php?module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}", "post");
 	
 	if($errors)
 	{
@@ -403,13 +403,13 @@ if($mybb->input['action'] == "delete_level")
 	if(!$level['lid'])
 	{
 		flash_message($lang->error_invalid_warning_level, 'error');
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 
 	if($mybb->request_method == "post")
@@ -423,11 +423,11 @@ if($mybb->input['action'] == "delete_level")
 		log_admin_action($level['percentage']);
 
 		flash_message($lang->success_warning_level_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/warning&amp;action=delete_level&amp;lid={$level['lid']}", $lang->confirm_warning_level_deletion);
+		$page->output_confirm_action("index.php?module=config/warning&amp;action=delete_level&amp;lid={$level['lid']}", $lang->confirm_warning_level_deletion);
 	}
 }
 
@@ -463,7 +463,7 @@ if($mybb->input['action'] == "add_type")
 			log_admin_action($tid, $mybb->input['title']);
 			
 			flash_message($lang->success_warning_type_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/warning");
+			admin_redirect("index.php?module=config/warning");
 		}
 	}
 	else
@@ -479,7 +479,7 @@ if($mybb->input['action'] == "add_type")
 	$page->output_header($lang->warning_types." - ".$lang->add_warning_type);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_type');
-	$form = new Form("index.php?".SID."&amp;module=config/warning&amp;action=add_type", "post");
+	$form = new Form("index.php?module=config/warning&amp;action=add_type", "post");
 	
 	
 	if($errors)
@@ -519,7 +519,7 @@ if($mybb->input['action'] == "edit_type")
 	if(!$type['tid'])
 	{
 		flash_message($lang->error_invalid_warning_type, 'error');
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 
 	if($mybb->request_method == "post")
@@ -550,7 +550,7 @@ if($mybb->input['action'] == "edit_type")
 			log_admin_action($type['tid'], $mybb->input['title']);
 
 			flash_message($lang->success_warning_type_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/warning");
+			admin_redirect("index.php?module=config/warning");
 		}
 	}
 	else
@@ -568,13 +568,13 @@ if($mybb->input['action'] == "edit_type")
 	$page->output_header($lang->warning_types." - ".$lang->edit_warning_type);
 	
 	$sub_tabs['edit_type'] = array(
-		'link' => "index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}",
+		'link' => "index.php?module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}",
 		'title' => $lang->edit_warning_type,
 		'description' => $lang->edit_warning_type_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_type');
-	$form = new Form("index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}", "post");
+	$form = new Form("index.php?module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}", "post");
 	
 	
 	if($errors)
@@ -614,13 +614,13 @@ if($mybb->input['action'] == "delete_type")
 	if(!$type['tid'])
 	{
 		flash_message($lang->error_invalid_warning_type, 'error');
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 
 	if($mybb->request_method == "post")
@@ -634,11 +634,11 @@ if($mybb->input['action'] == "delete_type")
 		log_admin_action($type['title']);
 
 		flash_message($lang->success_warning_type_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/warning");
+		admin_redirect("index.php?module=config/warning");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/warning&amp;action=delete_type&amp;tid={$type['tid']}", $lang->confirm_warning_type_deletion);
+		$page->output_confirm_action("index.php?module=config/warning&amp;action=delete_type&amp;tid={$type['tid']}", $lang->confirm_warning_type_deletion);
 	}
 }
 
@@ -681,8 +681,8 @@ if($mybb->input['action'] == "levels")
 			$type = sprintf($lang->moderate_new_posts, $period['time'], $lang->$lang_str);
 		}
 		$table->construct_cell($type);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=delete_level&amp;lid={$level['lid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_level_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=delete_level&amp;lid={$level['lid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_level_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -716,7 +716,7 @@ if(!$mybb->input['action'])
 	while($type = $db->fetch_array($query))
 	{
 		$type['name'] = htmlspecialchars_uni($type['title']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\"><strong>{$type['title']}</strong></a>");
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\"><strong>{$type['title']}</strong></a>");
 		$table->construct_cell("{$type['points']}", array("class" => "align_center"));
 		$expiration = fetch_friendly_expiration($type['expirationtime']);
 		$lang_str = "expiration_".$expiration['period'];
@@ -728,8 +728,8 @@ if(!$mybb->input['action'])
 		{
 			$table->construct_cell($lang->never, array("class" => "align_center"));
 		}
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/warning&amp;action=delete_type&amp;tid={$type['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_type_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=delete_type&amp;tid={$type['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_type_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	

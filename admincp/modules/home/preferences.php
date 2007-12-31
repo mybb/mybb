@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->preferences_and_personal_notes, "index.php?".SID."&amp;module=home/preferences");
+$page->add_breadcrumb_item($lang->preferences_and_personal_notes, "index.php?module=home/preferences");
 
 $plugins->run_hooks("admin_home_preferences_begin");
 
@@ -36,14 +36,14 @@ if(!$mybb->input['action'])
 		$plugins->run_hooks("admin_home_preferences_start_commit");
 	
 		flash_message("The Preferences have been successfully updated.", 'success');
-		admin_redirect("index.php?".SID."&module=home/preferences");
+		admin_redirect("index.php?module=home/preferences");
 	}
 	
 	$page->output_header($lang->preferences_and_personal_notes);
 	
 	$sub_tabs['preferences'] = array(
 		'title' => $lang->preferences_and_personal_notes,
-		'link' => "index.php?".SID."&amp;module=home/preferences",
+		'link' => "index.php?module=home/preferences",
 		'description' => $lang->prefs_and_personal_notes_description
 	);
 
@@ -52,7 +52,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("adminoptions", "cpstyle, notes", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
 	
-	$form = new Form("index.php?".SID."&amp;module=home/preferences", "post");
+	$form = new Form("index.php?module=home/preferences", "post");
 	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
 	while($folder = readdir($dir))
 	{

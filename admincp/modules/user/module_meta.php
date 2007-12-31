@@ -20,17 +20,17 @@ function user_meta()
 	global $page, $lang, $plugins;
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "users", "title" => $lang->users, "link" => "index.php?".SID."&module=user/users");
-	$sub_menu['20'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?".SID."&module=user/groups");
-	$sub_menu['30'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?".SID."&module=user/titles");
-	$sub_menu['40'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?".SID."&module=user/banning");
-	$sub_menu['50'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?".SID."&module=user/admin_permissions");
-	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?".SID."&module=user/mass_mail");
-	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?".SID."&module=user/group_promotions");
+	$sub_menu['10'] = array("id" => "users", "title" => $lang->users, "link" => "index.php?module=user/users");
+	$sub_menu['20'] = array("id" => "groups", "title" => $lang->groups, "link" => "index.php?module=user/groups");
+	$sub_menu['30'] = array("id" => "titles", "title" => $lang->user_titles, "link" => "index.php?module=user/titles");
+	$sub_menu['40'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?module=user/banning");
+	$sub_menu['50'] = array("id" => "admin_permissions", "title" => $lang->admin_permissions, "link" => "index.php?module=user/admin_permissions");
+	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?module=user/mass_mail");
+	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?module=user/group_promotions");
 	
 	$plugins->run_hooks_by_ref("admin_user_menu", $sub_menu);
 
-	$page->add_menu_item($lang->users_and_groups, "user", "index.php?".SID."&module=user", 30, $sub_menu);
+	$page->add_menu_item($lang->users_and_groups, "user", "index.php?module=user", 30, $sub_menu);
 	return true;
 }
 
@@ -61,6 +61,10 @@ function user_action_handler($action)
 			$page->active_action = "groups";
 			$action_file = "groups.php";
 			break;
+		case "mass_mail":
+			$page->active_action = "mass_mail";
+			$action_file = "mass_mail.php";
+			break;
 		default:
 			$page->active_action = "users";
 			$action_file = "users.php";
@@ -69,21 +73,6 @@ function user_action_handler($action)
 	$plugins->run_hooks_by_ref("admin_user_action_handler", $action);
 	
 	return $action_file;
-}
-
-function user_admin_log_data()
-{
-	global $mybb;
-	
-	switch($page->active_action)
-	{
-		case "dashboard":
-			return array(
-				"data" => array("uid" => $mybb->user['uid'], "username" => $mybb->user['username'])
-			);
-			break;
-
-	}
 }
 
 function user_format_admin_log_data($action, $data)

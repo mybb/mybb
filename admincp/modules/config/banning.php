@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->banning, "index.php?".SID."&amp;module=config/banning");
+$page->add_breadcrumb_item($lang->banning, "index.php?module=config/banning");
 
 $plugins->run_hooks("admin_config_banning_begin");
 
@@ -50,17 +50,17 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		if($mybb->input['type'] == 1)
 		{
 			flash_message($lang->success_ip_banned, 'success');
-			admin_redirect("index.php?".SID."&module=config/banning");
+			admin_redirect("index.php?module=config/banning");
 		}
 		else if($mybb->input['type'] == 2)
 		{
 			flash_message($lang->success_username_disallowed, 'success');
-			admin_redirect("index.php?".SID."&module=config/banning&type=usernames");
+			admin_redirect("index.php?module=config/banning&type=usernames");
 		}
 		else if($mybb->input['type'] == 3)
 		{
 			flash_message($lang->success_email_disallowed, 'success');
-			admin_redirect("index.php?".SID."&module=config/banning&type=emails");
+			admin_redirect("index.php?module=config/banning&type=emails");
 		}		
 	}
 	else
@@ -92,7 +92,7 @@ if($mybb->input['action'] == "delete")
 	if(!$filter['fid'])
 	{
 		flash_message($lang->error_invalid_filter, 'error');
-		admin_redirect("index.php?".SID."&module=config/banning");
+		admin_redirect("index.php?module=config/banning");
 	}
 
 	if($filter['type'] == 3)
@@ -111,7 +111,7 @@ if($mybb->input['action'] == "delete")
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/banning&type={$type}");
+		admin_redirect("index.php?module=config/banning&type={$type}");
 	}
 
 	if($mybb->request_method == "post")
@@ -132,11 +132,11 @@ if($mybb->input['action'] == "delete")
 		}
 
 		flash_message($lang->success_ban_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/banning&type={$type}");
+		admin_redirect("index.php?module=config/banning&type={$type}");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}", $lang->confirm_ban_deletion);
+		$page->output_confirm_action("index.php?module=config/banning&amp;action=delete&amp;fid={$filter['fid']}", $lang->confirm_ban_deletion);
 	}
 }
 
@@ -164,24 +164,24 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['ips'] = array(
 		'title' => $lang->banned_ips,
-		'link' => "index.php?".SID."&amp;module=config/banning",
+		'link' => "index.php?module=config/banning",
 		'description' => $lang->banned_ips_desc
 	);
 
 	$sub_tabs['users'] = array(
 		'title' => $lang->banned_accounts,
-		'link' => "index.php?".SID."&amp;module=user/banning"
+		'link' => "index.php?module=user/banning"
 	);
 
 	$sub_tabs['usernames'] = array(
 		'title' => $lang->disallowed_usernames,
-		'link' => "index.php?".SID."&amp;module=config/banning&amp;type=usernames",
+		'link' => "index.php?module=config/banning&amp;type=usernames",
 		'description' => $lang->disallowed_usernames_desc
 	);
 
 	$sub_tabs['emails'] = array(
 		'title' => $lang->disallowed_email_addresses,
-		'link' => "index.php?".SID."&amp;module=config/banning&amp;type=emails",
+		'link' => "index.php?module=config/banning&amp;type=emails",
 		'description' => $lang->disallowed_email_addresses_desc
 	);
 
@@ -224,7 +224,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($filter['filter']);
 		$table->construct_cell($date, array("class" => "align_center"));
 		$table->construct_cell($last_use, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/banning&amp;action=delete&amp;fid={$filter['fid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_ban_deletion}');\"><img src=\"styles/{$page->style}/images/icons/delete.gif\" title=\"{$lang->delete}\" alt=\"{$lang->delete}\" /></a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/banning&amp;action=delete&amp;fid={$filter['fid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_ban_deletion}');\"><img src=\"styles/{$page->style}/images/icons/delete.gif\" title=\"{$lang->delete}\" alt=\"{$lang->delete}\" /></a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -236,7 +236,7 @@ if(!$mybb->input['action'])
 	
 	$table->output($title);
 
-	$form = new Form("index.php?".SID."&amp;module=config/banning&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=config/banning&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);

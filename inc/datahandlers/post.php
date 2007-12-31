@@ -511,6 +511,8 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 		$time = TIME_NOW;
 		
+		$this->action = "post";
+		
 		if($this->method != "update" && !$post['savedraft'])
 		{
 			$this->verify_post_flooding();
@@ -616,7 +618,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($post['fid'], "", $post['uid']))
+			if(is_moderator($post['fid'], "", $post['uid']) && isset($post['modoptions']))
 			{
 				$lang->load($this->language_file, true);
 				
@@ -1344,25 +1346,43 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		$post['pid'] = intval($post['pid']);
-
-		// If we don't have a tid then we need to fetch it along with the forum id.
-		if(!$post['tid'] || !$post['fid'])
-		{
-			$query = $db->simple_select("posts", "tid,fid", "pid='".intval($post['pid'])."'");
-			$tid_fetch = $db->fetch_array($query);
-			$post['tid'] = $tid_fetch['tid'];
-			$post['fid'] = $tid_fetch['fid'];
-		}
+		
+		$existing_post = get_post($post['pid']);
+		$post['tid'] = $tid_fetch['tid'];
+		$post['fid'] = $tid_fetch['fid'];
 		
 		$forum = get_forum($post['fid']);
 
 		// Decide on the visibility of this post.
 		if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
 		{
+			if($existing_post['visible'] == 1) {
+				update_thread_data($existing_post['tid']);
+				update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
+				update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
+				
+				// Subtract from the users post count
+				// Update the post count if this forum allows post counts to be tracked
+				if($forum['usepostcounts'] != 0)
+				{
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}");
+				}
+			}
 			$visible = 0;
 		}
 		else
 		{
+			if($existing_post['visible'] == 0) {
+				update_thread_data($existing_post['tid']);
+				update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
+				update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
+				
+				// Update the post count if this forum allows post counts to be tracked
+				if($forum['usepostcounts'] != 0)
+				{
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}");
+				}
+			}
 			$visible = 1;
 		}
 

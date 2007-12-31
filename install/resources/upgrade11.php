@@ -172,7 +172,7 @@ function upgrade11_dbchanges()
 			echo "<input type=\"hidden\" name=\"{$key}\" value=\"{$val}\" />";
 		}
 		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 		$output->print_footer($next_act);
 	}
 	else
@@ -184,7 +184,7 @@ function upgrade11_dbchanges()
 		echo "<p><strong>The integrer conversion process is now complete.</strong></p>";
 		echo "<p>Click next to continue with the upgrade process.</p>";
 		global $footer_extra;
-		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 		$output->print_footer($next_act);
 	}
@@ -215,7 +215,7 @@ function upgrade11_dbchanges1()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer("11_dbchanges2");
 }
@@ -334,6 +334,23 @@ function upgrade11_dbchanges2()
 	$db->drop_table("mailerrors");
 	$db->drop_table("promotions");
 	$db->drop_table("promotionlogs");
+	$db->drop_table("massemails");
+
+	$bd->write_query("CREATE TABLE ".TABLE_PREFIX."massemails (
+		mid int unsigned NOT NULL auto_increment,
+		subject varchar(200) NOT NULL default '',
+		message text NOT NULL,
+		htmlmessage text NOT NULL,
+		format tinyint(1) NOT NULL default '0',
+		dateline bigint(30) NOT NULL default '0',
+		senddate bigint(30) NOT NULL default '0',
+		status tinyint(1) NOT NULL default '0',
+		sentcount int unsigned NOT NULL default '0',
+		totalcount int unsigned NOT NULL default '0',
+		conditions text NOT NULL,
+		perpage smallint(4) NOT NULL default '50',
+		PRIMARY KEY(mid)
+	) TYPE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
@@ -622,7 +639,7 @@ function upgrade11_dbchanges2()
 	$output->print_contents($contents);
 	
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 	
 	$output->print_footer("11_dbchanges3");
 }
@@ -688,7 +705,7 @@ function upgrade11_dbchanges3()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer("11_dbchanges4");
 }
@@ -912,7 +929,7 @@ function upgrade11_dbchanges4()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer("11_dbchanges5");
 }
@@ -1106,7 +1123,7 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer("11_redoconfig");
 }
@@ -1257,7 +1274,7 @@ function upgrade11_redoconfig()
 	echo "<p>Click next to continue with the upgrade process.</p>";
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer("11_dbchanges6");
 }
@@ -1328,7 +1345,7 @@ function upgrade11_dbchanges6()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer($nextact);
 }
@@ -1412,7 +1429,7 @@ function upgrade11_dbchanges7()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer($nextact);	
 }
@@ -1577,7 +1594,7 @@ function upgrade11_dbchanges8()
 	$output->print_contents($contents);
 
 	global $footer_extra;
-	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer($nextact);
 }
@@ -1720,7 +1737,7 @@ function upgrade11_redothemes()
 	echo "<p>Click next to continue with the upgrade process.</p>";
 
 	global $footer_extra;
-	//$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button', 'input'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+	//$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = document.getElementsByClassName('submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
 	$output->print_footer("11_done");
 }

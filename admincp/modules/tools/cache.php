@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->cache_manager, "index.php?".SID."&amp;module=tools/cache");
+$page->add_breadcrumb_item($lang->cache_manager, "index.php?module=tools/cache");
 
 $plugins->run_hooks("admin_tools_cache_begin");
 
@@ -26,7 +26,7 @@ if($mybb->input['action'] == 'view')
 	if(!trim($mybb->input['title']))
 	{
 		flash_message($lang->error_no_cache_specified, 'error');
-		admin_redirect("index.php?".SID."&module=tools/cache");
+		admin_redirect("index.php?module=tools/cache");
 	}
 	
 	$query = $db->simple_select("datacache", "*", "title = '".$db->escape_string($mybb->input['title'])."'");
@@ -35,7 +35,7 @@ if($mybb->input['action'] == 'view')
 	if(!$cacheitem)
 	{
 		flash_message($lang->error_incorrect_cache, 'error');
-		admin_redirect("index.php?".SID."&module=tools/cache");
+		admin_redirect("index.php?module=tools/cache");
 	}
 	
 	$cachecontents = unserialize($cacheitem['cache']);
@@ -77,12 +77,12 @@ if($mybb->input['action'] == "rebuild")
 		log_admin_action($mybb->input['title']);
 
 		flash_message($lang->success_cache_rebuilt, 'success');
-		admin_redirect("index.php?".SID."&module=tools/cache");
+		admin_redirect("index.php?module=tools/cache");
 	}
 	else
 	{
 		flash_message($lang->error_cannot_rebuild, 'error');
-		admin_redirect("index.php?".SID."&module=tools/cache");
+		admin_redirect("index.php?module=tools/cache");
 	}
 }
 
@@ -94,7 +94,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['cache_manager'] = array(
 		'title' => $lang->cache_manager,
-		'link' => "index.php?".SID."&amp;module=tools/cache",
+		'link' => "index.php?module=tools/cache",
 		'description' => $lang->cache_manager_description
 	);
 
@@ -108,12 +108,12 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("datacache");
 	while($cacheitem = $db->fetch_array($query))
 	{
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=tools/cache&amp;action=view&amp;title=".urlencode($cacheitem['title'])."\">{$cacheitem['title']}</a></strong>");
+		$table->construct_cell("<strong><a href=\"index.php?module=tools/cache&amp;action=view&amp;title=".urlencode($cacheitem['title'])."\">{$cacheitem['title']}</a></strong>");
 		$table->construct_cell(get_friendly_size(strlen($cacheitem['cache'])), array("class" => "align_center"));
 		
 		if(method_exists($cache, "update_".$cacheitem['title']))
 		{
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=tools/cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
 		}
 		else
 		{

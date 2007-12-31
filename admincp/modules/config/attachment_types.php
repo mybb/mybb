@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->attachment_types, "index.php?".SID."&amp;module=config/attachment_types");
+$page->add_breadcrumb_item($lang->attachment_types, "index.php?module=config/attachment_types");
 
 $plugins->run_hooks("admin_config_attachment_types_begin");
 
@@ -64,7 +64,7 @@ if($mybb->input['action'] == "add")
 			$cache->update_attachtypes();
 
 			flash_message($lang->success_attachment_type_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/attachment_types");
+			admin_redirect("index.php?module=config/attachment_types");
 		}
 	}
 
@@ -74,18 +74,18 @@ if($mybb->input['action'] == "add")
 	
 	$sub_tabs['attachment_types'] = array(
 		'title' => $lang->attachment_types,
-		'link' => "index.php?".SID."&amp;module=config/attachment_types"
+		'link' => "index.php?module=config/attachment_types"
 	);
 	
 	$sub_tabs['add_attachment_type'] = array(
 		'title' => $lang->add_new_attachment_type,
-		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=add",
+		'link' => "index.php?module=config/attachment_types&amp;action=add",
 		'description' => $lang->add_attachment_type_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_attachment_type');
 
-	$form = new Form("index.php?".SID."&amp;module=config/attachment_types&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=config/attachment_types&amp;action=add", "post", "add");
 	
 	if($errors)
 	{
@@ -140,7 +140,7 @@ if($mybb->input['action'] == "edit")
 	if(!$attachment_type['atid'])
 	{
 		flash_message($lang->error_invalid_attachment_type, 'error');
-		admin_redirect("index.php?".SID."&module=config/attachment_types");
+		admin_redirect("index.php?module=config/attachment_types");
 	}
 		
 	if($mybb->request_method == "post")
@@ -184,7 +184,7 @@ if($mybb->input['action'] == "edit")
 			$cache->update_attachtypes();
 
 			flash_message($lang->success_attachment_type_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/attachment_types");
+			admin_redirect("index.php?module=config/attachment_types");
 		}
 	}
 	
@@ -193,13 +193,13 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_attachment_type'] = array(
 		'title' => $lang->edit_attachment_type,
-		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}",
+		'link' => "index.php?module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}",
 		'description' => $lang->edit_attachment_type_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_attachment_type');
 
-	$form = new Form("index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}", "post", "add");
+	$form = new Form("index.php?module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}", "post", "add");
 
 	if($errors)
 	{
@@ -249,7 +249,7 @@ if($mybb->input['action'] == "delete")
 	
 	if($mybb->input['no']) 
 	{ 
-		admin_redirect("index.php?".SID."&module=config/attachment_types"); 
+		admin_redirect("index.php?module=config/attachment_types"); 
 	}
 	
 	$query = $db->simple_select("attachtypes", "*", "atid='".intval($mybb->input['atid'])."'");
@@ -258,7 +258,7 @@ if($mybb->input['action'] == "delete")
 	if(!$attachment_type['atid'])
 	{
 		flash_message($lang->error_invalid_attachment_type, 'error');
-		admin_redirect("index.php?".SID."&module=config/attachment_types");
+		admin_redirect("index.php?module=config/attachment_types");
 	}
 	
 	if($mybb->request_method == "post")
@@ -273,11 +273,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($atid, $attachment_type['extension']);
 
 		flash_message($lang->success_attachment_type_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/attachment_types");
+		admin_redirect("index.php?module=config/attachment_types");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}", $lang->confirm_attachment_type_deletion); 
+		$page->output_confirm_action("index.php?module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}", $lang->confirm_attachment_type_deletion); 
 	}
 }
 
@@ -289,12 +289,12 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['attachment_types'] = array(
 		'title' => $lang->attachment_types,
-		'link' => "index.php?".SID."&amp;module=config/attachment_types",
+		'link' => "index.php?module=config/attachment_types",
 		'description' => $lang->attachment_types_desc
 	);
 	$sub_tabs['add_attachment_type'] = array(
 		'title' => $lang->add_new_attachment_type,
-		'link' => "index.php?".SID."&amp;module=config/attachment_types&amp;action=add",
+		'link' => "index.php?module=config/attachment_types&amp;action=add",
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'attachment_types');
@@ -323,8 +323,8 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<strong>.{$attachment_type['extension']}</strong>");
 		$table->construct_cell($attachment_type['mimetype']);
 		$table->construct_cell(get_friendly_size(($attachment_type['maxsize']*1024)), array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/attachment_types&amp;action=edit&amp;atid={$attachment_type['atid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/attachment_types&amp;action=delete&amp;atid={$attachment_type['atid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_attachment_type_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

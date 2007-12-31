@@ -20,17 +20,17 @@ function tools_meta()
 	global $page, $lang, $plugins;
 
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "system_health", "title" => $lang->system_health, "link" => "index.php?".SID."&module=tools/system_health");
-	$sub_menu['20'] = array("id" => "cache", "title" => $lang->cache_manager, "link" => "index.php?".SID."&module=tools/cache");
-	$sub_menu['30'] = array("id" => "tasks", "title" => $lang->task_manager, "link" => "index.php?".SID."&module=tools/tasks");
-	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => $lang->recount_and_rebuild, "link" => "index.php?".SID."&module=tools/recount_rebuild");
-	$sub_menu['50'] = array("id" => "php_info", "title" => $lang->view_php_info, "link" => "index.php?".SID."&module=tools/php_info");
-	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
-	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?".SID."&module=tools/optimizedb");
+	$sub_menu['10'] = array("id" => "system_health", "title" => $lang->system_health, "link" => "index.php?module=tools/system_health");
+	$sub_menu['20'] = array("id" => "cache", "title" => $lang->cache_manager, "link" => "index.php?module=tools/cache");
+	$sub_menu['30'] = array("id" => "tasks", "title" => $lang->task_manager, "link" => "index.php?module=tools/tasks");
+	$sub_menu['40'] = array("id" => "recount_rebuild", "title" => $lang->recount_and_rebuild, "link" => "index.php?module=tools/recount_rebuild");
+	$sub_menu['50'] = array("id" => "php_info", "title" => $lang->view_php_info, "link" => "index.php?module=tools/php_info");
+	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools/backupdb");
+	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?module=tools/optimizedb");
 	
 	$plugins->run_hooks_by_ref("admin_tools_menu", $sub_menu);
 	
-	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?".SID."&module=tools", 50, $sub_menu);
+	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?module=tools", 50, $sub_menu);
 	
 	return true;
 }
@@ -94,11 +94,11 @@ function tools_action_handler($action)
 	$plugins->run_hooks_by_ref("admin_tools_action_handler", $action);
 
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?".SID."&module=tools/adminlog");
-	$sub_menu['20'] = array("id" => "modlog", "title" => $lang->moderator_log, "link" => "index.php?".SID."&module=tools/modlog");
-	$sub_menu['30'] = array("id" => "maillogs", "title" => $lang->user_email_log, "link" => "index.php?".SID."&module=tools/maillogs");
-	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?".SID."&module=tools/mailerrors");
-	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?".SID."&module=tools/warninglog");
+	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?module=tools/adminlog");
+	$sub_menu['20'] = array("id" => "modlog", "title" => $lang->moderator_log, "link" => "index.php?module=tools/modlog");
+	$sub_menu['30'] = array("id" => "maillogs", "title" => $lang->user_email_log, "link" => "index.php?module=tools/maillogs");
+	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?module=tools/mailerrors");
+	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?module=tools/warninglog");
 	
 	$plugins->run_hooks_by_ref("admin_tools_menu_logs", $sub_menu);
 	

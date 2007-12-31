@@ -167,14 +167,23 @@ elseif($mybb->input['action'] == "help")
 		{
 			$plugins->run_hooks("misc_help_helpdoc_start");
 
-			if($helpdoc['usetranslation'] == 1 || $helpdoc['hid'] <= 7)
+			if($helpdoc['usetranslation'] == 1)
 			{
 				$langnamevar = "d".$helpdoc['hid']."_name";
 				$langdescvar = "d".$helpdoc['hid']."_desc";
 				$langdocvar = "d".$helpdoc['hid']."_document";
-				$helpdoc['name'] = $lang->$langnamevar;
-				$helpdoc['description'] = $lang->$langdescvar;
-				$helpdoc['document'] = $lang->$langdocvar;
+				if($lang->$langnamevar)
+				{
+					$helpdoc['name'] = $lang->$langnamevar;
+				}
+				if($lang->$langdescvar)
+				{
+					$helpdoc['description'] = $lang->$langdescvar;
+				}
+				if($lang->$langdocvar)
+				{
+					$helpdoc['document'] = $lang->$langdocvar;
+				}
 			}
 			add_breadcrumb($helpdoc['name']);
 
@@ -202,12 +211,18 @@ elseif($mybb->input['action'] == "help")
 		$query = $db->simple_select("helpsections", "*", "enabled != 0", array('order_by' => 'disporder'));
 		while($section = $db->fetch_array($query))
 		{
-			if($section['usetranslation'] == 1 || $section['sid'] <= 2)
+			if($section['usetranslation'] == 1)
 			{
 				$langnamevar = "s".$section['sid']."_name";
 				$langdescvar = "s".$section['sid']."_desc";
-				$section['name'] = $lang->$langnamevar;
-				$section['description'] = $lang->$langdescvar;
+				if($lang->$langnamevar)
+				{
+					$section['name'] = $lang->$langnamevar;
+				}
+				if($lang->$langdescvar)
+				{
+					$section['description'] = $lang->$langdescvar;
+				}
 			}
 			if(is_array($helpdocs[$section['sid']]))
 			{
@@ -229,12 +244,18 @@ elseif($mybb->input['action'] == "help")
 					{
 						if($helpdoc['enabled'] != 0)
 						{
-							if($helpdoc['usetranslation'] == 1 || $helpdoc['hid'] <= 7)
+							if($helpdoc['usetranslation'] == 1)
 							{
 								$langnamevar = "d".$helpdoc['hid'].'_name';
 								$langdescvar = "d".$helpdoc['hid'].'_desc';
-								$helpdoc['name'] = $lang->$langnamevar;
-								$helpdoc['description'] = $lang->$langdescvar;
+								if($lang->$langnamevar)
+								{
+									$helpdoc['name'] = $lang->$langnamevar;
+								}
+								if($lang->$langdescvar)
+								{
+									$helpdoc['description'] = $lang->$langdescvar;
+								}
 							}
 							$altbg = alt_trow();
 							eval("\$helpbits .= \"".$templates->get("misc_help_section_bit")."\";");

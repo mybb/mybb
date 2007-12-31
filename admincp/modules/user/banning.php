@@ -15,28 +15,28 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->banning, "index.php?".SID."&amp;module=user/banning");
+$page->add_breadcrumb_item($lang->banning, "index.php?module=user/banning");
 
 
 $sub_tabs['ips'] = array(
 	'title' => $lang->banned_ips,
-	'link' => "index.php?".SID."&amp;module=config/banning",
+	'link' => "index.php?module=config/banning",
 );
 	
 $sub_tabs['bans'] = array(
 	'title' => $lang->banned_accounts,
-	'link' => "index.php?".SID."&amp;module=user/banning",
+	'link' => "index.php?module=user/banning",
 	'description' => $lang->banned_accounts_desc
 );
 	
 $sub_tabs['usernames'] = array(
 	'title' => $lang->disallowed_usernames,
-	'link' => "index.php?".SID."&amp;module=config/banning&amp;type=usernames",
+	'link' => "index.php?module=config/banning&amp;type=usernames",
 );
 	
 $sub_tabs['emails'] = array(
 	'title' => $lang->disallowed_email_addresses,
-	'link' => "index.php?".SID."&amp;module=config/banning&amp;type=emails",
+	'link' => "index.php?module=config/banning&amp;type=emails",
 );
 
 // Fetch banned groups
@@ -62,13 +62,13 @@ if($mybb->input['action'] == "lift")
 	if(!$ban['uid'])
 	{
 		flash_message($lang->error_invalid_ban, 'error');
-		admin_redirect("index.php?".SID."&module=user/banning");
+		admin_redirect("index.php?module=user/banning");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=user/banning");
+		admin_redirect("index.php?module=user/banning");
 	}
 
 	if($mybb->request_method == "post")
@@ -87,11 +87,11 @@ if($mybb->input['action'] == "lift")
 		log_admin_action($mybb->input['uid'], $user['username']);
 
 		flash_message($lang->success_ban_lifted, 'success');
-		admin_redirect("index.php?".SID."&module=user/banning");
+		admin_redirect("index.php?module=user/banning");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/banning&amp;action=lift&amp;uid={$ban['uid']}", $lang->confirm_lift_ban);
+		$page->output_confirm_action("index.php?module=user/banning&amp;action=lift&amp;uid={$ban['uid']}", $lang->confirm_lift_ban);
 	}
 }
 
@@ -107,7 +107,7 @@ if($mybb->input['action'] == "edit")
 	if(!$ban['uid'])
 	{
 		flash_message($lang->error_invalid_ban, 'error');
-		admin_redirect("index.php?".SID."&module=user/banning");
+		admin_redirect("index.php?module=user/banning");
 	}
 
 	if($mybb->request_method == "post")
@@ -161,7 +161,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($mybb->input['uid'], $user['username']);
 
 			flash_message($lang->success_ban_updated, 'success');
-			admin_redirect("index.php?".SID."&module=user/banning");
+			admin_redirect("index.php?module=user/banning");
 		}
 	}
 	$page->add_breadcrumb_item($lang->edit_ban);
@@ -174,7 +174,7 @@ if($mybb->input['action'] == "edit")
 	);
 	$page->output_nav_tabs($sub_tabs, "edit");
 
-	$form = new Form("index.php?".SID."&amp;module=user/banning&amp;action=edit&amp;uid={$ban['uid']}", "post");
+	$form = new Form("index.php?module=user/banning&amp;action=edit&amp;uid={$ban['uid']}", "post");
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -290,7 +290,7 @@ if(!$mybb->input['action'])
 			log_admin_action($user['uid'], $user['username']);
 
 			flash_message($lang->success_banned, 'success');
-			admin_redirect("index.php?".SID."&module=user/banning");
+			admin_redirect("index.php?module=user/banning");
 		}
 	}
 	
@@ -321,7 +321,7 @@ if(!$mybb->input['action'])
 		$current_page = 1;
 	}
 
-	$pagination = draw_admin_pagination($current_page, $per_page, $ban_count, "index.php?".SID."&amp;module=user/banning&amp;page={page}");
+	$pagination = draw_admin_pagination($current_page, $per_page, $ban_count, "index.php?module=user/banning&amp;page={page}");
 
 	$table = new Table;
 	$table->construct_header($lang->user);
@@ -378,8 +378,8 @@ if(!$mybb->input['action'])
 		$table->construct_cell(sprintf($lang->bannedby_x_on_x, $profile_link, $ban['adminuser'], $ban_date, $ban_period));
 		$table->construct_cell($lifts_on, array("class" => "align_center"));
 		$table->construct_cell($time_remaining, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/banning&amp;action=lift&amp;uid={$ban['uid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/banning&amp;action=lift&amp;uid={$ban['uid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 
@@ -391,7 +391,7 @@ if(!$mybb->input['action'])
 	$table->output($lang->banned_accounts);
 	echo $pagination;
 	
-	$form = new Form("index.php?".SID."&amp;module=user/banning", "post");
+	$form = new Form("index.php?module=user/banning", "post");
 	if($errors)
 	{
 		$page->output_inline_error($errors);

@@ -15,23 +15,23 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->moderation_queue, "index.php?".SID."&amp;module=forum/moderation_queue");
+$page->add_breadcrumb_item($lang->moderation_queue, "index.php?module=forum/moderation_queue");
 
 $sub_tabs['threads'] = array(
 	'title' => $lang->threads,
-	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=threads",
+	'link' => "index.php?module=forum/moderation_queue&amp;type=threads",
 	'description' => $lang->threads_desc
 );
 
 $sub_tabs['posts'] = array(
 	'title' => $lang->posts,
-	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=posts",
+	'link' => "index.php?module=forum/moderation_queue&amp;type=posts",
 	'description' => $lang->posts_desc
 );
 
 $sub_tabs['attachments'] = array(
 	'title' => $lang->attachments,
-	'link' => "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=attachments",
+	'link' => "index.php?module=forum/moderation_queue&amp;type=attachments",
 	'description' => $lang->attachments_desc
 );
 
@@ -73,7 +73,7 @@ if($mybb->request_method == "post")
 		log_admin_action('threads');
 
 		flash_message($lang->success_threads, 'success');
-		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=threads");
+		admin_redirect("index.php?module=forum/moderation_queue&type=threads");
 	}
 	else if(is_array($mybb->input['posts']))
 	{
@@ -102,7 +102,7 @@ if($mybb->request_method == "post")
 		log_admin_action('posts');
 
 		flash_message($lang->success_posts, 'success');
-		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=posts");
+		admin_redirect("index.php?module=forum/moderation_queue&type=posts");
 
 	}
 	else if(is_array($mybb->input['attachments']))
@@ -127,14 +127,14 @@ if($mybb->request_method == "post")
 		log_admin_action('attachments');
 
 		flash_message($lang->success_attachments, 'success');
-		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=attachments");
+		admin_redirect("index.php?module=forum/moderation_queue&type=attachments");
 	}
 }
 
 $all_options = "<ul class=\"modqueue_mass\">\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"document.getElementsByClassName('radio_ignore', 'input').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_ignored}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"document.getElementsByClassName('radio_delete', 'input').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_deleted}</a></li>\n";
-$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"document.getElementsByClassName('radio_approve', 'input').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_approved}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_ignore\" onclick=\"$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_ignored}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_delete\" onclick=\"$$('input.radio_delete').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_deleted}</a></li>\n";
+$all_options .= "<li><a href=\"#\" class=\"mass_approve\" onclick=\"$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;\">{$lang->mark_as_approved}</a></li>\n";
 $all_options .= "</ul>\n";
 
 // Threads awaiting moderation
@@ -169,13 +169,13 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$current_page = 1;
 		}
 
-		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_threads, "index.php?".SID."&amp;module=forum/moderation_queue&amp;page={page}");
+		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_threads, "index.php?module=forum/moderation_queue&amp;page={page}");
 
 		$page->add_breadcrumb_item($lang->threads_awaiting_moderation);
 		$page->output_header($lang->threads_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "threads");
 
-		$form = new Form("index.php?".SID."&amp;module=forum/moderation_queue", "post");
+		$form = new Form("index.php?module=forum/moderation_queue", "post");
 
 		$table = new Table;
 		$table->construct_header($lang->subject);
@@ -267,14 +267,14 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$current_page = 1;
 		}
 
-		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_posts, "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=posts&amp;page={page}");
+		$pagination = draw_admin_pagination($current_page, $per_page, $unaproved_posts, "index.php?module=forum/moderation_queue&amp;type=posts&amp;page={page}");
 
 
 		$page->add_breadcrumb_item($lang->posts_awaiting_moderation);
 		$page->output_header($lang->posts_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "posts");
 
-		$form = new Form("index.php?".SID."&amp;module=forum/moderation_queue", "post");
+		$form = new Form("index.php?module=forum/moderation_queue", "post");
 
 		$table = new Table;
 		$table->construct_header($lang->subject);
@@ -382,13 +382,13 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 			$current_page = 1;
 		}
 
-		$pagination = draw_admin_pagination($current_page, $per_page, $unapproved_attachments, "index.php?".SID."&amp;module=forum/moderation_queue&amp;type=attachments&amp;page={page}");
+		$pagination = draw_admin_pagination($current_page, $per_page, $unapproved_attachments, "index.php?module=forum/moderation_queue&amp;type=attachments&amp;page={page}");
 
 		$page->add_breadcrumb_item($lang->attachments_awaiting_moderation);
 		$page->output_header($lang->attachments_awaiting_moderation);
 		$page->output_nav_tabs($sub_tabs, "attachments");
 
-		$form = new Form("index.php?".SID."&amp;module=forum/moderation_queue", "post");
+		$form = new Form("index.php?module=forum/moderation_queue", "post");
 
 		$table = new Table;
 		$table->construct_header($lang->filename);

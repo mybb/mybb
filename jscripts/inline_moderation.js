@@ -197,9 +197,13 @@ var inlineModeration = {
 				element.checked = master.checked;
 
 				var tr = element.up('tr');
-				if(tr)
+				if(tr && master.checked == true)
 				{
 					tr.addClassName('trow_selected');
+				}
+				else
+				{
+					tr.removeClassName('trow_selected');
 				}
 
 				if(master.checked == true)
@@ -226,4 +230,4 @@ var inlineModeration = {
 		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 	}
 };
-Event.observe(window, "load", inlineModeration.init);
+Event.observe(window, "dom:loaded", inlineModeration.init);

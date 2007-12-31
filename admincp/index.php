@@ -57,11 +57,13 @@ unset($user);
 
 $logged_out = false;
 
+$post_verify = true;
+
 if($mybb->input['action'] == "logout")
 {
 	// Delete session from the database
 	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
-	
+	setcookie("adminsid", "");
 	$logged_out = true;
 }
 elseif($mybb->input['do'] == "login")
@@ -90,19 +92,21 @@ elseif($mybb->input['do'] == "login")
 			"lastactive" => TIME_NOW
 		);
 		$db->insert_query("adminsessions", $admin_session);
+		setcookie("adminsid", $sid);
+		$post_verify = false;
 	}
 }
 else
 {
 	// No admin session - show message on the login screen
-	if(!$mybb->input['adminsid'])
+	if(!isset($_COOKIE['adminsid']))
 	{
 		$login_message = "";
 	}
 	// Otherwise, check admin session
 	else
 	{
-		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($_COOKIE['adminsid'])."'");
 		$admin_session = $db->fetch_array($query);
 
 		// No matching admin session found - show message on login screen
@@ -129,7 +133,7 @@ else
 				if($admin_session['lastactive'] < TIME_NOW-7200)
 				{
 					$login_message = "Your administration session has expired";
-					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+					$db->delete_query("adminsessions", "sid='".$db->escape_string($_COOKIE['adminsid'])."'");
 					unset($mybb->user);
 				}
 				// If IP matching is set - check IP address against the session IP
@@ -193,7 +197,6 @@ if($mybb->user['uid'])
 	{
 		$db->shutdown_query("UPDATE ".TABLE_PREFIX."adminsessions SET lastactive='".TIME_NOW."', ip='".$ipaddress."' WHERE sid='".$db->escape_string($admin_session['sid'])."'");
 	}
-	define("SID", "adminsid={$admin_session['sid']}");
 
 	// Fetch administrator permissions
 	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
@@ -263,7 +266,7 @@ if($rand == 2 || $rand == 5)
 	$db->delete_query("adminsessions", "lastactive < '{$stamp}'");
 }
 
-$page->add_breadcrumb_item($lang->home, "index.php?".SID);
+$page->add_breadcrumb_item($lang->home, "index.php");
 
 // Begin dealing with the modules
 $modules_dir = MYBB_ADMIN_DIR."modules";
@@ -272,11 +275,21 @@ while(($module = readdir($dir)) !== false)
 {
 	if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
 	{
+		require_once $modules_dir."/".$module."/module_meta.php";
+		$has_permission = false;
+		if(function_exists($module."_admin_permissions"))
+		{
+			if(isset($mybb->admin['permissions'][$module]))
+				$has_permission = true;
+		}
+		// This module doesn't support permissions
+		else
+			$has_permission = true;
+			
 		// Do we have permissions to run this module (Note: home is accessible by all)
-		if($module == "home" || $mybb->admin['permissions'][$module])
+		if($module == "home" || $has_permission == true)
 		{
 			$lang->load($module."_module_meta", false, true);
-			require_once $modules_dir."/".$module."/module_meta.php";
 			$meta_function = $module."_meta";
 			$initialized = $meta_function();
 			if($initialized == true)
@@ -304,6 +317,34 @@ $action_file = $action_handler($current_module[1]);
 if($run_module != "home")
 {
 	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
+}
+
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
+// Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
+$post_check_ignores = array(
+	"example/users" => array("edit")
+); // An array of modules/actions to ignore POST checks for.
+
+if($mybb->request_method == "post")
+{
+	if(in_array($mybb->input['module'], $post_check_ignores))
+	{
+		$k = array_search($mybb->input['module'], $post_check_ignores);
+		if(in_array($mybb->input['action'], $post_check_ignores[$k]))
+		{
+			$post_verify = false;
+		}
+	}
+	if($post_verify == true) {
+		// If the post key does not match we switch the action to GET and set a message to show the user
+		if(!isset($mybb->input['my_post_key']) || $mybb->post_code != $mybb->input['my_post_key'])
+		{
+			$mybb->request_method = "get";
+			$page->show_post_verify_error = true;
+		}
+	}
 }
 
 $lang->load("{$run_module}_{$page->active_action}", false, true);

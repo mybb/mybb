@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->warning_logs, "index.php?".SID."&amp;module=tools/warninglog");
+$page->add_breadcrumb_item($lang->warning_logs, "index.php?module=tools/warninglog");
 
 $plugins->run_hooks("admin_tools_warninglog_begin");
 
@@ -30,12 +30,12 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 	if(!$warning['wid'])
 	{
 		flash_message($lang->error_invalid_warning, 'error');
-		admin_redirect("index.php?".SID."&module=tools/warninglog");
+		admin_redirect("index.php?module=tools/warninglog");
 	}
 	else if($warning['daterevoked'])
 	{
 		flash_message($lang->error_already_revoked, 'error');
-		admin_redirect("index.php?".SID."&module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
+		admin_redirect("index.php?module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
 	}
 
 	$user = get_user($warning['uid']);
@@ -75,7 +75,7 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 		$plugins->run_hooks("admin_tools_warninglog_do_revoke_commit");
 		
 		flash_message($lang->redirect_warning_revoked, 'success');
-		admin_redirect("index.php?".SID."&module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
+		admin_redirect("index.php?module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
 	}
 }
 
@@ -97,12 +97,12 @@ if($mybb->input['action'] == "view")
 	if(!$warning['wid'])
 	{
 		flash_message($lang->error_invalid_warning, 'error');
-		admin_redirect("index.php?".SID."&module=tools/warninglog");
+		admin_redirect("index.php?module=tools/warninglog");
 	}
 
 	$user = get_user(intval($warning['uid']));
 
-	$page->add_breadcrumb_item($lang->warning_details, "index.php?".SID."&amp;module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
+	$page->add_breadcrumb_item($lang->warning_details, "index.php?module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
 	
 	$page->output_header($lang->warning_details);
 
@@ -190,7 +190,7 @@ if($mybb->input['action'] == "view")
 
 	if(!$warning['daterevoked'])
 	{
-		$form = new Form("index.php?".SID."&amp;module=tools/warninglog", "post");
+		$form = new Form("index.php?module=tools/warninglog", "post");
 		$form_container = new FormContainer($lang->revoke_warning);
 		echo $form->generate_hidden_field('action', 'do_revoke');
 		echo $form->generate_hidden_field('wid', $warning['wid']);
@@ -231,7 +231,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['warning_logs'] = array(
 		'title' => $lang->warning_logs,
-		'link' => "index.php?".SID."&amp;module=tools/warninglog",
+		'link' => "index.php?module=tools/warninglog",
 		'description' => $lang->warning_logs_desc
 	);
 	
@@ -333,7 +333,7 @@ if(!$mybb->input['action'])
 	}
 	$start = ($view_page-1) * $per_page;
 	// Build the base URL for pagination links
-	$url = 'index.php?'.SID.'&amp;module=tools/warninglog';
+	$url = 'index.php?'?'&amp;module=tools/warninglog';
 	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))
 	{
 		foreach($mybb->input['filter'] as $field => $value)
@@ -408,7 +408,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($issued_date, array("class" => "align_center"));
 		$table->construct_cell($expire_date.$revoked_text, array("class" => "align_center"));
 		$table->construct_cell($mod_username_link);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/warninglog&amp;action=view&amp;wid={$row['wid']}\">{$lang->view}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=tools/warninglog&amp;action=view&amp;wid={$row['wid']}\">{$lang->view}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -438,7 +438,7 @@ if(!$mybb->input['action'])
 		'desc' => $lang->desc
 	);
 
-	$form = new Form("index.php?".SID."&amp;module=tools/warninglog", "post");
+	$form = new Form("index.php?module=tools/warninglog", "post");
 	$form_container = new FormContainer($lang->filter_warning_logs);
 	$form_container->output_row($lang->filter_warned_user, "", $form->generate_text_box('filter[username]', $mybb->input['filter']['username'], array('id' => 'filter_username')), 'filter_username');	
 	$form_container->output_row($lang->filter_issued_by, "", $form->generate_text_box('filter[mod_username]', $mybb->input['filter']['mod_username'], array('id' => 'filter_mod_username')), 'filter_mod_username');

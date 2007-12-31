@@ -46,7 +46,7 @@ function clear_overflow($fp, &$contents)
 	$contents = '';	
 }
 
-$page->add_breadcrumb_item($lang->database_backups, "index.php?".SID."&amp;module=tools/backupdb");
+$page->add_breadcrumb_item($lang->database_backups, "index.php?module=tools/backupdb");
 
 $plugins->run_hooks("admin_tools_backupdb_begin");
 
@@ -57,7 +57,7 @@ if($mybb->input['action'] == "dlbackup")
 	if(empty($mybb->input['file']))
 	{
 		flash_message($lang->error_file_not_specified, 'error');
-		admin_redirect("index.php?".SID."&module=tools/backupdb");
+		admin_redirect("index.php?module=tools/backupdb");
 	}
 	
 	$file = basename($mybb->input['file']);
@@ -78,7 +78,7 @@ if($mybb->input['action'] == "dlbackup")
 	else
 	{
 		flash_message($lang->error_invalid_backup, 'error');
-		admin_redirect("index.php?".SID."&module=tools/backupdb");
+		admin_redirect("index.php?module=tools/backupdb");
 	}
 }
 
@@ -88,7 +88,7 @@ if($mybb->input['action'] == "delete")
 	
 	if($mybb->input['no']) 
 	{ 
-		admin_redirect("index.php?".SID."&module=tools/backupdb"); 
+		admin_redirect("index.php?module=tools/backupdb"); 
 	}
 	
 	$file = basename($mybb->input['file']);
@@ -96,7 +96,7 @@ if($mybb->input['action'] == "delete")
 	if(!trim($mybb->input['file']) || !file_exists(MYBB_ADMIN_DIR.'backups/'.$file))
 	{
 		flash_message($lang->error_backup_doesnt_exist, 'error');
-		admin_redirect("index.php?".SID."&module=tools/backupdb");
+		admin_redirect("index.php?module=tools/backupdb");
 	}
 	
 	if($mybb->request_method == "post")
@@ -111,17 +111,17 @@ if($mybb->input['action'] == "delete")
 			log_admin_action($file);
 			
 			flash_message($lang->success_backup_deleted, 'success');
-			admin_redirect("index.php?".SID."&module=tools/backupdb");
+			admin_redirect("index.php?module=tools/backupdb");
 		}
 		else
 		{
 			flash_message($lang->error_backup_not_deleted, 'error');
-			admin_redirect("index.php?".SID."&module=tools/backupdb");
+			admin_redirect("index.php?module=tools/backupdb");
 		}
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=tools/backupdb&amp;action=delete&amp;file={$mybb->input['file']}", $lang->confirm_backup_deletion); 
+		$page->output_confirm_action("index.php?module=tools/backupdb&amp;action=delete&amp;file={$mybb->input['file']}", $lang->confirm_backup_deletion); 
 	}
 }
 
@@ -134,7 +134,7 @@ if($mybb->input['action'] == "backup")
 		if(!is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_tables_not_selected, 'error');
-			admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
+			admin_redirect("index.php?module=tools/backupdb&action=backup");
 		}
 		
 		@set_time_limit(0);
@@ -148,7 +148,7 @@ if($mybb->input['action'] == "backup")
 				if(!function_exists('gzopen')) // check zlib-ness
 				{
 					flash_message($lang->error_no_zlib, 'error');
-					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
+					admin_redirect("index.php?module=tools/backupdb&action=backup");
 				}
 				
 				$fp = gzopen($file.'.sql.gz', 'w9');
@@ -166,7 +166,7 @@ if($mybb->input['action'] == "backup")
 				if(!function_exists('gzopen')) // check zlib-ness
 				{
 					flash_message($lang->error_no_zlib, 'error');
-					admin_redirect("index.php?".SID."&module=tools/backupdb&action=backup");
+					admin_redirect("index.php?module=tools/backupdb&action=backup");
 				}
 
 				// Send headers for gzip file (do ob_start too)
@@ -264,9 +264,9 @@ if($mybb->input['action'] == "backup")
 			// Log admin action
 			log_admin_action("disk", $file.$ext);
 
-			$file_from_admindir = 'index.php?'.SID.'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
+			$file_from_admindir = 'index.php?'?'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
 			flash_message("<p><em>{$lang->success_backup_created}</em></p><p>{$lang->backup_saved_to}<br />{$file}{$ext} (<a href=\"{$file_from_admindir}\">{$lang->download}</a>)</p>", 'success');
-			admin_redirect("index.php?".SID."&module=tools/backupdb");
+			admin_redirect("index.php?module=tools/backupdb");
 		}
 		else
 		{
@@ -321,12 +321,12 @@ if($mybb->input['action'] == "backup")
 	
 	$sub_tabs['database_backup'] = array(
 		'title' => $lang->database_backups,
-		'link' => "index.php?".SID."&amp;module=tools/backupdb"
+		'link' => "index.php?module=tools/backupdb"
 	);
 	
 	$sub_tabs['new_backup'] = array(
 		'title' => $lang->new_backup,
-		'link' => "index.php?".SID."&amp;module=tools/backupdb&amp;action=backup",
+		'link' => "index.php?module=tools/backupdb&amp;action=backup",
 		'description' => $lang->new_backup_desc
 	);
 	
@@ -351,7 +351,7 @@ if($mybb->input['action'] == "backup")
 		$table_selects[$table_name] = $table_name;
 	}
 	
-	$form = new Form("index.php?".SID."&amp;module=tools/backupdb&amp;action=backup", "post", 0, "table_selection", "table_selection");
+	$form = new Form("index.php?module=tools/backupdb&amp;action=backup", "post", 0, "table_selection", "table_selection");
 	
 	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
 	$table->construct_row();
@@ -384,13 +384,13 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['database_backup'] = array(
 		'title' => $lang->database_backups,
-		'link' => "index.php?".SID."&amp;module=tools/backupdb",
+		'link' => "index.php?module=tools/backupdb",
 		'description' => $lang->database_backups_desc
 	);
 	
 	$sub_tabs['new_backup'] = array(
 		'title' => $lang->new_backup,
-		'link' => "index.php?".SID."&amp;module=tools/backupdb&amp;action=backup",
+		'link' => "index.php?module=tools/backupdb&amp;action=backup",
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'database_backup');
@@ -434,10 +434,10 @@ if(!$mybb->input['action'])
 			$time = "-";
 		}
 		
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
+		$table->construct_cell("<a href=\"index.php?module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
 		$table->construct_cell(get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$backup['file'])), array("class" => "align_center"));
 		$table->construct_cell($time);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_backup_deletion}')\">Delete</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_backup_deletion}')\">Delete</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

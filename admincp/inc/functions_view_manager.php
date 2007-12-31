@@ -301,7 +301,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				}
 
 				flash_message($lang->success_view_updated, "success");
-				admin_redirect($base_url."&vid={$vid}");
+				admin_redirect($base_url."&vid={$admin_view['vid']}");
 			}
 		}
 		else
@@ -449,7 +449,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		
 		if($mybb->request_method == "post")
 		{
-			$db->delete_query("adminviews", "vid='{$admin_view['vid']}");
+			$db->delete_query("adminviews", "vid='{$admin_view['vid']}'");
 			flash_message($lang->success_view_deleted, 'success');
 			admin_redirect($base_url."&action=views");
 		}
@@ -552,6 +552,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$view_type = "user";
 			}
 
+			$default_add = '';
 			if($default_view == $view['vid'])
 			{
 				$default_add = " ({$lang->default})";
@@ -618,7 +619,6 @@ function fetch_default_view($type)
 	if(!is_array($default_views))
 	{
 		return false;
-		$create = true;
 	}
 	return $default_views[$type];
 }

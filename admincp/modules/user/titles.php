@@ -15,18 +15,18 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->user_titles, "index.php?".SID."&amp;module=user/titles");
+$page->add_breadcrumb_item($lang->user_titles, "index.php?module=user/titles");
 
 if($mybb->input['action'] == "add" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_titles'] = array(
 		'title' => $lang->user_titles,
-		'link' => "index.php?".SID."&amp;module=user/titles",
+		'link' => "index.php?module=user/titles",
 		'description' => $lang->user_titles_desc
 	);
 	$sub_tabs['add_title'] = array(
 		'title' => $lang->add_new_user_title,
-		'link' => "index.php?".SID."&amp;module=user/titles&amp;action=add",
+		'link' => "index.php?module=user/titles&amp;action=add",
 		'description' => $lang->add_new_user_title_desc
 	);
 }
@@ -66,7 +66,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($utid, $mybb->input['title']);
 
 			flash_message($lang->success_user_title_created, 'success');
-			admin_redirect("index.php?".SID."&module=user/titles");
+			admin_redirect("index.php?module=user/titles");
 		}
 	}
 	else
@@ -81,7 +81,7 @@ if($mybb->input['action'] == "add")
 	$page->output_header($lang->user_titles." - ".$lang->add_new_user_title);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_title');
-	$form = new Form("index.php?".SID."&amp;module=user/titles&amp;action=add", "post");
+	$form = new Form("index.php?module=user/titles&amp;action=add", "post");
 	
 	
 	if($errors)
@@ -114,7 +114,7 @@ if($mybb->input['action'] == "edit")
 	if(!$usertitle['utid'])
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
-		admin_redirect("index.php?".SID."&module=user/titles");
+		admin_redirect("index.php?module=user/titles");
 	}
 
 	if($mybb->request_method == "post")
@@ -146,7 +146,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($usertitle['utid'], $mybb->input['title']);
 			
 			flash_message($lang->success_user_title_updated, 'success');
-			admin_redirect("index.php?".SID."&module=user/titles");
+			admin_redirect("index.php?module=user/titles");
 		}
 	}
 
@@ -155,12 +155,12 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_title'] = array(
 		'title' => "Edit User Title",
-		'link' => "index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
+		'link' => "index.php?module=user/titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
 		'description' => "This section allows you to edit a user title."
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_title');
-	$form = new Form("index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}", "post");
+	$form = new Form("index.php?module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}", "post");
 	
 	
 	if($errors)
@@ -198,13 +198,13 @@ if($mybb->input['action'] == "delete")
 	if(!$usertitle['utid'])
 	{
 		flash_message($lang->error_invalid_user_title, 'error');
-		admin_redirect("index.php?".SID."&module=user/titles");
+		admin_redirect("index.php?module=user/titles");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=user/titles");
+		admin_redirect("index.php?module=user/titles");
 	}
 
 	if($mybb->request_method == "post")
@@ -217,11 +217,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($usertitle['title']);
 
 		flash_message($lang->success_user_title_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=user/titles");
+		admin_redirect("index.php?module=user/titles");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}", $lang->user_title_deletion_confirmation);
+		$page->output_confirm_action("index.php?module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}", $lang->user_title_deletion_confirmation);
 	}
 }
 
@@ -242,10 +242,10 @@ if(!$mybb->input['action'])
 	while($usertitle = $db->fetch_array($query))
 	{
 		$usertitle['title'] = htmlspecialchars_uni($usertitle['title']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\"><strong>{$usertitle['title']}</strong></a>");
+		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\"><strong>{$usertitle['title']}</strong></a>");
 		$table->construct_cell($usertitle['posts'], array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->user_title_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->user_title_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	

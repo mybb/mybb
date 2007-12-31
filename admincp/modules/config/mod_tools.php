@@ -16,7 +16,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->mod_tools, "index.php?".SID."&amp;module=config/mod_tools");
+$page->add_breadcrumb_item($lang->mod_tools, "index.php?module=config/mod_tools");
 
 $plugins->run_hooks("admin_config_mod_tools_begin");
 
@@ -31,13 +31,13 @@ if($mybb->input['action'] == "delete_post_tool")
 	if(!$tool['tid'])
 	{
 		flash_message($lang->error_invalid_post_tool, 'error');
-		admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
+		admin_redirect("index.php?module=config/mod_tools&action=post_tools");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
+		admin_redirect("index.php?module=config/mod_tools&action=post_tools");
 	}
 
 	if($mybb->request_method == 'post')
@@ -51,11 +51,11 @@ if($mybb->input['action'] == "delete_post_tool")
 		log_admin_action($tool['name']);
 
 		flash_message($lang->success_post_tool_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
+		admin_redirect("index.php?module=config/mod_tools&action=post_tools");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools&amp;tid={$type['tid']}", $lang->confirm_post_tool_deletion);
+		$page->output_confirm_action("index.php?module=config/mod_tools&amp;action=post_tools&amp;tid={$type['tid']}", $lang->confirm_post_tool_deletion);
 	}
 }
 
@@ -70,13 +70,13 @@ if($mybb->input['action'] == "delete_thread_tool")
 	if(!$tool['tid'])
 	{
 		flash_message($lang->error_invalid_thread_tool, 'error');
-		admin_redirect("index.php?".SID."&module=config/mod_tools");
+		admin_redirect("index.php?module=config/mod_tools");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/mod_tools");
+		admin_redirect("index.php?module=config/mod_tools");
 	}
 
 	if($mybb->request_method == 'post')
@@ -90,11 +90,11 @@ if($mybb->input['action'] == "delete_thread_tool")
 		log_admin_action($tool['name']);
 
 		flash_message($lang->success_thread_tool_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/mod_tools");
+		admin_redirect("index.php?module=config/mod_tools");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$type['tid']}", $lang->confirm_thread_tool_deletion);
+		$page->output_confirm_action("index.php?module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$type['tid']}", $lang->confirm_thread_tool_deletion);
 	}
 }
 
@@ -108,20 +108,20 @@ if($mybb->input['action'] == "post_tools")
 	
 	$sub_tabs['thread_tools'] = array(
 		'title' => $lang->thread_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools"
+		'link' => "index.php?module=config/mod_tools"
 	);
 	$sub_tabs['add_thread_tool'] = array(
 		'title'=> $lang->add_thread_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool"
+		'link' => "index.php?module=config/mod_tools&amp;action=add_thread_tool"
 	);
 	$sub_tabs['post_tools'] = array(
 		'title' => $lang->post_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
+		'link' => "index.php?module=config/mod_tools&amp;action=post_tools",
 		'description' => $lang->post_tools_desc
 	);
 	$sub_tabs['add_post_tool'] = array(
 		'title'=> $lang->add_post_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool"
+		'link' => "index.php?module=config/mod_tools&amp;action=add_post_tool"
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'post_tools');
@@ -133,9 +133,9 @@ if($mybb->input['action'] == "post_tools")
 	$query = $db->simple_select('modtools', 'tid, name, description, type', "type='p'", array('order_by' => 'name'));
 	while($tool = $db->fetch_array($query))
 	{
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=delete_post_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=delete_post_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -158,7 +158,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	if($db->fetch_field($query, "tools") < 1)
 	{
 		flash_message($lang->error_invalid_thread_tool, 'error');
-		admin_redirect("index.php?".SID."&module=config/mod_tools");
+		admin_redirect("index.php?module=config/mod_tools");
 	}
 
 	if($mybb->request_method == 'post')
@@ -273,14 +273,14 @@ if($mybb->input['action'] == "edit_thread_tool")
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
 
 			flash_message($lang->success_mod_tool_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/mod_tools");
+			admin_redirect("index.php?module=config/mod_tools");
 		}
 	}
 	
 	$page->add_breadcrumb_item($lang->edit_thread_tool);
 	$page->output_header($lang->mod_tools." - ".$lang->edit_thread_tool);
 	
-	$form = new Form("index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_thread_tool", 'post');
+	$form = new Form("index.php?module=config/mod_tools&amp;action=edit_thread_tool", 'post');
 	echo $form->generate_hidden_field("tid", $mybb->input['tid']);
 	
 	if($errors)
@@ -297,7 +297,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		$mybb->input['description'] = $modtool['description'];
 		$mybb->input['forum_1_forums'] = explode(",", $modtool['forums']);
 
-		if(!$modtool['forums'])
+		if(!$modtool['forums'] || $modtool['forums'] == -1)
 		{
 			$forum_checked[1] = "checked=\"checked\"";
 			$forum_checked[2] = '';
@@ -338,9 +338,9 @@ if($mybb->input['action'] == "edit_thread_tool")
 		
 		$mybb->input['copy_1_forum'] = $thread_options['copythread'];
 		$mybb->input['deletethread'] = $thread_options['deletethread'];
-		$mybb->input['mergethread'] = $thread_options['mergethreads'];
+		$mybb->input['mergethreads'] = $thread_options['mergethreads'];
 		$mybb->input['deletepoll'] = $thread_options['deletepoll'];
-		$mybb->input['deleteredirects'] = $thread_options['removeredirects'];
+		$mybb->input['removeredirects'] = $thread_options['removeredirects'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
 		$mybb->input['newreplysubject'] = $thread_options['replysubject'];
@@ -379,7 +379,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->available_in_forums}</td>
+					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -454,9 +454,9 @@ if($mybb->input['action'] == "edit_thread_tool")
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethread', $mybb->input['mergethread'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('deleteredirects', $mybb->input['deleteredirects'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject'], array('id' => 'newsubject')));
 	$form_container->end();
 	
@@ -586,7 +586,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			log_admin_action($tid, $mybb->input['title']);
 			
 			flash_message($lang->success_mod_tool_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/mod_tools");
+			admin_redirect("index.php?module=config/mod_tools");
 		}
 	}
 	
@@ -595,25 +595,25 @@ if($mybb->input['action'] == "add_thread_tool")
 	
 	$sub_tabs['thread_tools'] = array(
 		'title' => $lang->thread_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools"
+		'link' => "index.php?module=config/mod_tools"
 	);
 	$sub_tabs['add_thread_tool'] = array(
 		'title'=> $lang->add_new_thread_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool",
+		'link' => "index.php?module=config/mod_tools&amp;action=add_thread_tool",
 		'description' => $lang->add_thread_tool_desc
 	);
 	$sub_tabs['post_tools'] = array(
 		'title' => $lang->post_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
+		'link' => "index.php?module=config/mod_tools&amp;action=post_tools",
 	);
 	$sub_tabs['add_post_tool'] = array(
 		'title'=> $lang->add_new_post_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool"
+		'link' => "index.php?module=config/mod_tools&amp;action=add_post_tool"
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'add_thread_tool');
 	
-	$form = new Form("index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool", 'post');
+	$form = new Form("index.php?module=config/mod_tools&amp;action=add_thread_tool", 'post');
 	
 	if($errors)
 	{
@@ -637,9 +637,9 @@ if($mybb->input['action'] == "add_thread_tool")
 		$copy_checked[2] = '';
 		$mybb->input['copy_1_forum'] = '';
 		$mybb->input['deletethread'] = '0';
-		$mybb->input['mergethread'] = '0';
+		$mybb->input['mergethreads'] = '0';
 		$mybb->input['deletepoll'] = '0';
-		$mybb->input['deleteredirects'] = '0';
+		$mybb->input['removeredirects'] = '0';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
 		$mybb->input['newreplysubject'] = '{subject}';
@@ -678,7 +678,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->available_in_forums}</td>
+					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -753,9 +753,9 @@ if($mybb->input['action'] == "add_thread_tool")
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethread', $mybb->input['mergethread'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethreads', $mybb->input['mergethreads'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll'], array('style' => 'width: 2em;')));
-	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('deleteredirects', $mybb->input['deleteredirects'], array('style' => 'width: 2em;')));
+	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('removeredirects', $mybb->input['removeredirects'], array('style' => 'width: 2em;')));
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject'], array('id' => 'newsubject')));
 	$form_container->end();
 	
@@ -780,7 +780,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	if($db->fetch_field($query, "tools") < 1)
 	{
 		flash_message($lang->error_invalid_post_tool, 'error');
-		admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
+		admin_redirect("index.php?module=config/mod_tools&action=post_tools");
 	}
 	
 	if($mybb->request_method == 'post')
@@ -884,9 +884,6 @@ if($mybb->input['action'] == "edit_post_tool")
 		{
 			$thread_options = array(
 				'deletethread' => $mybb->input['deletethread'],
-				'mergethreads' => $mybb->input['mergethreads'],
-				'deletepoll' => $mybb->input['deletepoll'],
-				'removeredirects' => $mybb->input['removeredirects'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
@@ -940,14 +937,14 @@ if($mybb->input['action'] == "edit_post_tool")
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
 			
 			flash_message($lang->success_mod_tool_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
+			admin_redirect("index.php?module=config/mod_tools&action=post_tools");
 		}
 	}
 	
 	$page->add_breadcrumb_item($lang->edit_post_tool);
 	$page->output_header($lang->mod_tools." - ".$lang->edit_post_tool);
 	
-	$form = new Form("index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_post_tool", 'post');
+	$form = new Form("index.php?module=config/mod_tools&amp;action=edit_post_tool", 'post');
 	echo $form->generate_hidden_field("tid", $mybb->input['tid']);
 	
 	if($errors)
@@ -965,7 +962,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		$mybb->input['description'] = $modtool['description'];
 		$mybb->input['forum_1_forums'] = explode(",", $modtool['forums']);
 		
-		if(!$modtool['forums'])
+		if(!$modtool['forums'] || $modtool['forums'] == -1)
 		{
 			$forum_checked[1] = "checked=\"checked\"";
 			$forum_checked[2] = '';
@@ -1006,9 +1003,6 @@ if($mybb->input['action'] == "edit_post_tool")
 		
 		$mybb->input['copy_1_forum'] = $thread_options['copythread'];
 		$mybb->input['deletethread'] = $thread_options['deletethread'];
-		$mybb->input['mergethread'] = $thread_options['mergethreads'];
-		$mybb->input['deletepoll'] = $thread_options['deletepoll'];
-		$mybb->input['deleteredirects'] = $thread_options['removeredirects'];
 		$mybb->input['newsubject'] = $thread_options['newsubject'];
 		$mybb->input['newreply'] = $thread_options['addreply'];
 		$mybb->input['newreplysubject'] = $thread_options['replysubject'];
@@ -1095,7 +1089,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->available_in_forums}</td>
+					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -1189,9 +1183,6 @@ if($mybb->input['action'] == "edit_post_tool")
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread']));
-	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethread', $mybb->input['mergethread']));
-	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll']));
-	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('deleteredirects', $mybb->input['deleteredirects']));
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
 	
@@ -1314,9 +1305,6 @@ if($mybb->input['action'] == "add_post_tool")
 		{
 			$thread_options = array(
 				'deletethread' => $mybb->input['deletethread'],
-				'mergethreads' => $mybb->input['mergethreads'],
-				'deletepoll' => $mybb->input['deletepoll'],
-				'removeredirects' => $mybb->input['removeredirects'],
 				'approvethread' => $mybb->input['approvethread'],
 				'openthread' => $mybb->input['openthread'],
 				'movethread' => intval($mybb->input['move_1_forum']),
@@ -1370,7 +1358,7 @@ if($mybb->input['action'] == "add_post_tool")
 			log_admin_action($tid, $mybb->input['title']);
 			
 			flash_message($lang->success_mod_tool_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/mod_tools&action=post_tools");
+			admin_redirect("index.php?module=config/mod_tools&action=post_tools");
 		}
 	}
 	
@@ -1379,25 +1367,25 @@ if($mybb->input['action'] == "add_post_tool")
 	
 	$sub_tabs['thread_tools'] = array(
 		'title' => $lang->thread_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools"
+		'link' => "index.php?module=config/mod_tools"
 	);
 	$sub_tabs['add_thread_tool'] = array(
 		'title'=> $lang->add_new_thread_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool"
+		'link' => "index.php?module=config/mod_tools&amp;action=add_thread_tool"
 	);
 	$sub_tabs['post_tools'] = array(
 		'title' => $lang->post_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
+		'link' => "index.php?module=config/mod_tools&amp;action=post_tools",
 	);
 	$sub_tabs['add_post_tool'] = array(
 		'title'=> $lang->add_new_post_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool",
+		'link' => "index.php?module=config/mod_tools&amp;action=add_post_tool",
 		'description' => $lang->add_post_tool_desc
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'add_post_tool');
 	
-	$form = new Form("index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool", 'post');
+	$form = new Form("index.php?module=config/mod_tools&amp;action=add_post_tool", 'post');
 	
 	if($errors)
 	{
@@ -1421,9 +1409,6 @@ if($mybb->input['action'] == "add_post_tool")
 		$copy_checked[2] = '';
 		$mybb->input['copy_1_forum'] = '';
 		$mybb->input['deletethread'] = '0';
-		$mybb->input['mergethread'] = '0';
-		$mybb->input['deletepoll'] = '0';
-		$mybb->input['deleteredirects'] = '0';
 		$mybb->input['newsubject'] = '{subject}';
 		$mybb->input['newreply'] = '';
 		$mybb->input['newreplysubject'] = '{subject}';
@@ -1474,7 +1459,7 @@ if($mybb->input['action'] == "add_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->available_in_forums}</td>
+					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -1568,9 +1553,6 @@ if($mybb->input['action'] == "add_post_tool")
 	</script>";
 	$form_container->output_row($lang->copy_thread." <em>*</em>", '', $actions);
 	$form_container->output_row($lang->delete_thread." <em>*</em>", '', $form->generate_yes_no_radio('deletethread', $mybb->input['deletethread']));
-	$form_container->output_row($lang->merge_thread." <em>*</em>", $lang->merge_thread_desc, $form->generate_yes_no_radio('mergethread', $mybb->input['mergethread']));
-	$form_container->output_row($lang->delete_poll." <em>*</em>", '', $form->generate_yes_no_radio('deletepoll', $mybb->input['deletepoll']));
-	$form_container->output_row($lang->delete_redirects." <em>*</em>", '', $form->generate_yes_no_radio('deleteredirects', $mybb->input['deleteredirects']));
 	$form_container->output_row($lang->new_subject." <em>*</em>", $lang->new_subject_desc, $form->generate_text_box('newsubject', $mybb->input['newsubject']));
 	$form_container->end();
 	
@@ -1595,20 +1577,20 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['thread_tools'] = array(
 		'title' => $lang->thread_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools",
+		'link' => "index.php?module=config/mod_tools",
 		'description' => $lang->thread_tools_desc
 	);
 	$sub_tabs['add_thread_tool'] = array(
 		'title'=> $lang->add_new_thread_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_thread_tool"
+		'link' => "index.php?module=config/mod_tools&amp;action=add_thread_tool"
 	);
 	$sub_tabs['post_tools'] = array(
 		'title' => $lang->post_tools,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=post_tools",
+		'link' => "index.php?module=config/mod_tools&amp;action=post_tools",
 	);
 	$sub_tabs['add_post_tool'] = array(
 		'title'=> $lang->add_new_post_tool,
-		'link' => "index.php?".SID."&amp;module=config/mod_tools&amp;action=add_post_tool"
+		'link' => "index.php?module=config/mod_tools&amp;action=add_post_tool"
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'thread_tools');
@@ -1620,9 +1602,9 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select('modtools', 'tid, name, description, type', "type='t'", array('order_by' => 'name'));
 	while($tool = $db->fetch_array($query))
 	{
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_row();
 	}
 	

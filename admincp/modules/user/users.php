@@ -19,31 +19,31 @@ if(!defined("IN_MYBB"))
 require_once MYBB_ROOT."inc/functions_upload.php";
 
 
-$page->add_breadcrumb_item($lang->users, "index.php?".SID."&amp;module=user/users");
+$page->add_breadcrumb_item($lang->users, "index.php?module=user/users");
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "merge" || $mybb->input['action'] == "search" || !$mybb->input['action'])
 {
 	$sub_tabs['browse_users'] = array(
 		'title' => $lang->browse_users,
-		'link' => "index.php?".SID."&amp;module=user/users",
+		'link' => "index.php?module=user/users",
 		'description' => $lang->browse_users_desc
 	);
 
 	$sub_tabs['find_users'] = array(
 		'title' => $lang->find_users,
-		'link' => "index.php?".SID."&amp;module=user/users&amp;action=search",
+		'link' => "index.php?module=user/users&amp;action=search",
 		'description' => $lang->find_users_desc
 	);
 
 	$sub_tabs['create_user'] = array(
 		'title' => $lang->create_user,
-		'link' => "index.php?".SID."&amp;module=user/users&amp;action=add",
+		'link' => "index.php?module=user/users&amp;action=add",
 		'description' => $lang->create_user_desc
 	);
 
 	$sub_tabs['merge_users'] = array(
 		'title' => $lang->merge_users,
-		'link' => "index.php?".SID."&amp;module=user/users&amp;action=merge",
+		'link' => "index.php?module=user/users&amp;action=merge",
 		'description' => $lang->merge_users_desc
 	);
 }
@@ -143,7 +143,7 @@ $plugins->run_hooks("admin_user_users_begin");
 require MYBB_ADMIN_DIR."inc/functions_view_manager.php";
 if($mybb->input['action'] == "views")
 {
-	view_manager("index.php?".SID."&amp;module=user/users", "user", $user_view_fields, $sort_options, "user_search_conditions");
+	view_manager("index.php?module=user/users", "user", $user_view_fields, $sort_options, "user_search_conditions");
 }
 
 if($mybb->input['action'] == "avatar_gallery")
@@ -195,7 +195,7 @@ if($mybb->input['action'] == "avatar_gallery")
 	// Sanitize incoming path if we have one
 	$gallery = str_replace(array("..", "\x0"), "", $mybb->input['gallery']);
 	
-	$breadcrumb = "<a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}\">Default Gallery</a>";
+	$breadcrumb = "<a href=\"index.php?module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}\">Default Gallery</a>";
 
 	$mybb->settings['avatardir'] = "../".$mybb->settings['avatardir'];
 
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "avatar_gallery")
 
 				if($gallery_path[$key+1])
 				{
-					$breadcrumb .= " &raquo; <a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
+					$breadcrumb .= " &raquo; <a href=\"index.php?module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$breadcrumb_url}\">{$gallery_name}</a>";
 				}
 				else
 				{
@@ -306,7 +306,7 @@ if($mybb->input['action'] == "avatar_gallery")
 			$scaled_dimensions = scale_image($gallery['thumb_width'], $gallery['thumb_height'], 80, 80);
 			$top = ceil((80-$scaled_dimensions['height'])/2);
 			$left = ceil((80-$scaled_dimensions['width'])/2);
-			echo "<li><a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$gallery['path']}\"><span class=\"image\"><img src=\"{$gallery['thumb']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\"></span><span class=\"title\">{$gallery['friendly_name']}</span></a></li>\n";
+			echo "<li><a href=\"index.php?module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;gallery={$gallery['path']}\"><span class=\"image\"><img src=\"{$gallery['thumb']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\"></span><span class=\"title\">{$gallery['friendly_name']}</span></a></li>\n";
 		}
 	}
 	echo "</ul>\n";
@@ -319,7 +319,7 @@ if($mybb->input['action'] == "avatar_gallery")
 			$scaled_dimensions = scale_image($avatar['width'], $avatar['height'], 80, 80);
 			$top = ceil((80-$scaled_dimensions['height'])/2);
 			$left = ceil((80-$scaled_dimensions['width'])/2);
-			echo "<li><a href=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;avatar={$avatar['path']}\"><span class=\"image\"><img src=\"{$mybb->settings['avatardir']}/{$avatar['path']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\" /></span><span class=\"title\">{$avatar['friendly_name']}</span></a></li>\n";
+			echo "<li><a href=\"index.php?module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;avatar={$avatar['path']}\"><span class=\"image\"><img src=\"{$mybb->settings['avatardir']}/{$avatar['path']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\" /></span><span class=\"title\">{$avatar['friendly_name']}</span></a></li>\n";
 		}
 	}
 	echo "</ul>\n";
@@ -329,7 +329,7 @@ if($mybb->input['action'] == "avatar_gallery")
 	exit;
 }
 
-if($mybb->input['action'] == "coppa_activate")
+if($mybb->input['action'] == "activate_user")
 {
 	$plugins->run_hooks("admin_user_users_coppa_activate");
 	
@@ -337,16 +337,25 @@ if($mybb->input['action'] == "coppa_activate")
 	$user = $db->fetch_array($query);
 
 	// Does the user not exist?
-	if(!$user['uid'] || $user['coppauser'] != 1)
+	if(!$user['uid'] || $user['usergroup'] != 5)
 	{
 		flash_message($lang->error_invalid_user, 'error');
-		admin_redirect("index.php?".SID."&module=user/users");
+		admin_redirect("index.php?module=user/users");
 	}
 
+	$updated_user['usergroup'] = $user['usergroup'];
+
 	// Update
-	$updated_user = array(
-		"coppauser" => 0
-	);
+	if($user['coppauser'])
+	{
+		$updated_user = array(
+			"coppauser" => 0
+		);
+	}
+	else
+	{
+		$db->delete_query("awaitingactivation", "uid='{$user['uid']}");
+	}
 
 	// Move out of awaiting activation if they're in it.
 	if($user['usergroup'] == 5)
@@ -361,8 +370,25 @@ if($mybb->input['action'] == "coppa_activate")
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
-	flash_message($lang->success_coppa_activated, 'success');
-	admin_redirect("index.php?".SID."&module=user/users&amp;action=edit&amp;uid={$user['uid']}");
+	if($user['coppauser'])
+	{
+		flash_message($lang->success_coppa_activated, 'success');
+	}
+	else
+	{
+		flash_message($lang->success_activated, 'success');
+	}
+
+	if($admin_session['data']['last_users_url'])
+	{
+		update_admin_session('last_users_url', '');
+		$url = $admin_session['data']['last_users_url'];
+	}
+	else
+	{
+		$url = "index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}";
+	}
+	admin_redirect($url);
 }
 
 if($mybb->input['action'] == "add")
@@ -426,7 +452,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($user_info['uid'], $user_info['username']);
 
 			flash_message($lang->success_user_created, 'success');
-			admin_redirect("index.php?".SID."&module=user/users&action=edit&uid={$user_info['uid']}");
+			admin_redirect("index.php?module=user/users&action=edit&uid={$user_info['uid']}");
 		}
 	}
 
@@ -440,7 +466,7 @@ if($mybb->input['action'] == "add")
 	$page->add_breadcrumb_item($lang->create_user);
 	$page->output_header($lang->create_user);
 		
-	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=add", "post");
+	$form = new Form("index.php?module=user/users&amp;action=add", "post");
 
 	$page->output_nav_tabs($sub_tabs, 'create_user');
 
@@ -496,7 +522,7 @@ if($mybb->input['action'] == "edit")
 	if(!$user['uid'])
 	{
 		flash_message($lang->error_invalid_user, 'error');
-		admin_redirect("index.php?".SID."&module=user/users");
+		admin_redirect("index.php?module=user/users");
 	}
 
 	if($mybb->request_method == "post")
@@ -504,7 +530,7 @@ if($mybb->input['action'] == "edit")
 		if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
 		{
 			flash_message($lang->error_no_perms_super_admin, 'error');
-			admin_redirect("index.php?".SID."&module=user/users");
+			admin_redirect("index.php?module=user/users");
 		}
 
 		// Determine the usergroup stuff
@@ -725,7 +751,7 @@ if($mybb->input['action'] == "edit")
 				log_admin_action($user['uid'], $mybb->input['username']);
 
 				flash_message($lang->success_user_updated, 'success');
-				admin_redirect("index.php?".SID."&module=user/users");
+				admin_redirect("index.php?module=user/users");
 			}
 		}
 	}
@@ -761,7 +787,7 @@ if($mybb->input['action'] == "edit")
 		'description' => $lang->edit_user_desc
 	);
 
-	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$user['uid']}", "post");
+	$form = new Form("index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}", "post");
 	echo "<script type=\"text/javascript\">\n function submitUserForm() { $('tab_overview').up('FORM').submit(); }</script>\n";
 
 	$page->output_nav_tabs($sub_tabs, 'edit_user');
@@ -1173,7 +1199,7 @@ if($mybb->input['action'] == "edit")
 	// Select an image from the gallery
 	echo "<div class=\"border_wrapper\">";
 	echo "<div class=\"title\">.. {$lang->or_select_avatar_gallery}</div>";
-	echo "<iframe src=\"index.php?".SID."&amp;module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}\" width=\"100%\" height=\"350\" frameborder=\"0\"></iframe>";
+	echo "<iframe src=\"index.php?module=user/users&amp;action=avatar_gallery&amp;uid={$user['uid']}\" width=\"100%\" height=\"350\" frameborder=\"0\"></iframe>";
 	echo "</div>";
 	echo "</div>";
 
@@ -1196,13 +1222,13 @@ if($mybb->input['action'] == "delete")
 	if(!$user['uid'])
 	{
 		flash_message($lang->error_invalid_user, 'error');
-		admin_redirect("index.php?".SID."&module=user/users");
+		admin_redirect("index.php?module=user/users");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=user/users");
+		admin_redirect("index.php?module=user/users");
 	}
 
 	if($mybb->request_method == "post")
@@ -1230,11 +1256,11 @@ if($mybb->input['action'] == "delete")
 
 
 		flash_message($lang->success_user_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=user/users");
+		admin_redirect("index.php?module=user/users");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=user/users&action=delete&uid={$user['uid']}", $lang->user_deletion_confirmation);
+		$page->output_confirm_action("index.php?module=user/users&action=delete&uid={$user['uid']}", $lang->user_deletion_confirmation);
 	}
 }
 
@@ -1247,7 +1273,7 @@ if($mybb->input['action'] == "referrers")
 		
 	$sub_tabs['referrers'] = array(
 		'title' => $lang->show_referrers,
-		'link' => "index.php?".SID."&amp;module=user/users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
+		'link' => "index.php?module=user/users&amp;action=referrers&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_referrers_desc
 	);
 	
@@ -1280,7 +1306,7 @@ if($mybb->input['action'] == "ipaddresses")
 	
 	$sub_tabs['ipaddresses'] = array(
 		'title' => $lang->show_ip_addresses,
-		'link' => "index.php?".SID."&amp;module=user/users&amp;action=ipaddresses&amp;uid={$mybb->input['uid']}",
+		'link' => "index.php?module=user/users&amp;action=ipaddresses&amp;uid={$mybb->input['uid']}",
 		'description' => $lang->show_ip_addresses_desc
 	);
 	
@@ -1305,9 +1331,9 @@ if($mybb->input['action'] == "ipaddresses")
 	else
 	{
 		$popup = new PopupMenu("user_last", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['lastip']}");
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['lastip']}");
-		$popup->add_item($lang->ban_ip, "index.php?".SID."&amp;module=config/banning&amp;filter={$user['lastip']}");
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;action=search&amp;regip={$user['lastip']}");
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;action=search&amp;postip={$user['lastip']}");
+		$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
 	$table->construct_cell("<strong>{$lang->last_known_ip}:</strong> {$user['lastip']}");
@@ -1322,9 +1348,9 @@ if($mybb->input['action'] == "ipaddresses")
 	else
 	{
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$user['regip']}");
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$user['regip']}");
-		$popup->add_item($lang->ban_ip, "index.php?".SID."&amp;module=config/banning&amp;filter={$user['regip']}");
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;action=search&amp;regip={$user['regip']}");
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;action=search&amp;postip={$user['regip']}");
+		$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
 	$table->construct_cell("<strong>{$lang->registration_ip}:</strong> {$user['regip']}");
@@ -1337,9 +1363,9 @@ if($mybb->input['action'] == "ipaddresses")
 		if(!$done_ip[$ip['ipaddress']])
 		{
 			$popup = new PopupMenu("post_{$ip['pid']}", $lang->options);
-			$popup->add_item($lang->show_users_regged_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;regip={$ip['ipaddress']}");
-			$popup->add_item($lang->show_users_posted_with_ip, "index.php?".SID."&amp;module=user/users&amp;action=search&amp;postip={$ip['ipaddress']}");
-			$popup->add_item($lang->ban_ip, "index.php?".SID."&amp;module=config/banning&amp;filter={$ip['ipaddress']}");
+			$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;action=search&amp;regip={$ip['ipaddress']}");
+			$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;action=search&amp;postip={$ip['ipaddress']}");
+			$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$ip['ipaddress']}");
 			$controls = $popup->fetch();
 		
 			$table->construct_cell($ip['ipaddress']);
@@ -1443,7 +1469,7 @@ if($mybb->input['action'] == "merge")
 
 		// Redirect!
 		flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");
-		admin_redirect("index.php?".SID."&module=user/users");
+		admin_redirect("index.php?module=user/users");
 		exit;
 	}
 
@@ -1458,7 +1484,7 @@ if($mybb->input['action'] == "merge")
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=merge", "post");
+	$form = new Form("index.php?module=user/users&amp;action=merge", "post");
 
 	$form_container = new FormContainer($lang->merge_users);
 	$form_container->output_row($lang->source_account." <em>*</em>", $lang->source_account_desc, $form->generate_text_box('source_username', $mybb->input['source_username'], array('id' => 'source_username')), 'source_username');
@@ -1498,26 +1524,25 @@ if($mybb->input['action'] == "search")
 			{
 				unset($admin_view);
 			}
-			echo 'b';
 		}
-		echo 'a';
 
-		// Don't have a view? Fetch the default
-		if(!$admin_view['vid'])
+		if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
 		{
-			echo 'geting default';
-			$default_view = fetch_default_view("user");
-			$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
-			$admin_view = $db->fetch_array($query);
+			$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
+			unset($admin_view['extra_sql']);
 		}
-		print_r($admin_view);
+		else {
+			// Don't have a view? Fetch the default
+			if(!$admin_view['vid'])
+			{
+				$default_view = fetch_default_view("user");
+				$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
+				$admin_view = $db->fetch_array($query);
+			}
+		}
 
 		// Override specific parts of the view
 		unset($admin_view['vid']);
-		$admin_view['sortby'] = $mybb->input['sortby'];
-		$admin_view['sortorder'] = $mybb->input['order'];
-		$admin_view['conditions'] = $mybb->input['conditions'];
-		$admin_view['url'] = "index.php?".SID."&amp;module=user/users&amp;action=search&amp;results=1";
 
 		if($mybb->input['type'])
 		{
@@ -1551,7 +1576,7 @@ if($mybb->input['action'] == "search")
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?".SID."&amp;module=user/users&amp;action=search", "post");
+	$form = new Form("index.php?module=user/users&amp;action=search", "post");
 
 	user_search_conditions($mybb->input, $form);
 
@@ -1580,12 +1605,10 @@ if(!$mybb->input['action'])
 	echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
 	
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
-
-	if($mybb->input['view'])
+	
+	if($mybb->input['search_id'] && $admin_session['user_views'][$mybb->input['search_id']])
 	{
-		$admin_view = $mybb->input['view'];
-		$admin_view['fields'] = unserialize(base64_decode($admin_view['fields']));
-		$admin_view['conditions'] = unserialize(base64_decode($admin_view['conditions']));
+		$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 		unset($admin_view['extra_sql']);
 	}
 	else
@@ -1617,23 +1640,14 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("adminviews", "*", "type='user' AND (visibility=2 OR uid={$mybb->user['uid']})", array("order_by" => "title"));
 	while($view = $db->fetch_array($query))
 	{
-		$popup->add_item(htmlspecialchars_uni($view['title']), "index.php?".SID."&amp;module=user/users&amp;vid={$view['vid']}");
+		$popup->add_item(htmlspecialchars_uni($view['title']), "index.php?module=user/users&amp;vid={$view['vid']}");
 	}
-	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?".SID."&amp;module=user/users&amp;action=views");
+	$popup->add_item("<em>{$lang->manage_views}</em>", "index.php?module=user/users&amp;action=views");
 	$admin_view['popup'] = $popup->fetch();
 
 	if($mybb->input['type'])
 	{
 		$admin_view['view_type'] = $mybb->input['type'];
-	}
-
-	if($mybb->input['username'])
-	{
-		if(!is_array($admin_view['conditions']))
-		{
-			$admin_view['conditions'] = unserialize($admin_view['conditions']);
-		}
-		$admin_view['conditions']['username'] = $mybb->input['username'];
 	}
 
 	$results = build_users_view($admin_view);
@@ -1663,10 +1677,20 @@ function build_users_view($view)
 		$view_title .= " (".htmlspecialchars_uni($view['title']).")";
 	}
 
+	if($mybb->input['username'])
+	{
+		if(!is_array($admin_view['conditions']))
+		{
+			$admin_view['conditions'] = unserialize($admin_view['conditions']);
+		}
+		$admin_view['conditions']['username'] = $mybb->input['username'];
+	}
+
+
 	// Build the URL to this view
 	if(!$view['url'])
 	{
-		$view['url'] = "index.php?".SID."&amp;module=user/users";
+		$view['url'] = "index.php?module=user/users";
 	}
 	if(!is_array($view['conditions']))
 	{
@@ -1683,15 +1707,22 @@ function build_users_view($view)
 	else
 	{
 		// If this is a custom view we need to save everything ready to pass it on from page to page
-		foreach($view as $key => $val)
+		global $admin_session;
+		if(!$_REQUEST['search_id'])
 		{
-			if($key == "url" || $key == "title") continue;
-			if(is_array($val))
-			{
-				$val = base64_encode(serialize($val));
-			}
-			$view['url'] .= "&amp;view[{$key}]=".urlencode($val);
+			$search_id = md5(uniqid(rand(), true));
+			$admin_session['data']['user_views'][$search_id] = $view;
+			update_admin_session('user_views', $admin_session['data']['user_views']);
+			$_REQUEST['search_id'] = $search_id;
 		}
+		$view['url'] .= "&amp;search_id=".htmlspecialchars($_REQUEST['search_id']);
+	}
+	if($mybb->input['username'])
+	{
+		$view['url'] .= "&amp;username=".htmlspecialchars_uni($mybb->input['username']);
+	}
+	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url'])) {
+		update_admin_session('last_users_url', str_replace("&amp;", "&", $view['url']));
 	}
 
 	$table = new Table;
@@ -1893,7 +1924,7 @@ function build_users_view($view)
 		");
 		while($user = $db->fetch_array($query))
 		{
-			$user['view']['username'] = "<a href=\"index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
+			$user['view']['username'] = "<a href=\"index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
 			$user['view']['usergroup'] = $usergroups[$user['usergroup']]['title'];
 			$additional_groups = explode(",", $user['additionalgroups']);
 			foreach($additional_groups as $group)
@@ -1910,12 +1941,24 @@ function build_users_view($view)
 
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
-			$popup->add_item($lang->edit_profile_and_settings, "index.php?".SID."&amp;module=user/users&amp;action=edit&amp;uid={$user['uid']}");
-			$popup->add_item($lang->ban_user, "index.php?".SID."&amp;module=user/users&amp;action=ban&amp;uid={$user['uid']}");
-			$popup->add_item($lang->delete_user, "index.php?".SID."&amp;module=user/users&amp;action=delete&amp;uid={$user['uid']}");
-			$popup->add_item($lang->show_referred_users, "index.php?".SID."&amp;module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
-			$popup->add_item($lang->show_ip_addresses, "index.php?".SID."&amp;module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
-			$popup->add_item($lang->show_attachments, "index.php?".SID."&amp;module=user/users&amp;action=attachments&amp;uid={$user['uid']}");
+			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}");
+			$popup->add_item($lang->ban_user, "index.php?module=user/users&amp;action=ban&amp;uid={$user['uid']}");
+
+			if($user['usergroup'] == 5) {
+				if($user['coppauser'])
+				{
+					$popup->add_item($lang->approve_coppa_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}");
+				}
+				else
+				{
+					$popup->add_item($lang->approve_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}");
+				}
+			}
+
+			$popup->add_item($lang->delete_user, "index.php?module=user/users&amp;action=delete&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_referred_users, "index.php?module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_ip_addresses, "index.php?module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_attachments, "index.php?module=user/users&amp;action=attachments&amp;uid={$user['uid']}");
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user
@@ -2008,9 +2051,8 @@ function build_users_view($view)
 		$search_style = "text-align: right;";
 	}
 
-	echo "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
-	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 0, '', 'search_form');
-	$sid = explode('=', SID);
+	$built_view = "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
+	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 0, '', 'search_form', true);
 	if($view['conditions']['username'])
 	{
 		$default_class = '';
@@ -2021,8 +2063,8 @@ function build_users_view($view)
 		$default_class = "search_default";
 		$value = $lang->search_for_user;
 	}
-	echo $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"));
-	echo "<script type='text/javascript'>
+	$built_view .= $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"));
+	$built_view .= "<script type='text/javascript'>
 		var form = document.getElementById('search_form');
 		form.onsubmit = function() {
 			var search = document.getElementById('search_keywords');
@@ -2051,15 +2093,15 @@ function build_users_view($view)
 			}
 		}
 		</script>";
-	echo "<input type='image' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
+	$built_view .= "<input type='image' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
 	if($view['popup'])
 	{
-		echo " <div style=\"display: inline\">{$view['popup']}</div>";
+		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>";
 	}
 	$search->end();
-	echo "</div>\n";
+	$built_view .= "</div>\n";
 
-	$built_view = $pagination;
+	$built_view .= $pagination;
 	$built_view .= $table->construct_html("{$switch_view}{$lang->users}{$view_title}", 1, "", $view['table_id']);
 	$built_view .= $pagination;
 

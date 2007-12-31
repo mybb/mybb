@@ -20,13 +20,13 @@ function home_meta()
 	global $page, $lang, $plugins;
 
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?".SID."&module=home/dashboard");
-	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?".SID."&module=home/preferences");
-	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?".SID."&module=home/version_check");
-	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?".SID."&module=home/credits");
+	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?module=home/dashboard");
+	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home/preferences");
+	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?module=home/version_check");
+	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?module=home/credits");
 	$plugins->run_hooks_by_ref("admin_home_menu", $sub_menu);
 	
-	$page->add_menu_item($lang->home, "home", "index.php?".SID, 1, $sub_menu);
+	$page->add_menu_item($lang->home, "home", "index.php", 1, $sub_menu);
 	
 	return true;
 }
@@ -62,12 +62,12 @@ function home_action_handler($action)
 	{
 		// Quick Access
 		$sub_menu = array();
-		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?".SID."&module=forum/management&action=add");
-		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?".SID."&module=user/users&action=search");
-		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?".SID."&module=style/themes");
-		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");
-		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?".SID."&module=config/plugins");
-		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
+		$sub_menu['10'] = array("id" => "add_forum", "title" => $lang->add_new_forum, "link" => "index.php?module=forum/management&action=add");
+		$sub_menu['20'] = array("id" => "search", "title" => $lang->search_for_users, "link" => "index.php?module=user/users&action=search");
+		$sub_menu['30'] = array("id" => "themes", "title" => $lang->themes, "link" => "index.php?module=style/themes");
+		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?module=style/templates");
+		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config/plugins");
+		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools/backupdb");
 		
 		$plugins->run_hooks_by_ref("admin_home_menu_quick_access", $sub_menu);
 		

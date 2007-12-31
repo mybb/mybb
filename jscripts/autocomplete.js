@@ -35,7 +35,7 @@ autoComplete.prototype = {
 		this.menuOpen = false;
 		this.timeout = false;
 
-		Event.observe(window, "load", this.init.bindAsEventListener(this));
+		Event.observe(window, "dom:loaded", this.init.bindAsEventListener(this));
 	},
 
 	init: function()

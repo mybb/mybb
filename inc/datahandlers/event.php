@@ -355,7 +355,7 @@ class EventDataHandler extends DataHandler
 		$event['starttime_user'] = $event['starttime'];
 		$event['endtime_user'] = $event['endtime'];
 		$next_occurance = fetch_next_occurance($event, array('start' => $event['starttime'], 'end' => $event['endtime']), $event['starttime'], true);
-		if($next_occurance < $event['starttime'] || $next_occurance > $event['endtime'])
+		if($next_occurance > $event['endtime'])
 		{
 			$this->set_error("event_wont_occur");
 			return false;
@@ -461,7 +461,7 @@ class EventDataHandler extends DataHandler
 			'dateline' => TIME_NOW,
 			'starttime' => intval($event['starttime']),
 			'endtime' => intval($event['endtime']),
-			'timezone' => intval($event['timezone']),
+			'timezone' => $db->escape_string($event['timezone']),
 			'ignoretimezone' => intval($event['ignoretimezone']),
 			'usingtime' => intval($event['usingtime']),
 			'repeats' => $db->escape_string(serialize($event['repeats']))
@@ -538,8 +538,13 @@ class EventDataHandler extends DataHandler
 
 		if(isset($event['timezone']))
 		{
-			$this->event_update_data['timezone'] = intval($event['timezone']);
+			$this->event_update_data['timezone'] = $db->escape_string($event['timezone']);
 		}
+		
+		if(isset($event['ignoretimezone']))
+		{
+			$this->event_update_data['ignoretimezone'] = intval($event['ignoretimezone']);
+		}		
 
 		if(isset($event['private']))
 		{

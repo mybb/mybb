@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->spiders_bots, "index.php?".SID."&amp;module=config/spiders");
+$page->add_breadcrumb_item($lang->spiders_bots, "index.php?module=config/spiders");
 
 $plugins->run_hooks("admin_config_spiders_begin");
 
@@ -55,7 +55,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($sid, $mybb->input['name']);
 
 			flash_message($lang->success_bot_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/spiders");
+			admin_redirect("index.php?module=config/spiders");
 		}
 	}
 
@@ -64,17 +64,17 @@ if($mybb->input['action'] == "add")
 	
 	$sub_tabs['spiders'] = array(
 		'title' => $lang->spiders_bots,
-		'link' => "index.php?".SID."&amp;module=config/spiders",
+		'link' => "index.php?module=config/spiders",
 	);
 	$sub_tabs['add_spider'] = array(
 		'title' => $lang->add_new_bot,
-		'link' => "index.php?".SID."&amp;module=config/spiders&amp;action=add",
+		'link' => "index.php?module=config/spiders&amp;action=add",
 		'description' => $lang->add_new_bot_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, "add_spider");
 	
-	$form = new Form("index.php?".SID."&amp;module=config/spiders&amp;action=add", "post");
+	$form = new Form("index.php?module=config/spiders&amp;action=add", "post");
 
 	if($errors)
 	{
@@ -122,13 +122,13 @@ if($mybb->input['action'] == "delete")
 	if(!$spider['sid'])
 	{
 		flash_message($lang->error_invalid_bot, 'error');
-		admin_redirect("index.php?".SID."&module=config/spiders");
+		admin_redirect("index.php?module=config/spiders");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/spiders");
+		admin_redirect("index.php?module=config/spiders");
 	}
 
 	if($mybb->request_method == "post")
@@ -144,11 +144,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($mybb->input['name']);
 
 		flash_message($lang->success_bot_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/spiders");
+		admin_redirect("index.php?module=config/spiders");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=config/spiders&action=delete&sid={$spider['sid']}", $lang->confirm_bot_deletion);
+		$page->output_confirm_action("index.php?module=config/spiders&action=delete&sid={$spider['sid']}", $lang->confirm_bot_deletion);
 	}
 }
 
@@ -163,7 +163,7 @@ if($mybb->input['action'] == "edit")
 	if(!$spider['sid'])
 	{
 		flash_message($lang->error_invalid_bot, 'error');
-		admin_redirect("index.php?".SID."&module=config/spiders");
+		admin_redirect("index.php?module=config/spiders");
 	}
 
 	if($mybb->request_method == "post")
@@ -197,7 +197,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($spider['sid'], $mybb->input['name']);
 
 			flash_message($lang->success_bot_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/spiders");
+			admin_redirect("index.php?module=config/spiders");
 		}
 	}
 
@@ -206,13 +206,13 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_spider'] = array(
 		'title' => $lang->edit_bot,
-		'link' => "index.php?".SID."&amp;module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}",
+		'link' => "index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}",
 		'description' => $lang->edit_bot_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, "edit_spider");
 	
-	$form = new Form("index.php?".SID."&amp;module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}", "post");
+	$form = new Form("index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}", "post");
 
 	if($errors)
 	{
@@ -261,12 +261,12 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['spiders'] = array(
 		'title' => $lang->spiders_bots,
-		'link' => "index.php?".SID."&amp;module=config/spiders",
+		'link' => "index.php?module=config/spiders",
 		'description' => $lang->spiders_bots_desc
 	);
 	$sub_tabs['add_spider'] = array(
 		'title' => $lang->add_new_bot,
-		'link' => "index.php?".SID."&amp;module=config/spiders&amp;action=add"
+		'link' => "index.php?module=config/spiders&amp;action=add"
 	);
 
 	$page->output_nav_tabs($sub_tabs, "spiders");
@@ -288,10 +288,10 @@ if(!$mybb->input['action'])
 		{
 			$lastvisit = $lang->never;
 		}
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\"><strong>{$spider['name']}</strong></a>");
+		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\"><strong>{$spider['name']}</strong></a>");
 		$table->construct_cell($lastvisit, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/spiders&amp;action=delete&amp;sid={$spider['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=delete&amp;sid={$spider['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

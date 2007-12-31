@@ -20,25 +20,25 @@ function config_meta()
 	global $page, $lang, $plugins;
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "settings", "title" => $lang->settings, "link" => "index.php?".SID."&module=config/settings");
-	$sub_menu['20'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?".SID."&module=config/banning");
-	$sub_menu['30'] = array("id" => "profile_fields", "title" => $lang->custom_profile_fields, "link" => "index.php?".SID."&module=config/profile_fields");
-	$sub_menu['40'] = array("id" => "smilies", "title" => $lang->smilies, "link" => "index.php?".SID."&module=config/smilies");
-	$sub_menu['50'] = array("id" => "badwords", "title" => $lang->word_filters, "link" => "index.php?".SID."&module=config/badwords");
-	$sub_menu['60'] = array("id" => "mycode", "title" => $lang->mycode, "link" => "index.php?".SID."&module=config/mycode");
-	$sub_menu['70'] = array("id" => "languages", "title" => $lang->languages, "link" => "index.php?".SID."&module=config/languages");
-	$sub_menu['80'] = array("id" => "post_icons", "title" => $lang->post_icons, "link" => "index.php?".SID."&module=config/post_icons");
-	$sub_menu['90'] = array("id" => "help_documents", "title" => $lang->help_documents, "link" => "index.php?".SID."&module=config/help_documents");
-	$sub_menu['100'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?".SID."&module=config/plugins");
-	$sub_menu['110'] = array("id" => "attachment_types", "title" => $lang->attachment_types, "link" => "index.php?".SID."&module=config/attachment_types");
-	$sub_menu['120'] = array("id" => "mod_tools", "title" => $lang->moderator_tools, "link" => "index.php?".SID."&module=config/mod_tools");
-	$sub_menu['130'] = array("id" => "spiders", "title" => $lang->spiders_bots, "link" => "index.php?".SID."&module=config/spiders");
-	$sub_menu['140'] = array("id" => "calendars", "title" => $lang->calendars, "link" => "index.php?".SID."&module=config/calendars");
-	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?".SID."&module=config/warning");
+	$sub_menu['10'] = array("id" => "settings", "title" => $lang->settings, "link" => "index.php?module=config/settings");
+	$sub_menu['20'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?module=config/banning");
+	$sub_menu['30'] = array("id" => "profile_fields", "title" => $lang->custom_profile_fields, "link" => "index.php?module=config/profile_fields");
+	$sub_menu['40'] = array("id" => "smilies", "title" => $lang->smilies, "link" => "index.php?module=config/smilies");
+	$sub_menu['50'] = array("id" => "badwords", "title" => $lang->word_filters, "link" => "index.php?module=config/badwords");
+	$sub_menu['60'] = array("id" => "mycode", "title" => $lang->mycode, "link" => "index.php?module=config/mycode");
+	$sub_menu['70'] = array("id" => "languages", "title" => $lang->languages, "link" => "index.php?module=config/languages");
+	$sub_menu['80'] = array("id" => "post_icons", "title" => $lang->post_icons, "link" => "index.php?module=config/post_icons");
+	$sub_menu['90'] = array("id" => "help_documents", "title" => $lang->help_documents, "link" => "index.php?module=config/help_documents");
+	$sub_menu['100'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config/plugins");
+	$sub_menu['110'] = array("id" => "attachment_types", "title" => $lang->attachment_types, "link" => "index.php?module=config/attachment_types");
+	$sub_menu['120'] = array("id" => "mod_tools", "title" => $lang->moderator_tools, "link" => "index.php?module=config/mod_tools");
+	$sub_menu['130'] = array("id" => "spiders", "title" => $lang->spiders_bots, "link" => "index.php?module=config/spiders");
+	$sub_menu['140'] = array("id" => "calendars", "title" => $lang->calendars, "link" => "index.php?module=config/calendars");
+	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?module=config/warning");
 	
 	$plugins->run_hooks_by_ref("admin_config_menu", $sub_menu);
 	
-	$page->add_menu_item($lang->configuration, "config", "index.php?".SID."&module=config", 10, $sub_menu);
+	$page->add_menu_item($lang->configuration, "config", "index.php?module=config", 10, $sub_menu);
 	
 	return true;
 }

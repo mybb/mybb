@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 $languages = $lang->get_languages();
 
-$page->add_breadcrumb_item($lang->languages, "index.php?".SID."&amp;module=config/languages");
+$page->add_breadcrumb_item($lang->languages, "index.php?module=config/languages");
 
 $plugins->run_hooks("admin_config_languages_begin");
 
@@ -30,7 +30,7 @@ if($mybb->input['action'] == "edit_properties")
 	if(!file_exists($file))
 	{
 		flash_message($lang->error_invalid_file, 'error');
-		admin_redirect("index.php?".SID."&module=config/languages");
+		admin_redirect("index.php?module=config/languages");
 	}
 	
 	if($mybb->request_method == "post")
@@ -38,7 +38,7 @@ if($mybb->input['action'] == "edit_properties")
 		if(!is_writable($file))
 		{
 			flash_message($lang->error_cannot_write_to_file, 'error');
-			admin_redirect("index.php?".SID."&module=config/languages");
+			admin_redirect("index.php?module=config/languages");
 		}
 		
 		foreach($mybb->input['info'] as $key => $info)
@@ -89,7 +89,7 @@ if($mybb->input['action'] == "edit_properties")
 			log_admin_action($editlang);
 
 			flash_message($lang->success_langprops_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
+			admin_redirect("index.php?module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
 		}
 		else
 		{
@@ -97,7 +97,7 @@ if($mybb->input['action'] == "edit_properties")
 		}
 	}
 	
-	$page->add_breadcrumb_item($languages[$editlang], "index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$editlang}");
+	$page->add_breadcrumb_item($languages[$editlang], "index.php?module=config/languages&amp;action=edit&amp;lang={$editlang}");
 	$page->add_breadcrumb_item($lang->nav_editing_set);
 	
 	$page->output_header($lang->languages);
@@ -105,7 +105,7 @@ if($mybb->input['action'] == "edit_properties")
 	// Get language info
 	require $file;
 
-	$form = new Form("index.php?".SID."&amp;module=config/languages&amp;action=edit_properties", "post", "editset");
+	$form = new Form("index.php?module=config/languages&amp;action=edit_properties", "post", "editset");
 	echo $form->generate_hidden_field("lang", $editlang);
 	echo $form->generate_hidden_field("info[author]", $langinfo['author']);
 	echo $form->generate_hidden_field("info[website]", $langinfo['website']);
@@ -173,7 +173,7 @@ if($mybb->input['action'] == "edit")
 	$editlang = basename($mybb->input['lang']);
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
 	
-	$page->add_breadcrumb_item($languages[$editlang], "index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$editlang}");
+	$page->add_breadcrumb_item($languages[$editlang], "index.php?module=config/languages&amp;action=edit&amp;lang={$editlang}");
 	
 	$editwith = basename($mybb->input['editwith']);
 	$editwithfolder = '';
@@ -186,7 +186,7 @@ if($mybb->input['action'] == "edit")
 	if(!file_exists($folder) || ($editwithfolder && !file_exists($editwithfolder)))
 	{
 		flash_message($lang->error_invalid_set, 'error');
-		admin_redirect("index.php?".SID."&module=config/languages");
+		admin_redirect("index.php?module=config/languages");
 	}
 
 	if(isset($mybb->input['file']))
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "edit")
 		if(!file_exists($editfile) || ($editwithfile && !file_exists($editwithfile)))
 		{
 			flash_message($lang->error_invalid_file, 'error');
-			admin_redirect("index.php?".SID."&module=config/languages");
+			admin_redirect("index.php?module=config/languages");
 		}
 		
 		if($mybb->request_method == "post")
@@ -246,7 +246,7 @@ if($mybb->input['action'] == "edit")
 				log_admin_action($editlang, $editfile);
 
 				flash_message($lang->success_langfile_updated, 'success');
-				admin_redirect("index.php?".SID."&module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
+				admin_redirect("index.php?module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
 			}
 			else
 			{
@@ -280,7 +280,7 @@ if($mybb->input['action'] == "edit")
 		
 		$page->output_header($lang->languages);
 		
-		$form = new Form("index.php?".SID."&amp;module=config/languages&amp;action=edit", "post", "edit");
+		$form = new Form("index.php?module=config/languages&amp;action=edit", "post", "edit");
 		echo $form->generate_hidden_field("file", $file);
 		echo $form->generate_hidden_field("lang", $editlang);
 		echo $form->generate_hidden_field("editwith", $editwith);
@@ -354,7 +354,7 @@ if($mybb->input['action'] == "edit")
 		
 		$sub_tabs['language_files'] = array(
 			'title' => $lang->language_files,
-			'link' => "index.php?".SID."&amp;module=config/languages",
+			'link' => "index.php?module=config/languages",
 			'description' => $lang->language_files_desc
 		);
 	
@@ -384,7 +384,7 @@ if($mybb->input['action'] == "edit")
 		foreach($filenames as $key => $file)
 		{
 			$table->construct_cell("<strong>{$file}</strong>");
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$file}\">{$lang->edit}</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=config/languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$file}\">{$lang->edit}</a>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 		
@@ -420,7 +420,7 @@ if($mybb->input['action'] == "edit")
 			foreach($adminfilenames as $key => $file)
 			{
 				$table->construct_cell("<strong>{$file}</strong>");
-				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "align_center"));
+				$table->construct_cell("<a href=\"index.php?module=config/languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "align_center"));
 				$table->construct_row();
 			}
 			
@@ -446,7 +446,7 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['languages'] = array(
 		'title' => $lang->languages,
-		'link' => "index.php?".SID."&amp;module=config/languages",
+		'link' => "index.php?module=config/languages",
 		'description' => $lang->languages_desc
 	);
 	$sub_tabs['find_language'] = array(
@@ -486,12 +486,12 @@ if(!$mybb->input['action'])
 		$table->construct_cell($langinfo['version'], array("class" => "align_center"));
 		
 		$popup = new PopupMenu("laguage_{$key}", $lang->options);
-		$popup->add_item($lang->edit_language_variables, "index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$key}");
+		$popup->add_item($lang->edit_language_variables, "index.php?module=config/languages&amp;action=edit&amp;lang={$key}");
 		foreach($langselectlangs as $key1 => $langname1)
 		{
-			$popup->add_item($langname1, "index.php?".SID."&amp;module=config/languages&amp;action=edit&amp;lang={$key}&amp;editwith={$key1}");
+			$popup->add_item($langname1, "index.php?module=config/languages&amp;action=edit&amp;lang={$key}&amp;editwith={$key1}");
  		}
-		$popup->add_item($lang->edit_properties, "index.php?".SID."&amp;module=config/languages&amp;action=edit_properties&amp;lang={$key}");
+		$popup->add_item($lang->edit_properties, "index.php?module=config/languages&amp;action=edit_properties&amp;lang={$key}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

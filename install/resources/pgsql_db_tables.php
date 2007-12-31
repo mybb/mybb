@@ -314,6 +314,22 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
   PRIMARY KEY (rid)
 );";
 
+$tables[] = "CREATE TABLE mybb_massemails (
+	mid serial,
+	subject varchar(200) NOT NULL default '',
+	message text NOT NULL,
+	htmlmessage text NOT NULL,
+	format tinyint(1) NOT NULL default '0',
+	dateline bigint(30) NOT NULL default '0',
+	senddate bigint(30) NOT NULL default '0',
+	status tinyint(1) NOT NULL default '0',
+	sentcount int NOT NULL default '0',
+	totalcount int NOT NULL default '0',
+	conditions text NOT NULL,
+	perpage smallint(4) NOT NULL default '50',
+	PRIMARY KEY(mid)
+);";
+
 $tables[] = "CREATE TABLE mybb_mailerrors (
   eid serial,
   subject varchar(200) NOT NULL default '',

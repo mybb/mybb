@@ -15,23 +15,23 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->user_group_promotions, "index.php?".SID."&amp;module=user/group_promotions");
+$page->add_breadcrumb_item($lang->user_group_promotions, "index.php?module=user/group_promotions");
 
 $sub_tabs['usergroup_promotions'] = array(
 	'title' => $lang->user_group_promotions,
-	'link' => "index.php?".SID."&amp;module=user/group_promotions",
+	'link' => "index.php?module=user/group_promotions",
 	'description' => $lang->user_group_promotions_desc
 );
 
 $sub_tabs['add_promotion'] = array(
 	'title' => $lang->add_new_promotion,
-	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=add",
+	'link' => "index.php?module=user/group_promotions&amp;action=add",
 	'description' => $lang->add_new_promotion_desc
 );
 
 $sub_tabs['promotion_logs'] = array(
 	'title' => $lang->view_promotion_logs,
-	'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs",
+	'link' => "index.php?module=user/group_promotions&amp;action=logs",
 	'description' => $lang->view_promotion_logs_desc
 );
 
@@ -44,7 +44,7 @@ if($mybb->input['action'] == "disable")
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	
 	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
@@ -53,7 +53,7 @@ if($mybb->input['action'] == "disable")
 	if(!$promotion['pid'])
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 
 	$promotion = array(
@@ -67,7 +67,7 @@ if($mybb->input['action'] == "disable")
 	log_admin_action($promotion['pid'], $promotion['title']);
 
 	flash_message($lang->success_promo_disabled, 'success');
-	admin_redirect("index.php?".SID."&module=user/group_promotions");
+	admin_redirect("index.php?module=user/group_promotions");
 }
 
 if($mybb->input['action'] == "delete")
@@ -76,13 +76,13 @@ if($mybb->input['action'] == "delete")
 	
 	if($mybb->input['no']) 
 	{ 
-		admin_redirect("index.php?".SID."&module=user/group_promotions"); 
+		admin_redirect("index.php?module=user/group_promotions"); 
 	} 
 	
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	
 	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
@@ -91,7 +91,7 @@ if($mybb->input['action'] == "delete")
 	if(!$promotion['pid'])
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	
 	if($mybb->request_method == "post")
@@ -104,11 +104,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($promotion['title']);
 
 		flash_message($lang->success_promo_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=user/group_promotions&amp;action=delete&amp;pid={$mybb->input['pid']}", $lang->confirm_promo_deletion); 
+		$page->output_confirm_action("index.php?module=user/group_promotions&amp;action=delete&amp;pid={$mybb->input['pid']}", $lang->confirm_promo_deletion); 
 	}
 }
 
@@ -119,7 +119,7 @@ if($mybb->input['action'] == "enable")
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	
 	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
@@ -128,7 +128,7 @@ if($mybb->input['action'] == "enable")
 	if(!$promotion['pid'])
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 
 	$promotion = array(
@@ -143,7 +143,7 @@ if($mybb->input['action'] == "enable")
 	log_admin_action($promotion['pid'], $promotion['title']);
 
 	flash_message($lang->success_promo_enabled, 'success');
-	admin_redirect("index.php?".SID."&module=user/group_promotions");
+	admin_redirect("index.php?module=user/group_promotions");
 }
 
 if($mybb->input['action'] == "edit")
@@ -153,7 +153,7 @@ if($mybb->input['action'] == "edit")
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	
 	$query = $db->simple_select("promotions", "*", "pid = '{$mybb->input['pid']}'");
@@ -162,7 +162,7 @@ if($mybb->input['action'] == "edit")
 	if(!$promotion)
 	{
 		flash_message($lang->error_invalid_promo_id, 'error');
-		admin_redirect("index.php?".SID."&module=user/group_promotions");
+		admin_redirect("index.php?module=user/group_promotions");
 	}
 	
 	if($mybb->request_method == "post")
@@ -233,7 +233,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($promotion['pid'], $mybb->input['title']);
 
 			flash_message($lang->success_promo_updated, 'success');
-			admin_redirect("index.php?".SID."&module=user/group_promotions");
+			admin_redirect("index.php?module=user/group_promotions");
 		}
 	}
 	
@@ -243,12 +243,12 @@ if($mybb->input['action'] == "edit")
 	$sub_tabs = array();
 	$sub_tabs['edit_promotion'] = array(
 		'title' => $lang->edit_promotion,
-		'link' => "index.php?".SID."&amp;module=user/group_promotions&amp;action=edit",
+		'link' => "index.php?module=user/group_promotions&amp;action=edit",
 		'description' => $lang->edit_promotion_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_promotion');
-	$form = new Form("index.php?".SID."&amp;module=user/group_promotions&amp;action=edit", "post", "edit");
+	$form = new Form("index.php?module=user/group_promotions&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field("pid", $mybb->input['pid']);
 	if($errors)
 	{
@@ -412,14 +412,30 @@ if($mybb->input['action'] == "add")
 			log_admin_action($pid, $mybb->input['title']);
 			
 			flash_message($lang->success_promo_added, 'success');
-			admin_redirect("index.php?".SID."&module=user/group_promotions");
+			admin_redirect("index.php?module=user/group_promotions");
 		}
 	}
 	$page->add_breadcrumb_item($lang->add_new_promotion);
 	$page->output_header($lang->user_group_promotions." - ".$lang->add_new_promotion);
+	
+	$sub_tabs['usergroup_promotions'] = array(
+		'title' => $lang->user_group_promotions,
+		'link' => "index.php?module=user/group_promotions"
+	);
+
+	$sub_tabs['add_promotion'] = array(
+		'title' => $lang->add_new_promotion,
+		'link' => "index.php?module=user/group_promotions&amp;action=add",
+		'description' => $lang->add_new_promotion_desc
+	);
+
+	$sub_tabs['promotion_logs'] = array(
+		'title' => $lang->view_promotion_logs,
+		'link' => "index.php?module=user/group_promotions&amp;action=logs"
+	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_promotion');
-	$form = new Form("index.php?".SID."&amp;module=user/group_promotions&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=user/group_promotions&amp;action=add", "post", "add");
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -538,7 +554,7 @@ if($mybb->input['action'] == "logs")
 	");
 	while($log = $db->fetch_array($query))
 	{
-		$log['username'] = "<a href=\"index.php?".SID."&amp;module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($log['username'])."</a>";
+		$log['username'] = "<a href=\"index.php?module=user/view&amp;action=edit&amp;uid={$log['uid']}\">".htmlspecialchars_uni($log['username'])."</a>";
 		
 		if($log['type'] == "secondary" || (!empty($log['oldusergroup']) && strstr(",", $log['oldusergroup'])))
 		{
@@ -580,7 +596,7 @@ if($mybb->input['action'] == "logs")
 	$query = $db->simple_select("promotions", "COUNT(pid) as promotions");
 	$total_rows = $db->fetch_field($query, "promotions");
 	
-	echo "<br />".draw_admin_pagination($mybb->input['page'], "20", $total_rows, "index.php?".SID."&amp;module=user/group_promotions&amp;action=logs&amp;page={page}");
+	echo "<br />".draw_admin_pagination($mybb->input['page'], "20", $total_rows, "index.php?module=user/group_promotions&amp;action=logs&amp;page={page}");
 	
 	$page->output_footer();
 }
@@ -602,19 +618,19 @@ if(!$mybb->input['action'])
 	{
 		$promotion['title'] = htmlspecialchars_uni($promotion['title']);
 		$promotion['description'] = htmlspecialchars_uni($promotion['description']);
-		$table->construct_cell("<div><strong><a href=\"index.php?".SID."&amp;module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
+		$table->construct_cell("<div><strong><a href=\"index.php?module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}\">{$promotion['title']}</a></strong><br /><small>{$promotion['description']}</small></div>");
 
 		$popup = new PopupMenu("promotion_{$promotion['pid']}", $lang->options);
-		$popup->add_item($lang->edit_promotion, "index.php?".SID."&amp;module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");
+		$popup->add_item($lang->edit_promotion, "index.php?module=user/group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");
 		if($promotion['enabled'] == 1)
 		{
-			$popup->add_item($lang->disable_promotion, "index.php?".SID."&amp;module=user/group_promotions&amp;action=disable&amp;pid={$promotion['pid']}");
+			$popup->add_item($lang->disable_promotion, "index.php?module=user/group_promotions&amp;action=disable&amp;pid={$promotion['pid']}");
 		}
 		else
 		{
-			$popup->add_item($lang->enable_promotion, "index.php?".SID."&amp;module=user/group_promotions&amp;action=enable&amp;pid={$promotion['pid']}");
+			$popup->add_item($lang->enable_promotion, "index.php?module=user/group_promotions&amp;action=enable&amp;pid={$promotion['pid']}");
 		}
-		$popup->add_item($lang->delete_promotion, "index.php?".SID."&amp;module=user/group_promotions&amp;action=delete&amp;pid={$promotion['pid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_promo_deletion}')");
+		$popup->add_item($lang->delete_promotion, "index.php?module=user/group_promotions&amp;action=delete&amp;pid={$promotion['pid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_promo_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

@@ -864,7 +864,7 @@ if($mybb->input['action'] == "editevent")
 			}
 			if($event['ignoretimezone'])
 			{
-				$timezone = $mybb->user['timezone'];
+				$timezone = 0;
 			}
 			else
 			{
@@ -1308,7 +1308,7 @@ if($mybb->input['action'] == "event")
 
 	if($event['ignoretimezone'] == 0)
 	{
-		$offset = $event['timezone'];
+		$offset = 0;
 	}
 	else
 	{
@@ -1640,7 +1640,7 @@ if($mybb->input['action'] == "dayview")
 			}
 			else
 			{
-				$offset = $mybb->user['timezone'];
+				$offset = 0;
 			}
 
 			$event['starttime_user'] = $event['starttime']+$offset*3600;
@@ -2048,7 +2048,8 @@ if(!$mybb->input['action'])
 	$month_start_weekday = my_date("w", mktime(0, 0, 0, $month, 1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
-		$day = my_date("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']))-(array_search($month_start_weekday, $weekdays)-1);
+		$day = gmdate("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$day -= array_search($month_start_weekday, $weekdays);
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
 	}
@@ -2062,9 +2063,9 @@ if(!$mybb->input['action'])
 	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
-	$start_timestamp = gmmktime(0, 0, 0, $prev_month['month'], $day, $prev_month['year']);
+	$start_timestamp = mktime(0, 0, 0, $prev_month['month'], $day, $prev_month['year']);
 	$num_days = gmdate("t", mktime(0, 0, 0, $next_month['month'], 1, $next_month['year']));
-	$end_timestamp = gmmktime(23, 59, 59, $next_month['month'], $num_days, $next_month['year']);
+	$end_timestamp = mktime(23, 59, 59, $next_month['month'], $num_days, $next_month['year']);
 
 	$num_days = gmdate("t", mktime(0, 0, 0, $month, 1, $year));
 

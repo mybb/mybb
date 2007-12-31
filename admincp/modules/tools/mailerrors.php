@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->system_email_log, "index.php?".SID."&amp;module=tools/mailerrors");
+$page->add_breadcrumb_item($lang->system_email_log, "index.php?module=tools/mailerrors");
 
 $plugins->run_hooks("admin_tools_mailerrors_begin");
 
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		log_admin_action($num_deleted);
 		
 		flash_message($lang->all_logs_deleted, 'error');
-		admin_redirect("index.php?".SID."&module=tools/mailerrors");
+		admin_redirect("index.php?module=tools/mailerrors");
 	}
 	else if(is_array($mybb->input['log']))
 	{
@@ -74,7 +74,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	log_admin_action($num_deleted);
 	
 	flash_message($lang->selected_logs_deleted, 'error');
-	admin_redirect("index.php?".SID."&module=tools/mailerrors");
+	admin_redirect("index.php?module=tools/mailerrors");
 }
 
 if($mybb->input['action'] == "view")
@@ -184,13 +184,13 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['mailerrors'] = array(
 		'title' => $lang->system_email_log,
-		'link' => "index.php?adminsid=".SID."&amp;module=tools/mailerrors",
+		'link' => "index.php?adminsid="?"&amp;module=tools/mailerrors",
 		'description' => $lang->system_email_log_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'mailerrors');
 
-	$form = new Form("index.php?".SID."&amp;module=tools/mailerrors&amp;action=prune", "post");
+	$form = new Form("index.php?module=tools/mailerrors&amp;action=prune", "post");
 
 	// Begin criteria filtering
 	if($mybb->input['subject'])
@@ -245,8 +245,8 @@ if(!$mybb->input['action'])
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 
 		$table->construct_cell($form->generate_check_box("log[{$log['eid']}]", 1, ''));
-		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/mailerrors&amp;action=view&amp;eid={$log['eid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
-		$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/mailerrors&amp;toaddress={$log['toaddress']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->fine_emails_to_addr}\" alt=\"{$lang->find}\" /></a></div>";
+		$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools/mailerrors&amp;action=view&amp;eid={$log['eid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
+		$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools/mailerrors&amp;toaddress={$log['toaddress']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->fine_emails_to_addr}\" alt=\"{$lang->find}\" /></a></div>";
 		$table->construct_cell("{$find_from}<div>{$log['toaddress']}</div>");
 		$table->construct_cell($log['error']);
 		$table->construct_cell($log['dateline'], array("class" => "align_center"));
@@ -272,9 +272,9 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("mailerrors l", "COUNT(eid) AS logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");
 
-	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?".SID."&amp;module=tools/mailerrors&amp;page={page}{$additional_criteria}");
+	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools/mailerrors&amp;page={page}{$additional_criteria}");
 	
-	$form = new Form("index.php?".SID."&amp;module=tools/mailerrors", "post");
+	$form = new Form("index.php?module=tools/mailerrors", "post");
 	$form_container = new FormContainer($lang->filter_system_email_log);
 	$form_container->output_row($lang->subject_contains, "", $form->generate_text_box('subject', $mybb->input['subject'], array('id' => 'subject')), 'subject');	
 	$form_container->output_row($lang->error_message_contains, "", $form->generate_text_box('error', $mybb->input['error'], array('id' => 'error')), 'error');	

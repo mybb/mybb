@@ -2,7 +2,7 @@ var MyBB = {
 	init: function()
 	{
 		this.detectBrowser();
-		Event.observe(window, "load", MyBB.pageLoaded);
+		Event.observe(window, "dom:loaded", MyBB.pageLoaded);
 		return true;
 	},
 
@@ -13,13 +13,13 @@ var MyBB = {
 		expandables.init();
 
 		// Initialise check all boxes
-		checkall = document.getElementsByClassName("checkall", "input");
+		checkall = $$('input.checkall');
 		checkall.each(function(element) {
 			Event.observe(element, "click", MyBB.checkAll.bindAsEventListener(this));
 		});
 
 		// Initialise "initial focus" field if we have one
-		initialfocus = document.getElementsByClassName("initial_focus", "input");
+		initialfocus = $$('input.initial_focus');
 		if(initialfocus[0])
 		{
 			initialfocus[0].focus();
@@ -27,7 +27,7 @@ var MyBB = {
 
 		if(typeof(use_xmlhttprequest) != "undefined" && use_xmlhttprequest == 1)
 		{
-			mark_read_imgs = document.getElementsByClassName("ajax_mark_read", "img");
+			mark_read_imgs = $$('img.ajax_mark_read');
 			mark_read_imgs.each(function(element) {
 				if(element.src.match("off.gif") || element.src.match("offlock.gif") || (element.title && element.title == lang.no_new_posts)) return;
 				Event.observe(element, "click", MyBB.markForumRead.bindAsEventListener(this));
@@ -497,7 +497,7 @@ var DomLib = {
 var expandables = {
 	init: function()
 	{
-		expanders = document.getElementsByClassName("expander", "img");
+		expanders = $$('img.expander');
 		if(expanders.length > 0)
 		{
 			expanders.each(function(expander) {

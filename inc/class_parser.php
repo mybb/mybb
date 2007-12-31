@@ -954,11 +954,6 @@ class postParser
 			$message = $this->parse_badwords($message);
 		}
 
-		if($options['safe_html'] == 1)
-		{
-			$message = $this->parse_html($message);
-		}
-
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message, true);
 

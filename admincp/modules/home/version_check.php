@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->version_check, "index.php?".SID."&amp;module=home/version_check");
+$page->add_breadcrumb_item($lang->version_check, "index.php?module=home/version_check");
 
 $plugins->run_hooks("admin_home_version_check_begin");
 
@@ -27,7 +27,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['version_check'] = array(
 		'title' => $lang->version_check,
-		'link' => "index.php?".SID."&amp;module=home/version_check",
+		'link' => "index.php?module=home/version_check",
 		'description' => $lang->version_check_description
 	);
 	
@@ -39,7 +39,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['check_plugins'] = array(
 		'title' => $lang->check_plugin_versions,
-		'link' => "index.php?".SID."&amp;module=config/plugins&amp;action=check",
+		'link' => "index.php?module=config/plugins&amp;action=check",
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'version_check');	

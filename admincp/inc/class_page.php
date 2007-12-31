@@ -26,6 +26,11 @@ class DefaultPage
 	var $menu = array();
 
 	/**
+	 * @var string The side bar menu items.
+	 */
+	var $submenu = '';
+
+	/**
 	 * @var string The module we're currently in.
 	 */
 	var $active_module;
@@ -105,10 +110,11 @@ var imagepath = '../images';
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
 		echo "	<div id=\"logo\"><h1><span class=\"invisible\">{$lang->mybb_admin_cp}</span></h1></div>\n";
-		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_forum}</a> | <a href=\"index.php?".SID."&amp;action=logout\" class=\"logout\">{$lang->logout}</a></div>\n";
+		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_forum}</a> | <a href=\"index.php?action=logout\" class=\"logout\">{$lang->logout}</a></div>\n";
 		echo $this->_build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";
+		echo $this->submenu;
 		echo $this->sidebar;
 		echo "		</div>\n";
 		echo "		<div id=\"content\">\n";
@@ -124,6 +130,10 @@ var imagepath = '../images';
 			echo "{$message}\n";
 			echo "</div>\n";
 			update_admin_session('flash_message', '');
+		}
+		if($this->show_post_verify_error == true)
+		{
+			$this->output_error($lang->invalid_post_verify_key);
 		}
 	}
 
@@ -432,7 +442,7 @@ EOF;
 		{
 			$sidebar = new sideBarItem($title);
 			$sidebar->add_menu_items($items, $this->active_action);
-			$this->sidebar = $sidebar->get_markup().$this->sidebar;
+			$this->submenu .= $sidebar->get_markup();
 		}
 	}
 

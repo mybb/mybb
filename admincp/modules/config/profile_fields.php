@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->custom_profile_fields, "index.php?".SID."&amp;module=config/profile_fields");
+$page->add_breadcrumb_item($lang->custom_profile_fields, "index.php?module=config/profile_fields");
 
 $plugins->run_hooks("admin_config_profile_fields_begin");
 
@@ -75,7 +75,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($fid, $mybb->input['name']);
 					
 			flash_message($lang->success_profile_field_added, 'success');
-			admin_redirect("index.php?".SID."&module=config/profile_fields");
+			admin_redirect("index.php?module=config/profile_fields");
 		}
 	}
 	
@@ -84,17 +84,17 @@ if($mybb->input['action'] == "add")
 	
 	$sub_tabs['custom_profile_fields'] = array(
 		'title' => $lang->custom_profile_fields,
-		'link' => "index.php?".SID."&amp;module=config/profile_fields"
+		'link' => "index.php?module=config/profile_fields"
 	);
 	
 	$sub_tabs['add_profile_field'] = array(
 		'title' => $lang->add_new_profile_field,
-		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",
+		'link' => "index.php?module=config/profile_fields&amp;action=add",
 		'description' => $lang->add_new_profile_field_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_profile_field');
-	$form = new Form("index.php?".SID."&amp;module=config/profile_fields&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=config/profile_fields&amp;action=add", "post", "add");
 	
 	if($errors)
 	{
@@ -160,7 +160,7 @@ if($mybb->input['action'] == "edit")
 	if(!$profile_field['fid'])
 	{
 		flash_message($lang->error_invalid_fid, 'error');
-		admin_redirect("index.php?".SID."&module=config/profile_fields");
+		admin_redirect("index.php?module=config/profile_fields");
 	}
 		
 	if($mybb->request_method == "post")
@@ -209,7 +209,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($profile_field['fid'], $mybb->input['name']);
 
 			flash_message($lang->success_profile_field_saved, 'success');
-			admin_redirect("index.php?".SID."&module=config/profile_fields");
+			admin_redirect("index.php?module=config/profile_fields");
 		}
 	}
 	
@@ -218,12 +218,12 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_profile_field'] = array(
 		'title' => $lang->edit_profile_field,
-		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
+		'link' => "index.php?module=config/profile_fields&amp;action=edit&amp;fid=".intval($mybb->input['fid']),
 		'description' => $lang->edit_profile_field_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_profile_field');
-	$form = new Form("index.php?".SID."&amp;module=config/profile_fields&amp;action=edit", "post", "edit");
+	$form = new Form("index.php?module=config/profile_fields&amp;action=edit", "post", "edit");
 	
 	
 	echo $form->generate_hidden_field("fid", $profile_field['fid']);
@@ -294,13 +294,13 @@ if($mybb->input['action'] == "delete")
 	if(!$profile_field['fid'])
 	{
 		flash_message($lang->error_invalid_fid, 'error');
-		admin_redirect("index.php?".SID."&module=config/profile_fields");
+		admin_redirect("index.php?module=config/profile_fields");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/profile_fields");
+		admin_redirect("index.php?module=config/profile_fields");
 	}
 
 	if($mybb->request_method == "post")
@@ -315,11 +315,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($profile_field['name']);
 
 		flash_message($lang->success_profile_field_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/profile_fields");
+		admin_redirect("index.php?module=config/profile_fields");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&module=config/profile_fields&amp;action=delete&amp;fid={$profile_field['fid']}", $lang->confirm_profile_field_deletion);
+		$page->output_confirm_action("index.php?module=config/profile_fields&amp;action=delete&amp;fid={$profile_field['fid']}", $lang->confirm_profile_field_deletion);
 	}
 }
 
@@ -331,13 +331,13 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['custom_profile_fields'] = array(
 		'title' => $lang->custom_profile_fields,
-		'link' => "index.php?".SID."&amp;module=config/profile_fields",
+		'link' => "index.php?module=config/profile_fields",
 		'description' => $lang->custom_profile_fields_desc
 	);
 	
 	$sub_tabs['add_profile_field'] = array(
 		'title' => $lang->add_new_profile_field,
-		'link' => "index.php?".SID."&amp;module=config/profile_fields&amp;action=add",
+		'link' => "index.php?module=config/profile_fields&amp;action=add",
 	);
 
 	
@@ -380,15 +380,15 @@ if(!$mybb->input['action'])
 		{
 			$hidden = $lang->no;
 		}
-		$table->construct_cell("<strong><a href=\"index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}\">{$field['name']}</a></strong><br /><small>{$field['description']}</small>", array('width' => '45%'));
+		$table->construct_cell("<strong><a href=\"index.php?module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}\">{$field['name']}</a></strong><br /><small>{$field['description']}</small>", array('width' => '45%'));
 		$table->construct_cell($field['fid'], array("class" => "align_center", 'width' => '5%'));
 		$table->construct_cell($required, array("class" => "align_center", 'width' => '10%'));
 		$table->construct_cell($editable, array("class" => "align_center", 'width' => '10%'));		
 		$table->construct_cell($hidden, array("class" => "align_center", 'width' => '10%'));
 		
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
-		$popup->add_item($lang->edit_field, "index.php?".SID."&amp;module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}");
-		$popup->add_item($lang->delete_field, "index.php?".SID."&amp;module=config/profile_fields&amp;action=delete&amp;fid={$field['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_profile_field_deletion}')");
+		$popup->add_item($lang->edit_field, "index.php?module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}");
+		$popup->add_item($lang->delete_field, "index.php?module=config/profile_fields&amp;action=delete&amp;fid={$field['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_profile_field_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center", 'width' => '20%'));
 		$table->construct_row();
 	}

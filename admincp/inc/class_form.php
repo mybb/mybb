@@ -15,15 +15,22 @@
 class DefaultForm
 {
 	/**
+	 * @var boolean Should this form be returned instead of output to the browser?
+	 */
+	var $_return = false;
+
+	/**
 	 * Constructor. Outputs the form tag with the specified options.
 	 *
 	 * @param string The action for the form.
 	 * @param string The method (get or post) for this form.
 	 * @param string The ID of the form.
 	 * @param boolean Should file uploads be allowed for this form?
+	 * @param boolean Should this form be returned instead of output to the browser?
 	 */
 	function __construct($script, $method, $id="", $allow_uploads=0)
 	{
+		global $mybb;
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
 		if($allow_uploads != 0)
 		{
@@ -34,7 +41,16 @@ class DefaultForm
 			$form .= " id=\"{$id}\"";
 		}
 		$form .= ">\n";
-		echo $form;
+		$form .= $this->generate_hidden_field("my_post_key", $mybb->post_code);
+		if($return == false)
+		{
+			echo $form;
+		}
+		else
+		{
+			$this->_return = true;
+			return $form;
+		}
 	}
 
 	function DefaultForm($script, $method, $id="", $allow_uploads=0)
@@ -404,15 +420,19 @@ class DefaultForm
 						{
 							$select_add = " selected=\"selected\"";
 						}
+						
+						$sep = '';
+						if(isset($options['depth']))
+							$sep = str_repeat("&nbsp;", $options['depth']);
 
-						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add} style=\"padding-left: {$options['depth']}px;\">".htmlspecialchars_uni($forum['name'])."</option>\n";
+						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add}>".$sep.htmlspecialchars_uni($forum['name'])."</option>\n";
 	
 						if($forum_cache[$forum['fid']])
 						{
-							$options['depth'] += 15;
+							$options['depth'] += 5;
 							$options['pid'] = $forum['fid'];
 							$this->generate_forum_select($forum['fid'], $selected, $options, 0);
-							$options['depth'] -= 15;
+							$options['depth'] -= 5;
 						}
 					}
 				}
@@ -622,12 +642,20 @@ class DefaultForm
 	 */
 	function output_submit_wrapper($buttons)
 	{
-		echo "<div class=\"form_button_wrapper\">\n";
+		$return = "<div class=\"form_button_wrapper\">\n";
 		foreach($buttons as $button)
 		{
-			echo $button." \n";
+			$return = $button." \n";
 		}
-		echo "</div>\n";
+		$return .= "</div>\n";
+		if($this->_return == false)
+		{
+			echo $return;
+		}
+		else
+		{
+			return $return;
+		}
 	}	
 
 	/**
@@ -635,7 +663,14 @@ class DefaultForm
 	 */
 	function end()
 	{
-		echo "</form>";
+		if($this->_return == false)
+		{
+			echo "</form>";
+		}
+		else
+		{
+			return "</form>";
+		}
 	}
 }
 

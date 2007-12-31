@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->mod_logs, "index.php?".SID."&amp;module=tools/modlog");
+$page->add_breadcrumb_item($lang->mod_logs, "index.php?module=tools/modlog");
 
 $plugins->run_hooks("admin_tools_modlog_begin");
 
@@ -27,7 +27,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['mod_logs'] = array(
 		'title' => $lang->mod_logs,
-		'link' => "index.php?".SID."&amp;module=tools/modlog",
+		'link' => "index.php?module=tools/modlog",
 		'description' => $lang->mod_logs_desc
 	);
 	
@@ -168,7 +168,7 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?".SID."&amp;module=tools/modlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools/modlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
 	
 	// Fetch filter options
@@ -206,7 +206,7 @@ if(!$mybb->input['action'])
 		'desc' => $lang->desc
 	);
 
-	$form = new Form("index.php?".SID."&amp;module=tools/modlog", "post");
+	$form = new Form("index.php?module=tools/modlog", "post");
 	$form_container = new FormContainer($lang->filter_moderator_logs);
 	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->input['fid'], array('id' => 'fid')), 'fid');	
 	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');	

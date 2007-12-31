@@ -6,6 +6,7 @@
 		<logo><![CDATA[images/logo.gif]]></logo>
 		<tablespace><![CDATA[4]]></tablespace>
 		<borderwidth><![CDATA[1]]></borderwidth>
+		<editortheme><![CDATA[Default]]></editortheme>
 	</properties>
 	<stylesheets>
 		<stylesheet name="global.css" version="1400"><![CDATA[body {
@@ -243,21 +244,6 @@ select {
 .editor_control_bar {
 	background: #fff;
 	border: 1px solid #0f5c8e;
-}
-
-.toolbar_normal {
-	background: #f0f0f0;
-	border: 1px solid #f0f0f0;
-}
-
-.toolbar_hover {
-	background: #c1d2ee;
-	border: 1px solid #5296f7;
-}
-
-.toolbar_clicked {
-	background: #e1F2fe;
-	border: 1px solid #5296f7;
 }
 
 .autocomplete {
@@ -599,26 +585,19 @@ div.error.ul {
 	text-decoration: none;
 }
 
-.thread_legend, .thread_legend dt, .thread_legend dd {
+.thread_legend, .thread_legend dd {
 	margin: 0;
 	padding: 0;
 }
 
-.thread_legend {
-	width: 350px;
-}
-
 .thread_legend dd {
-	width: 150px;
+	padding-bottom: 4px;
+	margin-right: 15px;
 }
 
-.thread_legend dt {
-	width: 20px;
-	margin-bottom: 4px;
-	text-align: left;
-}
-.thread_legend dt, .thread_legend dd {
-	float: left;
+.thread_legend img {
+	margin-right: 4px;
+	vertical-align: bottom;
 }
 
 .forum_legend, .forum_legend dt, .forum_legend dd {
@@ -648,6 +627,14 @@ div.error.ul {
 	font-weight: bold;
 	font-size: 10px;
 	margin-bottom: 10px;
+}
+
+.post_body {
+	padding: 5px;
+}
+
+.post_content {
+	padding: 5px 10px;
 }
 ]]>
 		</stylesheet>
@@ -954,15 +941,7 @@ ul.thread_tools li.subscription_add {
 
 ul.thread_tools li.subscription_remove {
 	background: url('images/unsubscribe.gif') no-repeat 0px 0px;
-}
-
-.post_body {
-	padding: 5px;
-}
-
-.post_content {
-	padding: 5px 10px;
-}}]]></stylesheet>
+}]]></stylesheet>
 	</stylesheets>
 	<templates>
 			<template name="forumdisplay_threadlist" version="1400"><![CDATA[<div class="float_left">
@@ -1034,25 +1013,22 @@ ul.thread_tools li.subscription_remove {
 <br style="clear: both;" />
 <br />
 <div class="float_left">
-	<dl class="thread_legend smalltext">
-		<dt><img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" title="{$lang->new_thread}" /></dt>
-		<dd>{$lang->new_thread}</dd>
-		
-		<dt><img src="{$theme['imgdir']}/folder.gif" alt="{$lang->no_new_thread}" title="{$lang->no_new_thread}" /></dt>
-		<dd>{$lang->no_new_thread}</dd>
+	<div class="float_left">
+		<dl class="thread_legend smalltext">
+			<dd><img src="{$theme['imgdir']}/newfolder.gif" alt="{$lang->new_thread}" title="{$lang->new_thread}" /> {$lang->new_thread}</dd>
+			<dd><img src="{$theme['imgdir']}/newhotfolder.gif" alt="{$lang->new_hot_thread}" title="{$lang->new_hot_thread}" /> {$lang->new_hot_thread}</dd>
+			<dd><img src="{$theme['imgdir']}/hotfolder.gif" alt="{$lang->hot_thread}" title="{$lang->hot_thread}" />{$lang->hot_thread}</dd>
+		</dl>
+	</div>
 
-		<dt style="clear: left;"><img src="{$theme['imgdir']}/newhotfolder.gif" alt="{$lang->new_hot_thread}" title="{$lang->new_hot_thread}" /></dt>
-		<dd>{$lang->new_hot_thread}</dd>
-
-		<dt><img src="{$theme['imgdir']}/hotfolder.gif" alt="{$lang->hot_thread}" title="{$lang->hot_thread}" /></dt>
-		<dd>{$lang->hot_thread}</dd>
-
-		<dt style="clear: left;"><img src="{$theme['imgdir']}/dot_folder.gif" alt="{$lang->posts_by_you}" title="{$lang->posts_by_you}" /></dt>
-		<dd>{$lang->posts_by_you}</dd>
-
-		<dt><img src="{$theme['imgdir']}/lockfolder.gif" alt="{$lang->locked_thread}" title="{$lang->locked_thread}" /></dt>
-		<dd>{$lang->locked_thread}</dd>
-	</dl>
+	<div class="float_left">
+		<dl class="thread_legend smalltext">
+			<dd><img src="{$theme['imgdir']}/folder.gif" alt="{$lang->no_new_thread}" title="{$lang->no_new_thread}" /> {$lang->no_new_thread}</dd>
+			<dd><img src="{$theme['imgdir']}/dot_folder.gif" alt="{$lang->posts_by_you}" title="{$lang->posts_by_you}" /> {$lang->posts_by_you}</dd>
+			<dd><img src="{$theme['imgdir']}/lockfolder.gif" alt="{$lang->locked_thread}" title="{$lang->locked_thread}" /> {$lang->locked_thread}</dd>
+		</dl>
+	</div>
+	<br style="clear: both" />
 </div>
 
 <div class="float_right" style="text-align: right;">
@@ -3105,7 +3081,7 @@ ul.thread_tools li.subscription_remove {
 		<template name="nav_sep" version="120"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new" version="120"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.gif" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" style="width: 100%" /></td><td class="trow1" align="center"><input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /></td><td class="trow1" align="center"><input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
@@ -9976,9 +9952,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 	<template name="modcp_modqueue_masscontrols" version="1400"><![CDATA[<ul class="modqueue_mass">
-	<li><a href="#" class="mass_ignore" onclick="document.getElementsByClassName('radio_ignore', 'input').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_ignored}</a></li>
-	<li><a href="#" class="mass_delete" onclick="document.getElementsByClassName('radio_delete', 'input').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
-	<li><a href="#" class="mass_approve" onclick="document.getElementsByClassName('radio_approve', 'input').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
+	<li><a href="#" class="mass_ignore" onclick="$$('input.radio_ignore').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_ignored}</a></li>
+	<li><a href="#" class="mass_delete" onclick="$$('input.radio_delete')).each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_deletion}</a></li>
+	<li><a href="#" class="mass_approve" onclick="$$('input.radio_approve').each(function(e) { e.checked = true; }); return false;">{$lang->mark_all_approved}</a></li>
 </ul>]]></template>
 	<template name="modcp_modqueue_threads_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="3">{$lang->mod_queue_threads_empty}</td>

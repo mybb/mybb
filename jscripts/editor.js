@@ -2,6 +2,25 @@ var messageEditor = Class.create();
 
 messageEditor.prototype = {
 	openTags: new Array(),
+	toolbarHeight: 0,
+	currentTheme: '',
+	themePath: '',
+	openDropDownMenu: null,
+	
+	setTheme: function(theme)
+	{
+		if(this.currentTheme != '' || $('editorTheme')) {
+			$('editorTheme').remove();
+		}
+		
+		var stylesheet = document.createElement('link');
+		stylesheet.setAttribute('rel', 'stylesheet');
+		stylesheet.setAttribute('type', 'text/css');
+		stylesheet.setAttribute('href', this.baseURL + 'editor_themes/'+theme+'/stylesheet.css');
+		document.getElementsByTagName('head')[0].appendChild(stylesheet);
+		this.currentTheme = theme;
+		this.themePath = this.baseURL + 'editor_themes/'+theme;
+	},
 
 	initialize: function(textarea, options)
 	{
@@ -12,6 +31,13 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
+		
+		// Establish the base path to this javascript file
+		$$('script').each(function(script) {
+			if(script.src && script.src.indexOf('editor.js') != -1) {
+				this.baseURL = script.src.replace(/editor\.js(.*?)$/, '');
+			}
+		}, this);
 		
 		this.options = options;
 
@@ -26,6 +52,13 @@ messageEditor.prototype = {
 			{
 				this.options.rtl = 0;
 			}
+		}
+		
+		if(this.options && this.options.theme) {
+			this.setTheme(this.options.theme);
+		}
+		else {
+			this.setTheme('default');
 		}
 
 		// Defines an array of fonts to be shown in the font drop down.
@@ -76,12 +109,12 @@ messageEditor.prototype = {
 		}
 		else
 		{
-			Event.observe(window, "load", this.showEditor.bindAsEventListener(this));
+			Event.observe(document, "dom:loaded", this.showEditor.bindAsEventListener(this));
 		}
 	},
 
 	showEditor: function()
-	{
+	{		
 		// Assign the old textarea to a variable for later use.
 		oldTextarea = $(this.textarea);
 
@@ -90,13 +123,13 @@ messageEditor.prototype = {
 
 		// Begin the creation of our new editor.
 
-		editor = document.createElement("div");
-		editor.style.position = "relative";
-		editor.style.display = "none";
-		editor.className = "editor";
+		this.editor = document.createElement("div");
+		this.editor.style.position = "relative";
+		this.editor.style.display = "none";
+		this.editor.className = "messageEditor";
 
 		// Append the new editor
-		oldTextarea.parentNode.insertBefore(editor, oldTextarea);
+		oldTextarea.parentNode.insertBefore(this.editor, oldTextarea);
 
 		// Determine the overall height and width - messy, but works
 		w = oldTextarea.getDimensions().width+"px";
@@ -124,169 +157,69 @@ messageEditor.prototype = {
 		{
 			h = "400px";
 		}
-		editor.style.width = w;
-		editor.style.height = h;
-		editor.style.padding = "3px";
-
-		// Create the first toolbar
-		toolBar = document.createElement("div");
-		toolBar.style.height = "26px";
-		toolBar.style.position = "relative";
-
-		// Create text font/color/size toolbar
-		textFormatting = document.createElement("div");
-		textFormatting.style.position = "absolute";
-		textFormatting.style.width = "100%";
-
-		if(this.options.rtl == 1)
-		{
-			textFormatting.style.right = 0;
-		}
-		else
-		{
-			textFormatting.style.left = 0;
-		}
-		toolBar.appendChild(textFormatting);
-
-		// Create the font drop down.
-		fontSelect = document.createElement("select");
-		fontSelect.style.margin = "2px";
-		fontSelect.id = "font";
-		fontSelect.options[fontSelect.options.length] = new Option(this.options.lang.font, "-");
-
-		$H(this.fonts).each(function(font) {
-			fontSelect.options[fontSelect.options.length] = new Option(font.value, font.key)
-		}.bind(this));
-
-		Event.observe(fontSelect, "change", this.changeFont.bindAsEventListener(this));
-		textFormatting.appendChild(fontSelect);
-
-		// Create the font size drop down.
-		sizeSelect = document.createElement("select");
-		sizeSelect.style.margin = "2px";
-		sizeSelect.id = "size";
-		sizeSelect.options[sizeSelect.options.length] = new Option(this.options.lang.size, "-");
-
-		$H(this.sizes).each(function(size) {
-			sizeSelect.options[sizeSelect.options.length] = new Option(size.value, size.key)
-		}.bind(this));
-
-		Event.observe(sizeSelect, "change", this.changeSize.bindAsEventListener(this));
-		textFormatting.appendChild(sizeSelect);
-
-		// Create the colour drop down.
-		colorSelect = document.createElement("select");
-		colorSelect.style.margin = "2px";
-		colorSelect.id = "color";
-		colorSelect.options[colorSelect.options.length] = new Option(this.options.lang.color, "-");
-
-		$H(this.colors).each(function(color) {
-			colorSelect.options[colorSelect.options.length] = new Option(color.value, color.key);
-			colorSelect.options[colorSelect.options.length-1].style.backgroundColor = color.key;
-			colorSelect.options[colorSelect.options.length-1].style.color = color.key;
-		}.bind(this));
-
-		Event.observe(colorSelect, "change", this.changeColor.bindAsEventListener(this));
-		textFormatting.appendChild(colorSelect);
-
-		// Create close tags button
-		closeBar = document.createElement("div");
-		closeBar.style.position = "absolute";
-
-		if(this.options.rtl == 1)
-		{
-			closeBar.style.left = 0;
-		}
-		else
-		{
-			closeBar.style.right = 0;
-		}
-
-		var closeButton = document.createElement("img");
-		closeButton.id = "close_tags";
-		closeButton.src = imagepath + "/codebuttons/close_tags.gif";
-		closeButton.title = "";
-		closeButton.className = "toolbar_normal";
-		closeButton.height = 22;
-		closeButton.width = 80;
-		closeButton.style.margin = "2px";
-		closeButton.style.visibility = 'hidden';
-		Event.observe(closeButton, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
-		Event.observe(closeButton, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
-		Event.observe(closeButton, "click", this.toolbarItemClick.bindAsEventListener(this));
-		closeBar.appendChild(closeButton);
-		toolBar.appendChild(closeBar);
-
-		// Append first toolbar to the editor
-		editor.appendChild(toolBar);
-
-		// Create the second toolbar.
-		toolbar2 = document.createElement("div");
-		toolbar2.style.height = "28px";
-		toolbar2.style.position = "relative";
-
-		// Create formatting section of second toolbar.
-		formatting = document.createElement("div");
-		formatting.style.position = "absolute";
-		formatting.style.width = "100%";
-		formatting.style.whiteSpace = "nowrap";
-
-		if(this.options.rtl == 1)
-		{
-			formatting.style.right = 0;
-		}
-		else
-		{
-			formatting.style.left = 0;
-		}
-		toolbar2.appendChild(formatting);
-
-		// Insert toolbar buttons.
-		this.insertStandardButton(formatting, "b", imagepath + "/codebuttons/bold.gif", "b", "", this.options.lang.title_bold);
-		this.insertStandardButton(formatting, "i", imagepath + "/codebuttons/italic.gif", "i", "", this.options.lang.title_italic);
-		this.insertStandardButton(formatting, "u", imagepath + "/codebuttons/underline.gif", "u", "", this.options.lang.title_underline);
-		this.insertSeparator(formatting);
-		this.insertStandardButton(formatting, "align_left", imagepath + "/codebuttons/align_left.gif", "align", "left", this.options.lang.title_left);
-		this.insertStandardButton(formatting, "align_center", imagepath + "/codebuttons/align_center.gif", "align", "center", this.options.lang.title_center);
-		this.insertStandardButton(formatting, "align_right", imagepath + "/codebuttons/align_right.gif", "align", "right", this.options.lang.title_right);
-		this.insertStandardButton(formatting, "align_justify", imagepath + "/codebuttons/align_justify.gif", "align", "justify", this.options.lang.title_justify);
-
-		// Create insertable elements section of second toolbar.
-		elements = document.createElement("div");
-		elements.style.position = "absolute";
-
-		if(this.options.rtl == 1)
-		{
-			elements.style.left = 0;
-		}
-		else
-		{
-			elements.style.right = 0;
-		}
-
-		toolbar2.appendChild(elements);
-		this.insertStandardButton(elements, "list_num", imagepath + "/codebuttons/list_num.gif", "list", "1", this.options.lang.title_numlist);
-		this.insertStandardButton(elements, "list_bullet", imagepath + "/codebuttons/list_bullet.gif", "list", "", this.options.lang.title_bulletlist);
-		this.insertSeparator(elements);
-		this.insertStandardButton(elements, "img", imagepath + "/codebuttons/image.gif", "image", "", this.options.lang.title_image);
-		this.insertStandardButton(elements, "url", imagepath + "/codebuttons/link.gif", "url", "", this.options.lang.title_hyperlink);
-		this.insertStandardButton(elements, "email", imagepath + "/codebuttons/email.gif", "email", "", this.options.lang.title_email);
-		this.insertSeparator(elements);
-		this.insertStandardButton(elements, "quote", imagepath + "/codebuttons/quote.gif", "quote", "", this.options.lang.title_quote);
-		this.insertStandardButton(elements, "code", imagepath + "/codebuttons/code.gif", "code", "", this.options.lang.title_code);
-		this.insertStandardButton(elements, "php", imagepath + "/codebuttons/php.gif", "php", "", this.options.lang.title_php);
-
-		// Append the second toolbar to the editor
-		editor.appendChild(toolbar2);
-
+		this.editor.style.width = w;
+		this.editor.style.height = h;
+		
+		this.createToolbarContainer('top');
+		
+		this.createToolbar('closetags', {
+			container: 'top',
+			alignment: 'right',
+			items: [
+				{type: 'button', name: 'close_tags', insert: 'zzzz', sprite: 'close_tags', width: 80, style: {visibility: 'hidden'}}
+			]
+		});
+		this.createToolbar('topformatting', {
+			container: 'top',
+			items: [
+				{type: 'dropdown', name: 'font', insert: 'font', title: this.options.lang.font, options: this.fonts},
+				{type: 'dropdown', name: 'size', insert: 'size', title: this.options.lang.size, options: this.sizes},
+				{type: 'button', name: 'color', insert: 'color', dropdown: true, color_select: true, image: 'color.gif', draw_option: this.drawColorOption, options: this.colors}			]
+		});
+							
+		this.createToolbarContainer('bottom');
+		
+		this.createToolbar('insertables', {
+			container: 'bottom',
+			alignment: 'right',
+			items: [
+				{type: 'button', name: 'list_num', sprite: 'list_num', insert: 'list', extra: 1, title: this.options.lang.title_numlist},
+				{type: 'button', name: 'list_bullet', sprite: 'list_bullet', insert: 'list', title: this.options.lang.title_bulletlist},
+				{type: 'separator'},
+				{type: 'button', name: 'img', sprite: 'image', insert: 'image', extra: 1, title: this.options.lang.title_image},
+				{type: 'button', name: 'url', sprite: 'link', insert: 'url', title: this.options.lang.title_hyperlink},				
+				{type: 'button', name: 'email', sprite: 'email', insert: 'email', extra: 1, title: this.options.lang.title_email},
+				{type: 'separator'},
+				{type: 'button', name: 'quote', sprite: 'quote', insert: 'quote', title: this.options.lang.title_quote},				
+				{type: 'button', name: 'code', sprite: 'code', insert: 'code', title: this.options.lang.title_code},				
+				{type: 'button', name: 'php', sprite: 'php', insert: 'php', title: this.options.lang.title_php}
+			]
+		});		
+		this.createToolbar('formatting', {
+			container: 'bottom',
+			items: [
+				{type: 'button', name: 'b', sprite: 'bold', insert: 'b', title: this.options.lang.title_bold},
+				{type: 'button', name: 'i', sprite: 'italic', insert: 'i', title: this.options.lang.title_italic},
+				{type: 'button', name: 'u', sprite: 'underline', insert: 'u', title: this.options.lang.title_underline},
+				{type: 'separator'},
+				{type: 'button', name: 'align_left', sprite: 'align_left', insert: 'align', extra: 'left', title: this.options.lang.title_left},
+				{type: 'button', name: 'align_center', sprite: 'align_center', insert: 'align', extra: 'center', title: this.options.lang.title_center},
+				{type: 'button', name: 'align_right', sprite: 'align_right', insert: 'align', extra: 'right', title: this.options.lang.title_right},
+				{type: 'button', name: 'align_justify', sprite: 'align_justify', insert: 'align', extra: 'justify', title: this.options.lang.title_justify}
+			]
+		});
+		
 		// Create our new text area
 		areaContainer = document.createElement("div");
 		areaContainer.style.clear = "both";
 
 		// Set the width/height of the area
-		subtract = subtract2 = 16;
-		areaContainer.style.height = parseInt(Element.getDimensions(editor).height)-parseInt(toolBar.style.height)-parseInt(toolbar2.style.height)-subtract+"px";
-		areaContainer.style.width = parseInt(Element.getDimensions(editor).width)-subtract2+"px";
+		subtract = 16;
+		if(MyBB.browser == 'ie') subtract += 5;
+		subtract2 = 7;
+		if(MyBB.browser == 'ie') subtract2 += 6;
+		areaContainer.style.height = parseInt(Element.getDimensions(this.editor).height)-this.toolbarHeight-subtract+"px";
+		areaContainer.style.width = parseInt(Element.getDimensions(this.editor).width)-subtract2+"px";
 
 		// Create text area
 		textInput = document.createElement("textarea");
@@ -306,7 +239,7 @@ messageEditor.prototype = {
 		}
 
 		areaContainer.appendChild(textInput);
-		editor.appendChild(areaContainer);
+		this.editor.appendChild(areaContainer);
 
 		if(oldTextarea.form)
 		{
@@ -321,10 +254,501 @@ messageEditor.prototype = {
 		oldTextarea.id += "_old";
 		this.oldTextarea = oldTextarea;
 
-		editor.style.display = "";
+		this.editor.style.display = "";
 
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
+	},
+	
+	drawColorOption: function(option)
+	{
+		var item = document.createElement('li');
+		item.className = 'editor_dropdown_color_item';
+		item.innerHTML = '<a style="background-color: '+option.key+'"></a>';
+		item.title = option.value;			
+		return item;
+	},
+	
+	createToolbarContainer: function(name)
+	{
+		if($('editor_toolbar_container_'+name)) return;
+		
+		var container = document.createElement("div");
+		container.id = 'editor_toolbar_container_'+name;
+		container.className = 'toolbar_container';
+		
+		this.editor.appendChild(container);
+		
+		this.toolbarHeight += 28;
+		
+		return container;
+	},
+	
+	createToolbar: function(name, options)
+	{
+		if(typeof(options.container) == 'undefined')
+		{
+			options.container = this.createToolbarContainer('auto_'+name);
+		}
+		else {
+			options.container = $('editor_toolbar_container_'+options.container);
+			if(!options.container) return;
+		}
+		
+		if($('editor_toolbar_'+name)) return;
+		
+		var toolbar = document.createElement('div');
+		toolbar.id = 'editor_toolbar_'+name;
+		toolbar.className = 'toolbar';
+		
+		var clear = document.createElement('br');
+		clear.style.clear = 'both';
+		toolbar.appendChild(clear);
+		
+		if(options.alignment && options.alignment == 'right') {
+			toolbar.className += ' float_right';
+		}
+		options.container.appendChild(toolbar);
+		if(typeof(options.items) == 'object') {
+			for(var i = 0; i < options.items.length; ++i) {
+				this.addToolbarItem(toolbar, options.items[i]);
+			}
+		}
+		// add closing item
+		if(toolbar.lastChild.previousSibling)
+			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';		
+	},
+	
+	dropDownMenuItemClick: function(e)
+	{
+		element = Event.element(e);
+
+		if(!element)
+			return;
+			
+		if(!element.extra)
+			element = element.up('li');
+			
+		var menu = element.up('ul');
+		var dropdown = this.getElementToolbarItem(menu);
+		var label = dropdown.down('.editor_dropdown_label');
+		
+		if(!dropdown.insertText || (menu.activeItem && menu.activeItem == element))
+			return;
+	
+		this.insertMyCode(dropdown.insertText, element.extra);
+		menu.lastItemValue = element.extra;
+		
+		if(this.getSelectedText($(this.textarea)))
+		{
+			this.setDropDownMenuActiveItem(dropdown, 0);
+		}
+		else
+		{
+			if(label)
+			{
+				label.innerHTML = element.innerHTML;
+				label.style.overflow = 'hidden';
+			}
+			var sel_color = dropdown.down('.editor_button_color_selected')
+			if(sel_color)
+			{
+				sel_color.style.backgroundColor = element.extra;
+				var use_default = dropdown.down('.editor_dropdown_color_item_default');
+				if(use_default) use_default.style.display = '';
+			}
+			menu.activeItem = element;
+			element.addClassName('editor_dropdown_menu_item_active');
+		}
+		this.hideOpenDropDownMenu();
+		Event.stop(e);		
+	},
+	
+	setDropDownMenuActiveItem: function(element, index)
+	{
+		var menu = element.down('ul');
+		var label = element.down('.editor_dropdown_label');
+
+		if(menu.activeItem)
+		{
+			menu.activeItem.removeClassName('editor_dropdown_menu_item_active');
+			menu.activeItem = null;
+		}
+		
+		if(index > 0)
+		{
+			var item = menu.childNodes[index];
+			if(!item) return;
+			menu.activeItem = item;
+			if(label)
+			{
+				label.innerHTML = item.innerHTML;
+				label.style.overflow = 'hidden';
+			}
+			
+			var sel_color = element.down('.editor_dropdown_color_selected')
+			if(sel_color)
+			{
+				sel_color.style.backgroundColor = item.style.backgroundColor;
+				menu.lastItemValue = item.insertExtra;
+				var use_default = element.down('.editor_dropdown_color_item_default');
+				if(use_default) use_default.style.display = '';
+			}			
+			item.addClassName('editor_dropdown_menu_item_active');
+		}
+		else
+		{
+			if(label)
+			{
+				label.innerHTML = menu.childNodes[0].innerHTML;
+				label.style.overflow = '';
+			}
+			
+			var sel_color = element.down('.editor_button_color_selected')
+			if(sel_color)
+			{
+				//sel_color.style.backgroundColor = '';
+				var use_default = element.down('.editor_dropdown_color_item_default');
+				if(use_default) use_default.style.display = 'none';
+			}
+			element.removeClassName('toolbar_clicked');
+		}
+	},	
+	
+	createDropDownMenu: function(options)
+	{
+		var dropdown = document.createElement('div');
+		dropdown.itemType = options.type;
+		if(options.image || options.sprite)
+			dropdown.className = 'toolbar_dropdown_image';
+		else
+			dropdown.className = 'toolbar_dropdown';
+			
+		dropdown.className += ' editor_dropdown toolbar_dropdown_'+options.name;
+		dropdown.id = 'editor_item_'+options.name;
+		
+		Event.observe(dropdown, 'mouseover', function()
+		{
+			dropdown.addClassName('toolbar_dropdown_over');
+		});
+		Event.observe(dropdown, 'mouseout', function()
+		{
+			dropdown.removeClassName('toolbar_dropdown_over');
+		});
+		dropdown.insertText = options.insert;
+		
+		// create the dropdown label container
+		var label = document.createElement('div');
+		label.className = 'editor_dropdown_label';
+		if(options.title)
+		{
+			label.innerHTML = options.title;
+		}
+		else
+		{
+			label.innerHTML = '&nbsp;';
+		}
+		dropdown.appendChild(label)
+		
+		// create the arrow
+		var arrow = document.createElement('div');
+		arrow.className = 'editor_dropdown_arrow';
+		dropdown.appendChild(arrow);
+		
+		// create the menu item container
+		var menu = this.buildDropDownMenu(options);
+
+		Event.observe(dropdown, 'click', this.toggleDropDownMenu.bindAsEventListener(this));
+		dropdown.appendChild(menu);
+		return dropdown;
+	},
+	
+	buildDropDownMenu: function(options)
+	{
+		var menu = document.createElement('ul');
+		menu.className = 'editor_dropdown_menu';
+		menu.style.display = 'none';
+		
+		// create the first item
+		if(options.title)
+		{
+			var item = document.createElement('li');
+			item.className = 'editor_dropdown_menu_title';
+			item.innerHTML = options.title;
+			menu.appendChild(item);
+			Event.observe(item, 'click', function()
+			{
+				if(menu.activeItem)
+				{
+					this.insertMyCode(dropdown.insertText, '-');
+				}
+				this.setDropDownMenuActiveItem(dropdown, 0);
+			}.bindAsEventListener(this));
+		}
+				
+		$H(options.options).each(function(option)
+		{
+			if(options.draw_option)
+			{
+				item = options.draw_option(option)
+			}
+			else
+			{
+				var item = document.createElement('li');
+				item.innerHTML = option.value;	
+							
+				var content = document.createElement('span');
+				item.appendChild(content);
+			}
+			item.extra = option.key;
+			Event.observe(item, 'click', this.dropDownMenuItemClick.bindAsEventListener(this));
+			Event.observe(item, 'mouseover', function()
+			{
+				item.addClassName('editor_dropdown_menu_item_over');
+			});
+			Event.observe(item, 'mouseout', function()
+			{
+				item.removeClassName('editor_dropdown_menu_item_over');
+			});
+			menu.appendChild(item);
+		}, this);	
+		return menu;	
+	},
+
+	toggleDropDownMenu: function(e)
+	{
+		element = Event.element(e);
+		if(!element)
+			return;
+
+		if(!element.itemType)
+			element = this.getElementToolbarItem(element);
+
+		menu = element.down('ul');
+
+		// This menu is already open, close it
+		if(menu.style.display != 'none')
+		{
+			menu.style.display = 'none';
+			element.removeClassName('editor_dropdown_menu_open');
+			element.removeClassName('toolbar_clicked');
+			this.openDropDownMenu = null;
+			Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
+		}
+		// Opening this menu
+		else
+		{
+			// If a menu is already open, close it first
+			this.showDropDownMenu(menu);
+		}
+		element.removeClassName('toolbar_clicked');
+		Event.stop(e);
+	},
+	
+	showDropDownMenu: function(menu)
+	{
+		this.hideOpenDropDownMenu();
+		menu.style.display = '';
+		element = this.getElementToolbarItem(menu);
+		element.addClassName('editor_dropdown_menu_open');
+		element.addClassName('toolbar_clicked');
+		this.openDropDownMenu = menu;
+		Event.observe(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));	
+	},
+
+	hideOpenDropDownMenu: function()
+	{
+		if(!this.openDropDownMenu) return;
+		this.openDropDownMenu.style.display = 'none';
+		this.getElementToolbarItem(this.openDropDownMenu).removeClassName('editor_dropdown_menu_open');
+		this.getElementToolbarItem(this.openDropDownMenu).removeClassName('toolbar_clicked');
+		this.openDropDownMenu = null;
+		Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
+	},
+	
+	getElementToolbarItem: function(elem)
+	{
+		var parent = elem;
+		do {
+			if(parent.insertText) return parent;
+			parent = parent.parentNode;
+		} while($(parent));
+		
+		return false;
+	},
+	
+	addToolbarItem: function(toolbar, options)
+	{
+		if(typeof(toolbar) == 'string')
+		{
+			toolbar = $('editor_toolbar_'+toolbar);
+		}
+		
+		if(!$(toolbar)) return;
+		
+		// Does this item already exist?
+		if($('editor_item_'+options.name)) return;
+		
+		insert_first_class = false;
+		
+		// Is this the first item? childnodes = 1 (closing br) or lastchild.previousSibling = sep
+		if(toolbar.childNodes.length == 1 || (toolbar.lastChild.previousSibling && toolbar.lastChild.previousSibling.className.indexOf('toolbar_sep') > -1 || (toolbar.lastChild.previousSibling.className.indexOf('editor_dropdown') > -1 && options.type != 'dropdown')))
+		{
+			insert_first_class = true;
+		}
+		
+		if(options.type == "dropdown")
+		{
+			var dropdown = this.createDropDownMenu(options);
+			if(dropdown)
+				toolbar.insertBefore(dropdown, toolbar.lastChild);
+
+			if(insert_first_class == true)
+				dropdown.className += ' toolbar_button_group_first';
+		}
+		else if(options.type == 'button')
+		{
+			var button = this.createToolbarButton(options)
+			toolbar.insertBefore(button, toolbar.lastChild);
+			
+			if(insert_first_class == true)
+				button.className += ' toolbar_button_group_first';				
+		}
+		else if(options.type == 'separator')
+		{
+			if(toolbar.lastChild.previousSibling)
+			{
+				toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
+			}
+			var separator = document.createElement("span");
+			separator.itemType = options.type;			
+			separator.className = "toolbar_sep";
+			toolbar.insertBefore(separator, toolbar.lastChild);	
+		}
+	},
+	
+	createToolbarButton: function(options)
+	{
+		var button = document.createElement('span');
+		button.itemType = options.type;
+		button.id = 'editor_item_'+options.name;
+		if(typeof(options.title) != 'undefined')
+		{
+			button.title = options.title;
+		}
+		button.className = 'toolbar_button toolbar_normal toolbar_button_'+options.name;
+	
+		if(typeof(options.style) == 'object')
+		{
+			$H(options.style).each(function(item) {
+				eval('button.style.'+item.key+' = "'+item.value+'";');
+			});
+		}			
+		button.insertText = options.insert;
+		button.insertExtra = '';
+		if(typeof(options.extra) != 'undefined')
+			button.insertExtra = options.extra;
+		
+		if(typeof(options.sprite) != 'undefined')
+		{
+			var img = document.createElement('span');
+			img.className = 'toolbar_sprite toolbar_sprite_'+options.sprite;
+		}
+		else
+		{
+			var img = document.createElement('img');
+			img.src = this.themePath + "/images/" + options.image;
+		}
+		button.appendChild(img);
+		
+		if(options.dropdown)
+		{
+			if(options.color_select == true)
+			{
+				var sel = document.createElement('em');
+				sel.className = 'editor_button_color_selected';
+				button.appendChild(sel);				
+			}
+			// create the arrow
+			var arrow = document.createElement('u');
+			arrow.className = 'toolbar_button_arrow';
+			button.appendChild(arrow);
+			button.className += ' toolbar_button_with_arrow';
+		}
+		
+		var end = document.createElement('strong');
+		button.appendChild(end);
+		
+		// Create the actual drop down menu
+		if(options.dropdown)
+		{
+			// create the menu item container
+			var menu = this.buildDropDownMenu(options);
+
+			Event.observe(arrow, 'click', this.toggleDropDownMenu.bindAsEventListener(this));
+			Event.observe(arrow, 'mouseover', function(e)
+			{
+				elem = Event.element(e);
+				if(!elem) return;
+				elem.parentNode.addClassName('toolbar_button_over_arrow');
+			});
+			Event.observe(arrow, 'mouseout', function(e)
+			{
+				elem = Event.element(e);
+				if(!elem) return;
+				elem.parentNode.removeClassName('toolbar_button_over_arrow');
+			});
+			button.appendChild(menu);	
+			button.dropdown = true;
+			button.menu = menu;			
+		}
+		
+		// Does this button have enabled/disabled states?
+		if(options.disabled_img || options.disabled_sprite)
+		{
+			button.disable = function()
+			{
+				if(button.disabled == true) return;
+				
+				if(options.disabled_sprite)
+				{
+					img.removeClassName('toolbar_sprite_'+options.sprite);
+					img.addClassName('toolbar_sprite_disabled_'+options.disabled_sprite);
+				}
+				else
+					img.src = this.themePath + '/images/' + options.disabled_img;
+
+				button.disabled = true;
+			};
+
+			button.enable = function()
+			{
+				if(!button.disabled) return;
+				
+				if(options.disabled_sprite)
+				{
+					img.removeClassName('toolbar_sprite_disabled_'+options.disabled_sprite);
+					img.addClassName('toolbar_sprite_'+options.sprite);
+				}
+				else
+					img.src = this.themePath + '/images/' + options.image;
+
+				button.enabled = true;
+			};
+			
+			if(options.disabled && options.disabled == true)
+			{
+				button.disable();
+				button.disabled = true;
+			}
+			else
+				button.disabled = false;
+		}		
+		
+		Event.observe(button, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
+		Event.observe(button, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
+		Event.observe(button, "click", this.toolbarItemClick.bindAsEventListener(this));
+		return button;	
 	},
 
 	updateOldArea: function(e)
@@ -332,45 +756,20 @@ messageEditor.prototype = {
 		this.oldTextarea.value = $(this.textarea).value;
 	},
 
-	insertStandardButton: function(into, id, src, insertText, insertExtra, alt)
-	{
-		var button = document.createElement("img");
-		button.id = id;
-		button.src = src;
-		button.alt = alt;
-		button.title = alt;
-		button.insertText = insertText;
-		button.insertExtra = insertExtra;
-		button.className = "toolbar_normal";
-		button.height = 22;
-		button.width = 23;
-		button.style.margin = "2px";
-		Event.observe(button, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
-		Event.observe(button, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
-		Event.observe(button, "click", this.toolbarItemClick.bindAsEventListener(this));
-		into.appendChild(button);
-	},
-
-	insertSeparator: function(into)
-	{
-		var separator = document.createElement("img");
-		separator.style.margin = "2px";
-		separator.src = imagepath + "/codebuttons/sep.gif";
-		separator.style.verticalAlign = "top";
-		separator.className = "toolbar_sep";
-		into.appendChild(separator);
-	},
-
 	toolbarItemOut: function(e)
 	{
 		element = Event.element(e);
 
 		if(!element)
-		{
 			return false;
-		}
+			
+		if(!element.itemType)
+			element = 	this.getElementToolbarItem(element);
+			
+		if(element.disabled)
+			return;
 
-		if(element.insertText)
+		if(typeof(element.insertText) != 'undefined')
 		{
 			if(element.insertExtra)
 			{
@@ -381,24 +780,28 @@ messageEditor.prototype = {
 				insertCode = element.insertText;
 			}
 
-			if(this.openTags.indexOf(insertCode) != -1)
+			if(this.openTags.indexOf(insertCode) != -1 || element.className.indexOf('editor_dropdown_menu_open') > -1)
 			{
 				Element.addClassName(element, "toolbar_clicked");
 			}
 		}
-	Element.removeClassName(element, "toolbar_hover");
+		Element.removeClassName(element, "toolbar_hover");
 	},
 
 	toolbarItemHover: function(e)
 	{
 		element = Event.element(e);
-
 		if(!element)
-		{
 			return false;
-		}
+			
+		if(!element.itemType)
+			element = this.getElementToolbarItem(element);
+		
+		if(element.disabled)
+			return;
 
-		Element.addClassName(element, "toolbar_hover");
+		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)	
+			element.addClassName('toolbar_hover')
 	},
 
 	toolbarItemClick: function(e)
@@ -406,68 +809,38 @@ messageEditor.prototype = {
 		element = Event.element(e);
 
 		if(!element)
-		{
 			return false;
+			
+		if(!element.itemType)
+			element = 	this.getElementToolbarItem(element);
+			
+		if(element.disabled)
+			return;
+
+		if(element.dropdown && element.menu)
+		{
+			if(!element.menu.activeItem)
+			{
+				Event.stop(e);
+				if(!element.menu.lastItemValue)			
+					this.showDropDownMenu(element.menu);
+				else
+					this.insertMyCode(element.insertText, element.menu.lastItemValue);
+					
+				return;
+			}
 		}
 
-		if(element.id == "close_tags")
+		if(element.id == "editor_item_close_tags")
 		{
 			this.closeTags();
 		}
 		else
 		{
-			this.insertMyCode(element.insertText, element.insertExtra);
-		}
-	},
-
-	changeFont: function(e)
-	{
-		element = Event.element(e);
-
-		if(!element)
-		{
-			return false;
-		}
-
-		this.insertMyCode("font", element.options[element.selectedIndex].value);
-
-		if(this.getSelectedText($(this.textarea)))
-		{
-			element.selectedIndex = 0;
-		}
-	},
-
-	changeSize: function(e)
-	{
-		element = Event.element(e);
-
-		if(!element)
-		{
-			return false;
-		}
-
-		this.insertMyCode("size", element.options[element.selectedIndex].value);
-
-		if(this.getSelectedText($(this.textarea)))
-		{
-			element.selectedIndex = 0;
-		}
-	},
-
-	changeColor: function(e)
-	{
-		element = Event.element(e);
-
-		if(!element)
-		{
-			return false;
-		}
-
-		this.insertMyCode("color", element.options[element.selectedIndex].value);
-
-		if(this.getSelectedText($(this.textarea)))
-		{
-			element.selectedIndex = 0;
+			if(typeof(element.insertExtra) != 'undefined')
+				this.insertMyCode(element.insertText, element.insertExtra);
+			else
+				this.insertMyCode(element.insertText);
 		}
 	},
 
@@ -605,14 +978,14 @@ messageEditor.prototype = {
 						already_open = true;
 						this.performInsert("[/"+exploded_tag[0]+"]", "", false);
 
-						if($(tag))
+						if($('editor_item_'+tag))
 						{
-							$(tag).className = "toolbar_normal";
+							$('editor_item_'+tag).removeClassName('toolbar_clicked');
 						}
 						
-						if($(exploded_tag[0]) && $(exploded_tag[0]).type == "select-one")
+						if($('editor_item_'+exploded_tag[0]) && $('editor_item_'+exploded_tag[0]).itemType == "dropdown")
 						{
-							$(exploded_tag[0]).selectedIndex = 0;
+							this.setDropDownMenuActiveItem($('editor_item_'+exploded_tag[0]), 0);
 						}							
 
 						if(tag == full_tag)
@@ -647,21 +1020,24 @@ messageEditor.prototype = {
 					if(!this.performInsert(start_tag, end_tag, true))
 					{
 						this.openTags.push(full_tag);
-						$('close_tags').style.visibility = '';
+						$('editor_item_close_tags').style.visibility = '';
 					}
-					else if($(full_tag))
+					else if($('editor_item_'+full_tag))
 					{
-						Element.removeClassName($(full_tag), "toolbar_clicked");
+						Element.removeClassName($('editor_item_'+full_tag), "toolbar_clicked");
 					}
-					else if($(code) && $(code).type == "select-one")
+					else if($('editor_item_'+code))
 					{
-						$(code).selectedIndex = 0;
+						elem = $('editor_item_'+code);
+						if(elem.type == "dropdown" || elem.dropdown || elem.menu)
+							this.setDropDownMenuActiveItem($('editor_item_'+exploded_tag[0]), 0);
 					}
 				}
 		}
+		
 		if(this.openTags.length == 0)
 		{
-			$('close_tags').style.visibility = 'hidden';
+			$('editor_item_close_tags').style.visibility = 'hidden';
 		}
 	},
 
@@ -691,7 +1067,7 @@ messageEditor.prototype = {
 			return middle;
 		}
 	},
-
+	
 	performInsert: function(open_tag, close_tag, is_single, ignore_selection)
 	{
 		var is_closed = true;
@@ -810,36 +1186,32 @@ messageEditor.prototype = {
 				exploded_tag = tag.split("_");
 				this.performInsert("[/"+exploded_tag[0]+"]", "", false);
 
-				if($(exploded_tag[0]))
+				if($('editor_item_'+exploded_tag[0]))
 				{
-					tag = $(exploded_tag[0]);
+					tag = $('editor_item_'+exploded_tag[0]);
 				}
-				if($(tag))
-				{				
-					if(tag.type == "select-one")
+				else
+				{
+					tag = $('editor_item_'+tag);
+				}
+				if(tag)
+				{
+					if(tag.itemType == "dropdown" || tag.dropdown || tag.menu)
 					{
-						tag.selectedIndex = 0;
+						this.setDropDownMenuActiveItem(tag, 0);						
 					}
 					else
 					{
-						Element.removeClassName($(tag), "toolbar_clicked");
+						Element.removeClassName(tag, "toolbar_clicked");
 					}
 				}
 			}
 		}
 		$(this.textarea).focus();
-		$('close_tags').style.visibility = 'hidden';
+		$('editor_item_close_tags').style.visibility = 'hidden';
 		this.openTags = new Array();
 	},
 
-	setToolbarItemState: function(id, state)
-	{
-		element = $(id);
-		if(element && element != null)
-		{
-			element.className = "toolbar_"+state;
-		}
-	},
 	bindSmilieInserter: function(id)
 	{
 		if(!$(id))

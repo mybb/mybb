@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->post_icons, "index.php?".SID."&amp;module=config/post_icons");
+$page->add_breadcrumb_item($lang->post_icons, "index.php?module=config/post_icons");
 
 $plugins->run_hooks("admin_config_post_icons_begin");
 
@@ -52,7 +52,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($iid = $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_added, 'success');
-			admin_redirect('index.php?'.SID.'&module=config/post_icons');
+			admin_redirect('index.php?'?'&module=config/post_icons');
 		}
 	}
 
@@ -61,18 +61,18 @@ if($mybb->input['action'] == "add")
 
 	$sub_tabs['manage_icons'] = array(
 		'title'	=> $lang->manage_post_icons,
-		'link' => "index.php?".SID."&amp;module=config/post_icons"
+		'link' => "index.php?module=config/post_icons"
 	);
 
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
-		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add",
+		'link' => "index.php?module=config/post_icons&amp;action=add",
 		'description' => $lang->add_post_icon_desc
 	);
 
 	$sub_tabs['add_multiple'] = array(
 		'title' => $lang->add_multiple_post_icons,
-		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple"
+		'link' => "index.php?module=config/post_icons&amp;action=add_multiple"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_icon');
@@ -86,7 +86,7 @@ if($mybb->input['action'] == "add")
 		$mybb->input['path'] = 'images/icons/';
 	}
 
-	$form = new Form("index.php?".SID."&amp;module=config/post_icons&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=config/post_icons&amp;action=add", "post", "add");
 	$form_container = new FormContainer($lang->add_post_icon);
 	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 	$form_container->output_row($lang->image_path." <em>*</em>", $lang->image_path_desc, $form->generate_text_box('path', $mybb->input['path'], array('id' => 'path')), 'path');
@@ -161,23 +161,23 @@ if($mybb->input['action'] == "add_multiple")
 
 				$sub_tabs['manage_icons'] = array(
 					'title'	=> $lang->manage_post_icons,
-					'link' => "index.php?".SID."&amp;module=config/post_icons"
+					'link' => "index.php?module=config/post_icons"
 				);
 
 				$sub_tabs['add_icon'] = array(
 					'title'	=> $lang->add_post_icon,
-					'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
+					'link' => "index.php?module=config/post_icons&amp;action=add"
 				);
 
 				$sub_tabs['add_multiple'] = array(
 					'title' => $lang->add_multiple_post_icons,
-					'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple",
+					'link' => "index.php?module=config/post_icons&amp;action=add_multiple",
 					'description' => $lang->add_multiple_post_icons_desc
 				);
 
 				$page->output_nav_tabs($sub_tabs, 'add_multiple');
 
-				$form = new Form("index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple", "post", "add_multiple");
+				$form = new Form("index.php?module=config/post_icons&amp;action=add_multiple", "post", "add_multiple");
 				echo $form->generate_hidden_field("step", "2");
 				echo $form->generate_hidden_field("pathfolder", $path);
 
@@ -201,7 +201,7 @@ if($mybb->input['action'] == "add_multiple")
 				if($form_container->num_rows() == 0)
 				{
 					flash_message($lang->error_no_images, 'error');
-					admin_redirect("index.php?".SID."&module=config/post_icons&action=add_multiple");
+					admin_redirect("index.php?module=config/post_icons&action=add_multiple");
 				}
 
 				$form_container->end();
@@ -224,7 +224,7 @@ if($mybb->input['action'] == "add_multiple")
 			if(empty($mybb->input['include']))
 			{
 				flash_message($lang->error_none_included, 'error');
-				admin_redirect("index.php?".SID."&module=config/post_icons&action=add_multiple");
+				admin_redirect("index.php?module=config/post_icons&action=add_multiple");
 			}
 
 			foreach($mybb->input['include'] as $image => $insert)
@@ -248,7 +248,7 @@ if($mybb->input['action'] == "add_multiple")
 			log_admin_action();
 
 			flash_message($lang->success_post_icons_added, 'success');
-			admin_redirect("index.php?".SID."&module=config/post_icons");
+			admin_redirect("index.php?module=config/post_icons");
 		}
 	}
 
@@ -257,23 +257,23 @@ if($mybb->input['action'] == "add_multiple")
 
 	$sub_tabs['manage_icons'] = array(
 		'title'	=> $lang->manage_post_icons,
-		'link'	=> "index.php?".SID."&amp;module=config/post_icons"
+		'link'	=> "index.php?module=config/post_icons"
 	);
 	
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
-		'link'	=> "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
+		'link'	=> "index.php?module=config/post_icons&amp;action=add"
 	);
 
 	$sub_tabs['add_multiple'] = array(
 		'title' => $lang->add_multiple_post_icons,
-		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple",
+		'link' => "index.php?module=config/post_icons&amp;action=add_multiple",
 		'description'	=> $lang->add_multiple_post_icons_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'add_multiple');
 
-	$form = new Form("index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple", "post", "add_multiple");
+	$form = new Form("index.php?module=config/post_icons&amp;action=add_multiple", "post", "add_multiple");
 	echo $form->generate_hidden_field("step", "1");
 
 	if($errors)
@@ -303,7 +303,7 @@ if($mybb->input['action'] == "edit")
 	if(!$icon['iid'])
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
-		admin_redirect("index.php?".SID."&module=config/post_icons");
+		admin_redirect("index.php?module=config/post_icons");
 	}
 
 	if($mybb->request_method == "post")
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($icon['iid'], $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_updated, 'success');
-			admin_redirect('index.php?'.SID.'&module=config/post_icons');
+			admin_redirect('index.php?'?'&module=config/post_icons');
 		}
 	}
 	
@@ -344,13 +344,13 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_icon'] = array(
 		'title'	=> $lang->edit_post_icon,
-		'link'	=> "index.php?'.SID.'&amp;module=config/post_icons",
+		'link'	=> "index.php?'?'&amp;module=config/post_icons",
 		'description'	=> $lang->edit_post_icon_desc
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'edit_icon');
 
-	$form = new Form("index.php?".SID."&amp;module=config/post_icons&amp;action=edit", "post", "edit");
+	$form = new Form("index.php?module=config/post_icons&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field("iid", $icon['iid']);
 
 	if($errors)
@@ -386,13 +386,13 @@ if($mybb->input['action'] == "delete")
 	if(!$icon['iid'])
 	{
 		flash_message($lang->error_invalid_post_icon, 'error');
-		admin_redirect("index.php?".SID."&module=config/post_icons");
+		admin_redirect("index.php?module=config/post_icons");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/post_icons");
+		admin_redirect("index.php?module=config/post_icons");
 	}
 
 	if($mybb->request_method == "post")
@@ -407,11 +407,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($icon['name']);
 
 		flash_message($lang->success_post_icon_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/post_icons");
+		admin_redirect("index.php?module=config/post_icons");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}", $lang->confirm_post_icon_deletion);
+		$page->output_confirm_action("index.php?module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}", $lang->confirm_post_icon_deletion);
 	}
 }
 
@@ -423,18 +423,18 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['manage_icons'] = array(
 		'title'	=> $lang->manage_post_icons,
-		'link' => "index.php?".SID."&amp;module=config/post_icons",
+		'link' => "index.php?module=config/post_icons",
 		'description' => $lang->manage_post_icons_desc
 	);
 
 	$sub_tabs['add_icon'] = array(
 		'title'	=> $lang->add_post_icon,
-		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add"
+		'link' => "index.php?module=config/post_icons&amp;action=add"
 	);
 
 	$sub_tabs['add_multiple'] = array(
 		'title' => $lang->add_multiple_post_icons,
-		'link' => "index.php?".SID."&amp;module=config/post_icons&amp;action=add_multiple"
+		'link' => "index.php?module=config/post_icons&amp;action=add_multiple"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_icons');
@@ -470,8 +470,8 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<img src=\"{$image}\" alt=\"\" />", array("class" => "align_center"));
 		$table->construct_cell("{$icon['name']}");
 
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -486,7 +486,7 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("icons", "COUNT(iid) AS icons");
 	$total_rows = $db->fetch_field($query, "icons");
 	
-	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?".SID."&amp;module=config/post_icons&amp;page={page}");
+	echo "<br />".draw_admin_pagination($pagenum, "20", $total_rows, "index.php?module=config/post_icons&amp;page={page}");
 
 	$page->output_footer();
 }

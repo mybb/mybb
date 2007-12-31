@@ -15,19 +15,19 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->forum_announcements, "index.php?".SID."&amp;module=forum/announcements");
+$page->add_breadcrumb_item($lang->forum_announcements, "index.php?module=forum/announcements");
 
 if($mybb->input['action'] == "add" || !$mybb->input['action'])
 {
 	$sub_tabs['forum_announcements'] = array(
 		'title' => $lang->forum_announcements,
-		'link' => "index.php?".SID."&amp;module=forum/announcements",
+		'link' => "index.php?module=forum/announcements",
 		'description' => $lang->forum_announcements_desc
 	);
 
 	$sub_tabs['add_announcement'] = array(
 		'title' => $lang->add_announcement,
-		'link' => "index.php?".SID."&amp;module=forum/announcements&amp;action=add",
+		'link' => "index.php?module=forum/announcements&amp;action=add",
 		'description' => $lang->add_announcement_desc
 	);
 }
@@ -35,13 +35,13 @@ else if($mybb->input['action'] == "edit")
 {
 	$sub_tabs['forum_announcements'] = array(
 		'title' => $lang->forum_announcements,
-		'link' => "index.php?".SID."&amp;module=forum/announcements",
+		'link' => "index.php?module=forum/announcements",
 		'description' => $lang->forum_announcements_desc
 	);
 	
 	$sub_tabs['update_announcement'] = array(
 		'title' => $lang->update_announcement,
-		'link' => "index.php?".SID."&amp;module=forum/announcements&amp;action=add",
+		'link' => "index.php?module=forum/announcements&amp;action=add",
 		'description' => $lang->update_announcement_desc
 	);
 }
@@ -125,7 +125,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($aid, $mybb->input['title']);
 	
 			flash_message($lang->success_added_announcement, 'success');
-			admin_redirect("index.php?".SID."&module=forum/announcements");
+			admin_redirect("index.php?module=forum/announcements");
 		}
 	}
 	
@@ -133,7 +133,7 @@ if($mybb->input['action'] == "add")
 	$page->output_header($lang->add_an_announcement);
 	$page->output_nav_tabs($sub_tabs, "add_announcement");
 
-	$form = new Form("index.php?".SID."&amp;module=forum/announcements&amp;action=add", "post");
+	$form = new Form("index.php?module=forum/announcements&amp;action=add", "post");
 	if($errors)
 	{
 		$page->output_inline_error($errors);
@@ -334,7 +334,7 @@ if($mybb->input['action'] == "edit")
 	if(!trim($mybb->input['aid']))
 	{
 		flash_message($lang->error_invalid_announcement, 'error');
-		admin_redirect("index.php?".SID."&module=forum/announcements");
+		admin_redirect("index.php?module=forum/announcements");
 	}
 			
 	if($mybb->request_method == "post")
@@ -410,7 +410,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($aid, $mybb->input['title']);
 	
 			flash_message($lang->success_updated_announcement, 'success');
-			admin_redirect("index.php?".SID."&module=forum/announcements");
+			admin_redirect("index.php?module=forum/announcements");
 		}
 	}
 	
@@ -418,7 +418,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_header($lang->update_an_announcement);
 	$page->output_nav_tabs($sub_tabs, "update_announcement");
 
-	$form = new Form("index.php?".SID."&amp;module=forum/announcements&amp;action=edit", "post");
+	$form = new Form("index.php?module=forum/announcements&amp;action=edit", "post");
 	echo $form->generate_hidden_field("aid", $mybb->input['aid']);
 	
 	if($errors)
@@ -433,7 +433,7 @@ if($mybb->input['action'] == "edit")
 		if(!$announcement)
 		{
 			flash_message($lang->error_invalid_announcement, 'error');
-			admin_redirect("index.php?".SID."&module=forum/announcements");
+			admin_redirect("index.php?module=forum/announcements");
 		}
 		
 		$start_time = explode("-", gmdate("g-i-a", $announcement['startdate']));
@@ -598,13 +598,13 @@ if($mybb->input['action'] == "delete")
 	if(!$announcement['aid'])
 	{
 		flash_message($lang->error_invalid_announcement, 'error');
-		admin_redirect("index.php?".SID."&module=forum/announcements");
+		admin_redirect("index.php?module=forum/announcements");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=forum/announcements");
+		admin_redirect("index.php?module=forum/announcements");
 	}
 
 	if($mybb->request_method == "post")
@@ -617,11 +617,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($announcement['aid']);
 
 		flash_message($lang->success_announcement_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=forum/announcements");
+		admin_redirect("index.php?module=forum/announcements");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$announcement['aid']}", $lang->confirm_announcement_deletion);
+		$page->output_confirm_action("index.php?module=forum/announcements&amp;action=delete&amp;aid={$announcement['aid']}", $lang->confirm_announcement_deletion);
 	}
 }
 
@@ -629,7 +629,7 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_announcements_start");
 	
-	$page->add_breadcrumb_item($lang->forum_announcements, "index.php?".SID."&amp;module=forum/announcements");
+	$page->add_breadcrumb_item($lang->forum_announcements, "index.php?module=forum/announcements");
 	
 	$page->output_header($lang->forum_announcements);
 	
@@ -665,9 +665,9 @@ if(!$mybb->input['action'])
 				$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
 			}
 			
-			$table->construct_cell($icon."<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a>");
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+			$table->construct_cell($icon."<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a>");
+			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 		$table->output($lang->global_announcements);
@@ -727,7 +727,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 			}
 				
 			$table->construct_cell("<div style=\"padding-left: ".(40*($depth-1))."px;\">{$forum['name']}</div>");
-			$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}</a>", array("class" => "align_center", "colspan" => 2));
+			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=add&amp;fid={$forum['fid']}\">{$lang->add_announcement}</a>", array("class" => "align_center", "colspan" => 2));
 			$table->construct_row();
 				
 			if($announcements[$forum['fid']])
@@ -743,9 +743,9 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 						$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Active)\" title=\"Active Announcement\"  style=\"vertical-align: middle;\" /> ";
 					}
 							
-					$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a></div>");
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+					$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a></div>");
+					$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
+					$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 					$table->construct_row();
 				}
 			}

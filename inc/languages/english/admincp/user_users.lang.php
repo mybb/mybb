@@ -42,6 +42,7 @@ $l['error_invalid_view_delete'] = "You selected an invalid administration view t
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
 $l['success_coppa_activated'] = "The COPPA user has successfully been activated.";
+$l['success_activated'] = "The user has successfuly been activated.";
 $l['success_user_created'] = "The user has successfully been created.";
 $l['success_user_updated'] = "The user has successfully been updated.";
 $l['success_user_deleted'] = "The user has successfully been deleted.";
@@ -53,7 +54,7 @@ $l['success_view_deleted'] = "The administration view has successfully been dele
 
 $l['confirm_view_deletion'] = "Are you sure you want to delete the selected view?";
 
-$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?".SID."&amp;module=user/users&amp;action=coppa_activate&amp;uid={1}\">Activate Account</a></p>";
+$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user/users&amp;action=activate_user&amp;uid={1}\">Activate Account</a></p>";
 
 $l['required_profile_info'] = "Required Profile Information";
 $l['password'] = "Password";
@@ -204,6 +205,8 @@ $l['none'] = "None";
 
 $l['edit_profile_and_settings'] = "Edit Profile &amp; Settings";
 $l['ban_user'] = "Ban User";
+$l['approve_coppa_user'] = "Activate COPPA User";
+$l['approve_user'] = "Activate User";
 $l['delete_user'] = "Delete User";
 $l['show_referred_users'] = "Show Referred Users";
 $l['show_attachments'] = "Show Attachments";

@@ -326,16 +326,22 @@ function save_quick_perms($fid)
  */
 function check_admin_permissions($action)
 {
-	global $mybb, $page, $lang;
+	global $mybb, $page, $lang, $modules_dir;
 	
-	if($mybb->admin['permissions'][$action['module']][$action['action']] != 1)
-	{
-		$page->output_header($lang->access_denied);
-		$page->add_breadcrumb_item($lang->access_denied, "index.php?".SID."&amp;module=home/index");
-		$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
-		$page->output_footer();
-		exit;
-	}
+	require_once $modules_dir."/".$action['module']."/module_meta.php";
+	if(function_exists($action['module']."_admin_permissions"))
+	{	
+		$func = $action['module']."_admin_permissions";
+		$permissions = $func();
+		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1)
+		{
+			$page->output_header($lang->access_denied);
+			$page->add_breadcrumb_item($lang->access_denied, "index.php?module=home/index");
+			$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
+			$page->output_footer();
+			exit;
+		}
+	}	
 }
 
 /**

@@ -15,25 +15,25 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->attachments, "index.php?".SID."&amp;module=forum/attachments");
+$page->add_breadcrumb_item($lang->attachments, "index.php?module=forum/attachments");
 
 if($mybb->input['action'] == "stats" || $mybb->input['action'] == "orphans" || !$mybb->input['action'])
 {
 	$sub_tabs['find_attachments'] = array(
 		'title' => $lang->find_attachments,
-		'link' => "index.php?".SID."&amp;module=forum/attachments",
+		'link' => "index.php?module=forum/attachments",
 		'description' => $lang->find_attachments_desc
 	);
 
 	$sub_tabs['find_orphans'] = array(
 		'title' => $lang->find_orphans,
-		'link' => "index.php?".SID."&amp;module=forum/attachments&amp;action=orphans",
+		'link' => "index.php?module=forum/attachments&amp;action=orphans",
 		'description' => $lang->find_orphans_desc
 	);
 
 	$sub_tabs['stats'] = array(
 		'title' => $lang->attachment_stats,
-		'link' => "index.php?".SID."&amp;module=forum/attachments&amp;action=stats",
+		'link' => "index.php?module=forum/attachments&amp;action=stats",
 		'description' => $lang->attachment_stats_desc
 	);
 }
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "delete")
 	if(count($mybb->input['aids']) < 1)
 	{
 		flash_message($lang->error_nothing_selected, 'error');
-		admin_redirect("index.php?".SID."&module=forum/attachments");
+		admin_redirect("index.php?module=forum/attachments");
 	}
 
 	if($mybb->request_method == "post")
@@ -82,7 +82,7 @@ if($mybb->input['action'] == "delete")
 		log_admin_action();
 
 		flash_message($lang->success_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=forum/attachments");
+		admin_redirect("index.php?module=forum/attachments");
 	}
 	else
 	{
@@ -90,7 +90,7 @@ if($mybb->input['action'] == "delete")
 		{
 			$aids .= "&amp;aids[]=$aid";
 		}
-		$page->output_confirm_action("index.php?".SID."&amp;module=forum/attachments&amp;action=delete&amp;aids={$aids}", $lang->confirm_delete); 
+		$page->output_confirm_action("index.php?module=forum/attachments&amp;action=delete&amp;aids={$aids}", $lang->confirm_delete); 
 	}
 }
 
@@ -191,7 +191,7 @@ if($mybb->input['action'] == "stats")
 	while($user = $db->fetch_array($query))
 	{
 		$table->construct_cell(build_profile_link($user['username'], $user['uid']));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=forum/attachments&results=1&username=".urlencode($user['username'])."\">".get_friendly_size($user['totalsize'])."</a>", array('class' => 'align_center'));
+		$table->construct_cell("<a href=\"index.php?module=forum/attachments&results=1&username=".urlencode($user['username'])."\">".get_friendly_size($user['totalsize'])."</a>", array('class' => 'align_center'));
 		$table->construct_row();
 	}
 	$table->output($lang->users_diskspace);
@@ -253,7 +253,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	{
 		flash_message($lang->success_orphan_deleted, 'success');
 	}
-	admin_redirect("index.php?".SID."&module=forum/attachments");
+	admin_redirect("index.php?module=forum/attachments");
 }
 
 if($mybb->input['action'] == "orphans")
@@ -304,13 +304,13 @@ if($mybb->input['action'] == "orphans")
 		if($results == 0)
 		{
 			flash_message($lang->success_no_orphans, 'success');
-			admin_redirect("index.php?".SID."&module=forum/attachments");
+			admin_redirect("index.php?module=forum/attachments");
 		}
 
 		$page->output_header($lang->orphan_results);
 		$page->output_nav_tabs($sub_tabs, 'find_orphans');
 
-		$form = new Form("index.php?".SID."&amp;module=forum/attachments&amp;action=delete_orphans", "post");
+		$form = new Form("index.php?module=forum/attachments&amp;action=delete_orphans", "post");
 
 		$table = new Table;
 		$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
@@ -419,7 +419,7 @@ if($mybb->input['action'] == "orphans")
 		}
 
 		// Now send the user to the final page
-		$form = new Form("index.php?".SID."&amp;module=forum/attachments&amp;action=orphans&amp;step=3", "post", 0, "", "redirect_form");
+		$form = new Form("index.php?module=forum/attachments&amp;action=orphans&amp;step=3", "post", 0, "", "redirect_form");
 		// Scan complete
 		if($mybb->input['bad_attachments'])
 		{
@@ -549,7 +549,7 @@ if($mybb->input['action'] == "orphans")
 		scan_attachments_directory();
 		global $bad_attachments;
 
-		$form = new Form("index.php?".SID."&amp;module=forum/attachments&amp;action=orphans&amp;step=2", "post", 0, "", "redirect_form");
+		$form = new Form("index.php?module=forum/attachments&amp;action=orphans&amp;step=2", "post", 0, "", "redirect_form");
 		// Scan complete
 		if(is_array($bad_attachments) && count($bad_attachments) > 0)
 		{
@@ -729,7 +729,7 @@ if(!$mybb->input['action'])
 			
 			$page->output_nav_tabs($sub_tabs, 'find_attachments');
 			
-			$form = new Form("index.php?".SID."&amp;module=forum/attachments&amp;action=delete", "post");
+			$form = new Form("index.php?module=forum/attachments&amp;action=delete", "post");
 
 			$table = new Table;
 			$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
@@ -758,7 +758,7 @@ if(!$mybb->input['action'])
 			// Need to draw pagination for this result set
 			if($num_results > $mybb->input['perpage'])
 			{
-				$pagination_url = "index.php?".SID."&amp;module=forum/attachments&amp;results=1";
+				$pagination_url = "index.php?module=forum/attachments&amp;results=1";
 				$pagination_vars = array('filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
@@ -793,7 +793,7 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 
-	$form = new Form("index.php?".SID."&amp;module=forum/attachments", "post");
+	$form = new Form("index.php?module=forum/attachments", "post");
 
 	$form_container = new FormContainer($lang->find_where);
 	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');

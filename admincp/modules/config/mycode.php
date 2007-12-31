@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->mycode, "index.php?".SID."&amp;module=config/mycode");
+$page->add_breadcrumb_item($lang->mycode, "index.php?module=config/mycode");
 
 $plugins->run_hooks("admin_config_mycode_begin");
 
@@ -29,7 +29,7 @@ if($mybb->input['action'] == "toggle_status")
 	if(!$mycode['cid'])
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
-		admin_redirect("index.php?".SID."&module=config/mycode");
+		admin_redirect("index.php?module=config/mycode");
 	}
 
 	if($mycode['active'] == 1)
@@ -56,7 +56,7 @@ if($mybb->input['action'] == "toggle_status")
 	log_admin_action($mycode['cid'], $mycode['title'], $new_status);
 
 	flash_message($phrase, 'success');
-	admin_redirect('index.php?'.SID.'&module=config/mycode');
+	admin_redirect('index.php?'?'&module=config/mycode');
 }
 
 if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "post")
@@ -126,19 +126,19 @@ if($mybb->input['action'] == "add")
 			log_admin_action($cid, $mybb->input['title']);
 
 			flash_message($lang->success_added_mycode, 'success');
-			admin_redirect('index.php?'.SID.'&module=config/mycode');
+			admin_redirect('index.php?'?'&module=config/mycode');
 		}
 	}
 	
 	$sub_tabs['mycode'] = array(
 		'title'	=> $lang->mycode,
-		'link' => "index.php?".SID."&amp;module=config/mycode",
+		'link' => "index.php?module=config/mycode",
 		'description' => $lang->mycode_desc
 	);
 
 	$sub_tabs['add_new_mycode'] = array(
 		'title'	=> $lang->add_new_mycode,
-		'link' => "index.php?".SID."&amp;module=config/mycode&amp;action=add",
+		'link' => "index.php?module=config/mycode&amp;action=add",
 		'description' => $lang->add_new_mycode_desc
 	);
 
@@ -155,7 +155,7 @@ if($mybb->input['action'] == "add")
 		$mybb->input['active'] = 1;
 	}
 
-	$form = new Form("index.php?".SID."&amp;module=config/mycode&amp;action=add", "post", "add");
+	$form = new Form("index.php?module=config/mycode&amp;action=add", "post", "add");
 	$form_container = new FormContainer($lang->add_mycode);
 	$form_container->output_row($lang->title." <em>*</em>", '', $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->short_description, '', $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript">
 //<![CDATA[
 Event.observe(window, "load", function() {
-    new MyCodeSandbox("index.php?'.SID.'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("index.php?'?'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
 });
 //]]>
 </script>';
@@ -200,7 +200,7 @@ if($mybb->input['action'] == "edit")
 	if(!$mycode['cid'])
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
-		admin_redirect("index.php?".SID."&module=config/mycode");
+		admin_redirect("index.php?module=config/mycode");
 	}
 
 	if($mybb->request_method == "post")
@@ -247,13 +247,13 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($mycode['cid'], $mybb->input['title']);
 
 			flash_message($lang->success_updated_mycode, 'success');
-			admin_redirect('index.php?'.SID.'&module=config/mycode');
+			admin_redirect('index.php?'?'&module=config/mycode');
 		}
 	}
 
 	$sub_tabs['edit_mycode'] = array(
 		'title'	=> $lang->edit_mycode,
-		'link' => "index.php?".SID."&amp;module=config/mycode&amp;action=edit",
+		'link' => "index.php?module=config/mycode&amp;action=edit",
 		'description' => $lang->edit_mycode_desc
 	);
 	
@@ -261,7 +261,7 @@ if($mybb->input['action'] == "edit")
 	$page->output_header($lang->custom_mycode." - ".$lang->edit_mycode);
 	$page->output_nav_tabs($sub_tabs, 'edit_mycode');
 
-	$form = new Form("index.php?".SID."&amp;module=config/mycode&amp;action=edit", "post", "edit");
+	$form = new Form("index.php?module=config/mycode&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field('cid', $mycode['cid']);
 
 	if($errors)
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "edit")
 
 Event.observe(window, "load", function() {
 //<![CDATA[
-    new MyCodeSandbox("index.php?'.SID.'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("index.php?'?'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
 });
 //]]>
 </script>';
@@ -319,13 +319,13 @@ if($mybb->input['action'] == "delete")
 	if(!$mycode['cid'])
 	{
 		flash_message($lang->error_invalid_mycode, 'error');
-		admin_redirect("index.php?".SID."&module=config/mycode");
+		admin_redirect("index.php?module=config/mycode");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/mycode");
+		admin_redirect("index.php?module=config/mycode");
 	}
 
 	if($mybb->request_method == "post")
@@ -340,11 +340,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($mycode['title']);
 
 		flash_message($lang->success_deleted_mycode, 'success');
-		admin_redirect("index.php?".SID."&module=config/mycode");
+		admin_redirect("index.php?module=config/mycode");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/mycode&amp;action=delete&amp;cid={$mycode['cid']}", $lang->confirm_mycode_deletion);
+		$page->output_confirm_action("index.php?module=config/mycode&amp;action=delete&amp;cid={$mycode['cid']}", $lang->confirm_mycode_deletion);
 	}
 }
 
@@ -356,13 +356,13 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['mycode'] = array(
 		'title'	=> $lang->mycode,
-		'link' => "index.php?".SID."&amp;module=config/mycode",
+		'link' => "index.php?module=config/mycode",
 		'description' => $lang->mycode_desc
 	);
 
 	$sub_tabs['add_new_mycode'] = array(
 		'title'	=> $lang->add_new_mycode,
-		'link' => "index.php?".SID."&amp;module=config/mycode&amp;action=add"
+		'link' => "index.php?module=config/mycode&amp;action=add"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'mycode');
@@ -390,12 +390,12 @@ if(!$mybb->input['action'])
 			$mycode['description'] = "<small>{$mycode['description']}</small>";
 		}
 		
-		$table->construct_cell("{$indicator}<strong><a href=\"index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}");
+		$table->construct_cell("{$indicator}<strong><a href=\"index.php?module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}\">{$mycode['title']}</a></strong><br />{$mycode['description']}");
 
 		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
-		$popup->add_item($lang->edit_mycode, "index.php?".SID."&amp;module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}");
-		$popup->add_item($phrase, "index.php?".SID."&amp;module=config/mycode&amp;action=toggle_status&amp;cid={$mycode['cid']}");
-		$popup->add_item($lang->delete_mycode, "index.php?".SID."&amp;module=config/mycode&amp;action=delete&amp;cid={$mycode['cid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_mycode_deletion}')");
+		$popup->add_item($lang->edit_mycode, "index.php?module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}");
+		$popup->add_item($phrase, "index.php?module=config/mycode&amp;action=toggle_status&amp;cid={$mycode['cid']}");
+		$popup->add_item($lang->delete_mycode, "index.php?module=config/mycode&amp;action=delete&amp;cid={$mycode['cid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_mycode_deletion}')");
 		$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
 		$table->construct_row();
 	}

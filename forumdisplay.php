@@ -16,7 +16,7 @@ $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
 $templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
-$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumdisplay_announcements_announcement_modbit,forumdisplay_rules_link,forumdisplay_thread_gotounread";
+$templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumdisplay_announcements_announcement_modbit,forumdisplay_rules_link,forumdisplay_thread_gotounread,forumdisplay_nothreads,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_forumlist.php";
@@ -1012,13 +1012,6 @@ if(is_array($threadcache))
 		eval("\$threads .= \"".$templates->get("forumdisplay_thread")."\";");
 	}
 
-	// If there are no unread threads in this forum and no unread child forums - mark it as read
-	require_once MYBB_ROOT."inc/functions_indicators.php";
-	if(fetch_unread_count($fid) == 0 && $unread_forums == 0)
-	{
-		mark_forum_read($fid);
-	}
-
 	$customthreadtools = '';
 	if($ismod)
 	{
@@ -1027,12 +1020,11 @@ if(is_array($threadcache))
 			case "pgsql":
 			case "sqlite3":
 			case "sqlite2":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%') AND type = 't'");
+				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
 				break;
 			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%') AND type = 't'");
-		}	
-
+				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+		}
 		while($tool = $db->fetch_array($query))
 		{
 			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
@@ -1047,9 +1039,17 @@ if(is_array($threadcache))
 	}
 }
 
+// If there are no unread threads in this forum and no unread child forums - mark it as read
+require_once MYBB_ROOT."inc/functions_indicators.php";
+if(fetch_unread_count($fid) == 0 && $unread_forums == 0)
+{
+	mark_forum_read($fid);
+}
+
+
 // Subscription status
-$query = $db->simple_select("forumsubscriptions", "COUNT(fid) as count", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
-if($db->fetch_field($query, 'count'))
+$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
+if($db->fetch_field($query, 'fid'))
 {
 	$add_remove_subscription = 'remove';
 	$add_remove_subscription_text = $lang->unsubscribe_forum;

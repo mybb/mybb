@@ -15,18 +15,18 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->calendars, "index.php?".SID."&amp;module=config/calendars");
+$page->add_breadcrumb_item($lang->calendars, "index.php?module=config/calendars");
 
 if($mybb->input['action'] == "add" || $mybb->input['action'] == "permissions" || !$mybb->input['action'])
 {
 	$sub_tabs['manage_calendars'] = array(
 		'title' => $lang->manage_calendars,
-		'link' => "index.php?".SID."&amp;module=config/calendars",
+		'link' => "index.php?module=config/calendars",
 		'description' => $lang->manage_calendars_desc
 	);
 	$sub_tabs['add_calendar'] = array(
 		'title' => $lang->add_calendar,
-		'link' => "index.php?".SID."&amp;module=config/calendars&amp;action=add",
+		'link' => "index.php?module=config/calendars&amp;action=add",
 	);
 }
 
@@ -71,7 +71,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($cid, $mybb->input['name']);
 
 			flash_message($lang->success_calendar_created, 'success');
-			admin_redirect("index.php?".SID."&module=config/calendars");
+			admin_redirect("index.php?module=config/calendars");
 		}
 	}
 	else
@@ -89,12 +89,12 @@ if($mybb->input['action'] == "add")
 	
 	$sub_tabs['add_calendar'] = array(
 		'title' => $lang->add_calendar,
-		'link' => "index.php?".SID."&amp;module=config/calendars&amp;action=add",
+		'link' => "index.php?module=config/calendars&amp;action=add",
 		'description' => $lang->add_calendar_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_calendar');
-	$form = new Form("index.php?".SID."&amp;module=config/calendars&amp;action=add", "post");
+	$form = new Form("index.php?module=config/calendars&amp;action=add", "post");
 	
 	
 	if($errors)
@@ -135,7 +135,7 @@ if($mybb->input['action'] == "permissions")
 	if(!$calendar['cid'])
 	{
 		flash_message($lang->error_invalid_calendar, 'error');
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 
 	$query = $db->simple_select("usergroups", "*", "", array("order_dir" => "name"));
@@ -181,15 +181,15 @@ if($mybb->input['action'] == "permissions")
 		log_admin_action($calendar['cid'], $calendar['name']);
 
 		flash_message($lang->success_calendar_permissions_updated, 'success');
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 	
 	$calendar['name'] = htmlspecialchars_uni($calendar['name']);
-	$page->add_breadcrumb_item($calendar['name'], "index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}");
+	$page->add_breadcrumb_item($calendar['name'], "index.php?module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}");
 	$page->add_breadcrumb_item($lang->permissions);
 	$page->output_header($lang->calendars." - ".$lang->edit_permissions);
 
-	$form = new Form("index.php?".SID."&amp;module=config/calendars&amp;action=permissions", "post");
+	$form = new Form("index.php?module=config/calendars&amp;action=permissions", "post");
 	echo $form->generate_hidden_field("cid", $calendar['cid']);
 
 	$table = new Table;
@@ -275,7 +275,7 @@ if($mybb->input['action'] == "edit")
 	if(!$calendar['cid'])
 	{
 		flash_message($lang->error_invalid_calendar, 'error');
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 
 	if($mybb->request_method == "post")
@@ -313,7 +313,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($calendar['cid'], $mybb->input['name']);
 
 			flash_message($lang->success_calendar_updated, 'success');
-			admin_redirect("index.php?".SID."&module=config/calendars");
+			admin_redirect("index.php?module=config/calendars");
 		}
 	}
 	
@@ -322,12 +322,12 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_calendar'] = array(
 		'title' => $lang->edit_calendar,
-		'link' => "index.php?".SID."&amp;module=config/smilies&amp;action=edit",
+		'link' => "index.php?module=config/smilies&amp;action=edit",
 		'description' => $lang->edit_calendar_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_calendar');
-	$form = new Form("index.php?".SID."&amp;module=config/calendars&amp;action=edit", "post");
+	$form = new Form("index.php?module=config/calendars&amp;action=edit", "post");
 	
 	echo $form->generate_hidden_field("cid", $calendar['cid']);
 	
@@ -373,13 +373,13 @@ if($mybb->input['action'] == "delete")
 	if(!$calendar['cid'])
 	{
 		flash_message($lang->error_invalid_calendar, 'error');
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 
 	if($mybb->request_method == "post")
@@ -394,11 +394,11 @@ if($mybb->input['action'] == "delete")
 		log_admin_action($calendar['name']);
 
 		flash_message($lang->success_calendar_deleted, 'success');
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?".SID."&amp;module=config/calendar&amp;action=delete&amp;cid={$calendar['cid']}", $lang->confirm_calendar_deletion);
+		$page->output_confirm_action("index.php?module=config/calendar&amp;action=delete&amp;cid={$calendar['cid']}", $lang->confirm_calendar_deletion);
 	}
 }
 
@@ -408,7 +408,7 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 	
 	if(!is_array($mybb->input['disporder']))
 	{
-		admin_redirect("index.php?".SID."&module=config/calendars");
+		admin_redirect("index.php?module=config/calendars");
 	}
 
 	foreach($mybb->input['disporder'] as $cid => $order)
@@ -425,7 +425,7 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 	log_admin_action();
 
 	flash_message($lang->sucess_calendar_orders_updated, 'success');
-	admin_redirect("index.php?".SID."&module=config/calendars");
+	admin_redirect("index.php?module=config/calendars");
 }
 
 if(!$mybb->input['action'])
@@ -434,7 +434,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'manage_calendars');
 
-	$form = new Form("index.php?".SID."&amp;module=config/calendars&amp;action=update_order", "post");
+	$form = new Form("index.php?module=config/calendars&amp;action=update_order", "post");
 	$table = new Table;
 	$table->construct_header($lang->calendar);
 	$table->construct_header($lang->order, array('width' => '5%', 'class' => 'align_center'));
@@ -444,11 +444,11 @@ if(!$mybb->input['action'])
 	while($calendar = $db->fetch_array($query))
 	{
 		$calendar['name'] = htmlspecialchars_uni($calendar['name']);
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\"><strong>{$calendar['name']}</strong></a>");
+		$table->construct_cell("<a href=\"index.php?module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\"><strong>{$calendar['name']}</strong></a>");
 		$table->construct_cell($form->generate_text_box("disporder[{$calendar['cid']}]", $calendar['disporder'], array('id' => 'disporder', 'style' => 'width: 80%', 'class' => 'align_center')));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=permissions&amp;cid={$calendar['cid']}\">{$lang->permissions}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/calendars&amp;action=delete&amp;cid={$calendar['cid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_calendar_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/calendars&amp;action=edit&amp;cid={$calendar['cid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/calendars&amp;action=permissions&amp;cid={$calendar['cid']}\">{$lang->permissions}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/calendars&amp;action=delete&amp;cid={$calendar['cid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_calendar_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	

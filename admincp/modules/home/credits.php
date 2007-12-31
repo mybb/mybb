@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->mybb_credits, "index.php?".SID."&amp;module=home/credits");
+$page->add_breadcrumb_item($lang->mybb_credits, "index.php?module=home/credits");
 
 $plugins->run_hooks("admin_home_credits_begin");
 
@@ -27,7 +27,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['credits'] = array(
 		'title' => $lang->mybb_credits,
-		'link' => "index.php?".SID."&amp;module=home/credits",
+		'link' => "index.php?module=home/credits",
 		'description' => $lang->mybb_credits_description
 	);
 	

@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->plugins, "index.php?".SID."&amp;module=config/plugins");
+$page->add_breadcrumb_item($lang->plugins, "index.php?module=config/plugins");
 
 $plugins->run_hooks("admin_config_plugins_begin");
 
@@ -51,7 +51,7 @@ if($mybb->input['action'] == "check")
 	if(empty($info))
 	{
 		flash_message($lang->error_vcheck_no_supported_plugins, 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
+		admin_redirect("index.php?module=config/plugins");
 	}
 	
 	require_once MYBB_ROOT."inc/class_xml.php";
@@ -60,7 +60,7 @@ if($mybb->input['action'] == "check")
 	if(!$contents)
 	{
 		flash_message($lang->error_vcheck_communications_problem, 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
+		admin_redirect("index.php?module=config/plugins");
 	}
 	
 	$parser = new XMLParser($contents);
@@ -81,7 +81,7 @@ if($mybb->input['action'] == "check")
 		}
 		
 		flash_message($lang->error_communication_problem.$error_msg, 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
+		admin_redirect("index.php?module=config/plugins");
 	}
 	
 	$table = new Table;
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "check")
 	if($table->num_rows() == 0)
 	{
 		flash_message($lang->success_plugins_up_to_date, 'success');
-		admin_redirect("index.php?".SID."&module=config/plugins");
+		admin_redirect("index.php?module=config/plugins");
 	}
 	
 	$page->add_breadcrumb_item($lang->plugin_updates);
@@ -121,7 +121,7 @@ if($mybb->input['action'] == "check")
 	
 	$sub_tabs['update_plugins'] = array(
 		'title' => $lang->plugin_updates,
-		'link' => "index.php?".SID."&amp;module=config/plugin&amp;action=check",
+		'link' => "index.php?module=config/plugin&amp;action=check",
 		'description' => $lang->plugin_updates_desc
 	);
 	
@@ -152,7 +152,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	if(!file_exists(MYBB_ROOT."inc/plugins/$file"))
 	{
 		flash_message($lang->error_invalid_plugin, 'error');
-		admin_redirect("index.php?".SID."&module=config/plugins");
+		admin_redirect("index.php?module=config/plugins");
 	}
 	
 	$plugins_cache = $cache->read("plugins");
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		if($plugins->is_compatible($codename) == false)
 		{
 			flash_message(sprintf($lang->plugin_incompatible, $mybb->version_code), 'error');
-			admin_redirect("index.php?".SID."&module=config/plugins");
+			admin_redirect("index.php?module=config/plugins");
 		}
 
 		// If not installed and there is a custom installation function
@@ -227,7 +227,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	log_admin_action($mybb->input['action'], $codename);
 
 	flash_message($message, 'success');
-	admin_redirect("index.php?".SID."&module=config/plugins");
+	admin_redirect("index.php?module=config/plugins");
 }
 
 if(!$mybb->input['action'])
@@ -236,12 +236,12 @@ if(!$mybb->input['action'])
 
 	$sub_tabs['plugins'] = array(
 		'title' => $lang->plugins,
-		'link' => "index.php?".SID."&amp;module=config/plugins",
+		'link' => "index.php?module=config/plugins",
 		'description' => $lang->plugins_desc
 	);
 	$sub_tabs['update_plugins'] = array(
 		'title' => $lang->plugin_updates,
-		'link' => "index.php?".SID."&amp;module=config/plugins&amp;action=check",
+		'link' => "index.php?module=config/plugins&amp;action=check",
 		'description' => $lang->plugin_updates_desc
 	);
 	
@@ -318,16 +318,16 @@ if(!$mybb->input['action'])
 				}
 				else
 				{
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
+					$table->construct_cell("<a href=\"index.php?module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->install_and_activate}</a>", array("class" => "align_center", "colspan" => 2));
 				}
 			}
 			// Plugin is activated and installed
 			else if($active_plugins[$codename])
 			{
-				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">{$lang->deactivate}</a>", array("class" => "align_center", "width" => 150));
+				$table->construct_cell("<a href=\"index.php?module=config/plugins&amp;action=deactivate&amp;plugin={$codename}\">{$lang->deactivate}</a>", array("class" => "align_center", "width" => 150));
 				if($uninstall_button)
 				{
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+					$table->construct_cell("<a href=\"index.php?module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
 				}
 				else
 				{
@@ -337,10 +337,10 @@ if(!$mybb->input['action'])
 			// Plugin is installed but not active
 			else if($installed == true)
 			{
-				$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
+				$table->construct_cell("<a href=\"index.php?module=config/plugins&amp;action=activate&amp;plugin={$codename}\">{$lang->activate}</a>", array("class" => "align_center", "width" => 150));
 				if($uninstall_button)
 				{
-					$table->construct_cell("<a href=\"index.php?".SID."&amp;module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
+					$table->construct_cell("<a href=\"index.php?module=config/plugins&amp;action=deactivate&amp;uninstall=1&amp;plugin={$codename}\">{$lang->uninstall}</a>", array("class" => "align_center", "width" => 150));
 				}
 				else
 				{

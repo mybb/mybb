@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->user_email_log, "index.php?".SID."&amp;module=tools/maillogs");
+$page->add_breadcrumb_item($lang->user_email_log, "index.php?module=tools/maillogs");
 
 $plugins->run_hooks("admin_tools_maillogs_begin");
 
@@ -150,7 +150,7 @@ if(!$mybb->input['action'])
 		if(!$user['uid'])
 		{
 			flash_message($lang->error_invalid_user, 'error');
-			admin_redirect("index.php?".SID."&module=tools/maillogs");
+			admin_redirect("index.php?module=tools/maillogs");
 		}
 		$additional_sql_criteria .= "AND l.fromuid='{$user['uid']}'";
 		$additional_criteria = "fromuid={$user['uid']}";
@@ -180,7 +180,7 @@ if(!$mybb->input['action'])
 		if(!$user['uid'])
 		{
 			flash_message($lang->error_invalid_user, 'error');
-			admin_redirect("index.php?".SID."&module=tools/maillogs");
+			admin_redirect("index.php?module=tools/maillogs");
 		}
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
 		$additional_criteria = "touid='{$user['uid']}'";
@@ -199,12 +199,12 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['maillogs'] = array(
 		'title' => $lang->user_email_log,
-		'link' => "index.php?".SID."&amp;module=tools/maillogs",
+		'link' => "index.php?module=tools/maillogs",
 		'description' => $lang->user_email_log_desc
 	);
 	$sub_tabs['prune_maillogs'] = array(
 		'title' => $lang->prune_user_email_log,
-		'link' => "index.php?".SID."&amp;module=tools/maillogs&amp;action=prune"
+		'link' => "index.php?module=tools/maillogs&amp;action=prune"
 	);
 
 	$page->output_nav_tabs($sub_tabs, 'maillogs');
@@ -241,8 +241,8 @@ if(!$mybb->input['action'])
 				$thread_link = $lang->deleted;
 			}
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_thread.gif\" title=\"{$lang->sent_using_send_thread_feature}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools/maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a><br /><small>{$lang->thread} {$thread_link}</small>");
+			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
 				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
@@ -258,8 +258,8 @@ if(!$mybb->input['action'])
 		else
 		{
 			$table->construct_cell("<img src=\"styles/{$page->style}/images/icons/maillogs_user.gif\" title=\"{$lang->email_sent_to_user}\" alt=\"\" />", array("width" => 1));
-			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?".SID."&amp;module=tools/maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
-			$find_from = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$table->construct_cell("<a href=\"javascript:MyBB.popupWindow('index.php?module=tools/maillogs&amp;action=view&amp;mid={$log['mid']}', 'log_entry', 450, 450);\">{$log['subject']}</a>");
+			$find_from = "<div class=\"float_right\"><a href=\"index.php?module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['from_username'])
 			{
 				$table->construct_cell("{$find_from}<div>{$lang->deleted_user}</div>");
@@ -268,7 +268,7 @@ if(!$mybb->input['action'])
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
-			$find_to = "<div class=\"float_right\"><a href=\"index.php?".SID."&amp;module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
 			if(!$log['to_username'])
 			{
 				$table->construct_cell("{$find_to}<div>{$lang->deleted_user}</div>");
@@ -293,9 +293,9 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");
 
-	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?".SID."&amp;module=tools/maillogs&amp;page={page}{$additional_criteria}");
+	echo "<br />".draw_admin_pagination($mybb->input['page'], $per_page, $total_rows, "index.php?module=tools/maillogs&amp;page={page}{$additional_criteria}");
 	
-	$form = new Form("index.php?".SID."&amp;module=tools/maillogs", "post");
+	$form = new Form("index.php?module=tools/maillogs", "post");
 	$form_container = new FormContainer($lang->filter_user_email_log);
 	$user_email = array(
 		"user" => $lang->username_is,

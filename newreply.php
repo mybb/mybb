@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 
 $templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,redirect_threadposted,loginbox,changeuserbox,posticons,newreply_threadreview,forumrules,attachments,newreply_threadreview_post";
-$templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies";
+$templatelist .= ",smilieinsert,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_seperator,postbit,post_subscription_method";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -931,7 +931,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	// If the user is logged in, provide a save draft button.
 	if($mybb->user['uid'])
 	{
-		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton")."\";");
+		eval("\$savedraftbutton = \"".$templates->get("post_savedraftbutton", 1, 0)."\";");
 	}
 
 	// Show captcha image for guests if enabled

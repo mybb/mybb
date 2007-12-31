@@ -382,4 +382,4 @@ var Thread = {
 		$('post_'+pid).show();
 	}
 };
-Event.observe(window, 'load', Thread.init);
+Event.observe(window, 'dom:loaded', Thread.init);
