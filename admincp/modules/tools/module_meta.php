@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 function tools_meta()
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "system_health", "title" => $lang->system_health, "link" => "index.php?".SID."&module=tools/system_health");
@@ -28,6 +28,8 @@ function tools_meta()
 	$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
 	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?".SID."&module=tools/optimizedb");
 	
+	$plugins->run_hooks_by_ref("admin_tools_menu", $sub_menu);
+	
 	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?".SID."&module=tools", 50, $sub_menu);
 	
 	return true;
@@ -35,7 +37,7 @@ function tools_meta()
 
 function tools_action_handler($action)
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 	
 	$page->active_module = "tools";
 	switch($action)
@@ -88,6 +90,8 @@ function tools_action_handler($action)
 			$page->active_action = "system_health";
 			$action_file = "system_health.php";
 	}
+	
+	$plugins->run_hooks_by_ref("admin_tools_action_handler", $action);
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?".SID."&module=tools/adminlog");
@@ -95,6 +99,8 @@ function tools_action_handler($action)
 	$sub_menu['30'] = array("id" => "maillogs", "title" => $lang->user_email_log, "link" => "index.php?".SID."&module=tools/maillogs");
 	$sub_menu['40'] = array("id" => "mailerrors", "title" => $lang->system_mail_log, "link" => "index.php?".SID."&module=tools/mailerrors");
 	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?".SID."&module=tools/warninglog");
+	
+	$plugins->run_hooks_by_ref("admin_tools_menu_logs", $sub_menu);
 	
 	$sidebar = new SidebarItem($lang->logs);
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
@@ -105,7 +111,7 @@ function tools_action_handler($action)
 
 function tools_admin_permissions()
 {
-	global $lang;
+	global $lang, $plugins;
 	
 	$admin_permissions = array(
 		"system_health" => $lang->can_access_system_health,
@@ -121,6 +127,9 @@ function tools_admin_permissions()
 		"warninglog" => $lang->can_manage_user_warning_log,
 		"phpinfo" => $lang->can_view_php_info
 	);
+	
+	$plugins->run_hooks_by_ref("admin_tools_permissions", $admin_permissions);
+	
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }
 ?>

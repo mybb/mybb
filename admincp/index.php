@@ -263,7 +263,7 @@ if($rand == 2 || $rand == 5)
 	$db->delete_query("adminsessions", "lastactive < '{$stamp}'");
 }
 
-$page->add_breadcrumb_item("Home", "index.php?".SID);
+$page->add_breadcrumb_item($lang->home, "index.php?".SID);
 
 // Begin dealing with the modules
 $modules_dir = MYBB_ADMIN_DIR."modules";
@@ -308,10 +308,7 @@ if($run_module != "home")
 
 $lang->load("{$run_module}_{$page->active_action}", false, true);
 
-require $modules_dir."/".$run_module."/".$action_file;
+$plugins->run_hooks("admin_load");
 
-if($mybb->input['debug'])
-{
-	echo $db->explain;
-}
+require $modules_dir."/".$run_module."/".$action_file;
 ?>

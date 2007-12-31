@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->system_email_log, "index.php?".SID."&amp;module=tools/mailerrors");
 
+$plugins->run_hooks("admin_tools_mailerrors_begin");
+
 if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_tools_mailerrors_prune");
+	
 	// Begin criteria filtering
 	$additional_sql_criteria = '';
 	if($mybb->input['subject'])
@@ -46,6 +50,8 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		$db->delete_query("mailerrors");
 		$num_deleted = $db->affected_rows();
 		
+		$plugins->run_hooks("admin_tools_mailerrors_prune_delete_all_commit");
+		
 		// Log admin action
 		log_admin_action($num_deleted);
 		
@@ -62,6 +68,8 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		}
 	}
 	
+	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
+	
 	// Log admin action
 	log_admin_action($num_deleted);
 	
@@ -71,6 +79,8 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "view")
 {
+	$plugins->run_hooks("admin_tools_mailerrors_view");
+	
 	$query = $db->simple_select("mailerrors", "*", "eid='".intval($mybb->input['eid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -153,6 +163,8 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_mailerrors_start");
+	
 	$per_page = 20;
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)

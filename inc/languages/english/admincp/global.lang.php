@@ -42,6 +42,7 @@ $l['lost_password'] = "Forgot your password?";
 $l['confirm_action'] = "Are you sure you wish to perform this action?";
 
 // Common words and phrases
+$l['home'] = "Home";
 $l['name'] = "Name";
 $l['size'] = "Size";
 $l['controls'] = "Controls";

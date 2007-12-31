@@ -38,8 +38,12 @@ if($mybb->input['action'] == "stats" || $mybb->input['action'] == "orphans" || !
 	);
 }
 
+$plugins->run_hooks("admin_forum_attachments_begin");
+
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_forum_attachments_delete");
+	
 	if(!is_array($mybb->input['aids']))
 	{
 		$mybb->input['aids'] = array(intval($mybb->input['aid']));
@@ -71,6 +75,8 @@ if($mybb->input['action'] == "delete")
 				remove_attachment($attachment['pid'], null, $attachment['aid']);
 			}
 		}
+		
+		$plugins->run_hooks("admin_forum_attachments_delete_commit");
 
 		// Log admin action
 		log_admin_action();
@@ -90,6 +96,7 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "stats")
 {
+	$plugins->run_hooks("admin_forum_attachments_stats");
 
 	$query = $db->simple_select("attachments", "COUNT(*) AS total_attachments, SUM(filesize) as disk_usage, SUM(downloads) as total_downloads", "visible='1'");
 	$attachment_stats = $db->fetch_array($query);
@@ -194,6 +201,8 @@ if($mybb->input['action'] == "stats")
 
 if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_forum_attachments_delete_orphans");
+	
 	// Deleting specific attachments from uploads directory
 	if(is_array($mybb->input['orphaned_files']))
 	{
@@ -230,6 +239,8 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 			}
 		}
 	}
+	
+	$plugins->run_hooks("admin_forum_attachments_delete_orphans_commit");
 
 	// Log admin action
 	log_admin_action();
@@ -247,6 +258,8 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 
 if($mybb->input['action'] == "orphans")
 {
+	$plugins->run_hooks("admin_forum_attachments_orphans");
+	
 	// Oprhans are defined as:
 	// - Uploaded files in the uploads directory that don't exist in the database
 	// - Attachments for which the uploaded file is missing
@@ -258,6 +271,8 @@ if($mybb->input['action'] == "orphans")
 	// Finished second step, show results
 	if($mybb->input['step'] == 3)
 	{
+		$plugins->run_hooks("admin_forum_attachments_step3");
+		
 		$reults = 0;
 		// Incoming attachments which exist as files but not in database
 		if($mybb->input['bad_attachments'])
@@ -362,6 +377,8 @@ if($mybb->input['action'] == "orphans")
 	// Running second step - scan the database
 	else if($mybb->input['step'] == 2)
 	{
+		$plugins->run_hooks("admin_forum_attachments_orphans_step2");
+		
 		$page->output_header("{$lang->orphan_attachments_search} - {$lang->step2}");
 	
 		$page->output_nav_tabs($sub_tabs, 'find_orphans');
@@ -436,6 +453,8 @@ if($mybb->input['action'] == "orphans")
 	// Running first step, scan the file system
 	else
 	{
+		$plugins->run_hooks("admin_forum_attachments_orphans_step1");
+		
 		function scan_attachments_directory($dir="")
 		{
 			global $db, $mybb, $bad_attachments, $attachments_to_check;
@@ -551,6 +570,8 @@ if($mybb->input['action'] == "orphans")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_forum_attachments_start");
+	
 	if($mybb->request_method == "post" || $mybb->input['results'] == 1)
 	{
 		$search_sql = '1=1';

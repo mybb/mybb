@@ -137,6 +137,8 @@ $sort_options = array(
 	"warninglevel" => $lang->warning_level
 );
 
+$plugins->run_hooks("admin_user_users_begin");
+
 // Initialise the views manager for user based views
 require MYBB_ADMIN_DIR."inc/functions_view_manager.php";
 if($mybb->input['action'] == "views")
@@ -146,6 +148,8 @@ if($mybb->input['action'] == "views")
 
 if($mybb->input['action'] == "avatar_gallery")
 {
+	$plugins->run_hooks("admin_user_users_avatar_gallery");
+	
 	$user = get_user($mybb->input['uid']);
 	if(!$user['uid'])
 	{
@@ -165,6 +169,8 @@ if($mybb->input['action'] == "avatar_gallery")
 			);
 
 			$db->update_query("users", $updated_avatar, "uid='".$user['uid']."'");
+			
+			$plugins->run_hooks("admin_user_users_avatar_gallery_commit");
 
 			// Log admin action
 			log_admin_action($user['uid'], $user['username']);
@@ -325,6 +331,8 @@ if($mybb->input['action'] == "avatar_gallery")
 
 if($mybb->input['action'] == "coppa_activate")
 {
+	$plugins->run_hooks("admin_user_users_coppa_activate");
+	
 	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 
@@ -347,6 +355,8 @@ if($mybb->input['action'] == "coppa_activate")
 	}
 
 	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
+	
+	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
 
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
@@ -357,6 +367,8 @@ if($mybb->input['action'] == "coppa_activate")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_user_users_add");
+	
 	if($mybb->request_method == "post")
 	{
 		// Determine the usergroup stuff
@@ -407,7 +419,9 @@ if($mybb->input['action'] == "add")
 		else
 		{
 			$user_info = $userhandler->insert_user();
-
+			
+			$plugins->run_hooks("admin_user_users_add_commit");
+			
 			// Log admin action
 			log_admin_action($user_info['uid'], $user_info['username']);
 
@@ -473,6 +487,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_user_users_edit");
+	
 	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 
@@ -702,6 +718,8 @@ if($mybb->input['action'] == "edit")
 			{
 				$user_info = $userhandler->update_user();
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
+				
+				$plugins->run_hooks("admin_user_users_edit_commit");
 
 				// Log admin action
 				log_admin_action($user['uid'], $mybb->input['username']);
@@ -1169,6 +1187,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_user_users_delete");
+	
 	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 
@@ -1202,6 +1222,8 @@ if($mybb->input['action'] == "delete")
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
+		
+		$plugins->run_hooks("admin_user_users_delete_commit");
 
 		// Log admin action
 		log_admin_action($user['username']);
@@ -1218,6 +1240,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "referrers")
 {
+	$plugins->run_hooks("admin_user_users_referrers");
+	
 	$page->add_breadcrumb_item($lang->show_referrers);
 	$page->output_header($lang->show_referrers);
 		
@@ -1249,6 +1273,8 @@ if($mybb->input['action'] == "referrers")
 
 if($mybb->input['action'] == "ipaddresses")
 {
+	$plugins->run_hooks("admin_user_users_ipaddresses");
+	
 	$page->add_breadcrumb_item($lang->ip_addresses);
 	$page->output_header($lang->ip_addresses);	
 	
@@ -1330,6 +1356,8 @@ if($mybb->input['action'] == "ipaddresses")
 
 if($mybb->input['action'] == "merge")
 {
+	$plugins->run_hooks("admin_user_users_merge");
+	
 	if($mybb->request_method == "post")
 	{
 		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['source_username']))."'");
@@ -1407,10 +1435,11 @@ if($mybb->input['action'] == "merge")
 		$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
 		update_stats(array('numusers' => '-1'));
+		
+		$plugins->run_hooks("admin_user_users_merge_commit");
 
 		// Log admin action
 		log_admin_action($source_user['username'], $destination_user['uid'], $destination_user['username']);
-
 
 		// Redirect!
 		flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");
@@ -1455,6 +1484,8 @@ if($mybb->input['action'] == "merge")
 
 if($mybb->input['action'] == "search")
 {
+	$plugins->run_hooks("admin_user_users_search");
+	
 	if($mybb->request_method == "post" || $mybb->input['results'] == 1)
 	{
 		// Build view options from incoming search options
@@ -1543,6 +1574,8 @@ if($mybb->input['action'] == "search")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_user_users_start");
+	
 	$page->output_header($lang->browse_users);
 	echo "<script type=\"text/javascript\" src=\"jscripts/users.js\"></script>";
 	

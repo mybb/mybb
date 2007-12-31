@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->preferences_and_personal_notes, "index.php?".SID."&amp;module=home/preferences");
 
+$plugins->run_hooks("admin_home_preferences_begin");
+
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_home_preferences_start");
+	
 	if($mybb->request_method == "post")
 	{
 		$sqlarray = array(
@@ -28,7 +32,8 @@ if(!$mybb->input['action'])
 		);
 
 		$db->replace_query("adminoptions", $sqlarray);
-
+		
+		$plugins->run_hooks("admin_home_preferences_start_commit");
 	
 		flash_message("The Preferences have been successfully updated.", 'success');
 		admin_redirect("index.php?".SID."&module=home/preferences");

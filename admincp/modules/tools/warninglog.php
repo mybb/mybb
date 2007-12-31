@@ -17,9 +17,13 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->warning_logs, "index.php?".SID."&amp;module=tools/warninglog");
 
+$plugins->run_hooks("admin_tools_warninglog_begin");
+
 // Revoke a warning
 if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_tools_warninglog_do_revoke");
+	
 	$query = $db->simple_select("warnings", "*", "wid='".intval($mybb->input['wid'])."'");
 	$warning = $db->fetch_array($query);
 
@@ -68,6 +72,8 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 		);
 		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 		
+		$plugins->run_hooks("admin_tools_warninglog_do_revoke_commit");
+		
 		flash_message($lang->redirect_warning_revoked, 'success');
 		admin_redirect("index.php?".SID."&module=tools/warninglog&amp;action=view&amp;wid={$warning['wid']}");
 	}
@@ -76,6 +82,8 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 // Detailed view of a warning
 if($mybb->input['action'] == "view")
 {
+	$plugins->run_hooks("admin_tools_warninglog_view");
+	
 	$query = $db->query("
 		SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
 		FROM ".TABLE_PREFIX."warnings w
@@ -122,8 +130,7 @@ if($mybb->input['action'] == "view")
 	{
 		$table->construct_cell("<strong>{$lang->warned_user}</strong><br /><br />{$user_link}", array('colspan' => 2));
 		$table->construct_row();
-	}
-	
+	}	
 
 	$issuedby = build_profile_link($warning['username'], $warning['uid']);
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
@@ -218,6 +225,8 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_warninglog_start");
+	
 	$page->output_header($lang->warning_logs);
 	
 	$sub_tabs['warning_logs'] = array(

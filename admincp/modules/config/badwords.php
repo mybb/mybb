@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->bad_words, "index.php?".SID."&amp;module=config/badwords");
 
+$plugins->run_hooks("admin_config_badwords_begin");
+
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_config_badwords_add");
+	
 	if(!trim($mybb->input['badword']))
 	{
 		$errors[] = $lang->error_missing_bad_word;
@@ -32,6 +36,8 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		);
 
 		$bid = $db->insert_query("badwords", $new_badword);
+		
+		$plugins->run_hooks("admin_config_badwords_add_commit");
 
 		// Log admin action
 		log_admin_action($bid, $mybb->input['badword']);
@@ -48,6 +54,8 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_badwords_delete");
+	
 	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
 	
@@ -68,6 +76,8 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the bad word
 		$db->delete_query("badwords", "bid='{$badword['bid']}'");
+		
+		$plugins->run_hooks("admin_config_badwords_delete_commit");
 
 		// Log admin action
 		log_admin_action($badword['bid'], $badword['badword']);
@@ -85,6 +95,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_badwords_edit");
+	
 	$query = $db->simple_select("badwords", "*", "bid='".intval($mybb->input['bid'])."'");
 	$badword = $db->fetch_array($query);
 	
@@ -110,6 +122,8 @@ if($mybb->input['action'] == "edit")
 			);
 
 			$db->update_query("badwords", $updated_badword, "bid='{$badword['bid']}'");
+			
+			$plugins->run_hooks("admin_config_badwords_edit_commit");
 
 			// Log admin action
 			log_admin_action($badword['bid'], $mybb->input['badword']);
@@ -149,6 +163,8 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_badwords_start");
+	
 	$page->output_header($lang->bad_words);
 
 	$sub_tabs['badwords'] = array(
@@ -202,5 +218,6 @@ if(!$mybb->input['action'])
 	$form->end();
 
 	$page->output_footer();
- }
+}
+
 ?>

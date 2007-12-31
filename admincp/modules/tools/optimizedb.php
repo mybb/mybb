@@ -17,11 +17,14 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->optimize_database, "index.php?".SID."&amp;module=tools/optimizedb");
 
+$plugins->run_hooks("admin_tools_optimizedb_begin");
+
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_optimizedb_start");
+	
 	if($mybb->request_method == "post")
-	{
-		
+	{		
 		if(!is_array($mybb->input['tables']))
 		{
 			flash_message($lang->error_no_tables_selected, 'error');
@@ -39,6 +42,8 @@ if(!$mybb->input['action'])
 		}
 		
 		$db->set_table_prefix(TABLE_PREFIX);
+		
+		$plugins->run_hooks("admin_tools_optimizedb_start_begin");
 		
 		// Log admin action
 		log_admin_action(serialize($mybb->input['tables']));

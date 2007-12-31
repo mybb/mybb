@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 function config_meta()
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 	
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "settings", "title" => $lang->settings, "link" => "index.php?".SID."&module=config/settings");
@@ -35,19 +35,21 @@ function config_meta()
 	$sub_menu['130'] = array("id" => "spiders", "title" => $lang->spiders_bots, "link" => "index.php?".SID."&module=config/spiders");
 	$sub_menu['140'] = array("id" => "calendars", "title" => $lang->calendars, "link" => "index.php?".SID."&module=config/calendars");
 	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?".SID."&module=config/warning");
-
+	
+	$plugins->run_hooks_by_ref("admin_config_menu", $sub_menu);
+	
 	$page->add_menu_item($lang->configuration, "config", "index.php?".SID."&module=config", 10, $sub_menu);
 	
 	return true;
 }
 
-function config_action_handler($manage)
+function config_action_handler($action)
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 	
 	$page->active_module = "config";
 
-	switch($manage)
+	switch($action)
 	{
 		case "plugins":
 			$page->active_action = "plugins";
@@ -109,13 +111,15 @@ function config_action_handler($manage)
 			$page->active_action = "settings";
 			$action_file = "settings.php";
 	}
+	
+	$plugins->run_hooks_by_ref("admin_config_action_handler", $action);
 
 	return $action_file;
 }
 
 function config_admin_permissions()
 {
-	global $lang;
+	global $lang, $plugins;
 	
 	$admin_permissions = array(
 		"settings" => $lang->can_manage_settings,
@@ -134,6 +138,9 @@ function config_admin_permissions()
 		"warning" => $lang->can_manage_warning_system,
 		"mod_tools" => $lang->can_manage_mod_tools
 	);
-	return array("name" => "Configuration", "permissions" => $admin_permissions, "disporder" => 10);
+	
+	$plugins->run_hooks_by_ref("admin_config_permissions", $admin_permissions);
+	
+	return array("name" => $lang->configuration, "permissions" => $admin_permissions, "disporder" => 10);
 }
 ?>

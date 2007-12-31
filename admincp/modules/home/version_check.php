@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->version_check, "index.php?".SID."&amp;module=home/version_check");
 
+$plugins->run_hooks("admin_home_version_check_begin");
+
 if(!$mybb->input['action'])
-{	
+{
+	$plugins->run_hooks("admin_home_version_check_start");
+	
 	$page->output_header($lang->version_check);
 	
 	$sub_tabs['version_check'] = array(

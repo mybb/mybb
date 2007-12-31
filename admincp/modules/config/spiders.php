@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->spiders_bots, "index.php?".SID."&amp;module=config/spiders");
 
+$plugins->run_hooks("admin_config_spiders_begin");
+
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_spiders_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -44,6 +48,8 @@ if($mybb->input['action'] == "add")
 			$sid = $db->insert_query("spiders", $new_spider);
 
 			$cache->update_spiders();
+			
+			$plugins->run_hooks("admin_config_spiders_add_commit");
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['name']);
@@ -107,6 +113,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_spiders_delete");
+	
 	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
 	$spider = $db->fetch_array($query);
 
@@ -129,6 +137,8 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("spiders", "sid='{$spider['sid']}'");
 
 		$cache->update_spiders();
+		
+		$plugins->run_hooks("admin_config_spiders_delete_commit");
 
 		// Log admin action
 		log_admin_action($mybb->input['name']);
@@ -144,6 +154,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_spiders_edit");
+	
 	$query = $db->simple_select("spiders", "*", "sid='".intval($mybb->input['sid'])."'");
 	$spider = $db->fetch_array($query);
 
@@ -178,6 +190,8 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("spiders", $updated_spider, "sid='{$spider['sid']}'");
 
 			$cache->update_spiders();
+			
+			$plugins->run_hooks("admin_config_spiders_edit_commit");
 
 			// Log admin action
 			log_admin_action($spider['sid'], $mybb->input['name']);
@@ -241,6 +255,8 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_spiders_start");
+	
 	$page->output_header($lang->spiders_bots);
 
 	$sub_tabs['spiders'] = array(
@@ -288,5 +304,5 @@ if(!$mybb->input['action'])
 	$table->output($lang->spiders_bots);
 
 	$page->output_footer();
- }
+}
 ?>

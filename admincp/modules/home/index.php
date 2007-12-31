@@ -15,8 +15,12 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+$plugins->run_hooks("admin_home_index_begin");
+
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_home_index_start");
+	
 	if($mybb->request_method == "post" && isset($mybb->input['adminnotes']))
 	{
 		// Update Admin Notes cache
@@ -25,6 +29,8 @@ if(!$mybb->input['action'])
 		);
 		
 		$cache->update("adminnotes", $update_cache);
+		
+		$plugins->run_hooks("admin_home_index_start_begin");
 	
 		flash_message($lang->success_notes_updated, 'success');
 		admin_redirect("index.php?".SID);

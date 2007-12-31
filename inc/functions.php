@@ -4850,7 +4850,7 @@ function fetch_remote_file($url)
 		}
 		if($url['query'])
 		{
-			$url['path'] .= "?{$url['path']}";
+			$url['path'] .= "?{$url['query']}";
 		}
 		$fp = @fsockopen($url['host'], $url['port'], $error_no, $error, 10);
 		@stream_set_timeout($fp, 10);

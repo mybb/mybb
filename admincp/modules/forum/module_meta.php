@@ -17,13 +17,15 @@ if(!defined("IN_MYBB"))
 
 function forum_meta()
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 	
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "management", "title" => $lang->forum_management, "link" => "index.php?".SID."&module=forum/management");
 	$sub_menu['20'] = array("id" => "announcements", "title" => $lang->forum_announcements, "link" => "index.php?".SID."&module=forum/announcements");
 	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?".SID."&module=forum/moderation_queue");
 	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?".SID."&module=forum/attachments");
+	
+	$plugins->run_hooks_by_ref("admin_forum_menu", $sub_menu);
 
 	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?".SID."&module=forum", 20, $sub_menu);
 
@@ -32,7 +34,7 @@ function forum_meta()
 
 function forum_action_handler($action)
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 	
 	$page->active_module = "forum";
 	
@@ -55,12 +57,14 @@ function forum_action_handler($action)
 			$action_file = "management.php";
 	}
 	
+	$plugins->run_hooks_by_ref("admin_forum_action_handler", $action);
+	
 	return $action_file;
 }
 
 function forum_admin_permissions()
 {
-	global $lang;
+	global $lang, $plugins;
 	
 	$admin_permissions = array(
 		"management" => $lang->can_manage_forums,
@@ -68,6 +72,9 @@ function forum_admin_permissions()
 		"moderation_queue" => $lang->can_moderate,
 		"attachments" => $lang->can_manage_attachments,
 	);
+	
+	$plugins->run_hooks_by_ref("admin_forum_permissions", $admin_permissions);
+	
 	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions, "disporder" => 20);
 }
 

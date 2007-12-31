@@ -49,8 +49,12 @@ while($group = $db->fetch_array($query))
 // Fetch ban times
 $ban_times = fetch_ban_times();
 
+$plugins->run_hooks("admin_user_banning_begin");
+
 if($mybb->input['action'] == "lift")
 {
+	$plugins->run_hooks("admin_user_banning_lift");
+	
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 	$user = get_user($ban['uid']);
@@ -76,7 +80,9 @@ if($mybb->input['action'] == "lift")
 		);
 		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
-
+		
+		$plugins->run_hooks("admin_user_banning_lift_commit");
+		
 		// Log admin action
 		log_admin_action($mybb->input['uid'], $user['username']);
 
@@ -91,6 +97,8 @@ if($mybb->input['action'] == "lift")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_user_banning_edit");
+	
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
 
@@ -146,6 +154,8 @@ if($mybb->input['action'] == "edit")
 				'additionalgroups' => '',
 			);
 			$db->update_query('users', $update_array, "uid = {$ban['uid']}");
+			
+			$plugins->run_hooks("admin_user_banning_edit_commit");
 
 			// Log admin action
 			log_admin_action($mybb->input['uid'], $user['username']);
@@ -203,6 +213,8 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_user_banning_start");
+	
 	if($mybb->request_method == "post")
 	{
 		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
@@ -271,6 +283,8 @@ if(!$mybb->input['action'])
 				'additionalgroups' => '',
 			);
 			$db->update_query('users', $update_array, "uid = {$user['uid']}");
+			
+			$plugins->run_hooks("admin_user_banning_start_commit");
 
 			// Log admin action
 			log_admin_action($user['uid'], $user['username']);

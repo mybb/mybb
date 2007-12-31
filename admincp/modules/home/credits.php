@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->mybb_credits, "index.php?".SID."&amp;module=home/credits");
 
+$plugins->run_hooks("admin_home_credits_begin");
+
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_home_credits_start");
+	
 	$page->output_header($lang->mybb_credits);
 	
 	$sub_tabs['credits'] = array(

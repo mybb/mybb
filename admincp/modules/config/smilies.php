@@ -12,9 +12,12 @@
 
 $page->add_breadcrumb_item($lang->smilies, "index.php?".SID."&amp;module=config/smilies");
 
+$plugins->run_hooks("admin_config_smilies_begin");
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_smilies_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -50,6 +53,8 @@ if($mybb->input['action'] == "add")
 			$sid = $db->insert_query("smilies", $new_smilie);
 
 			$cache->update_smilies();
+			
+			$plugins->run_hooks("admin_config_smilies_add_commit");
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['name']);
@@ -117,6 +122,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_smilies_edit");
+	
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -162,6 +169,8 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("smilies", $updated_smilie, "sid = '".intval($mybb->input['sid'])."'");
 			
 			$cache->update_smilies();
+			
+			$plugins->run_hooks("admin_config_smilies_edit_commit");
 
 			// Log admin action
 			log_admin_action($smilie['sid'], $mybb->input['name']);
@@ -217,6 +226,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_smilies_delete");
+	
 	$query = $db->simple_select("smilies", "*", "sid='".intval($mybb->input['sid'])."'");
 	$smilie = $db->fetch_array($query);
 
@@ -239,6 +250,8 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("smilies", "sid='{$smilie['sid']}'");
 
 		$cache->update_smilies();
+		
+		$plugins->run_hooks("admin_config_smilies_delete_commit");
 
 		// Log admin action
 		log_admin_action($smilie['name']);
@@ -253,10 +266,14 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "add_multiple")
 {
+	$plugins->run_hooks("admin_config_smilies_add_multiple");
+	
 	if($mybb->request_method == "post")
 	{
 		if($mybb->input['step'] == 1)
 		{
+			$plugins->run_hooks("admin_config_smilies_add_multiple_step1");
+			
 			if(!trim($mybb->input['pathfolder']))
 			{
 				$errors[] = $lang->error_missing_path_multiple;
@@ -371,6 +388,8 @@ if($mybb->input['action'] == "add_multiple")
 		}
 		else
 		{
+			$plugins->run_hooks("admin_config_smilies_add_multiple_step2");
+			
 			$path = $mybb->input['pathfolder'];
 			reset($mybb->input['include']);
 			$find = $mybb->input['find'];
@@ -397,6 +416,8 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$cache->update_smilies();
+			
+			$plugins->run_hooks("admin_config_smilies_add_multiple_commit");
 
 			// Log admin action
 			log_admin_action();
@@ -450,6 +471,8 @@ if($mybb->input['action'] == "add_multiple")
 
 if($mybb->input['action'] == "mass_edit")
 {
+	$plugins->run_hooks("admin_config_smilies_mass_edit");
+	
 	if($mybb->request_method == "post")
 	{
 		foreach($mybb->input['name'] as $sid => $name)
@@ -472,6 +495,8 @@ if($mybb->input['action'] == "mass_edit")
 		}
 		
 		$cache->update_smilies();
+		
+		$plugins->run_hooks("admin_config_smilies_mass_edit_commit");
 
 		// Log admin action
 		log_admin_action($smilie['name']);
@@ -570,6 +595,8 @@ if($mybb->input['action'] == "mass_edit")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_smilies_start");
+	
 	$page->output_header($lang->manage_smilies);
 
 	$sub_tabs['manage_smilies'] = array(

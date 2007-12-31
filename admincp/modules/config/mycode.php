@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->mycode, "index.php?".SID."&amp;module=config/mycode");
 
+$plugins->run_hooks("admin_config_mycode_begin");
+
 if($mybb->input['action'] == "toggle_status")
 {
+	$plugins->run_hooks("admin_config_mycode_toggle_status");
+	
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 	
@@ -45,6 +49,8 @@ if($mybb->input['action'] == "toggle_status")
 	$db->update_query("mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");
 
 	$cache->update_mycode();
+	
+	$plugins->run_hooks("admin_config_mycode_toggle_status_commit");
 
 	// Log admin action
 	log_admin_action($mycode['cid'], $mycode['title'], $new_status);
@@ -55,6 +61,8 @@ if($mybb->input['action'] == "toggle_status")
 
 if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_config_mycode_xmlhttp_test_mycode_start");
+	
 	// Send no cache headers
 	header("Expires: Sat, 1 Jan 2000 01:00:00 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . "GMT");
@@ -64,12 +72,16 @@ if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "
 	
 	$sandbox = test_regex($mybb->input['regex'], $mybb->input['replacement'], $mybb->input['test_value']);
 	
+	$plugins->run_hooks("admin_config_mycode_xmlhttp_test_mycode_end");
+	
 	echo $sandbox['actual'];
 	exit;
 }
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_mycode_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -107,6 +119,8 @@ if($mybb->input['action'] == "add")
 			$cid = $db->insert_query("mycode", $new_mycode);
 
 			$cache->update_mycode();
+			
+			$plugins->run_hooks("admin_config_mycode_add_commit");
 
 			// Log admin action
 			log_admin_action($cid, $mybb->input['title']);
@@ -178,6 +192,8 @@ Event.observe(window, "load", function() {
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_mycode_edit");
+	
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 	
@@ -224,6 +240,8 @@ if($mybb->input['action'] == "edit")
 			$db->update_query("mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");
 
 			$cache->update_mycode();
+			
+			$plugins->run_hooks("admin_config_mycode_edit_commit");
 
 			// Log admin action
 			log_admin_action($mycode['cid'], $mybb->input['title']);
@@ -293,6 +311,8 @@ Event.observe(window, "load", function() {
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_mycode_delete");
+	
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
 	$mycode = $db->fetch_array($query);
 	
@@ -313,6 +333,8 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("mycode", "cid='{$mycode['cid']}'");
 
 		$cache->update_mycode();
+		
+		$plugins->run_hooks("admin_config_mycode_delete_commit");
 
 		// Log admin action
 		log_admin_action($mycode['title']);
@@ -328,6 +350,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_mycode_start");
+	
 	$page->output_header($lang->custom_mycode);
 
 	$sub_tabs['mycode'] = array(

@@ -17,13 +17,16 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->banning, "index.php?".SID."&amp;module=config/banning");
 
+$plugins->run_hooks("admin_config_banning_begin");
+
 if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_config_banning_add");
+	
 	if(!trim($mybb->input['filter']))
 	{
 		$errors[] = $lang->error_missing_ban_input;
 	}
-
 
 	if(!$errors)
 	{
@@ -33,13 +36,19 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 			"dateline" => TIME_NOW
 		);
 		$fid = $db->insert_query("banfilters", $new_filter);
+		
+		if($mybb->input['type'] == 1)
+		{
+			$cache->update_bannedips();
+		}
+		
+		$plugins->run_hooks("admin_config_banning_add_commit");
 
 		// Log admin action
 		log_admin_action($fid, $mybb->input['filter'], $mybb->input['type']);
 
 		if($mybb->input['type'] == 1)
 		{
-			$cache->update_bannedips();
 			flash_message($lang->success_ip_banned, 'success');
 			admin_redirect("index.php?".SID."&module=config/banning");
 		}
@@ -74,6 +83,8 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_banning_delete");
+	
 	$query = $db->simple_select("banfilters", "*", "fid='".intval($mybb->input['fid'])."'");
 	$filter = $db->fetch_array($query);
 	
@@ -107,6 +118,8 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the ban filter
 		$db->delete_query("banfilters", "fid='{$filter['fid']}'");
+		
+		$plugins->run_hooks("admin_config_banning_delete_commit");
 
 		// Log admin action
 		log_admin_action($filter['fid'], $filter['filter'], $filter['type']);
@@ -129,6 +142,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_banning_start");
+	
 	switch($mybb->input['type'])
 	{
 		case "emails":
@@ -253,4 +268,5 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+
 ?>

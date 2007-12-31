@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->mod_logs, "index.php?".SID."&amp;module=tools/modlog");
 
+$plugins->run_hooks("admin_tools_modlog_begin");
+
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_modlog_start");
+	
 	$page->output_header($lang->mod_logs);
 	
 	$sub_tabs['mod_logs'] = array(

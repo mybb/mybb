@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->plugins, "index.php?".SID."&amp;module=config/plugins");
 
+$plugins->run_hooks("admin_config_plugins_begin");
+
 if($mybb->input['action'] == "check")
-{		
+{
+	$plugins->run_hooks("admin_config_plugins_check");
+	
 	$plugins_list = get_plugins_list();
 	
 	$info = array();
@@ -62,7 +66,7 @@ if($mybb->input['action'] == "check")
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();
 	
-	if(array_key_exists('error', $tree['plugins'][0]))
+	if(array_key_exists('error', $tree['plugins']))
 	{
 		switch($tree['plugins'][0]['error'])
 		{
@@ -92,6 +96,7 @@ if($mybb->input['action'] == "check")
 	 	unset($tree['plugins']['plugin']);
 	 	$tree['plugins']['plugin'][0] = $only_plugin;
 	}
+	//die;
 
 	foreach($tree['plugins']['plugin'] as $plugin)
 	{
@@ -100,7 +105,7 @@ if($mybb->input['action'] == "check")
 			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
 			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybboard.net/download/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://mods.mybboard.net/view/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}
@@ -131,6 +136,15 @@ if($mybb->input['action'] == "check")
 // Activates or deactivates a specific plugin
 if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate")
 {
+	if($mybb->input['action'] == "activate")
+	{
+		$plugins->run_hooks("admin_config_plugins_activate");
+	}
+	else
+	{
+		$plugins->run_hooks("admin_config_plugins_deactivate");
+	}
+	
 	$codename = $mybb->input['plugin'];
 	$codename = str_replace(array(".", "/", "\\"), "", $codename);
 	$file = basename($codename.".php");
@@ -200,6 +214,15 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	// Update plugin cache
 	$plugins_cache['active'] = $active_plugins;
 	$cache->update("plugins", $plugins_cache);
+	
+	if($mybb->input['action'] == "activate")
+	{
+		$plugins->run_hooks("admin_config_plugins_activate_commit");
+	}
+	else
+	{
+		$plugins->run_hooks("admin_config_plugins_deactivate_commit");
+	}
 
 	// Log admin action
 	log_admin_action($mybb->input['action'], $codename);
@@ -259,7 +282,7 @@ if(!$mybb->input['action'])
 
 			if($plugins->is_compatible($codename) == false)
 			{
-				$compatibility_warning = "<br /><span style=\"color: red;\">".sprintf($lang->plugin_incompatible, $mybb->version_code)."</span>";
+				$compatibility_warning = "<span style=\"color: red;\">".sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
 			}
 
 			$installed_func = "{$codename}_is_installed";
@@ -292,7 +315,7 @@ if(!$mybb->input['action'])
 			{
 				if($compatibility_warning)
 				{
-					$table->construct_cell("&nbsp;", array("class" => "align_center", "colspan" => 2));
+					$table->construct_cell("{$compatibility_warning}", array("class" => "align_center", "colspan" => 2));
 				}
 				else
 				{

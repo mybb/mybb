@@ -46,8 +46,12 @@ else if($mybb->input['action'] == "edit")
 	);
 }
 
+$plugins->run_hooks("admin_forum_announcements_begin");
+
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_forum_announcements_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -114,6 +118,8 @@ if($mybb->input['action'] == "add")
 			);
 	
 			$aid = $db->insert_query("announcements", $insert_announcement);
+			
+			$plugins->run_hooks("admin_forum_announcements_add_commit");
 	
 			// Log admin action
 			log_admin_action($aid, $mybb->input['title']);
@@ -322,7 +328,9 @@ if($mybb->input['action'] == "add")
 }
 
 if($mybb->input['action'] == "edit")
-{	
+{
+	$plugins->run_hooks("admin_forum_announcements_edit");
+	
 	if(!trim($mybb->input['aid']))
 	{
 		flash_message($lang->error_invalid_announcement, 'error');
@@ -395,6 +403,8 @@ if($mybb->input['action'] == "edit")
 			);
 	
 			$aid = $db->update_query("announcements", $update_announcement, "aid='{$mybb->input['aid']}'");
+			
+			$plugins->run_hooks("admin_forum_announcements_edit_commit");
 	
 			// Log admin action
 			log_admin_action($aid, $mybb->input['title']);
@@ -579,6 +589,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_forum_announcements_delete");
+	
 	$query = $db->simple_select("announcements", "*", "aid='{$mybb->input['aid']}'");
 	$announcement = $db->fetch_array($query);
 	
@@ -599,6 +611,8 @@ if($mybb->input['action'] == "delete")
 	{
 		$db->delete_query("announcements", "aid='{$announcement['aid']}'");
 		
+		$plugins->run_hooks("admin_forum_announcements_delete_commit");
+		
 		// Log admin action
 		log_admin_action($announcement['aid']);
 
@@ -613,6 +627,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_forum_announcements_start");
+	
 	$page->add_breadcrumb_item($lang->forum_announcements, "index.php?".SID."&amp;module=forum/announcements");
 	
 	$page->output_header($lang->forum_announcements);

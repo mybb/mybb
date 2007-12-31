@@ -19,8 +19,12 @@ $languages = $lang->get_languages();
 
 $page->add_breadcrumb_item($lang->languages, "index.php?".SID."&amp;module=config/languages");
 
+$plugins->run_hooks("admin_config_languages_begin");
+
 if($mybb->input['action'] == "edit_properties")
 {
+	$plugins->run_hooks("admin_config_languages_edit_properties");
+	
 	$editlang = basename($mybb->input['lang']);
 	$file = MYBB_ROOT."inc/languages/".$editlang.".php";
 	if(!file_exists($file))
@@ -78,6 +82,8 @@ if($mybb->input['action'] == "edit_properties")
 		{
 			fwrite($file, $newfile);
 			fclose($file);
+
+			$plugins->run_hooks("admin_config_languages_edit_properties_commit");
 
 			// Log admin action
 			log_admin_action($editlang);
@@ -161,6 +167,8 @@ if($mybb->input['action'] == "edit_properties")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_languages_edit");
+	
 	// Validate input
 	$editlang = basename($mybb->input['lang']);
 	$folder = MYBB_ROOT."inc/languages/".$editlang."/";
@@ -231,6 +239,8 @@ if($mybb->input['action'] == "edit")
 			{
 				fwrite($fp, $contents);
 				fclose($fp);
+				
+				$plugins->run_hooks("admin_config_languages_edit_commit");
 
 				// Log admin action
 				log_admin_action($editlang, $editfile);
@@ -430,6 +440,8 @@ if($mybb->input['action'] == "edit")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_languages_start");
+	
 	$page->output_header($lang->languages);
 
 	$sub_tabs['languages'] = array(
@@ -494,4 +506,5 @@ if(!$mybb->input['action'])
 	
 	$page->output_footer();
 }
+
 ?>

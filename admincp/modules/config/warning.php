@@ -43,8 +43,12 @@ if($mybb->input['action'] == "levels" || $mybb->input['action'] == "add_type" ||
 	);
 }
 
+$plugins->run_hooks("admin_config_warning_begin");
+
 if($mybb->input['action'] == "add_level")
 {
+	$plugins->run_hooks("admin_config_warning_add_level");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!is_numeric($mybb->input['percentage']) || $mybb->input['percentage'] > 100 || $mybb->input['percentage'] < 0)
@@ -85,6 +89,8 @@ if($mybb->input['action'] == "add_level")
 			);
 			
 			$lid = $db->insert_query("warninglevels", $new_level);
+			
+			$plugins->run_hooks("admin_config_warning_add_level_commit");
 
 			// Log admin action
 			log_admin_action($lid, $mybb->input['percentage']);
@@ -194,6 +200,8 @@ if($mybb->input['action'] == "add_level")
 
 if($mybb->input['action'] == "edit_level")
 {
+	$plugins->run_hooks("admin_config_warning_edit_level");
+	
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -244,6 +252,8 @@ if($mybb->input['action'] == "edit_level")
 			);
 			
 			$db->update_query("warninglevels", $updated_level, "lid='{$level['lid']}'");
+			
+			$plugins->run_hooks("admin_config_warning_edit_level_commit");
 
 			// Log admin action
 			log_admin_action($level['lid'], $mybb->input['percentage']);
@@ -384,6 +394,8 @@ if($mybb->input['action'] == "edit_level")
 
 if($mybb->input['action'] == "delete_level")
 {
+	$plugins->run_hooks("admin_config_warning_delete_level");
+	
 	$query = $db->simple_select("warninglevels", "*", "lid='".intval($mybb->input['lid'])."'");
 	$level = $db->fetch_array($query);
 
@@ -404,6 +416,8 @@ if($mybb->input['action'] == "delete_level")
 	{
 		// Delete the level
 		$db->delete_query("warninglevels", "lid='{$level['lid']}'");
+		
+		$plugins->run_hooks("admin_config_warning_delete_level_commit");
 
 		// Log admin action
 		log_admin_action($level['percentage']);
@@ -419,6 +433,8 @@ if($mybb->input['action'] == "delete_level")
 
 if($mybb->input['action'] == "add_type")
 {
+	$plugins->run_hooks("admin_config_warning_add_type");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -440,6 +456,8 @@ if($mybb->input['action'] == "add_type")
 			);
 			
 			$tid = $db->insert_query("warningtypes", $new_type);
+			
+			$plugins->run_hooks("admin_config_warning_add_type_commit");
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
@@ -492,6 +510,8 @@ if($mybb->input['action'] == "add_type")
 
 if($mybb->input['action'] == "edit_type")
 {
+	$plugins->run_hooks("admin_config_warning_edit_type");
+	
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -523,6 +543,8 @@ if($mybb->input['action'] == "edit_type")
 			);
 			
 			$db->update_query("warningtypes", $updated_type, "tid='{$type['tid']}'");
+			
+			$plugins->run_hooks("admin_config_warning_edit_type_commit");
 
 			// Log admin action
 			log_admin_action($type['tid'], $mybb->input['title']);
@@ -583,6 +605,8 @@ if($mybb->input['action'] == "edit_type")
 
 if($mybb->input['action'] == "delete_type")
 {
+	$plugins->run_hooks("admin_config_warning_delete_type");
+	
 	$query = $db->simple_select("warningtypes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$type = $db->fetch_array($query);
 
@@ -603,6 +627,8 @@ if($mybb->input['action'] == "delete_type")
 	{
 		// Delete the type
 		$db->delete_query("warningtypes", "tid='{$type['tid']}'");
+		
+		$plugins->run_hooks("admin_config_warning_delete_type_commit");
 
 		// Log admin action
 		log_admin_action($type['title']);
@@ -618,6 +644,8 @@ if($mybb->input['action'] == "delete_type")
 
 if($mybb->input['action'] == "levels")
 {
+	$plugins->run_hooks("admin_config_warning_levels");
+	
 	$page->output_header($lang->warning_levels);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_levels');
@@ -672,6 +700,8 @@ if($mybb->input['action'] == "levels")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_warning_start");
+	
 	$page->output_header($lang->warning_types);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_types');
@@ -717,27 +747,27 @@ if(!$mybb->input['action'])
 
 function fetch_time_length($time, $period)
 {
-		$time = intval($time);
-		if($period == "hours")
-		{
-			$time = $time*3600;
-		}
-		else if($period == "days")
-		{
-			$time = $time*86400;
-		}
-		else if($period == "weeks")
-		{
-			$time = $time*604800;
-		}
-		else if($period == "months")
-		{
-			$time = $time*2592000;
-		}
-		else
-		{
-			$time = 0;
-		}
-		return $time;
+	$time = intval($time);
+	if($period == "hours")
+	{
+		$time = $time*3600;
+	}
+	else if($period == "days")
+	{
+		$time = $time*86400;
+	}
+	else if($period == "weeks")
+	{
+		$time = $time*604800;
+	}
+	else if($period == "months")
+	{
+		$time = $time*2592000;
+	}
+	else
+	{
+		$time = 0;
+	}
+	return $time;
 }
 ?>

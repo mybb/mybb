@@ -35,8 +35,12 @@ $sub_tabs['promotion_logs'] = array(
 	'description' => $lang->view_promotion_logs_desc
 );
 
+$plugins->run_hooks("admin_user_group_promotions_begin");
+
 if($mybb->input['action'] == "disable")
 {
+	$plugins->run_hooks("admin_user_group_promotions_disable");
+	
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
@@ -56,6 +60,8 @@ if($mybb->input['action'] == "disable")
 		"enabled" => 0
 	);
 	$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
+	
+	$plugins->run_hooks("admin_user_group_promotions_disable_commit");
 
 	// Log admin action
 	log_admin_action($promotion['pid'], $promotion['title']);
@@ -66,6 +72,8 @@ if($mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_user_group_promotions_delete");
+	
 	if($mybb->input['no']) 
 	{ 
 		admin_redirect("index.php?".SID."&module=user/group_promotions"); 
@@ -89,6 +97,8 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$db->delete_query("promotions", "pid = '{$mybb->input['pid']}'");
+		
+		$plugins->run_hooks("admin_user_group_promotions_delete_commit");
 
 		// Log admin action
 		log_admin_action($promotion['title']);
@@ -104,6 +114,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "enable")
 {
+	$plugins->run_hooks("admin_user_group_promotions_enable");
+	
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
@@ -124,6 +136,8 @@ if($mybb->input['action'] == "enable")
 	);
 	
 	$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
+	
+	$plugins->run_hooks("admin_user_group_promotions_enable_commit");
 
 	// Log admin action
 	log_admin_action($promotion['pid'], $promotion['title']);
@@ -134,6 +148,8 @@ if($mybb->input['action'] == "enable")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_user_group_promotions_edit");
+	
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
@@ -210,6 +226,8 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("promotions", $update_promotion, "pid = '".intval($mybb->input['pid'])."'");
+			
+			$plugins->run_hooks("admin_user_group_promotions_edit_commit");
 
 			// Log admin action
 			log_admin_action($promotion['pid'], $mybb->input['title']);
@@ -324,6 +342,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_user_group_promotions_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -385,6 +405,8 @@ if($mybb->input['action'] == "add")
 			);
 			
 			$pid = $db->insert_query("promotions", $new_promotion);
+			
+			$plugins->run_hooks("admin_user_group_promotions_add_commit");
 
 			// Log admin action
 			log_admin_action($pid, $mybb->input['title']);
@@ -482,6 +504,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "logs")
 {
+	$plugins->run_hooks("admin_user_group_promotions_logs");
+	
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
 		$mybb->input['page'] = intval($mybb->input['page']);
@@ -562,7 +586,9 @@ if($mybb->input['action'] == "logs")
 }
 
 if(!$mybb->input['action'])
-{	
+{
+	$plugins->run_hooks("admin_user_group_promotions_start");
+	
 	$page->output_header($lang->promotion_manager);
 	
 	$page->output_nav_tabs($sub_tabs, 'usergroup_promotions');

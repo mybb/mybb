@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->user_email_log, "index.php?".SID."&amp;module=tools/maillogs");
 
+$plugins->run_hooks("admin_tools_maillogs_begin");
+
 if($mybb->input['action'] == "view")
 {
+	$plugins->run_hooks("admin_tools_maillogs_view");
+	
 	$query = $db->simple_select("maillogs", "*", "mid='".intval($mybb->input['mid'])."'");
 	$log = $db->fetch_array($query);
 
@@ -83,6 +87,8 @@ if($mybb->input['action'] == "view")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_maillogs_start");
+	
 	$per_page = 20;
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)

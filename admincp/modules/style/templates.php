@@ -66,8 +66,12 @@ else if(($mybb->input['sid'] && !$mybb->input['action']) || $mybb->input['action
 	);
 }
 
+$plugins->run_hooks("admin_style_templates");
+
 if($mybb->input['action'] == "add_set")
 {
+	$plugins->run_hooks("admin_style_templates_add_set");
+	
 	if($mybb->request_method == "post")
 	{
 	}
@@ -81,6 +85,8 @@ if($mybb->input['action'] == "add_set")
 
 if($mybb->input['action'] == "add_template")
 {
+	$plugins->run_hooks("admin_style_templates_add_template");
+	
 	$expand_str = "";
 	$expand_array = array();
 	if($mybb->input['expand'])
@@ -125,12 +131,14 @@ if($mybb->input['action'] == "add_template")
 						
 			$tid = $db->insert_query("templates", $template_array);
 			
-			flash_message($lang->success_template_saved, 'success');
-			
 			if($expand_str)
 			{
 				$expand_str = "&expand=".$expand_str;
 			}
+			
+			$plugins->run_hooks("admin_style_templates_add_template_commit");
+			
+			flash_message($lang->success_template_saved, 'success');
 			
 			if($mybb->input['continue'])
 			{
@@ -232,6 +240,8 @@ if($mybb->input['action'] == "add_template")
 
 if($mybb->input['action'] == "edit_set")
 {
+	$plugins->run_hooks("admin_style_templates_edit_set");
+	
 	if($mybb->request_method == "post")
 	{
 	}
@@ -245,6 +255,8 @@ if($mybb->input['action'] == "edit_set")
 
 if($mybb->input['action'] == "edit_template")
 {
+	$plugins->run_hooks("admin_style_templates_edit_template");
+	
 	if(!$mybb->input['tid'] || !$mybb->input['sid'])
 	{
 		flash_message($lang->error_missing_input, 'error');
@@ -302,12 +314,14 @@ if($mybb->input['action'] == "edit_template")
 				$db->update_query("templates", $template_array, "tid='".intval($mybb->input['tid'])."'");
 			}
 			
-			flash_message($lang->success_template_saved, 'success');
-			
 			if($expand_str)
 			{
 				$expand_str = "&expand=".$expand_str;
 			}
+			
+			$plugins->run_hooks("admin_style_templates_edit_template_commit");
+			
+			flash_message($lang->success_template_saved, 'success');
 			
 			if($mybb->input['continue'])
 			{
@@ -401,6 +415,8 @@ if($mybb->input['action'] == "edit_template")
 
 if($mybb->input['action'] == "search_replace")
 {
+	$plugins->run_hooks("admin_style_templates_search_replace");
+	
 	if($mybb->request_method == "post")
 	{
 	}
@@ -414,6 +430,8 @@ if($mybb->input['action'] == "search_replace")
 
 if($mybb->input['action'] == "find_updated")
 {
+	$plugins->run_hooks("admin_style_templates_find_updated");
+	
 	if($mybb->request_method == "post")
 	{
 	}
@@ -427,10 +445,14 @@ if($mybb->input['action'] == "find_updated")
 
 if($mybb->input['action'] == "delete_set")
 {
+	$plugins->run_hooks("admin_style_templates_delete_set");
+	
 }
 
 if($mybb->input['action'] == "delete_template")
 {
+	$plugins->run_hooks("admin_style_templates_delete_template");
+	
 	$query = $db->simple_select("templates", "*", "tid='".intval($mybb->input['tid'])."' AND sid > 0 AND sid = '".intval($mybb->input['sid'])."'");
 	$template = $db->fetch_array($query);
 	
@@ -451,9 +473,6 @@ if($mybb->input['action'] == "delete_template")
 	{
 		// Delete the template
 		$db->delete_query("templates", "tid='{$template['tid']}'");
-
-		// Log admin action
-		log_admin_action($template['tid'], $template['sid']);
 		
 		$expand_str = "";
 		$expand_array = array();
@@ -470,6 +489,11 @@ if($mybb->input['action'] == "delete_template")
 			}
 			$expand_str = "&expand=".implode("|", $expand_array);
 		}
+		
+		$plugins->run_hooks("admin_style_templates_delete_template_commit");
+
+		// Log admin action
+		log_admin_action($template['tid'], $template['sid']);
 
 		flash_message($lang->success_template_deleted, 'success');
 		admin_redirect("index.php?".SID."&module=style/templates&sid={$template['sid']}{$expand_str}");
@@ -498,10 +522,13 @@ if($mybb->input['action'] == "delete_template")
 
 if($mybb->input['action'] == "diff_report")
 {
+	$plugins->run_hooks("admin_style_templates_diff_report");
 }
 
 if($mybb->input['action'] == "revert")
 {
+	$plugins->run_hooks("admin_style_templates_revert");
+	
 	$query = $db->simple_select("templates", "*", "tid='".intval($mybb->input['tid'])."' AND sid > 0 AND sid = '".intval($mybb->input['sid'])."'");
 	$template = $db->fetch_array($query);
 	
@@ -522,9 +549,6 @@ if($mybb->input['action'] == "revert")
 	{
 		// Revert the template
 		$db->delete_query("templates", "tid='{$template['tid']}'");
-
-		// Log admin action
-		log_admin_action($template['tid'], $template['sid']);
 		
 		$expand_str = "";
 		$expand_array = array();
@@ -541,6 +565,11 @@ if($mybb->input['action'] == "revert")
 			}
 			$expand_str = "&expand=".implode("|", $expand_array);
 		}
+		
+		$plugins->run_hooks("admin_style_templates_revert_commit");
+
+		// Log admin action
+		log_admin_action($template['tid'], $template['sid']);
 
 		flash_message($lang->success_template_reverted, 'success');
 		admin_redirect("index.php?".SID."&module=style/templates&sid={$template['sid']}{$expand_str}");
@@ -568,7 +597,9 @@ if($mybb->input['action'] == "revert")
 }
 
 if($mybb->input['sid'] && !$mybb->input['action'])
-{	
+{
+	$plugins->run_hooks("admin_style_templates_set");
+	
 	$template_sets[-1] = $lang->global_templates;
 
 	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title', 'order_dir' => 'ASC'));
@@ -773,6 +804,8 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_style_templates_start");
+	
 	$page->output_header($lang->template_sets);
 	
 	$page->output_nav_tabs($sub_tabs, 'templates');

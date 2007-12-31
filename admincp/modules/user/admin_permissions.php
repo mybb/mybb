@@ -38,8 +38,12 @@ if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->inpu
 	);
 }
 
+$plugins->run_hooks("admin_user_admin_permissions_begin");
+
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_user_admin_permissions_delete");
+	
 	$uid = intval($mybb->input['uid']);
 	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
 	{
@@ -71,6 +75,8 @@ if($mybb->input['action'] == "delete")
 			"permissions" => ''
 		);
 		$db->update_query("adminoptions", $newperms, "uid = '{$mybb->input['uid']}'");
+		
+		$plugins->run_hooks("admin_user_admin_permissions_delete_commit");
 
 		// Log admin action
 		log_admin_action($mybb->input['uid']);
@@ -86,6 +92,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_user_admin_permissions_edit");
+	
 	if($mybb->request_method == "post")
 	{
 		foreach($mybb->input['permissions'] as $module => $actions)
@@ -116,7 +124,9 @@ if($mybb->input['action'] == "edit")
 		{
 			$db->insert_query("adminoptions", array('uid' => intval($mybb->input['uid']), 'permissions' => $db->escape_string(serialize($mybb->input['permissions']))));
 		}
-
+		
+		$plugins->run_hooks("admin_user_admin_permissions_edit_commit");
+		
 		// Log admin action
 		log_admin_action($mybb->input['uid']);
 				
@@ -232,6 +242,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "group")
 {
+	$plugins->run_hooks("admin_user_admin_permissions_group");
+	
 	$page->add_breadcrumb_item($lang->group_permissions);
 	$page->output_header($lang->group_permissions);
 	
@@ -298,7 +310,9 @@ LEGEND;
 }
 
 if(!$mybb->input['action'])
-{	
+{
+	$plugins->run_hooks("admin_user_admin_permissions_start");
+	
 	$page->add_breadcrumb_item($lang->user_permissions);
 	$page->output_header($lang->user_permissions);
 	

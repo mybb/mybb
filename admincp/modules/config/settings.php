@@ -17,6 +17,8 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->board_settings, "index.php?".SID."&amp;module=config/settings");
 
+$plugins->run_hooks("admin_config_settings_begin");
+
 // Delete all duplicate settings and setting groups
 if($mybb->inpu['action'] == "delete_duplicates")
 {
@@ -31,6 +33,9 @@ if($mybb->inpu['action'] == "delete_duplicates")
 		INNER JOIN ".TABLE_PREFIX."settinggroups g2 ON (g2.title=g1.title AND g2.gid!=g1.gid)
 	");
 	rebuild_settings();
+	
+	$plugins->run_hooks("admin_config_settings_delete_duplicates_commit");
+	
 	flash_message($lang->success_duplicate_settings_deleted, 'success');
 	admin_redirect("index.php?".SID."&module=config/settings&action=manage");
 }
@@ -38,6 +43,8 @@ if($mybb->inpu['action'] == "delete_duplicates")
 // Creating a new setting group
 if($mybb->input['action'] == "addgroup")
 {
+	$plugins->run_hooks("admin_config_settings_addgroup");
+	
 	if($mybb->request_method == "post")
 	{
 		// Validate title
@@ -68,6 +75,8 @@ if($mybb->input['action'] == "addgroup")
 				"isdefault" => 0
 			);
 			$gid = $db->insert_query("settinggroups", $new_setting_group);
+			
+			$plugins->run_hooks("admin_config_settings_addgroup_commit");
 
 			// Log admin action
 			log_admin_action($gid, $mybb->input['name']);
@@ -127,6 +136,8 @@ if($mybb->input['action'] == "addgroup")
 // Edit setting group
 if($mybb->input['action'] == "editgroup")
 {
+	$plugins->run_hooks("admin_config_settings_editgroup");
+	
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -174,6 +185,8 @@ if($mybb->input['action'] == "editgroup")
 			);
 			
 			$db->update_query("settinggroups", $update_setting_group, "gid='{$group['gid']}'");
+			
+			$plugins->run_hooks("admin_config_settings_editgroup_commit");
 
 			// Log admin action
 			log_admin_action($group['gid'], $mybb->input['name']);
@@ -225,6 +238,8 @@ if($mybb->input['action'] == "editgroup")
 // Delete Setting Group
 if($mybb->input['action'] == "deletegroup")
 {
+	$plugins->run_hooks("admin_config_settings_deletegroup");
+	
 	$query = $db->simple_select("settinggroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -254,6 +269,8 @@ if($mybb->input['action'] == "deletegroup")
 		$db->delete_query("settings", "gid='{$group['gid']}'");
 		
 		rebuild_settings();
+		
+		$plugins->run_hooks("admin_config_settings_deletegroup_commit");
 
 		// Log admin action
 		log_admin_action($group['name']);
@@ -270,6 +287,8 @@ if($mybb->input['action'] == "deletegroup")
 // Creating a new setting
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_settings_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -327,6 +346,8 @@ if($mybb->input['action'] == "add")
 			
 			$sid = $db->insert_query("settings", $new_setting);
 			rebuild_settings();
+			
+			$plugins->run_hooks("admin_config_settings_add_commit");
 
 			// Log admin action
 			log_admin_action($sid, $mybb->input['title']);
@@ -418,6 +439,8 @@ if($mybb->input['action'] == "add")
 // Editing a particular setting
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_settings_edit");
+	
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -485,6 +508,8 @@ if($mybb->input['action'] == "edit")
 			);
 			$db->update_query("settings", $updated_setting, "sid='{$mybb->input['sid']}'");
 			rebuild_settings();
+			
+			$plugins->run_hooks("admin_config_settings_edit_commit");
 
 			// Log admin action
 			log_admin_action($setting['sid'], $mybb->input['title']);
@@ -588,6 +613,8 @@ if($mybb->input['action'] == "edit")
 // Delete Setting
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_settings_delete");
+	
 	$query = $db->simple_select("settings", "*", "sid='".intval($mybb->input['sid'])."'");
 	$setting = $db->fetch_array($query);
 
@@ -619,6 +646,8 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("settings", "sid='{$setting['sid']}'");
 		
 		rebuild_settings();
+		
+		$plugins->run_hooks("admin_config_settings_delete_commit");
 
 		// Log admin action
 		log_admin_action($setting['title']);
@@ -635,6 +664,8 @@ if($mybb->input['action'] == "delete")
 // Modify Existing Settings
 if($mybb->input['action'] == "manage")
 {
+	$plugins->run_hooks("admin_config_settings_manage");
+	
 	// Update orders
 	if($mybb->request_method == "post")
 	{
@@ -657,6 +688,8 @@ if($mybb->input['action'] == "manage")
 				$db->update_query("settings", $update_setting, "sid={$sid}");
 			}
 		}
+		
+		$plugins->run_hooks("admin_config_settings_manage_commit");
 
 		// Log admin action
 		log_admin_action();
@@ -782,6 +815,8 @@ if($mybb->input['action'] == "manage")
 // Change settings for a specified group.
 if($mybb->input['action'] == "change")
 {
+	$plugins->run_hooks("admin_config_settings_change");
+	
 	if($mybb->request_method == "post")
 	{
 		if(is_array($mybb->input['upsetting']))
@@ -824,6 +859,8 @@ if($mybb->input['action'] == "change")
 			}
 			$db->update_query("tasks", $updated_task, "file='threadviews'");
 		}
+		
+		$plugins->run_hooks("admin_config_settings_change_commit");
 			
 		// Log admin action
 		log_admin_action();
@@ -1071,6 +1108,8 @@ if($mybb->input['action'] == "change")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_settings_start");
+	
 	$page->output_header($lang->board_settings);
 	if($message)
 	{

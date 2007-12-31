@@ -35,10 +35,13 @@ $sub_tabs['attachments'] = array(
 	'description' => $lang->attachments_desc
 );
 
+$plugins->run_hooks("admin_forum_moderation_queue_begin");
 
 // Actually performing our moderation choices
 if($mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_forum_moderation_queue_commit");
+	
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
@@ -63,6 +66,8 @@ if($mybb->request_method == "post")
 		{
 			$moderation->approve_threads($threads_to_approve);
 		}
+		
+		$plugins->run_hooks("admin_forum_moderation_queue_threads_commit");
 
 		// Log admin action
 		log_admin_action('threads');
@@ -90,6 +95,8 @@ if($mybb->request_method == "post")
 		{
 			$moderation->approve_posts($posts_to_approve);
 		}
+		
+		$plugins->run_hooks("admin_forum_moderation_queue_posts_commit");
 
 		// Log admin action
 		log_admin_action('posts');
@@ -113,13 +120,14 @@ if($mybb->request_method == "post")
 				remove_attachment($attachment['pid'], '', $attachment['aid']);
 			}
 		}
+		
+		$plugins->run_hooks("admin_forum_moderation_queue_attachments_commit");
 
 		// Log admin action
 		log_admin_action('attachments');
 
 		flash_message($lang->success_attachments, 'success');
 		admin_redirect("index.php?".SID."&module=forum/moderation_queue&type=attachments");
-
 	}
 }
 
@@ -132,6 +140,8 @@ $all_options .= "</ul>\n";
 // Threads awaiting moderation
 if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 {
+	$plugins->run_hooks("admin_forum_moderation_queue_threads");
+	
 	$forum_cache = $cache->read("forums");
 
 	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0");
@@ -223,6 +233,8 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 // Posts awaiting moderation
 if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 {
+	$plugins->run_hooks("admin_forum_moderation_queue_posts");
+	
 	$forum_cache = $cache->read("forums");
 
 	$query = $db->query("
@@ -337,6 +349,8 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 // Attachments awaiting moderation
 if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 {
+	$plugins->run_hooks("admin_forum_moderation_queue_attachments");
+	
 	$query = $db->query("
 		SELECT COUNT(aid) AS unapprovedattachments
 		FROM  ".TABLE_PREFIX."attachments a

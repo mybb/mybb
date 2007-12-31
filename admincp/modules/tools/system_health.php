@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->system_health, "index.php?".SID."&amp;module=tools/system_health");
 
+$plugins->run_hooks("admin_tools_system_health_begin");
+
 if($mybb->input['action'] == "utf8_conversion")
 {
+	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
+	
 	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion");
 	
 	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
@@ -171,6 +175,8 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$db->set_table_prefix($old_table_prefix);
 		
+		$plugins->run_hooks("admin_tools_system_health_utf8_conversion_commit");
+		
 		// Log admin action
 		log_admin_action($mybb->input['table']);
 		
@@ -306,6 +312,8 @@ if($mybb->input['action'] == "utf8_conversion")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_system_health_start");
+	
 	$page->output_header($lang->system_health);
 	
 	$sub_tabs['system_health'] = array(

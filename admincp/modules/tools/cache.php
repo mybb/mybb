@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->cache_manager, "index.php?".SID."&amp;module=tools/cache");
 
+$plugins->run_hooks("admin_tools_cache_begin");
+
 if($mybb->input['action'] == 'view')
 {
+	$plugins->run_hooks("admin_tools_cache_view");
+	
 	if(!trim($mybb->input['title']))
 	{
 		flash_message($lang->error_no_cache_specified, 'error');
@@ -60,10 +64,14 @@ if($mybb->input['action'] == 'view')
 
 if($mybb->input['action'] == "rebuild")
 {
+	$plugins->run_hooks("admin_tools_cache_rebuild");
+	
 	if(method_exists($cache, "update_{$mybb->input['title']}"))
 	{
 		$func = "update_{$mybb->input['title']}";
 		$cache->$func();
+		
+		$plugins->run_hooks("admin_tools_cache_rebuild_commit");
 
 		// Log admin action
 		log_admin_action($mybb->input['title']);
@@ -80,6 +88,8 @@ if($mybb->input['action'] == "rebuild")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_cache_start");
+	
 	$page->output_header($lang->cache_manager);
 	
 	$sub_tabs['cache_manager'] = array(

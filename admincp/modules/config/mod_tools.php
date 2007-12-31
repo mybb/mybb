@@ -16,11 +16,14 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-
 $page->add_breadcrumb_item($lang->mod_tools, "index.php?".SID."&amp;module=config/mod_tools");
+
+$plugins->run_hooks("admin_config_mod_tools_begin");
 
 if($mybb->input['action'] == "delete_post_tool")
 {
+	$plugins->run_hooks("admin_config_mod_tools_delete_post_tool");
+	
 	$query = $db->simple_select("modtools", "*", "tid='{$mybb->input['tid']}'");
 	$tool = $db->fetch_array($query);
 	
@@ -41,6 +44,8 @@ if($mybb->input['action'] == "delete_post_tool")
 	{
 		// Delete the type
 		$db->delete_query('modtools', "tid='{$tool['tid']}'");
+		
+		$plugins->run_hooks("admin_config_mod_tools_delete_post_tool_commit");
 
 		// Log admin action
 		log_admin_action($tool['name']);
@@ -56,6 +61,8 @@ if($mybb->input['action'] == "delete_post_tool")
 
 if($mybb->input['action'] == "delete_thread_tool")
 {
+	$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool");
+	
 	$query = $db->simple_select("modtools", "*", "tid='{$mybb->input['tid']}'");
 	$tool = $db->fetch_array($query);
 	
@@ -76,6 +83,8 @@ if($mybb->input['action'] == "delete_thread_tool")
 	{
 		// Delete the type
 		$db->delete_query('modtools', "tid='{$tool['tid']}'");
+		
+		$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool_commit");
 
 		// Log admin action
 		log_admin_action($tool['name']);
@@ -92,6 +101,8 @@ if($mybb->input['action'] == "delete_thread_tool")
 
 if($mybb->input['action'] == "post_tools")
 {
+	$plugins->run_hooks("admin_config_mod_tools_post_tools");
+	
 	$page->add_breadcrumb_item($lang->post_tools);
 	$page->output_header($lang->mod_tools." - ".$lang->post_tools);
 	
@@ -141,6 +152,8 @@ if($mybb->input['action'] == "post_tools")
 
 if($mybb->input['action'] == "edit_thread_tool")
 {
+	$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool");
+	
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='t'");
 	if($db->fetch_field($query, "tools") < 1)
 	{
@@ -253,6 +266,8 @@ if($mybb->input['action'] == "edit_thread_tool")
 			}
 		
 			$db->update_query("modtools", $update_tool, "tid='{$mybb->input['tid']}'");
+			
+			$plugins->run_hooks("admin_config_mod_tools_edit_thread_tool_commit");
 
 			// Log admin action
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
@@ -460,6 +475,8 @@ if($mybb->input['action'] == "edit_thread_tool")
 
 if($mybb->input['action'] == "add_thread_tool")
 {
+	$plugins->run_hooks("admin_config_mod_tools_add_thread_tool");
+	
 	if($mybb->request_method == 'post')
 	{
 		if(trim($mybb->input['title']) == "")
@@ -562,6 +579,8 @@ if($mybb->input['action'] == "add_thread_tool")
 			}
 		
 			$tid = $db->insert_query("modtools", $new_tool);
+			
+			$plugins->run_hooks("admin_config_mod_tools_add_thread_tool_commit");
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
@@ -755,6 +774,8 @@ if($mybb->input['action'] == "add_thread_tool")
 
 if($mybb->input['action'] == "edit_post_tool")
 {
+	$plugins->run_hooks("admin_config_mod_tools_edit_post_tool");
+	
 	$query = $db->simple_select("modtools", "COUNT(tid) as tools", "tid = '{$mybb->input['tid']}' AND type='p'");
 	if($db->fetch_field($query, "tools") < 1)
 	{
@@ -784,8 +805,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		else
 		{
 			$mybb->input['forum_1_forums'] = '';
-		}
-		
+		}		
 		
 		if($mybb->input['approvethread'] != '' && $mybb->input['approvethread'] != 'approve' && $mybb->input['approvethread'] != 'unapprove' && $mybb->input['approvethread'] != 'toggle')
 		{
@@ -913,6 +933,8 @@ if($mybb->input['action'] == "edit_post_tool")
 			}
 		
 			$db->update_query("modtools", $update_tool, "tid = '{$mybb->input['tid']}'");
+			
+			$plugins->run_hooks("admin_config_mod_tools_edit_post_tool_commit");
 
 			// Log admin action
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
@@ -1188,6 +1210,8 @@ if($mybb->input['action'] == "edit_post_tool")
 
 if($mybb->input['action'] == "add_post_tool")
 {
+	$plugins->run_hooks("admin_config_mod_tools_add_post_tool");
+	
 	if($mybb->request_method == 'post')
 	{
 		if(trim($mybb->input['title']) == "")
@@ -1339,6 +1363,8 @@ if($mybb->input['action'] == "add_post_tool")
 			}
 		
 			$tid = $db->insert_query("modtools", $new_tool);
+			
+			$plugins->run_hooks("admin_config_mod_tools_add_post_tool_commit");
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
@@ -1563,6 +1589,8 @@ if($mybb->input['action'] == "add_post_tool")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_mod_tools_start");
+	
 	$page->output_header($lang->mod_tools." - ".$lang->thread_tools);
 	
 	$sub_tabs['thread_tools'] = array(

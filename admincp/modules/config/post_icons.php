@@ -17,8 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->post_icons, "index.php?".SID."&amp;module=config/post_icons");
 
+$plugins->run_hooks("admin_config_post_icons_begin");
+
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_post_icons_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -34,13 +38,15 @@ if($mybb->input['action'] == "add")
 		if(!$errors)
 		{
 			$new_icon = array(
-				'name'	=> $db->escape_string($mybb->input['name']),
-				'path'	=> $db->escape_string($mybb->input['path'])
+				'name' => $db->escape_string($mybb->input['name']),
+				'path' => $db->escape_string($mybb->input['path'])
 			);
 
 			$iid = $db->insert_query("icons", $new_icon);
 
 			$cache->update_posticons();
+			
+			$plugins->run_hooks("admin_config_post_icons_add_commit");
 
 			// Log admin action
 			log_admin_action($iid = $mybb->input['name']);
@@ -97,6 +103,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "add_multiple")
 {
+	$plugins->run_hooks("admin_config_post_icons_add_multiple");
+	
 	if($mybb->request_method == "post")
 	{
 		if($mybb->input['step'] == 1)
@@ -208,7 +216,7 @@ if($mybb->input['action'] == "add_multiple")
 			}
 		}
 		else
-		{
+		{			
 			$path = $mybb->input['pathfolder'];
 			reset($mybb->input['include']);
 			$name = $mybb->input['name'];
@@ -233,6 +241,8 @@ if($mybb->input['action'] == "add_multiple")
 			}
 
 			$cache->update_posticons();
+			
+			$plugins->run_hooks("admin_config_post_icons_add_multiple_commit");
 
 			// Log admin action
 			log_admin_action();
@@ -285,6 +295,8 @@ if($mybb->input['action'] == "add_multiple")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_post_icons_edit");
+	
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
 	
@@ -314,11 +326,13 @@ if($mybb->input['action'] == "edit")
 			);
 
 			$db->update_query("icons", $icon, "iid='".intval($mybb->input['iid'])."'");
+			
+			$cache->update_posticons();
+			
+			$plugins->run_hooks("admin_config_post_icons_edit_commit");
 
 			// Log admin action
 			log_admin_action($icon['iid'], $mybb->input['name']);
-
-			$cache->update_posticons();
 
 			flash_message($lang->success_post_icon_updated, 'success');
 			admin_redirect('index.php?'.SID.'&module=config/post_icons');
@@ -364,6 +378,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_post_icons_delete");
+	
 	$query = $db->simple_select("icons", "*", "iid='".intval($mybb->input['iid'])."'");
 	$icon = $db->fetch_array($query);
 	
@@ -384,6 +400,8 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("icons", "iid='{$icon['iid']}'");
 
 		$cache->update_posticons();
+		
+		$plugins->run_hooks("admin_config_post_icons_delete_commit");
 
 		// Log admin action
 		log_admin_action($icon['name']);
@@ -399,6 +417,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_post_icons_start");
+	
 	$page->output_header($lang->post_icons);
 
 	$sub_tabs['manage_icons'] = array(

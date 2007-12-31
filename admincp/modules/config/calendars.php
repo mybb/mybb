@@ -30,10 +30,16 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "permissions" ||
 	);
 }
 
+$plugins->run_hooks("admin_config_calendars_begin");
+
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_calendars_add");
+	
 	if($mybb->request_method == "post")
 	{
+		$plugins->run_hooks("admin_config_calendars_add_commit");
+		
 		if(!trim($mybb->input['name']))
 		{
 			$errors[] = $lang->error_missing_name;
@@ -120,6 +126,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "permissions")
 {
+	$plugins->run_hooks("admin_config_calendars_permissions");
+	
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 	
@@ -166,6 +174,8 @@ if($mybb->input['action'] == "permissions")
 				$db->insert_query("calendarpermissions", $permissions_array);
 			}
 		}
+		
+		$plugins->run_hooks("admin_config_calendars_permissions_commit");
 
 		// Log admin action
 		log_admin_action($calendar['cid'], $calendar['name']);
@@ -256,6 +266,8 @@ if($mybb->input['action'] == "permissions")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_calendars_edit");
+	
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 	
@@ -294,7 +306,9 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("calendars", $calendar, "cid = '".intval($mybb->input['cid'])."'");
-
+			
+			$plugins->run_hooks("admin_config_calendars_edit_commit");
+			
 			// Log admin action
 			log_admin_action($calendar['cid'], $mybb->input['name']);
 
@@ -350,6 +364,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_calendars_delete");
+	
 	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['cid'])."'");
 	$calendar = $db->fetch_array($query);
 	
@@ -371,6 +387,8 @@ if($mybb->input['action'] == "delete")
 		// Delete the calendar
 		$db->delete_query("calendars", "cid='{$calendar['cid']}'");
 		$db->delete_query("events", "cid='{$calendar['cid']}'");
+		
+		$plugins->run_hooks("admin_config_calendars_delete_commit");
 
 		// Log admin action
 		log_admin_action($calendar['name']);
@@ -386,6 +404,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_config_calendars_update_order");
+	
 	if(!is_array($mybb->input['disporder']))
 	{
 		admin_redirect("index.php?".SID."&module=config/calendars");
@@ -398,6 +418,8 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 		);
 		$db->update_query("calendars", $update_query, "cid='".intval($cid)."'");
 	}
+	
+	$plugins->run_hooks("admin_config_calendars_update_order_commit");
 
 	// Log admin action
 	log_admin_action();
@@ -449,4 +471,5 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
+
 ?>

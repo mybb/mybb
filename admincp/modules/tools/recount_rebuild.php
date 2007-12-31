@@ -17,6 +17,8 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->recount_rebuild, "index.php?".SID."&amp;module=tools/recount_rebuild");
 
+$plugins->run_hooks("admin_tools_recount_rebuild");
+
 function acp_rebuild_forum_counters()
 {	
 	global $db, $mybb, $lang;
@@ -138,7 +140,7 @@ function acp_rebuild_attachment_thumbnails()
 
 function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, $message)
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 	
 	if($finish >= $current)
 	{
@@ -171,6 +173,8 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_recount_rebuild_start");
+	
 	if($mybb->request_method == "post")
 	{
 		require_once MYBB_ROOT."inc/functions_rebuild.php";
@@ -182,6 +186,8 @@ if(!$mybb->input['action'])
 		
 		if(isset($mybb->input['do_rebuildforumcounters']))
 		{
+			$plugins->run_hooks("admin_tools_recount_rebuild_forum_counters");
+			
 			if($mybb->input['page'] == 1)
 			{
 				// Log admin action
@@ -196,6 +202,8 @@ if(!$mybb->input['action'])
 		}
 		elseif(isset($mybb->input['do_rebuildthreadcounters']))
 		{
+			$plugins->run_hooks("admin_tools_recount_rebuild_thread_counters");
+			
 			if($mybb->input['page'] == 1)
 			{
 				// Log admin action
@@ -210,6 +218,8 @@ if(!$mybb->input['action'])
 		}
 		elseif(isset($mybb->input['do_recountuserposts']))
 		{
+			$plugins->run_hooks("admin_tools_recount_rebuild_user_posts");
+			
 			if($mybb->input['page'] == 1)
 			{
 				// Log admin action
@@ -224,11 +234,14 @@ if(!$mybb->input['action'])
 		}
 		elseif(isset($mybb->input['do_rebuildattachmentthumbs']))
 		{
+			$plugins->run_hooks("admin_tools_recount_rebuild_forum_counters");
+			
 			if($mybb->input['page'] == 1)
 			{
 				// Log admin action
 				log_admin_action("attachmentthumbs");
 			}
+			
 			if(!intval($mybb->input['attachmentthumbs']))
 			{
 				$mybb->input['attachmentthumbs'] = 500;
@@ -240,14 +253,15 @@ if(!$mybb->input['action'])
 		{
 			$cache->update_stats();
 			
+			$plugins->run_hooks("admin_tools_recount_rebuild_stats");
+			
 			// Log admin action
 			log_admin_action("stats");
 
 			flash_message($lang->success_rebuilt_forum_stats, 'success');
 			admin_redirect("index.php?".SID."&module=tools/recount_rebuild");
 		}
-	}
-	
+	}	
 	
 	$page->output_header($lang->recount_rebuild);
 	

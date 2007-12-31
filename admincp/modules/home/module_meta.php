@@ -17,13 +17,14 @@ if(!defined("IN_MYBB"))
 
 function home_meta()
 {
-	global $page, $lang;
+	global $page, $lang, $plugins;
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "dashboard", "title" => $lang->dashboard, "link" => "index.php?".SID."&module=home/dashboard");
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?".SID."&module=home/preferences");
 	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?".SID."&module=home/version_check");
 	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?".SID."&module=home/credits");
+	$plugins->run_hooks_by_ref("admin_home_menu", $sub_menu);
 	
 	$page->add_menu_item($lang->home, "home", "index.php?".SID, 1, $sub_menu);
 	
@@ -32,7 +33,7 @@ function home_meta()
 
 function home_action_handler($action)
 {
-	global $page, $db, $lang;
+	global $page, $db, $lang, $plugins;
 	
 	$page->active_module = "home";
 	
@@ -55,6 +56,8 @@ function home_action_handler($action)
 			$action_file = "index.php";
 	}
 	
+	$plugins->run_hooks_by_ref("admin_home_action_handler", $action);
+	
 	if($page->active_action == "dashboard")
 	{
 		// Quick Access
@@ -65,6 +68,8 @@ function home_action_handler($action)
 		$sub_menu['40'] = array("id" => "templates", "title" => $lang->templates, "link" => "index.php?".SID."&module=style/templates");
 		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?".SID."&module=config/plugins");
 		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?".SID."&module=tools/backupdb");
+		
+		$plugins->run_hooks_by_ref("admin_home_menu_quick_access", $sub_menu);
 		
 		$sidebar = new SidebarItem($lang->quick_access);
 		$sidebar->add_menu_items($sub_menu, $page->active_action);

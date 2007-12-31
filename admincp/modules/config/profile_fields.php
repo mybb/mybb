@@ -17,9 +17,12 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->custom_profile_fields, "index.php?".SID."&amp;module=config/profile_fields");
 
+$plugins->run_hooks("admin_config_profile_fields_begin");
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_config_profile_fields_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['name']))
@@ -65,6 +68,8 @@ if($mybb->input['action'] == "add")
 			$fid = $db->insert_query("profilefields", $new_profile_field);
 			
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields ADD fid{$fid} TEXT");
+			
+			$plugins->run_hooks("admin_config_profile_fields_add_commit");
 
 			// Log admin action
 			log_admin_action($fid, $mybb->input['name']);
@@ -147,6 +152,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_config_profile_fields_edit");
+	
 	$query = $db->simple_select("profilefields", "*", "fid = '".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
 	
@@ -195,6 +202,8 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("profilefields", $profile_field, "fid = '".intval($mybb->input['fid'])."'");
+			
+			$plugins->run_hooks("admin_config_profile_fields_edit_commit");
 			
 			// Log admin action
 			log_admin_action($profile_field['fid'], $mybb->input['name']);
@@ -276,6 +285,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_config_profile_fields_delete");
+	
 	$query = $db->simple_select("profilefields", "*", "fid='".intval($mybb->input['fid'])."'");
 	$profile_field = $db->fetch_array($query);
 	
@@ -297,6 +308,8 @@ if($mybb->input['action'] == "delete")
 		// Delete the profile field
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
 		$db->query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
+		
+		$plugins->run_hooks("admin_config_profile_fields_delete_commit");
 
 		// Log admin action
 		log_admin_action($profile_field['name']);
@@ -312,6 +325,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_config_profile_fields_start");
+	
 	$page->output_header($lang->custom_profile_fields);
 
 	$sub_tabs['custom_profile_fields'] = array(

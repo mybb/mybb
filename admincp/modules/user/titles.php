@@ -31,8 +31,12 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 	);
 }
 
+$plugins->run_hooks("admin_user_titles_begin");
+
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_user_titles_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -55,6 +59,8 @@ if($mybb->input['action'] == "add")
 			);
 			
 			$utid = $db->insert_query("usertitles", $new_title);
+			
+			$plugins->run_hooks("admin_user_titles_add_commit");
 
 			// Log admin action
 			log_admin_action($utid, $mybb->input['title']);
@@ -100,6 +106,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_user_titles_edit");
+	
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
@@ -131,6 +139,8 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
+			
+			$plugins->run_hooks("admin_user_titles_edit_commit");
 
 			// Log admin action
 			log_admin_action($usertitle['utid'], $mybb->input['title']);
@@ -180,6 +190,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_user_titles_delete");
+	
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$usertitle = $db->fetch_array($query);
 
@@ -198,6 +210,8 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		$db->delete_query("usertitles", "utid='{$usertitle['utid']}'");
+		
+		$plugins->run_hooks("admin_user_titles_delete_commit");
 
 		// Log admin action
 		log_admin_action($usertitle['title']);
@@ -213,6 +227,8 @@ if($mybb->input['action'] == "delete")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_user_titles_start");
+	
 	$page->output_header($lang->manage_user_titles);
 
 	$page->output_nav_tabs($sub_tabs, 'manage_titles');

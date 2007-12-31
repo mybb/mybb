@@ -48,8 +48,12 @@ function clear_overflow($fp, &$contents)
 
 $page->add_breadcrumb_item($lang->database_backups, "index.php?".SID."&amp;module=tools/backupdb");
 
+$plugins->run_hooks("admin_tools_backupdb_begin");
+
 if($mybb->input['action'] == "dlbackup")
 {
+	$plugins->run_hooks("admin_tools_backupdb_dlbackup");
+	
 	if(empty($mybb->input['file']))
 	{
 		flash_message($lang->error_file_not_specified, 'error');
@@ -61,6 +65,8 @@ if($mybb->input['action'] == "dlbackup")
 		
 	if(file_exists(MYBB_ADMIN_DIR.'backups/'.$file) && filetype(MYBB_ADMIN_DIR.'backups/'.$file) == 'file' && ($ext == 'gz' || $ext == 'sql'))
 	{
+		$plugins->run_hooks("admin_tools_backupdb_dlbackup_commit");
+				
 		// Log admin action
 		log_admin_action($file);
 
@@ -78,6 +84,8 @@ if($mybb->input['action'] == "dlbackup")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_tools_backupdb_delete");
+	
 	if($mybb->input['no']) 
 	{ 
 		admin_redirect("index.php?".SID."&module=tools/backupdb"); 
@@ -97,6 +105,8 @@ if($mybb->input['action'] == "delete")
 			
 		if($delete)
 		{
+			$plugins->run_hooks("admin_tools_backupdb_delete_commit");
+			
 			// Log admin action
 			log_admin_action($file);
 			
@@ -117,6 +127,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "backup")
 {
+	$plugins->run_hooks("admin_tools_backupdb_backup");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!is_array($mybb->input['tables']))
@@ -247,6 +259,8 @@ if($mybb->input['action'] == "backup")
 			
 			$db->set_table_prefix(TABLE_PREFIX);
 			
+			$plugins->run_hooks("admin_tools_backupdb_backup_disk_commit");
+			
 			// Log admin action
 			log_admin_action("disk", $file.$ext);
 
@@ -256,6 +270,8 @@ if($mybb->input['action'] == "backup")
 		}
 		else
 		{
+			$plugins->run_hooks("admin_tools_backupdb_backup_download_commit");
+			
 			// Log admin action
 			log_admin_action("download");
 
@@ -360,7 +376,9 @@ if($mybb->input['action'] == "backup")
 }
 
 if(!$mybb->input['action'])
-{	
+{
+	$plugins->run_hooks("admin_tools_backupdb_start");
+	
 	$page->add_breadcrumb_item($lang->backups);
 	$page->output_header($lang->database_backups);
 	

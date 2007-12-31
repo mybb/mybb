@@ -28,8 +28,12 @@ $sub_tabs['prune_admin_logs'] = array(
 	'description' => $lang->prune_admin_logs_desc
 );
 
+$plugins->run_hooks("admin_tools_adminlog_begin");
+
 if($mybb->input['action'] == 'prune')
 {
+	$plugins->run_hooks("admin_tools_adminlog_prune");
+	
 	if($config['log_pruning']['admin_logs'])
 	{
 		flash_message($lang->error_logs_automatically_pruned, 'error');
@@ -58,6 +62,8 @@ if($mybb->input['action'] == 'prune')
 		
 		$query = $db->delete_query("adminlog", $where);
 		$num_deleted = $db->affected_rows();
+		
+		$plugins->run_hooks("admin_tools_adminlog_prune_commit");
 		
 		// Log admin action
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['filter_module'], $num_deleted);
@@ -128,8 +134,11 @@ if($mybb->input['action'] == 'prune')
 	
 	$page->output_footer();
 }
+
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_tools_adminlog_start");
+	
 	$page->output_header($lang->admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'admin_logs');
 	

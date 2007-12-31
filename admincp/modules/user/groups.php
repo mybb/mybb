@@ -93,8 +93,12 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 	);
 }
 
+$plugins->run_hooks("admin_user_groups_begin");
+
 if($mybb->input['action'] == "export")
 {
+	$plugins->run_hooks("admin_user_groups_export_start");
+	
 	// Log admin action
 	log_admin_action();
 
@@ -125,12 +129,17 @@ if($mybb->input['action'] == "export")
 	header("Content-type: unknown/unknown");
 	header("Pragma: no-cache");
 	header("Expires: 0");
+	
+	$plugins->run_hooks("admin_user_groups_export_end");
+	
 	echo $xml;
 	exit;	
 }
 
 if($mybb->input['action'] == "approve_join_request")
 {
+	$plugins->run_hooks("admin_user_groups_approve_join_request");
+	
 	$query = $db->simple_select("joinrequests", "*", "rid='".intval($mybb->input['rid'])."'");
 	$request = $db->fetch_array($query);
 	
@@ -152,6 +161,8 @@ if($mybb->input['action'] == "approve_join_request")
 
 if($mybb->input['action'] == "deny_join_request")
 {
+	$plugins->run_hooks("admin_user_groups_deny_join_request");
+	
 	$query = $db->simple_select("joinrequests", "*", "rid='".intval($mybb->input['rid'])."'");
 	$request = $db->fetch_array($query);
 
@@ -170,6 +181,8 @@ if($mybb->input['action'] == "deny_join_request")
 
 if($mybb->input['action'] == "join_requests")
 {
+	$plugins->run_hooks("admin_user_groups_join_requests_start");
+	
 	$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -200,6 +213,8 @@ if($mybb->input['action'] == "join_requests")
 			log_admin_action("deny", $group['title'], $group['gid']);
 			$message = "The selected join requests have been denied.";
 		}
+		
+		$plugins->run_hooks("admin_user_groups_join_requests_commit");
 		
 		// Go through and delete the join requests from the database
 		$db->delete_query("joinrequests", "uid IN ({$uid_in}) AND gid='{$group['gid']}'");
@@ -296,6 +311,8 @@ if($mybb->input['action'] == "join_requests")
 }
 if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 {
+	$plugins->run_hooks("admin_user_groups_add_leader");
+	
 	$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -331,6 +348,9 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 			"canmanagemembers" => intval($mybb->input['canmanagemembers']),
 			"canmanagerequests" => intval($mybb->input['canmanagerequests'])
 		);
+		
+		$plugins->run_hooks("admin_user_groups_add_leader_commit");
+		
 		$db->insert_query("groupleaders", $new_leader);
 
 		// Log admin action
@@ -349,6 +369,8 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 // Show a listing of group leaders
 if($mybb->input['action'] == "leaders")
 {
+	$plugins->run_hooks("admin_user_groups_leaders");
+	
 	$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
 
@@ -442,6 +464,8 @@ if($mybb->input['action'] == "leaders")
 
 if($mybb->input['action'] == "delete_leader")
 {
+	$plugins->run_hooks("admin_user_groups_delete_leader");
+	
 	$query = $db->query("
 		SELECT l.*, u.username
 		FROM ".TABLE_PREFIX."groupleaders l
@@ -465,9 +489,11 @@ if($mybb->input['action'] == "delete_leader")
 	}
 
 	if($mybb->request_method == "post")
-	{
+	{		
 		// Delete the leader
 		$db->delete_query("groupleaders", "lid='{$lid}'");
+		
+		$plugins->run_hooks("admin_user_groups_delete_leader_commit");
 
 		// Log admin action
 		log_admin_action($leader['username'], $group['title']);
@@ -483,6 +509,8 @@ if($mybb->input['action'] == "delete_leader")
 
 if($mybb->input['action'] == "edit_leader")
 {
+	$plugins->run_hooks("admin_user_groups_edit_leader");
+	
 	$query = $db->query("
 		SELECT l.*, u.username
 		FROM ".TABLE_PREFIX."groupleaders l
@@ -507,6 +535,8 @@ if($mybb->input['action'] == "edit_leader")
 			"canmanagerequests" => intval($mybb->input['canmanagerequests'])
 		);
 		$db->update_query("groupleaders", $updated_leader, "lid={$leader['lid']}");
+		
+		$plugins->run_hooks("admin_user_groups_edit_leader_commit");
 
 		// Log admin action
 		log_admin_action($leader['username'], $group['title']);
@@ -550,6 +580,8 @@ if($mybb->input['action'] == "edit_leader")
 
 if($mybb->input['action'] == "add")
 {
+	$plugins->run_hooks("admin_user_groups_add");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!trim($mybb->input['title']))
@@ -614,6 +646,8 @@ if($mybb->input['action'] == "add")
 			// Update the caches
 			$cache->update_usergroups();
 			$cache->update_forumpermissions();
+			
+			$plugins->run_hooks("admin_user_groups_add_commit");
 
 			// Log admin action
 			log_admin_action($gid, $mybb->input['title']);
@@ -664,6 +698,8 @@ if($mybb->input['action'] == "add")
 
 if($mybb->input['action'] == "edit")
 {
+	$plugins->run_hooks("admin_user_groups_edit");
+	
 	$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 
@@ -783,6 +819,8 @@ if($mybb->input['action'] == "edit")
 			// Update the caches
 			$cache->update_usergroups();
 			$cache->update_forumpermissions();
+			
+			$plugins->run_hooks("admin_user_groups_edit_commit");
 
 			// Log admin action
 			log_admin_action($usergroup['gid'], $mybb->input['title']);
@@ -1006,6 +1044,8 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "delete")
 {
+	$plugins->run_hooks("admin_user_groups_delete");
+	
 	$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 
@@ -1033,6 +1073,8 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
 
+		$plugins->run_hooks("admin_user_groups_delete_commit");
+
 		// Log admin action
 		log_admin_action($usergroup['title']);
 
@@ -1047,6 +1089,8 @@ if($mybb->input['action'] == "delete")
 
 if($mybb->input['action'] == "disporder" && $mybb->_request_method == "post")
 {
+	$plugins->run_hooks("admin_user_groups_disporder");
+	
 	foreach($mybb->input['disporder'] as $gid=>$order)
 	{
 		$gid = intval($gid);
@@ -1062,6 +1106,8 @@ if($mybb->input['action'] == "disporder" && $mybb->_request_method == "post")
 
 	// Log admin action
 	log_admin_action();
+	
+	$plugins->run_hooks("admin_user_groups_disporder_commit");
 
 	flash_message("The user group display orders have been updated successfully.", 'success');
 	admin_redirect("index.php?".SID."&module=user/groups");
@@ -1069,6 +1115,8 @@ if($mybb->input['action'] == "disporder" && $mybb->_request_method == "post")
 
 if(!$mybb->input['action'])
 {
+	$plugins->run_hooks("admin_user_groups_start");
+	
 	if($mybb->request_method == "post")
 	{
 		if(!empty($mybb->input['disporder']))
@@ -1079,6 +1127,8 @@ if(!$mybb->input['action'])
 			}
 					
 			$cache->update_usergroups();
+			
+			$plugins->run_hooks("admin_user_groups_start_commit");
 		
 			flash_message($lang->success_groups_disporder_updated, 'success');
 			admin_redirect("index.php?".SID."&module=user/groups");
