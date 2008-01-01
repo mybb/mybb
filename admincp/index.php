@@ -299,6 +299,9 @@ while(($module = readdir($dir)) !== false)
 		}
 	}
 }
+
+$plugins->run_hooks_by_ref("admin_tabs", $modules);
+
 closedir($dir);
 
 $current_module = explode("/", $mybb->input['module'], 2);

@@ -1573,7 +1573,11 @@ if($mybb->input['action'] == "editsig")
 	$sig = htmlspecialchars_uni($sig);
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	
-	$codebuttons = build_mycode_inserter("signature");
+	if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
+	{
+		$codebuttons = build_mycode_inserter("signature");
+	}
+	
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_editsig_end");
 	output_page($editsig);

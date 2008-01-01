@@ -783,7 +783,7 @@ div.error.ul {
 }
 
 .modqueue_controls {
-	width: 250px;
+	width: 270px;
 	float: right;
 	text-align: center;
 	border: 1px solid #ccc;
@@ -3928,7 +3928,7 @@ body {
 <td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /></td>
 </tr>]]></template>
 		<template name="private_folders_folder_unremovable" version="1400"><![CDATA[<tr>
-<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" /> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
+<td class="trow1"><input type="text" class="textbox" name="folder[{$fid}]" size="25" value="{$foldername}" maxlength="30" /> <span class="smalltext">({$foldername2} - {$lang->cannot_be_removed})</span>
 </td>
 </tr>]]></template>
 		<template name="showteam_usergroup_user" version="1400"><![CDATA[<tr>
@@ -5708,7 +5708,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td class="tcat" height="3"><img src="pixel.gif" height="3" width="1" alt="" /></td>
 </tr>]]></template>
-		<template name="private_archive_csv_message" version="120"><![CDATA[{$senddate},{$foldername},{$message['subject']},{$message['tousername']},{$message['fromusername']},{$message['message']}]]></template>
+		<template name="private_archive_csv_message" version="1400"><![CDATA[{$senddate},"{$foldername}","{$message['subject']}","{$message['tousername']}","{$message['fromusername']}","{$message['message']}"
+]]></template>
 		<template name="search_results_threads_thread" version="1400"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
@@ -5773,7 +5774,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}">
 		<span class="smalltext">
 			{$lang->post_thread} <a href="{$thread_url}{$highlight}">{$post['thread_subject']}</a><br />
-			{$lang->post_subject} <a href="{$post_url}{$highlight}">{$post['subject']}</a>
+			{$lang->post_subject} <a href="{$post_url}{$highlight}#pid{$post['pid']}">{$post['subject']}</a>
 		</span><br />
 		<table width="100%"><tr><td><span class="smalltext"><em>{$prev}</em></span></td></tr></table>
 	</td>

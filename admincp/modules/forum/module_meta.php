@@ -38,26 +38,27 @@ function forum_action_handler($action)
 	
 	$page->active_module = "forum";
 	
-	switch($action)
+	$actions = array(
+		'moderation_queue' => array('active' => 'moderation_queue', 'file' => 'moderation_queue.php'),
+		'announcements' => array('active' => 'announcements', 'file' => 'announcements.php'),
+		'attachments' => array('active' => 'attachments', 'file' => 'attachments.php'),
+		'management' => array('active' => 'management', 'file' => 'management.php')
+	);
+	
+	$plugins->run_hooks_by_ref("admin_forum_action_handler", $actions);
+	
+	if(is_array($actions[$action]))
 	{
-		case "moderation_queue":
-			$page->active_action = "moderation_queue";
-			$action_file = "moderation_queue.php";
-			break;
-		case "announcements":
-			$page->active_action = "announcements";
-			$action_file = "announcements.php";
-			break;
-		case "attachments":
-			$page->active_action = "attachments";
-			$action_file = "attachments.php";
-			break;
-		default:
-			$page->active_action = "management";
-			$action_file = "management.php";
+		$page->active_action = $actions[$action]['active'];
+		return $actions[$action]['file'];
+	}
+	else
+	{
+		$page->active_action = "management";
+		return "management.php";
 	}
 	
-	$plugins->run_hooks_by_ref("admin_forum_action_handler", $action);
+	
 	
 	return $action_file;
 }

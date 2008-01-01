@@ -1348,8 +1348,8 @@ class PostDataHandler extends DataHandler
 		$post['pid'] = intval($post['pid']);
 		
 		$existing_post = get_post($post['pid']);
-		$post['tid'] = $tid_fetch['tid'];
-		$post['fid'] = $tid_fetch['fid'];
+		$post['tid'] = $existing_post['tid'];
+		$post['fid'] = $existing_post['fid'];
 		
 		$forum = get_forum($post['fid']);
 
@@ -1406,6 +1406,7 @@ class PostDataHandler extends DataHandler
 		// Update the thread details that might have been changed first.
 		if($first_post)
 		{
+			
 			$this->tid = $post['tid'];
 
 			$this->thread_update_data['visible'] = $visible;

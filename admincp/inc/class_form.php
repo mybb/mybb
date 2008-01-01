@@ -645,7 +645,7 @@ class DefaultForm
 		$return = "<div class=\"form_button_wrapper\">\n";
 		foreach($buttons as $button)
 		{
-			$return = $button." \n";
+			$return .= $button." \n";
 		}
 		$return .= "</div>\n";
 		if($this->_return == false)

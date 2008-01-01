@@ -108,8 +108,8 @@ if($all_forums)
 
 // Get the threads to syndicate.
 $query = $db->query("
-	SELECT t.tid, t.dateline AS date, p.edittime AS updated, t.subject AS title, f.allowhtml, f.allowmycode, f.allowsmilies, f.allowimgcode,
-	f.name AS forumname, p.message AS description, u.username AS author, p.smilieoff, f.fid
+	SELECT t.tid, t.dateline, p.edittime, t.subject, f.allowhtml, f.allowmycode, f.allowsmilies, f.allowimgcode,
+	f.name, p.message, u.username, p.smilieoff, f.fid
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=t.fid)
 	LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=t.firstpost)
@@ -137,7 +137,31 @@ while($thread = $db->fetch_array($query))
 	$thread['link'] = $channel['link'] . get_thread_link($thread['tid']);
 	if($forumcache[$thread['fid']])
 	{
-		$feedgenerator->add_item($thread);
+		if($thread['disablesmilies'])
+		{
+			$thread['allowsmilies'] = 0;
+		}
+		
+		// Set up the parser options.
+		$parser_options = array(
+			"allow_html" => $thread['allowhtml'],
+			"allow_mycode" => $thread['allowmycode'],
+			"allow_smilies" => $thread['allowsmilies'],
+			"allow_imgcode" => $thread['allowimgcode']
+		);
+		
+		$thread['message'] = $parser->parse_message($thread['message'], $parser_options);
+		
+		$item = array(
+			'updated' => $thread['edittime'],
+			'author' => $thread['username'],
+			'title' => $thread['subject'],
+			'name' => $thread['forumname'],
+			'description' => $thread['message'],
+			'date' => $thread['dateline']
+		);
+		
+		$feedgenerator->add_item($item);
 	}
 }
 $db->free_result($query);

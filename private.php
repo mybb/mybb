@@ -1089,6 +1089,13 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	$extime = my_date($mybb->settings['timeformat'], TIME_NOW, 0, 0);
 	$lang->exported_date = sprintf($lang->exported_date, $exdate, $extime);
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
+	foreach($foldersexploded as $key => $folders)
+	{
+		$folderinfo = explode("**", $folders, 2);
+		$folderinfo[1] = get_pm_folder_name($folderinfo[0], $folderinfo[1]);
+		$foldersexploded[$key] = implode("**", $folderinfo);
+	}
+	
 	if($mybb->input['pmid'])
 	{
 		$wsql = "pmid='".intval($mybb->input['pmid'])."' AND uid='".$mybb->user['uid']."'";
@@ -1251,6 +1258,15 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			$message['message'] = str_replace("\n", "\r\n", $message['message']);
 		}
 		
+		if($mybb->input['exporttype'] == "csv")
+		{
+			$message['message'] = addslashes($message['message']);
+			$message['subject'] = addslashes($message['subject']);
+			$message['tousername'] = addslashes($message['tousername']);
+			$message['fromusername'] = addslashes($message['fromusername']);
+		}
+		
+		
 		if(!$donefolder[$message['folder']])
 		{
 			reset($foldersexploded);
@@ -1263,6 +1279,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 					if($mybb->input['exporttype'] != "csv")
 					{
 						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$nmybb->input['exporttype']."_folderhead", 1, 0)."\";");
+					}
+					else
+					{
+						$foldername = addslashes($folderinfo[1]);
 					}
 					$donefolder[$message['folder']] = 1;
 				}

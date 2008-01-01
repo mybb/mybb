@@ -498,4 +498,58 @@ function fetch_iconv_encoding($mysql_encoding)
     }
 }
 
+/**
+ * Adds/Updates a Page/Tab to the permissions array in the adminoptions table
+ *
+ * @param integer Default permissions for the page (1 for allowed - 0 for disallowed - -1 to remove)
+ */
+function change_admin_permission($tab, $page="", $default=1)
+{
+	global $db;
+	
+	$query = $db->simple_select("adminoptions", "uid, permissions");
+	while($adminoption = $db->fetch_array($query))
+	{
+		$adminoption['permissions'] = unserialize($adminoption['permissions']);
+		
+		if($default == -1)
+		{
+			if(!empty($page))
+			{
+				unset($adminoption['permissions'][$tab][$page]);
+			}
+			else
+			{
+				unset($adminoption['permissions'][$tab]);
+			}
+		}
+		
+		if(!empty($page))
+		{
+			if($uid == 0)
+			{
+				$adminoption['permissions'][$tab][$page] = 0;
+			}
+			else
+			{
+				$adminoption['permissions'][$tab][$page] = $default;
+			}
+		}
+		else
+		{
+			if($uid == 0)
+			{
+				$adminoption['permissions'][$tab]['tab'] = 0;
+			}
+			else
+			{
+				$adminoption['permissions'][$tab]['tab'] = $default;
+			}
+		}
+		
+		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
+	}
+}
+
+
 ?>
