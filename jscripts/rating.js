@@ -47,7 +47,7 @@ var Rating = {
 			var list_element_a = document.createElement('a');
 			list_element_a.className = list_classes[i];
 			list_element_a.title = lang.stars[i];
-			list_element_a.href = './ratethread.php?tid='+tid+'&rating='+i;
+			list_element_a.href = './ratethread.php?tid='+tid+'&rating='+i+'&my_post_key='+my_post_key;
 			list_element_a.innerHTML = i;
 			list_element.appendChild(list_element_a);
 			list.appendChild(list_element);
@@ -58,7 +58,7 @@ var Rating = {
 	{
 		this.spinner = new ActivityIndicator('body', {image: imagepath + "/spinner_big.gif"});
 		var element_id = parameterString.match(/tid=(.*)&/)[1];
-		new Ajax.Request('ratethread.php?ajax=1', {
+		new Ajax.Request('ratethread.php?ajax=1&my_post_key='+my_post_key, {
 			method: 'post',
 			postBody: parameterString,
 			onComplete: function(request) { Rating.rating_added(request, element_id); }

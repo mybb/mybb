@@ -14,6 +14,9 @@ define("IN_MYBB", 1);
 $templatelist = '';
 require_once "./global.php";
 
+// Verify incoming POST request
+verify_post_check($mybb->input['my_post_key']);
+
 $lang->load("ratethread");
 
 $tid = intval($mybb->input['tid']);

@@ -1910,13 +1910,14 @@ if($mybb->input['action'] == "do_editlists")
 	}
 	else
 	{
-		$existing_list  = explode(",", $mybb->user['buddylist']);
+		$existing_list = explode(",", $mybb->user['buddylist']);
 	}
 
 	// Adding one or more users to this list
 	if($mybb->input['add_username'])
 	{
 		// Split up any usernames we have
+		$found_users = 0;
 		$adding_self = false;
 		$users = explode(",", $mybb->input['add_username']);
 		$users = array_map("trim", $users);
@@ -1937,12 +1938,14 @@ if($mybb->input['action'] == "do_editlists")
 			$query = $db->simple_select("users", "uid", "LOWER(username) IN ('".my_strtolower(implode("','", $users))."')");
 			while($user = $db->fetch_array($query))
 			{
+				++$found_users;
+				
 				// Make sure we're not adding a duplicate
 				if(in_array($user['uid'], $existing_list))
 				{
 					continue;
 				}
-				$existing_list[] = $user['uid'];
+				$existing_users[] = $user['uid'];
 			}
 		}
 
@@ -1969,6 +1972,21 @@ if($mybb->input['action'] == "do_editlists")
 				$error_message = $lang->cant_add_self_to_buddy_list;
 			}
 		}
+		
+		if(count($existing_users) == 0)
+		{
+			$message = "";
+		}
+		
+		if(count($found_users) < count($users))
+		{
+			if($error_message)
+			{
+				$error_message .= "<br />";
+			}
+			
+			$error_message .= $lang->invalid_user_selected;
+		}
 	}
 
 	// Removing a user from this list
@@ -1993,7 +2011,7 @@ if($mybb->input['action'] == "do_editlists")
 	}
 
 	// Now we have the new list, so throw it all back together
-	$new_list = implode(",", $existing_list);
+	$new_list = implode(",", $existing_users);
 
 	// And clean it up a little to ensure there is no possibility of bad values
 	$new_list = preg_replace("#,{2,}#", ",", $new_list);
