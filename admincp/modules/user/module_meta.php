@@ -39,40 +39,29 @@ function user_action_handler($action)
 	global $page, $lang, $plugins;
 	
 	$page->active_module = "user";
-	switch($action)
-	{
-		case "group_promotions":
-			$page->active_action = "group_promotions";
-			$action_file = "group_promotions.php";
-			break;
-		case "admin_permissions":
-			$page->active_action = "admin_permissions";
-			$action_file = "admin_permissions.php";
-			break;
-		case "titles":
-			$page->active_action = "titles";
-			$action_file = "titles.php";
-			break;
-		case "banning":
-			$page->active_action = "banning";
-			$action_file = "banning.php";
-			break;
-		case "groups":
-			$page->active_action = "groups";
-			$action_file = "groups.php";
-			break;
-		case "mass_mail":
-			$page->active_action = "mass_mail";
-			$action_file = "mass_mail.php";
-			break;
-		default:
-			$page->active_action = "users";
-			$action_file = "users.php";
-	}
+	
+	$actions = array(
+		'group_promotions' => array('active' => 'group_promotions', 'file' => 'group_promotions.php'),
+		'admin_permissions' => array('active' => 'admin_permissions', 'file' => 'admin_permissions.php'),
+		'titles' => array('active' => 'titles', 'file' => 'titles.php'),
+		'banning' => array('active' => 'banning', 'file' => 'banning.php'),
+		'groups' => array('active' => 'groups', 'file' => 'groups.php'),
+		'mass_mail' => array('active' => 'mass_mail', 'file' => 'mass_mail.php'),
+		'users' => array('active' => 'users', 'file' => 'users.php')
+	);
 	
 	$plugins->run_hooks_by_ref("admin_user_action_handler", $action);
 	
-	return $action_file;
+	if(isset($actions[$action]))
+	{
+		$page->active_action = $actions[$action]['active'];
+		return $actions[$action]['file'];
+	}
+	else
+	{
+		$page->active_action = "users";
+		return "users.php";
+	}
 }
 
 function user_format_admin_log_data($action, $data)

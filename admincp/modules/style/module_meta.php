@@ -34,20 +34,24 @@ function style_action_handler($action)
 	global $page, $lang, $plugins;
 	
 	$page->active_module = "style";
-	switch($action)
+	
+	$actions = array(
+		'templates' => array('active' => 'templates', 'file' => 'templates.php'),
+		'themes' => array('active' => 'themes', 'file' => 'themes.php')
+	);
+	
+	$plugins->run_hooks_by_ref("admin_style_action_handler", $actions);
+	
+	if(isset($actions[$action]))
 	{
-		case "templates":
-			$page->active_action = "templates";
-			$action_file = "templates.php";
-			break;
-		default:
-			$page->active_action = "themes";
-			$action_file = "themes.php";
+		$page->active_action = $actions[$action]['active'];
+		return $actions[$action]['file'];
 	}
-	
-	$plugins->run_hooks_by_ref("admin_style_action_handler", $action);
-	
-	return $action_file;
+	else
+	{
+		$page->active_action = "themes";
+		return "themes.php";
+	}
 }
 
 function style_admin_permissions()

@@ -40,58 +40,23 @@ function tools_action_handler($action)
 	global $page, $lang, $plugins;
 	
 	$page->active_module = "tools";
-	switch($action)
-	{
-		case "php_info":
-			$page->active_action = "php_info";
-			$action_file = "php_info.php";
-			break;
-		case "tasks":
-			$page->active_action = "tasks";
-			$action_file = "tasks.php";
-			break;
-		case "backupdb":
-			$page->active_action = "backupdb";
-			$action_file = "backupdb.php";
-			break;
-		case "optimizedb":
-			$page->active_action = "optimizedb";
-			$action_file = "optimizedb.php";
-			break;
-		case "cache":
-			$page->active_action = "cache";
-			$action_file = "cache.php";
-			break;
-		case "recount_rebuild":
-			$page->active_action = "recount_rebuild";
-			$action_file = "recount_rebuild.php";
-			break;
-		case "maillogs":
-			$page->active_action = "maillogs";
-			$action_file = "maillogs.php";
-			break;
-		case "mailerrors":
-			$page->active_action = "mailerrors";
-			$action_file = "mailerrors.php";
-			break;
-		case "adminlog":
-			$page->active_action = "adminlog";
-			$action_file = "adminlog.php";
-			break;
-		case "modlog":
-			$page->active_action = "modlog";
-			$action_file = "modlog.php";
-			break;
-		case "warninglog":
-			$page->active_action = "warninglog";
-			$action_file = "warninglog.php";
-			break;
-		default:
-			$page->active_action = "system_health";
-			$action_file = "system_health.php";
-	}
 	
-	$plugins->run_hooks_by_ref("admin_tools_action_handler", $action);
+	$actions = array(
+		'php_info' => array('active' => 'php_info', 'file' => 'php_info.php'),
+		'tasks' => array('active' => 'tasks', 'file' => 'tasks.php'),
+		'backupdb' => array('active' => 'backupdb', 'file' => 'backupdb.php'),
+		'optimizedb' => array('active' => 'optimizedb', 'file' => 'optimizedb.php'),
+		'cache' => array('active' => 'cache', 'file' => 'cache.php'),
+		'recount_rebuild' => array('active' => 'recount_rebuild', 'file' => 'recount_rebuild.php'),
+		'maillogs' => array('active' => 'maillogs', 'file' => 'maillogs.php'),
+		'mailerrors' => array('active' => 'mailerrors', 'file' => 'mailerrors.php'),
+		'adminlog' => array('active' => 'adminlog', 'file' => 'adminlog.php'),
+		'modlog' => array('active' => 'modlog', 'file' => 'modlog.php'),
+		'warninglog' => array('active' => 'warninglog', 'file' => 'warninglog.php'),
+		'system_health' => array('active' => 'system_health', 'file' => 'system_health.php')
+	);
+	
+	$plugins->run_hooks_by_ref("admin_tools_action_handler", $actions);
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?module=tools/adminlog");
@@ -106,7 +71,17 @@ function tools_action_handler($action)
 	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
-	return $action_file;
+	
+	if(isset($actions[$action]))
+	{
+		$page->active_action = $actions[$action]['active'];
+		return $actions[$action]['file'];
+	}
+	else
+	{
+		$page->active_action = "system_health";
+		return "system_health.php";
+	}
 }
 
 function tools_admin_permissions()

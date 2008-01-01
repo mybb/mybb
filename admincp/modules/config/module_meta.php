@@ -49,72 +49,36 @@ function config_action_handler($action)
 	
 	$page->active_module = "config";
 
-	switch($action)
-	{
-		case "plugins":
-			$page->active_action = "plugins";
-			$action_file = "plugins.php";
-			break;
-		case "smilies":
-			$page->active_action = "smilies";
-			$action_file = "smilies.php";
-			break;
-		case "banning":
-			$page->active_action = "banning";
-			$action_file = "banning.php";
-			break;
-		case "badwords":
-			$page->active_action = "badwords";
-			$action_file = "badwords.php";
-			break;
-		case "profile_fields":
-			$page->active_action = "profile_fields";
-			$action_file = "profile_fields.php";
-			break;
-		case "spiders":
-			$page->active_action = "spiders";
-			$action_file = "spiders.php";
-			break;
-		case "attachment_types":
-			$page->active_action = "attachment_types";
-			$action_file = "attachment_types.php";
-			break;
-		case "languages":
-			$page->active_action = "languages";
-			$action_file = "languages.php";
-			break;
-		case "post_icons":
-			$page->active_action = "post_icons";
-			$action_file = "post_icons.php";
-			break;
-		case "help_documents":
-			$page->active_action = "help_documents";
-			$action_file = "help_documents.php";
-			break;
-		case "calendars":
-			$page->active_action = "calendars";
-			$action_file = "calendars.php";
-			break;
-		case "warning":
-			$page->active_action = "warning";
-			$action_file = "warning.php";
-			break;
-		case "mod_tools":
-			$page->active_action = "mod_tools";
-			$action_file = "mod_tools.php";
-			break;
-		case "mycode":
-			$page->active_action = "mycode";
-			$action_file = "mycode.php";
-			break;
-		default:
-			$page->active_action = "settings";
-			$action_file = "settings.php";
-	}
+	$actions = array(
+		'plugins' => array('active' => 'plugins', 'file' => 'plugins.php'),
+		'smilies' => array('active' => 'smilies', 'file' => 'smilies.php'),
+		'banning' => array('active' => 'banning', 'file' => 'banning.php'),
+		'badwords' => array('active' => 'badwords', 'file' => 'badwords.php'),
+		'profile_fields' => array('active' => 'profile_fields', 'file' => 'profile_fields.php'),
+		'spiders' => array('active' => 'spiders', 'file' => 'spiders.php'),
+		'attachment_types' => array('active' => 'attachment_types', 'file' => 'attachment_types.php'),
+		'languages' => array('active' => 'languages', 'file' => 'languages.php'),
+		'post_icons' => array('active' => 'post_icons', 'file' => 'post_icons.php'),
+		'help_documents' => array('active' => 'help_documents', 'file' => 'help_documents.php'),
+		'calendars' => array('active' => 'calendars', 'file' => 'calendars.php'),
+		'warning' => array('active' => 'warning', 'file' => 'warning.php'),
+		'mod_tools' => array('active' => 'mod_tools', 'file' => 'mod_tools.php'),
+		'mycode' => array('active' => 'mycode', 'file' => 'mycode.php'),
+		'settings' => array('active' => 'settings', 'file' => 'settings.php')
+	);
 	
-	$plugins->run_hooks_by_ref("admin_config_action_handler", $action);
+	$plugins->run_hooks_by_ref("admin_config_action_handler", $actions);
 
-	return $action_file;
+	if(isset($actions[$action]))
+	{
+		$page->active_action = $actions[$action]['active'];
+		return $actions[$action]['file'];
+	}
+	else
+	{
+		$page->active_action = "settings";
+		return "settings.php";
+	}
 }
 
 function config_admin_permissions()

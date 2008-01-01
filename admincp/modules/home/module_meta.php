@@ -56,7 +56,14 @@ function home_action_handler($action)
 			$action_file = "index.php";
 	}
 	
-	$plugins->run_hooks_by_ref("admin_home_action_handler", $action);
+	$actions = array(
+		'preferences' => array('active' => 'preferences', 'file' => 'preferences.php'),
+		'credits' => array('active' => 'credits', 'file' => 'credits.php'),
+		'version_check' => array('active' => 'version_check', 'file' => 'version_check.php'),
+		'dashboard' => array('active' => 'dashboard', 'file' => 'index.php')
+	);
+	
+	$plugins->run_hooks_by_ref("admin_home_action_handler", $actions);
 	
 	if($page->active_action == "dashboard")
 	{
@@ -109,7 +116,16 @@ function home_action_handler($action)
 		$page->sidebar .= $sidebar->get_markup();
 	}
 
-	return $action_file;
+	if(isset($actions[$action]))
+	{
+		$page->active_action = $actions[$action]['active'];
+		return $actions[$action]['file'];
+	}
+	else
+	{
+		$page->active_action = "dashboard";
+		return "index.php";
+	}
 }
 
 ?>

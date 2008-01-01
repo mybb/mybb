@@ -47,7 +47,7 @@ function forum_action_handler($action)
 	
 	$plugins->run_hooks_by_ref("admin_forum_action_handler", $actions);
 	
-	if(is_array($actions[$action]))
+	if(isset($actions[$action]))
 	{
 		$page->active_action = $actions[$action]['active'];
 		return $actions[$action]['file'];
@@ -57,10 +57,6 @@ function forum_action_handler($action)
 		$page->active_action = "management";
 		return "management.php";
 	}
-	
-	
-	
-	return $action_file;
 }
 
 function forum_admin_permissions()
