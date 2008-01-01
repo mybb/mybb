@@ -793,7 +793,7 @@ if($mybb->input['action'] == "export")
 
 if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 {
-	if($mybb->input['exporttype'] != "csv" && $mybb->input['exporttype'] != "text" && $mybb->input['exporttype'] != "html")
+	if($mybb->input['exporttype'] != "csv" && $mybb->input['exporttype'] != "txt" && $mybb->input['exporttype'] != "html")
 	{
 		exit;
 	}

@@ -1439,7 +1439,7 @@ if($mybb->input['action'] == "editsig")
 	$sig = htmlspecialchars_uni($sig);
 	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
-	$plugins->run_hooks("usercp_endsig_end");
+	$plugins->run_hooks("usercp_editsig_end");
 	output_page($editsig);
 }
 
