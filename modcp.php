@@ -425,7 +425,8 @@ if($mybb->input['action'] == "modlogs")
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
-		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
+		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
+		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
 		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
@@ -2615,7 +2616,7 @@ if(!$mybb->input['action'])
 	if($unapproved_attachments > 0)
 	{
 		$query = $db->query("
-			SELECT t.tid, p.pid, t.uid, t.username, a.dateuploaded
+			SELECT t.tid, p.pid, t.uid, t.username, a.filename, a.dateuploaded
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
