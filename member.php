@@ -325,7 +325,7 @@ if($mybb->input['action'] == "register")
 	if($mybb->input['bday3'] == 0) $mybb->input['bday3'] = "";
 
 	// Is COPPA checking enabled?
-	if($mybb->settings['coppa'] != "disabled" && !$_COOKIE['coppadob'])
+	if($mybb->settings['coppa'] != "disabled" && !$mybb->input['step'])
 	{
 		// Just selected DOB, we check
 		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])

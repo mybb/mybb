@@ -83,21 +83,47 @@ messageEditor.prototype = {
 
 		// An array of colours to be shown.
 		this.colors = new Object();
-		this.colors["#ffffff"] = this.options.lang.color_white;
-		this.colors["#000000"] = this.options.lang.color_black;
-		this.colors["#FF0000"] = this.options.lang.color_red;
-		this.colors["#FFFF00"] = this.options.lang.color_yellow;
-		this.colors["#FFC0CB"] = this.options.lang.color_pink;
-		this.colors["#008000"] = this.options.lang.color_green;
-		this.colors["#FFA500"] = this.options.lang.color_orange;
-		this.colors["#800080"] = this.options.lang.color_purple;
-		this.colors["#0000FF"] = this.options.lang.color_blue;
-		this.colors["#F5F5DC"] = this.options.lang.color_beige;
-		this.colors["#A52A2A"] = this.options.lang.color_brown;
-		this.colors["#008080"] = this.options.lang.color_teal;
-		this.colors["#000080"] = this.options.lang.color_navy;
-		this.colors["#800000"] = this.options.lang.color_maroon;
-		this.colors["#32CD32"] = this.options.lang.color_limegreen; 
+		this.colors[1] = "#800000";
+		this.colors[2] = "#8B4513";
+		this.colors[3] = "#006400";
+		this.colors[4] = "#2F4F4F";
+		this.colors[5] = "#000080";
+		this.colors[6] = "#4B0082";
+		this.colors[7] = "#800080";
+		this.colors[8] = "#000000";
+		this.colors[9] = "#FF0000";
+		this.colors[10] = "#DAA520";
+		this.colors[11] = "#6B8E23";
+		this.colors[12] = "#708090";
+		this.colors[13] = "#0000CD";
+		this.colors[14] = "#483D8B";
+		this.colors[15] = "#C71585";
+		this.colors[16] = "#696969";
+		this.colors[17] = "#FF4500";
+		this.colors[18] = "#FFA500";
+		this.colors[19] = "#808000";
+		this.colors[20] = "#4682B4";
+		this.colors[21] = "#1E90FF";
+		this.colors[22] = "#9400D3";
+		this.colors[23] = "#FF1493";
+		this.colors[24] = "#A9A9A9";
+		this.colors[25] = "#FF6347";
+		this.colors[26] = "#FFD700";
+		this.colors[27] = "#32CD32";
+		this.colors[28] = "#87CEEB";
+		this.colors[29] = "#00BFFF";
+		this.colors[30] = "#9370DB";
+		this.colors[31] = "#FF69B4";
+		this.colors[32] = "#DCDCDC";
+		this.colors[33] = "#FFDAB9";
+		this.colors[34] = "#FFFFE0";
+		this.colors[35] = "#98FB98";
+		this.colors[36] = "#E0FFFF";
+		this.colors[37] = "#87CEFA";
+		this.colors[38] = "#E6E6FA";
+		this.colors[39] = "#DDA0DD";
+		this.colors[40] = "#FFFFFF";
+
 
 		// Here we get the ID of the textarea we're replacing and store it.
 		this.textarea = textarea;
@@ -263,9 +289,9 @@ messageEditor.prototype = {
 	drawColorOption: function(option)
 	{
 		var item = document.createElement('li');
+		item.extra = option.value;
 		item.className = 'editor_dropdown_color_item';
-		item.innerHTML = '<a style="background-color: '+option.key+'"></a>';
-		item.title = option.value;			
+		item.innerHTML = '<a style="background-color: '+option.value+'"></a>';
 		return item;
 	},
 	
@@ -499,8 +525,8 @@ messageEditor.prototype = {
 							
 				var content = document.createElement('span');
 				item.appendChild(content);
+				item.extra = option.key;
 			}
-			item.extra = option.key;
 			Event.observe(item, 'click', this.dropDownMenuItemClick.bindAsEventListener(this));
 			Event.observe(item, 'mouseover', function()
 			{

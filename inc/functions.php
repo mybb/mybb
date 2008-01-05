@@ -123,12 +123,23 @@ function add_shutdown($name)
  */
 function run_shutdown()
 {
-	global $config, $db, $cache, $plugins, $error_handler, $shutdown_functions, $shutdown_queries, $done_shutdown;
+	global $config, $db, $cache, $plugins, $error_handler, $shutdown_functions, $shutdown_queries, $done_shutdown, $mybb;
 
 	if($done_shutdown == true || !$config || $error_handler->has_errors)
 	{
 		return;
 	}
+
+	// Missing the core? Build
+	if(!is_object($mybb)) {
+		require_once MYBB_ROOT."inc/class_core.php";
+		$mybb = new MyBB;
+
+		// Load the settings
+		require_once MYBB_ROOT."inc/settings.php";
+		$mybb->settings = &$settings;
+	}
+
 
 	// If our DB has been deconstructed already (bad PHP 5.2.0), reconstruct
 	if(!is_object($db))
@@ -4752,6 +4763,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 		"-7" => $lang->timezone_gmt_minus_700,
 		"-6" => $lang->timezone_gmt_minus_600,
 		"-5" => $lang->timezone_gmt_minus_500,
+		"-4.5" => $lang->timezone_gmt_minus_450,
 		"-4" => $lang->timezone_gmt_minus_400,
 		"-3.5" => $lang->timezone_gmt_minus_350,
 		"-3" => $lang->timezone_gmt_minus_300,

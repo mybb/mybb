@@ -1350,7 +1350,7 @@ both=Warnings and Errors
 	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="1">
 		<setting name="postlayout">
 			<title>Post Layout</title>
-			<description><![CDATA[Allows you to switch between the classic and new vertical layout modes. Classic mode shows the author information to the left of the post, vertical shows the author information above the post.]]></description>
+			<description><![CDATA[Allows you to switch between the classic and new horizontal layout modes. Classic mode shows the author information to the left of the post, horizontal shows the author information above the post.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[radio
 vertical=Display posts using the vertical post layout

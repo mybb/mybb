@@ -132,6 +132,7 @@ $l['timezone_gmt_minus_800'] = "(GMT -8:00) Pacific Time";
 $l['timezone_gmt_minus_700'] = "(GMT -7:00) Mountain Time";
 $l['timezone_gmt_minus_600'] = "(GMT -6:00) Central Time, Mexico City";
 $l['timezone_gmt_minus_500'] = "(GMT -5:00) Eastern Time, Bogota, Lima, Quito";
+$l['timezone_gmt_minus_450'] = "(GMT -4:30) Venezuela (September)";
 $l['timezone_gmt_minus_400'] = "(GMT -4:00) Atlantic Time, Caracas, La Paz";
 $l['timezone_gmt_minus_350'] = "(GMT -3:30) Newfoundland";
 $l['timezone_gmt_minus_300'] = "(GMT -3:00) Brazil, Buenos Aires, Georgetown, Falkland Is.";
