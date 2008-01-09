@@ -46,6 +46,7 @@ $lang->load("global");
 header("Content-type: text/html; charset={$lang->settings['charset']}");
 
 $time = TIME_NOW;
+$errors = array();
 
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
@@ -241,7 +242,6 @@ foreach($classes as $style_name => $default_name)
 
 $page = new Page;
 $page->style = $cp_style;
-
 
 // Do not have a valid Admin user, throw back to login page.
 if(!$mybb->user['uid'] || $logged_out == true)

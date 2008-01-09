@@ -136,7 +136,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 
 		$form_container = new FormContainer($lang->create_new_view);
-		$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 
 		if($mybb->input['visibility'] == 2)
 		{
@@ -148,10 +148,10 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		}
 
 		$visibility_options = array(
-			$form->generate_radio_button("visibility", "1", "<strong>Private</strong> - This view is only visible to you", array("checked" => $visibility_private_checked)),
-			$form->generate_radio_button("visibility", "2", "<strong>Public</strong> - All other administrators can see this view", array("checked" => $visibility_public_checked))
+			$form->generate_radio_button("visibility", "1", "<strong>{$lang->private}</strong> - {$lang->private_desc}", array("checked" => $visibility_private_checked)),
+			$form->generate_radio_button("visibility", "2", "<strong>{$lang->public}</strong> - {$lang->public_desc}", array("checked" => $visibility_public_checked))
 		);
-		$form_container->output_row("Visibility", "", implode("<br />", $visibility_options));
+		$form_container->output_row($lang->visibility, "", implode("<br />", $visibility_options));
 
 		$form_container->output_row($lang->set_as_default_view, "", $form->generate_yes_no_radio("isdefault", $mybb->input['isdefault'], array('yes' => 1, 'no' => 0)));
 
@@ -224,7 +224,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$conditions_callback($mybb->input, $form); 
 		}
 
-		$buttons[] = $form->generate_submit_button("Save View");
+		$buttons[] = $form->generate_submit_button($lang->save_view);
 		$form->output_submit_wrapper($buttons);
 
 		$form->end();
@@ -339,7 +339,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		}
 
 		$form_container = new FormContainer($lang->edit_view);
-		$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+		$form_container->output_row($lang->view." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 
 		if($mybb->input['visibility'] == 2)
 		{

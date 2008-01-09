@@ -1115,7 +1115,7 @@ switch($mybb->input['action'])
 		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
-			$tids[] = $tid;
+			$tids[] = intval($tid);
 		}
 		if(!is_moderator($moveto, "canmanagethreads") && !is_moderator($fid, "canmovetononmodforum"))
 		{

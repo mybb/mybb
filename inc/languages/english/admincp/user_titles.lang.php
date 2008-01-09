@@ -29,6 +29,7 @@ $l['star_image'] = "Star Image";
 $l['star_image_desc'] = "If this user title should show stars, enter the path to the star image here. If empty, the user group star image will be shown. Use {theme} to specify the image directory for the viewers current theme.";
 $l['save_user_title'] = "Save User Title";
 $l['edit_user_title'] = "Edit User Title";
+$l['edit_user_title_desc'] = "This section allows you to edit a user title.";
 $l['user_title_deletion_confirmation'] = "Are you sure you want to delete this user title?";
 $l['manage_user_titles'] = "Manage User Titles";
 $l['user_title'] = "User Title";

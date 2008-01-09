@@ -37,7 +37,7 @@ if(!$mybb->input['action'])
 	}
 	
 	$page->add_breadcrumb_item($lang->dashboard);
-	$page->output_header($lang->dashboard, array("stylesheets" => array("home.css")));
+	$page->output_header($lang->dashboard);
 	
 	$sub_tabs['dashboard'] = array(
 		'title' => $lang->dashboard,

@@ -259,5 +259,7 @@ $l['default_view_desc'] = "Default view created by MyBB. Cannot be edited or rem
 $l['public_view_desc'] = "Public view visible to all administrators.";
 $l['private_view_desc'] = "Private view visible only to yourself.";
 $l['table'] = "Table";
+$l['title'] = "Title";
+
 
 ?>

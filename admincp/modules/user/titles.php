@@ -150,13 +150,13 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 
-	$page->add_breadcrumb_item("Edit User Title");
-	$page->output_header("User Titles - Edit User Title");
+	$page->add_breadcrumb_item($lang->edit_user_title);
+	$page->output_header($lang->user_titles." - ".$lang->edit_user_title);
 	
 	$sub_tabs['edit_title'] = array(
-		'title' => "Edit User Title",
+		'title' => $lang->edit_user_title,
 		'link' => "index.php?module=user/titles&amp;action=edit&amp;uid=".$mybb->input['uid'],
-		'description' => "This section allows you to edit a user title."
+		'description' => $lang->edit_user_title_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_title');
