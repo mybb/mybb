@@ -389,6 +389,7 @@ switch($sortby)
 		break;
 	default:
 		$mybb->input['sortby'] = "lastpost";
+		$sortby = "lastpost";
 		$sortfield = "t.lastpost";
 		break;
 }

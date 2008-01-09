@@ -469,7 +469,7 @@ class Moderation
 	{
 		global $db, $plugins;
 
-		$pidin = implode(",", $pids);
+		$pidin = implode(",", array_map("intval", $pids));
 		$first = 1;
 		// Get the messages to be merged
 		$query = $db->query("

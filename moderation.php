@@ -997,7 +997,7 @@ switch($mybb->input['action'])
 		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
-			$tids[] = $tid;
+			$tids[] = intval($tid);
 		}
 		if(is_moderator($moveto, "canmanagethreads") != "yes" && is_moderator($fid, "canmovetononmodforum") != "yes")
 		{
@@ -1395,6 +1395,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
+		$mybb->input['rid'] = intval($mybb->input['rid']);
 		
 		// Figure out if we need to display multiple pages.
 		$perpage = $mybb->settings['threadsperpage'];

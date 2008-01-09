@@ -100,10 +100,12 @@ if($mybb->input['action'] == "results")
 			if($search['resulttype'] == "threads")
 			{
 				$sortfield = "t.lastpost";
+				$sortby = 'lastpost';
 			}
 			else
 			{
 				$sortfield = "p.dateline";
+				$sortby = 'dateline';
 			}
 			break;
 	}

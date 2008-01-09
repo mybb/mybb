@@ -633,7 +633,7 @@ if($mybb->input['action'] == "do_joinrequests")
 	}
 	if(is_array($uidin))
 	{
-		$uids = implode(",", $uidin);
+		$uids = implode(",", array_map("intval", $uidin));
 		$db->query("DELETE FROM ".TABLE_PREFIX."joinrequests WHERE uid IN($uids) AND gid='{$mybb->input['gid']}'");
 	}
 	cpredirect("usergroups.php?".SID, $lang->join_requests_moderated);

@@ -158,6 +158,7 @@ function upload_avatar()
 	$file = upload_file($avatar, $mybb->settings['avataruploadpath'], $filename);
 	if($file['error'])
 	{
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);		
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
@@ -173,6 +174,7 @@ function upload_avatar()
 	$img_dimensions = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
 	if(!is_array($img_dimensions))
 	{
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);		
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
@@ -201,6 +203,7 @@ function upload_avatar()
 	// Check if the uploaded file type matches the correct image type (returned by getimagesize)
 	if($img_dimensions[2] != $img_type || $img_type == 0)
 	{
+		@unlink($mybb->settings['avataruploadpath']."/".$filename);		
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;		
 	}
