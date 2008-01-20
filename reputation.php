@@ -237,7 +237,7 @@ if($mybb->input['action'] == "delete")
 	verify_post_check($mybb->input['my_post_key']);
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
-	$query = $db->simple_select("reputation", "*", "rid='".intval($mybb->input['rid'])."'");
+	$query = $db->simple_select("reputation", "*", "rid='".$mybb->input['rid']."'");
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators as well as users who gave a specifc vote can delete one.
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// Delete the specified reputation
-	$db->delete_query("reputation", "uid='{$uid}' AND rid='".intval($mybb->input['rid'])."'");
+	$db->delete_query("reputation", "uid='{$uid}' AND rid='".$mybb->input['rid']."'");
 
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");

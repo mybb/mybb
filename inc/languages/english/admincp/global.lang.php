@@ -99,6 +99,13 @@ $l['previous'] = "Previous";
 $l['page'] = "Page";
 $l['next'] = "Next";
 
+// Parser bits
+$l['quote'] = "Quote:";
+$l['wrote'] = "Wrote:";
+$l['code'] = "Code:";
+$l['php_code'] = "PHP Code:";
+$l['linkback'] = "Original Post";
+
 // The months of the year
 $l['january'] = "January";
 $l['february'] = "February";

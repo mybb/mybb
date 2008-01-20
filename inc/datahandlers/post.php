@@ -1356,7 +1356,8 @@ class PostDataHandler extends DataHandler
 		// Decide on the visibility of this post.
 		if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
 		{
-			if($existing_post['visible'] == 1) {
+			if($existing_post['visible'] == 1)
+			{
 				update_thread_data($existing_post['tid']);
 				update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
 				update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
@@ -1372,7 +1373,8 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			if($existing_post['visible'] == 0) {
+			if($existing_post['visible'] == 0)
+			{
 				update_thread_data($existing_post['tid']);
 				update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
 				update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
@@ -1403,10 +1405,10 @@ class PostDataHandler extends DataHandler
 		{
 			$first_post = false;
 		}
+		
 		// Update the thread details that might have been changed first.
 		if($first_post)
-		{
-			
+		{			
 			$this->tid = $post['tid'];
 
 			$this->thread_update_data['visible'] = $visible;
@@ -1467,7 +1469,7 @@ class PostDataHandler extends DataHandler
 		}
 
 		$this->post_update_data['visible'] = $visible;
-
+		
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
 
 		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
