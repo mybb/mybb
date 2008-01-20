@@ -151,6 +151,15 @@ var Thread = {
 			form.setAttribute("method", "post");
 			form.setAttribute("action", "editpost.php?action=deletepost&delete=yes");
 			form.setAttribute("style", "display: none;");
+			
+			if(my_post_key)
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "my_post_key");
+				input.setAttribute("type", "hidden");
+				input.setAttribute("value", my_post_key);
+				form.appendChild(input);
+			}
 
 			var input = document.createElement("input");
 			input.setAttribute("name", "pid");

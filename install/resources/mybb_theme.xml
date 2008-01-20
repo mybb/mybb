@@ -600,9 +600,10 @@ form {
 <tr>
 <td>
 <form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="modtype" value="thread" />
 <input type="hidden" name="tid" value="{$tid}" /><span class="smalltext">
-<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread')">
+<strong>{$lang->moderation_options}</strong></span> <select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}')">
 <optgroup label="{$lang->standard_mod_tools}">
 	<option value="threadnotes">{$lang->thread_notes}</option>
 	<option value="openclosethread">{$lang->open_close_thread}</option>
@@ -2207,7 +2208,7 @@ var inlineId = {$fid};
 </html>]]></template>
 		<template name="usercp_avatar_gallery_avatar" version="120"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="120"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" {$avatar_width_height} /></td>]]></template>
-		<template name="headerinclude" version="123"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1212"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.lite.js?ver=121"></script>
@@ -2217,6 +2218,7 @@ var inlineId = {$fid};
 <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" />
 <script language="Javascript" type="text/javascript">
 <!--
+	var my_post_key = '{$mybb->post_code}';
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
 	var newpm_prompt = "{$lang->newpm_prompt}";
@@ -2444,7 +2446,7 @@ var inlineId = {$fid};
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_usergroups_memberof" version="120"><![CDATA[<form method="post" action="usercp.php">
+		<template name="usercp_usergroups_memberof" version="1212"><![CDATA[<form method="post" action="usercp.php">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="usergroups" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -3493,7 +3495,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 {$footer}
 </body>
 </html>]]></template>
-		<template name="private" version="120"><![CDATA[<html>
+		<template name="private" version="1212"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->private_messaging}</title>
 {$headerinclude}
@@ -3501,6 +3503,7 @@ var delete_reputation_confirm = "{$lang->delete_reputation_confirm}";
 <body>
 {$header}
 <form action="private.php" method="post" name="pmForm">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table width="100%" border="0" align="center">
 <tr>
 {$usercpnav}
@@ -5640,7 +5643,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}">{$lang->delete_pm}</a></td></table></td>
+<td class="thead" colspan="3"><table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="thead"><strong>{$pm['subject']}</strong></td><td class="thead" align="right"><a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=reply">{$lang->reply}</a> | <a href="private.php?action=send&amp;pmid={$pm['pmid']}&amp;do=forward">{$lang->forward}</a> | <a href="private.php?action=delete&amp;pmid={$pm['pmid']}&amp;my_post_key={$mybb->post_code}">{$lang->delete_pm}</a></td></table></td>
 </tr>
 {$message}
 <tr>
