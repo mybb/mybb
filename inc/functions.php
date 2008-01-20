@@ -381,6 +381,51 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="")
 }
 
 /**
+ * Generates a unique code for POST requests to prevent XSS/CSRF attacks
+ *
+ * @return string The generated code
+ */
+function generate_post_check()
+{
+	global $mybb;
+	if($mybb->user['uid'])
+	{
+		return md5($mybb->user['loginkey'].$mybb->user['salt'].$mybb->user['regdate']);
+	}
+	// Guests get a special string
+	else
+	{
+		return md5($mybb->config['hostname'].$mybb->config['username'].$mybb->config['password']);
+	}
+}
+
+/**
+ * Verifies a POST check code is valid, if not shows an error (silently returns false on silent parameter)
+ *
+ * @param string The incoming POST check code
+ * @param boolean Silent mode or not (silent mode will not show the error to the user but returns false)
+ */
+function verify_post_check($code, $silent=false)
+{
+	global $lang;
+	if(generate_post_check() != $code)
+	{
+		if($silent == true)
+		{
+			return false;
+		}
+		else
+		{
+			error($lang->invalid_post_code);
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
+
+/**
  * Return a parent list for the specified forum.
  *
  * @param int The forum id to get the parent list for.

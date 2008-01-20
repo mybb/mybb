@@ -61,6 +61,9 @@ if($mybb->usergroup['cansendemail'] == "no")
 
 if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("sendthread_do_sendtofriend_start");
 	if(!preg_match("/^(.+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+$/si", $mybb->input['sendto']))
 	{

@@ -196,6 +196,9 @@ if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != "yes")
 
 if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("newreply_do_newreply_start");
 
 	// If this isn't a logged in user, then we need to do some special validation.

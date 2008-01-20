@@ -298,6 +298,9 @@ if($mybb->input['action'] == "dayview")
 // Process the adding of an event.
 if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("calendar_do_addevent_start");
 
 	// Set up eventhandler.
@@ -415,6 +418,9 @@ if($mybb->input['action'] == "addevent")
 // Process the editing of an event.
 if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("calendar_do_editevent_start");
 
 	$query = $db->simple_select(TABLE_PREFIX."events", "*", "eid='{$eid}'");

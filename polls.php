@@ -131,6 +131,9 @@ if($mybb->input['action'] == "newpoll")
 
 if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("polls_do_newpoll_start");
 
 	$query = $db->simple_select(TABLE_PREFIX."threads", "*", "tid='".intval($mybb->input['tid'])."'");
@@ -399,6 +402,9 @@ if($mybb->input['action'] == "editpoll")
 }
 if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("polls_do_editpoll_start");
 
 	$query = $db->simple_select(TABLE_PREFIX."polls", "*", "pid='".intval($mybb->input['pid'])."'");

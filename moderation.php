@@ -99,6 +99,9 @@ switch($mybb->input['action'])
 {
 	// Open or close a thread
 	case "openclosethread":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
 			error_no_permission();
@@ -128,6 +131,9 @@ switch($mybb->input['action'])
 
 	// Stick or unstick that post to the top bab!
 	case "stick";
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -157,6 +163,10 @@ switch($mybb->input['action'])
 
 	// Remove redirects to a specific thread
 	case "removeredirects":
+	
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -192,6 +202,10 @@ switch($mybb->input['action'])
 
 	// Delete the actual thread here
 	case "do_deletethread":
+	
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			if($permissions['candeletethreads'] != "yes" || $mybb->user['uid'] != $thread['uid'])
@@ -242,6 +256,9 @@ switch($mybb->input['action'])
 
 	// Delete the actual poll here!
 	case "do_deletepoll":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(!$mybb->input['delete'])
 		{
 			error($lang->redirect_pollnotdeleted);
@@ -272,6 +289,9 @@ switch($mybb->input['action'])
 
 	// Approve a thread
 	case "approvethread":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
 			error_no_permission();
@@ -291,6 +311,9 @@ switch($mybb->input['action'])
 
 	// Unapprove a thread
 	case "unapprovethread":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
 			error_no_permission();
@@ -353,6 +376,9 @@ switch($mybb->input['action'])
 
 	// Lets delete those selected posts!
 	case "do_deleteposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			error_no_permission();
@@ -437,6 +463,9 @@ switch($mybb->input['action'])
 
 	// Lets merge those selected posts!
 	case "do_mergeposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -478,6 +507,9 @@ switch($mybb->input['action'])
 
 	// Lets get this thing moving!
 	case "do_move":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		$moveto = intval($mybb->input['moveto']);
 		$method = $mybb->input['method'];
 
@@ -587,6 +619,9 @@ switch($mybb->input['action'])
 
 	// Update the thread notes!
 	case "do_threadnotes":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -643,6 +678,9 @@ switch($mybb->input['action'])
 
 	// Lets get those threads together baby! (Merge threads)
 	case "do_merge":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -759,6 +797,9 @@ switch($mybb->input['action'])
 
 	// Lets break them up buddy! (Do the split)
 	case "do_split":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -830,6 +871,9 @@ switch($mybb->input['action'])
 
 	// Actually delete the threads - Inline moderation
 	case "do_multideletethreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			error_no_permission();
@@ -850,6 +894,9 @@ switch($mybb->input['action'])
 
 	// Open threads - Inline moderation
 	case "multiopenthreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
 			error_no_permission();
@@ -869,6 +916,9 @@ switch($mybb->input['action'])
 
 	// Close threads - Inline moderation
 	case "multiclosethreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -888,6 +938,9 @@ switch($mybb->input['action'])
 
 	// Approve threads - Inline moderation
 	case "multiapprovethreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -908,6 +961,9 @@ switch($mybb->input['action'])
 
 	// Unapprove threads - Inline moderation
 	case "multiunapprovethreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -928,6 +984,9 @@ switch($mybb->input['action'])
 
 	// Stick threads - Inline moderation
 	case "multistickthreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
 			error_no_permission();
@@ -947,6 +1006,9 @@ switch($mybb->input['action'])
 
 	// Unstick threads - Inline moderaton
 	case "multiunstickthreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canopenclosethreads") != "yes")
 		{
 			error_no_permission();
@@ -989,6 +1051,9 @@ switch($mybb->input['action'])
 
 	// Actually move the threads in Inline moderation
 	case "do_multimovethreads":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -1050,6 +1115,9 @@ switch($mybb->input['action'])
 
 	// Actually delete the posts in inline moderation
 	case "do_multideleteposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "candeleteposts") != "yes")
 		{
 			error_no_permission();
@@ -1103,6 +1171,9 @@ switch($mybb->input['action'])
 
 	// Actually merge the posts - Inline moderation
 	case "do_multimergeposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -1169,6 +1240,9 @@ switch($mybb->input['action'])
 
 	// Actually split the posts - Inline moderation
 	case "do_multisplitposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -1207,6 +1281,9 @@ switch($mybb->input['action'])
 
 	// Approve posts - Inline moderation
 	case "multiapproveposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -1232,6 +1309,9 @@ switch($mybb->input['action'])
 
 	// Unapprove posts - Inline moderation
 	case "multiunapproveposts":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator($fid, "canmanagethreads") != "yes")
 		{
 			error_no_permission();
@@ -1256,6 +1336,9 @@ switch($mybb->input['action'])
 
 	// Manage selected reported posts
 	case "do_reports":
+		// Verify incoming POST request
+		verify_post_check($mybb->input['my_post_key']);
+		
 		if(is_moderator() != "yes")
 		{
 			error_no_permission();
@@ -1313,7 +1396,7 @@ switch($mybb->input['action'])
 		
 		if($mybb->input['rid'])
 		{
-			$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(r.rid) AS count", "r.rid <= '".$mybb->input['rid']."'");
+			$query = $db->simple_select(TABLE_PREFIX."reportedposts", "COUNT(r.rid) AS count", "r.rid <= '".intval($mybb->input['rid'])."'");
 			$result = $db->fetch_field($query, "count");
 			if(($result % $perpage) == 0)
 			{
@@ -1499,6 +1582,9 @@ switch($mybb->input['action'])
 		$tool = $custommod->tool_info(intval($mybb->input['action']));
 		if($tool !== false)
 		{
+			// Verify incoming POST request
+			verify_post_check($mybb->input['my_post_key']);
+		
 			$plugins->run_hooks("moderation_custommod");
 			if($tool['type'] == 't' && $mybb->input['modtype'] == 'inlinethread')
 			{

@@ -42,6 +42,9 @@ require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
 // Set and load the language
 if(!isset($mybb->settings['bblanguage']))
 {

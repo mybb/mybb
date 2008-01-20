@@ -276,6 +276,8 @@ $l['error_loadlimit'] = "The maximum server load limit has been reached.  Please
 $l['error_boardclosed'] = "This bulletin board is currently closed. The Administrator has specified the reason as to why below.";
 $l['error_banned'] = "I'm sorry, but you are banned.  You may not post, read threads, or access the forum.  Please contact your forum administrator should you have any questions.";
 
+$l['invalid_post_code'] = "Authorisation code mismatch. Are you accessing this function correctly? Please go back and try again.";
+
 $l['ajax_loading'] = "Loading. <br />Please Wait..";
 $l['saving_changes'] = "Saving changes..";
 ?>

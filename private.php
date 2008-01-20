@@ -120,6 +120,9 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
+	
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("private_send_do_send");
 
@@ -462,6 +465,9 @@ if($mybb->input['action'] == "tracking")
 }
 if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("private_do_tracking_start");
 	if($mybb->input['stoptracking'])
 	{
@@ -555,6 +561,9 @@ if($mybb->input['action'] == "folders")
 
 if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("private_do_folders_start");
 	$highestid = 2;
 	$folders = '';
@@ -659,6 +668,9 @@ if($mybb->input['action'] == "empty")
 
 if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("private_do_empty_start");
 	$emptyq = '';
 	if(is_array($mybb->input['empty']))
@@ -693,6 +705,9 @@ if($mybb->input['action'] == "do_empty" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("private_do_stuff");
 	if($mybb->input['hop'])
 	{
@@ -759,6 +774,9 @@ if($mybb->input['action'] == "do_stuff" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "delete")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("private_delete_start");
 
 	$sql_array = array(
@@ -797,6 +815,9 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	{
 		exit;
 	}
+	
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("private_do_export_start");
 	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);

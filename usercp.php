@@ -157,6 +157,9 @@ switch($mybb->input['action'])
 
 if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_profile_start");
 
 	if($mybb->input['away'] == "yes" && $mybb->settings['allowaway'] != "no")
@@ -563,6 +566,9 @@ if($mybb->input['action'] == "profile")
 
 if($mybb->input['action'] == "do_options" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_options_start");
 
 	// Set up user handler.
@@ -883,6 +889,9 @@ if($mybb->input['action'] == "options")
 
 if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$errors = array();
 
 	$plugins->run_hooks("usercp_do_email_start");
@@ -969,6 +978,9 @@ if($mybb->input['action'] == "email")
 
 if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$errors = array();
 
 	$plugins->run_hooks("usercp_do_password_start");
@@ -1004,8 +1016,8 @@ if($mybb->input['action'] == "do_password" && $mybb->request_method == "post")
 	}
 	if(count($errors) > 0)
 	{
-			$mybb->input['action'] = "password";
-			$errors = inline_error($errors);
+		$mybb->input['action'] = "password";
+		$errors = inline_error($errors);
 	}
 }
 
@@ -1019,6 +1031,9 @@ if($mybb->input['action'] == "password")
 
 if($mybb->input['action'] == "do_changename" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_changename_start");
 	if($mybb->usergroup['canchangename'] != "yes")
 	{
@@ -1352,6 +1367,9 @@ if($mybb->input['action'] == "forumsubscriptions")
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_editsig_start");
 	if($mybb->input['updateposts'] == "enable")
 	{
@@ -1444,7 +1462,10 @@ if($mybb->input['action'] == "editsig")
 }
 
 if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post") 
-{ 
+{
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_avatar_start"); 
 	require_once MYBB_ROOT."inc/functions_upload.php"; 
 	if($mybb->input['remove']) // remove avatar 
@@ -1730,6 +1751,9 @@ if($mybb->input['action'] == "notepad")
 }
 if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_notepad_start");
 	$db->update_query(TABLE_PREFIX."users", array('notepad' => $db->escape_string($mybb->input['notepad'])), "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_notepad_end");
@@ -1789,6 +1813,9 @@ if($mybb->input['action'] == "editlists")
 }
 if($mybb->input['action'] == "do_editlists" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_editlists_start");
 	$comma = '';
 	$users = '';
@@ -1872,6 +1899,9 @@ if($mybb->input['action'] == "drafts")
 }
 if($mybb->input['action'] == "do_drafts" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_drafts_start");
 	if(!$mybb->input['deletedraft'])
 	{
@@ -2257,6 +2287,9 @@ if($mybb->input['action'] == "attachments")
 }
 if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("usercp_do_attachments_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	if(!is_array($mybb->input['attachments']))

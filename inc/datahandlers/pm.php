@@ -253,6 +253,7 @@ class PMDataHandler extends DataHandler
 
 		$this->verify_yesno_option($options, 'signature', 'yes');
 		$this->verify_yesno_option($options, 'savecopy', 'yes');
+		$this->verify_yesno_option($options, 'disablesmilies', 'no');
 
 		// Requesting a read receipt?
 		if(isset($options['readreceipt']) && $options['readreceipt'] == "yes")

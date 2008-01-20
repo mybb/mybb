@@ -1391,6 +1391,9 @@ elseif($mybb->input['action'] == "emailuser")
 }
 elseif($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$plugins->run_hooks("member_do_emailuser_start");
 
 	if($mybb->usergroup['cansendemail'] == "no")

@@ -1301,7 +1301,7 @@ class PostDataHandler extends DataHandler
 			$this->post_update_data['edituid'] = intval($post['edit_uid']);
 			$this->post_update_data['edittime'] = time();
 		}
-
+		
 		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
 
 		$db->update_query(TABLE_PREFIX."posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
