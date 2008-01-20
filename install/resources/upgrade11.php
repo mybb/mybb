@@ -36,32 +36,26 @@ function upgrade11_dbchanges()
 		if($template['title'] == "private_read")
 		{
 			$template['template'] = str_replace("private.php?action=delete&amp;pmid={\$pm['pmid']}", "private.php?action=delete&amp;pmid={\$pm['pmid']}&amp;my_post_key={\$mybb->post_code}", $template['template']);
-			
-			continue;
 		}
-		
-		if($template['title'] == "showthread_moderationoptions")
+		elseif($template['title'] == "showthread_moderationoptions")
 		{
 			$template['template'] = str_replace('<input type="hidden" name="modtype" value="thread" />', '<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="modtype" value="thread" />', $template['template']);
 			
 			$template['template'] = str_replace('moderation.php?action=\'+this.options[this.selectedIndex].value+\'&amp;tid={$tid}&amp;modtype=thread', 'moderation.php?action=\'+this.options[this.selectedIndex].value+\'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}', $template['template']);
-			
-			continue;
 		}
-		
-		if($template['title'] == "headerinclude")
+		elseif($template['title'] == "headerinclude")
 		{
 			$template['template'] = str_replace('var cookieDomain = "{$mybb->settings[\'cookiedomain\']}";', 'var my_post_key = \'{$mybb->post_code}\';
-var cookieDomain = "{$mybb->settings[\'cookiedomain\']}";', $template['headerinclude']);
-
-			continue;
+var cookieDomain = "{$mybb->settings[\'cookiedomain\']}";', $template['template']);
 		}
-		
-		// Remove any duplicates
-		$template['template'] = str_replace("<input type=\"hidden\" name=\"my_post_key\" value=\"{\$mybb->post_code}\" />", "", $template['template']);
-		
-		$template['template'] = preg_replace("#<form(.*?)method\=\\\"post\\\"(.*?)>#i", "<form$1method=\"post\"$2>\n<input type=\"hidden\" name=\"my_post_key\" value=\"{\$mybb->post_code}\" />", $template['template']);
+		else
+		{
+			// Remove any duplicates
+			$template['template'] = str_replace("<input type=\"hidden\" name=\"my_post_key\" value=\"{\$mybb->post_code}\" />", "", $template['template']);
+			
+			$template['template'] = preg_replace("#<form(.*?)method\=\\\"post\\\"(.*?)>#i", "<form$1method=\"post\"$2>\n<input type=\"hidden\" name=\"my_post_key\" value=\"{\$mybb->post_code}\" />", $template['template']);
+		}
 		
 		$db->update_query(TABLE_PREFIX."templates", array('template' => $db->escape_string($template['template'])), "tid='{$template['tid']}'", 1);
 	}
