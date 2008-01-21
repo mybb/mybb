@@ -684,22 +684,6 @@ else if($mybb->input['action'] == "get_buddyselect")
 		xmlhttp_error($lang->buddylist_error);
 	}
 }
-else if($mybb->input['action'] == "get_template")
-{
-	header("Content-type: text/plain; charset={$charset}");
-	
-	$tid = $mybb->input['tid'];
-	
-	if(!$tid)
-	{
-		xmlhttp_error("Missing template ID");
-	}
-	
-	$query = $db->simple_select("templates", "template", "tid='".intval($mybb->input['tid'])."' AND (sid='-2' OR sid='".intval($mybb->input['sid'])."')", array('order_by' => 'sid', 'order_dir' => 'DESC'));
-	$template = $db->fetch_array($query);
-	
-	echo "<textarea name=\"template\" class=\"codepress mybb\" id=\"template\" style=\"width: 95%; height: 95%;\" rows=\"5\" cols=\"45\">".htmlentities($template['template'])."</textarea>";
-}
 
 /**
  * Spits an XML Http based error message back to the browser
