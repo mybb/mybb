@@ -189,7 +189,7 @@ var Thread = {
 		}
 		Thread.qeCache[pid] = $("pid_"+pid).innerHTML;
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
-		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid+'&my_post_key'+my_post_key, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
+		new ajax('xmlhttp.php?action=edit_post&do=get_post&pid='+pid+'&my_post_key='+my_post_key, {method: 'get', onComplete: function(request) { Thread.quickEditLoaded(request, pid); }});
 		return false;
 	},
 	
@@ -242,7 +242,7 @@ var Thread = {
 		this.spinner = new ActivityIndicator("body", {image: "images/spinner_big.gif"});
 		
 		postData = "value="+encodeURIComponent(message).replace(/\+/g, "%2B");
-		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid+'&my_post_key'+my_post_key, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});		
+		new ajax('xmlhttp.php?action=edit_post&do=update_post&pid='+pid+'&my_post_key='+my_post_key, {method: 'post', postBody: postData, onComplete: function(request) { Thread.quickEditSaved(request, pid); }});		
 	},
 	
 	quickEditCancel: function(pid)
