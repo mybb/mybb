@@ -138,6 +138,12 @@ if($mybb->input['action'] == "get_users")
 // This action provides editing of thread/post subjects from within their respective list pages.
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
+	// Verify POST request
+	if(!verify_post_check($mybb->input['my_post_key'], true))
+	{
+		xmlhttp_error($lang->invalid_post_code);
+	}
+	
 	// Editing a post subject.
 	if($mybb->input['pid'])
 	{
@@ -268,7 +274,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	exit;
 }
 else if($mybb->input['action'] == "edit_post")
-{
+{	
 	// Fetch the post from the database.
 	$post = get_post($mybb->input['pid']);
 		
@@ -328,6 +334,12 @@ else if($mybb->input['action'] == "edit_post")
 	}
 	else if($mybb->input['do'] == "update_post")
 	{
+		// Verify POST request
+		if(!verify_post_check($mybb->input['my_post_key'], true))
+		{
+			xmlhttp_error($lang->invalid_post_code);
+		}
+		
 		$message = strval($_POST['value']);
 		if(strtolower($charset) != "utf-8")
 		{
