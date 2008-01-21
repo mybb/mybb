@@ -7509,7 +7509,7 @@ To: {$to_recipients}
 <!--
 	if(use_xmlhttprequest == "1")
 	{
-		new inlineEditor("xmlhttp.php?action=edit_subject", {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
+		new inlineEditor("xmlhttp.php?action=edit_subject&my_post_key="+my_post_key, {className: "subject_editable", spinnerImage: "{$theme['imgdir']}/spinner.gif", lang_click_edit: "{$lang->click_hold_edit}"});
 	}
 // -->
 </script>]]></template>

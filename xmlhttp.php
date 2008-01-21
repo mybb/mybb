@@ -143,6 +143,12 @@ if($mybb->input['action'] == "get_users")
 // This action provides editing of thread/post subjects from within their respective list pages.
 else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "post")
 {
+	// Verify POST request
+	if(!verify_post_check($mybb->input['my_post_key'], true))
+	{
+		xmlhttp_error($lang->invalid_post_code);
+	}
+	
 	// Editing a post subject.
 	if($mybb->input['pid'])
 	{
@@ -273,7 +279,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	exit;
 }
 else if($mybb->input['action'] == "edit_post")
-{
+{	
 	// Fetch the post from the database.
 	$post = get_post($mybb->input['pid']);
 		
@@ -677,6 +683,22 @@ else if($mybb->input['action'] == "get_buddyselect")
 	{
 		xmlhttp_error($lang->buddylist_error);
 	}
+}
+else if($mybb->input['action'] == "get_template")
+{
+	header("Content-type: text/plain; charset={$charset}");
+	
+	$tid = $mybb->input['tid'];
+	
+	if(!$tid)
+	{
+		xmlhttp_error("Missing template ID");
+	}
+	
+	$query = $db->simple_select("templates", "template", "tid='".intval($mybb->input['tid'])."' AND (sid='-2' OR sid='".intval($mybb->input['sid'])."')", array('order_by' => 'sid', 'order_dir' => 'DESC'));
+	$template = $db->fetch_array($query);
+	
+	echo "<textarea name=\"template\" class=\"codepress mybb\" id=\"template\" style=\"width: 95%; height: 95%;\" rows=\"5\" cols=\"45\">".htmlentities($template['template'])."</textarea>";
 }
 
 /**
