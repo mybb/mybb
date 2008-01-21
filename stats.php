@@ -48,6 +48,7 @@ $threadsperday = my_number_format(round(($stats['numthreads'] / $days), 2));
 $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
+$unviewableforumsarray = array();
 $unviewableforums = get_unviewable_forums();
 $fidnot = '1=1';
 if($unviewableforums)
