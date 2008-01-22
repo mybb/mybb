@@ -333,7 +333,7 @@ if(!$mybb->input['action'])
 	}
 	$start = ($view_page-1) * $per_page;
 	// Build the base URL for pagination links
-	$url = 'index.php?'?'&amp;module=tools/warninglog';
+	$url = 'index.php?module=tools/warninglog';
 	if(is_array($mybb->input['filter']) && count($mybb->input['filter']))
 	{
 		foreach($mybb->input['filter'] as $field => $value)

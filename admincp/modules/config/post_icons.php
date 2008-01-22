@@ -52,7 +52,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($iid = $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_added, 'success');
-			admin_redirect('index.php?'?'&module=config/post_icons');
+			admin_redirect('index.php?module=config/post_icons');
 		}
 	}
 
@@ -335,7 +335,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($icon['iid'], $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_updated, 'success');
-			admin_redirect('index.php?'?'&module=config/post_icons');
+			admin_redirect('index.php?module=config/post_icons');
 		}
 	}
 	
@@ -344,7 +344,7 @@ if($mybb->input['action'] == "edit")
 
 	$sub_tabs['edit_icon'] = array(
 		'title'	=> $lang->edit_post_icon,
-		'link'	=> "index.php?'?'&amp;module=config/post_icons",
+		'link'	=> "index.php?module=config/post_icons",
 		'description'	=> $lang->edit_post_icon_desc
 	);
 

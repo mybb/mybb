@@ -70,7 +70,7 @@ if($mybb->input['action'] == "add")
 				log_admin_action($sid, $mybb->input['name']);
 
 				flash_message($lang->success_help_section_added, 'success');
-				admin_redirect('index.php?'?'&module=config/help_documents');
+				admin_redirect('index.php?module=config/help_documents');
 			}
 		}
 	
@@ -179,7 +179,7 @@ if($mybb->input['action'] == "add")
 				log_admin_action(array($hid, $mybb->input['name']));
 				
 				flash_message($lang->success_help_document_added, 'success');
-				admin_redirect('index.php?'?'&module=config/help_documents');
+				admin_redirect('index.php?module=config/help_documents');
 			}
 		}
 	
@@ -302,7 +302,7 @@ if($mybb->input['action'] == "edit")
 				log_admin_action(array($sid, $mybb->input['name']));
 				
 				flash_message($lang->success_help_section_updated, 'success');
-				admin_redirect('index.php?'?'&module=config/help_documents');
+				admin_redirect('index.php?module=config/help_documents');
 			}
 		}
 	
@@ -408,7 +408,7 @@ if($mybb->input['action'] == "edit")
 				log_admin_action(array($hid, $mybb->input['name']));
 
 				flash_message($lang->success_help_document_updated, 'success');
-				admin_redirect('index.php?'?'&module=config/help_documents');
+				admin_redirect('index.php?module=config/help_documents');
 			}
 		}
 	

@@ -13,15 +13,23 @@ $l['templates'] = "Templates";
 $l['manage_template_sets'] = "Manage Template Sets";
 $l['manage_template_sets_desc'] = "Here you can manage template sets, view the templates using these sets, and begin customizing your board's layout.";
 $l['add_set'] = "Add Set";
+$l['add_set_desc'] = "Here you can add a new template set.";
 $l['add_template'] = "Add Template";
 $l['add_template_desc'] = "Here you can add a new template.";
 $l['search_replace'] = "Search/Replace";
 $l['find_updated'] = "Find Updated Templates";
+$l['find_updated_desc'] = "Allows you to find changed templated in new versions of MyBB so you can properly apply the changes.";
 $l['edit_template'] = "Edit Template";
 $l['edit_template_desc'] = "Here you can edit the templates code, title or set.";
 $l['edit_set'] = "Edit Set";
+$l['edit_set_desc'] = "Here you can edit a template set.";
 $l['manage_templates'] = "Manage Templates";
 $l['manage_templates_desc'] = "Here you can manage the templates for this template set. To edit a template inline click on it's link, or select \"Full Edit\" to edit all properties on a seperate page.";
+$l['diff_report'] = "Diff Report";
+$l['diff_report_desc'] = "Performs a difference analysis between the templates and shows you exactly what changes have been made between your customised copy and the latest master copy.";
+
+$l['title'] = "Title";
+$l['save'] = "Save";
 
 $l['edit_template_breadcrumb'] = "Edit Template: ";
 
@@ -37,7 +45,6 @@ $l['delete_template_set'] = "Delete Template Set";
 
 $l['inline_edit'] = "Inline Edit";
 $l['full_edit'] = "Full Edit";
-$l['diff_report'] = "Diff Report";
 $l['revert_to_orig'] = "Revert to Original";
 $l['delete_template'] = "Delete Template";
 
@@ -91,7 +98,17 @@ $l['template_name'] = "Template Name";
 $l['template_name_desc'] = "Name of the template. If you change this on the default template, it will save the template as a custom template under the new name.";
 $l['template_set_desc'] = "Which template set should this template be in?";
 
+$l['templates_the_same'] = "The two templates you've selected are both the same and cannot be compared.";
+$l['master_updated_ins'] = "Changes that have been made between your previous version and this one are highlighted like this.";
+$l['master_updated_del'] = "Any customisations you've made to your templates (the old ones) are highlighted like this.";
+$l['template_diff_analysis'] = "Template Difference Analysis";
+
+$l['updated_template_welcome1'] = "Edit - Allows you to edit the current template for this template set to incorporate updates made between the versions.";
+$l['updated_template_welcome2'] = "Revert - Will revert the customised template back to the master revision, however you'll lose any custom changes you have made.";
+$l['updated_template_welcome3'] = "Diff - Performs a difference analysis between the templates and shows you exactly what changes have been made between your customised copy and the latest master copy.";
+
 $l['no_global_templates'] = "There are currently no global templates added yet.";
+$l['no_updated_templates'] = "There are currently no templates which have been updated since you last upgraded.";
 
 $l['confirm_template_set_deletion'] = "Are you sure you want to delete this template set?";
 $l['confirm_template_deletion'] = "Are you sure you want to delete this template?"; 
@@ -100,9 +117,12 @@ $l['confirm_template_revertion'] = "Are you sure you want to revert this templat
 $l['error_missing_input'] = "Please make sure you have all the input required to edit this template (tid and sid)";
 $l['error_already_exists'] = "The template title is already in use. Please use a different title.";
 $l['error_invalid_template'] = "Please input a valid template.";
+$l['error_missing_set_title'] = "Please input a template set title.";
+$l['error_invalid_input'] = "Please make sure you have the correct template set id.";
 
 $l['success_template_saved'] = "Successfully saved the template.";
 $l['success_template_deleted'] = "Successfully deleted the template.";
 $l['success_template_reverted'] = "Successfully reverted the template.";
+$l['success_template_set_saved'] = "Successfully saved the template set.";
 
 ?>

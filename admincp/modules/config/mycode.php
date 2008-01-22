@@ -56,7 +56,7 @@ if($mybb->input['action'] == "toggle_status")
 	log_admin_action($mycode['cid'], $mycode['title'], $new_status);
 
 	flash_message($phrase, 'success');
-	admin_redirect('index.php?'?'&module=config/mycode');
+	admin_redirect('index.php?module=config/mycode');
 }
 
 if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "post")
@@ -126,7 +126,7 @@ if($mybb->input['action'] == "add")
 			log_admin_action($cid, $mybb->input['title']);
 
 			flash_message($lang->success_added_mycode, 'success');
-			admin_redirect('index.php?'?'&module=config/mycode');
+			admin_redirect('index.php?module=config/mycode');
 		}
 	}
 	
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript">
 //<![CDATA[
 Event.observe(window, "load", function() {
-    new MyCodeSandbox("index.php?'?'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("index.php?module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
 });
 //]]>
 </script>';
@@ -247,7 +247,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($mycode['cid'], $mybb->input['title']);
 
 			flash_message($lang->success_updated_mycode, 'success');
-			admin_redirect('index.php?'?'&module=config/mycode');
+			admin_redirect('index.php?module=config/mycode');
 		}
 	}
 
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "edit")
 
 Event.observe(window, "load", function() {
 //<![CDATA[
-    new MyCodeSandbox("index.php?'?'&module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("index.php?module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
 });
 //]]>
 </script>';

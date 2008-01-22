@@ -264,7 +264,7 @@ if($mybb->input['action'] == "backup")
 			// Log admin action
 			log_admin_action("disk", $file.$ext);
 
-			$file_from_admindir = 'index.php?'?'&amp;module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
+			$file_from_admindir = 'index.php?module=tools/backupdb&amp;action=dlbackup&amp;file='.basename($file).$ext;
 			flash_message("<p><em>{$lang->success_backup_created}</em></p><p>{$lang->backup_saved_to}<br />{$file}{$ext} (<a href=\"{$file_from_admindir}\">{$lang->download}</a>)</p>", 'success');
 			admin_redirect("index.php?module=tools/backupdb");
 		}
