@@ -82,7 +82,7 @@ if($mybb->input['action'] == "add" || !$mybb->input['action'])
 	$sub_tabs['add_group'] = array(
 		'title' => $lang->add_user_group,
 		'link' => "index.php?module=user/groups&amp;action=add",
-		'description' => "Here you can create a new user group and optionally copy the permissions from another user group. After saving the user group you will be taken to the full edit page for this user group."
+		'description' => $lang->add_user_group_desc
 	);
 }
 
@@ -133,12 +133,12 @@ if($mybb->input['action'] == "approve_join_request")
 {
 	$plugins->run_hooks("admin_user_groups_approve_join_request");
 	
-	$query = $db->simple_select("joinrequests", "*", "rid='".intval($mybb->input['rid'])."'");
+	$query = $db->simple_select("joinrequests", "*", "rid='".$mybb->input['rid']."'");
 	$request = $db->fetch_array($query);
 	
 	if(!$request['rid'])
 	{
-		flash_message("You have selected an invalid join request.", 'error');
+		flash_message($lang->error_invalid_join_request, 'error');
 		admin_redirect("index.php?module=user/groups");
 	}
 	
@@ -148,7 +148,7 @@ if($mybb->input['action'] == "approve_join_request")
 	// Delete the join request
 	$db->delete_query("joinrequests", "rid='{$request['rid']}'");
 	
-	flash_message("The join request has been successfully approved. The user is now a member of this user group.", "success");
+	flash_message($lang->success_join_request_approved, "success");
 	admin_redirect("index.php?module=user/groups&action=join_requests&gid={$request['gid']}");
 }
 
@@ -156,19 +156,19 @@ if($mybb->input['action'] == "deny_join_request")
 {
 	$plugins->run_hooks("admin_user_groups_deny_join_request");
 	
-	$query = $db->simple_select("joinrequests", "*", "rid='".intval($mybb->input['rid'])."'");
+	$query = $db->simple_select("joinrequests", "*", "rid='".$mybb->input['rid']."'");
 	$request = $db->fetch_array($query);
 
 	if(!$request['rid'])
 	{
-		flash_message("You have selected an invalid join request.", 'error');
+		flash_message($lang->error_invalid_join_request, 'error');
 		admin_redirect("index.php?module=user/groups");
 	}
 
 	// Delete the join request
 	$db->delete_query("joinrequests", "rid='{$request['rid']}'");
 
-	flash_message("The join request has been successfully denied.", "success");
+	flash_message($lang->success_join_request_denied, "success");
 	admin_redirect("index.php?module=user/groups&action=join_requests&gid={$request['gid']}");
 }
 
@@ -198,13 +198,13 @@ if($mybb->input['action'] == "join_requests")
 			}
 			// Log admin action
 			log_admin_action("approve", $group['title'], $group['gid']);
-			$message = "The selected join requests have been approved. The users are now part of this group.";
+			$message = $lang->success_selected_requests_approved;
 		}
 		else
 		{
 			// Log admin action
 			log_admin_action("deny", $group['title'], $group['gid']);
-			$message = "The selected join requests have been denied.";
+			$message = $lang->success_selected_requests_denied;
 		}
 		
 		$plugins->run_hooks("admin_user_groups_join_requests_commit");
@@ -216,14 +216,14 @@ if($mybb->input['action'] == "join_requests")
 		admin_redirect("index.php?module=user/groups&action=join_requests&gid={$group['gid']}");
 	}
 	
-	$page->add_breadcrumb_item("Join Requests for {$group['title']}");
-	$page->output_header("Join Requests for {$group['title']}");
+	$page->add_breadcrumb_item($lang->join_requests_for." {$group['title']}");
+	$page->output_header($lang->join_requests_for." {$group['title']}");
 	
 	$sub_tabs = array();
 	$sub_tabs['join_requests'] = array(
-		'title' => "Group Join Requests",
+		'title' => $lang->group_join_requests,
 		'link' => "index.php?module=user/groups&action=join_requests&gid={$group['gid']}",
-		'description' => "Below is a list of users who are requesting access to this user group. From here, you can either approve or deny their request."
+		'description' => $lang->group_join_requests_desc
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'join_requests');
@@ -262,10 +262,10 @@ if($mybb->input['action'] == "join_requests")
 	$form = new Form("index.php?module=user/groups&amp;action=join_requests&gid={$group['gid']}", "post");
 	$table = new Table;
 	$table->construct_header($form->generate_check_box("checkall", 1, "", array('class' => 'checkall')), array('width' => 1));
-	$table->construct_header("User");
-	$table->construct_header("Reason");
-	$table->construct_header("Date Requested", array("class" => 'align_center', "width" => 200));
-	$table->construct_header("Controls", array("class" => "align_center", "colspan" => 2, "width" => 200));
+	$table->construct_header($lang->users);
+	$table->construct_header($lang->reason);
+	$table->construct_header($lang->date_requested, array("class" => 'align_center', "width" => 200));
+	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
 
 	$query = $db->query("
 		SELECT j.*, u.username
@@ -281,22 +281,22 @@ if($mybb->input['action'] == "join_requests")
 		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'])."</strong>");
 		$table->construct_cell(htmlspecialchars_uni($request['reason']));
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $request['dateline']), array('class' => 'align_center'));
-		$table->construct_cell("<a href=\"index.php?module=user/groups&action=approve_join_request&amp;rid={$request['rid']}\">Approve</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/groups&action=deny_join_request&amp;rid={$request['rid']}\">Deny</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/groups&action=approve_join_request&amp;rid={$request['rid']}\">{$lang->approve}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/groups&action=deny_join_request&amp;rid={$request['rid']}\">{$lang->deny}</a>", array("class" => "align_center"));
 		$table->construct_row();	
 	}
 	
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell("There are no outstanding join requests for this user group.", array("colspan" => 6));
+		$table->construct_cell($lang->no_join_requests, array("colspan" => 6));
 		$table->construct_row();
 	}
 
-	$table->output("Join Requests for {$group['title']}");
+	$table->output($lang->join_requests_for." {$group['title']}");
 	echo $pagination;
 
-	$buttons[] = $form->generate_submit_button("Approve Selected Requests");
-	$buttons[] = $form->generate_submit_button("Deny Selected Requests");
+	$buttons[] = $form->generate_submit_button($lang->approve_selected_requests);
+	$buttons[] = $form->generate_submit_button($lang->deny_selected_requests);
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
@@ -319,7 +319,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{
-		$errors[] = "The username you entered is invalid.";
+		$errors[] = $lang->error_invalid_username;
 	}
 	else
 	{
@@ -328,7 +328,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$existing_leader = $db->fetch_field($query, "uid");
 		if($existing_leader)
 		{
-			$errors[] = "The user is already a leader of this user group.";
+			$errors[] = $lang->error_already_leader;
 		}
 	}
 	
@@ -349,7 +349,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		// Log admin action
 		log_admin_action($mybb->input['username'], $group['title']);
 
-		flash_message("{$user['username']} was successfully made a group leader for this user group.", 'success');
+		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user/groups&action=leaders&gid={$group['gid']}");
 	}
 	else
@@ -373,23 +373,23 @@ if($mybb->input['action'] == "leaders")
 		admin_redirect("index.php?module=user/groups");
 	}
 
-	$page->add_breadcrumb_item("Group leaders for {$group['title']}");
-	$page->output_header("Group Leaders for {$group['title']}");
+	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}");
+	$page->output_header($lang->group_leaders_for." {$group['title']}");
 	
 	$sub_tabs = array();
 	$sub_tabs['group_leaders'] = array(
-		'title' => "Manage Group Leaders",
+		'title' => $lang->manage_group_leaders,
 		'link' => "index.php?module=user/groups&action=leaders&gid={$group['gid']}",
-		'description' => "Here you can manage the group leaders for this user group. Depending on the options you enable for the leader, these users can manage the users who are a member of this group and can moderate any join requests if this group is publicly joinable."
+		'description' => $lang->manage_group_leaders_desc
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'group_leaders');
 
 	$table = new Table;
-	$table->construct_header("User");
-	$table->construct_header("Can Manage Members?", array("class" => 'align_center', "width" => 200));
-	$table->construct_header("Can Manage Join Requests?", array("class" => 'align_center', "width" => 200));
-	$table->construct_header("Controls", array("class" => "align_center", "colspan" => 2, "width" => 200));
+	$table->construct_header($lang->user);
+	$table->construct_header($lang->can_manage_members, array("class" => 'align_center', "width" => 200));
+	$table->construct_header($lang->can_manage_join_requests, array("class" => 'align_center', "width" => 200));
+	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
 
 	$query = $db->query("
 		SELECT g.*, u.username
@@ -402,32 +402,40 @@ if($mybb->input['action'] == "leaders")
 	{
 		$leader['username'] = htmlspecialchars_uni($leader['username']);
 		if($leader['canmanagemembers'])
+		{
 			$canmanagemembers = $lang->yes;
+		}
 		else
+		{
 			$canmanagemembers = $lang->no;
+		}
 			
 		if($leader['canmanagerequests'])
+		{
 			$canmanagerequests = $lang->yes;
+		}
 		else
+		{
 			$canmanagerequests = $lang->no;
+		}
 		
 		$table->construct_cell("<strong>".build_profile_link($leader['username'], $leader['uid'])."</strong>");
 		$table->construct_cell($canmanagemembers, array("class" => "align_center"));
 		$table->construct_cell($canmanagerequests, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=edit_leader&lid={$leader['lid']}\">Edit</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=delete_leader&amp;lid={$leader['lid']}\" onclick=\"return AdminCP.deleteConfirmation(this, 'Are you sure you want to delete this group leader?')\">Delete</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=edit_leader&lid={$leader['lid']}\">{$lang->edit}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=delete_leader&amp;lid={$leader['lid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_leader_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell("You haven't assigned any users as leaders of this group yet. To create a leader for this group, fill in the form below.", array("colspan" => 5));
+		$table->construct_cell($lang->no_assigned_leaders, array("colspan" => 5));
 		$table->construct_row();
 	}
 	
-	$table->output("Group Leaders for {$group['title']}");
-
-	$form = new Form("index.php?module=user/groups&amp;action=add_leader&gid={$group['gid']}", "post");
+	$table->output($lang->group_leaders_for." {$group['title']}");
+	
+	$form = new Form("index.php?module=user/groups&amp;action=add_leader&amp;gid={$group['gid']}", "post");
 	
 	if($errors)
 	{

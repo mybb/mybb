@@ -15,16 +15,16 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->admin_logs, "index.php?".SID."&amp;module=tools/adminlog");
+$page->add_breadcrumb_item($lang->admin_logs, "index.php?module=tools/adminlog");
 
 $sub_tabs['admin_logs'] = array(
 	'title' => $lang->admin_logs,
-	'link' => "index.php?".SID."&amp;module=tools/adminlog",
+	'link' => "index.php?module=tools/adminlog",
 	'description' => $lang->admin_logs_desc
 );
 $sub_tabs['prune_admin_logs'] = array(
 	'title' => $lang->prune_admin_logs,
-	'link' => "index.php?".SID."&amp;module=tools/adminlog&amp;action=prune",
+	'link' => "index.php?module=tools/adminlog&amp;action=prune",
 	'description' => $lang->prune_admin_logs_desc
 );
 
@@ -37,12 +37,12 @@ if($mybb->input['action'] == 'prune')
 	if($config['log_pruning']['admin_logs'])
 	{
 		flash_message($lang->error_logs_automatically_pruned, 'error');
-		admin_redirect("index.php?".SID."&module=tools/adminlog");
+		admin_redirect("index.php?module=tools/adminlog");
 	}
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');
-		admin_redirect("index.php?".SID."&module=tools/adminlog");
+		admin_redirect("index.php?module=tools/adminlog");
 	}
 	if($mybb->request_method == 'post')
 	{
@@ -69,9 +69,9 @@ if($mybb->input['action'] == 'prune')
 		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['filter_module'], $num_deleted);
 
 		flash_message($lang->success_pruned_admin_logs, 'success');
-		admin_redirect("index.php?".SID."&module=tools/adminlog");
+		admin_redirect("index.php?module=tools/adminlog");
 	}
-	$page->add_breadcrumb_item($lang->prune_admin_logs, "index.php?".SID."&amp;module=tools/adminlog&amp;action=prune");
+	$page->add_breadcrumb_item($lang->prune_admin_logs, "index.php?module=tools/adminlog&amp;action=prune");
 	$page->output_header($lang->prune_admin_logs);
 	$page->output_nav_tabs($sub_tabs, 'prune_admin_logs');
 	
@@ -118,7 +118,7 @@ if($mybb->input['action'] == 'prune')
 		'desc' => $lang->desc
 	);
 
-	$form = new Form("index.php?".SID."&amp;module=tools/adminlog&amp;action=prune", "post");
+	$form = new Form("index.php?module=tools/adminlog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_administrator_logs);
 	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');	
 	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
@@ -253,7 +253,7 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?".SID."&amp;module=tools/adminlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools/adminlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
 	}
 	
 	// Fetch filter options
@@ -299,7 +299,7 @@ if(!$mybb->input['action'])
 		'desc' => $lang->desc
 	);
 
-	$form = new Form("index.php?".SID."&amp;module=tools/adminlog", "post");
+	$form = new Form("index.php?module=tools/adminlog", "post");
 	$form_container = new FormContainer($lang->filter_administrator_logs);
 	$form_container->output_row($lang->module, "", $form->generate_select_box('filter_module', $module_options, $mybb->input['filter_module'], array('id' => 'filter_module')), 'filter_module');	
 	$form_container->output_row($lang->administrator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');	
