@@ -15,7 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-$page->add_breadcrumb_item($lang->system_health, "index.php?".SID."&amp;module=tools/system_health");
+$page->add_breadcrumb_item($lang->system_health, "index.php?module=tools/system_health");
 
 $plugins->run_hooks("admin_tools_system_health_begin");
 
@@ -23,14 +23,14 @@ if($mybb->input['action'] == "utf8_conversion")
 {
 	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
 	
-	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion");
+	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
 	
 	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 	
 	if($db->type == "sqlite2" || $db->type == "sqlite3")
 	{
 		flash_message($lang->error_not_supported, 'error');
-		admin_redirect("index.php?".SID."&module=tools/system_health");
+		admin_redirect("index.php?module=tools/system_health");
 	}
 	
 	if($mybb->request_method == "post")
@@ -43,18 +43,18 @@ if($mybb->input['action'] == "utf8_conversion")
 		if(!$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
 			flash_message($lang->error_invalid_table, 'error');
-			admin_redirect("index.php?".SID."&module=tools/system_health&action=utf8_conversion");
+			admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		}
 		
 		$sub_tabs['system_health'] = array(
 			'title' => $lang->system_health,
-			'link' => "index.php?".SID."&amp;module=tools/stats",
+			'link' => "index.php?module=tools/stats",
 			'description' => $lang->system_health_desc
 		);
 		
 		$sub_tabs['utf8_conversion'] = array(
 			'title' => $lang->utf8_conversion,
-			'link' => "index.php?".SID."&amp;module=tools/stats&amp;action=utf8_conversion",
+			'link' => "index.php?module=tools/stats&amp;action=utf8_conversion",
 			'description' => $lang->utf8_conversion_desc2
 		);
 		
@@ -181,20 +181,20 @@ if($mybb->input['action'] == "utf8_conversion")
 		log_admin_action($mybb->input['table']);
 		
 		flash_message(sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
-		admin_redirect("index.php?".SID."&module=tools/system_health&action=utf8_conversion");
+		admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		
 		exit;
 	}
 	
 	$sub_tabs['system_health'] = array(
 		'title' => $lang->system_health,
-		'link' => "index.php?".SID."&amp;module=tools/stats",
+		'link' => "index.php?module=tools/stats",
 		'description' => $lang->system_health_desc
 	);
 	
 	$sub_tabs['utf8_conversion'] = array(
 		'title' => $lang->utf8_conversion,
-		'link' => "index.php?".SID."&amp;module=tools/stats&amp;action=utf8_conversion",
+		'link' => "index.php?module=tools/stats&amp;action=utf8_conversion",
 		'description' => $lang->utf8_conversion_desc2
 	);
 	
@@ -209,14 +209,14 @@ if($mybb->input['action'] == "utf8_conversion")
 		{
 			$db->set_table_prefix($old_table_prefix);
 			flash_message($lang->error_invalid_table, 'error');
-			admin_redirect("index.php?".SID."&module=tools/system_health&action=utf8_conversion");
+			admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		}
 		
 		$table = $db->show_create_table($db->escape_string($mybb->input['table']));
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 		$charset = $matches[1];
 		
-		$form = new Form("index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion", "post", "utf8_conversion");
+		$form = new Form("index.php?module=tools/system_health&amp;action=utf8_conversion", "post", "utf8_conversion");
 		echo $form->generate_hidden_field("table", $mybb->input['table']);
 		
 		$table = new Table;
@@ -275,13 +275,13 @@ if($mybb->input['action'] == "utf8_conversion")
 	if($okay_count == count($mybb_tables))
 	{
 		flash_message($lang->error_all_tables_already_converted, 'error');
-		admin_redirect("index.php?".SID."&module=tools/system_health");
+		admin_redirect("index.php?module=tools/system_health");
 	}
 	
 	if(!$mybb->config['database']['encoding'])
 	{
 		flash_message($lang->error_db_encoding_not_set, 'error');
-		admin_redirect("index.php?".SID."&module=tools/system_health");
+		admin_redirect("index.php?module=tools/system_health");
 	}
 	
 	asort($mybb_tables);
@@ -294,7 +294,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	{
 		if(array_key_exists($key, $not_okey))
 		{
-			$status = "<a href=\"index.php?".SID."&amp;module=tools/system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
+			$status = "<a href=\"index.php?module=tools/system_health&amp;action=utf8_conversion&amp;table={$tablename}\" style=\"background: url(styles/{$page->style}/images/icons/cross.gif) no-repeat; padding-left: 20px;\">{$lang->convert_now}</a>";
 		}
 		else
 		{
@@ -318,13 +318,13 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['system_health'] = array(
 		'title' => $lang->system_health,
-		'link' => "index.php?".SID."&amp;module=tools/stats",
+		'link' => "index.php?module=tools/stats",
 		'description' => $lang->system_health_desc
 	);
 	
 	$sub_tabs['utf8_conversion'] = array(
 		'title' => $lang->utf8_conversion,
-		'link' => "index.php?".SID."&amp;module=tools/stats&amp;action=utf8_conversion",
+		'link' => "index.php?module=tools/stats&amp;action=utf8_conversion",
 		'description' => $lang->utf8_conversion_desc2
 	);
 	
@@ -430,7 +430,7 @@ if(!$mybb->input['action'])
 			$time = "-";
 		}
 		
-		$table->construct_cell("<a href=\"index.php?".SID."&amp;module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
+		$table->construct_cell("<a href=\"index.php?module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
 		$table->construct_cell($time, array("class" => "align_center"));
 		$table->construct_row();
 	}
