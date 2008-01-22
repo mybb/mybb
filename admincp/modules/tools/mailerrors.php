@@ -184,7 +184,7 @@ if(!$mybb->input['action'])
 	
 	$sub_tabs['mailerrors'] = array(
 		'title' => $lang->system_email_log,
-		'link' => "index.php?adminsid="?"&amp;module=tools/mailerrors",
+		'link' => "index.php?module=tools/mailerrors",
 		'description' => $lang->system_email_log_desc
 	);
 	
