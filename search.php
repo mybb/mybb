@@ -73,14 +73,14 @@ if($mybb->input['action'] == "results")
 		case "views":
 			$sortfield = "t.views";
 			break;
-		case "dateline":
+		case "subject":
 			if($search['resulttype'] == "threads")
 			{
-				$sortfield = "t.dateline";
+				$sortfield = "t.subject";
 			}
 			else
 			{
-				$sortfield = "p.dateline";
+				$sortfield = "p.subject";
 			}
 			break;
 		case "forum":
@@ -96,6 +96,7 @@ if($mybb->input['action'] == "results")
 				$sortfield = "p.username";
 			}
 			break;
+		case "lastpost":
 		default:
 			if($search['resulttype'] == "threads")
 			{

@@ -4814,7 +4814,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
 				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
 				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
-				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
+				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a> {$orderarrow['views']}</strong></span></td>
 				<td class="tcat" align="center" width="200"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
 			</tr>
 			{$results}
