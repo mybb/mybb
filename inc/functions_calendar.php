@@ -379,7 +379,7 @@ function get_prev_month($month, $year)
  */
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
-	global $db;
+	global $db, $mybb;
 	// We take in to account timezones here - we add/subject 12 hours from our GMT time ranges
 	$start -= 12*3600;
 	$end += 12*3600;
@@ -392,7 +392,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		SELECT u.*, e.*
 		FROM ".TABLE_PREFIX."events e
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=e.uid)
-		WHERE e.cid='{$calendar}' {$visible_where} AND ((e.endtime>={$start} AND e.starttime<={$end}) OR (e.endtime=0 AND e.starttime>={$start} AND e.starttime<={$end}))
+		WHERE e.cid='{$calendar}' {$visible_where} AND ((e.endtime>={$start} AND e.starttime<={$end}) OR (e.endtime=0 AND e.starttime>={$start} AND e.starttime<={$end})) AND ((e.uid='{$mybb->user['uid']}' AND private='1') OR private!='1')
 		ORDER BY endtime DESC
 	");
 	while($event = $db->fetch_array($query))
