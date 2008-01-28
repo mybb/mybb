@@ -2379,7 +2379,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 
 		// Permission to edit this ban?
-		if($mybb->user['uid'] != $banned['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canadmincp'] != 1)
+		if($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canadmincp'] != 1)
 		{
 			error_no_permission();
 		}

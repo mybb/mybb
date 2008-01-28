@@ -449,11 +449,11 @@ if($mybb->input['action'] == "leaders")
 		);
 	}
 	
-	$form_container = new FormContainer("Add Group Leader to {$group['title']}");
+	$form_container = new FormContainer($lang->add_group_leader." {$group['title']}");
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row("Can Manage Group Members?", "If this user should be able to manage the members within a group, set to Yes.", $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
-		$form_container->output_row("Can Manage Group Join Requests?", "Should this user be able to approve or deny new membership requests for this group?", $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
-	$buttons[] = $form->generate_submit_button("Save Group Leader");
+	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
+		$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
+	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 	
 	$form_container->end();
 	$form->output_submit_wrapper($buttons);
@@ -476,7 +476,7 @@ if($mybb->input['action'] == "delete_leader")
 	
 	if(!$leader['lid'])
 	{
-		flash_message("You specified an invalid group leader.", 'error');
+		flash_message($lang->error_invalid_group_leader, 'error');
 		admin_redirect("index.php?module=user/groups");		
 	}
 	
@@ -499,12 +499,12 @@ if($mybb->input['action'] == "delete_leader")
 		// Log admin action
 		log_admin_action($leader['username'], $group['title']);
 
-		flash_message("The user has been successfully removed from the group leaders list for this group", 'success');
+		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user/groups&action=leaders&gid={$group['gid']}");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=user/groups&amp;action=delete_leader&amp;lid={$leader['lid']}", "Are you sure you want to delete this group leader?");
+		$page->output_confirm_action("index.php?module=user/groups&amp;action=delete_leader&amp;lid={$leader['lid']}", $lang->confirm_group_leader_deletion);
 	}
 }
 
@@ -522,7 +522,7 @@ if($mybb->input['action'] == "edit_leader")
 
 	if(!$leader['lid'])
 	{
-		flash_message("You specified an invalid group leader.", 'error');
+		flash_message($lang->error_invalid_group_leader, 'error');
 		admin_redirect("index.php?module=user/groups");		
 	}
 
@@ -542,35 +542,35 @@ if($mybb->input['action'] == "edit_leader")
 		// Log admin action
 		log_admin_action($leader['username'], $group['title']);
 
-		flash_message("The group leader has been updated successfully.", 'success');
+		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user/groups&action=leaders&gid={$group['gid']}");		
 	}
 	
 	if(!$errors)
 		$mybb->input = $leader;
 	
-	$page->add_breadcrumb_item("Group leaders for {$group['title']}", "index.php?module=user/groups&action=leaders&gid={$group['gid']}");
-	$page->add_breadcrumb_item("Edit Leader: {$leader['username']}");
+	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user/groups&action=leaders&gid={$group['gid']}");
+	$page->add_breadcrumb_item($lang->edit_leader." {$leader['username']}");
 	
-	$page->output_header("Edit Group Leader");
+	$page->output_header($lang->edit_group_leader);
 	
 	$sub_tabs = array();
 	$sub_tabs['group_leaders'] = array(
-		'title' => "Edit Group Leader",
+		'title' => $lang->edit_group_leader,
 		'link' => "index.php?module=user/groups&action=edit_leader&lid={$leader['lid']}",
-		'description' => "Here you can change the permissions for this group leader in regards to what actions they're allowed to perform."
+		'description' => $lang->edit_group_leader_desc
 	);
 		
 	$page->output_nav_tabs($sub_tabs, 'group_leaders');
 
 	$form = new Form("index.php?module=user/groups&amp;action=edit_leader&lid={$leader['lid']}'", "post");
 	
-	$form_container = new FormContainer("Edit Group Leader");
+	$form_container = new FormContainer($lang->edit_group_leader);
 	$form_container->output_row($lang->username." <em>*</em>", "", $leader['username']);
 	
-	$form_container->output_row("Can Manage Group Members?", "If this user should be able to manage the members within a group, set to Yes.", $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
-		$form_container->output_row("Can Manage Group Join Requests?", "Should this user be able to approve or deny new membership requests for this group?", $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
-	$buttons[] = $form->generate_submit_button("Save Group Leader");
+	$form_container->output_row($lang->can_manage_group_members, $lang->can_manage_group_members_desc, $form->generate_yes_no_radio('canmanagemembers', $mybb->input['canmanagemembers']));
+		$form_container->output_row($lang->can_manage_group_join_requests, $lang->can_manage_group_join_requests_desc, $form->generate_yes_no_radio('canmanagerequests', $mybb->input['canmanagerequests']));
+	$buttons[] = $form->generate_submit_button($lang->save_group_leader);
 	
 	$form_container->end();
 	$form->output_submit_wrapper($buttons);
@@ -675,22 +675,22 @@ if($mybb->input['action'] == "add")
 		);
 	}
 
-	$form_container = new FormContainer("Add User Group");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row("Short Description", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row("Username Style", "This option allows you to set a custom username style for users who have this user group as their display group. <strong>Use {username} to represent the user's name.</strong>", $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
-	$form_container->output_row("Default User Title", "If the user has nothing entered in their custom user title field, the user title entered here will be displayed.", $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
+	$form_container = new FormContainer($lang->add_user_group);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->username_style, $lang->username_style_desc, $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
+	$form_container->output_row($lang->user_title, $lang->user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 
-	$options[0] = "Don't copy permissions from another group";
+	$options[0] = $lang->do_not_copy_permissions;
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
 	while($usergroup = $db->fetch_array($query))
 	{
 		$options[$usergroup['gid']] = $usergroup['title'];
 	}
-	$form_container->output_row("Copy Permissions From...", "If you wish, you can copy the forum and group permissions from another group. To make use of this, select a group to copy permissons from.", $form->generate_select_box('copyfrom', $options, $mybb->input['copyfrom'], array('id' => 'copyfrom')), 'copyfrom');
+	$form_container->output_row($lang->copy_permissions_from, $lang->copy_permissions_from_desc, $form->generate_select_box('copyfrom', $options, $mybb->input['copyfrom'], array('id' => 'copyfrom')), 'copyfrom');
 
 	$form_container->end();
-	$buttons[] = $form->generate_submit_button("Save User Group");
+	$buttons[] = $form->generate_submit_button($lang->save_user_group);
 	$form->output_submit_wrapper($buttons);
 
 	$form->end();
@@ -823,6 +823,7 @@ if($mybb->input['action'] == "edit")
 			
 			$plugins->run_hooks("admin_user_groups_edit_commit");
 
+
 			// Log admin action
 			log_admin_action($usergroup['gid'], $mybb->input['title']);
 			
@@ -831,13 +832,13 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	
-	$page->add_breadcrumb_item("Edit User Group");
-	$page->output_header("Edit User Group");
+	$page->add_breadcrumb_item($lang->edit_user_group);
+	$page->output_header($lang->edit_user_group);
 	
 	$sub_tabs = array();	
 	$sub_tabs['edit_group'] = array(
-		'title' => "Edit User Group",
-		'description' => "Here you can edit an existing user group."
+		'title' => $lang->edit_user_group,
+		'description' => $lang->edit_user_group_desc
 	);
 
 	$form = new Form("index.php?module=user/groups&amp;action=edit&amp;gid={$usergroup['gid']}", "post");
@@ -869,51 +870,51 @@ if($mybb->input['action'] == "edit")
 		$mybb->input = $usergroup;
 	}	
 	$tabs = array(
-		"general" => "General",
-		"forums_posts" => "Forums and Posts",
-		"users_permissions" => "Users and Permissions",
-		"misc" => "Miscellaneous"		
+		"general" => $lang->general,
+		"forums_posts" => $lang->forums_posts,
+		"users_permissions" => $lang->users_permissions,
+		"misc" => $lang->misc		
 	);
 	$page->output_tab_control($tabs);
 	
 	echo "<div id=\"tab_general\">";	
-	$form_container = new FormContainer("General");
-	$form_container->output_row("Title <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row("Short Description", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
-	$form_container->output_row("Username Style", "This option allows you to set a custom username style for users who have this user group as their display group. <strong>Use {username} to represent the user's name.</strong>", $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
-	$form_container->output_row("Default User Title", "If the user has nothing entered in their custom user title field, the user title entered here will be displayed.", $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
+	$form_container = new FormContainer($lang->general);
+	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
+	$form_container->output_row($lang->short_description, "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
+	$form_container->output_row($lang->username_style, $lang->username_style_desc, $form->generate_text_box('namestyle', $mybb->input['namestyle'], array('id' => 'namestyle')), 'namestyle');
+	$form_container->output_row($lang->user_title, $lang->user_title_desc, $form->generate_text_box('usertitle', $mybb->input['usertitle'], array('id' => 'usertitle')), 'usertitle');
 
 	$stars = "<table cellpadding=\"3\"><tr><td>".$form->generate_text_box('stars', $mybb->input['stars'], array('class' => 'field50', 'id' => 'stars'))."</td><td>".$form->generate_text_box('starimage', $mybb->input['starimage'], array('id' => 'starimage'))."</td></tr>";
-	$stars .= "<tr><td><small># of Stars</small></td><td><small>Star Image</small></td></tr></table>";
-	$form_container->output_row("User Stars", "If you enter a number of stars and the location of a star image, this star image will be shown for this particular user group.", $stars, "stars");
+	$stars .= "<tr><td><small>{$lang->stars}</small></td><td><small>{$lang->star_image}</small></td></tr></table>";
+	$form_container->output_row($lang->user_stars, $lang->user_stars_desc, $stars, "stars");
 
-	$form_container->output_row("Group Image", "Here you can set a group image which will show on each post made by users in this group. Please use <strong>{lang}</strong> to represent the user's chosen language if translated group images are available", $form->generate_text_box('groupimage', $mybb->input['groupimage'], array('id' => 'groupimage')), 'groupimage');
+	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('groupimage', $mybb->input['groupimage'], array('id' => 'groupimage')), 'groupimage');
 
 	$general_options = array();
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")
 	{
-		$general_options[] = $form->generate_check_box("showforumteam", 1, "Show on 'Forum Team' page", array("checked" => $mybb->input['showforumteam']));
+		$general_options[] = $form->generate_check_box("showforumteam", 1, $lang->forum_team, array("checked" => $mybb->input['showforumteam']));
 	}
-	$general_options[] =	$form->generate_check_box("isbannedgroup", 1, "Is banned group?<br /><small>If this group is a 'banned' user group, users will be able to be 'banned' in to this user group.</small>", array("checked" => $mybb->input['isbannedgroup']));
+	$general_options[] =	$form->generate_check_box("isbannedgroup", 1, $lang->is_banned_group, array("checked" => $mybb->input['isbannedgroup']));
 	
-	$form_container->output_row("General Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $general_options)."</div>");
+	$form_container->output_row($lang->general_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $general_options)."</div>");
 
 	if($usergroup['type'] != 1)
-	{	
+	{
 		$public_options = array(
-			$form->generate_check_box("joinable", 1, "Users can join this group", array("checked" => $mybb->input['joinable'])),
-			$form->generate_check_box("moderate", 1, "Moderate all new join requests", array("checked" => $mybb->input['moderate'])),
-			$form->generate_check_box("candisplaygroup", 1, "Users can set this group as their display group.<br /><small>If set to yes, users will be able to set this user group as their display group for user titles, stars, name style and group images.</small>", array("checked" => $mybb->input['candisplaygroup'])),
+			$form->generate_check_box("joinable", 1, $lang->user_joinable, array("checked" => $mybb->input['joinable'])),
+			$form->generate_check_box("moderate", 1, $lang->moderate_join_requests, array("checked" => $mybb->input['moderate'])),
+			$form->generate_check_box("candisplaygroup", 1, $lang->can_set_as_display_group, array("checked" => $mybb->input['candisplaygroup'])),
 			);
-		$form_container->output_row("Publicly Joinable Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $public_options)."</div>");
+		$form_container->output_row($lang->publicly_joinable_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $public_options)."</div>");
 	}
 		
 	$admin_options = array(
-		$form->generate_check_box("issupermod", 1, "Is Super Moderator", array("checked" => $mybb->input['issupermod'])),
-		$form->generate_check_box("canmodcp", 1, "Can access Moderator CP", array("checked" => $mybb->input['canmodcp'])),
-		$form->generate_check_box("cancp", 1, "Can access Admin CP", array("checked" => $mybb->input['cancp']))
+		$form->generate_check_box("issupermod", 1, $lang->is_super_mod, array("checked" => $mybb->input['issupermod'])),
+		$form->generate_check_box("canmodcp", 1, $lang->can_access_mod_cp, array("checked" => $mybb->input['canmodcp'])),
+		$form->generate_check_box("cancp", 1, $lang->can_access_admin_cp, array("checked" => $mybb->input['cancp']))
 	);
-	$form_container->output_row("Moderation/Administration Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $admin_options)."</div>");
+	$form_container->output_row($lang->moderation_administration_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $admin_options)."</div>");
 
 	$form_container->end();
 	echo "</div>";
@@ -922,43 +923,43 @@ if($mybb->input['action'] == "edit")
 	// FORUMS AND POSTS
 	//
 	echo "<div id=\"tab_forums_posts\">";	
-	$form_container = new FormContainer("Forums and Posts");
+	$form_container = new FormContainer($lang->forums_posts);
 
 	$viewing_options = array(
-		$form->generate_check_box("canview", 1, "Can view board", array("checked" => $mybb->input['canview'])),
-		$form->generate_check_box("canviewthreads", 1, "Can view threads", array("checked" => $mybb->input['canviewthreads'])),
-		$form->generate_check_box("cansearch", 1, "Can search forums", array("checked" => $mybb->input['cansearch'])),
-		$form->generate_check_box("canviewprofiles", 1, "Can view user profiles", array("checked" => $mybb->input['canviewprofiles'])),
-		$form->generate_check_box("candlattachments", 1, "Moderate all new join requests", array("checked" => $mybb->input['candlattachments'])),
+		$form->generate_check_box("canview", 1, $lang->can_view_board, array("checked" => $mybb->input['canview'])),
+		$form->generate_check_box("canviewthreads", 1, $lang->can_view_threads, array("checked" => $mybb->input['canviewthreads'])),
+		$form->generate_check_box("cansearch", 1, $lang->can_search_forums, array("checked" => $mybb->input['cansearch'])),
+		$form->generate_check_box("canviewprofiles", 1, $lang->can_view_profiles, array("checked" => $mybb->input['canviewprofiles'])),
+		$form->generate_check_box("candlattachments", 1, $lang->can_download_attachments, array("checked" => $mybb->input['candlattachments'])),
 	);
-	$form_container->output_row("Viewing Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $viewing_options)."</div>");	
+	$form_container->output_row($lang->viewing_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $viewing_options)."</div>");	
 	
 	$posting_options = array(
-		$form->generate_check_box("canpostthreads", 1, "Can post new threads", array("checked" => $mybb->input['canpostthreads'])),
-		$form->generate_check_box("canpostreplys", 1, "Can post replies to threads", array("checked" => $mybb->input['canpostreplys'])),
-		$form->generate_check_box("canratethreads", 1, "Can rate threads", array("checked" => $mybb->input['canratethreads']))
+		$form->generate_check_box("canpostthreads", 1, $lang->can_post_threads, array("checked" => $mybb->input['canpostthreads'])),
+		$form->generate_check_box("canpostreplys", 1, $lang->can_post_replies, array("checked" => $mybb->input['canpostreplys'])),
+		$form->generate_check_box("canratethreads", 1, $lang->can_rate_threads, array("checked" => $mybb->input['canratethreads']))
 	);
-	$form_container->output_row("Posting/Rating Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
+	$form_container->output_row($lang->posting_rating_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $posting_options)."</div>");
 	
 	$poll_options = array(
-		$form->generate_check_box("canpostpolls", 1, "Can post polls", array("checked" => $mybb->input['canpostpolls'])),
-		$form->generate_check_box("canvotepolls", 1, "Can vote in polls", array("checked" => $mybb->input['canvotepolls']))
+		$form->generate_check_box("canpostpolls", 1, $lang->can_post_polls, array("checked" => $mybb->input['canpostpolls'])),
+		$form->generate_check_box("canvotepolls", 1, $lang->can_vote_polls, array("checked" => $mybb->input['canvotepolls']))
 	);
-	$form_container->output_row("Poll Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $poll_options)."</div>");	
+	$form_container->output_row($lang->poll_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $poll_options)."</div>");	
 
 	$attachment_options = array(
 		$form->generate_check_box("canpostattachments", 1, "Can post attachments", array("checked" => $mybb->input['canpostattachments'])),
-		"Attachment Quota:<br /><small>Here you can set the attachment quota that each user in this group will receive. If set to 0, there is no limit.</small><br />".$form->generate_text_box('attachquota', $mybb->input['attachquota'], array('id' => 'attachquota', 'class' => 'field50')). "KB"
+		"{$lang->attach_quota}<br /><small class=\"input\">{$lang->attach_quota_desc}</small><br />".$form->generate_text_box('attachquota', $mybb->input['attachquota'], array('id' => 'attachquota', 'class' => 'field50')). "KB"
 	);
-	$form_container->output_row("Attachment Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");	
+	$form_container->output_row($lang->attachment_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");	
 
 	$editing_options = array(
-		$form->generate_check_box("caneditposts", 1, "Can edit own posts", array("checked" => $mybb->input['caneditposts'])),
-		$form->generate_check_box("candeleteposts", 1, "Can delete own posts", array("checked" => $mybb->input['candeleteposts'])),
-		$form->generate_check_box("candeletethreads", 1, "Can delete own threads", array("checked" => $mybb->input['candeletethreads'])),
-		$form->generate_check_box("caneditattachments", 1, "Can edit own attachments", array("checked" => $mybb->input['caneditattachments']))
+		$form->generate_check_box("caneditposts", 1, $lang->can_edit_posts, array("checked" => $mybb->input['caneditposts'])),
+		$form->generate_check_box("candeleteposts", 1, $lang->can_delete_posts, array("checked" => $mybb->input['candeleteposts'])),
+		$form->generate_check_box("candeletethreads", 1, $lang->can_delete_threads, array("checked" => $mybb->input['candeletethreads'])),
+		$form->generate_check_box("caneditattachments", 1, $lang->can_edit_attachments, array("checked" => $mybb->input['caneditattachments']))
 	);
-	$form_container->output_row("Editing/Deleting Options", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
+	$form_container->output_row($lang->editing_deleting_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $editing_options)."</div>");
 	
 	$form_container->end();
 	echo "</div>";	
@@ -967,30 +968,30 @@ if($mybb->input['action'] == "edit")
 	// USERS AND PERMISSIONS
 	//
 	echo "<div id=\"tab_users_permissions\">";	
-	$form_container = new FormContainer("Users and Permissions");
+	$form_container = new FormContainer($lang->users_permissions);
 
 	$account_options = array(
-		$form->generate_check_box("canusercp", 1, "Can access User CP", array("checked" => $mybb->input['canusercp'])),
-		$form->generate_check_box("canchangename", 1, "Can change username", array("checked" => $mybb->input['canchangename'])),
-		$form->generate_check_box("cancustomtitle", 1, "Can use custom user titles", array("checked" => $mybb->input['cancustomtitle'])),
-		$form->generate_check_box("canuploadavatars", 1, "Can upload avatars", array("checked" => $mybb->input['canuploadavatars']))
+		$form->generate_check_box("canusercp", 1, $lang->can_access_usercp, array("checked" => $mybb->input['canusercp'])),
+		$form->generate_check_box("canchangename", 1, $lang->can_change_username, array("checked" => $mybb->input['canchangename'])),
+		$form->generate_check_box("cancustomtitle", 1, $lang->can_use_usertitles, array("checked" => $mybb->input['cancustomtitle'])),
+		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars']))
 	);
-	$form_container->output_row("Account Management", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");	
+	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");	
 
 	$reputation_options = array(
-		$form->generate_check_box("usereputationsystem", 1, "Show reputations for users in this group", array("checked" => $mybb->input['usereputationsystem'])),
-		$form->generate_check_box("cangivereputations", 1, "Can give reputations to users", array("checked" => $mybb->input['cangivereputations'])),
-		"Points to Award/Take Away:<br /><small>Here you need to enter the number of points to give or take away on each reputation given by users of this group.</small><br />".$form->generate_text_box('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50')),
-		"Maximum Reputations Allowed Per Day:<br /><small>Here you can enter the maximum number of reputations that users in this group can give per day. To allow unlimited reputations per day, enter 0.</small><br />".$form->generate_text_box('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50'))	
+		$form->generate_check_box("usereputationsystem", 1, $lang->show_reputations, array("checked" => $mybb->input['usereputationsystem'])),
+		$form->generate_check_box("cangivereputations", 1, $lang->can_give_reputation, array("checked" => $mybb->input['cangivereputations'])),
+		"{$lang->points_to_award_take}<br /><small class=\"input\">{$lang->points_to_award_take_desc}</small><br />".$form->generate_text_box('reputationpower', $mybb->input['reputationpower'], array('id' => 'reputationpower', 'class' => 'field50')),
+		"{$lang->max_reputations_daily}<br /><small class=\"input\">{$lang->max_reputations_daily_desc}</small><br />".$form->generate_text_box('maxreputationsday', $mybb->input['maxreputationsday'], array('id' => 'maxreputationsday', 'class' => 'field50'))	
 	);
-	$form_container->output_row("Reputation System", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $reputation_options)."</div>");
+	$form_container->output_row($lang->reputation_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $reputation_options)."</div>");
 
 	$warning_options = array(
-		$form->generate_check_box("canwarnusers", 1, "Can send warnings to other users", array("checked" => $mybb->input['canwarnusers'])),
-		$form->generate_check_box("canreceivewarnings", 1, "Can receive warnings from other users", array("checked" => $mybb->input['canreceivewarnings'])),
-		"Maximum warnings allowed per day:<br />".$form->generate_text_box('maxwarningsday', $mybb->input['maxwarningsday'], array('id' => 'maxwarningsday', 'class' => 'field50'))
+		$form->generate_check_box("canwarnusers", 1, $lang->can_send_warnings, array("checked" => $mybb->input['canwarnusers'])),
+		$form->generate_check_box("canreceivewarnings", 1, $lang->can_receive_warnings, array("checked" => $mybb->input['canreceivewarnings'])),
+		"{$lang->warnings_per_day}<br />".$form->generate_text_box('maxwarningsday', $mybb->input['maxwarningsday'], array('id' => 'maxwarningsday', 'class' => 'field50'))
 	);
-	$form_container->output_row("Warning System", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $warning_options)."</div>");
+	$form_container->output_row($lang->warning_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $warning_options)."</div>");
 
 	$pm_options = array(
 		$form->generate_check_box("canusepms", 1, "Can use private messaging", array("checked" => $mybb->input['canusepms'])),
@@ -1000,7 +1001,7 @@ if($mybb->input['action'] == "edit")
 		"Message Quota:<br /><small>Maximum number of private messages that can be stored by users in this group. If empty, users can store unlimited messages.</small><br />".$form->generate_text_box('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),
 		"Maximum Recipients Per Message:<br /><small>Maximum number of recipients a user can send a private message to at one time. If empty, users can send private messages to an unlimited number of recipients.</small><br />".$form->generate_text_box('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50'))
 	);
-	$form_container->output_row("Private Messaging", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $pm_options)."</div>");
+	$form_container->output_row($lang->private_messaging, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $pm_options)."</div>");
 	
 	$form_container->end();
 	echo "</div>";
@@ -1009,34 +1010,34 @@ if($mybb->input['action'] == "edit")
 	// MISC
 	//
 	echo "<div id=\"tab_misc\">";	
-	$form_container = new FormContainer("Miscellaneous");
+	$form_container = new FormContainer($lang->misc);
 
 	$calendar_options = array(
-		$form->generate_check_box("canviewcalendar", 1, "Can view calendar", array("checked" => $mybb->input['canviewcalendar'])),
-		$form->generate_check_box("canaddevents", 1, "Can post calendar events", array("checked" => $mybb->input['canaddevents'])),
-		$form->generate_check_box("canbypasseventmod", 1, "Can bypass calendar event moderation queue", array("checked" => $mybb->input['canbypasseventmod'])),
-		$form->generate_check_box("canmoderateevents", 1, "Can moderate calendar events", array("checked" => $mybb->input['canmoderateevents']))
+		$form->generate_check_box("canviewcalendar", 1, $lang->can_view_calendar, array("checked" => $mybb->input['canviewcalendar'])),
+		$form->generate_check_box("canaddevents", 1, $lang->can_post_events, array("checked" => $mybb->input['canaddevents'])),
+		$form->generate_check_box("canbypasseventmod", 1, $lang->can_bypass_event_moderation, array("checked" => $mybb->input['canbypasseventmod'])),
+		$form->generate_check_box("canmoderateevents", 1, $lang->can_moderate_events, array("checked" => $mybb->input['canmoderateevents']))
 	);
-	$form_container->output_row("Calendar", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $calendar_options)."</div>");
+	$form_container->output_row($lang->calendar, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $calendar_options)."</div>");
 
 	$wol_options = array(
-		$form->generate_check_box("canviewonline", 1, "Can view who's online", array("checked" => $mybb->input['canviewonline'])),
-		$form->generate_check_box("canviewwolinvis", 1, "Can view invisible users", array("checked" => $mybb->input['canviewwolinvis'])),
-		$form->generate_check_box("canviewonlineips", 1, "Can view IP addresses on who's online", array("checked" => $mybb->input['canviewonlineips']))
+		$form->generate_check_box("canviewonline", 1, $lang->can_view_whos_online, array("checked" => $mybb->input['canviewonline'])),
+		$form->generate_check_box("canviewwolinvis", 1, $lang->can_view_invisible, array("checked" => $mybb->input['canviewwolinvis'])),
+		$form->generate_check_box("canviewonlineips", 1, $lang->can_view_ips, array("checked" => $mybb->input['canviewonlineips']))
 	);
-	$form_container->output_row("Who's Online", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $wol_options)."</div>");
+	$form_container->output_row($lang->whos_online, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $wol_options)."</div>");
 
 	$misc_options = array(
-		$form->generate_check_box("canviewmemberlist", 1, "Can view member list", array("checked" => $mybb->input['canviewonline'])),
-		$form->generate_check_box("cansendemail", 1, "Can send threads to friends and email users", array("checked" => $mybb->input['canviewwolinvis'])),
-		"Maximum Emails Per Day:<br /><small>The maximum number of emails users can send using the 'Email User' and 'Send Thread to Friend' features.</small><br />".$form->generate_text_box('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50'))
+		$form->generate_check_box("canviewmemberlist", 1, $lang->can_view_member_list, array("checked" => $mybb->input['canviewonline'])),
+		$form->generate_check_box("cansendemail", 1, $lang->can_email_users, array("checked" => $mybb->input['canviewwolinvis'])),
+		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_text_box('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50'))
 	);
-	$form_container->output_row("Miscellaneous", "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $misc_options)."</div>");
+	$form_container->output_row($lang->misc, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $misc_options)."</div>");
 
 	$form_container->end();
 	echo "</div>";
 	
-	$buttons[] = $form->generate_submit_button("Save User Group");
+	$buttons[] = $form->generate_submit_button($lang->save_user_group);
 	$form->output_submit_wrapper($buttons);
 
 	$form->end();
@@ -1110,7 +1111,7 @@ if($mybb->input['action'] == "disporder" && $mybb->_request_method == "post")
 	
 	$plugins->run_hooks("admin_user_groups_disporder_commit");
 
-	flash_message("The user group display orders have been updated successfully.", 'success');
+	flash_message($lang->success_group_disporders_updated, 'success');
 	admin_redirect("index.php?module=user/groups");
 }
 
@@ -1240,7 +1241,7 @@ if(!$mybb->input['action'])
 		{
 			$popup->add_item($lang->moderate_join_requests, "index.php?module=user/groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
 		}
-		$popup->add_item("Group Leaders", "index.php?module=user/groups&amp;action=leaders&amp;gid={$usergroup['gid']}");
+		$popup->add_item($lang->group_leaders, "index.php?module=user/groups&amp;action=leaders&amp;gid={$usergroup['gid']}");
 		if($usergroup['type'] > 1)
 		{
 			$popup->add_item($lang->delete_group, "index.php?module=user/groups&amp;action=delete&amp;gid={$usergroup['gid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_deletion}')");

@@ -61,11 +61,12 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 			$db->insert_query("templates", $newtemp);
 		}
 	}
+	
 	if(is_array($update))
 	{
 		foreach($update as $template)
 		{
-			$updatetemp = array("template" => $db->escape_string($template['template']));
+			$updatetemp = array("template" => $db->escape_string($template['template']), "time" => TIME_NOW);
 			$db->update_query("templates", $updatetemp, "tid='".$template['tid']."'");
 		}
 	}

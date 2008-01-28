@@ -17,6 +17,7 @@ $l['add_set_desc'] = "Here you can add a new template set.";
 $l['add_template'] = "Add Template";
 $l['add_template_desc'] = "Here you can add a new template.";
 $l['search_replace'] = "Search/Replace";
+$l['search_replace_desc'] = "This tool will allow you to search for template titles or templates that contain certain text, and optionally replace it with another text automatically.";
 $l['find_updated'] = "Find Updated Templates";
 $l['find_updated_desc'] = "Allows you to find changed templated in new versions of MyBB so you can properly apply the changes.";
 $l['edit_template'] = "Edit Template";
@@ -30,6 +31,23 @@ $l['diff_report_desc'] = "Performs a difference analysis between the templates a
 
 $l['title'] = "Title";
 $l['save'] = "Save";
+$l['search_for'] = "Search For";
+$l['replace_with'] = "Replace With (Optional)";
+$l['reset'] = "Reset";
+$l['find_templates'] = "Find Templates";
+$l['find_and_replace'] = "Find and Replace";
+$l['search_template_names'] = "Search Template Titles";
+
+$l['search_noneset'] = "You did not enter a search string.";
+$l['search_results'] = "Template Search Results";
+$l['search_header'] = "Searching For \"{1}\" in {2}";
+$l['search_updated'] = "Updated {1}";
+$l['search_found'] = "Found in {1}";
+$l['search_created_custom'] = "Created custom template for {1}";
+$l['search_edit'] = "edit";
+$l['search_change_original'] = "change original";
+$l['search_noresults'] = "No templates were found containing the string '<strong>{1}</strong>'";
+$l['default_templates'] = "Default Templates";
 
 $l['edit_template_breadcrumb'] = "Edit Template: ";
 
@@ -102,6 +120,7 @@ $l['templates_the_same'] = "The two templates you've selected are both the same 
 $l['master_updated_ins'] = "Changes that have been made between your previous version and this one are highlighted like this.";
 $l['master_updated_del'] = "Any customisations you've made to your templates (the old ones) are highlighted like this.";
 $l['template_diff_analysis'] = "Template Difference Analysis";
+$l['search_names_header'] = "Searching template names containing \"{1}\"";
 
 $l['updated_template_welcome1'] = "Edit - Allows you to edit the current template for this template set to incorporate updates made between the versions.";
 $l['updated_template_welcome2'] = "Revert - Will revert the customised template back to the master revision, however you'll lose any custom changes you have made.";
