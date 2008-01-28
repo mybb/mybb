@@ -890,7 +890,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$attachment['size'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
-			if($forum['allowmycode'] != 0)
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}

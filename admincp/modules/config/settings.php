@@ -1175,7 +1175,7 @@ if(!$mybb->input['action'])
 	}
 	while($group = $db->fetch_array($query))
 	{
-		$table->construct_cell("<strong><a href=\"index.php?module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} {$lang->settings})<br /><small>{$group['description']}</small>");
+		$table->construct_cell("<strong><a href=\"index.php?module=config/settings&amp;action=change&amp;gid={$group['gid']}\">{$group['title']}</a></strong> ({$group['settingcount']} {$lang->bbsettings})<br /><small>{$group['description']}</small>");
 		$table->construct_row();
 	}
 	$table->output("<span style=\"float: right;\"><small><a href=\"index.php?module=config/settings&amp;action=change\">{$lang->show_all_settings}</a></small></span>{$lang->board_settings}");

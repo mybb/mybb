@@ -3432,11 +3432,11 @@ ul.thread_tools li.subscription_remove {
 	// -->
 	</script>
 	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
-<td class="trow1" valign="top"><textarea name="to" id="to" rows="1" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
+<td class="trow1" valign="top"><textarea name="to" id="to" rows="2" cols="38" tabindex="1">{$to}</textarea>{$max_recipients}</td>
 </tr>
 <tr id="bcc_area">
 <td class="trow2" valign="top"><strong>{$lang->compose_bcc}</strong>{$buddy_select_bcc}</td>
-<td class="trow2"><textarea name="bcc" id="bcc" rows="1" cols="38" tabindex="1">{$bcc}</textarea></td>
+<td class="trow2"><textarea name="bcc" id="bcc" rows="2" cols="38" tabindex="1">{$bcc}</textarea></td>
 </tr>
 <tr>
 <td class="trow1"><strong>{$lang->compose_subject}</strong></td>
@@ -4112,8 +4112,8 @@ body {
 </table>
 </body>]]></template>
 		<template name="private_messagebit" version="128"><![CDATA[<tr>
-<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
-<td align="center" class="trow2" width="5%">{$icon}</td>
+<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/{$msgfolder}" alt="{$msgalt}" title="{$msgalt}" /></td>
+<td align="center" class="trow2" width="1%">{$icon}</td>
 <td class="trow1" width="35%">{$msgprefix}<a href="private.php?action=read&amp;pmid={$message['pmid']}">{$message['subject']}</a>{$msgsuffix}{$denyreceipt}</td>
 <td align="center" class="trow2">{$tofromusername}</td>
 <td class="trow1" align="right" style="white-space: nowrap"><span class="smalltext">{$senddate} {$sendtime}</span></td>
@@ -4202,7 +4202,7 @@ body {
 <td class="thead" colspan="5"><strong>{$lang->member_list}</strong></td>
 </tr>
 <tr>
-<td class="tcat" width="5%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
+<td class="tcat" width="1%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
 <td class="tcat"><span class="smalltext"><strong>{$lang->username}</strong></span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->joined}</strong></span></td>
 <td class="tcat" width="15%" align="center"><span class="smalltext"><strong>{$lang->lastvisit}</strong></span></td>
@@ -4397,7 +4397,7 @@ body {
 <td class="tcat" align="center" colspan="3"><span class="smalltext"><strong>{$lang->message_title}</strong></span></td>
 <td class="tcat" align="center" width="30%" style="white-space: nowrap"><span class="smalltext"><strong>{$sender}</strong></span></td>
 <td class="tcat" align="right"  width="20%" style="white-space: nowrap"><span class="smalltext"><strong>{$lang->date_sent}</strong></span></td>
-<td class="tcat" align="center" width="5%" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="Check All" /></span></td>
+<td class="tcat" align="center" width="1%" style="white-space: nowrap"><span class="smalltext"><input name="allbox" title="Select All" type="checkbox" class="checkbox checkall" value="Check All" /></span></td>
 </tr>
 {$messagelist}
 <tr>
@@ -5977,14 +5977,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 ]]></template>
 		<template name="index_birthdays_birthday" version="1400"><![CDATA[{$comma}{$bdayuser['profilelink']}{$age}]]></template>
 		<template name="private_tracking_readmessage" version="1400"><![CDATA[<tr>
-<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
+<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/old_pm.gif" alt="" /></td>
 <td class="trow2">{$readmessage['subject']}</td>
 <td class="trow1" align="center">{$readmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$readdate}<br />{$readtime}</span></td>
 <td class="trow1"><input type="checkbox" class="checkbox" name="readcheck[{$readmessage['pmid']}]" value="1" /></td>
 </tr>]]></template>
 		<template name="private_tracking_unreadmessage" version="1400"><![CDATA[<tr>
-<td align="center" class="trow1" width="5%"><img src="{$theme['imgdir']}/new_pm.gif" alt="" /></td>
+<td align="center" class="trow1" width="1%"><img src="{$theme['imgdir']}/new_pm.gif" alt="" /></td>
 <td class="trow2">{$unreadmessage['subject']}</td>
 <td class="trow1" align="center">{$unreadmessage['profilelink']}</td>
 <td class="trow2" align="right"><span class="smalltext">{$senddate}<br />{$sendtime}</span></td>
@@ -6169,17 +6169,17 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="3"><strong>{$lang->change_avatar}</strong></td>
 </tr>
 <tr>
-<td align="center" class="trow1" width="5%"><input type="radio" class="radio" name="avatar" value="url"{$checked['url']} /></td>
+<td align="center" class="trow1" width="1%"><input type="radio" class="radio" name="avatar" value="url"{$checked['url']} /></td>
 <td class="trow1" width="40%"><strong>{$lang->avatar_url}</strong><br /><span class="smalltext">{$lang->avatar_url_note}</span></td>
 <td class="trow1" width="55%"><input type="text" class="textbox" name="avatarurl" size="25" maxlength="100" value="{$avatarurl}" /></td>
 </tr>
 <tr>
-<td align="center" class="trow2" width="5%"><input type="radio" class="radio" name="avatar" value="upload"{$checked['upload']} /></td>
+<td align="center" class="trow2" width="1%"><input type="radio" class="radio" name="avatar" value="upload"{$checked['upload']} /></td>
 <td class="trow2" width="40%"><strong>{$lang->avatar_upload}</strong><br /><span class="smalltext">{$lang->avatar_upload_note}</span></td>
 <td class="trow2" width="55%"><input type="file" name="avatarupload" size="25" value="" />{$uploadedmsg}</td>
 </tr>
 <tr>
-<td align="center" class="trow1" width="5%"><input type="radio" class="radio" name="avatar" value="list"{$checked['list']} /></td>
+<td align="center" class="trow1" width="1%"><input type="radio" class="radio" name="avatar" value="list"{$checked['list']} /></td>
 <td class="trow1" width="40%"><strong>{$lang->avatar_list}</strong><br /><span class="smalltext">{$lang->avatar_list_note}</span></td>
 <td class="trow1" width="55%">
 <table border="0" cellspacing="0" cellpadding="0" width="100%">
@@ -6197,7 +6197,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>
 <tr>
-<td align="center" class="trow2" width="5%"><input type="radio" class="radio" name="avatar" value="none"{$checked['none']} /></td>
+<td align="center" class="trow2" width="1%"><input type="radio" class="radio" name="avatar" value="none"{$checked['none']} /></td>
 <td colspan="2" class="trow2" width="95%"><strong>{$lang->no_avatar}</strong><br /><span class="smalltext">{$lang->no_avatar_note}</span></td>
 </tr>
 </table>
@@ -6374,7 +6374,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->posted_by} {$post['username']} - {$postdate} {$posttime}</strong></span></td>
 </tr>
 <tr>
-<td class="{$altbg}" valign="top" align="center" width="5%"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="1" /></td>
+<td class="{$altbg}" valign="top" align="center" width="1%"><input type="checkbox" class="checkbox" name="splitpost[{$post['pid']}]" value="1" /></td>
 <td class="{$altbg}">{$message}</td>
 </tr>]]></template>
 		<template name="newreply_threadreview_more" version="120"><![CDATA[<tr>
@@ -6785,11 +6785,11 @@ To: {$to_recipients}
 <td><input type="text" class="textbox" name="options[{$i}]" value="{$option}" size="25" /></td>
 </tr>]]></template>
 		<template name="showthread_poll_option_multiple" version="120"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="checkbox" class="checkbox" name="option[{$number}]" id="option[{$number}]" value="1" /></td>
+<td class="trow1" width="1%"><input type="checkbox" class="checkbox" name="option[{$number}]" id="option[{$number}]" value="1" /></td>
 <td class="trow2" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="showthread_poll_option" version="120"><![CDATA[<tr>
-<td class="trow1" width="5%"><input type="radio" class="radio" name="option" id="option" value="{$number}" /></td>
+<td class="trow1" width="1%"><input type="radio" class="radio" name="option" id="option" value="{$number}" /></td>
 <td class="trow1" colspan="3">{$option}</td>
 </tr>]]></template>
 		<template name="member_activate" version="120"><![CDATA[<html>
@@ -10001,7 +10001,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						<td class="tcat" width="20%" align="center"><strong>{$lang->date_issued}</strong></td>
 						<td class="tcat" width="20%" align="center"><strong>{$lang->expires}</strong></td>
 						<td class="tcat" width="15%"><strong>{$lang->issued_by}</strong></td>
-						<td class="tcat" width="5%" align="center"><strong>{$lang->details}</strong></td>
+						<td class="tcat" width="1%" align="center"><strong>{$lang->details}</strong></td>
 					</tr>
 					{$warning_list}
 				</table>

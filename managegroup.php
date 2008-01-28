@@ -208,7 +208,7 @@ else
 		error($lang->group_no_members);
 	}*/
 	$perpage = $mybb->settings['membersperpage'];
-	if($page)
+	if($page && $page > 0)
 	{
 		$start = ($page-1) *$perpage;
 	}

@@ -189,7 +189,7 @@ else
 	$num_users = $db->fetch_field($query, "users");
 
 	$page = intval($mybb->input['page']);
-	if($page)
+	if($page && $page > 0)
 	{
 		$start = ($page - 1) * $per_page;
 	}

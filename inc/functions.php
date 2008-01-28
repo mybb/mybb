@@ -2148,21 +2148,6 @@ function build_mycode_inserter($bind="message")
 			"editor_size_large",
 			"editor_size_x_large",
 			"editor_size_xx_large",
-			"editor_color_white",
-			"editor_color_black",
-			"editor_color_red",
-			"editor_color_yellow",
-			"editor_color_pink",
-			"editor_color_green",
-			"editor_color_orange",
-			"editor_color_purple",
-			"editor_color_blue",
-			"editor_color_beige",
-			"editor_color_brown",
-			"editor_color_teal",
-			"editor_color_navy",
-			"editor_color_maroon",
-			"editor_color_limegreen",
 			"editor_font",
 			"editor_size",
 			"editor_color"
@@ -2594,9 +2579,10 @@ function get_attachment_icon($ext)
 /**
  * Get a list of the unviewable forums for the current user
  *
+ * @param boolean Set to true to only fetch those forums for which users can actually read a thread in.
  * @return string Comma separated values list of the forum IDs which the user cannot view
  */
-function get_unviewable_forums()
+function get_unviewable_forums($only_readable_threads=false)
 {
 	global $db, $forum_cache, $permissioncache, $mybb, $unviewableforums, $unviewable, $templates, $forumpass;
 
@@ -2638,7 +2624,7 @@ function get_unviewable_forums()
 			}
 		}
 
-		if($perms['canview'] == 0 || $pwverified == 0)
+		if($perms['canview'] == 0 || $pwverified == 0 || ($only_readable_threads == true && $perms['canviewthreads'] == 0))
 		{
 			if($unviewableforums)
 			{
@@ -4516,6 +4502,16 @@ function build_highlight_array($terms)
 {
 	$terms = htmlspecialchars_uni($terms);
 
+	// Strip out any characters that shouldn't be included
+	$bad_characters = array(
+		"(",
+		")",
+		"+",
+		"-",
+		"~"
+	);
+	$terms = str_replace($bad_characters, '', $terms);
+
 	// Check if this is a "series of words" - should be treated as an EXACT match
 	if(my_strpos($terms, "\"") !== false)
 	{
@@ -4576,15 +4572,10 @@ function build_highlight_array($terms)
 	// Loop through our words to build the PREG compatible strings
 	foreach($words as $word)
 	{
-		$word = my_strtolower($word);
+		$word = trim($word);
 
-		// Strip off any search weight modifiers
-		$modifier = substr($word, 0, 1);
-		if($modifier == "+" || $modifier == "-")
-		{
-			$word = substr($word, 1);
-		}
-		
+		$word = my_strtolower($word);
+	
 		// Special boolean operators should be stripped
 		if($word == "" || $word == "or" || $word == "not" || $word == "and")
 		{
@@ -4592,8 +4583,8 @@ function build_highlight_array($terms)
 		}
 
 		// Now make PREG compatible
-		$find = "#(>[^<]*)".preg_quote($word, "#")."#i";
-		$replacement = "$1$2<span class=\"highlight\">".$word."</span>";
+		$find = "#(^|>)([^<]*)(".preg_quote($word, "#").")#i";
+		$replacement = "$1$2<span class=\"highlight\">$3</span>";
 		$highlight_cache[$find] = $replacement;
 	}
 

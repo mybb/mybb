@@ -20,7 +20,7 @@ function config_meta()
 	global $page, $lang, $plugins;
 	
 	$sub_menu = array();
-	$sub_menu['10'] = array("id" => "settings", "title" => $lang->settings, "link" => "index.php?module=config/settings");
+	$sub_menu['10'] = array("id" => "settings", "title" => $lang->bbsettings, "link" => "index.php?module=config/settings");
 	$sub_menu['20'] = array("id" => "banning", "title" => $lang->banning, "link" => "index.php?module=config/banning");
 	$sub_menu['30'] = array("id" => "profile_fields", "title" => $lang->custom_profile_fields, "link" => "index.php?module=config/profile_fields");
 	$sub_menu['40'] = array("id" => "smilies", "title" => $lang->smilies, "link" => "index.php?module=config/smilies");

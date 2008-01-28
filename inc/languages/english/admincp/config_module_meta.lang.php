@@ -8,7 +8,7 @@
  
 $l['configuration'] = "Configuration";
 
-$l['settings'] = "Settings";
+$l['bbsettings'] = "Settings";
 $l['banning'] = "Banning";
 $l['custom_profile_fields'] = "Custom Profile Fields";
 $l['smilies'] = "Smilies";

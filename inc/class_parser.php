@@ -383,20 +383,21 @@ class postParser
 
 		// Impose a hard limit of 500 smilies per message as to not overload the parser
 		$remaining = 500;
-		
+
 		if(is_array($this->smilies_cache))
 		{
 			foreach($this->smilies_cache as $find => $replace)
 			{
+				$find = $this->parse_html($find);
 				if(version_compare(PHP_VERSION, "5.1.0", ">="))
 				{
-					$message = preg_replace('#([^<])(?<!"|&amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining, $replacements);
+					$message = preg_replace("#(?<=[^\w&;/\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
 					$remaining -= $replacements;
 					if($remaining <= 0) break; // Reached the limit
 				}
 				else
 				{
-					$message = preg_replace('#([^<])(?<!"|&amp|&quot|&lt|&gt|&\#[0-9]{1}|&\#[0-9]{2}|&\#[0-9]{3}|&\#[0-9]{4})'.preg_quote($find, "#")."#is", "$1".$replace, $message, $remaining);
+					$message = preg_replace("#(?<=[^\w&;/\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining);
 				}
 			}
 		}

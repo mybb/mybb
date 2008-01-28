@@ -387,7 +387,12 @@ Object.extend(String.prototype, {
     var matchAll = new RegExp(Prototype.ScriptFragment, 'img');
     var matchOne = new RegExp(Prototype.ScriptFragment, 'im');
     return (this.match(matchAll) || []).map(function(scriptTag) {
-      return (scriptTag.match(matchOne) || ['', ''])[1];
+		script = scriptTag.match(matchOne) || ['', ''];
+		script = script[1];
+		// Fix for Norton Firewall which adds dodgy JS in to pages
+		script = script.replace(/^\s*<!--/im, '// <!---');
+		script = script.replace(/^\s*-->/im, '// -->');
+		return script;
     });
   },
 

@@ -145,11 +145,13 @@ class PMDataHandler extends DataHandler
 
 		$pm = &$this->data;
 
+		$recipients = array();
+
 		$invalid_recipients = array();
 		// We have our recipient usernames but need to fetch user IDs
 		if(array_key_exists("to", $pm))
 		{
-			if(count($pm['to']) <= 0)
+			if((count($pm['to']) <= 0 || trim(implode("", $pm['to'])) == "") && !$pm['saveasdraft'])
 			{
 				$this->set_error("no_recipients");
 				return false;
@@ -221,7 +223,7 @@ class PMDataHandler extends DataHandler
 		}
 
 		// If we have one or more invalid recipients and we're not saving a draft, error
-		if(count($invalid_recipients) > 0 || !is_array($recipients))
+		if(count($invalid_recipients) > 0)
 		{
 			$invalid_recipients = implode(", ", $invalid_recipients);
 			$this->set_error("invalid_recipients", array($invalid_recipients));
@@ -425,17 +427,22 @@ class PMDataHandler extends DataHandler
 
 		$uid = 0;
 
-		// Build recipient list
-		foreach($pm['recipients'] as $recipient)
-		{
-			if($recipient['bcc'])
+		if(!is_array($pm['recipients'])) {
+			$recipient_list = array();
+		}
+		else {
+			// Build recipient list
+			foreach($pm['recipients'] as $recipient)
 			{
-				$recipient_list['bcc'][] = $recipient['uid'];
-			}
-			else
-			{
-				$recipient_list['to'][] = $recipient['uid'];
-				$uid = $recipient['uid'];
+				if($recipient['bcc'])
+				{
+					$recipient_list['bcc'][] = $recipient['uid'];
+				}
+				else
+				{
+					$recipient_list['to'][] = $recipient['uid'];
+					$uid = $recipient['uid'];
+				}
 			}
 		}
 		$recipient_list = serialize($recipient_list);
@@ -574,6 +581,7 @@ class PMDataHandler extends DataHandler
 			}
 			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
 			$this->pm_insert_data['folder'] = 2;
+			$this->pm_insert_data['status'] = 1;
 			$this->pm_insert_data['receipt'] = 0;
 
 			$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);

@@ -86,7 +86,17 @@ class MyBB {
 	 * @var array
 	 */
 	var $clean_variables = array(
-		"int" => array("tid", "pid", "uid", "eid", "pmid", "fid", "aid", "rid")
+		"int" => array(
+			"tid", "pid", "uid",
+			"eid", "pmid", "fid",
+			"aid", "rid", "sid",
+			"vid", "cid", "bid",
+			"pid", "gid", "mid",
+			"wid", "lid", "iid",
+			"sid"),
+		"a-z" => array(
+			"sortby", "order"
+		)
 	);
 	
 	/**
@@ -272,10 +282,15 @@ class MyBB {
 				{
 					continue;
 				}
-				
-				if($type == "int" && isset($this->input[$var]) && $this->input[$var] != "lastposter")
-				{
-					$this->input[$var] = intval($this->input[$var]);
+
+				if(isset($this->input[$var])) {
+					if($type == "int" && $this->input[$var] != "lastposter")
+					{
+						$this->input[$var] = intval($this->input[$var]);
+					}
+					else if($type == "a-z") {
+						$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
+					}
 				}
 			}
 		}

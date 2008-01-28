@@ -230,4 +230,4 @@ var inlineModeration = {
 		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 	}
 };
-Event.observe(window, "dom:loaded", inlineModeration.init);
+Event.observe(document, "dom:loaded", inlineModeration.init);

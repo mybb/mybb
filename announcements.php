@@ -44,19 +44,18 @@ if($fid > 0)
 
 	// Make navigation
 	build_forum_breadcrumb($forum['fid']);
+
+	// Permissions
+	$forumpermissions = forum_permissions($forum['fid']);
+
+	if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+	{
+		error_no_permission();
+	}
 }
 add_breadcrumb($lang->nav_announcements);
 
 $archive_url = build_archive_link("announcement", $aid);
-
-// Permissions
-$forumpermissions = forum_permissions($forum['fid']);
-$parentlist = $forum['parentlist'];
-
-if(($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0) && $announcement['fid'] > 0)
-{
-	error_no_permission();
-}
 
 // Get announcement info
 $time = TIME_NOW;

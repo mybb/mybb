@@ -872,7 +872,7 @@ if(!$mybb->input['action'])
 
 	$pages = ceil($warning_count/$perpage);
 
-	if($page > $pages)
+	if($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}

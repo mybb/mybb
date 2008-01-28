@@ -74,11 +74,8 @@ if($mybb->input['action'] == "do_reports")
 	{
 		error($lang->error_noselected_reports);
 	}
-	
-	foreach($mybb->input['reports'] as $rid)
-	{
-		$reports[] = intval($rid);
-	}
+
+	array_walk($mybb->input['reports'], "intval");
 	$rids = implode($reports, "','");
 	$rids = "'0','{$rids}'";
 
@@ -108,6 +105,8 @@ if($mybb->input['action'] == "reports")
 	$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "reportstatus ='0'");
 	$report_count = $db->fetch_field($query, "count");
 
+	$mybb->input['rid'] = intval($mybb->input['rid']);
+
 	if($mybb->input['rid'])
 	{
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
@@ -130,12 +129,12 @@ if($mybb->input['action'] == "reports")
 		$page = $pages;
 	}
 
-	if($page > $pages)
+	if($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
 
-	if($page)
+	if($page && $page > 0)
 	{
 		$start = ($page-1) * $perpage;
 	}
@@ -218,6 +217,7 @@ if($mybb->input['action'] == "allreports")
 	
 	if($mybb->input['rid'])
 	{
+		$mybb->input['rid'] = intval($mybb->input['rid']);
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
 		$result = $db->fetch_field($query, "count");
 		if(($result % $perpage) == 0)
@@ -238,7 +238,7 @@ if($mybb->input['action'] == "allreports")
 		$page = $pages;
 	}
 
-	if($page > $pages)
+	if($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
@@ -391,7 +391,7 @@ if($mybb->input['action'] == "modlogs")
 		$page = $pages;
 	}
 
-	if($page > $pages)
+	if($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
@@ -1127,7 +1127,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = $pages;
 		}
 
-		if($page > $pages)
+		if($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
@@ -1210,7 +1210,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = $pages;
 		}
 
-		if($page > $pages)
+		if($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
@@ -1292,7 +1292,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = $pages;
 		}
 
-		if($page > $pages)
+		if($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
@@ -1761,7 +1761,8 @@ if($mybb->input['action'] == "finduser")
 	{
 		$page = $pages;
 	}
-	if($page > $pages)
+
+	if($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}
@@ -2077,7 +2078,7 @@ if($mybb->input['action'] == "ipsearch")
 			$page = $pages;
 		}
 	
-		if($page > $pages)
+		if($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}
@@ -2227,7 +2228,7 @@ if($mybb->input['action'] == "banning")
 		$page = $pages;
 	}
 
-	if($page > $pages)
+	if($page > $pages || $page <= 0)
 	{
 		$page = 1;
 	}

@@ -25,6 +25,10 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
 
 		$openthread = array(
@@ -50,6 +54,10 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
 
 		$closethread = array(
@@ -74,6 +82,10 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
 
 		$stickthread = array(
@@ -98,6 +110,10 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
 
 		$unstickthread = array(
@@ -119,6 +135,7 @@ class Moderation
 		global $db;
 
 		// Delete the redirects
+		$tid = intval($tid);
 		$db->delete_query("threads", "closed='moved|$tid'");
 
 		return true;
@@ -134,6 +151,7 @@ class Moderation
 	{
 		global $db, $cache, $plugins;
 
+		$tid = intval($tid);
 		$thread = get_thread($tid);
 		
 		$userposts = array();
@@ -252,6 +270,7 @@ class Moderation
 	{
 		global $db;
 
+		$pid = intval($pid);
 		$db->delete_query("polls", "pid='$pid'");
 		$db->delete_query("pollvotes", "pid='$pid'");
 		$pollarray = array(
@@ -276,7 +295,10 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
-		
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		foreach($tids as $tid)
 		{
 			$thread = get_thread($tid);
@@ -346,6 +368,10 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
 		
 		foreach($tids as $tid)
@@ -406,6 +432,7 @@ class Moderation
 		global $db, $cache, $plugins;
 
 		// Get pid, uid, fid, tid, visibility, forum post count status of post
+		$pid = intval($pid);
 		$query = $db->query("
 			SELECT p.pid, p.uid, p.fid, p.tid, p.visible, f.usepostcounts
 			FROM ".TABLE_PREFIX."posts p
@@ -466,7 +493,13 @@ class Moderation
 	{
 		global $db;
 
+
+		// Make sure we only have valid values
+		array_walk($pids, "intval");
+		$tid = intval($tid);
+
 		$pidin = implode(",", $pids);
+
 		$first = 1;
 		// Get the messages to be merged
 		$query = $db->query("
@@ -562,6 +595,10 @@ class Moderation
 		global $db, $plugins;
 
 		// Get thread info
+		$tid = intval($tid);
+		$new_fid = intval($new_fid);
+		$redirect_expire = intval($redirect_expire);
+
 		$thread = get_thread($tid);
 		$newforum = get_forum($new_fid);
 		$fid = $thread['fid'];
@@ -940,12 +977,11 @@ class Moderation
 	{
 		global $db, $thread;
 
-		if(!isset($thread['tid']) || $thread['tid'] != $tid)
-		{
-			$tid = intval($tid);
-			$query = $db->simple_select("threads", "*", "tid='".intval($tid)."'");
-			$thread = $db->fetch_array($query);
-		}
+		$tid = intval($tid);
+		$moveto = intval($moveto);
+		$destination_tid = intval($destination_tid);
+
+		$thread = get_thread($tid);
 
 		// Create the new thread
 		$newsubject = $db->escape_string($newsubject);
@@ -967,6 +1003,10 @@ class Moderation
 
 
 		// move the selected posts over
+
+		// Make sure we only have valid values
+		array_walk($pids, "intval");
+
 		$pids_list = implode(",", $pids);
 		$sqlarray = array(
 			"tid" => $newtid,
@@ -1115,7 +1155,12 @@ class Moderation
 	{
 		global $db;
 
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
+
+		$moveto = intval($moveto);
 		
 		$newforum = get_forum($moveto);
 		
@@ -1222,6 +1267,10 @@ class Moderation
 		global $db, $cache;
 
 		$num_posts = 0;
+
+		// Make sure we only have valid values
+		array_walk($pids, "intval");
+
 		$pid_list = implode(",", $pids);
 		$pids = array();
 
@@ -1315,6 +1364,12 @@ class Moderation
 	function unapprove_posts($pids, $tid, $fid)
 	{
 		global $db, $cache;
+
+
+		// Make sure we only have valid values
+		array_walk($pids, "intval");
+		$tid = intval($tid);
+		$fid = intval($fid);
 
 		$pid_list = implode(",", $pids);
 		$pids = array();
@@ -1415,6 +1470,11 @@ class Moderation
 		{
 			$tids = array(intval($tids));
 		}
+
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(",", $tids);
 
 		// Get original subject
@@ -1445,6 +1505,8 @@ class Moderation
 	{
 		global $db;
 
+		$tid = intval($tid);
+
 		$update_thread = array(
 			"deletetime" => intval($deletetime)
 		);
@@ -1464,6 +1526,13 @@ class Moderation
 	function toggle_post_visibility($pids, $tid, $fid)
 	{
 		global $db;
+
+
+		// Make sure we only have valid values
+		array_walk($pids, "intval");
+		$tid = intval($tid);
+		$fid = intval($fid);
+
 		$pid_list = implode(',', $pids);
 		$query = $db->simple_select("posts", 'pid, visible', "pid IN ($pid_list)");
 		while($post = $db->fetch_array($query))
@@ -1498,6 +1567,11 @@ class Moderation
 	function toggle_thread_visibility($tids, $fid)
 	{
 		global $db;
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+		$fid = intval($fid);
+
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, visible', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
@@ -1531,6 +1605,10 @@ class Moderation
 	function toggle_thread_status($tids)
 	{
 		global $db;
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
 		while($thread = $db->fetch_array($query))
@@ -1572,6 +1650,11 @@ class Moderation
 		{
 			$tids = array($tids);
 		}
+
+		// Make sure we only have valid values
+		array_walk($tids, "intval");
+		$fid = intval($fid);
+
 		$tids_csv = implode(',', $tids);
 		
 		// Delete only subscriptions from users who no longer have permission to read the thread.

@@ -49,23 +49,14 @@ else
 }
 
 // Get the forums the user is not allowed to see.
-$permissions = forum_permissions();
+$unviewableforums = get_unviewable_forums(true);
 $inactiveforums = get_inactive_forums();
 
+$unviewable = 0;
+
 // If there are any, add SQL to exclude them.
-if(is_array($permissions))
-{
-	foreach($permissions as $fid => $forum_permission)
-	{
-		if($forum_permission['canview'] == 0 || $forum_permission['canviewthreads'] == 0)
-		{
-			$unviewable[] = $fid;
-		}
-	}
-	if(is_array($unviewable))
-	{
-		$unviewable = "AND f.fid NOT IN (".implode(",", $unviewable).")";
-	}
+if($unviewableforums) {
+	$unviewable .= " AND f.fid NOT IN($unviewableforums)";
 }
 
 if($inactiveforums)

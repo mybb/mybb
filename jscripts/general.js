@@ -2,7 +2,7 @@ var MyBB = {
 	init: function()
 	{
 		this.detectBrowser();
-		Event.observe(window, "dom:loaded", MyBB.pageLoaded);
+		Event.observe(document, "dom:loaded", MyBB.pageLoaded);
 		return true;
 	},
 

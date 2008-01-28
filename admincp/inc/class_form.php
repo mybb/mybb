@@ -27,8 +27,9 @@ class DefaultForm
 	 * @param string The ID of the form.
 	 * @param boolean Should file uploads be allowed for this form?
 	 * @param boolean Should this form be returned instead of output to the browser?
+	 * @param boolean Should this form be returned instead of output to the browser?
 	 */
-	function __construct($script, $method, $id="", $allow_uploads=0)
+	function __construct($script, $method, $allow_uploads=0, $name="", $id="", $return=false)
 	{
 		global $mybb;
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";

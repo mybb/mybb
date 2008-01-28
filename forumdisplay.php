@@ -312,6 +312,7 @@ unset($rating);
 
 // Pick out some sorting options.
 // First, the date cut for the threads.
+$datecut = 0;
 if(!$mybb->input['datecut'])
 {
 	// If the user manually set a date cut, use it.
@@ -326,11 +327,6 @@ if(!$mybb->input['datecut'])
 		{
 			$datecut = $foruminfo['defaultdatecut'];
 		}
-		// Else set the date cut to 9999 days.
-		else
-		{
-			$datecut = 9999;
-		}
 	}
 }
 // If there was a manual date cut override, use it.
@@ -341,7 +337,7 @@ else
 
 $datecut = intval($datecut);
 $datecutsel[$datecut] = "selected=\"selected\"";
-if($datecut != 9999)
+if($datecut > 0)
 {
 	$checkdate = TIME_NOW - ($datecut * 86400);
 	$datecutsql = "AND (lastpost >= '$checkdate' OR sticky = '1')";
@@ -460,7 +456,7 @@ if(intval($mybb->input['page']) > 0)
 	$start = ($page-1) * $perpage;
 	$pages = $threadcount / $perpage;
 	$pages = ceil($pages);
-	if($page > $pages)
+	if($page > $pages || $page <= 0)
 	{
 		$start = 0;
 		$page = 1;
@@ -719,6 +715,8 @@ if(is_array($threadcache))
 	{
 		$plugins->run_hooks("forumdisplay_thread");
 
+		$moved = explode("|", $thread['closed']);
+
 		if($thread['visible'] == 0)
 		{
 			$bgcolor = "trow_shaded";
@@ -776,18 +774,23 @@ if(is_array($threadcache))
 		$rating = '';
 		if($foruminfo['allowtratings'] != 0)
 		{
-			$thread['averagerating'] = intval(round($thread['averagerating'], 2));
-			$thread['width'] = $thread['averagerating']*20;
-			$thread['numratings'] = intval($thread['numratings']);
-
-			$not_rated = '';
-			if(!$thread['rated'])
-			{
-				$not_rated = ' star_rating_notrated';
+			if($moved[0] == "moved") {
+				$rating = "<td class=\"{$bgcolor}\" style=\"text-align: center;\">-</td>";
 			}
+			else {
+				$thread['averagerating'] = intval(round($thread['averagerating'], 2));
+				$thread['width'] = $thread['averagerating']*20;
+				$thread['numratings'] = intval($thread['numratings']);
 
-			$ratingvotesav = sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
-			eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
+				$not_rated = '';
+				if(!$thread['rated'])
+				{
+					$not_rated = ' star_rating_notrated';
+				}
+
+				$ratingvotesav = sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
+				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
+			}
 		}
 
 		$thread['pages'] = 0;
@@ -856,8 +859,6 @@ if(is_array($threadcache))
 		{
 			$modbit = '';
 		}
-
-		$moved = explode("|", $thread['closed']);
 
 		if($moved[0] == "moved")
 		{

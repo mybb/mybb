@@ -302,7 +302,7 @@ if($mybb->input['action'] == "editmod")
 	
 	$sub_tabs['edit_mod'] = array(
 		'title' => $lang->edit_mod,
-		'link' => "index.php?module=forum/management&amp;action=editmod&amp;mid=".$mybb->input['uid'],
+		'link' => "index.php?module=forum/management&amp;action=editmod&amp;mid=".$mybb->input['mid'],
 		'description' => $lang->edit_mod_desc
 	);
 	

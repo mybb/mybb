@@ -39,7 +39,7 @@ function user_action_handler($action)
 	global $page, $lang, $plugins;
 	
 	$page->active_module = "user";
-	
+
 	$actions = array(
 		'group_promotions' => array('active' => 'group_promotions', 'file' => 'group_promotions.php'),
 		'admin_permissions' => array('active' => 'admin_permissions', 'file' => 'admin_permissions.php'),

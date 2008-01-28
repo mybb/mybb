@@ -98,4 +98,4 @@ var Post = {
 		document.input.attachmentact.value = action;
 	}
 };
-Event.observe(window, 'dom:loaded', Post.init);
+Event.observe(document, 'dom:loaded', Post.init);

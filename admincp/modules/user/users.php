@@ -913,6 +913,16 @@ if($mybb->input['action'] == "edit")
 		$warning_level = get_colored_warning_level($warning_level);
 	}
 
+
+	if($user['birthday'])
+	{
+		$age = get_age($user['birthday']);
+	}
+	else
+	{
+		$age = '';
+	}
+
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"{$user['avatar']}\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => 6, 'width' => 1));
 	$table->construct_cell("<strong>{$lang->email_address}:</strong> <a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>");
 	$table->construct_cell("<strong>{$lang->last_active}:</strong> {$last_active}");
@@ -2080,7 +2090,7 @@ function build_users_view($view)
 		{
 			if(this.value == '{$lang->search_for_user}')
 			{
-				this.removeClassName('search_default');
+				$(this).removeClassName('search_default');
 				this.value = '';
 			}
 		}
@@ -2088,7 +2098,7 @@ function build_users_view($view)
 		{
 			if(this.value == '')
 			{
-				this.addClassName('search_default');
+				$(this).addClassName('search_default');
 				this.value = '{$lang->search_for_user}';
 			}
 		}

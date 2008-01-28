@@ -683,7 +683,7 @@ if($mybb->input['action'] == "thread")
 			$page = $pages;
 		}
 
-		if($page > $pages)
+		if($page > $pages || $page <= 0)
 		{
 			$page = 1;
 		}

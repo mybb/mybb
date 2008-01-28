@@ -365,7 +365,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		{
 			$attachment['size'] = get_friendly_size($attachment['filesize']);
 			$attachment['icon'] = get_attachment_icon(get_extension($attachment['filename']));
-			if($forum['allowmycode'] != 0)
+			if($mybb->settings['bbcodeinserter'] != 0 && $forum['allowmycode'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
@@ -408,7 +408,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		}
 		$friendlyusage = get_friendly_size($usage['ausage']);
 		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
-		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount <= $mybb->settings['maxattachments']) && !$noshowattach)
+		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
 		}
