@@ -118,7 +118,6 @@ function akismet_install()
 		'akismetnumtillban',
 		'akismetfidsignore',
 		'akismetuidsignore',
-		'akismetcheckupdates',
 		'akismetuserstoignore'
 	)");
 	$db->delete_query("settinggroups", "name = 'akismet'");
@@ -205,17 +204,6 @@ function akismet_install()
 	);
 	$db->insert_query("settings", $insertarray);
 	
-	$insertarray = array(
-		'name' => 'akismetcheckupdates',
-		'title' => 'Check for Updates',
-		'description' => 'Automaticly check for updates for Akismet.',
-		'optionscode' => 'yesno',
-		'value' => 1,
-		'disporder' => 7,
-		'gid' => $group['gid']
-	);
-	$db->insert_query("settings", $insertarray);
-	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD akismetstopped int NOT NULL");
 	
 	$insertarray = array(
@@ -295,7 +283,6 @@ function akismet_uninstall()
 		'akismetnumtillban',
 		'akismetfidsignore',
 		'akismetuidsignore',
-		'akismetcheckupdates',
 		'akismetuserstoignore'
 	)");
 	$db->delete_query("settinggroups", "name = 'akismet'");

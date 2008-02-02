@@ -762,7 +762,7 @@ if($mybb->input['action'] == "manage")
 		{
 			$popup = new PopupMenu("group_{$group['gid']}", $lang->options);
 			$popup->add_item($lang->edit_setting_group, "index.php?module=config/settings&amp;action=editgroup&amp;gid={$group['gid']}");
-			$popup->add_item($lang->delete_setting_group, "index.php?module=config/settings&amp;action=deletegroup&amp;gid={$group['gid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_group_deletion}')");
+			$popup->add_item($lang->delete_setting_group, "index.php?module=config/settings&amp;action=deletegroup&amp;gid={$group['gid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_group_deletion}')");
 			$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
 		}
 		else
@@ -790,7 +790,7 @@ if($mybb->input['action'] == "manage")
 			{
 				$popup = new PopupMenu("setting_{$setting['sid']}", $lang->options);
 				$popup->add_item($lang->edit_setting, "index.php?module=config/settings&amp;action=edit&amp;sid={$setting['sid']}");
-				$popup->add_item($lang->delete_setting, "index.php?module=config/settings&amp;action=delete&amp;sid={$setting['sid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_deletion}')");
+				$popup->add_item($lang->delete_setting, "index.php?module=config/settings&amp;action=delete&amp;sid={$setting['sid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_deletion}')");
 				$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
 			}
 			else
