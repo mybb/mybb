@@ -214,6 +214,9 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	$plugins_cache['active'] = $active_plugins;
 	$cache->update("plugins", $plugins_cache);
 	
+	// Log admin action
+	log_admin_action($mybb->input['action'], $codename);
+	
 	if($mybb->input['action'] == "activate")
 	{
 		$plugins->run_hooks("admin_config_plugins_activate_commit");
@@ -222,9 +225,6 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	{
 		$plugins->run_hooks("admin_config_plugins_deactivate_commit");
 	}
-
-	// Log admin action
-	log_admin_action($mybb->input['action'], $codename);
 
 	flash_message($message, 'success');
 	admin_redirect("index.php?module=config/plugins");

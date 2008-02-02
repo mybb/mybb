@@ -66,7 +66,7 @@ function find_replace_templatesets($title, $find, $replace, $autocreate=1)
 	{
 		foreach($update as $template)
 		{
-			$updatetemp = array("template" => $db->escape_string($template['template']), "time" => TIME_NOW);
+			$updatetemp = array("template" => $db->escape_string($template['template']), "dateline" => TIME_NOW);
 			$db->update_query("templates", $updatetemp, "tid='".$template['tid']."'");
 		}
 	}

@@ -29,6 +29,8 @@ class Moderation
 		// Make sure we only have valid values
 		array_walk($tids, "intval");
 
+		$plugins->run_hooks("class_moderation_close_threads", $tids);
+		
 		$tid_list = implode(",", $tids);
 
 		$openthread = array(
@@ -57,7 +59,9 @@ class Moderation
 
 		// Make sure we only have valid values
 		array_walk($tids, "intval");
-
+		
+		$plugins->run_hooks("class_moderation_open_threads", $tids);
+		
 		$tid_list = implode(",", $tids);
 
 		$closethread = array(
@@ -85,6 +89,8 @@ class Moderation
 
 		// Make sure we only have valid values
 		array_walk($tids, "intval");
+		
+		$plugins->run_hooks("class_moderation_stick_threads", $tids);
 
 		$tid_list = implode(",", $tids);
 
@@ -113,6 +119,8 @@ class Moderation
 
 		// Make sure we only have valid values
 		array_walk($tids, "intval");
+		
+		$plugins->run_hooks("class_moderation_unstick_threads", $tids);
 
 		$tid_list = implode(",", $tids);
 
@@ -133,6 +141,8 @@ class Moderation
 	function remove_redirects($tid)
 	{
 		global $db;
+		
+		$plugins->run_hooks("class_moderation_remove_redirects", $tid);
 
 		// Delete the redirects
 		$tid = intval($tid);
@@ -254,8 +264,8 @@ class Moderation
 			// Update forum count
 			update_forum_counters($thread['fid'], $updated_counters);
 		}
-
-		$plugins->run_hooks("delete_thread", $tid);
+		
+		$plugins->run_hooks("class_moderation_delete_thread", $tid);
 
 		return true;
 	}
@@ -271,6 +281,9 @@ class Moderation
 		global $db;
 
 		$pid = intval($pid);
+		
+		$plugins->run_hooks("class_moderation_delete_poll", $pid);
+		
 		$db->delete_query("polls", "pid='$pid'");
 		$db->delete_query("pollvotes", "pid='$pid'");
 		$pollarray = array(
@@ -334,6 +347,8 @@ class Moderation
 			);
 			$db->update_query("threads", $approve, "tid IN ($tid_list)");
 			$db->update_query("posts", $approve, "pid IN (".implode(",", $posts_to_approve).")");
+			
+			$plugins->run_hooks("class_moderation_approve_threads", $tids);
 			
 			if(is_array($forum_counters))
 			{
@@ -403,6 +418,8 @@ class Moderation
 		$db->update_query("threads", $approve, "tid IN ($tid_list)");
 		$db->update_query("posts", $approve, "pid IN (".implode(",", $posts_to_unapprove).")");
 		
+		$plugins->run_hooks("class_moderation_unapprove_threads", $tids);
+		
 		if(is_array($forum_counters))
 		{
 			foreach($forum_counters as $fid => $counters)
@@ -461,7 +478,7 @@ class Moderation
 		{
 			$num_approved_posts++;
 		}
-		$plugins->run_hooks("delete_post", $post['pid']);
+		$plugins->run_hooks("class_moderation_delete_post", $post['pid']);
 
 		// Update stats
 		$update_array = array(
@@ -563,6 +580,8 @@ class Moderation
 		);
 		$db->update_query("posts", $mergepost2, "pid IN($pidin)");
 		$db->update_query("attachments", $mergepost2, "pid IN($pidin)");
+		
+		$plugins->run_hooks("class_moderation_merge_posts", array("pids" => $pids, "tid" => $tid));
 
 		// Update stats
 		$update_array = array(
@@ -608,7 +627,7 @@ class Moderation
 		switch($method)
 		{
 			case "redirect": // move (and leave redirect) thread
-				$plugins->run_hooks("moderation_do_move_redirect");
+				$plugins->run_hooks("class_moderation_move_thread_redirect", array("tid" => $tid, "new_fid" => $new_fid));
 	
 				if($thread['visible'] == 1)
 				{
@@ -692,7 +711,8 @@ class Moderation
 					$num_unapproved_posts = $thread['replies']+1;
 				}
 				
-				$plugins->run_hooks("moderation_do_move_copy");
+				$plugins->run_hooks("class_moderation_copy_thread", array("tid" => $tid, "new_fid" => $new_fid));
+				
 				$db->insert_query("threads", $threadarray);
 				$newtid = $db->insert_id();
 				
@@ -780,7 +800,7 @@ class Moderation
 				break;
 			default:
 			case "move": // plain move thread
-				$plugins->run_hooks("moderation_do_move_simple");
+				$plugins->run_hooks("class_moderation_move_simple", array("tid" => $tid, "new_fid" => $new_fid));
 
 				if($thread['visible'] == 1)
 				{
@@ -933,6 +953,8 @@ class Moderation
 		$db->update_query("threadsubscriptions", $sqlarray, "tid='{$mergetid}'");
 		update_first_post($tid);
 
+		$plugins->run_hooks("class_moderation_merge_threads", array("mergetid" => $tid, "tid" => $tid, "subject" => $subject));
+
 		$this->delete_thread($mergetid);
 
 		$updated_stats = array(
@@ -1084,6 +1106,8 @@ class Moderation
 			"replyto" => 0
 		);
 		$db->update_query("posts", $sqlarray, "pid='{$oldthread['pid']}'");
+		
+		$plugins->run_hooks("class_moderation_split_posts", array("pids" => $pids, "tid" => $tid, "moveto" => $moveto, "newsubject" => $newsubject, "destination_tid" => $destination_tid));
 
 		// Update old thread stats
 		$update_array = array(
@@ -1223,6 +1247,8 @@ class Moderation
 		);
 		$db->update_query("threads", $sqlarray, "tid IN ($tid_list)");
 		$db->update_query("posts", $sqlarray, "tid IN ($tid_list)");
+		
+		$plugins->run_hooks("class_moderation_move_threads", array("tids" => $tids, "moveto" => $moveto));
 
 		foreach($forum_counters as $fid => $counter)
 		{
@@ -1490,6 +1516,8 @@ class Moderation
 			$db->update_query("threads", $new_subject, "tid='{$thread['tid']}'", 1);
 			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
 		}
+		
+		$plugins->run_hooks("class_moderation_change_thread_subject", array("tids" => $tids, "format" => $format));
 	
 		return true;
 	}
@@ -1511,6 +1539,8 @@ class Moderation
 			"deletetime" => intval($deletetime)
 		);
 		$db->update_query("threads", $update_thread, "tid='{$tid}'");
+		
+		$plugins->run_hooks("class_moderation_expire_thread", array("tid" => $tid, "deletetime" => $deletetime));s
 
 		return true;
 	}
@@ -1706,6 +1736,8 @@ class Moderation
 		{
 			$db->delete_query("threadsubscriptions", "tid IN ({$tids_csv})");
 		}
+		
+		$plugins->run_hooks("class_moderation_remove_thread_subscriptions", array("tids" => $tids, "all" => $all, "fid" => $fid));
 		
 		return true;
 	}
