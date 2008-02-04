@@ -147,7 +147,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 	}
 }
 
-if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact'])) // Lets remove/approve/unapprove the attachment
+if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && is_moderator($fid, 'caneditposts') == 'yes') // Lets remove/approve/unapprove the attachment
 { 
 	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
 	if($mybb->input['attachmentact'] == "remove")
