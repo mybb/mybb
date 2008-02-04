@@ -141,7 +141,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_spiders_delete_commit");
 
 		// Log admin action
-		log_admin_action($mybb->input['name']);
+		log_admin_action($spider['sid'], $spider['name']);
 
 		flash_message($lang->success_bot_deleted, 'success');
 		admin_redirect("index.php?module=config/spiders");

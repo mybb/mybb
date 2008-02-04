@@ -420,7 +420,7 @@ if($mybb->input['action'] == "delete_level")
 		$plugins->run_hooks("admin_config_warning_delete_level_commit");
 
 		// Log admin action
-		log_admin_action($level['percentage']);
+		log_admin_action($level['lid'], $level['percentage']);
 
 		flash_message($lang->success_warning_level_deleted, 'success');
 		admin_redirect("index.php?module=config/warning");
@@ -631,7 +631,7 @@ if($mybb->input['action'] == "delete_type")
 		$plugins->run_hooks("admin_config_warning_delete_type_commit");
 
 		// Log admin action
-		log_admin_action($type['title']);
+		log_admin_action($type['tid'], $type['title']);
 
 		flash_message($lang->success_warning_type_deleted, 'success');
 		admin_redirect("index.php?module=config/warning");

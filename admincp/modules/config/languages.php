@@ -243,7 +243,7 @@ if($mybb->input['action'] == "edit")
 				$plugins->run_hooks("admin_config_languages_edit_commit");
 
 				// Log admin action
-				log_admin_action($editlang, $editfile);
+				log_admin_action($editlang, $editfile, $mybb->input['inadmin']);
 
 				flash_message($lang->success_langfile_updated, 'success');
 				admin_redirect("index.php?module=config/languages&action=edit&lang={$editlang}&editwith={$editwith}");
@@ -420,7 +420,7 @@ if($mybb->input['action'] == "edit")
 			foreach($adminfilenames as $key => $file)
 			{
 				$table->construct_cell("<strong>{$file}</strong>");
-				$table->construct_cell("<a href=\"index.php?module=config/languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$filename}&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "align_center"));
+				$table->construct_cell("<a href=\"index.php?module=config/languages&amp;action=edit&amp;lang={$editlang}&amp;editwith={$editwith}&amp;file={$config['admindir']}/{$file}&amp;inadmin=1\">{$lang->edit}</a>", array("class" => "align_center"));
 				$table->construct_row();
 			}
 			

@@ -20,7 +20,7 @@ $page->add_breadcrumb_item($lang->board_settings, "index.php?module=config/setti
 $plugins->run_hooks("admin_config_settings_begin");
 
 // Delete all duplicate settings and setting groups
-if($mybb->inpu['action'] == "delete_duplicates")
+if($mybb->input['action'] == "delete_duplicates")
 {
 	$query = $db->query("
 		DELETE s1
@@ -36,6 +36,9 @@ if($mybb->inpu['action'] == "delete_duplicates")
 	
 	$plugins->run_hooks("admin_config_settings_delete_duplicates_commit");
 	
+	// Log admin action
+	log_admin_action();
+
 	flash_message($lang->success_duplicate_settings_deleted, 'success');
 	admin_redirect("index.php?module=config/settings&action=manage");
 }
@@ -273,7 +276,7 @@ if($mybb->input['action'] == "deletegroup")
 		$plugins->run_hooks("admin_config_settings_deletegroup_commit");
 
 		// Log admin action
-		log_admin_action($group['name']);
+		log_admin_action($group['gid'], $group['name']);
 
 		flash_message($lang->success_setting_group_deleted, 'success');
 		admin_redirect("index.php?module=config/settings&action=manage");
@@ -650,7 +653,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_settings_delete_commit");
 
 		// Log admin action
-		log_admin_action($setting['title']);
+		log_admin_action($setting['sid'], $setting['title']);
 
 		flash_message($lang->success_setting_deleted, 'success');
 		admin_redirect("index.php?module=config/settings&action=manage");
@@ -772,32 +775,35 @@ if($mybb->input['action'] == "manage")
 		$table->construct_row(array('class' => 'alt_row', 'no_alt_row' => 1));
 		
 		// Make rows for each setting in the group
-		foreach($settings_cache[$group['gid']] as $setting)
+		if(is_array($settings_cache[$group['gid']]))
 		{
-			$setting_lang_var = "setting_group_{$group['name']}";
-			if($lang->$setting_lang_var)
+			foreach($settings_cache[$group['gid']] as $setting)
 			{
-				$group_title = htmlspecialchars_uni($lang->$setting_lang_var);
+				$setting_lang_var = "setting_group_{$group['name']}";
+				if($lang->$setting_lang_var)
+				{
+					$group_title = htmlspecialchars_uni($lang->$setting_lang_var);
+				}
+				else
+				{
+					$group_title = htmlspecialchars_uni($setting['title']);
+				}
+				$table->construct_cell($setting['title'], array('style' => 'padding-left: 40px;'));
+				$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
+				// Only show options if not a default setting group
+				if($group['isdefault'] != 1)
+				{
+					$popup = new PopupMenu("setting_{$setting['sid']}", $lang->options);
+					$popup->add_item($lang->edit_setting, "index.php?module=config/settings&amp;action=edit&amp;sid={$setting['sid']}");
+					$popup->add_item($lang->delete_setting, "index.php?module=config/settings&amp;action=delete&amp;sid={$setting['sid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_deletion}')");
+					$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
+				}
+				else
+				{
+					$table->construct_cell('');
+				}
+				$table->construct_row(array('no_alt_row' => 1, 'class' => "group{$group['gid']}"));
 			}
-			else
-			{
-				$group_title = htmlspecialchars_uni($setting['title']);
-			}
-			$table->construct_cell($setting['title'], array('style' => 'padding-left: 40px;'));
-			$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
-			// Only show options if not a default setting group
-			if($group['isdefault'] != 1)
-			{
-				$popup = new PopupMenu("setting_{$setting['sid']}", $lang->options);
-				$popup->add_item($lang->edit_setting, "index.php?module=config/settings&amp;action=edit&amp;sid={$setting['sid']}");
-				$popup->add_item($lang->delete_setting, "index.php?module=config/settings&amp;action=delete&amp;sid={$setting['sid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_setting_deletion}')");
-				$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
-			}
-			else
-			{
-				$table->construct_cell('');
-			}
-			$table->construct_row(array('no_alt_row' => 1, 'class' => "group{$group['gid']}"));
 		}
 	}
 	

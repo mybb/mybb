@@ -330,6 +330,58 @@ function get_admin_log_action($logitem)
 	switch($lang_string)
 	{
 		// == CONFIG ==
+		case 'admin_log_config_banning_add': // Banning IP/Username/Email
+		case 'admin_log_config_banning_delete': // Removing banned IP/username/emails
+			switch($logitem['data'][2])
+			{
+				case 1:
+					$lang_string = 'admin_log_config_banning_'.$logitem['action'].'_ip';
+					break;
+				case 2: 
+					$lang_string = 'admin_log_config_banning_'.$logitem['action'].'_username';
+					break;
+				case 3:
+					$lang_string = 'admin_log_config_banning_'.$logitem['action'].'_email';
+					break;
+			}
+			break;
+		
+		case 'admin_log_config_help_documents_add': // Help documents and sections
+		case 'admin_log_config_help_documents_edit':
+		case 'admin_log_config_help_documents_delete':
+			$lang_string .= "_{$logitem['data'][2]}"; // adds _section or _document
+			break;
+			
+		case 'admin_log_config_languages_edit': // Editing language variables
+			$logitem['data'][1] = basename($logitem['data'][1]);
+			if($logitem['data'][2] == 1)
+			{
+				$lang_string = 'admin_log_config_languages_edit_admin';
+			}
+			break;
+			
+		case 'admin_log_config_mycode_toggle_status': // Custom MyCode toggle activation
+			if($logitem['data'][2] == 1)
+			{
+				$lang_string .= '_enabled';
+			}
+			else
+			{
+				$lang_string .= '_disabled';
+			}
+			break;
+		case 'admin_log_config_plugins_activate': // Installing plugin
+			if($logitem['data'][1])
+			{
+				$lang_string .= '_install';
+			}
+			break;
+		case 'admin_log_config_plugins_deactivate': // Uninstalling plugin
+			if($logitem['data'][1])
+			{
+				$lang_string .= '_uninstall';
+			}
+			break;
 		// == FORUM ==
 		// == HOME ==
 		// == STYLE ==

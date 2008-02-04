@@ -48,7 +48,7 @@ if($mybb->input['action'] == "delete_post_tool")
 		$plugins->run_hooks("admin_config_mod_tools_delete_post_tool_commit");
 
 		// Log admin action
-		log_admin_action($tool['name']);
+		log_admin_action($tool['tid'], $tool['name']);
 
 		flash_message($lang->success_post_tool_deleted, 'success');
 		admin_redirect("index.php?module=config/mod_tools&action=post_tools");
@@ -87,14 +87,14 @@ if($mybb->input['action'] == "delete_thread_tool")
 		$plugins->run_hooks("admin_config_mod_tools_delete_thread_tool_commit");
 
 		// Log admin action
-		log_admin_action($tool['name']);
+		log_admin_action($tool['tid'], $tool['name']);
 
 		flash_message($lang->success_thread_tool_deleted, 'success');
 		admin_redirect("index.php?module=config/mod_tools");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$type['tid']}", $lang->confirm_thread_tool_deletion);
+		$page->output_confirm_action("index.php?module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}", $lang->confirm_thread_tool_deletion);
 	}
 }
 

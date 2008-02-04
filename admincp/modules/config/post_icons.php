@@ -49,7 +49,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_config_post_icons_add_commit");
 
 			// Log admin action
-			log_admin_action($iid = $mybb->input['name']);
+			log_admin_action($iid, $mybb->input['name']);
 
 			flash_message($lang->success_post_icon_added, 'success');
 			admin_redirect('index.php?module=config/post_icons');
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_post_icons_delete_commit");
 
 		// Log admin action
-		log_admin_action($icon['name']);
+		log_admin_action($icon['iid'], $icon['name']);
 
 		flash_message($lang->success_post_icon_deleted, 'success');
 		admin_redirect("index.php?module=config/post_icons");

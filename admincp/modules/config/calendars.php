@@ -391,14 +391,14 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_calendars_delete_commit");
 
 		// Log admin action
-		log_admin_action($calendar['name']);
+		log_admin_action($calendar['cid'], $calendar['name']);
 
 		flash_message($lang->success_calendar_deleted, 'success');
 		admin_redirect("index.php?module=config/calendars");
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=config/calendar&amp;action=delete&amp;cid={$calendar['cid']}", $lang->confirm_calendar_deletion);
+		$page->output_confirm_action("index.php?module=config/calendars&amp;action=delete&amp;cid={$calendar['cid']}", $lang->confirm_calendar_deletion);
 	}
 }
 
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "update_order" && $mybb->request_method == "post")
 	// Log admin action
 	log_admin_action();
 
-	flash_message($lang->sucess_calendar_orders_updated, 'success');
+	flash_message($lang->success_calendar_orders_updated, 'success');
 	admin_redirect("index.php?module=config/calendars");
 }
 

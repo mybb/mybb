@@ -270,7 +270,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_attachment_types_delete_commit");
 
 		// Log admin action
-		log_admin_action($atid, $attachment_type['extension']);
+		log_admin_action($attachment_type['atid'], $attachment_type['extension']);
 
 		flash_message($lang->success_attachment_type_deleted, 'success');
 		admin_redirect("index.php?module=config/attachment_types");

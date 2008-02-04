@@ -42,11 +42,11 @@ if($mybb->input['action'] == "toggle_status")
 		$new_status = 1;
 		$phrase = $lang->success_activated_mycode;
 	}
-	$mycode = array(
+	$mycode_update = array(
 		'active' => $new_status,
 	);
 
-	$db->update_query("mycode", $mycode, "cid='".intval($mybb->input['cid'])."'");
+	$db->update_query("mycode", $mycode_update, "cid='".intval($mybb->input['cid'])."'");
 
 	$cache->update_mycode();
 	
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_mycode_delete_commit");
 
 		// Log admin action
-		log_admin_action($mycode['title']);
+		log_admin_action($mycode['cid'], $mycode['title']);
 
 		flash_message($lang->success_deleted_mycode, 'success');
 		admin_redirect("index.php?module=config/mycode");

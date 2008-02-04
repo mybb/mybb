@@ -166,6 +166,8 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	{
 		$installed = false;
 	}
+	
+	$install_uninstall = false;
 
 	if($mybb->input['action'] == "activate")
 	{
@@ -183,6 +185,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		{
 			call_user_func("{$codename}_install");
 			$message = $lang->success_plugin_installed;
+			$install_uninstall = true;
 		}
 
 		if(function_exists("{$codename}_activate"))
@@ -191,6 +194,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		}
 
 		$active_plugins[$codename] = $codename;
+		$executed[] = 'activate';
 	}
 	else if($mybb->input['action'] == "deactivate")
 	{
@@ -205,6 +209,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		{
 			call_user_func("{$codename}_uninstall");
 			$message = $lang->success_plugin_uninstalled;
+			$install_uninstall = true;
 		}
 
 		unset($active_plugins[$codename]);
@@ -215,7 +220,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 	$cache->update("plugins", $plugins_cache);
 	
 	// Log admin action
-	log_admin_action($mybb->input['action'], $codename);
+	log_admin_action($codename, $install_uninstall);
 	
 	if($mybb->input['action'] == "activate")
 	{

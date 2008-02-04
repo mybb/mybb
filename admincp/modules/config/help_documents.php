@@ -67,7 +67,7 @@ if($mybb->input['action'] == "add")
 				$plugins->run_hooks("admin_config_help_documents_add_section_commit");
 				
 				// Log admin action
-				log_admin_action($sid, $mybb->input['name']);
+				log_admin_action($sid, $mybb->input['name'], 'section');
 
 				flash_message($lang->success_help_section_added, 'success');
 				admin_redirect('index.php?module=config/help_documents');
@@ -176,7 +176,7 @@ if($mybb->input['action'] == "add")
 				$plugins->run_hooks("admin_config_help_documents_add_page_commit");
 
 				// Log admin action
-				log_admin_action(array($hid, $mybb->input['name']));
+				log_admin_action($hid, $mybb->input['name'], 'document');
 				
 				flash_message($lang->success_help_document_added, 'success');
 				admin_redirect('index.php?module=config/help_documents');
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "edit")
 				$plugins->run_hooks("admin_config_help_documents_edit_section_commit");
 
 				// Log admin action
-				log_admin_action(array($sid, $mybb->input['name']));
+				log_admin_action($sid, $mybb->input['name'], 'section');
 				
 				flash_message($lang->success_help_section_updated, 'success');
 				admin_redirect('index.php?module=config/help_documents');
@@ -405,7 +405,7 @@ if($mybb->input['action'] == "edit")
 				$plugins->run_hooks("admin_config_help_documents_edit_page_commit");
 				
 				// Log admin action
-				log_admin_action(array($hid, $mybb->input['name']));
+				log_admin_action($hid, $mybb->input['name'], 'document');
 
 				flash_message($lang->success_help_document_updated, 'success');
 				admin_redirect('index.php?module=config/help_documents');
@@ -512,7 +512,7 @@ if($mybb->input['action'] == "delete")
 			$plugins->run_hooks("admin_config_help_documents_delete_section_commit");
 
 			// Log admin action
-			log_admin_action(array($section['name']));
+			log_admin_action($section['sid'], $section['name'], 'section');
 
 			flash_message($lang->success_section_deleted, 'success');
 			admin_redirect("index.php?module=config/help_documents");
@@ -545,7 +545,7 @@ if($mybb->input['action'] == "delete")
 			$plugins->run_hooks("admin_config_help_documents_delete_page_commit");
 
 			// Log admin action
-			log_admin_action(array($doc['name']));
+			log_admin_action($doc['hid'], $doc['name'], 'document');
 			
 			flash_message($lang->success_document_deleted, 'success');
 			admin_redirect("index.php?module=config/help_documents");

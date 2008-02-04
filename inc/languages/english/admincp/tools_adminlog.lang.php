@@ -39,10 +39,96 @@ $l['order'] = "order";
 $l['success_pruned_admin_logs'] = "Administrator logs pruned successfully.";
 $l['error_logs_automatically_pruned'] = "The administrator logs are already automatically pruned.";
 
-$l['admin_log_tools_adminlog_prune'] = "Pruned {4} logs older than {1} days";
-$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} logs older than {1} days for user {2}";
-$l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} logs older than {1} days for module {3}";
-$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} logs older than {1} days for user {2} and module {3}";
+$l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
+$l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";
+$l['admin_log_config_attachment_types_delete'] = "Deleted attachment extension #{1} ({2})";
+
+$l['admin_log_config_badwords_add'] = "Added word filter #{1} ({2})";
+$l['admin_log_config_badwords_edit'] = "Edited word filter #{1} ({2})";
+$l['admin_log_config_badwords_delete'] = "Deleted word filter #{1} ({2})";
+
+$l['admin_log_config_banning_add_ip'] = "Added IP ban #{1}: {2}";
+$l['admin_log_config_banning_add_username'] = "Added disallowed username #{1}: {2}";
+$l['admin_log_config_banning_add_email'] = "Added disallowed email #{1}: {2}";
+$l['admin_log_config_banning_delete_ip'] = "Removed IP ban #{1}: {2}";
+$l['admin_log_config_banning_delete_username'] = "Removed disallowed username #{1}: {2}";
+$l['admin_log_config_banning_delete_email'] = "Removed disallowed email #{1}: {2}";
+
+$l['admin_log_config_calendars_add'] = "Added calendar #{1}: {2}";
+$l['admin_log_config_calendars_permissions'] = "Modified permissions for calendar #{1}: {2}";
+$l['admin_log_config_calendars_edit'] = "Edited calendar #{1}: {2}";
+$l['admin_log_config_calendars_delete'] = "Deleted calendar #{1}: {2}";
+$l['admin_log_config_calendars_update_orders'] = "Updated calendar display order";
+
+$l['admin_log_config_help_documents_add_section'] = "Added help section #{1}: {2}";
+$l['admin_log_config_help_documents_add_document'] = "Added help document #{1}: {2}";
+$l['admin_log_config_help_documents_edit_section'] = "Edited help section #{1}: {2}";
+$l['admin_log_config_help_documents_edit_document'] = "Edited help document #{1}: {2}";
+$l['admin_log_config_help_documents_delete_section'] = "Deleted help section #{1}: {2}";
+$l['admin_log_config_help_documents_delete_document'] = "Deleted help document #{1}: {2}";
+
+$l['admin_log_config_languages_edit_properties'] = "Edited properties for language pack: {1}";
+$l['admin_log_config_languages_edit'] = "Edited {2} in language pack: {1}";
+$l['admin_log_config_languages_edit_admin'] = "Edited admin/{2} in language pack: {1}";
+
+$l['admin_log_config_mod_tools_delete_post_tool'] = "Deleted post moderation tool #{1}: {2}";
+$l['admin_log_config_mod_tools_delete_thread_tool'] = "Deleted thread moderation tool #{1}: {2}";
+$l['admin_log_config_mod_tools_edit_post_tool'] = "Edited post moderation tool #{1}: {2}";
+$l['admin_log_config_mod_tools_edit_thread_tool'] = "Edited thread moderation tool #{1}: {2}";
+$l['admin_log_config_mod_tools_add_post_tool'] = "Deleted post moderation tool #{1}: {2}";
+$l['admin_log_config_mod_tools_add_thread_tool'] = "Deleted thread moderation tool #{1}: {2}";
+
+$l['admin_log_config_mycode_toggle_status_enabled'] = "Enabled custom MyCode #{1}: {2}";
+$l['admin_log_config_mycode_toggle_status_disabled'] = "Disabled custom MyCode #{1}: {2}";
+$l['admin_log_config_mycode_add'] = "Added custom MyCode #{1}: {2}";
+$l['admin_log_config_mycode_edit'] = "Edited custom MyCode #{1}: {2}";
+$l['admin_log_config_mycode_delete'] = "Deleted custom MyCode #{1}: {2}";
+
+$l['admin_log_config_plugins_activate'] = "Activated plugin: {1}";
+$l['admin_log_config_plugins_activate_install'] = "Activated and installed plugin: {1}";
+$l['admin_log_config_plugins_deactivate'] = "Deactivated plugin: {1}";
+$l['admin_log_config_plugins_deactivate_uninstall'] = "Deactivated and uninstalled plugin: {1}";
+
+$l['admin_log_config_post_icons_add'] = "Added post icon #{1}: {2}";
+$l['admin_log_config_post_icons_add_multiple'] = "Added multiple post icons";
+$l['admin_log_config_post_icons_edit'] = "Edited post icon #{1}: {2}";
+$l['admin_log_config_post_icons_delete'] = "Deleted post icon #{1}: {2}";
+
+$l['admin_log_config_profile_fields_add'] = "Added custom profile field #{1}: {2}";
+$l['admin_log_config_profile_fields_edit'] = "Edited custom profile field #{1}: {2}";
+$l['admin_log_config_profile_fields_delete'] = "Deleted custom profile field #{1}: {2}";
+
+$l['admin_log_config_settings_delete_duplicates'] = "Deleted duplicate settings and setting groups";
+$l['admin_log_config_settings_addgroup'] = "Added setting group #{1} properties: {2}";
+$l['admin_log_config_settings_editgroup'] = "Edited setting group #{1} properties: {2}";
+$l['admin_log_config_settings_deletegroup'] = "Deleted setting group #{1} properties: {2}";
+$l['admin_log_config_settings_add'] = "Added setting #{1} properties: {2}";
+$l['admin_log_config_settings_edit'] = "Edited setting #{1} properties: {2}";
+$l['admin_log_config_settings_delete'] = "Deleted setting #{1} properties: {2}";
+$l['admin_log_config_settings_manage'] = "Updated setting and setting group orders";
+$l['admin_log_config_settings_change'] = "Changed board settings";
+
+$l['admin_log_config_smilies_add'] = "Added smilie #{1}: {2}";
+$l['admin_log_config_smilies_edit'] = "Edited smilie #{1}: {2}";
+$l['admin_log_config_smilies_delete'] = "Deleted smilie #{1}: {2}";
+$l['admin_log_config_smilies_add_multiple'] = "Added multiple smilies";
+$l['admin_log_config_smilies_mass_edit'] = "Edited multiple smilies";
+
+$l['admin_log_config_spiders_add'] = "Added spider #{1}: {2}";
+$l['admin_log_config_spiders_edit'] = "Edited spider #{1}: {2}";
+$l['admin_log_config_spiders_delete'] = "Deleted spider #{1}: {2}";
+
+$l['admin_log_config_warning_add_level'] = "Added warning level #{1} at {2}%";
+$l['admin_log_config_warning_edit_level'] = "Edited warning level #{1} at {2}%";
+$l['admin_log_config_warning_delete_level'] = "Deleted warning level #{1} at {2}%";
+$l['admin_log_config_warning_add_type'] = "Added warning type #{1}: {2}";
+$l['admin_log_config_warning_edit_type'] = "Edited warning type #{1}: {2}";
+$l['admin_log_config_warning_delete_type'] = "Deleted warning type #{1}: {2}";
+
+$l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
+$l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user {2}";
+$l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} administrator logs older than {1} days for module {3}";
+$l['admin_log_tools_adminlog_prune_user_module'] = "Pruned {4} administrator logs older than {1} days for user {2} and module {3}";
 
 $l['admin_log_tools_backupdb_dlbackup'] = "Downloaded a backup: {1}";
 $l['admin_log_tools_backupdb_delete'] = "Deleted a backup: {1}";

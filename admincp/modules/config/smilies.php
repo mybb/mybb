@@ -254,7 +254,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_config_smilies_delete_commit");
 
 		// Log admin action
-		log_admin_action($smilie['name']);
+		log_admin_action($smilie['sid'], $smilie['name']);
 
 		flash_message($lang->success_smilie_updated, 'success');
 		admin_redirect("index.php?module=config/smilies");
@@ -499,7 +499,7 @@ if($mybb->input['action'] == "mass_edit")
 		$plugins->run_hooks("admin_config_smilies_mass_edit_commit");
 
 		// Log admin action
-		log_admin_action($smilie['name']);
+		log_admin_action();
 
 		flash_message($lang->success_multiple_smilies_updated, 'success');
 		admin_redirect("index.php?module=config/smilies");
