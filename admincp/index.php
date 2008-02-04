@@ -46,7 +46,7 @@ $lang->load("global");
 header("Content-type: text/html; charset={$lang->settings['charset']}");
 
 $time = TIME_NOW;
-$errors = array();
+$errors = null;
 
 if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 {
