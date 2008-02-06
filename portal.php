@@ -504,7 +504,7 @@ while($announcement = $db->fetch_array($query))
 		{
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
-				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
+				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 				$ext = get_extension($attachment['filename']);
 				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")

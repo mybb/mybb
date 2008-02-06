@@ -500,6 +500,7 @@ function build_postbit($post, $post_type=0)
 	{
 		$parser_options['allow_smilies'] = 0;
 	}
+	
 	$post['message'] = $parser->parse_message($post['message'], $parser_options);
 
 	// If we have incoming search terms to highlight - get it done.
@@ -607,7 +608,7 @@ function get_post_attachments($id, &$post)
 		{
 			if($attachment['visible'])
 			{ // There is an attachment thats visible!
-				$attachment['name'] = htmlspecialchars_uni($attachment['name']);
+				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 				$attachment['filesize'] = get_friendly_size($attachment['filesize']);
 				$ext = get_extension($attachment['filename']);
 				if($ext == "jpeg" || $ext == "gif" || $ext == "bmp" || $ext == "png" || $ext == "jpg")
