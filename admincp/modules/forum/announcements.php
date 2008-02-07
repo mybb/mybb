@@ -614,7 +614,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_forum_announcements_delete_commit");
 		
 		// Log admin action
-		log_admin_action($announcement['aid']);
+		log_admin_action($announcement['aid'], $announcement['title']);
 
 		flash_message($lang->success_announcement_deleted, 'success');
 		admin_redirect("index.php?module=forum/announcements");

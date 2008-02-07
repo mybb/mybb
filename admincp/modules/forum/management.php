@@ -159,6 +159,14 @@ if($mybb->input['action'] == "copy")
 		
 					$db->insert_query("forumpermissions", $permissions);
 				}
+				
+				// Log admin action
+				log_admin_action($from, $from_forum['name'], $to, $new_forum['name'], $groups);
+			}
+			else
+			{
+				// Log admin action (no group permissions)
+				log_admin_action($from, $from_forum['name'], $to, $new_forum['name']);
 			}
 			$cache->update_forums();
 			$cache->update_forumpermissions();
@@ -269,7 +277,8 @@ if($mybb->input['action'] == "editmod")
 	
 	if($mybb->request_method == "post")
 	{
-		if(!$mybb->input['mid'])
+		$mid = intval($mybb->input['mid']);
+		if(!$mid)
 		{
 			flash_message($lang->error_incorrect_moderator, 'error');
 			admin_redirect("index.php?module=forum/management");
@@ -277,8 +286,11 @@ if($mybb->input['action'] == "editmod")
 	
 		if(!$errors)
 		{
+			$fid = intval($mybb->input['fid']);	
+			$forum = get_forum($fid);
+			$mod = get_user($mid);
 			$update_array = array(
-				'fid' => intval($mybb->input['fid']),
+				'fid' => intval($fid),
 				'caneditposts' => intval($mybb->input['caneditposts']),
 				'candeleteposts' => intval($mybb->input['candeleteposts']),
 				'canviewips' => intval($mybb->input['canviewips']),
@@ -289,6 +301,9 @@ if($mybb->input['action'] == "editmod")
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 			
 			$plugins->run_hooks("admin_forum_management_editmod_commit");
+			
+			// Log admin action
+			log_admin_action($fid, $forum['name'], $mid, $mod['username']);
 			
 			flash_message($lang->success_moderator_updated, 'success');
 			admin_redirect("index.php?module=forum/management&fid=".intval($mybb->input['fid'])."#tab_moderators");
@@ -352,6 +367,7 @@ if($mybb->input['action'] == "permissions")
 		$pid = intval($mybb->input['pid']);
 		$fid = intval($mybb->input['fid']);
 		$gid = intval($mybb->input['gid']);
+		$forum = get_forum($fid);
 		
 		if(!$fid && $pid)
 		{
@@ -396,7 +412,7 @@ if($mybb->input['action'] == "permissions")
 		$plugins->run_hooks("admin_forum_management_permissions_commit");
 		
 		// Log admin action
-		log_admin_action($fid);
+		log_admin_action($fid, $forum['name']);
 		
 		flash_message($lang->success_forum_permissions_saved, 'success');
 		admin_redirect("index.php?module=forum/management&fid={$fid}#tab_permissions");
@@ -659,7 +675,7 @@ if($mybb->input['action'] == "add")
 			$plugins->run_hooks("admin_forum_management_add_commit");
 			
 			// Log admin action
-			log_admin_action($fid);
+			log_admin_action($fid, $insert_array['name']);
 			
 			flash_message($lang->success_forum_added, 'success');
 			admin_redirect("index.php?module=forum/management");
@@ -1066,7 +1082,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_forum_management_edit_commit");
 			
 			// Log admin action
-			log_admin_action($fid);
+			log_admin_action($fid, $update_array['name']);
 			
 			flash_message($lang->success_forum_updated, 'success');
 			admin_redirect("index.php?module=forum/management");
@@ -1373,7 +1389,7 @@ if($mybb->input['action'] == "deletemod")
 	{
 		$mid = $mod['mid'];
 		$query = $db->query("
-			SELECT m.*, u.usergroup
+			SELECT m.*, u.username, u.usergroup
 			FROM ".TABLE_PREFIX."moderators m 
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.uid)
 			WHERE m.mid='{$mid}'
@@ -1393,8 +1409,10 @@ if($mybb->input['action'] == "deletemod")
 		
 		$plugins->run_hooks("admin_forum_management_deletemod_commit");
 		
+		$forum = get_forum($mybb->input['fid']);
+		
 		// Log admin action
-		log_admin_action($mod['uid'], $mybb->input['fid']);
+		log_admin_action($mod['uid'], $mod['username'], $forum['fid'], $forum['name']);
 		
 		flash_message($lang->success_moderator_deleted, 'success');
 		admin_redirect("index.php?module=forum/management&fid=".$mybb->input['fid']."#tab_moderators");
@@ -1427,7 +1445,8 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		$fid = $mybb->input['fid'];
+		$fid = intval($mybb->input['fid']);
+		$forum_info = get_forum($fid);
 		// Delete the forum
 		$db->delete_query("forums", "fid='$fid'");
 		switch($db->type)
@@ -1502,7 +1521,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_forum_management_delete_commit");
 		
 		// Log admin action
-		log_admin_action($forum['name']);
+		log_admin_action($forum_info['fid'], $forum_info['name']);
 
 		flash_message($lang->success_forum_deleted, 'success');
 		admin_redirect("index.php?module=forum/management");
@@ -1516,9 +1535,13 @@ if($mybb->input['action'] == "delete")
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_management_start");
-	
+	$fid = intval($mybb->input['fid']);
 	if($mybb->request_method == "post")
 	{
+		if($fid)
+		{
+			$forum = get_forum($fid);
+		}
 		if($mybb->input['update'] == "permissions")
 		{
 			$inherit = $mybb->input['default_permissions'];
@@ -1544,20 +1567,26 @@ if(!$mybb->input['action'])
 			$canpostpolls = $permissions['canpostpolls'];
 			$canpostattachments = $permissions['canpostattachments'];
 			$canpostreplies = $permissions['canpostreplys'];
-			save_quick_perms($mybb->input['fid']);
+			save_quick_perms($fid);
 			
 			$plugins->run_hooks("admin_forum_management_start_permissions_commit");
 			
 			// Log admin action
-			log_admin_action($mybb->input['fid']);
+			log_admin_action('quickpermissions', $fid, $forum['name']);
 			
 			flash_message($lang->success_forum_permissions_updated, 'success');
-			admin_redirect("index.php?module=forum/management&fid=".$mybb->input['fid']."#tab_permissions");
+			admin_redirect("index.php?module=forum/management&fid={$fid}#tab_permissions");
 		}
 		elseif($mybb->input['add'] == "moderators")
 		{
-			$fid = intval($mybb->input['fid']);
-			$query = $db->simple_select("users", "uid", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+			
+			$forum = get_forum($fid);
+			if(!$forum)
+			{
+				flash_message($lang->error_invalid_forum, 'error');
+				admin_redirect("index.php?module=forum/management&fid={$fid}#tab_moderators");
+			}
+			$query = $db->simple_select("users", "uid, username", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 			$user = $db->fetch_array($query);
 			if($user['uid'])
 			{
@@ -1582,7 +1611,7 @@ if(!$mybb->input['action'])
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
 					
 					// Log admin action
-					log_admin_action($user['fid']);
+					log_admin_action('addmod', $new_mod['fid'], $mod['username'], $fid, $forum['name']);
 					
 					flash_message($lang->success_moderator_added, 'success');
 					admin_redirect("index.php?module=forum/management&action=editmod&mid={$mid}");
@@ -1601,11 +1630,11 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			if(!empty($mybb->input['disporder']))
+			if(!empty($mybb->input['disporder']) && is_array($mybb->input['disporder']))
 			{
-				foreach($mybb->input['disporder'] as $fid => $order)
+				foreach($mybb->input['disporder'] as $update_fid => $order)
 				{
-					$db->update_query("forums", array('disporder' => intval($order)), "fid='".intval($fid)."'");
+					$db->update_query("forums", array('disporder' => intval($order)), "fid='".intval($update_fid)."'");
 				}
 						
 				$cache->update_forums();
@@ -1613,15 +1642,13 @@ if(!$mybb->input['action'])
 				$plugins->run_hooks("admin_forum_management_start_disporder_commit");
 				
 				// Log admin action
-				log_admin_action($mybb->input['fid']);
+				log_admin_action('orders', $forum['fid'], $forum['name']);
 			
 				flash_message($lang->success_forum_disporder_updated, 'success');
 				admin_redirect("index.php?module=forum/management&fid=".$mybb->input['fid']);
 			}
 		}
 	}
-	
-	$fid = intval($mybb->input['fid']);
 	
 	if($fid)
 	{

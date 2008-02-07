@@ -81,7 +81,7 @@ $l['success_forum_permissions_updated'] = "Successfully updated the forum permis
 $l['success_forum_updated'] = "Successfully updated the forum.";
 $l['success_moderator_updated'] = "Successfully updated the moderator.";
 
-$l['error_invalid_forum'] = "Please input a valid forum to delete.";
+$l['error_invalid_forum'] = "Please input a valid forum.";
 $l['error_invalid_moderator'] = "Please input a valid moderator to delete.";
 $l['error_invalid_fid'] = "Invalid Forum ID selected.";
 $l['error_forum_parent_child'] = "You can't set the parent forum to one of the forums own children.";

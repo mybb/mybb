@@ -63,23 +63,24 @@ if($mybb->input['action'] == "delete")
 	{
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
-		$query = $db->simple_select("attachments", "aid,pid,posthash", "aid IN (".implode(",", $mybb->input['aids']).")");
+		$query = $db->simple_select("attachments", "aid,pid,posthash, filename", "aid IN (".implode(",", $mybb->input['aids']).")");
 		while($attachment = $db->fetch_array($query))
 		{
 			if(!$attachment['pid'])
 			{
 				remove_attachment(null, $attachment['posthash'], $attachment['aid']);
+				// Log admin action
+				log_admin_action($attachment['aid'], $attachment['filename']);
 			}
 			else
 			{
 				remove_attachment($attachment['pid'], null, $attachment['aid']);
+				// Log admin action
+				log_admin_action($attachment['aid'], $attachment['filename'], $attachment['pid']);
 			}
 		}
 		
 		$plugins->run_hooks("admin_forum_attachments_delete_commit");
-
-		// Log admin action
-		log_admin_action();
 
 		flash_message($lang->success_deleted, 'success');
 		admin_redirect("index.php?module=forum/attachments");

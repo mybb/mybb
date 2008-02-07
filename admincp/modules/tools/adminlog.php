@@ -383,6 +383,30 @@ function get_admin_log_action($logitem)
 			}
 			break;
 		// == FORUM ==
+		case 'admin_log_forum_attachments_delete': // Deleting attachments
+			if($logitem['data'][2])
+			{
+				$lang_string .= '_post';
+			}
+			break;
+		case 'admin_log_forum_management_copy': // Forum copy
+			if($logitem['data'][4])
+			{
+				$lang_string .= '_with_permissions';
+			}
+			break;
+		case 'admin_log_forum_management_': // add mod, permissions, forum orders
+			// first parameter already set with action
+			$lang_string .= $logitem['data'][0];
+			if($logitem['data'][0] == 'orders' && $logitem['data'][1])
+			{
+				$lang_string .= '_sub'; // updating forum orders in a subforum 
+			}
+			break;
+		case 'admin_log_forum_moderation_queue_': //moderation queue
+			// first parameter already set with action
+			$lang_string .= $logitem['data'][0];
+			break;
 		// == HOME ==
 		// == STYLE ==
 		// == TOOLS ==
