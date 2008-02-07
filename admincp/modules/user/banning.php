@@ -282,7 +282,10 @@ if(!$mybb->input['action'])
 				'displaygroup' => 0,
 				'additionalgroups' => '',
 			);
-			$db->update_query('users', $update_array, "uid = {$user['uid']}");
+			$db->update_query('users', $update_array, "uid = '{$user['uid']}'");
+			
+			$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
+			$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
 			
 			$plugins->run_hooks("admin_user_banning_start_commit");
 

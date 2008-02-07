@@ -2342,15 +2342,15 @@ ul.thread_tools li.subscription_remove {
 </html>]]></template>
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
 		<template name="postbit_away" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.gif" border="0" alt="{$lang->postbit_status_away}" /></a>]]></template>
-		<template name="misc_imcenter_icq" version="120"><![CDATA[<html>
+		<template name="misc_imcenter_icq" version="1213"><![CDATA[<html>
 <head>
 <title>{$lang->icq_message_center}</title>
 {$headerinclude}
 </head>
-<body style="margin:0;top:0;left:0;" class="trow2">
+<body style="margin: 0; top: 0; left: 0;" class="trow2">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
+<td class="thead" align="center"><strong>{$user['username']} - {$lang->icq_message_center}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>

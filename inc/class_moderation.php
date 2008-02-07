@@ -19,7 +19,7 @@ class Moderation
 	 */
 	function close_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -50,7 +50,7 @@ class Moderation
 
 	function open_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -80,7 +80,7 @@ class Moderation
 	 */
 	function stick_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -110,7 +110,7 @@ class Moderation
 	 */
 	function unstick_threads($tids)
 	{
-		global $db;
+		global $db, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -140,7 +140,7 @@ class Moderation
 	 */
 	function remove_redirects($tid)
 	{
-		global $db;
+		global $db, $plugins;
 		
 		$plugins->run_hooks("class_moderation_remove_redirects", $tid);
 
@@ -278,7 +278,7 @@ class Moderation
 	 */
 	function delete_poll($pid)
 	{
-		global $db;
+		global $db, $plugins;
 
 		$pid = intval($pid);
 		
@@ -302,7 +302,7 @@ class Moderation
 	 */
 	function approve_threads($tids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 
 		if(!is_array($tids))
 		{
@@ -377,7 +377,7 @@ class Moderation
 	 */
 	function unapprove_threads($tids)
 	{
-		global $db, $cache;
+		global $db, $cache, $plugins;
 		
 		if(!is_array($tids))
 		{
@@ -472,11 +472,11 @@ class Moderation
 		// Update unapproved post count
 		if($post['visible'] == 0)
 		{
-			$num_unaproved_posts--;
+			--$num_unaproved_posts;
 		}
 		else
 		{
-			$num_approved_posts++;
+			++$num_approved_posts;
 		}
 		$plugins->run_hooks("class_moderation_delete_post", $post['pid']);
 
@@ -508,7 +508,7 @@ class Moderation
 	 */
 	function merge_posts($pids, $tid, $sep="new_line")
 	{
-		global $db;
+		global $db, $plugins;
 
 
 		// Make sure we only have valid values
@@ -896,7 +896,7 @@ class Moderation
 	 */
 	function merge_threads($mergetid, $tid, $subject)
 	{
-		global $db, $mybb, $mergethread, $thread;
+		global $db, $mybb, $mergethread, $thread, $plugins;
 
 		$mergetid = intval($mergetid);
 		$tid = intval($tid);
@@ -997,7 +997,7 @@ class Moderation
 	 */
 	function split_posts($pids, $tid, $moveto, $newsubject, $destination_tid=0)
 	{
-		global $db, $thread;
+		global $db, $thread, $plugins;
 
 		$tid = intval($tid);
 		$moveto = intval($moveto);
@@ -1177,7 +1177,7 @@ class Moderation
 	 */
 	function move_threads($tids, $moveto)
 	{
-		global $db;
+		global $db, $plugins;
 
 		// Make sure we only have valid values
 		array_walk($tids, "intval");
@@ -1336,12 +1336,8 @@ class Moderation
 				}
 				++$thread_counters[$post['tid']]['replies'];
 			}
-
-			// Only add to the forum count if the thread is invisible
-			if($post['threadvisible'] == 0)
-			{
-				++$forum_counters[$post['fid']]['num_posts'];
-			}
+			
+			++$forum_counters[$post['fid']]['num_posts'];
 
 			// If the first post here matches and thread is invisible, we approve the thread too
 			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 0)
@@ -1362,6 +1358,8 @@ class Moderation
 			foreach($thread_counters as $tid => $counters)
 			{
 				$db->update_query("threads", $counters, "tid='{$tid}'");
+				
+				update_thread_data($tid);
 			}
 		}
 		
@@ -1461,6 +1459,8 @@ class Moderation
 			foreach($thread_counters as $tid => $counters)
 			{
 				$db->update_query("threads", $counters, "tid='{$tid}'");
+				
+				update_thread_data($tid);
 			}
 		}
 		
@@ -1489,7 +1489,7 @@ class Moderation
 	 */
 	function change_thread_subject($tids, $format)
 	{
-		global $db, $mybb;
+		global $db, $mybb, $plugins;
 
 		// Get tids into list
 		if(!is_array($tids))
@@ -1531,7 +1531,7 @@ class Moderation
 	 */
 	function expire_thread($tid, $deletetime)
 	{
-		global $db;
+		global $db, $plugins;
 
 		$tid = intval($tid);
 
@@ -1540,7 +1540,7 @@ class Moderation
 		);
 		$db->update_query("threads", $update_thread, "tid='{$tid}'");
 		
-		$plugins->run_hooks("class_moderation_expire_thread", array("tid" => $tid, "deletetime" => $deletetime));s
+		$plugins->run_hooks("class_moderation_expire_thread", array("tid" => $tid, "deletetime" => $deletetime));
 
 		return true;
 	}
@@ -1673,7 +1673,7 @@ class Moderation
 	 */
 	function remove_thread_subscriptions($tids, $all = true, $fid = 0)
 	{
-		global $db;
+		global $db, $plugins;
 		
 		// Format thread IDs
 		if(!is_array($tids))
