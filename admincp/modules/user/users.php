@@ -1262,7 +1262,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
 		// Log admin action
-		log_admin_action($user['username']);
+		log_admin_action($user['uid'], $user['username']);
 
 
 		flash_message($lang->success_user_deleted, 'success');
@@ -1475,7 +1475,7 @@ if($mybb->input['action'] == "merge")
 		$plugins->run_hooks("admin_user_users_merge_commit");
 
 		// Log admin action
-		log_admin_action($source_user['username'], $destination_user['uid'], $destination_user['username']);
+		log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
 
 		// Redirect!
 		flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");

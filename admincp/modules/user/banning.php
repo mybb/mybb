@@ -290,7 +290,7 @@ if(!$mybb->input['action'])
 			$plugins->run_hooks("admin_user_banning_start_commit");
 
 			// Log admin action
-			log_admin_action($user['uid'], $user['username']);
+			log_admin_action($user['uid'], $user['username'], $lifted);
 
 			flash_message($lang->success_banned, 'success');
 			admin_redirect("index.php?module=user/banning");

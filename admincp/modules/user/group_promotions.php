@@ -101,7 +101,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_user_group_promotions_delete_commit");
 
 		// Log admin action
-		log_admin_action($promotion['title']);
+		log_admin_action($promotion['pid'], $promotion['title']);
 
 		flash_message($lang->success_promo_deleted, 'success');
 		admin_redirect("index.php?module=user/group_promotions");
@@ -404,7 +404,8 @@ if($mybb->input['action'] == "add")
 				"logging" => intval($mybb->input['logging'])
 			);
 			
-			$pid = $db->insert_query("promotions", $new_promotion);
+			$query = $db->insert_query("promotions", $new_promotion);
+			$pid = $db->insert_id();
 			
 			$plugins->run_hooks("admin_user_group_promotions_add_commit");
 

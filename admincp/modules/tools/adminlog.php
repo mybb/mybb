@@ -452,6 +452,30 @@ function get_admin_log_action($logitem)
 				$lang_string = $detail_lang_string;
 			}
 			break;
+		// == USERS ==
+		case 'admin_log_user_admin_permissions_edit': // default/group/user admin permissions
+			if($logitem['data'][0] > 0)
+			{
+				// User
+				$lang_string .= '_user';
+			}
+			elseif($logitem['data'][0] < 0)
+			{
+				// Group
+				$logitem['data'][0] = abs($logitem['data'][0]);
+				$lang_string .= '_group';
+			}
+			break;
+		case 'admin_log_user_banning_': // banning
+			if($logitem['data'][2] == 0)
+			{
+				$lang_string = 'admin_log_user_banning_add_permanent';
+			}
+			else
+			{
+				$logitem['data'][2] = my_date($mybb->settings['dateformat'], $logitem['data'][2]);
+				$lang_string = 'admin_log_user_banning_add_temporary';
+			}
 	}
 	if(isset($lang->$lang_string))
 	{

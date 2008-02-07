@@ -195,4 +195,43 @@ $l['admin_log_tools_tasks_enable'] = "Enabled task #{1} ({2})";
 $l['admin_log_tools_tasks_disable'] = "Disabled task #{1} ({2})";
 $l['admin_log_tools_tasks_run'] = "Executed task #{1} ({2})";
 
+$l['admin_log_user_admin_permissions_delete'] = "Deleted administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_edit_user'] = "Edited administrator permissions for user #{1} ({2})";
+$l['admin_log_user_admin_permissions_edit_group'] = "Edited group administrator permissions for usergroup #{1} ({2})";
+$l['admin_log_user_admin_permissions_edit'] = "Edited default administrator permissions";
+
+$l['admin_log_user_banning_lift'] = "Lifted ban for user #{1} ({2})";
+$l['admin_log_user_banning_edit'] = "Edited ban for user #{1} ({2})";
+$l['admin_log_user_banning_add_permanent'] = "Banned user #{1} ({2}) permanently";
+$l['admin_log_user_banning_add_temporary'] = "Banned user #{1} ({2}) until {3}";
+
+$l['admin_log_user_group_promotions_disable'] = "Disabled group promotion #{1} ({2})";
+$l['admin_log_user_group_promotions_delete'] = "Deleted group promotion #{1} ({2})";
+$l['admin_log_user_group_promotions_enable'] = "Enabled group promotion #{1} ({2})";
+$l['admin_log_user_group_promotions_edit'] = "Edited group promotion #{1} ({2})";
+$l['admin_log_user_group_promotions_add'] = "Added group promotion #{1} ({2})";
+
+$l['admin_log_user_groups_export'] = "Exported usergroups to XML";
+$l['admin_log_user_groups_add_leader'] = "Added user #{1} ({2}) as a leader for usergroup #{3} ({4})";
+$l['admin_log_user_groups_delete_leader'] = "Removed user #{1} ({2}) as a leader for usergroup #{3} ({4})";
+$l['admin_log_user_groups_edit_leader'] = "Edited user #{1} ({2}) as a leader for usergroup #{3} ({4})";
+$l['admin_log_user_groups_add'] = "Added usergroup #{1} ({2})";
+$l['admin_log_user_groups_edit'] = "Edited usergroup #{1} ({2})";
+$l['admin_log_user_groups_delete'] = "Deleted usergroup #{1} ({2})";
+$l['admin_log_user_groups_disporder'] = "Updated usergroup display orders";
+$l['admin_log_user_groups_join_requests_approve'] = "Approved selected join requests for usergroup #{1} ({2})";
+$l['admin_log_user_groups_join_requests_deny'] = "Denied selected join requests for usergroup #{1} ({2})";
+
+$l['admin_log_user_titles_add'] = "Added default user title #{1} ({2}) at {3} posts";
+$l['admin_log_user_titles_edit'] = "Edited default user title #{1} ({2}) at {3} posts";
+$l['admin_log_user_titles_delete'] = "Deleted default user title #{1} ({2}) at {3} posts";
+
+$l['admin_log_user_users_avatar_gallery'] = "Selected a new avatar for user #{1} ({2})";
+$l['admin_log_user_users_activate_user'] = "Activated user #{1} ({2})";
+$l['admin_log_user_users_add'] = "Created user #{1} ({2})";
+$l['admin_log_user_users_edit'] = "Edited user #{1} ({2})";
+$l['admin_log_user_users_delete'] = "Deleted user #{1} ({2})";
+$l['admin_log_user_users_ipaddresses'] = "Viewed IP addresses associated with user #{1} ({2})";
+$l['admin_log_user_users_merge'] = "Merged user #{1} ({2}) into user #{3} ({4})";
+ 
 ?>

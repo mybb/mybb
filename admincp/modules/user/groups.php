@@ -347,7 +347,7 @@ if($mybb->input['action'] == "add_leader" && $mybb->request_method == "post")
 		$db->insert_query("groupleaders", $new_leader);
 
 		// Log admin action
-		log_admin_action($mybb->input['username'], $group['title']);
+		log_admin_action($user['uid'], $mybb->input['username'], $group['gid'], $group['title']);
 
 		flash_message("{$user['username']} ".$lang->success_user_made_leader, 'success');
 		admin_redirect("index.php?module=user/groups&action=leaders&gid={$group['gid']}");
@@ -497,7 +497,7 @@ if($mybb->input['action'] == "delete_leader")
 		$plugins->run_hooks("admin_user_groups_delete_leader_commit");
 
 		// Log admin action
-		log_admin_action($leader['username'], $group['title']);
+		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
 
 		flash_message($lang->success_group_leader_deleted, 'success');
 		admin_redirect("index.php?module=user/groups&action=leaders&gid={$group['gid']}");
@@ -540,7 +540,7 @@ if($mybb->input['action'] == "edit_leader")
 		$plugins->run_hooks("admin_user_groups_edit_leader_commit");
 
 		// Log admin action
-		log_admin_action($leader['username'], $group['title']);
+		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
 
 		flash_message($lang->success_group_leader_updated, 'success');
 		admin_redirect("index.php?module=user/groups&action=leaders&gid={$group['gid']}");		
@@ -1078,7 +1078,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_user_groups_delete_commit");
 
 		// Log admin action
-		log_admin_action($usergroup['title']);
+		log_admin_action($usergroup['gid'], $usergroup['title']);
 
 		flash_message($lang->success_group_deleted, 'success');
 		admin_redirect("index.php?module=user/groups");

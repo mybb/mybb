@@ -38,13 +38,14 @@ if(($mybb->input['action'] == "edit" && $mybb->input['uid'] == 0) || $mybb->inpu
 	);
 }
 
+$uid = intval($mybb->input['uid']);
+
 $plugins->run_hooks("admin_user_admin_permissions_begin");
 
 if($mybb->input['action'] == "delete")
 {
 	$plugins->run_hooks("admin_user_admin_permissions_delete");
 	
-	$uid = intval($mybb->input['uid']);
 	if(is_super_admin($uid) && $mybb->user['uid'] != $uid)
 	{
 		flash_message($lang->error_delete_super_admin, 'error');
@@ -74,12 +75,13 @@ if($mybb->input['action'] == "delete")
 		$newperms = array(
 			"permissions" => ''
 		);
-		$db->update_query("adminoptions", $newperms, "uid = '{$mybb->input['uid']}'");
+		$db->update_query("adminoptions", $newperms, "uid = '{$uid}'");
 		
 		$plugins->run_hooks("admin_user_admin_permissions_delete_commit");
 
+		$user = get_user($uid);
 		// Log admin action
-		log_admin_action($mybb->input['uid']);
+		log_admin_action($uid, $user['username']);
 
 		flash_message($lang->success_perms_deleted, 'success');
 		admin_redirect("index.php?module=user/admin_permissions");
@@ -126,15 +128,31 @@ if($mybb->input['action'] == "edit")
 		}
 		
 		$plugins->run_hooks("admin_user_admin_permissions_edit_commit");
-		
-		// Log admin action
-		log_admin_action($mybb->input['uid']);
-				
+
+		// Log admin action		
+		if($uid > 0)
+		{
+			// Users
+			$user = get_user($uid);
+			log_admin_action($uid, $user['username']);
+		}
+		elseif($uid < 0)
+		{
+			// Groups
+			$gid = abs($uid);
+			$query = $db->simple_select("usergroups", "title", "gid='$gid'");
+			$group = $db->fetch_array($query);
+			log_admin_action($uid, $user['title']);
+		}
+		else
+		{
+			// Default
+			log_admin_action(0);
+		}
+
 		flash_message($lang->admin_permissions_updated, 'success');
 		admin_redirect("index.php?module=user/admin_permissions");
 	}
-	
-	$uid = intval($mybb->input['uid']);
 	
 	if($uid > 0)
 	{
