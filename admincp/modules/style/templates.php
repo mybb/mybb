@@ -108,7 +108,12 @@ if($mybb->input['action'] == "add_set")
 		
 		if(!$errors)
 		{
-			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])));
+			$query = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])));
+			$sid = $db->insert_id();
+			
+			// Log admin action
+			log_admin_action($sid, $mybb->input['title']);
+			
 			flash_message($lang->success_template_set_saved, 'success');
 			admin_redirect("index.php?module=style/templates&sid=".$sid);
 		}
@@ -171,6 +176,13 @@ if($mybb->input['action'] == "add_template")
 			}
 		}
 		
+		$query = $db->simple_select("templatesets", "*", "sid='{$sid}'");
+		$template_set = $db->fetch_array($query);
+		if(!$template_set['sid'])
+		{
+			$errors[] = $lang->error_invalid_set;
+		}
+		
 		if(!$errors)
 		{
 			$template_array = array(
@@ -182,9 +194,13 @@ if($mybb->input['action'] == "add_template")
 				'dateline' => time()
 			);
 						
-			$tid = $db->insert_query("templates", $template_array);
+			$query = $db->insert_query("templates", $template_array);
+			$tid = $db->insert_id();
 			
 			$plugins->run_hooks("admin_style_templates_add_template_commit");
+			
+			// Log admin action
+			log_admin_action($tid, $mybb->input['title'], $sid, $template_set['title']);
 			
 			flash_message($lang->success_template_saved, 'success');
 			
@@ -274,7 +290,7 @@ if($mybb->input['action'] == "edit_set")
 {
 	$plugins->run_hooks("admin_style_templates_edit_set");
 	
-	$query = $db->simple_select("templatesets", "sid", "sid='{$sid}'");
+	$query = $db->simple_select("templatesets", "*", "sid='{$sid}'");
 	$set = $db->fetch_array($query);
 	if(!$set)
 	{
@@ -292,7 +308,11 @@ if($mybb->input['action'] == "edit_set")
 		
 		if(!$errors)
 		{
-			$sid = $db->update_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])), "sid='{$sid}'");
+			$query = $db->update_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])), "sid='{$sid}'");
+			
+			// Log admin action
+			log_admin_action($sid, $set['title']);
+			
 			flash_message($lang->success_template_set_saved, 'success');
 			admin_redirect("index.php?module=style/templates&sid=".$sid.$expand_str2);
 		}
@@ -370,25 +390,33 @@ if($mybb->input['action'] == "edit_template")
 				'status' => '',
 				'dateline' => time()
 			);
-				
+			
+			$tid = intval($mybb->input['tid']);
 			if($mybb->input['sid'] > 0)
 			{
 				$query = $db->simple_select("templates", "COUNT(tid) as count", "title='".$db->escape_string($mybb->input['title'])."' AND (sid = '-2' OR sid = '{$sid}')");
 				if($db->fetch_field($query, "count") == 1)
 				{
 					$db->insert_query("templates", $template_array);
+					$tid = $db->insert_id();
 				}
 				else
 				{
-					$db->update_query("templates", $template_array, "tid='".intval($mybb->input['tid'])."'");
+					$db->update_query("templates", $template_array, "tid='{$tid}'");
 				}
 			}
 			else
 			{
-				$db->update_query("templates", $template_array, "tid='".intval($mybb->input['tid'])."'");
+				// Global template set
+				$db->update_query("templates", $template_array, "tid='{$tid}'");
 			}
 			
 			$plugins->run_hooks("admin_style_templates_edit_template_commit");
+			
+			$query = $db->simple_select("templatesets", "title", "sid={$sid}");
+			$set = $db->fetch_array($set);
+			// Log admin action
+			log_admin_action($tid, $mybb->input['title'], $sid, $set['title']);
 			
 			flash_message($lang->success_template_saved, 'success');
 			
@@ -475,6 +503,8 @@ if($mybb->input['action'] == "search_replace")
 	{
 		if($mybb->input['type'] == "templates")
 		{
+			// Search and replace in templates
+			
 			if(!$mybb->input['find'])
 			{
 				flash_message($lang->search_noneset, "error");
@@ -593,6 +623,12 @@ if($mybb->input['action'] == "search_replace")
 					}
 				}
 				
+				if(trim($mybb->input['replace']) != "")
+				{
+					// Log admin action - only if replace
+					log_admin_action($mybb->input['find'], $mybb->input['replace']);
+				}
+				
 				$page->output_footer();
 				exit;
 			}
@@ -606,7 +642,7 @@ if($mybb->input['action'] == "search_replace")
 			}
 			else
 			{
-				
+				// Search Template Titles
 				$page->output_header($lang->search_replace);
 	
 				$page->output_nav_tabs($sub_tabs, 'search_replace');
@@ -888,9 +924,9 @@ if($mybb->input['action'] == "delete_set")
 		$plugins->run_hooks("admin_style_templates_delete_set_commit");
 
 		// Log admin action
-		log_admin_action($template['sid']);
+		log_admin_action($set['sid'], $set['title']);
 
-		flash_message($lang->success_template_deleted, 'success');
+		flash_message($lang->success_template_set_deleted, 'success');
 		admin_redirect("index.php?module=style/templates");
 	}
 	else
@@ -904,7 +940,7 @@ if($mybb->input['action'] == "delete_template")
 {
 	$plugins->run_hooks("admin_style_templates_delete_template");
 	
-	$query = $db->simple_select("templates", "*", "tid='".intval($mybb->input['tid'])."' AND sid > '-2' AND sid = '{$sid}'");
+	$query = $db->query("SELECT t.*, s.title as set_title FROM (".TABLE_PREFIX."templates t, ".TABLE_PREFIX."templatesets s) WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > '-2' AND t.sid = '{$sid}' AND t.sid = s.sid");
 	$template = $db->fetch_array($query);
 	
 	// Does the template not exist?
@@ -928,7 +964,7 @@ if($mybb->input['action'] == "delete_template")
 		$plugins->run_hooks("admin_style_templates_delete_template_commit");
 
 		// Log admin action
-		log_admin_action($template['tid'], $template['sid']);
+		log_admin_action($template['tid'], $template['title'], $template['sid'], $template['set_title']);
 
 		flash_message($lang->success_template_deleted, 'success');
 		admin_redirect("index.php?module=style/templates&sid={$template['sid']}{$expand_str2}");
@@ -1010,7 +1046,7 @@ if($mybb->input['action'] == "revert")
 {
 	$plugins->run_hooks("admin_style_templates_revert");
 	
-	$query = $db->simple_select("templates", "*", "tid='".intval($mybb->input['tid'])."' AND sid > 0 AND sid = '".intval($mybb->input['sid'])."'");
+	$query = $db->query("SELECT t.*, s.title as set_title FROM (".TABLE_PREFIX."templates t, ".TABLE_PREFIX."templatesets s) WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > 0 AND t.sid = '".intval($mybb->input['sid'])."' AND s.sid = t.sid");
 	$template = $db->fetch_array($query);
 	
 	// Does the template not exist?
@@ -1034,7 +1070,7 @@ if($mybb->input['action'] == "revert")
 		$plugins->run_hooks("admin_style_templates_revert_commit");
 
 		// Log admin action
-		log_admin_action($template['tid'], $template['sid']);
+		log_admin_action($template['tid'], $template['sid'], $template['sid'], $template['set_title']);
 
 		flash_message($lang->success_template_reverted, 'success');
 		

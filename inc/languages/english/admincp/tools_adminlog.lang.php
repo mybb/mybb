@@ -150,6 +150,17 @@ $l['admin_log_forum_moderation_queue_threads'] = "Moderated unapproved threads";
 $l['admin_log_forum_moderation_queue_posts'] = "Moderated unapproved posts";
 $l['admin_log_forum_moderation_queue_attachments'] = "Moderated unapproved attachments";
 
+$l['admin_log_style_templates_delete_set'] = "Deleted template set #{1} ({2})";
+$l['admin_log_style_templates_delete_template'] = "Deleted template #{1} ({2}) from template set #{3} ({4})";
+$l['admin_log_style_templates_delete_template_global'] = "Deleted template #{1} ({2}) from the global template set";
+$l['admin_log_style_templates_add_set'] = "Added template set #{1} ({2})";
+$l['admin_log_style_templates_add_template'] = "Added template #{1} ({2}) from template set #{3} ({4})";
+$l['admin_log_style_templates_edit_set'] = "Edited template set #{1} ({2})";
+$l['admin_log_style_templates_edit_template'] = "Edited template #{1} ({2}) from template set #{3} ({4})";
+$l['admin_log_style_templates_edit_template_global'] = "Edited template #{1} ({2}) from the global template set";
+$l['admin_log_style_templates_search_replace'] = "Searched templates for '{1}' and replaced with '{2}'";
+$l['admin_log_style_templates_revert'] = "Reverted template #{1} ({2}) in template set #{3} ({4})";
+
 $l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
 $l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user {2}";
 $l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} administrator logs older than {1} days for module {3}";
@@ -160,7 +171,7 @@ $l['admin_log_tools_backupdb_delete'] = "Deleted a backup: {1}";
 $l['admin_log_tools_backupdb_backup'] = "Created a backup: {2}";
 $l['admin_log_tools_backupdb_backup_download'] = "Downloaded a backup of the current database";
 
-$l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1}";
+$l['admin_log_tools_cache_rebuild'] = "Rebuilt cache ({1})";
 
 $l['admin_log_tools_index_utf8_conversion'] = "Converted table {1} to UTF-8";
 

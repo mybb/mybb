@@ -138,10 +138,11 @@ $l['error_already_exists'] = "The template title is already in use. Please use a
 $l['error_invalid_template'] = "Please input a valid template.";
 $l['error_missing_set_title'] = "Please input a template set title.";
 $l['error_invalid_input'] = "Please make sure you have the correct template set id.";
+$l['error_invalid_set'] = "Please input a valid template set.";
 
 $l['success_template_saved'] = "Successfully saved the template.";
 $l['success_template_deleted'] = "Successfully deleted the template.";
 $l['success_template_reverted'] = "Successfully reverted the template.";
 $l['success_template_set_saved'] = "Successfully saved the template set.";
-
+$l['success_template_set_deleted'] = "Successfully deleted the template set.";
 ?>

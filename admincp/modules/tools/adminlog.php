@@ -409,6 +409,18 @@ function get_admin_log_action($logitem)
 			break;
 		// == HOME ==
 		// == STYLE ==
+		case 'admin_log_style_templates_delete_template': // deleting templates
+			// global template set
+			if($logitem['data'][2] == -1)
+			{
+				$lang_string .= '_global';
+			}
+		case 'admin_log_style_templates_edit_template': // editing templates
+			// global template set
+			if($logitem['data'][2] == -1)
+			{
+				$lang_string .= '_global';
+			}
 		// == TOOLS ==
 		case 'admin_log_tools_adminlog_prune': // Admin Log Pruning
 			if($logitem['data'][1] && !$logitem['data'][2])
