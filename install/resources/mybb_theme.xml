@@ -1543,7 +1543,7 @@ var inlineId = {$fid};
 		<template name="gobutton" version="120"><![CDATA[<input type="submit" class="button" value="{$lang->go}" />]]></template>
 		<template name="postbit_away" version="120"><![CDATA[<a href="member.php?action=profile&amp;uid={$post['uid']}"><font color="maroon">{$lang->postbit_status_away}</font></a>]]></template>
 		<template name="calendar_dayview_birthdays_bday" version="120"><![CDATA[{$comma}<a href="member.php?action=profile&amp;uid={$bdays['uid']}"><strong>{$bdays['username']}</strong></a>{$age}]]></template>
-		<template name="misc_imcenter_icq" version="128"><![CDATA[<html>
+		<template name="misc_imcenter_icq" version="1213"><![CDATA[<html>
 <head>
 <title>{$lang->icq_message_center}</title>
 {$headerinclude}
@@ -1551,7 +1551,7 @@ var inlineId = {$fid};
 <body style="margin: 0; top: 0; left: 0;" class="trow2">
 <table width="100%" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" border="0" align="center" class="tborder">
 <tr>
-<td class="thead" align="center"><strong>{$user['username']} - {$lang->yahoo_center}</strong></td>
+<td class="thead" align="center"><strong>{$user['username']} - {$lang->icq_message_center}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center"><span class="smalltext"><strong>{$navigationbar}</strong></span></td>

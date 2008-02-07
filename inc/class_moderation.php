@@ -431,11 +431,11 @@ class Moderation
 		{
 			$db->query("UPDATE ".TABLE_PREFIX."forums SET unapprovedposts=unapprovedposts-1 WHERE fid='{$post['fid']}'");
 			$db->query("UPDATE ".TABLE_PREFIX."threads SET unapprovedposts=unapprovedposts-1 WHERE tid='{$post['tid']}'");
-			$num_unaproved_posts--;
+			--$num_unaproved_posts;
 		}
 		else
 		{
-			$num_approved_posts++;
+			++$num_approved_posts;
 		}
 		$plugins->run_hooks("class_moderation_delete_post", $post['pid']);
 
@@ -444,7 +444,7 @@ class Moderation
 			"replies" => "-{$num_approved_posts}", 
 			"unapprovedposts" => "-{$num_unapproved_posts}" 
 		); 
-		update_thread_counters($post['tid'], $update_array); 
+		update_thread_counters($post['tid'], $update_array);
 		
 		
 		// Update stats 
@@ -1271,17 +1271,12 @@ class Moderation
 				++$thread_counters[$post['tid']]['replies'];
 			}
 
-			// Only add to the forum count if the thread is invisible
-			if($post['threadvisible'] == 0)
-			{
-				++$forum_counters[$post['fid']]['num_posts'];
-			}
+			++$forum_counters[$post['fid']]['num_posts'];
 
 			// If the first post here matches and thread is invisible, we approve the thread too
 			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 0)
 			{
 				$thread_counters[$post['tid']]['visible'] = 1;
-				$thread_counters[$post['tid']]['unapprovedposts'] += 1;
 				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies']; 
 				$forum_counters[$post['fid']]['num_threads']++;
 			}
@@ -1297,6 +1292,8 @@ class Moderation
 			foreach($thread_counters as $tid => $counters)
 			{
 				$db->update_query(TABLE_PREFIX."threads", $counters, "tid='{$tid}'");
+				
+				update_thread_data($tid);
 			}
 		}
 		
@@ -1391,6 +1388,8 @@ class Moderation
 			foreach($thread_counters as $tid => $counters)
 			{
 				$db->update_query(TABLE_PREFIX."threads", $counters, "tid='{$tid}'");
+				
+				update_thread_data($tid);
 			}
 		}
 		

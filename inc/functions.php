@@ -1288,6 +1288,11 @@ function get_server_load()
 		}
 		if(!$serverload)
 		{
+			if(@ini_get('safe_mode') == 'On')
+			{
+				return $lang->unknown;
+			}
+			
 			// Suhosin likes to throw a warning if exec is disabled then die - weird
 			if($func_blacklist = @ini_get('suhosin.executor.func.blacklist'))
 			{
@@ -1297,7 +1302,7 @@ function get_server_load()
 				}
 			}
 			// PHP disabled functions?
-			if($func_blacklist = @ini_get('disabled_functions'))
+			if($func_blacklist = @ini_get('disable_functions'))
 			{
 				if(strpos(",".$func_blacklist.",", 'exec') !== false)
 				{

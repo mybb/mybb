@@ -1849,6 +1849,9 @@ if($mybb->input['action'] == "do_manageban")
 		"usergroup" => intval($mybb->input['usergroup'])
 		);
 	$db->update_query(TABLE_PREFIX."users", $groupupdate, "uid='".$user['uid']."'");
+	
+	$db->delete_query(TABLE_PREFIX."forumsubscriptions", "uid = '{$user['uid']}'");
+	
 	if($bancheck['uid'])
 	{
 		$banneduser = array(
