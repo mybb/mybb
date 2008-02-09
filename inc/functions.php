@@ -86,7 +86,7 @@ function output_page($contents)
 	}
 
 	@header("Content-type: text/html; charset={$lang->settings['charset']}");
-
+	
 	echo $contents;
 
 	$plugins->run_hooks("post_output_page");
@@ -131,12 +131,13 @@ function run_shutdown()
 	}
 
 	// Missing the core? Build
-	if(!is_object($mybb)) {
+	if(!is_object($mybb))
+	{
 		require_once MYBB_ROOT."inc/class_core.php";
 		$mybb = new MyBB;
 
 		// Load the settings
-		require_once MYBB_ROOT."inc/settings.php";
+		require MYBB_ROOT."inc/settings.php";
 		$mybb->settings = &$settings;
 	}
 

@@ -212,7 +212,7 @@ class MailHandler
 	function set_common_headers()
 	{
 		global $mybb;
-
+		
 		// Build mail headers
 		if(!trim($this->from))
 		{

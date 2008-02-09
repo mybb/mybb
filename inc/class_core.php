@@ -283,12 +283,14 @@ class MyBB {
 					continue;
 				}
 
-				if(isset($this->input[$var])) {
+				if(isset($this->input[$var]))
+				{
 					if($type == "int" && $this->input[$var] != "lastposter")
 					{
 						$this->input[$var] = intval($this->input[$var]);
 					}
-					else if($type == "a-z") {
+					else if($type == "a-z")
+					{
 						$this->input[$var] = preg_replace("#[^a-z\.\-_]#i", "", $this->input[$var]);
 					}
 				}

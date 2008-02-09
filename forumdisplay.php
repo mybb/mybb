@@ -337,7 +337,7 @@ else
 
 $datecut = intval($datecut);
 $datecutsel[$datecut] = "selected=\"selected\"";
-if($datecut > 0)
+if($datecut > 0 && $datecut != 9999)
 {
 	$checkdate = TIME_NOW - ($datecut * 86400);
 	$datecutsql = "AND (lastpost >= '$checkdate' OR sticky = '1')";
@@ -425,7 +425,7 @@ else
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 // How many posts are there?
-if($datecut != 9999)
+if($datecut > 0)
 {
 	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $datecutsql");
 	$threadcount = $db->fetch_field($query, "threads");
@@ -479,8 +479,38 @@ if($upper > $threadcount)
 
 // Assemble page URL
 if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) // Ugly URL
-{
-	$page_url = "forumdisplay.php?fid=$fid&sortby=$sortby&order=$sortordernow&datecut=$datecut";
+{	
+	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
+	
+	if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+	{
+		$q = "?";
+		$and = '';
+	}
+	else
+	{
+		$q = '';
+		$and = "&";
+	}
+	
+	if($sortby != "lastpost")
+	{
+		$page_url .= "{$q}{$and}sortby={$sortby}";
+		$q = '';
+		$and = "&";
+	}
+	
+	if($sortordernow != "desc")
+	{
+		$page_url .= "{$q}{$and}sortby={$sortordernow}";
+		$q = '';
+		$and = "&";
+	}
+	
+	if($datecut > 0 && $datecut != 9999)
+	{
+		$page_url .= "{$q}{$and}datecut={$datecut}";
+	}
 }
 else
 {
@@ -774,10 +804,12 @@ if(is_array($threadcache))
 		$rating = '';
 		if($foruminfo['allowtratings'] != 0)
 		{
-			if($moved[0] == "moved") {
+			if($moved[0] == "moved")
+			{
 				$rating = "<td class=\"{$bgcolor}\" style=\"text-align: center;\">-</td>";
 			}
-			else {
+			else
+			{
 				$thread['averagerating'] = intval(round($thread['averagerating'], 2));
 				$thread['width'] = $thread['averagerating']*20;
 				$thread['numratings'] = intval($thread['numratings']);
