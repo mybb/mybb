@@ -526,7 +526,7 @@ function change_admin_permission($tab, $page="", $default=1)
 		
 		if(!empty($page))
 		{
-			if($uid == 0)
+			if($adminoption['uid'] == 0)
 			{
 				$adminoption['permissions'][$tab][$page] = 0;
 			}
@@ -537,7 +537,7 @@ function change_admin_permission($tab, $page="", $default=1)
 		}
 		else
 		{
-			if($uid == 0)
+			if($adminoption['uid'] == 0)
 			{
 				$adminoption['permissions'][$tab]['tab'] = 0;
 			}

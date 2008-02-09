@@ -374,7 +374,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   tid int NOT NULL default '0',
   pid int NOT NULL default '0',
   action text NOT NULL default '',
-  data text NOT NULL default '',
+  data text NOT NULL,
   ipaddress varchar(50) NOT NULL default ''
 );";
 
@@ -655,7 +655,7 @@ $tables[] = "CREATE TABLE mybb_tasklog (
 	lid serial,
 	tid int NOT NULL default '0',
 	dateline bigint NOT NULL default '0',
-	data text NOT NULL default '',
+	data text NOT NULL,
 	PRIMARY KEY(lid)
 );";
 

@@ -1794,6 +1794,7 @@ if($mybb->input['action'] == "finduser")
 	while($user = $db->fetch_array($query))
 	{
 		$alt_row = alt_trow();
+		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		$regtime = my_date($mybb->settings['timeformat'], $user['regdate']);

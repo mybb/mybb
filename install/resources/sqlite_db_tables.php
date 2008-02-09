@@ -33,7 +33,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip varchar(40) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0',
-	data text NOT NULL default '',
+	data text NOT NULL,
 );";
 
 $tables[] = "CREATE TABLE mybb_adminviews (
@@ -352,7 +352,7 @@ $tables[] = "CREATE TABLE mybb_moderatorlog (
   tid int NOT NULL default '0',
   pid int NOT NULL default '0',
   action text NOT NULL default '',
-  data text NOT NULL default '',
+  data text NOT NULL,
   ipaddress varchar(50) NOT NULL default ''
 );";
 

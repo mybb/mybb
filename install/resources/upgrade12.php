@@ -628,7 +628,7 @@ function upgrade12_dbchanges2()
 	  dateline bigint(30) NOT NULL default '0',
 	  module varchar(50) NOT NULL default '',
 	  action varchar(50) NOT NULL default '',
-	  data text NOT NULL default '',
+	  data text NOT NULL,
 	  KEY module (module, action)
 	) TYPE=MyISAM{$collation};");
 

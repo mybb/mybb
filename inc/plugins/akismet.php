@@ -292,11 +292,11 @@ function akismet_uninstall()
 
 function akismet_key()
 {
-	global $installed;
+	global $installed, $mybb;
 	
-	if($installed == false)
+	if($installed == false && $mybb->input['plugin'] == "akismet")
 	{
-		global $message, $mybb;
+		global $message;
 		
 		flash_message($message, 'success');
 		admin_redirect("index.php?module=config/settings&action=change&gid=".intval($mybb->akismet_insert_gid)."#row_setting_akismetapikey");
@@ -658,7 +658,7 @@ function akismet_admin_permissions(&$admin_permissions)
 		
 		$lang->load("forum_akismet", false, true);
 		
-		$admin_permissions['canmanageakismet'] = $lang->can_manage_akismet;
+		$admin_permissions['akismet'] = $lang->can_manage_akismet;
 	}
 }
 
