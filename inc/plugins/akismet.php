@@ -205,12 +205,6 @@ function akismet_install()
 	$db->insert_query("settings", $insertarray);
 	
 	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD akismetstopped int NOT NULL");
-	
-	$insertarray = array(
-		'title' => 'akismet_update_check',
-		'cache' => serialize(array('last_check' => time()))
-	);
-	$db->insert_query("datacache", $insertarray);
 
 	rebuild_settings();
 }

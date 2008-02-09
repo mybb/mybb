@@ -47,7 +47,7 @@ function task_dailycleanup($task)
 		}
 	}
 	
-	$cache->update_stats_most_replied_threads();
-	$cache->update_stats_most_viewed_threads();
+	$cache->update_most_replied_threads();
+	$cache->update_most_viewed_threads();
 }
 ?>

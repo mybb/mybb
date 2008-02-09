@@ -62,7 +62,7 @@ $most_replied = $cache->read("most_replied_threads");
 
 if(!$most_replied)
 {
-	$cache->update_stats_most_replied_threads();
+	$cache->update_most_replied_threads();
 	$most_replied = $cache->read("most_replied_threads", true);
 }
 
@@ -86,7 +86,7 @@ $most_viewed = $cache->read("most_viewed_threads");
 
 if(!$most_viewed)
 {
-	$cache->update_stats_most_viewed_threads();
+	$cache->update_most_viewed_threads();
 	$most_viewed = $cache->read("most_viewed_threads", true);
 }
 

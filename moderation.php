@@ -1203,7 +1203,7 @@ switch($mybb->input['action'])
 	// Merge posts - Inline moderation
 	case "multimergeposts":
 		add_breadcrumb($lang->nav_multi_mergeposts);
-		if(!is_moderator($fid, "candeleteposts"))
+		if(!is_moderator($fid, "canmanagethreads"))
 		{
 			error_no_permission();
 		}

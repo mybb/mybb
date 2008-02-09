@@ -664,7 +664,7 @@ class datacache
 		$this->update("spiders", $spiders);
 	}
 	
-	function update_stats_most_replied_threads()
+	function update_most_replied_threads()
 	{
 		global $db, $mybb;
 		
@@ -679,7 +679,7 @@ class datacache
 		$this->update("most_replied_threads", $threads);
 	}
 	
-	function update_stats_most_viewed_threads()
+	function update_most_viewed_threads()
 	{
 		global $db, $mybb;
 		
