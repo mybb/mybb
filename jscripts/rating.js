@@ -18,7 +18,7 @@ var Rating = {
 				elements.each(function(element) {
 					element.onclick = function() { return false; };
 					element.style.cursor = 'default';
-					var element_id = element.href.replace(/.*\?(.*)/, "$1").match(/tid=(.*)&/)[1];
+					var element_id = element.href.replace(/.*\?(.*)/, "$1").match(/tid=(.*)&(.*)&/)[1];
 					element.title = $('current_rating_'+element_id).innerHTML;
 				});
 			}
@@ -57,7 +57,7 @@ var Rating = {
 	add_rating: function(parameterString)
 	{
 		this.spinner = new ActivityIndicator('body', {image: imagepath + "/spinner_big.gif"});
-		var element_id = parameterString.match(/tid=(.*)&/)[1];
+		var element_id = parameterString.match(/tid=(.*)&(.*)&/)[1];
 		new Ajax.Request('ratethread.php?ajax=1&my_post_key='+my_post_key, {
 			method: 'post',
 			postBody: parameterString,
@@ -89,7 +89,7 @@ var Rating = {
 			if(!$('success_rating_' + element_id))
 			{
 				var success = document.createElement('span');
-				var element = $("rating_thread_" + element_id);
+				var element = $('rating_thread_' + element_id);
 				element.parentNode.insertBefore(success, element.nextSibling);
 				element.removeClassName('star_rating_notrated');
 			}
