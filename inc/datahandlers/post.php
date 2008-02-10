@@ -1366,7 +1366,7 @@ class PostDataHandler extends DataHandler
 				// Update the post count if this forum allows post counts to be tracked
 				if($forum['usepostcounts'] != 0)
 				{
-					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
 				}
 			}
 			$visible = 0;
@@ -1382,7 +1382,7 @@ class PostDataHandler extends DataHandler
 				// Update the post count if this forum allows post counts to be tracked
 				if($forum['usepostcounts'] != 0)
 				{
-					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}");
+					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
 				}
 			}
 			$visible = 1;

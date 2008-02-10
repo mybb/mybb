@@ -548,8 +548,8 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				mt_srand((double) microtime() * 1000000);
 			    $new_posthash = md5($mybb->user['uid'].mt_rand());
 				echo "<script type=\"text/javascript\">\n"; 
-				echo "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n"; 
-				echo "if(typeof('inlineModeration') != 'undefind') { Event.observe($('inlinemod_{$pid}'), 'click', inlineModeration.checkItem); }\n";
+				echo "var hash = document.getElementById('posthash'); if(hash) { hash.value = '{$new_posthash}'; }\n";
+				echo "if(typeof(inlineModeration) != 'undefined') { Event.observe($('inlinemod_{$pid}'), 'click', inlineModeration.checkItem); }\n";
 				echo "</script>\n"; 
 				exit;				
 			}
