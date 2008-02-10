@@ -420,7 +420,7 @@ if($mybb->input['action'] == "orphans")
 		}
 
 		// Now send the user to the final page
-		$form = new Form("index.php?module=forum/attachments&amp;action=orphans&amp;step=3", "post", 0, "", "redirect_form");
+		$form = new Form("index.php?module=forum/attachments&amp;action=orphans&amp;step=3", "post", "redirect_form", 0, "");
 		// Scan complete
 		if($mybb->input['bad_attachments'])
 		{
@@ -550,7 +550,7 @@ if($mybb->input['action'] == "orphans")
 		scan_attachments_directory();
 		global $bad_attachments;
 
-		$form = new Form("index.php?module=forum/attachments&amp;action=orphans&amp;step=2", "post", 0, "", "redirect_form");
+		$form = new Form("index.php?module=forum/attachments&amp;action=orphans&amp;step=2", "post", "redirect_form", 0, "");
 		// Scan complete
 		if(is_array($bad_attachments) && count($bad_attachments) > 0)
 		{

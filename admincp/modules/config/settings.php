@@ -1147,7 +1147,7 @@ if(!$mybb->input['action'])
 	
 	// Search form
 	echo "<div style=\"text-align: right; margin-bottom: 3px;\">";
-	$search = new Form("index.php", 'get', 0, 'settings_search', 'settings_search');
+	$search = new Form("index.php", 'get', 'settings_search', 0, 'settings_search');
 	echo $search->generate_hidden_field('module', 'config/settings');
 	echo $search->generate_hidden_field('action', 'change');
 	echo $search->generate_text_box('search', $lang->settings_search, array('id' => 'search', 'class' => 'search_default field150 field_small'));

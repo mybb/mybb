@@ -2062,7 +2062,7 @@ function build_users_view($view)
 	}
 
 	$built_view = "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
-	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 0, '', 'search_form', true);
+	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 'search_form', 0, '', true);
 	if($view['conditions']['username'])
 	{
 		$default_class = '';

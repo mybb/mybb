@@ -351,7 +351,7 @@ if($mybb->input['action'] == "backup")
 		$table_selects[$table_name] = $table_name;
 	}
 	
-	$form = new Form("index.php?module=tools/backupdb&amp;action=backup", "post", 0, "table_selection", "table_selection");
+	$form = new Form("index.php?module=tools/backupdb&amp;action=backup", "post", "table_selection", 0, "table_selection");
 	
 	$table->construct_cell("{$lang->table_select_desc}\n<br /><br />\n<a href=\"javascript:changeSelection('select', 0);\">{$lang->select_all}</a><br />\n<a href=\"javascript:changeSelection('deselect', 0);\">{$lang->deselect_all}</a><br />\n<a href=\"javascript:changeSelection('forum', '".TABLE_PREFIX."');\">{$lang->select_forum_tables}</a>\n<br /><br />\n<div class=\"form_row\">".$form->generate_select_box("tables[]", $table_selects, false, array('multiple' => true, 'id' => 'table_select', 'size' => 20))."</div>", array('rowspan' => 5, 'width' => '50%'));
 	$table->construct_row();

@@ -29,7 +29,7 @@ class DefaultForm
 	 * @param boolean Should this form be returned instead of output to the browser?
 	 * @param boolean Should this form be returned instead of output to the browser?
 	 */
-	function __construct($script, $method, $allow_uploads=0, $name="", $id="", $return=false)
+	function __construct($script, $method, $id="", $allow_uploads=0, $name="", $return=false)
 	{
 		global $mybb;
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
@@ -37,6 +37,12 @@ class DefaultForm
 		{
 			$form .= " type=\"multipart/form-data\"";
 		}
+		
+		if($name != "")
+		{
+			$form .= " name=\"{$name}\"";
+		}
+		
 		if($id != "")
 		{
 			$form .= " id=\"{$id}\"";
