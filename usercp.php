@@ -1906,11 +1906,11 @@ if($mybb->input['action'] == "do_editlists")
 
 	if($mybb->input['manage'] == "ignored")
 	{
-		$existing_list = explode(",", $mybb->user['ignorelist']);
+		$existing_users = explode(",", $mybb->user['ignorelist']);
 	}
 	else
 	{
-		$existing_list = explode(",", $mybb->user['buddylist']);
+		$existing_users = explode(",", $mybb->user['buddylist']);
 	}
 
 	// Adding one or more users to this list
@@ -1923,6 +1923,12 @@ if($mybb->input['action'] == "do_editlists")
 		$users = array_map("trim", $users);
 		foreach($users as $key => $username)
 		{
+			if(empty($username))
+			{
+				unset($users[$key]);
+				continue;
+			}
+			
 			if(my_strtoupper($mybb->user['username']) == my_strtoupper($username))
 			{
 				$adding_self = true;
@@ -1941,7 +1947,7 @@ if($mybb->input['action'] == "do_editlists")
 				++$found_users;
 				
 				// Make sure we're not adding a duplicate
-				if(in_array($user['uid'], $existing_list))
+				if(in_array($user['uid'], $existing_users))
 				{
 					continue;
 				}
@@ -1993,10 +1999,10 @@ if($mybb->input['action'] == "do_editlists")
 	else if($mybb->input['delete'])
 	{
 		// Check if user exists on the list
-		$key = array_search($mybb->input['delete'], $existing_list);
+		$key = array_search($mybb->input['delete'], $existing_users);
 		if($key !== false)
 		{
-			unset($existing_list[$key]);
+			unset($existing_users[$key]);
 			$user = get_user($mybb->input['delete']);
 			if($mybb->input['manage'] == "ignored")
 			{
