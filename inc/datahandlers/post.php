@@ -306,7 +306,7 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 		
 		// Are we even turned on?
-		if(empty($mybb->settings['postmergehrs']))
+		if(empty($mybb->settings['postmergemins']))
 		{
 			return true;
 		}
@@ -342,7 +342,7 @@ class PostDataHandler extends DataHandler
 		$thread = $db->fetch_array($query);
 		
 		// Check to see if the same author has posted within the merge post time limit
-		if((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergehrs']) != "") && (TIME_NOW-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
+		if((intval($mybb->settings['postmergemins']) != 0 && trim($mybb->settings['postmergemins']) != "") && (TIME_NOW-$thread['lastpost']) > (intval($mybb->settings['postmergemins'])*60))
 		{
 			return true;
 		}

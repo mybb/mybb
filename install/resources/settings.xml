@@ -376,7 +376,7 @@
 			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaimage">
-			<title><![CDATA[CAPTCHA Images for Registration &amp; Posting]]></title>
+			<title><![CDATA[CAPTCHA Images for Registration & Posting]]></title>
 			<description><![CDATA[If yes, and GD is installed, an image will be shown during registration and posting where users are required to enter the text contained within the image to continue. This helps prevent automated registrations and postings.]]></description>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
@@ -632,8 +632,8 @@ admin=Administrator Activation]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigmycode">
-			<title>Allow myCode in Signatures</title>
-			<description><![CDATA[Do you want to allow myCode to be used in users' signatures?]]></description>
+			<title>Allow MyCode in Signatures</title>
+			<description><![CDATA[Do you want to allow MyCode to be used in users' signatures?]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
@@ -681,7 +681,7 @@ admin=Administrator Activation]]></optionscode>
 		</setting>
 		<setting name="sigcountmycode">
 			<title>MyCode affects signature length</title>
-			<description><![CDATA[Do you want myCode to be counted as part of the limit when users use myCode in their signature?]]></description>
+			<description><![CDATA[Do you want MyCode to be counted as part of the limit when users use MyCode in their signature?]]></description>
 			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>

@@ -44,9 +44,9 @@ $l['d6_document'] = "During the course of your visit, you may encounter a thread
 <br /><br />Additionally, a moderator of a forum may have closed a thread meaning that users cannot reply to it. There is no way for a user to open such a thread without the help of a moderator or administrator.";
 
 // Help Document 7
-$l['d7_name'] = "myCode";
-$l['d7_desc'] = "Learn how to use myCode to enhance your posts.";
-$l['d7_document'] = "You can use myCode, a simplified version of HTML, in your posts to create certain effects.
+$l['d7_name'] = "MyCode";
+$l['d7_desc'] = "Learn how to use MyCode to enhance your posts.";
+$l['d7_document'] = "You can use MyCode, a simplified version of HTML, in your posts to create certain effects.
 <p><br />[b]This text is bold[/b]<br />&nbsp;&nbsp;&nbsp;<b>This text is bold</b>
 <p>[i]This text is italicized[/i]<br />&nbsp;&nbsp;&nbsp;<i>This text is italicized</i>
 <p>[u]This text is underlined[/u]<br />&nbsp;&nbsp;&nbsp;<u>This text is underlined</u>
