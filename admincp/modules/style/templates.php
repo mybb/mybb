@@ -438,7 +438,10 @@ if($mybb->input['action'] == "edit_template")
 	}
 	else
 	{
-		$query = $db->simple_select("templates", "*", "tid='".intval($mybb->input['tid'])."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("templates", "title", "tid='".intval($mybb->input['tid'])."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'ASC', 'limit' => 1));
+		$title = $db->fetch_field($query, "title");
+		
+		$query = $db->simple_select("templates", "*", "title='".$db->escape_string($title)."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 		$template = $db->fetch_array($query);
 	}
 	
@@ -1198,14 +1201,14 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 							
 			// If this template is not a master template, we simple add it to the list
 			if($template['sid'] != -2)
-			{					
+			{
 				$template['original'] = false;
 				$template['modified'] = false;
 				$template_groups[$group]['templates'][$template['title']] = $template;
 			}
 			// Otherwise, if we are down to master templates we need to do a few extra things
 			else
-			{
+			{				
 				// Master template that hasn't been customised in the set we have expanded
 				if(!isset($template_groups[$group]['templates'][$template['title']]))
 				{
