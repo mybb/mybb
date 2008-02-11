@@ -264,7 +264,7 @@ if($mybb->input['action'] == "copy")
 
 if($mybb->input['action'] == "editmod")
 {
-	$query = $db->simple_select("moderators", "*", "uid='".intval($mybb->input['mid'])."'");
+	$query = $db->simple_select("moderators", "*", "mid='".intval($mybb->input['mid'])."'");
 	$mod_data = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_forum_management_editmod");
@@ -1611,7 +1611,7 @@ if(!$mybb->input['action'])
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
 					
 					// Log admin action
-					log_admin_action('addmod', $new_mod['fid'], $mod['username'], $fid, $forum['name']);
+					log_admin_action('addmod', $new_mod['fid'], $user['username'], $fid, $forum['name']);
 					
 					flash_message($lang->success_moderator_added, 'success');
 					admin_redirect("index.php?module=forum/management&action=editmod&mid={$mid}");

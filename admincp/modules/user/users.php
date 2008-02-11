@@ -1687,16 +1687,6 @@ function build_users_view($view)
 		$view_title .= " (".htmlspecialchars_uni($view['title']).")";
 	}
 
-	if($mybb->input['username'])
-	{
-		if(!is_array($admin_view['conditions']))
-		{
-			$admin_view['conditions'] = unserialize($admin_view['conditions']);
-		}
-		$admin_view['conditions']['username'] = $mybb->input['username'];
-	}
-
-
 	// Build the URL to this view
 	if(!$view['url'])
 	{
@@ -1710,6 +1700,10 @@ function build_users_view($view)
 	{
 		$view['fields'] = unserialize($view['fields']);
 	}
+	if($mybb->input['username'])
+    {
+        $view['conditions']['username'] = $mybb->input['username'];
+    }
 	if($view['vid'])
 	{
 		$view['url'] .= "&amp;vid={$view['vid']}";
@@ -2062,7 +2056,14 @@ function build_users_view($view)
 	}
 
 	$built_view = "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
-	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 'search_form', 0, '', true);
+	$search_action = $view['url'];
+	// stop &username= in the query string
+	if($view_upos = strpos($search_action, '&amp;username='))
+	{
+		$search_action = substr($search_action, 0, $view_upos);
+	}
+	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 'search_form', 0, '');
+	$built_view .= $search->generate_hidden_field('action', 'search');
 	if($view['conditions']['username'])
 	{
 		$default_class = '';
@@ -2102,13 +2103,19 @@ function build_users_view($view)
 				this.value = '{$lang->search_for_user}';
 			}
 		}
+		// fix the styling used if we have a different default value
+        if(search.value != '{$lang->search_for_user}')
+        {
+            $(search).removeClassName('search_default');
+        }
 		</script>";
 	$built_view .= "<input type='image' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
 	if($view['popup'])
 	{
 		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>";
 	}
-	$search->end();
+	$search->_return = true;
+	$built_view .= $search->end();
 	$built_view .= "</div>\n";
 
 	$built_view .= $pagination;

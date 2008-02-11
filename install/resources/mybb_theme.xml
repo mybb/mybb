@@ -4497,7 +4497,7 @@ body {
 						</td>
 					</tr>
 				</table>
-			</tr>
+			</td>
 		</tr>
 		
 		<tr>
@@ -5721,7 +5721,6 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<div class="author smalltext">{$thread['profilelink']}</div>
 		</div>
 	</td>
-	<td align="center" class="{$bgcolor}">{$thread['profilelink']}</td>
 	<td class="{$bgcolor}">{$thread['forumlink']}</td>
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$thread['tid']});">{$thread['replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
@@ -5751,8 +5750,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				</td>
 			</tr>
 			<tr>
-				<td class="tcat" align="center" colspan="3" width="42%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong></span></td>
-				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
+				<td class="tcat" align="center" colspan="3" width="56%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=subject&amp;order=asc">{$lang->thread}</a> {$orderarrow['subject']}</strong> / <strong><a href="{$sorturl}&amp;sortby=starter&amp;order=asc">{$lang->author}</a> {$orderarrow['starter']}</strong></span></td>
 				<td class="tcat" align="center" width="14%"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=forum&amp;order=asc">{$lang->forum}</a> {$orderarrow['forum']}</strong></span></td>
 				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
 				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a> {$orderarrow['views']}</strong></span></td>
@@ -6301,7 +6299,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 ]]></template>
 		<template name="forumdisplay_usersbrowsing_user" version="1400"><![CDATA[{$comma}{$user['profilelink']}{$invisiblemark}]]></template>
-		<template name="forumdisplay_usersbrowsing" version="120"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span>]]></template>
+		<template name="forumdisplay_usersbrowsing" version="1400"><![CDATA[<span class="smalltext">{$lang->users_browsing_forum} {$onlinemembers}{$onlinesep}{$invisonline}{$onlinesep2}{$guestsonline}</span><br />]]></template>
 		<template name="member_lostpw" version="120"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->lost_pw}</title>
