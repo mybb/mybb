@@ -529,7 +529,7 @@ if($mybb->input['action'] == "search_replace")
 				$query = $db->simple_select("templates", "tid, title, template, sid", "template LIKE '%".$db->escape_string($mybb->input['find'])."%'", array('order_by' => 'sid, title', 'order_dir' => 'ASC'));
 				if($db->num_rows($query) == 0)
 				{
-					$table->construct_cell(sprintf($lang->search_noresults, htmlspecialchars_uni($mybb->input['find'])), array("class" => "align_center"));
+					$table->construct_cell($lang->sprintf($lang->search_noresults, htmlspecialchars_uni($mybb->input['find'])), array("class" => "align_center"));
 							
 					$table->construct_row();
 				}
@@ -553,7 +553,7 @@ if($mybb->input['action'] == "search_replace")
 					{
 						++$count;
 						
-						$search_header = sprintf($lang->search_header, htmlspecialchars_uni($mybb->input['find']), $template_sets[$sid]);						
+						$search_header = $lang->sprintf($lang->search_header, htmlspecialchars_uni($mybb->input['find']), $template_sets[$sid]);						
 						$table->construct_header($search_header, array("colspan" => 2));
 		
 						foreach($templates as $title => $template)
@@ -578,7 +578,7 @@ if($mybb->input['action'] == "search_replace")
 										);
 										$db->insert_query("templates", $new_template);
 										$new_tid = $db->insert_id();
-										$label = sprintf($lang->search_created_custom, $template['title']);
+										$label = $lang->sprintf($lang->search_created_custom, $template['title']);
 										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$new_tid}&amp;sid=1";
 									}
 									else
@@ -589,7 +589,7 @@ if($mybb->input['action'] == "search_replace")
 											"template" => $db->escape_string($newtemplate)
 										);
 										$db->update_query("templates", $updatedtemplate, "tid='".$template['tid']."'");
-										$label = sprintf($lang->search_updated, $template['title']);
+										$label = $lang->sprintf($lang->search_updated, $template['title']);
 										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$template['sid']}";
 									}
 								}
@@ -598,12 +598,12 @@ if($mybb->input['action'] == "search_replace")
 									// Just show that the term was found
 									if($template['sid'] == -2)
 									{
-										$label = sprintf($lang->search_found, $template['title']);
+										$label = $lang->sprintf($lang->search_found, $template['title']);
 										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=1";
 									}
 									else
 									{
-										$label = sprintf($lang->search_found, $template['title']);
+										$label = $lang->sprintf($lang->search_found, $template['title']);
 										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$template['sid']}";
 									}
 								}
@@ -727,7 +727,7 @@ if($mybb->input['action'] == "search_replace")
 					
 					if($count == 1)
 					{
-						$table->output(sprintf($lang->search_names_header, htmlspecialchars_uni($mybb->input['title'])));
+						$table->output($lang->sprintf($lang->search_names_header, htmlspecialchars_uni($mybb->input['title'])));
 					}
 					else
 					{

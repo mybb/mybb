@@ -172,8 +172,13 @@ class DB_PgSQL
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type])) break;
-			if(array_key_exists('hostname', $connections[$type])) {
+			if(!is_array($connections[$type]))
+			{
+				break;
+			}
+			
+			if(array_key_exists('hostname', $connections[$type]))
+			{
 				$details = $connections[$type];
 				unset($connections);
 				$connections[$type][] = $details;
@@ -186,7 +191,11 @@ class DB_PgSQL
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "pg_connect";
-				if($single_connection['pconnect']) $connect_function = "pg_pconnect";
+				if($single_connection['pconnect'])
+				{
+					$connect_function = "pg_pconnect";
+				}
+				
 				$link = $type."_link";
 
 				$this->get_execution_time();
@@ -1017,7 +1026,7 @@ class DB_PgSQL
 
 			if(strpos($row['type'], 'numeric') !== false)
 			{
-				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
+				$line .= '('.$lang->sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
 			}
 
 			if(!empty($row['rowdefault']))

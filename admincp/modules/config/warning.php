@@ -444,7 +444,7 @@ if($mybb->input['action'] == "add_type")
 
 		if(!is_numeric($mybb->input['points']) || $mybb->input['points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['points'] < 0)
 		{
-			$errors[] = sprintf($lang->error_missing_type_points, $mybb->settings['maxwarningpoints']);
+			$errors[] = $lang->sprintf($lang->error_missing_type_points, $mybb->settings['maxwarningpoints']);
 		}
 
 		if(!$errors)
@@ -531,7 +531,7 @@ if($mybb->input['action'] == "edit_type")
 
 		if(!is_numeric($mybb->input['points']) || $mybb->input['points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['points'] < 0)
 		{
-			$errors[] = sprintf($lang->error_missing_type_points, $mybb->settings['maxwarningpoints']);
+			$errors[] = $lang->sprintf($lang->error_missing_type_points, $mybb->settings['maxwarningpoints']);
 		}
 
 		if(!$errors)
@@ -666,19 +666,19 @@ if($mybb->input['action'] == "levels")
 			$ban_length = fetch_friendly_expiration($action['length']);
 			$lang_str = "expiration_".$ban_length['period'];
 			$group_name = $groupscache[$action['usergroup']]['title'];
-			$type = sprintf($lang->move_banned_group, $group_name, $ban_length['time'], $lang->$lang_str);
+			$type = $lang->sprintf($lang->move_banned_group, $group_name, $ban_length['time'], $lang->$lang_str);
 		}
 		else if($action['type'] == 2)
 		{
 			$period = fetch_friendly_expiration($action['length']);
 			$lang_str = "expiration_".$period['period'];
-			$type = sprintf($lang->suspend_posting, $period['time'], $lang->$lang_str);
+			$type = $lang->sprintf($lang->suspend_posting, $period['time'], $lang->$lang_str);
 		}
 		else if($action['type'] == 3)
 		{
 			$period = fetch_friendly_expiration($action['length']);
 			$lang_str = "expiration_".$period['period'];
-			$type = sprintf($lang->moderate_new_posts, $period['time'], $lang->$lang_str);
+			$type = $lang->sprintf($lang->moderate_new_posts, $period['time'], $lang->$lang_str);
 		}
 		$table->construct_cell($type);
 		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));

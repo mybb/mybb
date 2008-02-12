@@ -466,7 +466,7 @@ if(!$mybb->input['action'])
 	
 	foreach($languages as $key1 => $langname1)
 	{
-		$langselectlangs[$key1] = sprintf($lang->edit_with, $langname1);
+		$langselectlangs[$key1] = $lang->sprintf($lang->edit_with, $langname1);
 	}
 	
 	foreach($languages as $key => $langname)

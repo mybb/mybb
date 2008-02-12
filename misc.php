@@ -120,7 +120,7 @@ elseif($mybb->input['action'] == "rules")
 		}
 		if(!$forum['rulestitle'])
 		{
-			$forum['rulestitle'] = sprintf($lang->forum_rules, $forum['name']);
+			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
 		}
 
 		require_once MYBB_ROOT."inc/class_parser.php";
@@ -334,11 +334,11 @@ elseif($mybb->input['action'] == "buddypopup")
 			}
 			if($buddy['lastactive'])
 			{
-				$last_active = sprintf($lang->last_active, my_date($mybb->settings['dateformat'], $buddy['lastactive']).", ".my_date($mybb->settings['timeformat'], $buddy['lastactive']));
+				$last_active = $lang->sprintf($lang->last_active, my_date($mybb->settings['dateformat'], $buddy['lastactive']).", ".my_date($mybb->settings['timeformat'], $buddy['lastactive']));
 			}
 			else
 			{
-				$last_active = sprintf($lang->last_active, $lang->never);
+				$last_active = $lang->sprintf($lang->last_active, $lang->never);
 			}
 
 			if($buddy['avatar'])
@@ -534,10 +534,10 @@ elseif($mybb->input['action'] == "imcenter")
 	{
 		$navigationbar .= "$navsep<a href=\"misc.php?action=imcenter&amp;imtype=yahoo&amp;uid=$uid\">$lang->yahoo_im</a>";
 	}
-	$lang->msn_address_is = sprintf($lang->msn_address_is, $user['username']);
-	$lang->send_y_message = sprintf($lang->send_y_message, $user['username']);
-	$lang->view_y_profile = sprintf($lang->view_y_profile, $user['username']);
-	$lang->send_icq_message = sprintf($lang->send_icq_message, $user['username']);
+	$lang->msn_address_is = $lang->sprintf($lang->msn_address_is, $user['username']);
+	$lang->send_y_message = $lang->sprintf($lang->send_y_message, $user['username']);
+	$lang->view_y_profile = $lang->sprintf($lang->view_y_profile, $user['username']);
+	$lang->send_icq_message = $lang->sprintf($lang->send_icq_message, $user['username']);
 	
 	$imtemplate = "misc_imcenter_".$mybb->input['imtype'];
 	eval("\$imcenter = \"".$templates->get($imtemplate)."\";");

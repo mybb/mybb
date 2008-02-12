@@ -106,11 +106,11 @@ if($mybb->input['action'] == "add")
 		$limit_string = '<br /><br />'.$lang->limit_intro;
 		if($upload_max_filesize)
 		{
-			$limit_string .= '<br />'.sprintf($lang->limit_upload_max_filesize, $upload_max_filesize);
+			$limit_string .= '<br />'.$lang->sprintf($lang->limit_upload_max_filesize, $upload_max_filesize);
 		}
 		if($post_max_size)
 		{
-			$limit_string .= '<br />'.sprintf($lang->limit_post_max_size, $post_max_size);
+			$limit_string .= '<br />'.$lang->sprintf($lang->limit_post_max_size, $post_max_size);
 		}
 	}
 	
@@ -219,11 +219,11 @@ if($mybb->input['action'] == "edit")
 		$limit_string = '<br /><br />'.$lang->limit_intro;
 		if($upload_max_filesize)
 		{
-			$limit_string .= '<br />'.sprintf($lang->limit_upload_max_filesize, $upload_max_filesize);
+			$limit_string .= '<br />'.$lang->sprintf($lang->limit_upload_max_filesize, $upload_max_filesize);
 		}
 		if($post_max_size)
 		{
-			$limit_string .= '<br />'.sprintf($lang->limit_post_max_size, $post_max_size);
+			$limit_string .= '<br />'.$lang->sprintf($lang->limit_post_max_size, $post_max_size);
 		}
 	}
 	

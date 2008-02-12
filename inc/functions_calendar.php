@@ -877,7 +877,7 @@ function fetch_friendly_repitition($event)
 			{
 				return $lang->repeats_every_day;
 			}
-			return sprintf($lang->repeats_every_x_days, $event['repeats']['days']);
+			return $lang->sprintf($lang->repeats_every_x_days, $event['repeats']['days']);
 			break;
 		case 2:
 			return $lang->repeats_on_weekdays;
@@ -903,22 +903,22 @@ function fetch_friendly_repitition($event)
 			{
 				if($weekdays)
 				{
-					return sprintf($lang->every_week_on_days, $weekdays);
+					return $lang->sprintf($lang->every_week_on_days, $weekdays);
 				}
 				else
 				{
-					return sprintf($lang->every_week);
+					return $lang->sprintf($lang->every_week);
 				}
 			}
 			else
 			{
 				if($weekdays)
 				{
-					return sprintf($lang->every_x_weeks_on_days, $event['repeats']['weeks'], $weekdays);
+					return $lang->sprintf($lang->every_x_weeks_on_days, $event['repeats']['weeks'], $weekdays);
 				}
 				else
 				{
-					return sprintf($lang->every_x_weeks, $event['repeats']['weeks']);
+					return $lang->sprintf($lang->every_x_weeks, $event['repeats']['weeks']);
 				}
 			}
 			break;
@@ -927,11 +927,11 @@ function fetch_friendly_repitition($event)
 			{
 				if($event['repeats']['months'] == 1)
 				{
-					return sprintf($lang->every_month_on_day, $event['repeats']['day']);
+					return $lang->sprintf($lang->every_month_on_day, $event['repeats']['day']);
 				}
 				else
 				{
-					return sprintf($lang->every_x_months_on_day, $event['repeats']['day'], $event['repeats']['months']);
+					return $lang->sprintf($lang->every_x_months_on_day, $event['repeats']['day'], $event['repeats']['months']);
 				}
 			}
 			else
@@ -941,11 +941,11 @@ function fetch_friendly_repitition($event)
 				$occurance = $lang->$occurance;
 				if($event['repeats']['months'] == 1)
 				{
-					return sprintf($lang->every_month_on_weekday, $occurance, $weekday_name);
+					return $lang->sprintf($lang->every_month_on_weekday, $occurance, $weekday_name);
 				}
 				else
 				{
-					return sprintf($lang->every_x_months_on_weekday, $occurance, $weekday_name, $event['repeats']['months']);
+					return $lang->sprintf($lang->every_x_months_on_weekday, $occurance, $weekday_name, $event['repeats']['months']);
 				} 
 			}
 			break;
@@ -955,11 +955,11 @@ function fetch_friendly_repitition($event)
 			{
 				if($event['repeats']['years'] == 1)
 				{
-					return sprintf($lang->every_year_on_day, $event['repeats']['day'], $month);
+					return $lang->sprintf($lang->every_year_on_day, $event['repeats']['day'], $month);
 				}
 				else
 				{
-					return sprintf($lang->every_x_years_on_day, $event['repeats']['day'], $month, $event['repeats']['years']);
+					return $lang->sprintf($lang->every_x_years_on_day, $event['repeats']['day'], $month, $event['repeats']['years']);
 				}
 			}
 			else
@@ -969,11 +969,11 @@ function fetch_friendly_repitition($event)
 				$occurance = $lang->$occurance;
 				if($event['repeats']['years'] == 1)
 				{
-					return sprintf($lang->every_year_on_weekday, $occurance, $weekday_name, $month);
+					return $lang->sprintf($lang->every_year_on_weekday, $occurance, $weekday_name, $month);
 				}
 				else
 				{
-					return sprintf($lang->every_x_year_on_weekday, $occurance, $weekday_name, $month, $event['repeats']['years']);
+					return $lang->sprintf($lang->every_x_year_on_weekday, $occurance, $weekday_name, $month, $event['repeats']['years']);
 				}
 			}
 			break;

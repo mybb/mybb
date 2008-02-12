@@ -715,7 +715,7 @@ if($mybb->input['action'] == "edit")
 						list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
 						if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 						{
-							$lang->error_avatartoobig = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+							$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 							$avatar_error = $lang->error_avatartoobig;
 						}
 					}
@@ -801,7 +801,7 @@ if($mybb->input['action'] == "edit")
 	// Is this user a COPPA user? We show a warning & activate link
 	if($user['coppauser'])
 	{
-		echo sprintf($lang->warning_coppa_user, $user['uid']);
+		echo $lang->sprintf($lang->warning_coppa_user, $user['uid']);
 	}
 
 	$tabs = array(
@@ -1129,7 +1129,7 @@ if($mybb->input['action'] == "edit")
 	}
 	echo "<div id=\"tab_signature\">\n";
 	$form_container = new FormContainer("{$lang->signature}: {$user['username']}");
-	$form_container->output_row($lang->signature, sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
+	$form_container->output_row($lang->signature, $lang->sprintf($lang->signature_desc, $sig_mycode, $sig_smilies, $sig_imgcode, $sig_html), $signature_editor, 'signature');
 
 	$signature_options = array(
 		$form->generate_radio_button("update_posts", "enable", $lang->enable_sig_in_all_posts, array("checked" => 0)),

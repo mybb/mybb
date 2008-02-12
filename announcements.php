@@ -78,7 +78,7 @@ if(!$announcementarray)
 $announcementarray['dateline'] = $announcementarray['startdate'];
 $announcementarray['userusername'] = $announcementarray['username'];
 $announcement = build_postbit($announcementarray, 3);
-$lang->forum_announcement = sprintf($lang->forum_announcement, $announcementarray['subject']);
+$lang->forum_announcement = $lang->sprintf($lang->forum_announcement, $announcementarray['subject']);
 
 $plugins->run_hooks("announcements_end");
 

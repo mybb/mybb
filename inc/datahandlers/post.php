@@ -862,8 +862,8 @@ class PostDataHandler extends DataHandler
 					$emailsubject = $langcache[$uselang]['emailsubject_subscription'];
 					$emailmessage = $langcache[$uselang]['email_subscription'];
 				}
-				$emailsubject = sprintf($emailsubject, $subject);
-				$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $thread['tid'], $subscribedmember['subscriptionkey']);
+				$emailsubject = $lang->sprintf($emailsubject, $subject);
+				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], $thread['tid'], $subscribedmember['subscriptionkey']);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',
@@ -1267,8 +1267,8 @@ class PostDataHandler extends DataHandler
 						$emailsubject = $langcache[$uselang]['emailsubject_forumsubscription'];
 						$emailmessage = $langcache[$uselang]['email_forumsubscription'];
 					}
-					$emailsubject = sprintf($emailsubject, $forum['name']);
-					$emailmessage = sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $this->tid, $thread['fid']);
+					$emailsubject = $lang->sprintf($emailsubject, $forum['name']);
+					$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $thread['username'], $forum['name'], $mybb->settings['bbname'], $thread['subject'], $excerpt, $mybb->settings['bburl'], $this->tid, $thread['fid']);
 					$new_email = array(
 						"mailto" => $db->escape_string($subscribedmember['email']),
 						"mailfrom" => '',

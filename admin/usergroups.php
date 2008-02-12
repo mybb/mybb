@@ -239,7 +239,7 @@ if($mybb->input['action'] == "do_addgroupleader" || $mybb->input['action'] == "d
 	else
 	{
 		$db->insert_query("groupleaders", $leaderarray);
-		$success_text = sprintf($lang->leader_added, $usergroup['title']);
+		$success_text = $lang->sprintf($lang->leader_added, $usergroup['title']);
 	}
 
 	cpredirect("usergroups.php?".SID."&action=groupleaders&gid=".$mybb->input['gid'], $success_text);
@@ -470,8 +470,8 @@ if($mybb->input['action'] == "delete")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."usergroups WHERE gid='".intval($mybb->input['gid'])."'");
 	$usergroup = $db->fetch_array($query);
 	$plugins->run_hooks("admin_usergroups_delete");
-	$lang->delete_group = sprintf($lang->delete_group, $usergroup['title']);
-	$lang->confirm_delete_group = sprintf($lang->confirm_delete_group, $usergroup['title']);
+	$lang->delete_group = $lang->sprintf($lang->delete_group, $usergroup['title']);
+	$lang->confirm_delete_group = $lang->sprintf($lang->confirm_delete_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_delete");
 	makehiddencode("gid", $mybb->input['gid']);
@@ -504,7 +504,7 @@ if($mybb->input['action'] == "edit")
 		$moderate = 0;
 	}
 	$plugins->run_hooks("admin_usergroups_edit");
-	$lang->edit_group = sprintf($lang->edit_group, $usergroup['title']);
+	$lang->edit_group = $lang->sprintf($lang->edit_group, $usergroup['title']);
 	cpheader();
 	startform("usergroups.php", "", "do_edit");
 	makehiddencode("gid", htmlspecialchars($mybb->input['gid']));
@@ -647,7 +647,7 @@ if($mybb->input['action'] == "groupleaders")
 	$usergroup = $db->fetch_array($query);
 	$plugins->run_hooks("admin_usergroups_groupleaders");
 	cpheader();
-	$lang->manage_group_leaders_for = sprintf($lang->manage_group_leaders_for, $usergroup['title']);
+	$lang->manage_group_leaders_for = $lang->sprintf($lang->manage_group_leaders_for, $usergroup['title']);
 	startform("usergroups.php", "", "do_groupleaders");
 	makehiddencode("gid", $mybb->input['gid']);
 	starttable();
@@ -737,7 +737,7 @@ function radioAll(formName, value)
 -->
 </script>
 <?php
-	$lang->manage_requests_for = sprintf($lang->manage_requests_for, $usergroup['title']);
+	$lang->manage_requests_for = $lang->sprintf($lang->manage_requests_for, $usergroup['title']);
 	startform("usergroups.php", "reqform", "do_joinrequests");
 	makehiddencode("gid", $mybb->input['gid']);
 	starttable();

@@ -139,7 +139,7 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 
-		$output->print_contents(sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>");
+		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")
@@ -154,7 +154,7 @@ else
 			{
 				$output->print_header();
 				$lang->plugin_warning = "<input type=\"hidden\" name=\"from\" value=\"".intval($mybb->input['from'])."\" />\n<input type=\"hidden\" name=\"donewarning\" value=\"true\" />\n<div class=\"error\"><strong><span style=\"color: red\">Warning:</span></strong> <p>There are still ".count($plugins['active'])." plugin(s) active. Active plugins can sometimes cause problems during an upgrade procedure or may break your forum afterward. It is <strong>strongly</strong> reccommended that you deactivate your plugins before continuing.</p></div> <br />";
-				$output->print_contents(sprintf($lang->plugin_warning, $mybb->version));
+				$output->print_contents($lang->sprintf($lang->plugin_warning, $mybb->version));
 				$output->print_footer("doupgrade");
 			}
 			else
@@ -349,7 +349,7 @@ function buildsettings()
 	$synccount = sync_settings($system_upgrade_detail['revert_all_settings']);
 
 	$output->print_header($lang->upgrade_settings_sync);
-	$output->print_contents(sprintf($lang->upgrade_settings_sync_success, $synccount[1], $synccount[0]));
+	$output->print_contents($lang->sprintf($lang->upgrade_settings_sync_success, $synccount[1], $synccount[0]));
 	$output->print_footer("buildcaches");
 }
 
@@ -398,14 +398,14 @@ function upgradedone()
 		@fclose($lock);
 		if($written)
 		{
-			$lock_note = sprintf($lang->upgrade_locked, $config['admin_dir']);
+			$lock_note = $lang->sprintf($lang->upgrade_locked, $config['admin_dir']);
 		}
 	}
 	if(!$written)
 	{
 		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
 	}
-	$output->print_contents(sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
+	$output->print_contents($lang->sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }
 

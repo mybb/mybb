@@ -72,7 +72,7 @@ function archive_header($title="", $fulltitle="", $fullurl="")
 <h1><a href="<?php echo $mybb->settings['bburl']; ?>/index.php"><?php echo $mybb->settings['bbname']; ?></a></h1>
 <div class="navigation"><?php echo $nav; ?></div>
 <div id="fullversion"><strong><?php echo $lang->archive_fullversion; ?></strong> <a href="<?php echo $fullurl; ?>"><?php echo $fulltitle; ?></a></div>
-<div id="infobox"><?php echo sprintf($lang->archive_note, $fullurl); ?></div>
+<div id="infobox"><?php echo $lang->sprintf($lang->archive_note, $fullurl); ?></div>
 <div id="content">
 <?php
 	$sent_header = 1;

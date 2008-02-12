@@ -335,7 +335,7 @@ if($mybb->input['action'] == "editmod")
 		$mod_data = $mybb->input;
 	}	
 
-	$form_container = new FormContainer(sprintf($lang->edit_mod_for, $mod_data['username']));
+	$form_container = new FormContainer($lang->sprintf($lang->edit_mod_for, $mod_data['username']));
 	$form_container->output_row($lang->forum, $lang->forum_desc, $form->generate_forum_select('fid', $mod_data['fid'], array('id' => 'fid')), 'fid');
 	
 	$moderator_permissions = array(
@@ -1256,7 +1256,7 @@ if($mybb->input['action'] == "edit")
 	
 	$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments');
 				
-	$form_container = new FormContainer(sprintf($lang->forum_permissions_in, $forum_data['name']));
+	$form_container = new FormContainer($lang->sprintf($lang->forum_permissions_in, $forum_data['name']));
 	$form_container->output_row_header($lang->permissions_group);
 	$form_container->output_row_header($lang->permissions_canview, array("class" => "align_center", "width" => "10%"));
 	$form_container->output_row_header($lang->permissions_canpostthreads, array("class" => "align_center", "width" => "10%"));
@@ -1684,7 +1684,7 @@ if(!$mybb->input['action'])
 		{
 			cache_forums();
 		}
-		$form_container = new FormContainer(sprintf($lang->in_forums, $forum_cache[$fid]['name']));
+		$form_container = new FormContainer($lang->sprintf($lang->in_forums, $forum_cache[$fid]['name']));
 	}
 	else
 	{
@@ -1742,7 +1742,7 @@ if(!$mybb->input['action'])
 				
 		echo "<div id=\"tab_permissions\">\n";
 		
-		$form_container = new FormContainer(sprintf($lang->forum_permissions_in, $forum_cache[$fid]['name']));
+		$form_container = new FormContainer($lang->sprintf($lang->forum_permissions_in, $forum_cache[$fid]['name']));
 		$form_container->output_row_header($lang->permissions_group);
 		$form_container->output_row_header($lang->permissions_canview, array("class" => "align_center", "width" => "10%"));
 		$form_container->output_row_header($lang->permissions_canpostthreads, array("class" => "align_center", "width" => "10%"));
@@ -1821,7 +1821,7 @@ if(!$mybb->input['action'])
 		echo "</div>\n";
 		$form->end();
 		echo "<div id=\"tab_moderators\">\n";
-		$form_container = new FormContainer(sprintf($lang->moderators_assigned_to, $forum_cache[$fid]['name']));
+		$form_container = new FormContainer($lang->sprintf($lang->moderators_assigned_to, $forum_cache[$fid]['name']));
 		$form_container->output_row_header($lang->username, array('width' => '75%'));
 		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 200px', 'colspan' => 2));
 		$query = $db->query("
@@ -1999,7 +1999,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				{
 					if(count($children) > $donecount)
 					{
-						$sub_forums .= $comma.sprintf($lang->more_subforums, (count($children) - $donecount));
+						$sub_forums .= $comma.$lang->sprintf($lang->more_subforums, (count($children) - $donecount));
 						return;
 					}
 				}

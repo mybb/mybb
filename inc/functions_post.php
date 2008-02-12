@@ -402,7 +402,7 @@ function build_postbit($post, $post_type=0)
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], $post['edittime']);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], $post['edittime']);
-			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			$post['editedprofilelink'] = build_profile_link($post['editusername'], $post['edituid']);
 			eval("\$post['editedmsg'] = \"".$templates->get("postbit_editedby")."\";");
 		}
@@ -568,7 +568,7 @@ function build_postbit($post, $post_type=0)
 			// Is this author on the ignore list of the current user? Hide this post
 			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)
 			{
-				$lang->postbit_currently_ignoring_user = sprintf($lang->postbit_currently_ignoring_user, $post['username']);
+				$lang->postbit_currently_ignoring_user = $lang->sprintf($lang->postbit_currently_ignoring_user, $post['username']);
 				eval("\$ignore_bit = \"".$templates->get("postbit_ignored")."\";");
 				$post_visibility = "display: none;";
 			}
@@ -678,7 +678,7 @@ function get_post_attachments($id, &$post)
 			}
 			else
 			{
-				$lang->postbit_unapproved_attachments = sprintf($lang->postbit_unapproved_attachments, $validationcount);
+				$lang->postbit_unapproved_attachments = $lang->sprintf($lang->postbit_unapproved_attachments, $validationcount);
 			}
 			eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment_unapproved")."\";");
 		}

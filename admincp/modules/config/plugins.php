@@ -176,7 +176,7 @@ if($mybb->input['action'] == "activate" || $mybb->input['action'] == "deactivate
 		// Plugin is compatible with this version?
 		if($plugins->is_compatible($codename) == false)
 		{
-			flash_message(sprintf($lang->plugin_incompatible, $mybb->version_code), 'error');
+			flash_message($lang->sprintf($lang->plugin_incompatible, $mybb->version_code), 'error');
 			admin_redirect("index.php?module=config/plugins");
 		}
 
@@ -286,7 +286,7 @@ if(!$mybb->input['action'])
 
 			if($plugins->is_compatible($codename) == false)
 			{
-				$compatibility_warning = "<span style=\"color: red;\">".sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
+				$compatibility_warning = "<span style=\"color: red;\">".$lang->sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
 			}
 
 			$installed_func = "{$codename}_is_installed";

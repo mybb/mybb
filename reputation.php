@@ -193,7 +193,7 @@ if($mybb->input['action'] == "add")
 	// If we have an existing reputation for this user, the user can modify or delete it.
 	if($existing_reputation['uid'])
 	{
-		$vote_title = sprintf($lang->update_reputation_vote, $user['username']);
+		$vote_title = $lang->sprintf($lang->update_reputation_vote, $user['username']);
 		$vote_button = $lang->update_vote;
 		$comments = htmlspecialchars_uni($existing_reputation['comments']);
 		$delete_button = "<input type=\"submit\" name=\"delete\" value=\"{$lang->delete_vote}\" />";
@@ -201,12 +201,12 @@ if($mybb->input['action'] == "add")
 	// Otherwise we're adding an entirely new reputation for this user.
 	else
 	{
-		$vote_title = sprintf($lang->add_reputation_vote, $user['username']);
+		$vote_title = $lang->sprintf($lang->add_reputation_vote, $user['username']);
 		$vote_button = $lang->add_vote;
 		$comments = '';
 		$delete_button = '';
 	}
-	$lang->user_comments = sprintf($lang->user_comments, $user['username']);
+	$lang->user_comments = $lang->sprintf($lang->user_comments, $user['username']);
 
 	// Draw the "power" options
 	$positive_power = '';
@@ -219,9 +219,9 @@ if($mybb->input['action'] == "add")
 	$reputationpower = $mybb->usergroup['reputationpower'];
 	for($i = 1; $i <= $reputationpower; ++$i)
 	{
-		$positive_title = sprintf($lang->power_positive, "+".$i);
+		$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
 		$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
-		$negative_title = sprintf($lang->power_negative, "-".$i);
+		$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
 		$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
 	}
 
@@ -266,8 +266,8 @@ if(!$mybb->input['action'])
 		error($lang->reputations_disabled_group);
 	}
 
-	$lang->nav_profile = sprintf($lang->nav_profile, $user['username']);
-	$lang->reputation_report = sprintf($lang->reputation_report, $user['username']);
+	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
+	$lang->reputation_report = $lang->sprintf($lang->reputation_report, $user['username']);
 
 	// Format the user name using the group username style
 	$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
@@ -506,7 +506,7 @@ if(!$mybb->input['action'])
 		// Format the date this reputation was last modified
 		$last_updated_date = my_date($mybb->settings['dateformat'], $reputation_vote['dateline']);
 		$last_updated_time = my_date($mybb->settings['timeformat'], $reputation_vote['dateline']);
-		$last_updated = sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
+		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 
 		// Does the current user have permission to delete this reputation? Show delete link
 		if($mybb->usergroup['cancp'] == 1 || ($mybb->usergroup['cangivereputations'] == 1 && $reputation_vote['adduid'] == $mybb->user['uid'] && $mybb->user['uid'] != 0))

@@ -84,7 +84,7 @@ function output_page($contents)
 			$contents = gzip_encode($contents);
 		}
 	}
-
+	
 	@header("Content-type: text/html; charset={$lang->settings['charset']}");
 	
 	echo $contents;
@@ -707,7 +707,7 @@ function error_no_permission()
 
 	if($mybb->user['uid'])
 	{
-		$lang->error_nopermission_user_5 = sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
+		$lang->error_nopermission_user_5 = $lang->sprintf($lang->error_nopermission_user_5, $mybb->user['username']);
 		eval("\$errorpage = \"".$templates->get("error_nopermission_loggedin")."\";");
 	}
 	else
@@ -871,7 +871,7 @@ function multipage($count, $perpage, $page, $url)
 		$page_url = fetch_page_url($url, $next);
 		eval("\$nextpage = \"".$templates->get("multipage_nextpage")."\";");
 	}
-	$lang->multipage_pages = sprintf($lang->multipage_pages, $pages);
+	$lang->multipage_pages = $lang->sprintf($lang->multipage_pages, $pages);
 	eval("\$multipage = \"".$templates->get("multipage")."\";");
 
 	return $multipage;
@@ -3654,8 +3654,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	);
 
 	$replace = array(
-		sprintf('%02s', $bm),
-		sprintf('%02s', $bd),
+		$lang->sprintf('%02s', $bm),
+		$lang->sprintf('%02s', $bd),
 		my_substr($by, 2),
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),
@@ -4377,7 +4377,7 @@ function login_attempt_check($fatal = true)
 
 			if($fatal)
 			{
-				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
 			}
 
 			return false;
@@ -4399,7 +4399,7 @@ function login_attempt_check($fatal = true)
 		{
 			if($fatal)
 			{
-				error(sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
+				error($lang->sprintf($lang->failed_login_wait, $hoursleft, $minsleft, $secsleft));
 			}
 
 			return false;
@@ -4815,7 +4815,7 @@ function build_timezone_select($name, $selected=0, $short=false)
 				}
 			}
 			$time_in_zone = my_date($mybb->settings['timeformat'], TIME_NOW, $timezone);
-			$label = sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
+			$label = $lang->sprintf($lang->timezone_gmt_short, $label." ", $time_in_zone);
 		}
 		$select .= "<option value=\"{$timezone}\"{$selected_add}>{$label}</option>\n";
 	}

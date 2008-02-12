@@ -47,7 +47,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
-			error(sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
+			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
 		}
 	}
 
@@ -137,7 +137,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			}
 			if(!is_numeric($mybb->input['custom_points']) || $mybb->input['custom_points'] > $mybb->settings['maxwarningpoints'] || $mybb->input['custom_points'] < 0)
 			{
-				$warn_errors[] = sprintf($lang->error_invalid_custom_points, $mybb->settings['maxwarningpoints']);
+				$warn_errors[] = $lang->sprintf($lang->error_invalid_custom_points, $mybb->settings['maxwarningpoints']);
 			}
 			else
 			{
@@ -303,8 +303,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						$ban_length = fetch_friendly_expiration($action['length']);
 						$lang_str = "expiration_".$ban_length['period'];
 						$group_name = $groupscache[$action['usergroup']]['title'];
-						$period = sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
-						$friendly_action = "<br /><br />".sprintf($lang->redirect_warned_banned, $group_name, $period);
+						$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
+						$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_banned, $group_name, $period);
 					}
 					break;
 				// Suspend posting privledges
@@ -322,8 +322,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							$updated_user['suspendposting'] = 1;
 							$period = fetch_friendly_expiration($action['length']);
 							$lang_str = "expiration_".$period['period'];
-							$period = sprintf($lang->result_period, $period['time'], $lang->$lang_str);
-							$friendly_action = "<br /><br />".sprintf($lang->redirect_warned_suspended, $period);
+							$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_suspended, $period);
 						}
 					}
 					break;
@@ -342,8 +342,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							$updated_user['moderateposts'] = 1;
 							$period = fetch_friendly_expiration($action['length']);
 							$lang_str = "expiration_".$period['period'];
-							$period = sprintf($lang->result_period, $period['time'], $lang->$lang_str);
-							$friendly_action = "<br /><br />".sprintf($lang->redirect_warned_moderate, $period);
+							$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_moderate, $period);
 						}
 					}
 					break;
@@ -353,7 +353,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		// Save updated details
 		$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 
-		$lang->redirect_warned = sprintf($lang->redirect_warned, $user['username'], $new_warning_level, $friendly_action);
+		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, $user['username'], $new_warning_level, $friendly_action);
 
 		if($post['pid'])
 		{
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "warn")
 		$given_today = $db->fetch_field($query, "given_today");
 		if($given_today >= $mybb->usergroup['maxwarningsday'])
 		{
-			error(sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
+			error($lang->sprintf($lang->reached_max_warnings_day, $mybb->usergroup['maxwarningsday']));
 		}
 	}
 
@@ -481,7 +481,7 @@ if($mybb->input['action'] == "warn")
 			{
 				$warning['points'] = "+{$warning['points']}";
 			}
-			$points = sprintf($lang->warning_points, $warning['points']);
+			$points = $lang->sprintf($lang->warning_points, $warning['points']);
 			if($warning['expired'] != 1)
 			{
 				if($warning['expires'] == 0)
@@ -541,7 +541,7 @@ if($mybb->input['action'] == "warn")
 		$pm_message = $lang->warning_pm_message;
 	}
 
-	$lang->nav_profile = sprintf($lang->nav_profile, $user['username']);
+	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_add_warning);
 
@@ -562,28 +562,28 @@ if($mybb->input['action'] == "warn")
 				{
 					$ban_length = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$ban_length['period'];
-					$period = sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
+					$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
 				}
 				$group_name = $groupscache[$level['action']['usergroup']]['title'];
-				$level['friendly_action'] = sprintf($lang->result_banned, $group_name, $period);
+				$level['friendly_action'] = $lang->sprintf($lang->result_banned, $group_name, $period);
 				break;
 			case 2:
 				if($level['action']['length'] > 0)
 				{
 					$period = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$period['period'];
-					$period = sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
 				}
-				$level['friendly_action'] = sprintf($lang->result_suspended, $period);
+				$level['friendly_action'] = $lang->sprintf($lang->result_suspended, $period);
 				break;
 			case 3:
 				if($level['action']['length'] > 0)
 				{
 					$period = fetch_friendly_expiration($level['action']['length']);
 					$lang_str = "expiration_".$period['period'];
-					$period = sprintf($lang->result_period, $period['time'], $lang->$lang_str);
+					$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
 				}
-				$level['friendly_action'] = sprintf($lang->result_moderated, $period);
+				$level['friendly_action'] = $lang->sprintf($lang->result_moderated, $period);
 				break;
 		}
 		$levels[$level['percentage']] = $level;
@@ -604,7 +604,7 @@ if($mybb->input['action'] == "warn")
 		{
 			$type['points'] = "+{$type['points']}";
 		}
-		$points = sprintf($lang->warning_points, $type['points']);
+		$points = $lang->sprintf($lang->warning_points, $type['points']);
 
 		if(is_array($levels))
 		{
@@ -755,7 +755,7 @@ if($mybb->input['action'] == "view")
 
 	$plugins->run_hooks("warnings_view_start");
 
-	$lang->nav_profile = sprintf($lang->nav_profile, $user['username']);
+	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
 	add_breadcrumb($lang->nav_view_warning);
@@ -793,7 +793,7 @@ if($mybb->input['action'] == "view")
 		$warning['points'] = "+{$warning['points']}";
 	}
 	
-	$points = sprintf($lang->warning_points, $warning['points']);
+	$points = $lang->sprintf($lang->warning_points, $warning['points']);
 	if($warning['expired'] != 1)
 	{
 		if($warning['expires'] == 0)
@@ -854,7 +854,7 @@ if(!$mybb->input['action'])
 		error($lang->error_cant_warn_group);
 	}
 
-	$lang->nav_profile = sprintf($lang->nav_profile, $user['username']);
+	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
 	add_breadcrumb($lang->nav_warning_log);
 
@@ -901,7 +901,7 @@ if(!$mybb->input['action'])
 	
 	if($warning_level > 0)
 	{
-		$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
+		$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $user['warningpoints'], $mybb->settings['maxwarningpoints']);
 	}
 	else
 	{
@@ -958,7 +958,7 @@ if(!$mybb->input['action'])
 		{
 			$warning['points'] = "+{$warning['points']}";
 		}
-		$points = sprintf($lang->warning_points, $warning['points']);
+		$points = $lang->sprintf($lang->warning_points, $warning['points']);
 		if($warning['expired'] != 1)
 		{
 			if($warning['expires'] == 0)

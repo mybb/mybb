@@ -472,7 +472,7 @@ if($mybb->input['action'] == "edit")
 		startform("attachments.php", "", "do_edit");
 		makehiddencode("atid", $atid);
 		starttable();
-		$lang->edit_attach_type = sprintf($lang->edit_attach_type, $type['name']);
+		$lang->edit_attach_type = $lang->sprintf($lang->edit_attach_type, $type['name']);
 		tableheader($lang->edit_attach_type);
 		makeinputcode($lang->extension, "extension", $type['extension']);
 		makeinputcode($lang->mimetype, "mimetype", $type['mimetype']);
@@ -496,11 +496,11 @@ if($mybb->input['action'] == "delete")
 	startform("attachments.php", "", "do_delete");
 	makehiddencode("atid", $atid);
 	starttable();
-	$lang->delete_attach_type = sprintf($lang->delete_attach_type, $name);
+	$lang->delete_attach_type = $lang->sprintf($lang->delete_attach_type, $name);
 	tableheader($lang->delete_attach_type);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode(0, $lang->no);
-	$lang->delete_confirm = sprintf($lang->delete_confirm, $name);
+	$lang->delete_confirm = $lang->sprintf($lang->delete_confirm, $name);
 	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();

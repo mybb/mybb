@@ -22,7 +22,7 @@ if(!$usergroup['gid'])
 {
 	error($lang->invalid_group);
 }
-$lang->nav_group_management = sprintf($lang->nav_group_management, $usergroup['title']);
+$lang->nav_group_management = $lang->sprintf($lang->nav_group_management, $usergroup['title']);
 add_breadcrumb($lang->nav_group_memberships, "usercp.php?action=usergroups");
 add_breadcrumb($lang->nav_group_management, "managegroup.php?gid=$gid");
 
@@ -129,7 +129,7 @@ elseif($mybb->input['action'] == "joinrequests")
 	{
 		error($lang->no_requests);
 	}
-	$lang->join_requests = sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
+	$lang->join_requests = $lang->sprintf($lang->join_requests_title,htmlspecialchars_uni($usergroup['title']));
 
 	$plugins->run_hooks("managegroup_joinrequests_end");
 
@@ -164,15 +164,15 @@ else
 {
 	$plugins->run_hooks("managegroup_start");
 
-	$lang->members_of = sprintf($lang->members_of, $usergroup['title']);
-	$lang->add_member = sprintf($lang->add_member, $usergroup['title']);
+	$lang->members_of = $lang->sprintf($lang->members_of, $usergroup['title']);
+	$lang->add_member = $lang->sprintf($lang->add_member, $usergroup['title']);
 	if($usergroup['type'] == 4)
 	{
 		$query = $db->simple_select("joinrequests", "COUNT(*) AS req", "gid='".$mybb->input['gid']."'");
 		$numrequests = $db->fetch_array($query);
 		if($numrequests['req'])
 		{
-			$lang->num_requests_pending = sprintf($lang->num_requests_pending, $numrequests['req']);
+			$lang->num_requests_pending = $lang->sprintf($lang->num_requests_pending, $numrequests['req']);
 			eval("\$joinrequests = \"".$templates->get("managegroup_requestnote")."\";");
 		}
 		$usergrouptype = $lang->group_public_moderated;

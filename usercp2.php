@@ -104,7 +104,7 @@ if($mybb->input['action'] == "addsubscription")
 		$parser = new postParser;
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
-		$lang->subscribe_to_thread = sprintf($lang->subscribe_to_thread, $thread['subject']);
+		$lang->subscribe_to_thread = $lang->sprintf($lang->subscribe_to_thread, $thread['subject']);
 
 		if($mybb->user['subscriptionmethod'] == 1 || $mybb->user['subscriptionmethod'] == 0)
 		{

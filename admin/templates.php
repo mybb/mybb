@@ -231,7 +231,7 @@ if($mybb->input['action'] == "do_replace")
 		$query = $db->query("SELECT tid, title, template, sid FROM ".TABLE_PREFIX."templates WHERE template LIKE '%".$db->escape_string($mybb->input['find'])."%' ORDER BY sid,title ASC");
 		if($db->num_rows($query) == 0)
 		{
-			makelabelcode(sprintf($lang->search_noresults, $mybb->input['find']));
+			makelabelcode($lang->sprintf($lang->search_noresults, $mybb->input['find']));
 		}
 		else
 		{
@@ -251,7 +251,7 @@ if($mybb->input['action'] == "do_replace")
 			foreach($template_list as $sid => $templates)
 			{
 				// Show group header
-				$search_header = sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
+				$search_header = $lang->sprintf($lang->search_header, $mybb->input['find'], $template_groups[$sid]);
 				tablesubheader($search_header);
 
 				foreach($templates as $title => $template)
@@ -276,7 +276,7 @@ if($mybb->input['action'] == "do_replace")
 								);
 								$db->insert_query("templates", $new_template);
 								$new_tid = $db->insert_id();
-								$label = sprintf($lang->search_created_custom, $template['title']);
+								$label = $lang->sprintf($lang->search_created_custom, $template['title']);
 								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&amp;action=edit&amp;tid=".$new_tid));
 							}
 							else
@@ -287,7 +287,7 @@ if($mybb->input['action'] == "do_replace")
 									"template" => $db->escape_string($newtemplate)
 									);
 								$db->update_query("templates", $updatedtemplate, "tid='".$template['tid']."'");
-								$label = sprintf($lang->search_updated, $template['title']);
+								$label = $lang->sprintf($lang->search_updated, $template['title']);
 								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
 							}
 						}
@@ -296,12 +296,12 @@ if($mybb->input['action'] == "do_replace")
 							// Just show that the term was found
 							if($template['sid'] == -2)
 							{
-								$label = sprintf($lang->search_found, $template['title']);
+								$label = $lang->sprintf($lang->search_found, $template['title']);
 								makelabelcode($label, makelinkcode($lang->search_change_original, "templates.php?".SID."&action=add&title=".$template['title']."&sid=1"));
 							}
 							else
 							{
-								$label = sprintf($lang->search_found, $template['title']);
+								$label = $lang->sprintf($lang->search_found, $template['title']);
 								makelabelcode($label, makelinkcode($lang->search_edit, "templates.php?".SID."&action=edit&tid=".$template['tid']));
 							}
 						}
@@ -326,7 +326,7 @@ if($mybb->input['action'] == "do_search_names")
 		cpheader();
 		starttable();
 		tableheader($lang->search_results);
-		$lang->search_names_header = sprintf($lang->search_names_header, $mybb->input['title']);
+		$lang->search_names_header = $lang->sprintf($lang->search_names_header, $mybb->input['title']);
 		tablesubheader($lang->search_names_header);
 		// Query for templates
 		$query = $db->query("

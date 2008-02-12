@@ -151,11 +151,11 @@ if($mybb->input['action'] == "delete")
 	startform("profilefields.php", "", "do_delete");
 	makehiddencode("fid", $fid);
 	starttable();
-	$lang->delete_field = sprintf($lang->delete_field, $profilefield['name']);
+	$lang->delete_field = $lang->sprintf($lang->delete_field, $profilefield['name']);
 	tableheader($lang->delete_field, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode(0, $lang->no);
-	$lang->delete_confirm = sprintf($lang->delete_confirm, $profilefield['name']);
+	$lang->delete_confirm = $lang->sprintf($lang->delete_confirm, $profilefield['name']);
 	makelabelcode("<div align=\"center\">$lang->delete_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
@@ -181,7 +181,7 @@ if($mybb->input['action'] == "edit")
 	startform("profilefields.php", "" , "do_edit");
 	makehiddencode("fid", $profilefield['fid']);
 	starttable();
-	$lang->edit_custom_field = sprintf($lang->edit_custom_field, $profilefield['name']);
+	$lang->edit_custom_field = $lang->sprintf($lang->edit_custom_field, $profilefield['name']);
 	tableheader($lang->edit_custom_field);
 	makeinputcode($lang->field_name, "name", "$profilefield[name]");
 	maketextareacode($lang->field_description, "description", $profilefield['description']);

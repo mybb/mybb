@@ -1704,7 +1704,7 @@ if($mybb->input['action'] == "editprofile")
 		eval("\$customfields = \"".$templates->get("usercp_profile_profilefields")."\";");
 	}
 
-	$lang->edit_profile = sprintf($lang->edit_profile, $user['username']);
+	$lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
 	eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");
@@ -2172,7 +2172,7 @@ if($mybb->input['action'] == "ipsearch")
 
 		if($ipaddressvalue)
 		{
-			$lang->ipsearch_results = sprintf($lang->ipsearch_results, $ipaddressvalue);
+			$lang->ipsearch_results = $lang->sprintf($lang->ipsearch_results, $ipaddressvalue);
 		}
 		else
 		{

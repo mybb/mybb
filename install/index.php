@@ -139,7 +139,7 @@ if(file_exists('lock'))
 else if($installed == true && !$mybb->input['action'])
 {
 	$output->print_header($lang->already_installed, "errormsg", 0);
-	echo sprintf($lang->mybb_already_installed, $mybb->version);
+	echo $lang->sprintf($lang->mybb_already_installed, $mybb->version);
 	$output->print_footer();
 }
 else
@@ -204,9 +204,9 @@ function intro()
 	$output->print_header($lang->welcome, 'welcome');
 	if(strpos(strtolower($_SERVER['PHP_SELF']), "upload/") !== false)
 	{
-		echo sprintf($lang->mybb_incorrect_folder);
+		echo $lang->sprintf($lang->mybb_incorrect_folder);
 	}
-	echo sprintf($lang->welcome_step, $mybb->version);
+	echo $lang->sprintf($lang->welcome_step, $mybb->version);
 	$output->print_footer('license');
 }
 
@@ -246,7 +246,7 @@ function license_agreement()
 <h4>Product Warranty and Liability for Damages</h4>
 <p>The MyBB Group expressly disclaims any warranty for MyBB. The MyBB software and any related documentation is provided "as is" without warranty of any kind, either express or implied, including, without limitation, the implied warranties or merchant-ability, fitness for a particular purpose, or non-infringement. The entire risk arising out of use or performance of MyBB remains with you.</p>
 <p>In no event shall the MyBB Group be liable for any damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or any other pecuniary loss) arising out of the use of or inability to use this product, even if the MyBB Group has been advised of the possibility of such damages. Because some states/jurisdictions do not allow the exclusion or limitation of liability for consequential or incidental damages, the above limitation may not apply to you.</p>';
-	echo sprintf($lang->license_step, $license);
+	echo $lang->sprintf($lang->license_step, $license);
 	$output->print_footer('requirements_check');
 }
 
@@ -264,13 +264,13 @@ function requirements_check()
 	$phpversion = @phpversion();
 	if($phpversion < '4.1.0')
 	{
-		$errors[] = sprintf($lang->req_step_error_box, sprintf($lang->req_step_error_phpversion, $phpversion));
-		$phpversion = sprintf($lang->req_step_span_fail, $phpversion);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->sprintf($lang->req_step_error_phpversion, $phpversion));
+		$phpversion = $lang->sprintf($lang->req_step_span_fail, $phpversion);
 		$showerror = 1;
 	}
 	else
 	{
-		$phpversion = sprintf($lang->req_step_span_pass, $phpversion);
+		$phpversion = $lang->sprintf($lang->req_step_span_pass, $phpversion);
 	}
 	
 	if(function_exists('mb_detect_encoding'))
@@ -286,7 +286,7 @@ function requirements_check()
 	// Check Multibyte extensions
 	if(count($mboptions) < 1)
 	{
-		$mbstatus = sprintf($lang->req_step_span_fail, $lang->none);
+		$mbstatus = $lang->sprintf($lang->req_step_span_fail, $lang->none);
 	}
 	else
 	{
@@ -296,8 +296,8 @@ function requirements_check()
 	// Check database engines
 	if(count($dboptions) < 1)
 	{
-		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_dboptions);
-		$dbsupportlist = sprintf($lang->req_step_span_fail, $lang->none);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_dboptions);
+		$dbsupportlist = $lang->sprintf($lang->req_step_span_fail, $lang->none);
 		$showerror = 1;
 	}
 	else
@@ -312,26 +312,26 @@ function requirements_check()
 	// Check XML parser is installed
 	if(!function_exists('xml_parser_create'))
 	{
-		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_xmlsupport);
-		$xmlstatus = sprintf($lang->req_step_span_fail, $lang->not_installed);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_xmlsupport);
+		$xmlstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_installed);
 		$showerror = 1;
 	}
 	else
 	{
-		$xmlstatus = sprintf($lang->req_step_span_pass, $lang->installed);
+		$xmlstatus = $lang->sprintf($lang->req_step_span_pass, $lang->installed);
 	}
 
 	// Check config file is writable
 	$configwritable = @fopen(MYBB_ROOT.'inc/config.php', 'w');
 	if(!$configwritable)
 	{
-		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
-		$configstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_configfile);
+		$configstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 	}
 	else
 	{
-		$configstatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		$configstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($configwritable);
 
@@ -339,13 +339,13 @@ function requirements_check()
 	$settingswritable = @fopen(MYBB_ROOT.'inc/settings.php', 'w');
 	if(!$settingswritable)
 	{
-		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
-		$settingsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_settingsfile);
+		$settingsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 	}
 	else
 	{
-		$settingsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		$settingsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 	}
 	@fclose($settingswritable);
 
@@ -353,14 +353,14 @@ function requirements_check()
 	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
 	if(!$cachewritable)
 	{
-		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
-		$cachestatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_cachedir);
+		$cachestatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 		@fclose($cachewritable);
 	}
 	else
 	{
-		$cachestatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		$cachestatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($cachewritable);
 	  	@chmod(MYBB_ROOT.'cache', 0777);
 	  	@chmod(MYBB_ROOT.'cache/test.write', 0777);
@@ -371,14 +371,14 @@ function requirements_check()
 	$uploadswritable = @fopen(MYBB_ROOT.'uploads/test.write', 'w');
 	if(!$uploadswritable)
 	{
-		$errors[] = sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
-		$uploadsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
+		$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_uploaddir);
+		$uploadsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 		@fclose($uploadswritable);
 	}
 	else
 	{
-		$uploadsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		$uploadsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($uploadswritable);
 	  	@chmod(MYBB_ROOT.'uploads', 0777);
 	  	@chmod(MYBB_ROOT.'uploads/test.write', 0777);
@@ -389,14 +389,14 @@ function requirements_check()
 	$avatarswritable = @fopen(MYBB_ROOT.'uploads/avatars/test.write', 'w');
 	if(!$avatarswritable)
 	{
-		$errors[] =  sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
-		$avatarsstatus = sprintf($lang->req_step_span_fail, $lang->not_writable);
+		$errors[] =  $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_avatardir);
+		$avatarsstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 		$showerror = 1;
 		@fclose($avatarswritable);
 	}
 	else
 	{
-		$avatarsstatus = sprintf($lang->req_step_span_pass, $lang->writable);
+		$avatarsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($avatarswritable);
 		@chmod(MYBB_ROOT.'uploads/avatars', 0777);
 	  	@chmod(MYBB_ROOT.'uploads/avatars/test.write', 0777);
@@ -405,12 +405,12 @@ function requirements_check()
 
 
 	// Output requirements page
-	echo sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
+	echo $lang->sprintf($lang->req_step_reqtable, $phpversion, $dbsupportlist, $mbstatus, $xmlstatus, $configstatus, $settingsstatus, $cachestatus, $uploadsstatus, $avatarsstatus);
 
 	if($showerror == 1)
 	{
 		$error_list = error_list($errors);
-		echo sprintf($lang->req_step_error_tablelist, $error_list);
+		echo $lang->sprintf($lang->req_step_error_tablelist, $error_list);
 		echo "\n			<input type=\"hidden\" name=\"action\" value=\"{$mybb->input['action']}\" />";
 		echo "\n				<div id=\"next_button\"><input type=\"submit\" class=\"submit_button\" value=\"{$lang->recheck} &raquo;\" /></div><br style=\"clear: both;\" />\n";
 		$output->print_footer();
@@ -453,7 +453,7 @@ function database_info()
 	if(is_array($errors))
 	{
 		$error_list = error_list($errors);
-		echo sprintf($lang->db_step_error_config, $error_list);
+		echo $lang->sprintf($lang->db_step_error_config, $error_list);
 	}
 	else
 	{
@@ -576,7 +576,7 @@ function database_info()
 	}
 	$dbconfig = implode("", $db_info);
 
-	echo sprintf($lang->db_step_config_table, $dbengines, $dbconfig);
+	echo $lang->sprintf($lang->db_step_config_table, $dbengines, $dbconfig);
 	$output->print_footer('create_tables');
 }
 
@@ -608,7 +608,7 @@ function create_tables()
 	$connection = $db->connect($connect_array);
 	if(!$connection)
 	{
-		$errors[] = sprintf($lang->db_step_error_noconnect, $config['dbhost']);
+		$errors[] = $lang->sprintf($lang->db_step_error_noconnect, $config['dbhost']);
 	}
 
 	if(is_array($errors))
@@ -736,7 +736,7 @@ function create_tables()
  	$db->error_reporting = 1;
 
 	$output->print_header($lang->table_creation, 'createtables');
-	echo sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['short_title'], $db->get_version());
+	echo $lang->sprintf($lang->tablecreate_step_connected, $dboptions[$mybb->input['dbengine']]['short_title'], $db->get_version());
 	
 	if($dboptions[$mybb->input['dbengine']]['structure_file'])
 	{
@@ -756,7 +756,7 @@ function create_tables()
 		if($match[1])
 		{
 			$db->drop_table($match[1], false, false);
-			echo sprintf($lang->tablecreate_step_created, $match[1]);
+			echo $lang->sprintf($lang->tablecreate_step_created, $match[1]);
 		}
 		$db->query($val);
 		if($match[1])
@@ -776,7 +776,7 @@ function populate_tables()
 	$db = db_connection($config);
 
 	$output->print_header($lang->table_population, 'tablepopulate');
-	echo sprintf($lang->populate_step_insert);
+	echo $lang->sprintf($lang->populate_step_insert);
 
 	if($dboptions[$db->type]['population_file'])
 	{
@@ -841,7 +841,7 @@ function configure()
 	if(is_array($errors))
 	{
 		$error_list = error_list($errors);
-		echo sprintf($lang->config_step_error_config, $error_list);
+		echo $lang->sprintf($lang->config_step_error_config, $error_list);
 
 		$bbname = htmlspecialchars($mybb->input['bbname']);
 		$bburl = htmlspecialchars($mybb->input['bburl']);
@@ -909,7 +909,7 @@ function configure()
 		}
 	}
 
-	echo sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
+	echo $lang->sprintf($lang->config_step_table, $bbname, $bburl, $websitename, $websiteurl, $cookiedomain, $cookiepath, $contactemail);
 	$output->print_footer('adminuser');
 }
 
@@ -939,7 +939,7 @@ function create_admin_user()
 	if(is_array($errors))
 	{
 		$error_list = error_list($errors);
-		echo sprintf($lang->admin_step_error_config, $error_list);
+		echo $lang->sprintf($lang->admin_step_error_config, $error_list);
 		$adminuser = $mybb->input['adminuser'];
 		$adminemail = $mybb->input['adminemail'];
 	}
@@ -1001,7 +1001,7 @@ function create_admin_user()
 
 		write_settings();
 
-		echo sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
+		echo $lang->sprintf($lang->admin_step_insertesettings, $settingcount, $groupcount);
 
 		include_once MYBB_ROOT."inc/functions_task.php";
 		$tasks = file_get_contents(INSTALL_ROOT.'resources/tasks.xml');
@@ -1031,7 +1031,7 @@ function create_admin_user()
 			$taskcount++;
 		}
 
-		echo sprintf($lang->admin_step_insertedtasks, $taskcount);
+		echo $lang->sprintf($lang->admin_step_insertedtasks, $taskcount);
 
 		$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
 		$parser = new XMLParser($views);
@@ -1077,12 +1077,12 @@ function create_admin_user()
 			$view_count++;
 		}
 
-		echo sprintf($lang->admin_step_insertedviews, $view_count);
+		echo $lang->sprintf($lang->admin_step_insertedviews, $view_count);
 
 		echo $lang->admin_step_createadmin;
 	}
 
-	echo sprintf($lang->admin_step_admintable, $adminuser, $adminemail);
+	echo $lang->sprintf($lang->admin_step_admintable, $adminuser, $adminemail);
 	$output->print_footer('final');
 }
 

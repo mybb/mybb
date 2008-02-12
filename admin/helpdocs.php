@@ -155,7 +155,7 @@ if($mybb->input['action'] == "edit")
 		startform("helpdocs.php", "", "do_edit");
 		makehiddencode("hid", "$hid");
 		starttable();
-		$lang->modify_doc = sprintf($lang->modify_doc, $doc['name']);
+		$lang->modify_doc = $lang->sprintf($lang->modify_doc, $doc['name']);
 		tableheader($lang->modify_doc);
 		makelabelcode($lang->doc_id, $doc['hid']);
 		if($doc['hid'] > 7)
@@ -187,7 +187,7 @@ if($mybb->input['action'] == "edit")
 		startform("helpdocs.php", "", "do_edit");
 		makehiddencode("sid", "$sid");
 		starttable();
-		$lang->modify_section = sprintf($lang->modify_section, $section['name']);
+		$lang->modify_section = $lang->sprintf($lang->modify_section, $section['name']);
 		tableheader($lang->modify_section);
 		makelabelcode($lang->section_id, $section['sid']);
 		if($section['sid'] > 2)
@@ -221,8 +221,8 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_helpdocs_delete_doc");
 		if($mybb->input['hid'] > 7)
 		{
-			$lang->delete_doc = sprintf($lang->delete_doc, $doc[name]);
-			$lang->delete_doc_confirm = sprintf($lang->delete_doc_confirm, $doc[name]);
+			$lang->delete_doc = $lang->sprintf($lang->delete_doc, $doc[name]);
+			$lang->delete_doc_confirm = $lang->sprintf($lang->delete_doc_confirm, $doc[name]);
 			startform("helpdocs.php", "", "do_delete");
 			makehiddencode("hid", $hid);
 			starttable();
@@ -242,8 +242,8 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_helpdocs_delete_section");
 		if($section['sid'] > 2)
 		{
-			$lang->delete_section = sprintf($lang->delete_section, $section[name]);
-			$lang->delete_section_confirm = sprintf($lang->delete_section_confirm, $section[name]);
+			$lang->delete_section = $lang->sprintf($lang->delete_section, $section[name]);
+			$lang->delete_section_confirm = $lang->sprintf($lang->delete_section_confirm, $section[name]);
 			startform("helpdocs.php", "", "do_delete");
 			makehiddencode("sid", $sid);
 			starttable();

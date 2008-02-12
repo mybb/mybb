@@ -213,8 +213,8 @@ else
 		$md5pw = md5($mybb->input['password']);
 		$ipaddress = get_ip();
 		$iphost = @gethostbyaddr($ipaddress);
-		$lang->invalidlogin_message = sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $md5pw, $ipaddress, $iphost);
-		$lang->invalidlogin_subject = sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
+		$lang->invalidlogin_message = $lang->sprintf($lang->invalidlogin_message, $mybb->settings['bbname'], $mybb->input['username'], $md5pw, $ipaddress, $iphost);
+		$lang->invalidlogin_subject = $lang->sprintf($lang->invalidlogin_subject, $mybb->settings['bbname']);
 		my_mail($mybb->settings['adminemail'], $lang->invalidlogin_subject, $lang->invalidlogin_message);
 
 		$plugins->run_hooks("admin_global_invalid_login");

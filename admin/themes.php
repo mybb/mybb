@@ -277,7 +277,7 @@ if($mybb->input['action'] == "do_import")
 					$error .= $lang->error_uploadfailed_php7;
 					break;
 				default:
-					$error .= sprintf($lang->error_uploadfailed_phpx, $_FILES['compfile']['error']);
+					$error .= $lang->sprintf($lang->error_uploadfailed_phpx, $_FILES['compfile']['error']);
 					break;
 			}
 			cperror($error);
@@ -336,7 +336,7 @@ if($mybb->input['action'] == "do_import")
 
 	if($mybb->version_code != $version && $mybb->input['ignorecompat'] != 1)
 	{
-		$lang->version_warning = sprintf($lang->version_warning, $mybb->version);
+		$lang->version_warning = $lang->sprintf($lang->version_warning, $mybb->version);
 		cperror($lang->version_warning);
 	}
 	
@@ -404,7 +404,7 @@ if($mybb->input['action'] == "do_import")
 	$db->insert_query("themes", $themearray);
 	$tid = $db->insert_id();
 	update_theme($tid, $mybb->input['pid'], $themebits, $css, 0);
-	$lang->theme_imported = sprintf($lang->theme_imported, $name);
+	$lang->theme_imported = $lang->sprintf($lang->theme_imported, $name);
 	cpredirect("themes.php?".SID, $lang->theme_imported);
 }
 if($mybb->input['action'] == "add")
@@ -475,7 +475,7 @@ if($mybb->input['action'] == "edit")
 	$usergroups[] = "<input type=\"checkbox\" name=\"allowedgroups[]\" value=\"all\"$checked /> <strong>$lang->all_groups</strong>";
 	$usergroups = implode("<br />", $usergroups);
 	$plugins->run_hooks("admin_themes_do_edit");
-	$lang->modify_theme = sprintf($lang->modify_theme, $theme['name']);
+	$lang->modify_theme = $lang->sprintf($lang->modify_theme, $theme['name']);
 	cpheader();
 	startform("themes.php", "" , "do_edit");
 	makehiddencode("tid", $mybb->input['tid']);
@@ -538,8 +538,8 @@ if($mybb->input['action'] == "delete")
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."themes WHERE tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 	$plugins->run_hooks("admin_themes_delete");
-	$lang->delete_theme = sprintf($lang->delete_theme, $theme['name']);
-	$lang->delete_theme_confirm = sprintf($lang->delete_theme_confirm, $theme['name']);
+	$lang->delete_theme = $lang->sprintf($lang->delete_theme, $theme['name']);
+	$lang->delete_theme_confirm = $lang->sprintf($lang->delete_theme_confirm, $theme['name']);
 	cpheader();
 	startform("themes.php", "", "do_delete");
 	makehiddencode("tid", $mybb->input['tid']);

@@ -99,7 +99,7 @@ if($mybb->input['action'] == "edit")
 	{
 		cpheader();
 	}
-	$lang->modify_icon = sprintf($lang->modify_icon, $icon['name']);
+	$lang->modify_icon = $lang->sprintf($lang->modify_icon, $icon['name']);
 	startform("icons.php", "", "do_edit");
 	makehiddencode("iid", $iid);
 	starttable();
@@ -120,8 +120,8 @@ if($mybb->input['action'] == "delete")
 	{
 		cperror($lang->invalid_icon);
 	}
-	$lang->delete_icon = sprintf($lang->delete_icon, $icon['name']);
-	$lang->delete_icon_confirm = sprintf($lang->delete_icon_confirm, $icon['name']);
+	$lang->delete_icon = $lang->sprintf($lang->delete_icon, $icon['name']);
+	$lang->delete_icon_confirm = $lang->sprintf($lang->delete_icon_confirm, $icon['name']);
 	cpheader();
 	startform("icons.php", "", "do_delete");
 	makehiddencode("iid", $iid);
@@ -282,7 +282,7 @@ if($mybb->input['action'] == "addmultiple")
 		makehiddencode("perpage", $perpage);
 		makehiddencode("path", $path);
 		starttable();
-		$lang->add_multiple2 = sprintf($lang->add_multiple2, $page, $pages);
+		$lang->add_multiple2 = $lang->sprintf($lang->add_multiple2, $page, $pages);
 		tableheader($lang->add_multiple2, "", 3);
 		echo "<tr>\n";
 		echo "<td class=\"subheader\" align=\"center\">$lang->image</td>\n";

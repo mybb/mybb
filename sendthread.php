@@ -76,7 +76,7 @@ if($mybb->usergroup['maxemails'] > 0)
 	$sent_count = $db->fetch_field($query, "maillogs");
 	if($sent_count > $mybb->usergroup['maxemails'])
 	{
-		$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+		$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 		error($lang->error_max_emails_day);
 	}
 }
@@ -110,7 +110,7 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		
 		$threadlink = get_thread_link($thread['tid']);
 		
-		$message = sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
+		$message = $lang->sprintf($lang->email_sendtofriend, $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']."/".$threadlink, $mybb->input['message']);
 		
 		// Send the actual message
 		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from);
@@ -154,7 +154,7 @@ if(!$mybb->input['action'])
 	{
 		$errors = '';
 		$email = '';
-		$subject = sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
+		$subject = $lang->sprintf($lang->emailsubject_sendtofriend, $mybb->settings['bbname']);
 		$message = '';
 	}
 

@@ -104,8 +104,8 @@ if($mybb->input['action'] == "delete")
 	$plugins->run_hooks("admin_usertitles_delete");
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
-	$lang->delete_title = sprintf($lang->delete_title, $title['title']);
-	$lang->delete_title_confirm = sprintf($lang->delete_title_confirm, $title['title']);
+	$lang->delete_title = $lang->sprintf($lang->delete_title, $title['title']);
+	$lang->delete_title_confirm = $lang->sprintf($lang->delete_title_confirm, $title['title']);
 	cpheader();
 	startform("usertitles.php", "", "do_delete");
 	makehiddencode("utid", $mybb->input['utid']);
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "edit")
 	$query = $db->simple_select("usertitles", "*", "utid='".intval($mybb->input['utid'])."'");
 	$title = $db->fetch_array($query);
 	$plugins->run_hooks("admin_usertitles_edit");
-	$lang->edit_title = sprintf($lang->edit_title, $title['title']);
+	$lang->edit_title = $lang->sprintf($lang->edit_title, $title['title']);
 	cpheader();
 	startform("usertitles.php", "" , "do_edit");
 	makehiddencode("utid", $mybb->input['utid']);

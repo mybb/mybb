@@ -63,7 +63,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == 1)
 		{
-			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
 		error($lang->error_invalidpworusername.$login_text);
 	}
@@ -74,7 +74,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == 1)
 		{
-			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
 		error($lang->error_invalidpassword.$login_text);
 	}
@@ -130,7 +130,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 			{
 				$messages['pms_unread'] = 0;
 			}
-			$lang->pms_received_new = sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_new']);
+			$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_new']);
 			eval("\$pms = \"".$templates->get("portal_pms")."\";");
 		}
 		
@@ -166,7 +166,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 		}
 		else
 		{
-			$lang->new_announcements = sprintf($lang->new_announcements, $newann);
+			$lang->new_announcements = $lang->sprintf($lang->new_announcements, $newann);
 		}
 		if($newthreads == 1)
 		{
@@ -174,7 +174,7 @@ if($mybb->settings['portal_showwelcome'] != 0)
 		}
 		else
 		{
-			$lang->new_threads = sprintf($lang->new_threads, $newthreads);
+			$lang->new_threads = $lang->sprintf($lang->new_threads, $newthreads);
 		}
 		if($newposts == 1)
 		{
@@ -182,18 +182,18 @@ if($mybb->settings['portal_showwelcome'] != 0)
 		}
 		else
 		{
-			$lang->new_posts = sprintf($lang->new_posts, $newposts);
+			$lang->new_posts = $lang->sprintf($lang->new_posts, $newposts);
 		}
 		eval("\$welcometext = \"".$templates->get("portal_welcome_membertext")."\";");
 
 	}
 	else
 	{
-		$lang->guest_welcome_registration = sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
+		$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
 		eval("\$welcometext = \"".$templates->get("portal_welcome_guesttext")."\";");
 	}
-	$lang->welcome = sprintf($lang->welcome, $mybb->user['username']);
+	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);
 	eval("\$welcome = \"".$templates->get("portal_welcome")."\";");
 	if($mybb->user['uid'] == 0)
 	{
@@ -323,9 +323,9 @@ if($mybb->settings['portal_showwol'] != 0)
 	}
 	else
 	{
-	  $lang->online_users = sprintf($lang->online_users, $onlinecount);
+	  $lang->online_users = $lang->sprintf($lang->online_users, $onlinecount);
 	}
-	$lang->online_counts = sprintf($lang->online_counts, $membercount, $guestcount);
+	$lang->online_counts = $lang->sprintf($lang->online_counts, $membercount, $guestcount);
 	eval("\$whosonline = \"".$templates->get("portal_whosonline")."\";");
 }
 

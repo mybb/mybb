@@ -402,8 +402,8 @@ if($mybb->input['action'] == "do_add")
 			"type" => 'r'
 		);
 		$db->insert_query("awaitingactivation", $activationarray);
-		$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-		$emailmessage = sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+		$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+		$emailmessage = $lang->sprintf($lang->email_activateaccount, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 		my_mail($email, $emailsubject, $emailmessage);
 	}
 	cpredirect("users.php?".SID."&lastuid={$user_info['uid']}", $lang->user_added);
@@ -647,7 +647,7 @@ if($mybb->input['action'] == "do_email")
 		cpheader();
 		starttable();
 		tableheader($lang->mass_mail);
-		$lang->results_matching = sprintf($lang->results_matching, $num['results']);
+		$lang->results_matching = $lang->sprintf($lang->results_matching, $num['results']);
 		tablesubheader($lang->results_matching);
 		$bgcolor = getaltbg();
 		echo "<tr>\n<td class=\"$bgcolor\" valign=\"top\">\n";
@@ -664,7 +664,7 @@ if($mybb->input['action'] == "do_email")
 
 			if($searchop['type'] == "html" && $user['email'] != '')
 			{
-				echo sprintf($lang->email_sent, $user['username']);
+				echo $lang->sprintf($lang->email_sent, $user['username']);
 			}
 			elseif($searchop['type'] == "pm")
 			{
@@ -721,21 +721,21 @@ if($mybb->input['action'] == "do_email")
 						$emailsubject = $userlang->emailsubject_newpm;
 						$emailmessage = $userlang->email_newpm;
 					}
-					$emailmessage = sprintf($emailmessage, $user['username'], $mybbadmin['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-					$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+					$emailmessage = $lang->sprintf($emailmessage, $user['username'], $mybbadmin['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+					$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
 					my_mail($email, $emailsubject, $emailmessage);
 				}
 				
-				echo sprintf($lang->pm_sent, $user['username']);
+				echo $lang->sprintf($lang->pm_sent, $user['username']);
 			}
 			elseif($user['email'] != '')
 			{
 				my_mail($user['email'], $searchop['subject'], $sendmessage, $searchop['from']); 
-				echo sprintf($lang->email_sent, $user['username']);
+				echo $lang->sprintf($lang->email_sent, $user['username']);
 			}
 			else
 			{
-				echo sprintf($lang->not_sent, $user['username']);
+				echo $lang->sprintf($lang->not_sent, $user['username']);
 			}
 			echo "<br />";
 		}
@@ -818,7 +818,7 @@ if($mybb->input['action'] == "do_do_merge")
 	$num = $db->fetch_array($query);
 	$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum='".$num['postnum']."' WHERE uid='".$destuser['uid']."'");
 	update_stats(array('numusers' => '-1'));
-	$lang->users_merged = sprintf($lang->users_merged, $sourceuser['username'], $sourceuser['username'], $destuser['username']);
+	$lang->users_merged = $lang->sprintf($lang->users_merged, $sourceuser['username'], $sourceuser['username'], $destuser['username']);
 	cpmessage($lang->users_merged);
 }
 if($mybb->input['action'] == "do_merge")
@@ -837,7 +837,7 @@ if($mybb->input['action'] == "do_merge")
 		cperror($lang->error_invalid_destination);
 	}
 	$plugins->run_hooks("admin_users_do_merge");
-	$lang->confirm_merge = sprintf($lang->confirm_merge, $sourceuser['username'], $destuser['username'], $sourceuser['username']);
+	$lang->confirm_merge = $lang->sprintf($lang->confirm_merge, $sourceuser['username'], $destuser['username'], $sourceuser['username']);
 	cpheader();
 	startform("users.php", '', "do_do_merge");
 	makehiddencode("source", $mybb->input['source']);
@@ -931,7 +931,7 @@ if($mybb->input['action'] == "edit")
 
 	$additionalgroups = explode(",", $user['additionalgroups']);
 
-	$lang->modify_user = sprintf($lang->modify_user, $user['username']);
+	$lang->modify_user = $lang->sprintf($lang->modify_user, $user['username']);
 
 	cpheader();
 	starttable();
@@ -1023,8 +1023,8 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("users", "username", "uid='$uid'");
 	$user = $db->fetch_array($query);
 	$plugins->run_hooks("admin_users_delete");
-	$lang->delete_user = sprintf($lang->delete_user, $user['username']);
-	$lang->confirm_delete_user = sprintf($lang->confirm_delete_user, $user['username']);
+	$lang->delete_user = $lang->sprintf($lang->delete_user, $user['username']);
+	$lang->confirm_delete_user = $lang->sprintf($lang->confirm_delete_user, $user['username']);
 	cpheader();
 	startform("users.php", '', "do_delete");
 	makehiddencode("uid", $uid);
@@ -1047,7 +1047,7 @@ if($mybb->input['action'] == "showreferrers")
 		$query = $db->simple_select("users", "username", "uid='$uid'");
 		$user = $db->fetch_array($query);
 		$plugins->run_hooks("admin_users_showreferrers");
-		$lang->members_referred_by = sprintf($lang->members_referred_by, $user['username']);
+		$lang->members_referred_by = $lang->sprintf($lang->members_referred_by, $user['username']);
 
 		starttable();
 		tableheader($lang->members_referred_by, '', 6);
@@ -1088,7 +1088,7 @@ if($mybb->input['action'] == "findips")
 		cperror($lang->error_no_users);
 	}
 	starttable();
-	$lang->ip_addresses_user = sprintf($lang->ip_addresses_user, $user['username']);
+	$lang->ip_addresses_user = $lang->sprintf($lang->ip_addresses_user, $user['username']);
 	tableheader($lang->ip_addresses_user, '');
 	tablesubheader($lang->reg_ip, '');
 	if(!empty($user['regip']))
@@ -1160,7 +1160,7 @@ if($mybb->input['action'] == "stats")
 	$uid = intval($mybb->input['uid']);
 	$query = $db->simple_select("users", "*", "uid='$uid'");
 	$user = $db->fetch_array($query);
-	$lang->general_user_stats = sprintf($lang->general_user_stats, $user['username']);
+	$lang->general_user_stats = $lang->sprintf($lang->general_user_stats, $user['username']);
 
 	$daysreg = (time() - $user['regdate']) / (24*3600);
 	$ppd = $user['postnum'] / $daysreg;
@@ -1232,8 +1232,8 @@ if($mybb->input['action'] == "pmstats")
 	$uid = intval($mybb->input['uid']);
 	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."users WHERE uid='$uid'");
 	$user = $db->fetch_array($query);
-	$lang->pm_stats = sprintf($lang->pm_stats, $user['username']);
-	$lang->custom_pm_folders = sprintf($lang->custom_pm_folders, $user['username']);
+	$lang->pm_stats = $lang->sprintf($lang->pm_stats, $user['username']);
+	$lang->custom_pm_folders = $lang->sprintf($lang->custom_pm_folders, $user['username']);
 
 	$query = $db->simple_select("privatemessages", "COUNT(*) AS total", "uid='$uid'");
 	$pmscount = $db->fetch_array($query);
@@ -1572,7 +1572,7 @@ if($mybb->input['action'] == "find")
 		{
 			$usergroups[$usergroup['gid']] = $usergroup;
 		}
-		$lang->results_found = sprintf($lang->results_found, $numusers);
+		$lang->results_found = $lang->sprintf($lang->results_found, $numusers);
 		cpheader();
 		starttable();
 		tableheader($lang->search_results);
@@ -1925,8 +1925,8 @@ if($mybb->input['action'] == "do_manageban")
 	{
 		$liftdate = date2timestamp($mybb->input['liftafter']);
 	}
-	$lang->ban_updated = sprintf($lang->ban_updated, $user['username']);
-	$lang->ban_added = sprintf($lang->ban_added, $user['username']);
+	$lang->ban_updated = $lang->sprintf($lang->ban_updated, $user['username']);
+	$lang->ban_added = $lang->sprintf($lang->ban_added, $user['username']);
 	$now = time();
 	$groupupdate = array(
 		"usergroup" => intval($mybb->input['usergroup'])
@@ -1971,7 +1971,7 @@ if($mybb->input['action'] == "liftban")
 	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 	$plugins->run_hooks("admin_users_liftban");
-	$lang->ban_lifted = sprintf($lang->ban_lifted, $user['username']);
+	$lang->ban_lifted = $lang->sprintf($lang->ban_lifted, $user['username']);
 	if(!$ban['uid'])
 	{
 		cperror($lang->error_not_banned);
@@ -1995,7 +1995,7 @@ if($mybb->input['action'] == "manageban")
 
 		$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 		$user = $db->fetch_array($query);
-		$lang->edit_banning_options = sprintf($lang->edit_banning_options, $user['username']);
+		$lang->edit_banning_options = $lang->sprintf($lang->edit_banning_options, $user['username']);
 
 		if(!$ban['uid'])
 		{
@@ -2130,7 +2130,7 @@ if($mybb->input['action'] == "search" || !$mybb->input['action'])
 		$last_uid = intval($mybb->input['lastuid']);
 		$query = $db->simple_select("users", "username", "uid='$last_uid'");
 		$last_user = $db->fetch_array($query);
-		$lang->last_edited = sprintf($lang->last_edited, $last_user['username']);
+		$lang->last_edited = $lang->sprintf($lang->last_edited, $last_user['username']);
 		$last_user['username'] = urlencode($last_user['username']);
 		$last_edited = "<li><a href=\"users.php?".SID."&amp;action=find&amp;search[username]=$last_user[username]&amp;searchop[sortby]=regdate&amp;searchop[order]=desc\">".$lang->last_edited."</li>\n";
 	}

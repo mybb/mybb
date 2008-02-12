@@ -117,7 +117,7 @@ $child_forums = build_forumbits($fid, 2);
 $forums = $child_forums['forum_list'];
 if($forums)
 {
-	$lang->sub_forums_in = sprintf($lang->sub_forums_in, $foruminfo['name']);
+	$lang->sub_forums_in = $lang->sprintf($lang->sub_forums_in, $foruminfo['name']);
 	eval("\$subforums = \"".$templates->get("forumdisplay_subforums")."\";");
 }
 
@@ -229,7 +229,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 	
 	if($guestcount)
 	{
-		$guestsonline = sprintf($lang->users_browsing_forum_guests, $guestcount);
+		$guestsonline = $lang->sprintf($lang->users_browsing_forum_guests, $guestcount);
 	}
 	
 	if($guestcount && $onlinemembers)
@@ -240,7 +240,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 	$invisonline = '';
 	if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
 	{
-		$invisonline = sprintf($lang->users_browsing_forum_invis, $inviscount);
+		$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
 	}
 	
 	if($invisonline != '' && $guestcount)
@@ -256,7 +256,7 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 {
 	if(!$foruminfo['rulestitle'])
 	{
-		$foruminfo['rulestitle'] = sprintf($lang->forum_rules, $foruminfo['name']);
+		$foruminfo['rulestitle'] = $lang->sprintf($lang->forum_rules, $foruminfo['name']);
 	}
 	
 	$rules_parser = array(
@@ -820,7 +820,7 @@ if(is_array($threadcache))
 					$not_rated = ' star_rating_notrated';
 				}
 
-				$ratingvotesav = sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
+				$ratingvotesav = $lang->sprintf($lang->rating_votes_average, $thread['numratings'], $thread['averagerating']);
 				eval("\$rating = \"".$templates->get("forumdisplay_thread_rating")."\";");
 			}
 		}
@@ -1009,11 +1009,11 @@ if(is_array($threadcache))
 		{
 			if($thread['unapprovedposts'] > 1)
 			{
-				$unapproved_posts_count = sprintf($lang->thread_unapproved_posts_count, $thread['unapprovedposts']);
+				$unapproved_posts_count = $lang->sprintf($lang->thread_unapproved_posts_count, $thread['unapprovedposts']);
 			}
 			else
 			{
-				$unapproved_posts_count = sprintf($lang->thread_unapproved_post_count, 1);
+				$unapproved_posts_count = $lang->sprintf($lang->thread_unapproved_post_count, 1);
 			}
 
 			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($thread['unapprovedposts']).")</span>";
@@ -1028,7 +1028,7 @@ if(is_array($threadcache))
 		{
 			if($thread['attachmentcount'] > 1)
 			{
-				$attachment_count = sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
+				$attachment_count = $lang->sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
 			}
 			else
 			{
@@ -1112,7 +1112,7 @@ if($foruminfo['type'] != "c")
 		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
 
-	$lang->rss_discovery_forum = sprintf($lang->rss_discovery_forum, htmlspecialchars_uni($foruminfo['name']));
+	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni($foruminfo['name']));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
 }

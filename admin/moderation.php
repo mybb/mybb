@@ -63,11 +63,11 @@ if($mybb->input['action'] == "delete")
 	startform('moderation.php', '', 'do_delete');
 	makehiddencode('tid', $tid);
 	starttable();
-	$lang->delete_tool_title = sprintf($lang->delete_tool_title, $tool['name']);
+	$lang->delete_tool_title = $lang->sprintf($lang->delete_tool_title, $tool['name']);
 	tableheader($lang->delete_tool_title, '', 1);
 	$yes = makebuttoncode('deletesubmit', $lang->yes);
 	$no = makebuttoncode(0, $lang->no);
-	$lang->delete_tool_confirm = sprintf($lang->delete_tool_confirm, $tool['name']);
+	$lang->delete_tool_confirm = $lang->sprintf($lang->delete_tool_confirm, $tool['name']);
 	makelabelcode("<div align=\"center\">$lang->delete_tool_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();

@@ -378,7 +378,7 @@ if(!$mybb->input['action'])
 			$lifts_on = my_date($mybb->settings['dateformat'], $ban['lifted']);
 		}
 
-		$table->construct_cell(sprintf($lang->bannedby_x_on_x, $profile_link, $ban['adminuser'], $ban_date, $ban_period));
+		$table->construct_cell($lang->sprintf($lang->bannedby_x_on_x, $profile_link, $ban['adminuser'], $ban_date, $ban_period));
 		$table->construct_cell($lifts_on, array("class" => "align_center"));
 		$table->construct_cell($time_remaining, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user/banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));

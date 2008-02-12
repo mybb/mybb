@@ -207,7 +207,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
 		$ismod = false;
@@ -320,7 +320,7 @@ else if($mybb->input['action'] == "edit_post")
 		// If we're past the edit time limit - don't allow editing.
 		else if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < (TIME_NOW-($mybb->settings['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
 	}
@@ -431,7 +431,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$post['editdate'] = my_date($mybb->settings['dateformat'], TIME_NOW);
 			$post['edittime'] = my_date($mybb->settings['timeformat'], TIME_NOW);
-			$post['editnote'] = sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
+			$post['editnote'] = $lang->sprintf($lang->postbit_edited, $post['editdate'], $post['edittime']);
 			$post['editedprofilelink'] = build_profile_link($mybb->user['username'], $mybb->user['uid']);
 			eval("\$editedmsg = \"".$templates->get("postbit_editedby")."\";");
 		}
@@ -607,13 +607,13 @@ else if($mybb->input['action'] == "username_availability")
 
 	if($user['uid'])
 	{
-		$lang->username_taken = sprintf($lang->username_taken, $username);
+		$lang->username_taken = $lang->sprintf($lang->username_taken, $username);
 		echo "<fail>{$lang->username_taken}</fail>";
 		exit;		
 	}
 	else
 	{
-		$lang->username_available = sprintf($lang->username_available, $username);
+		$lang->username_available = $lang->sprintf($lang->username_available, $username);
 		echo "<success>{$lang->username_available}</success>";
 		exit;
 	}
@@ -637,13 +637,13 @@ else if($mybb->input['action'] == "username_exists")
 
 	if($user['uid'])
 	{
-		$lang->valid_username = sprintf($lang->valid_username, $username);
+		$lang->valid_username = $lang->sprintf($lang->valid_username, $username);
 		echo "<success>{$lang->valid_username}</success>";
 		exit;
 	}
 	else
 	{
-		$lang->invalid_username = sprintf($lang->invalid_username, $username);
+		$lang->invalid_username = $lang->sprintf($lang->invalid_username, $username);
 		echo "<fail>{$lang->invalid_username}</fail>";
 		exit;
 	}

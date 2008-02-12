@@ -70,7 +70,7 @@ if($mybb->input['action'] == "today")
 	}
 	else
 	{
-		$onlinetoday = sprintf($lang->members_were_online_today, $todaycount);
+		$onlinetoday = $lang->sprintf($lang->members_were_online_today, $todaycount);
 	}
 
 	$plugins->run_hooks("online_today_end");
@@ -251,7 +251,7 @@ else
 	{
 		$guest_bit = $lang->online_guest_singular;
 	}
-	$lang->online_count = sprintf($lang->online_count, my_number_format($online_count), $total_bit, $mybb->settings['wolcutoffmins'], my_number_format($user_count), $user_bit, my_number_format($invisible_count), $invisible_bit, my_number_format($guest_count), $guest_bit);
+	$lang->online_count = $lang->sprintf($lang->online_count, my_number_format($online_count), $total_bit, $mybb->settings['wolcutoffmins'], my_number_format($user_count), $user_bit, my_number_format($invisible_count), $invisible_bit, my_number_format($guest_count), $guest_bit);
 
 	$plugins->run_hooks("online_end");
 

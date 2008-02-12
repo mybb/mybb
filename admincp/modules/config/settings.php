@@ -65,7 +65,7 @@ if($mybb->input['action'] == "addgroup")
 		if($db->num_rows($query) > 0)
 		{
 			$dup_group_title = $db->fetch_field($query, 'title');
-			$errors[] = sprintf($lang->error_duplicate_group_name, $dup_group_title);
+			$errors[] = $lang->sprintf($lang->error_duplicate_group_name, $dup_group_title);
 		}
 
 		if(!$errors)
@@ -175,7 +175,7 @@ if($mybb->input['action'] == "editgroup")
 		if($db->num_rows($query) > 0)
 		{
 			$dup_group_title = $db->fetch_field($query, 'title');
-			$errors[] = sprintf($lang->error_duplicate_group_name, $dup_group_title);
+			$errors[] = $lang->sprintf($lang->error_duplicate_group_name, $dup_group_title);
 		}
 
 		if(!$errors)
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "add")
 		if($db->num_rows($query) > 0)
 		{
 			$dup_setting_title = $db->fetch_field($query, 'title');
-			$errors[] = sprintf($lang->error_duplicate_name, $dup_setting_title);
+			$errors[] = $lang->sprintf($lang->error_duplicate_name, $dup_setting_title);
 		}
 
 		if(!$mybb->input['type'])
@@ -478,7 +478,7 @@ if($mybb->input['action'] == "edit")
 		if($db->num_rows($query) > 0)
 		{
 			$dup_setting_title = $db->fetch_field($query, 'title');
-			$errors[] = sprintf($lang->error_duplicate_name, $dup_setting_title);
+			$errors[] = $lang->sprintf($lang->error_duplicate_name, $dup_setting_title);
 		}
 		
 		if(!$mybb->input['type'])

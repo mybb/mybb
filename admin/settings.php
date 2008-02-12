@@ -689,7 +689,7 @@ if($mybb->input['action'] == "change" || $mybb->input['action'] == "")
 		{
 			if($group['settingcount'] != 1)
 			{
-				$settings_count = sprintf($lang->settings_count, $group['settingcount']);
+				$settings_count = $lang->sprintf($lang->settings_count, $group['settingcount']);
 			}
 			else
 			{

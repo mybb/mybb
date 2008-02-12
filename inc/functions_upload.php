@@ -212,7 +212,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				$thumbnail = generate_thumbnail($mybb->settings['avataruploadpath']."/".$filename, $mybb->settings['avataruploadpath'], $filename, $maxheight, $maxwidth);
 				if(!$thumbnail['filename'])
 				{
-					$ret['error'] = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
 					@unlink($mybb->settings['avataruploadpath']."/".$filename);
 					return $ret;				
@@ -227,7 +227,7 @@ function upload_avatar($avatar=array(), $uid=0)
 			}
 			else
 			{
-				$ret['error'] = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+				$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 				if($mybb->settings['avatarresizing'] == "user")
 				{
 					$ret['error'] .= "<br /<br />".$lang->error_avataruserresize;
@@ -322,7 +322,7 @@ function upload_attachment($attachment)
 				$ret['error'] .= $lang->error_uploadfailed_php7;
 				break;
 			default:
-				$ret['error'] .= sprintf($lang->error_uploadfailed_phpx, $attachment['error']);
+				$ret['error'] .= $lang->sprintf($lang->error_uploadfailed_phpx, $attachment['error']);
 				break;
 		}
 		return $ret;
@@ -347,7 +347,7 @@ function upload_attachment($attachment)
 	// Check the size
 	if($attachment['size'] > $attachtype['maxsize']*1024 && $attachtype['maxsize'] != "")
 	{
-		$ret['error'] = sprintf($lang->error_attachsize, $attachtype['maxsize']);
+		$ret['error'] = $lang->sprintf($lang->error_attachsize, $attachtype['maxsize']);
 		return $ret;
 	}
 
@@ -360,7 +360,7 @@ function upload_attachment($attachment)
 		if($usage > ($mybb->usergroup['attachquota']*1024))
 		{
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-			$ret['error'] = sprintf($lang->error_reachedattachquota, $friendlyquota);
+			$ret['error'] = $lang->sprintf($lang->error_reachedattachquota, $friendlyquota);
 			return $ret;
 		}
 	}

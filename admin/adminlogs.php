@@ -156,7 +156,7 @@ else if($mybb->input['action'] == "view")
 		$firstpage = "<input type=\"button\" value=\"$lang->firstpage\" onClick=\"hopto('adminlogs.php?".SID."&amp;action=view&amp;perpage=$perpage&amp;fromscript=$fromscript&amp;fromadmin=$fromadmin&amp;orderby=$orderby&amp;page=1')\" />&nbsp;";
 	}
 	
-	$lang->log_results_header = sprintf($lang->log_results_header, $page, $pages, $rescount);
+	$lang->log_results_header = $lang->sprintf($lang->log_results_header, $page, $pages, $rescount);
 
 	cpheader();
 	starttable();

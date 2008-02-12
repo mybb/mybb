@@ -66,7 +66,7 @@ if($mybb->input['action'] == "utf8_conversion")
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table1, $matches);
 		$charset = $matches[1];
 		
-		$table->construct_cell("<strong>".sprintf($lang->converting_to_utf8, $mybb->input['table'], $charset)."</strong>");
+		$table->construct_cell("<strong>".$lang->sprintf($lang->converting_to_utf8, $mybb->input['table'], $charset)."</strong>");
 		$table->construct_row();
 		
 		$table->construct_cell($lang->please_wait);
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		// Log admin action
 		log_admin_action($mybb->input['table']);
 		
-		flash_message(sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
+		flash_message($lang->sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
 		admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		
 		exit;
@@ -221,7 +221,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$table = new Table;
 		
-		$table->construct_cell("<strong>".sprintf($lang->convert_to_utf8, $mybb->input['table'], $charset)."</strong>");
+		$table->construct_cell("<strong>".$lang->sprintf($lang->convert_to_utf8, $mybb->input['table'], $charset)."</strong>");
 		$table->construct_row();
 		
 		$table->construct_cell($lang->notice_proccess_long_time);

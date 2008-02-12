@@ -31,7 +31,7 @@ if($mybb->input['action'] == "header")
 	echo "</head>\n";
 	echo "<body id=\"logo\">\n";
 	echo "<h1><span class=\"hidden\">MyBB Admin CP</span></h1>\n";
-	$lang->logout_cp = sprintf($lang->logout_cp, $user['username']);
+	$lang->logout_cp = $lang->sprintf($lang->logout_cp, $user['username']);
 	echo "<div id=\"header-links\">\n<a href=\"index.php?".SID."&amp;action=home\" target=\"body\">".$lang->cp_home."</a>\n<a href=\"../index.php\" target=\"body\">".$lang->view_forums."</a>\n<a href=\"index.php?".SID."&amp;action=logout\" target=\"_parent\">".$lang->logout_cp."</a>\n</div>\n";
 	echo "</body>\n";
 	echo "</html>\n";
@@ -104,14 +104,14 @@ elseif($mybb->input['action'] == "home")
 	// If last update check was greater than two weeks ago (14 days) show an alert
 	if($update_check['last_check'] <= time()-60*60*24*14)
 	{
-		$lang->last_update_check_two_weeks = sprintf($lang->last_update_check_two_weeks, "index.php?".SID."&amp;action=vercheck");
+		$lang->last_update_check_two_weeks = $lang->sprintf($lang->last_update_check_two_weeks, "index.php?".SID."&amp;action=vercheck");
 		makewarning($lang->last_update_check_two_weeks);
 	}
 
 	// If the update check contains information about a newer version, show an alert
 	if($update_check['latest_version_code'] > $mybb->version_code)
 	{
-		$lang->new_version_available = sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
+		$lang->new_version_available = $lang->sprintf($lang->new_version_available, "MyBB {$mybb->version}", "<a href=\"http://www.mybboard.net/?fwlink=release_{$update_check['latest_version_code']}\" target=\"_new\">MyBB {$update_check['latest_version']}</a>");
 		makewarning($lang->new_version_available);
 	}
 

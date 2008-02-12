@@ -330,7 +330,7 @@ function perform_search_mysql($search)
 							// Word is too short - show error message
 							if(my_strlen($word) < $mybb->settings['minsearchword'])
 							{
-								$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+								$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 								error($lang->error_minsearchlength);
 							}
 							// Add terms to search query
@@ -348,7 +348,7 @@ function perform_search_mysql($search)
 					$phrase = str_replace(array("+", "-", "*"), "", trim($phrase));
 					if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 					{
-						$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 						error($lang->error_minsearchlength);
 					}
 					// Add phrase to search query
@@ -368,7 +368,7 @@ function perform_search_mysql($search)
 			$keywords = str_replace("\"", "", trim($keywords));
 			if(my_strlen($keywords) < $mybb->settings['minsearchword'])
 			{
-				$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+				$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 				error($lang->error_minsearchlength);
 			}
 			$subject_lookin = " AND LOWER(t.subject) LIKE '%{$keywords}%'";
@@ -677,7 +677,7 @@ function perform_search_mysql_ft($search)
 		// Show the minimum search term error only if all search terms are too short
 		if($all_too_short == true)
 		{
-			$lang->error_minsearchlength = sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+			$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
 			error($lang->error_minsearchlength);
 		}
 		$message_lookin = "AND MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";

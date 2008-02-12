@@ -120,7 +120,7 @@ if($mybb->input['action'] == "view")
 	}
 	cpheader();
 	starttable();
-	$lang->modlogs_results = sprintf($lang->modlogs_results, $page, $pages, $rescount);
+	$lang->modlogs_results = $lang->sprintf($lang->modlogs_results, $page, $pages, $rescount);
 	tableheader($lang->modlogs_results, "", 5);
 	echo "<tr>\n";
 	echo "<td class=\"subheader\" align=\"center\">$lang->username</td>\n";

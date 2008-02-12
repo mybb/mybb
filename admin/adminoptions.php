@@ -173,9 +173,9 @@ if($mybb->input['action'] == "updateperms")
 			LIMIT 1
 		");
 		$admin = $db->fetch_array($query);
-		$tsub = sprintf($lang->edit_admin_perms, $admin['username']);
+		$tsub = $lang->sprintf($lang->edit_admin_perms, $admin['username']);
 		$permissions = getadminpermissions($uid, $admin['gid']);
-		$lang->nav_edit_permissions = sprintf($lang->nav_edit_permissions, $admin['username']);
+		$lang->nav_edit_permissions = $lang->sprintf($lang->nav_edit_permissions, $admin['username']);
 		addacpnav($lang->nav_edit_permissions);
 	}
 	elseif($uid < 0)
@@ -183,9 +183,9 @@ if($mybb->input['action'] == "updateperms")
 		$gid = abs($uid);
 		$query = $db->simple_select("usergroups", "title", "gid='$gid'");
 		$group = $db->fetch_array($query);
-		$tsub = sprintf($lang->edit_admin_group_perms, $group['title']);
+		$tsub = $lang->sprintf($lang->edit_admin_group_perms, $group['title']);
 		$permissions = getadminpermissions("", $gid);
-		$lang->nav_edit_permissions = sprintf($lang->nav_edit_group_permissions, $group['title']);
+		$lang->nav_edit_permissions = $lang->sprintf($lang->nav_edit_group_permissions, $group['title']);
 		addacpnav($lang->nav_edit_permissions);
 	}
 	else

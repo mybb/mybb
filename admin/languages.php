@@ -132,7 +132,7 @@ if($mybb->input['action'] == "editset")
 	cpheader();
 	startform("languages.php", "editset", "do_editset");
 	starttable();
-	$lang->editing_set = sprintf($lang->editing_set, $languages[$editlang]);
+	$lang->editing_set = $lang->sprintf($lang->editing_set, $languages[$editlang]);
 	tableheader($lang->editing_set);
 	makeinputcode($lang->set_friendly_name, "info[name]", $langinfo['name']);
 	makelabelcode($lang->set_author, $langinfo['author']);
@@ -281,7 +281,7 @@ if($mybb->input['action'] == "edit")
 			cperror($lang->invalid_file);
 		}
 
-		addacpnav(sprintf($lang->nav_editing_file, $file));
+		addacpnav($lang->sprintf($lang->nav_editing_file, $file));
 
 		// Get file being edited in an array
 		require $editfile;
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "edit")
 		if($editwithfile)
 		{
 			// Editing with another file
-			$lang->editing_file_in_set_with = sprintf($lang->editing_file_in_set_with, $file, $languages[$editlang], $languages[$editwith]);
+			$lang->editing_file_in_set_with = $lang->sprintf($lang->editing_file_in_set_with, $file, $languages[$editlang], $languages[$editwith]);
 			tableheader($lang->editing_file_in_set_with, "", 1);
 			//tablesubheader(array($lang->variable, $languages[$editlang], $languages[$editwith]));
 			if(count($editvars) == 0)
@@ -356,7 +356,7 @@ if($mybb->input['action'] == "edit")
 		else
 		{
 			// Editing individually
-			$lang->editing_file_in_set = sprintf($lang->editing_file_in_set, $file, $languages[$editlang]);
+			$lang->editing_file_in_set = $lang->sprintf($lang->editing_file_in_set, $file, $languages[$editlang]);
 			tableheader($lang->editing_file_in_set, "", 1);
 			if(count($editvars) == 0)
 			{
@@ -515,7 +515,7 @@ if(empty($mybb->input['action']))
 	$langselectlangs[0] = $lang->edit;
 	foreach($languages as $key1 => $langname1)
 	{
-		$langselectlangs[$key1] = sprintf($lang->edit_with, $langname1);
+		$langselectlangs[$key1] = $lang->sprintf($lang->edit_with, $langname1);
 	}
 
 	foreach($languages as $key => $langname)

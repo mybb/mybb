@@ -174,8 +174,8 @@ $query = $db->simple_select("users", "COUNT(*) AS count", "postnum > 0");
 $posters = $db->fetch_field($query, "count");
 $havepostedpercent = my_number_format(round((($posters / $stats['numusers']) * 100), 2)) . "%";
 
-$lang->todays_top_poster = sprintf($lang->todays_top_poster, $topposter, my_number_format($topposterposts));
-$lang->popular_forum = sprintf($lang->popular_forum, $topforum, my_number_format($topforumposts), my_number_format($topforumthreads));
+$lang->todays_top_poster = $lang->sprintf($lang->todays_top_poster, $topposter, my_number_format($topposterposts));
+$lang->popular_forum = $lang->sprintf($lang->popular_forum, $topforum, my_number_format($topforumposts), my_number_format($topforumthreads));
 
 $stats['numposts'] = my_number_format($stats['numposts']);
 $stats['numthreads'] = my_number_format($stats['numthreads']);

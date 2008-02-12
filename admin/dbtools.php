@@ -175,7 +175,7 @@ if($mybb->input['action'] == 'do_backup')
 		}
 		
 		$file_from_admindir = 'dbtools.php?'.SID.'&amp;action=dlbackup&amp;file='.basename($file).$ext;
-		$lang->backup_complete = sprintf($lang->backup_complete, $file.$ext, $file_from_admindir);
+		$lang->backup_complete = $lang->sprintf($lang->backup_complete, $file.$ext, $file_from_admindir);
 		cpmessage($lang->backup_complete);
 	}
 	else
@@ -309,7 +309,7 @@ if($mybb->input['action'] == 'delete')
 {
 	if(!$mybb->input['backup'])
 	{
-		$lang->error_no_backup_specified = sprintf($lang->error_no_backup_specified, $lang->deletion);
+		$lang->error_no_backup_specified = $lang->sprintf($lang->error_no_backup_specified, $lang->deletion);
 		cperror($lang->error_no_backup_specified);
 	}
 	

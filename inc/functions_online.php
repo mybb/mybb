@@ -515,7 +515,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 		case "announcements":
 			if($forums[$user_activity['fid']])
 			{
-				$location_name = sprintf($lang->viewing_announcements, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
+				$location_name = $lang->sprintf($lang->viewing_announcements, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
 			}
 			else
 			{
@@ -528,7 +528,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 			$tid = $posts[$pid];
 			if($threads[$tid])
 			{
-				$location_name = sprintf($lang->viewing_attachment2, $user_activity['aid'], $threads[$tid], get_thread_link($tid));
+				$location_name = $lang->sprintf($lang->viewing_attachment2, $user_activity['aid'], $threads[$tid], get_thread_link($tid));
 			}
 			else
 			{
@@ -542,7 +542,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 		case "calendar_event":
 			if($events[$user_activity['eid']])
 			{
-				$location_name = sprintf($lang->viewing_event2, get_event_link($user_activity['eid']), $events[$user_activity['eid']]);
+				$location_name = $lang->sprintf($lang->viewing_event2, get_event_link($user_activity['eid']), $events[$user_activity['eid']]);
 			}
 			else
 			{
@@ -565,11 +565,11 @@ function build_friendly_wol_location($user_activity, $return=false)
 			{
 				if($forums_linkto[$user_activity['fid']])
 				{
-					$location_name = sprintf($lang->forum_redirect_to, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
+					$location_name = $lang->sprintf($lang->forum_redirect_to, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
 				}
 				else
 				{
-					$location_name = sprintf($lang->viewing_forum2, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
+					$location_name = $lang->sprintf($lang->viewing_forum2, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
 				}
 			}
 			else
@@ -579,7 +579,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		// index.php functions
 		case "index":
-			$location_name = sprintf($lang->viewing_index, $mybb->settings['bbname']);
+			$location_name = $lang->sprintf($lang->viewing_index, $mybb->settings['bbname']);
 			break;
 		// managegroup.php functions
 		case "managegroup":
@@ -592,7 +592,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 		case "member_profile":
 			if($users[$user_activity['uid']])
 			{
-				$location_name = sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $users[$user_activity['uid']]);
+				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $users[$user_activity['uid']]);
 			}
 			else
 			{
@@ -637,7 +637,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 		case "misc_whoposted":
 			if($threads[$user_activity['tid']])
 			{
-				$location_name = sprintf($lang->viewing_whoposted2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
+				$location_name = $lang->sprintf($lang->viewing_whoposted2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
 			}
 			else
 			{
@@ -714,7 +714,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 			}
 			if($threads[$user_activity['tid']])
 			{
-				$location_name = sprintf($lang->replying_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
+				$location_name = $lang->sprintf($lang->replying_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
 			}
 			else
 			{
@@ -725,7 +725,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 		case "newthread":
 			if($forums[$user_activity['fid']])
 			{
-				$location_name = sprintf($lang->posting_thread2, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
+				$location_name = $lang->sprintf($lang->posting_thread2, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
 			}
 			else
 			{
@@ -783,14 +783,14 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		// search.php functions
 		case "search":
-			$location_name = sprintf($lang->searching_forum, $mybb->settings['bbname']);
+			$location_name = $lang->sprintf($lang->searching_forum, $mybb->settings['bbname']);
 			break;
 		// showthread.php functions
 		case "showthread":
 			if($threads[$user_activity['tid']])
 			{
 				$pagenote = '';
-				$location_name = sprintf($lang->reading_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']], $pagenote);
+				$location_name = $lang->sprintf($lang->reading_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']], $pagenote);
 			}
 			else
 			{
@@ -869,7 +869,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 	}
 	if(!$location_name)
 	{
-		$location_name = sprintf($lang->unknown_location, $location);
+		$location_name = $lang->sprintf($lang->unknown_location, $location);
 	}
 
 	return $location_name;

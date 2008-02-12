@@ -293,8 +293,8 @@ if($mybb->input['action'] == "delete")
 	makehiddencode("aid", $mybb->input['aid']);
 	starttable();
 
-	$lang->delete_announcement2 = sprintf($lang->delete_announcement2, $announcement['subject']);
-	$lang->delete_announcement_confirm = sprintf($lang->delete_announcement_confirm, $announcement['subject']);
+	$lang->delete_announcement2 = $lang->sprintf($lang->delete_announcement2, $announcement['subject']);
+	$lang->delete_announcement_confirm = $lang->sprintf($lang->delete_announcement_confirm, $announcement['subject']);
 
 	tableheader($lang->delete_announcement2, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
@@ -311,7 +311,7 @@ if($mybb->input['action'] == "edit")
 
 	$plugins->run_hooks("admin_announcements_edit");
 	
-	$lang->nav_edit_announcement = sprintf($lang->nav_edit_announcement, $announcement['subject']);
+	$lang->nav_edit_announcement = $lang->sprintf($lang->nav_edit_announcement, $announcement['subject']);
 	addacpnav($lang->nav_edit_announcement);
 	if(!$noheader)
 	{
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "edit")
 	makehiddencode("aid", "$aid");
 	starttable();
 
-	$lang->edit_announcement2 = sprintf($lang->edit_announcement2, $announcement['subject']);
+	$lang->edit_announcement2 = $lang->sprintf($lang->edit_announcement2, $announcement['subject']);
 
 	tableheader($lang->edit_announcement2);
 	makeinputcode($lang->subject, "subject", "$announcement[subject]");

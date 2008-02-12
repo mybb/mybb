@@ -295,8 +295,8 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_reachedpmquota;
 					$emailmessage = $userlang->email_reachedpmquota;
 				}
-				$emailmessage = sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+				$emailmessage = $lang->sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
 				my_mail($user['email'], $emailsubject, $emailmessage);
 	
 				if($this->admin_override != true)
@@ -520,8 +520,8 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_newpm;
 					$emailmessage = $userlang->email_newpm;
 				}
-				$emailmessage = sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
-				$emailsubject = sprintf($emailsubject, $mybb->settings['bbname']);
+				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
+				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
 				my_mail($recipient['email'], $emailsubject, $emailmessage);
 			}
 

@@ -69,7 +69,7 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 		$regcount = $db->num_rows($query);
 		if($regcount >= $mybb->settings['maxregsbetweentime'])
 		{
-			$lang->error_alreadyregisteredtime = sprintf($lang->error_alreadyregisteredtime, $regcount, $mybb->settings['betweenregstime']);
+			$lang->error_alreadyregisteredtime = $lang->sprintf($lang->error_alreadyregisteredtime, $regcount, $mybb->settings['betweenregstime']);
 			error($lang->error_alreadyregisteredtime);
 		}
 	}
@@ -238,7 +238,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 		if($_COOKIE['coppauser'])
 		{
-			$lang->redirect_registered_coppa_activate = sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], $user_info['username']);
 			my_unsetcookie("coppauser");
 			my_unsetcookie("coppadob");
 			$plugins->run_hooks("member_do_register_end");
@@ -255,11 +255,11 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 				"type" => "r"
 			);
 			$db->insert_query("awaitingactivation", $activationarray);
-			$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			$emailmessage = sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
 			
-			$lang->redirect_registered_activation = sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -267,8 +267,8 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "randompass")
 		{
-			$emailsubject = sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
-			$emailmessage = sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+			$emailsubject = $lang->sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -277,7 +277,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else if($mybb->settings['regtype'] == "admin")
 		{
-			$lang->redirect_registered_admin_activate = sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered_admin_activate = $lang->sprintf($lang->redirect_registered_admin_activate, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -285,7 +285,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_registered = sprintf($lang->redirect_registered, $mybb->settings['bbname'], $user_info['username']);
+			$lang->redirect_registered = $lang->sprintf($lang->redirect_registered, $mybb->settings['bbname'], $user_info['username']);
 
 			$plugins->run_hooks("member_do_register_end");
 
@@ -363,7 +363,7 @@ if($mybb->input['action'] == "register")
 			{
 				error($lang->error_need_to_be_thirteen);
 			}
-			$lang->coppa_agreement_1 = sprintf($lang->coppa_agreement_1, $mybb->settings['bbname']);
+			$lang->coppa_agreement_1 = $lang->sprintf($lang->coppa_agreement_1, $mybb->settings['bbname']);
 			eval("\$coppa_agreement = \"".$templates->get("member_register_agreement_coppa")."\";");
 		}
 
@@ -399,7 +399,7 @@ if($mybb->input['action'] == "register")
 				foreach($explodedtpp as $val)
 				{
 					$val = trim($val);
-					$tppoptions .= "<option value=\"$val\">".sprintf($lang->tpp_option, $val)."</option>\n";
+					$tppoptions .= "<option value=\"$val\">".$lang->sprintf($lang->tpp_option, $val)."</option>\n";
 				}
 			}
 			eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
@@ -413,7 +413,7 @@ if($mybb->input['action'] == "register")
 				foreach($explodedppp as $val)
 				{
 					$val = trim($val);
-					$pppoptions .= "<option value=\"$val\">".sprintf($lang->ppp_option, $val)."</option>\n";
+					$pppoptions .= "<option value=\"$val\">".$lang->sprintf($lang->ppp_option, $val)."</option>\n";
 				}
 			}
 			eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "register")
 			eval("\$passboxes = \"".$templates->get("member_register_password")."\";");
 
 			// JS validator extra
-			$lang->js_validator_password_length = sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
+			$lang->js_validator_password_length = $lang->sprintf($lang->js_validator_password_length, $mybb->settings['minpasswordlength']);
 			$validator_extra .= "\tregValidator.register('password', 'length', {match_field:'password2', min: {$mybb->settings['minpasswordlength']}, failure_message:'{$lang->js_validator_password_length}'});\n";
 
 			// See if the board has "require complex passwords" enabled.
@@ -673,7 +673,7 @@ if($mybb->input['action'] == "register")
 		// JS validator extra
 		if($mybb->settings['maxnamelength'] > 0 && $mybb->settings['minnamelength'] > 0)
 		{
-			$lang->js_validator_username_length = sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
+			$lang->js_validator_username_length = $lang->sprintf($lang->js_validator_username_length, $mybb->settings['minnamelength'], $mybb->settings['maxnamelength']);
 			$validator_extra .= "\tregValidator.register('username', 'length', {min: {$mybb->settings['minnamelength']}, max: {$mybb->settings['maxnamelength']}, failure_message:'{$lang->js_validator_username_length}'});\n";
 		}
 
@@ -819,8 +819,8 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 				$username = $user['username'];
 				$email = $user['email'];
 				$activationcode = $user['code'];
-				$emailsubject = sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-				$emailmessage = sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+				$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
+				$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
 				my_mail($email, $emailsubject, $emailmessage);
 			}
 		}
@@ -867,8 +867,8 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 			$username = $user['username'];
 			$email = $user['email'];
 			$activationcode = $user['activationcode'];
-			$emailsubject = sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
-			$emailmessage = sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+			$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 			my_mail($email, $emailsubject, $emailmessage);
 		}
 	}
@@ -915,8 +915,8 @@ if($mybb->input['action'] == "resetpassword")
 
 		$plugins->run_hooks("member_resetpassword_process");
 
-		$emailsubject = sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
-		$emailmessage = sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
+		$emailsubject = $lang->sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
+		$emailmessage = $lang->sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
 		my_mail($email, $emailsubject, $emailmessage);
 
 		$plugins->run_hooks("member_resetpassword_reset");
@@ -939,7 +939,7 @@ if($mybb->input['action'] == "login")
 	$member_loggedin_notice = "";
 	if($mybb->user['uid'] != 0)
 	{
-		$lang->already_logged_in = sprintf($lang->already_logged_in, build_profile_link($mybb->user['username'], $mybb->user['uid']));
+		$lang->already_logged_in = $lang->sprintf($lang->already_logged_in, build_profile_link($mybb->user['username'], $mybb->user['uid']));
 		eval("\$member_loggedin_notice = \"".$templates->get("member_loggedin_notice")."\";");
 	}
 
@@ -976,7 +976,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == 1)
 		{
-			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
 		error($lang->error_invalidpworusername.$login_text);
 	}
@@ -987,7 +987,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 		if($mybb->settings['failedlogintext'] == 1)
 		{
-			$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
 		error($lang->error_invalidpassword.$login_text);
 	}
@@ -1126,7 +1126,7 @@ if($mybb->input['action'] == "profile")
 	$query = $db->simple_select("users", "*", "uid='$uid'");
 	$memprofile = $db->fetch_array($query);
 	
-	$lang->profile = sprintf($lang->profile, $memprofile['username']);
+	$lang->profile = $lang->sprintf($lang->profile, $memprofile['username']);
 
 	if(!$memprofile['uid'])
 	{
@@ -1136,24 +1136,24 @@ if($mybb->input['action'] == "profile")
 	// Get member's permissions
 	$memperms = user_permissions($memprofile['uid']);
 
-	$lang->nav_profile = sprintf($lang->nav_profile, $memprofile['username']);
+	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $memprofile['username']);
 	add_breadcrumb($lang->nav_profile);
 
-	$lang->users_forum_info = sprintf($lang->users_forum_info, $memprofile['username']);
-	$lang->users_contact_details = sprintf($lang->users_contact_details, $memprofile['username']);
+	$lang->users_forum_info = $lang->sprintf($lang->users_forum_info, $memprofile['username']);
+	$lang->users_contact_details = $lang->sprintf($lang->users_contact_details, $memprofile['username']);
 
 	if($mybb->settings['enablepms'] != 0 && $memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 	{
-		$lang->send_pm = sprintf($lang->send_pm, $memprofile['username']);
+		$lang->send_pm = $lang->sprintf($lang->send_pm, $memprofile['username']);
 	}
 	else
 	{
 		$lang->send_pm = '';
 	}
-	$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
-	$lang->users_additional_info = sprintf($lang->users_additional_info, $memprofile['username']);
-	$lang->users_signature = sprintf($lang->users_signature, $memprofile['username']);
-	$lang->send_user_email = sprintf($lang->send_user_email, $memprofile['username']);
+	$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
+	$lang->users_additional_info = $lang->sprintf($lang->users_additional_info, $memprofile['username']);
+	$lang->users_signature = $lang->sprintf($lang->users_signature, $memprofile['username']);
+	$lang->send_user_email = $lang->sprintf($lang->send_user_email, $memprofile['username']);
 
 	if($memprofile['avatar'])
 	{
@@ -1236,7 +1236,7 @@ if($mybb->input['action'] == "profile")
 
 	if($memprofile['away'] == 1 && $mybb->settings['allowaway'] != 0)
 	{
-		$lang->away_note = sprintf($lang->away_note, $memprofile['username']);
+		$lang->away_note = $lang->sprintf($lang->away_note, $memprofile['username']);
 		$awaydate = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
 		if(!empty($memprofile['awayreason']))
 		{
@@ -1279,7 +1279,7 @@ if($mybb->input['action'] == "profile")
 	$memlocaldate = gmdate($mybb->settings['dateformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 	$memlocaltime = gmdate($mybb->settings['timeformat'], TIME_NOW + ($memprofile['timezone'] * 3600));
 
-	$localtime = sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
+	$localtime = $lang->sprintf($lang->local_time_format, $memlocaldate, $memlocaltime);
 
 	if($memprofile['lastactive'])
 	{
@@ -1303,7 +1303,7 @@ if($mybb->input['action'] == "profile")
 			if($membday[2])
 			{
 				$year = my_date("Y");
-				$lang->membdayage = sprintf($lang->membdayage, ($year - $membday['2']));
+				$lang->membdayage = $lang->sprintf($lang->membdayage, ($year - $membday['2']));
 				
 				if($membday[2] < 1970)
 				{
@@ -1510,7 +1510,7 @@ if($mybb->input['action'] == "profile")
 		eval("\$profilefields = \"".$templates->get("member_profile_customfields")."\";");
 	}
 	$memprofile['postnum'] = my_number_format($memprofile['postnum']);
-	$lang->ppd_percent_total = sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
+	$lang->ppd_percent_total = $lang->sprintf($lang->ppd_percent_total, my_number_format($ppd), $percent);
 	$formattedname = format_name($memprofile['username'], $memprofile['usergroup'], $memprofile['displaygroup']);
 	if($memprofile['timeonline'] > 0)
 	{
@@ -1556,7 +1556,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$sent_count = $db->fetch_field($query, "maillogs");
 		if($sent_count > $mybb->usergroup['maxemails'])
 		{
-			$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 			error($lang->error_max_emails_day);
 		}
 	}
@@ -1588,7 +1588,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	{
 		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
 		
-		$message = sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
+		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
 		my_mail($to_user['email'], $mybb->input['subject'], $message, $from);
 		
 		// Log the message
@@ -1632,7 +1632,7 @@ if($mybb->input['action'] == "emailuser")
 		$sent_count = $db->fetch_field($query, "maillogs");
 		if($sent_count > $mybb->usergroup['maxemails'])
 		{
-			$lang->error_max_emails_day = sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
+			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
 			error($lang->error_max_emails_day);
 		}
 	}	
@@ -1640,7 +1640,7 @@ if($mybb->input['action'] == "emailuser")
 	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
 	$to_user = $db->fetch_array($query);
 	
-	$lang->email_user = sprintf($lang->email_user, $to_user['username']);
+	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
 	
 	if(!$to_user['uid'])
 	{

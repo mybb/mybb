@@ -120,7 +120,7 @@ else
 		$time = TIME_NOW;
 		if($mybb->settings['edittimelimit'] != 0 && $post['dateline'] < ($time-($mybb->settings['edittimelimit']*60)))
 		{
-			$lang->edit_time_limit = sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
+			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			error($lang->edit_time_limit);
 		}
 	}
@@ -407,7 +407,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 		$friendlyusage = get_friendly_size($usage['ausage']);
-		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
@@ -571,7 +571,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	$firstcheck = $db->fetch_array($query);
 	if($firstcheck['pid'] == $pid && $forumpermissions['canpostpolls'] != 0 && $thread['poll'] < 1)
 	{
-		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
+		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		$numpolloptions = "2";
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}

@@ -599,7 +599,7 @@ function akismet_redirect_thread()
 		$url = get_thread_link($thread['tid']);
 		$url2 = get_forum_link($thread['fid']);
 		
-		error("<div align=\"center\">".$lang->redirect_newreply."<br /><br />".sprintf($lang->redirect_return_forum, $url, $url2)."</div>", $lang->akismet_error);
+		error("<div align=\"center\">".$lang->redirect_newreply."<br /><br />".$lang->sprintf($lang->redirect_return_forum, $url, $url2)."</div>", $lang->akismet_error);
 	}
 }
 
@@ -613,7 +613,7 @@ function akismet_redirect_forum()
 		
 		$url = get_forum_link($fid);
 		
-		error("<div align=\"center\">".$lang->redirect_newthread."<br /><br />".sprintf($lang->redirect_return_forum, $url)."</div>", $lang->akismet_error);
+		error("<div align=\"center\">".$lang->redirect_newthread."<br /><br />".$lang->sprintf($lang->redirect_return_forum, $url)."</div>", $lang->akismet_error);
 	}
 }
 

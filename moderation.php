@@ -122,7 +122,7 @@ switch($mybb->input['action'])
 			$moderation->close_threads($tid);
 		}
 
-		$lang->mod_process = sprintf($lang->mod_process, $openclose);
+		$lang->mod_process = $lang->sprintf($lang->mod_process, $openclose);
 
 		log_moderator_action($modlogdata, $lang->mod_process);
 
@@ -154,7 +154,7 @@ switch($mybb->input['action'])
 			$moderation->stick_threads($tid);
 		}
 
-		$lang->mod_process = sprintf($lang->mod_process, $stuckunstuck);
+		$lang->mod_process = $lang->sprintf($lang->mod_process, $stuckunstuck);
 
 		log_moderator_action($modlogdata, $lang->mod_process);
 
@@ -221,7 +221,7 @@ switch($mybb->input['action'])
 		$modlogdata['thread_subject'] = $thread['subject'];
 
 		$thread['subject'] = $db->escape_string($thread['subject']);
-		$lang->thread_deleted = sprintf($lang->thread_deleted, $thread['subject']);
+		$lang->thread_deleted = $lang->sprintf($lang->thread_deleted, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->thread_deleted);
 
 		$moderation->delete_thread($tid);
@@ -281,7 +281,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_do_deletepoll");
 
-		$lang->poll_deleted = sprintf($lang->poll_deleted, $thread['subject']);
+		$lang->poll_deleted = $lang->sprintf($lang->poll_deleted, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->poll_deleted);
 
 		$moderation->delete_poll($poll['pid']);
@@ -304,7 +304,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_approvethread");
 
-		$lang->thread_approved = sprintf($lang->thread_approved, $thread['subject']);
+		$lang->thread_approved = $lang->sprintf($lang->thread_approved, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->thread_approved);
 
 		$moderation->approve_threads($tid, $fid);
@@ -327,7 +327,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_unapprovethread");
 
-		$lang->thread_unapproved = sprintf($lang->thread_unapproved, $thread['subject']);
+		$lang->thread_unapproved = $lang->sprintf($lang->thread_unapproved, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->thread_unapproved);
 
 		$moderation->unapprove_threads($tid, $fid);
@@ -418,7 +418,7 @@ switch($mybb->input['action'])
 			$url = get_thread_link($thread['tid']);
 			mark_reports($tid, "thread");
 		}
-		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
+		$lang->deleted_selective_posts = $lang->sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
@@ -1195,7 +1195,7 @@ switch($mybb->input['action'])
 			mark_reports($plist, "posts");
 			$url = get_thread_link($thread['tid']);
 		}
-		$lang->deleted_selective_posts = sprintf($lang->deleted_selective_posts, $deletecount);
+		$lang->deleted_selective_posts = $lang->sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
 		redirect($url, $lang->redirect_postsdeleted);
 		break;
@@ -1322,7 +1322,7 @@ switch($mybb->input['action'])
 		$newtid = $moderation->split_posts($plist, $tid, $moveto, $newsubject);
 
 		$pid_list = implode(', ', $plist);
-		$lang->split_selective_posts = sprintf($lang->split_selective_posts, $pid_list, $newtid);
+		$lang->split_selective_posts = $lang->sprintf($lang->split_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->split_selective_posts);
 
 		redirect(get_thread_link($thread['tid']), $lang->redirect_threadsplit);
@@ -1401,26 +1401,26 @@ switch($mybb->input['action'])
 					error($lang->error_inline_nopostsselected);
 				}
 				$custommod->execute(intval($mybb->input['action']), $tids);
- 				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
+ 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				clearinline($fid, "forum");
-				$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
+				$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
 				redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				break;
 			}
 			elseif($tool['type'] == 't' && $mybb->input['modtype'] == 'thread')
 			{
 				$ret = $custommod->execute(intval($mybb->input['action']), $tid);
- 				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
+ 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				if($ret == 'forum')
 				{
-					$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
+					$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
 					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				}
 				else
 				{
-					$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
+					$lang->redirect_customtool_thread = $lang->sprintf($lang->redirect_customtool_thread, $tool['name']);
 					redirect(get_thread_link($thread['tid']), $lang->redirect_customtool_thread);
 				}
 				break;
@@ -1433,17 +1433,17 @@ switch($mybb->input['action'])
 					error($lang->error_inline_nopostsselected);
 				}
 				$ret = $custommod->execute(intval($mybb->input['action']), $tid, $pids);
- 				$lang->custom_tool = sprintf($lang->custom_tool, $tool['name']);
+ 				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
 				clearinline($tid, "thread");
 				if($ret == 'forum')
 				{
-					$lang->redirect_customtool_forum = sprintf($lang->redirect_customtool_forum, $tool['name']);
+					$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
 					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				}
 				else
 				{
-					$lang->redirect_customtool_thread = sprintf($lang->redirect_customtool_thread, $tool['name']);
+					$lang->redirect_customtool_thread = $lang->sprintf($lang->redirect_customtool_thread, $tool['name']);
 					redirect(get_thread_link($tid), $lang->redirect_customtool_thread);
 				}
 				break;

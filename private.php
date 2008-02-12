@@ -436,7 +436,7 @@ if($mybb->input['action'] == "send")
 	$max_recipients = '';
 	if($mybb->usergroup['maxpmrecipients'] > 0)
 	{
-		$max_recipients = sprintf($lang->max_recipients, $mybb->usergroup['maxpmrecipients']);
+		$max_recipients = $lang->sprintf($lang->max_recipients, $mybb->usergroup['maxpmrecipients']);
 	}
 
 	if($send_errors)
@@ -543,12 +543,12 @@ if($mybb->input['action'] == "read")
 		if($reply_date == $lang->today || $reply_date == $lang->yesterday)
 		{
 			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = sprintf($lang->you_replied, $reply_date);
+			$actioned_on = $lang->sprintf($lang->you_replied, $reply_date);
 		}
 		else
 		{
 			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = sprintf($lang->you_replied_on, $reply_date);
+			$actioned_on = $lang->sprintf($lang->you_replied_on, $reply_date);
 		}
 		
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
@@ -560,12 +560,12 @@ if($mybb->input['action'] == "read")
 		if($forward_date == $lang->today || $forward_date == $lang->yesturday)
 		{
 			$forward_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = sprintf($lang->you_forwarded, $forward_date);
+			$actioned_on = $lang->sprintf($lang->you_forwarded, $forward_date);
 		}
 		else
 		{
 			$forward_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
-			$actioned_on = sprintf($lang->you_forwarded_on, $forward_date);
+			$actioned_on = $lang->sprintf($lang->you_forwarded_on, $forward_date);
 		}
 		
 		eval("\$action_time = \"".$templates->get("private_read_action")."\";");
@@ -1081,10 +1081,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("private_do_export_start");
 	
-	$lang->private_messages_for = sprintf($lang->private_messages_for, $mybb->user['username']);
+	$lang->private_messages_for = $lang->sprintf($lang->private_messages_for, $mybb->user['username']);
 	$exdate = my_date($mybb->settings['dateformat'], TIME_NOW, 0, 0);
 	$extime = my_date($mybb->settings['timeformat'], TIME_NOW, 0, 0);
-	$lang->exported_date = sprintf($lang->exported_date, $exdate, $extime);
+	$lang->exported_date = $lang->sprintf($lang->exported_date, $exdate, $extime);
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -1353,7 +1353,7 @@ if(!$mybb->input['action'])
 		}
 	}
 
-	$lang->pms_in_folder = sprintf($lang->pms_in_folder, $foldername);
+	$lang->pms_in_folder = $lang->sprintf($lang->pms_in_folder, $foldername);
 	if($folder == 2 || $folder == 3)
 	{ // Sent Items Folder
 		$sender = $lang->sentto;

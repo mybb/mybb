@@ -252,7 +252,7 @@ $templates->cache($db->escape_string($templatelist));
 // Set the current date and time now
 $datenow = my_date($mybb->settings['dateformat'], TIME_NOW, '', false);
 $timenow = my_date($mybb->settings['timeformat'], TIME_NOW);
-$lang->welcome_current_time = sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
+$lang->welcome_current_time = $lang->sprintf($lang->welcome_current_time, $datenow.', '.$timenow);
 
 // Format the last visit date of this user appropriately
 if(isset($mybb->user['lastvisit']))
@@ -291,10 +291,10 @@ if($mybb->user['uid'] != 0)
 	}
 	
 	// Format the welcome back message
-	$lang->welcome_back = sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
+	$lang->welcome_back = $lang->sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
 
 	// Tell the user their PM usage
-	$lang->welcome_pms_usage = sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
+	$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_member")."\";");
 }
 // Otherwise, we have a guest
@@ -319,7 +319,7 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $myb
 		}
 		else
 		{
-			$lang->unread_reports = sprintf($lang->unread_reports, $reported['unread']);
+			$lang->unread_reports = $lang->sprintf($lang->unread_reports, $reported['unread']);
 		}
 		eval("\$unreadreports = \"".$templates->get("global_unreadreports")."\";");
 	}
@@ -386,11 +386,11 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 	$pm = $db->fetch_array($query);
 	if($mybb->user['pms_unread'] == 1)
 	{
-		$privatemessage_text = sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
 	}
 	else
 	{
-		$privatemessage_text = sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
 	}
 	eval("\$pm_notice = \"".$templates->get("global_pm_alert")."\";");
 }

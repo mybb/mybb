@@ -214,7 +214,7 @@ if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
 	$post_count = $db->fetch_field($query, "posts_today");
 	if($post_count >= $mybb->settings['maxposts'])
 	{
-		$lang->error_maxposts = sprintf($lang->error_maxposts, $mybb->settings['maxposts']);
+		$lang->error_maxposts = $lang->sprintf($lang->error_maxposts, $mybb->settings['maxposts']);
 		error($lang->error_maxposts);
 	}
 }
@@ -252,7 +252,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 				if($mybb->settings['failedlogintext'] == 1)
 				{
-					$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+					$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 				}				
 				error($lang->error_invalidpassword.$login_text);
 			}
@@ -562,7 +562,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_newreply .= sprintf($lang->redirect_return_forum, $fid); 
+			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_forum, $fid); 
 			redirect($url, $lang->redirect_newreply); 
 			exit;
 		}
@@ -659,7 +659,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 				}
 				else
 				{
-					$multiquote_text = sprintf($lang->multiquote_external, $external_quotes);
+					$multiquote_text = $lang->sprintf($lang->multiquote_external, $external_quotes);
 					$multiquote_deselect = $lang->multiquote_external_deselect;
 					$multiquote_quote = $lang->multiquote_external_quote;
 				}
@@ -920,7 +920,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 		$friendlyusage = get_friendly_size($usage['ausage']);
-		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
@@ -990,7 +990,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		if($numposts > $mybb->settings['postsperpage'])
 		{
 			$numposts = $mybb->settings['postsperpage'];
-			$lang->thread_review_more = sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], $tid);
+			$lang->thread_review_more = $lang->sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], $tid);
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 
@@ -1099,8 +1099,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	// Fetch subscription select box
 	eval("\$subscriptionmethod = \"".$templates->get("post_subscription_method")."\";");
 	
-	$lang->post_reply_to = sprintf($lang->post_reply_to, $thread['subject']);
-	$lang->reply_to = sprintf($lang->reply_to, $thread['subject']);
+	$lang->post_reply_to = $lang->sprintf($lang->post_reply_to, $thread['subject']);
+	$lang->reply_to = $lang->sprintf($lang->reply_to, $thread['subject']);
 
 	$plugins->run_hooks("newreply_end");
 

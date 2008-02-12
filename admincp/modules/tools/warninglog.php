@@ -150,7 +150,7 @@ if($mybb->input['action'] == "view")
 		$warning['points'] = "+{$warning['points']}";
 	}
 	
-	$points = sprintf($lang->warning_points, $warning['points']);
+	$points = $lang->sprintf($lang->warning_points, $warning['points']);
 	if($warning['expired'] != 1)
 	{
 		if($warning['expires'] == 0)

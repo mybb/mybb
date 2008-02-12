@@ -66,7 +66,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		{
 			$imgsallowed = 0;
 		}
-		$lang->too_many_sig_images2 = sprintf($lang->too_many_sig_images2, $imgsallowed);
+		$lang->too_many_sig_images2 = $lang->sprintf($lang->too_many_sig_images2, $imgsallowed);
 		$error = inline_error($lang->too_many_sig_images." ".$lang->too_many_sig_images2);
 		$mybb->input['preview'] = 1;
 	}
@@ -84,10 +84,10 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		$sig_length = my_strlen($parsed_sig);
 		if($sig_length > $mybb->settings['siglength'])
 		{
-			$lang->sig_too_long = sprintf($lang->sig_too_long, $mybb->settings['siglength']);
+			$lang->sig_too_long = $lang->sprintf($lang->sig_too_long, $mybb->settings['siglength']);
 			if($sig_length - $mybb->settings['siglength'] > 1)
 			{
-				$lang->sig_too_long .= sprintf($lang->sig_remove_chars_plural, $sig_length-$mybb->settings['siglength']);
+				$lang->sig_too_long .= $lang->sprintf($lang->sig_remove_chars_plural, $sig_length-$mybb->settings['siglength']);
 			}
 			else
 			{
@@ -362,7 +362,7 @@ if($mybb->input['action'] == "profile")
 			{
 				$awaydate = my_date($mybb->settings['dateformat'], $mybb->user['awaydate']);
 				$awaycheck[1] = "checked=\"checked\"";
-				$awaynotice = sprintf($lang->away_notice_away, $awaydate);
+				$awaynotice = $lang->sprintf($lang->away_notice_away, $awaydate);
 			}
 			else
 			{
@@ -890,7 +890,7 @@ if($mybb->input['action'] == "options")
 				{
 					$selected = "selected=\"selected\"";
 				}
-				$tppoptions .= "<option value=\"$val\" $selected>".sprintf($lang->tpp_option, $val)."</option>\n";
+				$tppoptions .= "<option value=\"$val\" $selected>".$lang->sprintf($lang->tpp_option, $val)."</option>\n";
 			}
 		}
 		eval("\$tppselect = \"".$templates->get("usercp_options_tppselect")."\";");
@@ -909,7 +909,7 @@ if($mybb->input['action'] == "options")
 				{
 					$selected = "selected=\"selected\"";
 				}
-				$pppoptions .= "<option value=\"$val\" $selected>".sprintf($lang->ppp_option, $val)."</option>\n";
+				$pppoptions .= "<option value=\"$val\" $selected>".$lang->sprintf($lang->ppp_option, $val)."</option>\n";
 			}
 		}
 		eval("\$pppselect = \"".$templates->get("usercp_options_pppselect")."\";");
@@ -968,8 +968,8 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 		
 				$username = $mybb->user['username'];
 				$uid = $mybb->user['uid'];
-				$lang->emailsubject_changeemail = sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
-				$lang->email_changeemail = sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
+				$lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
+				$lang->email_changeemail = $lang->sprintf($lang->email_changeemail, $mybb->user['username'], $mybb->settings['bbname'], $mybb->user['email'], $mybb->input['email'], $mybb->settings['bburl'], $activationcode, $mybb->user['username'], $mybb->user['uid']);
 				my_mail($mybb->input['email'], $lang->emailsubject_changeemail, $lang->email_changeemail);
 
 				$plugins->run_hooks("usercp_do_email_verify");
@@ -1571,7 +1571,7 @@ if($mybb->input['action'] == "editsig")
 		$sigimgcode = $lang->off;
 	}
 	$sig = htmlspecialchars_uni($sig);
-	$lang->edit_sig_note2 = sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
+	$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
 	
 	if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
 	{
@@ -1700,7 +1700,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 				list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
 				if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 				{
-					$lang->error_avatartoobig = sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
+					$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$avatar_error = $lang->error_avatartoobig;
 				}
 			}
@@ -1766,7 +1766,7 @@ if($mybb->input['action'] == "avatar")
 	if($activegallery)
 	{
 		$gallery = str_replace("..", "", $mybb->input['gallery']);
-		$lang->avatars_in_gallery = sprintf($lang->avatars_in_gallery, $activegallery);
+		$lang->avatars_in_gallery = $lang->sprintf($lang->avatars_in_gallery, $activegallery);
 		// Get a listing of avatars in this gallery
 		$avatardir = $mybb->settings['avatardir'];
 		if($gallery != "default")
@@ -1857,12 +1857,12 @@ if($mybb->input['action'] == "avatar")
 		if($mybb->settings['maxavatardims'] != "")
 		{
 			list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
-			$lang->avatar_note .= "<br />".sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
+			$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
 		}
 		if($mybb->settings['avatarsize'])
 		{
 			$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
-			$lang->avatar_note .= "<br />".sprintf($lang->avatar_note_size, $maxsize);
+			$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
 		}
 		if($mybb->settings['avatarresizing'] == "auto")
 		{
@@ -2012,7 +2012,7 @@ if($mybb->input['action'] == "do_editlists")
 			{
 				$message = $lang->removed_from_buddy_list;
 			}
-			$message = sprintf($message, $user['username']);
+			$message = $lang->sprintf($message, $user['username']);
 		}
 	}
 
@@ -2134,7 +2134,7 @@ if($mybb->input['action'] == "editlists")
 		}
 	}
 
-	$lang->current_buddies = sprintf($lang->current_buddies, $buddy_count);
+	$lang->current_buddies = $lang->sprintf($lang->current_buddies, $buddy_count);
 	if(!$buddy_list)
 	{
 		$buddy_list = "<li>{$lang->buddy_list_empty}</li>";
@@ -2162,7 +2162,7 @@ if($mybb->input['action'] == "editlists")
 		}
 	}
 
-	$lang->current_ignored_users = sprintf($lang->current_ignored_users, $ignore_count);
+	$lang->current_ignored_users = $lang->sprintf($lang->current_ignored_users, $ignore_count);
 	if(!$ignore_list)
 	{
 		$ignore_list = "<li>{$lang->ignore_list_empty}</li>";
@@ -2565,7 +2565,7 @@ if($mybb->input['action'] == "usergroups")
 		{
 			$applydate = my_date($mybb->settings['dateformat'], $appliedjoin[$usergroup['gid']]);
 			$applytime = my_date($mybb->settings['timeformat'], $appliedjoin[$usergroup['gid']]);
-			$joinlink = sprintf($lang->join_group_applied, $applydate, $applytime);
+			$joinlink = $lang->sprintf($lang->join_group_applied, $applydate, $applytime);
 		}
 		else
 		{
@@ -2611,13 +2611,13 @@ if($mybb->input['action'] == "attachments")
 	{
 		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
 		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-		$usagenote = sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
+		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
 	}
 	else
 	{
 		$percent = $lang->unlimited;
 		$attachquota = $lang->unlimited;
-		$usagenote = sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
+		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
 	}
 
 	// Pagination
@@ -2666,7 +2666,7 @@ if($mybb->input['action'] == "attachments")
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
 			$size = get_friendly_size($attachment['filesize']);
 			$icon = get_attachment_icon(get_extension($attachment['filename']));
-			$sizedownloads = sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
+			$sizedownloads = $lang->sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
 			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateline']);
 			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateline']);
 			$altbg = alt_trow();
@@ -2736,7 +2736,7 @@ if(!$mybb->input['action'])
 		$percent = round($percent, 2);
 	}
 
-	$lang->posts_day = sprintf($lang->posts_day, my_number_format($perday), $percent);
+	$lang->posts_day = $lang->sprintf($lang->posts_day, my_number_format($perday), $percent);
 	$usergroup = $groupscache[$mybb->user['usergroup']]['title'];
 
 	$colspan = 2;
@@ -2785,7 +2785,7 @@ if(!$mybb->input['action'])
 		{
 			expire_warnings();
 
-			$lang->current_warning_level = sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
+			$lang->current_warning_level = $lang->sprintf($lang->current_warning_level, $warning_level, $mybb->user['warningpoints'], $mybb->settings['maxwarningpoints']);
 			// Fetch latest warnings
 			$query = $db->query("
 				SELECT w.*, t.title AS type_title, u.username, p.subject AS post_subject
@@ -2821,7 +2821,7 @@ if(!$mybb->input['action'])
 				{
 					$warning['points'] = "+{$warning['points']}";
 				}
-				$points = sprintf($lang->warning_points, $warning['points']);
+				$points = $lang->sprintf($lang->warning_points, $warning['points']);
 				
 				// Figure out expiration time
 				if($warning['daterevoked'])

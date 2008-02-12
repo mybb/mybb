@@ -437,7 +437,7 @@ if($mybb->input['action'] == "results")
 			{
 				if($thread['attachmentcount'] > 1)
 				{
-					$attachment_count = sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
+					$attachment_count = $lang->sprintf($lang->attachment_count_multiple, $thread['attachmentcount']);
 				}
 				else
 				{
@@ -951,11 +951,11 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 			$remaining_time = $mybb->settings['searchfloodtime']-(TIME_NOW-$last_search['dateline']);
 			if($remaining_time == 1)
 			{
-				$lang->error_searchflooding = sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
 			}
 			else
 			{
-				$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			}
 			error($lang->error_searchflooding);
 		}
@@ -1077,11 +1077,11 @@ else if($mybb->input['action'] == "thread")
 		{
 			if($remaining_time == 1)
 			{
-				$lang->error_searchflooding = sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
+				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding_1, $mybb->settings['searchfloodtime']);
 			}
 			else
 			{
-				$lang->error_searchflooding = sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
+				$lang->error_searchflooding = $lang->sprintf($lang->error_searchflooding, $mybb->settings['searchfloodtime'], $remaining_time);
 			}
 			error($lang->error_searchflooding);
 		}

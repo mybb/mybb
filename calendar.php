@@ -1510,7 +1510,7 @@ if($mybb->input['action'] == "dayview")
 		if($birthday_list)
 		{
 			$bdaydate = my_date($mybb->settings['dateformat'], gmmktime(0, 0, 0, $month, $day, $year), 0, 0);
-			$lang->birthdays_on_day = sprintf($lang->birthdays_on_day, $bdaydate);
+			$lang->birthdays_on_day = $lang->sprintf($lang->birthdays_on_day, $bdaydate);
 			eval("\$birthdays = \"".$templates->get("calendar_dayview_birthdays", 1, 0)."\";");
 		}
 	}
@@ -1730,7 +1730,7 @@ if($mybb->input['action'] == "dayview")
 
 	if(!$events)
 	{
-		$lang->no_events = sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
+		$lang->no_events = $lang->sprintf($lang->no_events, $calendar['cid'], $day, $month, $year);
 		eval("\$events = \"".$templates->get("calendar_dayview_noevents")."\";");
 	}
 

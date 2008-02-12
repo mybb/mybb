@@ -169,7 +169,7 @@ if($mybb->settings['maxposts'] > 0 && $mybb->usergroup['cancp'] != 1)
 	$post_count = $db->fetch_field($query, "posts_today");
 	if($post_count >= $mybb->settings['maxposts'])
 	{
-		$lang->error_maxposts = sprintf($lang->error_maxposts, $mybb->settings['maxposts']);
+		$lang->error_maxposts = $lang->sprintf($lang->error_maxposts, $mybb->settings['maxposts']);
 		error($lang->error_maxposts);
 	}
 }
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 				$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
 				if($mybb->settings['failedlogintext'] == 1)
 				{
-					$login_text = sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+					$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 				}				
 				error($lang->error_invalidpassword.$login_text);
 			}
@@ -412,7 +412,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		// Hop to it! Send them to the next page.
 		if(!$mybb->input['postpoll'])
 		{
-			$lang->redirect_newthread .= sprintf($lang->redirect_return_forum, $fid);
+			$lang->redirect_newthread .= $lang->sprintf($lang->redirect_return_forum, $fid);
 		}
 		redirect($url, $lang->redirect_newthread);
 	}
@@ -502,7 +502,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					}
 					else
 					{
-						$multiquote_text = sprintf($lang->multiquote_external, $external_quotes);
+						$multiquote_text = $lang->sprintf($lang->multiquote_external, $external_quotes);
 						$multiquote_deselect = $lang->multiquote_external_deselect;
 						$multiquote_quote = $lang->multiquote_external_quote;
 					}
@@ -806,7 +806,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$friendlyquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
 		}
 		$friendlyusage = get_friendly_size($usage['ausage']);
-		$lang->attach_quota = sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
+		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
 			eval("\$newattach = \"".$templates->get("post_attachments_new")."\";");
@@ -858,13 +858,13 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	
 	if($forumpermissions['canpostpolls'] != 0)
 	{
-		$lang->max_options = sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
+		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
 	}
 
 	$plugins->run_hooks("newthread_end");
 	
-	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
+	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
 
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	output_page($newthread);

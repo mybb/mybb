@@ -977,7 +977,7 @@ function cpfooter($showversion=1)
 
 	echo "<div align=\"center\">\n<br />\n<br />\n";
 	$totaltime = $maintimer->stop();
-	$lang->footer_stats = sprintf($lang->footer_stats, $totaltime, $db->query_count);
+	$lang->footer_stats = $lang->sprintf($lang->footer_stats, $totaltime, $db->query_count);
 	if(!$showversion)
 	{
 		$mybbversion = "";
@@ -1499,7 +1499,7 @@ function getElemRefs(id) {
 	starttable();
 	if($fid)
 	{
-		tableheader(sprintf($lang->quickperms_forum, $forum['name']), "", "7");
+		tableheader($lang->sprintf($lang->quickperms_forum, $forum['name']), "", "7");
 	}
 	else
 	{
@@ -2080,7 +2080,7 @@ function make_theme_list($tid="0", $depth="")
 			}
 			if($theme['users'])
 			{
-				$users = sprintf($lang->theme_users, $theme['users']);
+				$users = $lang->sprintf($lang->theme_users, $theme['users']);
 			}
 			else
 			{

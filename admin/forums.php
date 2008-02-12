@@ -672,11 +672,11 @@ if($mybb->input['action'] == "delete")
 	startform("forums.php", "", "do_delete");
 	makehiddencode("fid", $fid);
 	starttable();
-	$lang->delete_forum = sprintf($lang->delete_forum, $forum['name']);
+	$lang->delete_forum = $lang->sprintf($lang->delete_forum, $forum['name']);
 	tableheader($lang->delete_forum, "", 1);
 	$yes = makebuttoncode("deletesubmit", $lang->yes);
 	$no = makebuttoncode(0, $lang->no);
-	$lang->delete_forum_confirm = sprintf($lang->delete_forum_confirm, $forum['name']);
+	$lang->delete_forum_confirm = $lang->sprintf($lang->delete_forum_confirm, $forum['name']);
 	makelabelcode("<div align=\"center\">$lang->delete_forum_confirm<br /><br />$yes$no</div>", "");
 	endtable();
 	endform();
@@ -726,7 +726,7 @@ if($mybb->input['action'] == "edit")
 	startform("forums.php", "", "do_edit");
 	makehiddencode("fid", $fid);
 	starttable();
-	$lang->edit_forum = sprintf($lang->edit_forum, $forum['name']);
+	$lang->edit_forum = $lang->sprintf($lang->edit_forum, $forum['name']);
 	tableheader($lang->edit_forum);
 	makeinputcode($lang->name, "name", $forum['name']);
 	maketextareacode($lang->description, "description", $forum['description']);
@@ -1034,7 +1034,7 @@ if($mybb->input['action'] == "modify" || $mybb->input['action'] == "")
 		{
 			startform("forums.php", "", "do_modify");
 			starttable();
-			$lang->forums_in = sprintf($lang->forums_in, $forum['name']);
+			$lang->forums_in = $lang->sprintf($lang->forums_in, $forum['name']);
 			tableheader($lang->forums_in, "", 3);
 			getforums($fid);
 			endtable();

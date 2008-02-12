@@ -165,7 +165,7 @@ function build_forumbits($pid=0, $depth=1)
 				{
 					if(count($parent) > $donecount)
 					{
-						$forum_list .= $comma.sprintf($lang->more_subforums, (count($parent) - $donecount));
+						$forum_list .= $comma.$lang->sprintf($lang->more_subforums, (count($parent) - $donecount));
 					}
 				}
 				continue;
@@ -223,7 +223,7 @@ function build_forumbits($pid=0, $depth=1)
 					}
 					else
 					{
-						$forum_viewers_text = sprintf($lang->viewing_multiple, $forum['viewers']);
+						$forum_viewers_text = $lang->sprintf($lang->viewing_multiple, $forum['viewers']);
 					}
 					$forum_viewers_text = "<span class=\"smalltext\">{$forum_viewers_text}</span>";
 				}
@@ -386,11 +386,11 @@ function get_forum_unapproved($forum)
 		{
 			if($forum['unapprovedposts'] > 1)
 			{
-				$unapproved_posts_count = sprintf($lang->forum_unapproved_posts_count, $forum['unapprovedposts']);
+				$unapproved_posts_count = $lang->sprintf($lang->forum_unapproved_posts_count, $forum['unapprovedposts']);
 			}
 			else
 			{
-				$unapproved_posts_count = sprintf($lang->forum_unapproved_post_count, 1);
+				$unapproved_posts_count = $lang->sprintf($lang->forum_unapproved_post_count, 1);
 			}
 			$unapproved_posts = " <span title=\"{$unapproved_posts_count}\">(".my_number_format($forum['unapprovedposts']).")</span>";
 		}
@@ -399,11 +399,11 @@ function get_forum_unapproved($forum)
 		{
 			if($forum['unapprovedthreads'] > 1)
 			{
-				$unapproved_threads_count = sprintf($lang->forum_unapproved_threads_count, $forum['unapprovedthreads']);
+				$unapproved_threads_count = $lang->sprintf($lang->forum_unapproved_threads_count, $forum['unapprovedthreads']);
 			}
 			else
 			{
-				$unapproved_threads_count = sprintf($lang->forum_unapproved_thread_count, 1);
+				$unapproved_threads_count = $lang->sprintf($lang->forum_unapproved_thread_count, 1);
 			}
 			$unapproved_threads = " <span title=\"{$unapproved_threads_count}\">(".my_number_format($forum['unapprovedthreads']).")</span>";
 		}

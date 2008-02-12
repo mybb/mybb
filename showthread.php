@@ -396,7 +396,7 @@ if($mybb->input['action'] == "thread")
 			{
 				$pollstatus = $lang->poll_closed;
 			}
-			$lang->total_votes = sprintf($lang->total_votes, $totalvotes);
+			$lang->total_votes = $lang->sprintf($lang->total_votes, $totalvotes);
 			eval("\$pollbox = \"".$templates->get("showthread_poll_results")."\";");
 			$plugins->run_hooks("showthread_poll_results");
 		}
@@ -520,7 +520,7 @@ if($mybb->input['action'] == "thread")
 			$not_rated = ' star_rating_notrated';
 		}
 
-		$ratingvotesav = sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
+		$ratingvotesav = $lang->sprintf($lang->rating_average, $thread['numratings'], $thread['averagerating']);
 		eval("\$ratethread = \"".$templates->get("showthread_ratethread")."\";");
 	}
 	// Work out if we are showing unapproved posts as well (if the user is a moderator etc.)
@@ -914,7 +914,7 @@ if($mybb->input['action'] == "thread")
 		}
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}
-	$lang->newthread_in = sprintf($lang->newthread_in, $forum['name']);
+	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
 	
 	// Subscription status
 	$query = $db->simple_select("threadsubscriptions", "tid", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
