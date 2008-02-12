@@ -382,7 +382,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($lifts_on, array("class" => "align_center"));
 		$table->construct_cell($time_remaining, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user/banning&amp;action=edit&amp;uid={$ban['uid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/banning&amp;action=lift&amp;uid={$ban['uid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/banning&amp;action=lift&amp;uid={$ban['uid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_lift_ban}');\">{$lang->lift}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 

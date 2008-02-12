@@ -7,6 +7,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="publiceventcolor">
@@ -15,6 +16,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[green]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="privateeventcolor">
@@ -23,6 +25,7 @@
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[red]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -33,6 +36,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinserter">
@@ -41,6 +45,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinsertertot">
@@ -49,6 +54,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smilieinsertercols">
@@ -57,6 +63,7 @@
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -67,6 +74,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[adminlanguage]]></optionscode>
 			<settingvalue><![CDATA[english]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="cpstyle">
@@ -75,6 +83,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[cpstyle]]></optionscode>
 			<settingvalue><![CDATA[Axiom]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -85,6 +94,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[m-d-Y]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="timeformat">
@@ -93,6 +103,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[h:i A]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="regdateformat">
@@ -101,6 +112,7 @@
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[M Y]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="timezoneoffset">
@@ -143,6 +155,7 @@
 <option value=\"+12\" ".($setting['value'] == 12?"selected=\"selected\"":"").">GMT +12:00 Hours (".my_date($mybb->settings['timeformat'], TIME_NOW, 12).")</option>
 </select>]]></optionscode>
 			<settingvalue><![CDATA[+10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="dstcorrection">
@@ -151,6 +164,7 @@
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -161,6 +175,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="hottopic">
@@ -169,6 +184,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="hottopicviews">
@@ -177,6 +193,7 @@
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[150]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="usertppoptions">
@@ -185,6 +202,7 @@
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10,20,25,30,40,50]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="dotfolders">
@@ -193,6 +211,7 @@
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="browsingthisforum">
@@ -201,6 +220,7 @@
 			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="announcementlimit">
@@ -209,6 +229,7 @@
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -219,6 +240,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="subforumsindex">
@@ -227,6 +249,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="subforumsstatusicons">
@@ -235,6 +258,7 @@
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="hideprivateforums">
@@ -243,6 +267,7 @@
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="modlist">
@@ -251,6 +276,7 @@
 			<disporder>5</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showbirthdays">
@@ -259,6 +285,7 @@
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showwol">
@@ -267,6 +294,7 @@
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showindexstats">
@@ -275,6 +303,7 @@
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showforumviewing">
@@ -283,6 +312,7 @@
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -293,6 +323,7 @@
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[Forums]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="bburl">
@@ -301,6 +332,7 @@
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="homename">
@@ -309,6 +341,7 @@
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="homeurl">
@@ -317,6 +350,7 @@
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="adminemail">
@@ -325,6 +359,7 @@
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="contactlink">
@@ -333,6 +368,7 @@
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="bblanguage">
@@ -341,6 +377,7 @@
 			<disporder>7</disporder>
 			<optionscode><![CDATA[language]]></optionscode>
 			<settingvalue><![CDATA[english]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="cookiedomain">
@@ -349,6 +386,7 @@
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="cookiepath">
@@ -357,6 +395,7 @@
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="cookieprefix">
@@ -365,6 +404,7 @@
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showvernum">
@@ -373,6 +413,7 @@
 			<disporder>11</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="captchaimage">
@@ -381,6 +422,7 @@
 			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="reportmethod">
@@ -392,6 +434,7 @@ db=Stored in the Database
 pms=Sent as Private Messages
 email=Sent via Email]]></optionscode>
 			<settingvalue><![CDATA[db]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="statslimit">
@@ -400,6 +443,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="decpoint">
@@ -408,6 +452,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[.]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="thousandssep">
@@ -416,6 +461,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showlanguageselect">
@@ -424,6 +470,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxmultipagelinks">
@@ -432,6 +479,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="mailingaddress">
@@ -440,6 +488,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>19</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="faxno">
@@ -448,6 +497,7 @@ email=Sent via Email]]></optionscode>
 			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -460,6 +510,7 @@ email=Sent via Email]]></optionscode>
 mail=PHP mail
 smtp=SMTP mail]]></optionscode>
 			<settingvalue><![CDATA[mail]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_host">
@@ -468,6 +519,7 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_port">
@@ -476,6 +528,7 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_user">
@@ -484,6 +537,7 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="smtp_pass">
@@ -492,6 +546,7 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="secure_smtp">
@@ -503,6 +558,7 @@ smtp=SMTP mail]]></optionscode>
 1=SSL encryption
 2=TLS encryption]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="mail_parameters">
@@ -511,6 +567,7 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -521,6 +578,7 @@ smtp=SMTP mail]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="regtype">
@@ -533,6 +591,7 @@ verify=Send Email Verification
 randompass=Send Random Password
 admin=Administrator Activation]]></optionscode>
 			<settingvalue><![CDATA[verify]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="minnamelength">
@@ -541,6 +600,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxnamelength">
@@ -549,6 +609,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="minpasswordlength">
@@ -557,6 +618,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[6]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpasswordlength">
@@ -565,6 +627,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="customtitlemaxlength">
@@ -573,6 +636,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="betweenregstime">
@@ -581,6 +645,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[24]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="allowmultipleemails"> 
@@ -589,6 +654,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>9</disporder> 
 			<optionscode><![CDATA[yesno]]></optionscode> 
 			<settingvalue><![CDATA[0]]></settingvalue> 
+			<isdefault>1</isdefault>
 			<helpkey></helpkey> 
 		</setting> 
 		<setting name="maxregsbetweentime">
@@ -597,6 +663,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogincount">
@@ -605,6 +672,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[3]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogintime">
@@ -613,6 +681,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="failedlogintext">
@@ -621,6 +690,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="usereferrals">
@@ -629,6 +699,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigmycode">
@@ -637,6 +708,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxsigimages">
@@ -645,6 +717,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigsmilies">
@@ -653,6 +726,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sightml">
@@ -661,6 +735,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigimgcode">
@@ -669,6 +744,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="siglength">
@@ -677,6 +753,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="sigcountmycode">
@@ -685,6 +762,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxavatardims">
@@ -693,6 +771,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="avatarsize">
@@ -701,6 +780,7 @@ admin=Administrator Activation]]></optionscode>
 			<disporder>23</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="avatarresizing">
@@ -712,6 +792,7 @@ auto=Automatically resize large avatars
 user=Give users the choice of resizing large avatars
 disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[auto]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="avatardir">
@@ -720,6 +801,7 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>25</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/avatars]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="avataruploadpath">
@@ -728,6 +810,7 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>26</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="emailkeep">
@@ -736,6 +819,7 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>27</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="coppa">
@@ -747,6 +831,7 @@ enabled=Enabled
 deny=Deny users under the age of 13
 disabled=Disable this feature]]></optionscode>
 			<settingvalue><![CDATA[disabled]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="allowaway">
@@ -755,6 +840,7 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>29</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -765,6 +851,7 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="membersperpage">
@@ -773,6 +860,7 @@ disabled=Disable this feature]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[20]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="default_memberlist_sortby">
@@ -785,6 +873,7 @@ postnum=Post Count
 username=Username
 lastvisit=Last Visit]]></optionscode>
 			<settingvalue><![CDATA[regdate]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="default_memberlist_order">
@@ -795,6 +884,7 @@ lastvisit=Last Visit]]></optionscode>
 ASC=Ascending
 DESC=Descending]]></optionscode>
 			<settingvalue><![CDATA[ASC]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="memberlistmaxavatarsize">
@@ -803,6 +893,7 @@ DESC=Descending]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>		
 	</settinggroup>
@@ -815,6 +906,7 @@ DESC=Descending]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="boardclosed_reason">
@@ -823,6 +915,7 @@ DESC=Descending]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[These forums are currently closed for maintenance. Please check back later.]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -833,6 +926,7 @@ DESC=Descending]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_numannouncements">
@@ -841,6 +935,7 @@ DESC=Descending]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showwelcome">
@@ -849,6 +944,7 @@ DESC=Descending]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showpms">
@@ -857,6 +953,7 @@ DESC=Descending]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showstats">
@@ -865,6 +962,7 @@ DESC=Descending]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showwol">
@@ -873,6 +971,7 @@ DESC=Descending]]></optionscode>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showsearch">
@@ -881,6 +980,7 @@ DESC=Descending]]></optionscode>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showdiscussions">
@@ -889,6 +989,7 @@ DESC=Descending]]></optionscode>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="portal_showdiscussionsnum">
@@ -897,6 +998,7 @@ DESC=Descending]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -907,6 +1009,7 @@ DESC=Descending]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxmessagelength">
@@ -915,6 +1018,7 @@ DESC=Descending]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxposts">
@@ -923,6 +1027,7 @@ DESC=Descending]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postfloodcheck">
@@ -931,6 +1036,7 @@ DESC=Descending]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postfloodsecs">
@@ -939,6 +1045,7 @@ DESC=Descending]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergemins">
@@ -947,6 +1054,7 @@ DESC=Descending]]></optionscode>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[60]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergefignore">
@@ -955,6 +1063,7 @@ DESC=Descending]]></optionscode>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergeuignore">
@@ -963,6 +1072,7 @@ DESC=Descending]]></optionscode>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergesep">
@@ -971,6 +1081,7 @@ DESC=Descending]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[[hr]]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="logip">
@@ -982,6 +1093,7 @@ no=Do not log IP
 hide=Show to Admins & Mods
 show=Show to all Users]]></optionscode>
 			<settingvalue><![CDATA[hide]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showeditedby">
@@ -990,6 +1102,7 @@ show=Show to all Users]]></optionscode>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showeditedbyadmin">
@@ -998,6 +1111,7 @@ show=Show to all Users]]></optionscode>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpostimages">
@@ -1006,6 +1120,7 @@ show=Show to all Users]]></optionscode>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="subscribeexcerpt">
@@ -1014,6 +1129,7 @@ show=Show to all Users]]></optionscode>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxattachments">
@@ -1022,6 +1138,7 @@ show=Show to all Users]]></optionscode>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbnails">
@@ -1033,6 +1150,7 @@ yes=Thumbnail
 no=Full Size Image
 download=As Download Link]]></optionscode>
 			<settingvalue><![CDATA[yes]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbh">
@@ -1041,6 +1159,7 @@ download=As Download Link]]></optionscode>
 			<disporder>17</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="attachthumbw">
@@ -1049,6 +1168,7 @@ download=As Download Link]]></optionscode>
 			<disporder>18</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[96]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="edittimelimit">
@@ -1057,6 +1177,7 @@ download=As Download Link]]></optionscode>
 			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="wordwrap">
@@ -1065,6 +1186,7 @@ download=As Download Link]]></optionscode>
 			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[80]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="polloptionlimit">
@@ -1073,6 +1195,7 @@ download=As Download Link]]></optionscode>
 			<disporder>21</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[250]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxpolloptions">
@@ -1081,6 +1204,7 @@ download=As Download Link]]></optionscode>
 			<disporder>22</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="threadreview">
@@ -1089,6 +1213,7 @@ download=As Download Link]]></optionscode>
 			<disporder>22</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1099,6 +1224,7 @@ download=As Download Link]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowhtml">
@@ -1107,6 +1233,7 @@ download=As Download Link]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowmycode">
@@ -1115,6 +1242,7 @@ download=As Download Link]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowsmilies">
@@ -1123,6 +1251,7 @@ download=As Download Link]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="pmsallowimgcode">
@@ -1131,6 +1260,7 @@ download=As Download Link]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1141,6 +1271,7 @@ download=As Download Link]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="repsperpage">
@@ -1149,6 +1280,7 @@ download=As Download Link]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1160,6 +1292,7 @@ download=As Download Link]]></optionscode>
 			<optionscode><![CDATA[php
 <select name=\"upsetting[{$setting['sid']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting['value']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>]]></optionscode>
 			<settingvalue><![CDATA[standard]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="searchfloodtime">
@@ -1168,6 +1301,7 @@ download=As Download Link]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[30]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="minsearchword">
@@ -1176,6 +1310,7 @@ download=As Download Link]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="searchhardlimit">
@@ -1184,6 +1319,7 @@ download=As Download Link]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1197,6 +1333,7 @@ auto=Automatic Detection
 yes=Enabled
 no=Disabled]]></optionscode>
 			<settingvalue><![CDATA[auto]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="gzipoutput">
@@ -1205,6 +1342,7 @@ no=Disabled]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="gziplevel">
@@ -1213,6 +1351,7 @@ no=Disabled]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="standardheaders">
@@ -1221,6 +1360,7 @@ no=Disabled]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="nocacheheaders">
@@ -1229,6 +1369,7 @@ no=Disabled]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="redirects">
@@ -1237,6 +1378,7 @@ no=Disabled]]></optionscode>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="load">
@@ -1245,6 +1387,7 @@ no=Disabled]]></optionscode>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="tplhtmlcomments">
@@ -1253,6 +1396,7 @@ no=Disabled]]></optionscode>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="use_xmlhttprequest">
@@ -1261,6 +1405,7 @@ no=Disabled]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="useshutdownfunc">
@@ -1269,6 +1414,7 @@ no=Disabled]]></optionscode>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="extraadmininfo">
@@ -1277,6 +1423,7 @@ no=Disabled]]></optionscode>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="uploadspath">
@@ -1285,6 +1432,7 @@ no=Disabled]]></optionscode>
 			<disporder>13</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="useerrorhandling">
@@ -1293,6 +1441,7 @@ no=Disabled]]></optionscode>
 			<disporder>14</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="errorlogmedium">
@@ -1306,6 +1455,7 @@ email=Email errors
 both=Log and email errors
 ]]></optionscode>
 			<settingvalue><![CDATA[none]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="errortypemedium">
@@ -1318,6 +1468,7 @@ error=Errors
 both=Warnings and Errors
 ]]></optionscode>
 			<settingvalue><![CDATA[both]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="errorloglocation">
@@ -1326,6 +1477,7 @@ both=Warnings and Errors
 			<disporder>17</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="enableforumjump">
@@ -1334,6 +1486,7 @@ both=Warnings and Errors
 			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1344,6 +1497,7 @@ both=Warnings and Errors
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1356,6 +1510,7 @@ both=Warnings and Errors
 vertical=Display posts using the vertical post layout
 classic=Display posts using the classic layout]]></optionscode>
 			<settingvalue><![CDATA[vertical]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>		
 		<setting name="postsperpage">
@@ -1364,6 +1519,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="userpppoptions">
@@ -1372,6 +1528,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[5,10,20,25,30,40,50]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmaxavatarsize">
@@ -1380,6 +1537,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[70x70]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>		
 		<setting name="threadreadcut">
@@ -1388,6 +1546,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>5</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[7]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="threadusenetstyle">
@@ -1396,6 +1555,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="quickreply">
@@ -1404,6 +1564,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="multiquote">
@@ -1412,6 +1573,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="showsimilarthreads">
@@ -1420,6 +1582,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="similarityrating">
@@ -1428,6 +1591,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="similarlimit">
@@ -1436,6 +1600,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="delayedthreadviews">
@@ -1444,6 +1609,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1454,6 +1620,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="allowcustomwarnings">
@@ -1462,6 +1629,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="canviewownwarning">
@@ -1470,6 +1638,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxwarningpoints">
@@ -1478,6 +1647,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
@@ -1488,6 +1658,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="refreshwol">
@@ -1496,6 +1667,7 @@ classic=Display posts using the classic layout]]></optionscode>
 			<disporder>16</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>

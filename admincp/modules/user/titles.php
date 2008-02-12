@@ -245,7 +245,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\"><strong>{$usertitle['title']}</strong></a>");
 		$table->construct_cell($usertitle['posts'], array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=edit&amp;utid={$usertitle['utid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->user_title_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/titles&amp;action=delete&amp;utid={$usertitle['utid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->user_title_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	

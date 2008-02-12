@@ -262,8 +262,7 @@ class MyBB {
 		foreach(array_keys($array) as $key)
 		{
 			unset($GLOBALS[$key]);
-			global $$key;
-			unset($$key);
+			unset($GLOBALS[$key]); // Double unset to circumvent the zend_hash_del_key_or_index hole in PHP <4.4.3 and <5.1.4
 		}
 	}
 

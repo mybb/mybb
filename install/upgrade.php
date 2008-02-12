@@ -572,7 +572,8 @@ function sync_settings($redo=0)
 				"description" => $db->escape_string($setting['description'][0]['value']),
 				"optionscode" => $db->escape_string($setting['optionscode'][0]['value']),
 				"disporder" => intval($setting['disporder'][0]['value']),
-				"gid" => $gid
+				"gid" => $gid,
+				"isdefault" => 1
 			);
 			if(!$settings[$setting['attributes']['name']] || $redo == 2)
 			{

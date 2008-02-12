@@ -667,7 +667,7 @@ if(!$mybb->input['action'])
 			
 			$table->construct_cell($icon."<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a>");
 			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 		$table->output($lang->global_announcements);
@@ -745,7 +745,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 							
 					$table->construct_cell("<div style=\"padding-left: ".(40*$depth)."px;\">{$icon}<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a></div>");
 					$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-					$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+					$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 					$table->construct_row();
 				}
 			}

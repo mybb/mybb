@@ -37,25 +37,6 @@ function home_action_handler($action)
 	
 	$page->active_module = "home";
 	
-	switch($action)
-	{
-		case "preferences":
-			$page->active_action = "preferences";
-			$action_file = "preferences.php";
-			break;
-		case "credits":
-			$page->active_action = "credits";
-			$action_file = "credits.php";
-			break;
-		case "version_check":
-			$page->active_action = "version_check";
-			$action_file = "version_check.php";
-			break;
-		default:
-			$page->active_action = "dashboard";
-			$action_file = "index.php";
-	}
-	
 	$actions = array(
 		'preferences' => array('active' => 'preferences', 'file' => 'preferences.php'),
 		'credits' => array('active' => 'credits', 'file' => 'credits.php'),
@@ -79,7 +60,7 @@ function home_action_handler($action)
 		$plugins->run_hooks_by_ref("admin_home_menu_quick_access", $sub_menu);
 		
 		$sidebar = new SidebarItem($lang->quick_access);
-		$sidebar->add_menu_items($sub_menu, $page->active_action);
+		$sidebar->add_menu_items($sub_menu, $actions[$action]['active']);
 		
 		$page->sidebar .= $sidebar->get_markup();
 

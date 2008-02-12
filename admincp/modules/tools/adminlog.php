@@ -126,7 +126,7 @@ if($mybb->input['action'] == 'prune')
 	{
 		$mybb->input['older_than'] = '30';
 	}
-	$form_container->output_row($lang->date_range, "", 'Older than '.$form->generate_text_box('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px')).' days', 'older_than');
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_text_box('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px')).' days', 'older_than');
 	$form_container->end();
 	$buttons[] = $form->generate_submit_button($lang->prune_administrator_logs);
 	$form->output_submit_wrapper($buttons);

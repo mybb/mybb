@@ -100,7 +100,7 @@ if($mybb->input['action'] == "add")
 	{
 		$mybb->input['usergroup'] = 1;
 	}
-	$form_container->output_row($lang->user_group, $lang->user_group_desc, $form->generate_select_box("usergroup", $usergroups, $spider_data['usergroup'], array("id" => "usergroup")), 'usergroup');
+	$form_container->output_row($lang->user_group, $lang->user_group_desc, $form->generate_select_box("usergroup", $usergroups, $mybb->input['usergroup'], array("id" => "usergroup")), 'usergroup');
 
 
 	$form_container->end();
@@ -291,7 +291,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\"><strong>{$spider['name']}</strong></a>");
 		$table->construct_cell($lastvisit, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=delete&amp;sid={$spider['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=delete&amp;sid={$spider['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

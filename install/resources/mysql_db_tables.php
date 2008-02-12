@@ -631,6 +631,7 @@ $tables[] = "CREATE TABLE mybb_settings (
   value text NOT NULL,
   disporder smallint unsigned NOT NULL default '0',
   gid smallint unsigned NOT NULL default '0',
+  isdefault int(1) NOT NULL default '0',
   PRIMARY KEY (sid)
 ) TYPE=MyISAM;";
 

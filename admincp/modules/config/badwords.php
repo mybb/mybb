@@ -192,7 +192,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($badword['badword']);
 		$table->construct_cell($badword['replacement']);
 		$table->construct_cell("<a href=\"index.php?module=config/badwords&amp;action=edit&amp;bid={$badword['bid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/badwords&amp;action=delete&amp;bid={$badword['bid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bad_word_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/badwords&amp;action=delete&amp;bid={$badword['bid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bad_word_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

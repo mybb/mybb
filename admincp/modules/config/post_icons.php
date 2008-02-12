@@ -471,7 +471,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("{$icon['name']}");
 
 		$table->construct_cell("<a href=\"index.php?module=config/post_icons&amp;action=edit&amp;iid={$icon['iid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/post_icons&amp;action=delete&amp;iid={$icon['iid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_icon_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

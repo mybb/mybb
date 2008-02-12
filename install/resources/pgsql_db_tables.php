@@ -600,6 +600,7 @@ $tables[] = "CREATE TABLE mybb_settings (
   value text NOT NULL default '',
   disporder smallint NOT NULL default '0',
   gid smallint NOT NULL default '0',
+  isdefault int(1) NOT NULL default '0',
   PRIMARY KEY (sid)
 );";
 

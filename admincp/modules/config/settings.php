@@ -454,10 +454,8 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=config/settings");
 	}
 	
-	$query = $db->simple_select("settinggroups", "isdefault", "gid='{$setting['gid']}'");
-	$group = $db->fetch_array($query);
 	// Prevent editing of default
-	if($group['isdefault'] == 1)
+	if($setting['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config/settings&action=manage");
@@ -628,10 +626,9 @@ if($mybb->input['action'] == "delete")
 		admin_redirect("index.php?module=config/settings&action=manage");
 	}
 	
-	$query = $db->simple_select("settinggroups", "isdefault", "gid='{$setting['gid']}'");
-	$group = $db->fetch_array($query);
+	
 	// Prevent editing of default
-	if($group['isdefault'] == 1)
+	if($setting['isdefault'] == 1)
 	{
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config/settings&action=manage");
@@ -729,7 +726,7 @@ if($mybb->input['action'] == "manage")
 	
 	// Cache settings
 	$settings_cache = array();
-	$query = $db->simple_select("settings", "sid, name, title, disporder, gid", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
+	$query = $db->simple_select("settings", "sid, name, title, disporder, gid, isdefault", "", array('order_by' => 'disporder', 'order_dir' => 'asc'));
 	while($setting = $db->fetch_array($query))
 	{
 		$settings_cache[$setting['gid']][] = $setting;
@@ -790,8 +787,8 @@ if($mybb->input['action'] == "manage")
 				}
 				$table->construct_cell($setting['title'], array('style' => 'padding-left: 40px;'));
 				$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
-				// Only show options if not a default setting group
-				if($group['isdefault'] != 1)
+				// Only show options if not a default setting group or is a custom setting
+				if($group['isdefault'] != 1 || $setting['isdefault'] != 1)
 				{
 					$popup = new PopupMenu("setting_{$setting['sid']}", $lang->options);
 					$popup->add_item($lang->edit_setting, "index.php?module=config/settings&amp;action=edit&amp;sid={$setting['sid']}");
@@ -943,6 +940,12 @@ if($mybb->input['action'] == "change")
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;
 		}
 		
+		if(!$db->num_rows($query))
+        {
+            flash_message("<p><em>{$lang->error_no_settings_found}</em></p>", 'error');
+            admin_redirect("index.php?module=config/settings");    
+        }
+		
 		// Page header
 		$page->add_breadcrumb_item($groupinfo['title']);
 		$page->output_header($lang->board_settings." - {$groupinfo['title']}");
@@ -985,6 +988,17 @@ if($mybb->input['action'] == "change")
 	foreach($cache_groups as $groupinfo)
 	{
 		$form_container = new FormContainer($groupinfo['title']);
+		
+		if(empty($cache_settings[$groupinfo['gid']]))
+        {
+            $form_container->output_cell($lang->error_no_settings_found);
+            $form_container->construct_row();
+            
+            $form_container->end();
+            echo '<br />';
+			
+            continue;
+        }
 		
 		foreach($cache_settings[$groupinfo['gid']] as $setting)
 		{

@@ -682,7 +682,7 @@ if($mybb->input['action'] == "levels")
 		}
 		$table->construct_cell($type);
 		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=edit_level&amp;lid={$level['lid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=delete_level&amp;lid={$level['lid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_level_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=delete_level&amp;lid={$level['lid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_level_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -729,7 +729,7 @@ if(!$mybb->input['action'])
 			$table->construct_cell($lang->never, array("class" => "align_center"));
 		}
 		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=edit_type&amp;tid={$type['tid']}\">{$lang->edit}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=delete_type&amp;tid={$type['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_type_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/warning&amp;action=delete_type&amp;tid={$type['tid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_warning_type_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	

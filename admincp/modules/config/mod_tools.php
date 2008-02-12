@@ -135,7 +135,7 @@ if($mybb->input['action'] == "post_tools")
 	{
 		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
 		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_post_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=delete_post_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=delete_post_tool&amp;tid={$tool['tid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_post_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -1604,7 +1604,7 @@ if(!$mybb->input['action'])
 	{
 		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\"><strong>".htmlspecialchars_uni($tool['name'])."</strong></a><br /><small>".htmlspecialchars_uni($tool['description'])."</small>");
 		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=edit_thread_tool&amp;tid={$tool['tid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/mod_tools&amp;action=delete_thread_tool&amp;tid={$tool['tid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_tool_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => "align_center"));
 		$table->construct_row();
 	}
 	

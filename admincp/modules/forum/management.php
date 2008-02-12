@@ -288,7 +288,7 @@ if($mybb->input['action'] == "editmod")
 		{
 			$fid = intval($mybb->input['fid']);	
 			$forum = get_forum($fid);
-			$mod = get_user($mid);
+			$mod = get_user($mod_data['uid']);
 			$update_array = array(
 				'fid' => intval($fid),
 				'caneditposts' => intval($mybb->input['caneditposts']),
@@ -1834,7 +1834,7 @@ if(!$mybb->input['action'])
 		{
 			$form_container->output_cell("<a href=\"index.php?module=user/users&amp;action=edit&amp;uid={$moderator['uid']}\">{$moderator['username']}</a>");
 			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=editmod&amp;mid={$moderator['mid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=deletemod&amp;uid={$moderator['uid']}&amp;fid={$fid}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=deletemod&amp;uid={$moderator['uid']}&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 			$form_container->construct_row();
 		}
 		
@@ -1930,7 +1930,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$popup->add_item($lang->permissions, "index.php?module=forum/management&amp;fid={$forum['fid']}#tab_permissions");
 				$popup->add_item($lang->add_child_forum, "index.php?module=forum/management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
-				$popup->add_item($lang->delete_forum, "index.php?module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
+				$popup->add_item($lang->delete_forum, "index.php?module=forum/management&amp;action=delete&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
 				
 				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
 				
@@ -1974,7 +1974,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				$popup->add_item($lang->permissions, "index.php?module=forum/management&amp;fid={$forum['fid']}#tab_permissions");
 				$popup->add_item($lang->add_child_forum, "index.php?module=forum/management&amp;action=add&amp;pid={$forum['fid']}");
 				$popup->add_item($lang->copy_forum, "index.php?module=forum/management&amp;action=copy&amp;fid={$forum['fid']}");
-				$popup->add_item($lang->delete_forum, "index.php?module=forum/management&amp;action=delete&amp;fid={$forum['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
+				$popup->add_item($lang->delete_forum, "index.php?module=forum/management&amp;action=delete&amp;fid={$forum['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_forum_deletion}')");
 				
 				$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
 				

@@ -388,7 +388,7 @@ if(!$mybb->input['action'])
 		
 		$popup = new PopupMenu("field_{$field['fid']}", $lang->options);
 		$popup->add_item($lang->edit_field, "index.php?module=config/profile_fields&amp;action=edit&amp;fid={$field['fid']}");
-		$popup->add_item($lang->delete_field, "index.php?module=config/profile_fields&amp;action=delete&amp;fid={$field['fid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_profile_field_deletion}')");
+		$popup->add_item($lang->delete_field, "index.php?module=config/profile_fields&amp;action=delete&amp;fid={$field['fid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_profile_field_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center", 'width' => '20%'));
 		$table->construct_row();
 	}

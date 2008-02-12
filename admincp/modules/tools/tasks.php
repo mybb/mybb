@@ -686,7 +686,7 @@ if(!$mybb->input['action'])
 		{
 			$popup->add_item($lang->enable_task, "index.php?module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}");
 		}
-		$popup->add_item($lang->delete_task, "index.php?module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_task_deletion}')");
+		$popup->add_item($lang->delete_task, "index.php?module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_task_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

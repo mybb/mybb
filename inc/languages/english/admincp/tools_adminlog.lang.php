@@ -25,6 +25,7 @@ $l['sort_by'] = "Sort By:";
 $l['results_per_page'] = "Results Per Page:";
 $l['all_administrators'] = "All Administrators";
 $l['all_modules'] = "All Modules";
+$l['older_than'] = "Older than ";
 
 $l['prune_administrator_logs'] = "Prune Administrator Logs";
 $l['date_range'] = "Date range:";

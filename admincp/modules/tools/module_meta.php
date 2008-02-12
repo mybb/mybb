@@ -68,7 +68,7 @@ function tools_action_handler($action)
 	$plugins->run_hooks_by_ref("admin_tools_menu_logs", $sub_menu);
 	
 	$sidebar = new SidebarItem($lang->logs);
-	$sidebar->add_menu_items($sub_menu, $page->active_action);
+	$sidebar->add_menu_items($sub_menu, $actions[$action]['active']);
 	
 	$page->sidebar .= $sidebar->get_markup();
 	

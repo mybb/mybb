@@ -566,7 +566,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			{
 				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
 			}
-			$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
+			$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
 			$controls = $popup->fetch();
 			$table->construct_cell($controls, array("class" => "align_center"));
 			$table->construct_row();

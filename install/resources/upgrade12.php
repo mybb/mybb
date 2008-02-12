@@ -634,6 +634,28 @@ function upgrade12_dbchanges2()
 
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
 	
+	if($db->field_exists('isdefault', "settings"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings DROP isdefault;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."settings ADD isdefault int(1) NOT NULL default '0' AFTER gid;");
+	
+	$setting_group_cache = array();
+	$query = $db->simple_select("settinggroups", "gid, isdefault");
+	while($settinggroup = $db->fetch_array($query))
+	{
+		$setting_group_cache[$settinggroup['gid']] = $settinggroup['isdefault'];
+	}
+	
+	$query = $db->simple_select("settings", "gid, sid");
+	while($setting = $db->fetch_array($query))
+	{
+		if($setting_group_cache[$setting['gid']] == 1)
+		{
+			$db->update_query("settings", array('isdefault' => 1), "sid = '{$setting['sid']}'", 1);
+		}
+	}
+	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

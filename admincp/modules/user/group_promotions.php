@@ -631,7 +631,7 @@ if(!$mybb->input['action'])
 		{
 			$popup->add_item($lang->enable_promotion, "index.php?module=user/group_promotions&amp;action=enable&amp;pid={$promotion['pid']}");
 		}
-		$popup->add_item($lang->delete_promotion, "index.php?module=user/group_promotions&amp;action=delete&amp;pid={$promotion['pid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_promo_deletion}')");
+		$popup->add_item($lang->delete_promotion, "index.php?module=user/group_promotions&amp;action=delete&amp;pid={$promotion['pid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_promo_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}

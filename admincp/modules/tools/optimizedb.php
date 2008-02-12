@@ -69,6 +69,7 @@ if(!$mybb->input['action'])
 			}
 			else if(action == 'forum' && prefix != 0)
 			{
+				document.table_selection.table_select[i].selected = false;
 				var row = document.table_selection.table_select[i].value;
 				var subString = row.substring(prefix.length, 0);
 				if(subString == prefix)

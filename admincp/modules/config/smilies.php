@@ -655,7 +655,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell($smilie['find']);
 		
 		$table->construct_cell("<a href=\"index.php?module=config/smilies&amp;action=edit&amp;sid={$smilie['sid']}\">Edit</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/smilies&amp;action=delete&amp;sid={$smilie['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_smilie_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=config/smilies&amp;action=delete&amp;sid={$smilie['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_smilie_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

@@ -423,7 +423,7 @@ if($mybb->input['action'] == "leaders")
 		$table->construct_cell($canmanagemembers, array("class" => "align_center"));
 		$table->construct_cell($canmanagerequests, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=edit_leader&lid={$leader['lid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=delete_leader&amp;lid={$leader['lid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_leader_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/groups&amp;action=delete_leader&amp;lid={$leader['lid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_leader_deletion}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 		$table->construct_row();
 	}
 	
@@ -1244,7 +1244,7 @@ if(!$mybb->input['action'])
 		$popup->add_item($lang->group_leaders, "index.php?module=user/groups&amp;action=leaders&amp;gid={$usergroup['gid']}");
 		if($usergroup['type'] > 1)
 		{
-			$popup->add_item($lang->delete_group, "index.php?module=user/groups&amp;action=delete&amp;gid={$usergroup['gid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_deletion}')");
+			$popup->add_item($lang->delete_group, "index.php?module=user/groups&amp;action=delete&amp;gid={$usergroup['gid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_group_deletion}')");
 		}
 		$form_container->output_cell($popup->fetch(), array("class" => "align_center"));
 		$form_container->construct_row();

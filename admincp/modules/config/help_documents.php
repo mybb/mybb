@@ -617,7 +617,7 @@ if(!$mybb->input['action'])
 		// Show delete only if not a default section
 		if($section['sid'] > 2)
 		{
-			$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;sid={$section['sid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
+			$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;sid={$section['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
 		}
 		else
 		{
@@ -644,7 +644,7 @@ if(!$mybb->input['action'])
 			// Only show delete if not a default document
 			if($doc['hid'] > 7)
 			{
-				$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;hid={$doc['hid']}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
+				$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;hid={$doc['hid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
 			}
 			else
 			{
