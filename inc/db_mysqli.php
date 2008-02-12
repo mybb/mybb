@@ -158,8 +158,13 @@ class DB_MySQLi
 		// Actually connect to the specified servers
 		foreach(array('read', 'write') as $type)
 		{
-			if(!is_array($connections[$type])) break;
-			if(array_key_exists('hostname', $connections[$type])) {
+			if(!is_array($connections[$type]))
+			{
+				break;
+			}
+			
+			if(array_key_exists('hostname', $connections[$type]))
+			{
 				$details = $connections[$type];
 				unset($connections);
 				$connections[$type][] = $details;
@@ -172,7 +177,11 @@ class DB_MySQLi
 			foreach($connections[$type] as $single_connection)
 			{
 				$connect_function = "mysqli_connect";
-				if($single_connection['pconnect']) $connect_function = "mysqli_pconnect";
+				if($single_connection['pconnect'])
+				{
+					$connect_function = "mysqli_pconnect";
+				}
+				
 				$link = $type."_link";
 
 				$this->get_execution_time();

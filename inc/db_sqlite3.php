@@ -977,7 +977,6 @@ class DB_SQLite3
 		return $total;
 	}
 	
-	// 
 	/**
 	 * Perform an "Alter Table" query in SQLite < 3.2.0 - Code taken from http://code.jenseng.com/db/
 	 *

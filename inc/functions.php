@@ -3654,8 +3654,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	);
 
 	$replace = array(
-		$lang->sprintf('%02s', $bm),
-		$lang->sprintf('%02s', $bd),
+		sprintf('%02s', $bm),
+		sprintf('%02s', $bd),
 		my_substr($by, 2),
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),

@@ -448,7 +448,7 @@ static $daylight;
 			if ($secs < 10) $dates .= ':0'.$secs; else $dates .= ':'.$secs;
 			
 			$gmt = adodb_get_gmt_diff();
-			$dates .= $lang->sprintf(' %s%04d',($gmt<0)?'+':'-',abs($gmt)/36); break;
+			$dates .= sprintf(' %s%04d',($gmt<0)?'+':'-',abs($gmt)/36); break;
 				
 		case 'Y': $dates .= $year; break;
 		case 'y': $dates .= substr($year,strlen($year)-2,2); break;
@@ -479,7 +479,7 @@ static $daylight;
 			$dates .= ($is_gmt) ? 0 : -adodb_get_gmt_diff(); break;
 		case 'O': 
 			$gmt = ($is_gmt) ? 0 : adodb_get_gmt_diff();
-			$dates .= $lang->sprintf('%s%04d',($gmt<0)?'+':'-',abs($gmt)/36); break;
+			$dates .= sprintf('%s%04d',($gmt<0)?'+':'-',abs($gmt)/36); break;
 			
 		case 'H': 
 			if ($hour < 10) $dates .= '0'.$hour; 

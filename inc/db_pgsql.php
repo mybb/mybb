@@ -1026,7 +1026,7 @@ class DB_PgSQL
 
 			if(strpos($row['type'], 'numeric') !== false)
 			{
-				$line .= '('.$lang->sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
+				$line .= '('.sprintf("%s,%s", (($row['lengthvar'] >> 16) & 0xffff), (($row['lengthvar'] - 4) & 0xffff)).')';
 			}
 
 			if(!empty($row['rowdefault']))

@@ -167,10 +167,10 @@ class MyLanguage
 		$arg_list = func_get_args();
 		$num_args = count($arg_list);
 		
-    	for($i = 1; $i < $num_args; $i++)
+		for($i = 1; $i < $num_args; $i++)
 		{
-       		$string = str_replace('{'.$i.'}', $arg_list[$i], $string);
-    	}
+			$string = str_replace('{'.$i.'}', $arg_list[$i], $string);
+		}
 		
 		return $string;
 	}
