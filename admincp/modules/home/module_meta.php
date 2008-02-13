@@ -44,6 +44,11 @@ function home_action_handler($action)
 		'dashboard' => array('active' => 'dashboard', 'file' => 'index.php')
 	);
 	
+	if(!isset($actions[$action]))
+	{
+		$page->active_action = "dashboard";
+	}
+	
 	$plugins->run_hooks_by_ref("admin_home_action_handler", $actions);
 	
 	if($page->active_action == "dashboard")
@@ -60,7 +65,7 @@ function home_action_handler($action)
 		$plugins->run_hooks_by_ref("admin_home_menu_quick_access", $sub_menu);
 		
 		$sidebar = new SidebarItem($lang->quick_access);
-		$sidebar->add_menu_items($sub_menu, $actions[$action]['active']);
+		$sidebar->add_menu_items($sub_menu, $page->active_action);
 		
 		$page->sidebar .= $sidebar->get_markup();
 

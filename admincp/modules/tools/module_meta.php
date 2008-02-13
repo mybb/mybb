@@ -67,8 +67,13 @@ function tools_action_handler($action)
 	
 	$plugins->run_hooks_by_ref("admin_tools_menu_logs", $sub_menu);
 	
+	if(!isset($actions[$action]))
+	{
+		$page->active_action = "system_health";
+	}
+	
 	$sidebar = new SidebarItem($lang->logs);
-	$sidebar->add_menu_items($sub_menu, $actions[$action]['active']);
+	$sidebar->add_menu_items($sub_menu, $page->active_action);
 	
 	$page->sidebar .= $sidebar->get_markup();
 	
@@ -79,7 +84,6 @@ function tools_action_handler($action)
 	}
 	else
 	{
-		$page->active_action = "system_health";
 		return "system_health.php";
 	}
 }
