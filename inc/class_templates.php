@@ -47,7 +47,7 @@ class templates
 			$sql .= " ,'".trim($title)."'";
 		}
 
-		$query = $db->simple_select("templates", "title,template", "title IN (''$sql) AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'desc'));
+		$query = $db->simple_select("templates", "title,template", "title IN (''$sql) AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'asc'));
 		while($template = $db->fetch_array($query))
 		{
 			$this->cache[$template['title']] = $template['template'];

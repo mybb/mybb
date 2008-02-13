@@ -2549,22 +2549,22 @@ function get_attachment_icon($ext)
 	{
 		if(defined("IN_ADMINCP"))
 		{
-			$attachtypes[$ext]['icon'] = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
-			if(my_substr($attachtypes[$ext]['icon'], 0, 1) != "/" && my_substr($attachtypes[$ext]['icon'], 0, 7) != "http://")
+			$icon = str_replace("{theme}", "", $attachtypes[$ext]['icon']);
+			if(my_substr($icon, 0, 1) != "/" && my_substr($icon, 0, 7) != "http://")
 			{
-				$attachtypes[$ext]['icon'] = "../".$attachtypes[$ext]['icon'];
+				$icon = "../".$icon;
 			}
 		}
 		elseif(defined("IN_PORTAL"))
 		{
 			global $change_dir;
-			$attachtypes[$ext]['icon'] = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$icon = $change_dir."/".str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
 		else
 		{
-			$attachtypes[$ext]['icon'] = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$ucib = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
-		return "<img src=\"".$attachtypes[$ext]['icon']."\" border=\"0\" alt=\".{$ext}\" />";
+		return "<img src=\"{$icon}\" border=\"0\" alt=\".{$ext}\" />";
 	}
 	else
 	{
