@@ -52,10 +52,11 @@ else
 $unviewableforums = get_unviewable_forums(true);
 $inactiveforums = get_inactive_forums();
 
-$unviewable = 0;
+$unviewable = '';
 
 // If there are any, add SQL to exclude them.
-if($unviewableforums) {
+if($unviewableforums)
+{
 	$unviewable .= " AND f.fid NOT IN($unviewableforums)";
 }
 

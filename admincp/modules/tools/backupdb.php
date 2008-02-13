@@ -297,20 +297,20 @@ if($mybb->input['action'] == "backup")
 		{
 			if(action == 'select')
 			{
-				document.table_selection.table_select[i].selected = true;
+				select_box[i].selected = true;
 			}
 			else if(action == 'deselect')
 			{
-				document.table_selection.table_select[i].selected = false;
+				select_box[i].selected = false;
 			}
 			else if(action == 'forum' && prefix != 0)
 			{
-				document.table_selection.table_select[i].selected = false;
-				var row = document.table_selection.table_select[i].value;
+				select_box[i].selected = false;
+				var row = select_box[i].value;
 				var subString = row.substring(prefix.length, 0);
 				if(subString == prefix)
 				{
-					document.table_selection.table_select[i].selected = true;
+					select_box[i].selected = true;
 				}
 			}
 		}
