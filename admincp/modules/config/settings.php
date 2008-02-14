@@ -418,7 +418,7 @@ if($mybb->input['action'] == "add")
 		"language" => $lang->language,
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
-		"php" => $lang->php
+		//"php" => $lang->php // Internal Use Only
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $mybb->input['type'], array('id' => 'type')), 'type');
@@ -590,7 +590,7 @@ if($mybb->input['action'] == "edit")
 		"language" => $lang->language,
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
-		"php" => $lang->php
+		//"php" => $lang->php // Internal Use Only
 	);
 
 	$form_container->output_row($lang->type." <em>*</em>", "", $form->generate_select_box("type", $setting_types, $setting_data['type'], array('id' => 'type')), 'type');

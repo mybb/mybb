@@ -103,7 +103,7 @@ if($mybb->input['action'] == 'prune')
 	");
 	while($module = $db->fetch_array($query))
 	{
-		$module_options[$module['module']] = str_replace(' ', ' -> ', ucwords(str_replace('/', ' ', $module['module'])));
+		$module_options[$module['module']] = str_replace(' ', ' -&gt; ', ucwords(str_replace('/', ' ', $module['module'])));
 	}
 	
 	$sort_by = array(
@@ -284,7 +284,7 @@ if(!$mybb->input['action'])
 	");
 	while($module = $db->fetch_array($query))
 	{
-		$module_options[$module['module']] = str_replace(' ', ' -> ', ucwords(str_replace('/', ' ', $module['module'])));
+		$module_options[$module['module']] = str_replace(' ', ' -&gt; ', ucwords(str_replace('/', ' ', $module['module'])));
 	}
 	
 	$sort_by = array(
