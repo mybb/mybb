@@ -19,7 +19,7 @@ $l['na'] = "N/A";
 $l['mybb_admin_panel'] = "MyBB Administration Panel";
 $l['mybb_admin_cp'] = "MyBB Admin CP";
 $l['logged_in_as'] = "Logged in as";
-$l['view_forum'] = "View Forum";
+$l['view_board'] = "View Forum";
 $l['logout'] = "Logout";
 
 // Footer language strings
@@ -217,4 +217,8 @@ $l['editor_size_xx_large'] = "XX Large";
 $l['editor_font'] = "Font";
 $l['editor_size'] = "Text Size";
 $l['editor_color'] = "Text Color";
+
+// If the language string for "Username" is too cramped in the ACP Login box
+// then use this to define how much larger you want the gap to be (in px)
+// $l['login_field_width'] = "0";
 ?>

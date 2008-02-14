@@ -110,7 +110,7 @@ var imagepath = '../images';
 		echo "<body>\n";
 		echo "<div id=\"container\">\n";
 		echo "	<div id=\"logo\"><h1><span class=\"invisible\">{$lang->mybb_admin_cp}</span></h1></div>\n";
-		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_forum}</a> | <a href=\"index.php?action=logout\" class=\"logout\">{$lang->logout}</a></div>\n";
+		echo "	<div id=\"welcome\"><span class=\"logged_in_as\">{$lang->logged_in_as} <a href=\"#\" class=\"username\">{$mybb->user['username']}</a></span> | <a href=\"{$mybb->settings['bburl']}\" target=\"_blank\" class=\"forum\">{$lang->view_board}</a> | <a href=\"index.php?action=logout\" class=\"logout\">{$lang->logout}</a></div>\n";
 		echo $this->_build_menu();
 		echo "	<div id=\"page\">\n";
 		echo "		<div id=\"left_menu\">\n";
@@ -300,6 +300,16 @@ var imagepath = '../images';
 		global $lang;
 
 		$copy_year = COPY_YEAR;
+		
+		$login_container_width = "";
+		$login_label_width = "";
+		 
+		// If the language string for "Username" is too cramped then use this to define how much larger you want the gap to be (in px)
+		if($lang->login_field_width)
+        {
+        	$login_label_width = " style=\"width: ".(intval($lang->login_field_width)+100)."px;\"";
+			$login_container_width = " style=\"width: ".(410+(intval($lang->login_field_width)))."px;\"";
+        }
 
 		print <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -319,7 +329,7 @@ var imagepath = '../images';
 </script>
 </head>
 <body>
-<div id="container">
+<div id="container"{$login_container_width}>
 	<div id="header">
 		<div id="logo">
 			<h1><a href="../" title="{$lang->return_to_forum}"><span class="invisible">{$lang->mybb_acp}</span></a></h1>
@@ -343,16 +353,17 @@ EOF;
 			$query_string = str_replace('?&', '?', $query_string);
 			$query_string = htmlspecialchars_uni($query_string);
 		}
+       	
 print <<<EOF
 		<p>{$lang->enter_username_and_password}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
 
-			<div class="label"><label for="username">{$lang->username}</label></div>
+			<div class="label"{$login_label_width}><label for="username">{$lang->username}</label></div>
 
 			<div class="field"><input type="text" name="username" id="username" class="text_input initial_focus" /></div>
 
-			<div class="label"><label for="password">{$lang->password}</label></div>
+			<div class="label"{$login_label_width}><label for="password">{$lang->password}</label></div>
 			<div class="field"><input type="password" name="password" id="password" class="text_input" /></div>
 		</div>
 		<p class="submit">

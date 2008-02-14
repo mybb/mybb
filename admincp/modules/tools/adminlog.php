@@ -477,10 +477,11 @@ function get_admin_log_action($logitem)
 				$lang_string = 'admin_log_user_banning_add_temporary';
 			}
 	}
+	
 	if(isset($lang->$lang_string))
 	{
 		array_unshift($logitem['data'], $lang->$lang_string); // First parameter for sprintf is the format string
-		$string = call_user_func_array('sprintf', $logitem['data']);
+		$string = call_user_func_array(array($lang, 'sprintf'), $logitem['data']);
 		if(!$string)
 		{
 			$string = $lang->$lang_string; // Fall back to the one in the language pack

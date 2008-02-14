@@ -667,10 +667,13 @@ if($mybb->input['action'] == "editevent")
 	$plugins->run_hooks("calendar_editevent_start");
 
 	// If MyCode is on for this forum and the MyCode editor is enabled inthe Admin CP, draw the code buttons and smilie inserter.
-	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0))
+	if($mybb->settings['bbcodeinserter'] != 0 && (!$mybb->user['uid'] || $mybb->user['showcodebuttons'] != 0) && $calendar['allowmycode'] == 1)
 	{
 		$codebuttons = build_mycode_inserter();
-		$smilieinserter = build_clickable_smilies();
+		if($calendar['allowsmilies'] == 1)
+		{
+			$smilieinserter = build_clickable_smilies();
+		}
 	}
 
 	// Previous selections
