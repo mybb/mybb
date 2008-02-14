@@ -360,7 +360,8 @@ switch($mybb->input['action'])
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
 				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode']
+				"allow_imgcode" => $forum['allowimgcode'],
+				"filter_badwords" => 1
 			);
 			if($post['smilieoff'] == 1)
 			{
@@ -448,7 +449,8 @@ switch($mybb->input['action'])
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
 				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode']
+				"allow_imgcode" => $forum['allowimgcode'],
+				"filter_badwords" => 1
 			);
 			if($post['smilieoff'] == 1)
 			{
@@ -809,7 +811,8 @@ switch($mybb->input['action'])
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
 				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode']
+				"allow_imgcode" => $forum['allowimgcode'],
+				"filter_badwords" => 1
 			);
 			if($post['smilieoff'] == 1)
 			{

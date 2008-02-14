@@ -139,7 +139,8 @@ while($thread = $db->fetch_array($query))
 			"allow_html" => $thread['allowhtml'],
 			"allow_mycode" => $thread['allowmycode'],
 			"allow_smilies" => $thread['allowsmilies'],
-			"allow_imgcode" => $thread['allowimgcode']
+			"allow_imgcode" => $thread['allowimgcode'],
+			"filter_badwords" => 1
 		);
 		
 		$thread['message'] = $parser->parse_message($thread['message'], $parser_options);

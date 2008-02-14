@@ -47,7 +47,8 @@ switch($action)
 			"allow_mycode" => $announcement['allowmycode'],
 			"allow_smilies" => $announcement['allowsmilies'],
 			"allow_imgcode" => $announcement['allowmycode'],
-			"me_username" => $announcement['username']
+			"me_username" => $announcement['username'],
+			"filter_badwords" => 1
 		);
 
 		$announcement['message'] = $parser->parse_message($announcement['message'], $parser_options);
@@ -157,7 +158,8 @@ switch($action)
 				"allow_mycode" => $forum['allowmycode'],
 				"allow_smilies" => $forum['allowsmilies'],
 				"allow_imgcode" => $forum['allowimgcode'],
-				"me_username" => $post['username']
+				"me_username" => $post['username'],
+				"filter_badwords" => 1
 			);
 			if($post['smilieoff'] == 1)
 			{

@@ -682,7 +682,8 @@ if($mybb->input['action'] == "results")
 				'filter_badwords' => 1,
 				'allow_mycode' => 1,
 				'allow_smilies' => 0,
-				'allow_imgcode' => 0
+				'allow_imgcode' => 0,
+				'filter_badwords' => 1
 			);
 			$post['message'] = strip_tags($parser->parse_message($post['message'], $parser_options));
 			if(my_strlen($post['message']) > 200)

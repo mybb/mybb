@@ -397,7 +397,8 @@ class PostDataHandler extends DataHandler
 			$parser_options = array(
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
-				"allow_imgcode" => $forum['allowimgcode']
+				"allow_imgcode" => $forum['allowimgcode'],
+				"filter_badwords" => 1
 			);
 
 			if($post['options']['disablesmilies'] != 1)

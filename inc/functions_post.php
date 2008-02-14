@@ -55,6 +55,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
 			$parser_options['me_username'] = $post['username'];
+			$parser_options['filter_badwords'] = 1;
 			$id = 0;
 			break;
 		case 2: // Private message
@@ -64,6 +65,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_smilies'] = $mybb->settings['pmsallowsmilies'];
 			$parser_options['allow_imgcode'] = $mybb->settings['pmsallowimgcode'];
 			$parser_options['me_username'] = $post['username'];
+			$parser_options['filter_badwords'] = 1;
 			$id = $pmid;
 			break;
 		case 3: // Announcement
@@ -73,6 +75,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_smilies'] = $announcementarray['allowsmilies'];
 			$parser_options['allow_imgcode'] = 1;
 			$parser_options['me_username'] = $post['username'];
+			$parser_options['filter_badwords'] = 1;
 			break;
 		default: // Regular post
 			global $forum, $thread, $tid;
@@ -82,6 +85,7 @@ function build_postbit($post, $post_type=0)
 			$parser_options['allow_mycode'] = $forum['allowmycode'];
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
 			$parser_options['allow_imgcode'] = $forum['allowimgcode'];
+			$parser_options['filter_badwords'] = 1;
 			
 			if(!$post['username'])
 			{

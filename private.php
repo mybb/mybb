@@ -1243,7 +1243,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 				"allow_mycode" => $mybb->settings['pmsallowmycode'],
 				"allow_smilies" => 0,
 				"allow_imgcode" => $mybb->settings['pmsallowimgcode'],
-				"me_username" => $mybb->user['username']
+				"me_username" => $mybb->user['username'],
+				"filter_badwords" => 1
 			);
 
 			$message['message'] = $parser->parse_message($message['message'], $parser_options);

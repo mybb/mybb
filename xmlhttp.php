@@ -404,7 +404,8 @@ else if($mybb->input['action'] == "edit_post")
 			"allow_mycode" => $forum['allowmycode'],
 			"allow_smilies" => $forum['allowsmilies'],
 			"allow_imgcode" => $forum['allowimgcode'],
-			"me_username" => $post['username']
+			"me_username" => $post['username'],
+			"filter_badwords" => 1
 		);
 		
 		if($post['smilieoff'] == 1)

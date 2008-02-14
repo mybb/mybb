@@ -318,7 +318,8 @@ if($mybb->input['action'] == "thread")
 				"allow_html" => $forum['allowhtml'],
 				"allow_mycode" => $forum['allowmycode'],
 				"allow_smilies" => $forum['allowsmilies'],
-				"allow_imgcode" => $forum['allowimgcode']
+				"allow_imgcode" => $forum['allowimgcode'],
+				"filter_badwords" => 1
 			);
 
 			$option = $parser->parse_message($optionsarray[$i-1], $parser_options);

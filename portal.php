@@ -487,7 +487,8 @@ while($announcement = $db->fetch_array($query))
 		"allow_html" => $forum[$announcement['fid']]['allowhtml'],
 		"allow_mycode" => $forum[$announcement['fid']]['allowmycode'],
 		"allow_smilies" => $forum[$announcement['fid']]['allowsmilies'],
-		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode']
+		"allow_imgcode" => $forum[$announcement['fid']]['allowimgcode'],
+		"filter_badwords" => 1
 	);
 	if($announcement['smilieoff'] == 1)
 	{

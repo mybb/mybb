@@ -129,7 +129,8 @@ elseif($mybb->input['action'] == "rules")
 			"allow_html" => 1,
 			"allow_mycode" => 1,
 			"allow_smilies" => 1,
-			"allow_imgcode" => 1
+			"allow_imgcode" => 1,
+			"filter_badwords" => 1
 		);
 
 		$forum['rules'] = $parser->parse_message($forum['rules'], $parser_options);

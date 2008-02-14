@@ -88,7 +88,7 @@ class postParser
 		$message = str_replace("\r", "", $message);
 
 		// Filter bad words if requested.
-		if($options['filter_badwords'] !== 0)
+		if($options['filter_badwords'])
 		{
 			$message = $this->parse_badwords($message);
 		}
@@ -110,7 +110,7 @@ class postParser
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
-		if($options['allow_mycode'] !== 0)
+		if($options['allow_mycode'])
 		{
 			// First we split up the contents of code and php tags to ensure they're not parsed.
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
@@ -130,13 +130,13 @@ class postParser
 		}
 		
 		// If we can, parse smilies
-		if($options['allow_smilies'] !== 0)
+		if($options['allow_smilies'])
 		{
 			$message = $this->parse_smilies($message, $options['allow_html']);
 		}
 
 		// Replace MyCode if requested.
-		if($options['allow_mycode'] !== 0)
+		if($options['allow_mycode'])
 		{
 			$message = $this->parse_mycode($message, $options);
 		}
@@ -144,7 +144,7 @@ class postParser
 		// Run plugin hooks
 		$message = $plugins->run_hooks("parse_message", $message);
 		
-		if($options['allow_mycode'] !== 0)
+		if($options['allow_mycode'])
 		{
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)

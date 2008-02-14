@@ -953,11 +953,12 @@ function akismet_admin()
 			$table->construct_row();
 			
 			$parser_options = array(
-				"allow_html" => "no",
-				"allow_mycode" => "no",
-				"allow_smilies" => "no",
-				"allow_imgcode" => "no",
-				"me_username" => $post['username']
+				"allow_html" => 0,
+				"allow_mycode" => 0,
+				"allow_smilies" => 0,
+				"allow_imgcode" => 0,
+				"me_username" => $post['username'],
+				"filter_badwords" => 1
 			);
 			$post['message'] = $parser->parse_message($post['message'], $parser_options);
 			
