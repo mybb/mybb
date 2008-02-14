@@ -294,7 +294,7 @@ function upload_avatar($avatar=array(), $uid=0)
  */
 function upload_attachment($attachment)
 {
-	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins;
+	global $db, $theme, $templates, $posthash, $pid, $tid, $forum, $mybb, $lang, $plugins, $cache;
 	
 	$posthash = $db->escape_string($mybb->input['posthash']);
 
@@ -452,10 +452,20 @@ function upload_attachment($attachment)
 			default:
 				$img_type = 0;
 		}
+		
+		$supported_mimes = array();
+		$attachtypes = $cache->read("attachtypes");
+		foreach($attachtypes => $attachtype)
+		{
+			if(!empty($attachtype['mimetype']))
+			{
+				$supported_mimes[] = $attachtype['mimetype'];
+			}
+		}
 
 		// Check if the uploaded file type matches the correct image type (returned by getimagesize)
 		$img_dimensions = @getimagesize($mybb->settings['uploadspath']."/".$filename);
-		if(!is_array($img_dimensions) || $img_dimensions[2] != $img_type)
+		if(!is_array($img_dimensions) || ($img_dimensions[2] != $img_type && !in_array(mime_content_type($filename), $supported_mimes)))
 		{
 			@unlink($mybb->settings['uploadspath']."/".$filename);
 			$ret['error'] = $lang->error_uploadfailed;

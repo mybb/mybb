@@ -57,7 +57,7 @@ $ip_address = get_ip();
 unset($user);
 
 $logged_out = false;
-
+$fail_check = 0;
 $post_verify = true;
 
 if($mybb->input['action'] == "logout")
@@ -75,7 +75,6 @@ elseif($mybb->input['do'] == "login")
 		$query = $db->simple_select("users", "*", "uid='".$user['uid']."'");
 		$mybb->user = $db->fetch_array($query);
 	}
-	$fail_check = 1;
 
 	if($mybb->user['uid'])
 	{
@@ -96,6 +95,10 @@ elseif($mybb->input['do'] == "login")
 		setcookie("adminsid", $sid);
 		$post_verify = false;
 	}
+	else
+	{
+		$fail_check = 1;
+	}
 }
 else
 {
@@ -113,7 +116,7 @@ else
 		// No matching admin session found - show message on login screen
 		if(!$admin_session['sid'])
 		{
-			$login_message = "Invalid administration session";
+			$login_message = $lang->invalid_admin_session;
 		}
 		else
 		{
@@ -133,7 +136,7 @@ else
 				// Admin CP sessions 2 hours old are expired
 				if($admin_session['lastactive'] < TIME_NOW-7200)
 				{
-					$login_message = "Your administration session has expired";
+					$login_message = $lang->error_admin_session_expired;
 					$db->delete_query("adminsessions", "sid='".$db->escape_string($_COOKIE['adminsid'])."'");
 					unset($mybb->user);
 				}
@@ -160,7 +163,7 @@ else
 					// IP doesn't match properly - show message on logon screen
 					if(!$valid_ip)
 					{
-						$login_message = "Your IP address is not valid for this session";
+						$login_message = $lang->error_invalid_ip;
 					}
 				}
 			}
@@ -248,11 +251,11 @@ if(!$mybb->user['uid'] || $logged_out == true)
 {
 	if($logged_out == true)
 	{
-		$page->show_login("You have successfully been logged out.");
+		$page->show_login($lang->success_logged_out);
 	}
 	elseif($fail_check == 1)
 	{
-		$page->show_login("The username and password combination you entered is invalid.", "error");
+		$page->show_login($lang->error_invalid_username_password, "error");
 	}
 	else
 	{
@@ -280,11 +283,15 @@ while(($module = readdir($dir)) !== false)
 		if(function_exists($module."_admin_permissions"))
 		{
 			if(isset($mybb->admin['permissions'][$module]))
+			{
 				$has_permission = true;
+			}
 		}
 		// This module doesn't support permissions
 		else
+		{
 			$has_permission = true;
+		}
 			
 		// Do we have permissions to run this module (Note: home is accessible by all)
 		if($module == "home" || $has_permission == true)

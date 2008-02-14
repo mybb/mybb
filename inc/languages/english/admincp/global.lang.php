@@ -38,6 +38,13 @@ $l['password'] = "Password:";
 $l['login'] = "Login";
 $l['lost_password'] = "Forgot your password?";
 
+$l['error_invalid_admin_session'] = "Invalid administration session";
+$l['error_admin_session_expired'] = "Your administration session has expired";
+$l['error_invalid_ip'] = "Your IP address is not valid for this session";
+
+$l['success_logged_out'] = "You have successfully been logged out.";
+$l['error_invalid_username_password'] = "The username and password combination you entered is invalid.";
+
 // Action Confirmation
 $l['confirm_action'] = "Are you sure you wish to perform this action?";
 

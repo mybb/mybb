@@ -46,11 +46,18 @@ if($mybb->input['action'] == "add")
 			{
 				$mybb->input['extension'] = substr($mybb->input['extension'], 1);
 			}
+			
+			$maxsize = intval($mybb->input['maxsize']);
+			
+			if($maxsize == 0)
+			{
+				$maxsize = "";
+			}
 
 			$new_type = array(
 				"mimetype" => $db->escape_string($mybb->input['mimetype']),
 				"extension" => $db->escape_string($mybb->input['extension']),
-				"maxsize" => intval($mybb->input['maxsize']),
+				"maxsize" => $maxsize,
 				"icon" => $db->escape_string($mybb->input['icon'])
 			);
 

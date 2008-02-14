@@ -207,7 +207,7 @@ else
 	define('CALENDAR_URL', "calendar.php?calendar={calendar}");
 	define('CALENDAR_URL_YEAR', "calendar.php?action=yearview&calendar={calendar}&year={year}");
 	define('CALENDAR_URL_MONTH', "calendar.php?calendar={calendar}&year={year}&month={month}");
-	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&amp;calendar={calendar}&year={year}&month={month}&day={day}');
+	define('CALENDAR_URL_DAY', 'calendar.php?action=dayview&calendar={calendar}&year={year}&month={month}&day={day}');
 	define('CALENDAR_URL_WEEK', 'calendar.php?action=weekview&calendar={calendar}&week={week}');
 	define('EVENT_URL', "calendar.php?action=event&eid={eid}");
 	define('INDEX_URL', "index.php");

@@ -33,6 +33,7 @@ $l['id'] = "ID";
 $l['custom_doc_sec'] = "Custom Document/Section";
 $l['default_doc_sec'] = "Default Document/Section";
 $l['no_help_documents'] = "There are no help documents on your forum at this time.";
+$l['section_document'] = "Section / Document";
 
 $l['error_section_missing_name'] = "You must specify a name for the section.";
 $l['error_section_missing_description'] = "You must specify a short description for the section.";

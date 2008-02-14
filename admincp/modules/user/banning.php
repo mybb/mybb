@@ -112,12 +112,21 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->request_method == "post")
 	{
-		// Reason?
-		if(!$mybb->input['reason'])
+		if(!$ban['uid'])
 		{
-			$errors[] = $lang->error_no_reason;
+			$errors[] = $lang->error_invalid_username;
+		}
+		// Is the user we're trying to ban a super admin and we're not?
+		else if(is_super_admin($ban['uid']) && !is_super_admin($ban['uid']))
+		{
+			$errors[] = $lang->error_no_perm_to_ban;
 		}
 
+		if($ban['uid'] == $mybb->user['uid'])
+		{
+			$errors[] = $lang->error_ban_self;
+		}
+		
 		// No errors? Update
 		if(!$errors)
 		{

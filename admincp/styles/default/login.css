@@ -26,7 +26,7 @@ a:hover {
 }
 
 #container {
-	width: 410px;
+	width: 420px;
 	margin: 100px auto;
 }
 
@@ -40,7 +40,7 @@ a:hover {
 #header h1 a {
 	float: left;
 	height: 82px;
-	width: 410px;
+	width: 420px;
 }
 
 #content {
@@ -108,7 +108,7 @@ input.text_input:focus {
 form .label {
 	margin-top: 5px;
 	margin-bottom: 3px;
-	width: 100px;
+	width: 110px;
 	clear: left;
 	float: left;
 	padding-bottom:5px;

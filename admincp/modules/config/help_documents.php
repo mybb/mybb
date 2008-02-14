@@ -595,8 +595,8 @@ if(!$mybb->input['action'])
 	$page->output_nav_tabs($sub_tabs, 'manage_help_documents');
 
 	$table = new Table;
-	$table->construct_header("Section / Document");
-	$table->construct_header("Controls", array('class' => "align_center", 'colspan' => 2, "width" => "150"));
+	$table->construct_header($lang->section_document);
+	$table->construct_header($lang->controls, array('class' => "align_center", 'colspan' => 2, "width" => "150"));
 
 	$query = $db->simple_select("helpsections", "*", "", array('order_by' => "disporder"));
 	while($section = $db->fetch_array($query))
@@ -617,7 +617,7 @@ if(!$mybb->input['action'])
 		// Show delete only if not a default section
 		if($section['sid'] > 2)
 		{
-			$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;sid={$section['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
+			$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;sid={$section['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
 		}
 		else
 		{
@@ -644,7 +644,7 @@ if(!$mybb->input['action'])
 			// Only show delete if not a default document
 			if($doc['hid'] > 7)
 			{
-				$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;hid={$doc['hid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
+				$table->construct_cell("<a href=\"index.php?module=config/help_documents&amp;action=delete&amp;hid={$doc['hid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
 			}
 			else
 			{
