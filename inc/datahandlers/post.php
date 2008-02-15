@@ -714,9 +714,9 @@ class PostDataHandler extends DataHandler
 			if($double_post !== true && $double_post['visible'] == $visible)
 			{
 				// Only combine if they are both invisible (mod queue'd forum) or both visible
-				$double_post['message'] .= $mybb->settings['postmergesep'].$db->escape_string($post['message']);
+				$double_post['message'] .= $mybb->settings['postmergesep'].$post['message'];
 				$update_query = array(
-					"message" => $double_post['message']
+					"message" => $db->escape_string($double_post['message'])
 				);
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
 			
