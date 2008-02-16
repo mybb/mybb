@@ -414,7 +414,7 @@ if($mybb->input['action'] == "edit_template")
 			$plugins->run_hooks("admin_style_templates_edit_template_commit");
 			
 			$query = $db->simple_select("templatesets", "title", "sid={$sid}");
-			$set = $db->fetch_array($set);
+			$set = $db->fetch_array($query);
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title'], $sid, $set['title']);
 			
