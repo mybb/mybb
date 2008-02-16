@@ -940,3 +940,16 @@ input.image_button {
 	margin-left: 5px;
 	vertical-align: bottom;
 }
+
+input.search_button {
+	background: #fff url(images/icons/search.gif) no-repeat;
+	background-position: 4px 7px;
+	border: 0px;
+	padding: 4px;
+	padding-left: 20px;
+	font-size: 15px;
+	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
+	color: #6F6F6F;
+	font-weight: bold;
+	height: 30px;
+}

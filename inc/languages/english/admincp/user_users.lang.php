@@ -202,6 +202,7 @@ $l['views'] = "Views";
 $l['views_desc'] = "The view manager allows you to create different kinds of views for this specific area. Different views are useful for generating a variety of reports.";
 $l['manage_views'] = "Manage Views";
 $l['none'] = "None";
+$l['search'] = "Search";
 
 $l['edit_profile_and_settings'] = "Edit Profile &amp; Settings";
 $l['ban_user'] = "Ban User";

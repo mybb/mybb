@@ -56,6 +56,7 @@ $l['delete_setting_group'] = "Delete Setting Group";
 $l['save_display_orders'] = "Save Display Orders";
 $l['update_setting_group'] = "Update Setting Group";
 $l['modify_setting'] = "Modify Setting";
+$l['search'] = "Search";
 
 $l['show_all_settings'] = "Show All Settings";
 $l['settings_search'] = "Search For Settings";

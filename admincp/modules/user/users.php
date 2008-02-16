@@ -2055,7 +2055,7 @@ function build_users_view($view)
 		$search_style = "text-align: right;";
 	}
 
-	$built_view = "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; {$search_style}\">";
+	$built_view = "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; margin-top: -9px; {$search_style}\">";
 	$search_action = $view['url'];
 	// stop &username= in the query string
 	if($view_upos = strpos($search_action, '&amp;username='))
@@ -2109,7 +2109,7 @@ function build_users_view($view)
             $(search).removeClassName('search_default');
         }
 		</script>";
-	$built_view .= "<input type='image' class='image_button' src='styles/{$page->style}/images/search.gif' name='search' />";
+	$built_view .= "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />";
 	if($view['popup'])
 	{
 		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>";
