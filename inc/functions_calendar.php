@@ -857,7 +857,23 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
  */
 function fetch_friendly_repitition($event)
 {
-	global $lang, $monthnames;
+	global $lang;
+
+	$monthnames = array(
+		"offset",
+		$lang->month_1,
+		$lang->month_2,
+		$lang->month_3,
+		$lang->month_4,
+		$lang->month_5,
+		$lang->month_6,
+		$lang->month_7,
+		$lang->month_8,
+		$lang->month_9,
+		$lang->month_10,
+		$lang->month_11,
+		$lang->month_12
+	);
 
 	if(!is_array($event['repeats']))
 	{

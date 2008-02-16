@@ -852,7 +852,7 @@ if($mybb->input['action'] == "editevent")
 							$repeats_5_type[1] = "checked=\"checked\"";
 							$repeats_5_day = $repeats['day'];
 							$repeats_5_month[$repeats['month']] = $repeats_5_month2[$repeats['month']] = "selected=\"selected\"";
-							$repeats_5_years = $repeats_5_years2 = $repeats['year'];
+							$repeats_5_years = $repeats_5_years2 = $repeats['years'];
 						}
 						else
 						{
@@ -860,7 +860,7 @@ if($mybb->input['action'] == "editevent")
 							$repeats_5_occurance[$repeats['occurance']] = "selected=\"selected\"";
 							$repeats_5_weekday[$repeats['weekday']] = "selected=\"selected\"";
 							$repeats_5_month[$repeats['month']] = $repeats_5_month2[$repeats['month']] = "selected=\"selected\"";
-							$repeats_5_years = $repeats_5_years2 = $repeats['year'];
+							$repeats_5_years = $repeats_5_years2 = $repeats['years'];
 						}
 						break;
 				}
