@@ -627,7 +627,7 @@ class postParser
 
 		if($text_only)
 		{
-			return "\n".htmlentities($username)." $lang->wrote{$date}\n--\n{$message}\n--\n";
+			return "\n".htmlspecialchars_uni($username)." $lang->wrote{$date}\n--\n{$message}\n--\n";
 		}
 		else
 		{
@@ -636,7 +636,7 @@ class postParser
 			{
 				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
 			}
-			return "<p>\n<blockquote><cite>{$span}".htmlentities($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote></p>\n";
+			return "<p>\n<blockquote><cite>{$span}".htmlspecialchars_uni($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote></p>\n";
 		}
 	}
 
