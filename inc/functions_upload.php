@@ -455,7 +455,7 @@ function upload_attachment($attachment)
 		
 		$supported_mimes = array();
 		$attachtypes = $cache->read("attachtypes");
-		foreach($attachtypes => $attachtype)
+		foreach($attachtypes as $attachtype)
 		{
 			if(!empty($attachtype['mimetype']))
 			{
