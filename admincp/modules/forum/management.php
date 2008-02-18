@@ -1558,7 +1558,7 @@ if(!$mybb->input['action'])
 					{
 						$permissions[$name][$gid] = 0;
 					}
-				}			
+				}
 			}
 			
 			$canview = $permissions['canview'];

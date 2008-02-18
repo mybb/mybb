@@ -380,6 +380,7 @@ class datacache
 						}
 						if($perms[$gid])
 						{
+							$perms[$gid]['fid'] = $forum['fid'];
 							$this->built_forum_permissions[$forum['fid']][$gid] = $perms[$gid];
 						}
 					}

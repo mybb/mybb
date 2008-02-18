@@ -24,6 +24,7 @@ $l['edit_mod'] = "Edit Moderator";
 $l['edit_mod_desc'] = "Here you can modify a particular moderator's settings.";
 $l['forum_moderators'] = "Forum Moderators";
 $l['forum_permissions2'] = "Forum Permissions";
+$l['more_subforums'] = "and {1} more.";
 
 $l['manage_forums'] = "Manage Forums";
 $l['forum'] = "Forum";
