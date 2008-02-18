@@ -42,7 +42,7 @@ function task_backupdb($task)
 		$header = "-- MyBB Database Backup\n-- Generated: {$time}\n-- -------------------------------------\n\n";
 		$contents = $header;
 		foreach($tables as $table)
-		{			
+		{
 			$field_list = array();
 			$fields_array = $db->show_fields_from($table);
 			foreach($fields_array as $field)

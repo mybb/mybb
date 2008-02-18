@@ -631,7 +631,7 @@ function akismet_admin_nav(&$sub_menu)
 		$lang->load("forum_akismet", false, true);
 		
 		end($sub_menu);
-		$key = key($sub_menu);
+		$key = (key($sub_menu))+10;
 		
 		if(!$key)
 		{
