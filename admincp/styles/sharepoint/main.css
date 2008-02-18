@@ -391,6 +391,11 @@ border-top: 1px solid #fff;
 	font-size: 96%;
 }
 .breadcrumb .active {
+	display: block;
+	background: url(images/nav_bit.gif) no-repeat top left;
+	padding-left: 20px;
+	font-weight: bold;
+	font-size: 110%;
 }
 
 .alert {
@@ -563,18 +568,23 @@ input.button_no {
 	font-weight: bold;
 }
 
-.label_radio_yes, .label_radio_on {
-	background: #D6ECA6;
-	border: 1px solid #8DC93E;
+.label_radio_yes, .label_radio_on, .label_radio_no, .label_radio_off {
 	padding: 4px 6px;
 	margin-right: 5px;
 	margin-top: 5px;
+	display: block;
+	width: 60px;
+	float: left;
+}
+
+.label_radio_yes, .label_radio_on {
+	background: #D6ECA6;
+	border: 1px solid #8DC93E;
 }
 
 .label_radio_no, .label_radio_off {
 	background: #ECA6D6;
 	border: 1px solid #C93E8D;
-	padding: 4px 6px ;
 }
 
 input.radio_input {
@@ -850,4 +860,17 @@ ul.tabs a.active {
 .autocomplete_selected {
 	background: #adcee7;
 	color: #000;
+}
+
+input.search_button {
+	background: #fff url(images/icons/search.gif) no-repeat;
+	background-position: 4px 7px;
+	border: 0px;
+	padding: 4px;
+	padding-left: 20px;
+	font-size: 15px;
+	font-family: 'Lucida Grande', 'Trebuchet MS', Verdana, Sans-Serif;
+	color: #6F6F6F;
+	font-weight: bold;
+	height: 30px;
 }
