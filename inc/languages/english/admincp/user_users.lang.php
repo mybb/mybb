@@ -30,6 +30,7 @@ $l['error_invalid_user'] = "You have selected an invalid user.";
 $l['error_no_perms_super_admin'] = "You do not have permission to edit this user because you are not a super administrator.";
 $l['error_invalid_user_source'] = "The source account username you entered does not exist";
 $l['error_invalid_user_destination'] = "The destination account username you entered does not exist";
+$l['error_cannot_merge_same_account'] = "The source and destination accounts must be different";
 $l['error_no_users_found'] = "No users were found matching the specified search criteria. Please modify your search criteria and try again.";
 $l['error_invalid_admin_view'] = "You selected an invalid administration view.";
 $l['error_missing_view_title'] = "You did not enter a title for this view.";

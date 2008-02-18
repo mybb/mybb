@@ -658,7 +658,7 @@ if($mybb->input['action'] == "edit")
 				$avatar = upload_avatar($_FILES['avatar_upload'], $user['uid']);
 				if($avatar['error'])
 				{
-					$errors[] = array($avatar['error']);
+					$errors = array($avatar['error']);
 				}
 				else
 				{
@@ -787,7 +787,7 @@ if($mybb->input['action'] == "edit")
 		'description' => $lang->edit_user_desc
 	);
 
-	$form = new Form("index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}", "post");
+	$form = new Form("index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}", "post", "", 1);
 	echo "<script type=\"text/javascript\">\n function submitUserForm() { $('tab_overview').up('FORM').submit(); }</script>\n";
 
 	$page->output_nav_tabs($sub_tabs, 'edit_user');
@@ -1410,77 +1410,85 @@ if($mybb->input['action'] == "merge")
 			$errors[] = $lang->error_invalid_user_destination;
 		}
 
-		// Begin to merge the accounts
-		$uid_update = array(
-			"uid" => $destination_user['uid']
-		);
-		$query = $db->simple_select("adminoptions", "uid", "uid='{$destination_user['uid']}'");
-		$existing_admin_options = $db->fetch_field($query, "uid");
-
-		// Only carry over admin options/permissions if we don't already have them
-		if(!$existing_admin_options)
+		if($source_user['uid'] == $destination_user['uid'])
 		{
-			$db->update_query("adminoptions", $uid_update, "uid='{$source_user['uid']}'");
+			$errors[] = $lang->error_cannot_merge_same_account;
 		}
-		
-		$db->update_query("adminlog", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("announcements", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("events", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("threadsubscriptions", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("forumsubscriptions", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("moderatorlog", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("reputation", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("reputation", array('adduid' => $destination_user['uid']), "adduid='{$source_user['uid']}'");
-		$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
-		$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 
-		// Additional updates for non-uid fields
-		$last_poster = array(
-			"lastposteruid" => $destination_user['uid'],
-			"lastposter" => $db->escape_string($destination_user['username'])
-		);
-		$db->update_query("forums", $last_poster, "lastposteruid='{$source_user['uid']}'");
-		$db->update_query("threads", $last_poster, "lastposteruid='{$source_user['uid']}'");
-		$edit_uid = array(
-			"edituid" => $destination_user['uid']
-		);
-		$db->update_query("posts", $edit_uid, "edituid='{$source_user['uid']}'");
+		if(empty($errors))
+		{
+			// Begin to merge the accounts
+			$uid_update = array(
+				"uid" => $destination_user['uid']
+			);
+			$query = $db->simple_select("adminoptions", "uid", "uid='{$destination_user['uid']}'");
+			$existing_admin_options = $db->fetch_field($query, "uid");
 
-		$from_uid = array(
-			"fromid" => $destination_user['uid']
-		);	
-		$db->update_query("privatemessages", $from_uid, "fromid='{$source_user['uid']}'");
-		$to_uid = array(
-			"toid" => $destination_user['uid']
-		);	
-		$db->update_query("privatemessages", $to_uid, "toid='{$source_user['uid']}'");
+			// Only carry over admin options/permissions if we don't already have them
+			if(!$existing_admin_options)
+			{
+				$db->update_query("adminoptions", $uid_update, "uid='{$source_user['uid']}'");
+			}
+			
+			$db->update_query("adminlog", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("announcements", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("events", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("threadsubscriptions", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("forumsubscriptions", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("moderatorlog", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("reputation", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("reputation", array('adduid' => $destination_user['uid']), "adduid='{$source_user['uid']}'");
+			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
+			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 
-		// Delete the old user
-		$db->delete_query("users", "uid='{$source_user['uid']}'");
-		$db->delete_query("banned", "uid='{$source_user['uid']}'");
-		
-		// Update user post count
-		$query = $db->simple_select("posts", "COUNT(*) AS postnum", "uid='".$destination_user['uid']."'");
-		$num = $db->fetch_array($query);
-		$updated_count = array(
-			"postnum" => $num['postnum']
-		);
-		$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
+			// Additional updates for non-uid fields
+			$last_poster = array(
+				"lastposteruid" => $destination_user['uid'],
+				"lastposter" => $db->escape_string($destination_user['username'])
+			);
+			$db->update_query("forums", $last_poster, "lastposteruid='{$source_user['uid']}'");
+			$db->update_query("threads", $last_poster, "lastposteruid='{$source_user['uid']}'");
+			$edit_uid = array(
+				"edituid" => $destination_user['uid']
+			);
+			$db->update_query("posts", $edit_uid, "edituid='{$source_user['uid']}'");
 
-		update_stats(array('numusers' => '-1'));
-		
-		$plugins->run_hooks("admin_user_users_merge_commit");
+			$from_uid = array(
+				"fromid" => $destination_user['uid']
+			);	
+			$db->update_query("privatemessages", $from_uid, "fromid='{$source_user['uid']}'");
+			$to_uid = array(
+				"toid" => $destination_user['uid']
+			);	
+			$db->update_query("privatemessages", $to_uid, "toid='{$source_user['uid']}'");
 
-		// Log admin action
-		log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
+			// Delete the old user
+			$db->delete_query("users", "uid='{$source_user['uid']}'");
+			$db->delete_query("banned", "uid='{$source_user['uid']}'");
+			
+			// Update user post count
+			$query = $db->simple_select("posts", "COUNT(*) AS postnum", "uid='".$destination_user['uid']."'");
+			$num = $db->fetch_array($query);
+			$updated_count = array(
+				"postnum" => $num['postnum']
+			);
+			$db->update_query("users", $updated_count, "uid='{$destination_user['uid']}'");
 
-		// Redirect!
-		flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");
-		admin_redirect("index.php?module=user/users");
-		exit;
+			update_stats(array('numusers' => '-1'));
+			
+			$plugins->run_hooks("admin_user_users_merge_commit");
+
+			// Log admin action
+			log_admin_action($source_user['uid'], $source_user['username'], $destination_user['uid'], $destination_user['username']);
+
+			// Redirect!
+			flash_message("<strong>{$source_user['username']}</strong> {$lang->success_merged} {$destination_user['username']}", "success");
+			admin_redirect("index.php?module=user/users");
+			exit;
+		}
 	}
 
 	$page->add_breadcrumb_item($lang->merge_users);

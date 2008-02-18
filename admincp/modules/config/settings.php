@@ -942,7 +942,7 @@ if($mybb->input['action'] == "change")
 		
 		if(!$db->num_rows($query))
         {
-            flash_message("<p><em>{$lang->error_no_settings_found}</em></p>", 'error');
+            flash_message($lang->error_no_settings_found, 'error');
             admin_redirect("index.php?module=config/settings");    
         }
 		

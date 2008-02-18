@@ -35,7 +35,7 @@ class DefaultForm
 		$form = "<form action=\"{$script}\" method=\"{$method}\"";
 		if($allow_uploads != 0)
 		{
-			$form .= " type=\"multipart/form-data\"";
+			$form .= " enctype=\"multipart/form-data\"";
 		}
 		
 		if($name != "")

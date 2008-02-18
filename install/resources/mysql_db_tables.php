@@ -954,7 +954,7 @@ $tables[] = "CREATE TABLE mybb_users (
   suspensiontime bigint(30) NOT NULL default '0',
   coppauser int(1) NOT NULL default '0',
   classicpostbit int(1) NOT NULL default '0',
-  KEY username (username),
+  UNIQUE KEY username (username),
   KEY usergroup (usergroup),
   KEY birthday (birthday),
   PRIMARY KEY (uid)

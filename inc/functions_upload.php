@@ -120,16 +120,25 @@ function remove_avatars($uid, $exclude="")
 {
 	global $mybb, $plugins;
 	
-	$dir = opendir($mybb->settings['avataruploadpath']);
+	if(defined('IN_ADMINCP'))
+	{
+		$avatarpath = '../'.$mybb->settings['avataruploadpath'];
+	}
+	else
+	{
+		$avatarpath = $mybb->settings['avataruploadpath'];
+	}
+	
+	$dir = opendir($avatarpath);
 	if($dir)
 	{
 		while($file = @readdir($dir))
 		{
 			$plugins->run_hooks("remove_avatars_do_delete", $file);
 			
-			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($mybb->settings['avataruploadpath']."/".$file) && $file != $exclude)
+			if(preg_match("#avatar_".$uid."\.#", $file) && is_file($avatarpath."/".$file) && $file != $exclude)
 			{
-				@unlink($mybb->settings['avataruploadpath']."/".$file);
+				@unlink($avatarpath."/".$file);
 			}
 		}
 
@@ -153,7 +162,7 @@ function upload_avatar($avatar=array(), $uid=0)
 		$uid = $mybb->user['uid'];
 	}
 
-	if(!$file['name'] || !$file['tmp_name'])
+	if(!$avatar['name'] || !$avatar['tmp_name'])
 	{
 		$avatar = $_FILES['avatarupload'];
 	}
@@ -172,29 +181,39 @@ function upload_avatar($avatar=array(), $uid=0)
 		return $ret;
 	}
 	
+	if(defined('IN_ADMINCP'))
+	{
+		$avatarpath = '../'.$mybb->settings['avataruploadpath'];
+		$lang->load("messages", true);
+	}
+	else
+	{
+		$avatarpath = $mybb->settings['avataruploadpath'];
+	}
+	
 	$filename = "avatar_".$uid.".".$ext;
-	$file = upload_file($avatar, $mybb->settings['avataruploadpath'], $filename);
+	$file = upload_file($avatar, $avatarpath, $filename);
 	if($file['error'])
 	{
-		@unlink($mybb->settings['avataruploadpath']."/".$filename);		
+		@unlink($avatarpath."/".$filename);		
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}	
 
 
 	// Lets just double check that it exists
-	if(!file_exists($mybb->settings['avataruploadpath']."/".$filename))
+	if(!file_exists($avatarpath."/".$filename))
 	{
 		$ret['error'] = $lang->error_uploadfailed;
-		@unlink($mybb->settings['avataruploadpath']."/".$filename);
+		@unlink($avatarpath."/".$filename);
 		return $ret;
 	}
 	
 	// Check if this is a valid image or not
-	$img_dimensions = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
+	$img_dimensions = @getimagesize($avatarpath."/".$filename);
 	if(!is_array($img_dimensions))
 	{
-		@unlink($mybb->settings['avataruploadpath']."/".$filename);
+		@unlink($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadfailed;
 		return $ret;
 	}
@@ -209,20 +228,20 @@ function upload_avatar($avatar=array(), $uid=0)
 			if($mybb->settings['avatarresizing'] == "auto" || ($mybb->settings['avatarresizing'] == "user" && $mybb->input['auto_resize'] == 1))
 			{
 				require_once MYBB_ROOT."inc/functions_image.php";
-				$thumbnail = generate_thumbnail($mybb->settings['avataruploadpath']."/".$filename, $mybb->settings['avataruploadpath'], $filename, $maxheight, $maxwidth);
+				$thumbnail = generate_thumbnail($avatarpath."/".$filename, $avatarpath, $filename, $maxheight, $maxwidth);
 				if(!$thumbnail['filename'])
 				{
 					$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 					$ret['error'] .= "<br /><br />".$lang->error_avatarresizefailed;
-					@unlink($mybb->settings['avataruploadpath']."/".$filename);
+					@unlink($avatarpath."/".$filename);
 					return $ret;				
 				}
 				else
 				{
 					// Reset filesize
-					$avatar['size'] = filesize($mybb->settings['avataruploadpath']."/".$filename);
+					$avatar['size'] = filesize($avatarpath."/".$filename);
 					// Reset dimensions
-					$img_dimensions = @getimagesize($mybb->settings['avataruploadpath']."/".$filename);
+					$img_dimensions = @getimagesize($avatarpath."/".$filename);
 				}
 			}
 			else
@@ -232,7 +251,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				{
 					$ret['error'] .= "<br /<br />".$lang->error_avataruserresize;
 				}
-				@unlink($mybb->settings['avataruploadpath']."/".$filename);
+				@unlink($avatarpath."/".$filename);
 				return $ret;
 			}			
 		}
@@ -241,7 +260,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	// Next check the file size
 	if($avatar['size'] > ($mybb->settings['avatarsize']*1024) && $mybb->settings['avatarsize'] > 0)
 	{
-		@unlink($mybb->settings['avataruploadpath']."/".$filename);
+		@unlink($avatarpath."/".$filename);
 		$ret['error'] = $lang->error_uploadsize;
 		return $ret;
 	}	
@@ -271,7 +290,7 @@ function upload_avatar($avatar=array(), $uid=0)
 	if($img_dimensions[2] != $img_type || $img_type == 0)
 	{
 		$ret['error'] = $lang->error_uploadfailed;
-		@unlink($mybb->settings['avataruploadpath']."/".$filename);
+		@unlink($avatarpath."/".$filename);
 		return $ret;		
 	}
 	// Everything is okay so lets delete old avatars for this user
