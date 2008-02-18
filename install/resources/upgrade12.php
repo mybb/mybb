@@ -1013,6 +1013,14 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('38','xmlhttp','<lang:group_xmlhttp>');");
 $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('39','footer','<lang:group_footer>');");
 
+	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users WHERE Key_name LIKE 'username'");
+	$index = $db->fetch_array($query);
+	if($index)
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY (username)");
+
 	if($db->field_exists('statustime', "privatemessages"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP statustime;");
