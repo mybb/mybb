@@ -507,7 +507,7 @@ function change_admin_permission($tab, $page="", $default=1)
 {
 	global $db;
 	
-	$query = $db->simple_select("adminoptions", "uid, permissions");
+	$query = $db->simple_select("adminoptions", "uid, permissions", "permissions != ''");
 	while($adminoption = $db->fetch_array($query))
 	{
 		$adminoption['permissions'] = unserialize($adminoption['permissions']);
