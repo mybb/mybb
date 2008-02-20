@@ -405,7 +405,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		{
 			$offset = 0;
 		}
-		$event['starttime_user'] = $event['starttime']+$offset*3600;
+		$event['starttime_user'] = $event['starttime']+($offset*3600);
 
 		// Single day event
 		if($event['endtime'] == 0)
@@ -447,6 +447,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 				// Outside the dates we care about, break! (No unnecessary looping here!)
 				if($range_start > $end || !$range_start)
 				{
+					unset($events_cache["{$first}"]);
 					break;
 				}
 				if($range_start >= $start)
@@ -459,8 +460,8 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 					else if(!$first)
 					{
 						$count = count($events_cache["{$day_date}"]);
-						$events_cache["{$day_date}"][] = $event;
 						$first = $day_date;
+						$events_cache["{$day_date}"][] = $event;
 					}
 				}
 				if($event['repeats']['repeats'] == 0)
@@ -720,14 +721,17 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
 	{
 		$weekdays = fetch_weekday_structure($event['weekday_start']);
 		$last_dow = gmdate("w", $last_occurance);
-		if($first == true) {
+		if($first == true)
+		{
 			$last_dow = -1;
 			$start_day = gmdate('w', $last_occurance);
-			if(in_array($start_day, $weekdays)) {
+			if(in_array($start_day, $weekdays))
+			{
 				$next_dow = 0;
 			}
 		}
-		else {
+		else
+		{
 			foreach($repeats['days'] as $weekday)
 			{
 				if($weekday > $last_dow)
@@ -908,7 +912,7 @@ function fetch_friendly_repitition($event)
 					{
 						$weekdays .= ", ";
 					}
-					else if(!$event['repeats']['days'][$id+2])
+					else if(!$event['repeats']['days'][$id+1])
 					{
 						$weekdays .= " {$lang->and} ";
 					}

@@ -2052,7 +2052,7 @@ if(!$mybb->input['action'])
 	if($month_start_weekday != $weekdays[0])
 	{
 		$day = gmdate("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-		$day -= array_search($month_start_weekday, $weekdays);
+		$day -= array_search(($month_start_weekday-1), $weekdays);
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
 	}
@@ -2073,7 +2073,7 @@ if(!$mybb->input['action'])
 	$num_days = gmdate("t", mktime(0, 0, 0, $month, 1, $year));
 
 	$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
-
+	
 	// Fetch birthdays
 	if($calendar['showbirthdays'])
 	{
