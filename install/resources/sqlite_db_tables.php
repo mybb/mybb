@@ -33,7 +33,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip varchar(40) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0',
-	data text NOT NULL,
+	data text NOT NULL default ''
 );";
 
 $tables[] = "CREATE TABLE mybb_adminviews (
@@ -125,7 +125,7 @@ $tables[] = "CREATE TABLE mybb_banned (
 );";
 
 $tables[] = "CREATE TABLE mybb_calendars (
-  cid INTEGER PRIMARY_KEY,
+  cid INTEGER PRIMARY KEY,
   name varchar(100) NOT NULL default '',
   disporder int NOT NULL default '0',
   startofweek int(1) NOT NULL default '0',
@@ -308,7 +308,7 @@ $tables[] = "CREATE TABLE mybb_massemails (
 	sentcount int NOT NULL default '0',
 	totalcount int NOT NULL default '0',
 	conditions text NOT NULL,
-	perpage smallint(4) NOT NULL default '50',
+	perpage smallint(4) NOT NULL default '50'
 );";
 
 $tables[] = "CREATE TABLE mybb_mailerrors (

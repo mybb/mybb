@@ -1929,11 +1929,11 @@ if($mybb->input['action'] == "warninglogs")
 			t.title,
 			u.uid, u.username, u.usergroup, u.displaygroup,
 			i.uid as mod_uid, i.username as mod_username, i.usergroup as mod_usergroup, i.displaygroup as mod_displaygroup
-		FROM
-			(".TABLE_PREFIX."warnings w, ".TABLE_PREFIX."users u)
+		FROM ".TABLE_PREFIX."warnings w
+			LEFT JOIN ".TABLE_PREFIX."users u ON (w.uid=u.uid)
 			LEFT JOIN ".TABLE_PREFIX."warningtypes t ON (w.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."users i ON (i.uid=w.issuedby)
-		WHERE u.uid=w.uid
+		WHERE 1=1
 			{$where_sql}
 		ORDER BY {$sortby} {$order}
 		LIMIT {$start}, {$per_page}

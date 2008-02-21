@@ -48,6 +48,10 @@ function home_action_handler($action)
 	{
 		$page->active_action = "dashboard";
 	}
+	else
+	{
+		$page->active_action = $actions[$action]['active'];
+	}
 	
 	$plugins->run_hooks_by_ref("admin_home_action_handler", $actions);
 	

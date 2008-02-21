@@ -1142,7 +1142,12 @@ if(!$mybb->input['action'])
 	
 	$form = new Form("index.php?module=user/groups", "post", "groups");
 	
-	$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup) GROUP BY gid;");
+	$query = $db->query("
+		SELECT g.gid, COUNT(u.uid) AS users
+		FROM ".TABLE_PREFIX."users u
+		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
+		GROUP BY g.gid
+	");
 	while($groupcount = $db->fetch_array($query))
 	{
 		$primaryusers[$groupcount['gid']] = $groupcount['users'];
@@ -1153,17 +1158,32 @@ if(!$mybb->input['action'])
 		case "pgsql":
 		case "sqlite3":
 		case "sqlite2":
-			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')) WHERE g.gid!='' GROUP BY gid;");
+			$query = $db->query("
+				SELECT g.gid, COUNT(u.uid) AS users
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')
+				WHERE g.gid != '' GROUP BY g.gid
+			");
 			break;
 		default:
-			$query = $db->query("SELECT g.gid, COUNT(u.uid) AS users FROM ".TABLE_PREFIX."users u LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) WHERE g.gid!='' GROUP BY gid;");
+			$query = $db->query("S
+				ELECT g.gid, COUNT(u.uid) AS users
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%'))
+				WHERE g.gid != '' GROUP BY g.gid
+			");
 	}
 	while($groupcount = $db->fetch_array($query))
 	{
 		$secondaryusers[$groupcount['gid']] = $groupcount['users'];
 	}
 
-	$query = $db->query("SELECT g.gid, COUNT(r.uid) AS users FROM ".TABLE_PREFIX."joinrequests r LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=r.gid) GROUP BY gid;");
+	$query = $db->query("
+		SELECT g.gid, COUNT(r.uid) AS users
+		FROM ".TABLE_PREFIX."joinrequests r
+		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=r.gid)
+		GROUP BY g.gid
+	");
 	while($joinrequest = $db->fetch_array($query))
 	{
 		$joinrequests[$joinrequest['gid']] = $joinrequest['users'];
@@ -1177,7 +1197,8 @@ if(!$mybb->input['action'])
 		INNER JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		ORDER BY u.username ASC
 	");
-	while($leader = $db->fetch_array($query)) {
+	while($leader = $db->fetch_array($query))
+	{
 		$leaders[$leader['gid']][] = build_profile_link($leader['username'], $leader['uid'], "_blank");
 	}
 	
@@ -1186,6 +1207,7 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header($lang->number_of_users);
 	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center"));
+	
 	$query = $db->simple_select("usergroups", "*", "", array('order_by' => 'disporder'));
 	while($usergroup = $db->fetch_array($query))
 	{

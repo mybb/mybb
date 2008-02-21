@@ -632,7 +632,7 @@ function upgrade12_dbchanges2()
 	  KEY module (module, action)
 	) TYPE=MyISAM{$collation};");
 
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL default '' AFTER lastactive;");
 	
 	if($db->field_exists('isdefault', "settings"))
 	{

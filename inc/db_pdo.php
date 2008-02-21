@@ -17,6 +17,8 @@ class dbpdoEngine {
 	var $last_query = "";
 	
 	var $seek_array = array();
+	
+	var $queries = 0;
 
 	/**
 	 * Connect to the database.
@@ -27,7 +29,7 @@ class dbpdoEngine {
 	 * @param array The databases driver options (optional)
 	 * @return boolean True on success
 	 */
-	function pdoEngine($dsn, $username="", $password="", $driver_options=array())
+	function dbpdoEngine($dsn, $username="", $password="", $driver_options=array())
 	{
 		try
 		{
@@ -49,10 +51,13 @@ class dbpdoEngine {
 	 */
 	function query($string)
 	{
-		//echo htmlentities($string)."<br />";
+		++$this->queries;
+		
 		$query = $this->db->query($string, PDO::FETCH_BOTH);		
 		$this->last_query = $query;
-				
+		
+		$query->guid = $this->queries;
+		
 		return $query;
 	}
 	
@@ -69,17 +74,15 @@ class dbpdoEngine {
 			return;
 		}
 		
-		if($this->seek_array[md5((string)$query)])
+		if($this->seek_array[$query->guid])
 		{
-			$array = $query->fetch(PDO::FETCH_BOTH, $this->seek[$query]['offset'], $this->seek[$query]['row']);
+			$array = $query->fetch(PDO::FETCH_BOTH, $this->seek[$query->guid]['offset'], $this->seek[$query->guid]['row']);
 		}
 		else
 		{
 			$array = $query->fetch(PDO::FETCH_BOTH);
-		}/*
-		echo "<pre>";
-		print_r($array);
-		echo "</pre>";*/
+		}
+		
 		return $array;
 	}
 	
@@ -96,8 +99,7 @@ class dbpdoEngine {
 			return;
 		}
 		
-		$this->seek_array[md5((string)$query)] = array('offset' => PDO::FETCH_ORI_ABS, 'row' => $row);
-		
+		$this->seek_array[$query->guid] = array('offset' => PDO::FETCH_ORI_ABS, 'row' => $row);
 	}
 	
 	/**
@@ -139,8 +141,9 @@ class dbpdoEngine {
 		{
 			return;
 		}
+		
 		$errorcode = $query->errorCode();
-		//echo " - $errorcode -";
+		
 		return $errorcode;
 	}
 	

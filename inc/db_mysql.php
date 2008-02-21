@@ -108,6 +108,13 @@ class DB_MySQL
 	 * @var string
 	 */
 	var $engine = "mysql";
+	
+	/**
+	 * Weather or not this engine can use the search functionality
+	 *
+	 * @var boolean
+	 */
+	var $can_search = true;
 
 	/**
 	 * The database encoding currently in use (if supported)

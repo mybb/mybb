@@ -94,6 +94,13 @@ class DB_SQLite3
 	 * @var string
 	 */
 	var $engine = "pdo";
+	
+	/**
+	 * Weather or not this engine can use the search functionality
+	 *
+	 * @var boolean
+	 */
+	var $can_search = true;
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -131,11 +138,10 @@ class DB_SQLite3
 		$this->query_time += $query_time;
 
 		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".my_number_format($query_time)."s)";
-
-		@$this->query('PRAGMA short_column_names = 1');
 		
 		if($this->db)
 		{
+			$this->query('PRAGMA short_column_names = 1');
 			return true;
 		}
 		else
@@ -173,7 +179,7 @@ class DB_SQLite3
 				// SQLITE 3 supports ADD Alter statements
 				if(strtolower(substr(ltrim($alterdefs), 0, 3)) == 'add')
 				{
-					$query = @$this->db->query($string);
+					$query = $this->db->query($string);
 				}
 				else
 				{
@@ -213,7 +219,6 @@ class DB_SQLite3
 	{
 		if(preg_match("#^\s*select#i", $string))
 		{
-			$query = $this->query("EXPLAIN {$string}");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
@@ -221,33 +226,6 @@ class DB_SQLite3
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
-				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>table</strong></td>\n".
-				"<td><strong>type</strong></td>\n".
-				"<td><strong>possible_keys</strong></td>\n".
-				"<td><strong>key</strong></td>\n".
-				"<td><strong>key_len</strong></td>\n".
-				"<td><strong>ref</strong></td>\n".
-				"<td><strong>rows</strong></td>\n".
-				"<td><strong>Extra</strong></td>\n".
-				"</tr>\n";
-
-			while($table = $this->fetch_array($query))
-			{
-				// NOTE: Doesn't work
-				$this->explain .=
-					"<tr bgcolor=\"#ffffff\">\n".
-					"<td>".$table['table']."</td>\n".
-					"<td>".$table['type']."</td>\n".
-					"<td>".$table['possible_keys']."</td>\n".
-					"<td>".$table['key']."</td>\n".
-					"<td>".$table['key_len']."</td>\n".
-					"<td>".$table['ref']."</td>\n".
-					"<td>".$table['rows']."</td>\n".
-					"<td>".$table['Extra']."</td>\n".
-					"</tr>\n";
-			}
-			$this->explain .=
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
 				"</tr>\n".
@@ -969,7 +947,7 @@ class DB_SQLite3
 	{
 		global $config, $lang;
 		
-		$total = @filesize($config['database']);
+		$total = @filesize($config['database']['database']);
 		if(!$total || $table != '')
 		{
 			$total = $lang->na;
@@ -990,7 +968,6 @@ class DB_SQLite3
 			$result = $this->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '{$table}' ORDER BY type DESC");
 			if($this->num_rows($result) > 0)
 			{
-				echo $this->num_rows($result);
 				$row = $this->fetch_array($result); // Table sql
 				$tmpname = 't'.TIME_NOW;
 				$origsql = trim(preg_replace("/[\s]+/", " ", str_replace(",", ", ", preg_replace("/[\(]/","( ", $row['sql'], 1))));

@@ -94,6 +94,14 @@ class DB_SQLite
 	 * @var string
 	 */
 	var $engine = "sqlite";
+	
+	/**
+	 * Weather or not this engine can use the search functionality
+	 *
+	 * @var boolean
+	 */
+	var $can_search = true;
+	 
 
 	/**
 	 * The database encoding currently in use (if supported)
@@ -139,7 +147,7 @@ class DB_SQLite
 
 		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".my_number_format($query_time)."s)";
 		
-		@sqlite_query('PRAGMA short_column_names = 1', $this->link);
+		sqlite_query('PRAGMA short_column_names = 1', $this->link);
 		return $this->link;
 	}
 
@@ -220,7 +228,6 @@ class DB_SQLite
 	{
 		if(preg_match("#^\s*select#i", $string))
 		{
-			$query = sqlite_query($this->link, "EXPLAIN $string");
 			$this->explain .= "<table style=\"background-color: #666;\" width=\"95%\" cellpadding=\"4\" cellspacing=\"1\" align=\"center\">\n".
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #ccc;\"><strong>#".$this->query_count." - Select Query</strong></td>\n".
@@ -228,33 +235,6 @@ class DB_SQLite
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
-				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>table</strong></td>\n".
-				"<td><strong>type</strong></td>\n".
-				"<td><strong>possible_keys</strong></td>\n".
-				"<td><strong>key</strong></td>\n".
-				"<td><strong>key_len</strong></td>\n".
-				"<td><strong>ref</strong></td>\n".
-				"<td><strong>rows</strong></td>\n".
-				"<td><strong>Extra</strong></td>\n".
-				"</tr>\n";
-
-			while($table = sqlite_fetch_array($query))
-			{
-				// NOTE: Doesn't work
-				$this->explain .=
-					"<tr bgcolor=\"#ffffff\">\n".
-					"<td>".$table['table']."</td>\n".
-					"<td>".$table['type']."</td>\n".
-					"<td>".$table['possible_keys']."</td>\n".
-					"<td>".$table['key']."</td>\n".
-					"<td>".$table['key_len']."</td>\n".
-					"<td>".$table['ref']."</td>\n".
-					"<td>".$table['rows']."</td>\n".
-					"<td>".$table['Extra']."</td>\n".
-					"</tr>\n";
-			}
-			$this->explain .=
 				"<tr>\n".
 				"<td colspan=\"8\" style=\"background-color: #fff;\">Query Time: ".$qtime."</td>\n".
 				"</tr>\n".
@@ -940,7 +920,7 @@ class DB_SQLite
 	{
 		global $config, $lang;
 		
-		$total = filesize($config['database']);
+		$total = @filesize($config['database']['database']);
 		if(!$total || $table != '')
 		{
 			$total = $lang->na;

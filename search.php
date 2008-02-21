@@ -982,7 +982,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"numreplies" => $mybb->input['numreplies']
 	);
 
-	if($db->type == "mysql" || $db->type == "mysqli")
+	if($db->can_search == true)
 	{
 		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->is_fulltext("posts"))
 		{
@@ -1094,7 +1094,7 @@ else if($mybb->input['action'] == "thread")
 		"tid" => $mybb->input['tid']
 	);
 
-	if($db->type == "mysql" || $db->type == "mysqli")
+	if($db->can_search == true)
 	{
 		if($mybb->settings['searchtype'] == "fulltext" && $db->supports_fulltext_boolean("posts") && $db->is_fulltext("posts"))
 		{
