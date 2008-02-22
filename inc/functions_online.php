@@ -663,40 +663,40 @@ function build_friendly_wol_location($user_activity, $return=false)
 			$location_name = $lang->viewing_imcenter;
 			break;						
 		// modcp.php functions
-		case "modlogs":
+		case "modcp_modlogs":
 			$location_name = $lang->viewing_modlogs;
 			break;
-		case "announcements":
+		case "modcp_announcements":
 			$location_name = $lang->managing_announcements;
 			break;
-		case "finduser":
+		case "modcp_finduser":
 			$location_name = $lang->search_for_user;
 			break;
-		case "warninglogs":
+		case "modcp_warninglogs":
 			$location_name = $lang->managing_warninglogs;
 			break;
-		case "ipsearch":
+		case "modcp_ipsearch":
 			$location_name = $lang->searching_ips;
 			break;
-		case "report":
+		case "modcp_report":
 			$location_name = $lang->viewing_reports;
 			break;
-		case "new_announcement":
+		case "modcp_new_announcement":
 			$location_name = $lang->adding_announcement;
 			break;
-		case "delete_announcement":
+		case "modcp_delete_announcement":
 			$location_name = $lang->deleting_announcement;
 			break;
-		case "edit_announcement":
+		case "modcp_edit_announcement":
 			$location_name = $lang->editing_announcement;
 			break;
-		case "mod_queue":
+		case "modcp_mod_queue":
 			$location_name = $lang->managing_modqueue;
 			break;
-		case "editprofile":
+		case "modcp_editprofile":
 			$location_name = $lang->editing_user_profiles;
 			break;
-		case "banning":
+		case "modcp_banning":
 			$location_name = $lang->managing_bans;
 			break;
 		case "modcp":
