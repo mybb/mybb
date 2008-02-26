@@ -76,7 +76,7 @@ if($mybb->input['action'] == "do_reports")
 	}
 
 	array_walk($mybb->input['reports'], "intval");
-	$rids = implode($reports, "','");
+	$rids = implode($mybb->input['reports'], "','");
 	$rids = "'0','{$rids}'";
 
 	$plugins->run_hooks("modcp_do_reports");
