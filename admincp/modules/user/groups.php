@@ -603,7 +603,7 @@ if($mybb->input['action'] == "add")
 			}
 			
 			$new_usergroup = array(
-				"type" => $mybb->input['type'],
+				"type" => 2,
 				"title" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
 				"namestyle" => $db->escape_string($mybb->input['namestyle']),
@@ -1166,8 +1166,8 @@ if(!$mybb->input['action'])
 			");
 			break;
 		default:
-			$query = $db->query("S
-				ELECT g.gid, COUNT(u.uid) AS users
+			$query = $db->query("
+				SELECT g.gid, COUNT(u.uid) AS users
 				FROM ".TABLE_PREFIX."users u
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%'))
 				WHERE g.gid != '' GROUP BY g.gid
