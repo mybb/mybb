@@ -866,8 +866,8 @@ if($mybb->input['action'] == "thread")
 	// Decide whether or not to show quick reply.
 	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $forum['open'] != 0)
 	{
-		//$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc"));
-		//$last_pid = $db->fetch_field($query, "pid");
+		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc", "limit" => 1));
+		$last_pid = $db->fetch_field($query, "pid");
 		
 		// Show captcha image for guests if enabled
 		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
