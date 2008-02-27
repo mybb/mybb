@@ -226,7 +226,7 @@ class datacache
 		
 		$types = array();
 
-		$query = $db->simple_select("attachtypes", "atid, name, mimetype, extension, maxsize, icon");
+		$query = $db->simple_select("attachtypes", "*");
 		while($type = $db->fetch_array($query))
 		{
 			$type['extension'] = my_strtolower($type['extension']);
@@ -246,7 +246,7 @@ class datacache
 		
 		$smilies = array();
 
-		$query = $db->simple_select("smilies", "sid, name, find, image, disporder, showclickable", "", array('order_by' => 'LENGTH(find)', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'LENGTH(find)', 'order_dir' => 'DESC'));
 		while($smilie = $db->fetch_array($query))
 		{
 			$smilies[$smilie['sid']] = $smilie;
@@ -284,7 +284,7 @@ class datacache
 		
 		$badwords = array();
 
-		$query = $db->simple_select("badwords", "bid, badword, replacement");
+		$query = $db->simple_select("badwords", "*");
 		while($badword = $db->fetch_array($query)) 
 		{
 			$badwords[$badword['bid']] = $badword;

@@ -11,7 +11,7 @@
 
 define("IN_MYBB", 1);
 
-$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons,codebuttons,smilieinsert,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,newthread_postpoll,editpost_disablesmilies";
+$templatelist = "editpost,previewpost,redirect_postedited,loginbox,posticons,changeuserbox,attachment,posticons,codebuttons,smilieinsert,post_attachments_attachment_postinsert,post_attachments_attachment_mod_approve,post_attachments_attachment_unapproved,post_attachments_attachment_mod_unapprove,post_attachments_attachment,post_attachments_new,post_attachments,newthread_postpoll,editpost_disablesmilies,post_subscription_method";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -29,8 +29,16 @@ if(!$mybb->user['uid'])
 // Get post info
 $pid = intval($mybb->input['pid']);
 
-$query = $db->simple_select("posts", "*", "pid='$pid'");
-$post = $db->fetch_array($query);
+// if we already have the post information...
+if(isset($style) && $style['pid'] == $pid)
+{
+	$post = &$style;
+}
+else
+{
+	$query = $db->simple_select("posts", "*", "pid='$pid'");
+	$post = $db->fetch_array($query);
+}
 
 if(!$post['pid'])
 {
@@ -344,8 +352,9 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Setup a unique posthash for attachment management
-	$query = $db->simple_select("posts", "posthash", "pid='{$pid}'");
-	$posthash = $db->fetch_field($query, "posthash");
+	//$query = $db->simple_select("posts", "posthash", "pid='{$pid}'");
+	//$posthash = $db->fetch_field($query, "posthash");
+	$posthash = $post['posthash'];
 
 	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != 0)

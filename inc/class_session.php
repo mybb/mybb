@@ -520,8 +520,10 @@ class session
 		{
 			global $db;
 			$array[2] = intval($mybb->input['tid']);
-			$query = $db->simple_select("threads", "fid", "tid='".$array[2]."'", array('limit' => 1));
-			$array[1] = $db->fetch_field($query, "fid");
+			//$query = $db->simple_select("threads", "fid", "tid='".$array[2]."'", array('limit' => 1));
+			//$array[1] = $db->fetch_field($query, "fid");
+			$thread = get_thread(intval($array[2]));
+			$array[1] = $thread['fid'];
 		}
 		return $array;
 	}

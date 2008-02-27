@@ -15,7 +15,7 @@ $templatelist = "showthread,postbit,postbit_author_user,postbit_author_guest,sho
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl";
-$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom";
+$templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_seperator,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic,showthread_classic_header";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -29,21 +29,46 @@ $lang->load("showthread");
 // If there is no tid but a pid, trick the system into thinking there was a tid anyway.
 if($mybb->input['pid'] && !$mybb->input['tid'])
 {
-	$options = array(
-		"limit" => 1
-	);
-	$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
-	$post = $db->fetch_array($query);
-	$pid = $mybb->input['pid'];
-	$mybb->input['tid'] = $post['tid'];
+	// see if we already have the post information
+	if(isset($style) && $style['pid'] == $mybb->input['pid'] && $style['tid'])
+	{
+		$mybb->input['tid'] = $style['tid'];
+		unset($style['tid']); // stop the thread caching code from being tricked
+	}
+	else
+	{
+		$options = array(
+			"limit" => 1
+		);
+		$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
+		$post = $db->fetch_array($query);
+		$db->free_result($query);
+		$mybb->input['tid'] = $post['tid'];
+	}
 }
 
 // Get the thread details from the database.
 $options = array(
 	"limit" => 1
 );
-$query = $db->simple_select("threads", "*", "tid='".$mybb->input['tid']."' AND closed NOT LIKE 'moved|%'");
-$thread = $db->fetch_array($query);
+//$query = $db->simple_select("threads", "*", "tid='".$mybb->input['tid']."' AND closed NOT LIKE 'moved|%'");
+//$thread = $db->fetch_array($query);
+
+// firstly, check if the current thread has already been loaded when trying to grab the forum style
+if(isset($style) && $style['tid'] == $mybb->input['tid'])
+{
+	$thread = &$style;
+}
+else // otherwise, cache the thread
+{
+	$thread = get_thread($mybb->input['tid']);
+}
+
+if(substr($thread['closed'], 0, 6) == "moved|")
+{
+	$thread['tid'] = 0;
+}
+
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 $tid = $thread['tid'];
 $fid = $thread['fid'];
@@ -841,8 +866,8 @@ if($mybb->input['action'] == "thread")
 	// Decide whether or not to show quick reply.
 	if($forumpermissions['canpostreplys'] != 0 && $mybb->user['suspendposting'] != 1 && ($thread['closed'] != 1 || is_moderator($fid)) && $mybb->settings['quickreply'] != 0 && $mybb->user['showquickreply'] != 0 && $forum['open'] != 0)
 	{
-		$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc"));
-		$last_pid = $db->fetch_field($query, "pid");
+		//$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array("order_by" => "pid", "order_dir" => "desc"));
+		//$last_pid = $db->fetch_field($query, "pid");
 		
 		// Show captcha image for guests if enabled
 		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])

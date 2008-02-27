@@ -111,7 +111,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 	if(isset($mybb->input['pid']))
 	{
 		$query = $db->query("
-			SELECT f.style, f.overridestyle
+			SELECT f.style, f.overridestyle, p.*
 			FROM ".TABLE_PREFIX."forums f
 			LEFT JOIN ".TABLE_PREFIX."posts p ON(f.fid=p.fid) 
 			WHERE p.pid='".intval($mybb->input['pid'])."'
@@ -125,7 +125,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 	else if(isset($mybb->input['tid']))
 	{
 		$query = $db->query("
-			SELECT f.style, f.overridestyle
+			SELECT f.style, f.overridestyle, t.*
 			FROM ".TABLE_PREFIX."forums f
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (f.fid=t.fid)
 			WHERE t.tid='".intval($mybb->input['tid'])."'
@@ -138,8 +138,10 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 	// We have a forum id - simply load the theme from it
 	else if(isset($mybb->input['fid']))
 	{
-		$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'", array('limit' => 1));
-		$style = $db->fetch_array($query);
+		//$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'", array('limit' => 1));
+		//$style = $db->fetch_array($query);
+		cache_forums();
+		$style = $forum_cache[intval($mybb->input['fid'])];
 		$load_from_forum = 1;
 	}
 }
@@ -245,7 +247,7 @@ if(isset($templatelist))
 {
 	$templatelist .= ',';
 }
-$templatelist .= "css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert";
+$templatelist .= "css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports";
 $templatelist .= ",nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,header_welcomeblock_member_moderator,redirect,error";
 $templates->cache($db->escape_string($templatelist));
 

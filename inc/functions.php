@@ -1371,7 +1371,7 @@ function is_moderator($fid="0", $action="", $uid="0")
  */
 function get_post_icons()
 {
-	global $mybb, $db, $icon, $theme, $templates, $lang;
+	global $mybb, $cache, $icon, $theme, $templates, $lang;
 
 	$listed = 0;
 	if($mybb->input['icon'])
@@ -1380,8 +1380,18 @@ function get_post_icons()
 	}
 
 	$no_icons_checked = " checked=\"checked\"";
-	$query = $db->simple_select("icons", "*", "", array('order_by' => 'name', 'order_dir' => 'DESC'));
-	while($dbicon = $db->fetch_array($query))
+	// read post icons from cache, and sort them accordingly
+	$posticons_cache = $cache->read("posticons");
+	$posticons = array();
+	foreach($posticons_cache as $posticon)
+	{
+		$posticons[$posticon['name']] = $posticon;
+	}
+	krsort($posticons);
+	
+	//$query = $db->simple_select("icons", "*", "", array('order_by' => 'name', 'order_dir' => 'DESC'));
+	//while($dbicon = $db->fetch_array($query))
+	foreach($posticons as $dbicon)
 	{
 		if($icon == $dbicon['iid'])
 		{
@@ -2198,24 +2208,39 @@ function build_mycode_inserter($bind="message")
  */
 function build_clickable_smilies()
 {
-	global $db, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
+	global $cache, $smiliecache, $theme, $templates, $lang, $mybb, $smiliecount;
 
 	if($mybb->settings['smilieinserter'] != 0 && $mybb->settings['smilieinsertercols'] && $mybb->settings['smilieinsertertot'])
 	{
 		if(!$smiliecount)
 		{
-			$query = $db->simple_select("smilies", "COUNT(*) as smilies");
-			$smiliecount = $db->fetch_field($query, "smilies");
+			//$query = $db->simple_select("smilies", "COUNT(*) as smilies");
+			//$smiliecount = $db->fetch_field($query, "smilies");
+			$smilie_cache = $cache->read("smilies");
+			$smiliecount = count($smilie_cache);
 		}
 
 		if(!$smiliecache)
 		{
+			if(!is_array($smilie_cache))
+			{
+				$smilie_cache = $cache->read("smilies");
+			}
+			foreach($smilie_cache as $smilie)
+			{
+				if($smilie['showclickable'] != 0)
+				{
+					$smiliecache[$smilie['find']] = $smilie['image'];
+				}
+			}
+			/*
 			$query = $db->simple_select("smilies", "*", "showclickable != 0", array('order_by' => 'disporder'));
 
 			while($smilie = $db->fetch_array($query))
 			{
 				$smiliecache[$smilie['find']] = $smilie['image'];
 			}
+			*/
 		}
 
 		unset($smilie);
