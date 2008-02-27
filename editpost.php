@@ -352,8 +352,6 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Setup a unique posthash for attachment management
-	//$query = $db->simple_select("posts", "posthash", "pid='{$pid}'");
-	//$posthash = $db->fetch_field($query, "posthash");
 	$posthash = $post['posthash'];
 
 	$bgcolor = "trow1";

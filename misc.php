@@ -445,6 +445,7 @@ elseif($mybb->input['action'] == "whoposted")
 		eval("\$whoposted .= \"".$templates->get("misc_whoposted_poster")."\";");
 		$altbg = alt_trow();
 	}
+	$numposts = my_number_format($numposts);
 	eval("\$whop = \"".$templates->get("misc_whoposted")."\";");
 	output_page($whop);
 }

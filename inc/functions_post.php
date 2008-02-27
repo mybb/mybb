@@ -178,15 +178,6 @@ function build_postbit($post, $post_type=0)
 		}
 		krsort($titlescache);
 		unset($usertitle, $cached_titles);
-		/*
-		// Get user titles (i guess we should improve this, maybe in version3.
-		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-		while($usertitle = $db->fetch_array($query))
-		{
-			$titlescache[$usertitle['posts']] = $usertitle;
-		}
-		unset($usertitle);
-		*/
 	}
 
 	// Work out the usergroup/title stuff

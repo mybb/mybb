@@ -51,8 +51,6 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 $options = array(
 	"limit" => 1
 );
-//$query = $db->simple_select("threads", "*", "tid='".$mybb->input['tid']."' AND closed NOT LIKE 'moved|%'");
-//$thread = $db->fetch_array($query);
 
 // firstly, check if the current thread has already been loaded when trying to grab the forum style
 if(isset($style) && $style['tid'] == $mybb->input['tid'])

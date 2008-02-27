@@ -1389,8 +1389,6 @@ function get_post_icons()
 	}
 	krsort($posticons);
 	
-	//$query = $db->simple_select("icons", "*", "", array('order_by' => 'name', 'order_dir' => 'DESC'));
-	//while($dbicon = $db->fetch_array($query))
 	foreach($posticons as $dbicon)
 	{
 		if($icon == $dbicon['iid'])
@@ -2214,8 +2212,6 @@ function build_clickable_smilies()
 	{
 		if(!$smiliecount)
 		{
-			//$query = $db->simple_select("smilies", "COUNT(*) as smilies");
-			//$smiliecount = $db->fetch_field($query, "smilies");
 			$smilie_cache = $cache->read("smilies");
 			$smiliecount = count($smilie_cache);
 		}
@@ -2233,14 +2229,6 @@ function build_clickable_smilies()
 					$smiliecache[$smilie['find']] = $smilie['image'];
 				}
 			}
-			/*
-			$query = $db->simple_select("smilies", "*", "showclickable != 0", array('order_by' => 'disporder'));
-
-			while($smilie = $db->fetch_array($query))
-			{
-				$smiliecache[$smilie['find']] = $smilie['image'];
-			}
-			*/
 		}
 
 		unset($smilie);
