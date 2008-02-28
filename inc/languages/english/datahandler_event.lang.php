@@ -11,7 +11,7 @@ $l['eventdata_missing_description'] = 'The description for the event is missing.
 
 $l['eventdata_invalid_start_date'] = 'The event start date you entered is invalid. You need to make sure you specify the day, month and year as well as ensure the day you entered is valid for the particular month.';
 $l['eventdata_invalid_start_year'] = "Events can only be created in the next 5 years. Please select a reasonable start year from the list.";
-$l['eventdata_invalid_start_month'] = 'The start month you entered is not a valid month. Please and enter a valid start month.';
+$l['eventdata_invalid_start_month'] = 'The start month you entered is not a valid month. Please enter a valid start month.';
 
 $l['eventdata_invalid_end_date'] = 'The event end date you entered is invalid. You need to make sure you specify the day, month and year as well as ensure the day you entered is valid for the particular month.';
 $l['eventdata_invalid_end_year'] = "Events can only be created in the next 5 years. Please select a reasonable end year from the list.";

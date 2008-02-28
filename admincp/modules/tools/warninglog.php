@@ -218,8 +218,7 @@ if($mybb->input['action'] == "view")
 		
 		$revoke_table->output($lang->warning_is_revoked);
 	}
-
-	eval("\$warning = \"".$templates->get("warnings_view")."\";");
+	
 	$page->output_footer();
 }
 

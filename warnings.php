@@ -793,6 +793,8 @@ if($mybb->input['action'] == "view")
 		$warning['points'] = "+{$warning['points']}";
 	}
 	
+	$revoked_date = '';
+	
 	$points = $lang->sprintf($lang->warning_points, $warning['points']);
 	if($warning['expired'] != 1)
 	{
@@ -814,6 +816,7 @@ if($mybb->input['action'] == "view")
 		}
 		else if($warning['expires'])
 		{
+			$revoked_date = my_date($mybb->settings['dateformat'], $warning['daterevoked']).' '.my_date($mybb->settings['timeformat'], $warning['daterevoked']);
 			$expires = $status = $lang->already_expired;
 		}
 	}

@@ -73,7 +73,7 @@ function build_mass_mail_query($conditions)
 				case "sqlite2":
 					$additional_sql .= " OR ','||additionalgroups||',' LIKE '%,{$usergroup},%'";
 				default:
-					$additional_sql .= "OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%'";
+					$additional_sql .= " OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%'";
 			}
 		}
 		$search_sql .= " AND (u.usergroup IN (".implode(",", $conditions['usergroup']).") {$additional_sql})";
@@ -97,6 +97,7 @@ function create_text_message($message)
 	$message = preg_replace("#</p>#i", "\n\n", $message);
 	$message = preg_replace("#<br( \/?)>#i", "\n", $message);
 	$message = preg_replace("#<p[^>]*?>#i", "", $message);
+	$message = preg_replace("#<hr[^>]*?>\s*#i", "-----------\n", $message);
 	$message = html_entity_decode($message);
 	$message = str_replace("\t", "", $message);
 	do

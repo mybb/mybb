@@ -392,7 +392,6 @@ if($mybb->input['action'] == "edit")
 			
 			$update_announcement = array(
 				"fid" => $mybb->input['fid'],
-				"uid" => $mybb->user['uid'],
 				"subject" => $db->escape_string($mybb->input['title']),
 				"message" => $db->escape_string($mybb->input['message']),
 				"startdate" => $startdate,
