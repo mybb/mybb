@@ -174,7 +174,6 @@ if($mybb->input['action'] == "do_edit")
 	$sqlarray = array(
 		"aid" => intval($mybb->input['aid']), 
 		"fid" => $fid,
-		"uid" => $mybbadmin['uid'],
 		"subject" => $subject,
 		"message" => $message,
 		"startdate" => $startdate,
