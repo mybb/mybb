@@ -11,7 +11,7 @@
 
 function task_hourlycleanup($task)
 {
-	global $db;
+	global $db, $lang;
 	
 	$threads = array();
 	$posts = array();
@@ -26,6 +26,7 @@ function task_hourlycleanup($task)
 	// Delete old captcha images
 	$cut = TIME_NOW-(60*60*12);
 	$db->delete_query("captcha", "dateline < '{$cut}'");
-
+	
+	add_task_log($task, $lang->task_hourlycleanup_ran);
 }
 ?>

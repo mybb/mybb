@@ -127,6 +127,20 @@ class errorHandler {
 		
 		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
 		{
+			if(defined("IN_TASK"))
+			{
+				global $task;
+				
+				require_once MYBB_ROOT."inc/functions_task.php";
+				
+				if($file)
+				{
+					$filestr = " - Line: $line - File: $file";
+				}
+				
+				add_task_log($task['id'], "{$this->error_types[$type]} - [$type] ".var_export($message, true)."{$filestr}");
+			}
+			
 			// Saving error to log file.
 			if($mybb->settings['errorlogmedium'] == "log" || $mybb->settings['errorlogmedium'] == "both")
 			{

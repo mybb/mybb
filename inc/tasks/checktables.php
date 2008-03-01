@@ -11,7 +11,7 @@
 
 function task_checktables($task)
 {
-	global $db, $mybb;
+	global $db, $mybb, $lang;
 	
 	@set_time_limit(0);
 	
@@ -23,6 +23,7 @@ function task_checktables($task)
 	
 	$comma = "";
 	$tables_list = "";
+	$repaired = "";
 
 	$tables = $db->list_tables($mybb->config['database']['database'], $mybb->config['database']['table_prefix']);
 	foreach($tables as $key => $table)
@@ -51,6 +52,7 @@ function task_checktables($task)
 				}
 				
 				$db->query("REPAIR TABLE {$table['Table']}");
+				$repaired[] = $table['Table'];
 			}
 		}
 		
@@ -62,6 +64,15 @@ function task_checktables($task)
 			rebuild_settings();
 		}
 		
+	}
+	
+	if(!empty($repaired))
+	{
+		add_task_log($task, $lang->sprintf($lang->task_checktables_ran_found, implode(', ', $repaired)));
+	}
+	else
+	{
+		add_task_log($task, $lang->task_checktables_ran);
 	}
 }
 ?>

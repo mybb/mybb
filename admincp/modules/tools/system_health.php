@@ -274,7 +274,7 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	if($okay_count == count($mybb_tables))
 	{
-		flash_message($lang->error_all_tables_already_converted, 'error');
+		flash_message($lang->success_all_tables_already_converted, 'success');
 		admin_redirect("index.php?module=tools/system_health");
 	}
 	

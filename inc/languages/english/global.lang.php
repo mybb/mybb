@@ -345,8 +345,18 @@ $l['timezone_gmt_1100'] = "(GMT +11:00) Magadan, New Caledonia, Solomon Islands"
 $l['timezone_gmt_1200'] = "(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island";
 $l['timezone_gmt_short'] = "GMT {1}({2})";
 
-$l['missing_task'] = "Task file does not exist";
-$l['task_backup_cannot_write_backup'] = "Database backup task cannot write to backups directory.";
+$l['missing_task'] = "Error: Task file does not exist";
+$l['task_backup_cannot_write_backup'] = "Error: The database backup task cannot write to backups directory.";
+$l['task_backup_ran'] = "The database backup task successfully ran.";
+$l['task_checktables_ran'] = "The check tables task successfully ran with no corrupted tables found.";
+$l['task_checktables_ran_found'] = "Notice: The check tables task succesfully ran and repaired the {1} table(s).";
+$l['task_dailycleanup_ran'] = "The daily cleanup task successfully ran.";
+$l['task_hourlycleanup_ran'] = "The hourly cleanup task successfully ran.";
+$l['task_logcleanup_ran'] = "The log cleanup task successfully ran and pruned any old logs.";
+$l['task_promotions_ran'] = "The promotions task successfully ran.";
+$l['task_threadviews_ran'] = "The thread views task successfully ran.";
+$l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
+$l['task_massmail_ran'] = "The mass mail task successfully ran.";
 
 $l['dismiss_notice'] = "Dismiss this notice";
 

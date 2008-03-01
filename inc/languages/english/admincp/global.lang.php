@@ -215,6 +215,19 @@ $l['editor_font'] = "Font";
 $l['editor_size'] = "Text Size";
 $l['editor_color'] = "Text Color";
 
+$l['missing_task'] = "Error: Task file does not exist";
+$l['task_backup_cannot_write_backup'] = "Error: The database backup task cannot write to backups directory.";
+$l['task_backup_ran'] = "The database backup task successfully ran.";
+$l['task_checktables_ran'] = "The check tables task successfully ran with no corrupted tables found.";
+$l['task_checktables_ran_found'] = "Notice: The check tables task succesfully ran and repaired the {1} table(s).";
+$l['task_dailycleanup_ran'] = "The daily cleanup task successfully ran.";
+$l['task_hourlycleanup_ran'] = "The hourly cleanup task successfully ran.";
+$l['task_logcleanup_ran'] = "The log cleanup task successfully ran and pruned any old logs.";
+$l['task_promotions_ran'] = "The promotions task successfully ran.";
+$l['task_threadviews_ran'] = "The thread views task successfully ran.";
+$l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
+$l['task_massmail_ran'] = "The mass mail task successfully ran.";
+
 // If the language string for "Username" is too cramped in the ACP Login box
 // then use this to define how much larger you want the gap to be (in px)
 // $l['login_field_width'] = "0";

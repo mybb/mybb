@@ -16,7 +16,14 @@ define("IN_MYBB", 1);
 
 define("NO_ONLINE", 1);
 
+define("IN_TASK", 1);
+
 require_once "./inc/init.php";
+
+// Load language
+$lang->set_language($mybb->settings['bblanguage']);
+$lang->load("global");
+$lang->load("messages");
 
 require_once MYBB_ROOT."inc/functions_task.php";
 

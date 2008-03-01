@@ -11,7 +11,7 @@
 
 function task_logcleanup($task)
 {
-	global $mybb, $db;
+	global $mybb, $db, $lang;
 
 	// Clear out old admin logs
 	if($mybb->config['log_pruning']['admin_logs'] > 0)
@@ -54,5 +54,7 @@ function task_logcleanup($task)
 		$cut = TIME_NOW-60*60*24*$mybb->config['log_pruning']['promotion_logs'];
 		$db->delete_query("promotionlogs", "dateline<'{$cut}'");
 	}
+	
+	add_task_log($task, $lang->task_logcleanup_ran);
 }
 ?>

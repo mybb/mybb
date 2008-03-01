@@ -604,7 +604,7 @@ if($mybb->input['action'] == "logs")
 	$query = $db->query("
 		SELECT l.*, t.title
 		FROM ".TABLE_PREFIX."tasklog l
-		LEFT JOIN ".TABLE_PREFIX."tasks t ON (t.tid=l.lid)
+		LEFT JOIN ".TABLE_PREFIX."tasks t ON (t.tid=l.tid)
 		ORDER BY l.dateline DESC
 		LIMIT {$start}, {$per_page}
 	");

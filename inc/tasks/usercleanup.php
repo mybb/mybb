@@ -11,7 +11,7 @@
 
 function task_usercleanup($task)
 {
-	global $db;
+	global $db, $lang;
 
 	// Expire any old warnings
 	expire_warnings();
@@ -46,5 +46,7 @@ function task_usercleanup($task)
 		$db->update_query("users", $updated_user, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 	}
+	
+	add_task_log($task, $lang->task_usercleanup_ran);
 }
 ?>

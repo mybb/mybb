@@ -11,7 +11,7 @@
 
 function task_backupdb($task)
 {
-	global $db, $config;
+	global $db, $config, $lang;
 	static $contents;
 
 	@set_time_limit(0);
@@ -19,7 +19,7 @@ function task_backupdb($task)
 	// Check if folder is writable, before allowing submission
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
-		add_task_log($task['id'], $lang->task_backup_cannot_write_backup);
+		add_task_log($task, $lang->task_backup_cannot_write_backup);
 	}
 	else
 	{
@@ -91,6 +91,8 @@ function task_backupdb($task)
 			fwrite($fp, $contents);
 			fclose($fp);
 		}
+		
+		add_task_log($task, $lang->task_backup_ran);
 	}
 }
 

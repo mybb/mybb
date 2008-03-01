@@ -11,7 +11,7 @@
 
 function task_threadviews($task)
 {
-	global $mybb, $db;
+	global $mybb, $db, $lang;
 	
 	$threadviews = array();
 
@@ -32,5 +32,7 @@ function task_threadviews($task)
 	}
 	
 	$db->write_query("TRUNCATE TABLE ".TABLE_PREFIX."threadviews");
+	
+	add_task_log($task, $lang->task_threadviews_ran);
 }
 ?>

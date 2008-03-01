@@ -56,8 +56,8 @@ $l['error_chmod'] = "of the required files and directories do not have proper CH
 $l['error_invalid_table'] = "The specified table does not exist.";
 $l['error_db_encoding_not_set'] = "Your current setup of MyBB is not setup to use this tool yet. Please see <a href=\"http://wiki.mybboard.net/index.php/UTF8_Setup\">the wiki</a> for more information on how to set it up.";
 $l['error_not_supported'] = "Your current Database Engine is not supported by the UTF-8 Conversion Tool.";
-$l['error_all_tables_already_converted'] = "All tables have already been converted or are already in UTF-8 format.";
 
+$l['success_all_tables_already_converted'] = "All tables have already been converted or are already in UTF-8 format.";
 $l['success_table_converted'] = "The specified table \"{1}\" has been sucessfully converted to UTF-8.";
 $l['success_chmod'] = "All of the required files and directories have the proper CHMOD settings.";
 

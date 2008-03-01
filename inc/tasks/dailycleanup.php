@@ -11,7 +11,7 @@
 
 function task_dailycleanup($task)
 {
-	global $mybb, $db, $cache;
+	global $mybb, $db, $cache, $lang;
 
 	// Clear out sessions older than 24h
 	$cut = TIME_NOW-60*60*24;
@@ -49,5 +49,7 @@ function task_dailycleanup($task)
 	
 	$cache->update_most_replied_threads();
 	$cache->update_most_viewed_threads();
+	
+	add_task_log($task, $lang->task_dailycleanup_ran);
 }
 ?>

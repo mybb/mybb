@@ -20,7 +20,9 @@ function build_mass_mail_query($conditions)
 	global $db;
 
 	if(!is_array($conditions))
+	{
 		return '';
+	}
 
 	$search_sql = '1=1';
 

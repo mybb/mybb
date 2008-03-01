@@ -17,7 +17,7 @@
  */
 function run_task($tid=0)
 {
-	global $db, $mybb, $cache, $plugins;
+	global $db, $mybb, $cache, $plugins, $task;
 
 	// Run a specific task
 	if($tid > 0)
@@ -91,16 +91,22 @@ function run_task($tid=0)
 /**
  * Adds information to the scheduled task log.
  *
- * @param int The task ID to create the log entry for
+ * @param int The task array to create the log entry for
  * @param string The message to log
  */
-function add_task_log($tid, $message)
+function add_task_log($task, $message)
 {
 	global $db;
+	
+	if(!$task['logging'])
+	{
+		return;	
+	}
+	
 	$log_entry = array(
-		"tid" => intval($tid),
+		"tid" => intval($task['tid']),
 		"dateline" => TIME_NOW,
-		"message" => $db->escape_string($message)
+		"data" => $db->escape_string($message)
 	);
 	$db->insert_query("tasklog", $log_entry);
 }

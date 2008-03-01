@@ -11,7 +11,7 @@
 
 function task_promotions($task)
 {
-	global $mybb, $db;
+	global $mybb, $db, $lang;
 	
 	// Iterate through all our promotions
 	$query = $db->simple_select("promotions", "*", "enabled = '1'");
@@ -149,6 +149,8 @@ function task_promotions($task)
 			$uids = array();
 			$log_inserts = array();
 		}
-	}	
+	}
+	
+	add_task_log($task, $lang->task_promotions_ran);
 }
 ?>
