@@ -368,7 +368,7 @@ if($mybb->input['action'] == "do_import")
 	}
 	else
 	{
-		$db->write_query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('$name Templates')");
+		$db->write_query("INSERT INTO ".TABLE_PREFIX."templatesets (title) VALUES ('".$db->escape_strig($name)." Templates')");
 		$templateset = $db->insert_id();
 		$tid = "";
 	}
@@ -379,9 +379,9 @@ if($mybb->input['action'] == "do_import")
 	{
 		foreach($templates as $template)
 		{
-			$templatename = $template['attributes']['name'];
+			$templatename = $db->escape_string($template['attributes']['name']);
 			$templatevalue = $db->escape_string($template['value']);
-			$templateversion = $template['attributes']['version'];
+			$templateversion = $db->escape_string($template['attributes']['version']);
 			$time = time();
 			$db->write_query("INSERT INTO ".TABLE_PREFIX."templates (title,template,sid,version,status,dateline) VALUES ('$templatename','$templatevalue','$templateset','$templateversion','','$time')");
 		}
