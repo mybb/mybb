@@ -282,7 +282,7 @@ if($mybb->input['action'] == "add")
                 checked = e.value;
             }
         });
-        $$(id+'s').each(function(e)
+        $$('.'+id+'s').each(function(e)
         {
         	Element.hide(e);
         });
@@ -534,14 +534,14 @@ if($mybb->input['action'] == "edit")
     {
         var checked = '';
         
-        $$(id+'s_check').each(function(e)
+        $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
             {
                 checked = e.value;
             }
         });
-        $$(id+'s').each(function(e)
+        $$('.'+id+'s').each(function(e)
         {
         	Element.hide(e);
         });
