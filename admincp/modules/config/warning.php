@@ -134,14 +134,14 @@ if($mybb->input['action'] == "add_level")
 	function checkAction()
 	{
 		var checked = '';
-		document.getElementsByClassName('actions_check').each(function(e)
+		$$('.actions_check').each(function(e)
 		{
 			if(e.checked == true)
 			{
 				checked = e.value;
 			}
 		});
-		document.getElementsByClassName('actions').each(function(e)
+		$$('.actions').each(function(e)
 		{
 			Element.hide(e);
 		});
@@ -328,14 +328,14 @@ if($mybb->input['action'] == "edit_level")
 	function checkAction()
 	{
 		var checked = '';
-		document.getElementsByClassName('actions_check').each(function(e)
+		$$('.actions_check').each(function(e)
 		{
 			if(e.checked == true)
 			{
 				checked = e.value;
 			}
 		});
-		document.getElementsByClassName('actions').each(function(e)
+		$$('.actions').each(function(e)
 		{
 			Element.hide(e);
 		});

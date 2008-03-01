@@ -2575,7 +2575,7 @@ function get_attachment_icon($ext)
 		}
 		else
 		{
-			$ucib = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
+			$icon = str_replace("{theme}", $theme['imgdir'], $attachtypes[$ext]['icon']);
 		}
 		return "<img src=\"{$icon}\" border=\"0\" alt=\".{$ext}\" />";
 	}

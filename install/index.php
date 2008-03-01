@@ -433,7 +433,7 @@ function database_info()
 		function updateDBSettings()
 		{
 			dbengine = \$('dbengine').options[\$('dbengine').selectedIndex].value;
-			document.getElementsByClassName('db_settings').each(function(element)
+			$$('.db_settings').each(function(element)
 			{
 				element.className = 'db_settings';
 				if(dbengine+'_settings' == element.id)

@@ -356,14 +356,14 @@ if($mybb->input['action'] == "edit_thread_tool")
     {
         var checked = '';
         
-        document.getElementsByClassName(id+'s_check').each(function(e)
+        $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
             {
                 checked = e.value;
             }
         });
-        document.getElementsByClassName(id+'s').each(function(e)
+        $$('.'+id+'s').each(function(e)
         {
         	Element.hide(e);
         });
@@ -655,14 +655,14 @@ if($mybb->input['action'] == "add_thread_tool")
     {
         var checked = '';
         
-        document.getElementsByClassName(id+'s_check').each(function(e)
+        $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
             {
                 checked = e.value;
             }
         });
-        document.getElementsByClassName(id+'s').each(function(e)
+        $$('.'+id+'s').each(function(e)
         {
         	Element.hide(e);
         });
@@ -1066,14 +1066,14 @@ if($mybb->input['action'] == "edit_post_tool")
     {
         var checked = '';
         
-        document.getElementsByClassName(id+'s_check').each(function(e)
+        $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
             {
                 checked = e.value;
             }
         });
-        document.getElementsByClassName(id+'s').each(function(e)
+        $$('.'+id+'s').each(function(e)
         {
         	Element.hide(e);
         });
@@ -1436,14 +1436,14 @@ if($mybb->input['action'] == "add_post_tool")
     {
         var checked = '';
         
-        document.getElementsByClassName(id+'s_check').each(function(e)
+        $$('.'+id+'s_check').each(function(e)
         {
             if(e.checked == true)
             {
                 checked = e.value;
             }
         });
-        document.getElementsByClassName(id+'s').each(function(e)
+        $$('.'+id+'s').each(function(e)
         {
         	Element.hide(e);
         });

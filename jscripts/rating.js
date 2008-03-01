@@ -1,7 +1,7 @@
 var Rating = {
 	init: function()
 	{
-		var rating_elements = document.getElementsByClassName('star_rating');
+		var rating_elements = $$('.star_rating');
 		rating_elements.each(function(rating_element) {
 			var elements = Element.getElementsBySelector(rating_element, 'li a');
 			if(Element.hasClassName(rating_element, 'star_rating_notrated'))
@@ -106,7 +106,7 @@ var Rating = {
 				$('current_rating_' + element_id).innerHTML = request.responseText.match(/<average>(.*)<\/average>/)[1];
 			}
 
-			var rating_elements = document.getElementsByClassName('star_rating');
+			var rating_elements = $$('.star_rating');
 			rating_elements.each(function(rating_element) {
 				var elements = Element.getElementsBySelector(rating_element, 'li a');
 				elements.each(function(element) {

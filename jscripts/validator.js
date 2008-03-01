@@ -220,7 +220,7 @@ FormValidator.prototype = {
 			this.validateField(validation_field.key, 0, 1);
 		}.bind(this));
 
-		errorFields = document.getElementsByClassName("invalid_field");
+		errorFields = $$(".invalid_field");
 		if(errorFields.length > 0)
 		{
 			// Focus on field with first error

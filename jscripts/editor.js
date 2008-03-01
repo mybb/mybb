@@ -1244,8 +1244,8 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
-
-		smilies = Element.getElementsByClassName($(id), "smilie");
+		
+		var smilies = $$('.smilie');
 
 		if(smilies.length > 0)
 		{

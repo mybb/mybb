@@ -7926,7 +7926,7 @@ To: {$to_recipients}
 					function toggleRepeats()
 					{
 						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-						document.getElementsByClassName('repeats_type').each(function(e)
+						$$('.repeats_type').each(function(e)
 						{
 							Element.hide(e);
 						});
@@ -8354,7 +8354,7 @@ To: {$to_recipients}
 					function toggleRepeats()
 					{
 						var repeats = $('repeats').options[$('repeats').selectedIndex].value;
-						document.getElementsByClassName('repeats_type').each(function(e)
+						$$('.repeats_type').each(function(e)
 						{
 							Element.hide(e);
 						});
@@ -8940,14 +8940,14 @@ To: {$to_recipients}
 					function checkType()
 					{
 						var checked = '';
-						document.getElementsByClassName('types_check').each(function(e)
+						$$('.types_check').each(function(e)
 						{
 							if(e.checked == true)
 							{
 								checked = e.value;
 							}
 						});
-						document.getElementsByClassName('types').each(function(e)
+						$$('.types').each(function(e)
 						{
 							Element.hide(e);
 						});

@@ -25,7 +25,7 @@ inlineEditor.prototype = {
 			this.spinnerImage = options.spinnerImage;
 		}
 
-		this.elements = document.getElementsByClassName(options.className);
+		this.elements = $$('.'+options.className);
 		if(this.elements)
 		{
 			this.elements.each(function(element) {
