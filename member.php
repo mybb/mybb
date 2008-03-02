@@ -947,7 +947,7 @@ else if($mybb->input['action'] == "logout")
 		error($lang->error_notloggedout);
 	}
 	// Otherwise, check logoutkey
-	else if($mybb->input['logoutkey'] != $mybb->user['logoutkey'])
+	else if(!$mybb->input['sid'] && $mybb->input['logoutkey'] != $mybb->user['logoutkey'])
 	{
 		error($lang->error_notloggedout);
 	}
