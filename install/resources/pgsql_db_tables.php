@@ -316,9 +316,11 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
 
 $tables[] = "CREATE TABLE mybb_massemails (
 	mid serial,
+	uid int NOT NULL default '0',
 	subject varchar(200) NOT NULL default '',
 	message text NOT NULL,
 	htmlmessage text NOT NULL,
+	type tinyint(1) NOT NULL default '0',
 	format tinyint(1) NOT NULL default '0',
 	dateline bigint(30) NOT NULL default '0',
 	senddate bigint(30) NOT NULL default '0',

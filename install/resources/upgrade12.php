@@ -338,6 +338,7 @@ function upgrade12_dbchanges2()
 
 	$bd->write_query("CREATE TABLE ".TABLE_PREFIX."massemails (
 		mid int unsigned NOT NULL auto_increment,
+		uid int unsigned NOT NULL default '0',
 		subject varchar(200) NOT NULL default '',
 		message text NOT NULL,
 		htmlmessage text NOT NULL,

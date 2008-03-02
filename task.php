@@ -51,8 +51,8 @@ if(PHP_SAPI == "cli")
 else
 {
 	// Send our fake gif image (clear 1x1 transparent image)
-	header("Content-type: image/gif");
-	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
+	//header("Content-type: image/gif");
+	//echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 	
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
 	if($mybb->settings['useshutdownfunc'] != 0 || $mybb->use_shutdown == true)

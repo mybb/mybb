@@ -524,6 +524,8 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "run")
 {
+	ignore_user_abort(true);
+	@set_time_limit(0);
 	$plugins->run_hooks("admin_tools_tasks_run");
 	
 	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");

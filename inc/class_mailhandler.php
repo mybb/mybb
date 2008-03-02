@@ -88,8 +88,10 @@ class MailHandler
 	 * @param string from email.
 	 * @param string charset of email.
 	 * @param string headers of email.
+	 * @param string format of the email (HTML, plain text, or both?).
+	 * @param string plain text version of the email.
 	 */
-	function build_message($to, $subject, $message, $from="", $charset="", $headers="")
+	function build_message($to, $subject, $message, $from="", $charset="", $headers="", $format="text", $message_text="")
 	{
 		global $parser, $lang, $mybb;
 		
@@ -109,8 +111,9 @@ class MailHandler
 		{
 			$this->set_charset($charset);
 		}
+		$this->parse_format = $format;
 		$this->set_common_headers();
-		$this->set_message($message);
+		$this->set_message($message, $message_text);
 
 	}
 
@@ -138,11 +141,11 @@ class MailHandler
 	 *
 	 * @param string message
 	 */
-	function set_message($message)
+	function set_message($message, $message_text="")
 	{		
-		if($this->parse_format == "html")
+		if($this->parse_format == "html" || $this->parse_format == "both")
 		{
-			$this->set_html_headers($message);
+			$this->set_html_headers($message, $message_text);
 		}
 		else
 		{
@@ -186,8 +189,13 @@ class MailHandler
 	 *
 	 * @param string message
 	 */
-	function set_html_headers($message)
+	function set_html_headers($message, $message_text="")
 	{
+		if(!$message_text)
+		{
+			$message_text = strip_tags($message);
+		}
+		
 		$mime_boundary = "=_NextPart".md5(TIME_NOW);
 
 		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}";
@@ -196,7 +204,7 @@ class MailHandler
 		$this->message .= "--{$mime_boundary}{$this->delimiter}";
 		$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
 		$this->message .= "Content-Transfer-Encoding: 7bit{$this->delimiter}{$this->delimiter}";
-		$this->message .= strip_tags($message)."{$this->delimiter}{$this->delimiter}";
+		$this->message .= $message_text."{$this->delimiter}{$this->delimiter}";
 		
 		$this->message .= "--{$mime_boundary}{$this->delimiter}{$this->delimiter}";
 		$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
@@ -212,7 +220,7 @@ class MailHandler
 	function set_common_headers()
 	{
 		global $mybb;
-		
+
 		// Build mail headers
 		if(!trim($this->from))
 		{

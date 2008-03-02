@@ -96,4 +96,16 @@
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
+	<task>
+		<title>Mass Mail</title>
+		<description><![CDATA[Automatically sends any queued mass mailings. ]]></description>
+		<file>massmail</file>
+		<minute>30,59</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
 </tasks>

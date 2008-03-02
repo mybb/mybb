@@ -331,6 +331,7 @@ $tables[] = "CREATE TABLE mybb_joinrequests (
 
 $tables[] = "CREATE TABLE mybb_massemails (
 	mid int unsigned NOT NULL auto_increment,
+	uid int unsigned NOT NULL default '0',
 	subject varchar(200) NOT NULL default '',
 	message text NOT NULL,
 	htmlmessage text NOT NULL,

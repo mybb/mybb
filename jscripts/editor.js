@@ -1245,7 +1245,7 @@ messageEditor.prototype = {
 			return false;
 		}
 		
-		var smilies = $$('.smilie');
+		var smilies = $(id).select('.smilie');
 
 		if(smilies.length > 0)
 		{

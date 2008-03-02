@@ -380,7 +380,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
  * @param string The chracter set being used to send this email.
  * @param boolean Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
  */
-function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false)
+function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="")
 {
 	global $mybb;
 	static $mail;
@@ -426,7 +426,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 	}
 	
 	// Build and send
-	$mail->build_message($to, $subject, $message, $from, $charset, $headers);
+	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text);
 	return $mail->send();
 }
 
