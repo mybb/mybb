@@ -1048,7 +1048,7 @@ if($mybb->input['action'] == "send")
 					}
 
 					$new_email = array(
-						"uid" => $mybb->input['uid'],
+						"uid" => $mybb->user['uid'],
 						"subject" => $db->escape_string($mybb->input['subject']),
 						"message" => $db->escape_string($mybb->input['message']),
 						"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
