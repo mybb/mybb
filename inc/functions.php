@@ -758,8 +758,9 @@ function redirect($url, $message="", $title="")
 	{
 		$title = $mybb->settings['bbname'];
 	}
-
-	if($mybb->settings['redirects'] == 1 && $mybb->user['showredirect'] != 0)
+	
+	// Show redirects only if both ACP and UCP settings are enabled, or ACP is enabled, and user is a guest.
+	if($mybb->settings['redirects'] == 1 && ($mybb->user['showredirect'] != 0 || !$mybb->user['uid']))
 	{
 		$url = str_replace("&amp;", "&", $url);
 		$url = htmlspecialchars($url);
@@ -1304,7 +1305,7 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
  * @param int The forum ID (0 assumes global)
  * @param string The action tyring to be performed. (blank assumes any action at all)
  * @param int The user ID (0 assumes current user)
- * @return yes|no Returns yes if the user has permission, no if they do not
+ * @return bool Returns true if the user has permission, false if they do not
  */
 function is_moderator($fid="0", $action="", $uid="0")
 {

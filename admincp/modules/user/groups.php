@@ -589,14 +589,14 @@ if($mybb->input['action'] == "add")
 		{
 			$errors[] = $lang->error_missing_title;
 		}
+		
+		if(my_strpos($mybb->input['namestyle'], "{username}") === false)
+		{
+			$errors[] = $lang->error_missing_namestyle_username;
+		}
 
 		if(!$errors)
 		{
-			if(my_strpos($mybb->input['namestyle'], "{username}") === false)
-			{
-				$mybb->input['namestyle'] = "{username}";
-			}
-
 			if($mybb->input['stars'] < 1)
 			{
 				$mybb->input['stars'] = 0;
@@ -716,6 +716,11 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_missing_title;
 		}
+		
+		if(my_strpos($mybb->input['namestyle'], "{username}") === false)
+		{
+			$errors[] = $lang->error_missing_namestyle_username;
+		}
 
 		if(!$errors)
 		{
@@ -738,11 +743,6 @@ if($mybb->input['action'] == "edit")
 			if($usergroup['type'] == 1)
 			{
 				$mybb->input['type'] = 1;
-			}
-
-			if(my_strpos($mybb->input['namestyle'], "{username}") === false)
-			{
-				$mybb->input['namestyle'] = "{username}";
 			}
 
 			if($mybb->input['stars'] < 1)

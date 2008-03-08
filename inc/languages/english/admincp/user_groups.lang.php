@@ -145,6 +145,7 @@ $l['error_invalid_join_request'] = "You have selected an invalid join request.";
 $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_already_leader'] = "The user is already a leader of this user group.";
 $l['error_invalid_group_leader'] = "You specified an invalid group leader.";
+$l['error_missing_namestyle_username'] = "The username style must contain {username}";
 
 $l['success_group_created'] = "The new user group has successfully been created.";
 $l['success_group_updated'] = "The user group has successfully been updated.";

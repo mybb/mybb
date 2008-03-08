@@ -175,11 +175,35 @@ if($mybb->input['action'] == "results")
 	if($search['resulttype'] == "threads")
 	{
 		$threadcount = 0;
+		
+		// Moderators can view unapproved threads
+		$query = $db->simple_select("moderators", "fid", "uid='{$mybb->user['uid']}'");
+		if($mybb->usergroup['issupermod'] == 1)
+		{
+			// Super moderators (and admins)
+			$unapproved_where = "t.visible>-1";
+		}
+		elseif($db->num_rows($query))
+		{
+			// Normal moderators
+			$moderated_forums = '0';
+			while($forum = $db->fetch_array($query))
+			{
+				$moderated_forums .= ','.$forum['fid'];
+			}
+			$unapproved_where = "(t.visible>0 OR (t.visible=0 AND t.fid IN ({$moderated_forums})))";
+		}
+		else
+		{
+			// Normal users
+			$unapproved_where = 't.visible>0';
+		}
+		
 		// If we have saved WHERE conditions, execute them
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -201,7 +225,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND t.visible>0 AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -221,7 +245,7 @@ if($mybb->input['action'] == "results")
 			SELECT t.*, u.username AS userusername
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
-			WHERE $where_conditions AND t.visible>0 AND t.closed NOT LIKE 'moved|%'
+			WHERE $where_conditions AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -258,6 +282,12 @@ if($mybb->input['action'] == "results")
 			$bgcolor = alt_trow();
 			$folder = '';
 			$prefix = '';
+			
+			// Unapproved colour
+			if(!$thread['visible'])
+			{
+				$bgcolor = 'trow_shaded';
+			}
 
 			if($thread['userusername'])
 			{
@@ -491,11 +521,35 @@ if($mybb->input['action'] == "results")
 			}
 			$where_conditions = "p.pid IN (".$search['posts'].")";
 		}
+		
+		// Moderators can view unapproved threads
+		$query = $db->simple_select("moderators", "fid", "uid='{$mybb->user['uid']}'");
+		if($mybb->usergroup['issupermod'] == 1)
+		{
+			// Super moderators (and admins)
+			$unapproved_where = "t.visible>-1 AND p.visible>-1";
+		}
+		elseif($db->num_rows($query))
+		{
+			// Normal moderators
+			$moderated_forums = '0';
+			while($forum = $db->fetch_array($query))
+			{
+				$moderated_forums .= ','.$forum['fid'];
+			}
+			$unapproved_where = "((t.visible>0 AND p.visible>0) OR ((p.visible=0 OR t.visible>-1) AND t.fid IN ({$moderated_forums})))";
+		}
+		else
+		{
+			// Normal users
+			$unapproved_where = 't.visible>0 AND p.visible>0';
+		}
+		
 		$query = $db->query("
 			SELECT COUNT(p.pid) AS resultcount
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE $where_conditions  AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%'
+			WHERE {$where_conditions} AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%'
 			{$limitsql}
 		");
 		$count = $db->fetch_array($query);
@@ -511,7 +565,7 @@ if($mybb->input['action'] == "results")
 			SELECT p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE $where_conditions AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' 
+			WHERE {$where_conditions} AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' 
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -546,13 +600,17 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE $where_conditions AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%'
+			WHERE $where_conditions AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
 		while($post = $db->fetch_array($query))
 		{
 			$bgcolor = alt_trow();
+			if(!$post['visible'])
+			{
+				$bgcolor = 'trow_shaded';
+			}
 			if($post['userusername'])
 			{
 				$post['username'] = $post['userusername'];
