@@ -159,6 +159,7 @@ $l['invalid_username'] = "The username you entered was invalid. Please ensure yo
 $l['error_useralreadybanned'] = "This user is already banned. You cannot ban a user more than once.";
 $l['error_cannotbanuser'] = "You cannot ban this user because they have higher permissions than you. Please contact your administrator if you wish to ban this user.";
 $l['error_cannotbanself'] = "You cannot ban yourself. Please enter another username.";
+$l['error_no_perm_to_ban'] = "You do not have permission to ban this user.";
 $l['error_nobanreason'] = "You did not enter a reason for this ban. Please enter a valid reason below.";
 $l['error_nobangroup'] = "You did not select a valid group to move this user to.";
 $l['edit_ban'] = "Edit Ban";

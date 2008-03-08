@@ -2408,7 +2408,12 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	{
 		$errors[] = $lang->error_cannotbanself;
 	}
-		
+	
+	if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+	{
+		$errors[] = $lang->error_no_perm_to_ban;
+	}
+	
 	// Check for an incoming reason
 	if(!$mybb->input['banreason'])
 	{

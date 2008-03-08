@@ -138,7 +138,7 @@ class DataHandler
 			if(is_array($error['data']))
 			{
 				array_unshift($error['data'], $lang->$lang_string);
-				$errors[] = call_user_func_array("sprintf", $error['data']);
+				$errors[] = call_user_func_array(array($lang, "sprintf"), $error['data']);
 			}
 			else
 			{

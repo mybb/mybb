@@ -484,8 +484,8 @@ if($mybb->input['action'] == "add")
 
 	$form_container = new FormContainer($lang->required_profile_info);
 	$form_container->output_row($lang->username." <em>*</em>", "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
-	$form_container->output_row($lang->password, "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password')), 'password');
-	$form_container->output_row($lang->confirm_password, "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
+	$form_container->output_row($lang->password." <em>*</em>", "", $form->generate_password_box('password', $mybb->input['password'], array('id' => 'password')), 'password');
+	$form_container->output_row($lang->confirm_password." <em>*</em>", "", $form->generate_password_box('confirm_password', $mybb->input['confirm_password'], array('id' => 'confirm_new_password')), 'confirm_new_password');
 	$form_container->output_row($lang->email_address." <em>*</em>", "", $form->generate_text_box('email', $mybb->input['email'], array('id' => 'email')), 'email');
 
 	$display_group_options[0] = $lang->use_primary_user_group;
@@ -744,6 +744,15 @@ if($mybb->input['action'] == "edit")
 			{
 				$user_info = $userhandler->update_user();
 				$db->update_query("users", $extra_user_updates, "uid='{$user['uid']}'");
+				
+				// if we're updating the user's signature preferences, do so now
+				if($mybb->input['update_posts'] == 'enable' || $mybb->input['update_posts'] == 'disable')
+				{
+					$update_signature = array(
+						'includesig' => ($mybb->input['update_posts'] == 'enable' ? 1 : 0)
+					);
+					$db->update_query("posts", $update_signature, "uid='{$user['uid']}'");
+				}
 				
 				$plugins->run_hooks("admin_user_users_edit_commit");
 
