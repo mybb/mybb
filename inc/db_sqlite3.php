@@ -780,7 +780,10 @@ class DB_SQLite3
 	 */
 	function show_create_table($table)
 	{
+		$old_tbl_prefix = $this->table_prefix;
+		$this->set_table_prefix("");
 		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}' ORDER BY type DESC, name");
+		$this->set_table_prefix($old_tbl_prefix);
 		
 		return $this->fetch_field($query, 'sql');
 	}
@@ -793,7 +796,10 @@ class DB_SQLite3
 	 */
 	function show_fields_from($table)
 	{
+		$old_tbl_prefix = $this->table_prefix;
+		$this->set_table_prefix("");
 		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}'");
+		$this->set_table_prefix($old_tbl_prefix);
 		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
 
 		preg_match('#\((.*)\)#s', $table, $matches);

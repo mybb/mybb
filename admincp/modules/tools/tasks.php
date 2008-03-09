@@ -495,17 +495,48 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 
 	if($mybb->input['action'] == "enable")
 	{
-		$nextrun = fetch_next_run($task);
-		$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
-		$cache->update_tasks();
+	
+		if($task['file'] == "backupdb" || $task['file'] == "checktables")
+		{
+			// User clicked no
+			if($mybb->input['no'])
+			{
+				admin_redirect("index.php?module=tools/tasks");
+			}
 		
-		$plugins->run_hooks("admin_tools_tasks_enable_commit");
-		
-		// Log admin action
-		log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
-		
-		flash_message($lang->success_task_enabled, 'success');
-		admin_redirect("index.php?module=tools/tasks");
+			if($mybb->request_method == "post")
+			{
+				$nextrun = fetch_next_run($task);
+				$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
+				$cache->update_tasks();
+				
+				$plugins->run_hooks("admin_tools_tasks_enable_commit");
+				
+				// Log admin action
+				log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+				
+				flash_message($lang->success_task_enabled, 'success');
+				admin_redirect("index.php?module=tools/tasks");
+			}
+			else
+			{
+				$page->output_confirm_action("index.php?module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}", $lang->confirm_task_enable);
+			}
+		}
+		else
+		{
+			$nextrun = fetch_next_run($task);
+			$db->update_query("tasks", array("nextrun" => $nextrun, "enabled" => 1), "tid='{$task['tid']}'");
+			$cache->update_tasks();
+			
+			$plugins->run_hooks("admin_tools_tasks_enable_commit");
+			
+			// Log admin action
+			log_admin_action($task['tid'], $task['title'], $mybb->input['action']);
+			
+			flash_message($lang->success_task_enabled, 'success');
+			admin_redirect("index.php?module=tools/tasks");
+		}
 	}
 	else
 	{

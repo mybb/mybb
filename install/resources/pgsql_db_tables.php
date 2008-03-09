@@ -911,7 +911,8 @@ $tables[] = "CREATE TABLE mybb_users (
   moderationtime bigint NOT NULL default '0',
   suspendposting int NOT NULL default '0',
   suspensiontime bigint NOT NULL default '0',
-  coppauser int(1) NOT NULL default '0'
+  coppauser int(1) NOT NULL default '0',
+  classicpostbit int(1) NOT NULL default '0',
   PRIMARY KEY (uid)
 );";
 

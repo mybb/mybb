@@ -72,5 +72,6 @@ $l['success_task_disabled'] = "The specified task has now been disabled.";
 $l['success_task_run'] = "The specified task has been run.";
 
 $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled task?";
+$l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via a cron (Please see the <a href=\"http://wiki.mybboard.net/\" target=\"_blank\">MyBB Wiki</a> for more information). Continue?";
 
 ?>
