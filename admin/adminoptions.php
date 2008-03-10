@@ -38,7 +38,7 @@ if($mybb->input['action'] == "do_updateprefs")
 	$options = array(
 		"limit" => "1"
 	);
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'", $options);
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='{$mybb->user['uid']}'", $options);
 	$adminoptions = $db->fetch_array($query);
 	$sqlarray = array(
 		"notes" => $db->escape_string($mybb->input['notes']),
@@ -47,10 +47,11 @@ if($mybb->input['action'] == "do_updateprefs")
 	$plugins->run_hooks("admin_adminoptions_do_updateprefs");
 	if(isset($adminoptions['uid']))
 	{
-		$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='".$user['uid']."'");
+		$db->update_query(TABLE_PREFIX."adminoptions", $sqlarray, "uid='".$mybb->user['uid']."'");
 	}
 	else
 	{
+		$sqlarray['uid'] = $mybb->user['uid'];
 		$db->insert_query(TABLE_PREFIX."adminoptions", $sqlarray);
 	}
 	cpredirect("adminoptions.php?".SID, $lang->prefs_updated);
@@ -353,7 +354,7 @@ if($mybb->input['action'] == "adminpermissions")
 if($mybb->input['action'] == "updateprefs" || $mybb->input['action'] == "")
 {
 	
-	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='$user[uid]'");
+	$query = $db->simple_select(TABLE_PREFIX."adminoptions", "*", "uid='{$mybb->user['uid']}'");
 	$adminoptions = $db->fetch_array($query);
 
 	$plugins->run_hooks("admin_adminoptions_updateprefs");
