@@ -2014,7 +2014,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 						$selecteddone = 1;
 					}
 					
-					$forum['name'] = htmlspecialchars_uni($forum['name']);
+					$forum['name'] = htmlspecialchars_uni(strip_tags($forum['name']));
 
 					eval("\$forumjumpbits .= \"".$templates->get("forumjump_bit")."\";");
 

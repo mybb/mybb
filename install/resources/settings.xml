@@ -362,10 +362,19 @@
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="returnemail">
+			<title>Return Email</title>
+			<description><![CDATA[The email address for incoming replies to outgoing emails sent via the forums and is useful for no-reply accounts. Leave blank to use the admin email address instead.]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="contactlink">
 			<title>Contact Us Link</title>
 			<description><![CDATA[This will be used for the Contact Us link on the bottom of all the forum pages. Can either be an email address (using mailto:email@website.com) or a hyperlink.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -374,7 +383,7 @@
 		<setting name="bblanguage">
 			<title>Default Language</title>
 			<description><![CDATA[The default language that MyBB should use for guests and for users without a selected language in their user control panel.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[language]]></optionscode>
 			<settingvalue><![CDATA[english]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -383,7 +392,7 @@
 		<setting name="cookiedomain">
 			<title>Cookie Domain</title>
 			<description><![CDATA[The domain which cookies should be set to. This can remain blank. It should also start with a . so it covers all subdomains.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -392,7 +401,7 @@
 		<setting name="cookiepath">
 			<title>Cookie Path</title>
 			<description><![CDATA[The path which cookies are set to, we recommend setting this to the full directory path to your forums with a trailing slash.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
 			<isdefault>1</isdefault>

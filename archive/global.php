@@ -160,7 +160,7 @@ $lang->load("messages");
 $lang->load("archive");
 
 // Draw up the basic part of our naviagation
-$navbits[0]['name'] = $mybb->settings['bbname'];
+$navbits[0]['name'] = $mybb->settings['bbname_orig'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/archive/index.php";
 
 // Check banned ip addresses

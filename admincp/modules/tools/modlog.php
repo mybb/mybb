@@ -17,19 +17,105 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->mod_logs, "index.php?module=tools/modlog");
 
+$sub_tabs['mod_logs'] = array(
+	'title' => $lang->mod_logs,
+	'link' => "index.php?module=tools/modlog",
+	'description' => $lang->mod_logs_desc
+);
+$sub_tabs['prune_mod_logs'] = array(
+	'title' => $lang->prune_mod_logs,
+	'link' => "index.php?module=tools/modlog&amp;action=prune",
+	'description' => $lang->prune_mod_logs_desc
+);
+
 $plugins->run_hooks("admin_tools_modlog_begin");
+
+if($mybb->input['action'] == 'prune')
+{
+	$plugins->run_hooks("admin_tools_adminlog_prune");
+	
+	if($config['log_pruning']['mod_logs'])
+	{
+		flash_message($lang->error_logs_automatically_pruned, 'error');
+		admin_redirect("index.php?module=tools/modlog");
+	}
+	
+	if($mybb->request_method == 'post')
+	{
+		$where = 'dateline < '.(time()-(intval($mybb->input['older_than'])*86400));
+		
+		// Searching for entries by a particular user
+		if($mybb->input['uid'])
+		{
+			$where .= " AND uid='".intval($mybb->input['uid'])."'";
+		}
+		
+		// Searching for entries in a specific module
+		if($mybb->input['fid'])
+		{
+			$where .= " AND fid='".$db->escape_string($mybb->input['fid'])."'";
+		}
+		
+		$query = $db->delete_query("moderatorlog", $where);
+		$num_deleted = $db->affected_rows();
+		
+		$plugins->run_hooks("admin_tools_modlog_prune_commit");
+		
+		if(!is_array($forum_cache))
+		{
+			$forum_cache = cache_forums();
+		}
+		
+		// Log admin action
+		log_admin_action($mybb->input['older_than'], $mybb->input['uid'], $mybb->input['fid'], $num_deleted, $forum_cache[$mybb->input['fid']]['name']);
+
+		flash_message($lang->success_pruned_mod_logs, 'success');
+		admin_redirect("index.php?module=tools/modlog");
+	}
+	$page->add_breadcrumb_item($lang->prune_mod_logs, "index.php?module=tools/modlog&amp;action=prune");
+	$page->output_header($lang->prune_mod_logs);
+	$page->output_nav_tabs($sub_tabs, 'prune_mod_logs');
+	
+	// Fetch filter options
+	$sortbysel[$mybb->input['sortby']] = 'selected="selected"';
+	$ordersel[$mybb->input['order']] = 'selected="selected"';
+	
+	$user_options[''] = $lang->all_moderators;
+	$user_options['0'] = '----------';
+	
+	$query = $db->query("
+		SELECT DISTINCT l.uid, u.username
+		FROM ".TABLE_PREFIX."moderatorlog l
+		LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)
+		ORDER BY u.username ASC
+	");
+	while($user = $db->fetch_array($query))
+	{
+		$user_options[$user['uid']] = $user['username'];
+	}
+
+	$form = new Form("index.php?module=tools/modlog&amp;action=prune", "post");
+	$form_container = new FormContainer($lang->prune_moderator_logs);
+	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->input['fid'], array('id' => 'fid', 'main_option' => $lang->all_forums)), 'fid');	
+	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');
+	if(!$mybb->input['older_than'])
+	{
+		$mybb->input['older_than'] = '30';
+	}
+	$form_container->output_row($lang->date_range, "", $lang->older_than.$form->generate_text_box('older_than', $mybb->input['older_than'], array('id' => 'older_than', 'style' => 'width: 30px')).' days', 'older_than');
+	$form_container->end();
+	$buttons[] = $form->generate_submit_button($lang->prune_moderator_logs);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+	
+	$page->output_footer();
+}
 
 if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_modlog_start");
 	
 	$page->output_header($lang->mod_logs);
-	
-	$sub_tabs['mod_logs'] = array(
-		'title' => $lang->mod_logs,
-		'link' => "index.php?module=tools/modlog",
-		'description' => $lang->mod_logs_desc
-	);
 	
 	$page->output_nav_tabs($sub_tabs, 'mod_logs');
 	
@@ -208,7 +294,7 @@ if(!$mybb->input['action'])
 
 	$form = new Form("index.php?module=tools/modlog", "post");
 	$form_container = new FormContainer($lang->filter_moderator_logs);
-	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->input['fid'], array('id' => 'fid')), 'fid');	
+	$form_container->output_row($lang->forum, "", $form->generate_forum_select('fid', $mybb->input['fid'], array('id' => 'fid', 'main_option' => $lang->all_forums)), 'fid');	
 	$form_container->output_row($lang->forum_moderator, "", $form->generate_select_box('uid', $user_options, $mybb->input['uid'], array('id' => 'uid')), 'uid');	
 	$form_container->output_row($lang->sort_by, "", $form->generate_select_box('sortby', $sort_by, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $order_array, $order, array('id' => 'order'))." {$lang->order}", 'order');	
 	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $perpage, array('id' => 'perpage')), 'perpage');	

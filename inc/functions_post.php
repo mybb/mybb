@@ -394,9 +394,16 @@ function build_postbit($post, $post_type=0)
 	// For private messages, fetch the reply/forward/delete icons
 	if($post_type == 2 && $post['pmid'])
 	{
+		global $replyall;		
+		
 		eval("\$post['button_reply_pm'] = \"".$templates->get("postbit_reply_pm")."\";");
 		eval("\$post['button_forward_pm'] = \"".$templates->get("postbit_forward_pm")."\";");
 		eval("\$post['button_delete_pm'] = \"".$templates->get("postbit_delete_pm")."\";");
+		
+		if($replyall == true)
+		{
+			eval("\$post['button_replyall_pm'] = \"".$templates->get("postbit_replyall_pm")."\";");
+		}
 	}
 	
 	if(!$post_type)

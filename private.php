@@ -623,6 +623,12 @@ if($mybb->input['action'] == "read")
 		eval("\$bcc = \"".$templates->get("private_read_bcc")."\";");
 	}
 
+	$replyall = false;
+	if(count($to_recipients) > 1)
+	{
+		$replyall = true;
+	}
+	
 	if(count($to_recipients) > 0)
 	{
 		$to_recipients = implode(", ", $to_recipients);

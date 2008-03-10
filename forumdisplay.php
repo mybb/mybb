@@ -1112,7 +1112,7 @@ if($foruminfo['type'] != "c")
 		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
 
-	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni($foruminfo['name']));
+	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");
 }
@@ -1128,6 +1128,8 @@ else
 }
 
 $plugins->run_hooks("forumdisplay_end");
+
+$foruminfo['name'] = strip_tags($foruminfo['name']);
 
 eval("\$forums = \"".$templates->get("forumdisplay")."\";");
 output_page($forums);

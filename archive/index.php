@@ -216,12 +216,12 @@ switch($action)
 		// No threads and not a category? Error!
 		if($threadcount < 1 && $forum['type'] != 'c')
 		{
-			archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id)."");
+			archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id)."");
 			archive_error($lang->error_nothreads);
 		}
 
 		// Build the archive header.
-		archive_header($forum['name'], $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id.""), 1);
+		archive_header(strip_tags($forum['name']), $forum['name'], $mybb->settings['bburl']."/".get_forum_link($id.""), 1);
 
 		$plugins->run_hooks("archive_forum_start");
 
@@ -376,7 +376,7 @@ switch($action)
 	case "index":
 		// Build our forum listing
 		$forums = build_archive_forumbits(0);
-		archive_header("", $mybb->settings['bbname'], $mybb->settings['bburl']."/index.php");
+		archive_header("", $mybb->settings['bbname_orig'], $mybb->settings['bburl']."/index.php");
 
 		$plugins->run_hooks("archive_index_start");
 

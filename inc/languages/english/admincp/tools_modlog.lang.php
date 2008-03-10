@@ -9,6 +9,8 @@
 
 $l['mod_logs'] = "Moderator Logs";
 $l['mod_logs_desc'] = "Here you can view, prune, and search the moderator logs. These logs contain the actions any user may take (deletion of their own posts/threads) and all other actions by moderators.";
+$l['prune_mod_logs'] = "Prune Moderator Logs";
+$l['prune_mod_logs_desc'] = "Here you can prune the moderator logs matching a specified criteria.";
 
 $l['no_modlogs'] = "There are no log entries with the selected criteria.";
 
@@ -39,5 +41,12 @@ $l['desc'] = "Descending";
 
 $l['in'] = "in";
 $l['order'] = "order";
+
+$l['prune_moderator_logs'] = "Prune Moderator Logs";
+$l['date_range'] = "Date range:";
+$l['all_forums'] = "All Forums";
+
+$l['success_pruned_mod_logs'] = "Moderator logs pruned successfully.";
+$l['error_logs_automatically_pruned'] = "The moderator logs are already automatically pruned.";
 
 ?>

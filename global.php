@@ -466,7 +466,7 @@ eval("\$footer = \"".$templates->get("footer")."\";");
 
 // Add our main parts to the navigation
 $navbits = array();
-$navbits[0]['name'] = $mybb->settings['bbname'];
+$navbits[0]['name'] = $mybb->settings['bbname_orig'];
 $navbits[0]['url'] = $mybb->settings['bburl']."/index.php";
 
 // Set the link to the archive.

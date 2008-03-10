@@ -80,6 +80,7 @@ $l['reached_warning2'] = "To be able to receive messages you will need to delete
 $l['deny_receipt'] = "[deny receipt]";
 $l['viewing_pm'] = "Viewing PM:";
 $l['reply'] = "Reply";
+$l['reply_to_all'] = "Reply to All";
 $l['forward'] = "Forward";
 $l['compose_pm'] = "Compose a Private Message";
 $l['compose_to'] = "Recipients:";

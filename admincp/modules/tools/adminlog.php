@@ -105,18 +105,6 @@ if($mybb->input['action'] == 'prune')
 	{
 		$module_options[$module['module']] = str_replace(' ', ' -&gt; ', ucwords(str_replace('/', ' ', $module['module'])));
 	}
-	
-	$sort_by = array(
-		'dateline' => $lang->date,
-		'username' => $lang->username,
-		'forum' => $lang->forum_name,
-		'thread' => $lang->thread_subject
-	);
-	
-	$order_array = array(
-		'asc' => $lang->asc,
-		'desc' => $lang->desc
-	);
 
 	$form = new Form("index.php?module=tools/adminlog&amp;action=prune", "post");
 	$form_container = new FormContainer($lang->prune_administrator_logs);
@@ -434,6 +422,20 @@ function get_admin_log_action($logitem)
 			elseif($logitem['data'][1] && $logitem['data'][2])
 			{
 				$lang_string = 'admin_log_tools_adminlog_prune_user_module';
+			}
+			break;
+		case 'admin_log_tools_modlog_prune': // Moderator Log Pruning
+			if($logitem['data'][1] && !$logitem['data'][2])
+			{
+				$lang_string = 'admin_log_tools_modlog_prune_user';
+			}
+			elseif($logitem['data'][2] && !$logitem['data'][1])
+			{
+				$lang_string = 'admin_log_tools_modlog_prune_forum';
+			}
+			elseif($logitem['data'][1] && $logitem['data'][2])
+			{
+				$lang_string = 'admin_log_tools_modlog_prune_user_forum';
 			}
 			break;
 		case 'admin_log_tools_backupdb_backup': // Create backup

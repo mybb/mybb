@@ -228,7 +228,15 @@ class MailHandler
 		}
 
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
-		$this->headers .= "Return-Path: {$mybb->settings['adminemail']}{$this->delimiter}";
+		
+		if($mybb->settings['returnemail'])
+		{
+			$this->headers .= "Return-Path: {$mybb->settings['returnemail']}{$this->delimiter}";
+		}
+		else
+		{
+			$this->headers .= "Return-Path: {$mybb->settings['adminemail']}{$this->delimiter}";
+		}
 
 		if(isset($_SERVER['SERVER_NAME']))
 		{

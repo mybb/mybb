@@ -432,7 +432,7 @@ class DefaultForm
 						if(isset($options['depth']))
 							$sep = str_repeat("&nbsp;", $options['depth']);
 
-						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add}>".$sep.htmlspecialchars_uni($forum['name'])."</option>\n";
+						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add}>".$sep.htmlspecialchars_uni(strip_tags($forum['name']))."</option>\n";
 	
 						if($forum_cache[$forum['fid']])
 						{

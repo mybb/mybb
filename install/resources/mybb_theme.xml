@@ -4522,7 +4522,7 @@ body {
 				<div class="author_buttons float_left">
 					{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}
 				</div>
-				<div class="post_management_buttons float_right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
+				<div class="post_management_buttons float_right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}
 				</div>
 			</td>
 		</tr>
@@ -4564,7 +4564,7 @@ body {
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 			<tr valign="bottom">
 				<td align="left" ><span class="smalltext">{$post['button_email']}{$post['button_pm']}{$post['button_www']}{$post['button_find']}</span></td>
-				<td align="right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</td>
+				<td align="right">{$post['button_edit']}{$post['button_quickdelete']}{$post['button_quote']}{$post['button_multiquote']}{$post['button_report']}{$post['button_warn']}{$post['button_reply_pm']}{$post['button_replyall_pm']}{$post['button_forward_pm']}{$post['button_delete_pm']}</td>
 			</tr>
 		</table>
 	</td>
@@ -7665,6 +7665,7 @@ To: {$to_recipients}
 	<template name="postbit_delete_pm" version="1400"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
 	<template name="postbit_forward_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward"><img src="{$theme['imglangdir']}/pm_forward.gif" alt="{$lang->forward}" title="{$lang->forward_title}" /></a>]]></template>
 	<template name="postbit_reply_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
+	<template name="postbit_replyall_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall"><img src="{$theme['imglangdir']}/postbit_replyall.gif" alt="{$lang->reply_to_all}" title="{$lang->reply_title}" /></a>]]></template>
 	<template name="showthread_search" version="1400"><![CDATA[	<div class="float_right">
 		<form action="search.php" method="post">
 			<input type="hidden" name="action" value="thread" />
