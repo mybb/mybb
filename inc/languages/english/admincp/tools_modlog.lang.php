@@ -47,6 +47,5 @@ $l['date_range'] = "Date range:";
 $l['all_forums'] = "All Forums";
 
 $l['success_pruned_mod_logs'] = "Moderator logs pruned successfully.";
-$l['error_logs_automatically_pruned'] = "The moderator logs are already automatically pruned.";
 
 ?>

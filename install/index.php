@@ -719,7 +719,7 @@ function create_tables()
 
 \$config['log_pruning'] = array(
 	'admin_logs' => 365, // Administrator logs
-	'mod_logs' => 0, // Moderator logs
+	'mod_logs' => 365, // Moderator logs
 	'task_logs' => 30, // Scheduled task logs
 	'mail_logs' => 180, // Mail error logs
 	'user_mail_logs' => 180, // User mail logs

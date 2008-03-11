@@ -23,28 +23,6 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_tools_mailerrors_prune");
 	
-	// Begin criteria filtering
-	$additional_sql_criteria = '';
-	if($mybb->input['subject'])
-	{
-		$additional_sql_criteria .= " AND subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
-	}
-
-	if($mybb->input['fromaddress'])
-	{
-		$additional_sql_criteria .= " AND fromaddress LIKE '%".$db->escape_string($mybb->input['fromaddress'])."%'";
-	}
-
-	if($mybb->input['toaddress'])
-	{
-		$additional_sql_criteria .= " AND toaddress LIKE '%".$db->escape_string($mybb->input['toaddress'])."%'";
-	}
-
-	if($mybb->input['error'])
-	{
-		$additional_sql_criteria .= " AND error LIKE '%".$db->escape_string($mybb->input['error'])."%'";
-	}
-
 	if($mybb->input['delete_all'])
 	{
 		$db->delete_query("mailerrors");
@@ -55,7 +33,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 		// Log admin action
 		log_admin_action($num_deleted);
 		
-		flash_message($lang->all_logs_deleted, 'error');
+		flash_message($lang->all_logs_deleted, 'success');
 		admin_redirect("index.php?module=tools/mailerrors");
 	}
 	else if(is_array($mybb->input['log']))
@@ -73,7 +51,7 @@ if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
 	// Log admin action
 	log_admin_action($num_deleted);
 	
-	flash_message($lang->selected_logs_deleted, 'error');
+	flash_message($lang->selected_logs_deleted, 'success');
 	admin_redirect("index.php?module=tools/mailerrors");
 }
 

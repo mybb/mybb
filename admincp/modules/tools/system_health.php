@@ -33,7 +33,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		admin_redirect("index.php?module=tools/system_health");
 	}
 	
-	if($mybb->request_method == "post")
+	if($mybb->request_method == "post" || ($mybb->input['do'] == "all" && !empty($mybb->input['table'])))
 	{
 		@set_time_limit(0);
 		
@@ -172,7 +172,6 @@ if($mybb->input['action'] == "utf8_conversion")
 			}
 		}
 		
-		
 		$db->set_table_prefix($old_table_prefix);
 		
 		$plugins->run_hooks("admin_tools_system_health_utf8_conversion_commit");
@@ -181,6 +180,57 @@ if($mybb->input['action'] == "utf8_conversion")
 		log_admin_action($mybb->input['table']);
 		
 		flash_message($lang->sprintf($lang->success_table_converted, $mybb->input['table']), 'success');
+		
+		if($mybb->input['do'] == "all")
+		{
+			$old_table_prefix = $db->table_prefix;
+			$db->set_table_prefix('');
+		
+			$tables = $db->list_tables($mybb->config['database']['database']);
+			foreach($tables as $key => $tablename)
+			{		
+				if(substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
+				{
+					$table = $db->show_create_table($tablename);
+					preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
+					if(fetch_iconv_encoding($matches[1]) == 'utf-8' && $mybb->input['table'] != $tablename)
+					{
+						continue;
+					}
+					
+					$mybb_tables[$key] = $tablename;		
+				}
+			}
+			
+			asort($mybb_tables);
+			reset($mybb_tables);
+			
+			$is_next = false;
+			$nexttable = "";
+			
+			foreach($mybb_tables as $key => $tablename)
+			{
+				if($is_next == true)
+				{
+					$nexttable = $tablename;
+					break;
+				}
+				else if($mybb->input['table'] == $tablename)
+				{
+					$is_next = true;
+				}
+			}
+			
+			$db->set_table_prefix($old_table_prefix);
+			
+			if($nexttable)
+			{
+				$nexttable = $db->escape_string($nexttable);
+				admin_redirect("index.php?module=tools/system_health&action=utf8_conversion&do=all&table={$nexttable}");
+				exit;
+			}
+		}
+			
 		admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		
 		exit;
@@ -200,36 +250,92 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
 	
-	if($mybb->input['table'])
+	if($mybb->input['table'] || $mybb->input['do'] == "all")
 	{
 		$old_table_prefix = $db->table_prefix;
 		$db->set_table_prefix('');
 		
-		if(!$db->table_exists($db->escape_string($mybb->input['table'])))
+		if($mybb->input['do'] != "all" && !$db->table_exists($db->escape_string($mybb->input['table'])))
 		{
 			$db->set_table_prefix($old_table_prefix);
 			flash_message($lang->error_invalid_table, 'error');
 			admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		}
 		
-		$table = $db->show_create_table($db->escape_string($mybb->input['table']));
+		if($mybb->input['do'] == "all")
+		{
+			$tables = $db->list_tables($mybb->config['database']['database']);
+			foreach($tables as $key => $tablename)
+			{
+				if(substr($tablename, 0, strlen(TABLE_PREFIX)) == TABLE_PREFIX)
+				{
+					$table = $db->show_create_table($tablename);
+					preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
+					if(fetch_iconv_encoding($matches[1]) == 'utf-8')
+					{
+						continue;
+					}
+					$mybb_tables[$key] = $tablename;
+				}
+			}
+			
+			if(is_array($mybb_tables))
+			{
+				asort($mybb_tables);
+				reset($mybb_tables);
+				$nexttable = current($mybb_tables);
+				$table = $db->show_create_table($db->escape_string($nexttable));
+				$mybb->input['table'] = $nexttable;
+			}
+			else
+			{
+				flash_message($lang->success_all_tables_already_converted, 'success');
+				admin_redirect("index.php?module=tools/system_health");
+			}
+		}
+		else
+		{
+			$table = $db->show_create_table($db->escape_string($mybb->input['table']));
+		}
+		
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 		$charset = $matches[1];
 		
 		$form = new Form("index.php?module=tools/system_health&amp;action=utf8_conversion", "post", "utf8_conversion");
 		echo $form->generate_hidden_field("table", $mybb->input['table']);
 		
+		if($mybb->input['do'] == "all")
+		{
+			echo $form->generate_hidden_field("do", "all");
+		}
+		
 		$table = new Table;
 		
-		$table->construct_cell("<strong>".$lang->sprintf($lang->convert_to_utf8, $mybb->input['table'], $charset)."</strong>");
+		if($mybb->input['do'] == "all")
+		{
+			$table->construct_cell("<strong>".$lang->sprintf($lang->convert_all_to_utf, $charset)."</strong>");
+		}
+		else
+		{
+			$table->construct_cell("<strong>".$lang->sprintf($lang->convert_to_utf8, $mybb->input['table'], $charset)."</strong>");
+		}
+		
 		$table->construct_row();
 		
 		$table->construct_cell($lang->notice_proccess_long_time);
 		$table->construct_row();
 		
-		$table->output($lang->convert_table." {$mybb->input['table']}");
+		if($mybb->input['do'] == "all")
+		{
+			$table->output($lang->convert_tables);
+			$buttons[] = $form->generate_submit_button($lang->convert_database_tables);
+		}
+		else
+		{
+			$table->output($lang->convert_table.": {$mybb->input['table']}");
+			$buttons[] = $form->generate_submit_button($lang->convert_database_table);
+		}
 		
-		$buttons[] = $form->generate_submit_button($lang->convert_database_table);
 		$form->output_submit_wrapper($buttons);
 		
 		$form->end();
@@ -241,7 +347,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 	
-	$tables = $db->list_tables($config['database']['database']);
+	$tables = $db->list_tables($mybb->config['database']['database']);
 	
 	$old_table_prefix = $db->table_prefix;
 	$db->set_table_prefix('');
@@ -305,7 +411,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		$table->construct_row();
 	}
 	
-	$table->output($lang->utf8_conversion);
+	$table->output("<div style=\"float: right; text-decoration: underline\"><small><a href=\"index.php?module=tools/system_health&amp;action=utf8_conversion&amp;do=all\">({$lang->convert_all})</a></small></div><div>{$lang->utf8_conversion}</div>");
 	
 	$page->output_footer();
 }

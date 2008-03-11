@@ -34,11 +34,6 @@ if($mybb->input['action'] == 'prune')
 {
 	$plugins->run_hooks("admin_tools_adminlog_prune");
 	
-	if($config['log_pruning']['admin_logs'])
-	{
-		flash_message($lang->error_logs_automatically_pruned, 'error');
-		admin_redirect("index.php?module=tools/adminlog");
-	}
 	if(!is_super_admin($mybb->user['uid']))
 	{
 		flash_message($lang->cannot_perform_action_super_admin_general, 'error');

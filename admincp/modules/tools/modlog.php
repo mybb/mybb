@@ -34,12 +34,6 @@ if($mybb->input['action'] == 'prune')
 {
 	$plugins->run_hooks("admin_tools_adminlog_prune");
 	
-	if($config['log_pruning']['mod_logs'])
-	{
-		flash_message($lang->error_logs_automatically_pruned, 'error');
-		admin_redirect("index.php?module=tools/modlog");
-	}
-	
 	if($mybb->request_method == 'post')
 	{
 		$where = 'dateline < '.(time()-(intval($mybb->input['older_than'])*86400));

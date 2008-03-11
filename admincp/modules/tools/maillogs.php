@@ -19,6 +19,42 @@ $page->add_breadcrumb_item($lang->user_email_log, "index.php?module=tools/maillo
 
 $plugins->run_hooks("admin_tools_maillogs_begin");
 
+if($mybb->input['action'] == "prune" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("admin_tools_maillogs_prune");
+	
+	if($mybb->input['delete_all'])
+	{
+		$db->delete_query("maillogs");
+		$num_deleted = $db->affected_rows();
+		
+		$plugins->run_hooks("admin_tools_maillogs_prune_delete_all_commit");
+		
+		// Log admin action
+		log_admin_action($num_deleted);
+		
+		flash_message($lang->all_logs_deleted, 'success');
+		admin_redirect("index.php?module=tools/maillogs");
+	}
+	else if(is_array($mybb->input['log']))
+	{
+		$log_ids = implode(",", array_map("intval", $mybb->input['log']));
+		if($log_ids)
+		{
+			$db->delete_query("maillogs", "mid IN ({$log_ids})");
+			$num_deleted = $db->affected_rows();
+		}
+	}
+	
+	$plugins->run_hooks("admin_tools_mailerrors_prune_commit");
+	
+	// Log admin action
+	log_admin_action($num_deleted);
+	
+	flash_message($lang->selected_logs_deleted, 'success');
+	admin_redirect("index.php?module=tools/maillogs");
+}
+
 if($mybb->input['action'] == "view")
 {
 	$plugins->run_hooks("admin_tools_maillogs_view");
@@ -202,14 +238,13 @@ if(!$mybb->input['action'])
 		'link' => "index.php?module=tools/maillogs",
 		'description' => $lang->user_email_log_desc
 	);
-	$sub_tabs['prune_maillogs'] = array(
-		'title' => $lang->prune_user_email_log,
-		'link' => "index.php?module=tools/maillogs&amp;action=prune"
-	);
 
 	$page->output_nav_tabs($sub_tabs, 'maillogs');
+	
+	$form = new Form("index.php?module=tools/maillogs&amp;action=prune", "post");
 
 	$table = new Table;
+	$table->construct_header($form->generate_check_box("checkall", 1, '', array('class' => 'checkall')));
 	$table->construct_header($lang->subject, array("colspan" => 2));
 	$table->construct_header($lang->from, array("class" => "align_center", "width" => "20%"));
 	$table->construct_header($lang->to, array("class" => "align_center", "width" => "20%"));
@@ -227,6 +262,7 @@ if(!$mybb->input['action'])
 	");
 	while($log = $db->fetch_array($query))
 	{
+		$table->construct_cell($form->generate_check_box("log[{$log['mid']}]", 1, ''));
 		$log['subject'] = htmlspecialchars_uni($log['subject']);
 		$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
 		if($log['tid'] > 0)
@@ -284,11 +320,19 @@ if(!$mybb->input['action'])
 	
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_logs, array("colspan" => "5"));
+		$table->construct_cell($lang->no_logs, array("colspan" => "6"));
 		$table->construct_row();
+		$table->output($lang->user_email_log);
+	}
+	else
+	{
+		$table->output($lang->user_email_log);
+		$buttons[] = $form->generate_submit_button($lang->delete_selected, array('onclick' => "return confirm('{$lang->confirm_delete_logs}');"));
+		$buttons[] = $form->generate_submit_button($lang->delete_all, array('name' => 'delete_all', 'onclick' => "return confirm('{$lang->confirm_delete_all_logs}');"));
+		$form->output_submit_wrapper($buttons);
 	}
 	
-	$table->output($lang->user_email_log);
+	$form->end();
 	
 	$query = $db->simple_select("maillogs l", "COUNT(l.mid) as logs", "1=1 {$additional_sql_criteria}");
 	$total_rows = $db->fetch_field($query, "logs");

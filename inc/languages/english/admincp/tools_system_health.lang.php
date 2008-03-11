@@ -12,12 +12,16 @@ $l['utf8_conversion'] = "UTF-8 Conversion";
 $l['utf8_conversion_desc'] = "You are currently converting a database table to the UTF-8 format. Be aware that this proccess may take up to several hours depending on the size of your forum and this table. When the process is complete, you will be returned to the UTF-8 Conversion main page.";
 $l['utf8_conversion_desc2'] = "This tool checks the database tables to make sure they are in the UTF-8 format and allows you to convert them if they are not.";
 
+$l['convert_all'] = "Convert All";
 $l['converting_to_utf8'] = "MyBB is currently converting \"{1}\" table to UTF-8 language encoding from {2} encoding.";
 $l['convert_to_utf8'] = "You are about to convert the \"{1}\" table to UTF-8 language encoding from {2} encoding.";
+$l['convert_all_to_utf'] = "You are about to convert ALL tables to UTF-8 language encoding from {1} encoding.";
 $l['please_wait'] = "Please wait...";
 $l['converting_table'] = "Converting Table:";
-$l['convert_table'] = "Convert Table:";
+$l['convert_table'] = "Convert Table";
+$l['convert_tables'] = "Convert All Tables";
 $l['convert_database_table'] = "Convert Database Table";
+$l['convert_database_tables'] = "Convert All Database Tables";
 $l['table'] = "Table";
 $l['status'] = "Status";
 $l['convert_now'] = "Convert Now";
