@@ -117,18 +117,38 @@ class session
 	 */
 	function load_user($uid, $password='')
 	{
-		global $mybb, $db, $time, $lang, $mybbgroups, $session;
-
+		global $mybb, $db, $time, $lang, $mybbgroups, $session, $cache;
+		
+		// Read the banned cache
+		$bannedcache = $cache->read("banned");	
+		
+		// If the banned cache doesn't exist, update it and re-read it
+		if(!is_array($bannedcache))
+		{
+			$cache->update_banned();
+			$bannedcache = $cache->read("banned");
+		}
+		
 		$uid = intval($uid);
 		$query = $db->query("
-			SELECT u.*, f.*, b.dateline AS bandate, b.lifted AS banlifted, b.oldgroup AS banoldgroup, b.olddisplaygroup as banolddisplaygroup, b.oldadditionalgroups as banoldadditionalgroups
+			SELECT u.*, f.*
 			FROM ".TABLE_PREFIX."users u 
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid) 
-			LEFT JOIN ".TABLE_PREFIX."banned b ON (b.uid=u.uid) 
 			WHERE u.uid='$uid'
 			LIMIT 1
 		");
 		$mybb->user = $db->fetch_array($query);
+		
+		
+		if($bannedcache[$uid])
+		{
+			$banned_user = $bannedcache[$uid];
+			$mybb->user['bandate'] = $banned_user['dateline'];
+			$mybb->user['banlifted'] = $banned_user['lifted'];
+			$mybb->user['banoldgroup'] = $banned_user['oldgroup'];
+			$mybb->user['banolddisplaygroup'] = $banned_user['olddisplaygroup'];
+			$mybb->user['banoldadditionalgroups'] = $banned_user['oldadditionalgroups'];
+		}
 
 		// Check the password if we're not using a session
 		if($password != $mybb->user['loginkey'] || !$mybb->user['uid'])

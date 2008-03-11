@@ -379,6 +379,8 @@ function buildcaches()
 	$cache->update_tasks();
 	$cache->update_spiders();
 	$cache->update_bannedips();
+	$cache->update_banned();
+	$cache->update_birthdays();
 
 	$contents .= $lang->done."</p>";
 

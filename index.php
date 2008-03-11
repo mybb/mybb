@@ -170,13 +170,22 @@ if($mybb->settings['showbirthdays'] != 0)
 	$bdaytime = TIME_NOW;
 	$bdaydate = my_date("j-n", $bdaytime, '', 0);
 	$year = my_date("Y", $bdaytime, '', 0);
-
-	// Select all users who have their birthday today.
-	$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, birthday, birthdayprivacy", "birthday LIKE '$bdaydate-%'");
-	$comma = '';
-	while($bdayuser = $db->fetch_array($query))
+	
+	$bdaycache = $cache->read("birthdays");
+	
+	if(!is_array($bdaycache))
 	{
-		if($bdayuser['birthdayprivacy'] == 'all')
+		$cache->update_birthdays();
+		$bdaycache = $cache->read("birthdays");
+	}
+	
+	$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
+	$today_bdays = $bdaycache[$bdaydate]['users'];
+	
+	$comma = '';
+	if(!empty($today_bdays))
+	{
+		foreach($today_bdays as $bdayuser)
 		{
 			$bday = explode("-", $bdayuser['birthday']);
 			if($year > $bday['2'] && $bday['2'] != '')
@@ -193,23 +202,19 @@ if($mybb->settings['showbirthdays'] != 0)
 			++$bdaycount;
 			$comma = ", ";
 		}
-		else
+		
+		if($hiddencount > 0)
 		{
-			++$bdayhidden;
+			if($bdaycount > 0)
+			{
+				$bdays .= " - ";
+			}
+			$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
 		}
-	}
-	
-	if($bdayhidden > 0)
-	{
-		if($bdaycount > 0)
-		{
-			$bdays .= " - ";
-		}
-		$bdays .= "{$bdayhidden} {$lang->birthdayhidden}";
 	}
 	
 	// If there are one or more birthdays, show them.
-	if($bdaycount > 0 || $bdayhidden > 0)
+	if($bdaycount > 0 || $hiddencount > 0)
 	{
 		eval("\$birthdays = \"".$templates->get("index_birthdays")."\";");
 	}

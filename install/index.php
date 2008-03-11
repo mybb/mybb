@@ -1285,6 +1285,8 @@ function install_done()
 	$cache->update_tasks();
 	$cache->update_spiders();
 	$cache->update_bannedips();
+	$cache->update_banned();
+	$cache->update_birthdays();
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

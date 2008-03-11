@@ -694,6 +694,55 @@ class datacache
 		
 		$this->update("most_viewed_threads", $threads);
 	}
-
+	
+	function update_banned()
+	{
+		global $db;
+		
+		$bans = array();
+		
+		$query = $db->simple_select("banned");
+		while($ban = $db->fetch_array($query))
+		{
+			$bans[] = $ban;
+		}
+		
+		$this->update("banned", $bans);
+	}
+	
+	function update_birthdays()
+	{
+		global $db;
+		
+		$birthdays = array();
+		
+		// Get today, yesturday, and tomorrow's time (for different timezones)
+		$bdaytime = TIME_NOW;
+		$bdaydate = my_date("j-n", $bdaytime, '', 0);
+		$bdaydatetomorrow = my_date("j-n", ($bdaytime+86400), '', 0);
+		$bdaydateyesterday = my_date("j-n", ($bdaytime-86400), '', 0);
+		
+		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, birthday, birthdayprivacy", "birthday LIKE '$bdaydate-%' OR birthday LIKE '$bdaydateyesterday-%' OR birthday LIKE '$bdaydatetomorrow-%'");
+		while($bday = $db->fetch_array($query))
+		{
+			// Pop off the year from the birthday because we don't need it.
+			$bday['bday'] = explode('-', $bday['birthday']);
+			array_pop($bday['bday']);
+			$bday['bday'] = implode('-', $bday['bday']);
+			
+			if($bday['birthdayprivacy'] != 'all')
+			{
+				++$birthdays[$bday['bday']]['hiddencount'];
+				continue;
+			}
+			
+			// We don't need any excess caleries in the cache
+			unset($bday['birthdayprivacy']);
+			
+			$birthdays[$bday['bday']]['users'][] = $bday;
+		}
+		
+		$this->update("birthdays", $birthdays);
+	}
 }
 ?>

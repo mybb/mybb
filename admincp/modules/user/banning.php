@@ -81,6 +81,8 @@ if($mybb->input['action'] == "lift")
 		$db->update_query("users", $updated_group, "uid='{$ban['uid']}'");
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 		
+		$cache->update_banned();
+		
 		$plugins->run_hooks("admin_user_banning_lift_commit");
 		
 		// Log admin action
@@ -163,6 +165,8 @@ if($mybb->input['action'] == "edit")
 				'additionalgroups' => '',
 			);
 			$db->update_query('users', $update_array, "uid = {$ban['uid']}");
+			
+			$cache->update_banned();
 			
 			$plugins->run_hooks("admin_user_banning_edit_commit");
 
@@ -295,6 +299,8 @@ if(!$mybb->input['action'])
 			
 			$db->delete_query("forumsubscriptions", "uid = '{$user['uid']}'");
 			$db->delete_query("threadsubscriptions", "uid = '{$user['uid']}'");
+			
+			$cache->update_banned();
 			
 			$plugins->run_hooks("admin_user_banning_start_commit");
 

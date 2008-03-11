@@ -15,6 +15,20 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
+// Neat trick for caching our custom template(s)
+// Basically, when we include this from class_plugins.php we can do stuff in init.php, which is before we cache our templates
+// So we won't need an extra call to cache it.
+
+if(my_strpos($_SERVER['PHP_SELF'], 'showthread.php'))
+{
+	global $templatelist;
+	if(isset($templatelist))
+	{
+		$templatelist .= ',';
+	}
+	$templatelist .= 'akismet_postbit_spam';
+}
+
 $plugins->add_hook("datahandler_post_insert_thread", "akismet_verify");
 $plugins->add_hook("datahandler_post_insert_thread_post", "akismet_verify");
 $plugins->add_hook("datahandler_post_insert_post", "akismet_verify");
