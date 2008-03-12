@@ -830,7 +830,7 @@ function insert_templates()
 	$templateset = $db->insert_id();
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+	require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	import_theme_xml($contents, array("templateset" => -2));
 	$tid = build_new_theme("Default", null, 1);
 

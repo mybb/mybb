@@ -259,7 +259,7 @@ function upgradethemes()
 		) TYPE=MyISAM{$charset};");
 
 		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-		require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 		import_theme_xml($contents, array("templateset" => -2, "no_templates" => 1));
 		$tid = build_new_theme("Default", null, 1);
 
@@ -280,7 +280,7 @@ function upgradethemes()
 	{
 		// Re-import master
 		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-		require_once MYBB_ROOT."admincp/inc/functions_themes.php";
+		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 		
 		// Import master theme
 		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1));
