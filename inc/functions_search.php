@@ -18,7 +18,7 @@
  * @param int The current depth
  * @return string The forum select boxes
  */
-function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth="")
+function make_searchable_forums($pid="0", $selitem='', $addselect="1", $depth='')
 {
 	global $db, $pforumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $lang, $forumpass;
 	$pid = intval($pid);
@@ -52,10 +52,10 @@ function make_searchable_forums($pid="0", $selitem="", $addselect="1", $depth=""
 					}
 					else
 					{
-						$optionselected = "";
+						$optionselected = '';
 						$selecteddone = "0";
 					}
-					if($forum['password'] != "")
+					if($forum['password'] != '')
 					{
 						if($_COOKIE['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
 						{
@@ -102,7 +102,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 	if(!is_array($forum_cache))
 	{
 		// Get Forums
-		$query = $db->simple_select("forums", "fid,parentlist,password,active", "", array('order_by' => 'pid, disporder'));
+		$query = $db->simple_select("forums", "fid,parentlist,password,active", '', array('order_by' => 'pid, disporder'));
 		while($forum = $db->fetch_array($query))
 		{
 			$forum_cache[$forum['fid']] = $forum;
@@ -124,7 +124,7 @@ function get_unsearchable_forums($pid="0", $first=1)
 		}
 
 		$pwverified = 1;
-		if($forum['password'] != "")
+		if($forum['password'] != '')
 		{
 			if($_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
@@ -198,7 +198,7 @@ function clean_keywords_ft($keywords)
 		$keywords = explode("\"", $keywords);
 		foreach($keywords as $phrase)
 		{
-			if($phrase != "")
+			if($phrase != '')
 			{
 				if($inquote)
 				{
@@ -241,12 +241,12 @@ function clean_keywords_ft($keywords)
 		}
 
 	}
-	$keywords = "";
+	$keywords = '';
 	foreach($words as $word)
 	{
 		if($word == "or")
 		{
-			$boolean = "";
+			$boolean = '';
 		}
 		elseif($word == "and")
 		{
@@ -259,7 +259,7 @@ function clean_keywords_ft($keywords)
 		else
 		{
 			$keywords .= " ".$boolean.$word;
-			$boolean = "";
+			$boolean = '';
 		}
 	}
 	$keywords = "+".trim($keywords);
@@ -345,7 +345,7 @@ function perform_search_mysql($search)
 				// In the middle of a quote (phrase)
 				else
 				{
-					$phrase = str_replace(array("+", "-", "*"), "", trim($phrase));
+					$phrase = str_replace(array("+", "-", "*"), '', trim($phrase));
 					if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 					{
 						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
@@ -365,7 +365,7 @@ function perform_search_mysql($search)
 		}
 		else
 		{
-			$keywords = str_replace("\"", "", trim($keywords));
+			$keywords = str_replace("\"", '', trim($keywords));
 			if(my_strlen($keywords) < $mybb->settings['minsearchword'])
 			{
 				$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
@@ -378,8 +378,8 @@ function perform_search_mysql($search)
 			}
 		}
 	}
-	$post_usersql = "";
-	$thread_usersql = "";
+	$post_usersql = '';
+	$thread_usersql = '';
 	if($search['author'])
 	{
 		$userids = array();
@@ -402,12 +402,12 @@ function perform_search_mysql($search)
 		}
 		else
 		{
-			$userids = implode(",", $userids);
+			$userids = implode(',', $userids);
 			$post_usersql = " AND p.uid IN (".$userids.")";
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = "";
+	$datecut = '';
 	if($search['postdate'])
 	{
 		if($search['pddir'] == 0)
@@ -425,8 +425,8 @@ function perform_search_mysql($search)
 		$thread_datecut = " AND t.dateline $datecut";
 	}
 	
-	$thread_replycut = "";
-	if($search['numreplies'] != "" && $search['findthreadst'])
+	$thread_replycut = '';
+	if($search['numreplies'] != '' && $search['findthreadst'])
 	{
 		if(intval($search['findthreadst']) == 1)
 		{
@@ -438,7 +438,7 @@ function perform_search_mysql($search)
 		}
 	}
 
-	$forumin = "";
+	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
 	if($search['forums'] != "all")
@@ -495,7 +495,7 @@ function perform_search_mysql($search)
 			
 			if(count($fidlist) > 1)
 			{
-				$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
+				$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
 			}
 		}
 	}
@@ -516,7 +516,7 @@ function perform_search_mysql($search)
 		$tidsql = " AND t.tid='".intval($search['tid'])."'";
 	}
 	
-	$limitsql = "";
+	$limitsql = '';
 	if(intval($mybb->settings['searchhardlimit']) > 0)
 	{
 		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
@@ -535,7 +535,7 @@ function perform_search_mysql($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$forumin} {$thread_usersql} {$permsql} AND t.visible > '0' AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
+				WHERE 1=1 {$thread_datecut} {$thread_replycut} {$forumin} {$thread_usersql} {$permsql} AND t.visible >= '0' AND t.closed NOT LIKE 'moved|%' {$subject_lookin}
 				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
@@ -551,7 +551,7 @@ function perform_search_mysql($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 {$post_datecut} {$thread_replycut} {$forumin} {$post_usersql} {$permsql} {$tidsql} AND p.visible > '0' AND t.visible > '0' AND t.closed NOT LIKE 'moved|%' {$message_lookin}
+			WHERE 1=1 {$post_datecut} {$thread_replycut} {$forumin} {$post_usersql} {$permsql} {$tidsql} AND p.visible >= '0' AND t.visible >= '0' AND t.closed NOT LIKE 'moved|%' {$message_lookin}
 			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
@@ -563,8 +563,8 @@ function perform_search_mysql($search)
 		{
 			error($lang->error_nosearchresults);
 		}
-		$threads = implode(",", $threads);
-		$posts = implode(",", $posts);
+		$threads = implode(',', $threads);
+		$posts = implode(',', $posts);
 
 	}
 	// Searching only thread titles
@@ -574,7 +574,7 @@ function perform_search_mysql($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$forumin} {$thread_usersql} {$permsql} AND t.visible > '0' {$subject_lookin}
+			WHERE 1=1 {$thread_datecut} {$thread_replycut} {$forumin} {$thread_usersql} {$permsql} AND t.visible >= '0' {$subject_lookin}
 			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
@@ -590,23 +590,23 @@ function perform_search_mysql($search)
 			error($lang->error_nosearchresults);
 		}
 
-		$threads = implode(",", $threads);
-		$firstposts = implode(",", $firstposts);
+		$threads = implode(',', $threads);
+		$firstposts = implode(',', $firstposts);
 		if($firstposts)
 		{
-			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible > '0' {$limitsql}");
+			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible >= '0' {$limitsql}");
 			while($post = $db->fetch_array($query))
 			{
 				$posts[$post['pid']] = $post['pid'];
 			}
-			$posts = implode(",", $posts);
+			$posts = implode(',', $posts);
 		}
 	}
 	return array(
 		"searchtype" => $searchtype,
 		"threads" => $threads,
 		"posts" => $posts,
-		"querycache" => ""
+		"querycache" => ''
 	);
 }
 
@@ -650,7 +650,7 @@ function perform_search_mysql_ft($search)
 				$split_words = preg_split("#\s{1,}#", $phrase, -1);
 				foreach($split_words as $word)
 				{
-					$word = str_replace(array("+", "-", "*"), "", $word);
+					$word = str_replace(array("+", "-", "*"), '', $word);
 					if(!$word)
 					{
 						continue;
@@ -668,7 +668,7 @@ function perform_search_mysql_ft($search)
 			}
 			else
 			{
-				$phrase = str_replace(array("+", "-", "*"), "", $phrase);
+				$phrase = str_replace(array("+", "-", "*"), '', $phrase);
 				if(my_strlen($phrase) < $mybb->settings['minsearchword'])
 				{
 					$all_too_short = true;
@@ -690,8 +690,8 @@ function perform_search_mysql_ft($search)
 		$message_lookin = "AND MATCH(message) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
 		$subject_lookin = "AND MATCH(subject) AGAINST('".$db->escape_string($keywords)."' IN BOOLEAN MODE)";
 	}
-	$post_usersql = "";
-	$thread_usersql = "";
+	$post_usersql = '';
+	$thread_usersql = '';
 	if($search['author'])
 	{
 		$userids = array();
@@ -716,12 +716,12 @@ function perform_search_mysql_ft($search)
 		}
 		else
 		{
-			$userids = implode(",", $userids);
+			$userids = implode(',', $userids);
 			$post_usersql = " AND p.uid IN (".$userids.")";
 			$thread_usersql = " AND t.uid IN (".$userids.")";
 		}
 	}
-	$datecut = "";
+	$datecut = '';
 	if($search['postdate'])
 	{
 		if($search['pddir'] == 0)
@@ -739,8 +739,8 @@ function perform_search_mysql_ft($search)
 		$thread_datecut = " AND t.dateline $datecut";
 	}
 	
-	$thread_replycut = "";
-	if($search['numreplies'] != "" && $search['findthreadst'])
+	$thread_replycut = '';
+	if($search['numreplies'] != '' && $search['findthreadst'])
 	{
 		if(intval($search['findthreadst']) == 1)
 		{
@@ -752,7 +752,7 @@ function perform_search_mysql_ft($search)
 		}
 	}
 
-	$forumin = "";
+	$forumin = '';
 	$fidlist = array();
 	$searchin = array();
 	if($search['forums'] != "all")
@@ -802,7 +802,7 @@ function perform_search_mysql_ft($search)
 			
 			if(count($fidlist) > 1)
 			{
-				$forumin = " AND t.fid IN (".implode(",", $fidlist).")";
+				$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
 			}
 		}
 	}
@@ -823,7 +823,7 @@ function perform_search_mysql_ft($search)
 		$tidsql = " AND t.tid='".intval($search['tid'])."'";
 	}
 	
-	$limitsql = "";
+	$limitsql = '';
 	if(intval($mybb->settings['searchhardlimit']) > 0)
 	{
 		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
@@ -842,7 +842,7 @@ function perform_search_mysql_ft($search)
 			$query = $db->query("
 				SELECT t.tid, t.firstpost
 				FROM ".TABLE_PREFIX."threads t
-				WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
+				WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>=0 AND t.closed NOT LIKE 'moved|%' $subject_lookin
 				{$limitsql}
 			");
 			while($thread = $db->fetch_array($query))
@@ -859,7 +859,7 @@ function perform_search_mysql_ft($search)
 			SELECT p.pid, p.tid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql $tidsql AND p.visible>0 AND t.visible>0 AND t.closed NOT LIKE 'moved|%' $message_lookin
+			WHERE 1=1 $post_datecut $thread_replycut $forumin $post_usersql $permsql $tidsql AND p.visible>=0 AND t.visible>=0 AND t.closed NOT LIKE 'moved|%' $message_lookin
 			{$limitsql}
 		");
 		while($post = $db->fetch_array($query))
@@ -871,8 +871,8 @@ function perform_search_mysql_ft($search)
 		{
 			error($lang->error_nosearchresults);
 		}
-		$threads = implode(",", $threads);
-		$posts = implode(",", $posts);
+		$threads = implode(',', $threads);
+		$posts = implode(',', $posts);
 
 	}
 	// Searching only thread titles
@@ -882,7 +882,7 @@ function perform_search_mysql_ft($search)
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
-			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>0 $subject_lookin
+			WHERE 1=1 $thread_datecut $thread_replycut $forumin $thread_usersql $permsql AND t.visible>=0 $subject_lookin
 			{$limitsql}
 		");
 		while($thread = $db->fetch_array($query))
@@ -898,23 +898,23 @@ function perform_search_mysql_ft($search)
 			error($lang->error_nosearchresults);
 		}
 
-		$threads = implode(",", $threads);
-		$firstposts = implode(",", $firstposts);
+		$threads = implode(',', $threads);
+		$firstposts = implode(',', $firstposts);
 		if($firstposts)
 		{
-			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible > '0' {$limitsql}");
+			$query = $db->simple_select("posts", "pid", "pid IN ($firstposts) AND visible >= '0' {$limitsql}");
 			while($post = $db->fetch_array($query))
 			{
 				$posts[$post['pid']] = $post['pid'];
 			}
-			$posts = implode(",", $posts);
+			$posts = implode(',', $posts);
 		}
 	}
 	return array(
 		"searchtype" => $searchtype,
 		"threads" => $threads,
 		"posts" => $posts,
-		"querycache" => ""
+		"querycache" => ''
 	);
 }
 ?>
