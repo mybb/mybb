@@ -91,7 +91,7 @@ class MyLanguage
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
-		if($area == "admin" || $area == "admincp") // temporary: "|| $area == "admincp""
+		if($area == "admin" || $area == "admin.old") // temporary: "|| $area == "admin.old""
 		{
 			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
