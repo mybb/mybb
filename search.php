@@ -15,6 +15,7 @@ define("IGNORE_CLEAN_VARS", "sid");
 
 $templatelist = "search,forumdisplay_thread_gotounread,search_results_threads_thread,search_results_threads,search_results_posts,search_results_posts_post";
 $templatelist .= ",multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,forumdisplay_thread_multipage_more,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage";
+$templatelist .= ",search_results_posts_inlinecheck,search_results_posts_nocheck,search_results_threads_inlinecheck,search_results_threads_nocheck,search_results_inlinemodcol,search_results_posts_inlinemoderation_custom_tool,search_results_posts_inlinemoderation_custom,search_results_posts_inlinemoderation,search_results_threads_inlinemoderation_custom_tool,search_results_threads_inlinemoderation_custom,search_results_threads_inlinemoderation";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
 require_once MYBB_ROOT."inc/functions_search.php";
@@ -170,6 +171,22 @@ if($mybb->input['action'] == "results")
 	}
 
 	$fpermissions = forum_permissions();
+	
+	// Inline Mod Column for moderators
+	$inlinemodcol = $inlinecookie = '';
+	$is_mod = $is_supermod = false;
+	if($mybb->usergroup['issupermod'])
+	{
+		$is_supermod = true;
+	}
+	if($is_supermod || is_moderator())
+	{
+		eval("\$inlinemodcol = \"".$templates->get("search_results_inlinemodcol")."\";");
+		$inlinecookie = "inlinemod_search".$sid;
+		$inlinecount = 0;
+		$is_mod = true;
+		$return_url = 'search.php?'.htmlspecialchars_uni($_SERVER['QUERY_STRING']);
+	}
 
 	// Show search results as 'threads'
 	if($search['resulttype'] == "threads")
@@ -482,6 +499,17 @@ if($mybb->input['action'] == "results")
 			}
 
 			$inline_edit_tid = $thread['tid'];
+			
+			// Inline thread moderation
+			$inline_mod_checkbox = '';
+			if($is_supermod || is_moderator($thread['fid']))
+			{
+				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_inlinecheck")."\";");
+			}
+			elseif($is_mod)
+			{
+				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_threads_nocheck")."\";");
+			}
 
 			$plugins->run_hooks("search_results_thread");
 			eval("\$results .= \"".$templates->get("search_results_threads_thread")."\";");
@@ -502,6 +530,34 @@ if($mybb->input['action'] == "results")
 		{
 			$upper = $threadcount;
 		}
+		
+		// Inline Thread Moderation Options
+		if($is_mod)
+		{
+			$customthreadtools = '';
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite3":
+				case "sqlite2":
+					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
+					break;
+				default:
+					$query = $db->simple_select("modtools", "tid, name", "type='t' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
+			}
+			
+			while($tool = $db->fetch_array($query))
+			{
+				eval("\$customthreadtools .= \"".$templates->get("search_results_threads_inlinemoderation_custom_tool")."\";");
+			}
+			// Build inline moderation dropdown
+			if(!empty($customthreadtools))
+			{
+				eval("\$customthreadtools = \"".$templates->get("search_results_threads_inlinemoderation_custom")."\";");
+			}
+			eval("\$inlinemod = \"".$templates->get("search_results_threads_inlinemoderation")."\";");
+		}
+		
 		eval("\$searchresults = \"".$templates->get("search_results_threads")."\";");
 		$plugins->run_hooks("search_results_end");
 		output_page($searchresults);
@@ -756,6 +812,17 @@ if($mybb->input['action'] == "results")
 			
 			$thread_url = get_thread_link($post['tid']);
 			$post_url = get_post_link($post['pid'], $post['tid']);
+			
+			// Inline post moderation
+			$inline_mod_checkbox = '';
+			if($is_supermod || is_moderator($post['fid']))
+			{
+				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_inlinecheck")."\";");
+			}
+			elseif($is_mod)
+			{
+				eval("\$inline_mod_checkbox = \"".$templates->get("search_results_posts_nocheck")."\";");
+			}
 
 			$plugins->run_hooks("search_results_post");
 			eval("\$results .= \"".$templates->get("search_results_posts_post")."\";");
@@ -768,6 +835,33 @@ if($mybb->input['action'] == "results")
 		if($upper > $postcount)
 		{
 			$upper = $postcount;
+		}
+		
+		// Inline Post Moderation Options
+		if($is_mod)
+		{
+			$customthreadtools = $customposttools = '';
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite3":
+				case "sqlite2":
+					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (','||forums||',' LIKE '%,-1,%' OR forums='')");
+					break;
+				default:
+					$query = $db->simple_select("modtools", "tid, name, type", "type='p' AND (CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')");
+			}
+			
+			while($tool = $db->fetch_array($query))
+			{
+				eval("\$customposttools .= \"".$templates->get("search_results_posts_inlinemoderation_custom_tool")."\";");
+			}
+			// Build inline moderation dropdown
+			if(!empty($customposttools))
+			{
+				eval("\$customposttools = \"".$templates->get("search_results_posts_inlinemoderation_custom")."\";");
+			}
+			eval("\$inlinemod = \"".$templates->get("search_results_posts_inlinemoderation")."\";");
 		}
 
 		eval("\$searchresults = \"".$templates->get("search_results_posts")."\";");

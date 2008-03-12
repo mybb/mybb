@@ -58,6 +58,24 @@ $l['post_thread'] = "Thread:";
 $l['post_subject'] = "Post:";
 $l['replies2'] = "replies";
 
+$l['inline_thread_moderation'] = "Inline Thread Moderation:";
+$l['close_threads'] = "Close Threads";
+$l['open_threads'] = "Open Threads";
+$l['stick_threads'] = "Stick Threads";
+$l['unstick_threads'] = "Unstick Threads";
+$l['delete_threads'] = "Delete Threads";
+$l['move_threads'] = "Move Threads";
+$l['approve_threads'] = "Approve Threads";
+$l['unapprove_threads'] = "Unapprove Threads";
+$l['inline_delete_posts'] = "Delete Posts";
+$l['inline_merge_posts'] = "Merge Posts";
+$l['inline_split_posts'] = "Split Posts";
+$l['inline_approve_posts'] = "Approve Posts";
+$l['inline_unapprove_posts'] = "Unapprove Posts";
+$l['inline_post_moderation'] = "Inline Post Moderation:";
+$l['inline_go'] = "Go";
+$l['clear'] = "Clear";
+
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 
 $l['error_minsearchlength'] = "One or more of your search terms were shorter than the minimum length. The minimum search term length is {1} characters.<br /><br />If you're trying to search for an entire phrase, enclose it within double quotes. For example \"The quick brown fox jumps over the lazy dog\".";

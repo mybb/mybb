@@ -96,7 +96,7 @@ class CustomModeration extends Moderation
 	 *
 	 * @param array Moderation information
 	 * @param mixed Post IDs
-	 * @param array Thread IDs
+	 * @param array Thread IDs (in order of dateline ascending)
 	 * @return boolean true
 	 */
 	function execute_post_moderation($post_options, $pids, $tid)
@@ -106,6 +106,8 @@ class CustomModeration extends Moderation
 		if(is_array($tid))
 		{
 			$tid = intval($tid[0]); // There's only 1 thread when doing inline post moderation
+			// The thread chosen is the first thread in the array of tids.
+			// It is recommended that this be the tid of the oldest post
 		}
 
 		// Get the information about thread
@@ -123,20 +125,20 @@ class CustomModeration extends Moderation
 		{
 			if($post_options['mergeposts'] == 1) // Merge posts
 			{
-				$this->merge_posts($pids, $tid);
+				$this->merge_posts($pids);
 			}
 
 			if($post_options['approveposts'] == 'approve') // Approve posts
 			{
-				$this->approve_posts($pids, $tid, $thread['fid']);
+				$this->approve_posts($pids);
 			}
 			elseif($post_options['approveposts'] == 'unapprove') // Unapprove posts
 			{
-				$this->unapprove_posts($pids, $tid, $thread['fid']);
+				$this->unapprove_posts($pids);
 			}
 			elseif($post_options['approveposts'] == 'toggle') // Toggle post visibility
 			{
-				$this->toggle_post_visibility($pids, $tid, $thread['fid']);
+				$this->toggle_post_visibility($pids);
 			}
 
 			if($post_options['splitposts'] > 0 || $post_options['splitposts'] == -2) // Split posts

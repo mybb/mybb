@@ -3959,6 +3959,7 @@ body {
 <input type="hidden" name="action" value="do_multideleteposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
+<input type="hidden" name="url" value="{$return_url}" />
 </form>
 {$footer}
 </body>
@@ -5730,6 +5731,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}
 		</span>
 	</td>
+	{$inline_mod_checkbox}
 </tr>]]></template>
 		<template name="search_results_threads" version="120"><![CDATA[<html>
 		<head>
@@ -5745,7 +5747,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</table>
 		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 			<tr>
-				<td colspan="8" class="thead">
+				<td colspan="9" class="thead">
 					<strong>{$lang->search_results}</strong>
 				</td>
 			</tr>
@@ -5755,13 +5757,15 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
 				<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a> {$orderarrow['views']}</strong></span></td>
 				<td class="tcat" align="center" width="200"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=lastpost&amp;order=desc">{$lang->lastpost}</a> {$orderarrow['lastpost']}</strong></span></td>
+				{$inlinemodcol}
 			</tr>
 			{$results}
 		</table>
 		{$inline_edit_js}
 		<table width="100%" align="center" border="0">
 			<tr>
-				<td align="right" valign="top">{$multipage}</td>
+				<td align="left" valign="top">{$multipage}</td>
+				<td align="right" valign="top">{$inlinemod}</td>
 			</tr>
 		</table>
 		{$footer}
@@ -5782,6 +5786,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td align="center" class="{$bgcolor}"><a href="javascript:MyBB.whoPosted({$post['tid']});">{$post['thread_replies']}</a></td>
 	<td align="center" class="{$bgcolor}">{$post['thread_views']}</td>
 	<td class="{$bgcolor}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$posted}</span></td>
+	{$inline_mod_checkbox}
 </tr>]]></template>
 		<template name="reputation_add" version="1400"><![CDATA[<html>
 <head>
@@ -5861,7 +5866,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
-		<td colspan="8" class="thead">
+		<td colspan="9" class="thead">
 			<strong>{$lang->search_results}</strong>
 		</td>
 	</tr>
@@ -5872,12 +5877,14 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=replies&amp;order=desc">{$lang->replies}</a> {$orderarrow['replies']}</strong></span></td>
 		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=views&amp;order=desc">{$lang->views}</a></strong> {$orderarrow['views']}</span></td>
 		<td class="tcat" align="center"><span class="smalltext"><strong><a href="{$sorturl}&amp;sortby=dateline&amp;order=desc">{$lang->posted}</a> {$orderarrow['dateline']}</strong></span></td>
+		{$inlinemodcol}
 	</tr>
 	{$results}
 </table>
 <table width="100%" align="center" border="0">
 	<tr>
-		<td align="right" valign="top">{$multipage}</td>
+		<td align="left" valign="top">{$multipage}</td>
+		<td align="right" valign="top">{$inlinemod}</td>
 	</tr>
 </table>
 {$footer}
@@ -7200,6 +7207,7 @@ To: {$to_recipients}
 <input type="hidden" name="action" value="do_multideletethreads" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="threads" value="{$inlineids}" />
+<input type="hidden" name="url" value="{$return_url}" />
 </form>
 {$footer}
 </body>
@@ -7229,6 +7237,7 @@ To: {$to_recipients}
 <input type="hidden" name="action" value="do_multimovethreads" />
 <input type="hidden" name="fid" value="{$fid}" />
 <input type="hidden" name="threads" value="{$inlineids}" />
+<input type="hidden" name="url" value="{$return_url}" />
 </form>
 {$footer}
 </body>
@@ -7258,6 +7267,7 @@ To: {$to_recipients}
 <input type="hidden" name="action" value="do_multimergeposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
+<input type="hidden" name="url" value="{$return_url}" />
 </form>
 {$footer}
 </body>
@@ -7293,6 +7303,7 @@ To: {$to_recipients}
 <input type="hidden" name="action" value="do_multisplitposts" />
 <input type="hidden" name="tid" value="{$tid}" />
 <input type="hidden" name="posts" value="{$inlineids}" />
+<input type="hidden" name="url" value="{$return_url}" />
 </form>
 {$footer}
 </body>
@@ -10338,5 +10349,76 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 	<template name="search_orderarrow" version="120"><![CDATA[<span class="smalltext">[<a href="{$sorturl}&amp;sortby={$sortby}&amp;order={$oppsortnext}">{$oppsort}</a>]</span>]]></template>
+	<template name="search_results_posts_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
+	<template name="search_results_posts_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
+	<template name="search_results_threads_inlinecheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="inlinemod_{$thread['tid']}" id="inlinemod_{$thread['tid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  /></td>]]></template>
+	<template name="search_results_threads_nocheck" version="120"><![CDATA[<td class="{$bgcolor}" align="center" style="white-space: nowrap">&nbsp;</td>]]></template>
+	<template name="search_results_inlinemodcol" version="120"><![CDATA[<td class="tcat" align="center">&nbsp;</td>]]></template>
+	<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
+	<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+	<template name="search_results_posts_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="tid" value="0" />
+<input type="hidden" name="searchid" value="{$sid}" />
+<input type="hidden" name="modtype" value="inlinepost" />
+<span class="smalltext"><strong>{$lang->inline_post_moderation}</strong></span>
+<select name="action">
+<optgroup label="{$lang->standard_mod_tools}">
+	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
+	<option value="multimergeposts">{$lang->inline_merge_posts}</option>
+	<option value="multisplitposts">{$lang->inline_split_posts}</option>
+	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
+	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
+</optgroup>
+{$customposttools}
+</select>
+<input type="submit" class="button" name="go" value="{$lang->go} ({$inlinecount})" id="inline_go" />&nbsp;
+<input type="button" class="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" />
+<input type="hidden" name="url" value="{$return_url}" />
+<input type="hidden" name="inlinetype" value="search" />
+</form>
+<script type="text/javascript">
+<!--
+	var go_text = "{$lang->inline_go}";
+	var inlineType = "search";
+	var inlineId = "{$sid}";
+// -->
+</script><br />]]></template>
+		<template name="search_results_threads_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
+		<template name="search_results_threads_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
+		<template name="search_results_threads_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<form action="moderation.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<input type="hidden" name="fid" value="0" />
+<input type="hidden" name="searchid" value="{$sid}" />
+<input type="hidden" name="modtype" value="inlinethread" />
+<span class="smalltext"><strong>{$lang->inline_thread_moderation}</strong></span>
+<select name="action">
+	<optgroup label="{$lang->standard_mod_tools}">
+		<option value="multiclosethreads">{$lang->close_threads}</option>
+		<option value="multiopenthreads">{$lang->open_threads}</option>
+		<option value="multistickthreads">{$lang->stick_threads}</option>
+		<option value="multiunstickthreads">{$lang->unstick_threads}</option>
+		<option value="multideletethreads">{$lang->delete_threads}</option>
+		<option value="multimovethreads">{$lang->move_threads}</option>
+		<option value="multiapprovethreads">{$lang->approve_threads}</option>
+		<option value="multiunapprovethreads">{$lang->unapprove_threads}</option>
+	</optgroup>
+	{$customthreadtools}
+</select>
+<input type="submit" class="button" name="go" value="{$lang->inline_go} ({$inlinecount})" id="inline_go" />&nbsp;
+<input type="button" onclick="javascript:inlineModeration.clearChecked();" value="{$lang->clear}" class="button" />
+<input type="hidden" name="url" value="{$return_url}" />
+<input type="hidden" name="inlinetype" value="search" />
+</form>
+<script type="text/javascript">
+<!--
+	var go_text = "{$lang->inline_go}";
+	var inlineType = "search";
+	var inlineId = '{$sid}';
+// -->
+</script>
+<br />]]></template>
 	</templates>
 </theme>

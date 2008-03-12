@@ -126,7 +126,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->mod_process);
 
-		redirect(get_thread_link($thread['tid']), $redirect);
+		moderation_redirect(get_thread_link($thread['tid']), $redirect);
 		break;
 
 	// Stick or unstick that post to the top bab!
@@ -158,7 +158,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->mod_process);
 
-		redirect(get_thread_link($thread['tid']), $redirect);
+		moderation_redirect(get_thread_link($thread['tid']), $redirect);
 		break;
 
 	// Remove redirects to a specific thread
@@ -177,7 +177,7 @@ switch($mybb->input['action'])
 		$moderation->remove_redirects($tid);
 
 		log_moderator_action($modlogdata, $lang->redirects_removed);
-		redirect(get_thread_link($thread['tid']), $lang->redirect_redirectsremoved);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_redirectsremoved);
 		break;
 
 	// Delete thread confirmation page
@@ -227,7 +227,7 @@ switch($mybb->input['action'])
 		$moderation->delete_thread($tid);
 
 		mark_reports($tid, "thread");
-		redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
+		moderation_redirect(get_forum_link($fid), $lang->redirect_threaddeleted);
 		break;
 
 	// Delete the poll from a thread confirmation page
@@ -286,7 +286,7 @@ switch($mybb->input['action'])
 
 		$moderation->delete_poll($poll['pid']);
 
-		redirect(get_thread_link($thread['tid']), $lang->redirect_polldeleted);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_polldeleted);
 		break;
 
 	// Approve a thread
@@ -309,7 +309,7 @@ switch($mybb->input['action'])
 
 		$moderation->approve_threads($tid, $fid);
 
-		redirect(get_thread_link($thread['tid']), $lang->redirect_threadapproved);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadapproved);
 		break;
 
 	// Unapprove a thread
@@ -332,7 +332,7 @@ switch($mybb->input['action'])
 
 		$moderation->unapprove_threads($tid, $fid);
 
-		redirect(get_thread_link($thread['tid']), $lang->redirect_threadunapproved);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadunapproved);
 		break;
 
 	// Delete selective posts in a thread
@@ -421,7 +421,7 @@ switch($mybb->input['action'])
 		}
 		$lang->deleted_selective_posts = $lang->sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
-		redirect($url, $lang->redirect_postsdeleted);
+		moderation_redirect($url, $lang->redirect_postsdeleted);
 		break;
 
 	// Merge selected posts selection screen
@@ -495,7 +495,7 @@ switch($mybb->input['action'])
 
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
-		redirect(get_thread_link($thread['tid']), $lang->redirect_mergeposts);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_mergeposts);
 		break;
 
 	// Move a thread
@@ -570,7 +570,7 @@ switch($mybb->input['action'])
 				break;
 		}
 
-		redirect(get_thread_link($newtid), $lang->redirect_threadmoved);
+		moderation_redirect(get_thread_link($newtid), $lang->redirect_threadmoved);
 		break;
 
 	// Thread notes editor
@@ -643,7 +643,7 @@ switch($mybb->input['action'])
 			"notes" => $db->escape_string($mybb->input['threadnotes']),
 		);
 		$db->update_query("threads", $sqlarray, "tid='$tid'");
-		redirect(get_thread_link($thread['tid']), $lang->redirect_threadnotesupdated);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadnotesupdated);
 		break;
 
 	// Lets look up the ip address of a post
@@ -778,7 +778,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->thread_merged);
 
-		redirect("showthread.php?tid=$tid", $lang->redirect_threadsmerged);
+		moderation_redirect("showthread.php?tid=$tid", $lang->redirect_threadsmerged);
 		break;
 
 	// Divorce the posts in this thread (Split!)
@@ -884,7 +884,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->thread_split);
 
-		redirect(get_thread_link($newtid), $lang->redirect_threadsplit);
+		moderation_redirect(get_thread_link($newtid), $lang->redirect_threadsplit);
 		break;
 		
 	// Delete Thread Subscriptions
@@ -900,23 +900,45 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->removed_subscriptions);
 
-		redirect(get_thread_link($thread['tid']), $lang->redirect_removed_subscriptions);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_removed_subscriptions);
 		break;
 
 	// Delete Threads - Inline moderation
 	case "multideletethreads":
 		add_breadcrumb($lang->nav_multi_deletethreads);
-		if(!is_moderator($fid, "candeleteposts"))
+		
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'candeleteposts'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'candeleteposts'))
+			{
+				error_no_permission();
+			}
+		}
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
+		
 		$inlineids = implode("|", $threads);
-		clearinline($fid, "forum");
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		$return_url = htmlspecialchars_uni($mybb->input['url']);
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deletethreads")."\";");
 		output_page($multidelete);
 		break;
@@ -927,11 +949,11 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "candeleteposts"))
+		$threadlist = explode("|", $mybb->input['threads']);
+		if(!is_moderator_by_tids($threadlist, "candeleteposts"))
 		{
 			error_no_permission();
 		}
-		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
 			$tid = intval($tid);
@@ -939,9 +961,16 @@ switch($mybb->input['action'])
 			$tlist[] = $tid;
 		}
 		log_moderator_action($modlogdata, $lang->multi_deleted_threads);
-		clearinline($fid, "forum");
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
 		mark_reports($tlist, "threads");
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsdeleted);
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsdeleted);
 		break;
 
 	// Open threads - Inline moderation
@@ -949,12 +978,25 @@ switch($mybb->input['action'])
 
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
-
-		if(!is_moderator($fid, "canopenclosethreads"))
+		
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canopenclosethreads'))
+			{
+				error_no_permission();
+			}
+		}
+
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
@@ -963,8 +1005,15 @@ switch($mybb->input['action'])
 		$moderation->open_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_opened_threads);
-		clearinline($fid, "forum");
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsopened);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsopened);
 		break;
 
 	// Close threads - Inline moderation
@@ -973,11 +1022,23 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
@@ -986,8 +1047,15 @@ switch($mybb->input['action'])
 		$moderation->close_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_closed_threads);
-		clearinline($fid, "forum");
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsclosed);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsclosed);
 		break;
 
 	// Approve threads - Inline moderation
@@ -996,11 +1064,23 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
@@ -1009,9 +1089,16 @@ switch($mybb->input['action'])
 		$moderation->approve_threads($threads, $fid);
 
 		log_moderator_action($modlogdata, $lang->multi_approved_threads);
-		clearinline($fid, "forum");
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
 		$cache->update_stats();
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsapproved);
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsapproved);
 		break;
 
 	// Unapprove threads - Inline moderation
@@ -1020,11 +1107,23 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
@@ -1033,9 +1132,16 @@ switch($mybb->input['action'])
 		$moderation->unapprove_threads($threads, $fid);
 
 		log_moderator_action($modlogdata, $lang->multi_unapproved_threads);
-		clearinline($fid, "forum");
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
 		$cache->update_stats();
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsunapproved);
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsunapproved);
 		break;
 
 	// Stick threads - Inline moderation
@@ -1044,11 +1150,23 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canopenclosethreads"))
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canopenclosethreads'))
+			{
+				error_no_permission();
+			}
+		}
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
@@ -1057,8 +1175,15 @@ switch($mybb->input['action'])
 		$moderation->stick_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_stuck_threads);
-		clearinline($fid, "forum");
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsstuck);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsstuck);
 		break;
 
 	// Unstick threads - Inline moderaton
@@ -1067,11 +1192,23 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canopenclosethreads"))
+		if(!empty($mybb->input['searchid']))
 		{
-			error_no_permission();
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canopenclosethreads'))
+			{
+				error_no_permission();
+			}
 		}
-		$threads = getids($fid, "forum");
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canopenclosethreads'))
+			{
+				error_no_permission();
+			}
+		}
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
@@ -1080,26 +1217,54 @@ switch($mybb->input['action'])
 		$moderation->unstick_threads($threads);
 
 		log_moderator_action($modlogdata, $lang->multi_unstuck_threads);
-		clearinline($fid, "forum");
-		redirect(get_forum_link($fid), $lang->redirect_inline_threadsunstuck);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
+		}
+		moderation_redirect(get_forum_link($fid), $lang->redirect_inline_threadsunstuck);
 		break;
 
 	// Move threads - Inline moderation
 	case "multimovethreads":
 		add_breadcrumb($lang->nav_multi_movethreads);
-		$threads = getids($fid, "forum");
+		
+		if(!empty($mybb->input['searchid']))
+		{
+			// From search page
+			$threads = getids($mybb->input['searchid'], 'search');
+			if(!is_moderator_by_tids($threads, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
+		else
+		{
+			$threads = getids($fid, 'forum');
+			if(!is_moderator($fid, 'canmanagethreads'))
+			{
+				error_no_permission();
+			}
+		}
+		
 		if(count($threads) < 1)
 		{
 			error($lang->error_inline_nothreadsselected);
 		}
 		$inlineids = implode("|", $threads);
-		clearinline($fid, "forum");
-
-		if(!is_moderator($fid, "canmanagethreads"))
+		if($mybb->input['inlinetype'] == 'search')
 		{
-			error_no_permission();
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($fid, 'forum');
 		}
 		$forumselect = build_forum_jump("", '', 1, '', 0, '', "moveto");
+		$return_url = htmlspecialchars_uni($mybb->input['url']);
 		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
 		output_page($movethread);
 		break;
@@ -1110,58 +1275,69 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		$moveto = intval($mybb->input['moveto']);
+		$threadlist = explode("|", $mybb->input['threads']);
+		if(!is_moderator_by_tids($threadlist, 'canmanagethreads'))
 		{
 			error_no_permission();
 		}
-		$moveto = intval($mybb->input['moveto']);
-		$threadlist = explode("|", $mybb->input['threads']);
 		foreach($threadlist as $tid)
 		{
 			$tids[] = intval($tid);
 		}
-		if(!is_moderator($moveto, "canmanagethreads") && !is_moderator($fid, "canmovetononmodforum"))
-		{
-			error_no_permission();
-		}
+		// Make sure moderator has permission to move to the new forum
 		$newperms = forum_permissions($moveto);
-		if($newperms['canview'] == 0 && !is_moderator($fid, "canmovetononmodforum"))
+		if(($newperms['canview'] == 0 || !is_moderator($moveto, 'canmanagethreads')) && !is_moderator_by_tids($tids, 'canmovetononmodforum'))
 		{
 			error_no_permission();
 		}
-		$query = $db->simple_select("forums", "*", "fid='$moveto'");
-		$newforum = $db->fetch_array($query);
+		
+		$newforum = get_forum($moveto);
 		if($newforum['type'] != "f")
 		{
 			error($lang->error_invalidforum);
-		}
-		if($thread['fid'] == $moveto)
-		{
-			error($lang->error_movetosameforum);
 		}
 
 		$moderation->move_threads($tids, $moveto);
 
 		log_moderator_action($modlogdata, $lang->multi_moved_threads);
 
-		redirect(get_forum_link($moveto), $lang->redirect_inline_threadsmoved);
+		moderation_redirect(get_forum_link($moveto), $lang->redirect_inline_threadsmoved);
 		break;
 
 	// Delete posts - Inline moderation
 	case "multideleteposts":
 		add_breadcrumb($lang->nav_multi_deleteposts);
-		if(!is_moderator($fid, "candeleteposts"))
+		
+		if($mybb->input['inlinetype'] == 'search')
 		{
-			error_no_permission();
+			$posts = getids($mybb->input['searchid'], 'search');
 		}
-		$posts = getids($tid, "thread");
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
+		
 		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
+		if(!is_moderator_by_pids($posts, "candeleteposts"))
+		{
+			error_no_permission();
+		}
 		$inlineids = implode("|", $posts);
-		clearinline($tid, "thread");
-
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		
+		$return_url = htmlspecialchars_uni($mybb->input['url']);
+		
 		eval("\$multidelete = \"".$templates->get("moderation_inline_deleteposts")."\";");
 		output_page($multidelete);
 		break;
@@ -1171,12 +1347,12 @@ switch($mybb->input['action'])
 
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
-
-		if(!is_moderator($fid, "candeleteposts"))
+		
+		$postlist = explode("|", $mybb->input['posts']);
+		if(!is_moderator_by_pids($postlist, "candeleteposts"))
 		{
 			error_no_permission();
 		}
-		$postlist = explode("|", $mybb->input['posts']);
 		$deletecount = 0;
 		foreach($postlist as $pid)
 		{
@@ -1200,23 +1376,40 @@ switch($mybb->input['action'])
 		}
 		$lang->deleted_selective_posts = $lang->sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
-		redirect($url, $lang->redirect_postsdeleted);
+		moderation_redirect($url, $lang->redirect_postsdeleted);
 		break;
 
 	// Merge posts - Inline moderation
 	case "multimergeposts":
 		add_breadcrumb($lang->nav_multi_mergeposts);
-		if(!is_moderator($fid, "canmanagethreads"))
+		
+		if($mybb->input['inlinetype'] == 'search')
 		{
-			error_no_permission();
+			$posts = getids($mybb->input['searchid'], 'search');
 		}
-		$posts = getids($tid, "thread");
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
 		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 		$inlineids = implode("|", $posts);
-		clearinline($tid, "thread");
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		
+		$return_url = htmlspecialchars_uni($mybb->input['url']);
 
 		eval("\$multimerge = \"".$templates->get("moderation_inline_mergeposts")."\";");
 		output_page($multimerge);
@@ -1228,11 +1421,13 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		$postlist = explode("|", $mybb->input['posts']);
+		
+		if(!is_moderator_by_pids($postlist, "canmanagethreads"))
 		{
 			error_no_permission();
 		}
-		$postlist = explode("|", $mybb->input['posts']);
+		
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
@@ -1243,49 +1438,81 @@ switch($mybb->input['action'])
 
 		mark_reports($plist, "posts");
 		log_moderator_action($modlogdata, $lang->merged_selective_posts);
-		redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsmerged);
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsmerged);
 		break;
 
 	// Split posts - Inline moderation
 	case "multisplitposts":
 		add_breadcrumb($lang->nav_multi_splitposts);
-		if(!is_moderator($fid, "canmanagethreads"))
+		
+		if($mybb->input['inlinetype'] == 'search')
 		{
-			error_no_permission();
+			$posts = getids($mybb->input['searchid'], 'search');
 		}
-		$query = $db->query("
-			SELECT p.*, u.*
-			FROM ".TABLE_PREFIX."posts p
-			LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-			WHERE tid='$tid'
-			ORDER BY dateline ASC
-		");
-		$numposts = $db->num_rows($query);
-		if($numposts <= "1")
+		else
 		{
-			error($lang->error_cantsplitonepost);
+			$posts = getids($tid, 'thread');
 		}
-		$posts = getids($tid, "thread");
+		
 		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
-		$pidin = '';
-		$comma = '';
-		foreach($posts as $pid)
+		
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
 		{
-			$pid = intval($pid);
-			$pidin .= "$comma'$pid'";
-			$comma = ",";
+			error_no_permission();
 		}
-		$query = $db->simple_select("posts", "*", "pid NOT IN($pidin) AND tid='$tid'");
-		$num = $db->num_rows($query);
-		if(!$num)
+		array_walk($posts, 'intval');
+		$pidin = implode(',', $posts);
+
+		// Make sure that we are not splitting a thread with one post
+		// Select number of posts in each thread that the splitted post is in
+		$query = $db->query("
+			SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."posts q)
+			WHERE p.tid=q.tid AND p.pid IN ($pidin)
+			GROUP BY p.pid
+			");
+		$threads = $pcheck = array();
+		while($tcheck = $db->fetch_array($query))
 		{
+			if(intval($tcheck['count']) <= 1)
+			{
+				error($lang->error_cantsplitonepost);
+			}
+			$threads[] = $pcheck[] = $tcheck['tid']; // Save tids for below
+		}
+
+		// Make sure that we are not splitting all posts in the thread
+		// The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
+		$query = $db->query("SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."posts q)
+			WHERE p.tid=q.tid AND p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
+			GROUP BY p.pid");
+		$pcheck2 = array();
+		while($tcheck = $db->fetch_array($query))
+		{
+			if($tcheck['count'] > 0)
+			{
+				$pcheck2[] = $tcheck['tid'];
+			}
+		}
+		if(count($pcheck2) != count($pcheck))
+		{
+			// One or more threads do not have posts after splitting
 			error($lang->error_cantsplitall);
 		}
+
 		$inlineids = implode("|", $posts);
-		clearinline($tid, "thread");
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
 		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
 		output_page($splitposts);
@@ -1297,16 +1524,18 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
-		{
-			error_no_permission();
-		}
 		$postlist = explode("|", $mybb->input['posts']);
 		foreach($postlist as $pid)
 		{
 			$pid = intval($pid);
 			$plist[] = $pid;
 		}
+		
+		if(!is_moderator_by_pids($plist, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
+		
 		if($mybb->input['moveto'])
 		{
 			$moveto = intval($mybb->input['moveto']);
@@ -1315,8 +1544,8 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->simple_select("forums", "fid", "fid='$moveto'");
-		if($db->num_rows($query) == 0)
+		$query = $db->simple_select("forums", "COUNT(fid) as count", "fid='$moveto'");
+		if($db->fetch_field($query, 'count') == 0)
 		{
 			error($lang->error_invalidforum);
 		}
@@ -1328,7 +1557,7 @@ switch($mybb->input['action'])
 		$lang->split_selective_posts = $lang->sprintf($lang->split_selective_posts, $pid_list, $newtid);
 		log_moderator_action($modlogdata, $lang->split_selective_posts);
 
-		redirect(get_thread_link($thread['tid']), $lang->redirect_threadsplit);
+		moderation_redirect(get_thread_link($newtid), $lang->redirect_threadsplit);
 		break;
 
 	// Approve posts - Inline moderation
@@ -1337,14 +1566,22 @@ switch($mybb->input['action'])
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
 
-		if(!is_moderator($fid, "canmanagethreads"))
+		if($mybb->input['inlinetype'] == 'search')
 		{
-			error_no_permission();
+			$posts = getids($mybb->input['searchid'], 'search');
 		}
-		$posts = getids($tid, "thread");
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
 		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
+		}
+		
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
 		}
 
 		$pids = array();
@@ -1353,11 +1590,18 @@ switch($mybb->input['action'])
 			$pids[] = intval($pid);
 		}
 
-		$moderation->approve_posts($pids, $tid, $fid);
+		$moderation->approve_posts($pids);
 
 		log_moderator_action($modlogdata, $lang->multi_approve_posts);
-		clearinline($tid, "thread");
-		redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsapproved);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsapproved);
 		break;
 
 	// Unapprove posts - Inline moderation
@@ -1365,27 +1609,43 @@ switch($mybb->input['action'])
 
 		// Verify incoming POST request
 		verify_post_check($mybb->input['my_post_key']);
-
-		if(!is_moderator($fid, "canmanagethreads"))
+		
+		if($mybb->input['inlinetype'] == 'search')
 		{
-			error_no_permission();
+			$posts = getids($mybb->input['searchid'], 'search');
 		}
-		$posts = getids($tid, "thread");
+		else
+		{
+			$posts = getids($tid, 'thread');
+		}
+		
 		if(count($posts) < 1)
 		{
 			error($lang->error_inline_nopostsselected);
 		}
 		$pids = array();
+		
+		if(!is_moderator_by_pids($posts, "canmanagethreads"))
+		{
+			error_no_permission();
+		}
 		foreach($posts as $pid)
 		{
 			$pids[] = intval($pid);
 		}
 
-		$moderation->unapprove_posts($pids, $tid, $fid);
+		$moderation->unapprove_posts($pids);
 
 		log_moderator_action($modlogdata, $lang->multi_unapprove_posts);
-		clearinline($tid, "thread");
-		redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsunapproved);
+		if($mybb->input['inlinetype'] == 'search')
+		{
+			clearinline($mybb->input['searchid'], 'search');
+		}
+		else
+		{
+			clearinline($tid, 'thread');
+		}
+		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_inline_postsunapproved);
 		break;
 	default:
 		require_once MYBB_ROOT."inc/class_custommoderation.php";
@@ -1398,7 +1658,14 @@ switch($mybb->input['action'])
 
 			if($tool['type'] == 't' && $mybb->input['modtype'] == 'inlinethread')
 			{
-				$tids = getids($fid, "forum");
+				if($mybb->input['inlinetype'] == 'search')
+				{
+					$tids = getids($mybb->input['searchid'], 'search');
+				}
+				else
+				{
+					$tids = getids($fid, "forum");
+				}
 				if(count($tids) < 1)
 				{
 					error($lang->error_inline_nopostsselected);
@@ -1406,9 +1673,18 @@ switch($mybb->input['action'])
 				$custommod->execute(intval($mybb->input['action']), $tids);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
-				clearinline($fid, "forum");
-				$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
-				redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
+				if($mybb->input['inlinetype'] == 'search')
+				{
+					clearinline($mybb->input['searchid'], 'search');
+					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
+					redirect($mybb->input['url'], $lang->redirect_customtool_search);
+				}
+				else
+				{
+					clearinline($fid, "forum");
+					$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
+					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
+				}
 				break;
 			}
 			elseif($tool['type'] == 't' && $mybb->input['modtype'] == 'thread')
@@ -1419,36 +1695,71 @@ switch($mybb->input['action'])
 				if($ret == 'forum')
 				{
 					$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
-					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
+					moderation_redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
 				}
 				else
 				{
 					$lang->redirect_customtool_thread = $lang->sprintf($lang->redirect_customtool_thread, $tool['name']);
-					redirect(get_thread_link($thread['tid']), $lang->redirect_customtool_thread);
+					moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_customtool_thread);
 				}
 				break;
 			}
 			elseif($tool['type'] == 'p' && $mybb->input['modtype'] == 'inlinepost')
 			{
-				$pids = getids($tid, "thread");
+				if($mybb->input['inlinetype'] == 'search')
+				{
+					$pids = getids($mybb->input['searchid'], 'search');
+				}
+				else
+				{
+					$pids = getids($tid, 'thread');
+				}
+				
 				if(count($pids) < 1)
 				{
 					error($lang->error_inline_nopostsselected);
 				}
-				$ret = $custommod->execute(intval($mybb->input['action']), $tid, $pids);
+				if(!is_moderator_by_pids($pids))
+				{
+					error_no_permission();
+				}
+				
+				// Get threads which are associated with the posts
+				$tids = array();
+				$options = array(
+					'order_by' => 'dateline',
+					'order_dir' => 'asc'
+					);
+				$query = $db->simple_select("posts", "DISTINCT tid", "pid IN ($pids)", $options);
+				while($row = $db->fetch_array($query))
+				{
+					$tids[] = $row['tid'];
+				}
+				
+				$ret = $custommod->execute(intval($mybb->input['action']), $tids, $pids);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
-				clearinline($tid, "thread");
-				if($ret == 'forum')
+				if($mybb->input['inlinetype'] == 'search')
 				{
-					$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
-					redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
+					clearinline($mybb->input['searchid'], 'search');
+					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
+					redirect($mybb->input['url'], $lang->redirect_customtool_search);
 				}
 				else
 				{
-					$lang->redirect_customtool_thread = $lang->sprintf($lang->redirect_customtool_thread, $tool['name']);
-					redirect(get_thread_link($tid), $lang->redirect_customtool_thread);
+					clearinline($tid, 'thread');
+					if($ret == 'forum')
+					{
+						$lang->redirect_customtool_forum = $lang->sprintf($lang->redirect_customtool_forum, $tool['name']);
+						moderation_redirect(get_forum_link($fid), $lang->redirect_customtool_forum);
+					}
+					else
+					{
+						$lang->redirect_customtool_thread = $lang->sprintf($lang->redirect_customtool_thread, $tool['name']);
+						moderation_redirect(get_thread_link($tid), $lang->redirect_customtool_thread);
+					}
 				}
+				
 				break;
 			}
 		}
@@ -1484,4 +1795,107 @@ function extendinline($id, $type)
 	setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
 }
 
+/**
+ * Checks if the current user is a moderator of all the posts specified
+ * 
+ * Note: If no posts are specified, this function will return true.  It is the
+ * responsibility of the calling script to error-check this case if necessary.
+ * 
+ * @param array Array of post IDs
+ * @param string Permission to check
+ * @returns bool True if moderator of all; false otherwise
+ */
+function is_moderator_by_pids($posts, $permission='')
+{
+	global $db, $mybb;
+	
+	// Speedy determination for supermods/admins and guests
+	if($mybb->usergroup['issupermod'])
+	{
+		return true;
+	}
+	elseif(!$mybb->user['uid'])
+	{
+		return false;
+	}
+	// Make an array of threads if not an array
+	if(!is_array($posts))
+	{
+		$posts = array($posts);
+	}
+	// Validate input
+	array_walk($posts, 'intval');
+	$posts[] = 0;
+	// Get forums
+	$posts_string = implode(',', $posts);
+	$query = $db->simple_select("posts", "DISTINCT fid", "pid IN ($posts_string)");
+	while($forum = $db->fetch_array($query))
+	{
+		if(!is_moderator($forum['fid'], $permission))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Checks if the current user is a moderator of all the threads specified
+ * 
+ * Note: If no threads are specified, this function will return true.  It is the
+ * responsibility of the calling script to error-check this case if necessary.
+ * 
+ * @param array Array of thread IDs
+ * @param string Permission to check
+ * @returns bool True if moderator of all; false otherwise
+ */
+function is_moderator_by_tids($threads, $permission='')
+{
+	global $db, $mybb;
+	
+	// Speedy determination for supermods/admins and guests
+	if($mybb->usergroup['issupermod'])
+	{
+		return true;
+	}
+	elseif(!$mybb->user['uid'])
+	{
+		return false;
+	}
+	// Make an array of threads if not an array
+	if(!is_array($threads))
+	{
+		$threads = array($threads);
+	}
+	// Validate input
+	array_walk($threads, 'intval');
+	$threads[] = 0;
+	// Get forums
+	$threads_string = implode(',', $threads);
+	$query = $db->simple_select("threads", "DISTINCT fid", "tid IN ($threads_string)");
+	while($forum = $db->fetch_array($query))
+	{
+		if(!is_moderator($forum['fid'], $permission))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Special redirect that takes a return URL into account
+ * @param string URL
+ * @param string Message
+ * @param string Title
+ */
+function moderation_redirect($url, $message="", $title="")
+{
+	global $mybb;
+	if(!empty($mybb->input['url']))
+	{
+		redirect($mybb->input['url'], $message, $title);
+	}
+	redirect($url, $message, $title);
+}
 ?>
