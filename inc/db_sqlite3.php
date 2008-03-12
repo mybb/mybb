@@ -124,9 +124,6 @@ class DB_SQLite3
 	 */
 	function connect($config)
 	{
-		// $database ($config['database']) should be a full path to the file; i.e. C:\temp\test_db.db
-		// To be changed before 1.4 release
-
 		$this->get_execution_time();
 		
 		require_once MYBB_ROOT."inc/db_pdo.php";

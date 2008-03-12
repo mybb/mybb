@@ -591,6 +591,15 @@ function create_tables()
 	}
 
 	$config = $mybb->input['config'][$mybb->input['dbengine']];
+	
+	if(strstr($mybb->input['dbengine'], "sqlite") !== false)
+	{
+		if(strstr($config['dbname'], "./") !== false || strstr($config['dbname'], "../") !== false)
+		{
+			$errors[] = $lang->db_step_error_sqlite_invalid_dbname;
+			database_info();
+		}
+	}
 
 	// Attempt to connect to the db
 	require_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";

@@ -130,7 +130,7 @@ class MyLanguage
 		// Datahandlers are never in admin lang directory.
 		if($isdatahandler === true)
 		{
-			$this->language = str_replace('/admincp', '', $this->language); // Remove before 1.4 is released
+			$this->language = str_replace('/admin.old', '', $this->language); // Remove before 1.4 is released
 			$this->language = str_replace('/admin', '', $this->language);
 			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		}

@@ -181,6 +181,7 @@ $l['db_step_error_invalidengine'] = 'You have selected an invalid database engin
 $l['db_step_error_noconnect'] = 'Could not connect to the database server at \'{1}\' with the supplied username and password. Are you sure the hostname and user details are correct?';
 $l['db_step_error_nodbname'] = 'Could not select the database \'{1}\'. Are you sure it exists and the specified username and password have access to it?';
 $l['db_step_error_missingencoding'] = 'You have not selected an encoding yet. Please make sure you selected an encoding before continuing. (Select \'UTF-8 Unicode\' if you are not sure)';
+$l['db_step_error_sqlite_invalid_dbname'] = 'You may not use relative URLs for SQLite databases. Please use a file system path (ex: /home/user/database.db) for your SQLite database.';
 
 $l['tablecreate_step_connected'] = '<p>Connection to the database server and table you specified was successful.</p>
 <p>Database Engine: {1} {2}</p>

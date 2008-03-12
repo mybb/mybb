@@ -24,11 +24,7 @@ if(!isset($config['admin_dir']))
 	$config['admin_dir'] = "admin";
 }
 
-//
-// TEMPORARY
-//
-define('MYBB_ADMIN_DIR', MYBB_ROOT."admincp/");
-//define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
+define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 
 define('COPY_YEAR', my_date('Y', TIME_NOW));
 
@@ -38,7 +34,7 @@ require_once MYBB_ADMIN_DIR."/inc/class_table.php";
 require_once MYBB_ADMIN_DIR."/inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
-$lang->set_language($mybb->settings['cplanguage'], "admincp");
+$lang->set_language($mybb->settings['cplanguage'], "admin");
 
 // Load global language phrases
 $lang->load("global");
