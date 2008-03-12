@@ -50,7 +50,6 @@ if(file_exists(MYBB_ROOT."/inc/config.php") && file_exists(MYBB_ROOT."/inc/setti
 	}
 }
 
-require_once MYBB_ROOT.$admin_dir.'/adminfunctions.php';
 require_once MYBB_ROOT.'inc/class_xml.php';
 require_once MYBB_ROOT.'inc/functions_user.php';
 require_once MYBB_ROOT.'inc/class_language.php';

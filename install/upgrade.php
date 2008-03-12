@@ -45,24 +45,6 @@ $lang->load('language');
 require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
 
-// If there's a custom admin dir, use it.
-
-// Legacy for those boards trying to upgrade from an older version
-if(isset($config['admindir']))
-{
-	require_once MYBB_ROOT.$config['admindir']."/adminfunctions.php";
-}
-// Current
-else if(isset($config['admin_dir']))
-{
-	require_once MYBB_ROOT.$config['admin_dir']."/adminfunctions.php";
-}
-// No custom set
-else
-{
-	require_once MYBB_ROOT."admin/adminfunctions.php";
-}
-
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
 $groupzerogreater = array("pmquota", "maxreputationsday", "attachquota");

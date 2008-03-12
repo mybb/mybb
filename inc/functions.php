@@ -365,7 +365,10 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 		}
 	}
 
-	$plugins->run_hooks_by_ref("my_date", $date);
+	if(is_object($plugins))
+	{
+		$plugins->run_hooks_by_ref("my_date", $date);
+	}
 
 	return $date;
 }
