@@ -834,7 +834,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	}
 	if(!$gid || $gid == 0) // If no group, we need to fetch it
 	{
-		if($uid != $mybb->user['uid'])
+		if($uid != 0 && $uid != $mybb->user['uid'])
 		{
 			if($usercache[$uid])
 			{
@@ -901,9 +901,11 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	global $groupscache, $forum_cache, $fpermcache, $mybb, $fpermfields;
 
 	$groups = explode(",", $gid);
-
+	
 	if(!$fpermcache[$fid]) // This forum has no custom or inherited permisssions so lets just return the group permissions
 	{
+		$groupperms['fid'] = $fid;
+		$groupperms['gid'] = $gid;
 		return $groupperms;
 	}
 	
@@ -913,16 +915,37 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	{
 		if($groupscache[$gid])
 		{
-			// If this forum has permissions set
-			if($fpermcache[$fid][$gid])
+			$level_permissions = $fpermcache[$fid][$gid];
+			
+			// If our permissions arn't inherited we need to figure them out
+			if(empty($level_permissions))
 			{
-				$level_permissions = $fpermcache[$fid][$gid];
-				foreach($level_permissions as $permission => $access)
+				$parents = explode(',', $forum_cache[$fid]['parentlist']);
+				rsort($parents);
+				if(!empty($parents))
 				{
-					if($access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no") || !$current_permissions[$permission])
+					foreach($parents as $parent_id)
 					{
-						$current_permissions[$permission] = $access;
+						if(!empty($fpermcache[$parent_id][$gid]))
+						{
+							$level_permissions = $fpermcache[$parent_id][$gid];
+							break;
+						}
 					}
+					
+					// If we STILL don't have forum permissions we use the usergroup itself
+					if(empty($level_permissions))
+					{
+						$level_permissions = $groupscache[$gid];
+					}					
+				}
+			}
+			
+			foreach($level_permissions as $permission => $access)
+			{
+				if($access >= $current_permissions[$permission] || ($access == "yes" && $current_permissions[$permission] == "no") || !$current_permissions[$permission])
+				{
+					$current_permissions[$permission] = $access;
 				}
 			}
 		}
