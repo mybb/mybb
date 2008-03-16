@@ -693,20 +693,6 @@ class PostDataHandler extends DataHandler
 			}
 		}
 		
-		if($thread['visible'] == 1)
-		{
-			$now = TIME_NOW;
-			if($forum['usepostcounts'] != 0)
-			{
-				$queryadd = ",postnum=postnum+1";
-			}
-			else
-			{
-				$queryadd = '';
-			}
-			$db->write_query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
-		}
-		
 		if($this->method != "update" && $visible == 1)
 		{
 			$double_post = $this->verify_post_merge();
@@ -726,6 +712,21 @@ class PostDataHandler extends DataHandler
 					"visible" => $visible
 				);
 			}
+		}
+		
+		if($visible == 1)
+		{
+			$now = TIME_NOW;
+			if($forum['usepostcounts'] != 0)
+			{
+				echo "moop";
+				$queryadd = ",postnum=postnum+1";
+			}
+			else
+			{
+				$queryadd = '';
+			}
+			$db->write_query("UPDATE ".TABLE_PREFIX."users SET lastpost='{$now}' {$queryadd} WHERE uid='{$post['uid']}'");
 		}
 
 		$post['pid'] = intval($post['pid']);
