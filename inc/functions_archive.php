@@ -215,4 +215,52 @@ function archive_error_no_permission()
 	global $lang;
 	archive_error($lang->archive_nopermission);
 }
+
+/**
+ * Check the password given on a certain forum for validity
+ *
+ * @param int The forum ID
+ * @param boolean The Parent ID
+ */
+function check_forum_password_archive($fid, $pid=0)
+{
+	global $forum_cache;
+	
+	if(!is_array($forum_cache))
+	{
+		$forum_cache = cache_forums();
+		if(!$forum_cache)
+		{
+			return false;
+		}
+	}
+
+	// Loop through each of parent forums to ensure we have a password for them too
+	$parents = explode(',', $forum_cache[$fid]['parentlist']);
+	rsort($parents);
+	if(!empty($parents))
+	{
+		foreach($parents as $parent_id)
+		{
+			if($parent_id == $fid || $parent_id == $pid)
+			{
+				continue;
+			}
+			
+			if($forum_cache[$parent_id]['password'] != "")
+			{
+				check_forum_password_archive($parent_id, $fid);
+			}
+		}
+	}
+	
+	$password = $forum_cache[$fid]['password'];
+	if($password)
+	{
+		if(!$_COOKIE['forumpass'][$fid] || ($_COOKIE['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $_COOKIE['forumpass'][$fid]))
+		{
+			archive_error_no_permission();
+		}
+	}
+}
 ?>

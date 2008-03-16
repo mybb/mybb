@@ -216,12 +216,13 @@ if($mybb->input['action'] == "edit")
 			else
 			{
 				$input['delivery_type'] = "future";
-				$time = date("d-m-Y-h-i-a", $email['senddate']);
-				$input['deliveryhour'] = $time[3];
-				$input['deliveryminute'] = $time[4];
-				$input['deliverymonth'] = $time[1];
-				$input['deliveryday'] = $time[0];
-				$input['deliveryyear'] = $time[2];
+				$time = date("d-n-Y-h-i-a", $email['senddate']);
+				$time = explode('-', $time);
+				$input['deliveryhour'] = (int)$time[3];
+				$input['deliveryminute'] = (int)$time[4];
+				$input['deliverymonth'] = (int)$time[1];
+				$input['deliveryday'] = (int)$time[0];
+				$input['deliveryyear'] = (int)$time[2];
 				$input['deliverymeridiem'] = $time[5];
 				$delivery_type_checked['future'] = " checked=\"checked\"";
 			}
@@ -356,7 +357,7 @@ if($mybb->input['action'] == "edit")
 	// Construct option list for days
 	for($i = 1; $i <= 31; ++$i)
 	{
-		if($i == $end_day)
+		if($i == $input['enddateday'])
 		{
 			$enddateday .= "<option value=\"{$i}\" selected=\"selected\">{$i}</option>\n";
 		}
@@ -649,12 +650,13 @@ if($mybb->input['action'] == "send")
 				else
 				{
 					$input['delivery_type'] = "future";
-					$time = date("d-m-Y-h-i-a", $email['senddate']);
-					$input['deliveryhour'] = $time[3];
-					$input['deliveryminute'] = $time[4];
-					$input['deliverymonth'] = $time[1];
-					$input['deliveryday'] = $time[0];
-					$input['deliveryyear'] = $time[2];
+					$time = date("d-n-Y-h-i-a", $email['senddate']);
+					$time = explode('-', $time);
+					$input['deliveryhour'] = (int)$time[3];
+					$input['deliveryminute'] = (int)$time[4];
+					$input['deliverymonth'] = (int)$time[1];
+					$input['deliveryday'] = (int)$time[0];
+					$input['deliveryyear'] = (int)$time[2];
 					$input['deliverymeridiem'] = $time[5];
 					$delivery_type_checked['future'] = " checked=\"checked\"";
 				}
@@ -1477,7 +1479,7 @@ if(!$mybb->input['action'])
 	while($email = $db->fetch_array($query))
 	{
 		$email['subject'] = htmlspecialchars_uni($email['subject']);
-		if($email['senddate'] < time())
+		if(TIME_NOW >= $email['senddate'] && $email['status'] > 1)
 		{
 			$table->construct_cell("<a href=\"index.php?module=user/mass_mail&amp;action=edit&amp;mid={$email['mid']}\"><strong>{$email['subject']}</strong></a>");
 		}

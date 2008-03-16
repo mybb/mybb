@@ -38,6 +38,8 @@ switch($action)
 			{
 				archive_error_no_permission();
 			}
+			
+			check_forum_password_archive($forum['fid']);
 		}
 
 		$announcement['subject'] = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
@@ -89,6 +91,9 @@ switch($action)
 		{
 			archive_error_no_permission();
 		}
+		
+		check_forum_password_archive($forum['fid']);
+		
 		// Build the navigation
 		build_forum_breadcrumb($forum['fid'], 1);
 		add_breadcrumb($thread['subject']);
@@ -205,6 +210,8 @@ switch($action)
 		{
 			archive_error_no_permission();
 		}
+		
+		check_forum_password_archive($forum['fid']);
 
 		// Paginate this forum
 		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid='{$id}' AND visible='1'");

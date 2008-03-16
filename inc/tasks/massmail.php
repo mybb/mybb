@@ -79,7 +79,7 @@ function task_massmail($task)
 						$format = "text";
 						$text_message = "";
 				}
-				my_mail($user['email'], $mass_email['subject'], $mass_email['message'], "", "", "", false, $format, $text_message); 
+				my_mail($user['email'], $mass_email['subject'], $mass_email['message'], "", "", "", false, $format, $text_message);
 			}
 			++$sentcount;
 		}
