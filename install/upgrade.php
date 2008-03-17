@@ -126,11 +126,11 @@ else
 <p>UNDER NO CIRCUMSTANCES:
 <ul>
 <li>May you release ANY information what so ever about MyBB 1.4 without <strong>EXPRESS</strong> permission from Chris Boulton</li>
-<li>May you publically run your MyBB 1.4 beta forum without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
+<li>May you publicly run your MyBB 1.4 beta forum without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
 <li>May you distribute MyBB 1.4 beta or any files individually without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
-<li>Are we responsible for any damange contracted by the use of MyBB 1.4 beta.</li>
+<li>Are we responsible for any damage contracted by the use of MyBB 1.4 beta.</li>
 </ul>
-Any violations of these terms and we will be sending take down notices as well as removing special privelages or even permament removal of access to portions of our servers.
+Any violations of these terms and we will be sending take down notices as well as removing special privileges or even permanent removal of access to portions of our servers.
 </p>';
 
 		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version).$beta_warning."<p><select name=\"from\">$vers</select>");
