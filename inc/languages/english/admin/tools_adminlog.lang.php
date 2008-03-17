@@ -76,8 +76,8 @@ $l['admin_log_config_mod_tools_delete_post_tool'] = "Deleted post moderation too
 $l['admin_log_config_mod_tools_delete_thread_tool'] = "Deleted thread moderation tool #{1} ({2})";
 $l['admin_log_config_mod_tools_edit_post_tool'] = "Edited post moderation tool #{1} ({2})";
 $l['admin_log_config_mod_tools_edit_thread_tool'] = "Edited thread moderation tool #{1} ({2})";
-$l['admin_log_config_mod_tools_add_post_tool'] = "Deleted post moderation tool #{1} ({2})";
-$l['admin_log_config_mod_tools_add_thread_tool'] = "Deleted thread moderation tool #{1} ({2})";
+$l['admin_log_config_mod_tools_add_post_tool'] = "Added post moderation tool #{1} ({2})";
+$l['admin_log_config_mod_tools_add_thread_tool'] = "Added thread moderation tool #{1} ({2})";
 
 $l['admin_log_config_mycode_toggle_status_enabled'] = "Enabled custom MyCode #{1} ({2})";
 $l['admin_log_config_mycode_toggle_status_disabled'] = "Disabled custom MyCode #{1} ({2})";
