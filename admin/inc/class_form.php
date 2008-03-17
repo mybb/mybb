@@ -18,6 +18,11 @@ class DefaultForm
 	 * @var boolean Should this form be returned instead of output to the browser?
 	 */
 	var $_return = false;
+	
+	/**
+	 * @var string Contents of the form if $_return is true from __construct
+	 */
+	var $construct_return = "";
 
 	/**
 	 * Constructor. Outputs the form tag with the specified options.
@@ -48,7 +53,7 @@ class DefaultForm
 			$form .= " id=\"{$id}\"";
 		}
 		$form .= ">\n";
-		$form .= $this->generate_hidden_field("my_post_key", $mybb->post_code);
+		$form .= $this->generate_hidden_field("my_post_key", $mybb->post_code)."\n";
 		if($return == false)
 		{
 			echo $form;
@@ -56,7 +61,7 @@ class DefaultForm
 		else
 		{
 			$this->_return = true;
-			return $form;
+			$this->construct_content = $form;
 		}
 	}
 

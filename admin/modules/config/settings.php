@@ -1030,7 +1030,7 @@ if($mybb->input['action'] == "change")
 				{
 					if($file != "." && $file != ".." && @file_exists(MYBB_ROOT.$config['admin_dir']."/styles/$folder/main.css"))
 					{
-						$folders[$folder] = $folder;
+						$folders[$folder] = ucfirst($folder);
 					}
 				}
 				closedir($dir);

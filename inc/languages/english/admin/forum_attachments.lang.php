@@ -98,6 +98,7 @@ $l['asc'] = "Ascending";
 $l['desc'] = "Descending";
 $l['sort_results_by'] = "Sort results by";
 $l['results_per_page'] = "Results per page";
+$l['in'] = "in";
 
 // Buttons
 $l['button_delete_orphans'] = "Delete Checked Orphans";

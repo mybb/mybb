@@ -8,6 +8,7 @@
 
 $l['mybb_credits'] = "MyBB Credits";
 $l['mybb_credits_description'] = "These people have contributed their time and effort to create MyBB.";
+$l['about_the_team'] = "About the Team";
 
 $l['product_managers'] = "Product Managers";
 $l['developers'] = "Developers";

@@ -32,7 +32,7 @@ if(!$mybb->input['action'])
 	);
 	
 	$sub_tabs['credits_about'] = array(
-		'title' => "About the Team",
+		'title' => $lang->about_the_team,
 		'link' => "http://mybboard.net/about/team",
 		'link_target' => "_blank",
 	);

@@ -263,5 +263,6 @@ $l['private_view_desc'] = "Private view visible only to yourself.";
 $l['table'] = "Table";
 $l['title'] = "Title";
 
+$l['view_title_1'] = "All Users";
 
 ?>

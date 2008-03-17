@@ -557,6 +557,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			{
 				$default_add = " ({$lang->default})";
 			}
+			
+
+			$title_string = "view_title_{$view['vid']}";
+			
+			if($lang->$title_string)
+			{
+				$view['title'] = $lang->$title_string;
+			}
 
 			$table->construct_cell("<div class=\"float_right\"><img src=\"styles/{$page->style}/images/icons/{$view_type}.gif\" title=\"".$lang->sprintf($lang->this_is_a_view, $view_type)."\" alt=\"{$view_type}\" /></div><div class=\"{$default_class}\"><strong><a href=\"{$base_url}&amp;action=views&amp;do=edit&amp;vid={$view['vid']}\" >{$view['title']}</a></strong>{$default_add}{$created}</div>");
 			

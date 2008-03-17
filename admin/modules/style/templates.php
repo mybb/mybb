@@ -1168,7 +1168,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	// Add the ungrouped templates group at the bottom
 	$template_groups['-1'] = array(
 		"prefix" => "",
-		"title" => "Ungrouped Templates",
+		"title" => $lang->ungrouped_templates,
 		"gid" => -1
 	);
 	

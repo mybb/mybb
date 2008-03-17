@@ -239,47 +239,51 @@ if($mybb->input['action'] == "avatar_gallery")
 	// Get a listing of avatars/directories within this gallery
 	$sub_galleries = $avatars = array();
 	$files = @scandir($real_path);
-	foreach($files as $file)
+	
+	if(is_array($files))
 	{
-		if($file == "." || $file == ".." || $file == ".svn") continue;
-		// Build friendly name
-		$friendly_name = str_replace(array("_", "%20"), " ", $file);
-		$friendly_name = ucwords($friendly_name);
-		if(is_dir($real_path."/".$file))
+		foreach($files as $file)
 		{
-			// Only add this gallery if there are avatars or galleries inside it (no empty directories!)
-			$has = 0;
-			$dh = @opendir($real_path."/".$file);
-			while(false !== ($sub_file = readdir($dh)))
+			if($file == "." || $file == ".." || $file == ".svn") continue;
+			// Build friendly name
+			$friendly_name = str_replace(array("_", "%20"), " ", $file);
+			$friendly_name = ucwords($friendly_name);
+			if(is_dir($real_path."/".$file))
 			{
-				if(preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $sub_file) || is_dir($real_path."/".$file."/".$sub_file))
+				// Only add this gallery if there are avatars or galleries inside it (no empty directories!)
+				$has = 0;
+				$dh = @opendir($real_path."/".$file);
+				while(false !== ($sub_file = readdir($dh)))
 				{
-					$has = 1;
-					break;
+					if(preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $sub_file) || is_dir($real_path."/".$file."/".$sub_file))
+					{
+						$has = 1;
+						break;
+					}
+				}
+				@closedir($dh);
+				if($has == 1)
+				{
+					$sub_galleries[] = array(
+						"path" => $path.$file,
+						"friendly_name" => $friendly_name
+					);
 				}
 			}
-			@closedir($dh);
-			if($has == 1)
+			else if(preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $file))
 			{
-				$sub_galleries[] = array(
+				$friendly_name = preg_replace("#\.(jpg|jpeg|gif|bmp|png)$#i", "", $friendly_name);
+	
+				// Fetch dimensions
+				$dimensions = @getimagesize($real_path."/".$file);
+	
+				$avatars[] = array(
 					"path" => $path.$file,
-					"friendly_name" => $friendly_name
+					"friendly_name" => $friendly_name,
+					"width" => $dimensions[0],
+					"height" => $dimensions[1]
 				);
 			}
-		}
-		else if(preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $file))
-		{
-			$friendly_name = preg_replace("#\.(jpg|jpeg|gif|bmp|png)$#i", "", $friendly_name);
-
-			// Fetch dimensions
-			$dimensions = @getimagesize($real_path."/".$file);
-
-			$avatars[] = array(
-				"path" => $path.$file,
-				"friendly_name" => $friendly_name,
-				"width" => $dimensions[0],
-				"height" => $dimensions[1]
-			);
 		}
 	}
 
@@ -1044,7 +1048,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->date_and_time_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $date_options)."</div>");
 
 
-	$tpp_options = array("Use Default");
+	$tpp_options = array($lang->use_default);
 	if($mybb->settings['usertppoptions'])
 	{
 		$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
@@ -1614,7 +1618,7 @@ if($mybb->input['action'] == "search")
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
-	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', 'Table', array('checked' => ($mybb->input['displayas'] != "card" ? "checked" : "")))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? "checked" : ""))));
+	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->input['displayas'] != "card" ? "checked" : "")))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? "checked" : ""))));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->find_users);
@@ -1701,6 +1705,13 @@ function build_users_view($view)
 
 	if($view['title'])
 	{
+		$title_string = "view_title_{$view['vid']}";
+		
+		if($lang->$title_string)
+		{
+			$view['title'] = $lang->$title_string;
+		}
+		
 		$view_title .= " (".htmlspecialchars_uni($view['title']).")";
 	}
 
@@ -1738,11 +1749,14 @@ function build_users_view($view)
 		}
 		$view['url'] .= "&amp;search_id=".htmlspecialchars($_REQUEST['search_id']);
 	}
+	
 	if($mybb->input['username'])
 	{
 		$view['url'] .= "&amp;username=".htmlspecialchars_uni($mybb->input['username']);
 	}
-	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url'])) {
+	
+	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url']))
+	{
 		update_admin_session('last_users_url', str_replace("&amp;", "&", $view['url']));
 	}
 
@@ -1965,7 +1979,8 @@ function build_users_view($view)
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}");
 			$popup->add_item($lang->ban_user, "index.php?module=user/users&amp;action=ban&amp;uid={$user['uid']}");
 
-			if($user['usergroup'] == 5) {
+			if($user['usergroup'] == 5)
+			{
 				if($user['coppauser'])
 				{
 					$popup->add_item($lang->approve_coppa_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}");
@@ -2071,16 +2086,18 @@ function build_users_view($view)
 		$search_class = '';
 		$search_style = "text-align: right;";
 	}
-
-	$built_view = "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; margin-top: -9px; {$search_style}\">";
+	
 	$search_action = $view['url'];
 	// stop &username= in the query string
 	if($view_upos = strpos($search_action, '&amp;username='))
 	{
 		$search_action = substr($search_action, 0, $view_upos);
 	}
-	$search = new Form(htmlspecialchars_uni($view['url']), 'post', 'search_form', 0, '');
-	$built_view .= $search->generate_hidden_field('action', 'search');
+	$search_action = str_replace("&amp;", "&", $search_action);
+	$search = new Form(htmlspecialchars_uni($search_action), 'post', 'search_form', 0, '', true);
+	$built_view = $search->construct_return;
+	$built_view .= "<div class=\"{$search_class}\" style=\"padding-bottom: 3px; margin-top: -9px; {$search_style}\">";
+	$built_view .= $search->generate_hidden_field('action', 'search')."\n";
 	if($view['conditions']['username'])
 	{
 		$default_class = '';
@@ -2091,7 +2108,12 @@ function build_users_view($view)
 		$default_class = "search_default";
 		$value = $lang->search_for_user;
 	}
-	$built_view .= $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"));
+	$built_view .= $search->generate_text_box('username', $value, array('id' => 'search_keywords', 'class' => "{$default_class} field150 field_small"))."\n";
+	$built_view .= "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />\n";
+	if($view['popup'])
+	{
+		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>\n";
+	}
 	$built_view .= "<script type='text/javascript'>
 		var form = document.getElementById('search_form');
 		form.onsubmit = function() {
@@ -2125,15 +2147,10 @@ function build_users_view($view)
         {
             $(search).removeClassName('search_default');
         }
-		</script>";
-	$built_view .= "<input type=\"submit\" class=\"search_button\" value=\"{$lang->search}\" />";
-	if($view['popup'])
-	{
-		$built_view .= " <div style=\"display: inline\">{$view['popup']}</div>";
-	}
+		</script>\n";
 	$search->_return = true;
-	$built_view .= $search->end();
 	$built_view .= "</div>\n";
+	$built_view .= $search->end();
 
 	$built_view .= $pagination;
 	$built_view .= $table->construct_html("{$switch_view}{$lang->users}{$view_title}", 1, "", $view['table_id']);

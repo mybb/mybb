@@ -72,20 +72,23 @@ if(!function_exists('scandir'))
 	function scandir($directory, $sorting_order=0)
 	{
 		if($handle = opendir($directory))
-		{
+		{			
 			while(false !== ($file = readdir($handle)))
 			{
 				$files[] = $file;
     		}
+			
     		closedir($handle);
     		if($sorting_order == 1)
     		{
-    			return rsort($files);
+				rsort($files);
     		}
     		else
     		{
-    			return sort($files);
+				sort($files);
     		}
+			
+			return $files;
 		}
 		return false;
 	}

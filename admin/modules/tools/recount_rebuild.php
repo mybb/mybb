@@ -155,7 +155,7 @@ function check_proceed($current, $finish, $next_page, $per_page, $name, $name2, 
 		
 		echo $form->generate_hidden_field("page", $next_page);
 		echo $form->generate_hidden_field($name, $per_page);
-		echo $form->generate_hidden_field($name2, "Go");
+		echo $form->generate_hidden_field($name2, $lang->go);
 		echo "<div class=\"confirm_action\">\n";
 		echo "<p>{$lang->confirm_proceed_rebuild}</p>\n";
 		echo "<br />\n";
@@ -282,27 +282,27 @@ if(!$mybb->input['action'])
 	
 	$form_container->output_cell("<label>{$lang->recount_stats}</label><div class=\"description\">{$lang->recount_stats_desc}</div>");
 	$form_container->output_cell($lang->na);
-	$form_container->output_cell($form->generate_submit_button("Go", array("name" => "do_recountstats")));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountstats")));
 	$form_container->construct_row();
 	
 	$form_container->output_cell("<label>{$lang->rebuild_forum_counters}</label><div class=\"description\">{$lang->rebuild_forum_counters_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("forumcounters", 50, array('style' => 'width: 150px;')));
-	$form_container->output_cell($form->generate_submit_button("Go", array("name" => "do_rebuildforumcounters")));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildforumcounters")));
 	$form_container->construct_row();
 	
 	$form_container->output_cell("<label>{$lang->rebuild_thread_counters}</label><div class=\"description\">{$lang->rebuild_thread_counters_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("threadcounters", 500, array('style' => 'width: 150px;')));
-	$form_container->output_cell($form->generate_submit_button("Go", array("name" => "do_rebuildthreadcounters")));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildthreadcounters")));
 	$form_container->construct_row();
 	
 	$form_container->output_cell("<label>{$lang->recount_user_posts}</label><div class=\"description\">{$lang->recount_user_posts_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("userposts", 500, array('style' => 'width: 150px;')));
-	$form_container->output_cell($form->generate_submit_button("Go", array("name" => "do_recountuserposts")));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountuserposts")));
 	$form_container->construct_row();
 	
 	$form_container->output_cell("<label>{$lang->rebuild_attachment_thumbs}</label><div class=\"description\">{$lang->rebuild_attachment_thumbs_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("attachmentthumbs", 20, array('style' => 'width: 150px;')));
-	$form_container->output_cell($form->generate_submit_button("Go", array("name" => "do_rebuildattachmentthumbs")));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildattachmentthumbs")));
 	$form_container->construct_row();
 	
 	$form_container->end();

@@ -37,6 +37,7 @@ $l['reset'] = "Reset";
 $l['find_templates'] = "Find Templates";
 $l['find_and_replace'] = "Find and Replace";
 $l['search_template_names'] = "Search Template Titles";
+$l['ungrouped_templates'] = "Ungrouped Templates";
 
 $l['search_noneset'] = "You did not enter a search string.";
 $l['search_results'] = "Template Search Results";
