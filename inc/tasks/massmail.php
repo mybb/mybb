@@ -42,6 +42,12 @@ function task_massmail($task)
 			$mass_email['message'] = str_replace("{email}", $user['email'], $mass_email['message']);
 			$mass_email['message'] = str_replace("{bbname}", $mybb->settings['bbname'], $mass_email['message']);
 			$mass_email['message'] = str_replace("{bburl}", $mybb->settings['bburl'], $mass_email['message']);
+			
+			$mass_email['htmlmessage'] = str_replace("{uid}", $user['uid'], $mass_email['htmlmessage']);
+			$mass_email['htmlmessage'] = str_replace("{username}", $user['username'], $mass_email['htmlmessage']);
+			$mass_email['htmlmessage'] = str_replace("{email}", $user['email'], $mass_email['htmlmessage']);
+			$mass_email['htmlmessage'] = str_replace("{bbname}", $mybb->settings['bbname'], $mass_email['htmlmessage']);
+			$mass_email['htmlmessage'] = str_replace("{bburl}", $mybb->settings['bburl'], $mass_email['htmlmessage']);
 				
 			// Private Message
 			if($mass_email['type'] == 1)

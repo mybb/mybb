@@ -1222,7 +1222,9 @@ if(!$mybb->input['action'])
 	
 	echo '</div>';
 
-	echo '<script type="text/javascript">
+	echo '
+<script type="text/javascript">
+//<!--
 var SettingSearch = Class.create();
 SettingSearch.prototype = {
 	
@@ -1295,6 +1297,7 @@ SettingSearch.prototype = {
 	}
 }
 new SettingSearch($("settings_search"), $("search"), $("search_results"), $("group_list"));
+//-->
 </script>';
 	
 	print_setting_peekers();

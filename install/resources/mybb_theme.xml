@@ -3772,9 +3772,7 @@ ul.thread_tools li.subscription_remove {
 	</td>
 </tr>
 </table>
-<div>
 {$multipage}
-</div>
 {$footer}
 </body>
 </html>]]></template>
