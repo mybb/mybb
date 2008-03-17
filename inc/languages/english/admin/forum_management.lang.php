@@ -1,6 +1,6 @@
 <?php
 /**
- * MyBB 1.2 English Language Pack
+ * MyBB 1.4 English Language Pack
  * Copyright © 2007 MyBB Group, All Rights Reserved
  * 
  * $Id: user_users.lang.php 3373 2007-10-06 17:35:33Z Tikitiki $

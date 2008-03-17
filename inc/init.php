@@ -1,6 +1,6 @@
 <?php
 /**
- * MyBB 1.2
+ * MyBB 1.4
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
@@ -238,11 +238,4 @@ $time_formats = array(
 	3 => "H:i"
 );
 
-//
-// DEVELOPMENT MODE STUFF (REMOVE BEFORE RELEASE)
-//
-if($_ENV['COMPUTERNAME'] == "ROADRUNNER" || $_ENV['COMPUTERNAME'] == "DT100VISTATAB" || $config['dev_mode'])
-{
-	$mybb->dev_mode = 1;
-}
 ?>

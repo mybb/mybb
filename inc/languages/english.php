@@ -1,6 +1,6 @@
 <?php
 /**
- * MyBB 1.2 English Language Pack
+ * MyBB 1.4 English Language Pack
  * Copyright © 2007 MyBB Group, All Rights Reserved
  * 
  * $Id$
@@ -16,7 +16,7 @@ $langinfo['author'] = "MyBulletinBoard";
 $langinfo['website'] = "http://www.mybboard.net/";
 
 // Compatible version of MyBB
-$langinfo['version'] = "120";
+$langinfo['version'] = "140";
 
 // Sets if the translation includes the Admin CP (1 = yes, 0 = no)
 $langinfo['admin'] = 1;

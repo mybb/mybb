@@ -1,6 +1,6 @@
 <?php
 /**
- * MyBB 1.2
+ * MyBB 1.4
  * Copyright © 2006 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com

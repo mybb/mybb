@@ -1,6 +1,6 @@
 <?php
 /**
- * MyBB 1.2
+ * MyBB 1.4
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
@@ -15,14 +15,14 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	var $version = "1.2";
+	var $version = "1.4 (Beta)";
 	
 	/**
 	 * The version code of MyBB we're running.
 	 *
 	 * @var integer
 	 */
-	var $version_code = 120;
+	var $version_code = 1400;
 	
 	/**
 	 * The current working directory.

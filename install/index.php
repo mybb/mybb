@@ -1,6 +1,6 @@
 <?php
 /**
- * MyBB 1.2
+ * MyBB 1.4
  * Copyright © 2007 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
@@ -214,6 +214,19 @@ function license_agreement()
 	global $output, $lang;
 	
 	$output->print_header($lang->license_agreement, 'license');
+	
+	// TO BE REMOVED BEFORE RELEASE
+	echo '<h3>Beta Notice</h3>
+<p>UNDER NO CIRCUMSTANCES:
+<ul>
+<li>May you release ANY information what so ever about MyBB 1.4 without <strong>EXPRESS</strong> permission from Chris Boulton</li>
+<li>May you publically run your MyBB 1.4 beta forum without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
+<li>May you distribute MyBB 1.4 beta or any files individually without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
+<li>Are we responsible for any damange contracted by the use of MyBB 1.4 beta.</li>
+</ul>
+Any violations of these terms and we will be sending take down notices as well as removing special privelages or even permament removal of access to portions of our servers.
+</p>';
+
 	$license = '<h3>Important - Read Carefully</h3>
 <p>This MyBB End-User License Agreement ("EULA") is a legal agreement between you (either an individual or a single entity) and the MyBB Group for the MyBB product, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation. By installing, copying, or otherwise using the MyBB product, you agree to be bound by the terms of this EULA. If you do not agree to the terms of this EULA, do not install or use the MyBB product and destroy any copies of the application.</p>
 <p>The MyBB Group may alter or modify this license agreement without notification and any changes made to the EULA will affect all past and current copies of MyBB</p>

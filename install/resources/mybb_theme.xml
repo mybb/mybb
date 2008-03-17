@@ -1463,7 +1463,7 @@ ul.thread_tools li.subscription_remove {
 		<template name="showthread_moderationoptions_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
 		<template name="showthread_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 		<template name="showthread_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="showthread_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="showthread_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1400"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="{$tid}" />
@@ -1503,7 +1503,7 @@ ul.thread_tools li.subscription_remove {
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/thread.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/thread.js?ver=1400"></script>
 </head>
 <body>
 	{$header}
@@ -1609,7 +1609,7 @@ ul.thread_tools li.subscription_remove {
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=1400"></script>
 </head>
 <body>
 {$header}
@@ -1678,7 +1678,7 @@ ul.thread_tools li.subscription_remove {
 <head>
 <title>{$lang->post_reply_to}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=1400"></script>
 </head>
 <body>
 {$header}
@@ -1785,7 +1785,7 @@ ul.thread_tools li.subscription_remove {
 <head>
 <title>{$lang->newthread_in}</title>
 {$headerinclude}
-<script type="text/javascript" src="jscripts/post.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/post.js?ver=1400"></script>
 </head>
 <body>
 {$header}
@@ -2208,7 +2208,7 @@ ul.thread_tools li.subscription_remove {
 </form>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="forumdisplay_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="forumdisplay_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="forumdisplay_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1400"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="{$fid}" />
@@ -2859,7 +2859,7 @@ ul.thread_tools li.subscription_remove {
 </td>
 </tr></table>
 </fieldset>
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -4130,7 +4130,7 @@ body {
 		<template name="private_nomessages" version="120"><![CDATA[<tr>
 <td colspan="6" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="codebuttons" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=120"></script>
+		<template name="codebuttons" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	{$editor_language}
@@ -4256,7 +4256,7 @@ body {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -4351,7 +4351,7 @@ body {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -4671,7 +4671,7 @@ body {
 <div align="center"><br /><input type="submit" class="button" name="submit" value="{$lang->search}" /></div>
 </form>
 {$footer}
-<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -6875,7 +6875,7 @@ To: {$to_recipients}
 							<span class="smalltext">{$lang->add_buddies_desc}</span><br />
 							<div style="width: 120px; float: left; text-align: right;"><strong>{$lang->username_or_usernames}</strong></div>
 							<div style="margin-left: 130px;"><input type="text" name="add_username" id="buddy_add_username" style="width: 60%;" /> <input type="submit" value="{$lang->add_to_buddies}" id="buddy_submit" /></div>
-							<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+							<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 							<script type="text/javascript">
 							<!--
 								if(use_xmlhttprequest == "1")
@@ -7308,7 +7308,7 @@ To: {$to_recipients}
 </html>]]></template>
 		<template name="member_register_regimage" version="1400"><![CDATA[<br />
 <fieldset class="trow2">
-<script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>
 <legend><strong>{$lang->image_verification}</strong></legend>
 <table cellspacing="0" cellpadding="{$theme['tablespace']}">
 <tr>
@@ -7498,7 +7498,7 @@ To: {$to_recipients}
 	$('multiquote_link_{$post['pid']}').style.display = '';
 // -->
 </script>]]></template>
-		<template name="private_send_autocomplete" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=120"></script>
+		<template name="private_send_autocomplete" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -7511,7 +7511,7 @@ To: {$to_recipients}
 	}
 // -->
 </script>]]></template>
-		<template name="forumdisplay_threadlist_inlineedit_js" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=120"></script>
+		<template name="forumdisplay_threadlist_inlineedit_js" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_edit.js?ver=1400"></script>
 <script type="text/javascript">
 <!--
 	if(use_xmlhttprequest == "1")
@@ -7631,7 +7631,7 @@ To: {$to_recipients}
 		<template name="post_captcha" version="1400"><![CDATA[<tr>
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
-<script type="text/javascript" src="jscripts/captcha.js?ver=120"></script>
+<script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>
 <table style="width: 300px; padding: 4px;">
 	<tr>
 		<td rowspan="2" style="vertical-align: middle;"><img src="captcha.php?imagehash={$imagehash}" alt="{$lang->image_verification}" title="{$lang->image_verification}" id="captcha_img" /><br /><span style="color: red;" class="smalltext">{$lang->verification_subnote}</span>
@@ -10354,7 +10354,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<template name="search_results_inlinemodcol" version="120"><![CDATA[<td class="tcat" align="center">&nbsp;</td>]]></template>
 	<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 	<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-	<template name="search_results_posts_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+	<template name="search_results_posts_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1400"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -10385,7 +10385,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </script><br />]]></template>
 		<template name="search_results_threads_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customthreadtools}</optgroup>]]></template>
 		<template name="search_results_threads_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-		<template name="search_results_threads_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=120"></script>
+		<template name="search_results_threads_inlinemoderation" version="1400"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1400"></script>
 		<form action="moderation.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="fid" value="0" />
