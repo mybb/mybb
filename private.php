@@ -815,14 +815,14 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 	@reset($mybb->input['folder']);
 	foreach($mybb->input['folder'] as $key => $val)
 	{
-		if(!$donefolders[$val])
+		if(!$donefolders[$val]) // Probably was a check for duplicate folder names, but doesn't seem to be used now 
 		{
-			if(my_substr($key, 0, 3) == "new")
+			if(my_substr($key, 0, 3) == "new") // Create a new folder
 			{
 				++$highestid;
 				$fid = intval($highestid);
 			}
-			else
+			else // Editing an existing folder
 			{
 				if($key > $highestid)
 				{
@@ -830,28 +830,29 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				}
 				
 				$fid = intval($key);
+				// Use default language strings if empty or value is language string
 				switch($fid)
 				{
 					case 1:
-						if($val == $lang->folder_inbox)
+						if($val == $lang->folder_inbox || trim($val) == '')
 						{
 							$val = '';
 						}
 						break;
 					case 2:
-						if($val == $lang->folder_sent_items)
+						if($val == $lang->folder_sent_items || trim($val) == '')
 						{
 							$val = '';
 						}
 						break;
 					case 3:
-						if($val == $lang->folder_drafts)
+						if($val == $lang->folder_drafts || trim($val) == '')
 						{
 							$val = '';
 						}
 						break;
 					case 4:
-						if($val == $lang->folder_trash)
+						if($val == $lang->folder_trash || trim($val) == '')
 						{
 							$val = '';
 						}
@@ -859,8 +860,16 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 				}
 			}
 			
+			if($val != '' && trim($val) == '' && !($key >= 1 && $key <= 4))
+			{
+				// If the name only contains whitespace and it's not a default folder, print an error
+				error($lang->error_emptypmfoldername);
+			}
+			
+			
 			if($val != '' || ($key >= 1 && $key <= 4))
 			{
+				// If there is a name or if this is a default folder, save it 
 				$foldername = $val;
 				$foldername = $db->escape_string(htmlspecialchars_uni($foldername));
 				
@@ -879,6 +888,7 @@ if($mybb->input['action'] == "do_folders" && $mybb->request_method == "post")
 			}
 			else
 			{
+				// Delete PMs from the folder
 				$db->delete_query("privatemessages", "folder='$fid' AND uid='".$mybb->user['uid']."'");
 			}
 		}

@@ -136,6 +136,7 @@ $l['no_unreadmessages'] = "You currently do not have any unread messages being t
 
 $l['error_nopmsarchive'] = "Sorry, but there are no private messages matching the criteria you specified.";
 $l['error_invalidpmfoldername'] = "Sorry, but a folder name you have entered contains characters which are not allowed.";
+$l['error_emptypmfoldername'] = "Sorry, but a folder name you have entered does not contain any text.  Please enter a name for the folder, or completely blank the name to delete the folder.";
 $l['error_invalidpmrecipient'] = "The recipient you entered is either invalid or doesn't exist. Please go back and enter a correct one.";
 $l['error_invalidpm'] = "Invalid PM";
 $l['error_pmrecipientreachedquota'] = "You cannot send a private message to {1} because he/she has reached their private messaging quota. They cannot be sent any message until their messages have been cleared out. An email has been sent to the user about this. Please try sending your message at a later stage.";
