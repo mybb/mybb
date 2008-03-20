@@ -119,6 +119,12 @@ if($mybb->input['action'] == "view")
 	$post_link = "";
 	if($warning['post_subject'])
 	{
+		if(!is_object($parser))
+		{
+			require_once MYBB_ROOT."inc/class_parser.php";
+			$parser = new postParser;
+		}
+		
 		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 		$post_link = get_post_link($warning['pid']);

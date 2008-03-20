@@ -217,14 +217,27 @@ function license_agreement()
 	
 	// TO BE REMOVED BEFORE RELEASE
 	echo '<h3>Beta Notice</h3>
-<p>UNDER NO CIRCUMSTANCES:
+<p><strong>UNDER NO CIRCUMSTANCES:</strong><br />
 <ul>
-<li>May you release ANY information what so ever about MyBB 1.4 without <strong>EXPRESS</strong> permission from Chris Boulton</li>
-<li>May you publicly run your MyBB 1.4 beta forum without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
-<li>May you distribute MyBB 1.4 beta or any files individually without <strong>EXPRESS</strong> permission from Chris Boulton.</li>
-<li>Are we responsible for any damage contracted by the use of MyBB 1.4 beta.</li>
-</ul>
-Any violations of these terms and we will be sending take down notices as well as removing special privileges or even permanent removal of access to portions of our servers.
+<li>May you distribute any of the MyBB 1.4 (Beta) files either as a package or individually without direct permission from the MyBB Group.</li>
+<li>Are we to be held liable for any damage to your current forums if you\'re silly enough to try and run them on the 1.4 (Beta) at this stage. We also cannot be held liable for any loss of sleep you may incur as a result of beta testing. ;)<br />
+</li></ul>
+<br />
+If you violate any of the above terms, your beta access will be revoked and we\'ll be sending takedown notices for any downloadable links.<br />
+<strong>NOTES:</strong><br />
+<ul>
+<li><span style="color: red;">This is a BETA build. You should NOT use it on a live or production environment.</span></li>
+<li>We\'ll be updating it every so often to contain new bug fixes.</li>
+<li>You may set up a publicly accessible copy of MyBB 1.4 so that your users can also help us test. You should report any feedback they have directly on these forums.</li>
+
+<li>The control panel is <strong>not 100% complete</strong>. The "Themes" page is still currently under development. This means you cannot modify the theme of your forum. Template editing however, should work fine.<br />
+</li></ul>
+<br />
+Installation is the same as older versions of MyBB: Upload all of the files and visit the installer in your web browser (/install/).<br />
+<br />
+<strong><span style="color: red;">A final warning:</span></strong> Do not attempt to upgrade your live forums to this release!<br />
+<br />
+Thank you for your participation and we look forward to hearing some feedback regarding MyBB 1.4.
 </p>';
 
 	$license = '<h3>Important - Read Carefully</h3>

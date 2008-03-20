@@ -10,6 +10,11 @@
  */
 
 CodePress = function(obj) {
+	if(MyBB.browser == "opera" || MyBB.browser == "safari")
+	{
+		return;
+	}
+	
 	var self = document.createElement('iframe');
 	self.textarea = obj;
 	self.textarea.disabled = true;
