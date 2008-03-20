@@ -716,7 +716,7 @@ class DB_MySQL
 		{
 			return false;
 		}
-		$fields = implode(",", array_keys($array));
+		$fields = "`".implode("`,`", array_keys($array))."`";
 		$values = implode("','", $array);
 		$this->write_query("
 			INSERT 
@@ -741,7 +741,7 @@ class DB_MySQL
 		}
 		// Field names
 		$fields = array_keys($array[0]);
-		$fields = implode(",", $fields);
+		$fields = "`".implode("`,`", $fields)."`";
 
 		$insert_rows = array();
 		foreach($array as $values)
@@ -784,7 +784,7 @@ class DB_MySQL
 		
 		foreach($array as $field => $value)
 		{
-			$query .= $comma.$field."={$quote}{$value}{$quote}";
+			$query .= $comma."`".$field."`={$quote}{$value}{$quote}";
 			$comma = ", ";
 		}
 		
@@ -1084,7 +1084,7 @@ class DB_MySQL
 		$comma = '';
 		foreach($replacements as $column => $value)
 		{
-			$values .= $comma.$column."='".$value."'";
+			$values .= $comma."`".$column."`='".$value."'";
 			
 			$comma = ',';
 		}
