@@ -631,6 +631,11 @@ function create_tables()
 	{
 		$errors[] = $lang->sprintf($lang->db_step_error_noconnect, $config['dbhost']);
 	}
+	// double check if the DB exists for MySQL
+	elseif(method_exists($db, 'select_db') && !$db->select_db($config['dbname']))
+	{
+		$errors[] = $lang->sprintf($lang->db_step_error_nodbname, $config['dbname']);
+	}
 
 	if(is_array($errors))
 	{
