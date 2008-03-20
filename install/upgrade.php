@@ -31,6 +31,7 @@ if(!is_array($config['database']))
 		"password" => $config['password']
 	);
 }
+$mybb->config = &$config;
 
 // Include the files necessary for installation
 require_once MYBB_ROOT."inc/class_timers.php";
@@ -205,7 +206,7 @@ Any violations of these terms and we will be sending take down notices as well a
 //
 function upgradethemes()
 {
-	global $output, $db, $system_upgrade_detail, $lang;
+	global $output, $db, $system_upgrade_detail, $lang, $mybb;
 
 	$output->print_header($lang->upgrade_templates_reverted);
 

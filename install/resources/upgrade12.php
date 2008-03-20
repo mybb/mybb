@@ -336,7 +336,7 @@ function upgrade12_dbchanges2()
 	$db->drop_table("promotionlogs");
 	$db->drop_table("massemails");
 
-	$bd->write_query("CREATE TABLE ".TABLE_PREFIX."massemails (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."massemails (
 		mid int unsigned NOT NULL auto_increment,
 		uid int unsigned NOT NULL default '0',
 		subject varchar(200) NOT NULL default '',
@@ -403,7 +403,7 @@ function upgrade12_dbchanges2()
 		plid int unsigned NOT NULL auto_increment,
 		pid int unsigned NOT NULL default '0',
 		uid int unsigned NOT NULL default '0',
-		oldusergroup varchar(200) unsigned NOT NULL default '0',
+		oldusergroup varchar(200) NOT NULL default '0',
 		newusergroup smallint unsigned NOT NULL default '0',
 		dateline bigint(30) NOT NULL default '0',
 		type varchar(9) NOT NULL default 'primary',
