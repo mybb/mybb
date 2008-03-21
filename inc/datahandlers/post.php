@@ -719,7 +719,6 @@ class PostDataHandler extends DataHandler
 			$now = TIME_NOW;
 			if($forum['usepostcounts'] != 0)
 			{
-				echo "moop";
 				$queryadd = ",postnum=postnum+1";
 			}
 			else
