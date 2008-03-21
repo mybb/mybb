@@ -539,7 +539,30 @@ if($mybb->input['action'] == "do_new_announcement")
 		$errors[] = $lang->error_missing_forum;
 	}
 	
-	$startdate = strtotime(intval($mybb->input['starttime_year']).'-'.intval($mybb->input['starttime_month']).'-'.intval($mybb->input['starttime_day']).' '.$mybb->input['starttime_time'].' GMT');
+	$startdate = @explode(" ", $mybb->input['starttime_time']);
+	$startdate = @explode(":", $startdate[0]);
+	$enddate = @explode(" ", $mybb->input['endtime_time']);
+	$enddate = @explode(":", $enddate[0]);
+
+	if(stristr($mybb->input['starttime_time'], "pm"))
+	{
+		$startdate[0] = 12+$startdate[0];
+		if($startdate[0] >= 24)
+		{
+			$startdate[0] = "00";
+		}
+	}
+	
+	if(stristr($mybb->input['endtime_time'], "pm"))
+	{
+		$enddate[0] = 12+$enddate[0];
+		if($enddate[0] >= 24)
+		{
+			$enddate[0] = "00";
+		}
+	}
+	
+	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 	if($startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
@@ -551,7 +574,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 	else
 	{
-		$enddate = strtotime(intval($mybb->input['endtime_year']).'-'.intval($mybb->input['endtime_month']).'-'.intval($mybb->input['endtime_day']).' '.$mybb->input['endtime_time'].' GMT');
+		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -616,16 +639,14 @@ if($mybb->input['action'] == "new_announcement")
 	}
 	else
 	{
-		// Note: dates are in user's timezone
-		$starttime_time = my_date('g:i a');
-		$endtime_time = my_date('g:i a');
-	
-		$startday = $endday = my_date('j');	
+		// Note: dates are not in user's timezone
+		$starttime_time = gmdate("g:i a", TIME_NOW);
+		$endtime_time = gmdate("g:i a", TIME_NOW);		
+		$startday = $endday = gmdate("j", TIME_NOW);
+		$startmonth = $endmonth = gmdate("m", TIME_NOW);
+		$startdateyear = gmdate("Y", TIME_NOW);
 		
-		$startmonth = $endmonth = my_date('m');
-		
-		$startdateyear = my_date('Y');
-		$enddateyear = my_date('Y')+1;
+		$enddateyear = $startdateyear+1;
 	}
 	
 	// Generate form elements

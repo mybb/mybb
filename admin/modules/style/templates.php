@@ -191,7 +191,7 @@ if($mybb->input['action'] == "add_template")
 				'template' => $db->escape_string($mybb->input['template']),
 				'version' => $db->escape_string($mybb->version_code),
 				'status' => '',
-				'dateline' => time()
+				'dateline' => TIME_NOW
 			);
 						
 			$query = $db->insert_query("templates", $template_array);
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "edit_template")
 				'template' => $db->escape_string($mybb->input['template']),
 				'version' => $mybb->version_code,
 				'status' => '',
-				'dateline' => time()
+				'dateline' => TIME_NOW
 			);
 			
 			$tid = intval($mybb->input['tid']);
@@ -574,7 +574,7 @@ if($mybb->input['action'] == "search_replace")
 											"sid" => 1,
 											"version" => $mybb->version_code,
 											"status" => '',
-											"dateline" => time()
+											"dateline" => TIME_NOW
 										);
 										$db->insert_query("templates", $new_template);
 										$new_tid = $db->insert_id();

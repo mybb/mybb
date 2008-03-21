@@ -254,7 +254,7 @@ function akismet_activate()
 		'template' => $db->escape_string('<a href="{$mybb->settings[\'bburl\']}/moderation.php?action=mark_as_spam&amp;pid={$post[\'pid\']}&amp;fid={$post[\'fid\']}"><img src="{$theme[\'imglangdir\']}/postbit_spam.gif" alt="{$lang->spam}" /></a>'),
 		'sid' => '-1',
 		'version' => '',
-		'dateline' => time()
+		'dateline' => TIME_NOW
 	);
 	
 	$db->insert_query("templates", $insert_array);
@@ -416,7 +416,7 @@ function akismet_moderation_start()
 					"admin" => "Akismet",
 					"gid" => 7,
 					"oldgroup" => $post2['usergroup'],
-					"dateline" => time(),
+					"dateline" => TIME_NOW,
 					"bantime" => 'perm',
 					"lifted" => 'perm',
 					"reason" => "Automatically banned by the Akismet system for spamming."
@@ -454,7 +454,7 @@ function akismet_moderation_start()
 				"admin" => "Akismet",
 				"gid" => 7,
 				"oldgroup" => $usergroup,
-				"dateline" => time(),
+				"dateline" => TIME_NOW,
 				"bantime" => 'perm',
 				"lifted" => 'perm',
 				"reason" => "Automatically banned by the Akismet system for spamming."
@@ -571,7 +571,7 @@ function akismet_fake_draft(&$post)
 				"admin" => "Akismet",
 				"gid" => 7,
 				"oldgroup" => $mybb->user['usergroup'],
-				"dateline" => time(),
+				"dateline" => TIME_NOW,
 				"bantime" => 'perm',
 				"lifted" => 'perm',
 				"reason" => "Automatically banned by the Akismet system for spamming."

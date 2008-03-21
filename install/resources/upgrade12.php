@@ -1740,7 +1740,7 @@ function upgrade12_redothemes()
 			"attachedto" => "",
 			"stylesheet" => $db->escape_string($theme['css']),
 			"cachefile" => $cache_file,
-			"lastmodified" => time()
+			"lastmodified" => TIME_NOW
 		);
 		$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 		$css_url = "css.php?stylesheet={$sid}";

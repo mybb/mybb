@@ -36,7 +36,7 @@ if($mybb->input['action'] == 'prune')
 	
 	if($mybb->request_method == 'post')
 	{
-		$where = 'dateline < '.(time()-(intval($mybb->input['older_than'])*86400));
+		$where = 'dateline < '.(TIME_NOW-(intval($mybb->input['older_than'])*86400));
 		
 		// Searching for entries by a particular user
 		if($mybb->input['uid'])

@@ -610,7 +610,7 @@ class postParser
 		preg_match("#dateline=(?:&quot;|\"|')?([0-9]+)(?:&quot;|\"|')?#i", $username, $match);
 		if(intval($match[1]))
 		{
-			if($match[1] < time())
+			if($match[1] < TIME_NOW)
 			{
 				$postdate = my_date($mybb->settings['dateformat'], intval($match[1]));
 				$posttime = my_date($mybb->settings['timeformat'], intval($match[1]));

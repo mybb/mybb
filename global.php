@@ -113,11 +113,15 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 		$query = $db->query("
 			SELECT f.style, f.overridestyle, p.*
 			FROM ".TABLE_PREFIX."forums f
-			LEFT JOIN ".TABLE_PREFIX."posts p ON(f.fid=p.fid) 
+			LEFT JOIN ".TABLE_PREFIX."posts p ON(f.fid=p.fid)
 			WHERE p.pid='".intval($mybb->input['pid'])."'
 			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
+		
+		$thread = get_thread($style['tid']);
+		$style = array_merge($thread, $style);
+		
 		$load_from_forum = 1;
 	}
 	

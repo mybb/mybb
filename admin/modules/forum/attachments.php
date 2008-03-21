@@ -413,7 +413,7 @@ if($mybb->input['action'] == "orphans")
 				$missing_threads[$attachment['aid']] = $attachment['aid'];
 			}
 			// Check if the attachment was uploaded > 24 hours ago but not assigned to a thread
-			else if(!$attachment['attachment_pid'] && $attachment['dateuploaded'] < time()-60*60*24 && $attachment['dateuploaded'] != 0)
+			else if(!$attachment['attachment_pid'] && $attachment['dateuploaded'] < TIME_NOW-60*60*24 && $attachment['dateuploaded'] != 0)
 			{
 				$incomplete_attachments[$attachment['aid']] = $attachment['aid'];
 			}
@@ -636,7 +636,7 @@ if(!$mybb->input['action'])
 		// LESS THAN or GREATER THAN
 		if($mybb->input['dateuploaded'])
 		{
-			$mybb->input['dateuploaded'] = time()-60*60*24;
+			$mybb->input['dateuploaded'] = TIME_NOW-60*60*24;
 		}
 		if($mybb->input['filesize'])
 		{
@@ -856,7 +856,7 @@ function build_attachment_row($attachment, $table, $form=null)
 		$title = $lang->error_not_found;
 		$checked = true;
 	}
-	elseif(!$attachment['pid'] && $attachment['dateuploaded'] < time()-60*60*24 && $attachment['dateuploaded'] != 0)
+	elseif(!$attachment['pid'] && $attachment['dateuploaded'] < TIME_NOW-60*60*24 && $attachment['dateuploaded'] != 0)
 	{
 		$cell_class = "bad_attachment";
 		$title = $lang->error_not_attached;

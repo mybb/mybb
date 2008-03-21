@@ -152,13 +152,13 @@ if($mybb->input['action'] == "add")
 	
 	if(!$mybb->input['starttime_time'])
 	{
-		$start_time = explode("-", gmdate("g-i-a", time()));
+		$start_time = explode("-", gmdate("g-i-a", TIME_NOW));
 		$mybb->input['starttime_time'] = $start_time[0].":".$start_time[1]." ".$start_time[2];
 	}
 	
 	if(!$mybb->input['endtime_time'])
 	{
-		$end_time = explode("-", gmdate("g-i-a", time()));
+		$end_time = explode("-", gmdate("g-i-a", TIME_NOW));
 		$mybb->input['endtime_time'] = $end_time[0].":".$end_time[1]." ".$end_time[2];
 	}
 	
@@ -168,7 +168,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$startday = gmdate("j", time());
+		$startday = gmdate("j", TIME_NOW);
 	}
 	
 	if($mybb->input['endtime_day'])
@@ -177,7 +177,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$endday = gmdate("j", time());
+		$endday = gmdate("j", TIME_NOW);
 	}
 	
 	for($i = 1; $i <= 31; ++$i)
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$startmonth = gmdate("m", time());
+		$startmonth = gmdate("m", TIME_NOW);
 		$startmonthsel[$startmonth] = "selected=\"selected\"";
 	}
 	
@@ -219,7 +219,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$endmonth = gmdate("m", time());
+		$endmonth = gmdate("m", TIME_NOW);
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	
@@ -254,7 +254,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$startdateyear = gmdate("Y", time());
+		$startdateyear = gmdate("Y", TIME_NOW);
 	}
 	
 	if($mybb->input['endtime_year'])
@@ -263,7 +263,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$enddateyear = gmdate("Y", time()) + 1;
+		$enddateyear = gmdate("Y", TIME_NOW) + 1;
 	}
 	
 	$form_container = new FormContainer($lang->add_an_announcement);

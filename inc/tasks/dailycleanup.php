@@ -26,7 +26,7 @@ function task_dailycleanup($task)
 	}
 	
 	// Check PMs moved to trash over a week ago & delete them
-	$timecut = time()-(60*60*24*7);
+	$timecut = TIME_NOW-(60*60*24*7);
 	$query = $db->simple_select("privatemessages", "pmid, uid, folder", "deletetime<='{$timecut}' AND folder='4'");
 	while($pm = $db->fetch_array($query))
 	{

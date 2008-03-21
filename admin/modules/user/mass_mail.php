@@ -208,7 +208,7 @@ if($mybb->input['action'] == "edit")
 		
 		if($email['senddate'] != 0)
 		{
-			if($email['senddate'] <= time())
+			if($email['senddate'] <= TIME_NOW)
 			{
 				$input['delivery_type'] = "now";
 				$delivery_type_checked['now'] = " checked=\"checked\"";
@@ -642,7 +642,7 @@ if($mybb->input['action'] == "send")
 			if($email['senddate'] != 0)
 			{
 				$input = array();
-				if($email['senddate'] <= time())
+				if($email['senddate'] <= TIME_NOW)
 				{
 					$input['delivery_type'] = "now";
 					$delivery_type_checked['now'] = " checked=\"checked\"";
@@ -1369,7 +1369,7 @@ if($mybb->input['action'] == "resend")
 		"message" => $db->escape_string($mass_email['message']),
 		"htmlmessage" => $db->escape_string($mass_email['htmlmessage']),
 		"format" => $db->escape_string($mass_email['format']),
-		"dateline" => time(),
+		"dateline" =TIME_NOW,
 		"senddate" => '0',
 		"status" => 0,
 		"sentcount" => 0,

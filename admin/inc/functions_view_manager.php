@@ -463,7 +463,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 	else if($mybb->input['do'] == "export")
 	{
 		$xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?".">\n";
-		$xml = "<adminviews version=\"".$mybb->version_code."\" exported=\"".time()."\">\n";
+		$xml = "<adminviews version=\"".$mybb->version_code."\" exported=\"".TIME_NOW."\">\n";
 
 		if($mybb->input['type'])
 		{

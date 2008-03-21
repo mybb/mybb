@@ -10104,7 +10104,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 					</tr>]]></template>
 	<template name="modcp_announcements_global" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
-						<td class="thead" colspan="6"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
+						<td class="thead" colspan="3"><div class="float_right"><a href="modcp.php?action=new_announcement&amp;fid=-1">{$lang->add_global_announcement}</a></div><strong>{$lang->global_announcements}</strong></td>
 					</tr>
 					<tr>
 						<td class="tcat"><strong>{$lang->announcement}</strong></td>
@@ -10127,7 +10127,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				{$announcements_global}
 				<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 					<tr>
-						<td class="thead" colspan="6"><strong>{$lang->forum_announcements}</strong></td>
+						<td class="thead" colspan="3"><strong>{$lang->forum_announcements}</strong></td>
 					</tr>
 					<tr>
 						<td class="tcat"><strong>{$lang->announcement}</strong></td>

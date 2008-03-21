@@ -101,7 +101,7 @@ if($mybb->input['action'] == "export")
 		$gidwhere = "gid='".intval($mybb->input['gid'])."'";
 	}
 	$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\n";
-	$xml = "<usergroups version=\"{$mybb->version_code}\" exported=\"".time()."\">\n";
+	$xml = "<usergroups version=\"{$mybb->version_code}\" exported=\"".TIME_NOW."\">\n";
 
 	$query = $db->simple_select("usergroups", "*", $gidwhere, array('order_by' => 'gid', 'order_dir' => 'ASC'));
 	while($usergroup = $db->fetch_array($query))
