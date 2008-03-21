@@ -25,11 +25,14 @@ if(!$mybb->input['action'])
 	
 	if($mybb->request_method == "post")
 	{
+		$query = $db->simple_select("adminoptions", "permissions, defaultviews", "uid='{$mybb->user['uid']}'");
+		$adminopts = $db->fetch_array($query);
+		
 		$sqlarray = array(
 			"notes" => $db->escape_string($mybb->input['notes']),
 			"cpstyle" => $db->escape_string($mybb->input['cpstyle']),
-			"permissions" => $db->escape_string($mybb->input['permissions']),
-			"defaultviews" => $db->escape_string($mybb->input['defaultviews']),
+			"permissions" => $db->escape_string($adminopts['permissions']),
+			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
 			"uid" => $mybb->user['uid']
 		);
 
@@ -51,13 +54,11 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'preferences');	
 	
-	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'", array('limit' => 1));
+	$query = $db->simple_select("adminoptions", "notes, cpstyle", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
 	
 	$form = new Form("index.php?module=home/preferences", "post");
 	$dir = @opendir(MYBB_ADMIN_DIR."/styles");
-	echo $form->generate_hidden_field('permissions', $admin_options['permissions']);
-	echo $form->generate_hidden_field('defaultviews', $admin_options['defaultviews']);
 	while($folder = readdir($dir))
 	{
 		if($file != "." && $file != ".." && @file_exists(MYBB_ADMIN_DIR."/styles/$folder/main.css"))
