@@ -1494,7 +1494,7 @@ if($mybb->input['action'] == "editprofile")
 
 	if(!$errors)
 	{
-		$mybb->input = $user;
+		$mybb->input = array_merge($user, $mybb->input);
 		list($mybb->input['birthday_day'], $mybb->input['birthday_month'], $mybb->input['birthday_year']) = explode("-", $user['birthday']);
 	}
 	else

@@ -492,7 +492,7 @@ if($mybb->input['action'] == "delete_leader")
 	if($mybb->request_method == "post")
 	{		
 		// Delete the leader
-		$db->delete_query("groupleaders", "lid='{$lid}'");
+		$db->delete_query("groupleaders", "lid='{$leade['lid']}'");
 		
 		$plugins->run_hooks("admin_user_groups_delete_leader_commit");
 

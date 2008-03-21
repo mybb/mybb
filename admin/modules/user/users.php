@@ -1562,7 +1562,8 @@ if($mybb->input['action'] == "search")
 			$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 			unset($admin_view['extra_sql']);
 		}
-		else {
+		else
+		{
 			// Don't have a view? Fetch the default
 			if(!$admin_view['vid'])
 			{
@@ -1578,6 +1579,11 @@ if($mybb->input['action'] == "search")
 		if($mybb->input['type'])
 		{
 			$admin_view['view_type'] = $mybb->input['type'];
+		}
+		
+		if($mybb->input['conditions'])
+		{
+			$admin_view['conditions'] = $mybb->input['conditions'];
 		}
 
 		$results = build_users_view($admin_view);
