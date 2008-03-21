@@ -1369,7 +1369,7 @@ if($mybb->input['action'] == "resend")
 		"message" => $db->escape_string($mass_email['message']),
 		"htmlmessage" => $db->escape_string($mass_email['htmlmessage']),
 		"format" => $db->escape_string($mass_email['format']),
-		"dateline" =TIME_NOW,
+		"dateline" => TIME_NOW,
 		"senddate" => '0',
 		"status" => 0,
 		"sentcount" => 0,
