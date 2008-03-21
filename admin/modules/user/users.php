@@ -358,7 +358,7 @@ if($mybb->input['action'] == "activate_user")
 	}
 	else
 	{
-		$db->delete_query("awaitingactivation", "uid='{$user['uid']}");
+		$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
 	}
 
 	// Move out of awaiting activation if they're in it.
