@@ -3377,7 +3377,7 @@ function get_current_location($fields=false, $ignore=array())
 			}
 		}
 		
-		return array('location' => $location, 'form_html' => $form_html);
+		return array('location' => $location, 'form_html' => $form_html, 'form_method' => $mybb->request_method);
 	}
 	else
 	{

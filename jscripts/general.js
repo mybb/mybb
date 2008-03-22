@@ -308,36 +308,12 @@ var MyBB = {
 
 	changeLanguage: function()
 	{
-		element = $('lang_select');
-		if(!element)
+		form = $('lang_select');
+		if(!form)
 		{
 			return false;
 		}
-		var language = element.options[element.selectedIndex].value;
-		if(!language)
-		{
-			return false;
-		}
-		url = window.location.href.split("#");
-		if(url[0].indexOf("?") != -1)
-		{
-			// Strip off old language value if we have one
-			url[0] = url[0].replace(new RegExp("(\\??|\&?)language=([a-z0-9-_\\.]+)"), '$1');
-			if(url[0].substr(url[0].length-1) != "&")
-			{
-				url[0] += "&";
-			}
-		}
-		else
-		{
-			url[0] += "?";
-		}
-		url[0] += "language="+language;
-		if(url[1])
-		{
-			url[0] = url[0]+"#"+url[1];
-		}
-		window.location = url[0];
+		form.submit();
 	}
 };
 

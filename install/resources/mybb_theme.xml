@@ -7698,9 +7698,9 @@ To: {$to_recipients}
 	</td>
 </tr>
 </table>]]></template>
-	<template name="footer_languageselect" version="1400"><![CDATA[<form method="get" action="{$lang_redirect_url['location']}">
+	<template name="footer_languageselect" version="1400"><![CDATA[<form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
 		{$lang_redirect_url['form_html']}
-		<select name="language" id="lang_select" onchange="MyBB.changeLanguage();">
+		<select name="language" onchange="MyBB.changeLanguage();">
 			<optgroup label="{$lang->select_language}">
 				{$lang_options}
 			</optgroup>
