@@ -42,7 +42,7 @@ if($mybb->input['action'] == "add")
 		
 		if(!$errors)
 		{
-			$type = $mybb->input['type'];
+			$type = $mybb->input['fieldtype'];
 			$options = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['options']));
 			if($type != "text" && $type != "textarea")
 			{
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_fieldtype;
 		}
 		
-		$type = $mybb->input['type'];
+		$type = $mybb->input['fieldtype'];
 		$options = preg_replace("#(\r\n|\r|\n)#s", "\n", trim($mybb->input['options']));
 		if($type != "text" && $type != "textarea")
 		{
