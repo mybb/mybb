@@ -415,6 +415,12 @@ if(!$mybb->input['action'])
 		$page->output_inline_error($errors);
 	}
 	
+	if($mybb->input['uid'] && !$mybb->input['username'])
+	{
+		$user = get_user($mybb->input['uid']);
+		$mybb->input['username'] = $user['username'];
+	}
+	
 	$form_container = new FormContainer($lang->ban_a_user);
 	$form_container->output_row($lang->ban_username, $lang->autocomplete_enabled, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 	$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');

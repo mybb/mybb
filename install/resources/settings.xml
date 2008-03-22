@@ -1516,7 +1516,7 @@ both=Warnings and Errors
 			<description><![CDATA[Allows you to switch between the classic and new horizontal layout modes. Classic mode shows the author information to the left of the post, horizontal shows the author information above the post.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[radio
-vertical=Display posts using the vertical post layout
+horizontal=Display posts using the horizontal post layout
 classic=Display posts using the classic layout]]></optionscode>
 			<settingvalue><![CDATA[vertical]]></settingvalue>
 			<isdefault>1</isdefault>

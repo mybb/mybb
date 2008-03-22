@@ -1983,7 +1983,7 @@ function build_users_view($view)
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}");
-			$popup->add_item($lang->ban_user, "index.php?module=user/users&amp;action=ban&amp;uid={$user['uid']}");
+			$popup->add_item($lang->ban_user, "index.php?module=user/banning&amp;uid={$user['uid']}");
 
 			if($user['usergroup'] == 5)
 			{
