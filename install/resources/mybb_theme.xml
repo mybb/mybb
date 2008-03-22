@@ -1295,7 +1295,7 @@ ul.thread_tools li.subscription_remove {
 <input type="hidden" name="action" value="do_modnotes" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="4"><strong>{$lang->moderator_notes}</strong></td>
+<td class="thead" align="center" colspan="1"><strong>{$lang->moderator_notes}</strong></td>
 </tr>
 <tr>
 <td class="tcat"><span class="smalltext"><strong>{$lang->notes_public_all}</strong></span>
@@ -9935,7 +9935,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<td class="{$trow}" align="center">{$admin_profile}</td>
 </tr>]]></template>
 	<template name="modcp_banning_nobanned" version="1400"><![CDATA[<tr>
-	<td class="trow1" align="center" colspan="6">{$lang->no_banned}</td>
+	<td class="trow1" align="center" colspan="4">{$lang->no_banned}</td>
 </tr>]]></template>
 	<template name="modcp_modqueue_empty" version="1400"><![CDATA[<html>
 <head>
