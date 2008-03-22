@@ -26,6 +26,7 @@ $l['results_per_page'] = "Results Per Page:";
 $l['view'] = "View";
 $l['no_warning_logs'] = "There are no warning logs to view.";
 $l['revoked'] = "Revoked ";
+$l['post'] = "Post";
 
 $l['asc'] = "Ascending";
 $l['desc'] = "Descending";
