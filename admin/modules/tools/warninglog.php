@@ -211,7 +211,7 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
-		$revoked_by = build_profile_link($warning['username'], $warning['uid']);
+		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		
 		$revoke_table = new Table;

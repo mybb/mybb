@@ -605,7 +605,7 @@ if($mybb->input['action'] == "register")
 				}
 				else
 				{
-					$id = "field";
+					$id = "fid{$profilefield['fid']}";
 				}
 				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {faulure_message:'{$lang->js_validator_not_empty}'});\n";
 				

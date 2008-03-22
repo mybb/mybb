@@ -213,7 +213,7 @@ if($mybb->input['action'] == "add")
 		"5" => $lang->friday,
 		"6" => $lang->saturday
 	);
-	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => true)), 'weekday');
+	$form_container->output_row($lang->time_weekdays, $lang->time_weekdays_desc, $form->generate_select_box('weekday[]', $options, $mybb->input['weekday'], array('id' => 'weekday', 'multiple' => true, 'size' => 8)), 'weekday');
 
 	$options = array(
 		"*" => $lang->every_month,
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "add")
 		"11" => $lang->november,
 		"12" => $lang->december
 	);
-	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true)), 'month');
+	$form_container->output_row($lang->time_months, $lang->time_months_desc, $form->generate_select_box('month[]', $options, $mybb->input['month'], array('id' => 'month', 'multiple' => true, 'size' => 13)), 'month');
 
 	$form_container->output_row($lang->enable_logging." <em>*</em>", "", $form->generate_yes_no_radio("logging", $mybb->input['logging'], true));
 	

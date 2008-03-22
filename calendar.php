@@ -1484,7 +1484,7 @@ if($mybb->input['action'] == "dayview")
 					if($bday[2] && $bday[2] < $year)
 					{
 						$age = $year - $bday[2];
-						$age = " ($age $lang->years_old)";
+						$age = " (".$lang->sprintf($lang->years_old, $age).")";
 					}
 					else
 					{

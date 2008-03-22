@@ -143,9 +143,12 @@ table {
 }
 
 .trow_selected td {
-	background: #FFFBD9;
+	background-color: #FFFBD9;
 }
 
+.trow_not_selected td {
+	width: 1px;
+}
 
 .trow_sep {
 	background: #e5e5e5;
@@ -7476,7 +7479,7 @@ To: {$to_recipients}
 <!--
 	regValidator = new FormValidator('registration_form');
 	regValidator.register('username', 'notEmpty', {failure_message:'{$lang->js_validator_no_username}'});
-	regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
+	regValidator.register('email', 'regexp', {match_field:'email2', regexp:'^([a-zA-Z0-9_\.\+\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$', failure_message:'{$lang->js_validator_invalid_email}'});
 	regValidator.register('email2', 'matches', {match_field:'email', status_field:'email_status', failure_message:'{$lang->js_validator_email_match}'});
 {$validator_extra}
 	regValidator.register('username', 'ajax', {url:'xmlhttp.php?action=username_availability', loading_message:'{$lang->js_validator_checking_username}'}); // needs to be last

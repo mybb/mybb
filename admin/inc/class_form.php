@@ -338,6 +338,10 @@ class DefaultForm
 		else
 		{
 			$select = "<select name=\"{$name}\" multiple=\"multiple\"";
+			if(!isset($options['size']))
+			{
+				$options['size'] = count($option_list);
+			}
 		}
 		if(isset($options['class']))
 		{

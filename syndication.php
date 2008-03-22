@@ -126,7 +126,7 @@ $feedgenerator->set_channel($channel);
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-	$thread['link'] = $channel['link'] . get_thread_link($thread['tid']);
+	$thread['link'] = $channel['link'].get_thread_link($thread['tid']);
 	if($forumcache[$thread['fid']])
 	{
 		if($thread['disablesmilies'])
@@ -151,7 +151,8 @@ while($thread = $db->fetch_array($query))
 			'title' => $thread['subject'],
 			'name' => $thread['forumname'],
 			'description' => $thread['message'],
-			'date' => $thread['dateline']
+			'date' => $thread['dateline'],
+			'link' => $thread['link']
 		);
 		
 		$feedgenerator->add_item($item);

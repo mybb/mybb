@@ -871,7 +871,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$last_active = "Never";
+		$last_active = $lang->never;
 	}
 	$reg_date = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
 	if($user['dst'] == 1)
@@ -2159,7 +2159,7 @@ function build_users_view($view)
 	$built_view .= $search->end();
 
 	$built_view .= $pagination;
-	$built_view .= $table->construct_html("{$switch_view}{$lang->users}{$view_title}", 1, "", $view['table_id']);
+	$built_view .= $table->construct_html("{$switch_view}<div>{$lang->users}{$view_title}</div>", 1, "", $view['table_id']);
 	$built_view .= $pagination;
 
 	return $built_view;

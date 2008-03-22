@@ -178,7 +178,7 @@ if($mybb->input['action'] == "join_requests")
 	
 	$query = $db->simple_select("usergroups", "*", "gid='".intval($mybb->input['gid'])."'");
 	$group = $db->fetch_array($query);
-
+	
 	if(!$group['gid'] || $group['type'] != 4)
 	{
 		flash_message($lang->error_invalid_user_group, 'error');
@@ -186,8 +186,8 @@ if($mybb->input['action'] == "join_requests")
 	}
 	
 	if($mybb->request_method == "post" && is_array($mybb->input['users']))
-	{
-		$uid_in = implode(",", array_map($mybb->input['users'], 'trim'));
+	{		
+		$uid_in = implode(",", array_map('trim', $mybb->input['users']));
 		
 		if(isset($mybb->input['approve']))
 		{

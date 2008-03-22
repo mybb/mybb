@@ -42,6 +42,7 @@ var inlineModeration = {
 					if(tr)
 					{
 						tr.addClassName('trow_selected');
+						tr.style.width = "1px";
 					}
 				}
 				else
@@ -51,6 +52,7 @@ var inlineModeration = {
 					if(tr)
 					{
 						tr.removeClassName('trow_selected');
+						tr.style.width = "1px";
 					}
 				}
 			}
@@ -113,6 +115,7 @@ var inlineModeration = {
 			var tr = element.up('tr');
 			if(tr)
 			{
+				tr.removeClassName('trow_not_selected');
 				tr.addClassName('trow_selected');
 			}
 		}
@@ -123,6 +126,7 @@ var inlineModeration = {
 			if(tr)
 			{
 				tr.removeClassName('trow_selected');
+				tr.addClassName('trow_not_selected');
 			}
 		}
 
@@ -160,6 +164,7 @@ var inlineModeration = {
 
 		$$('tr.trow_selected').each(function(element) {
 			element.removeClassName('trow_selected');
+			element.addClassName('trow_not_selected');
 		});
 
 		inlineModeration.inlineCount = 0;
@@ -199,11 +204,13 @@ var inlineModeration = {
 				var tr = element.up('tr');
 				if(tr && master.checked == true)
 				{
+					tr.removeClassName('trow_not_selected');
 					tr.addClassName('trow_selected');
 				}
 				else
 				{
 					tr.removeClassName('trow_selected');
+					tr.addClassName('trow_not_selected');
 				}
 
 				if(master.checked == true)
