@@ -917,7 +917,7 @@ td .star_rating {
 		<stylesheet name="showthread.css" attachedto="showthread.php" version="1400"><![CDATA[ul.thread_tools, ul.thread_tools li {
 	list-style: none;
 	padding: 0;
-	marign: 0;
+	margin: 0;
 }
 
 ul.thread_tools li {
