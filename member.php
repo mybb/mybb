@@ -1362,7 +1362,7 @@ if($mybb->input['action'] == "profile")
 	else
 	{
 		// No usergroup title so get a default one
-		$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($title = $db->fetch_array($query))
 		{
 			if($memprofile['postnum'] >= $title['posts'])

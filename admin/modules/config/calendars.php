@@ -77,7 +77,7 @@ if($mybb->input['action'] == "add")
 	else
 	{
 		$mybb->input = array(
-			"allowhtml" => 1,
+			"allowhtml" => 0,
 			"eventlimit" => 4,
 			"disporder" => 1,
 			"moderation" => 0

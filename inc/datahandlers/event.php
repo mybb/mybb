@@ -433,7 +433,7 @@ class EventDataHandler extends DataHandler
 
 		$query = $db->simple_select("calendars", "*", "cid='".intval($event['cid'])."'");
 		$calendar_moderation = $db->fetch_field($query, "moderation");
-		if($calendar_moderation == 1)
+		if($calendar_moderation == 1 && intval($event['private']) != 1)
 		{
 			$visible = 0;
 			if($event['uid'] == $mybb->user['uid'])
