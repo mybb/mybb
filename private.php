@@ -1415,6 +1415,34 @@ if(!$mybb->input['action'])
 	
 	$icon_cache = $cache->read("posticons");
 	
+	// Cache users in multiple recipients for sent & drafts folder
+	if($folder == 2 || $folder == 3)
+	{
+		// Get all recipients into an array
+		$cached_users = $get_users = array();
+		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $per_page));
+		while($row = $db->fetch_array($users_query))
+		{
+			$recipients = unserialize($row['recipients']);
+			$get_users = array_merge($get_users, $recipients['to']);
+			if(is_array($recipients['bcc']) && count($recipients['bcc']))
+			{
+				$get_users = array_merge($get_users, $recipients['bcc']);
+			}
+		}
+		$get_users = implode(',', array_unique($get_users));
+		
+		// Grab info
+		if(count($get_users))
+		{
+			$users_query = $db->simple_select("users", "uid, username, usergroup, displaygroup", "uid IN ({$get_users})");
+			while($user = $db->fetch_array($users_query))
+			{
+				$cached_users[$user['uid']] = $user;
+			}
+		}
+	}
+	
 	$query = $db->query("
 		SELECT pm.*, fu.username AS fromusername, tu.username as tousername
 		FROM ".TABLE_PREFIX."privatemessages pm
@@ -1424,7 +1452,7 @@ if(!$mybb->input['action'])
 		ORDER BY pm.dateline DESC
 		LIMIT $start, $perpage
 	");
-	
+		
 	if($db->num_rows($query) > 0)
 	{
 		while($message = $db->fetch_array($query))
@@ -1457,8 +1485,28 @@ if(!$mybb->input['action'])
 			if($folder == 2 || $folder == 3)
 			{ // Sent Items or Drafts Folder Check
 				$recipients = unserialize($message['recipients']);
+				$to_users = $bcc_users = '';
 				if(count($recipients['to']) > 1 || (count($recipients['to']) == 1 && count($recipients['bcc']) > 0))
 				{
+					foreach($recipients['to'] as $uid)
+					{
+						$profilelink = get_profile_link($uid);
+						$user = $cached_users[$uid];
+						$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+						eval("\$to_users .= \"".$templates->get("private_multiple_recipients_user")."\";"); 
+					}
+					if(is_array($recipients['bcc']) && count($recipients['bcc']))
+					{
+						eval("\$bcc_users = \"".$templates->get("private_multiple_recipients_bcc")."\";");
+						foreach($recipients['bcc'] as $uid)
+						{
+							$profilelink = get_profile_link($uid);
+							$user = $cached_users[$uid];
+							$username = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+							eval("\$bcc_users .= \"".$templates->get("private_multiple_recipients_user")."\";"); 
+						}
+					}
+					
 					eval("\$tofromusername = \"".$templates->get("private_multiple_recipients")."\";");
 				}
 				else if($message['toid'])

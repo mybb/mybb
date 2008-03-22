@@ -201,7 +201,8 @@ function build_postbit($post, $post_type=0)
 
 		$post['username'] = $post['userusername'];
 		$post['profilelink_plain'] = get_profile_link($post['uid']);
-		$post['profilelink'] = build_profile_link(format_name($post['username'], $post['usergroup'], $post['displaygroup']), $post['uid']);
+		$post['username_formatted'] = format_name($post['username'], $post['usergroup'], $post['displaygroup']);
+		$post['profilelink'] = build_profile_link($post['username_formatted'], $post['uid']);
 		
 		if(trim($post['usertitle']) != "")
 		{

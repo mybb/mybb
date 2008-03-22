@@ -3263,7 +3263,7 @@ ul.thread_tools li.subscription_remove {
 <td class="{$trow}" align="center">{$joinlink}</td>
 </tr>]]></template>
 		<template name="usercp_usergroups_memberof_usergroup" version="1400"><![CDATA[<tr>
-<td class="{$trow}"><strong>{$usergroup['title']}</strong>{$displaycode}{$description}</td>
+<td class="{$trow}"><strong>{$usergroup['title']}</strong> {$displaycode}{$description}</td>
 <td class="{$trow}" align="center">{$usergroup['usertitle']}</td>
 <td class="{$trow}">{$leavelink}</td>
 </tr>]]></template>

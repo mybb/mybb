@@ -1349,14 +1349,20 @@ if($mybb->input['action'] == "profile")
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 
 	// Get the user title for this user
-	if($displaygroup['usertitle'])
+	if(trim($memprofile['usertitle']) != '')
 	{
+		// User has custom user title
+		$usertitle = $memprofile['usertitle'];
+	}
+	elseif(trim($displaygroup['usertitle']) != '')
+	{
+		// User has group title
 		$usertitle = $displaygroup['usertitle'];
-		$stars = $displaygroup['stars'];
 	}
 	else
 	{
-		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
+		// No usergroup title so get a default one
+		$query = $db->simple_select(TABLE_PREFIX."usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
 		while($title = $db->fetch_array($query))
 		{
 			if($memprofile['postnum'] >= $title['posts'])
@@ -1367,6 +1373,11 @@ if($mybb->input['action'] == "profile")
 				break;
 			}
 		}
+	}
+	
+	if($displaygroup['stars'])
+	{
+		$stars = $displaygroup['stars'];
 	}
 
 	if(!empty($displaygroup['image']))
@@ -1384,10 +1395,6 @@ if($mybb->input['action'] == "profile")
 		eval("\$groupimage = \"".$templates->get("member_profile_groupimage")."\";");
 	}
 
-	if(trim($memprofile['usertitle']) != '')
-	{
-		$usertitle = $memprofile['usertitle'];
-	}
 	if(!$starimage)
 	{
 		$starimage = $displaygroup['starimage'];
