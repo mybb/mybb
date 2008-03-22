@@ -105,17 +105,13 @@ Thank you,
 {2} Staff";
 
 
-$l['email_reportpost'] = "{2} from {3} has reported this post:
+$l['email_reportpost'] = "{1} from {2} has reported this post:
 
-{4}
-{5}/showthread.php?tid={6}&pid={7}#pid{7}
-
-This is part of this thread:
-{8}
-{5}/showthread.php?tid={6}
+{3}
+{4}/showthread.php?tid={5}&pid={6}#pid{6}
 
 The reason this user gave for reporting this post:
-{9}
+{8}
 
 This message has been sent to all moderators of this forum, or all administrators and super moderators if there are no moderators.
 

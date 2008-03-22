@@ -117,23 +117,6 @@ if($mybb->settings['portal_showwelcome'] != 0)
 {
 	if($mybb->user['uid'] != 0)
 	{
-		if($mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['portal_showpms'] != 0 && $mybb->settings['enablepms'] != 0)
-		{
-			$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
-			$messages = $db->fetch_array($query);
-			if(!$messages['pms_new'])
-			{
-				$messages['pms_new'] = 0;
-			}
-			// the SUM() thing returns "" instead of 0
-			if($messages['pms_unread'] == "")
-			{
-				$messages['pms_unread'] = 0;
-			}
-			$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_new']);
-			eval("\$pms = \"".$templates->get("portal_pms")."\";");
-		}
-		
 		// Get number of new posts, threads, announcements
 		$query = $db->simple_select("posts", "COUNT(pid) AS newposts", "dateline>'".$mybb->user['lastvisit']."' $unviewwhere");
 		$newposts = $db->fetch_field($query, "newposts");
@@ -198,6 +181,26 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	if($mybb->user['uid'] == 0)
 	{
 		$mybb->user['username'] = "";
+	}
+}
+// Private messages box
+if($mybb->settings['portal_showpms'] != 0)
+{
+	if($mybb->user['uid'] != 0 && $mybb->user['receivepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
+	{
+		$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total, SUM(IF(dateline>'".$mybb->user['lastvisit']."' AND folder='1','1','0')) AS pms_new, SUM(IF(status='0' AND folder='1','1','0')) AS pms_unread", "uid='".$mybb->user['uid']."'");
+		$messages = $db->fetch_array($query);
+		if(!$messages['pms_new'])
+		{
+			$messages['pms_new'] = 0;
+		}
+		// the SUM() thing returns "" instead of 0
+		if($messages['pms_unread'] == "")
+		{
+			$messages['pms_unread'] = 0;
+		}
+		$lang->pms_received_new = $lang->sprintf($lang->pms_received_new, $mybb->user['username'], $messages['pms_new']);
+		eval("\$pms = \"".$templates->get("portal_pms")."\";");
 	}
 }
 // Get Forum Statistics
