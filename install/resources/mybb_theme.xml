@@ -143,11 +143,7 @@ table {
 }
 
 .trow_selected td {
-	background-color: #FFFBD9;
-}
-
-.trow_not_selected td {
-	width: 1px;
+	background: #FFFBD9;
 }
 
 .trow_sep {

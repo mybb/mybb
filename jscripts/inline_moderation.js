@@ -39,20 +39,21 @@ var inlineModeration = {
 				{
 					element.checked = true;
 					var tr = element.up('tr');
-					if(tr)
+					
+					// Because you refuse to work correctly Opera,
+					// We have to disable you for this fancy feature
+					if(tr && MyBB.browser != "opera")
 					{
 						tr.addClassName('trow_selected');
-						tr.style.width = "1px";
 					}
 				}
 				else
 				{
 					element.checked = false;
 					var tr = element.up('tr');
-					if(tr)
+					if(tr && MyBB.browser != "opera")
 					{
 						tr.removeClassName('trow_selected');
-						tr.style.width = "1px";
 					}
 				}
 			}
@@ -113,9 +114,8 @@ var inlineModeration = {
 			inlineModeration.inlineCount++;
 			newIds[newIds.length] = id;
 			var tr = element.up('tr');
-			if(tr)
+			if(tr && MyBB.browser != "opera")
 			{
-				tr.removeClassName('trow_not_selected');
 				tr.addClassName('trow_selected');
 			}
 		}
@@ -123,10 +123,9 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount--;
 			var tr = element.up('tr');
-			if(tr)
+			if(tr && MyBB.browser != "opera")
 			{
 				tr.removeClassName('trow_selected');
-				tr.addClassName('trow_not_selected');
 			}
 		}
 
@@ -162,10 +161,12 @@ var inlineModeration = {
 			}
 		});
 
-		$$('tr.trow_selected').each(function(element) {
-			element.removeClassName('trow_selected');
-			element.addClassName('trow_not_selected');
-		});
+		if(MyBB.browser != "opera")
+		{
+			$$('tr.trow_selected').each(function(element) {
+				element.removeClassName('trow_selected');
+			});
+		}
 
 		inlineModeration.inlineCount = 0;
 		goButton = $("inline_go");
@@ -200,17 +201,18 @@ var inlineModeration = {
 			{
 				id = inlineCheck[1];
 				element.checked = master.checked;
-
-				var tr = element.up('tr');
-				if(tr && master.checked == true)
+				
+				if(MyBB.browser != "opera")
 				{
-					tr.removeClassName('trow_not_selected');
-					tr.addClassName('trow_selected');
-				}
-				else
-				{
-					tr.removeClassName('trow_selected');
-					tr.addClassName('trow_not_selected');
+					var tr = element.up('tr');
+					if(tr && master.checked == true)
+					{
+						tr.addClassName('trow_selected');
+					}
+					else
+					{
+						tr.removeClassName('trow_selected');
+					}
 				}
 
 				if(master.checked == true)
