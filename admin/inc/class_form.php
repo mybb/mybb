@@ -61,7 +61,7 @@ class DefaultForm
 		else
 		{
 			$this->_return = true;
-			$this->construct_content = $form;
+			$this->construct_return = $form;
 		}
 	}
 

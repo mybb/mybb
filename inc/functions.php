@@ -1054,7 +1054,7 @@ function usergroup_displaygroup($gid)
  */
 function forum_permissions($fid=0, $uid=0, $gid=0)
 {
-	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybb, $usercache, $fpermissionscache;
+	global $db, $cache, $groupscache, $forum_cache, $fpermcache, $mybb, $usercache, $cached_forum_permissions_permissions, $cached_forum_permissions;
 
 	if($uid == 0)
 	{
@@ -1104,7 +1104,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 
 	if($fid) // Fetch the permissions for a single forum
 	{
-		if(!$cached_forum_permissions[$gid][$fid])
+		if(!$cached_forum_permissions_permissions[$gid][$fid])
 		{
 			$cached_forum_permissions_permissions[$gid][$fid] = fetch_forum_permissions($fid, $gid, $groupperms);
 		}
