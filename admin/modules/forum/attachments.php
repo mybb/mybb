@@ -149,7 +149,7 @@ if($mybb->input['action'] == "stats")
 	");
 	while($attachment = $db->fetch_array($query))
 	{
-		build_attachment_row($attachment, &$table);
+		build_attachment_row($attachment, $table);
 	}
 	$table->output($lang->popular_attachments);
 
@@ -172,7 +172,7 @@ if($mybb->input['action'] == "stats")
 	");
 	while($attachment = $db->fetch_array($query))
 	{
-		build_attachment_row($attachment, &$table);
+		build_attachment_row($attachment, $table);
 	}
 	$table->output($lang->largest_attachments);
 
@@ -753,7 +753,7 @@ if(!$mybb->input['action'])
 			");
 			while($attachment = $db->fetch_array($query))
 			{
-				build_attachment_row($attachment, $table, &$form);
+				build_attachment_row($attachment, $table, $form);
 			}
 
 			// Need to draw pagination for this result set
@@ -841,7 +841,7 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-function build_attachment_row($attachment, $table, $form=null)
+function build_attachment_row($attachment, &$table, &$form=null)
 {
 	global $mybb;
 	$attachment['filename'] = htmlspecialchars($attachment['filename']);

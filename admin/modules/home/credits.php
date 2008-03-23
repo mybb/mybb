@@ -65,7 +65,7 @@ if(!$mybb->input['action'])
 	$table->construct_row();
 	
 	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=7473\" target=\"_blank\">Zinga Burga</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=7473\" target=\"_blank\">ZiNgA BuRgA</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
