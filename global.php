@@ -120,7 +120,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 		$style = $db->fetch_array($query);
 		
 		$thread = get_thread($style['tid']);
-		$style = array_merge($thread, $style);
+		$style = array_merge($style, $thread);
 		
 		$load_from_forum = 1;
 	}
