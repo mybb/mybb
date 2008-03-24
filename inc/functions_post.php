@@ -271,7 +271,7 @@ function build_postbit($post, $post_type=0)
 			}
 		}
 
-		if($post['avatar'] != "" && ($mybb->user['showavatars'] != 0 || !$mybb->user))
+		if($post['avatar'] != "" && ($mybb->user['showavatars'] != 0 || !$mybb->user['uid']))
 		{
 			$post['avatar'] = htmlspecialchars_uni($post['avatar']);
 			$avatar_dimensions = explode("|", $post['avatardimensions']);

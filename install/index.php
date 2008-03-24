@@ -1312,8 +1312,8 @@ function install_done()
 	$cache->update_usergroups();
 	$cache->update_forumpermissions();
 	$cache->update_stats();
-	$cache->update_moderators();
 	$cache->update_forums();
+	$cache->update_moderators();
 	$cache->update_usertitles();
 	$cache->update_reportedposts();
 	$cache->update_mycode();
@@ -1324,6 +1324,7 @@ function install_done()
 	$cache->update_bannedips();
 	$cache->update_banned();
 	$cache->update_birthdays();
+	$cache->update("plugins", array());
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

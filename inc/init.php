@@ -69,8 +69,6 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 	$mybb->trigger_generic_error("install_directory");
 }
 
-$mybb->config = $config;
-
 require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
 $db = new databaseEngine;
 
@@ -146,7 +144,8 @@ if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
 			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
 			$settings[$setting['name']] = $setting['value'];
 		}
-	}	
+		$db->free_result($query);
+	}
 }
 
 $settings['wolcutoff'] = $settings['wolcutoffmins']*60;

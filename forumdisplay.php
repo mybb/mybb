@@ -72,6 +72,11 @@ $parentlist = $foruminfo['parentlist'];
 $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];
 
+if($fpermissions['canview'] != 1)
+{
+	error_no_permission();
+}
+
 // Build a forum cache.
 $query = $db->query("
 	SELECT f.*, fr.dateline AS lastread
@@ -122,11 +127,6 @@ if($forums)
 }
 
 $excols = "forumdisplay";
-
-if($fpermissions['canview'] != 1)
-{
-	error_no_permission();
-}
 
 // Password protected forums
 check_forum_password($foruminfo['fid']);

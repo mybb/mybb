@@ -27,8 +27,10 @@ if(!is_array($groupscache))
 // Send page headers
 send_page_headers();
 
+$current_page = my_strtolower(basename($_SERVER['PHP_SELF']));
+
 // Do not use session system for defined pages
-if((@isset($mybb->input['action']) && @isset($nosession[$mybb->input['action']])) || (@isset($mybb->input['thumbnail']) && my_strpos($_SERVER['PHP_SELF'], 'attachment.php')))
+if((@isset($mybb->input['action']) && @isset($nosession[$mybb->input['action']])) || (@isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
 {
 	define("NO_ONLINE", 1);
 }
@@ -38,6 +40,8 @@ require_once MYBB_ROOT."inc/class_session.php";
 $session = new session;
 $session->init();
 $mybb->session = &$session;
+
+$mybb->user['ismoderator'] = is_moderator("", "", $mybb->user['uid']);
 
 // Set our POST validation code here
 $mybb->post_code = generate_post_check();
@@ -102,10 +106,10 @@ $valid = array(
 	"polls.php",
 	"sendthread.php",
 	"printthread.php",
-	"moderation.php"	
+	"moderation.php"
 );
 
-if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
+if(in_array($current_page, $valid))
 {
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
 	if(isset($mybb->input['pid']))
@@ -118,6 +122,7 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
+		$db->free_result($query);
 		
 		$thread = get_thread($style['tid']);
 		$style = array_merge($style, $thread);
@@ -136,19 +141,19 @@ if(in_array(strtolower(basename($_SERVER['PHP_SELF'])), $valid))
 			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
+		$db->free_result($query);
 		$load_from_forum = 1;
 	}
 	
 	// We have a forum id - simply load the theme from it
 	else if(isset($mybb->input['fid']))
 	{
-		//$query = $db->simple_select("forums", "style, overridestyle", "fid='".intval($mybb->input['fid'])."'", array('limit' => 1));
-		//$style = $db->fetch_array($query);
 		cache_forums();
 		$style = $forum_cache[intval($mybb->input['fid'])];
 		$load_from_forum = 1;
 	}
 }
+unset($valid);
 
 // From all of the above, a theme was found
 if(isset($style['style']) && $style['style'] > 0)
@@ -169,6 +174,7 @@ if(empty($loadstyle))
 // Fetch the theme to load from the database
 $query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
 $theme = $db->fetch_array($query);
+$db->free_result($query);
 
 // No theme was found - we attempt to load the master or any other theme
 if(!$theme['tid'])
@@ -186,6 +192,7 @@ if(!$theme['tid'])
 	// Attempt to load the master or any other theme if the master is not available
 	$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "", array("order_by" => "tid", "limit" => 1));
 	$theme = $db->fetch_array($query);
+	$db->free_result($query);
 }
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
@@ -241,7 +248,7 @@ else
 }
 
 // Theme logo - is it a relative URL to the forum root? Append bburl
-if(!preg_match("#^(\/|\.\.|\.|([a-z0-9]+)://)#i", $theme['logo']))
+if(!preg_match("#^(\.\.?(/|$)|([a-z0-9]+)://)#i", $theme['logo']) && $theme['logo']{0} != "/")
 {
 	$theme['logo'] = $mybb->settings['bburl']."/".$theme['logo'];
 }
@@ -291,7 +298,7 @@ if($mybb->user['uid'] != 0)
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
 	
-	if(is_moderator("", "", $mybb->user['uid']))
+	if($mybb->user['ismoderator'])
 	{
 		eval("\$modcplink = \"".$templates->get("header_welcomeblock_member_moderator")."\";");
 	}
@@ -311,7 +318,7 @@ else
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['issupermod'] == 1 || $mybb->user['usergroup'] == 6)
+if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'])
 {
 	// Read the reported posts cache
 	$reported = $cache->read("reportedposts");
@@ -349,6 +356,7 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 	// Fetch details on their ban
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'", array('limit' => 1));
 	$ban = $db->fetch_array($query);
+	$db->free_result($query);
 	if($ban['uid'])
 	{
 		// Format their ban lift date and reason appropriately
@@ -370,16 +378,14 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 	{
 		$banlift = $lang->unknown;
 	}
-	if($ban['uid'])
-	{
-		// Display a nice warning to the user
-	}	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
+	// Display a nice warning to the user
+	eval("\$bannedwarning = \"".$templates->get("global_bannedwarning")."\";");
 }
 
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && my_strpos(get_current_location(), 'private.php?action=read') === false)
+if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->input['action'] != "read"))
 {
 	$query = $db->query("
 		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
@@ -390,6 +396,7 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 		LIMIT 1
 	");
 	$pm = $db->fetch_array($query);
+	$db->free_result($query);
 	if($mybb->user['pms_unread'] == 1)
 	{
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
@@ -484,7 +491,7 @@ if(is_banned_ip($session->ipaddress, true))
 }
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
-if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !(basename($_SERVER['PHP_SELF']) == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))
+if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !($current_page == "member.php" && ($mybb->input['action'] == "login" || $mybb->input['action'] == "do_login" || $mybb->input['action'] == "logout")))
 {
 	// Show error
 	$lang->error_boardclosed .= "<blockquote>{$mybb->settings['boardclosed_reason']}</blockquote>";
@@ -522,28 +529,32 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 }
 
 // Check pages allowable even when not allowed to view board
-$allowable_actions = array(
-	"member.php" => array(
-		"register",
-		"do_register",
-		"login",
-		"do_login",
-		"logout",
-		"lostpw",
-		"do_lostpw",
-		"activate",
-		"resendactivation",
-		"do_resendactivation",
-		"resetpassword"
-	),
-	"usercp2.php" => array(
-		"removesubscription",
-		"removesubscriptions"
-	),
-);
-if($mybb->usergroup['canview'] != 1 && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !(my_strtolower(basename($_SERVER['PHP_SELF'])) == "usercp2.php" && in_array($mybb->input['action'], $allowable_actions['usercp2.php'])) && my_strtolower(basename($_SERVER['PHP_SELF'])) != "captcha.php")
+if($mybb->usergroup['canview'] != 1)
 {
-	error_no_permission();
+	$allowable_actions = array(
+		"member.php" => array(
+			"register",
+			"do_register",
+			"login",
+			"do_login",
+			"logout",
+			"lostpw",
+			"do_lostpw",
+			"activate",
+			"resendactivation",
+			"do_resendactivation",
+			"resetpassword"
+		),
+		"usercp2.php" => array(
+			"removesubscription",
+			"removesubscriptions"
+		),
+	);
+	if(!($current_page == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !($current_page == "usercp2.php" && in_array($mybb->input['action'], $allowable_actions['usercp2.php'])) && $current_page != "captcha.php")
+	{
+		error_no_permission();
+	}
+	unset($allowable_actions);
 }
 
 // work out which items the user has collapsed
