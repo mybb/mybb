@@ -1359,7 +1359,7 @@ function is_moderator($fid="0", $action="", $uid="0")
 			$modcache = $cache->read('moderators');
 			foreach($modcache as $modusers)
 			{
-				if($modusers[$uid]['mid'])
+				if(isset($modusers[$uid]) && $modusers[$uid]['mid'])
 				{
 					return true;
 				}
