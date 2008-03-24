@@ -158,7 +158,6 @@ while($thread = $db->fetch_array($query))
 		$feedgenerator->add_item($item);
 	}
 }
-$db->free_result($query);
 
 // Then output the feed XML.
 $feedgenerator->output_feed();

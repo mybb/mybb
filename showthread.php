@@ -42,7 +42,6 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 		);
 		$query = $db->simple_select("posts", "tid", "pid=".$mybb->input['pid'], $options);
 		$post = $db->fetch_array($query);
-		$db->free_result($query);
 		$mybb->input['tid'] = $post['tid'];
 	}
 }

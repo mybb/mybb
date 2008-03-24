@@ -89,7 +89,6 @@ while($forum = $db->fetch_array($query))
 {
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
-$db->free_result($query);
 
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != 0)
@@ -106,7 +105,6 @@ if($mybb->settings['modlist'] != 0)
 	{
 		$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
 	}
-	$db->free_result($query);
 }
 
 $bgcolor = "trow1";
@@ -225,8 +223,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 			}
 		}
 	}
-	$db->free_result($query);
-	
+		
 	if($guestcount)
 	{
 		$guestsonline = $lang->sprintf($lang->users_browsing_forum_guests, $guestcount);
@@ -440,7 +437,6 @@ else
 		$threadcount += $forum_threads['unapprovedthreads'];
 	}
 }
-$db->free_result($query);
 
 // How many pages are there?
 if(!$mybb->settings['threadsperpage'])
@@ -545,7 +541,6 @@ if($foruminfo['allowtratings'] != 0)
 
 				$avaragerating[$thread['tid']] = $rating;
 			}
-			$db->free_result($query);
 			break;
 		default:
 			$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";
@@ -629,7 +624,6 @@ while($announcement = $db->fetch_array($query))
 	eval("\$announcements  .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
 	$bgcolor = alt_trow();
 }
-$db->free_result($query);
 
 if($announcements)
 {
@@ -677,7 +671,6 @@ while($thread = $db->fetch_array($query))
 		}
 	}
 }
-$db->free_result($query);
 
 if($tids)
 {
@@ -699,7 +692,6 @@ if($mybb->settings['dotfolders'] != 0 && $mybb->user['uid'] && $threadcache)
 			$threadcache[$post['tid']]['doticon'] = 1;
 		}
 	}
-	$db->free_result($query);
 }
 
 // Read threads
@@ -717,7 +709,6 @@ if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcache)
 	 		$threadcache[$readthread['tid']]['lastread'] = $readthread['dateline']; 
 		}
 	}
-	$db->free_result($query);
 }
 
 if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
@@ -1062,8 +1053,7 @@ if(is_array($threadcache))
 		{
 			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
 		}
-		$db->free_result($query);
-
+		
 		if(!empty($customthreadtools))
 		{
 			eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
