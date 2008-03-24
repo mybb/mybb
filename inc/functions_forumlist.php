@@ -208,7 +208,7 @@ function build_forumbits($pid=0, $depth=1)
 					$full_lastpost_subject = htmlspecialchars_uni($full_lastpost_subject);
 
 					// Call lastpost template
-					if($depth != 1 && $forumcat != "cat")
+					if($depth != 1 && $forumcat != "_cat")
 					{
 						eval("\$lastpost = \"".$templates->get("forumbit_depth$depth$forumcat"."_lastpost")."\";");
 					}

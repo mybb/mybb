@@ -358,7 +358,7 @@ if($mybb->input['action'] == "activate_user")
 	}
 	else
 	{
-		$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
+		//$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
 	}
 
 	// Move out of awaiting activation if they're in it.
@@ -367,7 +367,7 @@ if($mybb->input['action'] == "activate_user")
 		$updated_user['usergroup'] = 2;
 	}
 
-	$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
+	//$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
 	
 	$plugins->run_hooks("admin_user_users_coppa_activate_commit");
 
@@ -385,8 +385,8 @@ if($mybb->input['action'] == "activate_user")
 
 	if($admin_session['data']['last_users_url'])
 	{
-		update_admin_session('last_users_url', '');
 		$url = $admin_session['data']['last_users_url'];
+		update_admin_session('last_users_url', '');
 	}
 	else
 	{

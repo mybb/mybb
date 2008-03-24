@@ -80,12 +80,17 @@ class templates
 		
 		if(!isset($this->cache[$title]))
 		{
-			$query = $db->simple_select("templates", "template", "title='$title' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+			$query = $db->simple_select("templates", "template", "title='".$db->escape_string($title)."' AND sid IN ('-2','-1','".$theme['templateset']."')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 
 			$gettemplate = $db->fetch_array($query);
 			if($mybb->debug_mode)
 			{
 				$this->uncached_templates[$title] = $title;
+			}
+			
+			if(!$gettemplate)
+			{
+				$gettemplate['template'] = "";
 			}
 
 			$this->cache[$title] = $gettemplate['template'];

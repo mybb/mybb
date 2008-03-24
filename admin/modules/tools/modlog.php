@@ -32,7 +32,7 @@ $plugins->run_hooks("admin_tools_modlog_begin");
 
 if($mybb->input['action'] == 'prune')
 {
-	$plugins->run_hooks("admin_tools_adminlog_prune");
+	$plugins->run_hooks("admin_tools_modlog_prune");
 	
 	if($mybb->request_method == 'post')
 	{

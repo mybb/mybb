@@ -2135,6 +2135,7 @@ if($mybb->input['action'] == "ipsearch")
 			");
 			while($ipaddress = $db->fetch_array($query))
 			{
+				$result = false;
 				$profile_link = build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				$trow = alt_trow();
 				$regexp_ip = str_replace("\*", "(.*)", preg_quote($mybb->input['ipaddress'], "#"));
@@ -2144,6 +2145,7 @@ if($mybb->input['action'] == "ipsearch")
 					$ip = $ipaddress['regip'];
 					$subject = "<strong>{$lang->ipresult_regip}</strong> {$profile_link}";
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+					$result = true;
 				}
 				// Last known IP matches
 				if(preg_match("#{$regexp_ip}#i", $ipaddress['lastip']))
@@ -2151,8 +2153,13 @@ if($mybb->input['action'] == "ipsearch")
 					$ip = $ipaddress['lastip'];
 					$subject = "<strong>{$lang->ipresult_lastip}</strong> {$profile_link}";
 					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+					$result = true;
 				}
-				--$post_limit;
+				
+				if($result)
+				{
+					--$post_limit;
+				}
 			}
 		}
 		$post_start = 0;
@@ -2161,7 +2168,7 @@ if($mybb->input['action'] == "ipsearch")
 			$post_start = $start-$user_results;
 			if($post_start < 0) $post_start = 0;
 		}
-		if($mybb->input['search_posts'] && (!$mybb->input['search_users'] || ($mybb->input['search_users']) && $post_limit > 0))
+		if($mybb->input['search_posts'] && (!$mybb->input['search_users'] || ($mybb->input['search_users'] && $post_limit > 0)))
 		{
 			$query = $db->query("
 				SELECT p.username AS postusername, p.uid, u.username, p.subject, p.pid, p.tid, p.ipaddress, t.subject AS threadsubject

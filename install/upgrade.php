@@ -43,8 +43,50 @@ $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources/');
 $lang->load('language');
 
+// Load Settings
+if(file_exists(MYBB_ROOT."inc/settings.php"))
+{
+	require_once MYBB_ROOT."inc/settings.php";
+}
+
+if(!file_exists(MYBB_ROOT."inc/settings.php") || !$settings)
+{
+	if(function_exists('rebuild_settings'))
+	{
+		rebuild_settings();
+	}
+	else
+	{
+		$options = array(
+			"order_by" => "title",
+			"order_dir" => "ASC"
+		);
+		
+		$query = $db->simple_select("settings", "value, name", "", $options);
+		while($setting = $db->fetch_array($query))
+		{
+			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
+			$settings[$setting['name']] = $setting['value'];
+		}
+	}	
+}
+
+$settings['wolcutoff'] = $settings['wolcutoffmins']*60;
+$settings['bbname_orig'] = $settings['bbname'];
+$settings['bbname'] = strip_tags($settings['bbname']);
+
+// Fix for people who for some specify a trailing slash on the board URL
+if(substr($settings['bburl'], -1) == "/")
+{
+	$settings['bburl'] = my_substr($settings['bburl'], 0, -1);
+}
+
+$mybb->settings = &$settings;
+
 require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
+
+$mybb->cache = &$cache;
 
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
@@ -531,13 +573,13 @@ function sync_settings($redo=0)
 	}
 	else
 	{
-		$query = $db->simple_select("settings", "name");
+		$query = $db->simple_select("settings", "name", "isdefault='1' OR isdefault='yes'");
 		while($setting = $db->fetch_array($query))
 		{
 			$settings[$setting['name']] = 1;
 		}
 		
-		$query = $db->simple_select("settinggroups", "name,title,gid");
+		$query = $db->simple_select("settinggroups", "name,title,gid", "isdefault='1' OR isdefault='yes'");
 		while($group = $db->fetch_array($query))
 		{
 			$settinggroups[$group['name']] = $group['gid'];
@@ -547,9 +589,13 @@ function sync_settings($redo=0)
 	$parser = new XMLParser($settings_xml);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
+	$settinggroupnames = array();
+	$settingnames = array();
 
 	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 	{
+		$settinggroupnames[$settinggroup['attributes']['name']] = 1;
+		
 		$groupdata = array(
 			"name" => $db->escape_string($settinggroup['attributes']['name']),
 			"title" => $db->escape_string($settinggroup['attributes']['title']),
@@ -568,12 +614,16 @@ function sync_settings($redo=0)
 			$gid = $settinggroups[$settinggroup['attributes']['name']];
 			$db->update_query("settinggroups", $groupdata, "gid='{$gid}'");
 		}
+		
 		if(!$gid)
 		{
 			continue;
 		}
+		
 		foreach($settinggroup['setting'] as $setting)
 		{
+			$settingnames[$setting['attributes']['name']] = 1;
+			
 			$settingdata = array(
 				"name" => $db->escape_string($setting['attributes']['name']),
 				"title" => $db->escape_string($setting['title'][0]['value']),
@@ -596,6 +646,23 @@ function sync_settings($redo=0)
 			}
 		}
 	}
+	
+	foreach($settinggroups as $groupname)
+	{
+		if(!array_key_exists($groupname, $settinggroupnames))
+		{
+			$db->delete_query("settinggroups", "gid='".$settinggroups[$groupname]."'", 1);
+		}
+	}
+	
+	foreach($settings as $settingname)
+	{
+		if(!array_key_exists($settingname, $settingnames))
+		{
+			$db->delete_query("settings", "sid='".$settings[$settingname]."'", 1);
+		}
+	}
+	
 	if($redo >= 1)
 	{
 		require MYBB_ROOT."inc/settings.php";

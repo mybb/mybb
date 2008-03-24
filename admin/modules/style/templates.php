@@ -819,7 +819,7 @@ if($mybb->input['action'] == "find_updated")
 		SELECT COUNT(*) AS updated_count
 		FROM ".TABLE_PREFIX."templates t 
 		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version)
-		WHERE t.sid > 0
+		WHERE t.sid > 0 AND m.template != t.template
 	");
 	$count = $db->fetch_array($query);
 
@@ -852,39 +852,50 @@ if($mybb->input['action'] == "find_updated")
 LEGEND;
 	
 	$count = 0;
+	$done_set = array();
+	$done_output = array();
+	$templates = array();
 	$table = new Table;	
 	
 	$query = $db->query("
-		SELECT t.tid,t.title, t.sid, t.version 
+		SELECT t.tid, t.title, t.sid, t.version 
 		FROM ".TABLE_PREFIX."templates t 
-		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version) 
-		WHERE t.sid > 0
+		LEFT JOIN ".TABLE_PREFIX."templates m ON (m.title=t.title AND m.sid=-2 AND m.version > t.version)
+		WHERE t.sid > 0 AND m.template != t.template
 		ORDER BY t.sid ASC, title ASC
 	");
 	while($template = $db->fetch_array($query))
 	{
-		if(!$done_set[$template['sid']])
+		$templates[$template['sid']][] = $template;
+	}
+	
+	foreach($templates as $sid => $templates)
+	{
+		if(!$done_set[$sid])
 		{
-			$table->construct_header($templatesets[$template['sid']]['title'], array("colspan" => 2));
+			$table->construct_header($templatesets[$sid]['title'], array("colspan" => 2));
+			
+			$done_set[$sid] = 1;
+			++$count;
 		}
 		
-		$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-		//$popup->add_item($lang->inline_edit, "javascript:;");
-		$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".$template['sid']);
-		$popup->add_item($lang->diff_report, "index.php?module=style/templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid1=".$template['sid']."&amp;sid2=-2");
-		$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid={$template['sid']}&amp;find_updated=1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+		foreach($templates as $template)
+		{		
+			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
+			//$popup->add_item($lang->inline_edit, "javascript:;");
+			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".$sid);
+			$popup->add_item($lang->diff_report, "index.php?module=style/templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid1=".$template['sid']."&amp;sid2=-2");
+			$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid={$sid}&amp;find_updated=1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+				
+			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}\">{$template['title']}</a>", array('width' => '80%')); // onclick=\"Templates.quick_edit('{$template['tid']}'); return false;\"
+			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 			
-		$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1\">{$template['title']}</a>", array('width' => '80%')); // onclick=\"Templates.quick_edit('{$template['tid']}'); return false;\"
-		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+			$table->construct_row();
+		}
 		
-		$table->construct_row();
-		
-		if(!$done_set[$template['sid']])
-		{
-			++$count;
-			
-			$done_set[$template['sid']] = 1;
-		
+		if($done_set[$sid] && !$done_output[$sid])
+		{		
+			$done_output[$sid] = 1;
 			if($count == 1)
 			{
 				$table->output($lang->find_updated);
@@ -1198,7 +1209,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			{
 				$group = -1;
 			}
-							
+			
 			// If this template is not a master template, we simple add it to the list
 			if($template['sid'] != -2)
 			{
@@ -1210,21 +1221,21 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			else
 			{				
 				// Master template that hasn't been customised in the set we have expanded
-				if(!isset($template_groups[$group]['templates'][$template['title']]))
+				if(!isset($template_groups[$group]['templates'][$template['title']]) || $template_groups[$group]['templates'][$template['title']]['template'] == $template['template'])
 				{
 					$template['original'] = true;
 					$template_groups[$group]['templates'][$template['title']] = $template;
 				}
-				// Template has not been modified in the set we have expanded (it matches the master)
-				else if($template_groups[$group]['templates'][$template['title']]['template'] != $template['template'] &&$template_groups[$group]['templates'][$template['title']]['sid'] != -2)
-				{					
+				// Template has been modified in the set we have expanded (it doesn't match the master)
+				else if($template_groups[$group]['templates'][$template['title']]['template'] != $template['template'] && $template_groups[$group]['templates'][$template['title']]['sid'] != -2)
+				{
 					$template_groups[$group]['templates'][$template['title']]['modified'] = true;
 				}
 				
 				// Save some memory!
 				unset($template_groups[$group]['templates'][$template['title']]['template']);
 			}
-		}		
+		}
 	}
 	
 	foreach($template_groups as $prefix => $group)
@@ -1260,12 +1271,13 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		if($expanded == true && isset($group['templates']) && count($group['templates']) > 0)
 		{
 			$templates = $group['templates'];
+			asort($templates);
 			foreach($templates as $template)
 			{
 				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
 				//$popup->add_item($lang->inline_edit, "javascript:;", "Templates.quick_edit('{$template['tid']}');");
 				$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}{$expand_str}");
-
+				
 				if(isset($template['modified']) && $template['modified'] == true)
 				{					
 					if($sid > 0)
@@ -1278,7 +1290,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 					$template['title'] = "<span style=\"color: green;\">{$template['title']}</span>";
 				}				
 				// This template does not exist in the master list
-				else if(!isset($template['original']) || $template['original'] == false)
+				else if(isset($template['original']) && $template['original'] == false)
 				{
 					$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 					

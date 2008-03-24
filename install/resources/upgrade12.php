@@ -197,21 +197,41 @@ function upgrade12_dbchanges1()
 	$output->print_header("Performing Queries");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
+	echo "<p>Adding index to private messages table ... ";
 	flush();
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 	
+	echo "done.</p>";
+	echo "<p>Adding index to posts table ... ";
+	flush();
+	
 	// This will take a LONG time on huge post databases, so we only run it isolted from most of the other queries
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX ( `visible` )");
 	
+	echo "done.</p>";
+	flush();
+	
 	if($db->field_exists('longipaddress', "posts"))
 	{
+		echo "<p>Dropping longipaddress column in posts table ... ";
+		flush();
+	
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP longipaddress;");
+		
+		echo "done.</p>";
+		flush();
 	}
+	
+	echo "<p>Adding loginipaddress column to posts table ... ";
+	flush();
+	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(10) NOT NULL default '0' AFTER ipaddress");
 	
-	$contents = "Done</p>";
-	$contents .= "<p>Click next to continue with the upgrade process.</p>";
+	echo "done.</p>";
+	flush();
+	
+	$contents = "<p>Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 
 	global $footer_extra;
@@ -690,7 +710,7 @@ function upgrade12_dbchanges3()
 	) TYPE=MyISAM{$collation};");
 
 	// Now we convert all of the old bans in to the new system!
-	$ban_types = array('bannedips','bannedemails','bannedusernames');
+	$ban_types = array('bannedips', 'bannedemails', 'bannedusernames');
 	foreach($ban_types as $type)
 	{
 		$bans = explode(",", $mybb->settings[$type]);
@@ -921,6 +941,11 @@ function upgrade12_dbchanges4()
 				}
 				$new_permissions[$convert_permissions[$field]['module']][$convert_permissions[$field]['permission']] = $value;
 			}
+			// If the page is new and we don't have anything to inherit the permissions from we allow it by default
+			else
+			{
+				$value = 1;
+			}
 		}
 		
 		$db->update_query("adminoptions", array('permissions' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
@@ -1020,7 +1045,7 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY (username)");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD KEY username (username)");
 
 	if($db->field_exists('statustime', "privatemessages"))
 	{
@@ -1346,7 +1371,8 @@ function upgrade12_dbchanges6()
 		$upper = $cnt['ipcount'];
 	}
 
-	$contents .= "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
+	echo "<p>Converting ip {$lower} to {$upper} ({$cnt['ipcount']} Total)</p>";
+	flush();
 	
 	$ipaddress = false;
 	
@@ -1366,12 +1392,12 @@ function upgrade12_dbchanges6()
 	{
 		$nextact = "12_dbchanges6";
 		$startat = $startat+$ipp;
-		$contents .= "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of post ips.</p>";
+		$contents = "<p><input type=\"hidden\" name=\"ipspage\" value=\"$ipp\" /><input type=\"hidden\" name=\"ipstart\" value=\"$startat\" />Done. Click Next to move on to the next set of post ips.</p>";
 	}
 	else
 	{
 		$nextact = "12_dbchanges7";
-		$contents .= "<p>Done</p><p>All post ips have been converted to the new ip format. Click next to continue.</p>";
+		$contents = "<p>Done</p><p>All post ips have been converted to the new ip format. Click next to continue.</p>";
 	}
 	$output->print_contents($contents);
 
@@ -1722,7 +1748,11 @@ function upgrade12_redothemes()
 		{
 			foreach($sheets as $stylesheet)
 			{
-				if($location == "global" && $action == "global") continue; // Skip global
+				if($location == "global" && $action == "global")
+				{
+					continue; // Skip global
+				}
+				
 				$default_stylesheets[$location][$action][] = $stylesheet;
 				$default_stylesheets['inherited']["{$location}_{$action}"][$stylesheet] = 1; // This stylesheet is inherited from the master
 			}

@@ -199,7 +199,7 @@ class Text_Diff_Engine_native {
 
                 while (list($junk, $y) = each($matches)) {
                     if ($y > $this->seq[$k - 1]) {
-                        assert($y < $this->seq[$k]);
+                        @assert($y < $this->seq[$k]);
                         /* Optimization: this is a common case: next match is
                          * just replacing previous match. */
                         $this->in_seq[$this->seq[$k]] = false;
