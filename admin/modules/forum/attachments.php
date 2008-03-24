@@ -149,7 +149,7 @@ if($mybb->input['action'] == "stats")
 	");
 	while($attachment = $db->fetch_array($query))
 	{
-		build_attachment_row($attachment, &$table);
+		@build_attachment_row($attachment, &$table);
 	}
 	$table->output($lang->popular_attachments);
 
@@ -172,7 +172,7 @@ if($mybb->input['action'] == "stats")
 	");
 	while($attachment = $db->fetch_array($query))
 	{
-		build_attachment_row($attachment, &$table);
+		@build_attachment_row($attachment, &$table);
 	}
 	$table->output($lang->largest_attachments);
 

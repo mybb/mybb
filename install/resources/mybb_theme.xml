@@ -5565,7 +5565,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <body>
 <table width="98%" align="center">
 <tr>
-<td valign="top"><a href="index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a></td>
+<td valign="top"><a href="index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" border="0" /></a></td>
 </tr>
 <tr>
 <td>

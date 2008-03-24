@@ -1687,7 +1687,7 @@ if($mybb->input['action'] == "dayview")
 			$repeats = fetch_friendly_repitition($event);
 			if($repeats)
 			{
-			$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
+				$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
 			}
 
 			$edit_event = $moderator_options = $event_class = "";

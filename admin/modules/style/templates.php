@@ -178,7 +178,7 @@ if($mybb->input['action'] == "add_template")
 		
 		$query = $db->simple_select("templatesets", "*", "sid='{$sid}'");
 		$template_set = $db->fetch_array($query);
-		if(!$template_set['sid'])
+		if(!$template_set)
 		{
 			$errors[] = $lang->error_invalid_set;
 		}
@@ -215,14 +215,8 @@ if($mybb->input['action'] == "add_template")
 		}
 	}
 	
-	if($sid)
-	{
-		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
-	}
-	
 	if($errors)
 	{
-		$page->output_inline_error($errors);
 		$template = $mybb->input;
 	}
 	else
@@ -234,6 +228,11 @@ if($mybb->input['action'] == "add_template")
 		
 		$template['template'] = "";
 		$template['sid'] = $sid;
+	}
+	
+	if($sid)
+	{
+		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
 	}
 	
 	$page->extra_header .= '
@@ -255,6 +254,11 @@ if($mybb->input['action'] == "add_template")
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_template');
+	
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
 	
 	$form = new Form("index.php?module=style/templates&amp;action=add_template{$expand_str}", "post", "add_template");
 	

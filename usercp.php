@@ -862,7 +862,7 @@ if($mybb->input['action'] == "options")
 	$time_format_options = "<option value=\"0\">{$lang->use_default}</option>";
 	foreach($time_formats as $key => $format)
 	{
-		if($user['dateformat'] == $key)
+		if($user['timeformat'] == $key)
 		{
 			$time_format_options .= "<option value=\"$key\" selected=\"selected\">".my_date($format, TIME_NOW, "", 0)."</option>";
 		}

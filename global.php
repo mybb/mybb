@@ -521,31 +521,34 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 	}
 }
 
-// Check pages allowable even when not allowed to view board
-$allowable_actions = array(
-	"member.php" => array(
-		"register",
-		"do_register",
-		"login",
-		"do_login",
-		"logout",
-		"lostpw",
-		"do_lostpw",
-		"activate",
-		"resendactivation",
-		"do_resendactivation",
-		"resetpassword"
-	),
-	"usercp2.php" => array(
-		"removesubscription",
-		"removesubscriptions"
-	),
-);
-if(!($current_page == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !($current_page == "usercp2.php" && in_array($mybb->input['action'], $allowable_actions['usercp2.php'])) && $current_page != "captcha.php")
+if($mybb->usergroup['canview'] != 1)
 {
-	error_no_permission();
+	// Check pages allowable even when not allowed to view board
+	$allowable_actions = array(
+		"member.php" => array(
+			"register",
+			"do_register",
+			"login",
+			"do_login",
+			"logout",
+			"lostpw",
+			"do_lostpw",
+			"activate",
+			"resendactivation",
+			"do_resendactivation",
+			"resetpassword"
+		),
+		"usercp2.php" => array(
+			"removesubscription",
+			"removesubscriptions"
+		),
+	);
+	if(!($current_page == "member.php" && in_array($mybb->input['action'], $allowable_actions['member.php'])) && !($current_page == "usercp2.php" && in_array($mybb->input['action'], $allowable_actions['usercp2.php'])) && $current_page != "captcha.php")
+	{
+		error_no_permission();
+	}
+	unset($allowable_actions);
 }
-unset($allowable_actions);
 
 // work out which items the user has collapsed
 $colcookie = $_COOKIE['collapsed'];
