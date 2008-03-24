@@ -162,6 +162,8 @@ $l['admin_log_style_templates_edit_template_global'] = "Edited template #{1} ({2
 $l['admin_log_style_templates_search_replace'] = "Searched templates for '{1}' and replaced with '{2}'";
 $l['admin_log_style_templates_revert'] = "Reverted template #{1} ({2}) in template set #{3} ({4})";
 
+$l['admin_log_tools_system_health_utf8_conversion'] = "Converted table {1} to UTF-8 Character Set.";
+
 $l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
 $l['admin_log_tools_adminlog_prune_user'] = "Pruned {4} administrator logs older than {1} days for user {2}";
 $l['admin_log_tools_adminlog_prune_module'] = "Pruned {4} administrator logs older than {1} days for module {3}";

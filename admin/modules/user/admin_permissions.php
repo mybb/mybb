@@ -142,7 +142,7 @@ if($mybb->input['action'] == "edit")
 			$gid = abs($uid);
 			$query = $db->simple_select("usergroups", "title", "gid='$gid'");
 			$group = $db->fetch_array($query);
-			log_admin_action($uid, $user['title']);
+			log_admin_action($uid, $group['title']);
 		}
 		else
 		{
