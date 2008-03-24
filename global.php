@@ -122,7 +122,6 @@ if(in_array($current_page, $valid))
 			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
-		$db->free_result($query);
 		
 		$thread = get_thread($style['tid']);
 		$style = array_merge($style, $thread);
@@ -141,7 +140,6 @@ if(in_array($current_page, $valid))
 			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
-		$db->free_result($query);
 		$load_from_forum = 1;
 	}
 	
@@ -174,7 +172,6 @@ if(empty($loadstyle))
 // Fetch the theme to load from the database
 $query = $db->simple_select("themes", "name, tid, properties, stylesheets", $loadstyle, array('limit' => 1));
 $theme = $db->fetch_array($query);
-$db->free_result($query);
 
 // No theme was found - we attempt to load the master or any other theme
 if(!$theme['tid'])
@@ -192,7 +189,6 @@ if(!$theme['tid'])
 	// Attempt to load the master or any other theme if the master is not available
 	$query = $db->simple_select("themes", "name, tid, properties, stylesheets", "", array("order_by" => "tid", "limit" => 1));
 	$theme = $db->fetch_array($query);
-	$db->free_result($query);
 }
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
@@ -356,7 +352,6 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 	// Fetch details on their ban
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->user['uid']}'", array('limit' => 1));
 	$ban = $db->fetch_array($query);
-	$db->free_result($query);
 	if($ban['uid'])
 	{
 		// Format their ban lift date and reason appropriately
@@ -396,7 +391,6 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 		LIMIT 1
 	");
 	$pm = $db->fetch_array($query);
-	$db->free_result($query);
 	if($mybb->user['pms_unread'] == 1)
 	{
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
