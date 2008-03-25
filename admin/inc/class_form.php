@@ -419,6 +419,7 @@ class DefaultForm
 		
 		if($options['main_option'] && $is_first)
 		{
+			$select_add = '';
 			if($selected == -1)
 			{
 				$select_add = " selected=\"selected\""; 
