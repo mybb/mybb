@@ -14,7 +14,7 @@ $l['add_warning_type_desc'] = "Here you can create a new predefined warning type
 $l['edit_warning_type'] = "Edit Warning Type";
 $l['edit_warning_type_desc'] = "Here you can edit this warning type. Warning types are selectable when warning users and you can define the number of points to add for this type as well as the time period before warnings of this type expire.";
 $l['warning_levels'] = "Warning Levels";
-$l['warning_levels_desc'] = "Warning Levels define what happens to a user when they reach a particular warning level (percentage of maximum warning points). You can ban users or suspend their privledges.";
+$l['warning_levels_desc'] = "Warning Levels define what happens to a user when they reach a particular warning level (percentage of maximum warning points). You can ban users or suspend their privileges.";
 $l['add_warning_level'] = "Add New Warning Level";
 $l['add_warning_level_desc'] = "Here you can create a new warning level. Warning levels are actions to be taken against users when they reach a specific percentage of the maximum warning level.";
 $l['edit_warning_level'] = "Edit Warning Level";
@@ -23,7 +23,7 @@ $l['edit_warning_level_desc'] = "Warning levels are actions to be taken against 
 $l['percentage'] = "Percentage";
 $l['action_to_take'] = "Action to Take";
 $l['move_banned_group'] = "Move to banned group ({1}) for {2} {3}";
-$l['suspend_posting'] = "Suspend posting privledges for {1} {2}";
+$l['suspend_posting'] = "Suspend posting privileges for {1} {2}";
 $l['moderate_new_posts'] = "Moderate new posts for {1} {2}";
 $l['no_warning_levels'] = "There are no warning levels on your forum at this time.";
 

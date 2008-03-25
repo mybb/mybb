@@ -1402,7 +1402,7 @@ if($mybb->input['action'] == "cancel")
 	);
 	$db->update_query("massemails", $updated_email, "mid='{$mass_email['mid']}'");
 	
-	flash_message($lang->success_mass_mail_cancelled, 'success');
+	flash_message($lang->success_mass_mail_canceled, 'success');
 	admin_redirect("index.php?module=user/mass_mail");
 	exit;		
 }
@@ -1435,7 +1435,7 @@ if($mybb->input['action'] == "archive")
 		}
 		else if($email['status'] == 4)
 		{
-			$status = $lang->cancelled;
+			$status = $lang->canceled;
 		}
 		$table->construct_cell($status, array("class" => "align_center"));
 

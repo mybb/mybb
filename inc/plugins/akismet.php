@@ -188,7 +188,7 @@ function akismet_install()
 	$insertarray = array(
 		'name' => 'akismetfidsignore',
 		'title' => 'Forums to Ignore',
-		'description' => 'Forums, seperated by a comma, to ignore. Use the forum id, <strong>not the name</strong>.',
+		'description' => 'Forums, separated by a comma, to ignore. Use the forum id, <strong>not the name</strong>.',
 		'optionscode' => 'text',
 		'value' => '',
 		'disporder' => 3,
@@ -199,7 +199,7 @@ function akismet_install()
 	$insertarray = array(
 		'name' => 'akismetuidsignore',
 		'title' => 'Usergroups to Ignore',
-		'description' => 'Usergroups, seperated by a comma, to ignore. Use the usergroup id, <strong>not the name</strong>.',
+		'description' => 'Usergroups, separated by a comma, to ignore. Use the usergroup id, <strong>not the name</strong>.',
 		'optionscode' => 'text',
 		'value' => '6,4,3',
 		'disporder' => 4,
@@ -210,7 +210,7 @@ function akismet_install()
 	$insertarray = array(
 		'name' => 'akismetuserstoignore',
 		'title' => 'Users to Ignore',
-		'description' => 'Users, seperated by a comma, to ignore. Use the user id, <strong>not the name</strong>.',
+		'description' => 'Users, separated by a comma, to ignore. Use the user id, <strong>not the name</strong>.',
 		'optionscode' => 'text',
 		'value' => '',
 		'disporder' => 6,

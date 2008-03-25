@@ -4312,7 +4312,7 @@ function get_post($pid)
 /**
  * Get inactivate forums.
  *
- * @return string The comma seperated values of the inactivate forum.
+ * @return string The comma separated values of the inactivate forum.
  */
 function get_inactive_forums()
 {

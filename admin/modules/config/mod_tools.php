@@ -379,7 +379,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
+					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -417,15 +417,15 @@ if($mybb->input['action'] == "edit_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"move_2\" class=\"moves\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_move_to}</td>
+					<td><small>{$lang->forum_to_move_to}</small></td>
 					<td>".$form->generate_forum_select('move_1_forum', $mybb->input['move_1_forum'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->leave_redirect}</td>
+					<td><small>{$lang->leave_redirect}</small></td>
 					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'], array('style' => 'width: 2em;'))."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->delete_redirect_after}</td>
+					<td><small>{$lang->delete_redirect_after}</small></td>
 					<td>".$form->generate_text_box('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
 				</tr>
 			</table>
@@ -443,7 +443,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_copy_to}</td>
+					<td><small>{$lang->forum_to_copy_to}</small></td>
 					<td>".$form->generate_forum_select('copy_1_forum', $mybb->input['copy_1_forum'])."</td>
 				</tr>
 			</table>
@@ -678,7 +678,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
+					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -716,15 +716,15 @@ if($mybb->input['action'] == "add_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"move_2\" class=\"moves\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_move_to}</td>
+					<td><small>{$lang->forum_to_move_to}</small></td>
 					<td>".$form->generate_forum_select('move_1_forum', $mybb->input['move_1_forum'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->leave_redirect}</td>
+					<td><small>{$lang->leave_redirect}</small></td>
 					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'], array('style' => 'width: 2em;'))."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->delete_redirect_after}</td>
+					<td><small>{$lang->delete_redirect_after}</small></td>
 					<td>".$form->generate_text_box('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
 				</tr>
 			</table>
@@ -742,7 +742,7 @@ if($mybb->input['action'] == "add_thread_tool")
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_copy_to}</td>
+					<td><small>{$lang->forum_to_copy_to}</small></td>
 					<td>".$form->generate_forum_select('copy_1_forum', $mybb->input['copy_1_forum'])."</td>
 				</tr>
 			</table>
@@ -1089,7 +1089,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
+					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -1146,15 +1146,15 @@ if($mybb->input['action'] == "edit_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"move_2\" class=\"moves\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_move_to}</td>
+					<td><small>{$lang->forum_to_move_to}</small></td>
 					<td>".$form->generate_forum_select('move_1_forum', $mybb->input['move_1_forum'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->leave_redirect}</td>
+					<td><small>{$lang->leave_redirect}</small></td>
 					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->delete_redirect_after}</td>
+					<td><small>{$lang->delete_redirect_after}</small></td>
 					<td>".$form->generate_text_box('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
 				</tr>
 			</table>
@@ -1172,7 +1172,7 @@ if($mybb->input['action'] == "edit_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_copy_to}</td>
+					<td><small>{$lang->forum_to_copy_to}</small></td>
 					<td>".$form->generate_forum_select('copy_1_forum', $mybb->input['copy_1_forum'])."</td>
 				</tr>
 			</table>
@@ -1459,7 +1459,7 @@ if($mybb->input['action'] == "add_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"forum_2\" class=\"forums\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\" valign=\"top\">{$lang->forums_colon}</td>
+					<td valign=\"top\"><small>{$lang->forums_colon}</small></td>
 					<td>".$form->generate_forum_select('forum_1_forums[]', $mybb->input['forum_1_forums'], array('multiple' => true, 'size' => 5))."</td>
 				</tr>
 			</table>
@@ -1516,15 +1516,15 @@ if($mybb->input['action'] == "add_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"move_2\" class=\"moves\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_move_to}</td>
+					<td><small>{$lang->forum_to_move_to}</small></td>
 					<td>".$form->generate_forum_select('move_1_forum', $mybb->input['move_1_forum'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->leave_redirect}</td>
+					<td><small>{$lang->leave_redirect}</small></td>
 					<td>".$form->generate_yes_no_radio('move_2_redirect', $mybb->input['move_2_redirect'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->delete_redirect_after}</td>
+					<td><small>{$lang->delete_redirect_after}</small></td>
 					<td>".$form->generate_text_box('move_3_redirecttime', $mybb->input['move_3_redirecttime'], array('style' => 'width: 2em;'))." {$lang->days}</td>
 				</tr>
 			</table>
@@ -1542,7 +1542,7 @@ if($mybb->input['action'] == "add_post_tool")
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->forum_to_copy_to}</td>
+					<td><small>{$lang->forum_to_copy_to}</small></td>
 					<td>".$form->generate_forum_select('copy_1_forum', $mybb->input['copy_1_forum'])."</td>
 				</tr>
 			</table>

@@ -307,7 +307,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_banned, $group_name, $period);
 					}
 					break;
-				// Suspend posting privledges
+				// Suspend posting privileges
 				case 2:
 					if($action['length'] != 0)
 					{

@@ -122,9 +122,9 @@ var UserCP = {
 		}
 	},
 
-	closeBuddySelect: function(cancelled)
+	closeBuddySelect: function(canceled)
 	{
-		if(cancelled != true)
+		if(canceled != true)
 		{
 			var buddies = $('buddyselect_buddies').innerHTML.stripTags();
 			existing_buddies = $(this.buddy_field).value;

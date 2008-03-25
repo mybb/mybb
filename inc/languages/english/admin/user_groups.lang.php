@@ -59,7 +59,7 @@ $l['user_title'] = "Default User Title";
 $l['user_title_desc'] = "If the user has nothing entered in their custom user title field, the user title entered here will be displayed.";
 $l['do_not_copy_permissions'] = "Don't copy permissions from another group";
 $l['copy_permissions_from'] = "Copy Permissions From...";
-$l['copy_permissions_from_desc'] = "If you wish, you can copy the forum and group permissions from another group. To make use of this, select a group to copy permissons from.";
+$l['copy_permissions_from_desc'] = "If you wish, you can copy the forum and group permissions from another group. To make use of this, select a group to copy permissions from.";
 $l['save_user_group'] = "Save User Group";
 
 $l['general'] = "General";

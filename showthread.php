@@ -51,15 +51,7 @@ $options = array(
 	"limit" => 1
 );
 
-// firstly, check if the current thread has already been loaded when trying to grab the forum style
-if(isset($style) && $style['tid'] == $mybb->input['tid'])
-{
-	$thread = &$style;
-}
-else // otherwise, cache the thread
-{
-	$thread = get_thread($mybb->input['tid']);
-}
+$thread = get_thread($mybb->input['tid']);
 
 if(substr($thread['closed'], 0, 6) == "moved|")
 {

@@ -322,7 +322,7 @@ if($mybb->input['action'] == "utf8_conversion")
 		
 		$table->construct_row();
 		
-		$table->construct_cell($lang->notice_proccess_long_time);
+		$table->construct_cell($lang->notice_process_long_time);
 		$table->construct_row();
 		
 		if($mybb->input['do'] == "all")

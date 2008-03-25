@@ -20,7 +20,7 @@ $l['success_user_title_updated'] = "The user title has successfully been updated
 $l['success_user_title_deleted'] = "The specified user title has successfully been deleted.";
 
 $l['title_to_assign'] = "Title to Assign";
-$l['title_to_assign_desc'] = "This title will be shown for users underneith their name if they do not have a custom title set.";
+$l['title_to_assign_desc'] = "This title will be shown for users underneath their name if they do not have a custom title set.";
 $l['minimum_posts'] = "Minimum Posts";
 $l['minimum_posts_desc'] = "The minimum number of posts for a user to have before they're assigned this user title.";
 $l['number_of_stars'] = "Number of Stars";

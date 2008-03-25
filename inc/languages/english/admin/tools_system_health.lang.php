@@ -9,7 +9,7 @@
 $l['system_health'] = "System Health";
 $l['system_health_desc'] = "Here you can view information on your system's health.";
 $l['utf8_conversion'] = "UTF-8 Conversion";
-$l['utf8_conversion_desc'] = "You are currently converting a database table to the UTF-8 format. Be aware that this proccess may take up to several hours depending on the size of your forum and this table. When the process is complete, you will be returned to the UTF-8 Conversion main page.";
+$l['utf8_conversion_desc'] = "You are currently converting a database table to the UTF-8 format. Be aware that this process may take up to several hours depending on the size of your forum and this table. When the process is complete, you will be returned to the UTF-8 Conversion main page.";
 $l['utf8_conversion_desc2'] = "This tool checks the database tables to make sure they are in the UTF-8 format and allows you to convert them if they are not.";
 
 $l['convert_all'] = "Convert All";
@@ -54,7 +54,7 @@ $l['language_files'] = "Language Files";
 $l['backup_dir'] = "Backups Directory";
 $l['chmod_files_and_dirs'] = "CHMOD Files and Directories";
 
-$l['notice_proccess_long_time'] = "This proccess may take up to several hours depending on the size of your forum and this table.";
+$l['notice_process_long_time'] = "This process may take up to several hours depending on the size of your forum and this table.";
 
 $l['error_chmod'] = "of the required files and directories do not have proper CHMOD settings.";
 $l['error_invalid_table'] = "The specified table does not exist.";
@@ -62,7 +62,7 @@ $l['error_db_encoding_not_set'] = "Your current setup of MyBB is not setup to us
 $l['error_not_supported'] = "Your current Database Engine is not supported by the UTF-8 Conversion Tool.";
 
 $l['success_all_tables_already_converted'] = "All tables have already been converted or are already in UTF-8 format.";
-$l['success_table_converted'] = "The specified table \"{1}\" has been sucessfully converted to UTF-8.";
+$l['success_table_converted'] = "The specified table \"{1}\" has been successfully converted to UTF-8.";
 $l['success_chmod'] = "All of the required files and directories have the proper CHMOD settings.";
 
 ?>

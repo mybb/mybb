@@ -1050,7 +1050,7 @@ DESC=Descending]]></optionscode>
 		</setting>
 		<setting name="postmergefignore">
 			<title>Merge Forums to Ignore</title>
-			<description><![CDATA[Forums, seperated by a comma, to exclude from the auto merge feature. Leave blank to disable.]]></description>
+			<description><![CDATA[Forums, separated by a comma, to exclude from the auto merge feature. Leave blank to disable.]]></description>
 			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
@@ -1059,7 +1059,7 @@ DESC=Descending]]></optionscode>
 		</setting>
 		<setting name="postmergeuignore">
 			<title>Merge User Groups to Ignore</title>
-			<description><![CDATA[Usergroups, seperated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
+			<description><![CDATA[Usergroups, separated by a comma, to exclude from the merge feature. Default: 4 (Administrator). Leave blank to disable.]]></description>
 			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>

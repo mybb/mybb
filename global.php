@@ -122,8 +122,6 @@ if(in_array($current_page, $valid))
 			LIMIT 1
 		");
 		$style = $db->fetch_array($query);
-		$thread = get_thread($style['tid']);
-		$style = array_merge($style, $thread);
 		
 		$load_from_forum = 1;
 	}

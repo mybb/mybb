@@ -187,7 +187,7 @@ $l['show_forum_jump'] = "Show in Forum Jump";
 $l['use_postcounts'] = "Make posts in this forum count towards user post counts";
 
 $l['use_permissions'] = "Use Permissions";
-$l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inheritied permissions (will delete custom permissions) or custom permissions.";
+$l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inherited permissions (will delete custom permissions) or custom permissions.";
 $l['inherit_permissions'] = "Use user group permissions or inherit from parent forums";
 $l['custom_permissions'] = "Use custom permissions (below)";
 
@@ -197,8 +197,8 @@ $l['error_missing_title'] = "You must enter in a title.";
 $l['error_no_parent'] = "You must select a parent forum.";
 
 $l['success_forum_added'] = "Successfully added the forum.";
-$l['success_moderator_added'] = "The moderator has sucessfully been added to the forum.";
-$l['success_forum_permissions_saved'] = "Succesfully saved the forum permissions.";
+$l['success_moderator_added'] = "The moderator has successfully been added to the forum.";
+$l['success_forum_permissions_saved'] = "Successfully saved the forum permissions.";
 $l['success_forum_copied'] = "Successfully copied the specified forum.";
 
 $l['error_moderator_already_added'] = "The specified moderator is already a moderator of the forum.";

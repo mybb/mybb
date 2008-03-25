@@ -756,12 +756,12 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 			$db->delete_query("privatemessages", "pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
 			foreach($pmuids as $uid)
 			{
-				// Message is cancelled, update PM count for this user
+				// Message is canceled, update PM count for this user
 				update_pm_count($pm['uid']);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
-		redirect("private.php", $lang->redirect_pmstrackingcancelled);
+		redirect("private.php", $lang->redirect_pmstrackingcanceled);
 	}
 }
 

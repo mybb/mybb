@@ -84,9 +84,9 @@ $l['status'] = "Status";
 $l['delivery_date'] = "Delivery Date";
 $l['recipients'] = "Recipients";
 $l['delivered'] = "Delivered";
-$l['cancelled'] = "Cancelled";
+$l['canceled'] = "canceled";
 $l['resend'] = "Resend";
-$l['no_archived_messages'] = "You do not have any previously sent or cancelled mass email messages.";
+$l['no_archived_messages'] = "You do not have any previously sent or canceled mass email messages.";
 
 $l['draft'] = "Draft";
 $l['queued'] = "Queued";
@@ -108,7 +108,7 @@ $l['error_delete_invalid_mid'] = "You have selected an invalid mass-email to del
 $l['success_mass_mail_saved'] = "The mass email message has successfully been saved.";
 $l['success_mass_mail_deleted'] = "The selected mass email has been deleted successfully.";
 $l['success_mass_mail_resent'] = "The mass email has been copied successfully. Please review it below.";
-$l['success_mass_mail_cancelled'] = "The mass email delivery has successfully been cancelled.";
+$l['success_mass_mail_ccanceled'] = "The mass email delivery has successfully been canceled.";
 
 $l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass email?";
 

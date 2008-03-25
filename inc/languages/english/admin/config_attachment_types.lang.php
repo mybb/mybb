@@ -12,7 +12,7 @@ $l['add_new_attachment_type'] = "Add New Attachment Type";
 $l['add_attachment_type'] = "Add Attachment Type";
 $l['add_attachment_type_desc'] = "Adding a new attachment type will allow members to attach files of this type to their posts. You have the ability to control the extension, MIME type, maximum size and show a small icon for each attachment type.";
 $l['edit_attachment_type'] = "Edit Attachment Type";
-$l['edit_attachment_type_desc'] = "You have the ability to control the extension, MIME type, maximum size and show a small mimetype for this attachment type.";
+$l['edit_attachment_type_desc'] = "You have the ability to control the extension, MIME type, maximum size and show a small MIME type for this attachment type.";
 
 $l['extension'] = "Extension";
 $l['maximum_size'] = "Maximum Size";
@@ -26,7 +26,7 @@ $l['maximum_file_size'] = "Maximum File Size (Kilobytes)";
 $l['maximum_file_size_desc'] = "The maximum file size for uploads of this attachment type in Kilobytes (1 MB = 1024 KB)";
 $l['limit_intro'] = "Please ensure the maximum file size is below the smallest of the following PHP limits:";
 $l['limit_post_max_size'] = "Max Post Size: {1}";
-$l['limit_upload_max_filesize'] = "Upload Max Filesize: {1}";
+$l['limit_upload_max_filesize'] = "Upload Max File Size: {1}";
 $l['attachment_icon'] = "Attachment Icon";
 $l['attachment_icon_desc'] = "If you wish to show a small attachment icon for attachments of this type then enter the path to it here. {theme} will be replaced by the image directory for the viewers theme allowing you to specify per-theme attachment icons.";
 $l['save_attachment_type'] = "Save Attachment Type";

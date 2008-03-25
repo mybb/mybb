@@ -156,11 +156,11 @@ if($mybb->input['action'] == "add_level")
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->banned_group}</td>
+					<td><small>{$lang->banned_group}</small></td>
 					<td>".$form->generate_select_box('action_1_usergroup', $banned_groups, $mybb->input['action_1_usergroup'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->ban_length}</td>
+					<td><small>{$lang->ban_length}</small></td>
 					<td>".$form->generate_text_box('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
 				</tr>
 			</table>
@@ -169,7 +169,7 @@ if($mybb->input['action'] == "add_level")
 		<dd style=\"margin-top: 4px;\" id=\"action_2\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->suspension_length}</td>
+					<td><small>{$lang->suspension_length}</small></td>
 					<td>".$form->generate_text_box('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
 				</tr>
 			</table>
@@ -178,7 +178,7 @@ if($mybb->input['action'] == "add_level")
 		<dd style=\"margin-top: 4px;\" id=\"action_3\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->moderation_length}</td>
+					<td><small>{$lang->moderation_length}</small></td>
 					<td>".$form->generate_text_box('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
 				</tr>
 			</table>
@@ -350,11 +350,11 @@ if($mybb->input['action'] == "edit_level")
 		<dd style=\"margin-top: 4px;\" id=\"action_1\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->banned_group}</td>
+					<td><small>{$lang->banned_group}</small></td>
 					<td>".$form->generate_select_box('action_1_usergroup', $banned_groups, $mybb->input['action_1_usergroup'])."</td>
 				</tr>
 				<tr>
-					<td class=\"smalltext\">{$lang->ban_length}</td>
+					<td><small>{$lang->ban_length}</small></td>
 					<td>".$form->generate_text_box('action_1_time', $mybb->input['action_1_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_1_period', $periods, $mybb->input['action_1_period'])."</td>
 				</tr>
 			</table>
@@ -363,7 +363,7 @@ if($mybb->input['action'] == "edit_level")
 		<dd style=\"margin-top: 4px;\" id=\"action_2\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->suspension_length}</td>
+					<td><small>{$lang->suspension_length}</small></td>
 					<td>".$form->generate_text_box('action_2_time', $mybb->input['action_2_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_2_period', $periods, $mybb->input['action_2_period'])."</td>
 				</tr>
 			</table>
@@ -372,7 +372,7 @@ if($mybb->input['action'] == "edit_level")
 		<dd style=\"margin-top: 4px;\" id=\"action_3\" class=\"actions\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td class=\"smalltext\">{$lang->moderation_length}</td>
+					<td><small>{$lang->moderation_length}</small></td>
 					<td>".$form->generate_text_box('action_3_time', $mybb->input['action_3_time'], array('style' => 'width: 2em;'))." ".$form->generate_select_box('action_3_period', $periods, $mybb->input['action_3_period'])."</td>
 				</tr>
 			</table>

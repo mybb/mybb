@@ -43,7 +43,7 @@ $l['error_invalid_view_delete'] = "You selected an invalid administration view t
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
 $l['success_coppa_activated'] = "The COPPA user has successfully been activated.";
-$l['success_activated'] = "The user has successfuly been activated.";
+$l['success_activated'] = "The user has successfully been activated.";
 $l['success_user_created'] = "The user has successfully been created.";
 $l['success_user_updated'] = "The user has successfully been updated.";
 $l['success_user_deleted'] = "The user has successfully been deleted.";

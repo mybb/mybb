@@ -22,8 +22,8 @@ $l['success_spam_deleted'] = "The spam messages have been deleted";
 
 $l['confirm_spam_deletion'] = "Are you sure you want to delete all detected messages?";
 
-$l['error_deletepost'] = "You must select atleast one post to delete";
-$l['error_unmark'] = "You must select atleast one post to unmark";
+$l['error_deletepost'] = "You must select at least one post to delete";
+$l['error_unmark'] = "You must select at least one post to unmark";
 
 $l['no_spam_found'] = "There are currently no detected spam messages found by Akismet";
 

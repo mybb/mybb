@@ -147,7 +147,7 @@ $l['error_pm_already_submitted'] = "You have already submitted the same private 
 
 $l['redirect_pmsaved'] = "The private message has been saved in your Drafts folder.";
 $l['redirect_pmstrackingstopped'] = "Tracking of the selected PMs has been stopped.";
-$l['redirect_pmstrackingcancelled'] = "The selected unread PMs have been deleted from the recipient's inbox.";
+$l['redirect_pmstrackingcanceled'] = "The selected unread PMs have been deleted from the recipient's inbox.";
 $l['redirect_pmsmoved'] = "The selected private messages have been moved.";
 $l['redirect_pmsdeleted'] = "The selected private messages have been deleted.<br />You will now be returned to your PM Inbox.";
 $l['redirect_pmsent'] = "Thank you, your private message has successfully been sent.<br />You will now be returned to your private message inbox.";

@@ -100,7 +100,7 @@ class MyBB {
 	);
 	
 	/**
-	 * Variables that are to be ignored from cleansing proccess
+	 * Variables that are to be ignored from cleansing process
 	 *
 	 * @var array
 	 */
