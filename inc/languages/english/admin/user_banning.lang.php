@@ -25,7 +25,6 @@ $l['error_no_perm_to_ban'] = "You do not have permission to ban this user.";
 $l['error_already_banned'] = "This user already belongs to a banned group and cannot be added to a new one.";
 $l['error_ban_self'] = "You cannot ban yourself.";
 $l['error_no_reason'] = "You did not enter a reason to ban this user.";
-$l['error_invalid_ban'] = "You have selected an invalid ban to edit.";
 
 // Success
 $l['success_ban_lifted'] = "The ban has successfully been lifted.";

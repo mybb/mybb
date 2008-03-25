@@ -419,7 +419,12 @@ class DefaultForm
 		
 		if($options['main_option'] && $is_first)
 		{
-			$selectoptions .= "<option value=\"-1\">{$options['main_option']}</option>\n";
+			if($selected == -1)
+			{
+				$select_add = " selected=\"selected\""; 
+			}
+			
+			$selectoptions .= "<option value=\"-1\"{$select_add}>{$options['main_option']}</option>\n";
 		}
 		
 		if(is_array($fselectcache[$pid]))
