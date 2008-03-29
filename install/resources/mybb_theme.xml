@@ -113,7 +113,7 @@ table {
 }
 
 .tcat {
-	background: #ADCBE7 url(images/tcat_bg.gif) top left repeat-x;
+	background: #ADCBE7;
 	color: #000000;
 	font-size: 12px;
 }
