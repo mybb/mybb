@@ -1091,8 +1091,8 @@ class UserDataHandler extends DataHandler
 					'ufid' => $user['uid']
 				);
 
-				$query = $db->show_fields_from("userfields");
-				while($field = $db->fetch_array($query))
+				$fields_array = $db->show_fields_from("userfields");
+				foreach($fields_array as $field)
 				{
 					if($field['Field'] == 'ufid')
 					{

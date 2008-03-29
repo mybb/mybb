@@ -9,14 +9,14 @@
 $l['mass_mail'] = "Mass Mail";
 
 $l['mass_mail_queue'] = "Mass Mail Queue";
-$l['mass_mail_queue_desc'] = "Here you can manage mass emails that are currently being sent or are queued for the future.";
-$l['create_mass_mail'] = "Create new Email";
-$l['create_mass_mail_desc'] = "Here you can create a new mass email and set it's options.";
-$l['mass_mail_archive'] = "Mass Email Archive";
-$l['mass_mail_archive_desc'] = "Here you can view a log of mass emails that have already been sent.";
-$l['edit_mass_mail'] = "Edit Mass Email";
-$l['edit_mass_mail_desc'] = "Here you can edit a mass email and it's options.";
-$l['send_mass_mail'] = "Send Mass Email";
+$l['mass_mail_queue_desc'] = "Here you can manage mass mailings that are currently being sent or are queued for the future.";
+$l['create_mass_mail'] = "Create New Mailing";
+$l['create_mass_mail_desc'] = "Here you can create a new mass mailing and set it's options.";
+$l['mass_mail_archive'] = "Mass Mailing Archive";
+$l['mass_mail_archive_desc'] = "Here you can view a log of mass mailings that have already been sent.";
+$l['edit_mass_mail'] = "Edit Mass Mailing";
+$l['edit_mass_mail_desc'] = "Here you can edit a mass mailing and its options.";
+$l['send_mass_mail'] = "Send Mass Mailing";
 
 $l['email_addr'] = "Email Address";
 $l['board_name'] = "Board Name";
@@ -32,9 +32,9 @@ $l['message_type'] = "Message Type";
 $l['deliver_immediately'] = "Deliver immediately";
 $l['deliver_specific'] = "Deliver on a specific date";
 $l['delivery_date'] = "Delivery Date";
-$l['delivery_date_desc'] = "Please select the date and time you want this mass email to be delivered";
+$l['delivery_date_desc'] = "Please select the date and time you want this mass mailing to be delivered";
 $l['per_page'] = "Per Page";
-$l['per_page_desc'] = "Please enter the number of mass emails to run per page.";
+$l['per_page_desc'] = "Please enter the number of mass mailings to run per page.";
 $l['plain_text_only'] = "Plain Text Only";
 $l['html_only'] = "HTML Only";
 $l['html_and_plain_text'] = "HTML and Plain Text";
@@ -84,32 +84,32 @@ $l['status'] = "Status";
 $l['delivery_date'] = "Delivery Date";
 $l['recipients'] = "Recipients";
 $l['delivered'] = "Delivered";
-$l['canceled'] = "canceled";
+$l['canceled'] = "Canceled";
 $l['resend'] = "Resend";
-$l['no_archived_messages'] = "You do not have any previously sent or canceled mass email messages.";
+$l['no_archived_messages'] = "You do not have any previously sent or canceled mass mailings.";
 
 $l['draft'] = "Draft";
 $l['queued'] = "Queued";
 $l['delivering'] = "Delivering";
 $l['na'] = "N/A";
-$l['mass_mail_cancel_confirmation'] = "Are you sure you wish to cancel the delivery of this mass email?";
+$l['mass_mail_cancel_confirmation'] = "Are you sure you wish to cancel the delivery of this mass mailing?";
 $l['cancel'] = "Cancel";
-$l['no_unset_messages'] = "You do not have any unsent, queued or currently delivering mass email messages";
+$l['no_unsent_messages'] = "You do not have any unsent, queued or currently delivering mass mailings.";
 
-$l['error_invalid_mid'] = "You have selected an invalid mass email message";
-$l['error_only_in_future'] = "You can only deliver mass emails in the future.";
+$l['error_invalid_mid'] = "You have selected an invalid mass mailing.";
+$l['error_only_in_future'] = "You can only deliver mass mailings in the future.";
 $l['error_no_users'] = "Your search criteria did not return any users. Please adjust your criteria and try again.";
 $l['error_missing_plain_text'] = "You did not enter a plain text version of this message.";
-$l['error_missing_subject'] = "You did not enter a subject for this mass email";
+$l['error_missing_subject'] = "You did not enter a subject for this mass mailing.";
 $l['error_missing_message'] = "You did not enter a message to send.";
 $l['error_missing_html'] = "You did not enter a HTML version of this message.";
-$l['error_delete_invalid_mid'] = "You have selected an invalid mass-email to delete.";
+$l['error_delete_invalid_mid'] = "You have selected an invalid mass mailing to delete.";
 
-$l['success_mass_mail_saved'] = "The mass email message has successfully been saved.";
-$l['success_mass_mail_deleted'] = "The selected mass email has been deleted successfully.";
-$l['success_mass_mail_resent'] = "The mass email has been copied successfully. Please review it below.";
-$l['success_mass_mail_ccanceled'] = "The mass email delivery has successfully been canceled.";
+$l['success_mass_mail_saved'] = "The mass mailing has successfully been saved.";
+$l['success_mass_mail_deleted'] = "The selected mass mailing has been deleted successfully.";
+$l['success_mass_mail_resent'] = "The mass mailing has been copied successfully. Please review it below.";
+$l['success_mass_mail_canceled'] = "The mass mailing delivery has successfully been canceled.";
 
-$l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass email?";
+$l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass mailing?";
 
 ?>

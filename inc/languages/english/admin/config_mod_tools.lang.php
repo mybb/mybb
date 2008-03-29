@@ -63,6 +63,7 @@ $l['forum_to_move_to'] = "Forum to move to:";
 $l['leave_redirect'] = "Leave redirect?";
 $l['delete_redirect_after'] = "Delete redirect after";
 $l['do_not_move_thread'] = "Do not move thread";
+$l['do_not_copy_thread'] = "Do not copy thread";
 $l['move_thread'] = "Move thread?";
 $l['move_thread_desc'] = "If moving the thread(s), the \"delete redirect after... days\" is only to be filled in if a redirect will be left.";
 $l['forum_to_copy_to'] = "Forum to copy to:";

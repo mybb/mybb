@@ -152,8 +152,9 @@ if($mybb->input['action'] == "permissions")
 	
 	if($mybb->request_method == "post")
 	{
-		foreach($mybb->input['permissions'] as $group_id => $permissions)
+		foreach(array_keys($usergroups) as $group_id)
 		{
+			$permissions = $mybb->input['permissions'][$group_id];
 			$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}' AND gid='".intval($group_id)."'");
 
 			if(!$mybb->input['default_permissions'][$group_id])

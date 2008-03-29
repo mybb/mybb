@@ -438,7 +438,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 	
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_copy_thread}</strong></label></dt>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
@@ -737,7 +737,7 @@ if($mybb->input['action'] == "add_thread_tool")
 	
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_copy_thread}</strong></label></dt>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
@@ -1167,7 +1167,7 @@ if($mybb->input['action'] == "edit_post_tool")
 	
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_copy_thread}</strong></label></dt>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">
@@ -1537,7 +1537,7 @@ if($mybb->input['action'] == "add_post_tool")
 	
 	$actions = "
 	<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_move_thread}</strong></label></dt>
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"1\" {$copy_checked[1]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->do_not_copy_thread}</strong></label></dt>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"copy_type\" value=\"2\" {$copy_checked[2]} class=\"copys_check\" onclick=\"checkAction('copy');\" style=\"vertical-align: middle;\" /> <strong>{$lang->copy_thread}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"copy_2\" class=\"copys\">
 			<table cellpadding=\"4\">

@@ -962,7 +962,7 @@ if($mybb->input['action'] == "delete_template")
 	$template = $db->fetch_array($query);
 	
 	// Does the template not exist?
-	if(!$template['tid'])
+	if(!$template)
 	{
 		flash_message($lang->error_invalid_template, 'error');
 		admin_redirect("index.php?module=style/templates");
@@ -1068,7 +1068,7 @@ if($mybb->input['action'] == "revert")
 	$template = $db->fetch_array($query);
 	
 	// Does the template not exist?
-	if(!$template['tid'])
+	if(!$template)
 	{
 		flash_message($lang->error_invalid_template, 'error');
 		admin_redirect("index.php?module=style/templates");

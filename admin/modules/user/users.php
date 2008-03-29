@@ -1612,6 +1612,11 @@ if($mybb->input['action'] == "search")
 	{
 		$page->output_inline_error($errors);
 	}
+	
+	if(!$mybb->input['displayas'])
+	{
+		$mybb->input['displayas'] = "card";
+	}
 
 	$form = new Form("index.php?module=user/users&amp;action=search", "post");
 
@@ -1624,7 +1629,7 @@ if($mybb->input['action'] == "search")
 	);
 	$form_container->output_row($lang->sort_results_by, "", $form->generate_select_box('sortby', $sort_options, $mybb->input['sortby'], array('id' => 'sortby'))." {$lang->in} ".$form->generate_select_box('order', $sort_directions, $mybb->input['order'], array('id' => 'order')), 'sortby');
 	$form_container->output_row($lang->results_per_page, "", $form->generate_text_box('perpage', $mybb->input['perpage'], array('id' => 'perpage')), 'perpage');
-	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->input['displayas'] != "card" ? "checked" : "")))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? "checked" : ""))));
+	$form_container->output_row($lang->display_results_as, "", $form->generate_radio_button('displayas', 'table', $lang->table, array('checked' => ($mybb->input['displayas'] != "card" ? true : false)))."<br />".$form->generate_radio_button('displayas', 'card', $lang->business_card, array('checked' => ($mybb->input['displayas'] == "card" ? true : false))));
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->find_users);
@@ -1834,7 +1839,7 @@ function build_users_view($view)
 				default:
 					$direction = "=";
 			}
-			$search_sql .= " AND u.{$search_field}{$direction_field}'".$db->escape_string($view['conditions'][$search_field])."'";
+			$search_sql .= " AND u.{$search_field}{$direction}'".$db->escape_string($view['conditions'][$search_field])."'";
 		}
 	}
 
@@ -2427,7 +2432,7 @@ function user_search_conditions($input=array(), &$form)
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
 
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
 	$form_container->output_row($lang->last_known_ip, $lang->wildcard, $form->generate_text_box('conditions[lastip]', $input['conditions']['lastip'], array('id' => 'lastip')), 'lastip');

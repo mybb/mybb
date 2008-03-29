@@ -239,7 +239,7 @@ var imagepath = '../images';
 	 */
 	function output_alert($message)
 	{
-		echo "<div class=\"warning\">{$message}</div>\n";
+		echo "<div class=\"alert\">{$message}</div>\n";
 	}
 	
 	/**

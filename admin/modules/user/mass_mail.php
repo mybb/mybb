@@ -396,7 +396,7 @@ if($mybb->input['action'] == "edit")
 			<dd style=\"margin-top: 4px;\" id=\"delivery_type_future\" class=\"delivery_types\">
 				<table cellpadding=\"4\">
 					<tr>
-						<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 60px;'))."</td>
+						<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" class=\"text_input\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 60px;'))."</td>
 					</tr>
 				</table>
 			</dd>
@@ -536,7 +536,7 @@ if($mybb->input['action'] == "edit")
 		"is_exactly" => $lang->is_exactly,
 		"less_than" => $lang->less_than
 	);
-	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
+	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
 
 	// Need to do reg date & last visit periods. FIGURE OUT HOW TO HANDLE/DISPLAY (Do the same as StoreSuite)
 
@@ -844,7 +844,7 @@ if($mybb->input['action'] == "send")
 				<dd style=\"margin-top: 4px;\" id=\"delivery_type_future\" class=\"delivery_types\">
 					<table cellpadding=\"4\">
 						<tr>
-							<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 60px;'))."</td>
+							<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" class=\"text_input\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 60px;'))."</td>
 						</tr>
 					</table>
 				</dd>
@@ -930,7 +930,7 @@ if($mybb->input['action'] == "send")
 			"is_exactly" => $lang->is_exactly,
 			"less_than" => $lang->less_than
 		);
-		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[numposts]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
+		$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['numposts'], array('id' => 'numposts')), 'numposts');
 
 		// Need to do reg date & last visit periods. FIGURE OUT HOW TO HANDLE/DISPLAY (Do the same as StoreSuite)
 
@@ -1531,7 +1531,7 @@ if(!$mybb->input['action'])
 	
 	if($table->num_rows() == 0)
 	{
-		$table->construct_cell($lang->no_unset_messages, array('colspan' => 6));
+		$table->construct_cell($lang->no_unsent_messages, array('colspan' => 6));
 		$table->construct_row();
 		$no_results = true;
 	}

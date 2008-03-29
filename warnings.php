@@ -746,6 +746,10 @@ if($mybb->input['action'] == "view")
 	}
 
 	$user = get_user(intval($warning['uid']));
+	if(!$user['username'])
+	{
+		$user['username'] = $lang->guest;
+	}
 
 	$group_permissions = user_permissions($user['uid']);
 	if($group_permissions['canreceivewarnings'] != 1)
@@ -756,8 +760,16 @@ if($mybb->input['action'] == "view")
 	$plugins->run_hooks("warnings_view_start");
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
-	add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
-	add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
+	if($user['uid'])
+	{
+		add_breadcrumb($lang->nav_profile, get_profile_link($user['uid']));
+		add_breadcrumb($lang->nav_warning_log, "warnings.php?uid={$user['uid']}");
+	}
+	else
+	{
+		add_breadcrumb($lang->nav_profile);
+		add_breadcrumb($lang->nav_warning_log);
+	}
 	add_breadcrumb($lang->nav_view_warning);
 
 	$user_link = build_profile_link($user['username'], $user['uid']);
@@ -829,6 +841,10 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
+		if(!$revoked_user['username'])
+		{
+			$revoked_user['username'] = $lang->guest;
+		}
 		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		eval("\$revoke = \"".$templates->get("warnings_view_revoked")."\";");

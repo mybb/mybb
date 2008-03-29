@@ -40,9 +40,7 @@ var inlineModeration = {
 					element.checked = true;
 					var tr = element.up('tr');
 					
-					// Because you refuse to work correctly Opera,
-					// We have to disable you for this fancy feature
-					if(tr && MyBB.browser != "opera")
+					if(tr)
 					{
 						tr.addClassName('trow_selected');
 					}
@@ -51,7 +49,7 @@ var inlineModeration = {
 				{
 					element.checked = false;
 					var tr = element.up('tr');
-					if(tr && MyBB.browser != "opera")
+					if(tr)
 					{
 						tr.removeClassName('trow_selected');
 					}
@@ -114,7 +112,7 @@ var inlineModeration = {
 			inlineModeration.inlineCount++;
 			newIds[newIds.length] = id;
 			var tr = element.up('tr');
-			if(tr && MyBB.browser != "opera")
+			if(tr)
 			{
 				tr.addClassName('trow_selected');
 			}
@@ -123,7 +121,7 @@ var inlineModeration = {
 		{
 			inlineModeration.inlineCount--;
 			var tr = element.up('tr');
-			if(tr && MyBB.browser != "opera")
+			if(tr)
 			{
 				tr.removeClassName('trow_selected');
 			}
@@ -161,12 +159,9 @@ var inlineModeration = {
 			}
 		});
 
-		if(MyBB.browser != "opera")
-		{
-			$$('tr.trow_selected').each(function(element) {
-				element.removeClassName('trow_selected');
-			});
-		}
+		$$('tr.trow_selected').each(function(element) {
+			element.removeClassName('trow_selected');
+		});
 
 		inlineModeration.inlineCount = 0;
 		goButton = $("inline_go");
@@ -202,17 +197,14 @@ var inlineModeration = {
 				id = inlineCheck[1];
 				element.checked = master.checked;
 				
-				if(MyBB.browser != "opera")
+				var tr = element.up('tr');
+				if(tr && master.checked == true)
 				{
-					var tr = element.up('tr');
-					if(tr && master.checked == true)
-					{
-						tr.addClassName('trow_selected');
-					}
-					else
-					{
-						tr.removeClassName('trow_selected');
-					}
+					tr.addClassName('trow_selected');
+				}
+				else
+				{
+					tr.removeClassName('trow_selected');
 				}
 
 				if(master.checked == true)

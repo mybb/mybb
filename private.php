@@ -1243,8 +1243,8 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		$message['subject'] = $parser->parse_badwords($message['subject']);
 		if($message['folder'] != "3")
 		{
-			$senddate = my_date($mybb->settings['dateformat'], $message['dateline'], 0, 0);
-			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline'], 0, 0);
+			$senddate = my_date($mybb->settings['dateformat'], $message['dateline']);
+			$sendtime = my_date($mybb->settings['timeformat'], $message['dateline']);
 			$senddate .= " $lang->at $sendtime";
 		}
 		else

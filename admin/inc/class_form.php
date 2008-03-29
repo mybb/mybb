@@ -65,9 +65,9 @@ class DefaultForm
 		}
 	}
 
-	function DefaultForm($script, $method, $id="", $allow_uploads=0)
+	function DefaultForm($script, $method, $id="", $allow_uploads=0, $name="", $return=false)
 	{
-		$this->__construct($script, $method, $id, $allow_uploads);
+		$this->__construct($script, $method, $id, $allow_uploads, $name, $return);
 	}
 
 
@@ -801,9 +801,16 @@ class DefaultFormContainer
 	/**
 	 * Output the end of the form container row.
 	 */
-	function end()
+	function end($return=false)
 	{
-		$this->_container->output($this->_title, 1, "general form_container {$this->extra_class}");
+		if($return == true)
+		{
+			return $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", true);
+		}
+		else
+		{
+			echo $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", false);
+		}
 	}
 }
 

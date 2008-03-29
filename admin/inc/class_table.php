@@ -129,9 +129,16 @@ class DefaultTable
 	 * @param int The border width for this table.
 	 * @param string The class for this table.
 	 */
-	function output($heading="", $border=1, $class="general")
+	function output($heading="", $border=1, $class="general", $return=false)
 	{
-		echo $this->construct_html($heading, $border, $class);
+		if($return == true)
+		{
+			return $this->construct_html($heading, $border, $class);
+		}
+		else
+		{
+			echo $this->construct_html($heading, $border, $class);
+		}
 	}
 
 	/**

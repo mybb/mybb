@@ -297,7 +297,7 @@ if($mybb->input['action'] == "add")
 		<dd style=\"margin-top: 4px;\" id=\"endtime_1\" class=\"endtimes\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $mybb->input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 50px;'))."</td>
+					<td><select name=\"endtime_day\">\n{$enddateday}</select>\n &nbsp; \n<select name=\"endtime_month\">\n{$enddatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"endtime_year\" value=\"{$enddateyear}\" class=\"text_input\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('endtime_time', $mybb->input['endtime_time'], array('id' => 'endtime_time', 'style' => 'width: 50px;'))."</td>
 				</tr>
 			</table>
 		</dd>
@@ -527,7 +527,7 @@ if($mybb->input['action'] == "edit")
 	
 	$form_container = new FormContainer($lang->add_an_announcement);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
-	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
+	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" class=\"text_input\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
 
 	$actions = "<script type=\"text/javascript\">
     function checkAction(id)

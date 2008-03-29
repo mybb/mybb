@@ -918,6 +918,8 @@ class postParser
 			$list = "<ul>$message</ul>\n";
 		}
 		$list = preg_replace("#<(ol type=\"$type\"|ul)>\s*</li>#", "<$1>", $list);
+		$list = str_replace("\n", "", $list);
+		//echo htmlentities($list);
 		return $list;
 	}
 
