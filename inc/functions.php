@@ -29,8 +29,17 @@ function output_page($contents)
 			$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
 			$query_time = $maintimer->format($db->query_time);
 
-			$percentphp = number_format((($phptime/$maintimer->totaltime) * 100), 2);
-			$percentsql = number_format((($query_time/$maintimer->totaltime) * 100), 2);
+			if($maintimer->totaltime > 0)
+			{
+				$percentphp = number_format((($phptime/$maintimer->totaltime) * 100), 2);
+				$percentsql = number_format((($query_time/$maintimer->totaltime) * 100), 2);
+			}
+			else
+			{
+				// if we've got a super fast script...  all we can do is assume something
+				$percentphp = 0;
+				$percentsql = 0;
+			}
 
 			$phpversion = phpversion();
 

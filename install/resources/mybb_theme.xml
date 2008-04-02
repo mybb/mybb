@@ -2959,7 +2959,7 @@ ul.thread_tools li.subscription_remove {
 <td class="trow1" width="60%">
 <form enctype="multipart/form-data" action="usercp.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<input type="file" name="avatarupload" size="25" />
+<input type="file" name="avatarupload" size="25" class="fileupload" />
 {$auto_resize}
 </td>
 </tr>
@@ -3080,7 +3080,7 @@ ul.thread_tools li.subscription_remove {
 		<template name="nav_sep" version="120"><![CDATA[ / ]]></template>
 		<template name="post_attachments_new" version="120"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.gif" alt="" /></td>
-<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" /></td><td class="trow1" align="center"><input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
+<td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center"><input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="12" />
 </td>
 </tr>]]></template>
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
@@ -6178,7 +6178,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 <td align="center" class="trow2" width="1%"><input type="radio" class="radio" name="avatar" value="upload"{$checked['upload']} /></td>
 <td class="trow2" width="40%"><strong>{$lang->avatar_upload}</strong><br /><span class="smalltext">{$lang->avatar_upload_note}</span></td>
-<td class="trow2" width="55%"><input type="file" name="avatarupload" size="25" value="" />{$uploadedmsg}</td>
+<td class="trow2" width="55%"><input type="file" name="avatarupload" size="25" value="" class="fileupload" />{$uploadedmsg}</td>
 </tr>
 <tr>
 <td align="center" class="trow1" width="1%"><input type="radio" class="radio" name="avatar" value="list"{$checked['list']} /></td>

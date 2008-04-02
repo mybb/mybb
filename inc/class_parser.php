@@ -836,6 +836,7 @@ class postParser
 	 */
 	function mycode_parse_img($url, $dimensions=array(), $align='')
 	{
+		global $lang;
 		$url = trim($url);
 		$url = str_replace("\n", "", $url);
 		$url = str_replace("\r", "", $url);
@@ -847,13 +848,19 @@ class postParser
 		{
 			$css_align = " style=\"float: left;\"";
 		}
+		$alt = htmlspecialchars_uni(basename($url));
+		if(my_strlen($alt) > 55)
+		{
+			$alt = my_substr($alt, 0, 40)."...".my_substr($alt, -10);
+		}
+		$alt = $lang->sprintf($lang->posted_image, $alt);
 		if($dimensions[0] > 0 && $dimensions[1] > 0)
 		{
-			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"\"{$css_align} />";
+			return "<img src=\"{$url}\" width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";
 		}
 		else
 		{
-			return "<img src=\"{$url}\" border=\"0\" alt=\"\"{$css_align} />";			
+			return "<img src=\"{$url}\" border=\"0\" alt=\"{$alt}\"{$css_align} />";			
 		}
 	}
 
@@ -889,8 +896,8 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
-		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
-		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s\(\)<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
+		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
+		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
 		$message = my_substr($message, 1);
 		return $message;
 	}
