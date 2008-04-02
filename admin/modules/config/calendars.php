@@ -323,7 +323,7 @@ if($mybb->input['action'] == "edit")
 	
 	$sub_tabs['edit_calendar'] = array(
 		'title' => $lang->edit_calendar,
-		'link' => "index.php?module=config/smilies&amp;action=edit",
+		'link' => "index.php?module=config/calendars&amp;action=edit",
 		'description' => $lang->edit_calendar_desc
 	);
 	
