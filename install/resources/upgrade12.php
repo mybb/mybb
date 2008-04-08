@@ -1674,8 +1674,8 @@ function upgrade12_redothemes()
 	else
 	{
 		@fclose($cachewritable);
-	  	@chmod(MYBB_ROOT.'cache', 0777);
-	  	@chmod(MYBB_ROOT.'cache/test.write', 0777);
+	  	@my_chmod(MYBB_ROOT.'cache', 0777);
+	  	@my_chmod(MYBB_ROOT.'cache/test.write', 0777);
 		@unlink(MYBB_ROOT.'cache/test.write');
 	}
 

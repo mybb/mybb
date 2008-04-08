@@ -9,17 +9,19 @@
 function import_theme_xml($xml, $options=array())
 {
 	global $mybb, $db;
+	
+	require_once MYBB_ROOT."inc/class_xml.php";
 
 	$parser = new XMLParser($xml);
 	$tree = $parser->get_tree();
 
 	if(!is_array($tree) || !is_array($tree['theme']))
 	{
-		return false;
+		return -1;
 	}
 	
 	$theme = $tree['theme'];
-
+	
 	if(is_array($theme['properties']))
 	{
 		foreach($theme['properties'] as $property => $value)
@@ -27,6 +29,28 @@ function import_theme_xml($xml, $options=array())
 			if($property == "tag" || $property == "value") continue;
 			$properties[$property] = $value['value'];
 		}
+	}
+	
+	if(empty($mybb->input['name']))
+	{
+		$name = $theme['attributes']['name'];
+	}
+	else
+	{
+		$name = $mybb->input['name'];
+	}
+	$version = $theme['attributes']['version'];
+
+	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
+	$existingtheme = $db->fetch_array($query);
+	if($existingtheme['tid'])
+	{
+		$options['tid'] = $existingtheme['tid'];
+	}
+
+	if($mybb->version_code != $version && $options['version_compat'] != 1)
+	{
+		return -2;
 	}
 
 	// Not overriding an existing theme
@@ -44,7 +68,7 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// If we have any stylesheets, process them
-	if(is_array($theme['stylesheets']))
+	if(is_array($theme['stylesheets']) && !$options['no_stylesheets'])
 	{
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
@@ -98,14 +122,8 @@ function import_theme_xml($xml, $options=array())
 	// Do we have any templates to insert?
 	if(is_array($theme['templates']) && !$options['no_templates'])
 	{
-		if($options['templateset'])
-		{
-			$sid = $options['templateset'];
-		}
-		else
-		{
-			$sid = $properties['templateset'];
-		}
+		$sid = $db->insert_query("templatesets", array('title' => $db->escape_strig($name)." Templates"));
+		
 		$templates = $theme['templates']['template'];
 		foreach($templates as $template)
 		{
@@ -151,7 +169,11 @@ function parse_theme_variables($string, $variables=array())
 function cache_stylesheet($tid, $filename, $stylesheet)
 {
 	global $mybb;
-	if($mybb->safemode) return false;
+	
+	if($mybb->safemode)
+	{
+		return false;
+	}
 
 	if(!is_dir(MYBB_ROOT."cache/themes/theme{$tid}"))
 	{
@@ -178,6 +200,32 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	return "cache/themes/theme{$tid}/{$filename}";
 }
 
+function resync_stylesheet($stylesheet)
+{
+	global $db;
+	
+	if(!$stylesheet['cachefile'])
+	{
+		$stylesheet['cachefile'] = $stylesheet['name'];		
+		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
+	}
+	
+	if(!file_exists(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"))
+	{
+		cache_stylesheet($stylesheet['tid'], $stylesheet['cachefile'], $stylesheet['stylesheet']);
+	
+		return true;
+	}
+	else if(@filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}") > $stylesheet['lastmodified'])
+	{
+		$contents = unfix_css_urls(file_get_contents(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"));		
+		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents)), "sid='{$stylesheet['sid']}'", 1);
+		return true;
+	}
+	
+	return false;
+}
+
 function fix_css_urls($url)
 {
 	if(!preg_match("#^(https?://|/)#i", $url))
@@ -188,6 +236,11 @@ function fix_css_urls($url)
 	{
 		return "url({$url})";
 	}
+}
+
+function unfix_css_urls($url)
+{
+	return preg_replace("#^".preg_quote("../../../", "#")."#", "./", $url);
 }
 
 /**
@@ -219,7 +272,11 @@ function build_new_theme($name, $properties=null, $parent=1)
 			$parent_properties = unserialize($parent_theme['properties']);
 			foreach($parent_properties as $property => $value)
 			{
-				if($property == "inherited") continue;
+				if($property == "inherited")
+				{
+					continue;
+				}
+				
 				$properties[$property] = $value;
 				if($parent_properties['inherited'][$property])
 				{
@@ -238,7 +295,11 @@ function build_new_theme($name, $properties=null, $parent=1)
 			$parent_stylesheets = unserialize($parent_theme['stylesheets']);
 			foreach($parent_stylesheets as $location => $value)
 			{
-				if($location == "inherited") continue;
+				if($location == "inherited")
+				{
+					continue;
+				}
+				
 				foreach($value as $action => $sheets)
 				{
 					foreach($sheets as $stylesheet)
@@ -337,6 +398,48 @@ function css_to_array($css)
 	return $parsed_css;
 }
 
+function get_selectors_as_options($css, $selected_item="")
+{
+	$select = "";
+	
+	if(!is_array($css))
+	{
+		$css = css_to_array($css);
+	}
+	
+	foreach($css as $id => $css_array)
+	{
+		if(!$css_array['name'])
+		{
+			$css_array['name'] = $css_array['class_name'];
+		}
+		
+		if($selected_item == $css_array['name'])
+		{
+			$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>";
+		}
+		else
+		{
+			$select .= "<option value=\"{$id}\">{$css_array['name']}</option>";
+		}
+	}
+	return $select;
+}
+
+function get_css_properties($css, $id)
+{
+	if(!is_array($css))
+	{
+		$css = css_to_array($css);
+	}
+	
+	if(!isset($css[$id]))
+	{
+		return false;
+	}
+	return parse_css_properties($css[$id]['values']);
+}
+
 /**
  * Parses CSS supported properties and returns them as an array.
  *
@@ -345,7 +448,10 @@ function css_to_array($css)
  */
 function parse_css_properties($values)
 {
-	if(!$values) return;
+	if(!$values)
+	{
+		return;
+	}
 	$values = explode(";", $values);
 	foreach($values as $value)
 	{
@@ -356,15 +462,14 @@ function parse_css_properties($values)
 		switch(strtolower($property))
 		{
 			case "background":
-			/*case "background-color": */
 			case "color":
-			/*case "width":
+			case "width":
 			case "font":
 			case "font-family":
 			case "font-size":
 			case "font-weight":
-			case "font-style":*/
-				$css_bits[$property] = $css_value;
+			case "font-style":
+				$css_bits[$property] = trim($css_value);
 				break;
 			default:
 				$css_bits['extra'] .= "{$property}: ".trim($css_value).";\n";
@@ -440,65 +545,8 @@ function insert_into_css($new_css, $class_id="", $css="", $selector="")
 	return $css;	
 }
 
-/**
- * Find and replace a string in a particular template through every template set.
- *
- * @param string The name of the template
- * @param string The regular expression to match in the template
- * @param string The replacement string
- * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - Defaults to 1
- * @return bolean true if matched template name, false if not.
- */
-function find_replace_templatesets($title, $find, $replace, $autocreate=1)
+function copy_stylesheet_to_theme($stylesheet, $tid)
 {
-	global $db;
-	if($autocreate != 0)
-	{
-		$query = $db->simple_select("templates", "*", "title='$title' AND sid='-2'");
-		$master = $db->fetch_array($query);
-		$oldmaster = $master['template'];
-		$master['template'] = preg_replace($find, $replace, $master['template']);
-		if($oldmaster == $master['template'])
-		{
-			return false;
-		}
-		$master['template'] = $db->escape_string($master['template']);
-	}
-	$query = $db->query("
-		SELECT s.sid, t.template, t.tid 
-		FROM ".TABLE_PREFIX."templatesets s 
-		LEFT JOIN ".TABLE_PREFIX."templates t ON (t.title='$title' AND t.sid=s.sid)
-	");
-	while($template = $db->fetch_array($query))
-	{
-		if($template['template']) // Custom template exists for this group
-		{
-			if(!preg_match($find, $template['template']))
-			{
-				return false;
-			}
-			$newtemplate = preg_replace($find, $replace, $template['template']);
-			$template['template'] = $newtemplate;
-			$update[] = $template;
-		}
-		elseif($autocreate != 0) // No template exists, create it based off master
-		{
-			$newtemp = array(
-				"title" => $title,
-				"template" => $master['template'],
-				"sid" => $template['sid']
-			);
-			$db->insert_query("templates", $newtemp);
-		}
-	}
-	if(is_array($update))
-	{
-		foreach($update as $template)
-		{
-			$updatetemp = array("template" => $db->escape_string($template['template']));
-			$db->update_query("templates", $updatetemp, "tid='".$template['tid']."'");
-		}
-	}
-	return true;
+	
 }
 ?>

@@ -104,7 +104,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 				@imagepng($thumbim, $path."/".$filename);
 				break;
 		}
-		@chmod($path."/".$filename, 0666);
+		@my_chmod($path."/".$filename, 0666);
 		@imagedestroy($thumbim);
 		$thumb['code'] = 1;
 		$thumb['filename'] = $filename;

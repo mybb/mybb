@@ -35,7 +35,6 @@ $l['subforums'] = "Sub Forums";
 $l['moderators'] = "Moderators";
 $l['permissions'] = "Permissions";
 $l['add_child_forum'] = "Add Child Forum";
-$l['copy_forum'] = "Copy Forum";
 $l['delete_forum'] = "Delete Forum";
 
 $l['sub_forums'] = "Sub Forums";
@@ -77,7 +76,7 @@ $l['no_moderators'] = "There are no moderators found.";
 
 $l['success_forum_disporder_updated'] = "Successfully updated the forum display order.";
 $l['success_forum_deleted'] = "Successfully delete the specified forum.";
-$l['success_moderator_deleted'] = "Successfully delete the specified moderator.";
+$l['success_moderator_deleted'] = "Successfully deleted the specified moderator.";
 $l['success_forum_permissions_updated'] = "Successfully updated the forum permissions.";
 $l['success_forum_updated'] = "Successfully updated the forum.";
 $l['success_moderator_updated'] = "Successfully updated the moderator.";
@@ -141,7 +140,6 @@ $l['dont_display_rules'] = "Don't Display Rules";
 $l['display_rules_inline'] = "Display Rules Inline";
 $l['display_rules_link'] = "Display Rules Link";
 $l['display_method'] = "Display Method:";
-$l['title'] = "Title";
 $l['rules'] = "Rules:";
 $l['forum_rules'] = "Forum Rules";
 $l['username'] = "Username";

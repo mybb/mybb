@@ -557,7 +557,7 @@ function upload_file($file, $path, $filename="")
 		$upload['error'] = 2;
 		return $upload;
 	}
-	@chmod($path."/".$filename, 0664);
+	@my_chmod($path."/".$filename, 0664);
 	$upload['filename'] = $filename;
 	$upload['path'] = $path;
 	$upload['type'] = $file['type'];

@@ -686,6 +686,24 @@ class UserDataHandler extends DataHandler
 		}
 		return true;
 	}
+	
+	/**
+	 * Verifies if this is coming from a spam bot or not
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_checkfields()
+	{
+		$user = &$this->data;
+		
+		// An invalid language has been specified?
+		if($user['regcheck1'] !== "" || $user['regcheck2'] !== "true")
+		{
+			$this->set_error("invalid_checkfield");
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	* Validate all user assets.
@@ -776,6 +794,10 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" || array_key_exists('language', $user))
 		{
 			$this->verify_language();
+		}
+		if($this->method == "insert" && array_key_exists('regcheck1', $user) && array_key_exists('regcheck2', $user))
+		{
+			$this->verify_checkfields();
 		}
 
 		$plugins->run_hooks_by_ref("datahandler_user_validate", $this);

@@ -38,7 +38,7 @@ function upgrade3_dbchanges()
 	{
 		if(!@is_writable("../uploads/"))
 		{
-			@chmod("../uploads", 766);
+			@my_chmod("../uploads", 766);
 			if(!@is_writable("../uploads/"))
 			{
 				$errors = "<p>../uploads/ is not writable! Please chmod this directory so it's writable (766 or 777).";
@@ -53,7 +53,7 @@ function upgrade3_dbchanges()
 	{
 		if(!@is_writable("../uploads/avatars/"))
 		{
-			@chmod("../uploads/avatars/", 766);
+			@my_chmod("../uploads/avatars/", 766);
 			if(!is_writable("../uploads/avatars/"))
 			{
 				$errors = "<p>../uploads/avatars/ is not writable! Please chmod this directory so it's writable (766 or 777).";

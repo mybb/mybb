@@ -15,8 +15,6 @@ $l['disallowed_usernames_desc'] = "Here you manage a list of usernames which can
 $l['disallowed_email_addresses'] = "Disallowed Email Addresses";
 $l['disallowed_email_addresses_desc'] = "Here you manage a list of email addresses which cannot be registered or used by users.";
 
-$l['disallowed_email_addresses'] = "Disallowed Email Addresses";
-$l['disallowed_usernames'] = "Disallowed Usernames";
 $l['banned_ip_addresses'] = "Banned IP Addresses";
 $l['username'] = "Username";
 $l['date_disallowed'] = "Date Disallowed";

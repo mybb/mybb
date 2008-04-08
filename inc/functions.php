@@ -1364,11 +1364,14 @@ function is_moderator($fid="0", $action="", $uid="0")
 		if(!$fid)
 		{
 			$modcache = $cache->read('moderators');
-			foreach($modcache as $modusers)
+			if(!empty($modcache))
 			{
-				if(isset($modusers[$uid]) && $modusers[$uid]['mid'])
+				foreach($modcache as $modusers)
 				{
-					return true;
+					if(isset($modusers[$uid]) && $modusers[$uid]['mid'])
+					{
+						return true;
+					}
 				}
 			}
 			return false;
@@ -5176,6 +5179,24 @@ function unicode_chr($c)
     {
         return false;
     }
+}
+
+/**
+ * Custom chmod function to fix problems with hosts who's server configurations screw up umasks
+ *
+ * @param string The file to chmod
+ * @param octal The mode to chmod(i.e. 0666)
+ */
+function my_chmod($file, $mode)
+{
+	if(substr($mode, 0, 1) != '0' || strlen($mode) !== 4)
+	{
+		return false;
+	}
+	$old_umask = umask(0);
+	$result = chmod($file, $mode);
+	umask($old_umask);
+	return $result;
 }
 
 ?>

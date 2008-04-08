@@ -377,9 +377,21 @@ if(!$mybb->input['action'])
 	
 	while($row = $db->fetch_array($query))
 	{
+		if(!$row['username'])
+		{
+			$row['username'] = $lang->guest;
+		}
+		
 		$trow = alt_trow();
 		$username = format_name($row['username'], $row['usergroup'], $row['displaygroup']);
-		$username_link = build_profile_link($username, $row['uid']);
+		if(!$row['uid'])
+		{
+			$username_link = $username;
+		}
+		else
+		{
+			$username_link = build_profile_link($username, $row['uid']);
+		}
 		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
 		$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
 		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);

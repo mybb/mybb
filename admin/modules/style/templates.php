@@ -236,10 +236,10 @@ if($mybb->input['action'] == "add_template")
 	}
 	
 	$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-php.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/mybb.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
-		CodePress.language = \'php\';
+		CodePress.language = \'mybb\';
 	</script>';
 	
 	$page->add_breadcrumb_item($lang->add_template);
@@ -389,7 +389,7 @@ if($mybb->input['action'] == "edit_template")
 			$template_array = array(
 				'title' => $db->escape_string($mybb->input['title']),
 				'sid' => $sid,
-				'template' => $db->escape_string($mybb->input['template']),
+				'template' => $db->escape_string(trim($mybb->input['template'])),
 				'version' => $mybb->version_code,
 				'status' => '',
 				'dateline' => TIME_NOW
@@ -450,10 +450,10 @@ if($mybb->input['action'] == "edit_template")
 	}
 	
 	$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-php.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/mybb.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
-		CodePress.language = \'php\';
+		CodePress.language = \'mybb\';
 	</script>';
 	
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
@@ -1275,7 +1275,8 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		if($expanded == true && isset($group['templates']) && count($group['templates']) > 0)
 		{
 			$templates = $group['templates'];
-			asort($templates);
+			ksort($templates);
+			
 			foreach($templates as $template)
 			{
 				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
@@ -1368,22 +1369,31 @@ if(!$mybb->input['action'])
 		{
 			$used_by_note = $lang->not_used_by_any_themes;
 		}
-
-		$popup = new PopupMenu("templateset_{$set['sid']}", $lang->options);
-		$popup->add_item($lang->expand_templates, "index.php?module=style/templates&amp;sid={$set['sid']}");		
 		
-		if($set['sid'] != 1)
+		if($set['sid'] == 1)
 		{
-			$popup->add_item($lang->edit_template_set, "index.php?module=style/templates&amp;action=edit_set&amp;sid={$set['sid']}");
-				
-			if(!$themes[$set['sid']])
+			$actions = "<a href=\"index.php?module=style/templates&amp;sid={$set['sid']}\">{$lang->expand_templates}</a>";
+		}
+		else
+		{	
+			$popup = new PopupMenu("templateset_{$set['sid']}", $lang->options);
+			$popup->add_item($lang->expand_templates, "index.php?module=style/templates&amp;sid={$set['sid']}");		
+			
+			if($set['sid'] != 1)
 			{
-				$popup->add_item($lang->delete_template_set, "index.php?module=style/templates&amp;action=delete_set&amp;sid={$set['sid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_set_deletion}')");
+				$popup->add_item($lang->edit_template_set, "index.php?module=style/templates&amp;action=edit_set&amp;sid={$set['sid']}");
+					
+				if(!$themes[$set['sid']])
+				{
+					$popup->add_item($lang->delete_template_set, "index.php?module=style/templates&amp;action=delete_set&amp;sid={$set['sid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_set_deletion}')");
+				}
 			}
+			
+			$actions = $popup->fetch();
 		}
 		
 		$table->construct_cell("<strong><a href=\"index.php?module=style/templates&amp;sid={$set['sid']}\">{$set['title']}</a></strong><br /><small>{$used_by_note}</small>");
-		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+		$table->construct_cell($actions, array("class" => "align_center"));
 		$table->construct_row();
 	}
 	

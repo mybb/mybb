@@ -385,8 +385,8 @@ function requirements_check()
 	{
 		$cachestatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($cachewritable);
-	  	@chmod(MYBB_ROOT.'cache', 0777);
-	  	@chmod(MYBB_ROOT.'cache/test.write', 0777);
+	  	@my_chmod(MYBB_ROOT.'cache', 0777);
+	  	@my_chmod(MYBB_ROOT.'cache/test.write', 0777);
 		@unlink(MYBB_ROOT.'cache/test.write');
 	}
 
@@ -403,8 +403,8 @@ function requirements_check()
 	{
 		$uploadsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($uploadswritable);
-	  	@chmod(MYBB_ROOT.'uploads', 0777);
-	  	@chmod(MYBB_ROOT.'uploads/test.write', 0777);
+	  	@my_chmod(MYBB_ROOT.'uploads', 0777);
+	  	@my_chmod(MYBB_ROOT.'uploads/test.write', 0777);
 		@unlink(MYBB_ROOT.'uploads/test.write');
 	}
 
@@ -421,8 +421,8 @@ function requirements_check()
 	{
 		$avatarsstatus = $lang->sprintf($lang->req_step_span_pass, $lang->writable);
 		@fclose($avatarswritable);
-		@chmod(MYBB_ROOT.'uploads/avatars', 0777);
-	  	@chmod(MYBB_ROOT.'uploads/avatars/test.write', 0777);
+		@my_chmod(MYBB_ROOT.'uploads/avatars', 0777);
+	  	@my_chmod(MYBB_ROOT.'uploads/avatars/test.write', 0777);
 		@unlink(MYBB_ROOT.'uploads/avatars/test.write');
   	}
 

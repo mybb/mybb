@@ -112,8 +112,14 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"profile_fields" => $mybb->input['profile_fields'],
 		"regip" => $session->ipaddress,
 		"longregip" => ip2long($session->ipaddress),
-		"coppa_user" => intval($_COOKIE['coppauser'])
+		"coppa_user" => intval($_COOKIE['coppauser']),
 	);
+	
+	if(isset($mybb->input['regcheck1']) && isset($mybb->input['regcheck2']))
+	{
+		$user['regcheck1'] = $mybb->input['regcheck1'];
+		$user['regcheck2'] = $mybb->input['regcheck2'];
+	}
 
 	// Do we have a saved COPPA DOB?
 	if($_COOKIE['coppadob'])

@@ -59,7 +59,7 @@ if($mybb->input['action'] == "toggle_status")
 	admin_redirect('index.php?module=config/mycode');
 }
 
-if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "post")
+if($mybb->input['action'] == "xmlhttp_test_mycode") //&& $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_config_mycode_xmlhttp_test_mycode_start");
 	
@@ -180,7 +180,7 @@ if($mybb->input['action'] == "add")
 	echo '<script type="text/javascript">
 //<![CDATA[
 Event.observe(window, "load", function() {
-    new MyCodeSandbox("index.php?module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("./index.php?module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
 });
 //]]>
 </script>';
@@ -299,7 +299,7 @@ if($mybb->input['action'] == "edit")
 
 Event.observe(window, "load", function() {
 //<![CDATA[
-    new MyCodeSandbox("index.php?module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
+    new MyCodeSandbox("./index.php?module=config/mycode&action=xmlhttp_test_mycode", $("test"), $("regex"), $("replacement"), $("test_value"), $("result_html"), $("result_actual"));
 });
 //]]>
 </script>';
@@ -414,7 +414,7 @@ if(!$mybb->input['action'])
 function test_regex($regex, $replacement, $test)
 {
 	$array = array();
-	$array['actual'] = @preg_replace("#".$regex."#si", $replacement, $test);
+	$array['actual'] = preg_replace("#".$regex."#si", $replacement, $test);
 	$array['html'] = htmlspecialchars($array['actual']);
 	return $array;
 }

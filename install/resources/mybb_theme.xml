@@ -5569,7 +5569,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 <tr>
 <td>
-<span class="largetext">{$thread['subject']} - {$lang->printable_version}</span><br />
+<span class="largetext"><a href="{$thread['threadlink']}">{$thread['subject']}</a> - {$lang->printable_version}</span><br />
 <br />
 +- {$mybb->settings['bbname']} (<em>{$mybb->settings['bburl']}</em>)<br />
 {$breadcrumb}
@@ -7347,7 +7347,7 @@ To: {$to_recipients}
 <body>
 {$header}
 <br />
-<form action="member.php" method="post" id="registration_form">
+<form action="member.php" method="post" id="registration_form"><input type="text" style="visibility: hidden;" value="" name="regcheck1" /><input type="text" style="visibility: hidden;" value="true" name="regcheck2" />
 {$regerrors}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
@@ -7672,7 +7672,7 @@ To: {$to_recipients}
 </table><br /><br />]]></template>
 	<template name="postbit_delete_pm" version="1400"><![CDATA[<a href="private.php?action=delete&amp;pmid={$id}&amp;my_post_key={$mybb->post_code}"><img src="{$theme['imglangdir']}/pm_delete.gif" alt="{$lang->delete}" title="{$lang->delete_title}" /></a>]]></template>
 	<template name="postbit_forward_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=forward"><img src="{$theme['imglangdir']}/pm_forward.gif" alt="{$lang->forward}" title="{$lang->forward_title}" /></a>]]></template>
-	<template name="postbit_reply_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
+	<template name="postbit_reply_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=reply"><img src="{$theme['imglangdir']}/pm_reply.gif" alt="{$lang->reply}" title="{$lang->reply_title}" /></a>]]></template>
 	<template name="postbit_replyall_pm" version="1400"><![CDATA[<a href="private.php?action=send&amp;pmid={$id}&amp;do=replyall"><img src="{$theme['imglangdir']}/postbit_replyall.gif" alt="{$lang->reply_to_all}" title="{$lang->reply_title}" /></a>]]></template>
 	<template name="showthread_search" version="1400"><![CDATA[	<div class="float_right">
 		<form action="search.php" method="post">

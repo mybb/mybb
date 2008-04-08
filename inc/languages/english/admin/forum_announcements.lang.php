@@ -19,14 +19,13 @@ $l['forums_to_appear_in_desc'] = "The announcement will appear in the forums sel
 
 $l['announcement'] = "Announcement";
 $l['global_announcements'] = "Global Announcements";
-$l['forum_announcements'] = "Forum Announcements";
 
 $l['no_global_announcements'] = "There are currently no global forum announcements.";
 $l['no_forums'] = "There are currently no forums setup to show forum announcements.";
 
 $l['confirm_announcement_deletion'] = "Are you sure you wish to delete this announcement?";
 
-$l['success_announcement_deleted'] = "Successfully delete the specified announcement.";
+$l['success_announcement_deleted'] = "Successfully deleted the specified announcement.";
 $l['success_added_announcement'] = "Successfully added the announcement.";
 $l['success_updated_announcement'] = "Successfully updated the announcement.";
 

@@ -141,7 +141,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			}
 			else
 			{
-				$points = $mybb->input['custom_points'];
+				$points = round((int)$mybb->input['custom_points']);
 			}
 			// Build expiry date
 			if($mybb->input['expires'])
