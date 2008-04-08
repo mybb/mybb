@@ -17,7 +17,7 @@ if(!defined("IN_MYBB"))
 
 require_once MYBB_ADMIN_DIR."inc/functions_themes.php";
 
-if($mybb->input['action'] == "xmlhttp_stylesheet")
+if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
 	$query = $db->simple_select("themestylesheets", "*", "sid='".intval($mybb->input['sid'])."'");
 	$stylesheet = $db->fetch_array($query);

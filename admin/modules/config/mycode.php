@@ -59,7 +59,7 @@ if($mybb->input['action'] == "toggle_status")
 	admin_redirect('index.php?module=config/mycode');
 }
 
-if($mybb->input['action'] == "xmlhttp_test_mycode") //&& $mybb->request_method == "post")
+if($mybb->input['action'] == "xmlhttp_test_mycode" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("admin_config_mycode_xmlhttp_test_mycode_start");
 	
@@ -414,7 +414,7 @@ if(!$mybb->input['action'])
 function test_regex($regex, $replacement, $test)
 {
 	$array = array();
-	$array['actual'] = preg_replace("#".$regex."#si", $replacement, $test);
+	$array['actual'] = @preg_replace("#".$regex."#si", $replacement, $test);
 	$array['html'] = htmlspecialchars($array['actual']);
 	return $array;
 }

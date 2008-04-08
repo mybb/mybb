@@ -236,7 +236,7 @@ if($mybb->input['action'] == "add_template")
 	}
 	
 	$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/mybb.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'mybb\';
@@ -450,7 +450,7 @@ if($mybb->input['action'] == "edit_template")
 	}
 	
 	$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/mybb.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'mybb\';
