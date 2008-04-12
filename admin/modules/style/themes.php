@@ -208,7 +208,7 @@ if($mybb->input['action'] == "import")
 						$errors[] = $lang->error_uploadfailed_lost;
 					}
 					// Get the contents
-					$contents = @fetch_remote_file($_FILES['compfile']['tmp_name']);
+					$contents = @file_get_contents($_FILES['compfile']['tmp_name']);
 					// Delete the temporary file if possible
 					@unlink($_FILES['compfile']['tmp_name']);
 					// Are there contents?
@@ -221,7 +221,7 @@ if($mybb->input['action'] == "import")
 			elseif(!empty($mybb->input['localfile']))
 			{
 				// Get the contents
-				$contents = @file_get_contents($mybb->input['localfile']);
+				$contents = @fetch_remote_file($mybb->input['localfile']);
 				if(!$contents)
 				{
 					$errors[] = $lang->error_local_file;
