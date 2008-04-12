@@ -3576,7 +3576,7 @@ function my_wordwrap($message)
 
 	if($mybb->settings['wordwrap'] > 0)
 	{
-		if($mybb->config['db_encoding'] == "utf8")
+		if($mybb->config['db_encoding'] == "utf8" && !preg_match("#[\x80-\xFF]#", $message))
 		{
 			$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#u", "$0 ", $message);
 		}

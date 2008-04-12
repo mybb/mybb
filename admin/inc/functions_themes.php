@@ -121,8 +121,15 @@ function import_theme_xml($xml, $options=array())
 
 	// Do we have any templates to insert?
 	if(is_array($theme['templates']) && !$options['no_templates'])
-	{
-		$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
+	{		
+		if($options['templateset']) 
+		{ 
+			$sid = $options['templateset'];
+		} 
+		else 
+		{ 
+			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
+		}
 		
 		$templates = $theme['templates']['template'];
 		foreach($templates as $template)
