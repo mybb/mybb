@@ -28,81 +28,6 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 		admin_redirect("index.php?module=style/themes");
 	}
 	
-	if($mybb->request_method == "post")
-	{		
-		// Fetch the theme we want to edit this stylesheet in
-		$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
-		$theme = $db->fetch_array($query);
-		
-		if(!$theme['tid'])
-		{
-			flash_message("You have selected an invalid theme.", 'error');
-			admin_redirect("index.php?module=style/themes");
-		}
-	
-		$sid = $theme['sid'];
-		
-		/*
-		// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
-		if($theme['tid'] != $stylesheet['tid'])
-		{
-			$sid = copy_stylesheet_to_theme($stylesheet, $theme['id']);
-		}
-
-		// Insert the modified CSS
-		$new_stylesheet = $stylesheet['stylesheet'];
-
-		$css_to_insert = '';
-		foreach($mybb->input['css_bits'] as $field => $value)
-		{
-			if($field == "extra")
-			{
-				$css_to_insert .= $value."\n";
-			}
-			else
-			{
-				$css_to_insert .= "{$field}: {$value}\n";
-			}
-		}
-		$new_stylesheet = insert_into_css($css_to_insert, $class_id, $new_stylesheet, $mybb->input['selector']);
-
-		// Now we have the new stylesheet, save it
-		$updated_stylesheet = array(
-			"stylesheet" => $db->escape_string($new_stylesheet),
-			"lastmodified" => TIME_NOW
-		);
-		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
-
-		// Cache the stylesheet to the file
-		cache_stylesheet($theme['tid'], $stylesheet['name'], $new_stylesheet);
-
-		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid']);
-		*/
-
-		// Log admin action
-		log_admin_action($theme['name'], $stylesheet['name']);
-
-		if(!$mybb->input['ajax'])
-		{			
-			flash_message("The stylesheet has successfully been updated.", 'success');
-				
-			if($mybb->input['save_close'])
-			{
-				admin_redirect("index.php?module=style/themes&action=edit&tid={$theme['tid']}");
-			}
-			else
-			{
-				admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&sid={$mybb->input['sid']}");
-			}
-		}
-		else
-		{
-			echo " (Saved @ ".my_date($mybb->settings['timeformat'], TIME_NOW).")";
-			exit;
-		}
-	}
-	
 	$css_array = css_to_array($stylesheet['stylesheet']);
 	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
 	$editable_selector = $css_array[$mybb->input['selector']];
@@ -129,7 +54,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_weight', $properties['font-weight'], array('id' => 'font_weight', 'style' => 'width: 260px;'))."</div><div>Font Weight</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	
-	$table->output("<span id=\"mini_spinner\"></span>".htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: red;\"></span>");
+	$table->output("<span id=\"mini_spinner\"></span>".htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
 	exit;
 }
 
@@ -822,25 +747,25 @@ if($mybb->input['action'] == "stylesheet_properties")
 			}
 			
 			$specific_file = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$short_name}\" value=\"0\" {$global_action_checked[1]} class=\"action_{$short_name}s_check\" onclick=\"checkAction('action_{$short_name}');\" style=\"vertical-align: middle;\" /> Globally</label></dt>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$short_name}\" value=\"1\" {$global_action_checked[2]} class=\"action_{$short_name}s_check\" onclick=\"checkAction('action_{$short_name}');\" style=\"vertical-align: middle;\" /> Specific actions</label></dt>
-			<dd style=\"margin-top: 4px;\" id=\"action_{$short_name}_1\" class=\"action_{$short_name}s\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"0\" {$global_action_checked[1]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> Globally</label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"1\" {$global_action_checked[2]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> Specific actions</label></dt>
+			<dd style=\"margin-top: 4px;\" id=\"action_{$count}_1\" class=\"action_{$count}s\">
 			<table cellpadding=\"4\">
 				<tr>
-					<td>".$form->generate_text_box('action_list_'.$short_name, $action_list, array('id' => 'action_list_'.$name, 'style' => 'width: 190px;'))."</td>
+					<td>".$form->generate_text_box('action_list_'.$count, $action_list, array('id' => 'action_list_'.$count, 'style' => 'width: 190px;'))."</td>
 				</tr>
 			</table>
 		</dd>
 		</dl>";
 			
 			$form_container = new FormContainer();
-			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\"><img src=\"styles/{$page->style}/images/icons/cross.gif\" alt=\"Delete\" title=\"Delete\" /></a></span>File &nbsp;".$form->generate_text_box("attached_{$short_name}", $name, array('id' => "attached_{$short_name}", 'style' => 'width: 200px;')), "attached_{$short_name}");
+			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\" id=\"delete_img_{$count}\"><img src=\"styles/{$page->style}/images/icons/cross.gif\" alt=\"Delete\" title=\"Delete\" /></a></span>File &nbsp;".$form->generate_text_box("attached_{$count}", $name, array('id' => "attached_{$count}", 'style' => 'width: 200px;')), "attached_{$count}");
 	
 			$form_container->output_row("", "", $specific_file);
 	
-			$specific_files .= $form_container->end(true);
+			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div>";
 			
-			$check_actions .= "\n\tcheckAction('action_{$short_name}');";
+			$check_actions .= "\n\tcheckAction('action_{$count}');";
 			
 			++$count;
 		}
@@ -878,7 +803,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	<small>Attached to</small>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
 	<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> Globally</label></dt>
-		<dt><label style="display: block;"><input type="radio" name="attach" value="1" '.$global_checked[2].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> Specific files (<a href="">Add another</a>)</label></dt><br />
+		<dt><label style="display: block;"><input type="radio" name="attach" value="1" '.$global_checked[2].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> Specific files (<a id="new_specific_file">Add another</a>)</label></dt><br />
 		'.$specific_files.'
 	</dl>
 	<script type="text/javascript">
@@ -897,6 +822,16 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$buttons[] = $form->generate_submit_button("Save Stylesheet Properties");
 
 	$form->output_submit_wrapper($buttons);
+	
+	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript">
+
+Event.observe(window, "load", function() {
+//<![CDATA[
+    new ThemeSelector(\''.$count.'\');
+});
+//]]>
+</script>';
 	
 	$form->end();
 	
@@ -1137,7 +1072,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_weight', $properties['font-weight'], array('id' => 'font_weight', 'style' => 'width: 260px;'))."</div><div>Font Weight</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	
-	$table->output("<span id=\"mini_spinner\"></span>".htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: red;\"></span>");
+	$table->output("<span id=\"mini_spinner\"></span>".htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
 	
 	echo "</div>";
 	
@@ -1152,7 +1087,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 
 Event.observe(window, "load", function() {
 //<![CDATA[
-    new ThemeSelector("./index.php?module=style/themes&action=xmlhttp_stylesheet", "./index.php?module=style/themes&action=xmlhttp_stylesheet", $("selector"), $("stylesheet"), "'.$mybb->input['sid'].'", $("selector_form"), "'.$mybb->input['tid'].'");
+    new ThemeSelector("./index.php?module=style/themes&action=xmlhttp_stylesheet", "./index.php?module=style/themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.$mybb->input['sid'].'", $("selector_form"), "'.$mybb->input['tid'].'");
 });
 //]]>
 </script>';

@@ -160,17 +160,18 @@ class MyBB {
 		// Determine input
 		$this->parse_incoming($_GET);
 		$this->parse_incoming($_POST);
-
+		
 		if($_SERVER['REQUEST_METHOD'] == "POST")
 		{
 			$this->request_method = "post";
 		}
-		elseif($_SERVER['REQUEST_METHOD'] == "GET")
+		else if($_SERVER['REQUEST_METHOD'] == "GET")
 		{
 			$this->request_method = "get";
 		}
+		
 		// If we've got register globals on, then kill them too
-		if (@ini_get("register_globals") == 1)
+		if(@ini_get("register_globals") == 1)
 		{
 			$this->unset_globals($_POST);
 			$this->unset_globals($_GET);
