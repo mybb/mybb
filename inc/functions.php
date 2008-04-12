@@ -65,7 +65,7 @@ function output_page($contents)
 
 			if(function_exists("memory_get_usage"))
 			{
-				$memory_usage = " / Memory Usage: ".get_friendly_size(memory_get_usage());
+				$memory_usage = " / Memory Usage: ".get_friendly_size(memory_get_peak_usage(true));
 			}
 
 			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
@@ -2954,7 +2954,7 @@ function debug_page()
 
 	if(function_exists("memory_get_usage"))
 	{
-		$memory_usage = memory_get_usage();
+		$memory_usage = memory_get_peak_usage(true);
 		$memory_limit = @ini_get("memory_limit");
 		echo "<tr>\n";
 		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";

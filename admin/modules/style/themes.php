@@ -208,7 +208,7 @@ if($mybb->input['action'] == "import")
 						$errors[] = $lang->error_uploadfailed_lost;
 					}
 					// Get the contents
-					$contents = @file_get_contents($_FILES['compfile']['tmp_name']);
+					$contents = @fetch_remote_file($_FILES['compfile']['tmp_name']);
 					// Delete the temporary file if possible
 					@unlink($_FILES['compfile']['tmp_name']);
 					// Are there contents?
@@ -236,14 +236,19 @@ if($mybb->input['action'] == "import")
 					'version_compat' => intval($mybb->input['version_compat']),
 					'tid' => intval($mybb->input['tid']),
 				);
-				$return = import_theme_xml($contents, $options);
+				$theme_id = import_theme_xml($contents, $options);
 				
-				if($return == true)
+				if($theme_id > -1)
 				{
+					// Log admin action
+					log_admin_action($theme_id);
+			
+					flash_message("Successfully imported the theme.", 'success');
+					admin_redirect("index.php?module=style/themes&action=edit&tid=".$theme_id);
 				}
 				else
 				{
-					switch($return)
+					switch($theme_id)
 					{
 						case -1:
 							$errors[] = "MyBB could not find the theme with the file you uploaded. Please check the file is the correct and is not corrupt.";

@@ -146,7 +146,7 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// And done?
-	return true;
+	return $theme_id;
 }
 
 /**
