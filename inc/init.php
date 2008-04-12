@@ -52,6 +52,7 @@ $mybb = new MyBB;
 
 // Include the required core files
 require_once MYBB_ROOT."inc/config.php";
+$mybb->config = &$config;
 
 if(!isset($config['database']))
 {
@@ -159,7 +160,6 @@ if(substr($settings['bburl'], -1) == "/")
 }
 
 $mybb->settings = &$settings;
-$mybb->config = &$config;
 $mybb->cache = &$cache;
 
 // Load plugins
