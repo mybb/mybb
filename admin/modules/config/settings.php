@@ -946,6 +946,12 @@ if($mybb->input['action'] == "change")
             admin_redirect("index.php?module=config/settings");    
         }
 		
+		$group_lang_var = "setting_group_{$groupinfo['name']}";
+		if($lang->$group_lang_var)
+		{
+			$groupinfo['title'] = $lang->$group_lang_var;
+		}
+		
 		// Page header
 		$page->add_breadcrumb_item($groupinfo['title']);
 		$page->output_header($lang->board_settings." - {$groupinfo['title']}");

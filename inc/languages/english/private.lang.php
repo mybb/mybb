@@ -31,7 +31,6 @@ $l['sentto'] = "Sent To";
 $l['date_sent'] = "Date/Time Sent";
 $l['delete_pm'] = "Delete";
 $l['move_to'] = "Move To";
-$l['delete'] = "Delete";
 $l['or'] = "or";
 $l['selected_messages'] = "the selected messages";
 $l['go'] = "Go!";

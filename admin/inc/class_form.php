@@ -618,6 +618,8 @@ class DefaultForm
 	 */
 	function generate_on_off_radio($name, $value=1, $int=true, $on_options=array(), $off_options = array())
 	{
+		global $lang;
+		
 		// Checked status
 		if($value == "off" || (int) $value !== 1)
 		{
@@ -647,8 +649,8 @@ class DefaultForm
 		$off_options['class'] = "radio_off ".$off_options['class'];
 		$off_options['checked'] = $off_checked;
 		
-		$on = $this->generate_radio_button($name, $on_value, "On", $on_options);
-		$off = $this->generate_radio_button($name, $off_value, "Off", $off_options);
+		$on = $this->generate_radio_button($name, $on_value, $lang->on, $on_options);
+		$off = $this->generate_radio_button($name, $off_value, $lang->off, $off_options);
 		return $on." ".$off;
 	}
 	

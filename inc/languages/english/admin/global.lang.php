@@ -58,7 +58,6 @@ $l['proceed'] = "Proceed";
 $l['ok'] = "OK";
 $l['error'] = "Error";
 $l['edit'] = "Edit";
-$l['delete'] = "Delete";
 $l['never'] = "Never";
 $l['legend'] = "Legend";
 $l['version'] = "Version";
@@ -102,6 +101,10 @@ $l['pages'] = "Pages";
 $l['previous'] = "Previous";
 $l['page'] = "Page";
 $l['next'] = "Next";
+$l['delete'] = "Delete";
+$l['reset'] = "Reset";
+$l['and'] = "and";
+$l['go'] = "Go";
 
 // Parser bits
 $l['quote'] = "Quote:";

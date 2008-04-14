@@ -272,9 +272,7 @@ if(!$mybb->input['action'])
 	
 	$sort_by = array(
 		'dateline' => $lang->date,
-		'username' => $lang->username,
-		'forum' => $lang->forum_name,
-		'thread' => $lang->thread_subject
+		'username' => $lang->username
 	);
 	
 	$order_array = array(

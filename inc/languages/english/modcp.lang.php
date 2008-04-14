@@ -132,7 +132,6 @@ $l['attachments_awaiting_moderation'] = "Attachments Awaiting Moderation";
 $l['mod_queue'] = "Moderation Queue";
 $l['approve'] = "Approve";
 $l['ignore'] = "Ignore";
-$l['delete'] = "Delete";
 $l['perform_actions'] = "Perform Actions";
 $l['subject'] = "Subject";
 $l['author'] = "Author";

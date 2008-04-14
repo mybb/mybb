@@ -230,7 +230,7 @@ if($mybb->input['action'] == "add_template")
 		$template['sid'] = $sid;
 	}
 	
-	if($sid)
+	if($mybb->input['sid'])
 	{
 		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
 	}
@@ -1269,8 +1269,8 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		}
 		
 		$table->construct_cell("<strong><a href=\"index.php?module=style/templates&amp;sid={$sid}&amp;expand={$group['expand_str']}\">{$group['title']}</a></strong>");
-		$table->construct_cell("<a href=\"index.php?module=style/templates&amp;sid={$sid}&amp;expand={$group['expand_str']}\">{$expand}</a>", array("class" => "align_center"));
-		$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid']));
+		$table->construct_cell("<a href=\"index.php?module=style/templates&amp;sid={$sid}&amp;expand={$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
+		$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 		
 		if($expanded == true && isset($group['templates']) && count($group['templates']) > 0)
 		{

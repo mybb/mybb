@@ -104,7 +104,7 @@ function tools_admin_permissions()
 		"maillogs" => $lang->can_manage_user_mail_log,
 		"mailerrors" => $lang->can_manage_system_mail_log,
 		"warninglog" => $lang->can_manage_user_warning_log,
-		"phpinfo" => $lang->can_view_php_info
+		"php_info" => $lang->can_view_php_info
 	);
 	
 	$plugins->run_hooks_by_ref("admin_tools_permissions", $admin_permissions);

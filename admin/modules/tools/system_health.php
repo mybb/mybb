@@ -23,10 +23,6 @@ if($mybb->input['action'] == "utf8_conversion")
 {
 	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
 	
-	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
-	
-	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
-	
 	if($db->type == "sqlite2" || $db->type == "sqlite3")
 	{
 		flash_message($lang->error_not_supported, 'error');
@@ -45,6 +41,10 @@ if($mybb->input['action'] == "utf8_conversion")
 			flash_message($lang->error_invalid_table, 'error');
 			admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		}
+		
+		$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
+	
+		$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 		
 		$sub_tabs['system_health'] = array(
 			'title' => $lang->system_health,
@@ -236,20 +236,6 @@ if($mybb->input['action'] == "utf8_conversion")
 		exit;
 	}
 	
-	$sub_tabs['system_health'] = array(
-		'title' => $lang->system_health,
-		'link' => "index.php?module=tools/stats",
-		'description' => $lang->system_health_desc
-	);
-	
-	$sub_tabs['utf8_conversion'] = array(
-		'title' => $lang->utf8_conversion,
-		'link' => "index.php?module=tools/stats&amp;action=utf8_conversion",
-		'description' => $lang->utf8_conversion_desc2
-	);
-	
-	$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
-	
 	if($mybb->input['table'] || $mybb->input['do'] == "all")
 	{
 		$old_table_prefix = $db->table_prefix;
@@ -297,6 +283,24 @@ if($mybb->input['action'] == "utf8_conversion")
 		{
 			$table = $db->show_create_table($db->escape_string($mybb->input['table']));
 		}
+		
+		$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
+	
+		$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
+		
+		$sub_tabs['system_health'] = array(
+			'title' => $lang->system_health,
+			'link' => "index.php?module=tools/stats",
+			'description' => $lang->system_health_desc
+		);
+		
+		$sub_tabs['utf8_conversion'] = array(
+			'title' => $lang->utf8_conversion,
+			'link' => "index.php?module=tools/stats&amp;action=utf8_conversion",
+			'description' => $lang->utf8_conversion_desc2
+		);
+		
+		$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
 		
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 		$charset = $matches[1];
@@ -389,6 +393,24 @@ if($mybb->input['action'] == "utf8_conversion")
 		flash_message($lang->error_db_encoding_not_set, 'error');
 		admin_redirect("index.php?module=tools/system_health");
 	}
+	
+	$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
+	
+	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
+	
+	$sub_tabs['system_health'] = array(
+		'title' => $lang->system_health,
+		'link' => "index.php?module=tools/stats",
+		'description' => $lang->system_health_desc
+	);
+	
+	$sub_tabs['utf8_conversion'] = array(
+		'title' => $lang->utf8_conversion,
+		'link' => "index.php?module=tools/stats&amp;action=utf8_conversion",
+		'description' => $lang->utf8_conversion_desc2
+	);
+	
+	$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
 	
 	asort($mybb_tables);
 	

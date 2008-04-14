@@ -127,7 +127,7 @@ ThemeSelector.prototype = {
     {
 		if(this.background != $("background").value || this.width != $("width").value || this.color != $("color").value || this.extra != $("extra").value || this.font != $("font").value || this.font_family != $("font_family").value || this.font_size != $("font_size").value || this.font_style != $("font_style").value || this.font_weight != $("font_weight").value)
 		{
-			confirmReturn = confirm("Do you want to save your changes first?");
+			confirmReturn = confirm(save_changes_lang_string);
 			if(confirmReturn == true)
 			{
 				this.save(false, isajax);
@@ -222,7 +222,7 @@ ThemeSelector.prototype = {
 	{
 		Event.stop(e);
 		
-		var contents = "<div id=\"attached_form_"+this.specific_count+"\"><div class=\"border_wrapper\">\n<table class=\"general form_container \" cellspacing=\"0\">\n<tbody>\n<tr class=\"first\">\n<td class=\"first\"><div class=\"form_row\"><span style=\"float: right;\"><a href=\"\" id=\"delete_img_"+this.specific_count+"\"><img src=\"styles/default/images/icons/cross.gif\" alt=\"Delete\" title=\"Delete\" /></a></span>File &nbsp;<input type=\"text\" name=\"attached_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 200px;\" id=\"attached_"+this.specific_count+"\" /></div>\n</td>\n</tr>\n<tr class=\"last alt_row\">\n<td class=\"first\"><div class=\"form_row\"><dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"0\" checked=\"checked\" class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> Globally</label></dt>\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"1\"  class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> Specific actions</label></dt>\n<dd style=\"margin-top: 4px;\" id=\"action_"+this.specific_count+"_1\" class=\"action_"+this.specific_count+"s\">\n<table cellpadding=\"4\">\n<tr>\n<td><input type=\"text\" name=\"action_list_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 190px;\" id=\"action_list_"+this.specific_count+"\" /></td>\n</tr>\n</table>\n</dd>\n</dl></div>\n</td>\n</tr>\n</tbody>\n</table>\n</div></div>\n";
+		var contents = "<div id=\"attached_form_"+this.specific_count+"\"><div class=\"border_wrapper\">\n<table class=\"general form_container \" cellspacing=\"0\">\n<tbody>\n<tr class=\"first\">\n<td class=\"first\"><div class=\"form_row\"><span style=\"float: right;\"><a href=\"\" id=\"delete_img_"+this.specific_count+"\"><img src=\"styles/default/images/icons/cross.gif\" alt=\""+delete_lang_string+"\" title=\""+delete_lang_string+"\" /></a></span>"+file_lang_string+" &nbsp;<input type=\"text\" name=\"attached_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 200px;\" id=\"attached_"+this.specific_count+"\" /></div>\n</td>\n</tr>\n<tr class=\"last alt_row\">\n<td class=\"first\"><div class=\"form_row\"><dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"0\" checked=\"checked\" class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> "+globally_lang_string+"</label></dt>\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"1\"  class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> "+specific_actions_lang_string+"</label></dt>\n<dd style=\"margin-top: 4px;\" id=\"action_"+this.specific_count+"_1\" class=\"action_"+this.specific_count+"s\">\n<table cellpadding=\"4\">\n<tr>\n<td><input type=\"text\" name=\"action_list_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 190px;\" id=\"action_list_"+this.specific_count+"\" /></td>\n</tr>\n</table>\n</dd>\n</dl></div>\n</td>\n</tr>\n</tbody>\n</table>\n</div></div>\n";
 		
 		$("attach_1").innerHTML = contents+$("attach_1").innerHTML;	
 		
@@ -244,7 +244,7 @@ ThemeSelector.prototype = {
 	{
 		Event.stop(e);
 		
-		confirmReturn = confirm("Are you sure you want to delete this?");
+		confirmReturn = confirm(delete_confirm_lang_string);
 
 		if(confirmReturn == true)
 		{

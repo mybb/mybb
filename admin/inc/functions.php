@@ -328,6 +328,11 @@ function check_admin_permissions($action)
 {
 	global $mybb, $page, $lang, $modules_dir;
 	
+	if(is_super_admin($mybb->user['uid']))
+	{
+		return true;
+	}
+	
 	require_once $modules_dir."/".$action['module']."/module_meta.php";
 	if(function_exists($action['module']."_admin_permissions"))
 	{	
@@ -341,7 +346,9 @@ function check_admin_permissions($action)
 			$page->output_footer();
 			exit;
 		}
-	}	
+	}
+	
+	return true;
 }
 
 /**

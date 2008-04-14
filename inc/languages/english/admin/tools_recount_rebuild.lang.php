@@ -9,8 +9,6 @@
 $l['recount_rebuild'] = "Recount &amp; Rebuild";
 $l['recount_rebuild_desc'] = "Here you can re-count &amp; rebuild data to fix any synchronization errors in your forum.";
 
-$l['go'] = "Go";
-
 $l['data_per_page'] = "Data Entries Per Page";
 $l['recount_stats'] = "Recount Statistics";
 $l['recount_stats_desc'] = "This will re-count and update your forum statistics on the forum index and statistics pages.";

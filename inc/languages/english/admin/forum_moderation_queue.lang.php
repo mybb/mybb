@@ -33,7 +33,6 @@ $l['subject'] = "Subject";
 $l['author'] = "Author";
 $l['posted'] = "Posted";
 $l['ignore'] = "Ignore";
-$l['delete'] = "Delete";
 $l['approve'] = "Approve";
 $l['forum'] = "Forum:";
 $l['thread'] = "Thread:";
