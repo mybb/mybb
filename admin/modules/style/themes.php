@@ -31,7 +31,7 @@ var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
 
 if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("themestylesheets", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'");
 	$stylesheet = $db->fetch_array($query);
 	
 	if(!$stylesheet['sid'])
@@ -48,25 +48,25 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$form = new Form("index.php?module=style/themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", true);
 	
 	$table = new Table;	
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('background', $properties['background'], array('id' => 'background', 'style' => 'width: 260px;'))."</div><div>{$lang->background}</div>", array('style' => 'width: 20%;'));
-	$table->construct_cell("{$lang->extra_css_atribs}<br /><div style=\"align: center;\">".$form->generate_text_area('extra', $properties['extra'], array('id' => 'extra', 'style' => 'width: 98%;', 'rows' => '19'))."</div>", array('rowspan' => 8));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[background]', $properties['background'], array('id' => 'css_bits[background]', 'style' => 'width: 260px;'))."</div><div>{$lang->background}</div>", array('style' => 'width: 20%;'));
+	$table->construct_cell("{$lang->extra_css_atribs}<br /><div style=\"align: center;\">".$form->generate_text_area('css_bits[extra]', $properties['extra'], array('id' => 'css_bits[extra]', 'style' => 'width: 98%;', 'rows' => '19'))."</div>", array('rowspan' => 8));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('color', $properties['color'], array('id' => 'color', 'style' => 'width: 260px;'))."</div><div>{$lang->color}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[color]', $properties['color'], array('id' => 'css_bits[color]', 'style' => 'width: 260px;'))."</div><div>{$lang->color}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('width', $properties['width'], array('id' => 'width', 'style' => 'width: 260px;'))."</div><div>{$lang->width}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[width]', $properties['width'], array('id' => 'css_bits[width]', 'style' => 'width: 260px;'))."</div><div>{$lang->width}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font', $properties['font'], array('id' => 'font', 'style' => 'width: 260px;'))."</div><div>{$lang->font_color}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font]', $properties['font'], array('id' => 'css_bits[font]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_color}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_family', $properties['font-family'], array('id' => 'font_family', 'style' => 'width: 260px;'))."</div><div>{$lang->font_family}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_family]', $properties['font-family'], array('id' => 'css_bits[font_family]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_family}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_size', $properties['font-size'], array('id' => 'font_size', 'style' => 'width: 260px;'))."</div><div>{$lang->font_size}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_size]', $properties['font-size'], array('id' => 'css_bits[font_size]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_size}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_style', $properties['font-style'], array('id' => 'font_style', 'style' => 'width: 260px;'))."</div><div>{$lang->font_style}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_style]', $properties['font-style'], array('id' => 'css_bits[font_style]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_style}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_weight', $properties['font-weight'], array('id' => 'font_weight', 'style' => 'width: 260px;'))."</div><div>{$lang->font_weight}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_weight]', $properties['font-weight'], array('id' => 'css_bits[font_weight]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_weight}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	
-	$table->output("<span id=\"mini_spinner\"></span>".htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
+	$table->output(htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
 	exit;
 }
 
@@ -399,15 +399,15 @@ if($mybb->input['action'] == "delete")
 		$query = $db->simple_select("themestylesheets", "cachefile", "tid='{$theme['tid']}'");
 		while($cachefile = $db->fetch_field($query, "cachefile"))
 		{
-			unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile}");
+			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile}");
 		}
-		unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
+		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
 		
 		$db->delete_query("themestylesheets", "tid='{$theme['tid']}'");
 		
 		$db->update_query("users", array('style' => 0), "style='{$theme['tid']}'");
 		
-		rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
+		@rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
 
 		// Delete any references to inherited stylesheets
 		
@@ -467,7 +467,9 @@ if($mybb->input['action'] == "edit")
 			}
 		}
 	}
-		
+	
+	
+	$inherited_load[] = $mybb->input['tid'];
 	$inherited_load = array_unique($inherited_load);
 	
 	$inherited_themes = array();
@@ -482,10 +484,16 @@ if($mybb->input['action'] == "edit")
 	
 	$theme_stylesheets = array();
 	
-	$query = $db->simple_select("themestylesheets", "*", "tid IN (".implode(",", $inherited_load).")");
-	while($theme_stylesheet = $db->fetch_array($query))
+	if(count($inherited_load) > 0)
 	{
-		$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
+		$query = $db->simple_select("themestylesheets", "*", "tid IN (".implode(",", $inherited_load).")", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
+		while($theme_stylesheet = $db->fetch_array($query))
+		{
+			if(!$theme_stylesheets[$theme_stylesheet['cachefile']])
+			{
+				$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
+			}
+		}
 	}
 	
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
@@ -511,10 +519,11 @@ if($mybb->input['action'] == "edit")
 	
 	foreach($stylesheets as $filename => $style)
 	{
-		$style['sid'] = $theme_stylesheets[basename($filename)]['sid'];
+		$filename = basename($filename);
+		$style['sid'] = $theme_stylesheets[$filename]['sid'];
 		
 		// Has the file on the file system been modified?
-		resync_stylesheet($theme_stylesheets[basename($filename)]);
+		resync_stylesheet($theme_stylesheets[$filename]);
 		
 		$inherited = "";
 		$inherited_ary = array();
@@ -590,9 +599,9 @@ if($mybb->input['action'] == "edit")
 		
 		$popup = new PopupMenu("style_{$style['sid']}", $lang->options);
 		
-		$popup->add_item($lang->properties, "index.php?module=style/themes&amp;action=stylesheet_properties&amp;sid={$style['sid']}&amp;tid={$theme['tid']}");
-		$popup->add_item($lang->edit_style, "index.php?module=style/themes&amp;action=edit_stylesheet&amp;sid={$style['sid']}&amp;tid={$theme['tid']}");
-		$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;sid={$style['sid']}&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
+		$popup->add_item($lang->edit_style, "index.php?module=style/themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}");
+		$popup->add_item($lang->properties, "index.php?module=style/themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}");
+		$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		
 		$table->construct_cell("<strong>".basename($filename)."</strong>{$inherited}<br />{$attached_to}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
@@ -606,7 +615,7 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "stylesheet_properties")
 {
-	$query = $db->simple_select("themestylesheets", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -658,11 +667,14 @@ if($mybb->input['action'] == "stylesheet_properties")
 	}
 	
 	foreach($stylesheets as $file => $stylesheet2)
-	{		
-		foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+	{
+		if(is_array($stylesheet2['inherited']))
 		{
-			$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-			unset($stylesheet2['inherited'][$inherited_file]);
+			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+			{
+				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
+				unset($stylesheet2['inherited'][$inherited_file]);
+			}
 		}
 		
 		$stylesheets[basename($file)] = $stylesheet2;
@@ -861,7 +873,7 @@ Event.observe(window, "load", function() {
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
 if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $mybb->input['mode'] == "simple"))
 {
-	$query = $db->simple_select("themestylesheets", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -883,21 +895,30 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 
 	if($mybb->request_method == "post")
 	{
-		$sid = $theme['sid'];
+		$sid = $stylesheet['sid'];
 		
-		/*
 		// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
 		if($theme['tid'] != $stylesheet['tid'])
 		{
-			$sid = copy_stylesheet_to_theme($stylesheet, $theme['id']);
+			$sid = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
 		}
 
 		// Insert the modified CSS
 		$new_stylesheet = $stylesheet['stylesheet'];
+		
+		if($mybb->input['serialized'] == 1)
+		{
+			$mybb->input['css_bits'] = unserialize($mybb->input['css_bits']);
+		}
 
 		$css_to_insert = '';
 		foreach($mybb->input['css_bits'] as $field => $value)
 		{
+			if(!$value || !$field)
+			{
+				continue;
+			}
+			
 			if($field == "extra")
 			{
 				$css_to_insert .= $value."\n";
@@ -907,7 +928,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 				$css_to_insert .= "{$field}: {$value}\n";
 			}
 		}
-		$new_stylesheet = insert_into_css($css_to_insert, $class_id, $new_stylesheet, $mybb->input['selector']);
+		$new_stylesheet = insert_into_css($css_to_insert, $mybb->input['selector'], $new_stylesheet);
 
 		// Now we have the new stylesheet, save it
 		$updated_stylesheet = array(
@@ -920,7 +941,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		cache_stylesheet($theme['tid'], $stylesheet['name'], $new_stylesheet);
 
 		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid']);*/
+		update_theme_stylesheet_list($theme['tid']);
 
 		// Log admin action
 		log_admin_action($theme['name'], $stylesheet['name']);
@@ -935,12 +956,12 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 			}
 			else
 			{
-				admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&sid={$mybb->input['sid']}");
+				admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&sid={$sid}");
 			}
 		}
 		else
 		{
-			echo " ({$lang->saved} @ ".my_date($mybb->settings['timeformat'], TIME_NOW).")";
+			echo "1";
 			exit;
 		}
 	}
@@ -977,11 +998,14 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	}
 	
 	foreach($stylesheets as $file => $stylesheet2)
-	{		
-		foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+	{
+		if(is_array($stylesheet2['inherited']))
 		{
-			$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-			unset($stylesheet2['inherited'][$inherited_file]);
+			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+			{
+				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
+				unset($stylesheet2['inherited'][$inherited_file]);
+			}
 		}
 		
 		$stylesheets[basename($file)] = $stylesheet2;
@@ -997,7 +1021,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	</script>";
 	
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
-	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;sid={$mybb->input['sid']}&amp;mode=simple");
+	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple");
 	
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheets}");
 
@@ -1020,13 +1044,13 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
-		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;sid={$mybb->input['sid']}&amp;mode=simple",
+		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple",
 		'description' => $lang->edit_stylesheet_simple_mode_desc
 	);
 
 	$sub_tabs['edit_stylesheet_advanced'] = array(
 		'title' => $lang->edit_stylesheet_advanced_mode,
-		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;sid={$mybb->input['sid']}&amp;mode=advanced",
+		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
@@ -1045,9 +1069,9 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	// Output the selection box
 	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet", "post", "selector_form");
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
-	echo $form->generate_hidden_field("sid", $mybb->input['sid'])."\n";	
+	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']))."\n";	
 	
-	echo "{$lang->selector}: <select id=\"selector\">{$selector_list}</select> ".$form->generate_submit_button($lang->go)."<br /><br />";
+	echo "{$lang->selector}: <select id=\"selector\">{$selector_list}</select> <span id=\"mini_spinner\">".$form->generate_submit_button($lang->go)."</span><br /><br />";
 
 	$form->end();
 
@@ -1069,30 +1093,30 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	
 	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet", "post");
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
-	echo $form->generate_hidden_field("sid", $mybb->input['sid'], array('id' => "sid"))."\n";
+	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
 	
 	echo "<div id=\"stylesheet\">";
 	
 	$table = new Table;	
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('background', $properties['background'], array('id' => 'background', 'style' => 'width: 260px;'))."</div><div>{$lang->background}</div>", array('style' => 'width: 20%;'));
-	$table->construct_cell("{$lang->extra_css_atribs}<br /><div style=\"align: center;\">".$form->generate_text_area('extra', $properties['extra'], array('id' => 'extra', 'style' => 'width: 98%;', 'rows' => '19'))."</div>", array('rowspan' => 8));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[background]', $properties['background'], array('id' => 'css_bits[background]', 'style' => 'width: 260px;'))."</div><div>{$lang->background}</div>", array('style' => 'width: 20%;'));
+	$table->construct_cell("{$lang->extra_css_atribs}<br /><div style=\"align: center;\">".$form->generate_text_area('css_bits[extra]', $properties['extra'], array('id' => 'css_bits[extra]', 'style' => 'width: 98%;', 'rows' => '19'))."</div>", array('rowspan' => 8));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('color', $properties['color'], array('id' => 'color', 'style' => 'width: 260px;'))."</div><div>{$lang->color}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[color]', $properties['color'], array('id' => 'css_bits[color]', 'style' => 'width: 260px;'))."</div><div>{$lang->color}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('width', $properties['width'], array('id' => 'width', 'style' => 'width: 260px;'))."</div><div>{$lang->width}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[width]', $properties['width'], array('id' => 'css_bits[width]', 'style' => 'width: 260px;'))."</div><div>{$lang->width}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font', $properties['font'], array('id' => 'font', 'style' => 'width: 260px;'))."</div><div>{$lang->font_color}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font]', $properties['font'], array('id' => 'css_bits[font]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_color}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_family', $properties['font-family'], array('id' => 'font_family', 'style' => 'width: 260px;'))."</div><div>{$lang->font_family}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_family]', $properties['font-family'], array('id' => 'css_bits[font_family]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_family}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_size', $properties['font-size'], array('id' => 'font_size', 'style' => 'width: 260px;'))."</div><div>{$lang->font_size}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_size]', $properties['font-size'], array('id' => 'css_bits[font_size]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_size}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_style', $properties['font-style'], array('id' => 'font_style', 'style' => 'width: 260px;'))."</div><div>{$lang->font_style}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_style]', $properties['font-style'], array('id' => 'css_bits[font_style]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_style}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('font_weight', $properties['font-weight'], array('id' => 'font_weight', 'style' => 'width: 260px;'))."</div><div>{$lang->font_weight}</div>", array('style' => 'width: 40%;'));
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_weight]', $properties['font-weight'], array('id' => 'css_bits[font_weight]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_weight}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	
-	$table->output("<span id=\"mini_spinner\"></span>".htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
+	$table->output(htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
 	
 	echo "</div>";
 	
@@ -1107,7 +1131,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 
 Event.observe(window, "load", function() {
 //<![CDATA[
-    new ThemeSelector("./index.php?module=style/themes&action=xmlhttp_stylesheet", "./index.php?module=style/themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.$mybb->input['sid'].'", $("selector_form"), "'.$mybb->input['tid'].'");
+    new ThemeSelector("./index.php?module=style/themes&action=xmlhttp_stylesheet", "./index.php?module=style/themes&action=edit_stylesheet", $("selector"), $("stylesheet"), "'.htmlspecialchars_uni($mybb->input['file']).'", $("selector_form"), "'.$mybb->input['tid'].'");
 });
 //]]>
 </script>';
@@ -1119,7 +1143,7 @@ Event.observe(window, "load", function() {
 
 if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advanced")
 {
-	$query = $db->simple_select("themestylesheets", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -1141,13 +1165,12 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 	if($mybb->request_method == "post")
 	{
-		$sid = $theme['sid'];
-
-		/*
+		$sid = $stylesheet['sid'];
+		
 		// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
 		if($theme['tid'] != $stylesheet['tid'])
 		{
-			$sid = copy_stylesheet_to_theme($stylesheet, $theme['id']);
+			$sid = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
 		}
 
 		// Now we have the new stylesheet, save it
@@ -1158,24 +1181,23 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
 
 		// Cache the stylesheet to the file
-		cache_stylesheet($theme['tid'], $stylesheet['name'], $new_stylesheet);
+		cache_stylesheet($theme['tid'], $stylesheet['name'], $mybb->input['stylesheet']);
 
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid']);
-		*/
 
 		// Log admin action
 		log_admin_action($theme['name'], $stylesheet['name']);
 
 		flash_message($lang->success_stylesheet_updated, 'success');
 		
-		if($mybb->input['save_code'])
+		if(!$mybb->input['save_close'])
 		{
-			admin_redirect("index.php?module=style/themes?action=edit_stylesheet&tid={$theme['tid']}&mode=advanced");
+			admin_redirect("index.php?module=style/themes&action=edit_stylesheet&file=".htmlspecialchars_uni($stylesheet['name'])."&tid={$theme['tid']}&mode=advanced");
 		}
 		else
 		{
-			admin_redirect("index.php?module=style/themes?action=edit&tid={$theme['tid']}");
+			admin_redirect("index.php?module=style/themes&action=edit&tid={$theme['tid']}");
 		}
 	}
 	
@@ -1211,11 +1233,14 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	}
 	
 	foreach($stylesheets as $file => $stylesheet2)
-	{		
-		foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+	{
+		if(is_array($stylesheet2['inherited']))
 		{
-			$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-			unset($stylesheet2['inherited'][$inherited_file]);
+			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+			{
+				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
+				unset($stylesheet2['inherited'][$inherited_file]);
+			}
 		}
 		
 		$stylesheets[basename($file)] = $stylesheet2;
@@ -1233,7 +1258,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	</script>';
 	
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
-	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;sid={$mybb->input['sid']}&amp;mode=advanced");
+	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
 	
 	$page->output_header("{$lang->themes} - {$lang->edit_stylesheet_advanced_mode}");
 
@@ -1256,12 +1281,12 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	
 	$sub_tabs['edit_stylesheet'] = array(
 		'title' => $lang->edit_stylesheet_simple_mode,
-		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;sid={$mybb->input['sid']}&amp;mode=simple"
+		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=simple"
 	);
 
 	$sub_tabs['edit_stylesheet_advanced'] = array(
 		'title' => $lang->edit_stylesheet_advanced_mode,
-		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;sid={$mybb->input['sid']}&amp;mode=advanced",
+		'link' => "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced",
 		'description' => $lang->edit_stylesheet_advanced_mode_desc
 	);
 	
@@ -1277,7 +1302,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	
 	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet&amp;mode=advanced", "post", "edit_stylesheet");
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
-	echo $form->generate_hidden_field("sid", $mybb->input['sid'])."\n";
+	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']))."\n";
 	
 	$table = new Table;	
 	$table->construct_cell($form->generate_text_area('stylesheet', $stylesheet['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => 'codepress css', 'rows' => '30')));
@@ -1309,7 +1334,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 if($mybb->input['action'] == "delete_stylesheet")
 {
-	$query = $db->simple_select("themestylesheets", "*", "sid='".intval($mybb->input['sid'])."'");
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 
 	// Does the theme not exist?
@@ -1421,7 +1446,7 @@ if($mybb->input['action'] == "force")
 }
 
 if(!$mybb->input['action'])
-{
+{	
 	$page->output_header($lang->themes);
 	
 	$page->output_nav_tabs($sub_tabs, 'themes');
@@ -1498,20 +1523,5 @@ function build_theme_list($parent=0, $depth=0)
 		// Fetch & build any child themes
 		build_theme_list($theme['tid'], ++$depth);
 	}
-}
-
-function cache_themes()
-{
-	global $db, $theme_cache;
-
-	$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
-	while($theme = $db->fetch_array($query))
-	{
-		$theme['themebits'] = unserialize($theme['themebits']);
-		$theme['cssbits'] = unserialize($theme['cssbits']);
-		$theme_cache[$theme['tid']] = $theme;
-	}
-	
-	return $theme_cache;
 }
 ?>

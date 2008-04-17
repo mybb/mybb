@@ -98,7 +98,7 @@ $l['delete_confirm_js'] = "Are you sure you want to delete this?";
 
 $l['full_stylesheet_for'] = "Full Stylesheet for";
 
-$l['error_invalid_stlyesheet'] = "You have selected an invalid stylesheet.";
+$l['error_invalid_stylesheet'] = "You have selected an invalid stylesheet.";
 $l['error_invalid_theme'] = "You have selected an invalid theme.";
 $l['error_missing_name'] = "Please enter a name for this theme.";
 $l['error_missing_url'] = "Please enter a theme a import.";

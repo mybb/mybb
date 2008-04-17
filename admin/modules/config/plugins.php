@@ -20,10 +20,10 @@ $page->add_breadcrumb_item($lang->plugins, "index.php?module=config/plugins");
 $plugins->run_hooks("admin_config_plugins_begin");
 
 if($mybb->input['action'] == "check")
-{
-	$plugins->run_hooks("admin_config_plugins_check");
-	
+{	
 	$plugins_list = get_plugins_list();
+	
+	$plugins->run_hooks("admin_config_plugins_check");
 	
 	$info = array();
 	
@@ -256,6 +256,8 @@ if(!$mybb->input['action'])
 	$active_plugins = $plugins_cache['active'];
 	
 	$plugins_list = get_plugins_list();
+	
+	$plugins->run_hooks("admin_config_plugins_plugin_list");
 
 	$table = new Table;
 	$table->construct_header($lang->plugin);

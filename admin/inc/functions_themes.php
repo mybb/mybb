@@ -211,10 +211,17 @@ function resync_stylesheet($stylesheet)
 {
 	global $db;
 	
-	if(!$stylesheet['cachefile'])
+	// Try and fix any missing cache file names
+	if(!$stylesheet['cachefile'] && $stylesheet['name'])
 	{
 		$stylesheet['cachefile'] = $stylesheet['name'];		
 		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
+	}
+	
+	// Still don't have the cache file name? Return false
+	if(!$stylesheet['cachefile'])
+	{
+		return false;
 	}
 	
 	if(!file_exists(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"))
@@ -414,6 +421,8 @@ function get_selectors_as_options($css, $selected_item="")
 		$css = css_to_array($css);
 	}
 	
+	$selected = false;
+	
 	foreach($css as $id => $css_array)
 	{
 		if(!$css_array['name'])
@@ -421,9 +430,10 @@ function get_selectors_as_options($css, $selected_item="")
 			$css_array['name'] = $css_array['class_name'];
 		}
 		
-		if($selected_item == $css_array['name'])
+		if($selected_item == $css_array['name'] || (!$selected_item && !$selected))
 		{
 			$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>";
+			$selected = true;
 		}
 		else
 		{
@@ -489,12 +499,12 @@ function parse_css_properties($values)
 /**
  * Inserts an incoming string of CSS in to an already defined document. If the class ID is not found, the CSS is appended to the file.
  *
- * @param string Class ID for this piece of CSS
  * @param string CSS we wish to insert at this location
+ * @param string The selector for this piece of CSS
  * @param string The existing CSS if we have any
- * @param string (Optional) The optional friendly selector value just incase the CSS is not found in the file
+ * @param string (Optional) The optional friendly class id value just incase the CSS is not found in the file
  */
-function insert_into_css($new_css, $class_id="", $css="", $selector="")
+function insert_into_css($new_css, $selector="", $css="", $class_id="")
 {
 	$new_css = str_replace(array("\r\n", "\n", "\r"), "\n", $new_css);
 
@@ -510,9 +520,14 @@ function insert_into_css($new_css, $class_id="", $css="", $selector="")
 	{
 		$parsed_css = css_to_array($css);
 	}
-
+	
+	if(!$class_id)
+	{
+		$class_id = $parsed_css[$selector]['class_name'];
+	}
+	
 	// The specified class ID cannot be found, add CSS to end of file
-	if(!$css || !$parsed_css[$class_id])
+	if(!$css || !$parsed_css[$selector])
 	{
 		return $css."{$selector}\n{$generated_css}}\n\n";
 	}
@@ -523,7 +538,7 @@ function insert_into_css($new_css, $class_id="", $css="", $selector="")
 		$css = preg_replace('#(?<!\\")\}#', "}\n", $css);
 		$css = preg_replace("#\s*([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~\^]+)(\s*)\{(\n*)#isu", "\n$1 {\n", $css);
 		$css = preg_replace("#\s{1,}\{#", " {", $css);
-		$existing_block = $parsed_css[$class_id];
+		$existing_block = $parsed_css[$selector];
 		list($id, $actual_occurance) = explode("_", $class_id);
 		if(!$actual_occurance) $actual_occurance = 1;
 		$occurance = 1;
@@ -554,6 +569,190 @@ function insert_into_css($new_css, $class_id="", $css="", $selector="")
 
 function copy_stylesheet_to_theme($stylesheet, $tid)
 {
+	global $db;
 	
+	$stylesheet['tid'] = $tid;
+	unset($stylesheet['sid']);
+	
+	foreach($stylesheet as $key => $value)
+	{
+		$stylesheet[$db->escape_string($key)] = $db->escape_string($value);
+	}
+	
+	$sid = $db->insert_query("themestylesheets", $stylesheet);
+	
+	return $sid;
+}
+
+function update_theme_stylesheet_list($tid)
+{
+	global $db;
+	
+	$stylesheets = array();
+	
+	$child_list = make_child_theme_list($tid);
+	$parent_list = make_parent_theme_list($tid);
+	$tid_list = implode(',', $parent_list);
+	
+	// Get our list of stylesheets
+	$query = $db->simple_select("themestylesheets", "sid,cachefile,attachedto,tid", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
+	while($stylesheet = $db->fetch_array($query))
+	{
+		if(!$stylesheets[$stylesheet['cachefile']])
+		{
+			if($stylesheet['tid'] != $tid)
+			{
+				$stylesheet['inherited'] = $stylesheet['tid'];
+			}
+			
+			$stylesheets[$stylesheet['cachefile']] = $stylesheet;
+		}
+	}
+	
+	foreach($stylesheets as $cachefile => $stylesheet)
+	{
+		$sid = $stylesheet['sid'];
+		$css_url = "css.php?stylesheet={$sid}";		
+		
+		foreach($parent_list as $theme_id)
+		{
+			if(file_exists(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['cachefile']}"))
+			{
+				$css_url = "cache/themes/theme{$theme_id}/{$stylesheet['cachefile']}";
+				break;
+			}
+		}
+		
+		$attachedto = $stylesheet['attachedto'];
+		if(!$attachedto)
+		{
+			$attachedto = "global";
+		}
+		// private.php?compose,folders|usercp.php,global|global
+		$attachedto = explode("|", $attachedto);
+		foreach($attachedto as $attached_file)
+		{
+			$attached_actions = explode(",", $attached_file);
+			$attached_file = array_shift($attached_actions);
+			if(count($attached_actions) == 0)
+			{
+				$attached_actions = array("global");
+			}
+			
+			foreach($attached_actions as $action)
+			{
+				$theme_stylesheets[$attached_file][$action][] = $css_url;
+				
+				if($stylesheet['inherited'])
+				{
+					$theme_stylesheets['inherited']["{$attached_file}_{$action}"][$css_url] = $stylesheet['inherited'];
+				}
+			}
+		}
+	}
+	// Now we have our list of built stylesheets, save them
+	$updated_theme = array(
+		"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
+	);
+	$db->update_query("themes", $updated_theme, "tid='{$tid}'");
+	
+	// Do we have any children themes that need updating too?
+	if(count($child_list) > 0)
+	{
+		update_theme_stylesheet_list($child_list[0]);
+	}
+	
+	return true;
+}
+
+function make_parent_theme_list($tid)
+{
+	static $themes_by_parent;
+	
+	$themes = array();
+	if(!is_array($themes_by_parent))
+	{
+		$theme_cache = cache_themes();
+		foreach($theme_cache as $theme)
+		{
+			$themes_by_parent[$theme['tid']][$theme['pid']] = $theme;
+		}
+	}
+	
+	if(!is_array($themes_by_parent[$tid]))
+	{
+		return;
+	}
+	
+	reset($themes_by_parent);
+	reset($themes_by_parent[$tid]);
+	
+	$themes = array();
+	
+	foreach($themes_by_parent[$tid] as $key => $theme)
+	{
+		$themes[] = $theme['tid'];
+		$parents = make_parent_theme_list($theme['pid']);
+		
+		if(is_array($parents))
+		{
+			$themes = array_merge($themes, $parents);
+		}
+	}
+	
+	return $themes;
+}
+
+function make_child_theme_list($tid)
+{
+	static $themes_by_child;
+	
+	$themes = array();
+	if(!is_array($themes_by_child))
+	{
+		$theme_cache = cache_themes();
+		foreach($theme_cache as $theme)
+		{
+			$themes_by_child[$theme['pid']][$theme['tid']] = $theme;
+		}
+	}
+	
+	if(!is_array($themes_by_child[$tid]))
+	{
+		return;
+	}
+	
+	$themes = array();
+	
+	foreach($themes_by_child[$tid] as $theme)
+	{
+		$themes[] = $theme['tid'];
+		$children = make_child_theme_list($theme['tid']);
+		
+		if(is_array($children))
+		{
+			$themes = array_merge($themes, $children);
+		}
+	}
+	
+	return $themes;
+}
+
+function cache_themes()
+{
+	global $db, $theme_cache;
+
+	if(!$theme_cache)
+	{
+		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
+		while($theme = $db->fetch_array($query))
+		{
+			$theme['properties'] = unserialize($theme['properties']);
+			$theme['stylesheets'] = unserialize($theme['stylesheets']);
+			$theme_cache[$theme['tid']] = $theme;
+		}
+	}
+	
+	return $theme_cache;
 }
 ?>

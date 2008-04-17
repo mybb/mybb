@@ -6,13 +6,14 @@ ThemeSelector.prototype = {
 	save_url: null,
     selector: null,
     stylesheet: null,
-	sid: null,
+	file: null,
 	selector_form: null,
 	tid: null,
     spinnerImage: "../images/spinner_big.gif",
 	miniSpinnerImage: "../images/spinner.gif",
 	isajax: false,
 	specific_count: 0,
+	selector_go: null,
 	
 	background: null,
 	width: null,
@@ -24,27 +25,27 @@ ThemeSelector.prototype = {
 	font_style: null,
 	font_weight: null,
     
-    initialize: function(url, save_url, selector, stylesheet, sid, selector_form, tid)
+    initialize: function(url, save_url, selector, stylesheet, file, selector_form, tid)
     {
-		if(url && save_url && selector && stylesheet && sid && selector_form && tid)
+		if(url && save_url && selector && stylesheet && file && selector_form && tid)
         {
             this.url = url;
 			this.save_url = save_url;
             this.selector = selector;
             this.stylesheet = stylesheet;
-			this.sid = sid;
+			this.file = file;
 			this.selector_form = selector_form;
 			this.tid = tid;
 			
-			this.background = $("background").value;
-			this.width = $("width").value;
-			this.color = $("color").value;
-			this.extra = $("extra").value;
-			this.font = $("font").value;
-			this.font_family = $("font_family").value;
-			this.font_size = $("font_size").value;
-			this.font_style = $("font_style").value;
-			this.font_weight = $("font_weight").value;
+			this.background = $("css_bits[background]").value;
+			this.width = $("css_bits[width]").value;
+			this.color = $("css_bits[color]").value;
+			this.extra = $("css_bits[extra]").value;
+			this.font = $("css_bits[font]").value;
+			this.font_family = $("css_bits[font_family]").value;
+			this.font_size = $("css_bits[font_size]").value;
+			this.font_style = $("css_bits[font_style]").value;
+			this.font_weight = $("css_bits[font_weight]").value;
 			
 			Event.observe(window, "unload", this.saveCheck.bindAsEventListener(this, false));
 			Event.observe($("save"), "click", this.save.bindAsEventListener(this, true));
@@ -69,9 +70,10 @@ ThemeSelector.prototype = {
 		
 		this.saveCheck(e, true);
 		
-        postData = "sid="+encodeURIComponent(this.sid)+"&selector="+encodeURIComponent(this.selector.value)+"&my_post_key="+encodeURIComponent(my_post_key);
+        postData = "file="+encodeURIComponent(this.file)+"&selector="+encodeURIComponent(this.selector.value)+"&my_post_key="+encodeURIComponent(my_post_key);
 		
-		$("mini_spinner").innerHTML = "<img src=\""+this.miniSpinnerImage+"\" alt=\"\" /> ";
+		this.selector_go = $("mini_spinner").innerHTML;
+		$("mini_spinner").innerHTML = "&nbsp;<img src=\""+this.miniSpinnerImage+"\" style=\"vertical-align: middle;\" alt=\"\" /> ";
 		
         new Ajax.Request(this.url, {
             method: 'post',
@@ -102,30 +104,31 @@ ThemeSelector.prototype = {
 			this.stylesheet.innerHTML = request.responseText;
 		}
 		
-		this.background = $("background").value;
-		this.width = $("width").value;
-		this.color = $("color").value;
-		this.extra = $("extra").value;
-		this.font = $("font").value;
-		this.font_family = $("font_family").value;
-		this.font_size = $("font_size").value;
-		this.font_style = $("font_style").value;
-		this.font_weight = $("font_weight").value;
-		
-		$("mini_spinner").innerHTML = "";
+		this.background = $("css_bits[background]").value;
+		this.width = $("css_bits[width]").value;
+		this.color = $("css_bits[color]").value;
+		this.extra = $("css_bits[extra]").value;
+		this.font = $("css_bits[font]").value;
+		this.font_family = $("css_bits[font_family]").value;
+		this.font_size = $("css_bits[font_size]").value;
+		this.font_style = $("css_bits[font_style]").value;
+		this.font_weight = $("css_bits[font_weight]").value;
 		
 		if(saved)
 		{
 			$("saved").innerHTML = saved;
 			window.setTimeout("$(\"saved\").innerHTML = \"\";", 30000);
 		}
+		
+		$("mini_spinner").innerHTML = this.selector_go;
+		this.selector_go = '';
 
 		return true;
 	},
 	
 	saveCheck: function(e, isajax)
     {
-		if(this.background != $("background").value || this.width != $("width").value || this.color != $("color").value || this.extra != $("extra").value || this.font != $("font").value || this.font_family != $("font_family").value || this.font_size != $("font_size").value || this.font_style != $("font_style").value || this.font_weight != $("font_weight").value)
+		if(this.background != $("css_bits[background]").value || this.width != $("css_bits[width]").value || this.color != $("css_bits[color]").value || this.extra != $("css_bits[extra]").value || this.font != $("css_bits[font]").value || this.font_family != $("css_bits[font_family]").value || this.font_size != $("css_bits[font_size]").value || this.font_style != $("css_bits[font_style]").value || this.font_weight != $("css_bits[font_weight]").value)
 		{
 			confirmReturn = confirm(save_changes_lang_string);
 			if(confirmReturn == true)
@@ -144,7 +147,19 @@ ThemeSelector.prototype = {
         	Event.stop(e);
 		}
 		
-        postData = "background="+encodeURIComponent($("background").value)+"&width="+encodeURIComponent($("width").value)+"&color="+encodeURIComponent($("color").value)+"&extra="+encodeURIComponent($("extra").value)+"&font="+encodeURIComponent($("font").value)+"&font_family="+encodeURIComponent($("font_family").value)+"&font_size="+encodeURIComponent($("font_size").value)+"&font_style="+encodeURIComponent($("font_style").value)+"&font_weight="+encodeURIComponent($("font_weight").value)+"&selector="+encodeURIComponent(this.selector.value)+"&sid="+encodeURIComponent(this.sid)+"&tid="+encodeURIComponent(this.tid)+"&my_post_key="+encodeURIComponent(my_post_key);
+		var css_bits = {
+			'background': $('css_bits[background]').value,
+			'width': $('css_bits[width]').value,
+			'color': $('css_bits[color]').value,
+			'extra': $('css_bits[extra]').value,
+			'font': $('css_bits[font]').value,
+			'font_family': $('css_bits[font_family]').value,
+			'font_size': $('css_bits[font_size]').value,
+			'font_style': $('css_bits[font_style]').value,
+			'font_weight': $('css_bits[font_weight]').value
+		};
+		
+		postData = "css_bits="+encodeURIComponent(js_array_to_php_array(css_bits))+"&selector="+encodeURIComponent(this.selector.value)+"&file="+encodeURIComponent(this.file)+"&tid="+encodeURIComponent(this.tid)+"&my_post_key="+encodeURIComponent(my_post_key)+"&serialized=1";
 		
 		if(isajax == true)
 		{
@@ -192,8 +207,18 @@ ThemeSelector.prototype = {
 		}
 		else if(request.responseText)
 		{
-			$("saved").innerHTML = request.responseText;
+			$("saved").innerHTML = " (Saved @ "+Date()+")";
 		}
+		
+		this.background = $("css_bits[background]").value;
+		this.width = $("css_bits[width]").value;
+		this.color = $("css_bits[color]").value;
+		this.extra = $("css_bits[extra]").value;
+		this.font = $("css_bits[font]").value;
+		this.font_family = $("css_bits[font_family]").value;
+		this.font_size = $("css_bits[font_size]").value;
+		this.font_style = $("css_bits[font_style]").value;
+		this.font_weight = $("css_bits[font_weight]").value;
 
 		this.spinner2.destroy();
 
@@ -252,4 +277,33 @@ ThemeSelector.prototype = {
 		}
 		
 	}
+}
+
+function js_array_to_php_array (a)
+// This converts a javascript array to a string in PHP serialized format.
+// This is useful for passing arrays to PHP. On the PHP side you can 
+// unserialize this string from a cookie or request variable. For example,
+// assuming you used javascript to set a cookie called "php_array"
+// to the value of a javascript array then you can restore the cookie 
+// from PHP like this:
+//    <?php
+//    session_start();
+//    $my_array = unserialize(urldecode(stripslashes($_COOKIE['php_array'])));
+//    print_r ($my_array);
+//    ?>
+// This automatically converts both keys and values to strings.
+// The return string is not URL escaped, so you must call the
+// Javascript "escape()" function before you pass this string to PHP.
+{
+    var a_php = "";
+    var total = 0;
+    for (var key in a)
+    {
+        ++ total;
+        a_php = a_php + "s:" +
+                String(key).length + ":\"" + String(key) + "\";s:" +
+                String(a[key]).length + ":\"" + String(a[key]) + "\";";
+    }
+    a_php = "a:" + total + ":{" + a_php + "}";
+    return a_php;
 }

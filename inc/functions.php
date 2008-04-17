@@ -597,7 +597,7 @@ function get_child_list($fid)
 	{
 		return;
 	}
-	$pid = $forum['fid'];
+	
 	foreach($forums_by_parent[$fid] as $forum)
 	{
 		$forums[] = $forum['fid'];
