@@ -1067,6 +1067,12 @@ if($mybb->input['action'] == "change")
 					{
 						continue;
 					}
+					$title_lang = "setting_{$setting['name']}_{$optionsexp[0]}";
+					if($lang->$title_lang)
+					{
+						$optionsexp[1] = $lang->$title_lang;
+					}
+					
 					if($type[0] == "select")
 					{
 						$option_list[$optionsexp[0]] = htmlspecialchars_uni($optionsexp[1]);
