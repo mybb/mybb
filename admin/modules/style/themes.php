@@ -31,7 +31,7 @@ var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
 
 if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'");
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 	
 	if(!$stylesheet['sid'])
@@ -914,7 +914,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		$css_to_insert = '';
 		foreach($mybb->input['css_bits'] as $field => $value)
 		{
-			if(!$value || !$field)
+			if(!trim($value) || !trim($field))
 			{
 				continue;
 			}
@@ -925,7 +925,8 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 			}
 			else
 			{
-				$css_to_insert .= "{$field}: {$value}\n";
+				$field = str_replace("_", "-", $field);
+				$css_to_insert .= "{$field}: {$value};\n";
 			}
 		}
 		$new_stylesheet = insert_into_css($css_to_insert, $mybb->input['selector'], $new_stylesheet);

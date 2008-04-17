@@ -53,6 +53,7 @@ $l['default_templates'] = "Default Templates";
 $l['edit_template_breadcrumb'] = "Edit Template: ";
 
 $l['global_templates'] = "Global Templates";
+$l['master_templates'] = "Master Templates";
 
 $l['not_used_by_any_themes'] = "Not used by any themes";
 $l['used_by'] = "Used by: ";
@@ -66,6 +67,7 @@ $l['inline_edit'] = "Inline Edit";
 $l['full_edit'] = "Full Edit";
 $l['revert_to_orig'] = "Revert to Original";
 $l['delete_template'] = "Delete Template";
+$l['edit_in'] = "Edit in";
 
 $l['group_calendar'] = "Calendar";
 $l['group_forumdisplay'] = "Forum Display";

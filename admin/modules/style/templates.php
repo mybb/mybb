@@ -526,8 +526,17 @@ if($mybb->input['action'] == "search_replace")
 				$templates_list = array();
 				$table = new Table;
 				
+				$template_sets = array();
+				
 				// Get the names of all template sets
-				$template_sets[-2] = $lang->default_templates;
+				$template_sets[-2] = $lang->master_templates;
+				$template_sets[-1] = $lang->global_templates;
+				
+				$query = $db->simple_select("templatesets", "sid, title");
+				while($set = $db->fetch_array($query))
+				{
+					$template_sets[$set['sid']] = $set['title'];
+				}
 				
 				// Select all templates with that search term
 				$query = $db->simple_select("templates", "tid, title, template, sid", "template LIKE '%".$db->escape_string($mybb->input['find'])."%'", array('order_by' => 'sid, title', 'order_dir' => 'ASC'));
@@ -536,19 +545,14 @@ if($mybb->input['action'] == "search_replace")
 					$table->construct_cell($lang->sprintf($lang->search_noresults, htmlspecialchars_uni($mybb->input['find'])), array("class" => "align_center"));
 							
 					$table->construct_row();
+					
+					$table->output($lang->search_results);
 				}
 				else
 				{
 					while($template = $db->fetch_array($query))
 					{
-						if($template['sid'] == 1)
-						{
-							$template_list[-2][$template['title']] = $template;
-						}
-						else
-						{
-							$template_list[$template['sid']][$template['title']] = $template;
-						}
+						$template_list[$template['sid']][$template['title']] = $template;
 					}
 		
 					$count = 0;
@@ -603,7 +607,6 @@ if($mybb->input['action'] == "search_replace")
 									if($template['sid'] == -2)
 									{
 										$label = $lang->sprintf($lang->search_found, $template['title']);
-										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=1";
 									}
 									else
 									{
@@ -614,7 +617,25 @@ if($mybb->input['action'] == "search_replace")
 							}
 						
 							$table->construct_cell($label, array("width" => "85%"));
-							$table->construct_cell("<a href=\"{$url}\">Edit</a>", array("class" => "align_center"));
+							
+							if($sid == -2)
+							{
+								$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
+		
+								foreach($template_sets as $set_sid => $title)
+								{
+									if($set_sid > 0)
+									{									
+										$popup->add_item($lang->edit_in." ".htmlspecialchars_uni($title), "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$set_sid}");
+									}
+								}
+								
+								$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+							}
+							else
+							{
+								$table->construct_cell("<a href=\"{$url}\">Edit</a>", array("class" => "align_center"));
+							}
 							
 							$table->construct_row();
 						}
@@ -653,8 +674,20 @@ if($mybb->input['action'] == "search_replace")
 				$page->output_header($lang->search_replace);
 	
 				$page->output_nav_tabs($sub_tabs, 'search_replace');
-					
+				
 				$templatessets = array();
+				
+				$templates_sets = array();
+				// Get the names of all template sets
+				$template_sets[-2] = $lang->master_templates;
+				$template_sets[-1] = $lang->global_templates;
+				
+				$query = $db->simple_select("templatesets", "sid, title");
+				while($set = $db->fetch_array($query))
+				{
+					$template_sets[$set['sid']] = $set['title'];
+				}
+				
 				$table = new Table;
 				
 				$query = $db->query("
@@ -692,18 +725,26 @@ if($mybb->input['action'] == "search_replace")
 				{
 					++$count;
 					
-					if($sid == -2)
-					{
-						$sid = 1;
-					}
-					
 					$table->construct_header($template_sets[$sid], array("colspan" => 2));
 					
 					foreach($templates as $template)
 					{
 						$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-						//$popup->add_item($lang->inline_edit, "javascript:;", "Templates.quick_edit('{$template['tid']}');");
-						$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}");
+						
+						if($sid == -2)
+						{
+							foreach($template_sets as $set_sid => $title)
+							{
+								if($set_sid < 0) continue;
+								
+								$popup->add_item($lang->edit_in." ".htmlspecialchars_uni($title), "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$set_sid}");
+							}
+						}
+						else
+						{
+							$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}");
+						}
+						
 						if(isset($template['modified']) && $template['modified'] == true)
 						{					
 							if($sid > 0)
