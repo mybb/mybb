@@ -684,6 +684,11 @@ if($mybb->input['action'] == "edit")
 	
 	
 	// Theme Properties table
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+	
 	$properties = unserialize($theme['properties']);
 	$form = new Form("index.php?module=style/themes&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field("tid", $theme['tid']);
