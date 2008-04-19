@@ -434,9 +434,81 @@ if($mybb->input['action'] == "edit")
 	
 	if($mybb->request_method == "post")
 	{
+		$properties = array(
+			'templateset' => intval($mybb->input['templateset']),
+			'editortheme' => $mybb->input['editortheme'],
+			'imgdir' => $mybb->input['imgdir'],
+			'logo' => $mybb->input['logo'],
+			'tablespace' => intval($mybb->input['tablespace']),
+			'borderwidth' => intval($mybb->input['borderwidth'])
+		);
 		
+		$allowedgroups = array();
+		if(is_array($mybb->input['allowedgroups']))
+		{
+			foreach($mybb->input['allowedgroups'] as $gid)
+			{
+				if($gid == "all")
+				{
+					$allowedgroups = "all";
+					break;
+				}
+				$gid = intval($gid);
+				$allowedgroups[$gid] = $gid;
+			}
+		}
+		if(is_array($allowedgroups))
+		{
+			$allowedgroups = implode(",", $allowedgroups);
+		}
+		
+		$update_array = array(
+			'name' => $db->escape_string($mybb->input['name']),
+			'pid' => intval($mybb->input['pid']),
+			'allowedgroups' => $allowedgroups,
+			'properties' => $db->escape_string(serialize($properties))
+		);
+		
+		// perform validation
+		if(!$update_array['name'])
+		{
+			$errors[] = $lang->error_missing_name;
+		}
+		
+		if($update_array['pid'])
+		{
+			$parent_check = $db->fetch_field($db->simple_select("themes", "tid", "tid='".$update_array['pid']."'"), "tid");
+			if(!$parent_check)
+			{
+				$errors[] = $lang->error_invalid_parent_theme;
+			}
+		}
+		if($properties['templateset'])
+		{
+			$ts_check = $db->fetch_field($db->simple_select("templatesets", "sid", "sid='".$properties['templateset']."'"), "sid");
+			if(!$ts_check)
+			{
+				unset($properties['templateset']);
+			}
+		}
+		if(!$properties['templateset'])
+		{
+			$errors[] = $lang->error_invalid_templateset;
+		}
+		if(!$properties['editortheme'] || !@is_dir(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']))
+		{
+			$errors[] = $lang->error_invalid_editortheme;
+		}
+		
+		if(empty($errors))
+		{
+			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
+			
+			flash_message($lang->success_theme_properties_updated, 'success');
+			admin_redirect("index.php?module=style/themes");
+		}
 	}
-		
+	
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
 	
@@ -610,8 +682,66 @@ if($mybb->input['action'] == "edit")
 	
 	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']));
 	
+	
+	// Theme Properties table
+	$properties = unserialize($theme['properties']);
+	$form = new Form("index.php?module=style/themes&amp;action=edit", "post", "edit");
+	echo $form->generate_hidden_field("tid", $theme['tid']);
+	$form_container = new FormContainer($lang->edit_theme_properties);
+	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
+	
+	$options = build_theme_array($theme['tid']);
+	$form_container->output_row($lang->parent_theme." <em>*</em>", $lang->parent_theme_desc, $form->generate_select_box('pid', $options, $theme['pid'], array('id' => 'pid')), 'pid');
+	
+	$options = array();
+	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
+	$options['all'] = $lang->all_user_groups;
+	while($usergroup = $db->fetch_array($query))
+	{
+		$options[(int)$usergroup['gid']] = $usergroup['title'];
+	}
+	if(!$theme['allowedgroups'])
+	{
+		$theme['allowedgroups'] = "all";
+	}
+	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => true, 'size' => 5)), 'allowedgroups');
+	
+	$options = array();
+	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
+	while($templateset = $db->fetch_array($query))
+	{
+		$options[intval($templateset['sid'])] = $templateset['title'];
+	}
+	$form_container->output_row($lang->template_set." <em>*</em>", $lang->template_set_desc, $form->generate_select_box('templateset', $options, $properties['templateset'], array('id' => 'templateset')), 'templateset');
+	
+	$options = array();
+	$editor_theme_root = MYBB_ROOT."jscripts/editor_themes/";
+	if($dh = @opendir($editor_theme_root))
+	{
+		while($dir = readdir($dh))
+		{
+			if($dir == "." || $dir == ".." || !is_dir($editor_theme_root.$dir))
+			{
+				continue;
+			}
+			$options[$dir] = $dir;
+		}
+	}
+	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $properties['editortheme'], array('id' => 'editortheme')), 'editortheme');
+	
+	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
+	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
+	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_text_box('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
+	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_text_box('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
+	
+	$form_container->end();
+	$buttons = array();
+	$buttons[] = $form->generate_submit_button($lang->save_theme_properties);
+	$form->output_submit_wrapper($buttons);
+	$form->end();
+	
 	$page->output_footer();
-} 
+}
 
 if($mybb->input['action'] == "stylesheet_properties")
 {
@@ -1525,4 +1655,45 @@ function build_theme_list($parent=0, $depth=0)
 		build_theme_list($theme['tid'], ++$depth);
 	}
 }
+
+
+// returns an array which can be sent to generate_select_box()
+function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = array())
+{
+	global $mybb, $lang;
+	static $theme_cache;
+
+	if(!is_array($theme_cache))
+	{
+		$themes = cache_themes();
+		// Restrucure the theme array to something we can "loop-de-loop" with
+		foreach($themes as $theme)
+		{
+			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
+		}
+		unset($theme);
+	}
+
+	if(!is_array($theme_cache[$parent]) || $ignoretid === $parent)
+	{
+		return;
+	}
+
+	foreach($theme_cache[$parent] as $theme)
+	{
+		if($ignoretid === $theme['tid'])
+		{
+			continue;
+		}
+		
+		$list[$theme['tid']] = str_repeat("--", $depth).$theme['name'];
+		// Fetch & build any child themes
+		build_theme_array($ignoretid, $theme['tid'], $depth+1, $list);
+	}
+	if(!$parent)
+	{
+		return $list;
+	}
+}
+
 ?>
