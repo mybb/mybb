@@ -392,24 +392,62 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		// Are any other themes relying on stylesheets from this theme? Get a list and show an error
+		$inherited_theme_cache = array();
 		
-		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
+		$query = $db->simple_select("themes", "tid,stylesheets", "tid != '{$theme['tid']}'", array('order_by' => "pid, name"));
+		while($theme2 = $db->fetch_array($query))
+		{
+			$theme2['stylesheets'] = unserialize($theme2['stylesheets']);
+			
+			if(!$theme2['stylesheets']['inherited'])
+			{
+				continue;
+			}
+			
+			$inherited_theme_cache[$theme2['tid']] = $theme2['stylesheets']['inherited'];
+		}
+		
+		$inherited_stylesheets = false;
+		
+		// Are any other themes relying on stylesheets from this theme? Get a list and show an error
+		foreach($inherited_theme_cache as $tid => $inherited)
+		{
+			foreach($inherited as $file => $value)
+			{
+				foreach($value as $filepath => $val)
+				{
+					if(strpos($filepath, "cache/themes/theme{$theme['tid']}") !== false)
+					{
+						$inherited_stylesheets = true;
+					}
+				}
+			}
+		}
+		
+		if($inherited_stylesheets == true)
+		{			
+			flash_message("You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.", 'error');
+			admin_redirect("index.php?module=style/themes");
+		}
+		
 		
 		$query = $db->simple_select("themestylesheets", "cachefile", "tid='{$theme['tid']}'");
-		while($cachefile = $db->fetch_field($query, "cachefile"))
+		while($cachefile = $db->fetch_array($query))
 		{
-			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile}");
+			@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$cachefile['cachefile']}");
 		}
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/index.html");
 		
 		$db->delete_query("themestylesheets", "tid='{$theme['tid']}'");
 		
+		// Update the CSS file list for this theme
+		update_theme_stylesheet_list($theme['tid']);
+		
 		$db->update_query("users", array('style' => 0), "style='{$theme['tid']}'");
 		
 		@rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
-
-		// Delete any references to inherited stylesheets
+		
+		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
 		
 		flash_message($lang->success_theme_deleted, 'success');
 		admin_redirect("index.php?module=style/themes");
@@ -597,6 +635,8 @@ if($mybb->input['action'] == "edit")
 		// Has the file on the file system been modified?
 		resync_stylesheet($theme_stylesheets[$filename]);
 		
+		$filename = $theme_stylesheets[$filename]['name'];
+		
 		$inherited = "";
 		$inherited_ary = array();
 		if(is_array($style['inherited']))
@@ -639,6 +679,7 @@ if($mybb->input['action'] == "edit")
 			$applied_to_count = count($style['applied_to']);
 			$count = 0;
 			$sep = " ";
+			$name = "";
 			foreach($style['applied_to'] as $name => $actions)
 			{
 				if(!$name)
@@ -646,20 +687,20 @@ if($mybb->input['action'] == "edit")
 					continue;
 				}
 				
+				++$count;
+				
 				if($actions[0] != "global")
 				{
-					$name = "{$lang->actions} ".implode(',', $actions)." {$lang->of} ".$name;
+					$name = "{$name} ({$lang->actions}: ".implode(',', $actions).")";
 				}
 				
-				if($count == $applied_to_count && $count != 0)
+				if($count == $applied_to_count && $count > 1)
 				{
 					$sep = ", {$lang->and} ";
 				}
 				$attached_to .= $sep.$name;
 				
 				$sep = ", ";
-				
-				++$count;
 			}
 			
 			$attached_to .= "</small>";
@@ -673,9 +714,13 @@ if($mybb->input['action'] == "edit")
 		
 		$popup->add_item($lang->edit_style, "index.php?module=style/themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}");
 		$popup->add_item($lang->properties, "index.php?module=style/themes&amp;action=stylesheet_properties&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}");
-		$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		
-		$table->construct_cell("<strong>".basename($filename)."</strong>{$inherited}<br />{$attached_to}");
+		if($inherited == "")
+		{
+			$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
+		}
+		
+		$table->construct_cell("<strong>{$filename}</strong>{$inherited}<br />{$attached_to}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
@@ -828,14 +873,68 @@ if($mybb->input['action'] == "stylesheet_properties")
 		
 		if(!$errors)
 		{
-			// Inheriting?
-
-			// Break inherit relationship
-			// Copy stylesheet to this theme
-			// Remove inherited stylesheet
+			// Theme & stylesheet theme ID do not match, editing inherited - we copy to local theme
+			if($theme['tid'] != $stylesheet['tid'])
+			{
+				$stylesheet['sid'] = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
+			}
+			
+			$attached = array();
+			
+			if($mybb->input['attach'] == 1)
+			{
+				// Our stylesheet is attached to custom pages in MyBB
+				foreach($mybb->input as $id => $value)
+				{
+					$actions_list = "";
+					$attached_to = "";
+					
+					if(strpos($id, 'attached_') !== false)
+					{
+						// We have a custom attached file				
+						$attached_id = intval(str_replace('attached_', '', $id));
+						
+						if($mybb->input['action_'.$attached_id] == 1)
+						{
+							// We have custom actions for attached files							
+							$actions_list = $mybb->input['action_list_'.$attached_id];
+						}
+						
+						if($actions_list)
+						{
+							$attached_to = $value."?".$actions_list;
+						}
+						
+						$attached[] = $attached_to;
+					}
+				}
+			}
+			
+			// Update Stylesheet			
+			$update_array = array(
+				'name' => $db->escape_string($mybb->input['name']),
+				'attachedto' => $db->escape_string(implode('|', $attached)),
+				'cachefile' => $db->escape_string(str_replace('/', '', $mybb->input['name'])),
+				'lastmodified' => TIME_NOW
+			);
+			
+			$db->update_query("themestylesheets", $update_array, "sid='{$stylesheet['sid']}'", 1);
+			
+			// If the name changed, re-cache our stylesheet
+			if($stylesheet['name'] != $mybb->input['name'])
+			{
+				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $theme['stylesheet']))
+				{
+					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
+				}
+				@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+			}
+			
+			// Update the CSS file list for this theme
+			update_theme_stylesheet_list($theme['tid']);
 		
 			flash_message($lang->success_stylesheet_properties_updated, 'success');
-			admin_redirect("index.php?module=style/themes");
+			admin_redirect("index.php?module=style/themes&action=stylesheet_properties&tid={$theme['tid']}&file=".htmlspecialchars_uni($mybb->input['file']));
 		}
 	}
 	
@@ -967,7 +1066,6 @@ if($mybb->input['action'] == "stylesheet_properties")
         }
     }    
 </script>
-	<small>Attached to</small>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
 	<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt>
 		<dt><label style="display: block;"><input type="radio" name="attach" value="1" '.$global_checked[2].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->specific_files.' (<a id="new_specific_file">'.$lang->add_another.'</a>)</label></dt><br />
@@ -977,12 +1075,13 @@ if($mybb->input['action'] == "stylesheet_properties")
 	checkAction(\'attach\');'.$check_actions.'
 	</script>';
 	
-	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
+	echo $form->generate_hidden_field("file", htmlspecialchars_uni($stylesheet['name']))."<br />\n";
+	echo $form->generate_hidden_field("tid", $theme['tid'])."<br />\n";
 
 	$form_container = new FormContainer("{$lang->edit_stylesheet_properties_for} ".htmlspecialchars_uni($stylesheet['name']));
 	$form_container->output_row($lang->file_name, "", $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 	
-	$form_container->output_row("", "", $actions);
+	$form_container->output_row("Attached To", "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.", $actions);
 	
 	$form_container->end();
 	
@@ -1201,6 +1300,14 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 
 	$css_array = css_to_array($stylesheet['stylesheet']);
 	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
+	
+	// Do we not have any selectors? Send em to the full edit page
+	if(!$selector_list)
+	{
+		flash_message("MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.", 'error');
+		admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&file=".htmlspecialchars_uni($stylesheet['name'])."&mode=advanced");
+		exit;
+	}
 	
 	// Output the selection box
 	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet", "post", "selector_form");
@@ -1501,9 +1608,8 @@ if($mybb->input['action'] == "delete_stylesheet")
 		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
 		unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
 		
-		// Delete from theme list
-		
-		// Delete from inherited themes
+		// Update the CSS file list for this theme
+		update_theme_stylesheet_list($theme['tid']);
 		
 		// Log admin action
 		log_admin_action($stylesheet['tid'], $stylesheet['name'], $theme['tid'], $theme['name']);
@@ -1519,9 +1625,335 @@ if($mybb->input['action'] == "delete_stylesheet")
 
 if($mybb->input['action'] == "add_stylesheet")
 {
+	// Fetch the theme we want to edit this stylesheet in
+	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
+	$theme = $db->fetch_array($query);
+	
+	if(!$theme['tid'])
+	{
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
+	// Fetch list of all of the stylesheets for this theme
+	$file_stylesheets = unserialize($theme['stylesheets']);
+	
+	$stylesheets = array();
+	$inherited_load = array();
+	
+	// Now we loop through the list of stylesheets for each file
+	foreach($file_stylesheets as $file => $action_stylesheet)
+	{
+		if($file == 'inherited')
+		{
+			continue;
+		}
+		
+		foreach($action_stylesheet as $action => $style)
+		{
+			foreach($style as $stylesheet2)
+			{
+				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
+				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
+				{
+					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
+					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
+					{
+						$inherited_load[] = $value;
+					}
+				}
+			}
+		}
+	}
+	
+	foreach($stylesheets as $file => $stylesheet2)
+	{
+		if(is_array($stylesheet2['inherited']))
+		{
+			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+			{
+				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
+				unset($stylesheet2['inherited'][$inherited_file]);
+			}
+		}
+		
+		$stylesheets[basename($file)] = $stylesheet2;
+		unset($stylesheets[$file]);
+	}
+	
 	if($mybb->request_method == "post")
 	{
+		if(!$mybb->input['name'])
+		{
+			$errors[] = $lang->error_missing_stylesheet_name;
+		}
+		
+		if(!$errors)
+		{
+			if($mybb->input['add_type'] == 1)
+			{
+				// Import from a current stylesheet
+				$parent_list = make_parent_theme_list($theme['tid']);
+				$parent_list = implode(',', $parent_list);
+				
+				$query = $db->simple_select("themestylesheets", "stylesheet", "name='".$db->escape_string($mybb->input['import'])."' AND tid IN ({$parent_list})", array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'desc'));
+				$stylesheet = $db->fetch_field($query, "stylesheet");
+			}
+			else
+			{
+				// Custom stylesheet
+				$stylesheet = $mybb->input['stylesheet'];
+			}
+			
+			$attached = array();
+			
+			if($mybb->input['attach'] == 1)
+			{
+				// Our stylesheet is attached to custom pages in MyBB
+				foreach($mybb->input as $id => $value)
+				{
+					$actions_list = "";
+					$attached_to = "";
+					
+					if(strpos($id, 'attached_') !== false)
+					{
+						// We have a custom attached file				
+						$attached_id = intval(str_replace('attached_', '', $id));
+						
+						if($mybb->input['action_'.$attached_id] == 1)
+						{
+							// We have custom actions for attached files							
+							$actions_list = $mybb->input['action_list_'.$attached_id];
+						}
+						
+						if($actions_list)
+						{
+							$attached_to = $value."?".$actions_list;
+						}
+						
+						$attached[] = $attached_to;
+					}
+				}
+			}
+			
+			// Add Stylesheet			
+			$insert_array = array(
+				'name' => $db->escape_string($mybb->input['name']),
+				'tid' => intval($mybb->input['tid']),
+				'attachedto' => implode('|', array_map(array($db, "escape_string"), $attached)),
+				'stylesheet' => $db->escape_string($stylesheet),
+				'cachefile' => $db->escape_string(str_replace('/', '', $mybb->input['name'])),
+				'lastmodified' => TIME_NOW
+			);
+			
+			
+			$sid = $db->insert_query("themestylesheets", $insert_array);
+			
+			if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $stylesheet))
+			{
+				$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
+			}
+			
+			// Update the CSS file list for this theme
+			update_theme_stylesheet_list($theme['tid']);
+		
+			flash_message("Successfully added the stylesheet.", 'success');
+			admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}");
+		}
 	}
+	
+	$page->extra_header .= '
+	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
+	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
+	<script type="text/javascript">
+		CodePress.language = \'css\';
+	</script>';
+	
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+	$page->add_breadcrumb_item("Add Stylesheet");
+	
+	$page->output_header("{$lang->themes} - Add Stylesheet");
+	
+	$sub_tabs['edit_stylesheets'] = array(
+		'title' => $lang->edit_stylesheets,
+		'link' => "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}"
+	);
+
+	$sub_tabs['add_stylesheet'] = array(
+		'title' => $lang->add_stylesheet,
+		'link' => "index.php?module=style/themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+		'description' => "Here you can add a new stylesheet to this theme. You will be taken to the stylesheet edit page following creation."
+	);
+	
+	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');
+	
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+	
+	$form = new Form("index.php?module=style/themes&amp;action=add_stylesheet", "post", "add_stylesheet");
+	
+	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
+	
+	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
+	$count = 0;
+	
+	if(is_array($mybb->input['applied_to']) && $mybb->input['applied_to']['global'][0] != "global")
+	{
+		$check_actions = "";
+		
+		$global_checked[2] = "checked=\"checked\"";
+		$global_checked[1] = "";
+		
+		foreach($mybb->input['applied_to'] as $name => $actions)
+		{
+			$short_name = substr($name, 0, -4);
+			
+			if($errors)
+			{
+				$action_list = $mybb->input['action_list_'.$short_name];
+			}
+			else
+			{
+				$action_list = "";
+				if($actions[0] != "global")
+				{
+					$action_list = implode(',', $actions);
+				}
+			}
+			
+			if(!$action_list)
+			{
+				$global_action_checked[1] = "checked=\"checked\"";
+				$global_action_checked[2] = "";
+			}
+			else
+			{
+				$global_action_checked[2] = "checked=\"checked\"";
+				$global_action_checked[1] = "";
+			}
+			
+			$specific_file = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"0\" {$global_action_checked[1]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> {$lang->globally}</label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"1\" {$global_action_checked[2]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> {$lang->specific_actions}</label></dt>
+			<dd style=\"margin-top: 4px;\" id=\"action_{$count}_1\" class=\"action_{$count}s\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td>".$form->generate_text_box('action_list_'.$count, $action_list, array('id' => 'action_list_'.$count, 'style' => 'width: 190px;'))."</td>
+				</tr>
+			</table>
+		</dd>
+		</dl>";
+			
+			$form_container = new FormContainer();
+			$form_container->output_row("", "", "<span style=\"float: right;\"><a href=\"\" id=\"delete_img_{$count}\"><img src=\"styles/{$page->style}/images/icons/cross.gif\" alt=\"{$lang->delete}\" title=\"{$lang->delete}\" /></a></span>{$lang->file} &nbsp;".$form->generate_text_box("attached_{$count}", $name, array('id' => "attached_{$count}", 'style' => 'width: 200px;')), "attached_{$count}");
+	
+			$form_container->output_row("", "", $specific_file);
+	
+			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div>";
+			
+			$check_actions .= "\n\tcheckAction('action_{$count}');";
+			
+			++$count;
+		}
+	}
+	else
+	{
+		$global_checked[1] = "checked=\"checked\"";
+		$global_checked[2] = "";
+	}
+	
+	$actions = '<script type="text/javascript">
+    function checkAction(id)
+    {
+        var checked = \'\';
+		
+        $$(\'.\'+id+\'s_check\').each(function(e)
+        {
+            if(e.checked == true)
+            {
+                checked = e.value;
+            }
+        });
+        $$(\'.\'+id+\'s\').each(function(e)
+        {
+        	Element.hide(e);
+        });
+        if($(id+\'_\'+checked))
+        {
+            Element.show(id+\'_\'+checked);
+        }
+    }    
+</script>
+	<dl style="margin-top: 0; margin-bottom: 0; width: 40%;">
+	<dt><label style="display: block;"><input type="radio" name="attach" value="0" '.$global_checked[1].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->globally.'</label></dt>
+		<dt><label style="display: block;"><input type="radio" name="attach" value="1" '.$global_checked[2].' class="attachs_check" onclick="checkAction(\'attach\');" style="vertical-align: middle;" /> '.$lang->specific_files.' (<a id="new_specific_file">'.$lang->add_another.'</a>)</label></dt><br />
+		'.$specific_files.'
+	</dl>
+	<script type="text/javascript">
+	checkAction(\'attach\');'.$check_actions.'
+	</script>';
+	
+	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
+	
+	$form_container = new FormContainer("Add Stylesheet to ".htmlspecialchars_uni($theme['name']));
+	$form_container->output_row($lang->file_name, "Name for the stylesheet, usually ending in <strong>[.css]</strong>", $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
+	
+	$form_container->output_row("Attached To", "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.", $actions);
+	
+	$sheetnames = array();
+	foreach($stylesheets as $filename => $style)
+	{
+		$sheetnames[basename($filename)] = basename($filename);
+	}
+	
+	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"1\" {$add_checked[1]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>Import from</strong></label></dt>
+		<dd style=\"margin-top: 4px;\" id=\"add_1\" class=\"adds\">
+			<table cellpadding=\"4\">
+				<tr>
+					<td>".$form->generate_select_box('import', $sheetnames, $mybb->input['import'], array('id' => 'import'))."</td>
+				</tr>
+			</table>
+		</dd>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"2\" {$add_checked[2]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>Write my own content</strong></label></dt>
+		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->input['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => 'codepress css', 'rows' => '30'))."</span>
+	</dl>";
+	
+	$form_container->output_row("", "", $actions);
+	
+	$form_container->end();
+	
+	$buttons[] = $form->generate_submit_button("Save Stylesheet");
+
+	$form->output_submit_wrapper($buttons);
+	
+	echo "<script language=\"Javascript\" type=\"text/javascript\">
+	Event.observe('add_stylesheet', 'submit', function()
+	{
+		if($('stylesheet_cp')) {
+			var area = $('stylesheet_cp');
+			area.id = 'stylesheet';
+			area.value = stylesheet.getCode();
+			area.disabled = false;
+		}
+	});
+</script>\n";
+
+	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
+	echo '<script type="text/javascript">
+Event.observe(window, "load", function() {
+//<![CDATA[
+    new ThemeSelector(\''.$count.'\');
+	checkAction(\'add\');
+});
+//]]>
+</script>';
+	
+	$form->end();
+	
+	$page->output_footer();
 }
 
 if($mybb->input['action'] == "set_default")
@@ -1641,8 +2073,8 @@ function build_theme_list($parent=0, $depth=0)
 			$popup->add_item($lang->delete_theme, "index.php?module=style/themes&amp;action=delete&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
 			if($theme['def'] != 1)
 			{
-				$popup->add_item($lang->set_as_default, "index.php?module=style/themes&amp;action=set_as_default&amp;tid={$theme['tid']}");
-				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_as_default&amp;tid={$theme['tid']}\"><img src=\"\" title=\"{$lang->set_as_default}\" /></a>";
+				$popup->add_item($lang->set_as_default, "index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}");
+				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}\"><img src=\"\" title=\"{$lang->set_as_default}\" /></a>";
 			}
 			else
 			{

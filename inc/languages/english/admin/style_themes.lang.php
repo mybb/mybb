@@ -138,7 +138,7 @@ $l['error_invalid_templateset'] = "The selected template set does not exist. Ple
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
 
 $l['success_imported_theme'] = "Successfully imported the theme.";
-$l['success_created_theme'] = "Successfully created the theme.";
+$l['success_theme_created'] = "Successfully created the theme.";
 $l['success_theme_deleted'] = "Successfully deleted the specified theme.";
 $l['success_stylesheet_properties_updated'] = "Successfully updated the specified stylesheet's proporties.";
 $l['success_stylesheet_updated'] = "The stylesheet has successfully been updated.";

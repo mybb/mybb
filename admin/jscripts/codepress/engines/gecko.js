@@ -27,7 +27,9 @@ CodePress = {
 		chars = '|32|46|62|8|'; // charcodes that trigger syntax highlighting
 		cc = '\u2009'; // carret char
 		editor = document.getElementsByTagName('pre')[0];
+		
 		document.designMode = 'on';
+		
 		document.addEventListener('keypress', this.keyHandler, true);
 		window.addEventListener('scroll', function() { if(!CodePress.scrolling) CodePress.syntaxHighlight('scroll') }, false);
 		completeChars = this.getCompleteChars();
@@ -290,4 +292,4 @@ CodePress = {
 }
 
 Language={};
-window.addEventListener('load', function() { CodePress.initialize('new'); }, true);
+window.addEventListener('load', function() { CodePress.initialize('new'); }, true); 

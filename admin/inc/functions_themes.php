@@ -227,6 +227,8 @@ function resync_stylesheet($stylesheet)
 	if(!file_exists(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"))
 	{
 		cache_stylesheet($stylesheet['tid'], $stylesheet['cachefile'], $stylesheet['stylesheet']);
+		
+		update_theme_stylesheet_list($stylesheet['tid']);
 	
 		return true;
 	}
@@ -423,21 +425,24 @@ function get_selectors_as_options($css, $selected_item="")
 	
 	$selected = false;
 	
-	foreach($css as $id => $css_array)
+	if(is_array($css))
 	{
-		if(!$css_array['name'])
+		foreach($css as $id => $css_array)
 		{
-			$css_array['name'] = $css_array['class_name'];
-		}
-		
-		if($selected_item == $css_array['name'] || (!$selected_item && !$selected))
-		{
-			$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>";
-			$selected = true;
-		}
-		else
-		{
-			$select .= "<option value=\"{$id}\">{$css_array['name']}</option>";
+			if(!$css_array['name'])
+			{
+				$css_array['name'] = $css_array['class_name'];
+			}
+			
+			if($selected_item == $css_array['name'] || (!$selected_item && !$selected))
+			{
+				$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>";
+				$selected = true;
+			}
+			else
+			{
+				$select .= "<option value=\"{$id}\">{$css_array['name']}</option>";
+			}
 		}
 	}
 	return $select;
@@ -612,7 +617,7 @@ function update_theme_stylesheet_list($tid)
 	foreach($stylesheets as $cachefile => $stylesheet)
 	{
 		$sid = $stylesheet['sid'];
-		$css_url = "css.php?stylesheet={$sid}";		
+		$css_url = "css.php?stylesheet={$sid}";
 		
 		foreach($parent_list as $theme_id)
 		{
@@ -632,8 +637,14 @@ function update_theme_stylesheet_list($tid)
 		$attachedto = explode("|", $attachedto);
 		foreach($attachedto as $attached_file)
 		{
-			$attached_actions = explode(",", $attached_file);
-			$attached_file = array_shift($attached_actions);
+			$attached_actions = array();
+			if(strpos($attached_file, '?') !== false)
+			{
+				$attached_file = explode('?', $attached_file);
+				$attached_actions = explode(",", $attached_file[1]);
+				$attached_file = $attached_file[0];
+			}
+			
 			if(count($attached_actions) == 0)
 			{
 				$attached_actions = array("global");
@@ -650,6 +661,7 @@ function update_theme_stylesheet_list($tid)
 			}
 		}
 	}
+
 	// Now we have our list of built stylesheets, save them
 	$updated_theme = array(
 		"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
@@ -742,7 +754,7 @@ function cache_themes()
 {
 	global $db, $theme_cache;
 
-	if(!$theme_cache)
+	if(empty($theme_cache) || !is_array($theme_cache))
 	{
 		$query = $db->simple_select("themes", "*", "", array('order_by' => "pid, name"));
 		while($theme = $db->fetch_array($query))
