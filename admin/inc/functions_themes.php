@@ -884,8 +884,13 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = arra
 	{
 		$themes = cache_themes();
 		// Restrucure the theme array to something we can "loop-de-loop" with
-		foreach($themes as $theme)
+		foreach($themes as $key => $theme)
 		{
+			if($key == "default")
+			{
+				continue;
+			}
+			
 			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
 		}
 		unset($theme);
@@ -907,6 +912,7 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = arra
 		// Fetch & build any child themes
 		build_theme_array($ignoretid, $theme['tid'], $depth+1, $list);
 	}
+	
 	if(!$parent)
 	{
 		return $list;
