@@ -796,4 +796,120 @@ function cache_themes()
 	
 	return $theme_cache;
 }
+
+function build_theme_list($parent=0, $depth=0)
+{
+	global $mybb, $db, $table, $lang; // Global $table is bad, but it will have to do for now
+	static $theme_cache;
+
+	$padding = $depth*20; // Padding
+
+	if(!is_array($theme_cache))
+	{		
+		$themes = cache_themes();
+		$query = $db->query("
+			SELECT style, COUNT(uid) AS users
+			FROM ".TABLE_PREFIX."users
+			GROUP BY style
+		");
+		while($user_themes = $db->fetch_array($query))
+		{
+			if($user_themes['style'] == 0)
+			{
+				$user_themes['style'] = $themes['default'];
+			}
+			$themes[$user_themes['style']]['users'] = intval($user_themes['users']);
+		}
+
+		// Restrucure the theme array to something we can "loop-de-loop" with
+		foreach($themes as $key => $theme)
+		{
+			if($key == "default")
+			{
+				continue;
+			}
+			
+			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
+		}
+		unset($theme);
+	}
+
+	if(!is_array($theme_cache[$parent]))
+	{
+		return;
+	}
+
+	foreach($theme_cache[$parent] as $theme)
+	{		
+		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
+		if($theme['tid'] > 1)
+		{
+			$popup->add_item($lang->edit_theme, "index.php?module=style/themes&amp;action=edit&amp;tid={$theme['tid']}");
+			
+			// We must have at least the master and 1 other active theme
+			if(count($theme_cache) > 2)
+			{
+				$popup->add_item($lang->delete_theme, "index.php?module=style/themes&amp;action=delete&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
+			}
+			
+			if($theme['def'] != 1)
+			{
+				$popup->add_item($lang->set_as_default, "index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}");
+				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}\"><img src=\"\" title=\"{$lang->set_as_default}\" /></a>";
+			}
+			else
+			{
+				$set_default = "<img src=\"\" title=\"{$lang->default_theme}\" />";
+			}
+			$popup->add_item($lang->force_on_users, "index.php?module=style/themes&amp;action=force&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+		}
+		$popup->add_item($lang->export_theme, "index.php?module=style/themes&amp;action=export&amp;tid={$theme['tid']}");
+		$table->construct_cell("<div class=\"float_right;\">{$set_default}</div><div style=\"margin-left: {$padding}px\"><strong>{$theme['name']}</strong></div>");
+		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
+		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+		$table->construct_row();
+		
+		// Fetch & build any child themes
+		build_theme_list($theme['tid'], ++$depth);
+	}
+}
+
+// returns an array which can be sent to generate_select_box()
+function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = array())
+{
+	global $mybb, $lang;
+	static $theme_cache;
+
+	if(!is_array($theme_cache))
+	{
+		$themes = cache_themes();
+		// Restrucure the theme array to something we can "loop-de-loop" with
+		foreach($themes as $theme)
+		{
+			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
+		}
+		unset($theme);
+	}
+
+	if(!is_array($theme_cache[$parent]) || $ignoretid === $parent)
+	{
+		return;
+	}
+
+	foreach($theme_cache[$parent] as $theme)
+	{
+		if($ignoretid === $theme['tid'])
+		{
+			continue;
+		}
+		
+		$list[$theme['tid']] = str_repeat("--", $depth).$theme['name'];
+		// Fetch & build any child themes
+		build_theme_array($ignoretid, $theme['tid'], $depth+1, $list);
+	}
+	if(!$parent)
+	{
+		return $list;
+	}
+}
 ?>
