@@ -1,27 +1,4 @@
 <?php
-
-echo "<form action=\"checkout.php\" method=\"post\">";
-echo "<table border=\"0\" cellspacing=\"1\" cellpadding=\"4\">\n";
-echo "<tr>
-<td class=\"tcat\"><strong>Product Name / Description</strong></td>
-<td class=\"tcat\" width=\"200\" align=\"center\" style=\"white-space: nowrap;\"><strong>Price</strong></td>
-<td class=\"tcat\" width=\"200\" align=\"center\" style=\"white-space: nowrap;\"><strong># Units Available</strong></td>
-<td class=\"tcat\" width=\"200\" align=\"center\" style=\"white-space: nowrap;\"><strong>Quantity</strong></td>
-</tr>\n";
-
-$query = mysql_query("SELECT * FROM products ORDER BY pname ASC", $link);
-while($product = mysql_fetch_assoc($query))
-{
-	echo "<tr><td>".htmlspecialchars($product['pname'])."<br /><small>".htmlspecialchars($product['pdesc'])."</td><td>{$product['pprice']}\$</td><td>{$product['pleft']}</td><td><input type=\"text\" size=\"5\" maxlength=\"5\" name=\"{$product['pnum']}\" value=\"0\" /></td></tr>\n";
-}
-
-echo "</table>\n";
-echo "<input type=\"submit\" name=\"addToCart\" value=\"Add to Cart\" /> <input type=\"submit\" name=\"checkout\" value=\"Checkout\" /><br />\n";
-echo "</form>\n";
-
-?>
-
-<?php
 /**
  * MyBB 1.4
  * Copyright © 2007 MyBB Group, All Rights Reserved
