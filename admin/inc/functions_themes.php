@@ -182,6 +182,9 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		return false;
 	}
 
+	$filename = str_replace('/', '', $filename);
+	$tid = intval($tid);
+
 	if(!is_dir(MYBB_ROOT."cache/themes/theme{$tid}"))
 	{
 		if(!@mkdir(MYBB_ROOT."cache/themes/theme{$tid}"))
@@ -201,7 +204,11 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	$stylesheet = preg_replace("#url\((\"|'|)(.*)\\1\)#e", "fix_css_urls('$2')", $stylesheet);
 	
 	$fp = @fopen(MYBB_ROOT."cache/themes/theme{$tid}/{$filename}", "wb");
-	if(!$fp) return false;
+	if(!$fp)
+	{
+		return false;
+	}
+	
 	fwrite($fp, $stylesheet);
 	fclose($fp);
 	return "cache/themes/theme{$tid}/{$filename}";
@@ -491,6 +498,7 @@ function parse_css_properties($values)
 			case "font-size":
 			case "font-weight":
 			case "font-style":
+			case "text-decoration":
 				$css_bits[$property] = trim($css_value);
 				break;
 			default:
@@ -652,6 +660,7 @@ function update_theme_stylesheet_list($tid)
 			
 			foreach($attached_actions as $action)
 			{
+				echo $attached_file."-".$action."<br />";
 				$theme_stylesheets[$attached_file][$action][] = $css_url;
 				
 				if($stylesheet['inherited'])
@@ -685,8 +694,13 @@ function make_parent_theme_list($tid)
 	if(!is_array($themes_by_parent))
 	{
 		$theme_cache = cache_themes();
-		foreach($theme_cache as $theme)
+		foreach($theme_cache as $key => $theme)
 		{
+			if($key == "default")
+			{
+				continue;
+			}
+			
 			$themes_by_parent[$theme['tid']][$theme['pid']] = $theme;
 		}
 	}
@@ -723,8 +737,13 @@ function make_child_theme_list($tid)
 	if(!is_array($themes_by_child))
 	{
 		$theme_cache = cache_themes();
-		foreach($theme_cache as $theme)
+		foreach($theme_cache as $key => $theme)
 		{
+			if($key == "default")
+			{
+				continue;
+			}
+			
 			$themes_by_child[$theme['pid']][$theme['tid']] = $theme;
 		}
 	}
@@ -762,7 +781,18 @@ function cache_themes()
 			$theme['properties'] = unserialize($theme['properties']);
 			$theme['stylesheets'] = unserialize($theme['stylesheets']);
 			$theme_cache[$theme['tid']] = $theme;
+			
+			if($theme['def'] == 1)
+			{
+				$theme_cache['default'] = $theme['tid'];
+			}
 		}
+	}
+	
+	// Do we have no themes assigned as default?
+	if(!$theme_cache['default'])
+	{
+		$theme_cache['default'] = 1;
 	}
 	
 	return $theme_cache;

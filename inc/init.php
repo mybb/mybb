@@ -59,6 +59,11 @@ if(!isset($config['database']))
 	$mybb->trigger_generic_error("board_not_installed");
 }
 
+if(!is_array($config['database']))
+{
+	$mybb->trigger_generic_error("board_not_upgraded");
+}
+
 if(empty($config['admin_dir']))
 {
 	$config['admin_dir'] = "admin";

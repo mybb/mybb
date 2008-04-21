@@ -55,8 +55,6 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[width]', $properties['width'], array('id' => 'css_bits[width]', 'style' => 'width: 260px;'))."</div><div>{$lang->width}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font]', $properties['font'], array('id' => 'css_bits[font]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_color}</div>", array('style' => 'width: 40%;'));
-	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_family]', $properties['font-family'], array('id' => 'css_bits[font_family]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_family}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_size]', $properties['font-size'], array('id' => 'css_bits[font_size]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_size}</div>", array('style' => 'width: 40%;'));
@@ -64,6 +62,8 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_style]', $properties['font-style'], array('id' => 'css_bits[font_style]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_style}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_weight]', $properties['font-weight'], array('id' => 'css_bits[font_weight]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_weight}</div>", array('style' => 'width: 40%;'));
+	$table->construct_row();
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[text_decoration]', $properties['text_decoration'], array('id' => 'css_bits[text_decoration]', 'style' => 'width: 260px;'))."</div><div>{$lang->text_decoration}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	
 	$table->output(htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
@@ -470,83 +470,13 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=style/themes");
 	}
 	
+	update_theme_stylesheet_list($theme['tid']);
+	
 	if($mybb->request_method == "post")
 	{
-		$properties = array(
-			'templateset' => intval($mybb->input['templateset']),
-			'editortheme' => $mybb->input['editortheme'],
-			'imgdir' => $mybb->input['imgdir'],
-			'logo' => $mybb->input['logo'],
-			'tablespace' => intval($mybb->input['tablespace']),
-			'borderwidth' => intval($mybb->input['borderwidth'])
-		);
 		
-		$allowedgroups = array();
-		if(is_array($mybb->input['allowedgroups']))
-		{
-			foreach($mybb->input['allowedgroups'] as $gid)
-			{
-				if($gid == "all")
-				{
-					$allowedgroups = "all";
-					break;
-				}
-				$gid = intval($gid);
-				$allowedgroups[$gid] = $gid;
-			}
-		}
-		if(is_array($allowedgroups))
-		{
-			$allowedgroups = implode(",", $allowedgroups);
-		}
-		
-		$update_array = array(
-			'name' => $db->escape_string($mybb->input['name']),
-			'pid' => intval($mybb->input['pid']),
-			'allowedgroups' => $allowedgroups,
-			'properties' => $db->escape_string(serialize($properties))
-		);
-		
-		// perform validation
-		if(!$update_array['name'])
-		{
-			$errors[] = $lang->error_missing_name;
-		}
-		
-		if($update_array['pid'])
-		{
-			$parent_check = $db->fetch_field($db->simple_select("themes", "tid", "tid='".$update_array['pid']."'"), "tid");
-			if(!$parent_check)
-			{
-				$errors[] = $lang->error_invalid_parent_theme;
-			}
-		}
-		if($properties['templateset'])
-		{
-			$ts_check = $db->fetch_field($db->simple_select("templatesets", "sid", "sid='".$properties['templateset']."'"), "sid");
-			if(!$ts_check)
-			{
-				unset($properties['templateset']);
-			}
-		}
-		if(!$properties['templateset'])
-		{
-			$errors[] = $lang->error_invalid_templateset;
-		}
-		if(!$properties['editortheme'] || !@is_dir(MYBB_ROOT."jscripts/editor_themes/".$properties['editortheme']))
-		{
-			$errors[] = $lang->error_invalid_editortheme;
-		}
-		
-		if(empty($errors))
-		{
-			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
-			
-			flash_message($lang->success_theme_properties_updated, 'success');
-			admin_redirect("index.php?module=style/themes");
-		}
 	}
-	
+		
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
 	
@@ -727,71 +657,8 @@ if($mybb->input['action'] == "edit")
 	
 	$table->output("{$lang->stylesheets_in} ".htmlspecialchars_uni($theme['name']));
 	
-	
-	// Theme Properties table
-	if($errors)
-	{
-		$page->output_inline_error($errors);
-	}
-	
-	$properties = unserialize($theme['properties']);
-	$form = new Form("index.php?module=style/themes&amp;action=edit", "post", "edit");
-	echo $form->generate_hidden_field("tid", $theme['tid']);
-	$form_container = new FormContainer($lang->edit_theme_properties);
-	$form_container->output_row($lang->name." <em>*</em>", $lang->name_desc_edit, $form->generate_text_box('name', $theme['name'], array('id' => 'name')), 'name');
-	
-	$options = build_theme_array($theme['tid']);
-	$form_container->output_row($lang->parent_theme." <em>*</em>", $lang->parent_theme_desc, $form->generate_select_box('pid', $options, $theme['pid'], array('id' => 'pid')), 'pid');
-	
-	$options = array();
-	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
-	$options['all'] = $lang->all_user_groups;
-	while($usergroup = $db->fetch_array($query))
-	{
-		$options[(int)$usergroup['gid']] = $usergroup['title'];
-	}
-	if(!$theme['allowedgroups'])
-	{
-		$theme['allowedgroups'] = "all";
-	}
-	$form_container->output_row($lang->allowed_user_groups, $lang->allowed_user_groups_desc, $form->generate_select_box('allowedgroups[]', $options, explode(",", $theme['allowedgroups']), array('id' => 'allowedgroups', 'multiple' => true, 'size' => 5)), 'allowedgroups');
-	
-	$options = array();
-	$query = $db->simple_select("templatesets", "*", "", array('order_by' => 'title'));
-	while($templateset = $db->fetch_array($query))
-	{
-		$options[intval($templateset['sid'])] = $templateset['title'];
-	}
-	$form_container->output_row($lang->template_set." <em>*</em>", $lang->template_set_desc, $form->generate_select_box('templateset', $options, $properties['templateset'], array('id' => 'templateset')), 'templateset');
-	
-	$options = array();
-	$editor_theme_root = MYBB_ROOT."jscripts/editor_themes/";
-	if($dh = @opendir($editor_theme_root))
-	{
-		while($dir = readdir($dh))
-		{
-			if($dir == "." || $dir == ".." || !is_dir($editor_theme_root.$dir))
-			{
-				continue;
-			}
-			$options[$dir] = $dir;
-		}
-	}
-	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $properties['editortheme'], array('id' => 'editortheme')), 'editortheme');
-	
-	$form_container->output_row($lang->img_directory, $lang->img_directory_desc, $form->generate_text_box('imgdir', $properties['imgdir'], array('id' => 'imgdir')), 'imgdir');
-	$form_container->output_row($lang->logo, $lang->logo_desc, $form->generate_text_box('logo', $properties['logo'], array('id' => 'boardlogo')), 'logo');
-	$form_container->output_row($lang->table_spacing, $lang->table_spacing_desc, $form->generate_text_box('tablespace', $properties['tablespace'], array('id' => 'tablespace')), 'tablespace');
-	$form_container->output_row($lang->inner_border, $lang->inner_border_desc, $form->generate_text_box('borderwidth', $properties['borderwidth'], array('id' => 'borderwidth')), 'borderwidth');
-	
-	$form_container->end();
-	$buttons = array();
-	$buttons[] = $form->generate_submit_button($lang->save_theme_properties);
-	$form->output_submit_wrapper($buttons);
-	$form->end();
-	
 	$page->output_footer();
-}
+} 
 
 if($mybb->input['action'] == "stylesheet_properties")
 {
@@ -1029,7 +896,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	
 			$form_container->output_row("", "", $specific_file);
 	
-			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div>";
+			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div><div id=\"attach_box_".($count+1)."\"></div>";
 			
 			$check_actions .= "\n\tcheckAction('action_{$count}');";
 			
@@ -1109,7 +976,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 {
 	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
-
+	
 	// Does the theme not exist?
 	if(!$stylesheet['sid'])
 	{
@@ -1201,6 +1068,25 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		}
 	}
 	
+	// Has the file on the file system been modified?
+	if(resync_stylesheet($stylesheet))
+	{
+		// Need to refetch new stylesheet as it was modified
+		$query = $db->simple_select("themestylesheets", "stylesheet", "sid='{$stylesheet['sid']}'");
+		$stylesheet['stylesheet'] = $db->fetch_field($query, 'stylesheet');
+	}
+
+	$css_array = css_to_array($stylesheet['stylesheet']);
+	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
+	
+	// Do we not have any selectors? Send em to the full edit page
+	if(!$selector_list)
+	{
+		flash_message("MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.", 'error');
+		admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&file=".htmlspecialchars_uni($stylesheet['name'])."&mode=advanced");
+		exit;
+	}
+	
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
 	
@@ -1289,25 +1175,6 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
-
-	// Has the file on the file system been modified?
-	if(resync_stylesheet($stylesheet))
-	{
-		// Need to refetch new stylesheet as it was modified
-		$query = $db->simple_select("themestylesheets", "stylesheet", "sid='{$stylesheet['sid']}'");
-		$stylesheet['stylesheet'] = $db->fetch_field($query, 'stylesheet');
-	}
-
-	$css_array = css_to_array($stylesheet['stylesheet']);
-	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
-	
-	// Do we not have any selectors? Send em to the full edit page
-	if(!$selector_list)
-	{
-		flash_message("MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.", 'error');
-		admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&file=".htmlspecialchars_uni($stylesheet['name'])."&mode=advanced");
-		exit;
-	}
 	
 	// Output the selection box
 	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet", "post", "selector_form");
@@ -1348,8 +1215,6 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[width]', $properties['width'], array('id' => 'css_bits[width]', 'style' => 'width: 260px;'))."</div><div>{$lang->width}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
-	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font]', $properties['font'], array('id' => 'css_bits[font]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_color}</div>", array('style' => 'width: 40%;'));
-	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_family]', $properties['font-family'], array('id' => 'css_bits[font_family]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_family}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_size]', $properties['font-size'], array('id' => 'css_bits[font_size]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_size}</div>", array('style' => 'width: 40%;'));
@@ -1357,6 +1222,8 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_style]', $properties['font-style'], array('id' => 'css_bits[font_style]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_style}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[font_weight]', $properties['font-weight'], array('id' => 'css_bits[font_weight]', 'style' => 'width: 260px;'))."</div><div>{$lang->font_weight}</div>", array('style' => 'width: 40%;'));
+	$table->construct_row();
+	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[text_decoration]', $properties['text_decoration'], array('id' => 'css_bits[text_decoration]', 'style' => 'width: 260px;'))."</div><div>{$lang->text_decoration}</div>", array('style' => 'width: 40%;'));
 	$table->construct_row();
 	
 	$table->output(htmlspecialchars_uni($editable_selector['class_name'])."<span id=\"saved\" style=\"color: #FEE0C6;\"></span>");
@@ -1851,7 +1718,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 			$form_container->output_row("", "", $specific_file);
 	
-			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div>";
+			$specific_files .= "<div id=\"attached_form_{$count}\">".$form_container->end(true)."</div><div id=\"attach_box_{$count}\"></div>";
 			
 			$check_actions .= "\n\tcheckAction('action_{$count}');";
 			
@@ -2039,7 +1906,7 @@ function build_theme_list($parent=0, $depth=0)
 	$padding = $depth*20; // Padding
 
 	if(!is_array($theme_cache))
-	{
+	{		
 		$themes = cache_themes();
 		$query = $db->query("
 			SELECT style, COUNT(uid) AS users
@@ -2048,12 +1915,21 @@ function build_theme_list($parent=0, $depth=0)
 		");
 		while($user_themes = $db->fetch_array($query))
 		{
+			if($user_themes['style'] == 0)
+			{
+				$user_themes['style'] = $themes['default'];
+			}
 			$themes[$user_themes['style']]['users'] = intval($user_themes['users']);
 		}
 
 		// Restrucure the theme array to something we can "loop-de-loop" with
-		foreach($themes as $theme)
+		foreach($themes as $key => $theme)
 		{
+			if($key == "default")
+			{
+				continue;
+			}
+			
 			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
 		}
 		unset($theme);
@@ -2065,12 +1941,18 @@ function build_theme_list($parent=0, $depth=0)
 	}
 
 	foreach($theme_cache[$parent] as $theme)
-	{
+	{		
 		$popup = new PopupMenu("theme_{$theme['tid']}", $lang->options);
 		if($theme['tid'] > 1)
 		{
 			$popup->add_item($lang->edit_theme, "index.php?module=style/themes&amp;action=edit&amp;tid={$theme['tid']}");
-			$popup->add_item($lang->delete_theme, "index.php?module=style/themes&amp;action=delete&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
+			
+			// We must have at least the master and 1 other active theme
+			if(count($theme_cache) > 2)
+			{
+				$popup->add_item($lang->delete_theme, "index.php?module=style/themes&amp;action=delete&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_deletion}')");
+			}
+			
 			if($theme['def'] != 1)
 			{
 				$popup->add_item($lang->set_as_default, "index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}");
@@ -2087,50 +1969,9 @@ function build_theme_list($parent=0, $depth=0)
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
-
+		
 		// Fetch & build any child themes
 		build_theme_list($theme['tid'], ++$depth);
 	}
 }
-
-
-// returns an array which can be sent to generate_select_box()
-function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = array())
-{
-	global $mybb, $lang;
-	static $theme_cache;
-
-	if(!is_array($theme_cache))
-	{
-		$themes = cache_themes();
-		// Restrucure the theme array to something we can "loop-de-loop" with
-		foreach($themes as $theme)
-		{
-			$theme_cache[$theme['pid']][$theme['tid']] = $theme;
-		}
-		unset($theme);
-	}
-
-	if(!is_array($theme_cache[$parent]) || $ignoretid === $parent)
-	{
-		return;
-	}
-
-	foreach($theme_cache[$parent] as $theme)
-	{
-		if($ignoretid === $theme['tid'])
-		{
-			continue;
-		}
-		
-		$list[$theme['tid']] = str_repeat("--", $depth).$theme['name'];
-		// Fetch & build any child themes
-		build_theme_array($ignoretid, $theme['tid'], $depth+1, $list);
-	}
-	if(!$parent)
-	{
-		return $list;
-	}
-}
-
 ?>

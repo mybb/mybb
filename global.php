@@ -208,7 +208,10 @@ foreach($stylesheet_scripts as $stylesheet_script)
 			// Actually add the stylesheets to the list
 			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
 			{
-				if($already_loaded[$page_stylesheet]) continue;
+				if($already_loaded[$page_stylesheet])
+				{
+					continue;
+				}
 				$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
 				$already_loaded[$page_stylesheet] = 1;
 			}

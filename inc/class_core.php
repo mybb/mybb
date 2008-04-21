@@ -331,6 +331,9 @@ class MyBB {
 			case "board_not_installed":
 				$message = "Your board has not yet been installed and configured. Please do so before attempting to browse it.";
 				break;
+			case "board_not_upgraded":
+				$message = "Your board has not yet been upgraded. Please do so before attempting to browse it.";
+				break;
 			case "sql_load_error":
 				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"http://www.mybboard.net\">MyBB Website</a>";
 				break;

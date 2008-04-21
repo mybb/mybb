@@ -429,7 +429,7 @@ class errorHandler {
 				}
 			}
 			$backtrace = $this->generate_backtrace();
-			if($backtrace)
+			if($backtrace && $type != MYBB_GENERAL)
 			{
 				$error_message .= "<dt>Backtrace:</dt><dd>{$backtrace}</dd>\n";
 			}

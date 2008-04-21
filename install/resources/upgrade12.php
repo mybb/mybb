@@ -57,6 +57,15 @@ function upgrade12_dbchanges()
 		"users" => array("uid","allownotices","hideemail","invisible","receivepms","pmpopup","pmnotify","remember","showsigs","showavatars","showquickreply","showredirect","away"),
 		"threads" => array("tid", "closed")
 	);
+	
+	if(!$db->field_exists('pmpopup', "users"))
+	{
+		$pmpopup_key = array_search('pmpopup', $to_int['users']);
+		if($pmpopup_key)
+		{
+			unset($to_int['users'][$pmpopup_key]);
+		}
+	}
 
 	// Continuing?
 	if($mybb->input['last_table'])
@@ -203,6 +212,23 @@ function upgrade12_dbchanges1()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD INDEX ( `uid` )");
 	
 	echo "done.</p>";
+	
+	$contents = "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
+	$output->print_footer("12_dbchanges_post1");
+}
+
+function upgrade12_dbchanges_post1()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";	
 	echo "<p>Adding index to posts table ... ";
 	flush();
 	
@@ -211,6 +237,23 @@ function upgrade12_dbchanges1()
 	
 	echo "done.</p>";
 	flush();
+	
+	$contents = "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
+	$output->print_footer("12_dbchanges_post2");
+}
+
+function upgrade12_dbchanges_post2()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
 	
 	if($db->field_exists('longipaddress', "posts"))
 	{
@@ -651,7 +694,12 @@ function upgrade12_dbchanges2()
 	  data text NOT NULL,
 	  KEY module (module, action)
 	) TYPE=MyISAM{$collation};");
-
+	
+	if($db->field_exists('data', "adminsessions"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions DROP data;");
+	}
+	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL default '' AFTER lastactive;");
 	
 	if($db->field_exists('isdefault', "settings"))
@@ -1185,7 +1233,9 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 
 function upgrade12_redoconfig()
 {
-	global $db, $output, $config, $mybb;
+	global $db, $output, $orig_config, $mybb;
+	
+	$config = $orig_config;
 	
 	$output->print_header("Rewriting config.php");
 
@@ -1658,11 +1708,17 @@ function upgrade12_dbchanges8()
 function upgrade12_redothemes()
 {
 	global $db, $output, $config, $mybb;
+	
 	$output->print_header("Converting themes");
 
 	if(!@is_dir(MYBB_ROOT.'cache/'))
 	{
 		@mkdir(MYBB_ROOT.'cache/', 077);
+		
+		// Add in empty index.html!
+		$fp = @fopen(MYBB_ROOT."cache/index.html", "w");
+		@fwrite($fp, "");
+		@fclose($fp);
 	}
 	$cachewritable = @fopen(MYBB_ROOT.'cache/test.write', 'w');
 	if(!$cachewritable)
@@ -1680,7 +1736,38 @@ function upgrade12_redothemes()
 
 	if($not_writable)
 	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to wrote to the cache/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
+		$output->print_footer("12_redothemes");
+		exit;
+	}
+	
+	$not_writable = false;
+	if(!@is_dir(MYBB_ROOT.'cache/themes/'))
+	{
+		@mkdir(MYBB_ROOT.'cache/themes/', 077);
+		
+		// Add in empty index.html!
+		$fp = @fopen(MYBB_ROOT."cache/themes/index.html", "w");
+		@fwrite($fp, "");
+		@fclose($fp);
+	}
+	$themewritable = @fopen(MYBB_ROOT.'cache/themes/test.write', 'w');
+	if(!$themewritable)
+	{
+		$not_writable = true;
+		@fclose($themewritable);
+	}
+	else
+	{
+		@fclose($themewritable);
+	  	@my_chmod(MYBB_ROOT.'cache/themes', 0777);
+	  	@my_chmod(MYBB_ROOT.'cache/themes/test.write', 0777);
+		@unlink(MYBB_ROOT.'cache/themes/test.write');
+	}
+	
+	if($not_writable)
+	{
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/theme/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
 		$output->print_footer("12_redothemes");
 		exit;
 	}
@@ -1699,11 +1786,6 @@ function upgrade12_redothemes()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP csscached");
 	}
-	
-	if($db->field_exists('extracss', "themes"))
-	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
-	}	
 	
 	if($db->field_exists('stylesheets', "themes"))
 	{
@@ -1761,14 +1843,17 @@ function upgrade12_redothemes()
 	$query = $db->simple_select("themes");
 	while($theme = $db->fetch_array($query))
 	{
+		$theme['css'] .= "\n\n".$theme['extracss'];
+		
 		// Create stylesheets
-		$cache_file = cache_stylesheet($theme['tid'], "general.css", $theme['css']);
+		$cache_file = cache_stylesheet($theme['tid'], "global.css", $theme['css']);
 
 		$new_stylesheet = array(
 			"tid" => $theme['tid'],
+			"name" => "global.css",
 			"attachedto" => "",
 			"stylesheet" => $db->escape_string($theme['css']),
-			"cachefile" => $cache_file,
+			"cachefile" => "global.css",
 			"lastmodified" => TIME_NOW
 		);
 		$sid = $db->insert_query("themestylesheets", $new_stylesheet);
@@ -1787,10 +1872,15 @@ function upgrade12_redothemes()
 		// Update the theme
 		$db->update_query("themes", array("stylesheets" => $db->escape_string(serialize($stylesheets))), "tid='{$theme['tid']}'");
 	}
-
+	
 	if($db->field_exists('css', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP css");
+	}
+	
+	if($db->field_exists('extracss', "themes"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
 	}
 
 	echo "<p>Your themes have successfully been converted to the new theme system.</p>";

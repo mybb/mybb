@@ -141,14 +141,12 @@ $l['show_code_buttons'] = "Show MyCode formatting options on posting pages";
 $l['theme'] = "Theme";
 $l['board_language'] = "Board Language";
 $l['other_options'] = "Other Options";
-$l['signature'] = "Signature";
 $l['signature_desc'] = "Formatting options: MyCode is {1}, smilies are {2}, IMG code is {3}, HTML is {4}";
 $l['enable_sig_in_all_posts'] = "Enable signature in all posts";
 $l['disable_sig_in_all_posts'] = "Disable signature in all posts";
 $l['do_nothing'] = "Do not change signature preferences";
 $l['signature_preferences'] = "Signature Preferences";
 
-$l['avatar'] = "Avatar";
 $l['username'] = "Username";
 $l['email'] = "Email";
 $l['primary_group'] = "Primary Group";

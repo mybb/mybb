@@ -19,7 +19,7 @@ ThemeSelector.prototype = {
 	width: null,
 	color: null,
 	extra: null,
-	font: null,
+	text_decoration: null,
 	font_family: null,
 	font_size: null,
 	font_style: null,
@@ -41,7 +41,7 @@ ThemeSelector.prototype = {
 			this.width = $("css_bits[width]").value;
 			this.color = $("css_bits[color]").value;
 			this.extra = $("css_bits[extra]").value;
-			this.font = $("css_bits[font]").value;
+			this.text_decoration = $("css_bits[text_decoration]").value;
 			this.font_family = $("css_bits[font_family]").value;
 			this.font_size = $("css_bits[font_size]").value;
 			this.font_style = $("css_bits[font_style]").value;
@@ -108,7 +108,7 @@ ThemeSelector.prototype = {
 		this.width = $("css_bits[width]").value;
 		this.color = $("css_bits[color]").value;
 		this.extra = $("css_bits[extra]").value;
-		this.font = $("css_bits[font]").value;
+		this.text_decoration = $("css_bits[text_decoration]").value;
 		this.font_family = $("css_bits[font_family]").value;
 		this.font_size = $("css_bits[font_size]").value;
 		this.font_style = $("css_bits[font_style]").value;
@@ -128,7 +128,7 @@ ThemeSelector.prototype = {
 	
 	saveCheck: function(e, isajax)
     {
-		if(this.background != $("css_bits[background]").value || this.width != $("css_bits[width]").value || this.color != $("css_bits[color]").value || this.extra != $("css_bits[extra]").value || this.font != $("css_bits[font]").value || this.font_family != $("css_bits[font_family]").value || this.font_size != $("css_bits[font_size]").value || this.font_style != $("css_bits[font_style]").value || this.font_weight != $("css_bits[font_weight]").value)
+		if(this.background != $("css_bits[background]").value || this.width != $("css_bits[width]").value || this.color != $("css_bits[color]").value || this.extra != $("css_bits[extra]").value || this.text_decoration != $("css_bits[text_decoration]").value || this.font_family != $("css_bits[font_family]").value || this.font_size != $("css_bits[font_size]").value || this.font_style != $("css_bits[font_style]").value || this.font_weight != $("css_bits[font_weight]").value)
 		{
 			confirmReturn = confirm(save_changes_lang_string);
 			if(confirmReturn == true)
@@ -152,7 +152,7 @@ ThemeSelector.prototype = {
 			'width': $('css_bits[width]').value,
 			'color': $('css_bits[color]').value,
 			'extra': $('css_bits[extra]').value,
-			'font': $('css_bits[font]').value,
+			'text_decoration': $('css_bits[text_decoration]').value,
 			'font_family': $('css_bits[font_family]').value,
 			'font_size': $('css_bits[font_size]').value,
 			'font_style': $('css_bits[font_style]').value,
@@ -214,7 +214,7 @@ ThemeSelector.prototype = {
 		this.width = $("css_bits[width]").value;
 		this.color = $("css_bits[color]").value;
 		this.extra = $("css_bits[extra]").value;
-		this.font = $("css_bits[font]").value;
+		this.text_decoration = $("css_bits[text_decoration]").value;
 		this.font_family = $("css_bits[font_family]").value;
 		this.font_size = $("css_bits[font_size]").value;
 		this.font_style = $("css_bits[font_style]").value;
@@ -247,19 +247,25 @@ ThemeSelector.prototype = {
 	{
 		Event.stop(e);
 		
-		var contents = "<div id=\"attached_form_"+this.specific_count+"\"><div class=\"border_wrapper\">\n<table class=\"general form_container \" cellspacing=\"0\">\n<tbody>\n<tr class=\"first\">\n<td class=\"first\"><div class=\"form_row\"><span style=\"float: right;\"><a href=\"\" id=\"delete_img_"+this.specific_count+"\"><img src=\"styles/default/images/icons/cross.gif\" alt=\""+delete_lang_string+"\" title=\""+delete_lang_string+"\" /></a></span>"+file_lang_string+" &nbsp;<input type=\"text\" name=\"attached_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 200px;\" id=\"attached_"+this.specific_count+"\" /></div>\n</td>\n</tr>\n<tr class=\"last alt_row\">\n<td class=\"first\"><div class=\"form_row\"><dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"0\" checked=\"checked\" class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> "+globally_lang_string+"</label></dt>\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"1\"  class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> "+specific_actions_lang_string+"</label></dt>\n<dd style=\"margin-top: 4px;\" id=\"action_"+this.specific_count+"_1\" class=\"action_"+this.specific_count+"s\">\n<table cellpadding=\"4\">\n<tr>\n<td><input type=\"text\" name=\"action_list_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 190px;\" id=\"action_list_"+this.specific_count+"\" /></td>\n</tr>\n</table>\n</dd>\n</dl></div>\n</td>\n</tr>\n</tbody>\n</table>\n</div></div>\n";
+		var next_count = Number(this.specific_count) + 1;
 		
-		$("attach_1").innerHTML = contents+$("attach_1").innerHTML;
+		var contents = "<div id=\"attached_form_"+this.specific_count+"\"><div class=\"border_wrapper\">\n<table class=\"general form_container \" cellspacing=\"0\">\n<tbody>\n<tr class=\"first\">\n<td class=\"first\"><div class=\"form_row\"><span style=\"float: right;\"><a href=\"\" id=\"delete_img_"+this.specific_count+"\"><img src=\"styles/default/images/icons/cross.gif\" alt=\""+delete_lang_string+"\" title=\""+delete_lang_string+"\" /></a></span>"+file_lang_string+" &nbsp;<input type=\"text\" name=\"attached_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 200px;\" id=\"attached_"+this.specific_count+"\" /></div>\n</td>\n</tr>\n<tr class=\"last alt_row\">\n<td class=\"first\"><div class=\"form_row\"><dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"0\" checked=\"checked\" class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> "+globally_lang_string+"</label></dt>\n<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_"+this.specific_count+"\" value=\"1\"  class=\"action_"+this.specific_count+"s_check\" onclick=\"checkAction('action_"+this.specific_count+"');\" style=\"vertical-align: middle;\" /> "+specific_actions_lang_string+"</label></dt>\n<dd style=\"margin-top: 4px;\" id=\"action_"+this.specific_count+"_1\" class=\"action_"+this.specific_count+"s\">\n<table cellpadding=\"4\">\n<tr>\n<td><input type=\"text\" name=\"action_list_"+this.specific_count+"\" value=\"\" class=\"text_input\" style=\"width: 190px;\" id=\"action_list_"+this.specific_count+"\" /></td>\n</tr>\n</table>\n</dd>\n</dl></div>\n</td>\n</tr>\n</tbody>\n</table>\n</div></div><div id=\"attach_box_"+next_count+"\"></div>\n";
+		
+		if(!$("attach_box_"+this.specific_count))
+		{
+			$("attach_1").innerHTML = contents;
+		}
+		else
+		{
+			$("attach_box_"+this.specific_count).innerHTML = contents;
+		}
 		
 		checkAction('action_'+this.specific_count);
 		
-		// We have to re register the event listeners
-		for(i=this.specific_count; i >= 0; --i)
+
+		if($("attached_form_"+this.specific_count))
 		{
-			if($("attached_form_"+i))
-			{
-				Event.observe($("delete_img_"+i), "click", this.removeAttachmentBox.bindAsEventListener(this, i));
-			}
+			Event.observe($("delete_img_"+this.specific_count), "click", this.removeAttachmentBox.bindAsEventListener(this, this.specific_count));
 		}
 		
 		++this.specific_count;
@@ -279,27 +285,13 @@ ThemeSelector.prototype = {
 	}
 }
 
-function js_array_to_php_array (a)
-// This converts a javascript array to a string in PHP serialized format.
-// This is useful for passing arrays to PHP. On the PHP side you can 
-// unserialize this string from a cookie or request variable. For example,
-// assuming you used javascript to set a cookie called "php_array"
-// to the value of a javascript array then you can restore the cookie 
-// from PHP like this:
-//    <?php
-//    session_start();
-//    $my_array = unserialize(urldecode(stripslashes($_COOKIE['php_array'])));
-//    print_r ($my_array);
-//    ?>
-// This automatically converts both keys and values to strings.
-// The return string is not URL escaped, so you must call the
-// Javascript "escape()" function before you pass this string to PHP.
+function js_array_to_php_array(a)
 {
     var a_php = "";
     var total = 0;
-    for (var key in a)
+    for(var key in a)
     {
-        ++ total;
+        ++total;
         a_php = a_php + "s:" +
                 String(key).length + ":\"" + String(key) + "\";s:" +
                 String(a[key]).length + ":\"" + String(a[key]) + "\";";
