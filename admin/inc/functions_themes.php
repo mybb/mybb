@@ -660,7 +660,6 @@ function update_theme_stylesheet_list($tid)
 			
 			foreach($attached_actions as $action)
 			{
-				echo $attached_file."-".$action."<br />";
 				$theme_stylesheets[$attached_file][$action][] = $css_url;
 				
 				if($stylesheet['inherited'])
