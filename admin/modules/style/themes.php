@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2007 MyBB Group, All Rights Reserved
+ * Copyright © 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -549,6 +549,10 @@ if($mybb->input['action'] == "edit")
 		
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
+	
+	echo "<pre>";
+	print_r($file_stylesheets);
+	echo "</pre>";
 	
 	$stylesheets = array();
 	$inherited_load = array();

@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2007 MyBB Group, All Rights Reserved
+ * Copyright © 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -88,7 +88,7 @@ class datacache
 	{
 		global $db, $mybb;
 		
-		// Already ready this cache and we're not doing a hard refresh? Return cached copy
+		// Already have this cache and we're not doing a hard refresh? Return cached copy
 		if(isset($this->cache[$name]) && $hard == false)
 		{
 			return $this->cache[$name];

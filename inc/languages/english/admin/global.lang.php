@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4 English Language Pack
- * Copyright © 2007 MyBB Group, All Rights Reserved
+ * Copyright © 2008 MyBB Group, All Rights Reserved
  * 
  * $Id$
  */
@@ -105,6 +105,8 @@ $l['delete'] = "Delete";
 $l['reset'] = "Reset";
 $l['and'] = "and";
 $l['go'] = "Go";
+$l['on'] = "On";
+$l['off'] = "Off";
 
 // Parser bits
 $l['quote'] = "Quote:";

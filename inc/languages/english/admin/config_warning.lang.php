@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4 English Language Pack
- * Copyright Œ 2007 MyBB Group, All Rights Reserved
+ * Copyright Œ 2008 MyBB Group, All Rights Reserved
  * 
  * $Id$
  */

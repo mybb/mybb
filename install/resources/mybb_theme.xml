@@ -5139,7 +5139,7 @@ body {
 	<td align="center" class="{$bgcolor}">{$thread['views']}</td>
 	{$rating}
 	<td class="{$bgcolor}" style="white-space: nowrap; text-align: right;">
-		<span class="smalltext">{$lastpostdate} {$lastposttime}<br />
+		<span class="lastpost smalltext">{$lastpostdate} {$lastposttime}<br />
 		<a href="{$thread['lastpostlink']}">{$lang->lastpost}</a>: {$lastposterlink}</span>
 	</td>
 {$modbit}

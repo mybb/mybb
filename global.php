@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2007 MyBB Group, All Rights Reserved
+ * Copyright © 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -202,7 +202,11 @@ foreach($stylesheet_scripts as $stylesheet_script)
 	// Load stylesheets for global actions and the current action
 	foreach($stylesheet_actions as $stylesheet_action)
 	{
-		if(!$stylesheet_action) continue;
+		if(!$stylesheet_action)
+		{
+			continue;
+		}
+		
 		if($theme['stylesheets'][$stylesheet_script][$stylesheet_action])
 		{
 			// Actually add the stylesheets to the list
