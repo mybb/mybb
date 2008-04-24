@@ -59,7 +59,7 @@ function akismet_info()
 		"authorsite"	=> "http://mybboard.net",
 		"version"		=> "1.2",
 		"guid"			=> "e57a80dbe7ff85083596a1a3b7da3ce7",
-		"compatibility" => "12*",
+		"compatibility" => "14*",
 	);
 }
 
