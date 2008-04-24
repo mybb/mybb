@@ -1057,7 +1057,7 @@ ul.thread_tools li.subscription_remove {
 <script type="text/javascript">
 <!--
 	lang.no_new_posts = "{$lang->no_new_posts}";
-	lang.click_mark_read = "{$lang->click_mark_read}";
+	lang.click_mark_read = "{$lang->click_mark_read}";	
 // -->
 </script>
 </head>
@@ -1567,7 +1567,7 @@ ul.thread_tools li.subscription_remove {
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="showthread_ratethread" version="1400"><![CDATA[<div style="margin-top: 6px;" class="float_right">
+		<template name="showthread_ratethread" version="1400"><![CDATA[<div style="margin-top: 6px; padding-right: 10px;" class="float_right">
 		<script type="text/javascript" src="jscripts/rating.js?ver=1400"></script>
 		<div id="success_rating_{$thread['tid']}" style="float: left; padding-top: 2px; padding-right: 10px;">&nbsp;</div>
 		<strong style="float: left; padding-right: 10px;">{$lang->thread_rating}</strong>
@@ -3198,8 +3198,16 @@ ul.thread_tools li.subscription_remove {
 </tr>
 </table>
 ]]></template>
-		<template name="header_welcomeblock_guest" version="120"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)]]></template>
+		<template name="header_welcomeblock_guest" version="1400"><![CDATA[<script type="text/javascript">
+<!--
+	lang.username = "{$lang->login_username}";
+	lang.password = "{$lang->login_password}";
+	lang.login = "{$lang->login}";
+	lang.register_url = " &mdash; <a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->welcome_register}<\/a>";
+// -->
+</script>
+<span style="float: right;">{$lang->welcome_current_time}</span>
+		<span id="quick_login">{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)</span>]]></template>
 		<template name="header" version="1400"><![CDATA[	<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
@@ -3852,7 +3860,7 @@ body {
 ({$lang->exported_date})
 
 {$pmsdownload}]]></template>
-		<template name="postbit_avatar" version="120"><![CDATA[<img src="{$post['avatar']}" alt="" {$avatar_width_height} />]]></template>
+		<template name="postbit_avatar" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}"><img src="{$post['avatar']}" alt="" {$avatar_width_height} /></a>]]></template>
 		<template name="usercp_profile_customfield" version="1400"><![CDATA[<tr>
 <td><span class="smalltext">
 <a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:</span></td>
@@ -4469,7 +4477,7 @@ body {
 		<tr>
 			<td class="tcat">
 				<div class="float_left smalltext">
-					<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>{$post['postdate']}, {$post['posttime']}
+					<a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>{$post['postdate']}, {$post['posttime']} <span id="edited_by_{$post['pid']}">{$post['editedmsg']}</span>
 				</div>
 				{$post['posturl']}
 			</td>
@@ -4507,10 +4515,9 @@ body {
 				</div>
 				{$post['attachments']}
 				{$post['signature']}
-
+				
 				<div class="post_meta" id="post_meta_{$post['pid']}">
-				<div id="edited_by_{$post['pid']}">{$post['editedmsg']}</div>
-					{$post['iplogged']}
+				{$post['iplogged']}
 				</div>
 			</td>
 		</tr>
@@ -6139,7 +6146,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<a href="modcp.php?action=ipsearch&amp;ipaddress={$post['ipaddress']}&amp;search_posts=1">{$lang->search_ip_posts}</a>
 </td>
 </tr>]]></template>
-		<template name="postbit_iplogged_hiden" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></div>]]></template>
+		<template name="postbit_iplogged_hiden" version="1400"><![CDATA[<p class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></p>]]></template>
 		<template name="usercp_options_tppselect" version="120"><![CDATA[<tr>
 <td colspan="2"><span class="smalltext">{$lang->tpp}</span></td>
 </tr>
@@ -6152,7 +6159,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </td>
 </tr>]]></template>
 		<template name="index_logoutlink" version="1400"><![CDATA[<a href="member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->index_logout}</a> | ]]></template>
-		<template name="postbit_iplogged_show" version="120"><![CDATA[<div class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</div>]]></template>
+		<template name="postbit_iplogged_show" version="1400"><![CDATA[<p class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</p>]]></template>
 		<template name="usercp_changeavatar" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_avatar}</title>
@@ -6942,7 +6949,7 @@ To: {$to_recipients}
 </tr>]]></template>
 		<template name="online_row_ip" version="120"><![CDATA[<br /><span class="smalltext">{$lang->ip} {$user['ip']} <a href="modcp.php?action=ipsearch&amp;ipaddress={$user['ip']}&amp;search_users=1">{$lang->lookup}</a></span>]]></template>
 		<template name="postbit_offline" version="1400"><![CDATA[<img src="{$theme['imgdir']}/buddy_offline.gif" title="{$lang->postbit_status_offline}" alt="{$lang->postbit_status_offline}" />]]></template>
-		<template name="postbit_editedby" version="1400"><![CDATA[<p class="smalltext">{$post['editnote']} {$post['editedprofilelink']}.</p>
+		<template name="postbit_editedby" version="1400"><![CDATA[<span class="smalltext">({$post['editnote']} {$post['editedprofilelink']}.)</span>
 
 ]]></template>
 		<template name="member_register_requiredfields" version="1400"><![CDATA[<br />

@@ -314,8 +314,69 @@ var MyBB = {
 			return false;
 		}
 		form.submit();
+	},
+	
+	quickLogin: function()
+	{
+		if($("quick_login_form"))
+		{
+			$("quick_login_form").submit();
+			return true;
+		}
+		
+		if($("quick_login"))
+		{
+			var form = document.createElement("form");
+			form.setAttribute("method", "post");
+			form.setAttribute("action", "member.php");
+			form.setAttribute("id", "quick_login_form");
+			
+			var input = document.createElement("input");
+			input.setAttribute("name", "action");
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", "do_login");
+			form.appendChild(input);
+			
+			var input = document.createElement("input");
+			input.setAttribute("name", "username");
+			input.setAttribute("type", "text");
+			input.setAttribute("value", lang.username);
+			input.setAttribute("class", "textbox");
+			input.setAttribute("onfocus", "if(this.value == '"+lang.username+"') { this.value=''; }");
+			input.setAttribute("onblur", "if(this.value == '') { this.value='"+lang.username+"'; }");
+			form.appendChild(input);
+			
+			form.innerHTML += " ";
+			
+			var input = document.createElement("input");
+			input.setAttribute("name", "password");
+			input.setAttribute("type", "password");
+			input.setAttribute("value", lang.password);
+			input.setAttribute("class", "textbox");
+			input.setAttribute("onfocus", "if(this.value == '"+lang.password+"') { this.value=''; }");
+			input.setAttribute("onblur", "if(this.value == '') { this.value='"+lang.password+"'; }");
+			form.appendChild(input);
+			
+			form.innerHTML += " ";
+			
+			var input = document.createElement("input");
+			input.setAttribute("name", "submit");
+			input.setAttribute("type", "submit");
+			input.setAttribute("value", lang.login);
+			input.setAttribute("class", "button");
+			form.appendChild(input);
+			
+			form.innerHTML += lang.register_url;
+			
+			$("quick_login").innerHTML = "";
+			$("quick_login").appendChild(form);
+		}
+		
+		return false;
 	}
 };
+
+
 
 var Cookie = {
 	get: function(name)
