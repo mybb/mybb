@@ -3207,7 +3207,7 @@ ul.thread_tools li.subscription_remove {
 // -->
 </script>
 <span style="float: right;">{$lang->welcome_current_time}</span>
-		<span id="quick_login">{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)</span>]]></template>
+		<span id="quick_login">{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="MyBB.quickLogin(); return false;">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)</span>]]></template>
 		<template name="header" version="1400"><![CDATA[	<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
