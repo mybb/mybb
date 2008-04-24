@@ -317,19 +317,12 @@ var MyBB = {
 	},
 	
 	quickLogin: function()
-	{
-		if($("quick_login_form"))
-		{
-			$("quick_login_form").submit();
-			return true;
-		}
-		
+	{		
 		if($("quick_login"))
 		{
 			var form = document.createElement("form");
 			form.setAttribute("method", "post");
 			form.setAttribute("action", "member.php");
-			form.setAttribute("id", "quick_login_form");
 			
 			var input = document.createElement("input");
 			input.setAttribute("name", "action");
