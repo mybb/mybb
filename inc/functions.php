@@ -1673,6 +1673,7 @@ function update_stats($changes=array())
 		$new_stats['lastuid'] = $lastmember['uid'];
 		$new_stats['lastusername'] = $lastmember['username'];
 	}
+	
 	if(is_array($stats))
 	{
 		$stats = array_merge($stats, $new_stats);

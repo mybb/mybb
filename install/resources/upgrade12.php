@@ -856,6 +856,8 @@ function upgrade12_dbchanges4()
 
 	$db->update_query("users", array('dstcorrection' => 2));
 	
+	$db->update_query("adminoptions", array('cpstyle' => ''));
+	
 	if($db->field_exists('permsset', "adminoptions") && !$db->field_exists('permissions', "adminoptions"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
