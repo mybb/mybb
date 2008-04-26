@@ -314,7 +314,175 @@ if($mybb->input['action'] == "export")
 
 	if($mybb->request_method == "post")
 	{
+		$properties = unserialize($theme['properties']);
+	
+		$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\r\n";
+		$xml .= "<theme name=\"".$theme['name']."\" version=\"".$mybb->version_code."\">\r\n";
+		$xml .= "\t<properties>\r\n";
+		foreach($properties as $property => $value)
+		{
+			if($property == "inherited") continue;
+			
+			$xml .= "\t\t<{$property}><![CDATA[{$value}]]></{$property}>\r\n";
+		}
+		$xml .= "\t</properties>\r\n";
+		
+		// Fetch list of all of the stylesheets for this theme
+		$file_stylesheets = unserialize($theme['stylesheets']);
+		
+		$stylesheets = array();
+		$inherited_load = array();
+		
+		// Now we loop through the list of stylesheets for each file
+		foreach($file_stylesheets as $file => $action_stylesheet)
+		{
+			if($file == 'inherited')
+			{
+				continue;
+			}
+			
+			foreach($action_stylesheet as $action => $style)
+			{
+				foreach($style as $stylesheet)
+				{
+					$stylesheets[$stylesheet]['applied_to'][$file][] = $action;
+					if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet, array_keys($file_stylesheets['inherited'][$file."_".$action])))
+					{
+						$stylesheets[$stylesheet]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
+						foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
+						{
+							$inherited_load[] = $value;
+						}
+					}
+				}
+			}
+		}
+		
+		$inherited_load[] = $mybb->input['tid'];
+		$inherited_load = array_unique($inherited_load);
+		
+		$inherited_themes = array();
+		if(count($inherited_load) > 0)
+		{
+			$query = $db->simple_select("themes", "tid, name", "tid IN (".implode(",", $inherited_load).")");
+			while($inherited_theme = $db->fetch_array($query))
+			{
+				$inherited_themes[$inherited_theme['tid']] = $inherited_theme['name'];
+			}
+		}
+		
+		$theme_stylesheets = array();
+		
+		if(count($inherited_load) > 0)
+		{
+			$query = $db->simple_select("themestylesheets", "*", "tid IN (".implode(",", $inherited_load).")", array('order_by' => 'tid', 'order_dir' => 'desc'));
+			while($theme_stylesheet = $db->fetch_array($query))
+			{
+				if(!$theme_stylesheets[$theme_stylesheet['cachefile']])
+				{
+					$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
+				}
+			}
+		}
+		
+		$xml .= "\t<stylesheets>\r\n";
+		foreach($stylesheets as $filename => $style)
+		{
+			$filename = basename($filename);
+			$style['tid'] = $theme_stylesheets[$filename]['tid'];
+			
+			if($mybb->input['custom_theme'] == 1 && $style['tid'] != $mybb->input['tid'])
+			{
+				continue;
+			}
+			
+			// Has the file on the file system been modified?
+			resync_stylesheet($theme_stylesheets[$filename]);
+			
+			$style['sid'] = $theme_stylesheets[$filename]['sid'];
+			
+			$attachedto = $theme_stylesheets[$filename]['attachedto'];
+			$stylesheet = $theme_stylesheets[$filename]['stylesheet'];
+	
+			if($attachedto)
+			{
+				$attachedto = "attachedto=\"{$attachedto}\" ";
+			}
+			
+			$filename = $theme_stylesheets[$filename]['name'];
+			
+			$xml .= "\t\t<stylesheet name=\"{$filename}\" {$attachedto}version=\"{$mybb->version_code}\"><![CDATA[{$stylesheet}]]>\r\n\t\t</stylesheet>\r\n";
+		
+		}
+		$xml .= "\t</stylesheets>\r\n";
+		
+		if($mybb->input['include_templates'] != 0)
+		{
+			$xml .= "\t<templates>\r\n";
+			$query = $db->simple_select("templates", "*", "sid='".$properties['templateset']."'");
+			while($template = $db->fetch_array($query))
+			{
+				$xml .= "\t\t<template name=\"{$template['title']}\" version=\"{$template['version']}\"><![CDATA[{$template['template']}]]></template>\r\n";
+			}
+			$xml .= "\t</templates>\r\n";
+		}
+		$xml .= "</theme>";
+		
+		$theme['name'] = rawurlencode($theme['name']);
+		header("Content-disposition: attachment; filename=".$theme['name']."-theme.xml");
+		header("Content-Length: ".my_strlen($xml));
+		header("Content-type: application/octet-stream");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		echo $xml;
+		exit;
 	}
+	
+	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
+		
+	$page->add_breadcrumb_item($lang->export_theme, "index.php?module=style/themes&amp;action=export");
+	
+	$page->output_header("{$lang->themes} - {$lang->export_theme}");
+	
+	$sub_tabs['edit_stylesheets'] = array(
+		'title' => $lang->edit_stylesheets,
+		'link' => "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}",
+	);
+
+	$sub_tabs['add_stylesheet'] = array(
+		'title' => $lang->add_stylesheet,
+		'link' => "index.php?module=style/themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+	);
+	
+	$sub_tabs['export_theme'] = array(
+		'title' => $lang->export_theme,
+		'link' => "index.php?module=style/themes&amp;action=export&amp;tid={$mybb->input['tid']}",
+		'description' => $lang->export_theme_desc
+	);
+	
+	$page->output_nav_tabs($sub_tabs, 'export_theme');
+	
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+	
+	$form = new Form("index.php?module=style/themes&amp;action=export", "post");
+	echo $form->generate_hidden_field("tid", $theme['tid']);
+	
+	$form_container = new FormContainer($lang->export_theme.": ".htmlspecialchars_uni($theme['name']));
+	$form_container->output_row($lang->include_custom_only, $lang->include_custom_only_desc, $form->generate_yes_no_radio('custom_theme', $mybb->input['custom_theme']), 'custom_theme');
+	$form_container->output_row($lang->include_templates, $lang->include_templates_desc, $form->generate_yes_no_radio('include_templates', $mybb->input['include_templates']), 'include_templates');
+	
+	$form_container->end();
+	
+	$buttons[] = $form->generate_submit_button($lang->export_theme);
+
+	$form->output_submit_wrapper($buttons);
+	
+	$form->end();
+	
+	$page->output_footer();
 }
 
 if($mybb->input['action'] == "add")
@@ -550,10 +718,6 @@ if($mybb->input['action'] == "edit")
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
 	
-	echo "<pre>";
-	print_r($file_stylesheets);
-	echo "</pre>";
-	
 	$stylesheets = array();
 	$inherited_load = array();
 	
@@ -623,6 +787,11 @@ if($mybb->input['action'] == "edit")
 	$sub_tabs['add_stylesheet'] = array(
 		'title' => $lang->add_stylesheet,
 		'link' => "index.php?module=style/themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
+	);
+	
+	$sub_tabs['export_theme'] = array(
+		'title' => $lang->export_theme,
+		'link' => "index.php?module=style/themes&amp;action=export&amp;tid={$mybb->input['tid']}"
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheets');
@@ -1786,6 +1955,11 @@ if($mybb->input['action'] == "add_stylesheet")
 		'title' => $lang->add_stylesheet,
 		'link' => "index.php?module=style/themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
 		'description' => "Here you can add a new stylesheet to this theme. You will be taken to the stylesheet edit page following creation."
+	);
+	
+	$sub_tabs['export_theme'] = array(
+		'title' => $lang->export_theme,
+		'link' => "index.php?module=style/themes&amp;action=export&amp;tid={$mybb->input['tid']}"
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'add_stylesheet');

@@ -19,6 +19,13 @@ $l['edit_stylesheets'] = "Edit Stylesheets";
 $l['edit_stylesheets_desc'] = "Here you can easily manage this theme's stylesheets.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
+$l['export_theme'] = "Export Theme";
+$l['export_theme_desc'] = "Here you can export your themes and customized templates.";
+
+$l['include_custom_only'] = "Include Custom only?";
+$l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
+$l['include_templates'] = "Include Templates?";
+$l['include_templates_desc'] = "If you want to export the customized templates used in this theme as well, select yes.";
 
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
 $l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet.";
