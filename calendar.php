@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 
 $templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar_eventbit_public,calendar_eventbit_private,calendar";
 $templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview,calendar_eventbit,calendar_addeventlink";
-$templatelist .= "calendar_event_editbutton,calendar_event_modoptions,calendar_event";
+$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_event,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,calendar_editevent";
 
 require_once "./global.php";
 
@@ -768,7 +768,7 @@ if($mybb->input['action'] == "editevent")
 		$start_day = $start_date[0];
 		$start_month[$start_date[1]] = " selected=\"selected\"";
 		$start_year = $start_date[2];
-		if($event['usingtimes'])
+		if($event['usingtime'])
 		{
 			$start_time = $start_date[3];
 		}
@@ -778,7 +778,7 @@ if($mybb->input['action'] == "editevent")
 			$end_day = $end_date[0];
 			$end_month[$end_date[1]] = " selected=\"selected\"";
 			$end_year = $end_date[2];
-			if($event['usingtimes'])
+			if($event['usingtime'])
 			{
 				$end_time = $end_date[3];
 			}

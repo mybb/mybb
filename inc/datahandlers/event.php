@@ -177,13 +177,13 @@ class EventDataHandler extends DataHandler
 					$this->set_error("end_time_invalid");
 					return false;
 				}
-				$event['usingtimes'] = 1;
+				$event['usingtime'] = 1;
 			}
 			else
 			{
 				$start_time = array("hour" => 0, "min" => 0);
 				$end_time = array("hour" => 23, "min" => 59);
-				$event['usingtimes'] = 0;
+				$event['usingtime'] = 0;
 			}
 		}
 
