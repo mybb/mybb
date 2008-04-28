@@ -1894,7 +1894,6 @@ if($mybb->input['action'] == "add_stylesheet")
 			{
 				// Import from a current stylesheet
 				$parent_list = make_parent_theme_list($theme['tid']);
-	$parent_list = implode(',', $parent_list);
 				$parent_list = implode(',', $parent_list);
 				
 				$query = $db->simple_select("themestylesheets", "stylesheet", "name='".$db->escape_string($mybb->input['import'])."' AND tid IN ({$parent_list})", array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'desc'));
