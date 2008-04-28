@@ -320,7 +320,7 @@ function resync_stylesheet($stylesheet)
 
 function fix_css_urls($url)
 {
-	if(!preg_match("#^(https?://|/)#i", $url) && strpos($url, "../../../") !== false)
+	if(!preg_match("#^(https?://|/)#i", $url) && strpos($url, "../../../") === false)
 	{
 		return "url(../../../{$url})";
 	}
