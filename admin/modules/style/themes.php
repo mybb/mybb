@@ -890,7 +890,7 @@ if($mybb->input['action'] == "edit")
 		
 		if($inherited == "")
 		{
-			$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
+			$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 		
 		$table->construct_cell("<strong>{$filename}</strong>{$inherited}<br />{$attached_to}");

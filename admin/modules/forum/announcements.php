@@ -650,7 +650,7 @@ if(!$mybb->input['action'])
 	{
 		$table = new Table;
 		$table->construct_header($lang->announcement);
-		$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
+		$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 150));
 		
 		// Get the global announcements
 		foreach($global_announcements as $aid => $announcement)

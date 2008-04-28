@@ -45,6 +45,14 @@ $lang = new MyLanguage();
 $lang->set_path(MYBB_ROOT.'install/resources/');
 $lang->load('language');
 
+require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
+$db = new databaseEngine;
+	
+// Connect to Database
+define('TABLE_PREFIX', $config['database']['table_prefix']);
+$db->connect($config['database']);
+$db->set_table_prefix(TABLE_PREFIX);
+
 // Load Settings
 if(file_exists(MYBB_ROOT."inc/settings.php"))
 {
@@ -101,14 +109,6 @@ require_once INSTALL_ROOT."resources/output.php";
 $output = new installerOutput;
 $output->script = "upgrade.php";
 $output->title = "MyBB Upgrade Wizard";
-
-require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
-$db = new databaseEngine;
-	
-// Connect to Database
-define('TABLE_PREFIX', $config['database']['table_prefix']);
-$db->connect($config['database']);
-$db->set_table_prefix(TABLE_PREFIX);
 
 if(file_exists("lock"))
 {

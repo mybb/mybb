@@ -990,16 +990,11 @@ function upgrade12_dbchanges4()
 				}
 				$new_permissions[$convert_permissions[$field]['module']][$convert_permissions[$field]['permission']] = $value;
 			}
-			// If the page is new and we don't have anything to inherit the permissions from we allow it by default
-			else
-			{
-				$value = 1;
-			}
 		}
 		
 		$db->update_query("adminoptions", array('permissions' => serialize($new_permissions)), "uid = '{$adminoption['uid']}'");
 		
-		$new_permissions = array();	
+		$new_permissions = $default_permissions;
 	}
 
 	foreach($convert_permissions as $field => $value)
@@ -1816,7 +1811,7 @@ function upgrade12_redothemes()
 	require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	
 	// Import master theme
-	import_theme_xml($contents, array("tid" => 1));
+	import_theme_xml($contents, array("tid" => 1, "no_templates" => 1));
 
 	// Fetch out default stylesheets from master
 	$query = $db->simple_select("themes", "*", "tid=1");

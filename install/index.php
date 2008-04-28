@@ -282,6 +282,21 @@ function requirements_check()
 	echo $lang->req_step_top;
 	$errors = array();
 	$showerror = 0;
+	
+	if(!file_exists(MYBB_ROOT."/inc/config.php"))
+	{
+		if(!@rename(MYBB_ROOT."/inc/config.default.php", MYBB_ROOT."/inc/config.php"))
+		{
+			if(!$configwritable)
+			{
+				$errors[] = $lang->sprintf($lang->req_step_error_box, $lang->req_step_error_configdefaultfile);
+				$configstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
+				$showerror = 1;
+			}
+			
+			@fclose($configwritable);
+		}
+	}
 
 	// Check PHP Version
 	$phpversion = @phpversion();
