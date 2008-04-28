@@ -967,16 +967,6 @@ if($mybb->input['action'] == "edit")
 
 if($mybb->input['action'] == "stylesheet_properties")
 {
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
-
-	// Does the theme not exist?
-	if(!$stylesheet['sid'])
-	{
-		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style/themes");
-	}
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -984,6 +974,23 @@ if($mybb->input['action'] == "stylesheet_properties")
 	if(!$theme['tid'])
 	{
 		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
+	$parent_list = make_parent_theme_list($theme['tid']);
+	$parent_list = implode(',', $parent_list);
+	if(!$parent_list)
+	{
+		$parent_list = 1;
+	}
+	
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
+	$stylesheet = $db->fetch_array($query);
+	
+	// Does the theme not exist?
+	if(!$stylesheet['sid'])
+	{
+		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style/themes");
 	}
 	
@@ -1279,16 +1286,6 @@ Event.observe(window, "load", function() {
 // Shows the page where you can actually edit a particular selector or the whole stylesheet
 if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $mybb->input['mode'] == "simple"))
 {
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
-	
-	// Does the theme not exist?
-	if(!$stylesheet['sid'])
-	{
-		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style/themes");
-	}
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -1296,6 +1293,23 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	if(!$theme['tid'])
 	{
 		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
+	$parent_list = make_parent_theme_list($theme['tid']);
+	$parent_list = implode(',', $parent_list);
+	if(!$parent_list)
+	{
+		$parent_list = 1;
+	}
+	
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
+	$stylesheet = $db->fetch_array($query);
+	
+	// Does the theme not exist?
+	if(!$stylesheet['sid'])
+	{
+		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style/themes");
 	}
 
@@ -1558,16 +1572,6 @@ Event.observe(window, "load", function() {
 
 if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advanced")
 {
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
-	$stylesheet = $db->fetch_array($query);
-
-	// Does the theme not exist?
-	if(!$stylesheet['sid'])
-	{
-		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style/themes");
-	}
-
 	// Fetch the theme we want to edit this stylesheet in
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
@@ -1575,6 +1579,23 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if(!$theme['tid'])
 	{
 		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
+	$parent_list = make_parent_theme_list($theme['tid']);
+	$parent_list = implode(',', $parent_list);
+	if(!$parent_list)
+	{
+		$parent_list = 1;
+	}
+	
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
+	$stylesheet = $db->fetch_array($query);
+	
+	// Does the theme not exist?
+	if(!$stylesheet['sid'])
+	{
+		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style/themes");
 	}
 
@@ -1749,23 +1770,30 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 if($mybb->input['action'] == "delete_stylesheet")
 {
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
+	// Fetch the theme we want to edit this stylesheet in
+	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
+	$theme = $db->fetch_array($query);
+	
+	if(!$theme['tid'])
+	{
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
+	$parent_list = make_parent_theme_list($theme['tid']);
+	$parent_list = implode(',', $parent_list);
+	if(!$parent_list)
+	{
+		$parent_list = 1;
+	}
+	
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
-
+	
 	// Does the theme not exist?
 	if(!$stylesheet['sid'])
 	{
 		flash_message($lang->error_invalid_stylesheet, 'error');
-		admin_redirect("index.php?module=style/themes");
-	}
-	
-	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
-	$theme = $db->fetch_array($query);
-
-	// Does the theme not exist?
-	if(!$theme['tid'])
-	{
-		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style/themes");
 	}
 	
@@ -1866,6 +1894,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			{
 				// Import from a current stylesheet
 				$parent_list = make_parent_theme_list($theme['tid']);
+	$parent_list = implode(',', $parent_list);
 				$parent_list = implode(',', $parent_list);
 				
 				$query = $db->simple_select("themestylesheets", "stylesheet", "name='".$db->escape_string($mybb->input['import'])."' AND tid IN ({$parent_list})", array('limit' => 1, 'order_by' => 'tid', 'order_dir' => 'desc'));
