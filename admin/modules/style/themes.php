@@ -555,7 +555,7 @@ if($mybb->input['action'] == "delete")
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?module=styles/themes");
+		admin_redirect("index.php?module=style/themes");
 	}
 
 	if($mybb->request_method == "post")
@@ -594,7 +594,7 @@ if($mybb->input['action'] == "delete")
 		
 		if($inherited_stylesheets == true)
 		{			
-			flash_message("You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.", 'error');
+			flash_message($lang->error_inheriting_stylesheets, 'error');
 			admin_redirect("index.php?module=style/themes");
 		}
 		
@@ -942,11 +942,11 @@ if($mybb->input['action'] == "edit")
 	{
 		while($dir = readdir($dh))
 		{
-			if($dir == "." || $dir == ".." || !is_dir($editor_theme_root.$dir))
+			if($dir == ".svn" || $dir == "." || $dir == ".." || !is_dir($editor_theme_root.$dir))
 			{
 				continue;
 			}
-			$options[$dir] = $dir;
+			$options[$dir] = ucfirst(str_replace('_', ' ', $dir));
 		}
 	}
 	$form_container->output_row($lang->editor_theme." <em>*</em>", $lang->editor_theme_desc, $form->generate_select_box('editortheme', $options, $properties['editortheme'], array('id' => 'editortheme')), 'editortheme');
@@ -1251,9 +1251,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 	echo $form->generate_hidden_field("tid", $theme['tid'])."<br />\n";
 
 	$form_container = new FormContainer("{$lang->edit_stylesheet_properties_for} ".htmlspecialchars_uni($stylesheet['name']));
-	$form_container->output_row($lang->file_name, "", $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
+	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 	
-	$form_container->output_row("Attached To", "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.", $actions);
+	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
 	
 	$form_container->end();
 	
@@ -1387,7 +1387,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	// Do we not have any selectors? Send em to the full edit page
 	if(!$selector_list)
 	{
-		flash_message("MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.", 'error');
+		flash_message($lang->error_cannot_parse, 'error');
 		admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&file=".htmlspecialchars_uni($stylesheet['name'])."&mode=advanced");
 		exit;
 	}
@@ -1772,7 +1772,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?module=style/templates");
+		admin_redirect("index.php?module=style/themes");
 	}
 
 	if($mybb->request_method == "post")
@@ -1929,7 +1929,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			// Update the CSS file list for this theme
 			update_theme_stylesheet_list($theme['tid']);
 		
-			flash_message("Successfully added the stylesheet.", 'success');
+			flash_message($lang->success_stylesheet_added, 'success');
 			admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}");
 		}
 	}
@@ -1944,7 +1944,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item("Add Stylesheet");
 	
-	$page->output_header("{$lang->themes} - Add Stylesheet");
+	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
 	
 	$sub_tabs['edit_stylesheets'] = array(
 		'title' => $lang->edit_stylesheets,
@@ -1954,7 +1954,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	$sub_tabs['add_stylesheet'] = array(
 		'title' => $lang->add_stylesheet,
 		'link' => "index.php?module=style/themes&amp;action=add_stylesheet&amp;tid={$mybb->input['tid']}",
-		'description' => "Here you can add a new stylesheet to this theme. You will be taken to the stylesheet edit page following creation."
+		'description' => $lang->add_stylesheet_desc
 	);
 	
 	$sub_tabs['export_theme'] = array(
@@ -2074,10 +2074,10 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
 	
-	$form_container = new FormContainer("Add Stylesheet to ".htmlspecialchars_uni($theme['name']));
-	$form_container->output_row($lang->file_name, "Name for the stylesheet, usually ending in <strong>[.css]</strong>", $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
+	$form_container = new FormContainer("{$lang->add_stylesheet_to} ".htmlspecialchars_uni($theme['name']));
+	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 	
-	$form_container->output_row("Attached To", "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.", $actions);
+	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
 	
 	$sheetnames = array();
 	foreach($stylesheets as $filename => $style)
@@ -2086,7 +2086,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 	
 	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"1\" {$add_checked[1]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>Import from</strong></label></dt>
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"1\" {$add_checked[1]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->import_from}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"add_1\" class=\"adds\">
 			<table cellpadding=\"4\">
 				<tr>
@@ -2094,7 +2094,7 @@ if($mybb->input['action'] == "add_stylesheet")
 				</tr>
 			</table>
 		</dd>
-		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"2\" {$add_checked[2]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>Write my own content</strong></label></dt>
+		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"2\" {$add_checked[2]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->write_own}</strong></label></dt>
 		<span id=\"add_2\" class=\"adds\"><br />".$form->generate_text_area('stylesheet', $mybb->input['stylesheet'], array('id' => 'stylesheet', 'style' => 'width: 99%;', 'class' => 'codepress css', 'rows' => '30'))."</span>
 	</dl>";
 	
@@ -2102,7 +2102,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	$form_container->end();
 	
-	$buttons[] = $form->generate_submit_button("Save Stylesheet");
+	$buttons[] = $form->generate_submit_button($lang->save_stylesheet);
 
 	$form->output_submit_wrapper($buttons);
 	
@@ -2167,7 +2167,7 @@ if($mybb->input['action'] == "force")
 	// User clicked no
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?module=style/templates");
+		admin_redirect("index.php?module=style/themes");
 	}
 
 	if($mybb->request_method == "post")

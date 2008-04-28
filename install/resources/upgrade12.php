@@ -266,7 +266,7 @@ function upgrade12_dbchanges_post2()
 		flush();
 	}
 	
-	echo "<p>Adding loginipaddress column to posts table ... ";
+	echo "<p>Adding longipaddress column to posts table ... ";
 	flush();
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(10) NOT NULL default '0' AFTER ipaddress");
@@ -760,7 +760,17 @@ function upgrade12_dbchanges3()
 	$ban_types = array('bannedips', 'bannedemails', 'bannedusernames');
 	foreach($ban_types as $type)
 	{
+		// Some people put spaces or breaks (\r\n) instead, so we should take that into account.
+		$mybb->settings[$type] = str_replace(array("\n", "\r\n", "\r"), ",", $mybb->settings[$type]);
+		
+		// Usernames can have spaces so don't replace those with commas.
+		if($type != 'bannedusernames')
+		{
+			$mybb->settings[$type] = str_replace(" ", ",", $mybb->settings[$type]);
+		}
+		
 		$bans = explode(",", $mybb->settings[$type]);
+		$bans = array_unique($bans);
 		$bans = array_map("trim", $bans);
 		foreach($bans as $ban)
 		{
@@ -1238,6 +1248,9 @@ function upgrade12_redoconfig()
 
 	if(!is_array($config['database']))
 	{
+		// Backup our old Config file
+		@copy(MYBB_ROOT."inc/config.php", MYBB_ROOT."inc/config.backup.php");
+		
 		$fh = @fopen(MYBB_ROOT."inc/config.php", "w");
 		if(!$fh)
 		{
@@ -1840,6 +1853,11 @@ function upgrade12_redothemes()
 	$query = $db->simple_select("themes");
 	while($theme = $db->fetch_array($query))
 	{
+		if(!$theme['css'])
+		{
+			continue;
+		}
+		
 		$theme['css'] .= "\n\n".$theme['extracss'];
 		
 		$theme['css'] = upgrade_css_120_to_140($theme['css']);
@@ -1881,6 +1899,16 @@ function upgrade12_redothemes()
 	if($db->field_exists('extracss', "themes"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."themes DROP extracss");
+	}
+	
+	// We need to replace this for our themes css to show up
+	// <link rel="stylesheet" type="text/css" href="{$theme['css_url']}" /> must be present in the old template (it usually is)
+	$query = $db->simple_select("templates", "tid,template", "title='headerinclude'");
+	while($template = $db->fetch_array($query))
+	{
+		$template['template'] = str_replace('<link rel="stylesheet" type="text/css" href="{$theme[\'css_url\']}" />', '{$stylesheets}', $template['template']);
+		
+		$db->update_query("templates", array('template' => $db->escape_string($template['template'])), "tid='{$template['tid']}'");
 	}
 
 	echo "<p>Your themes have successfully been converted to the new theme system.</p>";

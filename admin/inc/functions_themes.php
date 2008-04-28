@@ -932,7 +932,7 @@ function build_theme_list($parent=0, $depth=0)
 			{
 				$set_default = "<img src=\"\" title=\"{$lang->default_theme}\" />";
 			}
-			$popup->add_item($lang->force_on_users, "index.php?module=style/themes&amp;action=force&amp;tid={$theme['tid']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
+			$popup->add_item($lang->force_on_users, "index.php?module=style/themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
 		}
 		$popup->add_item($lang->export_theme, "index.php?module=style/themes&amp;action=export&amp;tid={$theme['tid']}");
 		$table->construct_cell("<div class=\"float_right;\">{$set_default}</div><div style=\"margin-left: {$padding}px\"><strong>{$theme['name']}</strong></div>");
@@ -994,7 +994,12 @@ function upgrade_css_120_to_140($css)
 {
 	// Update our CSS to the new stuff in 1.4
 	$parsed_css = css_to_array($css);
-
+	
+	if(!is_array($parsed_css))
+	{
+		return "";
+	}
+	
 	foreach($parsed_css as $class_id => $array)
 	{
 		$parsed_css[$class_id]['values'] = str_replace('#eea8a1', '#ffdde0', $array['values']);

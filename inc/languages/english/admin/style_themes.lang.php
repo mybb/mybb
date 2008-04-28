@@ -19,6 +19,8 @@ $l['edit_stylesheets'] = "Edit Stylesheets";
 $l['edit_stylesheets_desc'] = "Here you can easily manage this theme's stylesheets.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
+$l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. You will be taken to the stylesheet edit page following creation.";
+
 $l['export_theme'] = "Export Theme";
 $l['export_theme_desc'] = "Here you can export your themes and customized templates.";
 
@@ -95,6 +97,7 @@ $l['font_weight'] = "Font Weight";
 $l['stylesheets'] = "Stylesheets";
 $l['inherited_from'] = "Inherited from";
 $l['attached_to'] = "Attached to";
+$l['attached_to_desc'] = "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.";
 $l['actions'] = "actions";
 $l['of'] = "of";
 $l['attached_to_all_pages'] = "Attached to all pages";
@@ -111,6 +114,7 @@ $l['file'] = "File";
 $l['add_another'] = "Add another";
 $l['edit_stylesheet_properties_for'] = "Edit Stylesheet Properties for";
 $l['file_name'] = "File Name";
+$l['file_name_desc'] = "Name for the stylesheet, usually ending in <strong>[.css]</strong>";
 $l['save_stylesheet_properties'] = "Save Stylesheet Properties";
 $l['saved'] = "Saved";
 $l['editing'] = "Editing";
@@ -119,6 +123,10 @@ $l['save_changes'] = "Save Changes";
 $l['save_changes_and_close'] = "Save Changes & Close";
 $l['save_changes_js'] = "Do you want to save your changes first?";
 $l['delete_confirm_js'] = "Are you sure you want to delete this?";
+$l['import_from'] = "Import Form";
+$l['write_own'] = "Write my own content";
+$l['save_stylesheet'] = "Save Stylesheet";
+$l['add_stylesheet_to'] = "Add Stylesheet to";
 
 $l['full_stylesheet_for'] = "Full Stylesheet for";
 
@@ -143,6 +151,8 @@ $l['error_missing_stylesheet_name'] = "Please enter a name for this stylesheet."
 $l['error_invalid_parent_theme'] = "The selected parent theme does not exist. Please select a valid parent theme.";
 $l['error_invalid_templateset'] = "The selected template set does not exist. Please select a valid template set.";
 $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Please select a valid editor theme.";
+$l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
+$l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
 
 $l['success_imported_theme'] = "Successfully imported the theme.";
 $l['success_theme_created'] = "Successfully created the theme.";
@@ -153,6 +163,7 @@ $l['success_stylesheet_deleted'] = "Successfully deleted the selected stylesheet
 $l['success_theme_set_default'] = "The selected theme has now been marked as the default.";
 $l['success_theme_forced'] = "The selected theme has now been forced as the default to all users.";
 $l['success_theme_properties_updated'] = "Successfully updated the specified theme's properties.";
+$l['success_stylesheet_added'] = "Successfully added the stylesheet.";
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete this stylesheet?";
