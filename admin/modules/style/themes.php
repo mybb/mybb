@@ -97,7 +97,7 @@ if($mybb->input['action'] == "import")
 {
 	if($mybb->request_method == "post")
 	{
-		if(!$mybb->input['local_file'] && !$mybb->input['url'])
+		if(!$_FILES['local_file'] && !$mybb->input['url'])
 		{
 			$errors[] = $lang->error_missing_url;
 		}
@@ -105,13 +105,13 @@ if($mybb->input['action'] == "import")
 		if(!$errors)
 		{
 			// Find out if there was an uploaded file
-			if($_FILES['compfile']['error'] != 4)
+			if($_FILES['local_file']['error'] != 4)
 			{
 				// Find out if there was an error with the uploaded file
-				if($_FILES['compfile']['error'] != 0)
+				if($_FILES['local_file']['error'] != 0)
 				{
 					$errors[] = $lang->error_uploadfailed.$lang->error_uploadfailed_detail;
-					switch($_FILES['compfile']['error'])
+					switch($_FILES['local_file']['error'])
 					{
 						case 1: // UPLOAD_ERR_INI_SIZE
 							$errors[] = $lang->error_uploadfailed_php1;
@@ -132,7 +132,7 @@ if($mybb->input['action'] == "import")
 							$errors[] = $lang->error_uploadfailed_php7;
 							break;
 						default:
-							$errors[] = $lang->sprintf($lang->error_uploadfailed_phpx, $_FILES['compfile']['error']);
+							$errors[] = $lang->sprintf($lang->error_uploadfailed_phpx, $_FILES['local_file']['error']);
 							break;
 					}
 				}
@@ -140,14 +140,14 @@ if($mybb->input['action'] == "import")
 				if(!$errors)
 				{
 					// Was the temporary file found?
-					if(!is_uploaded_file($_FILES['compfile']['tmp_name']))
+					if(!is_uploaded_file($_FILES['local_file']['tmp_name']))
 					{
 						$errors[] = $lang->error_uploadfailed_lost;
 					}
 					// Get the contents
-					$contents = @file_get_contents($_FILES['compfile']['tmp_name']);
+					$contents = @file_get_contents($_FILES['local_file']['tmp_name']);
 					// Delete the temporary file if possible
-					@unlink($_FILES['compfile']['tmp_name']);
+					@unlink($_FILES['local_file']['tmp_name']);
 					// Are there contents?
 					if(!trim($contents))
 					{
@@ -155,10 +155,10 @@ if($mybb->input['action'] == "import")
 					}
 				}
 			}
-			elseif(!empty($mybb->input['localfile']))
+			else if(!empty($mybb->input['url']))
 			{
 				// Get the contents
-				$contents = @fetch_remote_file($mybb->input['localfile']);
+				$contents = @fetch_remote_file($mybb->input['url']);
 				if(!$contents)
 				{
 					$errors[] = $lang->error_local_file;
@@ -168,10 +168,10 @@ if($mybb->input['action'] == "import")
 			if(!$errors)
 			{
 				$options = array(
-					'no_stylesheets' => intval($mybb->input['import_stylesheets']),
-					'no_templates' => intval($mybb->input['import_templates']),
+					'no_stylesheets' => ($mybb->input['import_stylesheets'] ? 0 : 1),
+					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
 					'version_compat' => intval($mybb->input['version_compat']),
-					'tid' => intval($mybb->input['tid']),
+					'parent' => intval($mybb->input['tid']),
 				);
 				$theme_id = import_theme_xml($contents, $options);
 				
@@ -205,7 +205,7 @@ if($mybb->input['action'] == "import")
 		$themes[$theme['tid']] = $theme['name'];
 	}
 	
-	$page->add_breadcrumb_item($lang->import_a_theme, "index.php?module=style/themes&amp;action=add");
+	$page->add_breadcrumb_item($lang->import_a_theme, "index.php?module=style/themes&amp;action=import");
 	
 	$page->output_header("{$lang->themes} - {$lang->import_a_theme}");
 	
@@ -235,7 +235,7 @@ if($mybb->input['action'] == "import")
 		$mybb->input['import_templates'] = true;
 	}
 	
-	$form = new Form("index.php?module=style/themes&amp;action=add", "post");
+	$form = new Form("index.php?module=style/themes&amp;action=import", "post", "", 1);
 	
 	$actions = '<script type="text/javascript">
     function checkAction(id)

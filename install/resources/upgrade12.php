@@ -1847,6 +1847,9 @@ function upgrade12_redothemes()
 	{
 		$theme['css'] .= "\n\n".$theme['extracss'];
 		
+		$theme['css'] = upgrade_css_120_to_140($theme['css']);
+		
+		
 		// Create stylesheets
 		$cache_file = cache_stylesheet($theme['tid'], "global.css", $theme['css']);
 
