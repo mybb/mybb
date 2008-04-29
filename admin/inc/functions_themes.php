@@ -310,8 +310,8 @@ function resync_stylesheet($stylesheet)
 	}
 	else if(@filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}") > $stylesheet['lastmodified'])
 	{
-		$contents = unfix_css_urls(file_get_contents(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"));		
-		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents)), "sid='{$stylesheet['sid']}'", 1);
+		$contents = unfix_css_urls(file_get_contents(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"));
+		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents), 'lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 		return true;
 	}
 	

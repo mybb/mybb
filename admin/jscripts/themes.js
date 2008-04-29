@@ -70,7 +70,7 @@ ThemeSelector.prototype = {
 		
 		this.saveCheck(e, true);
 		
-        postData = "file="+encodeURIComponent(this.file)+"&selector="+encodeURIComponent(this.selector.value)+"&my_post_key="+encodeURIComponent(my_post_key);
+        postData = "file="+encodeURIComponent(this.file)+"&tid="+encodeURIComponent(this.tid)+"&selector="+encodeURIComponent(this.selector.value)+"&my_post_key="+encodeURIComponent(my_post_key);
 		
 		this.selector_go = $("mini_spinner").innerHTML;
 		$("mini_spinner").innerHTML = "&nbsp;<img src=\""+this.miniSpinnerImage+"\" style=\"vertical-align: middle;\" alt=\"\" /> ";

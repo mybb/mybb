@@ -31,9 +31,27 @@ var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
 
 if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."'", array('order_by' => 'lastmodified', 'order_dir' => 'desc', 'limit' => 1));
+	// Fetch the theme we want to edit this stylesheet in
+	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
+	$theme = $db->fetch_array($query);
+	
+	if(!$theme['tid'])
+	{
+		flash_message($lang->error_invalid_theme, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
+	$parent_list = make_parent_theme_list($theme['tid']);
+	$parent_list = implode(',', $parent_list);
+	if(!$parent_list)
+	{
+		$parent_list = 1;
+	}
+	
+	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 	
+	// Does the theme not exist?
 	if(!$stylesheet['sid'])
 	{
 		flash_message($lang->error_invalid_stylesheet, 'error');
