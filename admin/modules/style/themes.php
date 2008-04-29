@@ -25,6 +25,7 @@ var delete_lang_string = '{$lang->delete}';
 var file_lang_string = '{$lang->file}';
 var globally_lang_string = '{$lang->globally}';
 var specific_actions_lang_string = '{$lang->specific_actions}';
+var specific_actions_desc_lang_string = '{$lang->specific_actions_desc}';
 var delete_confirm_lang_string = '{$lang->delete_confirm_js}';
 //]]>
 </script>";
@@ -1160,16 +1161,35 @@ if($mybb->input['action'] == "stylesheet_properties")
 		}
 	}
 	
+	$applied_to = $this_stylesheet['applied_to'];
+	unset($this_stylesheet);
+	
 	if($errors)
 	{
 		$page->output_inline_error($errors);
+		
+		foreach($mybb->input as $name => $value)
+		{
+			if(strpos($name, "attached") !== false)
+			{
+				list(, $id) = explode('_', $name);
+				$id = intval($id);
+				
+				$applied_to[$value] = array(0 => 'global');
+				
+				if($mybb->input['action_'.$id] == 1)
+				{
+					$applied_to[$value] = explode(',', $mybb->input['action_list_'.$id]);
+				}
+			}
+		}
+	}
+	else
+	{
+		$mybb->input['name'] = $stylesheet['name'];
 	}
 	
 	$form = new Form("index.php?module=style/themes&amp;action=stylesheet_properties", "post");
-	
-	
-	$applied_to = $this_stylesheet['applied_to'];
-	unset($this_stylesheet);
 	
 	$specific_files = "<div id=\"attach_1\" class=\"attachs\">";
 	$count = 0;
@@ -1183,22 +1203,15 @@ if($mybb->input['action'] == "stylesheet_properties")
 		
 		foreach($applied_to as $name => $actions)
 		{
-			$short_name = substr($name, 0, -4);
-			
-			if($errors)
+			$short_name = substr($name, 0, -4);			
+
+			$action_list = "";
+			if($actions[0] != "global")
 			{
-				$action_list = $mybb->input['action_list_'.$short_name];
-			}
-			else
-			{
-				$action_list = "";
-				if($actions[0] != "global")
-				{
-					$action_list = implode(',', $actions);
-				}
+				$action_list = implode(',', $actions);
 			}
 			
-			if(!$action_list)
+			if($actions[0] == "global")
 			{
 				$global_action_checked[1] = "checked=\"checked\"";
 				$global_action_checked[2] = "";
@@ -1213,6 +1226,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"0\" {$global_action_checked[1]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> {$lang->globally}</label></dt>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"1\" {$global_action_checked[2]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> {$lang->specific_actions}</label></dt>
 			<dd style=\"margin-top: 4px;\" id=\"action_{$count}_1\" class=\"action_{$count}s\">
+			<small class=\"description\">{$lang->specific_actions_desc}</small>
 			<table cellpadding=\"4\">
 				<tr>
 					<td>".$form->generate_text_box('action_list_'.$count, $action_list, array('id' => 'action_list_'.$count, 'style' => 'width: 190px;'))."</td>
@@ -1276,7 +1290,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	echo $form->generate_hidden_field("tid", $theme['tid'])."<br />\n";
 
 	$form_container = new FormContainer("{$lang->edit_stylesheet_properties_for} ".htmlspecialchars_uni($stylesheet['name']));
-	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
+	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 	
 	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
 	
@@ -2013,6 +2027,37 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($errors)
 	{
 		$page->output_inline_error($errors);
+		
+		foreach($mybb->input as $name => $value)
+		{
+			if(strpos($name, "attached") !== false)
+			{
+				list(, $id) = explode('_', $name);
+				$id = intval($id);
+				
+				$mybb->input['applied_to'][$value] = array(0 => 'global');
+				
+				if($mybb->input['action_'.$id] == 1)
+				{
+					$mybb->input['applied_to'][$value] = explode(',', $mybb->input['action_list_'.$id]);
+				}
+			}
+		}
+		
+		if($mybb->input['add_type'] == 1)
+		{
+			$add_checked[1] = "checked=\"checked\"";
+			$add_checked[2] = "";
+		}
+		else
+		{
+			$add_checked[2] = "checked=\"checked\"";
+			$add_checked[1] = "";
+		}
+	}
+	else
+	{
+		$mybb->input['name'] = $stylesheet['name'];
 	}
 	
 	$form = new Form("index.php?module=style/themes&amp;action=add_stylesheet", "post", "add_stylesheet");
@@ -2033,20 +2078,13 @@ if($mybb->input['action'] == "add_stylesheet")
 		{
 			$short_name = substr($name, 0, -4);
 			
-			if($errors)
+			$action_list = "";
+			if($actions[0] != "global")
 			{
-				$action_list = $mybb->input['action_list_'.$short_name];
-			}
-			else
-			{
-				$action_list = "";
-				if($actions[0] != "global")
-				{
-					$action_list = implode(',', $actions);
-				}
+				$action_list = implode(',', $actions);
 			}
 			
-			if(!$action_list)
+			if($actions[0] == "global")
 			{
 				$global_action_checked[1] = "checked=\"checked\"";
 				$global_action_checked[2] = "";
@@ -2061,6 +2099,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"0\" {$global_action_checked[1]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> {$lang->globally}</label></dt>
 		<dt><label style=\"display: block;\"><input type=\"radio\" name=\"action_{$count}\" value=\"1\" {$global_action_checked[2]} class=\"action_{$count}s_check\" onclick=\"checkAction('action_{$count}');\" style=\"vertical-align: middle;\" /> {$lang->specific_actions}</label></dt>
 			<dd style=\"margin-top: 4px;\" id=\"action_{$count}_1\" class=\"action_{$count}s\">
+			<small class=\"description\">{$lang->specific_actions_desc}</small>
 			<table cellpadding=\"4\">
 				<tr>
 					<td>".$form->generate_text_box('action_list_'.$count, $action_list, array('id' => 'action_list_'.$count, 'style' => 'width: 190px;'))."</td>
@@ -2121,7 +2160,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	echo $form->generate_hidden_field("sid", $stylesheet['sid'])."<br />\n";
 	
 	$form_container = new FormContainer("{$lang->add_stylesheet_to} ".htmlspecialchars_uni($theme['name']));
-	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $stylesheet['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
+	$form_container->output_row($lang->file_name, $lang->file_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name', 'style' => 'width: 200px;')), 'name');
 	
 	$form_container->output_row($lang->attached_to, $lang->attached_to_desc, $actions);
 	
