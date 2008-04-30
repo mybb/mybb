@@ -79,7 +79,7 @@ function home_action_handler($action)
 			SELECT u.uid, u.username, s.ip
 			FROM ".TABLE_PREFIX."adminsessions s
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
-			WHERE s.lastactive>{$timecut}
+			WHERE s.lastactive > {$timecut}
 			ORDER BY u.username
 		");
 		$online_users = "<ul class=\"menu online_admins\">";

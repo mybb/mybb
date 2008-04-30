@@ -195,7 +195,7 @@ if($mybb->user['uid'])
 	// Update the session information in the DB
 	if($admin_session['sid'])
 	{
-		$db->shutdown_query("UPDATE ".TABLE_PREFIX."adminsessions SET lastactive='".TIME_NOW."', ip='".$ipaddress."' WHERE sid='".$db->escape_string($admin_session['sid'])."'");
+		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => $db->escape_string($session->ipaddress)), "sid='".$db->escape_string($admin_session['sid'])."'");
 	}
 
 	// Fetch administrator permissions

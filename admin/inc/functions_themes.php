@@ -622,8 +622,20 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 		$css = preg_replace("#\s*([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~\^]+)(\s*)\{(\n*)#isu", "\n$1 {\n", $css);
 		$css = preg_replace("#\s{1,}\{#", " {", $css);
 		$existing_block = $parsed_css[$selector];
-		list($id, $actual_occurance) = explode("_", $class_id);
-		if(!$actual_occurance) $actual_occurance = 1;
+		
+		$break = strrpos($class_id, "_");
+		if($break !== false)
+		{
+			$actual_occurance = intval(substr($class_id, ($break+1)));
+			$id = substr($class_id, 0, $break);
+		}
+		
+		if(!$actual_occurance)
+		{
+			$actual_occurance = 1;
+			$id = $class_id;
+		}
+		
 		$occurance = 1;
 		$pos = 0;
 		do
