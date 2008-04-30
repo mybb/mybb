@@ -1127,11 +1127,11 @@ if($mybb->input['action'] == "edit")
 	);
 	
 	$create_a_options_f = array(
-		'id' => 'type'
+		'id' => 'forum'
 	);
 	
 	$create_a_options_c = array(
-		'id' => 'type'
+		'id' => 'category'
 	);
 	
 	if($forum_data['type'] == "f")
