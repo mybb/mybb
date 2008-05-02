@@ -1231,7 +1231,14 @@ class Moderation
 				else
 				{
 					// Update the subject of the first post in the old thread
-					$query = $db->query("SELECT p.pid, t.subject FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t) WHERE p.tid='{$tid}' AND p.tid=t.tid ORDER BY p.dateline ASC LIMIT 1");
+					$query = $db->query("
+						SELECT p.pid, t.subject
+						FROM ".TABLE_PREFIX."posts p
+						LEFT JOIN".TABLE_PREFIX."threads t ON (p.tid=t.tid)
+						WHERE p.tid='{$tid}'
+						ORDER BY p.dateline ASC
+						LIMIT 1
+					");
 					$oldthread = $db->fetch_array($query);
 					$sqlarray = array(
 						"subject" => $db->escape_string($oldthread['subject']),

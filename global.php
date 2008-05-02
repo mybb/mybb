@@ -53,7 +53,7 @@ if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
 	// If user is logged in, update their language selection with the new one
 	if($mybb->user['uid'])
 	{
-		$updated_lang = array("language" => $mybb->settings['bblanguage']);
+		$updated_lang = array("language" => $db->escape_string($mybb->settings['bblanguage']));
 		$db->update_query("users", $updated_lang, "uid='{$mybb->user['uid']}'");
 	}
 	// Guest = cookie

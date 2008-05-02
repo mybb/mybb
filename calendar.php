@@ -59,7 +59,7 @@ $calendar_jump = build_calendar_jump($mybb->input['calendar']);
 // Add an event
 if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 {
-	$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
+	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
@@ -208,7 +208,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "addevent")
 {
-	$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
+	$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
 	$calendar = $db->fetch_array($query);
 
 	// Invalid calendar?
@@ -1411,7 +1411,7 @@ if($mybb->input['action'] == "dayview")
 	// Showing a particular calendar
 	if($mybb->input['calendar'])
 	{
-		$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
+		$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
 		$calendar = $db->fetch_array($query);
 	}
 	// Showing the default calendar
@@ -1750,7 +1750,7 @@ if($mybb->input['action'] == "weekview")
 	// Showing a particular calendar
 	if($mybb->input['calendar'])
 	{
-		$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
+		$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
 		$calendar = $db->fetch_array($query);
 	}
 	// Showing the default calendar
@@ -1991,7 +1991,7 @@ if(!$mybb->input['action'])
 	// Showing a particular calendar
 	if($mybb->input['calendar'])
 	{
-		$query = $db->simple_select("calendars", "*", "cid='{$mybb->input['calendar']}'");
+		$query = $db->simple_select("calendars", "*", "cid='".intval($mybb->input['calendar'])."'");
 		$calendar = $db->fetch_array($query);
 	}
 	// Showing the default calendar
