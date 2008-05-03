@@ -1988,7 +1988,7 @@ function build_users_view($view)
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}");
-			$popup->add_item($lang->ban_user, "index.php?module=user/banning&amp;uid={$user['uid']}");
+			$popup->add_item($lang->ban_user, "index.php?module=user/banning&amp;uid={$user['uid']}#username");
 
 			if($user['usergroup'] == 5)
 			{
@@ -2002,7 +2002,7 @@ function build_users_view($view)
 				}
 			}
 
-			$popup->add_item($lang->delete_user, "index.php?module=user/users&amp;action=delete&amp;uid={$user['uid']}");
+			$popup->add_item($lang->delete_user, "index.php?module=user/users&amp;action=delete&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->user_deletion_confirmation}')");
 			$popup->add_item($lang->show_referred_users, "index.php?module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
 			$popup->add_item($lang->show_ip_addresses, "index.php?module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
 			$popup->add_item($lang->show_attachments, "index.php?module=user/users&amp;action=attachments&amp;uid={$user['uid']}");
@@ -2210,6 +2210,12 @@ function build_user_view_card($user, $view, &$i)
 			{
 				$value = $user[$field];
 			}
+			
+			if($field == "postnum")
+			{
+				$value = my_number_format($value);
+			}
+			
 			$user_details[] = "<strong>{$view_field['title']}:</strong> {$value}";
 		}
 

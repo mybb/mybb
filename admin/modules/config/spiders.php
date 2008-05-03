@@ -273,7 +273,7 @@ if(!$mybb->input['action'])
 
 	$table = new Table;
 	$table->construct_header($lang->bot);
-	$table->construct_header($lang->last_visit, array("class" => "align_center", "width" => "200"));
+	$table->construct_header($lang->last_visit, array("class" => "align_center", "width" => 200));
 	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 150, "colspan" => 2));
 
 	$query = $db->simple_select("spiders", "*", "", array("order_by" => "lastvisit", "order_dir" => "desc"));
@@ -289,9 +289,9 @@ if(!$mybb->input['action'])
 			$lastvisit = $lang->never;
 		}
 		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\"><strong>{$spider['name']}</strong></a>");
-		$table->construct_cell($lastvisit, array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=delete&amp;sid={$spider['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center"));
+		$table->construct_cell($lastvisit, array("class" => "align_center", "width" => 200));
+		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=edit&amp;sid={$spider['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => 75));
+		$table->construct_cell("<a href=\"index.php?module=config/spiders&amp;action=delete&amp;sid={$spider['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_bot_deletion}');\">{$lang->delete}</a>", array("class" => "align_center", "width" => 75));
 		$table->construct_row();
 	}
 	

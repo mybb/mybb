@@ -2556,18 +2556,46 @@ function get_friendly_size($size)
 	{
 		return $lang->na;
 	}
-
-	if($size >= 1073741824)
+	
+	// Yottabyte (1024 Zettabytes)
+	if($size >= 1208925819614629174706176)
 	{
-		$size = round(($size / 1073741824), 2)." ".$lang->size_gb;
+		$size = my_number_format(round(($size / 1208925819614629174706176), 2))." ".$lang->size_yb;
 	}
+	// Zetabyte (1024 Exabytes)
+	elseif($size >= 1180591620717411303424)
+	{
+		$size = my_number_format(round(($size / 1180591620717411303424), 2))." ".$lang->size_zb;
+	}
+	// Exabyte (1024 Petabytes)
+	elseif($size >= 1152921504606846976)
+	{
+		$size = my_number_format(round(($size / 1152921504606846976), 2))." ".$lang->size_eb;
+	}
+	// Petabyte (1024 Terabytes)
+	elseif($size >= 1125899906842624)
+	{
+		$size = my_number_format(round(($size / 1125899906842624), 2))." ".$lang->size_pb;
+	}
+	// Terabyte (1024 Gigabytes)
+	elseif($size >= 1099511627776)
+	{
+		$size = my_number_format(round(($size / 1099511627776), 2))." ".$lang->size_tb;
+	}
+	// Gigabyte (1024 Megabytes)
+	elseif($size >= 1073741824)
+	{
+		$size = my_number_format(round(($size / 1073741824), 2))." ".$lang->size_gb;
+	}
+	// Megabyte (1024 Kilobytes)
 	elseif($size >= 1048576)
 	{
-		$size = round(($size / 1048576), 2)." ".$lang->size_mb;
+		$size = my_number_format(round(($size / 1048576), 2))." ".$lang->size_mb;
 	}
+	// Kilobyte (1024 bytes)
 	elseif($size >= 1024)
 	{
-		$size = round(($size / 1024), 2)." ".$lang->size_kb;
+		$size = my_number_format(round(($size / 1024), 2))." ".$lang->size_kb;
 	}
 	elseif($size == 0)
 	{
@@ -2575,7 +2603,7 @@ function get_friendly_size($size)
 	}
 	else
 	{
-		$size = $size." ".$lang->size_bytes;
+		$size = my_number_format($size)." ".$lang->size_bytes;
 	}
 
 	return $size;

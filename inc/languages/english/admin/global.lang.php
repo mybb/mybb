@@ -9,6 +9,11 @@
 $l['today'] = "Today";
 $l['yesterday'] = "Yesterday";
 
+$l['size_yb'] = "YB";
+$l['size_zb'] = "ZB";
+$l['size_eb'] = "EB";
+$l['size_pb'] = "PB";
+$l['size_tb'] = "TB";
 $l['size_gb'] = "GB";
 $l['size_mb'] = "MB";
 $l['size_kb'] = "KB";

@@ -665,8 +665,8 @@ if(!$mybb->input['action'])
 			}
 			
 			$table->construct_cell($icon."<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$announcement['subject']}</a>");
-			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center"));
-			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=edit&amp;aid={$aid}\">{$lang->edit}</a>", array("class" => "align_center", "width" => 75));
+			$table->construct_cell("<a href=\"index.php?module=forum/announcements&amp;action=delete&amp;aid={$aid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_announcement_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => 75));
 			$table->construct_row();
 		}
 		$table->output($lang->global_announcements);

@@ -419,6 +419,18 @@ if($mybb->input['action'] == "edit_template")
 			
 			$query = $db->simple_select("templatesets", "title", "sid={$sid}");
 			$set = $db->fetch_array($query);
+			
+			$exploded = explode("_", $template_array['title'], 2);
+			$prefix = $exploded[0];
+			
+			$query = $db->simple_select("templategroups", "gid", "prefix = '".$db->escape_string($prefix)."'");
+			$group = $db->fetch_field($query, "gid");
+			
+			if(!$group)
+			{
+				$group = "-1";
+			}		
+			
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title'], $sid, $set['title']);
 			
@@ -430,7 +442,7 @@ if($mybb->input['action'] == "edit_template")
 			}
 			else
 			{
-				admin_redirect("index.php?module=style/templates&sid=".$sid.$expand_str2);
+				admin_redirect("index.php?module=style/templates&sid=".$sid.$expand_str2."#group_{$group}");
 			}
 		}
 	}

@@ -947,7 +947,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->poll_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $poll_options)."</div>");	
 
 	$attachment_options = array(
-		$form->generate_check_box("canpostattachments", 1, "Can post attachments", array("checked" => $mybb->input['canpostattachments'])),
+		$form->generate_check_box("canpostattachments", 1, $lang->post_attachments, array("checked" => $mybb->input['canpostattachments'])),
 		"{$lang->attach_quota}<br /><small class=\"input\">{$lang->attach_quota_desc}</small><br />".$form->generate_text_box('attachquota', $mybb->input['attachquota'], array('id' => 'attachquota', 'class' => 'field50')). "KB"
 	);
 	$form_container->output_row($lang->attachment_options, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $attachment_options)."</div>");	
@@ -993,12 +993,12 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->warning_system, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $warning_options)."</div>");
 
 	$pm_options = array(
-		$form->generate_check_box("canusepms", 1, "Can use private messaging", array("checked" => $mybb->input['canusepms'])),
-		$form->generate_check_box("cansendpms", 1, "Can send private messages", array("checked" => $mybb->input['cansendpms'])),
-		$form->generate_check_box("cantrackpms", 1, "Can track sent private messages", array("checked" => $mybb->input['cantrackpms'])),
-		$form->generate_check_box("candenypmreceipts", 1, "Can deny message receipt notifications", array("checked" => $mybb->input['candenypmreceipts'])),
-		"Message Quota:<br /><small>Maximum number of private messages that can be stored by users in this group. If empty, users can store unlimited messages.</small><br />".$form->generate_text_box('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),
-		"Maximum Recipients Per Message:<br /><small>Maximum number of recipients a user can send a private message to at one time. If empty, users can send private messages to an unlimited number of recipients.</small><br />".$form->generate_text_box('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50'))
+		$form->generate_check_box("canusepms", 1, $lang->can_user_pms, array("checked" => $mybb->input['canusepms'])),
+		$form->generate_check_box("cansendpms", 1, $lang->can_send_pms, array("checked" => $mybb->input['cansendpms'])),
+		$form->generate_check_box("cantrackpms", 1, $lang->can_track_pms, array("checked" => $mybb->input['cantrackpms'])),
+		$form->generate_check_box("candenypmreceipts", 1, $lang->can_deny_reciept, array("checked" => $mybb->input['candenypmreceipts'])),
+		"{$lang->message_quota}:<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_text_box('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),
+		"{$lang->max_recipients}:<br /><small>{$lang->max_recipients_desc}</small><br />".$form->generate_text_box('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->private_messaging, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $pm_options)."</div>");
 	
@@ -1203,7 +1203,7 @@ if(!$mybb->input['action'])
 	
 	$form_container = new FormContainer($lang->user_groups);
 	$form_container->output_row_header($lang->group);
-	$form_container->output_row_header($lang->number_of_users);
+	$form_container->output_row_header($lang->number_of_users, array("class" => "align_center", 'width' => '75'));
 	$form_container->output_row_header($lang->order, array("class" => "align_center", 'width' => '5%'));
 	$form_container->output_row_header($lang->controls, array("class" => "align_center"));
 	
@@ -1222,7 +1222,7 @@ if(!$mybb->input['action'])
 		$leaders_list = '';
 		if(isset($leaders[$usergroup['gid']]))
 		{
-			$leaders_list = "<br />Group Leaders: ".implode(", ", $leaders[$usergroup['gid']]);
+			$leaders_list = "<br />{$lang->group_leaders}: ".implode(", ", $leaders[$usergroup['gid']]);
 		}
 			
 		$join_requests = '';
@@ -1244,7 +1244,7 @@ if(!$mybb->input['action'])
 		$numusers = $primaryusers[$usergroup['gid']];
 		$numusers += $secondaryusers[$usergroups['gid']];
 
-		$form_container->output_cell($numusers, array("class" => "align_center"));
+		$form_container->output_cell(my_number_format($numusers), array("class" => "align_center"));
 		
 		if($usergroup['showforumteam'] == 1)
 		{
@@ -1257,7 +1257,7 @@ if(!$mybb->input['action'])
 		
 		$popup = new PopupMenu("usergroup_{$usergroup['gid']}", $lang->options);
 		$popup->add_item($lang->edit_group, "index.php?module=user/groups&amp;action=edit&amp;gid={$usergroup['gid']}");
-		$popup->add_item("List Users", "index.php?module=user/users&amp;action=search&amp;results=1&amp;conditions[usergroup]={$usergroup['gid']}");
+		$popup->add_item($lang->list_users, "index.php?module=user/users&amp;action=search&amp;results=1&amp;conditions[usergroup]={$usergroup['gid']}");
 		if($joinrequests[$usergroup['gid']] > 0)
 		{
 			$popup->add_item($lang->moderate_join_requests, "index.php?module=user/groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
