@@ -181,7 +181,7 @@ If you violate any of the above terms, your beta access will be revoked and we\'
 <li>We\'ll be updating it every so often to contain new bug fixes.</li>
 <li>You may set up a publicly accessible copy of MyBB 1.4 so that your users can also help us test. You should report any feedback they have directly to the MyBB Beta Forums.</li>
 
-<li>The control panel is <strong>not 100% complete</strong>. The "Themes" page is still currently under development. This means you cannot modify the theme of your forum. Template editing however, should work fine.<br />
+<li>The control panel is <strong>100% complete</strong>.<br />
 </li></ul>
 <br />
 <strong><span style="color: red;">A final warning:</span></strong> Do not attempt to upgrade your live forums to this release!<br />
