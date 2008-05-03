@@ -58,11 +58,11 @@ $l['error_invalid_calendar'] = "The specified calendar does not exist.";
 $l['error_missing_name'] = "You did not enter a name for this calendar";
 $l['error_missing_order'] = "You did not enter a display order for this calendar";
 
-$l['success_calendar_created'] = "The calendar has successfully been created.";
-$l['success_calendar_updated'] = "The calendar has successfully been updated.";
-$l['success_calendar_permissions_updated'] = "The calendar permissions have successfully been updated.";
-$l['success_calendar_deleted'] = "The specified calendar has been deleted.";
-$l['success_calendar_orders_updated'] = "The calendar display orders have been updated.";
+$l['success_calendar_created'] = "The calendar has been created successfully.";
+$l['success_calendar_updated'] = "The calendar has been updated successfully.";
+$l['success_calendar_permissions_updated'] = "The calendar permissions have been updated successfully.";
+$l['success_calendar_deleted'] = "The selected calendar has been deleted successfully.";
+$l['success_calendar_orders_updated'] = "The calendar display orders have been updated successfully.";
 
 $l['confirm_calendar_deletion'] = "Are you sure you wish to delete this calendar?";
 

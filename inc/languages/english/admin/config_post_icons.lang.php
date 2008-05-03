@@ -39,10 +39,10 @@ $l['error_no_images'] = "There are no post icons in the specified directory, or 
 $l['error_none_included'] = "You did not select any post icons to include.";
 $l['error_invalid_post_icon'] = "The specified post icon does not exist.";
 
-$l['success_post_icon_added'] = "The post icon has successfully been added.";
-$l['success_post_icons_added'] = "The selected post icons have successfully been added.";
-$l['success_post_icon_updated'] = "The post icon has successfully been updated.";
-$l['success_post_icon_deleted'] = "The specified post icon has been deleted.";
+$l['success_post_icon_added'] = "The post icon has been added successfully.";
+$l['success_post_icons_added'] = "The selected post icons have been added successfully.";
+$l['success_post_icon_updated'] = "The post icon has been updated successfully.";
+$l['success_post_icon_deleted'] = "The selected post icon has been deleted successfully.";
 
 $l['confirm_post_icon_deletion'] = "Are you sure you wish to delete this post icon?";
 ?>

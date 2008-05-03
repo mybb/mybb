@@ -38,7 +38,7 @@ $l['sandbox_desc'] = "You can use this area to test the regular expression and r
 $l['test_value'] = "Test Value";
 $l['test_value_desc'] = "Enter in text to be tested in the box below.";
 $l['result_html'] = "HTML Result";
-$l['result_html_desc'] = "The textarea below shows the resulting HTML using the regular expression on the test value.";
+$l['result_html_desc'] = "The text area below shows the resulting HTML using the regular expression on the test value.";
 $l['result_actual'] = "Actual Result";
 $l['result_actual_desc'] = "The area below shows the actual result when the HTML is rendered.";
 $l['test'] = "Test MyCode";
@@ -48,11 +48,11 @@ $l['error_missing_regex'] = "You did not enter in a regular expression.";
 $l['error_missing_replacement'] = "You did not enter in a replacement.";
 $l['error_invalid_mycode'] = "The specified MyCode does not exist.";
 
-$l['success_added_mycode'] = "The MyCode has successfully been added.";
-$l['success_deleted_mycode'] = "The MyCode has successfully been deleted.";
-$l['success_updated_mycode'] = "The MyCode has successfully been updated.";
-$l['success_deactivated_mycode'] = "The MyCode has successfully been deactivated.";
-$l['success_activated_mycode'] = "The MyCode has successfully been activated.";
+$l['success_added_mycode'] = "The MyCode has been added successfully.";
+$l['success_deleted_mycode'] = "The selected MyCode has been deleted successfully.";
+$l['success_updated_mycode'] = "The MyCode has been updated successfully.";
+$l['success_deactivated_mycode'] = "The selected MyCode has been deactivated successfully.";
+$l['success_activated_mycode'] = "The selected MyCode has been activated successfully.";
 
 $l['confirm_mycode_deletion'] = "Are you sure you wish to delete this MyCode?";
 

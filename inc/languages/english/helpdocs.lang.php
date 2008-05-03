@@ -21,7 +21,7 @@ $l['d2_document'] = "At some point during your stay, you may decide you need to 
 // Help Document 3
 $l['d3_name'] = "Use of Cookies on MyBB";
 $l['d3_desc'] = "MyBB uses cookies to store certain information about your registration.";
-$l['d3_document'] = "MyBulletinBoard makes use of cookies to store your login information if you are registered, and your last visit if you are not.
+$l['d3_document'] = "MyBB makes use of cookies to store your login information if you are registered, and your last visit if you are not.
 <br /><br />Cookies are small text documents stored on your computer; the cookies set by this forum can only be used on this website and pose no security risk.
 <br /><br />Cookies on this forum also track the specific topics you have read and when you last read them.
 <br /><br />To clear all cookies set by this forum, you can click <a href=\"misc.php?action=clearcookies\">here</a>.";

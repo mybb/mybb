@@ -37,7 +37,7 @@ $l['error_cannot_write_to_file'] = "Cannot write to file.  Check the file permis
 
 $l['alert_note_cannot_write'] = "Before you can edit the language file, you must CHMOD the files in this language set so that the server has permission to write to them.";
 
-$l['success_langfile_updated'] = "Successfully updated the language file.";
-$l['success_langprops_updated'] = "Successfully updated the language properties.";
+$l['success_langfile_updated'] = "The language file has been updated successfully.";
+$l['success_langprops_updated'] = "The language properties have been updated successfully.";
 
 ?>

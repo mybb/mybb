@@ -52,12 +52,12 @@ $l['error_none_included'] = "You did not select any smilies to include.";
 $l['error_invalid_path'] = "You did not enter a valid path";
 $l['error_invalid_smilie'] = "The specified smilie does not exist.";
 
-$l['success_smilie_added'] = "The smilie has successfully been added.";
-$l['success_multiple_smilies_added'] = "The selected smilies have successfully been added.";
-$l['success_smilie_updated'] = "The smilie has successfully been updated.";
-$l['success_multiple_smilies_updated'] = "The smilies have successfully been updated.";
-$l['success_smilie_deleted'] = "The specified smilie has successfully been deleted.";
-$l['success_mass_edit_updated'] = "The smilies have successfully been updated.";
+$l['success_smilie_added'] = "The smilie has been added successfully.";
+$l['success_multiple_smilies_added'] = "The selected smilies have been added successfully.";
+$l['success_smilie_updated'] = "The smilie has been updated successfully.";
+$l['success_multiple_smilies_updated'] = "The smilies have been updated successfully.";
+$l['success_smilie_deleted'] = "The selected smilie has been deleted successfully.";
+$l['success_mass_edit_updated'] = "The smilies have been updated successfully.";
 
 $l['confirm_smilie_deletion'] = "Are you sure you wish to delete this smilie?";
 

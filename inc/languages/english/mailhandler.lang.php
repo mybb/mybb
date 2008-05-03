@@ -14,5 +14,5 @@ $l['error_not_sent'] = 'There was a error while trying to send the mail through 
 $l['error_status_missmatch'] = 'The status from server mismatches expected result, returning: ';
 $l['error_data_not_sent'] = 'This data could not be sent to server: ';
 
-$l['error_occurred'] = 'One or more errors have occured. Please correct the following errors before continuing.<br />';
+$l['error_occurred'] = 'One or more errors have occurred. Please correct the following errors before continuing.<br />';
 ?>

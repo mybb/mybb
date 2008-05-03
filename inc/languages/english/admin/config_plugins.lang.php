@@ -29,11 +29,11 @@ $l['error_vcheck_communications_problem'] = "There was a problem communicating w
 $l['error_no_input'] = "Error code 1: No input specified.";
 $l['error_no_pids'] = "Error code 2: No plugin ids specified.";
 $l['error_communication_problem'] = "There was a problem communicating with the mod version server.";
-$l['error_invalid_plugin'] = "The specified plugin does not exist";
+$l['error_invalid_plugin'] = "The selected plugin does not exist.";
 
 $l['success_plugins_up_to_date'] = "Congratulations, all of your plugins are up to date.";
-$l['success_plugin_activated'] = "The plugin has been successfully activated.";
-$l['success_plugin_deactivated'] = "The plugin has been successfully deactivated.";
-$l['success_plugin_installed'] = "The plugin has successfully been installed and activated.";
-$l['success_plugin_uninstalled'] = "The plugin has successfully been uninstalled.";
+$l['success_plugin_activated'] = "The selected plugin has been activated successfully.";
+$l['success_plugin_deactivated'] = "The selected plugin has been deactivated successfully.";
+$l['success_plugin_installed'] = "The selected plugin has been installed and activated successfully.";
+$l['success_plugin_uninstalled'] = "The selected plugin has been uninstalled successfully.";
 ?>

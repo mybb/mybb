@@ -95,7 +95,7 @@ $l['receive_pms'] = "Receive private messages from other users.";
 $l['pm_notice'] = "Alert me with a notice when I receive a Private Message.";
 $l['email_notify_newpm'] = "Notify me by email when I receive a new Private Message.";
 $l['time_offset'] = "Time Zone (<acronym title=\"Daylight Savings Time\">DST</acronym> correction excluded):";
-$l['time_offset_desc'] = "If you live in a timezone which differs to what this board is set at, you can select it from the list below.";
+$l['time_offset_desc'] = "If you live in a time zone which differs to what this board is set at, you can select it from the list below.";
 $l['dst_correction'] = "Daylight Savings Time correction:";
 $l['dst_correction_auto'] = "Automatically detect DST settings";
 $l['dst_correction_enabled'] = "Always use DST correction";
@@ -145,7 +145,7 @@ $l['tpp_desc'] = "Allows you to select the amount of threads to be shown per pag
 $l['reset_password'] = "Reset Password";
 $l['send_password'] = "Send New Password!";
 $l['image_verification'] = "Image Verification";
-$l['verification_note'] = "Please enter the text contained within the image on the right in to the textbox below it. This process is used to prevent automated signups.";
+$l['verification_note'] = "Please enter the text contained within the image on the right in to the text box below it. This process is used to prevent automated signups.";
 $l['verification_subnote'] = "(case insensitive)";
 $l['registration_errors'] = "The following errors occurred with your registration:";
 $l['timeonline'] = "Time Spent Online:";

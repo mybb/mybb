@@ -35,9 +35,9 @@ $l['error_invalid_attachment_type'] = "You have selected an invalid attachment t
 $l['error_missing_mime_type'] = "You did not enter a MIME type for this attachment type";
 $l['error_missing_extension'] = "You did not enter a file extension for this attachment type";
 
-$l['success_attachment_type_created'] = "The attachment type has successfully been created.";
-$l['success_attachment_type_updated'] = "The attachment type has successfully been updated.";
-$l['success_attachment_type_deleted'] = "The attachment type has successfully been deleted.";
+$l['success_attachment_type_created'] = "The attachment type has been created successfully.";
+$l['success_attachment_type_updated'] = "The attachment type has been updated successfully.";
+$l['success_attachment_type_deleted'] = "The attachment type has been deleted successfully.";
 
 $l['confirm_attachment_type_deletion'] = "Are you sure you wish to delete this attachment type?";
 

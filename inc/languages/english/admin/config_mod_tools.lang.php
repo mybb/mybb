@@ -31,8 +31,8 @@ $l['no_post_tools'] = "There are no post tools setup on your forum.";
 $l['confirm_thread_tool_deletion'] = "Are you sure you want to delete this thread tool?";
 $l['confirm_post_tool_deletion'] = "Are you sure you want to delete this post tool?";
 
-$l['success_post_tool_deleted'] = "The specified post tool has been deleted.";
-$l['success_thread_tool_deleted'] = "The specified thread tool has been deleted.";
+$l['success_post_tool_deleted'] = "The selected post moderation tool has been deleted successfully.";
+$l['success_thread_tool_deleted'] = "The selected thread moderation tool has been deleted successfully.";
 
 $l['error_invalid_post_tool'] = "The specified post tool does not exist.";
 $l['error_invalid_thread_tool'] = "The specified thread tool does not exist.";
@@ -82,8 +82,8 @@ $l['add_new_reply_desc'] = "Leave blank for no reply.";
 $l['reply_subject'] = "Reply subject.";
 $l['reply_subject_desc'] = "Only used if a reply was made.<br />{subject} represents the original subject. {username} represents the moderator's username.";
 
-$l['success_mod_tool_created'] = "Successfully created the moderation tool.";
-$l['success_mod_tool_updated'] = "Successfully updated the moderation tool.";
+$l['success_mod_tool_created'] = "The moderation tool has been created successfully..";
+$l['success_mod_tool_updated'] = "The moderation tool has been updated successfully.";
 
 $l['inline_post_moderation'] = "Inline Post Moderation";
 $l['delete_posts'] = "Delete posts?";

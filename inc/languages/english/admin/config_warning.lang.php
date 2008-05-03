@@ -62,14 +62,14 @@ $l['error_invalid_warning_level'] = "The specified warning level does not exist.
 $l['error_invalid_warning_percentage'] = "You did not enter a valid percentage value for this warning level. Your percentage value must be between 1 and 100.";
 $l['error_invalid_warning_type'] = "The specified warning type does not exist.";
 $l['error_missing_type_title'] = "You did not enter a title for this warning type";
-$l['error_missing_type_points'] = "You did not enter a valid number of points to add when giving warnings of this type. You must enter a numer greater than 0 but less than {1}";
+$l['error_missing_type_points'] = "You did not enter a valid number of points to add when giving warnings of this type. You must enter a number greater than 0 but less than {1}";
 
-$l['success_warning_level_created'] = "The warning level has successfully been created.";
-$l['success_warning_level_updated'] = "The warning level has successfully been updated.";
-$l['success_warning_level_deleted'] = "The specified warning level has been deleted.";
-$l['success_warning_type_created'] = "The warning type has successfully been created.";
-$l['success_warning_type_updated'] = "The warning type has successfully been updated.";
-$l['success_warning_type_deleted'] = "The specified warning type has been deleted.";
+$l['success_warning_level_created'] = "The warning level has been created successfully.";
+$l['success_warning_level_updated'] = "The warning level has been updated successfully.";
+$l['success_warning_level_deleted'] = "The selected warning level has been deleted successfully.";
+$l['success_warning_type_created'] = "The warning type has been created successfully.";
+$l['success_warning_type_updated'] = "The warning type has been updated successfully.";
+$l['success_warning_type_deleted'] = "The selected warning type has been deleted successfully.";
 
 $l['confirm_warning_level_deletion'] = "Are you sure you wish to delete this warning level?";
 $l['confirm_warning_type_deletion'] = "Are you sure you wish to delete this warning type?";

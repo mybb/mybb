@@ -17,7 +17,7 @@ $l['edit_profile_field_desc'] = "Here you can edit a custom profile field.";
 $l['title'] = "Title";
 $l['short_description'] = "Short Description";
 $l['maximum_length'] = "Maximum Length";
-$l['maximum_length_desc'] = "This maximum number of characters that can be entered. This only applies to textboxes and textareas.";
+$l['maximum_length_desc'] = "This maximum number of characters that can be entered. This only applies to text boxes and text areas.";
 $l['field_length'] = "Field Length";
 $l['field_length_desc'] = "This length of the field. This only applies to single and multiple select boxes.";
 $l['display_order'] = "Display Order";
@@ -55,9 +55,9 @@ $l['error_missing_editable'] = "You did not select Yes or No for the \"Editable 
 $l['error_missing_hidden'] = "You did not select Yes or No for the \"Hide on profile?\" option";
 $l['error_invalid_fid'] = "The selected profile field does not exist.";
 
-$l['success_profile_field_added'] = "The profile field has successfully been created.";
+$l['success_profile_field_added'] = "The custom profile field has been created successfully.";
 $l['success_profile_field_saved'] = "The custom profile field has been saved successfully.";
-$l['success_profile_field_deleted'] = "The profile field has been deleted.";
+$l['success_profile_field_deleted'] = "The selected custom profile field has been deleted successfully.";
 
 $l['confirm_profile_field_deletion'] = "Are you sure you wish to delete this profile field?";
 ?>

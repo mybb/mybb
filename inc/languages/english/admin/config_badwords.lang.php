@@ -22,9 +22,9 @@ $l['add_bad_word'] = "Add a Filter";
 $l['error_missing_bad_word'] = "You did not enter a word filter.";
 $l['error_invalid_bid'] = "The specified filter does not exist.";
 
-$l['success_added_bad_word'] = "The filter has successfully been added.";
-$l['success_deleted_bad_word'] = "The filter has successfully been deleted.";
-$l['success_updated_bad_word'] = "The filter has successfully been updated.";
+$l['success_added_bad_word'] = "The filter has been added successfully.";
+$l['success_deleted_bad_word'] = "The filter has been deleted successfully.";
+$l['success_updated_bad_word'] = "The filter has been updated successfully.";
 
 $l['confirm_bad_word_deletion'] = "Are you sure you wish to delete this filter?";
 

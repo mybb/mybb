@@ -79,13 +79,13 @@ $l['error_cannot_edit_default'] = "Default settings and groups may not be edited
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
 
-$l['success_setting_added'] = "The setting has successfully been created.";
-$l['success_setting_updated'] = "The setting has successfully been updated.";
-$l['success_setting_deleted'] = "The setting has successfully been deleted.";
-$l['success_settings_updated'] = "The settings have successfully been updated.";
-$l['success_display_orders_updated'] = "The display orders have successfully been updated.";
-$l['success_setting_group_added'] = "The setting group has successfully been created.";
-$l['success_setting_group_updated'] = "The setting group has successfully been updated.";
-$l['success_setting_group_deleted'] = "The setting group has successfully been deleted.";
+$l['success_setting_added'] = "The setting has been created successfully.";
+$l['success_setting_updated'] = "The setting has been updated successfully.";
+$l['success_setting_deleted'] = "The selected setting has been deleted successfully.";
+$l['success_settings_updated'] = "The settings have been updated successfully.";
+$l['success_display_orders_updated'] = "The setting display orders have been updated successfully.";
+$l['success_setting_group_added'] = "The setting group has been created successfully.";
+$l['success_setting_group_updated'] = "The setting group has been updated successfully.";
+$l['success_setting_group_deleted'] = "The selected setting group has been deleted successfully.";
 $l['success_duplicate_settings_deleted'] = "All duplicate setting groups have been deleted successfully."
 ?>

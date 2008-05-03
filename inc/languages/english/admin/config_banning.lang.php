@@ -25,10 +25,10 @@ $l['ban_date'] = "Ban Date";
 $l['last_access'] = "Last Access";
 $l['no_bans'] = "There are no bans currently set at this time.";
 $l['add_disallowed_username'] = "Add a Disallowed Username";
-$l['username_desc'] = "Note: To indicate a wildcard match, use *";
+$l['username_desc'] = "Note: To indicate a wild card match, use *";
 $l['disallow_username'] = "Disallow Username";
 $l['add_disallowed_email_address'] = "Add a Disallowed Email Address";
-$l['email_address_desc'] = "Note: To indicate a wildcard match, use *";
+$l['email_address_desc'] = "Note: To indicate a wild card match, use *";
 $l['disallow_email_address'] = "Disallow Email Address";
 $l['ban_ip_address'] = "Ban an IP Address";
 $l['ip_address_desc'] = "Note: To ban a range of IP addresses use * (Ex: 127.0.0.*)";
@@ -37,10 +37,10 @@ $l['ban_ip_address'] = "Ban IP Address";
 $l['error_missing_ban_input'] = "You did not enter a value to ban.";
 $l['error_invalid_filter'] =" The specified filter does not exist.";
 
-$l['success_ip_banned'] = "The IP address has successfully been banned.";
-$l['success_username_disallowed'] = "The username has successfully been disallowed.";
-$l['success_email_disallowed'] = "The email address has successfully been disallowed.";
-$l['success_ban_deleted'] = "The specified ban has been deleted.";
+$l['success_ip_banned'] = "The IP address has been banned successfully.";
+$l['success_username_disallowed'] = "The username has been disallowed successfully.";
+$l['success_email_disallowed'] = "The email address has been disallowed successfully.";
+$l['success_ban_deleted'] = "The specified ban has been deleted successfully.";
 
 $l['confirm_ban_deletion'] = "Are you sure you wish to delete this ban?";
 

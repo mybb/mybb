@@ -72,7 +72,7 @@ $l['error_no_title'] = "You did not enter a title for this promotion";
 $l['error_no_desc'] = "You did not enter a description for this promotion";
 $l['error_no_requirements'] = "You did not select at least one requirement for this promotion";
 $l['error_no_orig_usergroup'] = "You did not select at least one original user group for this promotion";
-$l['error_no_new_usergroup'] = "You did not select at least one new usergroup for this promotion";
+$l['error_no_new_usergroup'] = "You did not select at least one new user group for this promotion";
 $l['error_no_usergroup_change_type'] = "You did not select at least one user group change type for this promotion";
 
 $l['success_promo_disabled'] = 'The promotion has successfully been disabled.';

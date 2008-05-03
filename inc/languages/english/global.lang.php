@@ -218,7 +218,7 @@ $l['forumjump_search'] = "Search";
 $l['forumjump_home'] = "Forum Home";
 
 $l['redirect'] = "You will now be redirected";
-$l['unknown_error'] = "An unknown error has occured.";
+$l['unknown_error'] = "An unknown error has occurred.";
 
 $l['smilieinsert'] = "Smilies";
 $l['smilieinsert_getmore'] = "get more";
@@ -306,7 +306,7 @@ $l['error_cannot_upload_php_post'] = "Can not upload file - Too large for php po
 $l['error_database_repair'] = "MyBB is automatically repairing a crashed table.";
 
 $l['unknown_user_trigger'] = "An unknown error has been triggered.";
-$l['warnings'] = "The following warnings occured:";
+$l['warnings'] = "The following warnings occurred:";
 
 $l['ajax_loading'] = "Loading. <br />Please Wait..";
 $l['saving_changes'] = "Saving changes..";

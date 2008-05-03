@@ -35,9 +35,9 @@ $l['error_invalid_bot'] = "The specified bot does not exist.";
 $l['error_missing_name'] = "You did not enter a name for this bot";
 $l['error_missing_agent'] = "You did not enter a user agent string for this bot";
 
-$l['success_bot_created'] = "The bot has successfully been created.";
-$l['success_bot_updated'] = "The bot has successfully been updated.";
-$l['success_bot_deleted'] = "The bot has been deleted.";
+$l['success_bot_created'] = "The bot has been created successfully.";
+$l['success_bot_updated'] = "The bot has been updated successfully.";
+$l['success_bot_deleted'] = "The selected bot has been deleted successfully.";
 
 $l['confirm_bot_deletion'] = "Are you sure you wish to delete this bot?";
 

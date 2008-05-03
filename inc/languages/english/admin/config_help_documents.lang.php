@@ -55,8 +55,8 @@ $l['success_help_section_added'] = "The help section has been added successfully
 $l['success_help_document_added'] = "The help document has been added successfully.";
 $l['success_help_section_updated'] = "The help section has been updated successfully.";
 $l['success_help_document_updated'] = "The help document has been updated successfully.";
-$l['success_section_deleted'] = "The specified section has been deleted.";
-$l['success_document_deleted'] = "The specified document has been deleted.";
+$l['success_section_deleted'] = "The selected help section has been deleted successfully.";
+$l['success_document_deleted'] = "The selected help document has been deleted successfully.";
 
 $l['confirm_section_deletion'] = "Are you sure you wish to delete this section?";
 $l['confirm_document_deletion'] = "Are you sure you wish to delete this document?";

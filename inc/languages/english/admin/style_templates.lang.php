@@ -121,12 +121,12 @@ $l['template_set_desc'] = "Which template set should this template be in?";
 
 $l['templates_the_same'] = "The two templates you've selected are both the same and cannot be compared.";
 $l['master_updated_ins'] = "Changes that have been made between your previous version and this one are highlighted like this.";
-$l['master_updated_del'] = "Any customisations you've made to your templates (the old ones) are highlighted like this.";
+$l['master_updated_del'] = "Any customizations you've made to your templates (the old ones) are highlighted like this.";
 $l['template_diff_analysis'] = "Template Difference Analysis";
 $l['search_names_header'] = "Searching template names containing \"{1}\"";
 
 $l['updated_template_welcome1'] = "Edit - Allows you to edit the current template for this template set to incorporate updates made between the versions.";
-$l['updated_template_welcome2'] = "Revert - Will revert the customised template back to the master revision, however you'll lose any custom changes you have made.";
+$l['updated_template_welcome2'] = "Revert - Will revert the customized template back to the master revision, however you'll lose any custom changes you have made.";
 $l['updated_template_welcome3'] = "Diff - Performs a difference analysis between the templates and shows you exactly what changes have been made between your customised copy and the latest master copy.";
 
 $l['no_global_templates'] = "There are currently no global templates added yet.";
