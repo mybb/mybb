@@ -398,7 +398,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		}
 		
 		// Mark any quoted posts so they're no longer selected - attempts to maintain those which weren't selected
-		if($mybb->input['quoted_ids'] && $_COOKIE['multiquote'] && $mybb->settings['multiquote'] != 0)
+		if($mybb->input['quoted_ids'] && $mybb->cookies['multiquote'] && $mybb->settings['multiquote'] != 0)
 		{
 			// We quoted all posts - remove the entire cookie
 			if($mybb->input['quoted_ids'] == "all")
@@ -430,9 +430,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		$message = '';
 		$quoted_posts = array();
 		// Handle multiquote
-		if($_COOKIE['multiquote'] && $mybb->settings['multiquote'] != 0)
+		if($mybb->cookies['multiquote'] && $mybb->settings['multiquote'] != 0)
 		{
-			$multiquoted = explode("|", $_COOKIE['multiquote']);
+			$multiquoted = explode("|", $mybb->cookies['multiquote']);
 			foreach($multiquoted as $post)
 			{
 				$quoted_posts[$post] = intval($post);

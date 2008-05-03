@@ -308,7 +308,7 @@ if($mybb->input['action'] == "thread")
 		}
 		else
 		{
-			if($_COOKIE['pollvotes'][$poll['pid']])
+			if($mybb->cookies['pollvotes'][$poll['pid']])
 			{
 				$alreadyvoted = 1;
 			}

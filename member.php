@@ -112,7 +112,7 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		"profile_fields" => $mybb->input['profile_fields'],
 		"regip" => $session->ipaddress,
 		"longregip" => ip2long($session->ipaddress),
-		"coppa_user" => intval($_COOKIE['coppauser']),
+		"coppa_user" => intval($mybb->cookies['coppauser']),
 	);
 	
 	if(isset($mybb->input['regcheck1']) && isset($mybb->input['regcheck2']))
@@ -122,9 +122,9 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	}
 
 	// Do we have a saved COPPA DOB?
-	if($_COOKIE['coppadob'])
+	if($mybb->cookies['coppadob'])
 	{
-		list($dob_day, $dob_month, $dob_year) = explode("-", $_COOKIE['coppadob']);
+		list($dob_day, $dob_month, $dob_year) = explode("-", $mybb->cookies['coppadob']);
 		$user['birthday'] = array(
 			"day" => $dob_day,
 			"month" => $dob_month,
@@ -236,13 +236,13 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 	{
 		$user_info = $userhandler->insert_user();
 
-		if($mybb->settings['regtype'] != "randompass" && !$_COOKIE['coppauser'])
+		if($mybb->settings['regtype'] != "randompass" && !$mybb->cookies['coppauser'])
 		{
 			// Log them in
 			my_setcookie("mybbuser", $user_info['uid']."_".$user_info['loginkey'], null, true);
 		}
 
-		if($_COOKIE['coppauser'])
+		if($mybb->cookies['coppauser'])
 		{
 			$lang->redirect_registered_coppa_activate = $lang->sprintf($lang->redirect_registered_coppa_activate, $mybb->settings['bbname'], $user_info['username']);
 			my_unsetcookie("coppauser");
@@ -363,7 +363,7 @@ if($mybb->input['action'] == "register")
 	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
 	{
 		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->setings['coppa'] != "disabled" && ($_COOKIE['coppauser'] == 1 || $under_thirteen))
+		if($mybb->setings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
 		{
 			if($mybb->settings['coppa'] == "deny")
 			{
@@ -426,9 +426,9 @@ if($mybb->input['action'] == "register")
 		}
 		if($mybb->settings['usereferrals'] == 1 && !$mybb->user['uid'])
 		{
-			if($_COOKIE['mybb']['referrer'])
+			if($mybb->cookies['mybb']['referrer'])
 			{
-				$query = $db->simple_select("users", "uid,username", "uid='".$db->escape_string($_COOKIE['mybb']['referrer'])."'");
+				$query = $db->simple_select("users", "uid,username", "uid='".$db->escape_string($mybb->cookies['mybb']['referrer'])."'");
 				$ref = $db->fetch_array($query);
 				$referrername = $ref['username'];
 			}

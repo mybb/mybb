@@ -446,7 +446,7 @@ function build_postbit($post, $post_type=0)
 		// Inline moderation stuff
 		if($ismod)
 		{
-			if(my_strpos($_COOKIE[$inlinecookie], "|".$post['pid']."|"))
+			if(my_strpos($mybb->cookies[$inlinecookie], "|".$post['pid']."|"))
 			{
 				$inlinecheck = "checked=\"checked\"";
 				$inlinecount++;

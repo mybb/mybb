@@ -610,7 +610,6 @@ if($mybb->input['action'] == "add")
 				"usertitle" => $db->escape_string($mybb->input['usertitle']),
 				"stars" => intval($mybb->input['stars']),
 				"starimage" => $db->escape_string($mybb->input['starimage']),
-				"image" => $db->escape_string($mybb->input['image']),
 				"disporder" => 0
 			);
 			
@@ -888,7 +887,7 @@ if($mybb->input['action'] == "edit")
 	$stars .= "<tr><td><small>{$lang->stars}</small></td><td><small>{$lang->star_image}</small></td></tr></table>";
 	$form_container->output_row($lang->user_stars, $lang->user_stars_desc, $stars, "stars");
 
-	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('groupimage', $mybb->input['groupimage'], array('id' => 'groupimage')), 'groupimage');
+	$form_container->output_row($lang->group_image, $lang->group_image_desc, $form->generate_text_box('image', $mybb->input['image'], array('id' => 'image')), 'image');
 
 	$general_options = array();
 	if($usergroup['gid'] != "1" && $usergroup['gid'] != "5")

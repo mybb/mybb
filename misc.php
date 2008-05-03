@@ -661,14 +661,14 @@ if($mybb->input['action'] == "clearcookies")
 	{
 		foreach($remove_cookies as $name)
 		{
-			@setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
+			@my_setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath'], $mybb->settings['cookiedomain']);
 		}
 	}
 	else
 	{
 		foreach($remove_cookies as $name)
 		{
-			@setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath']);
+			@my_setcookie($name, '', TIME_NOW-1, $mybb->settings['cookiepath']);
 		}
 	}
 	redirect("index.php", $lang->redirect_cookiescleared);

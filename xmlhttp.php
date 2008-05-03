@@ -452,12 +452,12 @@ else if($mybb->input['action'] == "edit_post")
 else if($mybb->input['action'] == "get_multiquoted")
 {
 	// If the cookie does not exist, exit
-	if(!array_key_exists("multiquote", $_COOKIE))
+	if(!array_key_exists("multiquote", $mybb->cookies))
 	{
 		exit;
 	}
 	// Divide up the cookie using our delimeter
-	$multiquoted = explode("|", $_COOKIE['multiquote']);
+	$multiquoted = explode("|", $mybb->cookies['multiquote']);
 	
 	// No values - exit
 	if(!is_array($multiquoted))

@@ -765,7 +765,7 @@ if($mybb->input['action'] == "vote")
 		$votecheck = $db->fetch_array($query);
 	}
 	
-	if($votecheck['vid'] || $_COOKIE['pollvotes'][$poll['pid']])
+	if($votecheck['vid'] || $mybb->cookies['pollvotes'][$poll['pid']])
 	{
 		error($lang->error_alreadyvoted);
 	}

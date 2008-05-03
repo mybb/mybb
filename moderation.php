@@ -1770,9 +1770,9 @@ switch($mybb->input['action'])
 // Some little handy functions for our inline moderation
 function getids($id, $type)
 {
-	global $_COOKIE;
+	global $mybb;
 	$cookie = "inlinemod_".$type.$id;
-	$ids = explode("|", $_COOKIE[$cookie]);
+	$ids = explode("|", $mybb->cookies[$cookie]);
 	foreach($ids as $id)
 	{
 		if($id != '')
@@ -1791,8 +1791,9 @@ function clearinline($id, $type)
 
 function extendinline($id, $type)
 {
-	global $_COOKIE;
-	setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
+	global $mybb;
+	
+	my_setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
 }
 
 /**

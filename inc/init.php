@@ -165,6 +165,7 @@ if(substr($settings['bburl'], -1) == "/")
 }
 
 $mybb->settings = &$settings;
+$mybb->parse_cookies();
 $mybb->cache = &$cache;
 
 // Load plugins

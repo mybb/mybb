@@ -35,11 +35,11 @@ class session
 		{
 			$this->useragent = my_substr($this->useragent, 0, 100);
 		}
-
+		
 		// Attempt to find a session id in the cookies.
-		if(isset($_COOKIE['sid']))
+		if(isset($mybb->cookies['sid']))
 		{
-			$this->sid = $db->escape_string($_COOKIE['sid']);
+			$this->sid = $db->escape_string($mybb->cookies['sid']);
 			// Load the session
 			$query = $db->simple_select("sessions", "*", "sid='{$this->sid}' AND ip='".$db->escape_string($this->ipaddress)."'", array('limit' => 1));
 			$session = $db->fetch_array($query);
@@ -69,9 +69,9 @@ class session
 		}
 
 		// If we have a valid session id and user id, load that users session.
-		if($_COOKIE['mybbuser'])
+		if($mybb->cookies['mybbuser'])
 		{
-			$logon = explode("_", $_COOKIE['mybbuser'], 2);
+			$logon = explode("_", $mybb->cookies['mybbuser'], 2);
 			$this->load_user($logon[0], $logon[1]);
 		}
 
@@ -103,7 +103,7 @@ class session
 
 
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
-		if(!$_COOKIE['sid'] && $this->sid && $this->is_spider != true)
+		if(!$mybb->cookies['sid'] && $this->sid && $this->is_spider != true)
 		{
 			my_setcookie("sid", $this->sid, -1, true);
 		}
@@ -327,25 +327,25 @@ class session
 		$mybb->user['displaygroup'] = 1;
 
 		// Has this user visited before? Lastvisit need updating?
-		if(isset($_COOKIE['mybb']['lastvisit']))
+		if(isset($mybb->cookies['mybb']['lastvisit']))
 		{
-			if(!isset($_COOKIE['mybb']['lastactive']))
+			if(!isset($mybb->cookies['mybb']['lastactive']))
 			{
 				$mybb->user['lastactive'] = $time;
-				$_COOKIE['mybb']['lastactive'] = $mybb->user['lastactive'];
+				$mybb->cookies['mybb']['lastactive'] = $mybb->user['lastactive'];
 			}
 			else
 			{
-				$mybb->user['lastactive'] = intval($_COOKIE['mybb']['lastactive']);
+				$mybb->user['lastactive'] = intval($mybb->cookies['mybb']['lastactive']);
 			}
-			if($time - $_COOKIE['mybb']['lastactive'] > 900)
+			if($time - $mybb->cookies['mybb']['lastactive'] > 900)
 			{
 				my_setcookie("mybb[lastvisit]", $mybb->user['lastactive']);
 				$mybb->user['lastvisit'] = $mybb->user['lastactive'];
 			}
 			else
 			{
-				$mybb->user['lastvisit'] = intval($_COOKIE['mybb']['lastactive']);
+				$mybb->user['lastvisit'] = intval($mybb->cookies['mybb']['lastactive']);
 			}
 		}
 

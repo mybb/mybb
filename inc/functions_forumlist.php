@@ -53,7 +53,7 @@ function build_forumbits($pid=0, $depth=1)
 
 			// This forum has a password, and the user isn't authenticated with it - hide post information
 			$hideinfo = false;
-			if($forum['password'] != '' && $_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
 				$hideinfo = true;
 			}

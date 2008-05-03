@@ -63,7 +63,7 @@ if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
 	}
 }
 // Cookied language!
-else if($_COOKIE['mybblang'] && $lang->language_exists($_COOKIE['mybblang']))
+else if($mybb->cookies['mybblang'] && $lang->language_exists($mybb->cookies['mybblang']))
 {
 	$mybb->settings['bblanguage'] = $mybb->input['language'];
 }
@@ -556,7 +556,7 @@ if($mybb->usergroup['canview'] != 1)
 }
 
 // work out which items the user has collapsed
-$colcookie = $_COOKIE['collapsed'];
+$colcookie = $mybb->cookies['collapsed'];
 
 // set up collapsable items (to automatically show them us expanded)
 if($colcookie)

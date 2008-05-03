@@ -1259,7 +1259,7 @@ function check_forum_password($fid, $pid=0)
 		}
 		else
 		{
-			if(!$_COOKIE['forumpass'][$fid] || ($_COOKIE['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $_COOKIE['forumpass'][$fid]))
+			if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $mybb->cookies['forumpass'][$fid]))
 			{
 				$showform = true;
 			}
@@ -1536,12 +1536,14 @@ function my_unsetcookie($name)
  */
 function my_get_array_cookie($name, $id)
 {
-	if(!isset($_COOKIE['mybb'][$name]))
+	global $mybb;
+	
+	if(!isset($mybb->cookies['mybb'][$name]))
 	{
 		return false;
 	}
 
-	$cookie = unserialize($_COOKIE['mybb'][$name]);
+	$cookie = unserialize($mybb->cookies['mybb'][$name]);
 
 	if(isset($cookie[$id]))
 	{
@@ -1562,7 +1564,9 @@ function my_get_array_cookie($name, $id)
  */
 function my_set_array_cookie($name, $id, $value)
 {
-	$cookie = $_COOKIE['mybb'];
+	global $mybb;
+	
+	$cookie = $mybb->cookies['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
 	$newcookie = addslashes(serialize($newcookie));
@@ -2673,7 +2677,7 @@ function get_unviewable_forums($only_readable_threads=false)
 
 		if($forum['password'] != "")
 		{
-			if($_COOKIE['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
 			}
@@ -4377,8 +4381,8 @@ function login_attempt_check($fatal = true)
 	// Use cookie if possible, otherwise use session
 	// Session stops user clearing cookies to bypass the login
 	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
-	$cookielogins = intval($_COOKIE['loginattempts']);
-	$cookietime = $_COOKIE['failedlogin'];
+	$cookielogins = intval($mybb->cookies['loginattempts']);
+	$cookietime = $mybb->cookies['failedlogin'];
 
 	if(empty($cookielogins) || $cookielogins < $session->logins)
 	{
@@ -4405,13 +4409,13 @@ function login_attempt_check($fatal = true)
 		// Some maths to work out how long they have left and display it to them
 		$now = TIME_NOW;
 
-		if(empty($_COOKIE['failedlogin']))
+		if(empty($mybb->cookies['failedlogin']))
 		{
 			$failedtime = $now;
 		}
 		else
 		{
-			$failedtime = $_COOKIE['failedlogin'];
+			$failedtime = $mybb->cookies['failedlogin'];
 		}
 
 		$secondsleft = $mybb->settings['failedlogintime'] * 60 + $failedtime - $now;
@@ -4433,7 +4437,7 @@ function login_attempt_check($fatal = true)
 		}
 
 		// Work out if the user has waited long enough before letting them login again
-		if($_COOKIE['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
+		if($mybb->cookies['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
 		{
 			my_setcookie('loginattempts', 1);
 			my_unsetcookie('failedlogin');

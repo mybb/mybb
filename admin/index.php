@@ -60,7 +60,7 @@ if($mybb->input['action'] == "logout")
 {
 	// Delete session from the database
 	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
-	setcookie("adminsid", "");
+	my_setcookie("adminsid", "");
 	$logged_out = true;
 }
 elseif($mybb->input['do'] == "login")
@@ -88,7 +88,7 @@ elseif($mybb->input['do'] == "login")
 			"lastactive" => TIME_NOW
 		);
 		$db->insert_query("adminsessions", $admin_session);
-		setcookie("adminsid", $sid);
+		my_setcookie("adminsid", $sid);
 		$post_verify = false;
 	}
 	else
@@ -99,14 +99,14 @@ elseif($mybb->input['do'] == "login")
 else
 {
 	// No admin session - show message on the login screen
-	if(!isset($_COOKIE['adminsid']))
+	if(!isset($mybb->cookies['adminsid']))
 	{
 		$login_message = "";
 	}
 	// Otherwise, check admin session
 	else
 	{
-		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($_COOKIE['adminsid'])."'");
+		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 		$admin_session = $db->fetch_array($query);
 
 		// No matching admin session found - show message on login screen
@@ -133,7 +133,7 @@ else
 				if($admin_session['lastactive'] < TIME_NOW-7200)
 				{
 					$login_message = $lang->error_admin_session_expired;
-					$db->delete_query("adminsessions", "sid='".$db->escape_string($_COOKIE['adminsid'])."'");
+					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 					unset($mybb->user);
 				}
 				// If IP matching is set - check IP address against the session IP

@@ -39,6 +39,13 @@ class MyBB {
 	var $input = array();
 	
 	/**
+	 * Cookie variables received from the outer world.
+	 *
+	 * @var array
+	 */
+	var $cookies = array();
+	
+	/**
 	 * Information about the current user.
 	 *
 	 * @var array
@@ -225,6 +232,30 @@ class MyBB {
 		foreach($array as $key => $val)
 		{
 			$this->input[$key] = $val;
+		}
+	}
+	
+	/**
+	 * Parses the incoming cookies
+	 *
+	 */
+	function parse_cookies()
+	{
+		if(!is_array($_COOKIE))
+		{
+			return;
+		}
+		
+		$prefix_length = strlen($this->settings['cookieprefix']);
+
+		foreach($_COOKIE as $key => $val)
+		{
+			if($prefix_length)
+			{
+				$key = substr($key, $prefix_length, strlen($key));
+			}
+			
+			$this->cookies[$key] = $val;
 		}
 	}
 

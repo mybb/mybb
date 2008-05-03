@@ -257,7 +257,7 @@ function check_forum_password_archive($fid, $pid=0)
 	$password = $forum_cache[$fid]['password'];
 	if($password)
 	{
-		if(!$_COOKIE['forumpass'][$fid] || ($_COOKIE['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $_COOKIE['forumpass'][$fid]))
+		if(!$mybb->cookies['forumpass'][$fid] || ($mybb->cookies['forumpass'][$fid] && md5($mybb->user['uid'].$password) != $mybb->cookies['forumpass'][$fid]))
 		{
 			archive_error_no_permission();
 		}

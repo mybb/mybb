@@ -276,7 +276,7 @@ if($mybb->user['uid'] == 0)
 		ORDER BY pid, disporder
 	");
 	
-	$forumsread = unserialize($_COOKIE['mybb']['forumread']);
+	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
 }
 else
 {
