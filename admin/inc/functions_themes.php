@@ -881,7 +881,7 @@ function cache_themes()
 
 function build_theme_list($parent=0, $depth=0)
 {
-	global $mybb, $db, $table, $lang; // Global $table is bad, but it will have to do for now
+	global $mybb, $db, $table, $lang, $page; // Global $table is bad, but it will have to do for now
 	static $theme_cache;
 
 	$padding = $depth*20; // Padding
@@ -938,16 +938,16 @@ function build_theme_list($parent=0, $depth=0)
 			if($theme['def'] != 1)
 			{
 				$popup->add_item($lang->set_as_default, "index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}");
-				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}\"><img src=\"\" title=\"{$lang->set_as_default}\" /></a>";
+				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}\"><img src=\"styles/{$page->style}/images/icons/make_default.gif\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
 			}
 			else
 			{
-				$set_default = "<img src=\"\" title=\"{$lang->default_theme}\" />";
+				$set_default = "<img src=\"styles/{$page->style}/images/icons/default.gif\" alt=\"{$lang->default_theme}\" style=\"vertical-align: middle;\" title=\"{$lang->default_theme}\" />";
 			}
 			$popup->add_item($lang->force_on_users, "index.php?module=style/themes&amp;action=force&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_theme_forced}')");
 		}
 		$popup->add_item($lang->export_theme, "index.php?module=style/themes&amp;action=export&amp;tid={$theme['tid']}");
-		$table->construct_cell("<div class=\"float_right;\">{$set_default}</div><div style=\"margin-left: {$padding}px\"><strong>{$theme['name']}</strong></div>");
+		$table->construct_cell("<div class=\"float_right\">{$set_default}</div><div style=\"margin-left: {$padding}px\"><strong>{$theme['name']}</strong></div>");
 		$table->construct_cell(my_number_format($theme['users']), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();

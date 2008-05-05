@@ -40,6 +40,8 @@ class dbpdoEngine {
     		echo 'Connection failed: '.$exception->getMessage();
 		}
 		
+		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		
 		return true;
 	}
 	
@@ -137,7 +139,7 @@ class dbpdoEngine {
 	 */
 	function error_number($query)
 	{
-		if(!is_object($query))
+		if(!is_object($query) || !method_exists($query, "errorCode"))
 		{
 			return;
 		}
@@ -155,7 +157,7 @@ class dbpdoEngine {
 	 */
 	function error_string($query)
 	{
-		if(!is_object($query))
+		if(!is_object($query) || !method_exists($query, "errorInfo"))
 		{
 			return $this->db->errorInfo();
 		}

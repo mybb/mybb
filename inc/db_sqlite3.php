@@ -487,8 +487,8 @@ class DB_SQLite3
 	{
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
-		$query = $this->query("SELECT name FROM sqlite_master WHERE type='table' AND name='{$this->table_prefix}{$table}'");
-		$exists = $this->num_rows($query);
+		$query = $this->query("SELECT COUNT(name) as count FROM sqlite_master WHERE type='table' AND name='{$this->table_prefix}{$table}'");
+		$exists = $this->fetch_field($query, "count");
 		$this->error_reporting = $err;
 
 		if($exists > 0)

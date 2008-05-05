@@ -394,7 +394,10 @@ class postParser
 				{
 					$message = preg_replace("#(?<=[^\w&;/\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
 					$remaining -= $replacements;
-					if($remaining <= 0) break; // Reached the limit
+					if($remaining <= 0)
+					{
+						break; // Reached the limit
+					}
 				}
 				else
 				{
