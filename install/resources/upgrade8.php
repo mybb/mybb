@@ -35,7 +35,7 @@ function upgrade8_dbchanges()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP oldadditionalgroups;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups text NOT NULL default '' AFTER oldgroup");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups TEXT NOT NULL AFTER oldgroup");
 	
 
 	if($db->field_exists('olddisplaygroup', TABLE_PREFIX."banned"))

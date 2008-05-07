@@ -922,10 +922,11 @@ function akismet_admin()
 				$db->delete_query("pollvotes", "pid='$poll'");
 			}
 			
-			// Delete the post
-			$db->delete_query("posts", "pid='{$post['pid']}'");
 			// Remove attachments
 			remove_attachments($post['pid']);
+			
+			// Delete the post
+			$db->delete_query("posts", "pid='{$post['pid']}'");
 		}
 		
 		flash_message($lang->success_spam_deleted, 'success');

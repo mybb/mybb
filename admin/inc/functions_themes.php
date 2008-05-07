@@ -351,7 +351,9 @@ function build_new_theme($name, $properties=null, $parent=1)
 		"name" => $db->escape_string($name),
 		"pid" => intval($parent),
 		"def" => 0,
-		"allowedgroups" => ""
+		"allowedgroups" => "",
+		"properties" => "",
+        "stylesheets" => ""
 	);
 	$tid = $db->insert_query("themes", $new_theme);
 
@@ -958,9 +960,9 @@ function build_theme_list($parent=0, $depth=0)
 }
 
 // returns an array which can be sent to generate_select_box()
-function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = array())
+function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 {
-	global $mybb, $lang;
+	global $mybb, $lang, $list;
 	static $theme_cache;
 
 	if(!is_array($theme_cache))
@@ -993,7 +995,7 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0, &$list = arra
 		
 		$list[$theme['tid']] = str_repeat("--", $depth).$theme['name'];
 		// Fetch & build any child themes
-		build_theme_array($ignoretid, $theme['tid'], $depth+1, $list);
+		build_theme_array($ignoretid, $theme['tid'], $depth+1);
 	}
 	
 	if(!$parent)

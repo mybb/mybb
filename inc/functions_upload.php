@@ -104,7 +104,7 @@ function remove_attachments($pid, $posthash="")
 		}
 	}
 	
-	if($post['pid'])
+	if($post['tid'])
 	{
 		update_thread_counters($post['tid'], array("attachmentcount" => "-{$num_attachments}"));
 	}

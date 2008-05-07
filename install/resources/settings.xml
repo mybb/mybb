@@ -1500,7 +1500,7 @@ both=Warnings and Errors
 			<optionscode><![CDATA[radio
 horizontal=Display posts using the horizontal post layout
 classic=Display posts using the classic layout]]></optionscode>
-			<settingvalue><![CDATA[vertical]]></settingvalue>
+			<settingvalue><![CDATA[horizontal]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>		

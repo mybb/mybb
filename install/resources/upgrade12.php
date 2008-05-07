@@ -419,7 +419,7 @@ function upgrade12_dbchanges2()
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
 		subject varchar(200) not null default '',
-		message text NOT NULL default '',
+		message TEXT NOT NULL,
 		dateline bigint(30) NOT NULL default '0',
 		fromuid int unsigned NOT NULL default '0',
 		fromemail varchar(200) not null default '',
@@ -658,7 +658,7 @@ function upgrade12_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD suspensiontime bigint(30) NOT NULL default '0' AFTER suspendposting");
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned CHANGE oldadditionalgroups oldadditionalgroups text NOT NULL default ''");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned CHANGE oldadditionalgroups oldadditionalgroups TEXT NOT NULL");
 	
 	if($db->field_exists('birthdayprivacy', "users"))
 	{
@@ -700,7 +700,7 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions DROP data;");
 	}
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL default '' AFTER lastactive;");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD data TEXT NOT NULL AFTER lastactive;");
 	
 	if($db->field_exists('isdefault', "settings"))
 	{
@@ -723,6 +723,8 @@ function upgrade12_dbchanges2()
 			$db->update_query("settings", array('isdefault' => 1), "sid = '{$setting['sid']}'", 1);
 		}
 	}
+	
+	$db->update_query("settings", array('value' => 'classic'), "name='postlayout' AND value != 'horizontal'");
 	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -870,7 +872,7 @@ function upgrade12_dbchanges4()
 	
 	if($db->field_exists('permsset', "adminoptions") && !$db->field_exists('permissions', "adminoptions"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions text NOT NULL default ''");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions CHANGE permsset permissions TEXT NOT NULL ");
 	}
 	
 	$adminoptions = file_get_contents(INSTALL_ROOT.'resources/adminoptions.xml');

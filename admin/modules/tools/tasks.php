@@ -700,11 +700,11 @@ if(!$mybb->input['action'])
 		$next_run = date($mybb->settings['dateformat'], $task['nextrun']).", ".date($mybb->settings['timeformat'], $task['nextrun']);
 		if($task['enabled'] == 1)
 		{
-			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"(Enabled)\" title=\"Enabled\"  style=\"vertical-align: middle;\" /> ";
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_on.gif\" alt=\"({$lang->alt_enabled})\" title=\"{$lang->alt_enabled}\"  style=\"vertical-align: middle;\" /> ";
 		}
 		else
 		{
-			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"(Disabled)\" title=\"Disabled\"  style=\"vertical-align: middle;\" /> ";
+			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}\"  style=\"vertical-align: middle;\" /> ";
 		}
 		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
 		$table->construct_cell($next_run, array("class" => "align_center"));

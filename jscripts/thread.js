@@ -154,15 +154,13 @@ var Thread = {
 
 			if(my_post_key)
 			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "my_post_key");
+				var input = document.createElement("<input name=\"my_post_key\">");
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", my_post_key);
 				form.appendChild(input);
 			}
 
-			var input = document.createElement("input");
-			input.setAttribute("name", "pid");
+			var input = document.createElement("<input name=\"pid\">");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", pid);
 

@@ -844,20 +844,20 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		// sendthread.php functions
 		case "sendthread":
-			$locationname = $lang->sending_thread;
+			$location_name = $lang->sending_thread;
 			break;
 		// warnings.php functions
 		case "warnings_revoke":
-			$locationname = $lang->revoking_warning;
+			$location_name = $lang->revoking_warning;
 			break;
 		case "warnings_warn":
-			$locationname = $lang->warning_user;
+			$location_name = $lang->warning_user;
 			break;
 		case "warnings_view":
-			$locationname = $lang->viewing_warning;
+			$location_name = $lang->viewing_warning;
 			break;
 		case "warnings":
-			$locationname = $lang->managing_warnings;
+			$location_name = $lang->managing_warnings;
 			break;
 	}
 	

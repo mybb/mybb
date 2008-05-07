@@ -35,7 +35,7 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
   ip varchar(40) NOT NULL default '',
   dateline bigint(30) NOT NULL default '0',
   lastactive bigint(30) NOT NULL default '0',
-  data TEXT NOT NULL default ''
+  data TEXT NOT NULL
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_adminviews (

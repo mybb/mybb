@@ -108,7 +108,7 @@ var MyBB = {
 			form.setAttribute("action", "calendar.php");
 			form.setAttribute("style", "display: none;");
 
-			var input = document.createElement("input");
+			var input = document.createElement("<input name=\"action\">");
 			input.setAttribute("name", "action");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", "do_editevent");
@@ -116,21 +116,18 @@ var MyBB = {
 
 			if(my_post_key)
 			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "my_post_key");
+				var input = document.createElement("<input name=\"my_post_key\">");
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", my_post_key);
 				form.appendChild(input);
 			}
 
-			var input = document.createElement("input");
-			input.setAttribute("name", "eid");
+			var input = document.createElement("<input name=\"eid\">");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", eid);
 			form.appendChild(input);
 
-			var input = document.createElement("input");
-			input.setAttribute("name", "delete");
+			var input = document.createElement("<input name=\"delete\">");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", 1);
 			form.appendChild(input);
@@ -172,22 +169,19 @@ var MyBB = {
 			form.setAttribute("action", "reputation.php?action=delete");
 			form.setAttribute("style", "display: none;");
 
-			var input = document.createElement("input");
-			input.setAttribute("name", "rid");
+			var input = document.createElement("<input name=\"rid\">");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", rid);
 			form.appendChild(input);
 
 			if(my_post_key)
 			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "my_post_key");
+				var input = document.createElement("<input name=\"my_post_key\">");
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", my_post_key);
 				form.appendChild(input);
 			}
-			var input = document.createElement("input");
-			input.setAttribute("name", "uid");
+			var input = document.createElement("<input name=\"uid\">");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", uid);
 			form.appendChild(input);
@@ -259,8 +253,7 @@ var MyBB = {
 				form.setAttribute("method", "post");
 				form.setAttribute("action", "misc.php");
 				form.setAttribute("style", "display: none;");
-				var input = document.createElement("input");
-				input.setAttribute("name", "action");
+				var input = document.createElement("<input name=\"action\">");
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", "dstswitch");
 				form.appendChild(input);
@@ -324,14 +317,12 @@ var MyBB = {
 			form.setAttribute("method", "post");
 			form.setAttribute("action", "member.php");
 			
-			var input = document.createElement("input");
-			input.setAttribute("name", "action");
+			var input = document.createElement("<input name=\"action\">");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", "do_login");
 			form.appendChild(input);
 			
-			var input = document.createElement("input");
-			input.setAttribute("name", "username");
+			var input = document.createElement("<input name=\"username\">");
 			input.setAttribute("type", "text");
 			input.setAttribute("value", lang.username);
 			input.setAttribute("class", "textbox");
@@ -341,8 +332,7 @@ var MyBB = {
 			
 			form.innerHTML += " ";
 			
-			var input = document.createElement("input");
-			input.setAttribute("name", "password");
+			var input = document.createElement("<input name=\"password\">");
 			input.setAttribute("type", "password");
 			input.setAttribute("value", lang.password);
 			input.setAttribute("class", "textbox");
@@ -352,8 +342,7 @@ var MyBB = {
 			
 			form.innerHTML += " ";
 			
-			var input = document.createElement("input");
-			input.setAttribute("name", "submit");
+			var input = document.createElement("<input name=\"submit\">");
 			input.setAttribute("type", "submit");
 			input.setAttribute("value", lang.login);
 			input.setAttribute("class", "button");
