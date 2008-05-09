@@ -135,6 +135,12 @@ function import_theme_xml($xml, $options=array())
 	// If we have any stylesheets, process them
 	if(is_array($theme['stylesheets']) && !$options['no_stylesheets'])
 	{
+		// are we dealing with a single stylesheet?
+		if(isset($theme['stylesheets']['stylesheet']['tag']))
+		{
+			// trick the system into thinking we have a good array =P
+			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
+		}
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
 			if(!$stylesheet['attributes']['lastmodified'])

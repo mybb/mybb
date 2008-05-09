@@ -121,7 +121,6 @@ $l['message_quota'] = "Message Quota";
 $l['message_quota_desc'] = "Maximum number of private messages that can be stored by users in this group. If empty, users can store unlimited messages.";
 $l['max_recipients'] = "Maximum Recipients Per Message";
 $l['max_recipients_desc'] = "Maximum number of recipients a user can send a private message to at one time. If empty, users can send private messages to an unlimited number of recipients.";
-$l['can_post_attachments'] = "Can post attachments";
 $l['show_reputations'] = "Show reputations for users in this group";
 $l['can_give_reputation'] = "Can give reputations to users";
 $l['points_to_award_take'] = "Points to Award/Take Away:";
