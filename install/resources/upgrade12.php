@@ -1095,8 +1095,15 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('38','xmlhttp','<lang:group_xmlhttp>');");
 $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('39','footer','<lang:group_footer>');");
 
-	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users WHERE Key_name LIKE 'username'");
-	$index = $db->fetch_array($query);
+	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
+	while($ukey = $db->fetch_array($query))
+	{
+		if($ukey['Key_name'] == "username")
+		{
+			$index = $ukey;
+			break;
+		}
+	}
 	if($index)
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
@@ -1179,7 +1186,7 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 		title varchar(100) NOT NULL default '',
 		type varchar(6) NOT NULL default '',
 		visibility int(1) NOT NULL default '0',
-		fields text NOT NULL,
+		`fields` text NOT NULL,
 		conditions text NOT NULL,
 		sortby varchar(20) NOT NULL default '',
 		sortorder varchar(4) NOT NULL default '',
