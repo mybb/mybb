@@ -66,6 +66,7 @@ class diskCacheHandler
 	 */
 	function put($name, $contents)
 	{
+		global $mybb;
 		if(!is_writable(MYBB_ROOT."cache"))
 		{
 			$mybb->trigger_generic_error("cache_no_write");

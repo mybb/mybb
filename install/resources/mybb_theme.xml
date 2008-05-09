@@ -4141,7 +4141,7 @@ body {
 <script type="text/javascript">
 <!--
 	{$editor_language}
-	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}});
+	var clickableEditor = new messageEditor("{$bind}", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
 	if(clickableEditor)
 	{
 		clickableEditor.bindSmilieInserter("clickable_smilies");

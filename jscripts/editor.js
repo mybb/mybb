@@ -1084,7 +1084,7 @@ messageEditor.prototype = {
 		{
 			var select_start = element.selectionStart;
 			var select_end = element.selectionEnd;
-			if(select_end <= 2)
+			if(select_end <= 0)
 			{
 				select_end = element.textLength;
 			}
@@ -1150,7 +1150,7 @@ messageEditor.prototype = {
 			var select_end = textarea.selectionEnd;
 			var scroll_top = textarea.scrollTop;
 
-			if(select_end <= 2)
+			if(select_end <= 0)
 			{
 				select_end = textarea.textLength;
 			}

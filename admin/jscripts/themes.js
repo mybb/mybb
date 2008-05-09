@@ -14,6 +14,7 @@ ThemeSelector.prototype = {
 	isajax: false,
 	specific_count: 0,
 	selector_go: null,
+	selector_prev_option: null,
 	
 	background: null,
 	width: null,
@@ -32,6 +33,7 @@ ThemeSelector.prototype = {
             this.url = url;
 			this.save_url = save_url;
             this.selector = selector;
+			this.selector_prev_option = this.selector.value;
             this.stylesheet = stylesheet;
 			this.file = file;
 			this.selector_form = selector_form;
@@ -137,6 +139,7 @@ ThemeSelector.prototype = {
 				alert('Saved');
 			}
 		}
+		this.selector_prev_option = this.selector.value;
 		return true;
     },
 	
@@ -159,7 +162,7 @@ ThemeSelector.prototype = {
 			'font_weight': $('css_bits[font_weight]').value
 		};
 		
-		postData = "css_bits="+encodeURIComponent(js_array_to_php_array(css_bits))+"&selector="+encodeURIComponent(this.selector.value)+"&file="+encodeURIComponent(this.file)+"&tid="+encodeURIComponent(this.tid)+"&my_post_key="+encodeURIComponent(my_post_key)+"&serialized=1";
+		postData = "css_bits="+encodeURIComponent(js_array_to_php_array(css_bits))+"&selector="+encodeURIComponent(this.selector_prev_option)+"&file="+encodeURIComponent(this.file)+"&tid="+encodeURIComponent(this.tid)+"&my_post_key="+encodeURIComponent(my_post_key)+"&serialized=1";
 		
 		if(isajax == true)
 		{
