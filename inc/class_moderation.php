@@ -1235,7 +1235,7 @@ class Moderation
 					$query = $db->query("
 						SELECT p.pid, t.subject
 						FROM ".TABLE_PREFIX."posts p
-						LEFT JOIN".TABLE_PREFIX."threads t ON (p.tid=t.tid)
+						LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 						WHERE p.tid='{$tid}'
 						ORDER BY p.dateline ASC
 						LIMIT 1
