@@ -105,8 +105,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 					"view_type" => $db->escape_string($mybb->input['view_type'])
 				);
 
-				$db->insert_query("adminviews", $new_view);
-				$vid = $db->insert_id();
+				$vid = $db->insert_query("adminviews", $new_view);
 
 				if($mybb->input['isdefault'])
 				{

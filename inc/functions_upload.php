@@ -514,14 +514,13 @@ function upload_attachment($attachment)
 	
 	$plugins->run_hooks_by_ref("upload_attachment_do_insert", $attacharray);
 
-	$db->insert_query("attachments", $attacharray);
+	$aid = $db->insert_query("attachments", $attacharray);
 
 	if($attacharray['pid'] > 0)
 	{
 		$post = get_post($attacharray['pid']);
 		update_thread_counters($post['tid'], array("attachmentcount" => +1));
 	}
-	$aid = $db->insert_id();
 	$ret['aid'] = $aid;
 	return $ret;
 }

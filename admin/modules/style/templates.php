@@ -108,8 +108,7 @@ if($mybb->input['action'] == "add_set")
 		
 		if(!$errors)
 		{
-			$query = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])));
-			$sid = $db->insert_id();
+			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($mybb->input['title'])));
 			
 			// Log admin action
 			log_admin_action($sid, $mybb->input['title']);
@@ -194,8 +193,7 @@ if($mybb->input['action'] == "add_template")
 				'dateline' => TIME_NOW
 			);
 						
-			$query = $db->insert_query("templates", $template_array);
-			$tid = $db->insert_id();
+			$tid = $db->insert_query("templates", $template_array);
 			
 			$plugins->run_hooks("admin_style_templates_add_template_commit");
 			
@@ -401,8 +399,7 @@ if($mybb->input['action'] == "edit_template")
 				$query = $db->simple_select("templates", "COUNT(tid) as count", "title='".$db->escape_string($mybb->input['title'])."' AND (sid = '-2' OR sid = '{$sid}')");
 				if($db->fetch_field($query, "count") == 1)
 				{
-					$db->insert_query("templates", $template_array);
-					$tid = $db->insert_id();
+					$tid = $db->insert_query("templates", $template_array);
 				}
 				else
 				{
@@ -596,8 +593,7 @@ if($mybb->input['action'] == "search_replace")
 											"status" => '',
 											"dateline" => TIME_NOW
 										);
-										$db->insert_query("templates", $new_template);
-										$new_tid = $db->insert_id();
+										$new_tid = $db->insert_query("templates", $new_template);
 										$label = $lang->sprintf($lang->search_created_custom, $template['title']);
 										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$new_tid}&amp;sid=1";
 									}

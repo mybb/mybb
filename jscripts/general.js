@@ -107,8 +107,16 @@ var MyBB = {
 			form.setAttribute("method", "post");
 			form.setAttribute("action", "calendar.php");
 			form.setAttribute("style", "display: none;");
-
-			var input = document.createElement("<input name=\"action\">");
+			
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"action\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "action");
+			}
 			input.setAttribute("name", "action");
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", "do_editevent");
@@ -116,18 +124,42 @@ var MyBB = {
 
 			if(my_post_key)
 			{
-				var input = document.createElement("<input name=\"my_post_key\">");
+				if(this.browser == "ie")
+				{
+					var input = document.createElement("<input name=\"my_post_key\">");
+				}
+				else
+				{
+					var input = document.createElement("input");
+					input.setAttribute("name", "my_post_key");
+				}
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", my_post_key);
 				form.appendChild(input);
 			}
 
-			var input = document.createElement("<input name=\"eid\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"eid\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "eid");
+			}
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", eid);
 			form.appendChild(input);
 
-			var input = document.createElement("<input name=\"delete\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"delete\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "delete");
+			}
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", 1);
 			form.appendChild(input);
@@ -169,19 +201,44 @@ var MyBB = {
 			form.setAttribute("action", "reputation.php?action=delete");
 			form.setAttribute("style", "display: none;");
 
-			var input = document.createElement("<input name=\"rid\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"rid\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "rid");
+			}
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", rid);
 			form.appendChild(input);
 
 			if(my_post_key)
 			{
-				var input = document.createElement("<input name=\"my_post_key\">");
+				if(this.browser == "ie")
+				{
+					var input = document.createElement("<input name=\"my_post_key\">");
+				}
+				else
+				{
+					var input = document.createElement("input");
+					input.setAttribute("name", "my_post_key");
+				}
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", my_post_key);
 				form.appendChild(input);
 			}
-			var input = document.createElement("<input name=\"uid\">");
+			
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"uid\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "uid");
+			}
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", uid);
 			form.appendChild(input);
@@ -253,7 +310,15 @@ var MyBB = {
 				form.setAttribute("method", "post");
 				form.setAttribute("action", "misc.php");
 				form.setAttribute("style", "display: none;");
-				var input = document.createElement("<input name=\"action\">");
+				if(this.browser == "ie")
+				{
+					var input = document.createElement("<input name=\"action\">");
+				}
+				else
+				{
+					var input = document.createElement("input");
+					input.setAttribute("name", "action");
+				}
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", "dstswitch");
 				form.appendChild(input);
@@ -317,12 +382,29 @@ var MyBB = {
 			form.setAttribute("method", "post");
 			form.setAttribute("action", "member.php");
 			
-			var input = document.createElement("<input name=\"action\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"action\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "action");
+			}
+			
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", "do_login");
 			form.appendChild(input);
 			
-			var input = document.createElement("<input name=\"username\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"username\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "username");
+			}
 			input.setAttribute("type", "text");
 			input.setAttribute("value", lang.username);
 			input.setAttribute("class", "textbox");
@@ -332,7 +414,15 @@ var MyBB = {
 			
 			form.innerHTML += " ";
 			
-			var input = document.createElement("<input name=\"password\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"password\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "password");
+			}
 			input.setAttribute("type", "password");
 			input.setAttribute("value", lang.password);
 			input.setAttribute("class", "textbox");
@@ -342,7 +432,15 @@ var MyBB = {
 			
 			form.innerHTML += " ";
 			
-			var input = document.createElement("<input name=\"submit\">");
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"submit\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "submit");
+			}
 			input.setAttribute("type", "submit");
 			input.setAttribute("value", lang.login);
 			input.setAttribute("class", "button");

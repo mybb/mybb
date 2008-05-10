@@ -104,8 +104,7 @@ if($mybb->input['action'] == "copy")
 				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
 				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
 						
-				$db->insert_query("forums", $new_forum);
-				$to = $db->insert_id();
+				$to = $db->insert_query("forums", $new_forum);
 		
 				// Generate parent list
 				$parentlist = make_parent_list($to);
@@ -638,14 +637,10 @@ if($mybb->input['action'] == "add")
 				"defaultsortby" => $db->escape_string($mybb->input['defaultsortby']),
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
-			$db->insert_query("forums", $insert_array);
+			$fid = $db->insert_query("forums", $insert_array);
 			
-			$fid = $db->insert_id();
 			$parentlist = make_parent_list($fid);
-			$updatearray = array(
-				"parentlist" => $parentlist
-			);
-			$db->update_query("forums", $updatearray, "fid='$fid'");
+			$db->update_query("forums", array("parentlist" => $parentlist), "fid='$fid'");
 			$inherit = $mybb->input['default_permissions'];
 			
 			foreach($mybb->input['permissions'] as $gid => $permission)

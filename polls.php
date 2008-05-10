@@ -243,8 +243,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("polls_do_newpoll_process");
 
-	$db->insert_query("polls", $newpoll);
-	$pid = $db->insert_id();
+	$pid = $db->insert_query("polls", $newpoll);
 
 	$db->update_query("threads", array('poll' => $pid), "tid='".$thread['tid']."'");
 

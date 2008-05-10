@@ -409,6 +409,7 @@ function fetch_wol_activity($location)
 			break;
 		default:
 			$user_activity['activity'] = "unknown";
+			$user_activity['location'] = $location;
 			break;
 	}
 	
@@ -425,7 +426,7 @@ function fetch_wol_activity($location)
  */
 function build_friendly_wol_location($user_activity, $return=false)
 {
-	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb;
+	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb, $user_activity;
 	static $threads, $forums, $forums_linkto, $posts, $events, $users, $attachments;
 
 	// Fetch forum permissions for this user
@@ -861,15 +862,16 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 	}
 	
-	$plugins->run_hooks_by_ref("build_friendly_wol_location_end", $filename);
+	$plugins->run_hooks_by_ref("build_friendly_wol_location_end", $location_name);
 	
 	if($user_activity['nopermission'] == 1)
 	{
 		$location_name = $lang->viewing_noperms;
 	}
+	
 	if(!$location_name)
 	{
-		$location_name = $lang->sprintf($lang->unknown_location, $location);
+		$location_name = $lang->sprintf($lang->unknown_location, $user_activity['location']);
 	}
 
 	return $location_name;

@@ -263,8 +263,7 @@ function upgrade1_dbchanges2()
 		}
 	}
 	$db->write_query("INSERT INTO themes (tid,name,templateset$tquery1) VALUES ('','((master))','$sid'$tquery2)");
-	$db->write_query("INSERT INTO themes (tid,name,templateset$tquery1) VALUES ('','$thname','$sid2'$tquery2)");
-	$thetid = $db->insert_id();
+	$thetid = $db->write_query("INSERT INTO themes (tid,name,templateset$tquery1) VALUES ('','$thname','$sid2'$tquery2)");
 	$db->write_query("UPDATE themes SET def='1' WHERE tid='$thetid'");
 
 	$output->print_contents("Theme imported<p>Please click next to continue with the upgrade process.</p>");

@@ -868,8 +868,7 @@ function insert_templates()
 	$insert_array = array(
 		'title' => 'Default Templates'
 	);
-	$db->insert_query("templatesets", $insert_array);
-	$templateset = $db->insert_id();
+	$templateset = $db->insert_query("templatesets", $insert_array);
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	require_once MYBB_ROOT."admin/inc/functions_themes.php";
@@ -1016,8 +1015,7 @@ function create_admin_user()
 				'disporder' => intval($settinggroup['attributes']['disporder']),
 				'isdefault' => $settinggroup['attributes']['isdefault'],
 			);
-			$db->insert_query('settinggroups', $groupdata);
-			$gid = $db->insert_id();
+			$gid = $db->insert_query('settinggroups', $groupdata);
 			++$groupcount;
 			foreach($settinggroup['setting'] as $setting)
 			{
@@ -1190,11 +1188,11 @@ function install_done()
 			if($key == "gid" || !is_array($value)) continue;
 			$new_group[$key] = $db->escape_string($value[0]['value']);
 		}
-		$db->insert_query("usergroups", $new_group);
+		$admin_gid = $db->insert_query("usergroups", $new_group);
 		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
-		if($new_group['cancp'] == 1 && !$admin_gid)
+		if($new_group['cancp'] != 1 && $admin_gid)
 		{
-			$admin_gid = $db->insert_id();
+			unset($admin_gid);
 		}
 		$group_count++;
 	}

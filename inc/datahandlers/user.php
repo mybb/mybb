@@ -902,8 +902,7 @@ class UserDataHandler extends DataHandler
 
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
 
-		$db->insert_query("users", $this->user_insert_data);
-		$this->uid = $db->insert_id();
+		$this->uid = $db->insert_query("users", $this->user_insert_data);
 
 		$user['user_fields']['ufid'] = $this->uid;
 

@@ -469,8 +469,7 @@ class EventDataHandler extends DataHandler
 
 		$plugins->run_hooks_by_ref("datahandler_event_insert", $this);
 
-		$db->insert_query("events", $this->event_insert_data);
-		$this->eid = $db->insert_id();
+		$this->eid = $db->insert_query("events", $this->event_insert_data);
 
 		// Return the event's eid and whether or not it is private.
 		return array(

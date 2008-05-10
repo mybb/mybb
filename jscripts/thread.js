@@ -154,13 +154,29 @@ var Thread = {
 
 			if(my_post_key)
 			{
-				var input = document.createElement("<input name=\"my_post_key\">");
+				if(MyBB.browser == "ie")
+				{
+					var input = document.createElement("<input name=\"my_post_key\">");
+				}
+				else
+				{
+					var input = document.createElement("input");
+					input.setAttribute("name", "my_post_key");
+				}
 				input.setAttribute("type", "hidden");
 				input.setAttribute("value", my_post_key);
 				form.appendChild(input);
 			}
 
-			var input = document.createElement("<input name=\"pid\">");
+			if(MyBB.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"pid\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "pid");
+			}
 			input.setAttribute("type", "hidden");
 			input.setAttribute("value", pid);
 
@@ -344,7 +360,7 @@ var Thread = {
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
 			$('posts').appendChild(post);
-			if(MyBB.browser == "ie")
+			if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari")
 			{
 				var scripts = request.responseText.extractScripts();
 				scripts.each(function(script)

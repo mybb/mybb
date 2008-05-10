@@ -145,7 +145,7 @@ function import_theme_xml($xml, $options=array())
 		{
 			if(!$stylesheet['attributes']['lastmodified'])
 			{
-				$stylesheet['attributes']['lastmodified'] = time();
+				$stylesheet['attributes']['lastmodified'] = TIME_NOW;
 			}
 			
 			$new_stylesheet = array(

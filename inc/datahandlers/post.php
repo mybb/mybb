@@ -788,8 +788,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
-			$db->insert_query("posts", $this->post_insert_data);
-			$this->pid = $db->insert_id();
+			$this->pid = $db->insert_query("posts", $this->post_insert_data);
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
@@ -1094,8 +1093,7 @@ class PostDataHandler extends DataHandler
 
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
 
-			$db->insert_query("threads", $this->thread_insert_data);
-			$this->tid = $db->insert_id();
+			$this->tid = $db->insert_query("threads", $this->thread_insert_data);
 
 			$this->post_insert_data = array(
 				"tid" => $this->tid,
@@ -1115,8 +1113,7 @@ class PostDataHandler extends DataHandler
 			);
 			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
 
-			$db->insert_query("posts", $this->post_insert_data);
-			$this->pid = $db->insert_id();
+			$this->pid = $db->insert_query("posts", $this->post_insert_data);
 
 			// Now that we have the post id for this first post, update the threads table.
 			$firstpostup = array("firstpost" => $this->pid);

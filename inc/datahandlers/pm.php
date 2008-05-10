@@ -529,9 +529,7 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['toid'] = $recipient['uid'];
 
 			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
-			$db->insert_query("privatemessages", $this->pm_insert_data);
-
-			$this->pmid = $db->insert_id();
+			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// If PM noices/alerts are on, show!
 			if($recipient['pmnotice'] == 1)

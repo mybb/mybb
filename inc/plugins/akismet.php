@@ -148,8 +148,7 @@ function akismet_install()
 		'disporder' => $rows+1, 
 		'isdefault' => 0
 	);
-	$db->insert_query("settinggroups", $insertarray);
-	$group['gid'] = $db->insert_id();
+	$group['gid'] = $db->insert_query("settinggroups", $insertarray);
 	$mybb->akismet_insert_gid = $group['gid'];
 	
 	$insertarray = array(
@@ -218,7 +217,7 @@ function akismet_install()
 	);
 	$db->insert_query("settings", $insertarray);
 	
-	$db->query("ALTER TABLE ".TABLE_PREFIX."users ADD akismetstopped int NOT NULL");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD akismetstopped int NOT NULL");
 
 	rebuild_settings();
 }

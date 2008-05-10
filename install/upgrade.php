@@ -606,8 +606,7 @@ function sync_settings($redo=0)
 		);
 		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
 		{
-			$db->insert_query("settinggroups", $groupdata);
-			$gid = $db->insert_id();
+			$gid = $db->insert_query("settinggroups", $groupdata);
 			++$groupcount;
 		}
 		else

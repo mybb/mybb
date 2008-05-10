@@ -68,6 +68,7 @@ $l['change_recipient_conds'] = "Change recipient conditions";
 $l['review_message'] = "Review Your Message";
 $l['define_delivery_date'] = "Define Delivery Date";
 $l['schedule_for_delivery'] = "Schedule for Delivery";
+$l['username'] = "Username";
 
 $l['step_three'] = "Step 3";
 $l['next_step'] = "Next Step";

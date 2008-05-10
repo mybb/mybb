@@ -404,8 +404,7 @@ if($mybb->input['action'] == "add")
 				"logging" => intval($mybb->input['logging'])
 			);
 			
-			$query = $db->insert_query("promotions", $new_promotion);
-			$pid = $db->insert_id();
+			$pid = $db->insert_query("promotions", $new_promotion);
 			
 			$plugins->run_hooks("admin_user_group_promotions_add_commit");
 

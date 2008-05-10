@@ -693,10 +693,9 @@ class Moderation
 					"visible" => $thread['visible'],
 					"notes" => ''
 				);
-				$db->insert_query("threads", $threadarray);
+				$redirect_tid = $db->insert_query("threads", $threadarray);
 				if($redirect_expire)
 				{
-					$redirect_tid = $db->insert_id();
 					$this->expire_thread($redirect_tid, $redirect_expire);
 				}
  				break;
@@ -740,8 +739,7 @@ class Moderation
 				
 				$plugins->run_hooks("class_moderation_copy_thread", array("tid" => $tid, "new_fid" => $new_fid));
 				
-				$db->insert_query("threads", $threadarray);
-				$newtid = $db->insert_id();
+				$newtid = $db->insert_query("threads", $threadarray);
 				
 				if($thread['poll'] != 0)
 				{
@@ -761,8 +759,7 @@ class Moderation
 						'multiple' => $poll['multiple'],
 						'public' => $poll['public']
 					);
-					$db->insert_query("polls", $poll_array);
-					$new_pid = $db->insert_id();
+					$new_pid = $db->insert_query("polls", $poll_array);
 
 					$query = $db->simple_select("pollvotes", "*", "pid = '{$poll['pid']}'");
 					while($pollvote = $db->fetch_array($query))
@@ -798,8 +795,7 @@ class Moderation
 						'edittime' => $post['edittime'],
 						'visible' => $post['visible']
 					);
-					$db->insert_query("posts", $post_array);
-					$pid = $db->insert_id();
+					$pid = $db->insert_query("posts", $post_array);
 					
 					// Insert attachments for this post
 					$query2 = $db->simple_select("attachments", "*", "pid = '{$post['pid']}'");
@@ -1056,8 +1052,7 @@ class Moderation
 				"visible" => 1,
 				"notes" => ''
 			);
-			$db->insert_query("threads", $query);
-			$newtid = $db->insert_id();
+			$newtid = $db->insert_query("threads", $query);
 			
 			++$forum_counters[$moveto]['threads'];
 		}
