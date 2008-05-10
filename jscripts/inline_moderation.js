@@ -195,6 +195,7 @@ var inlineModeration = {
 			if((element.name != "allbox") && (element.type == "checkbox") && (inlineCheck[0] == "inlinemod"))
 			{
 				id = inlineCheck[1];
+				var changed = (element.checked != master.checked);
 				element.checked = master.checked;
 				
 				var tr = element.up('tr');
@@ -207,14 +208,17 @@ var inlineModeration = {
 					tr.removeClassName('trow_selected');
 				}
 
-				if(master.checked == true)
+				if(changed)
 				{
-					inlineModeration.inlineCount++;
-					newIds[newIds.length] = id;
-				}
-				else
-				{
-					inlineModeration.inlineCount--;
+					if(master.checked == true)
+					{
+						inlineModeration.inlineCount++;
+						newIds[newIds.length] = id;
+					}
+					else
+					{
+						inlineModeration.inlineCount--;
+					}
 				}
 			}
 		});

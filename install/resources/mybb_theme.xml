@@ -6590,7 +6590,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="private_messagebit_denyreceipt" version="120"><![CDATA[ <span class="smalltext"><a href="private.php?action=read&amp;pmid={$message['pmid']}&amp;denyreceipt=1">{$lang->deny_receipt}</a></span>]]></template>
 		<template name="private_read_to" version="1400"><![CDATA[<br />
-To: {$to_recipients}
+{$lang->to} {$to_recipients}
 {$bcc}]]></template>
 		<template name="private_read_bcc" version="1400"><![CDATA[<br />{$lang->bcc} {$bcc_recipients}]]></template>
 		<template name="private_read_action" version="1400"><![CDATA[<tr>
