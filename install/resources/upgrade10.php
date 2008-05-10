@@ -30,8 +30,8 @@ function upgrade10_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 
-	$db->query("UPDATE ".TABLE_PREFIX."templates SET version='0' WHERE version=''");
-	$db->query("ALTER TABLE ".TABLE_PREFIX."templates CHANGE version version int unsigned NOT NULL default '0'");
+	$db->write_query("UPDATE ".TABLE_PREFIX."templates SET version='0' WHERE version=''");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."templates CHANGE version version int unsigned NOT NULL default '0'");
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

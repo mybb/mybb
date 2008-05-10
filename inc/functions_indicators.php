@@ -29,7 +29,7 @@ function mark_thread_read($tid, $fid)
 				$db->shutdown_query($db->build_replace_query("threadsread", array('tid' => $tid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), "tid"));
 				break;
 			default:
-				$db->query("
+				$db->write_query("
 					REPLACE INTO ".TABLE_PREFIX."threadsread (tid, uid, dateline)
 					VALUES('$tid', '{$mybb->user['uid']}', '".TIME_NOW."')
 				");

@@ -33,7 +33,7 @@ function upgrade4_dbchanges()
 	$db->write_query("UPDATE ".TABLE_PREFIX."users SET style='0' WHERE style='-1';");
 	$db->write_query("UPDATE ".TABLE_PREFIX."users SET displaygroup='0' WHERE displaygroup='-1';");
 	$db->write_query("UPDATE ".TABLE_PREFIX."forums SET style='0' WHERE style='-1';");
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."adminoptions WHERE uid='0'");
+	$query = $db->simple_select("adminoptions", "uid='0'");
 	$test = $db->fetch_array($query);
 	if(!isset($test['uid']))
 	{

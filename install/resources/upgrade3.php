@@ -106,7 +106,7 @@ function upgrade3_convertattachments()
 
 	require_once MYBB_ROOT."inc/settings.php";
 
-	$query = $db->query("SELECT COUNT(aid) AS attachcount FROM ".TABLE_PREFIX."attachments");
+	$query = $db->simple_select("attachments", "COUNT(aid) AS attachcount");
 	$cnt = $db->fetch_array($query);
 
 	$contents .= "<p>Converting attachments $lower to $upper (".$cnt['attachcount']." Total)</p>";
@@ -181,7 +181,7 @@ function upgrade3_convertattachments()
 	}
 	
 	echo "<p>Done.</p>";
-	$query = $db->query("SELECT COUNT(aid) AS attachrem FROM ".TABLE_PREFIX."attachments WHERE donecon != '1'");
+	$query = $db->simple_select("attachments", "COUNT(aid) AS attachrem", "donecon != '1'");
 	$cnt = $db->fetch_array($query);
 	
 	if($cnt['attachrem'] != 0)
@@ -246,7 +246,7 @@ function upgrade3_convertavatars()
 
 	require_once MYBB_ROOT."inc/settings.php";
 
-	$query = $db->query("SELECT COUNT(uid) AS avatarcount FROM ".TABLE_PREFIX."avatars");
+	$query = $db->simple_select("avatars", "COUNT(uid) AS avatarcount");
 	$cnt = $db->fetch_array($query);
 
 	$contents .= "<p>Converting avatars $lower to $upper (".$cnt['avatarcount']." Total)</p>";
@@ -263,7 +263,7 @@ function upgrade3_convertavatars()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD avatartype varchar(10) NOT NULL AFTER avatar;");
 
-	$query = $db->query("SELECT * FROM ".TABLE_PREFIX."avatars WHERE donecon != '1' ORDER BY uid ASC LIMIT $app");
+	$query = $db->simple_select("avatars", "*", "donecon != '1'", array('order_by' => 'uid', 'order_dir' => 'asc', 'limit' => $app));
 	while($avatar = $db->fetch_array($query))
 	{
 		$ext = "";
@@ -299,7 +299,7 @@ function upgrade3_convertavatars()
 	}
 	
 	echo "<p>Done.</p>";
-	$query = $db->query("SELECT COUNT(uid) AS avatarsrem FROM ".TABLE_PREFIX."avatars WHERE donecon!='1'");
+	$query = $db->simple_select("avatars", "COUNT(uid) AS avatarsrem", "donecon!='1'");
 	$cnt = $db->fetch_array($query);
 	
 	if($cnt['avatarsrem'] != 0)

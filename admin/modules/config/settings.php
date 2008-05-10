@@ -880,7 +880,13 @@ if($mybb->input['action'] == "change")
 		
 		// Search for settings
 		$search = $db->escape_string($mybb->input['search']);
-		$query = $db->query("SELECT s.* FROM (".TABLE_PREFIX."settings s, ".TABLE_PREFIX."settinggroups g) WHERE s.gid=g.gid AND (s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%') ORDER BY s.disporder");
+		$query = $db->query("
+			SELECT s.* 
+			FROM ".TABLE_PREFIX."settings s
+			LEFT JOIN ".TABLE_PREFIX."settinggroups g ON(s.gid=g.gid)
+			WHERE s.name LIKE '%{$search}%' OR s.title LIKE '%{$search}%' OR s.description LIKE '%{$search}%' OR g.name LIKE '%{$search}%' OR g.title LIKE '%{$search}%' OR g.description LIKE '%{$search}%'
+			ORDER BY s.disporder
+		");
 		while($setting = $db->fetch_array($query))
 		{
 			$cache_settings[$setting['gid']][$setting['sid']] = $setting;

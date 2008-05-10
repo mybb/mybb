@@ -1486,10 +1486,13 @@ switch($mybb->input['action'])
 
 		// Make sure that we are not splitting all posts in the thread
 		// The query does not return a row when the count is 0, so find if some threads are missing (i.e. 0 posts after removal)
-		$query = $db->query("SELECT DISTINCT p.tid, COUNT(q.pid) as count
-			FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."posts q)
-			WHERE p.tid=q.tid AND p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
-			GROUP BY p.pid");
+		$query = $db->query("
+			SELECT DISTINCT p.tid, COUNT(q.pid) as count
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
+			WHERE p.pid IN ($pidin) AND q.pid NOT IN ($pidin)
+			GROUP BY p.pid
+		");
 		$pcheck2 = array();
 		while($tcheck = $db->fetch_array($query))
 		{

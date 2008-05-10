@@ -253,19 +253,19 @@ function upgrade5_dbchanges()
 	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET name='bannedemails' WHERE name='emailban' LIMIT 1");
 	$db->write_query("UPDATE ".TABLE_PREFIX."settings SET name='bannedips' WHERE name='ipban' LIMIT 1");
 
-	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedusernames'");
+	$query = $db->simple_select("settings", "value", "name='bannedusernames'");
 	$bannedusernames = $db->fetch_field($query, 'sid');
 	$bannedusernames = explode(" ", $bannedusernames);
 	$bannedusernames = implode(",", $bannedusernames);
 	$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedusernames)."' WHERE name='bannedusernames'");
 
-	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedemails'");
+	$query = $db->simple_select("settings", "value", "name='bannedemails'");
 	$bannedemails = $db->fetch_field($query, 'sid');
 	$bannedemails = explode(" ", $bannedemails);
 	$bannedemails = implode(",", $bannedemails);
 	$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value='".$db->escape_string($bannedemails)."' WHERE name='bannedemails'");
 
-	$query = $db->query("SELECT value FROM ".TABLE_PREFIX."settings WHERE name='bannedips'");
+	$query = $db->simple_select("settings", "value", "name='bannedips'");
 	$bannedips = $db->fetch_field($query, 'sid');
 	$bannedips = explode(" ", $bannedips);
 	$bannedips = implode(",", $bannedips);

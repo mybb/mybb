@@ -283,7 +283,7 @@ class DB_MySQL
 
 		$this->get_execution_time();
 		
-		// Only execute write queries on slave server
+		// Only execute write queries on slave database
 		if($write_query && $this->write_link)
 		{
 			$this->current_link = &$this->write_link;

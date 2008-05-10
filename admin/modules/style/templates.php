@@ -1007,7 +1007,12 @@ if($mybb->input['action'] == "delete_template")
 {
 	$plugins->run_hooks("admin_style_templates_delete_template");
 	
-	$query = $db->query("SELECT t.*, s.title as set_title FROM (".TABLE_PREFIX."templates t, ".TABLE_PREFIX."templatesets s) WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > '-2' AND t.sid = '{$sid}' AND t.sid = s.sid");
+	$query = $db->query("
+		SELECT t.*, s.title as set_title
+		FROM ".TABLE_PREFIX."templates t
+		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(t.sid=s.sid)
+		WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > '-2' AND t.sid = '{$sid}'
+	");
 	$template = $db->fetch_array($query);
 	
 	// Does the template not exist?
@@ -1113,7 +1118,12 @@ if($mybb->input['action'] == "revert")
 {
 	$plugins->run_hooks("admin_style_templates_revert");
 	
-	$query = $db->query("SELECT t.*, s.title as set_title FROM (".TABLE_PREFIX."templates t, ".TABLE_PREFIX."templatesets s) WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > 0 AND t.sid = '".intval($mybb->input['sid'])."' AND s.sid = t.sid");
+	$query = $db->query("
+		SELECT t.*, s.title as set_title
+		FROM ".TABLE_PREFIX."templates t
+		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(s.sid=t.sid)
+		WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > 0 AND t.sid = '".intval($mybb->input['sid'])."'
+	");
 	$template = $db->fetch_array($query);
 	
 	// Does the template not exist?

@@ -403,7 +403,7 @@ class Moderation
 					$query = $db->simple_select("posts", "COUNT(pid) AS posts, uid", "tid='{$tid}' AND visible='1' AND uid > 0 GROUP BY uid");
 					while($counter = $db->fetch_array($query))
 					{
-						$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-{$counter['posts']} WHERE uid='".$counter['uid']."'");
+						$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-{$counter['posts']} WHERE uid='".$counter['uid']."'");
 					}
 				}
 			} 
@@ -1230,7 +1230,7 @@ class Moderation
 					$query = $db->query("
 						SELECT p.pid, t.subject
 						FROM ".TABLE_PREFIX."posts p
-						LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
+						LEFT JOIN".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 						WHERE p.tid='{$tid}'
 						ORDER BY p.dateline ASC
 						LIMIT 1

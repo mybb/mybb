@@ -307,7 +307,7 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the profile field
 		$db->delete_query("profilefields", "fid='{$profile_field['fid']}'");
-		$db->query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."userfields DROP fid{$profile_field['fid']}");
 		
 		$plugins->run_hooks("admin_config_profile_fields_delete_commit");
 

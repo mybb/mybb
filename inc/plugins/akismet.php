@@ -123,11 +123,11 @@ function akismet_install()
 	
 	if($db->field_exists('akismetstopped', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP akismetstopped"); 
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP akismetstopped"); 
 	}
 	
 	// DELETE ALL SETTINGS TO AVOID DUPLICATES
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name IN(
+	$db->write_query("DELETE FROM ".TABLE_PREFIX."settings WHERE name IN(
 		'akismetswitch',
 		'akismetnumtillban',
 		'akismetfidsignore',
@@ -281,11 +281,11 @@ function akismet_uninstall()
 	
 	if($db->field_exists('akismetstopped', "users"))
 	{
-		$db->query("ALTER TABLE ".TABLE_PREFIX."users DROP akismetstopped"); 
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP akismetstopped"); 
 	}
 	
 	// DELETE ALL SETTINGS TO AVOID DUPLICATES
-	$db->query("DELETE FROM ".TABLE_PREFIX."settings WHERE name IN(
+	$db->write_query("DELETE FROM ".TABLE_PREFIX."settings WHERE name IN(
 		'akismetswitch',
 		'akismetnumtillban',
 		'akismetfidsignore',
@@ -403,7 +403,7 @@ function akismet_moderation_start()
 				}
 			}
 			
-			$db->query("UPDATE ".TABLE_PREFIX."users SET akismetstopped=akismetstopped+1 WHERE uid = '{$post2['uid']}'");
+			$db->write_query("UPDATE ".TABLE_PREFIX."users SET akismetstopped=akismetstopped+1 WHERE uid = '{$post2['uid']}'");
 			$query1 = $db->simple_select("users", "akismetstopped", "uid = '{$post2['uid']}'");
 			$akismetstopped = $db->fetch_field($query1, 'akismetstopped');
 		
@@ -431,7 +431,7 @@ function akismet_moderation_start()
 	}
 	else
 	{
-		$db->query("UPDATE ".TABLE_PREFIX."users SET akismetstopped=akismetstopped+1 WHERE uid = '{$post['uid']}'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET akismetstopped=akismetstopped+1 WHERE uid = '{$post['uid']}'");
 		$query = $db->simple_select("users", "akismetstopped, usergroup", "uid = '{$post['uid']}'");
 		$akismetstopped = $db->fetch_field($query, 'akismetstopped');
 		$usergroup = $db->fetch_field($query, 'usergroup');
@@ -747,7 +747,7 @@ function akismet_admin()
 		{
 			if($post['usepostcounts'] != 0)
 			{
-				$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid = '{$post['uid']}'");
+				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid = '{$post['uid']}'");
 			}
 	
 			update_thread_counters($post['tid'], array('posts' => '+1'));

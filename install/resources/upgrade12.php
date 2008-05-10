@@ -152,7 +152,7 @@ function upgrade12_dbchanges()
 					}
 					$change_column[] = "MODIFY {$column} int(1) NOT NULL default '0'";
 				}
-				$db->query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."{$table} ".implode(", ", $change_column));
 
 				if($table == $final_table)
 				{
@@ -187,8 +187,8 @@ function upgrade12_dbchanges()
 	else
 	{
 		// Convert settings table
-		$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=1 WHERE value='yes' OR value='on'");
-		$query = $db->query("UPDATE ".TABLE_PREFIX."settings SET value=0 WHERE value='no' OR value='off'");
+		$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=1 WHERE value='yes' OR value='on'");
+		$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=0 WHERE value='no' OR value='off'");
 		echo "<p>Done</p>";
 		echo "<p><strong>The integrer conversion process is now complete.</strong></p>";
 		echo "<p>Click next to continue with the upgrade process.</p>";
@@ -557,7 +557,7 @@ function upgrade12_dbchanges2()
 
 	if($db->table_exists("favorites") && !$db->table_exists("threadsubscriptions"))
 	{
-		$db->query("RENAME TABLE ".TABLE_PREFIX."favorites TO ".TABLE_PREFIX."threadsubscriptions");
+		$db->write_query("RENAME TABLE ".TABLE_PREFIX."favorites TO ".TABLE_PREFIX."threadsubscriptions");
 	}
 	
 	if($db->field_exists('fid', "threadsubscriptions"))
@@ -837,7 +837,7 @@ function upgrade12_dbchanges4()
 		PRIMARY KEY(sid)
 	) TYPE=MyISAM{$collation};");
 	
-	$db->query("CREATE TABLE ".TABLE_PREFIX."stats (
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."stats (
 		dateline bigint(30) NOT NULL default '0',
 		numusers int unsigned NOT NULL default '0',
 		numthreads int unsigned NOT NULL default '0',
