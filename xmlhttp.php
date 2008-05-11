@@ -596,7 +596,7 @@ else if($mybb->input['action'] == "username_availability")
 	}
 
 	// Check for certain characters in username (<, >, &, and slashes)
-	if(eregi("<", $username) || eregi(">", $username) || eregi("&", $username) || my_strpos($username, "\\") !== false || eregi(";", $username))
+	if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false)
 	{
 		echo "<fail>{$lang->banned_characters_username}</fail>";
 		exit;

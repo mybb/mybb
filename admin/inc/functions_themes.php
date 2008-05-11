@@ -135,10 +135,10 @@ function import_theme_xml($xml, $options=array())
 	// If we have any stylesheets, process them
 	if(is_array($theme['stylesheets']) && !$options['no_stylesheets'])
 	{
-		// are we dealing with a single stylesheet?
+		// Are we dealing with a single stylesheet?
 		if(isset($theme['stylesheets']['stylesheet']['tag']))
 		{
-			// trick the system into thinking we have a good array =P
+			// Trick the system into thinking we have a good array =P
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
@@ -518,14 +518,14 @@ function get_selectors_as_options($css, $selected_item="")
 				$css_array['name'] = $css_array['class_name'];
 			}
 			
-			if($selected_item == $css_array['name'] || (!$selected_item && !$selected))
+			if($selected_item == $id || (!$selected_item && !$selected))
 			{
-				$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>";
+				$select .= "<option value=\"{$id}\" selected=\"selected\">{$css_array['name']}</option>\n";
 				$selected = true;
 			}
 			else
 			{
-				$select .= "<option value=\"{$id}\">{$css_array['name']}</option>";
+				$select .= "<option value=\"{$id}\">{$css_array['name']}</option>\n";
 			}
 		}
 	}

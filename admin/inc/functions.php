@@ -508,6 +508,8 @@ function fetch_iconv_encoding($mysql_encoding)
 /**
  * Adds/Updates a Page/Tab to the permissions array in the adminoptions table
  *
+ * @param string The name of the tab that is being affected
+ * @param string The name of the page being affected (optional - if not specified, will affect everything under the specified tab)
  * @param integer Default permissions for the page (1 for allowed - 0 for disallowed - -1 to remove)
  */
 function change_admin_permission($tab, $page="", $default=1)
@@ -530,33 +532,34 @@ function change_admin_permission($tab, $page="", $default=1)
 				unset($adminoption['permissions'][$tab]);
 			}
 		}
-		
-		if(!empty($page))
-		{
-			if($adminoption['uid'] == 0)
-			{
-				$adminoption['permissions'][$tab][$page] = 0;
-			}
-			else
-			{
-				$adminoption['permissions'][$tab][$page] = $default;
-			}
-		}
 		else
-		{
-			if($adminoption['uid'] == 0)
+		{		
+			if(!empty($page))
 			{
-				$adminoption['permissions'][$tab]['tab'] = 0;
+				if($adminoption['uid'] == 0)
+				{
+					$adminoption['permissions'][$tab][$page] = 0;
+				}
+				else
+				{
+					$adminoption['permissions'][$tab][$page] = $default;
+				}
 			}
 			else
 			{
-				$adminoption['permissions'][$tab]['tab'] = $default;
+				if($adminoption['uid'] == 0)
+				{
+					$adminoption['permissions'][$tab]['tab'] = 0;
+				}
+				else
+				{
+					$adminoption['permissions'][$tab]['tab'] = $default;
+				}
 			}
 		}
 		
 		$db->update_query("adminoptions", array('permissions' => $db->escape_string(serialize($adminoption['permissions']))), "uid='{$adminoption['uid']}'");
 	}
 }
-
 
 ?>

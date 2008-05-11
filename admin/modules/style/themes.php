@@ -1428,6 +1428,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		$stylesheet['stylesheet'] = $db->fetch_field($query, 'stylesheet');
 	}
 
+	echo $mybb->input['selector'];
 	$css_array = css_to_array($stylesheet['stylesheet']);
 	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
 	
@@ -1529,11 +1530,13 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheet');
 	
 	// Output the selection box
-	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet", "post", "selector_form");
+	$form = new Form("index.php", "get", "selector_form");
+	echo $form->generate_hidden_field("module", "style/themes")."\n";
+	echo $form->generate_hidden_field("action", "edit_stylesheet")."\n";
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'])."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']))."\n";	
 	
-	echo "{$lang->selector}: <select id=\"selector\">{$selector_list}</select> <span id=\"mini_spinner\">".$form->generate_submit_button($lang->go)."</span><br /><br />";
+	echo "{$lang->selector}: <select id=\"selector\" name=\"selector\">\n{$selector_list}</select> <span id=\"mini_spinner\">".$form->generate_submit_button($lang->go)."</span><br /><br />\n";
 
 	$form->end();
 

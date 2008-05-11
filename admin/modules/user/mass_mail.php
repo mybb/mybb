@@ -1425,7 +1425,7 @@ if($mybb->input['action'] == "archive")
 	while($email = $db->fetch_array($query))
 	{
 		$email['subject'] = htmlspecialchars_uni($email['subject']);
-		if($email['senddate'] < time())
+		if($email['senddate'] < TIME_NOW)
 		{
 			$table->construct_cell("<strong>{$email['subject']}</strong>");
 		}
