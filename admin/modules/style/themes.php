@@ -1427,8 +1427,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		$query = $db->simple_select("themestylesheets", "stylesheet", "sid='{$stylesheet['sid']}'");
 		$stylesheet['stylesheet'] = $db->fetch_field($query, 'stylesheet');
 	}
-
-	echo $mybb->input['selector'];
+	
 	$css_array = css_to_array($stylesheet['stylesheet']);
 	$selector_list = get_selectors_as_options($css_array, $mybb->input['selector']);
 	
