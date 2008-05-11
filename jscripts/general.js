@@ -396,6 +396,23 @@ var MyBB = {
 			input.setAttribute("value", "do_login");
 			form.appendChild(input);
 			
+			if(document.location.href)
+			{
+				if(this.browser == "ie")
+				{
+					var input = document.createElement("<input name=\"url\">");
+				}
+				else
+				{
+					var input = document.createElement("input");
+					input.setAttribute("name", "url");
+				}
+				
+				input.setAttribute("type", "hidden");
+				input.setAttribute("value", this.HTMLchars(document.location.href));
+				form.appendChild(input);
+			}
+			
 			if(this.browser == "ie")
 			{
 				var input = document.createElement("<input name=\"username\">");
