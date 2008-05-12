@@ -845,7 +845,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		if(!$correct)
 		{	
 			$randomstr = random_str(5);
-			$imagehash = md5($randomstr);
+			$imagehash = md5(random_str(12));
 			$imagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,

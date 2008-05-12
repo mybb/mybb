@@ -540,7 +540,7 @@ else if($mybb->input['action'] == "refresh_captcha")
 	}
 	$db->delete_query("captcha", "imagehash='$imagehash'");
 	$randomstr = random_str(5);
-	$imagehash = md5($randomstr);
+	$imagehash = md5(random_str(12));
 	$regimagearray = array(
 		"imagehash" => $imagehash,
 		"imagestring" => $randomstr,

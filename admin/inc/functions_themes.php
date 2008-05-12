@@ -117,6 +117,34 @@ function import_theme_xml($xml, $options=array())
 	{
 		return -2;
 	}
+	
+	// Do we have any templates to insert?
+	if(is_array($theme['templates']) && !$options['no_templates'])
+	{		
+		if($options['templateset']) 
+		{ 
+			$sid = $options['templateset'];
+		} 
+		else 
+		{ 
+			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
+		}
+		
+		$templates = $theme['templates']['template'];
+		foreach($templates as $template)
+		{
+			$new_template = array(
+				"title" => $template['attributes']['name'],
+				"template" => $db->escape_string($template['value']),
+				"sid" => $sid,
+				"version" => $template['attributes']['version'],
+				"dateline" => TIME_NOW
+			);
+			$db->insert_query("templates", $new_template);
+		}
+		
+		$properties['templateset'] = $sid;
+	}
 
 	// Not overriding an existing theme
 	if(!$options['tid'])
@@ -192,32 +220,6 @@ function import_theme_xml($xml, $options=array())
 			"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
 		);
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
-	}
-
-	// Do we have any templates to insert?
-	if(is_array($theme['templates']) && !$options['no_templates'])
-	{		
-		if($options['templateset']) 
-		{ 
-			$sid = $options['templateset'];
-		} 
-		else 
-		{ 
-			$sid = $db->insert_query("templatesets", array('title' => $db->escape_string($name)." Templates"));
-		}
-		
-		$templates = $theme['templates']['template'];
-		foreach($templates as $template)
-		{
-			$new_template = array(
-				"title" => $template['attributes']['name'],
-				"template" => $db->escape_string($template['value']),
-				"sid" => $sid,
-				"version" => $template['attributes']['version'],
-				"dateline" => TIME_NOW
-			);
-			$db->insert_query("templates", $new_template);
-		}
 	}
 
 	// And done?

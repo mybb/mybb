@@ -574,7 +574,7 @@ class DefaultForm
 		global $lang;
 		
 		// Checked status
-		if($value == "yes" || $value === '0')
+		if($value == "no" || $value === '0')
 		{
 			$no_checked = 1;
 			$yes_checked = 0;

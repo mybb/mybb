@@ -648,7 +648,7 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['captchaimage'] == 1 && function_exists("imagecreatefrompng"))
 		{
 			$randomstr = random_str(5);
-			$imagehash = md5($randomstr);
+			$imagehash = md5(random_str(12));
 			$regimagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,

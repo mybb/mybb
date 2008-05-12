@@ -862,7 +862,7 @@ if($mybb->input['action'] == "thread")
 		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
 		{
 			$randomstr = random_str(5);
-			$imagehash = md5($randomstr);
+			$imagehash = md5(random_str(12));
 			$imagearray = array(
 				"imagehash" => $imagehash,
 				"imagestring" => $randomstr,
