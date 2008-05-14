@@ -221,6 +221,8 @@ function import_theme_xml($xml, $options=array())
 		);
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
 	}
+	
+	update_theme_stylesheet_list($theme_id);
 
 	// And done?
 	return $theme_id;

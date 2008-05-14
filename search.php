@@ -892,7 +892,6 @@ elseif($mybb->input['action'] == "findguest")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
-		"searchtype" => "titles",
 		"resulttype" => "posts",
 		"querycache" => $db->escape_string($where_sql),
 		"keywords" => ''
@@ -924,7 +923,6 @@ elseif($mybb->input['action'] == "finduser")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
-		"searchtype" => "titles",
 		"resulttype" => "posts",
 		"querycache" => $db->escape_string($where_sql),
 		"keywords" => ''
@@ -956,7 +954,6 @@ elseif($mybb->input['action'] == "finduserthreads")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
-		"searchtype" => "titles",
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
 		"keywords" => ''
@@ -1007,7 +1004,6 @@ elseif($mybb->input['action'] == "getnew")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
-		"searchtype" => "titles",
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
 		"keywords" => ''
@@ -1069,7 +1065,6 @@ elseif($mybb->input['action'] == "getdaily")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => '',
 		"posts" => '',
-		"searchtype" => "titles",
 		"resulttype" => "threads",
 		"querycache" => $db->escape_string($where_sql),
 		"keywords" => ''
@@ -1157,7 +1152,6 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
-		"searchtype" => $search_results['searchtype'],
 		"resulttype" => $resulttype,
 		"querycache" => $search_results['querycache'],
 		"keywords" => $db->escape_string($mybb->input['keywords']),
@@ -1269,7 +1263,6 @@ else if($mybb->input['action'] == "thread")
 		"ipaddress" => $db->escape_string($session->ipaddress),
 		"threads" => $search_results['threads'],
 		"posts" => $search_results['posts'],
-		"searchtype" => 'posts',
 		"resulttype" => 'posts',
 		"querycache" => $search_results['querycache'],
 		"keywords" => $db->escape_string($mybb->input['keywords'])

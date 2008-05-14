@@ -528,7 +528,6 @@ function perform_search_mysql($search)
 	$firstposts = array();
 	if($search['postthread'] == 1)
 	{
-		$searchtype = "titles";
 		// No need to search subjects when looking for results within a specific thread
 		if(!$search['tid'])
 		{
@@ -570,7 +569,6 @@ function perform_search_mysql($search)
 	// Searching only thread titles
 	else
 	{
-		$searchtype = "posts";
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
@@ -603,7 +601,6 @@ function perform_search_mysql($search)
 		}
 	}
 	return array(
-		"searchtype" => $searchtype,
 		"threads" => $threads,
 		"posts" => $posts,
 		"querycache" => ''
@@ -835,7 +832,6 @@ function perform_search_mysql_ft($search)
 	$firstposts = array();
 	if($search['postthread'] == 1)
 	{
-		$searchtype = "titles";
 		// No need to search subjects when looking for results within a specific thread
 		if(!$search['tid'])
 		{
@@ -878,7 +874,6 @@ function perform_search_mysql_ft($search)
 	// Searching only thread titles
 	else
 	{
-		$searchtype = "posts";
 		$query = $db->query("
 			SELECT t.tid, t.firstpost
 			FROM ".TABLE_PREFIX."threads t
@@ -911,7 +906,6 @@ function perform_search_mysql_ft($search)
 		}
 	}
 	return array(
-		"searchtype" => $searchtype,
 		"threads" => $threads,
 		"posts" => $posts,
 		"querycache" => ''

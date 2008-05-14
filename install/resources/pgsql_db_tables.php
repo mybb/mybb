@@ -559,7 +559,6 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   ipaddress varchar(120) NOT NULL default '',
   threads text NOT NULL default '',
   posts text NOT NULL default '',
-  searchtype varchar(10) NOT NULL default '',
   resulttype varchar(10) NOT NULL default '',
   querycache text NOT NULL default '',
   keywords text NOT NULL default '',

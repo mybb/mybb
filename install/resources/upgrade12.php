@@ -303,8 +303,7 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages DROP deletetime;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."privatemessages ADD deletetime bigint(30) NOT NULL default '0' AFTER dateline");
-	
-	
+		
 	if($db->field_exists('maxpmrecipients', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP maxpmrecipients;");
@@ -683,6 +682,12 @@ function upgrade12_dbchanges2()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longlastip;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longlastip int(10) NOT NULL default '0' AFTER lastip");
+	
+	// Unused column
+	if($db->field_exists('titles', "searchlog"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."searchlog DROP titles;");
+	}
 
 	$db->drop_table("adminlog");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."adminlog (

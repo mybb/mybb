@@ -30,6 +30,7 @@ $l['forum_moderator'] = "Forum Moderator:";
 $l['sort_by'] = "Sort By:";
 $l['results_per_page'] = "Results Per Page:";
 $l['all_moderators'] = "All Moderators";
+$l['older_than'] = "Older than ";
 
 $l['date'] = "Date";
 $l['username'] = "Username";

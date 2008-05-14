@@ -45,12 +45,12 @@ if($mybb->input['action'] == 'prune')
 		}
 		
 		// Searching for entries in a specific module
-		if($mybb->input['fid'])
+		if($mybb->input['fid'] > 0)
 		{
 			$where .= " AND fid='".$db->escape_string($mybb->input['fid'])."'";
 		}
 		
-		$query = $db->delete_query("moderatorlog", $where);
+		$db->delete_query("moderatorlog", $where);
 		$num_deleted = $db->affected_rows();
 		
 		$plugins->run_hooks("admin_tools_modlog_prune_commit");

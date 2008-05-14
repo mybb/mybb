@@ -102,7 +102,7 @@ if($mybb->input['action'] == "add")
 			}
 			else
 			{
-				$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 			}
 			
 			$insert_announcement = array(
@@ -223,30 +223,30 @@ if($mybb->input['action'] == "add")
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	
-	$startdatemonth .= "<option value=\"01\" $startmonthsel[01]>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" $endmonthsel[01]>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" $startmonthsel[02]>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" $endmonthsel[02]>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" $startmonthsel[03]>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" $endmonthsel[03]>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" $startmonthsel[04]>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" $endmonthsel[04]>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" $startmonthsel[05]>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" $endmonthsel[05]>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" $startmonthsel[06]>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" $endmonthsel[06]>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" $startmonthsel[07]>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" $endmonthsel[07]>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" $startmonthsel[08]>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" $endmonthsel[08]>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" $startmonthsel[09]>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" $endmonthsel[09]>{$lang->september}</option>\n";
-	$startdatemonth .= "<option value=\"10\" $startmonthsel[10]>{$lang->october}</option>\n";
-	$enddatemonth .= "<option value=\"10\" $endmonthsel[10]>{$lang->october}</option>\n";
-	$startdatemonth .= "<option value=\"11\" $startmonthsel[11]>{$lang->november}</option>\n";
-	$enddatemonth .= "<option value=\"11\" $endmonthsel[11]>{$lang->november}</option>\n";
-	$startdatemonth .= "<option value=\"12\" $startmonthsel[12]>{$lang->december}</option>\n";
-	$enddatemonth .= "<option value=\"12\" $endmonthsel[12]>{$lang->december}</option>\n";
+	$startdatemonth .= "<option value=\"01\" {$startmonthsel['1']}>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" {$endmonthsel['1']}>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" {$startmonthsel['2']}>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" {$endmonthsel['2']}>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" {$startmonthsel['3']}>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" {$endmonthsel['3']}>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" {$startmonthsel['4']}>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" {$endmonthsel['4']}>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" {$startmonthsel['5']}>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" {$endmonthsel['5']}>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" {$startmonthsel['6']}>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" {$endmonthsel['6']}>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" {$startmonthsel['7']}>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" {$endmonthsel['7']}>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" {$startmonthsel['8']}>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" {$endmonthsel['8']}>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" {$startmonthsel['9']}>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" {$endmonthsel['9']}>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
+	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
+	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
+	$enddatemonth .= "<option value=\"11\" {$endmonthsel['11']}>{$lang->november}</option>\n";
+	$startdatemonth .= "<option value=\"12\" {$startmonthsel['12']}>{$lang->december}</option>\n";
+	$enddatemonth .= "<option value=\"12\" {$endmonthsel['12']}>{$lang->december}</option>\n";
 	
 	if($mybb->input['starttime_year'])
 	{
@@ -359,6 +359,7 @@ if($mybb->input['action'] == "edit")
 			$startdate = @explode(" ", $mybb->input['starttime_time']);
 			$startdate = @explode(":", $startdate[0]);
 			$enddate = @explode(" ", $mybb->input['endtime_time']);
+			echo "<pre>"; print_r($enddate); echo "</pre>";
 			$enddate = @explode(":", $enddate[0]);
 		
 			if(stristr($mybb->input['starttime_time'], "pm"))
@@ -387,7 +388,7 @@ if($mybb->input['action'] == "edit")
 			}
 			else
 			{
-				$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 			}
 			
 			$update_announcement = array(
@@ -500,30 +501,30 @@ if($mybb->input['action'] == "edit")
 		}
 	}
 	
-	$startdatemonth .= "<option value=\"01\" $startmonthsel[01]>{$lang->january}</option>\n";
-	$enddatemonth .= "<option value=\"01\" $endmonthsel[01]>{$lang->january}</option>\n";
-	$startdatemonth .= "<option value=\"02\" $startmonthsel[02]>{$lang->february}</option>\n";
-	$enddatemonth .= "<option value=\"02\" $endmonthsel[02]>{$lang->february}</option>\n";
-	$startdatemonth .= "<option value=\"03\" $startmonthsel[03]>{$lang->march}</option>\n";
-	$enddatemonth .= "<option value=\"03\" $endmonthsel[03]>{$lang->march}</option>\n";
-	$startdatemonth .= "<option value=\"04\" $startmonthsel[04]>{$lang->april}</option>\n";
-	$enddatemonth .= "<option value=\"04\" $endmonthsel[04]>{$lang->april}</option>\n";
-	$startdatemonth .= "<option value=\"05\" $startmonthsel[05]>{$lang->may}</option>\n";
-	$enddatemonth .= "<option value=\"05\" $endmonthsel[05]>{$lang->may}</option>\n";
-	$startdatemonth .= "<option value=\"06\" $startmonthsel[06]>{$lang->june}</option>\n";
-	$enddatemonth .= "<option value=\"06\" $endmonthsel[06]>{$lang->june}</option>\n";
-	$startdatemonth .= "<option value=\"07\" $startmonthsel[07]>{$lang->july}</option>\n";
-	$enddatemonth .= "<option value=\"07\" $endmonthsel[07]>{$lang->july}</option>\n";
-	$startdatemonth .= "<option value=\"08\" $startmonthsel[08]>{$lang->august}</option>\n";
-	$enddatemonth .= "<option value=\"08\" $endmonthsel[08]>{$lang->august}</option>\n";
-	$startdatemonth .= "<option value=\"09\" $startmonthsel[09]>{$lang->september}</option>\n";
-	$enddatemonth .= "<option value=\"09\" $endmonthsel[09]>{$lang->september}</option>\n";
-	$startdatemonth .= "<option value=\"10\" $startmonthsel[10]>{$lang->october}</option>\n";
-	$enddatemonth .= "<option value=\"10\" $endmonthsel[10]>{$lang->october}</option>\n";
-	$startdatemonth .= "<option value=\"11\" $startmonthsel[11]>{$lang->november}</option>\n";
-	$enddatemonth .= "<option value=\"11\" $endmonthsel[11]>{$lang->november}</option>\n";
-	$startdatemonth .= "<option value=\"12\" $startmonthsel[12]>{$lang->december}</option>\n";
-	$enddatemonth .= "<option value=\"12\" $endmonthsel[12]>{$lang->december}</option>\n";
+	$startdatemonth .= "<option value=\"01\" {$startmonthsel['1']}>{$lang->january}</option>\n";
+	$enddatemonth .= "<option value=\"01\" {$endmonthsel['1']}>{$lang->january}</option>\n";
+	$startdatemonth .= "<option value=\"02\" {$startmonthsel['2']}>{$lang->february}</option>\n";
+	$enddatemonth .= "<option value=\"02\" {$endmonthsel['2']}>{$lang->february}</option>\n";
+	$startdatemonth .= "<option value=\"03\" {$startmonthsel['3']}>{$lang->march}</option>\n";
+	$enddatemonth .= "<option value=\"03\" {$endmonthsel['3']}>{$lang->march}</option>\n";
+	$startdatemonth .= "<option value=\"04\" {$startmonthsel['4']}>{$lang->april}</option>\n";
+	$enddatemonth .= "<option value=\"04\" {$endmonthsel['4']}>{$lang->april}</option>\n";
+	$startdatemonth .= "<option value=\"05\" {$startmonthsel['5']}>{$lang->may}</option>\n";
+	$enddatemonth .= "<option value=\"05\" {$endmonthsel['5']}>{$lang->may}</option>\n";
+	$startdatemonth .= "<option value=\"06\" {$startmonthsel['6']}>{$lang->june}</option>\n";
+	$enddatemonth .= "<option value=\"06\" {$endmonthsel['6']}>{$lang->june}</option>\n";
+	$startdatemonth .= "<option value=\"07\" {$startmonthsel['7']}>{$lang->july}</option>\n";
+	$enddatemonth .= "<option value=\"07\" {$endmonthsel['7']}>{$lang->july}</option>\n";
+	$startdatemonth .= "<option value=\"08\" {$startmonthsel['8']}>{$lang->august}</option>\n";
+	$enddatemonth .= "<option value=\"08\" {$endmonthsel['8']}>{$lang->august}</option>\n";
+	$startdatemonth .= "<option value=\"09\" {$startmonthsel['9']}>{$lang->september}</option>\n";
+	$enddatemonth .= "<option value=\"09\" {$endmonthsel['9']}>{$lang->september}</option>\n";
+	$startdatemonth .= "<option value=\"10\" {$startmonthsel['10']}>{$lang->october}</option>\n";
+	$enddatemonth .= "<option value=\"10\" {$endmonthsel['10']}>{$lang->october}</option>\n";
+	$startdatemonth .= "<option value=\"11\" {$startmonthsel['11']}>{$lang->november}</option>\n";
+	$enddatemonth .= "<option value=\"11\" {$endmonthsel['11']}>{$lang->november}</option>\n";
+	$startdatemonth .= "<option value=\"12\" {$startmonthsel['12']}>{$lang->december}</option>\n";
+	$enddatemonth .= "<option value=\"12\" {$endmonthsel['12']}>{$lang->december}</option>\n";
 	
 	$form_container = new FormContainer($lang->add_an_announcement);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
