@@ -175,9 +175,7 @@ if($mybb->input['action'] == "add_template")
 			}
 		}
 		
-		$query = $db->simple_select("templatesets", "*", "sid='{$sid}'");
-		$template_set = $db->fetch_array($query);
-		if(!$template_set)
+		if(!isset($template_sets[$sid]))
 		{
 			$errors[] = $lang->error_invalid_set;
 		}
@@ -198,13 +196,13 @@ if($mybb->input['action'] == "add_template")
 			$plugins->run_hooks("admin_style_templates_add_template_commit");
 			
 			// Log admin action
-			log_admin_action($tid, $mybb->input['title'], $sid, $template_set['title']);
+			log_admin_action($tid, $mybb->input['title'], $sid, $template_sets[$sid]);
 			
 			flash_message($lang->success_template_saved, 'success');
 			
 			if($mybb->input['continue'])
 			{
-				admin_redirect("index.php?module=style/templates&action=edit_template&tid=".intval($mybb->input['tid'])."&sid=".$sid.$expand_str2);
+				admin_redirect("index.php?module=style/templates&action=edit_template&tid=".intval($tid)."&sid=".$sid.$expand_str2);
 			}
 			else
 			{

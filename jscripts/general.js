@@ -777,6 +777,7 @@ ActivityIndicator.prototype = {
 		this.spinner = document.createElement("div");
 		this.spinner.style.border = "1px solid #000000";
 		this.spinner.style.background = "#FFFFFF";
+		this.spinner.style.color = "#000000";
 		this.spinner.style.position = "absolute";
 		this.spinner.style.zIndex = 1000;
 		this.spinner.style.textAlign = "center";
