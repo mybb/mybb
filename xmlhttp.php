@@ -268,9 +268,14 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 			log_moderator_action($modlogdata, $lang->edited_post);
 		}
 	}
+	
+	require_once MYBB_ROOT."inc/class_parser.php";
+	$parser = new postParser;
 
 	// Send our headers.
 	header("Content-type: text/plain; charset={$charset}");
+	
+	$mybb->input['value'] = $parser->parse_badwords($mybb->input['value']);
 	
 	// Spit the subject back to the browser.
 	echo substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column

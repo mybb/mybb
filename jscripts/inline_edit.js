@@ -165,12 +165,13 @@ inlineEditor.prototype = {
 		if(typeof(newValue) != "undefined" && newValue != '' && MyBB.HTMLchars(newValue) != this.oldValue)
 		{
 			this.testNode.innerHTML = this.cache;
+			
 			this.element = $(this.currentElement);
-			this.element.innerHTML = newValue;
+			this.element.innerHTML = MyBB.HTMLchars(newValue);
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 			this.lastElement = this.currentElement;
 			postData = "value="+encodeURIComponent(newValue);
-
+			
 			if(this.spinnerImage)
 			{
 				this.showSpinner();
