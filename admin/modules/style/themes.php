@@ -1873,10 +1873,6 @@ if($mybb->input['action'] == "add_stylesheet")
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
 	
-	echo "<pre>";
-	print_r($file_stylesheets);
-	echo "</pre>";
-	
 	$stylesheets = array();
 	$inherited_load = array();
 	
