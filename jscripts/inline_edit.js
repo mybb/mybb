@@ -151,7 +151,7 @@ inlineEditor.prototype = {
 		{
 			this.testNode.innerHTML = this.cache;
 			this.element = $(this.currentElement);
-			this.element.innerHTML = newValue;
+			this.element.innerHTML = MyBB.HTMLchars(newValue);
 			this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
 			this.lastElement = this.currentElement;
 			postData = "value="+encodeURIComponent(newValue);
