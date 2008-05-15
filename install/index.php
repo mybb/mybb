@@ -1185,14 +1185,18 @@ function install_done()
 		$new_group = array();
 		foreach($usergroup as $key => $value)
 		{
-			if($key == "gid" || !is_array($value)) continue;
+			if($key == "gid" || !is_array($value))
+			{
+				continue;
+			}
+			
 			$new_group[$key] = $db->escape_string($value[0]['value']);
 		}
-		$admin_gid = $db->insert_query("usergroups", $new_group);
+		$return_gid = $db->insert_query("usergroups", $new_group);
 		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
-		if($new_group['cancp'] != 1 && $admin_gid)
+		if($new_group['cancp'] == 1 && !$admin_gid)
 		{
-			unset($admin_gid);
+			$admin_gid = $return_gid;
 		}
 		$group_count++;
 	}

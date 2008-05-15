@@ -224,7 +224,7 @@ class DB_PgSQL
 					$this->connect_string .= "host={$single_connection['hostname']} ";
 				}
 				
-				if($db_connection['password'])
+				if($single_connection['password'])
 				{
 					$this->connect_string .= " password={$single_connection['password']}";
 				}
