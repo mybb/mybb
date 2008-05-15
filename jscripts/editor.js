@@ -54,10 +54,12 @@ messageEditor.prototype = {
 			}
 		}
 		
-		if(this.options && this.options.theme) {
+		if(this.options && this.options.theme)
+		{
 			this.setTheme(this.options.theme);
 		}
-		else {
+		else
+		{
 			this.setTheme('default');
 		}
 

@@ -273,7 +273,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	header("Content-type: text/plain; charset={$charset}");
 	
 	// Spit the subject back to the browser.
-	echo $mybb->input['value'];
+	echo substr($mybb->input['value'], 0, 120); // 120 is the varchar length for the subject column
 	
 	// Close the connection.
 	exit;
