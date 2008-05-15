@@ -420,11 +420,13 @@ class Moderation
 		{
 			$db->query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 		}
-		// Delete the post
-		$db->delete_query(TABLE_PREFIX."posts", "pid='$pid'");
+		
 		// Remove attachments
 		remove_attachments($pid);
-	
+		
+		// Delete the post
+		$db->delete_query(TABLE_PREFIX."posts", "pid='$pid'");
+			
 		$num_unapproved_posts = $num_approved_posts = 0;
 		// Update unapproved post count
 		if($post['visible'] == 0)

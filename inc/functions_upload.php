@@ -94,7 +94,7 @@ function remove_attachments($pid, $posthash="")
 			@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
 		}
 	}
-	if($post['pid']) 
+	if($post['tid']) 
  	{ 
  		update_thread_counters($post['tid'], array("attachmentcount" => "-{$num_attachments}"));
 	}
