@@ -234,6 +234,8 @@ if($mybb->input['action'] == "backup")
 				}
 			}
 		}
+		
+		$db->set_table_prefix(TABLE_PREFIX);
 
 		if($mybb->input['method'] == 'disk')
 		{
@@ -256,8 +258,6 @@ if($mybb->input['action'] == "backup")
 			{
 				$ext = '.sql';
 			}
-			
-			$db->set_table_prefix(TABLE_PREFIX);
 			
 			$plugins->run_hooks("admin_tools_backupdb_backup_disk_commit");
 			
@@ -337,7 +337,7 @@ if($mybb->input['action'] == "backup")
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
 		$lang->update_button = '';
-		$page->output_alert($lang->alter_not_writable);
+		$page->output_alert($lang->alert_not_writable);
 		$cannot_write = true;
 	}
 	
