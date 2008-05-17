@@ -301,7 +301,7 @@ class PostDataHandler extends DataHandler
 	
 	function verify_post_merge()
 	{
-		global $mybb, $db;
+		global $mybb, $db, $session;
 		
 		$post = &$this->data;
 		
@@ -366,7 +366,16 @@ class PostDataHandler extends DataHandler
 			return true;
 		}
 		
-		$query = $db->simple_select("posts", "pid,message,visible", "uid='".$post['uid']."' AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
+		if($post['uid'])
+		{
+			$user_check = "uid='".$post['uid']."'";
+		}
+		else
+		{
+			$user_check = "ipaddress='".$db->escape_string($session->ipaddress)."'";
+		}
+		
+		$query = $db->simple_select("posts", "pid,message,visible", "$user_check AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
 		return $db->fetch_array($query);
 	}
 
