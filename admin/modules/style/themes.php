@@ -400,6 +400,7 @@ if($mybb->input['action'] == "export")
 				if(!$theme_stylesheets[$theme_stylesheet['cachefile']])
 				{
 					$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
+					$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['cachefile'];
 				}
 			}
 		}
@@ -407,8 +408,16 @@ if($mybb->input['action'] == "export")
 		$xml .= "\t<stylesheets>\r\n";
 		foreach($stylesheets as $filename => $style)
 		{
-			$filename = basename($filename);
-			$style['tid'] = $theme_stylesheets[$filename]['tid'];
+			if(strpos($filename, 'css.php?stylesheet=') !== false)
+			{
+				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
+				$filename = $theme_stylesheets[$style['sid']];
+			}
+			else
+			{
+				$filename = basename($filename);
+				$style['sid'] = $theme_stylesheets[$filename]['sid'];
+			}
 			
 			if($mybb->input['custom_theme'] == 1 && $style['tid'] != $mybb->input['tid'])
 			{
@@ -564,8 +573,8 @@ if($mybb->input['action'] == "delete")
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 
-	// Does the theme not exist?
-	if(!$theme['tid'])
+	// Does the theme not exist? or are we trying to delete the master?
+	if(!$theme['tid'] || $theme['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_theme, 'error');
 		admin_redirect("index.php?module=style/themes");
@@ -578,7 +587,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	if($mybb->request_method == "post")
-	{
+	{		
 		$inherited_theme_cache = array();
 		
 		$query = $db->simple_select("themes", "tid,stylesheets", "tid != '{$theme['tid']}'", array('order_by' => "pid, name"));
@@ -617,7 +626,6 @@ if($mybb->input['action'] == "delete")
 			admin_redirect("index.php?module=style/themes");
 		}
 		
-		
 		$query = $db->simple_select("themestylesheets", "cachefile", "tid='{$theme['tid']}'");
 		while($cachefile = $db->fetch_array($query))
 		{
@@ -634,6 +642,11 @@ if($mybb->input['action'] == "delete")
 		
 		@rmdir(MYBB_ROOT."cache/themes/theme{$theme['tid']}/");
 		
+		$children = make_child_theme_list($theme['tid']);
+		$child_tid = $children[0];
+			
+		$db->update_query("themes", array('pid' => $theme['pid']), "tid='{$child_tid}'");
+				
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
 		
 		flash_message($lang->success_theme_deleted, 'success');
@@ -789,6 +802,7 @@ if($mybb->input['action'] == "edit")
 			if(!$theme_stylesheets[$theme_stylesheet['cachefile']])
 			{
 				$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
+				$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['cachefile'];
 			}
 		}
 	}
@@ -821,8 +835,16 @@ if($mybb->input['action'] == "edit")
 	
 	foreach($stylesheets as $filename => $style)
 	{
-		$filename = basename($filename);
-		$style['sid'] = $theme_stylesheets[$filename]['sid'];
+		if(strpos($filename, 'css.php?stylesheet=') !== false)
+		{
+			$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
+			$filename = $theme_stylesheets[$style['sid']];
+		}
+		else
+		{
+			$filename = basename($filename);
+			$style['sid'] = $theme_stylesheets[$filename]['sid'];
+		}
 		
 		// Has the file on the file system been modified?
 		resync_stylesheet($theme_stylesheets[$filename]);
@@ -909,7 +931,7 @@ if($mybb->input['action'] == "edit")
 		
 		if($inherited == "")
 		{
-			$popup->add_item($lang->delete, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
+			$popup->add_item($lang->delete_revert, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 		
 		$table->construct_cell("<strong>{$filename}</strong>{$inherited}<br />{$attached_to}");
@@ -1056,11 +1078,11 @@ if($mybb->input['action'] == "stylesheet_properties")
 			}
 		}
 		
-		$stylesheets[basename($file)] = $stylesheet2;
 		unset($stylesheets[$file]);
+		$stylesheets[basename($file)] = $stylesheet2;
 	}
 	
-	$this_stylesheet = $stylesheets[$stylesheet['name']];	
+	$this_stylesheet = $stylesheets[$stylesheet['cachefile']];	
 	unset($stylesheets);
 	
 	if($mybb->request_method == "post")
@@ -1086,7 +1108,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 				foreach($mybb->input as $id => $value)
 				{
 					$actions_list = "";
-					$attached_to = "";
+					$attached_to = $value;
 					
 					if(strpos($id, 'attached_') !== false)
 					{
@@ -1101,7 +1123,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 						
 						if($actions_list)
 						{
-							$attached_to = $value."?".$actions_list;
+							$attached_to .= "?".$actions_list;
 						}
 						
 						$attached[] = $attached_to;
@@ -1113,9 +1135,13 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$update_array = array(
 				'name' => $db->escape_string($mybb->input['name']),
 				'attachedto' => $db->escape_string(implode('|', $attached)),
-				'cachefile' => $db->escape_string(str_replace('/', '', $mybb->input['name'])),
 				'lastmodified' => TIME_NOW
 			);
+			
+			if($stylesheet['name'] != $mybb->input['name'])
+			{
+				$update_array['cachefile'] = $db->escape_string(str_replace('/', '', $mybb->input['name']));
+			}
 			
 			$db->update_query("themestylesheets", $update_array, "sid='{$stylesheet['sid']}'", 1);
 			
@@ -1142,8 +1168,6 @@ if($mybb->input['action'] == "stylesheet_properties")
 	$page->add_breadcrumb_item(htmlspecialchars_uni($stylesheet['name'])." {$lang->properties}", "index.php?module=style/themes&amp;action=edit_properties&amp;tid={$mybb->input['tid']}");
 	
 	$page->output_header("{$lang->themes} - {$lang->stylesheet_properties}");
-	
-	//$page->output_nav_tabs($sub_tabs, 'themes');
 
 	// If the stylesheet and theme do not match, we must be editing something that is inherited
 	if($this_stylesheet['inherited'][$stylesheet['name']])
@@ -1391,8 +1415,11 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		);
 		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
 
-		// Cache the stylesheet to the file
-		cache_stylesheet($theme['tid'], $stylesheet['name'], $new_stylesheet);
+		// Cache the stylesheet to the file		
+		if(!cache_stylesheet($theme['tid'], $stylesheet['name'], $new_stylesheet))
+		{
+			$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
+		}
 
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid']);
@@ -1410,7 +1437,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 			}
 			else
 			{
-				admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&sid={$sid}");
+				admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$theme['tid']}&file={$stylesheet['name']}");
 			}
 		}
 		else
@@ -1650,9 +1677,12 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 			"lastmodified" => TIME_NOW
 		);
 		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
-
-		// Cache the stylesheet to the file
-		cache_stylesheet($theme['tid'], $stylesheet['name'], $mybb->input['stylesheet']);
+		
+		// Cache the stylesheet to the file		
+		if(!cache_stylesheet($theme['tid'], $stylesheet['name'], $mybb->input['stylesheet']))
+		{
+			$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid='{$sid}'", 1);
+		}
 
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid']);
@@ -1825,8 +1855,8 @@ if($mybb->input['action'] == "delete_stylesheet")
 	$query = $db->simple_select("themestylesheets", "*", "name='".$db->escape_string($mybb->input['file'])."' AND tid IN ({$parent_list})", array('order_by' => 'tid', 'order_dir' => 'desc', 'limit' => 1));
 	$stylesheet = $db->fetch_array($query);
 	
-	// Does the theme not exist?
-	if(!$stylesheet['sid'])
+	// Does the theme not exist? or are we trying to delete the master?
+	if(!$stylesheet['sid'] || $stylesheet['tid'] == 1)
 	{
 		flash_message($lang->error_invalid_stylesheet, 'error');
 		admin_redirect("index.php?module=style/themes");
@@ -1841,14 +1871,14 @@ if($mybb->input['action'] == "delete_stylesheet")
 	if($mybb->request_method == "post")
 	{
 		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
-		unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
+		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
 		
 		// Update the CSS file list for this theme
 		update_theme_stylesheet_list($theme['tid']);
 		
 		// Log admin action
 		log_admin_action($stylesheet['tid'], $stylesheet['name'], $theme['tid'], $theme['name']);
-
+		
 		flash_message($lang->success_stylesheet_deleted, 'success');
 		admin_redirect("index.php?module=style/themes");
 	}

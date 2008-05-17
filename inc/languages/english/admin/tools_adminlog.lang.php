@@ -189,7 +189,7 @@ $l['admin_log_tools_optimizedb_'] = "Optimized database tables: {1}";
 
 $l['admin_log_tools_php_info_phpinfo'] = "Viewed PHP Info";
 
-$l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt ({1}";
+$l['admin_log_tools_recount_rebuild_'] = "Recounted and rebuilt ({1})";
 $l['admin_log_tools_recount_rebuild_stats'] = "Recounted and rebuilt statistics";
 $l['admin_log_tools_recount_rebuild_forum'] = "Recounted and rebuilt forum counters";
 $l['admin_log_tools_recount_rebuild_thread'] = "Recounted and rebuilt thread counters";

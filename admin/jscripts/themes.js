@@ -15,6 +15,7 @@ ThemeSelector.prototype = {
 	specific_count: 0,
 	selector_go: null,
 	selector_prev_option: null,
+	is_closing: false,
 	
 	background: null,
 	width: null,
@@ -51,6 +52,7 @@ ThemeSelector.prototype = {
 			
 			Event.observe(window, "unload", this.saveCheck.bindAsEventListener(this, false));
 			Event.observe($("save"), "click", this.save.bindAsEventListener(this, true));
+			Event.observe($("save_close"), "click", this.saveClose.bindAsEventListener(this));
 			Event.observe(this.selector, "change", this.updateSelector.bindAsEventListener(this));
 			Event.observe(this.selector_form, "submit", this.updateSelector.bindAsEventListener(this));
 		}
@@ -65,6 +67,11 @@ ThemeSelector.prototype = {
 			Event.observe($("new_specific_file"), "click", this.addAttachmentBox.bindAsEventListener(this));
 		}
     },
+	
+	saveClose: function(e)
+	{
+		this.is_closing = true;
+	},
     
     updateSelector: function(e)
     {
@@ -130,6 +137,11 @@ ThemeSelector.prototype = {
 	
 	saveCheck: function(e, isajax)
     {
+		if(this.is_closing == true)
+		{
+			return true;
+		}
+		
 		if(this.background != $("css_bits[background]").value || this.width != $("css_bits[width]").value || this.color != $("css_bits[color]").value || this.extra != $("css_bits[extra]").value || this.text_decoration != $("css_bits[text_decoration]").value || this.font_family != $("css_bits[font_family]").value || this.font_size != $("css_bits[font_size]").value || this.font_style != $("css_bits[font_style]").value || this.font_weight != $("css_bits[font_weight]").value)
 		{
 			confirmReturn = confirm(save_changes_lang_string);

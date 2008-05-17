@@ -42,6 +42,7 @@ $l['set_as_default'] = "Set as Default";
 $l['default_theme'] = "Default Theme";
 $l['force_on_users'] = "Force on Users";
 $l['export_theme'] = "Export Theme";
+$l['delete_revert'] = "Delete / Revert";
 
 $l['local_file'] = "Local File";
 $l['url'] = "URL";

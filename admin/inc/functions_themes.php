@@ -256,6 +256,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 {
 	global $mybb;
 	
+	return false;
+	
 	if($mybb->safemode)
 	{
 		return false;
@@ -699,31 +701,37 @@ function update_theme_stylesheet_list($tid)
 	
 	$child_list = make_child_theme_list($tid);
 	$parent_list = make_parent_theme_list($tid);
+	
+	if(!is_array($parent_list))
+	{
+		return false;
+	}
+	
 	$tid_list = implode(',', $parent_list);
 	
 	// Get our list of stylesheets
-	$query = $db->simple_select("themestylesheets", "sid,cachefile,attachedto,tid", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
+	$query = $db->simple_select("themestylesheets", "sid,cachefile,attachedto,tid,lastmodified,name", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
 	while($stylesheet = $db->fetch_array($query))
 	{
-		if(!$stylesheets[$stylesheet['cachefile']])
+		if(!$stylesheets[$stylesheet['name']])
 		{
 			if($stylesheet['tid'] != $tid)
 			{
 				$stylesheet['inherited'] = $stylesheet['tid'];
 			}
 			
-			$stylesheets[$stylesheet['cachefile']] = $stylesheet;
+			$stylesheets[$stylesheet['name']] = $stylesheet;
 		}
 	}
 	
-	foreach($stylesheets as $cachefile => $stylesheet)
+	foreach($stylesheets as $name => $stylesheet)
 	{
 		$sid = $stylesheet['sid'];
 		$css_url = "css.php?stylesheet={$sid}";
 		
 		foreach($parent_list as $theme_id)
 		{
-			if(file_exists(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['cachefile']}"))
+			if(file_exists(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['cachefile']}") && filemtime(MYBB_ROOT."cache/themes/theme{$theme_id}/{$stylesheet['cachefile']}") >= $stylesheet['lastmodified'])
 			{
 				$css_url = "cache/themes/theme{$theme_id}/{$stylesheet['cachefile']}";
 				break;
@@ -800,7 +808,7 @@ function make_parent_theme_list($tid)
 	
 	if(!is_array($themes_by_parent[$tid]))
 	{
-		return;
+		return false;
 	}
 	
 	reset($themes_by_parent);
