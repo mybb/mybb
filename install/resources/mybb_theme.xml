@@ -7636,7 +7636,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="forumdisplay_thread_attachment_count" version="120"><![CDATA[<div style="float: right;"><img src="{$theme['imgdir']}/paperclip.gif" alt="" title="{$attachment_count}" /></div>]]></template>
 		<template name="forumdisplay_rssdiscovery" version="120"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->rss_discovery_forum} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php?fid={$fid}" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->rss_discovery_forum} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0&amp;fid={$fid}" />]]></template>
-		<template name="post_captcha" version="1400"><![CDATA[<tr>
+		<template name="post_captcha" version="1400"><![CDATA[<tr id="captcha_trow">
 <td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
 <td class="trow1">
 <script type="text/javascript" src="jscripts/captcha.js?ver=1400"></script>

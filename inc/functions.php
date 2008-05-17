@@ -618,8 +618,9 @@ function get_child_list($fid)
  */
 function error($error="", $title="")
 {
-	global $header, $footer, $theme, $headerinclude, $db, $templates, $lang, $mybb;
+	global $header, $footer, $theme, $headerinclude, $db, $templates, $lang, $mybb, $plugins;
 
+	$plugins->run_hooks_by_ref("error", $error);
 	if(!$error)
 	{
 		$error = $lang->unknown_error;
@@ -629,7 +630,7 @@ function error($error="", $title="")
 	if($mybb->input['ajax'])
 	{
 		// Send our headers.
-		header("Content-type: text/html; charset={$lang->settings['charset']}");
+		@header("Content-type: text/html; charset={$lang->settings['charset']}");
 		echo "<error>{$error}</error>\n";
 		exit;
 	}
@@ -675,7 +676,7 @@ function inline_error($errors, $title="")
 	{
 		$error = implode("\n\n", $errors);
 		// Send our headers.
-		header("Content-type: text/html; charset={$lang->settings['charset']}");
+		@header("Content-type: text/html; charset={$lang->settings['charset']}");
 		echo "<error>{$error}</error>\n";
 		exit;
 	}
@@ -740,10 +741,13 @@ function redirect($url, $message="", $title="")
 {
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
+	$redirect_args = array('url' => &$url, 'message' => &$message, 'title' => &$title);
+	$plugins->run_hooks_by_ref("redirect", $redirect_args);
+
 	if($mybb->input['ajax'])
 	{
 		// Send our headers.
-		header("Content-type: text/html; charset={$lang->settings['charset']}");
+		@header("Content-type: text/html; charset={$lang->settings['charset']}");
 		echo "<script type=\"text/javascript\">\n";
 		if($message != "")
 		{
@@ -764,7 +768,6 @@ function redirect($url, $message="", $title="")
 
 	$time = TIME_NOW;
 	$timenow = my_date($mybb->settings['dateformat'], $time) . " " . my_date($mybb->settings['timeformat'], $time);
-	$plugins->run_hooks("redirect");
 
 	if(!$title)
 	{
@@ -3099,7 +3102,7 @@ function mark_reports($id, $type="post")
 			break;
 	}
 
-	$plugins->run_hooks("mark_reports");
+	$plugins->run_hooks("mark_reports", array('id' => $id, 'type' => $type));
 	$cache->update_reportedposts();
 }
 

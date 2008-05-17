@@ -386,6 +386,26 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 			$db->delete_query("captcha", "imagehash='$imagehash'");
 			$hide_captcha = true;
 		}
+		
+		// if we're using AJAX, and we have a captcha, regenerate a new one
+		if($mybb->input['ajax'])
+		{
+			$randomstr = random_str(5);
+			$imagehash = md5(random_str(12));
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => TIME_NOW
+			);
+			$db->insert_query("captcha", $imagearray);
+			header("Content-type: text/html; charset={$lang->settings['charset']}");
+			echo "<captcha>$imagehash";
+			if($hide_captcha)
+			{
+				echo "|$randomstr";
+			}
+			echo "</captcha>";
+		}
 	}
 
 	// One or more erors returned, fetch error list and throw to newreply page
