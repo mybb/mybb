@@ -280,23 +280,20 @@ if($mybb->input['action'] == "import")
 </script>
 	<dl style="margin-top: 0; margin-bottom: 0; width: 35%;">
 	<dt><label style="display: block;"><input type="radio" name="import" value="0" '.$import_checked[1].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->local_file.'</label></dt>
-		<div id="import_0" class="imports">
-		<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-	<dt><label style="display: block;"><table cellpadding="4">
+		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_0" class="imports">
+	<table cellpadding="4">
 				<tr>
-					<td>'.$form->generate_file_upload_box("local_file", array('style' => 'width: 100%;')).'</td>
+					<td>'.$form->generate_file_upload_box("local_file", array('style' => 'width: 230px;')).'</td>
 				</tr>
-		</table></label></dt></dl>
-		</div>
+		</table>
+		</dd>	
 		<dt><label style="display: block;"><input type="radio" name="import" value="1" '.$import_checked[2].' class="imports_check" onclick="checkAction(\'import\');" style="vertical-align: middle;" /> '.$lang->url.'</label></dt>
-		<div id="import_1" class="imports">
-		<dl style="margin-top: 0; margin-bottom: 0; width: 100%;">
-	<dt><label style="display: block;"><table cellpadding="4">
+		<dd style="margin-top: 0; margin-bottom: 0; width: 100%;" id="import_1" class="imports">
+		<table cellpadding="4">
 				<tr>
 					<td>'.$form->generate_text_box("url", $mybb->input['file']).'</td>
 				</tr>
-		</table></label></dt></dl>
-		</div>
+		</table></dd>
 	</dl>
 	<script type="text/javascript">
 	checkAction(\'import\');
@@ -306,7 +303,7 @@ if($mybb->input['action'] == "import")
 	$form_container->output_row($lang->import_from, $lang->import_from_desc, $actions, 'file');
 	$form_container->output_row($lang->parent_theme, $lang->parent_theme_desc, $form->generate_select_box('tid', $themes, $mybb->input['tid'], array('id' => 'tid')), 'tid');
 	$form_container->output_row($lang->new_name, $lang->new_name_desc, $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
-	$form_container->output_row($lang->advanced_options, $lang->advanced_options_desc, $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->input['version_compat'], 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small><br />".$form->generate_check_box('import_stylesheets', '1', $lang->import_stylesheets, array('checked' => $mybb->input['import_stylesheets'], 'id' => 'import_stylesheets'))."<br /><small>{$lang->import_stylesheets_desc}</small><br />".$form->generate_check_box('import_templates', '1', $lang->import_templates, array('checked' => $mybb->input['import_templates'], 'id' => 'import_templates'))."<br /><small>{$lang->import_templates_desc}</small>");
+	$form_container->output_row($lang->advanced_options, "", $form->generate_check_box('version_compat', '1', $lang->ignore_version_compatibility, array('checked' => $mybb->input['version_compat'], 'id' => 'version_compat'))."<br /><small>{$lang->ignore_version_compat_desc}</small><br />".$form->generate_check_box('import_stylesheets', '1', $lang->import_stylesheets, array('checked' => $mybb->input['import_stylesheets'], 'id' => 'import_stylesheets'))."<br /><small>{$lang->import_stylesheets_desc}</small><br />".$form->generate_check_box('import_templates', '1', $lang->import_templates, array('checked' => $mybb->input['import_templates'], 'id' => 'import_templates'))."<br /><small>{$lang->import_templates_desc}</small>");
 	
 	$form_container->end();
 	

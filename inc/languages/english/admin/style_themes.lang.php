@@ -53,7 +53,6 @@ $l['parent_theme_desc'] = "Select the theme this theme should be a child of.";
 $l['new_name'] = "New Name";
 $l['new_name_desc'] = "A new name for the imported theme. If left blank, the name specified in the theme file will be used.";
 $l['advanced_options'] = "Advanced Options";
-$l['advanced_options_desc'] = "A new name for the imported theme. If left blank, the name specified in the theme file will be used.";
 $l['ignore_version_compatibility'] = "Ignore Version Compatibility";
 $l['ignore_version_compat_desc'] = "Should this theme be installed regardless of the version of MyBB it was created for?";
 $l['import_stylesheets'] = "Import Stylesheets";
