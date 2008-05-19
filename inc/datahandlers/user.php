@@ -519,6 +519,15 @@ class UserDataHandler extends DataHandler
 				$options['dstcorrection'] = 0;
 			}
 		}
+		
+		if($options['dstcorrection'] == 1)
+		{
+			$options['dst'] = 1;
+		}
+		else if($options['dstcorrection'] == 0)
+		{
+			$options['dst'] = 0;
+		}
 
 		if(isset($options['showcodebuttons']))
         {
@@ -899,6 +908,15 @@ class UserDataHandler extends DataHandler
 			"coppauser" => intval($user['coppa_user']),
 			"classicpostbit" => $user['options']['classicpostbit']
 		);
+		
+		if($user['options']['dstcorrection'] == 1)
+		{
+			$this->user_insert_data['dst'] = 1;
+		}
+		else if($user['options']['dstcorrection'] == 0)
+		{
+			$this->user_insert_data['dst'] = 0;
+		}
 
 		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
 
