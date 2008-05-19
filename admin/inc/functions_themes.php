@@ -304,7 +304,7 @@ function resync_stylesheet($stylesheet)
 		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
 	}
 	
-	// Still don't have the cache file name?Return false
+	// Still don't have the cache file name? Return false
 	if(!$stylesheet['cachefile'])
 	{
 		return false;

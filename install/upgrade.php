@@ -574,10 +574,10 @@ function sync_settings($redo=0)
 	}
 	else
 	{
-		$query = $db->simple_select("settings", "name,gid", "isdefault='1' OR isdefault='yes'");
+		$query = $db->simple_select("settings", "name,sid", "isdefault='1' OR isdefault='yes'");
 		while($setting = $db->fetch_array($query))
 		{
-			$settings[$setting['name']] = $setting['gid'];
+			$settings[$setting['name']] = $setting['sid'];
 		}
 		
 		$query = $db->simple_select("settinggroups", "name,title,gid", "isdefault='1' OR isdefault='yes'");
