@@ -19,7 +19,7 @@
 
 	RewriteRule ^post-([0-9]+).html showthread.php?pid=$1 [L,QSA]
 
-	RewriteRule ^announcement-([0-9]+).html announcement.php?aid=$1 [L,QSA]
+	RewriteRule ^announcement-([0-9]+).html announcements.php?aid=$1 [L,QSA]
 
 	RewriteRule ^user-([0-9]+).html member.php?action=profile&uid=$1 [L,QSA]
 

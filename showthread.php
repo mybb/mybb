@@ -113,6 +113,69 @@ if(!$mybb->input['action'])
 	$mybb->input['action'] = "thread";
 }
 
+
+// Jump to the unread posts.
+if($mybb->input['action'] == "newpost")
+{
+	// First, figure out what time the thread or forum were last read
+	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
+	$thread_read = $db->fetch_field($query, "dateline");
+
+	// Get forum read date
+	$forumread = my_get_array_cookie("forumread", $fid);
+
+	// If last visit is greater than forum read, change forum read date
+	if($mybb->user['lastvisit'] > $forumread)
+	{
+		$forumread = $mybb->user['lastvisit'];
+	}
+	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
+	{
+		$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+		if($thread['lastpost'] > $cutoff)
+		{
+			if($thread_read)
+			{
+				$lastread = $thread_read;
+			}
+			else
+			{
+				$lastread = 1;
+			}
+		}
+	}
+	if(!$lastread)
+	{
+		$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
+		if($readcookie > $forumread)
+		{
+			$lastread = $readcookie;
+		}
+		else
+		{
+			$lastread = $forumread;
+		}
+	}
+	// Next, find the proper pid to link to.
+	$options = array(
+		"limit_start" => 0,
+		"limit" => 1,
+		"order_by" => "dateline",
+		"order_dir" => "asc"
+	);
+	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}'", $options);
+	$newpost = $db->fetch_array($query);
+	if($newpost['pid'])
+	{
+		header("Location:".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
+	}
+	else
+	{
+		// show them to the last post
+		$mybb->input['action'] = "lastpost";
+	}
+}
+
 // Jump to the last post.
 if($mybb->input['action'] == "lastpost")
 {
@@ -200,67 +263,6 @@ if($mybb->input['action'] == "nextoldest")
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
 	header("Location:".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
-}
-
-// Jump to the unread posts.
-if($mybb->input['action'] == "newpost")
-{
-	// First, figure out what time the thread or forum were last read
-	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
-	$thread_read = $db->fetch_field($query, "dateline");
-
-	// Get forum read date
-	$forumread = my_get_array_cookie("forumread", $fid);
-
-	// If last visit is greater than forum read, change forum read date
-	if($mybb->user['lastvisit'] > $forumread)
-	{
-		$forumread = $mybb->user['lastvisit'];
-	}
-	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
-	{
-		$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-		if($thread['lastpost'] > $cutoff)
-		{
-			if($thread_read)
-			{
-				$lastread = $thread_read;
-			}
-			else
-			{
-				$lastread = 1;
-			}
-		}
-	}
-	if(!$lastread)
-	{
-		$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
-		if($readcookie > $forumread)
-		{
-			$lastread = $readcookie;
-		}
-		else
-		{
-			$lastread = $forumread;
-		}
-	}
-	// Next, find the proper pid to link to.
-	$options = array(
-		"limit_start" => 0,
-		"limit" => 1,
-		"order_by" => "dateline",
-		"order_dir" => "asc"
-	);
-	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}'", $options);
-	$newpost = $db->fetch_array($query);
-	if($newpost['pid'])
-	{
-		header("Location:".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
-	}
-	else
-	{
-		header("Location:".htmlspecialchars_decode(get_thread_link($tid, 0, "lastpost")));
-	}
 }
 
 if($mybb->input['pid'])

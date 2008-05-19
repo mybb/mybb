@@ -4453,7 +4453,7 @@ body {
 <td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
 <td align="center" class="{$bgcolor}">&nbsp;</td>
 <td class="{$bgcolor}">
-	<a href="announcements.php?aid={$announcement['aid']}"{$new_class}>{$announcement['subject']}</a>
+	<a href="{$announcement['announcementlink']}"{$new_class}>{$announcement['subject']}</a>
 	<div class="author smalltext">{$announcement['profilelink']}</div>
 </td>
 <td align="center" class="{$bgcolor}">-</td>
@@ -10171,7 +10171,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->title}</strong></td>
-							<td class="trow1" valign="top" width="75%"><input type="text" class="inputbox" name="title" size="40" value="{$title}" /></td>
+							<td class="trow1" valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{$title}" /></td>
 						</tr>
 						<tr>
 							<td class="trow1" colspan="1" valign="top" width="25%"><strong>{$lang->start_date}</strong></td>
@@ -10257,7 +10257,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->title}</strong></td>
-							<td class="trow1" valign="top" width="75%"><input type="text" class="inputbox" name="title" size="40" value="{$title}" /></td>
+							<td class="trow1" valign="top" width="75%"><input type="text" class="textbox" name="title" size="40" value="{$title}" /></td>
 						</tr>
 						<tr>
 							<td class="trow1" colspan="1" valign="top" width="25%"><strong>{$lang->start_date}</strong></td>

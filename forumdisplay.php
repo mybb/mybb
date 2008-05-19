@@ -621,6 +621,7 @@ while($announcement = $db->fetch_array($query))
 		$modann = '';
 	}
 	
+	$plugins->run_hooks("forumdisplay_announcement");
 	eval("\$announcements  .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
 	$bgcolor = alt_trow();
 }

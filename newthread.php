@@ -753,7 +753,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	else
 	{
 		$bgcolor = "trow2";
-		$bgcolor2 = "trow2";
+		$bgcolor2 = "trow1";
 	}
 
 	// Fetch subscription select box
