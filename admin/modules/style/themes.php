@@ -793,14 +793,15 @@ if($mybb->input['action'] == "edit")
 	
 	if(count($inherited_load) > 0)
 	{
-		$query = $db->simple_select("themestylesheets", "*", "tid IN (".implode(",", $inherited_load).")", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
+		$query = $db->simple_select("themestylesheets", "*", "", array('order_by' => 'sid DESC, tid', 'order_dir' => 'desc'));
 		while($theme_stylesheet = $db->fetch_array($query))
 		{
-			if(!$theme_stylesheets[$theme_stylesheet['cachefile']])
+			if(!$theme_stylesheets[$theme_stylesheet['cachefile']] && in_array($theme_stylesheet['tid'], $inherited_load))
 			{
 				$theme_stylesheets[$theme_stylesheet['cachefile']] = $theme_stylesheet;
-				$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['cachefile'];
 			}
+			
+			$theme_stylesheets[$theme_stylesheet['sid']] = $theme_stylesheet['cachefile'];
 		}
 	}
 	

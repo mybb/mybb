@@ -256,8 +256,6 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 {
 	global $mybb;
 	
-	return false;
-	
 	if($mybb->safemode)
 	{
 		return false;
@@ -290,8 +288,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 		return false;
 	}
 	
-	fwrite($fp, $stylesheet);
-	fclose($fp);
+	@fwrite($fp, $stylesheet);
+	@fclose($fp);
 	return "cache/themes/theme{$tid}/{$filename}";
 }
 
@@ -306,7 +304,7 @@ function resync_stylesheet($stylesheet)
 		$db->update_query("themestylesheets", array('cachefile' => $db->escape_string($stylesheet['name'])), "sid='{$stylesheet['sid']}'", 1);
 	}
 	
-	// Still don't have the cache file name? Return false
+	// Still don't have the cache file name?Return false
 	if(!$stylesheet['cachefile'])
 	{
 		return false;
@@ -314,13 +312,19 @@ function resync_stylesheet($stylesheet)
 	
 	if(!file_exists(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"))
 	{
-		cache_stylesheet($stylesheet['tid'], $stylesheet['cachefile'], $stylesheet['stylesheet']);
-		
-		update_theme_stylesheet_list($stylesheet['tid']);
+		if(cache_stylesheet($stylesheet['tid'], $stylesheet['cachefile'], $stylesheet['stylesheet']) !== false)
+		{
+			update_theme_stylesheet_list($stylesheet['tid']);
+			
+			if($stylesheet['sid'] != 1)
+			{
+				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
+			}
+		}
 	
 		return true;
 	}
-	else if(@filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}") > $stylesheet['lastmodified'])
+	else if($stylesheet['sid'] != 1 && @filemtime(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}") > $stylesheet['lastmodified'])
 	{
 		$contents = unfix_css_urls(file_get_contents(MYBB_ROOT."cache/themes/theme{$stylesheet['tid']}/{$stylesheet['cachefile']}"));
 		$db->update_query("themestylesheets", array('stylesheet' => $db->escape_string($contents), 'lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);

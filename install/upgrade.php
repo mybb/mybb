@@ -574,10 +574,10 @@ function sync_settings($redo=0)
 	}
 	else
 	{
-		$query = $db->simple_select("settings", "name", "isdefault='1' OR isdefault='yes'");
+		$query = $db->simple_select("settings", "name,gid", "isdefault='1' OR isdefault='yes'");
 		while($setting = $db->fetch_array($query))
 		{
-			$settings[$setting['name']] = 1;
+			$settings[$setting['name']] = $setting['gid'];
 		}
 		
 		$query = $db->simple_select("settinggroups", "name,title,gid", "isdefault='1' OR isdefault='yes'");
@@ -595,7 +595,7 @@ function sync_settings($redo=0)
 
 	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 	{
-		$settinggroupnames[$settinggroup['attributes']['name']] = 1;
+		$settinggroupnames[] = $settinggroup['attributes']['name'];
 		
 		$groupdata = array(
 			"name" => $db->escape_string($settinggroup['attributes']['name']),
@@ -622,7 +622,7 @@ function sync_settings($redo=0)
 		
 		foreach($settinggroup['setting'] as $setting)
 		{
-			$settingnames[$setting['attributes']['name']] = 1;
+			$settingnames[] = $setting['attributes']['name'];
 			
 			$settingdata = array(
 				"name" => $db->escape_string($setting['attributes']['name']),

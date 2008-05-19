@@ -42,6 +42,8 @@ if($mybb->input['action'] == "utf8_conversion")
 			admin_redirect("index.php?module=tools/system_health&action=utf8_conversion");
 		}
 		
+		$db->set_table_prefix($old_table_prefix);
+		
 		$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
 	
 		$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
@@ -59,6 +61,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		);
 		
 		$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
+		
+		$old_table_prefix = $db->table_prefix;
+		$db->set_table_prefix('');
 		
 		$table = new Table;
 		
@@ -285,7 +290,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		}
 		
 		$page->add_breadcrumb_item($lang->utf8_conversion, "index.php?module=tools/system_health&amp;action=utf8_conversion");
-	
+		
+		$db->set_table_prefix($old_table_prefix);
+		
 		$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 		
 		$sub_tabs['system_health'] = array(
@@ -301,6 +308,9 @@ if($mybb->input['action'] == "utf8_conversion")
 		);
 		
 		$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
+		
+		$old_table_prefix = $db->table_prefix;
+		$db->set_table_prefix('');
 		
         preg_match("#CHARSET=([a-zA-Z0-9_]+)\s?#i", $table, $matches);
 		$charset = $matches[1];
@@ -629,6 +639,7 @@ if(!$mybb->input['action'])
 		$message_backup = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
+	// /cache/ + /cache/themes/ ?
 	
 	
 	if($errors)
