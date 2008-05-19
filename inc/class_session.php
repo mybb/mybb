@@ -78,7 +78,7 @@ class session
 		// If no user still, then we have a guest.
 		if(!isset($mybb->user['uid']))
 		{
-			// Detect if this guest is a search engine spider. (bots don't get a cookied session ID so we first see if that's set
+			// Detect if this guest is a search engine spider. (bots don't get a cookied session ID so we first see if that's set)
 			if(!$this->sid)
 			{
 				$spiders = $cache->read("spiders");

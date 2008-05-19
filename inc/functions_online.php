@@ -19,7 +19,7 @@ $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
  */
 function fetch_wol_activity($location)
 {
-	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins;
+	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $user;
 
 	$user_activity = array();
 
@@ -919,7 +919,7 @@ function build_wol_row($user)
 	}
 
 	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
-
+	
 	// Fetch the location name for this users activity
 	$location = build_friendly_wol_location($user['activity']);
 

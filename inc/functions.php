@@ -3381,15 +3381,15 @@ function get_current_location($fields=false, $ignore=array())
 		return MYBB_LOCATION;
 	}
 
-	if(isset($_SERVER['PATH_INFO']))
+	if(!empty($_SERVER['PATH_INFO']))
 	{
 		$location = $_SERVER['PATH_INFO'];
 	}
-	elseif(isset($_ENV['PATH_INFO']))
+	elseif(!empty($_ENV['PATH_INFO']))
 	{
-		$location = $_SERVER['PATH_INFO'];
+		$location = $_ENV['PATH_INFO'];
 	}
-	elseif(isset($_ENV['PHP_SELF']))
+	elseif(!empty($_ENV['PHP_SELF']))
 	{
 		$location = $_ENV['PHP_SELF'];
 	}
