@@ -46,8 +46,8 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$month_start_weekday = my_date("w", mktime(0, 0, 0, $month, 1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
-		$day = gmdate("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-		$day -= array_search($month_start_weekday, $weekdays);		
+		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$day -= array_search(($month_start_weekday-1), $weekdays);		
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
 	}
@@ -62,7 +62,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 
 	// So now we fetch events for this month
 	$start_timestamp = gmmktime(0, 0, 0, $calendar_month, $day, $year);
-	$num_days = gmdate("t", mktime(0, 0, 0, $month, 1, $year));
+	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
 	$end_timestamp = gmmktime(23, 59, 59, $month, $num_days, $year);
 
 	if(!$events_cache)
