@@ -346,8 +346,8 @@ function upgrade12_dbchanges2()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD maxwarningsday int(3) NOT NULL default '3' AFTER canreceivewarnings");
 	
-	$db->update_query("usergroups", array('canreceivewarnings' => 1), "cancp=1 OR gid='1'");
-	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 1), "cancp=1 OR issupermod=1 OR gid='6'"); // Admins, Super Mods and Mods
+	$db->update_query("usergroups", array('canreceivewarnings' => 1), "cancp != 1");
+	$db->update_query("usergroups", array('maxwarningsday' => 3, 'canwarnusers' => 1), "cancp=1 OR issupermod=1 OR gid=6"); // Admins, Super Mods and Mods
 
 	if($db->field_exists('canmodcp', "usergroups"))
 	{
@@ -404,6 +404,7 @@ function upgrade12_dbchanges2()
 		subject varchar(200) NOT NULL default '',
 		message text NOT NULL,
 		htmlmessage text NOT NULL,
+		type tinyint(1) NOT NULL default '0',
 		format tinyint(1) NOT NULL default '0',
 		dateline bigint(30) NOT NULL default '0',
 		senddate bigint(30) NOT NULL default '0',

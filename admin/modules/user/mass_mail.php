@@ -137,7 +137,7 @@ if($mybb->input['action'] == "edit")
 				$errors[] = $lang->error_missing_plain_text;
 			}
 			
-			if($mybb->input['format'] == 1 || ($mybb->input['format'] == 2 && !$mybb->input['htmlmessage']))
+			if(($mybb->input['format'] == 1 || $mybb->input['format'] == 2) && !$mybb->input['htmlmessage'])
 			{
 				$errors[] = $lang->error_missing_html;
 			}
@@ -1010,7 +1010,7 @@ if($mybb->input['action'] == "send")
 					$errors[] = $lang->error_missing_plain_text;
 				}
 				
-				if($mybb->input['format'] == 1 || ($mybb->input['format'] == 2 && !$mybb->input['htmlmessage']))
+				if(($mybb->input['format'] == 1 || $mybb->input['format'] == 2) && !$mybb->input['htmlmessage'])
 				{
 					$errors[] = $lang->error_missing_html;
 				}

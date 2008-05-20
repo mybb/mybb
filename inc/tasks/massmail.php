@@ -31,6 +31,9 @@ function task_massmail($task)
 			$mass_email['perpage'] = 50;
 		}
 		
+		$mass_email['orig_message'] = $mass_email['message'];
+		$mass_email['orig_htmlmessage'] = $mass_email['htmlmessage'];
+		
 		// Need to perform the search to fetch the number of users we're emailing
 		$member_query = build_mass_mail_query(unserialize($mass_email['conditions']));
 		
@@ -88,6 +91,9 @@ function task_massmail($task)
 				my_mail($user['email'], $mass_email['subject'], $mass_email['message'], "", "", "", false, $format, $text_message);
 			}
 			++$sentcount;
+			
+			$mass_email['message'] = $mass_email['orig_message'];
+			$mass_email['htmlmessage'] = $mass_email['orig_htmlmessage'];
 		}
 		
 		$update_array = array();

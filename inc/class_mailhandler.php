@@ -203,12 +203,12 @@ class MailHandler
 
 		$this->message .= "--{$mime_boundary}{$this->delimiter}";
 		$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
-		$this->message .= "Content-Transfer-Encoding: 7bit{$this->delimiter}{$this->delimiter}";
+		$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
 		$this->message .= $message_text."{$this->delimiter}{$this->delimiter}";
 		
 		$this->message .= "--{$mime_boundary}{$this->delimiter}{$this->delimiter}";
 		$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
-		$this->message .= "Content-Transfer-Encoding: 7bit{$this->delimiter}{$this->delimiter}";
+		$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
 		$this->message .= $message."{$this->delimiter}{$this->delimiter}";
 		
 		$this->message .= "--{$mime_boundary}--{$this->delimiter}{$this->delimiter}";
@@ -232,10 +232,12 @@ class MailHandler
 		if($mybb->settings['returnemail'])
 		{
 			$this->headers .= "Return-Path: {$mybb->settings['returnemail']}{$this->delimiter}";
+			$this->headers .= "Reply-To: {$mybb->settings['adminemail']}{$this->delimiter}";
 		}
 		else
 		{
 			$this->headers .= "Return-Path: {$mybb->settings['adminemail']}{$this->delimiter}";
+			$this->headers .= "Reply-To: {$mybb->settings['adminemail']}{$this->delimiter}";
 		}
 
 		if(isset($_SERVER['SERVER_NAME']))
