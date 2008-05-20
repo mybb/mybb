@@ -71,7 +71,7 @@ class MyLanguage
 	function set_language($language="english", $area="user")
 	{
 		global $mybb;
-		$language = str_replace(array("/", "\\", ".."), '', trim($language));
+		$language = preg_replace("#^[a-z0-9\-_]#i", "", $language);
 
 		// Default language is English.
 		if($language == "")
