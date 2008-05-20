@@ -2005,7 +2005,7 @@ function build_users_view($view)
 			$popup->add_item($lang->delete_user, "index.php?module=user/users&amp;action=delete&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->user_deletion_confirmation}')");
 			$popup->add_item($lang->show_referred_users, "index.php?module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
 			$popup->add_item($lang->show_ip_addresses, "index.php?module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
-			$popup->add_item($lang->show_attachments, "index.php?module=user/users&amp;action=attachments&amp;uid={$user['uid']}");
+			$popup->add_item($lang->show_attachments, "index.php?module=forum/attachments&amp;results=1&amp;username=".htmlspecialchars_uni($user['username']));
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user

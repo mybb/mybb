@@ -885,7 +885,7 @@ function build_attachment_row($attachment, &$table, &$form=null)
 		$attachment['username'] = $attachment['username'];
 	}
 	$table->construct_cell(build_profile_link($attachment['username'], $attachment['uid']), array("class" => "align_center"));
-	$table->construct_cell("<a href=\"".get_post_link($attachment['pid'])."\">".htmlspecialchars($attachment['subject'])."</a>", array("class" => "align_center"));
+	$table->construct_cell("<a href=\"../".get_post_link($attachment['pid'])."\">".htmlspecialchars($attachment['subject'])."</a>", array("class" => "align_center"));
 	$table->construct_cell(my_number_format($attachment['downloads']), array("class" => "align_center"));
 	if($attachment['dateuploaded'] > 0)
 	{

@@ -2048,10 +2048,10 @@ if(!$mybb->input['action'])
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$month_start_weekday = my_date("w", mktime(0, 0, 0, $month, 1, $year));
+	$month_start_weekday = my_date("w", gmmktime(0, 0, 0, $month, 1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
-		$day = gmdate("t", mktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
+		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday-1), $weekdays);
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
