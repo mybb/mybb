@@ -1006,7 +1006,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['language']))
 		{
-			$this->user_update_data['language'] = $user['language'];
+			$this->user_update_data['language'] = $db->escape_string($user['language']);
 		}
 		if(isset($user['away']))
 		{
