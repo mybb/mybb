@@ -108,7 +108,7 @@ else
 	}
 	
 	$search_query = '1=1';
-	$search_url = "memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&per_page={$mybb->input['perpage']}";
+	$search_url = "memberlist.php?sort={$mybb->input['sort']}&order={$mybb->input['order']}&perpage={$mybb->input['perpage']}";
 	
 	// Limiting results to a certain letter
 	if($mybb->input['letter'])

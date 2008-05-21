@@ -475,6 +475,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		else
 		{
 			$previewmessage = $message;
+			$previewsubject = $subject;
 			$message = htmlspecialchars_uni($message);
 			$subject = htmlspecialchars_uni($subject);
 
@@ -527,7 +528,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		// Set the values of the post info array.
 		$postinfo['userusername'] = $postinfo['username'];
 		$postinfo['message'] = $previewmessage;
-		$postinfo['subject'] = $subject;
+		$postinfo['subject'] = $previewsubject;
 		$postinfo['icon'] = $icon;
 		$postinfo['smilieoff'] = $postoptions['disablesmilies'];
 

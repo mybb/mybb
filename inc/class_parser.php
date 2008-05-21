@@ -84,6 +84,8 @@ class postParser
 		// Set the options		
 		$this->options = $options;
 
+		$message = $plugins->run_hooks("parse_message_start", $message);
+
 		// Get rid of cartridge returns for they are the workings of the devil
 		$message = str_replace("\r", "", $message);
 
@@ -510,7 +512,7 @@ class postParser
 			$size = 50;
 		}
 
-		$text = "<span style=\"font-size: {$size}pt\">".stripslashes($text)."</span>";
+		$text = "<span style=\"font-size: {$size}pt\">".str_replace("\\'", "'", $text)."</span>";
 
 		return $text;
 	}
@@ -587,8 +589,8 @@ class postParser
 
 		if(!$message) return '';
 
-		$message = stripslashes($message);
-		$username = stripslashes($username)."'";
+		$message = str_replace("\\'", "'", $message);
+		$username = str_replace("\\'", "'", $username)."'";
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
@@ -798,6 +800,9 @@ class postParser
 	*/
 	function mycode_parse_url($url, $name="")
 	{
+		$name = str_replace("\\'", "'", $name);
+		$url = str_replace("\\'", "'", $url);
+
 		if(!preg_match("#^[a-z0-9]+://#i", $url))
 		{
 			$url = "http://".$url;
@@ -815,9 +820,6 @@ class postParser
 		{
 			$name = $url;
 		}
-		$name = stripslashes($name);
-		$url = stripslashes($url);
-		$fullurl = stripslashes($fullurl);
 		if($name == $url && $this->options['shorten_urls'] != 0)
 		{
 			if(my_strlen($url) > 55)
