@@ -1289,6 +1289,7 @@ class Akismet {
 			$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n";
 			$http_request .= "Content-Length: ".strlen($request)."\r\n";
 			$http_request .= "User-Agent: MyBB/1.4 | Akismet/1.1\r\n";
+			$http_request .= "Connection: close\r\n";
 			$http_request .= "\r\n";
 			$http_request .= $request;
 			

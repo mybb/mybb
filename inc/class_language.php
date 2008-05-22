@@ -51,7 +51,7 @@ class MyLanguage
 	 */
 	function language_exists($language)
 	{
-		$language = preg_replace("#^[a-z0-9\-_]#i", "", $language);
+		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 		if(file_exists($this->path."/".$language.".php"))
 		{
 			return true;
@@ -72,7 +72,7 @@ class MyLanguage
 	{
 		global $mybb;
 		
-		$language = preg_replace("#^[a-z0-9\-_]#i", "", $language);
+		$language = preg_replace("#[^a-z0-9\-_]#i", "", $language);
 
 		// Default language is English.
 		if($language == "")
