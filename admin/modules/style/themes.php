@@ -453,6 +453,9 @@ if($mybb->input['action'] == "export")
 		}
 		$xml .= "</theme>";
 		
+		// Log admin action
+		log_admin_action($theme['tid'], $theme['name']);
+		
 		$theme['name'] = rawurlencode($theme['name']);
 		header("Content-disposition: attachment; filename=".$theme['name']."-theme.xml");
 		header("Content-Length: ".my_strlen($xml));
@@ -524,7 +527,7 @@ if($mybb->input['action'] == "add")
 			$tid = build_new_theme($mybb->input['name'], null, $mybb->input['tid']);
 			
 			// Log admin action
-			log_admin_action($mybb->input['name'], $sid);
+			log_admin_action($mybb->input['name'], $tid);
 			
 			flash_message($lang->success_theme_created, 'success');
 			admin_redirect("index.php?module=style/themes&action=edit&tid=".$tid);
@@ -646,6 +649,9 @@ if($mybb->input['action'] == "delete")
 				
 		$db->delete_query("themes", "tid='{$theme['tid']}'", 1);
 		
+		// Log admin action
+		log_admin_action($theme['tid'], $theme['name']);
+		
 		flash_message($lang->success_theme_deleted, 'success');
 		admin_redirect("index.php?module=style/themes");
 	}
@@ -738,6 +744,9 @@ if($mybb->input['action'] == "edit")
 		if(empty($errors))
 		{
 			$db->update_query("themes", $update_array, "tid='{$theme['tid']}'");
+			
+			// Log admin action
+			log_admin_action($theme['tid'], $theme['name']);
 			
 			flash_message($lang->success_theme_properties_updated, 'success');
 			admin_redirect("index.php?module=style/themes&action=edit&tid={$theme['tid']}");
@@ -1155,6 +1164,9 @@ if($mybb->input['action'] == "stylesheet_properties")
 			
 			// Update the CSS file list for this theme
 			update_theme_stylesheet_list($theme['tid']);
+			
+			// Log admin action
+			log_admin_action($stylesheet['sid'], $mybb->input['name'], $theme['tid'], $theme['name']);
 		
 			flash_message($lang->success_stylesheet_properties_updated, 'success');
 			admin_redirect("index.php?module=style/themes&action=stylesheet_properties&tid={$theme['tid']}&file=".htmlspecialchars_uni($mybb->input['file']));
@@ -1875,7 +1887,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		update_theme_stylesheet_list($theme['tid']);
 		
 		// Log admin action
-		log_admin_action($stylesheet['tid'], $stylesheet['name'], $theme['tid'], $theme['name']);
+		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], $theme['name']);
 		
 		flash_message($lang->success_stylesheet_deleted, 'success');
 		admin_redirect("index.php?module=style/themes");
@@ -2007,8 +2019,7 @@ if($mybb->input['action'] == "add_stylesheet")
 				'stylesheet' => $db->escape_string($stylesheet),
 				'cachefile' => $db->escape_string(str_replace('/', '', $mybb->input['name'])),
 				'lastmodified' => TIME_NOW
-			);
-			
+			);			
 			
 			$sid = $db->insert_query("themestylesheets", $insert_array);
 			
@@ -2019,6 +2030,9 @@ if($mybb->input['action'] == "add_stylesheet")
 			
 			// Update the CSS file list for this theme
 			update_theme_stylesheet_list($theme['tid']);
+			
+			// Log admin action
+			log_admin_action($sid, $mybb->input['name'], $theme['tid'], $theme['name']);
 		
 			flash_message($lang->success_stylesheet_added, 'success');
 			admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}");
@@ -2263,6 +2277,9 @@ if($mybb->input['action'] == "set_default")
 	
 	$db->update_query("themes", array('def' => 0));
 	$db->update_query("themes", array('def' => 1), "tid='".intval($mybb->input['tid'])."'");
+	
+	// Log admin action
+	log_admin_action($theme['tid'], $theme['name']);
 
 	flash_message($lang->success_theme_set_default, 'success');
 	admin_redirect("index.php?module=style/themes");

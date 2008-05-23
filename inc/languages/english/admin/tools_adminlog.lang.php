@@ -162,6 +162,18 @@ $l['admin_log_style_templates_edit_template_global'] = "Edited template #{1} ({2
 $l['admin_log_style_templates_search_replace'] = "Searched templates for '{1}' and replaced with '{2}'";
 $l['admin_log_style_templates_revert'] = "Reverted template #{1} ({2}) in template set #{3} ({4})";
 
+$l['admin_log_style_themes_import'] = "Imported theme #{1}";
+$l['admin_log_style_themes_add'] = "Created theme #{2} ({1})";
+$l['admin_log_style_themes_edit_stylesheet'] = "Edited stylesheet {2} in {1}";
+$l['admin_log_style_themes_delete_stylesheet'] = "Deleted / Reverted stylesheet #{1} ({2}) in theme #{3} ({4})";
+$l['admin_log_style_themes_force'] = "Forced theme #{1} ({2}) on all users";
+$l['admin_log_style_themes_set_default'] = "Set theme #{1} ({2}) as default";
+$l['admin_log_style_themes_add_stylesheet'] = "Added stylesheet #{1} ({2}) in theme #{3} ({4})";
+$l['admin_log_style_themes_stylesheet_properties'] = "Edited the properties for stylesheet #{1} ({2}) in theme #{3} ({4})";
+$l['admin_log_style_themes_edit'] = "Edited theme #{1} ({2})";
+$l['admin_log_style_themes_delete'] = "Deleted theme #{1} ({2})";
+$l['admin_log_style_themes_export'] = "Exported theme #{1} ({2})";
+
 $l['admin_log_tools_system_health_utf8_conversion'] = "Converted table {1} to UTF-8 Character Set.";
 
 $l['admin_log_tools_adminlog_prune'] = "Pruned {4} administrator logs older than {1} days";
