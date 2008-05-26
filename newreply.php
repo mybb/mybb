@@ -582,7 +582,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_forum, $fid); 
+			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_forum, get_forum_link($fid)); 
 			redirect($url, $lang->redirect_newreply); 
 			exit;
 		}
@@ -1010,7 +1010,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		if($numposts > $mybb->settings['postsperpage'])
 		{
 			$numposts = $mybb->settings['postsperpage'];
-			$lang->thread_review_more = $lang->sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], $tid);
+			$lang->thread_review_more = $lang->sprintf($lang->thread_review_more, $mybb->settings['postsperpage'], get_thread_link($tid));
 			eval("\$reviewmore = \"".$templates->get("newreply_threadreview_more")."\";");
 		}
 

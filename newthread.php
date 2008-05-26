@@ -412,7 +412,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 		// Hop to it! Send them to the next page.
 		if(!$mybb->input['postpoll'])
 		{
-			$lang->redirect_newthread .= $lang->sprintf($lang->redirect_return_forum, $fid);
+			$lang->redirect_newthread .= $lang->sprintf($lang->redirect_return_forum, get_forum_link($fid));
 		}
 		redirect($url, $lang->redirect_newthread);
 	}

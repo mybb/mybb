@@ -7,7 +7,7 @@
  */
 
 $l['click_no_wait'] = "Click here if you don't want to wait any longer.";
-$l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"forumdisplay.php?fid={1}\">return to the forum</a>.";
+$l['redirect_return_forum'] = "<br /><br />Alternatively, <a href=\"{1}\">return to the forum</a>.";
 $l['redirect_emailsent'] = "Your e-mail message has been sent successfully.";
 $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will now be taken back to where you came from.";
 
@@ -108,10 +108,10 @@ Thank you,
 $l['email_reportpost'] = "{1} from {2} has reported this post:
 
 {3}
-{4}/showthread.php?tid={5}&pid={6}#pid{6}
+{4}/{5}
 
 The reason this user gave for reporting this post:
-{8}
+{7}
 
 This message has been sent to all moderators of this forum, or all administrators and super moderators if there are no moderators.
 
@@ -167,7 +167,7 @@ Here is an excerpt of the message:
 --
 
 To view the thread, you can go to the following URL:
-{7}/showthread.php?tid={8}
+{7}/{8}
 
 There may also be other new threads and replies but you will not receive anymore notifications until you visit the board again.
 
@@ -209,7 +209,7 @@ Here is an excerpt of the message:
 ------------------------------------------
 
 To view the thread, you can go to the following URL:
-{6}/showthread.php?action=newpost&tid={7}
+{6}/{7}
 
 There may also be other replies to this thread but you will not receive anymore notifications until you visit the board again.
 
