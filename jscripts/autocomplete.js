@@ -153,6 +153,7 @@ autoComplete.prototype = {
 					this.updateValue(this.popup.childNodes[this.currentIndex]);
 					this.hidePopup();
 					this.currentIndex = -1;
+					this.clearSelection();
 				}
 				//return false;
 				break;

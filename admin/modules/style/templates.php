@@ -1217,12 +1217,21 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		$page->output_footer();
 	}
 	
+	if($mybb->input['expand'] == 'all')
+	{
+		// if we're expanding everything, stick in the ungrouped templates in the list as well
+		$expand_array = array(-1);
+	}
 	// Fetch Groups
 	$template_sql = '';
 	$query = $db->simple_select("templategroups", "*");
 	while($templategroup = $db->fetch_array($query))
 	{
 		$templategroup['title'] = $lang->parse($templategroup['title'])." ".$lang->templates;
+		if($mybb->input['expand'] == 'all')
+		{
+			$expand_array[] = $templategroup['gid'];
+		}
 		if(in_array($templategroup['gid'], $expand_array))
 		{
 			$templategroup['expanded'] = 1;

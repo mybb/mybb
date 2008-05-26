@@ -3843,10 +3843,15 @@ function my_strlen($string)
  * @param string The string to cut.
  * @param int Where to cut
  * @param int (optional) How much to cut
+ * @param bool (optional) Properly handle HTML entities?
  * @return int The cut part of the string.
  */
-function my_substr($string, $start, $length="")
+function my_substr($string, $start, $length="", $handle_entities = false)
 {
+	if($handle_entities)
+	{
+		$string = unhtmlentities($string);
+	}
 	if(function_exists("mb_substr"))
 	{
 		if($length != "")
@@ -3870,6 +3875,10 @@ function my_substr($string, $start, $length="")
 		}
 	}
 
+	if($handle_entities)
+	{
+		$cut_string = htmlspecialchars_uni($cut_string);
+	}
 	return $cut_string;
 }
 

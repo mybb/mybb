@@ -793,7 +793,6 @@ if($mybb->input['action'] == "results")
 			// What we do here is parse the post using our post parser, then strip the tags from it
 			$parser_options = array(
 				'allow_html' => 0,
-				'filter_badwords' => 1,
 				'allow_mycode' => 1,
 				'allow_smilies' => 0,
 				'allow_imgcode' => 0,
@@ -802,11 +801,11 @@ if($mybb->input['action'] == "results")
 			$post['message'] = strip_tags($parser->parse_message($post['message'], $parser_options));
 			if(my_strlen($post['message']) > 200)
 			{
-				$prev = htmlspecialchars_uni(my_substr($post['message'], 0, 200)."...");
+				$prev = my_substr($post['message'], 0, 200)."...";
 			}
 			else
 			{
-				$prev = htmlspecialchars_uni($post['message']);
+				$prev = $post['message'];
 			}
 			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
 			

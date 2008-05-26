@@ -317,6 +317,13 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->sprintf($lang->error_duplicate_name, $dup_setting_title);
 		}
 
+		// do some type filtering
+		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
+		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
+		{
+			$mybb->input['type'] = "";
+		}
+
 		if(!$mybb->input['type'])
 		{
 			$errors[] = $lang->error_invalid_type;
@@ -460,6 +467,13 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_cannot_edit_default, 'error');
 		admin_redirect("index.php?module=config/settings&action=manage");
 	}
+	$type = explode("\n", $setting['optionscode'], 2);
+	$type = trim($type[0]);
+	if($type == "php")
+	{
+		flash_message($lang->error_cannot_edit_php, 'error');
+		admin_redirect("index.php?module=config/settings&action=manage");
+	}
 	
 	if($mybb->request_method == "post")
 	{
@@ -477,6 +491,13 @@ if($mybb->input['action'] == "edit")
 		{
 			$dup_setting_title = $db->fetch_field($query, 'title');
 			$errors[] = $lang->sprintf($lang->error_duplicate_name, $dup_setting_title);
+		}
+		
+		// do some type filtering
+		$mybb->input['type'] = str_replace("\n", "", $mybb->input['type']);
+		if(strtolower(substr($mybb->input['type'], 0, 3)) == "php")
+		{
+			$mybb->input['type'] = "";
 		}
 		
 		if(!$mybb->input['type'])

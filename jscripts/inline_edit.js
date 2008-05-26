@@ -159,6 +159,8 @@ inlineEditor.prototype = {
 
 	hideTextbox: function()
 	{
+		if(!this.currentElement)
+			return;
 		Event.stopObserving(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
 		var newValue = this.textbox.value;
 
@@ -201,7 +203,7 @@ inlineEditor.prototype = {
 		this.testNode.innerHTML = this.cache;
 		this.element = $(this.currentElement);
 		this.element.onmousedown = this.onMouseDown.bindAsEventListener(this);
-		this.currentCurrentElement = '';
+		this.currentElement = '';
 	},
 
 	onComplete: function(request)
