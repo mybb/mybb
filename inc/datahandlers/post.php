@@ -628,7 +628,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// Perform any selected moderation tools.
-			if(is_moderator($post['fid'], "", $post['uid']) && isset($post['modoptions']))
+			if(is_moderator($post['fid'], "", $post['uid']))
 			{
 				$lang->load($this->language_file, true);
 				

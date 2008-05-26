@@ -1091,7 +1091,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	// Show the moderator options.
 	if(is_moderator($fid))
 	{
-		if($thread['closed'] == 1)
+		if($mybb->input['processed'])
+		{
+			$closed = intval($mybb->input['modoptions']['closethread']);
+			$stuck = intval($mybb->input['modoptions']['stickthread']);
+		}
+		else
+		{
+			$closed = $thread['closed'];
+			$stuck = $thread['sticky'];
+		}
+		
+		if($closed)
 		{
 			$closecheck = ' checked="checked"';
 		}
@@ -1100,7 +1111,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$closecheck = '';
 		}
 
-		if($thread['sticky'])
+		if($stuck)
 		{
 			$stickycheck = ' checked="checked"';
 		}

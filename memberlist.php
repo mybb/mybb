@@ -98,7 +98,7 @@ else
 	
 	// Incoming results per page?
 	$mybb->input['perpage'] = intval($mybb->input['perpage']);
-	if($mybb->input['perpage'] > 0)
+	if($mybb->input['perpage'] > 0 && $mybb->input['perpage'] <= 500)
 	{
 		$per_page = $mybb->input['perpage'];
 	}
@@ -129,60 +129,55 @@ else
 	$search_username = htmlspecialchars_uni($mybb->input['username']);
 	if(trim($mybb->input['username']))
 	{
-		$mybb->input['username'] = $db->escape_string_like($mybb->input['username']);
+		$username_like_query = $db->escape_string_like($mybb->input['username']);
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
-			$search_query .= " AND u.username LIKE '".$db->escape_string($mybb->input['username'])."%'";
+			$search_query .= " AND u.username LIKE '".$username_like_query."%'";
 			$search_url .= "&username_match=begins";
 		}
 		// Just contains
 		else
 		{
-			$search_query .= " AND u.username LIKE '%".$db->escape_string($mybb->input['username'])."%'";
+			$search_query .= " AND u.username LIKE '%".$username_like_query."%'";
 		}
-		$search_url .= "&username={$mybb->input['username']}";
+		$search_url .= "&username=".urlencode($mybb->input['username']);
 	}
 
 	// Website contains
 	$search_website = htmlspecialchars_uni($mybb->input['website']);
 	if(trim($mybb->input['website']))
 	{
-		$mybb->input['website'] = $db->escape_string_like($mybb->input['website']);
-		$search_query .= " AND u.website LIKE '%".$db->escape_string($mybb->input['website'])."%'";
-		$search_url .= "&website={$mybb->input['website']}";
+		$search_query .= " AND u.website LIKE '%".$db->escape_string_like($mybb->input['website'])."%'";
+		$search_url .= "&website=".urlencode($mybb->input['website']);
 	}
 
 	// AIM Identity
 	if(trim($mybb->input['aim']))
 	{
-		$mybb->input['aim'] = $db->escape_string_like($mybb->input['aim']);
-		$search_query .= " AND u.aim LIKE '%".$db->escape_string($mybb->input['aim'])."%'";
-		$search_url .= "&aim={$mybb->input['aim']}";
+		$search_query .= " AND u.aim LIKE '%".$db->escape_string_like($mybb->input['aim'])."%'";
+		$search_url .= "&aim=".urlencode($mybb->input['aim']);
 	}
 
 	// ICQ Number
 	if(trim($mybb->input['icq']))
 	{
-		$mybb->input['icq'] = $db->escape_string_like($mybb->input['icq']);
-		$search_query .= " AND u.icq LIKE '%".$db->escape_string($mybb->input['icq'])."%'";
-		$search_url .= "&icq={$mybb->input['icq']}";
+		$search_query .= " AND u.icq LIKE '%".$db->escape_string_like($mybb->input['icq'])."%'";
+		$search_url .= "&icq=".urlencode($mybb->input['icq']);
 	}
 
 	// MSN/Windows Live Messenger address
 	if(trim($mybb->input['msn']))
 	{
-		$mybb->input['msn'] = $db->escape_string_like($mybb->input['msn']);
-		$search_query .= " AND u.msn LIKE '%".$db->escape_string($mybb->input['msn'])."%'";
-		$search_url .= "&msn={$mybb->input['msn']}";
+		$search_query .= " AND u.msn LIKE '%".$db->escape_string_like($mybb->input['msn'])."%'";
+		$search_url .= "&msn=".urlencode($mybb->input['msn']);
 	}
 
 	// Yahoo! Messenger address
 	if(trim($mybb->input['yahoo']))
 	{
-		$mybb->input['yahoo'] = $db->escape_string_like($mybb->input['yahoo']);
-		$search_query .= " AND u.yahoo LIKE '%".$db->escape_string($mybb->input['yahoo'])."%'";
-		$search_url .= "&yahoo={$mybb->input['yahoo']}";	
+		$search_query .= " AND u.yahoo LIKE '%".$db->escape_string_like($mybb->input['yahoo'])."%'";
+		$search_url .= "&yahoo=".urlencode($mybb->input['yahoo']);
 	}
 
 	$query = $db->simple_select("users u", "COUNT(*) AS users", "{$search_query}");
