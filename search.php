@@ -584,19 +584,19 @@ if($mybb->input['action'] == "results")
 			}
 			if(my_strlen($post['subject']) > 50)
 			{
-				$post['subject'] = my_substr($post['subject'], 0, 50)."...";
+				$post['subject'] = htmlspecialchars_uni(my_substr($post['subject'], 0, 50)."...");
 			}
 			else
 			{
-				$post['subject'] = $post['subject'];
+				$post['subject'] = htmlspecialchars_uni($post['subject']);
 			}
 			if(my_strlen($post['message']) > 200)
 			{
-				$prev = htmlspecialchars_uni(my_substr($post['message'], 0, 200)."...");
+				$post['message'] = htmlspecialchars_uni(my_substr($post['message'], 0, 200)."...");
 			}
 			else
 			{
-				$prev = htmlspecialchars_uni($post['message']);
+				$post['message'] = htmlspecialchars_uni($post['message']);
 			}
 			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
 
