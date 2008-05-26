@@ -784,11 +784,11 @@ if($mybb->input['action'] == "results")
 			}
 			if(my_strlen($post['subject']) > 50)
 			{
-				$post['subject'] = my_substr($post['subject'], 0, 50)."...";
+				$post['subject'] = htmlspecialchars_uni(my_substr($post['subject'], 0, 50)."...");
 			}
 			else
 			{
-				$post['subject'] = $post['subject'];
+				$post['subject'] = htmlspecialchars_uni($post['subject']);
 			}
 			// What we do here is parse the post using our post parser, then strip the tags from it
 			$parser_options = array(
