@@ -9653,7 +9653,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 									<legend><strong>{$lang->profile_optional}</strong></legend>
 									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
 										<tr>
-											<td colspan="3"><span class="smalltext"><label><input type="checkbox" name="remove_avatar" value="1" /> {$lang->remove_avatar}</label></span></td>
+											<td colspan="3"><span class="smalltext"><label><input type="checkbox" class="checkbox" name="remove_avatar" value="1" /> {$lang->remove_avatar}</label></span></td>
 										</tr>
 
 										<tr>
