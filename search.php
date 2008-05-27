@@ -480,7 +480,6 @@ if($mybb->input['action'] == "results")
 			}
 			$post['profilelink'] = build_profile_link($post['username'], $post['uid']);
 			$post['subject'] = $parser->parse_badwords($post['subject']);
-			$post['subject'] = htmlspecialchars_uni($post['subject']);
 			$post['thread_subject'] = $parser->parse_badwords($post['thread_subject']);
 			$post['thread_subject'] = htmlspecialchars_uni($post['thread_subject']);
 
