@@ -129,7 +129,7 @@ else
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."upgrade_data (
 			title varchar(30) NOT NULL,
 			contents text NOT NULL,
-			PRIMARY KEY(title)
+			UNIQUE (title)
 		);");
 
 		$dh = opendir(INSTALL_ROOT."resources");
@@ -537,7 +537,7 @@ function add_upgrade_store($title, $contents)
 		"title" => $db->escape_string($title),
 		"contents" => $db->escape_string(serialize($contents))
 	);		
-	$db->replace_query("upgrade_data", $replace_array);
+	$db->replace_query("upgrade_data", $replace_array, "title");
 }
 
 function sync_settings($redo=0)

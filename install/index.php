@@ -17,6 +17,7 @@ define('MYBB_ROOT', dirname(dirname(__FILE__))."/");
 define("INSTALL_ROOT", dirname(__FILE__)."/");
 define("TIME_NOW", time());
 define("IN_MYBB", 1);
+define("IN_INSTALL", 1);
 
 require_once MYBB_ROOT.'inc/class_core.php';
 $mybb = new MyBB;
@@ -872,8 +873,8 @@ function insert_templates()
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	require_once MYBB_ROOT."admin/inc/functions_themes.php";
-	import_theme_xml($contents, array("templateset" => -2));
-	$tid = build_new_theme("Default", null, 1);
+	$theme_id = import_theme_xml($contents, array("templateset" => -2));
+	$tid = build_new_theme("Default", array("templateset" => -2), $theme_id);
 
 	$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
 
@@ -1192,7 +1193,7 @@ function install_done()
 			
 			$new_group[$key] = $db->escape_string($value[0]['value']);
 		}
-		$return_gid = $db->insert_query("usergroups", $new_group);
+		$return_gid = $db->insert_query("usergroups", $new_group);		
 		// If this group can access the admin CP and we haven't established the admin group - set it (just in case we ever change IDs)
 		if($new_group['cancp'] == 1 && !$admin_gid)
 		{

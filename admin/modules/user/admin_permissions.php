@@ -222,7 +222,7 @@ if($mybb->input['action'] == "edit")
 			if(function_exists($meta_function) && is_array($meta_function()))
 			{
 				$permission_modules[$module] = $meta_function();
-				$modules[$module['disporder']][] = $module;
+				$modules[$permission_modules[$module]['disporder']][] = $module;
 			}
 		}
 	}

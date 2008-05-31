@@ -1697,9 +1697,9 @@ function update_stats($changes=array())
 		"numthreads" => $stats['numthreads'],
 		"numposts" => $stats['numposts']
 	);
-	$db->replace_query("stats", $todays_stats);
+	$db->replace_query("stats", $todays_stats, "dateline");
 
-	$cache->update("stats", $stats);
+	$cache->update("stats", $stats, "dateline");
 }
 
 /**

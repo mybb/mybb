@@ -24,7 +24,7 @@ $tables[] = "CREATE TABLE mybb_adminoptions (
   notes text NOT NULL default '',
   permissions text NOT NULL default '',
   defaultviews text NOT NULL,
-  PRIMARY KEY (uid)
+  UNIQUE (uid)
 );";
 
 $tables[] = "CREATE TABLE mybb_adminsessions (
@@ -164,7 +164,7 @@ $tables[] = "CREATE TABLE mybb_captcha (
 $tables[] = "CREATE TABLE mybb_datacache (
   title varchar(50) NOT NULL default '',
   cache text NOT NULL default '',
-  PRIMARY KEY (title)
+  UNIQUE (title)
 );";
 
 $tables[] = "CREATE TABLE mybb_events (
@@ -562,7 +562,7 @@ $tables[] = "CREATE TABLE mybb_searchlog (
   resulttype varchar(10) NOT NULL default '',
   querycache text NOT NULL default '',
   keywords text NOT NULL default '',
-  PRIMARY KEY (sid)
+  UNIQUE (sid)
 );";
 
 $tables[] = "CREATE TABLE mybb_sessions (
@@ -578,7 +578,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   location2 int NOT NULL default '0',
   loginattempts smallint NOT NULL default '1',
   failedlogin bigint NOT NULL default '0',
-  PRIMARY KEY (sid)
+  UNIQUE (sid)
 );";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
@@ -632,7 +632,7 @@ $tables[] = "CREATE TABLE mybb_stats (
 	numusers numeric(10,0) NOT NULL default '0',
 	numthreads numeric(10,0) NOT NULL default '0',
 	numposts numeric(10,0) NOT NULL default '0',
-	PRIMARY KEY(dateline)
+	UNIQUE (dateline)
 );";
 	
 $tables[] = "CREATE TABLE mybb_tasks (
@@ -782,7 +782,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   stars smallint NOT NULL default '0',
   starimage varchar(120) NOT NULL default '',
   image varchar(120) NOT NULL default '',
-  disporder smallint NOT NULL,
+  disporder smallint NOT NULL default '0',
   isbannedgroup int NOT NULL default '0',
   canview int NOT NULL default '0',
   canviewthreads int NOT NULL default '0',

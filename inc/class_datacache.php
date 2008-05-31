@@ -162,7 +162,7 @@ class datacache
 			"title" => $db->escape_string($name),
 			"cache" => $dbcontents
 		);		
-		$db->replace_query("datacache", $replace_array);
+		$db->replace_query("datacache", $replace_array, "title");
 
 		// Do we have a cache handler we're using?
 		if(is_object($this->handler))
@@ -555,6 +555,7 @@ class datacache
 		
 		$this->update("reportedposts", $reports);
 	}
+
 
 	/**
 	 * Update mycode cache.

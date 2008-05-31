@@ -64,16 +64,6 @@ function user_action_handler($action)
 	}
 }
 
-function user_format_admin_log_data($action, $data)
-{
-	switch($action)
-	{
-		case "dashboard":
-			return "Edit profile of {$data['username']} ({$data['uid']})";
-			break;
-	}
-}
-
 function user_admin_permissions()
 {
 	global $lang, $plugins;

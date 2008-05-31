@@ -109,7 +109,7 @@
 		<cansearch><![CDATA[1]]></cansearch>
 		<canusercp><![CDATA[1]]></canusercp>
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
-		<canratemembers><![CDATA[]]></canratemembers>
+		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -118,7 +118,7 @@
 		<maxreputationsday><![CDATA[5]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
-		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<cancustomtitle><![CDATA[1]]></cancustomtitle>
 		<canwarnusers><![CDATA[0]]></canwarnusers>
 		<canreceivewarnings><![CDATA[1]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
@@ -171,7 +171,7 @@
 		<cansearch><![CDATA[1]]></cansearch>
 		<canusercp><![CDATA[1]]></canusercp>
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
-		<canratemembers><![CDATA[]]></canratemembers>
+		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -180,7 +180,7 @@
 		<maxreputationsday><![CDATA[10]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
-		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<cancustomtitle><![CDATA[1]]></cancustomtitle>
 		<canwarnusers><![CDATA[1]]></canwarnusers>
 		<canreceivewarnings><![CDATA[1]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[3]]></maxwarningsday>
@@ -233,7 +233,7 @@
 		<cansearch><![CDATA[1]]></cansearch>
 		<canusercp><![CDATA[1]]></canusercp>
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
-		<canratemembers><![CDATA[]]></canratemembers>
+		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -295,16 +295,16 @@
 		<cansearch><![CDATA[1]]></cansearch>
 		<canusercp><![CDATA[1]]></canusercp>
 		<canuploadavatars><![CDATA[0]]></canuploadavatars>
-		<canratemembers><![CDATA[]]></canratemembers>
+		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
-		<showforumteam><![CDATA[]]></showforumteam>
+		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
 		<cangivereputations><![CDATA[0]]></cangivereputations>
 		<reputationpower><![CDATA[0]]></reputationpower>
 		<maxreputationsday><![CDATA[0]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
-		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<cancustomtitle><![CDATA[0]]></cancustomtitle>
 		<canwarnusers><![CDATA[0]]></canwarnusers>
 		<canreceivewarnings><![CDATA[0]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
@@ -357,7 +357,7 @@
 		<cansearch><![CDATA[1]]></cansearch>
 		<canusercp><![CDATA[1]]></canusercp>
 		<canuploadavatars><![CDATA[1]]></canuploadavatars>
-		<canratemembers><![CDATA[]]></canratemembers>
+		<canratemembers><![CDATA[1]]></canratemembers>
 		<canchangename><![CDATA[1]]></canchangename>
 		<showforumteam><![CDATA[1]]></showforumteam>
 		<usereputationsystem><![CDATA[1]]></usereputationsystem>
@@ -366,7 +366,7 @@
 		<maxreputationsday><![CDATA[10]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
-		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<cancustomtitle><![CDATA[1]]></cancustomtitle>
 		<canwarnusers><![CDATA[1]]></canwarnusers>
 		<canreceivewarnings><![CDATA[1]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[3]]></maxwarningsday>
@@ -419,7 +419,7 @@
 		<cansearch><![CDATA[0]]></cansearch>
 		<canusercp><![CDATA[0]]></canusercp>
 		<canuploadavatars><![CDATA[0]]></canuploadavatars>
-		<canratemembers><![CDATA[]]></canratemembers>
+		<canratemembers><![CDATA[0]]></canratemembers>
 		<canchangename><![CDATA[0]]></canchangename>
 		<showforumteam><![CDATA[0]]></showforumteam>
 		<usereputationsystem><![CDATA[0]]></usereputationsystem>
@@ -428,7 +428,7 @@
 		<maxreputationsday><![CDATA[0]]></maxreputationsday>
 		<candisplaygroup><![CDATA[1]]></candisplaygroup>
 		<attachquota><![CDATA[0]]></attachquota>
-		<cancustomtitle><![CDATA[]]></cancustomtitle>
+		<cancustomtitle><![CDATA[0]]></cancustomtitle>
 		<canwarnusers><![CDATA[0]]></canwarnusers>
 		<canreceivewarnings><![CDATA[0]]></canreceivewarnings>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>

@@ -36,7 +36,7 @@ if(!$mybb->input['action'])
 			"uid" => $mybb->user['uid']
 		);
 
-		$db->replace_query("adminoptions", $sqlarray);
+		$db->replace_query("adminoptions", $sqlarray, "uid");
 		
 		$plugins->run_hooks("admin_home_preferences_start_commit");
 	

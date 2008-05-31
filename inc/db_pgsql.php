@@ -292,20 +292,22 @@ class DB_PgSQL
 
 		if($write_query && $this->write_link)
 		{
+			while(pg_connection_busy($this->write_link));
 			$this->current_link = &$this->write_link;
-			pg_send_query($this->write_link, $string);
-			$query = pg_get_result($this->write_link);					
+			pg_send_query($this->current_link, $string);
+			$query = pg_get_result($this->current_link);		
 		}
 		else
 		{
+			while(pg_connection_busy($this->read_link));
 			$this->current_link = &$this->read_link;
-			pg_send_query($this->read_link, $string);
-			$query = pg_get_result($this->read_link);
+			pg_send_query($this->current_link, $string);
+			$query = pg_get_result($this->current_link);
 		}
 		
-		if(pg_result_error($query) && !$hide_errors)
+		if($result === false || (pg_result_error($query) && !$hide_errors))
 		{
-			 $this->error($string);
+			 $this->error($string, $query);
 			 exit;
 		}
 		
@@ -468,10 +470,16 @@ class DB_PgSQL
 		$this->last_query = str_replace(array("\r", "\n", "\t"), '', $this->last_query);
 		preg_match('#INSERT INTO ([a-zA-Z0-9_\-]+)#i', $this->last_query, $matches);
 				
-		$table = $matches[1];		
+		$table = $matches[1];
 		
 		$query = $this->query("SELECT column_name FROM information_schema.constraint_column_usage WHERE table_name = '{$table}' and constraint_name = '{$table}_pkey' LIMIT 1");
 		$field = $this->fetch_field($query, 'column_name');
+		
+		// Do we not have a primary field?
+		if(!$field)
+		{
+			return;
+		}
 		
 		$id = $this->query("SELECT currval('{$table}_{$field}_seq') AS last_value");
 		return $this->fetch_field($id, 'last_value');
@@ -495,9 +503,14 @@ class DB_PgSQL
 	 *
 	 * @return int The error number of the current error.
 	 */
-	function error_number()
+	function error_number($query="")
 	{
-		return 0;
+		if(!$query || !function_exists("pg_result_error_field"))
+		{
+			return 0;
+		}
+		
+		return pg_result_error_field($query, PGSQL_DIAG_SQLSTATE);
 	}
 
 	/**
@@ -505,8 +518,13 @@ class DB_PgSQL
 	 *
 	 * @return string The explanation for the current error.
 	 */
-	function error_string()
+	function error_string($query="")
 	{
+		if($query)
+		{
+			return pg_result_error($query);
+		}
+		
 		if($this->current_link)
 		{
 			return pg_last_error($this->current_link);
@@ -522,7 +540,7 @@ class DB_PgSQL
 	 *
 	 * @param string The string to present as an error.
 	 */
-	function error($string="")
+	function error($string="", $query="")
 	{
 		if($this->error_reporting)
 		{
@@ -537,8 +555,8 @@ class DB_PgSQL
 				}
 				
 				$error = array(
-					"error_no" => $this->error_number(),
-					"error" => $this->error_string(),
+					"error_no" => $this->error_number($query),
+					"error" => $this->error_string($query),
 					"query" => $string
 				);
 				$error_handler->error(MYBB_SQL, $error);
@@ -817,10 +835,6 @@ class DB_PgSQL
 		{
 			$query .= " WHERE $where";
 		}
-		if(!empty($limit))
-		{
-			$query .= " LIMIT $limit";
-		}
 		return $this->write_query("
 			UPDATE {$this->table_prefix}$table 
 			SET $query
@@ -838,6 +852,7 @@ class DB_PgSQL
 	 */
 	function build_update_query($table, $array, $where="", $limit="")
 	{
+
 		if(!is_array($array))
 		{
 			return false;
@@ -852,10 +867,6 @@ class DB_PgSQL
 		if(!empty($where))
 		{
 			$query .= " WHERE $where";
-		}
-		if(!empty($limit))
-		{
-			$query .= " LIMIT $limit";
 		}
 		return $this->query("
 			UPDATE {$this->table_prefix}$table 

@@ -133,6 +133,14 @@ function import_theme_xml($xml, $options=array())
 		$templates = $theme['templates']['template'];
 		foreach($templates as $template)
 		{
+			// PostgreSQL causes apache to stop sending content sometimes and 
+			// causes the page to stop loading during many queries all at one time
+			if($db->engine == "pgsql")
+			{
+				echo " ";
+				flush();
+			}
+			
 			$new_template = array(
 				"title" => $template['attributes']['name'],
 				"template" => $db->escape_string($template['value']),
@@ -380,54 +388,60 @@ function build_new_theme($name, $properties=null, $parent=1)
 		if(count($properties) == 0 || !is_array($properties))
 		{
 			$parent_properties = unserialize($parent_theme['properties']);
-			foreach($parent_properties as $property => $value)
+			if(!empty($parent_properties))
 			{
-				if($property == "inherited")
+				foreach($parent_properties as $property => $value)
 				{
-					continue;
+					if($property == "inherited")
+					{
+						continue;
+					}
+					
+					$properties[$property] = $value;
+					if($parent_properties['inherited'][$property])
+					{
+						$properties['inherited'][$property] = $parent_properties['inherited'][$property];
+					}
+					else
+					{
+						$properties['inherited'][$property] = $parent;
+					}
 				}
-				
-				$properties[$property] = $value;
-				if($parent_properties['inherited'][$property])
-				{
-					$properties['inherited'][$property] = $parent_properties['inherited'][$property];
-				}
-				else
-				{
-					$properties['inherited'][$property] = $parent;
-				}
+				$inherited_properties = true;
 			}
-			$inherited_properties = true;
 		}
 
 		if(count($stylesheets) == 0)
 		{
 			$parent_stylesheets = unserialize($parent_theme['stylesheets']);
-			foreach($parent_stylesheets as $location => $value)
+			if(!empty($parent_stylesheets))
 			{
-				if($location == "inherited")
+				foreach($parent_stylesheets as $location => $value)
 				{
-					continue;
-				}
-				
-				foreach($value as $action => $sheets)
-				{
-					foreach($sheets as $stylesheet)
+					if($location == "inherited")
 					{
-						$stylesheets[$location][$action][] = $stylesheet;
-						$inherited_check = "{$location}_{$action}";
-						if($parent_stylesheets['inherited'][$inherited_check][$stylesheet])
+						continue;
+					}
+					
+					foreach($value as $action => $sheets)
+					{
+						foreach($sheets as $stylesheet)
 						{
-							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent_stylesheets['inherited'][$inherited_check][$stylesheet];
-						}
-						else
-						{
-							$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent;
+							$stylesheets[$location][$action][] = $stylesheet;
+							$inherited_check = "{$location}_{$action}";
+							if($parent_stylesheets['inherited'][$inherited_check][$stylesheet])
+							{
+								$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent_stylesheets['inherited'][$inherited_check][$stylesheet];
+							}
+							else
+							{
+								$stylesheets['inherited'][$inherited_check][$stylesheet] = $parent;
+							}
 						}
 					}
 				}
+				$inherited_stylesheets = true;
 			}
-			$inherited_stylesheets = true;
 		}
 	}
 

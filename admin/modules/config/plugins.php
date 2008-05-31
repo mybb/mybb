@@ -90,11 +90,17 @@ if($mybb->input['action'] == "check")
 	$table->construct_header($lang->latest_version, array("class" => "align_center", 'width' => 125));
 	$table->construct_header($lang->controls, array("class" => "align_center", 'width' => 125));
 	
+	if(!is_array($tree['plugins']['plugin']))
+	{
+		flash_message($lang->success_plugins_up_to_date, 'success');
+		admin_redirect("index.php?module=config/plugins");
+	}
+	
 	if(array_key_exists("tag", $tree['plugins']['plugin']))
 	{
 		$only_plugin = $tree['plugins']['plugin'];
-	 	unset($tree['plugins']['plugin']);
-	 	$tree['plugins']['plugin'][0] = $only_plugin;
+		unset($tree['plugins']['plugin']);
+		$tree['plugins']['plugin'][0] = $only_plugin;
 	}
 
 	foreach($tree['plugins']['plugin'] as $plugin)
