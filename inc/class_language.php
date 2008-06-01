@@ -124,8 +124,6 @@ class MyLanguage
 	 */
 	function load($section, $isdatahandler=false, $supress_error=false)
 	{
-		global $config;
-		
 		// Assign language variables.
 		// Datahandlers are never in admin lang directory.
 		if($isdatahandler === true)

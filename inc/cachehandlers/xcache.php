@@ -49,11 +49,11 @@ class xcacheCacheHandler
 	
 	function fetch($name, $hard_refresh=false)
 	{
-		if(!xcache_isset($name))
+		if(!xcache_isset($this->unique_id."_".$name))
 		{
 			return false;
 		}
-		return @unserialize(xcache_get($this->unique_id."_".$name));
+		return xcache_get($this->unique_id."_".$name);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ class xcacheCacheHandler
 	 */
 	function put($name, $contents)
 	{
-		return xcache_set($this->unique_id."_".$name, serialize($data));
+		return xcache_set($this->unique_id."_".$name, $contents);
 	}
 	
 	/**
