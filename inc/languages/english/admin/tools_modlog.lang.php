@@ -42,6 +42,7 @@ $l['desc'] = "Descending";
 
 $l['in'] = "in";
 $l['order'] = "order";
+$l['days'] = "days";
 
 $l['prune_moderator_logs'] = "Prune Moderator Logs";
 $l['date_range'] = "Date range:";

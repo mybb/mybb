@@ -308,7 +308,7 @@ class postParser
 		{
 			$this->cache_mycode();
 		}
-
+		
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message);
 
@@ -512,7 +512,7 @@ class postParser
 			$size = 50;
 		}
 
-		$text = "<span style=\"font-size: {$size}pt\">".str_replace("\\'", "'", $text)."</span>";
+		$text = "<span style=\"font-size: {$size}pt\">".stripslashes($text)."</span>";
 
 		return $text;
 	}
@@ -549,7 +549,7 @@ class postParser
 			);
 		}
 
-		while(preg_match($pattern[0], $message) or preg_match($pattern[1], $message))
+		while(preg_match($pattern[0], $message) || preg_match($pattern[1], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
 		}
@@ -589,8 +589,8 @@ class postParser
 
 		if(!$message) return '';
 
-		$message = str_replace("\\'", "'", $message);
-		$username = str_replace("\\'", "'", $username)."'";
+		$message = stripslashes($message);
+		$username = stripslashes($username)."'";
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
@@ -800,9 +800,6 @@ class postParser
 	*/
 	function mycode_parse_url($url, $name="")
 	{
-		$name = str_replace("\\'", "'", $name);
-		$url = str_replace("\\'", "'", $url);
-
 		if(!preg_match("#^[a-z0-9]+://#i", $url))
 		{
 			$url = "http://".$url;
@@ -820,6 +817,11 @@ class postParser
 		{
 			$name = $url;
 		}
+		
+		$name = stripslashes($name);
+		$url = stripslashes($url);
+		$fullurl = stripslashes($fullurl);
+		
 		if($name == $url && $this->options['shorten_urls'] != 0)
 		{
 			if(my_strlen($url) > 55)

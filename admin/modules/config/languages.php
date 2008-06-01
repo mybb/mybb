@@ -152,7 +152,7 @@ if($mybb->input['action'] == "edit_properties")
 	if(!is_writable($file))
 	{
 		$no_write = 1;
-		$page->output_alert($lang->note_cannot_write);
+		$page->output_alert($lang->alert_note_cannot_write);
 	}
 
 	$form_container->end();
@@ -388,7 +388,7 @@ if($mybb->input['action'] == "edit")
 			$table->construct_row();
 		}
 		
-		if($table->num_rows()  == 0)
+		if($table->num_rows() == 0)
 		{
 			$table->construct_cell($lang->no_language_files_front_end, array('colspan' => 3));
 			$table->construct_row();

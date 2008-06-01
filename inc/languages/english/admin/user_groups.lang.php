@@ -145,6 +145,7 @@ $l['can_view_member_list'] = "Can view member list";
 $l['can_email_users'] = "Can send threads to friends and email users";
 $l['max_emails_per_day'] = "Maximum Emails Per Day:";
 $l['max_emails_per_day_desc'] = "The maximum number of emails users can send using the 'Email User' and 'Send Thread to Friend' features.";
+$l['outstanding_join_request'] = "outstanding join requests";
 
 $l['no_join_requests'] = "There are no outstanding join requests for this user group.";
 $l['no_assigned_leaders'] = "You haven't assigned any users as leaders of this group yet. To create a leader for this group, fill in the form below.";
