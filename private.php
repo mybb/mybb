@@ -1558,7 +1558,7 @@ if(!$mybb->input['action'])
 				$icon = '';
 			}
 			
-			if(!$message['subject'])
+			if(!trim($message['subject']))
 			{
 				$message['subject'] = $lang->pm_no_subject;
 			}

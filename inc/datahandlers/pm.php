@@ -70,7 +70,7 @@ class PMDataHandler extends DataHandler
 			return false;
 		}
 		// No subject, apply the default [no subject]
-		if(!$subject)
+		if(!trim($subject))
 		{
 			$this->set_error("missing_subject");
 			return false;
