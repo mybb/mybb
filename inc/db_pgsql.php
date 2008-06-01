@@ -353,31 +353,14 @@ class DB_PgSQL
 				"<td colspan=\"8\" style=\"background-color: #fefefe;\"><span style=\"font-family: Courier; font-size: 14px;\">".$string."</span></td>\n".
 				"</tr>\n".
 				"<tr style=\"background-color: #efefef;\">\n".
-				"<td><strong>table</strong></td>\n".
-				"<td><strong>type</strong></td>\n".
-				"<td><strong>possible_keys</strong></td>\n".
-				"<td><strong>key</strong></td>\n".
-				"<td><strong>key_len</strong></td>\n".
-				"<td><strong>ref</strong></td>\n".
-				"<td><strong>rows</strong></td>\n".
-				"<td><strong>Extra</strong></td>\n".
+				"<td><strong>Info</strong></td>\n".
 				"</tr>\n";
 
-			while($table = pg_fetch_array($query))
+			while($table = pg_fetch_assoc($query))
 			{
-				echo "<pre>";
-				print_r($table);
-				echo "</pre>";
 				$this->explain .=
 					"<tr bgcolor=\"#ffffff\">\n".
-					"<td>".$table['table']."</td>\n".
-					"<td>".$table['type']."</td>\n".
-					"<td>".$table['possible_keys']."</td>\n".
-					"<td>".$table['key']."</td>\n".
-					"<td>".$table['key_len']."</td>\n".
-					"<td>".$table['ref']."</td>\n".
-					"<td>".$table['rows']."</td>\n".
-					"<td>".$table['Extra']."</td>\n".
+					"<td>".$table['QUERY PLAN']."</td>\n".
 					"</tr>\n";
 			}
 			$this->explain .=
