@@ -2,7 +2,7 @@
 /**
  * MyBB 1.4 English Language Pack
  * Copyright © 2008 MyBB Group, All Rights Reserved
- * 
+ *
  * $Id$
  */
 
@@ -195,6 +195,8 @@ $l['filter_reason'] = "Reason contains:";
 $l['view'] = "View";
 $l['no_warning_logs'] = "There are no warning logs to view.";
 $l['revoked'] = "Revoked ";
+$l['signature']="Signature";
+
 
 $l['manage_announcement'] = "Manage Announcements";
 $l['forum_announcements'] = "Forum Announcements";

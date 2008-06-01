@@ -46,7 +46,7 @@ a:hover, a:active {
 #content {
 	/* FIX: Make internet explorer wrap correctly */
 	width: auto !important;
-	
+
 }
 
 .menu ul {
@@ -1057,7 +1057,7 @@ ul.thread_tools li.subscription_remove {
 <script type="text/javascript">
 <!--
 	lang.no_new_posts = "{$lang->no_new_posts}";
-	lang.click_mark_read = "{$lang->click_mark_read}";	
+	lang.click_mark_read = "{$lang->click_mark_read}";
 // -->
 </script>
 </head>
@@ -1069,10 +1069,10 @@ ul.thread_tools li.subscription_remove {
 <dl class="forum_legend smalltext">
 	<dt><img src="{$theme['imgdir']}/on.gif" alt="{$lang->new_posts}" title="{$lang->new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
 	<dd>{$lang->new_posts}</dd>
-	
+
 	<dt><img src="{$theme['imgdir']}/off.gif" alt="{$lang->no_new_posts}" title="{$lang->no_new_posts}" style="vertical-align: middle; padding-bottom: 4px;" /></dt>
 	<dd>{$lang->no_new_posts}</dd>
-	
+
 	<dt><img src="{$theme['imgdir']}/offlock.gif" alt="{$lang->forum_locked}" title="{$lang->forum_locked}" style="vertical-align: middle;" /></dt>
 	<dd>{$lang->forum_locked}</dd>
 </dl>
@@ -2369,8 +2369,8 @@ ul.thread_tools li.subscription_remove {
 </body>
 </html>]]></template>
 		<template name="forumdisplay_thread_rating" version="1400"><![CDATA[<td class="{$bgcolor}" id="rating_table_{$thread['tid']}">
-		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}"> 
-			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li> 
+		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
+			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
 		</ul>
 		<script type="text/javascript">
 		<!--
@@ -4485,7 +4485,7 @@ body {
 				{$post['posturl']}
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td class="trow1 {$unapproved_shade}">
 				<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
@@ -4508,23 +4508,23 @@ body {
 				</table>
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td class="trow2 post_content {$unapproved_shade}">
 				<span class="smalltext"><strong>{$post['icon']}{$post['subject']} {$post['subject_extra']}</strong></span>
-				
+
 				<div class="post_body" id="pid_{$post['pid']}">
 					{$post['message']}
 				</div>
 				{$post['attachments']}
 				{$post['signature']}
-				
+
 				<div class="post_meta" id="post_meta_{$post['pid']}">
 				{$post['iplogged']}
 				</div>
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td class="trow1 post_buttons {$unapproved_shade}">
 				<div class="author_buttons float_left">
@@ -5410,7 +5410,7 @@ body {
 			<td align="center" class="trow1"><span class="smalltext">{$lang->online_count}</span></td>
 		</tr>
 	</table>
-	{$multipage}	
+	{$multipage}
 	{$footer}
 </body>
 </html>]]></template>
@@ -7787,8 +7787,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="tfoot" style="text-align: right">
 		<span class="smalltext">
 			{$logoutlink}
-			<a href="misc.php?action=markread">{$lang->markread}</a> | 
-			<a href="showteam.php">{$lang->forumteam}</a> | 
+			<a href="misc.php?action=markread">{$lang->markread}</a> |
+			<a href="showteam.php">{$lang->forumteam}</a> |
 			<a href="stats.php">{$lang->forumstats}</a>
 		</span>
 	</td>
@@ -7857,7 +7857,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						<br /><br />
 						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
 						{$calendar_jump}
-						{$gobutton}							
+						{$gobutton}
 						</td>
 					</tr>
 				</table>
@@ -8268,7 +8268,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 							<br /><br />
 							<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
 							{$calendar_jump}
-							{$gobutton}							
+							{$gobutton}
 							</td>
 						</tr>
 					</table>
@@ -8729,7 +8729,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						<br /><br />
 						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
 						{$calendar_jump}
-						{$gobutton}							
+						{$gobutton}
 						</td>
 					</tr>
 				</table>
@@ -8793,7 +8793,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						<br /><br />
 						<span class="smalltext"><strong>{$lang->jump_to_calendar}</strong></span>
 						{$calendar_jump}
-						{$gobutton}							
+						{$gobutton}
 						</td>
 					</tr>
 				</table>
@@ -9164,7 +9164,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<td class="trow2" colspan="2">{$notes}</td>
 		</tr>
 	</table>
-	
+
 	{$revoke}
 
 {$footer}
@@ -9398,7 +9398,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<dl>
 		<dt><label for="username">{$lang->username}</label></dt>
 		<dd><input type="text" class="textbox" id="username" /></dd>
-	
+
 		<dt><label for="email">{$lang->email}</label></dt>
 		<dd><input type="text" class="textbox" id="email" /></dd>
 	</dl>
@@ -9415,7 +9415,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 
 		<dt><label for="parent_email">{$lang->email}</label></dt>
 		<dd><input type="text" class="textbox" id="parent_email" /></dd>
-		
+
 		<dd class="single">{$lang->coppa_parent_agreement}</dd>
 
 		<dt><label for="signature">{$lang->signature}</label></dt>
@@ -9454,8 +9454,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			<td class="thead" colspan="3">
 				<div class="float_right">
-					<strong>{$lang->threads}</strong> | 
-					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> | 
+					<strong>{$lang->threads}</strong> |
+					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> |
 					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
 				</div>
 				<strong>{$lang->threads_awaiting_moderation}</strong>
@@ -9518,8 +9518,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			<td class="thead" colspan="3">
 				<div class="float_right">
-					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> | 
-					<strong>{$lang->posts}</strong> | 
+					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> |
+					<strong>{$lang->posts}</strong> |
 					<a href="modcp.php?action=modqueue&amp;type=attachments">{$lang->attachments}</a>
 				</div>
 				<strong>{$lang->posts_awaiting_moderation}</strong>
@@ -9582,8 +9582,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<tr>
 			<td class="thead" colspan="6">
 				<div class="float_right">
-					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> | 
-					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> | 
+					<a href="modcp.php?action=modqueue&amp;type=threads">{$lang->threads}</a> |
+					<a href="modcp.php?action=modqueue&amp;type=posts">{$lang->posts}</a> |
 					<strong>{$lang->attachments}</strong>
 				</div>
 				<strong>{$lang->attachments_awaiting_moderation}</strong>
@@ -9760,6 +9760,22 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								</fieldset>
 							</td>
 						</tr>
+<tr>
+							<td colspan="2" class="trow1" valign="top">
+								<fieldset class="trow1">
+									<legend><strong>{$lang->signature}</strong></legend>
+									<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+<tr>
+<td class="trow1" width="80%">
+<textarea rows="15" cols="70" id="signature" name="signature">{$user['signature']}</textarea>
+{$codebuttons}
+</td>
+</tr>
+									</table>
+								</fieldset>
+												</td>
+<td width="50%" class="trow1" valign="top"></td>
+			</tr>
 					</table>
 					<br />
 					<div align="center">
@@ -10184,7 +10200,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								<select name="starttime_month">
 								{$startdatemonth}
 								</select>
-								&nbsp; 
+								&nbsp;
 								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
 								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" />
 							</td>
@@ -10196,11 +10212,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								<select name="endtime_day">
 								{$enddateday}
 								</select>
-								&nbsp; 
+								&nbsp;
 								<select name="endtime_month">
 								{$enddatemonth}
 								</select>
-								&nbsp; 
+								&nbsp;
 								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
 								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" />
 								<br /><input type="radio" name="endtime_type" value="2"{$end_type_sel['infinite']} /> {$lang->never}
@@ -10270,7 +10286,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								<select name="starttime_month">
 								{$startdatemonth}
 								</select>
-								&nbsp; 
+								&nbsp;
 								<input type="text" name="starttime_year" value="{$startdateyear}" size="4" maxlength="4"/>
 								 - {$lang->time} <input type="text" name="starttime_time" value="{$starttime_time}" size="10" />
 							</td>
@@ -10282,11 +10298,11 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 								<select name="endtime_day">
 								{$enddateday}
 								</select>
-								&nbsp; 
+								&nbsp;
 								<select name="endtime_month">
 								{$enddatemonth}
 								</select>
-								&nbsp; 
+								&nbsp;
 								<input type="text" name="endtime_year" value="{$enddateyear}" size="4" maxlength="4"/>
 								 - {$lang->time} <input type="text" name="endtime_time" value="{$endtime_time}" size="10" />
 								<br /><input type="radio" name="endtime_type" value="2"{$end_type_sel['infinite']} /> {$lang->never}
