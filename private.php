@@ -1558,6 +1558,11 @@ if(!$mybb->input['action'])
 				$icon = '';
 			}
 			
+			if(!$message['subject'])
+			{
+				$message['subject'] = $lang->pm_no_subject;
+			}
+
 			$message['subject'] = htmlspecialchars_uni($parser->parse_badwords($message['subject']));
 			if($message['folder'] != "3")
 			{
