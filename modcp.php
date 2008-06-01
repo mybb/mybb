@@ -1728,7 +1728,7 @@ if($mybb->input['action'] == "editprofile")
 	$lang->edit_profile = $lang->sprintf($lang->edit_profile, $user['username']);
 	$profile_link = build_profile_link(format_name($user['username'], $user['usergroup'], $user['displaygroup']), $user['uid']);
 
-$codebuttons = build_mycode_inserter("signature");
+	$codebuttons = build_mycode_inserter("signature");
 	eval("\$edituser = \"".$templates->get("modcp_editprofile")."\";");
 	output_page($edituser);
 }

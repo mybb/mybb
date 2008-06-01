@@ -195,7 +195,7 @@ $l['filter_reason'] = "Reason contains:";
 $l['view'] = "View";
 $l['no_warning_logs'] = "There are no warning logs to view.";
 $l['revoked'] = "Revoked ";
-$l['signature']="Signature";
+$l['signature'] = "Signature";
 
 
 $l['manage_announcement'] = "Manage Announcements";
