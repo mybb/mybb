@@ -463,7 +463,7 @@ var MyBB = {
 			input.setAttribute("class", "button");
 			form.appendChild(input);
 			
-			form.innerHTML += lang.register_url;
+			form.innerHTML += lang.lost_password+lang.register_url;
 			
 			$("quick_login").innerHTML = "";
 			$("quick_login").appendChild(form);

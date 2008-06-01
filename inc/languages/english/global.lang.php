@@ -67,6 +67,7 @@ $l['username'] = "Username:";
 $l['password'] = "Password:";
 $l['login_username'] = "Username";
 $l['login_password'] = "Password";
+$l['lost_password'] = "Lost Password?";
 
 $l['month_1'] = "January";
 $l['month_2'] = "February";

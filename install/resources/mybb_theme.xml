@@ -3205,6 +3205,7 @@ ul.thread_tools li.subscription_remove {
 	lang.username = "{$lang->login_username}";
 	lang.password = "{$lang->login_password}";
 	lang.login = "{$lang->login}";
+	lang.lost_password = " &mdash; <a href=\"{$mybb->settings['bburl']}/member.php?action=lostpw\">{$lang->lost_password}<\/a>";
 	lang.register_url = " &mdash; <a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->welcome_register}<\/a>";
 // -->
 </script>

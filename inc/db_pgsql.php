@@ -305,7 +305,7 @@ class DB_PgSQL
 			$query = pg_get_result($this->current_link);
 		}
 		
-		if($result === false || (pg_result_error($query) && !$hide_errors))
+		if((pg_result_error($query) && !$hide_errors))
 		{
 			 $this->error($string, $query);
 			 exit;
@@ -987,8 +987,8 @@ class DB_PgSQL
 			ORDER BY a.attnum
 		");
 
-		$table .= "CREATE TABLE {$this->table_prefix}{$table} (\n";
 		$lines = array();
+		$lines[] = "CREATE TABLE {$this->table_prefix}{$table} (\n";
 		
 		while($row = $this->fetch_array($query))
 		{
@@ -1047,10 +1047,10 @@ class DB_PgSQL
 		$query = $this->write_query("
 			SELECT ic.relname as index_name, bc.relname as tab_name, ta.attname as column_name, i.indisunique as unique_key, i.indisprimary as primary_key
 			FROM pg_class bc
-			LEFT JOIN pg_class ic ON (ic.oid = i.indexrelid)
 			LEFT JOIN pg_index i ON (bc.oid = i.indrelid)
-			LEFT JOIN pg_attribute ta ON (ta.attrelid = bc.oid AND ta.attrelid = i.indrelid AND ta.attnum = i.indkey[ia.attnum-1])
+			LEFT JOIN pg_class ic ON (ic.oid = i.indexrelid)
 			LEFT JOIN pg_attribute ia ON (ia.attrelid = i.indexrelid)
+			LEFT JOIN pg_attribute ta ON (ta.attrelid = bc.oid AND ta.attrelid = i.indrelid AND ta.attnum = i.indkey[ia.attnum-1])
 			WHERE bc.relname = '{$this->table_prefix}{$table}'
 			ORDER BY index_name, tab_name, column_name
 		");
