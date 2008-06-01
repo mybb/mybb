@@ -365,6 +365,9 @@ class DB_PgSQL
 
 			while($table = pg_fetch_array($query))
 			{
+				echo "<pre>";
+				print_r($table);
+				echo "</pre>";
 				$this->explain .=
 					"<tr bgcolor=\"#ffffff\">\n".
 					"<td>".$table['table']."</td>\n".
@@ -852,11 +855,11 @@ class DB_PgSQL
 	 */
 	function build_update_query($table, $array, $where="", $limit="")
 	{
-
 		if(!is_array($array))
 		{
 			return false;
 		}
+		
 		$comma = "";
 		$query = "";
 		foreach($array as $field => $value)
@@ -868,10 +871,7 @@ class DB_PgSQL
 		{
 			$query .= " WHERE $where";
 		}
-		return $this->query("
-			UPDATE {$this->table_prefix}$table 
-			SET $query
-		");
+		return "UPDATE {$this->table_prefix}{$table} SET {$query}";
 	}
 
 	/**

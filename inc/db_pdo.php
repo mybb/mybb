@@ -1,4 +1,13 @@
 <?php
+/**
+ * MyBB 1.4
+ * Copyright © 2008 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/about/license
+ *
+ * $Id$
+ */
 
 class dbpdoEngine {
 
