@@ -874,7 +874,7 @@ function insert_templates()
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	$theme_id = import_theme_xml($contents, array("templateset" => -2));
-	$tid = build_new_theme("Default", array("templateset" => -2), $theme_id);
+	$tid = build_new_theme("Default", null, $theme_id);
 
 	$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
 
