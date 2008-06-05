@@ -15,6 +15,7 @@ $l['select_acp_theme'] = "Please select a theme to use in the Admin Control Pane
 $l['notes_not_shared'] = "These notes are not shared with other Administrators.";
 $l['save_notes_and_prefs'] = "Save Personal Notes & Preferences";
 $l['personal_notes'] = "Personal Notes";
-$l['preferences_updated'] = "The preferences have been successfully updated.";
+
+$l['success_preferences_updated'] = "The preferences have been successfully updated.";
 
 ?>
