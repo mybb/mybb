@@ -62,7 +62,8 @@ class DefaultPage
 	 */
 	function output_header($title="")
 	{
-		global $mybb, $admin_session, $lang;
+		global $mybb, $admin_session, $lang, $plugins;
+		$plugins->run_hooks("admin_page_output_header");
 		
 		if(!$title)
 		{
@@ -148,7 +149,8 @@ var imagepath = '../images';
 	 */
 	function output_footer($quit=true)
 	{
-		global $mybb, $maintimer, $db, $lang;
+		global $mybb, $maintimer, $db, $lang, $plugins;
+		$plugins->run_hooks("admin_page_output_footer");
 		
 		$totaltime = $maintimer->stop();
 		$querycount = $db->query_count;
@@ -488,6 +490,8 @@ EOF;
 	 */
 	function output_tab_control($tabs=array())
 	{
+		global $plugins;
+		$plugins->run_hooks_by_ref("admin_page_output_tab_control_start", $tabs);
 		echo "<script type=\"text/javascript\">\n";
 		echo "Event.observe(window,'load',function(){\n";
 		echo "	\$\$('.tabs').each(function(tabs)\n";
@@ -514,6 +518,7 @@ EOF;
 			echo "<li class=\"{$class}\"><a href=\"#tab_{$anchor}\">{$title}</a></li>\n";
 		}
 		echo "</ul>\n";
+		$plugins->run_hooks("admin_page_output_tab_control_end", $tabs);
 	}
 
 	/**
@@ -524,6 +529,8 @@ EOF;
 	 */
 	function output_nav_tabs($tabs=array(), $active='')
 	{
+		global $plugins;
+		$plugins->run_hooks_by_ref("admin_page_output_nav_tabs_start", $tabs);
 		echo "<div class=\"nav_tabs\">";
 		echo "\t<ul>\n";
 		foreach($tabs as $id => $tab)
@@ -550,6 +557,7 @@ EOF;
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}
 		echo "</div>";
+		$plugins->run_hooks("admin_page_output_nav_tabs_end", array('tabs' => $tabs, 'active' => $active));
 	}
 
 	/**

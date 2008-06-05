@@ -862,7 +862,8 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 	}
 	
-	$plugins->run_hooks_by_ref("build_friendly_wol_location_end", $location_name);
+	$plugin_array = array('user_activity' => &$user_activity, 'location_name' => &$location_name);
+	$plugins->run_hooks_by_ref("build_friendly_wol_location_end", $plugin_array);
 	
 	if($user_activity['nopermission'] == 1)
 	{

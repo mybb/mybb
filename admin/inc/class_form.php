@@ -666,6 +666,8 @@ class DefaultForm
 	 */
 	function output_submit_wrapper($buttons)
 	{
+		global $plugins;
+		$plugins->run_hooks_by_ref("admin_form_output_submit_wrapper", $buttons);
 		$return = "<div class=\"form_button_wrapper\">\n";
 		foreach($buttons as $button)
 		{
@@ -687,6 +689,8 @@ class DefaultForm
 	 */
 	function end()
 	{
+		global $plugins;
+		$plugins->run_hooks_by_ref("admin_form_end", $this);
 		if($this->_return == false)
 		{
 			echo "</form>";
@@ -747,6 +751,17 @@ class DefaultFormContainer
 	 */
 	function output_row($title, $description="", $content="", $label_for="", $options=array(), $row_options=array())
 	{
+		global $plugins;
+		$pluginargs = array(
+			'title' => &$title,
+			'description' => &$description,
+			'content' => &$content,
+			'label_for' => &$label_for,
+			'options' => &$options,
+			'row_options' => &$row_options,
+			'this' => &$this
+		);
+		$plugins->run_hooks_by_ref("admin_formcontainer_output_row", $pluginargs);
 		if($label_for != '')
 		{
 			$for = " for=\"{$label_for}\"";
@@ -805,6 +820,8 @@ class DefaultFormContainer
 	 */
 	function end($return=false)
 	{
+		global $plugins;
+		$plugins->run_hooks("admin_formcontainer_end", $return);
 		if($return == true)
 		{
 			return $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", true);

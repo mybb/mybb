@@ -491,10 +491,10 @@ if($mybb->input['action'] == "delete_leader")
 
 	if($mybb->request_method == "post")
 	{		
+		$plugins->run_hooks("admin_user_groups_delete_leader_commit");
+		
 		// Delete the leader
 		$db->delete_query("groupleaders", "lid='{$leader['lid']}'");
-		
-		$plugins->run_hooks("admin_user_groups_delete_leader_commit");
 
 		// Log admin action
 		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
@@ -535,9 +535,9 @@ if($mybb->input['action'] == "edit_leader")
 			"canmanagemembers" => intval($mybb->input['canmanagemembers']),
 			"canmanagerequests" => intval($mybb->input['canmanagerequests'])
 		);
-		$db->update_query("groupleaders", $updated_leader, "lid={$leader['lid']}");
 		
 		$plugins->run_hooks("admin_user_groups_edit_leader_commit");
+		$db->update_query("groupleaders", $updated_leader, "lid={$leader['lid']}");
 
 		// Log admin action
 		log_admin_action($leader['lid'], $leader['username'], $group['gid'], $group['title']);
@@ -629,6 +629,8 @@ if($mybb->input['action'] == "add")
 				}
 			}
 			
+			$plugins->run_hooks("admin_user_groups_add_commit");
+			
 			$gid = $db->insert_query("usergroups", $new_usergroup);
 			
 			// Are we copying permissions? If so, copy all forum permissions too
@@ -646,8 +648,6 @@ if($mybb->input['action'] == "add")
 			// Update the caches
 			$cache->update_usergroups();
 			$cache->update_forumpermissions();
-			
-			$plugins->run_hooks("admin_user_groups_add_commit");
 
 			// Log admin action
 			log_admin_action($gid, $mybb->input['title']);
@@ -813,14 +813,14 @@ if($mybb->input['action'] == "edit")
 			{
 				$updated_group['candisplaygroup'] = $db->escape_string($mybb->input['candisplaygroup']);
 			}
+			
+			$plugins->run_hooks("admin_user_groups_edit_commit");
 
 			$db->update_query("usergroups", $updated_group, "gid='{$usergroup['gid']}'");
 
 			// Update the caches
 			$cache->update_usergroups();
 			$cache->update_forumpermissions();
-			
-			$plugins->run_hooks("admin_user_groups_edit_commit");
 
 
 			// Log admin action
@@ -1069,6 +1069,8 @@ if($mybb->input['action'] == "delete")
 		$db->update_query("users", $updated_users, "usergroup='{$usergroup['gid']}'");
 
 		$updated_users = array("displaygroup" => "usergroup");
+		$plugins->run_hooks("admin_user_groups_delete_commit");
+		
 		$db->update_query("users", $updated_users, "displaygroup='{$usergroup['gid']}'", "", false); // No quotes = displaygroup=usergroup
 
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
@@ -1076,7 +1078,6 @@ if($mybb->input['action'] == "delete")
 		
 		$cache->update_moderators();
 		
-		$plugins->run_hooks("admin_user_groups_delete_commit");
 
 		// Log admin action
 		log_admin_action($usergroup['gid'], $usergroup['title']);
@@ -1128,10 +1129,10 @@ if(!$mybb->input['action'])
 			{
 				$db->update_query("usergroups", array('disporder' => intval($order)), "gid='".intval($gid)."'");
 			}
-					
-			$cache->update_usergroups();
 			
 			$plugins->run_hooks("admin_user_groups_start_commit");
+			
+			$cache->update_usergroups();
 		
 			flash_message($lang->success_groups_disporder_updated, 'success');
 			admin_redirect("index.php?module=user/groups");

@@ -250,9 +250,9 @@ class MyBB {
 
 		foreach($_COOKIE as $key => $val)
 		{
-			if($prefix_length)
+			if($prefix_length && substr($key, 0, $prefix_length) == $this->settings['cookieprefix'])
 			{
-				$key = substr($key, $prefix_length, strlen($key));
+				$key = substr($key, $prefix_length);
 			}
 			
 			$this->cookies[$key] = $val;

@@ -48,7 +48,7 @@ switch($action)
 			"allow_html" => $announcement['allowhtml'],
 			"allow_mycode" => $announcement['allowmycode'],
 			"allow_smilies" => $announcement['allowsmilies'],
-			"allow_imgcode" => $announcement['allowmycode'],
+			"allow_imgcode" => $announcement['allowimgcode'],
 			"me_username" => $announcement['username'],
 			"filter_badwords" => 1
 		);
