@@ -40,7 +40,7 @@ if(!$mybb->input['action'])
 		
 		$plugins->run_hooks("admin_home_preferences_start_commit");
 	
-		flash_message("The Preferences have been successfully updated.", 'success');
+		flash_message($lang->preferences_updated, 'success');
 		admin_redirect("index.php?module=home/preferences");
 	}
 	
