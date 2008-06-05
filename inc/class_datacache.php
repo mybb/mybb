@@ -73,7 +73,7 @@ class datacache
 			while($data = $db->fetch_array($query))
 			{
 				$this->cache[$data['title']] = unserialize($data['cache']);
-			}				
+			}
 		}
 	}
 	
@@ -153,6 +153,7 @@ class datacache
 	function update($name, $contents)
 	{
 		global $db, $mybb;
+		
 		$this->cache[$name] = $contents;
 
 		// We ALWAYS keep a running copy in the db just incase we need it
@@ -435,10 +436,25 @@ class datacache
 		ksort($fcache);
 	
 		// Fetch moderators from the database
-		$query = $db->simple_select("moderators");
+		$query = $db->query("
+			SELECT m.*, u.username, u.usergroup, u.displaygroup
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
+			ORDER BY u.username
+		");
 		while($moderator = $db->fetch_array($query))
 		{
 			$this->moderators[$moderator['fid']][$moderator['uid']] = $moderator;
+		}
+		
+		function sort_moderators_by_usernames($a, $b)
+		{
+			return strcasecmp($a['username'], $b['username']);
+		}
+		
+		foreach(array_keys($this->moderators) as $fid)
+		{
+			usort($this->moderators[$fid], 'sort_moderators_by_usernames');
 		}
 
 		$this->build_moderators();

@@ -312,7 +312,7 @@ function akismet_key()
 
 function akismet_moderation_start()
 {
-	global $mybb, $db, $akismet, $lang;
+	global $mybb, $db, $akismet, $lang, $cache;
 	
 	if(!$mybb->settings['akismetswitch'] || $mybb->input['action'] != 'mark_as_spam')
 	{
@@ -423,6 +423,8 @@ function akismet_moderation_start()
 				$db->insert_query("banned", $banned_user);
 				
 				$db->update_query("users", array('usergroup' => 7), "uid = '{$post2['uid']}'");
+				
+				$cache->update_moderators();
 			}
 			
 			++$unapprovedakismetthread;
@@ -461,6 +463,8 @@ function akismet_moderation_start()
 			$db->insert_query("banned", $banned_user);
 			
 			$db->update_query("users", array('usergroup' => 7), "uid = '{$post['uid']}'");
+			
+			$cache->update_moderators();
 		}
 		
 		++$unapprovedakismetthread;
@@ -511,7 +515,7 @@ function akismet_verify(&$post)
 
 function akismet_fake_draft(&$post)
 {
-	global $mybb, $isspam, $akismet;
+	global $mybb, $isspam, $akismet, $cache;
 	
 	$exclude_array = explode(',', $mybb->settings['akismetuserstoignore']);
 	
@@ -578,6 +582,8 @@ function akismet_fake_draft(&$post)
 			$db->insert_query("banned", $banned_user);
 			
 			$db->update_query("users", array('usergroup' => 7), "uid = '{$mybb->user['uid']}'");
+			
+			$cache->update_moderators();
 			
 			// We better do this..otherwise they have dodgy permissions
 			$mybb->user['banoldgroup'] = $mybb->user['usergroup'];

@@ -1073,7 +1073,9 @@ if($mybb->input['action'] == "delete")
 
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
-
+		
+		$cache->update_moderators();
+		
 		$plugins->run_hooks("admin_user_groups_delete_commit");
 
 		// Log admin action

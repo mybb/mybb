@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered";
-$templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword,member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login";
+$templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword,member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions";
 require_once "./global.php";
 
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -739,10 +739,7 @@ if($mybb->input['action'] == "activate")
 		$db->delete_query("awaitingactivation", "uid='".$user['uid']."' AND (type='r' OR type='e')");
 		if($user['usergroup'] == 5 && $activation['type'] != "e")
 		{
-			$newgroup = array(
-				"usergroup" => 2,
-				);
-			$db->update_query("users", $newgroup, "uid='".$user['uid']."'");
+			$db->update_query("users", array("usergroup" => 2), "uid='".$user['uid']."'");
 		}
 		if($activation['type'] == "e")
 		{
@@ -1128,9 +1125,16 @@ if($mybb->input['action'] == "profile")
 			$uid = $mybb->user['uid'];
 		}
 	}
-
-	$query = $db->simple_select("users", "*", "uid='$uid'");
-	$memprofile = $db->fetch_array($query);
+	
+	if($mybb->user['uid'] != $uid)
+	{
+		$query = $db->simple_select("users", "*", "uid='$uid'");
+		$memprofile = $db->fetch_array($query);
+	}
+	else
+	{
+		$memprofile = $mybb->user;
+	}
 	
 	$lang->profile = $lang->sprintf($lang->profile, $memprofile['username']);
 
@@ -1228,7 +1232,7 @@ if($mybb->input['action'] == "profile")
 		$percent = round($percent, 2);
 	}
 
-	$query = $db->simple_select("users", "COUNT(*) AS referrals", "referrer='{$memprofile['uid']}'");
+	$query = $db->simple_select("users", "COUNT(uid) AS referrals", "referrer='{$memprofile['uid']}'");
 	$referrals = $db->fetch_field($query, "referrals");
 
 	if(!empty($memprofile['icq']))

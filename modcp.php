@@ -14,7 +14,12 @@ define("IN_MYBB", 1);
 $templatelist = "modcp_reports,modcp_reports_report,modcp_reports_multipage,modcp_reports_allreport";
 $templatelist .= ",modcp_reports_allnoreports,modcp_reports_noreports,modcp_banning,modcp_banning_ban";
 $templatelist .= ",modcp_banning_multipage,modcp_banning_nobanned,modcp_banning_auser,modcp_banning_error";
-$templatelist .= ",modcp_banning_edit,modcp_banning_banned_user";
+$templatelist .= ",modcp_banning_edit,modcp_banning_banned_user,modcp_nav,modcp_modlogs_noresults,modcp";
+$templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modcp_announcements_forum,modcp_announcements";
+$templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special";
+$templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields";
+$templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs";
+$templatelist .= ",modcp_warninglogs";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
@@ -2386,6 +2391,7 @@ if($mybb->input['action'] == "liftban")
 	$db->delete_query("banned", "uid='{$ban['uid']}'");
 
 	$cache->update_banned();
+	$cache->update_moderators();
 
 	redirect("modcp.php?action=banning", $lang->redirect_banlifted);
 }

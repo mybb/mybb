@@ -304,18 +304,8 @@ $forumpermissions = forum_permissions();
 
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != "off")
-{
-	$query = $db->query("
-		SELECT m.uid, m.fid, u.username
-		FROM ".TABLE_PREFIX."moderators m
-		LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
-		ORDER BY u.username
-	");
-	// Build a moderator cache.
-	while($moderator = $db->fetch_array($query))
-	{
-		$moderatorcache[$moderator['fid']][] = $moderator;
-	}
+{	
+	$moderatorcache = $cache->read("moderators");
 }
 
 $excols = "index";

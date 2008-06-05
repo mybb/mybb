@@ -13,7 +13,8 @@ define("IN_MYBB", 1);
 
 $templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage";
 $templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons";
-$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,private_messagebit";
+$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
+$templatelist .= ",private_messagebit,codebuttons,smilieinsert,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to, postbit_online,postbit_find,postbit_pm, postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,postbit_delete_pm,postbit,private_tracking_nomessage";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -396,8 +397,15 @@ if($mybb->input['action'] == "send")
 			{
 				$subject = "Re: $subject";
 				$uid = $pm['fromid'];
-				$query = $db->simple_select('users', 'username', "uid='{$uid}'");
-				$to = $db->fetch_field($query, 'username');
+				if($mybb->user['uid'] == $uid)
+				{
+					$to = $mybb->user['username'];
+				}
+				else
+				{
+					$query = $db->simple_select('users', 'username', "uid='{$uid}'");
+					$to = $db->fetch_field($query, 'username');
+				}
 				$to = htmlspecialchars_uni($to);
 			}
 			else if($mybb->input['do'] == 'replyall')

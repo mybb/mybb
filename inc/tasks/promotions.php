@@ -11,7 +11,7 @@
 
 function task_promotions($task)
 {
-	global $mybb, $db, $lang;
+	global $mybb, $db, $lang, $cache;
 	
 	// Iterate through all our promotions
 	$query = $db->simple_select("promotions", "*", "enabled = '1'");
@@ -150,6 +150,8 @@ function task_promotions($task)
 			$log_inserts = array();
 		}
 	}
+	
+	$cache->update_moderators();
 	
 	add_task_log($task, $lang->task_promotions_ran);
 }

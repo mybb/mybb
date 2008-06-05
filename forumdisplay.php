@@ -93,18 +93,7 @@ while($forum = $db->fetch_array($query))
 // Get the forum moderators if the setting is enabled.
 if($mybb->settings['modlist'] != 0)
 {
-	$query = $db->query("
-		SELECT m.uid, m.fid, u.username, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."moderators m
-		LEFT JOIN ".TABLE_PREFIX."users u ON (m.uid=u.uid)
-		ORDER BY u.username
-	");
-	
-	// Build a moderator cache.
-	while($moderator = $db->fetch_array($query))
-	{
-		$moderatorcache[$moderator['fid']][$moderator['uid']] = $moderator;
-	}
+	$moderatorcache = $cache->read("moderators");
 }
 
 $bgcolor = "trow1";

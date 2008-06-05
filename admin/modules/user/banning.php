@@ -82,6 +82,7 @@ if($mybb->input['action'] == "lift")
 		$db->delete_query("banned", "uid='{$ban['uid']}'");
 		
 		$cache->update_banned();
+		$cache->update_moderators();
 		
 		$plugins->run_hooks("admin_user_banning_lift_commit");
 		

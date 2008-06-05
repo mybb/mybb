@@ -117,7 +117,14 @@ class UserDataHandler extends DataHandler
 
 		$username = &$this->data['username'];
 
-		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."' AND uid!='{$this->data['uid']}'");
+		$uid_check = "";		
+		if($this->data['uid'])
+		{
+			$uid_check = " AND uid!='{$this->data['uid']}'";
+		}
+		
+		$query = $db->simple_select("users", "COUNT(uid) AS count", "LOWER(username)='".$db->escape_string(strtolower(trim($username)))."'{$uid_check}");
+		
 		$user_count = $db->fetch_field($query, "count");
 		if($user_count > 0)
 		{
@@ -954,7 +961,7 @@ class UserDataHandler extends DataHandler
 	*/
 	function update_user()
 	{
-		global $db, $plugins;
+		global $db, $plugins, $cache;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -1118,6 +1125,8 @@ class UserDataHandler extends DataHandler
 
 		// Actual updating happens here.
 		$db->update_query("users", $this->user_update_data, "uid='{$user['uid']}'");
+		
+		$cache->update_moderators();
 
 		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))
@@ -1158,8 +1167,7 @@ class UserDataHandler extends DataHandler
 			$db->update_query("threads", $username_update, "uid='{$user['uid']}'");
 			$db->update_query("threads", $lastposter_update, "lastposteruid='{$user['uid']}'");
 			$db->update_query("forums", $lastposter_update, "lastposteruid='{$user['uid']}'");
-
-			global $cache;
+			
 			$stats = $cache->read("stats");
 			if($stats['lastuid'] == $user['uid'])
 			{

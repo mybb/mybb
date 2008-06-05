@@ -619,12 +619,16 @@ if($mybb->input['action'] == "thread")
 		{
 			error($lang->error_invalidpost);
 		}
-
-		// Get the attachments for this post.
-		$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
-		while($attachment = $db->fetch_array($query))
+		
+		$attachcache = array();
+		if($thread['attachmentcount'] > 0)
 		{
-			$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			// Get the attachments for this post.
+			$query = $db->simple_select("attachments", "*", "pid=".$mybb->input['pid']);
+			while($attachment = $db->fetch_array($query))
+			{
+				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
 		}
 
 		// Build the threaded post display tree.
@@ -734,11 +738,16 @@ if($mybb->input['action'] == "thread")
 		if($pids)
 		{
 			$pids = "pid IN($pids)";
-			// Now lets fetch all of the attachments for these posts.
-			$query = $db->simple_select("attachments", "*", $pids);
-			while($attachment = $db->fetch_array($query))
+			
+			$attachcache = array();
+			if($thread['attachmentcount'] > 0)
 			{
-				$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+				// Now lets fetch all of the attachments for these posts.
+				$query = $db->simple_select("attachments", "*", $pids);
+				while($attachment = $db->fetch_array($query))
+				{
+					$attachcache[$attachment['pid']][$attachment['aid']] = $attachment;
+				}
 			}
 		}
 		else

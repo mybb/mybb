@@ -299,6 +299,8 @@ if($mybb->input['action'] == "editmod")
 			);
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 			
+			$cache->update_moderators();
+			
 			$plugins->run_hooks("admin_forum_management_editmod_commit");
 			
 			// Log admin action

@@ -352,6 +352,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 		// Save updated details
 		$db->update_query("users", $updated_user, "uid='{$user['uid']}'");
+		$cache->update_moderators();
 
 		$lang->redirect_warned = $lang->sprintf($lang->redirect_warned, $user['username'], $new_warning_level, $friendly_action);
 

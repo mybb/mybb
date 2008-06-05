@@ -3325,7 +3325,7 @@ function join_usergroup($uid, $joingroup)
  */
 function leave_usergroup($uid, $leavegroup)
 {
-	global $db, $mybb;
+	global $db, $mybb, $cache;
 
 	if($uid == $mybb->user['uid'])
 	{
@@ -3365,6 +3365,8 @@ function leave_usergroup($uid, $leavegroup)
 		SET additionalgroups='$groupslist' $dispupdate
 		WHERE uid='$uid'
 	");
+	
+	$cache->update_moderators();
 }
 
 /**
