@@ -597,6 +597,8 @@ if($mybb->input['action'] == "results")
 			{
 				$post['message'] = htmlspecialchars_uni($post['message']);
 			}
+			$prev = $post['message'];
+			
 			$posted = my_date($mybb->settings['dateformat'], $post['dateline']).", ".my_date($mybb->settings['timeformat'], $post['dateline']);
 
 			$plugins->run_hooks("search_results_post");
