@@ -2514,7 +2514,11 @@ function get_colored_warning_level($level)
  */
 function get_ip()
 {
-	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+	if(isset($_SERVER['REMOTE_ADDR']))
+	{
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+	elseif(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 	{
 		if(preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses))
 		{
@@ -2537,7 +2541,7 @@ function get_ip()
 		}
 		else
 		{
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = '';
 		}
 	}
 
@@ -4018,7 +4022,7 @@ function get_profile_link($uid=0)
  */
 function get_announcement_link($aid=0)
 {
-	$link = str_replace("{uid}", $aid, ANNOUNCEMENT_URL);
+	$link = str_replace("{aid}", $aid, ANNOUNCEMENT_URL);
 	return htmlspecialchars_uni($link);
 }
 
