@@ -173,7 +173,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		$form_container->end();
 
 		// Write in our JS based field selector
-		echo "<script src=\"../jscripts/scriptaculous.js?load=dragdrop\" type=\"text/javascript\"></script>\n";
+		echo "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		echo "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 		$field_select .= "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
@@ -376,7 +376,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form_container->end();
 
 		// Write in our JS based field selector
-		echo "<script src=\"../jscripts/scriptaculous.js?load=dragdrop\" type=\"text/javascript\"></script>\n";
+		echo "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		echo "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 		$field_select .= "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";

@@ -894,6 +894,7 @@ ul.tabs li.last a.active {
 }
 
 .view_fields ul {
+	overflow: auto; // Scroll fix for Opera
 	overflow-y: auto;
 	overflow-x: hidden;
 	height: 180px;

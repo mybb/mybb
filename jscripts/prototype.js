@@ -1,5 +1,5 @@
 /*  Prototype JavaScript framework, version 1.6.0.2
- *  (c) 2005-2008 Sam Stephenson
+ *  (c) 2005-2007 Sam Stephenson
  *
  *  Prototype is freely distributable under the terms of an MIT-style license.
  *  For details, see the Prototype web site: http://www.prototypejs.org/
@@ -3402,7 +3402,6 @@ var Form = {
     return options.hash ? data : Object.toQueryString(data);
   }
 };
-
 
 Form.Methods = {
   serialize: function(form, options) {

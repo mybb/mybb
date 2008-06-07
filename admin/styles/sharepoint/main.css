@@ -854,6 +854,45 @@ ul.tabs a.active {
 	text-decoration: none;
 }
 
+.view_fields .enabled, .view_fields .disabled {
+	width: 200px;
+	float: left;
+}
+
+.view_fields .disabled {
+	margin-left: 20px;
+}
+
+.view_fields .fields_title {
+	font-weight: bold;
+	font-size: 120%;
+}
+
+.view_fields ul, .view_fields li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.view_fields ul {
+	overflow: auto; // Scroll fix for Opera
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 180px;
+	margin-top: 4px;
+}
+
+
+.view_fields li {
+	-moz-border-radius: 3px;
+	padding: 4px;
+	background: #666;
+	color: #fff;
+	font-size: 11px;
+	margin-bottom: 2px;
+	margin-right: 10px;
+}
+
 /* Auto Complete */
 .autocomplete {
 	background: #fff;

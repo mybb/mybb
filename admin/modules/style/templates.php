@@ -770,7 +770,7 @@ if($mybb->input['action'] == "search_replace")
 							$template['title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 						}
 											
-						$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}\">{$template['title']}</a></span>", array("width" => "85%")); // onclick=\"Templates.quick_edit('{$template['tid']}'); return false;\"
+						$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}\">{$template['title']}</a></span>", array("width" => "85%"));
 						$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 						
 						$table->construct_row();
@@ -1171,16 +1171,6 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	$table = new Table;
 	
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}");
-	
-	/*$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-php.css" rel="stylesheet" id="cp-lang-style" />
-	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
-	<script type="text/javascript">
-		CodePress.language = \'php\';
-		var my_post_key = \''.$mybb->post_code.'\';
-	</script>';
-	$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects\" type=\"text/javascript\"></script>\n";
-	$page->extra_header .= "<script src=\"./jscripts/templates.js\" type=\"text/javascript\"></script>\n";*/
 
 	$page->output_header($lang->template_sets);
 	
@@ -1200,7 +1190,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1");
 			$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid=-1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 				
-			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1\">{$template['title']}</a>"); // onclick=\"Templates.quick_edit('{$template['tid']}'); return false;\"
+			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1\">{$template['title']}</a>");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 			
 			$table->construct_row();
@@ -1219,7 +1209,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	
 	if($mybb->input['expand'] == 'all')
 	{
-		// if we're expanding everything, stick in the ungrouped templates in the list as well
+		// If we're expanding everything, stick in the ungrouped templates in the list as well
 		$expand_array = array(-1);
 	}
 	// Fetch Groups
@@ -1346,7 +1336,6 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			foreach($templates as $template)
 			{
 				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-				//$popup->add_item($lang->inline_edit, "javascript:;", "Templates.quick_edit('{$template['tid']}');");
 				$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}{$expand_str}");
 				
 				if(isset($template['modified']) && $template['modified'] == true)
@@ -1368,7 +1357,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 					$template['title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 				}
 									
-				$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}{$expand_str}\" >{$template['title']}</a></span>"); // onclick=\"Templates.quick_edit('{$template['tid']}'); return false;\"
+				$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}{$expand_str}\" >{$template['title']}</a></span>");
 				$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 				
 				$table->construct_row();

@@ -17,17 +17,19 @@ var ViewManager = {
 
 	buildFieldsList: function()
 	{
-		//alert('called');
 		new_input = '';
-		for(var i=0;i<=$('fields_enabled').childNodes.length;i++)
+		for(var i=0; i <= $('fields_enabled').childNodes.length; i++)
 		{
 			if($('fields_enabled').childNodes[i] && $('fields_enabled').childNodes[i].id)
 			{
 				id = $('fields_enabled').childNodes[i].id.split("-");
-				//alert('adding '+id);
+				
 				if(id[1])
 				{
-					if(new_input) new_input += ",";
+					if(new_input)
+					{
+						new_input += ",";
+					}
 					new_input += id[1];
 				}
 			}
