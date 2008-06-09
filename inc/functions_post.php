@@ -194,7 +194,7 @@ function build_postbit($post, $post_type=0)
 		$usergroup['image'] = str_replace("{lang}", $language, $usergroup['image']);
 		$usergroup['image'] = str_replace("{theme}", $theme['imgdir'], $usergroup['image']);
 		eval("\$post['groupimage'] = \"".$templates->get("postbit_groupimage")."\";");
-		$mybb->settings['postlayout'] == "classic") {
+		if($mybb->settings['postlayout'] == "classic") {
 			$post['groupimage'] .= "<br />";
 		}
 	}
