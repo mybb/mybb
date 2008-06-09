@@ -16,15 +16,15 @@ $l['unmark_selected'] = "Unmark Selected";
 $l['deleted_selected'] = "Delete Selected";
 $l['delete_all'] = "Delete All";
 
-$l['success_deleted_spam'] = "Successfully deleted all detected spam messages.";
-$l['success_unmark'] = "The messages have been unmarked as spam";
-$l['success_spam_deleted'] = "The spam messages have been deleted";
+$l['success_deleted_spam'] = "All detected spam messages have been deleted successfully.";
+$l['success_unmark'] = "The selected messages are no longer marked as spam.";
+$l['success_spam_deleted'] = "The select spam messages have been deleted successfully.";
 
 $l['confirm_spam_deletion'] = "Are you sure you want to delete all detected messages?";
 
-$l['error_deletepost'] = "You must select at least one post to delete";
-$l['error_unmark'] = "You must select at least one post to unmark";
+$l['error_deletepost'] = "You must select at least one post to delete.";
+$l['error_unmark'] = "You must select at least one post to unmark.";
 
-$l['no_spam_found'] = "There are currently no detected spam messages found by Akismet";
+$l['no_spam_found'] = "There are currently no spam messages detected by Akismet.";
 
 ?>

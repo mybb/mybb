@@ -7,32 +7,32 @@
  */
 
 $l['themes'] = "Themes";
-$l['themes_desc'] = "Here you can manage your themes.";
+$l['themes_desc'] = "Here you can manage the themes set up on your forum. Themes allow you to customize the appearance of your forum. A list of the themes currently set up are shown below.";
 
 $l['create_new_theme'] = "Create New Theme";
 $l['create_new_theme_desc'] = "Here you can create a new theme based on the default. <strong>Template sets, stylesheets, and other settings are inherited from the parent theme.</strong>";
 
 $l['import_a_theme'] = "Import a Theme";
-$l['import_a_theme_desc'] = "Here you can import new themes.";
+$l['import_a_theme_desc'] = "Here you can import new themes. You may import a theme from your computer, or a remote URL.";
 
 $l['edit_stylesheets'] = "Edit Stylesheets";
-$l['edit_stylesheets_desc'] = "Here you can easily manage this theme's stylesheets.";
+$l['edit_stylesheets_desc'] = "Here you can easily manage the stylesheets in use by this theme. Stylesheets are based on CSS and define the fonts, colors and other visual aspects for this theme. A list of stylesheets attached to this theme is below.";
 
 $l['add_stylesheet'] = "Add Stylesheet";
-$l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. You will be taken to the stylesheet edit page following creation.";
+$l['add_stylesheet_desc'] = "Here you can add a new stylesheet to this theme. A stylesheet contains CSS that allows you to customize the appearance of this theme. You will be taken to the stylesheet edit page following creation.";
 
 $l['export_theme'] = "Export Theme";
-$l['export_theme_desc'] = "Here you can export your themes and customized templates.";
+$l['export_theme_desc'] = "Here you can export your themes and customized templates. Exporting themes is useful if you wish to share them with others or import them to another forum.";
 
-$l['include_custom_only'] = "Include Custom only?";
+$l['include_custom_only'] = "Include customized items only?";
 $l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
-$l['include_templates'] = "Include Templates?";
+$l['include_templates'] = "Include templates in the export as well?";
 $l['include_templates_desc'] = "If you want to export the customized templates used in this theme as well, select yes.";
 
 $l['edit_stylesheet_simple_mode'] = "Edit Stylesheet: Simple Mode";
-$l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet.";
+$l['edit_stylesheet_simple_mode_desc'] = "Here you can easily edit your theme's stylesheet. Simple mode allows you to customize the CSS in this stylesheet with little or no knowledge of CSS. Begin by selecting an item below.";
 $l['edit_stylesheet_advanced_mode'] = "Edit Stylesheet: Advanced Mode";
-$l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file.";
+$l['edit_stylesheet_advanced_mode_desc'] = "Here you can edit this stylesheet like a flat file. The contents of the CSS stylesheet is shown in the text area below.";
 
 $l['theme'] = "Theme";
 $l['num_users'] = "# Users";
@@ -51,7 +51,7 @@ $l['import_from_desc'] = "Select a file to import. You can either import the the
 $l['parent_theme'] = "Parent Theme";
 $l['parent_theme_desc'] = "Select the theme this theme should be a child of.";
 $l['new_name'] = "New Name";
-$l['new_name_desc'] = "A new name for the imported theme. If left blank, the name specified in the theme file will be used.";
+$l['new_name_desc'] = "A new name for the imported theme. If left blank, the name in the theme file will be used.";
 $l['advanced_options'] = "Advanced Options";
 $l['ignore_version_compatibility'] = "Ignore Version Compatibility";
 $l['ignore_version_compat_desc'] = "Should this theme be installed regardless of the version of MyBB it was created for?";
@@ -108,7 +108,7 @@ $l['stylesheet_properties'] = "Stylesheet Properties";
 $l['stylesheet_inherited_default'] = "This stylesheet is currently being inherited from {1}. Any changes you make will break the inheritance, and the stylesheet will be copied to this theme.";
 $l['stylesheet_inherited'] = "This stylesheet is currently being inherited from {1}. Any changes you make will break the inheritance, and the stylesheet will be copied to this theme. Edit this stylesheet in {1} to keep the inheritance.";
 $l['globally'] = "Globally";
-$l['specific_files'] = "Specific Files";
+$l['specific_files'] = "Specific files";
 $l['specific_actions'] = "Specific actions";
 $l['specific_actions_desc'] = "Actions are seperated by commas";
 $l['file'] = "File";
@@ -155,16 +155,16 @@ $l['error_invalid_editortheme'] = "The selected editor theme does not exist. Ple
 $l['error_inheriting_stylesheets'] = "You cannot delete this theme because there are still other themes that are inheriting stylesheets from it.";
 $l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
 
-$l['success_imported_theme'] = "Successfully imported the theme.";
-$l['success_theme_created'] = "Successfully created the theme.";
-$l['success_theme_deleted'] = "Successfully deleted the specified theme.";
-$l['success_stylesheet_properties_updated'] = "Successfully updated the specified stylesheet's properties.";
-$l['success_stylesheet_updated'] = "The stylesheet has successfully been updated.";
-$l['success_stylesheet_deleted'] = "Successfully deleted the selected stylesheet.";
-$l['success_theme_set_default'] = "The selected theme has now been marked as the default.";
-$l['success_theme_forced'] = "The selected theme has now been forced as the default to all users.";
-$l['success_theme_properties_updated'] = "Successfully updated the specified theme's properties.";
-$l['success_stylesheet_added'] = "Successfully added the stylesheet.";
+$l['success_imported_theme'] = "The selected theme has been imported successfully.";
+$l['success_theme_created'] = "The theme has been created successfully.";
+$l['success_theme_deleted'] = "The selected theme has been deleted successfully.";
+$l['success_stylesheet_properties_updated'] = "The properties for the selected stylesheet have been updated successfully.";
+$l['success_stylesheet_updated'] = "The selected stylesheet has been updated successfully.";
+$l['success_stylesheet_deleted'] = "The selected stylesheet has been deleted successfully.";
+$l['success_theme_set_default'] = "The selected theme is now the forum default.";
+$l['success_theme_forced'] = "All users have been forced to the selected theme successfully.";
+$l['success_theme_properties_updated'] = "The properties for the select theme have been updated successfully.";
+$l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete this stylesheet?";

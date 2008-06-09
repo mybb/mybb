@@ -25,9 +25,9 @@ $l['no_forums'] = "There are currently no forums setup to show forum announcemen
 
 $l['confirm_announcement_deletion'] = "Are you sure you wish to delete this announcement?";
 
-$l['success_announcement_deleted'] = "Successfully deleted the specified announcement.";
-$l['success_added_announcement'] = "Successfully added the announcement.";
-$l['success_updated_announcement'] = "Successfully updated the announcement.";
+$l['success_announcement_deleted'] = "The selected announcement has been deleted successfully.";
+$l['success_added_announcement'] = "The selected announcement has been created successfully.";
+$l['success_updated_announcement'] = "The selected announcement has been updated successfully.";
 
 $l['error_invalid_announcement'] = "Please input a valid announcement.";
 $l['error_missing_title'] = "You did not enter a title.";

@@ -75,11 +75,11 @@ $l['error_no_orig_usergroup'] = "You did not select at least one original user g
 $l['error_no_new_usergroup'] = "You did not select at least one new user group for this promotion";
 $l['error_no_usergroup_change_type'] = "You did not select at least one user group change type for this promotion";
 
-$l['success_promo_disabled'] = 'The promotion has successfully been disabled.';
-$l['success_promo_deleted'] = 'The promotion has successfully been deleted.';
-$l['success_promo_enabled'] = 'The promotion has successfully been enabled.';
-$l['success_promo_updated'] = 'The promotion has successfully been updated.';
-$l['success_promo_added'] = 'The promotion has successfully been added.';
+$l['success_promo_disabled'] = 'The selected group promotion has been disabled successfully.';
+$l['success_promo_deleted'] = 'The selected group promotion has been deleted successfully.';
+$l['success_promo_enabled'] = 'The selected group promotion has been enabled successfully.';
+$l['success_promo_updated'] = 'The selected group promotion has been updated successfully.';
+$l['success_promo_added'] = 'The promotion has been created successfully.';
 
 $l['confirm_promo_deletion'] = "Are you sure you wish to delete this promotion?";
 

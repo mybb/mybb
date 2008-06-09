@@ -21,11 +21,11 @@ $l['recount_user_posts_desc'] = "When this is run, the post count for each user 
 $l['rebuild_attachment_thumbs'] = "Rebuild Attachment Thumbnails";
 $l['rebuild_attachment_thumbs_desc'] = "This will rebuild attachment thumbnails to ensure they're using the current width and height dimensions and will also rebuild missing thumbnails.";
 
-$l['success_rebuilt_forum_counters'] = "The forum counters have successfully been rebuilt.";
-$l['success_rebuilt_thread_counters'] = "The thread counters have successfully been rebuilt.";
-$l['success_rebuilt_user_counters'] = "The user posts count have successfully been re-counted.";
-$l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have successfully been rebuilt.";
-$l['success_rebuilt_forum_stats'] = "The forum statistics have successfully been rebuilt.";
+$l['success_rebuilt_forum_counters'] = "The forum counters have been rebuilt successfully.";
+$l['success_rebuilt_thread_counters'] = "The thread counters have been rebuilt successfully.";
+$l['success_rebuilt_user_counters'] = "The user posts count have been re-counted successfully.";
+$l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have been rebuilt successfully.";
+$l['success_rebuilt_forum_stats'] = "The forum statistics have been rebuilt successfully.";
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the re-count and rebuild process.";
 

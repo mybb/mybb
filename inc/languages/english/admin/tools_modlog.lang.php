@@ -48,6 +48,6 @@ $l['prune_moderator_logs'] = "Prune Moderator Logs";
 $l['date_range'] = "Date range:";
 $l['all_forums'] = "All Forums";
 
-$l['success_pruned_mod_logs'] = "Moderator logs pruned successfully.";
+$l['success_pruned_mod_logs'] = "The moderator logs have been pruned successfully.";
 
 ?>

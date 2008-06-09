@@ -42,16 +42,16 @@ $l['error_invalid_view_delete'] = "You selected an invalid administration view t
 
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
-$l['success_coppa_activated'] = "The COPPA user has successfully been activated.";
-$l['success_activated'] = "The user has successfully been activated.";
-$l['success_user_created'] = "The user has successfully been created.";
-$l['success_user_updated'] = "The user has successfully been updated.";
-$l['success_user_deleted'] = "The user has successfully been deleted.";
+$l['success_coppa_activated'] = "The selected COPPA user has been activated successfully.";
+$l['success_activated'] = "The selected user has been activated successfully.";
+$l['success_user_created'] = "The user has been created successfully.";
+$l['success_user_updated'] = "The selected user has been updated successfully.";
+$l['success_user_deleted'] = "The selected user has been deleted successfully.";
 $l['success_merged'] = "has successfully been merged in to";
-$l['succuss_view_set_as_default'] = "The administration view has successfully been set as your default";
-$l['success_view_created'] = "The administration view has successfully been created";
-$l['success_view_updated'] = "The administration view has successfully been updated";
-$l['success_view_deleted'] = "The administration view has successfully been deleted";
+$l['succuss_view_set_as_default'] = "The selected administration view has been set as your default successfully";
+$l['success_view_created'] = "The administration view has been created successfully.";
+$l['success_view_updated'] = "The selected administration view has been updated successfully.";
+$l['success_view_deleted'] = "The selected administration view has been deleted successfully.";
 
 $l['confirm_view_deletion'] = "Are you sure you want to delete the selected view?";
 

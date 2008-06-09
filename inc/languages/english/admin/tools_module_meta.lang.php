@@ -25,17 +25,17 @@ $l['user_email_log'] = "User Email Log";
 $l['system_mail_log'] = "System Mail Log";
 $l['user_warning_log'] = "User Warning Log";
 
-$l['can_access_system_health'] = "Can Access System Health?";
-$l['can_manage_cache'] = "Can Manage Cache?";
-$l['can_manage_tasks'] = "Can Manage Scheduled Tasks?";
-$l['can_manage_db_backup'] = "Can Manage Backup Database?";
-$l['can_optimize_db'] = "Can Optimize Database?";
-$l['can_recount_and_rebuild'] = "Can Recount and Rebuild?";
-$l['can_manage_admin_logs'] = "Can Manage Administrator Log?";
-$l['can_manage_mod_logs'] = "Can Manage Moderator Log?";
-$l['can_manage_user_mail_log'] = "Can Manage User Mail Log?";
-$l['can_manage_system_mail_log'] = "Can Manage System Mail Log?";
-$l['can_manage_user_warning_log'] = "Can Manage User Warning Logs?";
-$l['can_view_php_info'] = "Can View PHP Info?";
+$l['can_access_system_health'] = "Can access system health?";
+$l['can_manage_cache'] = "Can manage cache?";
+$l['can_manage_tasks'] = "Can manage scheduled tasks?";
+$l['can_manage_db_backup'] = "Can manage backup database?";
+$l['can_optimize_db'] = "Can optimize database?";
+$l['can_recount_and_rebuild'] = "Can recount and rebuild?";
+$l['can_manage_admin_logs'] = "Can manage administrator log?";
+$l['can_manage_mod_logs'] = "Can manage moderator log?";
+$l['can_manage_user_mail_log'] = "Can manage user mail Log?";
+$l['can_manage_system_mail_log'] = "Can manage system mail log?";
+$l['can_manage_user_warning_log'] = "Can manage user warning logs?";
+$l['can_view_php_info'] = "Can view PHP info?";
 
 ?>

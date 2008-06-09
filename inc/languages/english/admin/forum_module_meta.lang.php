@@ -13,9 +13,9 @@ $l['forum_announcements'] = "Forum Announcements";
 $l['moderation_queue'] = "Moderation Queue";
 $l['attachments'] = "Attachments";
 
-$l['can_manage_forums'] = "Can Manage Forums?";
-$l['can_manage_forum_announcements'] = "Can Manage Forum Announcements?";
-$l['can_moderate'] = "Can Moderate Posts, Threads, and Attachments?";
-$l['can_manage_attachments'] = "Can Manage Attachments?";
+$l['can_manage_forums'] = "Can manage forums?";
+$l['can_manage_forum_announcements'] = "Can manage forum announcements?";
+$l['can_moderate'] = "Can moderate posts, threads, and attachments?";
+$l['can_manage_attachments'] = "Can manage attachments?";
 
 ?>

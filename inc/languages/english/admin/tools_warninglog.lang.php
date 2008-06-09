@@ -44,10 +44,10 @@ $l['error_invalid_warning'] = "An invalid warning was specified.";
 $l['revoke_warning'] = "Revoke this Warning";
 $l['revoke_warning_desc'] = "To revoke this warning please enter a reason below. This will not remove any bans or suspensions imposed by this warning.";
 $l['reason'] = "Reason:";
-$l['warning_is_revoked'] = "This Warning has been revoked";
+$l['warning_is_revoked'] = "This warning has been revoked";
 $l['revoked_by'] = "Revoked by:";
 $l['date_revoked'] = "Date Revoked:";
 $l['error_already_revoked'] = "This warning has already been revoked.";
 $l['error_no_revoke_reason'] = "You did not enter a reason as to why you want to revoke this warning.";
-$l['redirect_warning_revoked'] = "This warning has successfully been revoked and the users warning points decreased.";
+$l['redirect_warning_revoked'] = "This warning has been revoked and the users warning points decreased successfully.";
 ?>

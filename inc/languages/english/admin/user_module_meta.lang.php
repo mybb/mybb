@@ -16,12 +16,12 @@ $l['admin_permissions'] = "Admin Permissions";
 $l['mass_mail'] = "Mass Mail";
 $l['group_promotions'] = "Group Promotions";
 
-$l['can_manage_users'] = "Can Manage Users?";
-$l['can_manage_user_groups'] = "Can Manage User Groups?";
-$l['can_manage_user_titles'] = "Can Manage User Titles?";
-$l['can_manage_user_bans'] = "Can Manage User Bans?";
-$l['can_manage_admin_permissions'] = "Can Manage Admin Permissions?";
-$l['can_send_mass_mail'] = "Can Send Mass Mail?";
-$l['can_manage_group_promotions'] = "Can Manage Group Promotions?";
+$l['can_manage_users'] = "Can manage users?";
+$l['can_manage_user_groups'] = "Can manage user groups?";
+$l['can_manage_user_titles'] = "Can manage user titles?";
+$l['can_manage_user_bans'] = "Can manage User Bans?";
+$l['can_manage_admin_permissions'] = "Can manage admin permissions?";
+$l['can_send_mass_mail'] = "Can send mass mail?";
+$l['can_manage_group_promotions'] = "Can manage group promotions?";
 
 ?>

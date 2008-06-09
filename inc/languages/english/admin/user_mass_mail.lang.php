@@ -26,8 +26,8 @@ $l['personalize_message'] = "Personalize this message:";
 $l['message_settings'] = "Message Settings";
 $l['subject'] = "Subject";
 $l['subject_desc'] = "Please enter the subject of the message.";
-$l['send_via_email'] = "Send via Email";
-$l['send_via_pm'] = "Send via Private Message";
+$l['send_via_email'] = "Send via email";
+$l['send_via_pm'] = "Send via private message";
 $l['message_type'] = "Message Type";
 $l['deliver_immediately'] = "Deliver immediately";
 $l['deliver_specific'] = "Deliver on a specific date";
@@ -105,10 +105,10 @@ $l['error_missing_message'] = "You did not enter a message to send.";
 $l['error_missing_html'] = "You did not enter a HTML version of this message.";
 $l['error_delete_invalid_mid'] = "You have selected an invalid mass mailing to delete.";
 
-$l['success_mass_mail_saved'] = "The mass mailing has successfully been saved.";
+$l['success_mass_mail_saved'] = "The mass mailing has been saved successfully.";
 $l['success_mass_mail_deleted'] = "The selected mass mailing has been deleted successfully.";
 $l['success_mass_mail_resent'] = "The mass mailing has been copied successfully. Please review it below.";
-$l['success_mass_mail_canceled'] = "The mass mailing delivery has successfully been canceled.";
+$l['success_mass_mail_canceled'] = "The mass mailing delivery has been canceled successfully.";
 
 $l['mass_mail_deletion_confirmation'] = "Are you sure you want to delete this mass mailing?";
 

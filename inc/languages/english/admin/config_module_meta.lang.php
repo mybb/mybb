@@ -24,20 +24,20 @@ $l['spiders_bots'] = "Spiders / Bots";
 $l['calendars'] = "Calendars";
 $l['warning_system'] = "Warning System";
 
-$l['can_manage_settings'] = "Can Manage Settings?";
-$l['can_manage_banned_accounts'] = "Can Manage Banned Accounts?";
-$l['can_manage_custom_profile_fields'] = "Can Manage Custom Profile Fields?";
-$l['can_manage_smilies'] = "Can Manage Smilies?";
-$l['can_manage_bad_words'] = "Can Manage Word Filters?";
-$l['can_manage_custom_mycode'] = "Can Manage Custom MyCode?";
-$l['can_manage_language_packs'] = "Can Manage Language Packs?";
-$l['can_manage_post_icons'] = "Can Manage Post Icons?";
-$l['can_manage_help_documents'] = "Can Manage Help Documents?";
-$l['can_manage_plugins'] = "Can Manage Plugins?";
-$l['can_manage_attachment_types'] = "Can Manage Attachment Types?";
-$l['can_manage_spiders_bots'] = "Can Manage Spiders / Bots?";
-$l['can_manage_calendars'] = "Can Manage Calendars?";
-$l['can_manage_warning_system'] = "Can Manage Warning System?";
-$l['can_manage_mod_tools'] = "Can Manage Moderator Tools?";
+$l['can_manage_settings'] = "Can manage settings?";
+$l['can_manage_banned_accounts'] = "Can manage banned accounts?";
+$l['can_manage_custom_profile_fields'] = "Can manage custom profile fields?";
+$l['can_manage_smilies'] = "Can manage smilies?";
+$l['can_manage_bad_words'] = "Can manage word filters?";
+$l['can_manage_custom_mycode'] = "Can manage custom MyCode?";
+$l['can_manage_language_packs'] = "Can manage language packs?";
+$l['can_manage_post_icons'] = "Can manage post icons?";
+$l['can_manage_help_documents'] = "Can manage help documents?";
+$l['can_manage_plugins'] = "Can manage plugins?";
+$l['can_manage_attachment_types'] = "Can manage attachment types?";
+$l['can_manage_spiders_bots'] = "Can manage spiders / bots?";
+$l['can_manage_calendars'] = "Can manage calendars?";
+$l['can_manage_warning_system'] = "Can manage warning system?";
+$l['can_manage_mod_tools'] = "Can manage moderator tools?";
 
 ?>

@@ -19,14 +19,14 @@ $l['posts_awaiting_moderation'] = "Posts Awaiting Moderation";
 $l['attachments_awaiting_moderation'] = "Attachments Awaiting Moderation";
 
 // Errors
-$l['error_no_posts'] = "There are currently no posts awaiting moderation.";
-$l['error_no_attachments'] = "There are currently no attachments awaiting moderation.";
-$l['error_no_threads'] = "There are currently no threads, posts or attachments awaiting moderation.";
+$l['error_no_posts'] = "There are no posts currently awaiting moderation.";
+$l['error_no_attachments'] = "There are no attachments currently awaiting moderation.";
+$l['error_no_threads'] = "There are no threads, posts or attachments currently awaiting moderation.";
 
 // Success
-$l['success_threads'] = "The selected threads have successfully been moderated.";
-$l['success_posts'] = "The selected posts have successfully been moderated.";
-$l['success_attachments'] = "The selected attachments have successfully been moderated.";
+$l['success_threads'] = "The selected threads have been moderated successfully.";
+$l['success_posts'] = "The selected posts have been moderated successfully.";
+$l['success_attachments'] = "The selected attachments have been moderated successfully.";
 
 // Pages
 $l['subject'] = "Subject";

@@ -7,6 +7,6 @@
  */
 
 $l['php_info'] = "PHP Info";
-$l['browser_no_iframe_support'] = "Your browser does not support iframes";
+$l['browser_no_iframe_support'] = "Your browser does not support iFrames.";
 
 ?>

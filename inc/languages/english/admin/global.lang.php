@@ -21,7 +21,7 @@ $l['size_bytes'] = "bytes";
 $l['na'] = "N/A";
 
 // Header language strings
-$l['mybb_admin_panel'] = "MyBB Administration Panel";
+$l['mybb_admin_panel'] = "MyBB Control Panel";
 $l['mybb_admin_cp'] = "MyBB Admin CP";
 $l['logged_in_as'] = "Logged in as";
 $l['view_board'] = "View Forum";
@@ -32,7 +32,7 @@ $l['generated_in'] = "Generated in {1} seconds with {2} queries.";
 
 // Login page
 $l['enter_username_and_password'] = "Please enter your username and password to continue.";
-$l['mybb_admin_login'] = "MyBB Administration - Login";
+$l['mybb_admin_login'] = "MyBB Control Panel - Login";
 $l['return_to_forum'] = "Return to forum";
 $l['please_login'] = "Please Login";
 $l['username'] = "Username:";
@@ -44,7 +44,7 @@ $l['error_invalid_admin_session'] = "Invalid administration session";
 $l['error_admin_session_expired'] = "Your administration session has expired";
 $l['error_invalid_ip'] = "Your IP address is not valid for this session";
 
-$l['success_logged_out'] = "You have successfully been logged out.";
+$l['success_logged_out'] = "You have been logged out. successfully";
 $l['error_invalid_username_password'] = "The username and password combination you entered is invalid.";
 
 // Action Confirmation

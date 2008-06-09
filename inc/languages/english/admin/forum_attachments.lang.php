@@ -17,20 +17,20 @@ $l['attachment_stats'] = "Attachment Statistics";
 $l['attachment_stats_desc'] = "Below are some general statistics for the attachments currently on your forum.";
 
 // Errors
-$l['error_nothing_selected'] = "You did not select any attachments to delete";
+$l['error_nothing_selected'] = "Please select one or more attachments to delete.";
 $l['error_no_attachments'] = "There aren't any attachments on your forum yet. Once an attachment is posted you'll be able to access this section.";
 $l['error_not_all_removed'] = "Only some orphaned attachments were successfully deleted, others could not be removed from the uploads directory.";
 $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_invalid_forums'] = "One or more forums you selected are invalid.";
-$l['error_no_results'] = "No results were found with the specified search criteria.";
+$l['error_no_results'] = "No attachments were found with the specified search criteria.";
 $l['error_not_found'] = "Attachment file could not be found in the uploads directory.";
 $l['error_not_attached'] = "Attachment was uploaded over 24 hours ago but not attached to a post.";
 $l['error_does_not_exist'] = "Thread or post for this attachment no longer exists.";
 
 // Success
-$l['success_deleted'] = "The selected attachments have successfully been deleted";
-$l['success_orphan_deleted'] = "The selected orphaned attachments have been deleted.";
-$l['success_no_orphans'] = "You do not have any orphaned attachments on your forums";
+$l['success_deleted'] = "The selected attachments have been deleted successfully.";
+$l['success_orphan_deleted'] = "The selected orphaned attachments have been deleted successfully.";
+$l['success_no_orphans'] = "There are no orphaned attachments on your forum.";
 
 // Confirm
 $l['confirm_delete'] = "Are you sure you wish to delete the selected attachments?";

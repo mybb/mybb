@@ -15,9 +15,9 @@ $l['error_missing_title'] = "You did not enter a title for this user title";
 $l['error_missing_posts'] = "You did not enter the minimum number of posts for this user title";
 $l['error_invalid_user_title'] = "You have specified an invalid user title";
 
-$l['success_user_title_created'] = "The new user title has successfully been created";
-$l['success_user_title_updated'] = "The user title has successfully been updated.";
-$l['success_user_title_deleted'] = "The specified user title has successfully been deleted.";
+$l['success_user_title_created'] = "The new user title has been created successfully.";
+$l['success_user_title_updated'] = "The user title has been updated successfully.";
+$l['success_user_title_deleted'] = "The specified user title has been deleted successfully.";
 
 $l['title_to_assign'] = "Title to Assign";
 $l['title_to_assign_desc'] = "This title will be shown for users underneath their name if they do not have a custom title set.";

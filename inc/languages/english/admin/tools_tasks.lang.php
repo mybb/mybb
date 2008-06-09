@@ -66,12 +66,12 @@ $l['error_invalid_day'] = "The day you've entered is invalid.";
 $l['error_invalid_weekday'] = "The weekday you've selected is invalid.";
 $l['error_invalid_month'] = "The month you've selected is invalid.";
 
-$l['success_task_created'] = "The task has successfully been created.";
-$l['success_task_updated'] = "The task has successfully been updated.";
-$l['success_task_deleted'] = "The specified task has been deleted.";
-$l['success_task_enabled'] = "The specified task has now been enabled.";
-$l['success_task_disabled'] = "The specified task has now been disabled.";
-$l['success_task_run'] = "The specified task has been run.";
+$l['success_task_created'] = "The task has been created successfully.";
+$l['success_task_updated'] = "The selected task has been updated successfully.";
+$l['success_task_deleted'] = "The selected task has been deleted successfully.";
+$l['success_task_enabled'] = "The selected task has been enabled successfully.";
+$l['success_task_disabled'] = "The selected task has been disabled successfully.";
+$l['success_task_run'] = "The selected task has been run successfully.";
 
 $l['confirm_task_deletion'] = "Are you sure you wish to delete this scheduled task?";
 $l['confirm_task_enable'] = "<strong>WARNING:</strong> You are about to enable a task that is only meant to be run via a cron (Please see the <a href=\"http://wiki.mybboard.net/\" target=\"_blank\">MyBB Wiki</a> for more information). Continue?";

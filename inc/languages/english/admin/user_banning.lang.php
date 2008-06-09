@@ -27,9 +27,9 @@ $l['error_ban_self'] = "You cannot ban yourself.";
 $l['error_no_reason'] = "You did not enter a reason to ban this user.";
 
 // Success
-$l['success_ban_lifted'] = "The ban has successfully been lifted.";
-$l['success_banned'] = "The user has successfully been banned.";
-$l['success_ban_updated'] = "The ban has successfully been updated.";
+$l['success_ban_lifted'] = "The selected ban has been lifted successfully.";
+$l['success_banned'] = "The selected user has been banned successfully.";
+$l['success_ban_updated'] = "The selected ban has been updated successfully.";
 
 // Confirm
 $l['confirm_lift_ban'] = "Are you sure you want to lift this ban?";

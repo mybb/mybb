@@ -53,40 +53,40 @@ $l['using_default_perms'] = "Using Default Permissions";
 
 $l['permissions_use_group_default'] = "Use Group Default";
 $l['permissions_group'] = "Group";
-$l['permissions_canview'] = "Can View";
-$l['permissions_canpostthreads'] = "Can Post Threads";
-$l['permissions_canpostreplys'] = "Can Post Replies";
-$l['permissions_canpostpolls'] = "Can Post Polls";
-$l['permissions_canuploadattachments'] = "Can Upload Attachments";
+$l['permissions_canview'] = "Can view?";
+$l['permissions_canpostthreads'] = "Can post threads?";
+$l['permissions_canpostreplys'] = "Can post replies?";
+$l['permissions_canpostpolls'] = "Can post polls?";
+$l['permissions_canuploadattachments'] = "Can upload attachments?";
 $l['permissions_all'] = "All?";
 
 $l['moderator_permissions'] = "Moderator Permissions";
 $l['forum_desc'] = "Forum the moderator manages.";
 $l['edit_mod_for'] = "Edit moderator options for \"{1}\"";
-$l['can_edit_posts'] = "Can edit posts";
-$l['can_delete_posts'] = "Can delete posts";
-$l['can_view_ips'] = "Can view IPs";
-$l['can_open_close_threads'] = "Can open/close threads";
-$l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)";
-$l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate";
+$l['can_edit_posts'] = "Can edit posts?";
+$l['can_delete_posts'] = "Can delete posts?";
+$l['can_view_ips'] = "Can view IPs?";
+$l['can_open_close_threads'] = "Can open/close threads?";
+$l['can_manage_threads'] = "Can manage threads (split, move, copy, merge)?";
+$l['can_move_to_other_forums'] = "Can move threads to another forum this user doesn't moderate?";
 $l['save_mod'] = "Save Moderator";
 
 $l['no_forums'] = "There are no forums found.";
 $l['no_moderators'] = "There are no moderators found.";
 
-$l['success_forum_disporder_updated'] = "Successfully updated the forum display order.";
-$l['success_forum_deleted'] = "Successfully delete the specified forum.";
-$l['success_moderator_deleted'] = "Successfully deleted the specified moderator.";
-$l['success_forum_permissions_updated'] = "Successfully updated the forum permissions.";
-$l['success_forum_updated'] = "Successfully updated the forum.";
-$l['success_moderator_updated'] = "Successfully updated the moderator.";
+$l['success_forum_disporder_updated'] = "The forum display orders have been updated successfully.";
+$l['success_forum_deleted'] = "The selected forum have been deleted successfully.";
+$l['success_moderator_deleted'] = "The selected moderator has been deleted successfully.";
+$l['success_forum_permissions_updated'] = "The forum permissions have been updated successfully.";
+$l['success_forum_updated'] = "The forum settings have been updated successfully.";
+$l['success_moderator_updated'] = "The selected moderator has been updated successfully.";
 
-$l['error_invalid_forum'] = "Please input a valid forum.";
-$l['error_invalid_moderator'] = "Please input a valid moderator to delete.";
+$l['error_invalid_forum'] = "Please select a valid forum.";
+$l['error_invalid_moderator'] = "Please select a valid moderator to delete.";
 $l['error_invalid_fid'] = "Invalid Forum ID selected.";
-$l['error_forum_parent_child'] = "You can't set the parent forum to one of the forums own children.";
+$l['error_forum_parent_child'] = "You can't set the parent forum of this forum to one of it's children.";
 $l['error_forum_parent_itself'] = "The forum parent cannot be the forum itself.";
-$l['error_incorrect_moderator'] = "Please input a valid moderator.";
+$l['error_incorrect_moderator'] = "Please select a valid moderator.";
 
 $l['confirm_moderator_deletion'] = "Are you sure you wish to remove this moderator from this forum?";
 $l['confirm_forum_deletion'] = "Are you sure you wish to delete this forum?";
@@ -111,9 +111,9 @@ $l['forum_link_desc'] = "To make a forum redirect to another location, enter the
 $l['forum_password'] = "Forum Password";
 $l['forum_password_desc'] = "To protect this forum further, you can choose a password that must be entered for access. Note: User groups still need permissions to access this forum.";
 $l['access_options'] = "Access Options";
-$l['forum_is_active'] = "Forum is Active";
+$l['forum_is_active'] = "Forum is Active?";
 $l['forum_is_active_desc'] = "If unselected, this forum will not be shown to users and will not \"exist\".";
-$l['forum_is_open'] = "Forum is Open";
+$l['forum_is_open'] = "Forum is Open?";
 $l['forum_is_open_desc'] = "If unselected, users will not be able to post in this forum regardless of permissions.";
 
 $l['copy_to_new_forum'] = "Copy to new forum";
@@ -128,17 +128,17 @@ $l['copy_user_group_permissions'] = "Copy User Group Permissions";
 $l['copy_user_group_permissions_desc'] = "Use CTRL to select multiple groups.";
 
 $l['moderation_options'] = "Moderation Options";
-$l['mod_new_posts'] = "Moderate New Posts";
-$l['mod_new_threads'] = "Moderate New Threads";
-$l['mod_new_attachments'] = "Moderate New Attachments";
-$l['mod_after_edit'] = "Moderate After Edit";
-$l['override_user_style'] = "Override User's Selected Style";
+$l['mod_new_posts'] = "Yes, moderate new posts";
+$l['mod_new_threads'] = "Yes, moderate new threads";
+$l['mod_new_attachments'] = "Yes, moderate new attachments";
+$l['mod_after_edit'] = "Yes, moderate posts after they've been edited";
+$l['override_user_style'] = "Yes, override the user's selected style for this forum";
 $l['style_options'] = "Style Options";
 $l['forum_specific_style'] = "Forum-Specific Style:";
 $l['use_default'] = "Use Default";
-$l['dont_display_rules'] = "Don't Display Rules";
-$l['display_rules_inline'] = "Display Rules Inline";
-$l['display_rules_link'] = "Display Rules Link";
+$l['dont_display_rules'] = "Don't display rules for this forum";
+$l['display_rules_inline'] = "Display rules for this forum on the thread listing";
+$l['display_rules_link'] = "Display a link to the rules for this forum";
 $l['display_method'] = "Display Method:";
 $l['rules'] = "Rules:";
 $l['forum_rules'] = "Forum Rules";
@@ -175,18 +175,18 @@ $l['sort_order_asc'] = "Ascending";
 $l['sort_order_desc'] = "Descending";
 
 $l['misc_options'] = "Miscellaneous Options";
-$l['allow_html'] = "Allow HTML";
-$l['allow_mycode'] = "Allow MyCode";
-$l['allow_smilies'] = "Allow Smilies";
-$l['allow_img_code'] = "Allow [img] Code";
-$l['allow_post_icons'] = "Allow Post Icons";
-$l['allow_thread_ratings'] = "Allow Thread Ratings";
-$l['show_forum_jump'] = "Show in Forum Jump";
-$l['use_postcounts'] = "Make posts in this forum count towards user post counts";
+$l['allow_html'] = "Yes, allow HTML in posts";
+$l['allow_mycode'] = "Yes, allow MyCode in posts";
+$l['allow_smilies'] = "Yes, allow smilies in posts";
+$l['allow_img_code'] = "Yes, allow [img] code in posts";
+$l['allow_post_icons'] = "Yes, allow post icons to be chosen for posts";
+$l['allow_thread_ratings'] = "Yes, allow threads to be rated";
+$l['show_forum_jump'] = "Yes, show this forum in the 'forum jump' menu";
+$l['use_postcounts'] = "Yes, posts in this forum should count towards user post counts";
 
 $l['use_permissions'] = "Use Permissions";
 $l['use_permissions_desc'] = "Select the permissions you would like to use for this user group - inherited permissions (will delete custom permissions) or custom permissions.";
-$l['inherit_permissions'] = "Use user group permissions or inherit from parent forums";
+$l['inherit_permissions'] = "Use user group permissions or inherit permissions from parent forums";
 $l['custom_permissions'] = "Use custom permissions (below)";
 
 $l['save_permissions'] = "Save Forum Permissions";
@@ -194,12 +194,12 @@ $l['save_permissions'] = "Save Forum Permissions";
 $l['error_missing_title'] = "You must enter in a title.";
 $l['error_no_parent'] = "You must select a parent forum.";
 
-$l['success_forum_added'] = "Successfully added the forum.";
-$l['success_moderator_added'] = "The moderator has successfully been added to the forum.";
-$l['success_forum_permissions_saved'] = "Successfully saved the forum permissions.";
-$l['success_forum_copied'] = "Successfully copied the specified forum.";
+$l['success_forum_added'] = "The forum has been created successfully.";
+$l['success_moderator_added'] = "The moderator has been added to this forum successfully.";
+$l['success_forum_permissions_saved'] = "The forum permissions have been saved successfully.";
+$l['success_forum_copied'] = "The selected forum has been copied successfully.";
 
-$l['error_moderator_already_added'] = "The specified moderator is already a moderator of the forum.";
+$l['error_moderator_already_added'] = "The selected user is already a moderator of this forum.";
 $l['error_moderator_not_found'] = "The specified username was not found.";
 $l['error_new_forum_needs_name'] = "You need to give your new forum a name.";
 $l['error_invalid_source_forum'] = "Invalid source forum.";
@@ -211,23 +211,23 @@ $l['group_editing'] = "Editing";
 $l['group_polls'] = "Polls";
 $l['group_misc'] = "Miscellaneous";
 
-$l['viewing_field_canview'] = "Can view forum";
-$l['viewing_field_canviewthreads'] = "Can view threads within forum";
-$l['viewing_field_candlattachments'] = "Can download attachments";
+$l['viewing_field_canview'] = "Can view forum?";
+$l['viewing_field_canviewthreads'] = "Can view threads within forum?";
+$l['viewing_field_candlattachments'] = "Can download attachments?";
 
-$l['posting_rating_field_canpostthreads'] = "Can post threads";
-$l['posting_rating_field_canpostreplys'] = "Can post replies";
-$l['posting_rating_field_canpostattachments'] = "Can post attachments";
-$l['posting_rating_field_canratethreads'] = "Can rate threads";
+$l['posting_rating_field_canpostthreads'] = "Can post threads?";
+$l['posting_rating_field_canpostreplys'] = "Can post replies?";
+$l['posting_rating_field_canpostattachments'] = "Can post attachments?";
+$l['posting_rating_field_canratethreads'] = "Can rate threads?";
 
-$l['editing_field_caneditposts'] = "Can edit own posts";
-$l['editing_field_candeleteposts'] = "Can delete own posts";
-$l['editing_field_candeletethreads'] = "Can delete own threads";
-$l['editing_field_caneditattachments'] = "Can edit own attachments";
+$l['editing_field_caneditposts'] = "Can edit own posts?";
+$l['editing_field_candeleteposts'] = "Can delete own posts?";
+$l['editing_field_candeletethreads'] = "Can delete own threads?";
+$l['editing_field_caneditattachments'] = "Can edit own attachments?";
 
-$l['polls_field_canpostpolls'] = "Can post polls";
-$l['polls_field_canvotepolls'] = "Can vote in polls";
+$l['polls_field_canpostpolls'] = "Can post polls?";
+$l['polls_field_canvotepolls'] = "Can vote in polls?";
 
-$l['misc_field_cansearch'] = "Can search forum";
+$l['misc_field_cansearch'] = "Can search forum?";
 
 ?>

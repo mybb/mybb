@@ -11,7 +11,7 @@ $l['database_backups'] = "Database Backups";
 $l['database_backups_desc'] = "Here you find a listing of the database backups that are currently stored on your web server in the MyBB Backups directory.";
 $l['new_database_backup'] = "New Database Backup";
 $l['new_backup'] = "New Backup";
-$l['new_backup_desc'] = "Here you can make new backups of your database";
+$l['new_backup_desc'] = "Here you can backup a copy of your database.";
 $l['backups'] = "Backups";
 $l['existing_database_backups'] = "Existing Database Backups";
 
@@ -54,7 +54,7 @@ $l['alert_not_writable'] = "Your backups directory (within the Admin CP director
 
 $l['confirm_backup_deletion'] = "Are you sure you wish to delete this backup?";
 
-$l['success_backup_deleted'] = "The backup has successfully been deleted.";
-$l['success_backup_created'] = "The backup has successfully been created.";
+$l['success_backup_deleted'] = "The backup has been deleted successfully.";
+$l['success_backup_created'] = "The backup has been created successfully.";
 
 ?>

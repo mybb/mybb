@@ -8,7 +8,7 @@
 
 
 $l['admin_logs'] = "Administrator Logs";
-$l['admin_logs_desc'] = "Here you can view, prune, and search the actions administrators have taken in the Admin CP.";
+$l['admin_logs_desc'] = "Here you can view, prune, and search the actions administrators have taken in the control panel.";
 $l['prune_admin_logs'] = "Prune Administrator Logs";
 $l['prune_admin_logs_desc'] = "Here you can prune the administrator logs matching a specified criteria.";
 
@@ -38,7 +38,7 @@ $l['desc'] = "Descending";
 $l['in'] = "in";
 $l['order'] = "order";
 
-$l['success_pruned_admin_logs'] = "Administrator logs pruned successfully.";
+$l['success_pruned_admin_logs'] = "The administrator logs have been pruned successfully.";
 
 $l['admin_log_config_attachment_types_add'] = "Added attachment extension #{1} ({2})";
 $l['admin_log_config_attachment_types_edit'] = "Edited attachment extension #{1} ({2})";

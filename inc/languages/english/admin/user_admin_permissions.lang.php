@@ -14,7 +14,7 @@ $l['group_permissions_desc'] = "Administrator permissions can also be applied to
 $l['default_permissions'] = "Default Permissions";
 $l['default_permissions_desc'] = "The default administrative permissions are those applied to users who do not have custom administrator permissions set for them or are not inheriting group administrator permissions.";
 
-$l['admin_permissions_updated'] = "The admin permissions have been successfully updated.";
+$l['admin_permissions_updated'] = "The admin permissions have been updated successfully.";
 $l['revoke_permissions'] = "Revoke Permissions";
 $l['edit_permissions'] = "Edit Permissions";
 $l['set_permissions'] = "Set Permissions";
@@ -40,7 +40,7 @@ $l['error_delete_super_admin'] = 'Sorry, but you cannot perform this action on t
 $l['error_delete_no_uid'] = 'You did not enter a admin user/usergroup permission id';
 $l['error_delete_invalid_uid'] = 'You did not enter a valid admin user/usergroup permission id';
 
-$l['success_perms_deleted'] = 'The admin user/usergroup permissions has successfully been revoked.';
+$l['success_perms_deleted'] = 'The admin user/usergroup permissions has been revoked successfully.';
 
 $l['confirm_perms_deletion'] = "Are you sure you wish to revoked this admin user/usergroup permissions?";
 $l['confirm_perms_deletion2'] = "Are you sure you wish to revoke this user\'s permissions?";
