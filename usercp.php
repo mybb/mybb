@@ -1905,13 +1905,20 @@ if($mybb->input['action'] == "do_editlists")
 
 	$plugins->run_hooks("usercp_do_editlists_start");
 
+	$existing_users = array();
 	if($mybb->input['manage'] == "ignored")
 	{
-		$existing_users = explode(",", $mybb->user['ignorelist']);
+		if($mybb->user['ignorelist'])
+		{
+			$existing_users = explode(",", $mybb->user['ignorelist']);
+		}
 	}
 	else
 	{
-		$existing_users = explode(",", $mybb->user['buddylist']);
+		if($mybb->user['buddylist'])
+		{
+			$existing_users = explode(",", $mybb->user['buddylist']);
+		}
 	}
 
 	// Adding one or more users to this list
