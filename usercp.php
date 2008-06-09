@@ -2122,7 +2122,7 @@ if($mybb->input['action'] == "editlists")
 
 	// Fetch out buddies
 	$buddy_count = 0;
-	if(($mybb->request_method != "post" || $mybb->input['manage'] == "buddy") && $mybb->user['buddylist'])
+	if($mybb->user['buddylist'])
 	{
 		$type = "buddy";
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array("order_by" => "username"));
@@ -2150,7 +2150,7 @@ if($mybb->input['action'] == "editlists")
 
 	// Fetch out ignore list users
 	$ignore_count = 0;
-	if(($mybb->request_method != "post" || $mybb->input['manage'] == "ignored") && $mybb->user['ignorelist'])
+	if($mybb->user['ignorelist'])
 	{
 		$type = "ignored";
 		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['ignorelist']})", array("order_by" => "username"));
