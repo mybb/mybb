@@ -177,12 +177,12 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			{
 				$mybb->input['awaymonth'] = my_date('n', $awaydate);
 			}
-			
+
 			if(!$mybb->input['awayyear'])
 			{
 				$mybb->input['awayyear'] = my_date('Y', $awaydate);
 			}
-			
+
 			$returntimestamp = gmmktime(0, 0, 0, $mybb->input['awaymonth'], $mybb->input['awayday'], $mybb->input['awayyear']);
 			$awaytimestamp = gmmktime(0, 0, 0, my_date('n', $awaydate), my_date('j', $awaydate), my_date('Y', $awaydate));
 			if ($returntimestamp < $awaytimestamp && $mybb->input['awayyear'] < my_date("Y"))
@@ -294,7 +294,7 @@ if($mybb->input['action'] == "profile")
 		}
 	}
 	$bdaymonthsel[$bday[1]] = "selected";
-	
+
 	$bdayprivacysel = '';
 	if($user['birthdayprivacy'] == 'all' || !$user['birthdayprivacy'])
 	{
@@ -314,7 +314,7 @@ if($mybb->input['action'] == "profile")
 		$bdayprivacysel .= "<option value=\"none\">{$lang->birthdayprivacynone}</option>\n";
 		$bdayprivacysel .= "<option value=\"age\" selected=\"selected\">{$lang->birthdayprivacyage}</option>";
 	}
-	
+
 	if($user['website'] == "" || $user['website'] == "http://")
 	{
 		$user['website'] = "http://";
@@ -835,7 +835,7 @@ if($mybb->input['action'] == "options")
 	{
 		$user['threadmode'] = "linear";
 	}
-	
+
 	if($user['classicpostbit'] != 0)
 	{
 		$classicpostbitcheck = "checked=\"checked\"";
@@ -966,7 +966,7 @@ if($mybb->input['action'] == "do_email" && $mybb->request_method == "post")
 					"misc" => $db->escape_string($mybb->input['email'])
 				);
 				$db->insert_query("awaitingactivation", $newactivation);
-		
+
 				$username = $mybb->user['username'];
 				$uid = $mybb->user['uid'];
 				$lang->emailsubject_changeemail = $lang->sprintf($lang->emailsubject_changeemail, $mybb->settings['bbname']);
@@ -1225,7 +1225,11 @@ if($mybb->input['action'] == "subscriptions")
 
 	if(is_array($del_subscriptions))
 	{
-		$db->delete_query("threadsubscriptions", "tid IN (".implode(",", $del_subscriptions).") AND uid='{$mybb->user['uid']}'");
+		$tids = implode(',', $del_subscriptions);
+		if($tids)
+		{
+			$db->delete_query("threadsubscriptions", "tid IN ({$tids}) AND uid='{$mybb->user['uid']}'");
+		}
 	}
 
 	if(is_array($subscriptions))
@@ -1245,10 +1249,10 @@ if($mybb->input['action'] == "subscriptions")
 		// Read threads
 		if($mybb->settings['threadreadcut'] > 0)
 		{
-			$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})"); 
+			$query = $db->simple_select("threadsread", "*", "uid='{$mybb->user['uid']}' AND tid IN ({$tids})");
 			while($readthread = $db->fetch_array($query))
 			{
-				$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline']; 
+				$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline'];
 			}
 		}
 
@@ -1257,7 +1261,7 @@ if($mybb->input['action'] == "subscriptions")
 		foreach($subscriptions as $thread)
 		{
 			$bgcolor = alt_trow();
-		
+
 			$folder = '';
 			$prefix = '';
 
@@ -1268,7 +1272,7 @@ if($mybb->input['action'] == "subscriptions")
 			// Build our links
 			$thread['threadlink'] = get_thread_link($thread['tid']);
 			$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
-			
+
 			// Fetch the thread icon if we have one
 			if($thread['icon'] > 0 && $icon_cache[$thread['icon']])
 			{
@@ -1283,13 +1287,13 @@ if($mybb->input['action'] == "subscriptions")
 			// Determine the folder
 			$folder = '';
 			$folder_label = '';
-			
+
 			if($thread['doticon'])
 			{
 				$folder = "dot_";
 				$folder_label .= $lang->icon_dot;
 			}
-			
+
 			$gotounread = '';
 			$isnew = 0;
 			$donenew = 0;
@@ -1300,12 +1304,12 @@ if($mybb->input['action'] == "subscriptions")
 			{
 				$forumread = $mybb->user['lastvisit'];
 			}
-			
+
 			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forumread)
 			{
 				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 			}
-			
+
 			if($thread['lastpost'] > $cutoff)
 			{
 				if($thread['lastpost'] > $cutoff)
@@ -1319,21 +1323,21 @@ if($mybb->input['action'] == "subscriptions")
 							$lastread = 1;
 					}
 				}
-			} 
-			
-			if(!$lastread) 
+			}
+
+			if(!$lastread)
 			{
-				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']); 
-				if($readcookie > $forumread) 
-				{ 
-					$lastread = $readcookie; 
+				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
+				if($readcookie > $forumread)
+				{
+					$lastread = $readcookie;
 				}
 				else
 				{
 					$lastread = $forumread;
 				}
 			}
-			
+
 			if($thread['lastpost'] > $lastread && $lastread)
 			{
 				$folder .= "new";
@@ -1354,7 +1358,7 @@ if($mybb->input['action'] == "subscriptions")
 				$folder .= "hot";
 				$folder_label .= $lang->icon_hot;
 			}
-			
+
 			if($thread['closed'] == 1)
 			{
 				$folder .= "lock";
@@ -1379,7 +1383,7 @@ if($mybb->input['action'] == "subscriptions")
 			{
 				$lastposterlink = build_profile_link($lastposter, $lastposteruid);
 			}
-			
+
 			$thread['replies'] = my_number_format($thread['replies']);
 			$thread['views'] = my_number_format($thread['views']);
 
@@ -1573,12 +1577,12 @@ if($mybb->input['action'] == "editsig")
 	}
 	$sig = htmlspecialchars_uni($sig);
 	$lang->edit_sig_note2 = $lang->sprintf($lang->edit_sig_note2, $sigsmilies, $sigmycode, $sigimgcode, $sightml, $mybb->settings['siglength']);
-	
+
 	if($mybb->settings['bbcodeinserter'] != 0 || $mybb->user['showcodebuttons'] != 0)
 	{
 		$codebuttons = build_mycode_inserter("signature");
 	}
-	
+
 	eval("\$editsig = \"".$templates->get("usercp_editsig")."\";");
 	$plugins->run_hooks("usercp_editsig_end");
 	output_page($editsig);
@@ -1591,7 +1595,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 
 	$plugins->run_hooks("usercp_do_avatar_start");
 	require_once MYBB_ROOT."inc/functions_upload.php";
-	
+
 	$avatar_error = "";
 
 	if($mybb->input['remove']) // remove avatar
@@ -1610,7 +1614,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		{
 			$avatar_error = $lang->error_noavatar;
 		}
-		
+
 		if(empty($avatar_error))
 		{
 			if($mybb->input['gallery'] == "default")
@@ -1706,7 +1710,7 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 				}
 			}
 		}
-		
+
 		if(empty($avatar_error))
 		{
 			if($width > 0 && $height > 0)
@@ -1936,7 +1940,7 @@ if($mybb->input['action'] == "do_editlists")
 				unset($users[$key]);
 				continue;
 			}
-			
+
 			if(my_strtoupper($mybb->user['username']) == my_strtoupper($username))
 			{
 				$adding_self = true;
@@ -1953,7 +1957,7 @@ if($mybb->input['action'] == "do_editlists")
 			while($user = $db->fetch_array($query))
 			{
 				++$found_users;
-				
+
 				// Make sure we're not adding a duplicate
 				if(in_array($user['uid'], $existing_users))
 				{
@@ -1974,7 +1978,7 @@ if($mybb->input['action'] == "do_editlists")
 				$message = $lang->users_added_to_buddy_list;
 			}
 		}
-		
+
 		if($adding_self == true)
 		{
 			if($mybb->input['manage'] == "ignored")
@@ -1986,19 +1990,19 @@ if($mybb->input['action'] == "do_editlists")
 				$error_message = $lang->cant_add_self_to_buddy_list;
 			}
 		}
-		
+
 		if(count($existing_users) == 0)
 		{
 			$message = "";
 		}
-		
+
 		if(count($found_users) < count($users))
 		{
 			if($error_message)
 			{
 				$error_message .= "<br />";
 			}
-			
+
 			$error_message .= $lang->invalid_user_selected;
 		}
 	}
@@ -2073,7 +2077,7 @@ if($mybb->input['action'] == "do_editlists")
 		{
 			$message_js = "var success = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(success, element); success.innerHTML = '{$message}'; success.className = 'success_message'; window.setTimeout(function() { Element.remove(success) }, 5000);";
 		}
-		
+
 		if($error_message)
 		{
 			$message_js .= " var error = document.createElement('div'); var element = \$('{$list}_list'); element.parentNode.insertBefore(error, element); 	error.innerHTML = '{$error_message}'; error.className = 'error_message'; window.setTimeout(function() { Element.remove(error) }, 5000);";
@@ -2416,8 +2420,8 @@ if($mybb->input['action'] == "usergroups")
 
 	// List of groups this user is a leader of
 	$groupsledlist = '';
-	
-	
+
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -2444,7 +2448,7 @@ if($mybb->input['action'] == "usergroups")
 				GROUP BY l.gid
 			");
 	}
-	
+
 	while($usergroup = $db->fetch_array($query))
 	{
 		$memberlistlink = $moderaterequestslink = '';
@@ -2493,7 +2497,7 @@ if($mybb->input['action'] == "usergroups")
 		while($usergroup = $db->fetch_array($query))
 		{
 			$showmemberof = true;
-			
+
 			if($groupleader[$usergroup['gid']])
 			{
 				$leavelink = "<div style=\"text-align: center;\"><span class=\"smalltext\">$lang->usergroup_leave_leader</span></div>";
@@ -2636,7 +2640,7 @@ if($mybb->input['action'] == "attachments")
 	}
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
-	
+
 	if(intval($mybb->input['page']) > 0)
 	{
 		$start = ($page-1) *$perpage;
@@ -2646,16 +2650,16 @@ if($mybb->input['action'] == "attachments")
 		$start = 0;
 		$page = 1;
 	}
-	
+
 	$end = $start + $perpage;
 	$lower = $start+1;
-	
+
 	if($end > $totalattachments)
 	{
 		$upper = $totalattachments;
 	}
 	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
-	
+
 	$query = $db->query("
 		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
 		FROM ".TABLE_PREFIX."attachments a
@@ -2784,12 +2788,12 @@ if(!$mybb->input['action'])
 		{
 			$warning_level = 100;
 		}
-		
+
 		if($mybb->user['warningpoints'] > $mybb->settings['maxwarningpoints'])
 		{
 			$mybb->user['warningpoints'] = $mybb->settings['maxwarningpoints'];
 		}
-		
+
 		if($warning_level > 0)
 		{
 			expire_warnings();
@@ -2831,7 +2835,7 @@ if(!$mybb->input['action'])
 					$warning['points'] = "+{$warning['points']}";
 				}
 				$points = $lang->sprintf($lang->warning_points, $warning['points']);
-				
+
 				// Figure out expiration time
 				if($warning['daterevoked'])
 				{
@@ -2849,14 +2853,14 @@ if(!$mybb->input['action'])
 				{
 					$expires = my_date($mybb->settings['dateformat'], $warning['expires']).", ".my_date($mybb->settings['timeformat'], $warning['expires']);
 				}
-				
+
 				$alt_bg = alt_trow();
 				eval("\$warnings .= \"".$templates->get("usercp_warnings_warning")."\";");
 			}
 			if($warnings)
 			{
 				eval("\$latest_warnings = \"".$templates->get("usercp_warnings")."\";");
-			}	
+			}
 		}
 	}
 
