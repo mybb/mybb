@@ -975,6 +975,19 @@ if($mybb->input['action'] == "delete_set")
 		admin_redirect("index.php?module=style/templates");
 	}
 	
+	// Is there a theme attached to this set?
+	$query = $db->simple_select("themes", "properties");
+	while($theme = $db->fetch_array($query))
+	{
+		$properties = @unserialize($theme['properties']);
+		if($properties['templateset'] == $sid)
+		{
+			flash_message($lang->error_themes_attached_template_set, 'error');
+			admin_redirect("index.php?module=style/templates");
+			break;
+		}
+	}
+	
 	// User clicked no
 	if($mybb->input['no'])
 	{
@@ -983,8 +996,10 @@ if($mybb->input['action'] == "delete_set")
 
 	if($mybb->request_method == "post")
 	{
-		// Delete the template
+		// Delete the templateset
 		$db->delete_query("templatesets", "sid='{$set['sid']}'");
+		// Delete all custom templates in this templateset
+		$db->delete_query("templates", "sid='{$set['sid']}'");
 		
 		$plugins->run_hooks("admin_style_templates_delete_set_commit");
 

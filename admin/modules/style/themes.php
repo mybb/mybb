@@ -684,6 +684,11 @@ if($mybb->input['action'] == "edit")
 			'borderwidth' => intval($mybb->input['borderwidth'])
 		);
 		
+		if($properties['templateset'] <= 0)
+		{
+			$errors[] = $lang->error_invalid_templateset;
+		}
+		
 		$allowedgroups = array();
 		if(is_array($mybb->input['allowedgroups']))
 		{

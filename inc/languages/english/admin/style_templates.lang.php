@@ -142,6 +142,8 @@ $l['error_invalid_template'] = "Please select a valid template.";
 $l['error_missing_set_title'] = "Please select a template set title.";
 $l['error_invalid_input'] = "Please make sure you have the correct template set ID.";
 $l['error_invalid_set'] = "Please select a valid template set.";
+$l['error_invalid_template_set'] = "Invalid template set selected.";
+$l['error_themes_attached_template_set'] = "This template set cannot be deleted as there are themes attached to this template set.";
 
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_template_deleted'] = "The selected template has successfully been deleted.";
