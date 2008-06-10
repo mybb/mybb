@@ -499,7 +499,7 @@ elseif($mybb->input['action'] == "smilies")
 }
 elseif($mybb->input['action'] == "imcenter")
 {
-	if(!$mybb->input['imtype'])
+	if($mybb->input['imtype'] != "aim" && $mybb->input['imtype'] != "icq" && $mybb->input['imtype'] != "msn" && $mybb->input['imtype'] != "yahoo")
 	{
 		error($lang->error_invalidimtype);
 	}

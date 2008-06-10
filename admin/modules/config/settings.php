@@ -1020,6 +1020,12 @@ if($mybb->input['action'] == "change")
 	$buttons[] = $form->generate_submit_button($lang->save_settings);
 	foreach($cache_groups as $groupinfo)
 	{
+		$group_lang_var = "setting_group_{$groupinfo['name']}";
+		if($lang->$group_lang_var)
+		{
+			$groupinfo['title'] = $lang->$group_lang_var;
+		}
+		
 		$form_container = new FormContainer($groupinfo['title']);
 		
 		if(empty($cache_settings[$groupinfo['gid']]))
