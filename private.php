@@ -565,7 +565,7 @@ if($mybb->input['action'] == "read")
 	{
 		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
 		
-		if($forward_date == $lang->today || $forward_date == $lang->yesturday)
+		if(strpos($forward_date, $lang->today) !== false || strpos($forward_date, $lang->yesturday) !== false)
 		{
 			$forward_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 			$actioned_on = $lang->sprintf($lang->you_forwarded, $forward_date);

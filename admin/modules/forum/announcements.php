@@ -94,7 +94,12 @@ if($mybb->input['action'] == "add")
 				}
 			}
 			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+			if($mybb->input['starttime_month'] > 12 || (int)$mybb->input['starttime_month'] < 1 || !is_int($mybb->input['starttime_month']))
+			{
+				$mybb->input['starttime_month'] = 1;
+			}
+			
+			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, $mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 			
 			if($mybb->input['endtime_type'] == "2")
 			{
@@ -102,7 +107,11 @@ if($mybb->input['action'] == "add")
 			}
 			else
 			{
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				if($mybb->input['endtime_month'] > 12 || (int)$mybb->input['endtime_month'] < 1 || !is_int($mybb->input['endtime_month']))
+				{
+					$mybb->input['endtime_month'] = 1;
+				}
+				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, $mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 			}
 			
 			$insert_announcement = array(
@@ -359,7 +368,6 @@ if($mybb->input['action'] == "edit")
 			$startdate = @explode(" ", $mybb->input['starttime_time']);
 			$startdate = @explode(":", $startdate[0]);
 			$enddate = @explode(" ", $mybb->input['endtime_time']);
-			echo "<pre>"; print_r($enddate); echo "</pre>";
 			$enddate = @explode(":", $enddate[0]);
 		
 			if(stristr($mybb->input['starttime_time'], "pm"))
@@ -380,7 +388,12 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+			if($mybb->input['starttime_month'] > 12 || (int)$mybb->input['starttime_month'] < 1 || !is_int($mybb->input['starttime_month']))
+			{
+				$mybb->input['starttime_month'] = 1;
+			}
+			
+			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, $mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 			
 			if($mybb->input['endtime_type'] == "2")
 			{
@@ -388,7 +401,11 @@ if($mybb->input['action'] == "edit")
 			}
 			else
 			{
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				if($mybb->input['endtime_month'] > 12 || (int)$mybb->input['endtime_month'] < 1 || !is_int($mybb->input['endtime_month']))
+				{
+					$mybb->input['endtime_month'] = 1;
+				}
+				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, $mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 			}
 			
 			$update_announcement = array(

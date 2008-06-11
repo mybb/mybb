@@ -145,7 +145,7 @@ class DB_SQLite
 
 		$this->query_time += $query_time;
 
-		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".my_number_format($query_time)."s)";
+		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".number_format($query_time, 0)."s)";
 		
 		sqlite_query('PRAGMA short_column_names = 1', $this->link);
 		return $this->link;

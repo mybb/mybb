@@ -203,11 +203,6 @@ class CustomModeration extends Moderation
 					if($posthandler->validate_post($post))
 					{
 						$posthandler->insert_post($post);
-					}
-					
-					else {
-						echo '<pre>';
-						die(print_r($posthandler));
 					}					
 				}
 			}

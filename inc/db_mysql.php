@@ -201,7 +201,7 @@ class DB_MySQL
 				// Successful connection? break down brother!
 				if($this->$link)
 				{
-					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".my_number_format($time_spent)."s)";
+					$this->connections[] = "[".strtoupper($type)."] {$single_connection['username']}@{$single_connection['hostname']} (Connected in ".number_format($time_spent, 0)."s)";
 					break;
 				}
 				else

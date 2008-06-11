@@ -134,7 +134,7 @@ class DB_SQLite3
 
 		$this->query_time += $query_time;
 
-		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".my_number_format($query_time)."s)";
+		$this->connections[] = "[WRITE] {$config['database']} (Connected in ".number_format($query_time, 0)."s)";
 		
 		if($this->db)
 		{

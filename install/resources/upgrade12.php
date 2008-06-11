@@ -1284,16 +1284,16 @@ function upgrade12_redoconfig()
 			$config['memcache_port'] = 11211;
 		}
 		
+		$comment = "";
+		
+		if(!$db->db_encoding || !$config['db_encoding'])
+		{
+			$comment = " // ";
+		}
+		
 		if(!$config['db_encoding'])
 		{
 			$config['db_encoding'] = "utf8";
-		}
-		
-		$comma = "";
-		
-		if(!$db->db_encoding)
-		{
-			$comma = " // ";
 		}
 		
 		
