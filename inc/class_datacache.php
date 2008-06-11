@@ -451,10 +451,12 @@ class datacache
 		{
 			return strcasecmp($a['username'], $b['username']);
 		}
-		
-		foreach(array_keys($this->moderators) as $fid)
+		if (is_array($this->moderators))
 		{
-			usort($this->moderators[$fid], 'sort_moderators_by_usernames');
+			foreach(array_keys($this->moderators) as $fid)
+			{
+				usort($this->moderators[$fid], 'sort_moderators_by_usernames');
+			}
 		}
 
 		$this->build_moderators();
