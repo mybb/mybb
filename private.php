@@ -317,7 +317,7 @@ if($mybb->input['action'] == "send")
 	}
 	
 	// Draft, reply, forward
-	if($mybb->input['pmid'] && !$mybb->input['preview'])
+	if($mybb->input['pmid'] && !$mybb->input['preview'] && !$send_errors)
 	{
 		$query = $db->query("
 			SELECT pm.*, u.username AS quotename
