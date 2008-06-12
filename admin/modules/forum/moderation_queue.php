@@ -200,7 +200,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
 			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
 			$profile_link = build_profile_link($thread['username'], $thread['uid']);
-			$thread['postmessage'] = nl2br($thread['postmessage']);
+			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 
 			$table->construct_cell("<a href=\"{$thread['threadlink']}\">{$thread['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
@@ -308,9 +308,9 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$profile_link = build_profile_link($post['username'], $post['uid']);
-			$post['message'] = nl2br($post['message']);
+			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 
-			$table->construct_cell("<a href=\"{$post['postlink']}\">{$post['subject']}</a>");
+			$table->construct_cell("<a href=\"{$post['postlink']}#pid{$post['pid']}\">{$post['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$postdate}, {$posttime}", array("class" => "align_center"));
 			$table->construct_row();

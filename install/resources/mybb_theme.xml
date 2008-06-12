@@ -9546,7 +9546,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </body>
 </html>]]></template>
 		<template name="modcp_modqueue_posts_post" version="1400"><![CDATA[			<tr>
-				<td class="{$altbg}"><a href="{$post['postlink']}">{$post['subject']}</a></td>
+				<td class="{$altbg}"><a href="{$post['postlink']}#pid{$post['pid']}">{$post['subject']}</a></td>
 				<td class="{$altbg}" align="center">{$profile_link}</td>
 				<td align="center" class="{$altbg}">{$postdate}, {$posttime}</td>
 			</tr>

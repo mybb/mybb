@@ -1189,7 +1189,7 @@ if($mybb->input['action'] == "modqueue")
 			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
 			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
 			$profile_link = build_profile_link($thread['username'], $thread['uid']);
-			$thread['postmessage'] = nl2br($thread['postmessage']);
+			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong>";
 			eval("\$threads .= \"".$templates->get("modcp_modqueue_threads_thread")."\";");
 		}
@@ -1268,13 +1268,14 @@ if($mybb->input['action'] == "modqueue")
 			$post['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($post['threadsubject']));
 			$post['threadlink'] = get_thread_link($post['tid']);
 			$post['forumlink'] = get_forum_link($post['fid']);
+			$post['postlink'] = get_post_link($post['pid'], $post['tid']);
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
 			$profile_link = build_profile_link($post['username'], $post['uid']);
 			$thread = "<strong>{$lang->meta_thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
 			$forum = "<strong>{$lang->meta_forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
-			$post['message'] = nl2br($post['message']);
+			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 			eval("\$posts .= \"".$templates->get("modcp_modqueue_posts_post")."\";");
 		}
 
@@ -1349,7 +1350,11 @@ if($mybb->input['action'] == "modqueue")
 		{
 			$altbg = alt_trow();
 
-			if(!$attachment['dateuploaded']) $attachment['dateuploaded'] = $attachment['dateline'];
+			if(!$attachment['dateuploaded'])
+			{
+				$attachment['dateuploaded'] = $attachment['dateline'];
+			}
+			
 			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateuploaded']);
 			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateuploaded']);
 
