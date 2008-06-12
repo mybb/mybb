@@ -451,7 +451,8 @@ class datacache
 		{
 			return strcasecmp($a['username'], $b['username']);
 		}
-		if (is_array($this->moderators))
+		
+		if(is_array($this->moderators))
 		{
 			foreach(array_keys($this->moderators) as $fid)
 			{

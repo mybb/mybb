@@ -320,7 +320,7 @@ class PostDataHandler extends DataHandler
 		// Check to see if this person is in a usergroup that is excluded
 		if(strstr($mybb->settings['postmergeuignore'], ','))
 		{
-			$gids = explode(',', $mybb->settings['dppignoregroups']);
+			$gids = explode(',', $mybb->settings['postmergeuignore']);
 			foreach($gids as $key => $groupid)
 			{
 				$gid[] = intval($groupid);
@@ -375,7 +375,7 @@ class PostDataHandler extends DataHandler
 			$user_check = "ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
 		
-		$query = $db->simple_select("posts", "pid,message,visible", "$user_check AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
+		$query = $db->simple_select("posts", "pid,message,visible,posthash", "{$user_check} AND tid='".$post['tid']."' AND dateline='".$thread['lastpost']."'", array('order_by' => 'pid', 'order_dir' => 'DESC', 'limit' => 1));
 		return $db->fetch_array($query);
 	}
 
@@ -714,6 +714,28 @@ class PostDataHandler extends DataHandler
 					"message" => $db->escape_string($double_post['message'])
 				);
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+				
+				// Assign any uploaded attachments with the specific posthash to the merged post.
+				if($double_post['posthash'])
+				{
+					$post['posthash'] = $db->escape_string($post['posthash']);
+					$double_post['posthash'] = $db->escape_string($double_post['posthash']);
+					
+					$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+					$attachmentcount = $db->fetch_field($query, "attachmentcount");
+				
+					if($attachmentcount > 0)
+					{
+						// Update forum count
+						update_thread_counters($post['tid'], array('attachmentcount' => "+{$attachmentcount}"));
+					}
+					
+					$attachmentassign = array(
+						"pid" => $double_post['pid'],
+						"posthash" => $double_post['posthash'],
+					);
+					$db->update_query("attachments", $attachmentassign, "posthash='{$post['posthash']}'");
+				}
 			
 				// Return the post's pid and whether or not it is visible.
 				return array(
@@ -798,6 +820,12 @@ class PostDataHandler extends DataHandler
 			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
 
 			$this->pid = $db->insert_query("posts", $this->post_insert_data);
+		}
+		
+		if($visible == 1)
+		{
+			$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
@@ -890,11 +918,6 @@ class PostDataHandler extends DataHandler
 				$cache->update_mailqueue();
 			}
 			$thread_update = array("replies" => "+1");
-
-			$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'");
-			$attachmentcount = $db->fetch_field($query, "attachmentcount");
-
-			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 
 			// Update forum count
 			update_thread_counters($post['tid'], $thread_update);
