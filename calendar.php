@@ -1455,7 +1455,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// And day?
-	if($mybb->input['day'] && $mybb->input['day'] <= gmdate("t", mktime(0, 0, 0, $month, 1, $year)))
+	if($mybb->input['day'] && $mybb->input['day'] <= gmdate("t", gmmktime(0, 0, 0, $month, 1, $year)))
 	{
 		$day = intval($mybb->input['day']);
 	}
@@ -2048,7 +2048,7 @@ if(!$mybb->input['action'])
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$month_start_weekday = my_date("w", mktime(0, 0, 0, $month, 1, $year));
+	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, 1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
 		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));

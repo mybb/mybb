@@ -43,7 +43,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$next_month = get_next_month($month, $year);
 	$prev_month = get_prev_month($month, $year);
 
-	$month_start_weekday = my_date("w", mktime(0, 0, 0, $month, 1, $year));
+	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, 1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
 		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));

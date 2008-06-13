@@ -16,6 +16,16 @@ function task_backupdb($task)
 
 	@set_time_limit(0);
 	
+	if(!defined('MYBB_ADMIN_DIR'))
+	{
+		if(!isset($config['admin_dir']))
+		{
+			$config['admin_dir'] = "admin";
+		}
+	
+		define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
+	}
+	
 	// Check if folder is writable, before allowing submission
 	if(!is_writable(MYBB_ADMIN_DIR."/backups"))
 	{
@@ -92,7 +102,7 @@ function task_backupdb($task)
 			fclose($fp);
 		}
 		
-		add_task_log($task, $lang->task_backup_ran);
+		add_task_log($task, $lang->task_backup_ran."-".MYBB_ADMIN_DIR);
 	}
 }
 
