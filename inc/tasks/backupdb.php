@@ -102,7 +102,7 @@ function task_backupdb($task)
 			fclose($fp);
 		}
 		
-		add_task_log($task, $lang->task_backup_ran."-".MYBB_ADMIN_DIR);
+		add_task_log($task, $lang->task_backup_ran);
 	}
 }
 
