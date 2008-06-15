@@ -322,13 +322,13 @@ class postParser
 		// Special code requiring special attention
 		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 		{
-			$message = preg_replace("#\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')\n", $message);
+			$message = preg_replace("#\s?\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')\n", $message);
 		}
 
 		// Replace lists.
 		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
 		{
-			$message = preg_replace("#\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')\n", $message);
+			$message = preg_replace("#\s?\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')\n", $message);
 		}
 
 		// Convert images when allowed.
