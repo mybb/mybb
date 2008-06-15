@@ -1201,7 +1201,6 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		while($template = $db->fetch_array($query))
 		{
 			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-			//$popup->add_item($lang->inline_edit, "javascript:;");
 			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1");
 			$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid=-1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 				

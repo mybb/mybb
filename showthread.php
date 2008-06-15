@@ -570,13 +570,13 @@ if($mybb->input['action'] == "thread")
 	// Which thread mode is our user using?
 	if(!isset($mybb->input['mode']))
 	{
-		if(isset($mybb->user['threadmode']))
-		{
-			$mybb->input['mode'] = $mybb->user['threadmode'];
-		}
-		else if($mybb->settings['threadusenetstyle'] == 1)
+		if($mybb->settings['threadusenetstyle'] == 1)
 		{
 			$mybb->input['mode'] = "threaded";
+		}
+		else if(!empty($mybb->user['threadmode']))
+		{
+			$mybb->input['mode'] = $mybb->user['threadmode'];
 		}
 		else
 		{

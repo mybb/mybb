@@ -491,8 +491,7 @@ function perform_search_mysql($search)
 			$searchin[$fid] = 1;
 		}
 		else
-		{
-			
+		{			
 			if(count($fidlist) > 1)
 			{
 				$forumin = " AND t.fid IN (".implode(',', $fidlist).")";
