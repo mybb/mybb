@@ -479,7 +479,7 @@ var Cookie = {
 	get: function(name)
 	{
 		cookies = document.cookie;
-		name = name+"=";
+		name = cookiePrefix+name+"=";
 		cookiePos = cookies.indexOf(name);
 		
 		if(cookiePos != -1) 
@@ -527,7 +527,7 @@ var Cookie = {
 			path = "";
 		}
 
-		document.cookie = name+"="+escape(value)+"; path="+path+domain+expires;
+		document.cookie = cookiePrefix+name+"="+escape(value)+"; path="+path+domain+expires;
 	},
 
 	unset: function(name)

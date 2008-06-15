@@ -109,6 +109,7 @@ class DefaultPage
 var loading_text = '{$lang->loading_text}';
 var cookieDomain = '{$mybb->settings['cookiedomain']}';
 var cookiePath = '{$mybb->settings['cookiepath']}';
+var cookiePrefix = '{$mybb->settings['cookieprefix']}';
 var imagepath = '../images';
 //]]>
 </script>\n";

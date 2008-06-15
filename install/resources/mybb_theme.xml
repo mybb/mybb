@@ -3055,6 +3055,7 @@ ul.thread_tools li.subscription_remove {
 <!--
 	var cookieDomain = "{$mybb->settings['cookiedomain']}";
 	var cookiePath = "{$mybb->settings['cookiepath']}";
+	var cookiePrefix = "{$mybb->settings['cookieprefix']}";
 	var deleteevent_confirm = "{$lang->deleteevent_confirm}";
 	var removeattach_confirm = "{$lang->removeattach_confirm}";
 	var loading_text = '{$lang->ajax_loading}';

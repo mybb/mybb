@@ -873,10 +873,16 @@ function insert_templates()
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	require_once MYBB_ROOT."admin/inc/functions_themes.php";
-	$theme_id = import_theme_xml($contents, array("templateset" => $templateset));
+	$theme_id = import_theme_xml($contents, array("templateset" => -2));
 	$tid = build_new_theme("Default", null, $theme_id);
+	
+	// Update our properties template set to the correct one
+	$query = $db->simple_select("themes", "properties", "tid='{$tid}'", array('limit' => 1));
+	$properties = unserialize($db->fetch_field($query, "properties"));
+	$properties['templateset'] = $templateset;
+	unset($properties['inherited']['templateset']);
 
-	$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
+	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(serialize($properties))), "tid='{$tid}'");
 
 	echo $lang->theme_step_imported;
 	$output->print_footer('configuration');

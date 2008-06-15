@@ -180,7 +180,7 @@ var UserCP = {
 			var list = 'buddy';
 		}
 
-		new Ajax.Updater(list+'_list', 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type, {method: 'post', postBody: 'ajax=1&add_username='+escape($(type+'_add_username').value), evalScripts: true, onComplete: function() { $(type+'_submit').value = old_value; $(type+'_submit').disabled = false; $(type+'_add_username').disabled = false; $(type+'_add_username').value = ''; $(type+'_add_username').focus(); }});
+		new Ajax.Updater(list+'_list', 'usercp.php?action=do_editlists&my_post_key='+my_post_key+'&manage='+type, {method: 'post', postBody: 'ajax=1&add_username='+$(type+'_add_username').value, evalScripts: true, onComplete: function() { $(type+'_submit').value = old_value; $(type+'_submit').disabled = false; $(type+'_add_username').disabled = false; $(type+'_add_username').value = ''; $(type+'_add_username').focus(); }});
 		$(type+'_add_username').disabled = true;
 		$(type+'_submit').disabled = true;
 		return false;
