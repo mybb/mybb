@@ -1981,7 +1981,7 @@ if($mybb->input['action'] == "do_editlists")
 			}
 		}
 
-		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" && count($users) <= 1))
+		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" || count($users) > 1))
 		{
 			if($mybb->input['manage'] == "ignored")
 			{
