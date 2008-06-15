@@ -1924,7 +1924,10 @@ if($mybb->input['action'] == "do_editlists")
 			$existing_users = explode(",", $mybb->user['buddylist']);
 		}
 	}
-
+	
+	$error_message = "";
+	$message = "";
+	
 	// Adding one or more users to this list
 	if($mybb->input['add_username'])
 	{
@@ -1933,6 +1936,7 @@ if($mybb->input['action'] == "do_editlists")
 		$adding_self = false;
 		$users = explode(",", $mybb->input['add_username']);
 		$users = array_map("trim", $users);
+		$users = array_unique($users);
 		foreach($users as $key => $username)
 		{
 			if(empty($username))
@@ -1961,13 +1965,23 @@ if($mybb->input['action'] == "do_editlists")
 				// Make sure we're not adding a duplicate
 				if(in_array($user['uid'], $existing_users))
 				{
+					if($mybb->input['manage'] == "ignored")
+					{
+						$error_message = $lang->users_already_on_ignore_list;
+					}
+					else
+					{
+						$error_message = $lang->users_already_on_buddy_list;
+					}
+					array_pop($users); // To maintain a proper count when we call count($users)
 					continue;
 				}
+				
 				$existing_users[] = $user['uid'];
 			}
 		}
 
-		if($adding_self != true || ($adding_self == true && count($users) > 0))
+		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" && count($users) <= 1))
 		{
 			if($mybb->input['manage'] == "ignored")
 			{
@@ -1996,7 +2010,7 @@ if($mybb->input['action'] == "do_editlists")
 			$message = "";
 		}
 
-		if(count($found_users) < count($users))
+		if($found_users < count($users))
 		{
 			if($error_message)
 			{
