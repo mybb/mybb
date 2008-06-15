@@ -60,6 +60,11 @@ if(isset($mybb->user['language']) && $lang->language_exists($mybb->user['languag
 }
 $lang->set_language($mybb->settings['bblanguage']);
 
+if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
+{
+	@mb_internal_encoding($lang->settings['charset']);
+}
+
 // Load the language pack for this file.
 if(isset($mybb->user['style']) && intval($mybb->user['style']) != 0)
 {

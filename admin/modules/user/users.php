@@ -1943,6 +1943,9 @@ function build_users_view($view)
 
 		switch($view['sortby'])
 		{
+			case "numposts":
+				$view['sortby'] = "postnum";
+				break;
 			case "regdate":
 			case "lastactive":
 			case "postnum":
@@ -1959,7 +1962,7 @@ function build_users_view($view)
 		}
 
 		$usergroups = $cache->read("usergroups");
-
+		
 		// Fetch matching users
 		$query = $db->query("
 			SELECT u.*
@@ -2390,7 +2393,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				$code = $form->generate_text_box("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length']));
 				break;
 		}
-		$form_container->output_row($profile_field['name'], $profile_field['description'], $code, array('id' => "profile_field_{$field_name}"));
+		$form_container->output_row($profile_field['name'], $profile_field['description'], $code, "", array('id' => "profile_field_{$field_name}"));
 		$code = $user_options = $selected_options = $radio_options = $val = $options = '';
 	}
 }

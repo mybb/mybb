@@ -202,7 +202,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$profile_link = build_profile_link($thread['username'], $thread['uid']);
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 
-			$table->construct_cell("<a href=\"{$thread['threadlink']}\">{$thread['subject']}</a>");
+			$table->construct_cell("<a href=\"../{$thread['threadlink']}\">{$thread['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$threaddate}, {$threadtime}", array("class" => "align_center"));
 			$table->construct_row();
@@ -213,7 +213,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
 
-			$forum = "<strong>{$lang->forum} <a href=\"{$thread['forumlink']}\">{$forum_name}</a></strong><br />";
+			$forum = "<strong>{$lang->forum} <a href=\"../{$thread['forumlink']}\">{$forum_name}</a></strong><br />";
 
 			$table->construct_cell("<div class=\"modqueue_message\">{$controls}<div class=\"modqueue_meta\">{$forum}</div>{$thread['postmessage']}</div>", array("colspan" => 3));
 			$table->construct_row();
@@ -310,7 +310,7 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$profile_link = build_profile_link($post['username'], $post['uid']);
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 
-			$table->construct_cell("<a href=\"{$post['postlink']}#pid{$post['pid']}\">{$post['subject']}</a>");
+			$table->construct_cell("<a href=\"../{$post['postlink']}#pid{$post['pid']}\">{$post['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$postdate}, {$posttime}", array("class" => "align_center"));
 			$table->construct_row();
@@ -321,8 +321,8 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
 
-			$thread = "<strong>{$lang->thread} <a href=\"{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
-			$forum = "<strong>{$lang->forum} <a href=\"{$post['forumlink']}\">{$forum_name}</a></strong><br />";
+			$thread = "<strong>{$lang->thread} <a href=\"../{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
+			$forum = "<strong>{$lang->forum} <a href=\"../{$post['forumlink']}\">{$forum_name}</a></strong><br />";
 
 			$table->construct_cell("<div class=\"modqueue_message\">{$controls}<div class=\"modqueue_meta\">{$forum}{$thread}</div>{$post['message']}</div>", array("colspan" => 3));
 			$table->construct_row();
