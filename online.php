@@ -96,7 +96,17 @@ else
 	// Otherwise sort by last refresh
 	else
 	{
-		$sql = "s.time DESC";
+		switch($db->type)
+		{
+			case "sqlite3":
+			case "sqlite2":
+			case "pgsql":		
+				$sql = "s.time DESC";
+				break;
+			default:
+				$sql = "IF( s.uid >0, 1, 0 ) DESC, s.time DESC";
+				break;
+		}
 		$refresh_string = '';
 	}
 	
