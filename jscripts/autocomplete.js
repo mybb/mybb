@@ -311,16 +311,16 @@ autoComplete.prototype = {
 		var offsetTop = 0;
 		var offsetLeft = 0;
 
-		this.popup.style.width = this.textbox.offsetWidth-2+"px";
+		this.popup.style.width = this.textbox.offsetWidth-3+"px";
 		element = this.textbox;
 		do
 		{
 			offsetTop += element.offsetTop || 0;
 			offsetLeft += element.offsetLeft || 0;
 			element = element.offsetParent;
-			if(element)
+			if(element && ($(element).getStyle('position') == 'absolute'))
 			{
-				if(Element.getStyle(element, 'position') == 'relative' || Element.getStyle(element, 'position') == 'absolute') break;
+				break;
 			}
 		} while(element);
 		this.popup.style.marginTop = "-1px";
