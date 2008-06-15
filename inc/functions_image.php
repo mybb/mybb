@@ -71,13 +71,27 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 		$thumbwidth = $scale['width'];
 		$thumbheight = $scale['height'];
 		$thumbim = @imagecreatetruecolor($thumbwidth, $thumbheight);
-		if($thumbim)
+		
+		if(!$thumbim) {
+			$thumbim = @imagecreate($thumbwidth, $thumbheight);
+			$resized = true;
+		}
+		
+		// Attempt to preserve the transparency if there is any
+		$trans_color = imagecolortransparent($im);
+		if($trans_color >= 0 && $trans_color < imagecolorstotal($im)) {
+			$trans = imagecolorsforindex($im, $trans_colors);
+			$new_trans_color = imagecolorallocate($thumbim, $trnas['red'], $trans['blue'], $trans['green']);
+			imagefill($thumbim, 0, 0, $new_trans_color);
+			imagecolortransparent($thumbim, $new_trans_color);
+		}
+		
+		if(!isset($resized))
 		{
 			@imagecopyresampled($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth,$imgheight);
 		}
 		else
 		{
-			$thumbim = @imagecreate($thumbwidth, $thumbheight);
 			@imagecopyresized($thumbim, $im, 0, 0, 0, 0, $thumbwidth, $thumbheight, $imgwidth, $imgheight);
 		}
 		@imagedestroy($im);
