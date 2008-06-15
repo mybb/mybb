@@ -601,7 +601,7 @@ if($mybb->input['action'] == "add")
 		$pid = intval($mybb->input['pid']);
 		$type = $mybb->input['type'];
 		
-		if($pid == 0 && $type == "f")
+		if($pid <= 0 && $type == "f")
 		{
 			$errors[] = $lang->error_no_parent;
 		}
@@ -1009,7 +1009,7 @@ if($mybb->input['action'] == "edit")
 		
 		$type = $mybb->input['type'];
 		
-		if($pid == 0 && $type == "f")
+		if($pid <= 0 && $type == "f")
 		{
 			$errors[] = $lang->error_no_parent;
 		}		

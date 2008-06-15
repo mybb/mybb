@@ -410,10 +410,7 @@ class DefaultForm
 	
 			foreach($forum_cache as $fid => $forum)
 			{
-				if($forum['active'] != 0)
-				{
-					$fselectcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-				}
+				$fselectcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 			}
 		}
 		
@@ -445,9 +442,17 @@ class DefaultForm
 						
 						$sep = '';
 						if(isset($options['depth']))
+						{
 							$sep = str_repeat("&nbsp;", $options['depth']);
+						}
+						
+						$style = "";
+						if($forum['active'] == 0)
+						{
+							$style = " style=\"font-style: italic;\"";
+						}
 
-						$selectoptions .= "<option value=\"{$forum['fid']}\"{$select_add}>".$sep.htmlspecialchars_uni(strip_tags($forum['name']))."</option>\n";
+						$selectoptions .= "<option value=\"{$forum['fid']}\"{$style}{$select_add}>".$sep.htmlspecialchars_uni(strip_tags($forum['name']))."</option>\n";
 	
 						if($forum_cache[$forum['fid']])
 						{

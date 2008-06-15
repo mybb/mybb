@@ -512,7 +512,7 @@ class postParser
 			$size = 50;
 		}
 
-		$text = "<span style=\"font-size: {$size}pt\">".stripslashes($text)."</span>";
+		$text = "<span style=\"font-size: {$size}pt\">".str_replace('\"', '"', $text)."</span>";
 
 		return $text;
 	}
@@ -589,8 +589,8 @@ class postParser
 
 		if(!$message) return '';
 
-		$message = stripslashes($message);
-		$username = stripslashes($username)."'";
+		$message = str_replace('\"', '"', $message);
+		$username = str_replace('\"', '"', $username)."'";
 		$delete_quote = true;
 
 		preg_match("#pid=(?:&quot;|\"|')?([0-9]+)[\"']?(?:&quot;|\"|')?#i", $username, $match);
@@ -818,9 +818,9 @@ class postParser
 			$name = $url;
 		}
 		
-		$name = stripslashes($name);
-		$url = stripslashes($url);
-		$fullurl = stripslashes($fullurl);
+		$name = str_replace('\"', '"', $name);
+		$url = str_replace('\"', '"', $url);
+		$fullurl = str_replace('\"', '"', $fullurl);
 		
 		if($name == $url && $this->options['shorten_urls'] != 0)
 		{
