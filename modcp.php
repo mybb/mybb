@@ -2720,7 +2720,7 @@ if(!$mybb->input['action'])
 	if($unapproved_posts > 0)
 	{
 		$query = $db->query("
-			SELECT p.pid, p.subject, p.uid, p.username
+			SELECT p.pid, p.tid, p.subject, p.uid, p.username
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid
@@ -2801,7 +2801,7 @@ if(!$mybb->input['action'])
 		}
 		if($logitem['psubject'])
 		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid$logitem[pid]\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			$information .= "<strong>{$lang->post}</strong> <a href=\"".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
 		eval("\$modlogresults .= \"".$templates->get("modcp_modlogs_result")."\";");

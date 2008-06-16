@@ -10030,7 +10030,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <br />{$thread['date']} {$thread['time']}<br />{$lang->by} {$thread['profilelink']}</span>
 ]]></template>
 	<template name="modcp_lastpost" version="1400"><![CDATA[<span class="smalltext">
-<a href="{$post['link']}" title="{$post['fullsubject']}"><strong>{$post['subject']}</strong></a>
+<a href="{$post['link']}#pid{$post['pid']}" title="{$post['fullsubject']}"><strong>{$post['subject']}</strong></a>
 <br />{$post['date']} {$post['time']}<br />{$lang->by} {$post['profilelink']}</span>
 ]]></template>
 	<template name="modcp_warninglogs" version="1400"><![CDATA[<html>
