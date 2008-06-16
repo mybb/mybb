@@ -852,7 +852,6 @@ if($mybb->input['action'] == "change")
 			}
 		}
 		
-		rebuild_settings();
 		// Check if we need to create our fulltext index after changing the search mode
 		if($mybb->settings['searchtype'] != $mybb->input['upsetting']['searchtype'] && $mybb->input['upsetting']['searchtype'] == "fulltext")
 		{
@@ -883,6 +882,16 @@ if($mybb->input['action'] == "change")
 			}
 			$db->update_query("tasks", $updated_task, "file='threadviews'");
 		}
+		
+		// Have we changed our cookie prefix? If so, update our adminsid so we're not logged out
+		if($mybb->input['upsetting']['cookieprefix'] && $mybb->input['upsetting']['cookieprefix'] != $mybb->settings['cookieprefix'])
+		{
+			my_unsetcookie("adminsid");
+			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
+			my_setcookie("adminsid", $admin_session['sid']);
+		}
+		
+		rebuild_settings();
 		
 		$plugins->run_hooks("admin_config_settings_change_commit");
 			

@@ -589,6 +589,7 @@ if(!$mybb->input['action'])
 	else
 	{
 		$message_settings = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
+		++$errors;
 	}
 	
 	if(is_writable(MYBB_ROOT.'inc/config.php'))
@@ -598,6 +599,7 @@ if(!$mybb->input['action'])
 	else
 	{
 		$message_config = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
+		++$errors;
 	}
 	
 	if(is_writable('.'.$mybb->settings['uploadspath']))
@@ -639,7 +641,26 @@ if(!$mybb->input['action'])
 		$message_backup = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
 		++$errors;
 	}
-	// /cache/ + /cache/themes/ ?
+	
+	if(is_writable(MYBB_ROOT.'/cache/'))
+	{
+		$message_cache = "<span style=\"color: green;\">{$lang->writable}</span>";
+	}
+	else
+	{
+		$message_cache = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
+		++$errors;
+	}
+	
+	if(is_writable(MYBB_ROOT.'/cache/themes/'))
+	{
+		$message_themes = "<span style=\"color: green;\">{$lang->writable}</span>";
+	}
+	else
+	{
+		$message_themes = "<strong><span style=\"color: #C00\">{$lang->not_writable}</span></strong><br />{$lang->please_chmod_777}";
+		++$errors;
+	}
 	
 	
 	if($errors)
@@ -683,6 +704,16 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->backup_dir}</strong>");
 	$table->construct_cell('./'.$config['admin_dir'].'/backups');
 	$table->construct_cell($message_backup);
+	$table->construct_row();
+	
+	$table->construct_cell("<strong>{$lang->cache_dir}</strong>");
+	$table->construct_cell('./cache');
+	$table->construct_cell($message_cache);
+	$table->construct_row();
+	
+	$table->construct_cell("<strong>{$lang->themes_dir}</strong>");
+	$table->construct_cell('./cache/themes');
+	$table->construct_cell($message_themes);
 	$table->construct_row();
 	
 	$table->output($lang->chmod_files_and_dirs);

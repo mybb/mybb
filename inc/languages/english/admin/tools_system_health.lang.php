@@ -52,6 +52,8 @@ $l['file_upload_dir'] = "File Uploads Directory";
 $l['avatar_upload_dir'] = "Avatar Uploads Directory";
 $l['language_files'] = "Language Files";
 $l['backup_dir'] = "Backups Directory";
+$l['cache_dir'] = "Cache Directory";
+$l['themes_dir'] = "Themes Directory";
 $l['chmod_files_and_dirs'] = "CHMOD Files and Directories";
 
 $l['notice_process_long_time'] = "This process may take up to several hours depending on the size of your forum and this table.";

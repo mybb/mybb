@@ -253,9 +253,19 @@ class MyBB {
 			if($prefix_length && substr($key, 0, $prefix_length) == $this->settings['cookieprefix'])
 			{
 				$key = substr($key, $prefix_length);
+				
+				// Fixes conflicts with one board having a prefix and another that doesn't on the same domain
+				// Gives priority to our cookies over others (overwrites them)
+				if($this->cookies[$key])
+				{
+					unset($this->cookies[$key]);
+				}
 			}
 			
-			$this->cookies[$key] = $val;
+			if(!$this->cookies[$key])
+			{
+				$this->cookies[$key] = $val;
+			}
 		}
 	}
 
