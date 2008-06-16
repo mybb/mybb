@@ -10022,7 +10022,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
 </tr>]]></template>
 	<template name="modcp_lastattachment" version="1400"><![CDATA[<span class="smalltext">
-<a href="{$attachment['link']}"><strong>{$attachment['filename']}</strong></a>
+<a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']} {$attachment['time']}<br />{$lang->by} {$attachment['profilelink']}</span>
 ]]></template>
 	<template name="modcp_lastthread" version="1400"><![CDATA[<span class="smalltext">
