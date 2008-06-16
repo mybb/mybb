@@ -416,6 +416,8 @@ if($mybb->input['action'] == "export")
 				$style['sid'] = $theme_stylesheets[$filename]['sid'];
 			}
 			
+			$style['tid'] = $theme_stylesheets[$filename]['tid'];
+			
 			if($mybb->input['custom_theme'] == 1 && $style['tid'] != $mybb->input['tid'])
 			{
 				continue;
@@ -946,7 +948,7 @@ if($mybb->input['action'] == "edit")
 			$popup->add_item($lang->delete_revert, "index.php?module=style/themes&amp;action=delete_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_stylesheet_deletion}')");
 		}
 		
-		$table->construct_cell("<strong>{$filename}</strong>{$inherited}<br />{$attached_to}");
+		$table->construct_cell("<strong><a href=\"index.php?module=style/themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
@@ -1549,11 +1551,11 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 		// Show inherited warning
 		if($stylesheet['tid'] == 1)
 		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent));
+			$page->output_alert($lang->sprintf($lang->stylesheet_inherited_default, $stylesheet_parent), "ajax_alert");
 		}
 		else
 		{
-			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $stylesheet_parent));
+			$page->output_alert($lang->sprintf($lang->stylesheet_inherited, $stylesheet_parent), "ajax_alert");
 		}
 	}
 	
@@ -1895,7 +1897,7 @@ if($mybb->input['action'] == "delete_stylesheet")
 		log_admin_action($stylesheet['sid'], $stylesheet['name'], $theme['tid'], $theme['name']);
 		
 		flash_message($lang->success_stylesheet_deleted, 'success');
-		admin_redirect("index.php?module=style/themes");
+		admin_redirect("index.php?module=style/themes&action=edit&tid={$theme['tid']}");
 	}
 	else
 	{		

@@ -639,7 +639,7 @@ class postParser
 			$span = "";
 			if(!$delete_quote)
 			{
-				$span = "<span style=\"float: right; font-weight: normal;\">{$date}</span>";
+				$span = "<span>{$date}</span>";
 			}
 			return "<p>\n<blockquote><cite>{$span}".htmlspecialchars_uni($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote></p>\n";
 		}

@@ -223,6 +223,11 @@ ThemeSelector.prototype = {
 		else if(request.responseText)
 		{
 			$("saved").innerHTML = " (Saved @ "+Date()+")";
+			if($("ajax_alert"))
+			{
+				$("ajax_alert").innerHTML = '';
+				$("ajax_alert").hide();
+			}
 		}
 		
 		this.background = $("css_bits[background]").value;

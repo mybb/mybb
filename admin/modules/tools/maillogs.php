@@ -71,7 +71,14 @@ if($mybb->input['action'] == "view")
 	$log['fromemail'] = htmlspecialchars_uni($log['fromemail']);
 	$log['subject'] = htmlspecialchars_uni($log['subject']);
 	$log['dateline'] = date($mybb->settings['dateformat'], $log['dateline']).", ".date($mybb->settings['timeformat'], $log['dateline']);
-	$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
+	if($mybb->settings['mail_logging'] == 1)
+	{
+		$log['message'] = $lang->na;
+	}
+	else
+	{
+		$log['message'] = nl2br(htmlspecialchars_uni($log['message']));
+	}
 
 	?>
 <html xmlns="http://www.w3.org/1999/xhtml">

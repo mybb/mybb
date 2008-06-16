@@ -561,6 +561,18 @@ smtp=SMTP mail]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="mail_logging">
+			<title>Mail Logging</title>
+			<description><![CDATA[This setting allows you to set how to log outgoing emails sent via the 'Send Thread to a Friend' feature. In some countries it is illegal to log all content.]]></description>
+			<disporder>8</disporder>
+			<optionscode><![CDATA[select
+0=Disable email logging
+1=Log emails without content
+2=Log everything]]></optionscode>
+			<settingvalue><![CDATA[2]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="member" title="User Registration and Profile Options" description="Here you can control various settings with relation to user account registration and account management." disporder="8" isdefault="1">
 		<setting name="disableregs">

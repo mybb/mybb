@@ -419,6 +419,11 @@ blockquote cite {
 	margin: 4px 0;
 }
 
+blockquote cite span {
+	float: right;
+	font-weight: normal;
+}
+
 .codeblock {
 	background: #fff;
 	border: 1px solid #ccc;

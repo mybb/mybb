@@ -1607,19 +1607,22 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
 		my_mail($to_user['email'], $mybb->input['subject'], $message, $from);
 		
-		// Log the message
-		$log_entry = array(
-			"subject" => $db->escape_string($mybb->input['subject']),
-			"message" => $db->escape_string($mybb->input['message']),
-			"dateline" => TIME_NOW,
-			"fromuid" => $mybb->user['uid'],
-			"fromemail" => $db->escape_string($mybb->user['email']),
-			"touid" => $to_user['uid'],
-			"toemail" => $db->escape_string($to_user['email']),
-			"tid" => 0,
-			"ipaddress" => $db->escape_string($session->ipaddress)
-		);
-		$db->insert_query("maillogs", $log_entry);
+		if($mybb->settings['mail_logging'] > 0)
+		{
+			// Log the message
+			$log_entry = array(
+				"subject" => $db->escape_string($mybb->input['subject']),
+				"message" => $db->escape_string($mybb->input['message']),
+				"dateline" => TIME_NOW,
+				"fromuid" => $mybb->user['uid'],
+				"fromemail" => $db->escape_string($mybb->user['email']),
+				"touid" => $to_user['uid'],
+				"toemail" => $db->escape_string($to_user['email']),
+				"tid" => 0,
+				"ipaddress" => $db->escape_string($session->ipaddress)
+			);
+			$db->insert_query("maillogs", $log_entry);
+		}
 
 		$plugins->run_hooks("member_do_emailuser_end");
 

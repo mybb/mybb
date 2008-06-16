@@ -115,19 +115,22 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 		// Send the actual message
 		my_mail($mybb->input['email'], $mybb->input['subject'], $message, $from);
 		
-		// Log the message
-		$log_entry = array(
-			"subject" => $db->escape_string($mybb->input['subject']),
-			"message" => $db->escape_string($message),
-			"dateline" => TIME_NOW,
-			"fromuid" => $mybb->user['uid'],
-			"fromemail" => $db->escape_string($mybb->user['email']),
-			"touid" => 0,
-			"toemail" => $db->escape_string($mybb->input['email']),
-			"tid" => $thread['tid'],
-			"ipaddress" => $db->escape_string($session->ipaddress)
-		);
-		$db->insert_query("maillogs", $log_entry);
+		if($mybb->settings['mail_logging'] > 0)
+		{
+			// Log the message
+			$log_entry = array(
+				"subject" => $db->escape_string($mybb->input['subject']),
+				"message" => $db->escape_string($message),
+				"dateline" => TIME_NOW,
+				"fromuid" => $mybb->user['uid'],
+				"fromemail" => $db->escape_string($mybb->user['email']),
+				"touid" => 0,
+				"toemail" => $db->escape_string($mybb->input['email']),
+				"tid" => $thread['tid'],
+				"ipaddress" => $db->escape_string($session->ipaddress)
+			);
+			$db->insert_query("maillogs", $log_entry);
+		}
 
 		$plugins->run_hooks("sendthread_do_sendtofriend_end");
 		redirect(get_thread_link($thread['tid']), $lang->redirect_emailsent);

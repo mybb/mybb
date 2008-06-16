@@ -966,6 +966,7 @@ function build_theme_list($parent=0, $depth=0)
 		if($theme['tid'] > 1)
 		{
 			$popup->add_item($lang->edit_theme, "index.php?module=style/themes&amp;action=edit&amp;tid={$theme['tid']}");
+			$theme['name'] = "<a href=\"index.php?module=style/themes&amp;action=edit&amp;tid={$theme['tid']}\">{$theme['name']}</a>";
 			
 			// We must have at least the master and 1 other active theme
 			if($theme_cache['num_themes'] > 2)
@@ -1089,6 +1090,7 @@ function upgrade_css_120_to_140($css)
 		md5('.trow_selected td') => array("class_name" => '.trow_selected td', "values" => 'background: #FFFBD9;'),
 		md5('blockquote') => array("class_name" => 'blockquote', "values" => "border: 1px solid #ccc;\n\tmargin: 0;\n\tbackground: #fff;\n\tpadding: 4px;"),
 		md5('blockquote cite') => array("class_name" => 'blockquote cite', "values" => "font-weight: bold;\n\tborder-bottom: 1px solid #ccc;\n\tfont-style: normal;\n\tdisplay: block;\n\tmargin: 4px 0;"),
+		md5('blockquote cite span') => array("class_name" => 'blockquote cite span', "values" => "float: right;\n\tfont-weight: normal;"),
 		md5('.codeblock') => array("class_name" => '.codeblock', "values" => "background: #fff;\n\tborder: 1px solid #ccc;\n\tpadding: 4px;"),
 		md5('.codeblock .title') => array("class_name" => '.codeblock .title', "values" => "border-bottom: 1px solid #ccc;\n\tfont-weight: bold;\n\tmargin: 4px 0;"),
 		md5('.codeblock code') => array("class_name" => '.codeblock code', "values" => "overflow: auto;\n\theight: auto;\n\tmax-height: 200px;\n\tdisplay: block;\n\tfont-family: Monaco, Consolas, Courier, monospace;\n\tfont-size: 13px;"),

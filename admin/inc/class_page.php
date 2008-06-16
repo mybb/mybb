@@ -245,10 +245,15 @@ var imagepath = '../images';
 	 * Output an alert/warning message.
 	 *
 	 * @param string The message to output.
+	 * @param string The ID of the alert/warning (optional)
 	 */
-	function output_alert($message)
+	function output_alert($message, $id="")
 	{
-		echo "<div class=\"alert\">{$message}</div>\n";
+		if($id)
+		{
+			$id = " id=\"{$id}\"";
+		}
+		echo "<div class=\"alert\"{$id}>{$message}</div>\n";
 	}
 	
 	/**
