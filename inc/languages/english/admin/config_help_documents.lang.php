@@ -16,7 +16,7 @@ $l['edit_section_desc'] = "Here you can edit a help section.";
 $l['edit_document'] = "Edit Document";
 $l['edit_document_desc'] = "Here you can edit a help document.";
 $l['manage_help_documents'] = "Manage Help Documents";
-$l['manage_help_documents_desc'] = "This section allows you to edit and delete and manage your help documents.";
+$l['manage_help_documents_desc'] = "This section allows you to manage your help documents.";
 
 $l['title'] = "Title";
 $l['short_description'] = "Short Description";

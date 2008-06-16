@@ -1338,7 +1338,7 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			$group['expand_str'] .= $group['gid'];
 		}
 		
-		$table->construct_cell("<strong><a href=\"index.php?module=style/templates&amp;sid={$sid}&amp;expand={$group['expand_str']}\">{$group['title']}</a></strong>");
+		$table->construct_cell("<strong><a href=\"index.php?module=style/templates&amp;sid={$sid}&amp;expand={$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
 		$table->construct_cell("<a href=\"index.php?module=style/templates&amp;sid={$sid}&amp;expand={$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
 		$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 		

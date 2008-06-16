@@ -9,14 +9,14 @@
 $l['mod_tools'] = "Moderator Tools";
 
 $l['thread_tools'] = "Thread Tools";
-$l['thread_tools_desc'] = "Custom moderator tools allows you to create combinations of moderator actions to both threads and posts. These can then be used like the default tools when managing your forum. Here you can manage your custom thread tools.";
+$l['thread_tools_desc'] = "Custom moderator tools allows you to create combinations of moderator actions that can be used on both threads and posts. These can then be used like the default tools when managing your forum. Here you can manage your custom thread tools.";
 
 $l['add_thread_tool'] = "Add Thread Tool";
 $l['add_new_thread_tool'] = "Add New Thread Tool";
 $l['add_thread_tool_desc'] = "Here you can add a new custom thread moderation tool. This tool will be accessible from both inline thread moderation and from within threads themselves, listed with the default moderation tools.";
 
 $l['post_tools'] = "Post Tools";
-$l['post_tools_desc'] = "Custom moderator tools allows you to create combinations of moderator actions to both threads and posts. These can then be used like the default tools when managing your forum. Here you can manage your custom post tools.";
+$l['post_tools_desc'] = "Custom moderator tools allows you to create combinations of moderator actions that can be used on both threads and posts. These can then be used like the default tools when managing your forum. Here you can manage your custom post tools.";
 
 $l['add_post_tool'] = "Add Post Tool";
 $l['add_new_post_tool'] = "Add New Post Tool";

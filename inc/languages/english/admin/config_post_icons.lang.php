@@ -14,7 +14,7 @@ $l['add_multiple_post_icons_desc'] = "Here you can add multiple new post icons."
 $l['edit_post_icon'] = "Edit Post Icon";
 $l['edit_post_icon_desc'] = "Here you can edit a post icon.";
 $l['manage_post_icons'] = "Manage Post Icons";
-$l['manage_post_icons_desc'] = "This section allows you to edit and delete and manage your post icons.";
+$l['manage_post_icons_desc'] = "This section allows you to edit, delete, and manage your post icons.";
 
 $l['name_desc'] = "This is the name for the post icon.";
 $l['image_path'] = "Image Path";

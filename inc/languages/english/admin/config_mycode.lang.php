@@ -43,9 +43,9 @@ $l['result_actual'] = "Actual Result";
 $l['result_actual_desc'] = "The area below shows the actual result when the HTML is rendered.";
 $l['test'] = "Test MyCode";
 
-$l['error_missing_title'] = "You did not enter in a title.";
-$l['error_missing_regex'] = "You did not enter in a regular expression.";
-$l['error_missing_replacement'] = "You did not enter in a replacement.";
+$l['error_missing_title'] = "You did not enter a title.";
+$l['error_missing_regex'] = "You did not enter a regular expression.";
+$l['error_missing_replacement'] = "You did not enter a replacement.";
 $l['error_invalid_mycode'] = "The specified MyCode does not exist.";
 
 $l['success_added_mycode'] = "The MyCode has been added successfully.";

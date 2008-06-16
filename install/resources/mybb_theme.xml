@@ -9825,7 +9825,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->username_contains}</td>
-							<td class="trow1" width="75%"><input type="text" name="username" value="{$mybb->input['username']}" class="textbox" /></td>
+							<td class="trow1" width="75%"><input type="text" name="username" id="username" value="{$mybb->input['username']}" class="textbox" /></td>
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->sort_by}</strong></td>
@@ -9854,6 +9854,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</table>
 	</form>
 {$footer}
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "1")
+	{
+		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+	}
+// -->
+</script>
 </body>
 </html>]]></template>
 		<template name="modcp_finduser_user" version="1400"><![CDATA[						<tr>
@@ -9945,11 +9954,20 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</tr>
 	</table>
 	{$footer}
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "1")
+	{
+		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+	}
+// -->
+</script>
 </body>
 </html>]]></template>
 	<template name="modcp_banuser_addusername" version="1400"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
-	<td class="trow1" width="75%"><input type="text" class="textbox" name="username" value="{$username}" size="25" /></td>
+	<td class="trow1" width="75%"><input type="text" class="textbox" name="username" id="username" value="{$username}" size="25" /></td>
 </tr>]]></template>
 	<template name="modcp_banuser_editusername" version="1400"><![CDATA[<tr>
 	<td class="trow1" width="25%"><strong>{$lang->ban_username}</strong></td>
@@ -10050,7 +10068,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td class="trow1" width="25%"><strong>{$lang->filter_warned_user}</td>
-							<td class="trow1" width="75%"><input type="text" name="filter[username]" value="{$mybb->input['filter']['username']}" class="textbox" /></td>
+							<td class="trow1" width="75%"><input type="text" name="filter[username]" id="username" value="{$mybb->input['filter']['username']}" class="textbox" /></td>
 						</tr>
 						<tr>
 							<td class="trow2" width="25%"><strong>{$lang->filter_issued_by}</td>
@@ -10091,6 +10109,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		</tr>
 	</table>
 	{$footer}
+<script type="text/javascript" src="jscripts/autocomplete.js?ver=1400"></script>
+<script type="text/javascript">
+<!--
+	if(use_xmlhttprequest == "1")
+	{
+		new autoComplete("username", "xmlhttp.php?action=get_users", {valueSpan: "username"});
+	}
+// -->
+</script>
 </body>
 </html>]]></template>
 	<template name="modcp_warninglogs_nologs" version="1400"><![CDATA[					<tr colspan="6">
