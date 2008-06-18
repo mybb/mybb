@@ -191,6 +191,7 @@ if($mybb->input['action'] == "import")
 					'no_templates' => ($mybb->input['import_templates'] ? 0 : 1),
 					'version_compat' => intval($mybb->input['version_compat']),
 					'parent' => intval($mybb->input['tid']),
+					'force_name_check' => true,
 				);
 				$theme_id = import_theme_xml($contents, $options);
 				
@@ -211,6 +212,9 @@ if($mybb->input['action'] == "import")
 							break;
 						case -2:
 							$errors[] = $lang->error_invalid_version;
+							break;
+						case -3:
+							$errors[] = $lang->error_theme_already_exists;
 							break;
 					}
 				}

@@ -886,8 +886,48 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
 	foreach($usergroups as $usergroup)
 	{
-		$perms = $usergroup;
-		$default_checked = true;
+		$perms = array();
+		if(isset($mybb->input['default_permissions']))
+		{
+			if($mybb->input['default_permissions'][$usergroup['gid']])
+			{
+				if($existing_permissions[$usergroup['gid']])
+				{
+					$perms = $existing_permissions[$usergroup['gid']];
+					$default_checked = false;
+				}
+				else if($cached_forum_perms[$mybb->input['pid']][$usergroup['gid']])
+				{
+					$perms = $cached_forum_perms[$mybb->input['pid']][$usergroup['gid']];
+					$default_checked = true;
+				}
+			}
+			
+			if(!$perms)
+			{
+				$perms = $usergroup;
+				$default_checked = true;
+			}
+		}
+		else
+		{
+			if($existing_permissions[$usergroup['gid']])
+			{
+				$perms = $existing_permissions[$usergroup['gid']];
+				$default_checked = false;
+			}
+			else if($cached_forum_perms[$mybb->input['pid']][$usergroup['gid']])
+			{
+				$perms = $cached_forum_perms[$mybb->input['pid']][$usergroup['gid']];
+				$default_checked = true;
+			}
+			
+			if(!$perms)
+			{
+				$perms = $usergroup;
+				$default_checked = true;
+			}
+		}
 		
 		$perm_check = "";
 		$all_checked = true;
@@ -1251,6 +1291,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->misc_options, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $misc_options)."</div>");
 	$form_container->end();
 	
+	$cached_forum_perms = $cache->read("forumpermissions");
 	$field_list = array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments');
 				
 	$form_container = new FormContainer($lang->sprintf($lang->forum_permissions_in, $forum_data['name']));
@@ -1261,16 +1302,33 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row_header($lang->permissions_canpostpolls, array("class" => "align_center", "width" => "10%"));
 	$form_container->output_row_header($lang->permissions_canuploadattachments, array("class" => "align_center", "width" => "11%"));
 	$form_container->output_row_header($lang->permissions_all, array("class" => "align_center", "width" => "10%"));
+	$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 150px'));
 	foreach($usergroups as $usergroup)
 	{
+		$perms = array();
+		$all_check = "";
 		if(isset($mybb->input['default_permissions']))
 		{
 			if($mybb->input['default_permissions'][$usergroup['gid']])
 			{
-				$perms = $existing_permissions[$usergroup['gid']];
-				$default_checked = false;
+				if($existing_permissions[$usergroup['gid']])
+				{
+					$perms = $existing_permissions[$usergroup['gid']];
+					$default_checked = false;
+				}
+				elseif($cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+				{
+					$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+					$default_checked = true;
+				}
+				else if($cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+				{
+					$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+					$default_checked = true;
+				}
 			}
-			else
+			
+			if(!$perms)
 			{
 				$perms = $usergroup;
 				$default_checked = true;
@@ -1283,7 +1341,18 @@ if($mybb->input['action'] == "edit")
 				$perms = $existing_permissions[$usergroup['gid']];
 				$default_checked = false;
 			}
-			else
+			elseif($cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+			{
+				$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+				$default_checked = true;
+			}
+			else if($cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+			{
+				$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+				$default_checked = true;
+			}
+			
+			if(!$perms)
 			{
 				$perms = $usergroup;
 				$default_checked = true;
@@ -1351,6 +1420,14 @@ if($mybb->input['action'] == "edit")
 		}
 		$form_container->output_cell($form->generate_check_box("permissions[{$usergroup['gid']}][all]", 1, "", array("id" => "permissions_{$usergroup['gid']}_all", "checked" => $all_checked, "onclick" => $all_check)), array('class' => 'align_center'));
 		
+		if(!$default_checked)
+		{
+			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+		}
+		else
+		{
+			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\">{$lang->set_permissions}</a>", array("class" => "align_center"));
+		}
 		$form_container->construct_row();
 	}
 	$form_container->end();
@@ -1750,15 +1827,57 @@ if(!$mybb->input['action'])
 		$form_container->output_row_header($lang->controls, array("class" => "align_center", 'style' => 'width: 150px'));
 		foreach($usergroups as $usergroup)
 		{
-			if($existing_permissions[$usergroup['gid']])
+			$perms = array();
+			if(isset($mybb->input['default_permissions']))
 			{
-				$perms = $existing_permissions[$usergroup['gid']];
-				$default_checked = false;
+				if($mybb->input['default_permissions'][$usergroup['gid']])
+				{
+					if($existing_permissions[$usergroup['gid']])
+					{
+						$perms = $existing_permissions[$usergroup['gid']];
+						$default_checked = false;
+					}
+					elseif($cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+					{
+						$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+						$default_checked = true;
+					}
+					else if($cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+					{
+						$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+						$default_checked = true;
+					}
+				}
+				
+				if(!$perms)
+				{
+					$perms = $usergroup;
+					$default_checked = true;
+				}
 			}
 			else
 			{
-				$perms = $usergroup;
-				$default_checked = true;
+				if($existing_permissions[$usergroup['gid']])
+				{
+					$perms = $existing_permissions[$usergroup['gid']];
+					$default_checked = false;
+				}
+				elseif($cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+				{
+					$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+					$default_checked = true;
+				}
+				else if($cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+				{
+					$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+					$default_checked = true;
+				}
+				
+				if(!$perms)
+				{
+					$perms = $usergroup;
+					$default_checked = true;
+				}
 			}
 			$perm_check = "";
 			$all_checked = true;

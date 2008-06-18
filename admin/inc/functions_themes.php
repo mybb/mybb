@@ -108,7 +108,11 @@ function import_theme_xml($xml, $options=array())
 
 	$query = $db->simple_select("themes", "tid", "name='".$db->escape_string($name)."'", array("limit" => 1));
 	$existingtheme = $db->fetch_array($query);
-	if($existingtheme['tid'])
+	if($options['force_name_check'] && $existingtheme['tid'])
+	{
+		return -3;
+	}
+	else if($existingtheme['tid'])
 	{
 		$options['tid'] = $existingtheme['tid'];
 	}
@@ -119,7 +123,7 @@ function import_theme_xml($xml, $options=array())
 	}
 	
 	// Do we have any templates to insert?
-	if(is_array($theme['templates']) && !$options['no_templates'])
+	if(!empty($theme['templates']['template']) && !$options['no_templates'])
 	{		
 		if($options['templateset']) 
 		{ 
@@ -169,7 +173,7 @@ function import_theme_xml($xml, $options=array())
 	}
 
 	// If we have any stylesheets, process them
-	if(is_array($theme['stylesheets']) && !$options['no_stylesheets'])
+	if(!empty($theme['stylesheets']['stylesheet']) && !$options['no_stylesheets'])
 	{
 		// Are we dealing with a single stylesheet?
 		if(isset($theme['stylesheets']['stylesheet']['tag']))
@@ -177,6 +181,7 @@ function import_theme_xml($xml, $options=array())
 			// Trick the system into thinking we have a good array =P
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
+		
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
 			if(!$stylesheet['attributes']['lastmodified'])
