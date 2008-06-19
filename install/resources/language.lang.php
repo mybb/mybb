@@ -11,6 +11,7 @@ $l['error'] = 'Error';
 $l['multi_byte'] = 'Multi-Byte';
 $l['recheck'] = 'Recheck';
 
+$l['title'] = "MyBB Installation Wizard";
 $l['welcome'] = 'Welcome';
 $l['license_agreement'] = 'License Agreement';
 $l['req_check'] = 'Requirements Check';

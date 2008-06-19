@@ -19,6 +19,12 @@ class installerOutput {
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
 		global $mybb, $lang;
+		
+		if($lang->title)
+		{
+			$this->title = $lang->title;
+		}
+		
 		$this->doneheader = 1;
 		if($image == "dbconfig")
 		{
