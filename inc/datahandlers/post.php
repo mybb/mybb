@@ -274,7 +274,7 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0)
+		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0 && $this->admin_override == false)
 		{
 			if($this->verify_post_merge(true) !== true)
 			{
@@ -285,7 +285,7 @@ class PostDataHandler extends DataHandler
 			$user = get_user($post['uid']);
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'])
+			if(TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['postfloodsecs'] - (TIME_NOW-$user['lastpost'])) + 1;
