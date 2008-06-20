@@ -873,7 +873,7 @@ messageEditor.prototype = {
 			return;
 
 		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)
-			element.addClassName('toolbar_hover')
+			element.addClassName('toolbar_hover');
 	},
 
 	toolbarItemClick: function(e)
@@ -1132,7 +1132,7 @@ messageEditor.prototype = {
 		{
 			var select_start = element.selectionStart;
 			var select_end = element.selectionEnd;
-			if(select_end <= 2)
+			if(select_end <= 0)
 			{
 				select_end = element.textLength;
 			}
@@ -1198,7 +1198,7 @@ messageEditor.prototype = {
 			var select_end = textarea.selectionEnd;
 			var scroll_top = textarea.scrollTop;
 
-			if(select_end <= 0)
+			if(select_end <= 2)
 			{
 				select_end = textarea.textLength;
 			}
