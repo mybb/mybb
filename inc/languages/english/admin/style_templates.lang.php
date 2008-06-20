@@ -48,6 +48,7 @@ $l['search_created_custom'] = "Created custom template for {1}";
 $l['search_edit'] = "edit";
 $l['search_change_original'] = "change original";
 $l['search_noresults'] = "No templates were found containing the string '<strong>{1}</strong>'";
+$l['search_noresults_title'] = "No templates were found with the title '<strong>{1}</strong>'";
 $l['default_templates'] = "Default Templates";
 
 $l['edit_template_breadcrumb'] = "Edit Template: ";

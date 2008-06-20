@@ -640,6 +640,15 @@ div.error.ul {
 .post_content {
 	padding: 5px 10px;
 }
+
+.quick_jump {
+  background: url('images/jump.gif') no-repeat 0;
+  width: 13px;
+  height: 13px;
+  padding-left: 13px; /* amount of padding needed for image to fully show */
+  vertical-align: middle;
+  border: none;
+}
 ]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1400"><![CDATA[.usercp_nav_item {
@@ -4584,7 +4593,7 @@ body {
 	</td>
 </tr>
 </table>]]></template>
-		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}"><img src="{$theme['imgdir']}/jump.gif" alt="[ -> ]" title="{$lang->linkback}" style="vertical-align: middle; border: none;" /></a>]]></template>
+		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}" class="quick_jump">&nbsp;</a>]]></template>
 		<template name="postbit_seperator" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="2"><img src="{$theme['imgdir']}/pixel.gif" height="1" width="1" alt="" /></td>
 </tr>]]></template>
@@ -9084,7 +9093,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					</tr>
 					<tr>
 						<td valign="top"><strong>{$lang->send_pm_message}</strong></td>
-						<td><textarea name="pm_message" id="message" rows="15" cols="60">{$message}</textarea>
+						<td><textarea name="pm_message" id="message" rows="20" cols="70">{$message}</textarea>
 						{$codebuttons}</td>
 					</tr>
 				</table>

@@ -274,13 +274,18 @@ class PostDataHandler extends DataHandler
 		$post = &$this->data;
 
 		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
-		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0 && $this->admin_override == false)
+		if($mybb->settings['postfloodcheck'] == 1 && $post['uid'] != 0)
 		{
+			if($this->verify_post_merge(true) !== true)
+			{
+				return true;
+			}
+			
 			// Fetch the user information for this post - used to check their last post date.
 			$user = get_user($post['uid']);
 
 			// A little bit of calculation magic and moderator status checking.
-			if(TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'] && !is_moderator($post['fid'], "", $user['uid']))
+			if(TIME_NOW-$user['lastpost'] <= $mybb->settings['postfloodsecs'])
 			{
 				// Oops, user has been flooding - throw back error message.
 				$time_to_wait = ($mybb->settings['postfloodsecs'] - (TIME_NOW-$user['lastpost'])) + 1;
@@ -299,7 +304,7 @@ class PostDataHandler extends DataHandler
 		return true;
 	}
 	
-	function verify_post_merge()
+	function verify_post_merge($simple_mode=false)
 	{
 		global $mybb, $db, $session;
 		
@@ -364,6 +369,11 @@ class PostDataHandler extends DataHandler
 		else if(trim($mybb->settings['postmergefignore']) != "" && $thread['fid'] == intval($mybb->settings['postmergefignore']))
 		{
 			return true;
+		}
+		
+		if($simple_mode == true)
+		{
+			return false;
 		}
 		
 		if($post['uid'])

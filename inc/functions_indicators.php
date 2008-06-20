@@ -86,14 +86,14 @@ function fetch_unread_count($fid)
 			
 			// We set a limit to 100 otherwise it'll become too processor intensive, especially if we have many threads.
 			$query = $db->query("
-				SELECT lastpost, tid
+				SELECT lastpost, tid, fid
 				FROM ".TABLE_PREFIX."threads
 				WHERE visible=1 AND closed NOT LIKE 'moved|%' AND fid IN ($fid) AND tid IN ($tids) AND lastpost > '{$cutoff}'
 				LIMIT 100
 			");
 			while($thread = $db->fetch_array($query))
 			{
-				if($thread['lastpost'] > intval($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($forumsread[$thread['tid']]))
+				if($thread['lastpost'] > intval($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($forumsread[$thread['fid']]))
 				{
 					++$count;
 				}

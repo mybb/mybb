@@ -677,9 +677,6 @@ if($mybb->input['action'] == "search_replace")
 			else
 			{
 				// Search Template Titles
-				$page->output_header($lang->search_replace);
-	
-				$page->output_nav_tabs($sub_tabs, 'search_replace');
 				
 				$templatessets = array();
 				
@@ -723,6 +720,19 @@ if($mybb->input['action'] == "search_replace")
 						$template['modified'] = false;
 					}
 					$templatessets[$template['sid']][$template['title']] = $template;
+				}
+				
+				$page->output_header($lang->search_replace);
+	
+				$page->output_nav_tabs($sub_tabs, 'search_replace');
+				
+				if(empty($templatesets))
+				{
+					$table->construct_cell($lang->sprintf($lang->search_noresults_title, htmlspecialchars_uni($mybb->input['title'])), array("class" => "align_center"));
+							
+					$table->construct_row();
+					
+					$table->output($lang->search_results);
 				}
 				
 				$count = 0;
@@ -780,7 +790,7 @@ if($mybb->input['action'] == "search_replace")
 					{
 						$table->output($lang->sprintf($lang->search_names_header, htmlspecialchars_uni($mybb->input['title'])));
 					}
-					else
+					else if($count > 0)
 					{
 						$table->output();
 					}

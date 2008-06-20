@@ -829,7 +829,7 @@ messageEditor.prototype = {
 			return;
 
 		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)	
-			element.addClassName('toolbar_hover')
+			element.addClassName('toolbar_hover');
 	},
 
 	toolbarItemClick: function(e)
