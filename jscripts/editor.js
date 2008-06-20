@@ -6,13 +6,13 @@ messageEditor.prototype = {
 	currentTheme: '',
 	themePath: '',
 	openDropDownMenu: null,
-	
+
 	setTheme: function(theme)
 	{
 		if(this.currentTheme != '' || $('editorTheme')) {
 			$('editorTheme').remove();
 		}
-		
+
 		var stylesheet = document.createElement('link');
 		stylesheet.setAttribute('rel', 'stylesheet');
 		stylesheet.setAttribute('type', 'text/css');
@@ -26,19 +26,19 @@ messageEditor.prototype = {
 	{
 		// Sorry Konqueror, but due to a browser bug out of control with textarea values
 		// you do not get to use the fancy editor.
-		
-		if(MyBB.browse == "konqueror" || (typeof(mybb_editor_disabled) != "undefined" && mybb_editor_disabled == true))
+
+		if(MyBB.browser == "konqueror" || (typeof(mybb_editor_disabled) != "undefined" && mybb_editor_disabled == true))
 		{
 			return false;
 		}
-		
+
 		// Establish the base path to this javascript file
 		$$('script').each(function(script) {
 			if(script.src && script.src.indexOf('editor.js') != -1) {
 				this.baseURL = script.src.replace(/editor\.js(.*?)$/, '');
 			}
 		}, this);
-		
+
 		this.options = options;
 
 		if(this.options)
@@ -53,13 +53,11 @@ messageEditor.prototype = {
 				this.options.rtl = 0;
 			}
 		}
-		
-		if(this.options && this.options.theme)
-		{
+
+		if(this.options && this.options.theme) {
 			this.setTheme(this.options.theme);
 		}
-		else
-		{
+		else {
 			this.setTheme('default');
 		}
 
@@ -142,7 +140,7 @@ messageEditor.prototype = {
 	},
 
 	showEditor: function()
-	{		
+	{
 		// Assign the old textarea to a variable for later use.
 		oldTextarea = $(this.textarea);
 
@@ -187,9 +185,9 @@ messageEditor.prototype = {
 		}
 		this.editor.style.width = w;
 		this.editor.style.height = h;
-		
+
 		this.createToolbarContainer('top');
-		
+
 		this.createToolbar('closetags', {
 			container: 'top',
 			alignment: 'right',
@@ -204,9 +202,9 @@ messageEditor.prototype = {
 				{type: 'dropdown', name: 'size', insert: 'size', title: this.options.lang.size, options: this.sizes},
 				{type: 'button', name: 'color', insert: 'color', dropdown: true, color_select: true, image: 'color.gif', draw_option: this.drawColorOption, options: this.colors}			]
 		});
-							
+
 		this.createToolbarContainer('bottom');
-		
+
 		this.createToolbar('insertables', {
 			container: 'bottom',
 			alignment: 'right',
@@ -215,14 +213,14 @@ messageEditor.prototype = {
 				{type: 'button', name: 'list_bullet', sprite: 'list_bullet', insert: 'list', title: this.options.lang.title_bulletlist},
 				{type: 'separator'},
 				{type: 'button', name: 'img', sprite: 'image', insert: 'image', extra: 1, title: this.options.lang.title_image},
-				{type: 'button', name: 'url', sprite: 'link', insert: 'url', title: this.options.lang.title_hyperlink},				
+				{type: 'button', name: 'url', sprite: 'link', insert: 'url', title: this.options.lang.title_hyperlink},
 				{type: 'button', name: 'email', sprite: 'email', insert: 'email', extra: 1, title: this.options.lang.title_email},
 				{type: 'separator'},
-				{type: 'button', name: 'quote', sprite: 'quote', insert: 'quote', title: this.options.lang.title_quote},				
-				{type: 'button', name: 'code', sprite: 'code', insert: 'code', title: this.options.lang.title_code},				
+				{type: 'button', name: 'quote', sprite: 'quote', insert: 'quote', title: this.options.lang.title_quote},
+				{type: 'button', name: 'code', sprite: 'code', insert: 'code', title: this.options.lang.title_code},
 				{type: 'button', name: 'php', sprite: 'php', insert: 'php', title: this.options.lang.title_php}
 			]
-		});		
+		});
 		this.createToolbar('formatting', {
 			container: 'bottom',
 			items: [
@@ -236,7 +234,7 @@ messageEditor.prototype = {
 				{type: 'button', name: 'align_justify', sprite: 'align_justify', insert: 'align', extra: 'justify', title: this.options.lang.title_justify}
 			]
 		});
-		
+
 		// Create our new text area
 		areaContainer = document.createElement("div");
 		areaContainer.style.clear = "both";
@@ -285,9 +283,19 @@ messageEditor.prototype = {
 		this.editor.style.display = "";
 
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
+
+		if(MyBB.browser == 'ie') {
+			Event.observe($(this.textarea), 'focus', function() {
+				this.trackingCaret = true;
+			}.bindAsEventListener(this));
+			Event.observe($(this.textarea), 'blur', function() {
+				this.trackingCaret = false;
+			}.bindAsEventListener(this));
+		}
+
 		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
 	},
-	
+
 	drawColorOption: function(option)
 	{
 		var item = document.createElement('li');
@@ -296,22 +304,22 @@ messageEditor.prototype = {
 		item.innerHTML = '<a style="background-color: '+option.value+'"></a>';
 		return item;
 	},
-	
+
 	createToolbarContainer: function(name)
 	{
 		if($('editor_toolbar_container_'+name)) return;
-		
+
 		var container = document.createElement("div");
 		container.id = 'editor_toolbar_container_'+name;
 		container.className = 'toolbar_container';
-		
+
 		this.editor.appendChild(container);
-		
+
 		this.toolbarHeight += 28;
-		
+
 		return container;
 	},
-	
+
 	createToolbar: function(name, options)
 	{
 		if(typeof(options.container) == 'undefined')
@@ -322,17 +330,17 @@ messageEditor.prototype = {
 			options.container = $('editor_toolbar_container_'+options.container);
 			if(!options.container) return;
 		}
-		
+
 		if($('editor_toolbar_'+name)) return;
-		
+
 		var toolbar = document.createElement('div');
 		toolbar.id = 'editor_toolbar_'+name;
 		toolbar.className = 'toolbar';
-		
+
 		var clear = document.createElement('br');
 		clear.style.clear = 'both';
 		toolbar.appendChild(clear);
-		
+
 		if(options.alignment && options.alignment == 'right') {
 			toolbar.className += ' float_right';
 		}
@@ -344,29 +352,30 @@ messageEditor.prototype = {
 		}
 		// add closing item
 		if(toolbar.lastChild.previousSibling)
-			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';		
+			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 	},
-	
+
 	dropDownMenuItemClick: function(e)
 	{
+		this.restartEditorSelection();
 		element = Event.element(e);
 
 		if(!element)
 			return;
-			
+
 		if(!element.extra)
 			element = element.up('li');
-			
+
 		var menu = element.up('ul');
 		var dropdown = this.getElementToolbarItem(menu);
 		var label = dropdown.down('.editor_dropdown_label');
-		
+
 		if(!dropdown.insertText || (menu.activeItem && menu.activeItem == element))
 			return;
-	
+
 		this.insertMyCode(dropdown.insertText, element.extra);
 		menu.lastItemValue = element.extra;
-		
+
 		if(this.getSelectedText($(this.textarea)))
 		{
 			this.setDropDownMenuActiveItem(dropdown, 0);
@@ -389,11 +398,14 @@ messageEditor.prototype = {
 			element.addClassName('editor_dropdown_menu_item_active');
 		}
 		this.hideOpenDropDownMenu();
-		Event.stop(e);		
+		Event.stop(e);
 	},
-	
+
 	setDropDownMenuActiveItem: function(element, index)
 	{
+		if(element == null) {
+			return;
+		}
 		var menu = element.down('ul');
 		var label = element.down('.editor_dropdown_label');
 
@@ -402,7 +414,7 @@ messageEditor.prototype = {
 			menu.activeItem.removeClassName('editor_dropdown_menu_item_active');
 			menu.activeItem = null;
 		}
-		
+
 		if(index > 0)
 		{
 			var item = menu.childNodes[index];
@@ -413,7 +425,7 @@ messageEditor.prototype = {
 				label.innerHTML = item.innerHTML;
 				label.style.overflow = 'hidden';
 			}
-			
+
 			var sel_color = element.down('.editor_dropdown_color_selected')
 			if(sel_color)
 			{
@@ -421,7 +433,7 @@ messageEditor.prototype = {
 				menu.lastItemValue = item.insertExtra;
 				var use_default = element.down('.editor_dropdown_color_item_default');
 				if(use_default) use_default.style.display = '';
-			}			
+			}
 			item.addClassName('editor_dropdown_menu_item_active');
 		}
 		else
@@ -431,7 +443,7 @@ messageEditor.prototype = {
 				label.innerHTML = menu.childNodes[0].innerHTML;
 				label.style.overflow = '';
 			}
-			
+
 			var sel_color = element.down('.editor_button_color_selected')
 			if(sel_color)
 			{
@@ -441,8 +453,8 @@ messageEditor.prototype = {
 			}
 			element.removeClassName('toolbar_clicked');
 		}
-	},	
-	
+	},
+
 	createDropDownMenu: function(options)
 	{
 		var dropdown = document.createElement('div');
@@ -451,20 +463,22 @@ messageEditor.prototype = {
 			dropdown.className = 'toolbar_dropdown_image';
 		else
 			dropdown.className = 'toolbar_dropdown';
-			
+
 		dropdown.className += ' editor_dropdown toolbar_dropdown_'+options.name;
 		dropdown.id = 'editor_item_'+options.name;
-		
+
 		Event.observe(dropdown, 'mouseover', function()
 		{
+			this.storeCaret();
 			dropdown.addClassName('toolbar_dropdown_over');
-		});
+		}.bindAsEventListener(this));
 		Event.observe(dropdown, 'mouseout', function()
 		{
+			this.storeCaret();
 			dropdown.removeClassName('toolbar_dropdown_over');
-		});
+		}.bindAsEventListener(this));
 		dropdown.insertText = options.insert;
-		
+
 		// create the dropdown label container
 		var label = document.createElement('div');
 		label.className = 'editor_dropdown_label';
@@ -477,12 +491,12 @@ messageEditor.prototype = {
 			label.innerHTML = '&nbsp;';
 		}
 		dropdown.appendChild(label)
-		
+
 		// create the arrow
 		var arrow = document.createElement('div');
 		arrow.className = 'editor_dropdown_arrow';
 		dropdown.appendChild(arrow);
-		
+
 		// create the menu item container
 		var menu = this.buildDropDownMenu(options);
 
@@ -490,13 +504,13 @@ messageEditor.prototype = {
 		dropdown.appendChild(menu);
 		return dropdown;
 	},
-	
+
 	buildDropDownMenu: function(options)
 	{
 		var menu = document.createElement('ul');
 		menu.className = 'editor_dropdown_menu';
 		menu.style.display = 'none';
-		
+
 		// create the first item
 		if(options.title)
 		{
@@ -508,12 +522,13 @@ messageEditor.prototype = {
 			{
 				if(menu.activeItem)
 				{
+					this.restartEditorSelection();
 					this.insertMyCode(dropdown.insertText, '-');
 				}
 				this.setDropDownMenuActiveItem(dropdown, 0);
 			}.bindAsEventListener(this));
 		}
-				
+
 		$H(options.options).each(function(option)
 		{
 			if(options.draw_option)
@@ -523,8 +538,8 @@ messageEditor.prototype = {
 			else
 			{
 				var item = document.createElement('li');
-				item.innerHTML = option.value;	
-							
+				item.innerHTML = option.value;
+
 				var content = document.createElement('span');
 				item.appendChild(content);
 				item.extra = option.key;
@@ -539,8 +554,8 @@ messageEditor.prototype = {
 				item.removeClassName('editor_dropdown_menu_item_over');
 			});
 			menu.appendChild(item);
-		}, this);	
-		return menu;	
+		}, this);
+		return menu;
 	},
 
 	toggleDropDownMenu: function(e)
@@ -572,7 +587,7 @@ messageEditor.prototype = {
 		element.removeClassName('toolbar_clicked');
 		Event.stop(e);
 	},
-	
+
 	showDropDownMenu: function(menu)
 	{
 		this.hideOpenDropDownMenu();
@@ -581,7 +596,7 @@ messageEditor.prototype = {
 		element.addClassName('editor_dropdown_menu_open');
 		element.addClassName('toolbar_clicked');
 		this.openDropDownMenu = menu;
-		Event.observe(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));	
+		Event.observe(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 	},
 
 	hideOpenDropDownMenu: function()
@@ -593,7 +608,7 @@ messageEditor.prototype = {
 		this.openDropDownMenu = null;
 		Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 	},
-	
+
 	getElementToolbarItem: function(elem)
 	{
 		var parent = elem;
@@ -601,30 +616,57 @@ messageEditor.prototype = {
 			if(parent.insertText) return parent;
 			parent = parent.parentNode;
 		} while($(parent));
-		
+
 		return false;
 	},
-	
+
+	storeCaret: function()
+	{
+		if(MyBB.browser != 'ie' || !this.trackingCaret) {
+			return;
+		}
+		var range = document.selection.createRange();
+		dupe = range.duplicate();
+		dupe.moveToElementText($(this.textarea));
+		dupe.setEndPoint('EndToEnd', range);
+		caret_text = dupe.text.replace(/\r\n/g, 1);
+		this.lastCaretS = caret_text.length - range.text.length;
+		this.lastCaretE = this.lastCaretS + range.text.length;
+	},
+
+	restartEditorSelection: function()
+	{
+		if(MyBB.browser != 'ie') {
+			return;
+		}
+
+		var range = $(this.textarea).createTextRange();
+		range.collapse(true);
+		range.moveStart('character', this.lastCaretS);
+		range.moveEnd('character', this.lastCaretE - this.lastCaretS);
+		range.select();
+	},
+
 	addToolbarItem: function(toolbar, options)
 	{
 		if(typeof(toolbar) == 'string')
 		{
 			toolbar = $('editor_toolbar_'+toolbar);
 		}
-		
+
 		if(!$(toolbar)) return;
-		
+
 		// Does this item already exist?
 		if($('editor_item_'+options.name)) return;
-		
+
 		insert_first_class = false;
-		
+
 		// Is this the first item? childnodes = 1 (closing br) or lastchild.previousSibling = sep
 		if(toolbar.childNodes.length == 1 || (toolbar.lastChild.previousSibling && toolbar.lastChild.previousSibling.className.indexOf('toolbar_sep') > -1 || (toolbar.lastChild.previousSibling.className.indexOf('editor_dropdown') > -1 && options.type != 'dropdown')))
 		{
 			insert_first_class = true;
 		}
-		
+
 		if(options.type == "dropdown")
 		{
 			var dropdown = this.createDropDownMenu(options);
@@ -638,9 +680,9 @@ messageEditor.prototype = {
 		{
 			var button = this.createToolbarButton(options)
 			toolbar.insertBefore(button, toolbar.lastChild);
-			
+
 			if(insert_first_class == true)
-				button.className += ' toolbar_button_group_first';				
+				button.className += ' toolbar_button_group_first';
 		}
 		else if(options.type == 'separator')
 		{
@@ -649,12 +691,12 @@ messageEditor.prototype = {
 				toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 			}
 			var separator = document.createElement("span");
-			separator.itemType = options.type;			
+			separator.itemType = options.type;
 			separator.className = "toolbar_sep";
-			toolbar.insertBefore(separator, toolbar.lastChild);	
+			toolbar.insertBefore(separator, toolbar.lastChild);
 		}
 	},
-	
+
 	createToolbarButton: function(options)
 	{
 		var button = document.createElement('span');
@@ -665,18 +707,18 @@ messageEditor.prototype = {
 			button.title = options.title;
 		}
 		button.className = 'toolbar_button toolbar_normal toolbar_button_'+options.name;
-	
+
 		if(typeof(options.style) == 'object')
 		{
 			$H(options.style).each(function(item) {
 				eval('button.style.'+item.key+' = "'+item.value+'";');
 			});
-		}			
+		}
 		button.insertText = options.insert;
 		button.insertExtra = '';
 		if(typeof(options.extra) != 'undefined')
 			button.insertExtra = options.extra;
-		
+
 		if(typeof(options.sprite) != 'undefined')
 		{
 			var img = document.createElement('span');
@@ -688,14 +730,14 @@ messageEditor.prototype = {
 			img.src = this.themePath + "/images/" + options.image;
 		}
 		button.appendChild(img);
-		
+
 		if(options.dropdown)
 		{
 			if(options.color_select == true)
 			{
 				var sel = document.createElement('em');
 				sel.className = 'editor_button_color_selected';
-				button.appendChild(sel);				
+				button.appendChild(sel);
 			}
 			// create the arrow
 			var arrow = document.createElement('u');
@@ -703,10 +745,10 @@ messageEditor.prototype = {
 			button.appendChild(arrow);
 			button.className += ' toolbar_button_with_arrow';
 		}
-		
+
 		var end = document.createElement('strong');
 		button.appendChild(end);
-		
+
 		// Create the actual drop down menu
 		if(options.dropdown)
 		{
@@ -726,18 +768,18 @@ messageEditor.prototype = {
 				if(!elem) return;
 				elem.parentNode.removeClassName('toolbar_button_over_arrow');
 			});
-			button.appendChild(menu);	
+			button.appendChild(menu);
 			button.dropdown = true;
-			button.menu = menu;			
+			button.menu = menu;
 		}
-		
+
 		// Does this button have enabled/disabled states?
 		if(options.disabled_img || options.disabled_sprite)
 		{
 			button.disable = function()
 			{
 				if(button.disabled == true) return;
-				
+
 				if(options.disabled_sprite)
 				{
 					img.removeClassName('toolbar_sprite_'+options.sprite);
@@ -752,7 +794,7 @@ messageEditor.prototype = {
 			button.enable = function()
 			{
 				if(!button.disabled) return;
-				
+
 				if(options.disabled_sprite)
 				{
 					img.removeClassName('toolbar_sprite_disabled_'+options.disabled_sprite);
@@ -763,7 +805,7 @@ messageEditor.prototype = {
 
 				button.enabled = true;
 			};
-			
+
 			if(options.disabled && options.disabled == true)
 			{
 				button.disable();
@@ -771,12 +813,12 @@ messageEditor.prototype = {
 			}
 			else
 				button.disabled = false;
-		}		
-		
+		}
+
 		Event.observe(button, "mouseover", this.toolbarItemHover.bindAsEventListener(this));
 		Event.observe(button, "mouseout", this.toolbarItemOut.bindAsEventListener(this));
 		Event.observe(button, "click", this.toolbarItemClick.bindAsEventListener(this));
-		return button;	
+		return button;
 	},
 
 	updateOldArea: function(e)
@@ -786,14 +828,15 @@ messageEditor.prototype = {
 
 	toolbarItemOut: function(e)
 	{
+		this.storeCaret();
 		element = Event.element(e);
 
 		if(!element)
 			return false;
-			
+
 		if(!element.itemType)
 			element = 	this.getElementToolbarItem(element);
-			
+
 		if(element.disabled)
 			return;
 
@@ -818,18 +861,19 @@ messageEditor.prototype = {
 
 	toolbarItemHover: function(e)
 	{
+		this.storeCaret();
 		element = Event.element(e);
 		if(!element)
 			return false;
-			
+
 		if(!element.itemType)
 			element = this.getElementToolbarItem(element);
-		
+
 		if(element.disabled)
 			return;
 
-		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)	
-			element.addClassName('toolbar_hover');
+		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)
+			element.addClassName('toolbar_hover')
 	},
 
 	toolbarItemClick: function(e)
@@ -838,10 +882,10 @@ messageEditor.prototype = {
 
 		if(!element)
 			return false;
-			
+
 		if(!element.itemType)
-			element = 	this.getElementToolbarItem(element);
-			
+			element = this.getElementToolbarItem(element);
+
 		if(element.disabled)
 			return;
 
@@ -850,11 +894,11 @@ messageEditor.prototype = {
 			if(!element.menu.activeItem)
 			{
 				Event.stop(e);
-				if(!element.menu.lastItemValue)			
+				if(!element.menu.lastItemValue)
 					this.showDropDownMenu(element.menu);
 				else
 					this.insertMyCode(element.insertText, element.menu.lastItemValue);
-					
+
 				return;
 			}
 		}
@@ -971,6 +1015,8 @@ messageEditor.prototype = {
 
 	insertMyCode: function(code, extra)
 	{
+		this.restartEditorSelection();
+
 		switch(code)
 		{
 			case "list":
@@ -1010,11 +1056,11 @@ messageEditor.prototype = {
 						{
 							$('editor_item_'+tag).removeClassName('toolbar_clicked');
 						}
-						
+
 						if($('editor_item_'+exploded_tag[0]) && $('editor_item_'+exploded_tag[0]).itemType == "dropdown")
 						{
 							this.setDropDownMenuActiveItem($('editor_item_'+exploded_tag[0]), 0);
-						}							
+						}
 
 						if(tag == full_tag)
 						{
@@ -1058,11 +1104,11 @@ messageEditor.prototype = {
 					{
 						elem = $('editor_item_'+code);
 						if(elem.type == "dropdown" || elem.dropdown || elem.menu)
-							this.setDropDownMenuActiveItem($('editor_item_'+exploded_tag[0]), 0);
+							this.setDropDownMenuActiveItem($('editor_item_'+start_tag), 0);
 					}
 				}
 		}
-		
+
 		if(this.openTags.length == 0)
 		{
 			$('editor_item_close_tags').style.visibility = 'hidden';
@@ -1086,7 +1132,7 @@ messageEditor.prototype = {
 		{
 			var select_start = element.selectionStart;
 			var select_end = element.selectionEnd;
-			if(select_end <= 0)
+			if(select_end <= 2)
 			{
 				select_end = element.textLength;
 			}
@@ -1095,7 +1141,7 @@ messageEditor.prototype = {
 			return middle;
 		}
 	},
-	
+
 	performInsert: function(open_tag, close_tag, is_single, ignore_selection)
 	{
 		var is_closed = true;
@@ -1132,7 +1178,7 @@ messageEditor.prototype = {
 				else
 				{
 					var keep_selected = false;
-					
+
 					if(is_single)
 					{
 						is_closed = false;
@@ -1226,7 +1272,7 @@ messageEditor.prototype = {
 				{
 					if(tag.itemType == "dropdown" || tag.dropdown || tag.menu)
 					{
-						this.setDropDownMenuActiveItem(tag, 0);						
+						this.setDropDownMenuActiveItem(tag, 0);
 					}
 					else
 					{
@@ -1246,7 +1292,7 @@ messageEditor.prototype = {
 		{
 			return false;
 		}
-		
+
 		var smilies = $(id).select('.smilie');
 
 		if(smilies.length > 0)
