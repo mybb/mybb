@@ -123,7 +123,7 @@ else
 			$mybb->user = $db->fetch_array($query);
 
 			// Login key has changed - force logout
-			if(!$mybb->user['uid'] && $mybb->user['loginkey'] != $admin_session['loginkey'])
+			if(!$mybb->user['uid'] || $mybb->user['loginkey'] != $admin_session['loginkey'])
 			{
 				unset($mybb->user);
 			}
