@@ -5250,4 +5250,25 @@ function my_chmod($file, $mode)
 	return $result;
 }
 
+function my_rmdir_recursive($path)
+{
+    if(@is_dir($path) && !@is_link($path))
+    {
+        if($dh = @opendir($path))
+        {
+            while(($file = @readdir($dh)) !== false)
+            {
+                if($file == '.' || $file == '..' || $file == '.svn' || !my_rmdir_recursive($path.'/'.$file))
+                {
+                    continue;
+                }
+            }
+           @closedir($dh);
+        }
+        return @rmdir($path);
+    }
+	
+    return @unlink($path);
+}
+
 ?>

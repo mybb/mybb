@@ -1431,7 +1431,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 
 		// Now we have the new stylesheet, save it
 		$updated_stylesheet = array(
-			"stylesheet" => $db->escape_string($new_stylesheet),
+			"stylesheet" => $db->escape_string(unfix_css_urls($new_stylesheet)),
 			"lastmodified" => TIME_NOW
 		);
 		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");
@@ -1694,7 +1694,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 		// Now we have the new stylesheet, save it
 		$updated_stylesheet = array(
-			"stylesheet" => $db->escape_string($mybb->input['stylesheet']),
+			"stylesheet" => $db->escape_string(unfix_css_urls($mybb->input['stylesheet'])),
 			"lastmodified" => TIME_NOW
 		);
 		$db->update_query("themestylesheets", $updated_stylesheet, "sid='{$sid}'");

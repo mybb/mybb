@@ -55,20 +55,26 @@ if($mybb->input['action'] == "lift")
 {
 	$plugins->run_hooks("admin_user_banning_lift");
 	
+	// User clicked no
+	if($mybb->input['no'])
+	{
+		admin_redirect("index.php?module=user/banning");
+	}
+	
 	$query = $db->simple_select("banned", "*", "uid='{$mybb->input['uid']}'");
 	$ban = $db->fetch_array($query);
-	$user = get_user($ban['uid']);
 
 	if(!$ban['uid'])
 	{
 		flash_message($lang->error_invalid_ban, 'error');
 		admin_redirect("index.php?module=user/banning");
 	}
-
-	// User clicked no
-	if($mybb->input['no'])
+	
+	$user = get_user($ban['uid']);
+	
+	if(is_super_admin($user['uid']) && ($mybb->user['uid'] != $user['uid'] && !is_super_admin($mybb->user['uid'])))
 	{
-		admin_redirect("index.php?module=user/banning");
+		$errors[] = $lang->cannot_perform_action_super_admin_general;
 	}
 
 	if($mybb->request_method == "post")

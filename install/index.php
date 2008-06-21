@@ -865,6 +865,8 @@ function insert_templates()
 
 	$db->delete_query("themes");
 	$db->delete_query("templates");
+	$db->delete_query("themestylesheets");
+	my_rmdir_recursive(MYBB_ROOT."cache/themes");
 
 	$insert_array = array(
 		'title' => 'Default Templates'
