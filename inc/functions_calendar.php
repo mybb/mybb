@@ -43,7 +43,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	$next_month = get_next_month($month, $year);
 	$prev_month = get_prev_month($month, $year);
 
-	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, 1, $year));
+	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
 	if($month_start_weekday != $weekdays[0])
 	{
 		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
@@ -53,7 +53,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 	}
 	else
 	{
-		$day = 1;
+		$day = $calendar['startofweek']+1;
 		$calendar_month = $month;
 		$calendar_year = $year;
 	}
@@ -84,7 +84,7 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		foreach($weekdays as $weekday_id => $weekday)
 		{
 			// Current month always starts on 1st row
-			if($row == 0 && $day == 1)
+			if($row == 0 && $day == $calendar['startofweek']+1)
 			{
 				$in_month = 1;
 				$calendar_month = $month;

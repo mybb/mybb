@@ -1559,7 +1559,7 @@ if(!$mybb->input['action'])
 			if($message['icon'] > 0 && $icon_cache[$message['icon']])
 			{
 				$icon = $icon_cache[$message['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" />&nbsp;";
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" valign=\"middle\" align=\"center\" />&nbsp;";
 			}
 			else
 			{

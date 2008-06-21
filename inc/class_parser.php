@@ -394,7 +394,7 @@ class postParser
 				$find = $this->parse_html($find);
 				if(version_compare(PHP_VERSION, "5.1.0", ">="))
 				{
-					$message = preg_replace("#(?<=[^\w&;/\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
+					$message = preg_replace("#(?<=[^&;\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
 					$remaining -= $replacements;
 					if($remaining <= 0)
 					{
@@ -403,7 +403,7 @@ class postParser
 				}
 				else
 				{
-					$message = preg_replace("#(?<=[^\w&;/\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining);
+					$message = preg_replace("#(?<=[^&;\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining);
 				}
 			}
 		}
@@ -903,8 +903,8 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
-		$message = preg_replace("#([\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
-		$message = preg_replace("#([\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
+		$message = preg_replace("#([\W\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
+		$message = preg_replace("#([\W\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
 		$message = my_substr($message, 1);
 		return $message;
 	}

@@ -97,7 +97,13 @@ class pluginSystem
 						require_once $hook['file'];
 					}
 					$oldreturnargs = $returnargs; // why is this line of code here?
-					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
+					
+					if(!is_array($arguments))
+					{
+						$arguments = array($arguments);
+					}
+					
+					$returnargs = call_user_func_array($hook['function'], &$arguments);
 					if($returnargs)
 					{
 						$arguments = $returnargs;
@@ -134,7 +140,12 @@ class pluginSystem
 					{
 						require_once $hook['file'];
 					}
-					call_user_func_array($hook['function'], array(&$arguments));
+					
+					if(!is_array($arguments))
+					{
+						$arguments = array($arguments);
+					}
+					call_user_func_array($hook['function'], &$arguments);
 				}
 			}
 		}

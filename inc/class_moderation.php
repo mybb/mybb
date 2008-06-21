@@ -516,6 +516,7 @@ class Moderation
 		$tid = intval($tid);
 
 		$pidin = implode(',', $pids);
+		$attachment_count = 0;
 
 		$first = 1;
 		// Get the messages to be merged
@@ -536,10 +537,12 @@ class Moderation
 				$masterpid = $post['pid'];
 				$message = $post['message'];
 				$fid = $post['fid'];
+				$mastertid = $post['tid'];
 				$first = 0;
 			}
 			else
-			{ // these are the selected posts
+			{
+			 	// these are the selected posts
 				if($sep == "new_line")
 				{
 					$message .= "\n\n {$post['message']}";
@@ -577,27 +580,32 @@ class Moderation
 					// Subtract 1 unapproved post from post's forum
 					--$forum_counters[$post['fid']]['unapprovedposts'];
 				}
-
 			}
 		}
 
 		// Get lastpost pid to check if we're merging a post that is on the lastpost info
 		$query = $db->simple_select("posts", "pid", "tid = '{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => '1'));
 		$lastpostpid = $db->fetch_field($query, 'pid');
+		
+		$query2 = $db->simple_select("attachments", "COUNT(aid) as count", "pid IN({$pidin}) AND pid != '{$masterpid}' AND visible='1'");
+		$attachment_count = $db->fetch_field($query2, "count");
+		
+		$db->update_query("threads", array("attachmentcount" => $attachment_count), "tid = '{$mastertid}'");
 
 		// Update the message
 		$mergepost = array(
 			"message" => $db->escape_string($message),
 		);
-		$db->update_query("posts", $mergepost, "pid = '$masterpid'");
+		$db->update_query("posts", $mergepost, "pid = '{$masterpid}'");
+		
 		// Delete the extra posts
-		$db->delete_query("posts", "pid IN($pidin) AND pid != '$masterpid'");
+		$db->delete_query("posts", "pid IN({$pidin}) AND pid != '{$masterpid}'");
 		// Update pid for attachments
-		// FIXME: This needs to update the thread's attachmentcount
+		
 		$mergepost2 = array(
 			"pid" => $masterpid,
 		);
-		$db->update_query("attachments", $mergepost2, "pid IN($pidin)");
+		$db->update_query("attachments", $mergepost2, "pid IN({$pidin})");
 
 		$plugins->run_hooks("class_moderation_merge_posts", array("pids" => $pids, "tid" => $tid));
 

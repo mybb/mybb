@@ -2048,7 +2048,9 @@ if(!$mybb->input['action'])
 
 	$weekdays = fetch_weekday_structure($calendar['startofweek']);
 
-	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, 1, $year));
+	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
+	
+	// This is if we have days in the previous month to show
 	if($month_start_weekday != $weekdays[0])
 	{
 		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
@@ -2058,7 +2060,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		$day = 1;
+		$day = $calendar['startofweek']+1;
 		$calendar_month = $month;
 		$calendar_year = $year;
 	}
@@ -2095,7 +2097,7 @@ if(!$mybb->input['action'])
 		foreach($weekdays as $weekday_id => $weekday)
 		{
 			// Current month always starts on 1st row
-			if($row == 0 && $day == 1)
+			if($row == 0 && $day == $calendar['startofweek']+1)
 			{
 				$in_month = 1;
 				$calendar_month = $month;
