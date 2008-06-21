@@ -362,7 +362,6 @@ function fix_css_urls($url)
 function unfix_css_urls($url)
 {
 	return str_replace("../../../", "", $url);
-	//return preg_replace("#^(".preg_quote("../../../", "#").")#", "", $url);
 }
 
 /**
