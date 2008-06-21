@@ -332,7 +332,7 @@ class postParser
 		}
 
 		// Convert images when allowed.
-		if($options['allow_imgcode'] !== 0)
+		if($options['allow_imgcode'] != 0)
 		{
 			$message = preg_replace("#\[img\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$2')\n", $message);
 			$message = preg_replace("#\[img=([0-9]{1,3})x([0-9]{1,3})\](\r\n?|\n?)(https?://([^<>\"']+?))\[/img\]#ise", "\$this->mycode_parse_img('$4', array('$1', '$2'));", $message);
