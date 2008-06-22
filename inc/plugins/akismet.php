@@ -141,7 +141,6 @@ function akismet_install()
 	$rows = $db->fetch_field($query, "rows");
 	
 	$insertarray = array(
-		'gid' => 'NULL', 
 		'name' => 'akismet', 
 		'title' => 'Akismet', 
 		'description' => 'Options on how to configure and personalize Akismet', 

@@ -2054,7 +2054,8 @@ if(!$mybb->input['action'])
 	if($month_start_weekday != $weekdays[0])
 	{
 		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-		$day -= array_search(($month_start_weekday-1), $weekdays);
+		$day -= array_search(($month_start_weekday), $weekdays);
+		$day += $calendar['startofweek']+1;
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
 	}

@@ -2382,7 +2382,7 @@ ul.thread_tools li.subscription_remove {
 </table>
 </body>
 </html>]]></template>
-		<template name="forumdisplay_thread_rating" version="1400"><![CDATA[<td class="{$bgcolor}" id="rating_table_{$thread['tid']}">
+		<template name="forumdisplay_thread_rating" version="1400"><![CDATA[<td align="center" class="{$bgcolor}" id="rating_table_{$thread['tid']}">
 		<ul class="star_rating{$not_rated}" id="rating_thread_{$thread['tid']}">
 			<li style="width: {$thread['width']}%" class="current_rating" id="current_rating_{$thread['tid']}">{$ratingvotesav}</li>
 		</ul>

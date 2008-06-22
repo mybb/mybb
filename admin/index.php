@@ -85,7 +85,8 @@ elseif($mybb->input['do'] == "login")
 			"loginkey" => $mybb->user['loginkey'],
 			"ip" => $db->escape_string(get_ip()),
 			"dateline" => TIME_NOW,
-			"lastactive" => TIME_NOW
+			"lastactive" => TIME_NOW,
+			"data" => "",
 		);
 		$db->insert_query("adminsessions", $admin_session);
 		my_setcookie("adminsid", $sid);
