@@ -2227,7 +2227,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 	
 	$actions = "<dl style=\"margin-top: 0; margin-bottom: 0; width: 100%;\">
-	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"1\" {$add_checked[1]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->import_from}</strong></label></dt>
+	<dt><label style=\"display: block;\"><input type=\"radio\" name=\"add_type\" value=\"1\" {$add_checked[1]} class=\"adds_check\" onclick=\"checkAction('add');\" style=\"vertical-align: middle;\" /> <strong>{$lang->import_stylesheet_from}</strong></label></dt>
 		<dd style=\"margin-top: 4px;\" id=\"add_1\" class=\"adds\">
 			<table cellpadding=\"4\">
 				<tr>
