@@ -100,10 +100,10 @@ class pluginSystem
 					
 					if(!is_array($arguments))
 					{
-						$arguments = array($arguments);
+						$arguments = array(&$arguments);
 					}
 					
-					$returnargs = call_user_func_array($hook['function'], &$arguments);
+					$returnargs = call_user_func_array($hook['function'], $arguments);
 					if($returnargs)
 					{
 						$arguments = $returnargs;
@@ -143,9 +143,9 @@ class pluginSystem
 					
 					if(!is_array($arguments))
 					{
-						$arguments = array($arguments);
+						$arguments = array(&$arguments);
 					}
-					call_user_func_array($hook['function'], &$arguments);
+					call_user_func_array($hook['function'], $arguments);
 				}
 			}
 		}

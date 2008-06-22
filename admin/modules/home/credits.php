@@ -44,28 +44,28 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->developers, array('width' => '33%'));
 	$table->construct_header($lang->graphics_and_style, array('width' => '33%'));
 	
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1\" target=\"_blank\">Chris Boulton</a>");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1\" target=\"_blank\">Chris Boulton</a>");	
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1\" target=\"_blank\">Chris Boulton</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-1.html\" target=\"_blank\">Chris Boulton</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-1.html\" target=\"_blank\">Chris Boulton</a>");	
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-1.html\" target=\"_blank\">Chris Boulton</a>");
 	$table->construct_row();
 	
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=14\" target=\"_blank\">Musicalmidget</a>");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=81\" target=\"_blank\">DennisTT</a>");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=5\" target=\"_blank\">Scott Hough</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-14.html\" target=\"_blank\">Musicalmidget</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-81.html\" target=\"_blank\">DennisTT</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-5.html\" target=\"_blank\">Scott Hough</a>");
 	$table->construct_row();	
 	
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-27.html\" target=\"_blank\">Tochjo</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-2165.html\" target=\"_blank\">Tikitiki</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-1830.html\" target=\"_blank\">Justin S.</a>");
+	$table->construct_row();
+	
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-81.html\" target=\"_blank\">DennisTT</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-1653.html\" target=\"_blank\">DrPoodle</a>");
 	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=2165\" target=\"_blank\">Tikitiki</a>");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1830\" target=\"_blank\">Justin S.</a>");
 	$table->construct_row();
 	
 	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=1653\" target=\"_blank\">DrPoodle</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
-	
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/member.php?action=profile&amp;uid=7473\" target=\"_blank\">ZiNgA BuRgA</a>");
+	$table->construct_cell("<a href=\"http://community.mybboard.net/user-7473.html\" target=\"_blank\">ZiNgA BuRgA</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
