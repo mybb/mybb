@@ -1668,7 +1668,6 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 	else // remote avatar
 	{
 		$mybb->input['avatarurl'] = preg_replace("#script:#i", "", $mybb->input['avatarurl']);
-		$mybb->input['avatarurl'] = htmlspecialchars($mybb->input['avatarurl']);
 		$ext = get_extension($mybb->input['avatarurl']);
 
 		// Copy the avatar to the local server (work around remote URL access disabled for getimagesize)
@@ -2774,6 +2773,7 @@ if(!$mybb->input['action'])
 		{
 			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
 		}
+		$mybb->user['avatar'] = htmlspecialchars($mybb->user['avatar']);
 		eval("\$avatar = \"".$templates->get("usercp_currentavatar")."\";");
 		$colspan = 3;
 	}
