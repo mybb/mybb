@@ -162,6 +162,8 @@ class Moderation
 		global $db, $cache, $plugins;
 
 		$tid = intval($tid);
+		$plugins->run_hooks("class_moderation_delete_thread_start", $tid);
+		
 		$thread = get_thread($tid);
 
 		$userposts = array();
@@ -607,7 +609,8 @@ class Moderation
 		);
 		$db->update_query("attachments", $mergepost2, "pid IN({$pidin})");
 
-		$plugins->run_hooks("class_moderation_merge_posts", array("pids" => $pids, "tid" => $tid));
+		$arguments = array("pids" => $pids, "tid" => $tid);
+		$plugins->run_hooks("class_moderation_merge_posts", $arguments);
 
 		if(is_array($thread_counters))
 		{
@@ -663,7 +666,8 @@ class Moderation
 		switch($method)
 		{
 			case "redirect": // move (and leave redirect) thread
-				$plugins->run_hooks("class_moderation_move_thread_redirect", array("tid" => $tid, "new_fid" => $new_fid));
+				$arguments = array("tid" => $tid, "new_fid" => $new_fid);
+				$plugins->run_hooks("class_moderation_move_thread_redirect", $arguments);
 
 				if($thread['visible'] == 1)
 				{
@@ -746,7 +750,8 @@ class Moderation
 					$num_unapproved_posts = $thread['replies']+1;
 				}
 
-				$plugins->run_hooks("class_moderation_copy_thread", array("tid" => $tid, "new_fid" => $new_fid));
+				$arguments = array("tid" => $tid, "new_fid" => $new_fid);
+				$plugins->run_hooks("class_moderation_copy_thread", $arguments);
 
 				$newtid = $db->insert_query("threads", $threadarray);
 
@@ -832,7 +837,8 @@ class Moderation
 				break;
 			default:
 			case "move": // plain move thread
-				$plugins->run_hooks("class_moderation_move_simple", array("tid" => $tid, "new_fid" => $new_fid));
+				$arguments = array("tid" => $tid, "new_fid" => $new_fid);
+				$plugins->run_hooks("class_moderation_move_simple", $arguments);
 
 				if($thread['visible'] == 1)
 				{
@@ -985,7 +991,8 @@ class Moderation
 		$db->update_query("threadsubscriptions", $sqlarray, "tid='{$mergetid}'");
 		update_first_post($tid);
 
-		$plugins->run_hooks("class_moderation_merge_threads", array("mergetid" => $tid, "tid" => $tid, "subject" => $subject));
+		$arguments = array("mergetid" => $tid, "tid" => $tid, "subject" => $subject);
+		$plugins->run_hooks("class_moderation_merge_threads", $arguments);
 
 		$this->delete_thread($mergetid);
 
@@ -1202,7 +1209,8 @@ class Moderation
 			--$thread_counters[$newtid]['replies'];
 		}
 
-		$plugins->run_hooks("class_moderation_split_posts", array("pids" => $pids, "tid" => $tid, "moveto" => $moveto, "newsubject" => $newsubject, "destination_tid" => $destination_tid));
+		$arguments = array("pids" => $pids, "tid" => $tid, "moveto" => $moveto, "newsubject" => $newsubject, "destination_tid" => $destination_tid);
+		$plugins->run_hooks("class_moderation_split_posts", $arguments);
 
 		// Update user post counts
 		if(is_array($user_counters))
@@ -1354,7 +1362,8 @@ class Moderation
 		$db->update_query("threads", $sqlarray, "tid IN ($tid_list)");
 		$db->update_query("posts", $sqlarray, "tid IN ($tid_list)");
 
-		$plugins->run_hooks("class_moderation_move_threads", array("tids" => $tids, "moveto" => $moveto));
+		$arguments = array("tids" => $tids, "moveto" => $moveto);
+		$plugins->run_hooks("class_moderation_move_threads", $arguments);
 
 		foreach($forum_counters as $fid => $counter)
 		{
@@ -1620,7 +1629,8 @@ class Moderation
 			$db->update_query("posts", $new_subject, "tid='{$thread['tid']}' AND replyto='0'", 1);
 		}
 
-		$plugins->run_hooks("class_moderation_change_thread_subject", array("tids" => $tids, "format" => $format));
+		$arguments = array("tids" => $tids, "format" => $format);
+		$plugins->run_hooks("class_moderation_change_thread_subject", $arguments);
 
 		return true;
 	}
@@ -1643,7 +1653,8 @@ class Moderation
 		);
 		$db->update_query("threads", $update_thread, "tid='{$tid}'");
 
-		$plugins->run_hooks("class_moderation_expire_thread", array("tid" => $tid, "deletetime" => $deletetime));
+		$arguments = array("tid" => $tid, "deletetime" => $deletetime);
+		$plugins->run_hooks("class_moderation_expire_thread", $arguments);
 
 		return true;
 	}
@@ -1836,8 +1847,9 @@ class Moderation
 		{
 			$db->delete_query("threadsubscriptions", "tid IN ({$tids_csv})");
 		}
-
-		$plugins->run_hooks("class_moderation_remove_thread_subscriptions", array("tids" => $tids, "all" => $all, "fid" => $fid));
+	
+		$arguments = array("tids" => $tids, "all" => $all, "fid" => $fid);
+		$plugins->run_hooks("class_moderation_remove_thread_subscriptions", $arguments);
 
 		return true;
 	}

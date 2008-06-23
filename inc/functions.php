@@ -3106,7 +3106,8 @@ function mark_reports($id, $type="post")
 			break;
 	}
 
-	$plugins->run_hooks("mark_reports", array('id' => $id, 'type' => $type));
+	$arguments = array('id' => $id, 'type' => $type);
+	$plugins->run_hooks("mark_reports", $arguments);
 	$cache->update_reportedposts();
 }
 

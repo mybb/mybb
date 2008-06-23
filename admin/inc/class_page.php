@@ -563,7 +563,8 @@ EOF;
 			echo "\t<div class=\"tab_description\">{$tabs[$active]['description']}</div>\n";
 		}
 		echo "</div>";
-		$plugins->run_hooks("admin_page_output_nav_tabs_end", array('tabs' => $tabs, 'active' => $active));
+		$arguments = array('tabs' => $tabs, 'active' => $active);
+		$plugins->run_hooks("admin_page_output_nav_tabs_end", $arguments);
 	}
 
 	/**

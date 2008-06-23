@@ -75,7 +75,7 @@ class pluginSystem
 	 * Run the hooks that have plugins.
 	 *
 	 * @param string The name of the hook that is run.
-	 * @param string The argument for the hook that is run.
+	 * @param string The argument for the hook that is run. The passed value MUST be a variable
 	 * @return string The arguments for the hook.
 	 */
 	function run_hooks($hook, $arguments="")
@@ -98,12 +98,9 @@ class pluginSystem
 					}
 					$oldreturnargs = $returnargs; // why is this line of code here?
 					
-					if(!is_array($arguments))
-					{
-						$arguments = array(&$arguments);
-					}
+					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
 					
-					$returnargs = call_user_func_array($hook['function'], $arguments);
+					
 					if($returnargs)
 					{
 						$arguments = $returnargs;
@@ -120,7 +117,7 @@ class pluginSystem
 	 * This is a separate function to provide backwards compat with PHP 4.
 	 *
 	 * @param string The name of the hook that is run.
-	 * @param string The argument for the hook that is run - passed by reference
+	 * @param string The argument for the hook that is run - passed by reference. The passed value MUST be a variable
 	 */
 	function run_hooks_by_ref($hook, &$arguments)
 	{
@@ -141,11 +138,7 @@ class pluginSystem
 						require_once $hook['file'];
 					}
 					
-					if(!is_array($arguments))
-					{
-						$arguments = array(&$arguments);
-					}
-					call_user_func_array($hook['function'], $arguments);
+					call_user_func_array($hook['function'], array(&$arguments));				
 				}
 			}
 		}
@@ -215,8 +208,5 @@ class pluginSystem
 		// Nothing matches
 		return false;
 	}
-
-
-
 }
 ?>
