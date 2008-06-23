@@ -107,6 +107,27 @@ class UserDataHandler extends DataHandler
 	}
 
 	/**
+	 * Verifies if a usertitle is valid or invalid.
+	 *
+	 * @param boolean True when valid, false when invalid.
+	 */
+	function verify_usertitle()
+	{
+		global $mybb;
+
+		$usertitle = &$this->data['usertitle'];
+
+		// Check if the usertitle is of the correct length.
+		if($mybb->settings['customtitlemaxlength'] != 0 && my_strlen($usertitle) > $mybb->settings['customtitlemaxlength'])
+		{
+			$this->set_error('invalid_usertitle_length', $mybb->settings['customtitlemaxlength']);
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
 	 * Verifies if a username is already in use or not.
 	 *
 	 * @return boolean False when the username is not in use, true when it is.
@@ -750,6 +771,10 @@ class UserDataHandler extends DataHandler
 			{
 				unset($user['username']);
 			}
+		}
+		if($this->method == "insert" || array_key_exists('usertitle', $user))
+		{
+			$this->verify_usertitle();
 		}
 		if($this->method == "insert" || array_key_exists('password', $user))
 		{
