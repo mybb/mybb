@@ -311,7 +311,7 @@ class postParser
 		
 		// Parse quotes first
 		$message = $this->mycode_parse_quotes($message);
-
+		
 		$message = $this->mycode_auto_url($message);
 
 		$message = str_replace('$', '&#36;', $message);
@@ -641,6 +641,7 @@ class postParser
 			{
 				$span = "<span>{$date}</span>";
 			}
+			
 			return "<p>\n<blockquote><cite>{$span}".htmlspecialchars_uni($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote></p>\n";
 		}
 	}
@@ -903,8 +904,8 @@ class postParser
 	function mycode_auto_url($message)
 	{
 		$message = " ".$message;
-		$message = preg_replace("#([\W\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
-		$message = preg_replace("#([\W\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
+		$message = preg_replace("#([\>\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
+		$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
 		$message = my_substr($message, 1);
 		return $message;
 	}

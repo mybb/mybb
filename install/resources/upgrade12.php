@@ -314,7 +314,7 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canwarnusers;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers int(1) NOT NULL default '' AFTER cancustomtitle");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canwarnusers int(1) NOT NULL default '0' AFTER cancustomtitle");
 	
 	if($db->field_exists('lastip', "users"))
 	{
@@ -338,7 +338,7 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canreceivewarnings;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings int(1) NOT NULL default '' AFTER canwarnusers");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canreceivewarnings int(1) NOT NULL default '0' AFTER canwarnusers");
 	
 	if($db->field_exists('maxwarningsday', "usergroups"))
 	{
@@ -353,7 +353,7 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmodcp;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmodcp int(1) NOT NULL default '' AFTER maxwarningsday");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmodcp int(1) NOT NULL default '0' AFTER maxwarningsday");
 	$db->update_query("usergroups", array('canmodcp' => 1), "cancp=1 OR issupermod=1 OR gid='6'"); // Admins, Super Mods and Mods
 
 	if($db->field_exists('newpms', "users"))
@@ -369,7 +369,7 @@ function upgrade12_dbchanges2()
 	
 	if($db->field_exists('canaddpublicevents', "usergroups") && !$db->field_exists('canaddevents', "usergroups"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents int(1) NOT NULL default '';");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents int(1) NOT NULL default '0';");
 	}
 	
 	if($db->field_exists('canaddprivateevents', "usergroups"))
@@ -381,13 +381,13 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canbypasseventmod;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod int(1) NOT NULL default '' AFTER canaddevents;");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canbypasseventmod int(1) NOT NULL default '0' AFTER canaddevents;");
 	
 	if($db->field_exists('canmoderateevents', "usergroups"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups DROP canmoderateevents;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents int(1) NOT NULL default '' AFTER canbypasseventmod;");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups ADD canmoderateevents int(1) NOT NULL default '0' AFTER canbypasseventmod;");
 	$db->update_query("usergroups", array('canbypasseventmod' => 1, 'canmoderateevents' => 1), "cancp=1 OR issupermod=1");
 	$db->update_query("usergroups", array('canbypasseventmod' => 0, 'canmoderateevents' => 0), "cancp=0 AND issupermod=0");
 	$db->update_query("usergroups", array('canaddevents' => 0), "gid='1'");
@@ -489,11 +489,11 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums DROP mod_edit_posts;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts int(1) NOT NULL default '' AFTER modthreads");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."forums ADD mod_edit_posts int(1) NOT NULL default '0' AFTER modthreads");
 
 	if($db->field_exists('pmpopup', "users") && !$db->field_exists('pmnotice', "users"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice int(1) NOT NULL default ''");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE pmpopup pmnotice int(1) NOT NULL default '0'");
 	}
 	
 	$db->drop_table("tasks");
