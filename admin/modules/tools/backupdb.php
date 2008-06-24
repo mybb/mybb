@@ -438,7 +438,7 @@ if(!$mybb->input['action'])
 		$table->construct_cell("<a href=\"index.php?module=tools/backupdb&amp;action=dlbackup&amp;file={$backup['file']}\">{$backup['file']}</a>");
 		$table->construct_cell(get_friendly_size(filesize(MYBB_ADMIN_DIR.'backups/'.$backup['file'])), array("class" => "align_center"));
 		$table->construct_cell($time);
-		$table->construct_cell("<a href=\"index.php?module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_backup_deletion}')\">Delete</a>", array("class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=tools/backupdb&amp;action=backup&amp;action=delete&amp;file={$backup['file']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_backup_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 		$table->construct_row();
 	}
 	
