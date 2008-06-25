@@ -147,19 +147,19 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 	}
 }
 
-if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && is_moderator($fid, 'caneditposts') == 'yes') // Lets remove/approve/unapprove the attachment
+if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $mybb->input['action'] == "do_editpost" && $mybb->request_method == "post") // Lets remove/approve/unapprove the attachment
 { 
 	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
-	if($mybb->input['attachmentact'] == "remove")
+	if($mybb->input['attachmentact'] == "remove" && $mybb->input['posthash'])
 	{
 		remove_attachment($pid, $mybb->input['posthash'], $mybb->input['attachmentaid']);
 	}
-	elseif($mybb->input['attachmentact'] == "approve")
+	elseif($mybb->input['attachmentact'] == "approve" && is_moderator($fid, 'caneditposts') == 'yes')
 	{
 		$update_sql = array("visible" => 1);
 		$db->update_query(TABLE_PREFIX."attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
 	}
-	elseif($mybb->input['attachmentact'] == "unapprove")
+	elseif($mybb->input['attachmentact'] == "unapprove" && is_moderator($fid, 'caneditposts') == 'yes')
 	{
 		$update_sql = array("visible" => 0);
 		$db->update_query(TABLE_PREFIX."attachments", $update_sql, "aid='{$mybb->input['attachmentaid']}'");
