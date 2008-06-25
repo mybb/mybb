@@ -148,7 +148,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 }
 
 // Are we removing an attachment from the thread?
-if($mybb->input['attachmentaid'])
+if($mybb->input['attachmentaid'] && $mybb->input['posthash'])
 {
 	require_once MYBB_ROOT."inc/functions_upload.php";
 	remove_attachment(0, $mybb->input['posthash'], $mybb->input['attachmentaid']);

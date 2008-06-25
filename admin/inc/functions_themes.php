@@ -135,6 +135,15 @@ function import_theme_xml($xml, $options=array())
 		}
 		
 		$templates = $theme['templates']['template'];
+		if(is_array($templates))
+		{
+			// Theme only has one custom template
+			if(array_key_exists("attributes", $templates))
+			{
+				$templates = array($templates);
+			}
+		}
+	
 		foreach($templates as $template)
 		{
 			// PostgreSQL causes apache to stop sending content sometimes and 

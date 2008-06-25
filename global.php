@@ -497,13 +497,10 @@ if($mybb->settings['boardclosed'] == 1 && $mybb->usergroup['cancp'] != 1 && !($c
 }
 
 // Load Limiting
-if(($load = get_server_load()) && $load != $lang->unknown)
+if($mybb->usergroup['cancp'] != 1 && $mybb->settings['load'] > 0 && ($load = get_server_load()) && $load != $lang->unknown && $load > $mybb->settings['load'])
 {
 	// User is not an administrator and the load limit is higher than the limit, show an error
-	if($mybb->usergroup['cancp'] != 1 && $load > $mybb->settings['load'] && $mybb->settings['load'] > 0)
-	{
-		error($lang->error_loadlimit);
-	}
+	error($lang->error_loadlimit);
 }
 
 // If there is a valid referrer in the URL, cookie it
