@@ -323,23 +323,17 @@ class PostDataHandler extends DataHandler
 		}
 		
 		// Check to see if this person is in a usergroup that is excluded
-		if(strstr($mybb->settings['postmergeuignore'], ','))
+		if(trim($mybb->settings['postmergeuignore']) != "")
 		{
 			$gids = explode(',', $mybb->settings['postmergeuignore']);
-			foreach($gids as $key => $groupid)
-			{
-				$gid[] = intval($groupid);
-			}
+			array_walk($gids, 'intval');
 			
-			if(in_array($mybb->user['usergroup'], $gid))
+			
+			$user_usergroups = explode(',', $mybb->user['usergroup'].",".$mybb->user['additionalgroups']);
+			if(count(array_intersect($user_usergroups, $gids)) > 0)
 			{
 				return true;
-			}
-			
-		}
-		else if(trim($mybb->settings['postmergeuignore']) != "" && $mybb->user['usergroup'] == intval($mybb->settings['postmergeuignore']))
-		{
-			return true;
+			}			
 		}
 		
 		// Select the lastpost and fid information for this thread
