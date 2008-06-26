@@ -295,8 +295,8 @@ if($mybb->input['action'] == "join_requests")
 	$table->output($lang->join_requests_for." {$group['title']}");
 	echo $pagination;
 
-	$buttons[] = $form->generate_submit_button($lang->approve_selected_requests);
-	$buttons[] = $form->generate_submit_button($lang->deny_selected_requests);
+	$buttons[] = $form->generate_submit_button($lang->approve_selected_requests, array('name' => 'approve'));
+	$buttons[] = $form->generate_submit_button($lang->deny_selected_requests, array('name' => 'approve'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
