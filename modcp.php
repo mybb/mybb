@@ -2021,7 +2021,7 @@ if($mybb->input['action'] == "warninglogs")
 			$title = $row['custom_title'];
 		}
 		$title = htmlspecialchars_uni($title);
-		if($row['points'] > 0)
+		if($row['points'] >= 0)
 		{
 			$points = '+'.$row['points'];
 		}

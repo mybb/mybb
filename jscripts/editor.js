@@ -54,10 +54,12 @@ messageEditor.prototype = {
 			}
 		}
 
-		if(this.options && this.options.theme) {
+		if(this.options && this.options.theme)
+		{
 			this.setTheme(this.options.theme);
 		}
-		else {
+		else
+		{
 			this.setTheme('default');
 		}
 
@@ -403,7 +405,8 @@ messageEditor.prototype = {
 
 	setDropDownMenuActiveItem: function(element, index)
 	{
-		if(element == null) {
+		if(element == null)
+		{
 			return;
 		}
 		var menu = element.down('ul');
@@ -622,7 +625,8 @@ messageEditor.prototype = {
 
 	storeCaret: function()
 	{
-		if(MyBB.browser != 'ie' || !this.trackingCaret) {
+		if(MyBB.browser != 'ie' || !this.trackingCaret)
+		{
 			return;
 		}
 		var range = document.selection.createRange();
@@ -636,7 +640,8 @@ messageEditor.prototype = {
 
 	restartEditorSelection: function()
 	{
-		if(MyBB.browser != 'ie') {
+		if(MyBB.browser != 'ie')
+		{
 			return;
 		}
 
