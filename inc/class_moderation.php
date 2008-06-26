@@ -801,7 +801,6 @@ class Moderation
 						'uid' => $post['uid'],
 						'username' => $db->escape_string($post['username']),
 						'dateline' => $post['dateline'],
-						'message' => $db->escape_string($post['message']),
 						'ipaddress' => $post['ipaddress'],
 						'includesig' => $post['includesig'],
 						'smilieoff' => $post['smilieoff'],
@@ -827,7 +826,14 @@ class Moderation
 							'visible' => $attachment['visible'],
 							'thumbnail' => $attachment['thumbnail']
 						);
-						$db->insert_query("attachments", $attachment_array);
+						$new_aid = $db->insert_query("attachments", $attachment_array);
+						
+						$post['message'] = str_replace("[attachment={$attachment['aid']}]", "[attachment={$new_aid}]", $post['message']);
+					}
+					
+					if(strpos($post['message'], "[attachment=") !== false)
+					{
+						$db->update_query("posts", array('message' => $db->escape_string($post['message'])), "pid='{$pid}'");
 					}
 				}
 
