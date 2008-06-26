@@ -296,7 +296,7 @@ if($mybb->input['action'] == "join_requests")
 	echo $pagination;
 
 	$buttons[] = $form->generate_submit_button($lang->approve_selected_requests, array('name' => 'approve'));
-	$buttons[] = $form->generate_submit_button($lang->deny_selected_requests, array('name' => 'approve'));
+	$buttons[] = $form->generate_submit_button($lang->deny_selected_requests, array('name' => 'deny'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 	
