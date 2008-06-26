@@ -1049,6 +1049,13 @@ class Moderation
 		$tid = intval($tid);
 		$moveto = intval($moveto);
 		$newtid = intval($destination_tid);
+		
+		// Get forum infos
+		$query = $db->simple_select("forums", "fid, usepostcounts, posts, threads, unapprovedposts, unapprovedthreads");
+		while($forum = $db->fetch_array($query))
+		{
+			$forum_cache[$forum['fid']] = $forum;
+		}
 
 		// Make sure we only have valid values
 		array_walk($pids, 'intval');
@@ -1075,7 +1082,8 @@ class Moderation
 				"notes" => ''
 			);
 			$newtid = $db->insert_query("threads", $query);
-
+			
+			$forum_counters[$moveto]['threads'] = $forum_cache[$moveto]['threads'];
 			++$forum_counters[$moveto]['threads'];
 		}
 
@@ -1096,11 +1104,12 @@ class Moderation
 		//$original_posts_query = $db->simple_select("posts", "fid, visible, pid", "pid IN ($pids_list)");
 		$original_posts_query = $db->query("
 			SELECT p.pid, p.tid, p.fid, p.visible, p.uid, t.visible as threadvisible, t.replies as threadreplies, t.unapprovedposts as threadunapprovedposts, t.attachmentcount as threadattachmentcount, COUNT(a.aid) as postattachmentcount
-			FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."threads t)
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."attachments a ON (a.pid=p.pid)
-			WHERE p.pid IN ($pids_list) AND p.tid=t.tid
+			WHERE p.pid IN ($pids_list)
 			GROUP BY p.pid
-			");
+		");
 
 		// Move the selected posts over
 		$sqlarray = array(
@@ -1109,13 +1118,6 @@ class Moderation
 			"replyto" => 0
 		);
 		$db->update_query("posts", $sqlarray, "pid IN ($pids_list)");
-
-		// Get forum infos
-		$query = $db->simple_select("forums", "fid, usepostcounts, posts, threads, unapprovedposts, unapprovedthreads");
-		while($forum = $db->fetch_array($query))
-		{
-			$forum_cache[$forum['fid']] = $forum;
-		}
 
 		// Get posts being merged
 		while($post = $db->fetch_array($original_posts_query))
