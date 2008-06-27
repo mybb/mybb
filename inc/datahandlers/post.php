@@ -829,6 +829,7 @@ class PostDataHandler extends DataHandler
 		if($visible == 1)
 		{
 			$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
+			$attachmentcount = $db->fetch_field($query, "attachmentcount");
 			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 		}
 
@@ -921,7 +922,7 @@ class PostDataHandler extends DataHandler
 			{
 				$cache->update_mailqueue();
 			}
-			$thread_update = array("replies" => "+1");
+			$thread_update['replies'] = "+1";
 
 			// Update forum count
 			update_thread_counters($post['tid'], $thread_update);

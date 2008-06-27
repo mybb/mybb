@@ -519,7 +519,7 @@ function upload_attachment($attachment)
 	if($attacharray['pid'] > 0)
 	{
 		$post = get_post($attacharray['pid']);
-		update_thread_counters($post['tid'], array("attachmentcount" => +1));
+		update_thread_counters($post['tid'], array("attachmentcount" => "+1"));
 	}
 	$ret['aid'] = $aid;
 	return $ret;

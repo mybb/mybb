@@ -602,6 +602,11 @@ if($mybb->input['action'] == "add")
 				$mybb->input['stars'] = 0;
 			}
 			
+			if(!$mybb->input['starimage'])
+			{
+				$mybb->input['starimage'] = "images/star.gif";
+			}
+			
 			$new_usergroup = array(
 				"type" => 2,
 				"title" => $db->escape_string($mybb->input['title']),
