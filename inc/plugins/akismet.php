@@ -873,6 +873,9 @@ function akismet_admin()
 		
 		$db->update_query("posts", $approve, "pid IN ({$posts_in})");
 		
+		// Log admin action
+		log_admin_action();
+		
 		flash_message($lang->success_unmarked, 'success');
 		admin_redirect("index.php?module=forum/akismet");
 	}
@@ -932,6 +935,9 @@ function akismet_admin()
 			// Delete the post
 			$db->delete_query("posts", "pid='{$post['pid']}'");
 		}
+		
+		// Log admin action
+		log_admin_action();
 		
 		flash_message($lang->success_spam_deleted, 'success');
 		admin_redirect("index.php?module=forum/akismet");

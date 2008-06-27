@@ -584,7 +584,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 			break;
 		// managegroup.php functions
 		case "managegroup":
-			$locationname = $lang->managing_group;
+			$location_name = $lang->managing_group;
 			break;
 		// member.php functions
 		case "member_activate":

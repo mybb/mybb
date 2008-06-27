@@ -1086,20 +1086,20 @@ function upgrade12_dbchanges5()
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('23','newreply','<lang:group_newreply>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('24','member','<lang:group_member>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('25','warnings','<lang:group_warning>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','global','<lang:group_global>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('27','header','<lang:group_header>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('28','managegroup','<lang:group_managegroup>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('29','misc','<lang:group_misc>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('30','modcp','<lang:group_modcp>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('31','php','<lang:group_php>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('32','polls','<lang:group_polls>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('33','post','<lang:group_post>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('34','printthread','<lang:group_printthread>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('35','report','<lang:group_report>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('36','smilieinsert','<lang:group_smilieinsert>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('37','stats','<lang:group_stats>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('38','xmlhttp','<lang:group_xmlhttp>');");
-$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('39','footer','<lang:group_footer>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','global','<lang:group_global>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('27','header','<lang:group_header>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('28','managegroup','<lang:group_managegroup>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('29','misc','<lang:group_misc>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('30','modcp','<lang:group_modcp>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('31','php','<lang:group_php>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('32','polls','<lang:group_polls>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('33','post','<lang:group_post>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('34','printthread','<lang:group_printthread>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('35','report','<lang:group_report>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('36','smilieinsert','<lang:group_smilieinsert>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('37','stats','<lang:group_stats>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('38','xmlhttp','<lang:group_xmlhttp>');");
+	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('39','footer','<lang:group_footer>');");
 
 	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
 	while($ukey = $db->fetch_array($query))
@@ -1241,6 +1241,14 @@ $db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) 
 		);
 		$db->insert_query("adminviews", $new_view);
 		$view_count++;
+	}
+	
+	$avatardimensions = str_replace('x', '|', $mybb->settings['postmaxavatarsize']);
+	
+	$db->query("users", "uid", "avatar != '' && avatardimensions = ''");
+	while($user = $db->fetch_array($query))
+	{
+		$db->update_user("users", array('avatardimensions' => $avatardimensions), "uid='{$user['uid']}'", 1);
 	}
 
 	$contents = "Done</p>";

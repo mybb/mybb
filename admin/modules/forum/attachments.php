@@ -753,7 +753,7 @@ if(!$mybb->input['action'])
 			");
 			while($attachment = $db->fetch_array($query))
 			{
-				build_attachment_row($attachment, $table, $form);
+				build_attachment_row($attachment, $table, true);
 			}
 
 			// Need to draw pagination for this result set
@@ -841,9 +841,9 @@ if(!$mybb->input['action'])
 	$page->output_footer();
 }
 
-function build_attachment_row($attachment, &$table, &$form=null)
+function build_attachment_row($attachment, &$table, $use_form=false)
 {
-	global $mybb;
+	global $mybb, $form;
 	$attachment['filename'] = htmlspecialchars($attachment['filename']);
 
 	// Here we do a bit of detection, we want to automatically check for removal any missing attachments and any not assigned to a post uploaded > 24hours ago
@@ -873,7 +873,7 @@ function build_attachment_row($attachment, &$table, &$form=null)
 		$cell_class = "invisible_attachment";
 	}
 
-	if(is_object($form))
+	if($use_form == true && is_object($form))
 	{
 		$table->construct_cell($form->generate_check_box('aids[]', $attachment['aid'], '', array('checked' => $checked)));
 	}

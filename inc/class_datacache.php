@@ -447,9 +447,12 @@ class datacache
 			$this->moderators[$moderator['fid']][$moderator['uid']] = $moderator;
 		}
 		
-		function sort_moderators_by_usernames($a, $b)
+		if(!function_exists("sort_moderators_by_usernames"))
 		{
-			return strcasecmp($a['username'], $b['username']);
+			function sort_moderators_by_usernames($a, $b)
+			{
+				return strcasecmp($a['username'], $b['username']);
+			}
 		}
 		
 		if(is_array($this->moderators))
