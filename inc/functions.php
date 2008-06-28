@@ -5251,21 +5251,41 @@ function my_chmod($file, $mode)
 	return $result;
 }
 
-function my_rmdir_recursive($path)
+/**
+ * Custom rmdir function to loop through an entire directory and delete all files/folders within
+ *
+ * @param string The path to the directory
+ * @param array Any files you wish to ignore (optional)
+ */
+function my_rmdir_recursive($path, $ignore=array())
 {
+	global $orig_dir;
+	
+	if(!isset($orig_dir))
+	{
+		$orig_dir = $path;
+	}
+	
     if(@is_dir($path) && !@is_link($path))
     {
         if($dh = @opendir($path))
         {
             while(($file = @readdir($dh)) !== false)
             {
-                if($file == '.' || $file == '..' || $file == '.svn' || !my_rmdir_recursive($path.'/'.$file))
+                if($file == '.' || $file == '..' || $file == '.svn' || in_array($path.'/'.$file, $ignore) || !my_rmdir_recursive($path.'/'.$file))
                 {
                     continue;
                 }
             }
            @closedir($dh);
         }
+		
+		// Are we done? Don't delete the main folder too and return true
+		if($path == $orig_dir)
+		{
+			return true;
+		}
+		
         return @rmdir($path);
     }
 	

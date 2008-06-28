@@ -3636,7 +3636,7 @@ ul.thread_tools li.subscription_remove {
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>
 		<template name="polls_showresults_resultbit" version="120"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
-<td class="{$optionbg}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /><br />{$userlist}</td>
+<td class="{$optionbg}" width="{$imagerowwidth}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /><br />{$userlist}</td>
 <td class="{$optionbg}" width="67" align="center"><a href="polls.php?action=showresults&amp;pid={$poll['pid']}#option{$number}">{$votes}</a></td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
@@ -5421,11 +5421,6 @@ body {
 		</tr>
 	</table>
 	<br />
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-		<tr>
-			<td align="center" class="trow1"><span class="smalltext">{$lang->online_count}</span></td>
-		</tr>
-	</table>
 	{$multipage}
 	{$footer}
 </body>

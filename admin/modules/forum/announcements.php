@@ -94,7 +94,8 @@ if($mybb->input['action'] == "add")
 				}
 			}
 			
-			if($mybb->input['starttime_month'] > 12 || (int)$mybb->input['starttime_month'] < 1 || !is_int($mybb->input['starttime_month']))
+			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+			if(!in_array($mybb->input['starttime_month'], $months))
 			{
 				$mybb->input['starttime_month'] = 1;
 			}
@@ -107,7 +108,7 @@ if($mybb->input['action'] == "add")
 			}
 			else
 			{
-				if($mybb->input['endtime_month'] > 12 || (int)$mybb->input['endtime_month'] < 1 || !is_int($mybb->input['endtime_month']))
+				if(!in_array($mybb->input['endtime_month'], $months))
 				{
 					$mybb->input['endtime_month'] = 1;
 				}
@@ -388,7 +389,8 @@ if($mybb->input['action'] == "edit")
 				}
 			}
 			
-			if($mybb->input['starttime_month'] > 12 || (int)$mybb->input['starttime_month'] < 1 || !is_int($mybb->input['starttime_month']))
+			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+			if(!in_array($mybb->input['starttime_month'], $months))
 			{
 				$mybb->input['starttime_month'] = 1;
 			}
@@ -401,7 +403,7 @@ if($mybb->input['action'] == "edit")
 			}
 			else
 			{
-				if($mybb->input['endtime_month'] > 12 || (int)$mybb->input['endtime_month'] < 1 || !is_int($mybb->input['endtime_month']))
+				if(!in_array($mybb->input['endtime_month'], $months))
 				{
 					$mybb->input['endtime_month'] = 1;
 				}

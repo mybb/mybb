@@ -1017,6 +1017,8 @@ function akismet_admin()
 	
 		$page->output_footer();
 	}
+	
+	exit;
 }
 
 /**

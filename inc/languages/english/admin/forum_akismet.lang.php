@@ -17,7 +17,7 @@ $l['deleted_selected'] = "Delete Selected";
 $l['delete_all'] = "Delete All";
 
 $l['success_deleted_spam'] = "All detected spam messages have been deleted successfully.";
-$l['success_unmark'] = "The selected messages are no longer marked as spam.";
+$l['success_unmarked'] = "The selected messages are no longer marked as spam.";
 $l['success_spam_deleted'] = "The select spam messages have been deleted successfully.";
 
 $l['confirm_spam_deletion'] = "Are you sure you want to delete all detected messages?";

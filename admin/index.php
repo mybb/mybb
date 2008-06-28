@@ -188,7 +188,7 @@ if($mybb->user['uid'])
 	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
 	$admin_options = $db->fetch_array($query);
 	
-	if($admin_options['cpstyle'] && is_dir(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}"))
+	if(!empty($admin_options['cpstyle']) && is_dir(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}"))
 	{
 		$cp_style = $admin_options['cpstyle'];
 	}
@@ -206,7 +206,7 @@ if($mybb->user['uid'])
 // Load Admin CP style
 if(!$cp_style)
 {
-	if($mybb->settings['cpstyle'] && is_dir(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']))
+	if(!empty($admin_options['cpstyle']) && is_dir(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']))
 	{
 		$cp_style = $mybb->settings['cpstyle'];
 	}

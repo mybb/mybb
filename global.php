@@ -58,13 +58,13 @@ if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
 	// Guest = cookie
 	else
 	{
-		my_setcookie("mybblang", $mybb->settings['bblang']);
+		my_setcookie("mybblang", $mybb->settings['bblanguage']);
 	}
 }
 // Cookied language!
 else if($mybb->cookies['mybblang'] && $lang->language_exists($mybb->cookies['mybblang']))
 {
-	$mybb->settings['bblanguage'] = $mybb->input['language'];
+	$mybb->settings['bblanguage'] = $mybb->cookies['mybblang'];
 }
 else if(!isset($mybb->settings['bblanguage']))
 {

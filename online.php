@@ -137,8 +137,8 @@ else
 	}
 
 	// Assemble page URL
-	$multipage = multipage($online_count, $perpage, $page, "online.php".$refresh_string);	
-
+	$multipage = multipage($online_count, $perpage, $page, "online.php".$refresh_string);
+	
 	// Query for active sessions
 	$query = $db->query("
 		SELECT DISTINCT s.sid, s.ip, s.uid, s.time, s.location, u.username, s.nopermission, u.invisible, u.usergroup, u.displaygroup
@@ -148,10 +148,6 @@ else
 		ORDER BY $sql
 		LIMIT {$start}, {$perpage}
 	");
-
-	$user_count = 0;
-	$guest_count = 0;
-	$invisible_count = 0;
 
 	// Fetch spiders
 	$spiders = $cache->read("spiders");
@@ -170,11 +166,6 @@ else
 		{
 			if($users[$user['uid']]['time'] < $user['time'] || !$users[$user['uid']])
 			{
-				if($user['invisible'] == 1)
-				{
-					++$invisible_count;
-				}
-				++$user_count;
 				$users[$user['uid']] = $user;
 			}
 		}
@@ -184,13 +175,11 @@ else
 			$user['bot'] = $spiders[$botkey]['name'];
 			$user['usergroup'] = $spiders[$botkey]['usergroup'];
 			$guests[] = $user;
-			++$botcount;
 		}
 		// Or a guest
 		else
 		{
 			$guests[] = $user;
-			++$guest_count;
 		}
 	}
 
@@ -213,8 +202,6 @@ else
 		}
 	}
 
-	$online_count = $user_count + $guest_count;
-
 	// Fetch the most online information
 	$most_online = $cache->read("mostonline");
 	$record_count = $most_online['numusers'];
@@ -227,42 +214,7 @@ else
 		$refresh_time = $mybb->settings['refreshwol'] * 60;
 		$refresh = "<meta http-equiv=\"refresh\" content=\"{$refresh_time};URL=online.php{$refresh_string}\" />";
 	}
-
-	// Fetch language strings depending on counts being plural or singular
-	if($online_count != 1)
-	{
-		$total_bit = $lang->online_online_plural;
-	}
-	else
-	{
-		$total_bit = $lang->online_online_singular;
-	}
-	if($user_count != 1)
-	{
-		$user_bit = $lang->online_member_plural;
-	}
-	else
-	{
-		$user_bit = $lang->online_member_singular;
-	}
-	if($invisible_count != 1)
-	{
-		$invisible_bit = $lang->online_anon_plural;
-	}
-	else
-	{
-		$invisible_bit = $lang->online_anon_singular;
-	}
-	if($guest_count != 1)
-	{
-		$guest_bit = $lang->online_guest_plural;
-	}
-	else
-	{
-		$guest_bit = $lang->online_guest_singular;
-	}
-	$lang->online_count = $lang->sprintf($lang->online_count, my_number_format($online_count), $total_bit, $mybb->settings['wolcutoffmins'], my_number_format($user_count), $user_bit, my_number_format($invisible_count), $invisible_bit, my_number_format($guest_count), $guest_bit);
-
+	
 	$plugins->run_hooks("online_end");
 
 	eval("\$online = \"".$templates->get("online")."\";");
