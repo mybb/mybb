@@ -140,6 +140,7 @@ if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
 }
 
+$done_moderators = array();
 $modcomma = '';
 $modlist = '';
 $parentlistexploded = explode(",", $parentlist);
@@ -150,10 +151,17 @@ foreach($parentlistexploded as $mfid)
 		reset($moderatorcache[$mfid]);
 		foreach($moderatorcache[$mfid] as $moderator)
 		{
+			if(in_array($moderator['mid'], $done_moderators))
+			{
+				continue;
+			}
+			
 			$moderator['username'] = format_name($moderator['username'], $moderator['usergroup'], $moderator['displaygroup']);
 			$moderator['profilelink'] = build_profile_link($moderator['username'], $moderator['uid']);
 			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator", 1, 0)."\";");
-			$modcomma=", ";
+			$modcomma = ", ";
+			
+			$done_moderators[] = $moderator['mid'];
 		}
 	}
 }

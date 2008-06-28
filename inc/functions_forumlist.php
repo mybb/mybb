@@ -245,6 +245,7 @@ function build_forumbits($pid=0, $depth=1)
 			// Moderator column is not off
 			if($mybb->settings['modlist'] != 0)
 			{
+				$done_moderators = array();
 				$moderators = '';
 				// Fetch list of moderators from this forum and its parents
 				$parentlistexploded = explode(',', $forum['parentlist']);
@@ -256,8 +257,15 @@ function build_forumbits($pid=0, $depth=1)
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
+							if(in_array($moderator['mid'], $done_moderators))
+							{
+								continue;
+							}
+			
 							$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['uid'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
 							$comma = ', ';
+							
+							$done_moderators[] = $moderator['mid'];
 						}
 					}
 				}
