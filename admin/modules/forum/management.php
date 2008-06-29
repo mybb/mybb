@@ -1828,6 +1828,7 @@ if(!$mybb->input['action'])
 		foreach($usergroups as $usergroup)
 		{
 			$perms = array();
+			$all_check = "";
 			if(isset($mybb->input['default_permissions']))
 			{
 				if($mybb->input['default_permissions'][$usergroup['gid']])
