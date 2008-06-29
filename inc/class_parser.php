@@ -819,9 +819,9 @@ class postParser
 			$name = $url;
 		}
 		
-		$name = str_replace('\"', '"', $name);
-		$url = str_replace('\"', '"', $url);
-		$fullurl = str_replace('\"', '"', $fullurl);
+		$name = str_replace("\'", "'", $name);
+		$url = str_replace("\'", "'", $url);
+		$fullurl = str_replace("\'", "'", $fullurl);
 		
 		if($name == $url && $this->options['shorten_urls'] != 0)
 		{
