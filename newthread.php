@@ -228,6 +228,14 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Set uid and username
 			$uid = $mybb->user['uid'];
 			$username = $mybb->user['username'];
+			
+			// Check if this user is allowed to post here
+			$mybb->usergroup = &$groupscache[$mybb->user['usergroup']];
+			$forumpermissions = forum_permissions($fid);
+			if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 || $mybb->user['suspendposting'] == 1)
+			{
+				error_no_permission();
+			}
 		}
 		// This username does not exist.
 		else
