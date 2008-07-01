@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 			"time" => $mybb->input['end_time']
 		);
 		$event['timezone'] = $mybb->input['timezone'];
-		$event['ignoretimezone'] =	$mybb->input['ignoretimezone'];
+		$event['ignoretimezone'] =	intval($mybb->input['ignoretimezone']);
 		$repeats = array();
 		switch($mybb->input['repeats'])
 		{
@@ -549,7 +549,7 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 			"time" => $mybb->input['end_time']
 		);
 		$event['timezone'] = $mybb->input['timezone'];
-		$event['ignoretimezone'] =	$mybb->input['ignoretimezone'];
+		$event['ignoretimezone'] = intval($mybb->input['ignoretimezone']);
 		$repeats = array();
 		switch($mybb->input['repeats'])
 		{
@@ -750,6 +750,12 @@ if($mybb->input['action'] == "editevent")
 		{
 			$privatecheck = " checked=\"checked\"";
 		}
+		
+		if($mybb->input['ignoretimezone'] == 1)
+		{
+			$ignore_timezone = "checked=\"checked\"";
+		}
+		
 		$timezone = $mybb->input['timezone'];
 	}
 	else
@@ -868,6 +874,7 @@ if($mybb->input['action'] == "editevent")
 			if($event['ignoretimezone'])
 			{
 				$timezone = 0;
+				$ignore_timezone = "checked=\"checked\"";
 			}
 			else
 			{
@@ -940,11 +947,6 @@ if($mybb->input['action'] == "editevent")
 	}
 
 	$timezones = build_timezone_select("timezone", $timezone);
-
-	if($mybb->input['ignoretimezone'] == 1)
-	{
-		$ignore_timezone = "checked=\"checked\"";
-	}
 
 	$plugins->run_hooks("calendar_editevent_end");
 
@@ -1311,7 +1313,7 @@ if($mybb->input['action'] == "event")
 
 	if($event['ignoretimezone'] == 0)
 	{
-		$offset = 0;
+		$offset = $event['timezone'];
 	}
 	else
 	{
@@ -1643,7 +1645,7 @@ if($mybb->input['action'] == "dayview")
 			}
 			else
 			{
-				$offset = 0;
+				$offset = $mybb->user['timezone'];
 			}
 
 			$event['starttime_user'] = $event['starttime']+$offset*3600;
@@ -2067,7 +2069,7 @@ if(!$mybb->input['action'])
 	}
 
 	$prev_month_days = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
-
+	
 	// So now we fetch events for this month (nb, cache events for past month, current month and next month for mini calendars too)
 	$start_timestamp = gmmktime(0, 0, 0, $prev_month['month'], $day, $prev_month['year']);
 	$num_days = gmdate("t", gmmktime(0, 0, 0, $next_month['month'], 1, $next_month['year']));

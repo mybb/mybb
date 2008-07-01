@@ -1079,8 +1079,8 @@ DESC=Descending]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postmergesep">
-			<title>Merge Seperator</title>
-			<description><![CDATA[The Seperator to be used when merging two message Default: '[hr]']]></description>
+			<title>Merge Separator</title>
+			<description><![CDATA[The Separator to be used when merging two message Default: '[hr]']]></description>
 			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[[hr]]]></settingvalue>

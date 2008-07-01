@@ -381,7 +381,7 @@ function get_prev_month($month, $year)
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
-	// We take in to account timezones here - we add/subject 12 hours from our GMT time ranges
+	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
 	$start -= 12*3600;
 	$end += 12*3600;
 
@@ -404,7 +404,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		}
 		else
 		{
-			$offset = 0;
+			$offset = $mybb->user['timezone'];
 		}
 		$event['starttime_user'] = $event['starttime']+($offset*3600);
 

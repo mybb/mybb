@@ -393,7 +393,8 @@ while($forumrow = $db->fetch_array($query))
 }
 
 $pids = '';
-$comma="";
+$tids = '';
+$comma = '';
 $query = $db->query("
 	SELECT p.pid, p.message, p.tid
 	FROM ".TABLE_PREFIX."posts p
@@ -405,9 +406,10 @@ $query = $db->query("
 while($getid = $db->fetch_array($query))
 {
 	$pids .= ",'{$getid['pid']}'";
+	$tids .= ",'{$getid['tid']}'";
 	$posts[$getid['tid']] = $getid;
 }
-$pids = "pid IN(0$pids)";
+$pids = "pid IN(0{$pids})";
 // Now lets fetch all of the attachments for these posts
 $query = $db->simple_select("attachments", "*", $pids);
 while($attachment = $db->fetch_array($query))
@@ -430,7 +432,7 @@ $query = $db->query("
 	SELECT t.*, t.username AS threadusername, u.username, u.avatar
 	FROM ".TABLE_PREFIX."threads t
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-	WHERE fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
+	WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 	ORDER BY t.dateline DESC
 	LIMIT 0, ".$mybb->settings['portal_numannouncements']
 );
@@ -465,7 +467,7 @@ while($announcement = $db->fetch_array($query))
 		{
 			$announcement['avatar'] = $mybb->settings['bburl'] . '/' . $announcement['avatar'];
 		}		
-		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"0\" {$avatar_width_height} /></td>";
+		$avatar = "<td class=\"trow1\" width=\"1\" align=\"center\" valign=\"top\"><img src=\"{$announcement['avatar']}\" alt=\"\" {$avatar_width_height} /></td>";
 	}
 	else
 	{

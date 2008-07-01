@@ -176,7 +176,11 @@ function build_postbit($post, $post_type=0)
 		{
 			$titlescache[$usertitle['posts']] = $usertitle;
 		}
-		krsort($titlescache);
+		
+		if(is_array($titlescache))
+		{
+			krsort($titlescache);
+		}
 		unset($usertitle, $cached_titles);
 	}
 

@@ -609,7 +609,6 @@ function parse_css_properties($values)
 			case "background":
 			case "color":
 			case "width":
-			case "font":
 			case "font-family":
 			case "font-size":
 			case "font-weight":

@@ -1217,7 +1217,7 @@ if($mybb->input['action'] == "subscriptions")
 			$subscriptions[$subscription['tid']] = $subscription;
 		}
 		// Hmm, you don't have permission to view - unsubscribe!
-		else
+		else if($subscription['tid'])
 		{
 			$del_subscriptions[] = $subscription['tid'];
 		}

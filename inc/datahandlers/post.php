@@ -316,7 +316,7 @@ class PostDataHandler extends DataHandler
 			return true;
 		}
 		
-		// Assign a default seperator if none is specified
+		// Assign a default separator if none is specified
 		if(trim($mybb->settings['postmergesep']) == "")
 		{
 			$mybb->settings['postmergesep'] = "[hr]";
