@@ -216,7 +216,7 @@ function akismet_install()
 	);
 	$db->insert_query("settings", $insertarray);
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD akismetstopped int NOT NULL");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD akismetstopped int NOT NULL default 0");
 
 	rebuild_settings();
 }

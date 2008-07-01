@@ -65,6 +65,9 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$properties = parse_css_properties($editable_selector['values']);
 	
 	$form = new Form("index.php?module=style/themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", true);
+	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
+	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['selector']), array('id' => "file"))."\n";
+	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($editable_selector), array('id' => 'hidden_selector'))."\n";
 	
 	$table = new Table;	
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[background]', $properties['background'], array('id' => 'css_bits[background]', 'style' => 'width: 260px;'))."</div><div><strong>{$lang->background}</strong></div>", array('style' => 'width: 20%;'));
@@ -1427,6 +1430,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 				$css_to_insert .= "{$field}: {$value};\n";
 			}
 		}
+		
 		$new_stylesheet = insert_into_css($css_to_insert, $mybb->input['selector'], $new_stylesheet);
 
 		// Now we have the new stylesheet, save it
@@ -1591,13 +1595,14 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	if(!$mybb->input['selector'])
 	{
 		reset($css_array);
-		$key = key($css_array);
-		$editable_selector = $css_array[$key];
+		$selector = key($css_array);
+		$editable_selector = $css_array[$selector];
 	}
 	// Show a specific selector
 	else
 	{
 		$editable_selector = $css_array[$mybb->input['selector']];
+		$selector = $mybb->input['selector'];
 	}
 	
 	// Get the properties from this item
@@ -1606,9 +1611,9 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	$form = new Form("index.php?module=style/themes&amp;action=edit_stylesheet", "post");
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['file']), array('id' => "file"))."\n";
+	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($selector), array('id' => 'hidden_selector'))."\n";
 	
 	echo "<div id=\"stylesheet\">";
-	
 	$table = new Table;	
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[background]', $properties['background'], array('id' => 'css_bits[background]', 'style' => 'width: 260px;'))."</div><div><strong>{$lang->background}</strong></div>", array('style' => 'width: 20%;'));
 	$table->construct_cell("<strong>{$lang->extra_css_atribs}</strong><br /><div style=\"align: center;\">".$form->generate_text_area('css_bits[extra]', $properties['extra'], array('id' => 'css_bits[extra]', 'style' => 'width: 98%;', 'rows' => '19'))."</div>", array('rowspan' => 8));

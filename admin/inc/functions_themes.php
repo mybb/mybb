@@ -657,7 +657,7 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 	// The specified class ID cannot be found, add CSS to end of file
 	if(!$css || !$parsed_css[$selector])
 	{
-		return $css."{$selector}\n{$generated_css}}\n\n";
+		return $css."{$class_id}\n{\n{$generated_css}\n}\n\n";
 	}
 	// Valid CSS, swap out old, swap in new
 	else

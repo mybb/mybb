@@ -806,7 +806,8 @@ class Moderation
 						'smilieoff' => $post['smilieoff'],
 						'edituid' => $post['edituid'],
 						'edittime' => $post['edittime'],
-						'visible' => $post['visible']
+						'visible' => $post['visible'],
+						'message' => $db->escape_string($post['message']),
 					);
 					$pid = $db->insert_query("posts", $post_array);
 
@@ -893,7 +894,7 @@ class Moderation
 			}
 			if(!empty($pcount))
 			{
-				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum$pcount WHERE uid='{$posters['uid']}'");
+				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum{$pcount} WHERE uid='{$posters['uid']}'");
 			}
 		}
 
