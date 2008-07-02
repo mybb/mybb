@@ -64,7 +64,7 @@
 			<description><![CDATA[The Default style that the control panel will use. Styles are inside the styles folder. A folder name inside that folder becomes the style title and style.css inside the style title folder is the css style file.]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[cpstyle]]></optionscode>
-			<settingvalue><![CDATA[Axiom]]></settingvalue>
+			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>

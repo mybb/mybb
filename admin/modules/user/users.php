@@ -1585,6 +1585,26 @@ if($mybb->input['action'] == "search")
 		{
 			$admin_view['conditions'] = $mybb->input['conditions'];
 		}
+		
+		if($mybb->input['sortby'])
+		{
+			$admin_view['sortby'] = $mybb->input['sortby'];
+		}
+		
+		if($mybb->input['perpage'])
+		{
+			$admin_view['perpage'] = $mybb->input['perpage'];
+		}
+		
+		if($mybb->input['order'])
+		{
+			$admin_view['sortorder'] = $mybb->input['order'];
+		}
+		
+		if($mybb->input['displayas'])
+		{
+			$admin_view['view_type'] = $mybb->input['displayas'];
+		}
 
 		$results = build_users_view($admin_view);
 
@@ -1940,7 +1960,7 @@ function build_users_view($view)
 			$start = 0;
 			$mybb->input['page'] = 1;
 		}
-
+		
 		switch($view['sortby'])
 		{
 			case "numposts":

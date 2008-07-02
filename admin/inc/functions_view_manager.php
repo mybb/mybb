@@ -67,7 +67,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			}
 			if(count($mybb->input['fields']) <= 0)
 			{
-				$errors[] = $lang->eror_no_view_fields;
+				$errors[] = $lang->error_no_view_fields;
 			}
 
 			if(intval($mybb->input['perpage']) <= 0)
