@@ -297,7 +297,7 @@ if($mybb->user['uid'] != 0)
 		eval("\$admincplink = \"".$templates->get("header_welcomeblock_member_admin")."\";");
 	}
 	
-	if($mybb->user['ismoderator'])
+	if($mybb->usergroup['canmodcp'] == 1)
 	{
 		eval("\$modcplink = \"".$templates->get("header_welcomeblock_member_moderator")."\";");
 	}
@@ -317,7 +317,7 @@ else
 
 $unreadreports = '';
 // This user is a moderator, super moderator or administrator
-if($mybb->usergroup['cancp'] == 1 || $mybb->usergroup['canmodcp'] == 1)
+if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'])
 {
 	// Read the reported posts cache
 	$reported = $cache->read("reportedposts");
