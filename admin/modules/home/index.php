@@ -133,13 +133,13 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->mybb_version}</strong>", array('width' => '25%'));
 	$table->construct_cell($mybb->version, array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->threads}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$threads['numthreads']}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum/moderation_queue&amp;type=threads\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$threads}</strong> {$lang->threads}<br /><strong>{$newthreads}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum/moderation_queue&amp;type=threads\"><strong>{$unapproved_threads}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->construct_cell("<strong>{$lang->php_version}</strong>", array('width' => '25%'));
 	$table->construct_cell(phpversion(), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->posts}</strong>", array('width' => '25%'));
-	$table->construct_cell("<strong>{$posts['numposts']}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum/moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
+	$table->construct_cell("<strong>{$posts}</strong> {$lang->posts}<br /><strong>{$newposts}</strong> {$lang->new_today}<br /><a href=\"index.php?module=forum/moderation_queue&amp;type=posts\"><strong>{$unapproved_posts}</strong> {$lang->unapproved}</a>", array('width' => '25%'));
 	$table->construct_row();
 	
 	$table->construct_cell("<strong>{$lang->sql_engine}</strong>", array('width' => '25%'));

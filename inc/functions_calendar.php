@@ -381,6 +381,7 @@ function get_prev_month($month, $year)
 function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 {
 	global $db, $mybb;
+	
 	// We take in to account timezones here - we add/subtract 12 hours from our GMT time ranges
 	$start -= 12*3600;
 	$end += 12*3600;
@@ -443,7 +444,10 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 			}
 			$first = "";
 			$event_date = explode("-", gmdate("j-n-Y", $range_start));
-			while($range_start < $event['endtime'])
+			
+			// Get rid of hour/minutes because sometimes they cause the events to stretch into the next day
+			$range_end = gmmktime(0, 0, 0, gmdate("n", $event['endtime']), gmdate("j", $event['endtime']), gmdate("Y", $event['endtime']));
+			while($range_start < $range_end)
 			{
 				// Outside the dates we care about, break! (No unnecessary looping here!)
 				if($range_start > $end || !$range_start)
