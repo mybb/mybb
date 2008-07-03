@@ -2063,10 +2063,6 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 			{
 				if($forum['description'])
 				{
-					if(my_strlen($forum['description']) > 100)
-					{
-						$forum['description'] = my_substr($forum['description'], 0, 98)."...";
-					}
            			$forum['description'] = "<br /><small>".$forum['description']."</small>";
        			}
 			

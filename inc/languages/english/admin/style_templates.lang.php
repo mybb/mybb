@@ -25,7 +25,7 @@ $l['edit_template_desc'] = "Here you can edit the template's code, title or set.
 $l['edit_set'] = "Edit Set";
 $l['edit_set_desc'] = "Here you can edit the properties for this template set.";
 $l['manage_templates'] = "Manage Templates";
-$l['manage_templates_desc'] = "Here you can manage the templates for this template set. To edit a template inline click on it's link, or select \"Full Edit\" to edit all properties on a separate page.";
+$l['manage_templates_desc'] = "Here you can manage the templates for this template set. To edit a template click on it's link or select \"Full Edit\" to edit all properties on a separate page.";
 $l['diff_report'] = "Diff Report";
 $l['diff_report_desc'] = "Performs a difference analysis between the templates and shows you exactly what changes have been made between your customised copy and the latest master copy.";
 

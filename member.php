@@ -302,6 +302,11 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 
 if($mybb->input['action'] == "coppa_form")
 {
+	if(!$mybb->settings['faxno'])
+	{
+		$mybb->settings['faxno'] = "&nbsp;";
+	}
+	
 	eval("\$coppa_form = \"".$templates->get("member_coppa_form")."\";");
 	output_page($coppa_form);
 }

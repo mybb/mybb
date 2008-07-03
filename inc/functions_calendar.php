@@ -448,7 +448,6 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 				// Outside the dates we care about, break! (No unnecessary looping here!)
 				if($range_start > $end || !$range_start)
 				{
-					unset($events_cache["{$first}"]);
 					break;
 				}
 				if($range_start >= $start)

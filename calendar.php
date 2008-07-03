@@ -1525,6 +1525,9 @@ if($mybb->input['action'] == "dayview")
 	$end_timestamp = gmmktime(23, 59, 59, $month, $day, $year);
 
 	$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+	echo "<pre>";
+	print_r($events_cache);
+	echo "</pre>";
 
 	if(is_array($events_cache["$day-$month-$year"]))
 	{

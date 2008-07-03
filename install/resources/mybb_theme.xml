@@ -1744,6 +1744,7 @@ ul.thread_tools li.subscription_remove {
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
 <input type="hidden" name="quoted_ids" value="{$quoted_ids}" />
+<input type="hidden" name="tid" value="{$tid}" />
 {$editdraftpid}
 </form>
 {$forumrules}
@@ -6612,26 +6613,13 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_read_action" version="1400"><![CDATA[<tr>
 	<td class="tcat" align="center"><strong>{$actioned_on}</strong></td>
 </tr>]]></template>
-		<template name="private_read" version="1400"><![CDATA[<html>
-<head>
-<title>{$lang->viewing_pm} {$pm['subject']}</title>
-{$headerinclude}
-</head>
-<body>
-{$header}
-<table width="100%" border="0" align="center">
-<tr>
-{$usercpnav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
-<tr>
-<td class="thead">
+		<template name="private_read" version="1400"><![CDATA[<td class="thead">
 <strong>{$pm['subject']}</strong>
 </td>
 </tr>
+</table>
 {$action_time}
 {$message}
-</table>
 {$footer}
 </body>
 </html>]]></template>
