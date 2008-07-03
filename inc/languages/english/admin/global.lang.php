@@ -25,7 +25,7 @@ $l['mybb_admin_panel'] = "MyBB Control Panel";
 $l['mybb_admin_cp'] = "MyBB Admin CP";
 $l['logged_in_as'] = "Logged in as";
 $l['view_board'] = "View Forum";
-$l['logout'] = "Logout";
+$l['logout'] = "Log Out";
 
 // Footer language strings
 $l['generated_in'] = "Generated in {1} seconds with {2} queries.";

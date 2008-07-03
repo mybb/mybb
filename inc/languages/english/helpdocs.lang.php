@@ -28,9 +28,9 @@ $l['d3_document'] = "MyBB makes use of cookies to store your login information i
 
 // Help Document 4
 $l['d4_name'] = "Logging In and Out";
-$l['d4_desc'] = "How to login and logout.";
+$l['d4_desc'] = "How to login and log out.";
 $l['d4_document'] = "When you login, you set a cookie on your machine so that you can browse the forums without having to enter in your username and password each time. Logging out clears that cookie to ensure nobody else can browse the forum as you.
-<br /><br />To login, simply click the login link at the top right hand corner of the forum. To logout, click the logout link in the same place. In the event you cannot logout, clearing cookies on your machine will take the same effect.";
+<br /><br />To login, simply click the login link at the top right hand corner of the forum. To log out, click the log out link in the same place. In the event you cannot log out, clearing cookies on your machine will take the same effect.";
 
 // Help Document 5
 $l['d5_name'] = "Posting a New Topic";
