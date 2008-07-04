@@ -44,6 +44,7 @@ if($mybb->input['action'] == "edit_properties")
 		foreach($mybb->input['info'] as $key => $info)
 		{
 			$info = str_replace("\\", "\\\\", $info);
+			$info = str_replace('$', '\$', $info);
 			$newlanginfo[$key] = str_replace("\"", '\"', $info);
 		}
 		
@@ -53,28 +54,28 @@ if($mybb->input['action'] == "edit_properties")
 		// Make the contents of the new file
 		$newfile = "<?php
 // The friendly name of the language
-\$langinfo['name'] = \"$newlanginfo[name]\";
+\$langinfo['name'] = \"{$newlanginfo['name']}\";
 
 // The author of the language
-\$langinfo['author'] = \"$langinfo[author]\";
+\$langinfo['author'] = \"{$langinfo['author']}\";
 
 // The language authors website
-\$langinfo['website'] = \"$langinfo[website]\";
+\$langinfo['website'] = \"{$langinfo['website']}\";
 
 // Compatible version of MyBB
-\$langinfo['version'] = \"$langinfo[version]\";
+\$langinfo['version'] = \"{$langinfo['version']}\";
 
 // Sets if the translation includes the Admin CP (1 = yes, 0 = no)
-\$langinfo['admin'] = $newlanginfo[admin];
+\$langinfo['admin'] = {$newlanginfo['admin']};
 
 // Sets if the language is RTL (Right to Left) (1 = yes, 0 = no)
-\$langinfo['rtl'] = $newlanginfo[rtl];
+\$langinfo['rtl'] = {$newlanginfo['rtl']};
 
 // Sets the lang in the <html> on all pages
-\$langinfo['htmllang'] = \"$newlanginfo[htmllang]\";
+\$langinfo['htmllang'] = \"{$newlanginfo['htmllang']}\";
 
 // Sets the character set, blank uses the default.
-\$langinfo['charset'] = \"$newlanginfo[charset]\";\n".
+\$langinfo['charset'] = \"{$newlanginfo['charset']}\";\n".
 "?".">";
 	
 		// Put it in!
@@ -225,8 +226,10 @@ if($mybb->input['action'] == "edit")
 			foreach($mybb->input['edit'] as $key => $phrase)
 			{
 				// Sanitize (but it doesn't work well)
+				$phrase = str_replace('$', '\$', $phrase);
 				$phrase = str_replace("\\", "\\\\", $phrase);
 				$phrase = str_replace("\"", '\"', $phrase);
+				$key = str_replace('$', '\\$', $key);
 				$key = str_replace("\\", '', $key);
 				$key = str_replace("'", '', $key);
 				
