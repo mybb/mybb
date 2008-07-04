@@ -1515,6 +1515,8 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
 	{
 		$cookie .= "; HttpOnly";
 	}
+	
+	$mybb->cookies[$name] = $value;
 
 	header($cookie, false);
 }
@@ -1526,8 +1528,12 @@ function my_setcookie($name, $value="", $expires="", $httponly=false)
  */
 function my_unsetcookie($name)
 {
+	global $mybb;
+	
 	$expires = -3600;
 	my_setcookie($name, "", $expires);
+	
+	unset($mybb->cookies[$name]);
 }
 
 /**

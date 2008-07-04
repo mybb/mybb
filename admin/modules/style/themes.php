@@ -67,7 +67,7 @@ if($mybb->input['action'] == "xmlhttp_stylesheet" && $mybb->request_method == "p
 	$form = new Form("index.php?module=style/themes&amp;action=stylesheet_properties", "post", "selector_form", 0, "", true);
 	echo $form->generate_hidden_field("tid", $mybb->input['tid'], array('id' => "tid"))."\n";
 	echo $form->generate_hidden_field("file", htmlspecialchars_uni($mybb->input['selector']), array('id' => "file"))."\n";
-	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($editable_selector), array('id' => 'hidden_selector'))."\n";
+	echo $form->generate_hidden_field("selector", htmlspecialchars_uni($mybb->input['selector']), array('id' => 'hidden_selector'))."\n";
 	
 	$table = new Table;	
 	$table->construct_cell("<div style=\"float: right;\">".$form->generate_text_box('css_bits[background]', $properties['background'], array('id' => 'css_bits[background]', 'style' => 'width: 260px;'))."</div><div><strong>{$lang->background}</strong></div>", array('style' => 'width: 20%;'));

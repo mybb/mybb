@@ -276,6 +276,10 @@ while(($module = readdir($dir)) !== false)
 	if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
 	{
 		require_once $modules_dir."/".$module."/module_meta.php";
+		
+		// Need to always load it for admin permissions / quick access
+		$lang->load($module."_module_meta", false, true);
+		
 		$has_permission = false;
 		if(function_exists($module."_admin_permissions"))
 		{
@@ -293,7 +297,6 @@ while(($module = readdir($dir)) !== false)
 		// Do we have permissions to run this module (Note: home is accessible by all)
 		if($module == "home" || $has_permission == true)
 		{
-			$lang->load($module."_module_meta", false, true);
 			$meta_function = $module."_meta";
 			$initialized = $meta_function();
 			if($initialized == true)

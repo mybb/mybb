@@ -231,7 +231,11 @@ if($mybb->input['action'] == "edit")
 	ksort($modules);
 	foreach($modules as $disp_order => $mod)
 	{
-		if(!is_array($mod)) continue;
+		if(!is_array($mod))
+		{
+			continue;
+		}
+		
 		foreach($mod as $module)
 		{
 			$module_tabs[$module] = $permission_modules[$module]['name'];

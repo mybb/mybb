@@ -341,6 +341,8 @@ if($mybb->input['action'] == "register")
 		// Just selected DOB, we check
 		if($mybb->input['bday1'] && $mybb->input['bday2'] && $mybb->input['bday3'])
 		{
+			my_unsetcookie("coppauser");
+			
 			$bdaytime = @mktime(0, 0, 0, $mybb->input['bday2'], $mybb->input['bday1'], $mybb->input['bday3']);
 			
 			// Store DOB in cookie so we can save it with the registration
@@ -358,6 +360,8 @@ if($mybb->input['action'] == "register")
 		else
 		{
 			$plugins->run_hooks("member_register_coppa");
+			
+			my_unsetcookie("coppauser");
 			
 			eval("\$coppa = \"".$templates->get("member_register_coppa")."\";");
 			output_page($coppa);
