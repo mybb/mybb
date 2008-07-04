@@ -9881,7 +9881,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="{$alt_row}" align="center">{$usergroup}</td>
 							<td class="{$alt_row}" align="center">{$regdate}, {$regtime}</td>
 							<td class="{$alt_row}" align="center">{$lastdate}, {$lasttime}</td>
-							<td class="{$alt_row}" align="right">{$user['postnum']}</td>
+							<td class="{$alt_row}" align="center">{$user['postnum']}</td>
 						</tr>]]></template>
 		<template name="modcp_finduser_noresults" version="1400"><![CDATA[						<tr>
 							<td class="trow1" align="center" colspan="5">{$lang->no_user_results}</td>
