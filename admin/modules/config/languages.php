@@ -229,8 +229,8 @@ if($mybb->input['action'] == "edit")
 				$phrase = str_replace('$', '\$', $phrase);
 				$phrase = str_replace("\\", "\\\\", $phrase);
 				$phrase = str_replace("\"", '\"', $phrase);
-				$key = str_replace('$', '\\$', $key);
 				$key = str_replace("\\", '', $key);
+				$key = str_replace('$', '', $key);
 				$key = str_replace("'", '', $key);
 				
 				// Ugly regexp to find a variable and replace it.
