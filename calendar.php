@@ -1332,8 +1332,10 @@ if($mybb->input['action'] == "event")
 		$start_time = gmdate("Hi", $event['starttime_user']);
 		$end_time = gmdate("Hi", $event['endtime_user']);
 	
+		$event['repeats'] = unserialize($event['repeats']);
+		
 		// Event only runs over one day
-		if($start_day == $end_day || $event['repeats'] > 0)
+		if($start_day == $end_day && $event['repeats']['repeats'] == 0)
 		{
 			$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
 			// Event runs all day
@@ -1661,7 +1663,7 @@ if($mybb->input['action'] == "dayview")
 				$end_time = gmdate("Hi", $event['endtime_user']);
 			
 				// Event only runs over one day
-				if($start_day == $end_day || $event['repeats'] > 0)
+				if($start_day == $end_day && $event['repeats']['repeats'] == 0)
 				{
 					$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
 					// Event runs all day
