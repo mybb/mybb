@@ -443,24 +443,24 @@ function upgrade12_dbchanges2()
 		PRIMARY KEY(eid)
  	) TYPE=MyISAM{$collation};");
 	
-	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotions(
+	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotions (
 		pid int unsigned NOT NULL auto_increment,
 		title varchar(120) NOT NULL default '',
 		description text NOT NULL,
-		enabled int(1) NOT NULL default '1',
-		logging int(1) NOT NULL default '0',
+		enabled tinyint(1) NOT NULL default '1',
+		logging tinyint(1) NOT NULL default '0',
 		posts int NOT NULL default '0',
-		posttype varchar(120) NOT NULL default '',
+		posttype char(2) NOT NULL default '',
 		registered int NOT NULL default '0',
-		registeredtype varchar(2) NOT NULL default '',
+		registeredtype varchar(20) NOT NULL default '',
 		reputations int NOT NULL default '0',
-		reputationtype varchar(120) NOT NULL default '',
-		requirements varchar(2) NOT NULL default '',
-		originalusergroup smallint NOT NULL default '0',
+		reputationtype char(2) NOT NULL default '',
+		requirements varchar(200) NOT NULL default '',
+		originalusergroup varchar(120) NOT NULL default '0',
 		newusergroup smallint unsigned NOT NULL default '0',
 		usergrouptype varchar(120) NOT NULL default '0',
-		PRIMARY KEY(pid)
- 	) TYPE=MyISAM{$collation};");
+		PRIMARY KEY (pid)
+	) TYPE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
 		plid int unsigned NOT NULL auto_increment,

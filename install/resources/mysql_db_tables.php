@@ -535,7 +535,7 @@ $tables[] = "CREATE TABLE mybb_promotions (
   registeredtype varchar(20) NOT NULL default '',
   reputations int NOT NULL default '0',
   reputationtype char(2) NOT NULL default '',
-  requirements varchar(50) NOT NULL default '',
+  requirements varchar(200) NOT NULL default '',
   originalusergroup varchar(120) NOT NULL default '0',
   newusergroup smallint unsigned NOT NULL default '0',
   usergrouptype varchar(120) NOT NULL default '0',

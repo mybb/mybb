@@ -622,7 +622,7 @@ if($mybb->input['action'] == "register")
 				{
 					$id = "fid{$profilefield['fid']}";
 				}
-				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {faulure_message:'{$lang->js_validator_not_empty}'});\n";
+				$validator_extra .= "\tregValidator.register('{$id}', 'notEmpty', {failure_message:'{$lang->js_validator_not_empty}'});\n";
 				
 				eval("\$requiredfields .= \"".$templates->get("member_register_customfield")."\";");
 			}

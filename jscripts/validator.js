@@ -311,6 +311,7 @@ FormValidator.prototype = {
 			case "text":
 			case "password":
 			case "hidden":
+			case "textarea":
 				return element.value;
 				break;
 			case "radio":
