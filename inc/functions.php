@@ -432,11 +432,6 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 		}
 	}
 	
-	if(!$from)
-	{
-		$from = $mybb->settings['adminemail'];
-	}
-	
 	// Build and send
 	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text);
 	return $mail->send();
