@@ -717,6 +717,8 @@ class PostDataHandler extends DataHandler
 				$update_query = array(
 					"message" => $db->escape_string($double_post['message'])
 				);
+				$update_query['edituid'] = intval($post['uid']);
+				$update_query['edittime'] = TIME_NOW;
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
 				
 				// Assign any uploaded attachments with the specific posthash to the merged post.
