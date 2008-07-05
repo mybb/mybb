@@ -127,8 +127,8 @@ if($mybb->input['action'] == "copy")
 			if(!$errors)
 			{
 				$new_forum = $from_forum;
-				unset($new_forum['fid']);
-				$new_forum['name'] = $db->escape_string($to_forum['title']);
+				unset($new_forum['fid'], $new_forum['threads'], $new_forum['posts'], $new_forum['lastpost'], $new_forum['lastposter'], $new_forum['lastposteruid'], $new_forum['lastposttid'], $new_forum['lastpostsubject'], $new_forum['unapprovedthreads'], $new_forum['unapprovedposts']);
+				$new_forum['name'] = $db->escape_string($to_forum['name']);
 				$new_forum['description'] = $db->escape_string($to_forum['description']);
 				$new_forum['pid'] = $db->escape_string($to_forum['pid']);
 				$new_forum['parentlist'] = $db->escape_string($to_forum['parentlist']);
@@ -203,7 +203,7 @@ if($mybb->input['action'] == "copy")
 			$copy_data['pid'] = intval($mybb->input['pid']);
 		}
 		$copy_data['disporder'] = "1";
-		$copy_data['sfid'] = $mybb->input['fid'];
+		$copy_data['from'] = $mybb->input['fid'];
 		$copy_data['copyforumsettings'] = 0;
 		$copy_data['pid'] = 0;
 	}
