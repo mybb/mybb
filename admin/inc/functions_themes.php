@@ -155,10 +155,10 @@ function import_theme_xml($xml, $options=array())
 			}
 			
 			$new_template = array(
-				"title" => $template['attributes']['name'],
+				"title" => $db->escape_string($template['attributes']['name']),
 				"template" => $db->escape_string($template['value']),
-				"sid" => $sid,
-				"version" => $template['attributes']['version'],
+				"sid" => $db->escape_string($sid),
+				"version" => $db->escape_string($template['attributes']['version']),
 				"dateline" => TIME_NOW
 			);
 			$db->insert_query("templates", $new_template);

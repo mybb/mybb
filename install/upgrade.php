@@ -347,11 +347,11 @@ function upgradethemes()
 		$templates = $theme['templates']['template'];
 		foreach($templates as $template)
 		{
-			$templatename = $template['attributes']['name'];
+			$templatename = $db->escape_string($template['attributes']['name']);
 			$templateversion = intval($template['attributes']['version']);
 			$templatevalue = $db->escape_string($template['value']);
 			$time = TIME_NOW;
-			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='$templatename'");
+			$query = $db->simple_select("templates", "tid", "sid='-2' AND title='".$db->escape_string($templatename)."'");
 			$oldtemp = $db->fetch_array($query);
 			if($oldtemp['tid'])
 			{
@@ -360,7 +360,7 @@ function upgradethemes()
 					'version' => $templateversion,
 					'dateline' => $time
 				);
-				$db->update_query("templates", $update_array, "title='$templatename' AND sid='-2'");
+				$db->update_query("templates", $update_array, "title='".$db->escape_string($templatename)."' AND sid='-2'");
 			}
 			else
 			{
