@@ -512,7 +512,7 @@ class postParser
 			$size = 50;
 		}
 
-		$text = "<span style=\"font-size: {$size}pt\">".str_replace('\"', '"', $text)."</span>";
+		$text = "<span style=\"font-size: {$size}pt\">".str_replace("\'", "'", $text)."</span>";
 
 		return $text;
 	}
