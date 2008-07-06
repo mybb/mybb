@@ -1143,6 +1143,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	$lang->reply_to = $lang->sprintf($lang->reply_to, $thread['subject']);
 
 	$plugins->run_hooks("newreply_end");
+	
+	$forum['name'] = strip_tags($forum['name']);
 
 	eval("\$newreply = \"".$templates->get("newreply")."\";");
 	output_page($newreply);

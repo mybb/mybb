@@ -257,7 +257,7 @@ function build_forumbits($pid=0, $depth=1)
 						// Fetch each moderator from the cache and format it, appending it to the list
 						foreach($moderatorcache[$mfid] as $moderator)
 						{
-							if(in_array($moderator['mid'], $done_moderators))
+							if(in_array($moderator['uid'], $done_moderators))
 							{
 								continue;
 							}
@@ -265,7 +265,7 @@ function build_forumbits($pid=0, $depth=1)
 							$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['uid'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
 							$comma = ', ';
 							
-							$done_moderators[] = $moderator['mid'];
+							$done_moderators[] = $moderator['uid'];
 						}
 					}
 				}

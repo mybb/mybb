@@ -151,7 +151,7 @@ foreach($parentlistexploded as $mfid)
 		reset($moderatorcache[$mfid]);
 		foreach($moderatorcache[$mfid] as $moderator)
 		{
-			if(in_array($moderator['mid'], $done_moderators))
+			if(in_array($moderator['uid'], $done_moderators))
 			{
 				continue;
 			}
@@ -161,7 +161,7 @@ foreach($parentlistexploded as $mfid)
 			eval("\$modlist .= \"".$templates->get("forumdisplay_moderatedby_moderator", 1, 0)."\";");
 			$modcomma = ", ";
 			
-			$done_moderators[] = $moderator['mid'];
+			$done_moderators[] = $moderator['uid'];
 		}
 	}
 }

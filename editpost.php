@@ -596,6 +596,8 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	$plugins->run_hooks("editpost_end");
+	
+	$forum['name'] = strip_tags($forum['name']);
 
 	eval("\$editpost = \"".$templates->get("editpost")."\";");
 	output_page($editpost);
