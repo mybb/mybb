@@ -89,7 +89,7 @@ function upgrade13_dbchanges()
 	}
 	
 	// Update master templates 
-	$query = $db->simple_select("templates", "*", "title IN ('showthread_inlinemoderation','showthread_ratethread','editpost','newreply','usercp_drafts','newthread','usercp_options','forumdisplay_inlinemoderation')");
+	$query = $db->simple_select("templates", "*", "title IN ('newthread','newreply','polls_showresults_resultbit','member_register_password','member_register','modcp_finduser_user','private_send','online')");
 	while($template = $db->fetch_array($query))
 	{
 		switch($template['title'])

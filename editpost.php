@@ -306,13 +306,13 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
 			$lang->redirect_postedited = $lang->redirect_postedited_poll;
 		}
-		else if($visible == 0 && $first_post)
+		else if($visible == 0 && $first_post && !is_moderator($fid, "", $mybb->user['uid']))
 		{
 			// Moderated post
 			$lang->redirect_postedited .= $lang->redirect_thread_moderation;
 			$url = get_forum_link($fid);
 		}
-		else if($visible == 0)
+		else if($visible == 0 && !is_moderator($fid, "", $mybb->user['uid']))
 		{
 			$lang->redirect_postedited .= $lang->redirect_post_moderation;
 			$url = get_thread_link($tid);
