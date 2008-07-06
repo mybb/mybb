@@ -416,7 +416,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 	}
 
-	// One or more erors returned, fetch error list and throw to newreply page
+	// One or more errors returned, fetch error list and throw to newreply page
 	if(count($post_errors) > 0)
 	{
 		$reply_errors = inline_error($post_errors);
@@ -819,7 +819,7 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			$post_errors = $posthandler->get_friendly_errors();
 		}
 		
-		// One or more erors returned, fetch error list and throw to newreply page
+		// One or more errors returned, fetch error list and throw to newreply page
 		if(count($post_errors) > 0)
 		{
 			$reply_errors = inline_error($post_errors);

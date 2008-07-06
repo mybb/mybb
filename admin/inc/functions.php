@@ -80,7 +80,7 @@ function update_admin_session($name, $value)
  * Saves a "flash message" for the current user to be shown on their next page visit.
  *
  * @param string The message to show
- * @param string The type of message to be shown (success|eror)
+ * @param string The type of message to be shown (success|error)
  */
 function flash_message($message, $type='')
 {
