@@ -1847,6 +1847,7 @@ ul.thread_tools li.subscription_remove {
 <input type="hidden" name="attachmentaid" value="" />
 <input type="hidden" name="attachmentact" value="" />
 <input type="hidden" name="quoted_ids" value="{$quoted_ids}" />
+<input type="hidden" name="tid" value="{$tid}" />
 {$editdraftpid}
 </form>
 {$forumrules}

@@ -4,7 +4,7 @@
  * Copyright © 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.com
- * License: http://www.mybboard.com/eula.html
+ * License: http://www.mybboard.net/about/license
  *
  * $Id$
  */
