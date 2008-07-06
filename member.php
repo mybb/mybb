@@ -1242,6 +1242,11 @@ if($mybb->input['action'] == "profile")
 		$percent = $memprofile['postnum']*100/$posts;
 		$percent = round($percent, 2);
 	}
+	
+	if($percent > 100)
+	{
+		$percent = 100;
+	}
 
 	$query = $db->simple_select("users", "COUNT(uid) AS referrals", "referrer='{$memprofile['uid']}'");
 	$referrals = $db->fetch_field($query, "referrals");
