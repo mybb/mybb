@@ -122,6 +122,7 @@ else
 	
 	header("Content-type: {$attachment['filetype']}");
 	header("Content-length: {$attachment['filesize']}");
+	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']); 
 	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);
 }
 ?>

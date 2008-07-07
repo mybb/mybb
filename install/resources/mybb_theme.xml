@@ -7704,7 +7704,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<input type="hidden" name="action" value="thread" />
 			<input type="hidden" name="tid" value="{$thread['tid']}" />
 			<input type="text" name="keywords" value="{$lang->enter_keywords}" onfocus="if(this.value == '{$lang->enter_keywords}') { this.value = ''; }" onblur="if(this.value=='') { this.value='{$lang->enter_keywords}'; }" class="textbox" size="25" />
-			<input type="submit" value="{$lang->search_thread}" />
+			<input type="submit" class="button" value="{$lang->search_thread}" />
 		</form>
 	</div>]]></template>
 	<template name="postbit_ignored" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style}" id="ignored_post_{$post['pid']}">

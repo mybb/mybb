@@ -24,10 +24,13 @@ if(!is_array($groupscache))
 	$groupscache = $cache->read("usergroups");
 }
 
-// Send page headers
-send_page_headers();
-
 $current_page = my_strtolower(basename($_SERVER['PHP_SELF']));
+
+// Send page headers - don't send no-cache headers for attachment.php
+if($current_page != "attachment.php")
+{
+	send_page_headers();
+}
 
 // Do not use session system for defined pages
 if((@isset($mybb->input['action']) && @isset($nosession[$mybb->input['action']])) || (@isset($mybb->input['thumbnail']) && $current_page == 'attachment.php'))
