@@ -85,7 +85,7 @@ function upgrade13_dbchanges()
 	$db->simple_select("users", "uid", "avatar != '' && avatardimensions = ''");
 	while($user = $db->fetch_array($query))
 	{
-		$db->update_user("users", array('avatardimensions' => $avatardimensions), "uid='{$user['uid']}'", 1);
+		$db->update_query("users", array('avatardimensions' => $avatardimensions), "uid='{$user['uid']}'", 1);
 	}
 	
 	// Update master templates 
