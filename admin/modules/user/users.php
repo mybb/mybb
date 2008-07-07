@@ -771,6 +771,7 @@ if($mybb->input['action'] == "edit")
 
 	if(!$errors)
 	{
+		$user['usertitle'] = htmlspecialchars_decode($user['usertitle']);
 		$mybb->input = $user;
 
 		// We need to fetch this users profile field values

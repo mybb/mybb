@@ -121,9 +121,16 @@ class diskCacheHandler
 			$dir = opendir(MYBB_ROOT."/cache");
 			while(($file = readdir($dir)) !== false)
 			{
-				$total += @filesize(MYBB_ROOT."/cache/{$name}.php");
+				if($file == "." || $file == ".." || $file == ".svn" || !is_file(MYBB_ROOT."/cache/{$file}"))
+				{
+					continue;
+				}
+				
+				$total += filesize(MYBB_ROOT."/cache/{$file}");
 			}
-			return $title;
+			return $total;
 		}
 	}
 }
+
+?>

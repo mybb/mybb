@@ -99,7 +99,7 @@ class MyLanguage
 				{
 					if(!is_dir($this->path."/english/{$area}"))
 					{
-						die("Your forum does not conain an Administration set. Please reupload the english language administration pack.");
+						die("Your forum does not contain an Administration set. Please reupload the english language administration pack.");
 					}
 					else
 					{

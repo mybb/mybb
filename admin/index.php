@@ -34,6 +34,10 @@ require_once MYBB_ADMIN_DIR."inc/class_table.php";
 require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
+if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
+{
+	$mybb->settings['cplanguage'] = "english";
+}
 $lang->set_language($mybb->settings['cplanguage'], "admin");
 
 // Load global language phrases

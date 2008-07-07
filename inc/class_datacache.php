@@ -184,7 +184,23 @@ class datacache
 
 		if(is_object($this->handler))
 		{
-			return $this->handler->size_of($name);
+			$size = $this->handler->size_of($name);
+			if(!$size)
+			{
+				if($name)
+				{
+					$query = $db->simple_select("datacache", "cache", "title='{$name}'");
+					return strlen($db->fetch_field($query, "cache"));
+				}
+				else
+				{
+					return $db->fetch_size("datacache");
+				}
+			}
+			else
+			{
+				return $size;
+			}
 		}
 		// Using MySQL as cache
 		else
