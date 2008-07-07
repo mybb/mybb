@@ -1493,17 +1493,6 @@ both=Warnings and Errors
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>
-	<settinggroup name="showteam" title="Show Forum Team Options" description="This section allows you to manage settings that affect the Forum Team Page (showteam.php)." disporder="12" isdefault="1">
-		<setting name="showteamleaders">
-			<title>Separate Group Leaders</title>
-			<description><![CDATA[If set to 'yes,' and if there are group leaders, they will be displayed above the other group members.]]></description>
-			<disporder>1</disporder>
-			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
-	</settinggroup>
 	<settinggroup name="showthread" title="Show Thread Options" description="This section allows you to manage the various settings used on the thread display page (showthread.php) of your boards such as enabling and disabling different features." disporder="7" isdefault="1">
 		<setting name="postlayout">
 			<title>Post Layout</title>
