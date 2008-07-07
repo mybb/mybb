@@ -913,7 +913,7 @@ class UserDataHandler extends DataHandler
 			"invisible" => $user['options']['invisible'],
 			"style" => intval($user['style']),
 			"timezone" => $db->escape_string($user['timezone']),
-			"dstcorrection" => $user['options']['dstcorrection'],
+			"dstcorrection" => intval($user['options']['dstcorrection']),
 			"threadmode" => $user['options']['threadmode'],
 			"daysprune" => intval($user['options']['daysprune']),
 			"dateformat" => $db->escape_string($user['dateformat']),

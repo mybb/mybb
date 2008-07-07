@@ -19,7 +19,7 @@ require_once dirname(dirname(__FILE__))."/inc/init.php";
 
 send_page_headers();
 
-if(!isset($config['admin_dir']))
+if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
 {
 	$config['admin_dir'] = "admin";
 }
@@ -28,10 +28,10 @@ define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
 
 define('COPY_YEAR', my_date('Y', TIME_NOW));
 
-require_once MYBB_ADMIN_DIR."/inc/class_page.php";
-require_once MYBB_ADMIN_DIR."/inc/class_form.php";
-require_once MYBB_ADMIN_DIR."/inc/class_table.php";
-require_once MYBB_ADMIN_DIR."/inc/functions.php";
+require_once MYBB_ADMIN_DIR."inc/class_page.php";
+require_once MYBB_ADMIN_DIR."inc/class_form.php";
+require_once MYBB_ADMIN_DIR."inc/class_table.php";
+require_once MYBB_ADMIN_DIR."inc/functions.php";
 require_once MYBB_ROOT."inc/functions_user.php";
 
 $lang->set_language($mybb->settings['cplanguage'], "admin");

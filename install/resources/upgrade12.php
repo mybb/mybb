@@ -1844,8 +1844,19 @@ function upgrade12_redothemes()
 
 	// Define our default stylesheets - MyBB 1.4 contains additional stylesheets that our converted themes will also need
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
-	require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
-	
+	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
+	{
+		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
+	}
+	else if(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
+	{
+		require_once MYBB_ROOT."admin/inc/functions_themes.php";
+	}
+	else
+	{
+		$output->print_error("Please make sure your admin directory is uploaded correctly.");
+	}
+
 	// Import master theme
 	import_theme_xml($contents, array("tid" => 1, "no_templates" => 1));
 

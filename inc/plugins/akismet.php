@@ -958,8 +958,27 @@ function akismet_admin()
 		
 		$mybb->input['page'] = intval($mybb->input['page']);
 		
+		if($mybb->input['page'] > 0)
+		{
+			$start = $mybb->input['page'] * 20;
+		}
+		else
+		{
+			$start = 0;
+		}
+		
 		$query = $db->simple_select("posts", "COUNT(pid) as spam", "visible = '-4'");
 		$total_rows = $db->fetch_field($query, 'spam');
+		
+		if($start > $total_rows)
+		{
+			$start = $total_rows - 20;
+		}
+		
+		if($start < 0)
+		{
+			$start = 0;
+		}
 		
 		$query = $db->simple_select("posts", "*", "visible = '-4'", array('limit_start' => $start, 'limit' => '20', 'order_by' => 'dateline', 'order_dir' => 'desc'));
 		while($post = $db->fetch_array($query))

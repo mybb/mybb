@@ -133,7 +133,7 @@ function upgrade13_dbchanges()
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("rebuildsettings");
+	$output->print_footer("13_done");
 }
 
 ?>
