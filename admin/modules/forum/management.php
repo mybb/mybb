@@ -391,12 +391,24 @@ if($mybb->input['action'] == "permissions")
 		{
 			if(is_array($mybb->input['permissions']))
 			{
-				foreach($mybb->input['permissions'] as $permission => $value)
+				$update_array = array();
+				$fields_array = $db->show_fields_from("forumpermissions");
+				foreach($fields_array as $field)
 				{
-					$update_array[$db->escape_string($permission)] = intval($value);
+					if(strpos($field['Field'], 'can') !== false)
+					{
+						if(array_key_exists($field['Field'], $mybb->input['permissions']))
+						{
+							$update_array[$db->escape_string($field['Field'])] = intval($mybb->input['permissions'][$field['Field']]);
+						}
+						else
+						{
+							$update_array[$db->escape_string($field['Field'])] = 0;
+						}
+					}
 				}
 				
-				if($fid)
+				if($fid && !$pid)
 				{
 					$update_array['fid'] = $fid;
 					$update_array['gid'] = intval($mybb->input['gid']);
@@ -579,9 +591,6 @@ if($mybb->input['action'] == "permissions")
 		$buttons[] = $form->generate_submit_button($lang->save_permissions);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
-	}
-	else
-	{
 	}
 	
 	$page->output_footer();	
@@ -1358,6 +1367,9 @@ if($mybb->input['action'] == "edit")
 				$default_checked = true;
 			}
 		}
+		echo "<pre>";
+		print_r($perms);
+		echo "</pre>";
 		$perm_check = "";
 		$all_checked = true;
 		foreach($field_list as $forum_permission)
@@ -1422,7 +1434,7 @@ if($mybb->input['action'] == "edit")
 		
 		if(!$default_checked)
 		{
-			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+			$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=permissions&amp;pid={$perms['pid']}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 		}
 		else
 		{
@@ -1919,7 +1931,7 @@ if(!$mybb->input['action'])
 			
 			if(!$default_checked)
 			{
-				$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=permissions&amp;gid={$usergroup['gid']}&amp;fid={$fid}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
+				$form_container->output_cell("<a href=\"index.php?module=forum/management&amp;action=permissions&amp;pid={$perms['pid']}\">{$lang->edit_permissions}</a>", array("class" => "align_center"));
 			}
 			else
 			{

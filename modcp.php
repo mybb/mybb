@@ -1456,7 +1456,6 @@ if($mybb->input['action'] == "do_editprofile")
 	// Set the data for the new user.
 	$updated_user = array(
 		"uid" => $mybb->input['uid'],
-		"usertitle" => $mybb->input['usertitle'],
 		"profile_fields" => $mybb->input['profile_fields'],
 		"profile_fields_editable" => true,
 		"website" => $mybb->input['website'],
@@ -1475,16 +1474,16 @@ if($mybb->input['action'] == "do_editprofile")
 
 	if($mybb->input['usertitle'] != '')
 	{
-		$user['usertitle'] = $mybb->input['usertitle'];
+		$updated_user['usertitle'] = $mybb->input['usertitle'];
 	}
 	else if($mybb->input['reverttitle'])
 	{
-		$user['usertitle'] = '';
+		$updated_user['usertitle'] = '';
 	}
 
 	if($mybb->input['remove_avatar'])
 	{
-		$user['avatarurl'] = '';
+		$updated_user['avatarurl'] = '';
 	}
 
 	// Set the data of the user in the datahandler.
