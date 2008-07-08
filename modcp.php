@@ -567,12 +567,13 @@ if($mybb->input['action'] == "do_new_announcement")
 		}
 	}
 	
-	if($mybb->input['starttime_month'] > 12 || (int)$mybb->input['starttime_month'] < 1 || !is_int($mybb->input['starttime_month']))
+	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+	if(!in_array($mybb->input['starttime_month'], $months))
 	{
 		$mybb->input['starttime_month'] = 1;
 	}
 
-	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, $mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 	
 	if($startdate < 0 || $startdate == false)
 	{
@@ -585,11 +586,11 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 	else
 	{
-		if($mybb->input['endtime_month'] > 12 || (int)$mybb->input['endtime_month'] < 1 || !is_int($mybb->input['endtime_month']))
+		if(!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
-		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, $mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -658,7 +659,7 @@ if($mybb->input['action'] == "new_announcement")
 		$starttime_time = gmdate("g:i a", TIME_NOW);
 		$endtime_time = gmdate("g:i a", TIME_NOW);
 		$startday = $endday = gmdate("j", TIME_NOW);
-		$startmonth = $endmonth = gmdate("m", TIME_NOW);
+		$startmonth = $endmonth = gmdate("n", TIME_NOW);
 		$startdateyear = gmdate("Y", TIME_NOW);
 
 		$enddateyear = $startdateyear+1;
@@ -800,12 +801,13 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$errors[] = $lang->error_missing_forum;
 	}
 
-	if($mybb->input['starttime_month'] > 12 || (int)$mybb->input['starttime_month'] < 1 || !is_int($mybb->input['starttime_month']))
+	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+	if(!in_array($mybb->input['starttime_month'], $months))
 	{
 		$mybb->input['starttime_month'] = 1;
 	}
 
-	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, $mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 	if($startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
@@ -816,12 +818,12 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$enddate = '0';
 	}
 	else
-	{
-		if($mybb->input['endtime_month'] > 12 || (int)$mybb->input['endtime_month'] < 1 || !is_int($mybb->input['endtime_month']))
+	{		
+		if(!in_array($mybb->input['endtime_month'], $months))
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
-		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, $mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -907,8 +909,8 @@ if($mybb->input['action'] == "edit_announcement")
 		$startday = my_date('j', $announcement['startdate']);
 		$endday = my_date('j', $announcement['enddate']);
 
-		$startmonth = my_date('m', $announcement['startdate']);
-		$endmonth = my_date('m', $announcement['enddate']);
+		$startmonth = my_date('n', $announcement['startdate']);
+		$endmonth = my_date('n', $announcement['enddate']);
 
 		$startdateyear = my_date('Y', $announcement['startdate']);
 		$enddateyear = my_date('Y', $announcement['enddate']);

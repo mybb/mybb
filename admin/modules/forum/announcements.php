@@ -100,7 +100,7 @@ if($mybb->input['action'] == "add")
 				$mybb->input['starttime_month'] = 1;
 			}
 			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, $mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 			
 			if($mybb->input['endtime_type'] == "2")
 			{
@@ -112,7 +112,7 @@ if($mybb->input['action'] == "add")
 				{
 					$mybb->input['endtime_month'] = 1;
 				}
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, $mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 			}
 			
 			$insert_announcement = array(
@@ -218,7 +218,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$startmonth = gmdate("m", TIME_NOW);
+		$startmonth = gmdate("n", TIME_NOW);
 		$startmonthsel[$startmonth] = "selected=\"selected\"";
 	}
 	
@@ -229,7 +229,7 @@ if($mybb->input['action'] == "add")
 	}
 	else
 	{
-		$endmonth = gmdate("m", TIME_NOW);
+		$endmonth = gmdate("n", TIME_NOW);
 		$endmonthsel[$endmonth] = "selected=\"selected\"";
 	}
 	
@@ -395,7 +395,7 @@ if($mybb->input['action'] == "edit")
 				$mybb->input['starttime_month'] = 1;
 			}
 			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, $mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
 			
 			if($mybb->input['endtime_type'] == "2")
 			{
@@ -407,7 +407,7 @@ if($mybb->input['action'] == "edit")
 				{
 					$mybb->input['endtime_month'] = 1;
 				}
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, $mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 			}
 			
 			$update_announcement = array(
@@ -460,7 +460,7 @@ if($mybb->input['action'] == "edit")
 		
 		$startday = gmdate("j", $announcement['startdate']);
 		
-		$startmonth = gmdate("m", $announcement['startdate']);
+		$startmonth = gmdate("n", $announcement['startdate']);
 		$startmonthsel[$startmonth] = "selected=\"selected\"";
 		
 		$startdateyear = gmdate("Y", $announcement['startdate']);
@@ -482,7 +482,7 @@ if($mybb->input['action'] == "edit")
 			
 			$endday = gmdate("j", $announcement['enddate']);
 			
-			$endmonth = gmdate("m", $announcement['enddate']);
+			$endmonth = gmdate("n", $announcement['enddate']);
 			$endmonthsel[$endmonth] = "selected";
 			
 			$enddateyear = gmdate("Y", $announcement['enddate']);
