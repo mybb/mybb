@@ -351,7 +351,9 @@ function build_postbit($post, $post_type=0)
 				$warning_level = 100;
 			}
 			$warning_level = get_colored_warning_level($warning_level);
-			if($mybb->usergroup['canwarnusers'] != 0 && $post['uid'] != $mybb->user['uid'] && $post_type == 0)
+			
+			// If we can warn them, it's not the same person, and we're in a PM or a post.
+			if($mybb->usergroup['canwarnusers'] != 0 && $post['uid'] != $mybb->user['uid'] && ($post_type == 0 || $post_type == 2))
 			{
 				eval("\$post['button_warn'] = \"".$templates->get("postbit_warn")."\";");
 				$warning_link = "warnings.php?uid={$post['uid']}";

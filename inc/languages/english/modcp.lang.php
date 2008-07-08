@@ -83,6 +83,7 @@ $l['information']  = "Information";
 $l['filter_modlogs'] = "Filter Moderator Logs";
 $l['forum'] = "Forum:";
 $l['from_moderator'] = "From Moderator:";
+$l['na_deleted'] = "N/A - Been Deleted";
 $l['sort_by'] = "Sort by:";
 $l['forum_name'] = "Forum Name";
 $l['thread_subject'] = "Thread Subject";

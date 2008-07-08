@@ -693,7 +693,7 @@ if($mybb->input['action'] == "options")
 		{
 			$sel = " selected=\"selected\"";
 		}
-		$langoptions .= "<option value=\"$lname\"$sel>$language</option>\n";
+		$langoptions .= "<option value=\"$lname\"$sel>".htmlspecialchars_uni($language)."</option>\n";
 	}
 
 	// Lets work out which options the user has selected and check the boxes

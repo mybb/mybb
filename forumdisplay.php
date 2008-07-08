@@ -433,6 +433,13 @@ else
 	{
 		$threadcount += $forum_threads['unapprovedthreads'];
 	}
+	
+	// If we have 0 threads double check there aren't any "moved" threads
+	if($threadcount == 0)
+	{
+		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly", array('limit' => 1));
+		$threadcount = $db->fetch_field($query, "threads");
+	}
 }
 
 // How many pages are there?

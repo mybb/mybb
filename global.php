@@ -451,6 +451,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 	$languages = $lang->get_languages();
 	foreach($languages as $key => $language)
 	{
+		$language = htmlspecialchars_uni($language);
 		// Current language matches
 		if($lang->language == $key)
 		{

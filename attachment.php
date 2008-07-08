@@ -73,7 +73,9 @@ if(!$mybb->input['thumbnail']) // Only increment the download count if this is n
 	);
 	$db->update_query("attachments", $attachupdate, "aid='{$attachment['aid']}'");
 }
-$attachment['filename'] = rawurlencode($attachment['filename']);
+
+// basename isn't UTF-8 safe. This is a workaround.
+$attachment['filename'] = ltrim(basename(' '.$attachment['filename']));
 
 $plugins->run_hooks("attachment_end");
 
@@ -113,11 +115,11 @@ else
 	
 	if($ext == "txt" || $ext == "htm" || $ext == "html" || $ext == "pdf")
 	{
-		header("Content-disposition: attachment; filename=\"{$attachment['filename']}\"");
+		header("Content-disposition: attachment; filename=\"test/boo.foo\"");
 	}
 	else
 	{
-		header("Content-disposition: inline; filename=\"{$attachment['filename']}\"");
+		header("Content-disposition: inline; filename=\"test/boo.foo\"");
 	}	
 	
 	header("Content-type: {$attachment['filetype']}");

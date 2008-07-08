@@ -696,6 +696,7 @@ if($mybb->input['action'] == "register")
 		$langoptions = '';
 		foreach($languages as $lname => $language)
 		{
+			$language = htmlspecialchars_uni($language);
 			if($user['language'] == $lname)
 			{
 				$langoptions .= "<option value=\"$lname\" selected=\"selected\">$language</option>\n";

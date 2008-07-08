@@ -906,6 +906,9 @@ class Moderation
 			"unapprovedposts" => "+{$num_unapproved_posts}"
 		);
 		update_forum_counters($new_fid, $update_array);
+		echo "<pre>";
+		print_r($update_array);
+		echo "</pre>";
 
 		if($method != "copy")
 		{
@@ -916,6 +919,9 @@ class Moderation
 				"unapprovedposts" => "-{$num_unapproved_posts}"
 			);
 			update_forum_counters($fid, $update_array);
+			echo "<pre>";
+			print_r($update_array);
+			echo "</pre>";
 		}
 
 		if(isset($newtid))
