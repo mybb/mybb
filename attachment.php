@@ -115,11 +115,11 @@ else
 	
 	if($ext == "txt" || $ext == "htm" || $ext == "html" || $ext == "pdf")
 	{
-		header("Content-disposition: attachment; filename=\"test/boo.foo\"");
+		header("Content-disposition: attachment; filename=\"{$attachment['filename']}\"");
 	}
 	else
 	{
-		header("Content-disposition: inline; filename=\"test/boo.foo\"");
+		header("Content-disposition: inline; filename=\"{$attachment['filename']}\"");
 	}	
 	
 	header("Content-type: {$attachment['filetype']}");

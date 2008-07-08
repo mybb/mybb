@@ -460,7 +460,7 @@ if($mybb->input['action'] == "modlogs")
 	$sortbysel[$mybb->input['sortby']] = "selected=\"selected\"";
 	$ordersel[$mybb->input['order']] = "selected=\"selected\"";
 	$query = $db->query("
-		SELECT DISTINCT l.uid, u.username, u.usergroup, u.displaygroup
+		SELECT DISTINCT l.uid, u.username
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (l.uid=u.uid)
 		ORDER BY u.username ASC
