@@ -1367,9 +1367,6 @@ if($mybb->input['action'] == "edit")
 				$default_checked = true;
 			}
 		}
-		echo "<pre>";
-		print_r($perms);
-		echo "</pre>";
 		$perm_check = "";
 		$all_checked = true;
 		foreach($field_list as $forum_permission)
