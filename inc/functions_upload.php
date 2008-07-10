@@ -516,10 +516,9 @@ function upload_attachment($attachment)
 
 	$aid = $db->insert_query("attachments", $attacharray);
 
-	if($attacharray['pid'] > 0)
+	if($tid)
 	{
-		$post = get_post($attacharray['pid']);
-		update_thread_counters($post['tid'], array("attachmentcount" => "+1"));
+		update_thread_counters($tid, array("attachmentcount" => "+1"));
 	}
 	$ret['aid'] = $aid;
 	return $ret;

@@ -1268,7 +1268,7 @@ if(!$mybb->input['action'])
 		$popup->add_item($lang->list_users, "index.php?module=user/users&amp;action=search&amp;results=1&amp;conditions[usergroup]={$usergroup['gid']}");
 		if($joinrequests[$usergroup['gid']] > 0)
 		{
-			$popup->add_item($lang->moderate_join_requests, "index.php?module=user/groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
+			$popup->add_item($lang->join_requests, "index.php?module=user/groups&amp;action=join_requests&amp;gid={$usergroup['gid']}");
 		}
 		$popup->add_item($lang->group_leaders, "index.php?module=user/groups&amp;action=leaders&amp;gid={$usergroup['gid']}");
 		if($usergroup['type'] > 1)

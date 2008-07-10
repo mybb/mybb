@@ -380,20 +380,29 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		echo "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 		$field_select .= "<div class=\"view_fields\">\n";
 		$field_select .= "<div class=\"enabled\"><div class=\"fields_title\">{$lang->enabled}</div><ul id=\"fields_enabled\">\n";
-		foreach($mybb->input['fields'] as $field)
+		if(is_array($mybb->input['fields']))
 		{
-			if($fields[$field])
+			foreach($mybb->input['fields'] as $field)
 			{
-				$field_select .= "<li id=\"field-{$field}\">{$fields[$field]['title']}</li>";
-				$active[$field] = 1;
+				if($fields[$field])
+				{
+					$field_select .= "<li id=\"field-{$field}\">{$fields[$field]['title']}</li>";
+					$active[$field] = 1;
+				}
 			}
 		}
 		$field_select .= "</ul></div>\n";
 		$field_select .= "<div class=\"disabled\"><div class=\"fields_title\">{$lang->disabled}</div><ul id=\"fields_disabled\">\n";
-		foreach($fields as $key => $field)
+		if(is_array($fields))
 		{
-			if($active[$key]) continue;
-			$field_select .= "<li id=\"field-{$key}\">{$field['title']}</li>";
+			foreach($fields as $key => $field)
+			{
+				if($active[$key])
+				{
+					continue;
+				}
+				$field_select .= "<li id=\"field-{$key}\">{$field['title']}</li>";
+			}
 		}
 		$field_select .= "</div></ul>\n";
 		$field_select .= $form->generate_hidden_field("fields_js", @implode(",", @array_keys($active)), array('id' => 'fields_js'));
@@ -435,7 +444,16 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		if($mybb->input['no']) 
 		{ 
 			admin_redirect($base_url."&action=views"); 
-		} 
+		}
+		
+		$query = $db->simple_select("adminviews", "COUNT(vid) as views");
+		$views = $db->fetch_field($query, "views");
+		
+		if($views == 0)
+		{
+			flash_message($lang->error_cannot_delete_view, 'error');
+			admin_redirect($base_url."&action=views");
+		}
 		
 		$query = $db->simple_select("adminviews", "vid", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
@@ -524,6 +542,9 @@ document.write('".str_replace("/", "\/", $field_select)."');
 
 		$default_view = fetch_default_view($type);
 		
+		$query = $db->simple_select("adminviews", "COUNT(vid) as views");
+		$views = $db->fetch_field($query, "views");
+		
 		$query = $db->query("
 			SELECT v.*, u.username
 			FROM ".TABLE_PREFIX."adminviews v
@@ -573,7 +594,11 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			{
 				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
 			}
-			$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
+			
+			if($views > 1)
+			{
+				$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
+			}
 			$controls = $popup->fetch();
 			$table->construct_cell($controls, array("class" => "align_center"));
 			$table->construct_row();

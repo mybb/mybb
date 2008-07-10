@@ -210,7 +210,7 @@ if($mybb->user['uid'])
 // Load Admin CP style
 if(!$cp_style)
 {
-	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
+	if(!empty($mybb->settings['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
 	{
 		$cp_style = $mybb->settings['cpstyle'];
 	}

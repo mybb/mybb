@@ -39,6 +39,7 @@ $l['error_invalid_view_perpage'] = "You have entered an invalid number of result
 $l['error_invalid_view_sortby'] = "You have selected an invalid field to sort results by";
 $l['error_invalid_view_sortorder'] = "You have selected an invalid sort order";
 $l['error_invalid_view_delete'] = "You selected an invalid administration view to delete";
+$l['error_cannot_delete_view'] = "You must have atleast 1 administration view.";
 
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
