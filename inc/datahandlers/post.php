@@ -776,11 +776,6 @@ class PostDataHandler extends DataHandler
 				$cache->updatemailqueue();
 			}
 			$thread_update = array("replies" => "+1"); 
- 		 
-			$query = $db->simple_select(TABLE_PREFIX."attachments", "COUNT(aid) AS attachmentcount", "pid='{$this->pid}' AND visible='1'"); 
-			$attachmentcount = $db->fetch_field($query, "attachmentcount"); 
-
-			$thread_update['attachmentcount'] = "+{$attachmentcount}";
 
 			// Update forum count
 			update_thread_counters($post['tid'], $thread_update); 

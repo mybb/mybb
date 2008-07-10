@@ -324,8 +324,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	if(!$valid_thread)
 	{
 		$post_errors = $posthandler->get_friendly_errors();
-	}
-	
+	}	
 	
 	// Check captcha image
 	if($mybb->settings['captchaimage'] == "on" && function_exists("imagepng") && !$mybb->user['uid'])
@@ -344,7 +343,6 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			$hide_captcha = true;
 		}
 	}
-
 	
 	// One or more erors returned, fetch error list and throw to newthread page
 	if(count($post_errors) > 0)

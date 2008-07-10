@@ -71,7 +71,7 @@ function remove_attachments($pid, $posthash="")
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "" && !$pid)
 	{
-	  $query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='$posthash'");
+	  	$query = $db->simple_select(TABLE_PREFIX."attachments", "*", "posthash='$posthash'");
 	}
 	else
 	{
@@ -410,11 +410,9 @@ function upload_attachment($attachment)
 	$plugins->run_hooks_by_ref("upload_attachment_do_insert", $attacharray);
 
 	$db->insert_query(TABLE_PREFIX."attachments", $attacharray);
-	
-	if($attacharray['pid'] > 0) 
+	if($tid) 
 	{
-		$post = get_post($attacharray['pid']); 
-		update_thread_counters($post['tid'], array("attachmentcount" => +1)); 
+		update_thread_counters($tid, array("attachmentcount" => "+1")); 
 	}
 
 	$aid = $db->insert_id();
