@@ -9170,7 +9170,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</tr>
 		<tr>
 			<td class="trow1">{$issuedby}</td>
-			<td class="trow1">{$expires} ({$revoked_date})</td>
+			<td class="trow1">{$expires} {$revoked_date}</td>
 		</tr>
 		<tr>
 			<td class="tcat" colspan="2"><span class="smalltext"><strong>{$lang->warning_note}</strong></span></td>

@@ -829,7 +829,7 @@ if($mybb->input['action'] == "view")
 		}
 		else if($warning['expires'])
 		{
-			$revoked_date = my_date($mybb->settings['dateformat'], $warning['daterevoked']).' '.my_date($mybb->settings['timeformat'], $warning['daterevoked']);
+			$revoked_date = '('.my_date($mybb->settings['dateformat'], $warning['expires']).' '.my_date($mybb->settings['timeformat'], $warning['expires']).')';
 			$expires = $status = $lang->already_expired;
 		}
 	}

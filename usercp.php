@@ -41,7 +41,6 @@ $errors = '';
 usercp_menu();
 
 $plugins->run_hooks("usercp_start");
-
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 {
 	$parser_options = array(
@@ -71,7 +70,7 @@ if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
 		$error = inline_error($lang->too_many_sig_images." ".$lang->too_many_sig_images2);
 		$mybb->input['preview'] = 1;
 	}
-	elseif($mybb->settings['siglength'] > 0)
+	else if($mybb->settings['siglength'] > 0)
 	{
 		if($mybb->settings['sigcountmycode'] == 1)
 		{
@@ -1482,7 +1481,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 }
 
 if($mybb->input['action'] == "do_editsig" && $mybb->request_method == "post")
-{
+{	
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 

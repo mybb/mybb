@@ -48,7 +48,7 @@ $threadsperday = my_number_format(round(($stats['numthreads'] / $days), 2));
 $membersperday = my_number_format(round(($stats['numusers'] / $days), 2));
 
 // Get forum permissions
-$unviewableforums = get_unviewable_forums();
+$unviewableforums = get_unviewable_forums(true);
 $fidnot = '1=1';
 $unviewableforumsarray = array();
 if($unviewableforums)
@@ -70,7 +70,7 @@ if(!empty($most_replied))
 {
 	foreach($most_replied as $key => $thread)
 	{
-		if(!in_array($thread['fid'], $unviewableforumsarray))
+		if(!in_array("'{$thread['fid']}'", $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['replies']);
@@ -90,12 +90,11 @@ if(!$most_viewed)
 	$most_viewed = $cache->read("most_viewed_threads", true);
 }
 
-
 if(!empty($most_viewed))
 {
 	foreach($most_viewed as $key => $thread)
 	{
-		if(!in_array($thread['fid'], $unviewableforumsarray))
+		if(!in_array("'{$thread['fid']}'", $unviewableforumsarray))
 		{
 			$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 			$numberbit = my_number_format($thread['views']);
