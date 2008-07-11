@@ -3733,7 +3733,9 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$lang->month_11,
 		$lang->month_12
 	);
+	
 
+	// This needs to be in this specific order
 	$find = array(
 		'm',
 		'd',
@@ -3741,8 +3743,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		'Y',
 		'j',
 		'S',
+		'l',
 		'F',
-		'l'
 	);
 
 	$replace = array(
@@ -3752,10 +3754,10 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),
 		($db == 1 || $db == 21 || $db == 31 ? 'st' : ($db == 2 || $db == 22 ? 'nd' : ($db == 3 || $db == 23 ? 'rd' : 'th'))),
+		$bdays[$wd],
 		$bmonth[$bm-1],
-		$bdays[$wd]
 	);
-
+	
 	return str_replace($find, $replace, $display);
 }
 
