@@ -1158,7 +1158,7 @@ ul.thread_tools li.subscription_remove {
 							<td class="thead" colspan="2"><strong>{$lang->filter_modlogs}</strong></td>
 						</tr>
 						<tr>
-							<td class="trow1" width="25%"><strong>{$lang->forum}</td>
+							<td class="trow1" width="25%"><strong>{$lang->forum}</strong></td>
 							<td class="trow1" width="75%">
 								{$forum_select}
 							</td>
@@ -1252,7 +1252,6 @@ ul.thread_tools li.subscription_remove {
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead" align="center" colspan="3"><strong>{$lang->awaiting_moderation}</strong></td>
-</td>
 </tr>
 <tr>
 <td class="tcat" width="23%"><span class="smalltext"><strong>{$lang->type}</strong></span></td>
@@ -1319,6 +1318,7 @@ ul.thread_tools li.subscription_remove {
 </table>
 <br />
 <div align="center"><input type="submit" class="button" name="notessubmit" value="{$lang->save_notes}" /></div>
+</form>
 </td>
 </tr>
 </table>
@@ -3455,7 +3455,7 @@ ul.thread_tools li.subscription_remove {
 <td class="trow1" valign="top" width="200"><strong>{$lang->compose_to}</strong>
 	<script type="text/javascript">
 	<!--
-		document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}</a>)');
+		document.write('(<a href="#" onclick="showBcc(); return false;" title="{$lang->compose_bcc_show_title}">{$lang->compose_bcc_show}<\/a>)');
 	// -->
 	</script>
 	<br /><span class="smalltext">{$lang->separate_names}{$buddy_select_to}</span></td>
@@ -4060,8 +4060,8 @@ body {
 <td class="tfoot" align="right" colspan="5"><strong><input type="submit" class="button" name="stoptrackingunread" value="{$lang->stop_tracking}" /> / <input type="submit" class="button" name="cancel" value="{$lang->cancel}" /> {$lang->selected_messages}</strong></td>
 </tr>
 </table>
-</td></tr></table>
 </form>
+</td></tr></table>
 {$footer}
 </body>
 </html>]]></template>
@@ -5946,7 +5946,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$multipage}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 	<tr>
-		<td class="thead" colspan="7"><strong>{$lang->subscriptions} ({$threadcount})</strong>
+		<td class="thead" colspan="7"><strong>{$lang->subscriptions} ({$threadcount})</strong></td>
+	</tr>
 	<tr>
 		<td class="tcat" align="center" colspan="2">&nbsp;</td>
 		<td class="tcat" align="center"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
@@ -6592,6 +6593,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <label><input type="radio" class="radio" name="updateposts" value="enable" />&nbsp;{$lang->enable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="disable" />&nbsp;{$lang->disable_sig_posts}</label><br />
 <label><input type="radio" class="radio" name="updateposts" value="0" checked="checked" />&nbsp;{$lang->leave_sig_settings}</label></span>
+</td>
+</tr>
 </table>
 <br />
 <div align="center">
@@ -6634,6 +6637,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 {$action_time}
 {$message}
+</table>
 {$footer}
 </body>
 </html>]]></template>
@@ -6920,7 +6924,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			</table>
 		</form>
 		<br />
-		<form action="usercp.php" method="post" id="buddy" onsubmit="return UserCP.addBuddy('ignored');">
+		<form action="usercp.php" method="post" id="ignored" onsubmit="return UserCP.addBuddy('ignored');">
 			<input type="hidden" name="action" value="do_editlists" />
 			<input type="hidden" name="manage" value="ignored" />
 			<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
@@ -7998,7 +8002,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						</select>
 					</dd>
 					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
-					<dd style="margin-top: 4px;" id="ranged_selects" width="100%">
+					<dd style="margin-top: 4px; width: 100%;" id="ranged_selects">
 						<table width="100%">
 							<tr>
 								<td class="smalltext" style="padding: 4px; text-align: right;">{$lang->start_time}</td>
@@ -8058,7 +8062,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 								<td class="smalltext" style="padding: 4px; text-align: right; vertical-align: top;">{$lang->time_zone}</td>
 								<td style="padding: 4px;">
 									{$timezones}<br />
-									<label class="smalltext" style="display: block;padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {$ignore_timezone}" style="vertical-align: middle;" /> {$lang->ignore_timezone}
+									<label class="smalltext" style="display: block; padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {$ignore_timezone} style="vertical-align: middle;" /> {$lang->ignore_timezone} </label>
 								</td>
 							</tr>
 							<tr>
@@ -8236,7 +8240,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					<div class="float_right">
 						<a href="{$prev_link}">&laquo; {$lang->previous_week}</a> | <a href="{$next_link}">{$lang->next_week} &raquo;</a>
 					</div>
-					<div><strong>{$lang->weekly_overview} {$friendly_week_from} - {$friendly_week_to}</div>
+					<div><strong>{$lang->weekly_overview} {$friendly_week_from} - {$friendly_week_to}</strong></div>
 				</td>
 			</tr>
 		</thead>
@@ -8426,7 +8430,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						</select>
 					</dd>
 					<dt><input type="radio" name="type" value="ranged" {$type_ranged} id="type_ranged" onclick="toggleType();" /> <label for="type_ranged"><strong>{$lang->type_ranged}</strong></label></dt>
-					<dd style="margin-top: 4px;" id="ranged_selects" width="100%">
+					<dd style="margin-top: 4px; width: 100%;" id="ranged_selects">
 						<table width="100%">
 							<tr>
 								<td class="smalltext" style="padding: 4px; text-align: right;">{$lang->start_time}</td>
@@ -8486,7 +8490,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 								<td class="smalltext" style="padding: 4px; text-align: right; vertical-align: top;">{$lang->time_zone}</td>
 								<td style="padding: 4px;">
 									{$timezones}<br />
-									<label class="smalltext" style="display: block;padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {$ignore_timezone}" style="vertical-align: middle;" /> {$lang->ignore_timezone}
+									<label class="smalltext" style="display: block; padding-top: 4px;"><input type="checkbox" name="ignoretimezone" value="1" {$ignore_timezone} style="vertical-align: middle;" /> {$lang->ignore_timezone}</label>
 								</td>
 							</tr>
 							<tr>
@@ -9836,7 +9840,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="thead" colspan="2"><strong>{$lang->find_users}</strong></td>
 						</tr>
 						<tr>
-							<td class="trow1" width="25%"><strong>{$lang->username_contains}</td>
+							<td class="trow1" width="25%"><strong>{$lang->username_contains}</strong></td>
 							<td class="trow1" width="75%"><input type="text" name="username" id="username" value="{$mybb->input['username']}" class="textbox" /></td>
 						</tr>
 						<tr>
@@ -10033,7 +10037,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<template name="modcp_modqueue_attachments_empty" version="1400"><![CDATA[<tr>
 		<td class="trow1" align="center" colspan="6">{$lang->mod_queue_attachments_empty}</td>
 </tr>]]></template>
-	<template name="modcp_lastattachment" version="1400"><![CDATA[<span class="smalltext">
+	<template name="modcp_lastattachment" version="1400"><![CDATA[<span class="smalltext">"
 <a href="{$attachment['link']}#pid{$attachment['pid']}"><strong>{$attachment['filename']}</strong></a>
 <br />{$attachment['date']} {$attachment['time']}<br />{$lang->by} {$attachment['profilelink']}</span>
 ]]></template>
@@ -10079,15 +10083,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							<td class="thead" colspan="2"><strong>{$lang->filter_warning_logs}</strong></td>
 						</tr>
 						<tr>
-							<td class="trow1" width="25%"><strong>{$lang->filter_warned_user}</td>
+							<td class="trow1" width="25%"><strong>{$lang->filter_warned_user}</strong></td>
 							<td class="trow1" width="75%"><input type="text" name="filter[username]" id="username" value="{$mybb->input['filter']['username']}" class="textbox" /></td>
 						</tr>
 						<tr>
-							<td class="trow2" width="25%"><strong>{$lang->filter_issued_by}</td>
+							<td class="trow2" width="25%"><strong>{$lang->filter_issued_by}</strong></td>
 							<td class="trow2" width="75%"><input type="text" name="filter[mod_username]" value="{$mybb->input['filter']['mod_username']}" class="textbox" /></td>
 						</tr>
 						<tr>
-							<td class="trow1" width="25%"><strong>{$lang->filter_reason}</td>
+							<td class="trow1" width="25%"><strong>{$lang->filter_reason}</strong></td>
 							<td class="trow1" width="75%"><input type="text" name="filter[reason]" value="{$mybb->input['filter']['reason']}" class="textbox" /></td>
 						</tr>
 						<tr>
@@ -10108,7 +10112,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 							</td>
 						</tr>
 						<tr>
-							<td class="trow1" width="25%"><strong>{$lang->per_page}</td>
+							<td class="trow1" width="25%"><strong>{$lang->per_page}</strong></td>
 							<td class="trow1" width="75%"><input type="text" name="filter[per_page]" value="{$per_page}" class="textbox" /></td>
 						</tr>
 					</table>
@@ -10132,7 +10136,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </script>
 </body>
 </html>]]></template>
-	<template name="modcp_warninglogs_nologs" version="1400"><![CDATA[					<tr colspan="6">
+	<template name="modcp_warninglogs_nologs" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="6">{$lang->no_warning_logs}</td>
 					</tr>]]></template>
 	<template name="modcp_warninglogs_warning" version="1400"><![CDATA[					<tr>

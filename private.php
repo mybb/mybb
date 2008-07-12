@@ -1087,8 +1087,8 @@ if($mybb->input['action'] == "export")
 {
 	$plugins->run_hooks("private_export_start");
 	
-	$folderlist = "<select name=\"exportfolders[]\" multiple>\n";
-	$folderlist .= "<option value=\"all\" selected>$lang->all_folders</option>";
+	$folderlist = "<select name=\"exportfolders[]\" multiple=\"multiple\">\n";
+	$folderlist .= "<option value=\"all\" selected=\"selected\">$lang->all_folders</option>";
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{

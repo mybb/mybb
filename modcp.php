@@ -2228,7 +2228,7 @@ if($mybb->input['action'] == "ipsearch")
 				{
 					$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 				}
-				$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."<a> by ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
+				$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."</a> by ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
 			}
 		}
@@ -2716,7 +2716,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		$latest_attachment = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+		$latest_attachment = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
 	}
 
 	$query = $db->query("
@@ -2754,7 +2754,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		$latest_post =  "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+		$latest_post =  "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
 	}
 
 	$query = $db->simple_select("threads", "COUNT(tid) AS unapprovedthreads", "visible=0 {$flist}");
@@ -2780,7 +2780,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		$latest_thread = "<div style=\"text-align: center;\">{$lang->lastpost_never}</div>";
+		$latest_thread = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
 	}
 
 	$query = $db->query("
