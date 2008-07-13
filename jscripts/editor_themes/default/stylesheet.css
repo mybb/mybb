@@ -140,6 +140,11 @@
 	min-width: 130px;
 }
 
+/* IE 6 */
+.messageEditor .toolbar_dropdown {
+	width: 130px;
+}
+
 .messageEditor .toolbar_dropdown .editor_dropdown_label, .messageEditor .toolbar_dropdown_image .editor_dropdown_label {
 	display: block;
 }
@@ -152,6 +157,7 @@
 	border: 1px solid #aaa;
 	border-right: 0;
 	height: 14px;
+	overflow: hidden;
 }
 
 .messageEditor .toolbar_dropdown .editor_dropdown_arrow, .messageEditor .toolbar_dropdown_image .editor_dropdown_arrow {

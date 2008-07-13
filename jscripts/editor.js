@@ -283,7 +283,6 @@ messageEditor.prototype = {
 		this.oldTextarea = oldTextarea;
 
 		this.editor.style.display = "";
-
 		Event.observe(textInput, "keyup", this.updateOldArea.bindAsEventListener(this));
 
 		if(MyBB.browser == 'ie') {
@@ -356,6 +355,59 @@ messageEditor.prototype = {
 		if(toolbar.lastChild.previousSibling)
 			toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 	},
+	
+	setElementState: function(element, state) {
+		element.addClassName('toolbar_'+state);
+		
+		if(element.hasClassName('toolbar_button_group_first')) {
+			if(state == 'clicked') {
+				append = 'toolbar_clicked';
+			}
+			else if(state == 'hover') {
+				append = 'toolbar_hover';
+			}
+			append += '_button_group_first';
+			element.addClassName(append);
+		}
+		
+		if(element.hasClassName('toolbar_button_group_last')) {
+			if(state == 'clicked') {
+				append = 'toolbar_clicked';
+			}
+			else if(state == 'hover') {
+				append = 'toolbar_hover';
+			}
+			append += '_button_group_last';
+			element.addClassName(append);
+		}
+	},
+	
+	removeElementState: function(element, state)
+	{
+		element.removeClassName('toolbar_'+state);
+		
+		if(element.hasClassName('toolbar_button_group_first')) {
+			if(state == 'clicked') {
+				append = 'toolbar_clicked';
+			}
+			else if(state == 'hover') {
+				append = 'toolbar_hover';
+			}
+			append += '_button_group_first';
+			element.removeClassName(append);
+		}
+		
+		if(element.hasClassName('toolbar_button_group_last')) {
+			if(state == 'clicked') {
+				append = 'toolbar_clicked';
+			}
+			else if(state == 'hover') {
+				append = 'toolbar_hover';
+			}
+			append += '_button_group_last';
+			element.removeClassName(append);
+		}	
+	},
 
 	dropDownMenuItemClick: function(e)
 	{
@@ -368,15 +420,15 @@ messageEditor.prototype = {
 		if(!element.extra)
 			element = element.up('li');
 
-		var menu = element.up('ul');
-		var dropdown = this.getElementToolbarItem(menu);
+		var mnu = element.up('ul');
+		var dropdown = this.getElementToolbarItem(mnu);
 		var label = dropdown.down('.editor_dropdown_label');
 
-		if(!dropdown.insertText || (menu.activeItem && menu.activeItem == element))
+		if(!dropdown.insertText || (mnu.activeItem && mnu.activeItem == element))
 			return;
 
 		this.insertMyCode(dropdown.insertText, element.extra);
-		menu.lastItemValue = element.extra;
+		mnu.lastItemValue = element.extra;
 
 		if(this.getSelectedText($(this.textarea)))
 		{
@@ -396,7 +448,7 @@ messageEditor.prototype = {
 				var use_default = dropdown.down('.editor_dropdown_color_item_default');
 				if(use_default) use_default.style.display = '';
 			}
-			menu.activeItem = element;
+			mnu.activeItem = element;
 			element.addClassName('editor_dropdown_menu_item_active');
 		}
 		this.hideOpenDropDownMenu();
@@ -409,31 +461,30 @@ messageEditor.prototype = {
 		{
 			return;
 		}
-		var menu = element.down('ul');
+		var mnu = element.down('ul');
 		var label = element.down('.editor_dropdown_label');
 
-		if(menu.activeItem)
+		if(mnu.activeItem)
 		{
-			menu.activeItem.removeClassName('editor_dropdown_menu_item_active');
-			menu.activeItem = null;
+			mnu.activeItem.removeClassName('editor_dropdown_menu_item_active');
+			mnu.activeItem = null;
 		}
 
 		if(index > 0)
 		{
-			var item = menu.childNodes[index];
+			var item = mnu.childNodes[index];
 			if(!item) return;
-			menu.activeItem = item;
+			mnu.activeItem = item;
 			if(label)
 			{
 				label.innerHTML = item.innerHTML;
-				label.style.overflow = 'hidden';
 			}
 
 			var sel_color = element.down('.editor_dropdown_color_selected')
 			if(sel_color)
 			{
 				sel_color.style.backgroundColor = item.style.backgroundColor;
-				menu.lastItemValue = item.insertExtra;
+				mnu.lastItemValue = item.insertExtra;
 				var use_default = element.down('.editor_dropdown_color_item_default');
 				if(use_default) use_default.style.display = '';
 			}
@@ -443,8 +494,7 @@ messageEditor.prototype = {
 		{
 			if(label)
 			{
-				label.innerHTML = menu.childNodes[0].innerHTML;
-				label.style.overflow = '';
+				label.innerHTML = mnu.childNodes[0].innerHTML;
 			}
 
 			var sel_color = element.down('.editor_button_color_selected')
@@ -454,7 +504,7 @@ messageEditor.prototype = {
 				var use_default = element.down('.editor_dropdown_color_item_default');
 				if(use_default) use_default.style.display = 'none';
 			}
-			element.removeClassName('toolbar_clicked');
+			this.removeElementState(element, 'clicked');
 		}
 	},
 
@@ -501,18 +551,18 @@ messageEditor.prototype = {
 		dropdown.appendChild(arrow);
 
 		// create the menu item container
-		var menu = this.buildDropDownMenu(options);
+		var mnu = this.buildDropDownMenu(options);
 
 		Event.observe(dropdown, 'click', this.toggleDropDownMenu.bindAsEventListener(this));
-		dropdown.appendChild(menu);
+		dropdown.appendChild(mnu);
 		return dropdown;
 	},
 
 	buildDropDownMenu: function(options)
 	{
-		var menu = document.createElement('ul');
-		menu.className = 'editor_dropdown_menu';
-		menu.style.display = 'none';
+		var mnu = document.createElement('ul');
+		mnu.className = 'editor_dropdown_menu';
+		mnu.style.display = 'none';
 
 		// create the first item
 		if(options.title)
@@ -520,10 +570,10 @@ messageEditor.prototype = {
 			var item = document.createElement('li');
 			item.className = 'editor_dropdown_menu_title';
 			item.innerHTML = options.title;
-			menu.appendChild(item);
+			mnu.appendChild(item);
 			Event.observe(item, 'click', function()
 			{
-				if(menu.activeItem)
+				if(mnu.activeItem)
 				{
 					this.restartEditorSelection();
 					this.insertMyCode(dropdown.insertText, '-');
@@ -556,9 +606,9 @@ messageEditor.prototype = {
 			{
 				item.removeClassName('editor_dropdown_menu_item_over');
 			});
-			menu.appendChild(item);
+			mnu.appendChild(item);
 		}, this);
-		return menu;
+		return mnu;
 	},
 
 	toggleDropDownMenu: function(e)
@@ -566,18 +616,17 @@ messageEditor.prototype = {
 		element = Event.element(e);
 		if(!element)
 			return;
-
 		if(!element.itemType)
 			element = this.getElementToolbarItem(element);
-
-		menu = element.down('ul');
-
+		
+		var mnu = $(element).down('ul');
+		
 		// This menu is already open, close it
-		if(menu.style.display != 'none')
+		if(mnu.style.display != 'none')
 		{
-			menu.style.display = 'none';
+			mnu.style.display = 'none';
 			element.removeClassName('editor_dropdown_menu_open');
-			element.removeClassName('toolbar_clicked');
+			this.removeElementState(element, 'clicked');
 			this.openDropDownMenu = null;
 			Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 		}
@@ -585,20 +634,20 @@ messageEditor.prototype = {
 		else
 		{
 			// If a menu is already open, close it first
-			this.showDropDownMenu(menu);
+			this.showDropDownMenu(mnu);
 		}
-		element.removeClassName('toolbar_clicked');
+		this.removeElementState(element, 'clicked');
 		Event.stop(e);
 	},
 
-	showDropDownMenu: function(menu)
+	showDropDownMenu: function(mnu)
 	{
 		this.hideOpenDropDownMenu();
-		menu.style.display = '';
-		element = this.getElementToolbarItem(menu);
+		mnu.style.display = '';
+		element = this.getElementToolbarItem(mnu);
 		element.addClassName('editor_dropdown_menu_open');
-		element.addClassName('toolbar_clicked');
-		this.openDropDownMenu = menu;
+		this.setElementState(element, 'clicked');
+		this.openDropDownMenu = mnu;
 		Event.observe(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 	},
 
@@ -607,7 +656,8 @@ messageEditor.prototype = {
 		if(!this.openDropDownMenu) return;
 		this.openDropDownMenu.style.display = 'none';
 		this.getElementToolbarItem(this.openDropDownMenu).removeClassName('editor_dropdown_menu_open');
-		this.getElementToolbarItem(this.openDropDownMenu).removeClassName('toolbar_clicked');
+		var dropDown = this.getElementToolbarItem(this.openDropDownMenu);
+		this.removeElementState(element, 'clicked');
 		this.openDropDownMenu = null;
 		Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
 	},
@@ -679,7 +729,7 @@ messageEditor.prototype = {
 				toolbar.insertBefore(dropdown, toolbar.lastChild);
 
 			if(insert_first_class == true)
-				dropdown.className += ' toolbar_button_group_first';
+				dropdown.className += ' toolbar_dropdown_group_first';
 		}
 		else if(options.type == 'button')
 		{
@@ -691,7 +741,7 @@ messageEditor.prototype = {
 		}
 		else if(options.type == 'separator')
 		{
-			if(toolbar.lastChild.previousSibling)
+			if(toolbar.lastChild.previousSibling && !$(toolbar.lastChild.previousSibling).hasClassName('toolbar_dropdown'))
 			{
 				toolbar.lastChild.previousSibling.className += ' toolbar_button_group_last';
 			}
@@ -758,7 +808,7 @@ messageEditor.prototype = {
 		if(options.dropdown)
 		{
 			// create the menu item container
-			var menu = this.buildDropDownMenu(options);
+			var mnu = this.buildDropDownMenu(options);
 
 			Event.observe(arrow, 'click', this.toggleDropDownMenu.bindAsEventListener(this));
 			Event.observe(arrow, 'mouseover', function(e)
@@ -773,9 +823,9 @@ messageEditor.prototype = {
 				if(!elem) return;
 				elem.parentNode.removeClassName('toolbar_button_over_arrow');
 			});
-			button.appendChild(menu);
+			button.appendChild(mnu);
 			button.dropdown = true;
-			button.menu = menu;
+			button.menu = mnu;
 		}
 
 		// Does this button have enabled/disabled states?
@@ -858,10 +908,10 @@ messageEditor.prototype = {
 
 			if(this.openTags.indexOf(insertCode) != -1 || element.className.indexOf('editor_dropdown_menu_open') > -1)
 			{
-				Element.addClassName(element, "toolbar_clicked");
+				this.setElementState(element, 'clicked');
 			}
 		}
-		Element.removeClassName(element, "toolbar_hover");
+		this.removeElementState(element, 'hover');
 	},
 
 	toolbarItemHover: function(e)
@@ -878,7 +928,7 @@ messageEditor.prototype = {
 			return;
 
 		if(!element.className || element.className.indexOf('toolbar_clicked') == -1)
-			element.addClassName('toolbar_hover');
+			this.setElementState(element, 'hover');
 	},
 
 	toolbarItemClick: function(e)
@@ -900,9 +950,13 @@ messageEditor.prototype = {
 			{
 				Event.stop(e);
 				if(!element.menu.lastItemValue)
+				{
 					this.showDropDownMenu(element.menu);
+				}
 				else
+				{
 					this.insertMyCode(element.insertText, element.menu.lastItemValue);
+				}
 
 				return;
 			}
@@ -1056,15 +1110,16 @@ messageEditor.prototype = {
 					{
 						already_open = true;
 						this.performInsert("[/"+exploded_tag[0]+"]", "", false);
+						var elem = $('editor_item_'+exploded_tag[0]);
 
-						if($('editor_item_'+tag))
+						if(elem)
 						{
-							$('editor_item_'+tag).removeClassName('toolbar_clicked');
+							this.removeElementState(elem, 'clicked');
 						}
 
-						if($('editor_item_'+exploded_tag[0]) && $('editor_item_'+exploded_tag[0]).itemType == "dropdown")
+						if(elem && (elem.itemType == "dropdown" || elem.dropdown || elem.menu))
 						{
-							this.setDropDownMenuActiveItem($('editor_item_'+exploded_tag[0]), 0);
+							this.setDropDownMenuActiveItem(elem, 0);
 						}
 
 						if(tag == full_tag)
@@ -1103,7 +1158,7 @@ messageEditor.prototype = {
 					}
 					else if($('editor_item_'+full_tag))
 					{
-						Element.removeClassName($('editor_item_'+full_tag), "toolbar_clicked");
+						this.removeElementState($('editor_item_'+full_tag), 'clicked');
 					}
 					else if($('editor_item_'+code))
 					{
@@ -1281,7 +1336,7 @@ messageEditor.prototype = {
 					}
 					else
 					{
-						Element.removeClassName(tag, "toolbar_clicked");
+						this.removeElementState(tag, 'clicked');
 					}
 				}
 			}

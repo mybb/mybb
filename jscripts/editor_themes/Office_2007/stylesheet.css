@@ -36,6 +36,7 @@
 .messageEditor .toolbar_sprite {
 	display: block;
 	background: url('images/toolbar.gif') no-repeat;
+	background-position: 0 0;
 }
 
 .messageEditor .toolbar_button .toolbar_sprite_italic {
@@ -104,7 +105,8 @@
 }
 
 .messageEditor .toolbar_normal {
-	background: url(images/ui.gif) no-repeat -2px 0px;	
+	background: url(images/ui.gif) no-repeat;
+	background-position: -2px 0;	
 	border: 0;
 }
 
@@ -118,7 +120,7 @@
 	border: 0;
 }
 
-.messageEditor .toolbar_button.editor_dropdown_menu_open {
+.messageEditor .editor_dropdown_menu_open {
 	background: url(images/ui.gif) no-repeat -208px 0px;	
 	border: 0;	
 }
@@ -144,6 +146,11 @@
 	min-width: 130px;
 }
 
+/* IE 6 */
+* html .messageEditor .toolbar_dropdown {
+	width: 130px;
+}
+
 .messageEditor .toolbar_dropdown .editor_dropdown_label, .messageEditor .toolbar_dropdown_image .editor_dropdown_label {
 	display: block;
 }
@@ -156,6 +163,7 @@
 	border: 1px solid #abc1de;
 	border-right: 0;
 	height: 14px;
+	overflow: hidden;
 }
 
 .messageEditor .toolbar_dropdown_image .editor_dropdown_label {
@@ -165,6 +173,7 @@
 	background: #eaf2fb;
 	border: 1px solid #abc1de;
 	float: left;
+	overflow: hidden;
 }
 
 .messageEditor .toolbar_dropdown .editor_dropdown_arrow, .messageEditor .toolbar_dropdown_image .editor_dropdown_arrow {
@@ -327,23 +336,24 @@ background-position: -17px -28px;
 	border-right: 1px solid #b7cdea;
 	margin-top: 0px;
 }
-.messageEditor .toolbar_button.toolbar_button_group_first strong, .messageEditor .toolbar_button_group_first strong {
+
+.messageEditor .toolbar_button_group_first strong {
 	border-left: 0;		
 }
-.messageEditor .toolbar_button.toolbar_button_group_first {
+.messageEditor .toolbar_button_group_first {
 	padding-left: 3px;
 	background: url(images/ui.gif) no-repeat 0 0;
 }
 
-.messageEditor .toolbar_clicked.toolbar_button_group_first {
+.messageEditor .toolbar_clicked_button_group_first {
 	background-position: -206px 0;
 }
 
-.messageEditor .toolbar_hover.toolbar_button_group_first {
+.messageEditor .toolbar_hover_button_group_first {
 	background-position: -103px 0;
 }
 
-.messageEditor .toolbar_button_group_last strong, .messageEditor .toolbar_button_group_last strong {
+.messageEditor .toolbar_button_group_last strong {
 	border-right: 0;
 }
 
@@ -355,26 +365,26 @@ background-position: -17px -28px;
 	margin-top: 1px;
 }
 
-.messageEditor .toolbar_button.toolbar_button_group_last strong {
+.messageEditor .toolbar_button_group_last strong {
 	background: url(images/ui.gif) no-repeat -99px 0;
 	margin-top: 0;
 	height: 22px;	
 }
 
-.messageEditor .toolbar_button.toolbar_clicked.toolbar_button_group_last strong {
+.messageEditor .toolbar_clicked_button_group_last strong {
 	background-position: -204px 0;
 }
 
-.messageEditor .toolbar_button.toolbar_hover.toolbar_button_group_last strong {
+.messageEditor .toolbar_hover_button_group_last strong {
 	background-position: -200px 0;
 }
 
 .messageEditor .toolbar_button_arrow {
-background: transparent url(images/ui.gif) no-repeat scroll -306px 0px;
-float: left;
-width: 12px;
-display: block;
-height: 22px;	
+	background: transparent url(images/ui.gif) no-repeat scroll -306px 0px;
+	float: left;
+	width: 12px;
+	display: block;
+	height: 22px;	
 }
 
 .messageEditor .toolbar_hover .toolbar_button_arrow {
