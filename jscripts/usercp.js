@@ -52,7 +52,7 @@ var UserCP = {
 				container.id = "buddyselect_container";
 				container.style.display = 'none';
 				container.innerHTML = request.responseText;
-				$('container').appendChild(container);
+				document.body.appendChild(container);
 			}
 		}
 		else
@@ -69,6 +69,7 @@ var UserCP = {
 		// Clone off screen
 		var clone = container.cloneNode(true);
 		document.body.appendChild(clone);
+		clone.style.width = '300px';
 		clone.style.top = "-10000px";
 		clone.style.display = "block";
 		offsetHeight = clone.offsetHeight;
@@ -80,12 +81,12 @@ var UserCP = {
 		arrayPageScroll = DomLib.getPageScroll();
 		var top = arrayPageScroll[1] + ((arrayPageSize[3] - 35 - offsetHeight) / 2);
 		var left = ((arrayPageSize[0] - 20 - offsetWidth) / 2);
-
 		$('buddyselect_container').style.top = top+"px";
 		$('buddyselect_container').style.left = left+"px";
 		$('buddyselect_container').style.position = "absolute";
 		$('buddyselect_container').style.display = "block";
-
+		$('buddyselect_container').style.zIndex = '1000';
+		$('buddyselect_container').style.textAlign = 'left';
 		if(this.spinner)
 		{
 			this.spinner.destroy();
