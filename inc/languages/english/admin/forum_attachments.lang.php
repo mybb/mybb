@@ -43,7 +43,7 @@ $l['num_uploaded'] = "<strong>No. Uploaded Attachments</strong>";
 $l['space_used'] = "<strong>Attachment Space Used</strong>";
 $l['bandwidth_used'] = "<strong>Estimated Bandwidth Usage</strong>";
 $l['average_size'] = "<strong>Average Attachment Size</strong>";
-$l['size_attachments'] = "<span class=\"float_right\">Size</span>Attachment";
+$l['size'] = "Size";
 $l['posted_by'] = "Posted By";
 $l['thread'] = "Thread";
 $l['downloads'] = "Downloads";

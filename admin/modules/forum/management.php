@@ -96,7 +96,7 @@ if($mybb->input['action'] == "copy")
 			if(!$errors)
 			{
 				$new_forum = $from_forum;
-				unset($new_forum['fid']);
+				unset($new_forum['fid'], $new_forum['threads'], $new_forum['posts'], $new_forum['lastpost'], $new_forum['lastposter'], $new_forum['lastposteruid'], $new_forum['lastposttid'], $new_forum['lastpostsubject'], $new_forum['unapprovedthreads'], $new_forum['unapprovedposts']);
 				$new_forum['name'] = $db->escape_string($mybb->input['title']);
 				$new_forum['description'] = $db->escape_string($mybb->input['description']);
 				$new_forum['type'] = $db->escape_string($mybb->input['type']);
@@ -900,12 +900,12 @@ if($mybb->input['action'] == "add")
 		{
 			if($mybb->input['default_permissions'][$usergroup['gid']])
 			{
-				if($existing_permissions[$usergroup['gid']])
+				if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 				{
 					$perms = $existing_permissions[$usergroup['gid']];
 					$default_checked = false;
 				}
-				else if($cached_forum_perms[$mybb->input['pid']][$usergroup['gid']])
+				else if(is_array($cached_forum_perms) && $cached_forum_perms[$mybb->input['pid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$mybb->input['pid']][$usergroup['gid']];
 					$default_checked = true;
@@ -920,12 +920,12 @@ if($mybb->input['action'] == "add")
 		}
 		else
 		{
-			if($existing_permissions[$usergroup['gid']])
+			if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 			{
 				$perms = $existing_permissions[$usergroup['gid']];
 				$default_checked = false;
 			}
-			else if($cached_forum_perms[$mybb->input['pid']][$usergroup['gid']])
+			else if(is_array($cached_forum_perms) && $cached_forum_perms[$mybb->input['pid']][$usergroup['gid']])
 			{
 				$perms = $cached_forum_perms[$mybb->input['pid']][$usergroup['gid']];
 				$default_checked = true;
@@ -1320,17 +1320,17 @@ if($mybb->input['action'] == "edit")
 		{
 			if($mybb->input['default_permissions'][$usergroup['gid']])
 			{
-				if($existing_permissions[$usergroup['gid']])
+				if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 				{
 					$perms = $existing_permissions[$usergroup['gid']];
 					$default_checked = false;
 				}
-				elseif($cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+				elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
 					$default_checked = true;
 				}
-				else if($cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+				else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
 				{
 					$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
 					$default_checked = true;
@@ -1345,17 +1345,17 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			if($existing_permissions[$usergroup['gid']])
+			if(is_array($existing_permissions) && $existing_permissions[$usergroup['gid']])
 			{
 				$perms = $existing_permissions[$usergroup['gid']];
 				$default_checked = false;
 			}
-			elseif($cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+			elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
 			{
 				$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
 				$default_checked = true;
 			}
-			else if($cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+			else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
 			{
 				$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
 				$default_checked = true;

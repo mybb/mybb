@@ -132,7 +132,8 @@ if($mybb->input['action'] == "stats")
 
 	// Fetch the most popular attachments
 	$table = new Table;
-	$table->construct_header($lang->size_attachments, array('colspan' => 2));
+	$table->construct_header($lang->attachments, array('colspan' => 2));
+	$table->construct_header($lang->size, array('width' => '10%', 'class' => 'align_center'));
 	$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));
 	$table->construct_header($lang->thread, array('width' => '25%', 'class' => 'align_center'));
 	$table->construct_header($lang->downloads, array('width' => '10%', 'class' => 'align_center'));
@@ -155,7 +156,8 @@ if($mybb->input['action'] == "stats")
 
 	// Fetch the largest attachments
 	$table = new Table;
-	$table->construct_header($lang->size_attachments, array('colspan' => 2));
+	$table->construct_header($lang->attachments, array('colspan' => 2));
+	$table->construct_header($lang->size, array('width' => '10%', 'class' => 'align_center'));
 	$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));
 	$table->construct_header($lang->thread, array('width' => '25%', 'class' => 'align_center'));
 	$table->construct_header($lang->downloads, array('width' => '10%', 'class' => 'align_center'));
@@ -734,7 +736,8 @@ if(!$mybb->input['action'])
 
 			$table = new Table;
 			$table->construct_header($form->generate_check_box('checkall', '1', '', array('class' => 'checkall')), array( 'width' => 1));
-			$table->construct_header($lang->size_attachments, array('colspan' => 2));
+			$table->construct_header($lang->attachments, array('colspan' => 2));
+			$table->construct_header($lang->size, array('width' => '10%', 'class' => 'align_center'));
 			$table->construct_header($lang->posted_by, array('width' => '20%', 'class' => 'align_center'));
 			$table->construct_header($lang->thread, array('width' => '25%', 'class' => 'align_center'));
 			$table->construct_header($lang->downloads, array('width' => '10%', 'class' => 'align_center'));
@@ -868,9 +871,18 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 		$title = $lang->error_does_not_exist;
 		$checked = true;
 	}
-	elseif($attachment['visible'] == 0)
+	else if($attachment['visible'] == 0)
 	{
 		$cell_class = "invisible_attachment";
+	}
+	
+	if($cell_class)
+	{
+		$cell_class .= " align_center";
+	}
+	else
+	{
+		$cell_class = "align_center";
 	}
 
 	if($use_form == true && is_object($form))
@@ -878,7 +890,8 @@ function build_attachment_row($attachment, &$table, $use_form=false)
 		$table->construct_cell($form->generate_check_box('aids[]', $attachment['aid'], '', array('checked' => $checked)));
 	}
 	$table->construct_cell(get_attachment_icon(get_extension($attachment['filename'])), array('width' => 1));
-	$table->construct_cell("<span class=\"float_right\">".get_friendly_size($attachment['filesize'])."</span><a href=\"../attachment.php?aid={$attachment['aid']}\">{$attachment['filename']}</a>", array('class' => $cell_class));
+	$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\">{$attachment['filename']}</a>");
+	$table->construct_cell(get_friendly_size($attachment['filesize']), array('class' => $cell_class));
 
 	if($attachment['user_username'])
 	{
