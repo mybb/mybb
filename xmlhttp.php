@@ -670,6 +670,7 @@ else if($mybb->input['action'] == "get_buddyselect")
 			"order_by" => "username",
 			"order_dir" => "asc"
 		);
+		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];		
 		$query = $db->simple_select("users", "uid, username, usergroup, displaygroup, lastactive, lastvisit, invisible", "uid IN ({$mybb->user['buddylist']})", $query_options);
 		$buddy_array = array();
 		while($buddy = $db->fetch_array($query))
