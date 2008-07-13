@@ -428,7 +428,7 @@ var MyBB = {
 			input.setAttribute("onfocus", "if(this.value == '"+lang.username+"') { this.value=''; }");
 			input.setAttribute("onblur", "if(this.value == '') { this.value='"+lang.username+"'; }");
 			form.appendChild(input);
-			
+			var usernameInput = input;
 			form.innerHTML += " ";
 			
 			if(this.browser == "ie")
@@ -467,6 +467,7 @@ var MyBB = {
 			
 			$("quick_login").innerHTML = "";
 			$("quick_login").appendChild(form);
+			usernameInput.focus();
 		}
 		
 		return false;
