@@ -172,9 +172,12 @@ function build_postbit($post, $post_type=0)
 	if(!is_array($titlescache))
 	{
 		$cached_titles = $cache->read("usertitles");
-		foreach($cached_titles as $usertitle)
+		if(!empty($cached_titles))
 		{
-			$titlescache[$usertitle['posts']] = $usertitle;
+			foreach($cached_titles as $usertitle)
+			{
+				$titlescache[$usertitle['posts']] = $usertitle;
+			}
 		}
 		
 		if(is_array($titlescache))
