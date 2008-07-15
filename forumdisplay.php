@@ -502,7 +502,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 	
 	if($sortordernow != "desc")
 	{
-		$page_url .= "{$q}{$and}sortby={$sortordernow}";
+		$page_url .= "{$q}{$and}order={$sortordernow}";
 		$q = '';
 		$and = "&";
 	}
