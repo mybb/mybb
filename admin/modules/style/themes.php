@@ -2051,7 +2051,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			log_admin_action($sid, $mybb->input['name'], $theme['tid'], $theme['name']);
 		
 			flash_message($lang->success_stylesheet_added, 'success');
-			admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}");
+			admin_redirect("index.php?module=style/themes&action=edit_stylesheet&tid={$mybb->input['tid']}&sid={$sid}&file=".urlencode($mybb->input['name']));
 		}
 	}
 	
