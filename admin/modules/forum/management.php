@@ -1020,9 +1020,9 @@ if($mybb->input['action'] == "edit")
 		admin_redirect("index.php?module=forum/management");
 	}
 	
-	$query = $db->simple_select("forums", "COUNT(fid) AS count", "fid='{$mybb->input['fid']}'");
-	$exists = $db->fetch_field($query, "count");
-	if(!$exists)
+	$query = $db->simple_select("forums", "*", "fid='{$mybb->input['fid']}'");
+	$forum_data = $db->fetch_array($query);
+	if(!$forum_data)
 	{
 		flash_message($lang->error_invalid_fid, 'error');
 		admin_redirect("index.php?module=forum/management");
@@ -1071,7 +1071,6 @@ if($mybb->input['action'] == "edit")
 				"linkto" => $db->escape_string($mybb->input['linkto']),
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
-				"parentlist" => make_parent_list($fid),
 				"disporder" => intval($mybb->input['disporder']),
 				"active" => intval($mybb->input['active']),
 				"open" => intval($mybb->input['open']),
@@ -1098,6 +1097,27 @@ if($mybb->input['action'] == "edit")
 				"defaultsortorder" => $db->escape_string($mybb->input['defaultsortorder']),
 			);
 			$db->update_query("forums", $update_array, "fid='{$fid}'");
+			if($pid != $forum_data['pid'])
+			{
+				// Update the parentlist of this forum.
+				$db->update_query("forums", array("parentlist" => make_parent_list($fid)), "fid='{$fid}'", 1);
+				
+				// Rebuild the parentlist of all of the subforums of this forum
+				switch($db->type)
+				{
+					case "sqlite3":
+					case "sqlite2":
+						$query = $db->simple_select("forums", "fid", "','||parentlist||',' LIKE '%,$fid,%'");
+						break;
+					default:
+						$query = $db->simple_select("forums", "fid", "CONCAT(',',parentlist,',') LIKE '%,$fid,%'");
+				}
+				
+				while($child = $db->fetch_array($query))
+				{
+					$db->update_query("forums", array("parentlist" => make_parent_list($child['fid'])), "fid='{$child['fid']}'", 1);
+				}
+			}
 			
 			$inherit = $mybb->input['default_permissions'];
 			
@@ -1128,7 +1148,7 @@ if($mybb->input['action'] == "edit")
 			$plugins->run_hooks("admin_forum_management_edit_commit");
 			
 			// Log admin action
-			log_admin_action($fid, $update_array['name']);
+			log_admin_action($fid, $mybb->input['title']);
 			
 			flash_message($lang->success_forum_updated, 'success');
 			admin_redirect("index.php?module=forum/management");
@@ -1150,8 +1170,6 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$query = $db->simple_select("forums", "*", "fid='{$fid}'");
-		$forum_data = $db->fetch_array($query);
 		$forum_data['title'] = $forum_data['name'];
 	}
 	

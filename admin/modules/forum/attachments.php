@@ -474,15 +474,19 @@ if($mybb->input['action'] == "orphans")
 			{
 				while(false !== ($file = readdir($dh)))
 				{
-					if($file == "." || $file == "..") continue;
-					if(is_dir($real_dir.$file))
+					if($file == "." || $file == ".." || $file == ".svn")
+					{
+						continue;
+					}
+					
+					if(is_dir($real_dir.'/'.$file))
 					{
 						scan_attachments_directory($false_dir.$file);
 					}
 					else if(my_substr($file, -7, 7) == ".attach")
 					{
 						$attachments_to_check["$false_dir$file"] = $false_dir.$file;
-						// In lots of 20, query the database for these attachments
+						// In allotments of 20, query the database for these attachments
 						if(count($attachments_to_check) >= 20)
 						{
 							array_walk($attachments_to_check, array($db, "escape_string"));
