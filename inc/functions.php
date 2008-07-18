@@ -737,6 +737,7 @@ function redirect($url, $message="", $title="")
 	global $header, $footer, $mybb, $theme, $headerinclude, $templates, $lang, $plugins;
 
 	$redirect_args = array('url' => &$url, 'message' => &$message, 'title' => &$title);
+	
 	$plugins->run_hooks_by_ref("redirect", $redirect_args);
 
 	if($mybb->input['ajax'])

@@ -13,6 +13,7 @@
  * Check if the current user has permission to perform a ModCP action on another user
  *
  * @param int The user ID to perform the action on.
+ * @param int the moderators user ID
  * @return boolean True if the user has necessary permissions
  */
 function modcp_can_manage_user($uid)
@@ -27,7 +28,7 @@ function modcp_can_manage_user($uid)
 		return false;
 	}
 	// Current user is a super mod or is an administrator
-	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($uid) && !is_super_admin($uid)))
+	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid'])))
 	{
 		return false;
 	}

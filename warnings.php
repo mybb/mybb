@@ -13,7 +13,8 @@ define("IN_MYBB", 1);
 
 $templatelist = '';
 require_once "./global.php";
-require_once "./inc/functions_warnings.php";
+require_once MYBB_ROOT."/inc/functions_warnings.php";
+require_once MYBB_ROOT."inc/functions_modcp.php";
 
 require_once MYBB_ROOT."inc/class_parser.php";
 $parser = new postParser;
@@ -74,7 +75,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		error($lang->error_cant_warn_group);
 	}
 
-	if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+	if(!modcp_can_manage_user($user['uid']))
 	{
 		error($lang->error_cant_warn_user);
 	}
@@ -416,7 +417,7 @@ if($mybb->input['action'] == "warn")
 		error($lang->error_cant_warn_group);
 	}
 
-	if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+	if(!modcp_can_manage_user($user['uid']))
 	{
 		error($lang->error_cant_warn_user);
 	}

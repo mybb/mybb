@@ -212,13 +212,13 @@ class postParser
 		$this->mycode_cache = array();
 
 		$standard_mycode['b']['regex'] = "#\[b\](.*?)\[/b\]#si";
-        $standard_mycode['b']['replacement'] = "<div style=\"font-weight: bold; display: inline;\">$1</div>";
+        $standard_mycode['b']['replacement'] = "<span style=\"font-weight: bold;\">$1</span>";
 
         $standard_mycode['u']['regex'] = "#\[u\](.*?)\[/u\]#si";
-        $standard_mycode['u']['replacement'] = "<div style=\"text-decoration: underline; display: inline;\">$1</div>";
+        $standard_mycode['u']['replacement'] = "<span style=\"text-decoration: underline;\">$1</span>";
 
         $standard_mycode['i']['regex'] = "#\[i\](.*?)\[/i\]#si";
-        $standard_mycode['i']['replacement'] = "<div style=\"font-style: italic; display: inline;\">$1</div>";
+        $standard_mycode['i']['replacement'] = "<span style=\"font-style: italic;\">$1</span>";
 
 		$standard_mycode['s']['regex'] = "#\[s\](.*?)\[/s\]#si";
 		$standard_mycode['s']['replacement'] = "<del>$1</del>";
@@ -254,13 +254,13 @@ class postParser
 		$standard_mycode['color']['replacement'] = "<span style=\"color: $1;\">$2</span>";
 
 		$standard_mycode['size']['regex'] = "#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si";
-        $standard_mycode['size']['replacement'] = "<div style=\"font-size: $1; display: inline;\">$2</div>";
+        $standard_mycode['size']['replacement'] = "<span style=\"font-size: $1;\">$2</span>";
 
         $standard_mycode['size_int']['regex'] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#esi";
         $standard_mycode['size_int']['replacement'] = "\$this->mycode_handle_size(\"$1\", \"$2\")";
 
         $standard_mycode['font']['regex'] = "#\[font=([a-z ]+?)\](.+?)\[/font\]#si";
-        $standard_mycode['font']['replacement'] = "<div style=\"font-family: $1; display: inline;\">$2</div>";
+        $standard_mycode['font']['replacement'] = "<span style=\"font-family: $1;\">$2</span>";
 
         $standard_mycode['align']['regex'] = "#\[align=(left|center|right|justify)\](.*?)\[/align\]#si";
         $standard_mycode['align']['replacement'] = "<div style=\"text-align: $1;\">$2</div>";
@@ -512,7 +512,7 @@ class postParser
 			$size = 50;
 		}
 
-		$text = "<div style=\"font-size: {$size}pt; display: inline;\">".str_replace("\'", "'", $text)."</div>";
+		$text = "<span style=\"font-size: {$size}pt;\">".str_replace("\'", "'", $text)."</span>";
 
 		return $text;
 	}

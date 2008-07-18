@@ -1605,7 +1605,7 @@ if($mybb->input['action'] == "editprofile")
 
 	$requiredfields = '';
 	$customfields = '';
-	$query = $db->simple_select("profilefields", "*", "editable=1", array('order_by' => 'disporder'));
+	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
@@ -2456,7 +2456,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
-
+		
 		$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;bid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
 	}
 	// Creating a new ban
@@ -2469,11 +2469,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		{
 			$errors[] = $lang->invalid_username;
 		}
-		// Have permissions to ban this user?
-		if(!modcp_can_manage_user($user['uid']))
-		{
-			$errors[] = $lang->error_cannotbanuser;
-		}
 	}
 
 	if($user['uid'] == $mybb->user['uid'])
@@ -2481,9 +2476,10 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		$errors[] = $lang->error_cannotbanself;
 	}
 
-	if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
+	// Have permissions to ban this user?
+	if(!modcp_can_manage_user($user['uid']))
 	{
-		$errors[] = $lang->error_no_perm_to_ban;
+		$errors[] = $lang->error_cannotbanuser;
 	}
 
 	// Check for an incoming reason

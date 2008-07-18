@@ -92,11 +92,17 @@ if(substr($settings['bburl'], -1) == "/")
 }
 
 $mybb->settings = &$settings;
+$mybb->parse_cookies();
 
 require_once MYBB_ROOT."inc/class_datacache.php";
 $cache = new datacache;
 
 $mybb->cache = &$cache;
+
+require_once MYBB_ROOT."inc/class_session.php";
+$session = new session;
+$session->init();
+$mybb->session = &$session;
 
 // Include the necessary contants for installation
 $grouppermignore = array("gid", "type", "title", "description", "namestyle", "usertitle", "stars", "starimage", "image");
@@ -116,7 +122,82 @@ if(file_exists("lock"))
 }
 else
 {
+	// This allows users to login if the portal is stored offsite or in a different directory
+	if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
+	{	
+		require_once MYBB_ROOT."inc/functions_user.php";
+		
+		// Checks to make sure the user can login; they haven't had too many tries at logging in.
+		// Is a fatal call if user has had too many tries
+		$logins = login_attempt_check();
+		$login_text = '';
+	
+		if(!username_exists($mybb->input['username']))
+		{
+			error($lang->error_invalidusername);
+		}
+		$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+		if(!$user['uid'])
+		{
+			error($lang->error_invalidpassword);
+		}
+		
+		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
+		$newsession = array(
+			"uid" => $user['uid'],
+			"loginattempts" => 1,
+		);
+		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
+	
+		// Temporarily set the cookie remember option for the login cookies
+		$mybb->user['remember'] = $user['remember'];
+	
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
+		my_setcookie("sid", $session->sid, -1, true);
+	
+		header("Location: ./upgrade.php");
+	}
+
 	$output->steps = array($lang->upgrade);
+	
+	if($mybb->user['uid'] == 0)
+	{
+		$output->print_header("Please Login", "errormsg", 0, 1);
+		
+		$output->print_contents('<p>Please enter your username and password to begin the upgrade process. You must be a valid forum administrator to perform the upgrade.</p>
+<form action="upgrade.php" method="post">
+	<div class="border_wrapper">
+		<table class="general" cellspacing="0">
+		<thead>
+			<tr>
+				<th colspan="2" class="first last">Login</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="first">
+				<td class="first">Username:</td>
+				<td class="last alt_col"><input type="text" class="textbox" name="username" size="25" maxlength="'.$mybb->settings['maxnamelength'].'" style="width: 200px;" /></td>
+			</tr>
+			<tr class="alt_row last">
+				<td class="first">Password:<br /><small>Please note that passwords are case sensitive.</small></td>
+				<td class="last alt_col"><input type="password" class="textbox" name="password" size="25" style="width: 200px;" /></td>
+			</tr>
+		</tbody>
+		</table>
+	</div>
+	<div id="next_button">
+		<input type="submit" class="submit_button" name="submit" value="Login" />
+		<input type="hidden" name="action" value="do_login" />
+	</div>
+</form>');
+		$output->print_footer("");
+		
+		exit;
+	}
+	else if($mybb->usergroup['cancp'] != 1)
+	{
+		$output->print_error("You do not have permissions to run this process.");
+	}
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
 	{
@@ -180,8 +261,6 @@ If you violate any of the above terms, your beta access will be revoked and we\'
 <li><span style="color: red;">This is a BETA build. You should NOT use it on a live or production environment.</span></li>
 <li>We\'ll be updating it every so often to contain new bug fixes.</li>
 <li>You may set up a publicly accessible copy of MyBB 1.4 so that your users can also help us test. You should report any feedback they have directly to the MyBB Beta Forums.</li>
-
-<li>The control panel is <strong>100% complete</strong>.<br />
 </li></ul>
 <br />
 <strong><span style="color: red;">A final warning:</span></strong> Do not attempt to upgrade your live forums to this release!<br />
@@ -251,6 +330,7 @@ Thank you for your participation and we look forward to hearing some feedback re
 	// Fetch current script we're in
 	
 	if(function_exists($runfunction))
+
 	{
 		$runfunction();
 	}
