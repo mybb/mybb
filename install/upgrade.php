@@ -122,7 +122,6 @@ if(file_exists("lock"))
 }
 else
 {
-	// This allows users to login if the portal is stored offsite or in a different directory
 	if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{	
 		require_once MYBB_ROOT."inc/functions_user.php";
