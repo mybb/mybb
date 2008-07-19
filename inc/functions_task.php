@@ -17,7 +17,7 @@
  */
 function run_task($tid=0)
 {
-	global $db, $mybb, $cache, $plugins, $task;
+	global $db, $mybb, $cache, $plugins, $task, $lang;
 
 	// Run a specific task
 	if($tid > 0)
@@ -65,6 +65,10 @@ function run_task($tid=0)
 	// Run the task
 	else
 	{
+		// Update the nextrun time now, so if the task causes a fatal error, it doesn't get stuck first in the queue
+		$nextrun = fetch_next_run($task);
+		$db->update_query("tasks", array("nextrun" => $nextrun), "tid='{$task['tid']}'");
+		
 		include_once MYBB_ROOT."inc/tasks/{$task['file']}.php";
 		$function = "task_{$task['file']}";
 		if(function_exists($function))
@@ -73,11 +77,7 @@ function run_task($tid=0)
 		}
 	}
 
-	// Fetch the next run time for this task
-	$nextrun = fetch_next_run($task);
-
 	$updated_task = array(
-		"nextrun" => $nextrun,
 		"lastrun" => TIME_NOW,
 		"locked" => 0
 	);

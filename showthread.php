@@ -286,7 +286,7 @@ if($mybb->input['action'] == "thread")
 		$options = array(
 			"limit" => 1
 		);
-		$query = $db->simple_select("polls", "*", "pid='".$thread['poll']."'");
+		$query = $db->simple_select("polls", "*", "pid='".$thread['poll']."'", $options);
 		$poll = $db->fetch_array($query);
 		$poll['timeout'] = $poll['timeout']*60*60*24;
 		$expiretime = $poll['dateline'] + $poll['timeout'];
