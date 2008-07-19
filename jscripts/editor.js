@@ -684,8 +684,9 @@ messageEditor.prototype = {
 		dupe.moveToElementText($(this.textarea));
 		dupe.setEndPoint('EndToEnd', range);
 		caret_text = dupe.text.replace(/\r\n/g, 1);
-		this.lastCaretS = caret_text.length - range.text.length;
-		this.lastCaretE = this.lastCaretS + range.text.length;
+		range_text_length = range.text.replace(/\r\n/g, 1).length
+		this.lastCaretS = caret_text.length - range_text_length;
+		this.lastCaretE = this.lastCaretS + range_text_length;
 	},
 
 	restartEditorSelection: function()
@@ -1252,16 +1253,11 @@ messageEditor.prototype = {
 				textarea.value += open_tag;
 			}
 		}
-		else if(textarea.selectionEnd)
+		else if(textarea.selectionEnd || textarea.selectionEnd == 0)
 		{
 			var select_start = textarea.selectionStart;
 			var select_end = textarea.selectionEnd;
 			var scroll_top = textarea.scrollTop;
-
-			if(select_end <= 2)
-			{
-				select_end = textarea.textLength;
-			}
 
 			var start = textarea.value.substring(0, select_start);
 			var middle = textarea.value.substring(select_start, select_end);
