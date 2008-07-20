@@ -1253,7 +1253,7 @@ messageEditor.prototype = {
 				textarea.value += open_tag;
 			}
 		}
-		else if(textarea.selectionEnd || textarea.selectionEnd == 0)
+		else if(typeof(textarea.selectionEnd) != 'undefined')
 		{
 			var select_start = textarea.selectionStart;
 			var select_end = textarea.selectionEnd;
