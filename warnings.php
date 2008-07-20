@@ -276,15 +276,56 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						{
 							$warning_title = $warning_type['title'];
 						}
+						
+						// Never lift the ban?
+						if($action['length'] == 0)
+						{
+							$bantime = '---';
+						}
+						else
+						{
+							$bantimes = fetch_ban_times();
+							foreach($bantimes as $date => $string)
+							{
+								if($date == '---')
+								{
+									continue;
+								}
+								
+								$time = 0;
+								list($day, $month, $year) = explode('-', $date);
+								if($day > 0)
+								{
+									$time += 60*60*24*$day;
+								}
+								
+								if($month > 0)
+								{
+									$time += 60*60*24*30*$month;
+								}
+								
+								if($year > 0)
+								{
+									$time += 60*60*24*265*$year;
+								}
+								
+								if($time == $action['length'])
+								{
+									$bantime = $date;
+									break;
+								}
+							}
+						}
+						
 						$new_ban = array(
-							"uid" => $user['uid'],
-							"gid" => $action['usergroup'],
-							"oldgroup" => $user['usergroup'],
-							"oldadditionalgroups" => $user['additionalgroups'],
-							"olddisplaygroup" => $user['displaygroup'],
+							"uid" => intval($user['uid']),
+							"gid" => $db->escape_string($action['usergroup']),
+							"oldgroup" => $db->escape_string($user['usergroup']),
+							"oldadditionalgroups" => $db->escape_string($user['additionalgroups']),
+							"olddisplaygroup" => $db->escape_string($user['displaygroup']),
 							"admin" => $mybb->user['uid'],
 							"dateline" => TIME_NOW,
-							"bantime" => "",
+							"bantime" => $db->escape_string($bantime),
 							"lifted" => $expiration,
 							"reason" => $db->escape_string($warning_title)
 						);
@@ -293,9 +334,9 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						{
 							$db->delete_query("banned", "uid='{$user['uid']}' AND gid='{$action['usergroup']}'");
 							// Override new ban details with old group info
-							$new_ban['oldgroup'] = $existing_ban['oldgroup'];
-							$new_ban['oldadditionalgroups'] = $existing_ban['oldadditionalgroups'];
-							$new_ban['olddisplaygroup'] = $existing_ban['olddisplaygroup'];
+							$new_ban['oldgroup'] = $db->escape_string($existing_ban['oldgroup']);
+							$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
+							$new_ban['olddisplaygroup'] = $db->escape_string($existing_ban['olddisplaygroup']);
 						}
 						
 						$db->insert_query("banned", $new_ban);

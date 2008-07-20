@@ -538,7 +538,7 @@ class postParser
 		{
 			$replace = array(
 				"\$this->mycode_parse_post_quotes('$2','$1')",
-				"</p>\n<blockquote><cite>$lang->quote</cite>$1</blockquote><p>\n"
+				"<blockquote><cite>$lang->quote</cite>$1</blockquote>\n"
 			);
 		}
 		else
@@ -642,7 +642,7 @@ class postParser
 				$span = "<span>{$date}</span>";
 			}
 			
-			return "<p>\n<blockquote><cite>{$span}".htmlspecialchars_uni($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote></p>\n";
+			return "<blockquote><cite>{$span}".htmlspecialchars_uni($username)." $lang->wrote{$linkback}</cite>{$message}</blockquote>\n";
 		}
 	}
 

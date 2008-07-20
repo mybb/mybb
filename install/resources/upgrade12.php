@@ -860,7 +860,7 @@ function upgrade12_dbchanges4()
 	$db->insert_query("spiders", array('name' => 'Altavista', 'useragent' => 'scooter'));
 	$db->insert_query("spiders", array('name' => 'Alexa', 'useragent' => 'ia_archiver'));
 	$db->insert_query("spiders", array('name' => 'MSN Search', 'useragent' => 'msnbot'));
-	$db->insert_query("spiders", array('name' => 'Yahoo!', 'useragent' => 'yahoo slurp'));
+	$db->insert_query("spiders", array('name' => 'Yahoo!', 'useragent' => 'yahoo! slurp'));
 
 	// DST correction changes
 	$db->update_query("users", array('dst' => 1), "dst=1");

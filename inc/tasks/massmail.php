@@ -31,7 +31,7 @@ function task_massmail($task)
 			$mass_email['perpage'] = 50;
 		}
 		
-		if(strpos($mass_email['htmlmessage'] === false))
+		if(strpos($mass_email['htmlmessage'], '<br />') === false && strpos($mass_email['htmlmessage'], '<br>') === false)
 		{
 			$mass_email['htmlmessage'] = nl2br($mass_email['htmlmessage']);
 		}

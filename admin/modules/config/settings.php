@@ -797,16 +797,16 @@ if($mybb->input['action'] == "manage")
 		{
 			foreach($settings_cache[$group['gid']] as $setting)
 			{
-				$setting_lang_var = "setting_group_{$group['name']}";
+				$setting_lang_var = "setting_{$setting['name']}";
 				if($lang->$setting_lang_var)
 				{
-					$group_title = htmlspecialchars_uni($lang->$setting_lang_var);
+					$setting_title = htmlspecialchars_uni($lang->$setting_lang_var);
 				}
 				else
 				{
-					$group_title = htmlspecialchars_uni($setting['title']);
+					$setting_title = htmlspecialchars_uni($setting['title']);
 				}
-				$table->construct_cell($group_title, array('style' => 'padding-left: 40px;'));
+				$table->construct_cell($setting_title, array('style' => 'padding-left: 40px;'));
 				$table->construct_cell($form->generate_text_box("setting_disporder[{$setting['sid']}]", $setting['disporder'], array('style' => 'width: 80%', 'class' => 'align_center')));
 				// Only show options if not a default setting group or is a custom setting
 				if($group['isdefault'] != 1 || $setting['isdefault'] != 1)

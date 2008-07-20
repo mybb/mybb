@@ -125,20 +125,20 @@ else
 	if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{	
 		require_once MYBB_ROOT."inc/functions_user.php";
-		
-		// Checks to make sure the user can login; they haven't had too many tries at logging in.
-		// Is a fatal call if user has had too many tries
-		$logins = login_attempt_check();
-		$login_text = '';
 	
 		if(!username_exists($mybb->input['username']))
 		{
 			error($lang->error_invalidusername);
 		}
-		$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
 			error($lang->error_invalidpassword);
+		}
+		else
+		{
+			$user = validate_password_from_uid($user['uid'], $mybb->input['password'], $user);
 		}
 		
 		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");

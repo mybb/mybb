@@ -6634,9 +6634,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <strong>{$pm['subject']}</strong>
 </td>
 </tr>
-</table>
 {$action_time}
 {$message}
+</table>
 </table>
 {$footer}
 </body>

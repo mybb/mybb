@@ -34,10 +34,6 @@ if($mybb->user['uid'] == '/' || $mybb->user['uid'] == 0 || $mybb->usergroup['can
 {
 	error_no_permission();
 }
-if($mybb->user['receivepms'] == 0)
-{
-	error($lang->error_pmsturnedoff);
-}
 
 if(!$mybb->user['pmfolders'])
 {

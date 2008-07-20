@@ -394,8 +394,8 @@ if($mybb->input['action'] == "edit_template")
 			$tid = intval($mybb->input['tid']);
 			if($mybb->input['sid'] > 0)
 			{
-				$query = $db->simple_select("templates", "COUNT(tid) as count", "title='".$db->escape_string($mybb->input['title'])."' AND (sid = '-2' OR sid = '{$sid}')");
-				if($db->fetch_field($query, "count") == 1)
+				$query = $db->simple_select("templates", "sid", "title='".$db->escape_string($mybb->input['title'])."' AND (sid = '-2' OR sid = '{$sid}')", array('order_by' => 'sid', 'order_dir' => 'desc', 'limit' => 1));
+				if($db->fetch_field($query, "sid") == -2)
 				{
 					$tid = $db->insert_query("templates", $template_array);
 				}

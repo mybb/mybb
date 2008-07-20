@@ -185,7 +185,7 @@ class session
 		$mybb->user['pms_total'] = $mybb->user['totalpms'];
 		$mybb->user['pms_unread'] = $mybb->user['unreadpms'];
 
-		if($mybb->user['lastip'] != $this->ipaddress)
+		if($mybb->user['lastip'] != $this->ipaddress && array_key_exists('lastip', $mybb->user))
 		{
 			$lastip_add .= ", lastip='".$db->escape_string($this->ipaddress)."', longlastip='".intval(ip2long($this->ipaddress))."'";
 		}
