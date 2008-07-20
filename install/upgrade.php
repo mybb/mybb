@@ -128,13 +128,13 @@ else
 	
 		if(!username_exists($mybb->input['username']))
 		{
-			error($lang->error_invalidusername);
+			$output->print_error($lang->error_invalidusername);
 		}
 		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			error($lang->error_invalidpassword);
+			$output->print_error($lang->error_invalidpassword);
 		}
 		else
 		{
@@ -193,7 +193,7 @@ else
 		
 		exit;
 	}
-	else if($mybb->usergroup['cancp'] != 1)
+	else if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['cancp'] != 'yes')
 	{
 		$output->print_error("You do not have permissions to run this process.");
 	}
