@@ -257,6 +257,7 @@ class session
 			$mybb->user['usergroup'] = $mybb->user['banoldgroup'];
 			$mybb->user['displaygroup'] = $mybb->user['banolddisplaygroup'];
 			$mybb->user['additionalgroups'] = $mybb->user['banoldadditionalgroups'];
+			$cache->update_banned();
 
 			$mybbgroups = $mybb->user['usergroup'];
 			if($mybb->user['additionalgroups'])

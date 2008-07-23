@@ -166,6 +166,12 @@
 	overflow: hidden;
 }
 
+/* IE 6 */
+* html .messageEditor .toolbar_dropdown .editor_dropdown_label {
+	height: 13px;
+	padding-bottom: 0px;
+}
+
 .messageEditor .toolbar_dropdown_image .editor_dropdown_label {
 	margin: 2px 0;
 	width: 23px;
