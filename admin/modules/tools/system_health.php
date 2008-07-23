@@ -484,7 +484,7 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<strong>{$lang->total_cache_size}</strong>", array('width' => '25%'));
 	$table->construct_cell(get_friendly_size($cache->size_of()), array('width' => '25%'));
 	$table->construct_cell("<strong>{$lang->estimated_attachment_bandwidth_usage}</strong>", array('width' => '25%'));
-	$table->construct_cell(get_friendly_size(round($attachs['spaceused']*$attachs['downloadsused'])), array('width' => '25%'));
+	$table->construct_cell(get_friendly_size(round($attachs['spaceused']/$attachs['numattachs']*$attachs['downloadsused'])), array('width' => '25%'));
 	$table->construct_row();
 	
 	if($attachs['spaceused'] > 0)
