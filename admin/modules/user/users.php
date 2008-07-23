@@ -1248,6 +1248,12 @@ if($mybb->input['action'] == "delete")
 		flash_message($lang->error_invalid_user, 'error');
 		admin_redirect("index.php?module=user/users");
 	}
+	
+	if(is_super_admin($mybb->input['uid']) && $mybb->user['uid'] != $mybb->input['uid'] && !is_super_admin($mybb->user['uid']))
+	{
+		flash_message($lang->error_no_perms_super_admin, 'error');
+		admin_redirect("index.php?module=user/users");
+	}
 
 	// User clicked no
 	if($mybb->input['no'])
