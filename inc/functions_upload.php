@@ -24,12 +24,12 @@ function remove_attachment($pid, $posthash, $aid)
 	$posthash = $db->escape_string($posthash);
 	if($posthash != "")
 	{
-		$query = $db->simple_select("attachments", "aid, attachname, thumbnail", "aid='{$aid}' AND posthash='{$posthash}'");
+		$query = $db->simple_select("attachments", "aid, attachname, thumbnail, visible", "aid='{$aid}' AND posthash='{$posthash}'");
 		$attachment = $db->fetch_array($query);
 	}
 	else
 	{
-		$query = $db->simple_select("attachments", "aid, attachname, thumbnail", "aid='{$aid}' AND pid='{$pid}'");
+		$query = $db->simple_select("attachments", "aid, attachname, thumbnail, visible", "aid='{$aid}' AND pid='{$pid}'");
 		$attachment = $db->fetch_array($query);
 	}
 	

@@ -828,12 +828,6 @@ class PostDataHandler extends DataHandler
 			$this->pid = $db->insert_query("posts", $this->post_insert_data);
 		}
 		
-		if($visible == 1)
-		{
-			$query = $db->simple_select("attachments", "COUNT(aid) AS attachmentcount", "pid='0' AND visible='1' AND posthash='{$post['posthash']}'");
-			$attachmentcount = $db->fetch_field($query, "attachmentcount");
-			$thread_update['attachmentcount'] = "+{$attachmentcount}";
-		}
 
 		// Assign any uploaded attachments with the specific posthash to the newly created post.
 		if($post['posthash'])
