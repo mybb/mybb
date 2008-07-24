@@ -497,6 +497,9 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+
 	// Are we going to delete this event or just edit it?
 	if($mybb->input['delete'] == 1)
 	{
@@ -505,9 +508,6 @@ if($mybb->input['action'] == "do_editevent" && $mybb->request_method == "post")
 		// Redirect back to the main calendar view.
 		redirect("calendar.php", $lang->redirect_eventdeleted);
 	}
-
-	// Verify incoming POST request
-	verify_post_check($mybb->input['my_post_key']);
 
 	$plugins->run_hooks("calendar_do_editevent_start");
 
@@ -885,6 +885,10 @@ if($mybb->input['action'] == "editevent")
 		{
 			$type_single = "checked=\"checked\"";
 			$type = "single";
+			// set some defaults if the user wants to make a ranged event
+			$end_day = $start_day;
+			$end_month = $start_month;
+			$end_year = $start_year;
 		}
 	}
 
