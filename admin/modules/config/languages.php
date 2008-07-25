@@ -298,7 +298,7 @@ if($mybb->input['action'] == "edit")
 		if(!is_writable($editfile))
 		{
 			$no_write = 1;
-			$page->output_alert($lang->note_cannot_write);
+			$page->output_alert($lang->alert_note_cannot_write);
 		}
 
 		$form_container = new FormContainer($file);

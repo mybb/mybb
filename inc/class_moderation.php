@@ -1422,7 +1422,7 @@ class Moderation
 		array_walk($pids, 'intval');
 
 		$pid_list = implode(',', $pids);
-		$pids = array();
+		$pids = $threads_to_update = array();
 
 		// Make visible
 		$approve = array(
@@ -1438,6 +1438,17 @@ class Moderation
 		");
 		while($post = $db->fetch_array($query))
 		{
+			// Is this the first post in a thread? If so, we're unapproving the whole thread.
+			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 0)
+			{
+				$threads_to_update[] = $post['tid'];
+			}
+			
+			if(in_array($post['tid'], $threads_to_update))
+			{
+				continue;
+			}
+			
 			// If post counts enabled in this forum and the post hasn't already been approved, add 1
 			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1)
 			{
@@ -1462,17 +1473,17 @@ class Moderation
 			}
 
 			++$forum_counters[$post['fid']]['num_posts'];
-
-			// If the first post here matches and thread is invisible, we approve the thread too
-			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 0)
-			{
-				$thread_counters[$post['tid']]['visible'] = 1;
-				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies'];
-				$forum_counters[$post['fid']]['num_threads']++;
-			}
+		}
+		
+		if(!empty($threads_to_update))
+		{
+			$this->approve_threads($threads_to_update);
 		}
 
-		if(!count($pids)) return false;
+		if(!count($pids))
+		{
+			return false;
+		}
 
 		$where = "pid IN (".implode(',', $pids).")";
 		$db->update_query("posts", $approve, $where);
@@ -1517,7 +1528,7 @@ class Moderation
 		array_walk($pids, 'intval');
 
 		$pid_list = implode(',', $pids);
-		$pids = array();
+		$pids = $threads_to_update = array();
 
 		// Make invisible
 		$approve = array(
@@ -1533,9 +1544,19 @@ class Moderation
 		");
 		while($post = $db->fetch_array($query))
 		{
+			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 1)
+			{
+				$threads_to_update[] = $post['tid'];
+			}
+			
+			if(in_array($post['tid'], $threads_to_update))
+			{
+				continue;
+			}
+			
 			// If post counts enabled in this forum and the post hasn't already been unapproved, subtract 1
 			if($post['usepostcounts'] != 0 && $post['threadvisible'] == 1)
-			{
+			{				
 				$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='".$post['uid']."'");
 			}
 
@@ -1559,18 +1580,17 @@ class Moderation
 			{
 				++$forum_counters[$post['fid']]['num_posts'];
 			}
-
-			// If the first post here matches and thread is visible, we unapprove the thread too
-			if($post['threadfirstpost'] == $post['pid'] && $post['threadvisible'] == 1)
-			{
-				$thread_counters[$post['tid']]['visible'] = 0;
-				$thread_counters[$post['tid']]['unapprovedposts'] -= 1;
-				$forum_counters[$post['fid']]['num_posts'] += $post['threadreplies'];
-				$forum_counters[$post['fid']]['num_threads']++;
-			}
 		}
-
-		if(!count($pids)) return false;
+		
+		if(!empty($threads_to_update))
+		{
+			$this->unapprove_threads($threads_to_update);
+		}
+		
+		if(!count($pids))
+		{
+			return false;
+		}
 
 		$where = "pid IN (".implode(',', $pids).")";
 		$db->update_query("posts", $approve, $where);

@@ -115,7 +115,7 @@ function upgrade12_dbchanges()
 				flush();
 				$form_fields['start'] = $perpage+$start;
 
-				$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $primary_key, 'limit_start' => $start, 'limit' => $remaining));
+				$query = $db->simple_select($table, $columns_sql, "", array('order_by' => $pimary_key, 'limit_start' => $start, 'limit' => $remaining));
 				while($row = $db->fetch_array($query))
 				{
 					$updated_row = array();
@@ -190,7 +190,7 @@ function upgrade12_dbchanges()
 		$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=1 WHERE value='yes' OR value='on'");
 		$query = $db->write_query("UPDATE ".TABLE_PREFIX."settings SET value=0 WHERE value='no' OR value='off'");
 		echo "<p>Done</p>";
-		echo "<p><strong>The integer conversion process is now complete.</strong></p>";
+		echo "<p><strong>The integrer conversion process is now complete.</strong></p>";
 		echo "<p>Click next to continue with the upgrade process.</p>";
 		global $footer_extra;
 		$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
@@ -731,6 +731,9 @@ function upgrade12_dbchanges2()
 	}
 	
 	$db->update_query("settings", array('value' => 'classic'), "name='postlayout' AND value != 'horizontal'");
+	
+	$db->update_query("settings", array('value' => 'php
+<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>'), "name='searchtype'", 1);
 	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";

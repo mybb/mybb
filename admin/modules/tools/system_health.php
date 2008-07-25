@@ -481,20 +481,23 @@ if(!$mybb->input['action'])
 	$table->construct_cell(get_friendly_size($attachs['spaceused']), array('width' => '200'));
 	$table->construct_row();
 	
-	$table->construct_cell("<strong>{$lang->total_cache_size}</strong>", array('width' => '25%'));
-	$table->construct_cell(get_friendly_size($cache->size_of()), array('width' => '25%'));
-	$table->construct_cell("<strong>{$lang->estimated_attachment_bandwidth_usage}</strong>", array('width' => '25%'));
-	$table->construct_cell(get_friendly_size(round($attachs['spaceused']/$attachs['numattachs']*$attachs['downloadsused'])), array('width' => '25%'));
-	$table->construct_row();
-	
 	if($attachs['spaceused'] > 0)
 	{
 		$attach_average_size = round($attachs['spaceused']/$attachs['numattachs']);
+		$bandwidth_average_usage = round($attachs['spaceused']/$attachs['numattachs']*$attachs['downloadsused']);
 	}
 	else
 	{
 		$attach_average_size = 0;
+		$bandwidth_average_usage = 0;
 	}
+	
+	$table->construct_cell("<strong>{$lang->total_cache_size}</strong>", array('width' => '25%'));
+	$table->construct_cell(get_friendly_size($cache->size_of()), array('width' => '25%'));
+	$table->construct_cell("<strong>{$lang->estimated_attachment_bandwidth_usage}</strong>", array('width' => '25%'));
+	$table->construct_cell(get_friendly_size($bandwidth_average_usage), array('width' => '25%'));
+	$table->construct_row();
+	
 	
 	$table->construct_cell("<strong>{$lang->max_upload_post_size}</strong>", array('width' => '200'));
 	$table->construct_cell(@ini_get('upload_max_filesize').' / '.@ini_get('post_max_size'), array('width' => '200'));
