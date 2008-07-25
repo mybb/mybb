@@ -557,6 +557,27 @@ function upgradedone()
 	{
 		$lock_note = "<p><b><span style=\"color: red;\">".$lang->upgrade_removedir."</span></b></p>";
 	}
+	
+	// Rebuild inc/settings.php at the end of the upgrade
+	if(function_exists('rebuild_settings'))
+	{
+		rebuild_settings();
+	}
+	else
+	{
+		$options = array(
+			"order_by" => "title",
+			"order_dir" => "ASC"
+		);
+		
+		$query = $db->simple_select("settings", "value, name", "", $options);
+		while($setting = $db->fetch_array($query))
+		{
+			$setting['value'] = str_replace("\"", "\\\"", $setting['value']);
+			$settings[$setting['name']] = $setting['value'];
+		}
+	}
+	
 	$output->print_contents($lang->sprintf($lang->upgrade_congrats, $mybb->version, $lock_note));
 	$output->print_footer();
 }
