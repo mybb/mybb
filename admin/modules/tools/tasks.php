@@ -612,7 +612,7 @@ if($mybb->input['action'] == "logs")
 	$query = $db->simple_select("tasklog", "COUNT(*) AS log_count");
 	$log_count = $db->fetch_field($query, "log_count");
 
-	$per_page = 20;
+	$per_page = 50;
 
 	if($mybb->input['page'] > 0)
 	{

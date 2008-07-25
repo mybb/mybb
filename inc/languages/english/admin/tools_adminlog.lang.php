@@ -253,5 +253,7 @@ $l['admin_log_user_users_edit'] = "Edited user #{1} ({2})";
 $l['admin_log_user_users_delete'] = "Deleted user #{1} ({2})";
 $l['admin_log_user_users_ipaddresses'] = "Viewed IP addresses associated with user #{1} ({2})";
 $l['admin_log_user_users_merge'] = "Merged user #{1} ({2}) into user #{3} ({4})";
+
+$l['admin_log_user_mass_mail_delete'] = "Deleted mass mail #{1} ({2})"; 
  
 ?>

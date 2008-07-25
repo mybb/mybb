@@ -237,7 +237,7 @@ if(!$mybb->input['action'])
 	
 	if($mybb->request_method == "post")
 	{
-		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup, username", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 
 		if(!$user['uid'])

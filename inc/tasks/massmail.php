@@ -103,12 +103,12 @@ function task_massmail($task)
 		
 		$update_array = array();
 		
-		if($sentcount >= $mass_email['totalcount'])
+		$update_array['sentcount'] = $mass_email['sentcount'] + $sentcount;
+		
+		if($update_array['sentcount'] >= $mass_email['totalcount'])
 		{
 			$update_array['status'] = 3;
 		}
-		
-		$update_array['sentcount'] = $mass_email['sentcount'] + $sentcount;
 		
 		$db->update_query("massemails", $update_array, "mid='{$mass_email['mid']}'", 1);
 	}

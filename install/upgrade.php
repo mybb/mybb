@@ -246,28 +246,7 @@ else
 		unset($upgradescripts);
 		unset($upgradescript);
 		
-		// TO BE REMOVED BEFORE RELEASE
-		$beta_warning = '<h3>Beta Notice</h3>
-<p><strong>UNDER NO CIRCUMSTANCES:</strong><br />
-<ul>
-<li>May you distribute any of the MyBB 1.4 (Beta) files either as a package or individually without direct permission from the MyBB Group.</li>
-<li>Are we to be held liable for any damage to your current forums if you\'re silly enough to try and run them on the 1.4 (Beta) at this stage. We also cannot be held liable for any loss of sleep you may incur as a result of beta testing. ;)<br />
-</li></ul>
-<br />
-If you violate any of the above terms, your beta access will be revoked and we\'ll be sending takedown notices for any downloadable links.<br />
-<strong>NOTES:</strong><br />
-<ul>
-<li><span style="color: red;">This is a BETA build. You should NOT use it on a live or production environment.</span></li>
-<li>We\'ll be updating it every so often to contain new bug fixes.</li>
-<li>You may set up a publicly accessible copy of MyBB 1.4 so that your users can also help us test. You should report any feedback they have directly to the MyBB Beta Forums.</li>
-</li></ul>
-<br />
-<strong><span style="color: red;">A final warning:</span></strong> Do not attempt to upgrade your live forums to this release!<br />
-<br />
-Thank you for your participation and we look forward to hearing some feedback regarding MyBB 1.4.
-</p>';
-
-		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version).$beta_warning."<p><select name=\"from\">$vers</select>");
+		$output->print_contents($lang->sprintf($lang->upgrade_welcome, $mybb->version)."<p><select name=\"from\">$vers</select>");
 		$output->print_footer("doupgrade");
 	}
 	elseif($mybb->input['action'] == "doupgrade")

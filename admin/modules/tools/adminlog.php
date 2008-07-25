@@ -302,7 +302,7 @@ if(!$mybb->input['action'])
  */
 function get_admin_log_action($logitem)
 {
-	global $lang, $plugins;
+	global $lang, $plugins, $mybb;
 	
 	list($module, $action) = explode('/', $logitem['module']);
 	$lang_string = 'admin_log_'.$module.'_'.$action.'_'.$logitem['action'];
@@ -472,7 +472,7 @@ function get_admin_log_action($logitem)
 			{
 				$logitem['data'][2] = my_date($mybb->settings['dateformat'], $logitem['data'][2]);
 				$lang_string = 'admin_log_user_banning_add_temporary';
-			}
+			}			
 	}
 	
 	$plugin_array = array('logitem' => &$logitem, 'lang_string' => &$lang_string);

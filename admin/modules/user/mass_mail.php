@@ -1289,7 +1289,7 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_user_mass_email_delete_commit");
 
 		// Log admin action
-		log_admin_action($mass_email['subject']);
+		log_admin_action($mass_email['mid'], $mass_email['subject']);
 
 		flash_message($lang->success_mass_mail_deleted, 'success');
 		admin_redirect("index.php?module=user/mass_mail");

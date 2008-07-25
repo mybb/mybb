@@ -13,7 +13,6 @@
  * Upgrade Script: 1.2.12, 1.2.13 or 1.2.14
  */
 
-/** NEEDS TO BE CHANGED PENDING FINAL RELEASE **/
 $upgrade_detail = array(
 	"revert_all_templates" => 0,
 	"revert_all_themes" => 0,
