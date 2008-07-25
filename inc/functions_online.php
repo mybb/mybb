@@ -152,7 +152,7 @@ function fetch_wol_activity($location)
 			$user_activity['activity'] = "memberlist";
 			break;
 		case "misc":
-			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter");
+			$accepted_parameters = array("markread", "help", "buddypopup", "smilies", "syndication", "imcenter", "dstswitch");
 			if($parameters['action'] == "whoposted")
 			{
 				if(is_numeric($parameters['tid']))
@@ -409,9 +409,10 @@ function fetch_wol_activity($location)
 			break;
 		default:
 			$user_activity['activity'] = "unknown";
-			$user_activity['location'] = $location;
 			break;
 	}
+	
+	$user_activity['location'] = $location;
 	
 	$plugins->run_hooks_by_ref("fetch_wol_activity_end", $user_activity);
 	
@@ -510,7 +511,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 	}
 
 	// Now we've got everything we need we can put a name to the location
-	switch($user_activity['activity'])
+	switch($user_activity['activity']['activity'])
 	{
 		// announcement.php functions
 		case "announcements":
@@ -635,6 +636,9 @@ function build_friendly_wol_location($user_activity, $return=false)
 			$location_name = $lang->viewing_memberlist;
 			break;
 		// misc.php functions
+		case "misc_dstswitch":
+			$location_name = $lang->changing_dst;
+			break;
 		case "misc_whoposted":
 			if($threads[$user_activity['tid']])
 			{
@@ -922,7 +926,7 @@ function build_wol_row($user)
 	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
 	
 	// Fetch the location name for this users activity
-	$location = build_friendly_wol_location($user['activity']);
+	$location = build_friendly_wol_location($user);
 
 	// Can view IPs, then fetch the IP template
 	if($mybb->usergroup['canviewonlineips'] == 1)

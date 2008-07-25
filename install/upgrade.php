@@ -750,7 +750,7 @@ function sync_settings($redo=0)
 	
 	foreach($settinggroups as $groupname)
 	{
-		if(!array_key_exists($groupname, $settinggroupnames))
+		if(!in_array($groupname, $settinggroupnames))
 		{
 			$db->delete_query("settinggroups", "gid='".$settinggroups[$groupname]."'", 1);
 		}
@@ -758,7 +758,7 @@ function sync_settings($redo=0)
 	
 	foreach($settings as $settingname)
 	{
-		if(!array_key_exists($settingname, $settingnames))
+		if(!in_array($settingname, $settingnames))
 		{
 			$db->delete_query("settings", "sid='".$settings[$settingname]."'", 1);
 		}

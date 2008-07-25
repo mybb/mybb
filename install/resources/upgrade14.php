@@ -11,7 +11,7 @@
  */
 
 /**
- * Upgrade Script: MyBB 1.4 Beta 2
+ * Upgrade Script: MyBB 1.4 Beta 2 OR MyBB 1.4 Beta 3
  */
 
 

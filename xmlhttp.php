@@ -397,7 +397,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			$postinfo = $posthandler->update_post();
 			$visible = $postinfo['visible'];
-			if($visible == 0)
+			if($visible == 0 && !is_moderator())
 			{
 				echo "<p>\n";
 				echo $lang->post_moderation;

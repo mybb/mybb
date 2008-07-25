@@ -263,7 +263,7 @@ class datacache
 		
 		$smilies = array();
 
-		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'LENGTH(find)', 'order_dir' => 'DESC'));
+		$query = $db->simple_select("smilies", "*", "", array('order_by' => 'disporder', 'order_dir' => 'ASC'));
 		while($smilie = $db->fetch_array($query))
 		{
 			$smilies[$smilie['sid']] = $smilie;
