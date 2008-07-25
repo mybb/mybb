@@ -561,7 +561,7 @@ if($mybb->input['action'] == "thread")
 	$ignored_users = array();
 	if($mybb->user['uid'] > 0 && $mybb->user['ignorelist'] != "")
 	{
-		$ignore_list = explode(",", $mybb->user['ignorelist']);
+		$ignore_list = explode(',', $mybb->user['ignorelist']);
 		foreach($ignore_list as $uid)
 		{
 			$ignored_users[$uid] = 1;
@@ -571,22 +571,22 @@ if($mybb->input['action'] == "thread")
 	// Which thread mode is our user using?
 	if(!isset($mybb->input['mode']))
 	{
-		if($mybb->settings['threadusenetstyle'] == 1)
-		{
-			$mybb->input['mode'] = "threaded";
-		}
-		else if(!empty($mybb->user['threadmode']))
+		if(!empty($mybb->user['threadmode'])) // Take user's default preference first (if there is one) and run with it
 		{
 			$mybb->input['mode'] = $mybb->user['threadmode'];
 		}
+		else if($mybb->settings['threadusenetstyle'] == 1)
+		{
+			$mybb->input['mode'] = 'threaded';
+		}
 		else
 		{
-			$mybb->input['mode'] = "linear";
+			$mybb->input['mode'] = 'linear';
 		}
 	}
 
-	// Threaded or lineair display?
-	if($mybb->input['mode'] == "threaded")
+	// Threaded or linear display?
+	if($mybb->input['mode'] == 'threaded')
 	{
 		$isfirst = 1;
 

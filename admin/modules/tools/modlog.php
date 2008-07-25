@@ -119,7 +119,7 @@ if(!$mybb->input['action'])
 		$perpage = $mybb->settings['threadsperpage'];
 	}
 
-	$where = '';
+	$where = 'WHERE 1=1';
 
 	// Searching for entries by a particular user
 	if($mybb->input['uid'])
@@ -128,7 +128,7 @@ if(!$mybb->input['action'])
 	}
 
 	// Searching for entries in a specific forum
-	if($mybb->input['fid'])
+	if($mybb->input['fid'] > 0)
 	{
 		$where .= " AND l.fid='".intval($mybb->input['fid'])."'";
 	}
@@ -157,7 +157,7 @@ if(!$mybb->input['action'])
 	$query = $db->query("
 		SELECT COUNT(l.dateline) AS count
 		FROM ".TABLE_PREFIX."moderatorlog l
-		WHERE 1=1 {$where}
+		{$where}
 	");
 	$rescount = $db->fetch_field($query, "count");
 	

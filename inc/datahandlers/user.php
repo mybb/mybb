@@ -511,6 +511,8 @@ class UserDataHandler extends DataHandler
 	*/
 	function verify_options()
 	{
+		global $mybb;
+		
 		$options = &$this->data['options'];
 
 		// Verify yes/no options.
@@ -570,9 +572,16 @@ class UserDataHandler extends DataHandler
             $options['showcodebuttons'] = 1;
         }
 		
-		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "threaded"))
+		if($this->method == "insert" || (isset($options['threadmode']) && $options['threadmode'] != "linear" && $options['threadmode'] != "threaded"))
 		{
-			$options['threadmode'] = 'linear';
+			if($mybb->settings['threadusenetstyle'])
+			{
+				$options['threadmode'] = 'threaded';
+			}
+			else
+			{
+				$options['threadmode'] = 'linear';
+			}
 		}
 
 		// Verify the "threads per page" option.

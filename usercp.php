@@ -827,12 +827,13 @@ if($mybb->input['action'] == "options")
 	}
 	else
 	{
-		$pmnotifycheck = "";
+		$pmnotifycheck = '';
 	}
 
-	if($user['threadmode'] != "threaded")
+	
+	if($user['threadmode'] != "threaded" && $user['threadmode'] != "linear")
 	{
-		$user['threadmode'] = "linear";
+		$user['threadmode'] = ''; // Leave blank to show default
 	}
 
 	if($user['classicpostbit'] != 0)

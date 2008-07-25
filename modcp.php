@@ -1506,7 +1506,7 @@ if($mybb->input['action'] == "do_editprofile")
 				"avatardimensions" => "",
 				"avatartype" => ""
 			);
-			remove_avatars($mybb->user['uid']);
+			remove_avatars($user['uid']);
 		}
 
 		$user_info = $userhandler->update_user();
