@@ -99,7 +99,7 @@ if($mybb->input['action'] == "stats")
 {
 	$plugins->run_hooks("admin_forum_attachments_stats");
 
-	$query = $db->simple_select("attachments", "COUNT(*) AS total_attachments, SUM(filesize) as disk_usage, SUM(downloads) as total_downloads", "visible='1'");
+	$query = $db->simple_select("attachments", "COUNT(*) AS total_attachments, SUM(filesize) as disk_usage, SUM(downloads*filesize) as bandwidthused", "visible='1'");
 	$attachment_stats = $db->fetch_array($query);
 
 		$page->add_breadcrumb_item($lang->stats);
@@ -123,7 +123,7 @@ if($mybb->input['action'] == "stats")
 	$table->construct_row();
 	
 	$table->construct_cell($lang->bandwidth_used, array('width' => '25%'));
-	$table->construct_cell(get_friendly_size(round($attachment_stats['disk_usage']*$attachment_stats['total_downloads'])), array('width' => '25%'));
+	$table->construct_cell(get_friendly_size(round($attachment_stats['bandwidthused'])), array('width' => '25%'));
 	$table->construct_cell($lang->average_size, array('width' => '25%'));
 	$table->construct_cell(get_friendly_size(round($attachment_stats['disk_usage']/$attachment_stats['total_attachments'])), array('width' => '25%'));
 	$table->construct_row();

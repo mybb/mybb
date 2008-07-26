@@ -783,6 +783,7 @@ ActivityIndicator.prototype = {
 		this.spinner.style.zIndex = 1000;
 		this.spinner.style.textAlign = "center";
 		this.spinner.style.verticalAlign = "middle";
+		this.spinner.style.fontSize = "13px";
 
 		this.spinner.innerHTML = "<br />"+image+"<br /><br /><strong>"+loading_text+"</strong>";
 		this.spinner.style.width = this.width + "px";

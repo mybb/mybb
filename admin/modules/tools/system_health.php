@@ -472,7 +472,7 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->totals, array("colspan" => 2));
 	$table->construct_header($lang->attachments, array("colspan" => 2));
 	
-	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused, SUM(downloads) as downloadsused", "visible='1' AND pid > '0'");
+	$query = $db->simple_select("attachments", "COUNT(*) AS numattachs, SUM(filesize) as spaceused, SUM(downloads*filesize) as bandwidthused", "visible='1' AND pid > '0'");
 	$attachs = $db->fetch_array($query);
 	
 	$table->construct_cell("<strong>{$lang->total_database_size}</strong>", array('width' => '25%'));
@@ -484,7 +484,7 @@ if(!$mybb->input['action'])
 	if($attachs['spaceused'] > 0)
 	{
 		$attach_average_size = round($attachs['spaceused']/$attachs['numattachs']);
-		$bandwidth_average_usage = round($attachs['spaceused']/$attachs['numattachs']*$attachs['downloadsused']);
+		$bandwidth_average_usage = round($attachs['bandwidthused']);
 	}
 	else
 	{
