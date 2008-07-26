@@ -30,7 +30,7 @@ MyCodeSandbox.prototype = {
     update: function(e)
     {
         Event.stop(e);
-        postData = "regex="+encodeURIComponent(this.regex_textbox.value)+"&replacement="+encodeURIComponent(this.replacement_textbox.value)+"&test_value="+encodeURIComponent(this.test_textbox.value);
+        postData = "regex="+encodeURIComponent(this.regex_textbox.value)+"&replacement="+encodeURIComponent(this.replacement_textbox.value)+"&test_value="+encodeURIComponent(this.test_textbox.value)+"&my_post_key="+encodeURIComponent(my_post_key);
 
 		this.spinner = new ActivityIndicator("body", {image: this.spinnerImage});
 

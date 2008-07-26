@@ -141,6 +141,11 @@ if($mybb->input['action'] == "add")
 		'link' => "index.php?module=config/mycode&amp;action=add",
 		'description' => $lang->add_new_mycode_desc
 	);
+	
+	$page->extra_header .= "
+	<script type=\"text/javascript\">
+	var my_post_key = '".$mybb->post_code."';
+	</script>";
 
 	$page->add_breadcrumb_item($lang->add_new_mycode);
 	$page->output_header($lang->custom_mycode." - ".$lang->add_new_mycode);
@@ -256,6 +261,11 @@ if($mybb->input['action'] == "edit")
 		'link' => "index.php?module=config/mycode&amp;action=edit",
 		'description' => $lang->edit_mycode_desc
 	);
+	
+	$page->extra_header .= "
+	<script type=\"text/javascript\">
+	var my_post_key = '".$mybb->post_code."';
+	</script>";
 	
 	$page->add_breadcrumb_item($lang->edit_mycode);
 	$page->output_header($lang->custom_mycode." - ".$lang->edit_mycode);

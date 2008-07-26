@@ -343,10 +343,13 @@ $post_check_ignores = array(
 
 if($mybb->request_method == "post")
 {
-	$ignore_actions = &$post_check_ignores[$mybb->input['module']];
-	if(isset($ignore_actions) && in_array($mybb->input['action'], $ignore_actions))
+	if(in_array($mybb->input['module'], $post_check_ignores))
 	{
-		$post_verify = false;
+		$k = array_search($mybb->input['module'], $post_check_ignores);
+		if(in_array($mybb->input['action'], $post_check_ignores[$k]))
+		{
+			$post_verify = false;
+		}
 	}
 	
 	if($post_verify == true)
