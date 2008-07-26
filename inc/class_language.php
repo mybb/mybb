@@ -159,7 +159,7 @@ class MyLanguage
 		}
 	}
 	
-	function sprintf($string)
+	static function sprintf($string)
 	{
 		$arg_list = func_get_args();
 		$num_args = count($arg_list);
@@ -204,7 +204,7 @@ class MyLanguage
 	 * @param string The contents to parse.
 	 * @return string The parsed contents.
 	 */
-	function parse($contents)
+	static function parse($contents)
 	{
 		$contents = preg_replace("#<lang:([a-zA-Z0-9_]+)>#e", "\$this->$1", $contents);
 		return $contents;

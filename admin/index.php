@@ -338,18 +338,15 @@ $mybb->post_code = generate_post_check();
 
 // Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
 $post_check_ignores = array(
-	"example/users" => array("edit")
+	"config/mycode" => array("xmlhttp_test_mycode")
 ); // An array of modules/actions to ignore POST checks for.
 
 if($mybb->request_method == "post")
 {
-	if(in_array($mybb->input['module'], $post_check_ignores))
+	$ignore_actions = &$post_check_ignores[$mybb->input['module']];
+	if(isset($ignore_actions) && in_array($mybb->input['action'], $ignore_actions))
 	{
-		$k = array_search($mybb->input['module'], $post_check_ignores);
-		if(in_array($mybb->input['action'], $post_check_ignores[$k]))
-		{
-			$post_verify = false;
-		}
+		$post_verify = false;
 	}
 	
 	if($post_verify == true)

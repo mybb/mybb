@@ -19,7 +19,7 @@ function output_page($contents)
 	global $db, $lang, $theme, $plugins, $mybb;
 	global $debug, $templatecache, $templatelist, $maintimer, $globaltime, $parsetime;
 
-	$contents = parse_page($contents);
+	parse_page($contents);
 	$totaltime = $maintimer->stop();
 
 	if($mybb->usergroup['cancp'] == 1)
@@ -250,7 +250,7 @@ function send_mail_queue($count=10)
  * @param string The contents of the page.
  * @return string The parsed page.
  */
-function parse_page($contents)
+function parse_page(&$contents)
 {
 	global $lang, $theme, $mybb, $htmldoctype, $archive_url, $error_handler;
 
@@ -282,8 +282,6 @@ function parse_page($contents)
 	{
 		$contents = str_replace("<body>", "<body>\n".$error_handler->show_warnings(), $contents);
 	}
-
-	return $contents;
 }
 
 /**
