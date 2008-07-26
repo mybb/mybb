@@ -2173,7 +2173,7 @@ function format_name($username, $usergroup, $displaygroup="")
  */
 function build_mycode_inserter($bind="message")
 {
-	global $db, $mybb, $theme, $templates, $lang;
+	global $db, $mybb, $theme, $templates, $lang, $plugins;
 
 	if($mybb->settings['bbcodeinserter'] != 0)
 	{
@@ -2212,6 +2212,8 @@ function build_mycode_inserter($bind="message")
 			"editor_color"
 		);
 		$editor_language = "var editor_language = {\n";
+		
+		$plugins->run_hooks_by_ref("mycode_add_codebuttons", $editor_lang_strings);
 
 		foreach($editor_lang_strings as $key => $lang_string)
 		{

@@ -103,6 +103,7 @@ if($mybb->input['action'] == "copy")
 				$new_forum['pid'] = intval($mybb->input['pid']);
 				$new_forum['rulestitle'] = $db->escape_string($new_forum['rulestitle']);
 				$new_forum['rules'] = $db->escape_string($new_forum['rules']);
+				$new_forum['parentlist'] = '';
 						
 				$to = $db->insert_query("forums", $new_forum);
 		
@@ -623,6 +624,7 @@ if($mybb->input['action'] == "add")
 				"linkto" => $db->escape_string($mybb->input['linkto']),
 				"type" => $db->escape_string($type),
 				"pid" => $pid,
+				"parentlist" => '',
 				"disporder" => intval($mybb->input['disporder']),
 				"active" => intval($mybb->input['active']),
 				"open" => intval($mybb->input['open']),
@@ -669,6 +671,8 @@ if($mybb->input['action'] == "add")
 				}			
 			}
 			
+			$cache->update_forums();
+			
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostreplies = $permissions['canpostreplies'];
@@ -676,7 +680,6 @@ if($mybb->input['action'] == "add")
 			$canpostattachments = $permissions['canpostattachments'];
 			$canpostreplies = $permissions['canpostreplys'];
 			save_quick_perms($fid);
-			$cache->update_forums();
 			
 			$plugins->run_hooks("admin_forum_management_add_commit");
 			
@@ -1136,6 +1139,8 @@ if($mybb->input['action'] == "edit")
 				}			
 			}
 			
+			$cache->update_forums();
+			
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
 			$canpostreplies = $permissions['canpostreplies'];
@@ -1143,7 +1148,6 @@ if($mybb->input['action'] == "edit")
 			$canpostattachments = $permissions['canpostattachments'];
 			$canpostreplies = $permissions['canpostreplys'];
 			save_quick_perms($fid);
-			$cache->update_forums();
 			
 			$plugins->run_hooks("admin_forum_management_edit_commit");
 			
