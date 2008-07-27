@@ -132,7 +132,7 @@ var UserCP = {
 			if(existing_buddies != "")
 			{
 				existing_buddies = existing_buddies.replace(/^\s+|\s+$/g, "");
-
+				existing_buddies = existing_buddies.replace(/,\s?/g, ",");
 				exp_buddies = buddies.split(",");
 				exp_buddies.each(function(buddy, i)
 				{

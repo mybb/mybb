@@ -40,7 +40,7 @@ function upgrade12_dbchanges()
 
 	$to_int = array(
 		"announcements" => array("aid", "allowhtml", "allowmycode", "allowsmilies"),
-		"forumpermissions" => array("pid", "canview","canviewthreads","candlattachments","canpostthreads","canpostreplys","canpostattachments","canratethreads","caneditposts","candeleteposts","candeletethreads","caneditattachments","canpostpolls","canvotepolls"),
+		"forumpermissions" => array("pid", "canview","canviewthreads","candlattachments","canpostthreads","canpostreplys","canpostattachments","canratethreads","caneditposts","candeleteposts","candeletethreads","caneditattachments","canpostpolls","canvotepolls","cansearch"),
 		"forums" => array("fid", "active","open","allowhtml","allowmycode","allowsmilies","allowimgcode","allowpicons","allowtratings","usepostcounts","showinjump","modposts","modthreads","modattachments","overridestyle"),
 		"groupleaders" => array("lid", "canmanagemembers","canmanagerequests"),
 		"helpdocs" => array("hid", "usetranslation","enabled"),
@@ -319,7 +319,9 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP lastip;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD lastip varchar(11) NOT NULL default '' AFTER regip");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD lastip varchar(50) NOT NULL default '' AFTER regip");
+
+
 
 	if($db->field_exists('coppauser', "users"))
 	{
@@ -368,6 +370,8 @@ function upgrade12_dbchanges2()
 	
 	if($db->field_exists('canaddpublicevents', "usergroups") && !$db->field_exists('canaddevents', "usergroups"))
 	{
+		$db->update_query("usergroups", array('canaddpublicevents' => 0), "canaddpublicevents='no'");
+		$db->update_query("usergroups", array('canaddpublicevents' => 1), "canaddpublicevents='yes'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."usergroups CHANGE canaddpublicevents canaddevents int(1) NOT NULL default '0';");
 	}
 	
@@ -585,8 +589,9 @@ function upgrade12_dbchanges2()
 
 	if($db->field_exists('emailnotify', "users"))
 	{
-		$db->update_query("users", array('emailnotify' => 1), "emailnotify=0");
-		$db->update_query("users", array('emailnotify' => 2), "emailnotify=1");
+		$db->update_query("users", array('emailnotify' => 1), "emailnotify='no' OR emailnotify='0'");
+		$db->update_query("users", array('emailnotify' => 2), "emailnotify='yes' OR emailnotify='1'");
+		$db->update_query("users", array('emailnotify' => 0), "emailnotify != 1 AND emailnotify != 2");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
 	}
 	
@@ -731,8 +736,8 @@ function upgrade12_dbchanges2()
 	
 	$db->update_query("settings", array('value' => 'classic'), "name='postlayout' AND value != 'horizontal'");
 	
-	$db->update_query("settings", array('value' => 'php
-<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>'), "name='searchtype'", 1);
+	$db->update_query("settings", array('optionscode' => $db->escape_string('php
+<select name=\"upsetting[{$setting[\'name\']}]\"><option value=\"standard\">".($lang->setting_searchtype_standard?$lang->setting_searchtype_standard:"Standard")."</option>".($db->supports_fulltext("threads") && $db->supports_fulltext_boolean("posts")?"<option value=\"fulltext\"".($setting[\'value\']=="fulltext"?" selected=\"selected\"":"").">".($lang->setting_searchtype_fulltext?$lang->setting_searchtype_fulltext:"Full Text")."</option>":"")."</select>')), "name='searchtype'", 1);
 	
 	$contents = "Done</p>";
 	$contents .= "<p>Click next to continue with the upgrade process.</p>";
@@ -1538,12 +1543,12 @@ function upgrade12_dbchanges7()
 		// Have we already converted this ip?
 		if(!$user['longregip'])
 		{
-			$update_array['longregip'] = ip2long($user['regip']);
+			$update_array['longregip'] = intval(ip2long($user['regip']));
 		}
 		
 		if(!$user['longlastip'])
 		{
-			$update_array['longlastip'] = ip2long($user['lastip']);
+			$update_array['longlastip'] = intval(ip2long($user['lastip']));
 		}
 		
 		if(!empty($update_array))
@@ -1677,8 +1682,8 @@ function upgrade12_dbchanges8()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE subject name varchar(120) NOT NULL default ''");
 		}
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD visible int(1) NOT NULL default '0' AFTER description");
-		$db->update_query("events", array('private' => 1), "private=1");
-		$db->update_query("events", array('private' => 0), "private=0");
+		$db->update_query("events", array('private' => 1), "private='yes' OR private='1'");
+		$db->update_query("events", array('private' => 0), "private='no' OR private='0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE private private int(1) NOT NULL default '0'");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD dateline int(10) unsigned NOT NULL default '0' AFTER private");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events ADD starttime int(10) unsigned NOT NULL default '0' AFTER dateline");
@@ -1802,7 +1807,7 @@ function upgrade12_redothemes()
 	
 	if($not_writable)
 	{
-		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/theme/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
+		echo "<p><span style=\"color: red; font-weight: bold;\">Unable to write to the cache/themes/ directory.</span><br />Before the upgrade process can continue you need to make sure this directory exists and is writable (chmod 777)</p>";
 		$output->print_footer("12_redothemes");
 		exit;
 	}
@@ -1855,6 +1860,7 @@ function upgrade12_redothemes()
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
 	else
+
 	{
 		$output->print_error("Please make sure your admin directory is uploaded correctly.");
 	}

@@ -128,13 +128,13 @@ else
 	
 		if(!username_exists($mybb->input['username']))
 		{
-			$output->print_error($lang->error_invalidusername);
+			$output->print_error("The username you have entered appears to be invalid.");
 		}
 		$query = $db->simple_select("users", "uid,username,password,salt,loginkey", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			$output->print_error($lang->error_invalidpassword);
+			$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
 		}
 		else
 		{

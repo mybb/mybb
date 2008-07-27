@@ -108,6 +108,7 @@ $l['admin_log_config_settings_edit'] = "Edited setting #{1} ({2}) properties ";
 $l['admin_log_config_settings_delete'] = "Deleted setting #{1} ({2})";
 $l['admin_log_config_settings_manage'] = "Updated setting and setting group orders";
 $l['admin_log_config_settings_change'] = "Changed board settings";
+$l['admin_log_config_settings_delete_duplicates'] = "Deleted any found duplicate settings.";
 
 $l['admin_log_config_smilies_add'] = "Added smilie #{1} ({2})";
 $l['admin_log_config_smilies_edit'] = "Edited smilie #{1} ({2})";
