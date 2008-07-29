@@ -513,7 +513,7 @@ if(!$mybb->input['action'])
 	$task_cache = $cache->read("tasks");
 	$nextrun = $task_cache['nextrun'];
 	
-	$query = $db->simple_select("tasks", "*", "nextrun >= '{$nextrun}'", array("order_by" => "nextrun", "order_dir" => "asc", 'limit' => 3));
+	$query = $db->simple_select("tasks", "*", "nextrun >= '{$nextrun}' AND enabled='1'", array("order_by" => "nextrun", "order_dir" => "asc", 'limit' => 3));
 	while($task = $db->fetch_array($query))
 	{
 		$task['title'] = htmlspecialchars_uni($task['title']);

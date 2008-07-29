@@ -823,7 +823,7 @@ class postParser
 		$url = str_replace("\'", "'", $url);
 		$fullurl = str_replace("\'", "'", $fullurl);
 		
-		if($name == $url && $this->options['shorten_urls'] != 0)
+		if($name == $url && (!isset($this->options['shorten_urls']) || $this->options['shorten_urls'] != 0))
 		{
 			if(my_strlen($url) > 55)
 			{

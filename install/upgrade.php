@@ -30,7 +30,8 @@ if(!is_array($config['database']))
 		"table_prefix" => $config['table_prefix'],
 		"hostname" => $config['hostname'],
 		"username" => $config['username'],
-		"password" => $config['password']
+		"password" => $config['password'],
+		"encoding" => $config['db_encoding'],
 	);
 }
 $mybb->config = &$config;

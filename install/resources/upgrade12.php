@@ -279,6 +279,32 @@ function upgrade12_dbchanges_post2()
 	global $footer_extra;
 	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
 
+	$output->print_footer("12_dbchanges_user");
+}
+
+function upgrade12_dbchanges_user()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";	
+	echo "<p>Adding index to users table ... ";
+	flush();
+	
+	// This will take a LONG time on huge user databases, so we only run it isolted from most of the other queries
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX ( `lastvisit` )");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX ( `regdate` )");
+	
+	echo "done.</p>";
+	flush();
+	
+	$contents = "<p>Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+
+	global $footer_extra;
+	$footer_extra = "<script type=\"text/javascript\">window.onload = function() { var button = $$('.submit_button'); if(button[0]) { button[0].value = 'Automatically Redirecting...'; button[0].disabled = true; button[0].style.color = '#aaa'; button[0].style.borderColor = '#aaa'; document.forms[0].submit(); }}</script>";
+
 	$output->print_footer("12_dbchanges2");
 }
 

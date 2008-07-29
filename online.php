@@ -113,7 +113,17 @@ else
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
 
 	// Exactly how many users are currently online?
-	$query = $db->simple_select("sessions", "COUNT(DISTINCT sid) as online", "time > {$timesearch}");
+	switch($db->type)
+	{
+		case "sqlite3":
+		case "sqlite2":	
+			$query = $db->simple_select("sessions", "COUNT(count_sid)", "(SELECT DISTINCT sid as count_sid FROM ".TABLE_PREFIX."sessions WHERE time > {$timesearch})");
+			break;
+		case "pgsql":
+		default:
+			$query = $db->simple_select("sessions", "COUNT(DISTINCT sid) as online", "time > {$timesearch}");
+			break;
+	}
 	$online_count = $db->fetch_field($query, "online");
 	
 	// How many pages are there?

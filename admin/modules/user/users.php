@@ -2003,12 +2003,12 @@ function build_users_view($view)
 			$user['view']['username'] = "<a href=\"index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}\">".format_name($user['username'], $user['usergroup'], $user['displaygroup'])."</a>";
 			$user['view']['usergroup'] = $usergroups[$user['usergroup']]['title'];
 			$additional_groups = explode(",", $user['additionalgroups']);
+			$comma = $groups_list = '';
 			foreach($additional_groups as $group)
 			{
 				$groups_list .= "{$comma}{$usergroups[$group]['title']}";
 				$comma = ", ";
 			}
-			$comma = $groups_list = '';
 			if(!$groups_list) $groups_list = $lang->none;
 			$user['view']['additionalgroups'] = "<small>{$groups_list}</small>";
 			$user['view']['email'] = "<a href=\"mailto:".htmlspecialchars_uni($user['email'])."\">".htmlspecialchars_uni($user['email'])."</a>";

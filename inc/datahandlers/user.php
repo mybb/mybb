@@ -89,8 +89,8 @@ class UserDataHandler extends DataHandler
 			return false;
 		}
 
-		// Check for certain characters in username (<, >, &, and slashes)
-		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false)
+		// Check for certain characters in username (<, >, &, commas and slashes)
+		if(strpos($username, "<") !== false || strpos($username, ">") !== false || strpos($username, "&") !== false || my_strpos($username, "\\") !== false || strpos($username, ";") !== false || strpos($username, ",") !== false)
 		{
 			$this->set_error("bad_characters_username");
 			return false;

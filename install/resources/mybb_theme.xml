@@ -2847,11 +2847,17 @@ ul.thread_tools li.subscription_remove {
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay" version="120"><![CDATA[<html>
+		<template name="forumdisplay" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$foruminfo['name']} </title>
 {$headerinclude}
 {$rssdiscovery}
+<script type="text/javascript">
+<!--
+	lang.no_new_posts = "{$lang->no_new_posts}";
+	lang.click_mark_read = "{$lang->click_mark_read}";
+// -->
+</script>
 </head>
 <body>
 {$header}
