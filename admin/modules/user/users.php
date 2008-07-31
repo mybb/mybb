@@ -1790,7 +1790,7 @@ function build_users_view($view)
 	
 	if($mybb->input['username'])
 	{
-		$view['url'] .= "&amp;username=".htmlspecialchars_uni($mybb->input['username']);
+		$view['url'] .= "&amp;username=".urlencode(htmlspecialchars_uni($mybb->input['username']));
 	}
 	
 	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url']))
@@ -2035,7 +2035,7 @@ function build_users_view($view)
 			$popup->add_item($lang->delete_user, "index.php?module=user/users&amp;action=delete&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->user_deletion_confirmation}')");
 			$popup->add_item($lang->show_referred_users, "index.php?module=user/users&amp;action=referrers&amp;uid={$user['uid']}");
 			$popup->add_item($lang->show_ip_addresses, "index.php?module=user/users&amp;action=ipaddresses&amp;uid={$user['uid']}");
-			$popup->add_item($lang->show_attachments, "index.php?module=forum/attachments&amp;results=1&amp;username=".htmlspecialchars_uni($user['username']));
+			$popup->add_item($lang->show_attachments, "index.php?module=forum/attachments&amp;results=1&amp;username=".urlencode(htmlspecialchars_uni($user['username'])));
 			$user['view']['controls'] = $popup->fetch();
 
 			// Fetch the reputation for this user
@@ -2311,8 +2311,6 @@ function build_user_view_table($user, $view, &$table)
 
 function fetch_scaled_avatar($user, $max_width=80, $max_height=80)
 {
-	$avatar_dimensions = explode("|", $user['avatardimensions']);
-
 	$scaled_dimensions = array(
 		"width" => $max_width,
 		"height" => $max_height,
