@@ -490,7 +490,7 @@ function upgrade5_redoconfig()
  *  of the most commonly accessed data in MyBB.
  *  By default, the database is used to store this data.
  *
- *  If you wish to use the file system (inc/cache directory)
+ *  If you wish to use the file system (cache/ directory)
  *  you can change the value below to 'files' from 'db'.
  */
 

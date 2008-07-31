@@ -23,7 +23,7 @@ class datacache
 	 *
 	 * @var object
 	 */
-	var $handler;
+	var $handler = null;
 
 	/**
 	 * Build cache data.

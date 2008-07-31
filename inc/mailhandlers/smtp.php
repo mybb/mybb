@@ -320,7 +320,7 @@ class SmtpMail extends MailHandler
 		
 		if(in_array("LOGIN", $auth_methods))
 		{
-			if(!$$this->send_data("AUTH LOGIN", 334))
+			if(!$this->send_data("AUTH LOGIN", 334))
 			{
 				if($this->code == 503)
 				{

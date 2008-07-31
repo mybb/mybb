@@ -23,6 +23,14 @@ class memcacheCacheHandler
 	 * Unique identifier representing this copy of MyBB
 	 */
 	var $unique_id;
+	
+	function memcacheCacheHandler()
+	{
+		if(!function_exists("memcache_connect"))
+		{
+			die("Your server does not have memcache support enabled.");
+		}
+	}
 
 	/**
 	 * Connect and initialize this handler.
@@ -32,11 +40,6 @@ class memcacheCacheHandler
 	function connect()
 	{
 		global $mybb;
-		
-		if(!function_exists("memcache_connect"))
-		{
-			die("Your server does not have memcache support enabled.");
-		}
 
 		if(!$mybb->config['memcache_host'])
 		{

@@ -699,7 +699,7 @@ function create_tables()
  *  of the most commonly accessed data in MyBB.
  *  By default, the database is used to store this data.
  *
- *  If you wish to use the file system (inc/cache directory), MemCache or eAccelerator
+ *  If you wish to use the file system (cache/ directory), MemCache or eAccelerator
  *  you can change the value below to 'files', 'memcache' or 'eaccelerator' from 'db'.
  */
 

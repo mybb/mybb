@@ -18,6 +18,14 @@ class xcacheCacheHandler
 	 * Unique identifier representing this copy of MyBB
 	 */
 	var $unique_id;
+	
+	function xcacheCacheHandler()
+	{
+		if(!function_exists("xcache_get"))
+		{
+			die("Xcache needs to be configured with PHP to use the Xcache cache support");
+		}
+	}
 
 	/**
 	 * Connect and initialize this handler.
@@ -27,11 +35,6 @@ class xcacheCacheHandler
 	function connect()
 	{
 		global $mybb;
-		
-		if(!function_exists("xcache_get"))
-		{
-			die("Xcache needs to be configured with PHP to use the Xcache cache support");
-		}
 
 		// Set a unique identifier for all queries in case other forums on this server also use this cache handler
 		$this->unique_id = md5($mybb->settings['bburl']);
