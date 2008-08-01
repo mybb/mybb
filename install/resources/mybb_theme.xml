@@ -642,12 +642,12 @@ div.error.ul {
 }
 
 .quick_jump {
-  background: url('images/jump.gif') no-repeat 0;
-  width: 13px;
-  height: 13px;
-  padding-left: 13px; /* amount of padding needed for image to fully show */
-  vertical-align: middle;
-  border: none;
+	background: url('images/jump.gif') no-repeat 0;
+	width: 13px;
+	height: 13px;
+	padding-left: 13px; /* amount of padding needed for image to fully show */
+	vertical-align: middle;
+	border: none;
 }
 ]]>
 		</stylesheet>
