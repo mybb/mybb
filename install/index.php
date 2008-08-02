@@ -270,8 +270,6 @@ function requirements_check()
 				$configstatus = $lang->sprintf($lang->req_step_span_fail, $lang->not_writable);
 				$showerror = 1;
 			}
-			
-			@fclose($configwritable);
 		}
 	}
 

@@ -134,6 +134,11 @@ class DataHandler
 				$errors[] = $error['error_code'];
 				continue;
 			}
+			
+			if(!empty($error['data']) && !is_array($error['data']))
+			{
+				$error['data'] = array($error['data']);
+			}
 
 			if(is_array($error['data']))
 			{

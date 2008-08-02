@@ -10279,15 +10279,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_smilies}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>
 					</table>
 					<br />
@@ -10365,15 +10365,15 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_html}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowhtml" value="1"{$html_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowhtml" value="0"{$html_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_mycode}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowmycode" value="1"{$mycode_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowmycode" value="0"{$mycode_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>
 						<tr>
 							<td class="trow1" valign="top" width="25%"><strong>{$lang->allow_smilies}</strong></td>
-							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;Yes</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;No</label></td>
+							<td class="trow1" valign="top" width="75%"><label><input type="radio" name="allowsmilies" value="1"{$smilies_sel['yes']} />&nbsp;{$lang->yes}</label> &nbsp;&nbsp;<label><input type="radio" name="allowsmilies" value="0"{$smilies_sel['no']} />&nbsp;{$lang->no}</label></td>
 						</tr>
 					</table>
 					<br />

@@ -668,17 +668,15 @@ function insert_into_css($new_css, $selector="", $css="", $class_id="")
 		$css = preg_replace("#\s{1,}\{#", " {", $css);
 		$existing_block = $parsed_css[$selector];
 		
-		$break = strrpos($class_id, "_");
+		$break = strrpos($selector, "_");
 		if($break !== false)
 		{
-			$actual_occurance = intval(substr($class_id, ($break+1)));
-			$id = substr($class_id, 0, $break);
+			$actual_occurance = intval(substr($selector, ($break+1)));
 		}
 		
 		if(!$actual_occurance)
 		{
 			$actual_occurance = 1;
-			$id = $class_id;
 		}
 		
 		$occurance = 1;
