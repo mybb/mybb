@@ -19,7 +19,7 @@ $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
  */
 function fetch_wol_activity($location)
 {
-	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $user;
+	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $user, $parameters;
 
 	$user_activity = array();
 
@@ -428,7 +428,7 @@ function fetch_wol_activity($location)
 function build_friendly_wol_location($user_activity, $return=false)
 {
 	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb;
-	static $threads, $forums, $forums_linkto, $posts, $events, $users, $attachments;
+	global $threads, $forums, $forums_linkto, $posts, $events, $users, $attachments;
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
