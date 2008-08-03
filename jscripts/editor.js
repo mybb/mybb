@@ -292,6 +292,14 @@ messageEditor.prototype = {
 			Event.observe($(this.textarea), 'blur', function() {
 				this.trackingCaret = false;
 			}.bindAsEventListener(this));
+			Event.observe($(this.textarea), 'keyup', function() {
+				this.trackingCaret = true;
+				this.storeCaret();
+			}.bindAsEventListener(this));
+			Event.observe($(this.textarea), 'mousedown', function() {
+				this.trackingCaret = true;
+				this.storeCaret();
+			}.bindAsEventListener(this));
 		}
 
 		Event.observe(textInput, "blur", this.updateOldArea.bindAsEventListener(this));
@@ -679,14 +687,20 @@ messageEditor.prototype = {
 		{
 			return;
 		}
+		
 		var range = document.selection.createRange();
-		dupe = range.duplicate();
-		dupe.moveToElementText($(this.textarea));
-		dupe.setEndPoint('EndToEnd', range);
-		caret_text = dupe.text.replace(/\r\n/g, 1);
-		range_text_length = range.text.replace(/\r\n/g, 1).length
-		this.lastCaretS = caret_text.length - range_text_length;
-		this.lastCaretE = this.lastCaretS + range_text_length;
+		var range_all = document.body.createTextRange();
+		range_all.moveToElementText($(this.textarea));
+		for(var sel_start = 0; range_all.compareEndPoints('StartToStart', range) < 0; sel_start++)
+			range_all.moveStart('character', 1);
+
+		var range_all = document.body.createTextRange();
+		range_all.moveToElementText($(this.textarea));
+		for(var sel_end = 0; range_all.compareEndPoints('StartToEnd', range) < 0; sel_end++)
+			range_all.moveStart('character', 1);
+
+		this.lastCaretS = sel_start;
+		this.lastCaretE = sel_end;
 	},
 
 	restartEditorSelection: function()
@@ -1303,6 +1317,9 @@ messageEditor.prototype = {
 		}
 		this.updateOldArea();
 		textarea.focus();
+		this.trackingCaret = true;
+		this.storeCaret();
+		this.trackingCaret = false;		
 		return is_closed;
 	},
 
