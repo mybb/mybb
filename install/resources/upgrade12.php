@@ -125,7 +125,7 @@ function upgrade12_dbchanges()
 						{
 							$updated_row[$column] = 1;
 						}
-						else if($row[$column] == "off" || $row[$column] == "no" || $row[$column] == "")
+						else if($row[$column] == "off" || $row[$column] == "no" || $row[$column] == 'new' || $row[$column] == "")
 						{
 							$updated_row[$column] = 0;
 						}
