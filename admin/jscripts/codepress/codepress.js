@@ -105,7 +105,6 @@ CodePress = function(obj) {
 	}
 
 	self.edit();
-	self.textarea.disabled = false;
 	return self;
 }
 

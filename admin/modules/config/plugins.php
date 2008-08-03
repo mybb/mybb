@@ -366,7 +366,7 @@ if(!$mybb->input['action'])
 	
 	if($table->num_rows() == 0)
 	{
-		$table->contruct_cell($lang->no_plugins, array('colspan' => 2));
+		$table->contruct_cell($lang->no_plugins, array('colspan' => 3));
 		$table->construct_row();
 	}
 	$table->output($lang->plugins);
