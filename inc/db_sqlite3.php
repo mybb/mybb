@@ -1189,9 +1189,4 @@ class DB_SQLite3
 	}
 }
 
-if(!class_exists('databaseEngine'))
-{
-	class databaseEngine extends DB_SQLite3 {
-	}
-}
 ?>

@@ -1277,9 +1277,4 @@ class DB_MySQLi
 	}
 }
 
-if(!class_exists('databaseEngine'))
-{
-	class databaseEngine extends DB_MySQLi {
-	}
-}
 ?>

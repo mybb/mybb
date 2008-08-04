@@ -81,7 +81,24 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 }
 
 require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
-$db = new databaseEngine;
+
+switch($config['database']['type'])
+{
+	case "sqlite3":
+		$db = new DB_SQLite3;
+		break;
+	case "sqlite2":
+		$db = new DB_SQLite2;
+		break;
+	case "pgsql":
+		$db = new DB_PgSQL;
+		break;
+	case "mysqli":
+		$db = new DB_MySQLi;
+		break;
+	default:
+		$db = new DB_MySQL;
+}
 
 // Check if our DB engine is loaded
 if(!extension_loaded($db->engine))

@@ -1387,9 +1387,4 @@ class DB_PgSQL
 	}
 }
 
-if(!class_exists('databaseEngine'))
-{
-	class databaseEngine extends DB_PgSQL {
-	}
-}
 ?>
