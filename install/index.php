@@ -616,7 +616,23 @@ function create_tables()
 
 	// Attempt to connect to the db
 	require_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";
-	$db = new databaseEngine;
+	switch($config['database']['type'])
+	{
+		case "sqlite3":
+			$db = new DB_SQLite3;
+			break;
+		case "sqlite2":
+			$db = new DB_SQLite2;
+			break;
+		case "pgsql":
+			$db = new DB_PgSQL;
+			break;
+		case "mysqli":
+			$db = new DB_MySQLi;
+			break;
+		default:
+			$db = new DB_MySQL;
+	}
  	$db->error_reporting = 0;
 
 	$connect_array = array(
@@ -1362,7 +1378,23 @@ function install_done()
 function db_connection($config)
 {
 	require_once MYBB_ROOT."inc/db_{$config['database']['type']}.php";
-	$db = new databaseEngine;
+	switch($config['database']['type'])
+	{
+		case "sqlite3":
+			$db = new DB_SQLite3;
+			break;
+		case "sqlite2":
+			$db = new DB_SQLite2;
+			break;
+		case "pgsql":
+			$db = new DB_PgSQL;
+			break;
+		case "mysqli":
+			$db = new DB_MySQLi;
+			break;
+		default:
+			$db = new DB_MySQL;
+	}
 	
 	// Connect to Database
 	define('TABLE_PREFIX', $config['database']['table_prefix']);

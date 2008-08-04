@@ -162,7 +162,25 @@ function run_shutdown()
 		if(isset($config))
 		{
 			require_once MYBB_ROOT."inc/db_".$config['database']['type'].".php";
-			$db = new databaseEngine;
+			switch($config['database']['type'])
+			{
+				case "sqlite3":
+					$db = new DB_SQLite3;
+					break;
+				case "sqlite2":
+					$db = new DB_SQLite2;
+					break;
+				case "pgsql":
+					$db = new DB_PgSQL;
+					break;
+				case "mysqli":
+					$db = new DB_MySQLi;
+					break;
+				default:
+					$db = new DB_MySQL;
+			}
+			
+			
 			$db->connect($config['database']);
 			define("TABLE_PREFIX", $config['database']['table_prefix']);
 			$db->set_table_prefix(TABLE_PREFIX);

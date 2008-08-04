@@ -69,7 +69,7 @@ var cookieDomain = "{$mybb->settings[\'cookiedomain\']}";', $template['template'
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("rebuildsettings");
+	$output->print_footer("11_done");
 }
 
 ?>
