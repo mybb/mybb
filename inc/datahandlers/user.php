@@ -1161,6 +1161,10 @@ class UserDataHandler extends DataHandler
 		$db->update_query("users", $this->user_update_data, "uid='{$user['uid']}'");
 		
 		$cache->update_moderators();
+		if(isset($user['bday']))
+		{
+			$cache->update_birthdays();
+		}
 
 		// Maybe some userfields need to be updated?
 		if(is_array($user['user_fields']))

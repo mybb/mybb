@@ -425,10 +425,10 @@ function fetch_wol_activity($location)
  * @param array Array containing activity and essential IDs.
  * @return string Location name for the activity being performed.
  */
-function build_friendly_wol_location($user_activity, $return=false)
+function build_friendly_wol_location($user_activity)
 {
 	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb;
-	global $threads, $forums, $forums_linkto, $posts, $events, $users, $attachments;
+	global $threads, $forums, $forums_linkto, $posts, $events, $usernames, $attachments;
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
@@ -438,16 +438,16 @@ function build_friendly_wol_location($user_activity, $return=false)
 	}
 
 	// Fetch any users
-	if(!is_array($users) && count($uid_list) > 0)
+	if(!is_array($usernames) && count($uid_list) > 0)
 	{
 		$uid_sql = implode(",", $uid_list);
 		$query = $db->simple_select("users", "uid,username", "uid IN ($uid_sql)");
 		while($user = $db->fetch_array($query))
 		{
-			$users[$user['uid']] = $user['username'];
+			$usernames[$user['uid']] = $user['username'];
 		}
 	}
-
+	
 	// Fetch any attachments
 	if(!is_array($attachments) && count($aid_list) > 0)
 	{
@@ -511,7 +511,7 @@ function build_friendly_wol_location($user_activity, $return=false)
 	}
 
 	// Now we've got everything we need we can put a name to the location
-	switch($user_activity['activity']['activity'])
+	switch($user_activity['activity'])
 	{
 		// announcement.php functions
 		case "announcements":
@@ -592,9 +592,9 @@ function build_friendly_wol_location($user_activity, $return=false)
 			$location_name = $lang->activating_account;
 			break;
 		case "member_profile":
-			if($users[$user_activity['uid']])
+			if($usernames[$user_activity['uid']])
 			{
-				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $users[$user_activity['uid']]);
+				$location_name = $lang->sprintf($lang->viewing_profile2, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
 			}
 			else
 			{
@@ -926,7 +926,7 @@ function build_wol_row($user)
 	$online_time = my_date($mybb->settings['timeformat'], $user['time']);
 	
 	// Fetch the location name for this users activity
-	$location = build_friendly_wol_location($user);
+	$location = build_friendly_wol_location($user['activity']);
 
 	// Can view IPs, then fetch the IP template
 	if($mybb->usergroup['canviewonlineips'] == 1)

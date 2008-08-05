@@ -1,4 +1,3 @@
-
 <?php
 /**
  * MyBB 1.4
@@ -1253,7 +1252,7 @@ if(!$mybb->input['action'])
 			$primaryusers[$usergroup['gid']] = 0;
 		}
 		$numusers = $primaryusers[$usergroup['gid']];
-		$numusers += $secondaryusers[$usergroups['gid']];
+		$numusers += $secondaryusers[$usergroup['gid']];
 
 		$form_container->output_cell(my_number_format($numusers), array("class" => "align_center"));
 		

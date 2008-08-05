@@ -3853,7 +3853,6 @@ function my_strlen($string)
 
         // Remove dodgy whitespaces
         $string = str_replace(chr(0xCA), "", $string);
-		$string = str_replace("  ", " ", $string);
     }
 	$string = trim($string);
 

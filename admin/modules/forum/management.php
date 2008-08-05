@@ -618,6 +618,10 @@ if($mybb->input['action'] == "add")
 		
 		if(!$errors)
 		{
+			if($pid < 0)
+			{
+				$pid = 0;
+			}
 			$insert_array = array(
 				"name" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -641,7 +645,7 @@ if($mybb->input['action'] == "add")
 				"modthreads" => intval($mybb->input['modthreads']),
 				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
 				"modattachments" => intval($mybb->input['modattachments']),
-				"style" => intval($mybb->input['fstyle']),
+				"style" => intval($mybb->input['style']),
 				"overridestyle" => intval($mybb->input['overridestyle']),
 				"rulestype" => intval($mybb->input['rulestype']),
 				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
@@ -1068,6 +1072,10 @@ if($mybb->input['action'] == "edit")
 		
 		if(!$errors)
 		{
+			if($pid < 0)
+			{
+				$pid = 0;
+			}
 			$update_array = array(
 				"name" => $db->escape_string($mybb->input['title']),
 				"description" => $db->escape_string($mybb->input['description']),
@@ -1090,7 +1098,7 @@ if($mybb->input['action'] == "edit")
 				"modthreads" => intval($mybb->input['modthreads']),
 				"mod_edit_posts" => intval($mybb->input['mod_edit_posts']),
 				"modattachments" => intval($mybb->input['modattachments']),
-				"style" => intval($mybb->input['fstyle']),
+				"style" => intval($mybb->input['style']),
 				"overridestyle" => intval($mybb->input['overridestyle']),
 				"rulestype" => intval($mybb->input['rulestype']),
 				"rulestitle" => $db->escape_string($mybb->input['rulestitle']),
