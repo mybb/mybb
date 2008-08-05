@@ -60,12 +60,26 @@ class PhpMail extends MailHandler
 				@mb_language($language);
 			}
 			
-			$sent = @mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
+			{
+				$sent = @mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers));
+			}
+			else
+			{
+				$sent = @mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			}
 			$function_used = 'mb_send_mail()';
 		}
 		else
 		{
-			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
+			{
+				$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
+			}
+			else
+			{
+				$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+			}
 			$function_used = 'mail()';
 		}
 
