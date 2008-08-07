@@ -66,7 +66,7 @@ else
 $query = $db->simple_select("threadratings", "*", "{$whereclause} AND tid='{$tid}'");
 $ratecheck = $db->fetch_array($query);
 
-if($ratecheck['rid'] || $mybb->cookies['mybbthreadrate'][$tid])
+if($ratecheck['rid'] || $mybb->cookies['mybbratethread'][$tid])
 {
 	error($lang->error_alreadyratedthread);
 }

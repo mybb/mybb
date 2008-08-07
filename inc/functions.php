@@ -1089,7 +1089,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 
 	if(!$gid || $gid == 0) // If no group, we need to fetch it
 	{
-		if($uid != $mybb->user['uid'])
+		if($uid != 0 && $uid != $mybb->user['uid'])
 		{
 			if($usercache[$uid])
 			{
@@ -3816,7 +3816,7 @@ function update_first_post($tid)
 {
 	global $db;
 
-	$query = $db->simple_select("posts", "pid", "tid='{$tid}'", array('order_by' => 'dateline', 'limit' => 1));
+	$query = $db->simple_select("posts", "pid,replyto", "tid='{$tid}'", array('order_by' => 'dateline', 'limit' => 1));
 	$post = $db->fetch_array($query);
 
 	if($post['replyto'] != 0)
@@ -3824,7 +3824,7 @@ function update_first_post($tid)
 		$replyto_update = array(
 			"replyto" => 0
 		);
-		$db->update_query("threads", $replyto_update, "pid='{$post['pid']}'");
+		$db->update_query("posts", $replyto_update, "pid='{$post['pid']}'");
 	}
 
 	$firstpostup = array(

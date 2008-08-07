@@ -91,7 +91,7 @@ class MyLanguage
 		$this->settings = $langinfo;
 
 		// Load the admin language files as well, if needed.
-		if($area == "admin" || $area == "admin.old") // temporary: "|| $area == "admin.old""
+		if($area == "admin")
 		{
 			if(!is_dir($this->path."/".$language."/{$area}"))
 			{
@@ -129,15 +129,16 @@ class MyLanguage
 		if($isdatahandler === true)
 		{
 			$this->language = str_replace('/admin', '', $this->language);
-			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		}
-		else
-		{
-			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
-		}
+		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
+		
 		if(file_exists($lfile))
 		{
 			require_once $lfile;
+		}
+		elseif(file_exists($this->path."/english/".$section.".lang.php"))
+		{
+			require_once $this->path."/english/".$section.".lang.php";
 		}
 		else
 		{

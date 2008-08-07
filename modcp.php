@@ -130,6 +130,7 @@ if($mybb->input['action'] == "reports")
 	$pages = ceil($pages);
 
 	if($mybb->input['page'] == "last")
+
 	{
 		$page = $pages;
 	}
@@ -649,15 +650,30 @@ if($mybb->input['action'] == "new_announcement")
 	if(is_array($errors))
 	{
 		$errors = inline_error($errors);
-
+		
 		// Set $announcement to input stuff
-		$title = $mybb->input['title'];
-		$message = $mybb->input['message'];
-		$startmonth = intval($mybb->input['starttime_month']);
+		$announcement['subject'] = $mybb->input['title'];
+		$announcement['message'] = $mybb->input['message'];
+		$announcement['allowhtml'] = $mybb->input['allowhtml'];
+		$announcement['allowmycode'] = $mybb->input['allowmycode'];
+		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
+		
+		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+		if(!in_array($mybb->input['starttime_month'], $months))
+		{
+			$mybb->input['starttime_month'] = 1;
+		}
+		
+		if(!in_array($mybb->input['endtime_month'], $months))
+		{
+			$mybb->input['endtime_month'] = 1;
+		}
+		
+		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
 		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
-		$endmonth = intval($mybb->input['endtime_month']);
+		$endmonth = $mybb->input['endtime_month'];
 		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
 		$endday = intval($mybb->input['endtime_day']);
 		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
@@ -898,11 +914,23 @@ if($mybb->input['action'] == "edit_announcement")
 		$announcement['allowhtml'] = $mybb->input['allowhtml'];
 		$announcement['allowmycode'] = $mybb->input['allowmycode'];
 		$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
-		$startmonth = intval($mybb->input['starttime_month']);
+		
+		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+		if(!in_array($mybb->input['starttime_month'], $months))
+		{
+			$mybb->input['starttime_month'] = 1;
+		}
+		
+		if(!in_array($mybb->input['endtime_month'], $months))
+		{
+			$mybb->input['endtime_month'] = 1;
+		}
+		
+		$startmonth = $mybb->input['starttime_month'];
 		$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
 		$startday = intval($mybb->input['starttime_day']);
 		$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
-		$endmonth = intval($mybb->input['endtime_month']);
+		$endmonth = $mybb->input['endtime_month'];
 		$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
 		$endday = intval($mybb->input['endtime_day']);
 		$endtime_time = htmlspecialchars($mybb->input['endtime_time']);

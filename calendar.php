@@ -1803,7 +1803,7 @@ if($mybb->input['action'] == "weekview")
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
 	add_breadcrumb("{$monthnames[$week_from[1]]} {$week_from[2]}", get_calendar_link($calendar['cid'], $week_from[2], $week_from[1]));
-	add_breadcrumb("Weekly Overview");
+	add_breadcrumb($lang->weekly_overview);
 
 	// Establish if we have a month ending in this week
 	if($week_from[1] != $week_to[1])

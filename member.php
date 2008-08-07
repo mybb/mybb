@@ -1585,8 +1585,8 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 	// Check group limits
 	if($mybb->usergroup['maxemails'] > 0)
 	{
-		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}'");
-		$sent_count = $db->fetch_field($query, "maillogs");
+		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}' AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+		$sent_count = $db->fetch_field($query, "sent_count");
 		if($sent_count > $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);
@@ -1664,8 +1664,8 @@ if($mybb->input['action'] == "emailuser")
 	// Check group limits
 	if($mybb->usergroup['maxemails'] > 0)
 	{
-		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}'");
-		$sent_count = $db->fetch_field($query, "maillogs");
+		$query = $db->simple_select("maillogs", "COUNT(*) AS sent_count", "fromuid='{$mybb->user['uid']}' AND dateline >= '".(TIME_NOW - (60*60*24))."'");
+		$sent_count = $db->fetch_field($query, "sent_count");
 		if($sent_count > $mybb->usergroup['maxemails'])
 		{
 			$lang->error_max_emails_day = $lang->sprintf($lang->error_max_emails_day, $mybb->usergroup['maxemails']);

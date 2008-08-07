@@ -126,4 +126,6 @@ $l['warning_user'] = "Warning a user";
 $l['viewing_warning'] = "Viewing a warning";
 $l['managing_warnings'] = "Managing warnings";
 $l['changing_dst'] = "Changing DST Switch";
+$l['printing_thread'] = "Printing a Thread";
+$l['printing_thread2'] = "Printing Thread <a href=\"{1}\">{2}</a>";
 ?>

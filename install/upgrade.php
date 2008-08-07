@@ -139,7 +139,29 @@ if(file_exists("lock"))
 }
 else
 {
-	if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
+	if($mybb->input['action'] == "logout" && $mybb->user['uid'])
+	{	
+		// Check session ID if we have one
+		if($mybb->input['logoutkey'] != $mybb->user['logoutkey'])
+		{
+			$output->print_error("Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.");
+		}
+	
+		my_unsetcookie("mybbuser");
+		my_unsetcookie("sid");
+		if($mybb->user['uid'])
+		{
+			$time = TIME_NOW;
+			$lastvisit = array(
+				"lastactive" => $time-900,
+				"lastvisit" => $time,
+			);
+			$db->update_query("users", $lastvisit, "uid='".$mybb->user['uid']."'");
+			$db->delete_query("sessions", "sid='".$session->sid."'");
+		}
+		header("Location: upgrade.php");
+	}
+	else if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	{	
 		require_once MYBB_ROOT."inc/functions_user.php";
 	
@@ -212,7 +234,7 @@ else
 	}
 	else if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['cancp'] != 'yes')
 	{
-		$output->print_error("You do not have permissions to run this process.");
+		$output->print_error("You do not have permissions to run this process. You need administrator permissions to be able to run the upgrade procedure.<br /><br />If you need to logout, please click <a href=\"upgrade.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}\">here</a>. From there you will be able to log in again under your administrator account.");
 	}
 
 	if(!$mybb->input['action'] || $mybb->input['action'] == "intro")
@@ -499,7 +521,7 @@ function buildsettings()
 
 function buildcaches()
 {
-	global $db, $output, $cache, $lang;
+	global $db, $output, $cache, $lang, $mybb;
 
 	$output->print_header($lang->upgrade_datacache_building);
 
@@ -695,13 +717,13 @@ function sync_settings($redo=0)
 		$query = $db->simple_select("settings", "name,sid", "isdefault='1' OR isdefault='yes'");
 		while($setting = $db->fetch_array($query))
 		{
-			$settings[$setting['name']] = $setting['sid'];
+			$settings[$setting['sid']] = $setting['name'];
 		}
 		
 		$query = $db->simple_select("settinggroups", "name,title,gid", "isdefault='1' OR isdefault='yes'");
 		while($group = $db->fetch_array($query))
 		{
-			$settinggroups[$group['name']] = $group['gid'];
+			$settinggroups[$group['gid']] = $group['name'];
 		}
 	}
 	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
@@ -710,7 +732,7 @@ function sync_settings($redo=0)
 	$tree = $parser->get_tree();
 	$settinggroupnames = array();
 	$settingnames = array();
-
+	
 	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 	{
 		$settinggroupnames[] = $settinggroup['attributes']['name'];
@@ -769,7 +791,8 @@ function sync_settings($redo=0)
 	{
 		if(!in_array($groupname, $settinggroupnames))
 		{
-			$db->delete_query("settinggroups", "gid='".$settinggroups[$groupname]."'", 1);
+			$gid = array_search($groupname, $settinggroups);
+			$db->delete_query("settinggroups", "gid='".$gid."'", 1);
 		}
 	}
 	
@@ -777,9 +800,11 @@ function sync_settings($redo=0)
 	{
 		if(!in_array($settingname, $settingnames))
 		{
-			$db->delete_query("settings", "sid='".$settings[$settingname]."'", 1);
+			$sid = array_search($settingname, $settings);
+			$db->delete_query("settings", "sid='".$sid."'", 1);
 		}
 	}
+
 	
 	if($redo >= 1)
 	{

@@ -4915,15 +4915,6 @@ body {
 		<template name="modcp_reports_noreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="newthread_postpoll" version="120"><![CDATA[<tr>
-<td class="{$bgcolor}" valign="top">
-<strong>{$lang->poll}</strong><br /><span class="smalltext">{$lang->poll_desc}</span>
-</td>
-<td class="{$bgcolor}" valign="top">
-<span class="smalltext"><input type="checkbox" class="checkbox" name="postpoll" value="1" {$postpollchecked} /><strong>{$lang->poll_check}</strong><br />
-{$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" />{$lang->max_options}</span>
-</td>
-</tr>]]></template>
 		<template name="global_unreadreports" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1" align="right"><span class="smalltext"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></span></td>
@@ -9307,11 +9298,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <a href="{$lastpost_link}" title="{$full_lastpost_subject}"><strong>{$lastpost_subject}</strong></a>
 <br />{$lastpost_date} {$lastpost_time}<br />{$lang->by} {$lastpost_profilelink}</span>
 ]]></template>
-	<template name="calendar_dayview_noevents" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1">{$lang->no_events}</td>
-</tr>
-</table>]]></template>
 		<template name="member_register_coppa" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</title>
@@ -10217,7 +10203,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 </body>
 </html>]]></template>
-<template name="modcp_announcements_new" version="1400"><![CDATA[<html>
+<template name="modcp_announcements_new" version="1401"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
 {$headerinclude}
@@ -10232,7 +10218,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 			<tr>
 				{$modcp_nav}
 				<td valign="top">
-					{$announcements_global}
+					{$errors}
 					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 						<tr>
 							<td class="thead" colspan="6"><strong>{$lang->add_announcement}</strong></td>

@@ -47,10 +47,6 @@ if($mybb->input['pid'] && !$mybb->input['tid'])
 }
 
 // Get the thread details from the database.
-$options = array(
-	"limit" => 1
-);
-
 $thread = get_thread($mybb->input['tid']);
 
 if(substr($thread['closed'], 0, 6) == "moved|")
@@ -228,7 +224,7 @@ if($mybb->input['action'] == "nextnewest")
 		"order_by" => "dateline",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select('posts', 'pid', "tid={$nextthread['tid']}");
+	$query = $db->simple_select('posts', 'pid', "tid='{$nextthread['tid']}'", $options);
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
@@ -258,7 +254,7 @@ if($mybb->input['action'] == "nextoldest")
 		"order_by" => "dateline",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select("posts", "pid", "tid=".$nextthread['tid']);
+	$query = $db->simple_select("posts", "pid", "tid='".$nextthread['tid']."'", $options);
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
@@ -791,7 +787,7 @@ if($mybb->input['action'] == "thread")
 			case "sqlite2":
 			case "pgsql":
 			$query = $db->query("
-				SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."' WITH QUERY EXPANSION) AS relevance
+				SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
 				FROM ".TABLE_PREFIX."threads t
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 				WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
@@ -801,10 +797,10 @@ if($mybb->input['action'] == "thread")
 			break;
 			default:
 			$query = $db->query("
-				SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."' WITH QUERY EXPANSION) AS relevance
+				SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
 				FROM ".TABLE_PREFIX."threads t
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-				WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."' WITH QUERY EXPANSION) >= '{$mybb->settings['similarityrating']}'
+				WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
 				ORDER BY t.lastpost DESC
 				LIMIT 0, {$mybb->settings['similarlimit']}
 			");

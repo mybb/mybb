@@ -600,15 +600,15 @@ switch($mybb->input['action'])
 			$info = '';
 			if($modaction['tsubject'])
 			{
-				$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".$modaction['tsubject']."</a><br />";
+				$info .= "<strong>$lang->thread</strong> <a href=\"".get_thread_link($modaction['tid'])."\">".htmlspecialchars_uni($modaction['tsubject'])."</a><br />";
 			}
 			if($modaction['fname'])
 			{
-				$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".$modaction['fname']."</a><br />";
+				$info .= "<strong>$lang->forum</strong> <a href=\"".get_forum_link($modaction['fid'])."\">".htmlspecialchars_uni($modaction['fname'])."</a><br />";
 			}
 			if($modaction['psubject'])
 			{
-				$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".$modaction['psubject']."</a>";
+				$info .= "<strong>$lang->post</strong> <a href=\"".get_post_link($modaction['pid'])."#pid".$modaction['pid']."\">".htmlspecialchars_uni($modaction['psubject'])."</a>";
 			}
 
 			eval("\$modactions .= \"".$templates->get("moderation_threadnotes_modaction")."\";");
@@ -1732,8 +1732,8 @@ switch($mybb->input['action'])
 				$options = array(
 					'order_by' => 'dateline',
 					'order_dir' => 'asc'
-					);
-				$query = $db->simple_select("posts", "DISTINCT tid", "pid IN ($pids)", $options);
+				);
+				$query = $db->simple_select("posts", "DISTINCT tid", "pid IN (".implode(',',$pids).")", $options);
 				while($row = $db->fetch_array($query))
 				{
 					$tids[] = $row['tid'];

@@ -132,7 +132,7 @@ function upgrade5_dbchanges()
 	
 	if($db->field_exists('canmanagemembers', "groupleaders"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."groupleaders DROP gcanmanagemembers;");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."groupleaders DROP canmanagemembers;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."groupleaders ADD canmanagemembers char(3) NOT NULL default '' AFTER uid;");
 	
@@ -235,7 +235,7 @@ function upgrade5_dbchanges()
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('25','newreply','<lang:group_newreply>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('26','member','<lang:group_member>');");
 
-	$db->drop_table("searhlog");
+	$db->drop_table("searchlog");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."searchlog (
 		  sid varchar(32) NOT NULL default '',
 		  uid int unsigned NOT NULL default '0',
@@ -530,6 +530,8 @@ function upgrade5_lastposts()
 	}
 	else
 	{
+		require_once MYBB_ROOT."inc/functions_rebuild.php";
+		
 		$query = $db->simple_select("threads", "COUNT(*) as num_threads", "closed NOT LIKE 'moved|%'");
 		$num_threads = $db->fetch_field($query, 'num_threads');
 		$tpp = intval($_POST['tpp']);

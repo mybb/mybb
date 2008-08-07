@@ -266,6 +266,7 @@ function fetch_wol_activity($location)
 			}
 			$user_activity['activity'] = "printthread";
 			$user_activity['tid'] = $parameters['tid'];
+			break;
 		case "private":
 			if($parameters['action'] == "send" || $parameters['action'] == "do_send")
 			{
@@ -757,9 +758,16 @@ function build_friendly_wol_location($user_activity)
 		case "vote":
 			$location_name = $lang->voting_poll;
 			break;
-		// postings.php functions
-		case "postings":
-			$location_name = $lang->using_modtools;
+		// printthread.php functions
+		case "printthread":
+			if($threads[$user_activity['tid']])
+			{
+				$location_name = $lang->sprintf($lang->printing_thread2, get_thread_link($user_activity['tid']), $threads[$user_activity['tid']]);
+			}
+			else
+			{
+				$location_name = $lang->printing_thread;
+			}
 			break;
 		// private.php functions
 		case "private_send":

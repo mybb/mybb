@@ -978,6 +978,11 @@ if($mybb->input['action'] == "edit")
 		$options[$usergroup['gid']] = $usergroup['title'];
 		$display_group_options[$usergroup['gid']] = $usergroup['title'];
 	}
+	
+	if(!is_array($mybb->input['additionalgroups']))
+	{
+		$mybb->input['additionalgroups'] = explode(',', $mybb->input['additionalgroups']);
+	}
 
 	$form_container->output_row($lang->primary_user_group." <em>*</em>", "", $form->generate_select_box('usergroup', $options, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	$form_container->output_row($lang->additional_user_groups, $lang->additional_user_groups_desc, $form->generate_select_box('additionalgroups[]', $options, $mybb->input['additionalgroups'], array('id' => 'additionalgroups', 'multiple' => true, 'size' => 5)), 'additionalgroups');
