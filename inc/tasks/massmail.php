@@ -66,7 +66,8 @@ function task_massmail($task)
 				$pm = array(
 					"subject" => $mass_email['subject'],
 					"message" => $mass_email['message'],
-					"fromid" => $mass_email['uid']
+					"fromid" => $mass_email['uid'],
+					"options" => array("savecopy" => 0),
 				);
 				
 				$pm['to'] = explode(",", $user['username']);

@@ -26,8 +26,6 @@ $upgrade_detail = array(
 // during load_module $db is not globalized in the function
 global $db;
 
-$collation = $db->build_create_table_collation();
-
 // FIRST STEP IS FOR INTEGER CONVERSION PROJECT
 
 function upgrade12_dbchanges()
@@ -426,6 +424,8 @@ function upgrade12_dbchanges2()
 	$db->drop_table("promotions");
 	$db->drop_table("promotionlogs");
 	$db->drop_table("massemails");
+	
+	$collation = $db->build_create_table_collation();
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."massemails (
 		mid int unsigned NOT NULL auto_increment,
@@ -615,7 +615,7 @@ function upgrade12_dbchanges2()
 
 	if($db->field_exists('emailnotify', "users"))
 	{
-		$db->update_query("users", array('emailnotify' => 1), "emailnotify='no' OR emailnotify='0'");
+		$db->update_query("users", array('emailnotify' => 0), "emailnotify='no' OR emailnotify='0'");
 		$db->update_query("users", array('emailnotify' => 2), "emailnotify='yes' OR emailnotify='1'");
 		$db->update_query("users", array('emailnotify' => 0), "emailnotify != 1 AND emailnotify != 2");
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE emailnotify subscriptionmethod int(1) NOT NULL default '0'");
