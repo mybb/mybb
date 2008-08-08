@@ -1674,6 +1674,11 @@ switch($mybb->input['action'])
 				{
 					error($lang->error_inline_nopostsselected);
 				}
+				if(!is_moderator_by_tids($tids))
+				{
+					error_no_permission();
+				}
+				
 				$custommod->execute(intval($mybb->input['action']), $tids);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
@@ -1693,6 +1698,10 @@ switch($mybb->input['action'])
 			}
 			elseif($tool['type'] == 't' && $mybb->input['modtype'] == 'thread')
 			{
+				if(!is_moderator_by_tids($tid))
+				{
+					error_no_permission();
+				}
 				$ret = $custommod->execute(intval($mybb->input['action']), $tid);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
