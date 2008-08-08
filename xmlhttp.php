@@ -23,6 +23,7 @@ define("IN_MYBB", 1);
 
 // We don't want visits here showing up on the Who's Online
 define("NO_ONLINE", 1);
+define('THIS_SCRIPT', 'xmlhttp.php');
 
 // Load MyBB core files
 require_once dirname(__FILE__)."/inc/init.php";

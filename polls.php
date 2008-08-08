@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'polls.php');
 
 $templatelist = "poll_newpoll,redirect_pollposted,redirect_pollupdated,redirect_votethanks";
 require_once "./global.php";

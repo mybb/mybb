@@ -75,6 +75,13 @@ $l['inline_unapprove_posts'] = "Unapprove Posts";
 $l['inline_post_moderation'] = "Inline Post Moderation:";
 $l['inline_go'] = "Go";
 $l['clear'] = "Clear";
+$l['icon_dot'] = "Contains posts by you. "; // The spaces for the icon labels are strategically placed so that there should be no extra space at the beginning or end of the resulting label and that spaces separate each 'status' ;)
+$l['icon_no_new'] = "No new posts.";
+$l['icon_new'] = "New posts.";
+$l['icon_hot'] = " Hot thread.";
+$l['icon_lock'] = " Locked thread.";
+$l['attachment_count'] = "This thread contains 1 attachment.";
+$l['attachment_count_multiple'] = "This thread contains {1} attachments.";
 
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 

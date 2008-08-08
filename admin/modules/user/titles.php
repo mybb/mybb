@@ -60,6 +60,8 @@ if($mybb->input['action'] == "add")
 			
 			$utid = $db->insert_query("usertitles", $new_title);
 			
+			$cache->update_usertitles();
+			
 			$plugins->run_hooks("admin_user_titles_add_commit");
 
 			// Log admin action
@@ -139,6 +141,8 @@ if($mybb->input['action'] == "edit")
 			);
 			
 			$db->update_query("usertitles", $updated_title, "utid='{$usertitle['utid']}'");
+			
+			$cache->update_usertitles();
 			
 			$plugins->run_hooks("admin_user_titles_edit_commit");
 

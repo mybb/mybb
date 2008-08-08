@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'attachment.php');
 
 require_once "./global.php";
 

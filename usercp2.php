@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'usercp2.php');
 
 $templatelist = 'usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav';
 
@@ -44,7 +45,7 @@ if($mybb->input['action'] == "do_addsubscription")
 		add_subscribed_thread($thread['tid'], $mybb->input['notification']);
 		if($mybb->input['referrer'])
 		{
-			$url = $mybb->input['referrer'];
+			$url = htmlspecialchars_uni(addslashes($mybb->input['referrer']));
 		}
 		else
 		{
@@ -159,6 +160,9 @@ elseif($mybb->input['action'] == "removesubscription")
 }
 elseif($mybb->input['action'] == "removesubscriptions")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	if($mybb->input['type'] == "forum")
 	{
 		$db->delete_query("forumsubscriptions", "uid='".$mybb->user['uid']."'");

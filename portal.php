@@ -11,6 +11,7 @@
 
 define("IN_MYBB", 1);
 define("IN_PORTAL", 1);
+define('THIS_SCRIPT', 'portal.php');
 
 // set the path to your forums directory here (without trailing slash)
 $forumdir = "./";

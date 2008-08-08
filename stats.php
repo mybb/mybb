@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'stats.php');
 
 $templatelist = "stats,stats_thread";
 require_once "./global.php";

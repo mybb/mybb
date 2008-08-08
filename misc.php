@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'misc.php');
 
 $templatelist = "redirect_markallread,redirect_markforumread";
 $templatelist .= ",misc_buddypopup,misc_buddypopup_user_online,misc_buddypopup_user_offline,misc_buddypopup_user_sendpm";
@@ -454,7 +455,7 @@ elseif($mybb->input['action'] == "smilies")
 	$smilies = '';
 	if($mybb->input['popup'])
 	{ // make small popup list of smilies
-		$editor = htmlspecialchars($mybb->input['editor']);
+		$editor = addslashes(htmlentities($mybb->input['editor']));
 		$e = 1;
 		$class = "trow1";
 		$smilies = "<tr>";

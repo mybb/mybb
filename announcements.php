@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'announcement.php');
 
 $templatelist = "announcement";
 require_once "./global.php";

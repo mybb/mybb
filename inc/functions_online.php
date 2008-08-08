@@ -256,7 +256,21 @@ function fetch_wol_activity($location)
 			}
 			else
 			{
-				$user_activity['activity'] = $parameters['action'];
+				$accepted_parameters = array("do_editpoll", "editpoll", "newpoll", "do_newpoll", "showresults", "vote");
+			
+				foreach($accepted_parameters as $action)
+				{
+					if($parameters['action'] == $action)
+					{
+						$user_activity['activity'] = $action;
+						break;
+					}
+				}
+				
+				if(!$user_activity['activity'])
+				{
+					$user_activity['activity'] = "showresults";
+				}
 			}
 			break;
 		case "printthread":
@@ -413,7 +427,7 @@ function fetch_wol_activity($location)
 			break;
 	}
 	
-	$user_activity['location'] = $location;
+	$user_activity['location'] = htmlspecialchars_uni($location);
 	
 	$plugins->run_hooks_by_ref("fetch_wol_activity_end", $user_activity);
 	

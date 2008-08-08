@@ -12,6 +12,7 @@
 define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "fid");
 define("NO_ONLINE", 1);
+define('THIS_SCRIPT', 'syndication.php');
 
 require_once "./global.php";
 

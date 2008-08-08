@@ -854,9 +854,9 @@ class PostDataHandler extends DataHandler
 			// Fetch any users subscribed to this thread receiving instant notification and queue up their subscription notices
 			$query = $db->query("
 				SELECT u.username, u.email, u.uid, u.language, s.subscriptionkey
-				FROM ".TABLE_PREFIX."threadsubscriptions s, ".TABLE_PREFIX."users u
+				FROM ".TABLE_PREFIX."threadsubscriptions s
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
 				WHERE s.notification='1' AND s.tid='{$post['tid']}'
-				AND u.uid=s.uid
 				AND s.uid != '{$post['uid']}'
 				AND u.lastactive>'{$thread['lastpost']}'
 			");
@@ -871,9 +871,9 @@ class PostDataHandler extends DataHandler
 				{
 					$uselang = $subscribedmember['language'];
 				}
-				elseif($mybb->settings['bblanguage'])
+				elseif($mybb->settings['orig_bblanguage'])
 				{
-					$uselang = $mybb->settings['bblanguage'];
+					$uselang = $mybb->settings['orig_bblanguage'];
 				}
 				else
 				{
@@ -901,7 +901,7 @@ class PostDataHandler extends DataHandler
 					$emailmessage = $langcache[$uselang]['email_subscription'];
 				}
 				$emailsubject = $lang->sprintf($emailsubject, $subject);
-				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], get_thread_link($thread['tid'], 0, "newpost"), $thread['tid'], $subscribedmember['subscriptionkey']);
+				$emailmessage = $lang->sprintf($emailmessage, $subscribedmember['username'], $post['username'], $mybb->settings['bbname'], $subject, $excerpt, $mybb->settings['bburl'], str_replace("&amp;", "&", get_thread_link($thread['tid'], 0, "newpost")), $thread['tid'], $subscribedmember['subscriptionkey']);
 				$new_email = array(
 					"mailto" => $db->escape_string($subscribedmember['email']),
 					"mailfrom" => '',

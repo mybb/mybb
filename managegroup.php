@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'managegroup.php');
 
 require_once "./global.php";
 

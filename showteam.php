@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'showteam.php');
 
 $templatelist = 'showteam,showteam_row,showteam_row_mod,postbit_email,postbit_pm';
 $templatelist .= ',showteam_usergroup_user,showteam_usergroup,showteam_moderators_mod';

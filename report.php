@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'report.php');
 
 $templatelist = "report,email_reportpost,emailsubject_reportpost,report_thanks";
 require_once "./global.php";

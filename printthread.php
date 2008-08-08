@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'printthread.php');
 
 $templatelist = "printthread,printthread_post";
 

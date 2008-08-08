@@ -5926,7 +5926,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td width="40%" class="trow1"><strong>{$lang->your_email}</strong><br /><span class="smalltext">{$lang->email_note}</span></td>
 <td width="60%" class="trow1"><input type="text" class="textbox" size="50" name="fromemail" /></td>
 </tr>]]></template>
-		<template name="usercp_subscriptions" version="1400"><![CDATA[<html>
+		<template name="usercp_subscriptions" version="1401"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->subscriptions}</title>
 {$headerinclude}
@@ -5965,7 +5965,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				{$gobutton}
 			</div>
 			<div>
-				<strong><a href="usercp2.php?action=removesubscriptions">{$lang->remove_all_subscriptions}</a></strong>
+				<strong><a href="usercp2.php?action=removesubscriptions&amp;my_post_key={$mybb->post_code}">{$lang->remove_all_subscriptions}</a></strong>
 			</div>
 		</td>
 	</tr>

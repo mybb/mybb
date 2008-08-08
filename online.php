@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'online.php');
 
 $templatelist = "online,online_row,online_row_ip,online_today,online_today_row,online_iplookup,mostonline";
 require_once "./global.php";

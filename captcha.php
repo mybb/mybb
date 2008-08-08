@@ -11,6 +11,7 @@
 
 define("IN_MYBB", 1);
 define("NO_ONLINE", 1);
+define('THIS_SCRIPT', 'captcha.php');
 
 require_once "./global.php";
 

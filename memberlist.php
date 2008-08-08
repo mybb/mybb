@@ -10,6 +10,7 @@
  */
 
 define("IN_MYBB", 1);
+define('THIS_SCRIPT', 'memberlist.php');
 
 $templatelist = "memberlist,memberlist_member,memberlist_search,memberlist_user,memberlist_user_groupimage,memberlist_user_avatar";
 $templatelist .= ",postbit_www,postbit_email,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";

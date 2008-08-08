@@ -13,10 +13,9 @@ ignore_user_abort(true);
 @set_time_limit(0);
 
 define("IN_MYBB", 1);
-
 define("NO_ONLINE", 1);
-
 define("IN_TASK", 1);
+define('THIS_SCRIPT', 'task.php');
 
 require_once "./inc/init.php";
 
@@ -24,6 +23,11 @@ require_once "./inc/init.php";
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
+
+if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
+{
+	@mb_internal_encoding($lang->settings['charset']);
+}
 
 require_once MYBB_ROOT."inc/functions_task.php";
 
