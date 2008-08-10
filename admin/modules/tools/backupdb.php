@@ -252,7 +252,7 @@ if($mybb->input['action'] == "backup")
 			
 			if($mybb->input['filetype'] == 'gzip')
 			{
-				$ext = '.gz';
+				$ext = '.sql.gz';
 			}
 			else
 			{

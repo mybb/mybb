@@ -73,8 +73,8 @@ if($mybb->input['action'] == "edit")
 	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message} ";
 	foreach($replacement_fields as $value => $name)
 	{
-		$html_personalisation .= " [<a href=\"#\" onclick=\"$(\'htmlmessage\').value += \'{$value}\'; return false;\">{$name}</a>], ";
-		$text_personalisation .= " [<a href=\"#\" onclick=\"$(\'message\').value += \'{$value}\'; return false;\">{$name}</a>], ";
+		$html_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'htmlmessage\')); return false;\">{$name}</a>], ";
+		$text_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'message\')); return false;\">{$name}</a>], ";
 	}
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n</script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n</script>\n";
@@ -516,6 +516,28 @@ if($mybb->input['action'] == "edit")
 
 	Event.observe($('automatic_text'), 'click', ToggleAutomatic);
 	
+	function insertText(value, textarea)
+	{
+		// Internet Explorer
+		if(document.selection)
+		{
+			textarea.focus();
+			var selection = document.selection.createRange();
+			selection.text = value;
+		}
+		// Firefox
+		else if(textarea.selectionStart || textarea.selectionStart == '0')
+		{
+			var start = textarea.selectionStart;
+			var end = textarea.selectionEnd;
+			textarea.value = textarea.value.substring(0, start)	+ value	+ textarea.value.substring(end, textarea.value.length);
+		}
+		else
+		{
+			textarea.value += value;
+		}
+	}
+	
 	</script>";
 
 	$form_container = new FormContainer("{$lang->edit_mass_mail}: {$lang->define_the_recipients}");
@@ -575,8 +597,8 @@ if($mybb->input['action'] == "send")
 	$html_personalisation = $text_personalisation = "<script type=\"text/javascript\">\n<!--\ndocument.write('{$lang->personalize_message}: ";
 	foreach($replacement_fields as $value => $name)
 	{
-		$html_personalisation .= " [<a href=\"#\" onclick=\"$(\'htmlmessage\').value += \'{$value}\'; return false;\">{$name}</a>], ";
-		$text_personalisation .= " [<a href=\"#\" onclick=\"$(\'message\').value += \'{$value}\'; return false;\">{$name}</a>], ";
+		$html_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'htmlmessage\')); return false;\">{$name}</a>], ";
+		$text_personalisation .= " [<a href=\"#\" onclick=\"insertText(\'{$value}\', \$(\'message\')); return false;\">{$name}</a>], ";
 	}
 	$html_personalisation = substr($html_personalisation, 0, -2)."');\n</script>\n";
 	$text_personalisation = substr($text_personalisation, 0, -2)."');\n</script>\n";
@@ -1254,6 +1276,28 @@ if($mybb->input['action'] == "send")
 		}
 
 		Event.observe($('automatic_text'), 'click', ToggleAutomatic);
+		
+		function insertText(value, textarea)
+		{
+			// Internet Explorer
+			if(document.selection)
+			{
+				textarea.focus();
+				var selection = document.selection.createRange();
+				selection.text = value;
+			}
+			// Firefox
+			else if(textarea.selectionStart || textarea.selectionStart == '0')
+			{
+				var start = textarea.selectionStart;
+				var end = textarea.selectionEnd;
+				textarea.value = textarea.value.substring(0, start)	+ value	+ textarea.value.substring(end, textarea.value.length);
+			}
+			else
+			{
+				textarea.value += value;
+			}
+		}
 		
 		</script>";
 

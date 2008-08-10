@@ -5261,16 +5261,20 @@ function unicode_chr($c)
  * Custom chmod function to fix problems with hosts who's server configurations screw up umasks
  *
  * @param string The file to chmod
- * @param octal The mode to chmod(i.e. 0666)
+ * @param string The mode to chmod(i.e. 0666)
  */
 function my_chmod($file, $mode)
 {
-	if(substr("{$mode}", 0, 1) != '0' || strlen("{$mode}") !== 4)
+	// Passing $mode as an octal number causes strlen and substr to return incorrect values. Instead pass as a string
+	if(substr($mode, 0, 1) != '0' || strlen($mode) !== 4)
 	{
 		return false;
 	}
 	$old_umask = umask(0);
-	$result = chmod($file, $mode);
+	
+	// We convert the octal string to a decimal number because passing a octal string doesn't work with chmod
+	// and type casting subsequently removes the prepended 0 which is needed for octal numbers
+	$result = chmod($file, octdec($mode));
 	umask($old_umask);
 	return $result;
 }
