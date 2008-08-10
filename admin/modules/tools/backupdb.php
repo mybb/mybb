@@ -169,8 +169,8 @@ if($mybb->input['action'] == "backup")
 					admin_redirect("index.php?module=tools/backupdb&action=backup");
 				}
 
-				// Send headers for gzip file (do ob_start too)
-				header('Content-Encoding: x-gzip');
+				// Send headers for gzip file
+				header('Content-Encoding: gzip');
 				header('Content-Type: application/x-gzip');
 				header('Content-Disposition: attachment; filename="'.$file.'.sql.gz"');
 			}
