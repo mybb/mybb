@@ -468,6 +468,7 @@ if($mybb->input['action'] == "export")
 		$theme['name'] = rawurlencode($theme['name']);
 		header("Content-disposition: attachment; filename=".$theme['name']."-theme.xml");
 		header("Content-type: application/octet-stream");
+		header("Content-Length: ".my_strlen($xml));
 		header("Pragma: no-cache");
 		header("Expires: 0");
 		echo $xml;
