@@ -58,6 +58,19 @@ if(!$mybb->input['action'])
 		$page->output_footer();
 		exit;
 	}
+	
+	// We do this because there is some weird symbols that show up in the xml file for unknown reasons
+	$pos = strpos($contents, "<");
+	if($pos > 1)
+	{
+		$contents = substr($contents, $pos);
+	}
+	
+	$pos = strpos(strrev($contents), ">");
+	if($pos > 1)
+	{
+		$contents = substr($contents, 0, (-1) * ($pos-1));
+	}
 
 	$parser = new XMLParser($contents);
 	$tree = $parser->get_tree();

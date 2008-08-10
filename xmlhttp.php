@@ -227,7 +227,7 @@ else if($mybb->input['action'] == "edit_subject" && $mybb->request_method == "po
 	{
 		if(function_exists("iconv"))
 		{
-			$subject = iconv("UTF-8", $charset, $subject);
+			$subject = iconv($charset, "UTF-8//IGNORE", $subject);
 		}
 		else if(function_exists("mb_convert_encoding"))
 		{
@@ -361,7 +361,7 @@ else if($mybb->input['action'] == "edit_post")
 		{
 			if(function_exists("iconv"))
 			{
-				$message = iconv("UTF-8", $charset, $message);
+				$message = iconv($charset, "UTF-8//IGNORE", $message);
 			}
 			else if(function_exists("mb_convert_encoding"))
 			{

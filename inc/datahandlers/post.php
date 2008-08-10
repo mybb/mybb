@@ -1437,14 +1437,14 @@ class PostDataHandler extends DataHandler
 			$first_post = false;
 		}
 		
+		if($existing_post['visible'] == 0)
+		{
+			$visible = 0;
+		}
+		
 		// Update the thread details that might have been changed first.
 		if($first_post)
-		{
-			if($existing_post['visible'] == 0)
-			{
-				$visible = 0;
-			}
-			
+		{			
 			$this->tid = $post['tid'];
 
 			$this->thread_update_data['visible'] = $visible;

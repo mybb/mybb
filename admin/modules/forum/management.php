@@ -2102,6 +2102,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 			{
 				if($forum['description'])
 				{
+					$forum['description'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forum['description']);
            			$forum['description'] = "<br /><small>".$forum['description']."</small>";
        			}
 			

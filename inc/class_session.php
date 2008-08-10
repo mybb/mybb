@@ -246,6 +246,10 @@ class session
 		{
 			$mybb->settings['postlayout'] = 'classic';
 		}
+		else
+		{
+			$mybb->settings['postlayout'] = 'horizontal';
+		}
 
 		// Check if this user is currently banned and if we have to lift it.
 		if(!empty($mybb->user['bandate']) && (isset($mybb->user['banlifted']) && !empty($mybb->user['banlifted'])) && $mybb->user['banlifted'] < $time)  // hmmm...bad user... how did you get banned =/

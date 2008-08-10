@@ -132,6 +132,8 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Sanitize name and description of forum.
+			$forum['name'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forum['name']); // Fix & but allow unicode
+			$forum['description'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forum['description']); // Fix & but allow unicode
 			$forum['name'] = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $forum['name']);
 			$forum['description'] = preg_replace("#&([^\#])(?![a-z1-4]{1,10};)#i", "&#038;$1", $forum['description']);
 

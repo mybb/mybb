@@ -475,7 +475,7 @@ class datacache
 		{
 			foreach(array_keys($this->moderators) as $fid)
 			{
-				usort($this->moderators[$fid], 'sort_moderators_by_usernames');
+				uasort($this->moderators[$fid], 'sort_moderators_by_usernames');
 			}
 		}
 

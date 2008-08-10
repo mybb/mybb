@@ -5265,7 +5265,7 @@ function unicode_chr($c)
  */
 function my_chmod($file, $mode)
 {
-	if(substr($mode, 0, 1) != '0' || strlen($mode) !== 4)
+	if(substr("{$mode}", 0, 1) != '0' || strlen("{$mode}") !== 4)
 	{
 		return false;
 	}
