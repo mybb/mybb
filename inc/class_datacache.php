@@ -696,7 +696,7 @@ class datacache
 	{
 		global $db;
 		$spiders = array();
-		$query = $db->simple_select("spiders", "sid,name,useragent", "", array("order_by" => "LENGTH(useragent)", "order_dir" => "DESC"));
+		$query = $db->simple_select("spiders", "sid, name, useragent, usergroup", "", array("order_by" => "LENGTH(useragent)", "order_dir" => "DESC")); 
 		while($spider = $db->fetch_array($query))
 		{
 			$spiders[$spider['sid']] = $spider;

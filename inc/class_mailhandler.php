@@ -95,9 +95,7 @@ class MailHandler
 	{
 		global $parser, $lang, $mybb;
 		
-		$this->headers = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $this->headers);
-		$this->message = preg_replace("#(\r\n|\r|\n)#s", $this->delimiter, $this->message);
-
+		$this->message = '';
 		$this->headers = $headers;
 
 		if($from)
@@ -191,27 +189,36 @@ class MailHandler
 	 */
 	function set_html_headers($message, $message_text="")
 	{
-		if(!$message_text)
+		if(!$message_text && $this->parse_format == 'both')
 		{
 			$message_text = strip_tags($message);
 		}
 		
-		$mime_boundary = "=_NextPart".md5(TIME_NOW);
+		if($this->parse_format == 'both')
+		{
+			$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}";
+			$this->message = "This is a multi-part message in MIME format.{$this->delimiter}{$this->delimiter}";
 
-		$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}";
-		$this->message = "This is a multi-part message in MIME format.{$this->delimiter}{$this->delimiter}";
+			$mime_boundary = "=_NextPart".md5(TIME_NOW);
 
-		$this->message .= "--{$mime_boundary}{$this->delimiter}";
-		$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
-		$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
-		$this->message .= $message_text."{$this->delimiter}{$this->delimiter}";
-		
-		$this->message .= "--{$mime_boundary}{$this->delimiter}{$this->delimiter}";
-		$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
-		$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
-		$this->message .= $message."{$this->delimiter}{$this->delimiter}";
-		
-		$this->message .= "--{$mime_boundary}--{$this->delimiter}{$this->delimiter}";
+			$this->message .= "--{$mime_boundary}{$this->delimiter}";
+			$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
+			$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
+			$this->message .= $message_text."{$this->delimiter}{$this->delimiter}";
+
+			$this->message .= "--{$mime_boundary}{$this->delimiter}";
+
+			$this->message .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
+			$this->message .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
+			$this->message .= $message."{$this->delimiter}{$this->delimiter}";
+
+			$this->message .= "--{$mime_boundary}--{$this->delimiter}{$this->delimiter}";
+		}
+		else {
+			$this->headers .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
+			$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
+			$this->message = $message."{$this->delimiter}{$this->delimiter}";
+		}
 	}
 
 	/**
@@ -264,7 +271,7 @@ class MailHandler
 		{
 			$_SERVER['PHP_SELF'] = str_replace($mybb->config['admin_dir']."/", "admin-", $_SERVER['PHP_SELF']);
 		}
-		$this->headers .= "X-MyBB-Script: {$http_host}{$_SERVER['PHP_SELF']}{$this->delimeter}";
+		$this->headers .= "X-MyBB-Script: {$http_host}{$_SERVER['PHP_SELF']}{$this->delimiter}";
 		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}
 	
