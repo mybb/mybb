@@ -160,6 +160,7 @@ class MailHandler
 	function set_subject($subject)
 	{
 		$this->subject = $this->cleanup($subject);
+		$this->subject = $this->utf8_encode($subject);
 	}
 
 	/**
@@ -196,10 +197,10 @@ class MailHandler
 		
 		if($this->parse_format == 'both')
 		{
+			$mime_boundary = "=_NextPart".md5(TIME_NOW);
+
 			$this->headers .= "Content-Type: multipart/alternative; boundary=\"{$mime_boundary}\"{$this->delimiter}";
 			$this->message = "This is a multi-part message in MIME format.{$this->delimiter}{$this->delimiter}";
-
-			$mime_boundary = "=_NextPart".md5(TIME_NOW);
 
 			$this->message .= "--{$mime_boundary}{$this->delimiter}";
 			$this->message .= "Content-Type: text/plain; charset=\"{$this->charset}\"{$this->delimiter}";
@@ -231,7 +232,8 @@ class MailHandler
 		// Build mail headers
 		if(!trim($this->from))
 		{
-			$this->from = "\"{$mybb->settings['bbname']}\" <{$mybb->settings['adminemail']}>";
+			$this->from = '"'.$this->utf8_encode($mybb->settings['bbname'].'"');
+			$this->from .= " <{$mybb->settings['adminemail']}>";
 		}
 
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
@@ -311,6 +313,40 @@ class MailHandler
 		$string = str_replace(array("\r", "\n", "\r\n"), "", $string);
 		$string = trim($string);
 		return $string;
+	}
+	
+	/**
+	 * Encode a string based on the character set enabled. Used to encode subjects
+	 * and recipients in email messages going out so that they show up correctly
+	 * in email clients.
+	 *
+	 * @param string The string to be encoded.
+	 * @return string The encoded string.
+	 */
+	function utf8_encode($string)
+	{
+		$encoded_string = $string;
+		if(strtolower($this->charset) == 'utf-8' && preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]/', $string))
+		{
+			// Define start delimimter, end delimiter and spacer
+			$end = "?=";
+			$start = "=?" . $this->charset . "?B?";
+			$spacer = $end . ' ' . $start;
+
+			// Determine length of encoded text within chunks and ensure length is even (should NOT use the my_strlen functions)
+			$length = 75 - strlen($start) - strlen($end);
+			$length = floor($length/4) * 4;
+
+			// Encode the string and split it into chunks with spacers after each chunk
+			$encoded_string = base64_encode($encoded_string);
+			$encoded_string = chunk_split($encoded_string, $length, $spacer);
+
+			// Remove trailing spacer and add start and end delimiters
+			$spacer = preg_quote($spacer);
+			$encoded_string = preg_replace("/" . $spacer . "$/", "", $encoded_string);
+			$encoded_string = $start . $encoded_string . $end;
+		}
+		return $encoded_string;
 	}
 }
 ?>

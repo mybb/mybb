@@ -292,10 +292,6 @@ messageEditor.prototype = {
 			Event.observe($(this.textarea), 'blur', function() {
 				this.trackingCaret = false;
 			}.bindAsEventListener(this));
-			Event.observe($(this.textarea), 'keyup', function() {
-				this.trackingCaret = true;
-				this.storeCaret();
-			}.bindAsEventListener(this));
 			Event.observe($(this.textarea), 'mousedown', function() {
 				this.trackingCaret = true;
 				this.storeCaret();

@@ -45,42 +45,16 @@ class PhpMail extends MailHandler
 			$this->delimiter = "\n";
 		}
 
-		if(function_exists('mb_send_mail'))
+		// If safe mode is on, don't send the additional parameters as we're not allowed to
+		if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
 		{
-			if(function_exists('mb_language'))
-			{
-				if($this->charset == "UTF-8")
-				{
-					$language = 'uni';
-				}
-				else
-				{
-					$language = $lang->settings['htmllang'];
-				}
-				@mb_language($language);
-			}
-			
-			if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
-			{
-				$sent = @mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers));
-			}
-			else
-			{
-				$sent = @mb_send_mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
-			}
-			$function_used = 'mb_send_mail()';
+			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
 		}
 		else
 		{
-			if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
-			{
-				$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers));
-			}
-			else
-			{
-				$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
-			}
-			$function_used = 'mail()';
+			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
+		}
+		$function_used = 'mail()';
 		}
 
 		if(!$sent)

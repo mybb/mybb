@@ -403,6 +403,12 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 		LIMIT 1
 	");
 	$pm = $db->fetch_array($query);
+	
+	if($pm['fromuid'] == 0)
+	{
+		$pm['fromusername'] = 'MyBB Engine';
+	}
+	
 	if($mybb->user['pms_unread'] == 1)
 	{
 		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
