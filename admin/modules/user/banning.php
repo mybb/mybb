@@ -245,7 +245,7 @@ if(!$mybb->input['action'])
 			$errors[] = $lang->error_invalid_username;
 		}
 		// Is the user we're trying to ban a super admin and we're not?
-		else if(is_super_admin($user['uid']) && !is_super_admin($user['uid']))
+		else if(is_super_admin($user['uid']) && !is_super_admin($mybb->user['uid']))
 		{
 			$errors[] = $lang->error_no_perm_to_ban;
 		}

@@ -89,7 +89,7 @@ while($user = $db->fetch_array($query))
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}
 	
-	if($user['displaygroup'] == '6' || $user['displaygroup'] == '6')
+	if($user['displaygroup'] == '6' || $user['usergroup'] == '6')
 	{
 		$usergroups[6]['user_list'][$user['uid']] = $user;
 	}

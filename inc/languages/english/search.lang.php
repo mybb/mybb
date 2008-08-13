@@ -82,6 +82,7 @@ $l['icon_hot'] = " Hot thread.";
 $l['icon_lock'] = " Locked thread.";
 $l['attachment_count'] = "This thread contains 1 attachment.";
 $l['attachment_count_multiple'] = "This thread contains {1} attachments.";
+$l['goto_first_unread'] = "Go to first unread post";
 
 $l['redirect_searchresults'] = "Thank you, your search has been submitted and you will now be taken to the results list.";
 

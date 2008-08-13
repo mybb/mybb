@@ -39,8 +39,9 @@ if($mybb->input['action'] == "check")
 				continue;
 			}
 			$plugininfo = $infofunc();
+			$plugininfo['guid'] = trim($plugininfo['guid']);
 			
-			if(trim($plugininfo['guid']) != "")
+			if($plugininfo['guid'] != "")
 			{
 				$info[] = $plugininfo['guid'];
 				$names[$plugininfo['guid']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
@@ -366,7 +367,7 @@ if(!$mybb->input['action'])
 	
 	if($table->num_rows() == 0)
 	{
-		$table->contruct_cell($lang->no_plugins, array('colspan' => 3));
+		$table->construct_cell($lang->no_plugins, array('colspan' => 3));
 		$table->construct_row();
 	}
 	$table->output($lang->plugins);

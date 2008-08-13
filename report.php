@@ -111,7 +111,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		while($mod = $db->fetch_array($query))
 		{
 			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], get_post_link($post['pid'], $thread['tid']), $thread['subject'], $mybb->input['reason']);
+			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])), $thread['subject'], $mybb->input['reason']);
 			
 			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
 			{
@@ -126,7 +126,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 		if(count($pm_recipients) > 0)
 		{
 			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], get_post_link($post['pid'], $thread['tid']), $thread['subject'], $mybb->input['reason']);
+			$emailmessage = $lang->sprintf($lang->email_reportpost, $mybb->user['username'], $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])), $thread['subject'], $mybb->input['reason']);
 
 			require_once MYBB_ROOT."inc/datahandlers/pm.php";
 			$pmhandler = new PMDataHandler();

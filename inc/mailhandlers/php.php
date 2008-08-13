@@ -55,7 +55,6 @@ class PhpMail extends MailHandler
 			$sent = @mail($this->to, $this->subject, $this->message, trim($this->headers), $this->additional_parameters);
 		}
 		$function_used = 'mail()';
-		}
 
 		if(!$sent)
 		{

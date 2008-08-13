@@ -3477,7 +3477,7 @@ function get_current_location($fields=false, $ignore=array())
 				}
 			}
 	
-			if(isset($addlock) && is_array($addloc))
+			if(isset($addloc) && is_array($addloc))
 			{
 				$location .= "?".implode("&", $addloc);
 			}
@@ -3843,7 +3843,7 @@ function my_strlen($string)
 {
     global $lang;
 
-    $string = preg_replace("#&\#(0-9]+);#", "-", $string);
+    $string = preg_replace("#&\#([0-9]+);#", "-", $string);
 
     if(strtolower($lang->settings['charset']) == "utf-8")
     {

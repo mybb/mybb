@@ -1467,12 +1467,12 @@ if($mybb->input['action'] == "do_editprofile")
 	$user_permissions = user_permissions($user['uid']);
 
 	// Current user is only a local moderator, cannot edit super mods or admins
-	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == 1 || $user_permissions['canadmincp'] == 1))
+	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == 1 || $user_permissions['cancp'] == 1))
 	{
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
+	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['cancp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
 	{
 		error_no_permission();
 	}
@@ -1556,12 +1556,12 @@ if($mybb->input['action'] == "editprofile")
 	$user_permissions = user_permissions($user['uid']);
 
 	// Current user is only a local moderator, cannot edit super mods or admins
-	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == 1 || $user_permissions['canadmincp'] == 1))
+	if($mybb->user['usergroup'] == 6 && ($user_permissions['issupermod'] == 1 || $user_permissions['cancp'] == 1))
 	{
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['canadmincp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
+	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['cancp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
 	{
 		error_no_permission();
 	}
@@ -2364,7 +2364,7 @@ if($mybb->input['action'] == "banning")
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
-		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['canadmincp'] == 1)
+		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}
@@ -2440,7 +2440,7 @@ if($mybb->input['action'] == "liftban")
 	}
 
 	// Permission to edit this ban?
-	if($mybb->user['uid'] != $ban['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canadmincp'] != 1)
+	if($mybb->user['uid'] != $ban['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 	{
 		error_no_permission();
 	}
@@ -2481,7 +2481,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		}
 
 		// Permission to edit this ban?
-		if($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['canadmincp'] != 1)
+		if($mybb->user['uid'] != $user['admin'] && $mybb->usergroup['issupermod'] != 1 && $mybb->usergroup['cancp'] != 1)
 		{
 			error_no_permission();
 		}
@@ -2864,7 +2864,7 @@ if(!$mybb->input['action'])
 
 		// Only show the edit & lift links if current user created ban, or is super mod/admin
 		$edit_link = '';
-		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['canadmincp'] == 1)
+		if($mybb->user['uid'] == $banned['admin'] || !$banned['adminuser'] || $mybb->usergroup['issupermod'] == 1 || $mybb->usergroup['cancp'] == 1)
 		{
 			$edit_link = "<br /><span class=\"smalltext\"><a href=\"modcp.php?action=banuser&amp;uid={$banned['uid']}\">{$lang->edit_ban}</a> | <a href=\"modcp.php?action=liftban&amp;uid={$banned['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></span>";
 		}

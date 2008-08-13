@@ -972,7 +972,7 @@ class UserDataHandler extends DataHandler
 			{
 				continue;
 			}
-			$user['user_fields']["ufid{$profile_field['fid']}"] = '';
+			$user['user_fields']["fid{$profile_field['fid']}"] = '';
 		}
 
 		$db->insert_query("userfields", $user['user_fields']);

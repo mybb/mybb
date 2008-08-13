@@ -130,7 +130,7 @@ while($thread = $db->fetch_array($query))
 	$thread['link'] = $channel['link'].get_thread_link($thread['tid']);
 	if($forumcache[$thread['fid']])
 	{
-		if($thread['disablesmilies'])
+		if($thread['smilieoff'])
 		{
 			$thread['allowsmilies'] = 0;
 		}

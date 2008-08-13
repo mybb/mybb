@@ -1048,7 +1048,7 @@ if($mybb->input['action'] == "edit")
 	$date_options = array(
 		"<label for=\"dateformat\">{$lang->date_format}:</label><br />".$form->generate_select_box("dateformat", $date_format_options, $mybb->input['dateformat'], array('id' => 'dateformat')),
 		"<label for=\"dateformat\">{$lang->time_format}:</label><br />".$form->generate_select_box("timeformat", $time_format_options, $mybb->input['timeformat'], array('id' => 'timeformat')),
-		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".build_timezone_select("timezone", $mybb->user['timezone']),
+		"<label for=\"timezone\">{$lang->time_zone}:</label><br />".build_timezone_select("timezone", $mybb->input['timezone']),
 		"<label for=\"dstcorrection\">{$lang->daylight_savings_time_correction}:</label><br />".$form->generate_select_box("dstcorrection", array(2 => $lang->automatically_detect, 1 => $lang->always_use_dst_correction, 0 => $lang->never_use_dst_correction), $mybb->input['dstcorrection'], array('id' => 'dstcorrection'))
 	);
 	$form_container->output_row($lang->date_and_time_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $date_options)."</div>");
@@ -1366,8 +1366,9 @@ if($mybb->input['action'] == "ipaddresses")
 	else
 	{
 		$popup = new PopupMenu("user_last", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;action=search&amp;regip={$user['lastip']}");
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;action=search&amp;postip={$user['lastip']}");
+		$popup->add_item($lang->show_users_regged_with_ip, 
+"index.php?module=user/users&amp;action=search&amp;results=1&amp;conditions=".urlencode(serialize(array("regip" => $user['lastip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['lastip']))));
 		$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$user['lastip']}");
 		$controls = $popup->fetch();
 	}
@@ -1383,8 +1384,8 @@ if($mybb->input['action'] == "ipaddresses")
 	else
 	{
 		$popup = new PopupMenu("user_reg", $lang->options);
-		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;action=search&amp;regip={$user['regip']}");
-		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;action=search&amp;postip={$user['regip']}");
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $user['regip']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $user['regip']))));
 		$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$user['regip']}");
 		$controls = $popup->fetch();
 	}
@@ -1398,8 +1399,8 @@ if($mybb->input['action'] == "ipaddresses")
 		if(!$done_ip[$ip['ipaddress']])
 		{
 			$popup = new PopupMenu("post_{$ip['pid']}", $lang->options);
-			$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;action=search&amp;regip={$ip['ipaddress']}");
-			$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;action=search&amp;postip={$ip['ipaddress']}");
+			$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
+			$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
 			$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$ip['ipaddress']}");
 			$controls = $popup->fetch();
 		
@@ -1858,7 +1859,7 @@ function build_users_view($view)
 	foreach($direction_fields as $search_field)
 	{
 		$direction_field = $search_field."_dir";
-		if($view['conditions'][$search_field] && $view['conditions'][$direction_field])
+		if(($view['conditions'][$search_field] || $view['conditions'][$search_field] === '0') && $view['conditions'][$direction_field])
 		{
 			switch($view['conditions'][$direction_field])
 			{
@@ -1946,7 +1947,7 @@ function build_users_view($view)
 		WHERE {$search_sql}
 	");
 	$num_results = $db->fetch_field($query, "num_results");
-
+	
 	// No matching results then return false
 	if(!$num_results)
 	{

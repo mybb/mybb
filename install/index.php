@@ -616,7 +616,7 @@ function create_tables()
 
 	// Attempt to connect to the db
 	require_once MYBB_ROOT."inc/db_{$mybb->input['dbengine']}.php";
-	switch($config['database']['type'])
+	switch($mybb->input['dbengine'])
 	{
 		case "sqlite3":
 			$db = new DB_SQLite3;
@@ -866,18 +866,19 @@ function insert_templates()
 
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
-	{
+	{ 
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	}
-	else if(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
+	elseif(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
 	{
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
+		
 	}
 	else
 	{
 		$output->print_error("Please make sure your admin directory is uploaded correctly.");
 	}
-	$theme_id = import_theme_xml($contents, array("templateset" => -2));
+	$theme_id = import_theme_xml($contents, array("templateset" => -2, "version_compat" => 1));
 	$tid = build_new_theme("Default", null, $theme_id);
 	
 	// Update our properties template set to the correct one
