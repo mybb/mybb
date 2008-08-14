@@ -5729,7 +5729,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>]]></template>
 		<template name="private_archive_csv_message" version="1400"><![CDATA[{$senddate},"{$foldername}","{$message['subject']}","{$message['tousername']}","{$message['fromusername']}","{$message['message']}"
 ]]></template>
-		<template name="search_results_threads_thread" version="1400"><![CDATA[<tr>
+		<template name="search_results_threads_thread" version="1401"><![CDATA[<tr>
 	<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif"  alt="{$folder_label}" title="{$folder_label}" /></td>
 	<td align="center" class="{$bgcolor}" width="2%">{$icon}</td>
 	<td class="{$bgcolor}">
