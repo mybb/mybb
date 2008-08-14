@@ -138,7 +138,7 @@ class errorHandler {
 					$filestr = " - Line: $line - File: $file";
 				}
 				
-				add_task_log($task['id'], "{$this->error_types[$type]} - [$type] ".var_export($message, true)."{$filestr}");
+				add_task_log($task, "{$this->error_types[$type]} - [$type] ".var_export($message, true)."{$filestr}");
 			}
 			
 			// Saving error to log file.

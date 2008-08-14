@@ -574,7 +574,7 @@ if($mybb->input['action'] == "search_replace")
 						foreach($templates as $title => $template)
 						{
 							// Do replacement
-							$newtemplate = str_replace($mybb->input['find'], $mybb->input['replace'], $template['template']);
+							$newtemplate = str_ireplace($mybb->input['find'], $mybb->input['replace'], $template['template']);
 							if($newtemplate != $template['template'])
 							{
 								// If the template is different, that means the search term has been found.
