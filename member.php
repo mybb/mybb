@@ -1234,14 +1234,14 @@ if($mybb->input['action'] == "profile")
 		$ppd = $memprofile['postnum'];
 	}
 	$stats = $cache->read("stats");
-	$posts = $stats['numposts'];
-	if($posts == 0)
+	$numposts = $stats['numposts'];
+	if($numposts == 0)
 	{
 		$percent = "0";
 	}
 	else
 	{
-		$percent = $memprofile['postnum']*100/$posts;
+		$percent = $memprofile['postnum']*100/$numposts;
 		$percent = round($percent, 2);
 	}
 	
