@@ -61,7 +61,7 @@ $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 foreach($foldersexploded as $key => $folders)
 {
 	$folderinfo = explode("**", $folders, 2);
-	if($fid == $folderinfo[0])
+	if($mybb->input['fid'] == $folderinfo[0])
 	{
 		$sel = ' selected="selected"';
 	}
@@ -387,7 +387,7 @@ if($mybb->input['action'] == "send")
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote={$pm['quotename']}]\n$message\n[/quote]";
-			$quoted['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $quoted['message']);
+			$pm['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $pm['message']);
 
 			if($mybb->input['do'] == 'forward')
 			{
@@ -553,12 +553,12 @@ if($mybb->input['action'] == "read")
 		
 		if($reply_date == $lang->today || $reply_date == $lang->yesterday)
 		{
-			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
+			$reply_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 			$actioned_on = $lang->sprintf($lang->you_replied, $reply_date);
 		}
 		else
 		{
-			$reply_data .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
+			$reply_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 			$actioned_on = $lang->sprintf($lang->you_replied_on, $reply_date);
 		}
 		
@@ -568,7 +568,7 @@ if($mybb->input['action'] == "read")
 	{
 		$forward_date = my_date($mybb->settings['dateformat'], $pm['statustime']);
 		
-		if(strpos($forward_date, $lang->today) !== false || strpos($forward_date, $lang->yesturday) !== false)
+		if(strpos($forward_date, $lang->today) !== false || strpos($forward_date, $lang->yesterday) !== false)
 		{
 			$forward_date .= ', '.my_date($mybb->settings['timeformat'], $pm['statustime']);
 			$actioned_on = $lang->sprintf($lang->you_forwarded, $forward_date);
@@ -1303,7 +1303,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 					$foldername = $folderinfo[1];
 					if($mybb->input['exporttype'] != "csv")
 					{
-						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$nmybb->input['exporttype']."_folderhead", 1, 0)."\";");
+						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_folderhead", 1, 0)."\";");
 					}
 					else
 					{
@@ -1431,7 +1431,7 @@ if(!$mybb->input['action'])
 	{		
 		// Get all recipients into an array
 		$cached_users = $get_users = array();
-		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $per_page));
+		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $perpage));
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = unserialize($row['recipients']);
