@@ -164,7 +164,7 @@ if($mybb->input['action'] == "add_template")
 	{
 		if(empty($mybb->input['title']))
 		{
-			$errors[] = $lang->error_missing_title;
+			$errors[] = $lang->error_missing_set_title;
 		}
 		else
 		{	
