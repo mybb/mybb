@@ -61,7 +61,7 @@ $foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 foreach($foldersexploded as $key => $folders)
 {
 	$folderinfo = explode("**", $folders, 2);
-	if($fid == $folderinfo[0])
+	if($mybb->input['fid'] == $folderinfo[0])
 	{
 		$sel = ' selected="selected"';
 	}
@@ -387,7 +387,7 @@ if($mybb->input['action'] == "send")
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote={$pm['quotename']}]\n$message\n[/quote]";
-			$quoted['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $quoted['message']);
+			$pm['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $pm['message']);
 
 			if($mybb->input['do'] == 'forward')
 			{
