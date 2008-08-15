@@ -1871,7 +1871,7 @@ function update_thread_counters($tid, $changes=array())
 
 	$update_query = array();
 	
-	$counters = array('replies','unapprovedposts','attachmentcount');
+	$counters = array('replies','unapprovedposts','attachmentcount', 'attachmentcount');
 
 	// Fetch above counters for this thread
 	$query = $db->simple_select("threads", implode(",", $counters), "tid='{$tid}'");
