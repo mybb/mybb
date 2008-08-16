@@ -25,12 +25,12 @@ if($mybb->input['action'] == "delete_duplicates")
 	$query = $db->query("
 		DELETE s1
 		FROM ".TABLE_PREFIX."settings s1
-		INNER JOIN ".TABLE_PREFIX."settings s2 ON (s2.name=s1.name AND s2.sid!=s1.sid)
+		INNER JOIN ".TABLE_PREFIX."settings s2 ON (s2.name=s1.name AND s2.sid!=s1.sid AND s2.sid < s1.sid)
 	");
 	$query = $db->query("
 		DELETE g1
 		FROM ".TABLE_PREFIX."settinggroups g1
-		INNER JOIN ".TABLE_PREFIX."settinggroups g2 ON (g2.title=g1.title AND g2.gid!=g1.gid)
+		INNER JOIN ".TABLE_PREFIX."settinggroups g2 ON (g2.title=g1.title AND g2.gid!=g1.gid AND g2.gid < g1.gid)
 	");
 	rebuild_settings();
 	
