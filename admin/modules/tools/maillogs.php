@@ -311,7 +311,7 @@ if(!$mybb->input['action'])
 			{
 				$table->construct_cell("{$find_from}<div><a href=\"../".get_profile_link($log['fromuid'])."\">{$log['from_username']}</a></div>");
 			}
-			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools/maillogs&amp;fromuid={$log['fromuid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_by_user}\" alt=\"{$lang->find}\" /></a></div>";
+			$find_to = "<div class=\"float_right\"><a href=\"index.php?module=tools/maillogs&amp;touid={$log['touid']}\"><img src=\"styles/{$page->style}/images/icons/find.gif\" title=\"{$lang->find_emails_to_user}\" alt=\"{$lang->find}\" /></a></div>"; 
 			if(!$log['to_username'])
 			{
 				$table->construct_cell("{$find_to}<div>{$lang->deleted_user}</div>");

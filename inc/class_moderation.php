@@ -1006,7 +1006,7 @@ class Moderation
 		$updated_stats = array(
 			"replies" => '+'.($mergethread['replies']+1),
 			"unapprovedposts" => "+{$mergethread['unapprovedposts']}",
-			"attachmentcount" => '+'.($mergethread['attachmentcount']+1)
+			"attachmentcount" => "+{$mergethread['attachmentcount']}",
 		);
 		update_thread_counters($tid, $updated_stats);
 
