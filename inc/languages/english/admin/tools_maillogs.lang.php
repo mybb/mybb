@@ -32,6 +32,7 @@ $l['username_is'] = "Username is";
 $l['email_contains'] = "Email Address contains";
 $l['subject_contains'] = "Subject contains";
 $l['from'] = "From";
+$l['find_emails_to_user'] = "Find all emails sent to this user"; 
 
 $l['error_invalid_user'] = "The username you entered does not exist.";
 

@@ -79,9 +79,24 @@ if($mybb->input['action'] == "delete")
 		
 		$plugins->run_hooks("admin_user_admin_permissions_delete_commit");
 
-		$user = get_user($uid);
 		// Log admin action
-		log_admin_action($uid, $user['username']);
+		if($uid < 0)
+		{
+			$query = $db->simple_select("usergroups", "title", "gid='$gid'");
+			$group = $db->fetch_array($query);
+			log_admin_action($uid, $group['title']);
+			
+		}
+		elseif($uid == 0)
+		{
+			// Default
+			log_admin_action(0, $lang->default);
+		}
+		else
+		{
+			$user = get_user($uid);
+			log_admin_action($uid, $user['username']);
+		}
 
 		flash_message($lang->success_perms_deleted, 'success');
 		admin_redirect("index.php?module=user/admin_permissions");

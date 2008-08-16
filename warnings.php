@@ -566,7 +566,7 @@ if($mybb->input['action'] == "warn")
 		$notes = htmlspecialchars_uni($mybb->input['notes']);
 		$type_checked[$mybb->input['type']] = "checked=\"checked\"";
 		$pm_subject = htmlspecialchars_uni($mybb->input['pm_subject']);
-		$pm_message = htmlspecialchars_uni($mybb->input['pm_message']);
+		$message = htmlspecialchars_uni($mybb->input['pm_message']);
 		if($mybb->input['send_pm'])
 		{
 			$send_pm_checked = "checked=\"checked\"";
@@ -582,7 +582,7 @@ if($mybb->input['action'] == "warn")
 		$expires = 1;
 		$custom_points = 2;
 		$pm_subject = $lang->warning_pm_subject;
-		$pm_message = $lang->warning_pm_message;
+		$message = $lang->sprintf($lang->warning_pm_message, $user['username'], $mybb->settings['bbname']);
 	}
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
