@@ -19,6 +19,7 @@ $page->add_breadcrumb_item($lang->board_settings, "index.php?module=config/setti
 
 $plugins->run_hooks("admin_config_settings_begin");
 
+/*
 // Delete all duplicate settings and setting groups
 if($mybb->input['action'] == "delete_duplicates")
 {
@@ -41,7 +42,8 @@ if($mybb->input['action'] == "delete_duplicates")
 
 	flash_message($lang->success_duplicate_settings_deleted, 'success');
 	admin_redirect("index.php?module=config/settings&action=manage");
-}
+}*/
+// ^^ Code, Please go away. Forever.
 
 // Creating a new setting group
 if($mybb->input['action'] == "addgroup")

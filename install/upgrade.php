@@ -744,7 +744,7 @@ function sync_settings($redo=0)
 			"disporder" => intval($settinggroup['attributes']['disporder']),
 			"isdefault" => $settinggroup['attributes']['isdefault']
 		);
-		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
+		if(array_search($settinggroup['attributes']['name'], $settinggroups) === false || $redo == 2)
 		{
 			$gid = $db->insert_query("settinggroups", $groupdata);
 			++$groupcount;
