@@ -773,7 +773,7 @@ function sync_settings($redo=0)
 				"gid" => $gid,
 				"isdefault" => 1
 			);
-			if(!$settings[$setting['attributes']['name']] || $redo == 2)
+			if(array_search($setting['attributes']['name'], $settings) === false || $redo == 2)
 			{
 				$settingdata['value'] = $db->escape_string($setting['settingvalue'][0]['value']);
 				$db->insert_query("settings", $settingdata);
@@ -787,24 +787,21 @@ function sync_settings($redo=0)
 		}
 	}
 	
-	foreach($settinggroups as $groupname)
+	foreach($settinggroups as $gid => $groupname)
 	{
 		if(!in_array($groupname, $settinggroupnames))
 		{
-			$gid = array_search($groupname, $settinggroups);
 			$db->delete_query("settinggroups", "gid='".$gid."'", 1);
 		}
 	}
 	
-	foreach($settings as $settingname)
+	foreach($settings as $sid => $settingname)
 	{
 		if(!in_array($settingname, $settingnames))
 		{
-			$sid = array_search($settingname, $settings);
 			$db->delete_query("settings", "sid='".$sid."'", 1);
 		}
 	}
-
 	
 	if($redo >= 1)
 	{
