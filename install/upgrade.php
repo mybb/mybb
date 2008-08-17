@@ -717,13 +717,13 @@ function sync_settings($redo=0)
 		$query = $db->simple_select("settings", "name,sid", "isdefault='1' OR isdefault='yes'");
 		while($setting = $db->fetch_array($query))
 		{
-			$settings[$setting['sid']] = $setting['name'];
+			$settings[$setting['name']] = $setting['sid'];
 		}
 		
 		$query = $db->simple_select("settinggroups", "name,title,gid", "isdefault='1' OR isdefault='yes'");
 		while($group = $db->fetch_array($query))
 		{
-			$settinggroups[$group['gid']] = $group['name'];
+			$settinggroups[$group['name']] = $group['gid'];
 		}
 	}
 	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
@@ -744,7 +744,7 @@ function sync_settings($redo=0)
 			"disporder" => intval($settinggroup['attributes']['disporder']),
 			"isdefault" => $settinggroup['attributes']['isdefault']
 		);
-		if(array_search($settinggroup['attributes']['name'], $settinggroups) === false || $redo == 2)
+		if(!$settinggroups[$settinggroup['attributes']['name']] || $redo == 2)
 		{
 			$gid = $db->insert_query("settinggroups", $groupdata);
 			++$groupcount;
@@ -773,7 +773,7 @@ function sync_settings($redo=0)
 				"gid" => $gid,
 				"isdefault" => 1
 			);
-			if(array_search($setting['attributes']['name'], $settings) === false || $redo == 2)
+			if(!$settings[$setting['attributes']['name']] || $redo == 2)
 			{
 				$settingdata['value'] = $db->escape_string($setting['settingvalue'][0]['value']);
 				$db->insert_query("settings", $settingdata);
@@ -784,22 +784,6 @@ function sync_settings($redo=0)
 				$name = $db->escape_string($setting['attributes']['name']);
 				$db->update_query("settings", $settingdata, "name='{$name}'");
 			}
-		}
-	}
-	
-	foreach($settinggroups as $gid => $groupname)
-	{
-		if(!in_array($groupname, $settinggroupnames))
-		{
-			$db->delete_query("settinggroups", "gid='".$gid."'", 1);
-		}
-	}
-	
-	foreach($settings as $sid => $settingname)
-	{
-		if(!in_array($settingname, $settingnames))
-		{
-			$db->delete_query("settings", "sid='".$sid."'", 1);
 		}
 	}
 	
