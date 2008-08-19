@@ -569,7 +569,7 @@ if($mybb->input['action'] == "edit")
 			"displaygroup" => $mybb->input['displaygroup'],
 			"postnum" => $mybb->input['postnum'],
 			"usertitle" => $mybb->input['usertitle'],
-			"timezone" => $mybb->input['timezoneoffset'],
+			"timezone" => $mybb->input['timezone'],
 			"language" => $mybb->input['language'],
 			"profile_fields" => $mybb->input['profile_fields'],
 			"profile_fields_editable" => true,

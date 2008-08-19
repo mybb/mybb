@@ -193,8 +193,6 @@ switch($mybb->input['action'])
 				error_no_permission();
 			}
 		}
-		
-		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 
 		$plugins->run_hooks("moderation_deletethread");
 

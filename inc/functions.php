@@ -5320,4 +5320,21 @@ function my_rmdir_recursive($path, $ignore=array())
     return @unlink($path);
 }
 
+/**
+ * Counts the number of subforums in a array([pid][disporder][fid]) starting from the pid
+ *
+ * @param array The array of forums
+ * @return integer The number of sub forums
+ */
+function subforums_count($array)
+{
+	$count = 0;
+	foreach($array as $array2)
+	{
+		$count += count($array2);
+	}
+	
+	return $count;
+}
+
 ?>

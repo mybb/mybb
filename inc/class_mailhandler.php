@@ -159,8 +159,7 @@ class MailHandler
 	 */
 	function set_subject($subject)
 	{
-		$this->subject = $this->cleanup($subject);
-		$this->subject = $this->utf8_encode($subject);
+		$this->subject = $this->utf8_encode($this->cleanup($subject));
 	}
 
 	/**
@@ -215,7 +214,8 @@ class MailHandler
 
 			$this->message .= "--{$mime_boundary}--{$this->delimiter}{$this->delimiter}";
 		}
-		else {
+		else
+		{
 			$this->headers .= "Content-Type: text/html; charset=\"{$this->charset}\"{$this->delimiter}";
 			$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}{$this->delimiter}";
 			$this->message = $message."{$this->delimiter}{$this->delimiter}";

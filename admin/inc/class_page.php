@@ -367,7 +367,7 @@ EOF;
 			$query_string = str_replace('?&', '?', $query_string);
 			$query_string = htmlspecialchars_uni($query_string);
 		}
-       	
+       	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 print <<<EOF
 		<p>{$lang->enter_username_and_password}</p>
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">

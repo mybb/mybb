@@ -721,7 +721,7 @@ function fetch_forum_announcements(&$table, $pid=0, $depth=1)
 
 		foreach($forum_cache as $forum)
 		{
-			$forums_by_parent[$forum['pid']][$val['disporder']][$forum['fid']] = $forum;
+			$forums_by_parent[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 		}
 	}
 

@@ -2043,7 +2043,7 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 
 		foreach($forum_cache as $forum)
 		{
-			$forums_by_parent[$forum['pid']][$val['disporder']][$forum['fid']] = $forum;
+			$forums_by_parent[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 		}
 	}
 
@@ -2150,9 +2150,9 @@ function build_admincp_forums_list(&$form_container, $pid=0, $depth=1)
 				++$donecount;
 				if($donecount == $mybb->settings['subforumsindex'])
 				{
-					if(count($children) > $donecount)
+					if(subforums_count($forums_by_parent[$pid]) > $donecount)
 					{
-						$sub_forums .= $comma.$lang->sprintf($lang->more_subforums, (count($children) - $donecount));
+						$sub_forums .= $comma.$lang->sprintf($lang->more_subforums, (subforums_count($forums_by_parent[$pid]) - $donecount));
 						return;
 					}
 				}

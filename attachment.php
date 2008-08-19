@@ -114,14 +114,14 @@ else
 {
 	$ext = get_extension($attachment['filename']);
 	
-	if($ext == "txt" || $ext == "htm" || $ext == "html" || $ext == "pdf")
+	if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false && strpos($attachment['filetype'], "image" === false)
 	{
 		header("Content-disposition: attachment; filename=\"{$attachment['filename']}\"");
 	}
 	else
 	{
 		header("Content-disposition: inline; filename=\"{$attachment['filename']}\"");
-	}	
+	}
 	
 	header("Content-type: {$attachment['filetype']}");
 	header("Content-length: {$attachment['filesize']}");

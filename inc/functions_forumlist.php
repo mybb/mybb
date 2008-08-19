@@ -165,9 +165,9 @@ function build_forumbits($pid=0, $depth=1)
 				++$donecount;
 				if($donecount == $mybb->settings['subforumsindex'])
 				{
-					if(count($parent) > $donecount)
+					if(subforums_count($fcache[$pid]) > $donecount)
 					{
-						$forum_list .= $comma.$lang->sprintf($lang->more_subforums, (count($parent) - $donecount));
+						$forum_list .= $comma.$lang->sprintf($lang->more_subforums, (subforums_count($fcache[$pid]) - $donecount));
 					}
 				}
 				continue;
