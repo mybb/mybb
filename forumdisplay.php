@@ -546,6 +546,7 @@ if($foruminfo['allowtratings'] != 0)
 
 				$avaragerating[$thread['tid']] = $rating;
 			}
+			$sortfield = "";
 			break;
 		default:
 			$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";

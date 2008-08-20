@@ -419,7 +419,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		else
 		{
 			$event_date = explode("-", gmdate("j-n-Y", $event['starttime_user']));
-			$event['endtime_user'] = $event['endtime']+$offset*3600;
+			$event['endtime_user'] = $event['endtime']+($offset*3600);
 			$event['weekday_start'] = $calendar['weekstart'];
 
 			$start_day = gmmktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
@@ -445,8 +445,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 			$first = "";
 			$event_date = explode("-", gmdate("j-n-Y", $range_start));
 			
-			// Get rid of hour/minutes because sometimes they cause the events to stretch into the next day
-			$range_end = gmmktime(0, 0, 0, gmdate("n", $event['endtime']), gmdate("j", $event['endtime']), gmdate("Y", $event['endtime']));
+			$range_end = gmmktime(23, 59, 59, gmdate("n", $event['endtime']), gmdate("j", $event['endtime']), gmdate("Y", $event['endtime']));
 			while($range_start < $range_end)
 			{
 				// Outside the dates we care about, break! (No unnecessary looping here!)

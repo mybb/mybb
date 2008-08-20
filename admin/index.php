@@ -95,6 +95,8 @@ elseif($mybb->input['do'] == "login")
 		$db->insert_query("adminsessions", $admin_session);
 		my_setcookie("adminsid", $sid);
 		$post_verify = false;
+		
+		$mybb->request_method = "get";
 	}
 	else
 	{

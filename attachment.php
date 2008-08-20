@@ -55,8 +55,7 @@ $forum = get_forum($fid);
 // Permissions
 $forumpermissions = forum_permissions($fid);
 
-// No Permission page if user cannot view or download attachments in this forum (if not calling the thumbnail)
-if(($forumpermissions['canview'] == 0 || $forumpermissions['candlattachments'] == 0) && !$mybb->input['thumbnail'])
+if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0 || ($forumpermissions['candlattachments'] == 0 && !$mybb->input['thumbnail']))
 {
 	error_no_permission();
 }

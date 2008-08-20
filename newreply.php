@@ -169,8 +169,19 @@ if((empty($_POST) && empty($_FILES)) && $mybb->input['processed'] == '1')
 
 if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->input['action'] == "do_newreply" && $mybb->input['submit'] && $_FILES['attachment'])))
 {
-	// If there's an attachment, check it and upload it.
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0)
+	if($mybb->input['action'] == "editdraft" || ($mybb->input['tid'] && $mybb->input['pid']))
+	{
+		$attachwhere = "pid='$pid'";
+	}
+	else
+	{
+		$attachwhere = "posthash='".$db->escape_string($posthash)."'";
+	}
+	$query = $db->simple_select("attachments", "COUNT(aid) as numattachs", $attachwhere);
+	$attachcount = $db->fetch_field($query, "numattachs");
+	
+	// If there's an attachment, check it and upload it
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && $mybb->settings['maxattachments'] != 0 && $attachcount >= $mybb->settings['maxattachments']))
 	{
 		require_once MYBB_ROOT."inc/functions_upload.php";
 		$attachedfile = upload_attachment($_FILES['attachment']);
