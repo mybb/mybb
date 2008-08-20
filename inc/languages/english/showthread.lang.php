@@ -82,4 +82,6 @@ $l['search_thread'] = "Search Thread";
 $l['enter_keywords'] = "Enter Keywords";
 $l['image_verification'] = "Image Verification";
 $l['verification_note'] = "Please enter the text within the image on the left in to the text box below. This process is used to prevent automated posts.";
+$l['verification_subnote'] = "(case insensitive)";
+
 ?>
