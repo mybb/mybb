@@ -8633,7 +8633,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<tr>
 			<td width="20%" class="trow2"><strong>{$lang->event_options}</strong></td>
 			<td class="trow2">
-				<input type="checkbox" class="checkbox" name=thread value="1"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
+				<input type="checkbox" class="checkbox" name="private" value="1"{$privatecheck} /><span class="smalltext">{$lang->private_option}</span><br />
 			</td>
 		</tr>
 	</table>
