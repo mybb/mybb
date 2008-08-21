@@ -8,9 +8,15 @@
  *
  * $Id$
  */
+ 
+$working_dir = dirname(__FILE__);
+if(!$working_dir)
+{
+	$working_dir = '.';
+}
 
 // Load main MyBB core file which begins all of the magic
-require_once "./inc/init.php";
+require_once $working_dir."/inc/init.php";
 
 $shutdown_queries = array();
 
