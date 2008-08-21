@@ -481,7 +481,7 @@ class DB_MySQLi
 		@mysqli_close($this->read_link);
 		if($this->write_link)
 		{
-			@mysql_close($this->write_link);
+			@mysqli_close($this->write_link);
 		}
 	}
 
@@ -846,7 +846,7 @@ class DB_MySQLi
 	 */
 	function escape_string($string)
 	{
-		if(function_exists("mysql_real_escape_string") && $this->read_link)
+		if(function_exists("mysqli_real_escape_string") && $this->read_link)
 		{
 			$string = mysqli_real_escape_string($this->read_link, $string);
 		}

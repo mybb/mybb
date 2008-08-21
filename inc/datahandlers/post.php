@@ -310,6 +310,12 @@ class PostDataHandler extends DataHandler
 		
 		$post = &$this->data;
 		
+		// Are we starting a new thread?
+		if(!$post['tid'])
+		{
+			return true;
+		}
+		
 		// Are we even turned on?
 		if(empty($mybb->settings['postmergemins']))
 		{
