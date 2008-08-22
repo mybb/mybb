@@ -1202,7 +1202,6 @@ if($mybb->input['action'] == "do_modqueue")
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}
 		");
-		$query = $db->simple_select("attachments", "aid, pid", "");
 		while($attachment = $db->fetch_array($query))
 		{
 			$action = $mybb->input['attachments'][$attachment['aid']];
@@ -2711,8 +2710,6 @@ if($mybb->input['action'] == "banuser")
 			$liftlist .= ">{$title} ({$thatime})</option>\n";
 		}
 	}
-
-	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;bid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
 	
 	$bangroups = '';
 	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");

@@ -583,7 +583,8 @@ if($foruminfo['allowtratings'] != 0)
 }
 else
 {
-	$sortfield = "";
+	$t = "t.";
+	$sortfield = "lastpost";
 	$ratingadd = '';
 	$lpbackground = "trow1";
 	$colspan = "6";

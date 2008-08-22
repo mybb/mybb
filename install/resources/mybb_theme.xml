@@ -5205,7 +5205,7 @@ body {
 {$post['attachmentlist']}
 </fieldset>]]></template>
 		<template name="postbit_attachments_attachment" version="120"><![CDATA[<br />{$attachment['icon']}&nbsp;&nbsp;<a href="attachment.php?aid={$attachment['aid']}" target="_blank">{$attachment['filename']}</a> ({$lang->postbit_attachment_size} {$attachment['filesize']} / {$lang->postbit_attachment_downloads} {$attachment['downloads']})]]></template>
-		<template name="postbit_attachments_attachment_unapproved" version="120"><![CDATA[<br /><strong>{$lang->postbit_unapproved_attachments}</strong>]]></template>
+		<template name="postbit_attachments_attachment_unapproved" version="1402"><![CDATA[<br /><strong>{$postbit_unapproved_attachments}</strong>]]></template>
 		<template name="postbit_attachments_images" version="120"><![CDATA[<span class="smalltext"><strong>{$lang->postbit_attachments_images}</strong></span><br />
 {$post['imagelist']}
 <br />]]></template>
