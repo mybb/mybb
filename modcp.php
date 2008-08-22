@@ -126,12 +126,11 @@ if($mybb->input['action'] == "reports")
 			$page = intval($result / $perpage) + 1;
 		}
 	}
-	$postcount = intval($report_count)+1;
+	$postcount = intval($report_count);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
 	if($mybb->input['page'] == "last")
-
 	{
 		$page = $pages;
 	}
@@ -236,7 +235,7 @@ if($mybb->input['action'] == "allreports")
 			$page = intval($result / $perpage) + 1;
 		}
 	}
-	$postcount = intval($warnings)+1;
+	$postcount = intval($warnings);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -413,7 +412,7 @@ if($mybb->input['action'] == "modlogs")
 		$page = 1;
 	}
 
-	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modlogs&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;orderby=$mybb->input['sortby']&amp;order={$mybb->input['order']}");
+	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modlogs&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$mybb->input['order']}");
 	if($postcount > $perpage)
 	{
 		eval("\$resultspages = \"".$templates->get("modcp_modlogs_multipage")."\";");
@@ -1227,7 +1226,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=threads");
+		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=threads");
 
 		$query = $db->query("
 			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
@@ -1310,7 +1309,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
+		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
 		$query = $db->query("
 			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
@@ -1370,7 +1369,7 @@ if($mybb->input['action'] == "modqueue")
 		}
 
 		$perpage = $mybb->settings['postsperpage'];
-		$pages = $unapprovedthreads / $perpage;
+		$pages = $unapproved_attachments / $perpage;
 		$pages = ceil($pages);
 
 		if($mybb->input['page'] == "last")
@@ -1393,7 +1392,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
+		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
 		$query = $db->query("
 			SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
@@ -2317,7 +2316,7 @@ if($mybb->input['action'] == "banning")
 	$query = $db->simple_select("banned", "COUNT(uid) AS count");
 	$banned_count = $db->fetch_field($query, "count");
 
-	$postcount = intval($banned_count)+1;
+	$postcount = intval($banned_count);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -2486,7 +2485,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 			error_no_permission();
 		}
 		
-		$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;bid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
 	}
 	// Creating a new ban
 	else
@@ -2636,7 +2634,7 @@ if($mybb->input['action'] == "banuser")
 		}
 	}
 	// New ban!
-	if(!$banuer_username)
+	if(!$banuser_username)
 	{
 		if($mybb->input['uid'])
 		{
@@ -2681,6 +2679,8 @@ if($mybb->input['action'] == "banuser")
 		}
 	}
 
+	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;bid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
+	
 	$bangroups = '';
 	$query = $db->simple_select("usergroups", "gid, title", "isbannedgroup=1");
 	while($item = $db->fetch_array($query))
