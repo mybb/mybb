@@ -113,7 +113,7 @@ else
 {
 	$ext = get_extension($attachment['filename']);
 	
-	if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE") !== false && strpos($attachment['filetype'], "image" === false)
+	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie") !== false && strpos($attachment['filetype'], "image") === false)
 	{
 		header("Content-disposition: attachment; filename=\"{$attachment['filename']}\"");
 	}

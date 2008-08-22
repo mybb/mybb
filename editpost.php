@@ -157,7 +157,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || ($mybb->i
 	$attachcount = $db->fetch_field($query, "numattachs");
 	
 	// If there's an attachment, check it and upload it
-	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && $mybb->settings['maxattachments'] != 0 && $attachcount >= $mybb->settings['maxattachments']))
+	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
 		$attachedfile = upload_attachment($_FILES['attachment']);
 	}

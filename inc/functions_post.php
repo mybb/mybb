@@ -699,11 +699,11 @@ function get_post_attachments($id, &$post)
 		{
 			if($validationcount == 1)
 			{
-				$lang->postbit_unapproved_attachments = $lang->postbit_unapproved_attachment;
+				$postbit_unapproved_attachments = $lang->postbit_unapproved_attachment;
 			}
 			else
 			{
-				$lang->postbit_unapproved_attachments = $lang->sprintf($lang->postbit_unapproved_attachments, $validationcount);
+				$postbit_unapproved_attachments = $lang->sprintf($lang->postbit_unapproved_attachments, $validationcount);
 			}
 			eval("\$post['attachmentlist'] .= \"".$templates->get("postbit_attachments_attachment_unapproved")."\";");
 		}

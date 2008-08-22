@@ -28,7 +28,7 @@ function modcp_can_manage_user($uid)
 		return false;
 	}
 	// Current user is a super mod or is an administrator
-	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['cancp'] == 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid'])))
+	else if($user_permissions['cancp'] == 1 && ($mybb->usergroup['cancp'] != 1 || (is_super_admin($uid) && !is_super_admin($mybb->user['uid'])))) 
 	{
 		return false;
 	}

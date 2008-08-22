@@ -130,6 +130,9 @@ if($mybb->input['action'] == "reports")
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
+
+
+
 	if($mybb->input['page'] == "last")
 	{
 		$page = $pages;
@@ -600,7 +603,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
-		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -826,6 +829,29 @@ if($mybb->input['action'] == "do_edit_announcement")
 		$errors[] = $lang->error_missing_forum;
 	}
 
+	$startdate = @explode(" ", $mybb->input['starttime_time']);
+	$startdate = @explode(":", $startdate[0]);
+	$enddate = @explode(" ", $mybb->input['endtime_time']);
+	$enddate = @explode(":", $enddate[0]);
+
+	if(stristr($mybb->input['starttime_time'], "pm"))
+	{
+		$startdate[0] = 12+$startdate[0];
+		if($startdate[0] >= 24)
+		{
+			$startdate[0] = "00";
+		}
+	}
+
+	if(stristr($mybb->input['endtime_time'], "pm"))
+	{
+		$enddate[0] = 12+$enddate[0];
+		if($enddate[0] >= 24)
+		{
+			$enddate[0] = "00";
+		}
+	}
+
 	$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
 	if(!in_array($mybb->input['starttime_month'], $months))
 	{
@@ -848,7 +874,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		{
 			$mybb->input['endtime_month'] = 1;
 		}
-		$enddate = gmmktime($enddatehour, intval($mybb->input['endtime_time']), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
 		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
@@ -1170,7 +1196,13 @@ if($mybb->input['action'] == "do_modqueue")
 	}
 	else if(is_array($mybb->input['attachments']))
 	{
-		$query = $db->simple_select("attachments", "aid, pid", "aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}");
+		$query = $db->query("
+			SELECT a.pid, a.aid
+			FROM  ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}
+		");
+		$query = $db->simple_select("attachments", "aid, pid", "");
 		while($attachment = $db->fetch_array($query))
 		{
 			$action = $mybb->input['attachments'][$attachment['aid']];
@@ -1372,6 +1404,7 @@ if($mybb->input['action'] == "modqueue")
 		$pages = $unapproved_attachments / $perpage;
 		$pages = ceil($pages);
 
+
 		if($mybb->input['page'] == "last")
 		{
 			$page = $pages;
@@ -1471,7 +1504,7 @@ if($mybb->input['action'] == "do_editprofile")
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['cancp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
+	else if(modcp_can_manage_user($user['uid']))
 	{
 		error_no_permission();
 	}
@@ -1560,7 +1593,7 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if($mybb->usergroup['issupermod'] == 1 && $user_permissions['cancp'] == 1 || (is_super_admin($user['uid']) && !is_super_admin($user['uid'])))
+	else if(modcp_can_manage_user($user['uid']))
 	{
 		error_no_permission();
 	}
@@ -2435,7 +2468,7 @@ if($mybb->input['action'] == "liftban")
 
 	if(!$ban['uid'])
 	{
-		$lang->error_invalidban;
+		error($lang->error_invalidban);
 	}
 
 	// Permission to edit this ban?
@@ -2484,7 +2517,6 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
-		
 	}
 	// Creating a new ban
 	else
@@ -2633,6 +2665,7 @@ if($mybb->input['action'] == "banuser")
 			eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
 		}
 	}
+	
 	// New ban!
 	if(!$banuser_username)
 	{
@@ -2692,6 +2725,8 @@ if($mybb->input['action'] == "banuser")
 		}
 		$bangroups .= "<option value=\"{$item['gid']}\"{$selected}>".htmlspecialchars_uni($item['title'])."</option>\n";
 	}
+	
+	$lift_link = "<div class=\"float_right\"><a href=\"modcp.php?action=liftban&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}\">{$lang->lift_ban}</a></div>";
 
 	eval("\$banuser = \"".$templates->get("modcp_banuser")."\";");
 	output_page($banuser);
@@ -2722,7 +2757,7 @@ if(!$mybb->input['action'])
 	if($unapproved_attachments > 0)
 	{
 		$query = $db->query("
-			SELECT t.tid, p.pid, t.uid, t.username, a.filename, a.dateuploaded
+			SELECT t.tid, p.pid, p.uid, t.username, a.filename, a.dateuploaded
 			FROM  ".TABLE_PREFIX."attachments a
 			LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=a.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
@@ -2770,7 +2805,7 @@ if(!$mybb->input['action'])
 		$post['subject'] = $post['fullsubject'] = $parser->parse_badwords($post['subject']);
 		if(my_strlen($post['subject']) > 25)
 		{
-			$lastpost_subject = my_substr($post['subject'], 0, 25)."...";
+			$post['subject'] = my_substr($post['subject'], 0, 25)."...";
 		}
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
@@ -2796,7 +2831,7 @@ if(!$mybb->input['action'])
 		$thread['subject'] = $thread['fullsubject'] = $parser->parse_badwords($thread['subject']);
 		if(my_strlen($thread['subject']) > 25)
 		{
-			$lastpost_subject = my_substr($thread['subject'], 0, 25)."...";
+			$post['subject'] = my_substr($thread['subject'], 0, 25)."...";
 		}
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);

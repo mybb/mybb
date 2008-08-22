@@ -78,16 +78,38 @@ if($fpermissions['canview'] != 1)
 	error_no_permission();
 }
 
-// Build a forum cache.
-$query = $db->query("
-	SELECT f.*, fr.dateline AS lastread
-	FROM ".TABLE_PREFIX."forums f
-	LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
-	WHERE f.active != 0
-	ORDER BY pid, disporder
-");
+if($mybb->user['uid'] == 0)
+{
+	// Build a forum cache.
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."forums
+		WHERE active != 0
+		ORDER BY pid, disporder
+	");
+	
+	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+}
+else
+{
+	// Build a forum cache.
+	$query = $db->query("
+		SELECT f.*, fr.dateline AS lastread
+		FROM ".TABLE_PREFIX."forums f
+		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+		WHERE f.active != 0
+		ORDER BY pid, disporder
+	");
+}
 while($forum = $db->fetch_array($query))
 {
+	if($mybb->user['uid'] == 0)
+	{
+		if($forumsread[$forum['fid']])
+		{
+			$forum['lastread'] = $forumsread[$forum['fid']];
+		}
+	}
 	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
 
@@ -561,6 +583,7 @@ if($foruminfo['allowtratings'] != 0)
 }
 else
 {
+	$sortfield = "";
 	$ratingadd = '';
 	$lpbackground = "trow1";
 	$colspan = "6";
