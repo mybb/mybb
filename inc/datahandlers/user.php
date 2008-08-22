@@ -528,8 +528,16 @@ class UserDataHandler extends DataHandler
 		$this->verify_yesno_option($options, 'showavatars', 1);
 		$this->verify_yesno_option($options, 'showquickreply', 1);
 		$this->verify_yesno_option($options, 'showredirect', 1);
-		$this->verify_yesno_option($options, 'classicpostbit', 0);
-
+		
+		if($mybb->settings['postlayout'] == 'classic')
+		{
+			$this->verify_yesno_option($options, 'classicpostbit', 1);
+		}
+		else
+		{
+			$this->verify_yesno_option($options, 'classicpostbit', 0);
+		}
+		
 		if(array_key_exists('subscriptionmethod', $options))
 		{
 			// Value out of range
