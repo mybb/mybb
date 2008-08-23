@@ -89,8 +89,8 @@ function task_promotions($task)
 			$usergroup_select = "usergroup";
 		}
 		
-		$query = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
-		while($user = $db->fetch_array($query))
+		$query2 = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
+		while($user = $db->fetch_array($query2))
 		{
 			if($usergroup_select == "additionalgroups")
 			{
