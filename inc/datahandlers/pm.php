@@ -205,7 +205,7 @@ class PMDataHandler extends DataHandler
 						// Check that this recipient actually exists
 						$query = $db->simple_select("users", "*", "uid='".intval($uid)."'");
 						$user = $db->fetch_array($query);
-						if($recipient_type == "bcc")
+						if($recipient_type == "bccid")
 						{
 							$user['bcc'] = 1;
 						}
