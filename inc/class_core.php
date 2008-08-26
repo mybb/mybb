@@ -199,11 +199,8 @@ class MyBB {
 		}
 
 		// Old version of PHP, need to register_shutdown_function
-		if(phpversion() < '5.0.5')
-		{
-			$this->use_shutdown = true;
-			register_shutdown_function(array(&$this, "__destruct"));
-		}
+		$this->use_shutdown = true;
+		register_shutdown_function(array(&$this, "__destruct"));
 
 		if(isset($this->input['action']) && $this->input['action'] == "mybb_logo")
 		{

@@ -126,7 +126,7 @@ $valid = array(
 if(in_array($current_page, $valid))
 {
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if(isset($mybb->input['pid']))
+	if($mybb->input['pid'])
 	{
 		$query = $db->query("
 			SELECT f.style, f.overridestyle, p.*
@@ -141,7 +141,7 @@ if(in_array($current_page, $valid))
 	}
 	
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
-	else if(isset($mybb->input['tid']))
+	else if($mybb->input['tid'])
 	{
 		$query = $db->query("
 			SELECT f.style, f.overridestyle, t.*
@@ -155,7 +155,7 @@ if(in_array($current_page, $valid))
 	}
 	
 	// We have a forum id - simply load the theme from it
-	else if(isset($mybb->input['fid']))
+	else if($mybb->input['fid'])
 	{
 		cache_forums();
 		$style = $forum_cache[intval($mybb->input['fid'])];
@@ -417,11 +417,11 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 	
 	if($mybb->user['pms_unread'] == 1)
 	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), htmlspecialchars_uni($pm['fromusername']), $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	else
 	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], get_profile_link($pm['fromuid']), $pm['fromusername'], $pm['pmid'], $pm['subject']);
+		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], get_profile_link($pm['fromuid']), htmlspecialchars_uni($pm['fromusername']), $pm['pmid'], htmlspecialchars_uni($pm['subject']));
 	}
 	eval("\$pm_notice = \"".$templates->get("global_pm_alert")."\";");
 }

@@ -193,6 +193,10 @@ if($mybb->input['action'] == "stats")
 	");
 	while($user = $db->fetch_array($query))
 	{
+		if(!$user['uid'])
+		{
+			$user['username'] = $lang->na;
+		}
 		$table->construct_cell(build_profile_link($user['username'], $user['uid']));
 		$table->construct_cell("<a href=\"index.php?module=forum/attachments&amp;results=1&amp;username=".urlencode($user['username'])."\">".get_friendly_size($user['totalsize'])."</a>", array('class' => 'align_center'));
 		$table->construct_row();

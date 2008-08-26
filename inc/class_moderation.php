@@ -474,7 +474,7 @@ class Moderation
 		// Update unapproved post count
 		if($post['visible'] == 0)
 		{
-			--$num_unaproved_posts;
+			++$num_unapproved_posts;
 		}
 		else
 		{

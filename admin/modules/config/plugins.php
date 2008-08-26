@@ -297,6 +297,10 @@ if(!$mybb->input['action'])
 			{
 				$compatibility_warning = "<span style=\"color: red;\">".$lang->sprintf($lang->plugin_incompatible, $mybb->version)."</span>";
 			}
+			else
+			{
+				$compatibility_warning = "";
+			}
 
 			$installed_func = "{$codename}_is_installed";
 			$install_func = "{$codename}_install";

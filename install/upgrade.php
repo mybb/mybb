@@ -181,10 +181,16 @@ else
 		}
 		
 		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
+		
 		$newsession = array(
-			"uid" => $user['uid'],
-			"loginattempts" => 1,
+			"uid" => $user['uid']
 		);
+		
+		if($newsession['loginattempts'] == 1)
+		{
+			$newsession['loginattempts'] = 1;
+		}
+		
 		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 	
 		// Temporarily set the cookie remember option for the login cookies
@@ -715,13 +721,22 @@ function sync_settings($redo=0)
 	}
 	else
 	{
-		$query = $db->simple_select("settings", "name,sid", "isdefault='1' OR isdefault='yes'");
+		if($db->type == "mysql" || $db->type == "mysqli")
+        {
+            $wheresettings = "isdefault='1' OR isdefault='yes'";
+        }
+        else
+        {
+            $wheresettings = "isdefault='1'";
+        }
+		
+        $query = $db->simple_select("settings", "name,sid", $wheresettings);
 		while($setting = $db->fetch_array($query))
 		{
 			$settings[$setting['name']] = $setting['sid'];
 		}
 		
-		$query = $db->simple_select("settinggroups", "name,title,gid", "isdefault='1' OR isdefault='yes'");
+		$query = $db->simple_select("settinggroups", "name,title,gid", $wheresettings);
 		while($group = $db->fetch_array($query))
 		{
 			$settinggroups[$group['name']] = $group['gid'];

@@ -203,15 +203,15 @@ if($mybb->settings['showbirthdays'] != 0)
 			++$bdaycount;
 			$comma = ", ";
 		}
-		
-		if($hiddencount > 0)
+	}
+	
+	if($hiddencount > 0)
+	{
+		if($bdaycount > 0)
 		{
-			if($bdaycount > 0)
-			{
-				$bdays .= " - ";
-			}
-			$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
+			$bdays .= " - ";
 		}
+		$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
 	}
 	
 	// If there are one or more birthdays, show them.

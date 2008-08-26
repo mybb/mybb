@@ -340,7 +340,7 @@ if($mybb->input['action'] == "export")
 		$properties = unserialize($theme['properties']);
 	
 		$xml = "<?xml version=\"1.0\" encoding=\"{$lang->settings['charset']}\"?".">\r\n";
-		$xml .= "<theme name=\"".$theme['name']."\" version=\"".$mybb->version_code."\">\r\n";
+		$xml .= "<theme name=\"".htmlspecialchars_uni($theme['name'])."\" version=\"".$mybb->version_code."\">\r\n";
 		$xml .= "\t<properties>\r\n";
 		foreach($properties as $property => $value)
 		{

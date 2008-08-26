@@ -267,7 +267,7 @@ class PMDataHandler extends DataHandler
 			}
 	
 			// Check to see if the user has reached their private message quota - if they have, email them.
-			if($recipient_permissions['pmquota'] != "0" && $recipient['pms_total'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
+			if($recipient_permissions['pmquota'] != "0" && $user['totalpms'] >= $recipient_permissions['pmquota'] && $recipient_permissions['cancp'] != 1 && $sender_permissions['cancp'] != 1 && !$pm['saveasdraft'] && !$this->admin_override)
 			{
 				if(trim($user['language']) != '' && $lang->language_exists($user['language']))
 				{

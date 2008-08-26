@@ -3645,14 +3645,14 @@ ul.thread_tools li.subscription_remove {
 		<template name="polls_showresults_resultbit" version="120"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
 <td class="{$optionbg}" width="{$imagerowwidth}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /><br />{$userlist}</td>
-<td class="{$optionbg}" width="67" align="center"><a href="polls.php?action=showresults&amp;pid={$poll['pid']}#option{$number}">{$votes}</a></td>
+<td class="{$optionbg}" width="67" align="center">{$votes}</td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
 ]]></template>
 		<template name="showthread_poll_resultbit" version="120"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
 <td class="{$optionbg}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /></td>
-<td class="{$optionbg}" width="67" align="center"><a href="polls.php?action=showresults&amp;pid={$poll['pid']}#option{$number}">{$votes}</a></td>
+<td class="{$optionbg}" width="67" align="center">{$votes}</td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
 ]]></template>
