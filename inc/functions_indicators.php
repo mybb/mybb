@@ -188,27 +188,56 @@ function mark_all_forums_read()
 			$mark_query = '';
 			$done = 0;
 			foreach(array_keys($forums) as $fid)
-			{
-				if($mark_query != '') $mark_query .= ', ';
-
-				$mark_query .= "('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')";
+			{				
+				switch($db->type)
+				{
+					case "pgsql":
+						$mark_query[] = array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW);
+						break;
+					default:
+						if($mark_query != '') $mark_query .= ', ';
+						$mark_query .= "('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')";
+				}
 				++$done;
+				
 				// Only do this in loops of $update_count, save query time
 				if($done % $update_count)
 				{
-					$db->shutdown_query("
-						REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-						VALUES {$mark_query}
-					");
-					$mark_query = '';
+					switch($db->type)
+					{
+						case "pgsql":
+							foreach($mark_query as $replace_query)
+							{
+								$db->shutdown_query($db->build_replace_query("forumsread", $replace_query, "fid"));
+							}
+							$mark_query = array();
+							break;
+						default:
+							$db->shutdown_query("
+								REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
+								VALUES {$mark_query}
+							");
+							$mark_query = '';
+					}
 				}
 			}
+			
 			if($mark_query != '')
 			{
-				$db->shutdown_query("
-					REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-					VALUES {$mark_query}
-				");
+				switch($db->type)
+				{
+					case "pgsql":
+						foreach($mark_query as $replace_query)
+						{
+							$db->shutdown_query($db->build_replace_query("forumsread", $replace_query, "fid"));
+						}
+						break;
+					default:
+						$db->shutdown_query("
+							REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
+							VALUES {$mark_query}
+						");
+				}
 			}
 		}
 	}

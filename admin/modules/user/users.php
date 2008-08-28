@@ -1110,11 +1110,13 @@ if($mybb->input['action'] == "edit")
 	);
 	$form_container->output_row($lang->thread_view_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $thread_options)."</div>");
 
+	$languages = array_merge(array('0' => $lang->use_default), $lang->get_languages());
+
 	$other_options = array(
 		$form->generate_check_box("showredirect", 1, $lang->show_redirect, array("checked" => $mybb->input['showredirect'])),
 		$form->generate_check_box("showcodebuttons", "1", $lang->show_code_buttons, array("checked" => $mybb->input['showcodebuttons'])),
 		"<label for=\"style\">{$lang->theme}:</label><br />".build_theme_select("style", $mybb->input['style'], 0, "", 1),
-		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $lang->get_languages(), $mybb->input['language'], array('id' => 'language'))
+		"<label for=\"language\">{$lang->board_language}:</label><br />".$form->generate_select_box("language", $languages, $mybb->input['language'], array('id' => 'language'))
 	);
 	$form_container->output_row($lang->other_options, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $other_options)."</div>");
 

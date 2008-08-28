@@ -3481,6 +3481,7 @@ ul.thread_tools li.subscription_remove {
 <td class="trow2">
 <textarea name="message" id="message" rows="20" cols="70" tabindex="4">{$message}</textarea>
 {$codebuttons}
+</td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->compose_options}</strong></td>
