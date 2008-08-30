@@ -43,6 +43,11 @@ $lang->set_language($mybb->settings['cplanguage'], "admin");
 // Load global language phrases
 $lang->load("global");
 
+if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
+{
+	@mb_internal_encoding($lang->settings['charset']);
+}
+
 header("Content-type: text/html; charset={$lang->settings['charset']}");
 
 $time = TIME_NOW;
