@@ -50,7 +50,7 @@ function user_action_handler($action)
 		'users' => array('active' => 'users', 'file' => 'users.php')
 	);
 	
-	$plugins->run_hooks_by_ref("admin_user_action_handler", $action);
+	$plugins->run_hooks_by_ref("admin_user_action_handler", $actions);
 	
 	if(isset($actions[$action]))
 	{

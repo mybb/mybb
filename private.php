@@ -1545,10 +1545,7 @@ if(!$mybb->input['action'])
 				}
 			}
 			
-			if($tofromuid != 0)
-			{
-				$tofromusername = build_profile_link($tofromusername, $tofromuid);
-			}
+			$tofromusername = build_profile_link($tofromusername, $tofromuid);
 			
 			if($mybb->usergroup['cantrackpms'] == 1 && $mybb->usergroup['candenypmreceipts'] == 1 && $message['receipt'] == '1' && $message['folder'] != '3' && $message['folder'] != 2)
 			{

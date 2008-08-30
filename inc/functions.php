@@ -3774,7 +3774,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		my_substr($by, 2),
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),
-		($db == 1 || $db == 21 || $db == 31 ? 'st' : ($db == 2 || $db == 22 ? 'nd' : ($db == 3 || $db == 23 ? 'rd' : 'th'))),
+		($bd == 1 || $bd == 21 || $bd == 31 ? 'st' : ($bd == 2 || $bd == 22 ? 'nd' : ($bd == 3 || $bd == 23 ? 'rd' : 'th'))),
 		$bdays[$wd],
 		$bmonth[$bm-1],
 	);

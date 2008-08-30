@@ -2787,7 +2787,7 @@ if(!$mybb->input['action'])
 	if($unapproved_posts > 0)
 	{
 		$query = $db->query("
-			SELECT p.pid, p.tid, p.subject, p.uid, p.username
+			SELECT p.pid, p.tid, p.subject, p.uid, p.username, p.dateline
 			FROM  ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 			WHERE p.visible='0' {$tflist} AND t.firstpost != p.pid

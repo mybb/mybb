@@ -983,6 +983,13 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	// Is a fatal call if user has had too many tries
 	$logins = login_attempt_check();
 	$login_text = '';
+	
+	// Did we come from the quick login form
+	if($mybb->input['quick_login'] == "1" && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+	{
+		$mybb->input['password'] = $mybb->input['quick_password'];
+		$mybb->input['username'] = $mybb->input['quick_username'];
+	}
 
 	if(!username_exists($mybb->input['username']))
 	{
@@ -1334,7 +1341,7 @@ if($mybb->input['action'] == "profile")
 				
 				if($membday[2] >= 1970)
 				{
-					$w_day = get_weekday($membday[1], $membday[0], $membday[2]);
+					$w_day = date("l", mktime(0, 0, 0, $membday[1], $membday[0], $membday[2]));
 					$membday = format_bdays($mybb->settings['dateformat'], $membday[1], $membday[0], $membday[2], $w_day);
 				}
 				else

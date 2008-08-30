@@ -415,12 +415,26 @@ var MyBB = {
 			
 			if(this.browser == "ie")
 			{
-				var input = document.createElement("<input name=\"username\">");
+				var input = document.createElement("<input name=\"quick_login\">");
 			}
 			else
 			{
 				var input = document.createElement("input");
-				input.setAttribute("name", "username");
+				input.setAttribute("name", "quick_login");
+			}
+			
+			input.setAttribute("type", "hidden");
+			input.setAttribute("value", "1");
+			form.appendChild(input);
+			
+			if(this.browser == "ie")
+			{
+				var input = document.createElement("<input name=\"quick_username\">");
+			}
+			else
+			{
+				var input = document.createElement("input");
+				input.setAttribute("name", "quick_username");
 			}
 			input.setAttribute("type", "text");
 			input.setAttribute("value", lang.username);
@@ -433,12 +447,12 @@ var MyBB = {
 			
 			if(this.browser == "ie")
 			{
-				var input = document.createElement("<input name=\"password\">");
+				var input = document.createElement("<input name=\"quick_password\">");
 			}
 			else
 			{
 				var input = document.createElement("input");
-				input.setAttribute("name", "password");
+				input.setAttribute("name", "quick_password");
 			}
 			input.setAttribute("type", "password");
 			input.setAttribute("value", lang.password);

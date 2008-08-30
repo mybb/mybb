@@ -1571,7 +1571,7 @@ if($mybb->input['action'] == "search")
 				unset($admin_view);
 			}
 		}
-
+		
 		if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
 		{
 			$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
@@ -1683,7 +1683,7 @@ if(!$mybb->input['action'])
 	
 	$page->output_nav_tabs($sub_tabs, 'browse_users');
 	
-	if($mybb->input['search_id'] && $admin_session['user_views'][$mybb->input['search_id']])
+	if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
 	{
 		$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
 		unset($admin_view['extra_sql']);

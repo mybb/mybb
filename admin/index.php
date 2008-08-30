@@ -63,7 +63,7 @@ $post_verify = true;
 if($mybb->input['action'] == "logout")
 {
 	// Delete session from the database
-	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->input['adminsid'])."'");
+	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 	my_setcookie("adminsid", "");
 	$logged_out = true;
 }
