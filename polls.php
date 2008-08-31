@@ -790,7 +790,7 @@ if($mybb->input['action'] == "vote")
 				{
 					$votesql .= ",";
 				}
-				$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','$voteoption','$now')";
+				$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($voteoption)."','$now')";
 				$votesarray[$voteoption-1]++;
 				$numvotes = $numvotes+1;
 			}
