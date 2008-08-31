@@ -1143,10 +1143,10 @@ if($mybb->input['action'] == "edit")
 	{
 		$sig_html = "on";
 	}
-	$sig_imcode = "on";
+	$sig_imgcode = "off";
 	if($mybb->settings['sigimgcode'] == 1)
 	{
-		$sig_imgcode = "off";
+		$sig_imgcode = "on";
 	}
 	echo "<div id=\"tab_signature\">\n";
 	$form_container = new FormContainer("{$lang->signature}: {$user['username']}");
