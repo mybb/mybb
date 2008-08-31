@@ -3437,7 +3437,7 @@ ul.thread_tools li.subscription_remove {
 <td class="{$altbg}" align="center"><input type="radio" class="radio" name="request[{$user['uid']}]" value="decline" /></td>
 </tr>
 ]]></template>
-		<template name="private_send" version="1400"><![CDATA[<html>
+		<template name="private_send" version="1402"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
@@ -3643,14 +3643,14 @@ ul.thread_tools li.subscription_remove {
 		<template name="postbit_quote" version="120"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->postbit_quote}" title="{$lang->postbit_quote}" /></a>]]></template>
 		<template name="postbit_report" version="120"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_report.gif" alt="{$lang->postbit_report}" title="{$lang->postbit_report}" /></a>]]></template>
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>
-		<template name="polls_showresults_resultbit" version="120"><![CDATA[<tr>
+		<template name="polls_showresults_resultbit" version="1402"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
 <td class="{$optionbg}" width="{$imagerowwidth}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /><br />{$userlist}</td>
 <td class="{$optionbg}" width="67" align="center">{$votes}</td>
 <td class="{$optionbg}" width="67" align="center">{$percent}%</td>
 </tr>
 ]]></template>
-		<template name="showthread_poll_resultbit" version="120"><![CDATA[<tr>
+		<template name="showthread_poll_resultbit" version="1402"><![CDATA[<tr>
 <td class="{$optionbg}" align="right">{$option}{$votestar}</td>
 <td class="{$optionbg}"><img src="{$theme['imgdir']}/pollbar-s.gif" alt="" /><img src="{$theme['imgdir']}/pollbar.gif" width="{$imagewidth}" height="10" alt="{$percent}%" title="{$percent}%" /><img src="{$theme['imgdir']}/pollbar-e.gif" alt="" /></td>
 <td class="{$optionbg}" width="67" align="center">{$votes}</td>
@@ -7913,7 +7913,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					</div>
 				</td>
 ]]></template>
-		<template name="calendar_addevent" version="1400"><![CDATA[<html>
+		<template name="calendar_addevent" version="1402"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->add_event}</title>
 {$headerinclude}
@@ -8219,8 +8219,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </html>]]></template>
 		<template name="calendar_addprivateevent" version="1400"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}&amp;private=1">{$lang->add_private_event}</a>]]></template>
 		<template name="calendar_addpublicevent" version="1400"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}">{$lang->add_public_event}</a>]]></template>
-		<template name="calendar_eventbit_private" version="1400"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext eventbit_private"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
-		<template name="calendar_eventbit" version="1400"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
+		<template name="calendar_eventbit_private" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext eventbit_private"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
+		<template name="calendar_eventbit" version="1402"><![CDATA[<div style="margin-bottom: 4px;" class="smalltext {$event_class}"><a href="{$event['eventlink']}" title="{$event['fullname']}">{$event['name']}</a></div>]]></template>
 		<template name="calendar_weekview" version="1400"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
@@ -8333,7 +8333,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					{$day_link}
 				</td>]]></template>
 		<template name="calendar_addeventlink" version="1400"><![CDATA[<a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}">{$lang->add_public_event}</a> | <a href="calendar.php?action=addevent&amp;calendar={$calendar['cid']}&amp;private=1">{$lang->add_private_event}</a>]]></template>
-		<template name="calendar_editevent" version="1400"><![CDATA[<html>
+		<template name="calendar_editevent" version="1402"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->edit_event}</title>
 {$headerinclude}
@@ -8646,7 +8646,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_move" version="1400"><![CDATA[<html>
+		<template name="calendar_move" version="1402"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->move_event}</title>
 {$headerinclude}

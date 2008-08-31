@@ -232,8 +232,15 @@ class MailHandler
 		// Build mail headers
 		if(!trim($this->from))
 		{
-			$this->from = '"'.$this->utf8_encode($mybb->settings['bbname'].'"');
-			$this->from .= " <{$mybb->settings['adminemail']}>";
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				$this->from = $mybb->settings['adminemail'];
+			}
+			else
+			{
+				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
+				$this->from .= " <{$mybb->settings['adminemail']}>";
+			}
 		}
 
 		$this->headers .= "From: {$this->from}{$this->delimiter}";

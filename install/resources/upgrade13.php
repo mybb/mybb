@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: MyBB 1.4
+ * Upgrade Script: MyBB 1.4 or 1.4.1
  */
 
 
@@ -20,6 +20,6 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-/* Nothing to do from MyBB 1.4 to MyBB 1.4.1 */
+/* Nothing to do from MyBB 1.4 to MyBB 1.4.2 */
 
 ?>

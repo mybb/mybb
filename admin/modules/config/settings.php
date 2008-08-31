@@ -43,7 +43,7 @@ if($mybb->input['action'] == "delete_duplicates")
 	flash_message($lang->success_duplicate_settings_deleted, 'success');
 	admin_redirect("index.php?module=config/settings&action=manage");
 }*/
-// ^^ Code, Please go away. Forever.
+// ^^  Code, Please go away. Forever.
 
 // Creating a new setting group
 if($mybb->input['action'] == "addgroup")
@@ -424,7 +424,7 @@ if($mybb->input['action'] == "add")
 		"select" => $lang->select,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
-		"language" => $lang->language,
+		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
 		//"php" => $lang->php // Internal Use Only
@@ -610,7 +610,7 @@ if($mybb->input['action'] == "edit")
 		"select" => $lang->select,
 		"radio" => $lang->radio,
 		"checkbox" => $lang->checkbox,
-		"language" => $lang->language,
+		"language" => $lang->language_selection_box,
 		"adminlanguage" => $lang->adminlanguage,
 		"cpstyle" => $lang->cpstyle,
 		//"php" => $lang->php // Internal Use Only
@@ -1393,6 +1393,7 @@ function print_setting_peekers()
 			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_canviewownwarning"), /1/, true);
 			new Peeker($$(".setting_enablewarningsystem"), $("row_setting_maxwarningpoints"), /1/, true);
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowhtml"), /1/, true);
+
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true);
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true);
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true);
