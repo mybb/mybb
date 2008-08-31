@@ -171,6 +171,40 @@ if($mybb->input['action'] == "results")
 		$limitsql = "LIMIT ".intval($mybb->settings['searchhardlimit']);
 	}
 
+	if($mybb->user['uid'] == 0)
+	{
+		// Build a forum cache.
+		$query = $db->query("
+			SELECT fid
+			FROM ".TABLE_PREFIX."forums
+			WHERE active != 0
+			ORDER BY pid, disporder
+		");
+		
+		$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+	}
+	else
+	{
+		// Build a forum cache.
+		$query = $db->query("
+			SELECT f.fid, fr.dateline AS lastread
+			FROM ".TABLE_PREFIX."forums f
+			LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			WHERE f.active != 0
+			ORDER BY pid, disporder
+		");
+	}
+	while($forum = $db->fetch_array($query))
+	{
+		if($mybb->user['uid'] == 0)
+		{
+			if($forumsread[$forum['fid']])
+			{
+				$forum['lastread'] = $forumsread[$forum['fid']];
+			}
+		}
+		$readforums[$forum['fid']] = $forum['lastread'];
+	}
 	$fpermissions = forum_permissions();
 	
 	// Inline Mod Column for moderators
@@ -341,42 +375,45 @@ if($mybb->input['action'] == "results")
 			$gotounread = '';
 			$isnew = 0;
 			$donenew = 0;
-			$lastread = 0;
-
-			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
+			$last_read = 0;
+			
+			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 			{
-				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
-				if($thread['lastpost'] > $cutoff)
+				$forum_read = $readforums[$thread['fid']];
+			
+				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+				if($forum_read == 0 || $forum_read < $read_cutoff)
 				{
-					if($thread['lastread'])
-					{
-						$lastread = $thread['lastread'];
-					}
-					else
-					{
-						$lastread = 1;
-					}
+					$forum_read = $read_cutoff;
 				}
 			}
-			$lastread = $thread['lastread'];
-			if(!$lastread)
+			else
 			{
-				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
-				if($readcookie > $forumread)
+				$forum_read = $forumsread[$thread['fid']];
+			}
+			
+			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
+			{
+				if($thread['lastread'])
 				{
-					$lastread = $readcookie;
-				}
-				elseif($forumread > $mybb->user['lastvisit'])
-				{
-					$lastread = $forumread;
+					$last_read = $thread['lastread'];
 				}
 				else
 				{
-					$lastread = $mybb->user['lastvisit'];
+					$last_read = $read_cutoff;
 				}
 			}
+			else
+			{
+				$last_read = my_get_array_cookie("threadread", $thread['tid']);
+			}
+	
+			if($forum_read > $last_read)
+			{
+				$last_read = $forum_read;
+			}
 
-			if($thread['lastpost'] > $lastread && $lastread)
+			if($thread['lastpost'] > $last_read && $last_read)
 			{
 				$folder .= "new";
 				$new_class = "subject_new";
@@ -432,7 +469,7 @@ if($mybb->input['action'] == "results")
 					$page_link = get_thread_link($thread['tid'], $i);
 					eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 				}
-				eval("\$thread[multipage] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
+				eval("\$thread['multipage'] = \"".$templates->get("forumdisplay_thread_multipage")."\";");
 			}
 			else
 			{
@@ -701,7 +738,7 @@ if($mybb->input['action'] == "results")
 			$gotounread = '';
 			$isnew = 0;
 			$donenew = 0;
-			$lastread = 0;
+			$last_read = 0;
 			$post['thread_lastread'] = $readthreads[$post['tid']];
 			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forumread)
 			{
@@ -710,11 +747,11 @@ if($mybb->input['action'] == "results")
 				{
 					if($post['thread_lastread'])
 					{
-						$lastread = $post['thread_lastread'];
+						$last_read = $post['thread_lastread'];
 					}
 					else
 					{
-						$lastread = 1;
+						$last_read = 1;
 					}
 				}
 			}
@@ -725,24 +762,24 @@ if($mybb->input['action'] == "results")
 				$folder_label .= $lang->icon_dot;
 			}
 
-			if(!$lastread)
+			if(!$last_read)
 			{
 				$readcookie = $threadread = my_get_array_cookie("threadread", $post['tid']);
 				if($readcookie > $forumread)
 				{
-					$lastread = $readcookie;
+					$last_read = $readcookie;
 				}
 				elseif($forumread > $mybb->user['lastvisit'])
 				{
-					$lastread = $forumread;
+					$last_read = $forumread;
 				}
 				else
 				{
-					$lastread = $mybb->user['lastvisit'];
+					$last_read = $mybb->user['lastvisit'];
 				}
 			}
 
-			if($post['thread_lastpost'] > $lastread && $lastread)
+			if($post['thread_lastpost'] > $last_read && $last_read)
 			{
 				$folder .= "new";
 				$folder_label .= $lang->icon_new;

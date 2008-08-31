@@ -1334,13 +1334,28 @@ if($mybb->input['action'] == "delete")
 
 		// Log admin action
 		log_admin_action($mass_email['mid'], $mass_email['subject']);
-
-		flash_message($lang->success_mass_mail_deleted, 'success');
-		admin_redirect("index.php?module=user/mass_mail");
+		
+		if($mybb->input['archive'] == 1)
+		{
+			flash_message($lang->success_mass_mail_deleted, 'success');
+			admin_redirect("index.php?module=user/mass_mail&action=archive");
+		}
+		else
+		{
+			flash_message($lang->success_mass_mail_deleted, 'success');
+			admin_redirect("index.php?module=user/mass_mail");
+		}
 	}
 	else
 	{
-		$page->output_confirm_action("index.php?module=user/mass_mail&amp;action=delete&amp;mid={$mass_email['mid']}", $lang->mass_mail_deletion_confirmation);
+		if($mybb->input['archive'] == 1)
+		{
+			$page->output_confirm_action("index.php?module=user/mass_mail&amp;action=delete&amp;mid={$mass_email['mid']}&amp;archive=1", $lang->mass_mail_deletion_confirmation);
+		}
+		else
+		{
+			$page->output_confirm_action("index.php?module=user/mass_mail&amp;action=delete&amp;mid={$mass_email['mid']}", $lang->mass_mail_deletion_confirmation);
+		}
 	}
 }
 
@@ -1412,6 +1427,7 @@ if($mybb->input['action'] == "resend")
 		"subject" => $db->escape_string($mass_email['subject']),
 		"message" => $db->escape_string($mass_email['message']),
 		"htmlmessage" => $db->escape_string($mass_email['htmlmessage']),
+		"type" => $db->escape_string($mass_email['type']),
 		"format" => $db->escape_string($mass_email['format']),
 		"dateline" => TIME_NOW,
 		"senddate" => '0',
@@ -1489,7 +1505,7 @@ if($mybb->input['action'] == "archive")
 		$table->construct_cell(my_number_format($email['totalcount']), array("class" => "align_center"));
 
 		$table->construct_cell("<a href=\"index.php?module=user/mass_mail&amp;action=resend&amp;mid={$email['mid']}\">{$lang->resend}</a>", array("width" => 100, "class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user/mass_mail&amp;action=delete&amp;mid={$email['mid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->mass_mail_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
+		$table->construct_cell("<a href=\"index.php?module=user/mass_mail&amp;action=delete&amp;mid={$email['mid']}&amp;my_post_key={$mybb->post_code}&amp;archive=1\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->mass_mail_deletion_confirmation}')\">{$lang->delete}</a>", array("width" => 100, "class" => "align_center"));
 
 		$table->construct_row();
 	}

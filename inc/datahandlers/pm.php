@@ -427,10 +427,12 @@ class PMDataHandler extends DataHandler
 
 		$uid = 0;
 
-		if(!is_array($pm['recipients'])) {
+		if(!is_array($pm['recipients']))
+		{
 			$recipient_list = array();
 		}
-		else {
+		else
+		{
 			// Build recipient list
 			foreach($pm['recipients'] as $recipient)
 			{
@@ -506,7 +508,7 @@ class PMDataHandler extends DataHandler
 				{
 					$uselang = "english";
 				}
-				if($uselang == $mybb->settings['bblanguage'])
+				if($uselang == $mybb->settings['bblanguage'] && !empty($lang->emailsubject_newpm))
 				{
 					$emailsubject = $lang->emailsubject_newpm;
 					$emailmessage = $lang->email_newpm;
@@ -514,7 +516,7 @@ class PMDataHandler extends DataHandler
 				else
 				{
 					$userlang = new MyLanguage;
-					$userlang->set_path("./inc/languages");
+					$userlang->set_path(MYBB_ROOT."inc/languages");
 					$userlang->set_language($uselang);
 					$userlang->load("messages");
 					$emailsubject = $userlang->emailsubject_newpm;

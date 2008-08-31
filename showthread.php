@@ -118,15 +118,23 @@ if($mybb->input['action'] == "newpost")
 	$query = $db->simple_select("threadsread", "dateline", "uid='{$mybb->user['uid']}' AND tid='{$thread['tid']}'");
 	$thread_read = $db->fetch_field($query, "dateline");
 
-	// Get forum read date
-	$forumread = my_get_array_cookie("forumread", $fid);
-
-	// If last visit is greater than forum read, change forum read date
-	if($mybb->user['lastvisit'] > $forumread)
+	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
-		$forumread = $mybb->user['lastvisit'];
+		$query = $db->simple_select("forumsread", "dateline", "fid='{$fid}' AND uid='{$mybb->user['uid']}'");
+		$forum_read = $db->fetch_field($query, "dateline");
+	
+		$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+		if($forum_read == 0 || $forum_read < $read_cutoff)
+		{
+			$forum_read = $read_cutoff;
+		}
 	}
-	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forumread)
+	else
+	{
+		$forum_read = my_get_array_cookie("forumread", $fid);
+	}
+	
+	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
 	{
 		$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 		if($thread['lastpost'] > $cutoff)
@@ -141,18 +149,20 @@ if($mybb->input['action'] == "newpost")
 			}
 		}
 	}
+	
 	if(!$lastread)
 	{
 		$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
-		if($readcookie > $forumread)
+		if($readcookie > $forum_read)
 		{
 			$lastread = $readcookie;
 		}
 		else
 		{
-			$lastread = $forumread;
+			$lastread = $forum_read;
 		}
 	}
+	
 	// Next, find the proper pid to link to.
 	$options = array(
 		"limit_start" => 0,
@@ -164,7 +174,7 @@ if($mybb->input['action'] == "newpost")
 	$newpost = $db->fetch_array($query);
 	if($newpost['pid'])
 	{
-		header("Location:".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
+		header("Location: ".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
 	}
 	else
 	{
@@ -199,7 +209,7 @@ if($mybb->input['action'] == "lastpost")
 		$query = $db->simple_select('posts', 'pid', "tid={$tid}", $options);
 		$pid = $db->fetch_field($query, "pid");
 	}
-	header("Location:".htmlspecialchars_decode(get_post_link($pid, $tid))."#pid{$pid}");
+	header("Location: ".htmlspecialchars_decode(get_post_link($pid, $tid))."#pid{$pid}");
 	exit;
 }
 
@@ -229,7 +239,7 @@ if($mybb->input['action'] == "nextnewest")
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
+	header("Location: ".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
 }
 
 // Jump to the next oldest posts.
@@ -259,7 +269,7 @@ if($mybb->input['action'] == "nextoldest")
 
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
-	header("Location:".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
+	header("Location: ".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
 }
 
 if($mybb->input['pid'])

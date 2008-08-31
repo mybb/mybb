@@ -1236,6 +1236,41 @@ if($mybb->input['action'] == "subscriptions")
 	if(is_array($subscriptions))
 	{
 		$tids = implode(",", array_keys($subscriptions));
+		
+		if($mybb->user['uid'] == 0)
+		{
+			// Build a forum cache.
+			$query = $db->query("
+				SELECT fid
+				FROM ".TABLE_PREFIX."forums
+				WHERE active != 0
+				ORDER BY pid, disporder
+			");
+			
+			$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+		}
+		else
+		{
+			// Build a forum cache.
+			$query = $db->query("
+				SELECT f.fid, fr.dateline AS lastread
+				FROM ".TABLE_PREFIX."forums f
+				LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+				WHERE f.active != 0
+				ORDER BY pid, disporder
+			");
+		}
+		while($forum = $db->fetch_array($query))
+		{
+			if($mybb->user['uid'] == 0)
+			{
+				if($forumsread[$forum['fid']])
+				{
+					$forum['lastread'] = $forumsread[$forum['fid']];
+				}
+			}
+			$readforums[$forum['fid']] = $forum['lastread'];
+		}
 
 		// Check participation by the current user in any of these threads - for 'dot' folder icons
 		if($mybb->settings['dotfolders'] != 0)
@@ -1256,7 +1291,6 @@ if($mybb->input['action'] == "subscriptions")
 				$subscriptions[$readthread['tid']]['lastread'] = $readthread['dateline'];
 			}
 		}
-
 
 		// Now we can build our subscription list
 		foreach($subscriptions as $thread)
@@ -1300,13 +1334,22 @@ if($mybb->input['action'] == "subscriptions")
 			$donenew = 0;
 			$lastread = 0;
 
-			$forumread = my_get_array_cookie("forumread", $thread['fid']);
-			if($mybb->user['lastvisit'] > $forumread)
+			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 			{
-				$forumread = $mybb->user['lastvisit'];
+				$forum_read = $readforums[$thread['fid']];
+			
+				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+				if($forum_read == 0 || $forum_read < $read_cutoff)
+				{
+					$forum_read = $read_cutoff;
+				}
+			}
+			else
+			{
+				$forum_read = $forumsread[$thread['fid']];
 			}
 
-			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forumread)
+			if($mybb->settings['threadreadcut'] > 0 && $thread['lastpost'] > $forum_read)
 			{
 				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 			}
@@ -1317,11 +1360,11 @@ if($mybb->input['action'] == "subscriptions")
 				{
 					if($thread['lastread'])
 					{
-							$lastread = $thread['lastread'];
+						$lastread = $thread['lastread'];
 					}
 					else
 					{
-							$lastread = 1;
+						$lastread = 1;
 					}
 				}
 			}
@@ -1329,13 +1372,13 @@ if($mybb->input['action'] == "subscriptions")
 			if(!$lastread)
 			{
 				$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
-				if($readcookie > $forumread)
+				if($readcookie > $forum_read)
 				{
 					$lastread = $readcookie;
 				}
 				else
 				{
-					$lastread = $forumread;
+					$lastread = $forum_read;
 				}
 			}
 
@@ -1412,15 +1455,47 @@ if($mybb->input['action'] == "subscriptions")
 if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."forumpermissions
-		WHERE gid='".$mybb->user['usergroup']."'
-	");
+	$query = $db->simple_select("forumpermissions", "*", "gid='".$mybb->user['usergroup']."'");
 	while($permissions = $db->fetch_array($query))
 	{
 		$permissioncache[$permissions['gid']][$permissions['fid']] = $permissions;
 	}
+	
+	if($mybb->user['uid'] == 0)
+	{
+		// Build a forum cache.
+		$query = $db->query("
+			SELECT fid
+			FROM ".TABLE_PREFIX."forums
+			WHERE active != 0
+			ORDER BY pid, disporder
+		");
+		
+		$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+	}
+	else
+	{
+		// Build a forum cache.
+		$query = $db->query("
+			SELECT f.fid, fr.dateline AS lastread
+			FROM ".TABLE_PREFIX."forums f
+			LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+			WHERE f.active != 0
+			ORDER BY pid, disporder
+		");
+	}
+	while($forum = $db->fetch_array($query))
+	{
+		if($mybb->user['uid'] == 0)
+		{
+			if($forumsread[$forum['fid']])
+			{
+				$forum['lastread'] = $forumsread[$forum['fid']];
+			}
+		}
+		$readforums[$forum['fid']] = $forum['lastread'];
+	}
+	
 	$fpermissions = forum_permissions();
 	$query = $db->query("
 		SELECT fs.*, f.*, t.subject AS lastpostsubject
@@ -1437,7 +1512,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 		$forumpermissions = $fpermissions[$forum['fid']];
 		if($forumpermissions['canview'] != 0)
 		{
-			if(($forum['lastpost'] > $mybb->user['lastvisit'] || $mybbforumread[$forum['fid']] > $mybb->user['lastvisit']) && $forum['lastpost'] != 0)
+			if(($forum['lastpost'] > $mybb->user['lastvisit'] || $readforums[$forum['fid']] > $mybb->user['lastvisit']) && $forum['lastpost'] != 0)
 			{
 				$folder = "on";
 			}
