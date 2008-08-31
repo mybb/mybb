@@ -145,8 +145,8 @@ else
 				if($admin_session['lastactive'] < TIME_NOW-7200)
 				{
 					$login_message = $lang->error_admin_session_expired;
-					$fail_check = 1;
 					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+					unset($mybb->user);
 				}
 				// If IP matching is set - check IP address against the session IP
 				else if(ADMIN_IP_SEGMENTS > 0)
