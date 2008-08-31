@@ -764,11 +764,11 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 				$pmuids[$pm['uid']] = $pm['uid'];
 			}
 			
-			$db->delete_query("privatemessages", "pmid IN ($pmids) AND fromid='".$mybb->user['uid']."'");
+			$db->delete_query("privatemessages", "pmid IN ($pmids) AND receipt='1' AND status='0' AND fromid='".$mybb->user['uid']."'");
 			foreach($pmuids as $uid)
 			{
 				// Message is canceled, update PM count for this user
-				update_pm_count($pm['uid']);
+				update_pm_count($uid);
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");

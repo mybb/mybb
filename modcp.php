@@ -1946,6 +1946,7 @@ if($mybb->input['action'] == "warninglogs")
 		$search['username'] = $db->escape_string($mybb->input['filter']['username']);
 		$query = $db->simple_select("users", "uid", "username='{$search['username']}'");
 		$mybb->input['filter']['uid'] = $db->fetch_field($query, "uid");
+		$mybb->input['filter']['username'] = htmlspecialchars_uni($mybb->input['filter']['username']);
 	}
 	if($mybb->input['filter']['uid'])
 	{
@@ -1954,7 +1955,7 @@ if($mybb->input['action'] == "warninglogs")
 		if(!isset($mybb->input['search']['username']))
 		{
 			$user = get_user($mybb->input['search']['uid']);
-			$mybb->input['search']['username'] = $user['username'];
+			$mybb->input['search']['username'] = htmlspecialchars_uni($user['username']);
 		}
 	}
 	if($mybb->input['filter']['mod_username'])
@@ -1962,6 +1963,7 @@ if($mybb->input['action'] == "warninglogs")
 		$search['mod_username'] = $db->escape_string($mybb->input['filter']['mod_username']);
 		$query = $db->simple_select("users", "uid", "username='{$search['mod_username']}'");
 		$mybb->input['filter']['mod_uid'] = $db->fetch_field($query, "uid");
+		$mybb->input['filter']['mod_username'] = htmlspecialchars_uni($mybb->input['filter']['mod_username']);
 	}
 	if($mybb->input['filter']['mod_uid'])
 	{
@@ -1970,13 +1972,14 @@ if($mybb->input['action'] == "warninglogs")
 		if(!isset($mybb->input['search']['mod_username']))
 		{
 			$mod_user = get_user($mybb->input['search']['uid']);
-			$mybb->input['search']['mod_username'] = $mod_user['username'];
+			$mybb->input['search']['mod_username'] = htmlspecialchars_uni($mod_user['username']);
 		}
 	}
 	if($mybb->input['filter']['reason'])
 	{
 		$search['reason'] = $db->escape_string($mybb->input['filter']['reason']);
 		$where_sql .= " AND (w.notes LIKE '%{$search['reason']}%' OR t.title LIKE '%{$search['reason']}%' OR w.title LIKE '%{$search['reason']}%')";
+		$mybb->input['filter']['reason'] = htmlspecialchars_uni($mybb->input['filter']['reason']);
 	}
 	$sortbysel = array();
 	switch($mybb->input['filter']['sortby'])
@@ -2731,6 +2734,9 @@ if($mybb->input['action'] == "banuser")
 
 if($mybb->input['action'] == "do_modnotes")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	// Update Moderator Notes cache
 	$update_cache = array(
 		"modmessage" => $mybb->input['modnotes']

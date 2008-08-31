@@ -455,7 +455,7 @@ class PostDataHandler extends DataHandler
 		// Check if the post being replied to actually exists in this thread.
 		if($post['replyto'])
 		{
-			$query = $db->simple_select("posts", "pid", "pid='{$post['replyto']}'");
+			$query = $db->simple_select("posts", "pid", "pid='".intval($post['replyto'])."'");
 			$valid_post = $db->fetch_array($query);
 			if(!$valid_post['pid'])
 			{

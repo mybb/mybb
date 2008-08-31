@@ -593,7 +593,7 @@ class UserDataHandler extends DataHandler
 		}
 
 		// Verify the "threads per page" option.
-		if($this->method == "insert" || (array_key_exists('tpp', $options) && $mybb->settings['usetppoptions']))
+		if($this->method == "insert" || (array_key_exists('tpp', $options) && $mybb->settings['usertppoptions']))
 		{
 			$explodedtpp = explode(",", $mybb->settings['usertppoptions']);
 			if(is_array($explodedtpp))

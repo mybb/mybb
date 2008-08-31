@@ -162,12 +162,12 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 
 	$postoptions = $mybb->input['postoptions'];
-	if($postoptions['multiple'] != 1)
+	if($postoptions['multiple'] != '1')
 	{
 		$postoptions['multiple'] = 0;
 	}
 
-	if($postoptions['public'] != 1)
+	if($postoptions['public'] != '1')
 	{
 		$postoptions['public'] = 0;
 	}
@@ -461,17 +461,17 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	}
 
 	$postoptions = $mybb->input['postoptions'];
-	if($postoptions['multiple'] != 1)
+	if($postoptions['multiple'] != '1')
 	{
 		$postoptions['multiple'] = 0;
 	}
 	
-	if($postoptions['public'] != 1)
+	if($postoptions['public'] != '1')
 	{
 		$postoptions['public'] = 0;
 	}
 	
-	if($postoptions['closed'] != 1)
+	if($postoptions['closed'] != '1')
 	{
 		$postoptions['closed'] = 0;
 	}

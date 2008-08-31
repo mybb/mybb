@@ -3318,7 +3318,7 @@ function join_usergroup($uid, $joingroup)
 	}
 	else
 	{
-		$query = $db->simple_select("users", "additionalgroups, usergroup", "uid='{$uid}'");
+		$query = $db->simple_select("users", "additionalgroups, usergroup", "uid='".intval($uid)."'");
 		$user = $db->fetch_array($query);
 	}
 
@@ -3341,7 +3341,7 @@ function join_usergroup($uid, $joingroup)
 		}
 	}
 
-	$db->update_query("users", array('additionalgroups' => $groupslist), "uid='$uid'");
+	$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".intval($uid)."'");
 }
 
 /**
@@ -3360,11 +3360,12 @@ function leave_usergroup($uid, $leavegroup)
 	}
 	else
 	{
-		$query = $db->simple_select("users", "*", "uid='{$uid}'");
+		$query = $db->simple_select("users", "*", "uid='".intval($uid)."'");
 		$user = $db->fetch_array($query);
 	}
 
 	$usergroups = "";
+	$groupslist = "";
 	$usergroups = $user['additionalgroups'].",";
 
 	$groups = explode(",", $user['additionalgroups']);
@@ -3382,6 +3383,7 @@ function leave_usergroup($uid, $leavegroup)
 		}
 	}
 
+	$dispupdate = "";
 	if($leavegroup == $user['displaygroup'])
 	{
 		$dispupdate = ", displaygroup=usergroup";
@@ -3390,7 +3392,7 @@ function leave_usergroup($uid, $leavegroup)
 	$db->write_query("
 		UPDATE ".TABLE_PREFIX."users
 		SET additionalgroups='$groupslist' $dispupdate
-		WHERE uid='$uid'
+		WHERE uid='".intval($uid)."'
 	");
 	
 	$cache->update_moderators();
