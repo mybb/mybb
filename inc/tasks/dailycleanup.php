@@ -12,6 +12,8 @@
 function task_dailycleanup($task)
 {
 	global $mybb, $db, $cache, $lang;
+	
+	require_once MYBB_ROOT."inc/functions_user.php";
 
 	// Clear out sessions older than 24h
 	$cut = TIME_NOW-60*60*24;

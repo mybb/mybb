@@ -1103,7 +1103,12 @@ if($mybb->input['action'] == "stylesheet_properties")
 		$stylesheets[basename($file)] = $stylesheet2;
 	}
 	
-	$this_stylesheet = $stylesheets[$stylesheet['cachefile']];	
+	if(!array_key_exists($stylesheet['cachefile'], $stylesheets) && array_key_exists("css.php?stylesheet=".$stylesheet['tid'], $stylesheets))
+	{
+		$stylesheet['cachefile'] = "css.php?stylesheet=".$stylesheet['tid'];
+	}
+	
+	$this_stylesheet = $stylesheets[$stylesheet['cachefile']];
 	unset($stylesheets);
 	
 	if($mybb->request_method == "post")
@@ -1155,8 +1160,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			// Update Stylesheet			
 			$update_array = array(
 				'name' => $db->escape_string($mybb->input['name']),
-				'attachedto' => $db->escape_string(implode('|', $attached)),
-				'lastmodified' => TIME_NOW
+				'attachedto' => $db->escape_string(implode('|', $attached))
 			);
 			
 			if($stylesheet['name'] != $mybb->input['name'])
@@ -1169,6 +1173,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			// If the name changed, re-cache our stylesheet
 			if($stylesheet['name'] != $mybb->input['name'])
 			{
+				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $theme['stylesheet']))
 				{
 					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$stylesheet['sid']}"), "sid='{$stylesheet['sid']}'", 1);
