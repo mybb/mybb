@@ -260,7 +260,7 @@ class PMDataHandler extends DataHandler
 			}
 	
 			// Can the recipient actually receive private messages based on their permissions or user setting?
-			if($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0 && !$pm['saveasdraft'])
+			if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
 			{
 				$this->set_error("recipient_pms_disabled", array($user['username']));
 				return false;
