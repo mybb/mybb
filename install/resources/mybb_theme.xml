@@ -4692,7 +4692,7 @@ body {
 <option value="lastpost">{$lang->sort_lastpost}</option>
 <option value="starter">{$lang->sort_author}</option>
 <option value="forum">{$lang->sort_forum}</option>
-</select> {$lang->sort_in} <input type="radio" class="radio" name="sorder" value="asc" />{$lang->sort_asc} <input type="radio" class="radio" name="sorder" value="desc" checked="checked" />{$lang->sort_desc} {$lang->sort_order}
+</select> {$lang->sort_in} <input type="radio" class="radio" name="sortordr" value="asc" />{$lang->sort_asc} <input type="radio" class="radio" name="sortordr" value="desc" checked="checked" />{$lang->sort_desc} {$lang->sort_order}
 </td>
 </tr>
 <tr>
