@@ -20,6 +20,22 @@ $upgrade_detail = array(
 	"revert_all_settings" => 0
 );
 
-/* Nothing to do from MyBB 1.4 to MyBB 1.4.2 */
+@set_time_limit(0);
+
+function upgrade13_dbchanges()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
+
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
+
+	$contents .= "Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+	$output->print_footer("13_done");
+}
 
 ?>

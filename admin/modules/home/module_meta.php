@@ -75,15 +75,49 @@ function home_action_handler($action)
 
 		// Online Administrators in the last 30 minutes
 		$timecut = TIME_NOW-60*30;
-		$query = $db->query("
-			SELECT u.uid, u.username, s.ip
-			FROM ".TABLE_PREFIX."adminsessions s
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=s.uid)
-			WHERE s.lastactive > {$timecut}
-			ORDER BY u.username
-		");
+		$query = $db->simple_select("adminsessions", "uid, ip", "lastactive > {$timecut}");
 		$online_users = "<ul class=\"menu online_admins\">";
-		while($user = $db->fetch_array($query))
+		$online_admins = array();
+		
+		// If there's only 1 user online, it has to be us.
+		if($db->num_rows($query) == 1)
+		{
+			global $mybb;
+			
+			$online_admins[$mybb->user['username']] = array(
+				"uid" => $mybb->user['uid'],
+				"username" => $mybb->user['username'],
+				"ip" => $db->fetch_field($query, "ip")
+			);
+		}
+		else
+		{
+			$uid_in = array();
+			while($user = $db->fetch_array($query))
+			{
+				$uid_in[] = $user['uid'];
+				$online_admins[$user['uid']] = array(
+					"uid" => $user['uid'],
+					"username" => "",
+					"ip" => $user['ip']
+				);
+			}
+			
+			$query = $db->simple_select("users", "uid, username", "uid IN(".implode(',', $uid_in).")", array('order_by' => 'username'));
+			while($user = $db->fetch_array($query))
+			{
+				$online_admins[$user['username']] = array(
+					"uid" => $user['uid'],
+					"username" => $user['username'],
+					"ip" => $online_admins[$user['uid']]['ip']
+				);
+				unset($online_admins[$user['uid']]);
+			}
+		}
+		
+		asort($online_admins);
+		
+		foreach($online_admins as $user)
 		{
 			if(!$done_users["{$user['uid']}.{$user['ip']}"])
 			{

@@ -86,7 +86,6 @@ if(!$mybb->input['action'])
 	$posts = my_number_format($stats['numposts']);
 
 	// Get the number of unapproved posts
-	$stats['numunapprovedposts'] -= $stats['numunapprovedthreads'];
 	if($stats['numunapprovedposts'] < 0)
 	{
 		$status['numunapprovedposts'] = 0;
