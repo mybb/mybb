@@ -1462,7 +1462,7 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
-		$posts = array_map($posts, 'intval');
+		$posts = array_map('intval', $posts);
 		$pidin = implode(',', $posts);
 
 		// Make sure that we are not splitting a thread with one post
@@ -1836,7 +1836,7 @@ function is_moderator_by_pids($posts, $permission='')
 		$posts = array($posts);
 	}
 	// Validate input
-	$posts = array_map($posts, 'intval');
+	$posts = array_map('intval', $posts);
 	$posts[] = 0;
 	// Get forums
 	$posts_string = implode(',', $posts);
@@ -1880,7 +1880,7 @@ function is_moderator_by_tids($threads, $permission='')
 		$threads = array($threads);
 	}
 	// Validate input
-	$threads = array_map($threads, 'intval');
+	$threads = array_map('intval', $threads);
 	$threads[] = 0;
 	// Get forums
 	$threads_string = implode(',', $threads);

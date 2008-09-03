@@ -1136,7 +1136,7 @@ if($mybb->input['action'] == "do_subscriptions")
 	}
 
 	// Clean input - only accept integers thanks!
-	$mybb->input['check'] = array_map($mybb->input['check'], 'intval');
+	$mybb->input['check'] = array_map('intval', $mybb->input['check']);
 	$tids = implode(",", $mybb->input['check']);
 
 	// Deleting these subscriptions?
@@ -1603,6 +1603,7 @@ if($mybb->input['action'] == "editsig")
 	else if($error)
 	{
 		$sig = $mybb->input['signature'];
+		$template = false;
 	}
 
 	if($sig && $template)

@@ -25,7 +25,7 @@ $expand_array = array();
 if(isset($mybb->input['expand']))
 {
 	$expand_array = explode("|", $mybb->input['expand']);
-	array_map("intval", $expand_array);
+	$expand_array = array_map("intval", $expand_array);
 	$expand_str = "&amp;expand=".implode("|", $expand_array);
 	$expand_str2 = "&expand=".implode("|", $expand_array);
 }

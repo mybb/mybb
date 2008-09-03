@@ -27,7 +27,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$plugins->run_hooks("class_moderation_close_threads", $tids);
 
@@ -58,7 +58,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$plugins->run_hooks("class_moderation_open_threads", $tids);
 
@@ -88,7 +88,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$plugins->run_hooks("class_moderation_stick_threads", $tids);
 
@@ -118,7 +118,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$plugins->run_hooks("class_moderation_unstick_threads", $tids);
 
@@ -311,7 +311,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		foreach($tids as $tid)
 		{
@@ -385,7 +385,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
 
@@ -514,7 +514,7 @@ class Moderation
 		global $db, $plugins;
 
 		// Make sure we only have valid values
-		$pids = array_map($pids, 'intval');
+		$pids = array_map('intval', $pids);
 		$tid = intval($tid);
 
 		$pidin = implode(',', $pids);
@@ -1060,7 +1060,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$pids = array_map($pids, 'intval');
+		$pids = array_map('intval', $pids);
 
 		$pids_list = implode(',', $pids);
 
@@ -1304,7 +1304,7 @@ class Moderation
 		global $db, $plugins;
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
 
@@ -1420,7 +1420,7 @@ class Moderation
 		$num_posts = 0;
 
 		// Make sure we only have valid values
-		$pids = array_map($pids, 'intval');
+		$pids = array_map('intval', $pids);
 
 		$pid_list = implode(',', $pids);
 		$pids = $threads_to_update = array();
@@ -1526,7 +1526,7 @@ class Moderation
 		global $db, $cache;
 
 		// Make sure we only have valid values
-		$pids = array_map($pids, 'intval');
+		$pids = array_map('intval', $pids);
 
 		$pid_list = implode(',', $pids);
 		$pids = $threads_to_update = array();
@@ -1641,7 +1641,7 @@ class Moderation
 
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
 
@@ -1702,7 +1702,7 @@ class Moderation
 		global $db;
 
 		// Make sure we only have valid values
-		$pids = array_map($pids, 'intval');
+		$pids = array_map('intval', $pids);
 
 		$pid_list = implode(',', $pids);
 		$query = $db->simple_select("posts", 'pid, visible', "pid IN ($pid_list)");
@@ -1740,7 +1740,7 @@ class Moderation
 		global $db;
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 		$fid = intval($fid);
 
 		$tid_list = implode(',', $tids);
@@ -1778,7 +1778,7 @@ class Moderation
 		global $db;
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
@@ -1823,7 +1823,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		$tids = array_map($tids, 'intval');
+		$tids = array_map('intval', $tids);
 		$fid = intval($fid);
 
 		$tids_csv = implode(',', $tids);
