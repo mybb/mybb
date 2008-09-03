@@ -514,7 +514,7 @@ class Moderation
 		global $db, $plugins;
 
 		// Make sure we only have valid values
-		array_walk($pids, 'intval');
+		$pids = array_map($pids, 'intval');
 		$tid = intval($tid);
 
 		$pidin = implode(',', $pids);
@@ -1060,7 +1060,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($pids, 'intval');
+		$pids = array_map($pids, 'intval');
 
 		$pids_list = implode(',', $pids);
 
@@ -1420,7 +1420,7 @@ class Moderation
 		$num_posts = 0;
 
 		// Make sure we only have valid values
-		array_walk($pids, 'intval');
+		$pids = array_map($pids, 'intval');
 
 		$pid_list = implode(',', $pids);
 		$pids = $threads_to_update = array();
@@ -1526,7 +1526,7 @@ class Moderation
 		global $db, $cache;
 
 		// Make sure we only have valid values
-		array_walk($pids, 'intval');
+		$pids = array_map($pids, 'intval');
 
 		$pid_list = implode(',', $pids);
 		$pids = $threads_to_update = array();
@@ -1702,7 +1702,7 @@ class Moderation
 		global $db;
 
 		// Make sure we only have valid values
-		array_walk($pids, 'intval');
+		$pids = array_map($pids, 'intval');
 
 		$pid_list = implode(',', $pids);
 		$query = $db->simple_select("posts", 'pid, visible', "pid IN ($pid_list)");
