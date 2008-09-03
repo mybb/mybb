@@ -459,7 +459,7 @@ function perform_search_mysql($search)
 							SELECT DISTINCT f.fid 
 							FROM ".TABLE_PREFIX."forums f 
 							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid='".$mybb->user['usergroup']."')
-							WHERE (','||parentlist||',' LIKE ',%{$forum}%,') > 0 AND active!=0 AND (p.fid IS NULL OR p.cansearch=1)
+							WHERE (','||parentlist||',' LIKE ',%{$forum}%,') = true AND active!=0 AND (p.fid IS NULL OR p.cansearch=1)
 						");
 						break;
 					case "sqlite3":
