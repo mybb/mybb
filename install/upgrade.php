@@ -186,11 +186,6 @@ else
 			"uid" => $user['uid']
 		);
 		
-		if($newsession['loginattempts'] == 1)
-		{
-			$newsession['loginattempts'] = 1;
-		}
-		
 		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 	
 		// Temporarily set the cookie remember option for the login cookies

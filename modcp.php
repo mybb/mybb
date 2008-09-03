@@ -1503,7 +1503,7 @@ if($mybb->input['action'] == "do_editprofile")
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if(modcp_can_manage_user($user['uid']))
+	else if(!modcp_can_manage_user($user['uid']))
 	{
 		error_no_permission();
 	}
@@ -1592,7 +1592,7 @@ if($mybb->input['action'] == "editprofile")
 		error_no_permission();
 	}
 	// Current user is a super mod or is an administrator and the user we are editing is a super admin, cannot edit admins
-	else if(modcp_can_manage_user($user['uid']))
+	else if(!modcp_can_manage_user($user['uid']))
 	{
 		error_no_permission();
 	}

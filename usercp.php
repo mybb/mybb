@@ -1455,7 +1455,7 @@ if($mybb->input['action'] == "subscriptions")
 if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
-	$query = $db->simple_select("forumpermissions", "*", "gid='".$mybb->user['usergroup']."'");
+	$query = $db->simple_select("forumpermissions", "*", "gid='".$db->escape_string($mybb->user['usergroup'])."'");
 	while($permissions = $db->fetch_array($query))
 	{
 		$permissioncache[$permissions['gid']][$permissions['fid']] = $permissions;
