@@ -332,7 +332,7 @@ class PostDataHandler extends DataHandler
 		if(trim($mybb->settings['postmergeuignore']) != "")
 		{
 			$gids = explode(',', $mybb->settings['postmergeuignore']);
-			array_walk($gids, 'intval');
+			$gids = array_map($gids, 'intval');
 			
 			
 			$user_usergroups = explode(',', $mybb->user['usergroup'].",".$mybb->user['additionalgroups']);

@@ -27,7 +27,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$plugins->run_hooks("class_moderation_close_threads", $tids);
 
@@ -58,7 +58,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$plugins->run_hooks("class_moderation_open_threads", $tids);
 
@@ -88,7 +88,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$plugins->run_hooks("class_moderation_stick_threads", $tids);
 
@@ -118,7 +118,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$plugins->run_hooks("class_moderation_unstick_threads", $tids);
 
@@ -311,7 +311,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		foreach($tids as $tid)
 		{
@@ -385,7 +385,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$tid_list = implode(',', $tids);
 
@@ -1304,7 +1304,7 @@ class Moderation
 		global $db, $plugins;
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$tid_list = implode(',', $tids);
 
@@ -1641,7 +1641,7 @@ class Moderation
 
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$tid_list = implode(',', $tids);
 
@@ -1740,7 +1740,7 @@ class Moderation
 		global $db;
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 		$fid = intval($fid);
 
 		$tid_list = implode(',', $tids);
@@ -1778,7 +1778,7 @@ class Moderation
 		global $db;
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 
 		$tid_list = implode(',', $tids);
 		$query = $db->simple_select("threads", 'tid, closed', "tid IN ($tid_list)");
@@ -1823,7 +1823,7 @@ class Moderation
 		}
 
 		// Make sure we only have valid values
-		array_walk($tids, 'intval');
+		$tids = array_map($tids, 'intval');
 		$fid = intval($fid);
 
 		$tids_csv = implode(',', $tids);

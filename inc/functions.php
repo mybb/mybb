@@ -3414,19 +3414,19 @@ function get_current_location($fields=false, $ignore=array())
 
 	if(!empty($_SERVER['PATH_INFO']))
 	{
-		$location = $_SERVER['PATH_INFO'];
+		$location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
 	}
 	elseif(!empty($_ENV['PATH_INFO']))
 	{
-		$location = $_ENV['PATH_INFO'];
+		$location = htmlspecialchars_uni($_ENV['PATH_INFO']);
 	}
 	elseif(!empty($_ENV['PHP_SELF']))
 	{
-		$location = $_ENV['PHP_SELF'];
+		$location = htmlspecialchars_uni($_ENV['PHP_SELF']);
 	}
 	else
 	{
-		$location = $_SERVER['PHP_SELF'];
+		$location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
 	}
 
 	if($fields == true)
@@ -3460,11 +3460,11 @@ function get_current_location($fields=false, $ignore=array())
 	{
 		if(isset($_SERVER['QUERY_STRING']))
 		{
-			$location .= "?".$_SERVER['QUERY_STRING'];
+			$location .= "?".htmlspecialchars_uni($_SERVER['QUERY_STRING']);
 		}
 		else if(isset($_ENV['QUERY_STRING']))
 		{
-			$location = "?".$_ENV['QUERY_STRING'];
+			$location = "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
 		}
 		
 		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
@@ -3475,7 +3475,7 @@ function get_current_location($fields=false, $ignore=array())
 			{
 				if(isset($_POST[$var]))
 				{
-					$addloc[] = $var.'='.$_POST[$var];
+					$addloc[] = urlencode($var).'='.urlencode($_POST[$var]);
 				}
 			}
 	
@@ -3484,7 +3484,6 @@ function get_current_location($fields=false, $ignore=array())
 				$location .= "?".implode("&", $addloc);
 			}
 		}
-	
 	
 		return $location;
 	}

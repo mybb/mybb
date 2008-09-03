@@ -81,7 +81,7 @@ if($mybb->input['action'] == "do_reports")
 		error($lang->error_noselected_reports);
 	}
 
-	array_walk($mybb->input['reports'], "intval");
+	$mybb->input['reports'] = array_map($mybb->input['reports'], "intval");
 	$rids = implode($mybb->input['reports'], "','");
 	$rids = "'0','{$rids}'";
 

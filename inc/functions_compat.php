@@ -105,7 +105,7 @@ if(!function_exists('str_ireplace'))
 	{
 		if(is_array($search))
 		{
-			$search = array_walk($search, 'build_str_ireplace');
+			array_walk($search, 'build_str_ireplace');
 		}
 		else
 		{

@@ -134,7 +134,7 @@ class MyBB {
 		$protected = array("_GET", "_POST", "_SERVER", "_COOKIE", "_FILES", "_SERVER", "_ENV", "GLOBALS");
 		foreach($protected as $var)
 		{
-			if(isset($_REQUEST[$var]) || isset($_FILES[$var]) || isset($_COOKIE[$var]))
+			if(isset($_REQUEST[$var]) || isset($_FILES[$var]))
 			{
 				die("Hacking attempt");
 			}

@@ -1136,7 +1136,7 @@ if($mybb->input['action'] == "do_subscriptions")
 	}
 
 	// Clean input - only accept integers thanks!
-	array_walk($mybb->input['check'], 'intval');
+	$mybb->input['check'] = array_map($mybb->input['check'], 'intval');
 	$tids = implode(",", $mybb->input['check']);
 
 	// Deleting these subscriptions?
@@ -2806,7 +2806,7 @@ if($mybb->input['action'] == "do_attachments" && $mybb->request_method == "post"
 	{
 		error($lang->no_attachments_selected);
 	}
-	$aids = $db->escape_string(implode(",", $mybb->input['attachments']));
+	$aids = implode(',', array_map('intval', $mybb->input['attachments']));
 	$query = $db->simple_select("attachments", "*", "aid IN ($aids) AND uid='".$mybb->user['uid']."'");
 	while($attachment = $db->fetch_array($query))
 	{

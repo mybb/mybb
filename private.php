@@ -1134,7 +1134,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			{
 				$wsql .= "<=";
 			}
-			elseif($mybb->input['dayway'] == "newer")
+			else
 			{
 				$wsql .= ">=";
 			}

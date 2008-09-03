@@ -50,7 +50,7 @@ if($mybb->input['action'] == "delete")
 	}
 	else
 	{
-		array_walk($mybb->input['aids'], "intval");
+		$mybb->input['aids'] = array_map($mybb->input['aids'], "intval");
 	}
 
 	if(count($mybb->input['aids']) < 1)
@@ -217,7 +217,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 		{
 			return str_replace(array(".."), "", $string);
 		}
-		array_walk($mybb->input['orphaned_files'], "clean_filename");
+		$mybb->input['orphaned_files'] = array_map($mybb->input['orphaned_files'], "clean_filename");
 		foreach($mybb->input['orphaned_files'] as $file)
 		{
 			if(!@unlink(MYBB_ROOT.$mybb->settings['uploadspath']."/".$file))
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "delete_orphans" && $mybb->request_method == "post"
 	// Deleting physical attachments which exist in database
 	if(is_array($mybb->input['orphaned_attachments']))
 	{
-		array_walk($mybb->input['orphaned_attachments'], "intval");
+		$mybb->input['orphaned_attachments'] = array_map($mybb->input['orphaned_attachments'], "intval");
 		require_once MYBB_ROOT."inc/functions_upload.php";
 
 		$query = $db->simple_select("attachments", "aid,pid,posthash", "aid IN (".implode(",", $mybb->input['orphaned_attachments']).")");
@@ -493,7 +493,7 @@ if($mybb->input['action'] == "orphans")
 						// In allotments of 20, query the database for these attachments
 						if(count($attachments_to_check) >= 20)
 						{
-							array_walk($attachments_to_check, array($db, "escape_string"));
+							$attachments_to_check = array_map($attachments_to_check, array($db, "escape_string"));
 							$attachment_names = "'".implode("','", $attachments_to_check)."'";
 							$query = $db->simple_select("attachments", "aid, attachname", "attachname IN ($attachment_names)");
 							while($attachment = $db->fetch_array($query))
@@ -521,7 +521,7 @@ if($mybb->input['action'] == "orphans")
 				// Any reamining to check?
 				if(count($attachments_to_check) > 0)
 				{
-					array_walk($attachments_to_check, array($db, "escape_string"));
+					$attachments_to_check = array_map($attachments_to_check, array($db, "escape_string"));
 					$attachment_names = "'".implode("','", $attachments_to_check)."'";
 					$query = $db->simple_select("attachments", "aid, attachname", "attachname IN ($attachment_names)");
 					while($attachment = $db->fetch_array($query))
