@@ -667,7 +667,6 @@ else if($mybb->input['action'] == "get_buddyselect")
 
 	if($mybb->user['buddylist'] != "")
 	{
-		$onl
 		$query_options = array(
 			"order_by" => "username",
 			"order_dir" => "asc"
