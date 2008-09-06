@@ -727,8 +727,22 @@ if($mybb->input['action'] == "thread")
 			$page = 1;
 		}
 		$upper = $start+$perpage;
+		
+		// Work out if we have terms to highlight
+		$highlight = "";
+		if($mybb->input['highlight'])
+		{
+			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+			{
+				$highlight = "?highlight=".urlencode($mybb->input['highlight']);
+			}
+			else
+			{
+				$highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
+			}
+		}
 
-		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED));
+		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight));
 		if($postcount > $perpage)
 		{
 			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");

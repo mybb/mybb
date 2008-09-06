@@ -141,6 +141,7 @@ if($mybb->input['action'] == "results")
 	$upper = $end;
 	
 	// Work out if we have terms to highlight
+	$highlight = "";
 	if($search['keywords'])
 	{
 		if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
@@ -418,7 +419,7 @@ if($mybb->input['action'] == "results")
 				$folder .= "new";
 				$new_class = "subject_new";
 				$folder_label .= $lang->icon_new;
-				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost");
+				$thread['newpostlink'] = get_thread_link($thread['tid'], 0, "newpost").$highlight;
 				eval("\$gotounread = \"".$templates->get("forumdisplay_thread_gotounread")."\";");
 				$unreadpost = 1;
 			}
@@ -457,7 +458,7 @@ if($mybb->input['action'] == "results")
 				if($thread['pages'] > 4)
 				{
 					$pagesstop = 4;
-					$page_link = get_thread_link($thread['tid'], $thread['pages']);
+					$page_link = get_thread_link($thread['tid'], $thread['pages']).$highlight;
 					eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
 				}
 				else
@@ -466,7 +467,7 @@ if($mybb->input['action'] == "results")
 				}
 				for($i = 1; $i <= $pagesstop; ++$i)
 				{
-					$page_link = get_thread_link($thread['tid'], $i);
+					$page_link = get_thread_link($thread['tid'], $i).$highlight;
 					eval("\$threadpages .= \"".$templates->get("forumdisplay_thread_multipage_page")."\";");
 				}
 				eval("\$thread['multipage'] = \"".$templates->get("forumdisplay_thread_multipage")."\";");

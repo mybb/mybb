@@ -306,6 +306,12 @@ if($mybb->input['action'] == "orphans")
 			$incomplete_attachments = unserialize($mybb->input['incomplete_attachments']);
 			$aids = array_merge($aids, $incomplete_attachments);
 		}
+		
+		foreach($aids as $key => $aid)
+		{
+			$aids[$key] => intval($aid);
+		}
+		
 		$results += count($aids);
 
 		if($results == 0)

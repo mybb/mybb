@@ -685,7 +685,7 @@ function akismet_admin()
 	
 	$page->add_breadcrumb_item($lang->akismet);
 	
-	if($mybb->input['delete_all'])
+	if($mybb->input['delete_all'] && $mybb->request_method == "post")
 	{	
 		// User clicked no
 		if($mybb->input['no'])
@@ -710,7 +710,7 @@ function akismet_admin()
 		}
 	}
 	
-	if($mybb->input['unmark'])
+	if($mybb->input['unmark'] && $mybb->request_method == "post")
 	{
 		$unmark = $mybb->input['akismet'];
 	
@@ -721,12 +721,12 @@ function akismet_admin()
 		}
 		
 		$posts_in = '';
+		$comma = '';
 		foreach($unmark as $key => $val)
 		{
-			$posts_in .= $comma.$key;
+			$posts_in .= $comma.intval($key);
 			$comma = ',';
 		}
-		$comma = '';
 	
 		$query = $db->simple_select("posts", "pid, tid", "pid IN ({$posts_in}) AND replyto = '0'");
 		while($post = $db->fetch_array($query))
@@ -880,7 +880,7 @@ function akismet_admin()
 		admin_redirect("index.php?module=forum/akismet");
 	}
 	
-	if($mybb->input['delete'])
+	if($mybb->input['delete'] && $mybb->request_method == "post")
 	{
 		$deletepost = $mybb->input['akismet'];
 	
@@ -891,9 +891,10 @@ function akismet_admin()
 		}
 		
 		$posts_in = '';
+		$comma = '';
 		foreach($deletepost as $key => $val)
 		{
-			$posts_in .= $comma.$key;
+			$posts_in .= $comma.intval($key);
 			$comma = ',';
 		}
 	
