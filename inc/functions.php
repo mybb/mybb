@@ -3464,7 +3464,7 @@ function get_current_location($fields=false, $ignore=array())
 		}
 		else if(isset($_ENV['QUERY_STRING']))
 		{
-			$location = "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
+			$location .= "?".htmlspecialchars_uni($_ENV['QUERY_STRING']);
 		}
 		
 		if((isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") || (isset($_ENV['REQUEST_METHOD']) && $_ENV['REQUEST_METHOD'] == "POST"))
