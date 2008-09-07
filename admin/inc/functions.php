@@ -233,7 +233,10 @@ function save_quick_perms($fid)
 
 	$query = $db->simple_select("usergroups", "gid");
 	while($usergroup = $db->fetch_array($query))
-	{
+	{		
+		$query2 = $db->simple_select("forumpermissions", "canviewthreads,candlattachments,canratethreads,caneditposts,candeleteposts,candeletethreads,caneditattachments,canvotepolls,cansearch", "fid='{$fid}' AND gid='{$usergroup['gid']}'", array('limit' => 1));
+		$existing_permissions = $db->fetch_array($query2);
+		
 		// Delete existing permissions
 		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
 
@@ -298,19 +301,19 @@ function save_quick_perms($fid)
 				"fid" => $fid,
 				"gid" => $usergroup['gid'],
 				"canview" => $pview,
-				"canviewthreads" => $pview,
-				"candlattachments" => $pview,
+				"canviewthreads" => $existing_permissions['canviewthreads'],
+				"candlattachments" => $existing_permissions['candlattachments'],
 				"canpostthreads" => $pthreads,
 				"canpostreplys" => $preplies,
 				"canpostattachments" => $pattachments,
-				"canratethreads" => $pview,
-				"caneditposts" => $ppost,
-				"candeleteposts" => $ppost,
-				"candeletethreads" => $pthreads,
-				"caneditattachments" => $pattachments,
+				"canratethreads" => $existing_permissions['canratethreads'],
+				"caneditposts" => $existing_permissions['caneditposts'],
+				"candeleteposts" => $existing_permissions['candeleteposts'],
+				"candeletethreads" => $existing_permissions['candeletethreads'],
+				"caneditattachments" => $existing_permissions['caneditattachments'],
 				"canpostpolls" => $ppolls,
-				"canvotepolls" => $pview,
-				"cansearch" => $pview
+				"canvotepolls" => $existing_permissions['canvotepolls'],
+				"cansearch" => $existing_permissions['cansearch']
 			);
 			
 			$db->insert_query("forumpermissions", $insertquery);

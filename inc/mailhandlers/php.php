@@ -44,6 +44,13 @@ class PhpMail extends MailHandler
 			$this->message = str_replace("\r\n", "\n", $this->message);
 			$this->delimiter = "\n";
 		}
+		
+		// Some mail providers ignore email's with incorrect return-to path's so try and fix that here
+		$this->sendmail_from = @ini_get('sendmail_from');
+		if($this->sendmail_from != $mybb->settings['adminemail'])
+		{
+			@ini_set("sendmail_from", $mybb->settings['adminemail']);
+		}
 
 		// If safe mode is on, don't send the additional parameters as we're not allowed to
 		if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
