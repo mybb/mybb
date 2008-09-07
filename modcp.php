@@ -2291,7 +2291,7 @@ if($mybb->input['action'] == "ipsearch")
 				{
 					$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
 				}
-				$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."</a> by ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
+				$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."</a> {$lang->by} ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
 				eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
 			}
 		}

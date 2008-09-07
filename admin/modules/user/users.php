@@ -1127,26 +1127,26 @@ if($mybb->input['action'] == "edit")
 	// SIGNATURE EDITOR
 	//
 	$signature_editor = $form->generate_text_area("signature", $mybb->input['signature'], array('id' => 'signature', 'rows' => 15, 'cols' => '70', 'style' => 'width: 95%'));
-	$sig_smilies = "off";
+	$sig_smilies = $lang->off;
 	if($mybb->settings['sigsmilies'] == 1)
 	{
-		$sig_smilies = "on";
+		$sig_smilies = $lang->on;
 	}
-	$sig_mycode = "off";
+	$sig_mycode = $lang->off;
 	if($mybb->settings['sigmycode'] == 1)
 	{
-		$sig_mycode = "on";
+		$sig_mycode = $lang->on;
 		$signature_editor .= build_mycode_inserter("signature");
 	}
-	$sig_html = "off";
+	$sig_html = $lang->off;
 	if($mybb->settings['sightml'] == 1)
 	{
-		$sig_html = "on";
+		$sig_html = $lang->on;
 	}
-	$sig_imgcode = "off";
+	$sig_imgcode = $lang->off;
 	if($mybb->settings['sigimgcode'] == 1)
 	{
-		$sig_imgcode = "on";
+		$sig_imgcode = $lang->on;
 	}
 	echo "<div id=\"tab_signature\">\n";
 	$form_container = new FormContainer("{$lang->signature}: {$user['username']}");

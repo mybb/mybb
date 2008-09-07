@@ -4631,8 +4631,6 @@ function rebuild_settings()
  */
 function build_highlight_array($terms)
 {
-	$terms = htmlspecialchars_uni($terms);
-
 	// Strip out any characters that shouldn't be included
 	$bad_characters = array(
 		"(",
@@ -4650,6 +4648,7 @@ function build_highlight_array($terms)
 		$terms = explode("\"", $terms);
 		foreach($terms as $phrase)
 		{
+			$phrase = htmlspecialchars_uni($phrase);
 			if($phrase != "")
 			{
 				if($inquote)
@@ -4679,6 +4678,7 @@ function build_highlight_array($terms)
 	// Otherwise just a simple search query with no phrases
 	else
 	{
+		$terms = htmlspecialchars_uni($terms);
 		$split_words = preg_split("#\s{1,}#", $terms, -1);
 		if(!is_array($split_words))
 		{

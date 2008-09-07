@@ -9051,7 +9051,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 						</tr>
 						</table>
 					</dd>]]></template>
-		<template name="warnings_warn_pm" version="1400"><![CDATA[		<tr>
+		<template name="warnings_warn_pm" version="1402"><![CDATA[		<tr>
 			<td width="20%" class="trow1" valign="top">
 				<strong>{$lang->send_pm}</strong>
 				<div style="margin:auto" id="pm_smilie_insert">{$smilieinserter}</div>
@@ -9070,7 +9070,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 							if(mybb_editor_disabled == true && editor_language)
 							{
 								mybb_editor_disabled = false;
-								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: 0});
+								clickableEditor = new messageEditor("message", {lang: editor_language, rtl: {$lang->settings['rtl']}, theme: "{$theme['editortheme']}"});
 								if(clickableEditor)
 								{
 									clickableEditor.bindSmilieInserter("clickable_smilies");
