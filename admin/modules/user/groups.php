@@ -186,7 +186,7 @@ if($mybb->input['action'] == "join_requests")
 	
 	if($mybb->request_method == "post" && is_array($mybb->input['users']))
 	{		
-		$uid_in = implode(",", array_map('trim', $mybb->input['users']));
+		$uid_in = implode(",", array_map('intval', $mybb->input['users']));
 		
 		if(isset($mybb->input['approve']))
 		{
