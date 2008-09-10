@@ -266,7 +266,7 @@ function upgrade12_dbchanges_post2()
 	echo "<p>Adding longipaddress column to posts table ... ";
 	flush();
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(10) NOT NULL default '0' AFTER ipaddress");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD longipaddress int(11) NOT NULL default '0' AFTER ipaddress");
 	
 	echo "done.</p>";
 	flush();
@@ -706,13 +706,13 @@ function upgrade12_dbchanges2()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longregip;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longregip int(10) NOT NULL default '0' AFTER lastip");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longregip int(11) NOT NULL default '0' AFTER lastip");
 	
 	if($db->field_exists('longlastip', "users"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP longlastip;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longlastip int(10) NOT NULL default '0' AFTER lastip");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD longlastip int(11) NOT NULL default '0' AFTER lastip");
 	
 	// Unused column
 	if($db->field_exists('titles', "searchlog"))

@@ -336,7 +336,7 @@ if($mybb->input['action'] == "modlogs")
 	add_breadcrumb($lang->mcp_nav_modlogs, "modcp.php?action=modlogs");
 
 	$perpage = intval($mybb->input['perpage']);
-	if(!$perpage)
+	if(!$perpage || $pagepage <= 0)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
 	}
@@ -1834,7 +1834,8 @@ if($mybb->input['action'] == "editprofile")
 
 if($mybb->input['action'] == "finduser")
 {
-	if(!$perpage)
+	$perpage = intval($mybb->input['perpage']);
+	if(!$perpage || $pagepage <= 0)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
 	}
@@ -2184,7 +2185,7 @@ if($mybb->input['action'] == "ipsearch")
 
 		// Now we have the result counts, paginate
 		$perpage = intval($mybb->input['perpage']);
-		if(!$perpage)
+		if(!$perpage || $pagepage <= 0)
 		{
 			$perpage = $mybb->settings['threadsperpage'];
 		}
