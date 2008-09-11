@@ -257,13 +257,13 @@ class PMDataHandler extends DataHandler
 						$this->set_error("recipient_is_ignoring", array($user['username']));
 					}
 				}
-			}
-	
-			// Can the recipient actually receive private messages based on their permissions or user setting?
-			if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
-			{
-				$this->set_error("recipient_pms_disabled", array($user['username']));
-				return false;
+				
+				// Can the recipient actually receive private messages based on their permissions or user setting?
+				if(($user['receivepms'] == 0 || $recipient_permissions['canusepms'] == 0) && !$pm['saveasdraft'])
+				{
+					$this->set_error("recipient_pms_disabled", array($user['username']));
+					return false;
+				}
 			}
 	
 			// Check to see if the user has reached their private message quota - if they have, email them.
