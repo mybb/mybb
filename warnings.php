@@ -823,7 +823,7 @@ if($mybb->input['action'] == "view")
 	{
 		$warning['post_subject'] = $parser->parse_badwords($warning['post_subject']);
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
-		$post_link = get_post_link($warning['pid']);
+		$post_link = get_post_link($warning['pid'])."#pid{$warning['pid']}";
 		eval("\$warning_info = \"".$templates->get("warnings_view_post")."\";");
 	}
 	else

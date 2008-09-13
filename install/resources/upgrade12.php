@@ -50,7 +50,7 @@ function upgrade12_dbchanges()
 		"privatemessages" => array("pmid", "includesig","smilieoff"),
 		"profilefields" => array("fid", "required","editable","hidden"),
 		"smilies" => array("sid", "showclickable"),
-		"usergroups" => array("gid","isbannedgroup","canview","canviewthreads","canviewprofiles","candlattachments","canpostthreads","canpostreplys","canpostattachments","canratethreads","caneditposts","candeleteposts","candeletethreads","caneditattachments","canpostpolls","canvotepolls","canusepms","cansendpms","cantrackpms","candenypmreceipts","cansendemail","canviewmemberlist","canviewcalendar","canviewonline","canviewwolinvis","canviewonlineips","cancp","issupermod","cansearch","canusercp","canuploadavatars","canratemembers","canchangename","showforumteam","usereputationsystem","cangivereputations"),
+		"usergroups" => array("gid","isbannedgroup","canview","canviewthreads","canviewprofiles","candlattachments","canpostthreads","canpostreplys","canpostattachments","canratethreads","caneditposts","candeleteposts","candeletethreads","caneditattachments","canpostpolls","canvotepolls","canusepms","cansendpms","cantrackpms","candenypmreceipts","cansendemail","canviewmemberlist","canviewcalendar","canviewonline","canviewwolinvis","canviewonlineips","cancp","issupermod","cansearch","canusercp","canuploadavatars","canratemembers","canchangename","showforumteam","usereputationsystem","cangivereputations","candisplaygroup","cancustomtitle"),
 		"users" => array("uid","allownotices","hideemail","invisible","receivepms","pmpopup","pmnotify","remember","showsigs","showavatars","showquickreply","showredirect","away"),
 		"threads" => array("tid", "closed")
 	);
