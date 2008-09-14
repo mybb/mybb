@@ -1275,6 +1275,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 			);
 
 			$message['message'] = $parser->parse_message($message['message'], $parser_options);
+			$message['subject'] = htmlspecialchars_uni($message['subject']);
 		}
 		
 		if($mybb->input['exporttype'] == "txt" || $mybb->input['exporttype'] == "csv")
@@ -1303,6 +1304,10 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 					$foldername = $folderinfo[1];
 					if($mybb->input['exporttype'] != "csv")
 					{
+						if($mybb->input['exporttype'] != "html")
+						{
+							$mybb->input['exporttype'] == "txt";
+						}
 						eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_folderhead", 1, 0)."\";");
 					}
 					else

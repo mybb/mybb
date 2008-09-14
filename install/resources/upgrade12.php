@@ -1147,7 +1147,7 @@ function upgrade12_dbchanges5()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD KEY username (username)");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
 
 	if($db->field_exists('statustime', "privatemessages"))
 	{

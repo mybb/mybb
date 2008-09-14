@@ -34,6 +34,21 @@ function upgrade13_dbchanges()
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
 	
+	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
+	while($ukey = $db->fetch_array($query))
+	{
+		if($ukey['Key_name'] == "username")
+		{
+			$index = $ukey;
+			break;
+		}
+	}
+	if($index)
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
+	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE logrepip logrepip int(11) NOT NULL default '0'");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int(11) NOT NULL default '0'");
 	

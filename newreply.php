@@ -136,7 +136,7 @@ else
 	}
 	elseif($mybb->input['previewpost'])
 	{
-		$username = $mybb->input['username'];
+		$username = htmlspecialchars_uni($mybb->input['username']);
 	}
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
