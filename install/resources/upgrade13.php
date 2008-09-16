@@ -49,7 +49,7 @@ function upgrade13_dbchanges()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE logrepip logrepip int(11) NOT NULL default '0'");
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int(11) NOT NULL default '0'");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int(11) NOT NULL default '0'");
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts CHANGE longipaddress longipaddress int(11) NOT NULL default '0'");
