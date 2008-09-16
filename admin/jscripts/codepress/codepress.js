@@ -10,7 +10,7 @@
  */
 
 CodePress = function(obj) {
-	if(MyBB.browser == "opera" || MyBB.browser == "safari")
+	if(MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 	{
 		return;
 	}

@@ -54,6 +54,10 @@ var MyBB = {
 		{
 			this.browser = "mozilla";
 		}
+		else if(this.useragent.indexOf("chrome") != -1)
+		{
+			this.browser = "chrome";
+		}
 		else if(this.useragent.indexOf("opera") != -1)
 		{
 			this.browser = "opera";
