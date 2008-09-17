@@ -309,7 +309,7 @@ if($mybb->input['action'] == "orphans")
 		
 		foreach($aids as $key => $aid)
 		{
-			$aids[$key] => intval($aid);
+			$aids[$key] = intval($aid);
 		}
 		
 		$results += count($aids);
