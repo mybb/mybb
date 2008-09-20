@@ -509,7 +509,7 @@ class datacache
 					{
 						if(is_array($forum_mods))
 						{
-							$forum_mods = array_merge($forum_mods, $this->moderators[$forum['fid']]);
+							$forum_mods = $forum_mods + $this->moderators[$forum['fid']];
 						}
 						else
 						{

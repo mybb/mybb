@@ -326,13 +326,22 @@ function gd_version()
 		return;
 	}
 	
-	ob_start();
-	phpinfo(8);
-	$info = ob_get_contents();
-	ob_end_clean();
-	$info = stristr($info, 'gd version');
-	preg_match('/\d/', $info, $gd);
-	$gd_version = $gd[0];
+	if(function_exists("gd_info"))
+	{
+		$gd_info = gd_info();
+   		preg_match('/\d/', $gd_info['GD Version'], $gd);
+   		$gd_version = $gd[0];
+	}
+	else
+	{
+		ob_start();
+		phpinfo(8);
+		$info = ob_get_contents();
+		ob_end_clean();
+		$info = stristr($info, 'gd version');
+		preg_match('/\d/', $info, $gd);
+		$gd_version = $gd[0];
+	}
 	
 	return $gd_version;
 }
