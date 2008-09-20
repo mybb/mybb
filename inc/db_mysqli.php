@@ -238,7 +238,10 @@ class DB_MySQLi
 		}
 
 		// Select databases
-		$this->select_db($config['database']);
+		if(!$this->select_db($config['database']))
+		{
+			return false;
+		}
 
 		$this->current_link = &$this->read_link;
 		return $this->read_link;
