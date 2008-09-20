@@ -3988,16 +3988,49 @@ function my_strtoupper($string)
  * @return int The un-htmlentitied' string.
  */
 function unhtmlentities($string)
+{	
+	// Replace numeric entities
+	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'unichr(hexdec("\\1"))', $string);
+	$string = preg_replace('~&#([0-9]+);~e', 'unichr("\\1")', $string);
+	
+	// Replace literal entities
+	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+	$trans_tbl = array_flip($trans_tbl);
+	
+	return strtr($string, $trans_tbl);
+}
+
+/**
+ * Returns any ascii to it's character (utf-8 safe).
+ *
+ * @param string The ascii to characterize.
+ * @return int The characterized ascii.
+ */
+function unichr($c)
 {
-   // Replace numeric entities
-   $string = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $string);
-   $string = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $string);
-
-   // Replace literal entities
-   $trans_tbl = get_html_translation_table(HTML_ENTITIES);
-   $trans_tbl = array_flip($trans_tbl);
-
-   return strtr($string, $trans_tbl);
+    if($c <= 0x7F)
+	{
+        return chr($c);
+    }
+	else if($c <= 0x7FF)
+	{
+        return chr(0xC0 | $c >> 6) . chr(0x80 | $c & 0x3F);
+    }
+	else if($c <= 0xFFFF)
+	{
+        return chr(0xE0 | $c >> 12) . chr(0x80 | $c >> 6 & 0x3F)
+                                    . chr(0x80 | $c & 0x3F);
+    }
+	else if($c <= 0x10FFFF)
+	{
+        return chr(0xF0 | $c >> 18) . chr(0x80 | $c >> 12 & 0x3F)
+                                    . chr(0x80 | $c >> 6 & 0x3F)
+                                    . chr(0x80 | $c & 0x3F);
+    }
+	else
+	{
+        return false;
+    }
 }
 
 /**
