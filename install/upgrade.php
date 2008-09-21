@@ -703,16 +703,15 @@ function sync_settings($redo=0)
 		$db->drop_table("settings");
 
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."settings (
-		  sid smallint unsigned NOT NULL auto_increment,
+		  sid smallint(6) NOT NULL auto_increment,
 		  name varchar(120) NOT NULL default '',
 		  title varchar(120) NOT NULL default '',
 		  description text NOT NULL,
 		  optionscode text NOT NULL,
 		  value text NOT NULL,
-		  disporder smallint unsigned NOT NULL default '0',
-		  gid smallint unsigned NOT NULL default '0',
-		  isdefault int(1) NOT NULL default '0',
-		  PRIMARY KEY (sid)
+		  disporder smallint(6) NOT NULL default '0',
+		  gid smallint(6) NOT NULL default '0',
+		  PRIMARY KEY  (sid)
 		) TYPE=MyISAM;");
 	}
 	else
@@ -798,7 +797,23 @@ function sync_settings($redo=0)
 			}
 		}
 	}
-
+	
+	foreach($settinggroups as $groupname)
+	{
+		if(!in_array($groupname, $settinggroupnames))
+		{
+			$db->delete_query("settinggroups", "gid='".$settinggroups[$groupname]."'", 1);
+		}
+	}
+	
+	foreach($settings as $settingname)
+	{
+		if(!in_array($settingname, $settingnames))
+		{
+			$db->delete_query("settings", "sid='".$settings[$settingname]."'", 1);
+		}
+	}
+	
 	if($redo >= 1)
 	{
 		require MYBB_ROOT."inc/settings.php";
