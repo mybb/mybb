@@ -47,6 +47,13 @@ function upgrade13_dbchanges()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 	}
+	
+	$query = $db->simple_select("users", "username, uid", "GROUP BY username HAVING count(*) > 1");
+	while($user = $db->fetch_array($query))
+	{
+		$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
+	}
+	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int(11) NOT NULL default '0'");

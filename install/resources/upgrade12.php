@@ -1899,21 +1899,24 @@ function upgrade12_redothemes()
 	$master_theme = $db->fetch_array($query);
 
 	$master_stylesheets = unserialize($master_theme['stylesheets']);
-
-	// Note: 1.4 only ships with one global|global stylesheet
-	foreach($master_stylesheets as $location => $sheets)
+	
+	if(is_array($master_stylesheets))
 	{
-		foreach($sheets as $action => $sheets)
+		// Note: 1.4 only ships with one global|global stylesheet
+		foreach($master_stylesheets as $location => $sheets)
 		{
-			foreach($sheets as $stylesheet)
+			foreach($sheets as $action => $sheets)
 			{
-				if($location == "global" && $action == "global")
+				foreach($sheets as $stylesheet)
 				{
-					continue; // Skip global
+					if($location == "global" && $action == "global")
+					{
+						continue; // Skip global
+					}
+					
+					$default_stylesheets[$location][$action][] = $stylesheet;
+					$default_stylesheets['inherited']["{$location}_{$action}"][$stylesheet] = 1; // This stylesheet is inherited from the master
 				}
-				
-				$default_stylesheets[$location][$action][] = $stylesheet;
-				$default_stylesheets['inherited']["{$location}_{$action}"][$stylesheet] = 1; // This stylesheet is inherited from the master
 			}
 		}
 	}

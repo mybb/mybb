@@ -69,6 +69,7 @@ switch($config['database']['type'])
 define('TABLE_PREFIX', $config['database']['table_prefix']);
 $db->connect($config['database']);
 $db->set_table_prefix(TABLE_PREFIX);
+$db->type = $config['database']['type'];
 
 // Load Settings
 if(file_exists(MYBB_ROOT."inc/settings.php"))
@@ -743,7 +744,7 @@ function sync_settings($redo=0)
 	$tree = $parser->get_tree();
 	$settinggroupnames = array();
 	$settingnames = array();
-	
+
 	foreach($tree['settings'][0]['settinggroup'] as $settinggroup)
 	{
 		$settinggroupnames[] = $settinggroup['attributes']['name'];
@@ -797,7 +798,7 @@ function sync_settings($redo=0)
 			}
 		}
 	}
-	
+
 	if($redo >= 1)
 	{
 		require MYBB_ROOT."inc/settings.php";

@@ -1402,6 +1402,8 @@ function db_connection($config)
 
 	$db->connect($config['database']);
 	$db->set_table_prefix(TABLE_PREFIX);
+	$db->type = $config['database']['type'];
+	
 	return $db;
 }
 
