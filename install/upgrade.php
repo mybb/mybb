@@ -803,22 +803,6 @@ function sync_settings($redo=0)
 		}
 	}
 	
-	foreach($settinggroups as $groupname)
-	{
-		if(!in_array($groupname, $settinggroupnames))
-		{
-			$db->delete_query("settinggroups", "gid='".$settinggroups[$groupname]."'", 1);
-		}
-	}
-	
-	foreach($settings as $settingname)
-	{
-		if(!in_array($settingname, $settingnames))
-		{
-			$db->delete_query("settings", "sid='".$settings[$settingname]."'", 1);
-		}
-	}
-	
 	if($redo >= 1)
 	{
 		require MYBB_ROOT."inc/settings.php";
