@@ -174,11 +174,15 @@ else
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
+			$output->print_error("The username you have entered appears to be invalid.");
 		}
 		else
 		{
 			$user = validate_password_from_uid($user['uid'], $mybb->input['password'], $user);
+			if(!$user['uid'])
+			{
+				$output->print_error("The password you entered is incorrect. If you have forgotten your password, click <a href=\"../member.php?action=lostpw\">here</a>. Otherwise, go back and try again.");
+			}
 		}
 		
 		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");

@@ -1886,13 +1886,15 @@ function upgrade12_redothemes()
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
 	else
-
 	{
 		$output->print_error("Please make sure your admin directory is uploaded correctly.");
 	}
 
 	// Import master theme
-	import_theme_xml($contents, array("tid" => 1, "no_templates" => 1));
+	if(import_theme_xml($contents, array("tid" => 1, "no_templates" => 1, "version_compat" => 1)) === -1)
+	{
+		$output->print_error("Please make sure your install/resources/mybb_theme.xml file is uploaded correctly.");
+	}
 
 	// Fetch out default stylesheets from master
 	$query = $db->simple_select("themes", "*", "tid=1");
