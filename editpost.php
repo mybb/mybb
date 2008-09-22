@@ -315,7 +315,7 @@ if($mybb->input['action'] == "do_editpost" && $mybb->request_method == "post")
 		// Did the user choose to post a poll? Redirect them to the poll posting page.
 		if($mybb->input['postpoll'] && $forumpermissions['canpostpolls'])
 		{
-			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".$mybb->input['numpolloptions'];
+			$url = "polls.php?action=newpoll&tid=$tid&polloptions=".intval($mybb->input['numpolloptions']);
 			$lang->redirect_postedited = $lang->redirect_postedited_poll;
 		}
 		else if($visible == 0 && $first_post && !is_moderator($fid, "", $mybb->user['uid']))

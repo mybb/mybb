@@ -1683,7 +1683,8 @@ switch($mybb->input['action'])
 				if($mybb->input['inlinetype'] == 'search')
 				{
 					clearinline($mybb->input['searchid'], 'search');
-					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
+					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);					
+					// VULNERABLE
 					redirect($mybb->input['url'], $lang->redirect_customtool_search);
 				}
 				else
@@ -1754,6 +1755,7 @@ switch($mybb->input['action'])
 				{
 					clearinline($mybb->input['searchid'], 'search');
 					$lang->redirect_customtool_search = $lang->sprintf($lang->redirect_customtool_search, $tool['name']);
+					// VULNERABLE
 					redirect($mybb->input['url'], $lang->redirect_customtool_search);
 				}
 				else
@@ -1906,6 +1908,7 @@ function moderation_redirect($url, $message="", $title="")
 	global $mybb;
 	if(!empty($mybb->input['url']))
 	{
+		// VULNERABLE
 		redirect($mybb->input['url'], $message, $title);
 	}
 	redirect($url, $message, $title);
