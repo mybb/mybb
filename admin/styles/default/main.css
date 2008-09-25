@@ -608,7 +608,7 @@ input.radio_input {
 
 #flash_message.error {
 	border: 1px solid #FC6;
-	background: #FFC url('images/icons/error.gif') no-repeat 4px 9px;;
+	background: #FFC url('images/icons/error.gif') no-repeat 4px 9px;
 	color: #C00;
 }
 
