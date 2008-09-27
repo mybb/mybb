@@ -957,7 +957,7 @@ class DB_PgSQL
 	 */
 	function optimize_table($table)
 	{
-		$this->write_query("OPTIMIZE TABLE ".$this->table_prefix.$table."");
+		$this->write_query("VACUUM ".$this->table_prefix.$table."");
 	}
 	
 	/**

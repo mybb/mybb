@@ -1171,7 +1171,7 @@ if(!$mybb->input['action'])
 				SELECT g.gid, COUNT(u.uid) AS users
 				FROM ".TABLE_PREFIX."users u
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%')
-				WHERE g.gid != '' GROUP BY g.gid
+				WHERE g.gid != '0' AND g.gid != NULL GROUP BY g.gid
 			");
 			break;
 		default:
@@ -1179,7 +1179,7 @@ if(!$mybb->input['action'])
 				SELECT g.gid, COUNT(u.uid) AS users
 				FROM ".TABLE_PREFIX."users u
 				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%'))
-				WHERE g.gid != '' GROUP BY g.gid
+				WHERE g.gid != '0' AND g.gid != NULL GROUP BY g.gid
 			");
 	}
 	while($groupcount = $db->fetch_array($query))

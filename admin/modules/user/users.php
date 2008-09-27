@@ -165,6 +165,7 @@ if($mybb->input['action'] == "avatar_gallery")
 			$updated_avatar = array(
 				"avatar" => $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']),
 				"avatardimensions" => "{$dimensions[0]}|{$dimensions[1]}",
+
 				"avatartype" => "gallery"
 			);
 
@@ -932,6 +933,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$age = get_age($user['birthday']);
 	}
+
 	else
 	{
 		$age = '';
@@ -1318,6 +1320,10 @@ if($mybb->input['action'] == "referrers")
 	
 	// Fetch default admin view
 	$default_view = fetch_default_view("user");
+	if(!$default_view)
+	{
+		$default_view = "0";
+	}
 	$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
 	$admin_view = $db->fetch_array($query);
 
@@ -1571,7 +1577,7 @@ if($mybb->input['action'] == "search")
 				unset($admin_view);
 			}
 		}
-		
+
 		if($mybb->input['search_id'] && $admin_session['data']['user_views'][$mybb->input['search_id']])
 		{
 			$admin_view = $admin_session['data']['user_views'][$mybb->input['search_id']];
@@ -1583,6 +1589,10 @@ if($mybb->input['action'] == "search")
 			if(!$admin_view['vid'])
 			{
 				$default_view = fetch_default_view("user");
+				if(!$default_view)
+				{
+					$default_view = "0";
+				}
 				$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
 				$admin_view = $db->fetch_array($query);
 			}
@@ -1706,6 +1716,10 @@ if(!$mybb->input['action'])
 		if(!$admin_view)
 		{
 			$default_view = fetch_default_view("user");
+			if(!$default_view)
+			{
+				$default_view = "0";
+			}
 			$query = $db->simple_select("adminviews", "*", "type='user' AND (vid='{$default_view}' OR uid=0)", array("order_by" => "uid", "order_dir" => "desc"));
 			$admin_view = $db->fetch_array($query);
 		}
@@ -1731,7 +1745,7 @@ if(!$mybb->input['action'])
 
 	if(!$results)
 	{
-			$errors[] = $lang->error_no_users_found;
+		$errors[] = $lang->error_no_users_found;
 	}
 
 	// If we have any error messages, show them
