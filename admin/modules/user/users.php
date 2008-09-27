@@ -1884,16 +1884,16 @@ function build_users_view($view)
 	{
 		if($view['conditions'][$search_field])
 		{
-			$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
-			
 			// IPv6 IP
 			if(strpos($view['conditions'][$search_field], ":") !== false)
 			{
+				$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
 				$ip_sql = "{$search_field} LIKE '".$db->escape_string($view['conditions'][$search_field])."'";
 			}
 			else
 			{
 				$ip_range = fetch_longipv4_range($view['conditions'][$search_field]);
+				$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
 				if(!is_array($ip_range))
 				{
 					$ip_sql = "long{$search_field}='{$ip_range}'";
@@ -1905,6 +1905,31 @@ function build_users_view($view)
 			}
 			$search_sql .= " AND {$ip_sql}";
 		}
+	}
+
+	// Post IP searching
+	if($view['conditions']['postip'])
+	{
+		// IPv6 IP
+		if(strpos($view['conditions']['postip'], ":") !== false)
+		{
+			$view['conditions']['postip'] = str_replace("*", "%", $view['conditions']['postip']);
+			$ip_sql = "ipaddress LIKE '".$db->escape_string($view['conditions']['postip'])."'";
+		}
+		else
+		{
+			$ip_range = fetch_longipv4_range($view['conditions']['postip']);
+			$view['conditions']['postip'] = str_replace("*", "%", $view['conditions']['postip']);
+			if(!is_array($ip_range))
+			{
+				$ip_sql = "longipaddress='{$ip_range}'";
+			}
+			else
+			{
+				$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
+			}
+		}
+		$search_sql .= " AND EXISTS (SELECT uid FROM ".TABLE_PREFIX."posts WHERE {$ip_sql} AND uid=u.uid)";
 	}
 
 	// Usergroup based searching

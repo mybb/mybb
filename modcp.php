@@ -132,7 +132,6 @@ if($mybb->input['action'] == "reports")
 
 
 
-
 	if($mybb->input['page'] == "last")
 	{
 		$page = $pages;
@@ -336,7 +335,7 @@ if($mybb->input['action'] == "modlogs")
 	add_breadcrumb($lang->mcp_nav_modlogs, "modcp.php?action=modlogs");
 
 	$perpage = intval($mybb->input['perpage']);
-	if(!$perpage || $pagepage <= 0)
+	if(!$perpage || $perpage <= 0)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
 	}
@@ -1199,8 +1198,9 @@ if($mybb->input['action'] == "do_modqueue")
 		$query = $db->query("
 			SELECT a.pid, a.aid
 			FROM  ".TABLE_PREFIX."attachments a
+			LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-			WHERE aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$flist}
+			WHERE aid IN (".implode(",", array_map("intval", array_keys($mybb->input['attachments'])))."){$tflist}
 		");
 		while($attachment = $db->fetch_array($query))
 		{
@@ -1402,7 +1402,6 @@ if($mybb->input['action'] == "modqueue")
 		$perpage = $mybb->settings['postsperpage'];
 		$pages = $unapproved_attachments / $perpage;
 		$pages = ceil($pages);
-
 
 		if($mybb->input['page'] == "last")
 		{
@@ -1835,7 +1834,7 @@ if($mybb->input['action'] == "editprofile")
 if($mybb->input['action'] == "finduser")
 {
 	$perpage = intval($mybb->input['perpage']);
-	if(!$perpage || $pagepage <= 0)
+	if(!$perpage || $perpage <= 0)
 	{
 		$perpage = $mybb->settings['threadsperpage'];
 	}
@@ -2185,7 +2184,7 @@ if($mybb->input['action'] == "ipsearch")
 
 		// Now we have the result counts, paginate
 		$perpage = intval($mybb->input['perpage']);
-		if(!$perpage || $pagepage <= 0)
+		if(!$perpage || $perpage <= 0)
 		{
 			$perpage = $mybb->settings['threadsperpage'];
 		}

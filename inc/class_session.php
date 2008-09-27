@@ -241,7 +241,7 @@ class session
 			$mybb->settings['postsperpage'] = $mybb->user['ppp'];
 		}
 		
-		// DOes this user prefer posts in classic mode?
+		// Does this user prefer posts in classic mode?
 		if($mybb->user['classicpostbit'])
 		{
 			$mybb->settings['postlayout'] = 'classic';
@@ -522,7 +522,7 @@ class session
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
-		$db->insert_query("sessions", $onlinedata);
+		$db->replace_query("sessions", $onlinedata);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
 	}
