@@ -33,7 +33,8 @@ if(!$mybb->input['action'])
 			"cpstyle" => $db->escape_string($mybb->input['cpstyle']),
 			"permissions" => $db->escape_string($adminopts['permissions']),
 			"defaultviews" => $db->escape_string($adminopts['defaultviews']),
-			"uid" => $mybb->user['uid']
+			"uid" => $mybb->user['uid'],
+			"codepress" => intval($mybb->input['codepress']),
 		);
 
 		$db->replace_query("adminoptions", $sqlarray, "uid");
@@ -54,7 +55,7 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, 'preferences');	
 	
-	$query = $db->simple_select("adminoptions", "notes, cpstyle", "uid='".$mybb->user['uid']."'", array('limit' => 1));
+	$query = $db->simple_select("adminoptions", "notes, cpstyle, codepress", "uid='".$mybb->user['uid']."'", array('limit' => 1));
 	$admin_options = $db->fetch_array($query);
 	
 	$form = new Form("index.php?module=home/preferences", "post");
@@ -71,9 +72,12 @@ if(!$mybb->input['action'])
 	$setting_code = $form->generate_select_box("cpstyle", $folders, $admin_options['cpstyle']);
 	
 	$table = new Table;
-	$table->construct_header($lang->acp_theme);
+	$table->construct_header($lang->global_preferences);
 	
-	$table->construct_cell($lang->select_acp_theme."<br />{$setting_code}");
+	$table->construct_cell("<strong>{$lang->acp_theme}</strong><br /><small>{$lang->select_acp_theme}</small><br /><br />{$setting_code}");
+	$table->construct_row();
+	
+	$table->construct_cell("<strong>{$lang->codepress}</strong><br /><small>{$lang->use_codepress_desc}</small><br /><br />".$form->generate_yes_no_radio('codepress', $admin_options['codepress']));
 	$table->construct_row();
 	
 	$table->output($lang->preferences);

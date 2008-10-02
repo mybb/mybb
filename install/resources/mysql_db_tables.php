@@ -22,6 +22,7 @@ $tables[] = "CREATE TABLE mybb_adminlog (
 $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int(10) NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
+  codepress int(1) NOT NULL default '1',
   notes text NOT NULL,
   permissions text NOT NULL,
   defaultviews text NOT NULL,
@@ -481,6 +482,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   KEY uid (uid),
   KEY visible (visible),
   KEY dateline (dateline),
+  KEY longipaddress (longipaddress),
   PRIMARY KEY (pid)
 ) TYPE=MyISAM;";
 
@@ -958,6 +960,8 @@ $tables[] = "CREATE TABLE mybb_users (
   UNIQUE KEY username (username),
   KEY usergroup (usergroup),
   KEY birthday (birthday),
+  KEY longregip (longregip),
+  KEY longlastip (longlastip),
   PRIMARY KEY (uid)
 ) TYPE=MyISAM;";
 

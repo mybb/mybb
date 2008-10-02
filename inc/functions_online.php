@@ -34,7 +34,7 @@ function fetch_wol_activity($location)
 	}
 	if($split_loc[1])
 	{
-		$temp = explode("&", my_substr($split_loc[1], 1));
+		$temp = explode("&amp;", my_substr($split_loc[1], 1));
 		foreach($temp as $param)
 		{
 			$temp2 = explode("=", $param, 2);

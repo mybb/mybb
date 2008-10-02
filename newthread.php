@@ -587,6 +587,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
 		$icon = $post['icon'];
+		$posticons = get_post_icons();
 	}
 	
 	// Otherwise, this is our initial visit to this page.

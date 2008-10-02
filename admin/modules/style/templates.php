@@ -202,7 +202,7 @@ if($mybb->input['action'] == "add_template")
 			
 			if($mybb->input['continue'])
 			{
-				admin_redirect("index.php?module=style/templates&action=edit_template&tid=".intval($tid)."&sid=".$sid.$expand_str2);
+				admin_redirect("index.php?module=style/templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$sid.$expand_str2);
 			}
 			else
 			{
@@ -231,12 +231,15 @@ if($mybb->input['action'] == "add_template")
 		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
 	}
 	
-	$page->extra_header .= '
+	if($admin_options['codepress'] != 0)
+	{
+		$page->extra_header .= '
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'mybb\';
 	</script>';
+	}
 	
 	$page->add_breadcrumb_item($lang->add_template);
 	
@@ -271,7 +274,9 @@ if($mybb->input['action'] == "add_template")
 	
 	$form->end();
 	
-	echo "<script language=\"Javascript\" type=\"text/javascript\">
+	if($admin_options['codepress'] != 0)
+	{
+		echo "<script language=\"Javascript\" type=\"text/javascript\">
 	Event.observe('add_template', 'submit', function()
 	{
 		if($('template_cp')) {
@@ -282,6 +287,7 @@ if($mybb->input['action'] == "add_template")
 		}
 	});
 </script>";
+	}
 
 	$page->output_footer();
 }
@@ -367,7 +373,7 @@ if($mybb->input['action'] == "edit_template")
 {
 	$plugins->run_hooks("admin_style_templates_edit_template");
 	
-	if(!$mybb->input['tid'] || !$sid)
+	if(!$mybb->input['title'] || !$sid)
 	{
 		flash_message($lang->error_missing_input, 'error');
 		admin_redirect("index.php?module=style/templates");
@@ -433,11 +439,25 @@ if($mybb->input['action'] == "edit_template")
 			
 			if($mybb->input['continue'])
 			{
-				admin_redirect("index.php?module=style/templates&action=edit_template&tid=".intval($mybb->input['tid'])."&sid=".$sid.$expand_str2);
+				if($mybb->input['from'] == "diff_report")
+				{
+					admin_redirect("index.php?module=style/templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$sid.$expand_str2."&amp;from=diff_report");
+				}
+				else
+				{
+					admin_redirect("index.php?module=style/templates&action=edit_template&title=".urlencode($mybb->input['title'])."&sid=".$sid.$expand_str2);
+				}
 			}
 			else
 			{
-				admin_redirect("index.php?module=style/templates&sid=".$sid.$expand_str2."#group_{$group}");
+				if($mybb->input['from'] == "diff_report")
+				{
+					admin_redirect("index.php?module=style/templates&amp;action=find_updated");
+				}
+				else
+				{
+					admin_redirect("index.php?module=style/templates&sid=".$sid.$expand_str2."#group_{$group}");
+				}
 			}
 		}
 	}
@@ -448,38 +468,62 @@ if($mybb->input['action'] == "edit_template")
 		$template = $mybb->input;
 	}
 	else
-	{
-		$query = $db->simple_select("templates", "title", "tid='".intval($mybb->input['tid'])."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'ASC', 'limit' => 1));
-		$title = $db->fetch_field($query, "title");
-		
-		$query = $db->simple_select("templates", "*", "title='".$db->escape_string($title)."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
+	{		
+		$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND (sid='-2' OR sid='{$sid}')", array('order_by' => 'sid', 'order_dir' => 'DESC', 'limit' => 1));
 		$template = $db->fetch_array($query);
 	}
 	
-	$page->extra_header .= '
+	if($admin_options['codepress'] != 0)
+	{
+		$page->extra_header .= '
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-mybb.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'mybb\';
 	</script>';
+	}
 	
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
+	
+	if($mybb->input['from'] == "diff_report")
+	{
+		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style/templates&amp;action=find_updated");
+	}
 	
 	$page->add_breadcrumb_item($lang->edit_template_breadcrumb.$template['title'], "index.php?module=style/templates&amp;sid={$sid}");
 	
 	$page->output_header($lang->edit_template);
 	
 	$sub_tabs = array();
+	
+	if($mybb->input['from'] == "diff_report")
+	{
+		$sub_tabs['find_updated'] = array(
+			'title' => $lang->find_updated,
+			'link' => "index.php?module=style/templates&amp;action=find_updated"
+		);
+		
+		$sub_tabs['diff_report'] = array(
+			'title' => $lang->diff_report,
+			'link' => "index.php?module=style/templates&amp;action=diff_report&amp;title=".$db->escape_string($template['title'])."&amp;sid1=".intval($template['sid'])."&amp;sid2=-2",
+		);
+	}
+	
 	$sub_tabs['edit_template'] = array(
 		'title' => $lang->edit_template,
-		'link' => "index.php?module=style/templates&amp;action=edit_template&amp;tid=".$mybb->input['tid'].$expand_str,
+		'link' => "index.php?module=style/templates&amp;action=edit_template&amp;title=".htmlspecialchars_uni($template['title']).$expand_str,
 		'description' => $lang->edit_template_desc
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_template');
 	
 	$form = new Form("index.php?module=style/templates&amp;action=edit_template{$expand_str}", "post", "edit_template");
-	echo $form->generate_hidden_field('tid', $template['tid']);
+	echo $form->generate_hidden_field('tid', $template['tid'])."\n";
+	
+	if($mybb->input['from'] == "diff_report")
+	{
+		echo $form->generate_hidden_field('from', "diff_report");
+	}
 		
 	$form_container = new FormContainer($lang->edit_template_breadcrumb.$template['title']);
 	$form_container->output_row($lang->template_name, $lang->template_name_desc, $form->generate_text_box('title', $template['title'], array('id' => 'title')), 'title');
@@ -494,7 +538,9 @@ if($mybb->input['action'] == "edit_template")
 	
 	$form->end();
 	
-	echo "<script language=\"Javascript\" type=\"text/javascript\">
+	if($admin_options['codepress'] != 0)
+	{
+		echo "<script language=\"Javascript\" type=\"text/javascript\">
 	Event.observe('edit_template', 'submit', function()
 	{
 		if($('template_cp')) {
@@ -505,6 +551,7 @@ if($mybb->input['action'] == "edit_template")
 		}
 	});
 </script>";
+	}
 
 	$page->output_footer();
 }
@@ -525,7 +572,9 @@ if($mybb->input['action'] == "search_replace")
 				admin_redirect("index.php?module=style/templates&action=search_replace");
 			}
 			else
-			{				
+			{
+				$page->add_breadcrumb_item($lang->search_replace);
+				
 				$page->output_header($lang->search_replace);
 	
 				$page->output_nav_tabs($sub_tabs, 'search_replace');
@@ -593,7 +642,7 @@ if($mybb->input['action'] == "search_replace")
 										);
 										$new_tid = $db->insert_query("templates", $new_template);
 										$label = $lang->sprintf($lang->search_created_custom, $template['title']);
-										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$new_tid}&amp;sid=1";
+										$url = "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid=1";
 									}
 									else
 									{
@@ -604,7 +653,7 @@ if($mybb->input['action'] == "search_replace")
 										);
 										$db->update_query("templates", $updatedtemplate, "tid='".$template['tid']."'");
 										$label = $lang->sprintf($lang->search_updated, $template['title']);
-										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$template['sid']}";
+										$url = "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$template['sid']}";
 									}
 								}
 								else
@@ -617,7 +666,7 @@ if($mybb->input['action'] == "search_replace")
 									else
 									{
 										$label = $lang->sprintf($lang->search_found, $template['title']);
-										$url = "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$template['sid']}";
+										$url = "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$template['sid']}";
 									}
 								}
 							}
@@ -632,7 +681,7 @@ if($mybb->input['action'] == "search_replace")
 								{
 									if($set_sid > 0)
 									{									
-										$popup->add_item($lang->edit_in." ".htmlspecialchars_uni($title), "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$set_sid}");
+										$popup->add_item($lang->edit_in." ".htmlspecialchars_uni($title), "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$set_sid}");
 									}
 								}
 								
@@ -722,6 +771,8 @@ if($mybb->input['action'] == "search_replace")
 					$templatessets[$template['sid']][$template['title']] = $template;
 				}
 				
+				$page->add_breadcrumb_item($lang->search_replace);
+				
 				$page->output_header($lang->search_replace);
 	
 				$page->output_nav_tabs($sub_tabs, 'search_replace');
@@ -745,6 +796,8 @@ if($mybb->input['action'] == "search_replace")
 					
 					foreach($templates as $template)
 					{
+						$template['pretty_title'] = $template['title'];
+						
 						$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
 						
 						if($sid == -2)
@@ -753,12 +806,12 @@ if($mybb->input['action'] == "search_replace")
 							{
 								if($set_sid < 0) continue;
 								
-								$popup->add_item($lang->edit_in." ".htmlspecialchars_uni($title), "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$set_sid}");
+								$popup->add_item($lang->edit_in." ".htmlspecialchars_uni($title), "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$set_sid}");
 							}
 						}
 						else
 						{
-							$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}");
+							$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}");
 						}
 						
 						if(isset($template['modified']) && $template['modified'] == true)
@@ -767,20 +820,20 @@ if($mybb->input['action'] == "search_replace")
 							{
 								$popup->add_item($lang->diff_report, "index.php?module=style/templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid2={$sid}");
 							
-								$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+								$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
 							}
 							
-							$template['title'] = "<span style=\"color: green;\">{$template['title']}</span>";
+							$template['pretty_title'] = "<span style=\"color: green;\">{$template['title']}</span>";
 						}				
 						// This template does not exist in the master list
 						else if(!isset($template['original']) || $template['original'] == false)
 						{
-							$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
+							$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 							
-							$template['title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
+							$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 						}
 											
-						$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}\">{$template['title']}</a></span>", array("width" => "85%"));
+						$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}\">{$template['pretty_title']}</a></span>", array("width" => "85%"));
 						$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 						
 						$table->construct_row();
@@ -802,12 +855,17 @@ if($mybb->input['action'] == "search_replace")
 		}
 	}
 	
-	$page->extra_header .= '
+	if($admin_options['codepress'] != 0)
+	{
+		$page->extra_header .= '
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-php.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'php\';
 	</script>';
+	}
+	
+	$page->add_breadcrumb_item($lang->search_replace);
 	
 	$page->output_header($lang->search_replace);
 	
@@ -848,7 +906,9 @@ if($mybb->input['action'] == "search_replace")
 	
 	$form->end();
 	
-	echo "<script language=\"Javascript\" type=\"text/javascript\">
+	if($admin_options['codepress'] != 0)
+	{
+		echo "<script language=\"Javascript\" type=\"text/javascript\">
 	Event.observe('do_template', 'submit', function()
 	{
 		if($('find_cp')) {
@@ -866,6 +926,7 @@ if($mybb->input['action'] == "search_replace")
 		}
 	});
 </script>";
+	}
 
 	$page->output_footer();
 }
@@ -889,6 +950,8 @@ if($mybb->input['action'] == "find_updated")
 		flash_message($lang->no_updated_templates, 'success');
 		admin_redirect("index.php?module=style/templates");
 	}
+	
+	$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style/templates&amp;action=find_updated");
 	
 	$page->output_header($lang->find_updated);
 	
@@ -943,12 +1006,11 @@ LEGEND;
 		foreach($templates as $template)
 		{		
 			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-			//$popup->add_item($lang->inline_edit, "javascript:;");
-			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=".$sid);
+			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report");
 			$popup->add_item($lang->diff_report, "index.php?module=style/templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid1=".$template['sid']."&amp;sid2=-2");
-			$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid={$sid}&amp;find_updated=1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+			$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
 				
-			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}\">{$template['title']}</a>", array('width' => '80%')); // onclick=\"Templates.quick_edit('{$template['tid']}'); return false;\"
+			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report\">{$template['title']}</a>", array('width' => '80%'));
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 			
 			$table->construct_row();
@@ -1034,7 +1096,7 @@ if($mybb->input['action'] == "delete_template")
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(t.sid=s.sid)
-		WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > '-2' AND t.sid = '{$sid}'
+		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > '-2' AND t.sid = '{$sid}'
 	");
 	$template = $db->fetch_array($query);
 	
@@ -1099,6 +1161,14 @@ if($mybb->input['action'] == "diff_report")
 
 	$query = $db->simple_select("templates", "*", "title='".$db->escape_string($mybb->input['title'])."' AND sid='".intval($mybb->input['sid2'])."'");
 	$template2 = $db->fetch_array($query);
+	
+	if($mybb->input['sid2'] == -2)
+	{
+		$sub_tabs['full_edit'] = array(
+			'title' => $lang->full_edit,
+			'link' => "index.php?module=style/templates&action=edit_template&title=".urlencode($template1['title'])."&sid=".intval($mybb->input['sid1'])."&amp;from=diff_report",
+		);
+	}
 
 	if($template1['template'] == $template2['template'])
 	{
@@ -1121,6 +1191,13 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style/templates&amp;sid={$sid}{$expand_str}");
 	}
 	
+	if($mybb->input['sid2'] == -2)
+	{
+		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style/templates&amp;action=find_updated");
+	}
+	
+	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style/templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']));
+	
 	$page->output_header($lang->template_sets);
 	
 	$page->output_nav_tabs($sub_tabs, 'diff_report');
@@ -1132,7 +1209,7 @@ if($mybb->input['action'] == "diff_report")
 	$table->construct_cell("<pre>".$renderer->render($diff)."</pre>");
 	$table->construct_row();
 	
-	$table->output($lang->template_diff_analysis);
+	$table->output($lang->template_diff_analysis.": ".$template1['title']);
 	
 	$page->output_footer();
 }
@@ -1145,7 +1222,7 @@ if($mybb->input['action'] == "revert")
 		SELECT t.*, s.title as set_title
 		FROM ".TABLE_PREFIX."templates t
 		LEFT JOIN ".TABLE_PREFIX."templatesets s ON(s.sid=t.sid)
-		WHERE t.tid='".intval($mybb->input['tid'])."' AND t.sid > 0 AND t.sid = '".intval($mybb->input['sid'])."'
+		WHERE t.title='".$db->escape_string($mybb->input['title'])."' AND t.sid > 0 AND t.sid = '".intval($mybb->input['sid'])."'
 	");
 	$template = $db->fetch_array($query);
 	
@@ -1174,7 +1251,7 @@ if($mybb->input['action'] == "revert")
 
 		flash_message($lang->success_template_reverted, 'success');
 		
-		if($mybb->input['find_updated'] == 1)
+		if($mybb->input['from'] == "diff_report")
 		{
 			admin_redirect("index.php?module=style/templates&action=find_updated");
 		}
@@ -1211,10 +1288,10 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		while($template = $db->fetch_array($query))
 		{
 			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1");
-			$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid=-1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
+			$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid=-1");
+			$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;title=".urlencode($template['title'])."&amp;sid=-1&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 				
-			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid=-1\">{$template['title']}</a>");
+			$table->construct_cell("<a href=\"index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid=-1\">{$template['title']}</a>");
 			$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 			
 			$table->construct_row();
@@ -1364,8 +1441,10 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			
 			foreach($templates as $template)
 			{
+				$template['pretty_title'] = $template['title'];
+				
 				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-				$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}{$expand_str}");
+				$popup->add_item($lang->full_edit, "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}");
 				
 				if(isset($template['modified']) && $template['modified'] == true)
 				{					
@@ -1373,20 +1452,20 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 					{
 						$popup->add_item($lang->diff_report, "index.php?module=style/templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid2={$sid}");
 					
-						$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;tid={$template['tid']}&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+						$popup->add_item($lang->revert_to_orig, "index.php?module=style/templates&amp;action=revert&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
 					}
 					
-					$template['title'] = "<span style=\"color: green;\">{$template['title']}</span>";
+					$template['pretty_title'] = "<span style=\"color: green;\">{$template['title']}</span>";
 				}				
 				// This template does not exist in the master list
 				else if(isset($template['original']) && $template['original'] == false)
 				{
-					$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;tid={$template['tid']}&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
+					$popup->add_item($lang->delete_template, "index.php?module=style/templates&amp;action=delete_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
 					
-					$template['title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
+					$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 				}
 									
-				$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;tid={$template['tid']}&amp;sid={$sid}{$expand_str}\" >{$template['title']}</a></span>");
+				$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
 				$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 				
 				$table->construct_row();

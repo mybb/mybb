@@ -1782,12 +1782,15 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	$this_stylesheet = $stylesheets[$stylesheet['name']];	
 	unset($stylesheets);
 	
-	$page->extra_header .= '
+	if($admin_options['codepress'] != 0)
+	{
+		$page->extra_header .= '
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'css\';
 	</script>';
+	}
 	
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
 	$page->add_breadcrumb_item("{$lang->editing} ".htmlspecialchars_uni($stylesheet['name']), "index.php?module=style/themes&amp;action=edit_stylesheet&amp;tid={$mybb->input['tid']}&amp;file=".htmlspecialchars_uni($mybb->input['file'])."&amp;mode=advanced");
@@ -1849,7 +1852,9 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 
 	$form->end();
 	
-	echo "<script language=\"Javascript\" type=\"text/javascript\">
+	if($admin_options['codepress'] != 0)
+	{
+		echo "<script language=\"Javascript\" type=\"text/javascript\">
 	Event.observe('edit_stylesheet', 'submit', function()
 	{
 		if($('stylesheet_cp')) {
@@ -1860,6 +1865,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 		}
 	});
 </script>";
+	}
 	
 	$page->output_footer();
 }
@@ -2060,15 +2066,18 @@ if($mybb->input['action'] == "add_stylesheet")
 		}
 	}
 	
-	$page->extra_header .= '
+	if($admin_options['codepress'] != 0)
+	{
+		$page->extra_header .= '
 	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'css\';
 	</script>';
+	}
 	
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style/themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
-	$page->add_breadcrumb_item("Add Stylesheet");
+	$page->add_breadcrumb_item($lang->add_stylesheet);
 	
 	$page->output_header("{$lang->themes} - {$lang->add_stylesheet}");
 	
@@ -2257,7 +2266,9 @@ if($mybb->input['action'] == "add_stylesheet")
 
 	$form->output_submit_wrapper($buttons);
 	
-	echo "<script language=\"Javascript\" type=\"text/javascript\">
+	if($admin_options['codepress'] != 0)
+	{
+		echo "<script language=\"Javascript\" type=\"text/javascript\">
 	Event.observe('add_stylesheet', 'submit', function()
 	{
 		if($('stylesheet_cp')) {
@@ -2268,6 +2279,7 @@ if($mybb->input['action'] == "add_stylesheet")
 		}
 	});
 </script>\n";
+	}
 
 	echo '<script type="text/javascript" src="./jscripts/themes.js"></script>';
 	echo '<script type="text/javascript">

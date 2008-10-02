@@ -15,14 +15,17 @@ $tables[] = "CREATE TABLE mybb_adminlog (
   dateline bigint(30) NOT NULL default '0',
   module varchar(50) NOT NULL default '',
   action varchar(50) NOT NULL default '',
-  data TEXT NOT NULL );";
+  data TEXT NOT NULL 
+ );";
 
 $tables[] = "CREATE TABLE mybb_adminoptions (
   uid int(10) NOT NULL default '0',
   cpstyle varchar(50) NOT NULL default '',
+  codepress int(1) NOT NULL default '1',
   notes TEXT NOT NULL,
   permissions TEXT NOT NULL,
-  defaultviews TEXT NOT NULL );";
+  defaultviews TEXT NOT NULL 
+ );";
 
 $tables[] = "CREATE TABLE mybb_adminsessions (
 	sid varchar(32) NOT NULL default '',
@@ -31,7 +34,8 @@ $tables[] = "CREATE TABLE mybb_adminsessions (
 	ip varchar(40) NOT NULL default '',
 	dateline bigint(30) NOT NULL default '0',
 	lastactive bigint(30) NOT NULL default '0',
-	data TEXT NOT NULL );";
+	data TEXT NOT NULL
+);";
 
 $tables[] = "CREATE TABLE mybb_adminviews (
 	vid INTEGER PRIMARY KEY,
@@ -861,7 +865,8 @@ $tables[] = "CREATE TABLE mybb_usertitles (
 $tables[] = "CREATE TABLE mybb_warninglevels (
 	lid INTEGER PRIMARY KEY,
 	percentage int(2) NOT NULL default '0',
-	action TEXT NOT NULL );";
+	action TEXT NOT NULL
+);";
 
 $tables[] = "CREATE TABLE mybb_warningtypes (
 	tid INTEGER PRIMARY KEY,

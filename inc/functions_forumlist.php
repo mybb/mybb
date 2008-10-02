@@ -217,6 +217,7 @@ function build_forumbits($pid=0, $depth=1)
 				}
 
 				$forum_viewers_text = '';
+				$forum_viewers_text_plain = '';
 				if($mybb->settings['showforumviewing'] != 0 && $forum['viewers'] > 0)
 				{
 					if($forum['viewers'] == 1)
@@ -227,6 +228,7 @@ function build_forumbits($pid=0, $depth=1)
 					{
 						$forum_viewers_text = $lang->sprintf($lang->viewing_multiple, $forum['viewers']);
 					}
+					$forum_viewers_text_plain = $forum_viewers_text;
 					$forum_viewers_text = "<span class=\"smalltext\">{$forum_viewers_text}</span>";
 				}
 			}

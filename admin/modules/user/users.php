@@ -200,12 +200,17 @@ if($mybb->input['action'] == "avatar_gallery")
 
 	$mybb->settings['avatardir'] = "../".$mybb->settings['avatardir'];
 
+	if(!is_dir($mybb->settings['avatardir']) && is_dir(MYBB_ROOT."/images/avatars/"))
+	{
+		$mybb->settings['avatardir'] = "../images/avatars/";
+	}
+	
 	// Within a gallery
-	if($gallery)
+	if(!empty($gallery))
 	{
 		$path = $gallery."/";
 		$real_path = $mybb->settings['avatardir']."/".$path;
-		if(is_dir($path))
+		if(is_dir($real_path))
 		{
 			// Build friendly gallery breadcrumb
 			$gallery_path = explode("/", $gallery);
@@ -598,12 +603,6 @@ if($mybb->input['action'] == "edit")
 			$updated_user['password'] = $mybb->input['new_password'];
 			$updated_user['password2'] = $mybb->input['confirm_new_password'];
 		}
-
-		$updated_user['birthday'] = array(
-			"day" => $mybb->input['birthday_day'],
-			"month" => $mybb->input['birthday_month'],
-			"year" => $mybb->input['birthday_year']
-		);
 
 		$updated_user['options'] = array(
 			"allownotices" => $mybb->input['allownotices'],

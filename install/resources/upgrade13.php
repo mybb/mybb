@@ -48,7 +48,7 @@ function upgrade13_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 	}
 	
-	$query = $db->simple_select("users", "username, uid", "GROUP BY username HAVING count(*) > 1");
+	$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY username HAVING count(*) > 1");
 	while($user = $db->fetch_array($query))
 	{
 		$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);

@@ -3767,6 +3767,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		'S',
 		'l',
 		'F',
+		'M',
 	);
 
 	$replace = array(
@@ -3778,6 +3779,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		($bd == 1 || $bd == 21 || $bd == 31 ? 'st' : ($bd == 2 || $bd == 22 ? 'nd' : ($bd == 3 || $bd == 23 ? 'rd' : 'th'))),
 		$bdays[$wd],
 		$bmonth[$bm-1],
+		($bm == 9 ? my_substr($bmonth[$bm-1], 0, 4) :  my_substr($bmonth[$bm-1], 0, 3)),
 	);
 	
 	return str_replace($find, $replace, $display);
