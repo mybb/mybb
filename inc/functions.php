@@ -1897,12 +1897,16 @@ function update_thread_counters($tid, $changes=array())
 			}
 		}
 	}
+	
+	$db->free_result($query);
 
 	// Only update if we're actually doing something
 	if(count($update_query) > 0)
 	{
 		$db->update_query("threads", $update_query, "tid='".intval($tid)."'");
 	}
+	
+	unset($update_query, $thread);
 
 	update_thread_data($tid);
 }
@@ -1924,7 +1928,9 @@ function update_thread_data($tid)
 		LIMIT 1"
 	);
 	$lastpost = $db->fetch_array($query);
-
+	
+	$db->free_result($query);
+	
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p
@@ -1934,6 +1940,8 @@ function update_thread_data($tid)
 		LIMIT 1
 	");
 	$firstpost = $db->fetch_array($query);
+	
+	$db->free_result($query);
 
 	if(!$firstpost['username'])
 	{
@@ -1963,6 +1971,8 @@ function update_thread_data($tid)
 		'lastposteruid' => intval($lastpost['uid']),
 	);
 	$db->update_query("threads", $update_array, "tid='{$tid}'");
+	
+	unset($firstpost, $lastpost, $update_array);
 }
 
 function update_forum_count($fid)
@@ -4537,14 +4547,14 @@ function login_attempt_check($fatal = true)
 		}
 
 		// Work out if the user has waited long enough before letting them login again
-		if($mybb->cookies['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60)
+		if($mybb->cookies['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60 && $mybb->user['uid'] != 0)
 		{
 			my_setcookie('loginattempts', 1);
 			my_unsetcookie('failedlogin');
 			$update_array = array(
 				'loginattempts' => 1
 			);
-			$db->update_query("sessions", $update_array, "sid = '{$session->sid}'");
+			$db->update_query("users", $update_array, "uid = '{$mybb->user['uid']}'");
 			return 1;
 		}
 		// Not waited long enough

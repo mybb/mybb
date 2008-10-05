@@ -175,12 +175,20 @@ class DB_SQLite
 			else
 			{
 				$alterdefs = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $alterdefs);
-				$query = $this->alter_table_parse($tablename, $alterdefs);
+				$alterdefs = preg_replace("#;$#i", "", $alterdefs);
+				$query = $this->alter_table_parse($tablename, $alterdefs, $string);
 			}
 		}
 	  	else
 	  	{
-			$query = sqlite_query($this->link, $string, SQLITE_BOTH, $this->error_msg);
+			if(version_compare(phpversion(), "5.1.0", ">="))
+			{
+				$query = sqlite_query($this->link, $string, SQLITE_BOTH, $this->error_msg);
+			}
+			else
+			{
+				$query = sqlite_query($this->link, $string, SQLITE_BOTH);
+			}
 		}
 		
 		if($this->error_msg && !$hide_errors)
@@ -770,7 +778,7 @@ class DB_SQLite
 		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}'");
 		$this->set_table_prefix($old_tbl_prefix);
 		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
-
+		
 		preg_match('#\((.*)\)#s', $table, $matches);
 
 		$field_info = array();
@@ -934,10 +942,22 @@ class DB_SQLite
 	 * Perform an "Alter Table" query in SQLite < 3.2.0 - Code taken from http://code.jenseng.com/db/
 	 *
 	 * @param string The table (optional)
+	 * @param string The ADD/Change/Drop part of the query
+	 * @param string The full part of the query
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
-	function alter_table_parse($table, $alterdefs)
+	function alter_table_parse($table, $alterdefs, $fullquery="")
 	{
+		if(!$fullquery)
+		{
+			$fullquery = " ... {$alterdefs}";
+		}
+		
+		if(!defined("TIME_NOW"))
+		{
+			define("TIME_NOW", time());
+		}
+		
 		if($alterdefs != '')
 		{
 			$result = $this->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '{$table}' ORDER BY type DESC");
@@ -991,6 +1011,11 @@ class DB_SQLite
 							
 							$createtesttableSQL = substr($createtesttableSQL, 0, strlen($createtesttableSQL)-1).',';
 							
+							if(strstr($createtesttableSQL, $defparts[1]) !== false)
+							{
+								$this->error($fullquery, 'syntax error: '.$defparts[1].' column already exists in '.$table.' table');
+							}
+							
 							for($i = 1; $i < sizeof($defparts); $i++)
 							{
 								$createtesttableSQL .= ' '.$defparts[$i];
@@ -1008,7 +1033,7 @@ class DB_SQLite
 							{
 								if($newcols[$defparts[1]] != $defparts[1])
 								{
-									$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+									$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
 									return false;
 								}
 								
@@ -1032,14 +1057,14 @@ class DB_SQLite
 							}
 							else
 							{
-								$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
+								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
 								return false;
 							}
 							break;
 						case 'drop':
 							if(sizeof($defparts) < 2)
 							{
-								$this->error($alterdefs, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
+								$this->error($fullquery, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
 								return false;
 							}
 							
@@ -1060,12 +1085,12 @@ class DB_SQLite
 							}
 							else
 							{
-								$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
 								return false;
 							}
 							break;
 						default:
-							$this->error($alterdefs, 'near "'.$prevword.'": syntax error');
+							$this->error($fullquery, 'near "'.$prevword.'": syntax error');
 							return false;
 					}
 					

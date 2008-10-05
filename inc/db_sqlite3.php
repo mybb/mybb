@@ -180,7 +180,7 @@ class DB_SQLite3
 				}
 				else
 				{
-					$query = $this->alter_table_parse($tablename, $alterdefs);
+					$query = $this->alter_table_parse($tablename, $alterdefs, $string);
 				}
 			}
 		}
@@ -964,8 +964,18 @@ class DB_SQLite3
 	 * @param string The table (optional)
 	 * @return integer the total size of all mysql tables or a specific table
 	 */
-	function alter_table_parse($table, $alterdefs)
+	function alter_table_parse($table, $alterdefs, $fullquery="")
 	{
+		if(!$fullquery)
+		{
+			$fullquery = " ... {$alterdefs}";
+		}
+		
+		if(!defined("TIME_NOW"))
+		{
+			define("TIME_NOW", time());
+		}
+		
 		if($alterdefs != '')
 		{
 			$result = $this->query("SELECT sql,name,type FROM sqlite_master WHERE tbl_name = '{$table}' ORDER BY type DESC");
@@ -1045,14 +1055,14 @@ class DB_SQLite3
 							}
 							else
 							{
-								$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
+								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"', E_USER_WARNING);
 								return false;
 							}
 							break;
 						case 'drop':
 							if(sizeof($defparts) < 2)
 							{
-								$this->error($alterdefs, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
+								$this->error($fullquery, 'near "'.$defparts[0].($defparts[1] ? ' '.$defparts[1] : '').'": syntax error');
 								return false;
 							}
 							
@@ -1073,12 +1083,12 @@ class DB_SQLite3
 							}
 							else
 							{
-								$this->error($alterdefs, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
+								$this->error($fullquery, 'unknown column "'.$defparts[1].'" in "'.$table.'"');
 								return false;
 							}
 							break;
 						default:
-							$this->error($alterdefs, 'near "'.$prevword.'": syntax error');
+							$this->error($fullquery, 'near "'.$prevword.'": syntax error');
 							return false;
 					}
 					
@@ -1122,7 +1132,7 @@ class DB_SQLite3
 			}
 			else
 			{
-				$this->error($alterdefs, 'no such table: '.$table);
+				$this->error($fullquery, 'no such table: '.$table);
 				return false;
 			}
 			return true;

@@ -178,7 +178,22 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 	
 	if($thumbnail_memory > $free_memory)
 	{
-		@ini_set("memory_limit", $memory_limit+$thumbnail_memory);
+		if($matches[1] && $matches[2])
+		{
+			switch($matches[2])
+			{
+				case "k":
+					$memory_limit = (($memory_limit+$thumbnail_memory) / 1024)."K";
+					break;
+				case "m":
+					$memory_limit = (($memory_limit+$thumbnail_memory) / 1048576)."M";
+					break;
+				case "g":
+					$memory_limit = (($memory_limit+$thumbnail_memory) / 1073741824)."G";
+			}
+		}
+		
+		@ini_set("memory_limit", $memory_limit);
 	}
 }
 

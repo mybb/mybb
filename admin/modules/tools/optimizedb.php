@@ -52,7 +52,7 @@ if(!$mybb->input['action'])
 		admin_redirect("index.php?module=tools/optimizedb");
 	}
 	
-	$page->extra_header = "	<script type=\"text/javascript\" language=\"Javascript\">
+	$page->extra_header = "	<script type=\"text/javascript\">
 	function changeSelection(action, prefix)
 	{
 		var select_box = document.getElementById('table_select');

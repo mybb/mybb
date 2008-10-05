@@ -31,30 +31,43 @@ function upgrade13_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
-	
-	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
-	while($ukey = $db->fetch_array($query))
+	if($db->type == "mysql" || $db->type == "mysqli")
 	{
-		if($ukey['Key_name'] == "username")
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `uid` )");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminsessions ADD INDEX ( `dateline` )");
+	}
+	
+	if($db->type != "sqlite2" && $db->type != "sqlite3")
+	{
+		$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
+		while($ukey = $db->fetch_array($query))
 		{
-			$index = $ukey;
-			break;
+			if($ukey['Key_name'] == "username")
+			{
+				$index = $ukey;
+				break;
+			}
+		}
+		if($index)
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
+		}
+		
+		$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY username HAVING count(*) > 1");
+		while($user = $db->fetch_array($query))
+		{
+			$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
+		}
+		
+		if($db->type == "pgsql")
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE(username)");
+		}
+		else
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
 		}
 	}
-	if($index)
-	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
-	}
-	
-	$query = $db->simple_select("users", "username, uid", "1=1 GROUP BY username HAVING count(*) > 1");
-	while($user = $db->fetch_array($query))
-	{
-		$db->update_query("users", array('username' => $user['username']."_dup".$user['uid']), "uid='{$user['uid']}'", 1);
-	}
-	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD UNIQUE KEY username (username)");
 	
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int(11) NOT NULL default '0'");
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int(11) NOT NULL default '0'");

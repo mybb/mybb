@@ -276,7 +276,7 @@ if($mybb->input['action'] == "add_template")
 	
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script language=\"Javascript\" type=\"text/javascript\">
+		echo "<script type=\"text/javascript\">
 	Event.observe('add_template', 'submit', function()
 	{
 		if($('template_cp')) {
@@ -540,7 +540,7 @@ if($mybb->input['action'] == "edit_template")
 	
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script language=\"Javascript\" type=\"text/javascript\">
+		echo "<script type=\"text/javascript\">
 	Event.observe('edit_template', 'submit', function()
 	{
 		if($('template_cp')) {
@@ -908,7 +908,7 @@ if($mybb->input['action'] == "search_replace")
 	
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script language=\"Javascript\" type=\"text/javascript\">
+		echo "<script type=\"text/javascript\">
 	Event.observe('do_template', 'submit', function()
 	{
 		if($('find_cp')) {

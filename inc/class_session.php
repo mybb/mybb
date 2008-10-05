@@ -47,8 +47,6 @@ class session
 			{
 				$this->sid = $session['sid'];
 				$this->uid = $session['uid'];
-				$this->logins = $session['loginattempts'];
-				$this->failedlogin = $session['failedlogin'];
 			}
 			else
 			{
@@ -139,6 +137,8 @@ class session
 		");
 		$mybb->user = $db->fetch_array($query);
 		
+		$this->logins = $mybb->user['loginattempts'];
+		$this->failedlogin = $mybb->user['failedlogin'];
 		
 		if($bannedcache[$uid])
 		{

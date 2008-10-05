@@ -993,19 +993,14 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	if(!username_exists($mybb->input['username']))
 	{
-		my_setcookie('loginattempts', $logins + 1);
-		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
-		if($mybb->settings['failedlogintext'] == 1)
-		{
-			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-		}
 		error($lang->error_invalidpworusername.$login_text);
 	}
+	
 	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
 	if(!$user['uid'])
 	{
 		my_setcookie('loginattempts', $logins + 1);
-		$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET loginattempts=loginattempts+1 WHERE username = '".$db->escape_string($mybb->input['username'])."'");
 		if($mybb->settings['failedlogintext'] == 1)
 		{
 			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -1022,9 +1017,10 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
 	$newsession = array(
 		"uid" => $user['uid'],
-		"loginattempts" => 1,
 	);
 	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
+	
+	$db->update_query("users", array("loginattempts" => 1), "uid='{$user['uid']}'");
 
 	// Temporarily set the cookie remember option for the login cookies
 	$mybb->user['remember'] = $user['remember'];

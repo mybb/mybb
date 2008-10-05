@@ -22,7 +22,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade13_dbchanges()
+function upgrade14_dbchanges()
 {
 	global $db, $output, $mybb;
 
@@ -39,52 +39,127 @@ function upgrade13_dbchanges()
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD codepress int(1) NOT NULL default '1' AFTER cpstyle");
 	
-	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
-	while($ukey = $db->fetch_array($query))
+	if($db->type != "sqlite2" && $db->type != "sqlite3")
 	{
-		if($ukey['Key_name'] == "longregip")
+		$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
+		while($ukey = $db->fetch_array($query))
 		{
-			$longregip_index = true;
-			continue;
+			if($ukey['Key_name'] == "longregip")
+			{
+				$longregip_index = true;
+				continue;
+			}
+			
+			if($ukey['Key_name'] == "longlastip")
+			{
+				$longlastip_index = true;
+				continue;
+			}
+		}
+		if($longlastip_index == true)
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longlastip");
 		}
 		
-		if($ukey['Key_name'] == "longlastip")
+		if($longregip_index == true)
 		{
-			$longlastip_index = true;
-			continue;
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longregip");
+		}
+		
+		$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."posts");
+		while($pkey = $db->fetch_array($query))
+		{
+			if($pkey['Key_name'] == "longipaddress")
+			{
+				$longipaddress_index = true;
+				break;
+			}
+		}
+		if($longipaddress_index == true)
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP KEY longipaddress");
 		}
 	}
-	if($longlastip_index == true)
+	
+	if($db->field_exists('loginattempts', "sessions"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longlastip");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions DROP loginattempts;");
 	}
 	
-	if($longregip_index == true)
+	if($db->field_exists('loginattempts', "users"))
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longregip");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP loginattempts;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts tinyint(2) NOT NULL default '1';");
+	
+	if($db->field_exists('failedlogin', "sessions"))
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions DROP failedlogin;");
 	}
 	
-	$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."posts");
-	while($pkey = $db->fetch_array($query))
+	if($db->field_exists('failedlogin', "users"))
 	{
-		if($pkey['Key_name'] == "longipaddress")
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
+	}
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD failedlogin bigint(30) NOT NULL default '0';");
+	
+	if($db->type == "mysql" || $db->type == "mysqli")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX longregip (longregip)");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX longlastip (longlastip)");
+	}
+	
+	if($db->type == "sqlite2" || $db->type == "sqlite3")
+	{
+		// Because SQLite 2 nor 3 allows changing a column with a primary key constraint we have to completely rebuild the entire table
+		// *sigh* This is the 21st century, right?
+		$query = $db->simple_select("datacache");
+		while($datacache = $db->fetch_array($query))
 		{
-			$longipaddress_index = true;
-			break;
+			$temp_datacache[$datacache['title']] = array('title' => $db->escape_string($datacache['title']), 'cache' => $db->escape_string($datacache['cache']));
+		}
+		
+		$db->write_query("DROP TABLE ".TABLE_PREFIX."datacache");
+		
+		$db->write_query("CREATE TABLE ".TABLE_PREFIX."datacache (
+  title varchar(50) NOT NULL default '' PRIMARY KEY,
+  cache mediumTEXT NOT NULL
+);");
+		
+		reset($temp_datacache);
+		foreach($temp_datacache as $data)
+		{
+			$db->insert_query("datacache", $data);
 		}
 	}
-	if($longipaddress_index == true)
+	else if($db->type == "pgsql")
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP KEY longipaddress");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."datacache ADD PRIMARY KEY (title)");
 	}
-	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX longipaddress (longipaddress)");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX longregip (longregip)");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD INDEX longlastip (longlastip)");
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("13_dbchanges1");
+	$output->print_footer("14_dbchanges1");
 }
+
+function upgrade14_dbchanges1()
+{
+	global $db, $output;
+	
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
+	flush();
+	
+	if($db->type == "mysql" || $db->type == "mysqli")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX longipaddress (longipaddress)");
+	}
+	
+	$contents .= "Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+	$output->print_footer("14_done");
+}
+
 
 ?>

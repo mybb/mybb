@@ -217,7 +217,7 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			if(!$mybb->user['uid'])
 			{
 				my_setcookie('loginattempts', $logins + 1);
-				$db->write_query("UPDATE ".TABLE_PREFIX."sessions SET loginattempts=loginattempts+1 WHERE sid = '{$session->sid}'");
+				$db->write_query("UPDATE ".TABLE_PREFIX."users SET loginattempts=loginattempts+1 WHERE username = '".$db->escape_string($mybb->input['username'])."'");
 				if($mybb->settings['failedlogintext'] == 1)
 				{
 					$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
@@ -233,9 +233,10 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 			// Update the session to contain their user ID
 			$updated_session = array(
 				"uid" => $mybb->user['uid'],
-				"loginattempts" => 0
 			);
 			$db->update_query("sessions", $updated_session, "sid='{$session->sid}'");
+			
+			$db->update_query("users", array("loginattempts" => 1), "uid='{$mybb->user['uid']}'");
 			
 			// Set uid and username
 			$uid = $mybb->user['uid'];

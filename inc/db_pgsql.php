@@ -288,6 +288,10 @@ class DB_PgSQL
 		if(strtolower(substr(ltrim($string), 0, 5)) == 'alter')
 		{			
 			$string = preg_replace("#\sAFTER\s([a-z_]+?)(;*?)$#i", "", $string);
+			if(strstr($string, 'CHANGE') !== false)
+			{
+				$string = str_replace(' CHANGE ', ' ALTER ', $string);
+			}
 		}
 
 		if($write_query && $this->write_link)

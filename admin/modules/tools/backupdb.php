@@ -288,7 +288,7 @@ if($mybb->input['action'] == "backup")
 		exit;
 	}
 	
-	$page->extra_header = "	<script type=\"text/javascript\" language=\"Javascript\">
+	$page->extra_header = "	<script type=\"text/javascript\">
 	function changeSelection(action, prefix)
 	{
 		var select_box = document.getElementById('table_select');

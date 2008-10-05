@@ -155,8 +155,9 @@ $tables[] = "CREATE TABLE mybb_captcha (
 );";
 
 $tables[] = "CREATE TABLE mybb_datacache (
-  title varchar(50) NOT NULL default '',
-  cache mediumTEXT NOT NULL );";
+  title varchar(50) NOT NULL default '' PRIMARY KEY,
+  cache mediumTEXT NOT NULL
+);";
 
 $tables[] = "CREATE TABLE mybb_events (
   eid INTEGER PRIMARY KEY,
@@ -535,9 +536,7 @@ $tables[] = "CREATE TABLE mybb_sessions (
   anonymous int(1) NOT NULL default '0',
   nopermission int(1) NOT NULL default '0',
   location1 int(10) NOT NULL default '0',
-  location2 int(10) NOT NULL default '0',
-  loginattempts tinyint(2) NOT NULL default '1',
-  failedlogin bigint(30) NOT NULL default '0'
+  location2 int(10) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
@@ -850,7 +849,9 @@ $tables[] = "CREATE TABLE mybb_users (
   suspendposting int(1) NOT NULL default '0',
   suspensiontime bigint(30) NOT NULL default '0',
   coppauser int(1) NOT NULL default '0',
-  classicpostbit int(1) NOT NULL default '0'
+  classicpostbit int(1) NOT NULL default '0',
+  loginattempts tinyint(2) NOT NULL default '1',
+  failedlogin bigint(30) NOT NULL default '0'
 );";
 
 

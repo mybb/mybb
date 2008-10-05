@@ -18,7 +18,7 @@ if(!defined("IN_MYBB"))
 require_once MYBB_ADMIN_DIR."inc/functions_themes.php";
 
 $page->extra_header .= "
-<script language=\"Javascript\" type=\"text/javascript\">
+<script type=\"text/javascript\">
 //<![CDATA[
 var save_changes_lang_string = '{$lang->save_changes_js}';
 var delete_lang_string = '{$lang->delete}';
@@ -1854,7 +1854,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script language=\"Javascript\" type=\"text/javascript\">
+		echo "<script type=\"text/javascript\">
 	Event.observe('edit_stylesheet', 'submit', function()
 	{
 		if($('stylesheet_cp')) {
@@ -2268,7 +2268,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	if($admin_options['codepress'] != 0)
 	{
-		echo "<script language=\"Javascript\" type=\"text/javascript\">
+		echo "<script type=\"text/javascript\">
 	Event.observe('add_stylesheet', 'submit', function()
 	{
 		if($('stylesheet_cp')) {
