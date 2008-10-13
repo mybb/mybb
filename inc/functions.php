@@ -4992,8 +4992,18 @@ function build_timezone_select($name, $selected=0, $short=false)
  * @param string The URL of the remote file
  * @return string The remote file contents.
  */
-function fetch_remote_file($url)
+function fetch_remote_file($url, $post_data=array())
 {
+	$post_body = '';
+	if(!empty($post_data))
+	{
+		foreach($post_data as $key => $val)
+		{
+			$post_body .= '&'.urlencode($key).'='.urlencode($val);
+		}
+		$post_body = ltrim($post_body, '&');
+	}
+	
 	if(function_exists("curl_init"))
 	{
 		$ch = curl_init();
@@ -5001,11 +5011,16 @@ function fetch_remote_file($url)
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		if(!empty($post_body))
+		{
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+		}
 		$data = curl_exec($ch);
 		curl_close($ch);
 		return $data;
 	}
-	else if(function_exists("fsockopen"))
+ 	else if(function_exists("fsockopen"))
 	{
 		$url = @parse_url($url);
 		if(!$url['host'])
@@ -5030,9 +5045,28 @@ function fetch_remote_file($url)
 		{
 			return false;
 		}
-		$headers = "GET {$url['path']} HTTP/1.1\r\n";
-		$headers .= "Host: {$url['host']}\r\n";
-		$headers .= "Connection: Close\r\n\r\n";
+		$headers = array();
+		if(!empty($post_body))
+		{
+			$headers[] = "POST {$url['path']} HTTP/1.0";
+			$headers[] = "Content-Length: ".strlen($post_body);
+			$headers[] = "Content-Type: application/x-www-form-urlencoded";
+		}
+		else
+		{
+			$headers[] = "GET {$url['path']} HTTP/1.0";
+		}
+		
+		$headers[] = "Host: {$url['host']}";
+		$headers[] = "Connection: Close";
+		$headers[] = "\r\n";
+		
+		if(!empty($post_body))
+		{
+			$headers[] = $post_body;
+		}
+		
+		$headers = implode("\r\n", $headers);	
 		if(!@fwrite($fp, $headers))
 		{
 			return false;
@@ -5045,9 +5079,13 @@ function fetch_remote_file($url)
 		$data = explode("\r\n\r\n", $data, 2);
 		return $data[1];
 	}
-	else
+	else if(empty($post_data))
 	{
 		return @implode("", @file($url));
+	}
+	else
+	{
+		return false;
 	}
 }
 
