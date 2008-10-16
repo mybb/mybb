@@ -373,7 +373,7 @@ if($mybb->input['action'] == "register")
 	if((!isset($mybb->input['agree']) && !isset($mybb->input['regsubmit'])) || $mybb->request_method != "post")
 	{
 		// Is this user a COPPA user? We need to show the COPPA agreement too
-		if($mybb->setings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
+		if($mybb->settings['coppa'] != "disabled" && ($mybb->cookies['coppauser'] == 1 || $under_thirteen))
 		{
 			if($mybb->settings['coppa'] == "deny")
 			{
@@ -1379,6 +1379,8 @@ if($mybb->input['action'] == "profile")
 	$displaygroup = usergroup_displaygroup($memprofile['displaygroup']);
 
 	// Get the user title for this user
+	unset($usertitle);
+	unset($stars);
 	if(trim($memprofile['usertitle']) != '')
 	{
 		// User has custom user title
@@ -1407,7 +1409,22 @@ if($mybb->input['action'] == "profile")
 	
 	if($displaygroup['stars'])
 	{
+		// Set the number of stars if display group has constant number of stars
 		$stars = $displaygroup['stars'];
+	}
+	elseif(!$stars)
+	{
+		// This is for cases where the user has a title, but the group has no defined number of stars (use number of stars as per default usergroups)
+		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
+		while($title = $db->fetch_array($query))
+		{
+			if($memprofile['postnum'] >= $title['posts'])
+			{
+				$stars = $title['stars'];
+				$starimage = $title['starimage'];
+				break;
+			}
+		}
 	}
 
 	if(!empty($displaygroup['image']))

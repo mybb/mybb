@@ -2948,7 +2948,7 @@ function build_archive_link($type, $id="")
 			$url = "{$base_url}forum-{$id}.html";
 			break;
 		default:
-			$url = $mybb->setings['bburl']."/archive/index.php";
+			$url = $mybb->settings['bburl']."/archive/index.php";
 	}
 
 	return $url;
