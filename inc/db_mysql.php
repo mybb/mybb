@@ -618,6 +618,7 @@ class DB_MySQL
 			LIKE '{$this->table_prefix}$table'
 		");
 		$exists = $this->num_rows($query);
+		$this->error_reporting = $err;
 		if($exists > 0)
 		{
 			return true;
