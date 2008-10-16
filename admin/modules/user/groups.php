@@ -815,7 +815,7 @@ if($mybb->input['action'] == "edit")
 			// Only update the candisplaygroup setting if not a default user group
 			if($usergroup['type'] != 1)
 			{
-				$updated_group['candisplaygroup'] = $db->escape_string($mybb->input['candisplaygroup']);
+				$updated_group['candisplaygroup'] = intval($mybb->input['candisplaygroup']);
 			}
 			
 			$plugins->run_hooks("admin_user_groups_edit_commit");
