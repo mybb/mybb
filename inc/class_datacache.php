@@ -743,7 +743,7 @@ class datacache
 		$query = $db->simple_select("banned");
 		while($ban = $db->fetch_array($query))
 		{
-			$bans[] = $ban;
+			$bans[$ban['uid']] = $ban;
 		}
 		
 		$this->update("banned", $bans);
