@@ -1903,6 +1903,7 @@ if($mybb->input['action'] == "finduser")
 		if($mybb->input[$field])
 		{
 			$page_url .= "&amp;{$field}=".htmlspecialchars_uni($mybb->input[$field]);
+			$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
 		}
 	}
 

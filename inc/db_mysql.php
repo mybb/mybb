@@ -229,7 +229,10 @@ class DB_MySQL
 		}
 
 		// Select databases
-		$this->select_db($config['database']);
+		if(!$this->select_db($config['database']))
+		{
+			return false;
+		}
 
 		$this->current_link = &$this->read_link;
 		return $this->read_link;
@@ -544,6 +547,10 @@ class DB_MySQL
 				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
 			}
 		}
+		else
+		{
+			return false;
+		}
 	}
 
 
@@ -611,7 +618,6 @@ class DB_MySQL
 			LIKE '{$this->table_prefix}$table'
 		");
 		$exists = $this->num_rows($query);
-		$this->error_reporting = $err;
 		if($exists > 0)
 		{
 			return true;

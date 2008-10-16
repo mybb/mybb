@@ -553,6 +553,10 @@ class DB_MySQLi
 				trigger_error("<strong>[SQL] [".$this->error_number()."] ".$this->error_string()."</strong><br />{$string}", E_USER_ERROR);
 			}
 		}
+		else
+		{
+			return false;
+		}
 	}
 
 
