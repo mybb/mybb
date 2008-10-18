@@ -1920,8 +1920,8 @@ if($mybb->input['action'] == "finduser")
 		$user['postnum'] = my_number_format($user['postnum']);
 		$regdate = my_date($mybb->settings['dateformat'], $user['regdate']);
 		$regtime = my_date($mybb->settings['timeformat'], $user['regdate']);
-		$lastdate = my_date($mybb->settings['dateformat'], $user['lastactive']);
-		$lasttime = my_date($mybb->settings['timeformat'], $user['lastactive']);
+		$lastdate = my_date($mybb->settings['dateformat'], $user['lastvisit']);
+		$lasttime = my_date($mybb->settings['timeformat'], $user['lastvisit']);
 		$usergroup = $usergroups_cache[$user['usergroup']]['title'];
 		eval("\$users .= \"".$templates->get("modcp_finduser_user")."\";");
 	}

@@ -232,16 +232,16 @@ class postParser
 		$standard_mycode['reg']['regex'] = "#\(r\)#i";
 		$standard_mycode['reg']['replacement'] = "&reg;";
 
-		$standard_mycode['url_simple']['regex'] = "#\[url\]([a-z]+?://)([^\r\n\"\[<]+?)\[/url\]#sei";
+		$standard_mycode['url_simple']['regex'] = "#\[url\]([a-z]+?://)([^\r\n\"<]+?)\[/url\]#sei";
 		$standard_mycode['url_simple']['replacement'] = "\$this->mycode_parse_url(\"$1$2\")";
 
-		$standard_mycode['url_simple2']['regex'] = "#\[url\]([^\r\n\"\[<]+?)\[/url\]#ei";
+		$standard_mycode['url_simple2']['regex'] = "#\[url\]([^\r\n\"<]+?)\[/url\]#ei";
 		$standard_mycode['url_simple2']['replacement'] = "\$this->mycode_parse_url(\"$1\")";
 
-		$standard_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"\[<]+?)\](.+?)\[/url\]#esi";
+		$standard_mycode['url_complex']['regex'] = "#\[url=([a-z]+?://)([^\r\n\"<]+?)\](.+?)\[/url\]#esi";
 		$standard_mycode['url_complex']['replacement'] = "\$this->mycode_parse_url(\"$1$2\", \"$3\")";
 
-		$standard_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"\[<&\(\)]+?)\](.+?)\[/url\]#esi";
+		$standard_mycode['url_complex2']['regex'] = "#\[url=([^\r\n\"<&\(\)]+?)\](.+?)\[/url\]#esi";
 		$standard_mycode['url_complex2']['replacement'] = "\$this->mycode_parse_url(\"$1\", \"$2\")";
 
 		$standard_mycode['email_simple']['regex'] = "#\[email\](.*?)\[/email\]#ei";
@@ -811,6 +811,7 @@ class postParser
 		$url = str_replace('&amp;', '&', $url);
 		$name = str_replace('&amp;', '&', $name);
 
+
 		if(!preg_match("#[a-z0-9]+://#i", $fullurl))
 		{
 			$fullurl = "http://".$fullurl;
@@ -831,6 +832,9 @@ class postParser
 				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
 			}
 		}
+		
+		// fix some entities in URLs
+		$fullurl = strtr($fullurl, array('$' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20'));
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
 		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
@@ -882,6 +886,8 @@ class postParser
 	*/
 	function mycode_parse_email($email, $name="")
 	{
+		$name = str_replace("\\'", "'", $name);
+		$email = str_replace("\\'", "'", $email);
 		if(!$name)
 		{
 			$name = $email;
