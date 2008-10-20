@@ -1273,7 +1273,6 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the user
 		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
-		$db->delete_query("users", "uid='{$user['uid']}'");
 		$db->delete_query("userfields", "ufid='{$user['uid']}'");
 		$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 		$db->delete_query("events", "uid='{$user['uid']}'");
@@ -1283,6 +1282,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("sessions", "uid='{$user['uid']}'");
 		$db->delete_query("banned", "uid='{$user['uid']}'");
 		$db->delete_query("threadratings", "uid='{$user['uid']}'");
+		$db->delete_query("users", "uid='{$user['uid']}'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
