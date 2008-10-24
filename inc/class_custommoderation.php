@@ -331,7 +331,7 @@ class CustomModeration extends Moderation
 					$post['options'] = array(
 						"signature" => 1,
 						"emailnotify" => 0,
-						"disablesmilies" => 1
+						"disablesmilies" => 0
 					);
 	
 					$posthandler->set_data($post);
