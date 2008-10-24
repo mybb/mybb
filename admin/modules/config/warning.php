@@ -127,7 +127,7 @@ if($mybb->input['action'] == "add_level")
 		"days" => $lang->expiration_days,
 		"weeks" => $lang->expiration_weeks,
 		"months" => $lang->expiration_months,
-		"never" => $lang->expiration_never
+		"never" => $lang->permanent
 	);
 
 	$actions = "<script type=\"text/javascript\">
@@ -321,7 +321,7 @@ if($mybb->input['action'] == "edit_level")
 		"days" => $lang->expiration_days,
 		"weeks" => $lang->expiration_weeks,
 		"months" => $lang->expiration_months,
-		"never" => $lang->expiration_never
+		"never" => $lang->permanent
 	);
 
 	$actions = "<script type=\"text/javascript\">
@@ -495,7 +495,7 @@ if($mybb->input['action'] == "add_type")
 		"days" => $lang->expiration_days,
 		"weeks" => $lang->expiration_weeks,
 		"months" => $lang->expiration_months,
-		"never" => $lang->never
+		"never" => $lang->expiration_never
 	);
 	$form_container->output_row($lang->warning_expiry, $lang->warning_expiry_desc, $form->generate_text_box('expire_time', $mybb->input['expire_time'], array('id' => 'expire_time'))." ".$form->generate_select_box('expire_period', $expiration_periods, $mybb->input['expire_period'], array('id' => 'expire_period')), 'expire_time');
 	$form_container->end();
@@ -693,7 +693,7 @@ if($mybb->input['action'] == "levels")
 		$no_results = true;
 	}
 	
-	$table->output($lang->warning_types);
+	$table->output($lang->warning_levels);
 
 	$page->output_footer();
 }
