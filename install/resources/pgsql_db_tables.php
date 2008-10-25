@@ -769,7 +769,8 @@ $tables[] = "CREATE TABLE mybb_userfields (
   fid2 text NOT NULL default '',
   fid3 text NOT NULL default '',
   PRIMARY KEY (ufid)
-);";
+);
+CREATE SEQUENCE mybb_userfields_ufid_seq;";
 
 $tables[] = "CREATE TABLE mybb_usergroups (
   gid serial,

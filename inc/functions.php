@@ -4294,6 +4294,10 @@ function get_calendar_link($calendar, $year=0, $month=0, $day=0)
  */
 function get_calendar_week_link($calendar, $week)
 {
+	if($week < 0)
+	{
+		$week = str_replace('-', "n", $week);
+	}
 	$link = str_replace("{week}", $week, CALENDAR_URL_WEEK);
 	$link = str_replace("{calendar}", $calendar, $link);
 	return htmlspecialchars_uni($link);

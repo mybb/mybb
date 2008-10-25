@@ -125,7 +125,20 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	}
 
 	// Build the who's online bit on the index page.
-	$onlinecount = $membercount + $guestcount;
+	$onlinecount = $membercount + $guestcount + $botcount;
+	
+	// If we can see invisible users add them to the count
+	if($mybb->usergroup['canviewwolinvis'] == 1)
+	{
+		$onlinecount += $anoncount;
+	}
+	
+	// If we can't see invisible users but the user is an invisible user incriment the count by one
+	if($mybb->usergroup['canviewwolinvis'] != 1 && $mybb->user['invisible'] == 1)
+	{
+		++$onlinecount;
+	}
+	
 	if($onlinecount != 1)
 	{
 		$onlinebit = $lang->online_online_plural;

@@ -810,7 +810,10 @@ function update_theme_stylesheet_list($tid)
 	// Do we have any children themes that need updating too?
 	if(count($child_list) > 0)
 	{
-		update_theme_stylesheet_list($child_list[0]);
+		foreach($child_list as $id)
+		{
+			update_theme_stylesheet_list($id);
+		}
 	}
 	
 	return true;

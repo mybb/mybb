@@ -1388,13 +1388,11 @@ if($mybb->input['action'] == "preview")
 	{
 		// Show preview of the text version
 		echo nl2br($mass_email['message']);
-		exit;
 	}
 	else
 	{
 		// Preview the HTML version
 		echo $mass_email['htmlmessage'];
-		exit;
 	}
 	
 		?>
@@ -1403,7 +1401,9 @@ if($mybb->input['action'] == "preview")
 	</body>
 	</html>
 	<?php
+	exit;
 }
+
 if($mybb->input['action'] == "resend")
 {
 	// Copy and resend an email

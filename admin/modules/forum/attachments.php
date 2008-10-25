@@ -596,7 +596,7 @@ if(!$mybb->input['action'])
 		// Build the search SQL for users
 
 		// List of valid LIKE search fields
-		$user_like_fields = array("filename", "mimetype");
+		$user_like_fields = array("filename", "filetype");
 		foreach($user_like_fields as $search_field)
 		{
 			if($mybb->input[$search_field])

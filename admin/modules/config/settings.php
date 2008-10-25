@@ -1397,8 +1397,6 @@ function print_setting_peekers()
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowmycode"), /1/, true);
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowsmilies"), /1/, true);
 			new Peeker($$(".setting_enablepms"), $("row_setting_pmsallowimgcode"), /1/, true);
-			new Peeker($$(".setting_enablecalendar"), $("row_setting_publiceventcolor"), /1/, true);
-			new Peeker($$(".setting_enablecalendar"), $("row_setting_privateeventcolor"), /1/, true);
 			new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertertot"), /1/, true);
 			new Peeker($$(".setting_smilieinserter"), $("row_setting_smilieinsertercols"), /1/, true);
 			new Peeker($("setting_mail_handler"), $("row_setting_smtp_host"), /smtp/, false);

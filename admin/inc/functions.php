@@ -298,22 +298,22 @@ function save_quick_perms($fid)
 			}
 
 			$insertquery = array(
-				"fid" => $fid,
-				"gid" => $usergroup['gid'],
-				"canview" => $pview,
-				"canviewthreads" => $existing_permissions['canviewthreads'],
-				"candlattachments" => $existing_permissions['candlattachments'],
-				"canpostthreads" => $pthreads,
-				"canpostreplys" => $preplies,
-				"canpostattachments" => $pattachments,
-				"canratethreads" => $existing_permissions['canratethreads'],
-				"caneditposts" => $existing_permissions['caneditposts'],
-				"candeleteposts" => $existing_permissions['candeleteposts'],
-				"candeletethreads" => $existing_permissions['candeletethreads'],
-				"caneditattachments" => $existing_permissions['caneditattachments'],
-				"canpostpolls" => $ppolls,
-				"canvotepolls" => $existing_permissions['canvotepolls'],
-				"cansearch" => $existing_permissions['cansearch']
+				"fid" => intval($fid),
+				"gid" => intval($usergroup['gid']),
+				"canview" => intval($pview),
+				"canviewthreads" => intval($existing_permissions['canviewthreads']),
+				"candlattachments" => intval($existing_permissions['candlattachments']),
+				"canpostthreads" => intval($pthreads),
+				"canpostreplys" => intval($preplies),
+				"canpostattachments" => intval($pattachments),
+				"canratethreads" => intval($existing_permissions['canratethreads']),
+				"caneditposts" => intval($existing_permissions['caneditposts']),
+				"candeleteposts" => intval($existing_permissions['candeleteposts']),
+				"candeletethreads" => intval($existing_permissions['candeletethreads']),
+				"caneditattachments" => intval($existing_permissions['caneditattachments']),
+				"canpostpolls" => intval($ppolls),
+				"canvotepolls" => intval($existing_permissions['canvotepolls']),
+				"cansearch" => intval($existing_permissions['cansearch'])
 			);
 			
 			$db->insert_query("forumpermissions", $insertquery);

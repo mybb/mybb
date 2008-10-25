@@ -709,7 +709,8 @@ $tables[] = "CREATE TABLE mybb_userfields (
   ufid int NOT NULL default '0',
   fid1 TEXT NOT NULL,
   fid2 TEXT NOT NULL,
-  fid3 TEXT NOT NULL );";
+  fid3 TEXT NOT NULL
+);";
 
 $tables[] = "CREATE TABLE mybb_usergroups (
   gid INTEGER PRIMARY KEY,

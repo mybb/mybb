@@ -158,6 +158,29 @@ function upgrade14_dbchanges1()
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
+	$output->print_footer("14_dbchanges2");
+}
+
+function upgrade14_dbchanges2()
+{
+	global $db, $output;
+	
+	$output->print_header("Cleaning up settings and setting groups");
+
+	echo "<p>Performing necessary upgrade queries..</p>";
+	flush();
+	
+	$db->delete_query("settinggroups", "name='banning' AND isdefault='0'", 1);
+	
+	$db->delete_query("settings", "name='bannedusernames'", 1);
+	$db->delete_query("settings", "name='bannedips'", 1);
+	$db->delete_query("settings", "name='bannedemails'", 1);
+	$db->delete_query("settings", "name='publiceventcolor'", 1);
+	$db->delete_query("settings", "name='privateeventcolor'", 1);
+	$db->delete_query("settings", "name='cssmedium'", 1);	
+	
+	$contents .= "Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
 	$output->print_footer("14_done");
 }
 

@@ -1794,6 +1794,10 @@ if($mybb->input['action'] == "weekview")
 		$start_day = $day-$php_weekday;
 		$mybb->input['week'] = gmmktime(0, 0, 0, $month, $start_day, $year);
 	}
+	else
+	{
+		$mybb->input['week'] = (int)str_replace("n", "-", $mybb->input['week']);
+	}
 	
 	// This is where we've come from and where we're headed
 	$week_from = explode("-", gmdate("j-n-Y", $mybb->input['week']));

@@ -251,6 +251,8 @@ messageEditor.prototype = {
 
 		// Create text area
 		textInput = document.createElement("textarea");
+		textInput.setAttribute("cols", oldTextarea.getAttribute("cols"));
+		textInput.setAttribute("rows", oldTextarea.getAttribute("rows"));
 		textInput.id = this.textarea;
 		textInput.name = oldTextarea.name+"_new";
 		textInput.style.height = parseInt(areaContainer.style.height)+"px";

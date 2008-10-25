@@ -945,6 +945,7 @@ if($mybb->input['action'] == "add")
 			}
 		}
 		
+		$all_check = "";
 		$perm_check = "";
 		$all_checked = true;
 		foreach($field_list as $forum_permission)
@@ -1397,6 +1398,7 @@ if($mybb->input['action'] == "edit")
 				$default_checked = true;
 			}
 		}
+		$all_check = "";
 		$perm_check = "";
 		$all_checked = true;
 		foreach($field_list as $forum_permission)
@@ -1919,6 +1921,8 @@ if(!$mybb->input['action'])
 					$default_checked = true;
 				}
 			}
+			
+			$all_check = "";
 			$perm_check = "";
 			$all_checked = true;
 			foreach($field_list as $forum_permission)

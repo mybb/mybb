@@ -1138,7 +1138,7 @@ class DB_MySQLi
 	 */
 	function fetch_db_charsets()
 	{
-		if($this->link && $this->get_version() < 4.1)
+		if($this->link && version_compare($this->get_version(), "4.1", "<"))
 		{
 			return false;
 		}
