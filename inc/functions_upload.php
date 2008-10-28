@@ -412,7 +412,7 @@ function upload_attachment($attachment)
 	}
 	
 	// All seems to be good, lets move the attachment!
-	$filename = "post_".$mybb->user['uid']."_".TIME_NOW.".attach";
+	$filename = "post_".$mybb->user['uid']."_".TIME_NOW."_".md5(uniqid(rand(), true)).".attach";
 	
 	$file = upload_file($attachment, $mybb->settings['uploadspath']."/".$month_dir, $filename);
 	
