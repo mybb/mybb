@@ -2444,7 +2444,7 @@ ul.thread_tools li.subscription_remove {
 <td class="{$bgcolor}" valign="top" align="center" style="white-space: nowrap">{$posts}{$unapproved['unapproved_posts']}</td>
 <td class="{$bgcolor}" valign="top" align="right" style="white-space: nowrap">{$lastpost}</td>
 </tr>]]></template>
-		<template name="forumbit_depth3" version="1403"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text_plain}">{$forum['name']}</a>]]></template>
+		<template name="forumbit_depth3" version="1404"><![CDATA[{$comma}{$statusicon}<a href="{$forum_url}" title="{$forum_viewers_text_plain}">{$forum['name']}</a>]]></template>
 		<template name="forumbit_depth3_statusicon" version="1400"><![CDATA[<img src="{$theme['imgdir']}/{$lightbulb['folder']}.gif" alt="{$lightbulb['altonoff']}" title="{$lightbulb['altonoff']}" class="subforumicon ajax_mark_read" id="mark_read_{$forum['fid']}" />]]></template>
 		<template name="forumbit_subforums" version="120"><![CDATA[<br />{$lang->subforums} {$sub_forums}]]></template>
 		<template name="private_empty" version="120"><![CDATA[<html>
