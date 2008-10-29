@@ -1276,7 +1276,7 @@ function upgrade12_dbchanges5()
 		$view_count++;
 	}
 	
-	$avatardimensions = str_replace('x', '|', $mybb->settings['postmaxavatarsize']);
+	$avatardimensions = str_replace('x', '|', my_strtolower($mybb->settings['postmaxavatarsize']));
 	
 	$db->simple_select("users", "uid", "avatar != '' && avatardimensions = ''");
 	while($user = $db->fetch_array($query))

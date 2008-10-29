@@ -176,7 +176,7 @@ if($mybb->input['action'] == "avatar_gallery")
 			// Log admin action
 			log_admin_action($user['uid'], $user['username']);
 		}
-		remove_avatars($mybb->user['uid']);
+		remove_avatars($user['uid']);
 		// Now a tad of javascript to submit the parent window form
 		echo "<script type=\"text/javascript\">window.parent.submitUserForm();</script>";
 		exit;
@@ -652,7 +652,7 @@ if($mybb->input['action'] == "edit")
 					"avatardimensions" => "",
 					"avatartype" => ""
 				);
-				remove_avatars($mybb->user['uid']);
+				remove_avatars($user['uid']);
 			}
 
 
@@ -716,7 +716,7 @@ if($mybb->input['action'] == "edit")
 				{
 					if($width && $height && $mybb->settings['maxavatardims'] != "")
 					{
-						list($maxwidth, $maxheight) = explode("x", $mybb->settings['maxavatardims']);
+						list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
 						if(($maxwidth && $width > $maxwidth) || ($maxheight && $height > $maxheight))
 						{
 							$lang->error_avatartoobig = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
@@ -1194,7 +1194,7 @@ if($mybb->input['action'] == "edit")
 
 	if($mybb->settings['maxavatardims'] != "")
 	{
-		list($max_width, $max_height) = explode("x", $mybb->settings['maxavatardims']);
+		list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
 		$max_size = "<br />{$lang->max_dimensions_are} {$max_width}x{$max_height}";
 	}
 

@@ -765,12 +765,12 @@ function redirect($url, $message="", $title="")
 		echo "<script type=\"text/javascript\">\n";
 		if($message != "")
 		{
-			echo "alert('".str_replace("'", "\'", $message)."');\n";
+			echo 'alert("'.addslashes($message).'");';
 		}
 		$url = str_replace("#", "&#", $url);
 		$url = htmlspecialchars_decode($url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
-		echo "window.location = '".str_replace("'", "\'", $url)."';\n";
+		echo 'window.location = "'.addslashes($url).'";\n';
 		echo "</script>\n";
 		exit;
 	}

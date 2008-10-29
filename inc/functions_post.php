@@ -289,7 +289,7 @@ function build_postbit($post, $post_type=0)
 			
 			if($avatar_dimensions[0] && $avatar_dimensions[1])
 			{
-				list($max_width, $max_height) = explode("x", $mybb->settings['postmaxavatarsize']);
+				list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['postmaxavatarsize']));
 			 	if($avatar_dimensions[0] > $max_width || $avatar_dimensions[1] > $max_height)
 				{
 					require_once MYBB_ROOT."inc/functions_image.php";
