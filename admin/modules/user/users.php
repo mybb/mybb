@@ -1400,22 +1400,21 @@ if($mybb->input['action'] == "ipaddresses")
 	$table->construct_cell($controls, array('class' => "align_center"));
 	$table->construct_row();
 	
-	$query = $db->simple_select("posts", "DISTINCT ipaddress, pid", "uid='{$mybb->input['uid']}'");
+	$counter = 0;
+	
+	$query = $db->simple_select("posts", "DISTINCT ipaddress", "uid='{$mybb->input['uid']}'");
 	while($ip = $db->fetch_array($query))
 	{
-		if(!$done_ip[$ip['ipaddress']])
-		{
-			$popup = new PopupMenu("post_{$ip['pid']}", $lang->options);
-			$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
-			$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
-			$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$ip['ipaddress']}");
-			$controls = $popup->fetch();
-		
-			$table->construct_cell($ip['ipaddress']);
-			$table->construct_cell($controls, array('class' => "align_center"));
-			$table->construct_row();
-			$done_ip[$ip['ipaddres']] = 1;
-		}
+		++$counter;
+		$popup = new PopupMenu("id_{$counter}", $lang->options);
+		$popup->add_item($lang->show_users_regged_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("regip" => $ip['ipaddress']))));
+		$popup->add_item($lang->show_users_posted_with_ip, "index.php?module=user/users&amp;results=1&amp;action=search&amp;conditions=".urlencode(serialize(array("postip" => $ip['ipaddress']))));
+		$popup->add_item($lang->ban_ip, "index.php?module=config/banning&amp;filter={$ip['ipaddress']}");
+		$controls = $popup->fetch();
+	
+		$table->construct_cell($ip['ipaddress']);
+		$table->construct_cell($controls, array('class' => "align_center"));
+		$table->construct_row();
 	}
 	
 	$table->output($lang->ip_address_for." {$user['username']}");

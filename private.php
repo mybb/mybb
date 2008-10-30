@@ -347,7 +347,6 @@ if($mybb->input['action'] == "send")
 			// Get list of recipients
 			$recipients = unserialize($pm['recipients']);
 			$comma = '';
-			$recipientids = $pm['fromid'];
 			if(isset($recipients['to']) && is_array($recipients['to']))
 			{
 				foreach($recipients['to'] as $recipient)
@@ -357,7 +356,7 @@ if($mybb->input['action'] == "send")
 					$comma = ',';
 				}
 			}
-
+			
 			if(isset($recipients['bcc']) && is_array($recipients['bcc']))
 			{
 				foreach($recipients['bcc'] as $recipient)
@@ -368,6 +367,8 @@ if($mybb->input['action'] == "send")
 				}	
 			}
 			
+			
+			echo $recipientids;
 			$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
 			while($user = $db->fetch_array($query))
 			{
@@ -414,7 +415,6 @@ if($mybb->input['action'] == "send")
 
 				// Get list of recipients
 				$recipients = unserialize($pm['recipients']);
-				$recipientids = $pm['fromid'];
 				if(isset($recipients['to']) && is_array($recipients['to']))
 				{
 					foreach($recipients['to'] as $recipient)

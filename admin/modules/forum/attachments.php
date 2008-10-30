@@ -777,7 +777,7 @@ if(!$mybb->input['action'])
 			if($num_results > $mybb->input['perpage'])
 			{
 				$pagination_url = "index.php?module=forum/attachments&amp;results=1";
-				$pagination_vars = array('filename', 'mimetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
+				$pagination_vars = array('filename', 'filetype', 'username', 'fid', 'downloads', 'downloads_dir', 'dateuploaded', 'dateuploaded_dir', 'filesize', 'filesize_dir');
 				foreach($pagination_vars as $var)
 				{
 					if($mybb->input[$var])
@@ -815,7 +815,7 @@ if(!$mybb->input['action'])
 
 	$form_container = new FormContainer($lang->find_where);
 	$form_container->output_row($lang->name_contains, $lang->name_contains_desc, $form->generate_text_box('filename', $mybb->input['filename'], array('id' => 'filename')), 'filename');
-	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('mimetype', $mybb->input['mimetype'], array('id' => 'mimetype')), 'mimetype');
+	$form_container->output_row($lang->type_contains, "", $form->generate_text_box('filetype', $mybb->input['filetype'], array('id' => 'filetype')), 'filetype');
 	$form_container->output_row($lang->forum_is, "", $form->generate_forum_select('forum[]', $mybb->input['forum'], array('multiple' => true, 'size' => 5, 'id' => 'forum')), 'forum');
 	$form_container->output_row($lang->username_is, "", $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 

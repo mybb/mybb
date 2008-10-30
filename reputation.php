@@ -521,10 +521,10 @@ if(!$mybb->input['action'])
 
 		// Parse smilies in the reputation vote
 		$reputation_parser = array(
-			"allow_html" => "no",
-			"allow_mycode" => "no",
-			"allow_smilies" => "yes",
-			"allow_imgcode" => "no"
+			"allow_html" => 0,
+			"allow_mycode" => 0,
+			"allow_smilies" => 1,
+			"allow_imgcode" => 0
 		);
 
 		$reputation_vote['comments'] = $parser->parse_message($reputation_vote['comments'], $reputation_parser);
