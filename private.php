@@ -367,8 +367,6 @@ if($mybb->input['action'] == "send")
 				}	
 			}
 			
-			
-			echo $recipientids;
 			$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
 			while($user = $db->fetch_array($query))
 			{
