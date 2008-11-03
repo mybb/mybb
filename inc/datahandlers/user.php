@@ -253,7 +253,8 @@ class UserDataHandler extends DataHandler
 		}
 		
 		// Check signed up emails
-		if($mybb->settings['allowmultipleemails'] == 0)
+		// Ignore the ACP because the Merge System sometimes produces users with duplicate email addresses (Not A Bug)
+		if($mybb->settings['allowmultipleemails'] == 0 && !defined("IN_ADMINCP"))
 		{
 			if(email_already_in_use($user['email'], $user['uid']))
 			{

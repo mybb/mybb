@@ -50,6 +50,12 @@ if($mybb->usergroup['issupermod'] != 1)
 	while($forum = $db->fetch_array($query))
 	{
 		$flist .= ",'{$forum['fid']}'";
+		
+		$children = get_child_list($forum['fid']);
+		if(!empty($children))
+		{
+			$flist .= ",'".implode("','", $children)."'";
+		}
 		$moderated_forums[] = $forum['fid'];
 	}
 	if($flist)

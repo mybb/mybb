@@ -177,7 +177,26 @@ function upgrade14_dbchanges2()
 	$db->delete_query("settings", "name='bannedemails'", 1);
 	$db->delete_query("settings", "name='publiceventcolor'", 1);
 	$db->delete_query("settings", "name='privateeventcolor'", 1);
-	$db->delete_query("settings", "name='cssmedium'", 1);	
+	$db->delete_query("settings", "name='cssmedium'", 1);
+	
+	$db->delete_query("templates", "title='usercp_options_timezoneselect' AND sid != '-1'");
+	$db->delete_query("templates", "title='moderation_reports' AND sid != '-1'");
+	$db->delete_query("templates", "title='moderation_reports_report' AND sid != '-1'");
+	$db->delete_query("templates", "title='moderation_reports_multipage' AND sid != '-1'");
+	$db->delete_query("templates", "title='moderation_allreports' AND sid != '-1'");
+	$db->delete_query("templates", "title='showthread_ratingdisplay' AND sid != '-1'");
+	$db->delete_query("templates", "title='moderation_getip_adminoptions' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_eventbit_public' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_daybit_today' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_daybit' AND sid != '-1'");
+	$db->delete_query("templates", "title='online_iplookup' AND sid != '-1'");
+	$db->delete_query("templates", "title='online_iplookup_adminoptions' AND sid != '-1'");
+	$db->delete_query("templates", "title='online_row_ip' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_eventbit_dates' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_eventbit_dates_recurring' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_eventbit_times' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_editevent_normal' AND sid != '-1'");
+	$db->delete_query("templates", "title='calendar_editevent_recurring' AND sid != '-1'");
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

@@ -92,6 +92,7 @@ function task_promotions($task)
 		$query2 = $db->simple_select("users", "uid,{$usergroup_select}", $sql_where);
 		while($user = $db->fetch_array($query2))
 		{
+			// super admin check?
 			if($usergroup_select == "additionalgroups")
 			{
 				$log_inserts[] = array(

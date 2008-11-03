@@ -380,24 +380,46 @@ if($mybb->input['action'] == "activate_user")
 	// Log admin action
 	log_admin_action($user['uid'], $user['username']);
 
-	if($user['coppauser'])
+	if($mybb->input['from'] == "home")
 	{
-		flash_message($lang->success_coppa_activated, 'success');
+		if($user['coppauser'])
+		{
+			$message = $lang->success_coppa_activated;
+		}
+		else
+		{
+			$message = $lang->success_activated;
+		}
+		
+		update_admin_session('flash_message2', array('message' => $message, 'type' => 'success'));
 	}
 	else
 	{
-		flash_message($lang->success_activated, 'success');
+		if($user['coppauser'])
+		{
+			flash_message($lang->success_coppa_activated, 'success');
+		}
+		else
+		{
+			flash_message($lang->success_activated, 'success');
+		}
 	}
-
+	
 	if($admin_session['data']['last_users_url'])
 	{
 		$url = $admin_session['data']['last_users_url'];
 		update_admin_session('last_users_url', '');
+		
+		if($mybb->input['from'] == "home")
+		{
+			update_admin_session('from', 'home');
+		}
 	}
 	else
 	{
-		$url = "index.php?module=user/users&amp;action=edit&amp;uid={$user['uid']}";
+		$url = "index.php?module=user/users&action=edit&uid={$user['uid']}";
 	}
+	
 	admin_redirect($url);
 }
 
@@ -1641,7 +1663,16 @@ if($mybb->input['action'] == "search")
 		}
 		else
 		{
-			$errors[] = $lang->error_no_users_found;
+			if($mybb->input['from'] == "home")
+			{
+				flash_message($lang->error_no_users_found, 'error');
+				admin_redirect("index.php");
+				exit;
+			}
+			else
+			{
+				$errors[] = $lang->error_no_users_found;
+			}
 		}
 	}
 
@@ -1743,7 +1774,19 @@ if(!$mybb->input['action'])
 
 	if(!$results)
 	{
-		$errors[] = $lang->error_no_users_found;
+		// If we came from the home page and clicked on the "Activate Users" link, send them back to here
+		if($admin_session['data']['from'] == "home")
+		{
+			flash_message($admin_session['data']['flash_message2']['message'], $admin_session['data']['flash_message2']['type']);
+			update_admin_session('flash_message2', '');
+			update_admin_session('from', '');
+			admin_redirect("index.php");
+			exit;
+		}
+		else
+		{
+			$errors[] = $lang->error_no_users_found;
+		}
 	}
 
 	// If we have any error messages, show them
@@ -2013,6 +2056,12 @@ function build_users_view($view)
 			$mybb->input['page'] = 1;
 		}
 		
+		$from_bit = "";
+		if($mybb->input['from'] == "home")
+		{
+			$from_bit = "&amp;from=home";
+		}
+		
 		switch($view['sortby'])
 		{
 			case "numposts":
@@ -2069,11 +2118,11 @@ function build_users_view($view)
 			{
 				if($user['coppauser'])
 				{
-					$popup->add_item($lang->approve_coppa_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}");
+					$popup->add_item($lang->approve_coppa_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}{$from_bit}");
 				}
 				else
 				{
-					$popup->add_item($lang->approve_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}");
+					$popup->add_item($lang->approve_user, "index.php?module=user/users&amp;action=activate_user&amp;uid={$user['uid']}{$from_bit}");
 				}
 			}
 

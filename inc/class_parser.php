@@ -393,9 +393,17 @@ class postParser
 			foreach($this->smilies_cache as $find => $replace)
 			{
 				$find = $this->parse_html($find);
+				
+				$find = preg_quote($find, "#");
+				// Fix issues for smileys starting with a ";"
+				if($find{0} == ";")
+				{
+					$find = "(?<!&gt|&lt|&amp)".$find;
+				}
+				
 				if(version_compare(PHP_VERSION, "5.1.0", ">="))
 				{
-					$message = preg_replace("#(?<=[^&;\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
+					$message = preg_replace("#(?<=[^\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
 					$remaining -= $replacements;
 					if($remaining <= 0)
 					{
@@ -404,7 +412,7 @@ class postParser
 				}
 				else
 				{
-					$message = preg_replace("#(?<=[^&;\"])".preg_quote($find,"#")."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining);
+					$message = preg_replace("#(?<=[^\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining);
 				}
 			}
 		}

@@ -1206,7 +1206,7 @@ if($mybb->input['action'] == "diff_report")
 	
 	$table->construct_header("<ins>".$lang->master_updated_ins."</ins><br /><del>".$lang->master_updated_del."</del>");
 	
-	$table->construct_cell("<pre>".$renderer->render($diff)."</pre>");
+	$table->construct_cell("<pre class=\"differential\">".$renderer->render($diff)."</pre>");
 	$table->construct_row();
 	
 	$table->output($lang->template_diff_analysis.": ".$template1['title']);

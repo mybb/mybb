@@ -157,6 +157,7 @@ class DB_PgSQL
 		{
 			$connections['read'][] = $config;
 		}
+		else
 		// Connecting to more than one server
 		{
 			// Specified multiple servers, but no specific read/write servers

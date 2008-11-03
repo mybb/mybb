@@ -1352,6 +1352,19 @@ switch($mybb->input['action'])
 		{
 			error_no_permission();
 		}
+		$postlist = array_map('intval', $postlist);
+		$pids = implode(',', $postlist);
+		
+		$tids = array();
+		if($pids)
+		{
+			$query = $db->simple_select("threads", "tid", "firstpost IN({$pids})");
+			while($tid = $db->fetch_field($query, "tid"))
+			{
+				$tids[] = $tid;
+			}
+		}
+		
 		$deletecount = 0;
 		foreach($postlist as $pid)
 		{
@@ -1360,19 +1373,35 @@ switch($mybb->input['action'])
 			$plist[] = $pid;
 			$deletecount++;
 		}
-		$query = $db->simple_select("posts", "*", "tid='$tid'");
-		$numposts = $db->num_rows($query);
-		if(!$numposts)
+		
+		// If we have multiple threads, we must be coming from the search
+		if(!empty($tids))
 		{
-			$moderation->delete_thread($tid);
-			mark_reports($tid, "thread");
-			$url = get_forum_link($fid);
+			foreach($tids as $tid)
+			{
+				$moderation->delete_thread($tid);
+				mark_reports($tid, "thread");
+				$url = get_forum_link($fid);
+			}
 		}
+		// Otherwise we're just deleting from showthread.php
 		else
 		{
-			mark_reports($plist, "posts");
-			$url = get_thread_link($thread['tid']);
+			$query = $db->simple_select("posts", "*", "tid='$tid'");
+			$numposts = $db->num_rows($query);
+			if(!$numposts)
+			{
+				$moderation->delete_thread($tid);
+				mark_reports($tid, "thread");
+				$url = get_forum_link($fid);
+			}
+			else
+			{
+				mark_reports($plist, "posts");
+				$url = get_thread_link($thread['tid']);
+			}
 		}
+		
 		$lang->deleted_selective_posts = $lang->sprintf($lang->deleted_selective_posts, $deletecount);
 		log_moderator_action($modlogdata, $lang->deleted_selective_posts);
 		moderation_redirect($url, $lang->redirect_postsdeleted);

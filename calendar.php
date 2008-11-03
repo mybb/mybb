@@ -2105,11 +2105,20 @@ if(!$mybb->input['action'])
 		$weekday_name = fetch_weekday_name($weekday);
 		eval("\$weekday_headers .= \"".$templates->get("calendar_weekdayheader")."\";");
 	}
+	
+	$fixed_offset = false;
 
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
 	{
 		foreach($weekdays as $weekday_id => $weekday)
 		{
+			// Fix offset for Start Of Week being Saturday
+			if($calendar_month == $prev_month['month'] && $fixed_offset != true && $calendar['startofweek'] == 6)
+			{
+				$day -= 7;
+				$fixed_offset = true;
+			}
+						
 			// Current month always starts on 1st row
 			if($row == 0 && $day == $calendar['startofweek']+1)
 			{
@@ -2206,7 +2215,7 @@ if(!$mybb->input['action'])
 			}
 
 			$day_link = get_calendar_link($calendar['cid'], $calendar_year, $calendar_month, $day);
-
+			
 			// Is the current day
 			if($day.$calendar_month.$year == $today && $month == $calendar_month)
 			{

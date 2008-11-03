@@ -919,3 +919,14 @@ input.search_button {
 	font-weight: bold;
 	height: 30px;
 }
+
+/* Templates Differential page */
+.differential {
+	background: #FFF;
+	margin: 10px auto;
+	padding: 10px;
+	overflow: scroll;
+	height: 400px;
+	width: 980px;
+	border: 1px solid #ccc;
+}

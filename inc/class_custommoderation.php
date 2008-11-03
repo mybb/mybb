@@ -280,7 +280,6 @@ class CustomModeration extends Moderation
 
 			if($thread_options['openthread'] == 'open') // Open thread
 			{
-				echo "opening";
 				$this->open_threads($tids);
 			}
 			elseif($thread_options['openthread'] == 'close') // Close thread

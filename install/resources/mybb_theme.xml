@@ -4907,9 +4907,6 @@ body {
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</span></td>
 </tr>]]></template>
-	<template name="moderation_allreports_multipage" version="120"><![CDATA[<tr>
-<td class="tcat" colspan="6"><span class="smalltext"> {$multipage}</span></td>
-</tr>]]></template>
 	<template name="modcp_reports_allnoreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
