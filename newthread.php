@@ -886,10 +886,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 
 	$plugins->run_hooks("newthread_end");
 	
+	$forum['name'] = strip_tags($forum['name']);
 	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
 	
-	$forum['name'] = strip_tags($forum['name']);
-
 	eval("\$newthread = \"".$templates->get("newthread")."\";");
 	output_page($newthread);
 

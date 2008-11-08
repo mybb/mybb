@@ -537,8 +537,8 @@ if(!$mybb->input['action'])
 		eval("\$reputation_votes = \"".$templates->get("reputation_no_votes")."\";");
 	}
 
-	eval("\$reputation = \"".$templates->get("reputation")."\";");
 	$plugins->run_hooks("reputation_end");
+	eval("\$reputation = \"".$templates->get("reputation")."\";");
 	output_page($reputation);
 }
 ?>

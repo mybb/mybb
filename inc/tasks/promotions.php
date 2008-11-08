@@ -121,7 +121,12 @@ function task_promotions($task)
 			
 			if($usergroup_select == "additionalgroups")
 			{
-				join_usergroup($user['uid'], $promotion['newusergroup']);
+				if(join_usergroup($user['uid'], $promotion['newusergroup']) === false)
+				{
+					// Did the user already have the additional usergroup?
+					array_pop($log_inserts);
+					array_pop($uids);
+				}
 			}
 			
 			if((count($uids) % 20) == 0)

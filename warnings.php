@@ -746,10 +746,105 @@ if($mybb->input['action'] == "do_revoke" && $mybb->request_method == "post")
 				$new_warning_points = 0;
 			}
 
-			// Update user
 			$updated_user = array(
 				"warningpoints" => $new_warning_points
 			);
+			
+			
+			// check if we need to revoke any consequences with this warning
+			$current_level = round($user['warningpoints']/$mybb->settings['maxwarningpoints']*100);
+			$new_warning_level = round($new_warning_points/$mybb->settings['maxwarningpoints']*100);
+			$query = $db->simple_select("warninglevels", "action", "percentage>$new_warning_level AND percentage<=$current_level");
+			if($db->num_rows($query))
+			{
+				// we have some warning levels we need to revoke
+				$max_expiration_times = $check_levels = array();
+				find_warnlevels_to_check($query, $max_expiration_times, $check_levels);
+				
+				// now check warning levels already applied to this user to see if we need to lower any expiration times
+				$query = $db->simple_select("warninglevels", "action", "percentage<=$new_warning_level");
+				$lower_expiration_times = $lower_levels = array();
+				find_warnlevels_to_check($query, $lower_expiration_times, $lower_levels);
+				
+				// now that we've got all the info, do necessary stuff
+				for($i = 1; $i <= 3; ++$i)
+				{
+					if($check_levels[$i])
+					{
+						switch($i)
+						{
+							case 1: // Ban
+								// we'll have to resort to letting the admin/mod remove the ban manually, since there's an issue if stacked bans are in force...
+								continue;
+							case 2: // Revoke posting
+								$current_expiry_field = 'suspensiontime';
+								$current_inforce_field = 'suspendposting';
+								break;
+							case 3:
+								$current_expiry_field = 'moderationtime';
+								$current_inforce_field = 'moderateposts';
+								break;
+						}
+						
+						// if the thing isn't in force, don't bother with trying to update anything
+						if(!$user[$current_inforce_field])
+						{
+							continue;
+						}
+						
+						if($lower_levels[$i])
+						{
+							// lessen the expiration time if necessary
+							
+							if(!$lower_expiration_times[$i])
+							{
+								// doesn't expire - enforce this
+								$updated_user[$current_expiry_field] = 0;
+								continue;
+							}
+							
+							if($max_expiration_times[$i])
+							{
+								// if the old level did have an expiry time...
+								if($max_expiration_times[$i] <= $lower_expiration_times[$i])
+								{
+									// if the lower expiration time is actually higher than the upper expiration time -> skip
+									continue;
+								}
+								// both new and old max expiry times aren't infinite, so we can take a difference
+								$expire_offset = ($lower_expiration_times[$i] - $max_expiration_times[$i]);
+							}
+							else
+							{
+								// the old level never expired, not much we can do but try to estimate a new expiry time... which will just happen to be starting from today...
+								$expire_offset = TIME_NOW + $lower_expiration_times[$i];
+								// if the user's expiry time is already less than what we're going to set it to, skip
+								if($user[$current_expiry_field] <= $expire_offset)
+								{
+									continue;
+								}
+							}
+							
+							$updated_user[$current_expiry_field] = $user[$current_expiry_field] + $expire_offset;
+							// double-check if it's expired already
+							if($updated_user[$current_expiry_field] < TIME_NOW)
+							{
+								$updated_user[$current_expiry_field] = 0;
+								$updated_user[$current_inforce_field] = 0;
+							}
+						}
+						else
+						{
+							// there's no lower level for this type - remove the consequence entirely
+							$updated_user[$current_expiry_field] = 0;
+							$updated_user[$current_inforce_field] = 0;
+						}
+					}
+				}
+			}
+			
+			
+			// Update user
 			$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
 		}
 
@@ -1056,6 +1151,49 @@ if(!$mybb->input['action'])
 	eval("\$warnings = \"".$templates->get("warnings")."\";");
 	$plugins->run_hooks("warnings_end");
 	output_page($warnings);
+}
+
+
+
+function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
+{
+	global $db;
+	// we have some warning levels we need to revoke
+	$max_expiration_times = array(
+		1 => -1,	// Ban
+		2 => -1,	// Revoke posting
+		3 => -1		// Moderate posting
+	);
+	$check_levels = array(
+		1 => false,	// Ban
+		2 => false,	// Revoke posting
+		3 => false	// Moderate posting
+	);
+	while($warn_level = $db->fetch_array($query))
+	{
+		// revoke actions taken at this warning level
+		$action = unserialize($warn_level['action']);
+		if($action['type'] < 1 || $action['type'] > 3)	// prevent any freak-ish cases
+		{
+			continue;
+		}
+		
+		$check_levels[$action['type']] = true;
+		
+		$max_exp_time = &$max_expiration_times[$action['type']];
+		if($action['length'] && $max_exp_time != 0)
+		{
+			$expiration = $action['length'];
+			if($expiration > $max_exp_time)
+			{
+				$max_exp_time = $expiration;
+			}
+		}
+		else
+		{
+			$max_exp_time = 0;
+		}
+	}
 }
 
 ?>

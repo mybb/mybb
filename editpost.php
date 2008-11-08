@@ -219,7 +219,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		$modlogdata['tid'] = $tid;
 		if($firstpost)
 		{
-			if($forumpermissions['candeletethreads'] == 1)
+			if($forumpermissions['candeletethreads'] == 1 || is_moderator($fid, "candeleteposts"))
 			{
 				delete_thread($tid);
 				mark_reports($tid, "thread");
@@ -233,7 +233,7 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		}
 		else
 		{
-			if($forumpermissions['candeleteposts'] == 1)
+			if($forumpermissions['candeleteposts'] == 1 || is_moderator($fid, "candeleteposts"))
 			{
 				// Select the first post before this
 				delete_post($pid, $tid);

@@ -3320,7 +3320,7 @@ function alt_trow($reset=0)
  */
 function join_usergroup($uid, $joingroup)
 {
-	global $db;
+	global $db, $mybb;
 
 	if($uid == $mybb->user['uid'])
 	{
@@ -3351,7 +3351,16 @@ function join_usergroup($uid, $joingroup)
 		}
 	}
 
-	$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".intval($uid)."'");
+	// What's the point in updating if they're the same?
+	if($groupslist != $user['additionalgroups'])
+	{
+		$db->update_query("users", array('additionalgroups' => $groupslist), "uid='".intval($uid)."'");
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 /**

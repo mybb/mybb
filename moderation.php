@@ -1498,10 +1498,11 @@ switch($mybb->input['action'])
 		// Select number of posts in each thread that the splitted post is in
 		$query = $db->query("
 			SELECT DISTINCT p.tid, COUNT(q.pid) as count
-			FROM (".TABLE_PREFIX."posts p, ".TABLE_PREFIX."posts q)
-			WHERE p.tid=q.tid AND p.pid IN ($pidin)
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."posts q ON (p.tid=q.tid)
+			WHERE p.pid IN ($pidin)
 			GROUP BY p.pid
-			");
+		");
 		$threads = $pcheck = array();
 		while($tcheck = $db->fetch_array($query))
 		{

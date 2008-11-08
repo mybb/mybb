@@ -260,7 +260,7 @@ if($mybb->settings['browsingthisforum'] != 0)
 		$invisonline = $lang->sprintf($lang->users_browsing_forum_invis, $inviscount);
 	}
 	
-	if($invisonline != '' && $guestcount)
+	if($invisonline != '' && ($guestcount || $onlinemembers))
 	{
 		$onlinesep2 = ", ";
 	}

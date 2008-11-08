@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'calendar.php');
 
 $templatelist = "calendar_weekdayheader,calendar_weekrow_day,calendar_weekrow,calendar_eventbit_public,calendar_eventbit_private,calendar";
 $templatelist .= ",calendar_weekview_day,calendar_weekview_day_event,calendar_mini_weekdayheader,calendar_mini_weekrow_day,calendar_mini_weekrow,calendar_mini,calendar_weekview_month,calendar_weekview,calendar_eventbit,calendar_addeventlink";
-$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_event,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,calendar_editevent";
+$templatelist .= ",calendar_event_editbutton,calendar_event_modoptions,calendar_event,calendar_dayview_event,calendar_dayview,codebuttons,smilieinsert,calendar_editevent,calendar_dayview_birthdays_bday,calendar_dayview_birthdays,calendar_dayview_noevents,calendar_dayview_noevents";
 
 require_once "./global.php";
 

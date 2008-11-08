@@ -161,7 +161,7 @@ function build_postbit($post, $post_type=0)
 		if(!$post['displaygroup'])
 		{
 			$post['displaygroup'] = $post['usergroup'];
-		}
+		}		
 		$usergroup = $groupscache[$post['displaygroup']];
 	}
 	else
