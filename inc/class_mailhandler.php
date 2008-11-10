@@ -34,6 +34,13 @@ class MailHandler
 	 * @var string
 	 */
 	var $from;
+	
+	/**
+	 * Who the email should return to.
+	 *
+	 * @var string
+	 */
+	var $return_email;
 
 	/**
 	 * The subject of mail.
@@ -90,8 +97,9 @@ class MailHandler
 	 * @param string headers of email.
 	 * @param string format of the email (HTML, plain text, or both?).
 	 * @param string plain text version of the email.
+	 * @param string the return email address.
 	 */
-	function build_message($to, $subject, $message, $from="", $charset="", $headers="", $format="text", $message_text="")
+	function build_message($to, $subject, $message, $from="", $charset="", $headers="", $format="text", $message_text="", $return_email="")
 	{
 		global $parser, $lang, $mybb;
 		
@@ -102,7 +110,20 @@ class MailHandler
 		{
 			$this->from = $from;
 		}
-
+		else
+		{
+			$this->from = "";
+		}
+		
+		if($return_email)
+		{
+			$this->return_email = $return_email;
+		}
+		else
+		{
+			$this->return_email = "";
+		}
+		
 		$this->set_to($to);
 		$this->set_subject($subject);
 		if($charset)
@@ -245,7 +266,12 @@ class MailHandler
 
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
 		
-		if($mybb->settings['returnemail'])
+		if($this->return_email)
+		{
+			$this->headers .= "Return-Path: {$this->return_email}{$this->delimiter}";
+			$this->headers .= "Reply-To: {$this->return_email}{$this->delimiter}";
+		}
+		elseif($mybb->settings['returnemail'])
 		{
 			$this->headers .= "Return-Path: {$mybb->settings['returnemail']}{$this->delimiter}";
 			$this->headers .= "Reply-To: {$mybb->settings['adminemail']}{$this->delimiter}";

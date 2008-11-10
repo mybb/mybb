@@ -2064,7 +2064,7 @@ if(!$mybb->input['action'])
 	$month_start_weekday = gmdate("w", gmmktime(0, 0, 0, $month, $calendar['startofweek']+1, $year));
 	
 	// This is if we have days in the previous month to show
-	if($month_start_weekday != $weekdays[0])
+	if($month_start_weekday != $weekdays[0] || $calendar['startofweek'] != 0)
 	{
 		$day = gmdate("t", gmmktime(0, 0, 0, $prev_month['month'], 1, $prev_month['year']));
 		$day -= array_search(($month_start_weekday), $weekdays);
@@ -2106,19 +2106,22 @@ if(!$mybb->input['action'])
 		eval("\$weekday_headers .= \"".$templates->get("calendar_weekdayheader")."\";");
 	}
 	
-	$fixed_offset = false;
+	// Fix offset for Start Of Week being Saturday
+	if($calendar_month == $prev_month['month'] && $calendar['startofweek'] > 0)
+	{
+		$day -= 7;
+		
+		// Lets make sure we don't have a whole extra column for the last month
+		if($prev_month_days-7 >= ($day-1))
+		{
+			$day += 7;
+		}
+	}
 
 	for($row = 0; $row < 6; ++$row) // Iterate weeks (each week gets a row)
 	{
 		foreach($weekdays as $weekday_id => $weekday)
-		{
-			// Fix offset for Start Of Week being Saturday
-			if($calendar_month == $prev_month['month'] && $fixed_offset != true && $calendar['startofweek'] == 6)
-			{
-				$day -= 7;
-				$fixed_offset = true;
-			}
-						
+		{						
 			// Current month always starts on 1st row
 			if($row == 0 && $day == $calendar['startofweek']+1)
 			{

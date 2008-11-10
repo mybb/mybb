@@ -546,7 +546,9 @@ if($mybb->input['action'] == "edit_leader")
 	}
 	
 	if(!$errors)
+	{
 		$mybb->input = $leader;
+	}
 	
 	$page->add_breadcrumb_item($lang->group_leaders_for." {$group['title']}", "index.php?module=user/groups&action=leaders&gid={$group['gid']}");
 	$page->add_breadcrumb_item($lang->edit_leader." {$leader['username']}");
@@ -1079,13 +1081,29 @@ if($mybb->input['action'] == "delete")
 		$plugins->run_hooks("admin_user_groups_delete_commit");
 		
 		$db->update_query("users", $updated_users, "displaygroup='{$usergroup['gid']}'", "", false); // No quotes = displaygroup=usergroup
+		
+		switch($db->type)
+		{
+			case "pgsql":
+			case "sqlite3":
+			case "sqlite2":
+				$query = $db->simple_select("users", "uid", "','||additionalgroups||',' LIKE '%,{$usergroup['gid']},%'");
+				break;
+			default:
+				$query = $db->simple_select("users", "uid", "CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup['gid']},%'");
+		}
+		while($user = $db->fetch_array($query))
+		{
+			leave_usergroup($user['uid'], $usergroup['gid']);
+		}
 
 		$db->delete_query("groupleaders", "gid='{$usergroup['gid']}'");
 		$db->delete_query("usergroups", "gid='{$usergroup['gid']}'");
 		
 		$cache->update_moderators();
+		$cache->update_usergroups();
+		$cache->update_forumpermissions();
 		
-
 		// Log admin action
 		log_admin_action($usergroup['gid'], $usergroup['title']);
 

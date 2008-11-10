@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'member.php');
 
 $nosession['avatar'] = 1;
 $templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered";
-$templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword,member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions";
+$templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword,member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage";
 require_once "./global.php";
 
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -1643,7 +1643,7 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
 		
 		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
-		my_mail($to_user['email'], $mybb->input['subject'], $message, $from);
+		my_mail($to_user['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->user['email']);
 		
 		if($mybb->settings['mail_logging'] > 0)
 		{

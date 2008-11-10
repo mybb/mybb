@@ -409,8 +409,11 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
  * @param string The from address of the email, if blank, the board name will be used.
  * @param string The chracter set being used to send this email.
  * @param boolean Do we wish to keep the connection to the mail server alive to send more than one message (SMTP only)
+ * @param string The format of the email to be sent (text or html). text is default
+ * @param string The text message of the email if being sent in html format, for email clients that don't support html
+ * @param string The email address to return to. Defaults to admin return email address.
  */
-function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="")
+function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $keep_alive=false, $format="text", $message_text="", $return_email="")
 {
 	global $mybb;
 	static $mail;
@@ -3649,6 +3652,71 @@ function my_number_format($number)
 	}
 }
 
+function convert_through_utf8($str, $to=true)
+{
+	global $lang;
+	static $charset;
+	static $use_mb;
+	static $use_iconv;
+	
+	if(!isset($charset))
+	{
+		$charset = my_strtolower($lang->settings['charset']);
+	}
+	
+	if($charset == "utf-8")
+	{
+		return $str;
+	}
+	
+	if(!isset($use_iconv))
+	{
+		$use_iconv = function_exists("iconv");
+	}
+	
+	if(!isset($use_mb))
+	{
+		$use_mb = function_exists("mb_convert_encoding");
+	}
+	
+	if($use_iconv || $use_mb)
+	{
+		if($to)
+		{
+			$from_charset = $lang->settings['charset'];
+			$to_charset = "UTF-8";
+		}
+		else
+		{
+			$from_charset = "UTF-8";
+			$to_charset = $lang->settings['charset'];
+		}
+		if($use_iconv)
+		{
+			return iconv($from_charset, $to_charset."//IGNORE", $str);
+		}
+		else
+		{
+			return @mb_convert_encoding($str, $to_charset, $from_charset);
+		}
+	}
+	elseif($charset == "iso-8859-1" && function_exists("utf8_encode"))
+	{
+		if($to)
+		{
+			return utf8_encode($str);
+		}
+		else
+		{
+			return utf8_decode($str);
+		}
+	}
+	else
+	{
+		return $str;
+	}
+}
+
 /**
  * Replacement function for PHP's wordwrap(). This version does not break up HTML tags, URLs or unicode references.
  *
@@ -3661,17 +3729,17 @@ function my_wordwrap($message)
 
 	if($mybb->settings['wordwrap'] > 0)
 	{
-		if($mybb->config['db_encoding'] == "utf8" && !preg_match("#[\x80-\xFF]#", $message))
+		$message = convert_through_utf8($message);
+		
+		if(!($new_message = @preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
 		{
-			$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#u", "$0 ", $message);
+			$new_message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);	
 		}
-		else
-		{
-			$message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#", "$0 ", $message);
-		}
+		
+		$new_message = convert_through_utf8($new_message, false);
 	}
 
-	return $message;
+	return $new_message;
 }
 
 /**

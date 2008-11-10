@@ -20,7 +20,7 @@ $templatelist .= ",modcp_no_announcements_global,modcp_announcements_global,modc
 $templatelist .= ",codebuttons,smilieinsert,modcp_announcements_new,modcp_modqueue_empty,forumjump_bit,forumjump_special";
 $templatelist .= ",modcp_modlogs,modcp_finduser_user,modcp_finduser,usercp_profile_customfield,usercp_profile_profilefields";
 $templatelist .= ",modcp_editprofile,modcp_ipsearch,modcp_banuser_addusername,modcp_banuser,modcp_warninglogs_nologs";
-$templatelist .= ",modcp_warninglogs";
+$templatelist .= ",modcp_warninglogs,modcp_modlogs_result";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_user.php";
