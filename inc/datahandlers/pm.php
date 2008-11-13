@@ -324,6 +324,48 @@ class PMDataHandler extends DataHandler
 		}
 		return true;
 	}
+	
+	/**
+	* Verify that the user is not flooding the system.
+	* Temporary fix until a better one can be made for 1.6
+	*
+	* @return boolean True
+	*/
+	function verify_pm_flooding()
+	{
+		global $mybb, $db;
+
+		$pm = &$this->data;
+		
+		// Check if post flooding is enabled within MyBB or if the admin override option is specified.
+		if($mybb->settings['postfloodcheck'] == 1 && $pm['fromid'] != 0 && $this->admin_override == false)
+		{
+			// Fetch the senders profile data.
+			$sender = get_user($pm['fromid']);
+			
+			// Calculate last post
+			$query = $db->simple_select("privatemessages", "dateline", "fromid='".$db->escape_string($pm['fromid'])."'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => 1));
+			$sender['lastpm'] = $db->fetch_field($query, "dateline");
+
+			// A little bit of calculation magic and moderator status checking.
+			if(TIME_NOW-$sender['lastpm'] <= $mybb->settings['postfloodsecs'] && !is_moderator("", "", $pm['fromid']))
+			{
+				// Oops, user has been flooding - throw back error message.
+				$time_to_wait = ($mybb->settings['postfloodsecs'] - (TIME_NOW-$sender['lastpm'])) + 1;
+				if($time_to_wait == 1)
+				{
+					$this->set_error("pm_flooding_one_second");
+				}
+				else
+				{
+					$this->set_error("pm_flooding", array($time_to_wait));
+				}
+				return false;
+			}
+		}
+		// All is well that ends well - return true.
+		return true;
+	}
 
 	/**
 	 * Verifies if the various 'options' for sending PMs are valid.

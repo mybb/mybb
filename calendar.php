@@ -2179,12 +2179,12 @@ if(!$mybb->input['action'])
 					foreach($events_cache["$day-$calendar_month-$calendar_year"] as $event)
 					{
 						$event['eventlink'] = get_event_link($event['eid']);
-						$event['name'] = htmlspecialchars_uni($event['name']);
-						$event['fullname'] = $event['name'];
+						$event['fullname'] = htmlspecialchars_uni($event['name']);
 						if(my_strlen($event['name']) > 15)
 						{
 							$event['name'] = my_substr($event['name'], 0, 15) . "...";
 						}
+						$event['name'] = htmlspecialchars_uni($event['name']);
 						if($event['private'] == 1)
 						{
 							$event_class = " private_event";
