@@ -946,6 +946,88 @@ if($mybb->input['action'] == "resetpassword")
 	}
 }
 
+$do_captcha = $correct = false;
+$inline_errors = "";
+
+if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("member_do_login_captcha_start");
+	
+	// Did we come from the quick login form
+	if($mybb->input['quick_login'] == "1" && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+	{
+		$mybb->input['password'] = $mybb->input['quick_password'];
+		$mybb->input['username'] = $mybb->input['quick_username'];
+	}
+
+	if(!username_exists($mybb->input['username']))
+	{
+		error($lang->error_invalidpworusername.$login_text);
+	}
+	
+	$query = $db->simple_select("users", "loginattempts", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+	$loginattempts = $db->fetch_field($query, "loginattempts");
+	
+	$errors = array();
+	
+	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+	if(!$user['uid'])
+	{
+		my_setcookie('loginattempts', $logins + 1);
+		$db->write_query("UPDATE ".TABLE_PREFIX."users SET loginattempts=loginattempts+1 WHERE LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+		
+		$mybb->input['action'] = "login";
+		$mybb->input['request_method'] = "get";
+		
+		$errors[] = $lang->error_invalidpworusername;
+	}
+	
+	if($loginattempts > 3 || intval($mybb->cookies['loginattempts']) > 3)
+	{		
+		// Show captcha image for guests if enabled
+		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
+		{
+			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
+			if($mybb->input['imagestring'])
+			{
+				$imagehash = $db->escape_string($mybb->input['imagehash']);
+				$imagestring = $db->escape_string($mybb->input['imagestring']);
+				$query = $db->simple_select("captcha", "*", "imagehash='{$imagehash}' AND imagestring='{$imagestring}'");
+				$imgcheck = $db->fetch_array($query);
+				if($imgcheck['dateline'] > 0)
+				{
+					//eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");			
+					$correct = true;
+				}
+				else
+				{
+					$db->delete_query("captcha", "imagehash='{$imagehash}'");
+					$errors[] = $lang->error_regimageinvalid;
+					
+					$mybb->input['action'] = "login";
+					$mybb->input['request_method'] = "get";
+				}
+			}
+			else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
+			{
+				$errors[] = $lang->error_regimagerequired;
+				
+				$mybb->input['action'] = "login";
+				$mybb->input['request_method'] = "get";
+			}
+		}
+		
+		$do_captcha = true;
+	}
+	
+	if(!empty($errors))
+	{
+		$inline_errors = inline_error($errors);
+	}
+	
+	$plugins->run_hooks("member_do_login_captcha_end");
+}
+
 if($mybb->input['action'] == "login")
 {
 	$plugins->run_hooks("member_login");
@@ -969,6 +1051,36 @@ if($mybb->input['action'] == "login")
 	elseif($_SERVER['HTTP_REFERER'])
 	{
 		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
+	}
+	
+	$captcha = "";
+	// Show captcha image for guests if enabled
+	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && $do_captcha == true)
+	{
+		if(!$correct)
+		{	
+			$randomstr = random_str(5);
+			$imagehash = md5(random_str(12));
+			$imagearray = array(
+				"imagehash" => $imagehash,
+				"imagestring" => $randomstr,
+				"dateline" => TIME_NOW
+			);
+			$db->insert_query("captcha", $imagearray);
+			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
+		}
+	}
+	
+	$username = "";
+	$password = "";
+	if($mybb->input['username'] && $mybb->request_method == "post")
+	{
+		$username = htmlspecialchars_uni($mybb->input['username']);
+	}
+	
+	if($mybb->input['password'] && $mybb->request_method == "post")
+	{
+		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
 
 	eval("\$login = \"".$templates->get("member_login")."\";");
