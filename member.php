@@ -948,10 +948,14 @@ if($mybb->input['action'] == "resetpassword")
 
 $do_captcha = $correct = false;
 $inline_errors = "";
-
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
-	$plugins->run_hooks("member_do_login_captcha_start");
+	$plugins->run_hooks("member_do_login_start");
+	
+	// Checks to make sure the user can login; they haven't had too many tries at logging in.
+	// Is a fatal call if user has had too many tries
+	$logins = login_attempt_check();
+	$login_text = '';
 	
 	// Did we come from the quick login form
 	if($mybb->input['quick_login'] == "1" && $mybb->input['quick_password'] && $mybb->input['quick_username'])
@@ -962,6 +966,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 
 	if(!username_exists($mybb->input['username']))
 	{
+		my_setcookie('loginattempts', $logins + 1);
 		error($lang->error_invalidpworusername.$login_text);
 	}
 	
@@ -979,7 +984,16 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->input['action'] = "login";
 		$mybb->input['request_method'] = "get";
 		
-		$errors[] = $lang->error_invalidpworusername;
+		if($mybb->settings['failedlogintext'] == 1)
+		{
+			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
+		}
+		
+		$errors[] = $lang->error_invalidpworusername.$login_text;
+	}
+	else
+	{
+		$correct = true;
 	}
 	
 	if($loginattempts > 3 || intval($mybb->cookies['loginattempts']) > 3)
@@ -995,25 +1009,22 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 				$query = $db->simple_select("captcha", "*", "imagehash='{$imagehash}' AND imagestring='{$imagestring}'");
 				$imgcheck = $db->fetch_array($query);
 				if($imgcheck['dateline'] > 0)
-				{
-					//eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");			
+				{		
 					$correct = true;
 				}
 				else
 				{
 					$db->delete_query("captcha", "imagehash='{$imagehash}'");
 					$errors[] = $lang->error_regimageinvalid;
-					
-					$mybb->input['action'] = "login";
-					$mybb->input['request_method'] = "get";
 				}
 			}
 			else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
 			{
 				$errors[] = $lang->error_regimagerequired;
-				
-				$mybb->input['action'] = "login";
-				$mybb->input['request_method'] = "get";
+			}
+			else
+			{
+				$errors[] = $lang->error_regimagerequired;
 			}
 		}
 		
@@ -1022,10 +1033,59 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	
 	if(!empty($errors))
 	{
+		$mybb->input['action'] = "login";
+		$mybb->input['request_method'] = "get";
+		
 		$inline_errors = inline_error($errors);
 	}
+	else if($correct)
+	{		
+		if($user['coppauser'])
+		{
+			error($lang->error_awaitingcoppa);
+		}
+		
+		my_setcookie('loginattempts', 1);
+		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
+		$newsession = array(
+			"uid" => $user['uid'],
+		);
+		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
+		
+		$db->update_query("users", array("loginattempts" => 1), "uid='{$user['uid']}'");
 	
-	$plugins->run_hooks("member_do_login_captcha_end");
+		// Temporarily set the cookie remember option for the login cookies
+		$mybb->user['remember'] = $user['remember'];
+	
+		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
+		my_setcookie("sid", $session->sid, -1, true);
+	
+		$plugins->run_hooks("member_do_login_end");
+	
+		if($mybb->input['url'] != "" && my_strpos(basename($mybb->input['url']), 'member.php') === false)
+		{
+			if((my_strpos(basename($mybb->input['url']), 'newthread.php') !== false || my_strpos(basename($mybb->input['url']), 'newreply.php') !== false) && my_strpos($mybb->input['url'], '&processed=1') !== false)
+			{
+				$mybb->input['url'] = str_replace('&processed=1', '', $mybb->input['url']);
+			}
+			
+			$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
+			
+			// Redirect to the URL if it is not member.php
+			redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
+		}
+		else
+		{
+			redirect("index.php", $lang->redirect_loggedin);
+		}
+	}
+	else
+	{
+		$mybb->input['action'] = "login";
+		$mybb->input['request_method'] = "get";
+	}
+	
+	$plugins->run_hooks("member_do_login_end");
 }
 
 if($mybb->input['action'] == "login")
@@ -1085,79 +1145,6 @@ if($mybb->input['action'] == "login")
 
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	output_page($login);
-}
-
-if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
-{
-	$plugins->run_hooks("member_do_login_start");
-
-	// Checks to make sure the user can login; they haven't had too many tries at logging in.
-	// Is a fatal call if user has had too many tries
-	$logins = login_attempt_check();
-	$login_text = '';
-	
-	// Did we come from the quick login form
-	if($mybb->input['quick_login'] == "1" && $mybb->input['quick_password'] && $mybb->input['quick_username'])
-	{
-		$mybb->input['password'] = $mybb->input['quick_password'];
-		$mybb->input['username'] = $mybb->input['quick_username'];
-	}
-
-	if(!username_exists($mybb->input['username']))
-	{
-		error($lang->error_invalidpworusername.$login_text);
-	}
-	
-	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-	if(!$user['uid'])
-	{
-		my_setcookie('loginattempts', $logins + 1);
-		$db->write_query("UPDATE ".TABLE_PREFIX."users SET loginattempts=loginattempts+1 WHERE username = '".$db->escape_string($mybb->input['username'])."'");
-		if($mybb->settings['failedlogintext'] == 1)
-		{
-			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-		}
-		error($lang->error_invalidpassword.$login_text);
-	}
-
-	if($user['coppauser'])
-	{
-		error($lang->error_awaitingcoppa);
-	}
-
-	my_setcookie('loginattempts', 1);
-	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-	$newsession = array(
-		"uid" => $user['uid'],
-	);
-	$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-	
-	$db->update_query("users", array("loginattempts" => 1), "uid='{$user['uid']}'");
-
-	// Temporarily set the cookie remember option for the login cookies
-	$mybb->user['remember'] = $user['remember'];
-
-	my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], null, true);
-	my_setcookie("sid", $session->sid, -1, true);
-
-	$plugins->run_hooks("member_do_login_end");
-
-	if($mybb->input['url'] != "" && my_strpos(basename($mybb->input['url']), 'member.php') === false)
-	{
-		if((my_strpos(basename($mybb->input['url']), 'newthread.php') !== false || my_strpos(basename($mybb->input['url']), 'newreply.php') !== false) && my_strpos($mybb->input['url'], '&processed=1') !== false)
-		{
-			$mybb->input['url'] = str_replace('&processed=1', '', $mybb->input['url']);
-		}
-		
-		$mybb->input['url'] = str_replace('&amp;', '&', $mybb->input['url']);
-		
-		// Redirect to the URL if it is not member.php
-		redirect(htmlentities($mybb->input['url']), $lang->redirect_loggedin);
-	}
-	else
-	{
-		redirect("index.php", $lang->redirect_loggedin);
-	}
 }
 
 if($mybb->input['action'] == "logout")

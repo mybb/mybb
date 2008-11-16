@@ -163,7 +163,7 @@ class datacache
 			"title" => $db->escape_string($name),
 			"cache" => $dbcontents
 		);		
-		$db->replace_query("datacache", $replace_array, "title");
+		$db->replace_query("datacache", $replace_array, "title", false);
 
 		// Do we have a cache handler we're using?
 		if(is_object($this->handler))

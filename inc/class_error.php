@@ -125,7 +125,14 @@ class errorHandler {
 
 		$this->has_errors = true;
 		
-		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']))
+		// For some reason in the installer this setting is set to "<"
+		$accepted_error_types = array('both', 'error', 'warning');
+		if(!in_array($mybb->settings['errortypemedium'], $accepted_error_types))
+		{
+			$mybb->settings['errortypemedium'] = "both";
+		}
+		
+		if(($mybb->settings['errortypemedium'] == "both" || !$mybb->settings['errortypemedium']) || my_strpos(my_strtolower($this->error_types[$type]), $mybb->settings['errortypemedium']) || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 		{
 			if(defined("IN_TASK"))
 			{

@@ -723,9 +723,10 @@ class DB_PgSQL
 	 *
 	 * @param string The table name to perform the query on.
 	 * @param array An array of fields and their values.
+	 * @param boolean Whether or not to return an insert id. True by default
 	 * @return int The insert ID if available
 	 */
-	function insert_query($table, $array)
+	function insert_query($table, $array, $insert_id=true)
 	{
 		if(!is_array($array))
 		{
@@ -738,7 +739,15 @@ class DB_PgSQL
 			INTO {$this->table_prefix}{$table} (".$fields.") 
 			VALUES ('".$values."')
 		");
-		return $this->insert_id();
+		
+		if($insert_id != false)
+		{
+			return $this->insert_id();
+		}
+		else
+		{
+			return true;
+		}
 	}
 	
 	/**
@@ -1209,8 +1218,10 @@ class DB_PgSQL
 	 *
 	 * @param string The table
 	 * @param array The replacements
+	 * @param string The default field
+	 * @param boolean Whether or not to return an insert id. True by default
 	 */
-	function replace_query($table, $replacements=array(), $default_field="")
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
 		$i = 0;		
 		
@@ -1240,7 +1251,7 @@ class DB_PgSQL
 		}
 		else
 		{
-			return $this->insert_query($table, $replacements);
+			return $this->insert_query($table, $replacements, $insert_id);
 		}
 	}
 	
@@ -1249,6 +1260,7 @@ class DB_PgSQL
 	 *
 	 * @param string The table
 	 * @param array The replacements
+	 * @param string The default field
 	 */
 	function build_replace_query($table, $replacements=array(), $default_field="")
 	{
