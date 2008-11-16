@@ -2004,6 +2004,7 @@ function build_users_view($view)
 				case "sqlite3":
 				case "sqlite2":
 					$additional_sql .= " OR ','||additionalgroups||',' LIKE '%,{$usergroup},%'";
+					break;
 				default:
 					$additional_sql .= "OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%'";
 			}
