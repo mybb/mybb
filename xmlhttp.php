@@ -595,6 +595,12 @@ else if($mybb->input['action'] == "username_availability")
 
 	// Remove multiple spaces from the username
 	$username = preg_replace("#\s{2,}#", " ", $username);
+	
+	if(empty($username))
+	{
+		echo "<fail>{$lang->banned_characters_username}</fail>";
+		exit;
+	}
 
 	header("Content-type: text/xml; charset={$charset}");
 

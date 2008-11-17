@@ -96,7 +96,7 @@ if(!function_exists('scandir'))
 
 if(!function_exists('str_ireplace'))
 {
-	function build_str_ireplace(&$pattern, $k)
+	function build_str_ireplace(&$pattern)
 	{
 		$pattern = "#".preg_quote($pattern, "#")."#";
 	}

@@ -12,7 +12,7 @@ $l['nav_onlinetoday'] = "Who Was Online Today";
 $l['viewing_announcements'] = "Viewing <a href=\"{1}\">{2}</a> Announcements";
 $l['viewing_announcements2'] = "Viewing Forum Announcements";
 $l['viewing_attachment'] = "Viewing Attachment";
-$l['viewing_attachment2'] = "Viewing <a href=\"attachment.php?aid={1}\">Attachment</a> in Thread <a href=\"{3}\">{2}</a>";
+$l['viewing_attachment2'] = "Viewing <a href=\"attachment.php?aid={1}\" target=\"_blank\">Attachment</a> in Thread <a href=\"{3}\">{2}</a>";
 $l['viewing_calendar'] = "Viewing <a href=\"calendar.php\">Calendar</a>";
 $l['viewing_event'] = "Viewing Event";
 $l['viewing_event2'] = "Viewing Event <a href=\"{1}\">{2}</a>";
