@@ -1739,7 +1739,14 @@ if($mybb->input['action'] == "do_emailuser" && $mybb->request_method == "post")
 
 	if(count($errors) == 0)
 	{
-		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+		if($mybb->settings['mail_handler'] == 'smtp')
+		{
+			$from = $mybb->user['email'];
+		}
+		else
+		{
+			$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+		}
 		
 		$message = $lang->sprintf($lang->email_emailuser, $to_user['username'], $mybb->user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $mybb->input['message']);
 		my_mail($to_user['email'], $mybb->input['subject'], $message, $from, "", "", false, "text", "", $mybb->user['email']);

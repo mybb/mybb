@@ -981,7 +981,7 @@ class DB_PgSQL
 	 */
 	function analyze_table($table)
 	{
-		$this->write_query("ANALYZE TABLE ".$this->table_prefix.$table."");
+		$this->write_query("ANALYZE ".$this->table_prefix.$table."");
 	}
 
 	/**

@@ -385,7 +385,7 @@ function upload_attachment($attachment)
 	}
 
 	// Check if an attachment with this name is already in the post
-	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='$pid' AND pid!='0'))");
+	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='".intval($pid)."' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'])
 	{

@@ -4628,7 +4628,7 @@ function login_attempt_check($fatal = true)
 		}
 
 		// Work out if the user has waited long enough before letting them login again
-		if($mybb->cookies['failedlogin'] < $now - $mybb->settings['failedlogintime'] * 60 && $mybb->user['uid'] != 0)
+		if($mybb->cookies['failedlogin'] < ($now - $mybb->settings['failedlogintime'] * 60) && $mybb->user['uid'] != 0)
 		{
 			my_setcookie('loginattempts', 1);
 			my_unsetcookie('failedlogin');
@@ -4639,7 +4639,7 @@ function login_attempt_check($fatal = true)
 			return 1;
 		}
 		// Not waited long enough
-		else
+		else if($mybb->cookies['failedlogin'] > ($now - $mybb->settings['failedlogintime'] * 60))
 		{
 			if($fatal)
 			{

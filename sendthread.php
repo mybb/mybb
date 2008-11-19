@@ -107,7 +107,14 @@ if($mybb->input['action'] == "do_sendtofriend" && $mybb->request_method == "post
 	// No errors detected
 	if(count($errors) == 0)
 	{
-		$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+		if($mybb->settings['mail_handler'] == 'smtp')
+		{
+			$from = $mybb->user['email'];
+		}
+		else
+		{
+			$from = "{$mybb->user['username']} <{$mybb->user['email']}>";
+		}
 		
 		$threadlink = get_thread_link($thread['tid']);
 		
