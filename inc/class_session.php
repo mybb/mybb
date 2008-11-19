@@ -522,7 +522,7 @@ class session
 		$onlinedata['location1'] = intval($speciallocs['1']);
 		$onlinedata['location2'] = intval($speciallocs['2']);
 		$onlinedata['nopermission'] = 0;
-		$db->replace_query("sessions", $onlinedata);
+		$db->replace_query("sessions", $onlinedata, "sid", false);
 		$this->sid = $onlinedata['sid'];
 		$this->uid = $onlinedata['uid'];
 	}
