@@ -198,6 +198,11 @@ function upgrade14_dbchanges2()
 	$db->delete_query("templates", "title='calendar_editevent_normal' AND sid != '-1'");
 	$db->delete_query("templates", "title='calendar_editevent_recurring' AND sid != '-1'");
 	
+	$db->update_query("helpdocs", array('document' => $db->escape_string("MyBB makes use of cookies to store your login information if you are registered, and your last visit if you are not.
+<br /><br />Cookies are small text documents stored on your computer; the cookies set by this forum can only be used on this website and pose no security risk.
+<br /><br />Cookies on this forum also track the specific topics you have read and when you last read them.
+<br /><br />To clear all cookies set by this forum, you can click <a href=\"misc.php?action=clearcookies&amp;key={1}\">here</a>.")), "hid='3'", 1);
+	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("14_done");

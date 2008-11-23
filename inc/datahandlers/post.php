@@ -1532,7 +1532,7 @@ class PostDataHandler extends DataHandler
 		}
 		else
 		{
-			$db->delete_query("threadsubscriptions", "uid='{$post['uid']}' AND tid='{$post['tid']}'");
+			$db->delete_query("threadsubscriptions", "uid='".intval($post['uid'])."' AND tid='".intval($post['tid'])."'");
 		}
 
 		update_forum_lastpost($post['fid']);

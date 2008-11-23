@@ -185,6 +185,11 @@ elseif($mybb->input['action'] == "help")
 				if($lang->$langdocvar)
 				{
 					$helpdoc['document'] = $lang->$langdocvar;
+					
+					if($langdocvar == "d3_document")
+					{
+						$helpdoc['document'] = $lang->sprintf($helpdoc['document'], $mybb->user['logoutkey']);
+					}
 				}
 			}
 			add_breadcrumb($helpdoc['name']);
@@ -651,10 +656,14 @@ elseif($mybb->input['action'] == "syndication")
 	output_page($syndication);
 }
 
-
 if($mybb->input['action'] == "clearcookies")
 {
 	$plugins->run_hooks("misc_clearcookies");
+	
+	if($mybb->input['key'] != $mybb->user['logoutkey'])
+	{
+		error($lang->error_invalidkey);
+	}
 
 	$remove_cookies = array('mybb', 'mybbuser', 'mybb[password]', 'mybb[lastvisit]', 'mybb[lastactive]', 'collapsed', 'mybb[forumread]', 'mybb[threadsread]', 'mybbadmin');
 
