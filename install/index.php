@@ -97,7 +97,7 @@ if(function_exists('mysql_connect'))
 if(function_exists('sqlite_open'))
 {
 	$dboptions['sqlite2'] = array(
-		'class' => 'DB_SQLite',
+		'class' => 'DB_SQLite2',
 		'title' => 'SQLite 2',
 		'short_title' => 'SQLite',
 		'structure_file' => 'sqlite_db_tables.php',

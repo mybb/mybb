@@ -46,7 +46,7 @@ class dbpdoEngine {
 		} 
 		catch(PDOException $exception)
 		{
-    		echo 'Connection failed: '.$exception->getMessage();
+    		die('Connection failed: '.$exception->getMessage());
 		}
 		
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

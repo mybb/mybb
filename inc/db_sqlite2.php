@@ -9,7 +9,7 @@
  * $Id$
  */
 
-class DB_SQLite
+class DB_SQLite2
 {
 	/**
 	 * The title of this layer.
