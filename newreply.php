@@ -459,7 +459,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		else
 		{
 			// Moderated post
-			$lang->redirect_newreply .= $lang->redirect_newreply_moderation;
+			$lang->redirect_newreply .= '<br />'.$lang->redirect_newreply_moderation;
 			$url = get_thread_link($tid);
 		}
 

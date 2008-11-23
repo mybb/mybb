@@ -39,7 +39,7 @@ $l['multiquote_external_one_quote'] = "Quote this post too";
 $l['multiquote_external_quote'] = "Quote these posts too";
 
 $l['redirect_newreply'] = "Thank you, your reply has been posted.";
-$l['redirect_newreply_moderation'] = "<br />The administrator has specified that all new posts require moderation. You will now be returned to the thread.";
+$l['redirect_newreply_moderation'] = "The administrator has specified that all new posts require moderation. You will now be returned to the thread.";
 $l['redirect_newreply_post'] = "<br />You will now be taken to your post.";
 $l['redirect_newreplyerror'] = "Sorry, but your reply has been rejected for lack of content. <br />You will now be returned to the thread.";
 $l['redirect_threadclosed'] = "You cannot post replies in this thread because it has been closed by a moderator.";

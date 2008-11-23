@@ -564,6 +564,12 @@ class PMDataHandler extends DataHandler
 					$emailsubject = $userlang->emailsubject_newpm;
 					$emailmessage = $userlang->email_newpm;
 				}
+				
+				if(!$pm['sender']['username'])
+				{
+					$pm['sender']['username'] = 'MyBB Engine';
+				}
+				
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
 				my_mail($recipient['email'], $emailsubject, $emailmessage);
