@@ -57,7 +57,7 @@ function akismet_info()
 		"website"		=> "http://mybboard.net",
 		"author"		=> "MyBB Group",
 		"authorsite"	=> "http://mybboard.net",
-		"version"		=> "1.2",
+		"version"		=> "1.2.1",
 		"guid"			=> "e57a80dbe7ff85083596a1a3b7da3ce7",
 		"compatibility" => "14*",
 	);
@@ -309,6 +309,51 @@ function akismet_key()
 	}
 }
 
+
+function akismet_show_confirm_page()
+{
+	global $mybb, $lang, $theme, $pid, $fid;
+	
+	$pid = intval($pid);
+	$fid = intval($fid);
+	
+	$query = $db->simple_select("posts", "subject", "pid='{$pid}'", 1);
+	$post = $db->fetch_array($query);
+	
+	if(!$post)
+	{
+		error("Invalid Post ID.");
+	}
+	
+	output_page("<html>
+<head>
+<title>{$mybb->settings['bbname']} - {$lang->mark_as_spam}</title>
+{$headerinclude}
+</head>
+<body>
+{$header}
+<form action=\"moderation.php\" method=\"post\">
+<input type=\"hidden\" name=\"my_post_key\" value=\"{$mybb->post_code}\" />
+<table border=\"0\" cellspacing=\"{$theme['borderwidth']}\" cellpadding=\"{$theme['tablespace']}\" class=\"tborder\">
+<tr>
+<td class=\"thead\" colspan=\"2\"><strong>{$post['subject']} - {$lang->mark_as_spam}</strong></td>
+</tr>
+<tr>
+<td class=\"trow1\" colspan=\"2\" align=\"center\">{$lang->confirm_mark_as_spam}</td>
+</tr>
+{$loginbox}
+</table>
+<br />
+<div align=\"center\"><input type=\"submit\" class=\"button\" name=\"submit\" value=\"{$lang->mark_as_spam}\" /></div>
+<input type=\"hidden\" name=\"action\" value=\"mark_as_spam\" />
+<input type=\"hidden\" name=\"pid\" value=\"{$pid}\" />
+<input type=\"hidden\" name=\"fid\" value=\"{$fid}\" />
+</form>
+{$footer}
+</body>
+</html>");
+}
+
 function akismet_moderation_start()
 {
 	global $mybb, $db, $akismet, $lang, $cache;
@@ -351,7 +396,14 @@ function akismet_moderation_start()
 	{
 		error("Invalid Post ID.");
 	}
-		
+	
+	if(!$mybb->input['my_post_key'] || $mybb->request_method != "post")
+	{
+		akismet_show_confirm_page();
+	}
+	
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$akismet_array = array(
 		'type' => 'post',
 		'username' => $post['username'],

@@ -993,7 +993,7 @@ function user_permissions($uid=0)
 function usergroup_permissions($gid=0)
 {
 	global $cache, $groupscache, $grouppermignore, $groupzerogreater;
-
+	
 	if(!is_array($groupscache))
 	{
 		$groupscache = $cache->read("usergroups");
@@ -1013,7 +1013,7 @@ function usergroup_permissions($gid=0)
 		{
 			continue;
 		}
-
+		
 		foreach($groupscache[$gid] as $perm => $access)
 		{
 			if(!in_array($perm, $grouppermignore))
@@ -1027,14 +1027,12 @@ function usergroup_permissions($gid=0)
 					$permbit = "";
 				}
 
-				if(in_array($perm, $groupzerogreater))
+				// 0 represents unlimited for numerical group permissions (i.e. private message limit) so take that into account.
+				if(in_array($perm, $groupzerogreater) && ($access == 0 || $usergroup[$perm] == 0))
 				{
-					if($access == 0)
-					{
-						$usergroup[$perm] = 0;
-						continue;
-					}
-				}
+					$usergroup[$perm] = 0;
+					continue;
+				} 
 
 				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) // Keep yes/no for compatibility?
 				{

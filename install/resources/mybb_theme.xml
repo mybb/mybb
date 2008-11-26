@@ -1446,14 +1446,14 @@ ul.thread_tools li.subscription_remove {
 				<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1400"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/modcp.php">{$lang->welcome_modcp}</a>]]></template>
 		<template name="postbit_online" version="1400"><![CDATA[<a href="online.php" title="{$lang->postbit_status_online}"><img src="{$theme['imgdir']}/buddy_online.gif" border="0" alt="{$lang->postbit_status_online}" /></a>]]></template>
-		<template name="showthread_moderationoptions" version="1400"><![CDATA[{$inlinemod}
-<form action="moderation.php" method="get" style="margin-top: 0; margin-bottom: 0;">
+		<template name="showthread_moderationoptions" version="1404"><![CDATA[{$inlinemod}
+<form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
 	<input type="hidden" name="modtype" value="thread" />
 	<input type="hidden" name="tid" value="{$tid}" />
 	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<span class="smalltext">
 	<strong>{$lang->moderation_options}</strong></span>
-	<select name="action" onchange="window.location=('moderation.php?action='+this.options[this.selectedIndex].value+'&amp;tid={$tid}&amp;modtype=thread&amp;my_post_key={$mybb->post_code}')">
+	<select name="action" onchange="$('moderator_options').submit();">
 		<optgroup label="{$lang->standard_mod_tools}">
 			<option value="threadnotes">{$lang->thread_notes}</option>
 			<option value="openclosethread">{$lang->open_close_thread}</option>

@@ -97,6 +97,11 @@ else
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
 
+if($mybb->request_method != "post")
+{
+	error_no_permission();
+}
+
 // Begin!
 switch($mybb->input['action'])
 {
