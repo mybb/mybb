@@ -773,7 +773,7 @@ function redirect($url, $message="", $title="")
 		$url = str_replace("#", "&#", $url);
 		$url = htmlspecialchars_decode($url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
-		echo 'window.location = "'.addslashes($url).'";\n';
+		echo 'window.location = "'.addslashes($url).'";'."\n";
 		echo "</script>\n";
 		exit;
 	}
@@ -3735,9 +3735,11 @@ function my_wordwrap($message)
 		}
 		
 		$new_message = convert_through_utf8($new_message, false);
+		
+		return $new_message;
 	}
 
-	return $new_message;
+	return $message;
 }
 
 /**

@@ -10,7 +10,7 @@
  */
 
 /**
- * Upgrade Script: MyBB 1.4.2
+ * Upgrade Script: MyBB 1.4.3
  */
 
 

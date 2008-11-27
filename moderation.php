@@ -97,7 +97,7 @@ else
 	eval("\$loginbox = \"".$templates->get("loginbox")."\";");
 }
 
-if($mybb->request_method != "post")
+if($mybb->request_method != "post" && $mybb->input['action'] != "getip")
 {
 	error_no_permission();
 }
