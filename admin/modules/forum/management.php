@@ -1661,6 +1661,11 @@ if(!$mybb->input['action'])
 		{
 			$inherit = $mybb->input['default_permissions'];
 			
+			if(empty($mybb->input['permissions']))
+			{
+    			$mybb->input['permissions'] = array();
+			}
+			
 			foreach($mybb->input['permissions'] as $gid => $permission)
 			{
 				foreach(array('canview','canpostthreads','canpostreplys','canpostpolls','canpostattachments') as $name)

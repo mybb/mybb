@@ -24,7 +24,7 @@ function build_mass_mail_query($conditions)
 		return '';
 	}
 
-	$search_sql = '1=1';
+	$search_sql = 'u.allownotices=1';
 
 	// List of valid LIKE search fields
 	$user_like_fields = array("username", "email");

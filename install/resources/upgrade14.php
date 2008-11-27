@@ -165,7 +165,7 @@ function upgrade14_dbchanges2()
 {
 	global $db, $output;
 	
-	$output->print_header("Cleaning up settings and setting groups");
+	$output->print_header("Cleaning up old Settings &amp; Groups");
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();

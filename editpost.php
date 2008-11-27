@@ -21,6 +21,8 @@ require_once MYBB_ROOT."inc/functions_upload.php";
 // Load global language phrases
 $lang->load("editpost");
 
+$plugins->run_hooks("editpost_start");
+
 // No permission for guests
 if(!$mybb->user['uid'])
 {

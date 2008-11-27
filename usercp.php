@@ -2524,7 +2524,7 @@ if($mybb->input['action'] == "usergroups")
 				LEFT JOIN ".TABLE_PREFIX."users u ON(((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
 				LEFT JOIN ".TABLE_PREFIX."joinrequests j ON(j.gid=g.gid)
 				WHERE l.uid='".$mybb->user['uid']."'
-				GROUP BY l.gid
+				GROUP BY g.gid, g.title, g.type, l.canmanagerequests, l.canmanagemembers
 			");
 			break;
 		default:
