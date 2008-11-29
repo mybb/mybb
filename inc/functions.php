@@ -454,7 +454,7 @@ function my_mail($to, $subject, $message, $from="", $charset="", $headers="", $k
 	}
 	
 	// Build and send
-	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text);
+	$mail->build_message($to, $subject, $message, $from, $charset, $headers, $format, $message_text, $return_email);
 	return $mail->send();
 }
 
