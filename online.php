@@ -168,7 +168,7 @@ else
 		$plugins->run_hooks("online_user");
 
 		// Fetch the WOL activity
-		$user['activity'] = fetch_wol_activity($user['location']);
+		$user['activity'] = fetch_wol_activity($user['location'], $user['nopermission']);
 
 		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
 

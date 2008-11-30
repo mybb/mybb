@@ -1554,15 +1554,15 @@ if($mybb->input['action'] == "profile")
 	
 	// User is currently online and this user has permissions to view the user on the WOL
 	$timesearch = TIME_NOW - $mybb->settings['wolcutoffmins']*60;
-	$query = $db->simple_select("sessions", "location", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
-	$location = $db->fetch_field($query, 'location');
+	$query = $db->simple_select("sessions", "location,nopermission", "uid='$uid' AND time>'{$timesearch}'", array('order_by' => 'time', 'order_dir' => 'DESC', 'limit' => 1));
+	$session = $db->fetch_array($query);
 	
-	if(($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']) && $location)
+	if(($memprofile['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $memprofile['uid'] == $mybb->user['uid']) && !empty($session))
 	{
 		// Fetch their current location
 		$lang->load("online");
 		require_once MYBB_ROOT."inc/functions_online.php";
-		$activity = fetch_wol_activity($location);
+		$activity = fetch_wol_activity($session['location'], $session['nopermission']);
 		$location = build_friendly_wol_location($activity);
 		$location_time = my_date($mybb->settings['timeformat'], $memprofile['lastactive']);
 

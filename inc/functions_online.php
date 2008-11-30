@@ -17,7 +17,7 @@ $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
  * @param string The location (URL) of the user.
  * @return array Array of location and activity information
  */
-function fetch_wol_activity($location)
+function fetch_wol_activity($location, $nopermission=false)
 {
 	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $user, $parameters;
 
@@ -41,6 +41,12 @@ function fetch_wol_activity($location)
 			$parameters[$temp2[0]] = $temp2[1];
 		}
 	}
+	
+	if($nopermission)
+	{
+		$filename = "nopermission";
+	}
+
 
 	switch($filename)
 	{
@@ -421,6 +427,7 @@ function fetch_wol_activity($location)
 			break;
 		case "nopermission":
 			$user_activity['activity'] = "nopermission";
+			$user_activity['nopermission'] = 1;
 			break;
 		default:
 			$user_activity['activity'] = "unknown";

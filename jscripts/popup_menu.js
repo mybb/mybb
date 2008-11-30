@@ -49,6 +49,17 @@ PopupMenu.prototype = {
 				if(Element.getStyle(element, 'position') == 'relative' || Element.getStyle(element, 'position') == 'absolute') break;
 			}
 		} while(element);
+		offsetTopReal = offsetTop;
+		offsetLeftReal = offsetLeft;
+		if(element) // will be true if we broke off the last loop
+		{
+			// calculate the true top/left position relative to page borders (this is used for checking whether the popup menu will be displayed within the page)
+			do
+			{
+				offsetTopReal += element.offsetTop || 0;
+				offsetLeftReal += element.offsetLeft || 0;
+			} while(element = element.offsetParent);
+		}
 		element = $(this.id);
 		element.blur();
 		this.menu.style.position = "absolute";
@@ -71,7 +82,7 @@ PopupMenu.prototype = {
 			menuWidth = this.menu.offsetWidth;
 		}
 		pageSize = DomLib.getPageSize();
-		if(offsetLeft+menuWidth >= pageSize[0])
+		if(offsetLeftReal+menuWidth >= pageSize[0])
 		{
 			this.menu.style.left = (offsetLeft-menuWidth+element.offsetWidth)+"px";
 		}
