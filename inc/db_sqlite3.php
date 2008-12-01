@@ -873,6 +873,17 @@ class DB_SQLite3
 	}
 	
 	/**
+	 * Checks to see if an index exists on a specified table
+	 *
+	 * @param string The name of the table.
+	 * @param string The name of the index.
+	 */
+	function index_exists($table, $index)
+	{
+		return false;
+	}
+	
+	/**
 	 * Drop an table with the specified table
 	 *
 	 * @param string The name of the table.

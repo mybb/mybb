@@ -1183,6 +1183,32 @@ class DB_PgSQL
 	}
 	
 	/**
+	 * Checks to see if an index exists on a specified table
+	 *
+	 * @param string The name of the table.
+	 * @param string The name of the index.
+	 */
+	function index_exists($table, $index)
+	{
+		$err = $this->error_reporting;
+		$this->error_reporting = 0;
+		
+		$query = $this->write_query("SELECT {$index} FROM pg_indexes WHERE tablename='".$this->escape_string($this->table_prefix.$table)."'");
+		
+		$exists = $this->fetch_field($query, $index);
+		$this->error_reporting = $err;
+		
+		if($exists)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
 	 * Drop an table with the specified table
 	 *
 	 * @param string The name of the table.

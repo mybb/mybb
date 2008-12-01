@@ -1023,7 +1023,7 @@ class DB_MySQL
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Creates a fulltext index on the specified column in the specified table with optional index name.
 	 *
@@ -1051,6 +1051,32 @@ class DB_MySQL
 			ALTER TABLE {$this->table_prefix}$table 
 			DROP INDEX $name
 		");
+	}
+	
+	/**
+	 * Checks to see if an index exists on a specified table
+	 *
+	 * @param string The name of the table.
+	 * @param string The name of the index.
+	 */
+	function index_exists($table, $index)
+	{
+		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
+		while($ukey = $this->fetch_array($query))
+		{
+			if($ukey['Key_name'] == $index)
+			{
+				$index = true;
+				break;
+			}
+		}
+		
+		if($index)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**

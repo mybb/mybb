@@ -39,16 +39,7 @@ function upgrade13_dbchanges()
 	
 	if($db->type != "sqlite2" && $db->type != "sqlite3")
 	{
-		$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
-		while($ukey = $db->fetch_array($query))
-		{
-			if($ukey['Key_name'] == "username")
-			{
-				$index = $ukey;
-				break;
-			}
-		}
-		if($index)
+		if($db->index_exists("users", "username"))
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY username");
 		}
@@ -69,10 +60,20 @@ function upgrade13_dbchanges()
 		}
 	}
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int(11) NOT NULL default '0'");
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int(11) NOT NULL default '0'");
+	if($db->type == "pgsql")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int NOT NULL default '0'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int NOT NULL default '0'");
 	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts CHANGE longipaddress longipaddress int(11) NOT NULL default '0'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts CHANGE longipaddress longipaddress int NOT NULL default '0'");
+	}
+	else
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longregip longregip int(11) NOT NULL default '0'");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users CHANGE longlastip longlastip int(11) NOT NULL default '0'");
+	
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts CHANGE longipaddress longipaddress int(11) NOT NULL default '0'");
+	}
 
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

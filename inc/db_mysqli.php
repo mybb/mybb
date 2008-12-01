@@ -1047,6 +1047,32 @@ class DB_MySQLi
 	}
 	
 	/**
+	 * Checks to see if an index exists on a specified table
+	 *
+	 * @param string The name of the table.
+	 * @param string The name of the index.
+	 */
+	function index_exists($table, $index)
+	{
+		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
+		while($ukey = $this->fetch_array($query))
+		{
+			if($ukey['Key_name'] == $index)
+			{
+				$index = true;
+				break;
+			}
+		}
+		
+		if($index)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Drop an table with the specified table
 	 *
 	 * @param boolean hard drop - no checking

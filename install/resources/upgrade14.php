@@ -37,25 +37,21 @@ function upgrade14_dbchanges()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions DROP codepress;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD codepress int(1) NOT NULL default '1' AFTER cpstyle");
+	
+	if($db->type == "pgsql")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD codepress int NOT NULL default '1' AFTER cpstyle");
+	}
+	else
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."adminoptions ADD codepress int(1) NOT NULL default '1' AFTER cpstyle");
+	}
 	
 	if($db->type != "sqlite2" && $db->type != "sqlite3")
 	{
-		$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."users");
-		while($ukey = $db->fetch_array($query))
-		{
-			if($ukey['Key_name'] == "longregip")
-			{
-				$longregip_index = true;
-				continue;
-			}
-			
-			if($ukey['Key_name'] == "longlastip")
-			{
-				$longlastip_index = true;
-				continue;
-			}
-		}
+		$longregip_index = $db->index_exists("users", "longregip");
+		$longregip_index = $db->index_exists("users", "longlastip");
+
 		if($longlastip_index == true)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longlastip");
@@ -66,15 +62,7 @@ function upgrade14_dbchanges()
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP KEY longregip");
 		}
 		
-		$query = $db->query("SHOW INDEX FROM ".TABLE_PREFIX."posts");
-		while($pkey = $db->fetch_array($query))
-		{
-			if($pkey['Key_name'] == "longipaddress")
-			{
-				$longipaddress_index = true;
-				break;
-			}
-		}
+		$longipaddress_index = $db->index_exists("posts", "longipaddress");
 		if($longipaddress_index == true)
 		{
 			$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts DROP KEY longipaddress");
@@ -90,7 +78,15 @@ function upgrade14_dbchanges()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP loginattempts;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts tinyint(2) NOT NULL default '1';");
+	
+	if($db->type == "pgsql")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts tinyint NOT NULL default '1';");
+	}
+	else
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts tinyint(2) NOT NULL default '1';");
+	}
 	
 	if($db->field_exists('failedlogin', "sessions"))
 	{
@@ -101,7 +97,15 @@ function upgrade14_dbchanges()
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users DROP failedlogin;");
 	}
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD failedlogin bigint(30) NOT NULL default '0';");
+	
+	if($db->type == "pgsql")
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD failedlogin bigint NOT NULL default '0';");
+	}
+	else
+	{
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD failedlogin bigint(30) NOT NULL default '0';");
+	}
 	
 	if($db->type == "mysql" || $db->type == "mysqli")
 	{
