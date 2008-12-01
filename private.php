@@ -367,16 +367,19 @@ if($mybb->input['action'] == "send")
 				}	
 			}
 			
-			$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
-			while($user = $db->fetch_array($query))
+			if(!empty($recipientids))
 			{
-				if(isset($recipients['bcc']) && is_array($recipients['bcc']) && in_array($user['uid'], $recipient_list['bcc']))
+				$query = $db->simple_select("users", "uid, username", "uid IN ({$recipientids})");
+				while($user = $db->fetch_array($query))
 				{
-					$bcc .= htmlspecialchars_uni($user['username']).', ';
-				}
-				else
-				{
-					$to .= htmlspecialchars_uni($user['username']).', ';
+					if(isset($recipients['bcc']) && is_array($recipients['bcc']) && in_array($user['uid'], $recipient_list['bcc']))
+					{
+						$bcc .= htmlspecialchars_uni($user['username']).', ';
+					}
+					else
+					{
+						$to .= htmlspecialchars_uni($user['username']).', ';
+					}
 				}
 			}
 		}
@@ -413,6 +416,7 @@ if($mybb->input['action'] == "send")
 
 				// Get list of recipients
 				$recipients = unserialize($pm['recipients']);
+				$recipientids = $pm['fromid'];
 				if(isset($recipients['to']) && is_array($recipients['to']))
 				{
 					foreach($recipients['to'] as $recipient)

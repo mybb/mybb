@@ -5750,7 +5750,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</td>
 	{$inline_mod_checkbox}
 </tr>]]></template>
-		<template name="search_results_threads" version="120"><![CDATA[<html>
+		<template name="search_results_threads" version="1405"><![CDATA[<html>
 		<head>
 		<title>{$mybb->settings['bbname']} - {$lang->search_results}</title>
 		{$headerinclude}
@@ -5764,7 +5764,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		</table>
 		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 			<tr>
-				<td colspan="9" class="thead">
+				<td colspan="8" class="thead">
 					<strong>{$lang->search_results}</strong>
 				</td>
 			</tr>
@@ -10416,7 +10416,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	<template name="search_results_inlinemodcol" version="120"><![CDATA[<td class="tcat" align="center">&nbsp;</td>]]></template>
 	<template name="search_results_posts_inlinemoderation_custom" version="120"><![CDATA[<optgroup label="{$lang->custom_mod_tools}">{$customposttools}</optgroup>]]></template>
 	<template name="search_results_posts_inlinemoderation_custom_tool" version="120"><![CDATA[<option value="{$tool['tid']}">{$tool['name']}</option>]]></template>
-	<template name="search_results_posts_inlinemoderation" version="1404"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1400"></script>
+	<template name="search_results_posts_inlinemoderation" version="1405"><![CDATA[<script type="text/javascript" src="jscripts/inline_moderation.js?ver=1400"></script>
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="tid" value="0" />
@@ -10426,7 +10426,6 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <select name="action">
 <optgroup label="{$lang->standard_mod_tools}">
 	<option value="multideleteposts">{$lang->inline_delete_posts}</option>
-	<option value="multisplitposts">{$lang->inline_split_posts}</option>
 	<option value="multiapproveposts">{$lang->inline_approve_posts}</option>
 	<option value="multiunapproveposts">{$lang->inline_unapprove_posts}</option>
 </optgroup>

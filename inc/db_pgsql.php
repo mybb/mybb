@@ -217,12 +217,12 @@ class DB_PgSQL
 
 				if($single_connection['port'])
 				{
-					$this->connect_string .= "port={$single_connection['port']} ";
+					$this->connect_string .= " port={$single_connection['port']}";
 				}
 				
 				if($single_connection['hostname'] != "localhost")
 				{
-					$this->connect_string .= "host={$single_connection['hostname']} ";
+					$this->connect_string .= " host={$single_connection['hostname']}";
 				}
 				
 				if($single_connection['password'])
