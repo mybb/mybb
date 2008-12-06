@@ -457,12 +457,12 @@ function upgrade5_redoconfig()
  * Database configuration
  */
 
-\$config['dbtype'] = '{$config['dbtype']}';
-\$config['hostname'] = '{$config['hostname']}';
-\$config['username'] = '{$config['username']}';
-\$config['password'] = '{$config['password']}';
-\$config['database'] = '{$config['database']}';
-\$config['table_prefix'] = '{$config['table_prefix']}';
+\$config['dbtype'] = '{$config['database']['type']}';
+\$config['hostname'] = '{$config['database']['hostname']}';
+\$config['username'] = '{$config['database']['username']}';
+\$config['password'] = '{$config['database']['password']}';
+\$config['database'] = '{$config['database']['database']}';
+\$config['table_prefix'] = '{$config['database']['table_prefix']}';
 
 /**
  * Admin CP directory

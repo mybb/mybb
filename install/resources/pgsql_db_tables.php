@@ -179,7 +179,7 @@ $tables[] = "CREATE TABLE mybb_events (
   dateline int NOT NULL default '0',
   starttime int NOT NULL default '0',
   endtime int  NOT NULL default '0',
-  timezone int NOT NULL default '0',
+  timezone varchar(4) NOT NULL default '0',
   ignoretimezone int NOT NULL default '0',
   usingtime int NOT NULL default '0',
   repeats text NOT NULL,

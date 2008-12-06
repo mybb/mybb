@@ -34,6 +34,8 @@ function upgrade15_dbchanges()
 	$db->update_query("settinggroups", array('isdefault' => '1'), "isdefault='yes'");
 	$db->update_query("settinggroups", array('isdefault' => '0'), "isdefault='no'");
 	
+	$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE timezone timezone varchar(4) NOT NULL default '0'");
+	
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);

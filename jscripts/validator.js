@@ -136,15 +136,15 @@ FormValidator.prototype = {
 					{
 						for(x = 0; x < options.extra_body.length; ++x)
 						{
-							extra += "&" + options.extra_body[x] + "=" + escape(this.getValue(options.extra_body[x]));
+							extra += "&" + options.extra_body[x] + "=" + encodeURIComponent(this.getValue(options.extra_body[x]));
 						}
 					}
 					else if(typeof options.extra_body != "undefined")
 					{
-						extra = "&" + options.extra_body + "=" + escape(this.getValue(options.extra_body));
+						extra = "&" + options.extra_body + "=" + encodeURIComponent(this.getValue(options.extra_body));
 					}
 
-					new Ajax.Request(options.url, {method:'post', postBody:"value=" + escape(value) + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
+					new Ajax.Request(options.url, {method:'post', postBody:"value=" + encodeURIComponent(value) + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
 
 					return "loading";
 					break;

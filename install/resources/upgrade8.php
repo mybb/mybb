@@ -31,14 +31,14 @@ function upgrade8_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries..</p>";
 
-	if($db->field_exists('oldadditionalgroups', TABLE_PREFIX."banned"))
+	if($db->field_exists('oldadditionalgroups', "banned"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP oldadditionalgroups;");
 	}
 	$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned ADD oldadditionalgroups TEXT NOT NULL AFTER oldgroup");
 	
 
-	if($db->field_exists('olddisplaygroup', TABLE_PREFIX."banned"))
+	if($db->field_exists('olddisplaygroup', "banned"))
 	{
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."banned DROP olddisplaygroup;");
 	}

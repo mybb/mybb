@@ -837,7 +837,7 @@ if(is_array($threadcache))
 			else
 			{
 				$thread['averagerating'] = floatval(round($thread['averagerating'], 2));
-				$thread['width'] = intval($thread['averagerating'])*20;
+				$thread['width'] = intval(round($thread['averagerating']))*20;
 				$thread['numratings'] = intval($thread['numratings']);
 
 				$not_rated = '';

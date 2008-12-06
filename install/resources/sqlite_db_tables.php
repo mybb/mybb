@@ -170,7 +170,7 @@ $tables[] = "CREATE TABLE mybb_events (
   dateline int(10) NOT NULL default '0',
   starttime int(10) NOT NULL default '0',
   endtime int(10) NOT NULL default '0',
-  timezone int(3) NOT NULL default '0',
+  timezone varchar(4) NOT NULL default '0',
   ignoretimezone int(1) NOT NULL default '0',
   usingtime int(1) NOT NULL default '0',
   repeats TEXT NOT NULL );";

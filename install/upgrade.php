@@ -701,7 +701,7 @@ function sync_settings($redo=0)
 		  title varchar(220) NOT NULL default '',
 		  description text NOT NULL,
 		  disporder smallint unsigned NOT NULL default '0',
-		  isdefault int(1) NOT NULL default '',
+		  isdefault int(1) NOT NULL default '0',
 		  PRIMARY KEY  (gid)
 		) TYPE=MyISAM;");
 
