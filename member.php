@@ -1053,7 +1053,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
 		
 		$db->update_query("users", array("loginattempts" => 1), "uid='{$user['uid']}'");
-	
+		
 		// Temporarily set the cookie remember option for the login cookies
 		$mybb->user['remember'] = $user['remember'];
 	
@@ -1116,19 +1116,16 @@ if($mybb->input['action'] == "login")
 	$captcha = "";
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && $do_captcha == true)
-	{
-		if(!$correct)
-		{	
-			$randomstr = random_str(5);
-			$imagehash = md5(random_str(12));
-			$imagearray = array(
-				"imagehash" => $imagehash,
-				"imagestring" => $randomstr,
-				"dateline" => TIME_NOW
-			);
-			$db->insert_query("captcha", $imagearray);
-			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
-		}
+	{	
+		$randomstr = random_str(5);
+		$imagehash = md5(random_str(12));
+		$imagearray = array(
+			"imagehash" => $imagehash,
+			"imagestring" => $randomstr,
+			"dateline" => TIME_NOW
+		);
+		$db->insert_query("captcha", $imagearray);
+		eval("\$captcha = \"".$templates->get("post_captcha")."\";");
 	}
 	
 	$username = "";

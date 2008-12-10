@@ -688,7 +688,7 @@ if($mybb->input['action'] == "new_announcement")
 	}
 	else
 	{
-		// Note: dates are not in user's timezone
+		// Note: dates are in GMT timezone
 		$starttime_time = gmdate("g:i a", TIME_NOW);
 		$endtime_time = gmdate("g:i a", TIME_NOW);
 		$startday = $endday = gmdate("j", TIME_NOW);
@@ -970,18 +970,18 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 	else
 	{
-		// Note: dates are in user's timezone
-		$starttime_time = my_date('g:i a', $announcement['startdate']);
-		$endtime_time = my_date('g:i a', $announcement['enddate']);
+		// Note: dates are in GMT timezone
+		$starttime_time = gmdate('g:i a', $announcement['startdate']);
+		$endtime_time = gmdate('g:i a', $announcement['enddate']);
 
-		$startday = my_date('j', $announcement['startdate']);
-		$endday = my_date('j', $announcement['enddate']);
+		$startday = gmdate('j', $announcement['startdate']);
+		$endday = gmdate('j', $announcement['enddate']);
 
-		$startmonth = my_date('m', $announcement['startdate']);
-		$endmonth = my_date('m', $announcement['enddate']);
+		$startmonth = gmdate('m', $announcement['startdate']);
+		$endmonth = gmdate('m', $announcement['enddate']);
 
-		$startdateyear = my_date('Y', $announcement['startdate']);
-		$enddateyear = my_date('Y', $announcement['enddate']);
+		$startdateyear = gmdate('Y', $announcement['startdate']);
+		$enddateyear = gmdate('Y', $announcement['enddate']);
 
 		$errored = false;
 	}
