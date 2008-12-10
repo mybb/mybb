@@ -234,8 +234,8 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 		$new_warning = array(
 			"uid" => $user['uid'],
-			"tid" => $warning_type['tid'],
-			"pid" => $post['pid'],
+			"tid" => intval($warning_type['tid']),
+			"pid" => intval($post['pid']),
 			"title" => $db->escape_string($warning_title),
 			"points" => intval($points),
 			"dateline" => TIME_NOW,

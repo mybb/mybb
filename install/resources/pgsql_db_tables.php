@@ -966,8 +966,8 @@ $tables[] = "CREATE TABLE mybb_warnings (
 	expired int NOT NULL default '0',
 	daterevoked bigint NOT NULL default '0',
 	revokedby int NOT NULL default '0',
-	revokereason text NOT NULL,
-	notes text NOT NULL,
+	revokereason text NOT NULL default '',
+	notes text NOT NULL default '',
 	PRIMARY KEY(wid)
 );";
 

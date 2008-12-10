@@ -128,7 +128,7 @@ if($mybb->input['action'] == "check")
 	
 	$sub_tabs['update_plugins'] = array(
 		'title' => $lang->plugin_updates,
-		'link' => "index.php?module=config/plugin&amp;action=check",
+		'link' => "index.php?module=config/plugins&amp;action=check",
 		'description' => $lang->plugin_updates_desc
 	);
 	

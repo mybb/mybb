@@ -1331,7 +1331,7 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
 	if($mybb->input['deletepms'] == 1)
 	{ // delete the archived pms
-		$db->delete_query("privatemessages", "pmid IN (''$ids)");
+		$db->delete_query("privatemessages", "pmid IN ('0'$ids)");
 		// Update PM count
 		update_pm_count();
 	}

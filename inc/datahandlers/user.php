@@ -984,7 +984,7 @@ class UserDataHandler extends DataHandler
 			$user['user_fields']["fid{$profile_field['fid']}"] = '';
 		}
 
-		$db->insert_query("userfields", $user['user_fields']);
+		$db->insert_query("userfields", $user['user_fields'], false);
 
 		// Update forum stats
 		update_stats(array('numusers' => '+1'));
@@ -1197,7 +1197,7 @@ class UserDataHandler extends DataHandler
 				}
 				$db->insert_query("userfields", $user_fields);
 			}
-			$db->update_query("userfields", $user['user_fields'], "ufid='{$user['uid']}'");
+			$db->update_query("userfields", $user['user_fields'], "ufid='{$user['uid']}'", false);
 		}
 
 		// Let's make sure the user's name gets changed everywhere in the db if it changed.

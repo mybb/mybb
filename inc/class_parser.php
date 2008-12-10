@@ -397,13 +397,21 @@ class postParser
 				
 				if(version_compare(PHP_VERSION, "5.1.0", ">="))
 				{
+					$orig_message = $message;
+					$orig_find = $find;
 					// Fix issues for smileys starting with a ";"
 					if($find{0} == ";")
 					{
 						$find = "(?<!&gt|&lt|&amp)".$find;
 					}
 				
-					$message = preg_replace("#(?<=[^\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
+					$message = @preg_replace("#(?<=[^\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining, $replacements);
+				
+					if($message == null)
+					{
+						$message = preg_replace("#(?<=[^&;\"])".$orig_find."(?=.\W|\"|\W.|\W$)#si", $replace, $orig_message, $remaining);
+					}
+					
 					$remaining -= $replacements;
 					if($remaining <= 0)
 					{
@@ -415,6 +423,7 @@ class postParser
 					$message = preg_replace("#(?<=[^&;\"])".$find."(?=.\W|\"|\W.|\W$)#si", $replace, $message, $remaining);
 				}
 			}
+			unset($orig_message, $orig_find);
 		}
 
 		// If we matched any tags previously, swap them back in

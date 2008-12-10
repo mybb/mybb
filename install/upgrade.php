@@ -380,7 +380,7 @@ function upgradethemes()
 		  status varchar(10) NOT NULL default '',
 		  dateline int(10) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
-		) TYPE=MyISAM;{$charset}");
+		) TYPE=MyISAM{$charset};");
 	}
 
 	if($system_upgrade_detail['revert_all_themes'] > 0)
