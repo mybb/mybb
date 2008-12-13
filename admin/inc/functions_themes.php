@@ -991,7 +991,7 @@ function build_theme_list($parent=0, $depth=0)
 			if($theme['def'] != 1)
 			{
 				$popup->add_item($lang->set_as_default, "index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}");
-				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}\"><img src=\"styles/{$page->style}/images/icons/make_default.gif\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
+				$set_default = "<a href=\"index.php?module=style/themes&amp;action=set_default&amp;tid={$theme['tid']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/make_default.gif\" alt=\"{$lang->set_as_default}\" style=\"vertical-align: middle;\" title=\"{$lang->set_as_default}\" /></a>";
 			}
 			else
 			{

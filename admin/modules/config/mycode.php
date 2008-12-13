@@ -21,6 +21,12 @@ $plugins->run_hooks("admin_config_mycode_begin");
 
 if($mybb->input['action'] == "toggle_status")
 {
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=config/mycode");
+	}
+	
 	$plugins->run_hooks("admin_config_mycode_toggle_status");
 	
 	$query = $db->simple_select("mycode", "*", "cid='".intval($mybb->input['cid'])."'");
@@ -404,7 +410,7 @@ if(!$mybb->input['action'])
 
 		$popup = new PopupMenu("mycode_{$mycode['cid']}", $lang->options);
 		$popup->add_item($lang->edit_mycode, "index.php?module=config/mycode&amp;action=edit&amp;cid={$mycode['cid']}");
-		$popup->add_item($phrase, "index.php?module=config/mycode&amp;action=toggle_status&amp;cid={$mycode['cid']}");
+		$popup->add_item($phrase, "index.php?module=config/mycode&amp;action=toggle_status&amp;cid={$mycode['cid']}&amp;my_post_key={$mybb->post_code}");
 		$popup->add_item($lang->delete_mycode, "index.php?module=config/mycode&amp;action=delete&amp;cid={$mycode['cid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_mycode_deletion}')");
 		$table->construct_cell($popup->fetch(), array('class' => 'align_center'));
 		$table->construct_row();

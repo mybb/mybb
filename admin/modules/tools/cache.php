@@ -64,6 +64,12 @@ if($mybb->input['action'] == 'view')
 
 if($mybb->input['action'] == "rebuild")
 {
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=tools/cache");
+	}
+	
 	$plugins->run_hooks("admin_tools_cache_rebuild");
 	
 	if(method_exists($cache, "update_{$mybb->input['title']}"))
@@ -113,7 +119,7 @@ if(!$mybb->input['action'])
 		
 		if(method_exists($cache, "update_".$cacheitem['title']))
 		{
-			$table->construct_cell("<a href=\"index.php?module=tools/cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=tools/cache&amp;action=rebuild&amp;title=".urlencode($cacheitem['title'])."&amp;my_post_key={$mybb->post_code}\">".$lang->rebuild_cache."</a>", array("class" => "align_center"));
 		}
 		else
 		{

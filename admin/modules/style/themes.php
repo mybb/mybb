@@ -2298,6 +2298,12 @@ Event.observe(window, "load", function() {
 
 if($mybb->input['action'] == "set_default")
 {
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=style/themes");
+	}
+	
 	$query = $db->simple_select("themes", "*", "tid='".intval($mybb->input['tid'])."'");
 	$theme = $db->fetch_array($query);
 

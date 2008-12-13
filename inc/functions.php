@@ -494,7 +494,14 @@ function verify_post_check($code, $silent=false)
 		}
 		else
 		{
-			error($lang->invalid_post_code);
+			if(defined("IN_ADMINCP"))
+			{
+				return false;
+			}
+			else
+			{
+				error($lang->invalid_post_code);
+			}
 		}
 	}
 	else
@@ -3848,6 +3855,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	$find = array(
 		'm',
 		'd',
+		'D',
 		'y',
 		'Y',
 		'j',
@@ -3860,6 +3868,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 	$replace = array(
 		sprintf('%02s', $bm),
 		sprintf('%02s', $bd),
+		($wd == 2 ? my_substr($bdays[$wd], 0, 4) : ($wd == 4 ? my_substr($bdays[$wd], 0, 5) : my_substr($bdays[$wd], 0, 3))),
 		my_substr($by, 2),
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),

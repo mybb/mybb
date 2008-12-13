@@ -555,6 +555,12 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 
 if($mybb->input['action'] == "run")
 {
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=tools/tasks");
+	}
+	
 	ignore_user_abort(true);
 	@set_time_limit(0);
 	$plugins->run_hooks("admin_tools_tasks_run");
@@ -706,18 +712,18 @@ if(!$mybb->input['action'])
 		{
 			$icon = "<img src=\"styles/{$page->style}/images/icons/bullet_off.gif\" alt=\"({$lang->alt_disabled})\" title=\"{$lang->alt_disabled}\"  style=\"vertical-align: middle;\" /> ";
 		}
-		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?module=tools/tasks&amp;action=run&amp;tid={$task['tid']}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
+		$table->construct_cell("<div class=\"float_right\"><a href=\"index.php?module=tools/tasks&amp;action=run&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}\"><img src=\"styles/{$page->style}/images/icons/run_task.gif\" title=\"{$lang->run_task_now}\" alt=\"{$lang->run_task}\" /></a></div><div>{$icon}<strong><a href=\"index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}\">{$task['title']}</a></strong><br /><small>{$task['description']}</small></div>");
 		$table->construct_cell($next_run, array("class" => "align_center"));
 
 		$popup = new PopupMenu("task_{$task['tid']}", $lang->options);
 		$popup->add_item($lang->edit_task, "index.php?module=tools/tasks&amp;action=edit&amp;tid={$task['tid']}");
 		if($task['enabled'] == 1)
 		{
-			$popup->add_item($lang->disable_task, "index.php?module=tools/tasks&amp;action=disable&amp;tid={$task['tid']}");
+			$popup->add_item($lang->disable_task, "index.php?module=tools/tasks&amp;action=disable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 		}
 		else
 		{
-			$popup->add_item($lang->enable_task, "index.php?module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}");
+			$popup->add_item($lang->enable_task, "index.php?module=tools/tasks&amp;action=enable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 		}
 		$popup->add_item($lang->delete_task, "index.php?module=tools/tasks&amp;action=delete&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_task_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
