@@ -1498,7 +1498,17 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
-
+			$db->delete_query("reputation", "uid='{$destination_user['uid']}' AND adduid='{$destination_user['uid']}'");
+			
+			// Calculate new reputation
+			$new_reputation = 0;
+			$query = $db->simple_select("reputation", "reputation", "uid='{$destination_user['uid']}'");
+			while($reputation = $db->fetch_array($query)) {
+				$new_reputation = $new_reputation + $reputation['reputation'];
+			}
+			
+			$db->update_query("users", array('reputation' => $new_reputation), "uid='{$destination_user['uid']}'");
+			
 			// Additional updates for non-uid fields
 			$last_poster = array(
 				"lastposteruid" => $destination_user['uid'],
