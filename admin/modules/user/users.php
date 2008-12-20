@@ -1501,13 +1501,10 @@ if($mybb->input['action'] == "merge")
 			$db->delete_query("reputation", "uid='{$destination_user['uid']}' AND adduid='{$destination_user['uid']}'");
 			
 			// Calculate new reputation
-			$new_reputation = 0;
-			$query = $db->simple_select("reputation", "reputation", "uid='{$destination_user['uid']}'");
-			while($reputation = $db->fetch_array($query)) {
-				$new_reputation = $new_reputation + $reputation['reputation'];
-			}
+			$query = $db->simple_select("reputation", "SUM(reputation) as total_rep", "uid='{$destination_user['uid']}'");
+			$total_reputation = $db->fetch_field($query, "total_rep");
 			
-			$db->update_query("users", array('reputation' => $new_reputation), "uid='{$destination_user['uid']}'");
+			$db->update_query("users", array('reputation' => $total_reputation), "uid='{$destination_user['uid']}'");
 			
 			// Additional updates for non-uid fields
 			$last_poster = array(
