@@ -424,6 +424,13 @@ blockquote cite span {
 	font-weight: normal;
 }
 
+
+blockquote cite span.highlight {
+	float: none;
+	font-weight: bold;
+	padding-bottom: 0;
+}
+
 .codeblock {
 	background: #fff;
 	border: 1px solid #ccc;
