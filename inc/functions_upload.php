@@ -249,7 +249,7 @@ function upload_avatar($avatar=array(), $uid=0)
 				$ret['error'] = $lang->sprintf($lang->error_avatartoobig, $maxwidth, $maxheight);
 				if($mybb->settings['avatarresizing'] == "user")
 				{
-					$ret['error'] .= "<br /<br />".$lang->error_avataruserresize;
+					$ret['error'] .= "<br /><br />".$lang->error_avataruserresize;
 				}
 				@unlink($avatarpath."/".$filename);
 				return $ret;

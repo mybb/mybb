@@ -292,7 +292,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			{
 				$user_activity['activity'] = "private_send";
 			}
-			elseif($parameters['action'] == "show")
+			elseif($parameters['action'] == "read")
 			{
 				$user_activity['activity'] = "private_read";
 			}

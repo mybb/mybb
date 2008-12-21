@@ -190,19 +190,19 @@ if($mybb->input['action'] == "stats")
 				SELECT a.*, u.uid AS useruid, u.username, SUM(a.filesize) as totalsize
 				FROM ".TABLE_PREFIX."attachments a  
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
-				GROUP BY ".$db->build_fields_string("attachments", "a.")."
+				GROUP BY ".$db->build_fields_string("attachments", "a.").",u.uid,u.username
 				ORDER BY totalsize DESC
 				LIMIT 5
 			");
 			break;
 		default:
 			$query = $db->query("
-				SELECT u.uid, u.username, COUNT(*) AS poststoday
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."users u ON (p.uid=u.uid)
-				WHERE p.dateline > $timesearch
-				GROUP BY p.uid ORDER BY poststoday DESC
-				LIMIT 1
+				SELECT a.*, u.uid AS useruid, u.username, SUM(a.filesize) as totalsize
+				FROM ".TABLE_PREFIX."attachments a  
+				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
+				GROUP BY a.uid
+				ORDER BY totalsize DESC
+				LIMIT 5
 			");
 	}
 	while($user = $db->fetch_array($query))

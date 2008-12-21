@@ -3878,6 +3878,14 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		($bm == 9 ? my_substr($bmonth[$bm-1], 0, 4) :  my_substr($bmonth[$bm-1], 0, 3)),
 	);
 	
+	// Do we have the full month in our output?
+	// If so there's no need for the short month
+	if(strpos($display, 'F') !== false)
+	{
+		array_pop($find);
+		array_pop($replace);
+	}
+	
 	return str_replace($find, $replace, $display);
 }
 
