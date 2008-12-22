@@ -387,7 +387,7 @@ var Thread = {
 			var post = document.createElement("div");
 			post.innerHTML = request.responseText;
 			$('posts').appendChild(post);
-			if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari")
+			if(MyBB.browser == "ie" || MyBB.browser == "opera" || MyBB.browser == "safari" || MyBB.browser == "chrome")
 			{
 				var scripts = request.responseText.extractScripts();
 				scripts.each(function(script)

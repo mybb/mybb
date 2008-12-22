@@ -1956,7 +1956,6 @@ function build_users_view($view)
 			else
 			{
 				$ip_range = fetch_longipv4_range($view['conditions'][$search_field]);
-				$view['conditions'][$search_field] = str_replace("*", "%", $view['conditions'][$search_field]);
 				if(!is_array($ip_range))
 				{
 					$ip_sql = "long{$search_field}='{$ip_range}'";
@@ -1982,7 +1981,6 @@ function build_users_view($view)
 		else
 		{
 			$ip_range = fetch_longipv4_range($view['conditions']['postip']);
-			$view['conditions']['postip'] = str_replace("*", "%", $view['conditions']['postip']);
 			if(!is_array($ip_range))
 			{
 				$ip_sql = "longipaddress='{$ip_range}'";

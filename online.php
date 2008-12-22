@@ -117,15 +117,25 @@ else
 	switch($db->type)
 	{
 		case "sqlite3":
-		case "sqlite2":	
 			$query = $db->simple_select("sessions", "COUNT(count_sid)", "(SELECT DISTINCT sid as count_sid FROM ".TABLE_PREFIX."sessions WHERE time > {$timesearch})");
+			$online_count = $db->fetch_field($query, "online");
+			break;
+		case "sqlite2":
+			$sessions = array();
+			$query = $db->simple_select("sessions", "sid", "time > {$timesearch}");
+			while($sid = $db->fetch_field($query, "sid"))
+			{
+				$sessions[$sid] = 1;
+			}
+			$online_count = count($sessions);
+			unset($sessions);
 			break;
 		case "pgsql":
 		default:
 			$query = $db->simple_select("sessions", "COUNT(DISTINCT sid) as online", "time > {$timesearch}");
+			$online_count = $db->fetch_field($query, "online");
 			break;
 	}
-	$online_count = $db->fetch_field($query, "online");
 	
 	// How many pages are there?
 	$perpage = $mybb->settings['threadsperpage'];

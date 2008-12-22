@@ -50,13 +50,13 @@ var MyBB = {
 		{
 			this.browser = "safari";
 		}
-		else if(navigator.product == "Gecko")
-		{
-			this.browser = "mozilla";
-		}
 		else if(this.useragent.indexOf("chrome") != -1)
 		{
 			this.browser = "chrome";
+		}
+		else if(navigator.product == "Gecko")
+		{
+			this.browser = "mozilla";
 		}
 		else if(this.useragent.indexOf("opera") != -1)
 		{
