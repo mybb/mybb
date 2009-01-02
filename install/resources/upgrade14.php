@@ -50,7 +50,7 @@ function upgrade14_dbchanges()
 	if($db->type != "sqlite2" && $db->type != "sqlite3")
 	{
 		$longregip_index = $db->index_exists("users", "longregip");
-		$longregip_index = $db->index_exists("users", "longlastip");
+		$longlastip_index = $db->index_exists("users", "longlastip");
 
 		if($longlastip_index == true)
 		{

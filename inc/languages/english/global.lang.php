@@ -372,4 +372,9 @@ $l['dismiss_notice'] = "Dismiss this notice";
 $l['next'] = "Next";
 $l['previous'] = "Previous";
 $l['delete'] = "Delete";
+
+$l['email_addr'] = "Email Address";
+$l['board_name'] = "Board Name";
+$l['board_url'] = "Board URL";
+$l['personalize_message'] = "Personalize this message:";
 ?>

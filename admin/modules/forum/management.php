@@ -1628,6 +1628,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("threads", "fid='{$fid}' {$delquery}");
 		$db->delete_query("posts", "fid='{$fid}' {$delquery}");
 		$db->delete_query("moderators", "fid='{$fid}' {$delquery}");
+		$db->delete_query("forumsubscriptions", "fid='{$fid}' {$delquery}");
 
 		$cache->update_forums();
 		$cache->update_moderators();

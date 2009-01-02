@@ -24,11 +24,31 @@ class memcacheCacheHandler
 	 */
 	var $unique_id;
 	
-	function memcacheCacheHandler()
+	function memcacheCacheHandler($silent=false)
 	{
 		if(!function_exists("memcache_connect"))
 		{
-			die("Your server does not have memcache support enabled.");
+			// Check if our DB engine is loaded
+			if(!extension_loaded("Memcache"))
+			{
+				// Try and manually load it - DIRECTORY_SEPARATOR checks if running windows
+				if(DIRECTORY_SEPARATOR == '\\')
+				{
+					@dl('php_memcache.dll');
+				} 
+				else 
+				{
+					@dl('memcache.so');
+				}
+				
+				// Check again to see if we've been able to load it
+				if(!extension_loaded("Memcache") && !$silent)
+				{
+					// Throw our super awesome cache loading error
+					die("Your server does not have memcache support enabled.");
+					$mybb->trigger_generic_error("sql_load_error");
+				}
+			}
 		}
 	}
 

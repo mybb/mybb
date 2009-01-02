@@ -80,13 +80,21 @@ check_forum_password($forum['fid']);
 $thread['threadlink'] = get_thread_link($tid);
 
 $postrows = '';
+if(is_moderator($forum['fid']))
+{
+    $visible = "AND (p.visible='0' OR p.visible='1')";
+}
+else
+{
+    $visible = "AND p.visible='1'";
+}
 $query = $db->query("
-	SELECT u.*, u.username AS userusername, p.*
-	FROM ".TABLE_PREFIX."posts p
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-	WHERE p.tid='$tid' AND p.visible=1
-	ORDER BY p.dateline
-");
+    SELECT u.*, u.username AS userusername, p.*
+    FROM ".TABLE_PREFIX."posts p
+    LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
+    WHERE p.tid='$tid' {$visible}
+    ORDER BY p.dateline
+"); 
 while($postrow = $db->fetch_array($query))
 {
 	if($postrow['userusername'])

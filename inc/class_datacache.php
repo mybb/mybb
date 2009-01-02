@@ -24,6 +24,13 @@ class datacache
 	 * @var object
 	 */
 	var $handler = null;
+	
+	/**
+	 * Whether or not to exit the script if we cannot load the specified extension
+	 *
+	 * @var boolean
+	 */
+	var $silent = false;
 
 	/**
 	 * Build cache data.
@@ -38,22 +45,22 @@ class datacache
 			// Disk cache
 			case "files":
 				require_once MYBB_ROOT."/inc/cachehandlers/disk.php";
-				$this->handler = new diskCacheHandler;
+				$this->handler = new diskCacheHandler($this->silent);
 				break;
 			// Memcache cache
 			case "memcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/memcache.php";
-				$this->handler = new memcacheCacheHandler;
+				$this->handler = new memcacheCacheHandler($this->silent);
 				break;
 			// eAccelerator cache
 			case "eaccelerator":
 				require_once MYBB_ROOT."/inc/cachehandlers/eaccelerator.php";
-				$this->handler = new eacceleratorCacheHandler;
+				$this->handler = new eacceleratorCacheHandler($this->silent);
 				break;
 			// Xcache cache
 			case "xcache":
 				require_once MYBB_ROOT."/inc/cachehandlers/xcache.php";
-				$this->handler = new xcacheCacheHandler;
+				$this->handler = new xcacheCacheHandler($this->silent);
 				break;
 		}
 		if(is_object($this->handler))
@@ -782,6 +789,23 @@ class datacache
 		}
 		
 		$this->update("birthdays", $birthdays);
+	}
+	
+	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
+	function update_mostonline()
+	{
+		global $db;
+
+		$query = $db->simple_select("datacache", "title,cache", "title='mostonline'");
+		$this->update("mostonline", unserialize($db->fetch_array($query, "cache")));
+	}
+
+	function update_plugins()
+	{
+		global $db;
+
+		$query = $db->simple_select("datacache", "title,cache", "title='plugins'");
+		$this->update("plugins", unserialize($db->fetch_array($query, "cache")));
 	}
 }
 ?>

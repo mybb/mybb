@@ -19,12 +19,33 @@ class eacceleratorCacheHandler
 	 */
 	var $unique_id;
 	
-	function eacceleratorCacheHandler()
+	function eacceleratorCacheHandler($silent=false)
 	{
 		if(!function_exists("eaccelerator_get"))
 		{
-			die("eAccelerator needs to be configured with PHP to use the eAccelerator cache support");
+			// Check if our DB engine is loaded
+			if(!extension_loaded("Eaccelerator"))
+			{
+				// Try and manually load it - DIRECTORY_SEPARATOR checks if running windows
+				if(DIRECTORY_SEPARATOR == '\\')
+				{
+					@dl('php_eaccelerator.dll');
+				} 
+				else 
+				{
+					@dl('eaccelerator.so');
+				}
+				
+				// Check again to see if we've been able to load it
+				if(!extension_loaded("Eaccelerator") && !$silent)
+				{
+					// Throw our super awesome cache loading error
+					die("eAccelerator needs to be configured with PHP to use the eAccelerator cache support");
+					$mybb->trigger_generic_error("sql_load_error");
+				}
+			}
 		}
+		return false;
 	}
 
 	/**

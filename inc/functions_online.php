@@ -919,7 +919,7 @@ function build_friendly_wol_location($user_activity)
  */
 function build_wol_row($user)
 {
-	global $mybb, $lang, $templates, $themes, $session;
+	global $mybb, $lang, $templates, $theme, $session;
 
 	// We have a registered user
 	if($user['uid'] > 0)

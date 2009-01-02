@@ -13,6 +13,12 @@ function task_checktables($task)
 {
 	global $db, $mybb, $lang;
 	
+	// Sorry SQLite, you don't have a decent way of checking if the table is corrupted or not.
+	if($db->type == "sqlite2" || $db->type == "sqlite3")
+	{
+		return;
+	}
+	
 	@set_time_limit(0);
 	
 	$ok = array(

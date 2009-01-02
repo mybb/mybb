@@ -1305,6 +1305,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("banned", "uid='{$user['uid']}'");
 		$db->delete_query("threadratings", "uid='{$user['uid']}'");
 		$db->delete_query("users", "uid='{$user['uid']}'");
+		$db->delete_query("joinrequests", "uid='{$user['uid']}'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));

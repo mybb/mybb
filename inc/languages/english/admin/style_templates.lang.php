@@ -148,7 +148,7 @@ $l['error_themes_attached_template_set'] = "This template set cannot be deleted 
 
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_template_deleted'] = "The selected template has successfully been deleted.";
-$l['success_template_reverted'] = "The selected template has successfully been reverted..";
+$l['success_template_reverted'] = "The selected template has successfully been reverted.";
 $l['success_template_set_saved'] = "The selected template set has successfully been saved.";
 $l['success_template_set_deleted'] = "The selected template set has successfully been deleted.";
 ?>

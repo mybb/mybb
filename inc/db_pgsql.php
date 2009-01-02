@@ -1261,17 +1261,19 @@ class DB_PgSQL
 			$main_field = $default_field;
 		}
 		
+		$update = false;
 		$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
 		
 		while($column = $this->fetch_array($query))
 		{
 			if($column[$main_field] == $replacements[$main_field])
 			{				
-				++$i;
+				$update = true;
+				break;
 			}
 		}
 		
-		if($i > 0)
+		if($update === true)
 		{
 			return $this->update_query($table, $replacements, "{$main_field}='".$replacements[$main_field]."'");
 		}
@@ -1286,11 +1288,9 @@ class DB_PgSQL
 	 *
 	 * @param string The table
 	 * @param array The replacements
-	 * @param string The default field
 	 */
 	function build_replace_query($table, $replacements=array(), $default_field="")
-	{
-		$i = 0;		
+	{	
 		
 		if($default_field == "")
 		{
@@ -1302,17 +1302,19 @@ class DB_PgSQL
 			$main_field = $default_field;
 		}
 		
+		$update = false;
 		$query = $this->write_query("SELECT {$main_field} FROM {$this->table_prefix}{$table}");
 		
 		while($column = $this->fetch_array($query))
 		{
 			if($column[$main_field] == $replacements[$main_field])
 			{				
-				++$i;
+				$update = true;
+				break;
 			}
 		}
 		
-		if($i > 0)
+		if($update === true)
 		{
 			return $this->build_update_query($table, $replacements, "{$main_field}='".$replacements[$main_field]."'");
 		}

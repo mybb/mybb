@@ -919,8 +919,10 @@ class DB_SQLite3
 	 *
 	 * @param string The table
 	 * @param array The values
+	 * @param string The default field
+	 * @param boolean Whether or not to return an insert id. True by default
 	 */
-	function replace_query($table, $replacements=array())
+	function replace_query($table, $replacements=array(), $default_field="", $insert_id=true)
 	{
 		$columns = '';
 		$values = '';
@@ -938,7 +940,33 @@ class DB_SQLite3
 			 return false;
 		}
 		
-		return $this->query("REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})");
+		if($default_field == "")
+		{
+			return $this->write_query("REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})");
+		}
+		else
+		{
+			$update = false;
+			$query = $this->write_query("SELECT {$default_field} FROM {$this->table_prefix}{$table}");
+			
+			while($column = $this->fetch_array($query))
+			{
+				if($column[$default_field] == $replacements[$default_field])
+				{				
+					$update = true;
+					break;
+				}
+			}
+			
+			if($update === true)
+			{
+				return $this->update_query($table, $replacements, "{$default_field}='".$replacements[$default_field]."'");
+			}
+			else
+			{
+				return $this->insert_query($table, $replacements, $insert_id);
+			}
+		}
 	}
 	
 	/**

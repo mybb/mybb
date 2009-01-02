@@ -19,7 +19,7 @@ class diskCacheHandler
 	 *
 	 * @return boolean True if successful, false on failure
 	 */
-	function connect()
+	function connect($silent=false)
 	{
 		if(!@is_writable(MYBB_ROOT."cache"))
 		{

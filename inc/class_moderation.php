@@ -342,11 +342,18 @@ class Moderation
 
 		if(is_array($tid_list))
 		{
+			$tid_moved_list = "";
+			$comma = "";
+			foreach($tid_list as $tid)
+			{
+				$tid_moved_list .= "{$comma}'moved|{$tid}'";
+				$comma = ",";
+			}
 			$tid_list = implode(',', $tid_list);
 			$approve = array(
 				"visible" => 1
 			);
-			$db->update_query("threads", $approve, "tid IN ($tid_list)");
+			$db->update_query("threads", $approve, "tid IN ($tid_list) OR closed IN ({$tid_moved_list})");
 			$db->update_query("posts", $approve, "pid IN (".implode(',', $posts_to_approve).")");
 
 			$plugins->run_hooks("class_moderation_approve_threads", $tids);
@@ -388,6 +395,13 @@ class Moderation
 		$tids = array_map('intval', $tids);
 
 		$tid_list = implode(',', $tids);
+		$tid_moved_list = "";
+		$comma = "";
+		foreach($tids as $tid)
+		{
+			$tid_moved_list .= "{$comma}'moved|{$tid}'";
+			$comma = ",";
+		}
 
 		foreach($tids as $tid)
 		{
@@ -415,7 +429,7 @@ class Moderation
 		$approve = array(
 			"visible" => 0
 		);
-		$db->update_query("threads", $approve, "tid IN ($tid_list)");
+		$db->update_query("threads", $approve, "tid IN ($tid_list) OR closed IN ({$tid_moved_list})");
 		$db->update_query("posts", $approve, "pid IN (".implode(',', $posts_to_unapprove).")");
 
 		$plugins->run_hooks("class_moderation_unapprove_threads", $tids);

@@ -527,7 +527,12 @@ if($mybb->input['action'] == "profile")
 		else
 		{
 			$value = htmlspecialchars_uni($userfield);
-			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
+			$maxlength = "";
+			if($profilefield['maxlength'] > 0)
+			{
+				$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+			}
+			$code = "<input type=\"text\" name=\"profile_fields[$field]\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
 		}
 		if($profilefield['required'] == 1)
 		{

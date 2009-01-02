@@ -79,7 +79,7 @@ function build_mass_mail_query($conditions)
 					$additional_sql .= " OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%'";
 			}
 		}
-		$search_sql .= " AND (u.usergroup IN (".implode(",", $conditions['usergroup']).") {$additional_sql})";
+		$search_sql .= " AND (u.usergroup IN (".$db->escape_string(implode(",", $conditions['usergroup'])).") {$additional_sql})";
 	}
 
 	return $search_sql;

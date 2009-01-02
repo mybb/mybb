@@ -19,11 +19,31 @@ class xcacheCacheHandler
 	 */
 	var $unique_id;
 	
-	function xcacheCacheHandler()
+	function xcacheCacheHandler($silent=false)
 	{
 		if(!function_exists("xcache_get"))
 		{
-			die("Xcache needs to be configured with PHP to use the Xcache cache support");
+			// Check if our DB engine is loaded
+			if(!extension_loaded("XCache"))
+			{
+				// Try and manually load it - DIRECTORY_SEPARATOR checks if running windows
+				if(DIRECTORY_SEPARATOR == '\\')
+				{
+					@dl('php_xcache.dll');
+				} 
+				else 
+				{
+					@dl('xcache.so');
+				}
+				
+				// Check again to see if we've been able to load it
+				if(!extension_loaded("XCache") && !$silent)
+				{
+					// Throw our super awesome cache loading error
+					die("Xcache needs to be configured with PHP to use the Xcache cache support");
+					$mybb->trigger_generic_error("sql_load_error");
+				}
+			}
 		}
 	}
 

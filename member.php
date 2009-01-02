@@ -610,7 +610,12 @@ if($mybb->input['action'] == "register")
 			else
 			{
 				$value = htmlspecialchars_uni($userfield);
-				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\" maxlength=\"{$profilefield['maxlength']}\" value=\"$value\" />";
+				$maxlength = "";
+				if($profilefield['maxlength'] > 0)
+				{
+					$maxlength = " maxlength=\"{$profilefield['maxlength']}\"";
+				}
+				$code = "<input type=\"text\" name=\"profile_fields[$field]\" id=\"{$field}\" class=\"textbox\" size=\"{$profilefield['length']}\"{$maxlength} value=\"$value\" />";
 			}
 			if($profilefield['required'] == 1)
 			{

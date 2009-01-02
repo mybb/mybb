@@ -1054,17 +1054,18 @@ class DB_MySQLi
 	 */
 	function index_exists($table, $index)
 	{
+		$index_exists = false;
 		$query = $this->write_query("SHOW INDEX FROM {$this->table_prefix}{$table}");
 		while($ukey = $this->fetch_array($query))
 		{
 			if($ukey['Key_name'] == $index)
 			{
-				$index = true;
+				$index_exists = true;
 				break;
 			}
 		}
 		
-		if($index)
+		if($index_exists)
 		{
 			return true;
 		}

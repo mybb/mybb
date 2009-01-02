@@ -45,17 +45,23 @@ function task_massmail($task)
 		$query2 = $db->simple_select("users u", "u.uid, u.language, u.pmnotify, u.lastactive, u.username, u.email", $member_query, array('limit_start' => $mass_email['sentcount'], 'limit' => $mass_email['perpage'], 'order_by' => 'u.uid', 'order_dir' => 'asc'));
 		while($user = $db->fetch_array($query2))
 		{
-			$mass_email['message'] = str_replace("{uid}", $user['uid'], $mass_email['message']);
-			$mass_email['message'] = str_replace("{username}", $user['username'], $mass_email['message']);
-			$mass_email['message'] = str_replace("{email}", $user['email'], $mass_email['message']);
-			$mass_email['message'] = str_replace("{bbname}", $mybb->settings['bbname'], $mass_email['message']);
-			$mass_email['message'] = str_replace("{bburl}", $mybb->settings['bburl'], $mass_email['message']);
+			$replacement_fields = array(
+				"{uid}" => $user['uid'],						
+				"{username}" => $user['username'],
+				"{email}" => $user['email'],
+				"{bbname}" => $mybb->settings['bbname'],
+				"{bburl}" => $mybb->settings['bburl'],
+				"[".$lang->username."]" => $user['username'],
+				"[".$lang->email_addr."]" => $user['email'],
+				"[".$lang->board_name."]" => $mybb->settings['bbname'],
+				"[".$lang->board_url."]" => $mybb->settings['bburl']
+			);
 			
-			$mass_email['htmlmessage'] = str_replace("{uid}", $user['uid'], $mass_email['htmlmessage']);
-			$mass_email['htmlmessage'] = str_replace("{username}", $user['username'], $mass_email['htmlmessage']);
-			$mass_email['htmlmessage'] = str_replace("{email}", $user['email'], $mass_email['htmlmessage']);
-			$mass_email['htmlmessage'] = str_replace("{bbname}", $mybb->settings['bbname'], $mass_email['htmlmessage']);
-			$mass_email['htmlmessage'] = str_replace("{bburl}", $mybb->settings['bburl'], $mass_email['htmlmessage']);
+			foreach($replacement_fields as $find => $replace)
+			{
+				$mass_email['message'] = str_replace($find, $replace, $mass_email['message']);
+				$mass_email['htmlmessage'] = str_replace($find, $replace, $mass_email['htmlmessage']);												
+			}
 				
 			// Private Message
 			if($mass_email['type'] == 1)
