@@ -790,22 +790,5 @@ class datacache
 		
 		$this->update("birthdays", $birthdays);
 	}
-	
-	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
-	function update_mostonline()
-	{
-		global $db;
-
-		$query = $db->simple_select("datacache", "title,cache", "title='mostonline'");
-		$this->update("mostonline", unserialize($db->fetch_array($query, "cache")));
-	}
-
-	function update_plugins()
-	{
-		global $db;
-
-		$query = $db->simple_select("datacache", "title,cache", "title='plugins'");
-		$this->update("plugins", unserialize($db->fetch_array($query, "cache")));
-	}
 }
 ?>

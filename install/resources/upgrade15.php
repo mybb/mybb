@@ -42,6 +42,8 @@ function upgrade15_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."warnings ALTER COLUMN notes SET default ''");
 	}
 	
+	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
+	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("15_done");

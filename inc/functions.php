@@ -473,7 +473,7 @@ function generate_post_check()
 	// Guests get a special string
 	else
 	{
-		return md5($mybb->config['database']['hostname'].$mybb->config['database']['username'].md5($mybb->config['database']['password']));
+		return md5($mybb->settings['bburl'].$mybb->config['database']['username'].$mybb->settings['internal']['encryption_key']);
 	}
 }
 

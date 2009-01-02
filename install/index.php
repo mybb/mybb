@@ -1948,6 +1948,7 @@ function install_done()
 	$cache->update_banned();
 	$cache->update_birthdays();
 	$cache->update("plugins", array());
+	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	echo $lang->done . '</p>';
 
 	echo $lang->done_step_success;

@@ -187,6 +187,13 @@ if(substr($settings['bburl'], -1) == "/")
 	$settings['bburl'] = my_substr($settings['bburl'], 0, -1);
 }
 
+$settings['internal'] = $cache->read("internal_settings");
+if(!$settings['internal']['encryption_key'])
+{
+	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
+	$settings['internal'] = $cache->read("internal_settings");
+}
+
 $mybb->settings = &$settings;
 $mybb->parse_cookies();
 $mybb->cache = &$cache;
