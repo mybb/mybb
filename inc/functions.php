@@ -1035,7 +1035,7 @@ function usergroup_permissions($gid=0)
 				}
 
 				// 0 represents unlimited for numerical group permissions (i.e. private message limit) so take that into account.
-				if(in_array($perm, $groupzerogreater) && ($access == 0 || $usergroup[$perm] == 0))
+				if(in_array($perm, $groupzerogreater) && ($access == 0 || $permbit === 0))
 				{
 					$usergroup[$perm] = 0;
 					continue;

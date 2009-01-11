@@ -1297,6 +1297,8 @@ if($mybb->input['action'] == "subscriptions")
 			}
 		}
 
+		$icon_cache = $cache->read("posticons");
+		
 		// Now we can build our subscription list
 		foreach($subscriptions as $thread)
 		{
