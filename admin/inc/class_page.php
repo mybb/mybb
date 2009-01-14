@@ -311,7 +311,7 @@ var imagepath = '../images';
 	 */
 	function show_login($message="", $class="success")
 	{
-		global $lang;
+		global $lang, $cp_style;
 
 		$copy_year = COPY_YEAR;
 		
@@ -332,7 +332,7 @@ var imagepath = '../images';
 <title>{$lang->mybb_admin_login}</title>
 <meta name="author" content="MyBB Group" />
 <meta name="copyright" content="Copyright {$copy_year} MyBB Group." />
-<link rel="stylesheet" href="./styles/default/login.css" type="text/css" />
+<link rel="stylesheet" href="./styles/{$cp_style}/login.css" type="text/css" />
 <script type="text/javascript" src="../jscripts/prototype.js"></script>
 <script type="text/javascript" src="../jscripts/general.js"></script>
 <script type="text/javascript" src="./jscripts/admincp.js"></script>

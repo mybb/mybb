@@ -306,21 +306,21 @@ class CustomModeration extends Moderation
 					$posthandler = new PostDataHandler("insert");
 			
 					if(empty($thread_options['replysubject']))
-					{
-						$thread_options['replysubject'] = 'RE: '.$thread['subject'];
-					}
-					else
-					{
-						$thread_options['replysubject'] = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
-						$thread_options['replysubject'] = str_ireplace('{subject}', $thread['subject'], $thread_options['replysubject']);
-					}
-	
-					// Set the post data that came from the input to the $post array.
-					$post = array(
-						"tid" => $thread['tid'],
-						"replyto" => $thread['firstpost'],
-						"fid" => $thread['fid'],
-						"subject" => $thread_options['replysubject'],
+                    {
+                        $new_subject = 'RE: '.$thread['subject'];
+                    }
+                    else
+                    {
+                        $new_subject = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+                        $new_subject = str_ireplace('{subject}', $thread['subject'], $new_subject);
+                    }
+    
+                    // Set the post data that came from the input to the $post array.
+                    $post = array(
+                        "tid" => $thread['tid'],
+                        "replyto" => $thread['firstpost'],
+                        "fid" => $thread['fid'],
+                        "subject" => $new_subject,
 						"uid" => $mybb->user['uid'],
 						"username" => $mybb->user['username'],
 						"message" => $thread_options['addreply'],

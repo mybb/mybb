@@ -309,7 +309,6 @@ if($mybb->input['action'] == "edit")
 	$options = array();
 	
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
-	$options['*'] = $lang->all_user_groups;
 	while($usergroup = $db->fetch_array($query))
 	{
 		$options[(int)$usergroup['gid']] = $usergroup['title'];
@@ -487,7 +486,6 @@ if($mybb->input['action'] == "add")
 	$options = array();
 	
 	$query = $db->simple_select("usergroups", "gid, title", "gid != '1'", array('order_by' => 'title'));
-	$options['*'] = $lang->all_user_groups;
 	while($usergroup = $db->fetch_array($query))
 	{
 		$options[(int)$usergroup['gid']] = $usergroup['title'];

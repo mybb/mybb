@@ -312,7 +312,7 @@ function akismet_key()
 
 function akismet_show_confirm_page()
 {
-	global $mybb, $lang, $theme, $pid, $fid;
+	global $mybb, $lang, $theme, $pid, $fid, $db;
 	
 	$pid = intval($pid);
 	$fid = intval($fid);

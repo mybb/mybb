@@ -4308,7 +4308,7 @@ body {
 </script>
 </body>
 </html>]]></template>
-		<template name="memberlist_search" version="1400"><![CDATA[<html>
+		<template name="memberlist_search" version="1405"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->search_member_list}</title>
 {$headerinclude}
@@ -4374,7 +4374,7 @@ body {
 			<option value="username">{$lang->sort_by_username}</option>
 			<option value="regdate">{$lang->sort_by_regdate}</option>
 			<option value="lastvisit">{$lang->sort_by_lastvisit}</option>
-			<option value="posts">{$lang->sort_by_posts}</option>
+			<option value="postnum">{$lang->sort_by_posts}</option>
 		</select><br />
 		<span class="smalltext">
 		<input type="radio" class="radio" name="order" id="order_asc" value="asc" /> <label for="order_asc">{$lang->order_asc}</label><br />

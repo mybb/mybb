@@ -1991,7 +1991,14 @@ function build_users_view($view)
 				$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
 			}
 		}
-		$search_sql .= " AND EXISTS (SELECT uid FROM ".TABLE_PREFIX."posts WHERE {$ip_sql} AND uid=u.uid)";
+		$ip_uids = array();
+		$query = $db->simple_select("posts", "uid", $ip_sql);
+		while($uid = $db->fetch_field($query, "uid"))
+		{
+			$ip_uids[] = $uid;
+		}
+		$search_sql .= " AND u.uid IN(".implode(',', $ip_uids).")";
+		unset($ip_uids);
 	}
 
 	// Usergroup based searching

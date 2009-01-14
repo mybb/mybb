@@ -36,7 +36,7 @@ class Moderation
 		$openthread = array(
 			"closed" => 1,
 		);
-		$db->update_query("threads", $openthread, "tid IN ($tid_list)");
+		$db->update_query("threads", $openthread, "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 
 		return true;
 	}
@@ -725,6 +725,13 @@ class Moderation
 				{
 					$this->expire_thread($redirect_tid, $redirect_expire);
 				}
+				
+				// If we're moving back to a forum where we left a redirect, delete the rediect
+				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
+				while($movedthread = $db->fetch_array($query))
+				{
+					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'", 1);
+				}
  				break;
 			case "copy":// copy thread
 
@@ -880,6 +887,13 @@ class Moderation
 				);
 				$db->update_query("threads", $sqlarray, "tid='$tid'");
 				$db->update_query("posts", $sqlarray, "tid='$tid'");
+				
+				// If we're moving back to a forum where we left a redirect, delete the rediect
+				$query = $db->simple_select("threads", "tid", "closed LIKE 'moved|".intval($tid)."' AND fid='".intval($new_fid)."'");
+				while($movedthread = $db->fetch_array($query))
+				{
+					$db->delete_query("threads", "tid='".intval($movedthread['tid'])."'", 1);
+				}
 				break;
 		}
 

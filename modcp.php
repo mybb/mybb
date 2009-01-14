@@ -490,7 +490,7 @@ if($mybb->input['action'] == "modlogs")
 		$user_options .= "<option value=\"{$user['uid']}\"{$selected}>".htmlspecialchars_uni($user['username'])."</option>\n";
 	}
 
-	$forum_select = build_forum_jump("", $mybb->input['fid'], 1, '', 0, '', "fid");
+	$forum_select = build_forum_jump("", $mybb->input['fid'], 1, '', 0, true, '', "fid");
 
 	eval("\$modlogs = \"".$templates->get("modcp_modlogs")."\";");
 	output_page($modlogs);
@@ -2230,7 +2230,7 @@ if($mybb->input['action'] == "ipsearch")
 			$page = 1;
 		}
 
-		$page_url = "modcp.php?action=ipsearch&amp;perpage={$perpage}&amp;ipaddress={$mybb->input['ipaddress']}";
+		$page_url = "modcp.php?action=ipsearch&amp;perpage={$perpage}";
 		foreach(array('ipaddress', 'search_users', 'search_posts') as $input)
 		{
 			if(!$mybb->input[$input]) continue;
@@ -2281,30 +2281,56 @@ if($mybb->input['action'] == "ipsearch")
 		if($total_results > $user_results && $post_limit)
 		{
 			$post_start = $start-$user_results;
-			if($post_start < 0) $post_start = 0;
+			if($post_start < 0)
+			{
+				$post_start = 0;
+			}
 		}
 		if($mybb->input['search_posts'] && (!$mybb->input['search_users'] || ($mybb->input['search_users'] && $post_limit > 0)))
 		{
+			$ipaddresses = $tids = $uids = array();
 			$query = $db->query("
-				SELECT p.username AS postusername, p.uid, u.username, p.subject, p.pid, p.tid, p.ipaddress, t.subject AS threadsubject
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-				LEFT JOIN ".TABLE_PREFIX."users u ON(p.uid=u.uid)
+				SELECT username AS postusername, uid, subject, pid, tid, ipaddress
+				FROM ".TABLE_PREFIX."posts
 				WHERE {$post_ip_sql}
-				ORDER BY p.dateline DESC
+				ORDER BY dateline DESC
 				LIMIT {$post_start}, {$post_limit}
 			");
 			while($ipaddress = $db->fetch_array($query))
 			{
-				$ip = $ipaddress['ipaddress'];
-				if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
-				$trow = alt_trow();
-				if(!$ipaddress['subject'])
+				$tids[$ipaddress['tid']] = $ipaddress['pid'];
+				$uids[$ipaddress['uid']] = $ipaddress['pid'];
+				$ipaddresses[$ipaddress['pid']] = $ipaddress;
+			}
+			
+			if(!empty($ipaddresses))
+			{
+				$query = $db->simple_select("threads", "subject, tid", "tid IN(".implode(',', array_keys($tids)).")");
+				while($thread = $db->fetch_array($query))
 				{
-					$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
+					$ipaddresses[$tids[$thread['tid']]]['threadsubject'] = $thread['subject'];
 				}
-				$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."</a> {$lang->by} ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
-				eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+				unset($tids);
+				
+				$query = $db->simple_select("users", "username, uid", "uid IN(".implode(',', array_keys($uids)).")");
+				while($user = $db->fetch_array($query))
+				{
+					$ipaddresses[$uids[$user['uid']]]['username'] = $user['username'];
+				}
+				unset($uids);
+				
+				foreach($ipaddresses as $ipaddress)
+				{
+					$ip = $ipaddress['ipaddress'];
+					if(!$ipaddress['username']) $ipaddress['username'] = $ipaddress['postusername']; // Guest username support
+					$trow = alt_trow();
+					if(!$ipaddress['subject'])
+					{
+						$ipaddress['subject'] = "RE: {$ipaddress['threadsubject']}";
+					}
+					$subject = "<strong>{$lang->ipresult_post}</strong> <a href=\"".get_post_link($ipaddress['pid'], $ipaddress['tid'])."\">".htmlspecialchars_uni($ipaddress['subject'])."</a> {$lang->by} ".build_profile_link($ipaddress['username'], $ipaddress['uid']);
+					eval("\$results .= \"".$templates->get("modcp_ipsearch_result")."\";");
+				}
 			}
 		}
 
@@ -2664,7 +2690,7 @@ if($mybb->input['action'] == "banuser")
 	if($mybb->input['uid'])
 	{
 		$query = $db->query("
-			SELECT b.*, u.username
+			SELECT b.*, u.username, u.uid
 			FROM ".TABLE_PREFIX."banned b
 			LEFT JOIN ".TABLE_PREFIX."users u ON (b.uid=u.uid)
 			WHERE b.uid='{$mybb->input['uid']}'
@@ -2675,6 +2701,7 @@ if($mybb->input['action'] == "banuser")
 			$username = htmlspecialchars_uni($banned['username']);
 			$banreason = htmlspecialchars_uni($banned['reason']);
 			$uid = $mybb->input['uid'];
+			$user = get_user($banned['uid']);
 			$lang->ban_user = $lang->edit_ban; // Swap over lang variables
 			eval("\$banuser_username = \"".$templates->get("modcp_banuser_editusername")."\";");
 		}

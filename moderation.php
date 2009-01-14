@@ -512,7 +512,7 @@ switch($mybb->input['action'])
 
 		$plugins->run_hooks("moderation_move");
 
-		$forumselect = build_forum_jump("", '', 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
 		eval("\$movethread = \"".$templates->get("moderation_move")."\";");
 		output_page($movethread);
 		break;
@@ -827,7 +827,7 @@ switch($mybb->input['action'])
 			eval("\$posts .= \"".$templates->get("moderation_split_post")."\";");
 			$altbg = alt_trow();
 		}
-		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 
 		$plugins->run_hooks("moderation_split");
 
@@ -1267,7 +1267,7 @@ switch($mybb->input['action'])
 		{
 			clearinline($fid, 'forum');
 		}
-		$forumselect = build_forum_jump("", '', 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", '', 1, '', 0, true, '', "moveto");
 		$return_url = htmlspecialchars_uni($mybb->input['url']);
 		eval("\$movethread = \"".$templates->get("moderation_inline_movethreads")."\";");
 		output_page($movethread);
@@ -1550,7 +1550,7 @@ switch($mybb->input['action'])
 		{
 			clearinline($tid, 'thread');
 		}
-		$forumselect = build_forum_jump("", $fid, 1, '', 0, '', "moveto");
+		$forumselect = build_forum_jump("", $fid, 1, '', 0, true, '', "moveto");
 		eval("\$splitposts = \"".$templates->get("moderation_inline_splitposts")."\";");
 		output_page($splitposts);
 		break;

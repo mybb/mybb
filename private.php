@@ -1376,7 +1376,8 @@ if(!$mybb->input['action'])
 	{
 		$mybb->input['fid'] = 1;
 	}
-
+	
+	$folder = '';
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -1438,7 +1439,7 @@ if(!$mybb->input['action'])
 	{		
 		// Get all recipients into an array
 		$cached_users = $get_users = array();
-		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $perpage));
+		$users_query = $db->simple_select("privatemessages", "recipients", "folder='$folder' AND uid='{$mybb->user['uid']}'", array('limit_start' => $start, 'limit' => $perpage, 'order_by' => 'dateline', 'order_dir' => 'DESC'));
 		while($row = $db->fetch_array($users_query))
 		{
 			$recipients = unserialize($row['recipients']);

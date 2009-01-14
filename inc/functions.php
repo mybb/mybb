@@ -2040,11 +2040,12 @@ function delete_post($pid, $tid="")
  * @param int If we need to add select boxes to this cal or not
  * @param int The current depth of forums we're at
  * @param int Whether or not to show extra items such as User CP, Forum home
+ * @param boolean Ignore the showinjump setting and show all forums (for moderation pages)
  * @param array Array of permissions
  * @param string The name of the forum jump
  * @return string Forum jump items
  */
-function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $permissions="", $name="fid")
+function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $showextras="1", $showall=false, $permissions="", $name="fid")
 {
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
@@ -2084,7 +2085,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 			{
 				$perms = $permissioncache[$forum['fid']];
 
-				if($forum['fid'] != "0" && ($perms['canview'] != 0 || $mybb->settings['hideprivateforums'] == 0) && $forum['linkto'] == '' && $forum['showinjump'] != 0)
+				if($forum['fid'] != "0" && ($perms['canview'] != 0 || $mybb->settings['hideprivateforums'] == 0) && $forum['linkto'] == '' && ($forum['showinjump'] != 0 || $showall == true))
 				{
 					$optionselected = "";
 
@@ -2101,7 +2102,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 					if($forum_cache[$forum['fid']])
 					{
 						$newdepth = $depth."--";
-						$forumjumpbits .= build_forum_jump($forum['fid'], $selitem, 0, $newdepth, $showextras);
+						$forumjumpbits .= build_forum_jump($forum['fid'], $selitem, 0, $newdepth, $showextras, $showall);
 					}
 				}
 			}
@@ -3873,7 +3874,7 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),
 		($bd == 1 || $bd == 21 || $bd == 31 ? 'st' : ($bd == 2 || $bd == 22 ? 'nd' : ($bd == 3 || $bd == 23 ? 'rd' : 'th'))),
-		$bdays[$wd],
+		$wd,
 		$bmonth[$bm-1],
 		($bm == 9 ? my_substr($bmonth[$bm-1], 0, 4) :  my_substr($bmonth[$bm-1], 0, 3)),
 	);

@@ -61,6 +61,19 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 $ip_address = get_ip();
 unset($user);
 
+// Load Admin CP style
+if(!$cp_style)
+{
+	if(!empty($mybb->settings['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
+	{
+		$cp_style = $mybb->settings['cpstyle'];
+	}
+	else
+	{
+		$cp_style = "default";
+	}
+}
+
 $logged_out = false;
 $fail_check = 0;
 $post_verify = true;
@@ -213,19 +226,6 @@ if($mybb->user['uid'])
 
 	// Fetch administrator permissions
 	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
-}
-
-// Load Admin CP style
-if(!$cp_style)
-{
-	if(!empty($mybb->settings['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
-	{
-		$cp_style = $mybb->settings['cpstyle'];
-	}
-	else
-	{
-		$cp_style = "default";
-	}
 }
 
 // Include the layout generation class overrides for this style
