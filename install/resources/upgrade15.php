@@ -46,8 +46,71 @@ function upgrade15_dbchanges()
 	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
-	$output->print_footer("15_done");
+	$output->print_footer("15_usernameverify");
 }
 
+function upgrade15_usernameverify()
+{
+	
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p><span style=\"font-size: xx-large\">WARNING - PLEASE READ THE FOLLOWING:</span> The next step of this process will remove <strong>ALL</strong> commas (,) from the <i>usernames</i> of your forum whom contain them. The reason for this change is commas in usernames can make the private messages in MyBB return errors when sending to these users.</p>";
+	flush();
+	
+	$contents .= "Click next to continue with the upgrade process once you have read the warning.</p>";
+	$output->print_contents($contents);
+	$output->print_footer("15_usernameupdate");
+}
+
+function upgrade15_usernameupdate()
+{
+	global $db, $output, $mybb;
+
+	$output->print_header("Performing Queries");
+
+	echo "<p>Performing username updates..</p>";
+	flush();
+	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	
+	$not_renameable = array();
+	
+	// Because commas can cause some problems with private message sending in usernames we have to remove them
+	$query = $db->simple_select("users", "uid, username", "username LIKE '%,%'");
+	while($user = $db->fetch_array($query))
+	{
+		$userhandler = new UserDataHandler('update');
+		
+		$updated_user = array(
+			"uid" => $user['uid'],
+			"username" => str_replace(',', '', $user['username'])
+		);
+		$userhandler->set_data($updated_user);
+		
+		if(!$userhandler->validate_user())
+		{
+			$not_renameable[] = htmlspecialchars_uni($user['username']);
+		}
+		else
+		{
+			$userhandler->update_user();
+		}
+	}
+	
+	if(!empty($not_renameable))
+	{
+		echo "<span style=\"color: red;\">NOTICE:</span> The following users could not be renamed automatically. Please rename these users in the Admin CP manually after the upgrade process has finished completing:<br />
+		<ul>
+		<li>";
+		echo implode('</li>\n<li>', $not_renameable);
+		echo "</li>
+		</ul>";
+	}
+	
+	$contents .= "Click next to continue with the upgrade process.</p>";
+	$output->print_contents($contents);
+	$output->print_footer("15_done");
+}
 
 ?>

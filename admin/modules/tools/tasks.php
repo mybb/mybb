@@ -650,7 +650,7 @@ if($mybb->input['action'] == "logs")
 	while($log_entry = $db->fetch_array($query))
 	{
 		$log_entry['title'] = htmlspecialchars_uni($log_entry['title']);
-		$log_entry['data'] = htmlspecialchars_uni($log_entry['data']);
+		$log_entry['data'] = nl2br(htmlspecialchars_uni($log_entry['data']));
 		$date = my_date($mybb->settings['dateformat'], $log_entry['dateline']).", ".my_date($mybb->settings['timeformat'], $log_entry['dateline']);
 		$table->construct_cell("<a href=\"index.php?module=tools/tasks&amp;action=edit&amp;tid={$log_entry['tid']}\">{$log_entry['title']}</a>");
 		$table->construct_cell($date, array("class" => "align_center"));

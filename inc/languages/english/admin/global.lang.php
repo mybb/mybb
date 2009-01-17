@@ -238,6 +238,13 @@ $l['task_promotions_ran'] = "The promotions task successfully ran.";
 $l['task_threadviews_ran'] = "The thread views task successfully ran.";
 $l['task_usercleanup_ran'] = "The user cleanup task successfully ran.";
 $l['task_massmail_ran'] = "The mass mail task successfully ran.";
+$l['task_massmail_ran_errors'] = "One or more problems occured sending to \"{1}\":
+{2}";
+
+$l['massmail_username'] = "Username";
+$l['email_addr'] = "Email Address";
+$l['board_name'] = "Board Name";
+$l['board_url'] = "Board URL";
 
 // If the language string for "Username" is too cramped in the ACP Login box
 // then use this to define how much larger you want the gap to be (in px)

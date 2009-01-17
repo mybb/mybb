@@ -78,8 +78,16 @@ function task_massmail($task)
 				
 				$pm['to'] = explode(",", $user['username']);
 				$pm_handler->set_data($pm);
-				$pm_handler->validate_pm();
-				$pm_handler->insert_pm();
+				if(!$pm_handler->validate_pm())
+				{
+					$friendly_errors = implode('\n', $pm_handler->get_friendly_errors());
+					add_task_log($task, $lang->sprintf($lang->task_massmail_ran_errors, htmlspecialchars_uni($user['username']), $friendly_errors));
+					$friendly_errors = "";
+				}
+				else
+				{
+					$pm_handler->insert_pm();
+				}
 			}
 			// Normal Email
 			else

@@ -312,7 +312,7 @@ function akismet_key()
 
 function akismet_show_confirm_page()
 {
-	global $mybb, $lang, $theme, $pid, $fid, $db;
+	global $mybb, $lang, $theme, $pid, $fid, $db, $headerinclude, $header, $footer;
 	
 	$pid = intval($pid);
 	$fid = intval($fid);
@@ -352,11 +352,12 @@ function akismet_show_confirm_page()
 {$footer}
 </body>
 </html>");
+	exit;
 }
 
 function akismet_moderation_start()
 {
-	global $mybb, $db, $akismet, $lang, $cache;
+	global $mybb, $db, $akismet, $lang, $cache, $fid, $pid;
 	
 	if(!$mybb->settings['akismetswitch'] || $mybb->input['action'] != 'mark_as_spam')
 	{
