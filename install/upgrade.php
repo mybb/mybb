@@ -809,7 +809,7 @@ function sync_settings($redo=0)
 		require MYBB_ROOT."inc/settings.php";
 		foreach($settings as $key => $val)
 		{
-			$db->update_query("settings", array('value' => $db->escape_string($val)), "name='$key'");
+			$db->update_query("settings", array('value' => $db->escape_string($val)), "name='".$db->escape_string($key)."'");
 		}
 	}
 	unset($settings);

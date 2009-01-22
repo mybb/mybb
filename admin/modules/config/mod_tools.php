@@ -575,7 +575,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			}
 			else
 			{
-				$new_tools['forums'] = "-1";
+				$new_tool['forums'] = "-1";
 			}
 		
 			$tid = $db->insert_query("modtools", $new_tool);

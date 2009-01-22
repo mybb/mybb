@@ -535,7 +535,7 @@ smtp=SMTP mail]]></optionscode>
 			<title>SMTP password</title>
 			<description><![CDATA[The corresponding password used to authenticate with the SMTP server.<br />Only required if SMTP Mail is selected as the Mail Handler, and the SMTP server requires authentication.]]></description>
 			<disporder>5</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[passwordbox]]></optionscode>
 			<settingvalue><![CDATA[]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>

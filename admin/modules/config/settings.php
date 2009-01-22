@@ -1097,6 +1097,10 @@ if($mybb->input['action'] == "change")
 				$languages = $lang->get_languages(1);
 				$setting_code = $form->generate_select_box($element_name, $languages, $setting['value'], array('id' => $element_id));
 			}
+			else if($type[0] == "passwordbox")
+			{
+				$setting_code = $form->generate_password_box($element_name, $setting['value'], array('id' => $element_id));
+			}
 			else if($type[0] == "php")
 			{
 				$setting['optionscode'] = substr($setting['optionscode'], 3);
