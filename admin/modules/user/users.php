@@ -1045,7 +1045,12 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("remember", 1, $lang->remember_login_details, array("checked" => $mybb->input['remember']))
 	);
 	$form_container->output_row($lang->login_cookies_privacy, "", "<div class=\"user_settings_bit\">".implode("</div><div class=\"user_settings_bit\">", $login_options)."</div>");
-
+	
+	if($mybb->input['pmnotice'] > 1)
+	{
+		$mybb->input['pmnotice'] = 1;
+	}
+	
 	$messaging_options = array(
 		$form->generate_check_box("allownotices", 1, $lang->recieve_admin_emails, array("checked" => $mybb->input['allownotices'])),
 		$form->generate_check_box("hideemail", 1, $lang->hide_email_from_others, array("checked" => $mybb->input['hideemail'])),

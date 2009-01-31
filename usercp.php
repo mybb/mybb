@@ -199,7 +199,7 @@ if($mybb->input['action'] == "do_profile" && $mybb->request_method == "post")
 			"away" => 1,
 			"date" => $awaydate,
 			"returndate" => $returndate,
-			"awayreason" => $db->escape_string($mybb->input['awayreason'])
+			"awayreason" => $mybb->input['awayreason']
 		);
 	}
 	else

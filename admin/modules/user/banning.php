@@ -372,7 +372,7 @@ if(!$mybb->input['action'])
 		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{
 			$ban_period = $lang->permenantly;
-			$time_remaning = $lifts_on = $lang->na;
+			$time_remaining = $lifts_on = $lang->na;
 		}
 		else
 		{

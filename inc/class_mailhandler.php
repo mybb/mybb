@@ -355,31 +355,34 @@ class MailHandler
 	 *
 	 * @param string The string to be encoded.
 	 * @return string The encoded string.
-	 */
+	 */	
 	function utf8_encode($string)
 	{
-		$encoded_string = $string;
-		if(strtolower($this->charset) == 'utf-8' && preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]/', $string))
+		if(strtolower($this->charset) == 'utf-8' && preg_match('/[^\x20-\x7E]/', $string))
 		{
-			// Define start delimimter, end delimiter and spacer
-			$end = "?=";
-			$start = "=?" . $this->charset . "?B?";
-			$spacer = $end . ' ' . $start;
+			$chunk_size = 47; // Derived from floor((75 - strlen("=?UTF-8?B??=")) * 0.75);
+			$len = strlen($string);
+			$output = '';
+			$pos = 0;
 
-			// Determine length of encoded text within chunks and ensure length is even (should NOT use the my_strlen functions)
-			$length = 75 - strlen($start) - strlen($end);
-			$length = floor($length/4) * 4;
+            while($pos < $len)
+			{
+				$newpos = min($pos + $chunk_size, $len);
 
-			// Encode the string and split it into chunks with spacers after each chunk
-			$encoded_string = base64_encode($encoded_string);
-			$encoded_string = chunk_split($encoded_string, $length, $spacer);
+				while(ord($string[$newpos]) >= 0x80 && ord($string[$newpos]) < 0xC0)
+				{
+					// Reduce len until it's safe to split UTF-8.
+					$newpos--;
+				}
 
-			// Remove trailing spacer and add start and end delimiters
-			$spacer = preg_quote($spacer);
-			$encoded_string = preg_replace("/" . $spacer . "$/", "", $encoded_string);
-			$encoded_string = $start . $encoded_string . $end;
+				$chunk = substr($string, $pos, $newpos - $pos);
+				$pos = $newpos;
+
+				$output .= " =?UTF-8?B?".base64_encode($chunk)."?=\n";
+			}
+			return trim($output);
 		}
-		return $encoded_string;
+		return $string;
 	}
 }
 ?>

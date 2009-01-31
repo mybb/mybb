@@ -237,6 +237,12 @@ function save_quick_perms($fid)
 		$query2 = $db->simple_select("forumpermissions", "canviewthreads,candlattachments,canratethreads,caneditposts,candeleteposts,candeletethreads,caneditattachments,canvotepolls,cansearch", "fid='{$fid}' AND gid='{$usergroup['gid']}'", array('limit' => 1));
 		$existing_permissions = $db->fetch_array($query2);
 		
+		if(!$existing_permissions)
+		{
+			$query2 = $db->simple_select("usergroups", "canviewthreads,candlattachments,canratethreads,caneditposts,candeleteposts,candeletethreads,caneditattachments,canvotepolls,cansearch", "gid='{$usergroup['gid']}'", array('limit' => 1));
+			$existing_permissions = $db->fetch_array($query2);
+		}
+		
 		// Delete existing permissions
 		$db->delete_query("forumpermissions", "fid='{$fid}' AND gid='{$usergroup['gid']}'");
 

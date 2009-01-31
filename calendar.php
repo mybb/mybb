@@ -119,7 +119,7 @@ if($mybb->input['action'] == "do_addevent" && $mybb->request_method == "post")
 			"year" => $mybb->input['end_year'],
 			"time" => $mybb->input['end_time']
 		);
-		$event['timezone'] = $mybb->input['timezone'];
+		$event['timezone'] = intval($mybb->input['timezone']);
 		$event['ignoretimezone'] =	intval($mybb->input['ignoretimezone']);
 		$repeats = array();
 		switch($mybb->input['repeats'])

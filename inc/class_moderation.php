@@ -686,6 +686,7 @@ class Moderation
 				if($thread['visible'] == 1)
 				{
 					$num_threads++;
+					$num_posts = $thread['replies']+1;
 				}
 				else
 				{
@@ -693,8 +694,7 @@ class Moderation
 					// Implied forum unapproved count for unapproved threads
  					$num_unapproved_posts = $thread['replies']+1;
 				}
-
-				$num_posts = $thread['replies']+1;
+				
 				$num_unapproved_posts += $thread['unapprovedposts'];
 
 				$db->delete_query("threads", "closed='moved|$tid' AND fid='$new_fid'");
@@ -871,6 +871,7 @@ class Moderation
 				if($thread['visible'] == 1)
 				{
 					$num_threads++;
+					$num_posts = $thread['replies']+1;
 				}
 				else
 				{
@@ -878,8 +879,7 @@ class Moderation
 					// Implied forum unapproved count for unapproved threads
  					$num_unapproved_posts = $thread['replies']+1;
 				}
-
-				$num_posts = $thread['replies']+1;
+				
 				$num_unapproved_posts = $thread['unapprovedposts'];
 
 				$sqlarray = array(

@@ -320,7 +320,7 @@ else
 		}		
 		
 		$user['regdate'] = my_date($mybb->settings['dateformat'], $user['regdate']).", ".my_date($mybb->settings['timeformat'], $user['regdate']);
-		$user['lastvisit'] = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);;
+		$user['lastvisit'] = my_date($mybb->settings['dateformat'], $user['lastactive']).", ".my_date($mybb->settings['timeformat'], $user['lastactive']);
 		$user['postnum'] = my_number_format($user['postnum']);
 		$alt_bg = alt_trow();
 		eval("\$users .= \"".$templates->get("memberlist_user")."\";");

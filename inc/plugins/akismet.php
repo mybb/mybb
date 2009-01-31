@@ -964,30 +964,30 @@ function akismet_admin()
 		
 		require_once MYBB_ROOT."inc/functions_upload.php";
 		
-		foreach($deletepost as $key => $val)
+		foreach($deletepost as $pid => $val)
 		{
-			if(array_key_exists($key, $threadp))
+			if(array_key_exists($pid, $threadp))
 			{
 				$db->delete_query("posts", "pid IN ({$posts_in})");
 				$db->delete_query("attachments", "pid IN ({$posts_in})");
 	
 				// Get thread info
-				$query = $db->simple_select("threads", "poll", "tid='{$threadp[".$key."]}'");
+				$query = $db->simple_select("threads", "poll", "tid='".$threadp[$pid]."'");
 				$poll = $db->fetch_field($query, 'poll');
 		
 				// Delete threads, redirects, favorites, polls, and poll votes
-				$db->delete_query("threads", "tid='{$threadp[".$key."]}'");
-				$db->delete_query("threads", "closed='moved|{$threadp[".$key."]}'");
-				$db->delete_query("favorites", "tid='{$threadp[".$key."]}'");
-				$db->delete_query("polls", "tid='{$threadp[".$key."]}'");
-				$db->delete_query("pollvotes", "pid='$poll'");
+				$db->delete_query("threads", "tid='".$threadp[$pid]."'");
+				$db->delete_query("threads", "closed='moved|".$threadp[$pid]."'");
+				$db->delete_query("threadsubscriptions", "tid='".$threadp[$pid]."'");
+				$db->delete_query("polls", "tid='".$threadp[$pid]."'");
+				$db->delete_query("pollvotes", "pid='{$poll}'");
 			}
 			
 			// Remove attachments
-			remove_attachments($post['pid']);
+			remove_attachments($pid);
 			
 			// Delete the post
-			$db->delete_query("posts", "pid='{$post['pid']}'");
+			$db->delete_query("posts", "pid='{$pid}'");
 		}
 		
 		// Log admin action
@@ -1095,7 +1095,7 @@ function akismet_admin()
 }
 
 /**
- * This class is Copyright 2007 Ryan Gordon (Tikitiki)
+ * This class is Copyright 2009 Ryan Gordon (Tikitiki)
  * Built to communicate with the akismet server
  */
 

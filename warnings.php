@@ -307,7 +307,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 								
 								if($year > 0)
 								{
-									$time += 60*60*24*265*$year;
+									$time += 60*60*24*365*$year;
 								}
 								
 								if($time == $action['length'])
