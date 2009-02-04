@@ -1600,8 +1600,11 @@ function my_set_array_cookie($name, $id, $value)
 	$cookie = $mybb->cookies['mybb'];
 	$newcookie = unserialize($cookie[$name]);
 	$newcookie[$id] = $value;
-	$newcookie = addslashes(serialize($newcookie));
-	my_setcookie("mybb[$name]", $newcookie);
+	$newcookie = serialize($newcookie);
+	my_setcookie("mybb[$name]", addslashes($newcookie));
+	
+	// Make sure our current viarables are up-to-date as well
+	$mybb->cookies['mybb'][$name] = $newcookie;
 }
 
 /**

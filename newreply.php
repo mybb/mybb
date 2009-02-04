@@ -392,6 +392,11 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 	{
 		$post_errors = $posthandler->get_friendly_errors();
 	}
+	
+	// Mark thread as read
+	require_once MYBB_ROOT."inc/functions_indicators.php";
+	mark_thread_read($tid, $fid);
+
 
 	// Check captcha image
 	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
@@ -500,11 +505,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 				}
 			}
 		}
-
-		// Mark thread as read
-		require_once MYBB_ROOT."inc/functions_indicators.php";
-		mark_thread_read($tid, $fid);
-
+		
 		$plugins->run_hooks("newreply_do_newreply_end");
 		
 		// This was a post made via the ajax quick reply - we need to do some special things here
