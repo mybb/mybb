@@ -36,98 +36,98 @@ class SmtpMail extends MailHandler
 	 *
 	 * @var resource
 	 */
-	var $connection;
+	public $connection;
 
 	/**
 	 * SMTP username.
 	 *
 	 * @var string
 	 */
-	var $username = '';
+	public $username = '';
 
 	/**
 	 * SMTP password.
 	 *
 	 * @var string
 	 */
-	var $password = '';
+	public $password = '';
 
 	/**
 	 * Hello string sent to the smtp server with either HELO or EHLO.
 	 *
 	 * @var string
 	 */
-	var $helo = 'localhost';
+	public $helo = 'localhost';
 
 	/**
 	 * User authenticated or not.
 	 *
 	 * @var boolean
 	 */
-	var $authenticated = false;
+	public $authenticated = false;
 
 	/**
 	 * How long before timeout.
 	 *
 	 * @var integer
 	 */
-	var $timeout = 5;
+	public $timeout = 5;
 
 	/**
 	 * SMTP status.
 	 *
 	 * @var integer
 	 */
-	var $status = 0;
+	public $status = 0;
 
 	/**
 	 * SMTP default port.
 	 *
 	 * @var integer
 	 */
-	var $port = 25;
+	public $port = 25;
 	
 	/**
 	 * SMTP default secure port.
 	 *
 	 * @var integer
 	 */
-	var $secure_port = 465;
+	public $secure_port = 465;
 
 	/**
 	 * SMTP host.
 	 *
 	 * @var string
 	 */
-	var $host = '';
+	public $host = '';
 	
 	/**
 	 * The last received response from the SMTP server.
 	 *
 	 * @var string
 	 */
-	var $data = '';
+	public $data = '';
 	
 	/**
 	 * The last received response code from the SMTP server.
 	 *
 	 * @var string
 	 */
-	var $code = 0;
+	public $code = 0;
+	
+	/**
+	 * The last received error message from the SMTP server.
+	 *
+	 * @var string
+	 */
+	public $last_error = '';
 	
 	/**
 	 * Are we keeping the connection to the SMTP server alive?
 	 *
 	 * @var boolean
 	 */
-	var $keep_alive = false;
-
-	function SmtpMail()
-	{
-		global $mybb;
-
-		$this->__construct();
-	}
+	public $keep_alive = false;
 
 	function __construct()
 	{
@@ -192,7 +192,7 @@ class SmtpMail extends MailHandler
 		{
 			if(!$this->send_data('MAIL FROM:<'.$this->from.'>', '250'))
 			{
-				$this->fatal_error("The mail server does not understand the MAIL FROM command");
+				$this->fatal_error("The mail server does not understand the MAIL FROM command. Reason: ".$this->get_error());
 				return false;
 			}
 			
@@ -203,7 +203,7 @@ class SmtpMail extends MailHandler
 				$to = trim($to);
 				if(!$this->send_data('RCPT TO:<'.$to.'>', '250'))
 				{
-					$this->fatal_error("The mail server does not understand the RCPT TO command");
+					$this->fatal_error("The mail server does not understand the RCPT TO command. Reason: ".$this->get_error());
 					return false;
 				}
 			}
@@ -332,13 +332,13 @@ class SmtpMail extends MailHandler
 			
 			if(!$this->send_data(base64_encode($this->username), '334'))
 			{
-				$this->fatal_error("The SMTP server rejected the supplied SMTP username");
+				$this->fatal_error("The SMTP server rejected the supplied SMTP username. Reason: ".$this->get_error());
 				return false;
 			}
 			
 			if(!$this->send_data(base64_encode($this->password), '235'))
 			{
-				$this->fatal_error("The SMTP server rejected the supplied SMTP password");
+				$this->fatal_error("The SMTP server rejected the supplied SMTP password. Reason: ".$this->get_error());
 				return false;
 			}
 		}
@@ -356,7 +356,7 @@ class SmtpMail extends MailHandler
 			$auth = base64_encode(chr(0).$this->username.chr(0).$this->password);
 			if(!$this->send_data($auth, 235))
 			{
-				$this->fatal_error("The SMTP server rejected the supplied login username and password");
+				$this->fatal_error("The SMTP server rejected the supplied login username and password. Reason: ".$this->get_error());
 				return false;
 			}
 		}
@@ -428,6 +428,7 @@ class SmtpMail extends MailHandler
 					}
 					else
 					{
+						$this->set_error($rec);
 						return false;
 					}
 				}
@@ -471,6 +472,26 @@ class SmtpMail extends MailHandler
 			fclose($this->connection);
 			$this->status = 0;
 		}
+	}
+	
+	/**
+	 * Get the last error message response from the SMTP server
+	 *
+	 * @return string The error message response from the SMTP server
+	 */
+	function get_error()
+	{
+		return $this->last_error;
+	}
+	
+	/**
+	 * Set the last error message response from the SMTP server
+	 *
+	 * @param string The error message response
+	 */
+	function set_error($error)
+	{
+		$this->last_error = $error;
 	}
 }
 ?>

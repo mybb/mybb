@@ -48,6 +48,13 @@ class MailHandler
 	 * @var string
 	 */
 	var $subject;
+	
+	/**
+	 * The unaltered subject of mail.
+	 *
+	 * @var string
+	 */
+	var $orig_subject;
 
 	/**
 	 * The message of the mail.
@@ -123,7 +130,7 @@ class MailHandler
 		{
 			$this->return_email = "";
 		}
-		
+
 		$this->set_to($to);
 		$this->set_subject($subject);
 		if($charset)
@@ -180,7 +187,8 @@ class MailHandler
 	 */
 	function set_subject($subject)
 	{
-		$this->subject = $this->utf8_encode($this->cleanup($subject));
+		$this->orig_subject = $this->cleanup($subject);
+		$this->subject = $this->utf8_encode($this->orig_subject);
 	}
 
 	/**
@@ -355,7 +363,7 @@ class MailHandler
 	 *
 	 * @param string The string to be encoded.
 	 * @return string The encoded string.
-	 */	
+	 */
 	function utf8_encode($string)
 	{
 		if(strtolower($this->charset) == 'utf-8' && preg_match('/[^\x20-\x7E]/', $string))
@@ -383,6 +391,6 @@ class MailHandler
 			return trim($output);
 		}
 		return $string;
-	}
+	} 
 }
 ?>

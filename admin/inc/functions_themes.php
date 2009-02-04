@@ -952,7 +952,15 @@ function build_theme_list($parent=0, $depth=0)
 			{
 				$user_themes['style'] = $themes['default'];
 			}
-			$themes[$user_themes['style']]['users'] = intval($user_themes['users']);
+			
+			if($themes[$user_themes['style']]['users'] > 0)
+			{
+				$themes[$user_themes['style']]['users'] += intval($user_themes['users']);
+			}
+			else
+			{
+				$themes[$user_themes['style']]['users'] = intval($user_themes['users']);
+			}
 		}
 
 		// Restrucure the theme array to something we can "loop-de-loop" with

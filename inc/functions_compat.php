@@ -123,4 +123,61 @@ if(!function_exists('memory_get_peak_usage'))
 	}
 }
 
+if(!function_exists('mb_substr'))
+{
+	/**
+	 * Multibyte safe substr function. Based off of code from http://php.net/manual/en/function.substr.php#53199
+	 *
+	 * @param string The string to cut.
+	 * @param int Where to start
+	 * @param int (optional) How much to cut
+	 * @return int The cut part of the string.
+	 */
+	function mb_substr($string, $start, $len=null)
+	{
+		// How many bytes per character does this string have? (ex. utf-8 is "3", gb2312 and big5 is "2")
+		$byte = 3;
+		$cut_string = "";
+		$count = 0;
+		$string_length = strlen($string);
+		
+		if($len == null)
+		{
+			$len = $string_length;
+		}
+		
+		for($i=0; $i < $string_length; $i++)
+		{
+			$chr = substr($string, $i, 1);
+			$ord = ord($chr);
+			
+			if(($count+1-$start) > $len)
+			{
+				break;
+			}
+			elseif($ord <= 128 && $count < $start)
+			{
+				$count++;
+			}
+			elseif($ord > 128 && $count < $start)
+			{
+				$count = $count+2;
+				$i = $i+$byte-1;
+			}
+			elseif($ord <= 128 && $count >= $start)
+			{
+				$cut_string .= $chr;
+				$count++;
+			}
+			elseif($ord > 128 && $count >= $start)
+			{
+				$cut_string .= substr($string, $i, $byte);
+				$count = $count+2;
+				$i = $i+$byte-1;
+			}
+		}
+		return $cut_string;
+	}
+}
+
 ?>
