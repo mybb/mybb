@@ -36,98 +36,98 @@ class SmtpMail extends MailHandler
 	 *
 	 * @var resource
 	 */
-	public $connection;
+	var $connection;
 
 	/**
 	 * SMTP username.
 	 *
 	 * @var string
 	 */
-	public $username = '';
+	var $username = '';
 
 	/**
 	 * SMTP password.
 	 *
 	 * @var string
 	 */
-	public $password = '';
+	var $password = '';
 
 	/**
 	 * Hello string sent to the smtp server with either HELO or EHLO.
 	 *
 	 * @var string
 	 */
-	public $helo = 'localhost';
+	var $helo = 'localhost';
 
 	/**
 	 * User authenticated or not.
 	 *
 	 * @var boolean
 	 */
-	public $authenticated = false;
+	var $authenticated = false;
 
 	/**
 	 * How long before timeout.
 	 *
 	 * @var integer
 	 */
-	public $timeout = 5;
+	var $timeout = 5;
 
 	/**
 	 * SMTP status.
 	 *
 	 * @var integer
 	 */
-	public $status = 0;
+	var $status = 0;
 
 	/**
 	 * SMTP default port.
 	 *
 	 * @var integer
 	 */
-	public $port = 25;
+	var $port = 25;
 	
 	/**
 	 * SMTP default secure port.
 	 *
 	 * @var integer
 	 */
-	public $secure_port = 465;
+	var $secure_port = 465;
 
 	/**
 	 * SMTP host.
 	 *
 	 * @var string
 	 */
-	public $host = '';
+	var $host = '';
 	
 	/**
 	 * The last received response from the SMTP server.
 	 *
 	 * @var string
 	 */
-	public $data = '';
+	var $data = '';
 	
 	/**
 	 * The last received response code from the SMTP server.
 	 *
 	 * @var string
 	 */
-	public $code = 0;
+	var $code = 0;
 	
 	/**
 	 * The last received error message from the SMTP server.
 	 *
 	 * @var string
 	 */
-	public $last_error = '';
+	var $last_error = '';
 	
 	/**
 	 * Are we keeping the connection to the SMTP server alive?
 	 *
 	 * @var boolean
 	 */
-	public $keep_alive = false;
+	var $keep_alive = false;
 
 	function __construct()
 	{
