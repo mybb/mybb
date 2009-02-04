@@ -129,6 +129,13 @@ class SmtpMail extends MailHandler
 	 */
 	var $keep_alive = false;
 
+	function SmtpMail()		
+	{
+		global $mybb;
+		
+		$this->__construct();
+	}
+	
 	function __construct()
 	{
 		global $mybb;
