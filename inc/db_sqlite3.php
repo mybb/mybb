@@ -795,7 +795,7 @@ class DB_SQLite3
 	{
 		$old_tbl_prefix = $this->table_prefix;
 		$this->set_table_prefix("");
-		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$this->table_prefix}{$table}'");
+		$query = $this->simple_select("sqlite_master", "sql", "type = 'table' AND name = '{$old_tbl_prefix}{$table}'");
 		$this->set_table_prefix($old_tbl_prefix);
 		$table = trim(preg_replace('#CREATE\s+TABLE\s+"?'.$this->table_prefix.$table.'"?#i', '', $this->fetch_field($query, "sql")));
 

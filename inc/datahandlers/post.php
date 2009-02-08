@@ -1391,39 +1391,50 @@ class PostDataHandler extends DataHandler
 		$forum = get_forum($post['fid']);
 
 		// Decide on the visibility of this post.
-		if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
-		{
-			if($existing_post['visible'] == 1)
-			{
-				update_thread_data($existing_post['tid']);
-				update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
-				update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
-				
-				// Subtract from the users post count
-				// Update the post count if this forum allows post counts to be tracked
-				if($forum['usepostcounts'] != 0)
-				{
-					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
-				}
-			}
+		if(isset($post['visible']) && $post['visible'] != $existing_post['visible'])
+        {
+            if($forum['mod_edit_posts'] == 1 && !is_moderator($post['fid'], "", $post['uid']))
+            {
+                if($existing_post['visible'] == 1)
+                {
+                    update_thread_data($existing_post['tid']);
+                    update_thread_counters($existing_post['tid'], array('replies' => '-1', 'unapprovedposts' => '+1'));
+                    update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '+1', 'unapprovedposts' => '+1'));
+                    
+                    // Subtract from the users post count
+                    // Update the post count if this forum allows post counts to be tracked
+                    if($forum['usepostcounts'] != 0)
+                    {
+                        $db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum-1 WHERE uid='{$existing_post['uid']}'");
+                    }
+                }
+                $visible = 0;
+            }
+            else
+            {
+                if($existing_post['visible'] == 0)
+                {
+                    update_thread_data($existing_post['tid']);
+                    update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
+                    update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
+                    
+                    // Update the post count if this forum allows post counts to be tracked
+                    if($forum['usepostcounts'] != 0)
+                    {
+                        $db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
+                    }
+                }
+                $visible = 1;
+            }
+        }
+        else
+        {
 			$visible = 0;
-		}
-		else
-		{
-			if($existing_post['visible'] == 0)
+			if($forum['mod_edit_posts'] != 1 || is_moderator($post['fid'], "", $post['uid']))
 			{
-				update_thread_data($existing_post['tid']);
-				update_thread_counters($existing_post['tid'], array('replies' => '+1', 'unapprovedposts' => '-1'));
-				update_forum_counters($existing_post['fid'], array('unapprovedthreads' => '-1', 'unapprovedposts' => '-1'));
-				
-				// Update the post count if this forum allows post counts to be tracked
-				if($forum['usepostcounts'] != 0)
-				{
-					$db->write_query("UPDATE ".TABLE_PREFIX."users SET postnum=postnum+1 WHERE uid='{$existing_post['uid']}'");
-				}
+				$visible = 1;
 			}
-			$visible = 1;
-		}
+        }
 
 		// Check if this is the first post in a thread.
 		$options = array(

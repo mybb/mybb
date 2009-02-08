@@ -51,7 +51,7 @@ function task_massmail($task)
 				"{email}" => $user['email'],
 				"{bbname}" => $mybb->settings['bbname'],
 				"{bburl}" => $mybb->settings['bburl'],
-				"[".$lang->username."]" => $user['username'],
+				"[".$lang->massmail_username."]" => $user['username'],
 				"[".$lang->email_addr."]" => $user['email'],
 				"[".$lang->board_name."]" => $mybb->settings['bbname'],
 				"[".$lang->board_url."]" => $mybb->settings['bburl']
