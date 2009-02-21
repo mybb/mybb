@@ -132,7 +132,7 @@ else
 {
 	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "do_newreply")
 	{
-		$username = $lang->guest;
+		$username = '';
 	}
 	elseif($mybb->input['previewpost'])
 	{

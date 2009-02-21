@@ -442,17 +442,22 @@ function akismet_moderation_start()
 			SELECT p.uid, u.usergroup
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-			WHERE tid = '{$post['tid']}'
+			WHERE p.tid = '{$post['tid']}'
 		");
 		while($post2 = $db->fetch_array($query))
 		{
 			if($mybb->settings['akismetuidsignore'])
 			{
 				$akismet_uids_ignore = explode(',', $mybb->settings['akismetuidsignore']);
-				if(in_array($post2['usergroup'], $akismet_uids_ignore))
+				if(in_array($post2['usergroup'], $akismet_uids_ignore) || is_super_admin($post2['uid']))
 				{
 					continue;
 				}
+			}
+			
+			if(is_super_admin($post2['uid']))
+			{
+				continue;
 			}
 			
 			$db->write_query("UPDATE ".TABLE_PREFIX."users SET akismetstopped=akismetstopped+1 WHERE uid = '{$post2['uid']}'");
@@ -497,6 +502,11 @@ function akismet_moderation_start()
 			{
 				continue;
 			}
+		}
+		
+		if(is_super_admin($post['uid']))
+		{
+			continue;
 		}
 		
 		// Check if the person should be banned
@@ -571,7 +581,7 @@ function akismet_fake_draft(&$post)
 	
 	$exclude_array = explode(',', $mybb->settings['akismetuserstoignore']);
 	
-	if(!$mybb->settings['akismetswitch'] || in_array($mybb->user['uid'], $exclude_array))
+	if(!$mybb->settings['akismetswitch'] || in_array($mybb->user['uid'], $exclude_array) || is_super_admin($mybb->user['uid']))
 	{
 		return;
 	}

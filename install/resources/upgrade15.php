@@ -24,7 +24,7 @@ $upgrade_detail = array(
 
 function upgrade15_dbchanges()
 {
-	global $db, $output, $mybb;
+	global $db, $output, $mybb, $cache;
 
 	$output->print_header("Performing Queries");
 
@@ -44,6 +44,16 @@ function upgrade15_dbchanges()
 	
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	
+	if($db->type != "sqlite2" && $db->type != "sqlite3")
+	{
+		$ip_index = $db->index_exists("sessions", "ip");
+
+		if($ip_index == false)
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX (`ip`)");
+		}
+	}
+	
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("15_usernameverify");
@@ -51,7 +61,6 @@ function upgrade15_dbchanges()
 
 function upgrade15_usernameverify()
 {
-	
 	global $db, $output, $mybb;
 
 	$output->print_header("Performing Queries");
@@ -72,6 +81,8 @@ function upgrade15_usernameupdate()
 
 	echo "<p>Performing username updates..</p>";
 	flush();
+	
+	require_once MYBB_ROOT."inc/datahandler.php";
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
 	
 	$not_renameable = array();

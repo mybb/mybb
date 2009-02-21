@@ -441,27 +441,32 @@ else
 }
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
-// How many posts are there?
-if($datecut > 0)
+$threadcount = 0;
+
+if($fpermissions['canviewthreads'] != 0)
 {
-	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $datecutsql");
-	$threadcount = $db->fetch_field($query, "threads");
-}
-else
-{
-	$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
-	$forum_threads = $db->fetch_array($query);
-	$threadcount = $forum_threads['threads'];
-	if($ismod == true)
+	// How many posts are there?
+	if($datecut > 0)
 	{
-		$threadcount += $forum_threads['unapprovedthreads'];
-	}
-	
-	// If we have 0 threads double check there aren't any "moved" threads
-	if($threadcount == 0)
-	{
-		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly", array('limit' => 1));
+		$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $datecutsql");
 		$threadcount = $db->fetch_field($query, "threads");
+	}
+	else
+	{
+		$query = $db->simple_select("forums", "threads, unapprovedthreads", "fid = '{$fid}'", array('limit' => 1));
+		$forum_threads = $db->fetch_array($query);
+		$threadcount = $forum_threads['threads'];
+		if($ismod == true)
+		{
+			$threadcount += $forum_threads['unapprovedthreads'];
+		}
+		
+		// If we have 0 threads double check there aren't any "moved" threads
+		if($threadcount == 0)
+		{
+			$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly", array('limit' => 1));
+			$threadcount = $db->fetch_field($query, "threads");
+		}
 	}
 }
 
@@ -541,7 +546,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
-if($foruminfo['allowtratings'] != 0)
+if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
 	switch($db->type)
@@ -668,43 +673,50 @@ if($announcements)
 
 $icon_cache = $cache->read("posticons");
 
-// Start Getting Threads
-$query = $db->query("
-	SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username
-	FROM ".TABLE_PREFIX."threads t
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
-	WHERE t.fid='$fid' $tvisibleonly $datecutsql2
-	ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
-	LIMIT $start, $perpage
-");
-while($thread = $db->fetch_array($query))
+if($fpermissions['canviewthreads'] != 0)
 {
-	if($db->type == "pgsql")
+	// Start Getting Threads
+	$query = $db->query("
+		SELECT t.*, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username
+		FROM ".TABLE_PREFIX."threads t
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
+		WHERE t.fid='$fid' $tvisibleonly $datecutsql2
+		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
+		LIMIT $start, $perpage
+	");
+	while($thread = $db->fetch_array($query))
 	{
-		$thread['averagerating'] = $averagerating[$thread['tid']];
-	}
-
-	$threadcache[$thread['tid']] = $thread;
-
-	// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
-	if(substr($thread['closed'], 0, 5) == "moved")
-	{
-		$tid = substr($thread['closed'], 6);
-		if(!$tids[$tid])
+		if($db->type == "pgsql")
 		{
-			$moved_threads[$tid] = $thread['tid'];
-			$tids[$thread['tid']] = $tid;
+			$thread['averagerating'] = $averagerating[$thread['tid']];
+		}
+
+		$threadcache[$thread['tid']] = $thread;
+
+		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
+		if(substr($thread['closed'], 0, 5) == "moved")
+		{
+			$tid = substr($thread['closed'], 6);
+			if(!$tids[$tid])
+			{
+				$moved_threads[$tid] = $thread['tid'];
+				$tids[$thread['tid']] = $tid;
+			}
+		}
+		// Otherwise - set it to the plain thread ID
+		else
+		{
+			$tids[$thread['tid']] = $thread['tid'];
+			if($moved_threads[$tid])
+			{
+				unset($moved_threads[$tid]);
+			}
 		}
 	}
-	// Otherwise - set it to the plain thread ID
-	else
-	{
-		$tids[$thread['tid']] = $thread['tid'];
-		if($moved_threads[$tid])
-		{
-			unset($moved_threads[$tid]);
-		}
-	}
+}
+else
+{
+	$tids = $threadcache = null;
 }
 
 if($tids)

@@ -890,6 +890,7 @@ if($mybb->input['action'] == "add")
 		$usergroups[$usergroup['gid']] = $usergroup;
 	}
 	
+	$cached_forum_perms = $cache->read("forumpermissions");
 	$field_list = array('canview', 'canpostthreads', 'canpostreplys', 'canpostpolls', 'canpostattachments');
 	
 	$form_container = new FormContainer($lang->forum_permissions);

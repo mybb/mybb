@@ -132,7 +132,7 @@ else
 			break;
 		case "pgsql":
 		default:
-			$query = $db->simple_select("sessions", "COUNT(DISTINCT sid) as online", "time > {$timesearch}");
+			$query = $db->simple_select("sessions", "COUNT(sid) as online", "time > {$timesearch}");
 			$online_count = $db->fetch_field($query, "online");
 			break;
 	}

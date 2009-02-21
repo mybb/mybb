@@ -98,7 +98,7 @@ else
 {
 	if(!$mybb->input['previewpost'] && $mybb->input['action'] != "do_newthread")
 	{
-		$username = $lang->guest;
+		$username = '';
 	}
 	else
 	{

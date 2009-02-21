@@ -211,6 +211,13 @@ if($mybb->input['action'] == "edit")
 	{
 		$form_container->output_row($lang->ban_group, $lang->ban_group_desc, $form->generate_select_box('usergroup', $banned_groups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 	}
+	
+	if($mybb->input['bantime'] == 'perm' || $mybb->input['bantime'] == '' || $mybb->input['lifted'] == 'perm' ||$mybb->input['lifted'] == '')
+	{
+		$mybb->input['bantime'] = '---';
+		$mybb->input['lifted'] = '---';
+	}
+	
 	foreach($ban_times as $time => $period)
 	{
 		if($time != "---")

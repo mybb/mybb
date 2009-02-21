@@ -505,7 +505,14 @@ $archive_url = $mybb->settings['bburl']."/archive/index.php";
 // Check banned ip addresses
 if(is_banned_ip($session->ipaddress, true))
 {
-	$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
+	if ($mybb->user['uid'])
+    {
+        $db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
+    }
+    else
+    {
+        $db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."'");
+    }
 	error($lang->error_banned);
 }
 

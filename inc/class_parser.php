@@ -928,9 +928,24 @@ class postParser
 	*/
 	function mycode_auto_url($message)
 	{
-		$message = " ".$message;
-		$message = preg_replace("#([\>\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
-		$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
+		static $utf8_pcre_supported;
+	    if(!isset($utf8_pcre_supported))
+	    {
+	        $utf8_pcre_supported = @preg_match('#^.#u', 'a');
+	    }
+	        
+	    if($utf8_pcre_supported)
+	    {
+	        $utf8_regex_chr = "u";
+	    }
+	    else
+	    {
+	        $utf8_regex_chr = "";
+	    }
+	        
+	    $message = " ".$message;
+	    $message = preg_replace("#([\>\s\(\)])(https?|ftp|news){1}://([\w\-]+\.([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i".$utf8_regex_chr, "$1[url]$2://$3[/url]", $message);
+	    $message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([\w\-]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i".$utf8_regex_chr, "$1[url]$2.$3[/url]", $message);
 		$message = my_substr($message, 1);
 		return $message;
 	}

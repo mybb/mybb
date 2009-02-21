@@ -609,7 +609,8 @@ $tables[] = "CREATE TABLE mybb_sessions (
   KEY location1 (location1),
   KEY location2 (location2),
   KEY time (time),
-  KEY uid (uid)
+  KEY uid (uid),
+  KEY ip (ip)
 ) TYPE=MyISAM;";
 
 $tables[] = "CREATE TABLE mybb_settinggroups (
