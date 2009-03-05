@@ -809,7 +809,7 @@ if($mybb->input['action'] == "edit")
 				"attachquota" => intval($mybb->input['attachquota']),
 				"cancustomtitle" => intval($mybb->input['cancustomtitle']),
 				"canwarnusers" => intval($mybb->input['canwarnusers']),
-				"canreceivewarnings" =>intval($mybb->input['canreceivewarnings']),
+				"canreceivewarnings" => intval($mybb->input['canreceivewarnings']),
 				"maxwarningsday" => intval($mybb->input['maxwarningsday']),
 				"canmodcp" => intval($mybb->input['canmodcp'])
 			);

@@ -242,6 +242,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 			"issuedby" => $mybb->user['uid'],
 			"expires" => $warning_expires,
 			"expired" => 0,
+			"revokereason" => '',
 			"notes" => $db->escape_string($mybb->input['notes'])
 		);
 		$db->insert_query("warnings", $new_warning);

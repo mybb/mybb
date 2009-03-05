@@ -329,7 +329,7 @@ class MailHandler
 		global $db;
 		
 		$mail_error = array(
-			"subject" => $db->escape_string($this->subject),
+			"subject" => $db->escape_string($this->orig_subject),
 			"message" => $db->escape_string($this->message),
 			"toaddress" => $db->escape_string($this->to),
 			"fromaddress" => $db->escape_string($this->from),

@@ -83,7 +83,7 @@ if($endpart != "index.php")
 	{
 		$action = $todo[0];
 	}
-	$page = $todo[2];
+	$page = intval($todo[2]);
 	$id = intval($todo[1]);
 
 	// Get the thread, announcement or forum information.

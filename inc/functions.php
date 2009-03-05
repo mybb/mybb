@@ -1008,7 +1008,6 @@ function usergroup_permissions($gid=0)
 
 	$groups = explode(",", $gid);
 
-
 	if(count($groups) == 1)
 	{
 		return $groupscache[$gid];
@@ -1039,7 +1038,7 @@ function usergroup_permissions($gid=0)
 				{
 					$usergroup[$perm] = 0;
 					continue;
-				} 
+				}
 
 				if($access > $permbit || ($access == "yes" && $permbit == "no") || !$permbit) // Keep yes/no for compatibility?
 				{

@@ -1173,7 +1173,7 @@ elseif($mybb->input['action'] == "do_search" && $mybb->request_method == "post")
 			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
-		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 		// Users last search was within the flood time, show the error
 		if($last_search['sid'])
@@ -1296,7 +1296,7 @@ else if($mybb->input['action'] == "thread")
 			$conditions = "uid='0' AND ipaddress='".$db->escape_string($session->ipaddress)."'";
 		}
 		$timecut = TIME_NOW-$mybb->settings['searchfloodtime'];
-		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline >= '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
+		$query = $db->simple_select("searchlog", "*", "$conditions AND dateline > '$timecut'", array('order_by' => "dateline", 'order_dir' => "DESC"));
 		$last_search = $db->fetch_array($query);
 
 		// We shouldn't show remaining time if time is 0 or under.
