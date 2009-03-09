@@ -873,6 +873,13 @@ class PostDataHandler extends DataHandler
 					continue;
 				}
 				$done_users[$subscribedmember['uid']] = 1;
+				
+				$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
+				if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+				{
+				    continue;
+				}
+				
 				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
 					$uselang = $subscribedmember['language'];
@@ -1244,7 +1251,9 @@ class PostDataHandler extends DataHandler
 				{
 					$forum['lastpost'] = 0;
 				}
-
+				
+				$done_users = array();
+				
 				// Queue up any forum subscription notices to users who are subscribed to this forum.
 				$excerpt = my_substr($thread['message'], 0, $mybb->settings['subscribeexcerpt']).$lang->emailbit_viewthread;
 				
@@ -1270,6 +1279,13 @@ class PostDataHandler extends DataHandler
 						continue;
 					}
 					$done_users[$subscribedmember['uid']] = 1;
+					
+					$forumpermissions = forum_permissions($thread['fid'], $subscribedmember['uid']);
+					if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
+					{
+					    continue;
+					}
+					
 					// Determine the language pack we'll be using to send this email in and load it if it isn't already.
 					if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 					{

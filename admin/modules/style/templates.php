@@ -670,6 +670,19 @@ if($mybb->input['action'] == "search_replace")
 									}
 								}
 							}
+							else
+							{
+								// Just show that the term was found
+								if($template['sid'] == -2)
+								{
+									$label = $lang->sprintf($lang->search_found, $template['title']);
+								}
+								else
+								{
+									$label = $lang->sprintf($lang->search_found, $template['title']);
+									$url = "index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$template['sid']}";
+								}
+							}
 						
 							$table->construct_cell($label, array("width" => "85%"));
 							
