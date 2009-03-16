@@ -843,6 +843,9 @@ function build_friendly_wol_location($user_activity)
 		case "usercp_profile":
 			$location_name = $lang->updating_profile;
 			break;
+		case "usercp_editlists":
+			$location_name = $lang->managing_buddyignorelist;
+			break;
 		case "usercp_options":
 			$location_name = $lang->updating_options;
 			break;

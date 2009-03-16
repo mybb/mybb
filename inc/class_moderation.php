@@ -603,7 +603,7 @@ class Moderation
 		$query = $db->simple_select("posts", "pid", "tid = '{$post['tid']}'", array('order_by' => 'dateline', 'order_dir' => 'desc', 'limit' => '1'));
 		$lastpostpid = $db->fetch_field($query, 'pid');
 		
-		$query2 = $db->simple_select("attachments", "COUNT(aid) as count", "pid IN({$pidin}) AND pid != '{$masterpid}' AND visible='1'");
+		$query2 = $db->simple_select("attachments", "COUNT(aid) as count", "pid IN({$pidin}) AND visible='1'");
 		$attachment_count = $db->fetch_field($query2, "count");
 		
 		$db->update_query("threads", array("attachmentcount" => $attachment_count), "tid = '{$mastertid}'");

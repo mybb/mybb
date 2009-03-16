@@ -729,20 +729,41 @@ if($mybb->input['action'] == "thread")
 		$upper = $start+$perpage;
 		
 		// Work out if we have terms to highlight
-		$highlight = "";
-		if($mybb->input['highlight'])
-		{
-			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+        $highlight = "";
+        $threadmode = "";
+        if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+        {
+            if($mybb->input['highlight'])
+            {
+                $highlight = "?highlight=".urlencode($mybb->input['highlight']);
+            }
+            
+			if($mybb->input['mode'] == "linear")
 			{
-				$highlight = "?highlight=".urlencode($mybb->input['highlight']);
+	            if($mybb->input['highlight'])
+	            {
+	                $threadmode = "&amp;mode=linear";
+	            }
+	            else 
+	            {
+	                $threadmode = "?mode=linear";
+	            }
 			}
-			else
-			{
-				$highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
-			}
-		}
+        }
+        else
+        {
+            if($mybb->input['highlight'])
+            {
+                $highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
+            }
+            
+            if($mybb->input['mode'] == "linear")
+            {
+                $threadmode = "&amp;mode=linear";
+            }
+        }
 
-		$multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight));
+        $multipage = multipage($postcount, $perpage, $page, str_replace("{tid}", $tid, THREAD_URL_PAGED.$highlight.$threadmode)); 
 		if($postcount > $perpage)
 		{
 			eval("\$threadpages = \"".$templates->get("showthread_multipage")."\";");

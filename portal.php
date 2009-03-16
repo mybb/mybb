@@ -447,7 +447,16 @@ while($announcement = $db->fetch_array($query))
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
 	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 	$announcement['threadlink'] = get_thread_link($announcement['tid']);
-	$announcement['profilelink'] = get_profile_link($announcement['uid']);
+	
+	if($announcement['uid'] == 0)
+	{
+		$profilelink = htmlspecialchars_uni($announcement['username']);
+	}
+	else
+	{
+		$profilelink = build_profile_link($announcement['username'], $announcement['uid']);
+	}
+	
 	if(!$announcement['username'])
 	{
 		$announcement['username'] = $announcement['threadusername'];

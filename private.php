@@ -389,7 +389,7 @@ if($mybb->input['action'] == "send")
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
 			$message = "[quote={$pm['quotename']}]\n$message\n[/quote]";
-			$pm['message'] = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $pm['message']);
+			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
 
 			if($mybb->input['do'] == 'forward')
 			{
@@ -1567,11 +1567,11 @@ if(!$mybb->input['action'])
 			if($message['icon'] > 0 && $icon_cache[$message['icon']])
 			{
 				$icon = $icon_cache[$message['icon']];
-				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" align=\"center\" />&nbsp;";
+				$icon = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" align=\"center\" valign=\"middle\" />";
 			}
 			else
 			{
-				$icon = '';
+				$icon = '&nbsp;';
 			}
 			
 			if(!trim($message['subject']))

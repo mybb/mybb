@@ -5517,13 +5517,13 @@ body {
 </table>
 <br />]]></template>
 		<template name="portal_announcement_numcomments" version="1400"><![CDATA[- <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$lang->replies}</a> ({$announcement['replies']})]]></template>
-		<template name="portal_announcement" version="1400"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="portal_announcement" version="1405"><![CDATA[<table cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$icon} <a href="{$mybb->settings['bburl']}/{$announcement['threadlink']}">{$announcement['subject']}</a></strong></td>
 </tr>
 <tr>
 <td class="trow2" align="right">
-<span class="smalltext">{$lang->posted_by} <a href="{$mybb->settings['bburl']}/{$announcement['profilelink']}">{$announcement['username']}</a>  - {$anndate} {$anntime} {$numcomments}</span>
+<span class="smalltext">{$lang->posted_by} {$profilelink}  - {$anndate} {$anntime} {$numcomments}</span>
 </td>
 </tr>
 <tr>

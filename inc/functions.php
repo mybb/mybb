@@ -5378,6 +5378,9 @@ function ban_date2timestamp($date, $stamp=0)
 function expire_warnings()
 {
 	global $db;
+	
+	$users = array();
+	
 	$query = $db->query("
 		SELECT w.wid, w.uid, w.points, u.warningpoints
 		FROM ".TABLE_PREFIX."warnings w
@@ -5390,15 +5393,28 @@ function expire_warnings()
 			"expired" => 1
 		);
 		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
-		$warning['warningpoints'] -= $warning['points'];
-		if($warning['warningpoints'] < 0)
+		
+		if(array_key_exists($user['uid'], $users))
 		{
-			$warning['warningpoints'] = 0;
+			$users[$user['uid']] -= $warning['points'];
 		}
+		else
+		{
+			$users[$user['uid']] = $warning['warningpoints']-$warning['points'];
+		}
+	}
+	
+	foreach($users as $uid => $warningpoints)
+	{
+		if($warningpoints < 0)
+		{
+			$warningpoints = 0;
+		}
+		
 		$updated_user = array(
-			"warningpoints" => intval($warning['warningpoints'])
+			"warningpoints" => intval($warningpoints)
 		);
-		$db->update_query("users", $updated_user, "uid='{$warning['uid']}'");
+		$db->update_query("users", $updated_user, "uid='".intval($uid)."'");
 	}
 }
 
