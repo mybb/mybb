@@ -450,7 +450,7 @@ while($announcement = $db->fetch_array($query))
 	
 	if($announcement['uid'] == 0)
 	{
-		$profilelink = htmlspecialchars_uni($announcement['username']);
+		$profilelink = htmlspecialchars_uni($announcement['threadusername']);
 	}
 	else
 	{
