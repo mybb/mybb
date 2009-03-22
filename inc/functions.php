@@ -1625,7 +1625,7 @@ function get_server_load()
 			$serverload = explode(" ", $load);
 			$serverload[0] = round($serverload[0], 4);
 		}
-		if(!$serverload)
+		if(!is_numeric($serverload))
 		{
 			if(@ini_get('safe_mode') == 'On')
 			{

@@ -619,6 +619,34 @@ class DB_SQLite3
 	}
 	
 	/**
+	 * Build an insert query from an array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of fields and their values.
+	 * @return string The query string.
+	 */
+	function build_insert_query($table, $array)
+	{
+		$comma = $query1 = $query2 = "";
+		if(!is_array($array))
+		{
+			return false;
+		}
+		$comma = "";
+		$query1 = "";
+		$query2 = "";
+		foreach($array as $field => $value)
+		{
+			$query1 .= $comma.$field;
+			$query2 .= $comma."'".$value."'";
+			$comma = ", ";
+		}
+		return "INSERT 
+			INTO ".TABLE_PREFIX.$table." (".$query1.") 
+			VALUES (".$query2.")";
+	}
+	
+	/**
 	 * Build one query for multiple inserts from a multidimensional array.
 	 *
 	 * @param string The table name to perform the query on.
@@ -680,6 +708,39 @@ class DB_SQLite3
 		}
 		
 		return $this->query("UPDATE {$this->table_prefix}$table SET $query");
+	}
+	
+	/**
+	 * Build an update query from an array.
+	 *
+	 * @param string The table name to perform the query on.
+	 * @param array An array of fields and their values.
+	 * @param string An optional where clause for the query.
+	 * @param string An optional limit clause for the query.
+	 * @return string The query string.
+	 */
+	function build_update_query($table, $array, $where="", $limit="")
+	{
+		if(!is_array($array))
+		{
+			return false;
+		}
+		
+		$comma = "";
+		$query = "";
+		
+		foreach($array as $field => $value)
+		{
+			$query .= $comma.$field."='".$value."'";
+			$comma = ", ";
+		}
+		
+		if(!empty($where))
+		{
+			$query .= " WHERE $where";
+		}
+		
+		return "UPDATE {$this->table_prefix}{$table} SET {$query}";
 	}
 
 	/**
@@ -965,6 +1026,59 @@ class DB_SQLite3
 			else
 			{
 				return $this->insert_query($table, $replacements, $insert_id);
+			}
+		}
+	}
+	
+	/**
+	 * Replace contents of table with values
+	 *
+	 * @param string The table
+	 * @param array The replacements
+	 */
+	function build_replace_query($table, $replacements=array(), $default_field="")
+	{
+		$columns = '';
+		$values = '';
+		$comma = '';
+		foreach($replacements as $column => $value)
+		{
+			$columns .= $comma.$column;
+			$values .= $comma."'".$value."'";
+			
+			$comma = ',';
+		}
+		
+		if(empty($columns) || empty($values))
+		{
+			 return false;
+		}
+		
+		if($default_field == "")
+		{
+			return "REPLACE INTO {$this->table_prefix}{$table} ({$columns}) VALUES({$values})";
+		}
+		else
+		{
+			$update = false;
+			$query = $this->write_query("SELECT {$default_field} FROM {$this->table_prefix}{$table}");
+			
+			while($column = $this->fetch_array($query))
+			{
+				if($column[$default_field] == $replacements[$default_field])
+				{				
+					$update = true;
+					break;
+				}
+			}
+			
+			if($update === true)
+			{
+				return $this->build_update_query($table, $replacements, "{$default_field}='".$replacements[$default_field]."'");
+			}
+			else
+			{
+				return $this->build_insert_query($table, $replacements, $insert_id);
 			}
 		}
 	}

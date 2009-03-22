@@ -26,6 +26,8 @@ function mark_thread_read($tid, $fid)
 		switch($db->type)
 		{
 			case "pgsql":
+			case "sqlite2":
+			case "sqlite3":
 				$db->shutdown_query($db->build_replace_query("threadsread", array('tid' => $tid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), "tid"));
 				break;
 			default:

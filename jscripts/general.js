@@ -270,7 +270,7 @@ var MyBB = {
 
 		promptres = prompt("Quick Page Jump\nPlease enter a page number between 1 and "+pages+" to jump to.", defpage);
 
-		if((promptres != null) && (promptres != "") & (promptres > 1) && (promptres <= pages))
+		if((promptres != null) && (promptres != "") && (promptres > 1) && (promptres <= pages))
 		{
 			window.location = "showthread.php?tid="+tid+"&page"+promotres;
 		}
@@ -491,8 +491,6 @@ var MyBB = {
 		return false;
 	}
 };
-
-
 
 var Cookie = {
 	get: function(name)
