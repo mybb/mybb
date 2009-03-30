@@ -36,16 +36,26 @@ function remove_attachment($pid, $posthash, $aid)
 	$plugins->run_hooks("remove_attachment_do_delete", $attachment);
 	
 	$db->delete_query("attachments", "aid='{$attachment['aid']}'");
-	@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
+	
+	if(defined('IN_ADMINCP'))
+	{
+	    $uploadpath = '../'.$mybb->settings['uploadspath'];
+	}
+	else
+	{
+	    $uploadpath = $mybb->settings['uploadspath'];
+	}
+	
+	@unlink($uploadpath."/".$attachment['attachname']);
 	if($attachment['thumbnail'])
 	{
-		@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
+		@unlink($uploadpath."/".$attachment['thumbnail']);
 	}
 
 	$date_directory = explode('/', $attachment['attachname']);
-	if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+	if(@is_dir($uploadpath."/".$date_directory[0]))
 	{
-		@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+		@rmdir($uploadpath."/".$date_directory[0]);
 	}
 
 	if($attachment['visible'] == 1 && $pid)
@@ -78,6 +88,15 @@ function remove_attachments($pid, $posthash="")
 	{
 		$query = $db->simple_select("attachments", "*", "pid='$pid'");
 	}
+	
+	if(defined('IN_ADMINCP'))
+	{
+	    $uploadpath = '../'.$mybb->settings['uploadspath'];
+	}
+	else
+	{
+	    $uploadpath = $mybb->settings['uploadspath'];
+	}
 
 	$num_attachments = 0;
 	while($attachment = $db->fetch_array($query))
@@ -91,16 +110,16 @@ function remove_attachments($pid, $posthash="")
 		
 		$db->delete_query("attachments", "aid='".$attachment['aid']."'");
 		
-		@unlink($mybb->settings['uploadspath']."/".$attachment['attachname']);
+		@unlink($uploadpath."/".$attachment['attachname']);
 		if($attachment['thumbnail'])
 		{
-			@unlink($mybb->settings['uploadspath']."/".$attachment['thumbnail']);
+			@unlink($uploadpath."/".$attachment['thumbnail']);
 		}
 
 		$date_directory = explode('/', $attachment['attachname']);
-		if(@is_dir($mybb->settings['uploadspath']."/".$date_directory[0]))
+		if(@is_dir($uploadpath."/".$date_directory[0]))
 		{
-			@rmdir($mybb->settings['uploadspath']."/".$date_directory[0]);
+			@rmdir($uploadpath."/".$date_directory[0]);
 		}
 	}
 	

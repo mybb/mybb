@@ -141,7 +141,7 @@ if($mybb->input['action'] == "backup")
 		
 		if($mybb->input['method'] == 'disk')
 		{
-			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW.random_str()), 0, 10);
+			$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
 			
 			if($mybb->input['filetype'] == 'gzip')
 			{
@@ -160,7 +160,7 @@ if($mybb->input['action'] == "backup")
 		}
 		else
 		{
-			$file = 'backup_'.substr(md5($mybb->user['uid'].TIME_NOW.random_str()), 0, 10);
+			$file = 'backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
 			if($mybb->input['filetype'] == 'gzip')
 			{
 				if(!function_exists('gzopen')) // check zlib-ness
