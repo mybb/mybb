@@ -469,13 +469,14 @@ function akismet_moderation_start()
 			{
 				$banned_user = array(
 					"uid" => $post2['uid'],
-					"admin" => "Akismet",
+					"admin" => -1,
 					"gid" => 7,
 					"oldgroup" => $post2['usergroup'],
 					"dateline" => TIME_NOW,
 					"bantime" => 'perm',
 					"lifted" => 'perm',
-					"reason" => "Automatically banned by the Akismet system for spamming."
+					"reason" => "Automatically banned by the Akismet system for spamming.",
+					"oldadditionalgroups" => ''
 				);
 				$db->insert_query("banned", $banned_user);
 				
@@ -514,13 +515,14 @@ function akismet_moderation_start()
 		{			
 			$banned_user = array(
 				"uid" => $post['uid'],
-				"admin" => "Akismet",
+				"admin" => -1,
 				"gid" => 7,
 				"oldgroup" => $usergroup,
 				"dateline" => TIME_NOW,
 				"bantime" => 'perm',
 				"lifted" => 'perm',
-				"reason" => "Automatically banned by the Akismet system for spamming."
+				"reason" => "Automatically banned by the Akismet system for spamming.",
+				"oldadditionalgroups" => ''
 			);
 			$db->insert_query("banned", $banned_user);
 			
@@ -633,13 +635,14 @@ function akismet_fake_draft(&$post)
 		{
 			$banned_user = array(
 				"uid" => $mybb->user['uid'],
-				"admin" => "Akismet",
+				"admin" => -1,
 				"gid" => 7,
 				"oldgroup" => $mybb->user['usergroup'],
 				"dateline" => TIME_NOW,
 				"bantime" => 'perm',
 				"lifted" => 'perm',
-				"reason" => "Automatically banned by the Akismet system for spamming."
+				"reason" => "Automatically banned by the Akismet system for spamming.",
+				"oldadditionalgroups" => ''
 			);
 			$db->insert_query("banned", $banned_user);
 			

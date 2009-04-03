@@ -409,7 +409,14 @@ if(!$mybb->input['action'])
 		
 		if(!$ban['adminuser'])
 		{
-			$ban['adminuser'] = $ban['admin'];
+			if($ban['admin'] == -1)
+			{
+				$ban['adminuser'] = "MyBB System";
+			}
+			else
+			{
+				$ban['adminuser'] = $ban['admin'];
+			}
 		}
 
 		$table->construct_cell($lang->sprintf($lang->bannedby_x_on_x, $profile_link, htmlspecialchars_uni($ban['adminuser']), $ban_date, $ban_period));

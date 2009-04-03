@@ -858,9 +858,12 @@ class UserDataHandler extends DataHandler
 		{
 			$this->verify_checkfields();
 		}
-
-		$plugins->run_hooks_by_ref("datahandler_user_validate", $this);
-
+		
+		if(method_exists($plugins, "run_hooks_by_ref"))
+		{
+			$plugins->run_hooks_by_ref("datahandler_user_validate", $this);
+		}
+		
 		// We are done validating, return.
 		$this->set_validated(true);
 		if(count($this->get_errors()) > 0)
@@ -967,9 +970,12 @@ class UserDataHandler extends DataHandler
 		{
 			$this->user_insert_data['dst'] = 0;
 		}
-
-		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
-
+		
+		if(method_exists($plugins, "run_hooks_by_ref"))
+		{
+			$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
+		}
+		
 		$this->uid = $db->insert_query("users", $this->user_insert_data);
 
 		$user['user_fields']['ufid'] = $this->uid;
@@ -1158,8 +1164,11 @@ class UserDataHandler extends DataHandler
 		{
 			unset($this->user_update_data['pmnotice']);
 		}
-
-		$plugins->run_hooks_by_ref("datahandler_user_update", $this);
+		
+		if(method_exists($plugins, "run_hooks_by_ref"))
+		{
+			$plugins->run_hooks_by_ref("datahandler_user_update", $this);
+		}
 		
 		if(count($this->user_update_data) < 1) 
 		{ 
