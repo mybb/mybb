@@ -192,7 +192,7 @@ if($mybb->settings['portal_showpms'] != 0)
 				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_total", "uid='".$mybb->user['uid']."'");
 				$messages['pms_total'] = $db->fetch_field($query, "pms_total");
 				
-				$query = $db->simple_select("privatemessages", "SUM(*) AS pms_unread", "uid='".$mybb->user['uid']."' AND IF(status='0' AND folder='1','1','0')");
+				$query = $db->simple_select("privatemessages", "COUNT(*) AS pms_unread", "uid='".$mybb->user['uid']."' AND CASE WHEN status = '0' AND folder = '0' THEN TRUE ELSE FALSE END");
 				$messages['pms_unread'] = $db->fetch_field($query, "pms_unread");
 				break;
 			default:

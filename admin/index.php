@@ -205,7 +205,7 @@ $mybb->usergroup = usergroup_permissions($mybbgroups);
 
 if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
 {
-	$db->delete_query("adminsessions", "uid='".$db->escape_string($mybb->user['uid'])."'");
+	$db->delete_query("adminsessions", "uid='".intval($mybb->user['uid'])."'");
 	unset($mybb->user);
 	my_setcookie("adminsid", "");
 }
