@@ -5394,13 +5394,13 @@ function expire_warnings()
 		);
 		$db->update_query("warnings", $updated_warning, "wid='{$warning['wid']}'");
 		
-		if(array_key_exists($user['uid'], $users))
+		if(array_key_exists($warning['uid'], $users))
 		{
-			$users[$user['uid']] -= $warning['points'];
+			$users[$warning['uid']] -= $warning['points'];
 		}
 		else
 		{
-			$users[$user['uid']] = $warning['warningpoints']-$warning['points'];
+			$users[$warning['uid']] = $warning['warningpoints']-$warning['points'];
 		}
 	}
 	

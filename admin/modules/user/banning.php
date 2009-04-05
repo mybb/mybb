@@ -409,7 +409,7 @@ if(!$mybb->input['action'])
 		
 		if(!$ban['adminuser'])
 		{
-			if($ban['admin'] == -1)
+			if($ban['admin'] == 0)
 			{
 				$ban['adminuser'] = "MyBB System";
 			}

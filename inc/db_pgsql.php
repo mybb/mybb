@@ -1002,7 +1002,7 @@ class DB_PgSQL
 		");
 
 		$lines = array();
-		$lines[] = "CREATE TABLE {$this->table_prefix}{$table} (\n";
+		$table_lines = "CREATE TABLE {$this->table_prefix}{$table} (\n";
 		
 		while($row = $this->fetch_array($query))
 		{
@@ -1086,10 +1086,10 @@ class DB_PgSQL
 			$lines[] = "  CONSTRAINT $primary_key_name PRIMARY KEY (".implode(', ', $primary_key).")";
 		}
 
-		$table .= implode(", \n", $lines);
-		$table .= "\n);\n";
+		$table_lines .= implode(", \n", $lines);
+		$table_lines .= "\n)\n";
 		
-		return $table;
+		return $table_lines;
 	}
 
 	/**

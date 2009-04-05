@@ -469,7 +469,7 @@ function akismet_moderation_start()
 			{
 				$banned_user = array(
 					"uid" => $post2['uid'],
-					"admin" => -1,
+					"admin" => 0,
 					"gid" => 7,
 					"oldgroup" => $post2['usergroup'],
 					"dateline" => TIME_NOW,
@@ -515,7 +515,7 @@ function akismet_moderation_start()
 		{			
 			$banned_user = array(
 				"uid" => $post['uid'],
-				"admin" => -1,
+				"admin" => 0,
 				"gid" => 7,
 				"oldgroup" => $usergroup,
 				"dateline" => TIME_NOW,
@@ -635,7 +635,7 @@ function akismet_fake_draft(&$post)
 		{
 			$banned_user = array(
 				"uid" => $mybb->user['uid'],
-				"admin" => -1,
+				"admin" => 0,
 				"gid" => 7,
 				"oldgroup" => $mybb->user['usergroup'],
 				"dateline" => TIME_NOW,
