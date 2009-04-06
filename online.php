@@ -117,9 +117,6 @@ else
 	switch($db->type)
 	{
 		case "sqlite3":
-			$query = $db->simple_select("sessions", "COUNT(count_sid)", "(SELECT DISTINCT sid as count_sid FROM ".TABLE_PREFIX."sessions WHERE time > {$timesearch})");
-			$online_count = $db->fetch_field($query, "online");
-			break;
 		case "sqlite2":
 			$sessions = array();
 			$query = $db->simple_select("sessions", "sid", "time > {$timesearch}");

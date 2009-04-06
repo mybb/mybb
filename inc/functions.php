@@ -1098,7 +1098,7 @@ function forum_permissions($fid=0, $uid=0, $gid=0)
 	{
 		if($uid != 0 && $uid != $mybb->user['uid'])
 		{
-			if($usercache[$uid])
+			if(!$usercache[$uid])
 			{
 				$query = $db->simple_select("users", "*", "uid='$uid'");
 				$usercache[$uid] = $db->fetch_array($query);

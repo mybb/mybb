@@ -561,6 +561,7 @@ if($mybb->input['action'] == "add_thread_tool")
 			$new_tool['name'] = $db->escape_string($mybb->input['title']);
 			$new_tool['description'] = $db->escape_string($mybb->input['description']);
 			$new_tool['forums'] = '';
+			$new_tool['postoptions'] = '';
 			
 			if($mybb->input['forum_type'] == 2)
 			{
