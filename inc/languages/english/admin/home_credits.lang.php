@@ -13,5 +13,7 @@ $l['about_the_team'] = "About the Team";
 $l['product_managers'] = "Product Managers";
 $l['developers'] = "Developers";
 $l['graphics_and_style'] = "Graphics and Style";
+$l['software_quality_assurance'] = "Software Quality Assurance";
+$l['support_representative'] = "Support Representative";
 
 ?>

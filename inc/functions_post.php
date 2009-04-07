@@ -102,7 +102,17 @@ function build_postbit($post, $post_type=0)
 			}
 			break;
 	}
-
+	
+	// Sanatize our custom profile fields for use in templates, if people choose to use them
+	foreach($post as $post_field => $field_value)
+	{
+	    if(substr($post_field, 0, 3) != 'fid')
+	    {
+	        continue;
+	    }
+	    $post[$post_field] = htmlspecialchars_uni($field_value);
+	}
+	
 	if(!$postcounter)
 	{ // Used to show the # of the post
 		if($page > 1)
