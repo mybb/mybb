@@ -216,7 +216,7 @@ function fetch_next_run($task)
 		{
 			if(build_next_run_bit($task['weekday'], $current_weekday) != false)
 			{
-				$next_weekday - build_next_run_bit($task['weekday'], $current_weekday);
+				$next_weekday = build_next_run_bit($task['weekday'], $current_weekday);
 			}
 			else
 			{

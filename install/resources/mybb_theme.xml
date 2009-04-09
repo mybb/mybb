@@ -6621,7 +6621,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 		<template name="private_read_action" version="1400"><![CDATA[<tr>
 	<td class="tcat" align="center"><strong>{$actioned_on}</strong></td>
 </tr>]]></template>
-		<template name="private_read" version="1400"><![CDATA[<html>
+		<template name="private_read" version="1405"><![CDATA[<html>
 <head>
 <title>{$lang->viewing_pm} {$pm['subject']}</title>
 {$headerinclude}
@@ -6641,6 +6641,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$action_time}
 {$message}
 </table>
+</td>
+</tr>
 </table>
 {$footer}
 </body>

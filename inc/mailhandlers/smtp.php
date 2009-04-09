@@ -488,6 +488,11 @@ class SmtpMail extends MailHandler
 	 */
 	function get_error()
 	{
+		if(!$this->last_error)
+		{
+			$this->last_error = "N/A";
+		}
+		
 		return $this->last_error;
 	}
 	
