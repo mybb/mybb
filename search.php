@@ -656,7 +656,7 @@ if($mybb->input['action'] == "results")
 		{
 			if(array_key_exists($thread['tid'], $tids) != false)
 			{
-				$temp_pids = $tids[$thread['tids']];
+				$temp_pids = $tids[$thread['tid']];
 				foreach($temp_pids as $pid)
 				{
 					unset($pids[$pid]);

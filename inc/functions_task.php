@@ -223,7 +223,7 @@ function fetch_next_run($task)
 				$next_weekday = fetch_first_run_time($task['weekday']);
 			}
 			$next_day = $current_day + ($next_weekday-$current_weekday);
-			if($next_day < $current_day)
+			if($next_day <= $current_day)
 			{
 				$next_day += 7;
 			}
