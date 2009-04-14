@@ -809,7 +809,6 @@ function redirect($url, $message="", $title="")
 	}
 	else
 	{
-		$url = str_replace("#", "&#", $url);
 		$url = htmlspecialchars_decode($url);
 		$url = str_replace(array("\n","\r",";"), "", $url);
 

@@ -651,7 +651,7 @@ if($mybb->input['action'] == "results")
 		$temp_pids = array();
 
 		// Check the thread records as well. If we don't have permissions, remove them from the listing.
-		$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where} OR closed NOT LIKE 'moved|%')");
+		$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where} OR closed LIKE 'moved|%')");
 		while($thread = $db->fetch_array($query))
 		{
 			if(array_key_exists($thread['tid'], $tids) != false)
