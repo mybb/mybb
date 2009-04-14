@@ -35,7 +35,7 @@ function task_backupdb($task)
 	{
 		$db->set_table_prefix('');
 		
-		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW.random_str()), 0, 10);
+		$file = MYBB_ADMIN_DIR.'backups/backup_'.substr(md5($mybb->user['uid'].TIME_NOW), 0, 10).random_str(54);
 		
 		if(function_exists('gzopen'))
 		{

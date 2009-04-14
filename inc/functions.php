@@ -3518,7 +3518,7 @@ function get_current_location($fields=false, $ignore=array())
 				{
 					$location .= "&amp;";
 				}
-				$location .= implode("&", $addloc);
+				$location .= implode("&amp;", $addloc);
 			}
 		}
 	
