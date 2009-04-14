@@ -491,18 +491,18 @@ class session
 		// If there is a proper uid, delete by uid.
 		if($uid > 0)
 		{
-			$db->delete_query("sessions", "uid='{$uid}'", 1);
+			$db->delete_query("sessions", "uid='{$uid}'");
 			$onlinedata['uid'] = $uid;
 		}
 		// Is a spider - delete all other spider references
 		else if($this->is_spider == true)
 		{
-			$db->delete_query("sessions", "sid='{$this->sid}'", 1);
+			$db->delete_query("sessions", "sid='{$this->sid}'");
 		}
 		// Else delete by ip.
 		else
 		{
-			$db->delete_query("sessions", "ip='".$db->escape_string($this->ipaddress)."'", 1);
+			$db->delete_query("sessions", "ip='".$db->escape_string($this->ipaddress)."'");
 			$onlinedata['uid'] = 0;
 		}
 

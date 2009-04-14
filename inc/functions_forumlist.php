@@ -53,9 +53,16 @@ function build_forumbits($pid=0, $depth=1)
 
 			// This forum has a password, and the user isn't authenticated with it - hide post information
 			$hideinfo = false;
-			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']) || $permissions['canviewthreads'] !=1)
+			$showlockicon = 0;
+			if($permissions['canviewthreads'] != 1)
 			{
-				$hideinfo = true;
+			    $hideinfo = true;
+			}
+
+			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
+			{
+			    $hideinfo = true;
+			    $showlockicon = 1;
 			}
 			
 			$lastpost_data = array(
@@ -121,7 +128,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// Get the lightbulb status indicator for this forum based on the lastpost
-			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $hideinfo);
+			$lightbulb = get_forum_lightbulb($forum, $lastpost_data, $showlockicon);
 
 			// Fetch the number of unapproved threads and posts for this forum
 			$unapproved = get_forum_unapproved($forum);

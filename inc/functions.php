@@ -3511,7 +3511,15 @@ function get_current_location($fields=false, $ignore=array())
 	
 			if(isset($addloc) && is_array($addloc))
 			{
-				$location .= "?".implode("&", $addloc);
+				if(strpos($location, "?") === false)
+				{
+					$location .= "?";
+				}
+				else
+				{
+					$location .= "&amp;";
+				}
+				$location .= implode("&", $addloc);
 			}
 		}
 	
