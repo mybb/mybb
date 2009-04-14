@@ -5288,8 +5288,12 @@ function escaped_explode($delimeter, $string, $escape="")
 function fetch_longipv4_range($ip)
 {
 	$ip_bits = explode(".", $ip);
+	$ip_string1 = $ip_string2 = "";
 
-	if($ip == "*") return array(ip2long(0), ip2long(255));
+	if($ip == "*")
+	{
+		return array(ip2long('0.0.0.0'), ip2long('255.255.255.255'));
+	}
 
 	if(strpos($ip, ".*") === false)
 	{
@@ -5306,17 +5310,22 @@ function fetch_longipv4_range($ip)
 	// Wildcard based IP provided
 	else
 	{
+		$sep = "";
 		foreach($ip_bits as $piece)
 		{
 			if($piece == "*")
 			{
-				return array(ip2long($ip_string."0"), ip2long($ip_string."255"));
+				$ip_string1 .= $sep."0";
+				$ip_string2 .= $sep."255";
 			}
 			else
 			{
-				$ip_string .= $piece.".";
+				$ip_string1 .= $sep.$piece;
+				$ip_string2 .= $sep.$piece;
 			}
+			$sep = ".";
 		}
+		return array(ip2long($ip_string1), ip2long($ip_string2));
 	}
 }
 

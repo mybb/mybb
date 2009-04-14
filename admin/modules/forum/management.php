@@ -1514,7 +1514,7 @@ if($mybb->input['action'] == "deletemod")
 		
 		$db->delete_query("moderators", "mid='{$mid}'");
 		$query = $db->simple_select("moderators", "*", "uid='{$mod['uid']}'");
-		if($db->fetch_array($query))
+		if($db->num_rows($query) == 0)
 		{
 			$updatequery = array(
 				"usergroup" => "2"
