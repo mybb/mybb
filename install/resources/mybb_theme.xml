@@ -8777,7 +8777,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 					{$gobutton}
 				</form>
 				<br />]]></template>
-		<template name="calendar_dayview" version="1400"><![CDATA[<html>
+		<template name="calendar_dayview" version="1405"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar}</title>
 {$headerinclude}
@@ -8813,6 +8813,8 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 							<option value="12">{$lang->alt_month_12}</option>
 						</select>
 						<select name="year">
+							<option value="{$year}">{$year}</option>
+							<option value="{$year}">----------</option>
 							{$yearsel}
 						</select>
 						{$gobutton}

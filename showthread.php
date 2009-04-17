@@ -575,21 +575,24 @@ if($mybb->input['action'] == "thread")
 		}
 	}
 	
-	// Which thread mode is our user using?
+	// Which thread mode is our user using by default?
+	if(!empty($mybb->user['threadmode']))
+	{
+		$defaultmode = $mybb->user['threadmode'];
+	}
+	else if($mybb->settings['threadusenetstyle'] == 1)
+	{
+		$defaultmode = 'threaded';
+	}
+	else
+	{
+		$defaultmode = 'linear';
+	}
+	
+	// If mode is unset, set the default mode
 	if(!isset($mybb->input['mode']))
 	{
-		if(!empty($mybb->user['threadmode'])) // Take user's default preference first (if there is one) and run with it
-		{
-			$mybb->input['mode'] = $mybb->user['threadmode'];
-		}
-		else if($mybb->settings['threadusenetstyle'] == 1)
-		{
-			$mybb->input['mode'] = 'threaded';
-		}
-		else
-		{
-			$mybb->input['mode'] = 'linear';
-		}
+		$mybb->input['mode'] = $defaultmode;
 	}
 
 	// Threaded or linear display?
@@ -738,7 +741,7 @@ if($mybb->input['action'] == "thread")
                 $highlight = "?highlight=".urlencode($mybb->input['highlight']);
             }
             
-			if($mybb->input['mode'] == "linear")
+			if($defaultmode != "linear")
 			{
 	            if($mybb->input['highlight'])
 	            {
@@ -757,7 +760,7 @@ if($mybb->input['action'] == "thread")
                 $highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
             }
             
-            if($mybb->input['mode'] == "linear")
+            if($defaultmode != "linear")
             {
                 $threadmode = "&amp;mode=linear";
             }

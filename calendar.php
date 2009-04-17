@@ -1729,10 +1729,7 @@ if($mybb->input['action'] == "dayview")
 	$yearsel = '';
 	for($i = my_date("Y"); $i < (my_date("Y") + 5); ++$i)
 	{
-		if($i == my_date("Y"))
-		{
-			$yearsel .= "<option value=\"$i\">$i</option>\n";
-		}
+		$yearsel .= "<option value=\"$i\">$i</option>\n";
 	}
 
 	if($mybb->usergroup['canaddevents'] == 1)
