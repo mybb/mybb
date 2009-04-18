@@ -647,28 +647,28 @@ if($mybb->input['action'] == "results")
 			$pids[$post['pid']] = $post['tid'];
 			$tids[$post['tid']][$post['pid']] = $post['pid'];
 		}
-
-		$temp_pids = array();
-
-		// Check the thread records as well. If we don't have permissions, remove them from the listing.
-		$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where} OR closed LIKE 'moved|%')");
-		while($thread = $db->fetch_array($query))
+		
+		if(!empty($pids))
 		{
-			if(array_key_exists($thread['tid'], $tids) != false)
+			$temp_pids = array();
+			
+			// Check the thread records as well. If we don't have permissions, remove them from the listing.
+			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$t_unapproved_where} OR closed LIKE 'moved|%')");
+			while($thread = $db->fetch_array($query))
 			{
-				$temp_pids = $tids[$thread['tid']];
-				foreach($temp_pids as $pid)
+				if(array_key_exists($thread['tid'], $tids) != false)
 				{
-					unset($pids[$pid]);
-					unset($tids[$thread['tid']]);
+					$temp_pids = $tids[$thread['tid']];
+					foreach($temp_pids as $pid)
+					{
+						unset($pids[$pid]);
+						unset($tids[$thread['tid']]);
+					}
 				}
-			}
+			}			
+			unset($temp_pids);
 		}
-		unset($temp_pids);
-
-		// And now we have our sanatized post list
-		$search['posts'] = implode(',', array_keys($pids));
-	
+		
 		// Declare our post count
 		$postcount = count($pids);
 		
@@ -676,9 +676,12 @@ if($mybb->input['action'] == "results")
 		{
 			error($lang->error_nosearchresults);
 		}
-
+		
+		// And now we have our sanatized post list
+		$search['posts'] = implode(',', array_keys($pids));
+		
 		$tids = implode(",", array_keys($tids));
-
+		
 		// Read threads
 		if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0)
 		{
