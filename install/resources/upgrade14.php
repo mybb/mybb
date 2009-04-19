@@ -81,7 +81,7 @@ function upgrade14_dbchanges()
 	
 	if($db->type == "pgsql")
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts tinyint NOT NULL default '1';");
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."users ADD loginattempts smallint NOT NULL default '1';");
 	}
 	else
 	{
@@ -138,7 +138,10 @@ function upgrade14_dbchanges()
 	}
 	else if($db->type == "pgsql")
 	{
-		$db->write_query("ALTER TABLE ".TABLE_PREFIX."datacache ADD PRIMARY KEY (title)");
+		if(!$db->index_exists("datacache", "title"))
+		{
+			$db->write_query("ALTER TABLE ".TABLE_PREFIX."datacache ADD PRIMARY KEY (title)");
+		}
 	}
 
 	$contents .= "Click next to continue with the upgrade process.</p>";

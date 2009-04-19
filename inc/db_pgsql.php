@@ -1193,7 +1193,7 @@ class DB_PgSQL
 		$err = $this->error_reporting;
 		$this->error_reporting = 0;
 		
-		$query = $this->write_query("SELECT {$index} FROM pg_indexes WHERE tablename='".$this->escape_string($this->table_prefix.$table)."'");
+		$query = $this->write_query("SELECT * FROM pg_indexes WHERE tablename='".$this->escape_string($this->table_prefix.$table)."'");
 		
 		$exists = $this->fetch_field($query, $index);
 		$this->error_reporting = $err;

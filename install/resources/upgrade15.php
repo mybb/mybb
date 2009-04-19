@@ -31,10 +31,13 @@ function upgrade15_dbchanges()
 	echo "<p>Performing necessary upgrade queries..</p>";
 	flush();
 	
-	$db->update_query("settinggroups", array('isdefault' => '1'), "isdefault='yes'");
-	$db->update_query("settinggroups", array('isdefault' => '0'), "isdefault='no'");
-	
-	$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE timezone timezone varchar(4) NOT NULL default '0'");
+	if($db->type != "pgsql")
+	{
+		$db->update_query("settinggroups", array('isdefault' => '1'), "isdefault='yes'");
+		$db->update_query("settinggroups", array('isdefault' => '0'), "isdefault='no'");
+		
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."events CHANGE timezone timezone varchar(4) NOT NULL default '0'");
+	}
 	
 	if($db->type == "pgsql")
 	{
@@ -50,7 +53,14 @@ function upgrade15_dbchanges()
 
 		if($ip_index == false)
 		{
-			$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX (`ip`)");
+			if($db->type == "pgsql")
+			{
+				$db->write_query("CREATE INDEX ip ON ".TABLE_PREFIX."sessions (ip)");
+			}
+			else
+			{
+				$db->write_query("ALTER TABLE ".TABLE_PREFIX."sessions ADD INDEX (`ip`)");
+			}
 		}
 	}
 	
