@@ -422,7 +422,7 @@ function upgradethemes()
 		{
 			$output->print_error("Please make sure your admin directory is uploaded correctly.");
 		}
-		import_theme_xml($contents, array("templateset" => -2, "no_templates" => 1));
+		import_theme_xml($contents, array("templateset" => -2, "no_templates" => 1, "version_compat" => 1));
 		$tid = build_new_theme("Default", null, 1);
 
 		$db->update_query("themes", array("def" => 1), "tid='{$tid}'");
@@ -456,7 +456,7 @@ function upgradethemes()
 		}
 		
 		// Import master theme
-		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1));
+		import_theme_xml($contents, array("tid" => 1, "no_templates" => 1, "version_compat" => 1));
 	}
 
 	$sid = -2;
