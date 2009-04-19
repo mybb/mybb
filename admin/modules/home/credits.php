@@ -71,7 +71,7 @@ if(!$mybb->input['action'])
 	$table->construct_cell("<a href=\"http://community.mybboard.net/user-1923.html\" target=\"_blank\">Sergio Montoya</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_cell("<a href=\"http://community.mybboard.net/user-8242.html\" target=\"_blank\">dvb</a>");
-	$table->construct_cell("<a href=\"http://community.mybboard.net/user-8469.html\" target=\"_blank\">Tom Loveric</a>");
+	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
 	$table->construct_cell("&nbsp;");
