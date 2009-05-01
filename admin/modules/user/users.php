@@ -1807,6 +1807,7 @@ if(!$mybb->input['action'])
 	// If we have any error messages, show them
 	if($errors)
 	{
+		echo "<div style=\"display: inline; float: right;\">{$admin_view['popup']}</div><br />\n";
 		$page->output_inline_error($errors);
 	}
 
@@ -1874,6 +1875,12 @@ function build_users_view($view)
 	if(!isset($admin_session['data']['last_users_view']) || $admin_session['data']['last_users_view'] != str_replace("&amp;", "&", $view['url']))
 	{
 		update_admin_session('last_users_url', str_replace("&amp;", "&", $view['url']));
+	}
+	
+	// Do we not have any views?
+	if(empty($views))
+	{
+		return false;
 	}
 
 	$table = new Table;
@@ -2189,7 +2196,7 @@ function build_users_view($view)
 			{
 				$user['avatar'] = "styles/{$page->style}/images/default_avatar.gif";
 			}
-			$user['view']['avatar'] = "<img src=\"{$user['avatar']}\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
+			$user['view']['avatar'] = "<img src=\"".htmlspecialchars_uni($user['avatar'])."\" alt=\"\" width=\"{$scaled_avatar['width']}\" height=\"{$scaled_avatar['height']}\" />";
 
 			if($view['view_type'] == "card")
 			{
