@@ -122,6 +122,11 @@ else
 		header("Content-disposition: inline; filename=\"{$attachment['filename']}\"");
 	}
 	
+	if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), "msie 6.0") !== false)
+	{
+		header("Expires: -1");
+	}
+	
 	header("Content-type: {$attachment['filetype']}");
 	header("Content-length: {$attachment['filesize']}");
 	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']); 
