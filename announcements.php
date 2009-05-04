@@ -53,6 +53,9 @@ if($fid > 0)
 	{
 		error_no_permission();
 	}
+	
+	// Check if this forum is password protected and we have a valid password
+	check_forum_password($forum['fid']);
 }
 add_breadcrumb($lang->nav_announcements);
 

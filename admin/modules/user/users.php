@@ -2004,7 +2004,7 @@ function build_users_view($view)
 				$ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
 			}
 		}
-		$ip_uids = array();
+		$ip_uids = array(0);
 		$query = $db->simple_select("posts", "uid", $ip_sql);
 		while($uid = $db->fetch_field($query, "uid"))
 		{

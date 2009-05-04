@@ -87,7 +87,7 @@ if($mybb->input['action'] == "add")
 	
 	$languages = array('' => $lang->use_board_default);
 	$languages = array_merge($languages, $lang->get_languages());
-	$form_container->output_row($lang->language, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
+	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $mybb->input['language'], array("id" => "language")), 'language');
 	
 	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $mybb->input['theme'], 0, "", 1));
 
@@ -230,7 +230,7 @@ if($mybb->input['action'] == "edit")
 	
 	$languages = array('' => $lang->use_board_default);
 	$languages = array_merge($languages, $lang->get_languages());
-	$form_container->output_row($lang->language, $lang->language_desc, $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
+	$form_container->output_row($lang->language_str, $lang->language_desc, $form->generate_select_box("language", $languages, $spider_data['language'], array("id" => "language")), 'language');
 
 	$form_container->output_row($lang->theme, $lang->theme_desc, build_theme_select("theme", $spider_data['theme'], 0, "", 1));
 
