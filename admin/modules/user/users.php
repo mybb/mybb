@@ -924,7 +924,7 @@ if($mybb->input['action'] == "edit")
 	}
 	else
 	{
-		$percent_posts = round($memprofile['postnum']*100/$posts, 2);;
+		$percent_posts = round($user['postnum']*100/$posts, 2);
 	}
 
 	$user_permissions = user_permissions($user['uid']);

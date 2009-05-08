@@ -144,3 +144,4 @@ class memcacheCacheHandler
 		return $lang->na;
 	}
 }
+?>

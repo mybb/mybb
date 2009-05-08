@@ -1026,7 +1026,7 @@ class Moderation
 		$db->update_query("threadsubscriptions", $sqlarray, "tid='{$mergetid}'");
 		update_first_post($tid);
 
-		$arguments = array("mergetid" => $tid, "tid" => $tid, "subject" => $subject);
+		$arguments = array("mergetid" => $mergetid, "tid" => $tid, "subject" => $subject);
 		$plugins->run_hooks("class_moderation_merge_threads", $arguments);
 
 		$this->delete_thread($mergetid);
