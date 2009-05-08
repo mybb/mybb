@@ -411,18 +411,23 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 	$pm = $db->fetch_array($query);
 	
 	if($pm['fromuid'] == 0)
-	{
-		$pm['fromusername'] = 'MyBB Engine';
-	}
-	
-	if($mybb->user['pms_unread'] == 1)
-	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_one, get_profile_link($pm['fromuid']), htmlspecialchars_uni($pm['fromusername']), $pm['pmid'], htmlspecialchars_uni($pm['subject']));
-	}
-	else
-	{
-		$privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], get_profile_link($pm['fromuid']), htmlspecialchars_uni($pm['fromusername']), $pm['pmid'], htmlspecialchars_uni($pm['subject']));
-	}
+    {
+        $pm['fromusername'] = 'MyBB Engine';
+        $user_text = $pm['fromusername'];
+    }
+    else
+    {
+        $user_text = build_profile_link($pm['fromusername'], $pm['fromuid']);
+    }
+    
+    if($mybb->user['pms_unread'] == 1)
+    {
+        $privatemessage_text = $lang->sprintf($lang->newpm_notice_one, $user_text, $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+    }
+    else
+    {
+        $privatemessage_text = $lang->sprintf($lang->newpm_notice_multiple, $mybb->user['pms_unread'], $user_text, $pm['pmid'], htmlspecialchars_uni($pm['subject']));
+    }
 	eval("\$pm_notice = \"".$templates->get("global_pm_alert")."\";");
 }
 
