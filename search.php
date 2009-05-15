@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -629,7 +629,7 @@ if($mybb->input['action'] == "results")
 				$test_moderated_forums[$forum['fid']] = $forum['fid'];
 			}
 			$p_unapproved_where = "visible >= 0";
-			$t_unapproved_where = "visible < 0 OR fid NOT IN ({$moderated_forums})";
+			$t_unapproved_where = "visible < 0 AND fid NOT IN ({$moderated_forums})";
 		}
 		else
 		{

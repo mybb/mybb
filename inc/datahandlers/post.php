@@ -1359,7 +1359,7 @@ class PostDataHandler extends DataHandler
 		else if($visible == 0)
 		{
 			update_thread_data($this->tid);
-			update_thread_counters($thread['tid'], array("replies" => 0, "unapprovedposts" => 1));
+			update_thread_counters($this->tid, array("replies" => 0, "unapprovedposts" => 1));
 			update_forum_counters($thread['fid'], array("unapprovedthreads" => "+1", "unapprovedposts" => "+1"));
 		}
 		

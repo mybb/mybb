@@ -4482,9 +4482,9 @@ body {
 		<td width="130" align="center"><span class="smalltext"><strong>{$lang->pmspaceused}</strong></span></td>
 	</tr>
 </table></span>]]></template>
-		<template name="forumdisplay_announcements_announcement" version="1400"><![CDATA[<tr>
-<td align="center" class="{$bgcolor}"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
-<td align="center" class="{$bgcolor}">&nbsp;</td>
+		<template name="forumdisplay_announcements_announcement" version="1407"><![CDATA[<tr>
+<td align="center" class="{$bgcolor}" width="2%"><img src="{$theme['imgdir']}/{$folder}.gif" alt=""/></td>
+<td align="center" class="{$bgcolor}" width="2%">&nbsp;</td>
 <td class="{$bgcolor}">
 	<a href="{$announcement['announcementlink']}"{$new_class}>{$announcement['subject']}</a>
 	<div class="author smalltext">{$announcement['profilelink']}</div>

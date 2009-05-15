@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -63,7 +63,7 @@ class memcacheCacheHandler
 
 		if(!$mybb->config['memcache_host'])
 		{
-			die("Plesse configure the memcache settings in inc/config.php before attempting to use this cache handler");
+			die("Please configure the memcache settings in inc/config.php before attempting to use this cache handler");
 		}
 
 		if(!$mybb->config['memcache_port'])

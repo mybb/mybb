@@ -492,7 +492,7 @@ class PMDataHandler extends DataHandler
 		$recipient_list = serialize($recipient_list);
 
 		$this->pm_insert_data = array(
-			'fromid' => $pm['sender']['uid'],
+			'fromid' => intval($pm['sender']['uid']),
 			'folder' => $pm['folder'],
 			'subject' => $db->escape_string($pm['subject']),
 			'icon' => intval($pm['icon']),
@@ -507,7 +507,7 @@ class PMDataHandler extends DataHandler
 		);
 
 		// Check if we're updating a draft or not.
-		$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='{$pm['sender']['uid']}' AND pmid='{$pm['pmid']}'");
+		$query = $db->simple_select("privatemessages", "pmid", "folder='3' AND uid='".intval($pm['sender']['uid'])."' AND pmid='{$pm['pmid']}'");
 		$draftcheck = $db->fetch_array($query);
 
 		// This PM was previously a draft
@@ -627,7 +627,7 @@ class PMDataHandler extends DataHandler
 			{
 				$this->pm_insert_data['toid'] = 0;
 			}
-			$this->pm_insert_data['uid'] = $pm['sender']['uid'];
+			$this->pm_insert_data['uid'] = intval($pm['sender']['uid']);
 			$this->pm_insert_data['folder'] = 2;
 			$this->pm_insert_data['status'] = 1;
 			$this->pm_insert_data['receipt'] = 0;

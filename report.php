@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -94,7 +94,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 					$query = $db->query("
 						SELECT u.username, u.email, u.receivepms, u.uid
 						FROM ".TABLE_PREFIX."users u
-						LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(','|| u.additionalgroups|| ',') LIKE CONCAT('%,'|| g.gid|| ',%')) OR u.usergroup = g.gid))
+						LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((','|| u.additionalgroups|| ',' LIKE '%,'|| g.gid|| ',%') OR u.usergroup = g.gid))
 						WHERE (g.cancp=1 OR g.issupermod=1)
 					");
 					break;
