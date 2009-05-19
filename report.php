@@ -135,7 +135,7 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 				"subject" => $emailsubject,
 				"message" => $emailmessage,
 				"icon" => 0,
-				"fromid" => 0,
+				"fromid" => $mybb->user['uid'],
 				"toid" => $pm_recipients
 			);
 
