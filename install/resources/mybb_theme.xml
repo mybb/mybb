@@ -1438,9 +1438,10 @@ ul.thread_tools li.subscription_remove {
 					</table>
 					{$multipage}
 					<br />]]></template>
-		<template name="modcp_ipsearch_result" version="1400"><![CDATA[<tr>
+		<template name="modcp_ipsearch_result" version="1407"><![CDATA[<tr>
 <td class="{$trow}" align="center">{$ip}</td>
 <td class="{$trow}">{$subject}</td>
+</tr>
 ]]></template>
 		<template name="modcp_ipsearch_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="2">{$lang->error_no_results}</td>

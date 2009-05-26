@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -1068,7 +1068,7 @@ function akismet_admin()
 		{
 			if($post['uid'] != 0)
 			{
-				$username = "<a href=\"".str_replace("{uid}", $post['uid'], PROFILE_URL)."\" target=\"_blank\">".format_name($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
+				$username = "<a href=\"../".str_replace("{uid}", $post['uid'], PROFILE_URL)."\" target=\"_blank\">".format_name($post['username'], $post['usergroup'], $post['displaygroup'])."</a>";
 			}
 			else
 			{

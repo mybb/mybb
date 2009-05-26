@@ -638,10 +638,17 @@ if($mybb->input['action'] == "results")
 			$t_unapproved_where = 'visible < 1';
 		}	
 
+		$post_cache_options = array('limit' => intval($mybb->settings['searchhardlimit']));
+		if(strpos($sortfield, 'p.') !== false)
+		{
+			$post_cache_options['order_by'] = str_replace('p.', '', $sortfield);
+			$post_cache_options['order_dir'] = $order;
+		}
+
 		$tids = array();
 		$pids = array();
 		// Make sure the posts we're viewing we have permission to view.
-		$query = $db->simple_select("posts", "pid, tid", "pid IN(".$db->escape_string($search['posts']).") AND {$p_unapproved_where} {$limitsql}");
+		$query = $db->simple_select("posts", "pid, tid", "pid IN(".$db->escape_string($search['posts']).") AND {$p_unapproved_where}", $post_cache_options);
 		while($post = $db->fetch_array($query))
 		{
 			$pids[$post['pid']] = $post['tid'];
@@ -932,10 +939,16 @@ elseif($mybb->input['action'] == "findguest")
 	{
 		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
-	
+
+	$options = array(
+		'limit' => intval($mybb->settings['searchhardlimit']),
+		'order_by' => 'dateline',
+		'order_dir' => 'desc',
+	);
+
 	$pids = '';
 	$comma = '';
-	$query = $db->simple_select("posts", "pid", "{$where_sql} {$limitsql}");
+	$query = $db->simple_select("posts", "pid", "{$where_sql}", $options);
 	while($pid = $db->fetch_field($query, "pid"))
 	{
 			$pids .= $comma.$pid;
@@ -981,10 +994,16 @@ elseif($mybb->input['action'] == "finduser")
 	{
 		$where_sql .= " AND fid NOT IN ($inactiveforums)";
 	}
-	
+
+	$options = array(
+		'limit' => intval($mybb->settings['searchhardlimit']),
+		'order_by' => 'dateline',
+		'order_dir' => 'desc',
+	);
+
 	$pids = '';
 	$comma = '';
-	$query = $db->simple_select("posts", "pid", "{$where_sql} {$limitsql}");
+	$query = $db->simple_select("posts", "pid", "{$where_sql}", $options);
 	while($pid = $db->fetch_field($query, "pid"))
 	{
 			$pids .= $comma.$pid;
