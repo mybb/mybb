@@ -138,6 +138,12 @@ if(!$mybb->input['action'])
 	{
 		$where .= " AND l.uid='".intval($mybb->input['uid'])."'";
 	}
+	
+	// Searching for entries in a specific module
+	if($mybb->input['filter_module'])
+	{
+		$where .= " AND module='".$db->escape_string($mybb->input['filter_module'])."'";
+	}
 
 	// Order?
 	switch($mybb->input['sortby'])
@@ -236,7 +242,7 @@ if(!$mybb->input['action'])
 	// Do we need to construct the pagination?
 	if($rescount > $perpage)
 	{
-		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools/adminlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}")."<br />";
+		echo draw_admin_pagination($pagecnt, $perpage, $rescount, "index.php?module=tools/adminlog&amp;perpage=$perpage&amp;uid={$mybb->input['uid']}&amp;fid={$mybb->input['fid']}&amp;sortby={$mybb->input['sortby']}&amp;order={$order}&amp;filter_module=".htmlspecialchars_uni($mybb->input['filter_module']))."<br />";
 	}
 	
 	// Fetch filter options

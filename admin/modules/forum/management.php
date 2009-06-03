@@ -1153,7 +1153,6 @@ if($mybb->input['action'] == "edit")
 			
 			$canview = $permissions['canview'];
 			$canpostthreads = $permissions['canpostthreads'];
-			$canpostreplies = $permissions['canpostreplies'];
 			$canpostpolls = $permissions['canpostpolls'];
 			$canpostattachments = $permissions['canpostattachments'];
 			$canpostreplies = $permissions['canpostreplys'];
