@@ -846,7 +846,7 @@ if($mybb->input['action'] == "search_replace")
 							$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
 						}
 											
-						$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style/templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}\">{$template['pretty_title']}</a></span>", array("width" => "85%"));
+						$table->construct_cell("<span style=\"padding: 20px;\">{$template['pretty_title']}</span>", array("width" => "85%"));
 						$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 						
 						$table->construct_row();

@@ -69,6 +69,7 @@ $archive_url = build_archive_link("forum", $fid);
 $currentitem = $fid;
 build_forum_breadcrumb($fid);
 $parentlist = $foruminfo['parentlist'];
+$foruminfo['name'] = htmlspecialchars_uni($foruminfo['name']);
 
 $forumpermissions = forum_permissions();
 $fpermissions = $forumpermissions[$fid];

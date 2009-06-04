@@ -2886,7 +2886,7 @@ function build_forum_breadcrumb($fid)
 				}
 
 				$navsize = count($navbits);
-				$navbits[$navsize]['name'] = $forumnav['name'];
+				$navbits[$navsize]['name'] = htmlspecialchars_uni($forumnav['name']);
 
 				if(IN_ARCHIVE == 1)
 				{
