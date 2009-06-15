@@ -220,6 +220,7 @@ class UserDataHandler extends DataHandler
 		$user = &$this->data;
 		return true;
 	}
+	
 	/**
 	* Verifies if an email address is valid or not.
 	*
@@ -1108,7 +1109,7 @@ class UserDataHandler extends DataHandler
 		}
 		if(isset($user['birthdayprivacy']))
 		{
-			$this->user_update_data['birthdayprivacy'] = $user['birthdayprivacy'];
+			$this->user_update_data['birthdayprivacy'] = $db->escape_string($user['birthdayprivacy']);
 		}
 		if(isset($user['style']))
 		{
