@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -33,7 +33,7 @@ if($thread_limit > 50)
 {
 	$thread_limit = 50;
 }
-else if(!$thread_limit)
+else if(!$thread_limit || $thread_limit < 0)
 {
 	$thread_limit = 20;
 }

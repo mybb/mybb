@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -1500,12 +1500,25 @@ if($mybb->input['action'] == "merge")
 			$db->update_query("pollvotes", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("posts", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("privatemessages", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("reputation", $uid_update, "uid='{$source_user['uid']}'");
-			$db->update_query("reputation", array('adduid' => $destination_user['uid']), "adduid='{$source_user['uid']}'");
 			$db->update_query("threadratings", $uid_update, "uid='{$source_user['uid']}'");
 			$db->update_query("threads", $uid_update, "uid='{$source_user['uid']}'");
 			$db->delete_query("sessions", "uid='{$source_user['uid']}'");
-			$db->delete_query("reputation", "uid='{$destination_user['uid']}' AND adduid='{$destination_user['uid']}'");
+			
+			// Merging Reputation
+			$query = $db->simple_select("reputation", "rid, uid", "adduid = '{$source_user['uid']}' OR adduid = '{$uid_update['uid']}'", array("order_by" => "dateline", "order_dir" => "DESC"));
+			while($result = $db->fetch_array($query))
+			{
+				// Let's try and remove old one if it's the same uid
+				if($result['uid'] == $last['uid'])
+				{
+					$db->delete_query("reputation", "rid = '".$result['rid']."'");
+					$db->update_query("reputation", array("adduid" => $uid_update['uid']), "rid = '".$last['rid']."'");
+				}
+				$last = array(
+					"rid" => $result['rid'],
+					"uid" => $result['uid']
+				);
+			}
 			
 			// Calculate new reputation
 			$query = $db->simple_select("reputation", "SUM(reputation) as total_rep", "uid='{$destination_user['uid']}'");

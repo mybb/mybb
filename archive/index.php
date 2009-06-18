@@ -316,6 +316,7 @@ switch($action)
 				echo "<ol>\n";
 				while($sticky = $db->fetch_array($query))
 				{
+					$sticky['subject'] = htmlspecialchars_uni($parser->parse_badwords($sticky['subject']));
 					if($sticky['replies'] != 1)
 					{
 						$lang_reply_text = $lang->archive_replies;
