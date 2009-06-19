@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -355,21 +355,18 @@ class UserDataHandler extends DataHandler
 		$birthday['year'] = intval($birthday['year']);
 
 		// Error if a day and month exists, and the birthday day and range is not in range
-		if($birthday['day'] && $birthday['month'])
+		if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12 || ($birthday['month'] == 2 && $birthday['day'] > 29))
 		{
-			if($birthday['day'] < 1 || $birthday['day'] > 31 || $birthday['month'] < 1 || $birthday['month'] > 12 || ($birthday['month'] == 2 && $birthday['day'] > 29))
-			{
-				$this->set_error("invalid_birthday");
-				return false;
-			}
+			$this->set_error("invalid_birthday");
+			return false;
+		}
 
-			// Check if the day actually exists.
-			$months = get_bdays($birthday['year']);
-			if($birthday['day'] > $months[$birthday['month']-1])
-			{
-				$this->set_error("invalid_birthday");
-				return false;
-			}
+		// Check if the day actually exists.
+		$months = get_bdays($birthday['year']);
+		if($birthday['day'] > $months[$birthday['month']-1])
+		{
+			$this->set_error("invalid_birthday");
+			return false;
 		}
 
 		// Error if a year exists and the year is out of range

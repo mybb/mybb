@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -171,6 +171,17 @@ function clean_keywords($keywords)
 	$keywords = str_replace("*", "%", $keywords);
 	$keywords = preg_replace("#([\[\]\|\.\,:'])#s", " ", $keywords);
 	$keywords = preg_replace("#\s+#s", " ", $keywords);
+
+	// Search for "and" or "or" and remove if it's at the beginning
+	if(my_strpos($keywords, "or") !== false && my_strpos($keywords, "or") == 0)
+	{
+		$keywords = substr_replace($keywords, "", 0, 2);
+	}
+	if(my_strpos($keywords, "and") !== false && my_strpos($keywords, "and") == 0)
+	{
+		$keywords = substr_replace($keywords, "", 0, 3);
+	}
+
 	return trim($keywords);
 }
 

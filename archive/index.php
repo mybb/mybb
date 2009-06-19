@@ -134,11 +134,14 @@ switch($action)
 
 		$pids = implode(",", $pids);
 
-		// Build attachments cache
-		$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
-		while($attachment = $db->fetch_array($query))
+		if($pids)
 		{
-			$acache[$attachment['pid']][$attachment['aid']] = $attachment;
+			// Build attachments cache
+			$query = $db->simple_select("attachments", "*", "pid IN ({$pids})");
+			while($attachment = $db->fetch_array($query))
+			{
+				$acache[$attachment['pid']][$attachment['aid']] = $attachment;
+			}
 		}
 
 		// Start fetching the posts

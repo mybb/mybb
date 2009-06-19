@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -635,6 +635,8 @@ function set_default_view($type, $vid)
 	if($create == true)
 	{
 		$updated_admin['uid'] = $mybb->user['uid'];
+		$updated_admin['notes'] = '';
+		$updated_admin['permissions'] = '';
 		$db->insert_query("adminoptions", $updated_admin);
 	}
 	else

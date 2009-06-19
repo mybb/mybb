@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.4
- * Copyright © 2008 MyBB Group, All Rights Reserved
+ * Copyright Â© 2008 MyBB Group, All Rights Reserved
  *
  * Website: http://www.mybboard.net
  * License: http://www.mybboard.net/about/license
@@ -139,7 +139,13 @@ if($mybb->input['action'] == "edit")
 		}
 		else
 		{
-			$db->insert_query("adminoptions", array('uid' => intval($mybb->input['uid']), 'permissions' => $db->escape_string(serialize($mybb->input['permissions']))));
+			$insert_array = array(
+				"uid" => intval($mybb->input['uid']),
+				"permissions" => $db->escape_string(serialize($mybb->input['permissions'])),
+				"notes" => '',
+				"defaultviews" => ''
+			);
+			$db->insert_query("adminoptions", $insert_array);
 		}
 		
 		$plugins->run_hooks("admin_user_admin_permissions_edit_commit");
