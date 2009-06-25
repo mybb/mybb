@@ -29,6 +29,7 @@ if($mybb->input['action'] == "check")
 	
 	if($plugins_list)
 	{
+		$active_hooks = $plugins->hooks;
 		foreach($plugins_list as $plugin_file)
 		{
 			require_once MYBB_ROOT."inc/plugins/".$plugin_file;
@@ -47,6 +48,7 @@ if($mybb->input['action'] == "check")
 				$names[$plugininfo['guid']] = array('name' => $plugininfo['name'], 'version' => $plugininfo['version']);
 			}
 		}
+		$plugins->hooks = $active_hooks;
 	}
 	
 	if(empty($info))
