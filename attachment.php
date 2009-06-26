@@ -127,22 +127,7 @@ else
 		header("Expires: -1");
 	}
 	
-	$supported_mimes = array();
-	$attachtypes = $cache->read("attachtypes");
-	foreach($attachtypes as $attachtype)
-	{
-		if(!empty($attachtype['mimetype']))
-		{
-			$supported_mimes[] = $attachtype['mimetype'];
-		}
-	}
-	
-	if(!in_array($attachment['filetype'], $supported_mimes))
-	{
-		$attachment['filetype'] = "application/force-download";
-	}
-	
-	header("Content-type: {$attachment['filetype']}");
+	header("Content-type: application/force-download");
 	header("Content-length: {$attachment['filesize']}");
 	header("Content-range: bytes=0-".($attachment['filesize']-1)."/".$attachment['filesize']); 
 	echo file_get_contents($mybb->settings['uploadspath']."/".$attachment['attachname']);
