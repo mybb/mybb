@@ -1891,7 +1891,7 @@ function build_users_view($view)
 	}
 	
 	// Do we not have any views?
-	if(empty($views))
+	if(empty($view))
 	{
 		return false;
 	}
