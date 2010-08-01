@@ -1,0 +1,382 @@
+<?php
+/**
+ * MyBB 1.4
+ * Copyright © 2008 MyBB Group, All Rights Reserved
+ *
+ * Website: http://www.mybboard.net
+ * License: http://www.mybboard.net/about/license
+ *
+ * $Id: index.php 4865 2010-04-10 09:18:29Z RyanGordon $
+ */
+
+define("IN_MYBB", 1);
+define("IN_ADMINCP", 1);
+
+// Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (defaults to 3 which matches a.b.c)
+define("ADMIN_IP_SEGMENTS", 3);
+
+require_once dirname(dirname(__FILE__))."/inc/init.php";
+
+send_page_headers();
+
+if(!isset($config['admin_dir']) || !file_exists(MYBB_ROOT.$config['admin_dir']."/inc/class_page.php"))
+{
+	$config['admin_dir'] = "admin";
+}
+
+define('MYBB_ADMIN_DIR', MYBB_ROOT.$config['admin_dir'].'/');
+
+define('COPY_YEAR', my_date('Y', TIME_NOW));
+
+require_once MYBB_ADMIN_DIR."inc/class_page.php";
+require_once MYBB_ADMIN_DIR."inc/class_form.php";
+require_once MYBB_ADMIN_DIR."inc/class_table.php";
+require_once MYBB_ADMIN_DIR."inc/functions.php";
+require_once MYBB_ROOT."inc/functions_user.php";
+
+if(!file_exists(MYBB_ROOT."inc/languages/".$mybb->settings['cplanguage']."/admin/home_dashboard.lang.php"))
+{
+	$mybb->settings['cplanguage'] = "english";
+}
+$lang->set_language($mybb->settings['cplanguage'], "admin");
+
+// Load global language phrases
+$lang->load("global");
+
+if(function_exists('mb_internal_encoding') && !empty($lang->settings['charset']))
+{
+	@mb_internal_encoding($lang->settings['charset']);
+}
+
+header("Content-type: text/html; charset={$lang->settings['charset']}");
+
+$time = TIME_NOW;
+$errors = null;
+
+if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
+{
+	$mybb->trigger_generic_error("install_directory");
+}
+
+$ip_address = get_ip();
+unset($user);
+
+// Load Admin CP style
+if(!$cp_style)
+{
+	if(!empty($mybb->settings['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/".$mybb->settings['cpstyle']."/main.css"))
+	{
+		$cp_style = $mybb->settings['cpstyle'];
+	}
+	else
+	{
+		$cp_style = "default";
+	}
+}
+
+$logged_out = false;
+$fail_check = 0;
+$post_verify = true;
+
+if($mybb->input['action'] == "logout")
+{
+	// Delete session from the database
+	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+	my_setcookie("adminsid", "");
+	$logged_out = true;
+}
+elseif($mybb->input['do'] == "login")
+{
+	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
+	if($user['uid'])
+	{
+		$query = $db->simple_select("users", "*", "uid='".$user['uid']."'");
+		$mybb->user = $db->fetch_array($query);
+	}
+
+	if($mybb->user['uid'])
+	{
+		$db->delete_query("adminsessions", "uid='{$mybb->user['uid']}'");
+		
+		$sid = md5(random_str());
+		
+		// Create a new admin session for this user
+		$admin_session = array(
+			"sid" => $sid,
+			"uid" => $mybb->user['uid'],
+			"loginkey" => $mybb->user['loginkey'],
+			"ip" => $db->escape_string(get_ip()),
+			"dateline" => TIME_NOW,
+			"lastactive" => TIME_NOW,
+			"data" => "",
+		);
+		$db->insert_query("adminsessions", $admin_session);
+		my_setcookie("adminsid", $sid);
+		$post_verify = false;
+		
+		$mybb->request_method = "get";
+	}
+	else
+	{
+		$fail_check = 1;
+	}
+}
+else
+{
+	// No admin session - show message on the login screen
+	if(!isset($mybb->cookies['adminsid']))
+	{
+		$login_message = "";
+	}
+	// Otherwise, check admin session
+	else
+	{
+		$query = $db->simple_select("adminsessions", "*", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		$admin_session = $db->fetch_array($query);
+
+		// No matching admin session found - show message on login screen
+		if(!$admin_session['sid'])
+		{
+			$login_message = $lang->invalid_admin_session;
+		}
+		else
+		{
+			$admin_session['data'] = @unserialize($admin_session['data']);
+
+			// Fetch the user from the admin session
+			$query = $db->simple_select("users", "*", "uid='{$admin_session['uid']}'");
+			$mybb->user = $db->fetch_array($query);
+
+			// Login key has changed - force logout
+			if(!$mybb->user['uid'] || $mybb->user['loginkey'] != $admin_session['loginkey'])
+			{
+				unset($mybb->user);
+			}
+			else
+			{
+				// Admin CP sessions 2 hours old are expired
+				if($admin_session['lastactive'] < TIME_NOW-7200)
+				{
+					$login_message = $lang->error_admin_session_expired;
+					$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+					unset($mybb->user);
+				}
+				// If IP matching is set - check IP address against the session IP
+				else if(ADMIN_IP_SEGMENTS > 0)
+				{
+					$exploded_ip = explode(".", $ip_address);
+					$exploded_admin_ip = explode(".", $admin_session['ip']);
+					$matches = 0;
+					$valid_ip = false;
+					for($i = 0; $i < ADMIN_IP_SEGMENTS; ++$i)
+					{
+						if($exploded_ip[$i] == $exploded_admin_ip[$i])
+						{
+							++$matches;
+						}
+						if($matches == ADMIN_IP_SEGMENTS)
+						{
+							$valid_ip = true;
+							break;
+						}
+					}
+					
+					// IP doesn't match properly - show message on logon screen
+					if(!$valid_ip)
+					{
+						$login_message = $lang->error_invalid_ip;
+						unset($mybb->user);
+					}
+				}
+			}
+		}
+	}
+}
+
+if(!$mybb->user['usergroup'])
+{
+	$mybbgroups = 1;
+}
+else
+{
+	$mybbgroups = $mybb->user['usergroup'].",".$mybb->user['additionalgroups'];
+}
+$mybb->usergroup = usergroup_permissions($mybbgroups);
+
+if($mybb->usergroup['cancp'] != 1 || !$mybb->user['uid'])
+{
+	$db->delete_query("adminsessions", "uid='".intval($mybb->user['uid'])."'");
+	unset($mybb->user);
+	my_setcookie("adminsid", "");
+}
+
+if($mybb->user['uid'])
+{
+	$query = $db->simple_select("adminoptions", "*", "uid='".$mybb->user['uid']."'");
+	$admin_options = $db->fetch_array($query);
+	
+	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
+	{
+		$cp_style = $admin_options['cpstyle'];
+	}
+
+	// Update the session information in the DB
+	if($admin_session['sid'])
+	{
+		$db->update_query("adminsessions", array('lastactive' => TIME_NOW, 'ip' => $db->escape_string(get_ip())), "sid='".$db->escape_string($admin_session['sid'])."'");
+	}
+
+	// Fetch administrator permissions
+	$mybb->admin['permissions'] = get_admin_permissions($mybb->user['uid']);
+}
+
+// Include the layout generation class overrides for this style
+if(file_exists(MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php"))
+{
+	require_once MYBB_ADMIN_DIR."/styles/{$cp_style}/style.php";
+}
+
+// Check if any of the layout generation classes we can override exist in the style file
+$classes = array(
+	"Page" => "DefaultPage",
+	"SidebarItem" => "DefaultSidebarItem",
+	"PopupMenu" => "DefaultPopupMenu",
+	"Table" => "DefaultTable",
+	"Form" => "DefaultForm",
+	"FormContainer" => "DefaultFormContainer"
+);
+foreach($classes as $style_name => $default_name)
+{
+	// Style does not have this layout generation class, create it
+	if(!class_exists($style_name))
+	{
+		eval("class {$style_name} extends {$default_name} { }");
+	}
+}
+
+$page = new Page;
+$page->style = $cp_style;
+
+// Do not have a valid Admin user, throw back to login page.
+if(!$mybb->user['uid'] || $logged_out == true)
+{
+	if($logged_out == true)
+	{
+		$page->show_login($lang->success_logged_out);
+	}
+	elseif($fail_check == 1)
+	{
+		$page->show_login($lang->error_invalid_username_password, "error");
+	}
+	else
+	{
+		$page->show_login($login_message, "error");
+	}
+}
+
+$rand = my_rand();
+if($rand == 2 || $rand == 5)
+{
+	$stamp = TIME_NOW-604800;
+	$db->delete_query("adminsessions", "lastactive < '{$stamp}'");
+}
+
+$page->add_breadcrumb_item($lang->home, "index.php");
+
+// Begin dealing with the modules
+$modules_dir = MYBB_ADMIN_DIR."modules";
+$dir = opendir($modules_dir);
+while(($module = readdir($dir)) !== false)
+{
+	if(is_dir($modules_dir."/".$module) && !in_array($module, array(".", "..")) && file_exists($modules_dir."/".$module."/module_meta.php"))
+	{
+		require_once $modules_dir."/".$module."/module_meta.php";
+		
+		// Need to always load it for admin permissions / quick access
+		$lang->load($module."_module_meta", false, true);
+		
+		$has_permission = false;
+		if(function_exists($module."_admin_permissions"))
+		{
+			if(isset($mybb->admin['permissions'][$module]))
+			{
+				$has_permission = true;
+			}
+		}
+		// This module doesn't support permissions
+		else
+		{
+			$has_permission = true;
+		}
+			
+		// Do we have permissions to run this module (Note: home is accessible by all)
+		if($module == "home" || $has_permission == true)
+		{
+			$meta_function = $module."_meta";
+			$initialized = $meta_function();
+			if($initialized == true)
+			{
+				$modules[$module] = 1;
+			}
+		}
+	}
+}
+
+$plugins->run_hooks_by_ref("admin_tabs", $modules);
+
+closedir($dir);
+
+$current_module = explode("/", $mybb->input['module'], 2);
+if($mybb->input['module'] && $modules[$current_module[0]])
+{
+	$run_module = $current_module[0];
+}
+else
+{
+	$run_module = "home";
+}
+
+$action_handler = $run_module."_action_handler";
+$action_file = $action_handler($current_module[1]);
+
+if($run_module != "home")
+{
+	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
+}
+
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
+// Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
+$post_check_ignores = array(
+	"example/page" => array("action")
+); // An array of modules/actions to ignore POST checks for.
+
+if($mybb->request_method == "post")
+{
+	if(in_array($mybb->input['module'], $post_check_ignores))
+	{
+		$k = array_search($mybb->input['module'], $post_check_ignores);
+		if(in_array($mybb->input['action'], $post_check_ignores[$k]))
+		{
+			$post_verify = false;
+		}
+	}
+	
+	if($post_verify == true)
+	{
+		// If the post key does not match we switch the action to GET and set a message to show the user
+		if(!isset($mybb->input['my_post_key']) || $mybb->post_code != $mybb->input['my_post_key'])
+		{
+			$mybb->request_method = "get";
+			$page->show_post_verify_error = true;
+		}
+	}
+}
+
+$lang->load("{$run_module}_{$page->active_action}", false, true);
+
+$plugins->run_hooks("admin_load");
+
+require $modules_dir."/".$run_module."/".$action_file;
+?>
