@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tasks version="1400" exported="">
+	<task>
+		<title>Hourly Cleanup</title>
+		<description><![CDATA[Cleans out old searches, captcha images and expires redirects]]></description>
+		<file>hourlycleanup</file>
+		<minute>0</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Daily Cleanup</title>
+		<description><![CDATA[Cleans out old sessions and read threads]]></description>
+		<file>dailycleanup</file>
+		<minute>0</minute>
+		<hour>0</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Half-hourly User Cleanup</title>
+		<description><![CDATA[Automatically expires bans, warnings and posting suspension and moderation times for users]]></description>
+		<file>usercleanup</file>
+		<minute>30,59</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Weekly Backup</title>
+		<description><![CDATA[Automatically backups your MyBB tables to your backups directory.]]></description>
+		<file>backupdb</file>
+		<minute>0</minute>
+		<hour>0</hour>
+		<day>*</day>
+		<weekday>0</weekday>
+		<month>*</month>
+		<enabled>0</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Promotion System</title>
+		<description><![CDATA[Automatically runs the promotion system every 20 minutes.]]></description>
+		<file>promotions</file>
+		<minute>5,25,45</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Thread Views</title>
+		<description><![CDATA[Automatically updates thread views every 15 minutes. This task will automatically be enabled or disabled when changing the 'Delayed Thread Views' setting.]]></description>
+		<file>threadviews</file>
+		<minute>10,25,40,55</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>0</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Tables Check</title>
+		<description><![CDATA[Automatically runs a table check and attempts to repair any crashed tables.]]></description>
+		<file>checktables</file>
+		<minute>0</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>0</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Log Pruning</title>
+		<description><![CDATA[Automatically cleans up old MyBB log files (administrator, moderator, task, promotion, and mail logs)]]></description>
+		<file>logcleanup</file>
+		<minute>21</minute>
+		<hour>5</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Mass Mail</title>
+		<description><![CDATA[Automatically sends any queued mass mailings every 15 minutes. ]]></description>
+		<file>massmail</file>
+		<minute>10,25,40,55</minute>
+		<hour>*</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>User Pruning</title>
+		<description><![CDATA[Automatically prunes users based on criteria set in the settings every day. ]]></description>
+		<file>userpruning</file>
+		<minute>*</minute>
+		<hour>2</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+	<task>
+		<title>Delayed Moderation</title>
+		<description><![CDATA[Automatically performs delayed moderation actions every 24 hours.]]></description>
+		<file>delayedmoderation</file>
+		<minute>0</minute>
+		<hour>0</hour>
+		<day>*</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
+</tasks>

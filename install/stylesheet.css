@@ -1,0 +1,334 @@
+/**
+ * MyBB Installer CSS
+ * (c) 2010 MyBB Group
+ */
+
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	background: #fff;
+	color: #000000;
+	margin: 0;
+}
+
+a {
+	color: #035488;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #444;
+	text-decoration: underline;
+}
+
+#container {
+ margin: auto auto;
+ width: 780px;
+}
+
+/* Logo */
+
+#logo h1 {
+	background: #fff url('images/logo.gif') no-repeat top left;
+	height: 82px;
+	margin: 0 0 2px 0;
+	padding: 3px;
+}
+
+/* Header */
+
+#header {
+	clear: both;
+	background: #016DB1 url('images/thead_bg.gif') repeat-x top left;
+	color: #fff;
+	padding: 5px;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+}
+
+/* Inner Container */
+
+#inner_container {
+	background: #ebebeb url('images/content_bg.gif');
+	border: 1px solid #000;
+}
+
+/* Progress Side bar */
+
+#progress {
+	width: 160px;
+	float: left;
+	padding: 10px;
+	padding-right: 0px;
+	font-size: 11px;
+}
+#progress ul {
+	list-style: none;
+	padding: 0 0 0 10px;
+	margin: 0;
+}
+
+#progress li {
+	color: #535353;
+	font-weight: bold;
+	margin: 0;
+	padding: 0 0 3px 0;
+}
+
+#progress li.active {
+	list-style-image: url('images/bullet.gif');
+	color: #000;
+}
+
+/* Content Area */
+
+#content {
+	margin-left: 170px;
+	width: 570px;
+	padding: 10px 10px 10px 19px;
+}
+
+* html #content {
+	width: 560px;
+}
+
+/* Heading Styles */
+
+h2 {
+	margin: 0;
+	font-size: 24px;
+	height: 32px;
+	padding-left: 40px;
+}
+
+h2.welcome {
+	background: url('images/h2-welcome.gif') no-repeat;
+}
+
+h2.license {
+	background: url('images/h2-license.gif') no-repeat;
+}
+
+h2.requirements {
+	background: url('images/h2-requirements.gif') no-repeat;
+}
+
+h2.dbconfig {
+	background: url('images/h2-dbconfig.gif') no-repeat;
+}
+
+h2.createtables {
+	background: url('images/h2-createtables.gif') no-repeat;
+}
+
+h2.tablepopulate {
+	background: url('images/h2-tablepopulate.gif') no-repeat;
+}
+
+h2.errormsg {
+	background: url('images/error_bg.gif') no-repeat 0 5px;
+}
+
+h2.theme {
+	background: url('images/h2-theme.gif') no-repeat;
+}
+
+h2.config {
+	background: url('images/h2-config.gif') no-repeat;
+}
+
+h2.admin {
+	background: url('images/h2-admin.gif') no-repeat;
+}
+
+h2.finish{
+	background: url('images/h2-finish.gif') no-repeat;
+}
+
+h3 {
+	font-size: 14px;
+	margin: 5px 0;
+}
+
+h4 {
+	font-size: 12px;
+	margin: 5px 0;
+}
+
+/* License Agreement */
+
+.license_agreement {
+	margin: 10px auto;
+	padding: 10px;
+	overflow: scroll;
+	height: 400px;
+	width: 560px;
+	border: 1px solid #ccc;
+}
+
+
+.license_agreement ul {
+	padding: 0;
+	margin: 15px;
+}
+
+/* Next Button */
+
+#next_button, .next_button {
+	text-align: right;
+	width: auto;
+}
+
+/* Footer */
+
+#footer {
+	clear: both;
+	background: #ebebeb;
+	border-top: 1px solid #ccc;
+	padding: 5px;
+	font-size: 11px;
+	text-align: right;
+	vertical-align: middle;
+}
+
+/* Tables */
+
+.border_wrapper {
+	border: 1px solid #0F5C8E;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	margin-top: 14px;
+	border-top: 0;
+}
+
+.border_wrapper div.title {
+	background: #016DB1 url('images/thead_bg.gif') repeat-x top left;
+	color: #fff;
+	padding: 6px 4px;
+	font-size: 100%;
+	text-align: left;
+	font-weight: bold;
+}
+
+.border_wrapper div.title a {
+	color: #fff;
+	text-decoration: none;
+}
+
+table.general {
+	background: #ccc;
+	width: 100%;
+}
+
+table.general td {
+	border-top: 1px solid #fafafa;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #fafafa;
+}
+
+table.general tr.last td {
+	border-bottom: 0;
+}
+
+table.bottom_cell_border td {
+	border-right: 0;
+	border-left: 0;
+}
+
+table.general td {
+	background: #f5f5f5;
+	padding: 6px;
+	vertical-align: top;
+}
+
+table.general th {
+	background: #ADCBE6;
+	text-align: left;
+	color: #000;
+	padding: 5px;
+	font-size: 96%;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+	border-top: 1px solid #000;
+}
+
+table.general th a, table.general th {
+	color: #000;
+	text-decoration: none;
+}
+
+
+table .alt_row td {
+	background: #f1f1f1;
+}
+
+/* Forms */
+
+input.text_input {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	width: 300px;
+	padding: 3px;
+	font-size: 11px;
+}
+
+input.text_input:focus {
+	border: 1px solid #000;
+}
+
+input.submit_button {
+	border: 3px double #0F5C8E;
+	padding: 3px;
+	background: #fff url('images/submit_bg.gif') repeat-x top;
+	color: #0F5C8E;
+	font-weight: bold;
+	margin-top: 4px;
+	margin-right: 3px;
+}
+
+label {
+	font-weight: bold;
+}
+
+.field_description, small {
+	color: #444;
+	font-size: 11px;
+}
+
+/* Misc */
+
+.invisible {
+	display: none;
+}
+
+.pass {
+	color: green;
+}
+
+.fail {
+	color: red;
+}
+
+.error {
+	background: #FFF6BF;
+	border-top: 2px solid #FFD324;
+	border-bottom: 2px solid #FFD324;
+	margin: 10px auto;
+	padding: 3px 20px;
+}
+
+.success {
+	background: #D6ECA6;
+	border-top: 2px solid #8DC93E;
+	border-bottom: 2px solid #8DC93E;
+	text-align: center;
+	margin: 10px auto;
+	padding: 3px 20px;
+	font-weight: bold;
+}
+
+.upgrade_note {
+	background: #efefef;
+}

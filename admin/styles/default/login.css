@@ -1,0 +1,163 @@
+/* MyBB Admin CP
+ *
+ * Login CSS
+ */
+
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	background: #efefef;
+	color: #000000;
+	margin: 0;
+}
+
+a {
+	color: #035488;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #444;
+	text-decoration: underline;
+}
+
+.invisible {
+	display: none;
+}
+
+#container {
+	width: 410px;
+	margin: 100px auto;
+}
+
+#logo h1 {
+	height: 82px;
+	background: transparent url(images/login_logo.gif) bottom left no-repeat;
+	margin: 10px;
+	padding: 0;
+}
+
+#header h1 a {
+	float: left;
+	height: 82px;
+	width: 410px;
+}
+
+#content {
+	border: 2px solid #ccc;
+	background: #fff;
+}
+
+p, form {
+	padding: 0 10px 10px 10px 
+}
+
+form {
+	padding-bottom: 0;
+}
+
+p {
+	margin-bottom: 0;
+}
+
+form p {
+	padding: 0 0 10px 0;
+}
+
+h2 {
+	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
+	border-bottom: 1px solid #000000;
+	color:#fff;
+	margin: 0;
+	padding: 8px;
+	font-size: 12px;
+}
+
+input.text_input {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	width: 255px;
+	padding: 4px;
+	font-size: 13px;
+}
+
+input.text_input:focus {
+	border: 1px solid #000;
+}
+
+#message {
+	margin: 10px 10px 0 10px;
+	padding: 10px;
+	font-weight: bold;
+	background: #efefef;
+	border: 1px solid #ccc;
+}
+
+#message.error {
+	border: 1px solid #FC6;
+	background: #FFC;
+	color: #C00;
+}
+
+#message.success {
+	border: #080 1px solid;
+	background-color: #E8FCDC;
+	color: #080;
+}
+
+form .label {
+	margin-top: 5px;
+	margin-bottom: 3px;
+	width: 120px;
+	clear: left;
+	float: left;
+	padding-bottom:5px;
+}
+
+form label {
+	font-weight: bold;
+}
+
+.form_container .field{
+	float: left;
+	padding-bottom: 5px;
+}
+
+p.submit {
+	clear: both;
+	padding-top: 8px;
+	margin-top: 8px;
+	margin-right: 0;
+	padding-right: 0;
+	text-align: right;
+}
+
+p.submit input {
+	border: 3px double #0F5C8E;
+	padding: 3px;
+	background: #fff url(images/submit_bg.gif) repeat-x top;
+	color: #0F5C8E;
+	font-weight: bold;
+	margin-right: 3px;
+}
+
+.forgot_password {
+	float: left;
+	padding-top: 8px;
+	font-size: 11px;
+}
+
+.forgot_password a {
+	color: #555;
+}
+
+.alert {
+	padding: 5px 10px;
+	border: #FC6 1px solid;
+	background-color: #ffc;
+	color: #900; 
+	font-style: normal;
+	font-weight: bold;
+	padding-left: 10px;
+	display: block;
+}
