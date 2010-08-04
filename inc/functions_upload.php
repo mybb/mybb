@@ -533,8 +533,8 @@ function upload_attachment($attachment, $update_attachment=false)
 		$file_path = $mybb->settings['uploadspath']."/".$filename;
 		if(function_exists("finfo_open"))
 		{
-			$file_info = finfo_open(FILEINFO_MIME_TYPE);
-			$mime = finfo_file($file_info, MYBB_ROOT.$file_path);
+			$file_info = finfo_open(FILEINFO_MIME);
+			list($mime, ) = explode(';', finfo_file($file_info, MYBB_ROOT.$file_path), 1);
 			finfo_close($file_info);
 		}
 		else if(function_exists("mime_content_type"))
