@@ -1,0 +1,145 @@
+body {
+	background: #fff;
+	color: #000;
+	font: small Verdana;
+}
+
+#container {
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 20px;
+}
+
+h1 {
+	font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	font-weight: bold;
+	color: #000;
+}
+h1 a {
+	color: #000;
+	text-decoration: none;
+}
+
+.navigation {
+	border: 1px solid #ccc;
+	background: #F5F5F4;
+	padding: 4px;
+	margin-bottom: 10px;
+	font-size: 13px;
+}
+
+#infobox {
+	padding: 4px;
+	color: #777;
+	font-size: 0.8em;
+	margin-bottom: 10px;
+}
+
+#fullversion {
+	font-size: 1.1em;
+}
+
+
+.post {
+	border: 1px solid #ccc;
+	padding: 1px;
+	background: #F5F5F4;
+	margin-bottom: 10px;
+}
+
+.post .header {
+	background: #F5F5F4;
+}
+
+.post .header .author a {
+	color: #000;
+	text-decoration: none;
+}
+
+.post .header .dateline {
+	padding: 4px;
+	color: #777;
+	float: right;
+	margin-top: -20px;
+}
+
+.post .message {
+	background: #fff;
+	padding: 4px;
+}
+
+.listing {
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+.header {
+	background: #F5F5F4;
+	font-weight: bold;
+	padding: 4px;
+	border-bottom: 1px solid #ccc;
+}
+
+.threadlist .threads {
+	padding: 4px;
+}
+
+.threadlist .threads .replycount {
+	color: #777;
+	font-size: 0.8em;
+}
+
+.header h2 {
+	font-size: 1.0em;
+	margin: 0;
+}
+
+h3 {
+	font-size: 1.0em;
+	margin: 5px 0 0 10px;
+}
+
+.forumlist .forums ul {
+	list-style: none;
+}
+
+.error {
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+.error .header {
+	background: #F5F5F4;
+	font-weight: bold;
+	padding: 4px;
+	border-bottom: 1px solid #ccc;
+}
+
+.error .message {
+	padding: 4px;
+}
+
+.multipage {
+	background: #F5F5F4;
+	border: 1px solid #ccc;
+	margin-bottom: 10px;
+	padding: 4px;
+}
+
+#printinfo {
+	display: none;
+}
+
+#footer {
+	padding-top: 10px;
+	text-align: center;
+	font-size: 0.8em;
+}
+
+#footer a {
+	color: #000;
+}
+
+.quote_body, .code_body {
+	margin-left: 18px;
+}

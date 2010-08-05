@@ -1,0 +1,27 @@
+/*
+ * CodePress color styles for HTML syntax highlighting
+ */
+
+/* tags */
+b {color:#412CFF;}
+b a { font-weight: bold; }
+b i { font-style: italic;}
+b big { color: #888888;}
+
+/* attributes */
+s, s b {color:#036A2E;}
+
+/* comments */
+ins, ins b, ins s, ins em, tt a {color:#0066FF; font-style: italic;} 
+
+
+cite, s cite {color:#31849D;}
+cite s { font-weight: normal; color: #412CFF;}
+
+small { color: red; font-size: 13px;}
+
+em, em b {background: #f2f2f2; padding: 2px 0;} /* style */
+strong {background: #f2f2f2; padding: 2px 0;} /* script */
+tt { background: #f2f2f2; padding: 2px 0;}
+tt b i, tt b, tt b a, tt b big, tt s, tt s b{ color: #000; font-weight: normal; font-style: normal;}
+tt i {color:darkblue;font-weight:bold;} /* script reserved words */

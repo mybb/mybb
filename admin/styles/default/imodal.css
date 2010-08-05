@@ -1,0 +1,156 @@
+#ModalOverlay {
+	background-color:#000;
+	cursor:wait;
+}
+
+#ModalContainer {
+	left: 50%;
+	top: 15%;
+}
+
+.modalClose {
+	z-index: 100000;
+	cursor: pointer;
+	display: block;
+	position: absolute;
+	height: 20px;
+	width: 20px;
+	right: 10px;
+	top: 10px;
+	background: url('images/close.gif') no-repeat;
+}
+
+#ModalLoadingOverlay {
+	background: #000;
+	cursor: wait;
+}
+
+#ModalLoadingIndicator {
+	width: 100px;
+	height: 100px;
+	margin-left: -50px;
+	margin-top: -50px;
+	background: url('images/loading.gif') no-repeat;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 30001;
+}
+
+#ModalContentContainer {
+	background: #fff;
+	background-image: url('images/background.gif');
+	background-repeat: repeat-x;
+	background-position: left bottom;
+}
+#ModalTitle, .ModalTitle {
+	background: #efefef;
+	color: #444;
+	font-size: 110%;
+	font-weight: bold;
+	padding: 10px 14px;
+	border-bottom: 1px solid #777;
+	text-align: left;
+}
+
+#ModalContent, .ModalContent {
+	margin: 14px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	padding-bottom: 8px;
+	text-align: left;
+	color: #444;
+}
+
+#ModalContentContainer .ModalContentWithButtons {
+	border-bottom: 1px solid #757575;
+	margin-bottom: 0;
+}
+
+#ModalButtonRow, .ModalButtonRow {
+	text-align: right;
+	border-top: 1px solid #fff;
+	margin: 8px;
+	margin-top: 0;
+	height: 45px;
+}
+
+#ModalButtonRow input, .ModalButtonRow input {
+	text-align: center;
+}
+
+#ModalButtonRow input.Submit, .ModalButtonRow input.Submit {
+	font-weight: bold;
+}
+
+#ModalTopBorder {
+	position: absolute;
+	height: 11px;
+	background: url('images/border-topbottom.png') repeat-x  0 0;
+	top: -9px;
+	left: 12px;
+	right: 26px;
+}
+
+#ModalBottomBorder {
+	position: absolute;
+	height: 15px;
+	background: url('images/border-topbottom.png') repeat-x 0 -11px;
+	bottom: -7px;
+	left: 12px;
+	right: 26px;
+}
+
+#ModalRightBorder {
+	position: absolute;
+	background: url('images/border-sides.png') repeat-y 0 scroll;
+	right: -20px;
+	width: 20px;
+	top: 34px;
+	bottom: 32px;
+}
+
+#ModalLeftBorder {
+	position: absolute;
+	background: url('images/border-sides.png') repeat-y -37px scroll;
+	left: -20px;
+	width: 20px;
+	top: 34px;
+	bottom: 31px;
+}
+
+#ModalBottomLeftCorner {
+	position: absolute;
+	background: url('images/border-corners.png') no-repeat 0 -24px;
+	bottom:-9px;
+	height:40px;
+	left:-8px;
+	width:20px;
+}
+
+#ModalTopRightCorner {
+	position: absolute;
+	background: url('images/border-corners.png') no-repeat -22px 0;
+	top:-6px;
+	height:40px;
+	right:-14px;
+	width:40px;
+}
+
+#ModalTopLeftCorner {
+	position: absolute;
+	background: url('images/border-corners.png') no-repeat 0 0;
+	top:-6px;
+	height:40px;
+	left:-8px;
+	width:20px;
+}
+
+#ModalBottomRightCorner {
+	position: absolute;
+	background: url('images/border-corners.png') no-repeat -22px -23px;
+	bottom:-8px;
+	height:40px;
+	right:-14px;
+	width:40px;
+}

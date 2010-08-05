@@ -1,0 +1,20 @@
+.user_settings_bit {
+	margin-bottom: 8px;
+}
+
+.user_settings_bit input {
+	vertical-align: middle;
+	margin-right: 8px;
+}
+
+.user_settings_bit select {
+	margin-top: 8px;
+}
+
+.user_settings_bit label {
+	font-weight: normal;
+}
+
+.view_fields #fields_enabled, .view_fields #fields_disabled {
+	min-height: 300px;
+}
