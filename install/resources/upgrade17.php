@@ -509,10 +509,10 @@ function upgrade17_dbchanges6()
 	
 	$ipaddress = false;
 	
-	$query = $db->simple_select("posts", "ipaddress, longipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("posts", "ipaddress, pid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($post = $db->fetch_array($query))
 	{
-		$db->update_query("posts", array('longipaddress' => my_ip2long($post['ipaddress'])), "pid = '{$post['pid']}'");
+		$db->update_query("posts", array('longipaddress' => intval(my_ip2long($post['ipaddress']))), "pid = '{$post['pid']}'");
 		$ipaddress = true;
 	}
 	
@@ -577,7 +577,7 @@ function upgrade17_dbchanges7()
 	$ipaddress = false;
 	$update_array = array();
 	
-	$query = $db->simple_select("users", "regip, lastip, longlastip, longregip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
+	$query = $db->simple_select("users", "regip, lastip, uid", "", array('limit_start' => $lower, 'limit' => $ipp));
 	while($user = $db->fetch_array($query))
 	{
 		$update_array = array(
