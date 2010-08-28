@@ -28,5 +28,6 @@ $l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have be
 $l['success_rebuilt_forum_stats'] = "The forum statistics have been rebuilt successfully.";
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
+$l['automatically_redirecting'] = "Automatically Redirecting...";
 
 ?>
