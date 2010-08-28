@@ -4935,7 +4935,7 @@ function email_already_in_use($email, $uid="")
 	{
 		$uid_string = " AND uid != '".intval($uid)."'";
 	}
-	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string(my_strtolower($email))."'{$uid_string}");
+	$query = $db->simple_select("users", "COUNT(email) as emails", "email = '".$db->escape_string($email)."'{$uid_string}");
 	
 	if($db->fetch_field($query, "emails") > 0)
 	{
