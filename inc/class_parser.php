@@ -27,6 +27,7 @@ class postParser
 	/**
 	 * Internal cache of MyCode.
 	 *
+	 * @access public
 	 * @var mixed
 	 */
 	public $mycode_cache = 0;
@@ -34,6 +35,7 @@ class postParser
 	/**
 	 * Internal cache of smilies
 	 *
+	 * @access public
 	 * @var mixed
 	 */
 	public $smilies_cache = 0;
@@ -41,6 +43,7 @@ class postParser
 	/**
 	 * Internal cache of badwords filters
 	 *
+	 * @access public
 	 * @var mixed
 	 */
 	public $badwords_cache = 0;
@@ -48,6 +51,7 @@ class postParser
 	/**
 	 * Base URL for smilies
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $base_url;
@@ -55,18 +59,18 @@ class postParser
 	/**
 	 * Parsed Highlights cache
 	 *
-	 * @access private
+	 * @access public
 	 * @var array
 	 */
-	var $highlight_cache = array();
+	public $highlight_cache = array();
 	
 	/**
 	 * Options for this parsed message (Private - set by parse_message argument)
 	 *
-	 * @access private
+	 * @access public
 	 * @var array
 	 */
-	private $options;
+	public $options;
 
 	/**
 	 * Parses a message with the specified options.
