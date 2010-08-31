@@ -3627,17 +3627,18 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$user_options = $values[$field_name];
 				}
+
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = $val;
 				}
-				$select_options = array();
+
+				$select_options = explode("\n", $options);
 				$options = array();
 				if($search == true)
 				{
 					$select_options[''] = $lang->na;
 				}
-				$select_options += explode("\n", $options);
 				
 				foreach($select_options as $val)
 				{
