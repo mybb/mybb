@@ -1762,7 +1762,7 @@ if($mybb->input['action'] == "profile")
 	
 	$buddy_options = '';
 	
-	if($mybb->user['uid'] != $mybb->input['uid'] && $mybb->user['uid'] != 0)
+	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
 		if(in_array($mybb->input['uid'], $buddy_list))
