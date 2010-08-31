@@ -1310,18 +1310,6 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 	
 	$table = new Table;
 	
-	$page->extra_header .= '<script type="text/javascript">
-	Event.observe(document, "dom:loaded", function() {
-	var lastelement = \'\';
-	link_preview_template_list = $$(\'a.preview_template_list\');
-			link_preview_template_list.each(function(element) {
-				Event.observe(element, "mouseover", function(event) { if(lastelement != \'\') { $(lastelement).hide(); } listelement = Event.element(event); $(listelement.id.replace("preview_", "")).show(); lastelement = listelement.id.replace("preview_", ""); } );
-				
-				Event.observe(element, "mouseout", function(event) { listelement = Event.element(event); $(listelement.id.replace("preview_", "")).hide(); lastelement = \'\';  } );
-			});
-	});
-	</script>';
-	
 	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}");
 
 	$page->output_header($lang->template_sets);
@@ -1524,9 +1512,9 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		}
 		else if(isset($group['templates']) && count($group['templates']) > 0)
 		{			
-			$table->construct_cell("<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\" class=\"preview_template_list\" id=\"preview_template_list_{$group['gid']}\">{$group['title']}</a></strong>");
-			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
-			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
+			$table->construct_cell("<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
+ 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
+ 			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 		}
 	}
 	
