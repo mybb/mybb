@@ -1221,15 +1221,15 @@ if($mybb->input['action'] == "subscriptions")
 	while($subscription = $db->fetch_array($query))
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
-		// Only keep if we're allowed to view them
-		if($forumpermissions['canview'] != 0 || $forumpermissions['canviewthreads'] != 0)
+
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
-			$subscriptions[$subscription['tid']] = $subscription;
+			// Hmm, you don't have permission to view this thread - unsubscribe!
+			$del_subscriptions[] = $subscription['tid'];
 		}
-		// Hmm, you don't have permission to view - unsubscribe!
 		else if($subscription['tid'])
 		{
-			$del_subscriptions[] = $subscription['tid'];
+			$subscriptions[$subscription['tid']] = $subscription;
 		}
 	}
 
