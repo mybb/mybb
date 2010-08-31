@@ -397,7 +397,7 @@ elseif($mybb->input['action'] == "buddypopup")
 elseif($mybb->input['action'] == "whoposted")
 {
 	$numposts = 0;
-	$altbg = "trow1";
+	$altbg = alt_trow();
 	$whoposted = '';
 	$tid = intval($mybb->input['tid']);
 	$thread = get_thread($tid);
