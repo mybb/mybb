@@ -872,7 +872,7 @@ if($mybb->input['action'] == "send")
 	}
 	
 	// See if it's actually worth showing the buddylist icon.
-	if($mybb->user['buddylist'] != '')
+	if($mybb->user['buddylist'] != '' && $mybb->settings['use_xmlhttprequest'] == 1)
 	{
 		$buddy_select = 'to';
 		eval("\$buddy_select_to = \"".$templates->get("private_send_buddyselect")."\";");
