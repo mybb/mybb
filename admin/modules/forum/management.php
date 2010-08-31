@@ -90,7 +90,7 @@ if($mybb->input['action'] == "copy")
 			
 			if($mybb->input['pid'] == -1 && $mybb->input['type'] == 'f')
 			{
-				$errors[] = $lang->error_forum_noparent;
+				$errors[] = $lang->error_no_parent;
 			}
 	
 			if(!$errors)
