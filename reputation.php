@@ -599,9 +599,10 @@ if(!$mybb->input['action'])
 
 	// Fetch the reputations which will be displayed on this page
 	$query = $db->query("
-		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
+		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup, p.pid AS post_link
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=r.pid)
 		WHERE r.uid='{$user['uid']}' $conditions
 		ORDER BY $order
 		LIMIT $start, {$mybb->settings['repsperpage']}
@@ -662,7 +663,7 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 		
 		// Is this rating specific to a post?
-		if($reputation_vote['pid'])
+		if($reputation_vote['pid'] && $reputation_vote['post_link'])
 		{
 			$link = "<a href=\"".get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}\">{$lang->postrep_post}".$reputation_vote['pid']."</a>";
 			$postrep_given = $lang->sprintf($lang->postrep_given, $link);
