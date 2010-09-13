@@ -3219,7 +3219,7 @@ if(!$mybb->input['action'])
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' {$f_perm_sql}
+		WHERE t.uid='".$mybb->user['uid']."' AND visible != '-2' {$f_perm_sql}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");
