@@ -1598,7 +1598,6 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("userfields", "ufid='{$user['uid']}'");
 		$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 		$db->delete_query("events", "uid='{$user['uid']}'");
-		$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
 		$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
 		$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
 		$db->delete_query("sessions", "uid='{$user['uid']}'");
@@ -1612,12 +1611,18 @@ if($mybb->input['action'] == "delete")
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
-		
+
+		// Was this user a moderator?
+		if(is_moderator($user['uid']))
+		{
+			$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
+			$cache->update_moderators();
+		}
+
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
 		// Log admin action
 		log_admin_action($user['uid'], $user['username']);
-
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
