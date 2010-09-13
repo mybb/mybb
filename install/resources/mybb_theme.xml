@@ -2013,7 +2013,7 @@ body {
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=options" class="usercp_nav_item usercp_nav_options">{$lang->ucp_nav_edit_options}</a></td></tr>
 </tbody>]]></template>
 		<template name="usercp_nav_editsignature" version="1600"><![CDATA[<div><a href="usercp.php?action=editsig" class="usercp_nav_item usercp_nav_editsig">{$lang->ucp_nav_edit_sig}</a></div>]]></template>
-		<template name="usercp_nav_misc" version="1600"><![CDATA[<tr>
+		<template name="usercp_nav_misc" version="1601"><![CDATA[<tr>
 	<td class="tcat">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercpmisc']}.gif" id="usercpmisc_img" class="expander" alt="[-]" title="[-]" /></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_misc}</strong></span></div>
@@ -2023,7 +2023,7 @@ body {
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=usergroups" class="usercp_nav_item usercp_nav_usergroups">{$lang->ucp_nav_usergroups}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=editlists" class="usercp_nav_item usercp_nav_editlists">{$lang->ucp_nav_editlists}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=attachments" class="usercp_nav_item usercp_nav_attachments">{$lang->ucp_nav_attachments}</a></td></tr>
-	<tr><td class="trow1 smalltext">{$draftstart}<a href="usercp.php?action=drafts" class="usercp_nav_item usercp_nav_drafts">{$lang->ucp_nav_drafts}</a>{$draftend}</td></tr>
+	<tr><td class="trow1 smalltext">{$draftstart}<a href="usercp.php?action=drafts" class="usercp_nav_item usercp_nav_drafts">{$lang->ucp_nav_drafts} {$draftcount}</a>{$draftend}</td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=subscriptions" class="usercp_nav_item usercp_nav_subscriptions">{$lang->ucp_nav_subscribed_threads}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="usercp.php?action=forumsubscriptions" class="usercp_nav_item usercp_nav_fsubscriptions">{$lang->ucp_nav_forum_subscriptions}</a></td></tr>
 	<tr><td class="trow1 smalltext"><a href="{$profile_link}" class="usercp_nav_item usercp_nav_viewprofile">{$lang->ucp_nav_view_profile}</a></td></tr>

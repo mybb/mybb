@@ -458,14 +458,18 @@ function usercp_menu_profile()
 function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
-	
+
+	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
+	$count = $db->fetch_array($query);	
+
 	if($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";
 		$draftend = "</strong>";
+		$draftcount = "(".my_number_format($count['draftcount']).")";
 	}
+
 	$profile_link = get_profile_link($mybb->user['uid']);
-	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 
