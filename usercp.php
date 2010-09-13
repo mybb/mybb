@@ -1177,8 +1177,20 @@ if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 
+	// Thread visiblity
+	$visible = "AND t.visible != 0";
+	if(is_moderator() == true)
+	{
+		$visible = '';
+	}
+
 	// Do Multi Pages
-	$query = $db->simple_select("threadsubscriptions", "COUNT(tid) AS threads", "uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT COUNT(ts.tid) as threads
+		FROM ".TABLE_PREFIX."threadsubscriptions ts
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
+		WHERE ts.uid = '".$mybb->user['uid']."' {$visible}
+	");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	if(!$mybb->settings['threadsperpage'])
@@ -1214,7 +1226,7 @@ if($mybb->input['action'] == "subscriptions")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
-		WHERE s.uid='".$mybb->user['uid']."'
+		WHERE s.uid='".$mybb->user['uid']."' {$visible}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
@@ -1428,8 +1440,12 @@ if($mybb->input['action'] == "subscriptions")
 
 			$folder .= "folder";
 
-			// Build last post info
+			if($thread['visible'] == 0)
+			{
+				$bgcolor = "trow_shaded";
+			}
 
+			// Build last post info
 			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
@@ -3069,12 +3085,18 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
 	if($db->num_rows($query))
 	{
+		$visible = "AND t.visible != 0";
+		if(is_moderator() == true)
+		{
+			$visible = '';
+		}
+
 		$query = $db->query("
 			SELECT s.*, t.*, t.username AS threadusername, u.username
 			FROM ".TABLE_PREFIX."threadsubscriptions s
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE s.uid='".$mybb->user['uid']."'
+			WHERE s.uid='".$mybb->user['uid']."' {$visible}
 			ORDER BY t.lastpost DESC
 			LIMIT 0, 10
 		");
@@ -3179,6 +3201,11 @@ if(!$mybb->input['action'])
 						}
 						
 						$folder .= "folder";
+
+						if($thread['visible'] == 0)
+						{
+							$bgcolor = "trow_shaded";
+						}
 		
 						$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 						$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
@@ -3215,11 +3242,17 @@ if(!$mybb->input['action'])
 		$f_perm_sql = "AND t.fid NOT IN (".$unviewable_forums.")";
 	}
 
+	$visible = " AND visible != 0";
+	if(is_moderator() == true)
+	{
+		$visible = '';
+	}
+
 	$query = $db->query("
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' AND visible != '-2' {$f_perm_sql}
+		WHERE t.uid='".$mybb->user['uid']."' AND visible != '-2' {$visible} {$f_perm_sql}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");
@@ -3386,6 +3419,12 @@ if(!$mybb->input['action'])
 				{
 					$folder .= "hot";
 					$folder_label .= $lang->icon_hot;
+				}
+
+				// Is our thread visible?
+				if($thread['visible'] == 0)
+				{
+					$bgcolor = 'trow_shaded';
 				}
 
 				if($thread['closed'] == 1)
