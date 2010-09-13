@@ -1465,6 +1465,11 @@ function is_moderator($fid="0", $action="", $uid="0")
 					{
 						return true;
 					}
+					elseif(isset($modusers['usergroups'][$user_perms['gid']]))
+					{
+						// Moderating usergroup
+						return true;
+					}
 				}
 			}
 			return false;
