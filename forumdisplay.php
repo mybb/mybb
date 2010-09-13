@@ -197,7 +197,7 @@ foreach($parentlistexploded as $mfid)
 					{
 						continue;
 					}
-					$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
+					$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup'])."</a>";
 					$done_moderators['users'][] = $moderator['id'];
 				}
 				$comma = $lang->comma;
