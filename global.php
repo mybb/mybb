@@ -512,21 +512,18 @@ else
 }
 
 // Check to see if we have any tasks to run
-if($mybb->settings['taskscron'] != 1)
+$task_cache = $cache->read("tasks");
+if(!$task_cache['nextrun'])
 {
-	$task_cache = $cache->read("tasks");
-	if(!$task_cache['nextrun'])
-	{
-		$task_cache['nextrun'] = TIME_NOW;
-	}
-	if($task_cache['nextrun'] <= TIME_NOW)
-	{
-		$task_image = "<img src=\"{$mybb->settings['bburl']}/task.php\" border=\"0\" width=\"1\" height=\"1\" alt=\"\" />";
-	}
-	else
-	{
-		$task_image = '';
-	}
+	$task_cache['nextrun'] = TIME_NOW;
+}
+if($task_cache['nextrun'] <= TIME_NOW)
+{
+	$task_image = "<img src=\"{$mybb->settings['bburl']}/task.php\" border=\"0\" width=\"1\" height=\"1\" alt=\"\" />";
+}
+else
+{
+	$task_image = '';
 }
 
 // Are we showing the quick language selection box?
