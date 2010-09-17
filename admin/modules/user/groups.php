@@ -1099,7 +1099,7 @@ if($mybb->input['action'] == "delete")
 		$updated_users = array("displaygroup" => "usergroup");
 		$plugins->run_hooks("admin_user_groups_delete_commit");
 		
-		$db->update_query("users", $updated_users, "displaygroup='{$usergroup['gid']}'", "", false); // No quotes = displaygroup=usergroup
+		$db->update_query("users", $updated_users, "displaygroup='{$usergroup['gid']}'", "", true); // No quotes = displaygroup=usergroup
 		
 		switch($db->type)
 		{

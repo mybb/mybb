@@ -2012,6 +2012,14 @@ function install_done()
 		}
 		$group_count++;
 	}
+
+	// Restart usergroup sequence with correct # of groups
+	if($config['database']['type'] == "pgsql")
+	{
+		$pgsql_group_count = $group_count + 1;
+		$db->query("ALTER SEQUENCE ".$config['database']['table_prefix']."usergroups_gid_seq RESTART WITH ".$pgsql_group_count."");
+	}
+
 	echo $lang->done . '</p>';
 	
 	echo $lang->done_step_admincreated;
