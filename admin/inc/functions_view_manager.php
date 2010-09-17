@@ -49,7 +49,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 			admin_redirect($base_url."&action=views");
 		}
 		set_default_view($type, $admin_view['vid']);
-		flash_message($lang->success_view_set_as_default, 'success');
+		flash_message($lang->succuss_view_set_as_default, 'success');
 		admin_redirect($base_url."&action=views");
 	}
 	
