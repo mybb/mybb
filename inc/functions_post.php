@@ -571,7 +571,7 @@ function build_postbit($post, $post_type=0)
 
 	get_post_attachments($id, $post);
 
-	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsigtime'] < TIME_NOW))
+	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],

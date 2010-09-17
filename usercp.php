@@ -1648,7 +1648,7 @@ if($mybb->input['action'] == "editsig")
 		$template = false;
 	}
 
-	if(!$mybb->user['signature'] && ($mybb->user['suspendsignature'] && $mybb->user['suspendsigtime'] > TIME_NOW))
+	if($mybb->user['suspendsignature'] && ($mybb->user['suspendsigtime'] == 0 || $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] > TIME_NOW))
 	{
 		// User currently has no signature and they're suspended
 		error_no_permission();

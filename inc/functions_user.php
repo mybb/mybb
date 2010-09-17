@@ -443,7 +443,7 @@ function usercp_menu_profile()
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
 
-	if($mybb->user['suspendsignature'] == 0 || ($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] < TIME_NOW))
+	if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
 	{
 		eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
 	}
