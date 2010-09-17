@@ -30,7 +30,17 @@ function user_exists($uid)
 function username_exists($username)
 {
 	global $db;
-	$query = $db->simple_select("users", "COUNT(*) as user", "username='".$db->escape_string($username)."'", array('limit' => 1));
+
+	switch($db->type)
+	{
+		case "sqlite":
+			// SQLite has case sensitive usernames...
+			$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
+			break;
+		default:
+			$query = $db->simple_select("users", "COUNT(*) as user", "username='".$db->escape_string($username)."'", array('limit' => 1));
+	}
+
 	if($db->fetch_field($query, 'user') == 1)
 	{
 		return true;
@@ -51,8 +61,16 @@ function username_exists($username)
 function validate_password_from_username($username, $password)
 {
 	global $db;
-	
-	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "username='".$db->escape_string($username)."'", array('limit' => 1));
+
+	switch($db->type)
+	{
+		case "sqlite":
+			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
+			break;
+		default:
+			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "username='".$db->escape_string($username)."'", array('limit' => 1));
+	}
+
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{
