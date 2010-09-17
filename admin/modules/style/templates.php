@@ -1242,7 +1242,7 @@ if($mybb->input['action'] == "diff_report")
 	
 	$table = new Table;
 	
-	$table->construct_header("<ins>".$lang->master_updated_ins."</ins><br /><del>".$lang->master_updated_del."</del>");
+	$table->construct_header("<ins>".$lang->master_updated_del."</ins><br /><del>".$lang->master_updated_ins."</del>");
 	
 	$table->construct_cell("<pre class=\"differential\">".$renderer->render($diff)."</pre>");
 	$table->construct_row();
