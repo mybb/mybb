@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
@@ -394,6 +394,11 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		if($forum['lastread'])
 		{
 			$forum_read = $forum['lastread'];
+		}
+		elseif($mybb->cookies['mybb']['readallforums'])
+		{
+			// We've hit the read all forums as a guest, so use the lastvisit of the user
+			$forum_read = $mybb->cookies['mybb']['lastvisit'];
 		}
 		else // Is there not a read record for this forum? It must be unread
 		{

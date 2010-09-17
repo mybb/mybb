@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
@@ -246,7 +246,9 @@ function mark_all_forums_read()
 	}
 	else
 	{
+		my_setcookie("mybb[readallforums]", 1);
 		my_setcookie("mybb[lastvisit]", TIME_NOW);
+
 		my_unsetcookie("mybb[threadread]");
 		my_unsetcookie("mybb[forumread]");
 	}
