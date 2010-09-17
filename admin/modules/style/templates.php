@@ -614,7 +614,7 @@ if($mybb->input['action'] == "search_replace")
 				
 				// Select all templates with that search term
 				$query = $db->query("
-					SELECT t.tid, t.title, t.sid
+					SELECT t.tid, t.title, t.sid, t.template
 					FROM ".TABLE_PREFIX."templates t
 					LEFT JOIN ".TABLE_PREFIX."templatesets s ON (t.sid=s.sid)
 					LEFT JOIN ".TABLE_PREFIX."templates t2 ON (t.title=t2.title AND t2.sid='1')
