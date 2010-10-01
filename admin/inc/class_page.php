@@ -48,7 +48,7 @@ class DefaultPage
 	/**
 	 * @var array The breadcrumb trail leading up to this page.
 	 */
-	private $_breadcrumb_trail = array();
+	public $_breadcrumb_trail = array();
 	
 	/**
 	 * @var string Any additional information to add between the <head> tags.
