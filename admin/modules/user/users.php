@@ -1612,6 +1612,13 @@ if($mybb->input['action'] == "delete")
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
 
+		// Did this user have an uploaded avatar?
+		if($user['avatartype'] == "upload")
+		{
+			// Removes the ./ at the beginning the timestamp on the end...
+			@unlink("../".substr($user['avatar'], 2, -20));
+		}
+
 		// Was this user a moderator?
 		if(is_moderator($user['uid']))
 		{
