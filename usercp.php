@@ -2797,29 +2797,12 @@ if($mybb->input['action'] == "attachments")
 
 	$attachments = '';
 
-	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
-	$usage = $db->fetch_array($query);
-	$totalusage = $usage['ausage'];
-	$totalattachments = $usage['acount'];
-	$friendlyusage = get_friendly_size($totalusage);
-	if($mybb->usergroup['attachquota'])
-	{
-		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
-		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
-	}
-	else
-	{
-		$percent = $lang->unlimited;
-		$attachquota = $lang->unlimited;
-		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
-	}
-
 	// Pagination
 	if(!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
+
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
 
@@ -2836,20 +2819,15 @@ if($mybb->input['action'] == "attachments")
 	$end = $start + $perpage;
 	$lower = $start+1;
 
-	if($end > $totalattachments)
-	{
-		$upper = $totalattachments;
-	}
-	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
-
 	$query = $db->query("
 		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
 		FROM ".TABLE_PREFIX."attachments a
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE a.uid='".$mybb->user['uid']."' AND a.pid!='0'
+		WHERE a.uid='".$mybb->user['uid']."'
 		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
 	");
+
 	$bandwidth = $totaldownloads = 0;
 	while($attachment = $db->fetch_array($query))
 	{
@@ -2876,6 +2854,26 @@ if($mybb->input['action'] == "attachments")
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
 	}
+
+	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
+	$usage = $db->fetch_array($query);
+	$totalusage = $usage['ausage'];
+	$totalattachments = $usage['acount'];
+	$friendlyusage = get_friendly_size($totalusage);
+	if($mybb->usergroup['attachquota'])
+	{
+		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
+		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
+		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
+	}
+	else
+	{
+		$percent = $lang->unlimited;
+		$attachquota = $lang->unlimited;
+		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
+	}
+
+	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
 	$bandwidth = get_friendly_size($bandwidth);
 
 	if(!$attachments)
