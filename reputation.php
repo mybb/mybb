@@ -341,7 +341,12 @@ if($mybb->input['action'] == "delete")
 	verify_post_check($mybb->input['my_post_key']);
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
-	$query = $db->simple_select("reputation", "*", "rid='".$mybb->input['rid']."'");
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM ".TABLE_PREFIX."reputation r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
+		WHERE rid = '".intval($mybb->input['rid'])."'
+	");
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
@@ -356,6 +361,10 @@ if($mybb->input['action'] == "delete")
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 	$reputation_value = $db->fetch_field($query, "reputation_count");
+
+	// Create moderator log
+	$rep_remove = build_profile_link($existing_reputation['username'], $existing_reputation['adduid']);
+	log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->sprintf($lang->delete_reputation_log, $rep_remove));
 
 	$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 
