@@ -1102,6 +1102,17 @@ class Moderation
 			"tid" => $tid,
 		);
 
+		// Update the thread ratings
+		$new_numrating = $thread['numratings'] + $mergethread['numratings'];
+		$new_threadrating = $thread['totalratings'] + $mergethread['totalratings'];
+
+		$sqlarray = array(
+			"numratings" => $new_numrating,
+			"totalratings" => $new_threadrating
+		);
+
+		$db->update_query("threads", $sqlarray, "tid = '{$tid}'");
+
 		// Check if we have a thread subscription already for our new thread
 		$subscriptions = array(
 			$tid => array(),
