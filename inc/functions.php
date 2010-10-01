@@ -4106,8 +4106,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		'Y',
 		'j',
 		'S',
-		'l',
 		'F',
+		'l',
 		'M',
 	);
 
@@ -4119,8 +4119,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),
 		($bd == 1 || $bd == 21 || $bd == 31 ? 'st' : ($bd == 2 || $bd == 22 ? 'nd' : ($bd == 3 || $bd == 23 ? 'rd' : 'th'))),
-		$wd,
 		$bmonth[$bm-1],
+		$wd,
 		($bm == 9 ? my_substr($bmonth[$bm-1], 0, 4) :  my_substr($bmonth[$bm-1], 0, 3)),
 	);
 	
