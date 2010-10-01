@@ -1045,7 +1045,7 @@ LEGEND;
 		{		
 			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
 			$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report");
-			$popup->add_item($lang->diff_report, "index.php?module=style-templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid1=".$template['sid']."&amp;sid2=-2");
+			$popup->add_item($lang->diff_report, "index.php?module=style-templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid1=".$template['sid']."&amp;sid2=-2&amp;from=diff_report");
 			$popup->add_item($lang->revert_to_orig, "index.php?module=style-templates&amp;action=revert&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
 				
 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report\">{$template['title']}</a>", array('width' => '80%'));
@@ -1185,10 +1185,15 @@ if($mybb->input['action'] == "diff_report")
 			'link' => "index.php?module=style-templates&amp;action=find_updated"
 		);
 	}
+
+	if(!$mybb->input['from'])
+	{
+		$mybb->input['from'] = 0;
+	}
 	
 	$sub_tabs['diff_report'] = array(
 		'title' => $lang->diff_report,
-		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']),
+		'link' => "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']),
 		'description' => $lang->diff_report_desc
 	);
 	
@@ -1234,7 +1239,7 @@ if($mybb->input['action'] == "diff_report")
 		$page->add_breadcrumb_item($lang->find_updated, "index.php?module=style-templates&amp;action=find_updated");
 	}
 	
-	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']));
+	$page->add_breadcrumb_item($lang->diff_report.": ".$template1['title'], "index.php?module=style-templates&amp;action=diff_report&amp;title=".$db->escape_string($mybb->input['title'])."&amp;from=".$mybb->input['from']."&amp;sid1=".intval($mybb->input['sid1'])."&amp;sid2=".intval($mybb->input['sid2']));
 	
 	$page->output_header($lang->template_sets);
 	
@@ -1242,7 +1247,14 @@ if($mybb->input['action'] == "diff_report")
 	
 	$table = new Table;
 	
-	$table->construct_header("<ins>".$lang->master_updated_del."</ins><br /><del>".$lang->master_updated_ins."</del>");
+	if($mybb->input['from'])
+	{
+		$table->construct_header("<ins>".$lang->master_updated_ins."</ins><br /><del>".$lang->master_updated_del."</del>");
+	}
+	else
+	{
+		$table->construct_header("<ins>".$lang->master_updated_del."</ins><br /><del>".$lang->master_updated_ins."</del>");
+	}
 	
 	$table->construct_cell("<pre class=\"differential\">".$renderer->render($diff)."</pre>");
 	$table->construct_row();
