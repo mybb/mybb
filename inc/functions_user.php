@@ -1,4 +1,13 @@
 <?php
+/**
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ *
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
+ *
+ * $Id: $
+ */
 
 /**
  * Checks if a user with uid $uid exists in the database.
@@ -31,15 +40,7 @@ function username_exists($username)
 {
 	global $db;
 
-	switch($db->type)
-	{
-		case "sqlite":
-			// SQLite has case sensitive usernames...
-			$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
-			break;
-		default:
-			$query = $db->simple_select("users", "COUNT(*) as user", "username='".$db->escape_string($username)."'", array('limit' => 1));
-	}
+	$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
 
 	if($db->fetch_field($query, 'user') == 1)
 	{
@@ -62,14 +63,7 @@ function validate_password_from_username($username, $password)
 {
 	global $db;
 
-	switch($db->type)
-	{
-		case "sqlite":
-			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
-			break;
-		default:
-			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "username='".$db->escape_string($username)."'", array('limit' => 1));
-	}
+	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
 
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
