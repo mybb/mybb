@@ -2074,17 +2074,28 @@ if(!$mybb->input['action'])
 		}
 		elseif($mybb->input['add'] == "moderators")
 		{
-			
 			$forum = get_forum($fid);
 			if(!$forum)
 			{
 				flash_message($lang->error_invalid_forum, 'error');
 				admin_redirect("index.php?module=forum-management&fid={$fid}#tab_moderators");
 			}
-			if (!empty($mybb->input['usergroup']))
+			if(!empty($mybb->input['usergroup']))
 			{
-				$query = $db->simple_select("usergroups", "gid AS id, title AS name", "title='".$db->escape_string($mybb->input['usergroup'])."'", array('limit' => 1));
-				$isgroup = 1;
+				preg_match("/\(".$lang->usergroup." (.*?)\)/", $mybb->input['usergroup'], $match_group);
+
+				$mod_gid = intval($match_group[1]);
+				if(!empty($match_group) && $mod_gid > 0)
+				{
+					$query = $db->simple_select("usergroups", "gid AS id, title AS name", "gid='".$mod_gid."'", array('limit' => 1));
+					$isgroup = 1;
+				}
+				else
+				{
+					// Didn't select a valid moderator
+					flash_message($lang->error_moderator_not_found, 'error');
+					admin_redirect("index.php?module=forum-management&fid={$fid}#tab_moderators");
+				}
 			}
 			else
 			{
@@ -2460,7 +2471,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			if($moderator['isgroup'])
 			{
 				$moderator['img'] = "<img src=\"styles/{$page->style}/images/icons/group.gif\" alt=\"{$lang->group}\" title=\"{$lang->group}\" />";
-				$form_container->output_cell("{$moderator['img']} <a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$moderator['id']}\">".htmlspecialchars_uni($moderator['title'])."</a>");
+				$form_container->output_cell("{$moderator['img']} <a href=\"index.php?module=user-groups&amp;action=edit&amp;gid={$moderator['id']}\">".htmlspecialchars_uni($moderator['title'])." ({$lang->usergroup} {$moderator['id']})</a>");
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=editmod&amp;mid={$moderator['mid']}\">{$lang->edit}</a>", array("class" => "align_center"));
 				$form_container->output_cell("<a href=\"index.php?module=forum-management&amp;action=deletemod&amp;id={$moderator['id']}&amp;isgroup=1&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_moderator_deletion}')\">{$lang->delete}</a>", array("class" => "align_center"));
 			}
