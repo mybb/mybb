@@ -248,7 +248,19 @@ if($mybb->input['action'] == "newpost")
 	
 	if($newpost['pid'] && $lastread)
 	{
-		header("Location: ".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
+		$highlight = '';
+		if($mybb->input['highlight'])
+		{
+			$string = "&";
+			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+			{
+				$string = "?";
+			}
+
+			$highlight = $string."highlight=".$mybb->input['highlight'];
+		}
+
+		header("Location: ".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid)).$highlight."#pid{$newpost['pid']}");
 	}
 	else
 	{
