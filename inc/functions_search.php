@@ -378,8 +378,17 @@ function privatemessage_perform_search_mysql($search)
 		$keywords = " {$keywords} ";
 		if(preg_match("# and|or #", $keywords))
 		{
-			$subject_lookin = " AND (";
-			$message_lookin = " AND (";
+			$string = "AND";
+			if($search['subject'] == 1)
+			{
+				$string = "OR";
+				$subject_lookin = " AND (";
+			}
+
+			if($search['message'] == 1)
+			{
+				$message_lookin = " {$string} (";
+			}
 			
 			// Expand the string by double quotes
 			$keywords_exp = explode("\"", $keywords);
@@ -423,7 +432,7 @@ function privatemessage_perform_search_mysql($search)
 							}
 							if($search['message'] == 1)
 							{
-								$searchsql .= " $boolean LOWER(message) LIKE '%{$word}%'";
+								$message_lookin .= " $boolean LOWER(message) LIKE '%{$word}%'";
 							}
 						}
 					}
@@ -446,9 +455,17 @@ function privatemessage_perform_search_mysql($search)
 				}
 				$inquote = !$inquote;
 			}
-			$subject_lookin .= ")";
-			$message_lookin .= ")";
-			
+
+			if($search['subject'] == 1)
+			{
+				$subject_lookin .= ")";
+			}
+
+			if($search['message'] == 1)
+			{
+				$message_lookin .= ")";
+			}
+
 			$searchsql .= "{$subject_lookin} {$message_lookin}";
 		}
 		else
