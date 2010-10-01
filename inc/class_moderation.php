@@ -1103,26 +1103,43 @@ class Moderation
 		);
 
 		// Check if we have a thread subscription already for our new thread
-		$query = $db->simple_select("threadsubscriptions", "tid", "tid='{$mergetid}' OR tid='{$tid}'");
+		$subscriptions = array(
+			$tid => array(),
+			$mergetid => array()
+		);
+
+		$query = $db->simple_select("threadsubscriptions", "tid, uid", "tid='{$mergetid}' OR tid='{$tid}'");
 		while($subscription = $db->fetch_array($query))
 		{
-			$subscriptions[$subscription['tid']] = $subscription;
+			$subscriptions[$subscription['tid']][] = $subscription['uid'];
 		}
 
-		if(is_array($subscriptions[$tid]) && is_array($subscriptions[$mergetid]))
-		{
-			// Duplicate subscriptions? Remove the old one
-			$db->delete_query("threadsubscriptions", "tid = '{$tid}'");
-		}
-		elseif(is_array($subscriptions[$tid]) && !is_array($subscriptions[$mergetid]))
-		{
-			// Update old subscription to new subscription, keeping preferences...
-			$sqlarray = array(
-				"tid" => $mergetid
-			);
+		// Update any subscriptions for the merged thread
+		if(is_array($subscriptions[$mergetid]))
+ 		{
+			$update_users = array();
+			foreach($subscriptions[$mergetid] as $user)
+			{
+				if(!in_array($user, $subscriptions[$tid]))
+				{
+					// User doesn't have a $tid subscription
+					$update_users[] = $user;
+				}
+			}
+ 
+			if(!empty($update_users))
+			{				
+				$update_array = array(
+					"tid" => $tid
+				);
 
-			$db->update_query("threadsubscriptions", $sqlarray, "tid = '{$tid}'");
-		}
+				$update_users = implode(",", $update_users);
+				$db->update_query("threadsubscriptions", $update_array, "tid = '{$mergetid}' AND uid IN ({$update_users})");
+			}
+ 		}
+ 
+		// Remove source thread subscriptions
+		$db->delete_query("threadsubscriptions", "tid = '{$mergetid}'");
 
 		update_first_post($tid);
 
