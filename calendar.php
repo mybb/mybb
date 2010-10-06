@@ -789,7 +789,7 @@ if($mybb->input['action'] == "editevent")
 		$start_year = $start_date[2];
 		if($event['usingtime'])
 		{
-			$start_time = $start_date[3];
+			$start_time = gmdate($mybb->settings['timeformat'], $event['starttime']+$event['timezone']*3600);
 		}
 		if($event['endtime'])
 		{
@@ -799,7 +799,7 @@ if($mybb->input['action'] == "editevent")
 			$end_year = $end_date[2];
 			if($event['usingtime'])
 			{
-				$end_time = $end_date[3];
+				$end_time = gmdate($mybb->settings['timeformat'], $event['endtime']+$event['timezone']*3600);
 			}
 			$type_ranged = "checked=\"checked\"";
 			$type = "ranged";
