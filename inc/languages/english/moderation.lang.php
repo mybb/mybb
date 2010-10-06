@@ -135,6 +135,7 @@ $l['error_cantsplitonepost'] = "You cannot split a thread that contains only one
 $l['error_badmergeurl'] = "The URL for the thread to be merged seems to be invalid or empty. Please copy the exact URL into the textbox.<br />Please go back and try again.";
 $l['error_inline_nothreadsselected'] = "Sorry, but you did not select any threads to perform inline moderation on, or your previous moderation session has expired (Automatically after 1 hour of inactivity). Please select some threads and try again.";
 $l['error_inline_nopostsselected'] = "Sorry, but you did not select any posts to perform inline moderation on, or your previous moderation session has expired (Automatically after 1 hour of inactivity). Please select some posts and try again.";
+$l['error_movetocategory'] = "This tool is trying to move the thread into a category. Please alter the tool and select a valid forum.";
 $l['error_cantsplitall'] = "You cannot split all of the posts out of this thread! If you did, what would be left in the thread?";
 $l['error_nosplitposts'] = "You cannot split this thread as you did not select any posts to split from this thread.";
 $l['error_movetosameforum'] = "You cannot move this thread into the forum it is currently situated in. Please select a different forum.";

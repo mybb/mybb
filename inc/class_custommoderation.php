@@ -35,7 +35,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", 'tid, type, name, description', 'tid="'.intval($tool_id).'"');
+		$query = $db->simple_select("modtools", "*", 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
