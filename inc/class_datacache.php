@@ -520,17 +520,17 @@ class datacache
 			{
 				foreach($main as $forum)
 				{
-					$forum_mods = '';
-					if($moderators)
+					$forum_mods = array();
+					if(count($moderators))
 					{
 						$forum_mods = $moderators;
 					}
 					// Append - local settings override that of a parent - array_merge works here
 					if($this->moderators[$forum['fid']])
 					{
-						if(is_array($forum_mods))
+						if(count($forum_mods))
 						{
-							$forum_mods = $forum_mods + $this->moderators[$forum['fid']];
+							$forum_mods = array_merge($forum_mods, $this->moderators[$forum['fid']]);
 						}
 						else
 						{

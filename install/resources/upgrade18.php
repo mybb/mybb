@@ -27,7 +27,7 @@ function upgrade18_dbchanges()
 
 	$output->print_header("Performing Queries");
 
-	echo "<p>Performing necessary upgrade queries..</p>";
+	echo "<p>Performing necessary upgrade queries...</p>";
 
 	// Update the usergroup sequence for pgSQL - #1094
 	if($mybb->config['database']['type'] == "pgsql")
@@ -39,8 +39,22 @@ function upgrade18_dbchanges()
 		$db->query("ALTER SEQUENCE ".$config['database']['table_prefix']."usergroups_gid_seq RESTART WITH ".$group_count."");
 	}
 
-	$contents .= "Click next to continue with the upgrade process.</p>";
-	$output->print_contents($contents);
-	$output->print_footer("18_done");
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+	$output->print_footer("18_updatecache");
+}
+
+function upgrade18_updatecache()
+{
+	global $cache, $output;
+
+	$output->print_header("Updating Cache");
+
+	echo "<p>Updating cache...</p>";
+
+	// Update the Moderator cache - #1200
+	$cache->update_moderators();
+
+	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
+ 	$output->print_footer("18_done");
 }
 ?>
