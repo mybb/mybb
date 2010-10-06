@@ -315,7 +315,7 @@ $l['view_requests'] = "Join Requests";
 $l['cannot_leave_group'] = "You cannot leave this group because it is not a publicly join-able group.";
 $l['details'] = "Details";
 $l['members_referred'] = "Members Referred:";
-$l['referral_link'] = "<br />To refer a member to this board, direct them to {1}/member.php?action=register&amp;uid={2}";
+$l['referral_link'] = "<br />To refer a member to this board, direct them to {1}/member.php?action=register&amp;referrer={2}";
 $l['redirect_subscriptionsremoved'] = "Your thread subscriptions list has now been cleared.<br />You will be returned to where you came from.";
 $l['redirect_forumsubscriptionsremoved'] = "Your forum subscriptions list has now been cleared.<br />You will be returned to where you came from.";
 $l['redirect_subscriptionadded'] = "The selected thread has been added to your subscriptions list.<br />You will now be returned to the location you came from.";
