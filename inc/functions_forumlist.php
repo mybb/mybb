@@ -64,6 +64,7 @@ function build_forumbits($pid=0, $depth=1)
 			
 			if($permissions['canonlyviewownthreads'] == 1)
 			{
+				$hideinfo = true;
 				$hidelastpostinfo = true;
 			}
 
