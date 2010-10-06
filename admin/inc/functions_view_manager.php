@@ -215,7 +215,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$field_options[$key] = $field['title'];
 		}
 		
-		$field_select .= "<noscript>".$form->generate_select_box('fields', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
 		$form_container->output_row($lang->fields_to_show_desc, $description, $field_select);
@@ -422,7 +422,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$field_options[$key] = $field['title'];
 		}
 		
-		$field_select .= "<noscript>".$form->generate_select_box('fields', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
+		$field_select .= "<noscript>".$form->generate_select_box('fields[]', $field_options, $mybb->input['fields'], array('id' => 'fields', 'multiple' => true))."</noscript>\n";
 
 		$form_container = new FormContainer($lang->fields_to_show);
 		$form_container->output_row($lang->fields_to_show_desc, $description, $field_select);
