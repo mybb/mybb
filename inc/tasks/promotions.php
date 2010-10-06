@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
@@ -22,21 +22,21 @@ function task_promotions($task)
 		
 		// Based on the promotion generate criteria for user selection
 		$requirements = explode(',', $promotion['requirements']);
-		if(in_array('postcount', $requirements) && intval($promotion['posts']) >= 0 && !empty($promotion['posttype']))
+		if(in_array('postcount', $requirements) && !empty($promotion['posttype']))
 		{
 			$sql_where .= "{$and}postnum {$promotion['posttype']} '{$promotion['posts']}'";
 			
 			$and = " AND ";
 		}
 		
-		if(in_array('reputation', $requirements) && intval($promotion['reputations']) >= 0 && !empty($promotion['reputationtype']))
+		if(in_array('reputation', $requirements) && !empty($promotion['reputationtype']))
 		{
 			$sql_where .= "{$and}reputation {$promotion['reputationtype']} '{$promotion['reputations']}'";
 			
 			$and = " AND ";
 		}
 		
-		if(in_array('referrals', $requirements) && intval($promotion['referrals']) >= 0 && !empty($promotion['referralstype']))
+		if(in_array('referrals', $requirements) && !empty($promotion['referralstype']))
 		{
 			$sql_where .= "{$and}referrals {$promotion['referralstype']} '{$promotion['referrals']}'";
 			
