@@ -472,8 +472,11 @@ if(!$mybb->input['action'])
 	}
 
 	// Quickly check to see if we're in sync...
-	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation", "uid = '".$user['uid']."'");
-	$sync_reputation = $db->fetch_field($query, "reputation");
+	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation, COUNT(rid) AS total_reputation", "uid = '".$user['uid']."'");
+	$reputation = $db->fetch_array($query);
+
+	$sync_reputation = $reputation['reputation'];
+	$total_reputation = $reputation['total_reputation'];
 
 	if($sync_reputation != $user['reputation'])
 	{
@@ -572,7 +575,7 @@ if(!$mybb->input['action'])
 
 	// General
 	// We count how many reps in total, then subtract the reps from posts
-	$rep_members = my_number_format($reputation_count - $rep_posts);
+	$rep_members = my_number_format($total_reputation - $rep_posts);
 
 	// Is negative reputation disabled? If so, tell the user
 	if($mybb->settings['negrep'] == 0)
