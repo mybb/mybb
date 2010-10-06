@@ -958,9 +958,20 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
  */
 function fetch_page_url($url, $page)
 {
-	// If no page identifier is specified we tack it on to the end of the URL
-	if(strpos($url, "{page}") === false)
+	if($page <= 1)
+ 	{
+		$find = array(
+			"-page-{page}",
+			"&amp;page={page}"
+		);
+
+		// Remove "Page 1" to the defacto URL
+		$url = str_replace($find, array("", ""), $url);
+		return $url;
+	}
+	else if(strpos($url, "{page}") === false)
 	{
+		// If no page identifier is specified we tack it on to the end of the URL
 		if(strpos($url, "?") === false)
 		{
 			$url .= "?";
@@ -969,12 +980,14 @@ function fetch_page_url($url, $page)
 		{
 			$url .= "&amp;";
 		}
+
 		$url .= "page=$page";
 	}
 	else
 	{
 		$url = str_replace("{page}", $page, $url);
 	}
+
 	return $url;
 }
 
