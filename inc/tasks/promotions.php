@@ -22,7 +22,7 @@ function task_promotions($task)
 		
 		// Based on the promotion generate criteria for user selection
 		$requirements = explode(',', $promotion['requirements']);
-		if(in_array('postcount', $requirements) && !empty($promotion['posttype']))
+		if(in_array('postcount', $requirements) && intval($promotion['posts']) >= 0 && !empty($promotion['posttype']))
 		{
 			$sql_where .= "{$and}postnum {$promotion['posttype']} '{$promotion['posts']}'";
 			
@@ -36,7 +36,7 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 		
-		if(in_array('referrals', $requirements) && !empty($promotion['referralstype']))
+		if(in_array('referrals', $requirements) && intval($promotion['referrals']) >= 0 && !empty($promotion['referralstype']))
 		{
 			$sql_where .= "{$and}referrals {$promotion['referralstype']} '{$promotion['referrals']}'";
 			
