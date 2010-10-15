@@ -1782,6 +1782,13 @@ if($mybb->input['action'] == "merge")
 		{
 			$errors[] = $lang->error_invalid_user_destination;
 		}
+		
+		// If we're not a super admin and we're merging a source super admin or a destination super admin then dissallow this action
+		if(!is_super_admin($mybb->user['uid']) && (is_super_admin($source_user['uid']) || is_super_admin($destination_user['uid'])))
+		{
+			flash_message($lang->error_no_perms_super_admin, 'error');
+			admin_redirect("index.php?module=user-users");
+		}
 
 		if($source_user['uid'] == $destination_user['uid'])
 		{
