@@ -1294,7 +1294,8 @@ if($mybb->input['action'] == "stylesheet_properties")
 	
 	if($mybb->request_method == "post")
 	{
-		if(!$mybb->input['name'])
+		// Do we not have a name, or is it just an extension?
+		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
