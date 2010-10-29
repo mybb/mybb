@@ -1859,7 +1859,7 @@ function update_forum_counters($fid, $changes=array())
 			}
 			
 			// Less than 0? That's bad
-			if($update_query[$counter] < 0)
+			if(!$update_query[$counter])
 			{
 				$update_query[$counter] = 0;
 			}
