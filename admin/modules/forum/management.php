@@ -1411,7 +1411,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($fid, $mybb->input['title']);
 			
 			flash_message($lang->success_forum_updated, 'success');
-			admin_redirect("index.php?module=forum-management");
+			admin_redirect("index.php?module=forum-management&amp;fid={$fid}");
 		}
 	}
 	
@@ -2005,12 +2005,14 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_forum_management_start");
 	$fid = intval($mybb->input['fid']);
+
+	if($fid)
+	{
+		$forum = get_forum($fid);
+	}
+
 	if($mybb->request_method == "post")
 	{
-		if($fid)
-		{
-			$forum = get_forum($fid);
-		}
 		if($mybb->input['update'] == "permissions")
 		{
 			$inherit = array();
@@ -2299,14 +2301,14 @@ if(!$mybb->input['action'])
 						$perms = $existing_permissions[$usergroup['gid']];
 						$default_checked = false;
 					}
-					elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+					elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
 					{
-						$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+						$perms = $cached_forum_perms[$forum['fid']][$usergroup['gid']];
 						$default_checked = true;
 					}
-					else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+					else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum['pid']][$usergroup['gid']])
 					{
-						$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+						$perms = $cached_forum_perms[$forum['pid']][$usergroup['gid']];
 						$default_checked = true;
 					}
 				}
@@ -2324,14 +2326,14 @@ if(!$mybb->input['action'])
 					$perms = $existing_permissions[$usergroup['gid']];
 					$default_checked = false;
 				}
-				elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['fid']][$usergroup['gid']])
+				elseif(is_array($cached_forum_perms) && $cached_forum_perms[$forum['fid']][$usergroup['gid']])
 				{
-					$perms = $cached_forum_perms[$forum_data['fid']][$usergroup['gid']];
+					$perms = $cached_forum_perms[$forum['fid']][$usergroup['gid']];
 					$default_checked = true;
 				}
-				else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum_data['pid']][$usergroup['gid']])
+				else if(is_array($cached_forum_perms) && $cached_forum_perms[$forum['pid']][$usergroup['gid']])
 				{
-					$perms = $cached_forum_perms[$forum_data['pid']][$usergroup['gid']];
+					$perms = $cached_forum_perms[$forum['pid']][$usergroup['gid']];
 					$default_checked = true;
 				}
 				
@@ -2342,7 +2344,7 @@ if(!$mybb->input['action'])
 				}
 			}
 			foreach($field_list as $forum_permission => $forum_perm_title)
-			{				
+			{
 				if(isset($mybb->input['permissions']))
 				{
 					if($mybb->input['permissions'][$usergroup['gid']][$forum_permission])
