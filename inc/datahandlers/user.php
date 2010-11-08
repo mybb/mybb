@@ -447,6 +447,11 @@ class UserDataHandler extends DataHandler
 	{
 		global $db;
 
+		if($this->admin_override == true)
+		{
+			return true;
+		}
+
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
 
