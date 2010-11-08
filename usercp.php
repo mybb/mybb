@@ -3145,6 +3145,9 @@ if(!$mybb->input['action'])
 				
 				foreach($subscriptions as $thread)
 				{
+					$folder = '';
+					$folder_label = '';
+
 					if($thread['tid'])
 					{
 						$bgcolor = alt_trow();
