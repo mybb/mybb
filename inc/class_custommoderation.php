@@ -196,7 +196,7 @@ class CustomModeration extends Moderation
 					}	
 					else
 					{
-						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $post_options['splitpostsreplysubject']);
 						$post_options['splitpostsreplysubject'] = str_ireplace('{subject}', $new_subject, $post_options['splitpostsreplysubject']);
 					}
 					
