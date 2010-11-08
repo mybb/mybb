@@ -3770,7 +3770,12 @@ function get_current_location($fields=false, $ignore=array())
 				$location .= implode("&amp;", $addloc);
 			}
 		}
-	
+
+		if(strlen($location) > 150)
+		{
+			$location = substr($location, 0, 150);
+		}
+
 		return $location;
 	}
 }
