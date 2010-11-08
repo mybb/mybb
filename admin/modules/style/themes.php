@@ -1986,7 +1986,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/css.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'css\';
@@ -2285,7 +2285,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/css.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'css\';
