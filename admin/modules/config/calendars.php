@@ -391,6 +391,7 @@ if($mybb->input['action'] == "delete")
 	{
 		// Delete the calendar
 		$db->delete_query("calendars", "cid='{$calendar['cid']}'");
+		$db->delete_query("calendarpermissions", "cid='{$calendar['cid']}'");
 		$db->delete_query("events", "cid='{$calendar['cid']}'");
 		
 		$plugins->run_hooks("admin_config_calendars_delete_commit");
