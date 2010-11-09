@@ -2963,6 +2963,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
+	$password_forums = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -2981,6 +2982,20 @@ function get_unviewable_forums($only_readable_threads=false)
 			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
+			}
+			
+			$password_forums[$forum['fid']] = $forum['password'];
+		}
+		else
+		{
+			// Check parents for passwords
+			$parents = explode(",", $forum['parentlist']);
+			foreach($parents as $parent)
+			{
+				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] != md5($mybb->user['uid'].$password_forums[$parent]))
+				{
+					$pwverified = 0;
+				}
 			}
 		}
 
