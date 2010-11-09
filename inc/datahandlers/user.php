@@ -382,7 +382,7 @@ class UserDataHandler extends DataHandler
 		else if($birthday['year'] == date("Y"))
 		{
 			// Error if birth date is in future
-			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $bithday['day'] > date("d")))
+			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $birthday['day'] > date("d")))
 			{
 				$this->set_error("invalid_birthday");
 				return false;
