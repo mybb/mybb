@@ -1411,7 +1411,7 @@ if($mybb->input['action'] == "edit")
 			log_admin_action($fid, $mybb->input['title']);
 			
 			flash_message($lang->success_forum_updated, 'success');
-			admin_redirect("index.php?module=forum-management&amp;fid={$fid}");
+			admin_redirect("index.php?module=forum-management&fid={$fid}");
 		}
 	}
 	

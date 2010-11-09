@@ -39,9 +39,6 @@ function upgrade18_dbchanges()
 		$db->query("ALTER SEQUENCE ".$config['database']['table_prefix']."usergroups_gid_seq RESTART WITH ".$group_count."");
 	}
 
-	$string = "Set this option to On to show the clickable code buttons editor on posting pages. Switching this off will also disable the Smilies Inserter.";
-	$db->update_query("settings", array("description" => $string), "name = 'bbcodeinserter'");
-
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("18_updatecache");
 }
@@ -56,8 +53,6 @@ function upgrade18_updatecache()
 
 	// Update the Moderator cache - #1200
 	$cache->update_moderators();
-
-	rebuild_settings();
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
  	$output->print_footer("18_done");
