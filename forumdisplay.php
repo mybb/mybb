@@ -92,6 +92,11 @@ if($mybb->user['uid'] == 0)
 	");
 	
 	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+
+	if(!is_array($forumsread))
+	{
+		$forumsread = array();
+	}
 }
 else
 {

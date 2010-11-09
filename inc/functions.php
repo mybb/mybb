@@ -1655,7 +1655,7 @@ function my_get_array_cookie($name, $id)
 
 	$cookie = unserialize($mybb->cookies['mybb'][$name]);
 
-	if(isset($cookie[$id]))
+	if(is_array($cookie) && isset($cookie[$id]))
 	{
 		return $cookie[$id];
 	}
@@ -1678,6 +1678,13 @@ function my_set_array_cookie($name, $id, $value)
 	
 	$cookie = $mybb->cookies['mybb'];
 	$newcookie = unserialize($cookie[$name]);
+
+	if(!is_array($newcookie))
+	{
+		// Burnt / malformed cookie - reset
+		$newcookie = array();
+	}
+
 	$newcookie[$id] = $value;
 	$newcookie = serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie));
