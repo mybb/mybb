@@ -2192,7 +2192,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	if($mybb->request_method == "post")
 	{
-		if(!$mybb->input['name'])
+		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
