@@ -775,38 +775,47 @@ function perform_search_mysql($search)
 		if($mybb->user['additionalgroups'])
 		{
 			$user_groups .= ",".$mybb->user['additionalgroups'];
+
+			// Setup some quick permissions for us
+			$fcache = $mybb->cache->read("forumpermissions");
+			$add_groups = explode(",", $mybb->user['additionalgroups']);
 		}
 		foreach($search['forums'] as $forum)
 		{
 			$forum = intval($forum);
 			if(!$searchin[$forum])
 			{
-				switch($db->type)
+				if(is_array($add_groups))
 				{
-					case "pgsql":
-						$query = $db->query("
-							SELECT DISTINCT f.fid 
-							FROM ".TABLE_PREFIX."forums f 
-							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE (','||parentlist||',' LIKE ',%{$forum}%,') = true AND active!=0 AND (p.fid IS NULL OR p.cansearch=1)
-						");
-						break;
-					case "sqlite":
-						$query = $db->query("
-							SELECT DISTINCT f.fid 
-							FROM ".TABLE_PREFIX."forums f 
-							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE (','||parentlist||',' LIKE ',%{$forum}%,') > 0 AND active!=0 AND (p.fid = NULL OR p.cansearch=1)
-						");
-						break;
-					default:
-						$query = $db->query("
-							SELECT DISTINCT f.fid 
-							FROM ".TABLE_PREFIX."forums f 
-							LEFT JOIN ".TABLE_PREFIX."forumpermissions p ON (f.fid=p.fid AND p.gid IN (".$user_groups."))
-							WHERE INSTR(CONCAT(',',parentlist,','),',$forum,') > 0 AND active!=0 AND (ISNULL(p.fid) OR p.cansearch=1)
-						");
+					$can_search = 0;
+					foreach($add_groups as $add_group)
+					{
+						// Check to make sure that we have sufficient permissions to search this forum
+						if(!is_array($fcache[$forum][$add_group]) || $fcache[$forum][$add_group]['cansearch'] == 1 || $mybb->usergroup['cansearch'] == 1)
+						{
+							$can_search = 1;
+						}
+					}
+
+					if($can_search == 0)
+					{
+						// We can't search this forum...
+						continue;
+					}
 				}
+
+ 				switch($db->type)
+ 				{
+ 					case "pgsql":
+						$query = $db->simple_select("forums", "DISTINCT fid", "(','||parentlist||',' LIKE ',%{$forum}%,') = true AND active != 0");
+ 						break;
+ 					case "sqlite":
+						$query = $db->simple_select("forums", "DISTINCT fid", "(','||parentlist||',' LIKE ',%{$forum}%,') > 0 AND active != 0");
+ 						break;
+ 					default:
+						$query = $db->simple_select("forums", "DISTINCT fid", "INSTR(CONCAT(',',parentlist,','),',{$forum},') > 0 AND active != 0");
+ 				}
+
 				while($sforum = $db->fetch_array($query))
 				{
 					$fidlist[] = $sforum['fid'];
