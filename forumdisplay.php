@@ -706,6 +706,7 @@ if($fpermissions['canviewthreads'] != 0)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
 		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid = t.prefix)
 		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
+		GROUP BY t.tid
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
 	");
