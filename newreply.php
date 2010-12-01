@@ -950,11 +950,11 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	elseif($mybb->input['action'] == "editdraft")
 	{
 		// Drafts have posthashes, too...
-		$posthash = $post['posthash'];
+		$posthash = htmlspecialchars_uni($post['posthash']);
 	}
 	else
 	{
-		$posthash = $mybb->input['posthash'];
+		$posthash = htmlspecialchars_uni($mybb->input['posthash']);
 	}
 
 	// Do we have attachment errors?

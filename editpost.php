@@ -382,7 +382,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	}
 
 	// Setup a unique posthash for attachment management
-	$posthash = $post['posthash'];
+	$posthash = htmlspecialchars_uni($post['posthash']);
 
 	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != 0)
