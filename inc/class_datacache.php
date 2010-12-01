@@ -520,7 +520,7 @@ class datacache
 			{
 				foreach($main as $forum)
 				{
-					$forum_mods = array();
+					$forum_mods = '';
 					if(count($moderators))
 					{
 						$forum_mods = $moderators;
