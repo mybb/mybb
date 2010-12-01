@@ -1169,7 +1169,11 @@ if($mybb->input['action'] == "thread")
 					if($user['invisible'] == 1)
 					{
 						$invisiblemark = "*";
-						++$inviscount;
+
+						if($user['uid'] != $mybb->user['uid'])
+						{
+							++$inviscount;
+						}
 					}
 					else
 					{
@@ -1187,27 +1191,29 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 		}
-			
-		if($guestcount)
-		{
-			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
-		}
-		
-		if($guestcount && $onlinemembers)
-		{
-			$onlinesep = $lang->comma;
-		}
 		
 		$invisonline = '';
-		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
+		$onlinesep2 = $onlinesep = '';
+		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
 		{
-			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
-		}
-		
-		if($invisonline != '' && $guestcount)
-		{
-			$onlinesep2 = $lang->comma;
-		}
+			if($onlinemembers)
+			{
+				$onlinesep = $lang->comma;
+			}
+
+ 			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
+ 		}
+
+		if($guestcount)
+ 		{
+			if($onlinemembers)
+			{
+				$onlinesep2 = $lang->comma;
+			}
+
+			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
+ 		}
+
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
 	}
 	
