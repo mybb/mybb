@@ -610,9 +610,8 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 	{
 		return false;
 	}
-	
-	
-	if($attempts['loginattempts'] >= $mybb->settings['maxloginattempts'])
+
+	if($mybb->settings['maxloginattempts'] > 0 && $attempts['loginattempts'] >= $mybb->settings['maxloginattempts'])
 	{
 		// Has the expiry dateline been set yet?
 		if($attempts['loginlockoutexpiry'] == 0 && $return_num == false)
