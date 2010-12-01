@@ -1125,7 +1125,15 @@ if($mybb->input['action'] == "login")
 	{
 		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 	}
-		
+
+	// Check if we have a valid URL - if not, go back home
+	$redirect_parsed = parse_url($redirect_url);
+	$bburl_parsed = parse_url($mybb->settings['bburl']);
+	if(!$redirect_parsed['host'] || $redirect_parsed['host'] && strpos($redirect_url, $bburl_parsed['host']) === false)
+	{
+		$redirect_url = $mybb->settings['bburl'];
+	}
+
 	$captcha = "";
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && $do_captcha == true)
