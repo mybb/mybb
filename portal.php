@@ -460,6 +460,12 @@ $query = $db->query("
 );
 while($announcement = $db->fetch_array($query))
 {
+	// Make sure we can view this announcement
+	if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
+	{
+		continue;
+	}
+
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
 	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 	$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];
