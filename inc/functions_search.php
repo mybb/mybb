@@ -594,7 +594,7 @@ function privatemessage_perform_search_mysql($search)
  */
 function perform_search_mysql($search)
 {
-	global $mybb, $db, $lang;
+	global $mybb, $db, $lang, $cache;
 
 	$keywords = clean_keywords($search['keywords']);
 	if(!$keywords && !$search['author'])
@@ -778,7 +778,7 @@ function perform_search_mysql($search)
 			$user_groups .= ",".$mybb->user['additionalgroups'];
 
 			// Setup some quick permissions for us
-			$fcache = $mybb->cache->read("forumpermissions");
+			$fcache = $cache->read("forumpermissions");
 			$add_groups = explode(",", $mybb->user['additionalgroups']);
 		}
 		foreach($search['forums'] as $forum)
