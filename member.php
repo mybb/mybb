@@ -1117,21 +1117,13 @@ if($mybb->input['action'] == "login")
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
-	if($mybb->input['url'] && !preg_match("/action=login/i", $mybb->input['url']))
-	{
-		$redirect_url = htmlentities($mybb->input['url']);
-	}
-	elseif($_SERVER['HTTP_REFERER'])
+	if($_SERVER['HTTP_REFERER'] && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
 	{
 		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 	}
-
-	// Check if we have a valid URL - if not, go back home
-	$redirect_parsed = parse_url($redirect_url);
-	$bburl_parsed = parse_url($mybb->settings['bburl']);
-	if(!$redirect_parsed['host'] || $redirect_parsed['host'] && strpos($redirect_url, $bburl_parsed['host']) === false)
+	else
 	{
-		$redirect_url = $mybb->settings['bburl'];
+		$redirect_url = '';
 	}
 
 	$captcha = "";
