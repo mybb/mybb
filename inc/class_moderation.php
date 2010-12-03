@@ -1088,7 +1088,6 @@ class Moderation
 			"tid" => $tid,
 			"fid" => $thread['fid'],
 			"replyto" => 0,
-			"visible" => $mergethread['visible'],
 		);
 		$db->update_query("posts", $sqlarray, "tid='{$mergetid}'");
 
