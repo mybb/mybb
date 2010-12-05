@@ -2257,7 +2257,13 @@ switch($mybb->input['action'])
 				{
 					error_no_permission();
 				}
-				
+
+				$thread_options = unserialize($tool['threadoptions']);
+				if($thread_options['movethread'] && $forum_cache[$thread_options['movethread']]['type'] != "f")
+				{
+					error($lang->error_movetocategory);
+				}
+
 				$custommod->execute(intval($mybb->input['action']), $tids);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);
@@ -2282,6 +2288,13 @@ switch($mybb->input['action'])
 				{
 					error_no_permission();
 				}
+
+				$thread_options = unserialize($tool['threadoptions']);
+				if($thread_options['movethread'] && $forum_cache[$thread_options['movethread']]['type'] != "f")
+				{
+					error($lang->error_movetocategory);
+				}
+
 				$ret = $custommod->execute(intval($mybb->input['action']), $tid);
  				$lang->custom_tool = $lang->sprintf($lang->custom_tool, $tool['name']);
 				log_moderator_action($modlogdata, $lang->custom_tool);

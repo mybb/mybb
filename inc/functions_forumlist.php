@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
@@ -64,6 +64,7 @@ function build_forumbits($pid=0, $depth=1)
 			
 			if($permissions['canonlyviewownthreads'] == 1)
 			{
+				$hideinfo = true;
 				$hidelastpostinfo = true;
 			}
 
@@ -395,10 +396,27 @@ function get_forum_lightbulb($forum, $lastpost, $locked=0)
 		{
 			$forum_read = $forum['lastread'];
 		}
-		else // Is there not a read record for this forum? It must be unread
+		elseif($mybb->cookies['mybb']['readallforums'])
+		{
+			// We've hit the read all forums as a guest, so use the lastvisit of the user
+			$forum_read = $mybb->cookies['mybb']['lastvisit'];
+		}
+		else
 		{
 			$forum_read = 0;
-			//$forum_read = my_get_array_cookie("forumread", $forum['fid']);
+			$threadcut = TIME_NOW - 60*60*24*$mybb->settings['threadreadcut'];
+
+			// If the user is a guest, do they have a forumsread cookie?
+			if(!$mybb->user['uid'] && $mybb->cookies['mybb']['forumread'])
+			{
+				// If they've visited us before, then they'll have this cookie - otherwise everything is unread...
+				$forum_read = my_get_array_cookie("forumread", $forum['fid']);
+			}
+			else if($mybb->user['uid'] && $mybb->settings['threadreadcut'] > 0 && $threadcut > $lastpost['lastpost'])
+			{
+				// We have a user, the forum's unread and we're over our threadreadcut limit for the lastpost - we mark these as read
+				$forum_read = $lastpost['lastpost'] + 1;
+			}
 		}
 
 		//if(!$forum_read)

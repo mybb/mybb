@@ -1598,7 +1598,6 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("userfields", "ufid='{$user['uid']}'");
 		$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 		$db->delete_query("events", "uid='{$user['uid']}'");
-		$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
 		$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
 		$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
 		$db->delete_query("sessions", "uid='{$user['uid']}'");
@@ -1612,12 +1611,25 @@ if($mybb->input['action'] == "delete")
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
-		
+
+		// Did this user have an uploaded avatar?
+		if($user['avatartype'] == "upload")
+		{
+			// Removes the ./ at the beginning the timestamp on the end...
+			@unlink("../".substr($user['avatar'], 2, -20));
+		}
+
+		// Was this user a moderator?
+		if(is_moderator($user['uid']))
+		{
+			$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
+			$cache->update_moderators();
+		}
+
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
 		// Log admin action
 		log_admin_action($user['uid'], $user['username']);
-
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
@@ -1769,6 +1781,13 @@ if($mybb->input['action'] == "merge")
 		if(!$destination_user['uid'])
 		{
 			$errors[] = $lang->error_invalid_user_destination;
+		}
+		
+		// If we're not a super admin and we're merging a source super admin or a destination super admin then dissallow this action
+		if(!is_super_admin($mybb->user['uid']) && (is_super_admin($source_user['uid']) || is_super_admin($destination_user['uid'])))
+		{
+			flash_message($lang->error_no_perms_super_admin, 'error');
+			admin_redirect("index.php?module=user-users");
 		}
 
 		if($source_user['uid'] == $destination_user['uid'])
@@ -3627,17 +3646,18 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$user_options = $values[$field_name];
 				}
+
 				foreach($user_options as $val)
 				{
 					$selected_options[$val] = $val;
 				}
-				$select_options = array();
+
+				$select_options = explode("\n", $options);
 				$options = array();
 				if($search == true)
 				{
 					$select_options[''] = $lang->na;
 				}
-				$select_options += explode("\n", $options);
 				
 				foreach($select_options as $val)
 				{

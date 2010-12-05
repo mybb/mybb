@@ -443,7 +443,6 @@ messageEditor.prototype = {
 			return;
 		
 		mnu.lastItemValue = element.extra;
-		this.insertMyCode(dropdown.insertText, element.extra);
 
 		if(this.getSelectedText($(this.textarea)))
 		{
@@ -466,6 +465,8 @@ messageEditor.prototype = {
 			mnu.activeItem = element;
 			element.addClassName('editor_dropdown_menu_item_active');
 		}
+
+		this.insertMyCode(dropdown.insertText, element.extra);
 		this.hideOpenDropDownMenu();
 		Event.stop(e);
 	},

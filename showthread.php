@@ -90,6 +90,19 @@ else
 	$ismod = false;
 }
 
+$forumpermissions = forum_permissions($thread['fid']);
+
+// Does the user have permission to view this thread?
+if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
+{
+	error_no_permission();
+}
+
+if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+{
+	error_no_permission();
+}
+
 // Make sure we are looking at a real thread here.
 if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
 {
@@ -119,10 +132,20 @@ if($ismod == true)
 	$threadcount += $forum_threads['unapprovedthreads'];
 }
 
+// Limit to only our own threads
+$uid_only = '';
+if($forumpermissions['canonlyviewownthreads'] == 1)
+{
+	$uid_only = " AND uid = '".$mybb->user['uid']."'";
+
+	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
+	$threadcount = $db->fetch_field($query, "threads");
+}
+
 // If we have 0 threads double check there aren't any "moved" threads
 if($threadcount == 0)
 {
-	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly", array('limit' => 1));
+	$query = $db->simple_select("threads", "COUNT(tid) AS threads", "fid = '$fid' $visibleonly $uid_only", array('limit' => 1));
 	$threadcount = $db->fetch_field($query, "threads");
 }
 
@@ -139,13 +162,13 @@ switch($db->type)
 		$query = $db->query("
 			SELECT COUNT(tid) as threads
 			FROM ".TABLE_PREFIX."threads
-			WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly}
+			WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}
 			GROUP BY lastpost
 			ORDER BY lastpost DESC
 		");
 		break;
 	default:
-		$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
+		$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
 }
 
 $thread_position = $db->fetch_field($query, "threads");
@@ -155,19 +178,6 @@ $thread_page = ceil(($thread_position/$mybb->settings['threadsperpage']));
 build_forum_breadcrumb($fid, array('num_threads' => $threadcount, 'current_page' => $thread_page));
 add_breadcrumb($thread['displayprefix'].$thread['subject'], get_thread_link($thread['tid']));
 
-// Does the user have permission to view this thread?
-$forumpermissions = forum_permissions($forum['fid']);
-
-if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1)
-{
-	error_no_permission();
-}
-
-if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
-{
-	error_no_permission();
-}
-
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
@@ -176,7 +186,6 @@ if(!$mybb->input['action'])
 {
 	$mybb->input['action'] = "thread";
 }
-
 
 // Jump to the unread posts.
 if($mybb->input['action'] == "newpost")
@@ -248,7 +257,19 @@ if($mybb->input['action'] == "newpost")
 	
 	if($newpost['pid'] && $lastread)
 	{
-		header("Location: ".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid))."#pid{$newpost['pid']}");
+		$highlight = '';
+		if($mybb->input['highlight'])
+		{
+			$string = "&";
+			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+			{
+				$string = "?";
+			}
+
+			$highlight = $string."highlight=".$mybb->input['highlight'];
+		}
+
+		header("Location: ".htmlspecialchars_decode(get_post_link($newpost['pid'], $tid)).$highlight."#pid{$newpost['pid']}");
 	}
 	else
 	{
@@ -1148,7 +1169,11 @@ if($mybb->input['action'] == "thread")
 					if($user['invisible'] == 1)
 					{
 						$invisiblemark = "*";
-						++$inviscount;
+
+						if($user['uid'] != $mybb->user['uid'])
+						{
+							++$inviscount;
+						}
 					}
 					else
 					{
@@ -1166,27 +1191,29 @@ if($mybb->input['action'] == "thread")
 				}
 			}
 		}
-			
-		if($guestcount)
-		{
-			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
-		}
-		
-		if($guestcount && $onlinemembers)
-		{
-			$onlinesep = $lang->comma;
-		}
 		
 		$invisonline = '';
-		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
+		$onlinesep2 = $onlinesep = '';
+		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
 		{
-			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
-		}
-		
-		if($invisonline != '' && $guestcount)
-		{
-			$onlinesep2 = $lang->comma;
-		}
+			if($onlinemembers)
+			{
+				$onlinesep = $lang->comma;
+			}
+
+ 			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
+ 		}
+
+		if($guestcount)
+ 		{
+			if($onlinemembers)
+			{
+				$onlinesep2 = $lang->comma;
+			}
+
+			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
+ 		}
+
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
 	}
 	

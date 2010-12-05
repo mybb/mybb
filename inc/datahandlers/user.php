@@ -382,7 +382,7 @@ class UserDataHandler extends DataHandler
 		else if($birthday['year'] == date("Y"))
 		{
 			// Error if birth date is in future
-			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $bithday['day'] > date("d")))
+			if($birthday['month'] > date("m") || ($birthday['month'] == date("m") && $birthday['day'] > date("d")))
 			{
 				$this->set_error("invalid_birthday");
 				return false;
@@ -446,6 +446,11 @@ class UserDataHandler extends DataHandler
 	function verify_profile_fields()
 	{
 		global $db;
+
+		if($this->admin_override == true)
+		{
+			return true;
+		}
 
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];

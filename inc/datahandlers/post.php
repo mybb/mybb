@@ -934,6 +934,12 @@ class PostDataHandler extends DataHandler
 				{
 				    continue;
 				}
+
+				if($thread['uid'] != $subscribedmember['uid'] && $forumpermissions['canonlyviewownthread'] == 1 && !is_moderator($thread['fid'], "", $subscribedmember['uid']))
+				{
+					// User isn't a moderator or the author of the thread...
+					continue;
+				}
 				
 				if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 				{
@@ -1355,7 +1361,13 @@ class PostDataHandler extends DataHandler
 					{
 					    continue;
 					}
-					
+
+					if(!is_moderator($thread['fid'], "", $subscribedmember['uid']) && $forumpermissions['canonlyviewownthreads'] == 1)
+					{
+						// In a 'view own only' forum and not a moderator
+						continue;
+					}
+
 					// Determine the language pack we'll be using to send this email in and load it if it isn't already.
 					if($subscribedmember['language'] != '' && $lang->language_exists($subscribedmember['language']))
 					{

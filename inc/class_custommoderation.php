@@ -35,7 +35,7 @@ class CustomModeration extends Moderation
 		global $db;
 
 		// Get tool info
-		$query = $db->simple_select("modtools", 'tid, type, name, description', 'tid="'.intval($tool_id).'"');
+		$query = $db->simple_select("modtools", "*", 'tid="'.intval($tool_id).'"');
 		$tool = $db->fetch_array($query);
 		if(!$tool['tid'])
 		{
@@ -196,7 +196,7 @@ class CustomModeration extends Moderation
 					}	
 					else
 					{
-						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $thread_options['replysubject']);
+						$post_options['splitpostsreplysubject'] = str_ireplace('{username}', $mybb->user['username'], $post_options['splitpostsreplysubject']);
 						$post_options['splitpostsreplysubject'] = str_ireplace('{subject}', $new_subject, $post_options['splitpostsreplysubject']);
 					}
 					
@@ -322,7 +322,7 @@ class CustomModeration extends Moderation
 			if(!empty($thread_options['addreply'])) // Add reply to thread
 			{
 				$tid_list = implode(',', $tids);
-				$query = $db->simple_select("threads", 'fid, subject, tid, firstpost', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
+				$query = $db->simple_select("threads", 'fid, subject, tid, firstpost, closed', "tid IN ($tid_list) AND closed NOT LIKE 'moved|%'");
 				require_once MYBB_ROOT."inc/datahandlers/post.php";
 				
 				// Loop threads adding a reply to each one
@@ -351,13 +351,20 @@ class CustomModeration extends Moderation
 						"message" => $thread_options['addreply'],
 						"ipaddress" => $db->escape_string(get_ip()),
 					);
+
 					// Set up the post options from the input.
 					$post['options'] = array(
 						"signature" => 1,
 						"emailnotify" => 0,
 						"disablesmilies" => 0
 					);
-	
+
+					if($thread['closed'] == 1)
+					{
+						// Keep this thread closed
+						$post['modoptions']['closethread'] = 1;
+					}
+
 					$posthandler->set_data($post);
 					if($posthandler->validate_post($post))
 					{

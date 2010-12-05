@@ -773,7 +773,16 @@ if($mybb->input['action'] == "vote")
 	elseif(!$mybb->user['uid'])
 	{
 		// Give a cookie to guests to inhibit revotes
-		$votes_cookie = implode(',', array_keys($mybb->input['option']));
+		if(is_array($mybb->input['option']))
+		{
+			// We have multiple options here...
+			$votes_cookie = implode(',', array_keys($mybb->input['option']));
+		}
+		else
+		{
+			$votes_cookie = $mybb->input['option'];
+		}
+
 		my_setcookie("pollvotes[{$poll['pid']}]", $votes_cookie);
 	}
 	

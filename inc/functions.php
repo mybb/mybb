@@ -958,9 +958,20 @@ function multipage($count, $perpage, $page, $url, $breadcrumb=false)
  */
 function fetch_page_url($url, $page)
 {
-	// If no page identifier is specified we tack it on to the end of the URL
-	if(strpos($url, "{page}") === false)
+	if($page <= 1)
+ 	{
+		$find = array(
+			"-page-{page}",
+			"&amp;page={page}"
+		);
+
+		// Remove "Page 1" to the defacto URL
+		$url = str_replace($find, array("", ""), $url);
+		return $url;
+	}
+	else if(strpos($url, "{page}") === false)
 	{
+		// If no page identifier is specified we tack it on to the end of the URL
 		if(strpos($url, "?") === false)
 		{
 			$url .= "?";
@@ -969,12 +980,14 @@ function fetch_page_url($url, $page)
 		{
 			$url .= "&amp;";
 		}
+
 		$url .= "page=$page";
 	}
 	else
 	{
 		$url = str_replace("{page}", $page, $url);
 	}
+
 	return $url;
 }
 
@@ -1465,6 +1478,11 @@ function is_moderator($fid="0", $action="", $uid="0")
 					{
 						return true;
 					}
+					elseif(isset($modusers['usergroups'][$user_perms['gid']]))
+					{
+						// Moderating usergroup
+						return true;
+					}
 				}
 			}
 			return false;
@@ -1637,7 +1655,7 @@ function my_get_array_cookie($name, $id)
 
 	$cookie = unserialize($mybb->cookies['mybb'][$name]);
 
-	if(isset($cookie[$id]))
+	if(is_array($cookie) && isset($cookie[$id]))
 	{
 		return $cookie[$id];
 	}
@@ -1660,6 +1678,13 @@ function my_set_array_cookie($name, $id, $value)
 	
 	$cookie = $mybb->cookies['mybb'];
 	$newcookie = unserialize($cookie[$name]);
+
+	if(!is_array($newcookie))
+	{
+		// Burnt / malformed cookie - reset
+		$newcookie = array();
+	}
+
 	$newcookie[$id] = $value;
 	$newcookie = serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie));
@@ -1841,7 +1866,7 @@ function update_forum_counters($fid, $changes=array())
 			}
 			
 			// Less than 0? That's bad
-			if($update_query[$counter] < 0)
+			if(!$update_query[$counter])
 			{
 				$update_query[$counter] = 0;
 			}
@@ -2945,6 +2970,7 @@ function get_unviewable_forums($only_readable_threads=false)
 		$permissioncache = forum_permissions();
 	}
 
+	$password_forums = array();
 	foreach($forum_cache as $fid => $forum)
 	{
 		if($permissioncache[$forum['fid']])
@@ -2963,6 +2989,20 @@ function get_unviewable_forums($only_readable_threads=false)
 			if($mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
 			{
 				$pwverified = 0;
+			}
+			
+			$password_forums[$forum['fid']] = $forum['password'];
+		}
+		else
+		{
+			// Check parents for passwords
+			$parents = explode(",", $forum['parentlist']);
+			foreach($parents as $parent)
+			{
+				if(isset($password_forums[$parent]) && $mybb->cookies['forumpass'][$parent] != md5($mybb->user['uid'].$password_forums[$parent]))
+				{
+					$pwverified = 0;
+				}
 			}
 		}
 
@@ -3752,7 +3792,12 @@ function get_current_location($fields=false, $ignore=array())
 				$location .= implode("&amp;", $addloc);
 			}
 		}
-	
+
+		if(strlen($location) > 150)
+		{
+			$location = substr($location, 0, 150);
+		}
+
 		return $location;
 	}
 }
@@ -4101,8 +4146,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		'Y',
 		'j',
 		'S',
-		'l',
 		'F',
+		'l',
 		'M',
 	);
 
@@ -4114,8 +4159,8 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		$by,
 		($bd[0] == 0 ? my_substr($bd, 1) : $bd),
 		($bd == 1 || $bd == 21 || $bd == 31 ? 'st' : ($bd == 2 || $bd == 22 ? 'nd' : ($bd == 3 || $bd == 23 ? 'rd' : 'th'))),
-		$wd,
 		$bmonth[$bm-1],
+		$wd,
 		($bm == 9 ? my_substr($bmonth[$bm-1], 0, 4) :  my_substr($bmonth[$bm-1], 0, 3)),
 	);
 	

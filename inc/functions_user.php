@@ -1,4 +1,13 @@
 <?php
+/**
+ * MyBB 1.6
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ *
+ * Website: http://mybb.com
+ * License: http://mybb.com/about/license
+ *
+ * $Id$
+ */
 
 /**
  * Checks if a user with uid $uid exists in the database.
@@ -30,7 +39,9 @@ function user_exists($uid)
 function username_exists($username)
 {
 	global $db;
-	$query = $db->simple_select("users", "COUNT(*) as user", "username='".$db->escape_string($username)."'", array('limit' => 1));
+
+	$query = $db->simple_select("users", "COUNT(*) as user", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
+
 	if($db->fetch_field($query, 'user') == 1)
 	{
 		return true;
@@ -51,8 +62,9 @@ function username_exists($username)
 function validate_password_from_username($username, $password)
 {
 	global $db;
-	
-	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "username='".$db->escape_string($username)."'", array('limit' => 1));
+
+	$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$db->escape_string(my_strtolower($username))."'", array('limit' => 1));
+
 	$user = $db->fetch_array($query);
 	if(!$user['uid'])
 	{
@@ -443,7 +455,7 @@ function usercp_menu_profile()
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
 
-	if($mybb->user['suspendsignature'] == 0 || ($mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] < TIME_NOW))
+	if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
 	{
 		eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
 	}
@@ -458,14 +470,18 @@ function usercp_menu_profile()
 function usercp_menu_misc()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
-	
+
+	$query = $db->simple_select("posts", "COUNT(*) AS draftcount", "visible='-2' AND uid='".$mybb->user['uid']."'");
+	$count = $db->fetch_array($query);	
+
 	if($count['draftcount'] > 0)
 	{
 		$draftstart = "<strong>";
 		$draftend = "</strong>";
+		$draftcount = "(".my_number_format($count['draftcount']).")";
 	}
+
 	$profile_link = get_profile_link($mybb->user['uid']);
-	
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_misc")."\";");
 }
 

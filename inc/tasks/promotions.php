@@ -1,7 +1,7 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
@@ -29,7 +29,7 @@ function task_promotions($task)
 			$and = " AND ";
 		}
 		
-		if(in_array('reputation', $requirements) && intval($promotion['reputations']) >= 0 && !empty($promotion['reputationtype']))
+		if(in_array('reputation', $requirements) && !empty($promotion['reputationtype']))
 		{
 			$sql_where .= "{$and}reputation {$promotion['reputationtype']} '{$promotion['reputations']}'";
 			

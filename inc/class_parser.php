@@ -399,7 +399,7 @@ class postParser
 		{
 			foreach($smilies as $sid => $smilie)
 			{
-				$this->smilies_cache[$smilie['find']] = "<img src=\"{$this->base_url}{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
+				$this->smilies_cache[$smilie['find']] = "<img src=\"{$smilie['image']}\" style=\"vertical-align: middle;\" border=\"0\" alt=\"{$smilie['name']}\" title=\"{$smilie['name']}\" />";
 			}
 		}
 	}
@@ -506,8 +506,17 @@ class postParser
 				{
 					$badword['replacement'] = "*****";
 				}
-				$badword['badword'] = str_replace('\*', '(.*)',preg_quote($badword['badword'], "#"));
-				$message = preg_replace("#(^|\s|\W)".$badword['badword']."(\W|\s|$)#i", "\\1".$badword['replacement']."\\2", $message);
+				
+				// Take into account the position offset for our last replacement.
+				$index = substr_count($badword['badword'], '*')+2;
+				$badword['badword'] = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($badword['badword'], "#"));
+				
+				// Ensure we run the replacement enough times but not recursively (i.e. not while(preg_match..))
+				$count = preg_match_all("#(^|\W)".$badword['badword']."(\W|$)#i", $message, $matches);
+				for($i=0; $i < $count; ++$i)
+				{
+					$message = preg_replace("#(^|\W)".$badword['badword']."(\W|$)#i", "\\1".$badword['replacement'].'\\'.$index, $message);
+				}
 			}
 		}
 		if($options['strip_tags'] == 1)
@@ -1012,7 +1021,7 @@ class postParser
 	function mycode_auto_url($message)
 	{	
 		$message = " ".$message;
-		$message = preg_replace("#([\>\s\(\)])(http|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
+		$message = preg_replace("#([\>\s\(\)])(http|https|ftp|news){1}://([^\/\"\s\<\[\.]+\.([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2://$3[/url]", $message);
 		$message = preg_replace("#([\>\s\(\)])(www|ftp)\.(([^\/\"\s\<\[\.]+\.)*[\w]+(:[0-9]+)?(/[^\"\s<\[]*)?)#i", "$1[url]$2.$3[/url]", $message);
 		$message = my_substr($message, 1);
 		

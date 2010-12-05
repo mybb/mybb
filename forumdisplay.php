@@ -92,6 +92,11 @@ if($mybb->user['uid'] == 0)
 	");
 	
 	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+
+	if(!is_array($forumsread))
+	{
+		$forumsread = array();
+	}
 }
 else
 {
@@ -197,7 +202,7 @@ foreach($parentlistexploded as $mfid)
 					{
 						continue;
 					}
-					$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".htmlspecialchars_uni($moderator['username'])."</a>";
+					$moderators .= "{$comma}<a href=\"".get_profile_link($moderator['id'])."\">".format_name(htmlspecialchars_uni($moderator['username']), $moderator['usergroup'], $moderator['displaygroup'])."</a>";
 					$done_moderators['users'][] = $moderator['id'];
 				}
 				$comma = $lang->comma;
@@ -701,6 +706,7 @@ if($fpermissions['canviewthreads'] != 0)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
 		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid = t.prefix)
 		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
+		GROUP BY t.tid
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
 	");

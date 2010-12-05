@@ -8,7 +8,7 @@
 
 $l['statistics'] = "Statistics";
 $l['overall_statistics'] = "Overall Statistics";
-$l['overall_statistics_desc'] = "Here you can view overall statistics on your forum.";
+$l['overall_statistics_desc'] = "Here you can view overall statistics on your forum. All times are in UTC.";
 
 $l['date_range'] = "Date Range";
 

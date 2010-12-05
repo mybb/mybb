@@ -80,6 +80,17 @@ function task_userpruning($task)
 		$query = $db->delete_query("users", "uid IN({$uid_list})");
 		$num_deleted = $db->affected_rows($query);
 
+		// Remove any of the user(s) uploaded avatars
+		$query = $db->simple_select("users", "avatar", "uid IN ({$uid_list}) AND avatartype = 'upload'");
+		if($db->num_rows($query))
+		{
+			while($avatar = $db->fetch_field($query, "avatar"))
+			{
+				$avatar = substr($avatar, 2, -20);
+				@unlink(MYBB_ROOT.$avatar);
+			}
+		}
+
 		// Are we removing the posts/threads of a user?
 		if($mybb->settings['prunethreads'] == 1)
 		{

@@ -1294,7 +1294,8 @@ if($mybb->input['action'] == "stylesheet_properties")
 	
 	if($mybb->request_method == "post")
 	{
-		if(!$mybb->input['name'])
+		// Do we not have a name, or is it just an extension?
+		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
@@ -1985,7 +1986,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/css.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'css\';
@@ -2191,7 +2192,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	
 	if($mybb->request_method == "post")
 	{
-		if(!$mybb->input['name'])
+		if(!$mybb->input['name'] || $mybb->input['name'] == ".css")
 		{
 			$errors[] = $lang->error_missing_stylesheet_name;
 		}
@@ -2284,7 +2285,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	if($admin_options['codepress'] != 0)
 	{
 		$page->extra_header .= '
-	<link type="text/css" href="./jscripts/codepress/languages/codepress-css.css" rel="stylesheet" id="cp-lang-style" />
+	<link type="text/css" href="./jscripts/codepress/languages/css.css" rel="stylesheet" id="cp-lang-style" />
 	<script type="text/javascript" src="./jscripts/codepress/codepress.js"></script>
 	<script type="text/javascript">
 		CodePress.language = \'css\';

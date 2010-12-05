@@ -341,7 +341,12 @@ if($mybb->input['action'] == "delete")
 	verify_post_check($mybb->input['my_post_key']);
 
 	// Fetch the existing reputation for this user given by our current user if there is one.
-	$query = $db->simple_select("reputation", "*", "rid='".$mybb->input['rid']."'");
+	$query = $db->query("
+		SELECT r.*, u.username
+		FROM ".TABLE_PREFIX."reputation r
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
+		WHERE rid = '".intval($mybb->input['rid'])."'
+	");
 	$existing_reputation = $db->fetch_array($query);
 
 	// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
@@ -356,6 +361,10 @@ if($mybb->input['action'] == "delete")
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
 	$reputation_value = $db->fetch_field($query, "reputation_count");
+
+	// Create moderator log
+	$rep_remove = build_profile_link($existing_reputation['username'], $existing_reputation['adduid']);
+	log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->sprintf($lang->delete_reputation_log, $rep_remove));
 
 	$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 
@@ -463,8 +472,11 @@ if(!$mybb->input['action'])
 	}
 
 	// Quickly check to see if we're in sync...
-	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation", "uid = '".$user['uid']."'");
-	$sync_reputation = $db->fetch_field($query, "reputation");
+	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation, COUNT(rid) AS total_reputation", "uid = '".$user['uid']."'");
+	$reputation = $db->fetch_array($query);
+
+	$sync_reputation = $reputation['reputation'];
+	$total_reputation = $reputation['total_reputation'];
 
 	if($sync_reputation != $user['reputation'])
 	{
@@ -563,7 +575,7 @@ if(!$mybb->input['action'])
 
 	// General
 	// We count how many reps in total, then subtract the reps from posts
-	$rep_members = my_number_format($reputation_count - $rep_posts);
+	$rep_members = my_number_format($total_reputation - $rep_posts);
 
 	// Is negative reputation disabled? If so, tell the user
 	if($mybb->settings['negrep'] == 0)
@@ -599,9 +611,10 @@ if(!$mybb->input['action'])
 
 	// Fetch the reputations which will be displayed on this page
 	$query = $db->query("
-		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
+		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup, p.pid AS post_link
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
+		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=r.pid)
 		WHERE r.uid='{$user['uid']}' $conditions
 		ORDER BY $order
 		LIMIT $start, {$mybb->settings['repsperpage']}
@@ -662,7 +675,7 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 		
 		// Is this rating specific to a post?
-		if($reputation_vote['pid'])
+		if($reputation_vote['pid'] && $reputation_vote['post_link'])
 		{
 			$link = "<a href=\"".get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}\">{$lang->postrep_post}".$reputation_vote['pid']."</a>";
 			$postrep_given = $lang->sprintf($lang->postrep_given, $link);

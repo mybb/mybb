@@ -37,6 +37,14 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	{
 		$errors[] = $lang->replacement_word_max;
 	}
+	
+	$badword = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($mybb->input['badword'], "#"));
+	
+	// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
+	if(strlen($mybb->input['badword']) == strlen($mybb->input['replacement']) && preg_match("#(^|\W)".$badword."(\W|$)#i", $mybb->input['replacement']))
+	{
+		$errors[] = $lang->error_replacement_word_invalid;
+	}
 
 	if(!$errors)
 	{

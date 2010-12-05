@@ -289,7 +289,7 @@ if($mybb->input['action'] == "edit")
 				$sql_array = array(
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
-					"usetranslation" => 0,
+					"usetranslation" => intval($mybb->input['usetranslation']),
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
@@ -329,11 +329,13 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['description'] = $section['description'];
 			$mybb->input['disporder'] = $section['disporder'];
 			$mybb->input['enabled'] = $section['enabled'];
+			$mybb->input['usetranslation'] = $section['usetranslation'];
 		}
 	
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
 		
 		echo $form->generate_hidden_field("sid", $mybb->input['sid']);
+		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 		
 		$form_container = new FormContainer($lang->edit_section." ({$lang->id} ".intval($mybb->input['sid']).")");
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');

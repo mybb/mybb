@@ -170,7 +170,7 @@ class datacache
 			"title" => $db->escape_string($name),
 			"cache" => $dbcontents
 		);		
-		$db->replace_query("datacache", $replace_array, "title", false);
+		$db->replace_query("datacache", $replace_array, "", false);
 
 		// Do we have a cache handler we're using?
 		if(is_object($this->handler))
@@ -521,16 +521,16 @@ class datacache
 				foreach($main as $forum)
 				{
 					$forum_mods = '';
-					if($moderators)
+					if(count($moderators))
 					{
 						$forum_mods = $moderators;
 					}
 					// Append - local settings override that of a parent - array_merge works here
 					if($this->moderators[$forum['fid']])
 					{
-						if(is_array($forum_mods))
+						if(count($forum_mods))
 						{
-							$forum_mods = $forum_mods + $this->moderators[$forum['fid']];
+							$forum_mods = array_merge($forum_mods, $this->moderators[$forum['fid']]);
 						}
 						else
 						{

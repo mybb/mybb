@@ -223,12 +223,12 @@ function task_delayedmoderation($task)
 					
 					if(!empty($approved_tids))
 					{
-						$moderation->unapproved_threads($approved_tids);
+						$moderation->unapprove_threads($approved_tids);
 					}
 					
 					if(!empty($unapproved_tids))
 					{
-						$moderation->approved_threads($unapproved_tids);
+						$moderation->approve_threads($unapproved_tids);
 					}
 					break;
 			}

@@ -212,6 +212,7 @@ if(!$mybb->input['action'])
 	while($filter = $db->fetch_array($query))
 	{
 		$filter['filter'] = htmlspecialchars_uni($filter['filter']);
+
 		if($filter['lastuse'] > 0)
 		{
 			$last_use = my_date($mybb->settings['dateformat'], $filter['lastuse']).", ".my_date($mybb->settings['timeformat'], $filter['lastuse']);
@@ -220,7 +221,16 @@ if(!$mybb->input['action'])
 		{
 			$last_use = $lang->never;
 		}
-		$date = my_date($mybb->settings['dateformat'], $filter['dateline']).", ".my_date($mybb->settings['timeformat'], $filter['dateline']);
+
+		if($filter['dateline'] > 0)
+		{
+			$date = my_date($mybb->settings['dateformat'], $filter['dateline']).", ".my_date($mybb->settings['timeformat'], $filter['dateline']);
+		}
+		else
+		{
+			$date = $lang->na;
+		}
+
 		$table->construct_cell($filter['filter']);
 		$table->construct_cell($date, array("class" => "align_center"));
 		$table->construct_cell($last_use, array("class" => "align_center"));

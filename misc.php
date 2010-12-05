@@ -397,7 +397,7 @@ elseif($mybb->input['action'] == "buddypopup")
 elseif($mybb->input['action'] == "whoposted")
 {
 	$numposts = 0;
-	$altbg = "trow1";
+	$altbg = alt_trow();
 	$whoposted = '';
 	$tid = intval($mybb->input['tid']);
 	$thread = get_thread($tid);
@@ -698,13 +698,15 @@ if($mybb->input['action'] == "clearcookies")
 
 function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $permissions="")
 {
-	global $db, $forumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang;
+	global $db, $forumcache, $permissioncache, $mybb, $selecteddone, $forumlist, $forumlistbits, $theme, $templates, $flist, $lang, $unviewable;
+	static $unviewableforums;
 
 	$pid = intval($pid);
 	if(!$permissions)
 	{
 		$permissions = $mybb->usergroup;
 	}
+
 	if(!is_array($forumcache))
 	{
 		// Get Forums
@@ -714,10 +716,18 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 			$forumcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 		}
 	}
+
 	if(!is_array($permissioncache))
 	{
 		$permissioncache = forum_permissions();
 	}
+
+	if(!$unviewableforums)
+	{
+		// Save our unviewable forums in an array
+		$unviewableforums = explode(",", str_replace("'", "", $unviewable));
+	}
+
 	if(is_array($forumcache[$pid]))
 	{
 		foreach($forumcache[$pid] as $key => $main)
@@ -737,10 +747,11 @@ function makesyndicateforums($pid="0", $selitem="", $addselect="1", $depth="", $
 						$optionselected = '';
 					}
 
-					if($forum['password'] == '')
+					if($forum['password'] == '' && !in_array($forum['fid'], $unviewableforums) || $forum['password'] && $mybb->cookies['forumpass'][$forum['fid']] == md5($mybb->user['uid'].$forum['password']))
 					{
 						$forumlistbits .= "<option value=\"{$forum['fid']}\" $optionselected>$depth {$forum['name']}</option>\n";
 					}
+
 					if($forumcache[$forum['fid']])
 					{
 						$newdepth = $depth."&nbsp;&nbsp;&nbsp;&nbsp;";

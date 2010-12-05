@@ -1177,8 +1177,20 @@ if($mybb->input['action'] == "subscriptions")
 {
 	$plugins->run_hooks("usercp_subscriptions_start");
 
+	// Thread visiblity
+	$visible = "AND t.visible != 0";
+	if(is_moderator() == true)
+	{
+		$visible = '';
+	}
+
 	// Do Multi Pages
-	$query = $db->simple_select("threadsubscriptions", "COUNT(tid) AS threads", "uid='".$mybb->user['uid']."'");
+	$query = $db->query("
+		SELECT COUNT(ts.tid) as threads
+		FROM ".TABLE_PREFIX."threadsubscriptions ts
+		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid = ts.tid)
+		WHERE ts.uid = '".$mybb->user['uid']."' {$visible}
+	");
 	$threadcount = $db->fetch_field($query, "threads");
 
 	if(!$mybb->settings['threadsperpage'])
@@ -1214,22 +1226,22 @@ if($mybb->input['action'] == "subscriptions")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
-		WHERE s.uid='".$mybb->user['uid']."'
+		WHERE s.uid='".$mybb->user['uid']."' {$visible}
 		ORDER BY t.lastpost DESC
 		LIMIT $start, $perpage
 	");
 	while($subscription = $db->fetch_array($query))
 	{
 		$forumpermissions = $fpermissions[$subscription['fid']];
-		// Only keep if we're allowed to view them
-		if($forumpermissions['canview'] != 0 || $forumpermissions['canviewthreads'] != 0)
+
+		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
-			$subscriptions[$subscription['tid']] = $subscription;
+			// Hmm, you don't have permission to view this thread - unsubscribe!
+			$del_subscriptions[] = $subscription['tid'];
 		}
-		// Hmm, you don't have permission to view - unsubscribe!
 		else if($subscription['tid'])
 		{
-			$del_subscriptions[] = $subscription['tid'];
+			$subscriptions[$subscription['tid']] = $subscription;
 		}
 	}
 
@@ -1428,8 +1440,12 @@ if($mybb->input['action'] == "subscriptions")
 
 			$folder .= "folder";
 
-			// Build last post info
+			if($thread['visible'] == 0)
+			{
+				$bgcolor = "trow_shaded";
+			}
 
+			// Build last post info
 			$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 			$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 			$lastposter = $thread['lastposter'];
@@ -1632,7 +1648,7 @@ if($mybb->input['action'] == "editsig")
 		$template = false;
 	}
 
-	if(!$mybb->user['signature'] && ($mybb->user['suspendsignature'] && $mybb->user['suspendsigtime'] > TIME_NOW))
+	if($mybb->user['suspendsignature'] && ($mybb->user['suspendsigtime'] == 0 || $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] > TIME_NOW))
 	{
 		// User currently has no signature and they're suspended
 		error_no_permission();
@@ -2781,29 +2797,12 @@ if($mybb->input['action'] == "attachments")
 
 	$attachments = '';
 
-	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
-	$usage = $db->fetch_array($query);
-	$totalusage = $usage['ausage'];
-	$totalattachments = $usage['acount'];
-	$friendlyusage = get_friendly_size($totalusage);
-	if($mybb->usergroup['attachquota'])
-	{
-		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
-		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
-		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
-	}
-	else
-	{
-		$percent = $lang->unlimited;
-		$attachquota = $lang->unlimited;
-		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
-	}
-
 	// Pagination
 	if(!$mybb->settings['threadsperpage'])
 	{
 		$mybb->settings['threadsperpage'] = 20;
 	}
+
 	$perpage = $mybb->settings['threadsperpage'];
 	$page = intval($mybb->input['page']);
 
@@ -2820,20 +2819,15 @@ if($mybb->input['action'] == "attachments")
 	$end = $start + $perpage;
 	$lower = $start+1;
 
-	if($end > $totalattachments)
-	{
-		$upper = $totalattachments;
-	}
-	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
-
 	$query = $db->query("
 		SELECT a.*, p.subject, p.dateline, t.tid, t.subject AS threadsubject
 		FROM ".TABLE_PREFIX."attachments a
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (a.pid=p.pid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
-		WHERE a.uid='".$mybb->user['uid']."' AND a.pid!='0'
+		WHERE a.uid='".$mybb->user['uid']."'
 		ORDER BY p.dateline DESC LIMIT {$start}, {$perpage}
 	");
+
 	$bandwidth = $totaldownloads = 0;
 	while($attachment = $db->fetch_array($query))
 	{
@@ -2860,6 +2854,26 @@ if($mybb->input['action'] == "attachments")
 			remove_attachment($attachment['pid'], $attachment['posthash'], $attachment['aid']);
 		}
 	}
+
+	$query = $db->simple_select("attachments", "SUM(filesize) AS ausage, COUNT(aid) AS acount", "uid='".$mybb->user['uid']."'");
+	$usage = $db->fetch_array($query);
+	$totalusage = $usage['ausage'];
+	$totalattachments = $usage['acount'];
+	$friendlyusage = get_friendly_size($totalusage);
+	if($mybb->usergroup['attachquota'])
+	{
+		$percent = round(($totalusage/($mybb->usergroup['attachquota']*1024))*100)."%";
+		$attachquota = get_friendly_size($mybb->usergroup['attachquota']*1024);
+		$usagenote = $lang->sprintf($lang->attachments_usage_quota, $friendlyusage, $attachquota, $percent, $totalattachments);
+	}
+	else
+	{
+		$percent = $lang->unlimited;
+		$attachquota = $lang->unlimited;
+		$usagenote = $lang->sprintf($lang->attachments_usage, $friendlyusage, $totalattachments);
+	}
+
+	$multipage = multipage($totalattachments, $perpage, $page, "usercp.php?action=attachments");
 	$bandwidth = get_friendly_size($bandwidth);
 
 	if(!$attachments)
@@ -3069,12 +3083,18 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("threadsubscriptions", "sid", "uid = '".$mybb->user['uid']."'", array("limit" => 1));
 	if($db->num_rows($query))
 	{
+		$visible = "AND t.visible != 0";
+		if(is_moderator() == true)
+		{
+			$visible = '';
+		}
+
 		$query = $db->query("
 			SELECT s.*, t.*, t.username AS threadusername, u.username
 			FROM ".TABLE_PREFIX."threadsubscriptions s
 			LEFT JOIN ".TABLE_PREFIX."threads t ON (s.tid=t.tid)
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-			WHERE s.uid='".$mybb->user['uid']."'
+			WHERE s.uid='".$mybb->user['uid']."' {$visible}
 			ORDER BY t.lastpost DESC
 			LIMIT 0, 10
 		");
@@ -3125,6 +3145,9 @@ if(!$mybb->input['action'])
 				
 				foreach($subscriptions as $thread)
 				{
+					$folder = '';
+					$folder_label = '';
+
 					if($thread['tid'])
 					{
 						$bgcolor = alt_trow();
@@ -3179,6 +3202,11 @@ if(!$mybb->input['action'])
 						}
 						
 						$folder .= "folder";
+
+						if($thread['visible'] == 0)
+						{
+							$bgcolor = "trow_shaded";
+						}
 		
 						$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 						$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
@@ -3215,11 +3243,17 @@ if(!$mybb->input['action'])
 		$f_perm_sql = "AND t.fid NOT IN (".$unviewable_forums.")";
 	}
 
+	$visible = " AND t.visible != 0";
+	if(is_moderator() == true)
+	{
+		$visible = '';
+	}
+
 	$query = $db->query("
 		SELECT t.*, t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		WHERE t.uid='".$mybb->user['uid']."' {$f_perm_sql}
+		WHERE t.uid='".$mybb->user['uid']."' AND t.firstpost != 0 AND t.visible != '-2' {$visible} {$f_perm_sql}
 		ORDER BY t.lastpost DESC
 		LIMIT 0, 5
 	");
@@ -3386,6 +3420,12 @@ if(!$mybb->input['action'])
 				{
 					$folder .= "hot";
 					$folder_label .= $lang->icon_hot;
+				}
+
+				// Is our thread visible?
+				if($thread['visible'] == 0)
+				{
+					$bgcolor = 'trow_shaded';
 				}
 
 				if($thread['closed'] == 1)

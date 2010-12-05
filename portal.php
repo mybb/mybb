@@ -408,6 +408,12 @@ while($forumrow = $db->fetch_array($query))
     $forum[$forumrow['fid']] = $forumrow;
 }
 
+$numannouncements = intval($mybb->settings['portal_numannouncements']);
+if(!$numannouncements)
+{
+	$numannouncements = 10; // Default back to 10
+}
+
 $pids = '';
 $tids = '';
 $comma = '';
@@ -417,7 +423,7 @@ $query = $db->query("
 	LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 	WHERE t.fid IN (".$announcementsfids.") AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.firstpost=p.pid
 	ORDER BY t.dateline DESC 
-	LIMIT 0, ".$mybb->settings['portal_numannouncements']
+	LIMIT 0, {$numannouncements}"
 );
 while($getid = $db->fetch_array($query))
 {
@@ -450,10 +456,16 @@ $query = $db->query("
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 	WHERE t.fid IN (".$announcementsfids.") AND t.tid IN (0{$tids}) AND t.visible='1' AND t.closed NOT LIKE 'moved|%'
 	ORDER BY t.dateline DESC
-	LIMIT 0, ".$mybb->settings['portal_numannouncements']
+	LIMIT 0, {$numannouncements}"
 );
 while($announcement = $db->fetch_array($query))
 {
+	// Make sure we can view this announcement
+	if($forumpermissions[$announcement['fid']]['canview'] == 0 || $forumpermissions[$announcement['fid']]['canviewthreads'] == 0 || $forumpermissions[$announcement['fid']]['canonlyviewownthreads'] == 1 && $announcement['uid'] != $mybb->user['uid'])
+	{
+		continue;
+	}
+
 	$announcement['message'] = $posts[$announcement['tid']]['message'];
 	$announcement['pid'] = $posts[$announcement['tid']]['pid'];
 	$announcement['smilieoff'] = $posts[$announcement['tid']]['smilieoff'];

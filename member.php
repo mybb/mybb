@@ -1117,15 +1117,15 @@ if($mybb->input['action'] == "login")
 	login_attempt_check();
 
 	// Redirect to the page where the user came from, but not if that was the login page.
-	if($mybb->input['url'] && !preg_match("/action=login/i", $mybb->input['url']))
-	{
-		$redirect_url = htmlentities($mybb->input['url']);
-	}
-	elseif($_SERVER['HTTP_REFERER'])
+	if($_SERVER['HTTP_REFERER'] && strpos($_SERVER['HTTP_REFERER'], "action=login") === false)
 	{
 		$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
 	}
-		
+	else
+	{
+		$redirect_url = '';
+	}
+
 	$captcha = "";
 	// Show captcha image for guests if enabled
 	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && $do_captcha == true)
@@ -1762,7 +1762,7 @@ if($mybb->input['action'] == "profile")
 	
 	$buddy_options = '';
 	
-	if($mybb->user['uid'] != $mybb->input['uid'] && $mybb->user['uid'] != 0)
+	if($mybb->user['uid'] != $memprofile['uid'] && $mybb->user['uid'] != 0)
 	{
 		$buddy_list = explode(',', $mybb->user['buddylist']);
 		if(in_array($mybb->input['uid'], $buddy_list))

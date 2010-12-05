@@ -175,7 +175,7 @@ else if($mybb->input['action'] == "get_usergroups")
 		$group['title'] = htmlspecialchars_uni($group['title']);
 		// Send the result to the browser for this usergroup.
 		echo "<div>\n";
-		echo "<span class=\"usergroup\">{$group['title']}</span>\n";
+		echo "<span class=\"usergroup\">{$group['title']} ({$lang->usergroup} {$group['gid']})</span>\n";
 		echo "</div>\n";
 	}
 }

@@ -96,9 +96,7 @@ MyModal.prototype = {
 		this.loader.id = 'ModalLoadingIndicator';
 		
 		// Insert into the body
-		owner = document.getElementsByTagName("body").item(0);
-		owner.appendChild(this.loader);
-		//document.write(MyBB.HTMLchars(owner.innerHTML));
+		Element.insert(document.body, { 'after': this.loader });
 	},
 	
 	showOverlayLoader: function()
@@ -113,12 +111,22 @@ MyModal.prototype = {
 		this.overlayLoader.style.top = 0;
 		this.overlayLoader.style.zIndex = 3000;
 
-		// Set opacity (and be nice to IE)
-		this.overlayLoader.setStyle("opacity: " + this.options.overlay / 100);
+		Element.insert(document.body, { 'after': this.overlayLoader });
 
 		// Insert into the body
-		owner = document.getElementsByTagName('body').item(0);
-		owner.appendChild(this.overlayLoader);
+		// Opacity
+		if(MyBB.browser != "ie")
+		{
+			$("ModalOverlay").style.opacity = this.options.overlay / 100;
+		}
+		else
+		{
+			// IE 8 and IE 9 does this nicely - IE 7 ignores
+			$("ModalOverlay").setStyle(
+			{
+				opacity: this.options.overlay / 100
+			});
+		}
 
 		this.showLoader();
 	},
@@ -143,6 +151,7 @@ MyModal.prototype = {
 		{
 			new Ajax.Request(this.options.url, {
 				method: 'get',
+				parameters: { time: new Date().getTime() },
 				onComplete: function(request) { this.displayModal(request.responseText); }.bind(this)
 			});
 		}
@@ -162,7 +171,7 @@ MyModal.prototype = {
 		
 		new Ajax.Request(this.options.url, {
             method: 'post',
-            postBody: postData+"&ajax=1",
+            postBody: postData+"&ajax=1&time=" + new Date().getTime(),
             onComplete: this.onComplete.bind(this),
         });
 	},
@@ -210,7 +219,11 @@ MyModal.prototype = {
 		{
 			$('ModalLoadingIndicator').remove();
 		}
+
 		// ModalContentContainer
-		$('ModalOverlay').remove();
+		if($('ModalOverlay'))
+		{
+			$('ModalOverlay').remove();
+		}
 	}
 };
