@@ -1221,7 +1221,7 @@ if($mybb->input['action'] == "do_modqueue")
 		{
 			foreach($threads_to_delete as $tid)
 			{
-				$moderation->delete_thread($thread['tid']);
+				$moderation->delete_thread($tid);
 			}
 			log_moderator_action(array('tids' => $threads_to_delete), $lang->multi_delete_threads);
 		}
