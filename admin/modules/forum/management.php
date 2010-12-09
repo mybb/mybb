@@ -248,7 +248,7 @@ if($mybb->input['action'] == "copy")
 	$form_container->end();
 
 	$form_container = new FormContainer($lang->new_forum_settings);
-	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
+	$form_container->output_row($lang->forum_type, $lang->forum_type_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $copy_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $copy_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $copy_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
@@ -929,7 +929,7 @@ if($mybb->input['action'] == "add")
 	}
 
 	$form_container = new FormContainer($lang->add_forum);
-	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
+	$form_container->output_row($lang->forum_type, $lang->forum_type_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');
@@ -1473,7 +1473,7 @@ if($mybb->input['action'] == "edit")
 	}
 
 	$form_container = new FormContainer($lang->edit_forum);
-	$form_container->output_row($lang->create_a, $lang->create_a_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
+	$form_container->output_row($lang->forum_type, $lang->forum_type_desc, $form->generate_radio_button('type', 'f', $lang->forum, $create_a_options_f)."<br />\n".$form->generate_radio_button('type', 'c', $lang->category, $create_a_options_c));
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $forum_data['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->description, "", $form->generate_text_area('description', $forum_data['description'], array('id' => 'description')), 'description');
 	$form_container->output_row($lang->parent_forum." <em>*</em>", $lang->parent_forum_desc, $form->generate_forum_select('pid', $forum_data['pid'], array('id' => 'pid', 'main_option' => $lang->none)), 'pid');

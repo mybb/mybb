@@ -48,46 +48,67 @@ if(!$mybb->input['action'])
 	
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-1.html\" target=\"_blank\">Chris Boulton</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-2165.html\" target=\"_blank\">Ryan Gordon</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-2824.html\" target=\"_blank\">Stefan T.</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-15525.html\" target=\"_blank\">Kieran Dunbar</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-13556.html\" target=\"_blank\">Matt Rogowski</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-3971.html\" target=\"_blank\">Ryan Loos</a>");
 	$table->construct_row();
 	
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-81.html\" target=\"_blank\">Dennis Tsang</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-1830.html\" target=\"_blank\">Justin S.</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-1428.html\" target=\"_blank\">Nick P.</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-2249.html\" target=\"_blank\">Kevin Camps</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-2824.html\" target=\"_blank\">Stefan T.</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-24328.html\" target=\"_blank\">Alan Shepperson</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-6928.html\" target=\"_blank\">Imad Jomaa</a>");
 	$table->construct_row();	
 	
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-14.html\" target=\"_blank\">Alan Crisp</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-14621.html\" target=\"_blank\">Tom Moore</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-23449.html\" target=\"_blank\">Michael Malin</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-15525.html\" target=\"_blank\">Kieran Dunbar</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-24127.html\" target=\"_blank\">Conor Calby</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-27.html\" target=\"_blank\">Tom Huls</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-23291.html\" target=\"_blank\">Huji Lee</a>");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-12241.html\" target=\"_blank\">Manuel Feller</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-17942.html\" target=\"_blank\">Joshua Mayer</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+	
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-8198.html\" target=\"_blank\">Tim B.</a>");
-	$table->construct_cell("&nbsp;");
-	$table->construct_row();
-	
-	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-13144.html\" target=\"_blank\">DougSD</a>");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-12694.html\" target=\"_blank\">Darkmew</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-8242.html\" target=\"_blank\">dvb</a>");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-12694.html\" target=\"_blank\">Jitendra M</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
 	
 	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-22890.html\" target=\"_blank\">Dylan M</a>");
 	$table->construct_cell("&nbsp;");
-	$table->construct_cell("<a href=\"http://community.mybb.com/user-1331.html\" target=\"_blank\">Chris W B.</a>");
 	$table->construct_cell("&nbsp;");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
-	
+
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-24611.html\" target=\"_blank\">Jammerx2</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-32793.html\" target=\"_blank\">Ryon H.</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-27840.html\" target=\"_blank\">Sacred</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+
 	$table->output($lang->mybb_credits);
 	
 	$page->output_footer();

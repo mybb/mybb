@@ -380,6 +380,7 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 		}
 		$thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject']));
 		$thread['threadlink'] = get_thread_link($thread['tid']);
+		$thread['lastpostlink'] = get_thread_link($thread['tid'], 0, "lastpost");
 		eval("\$threadlist .= \"".$templates->get("portal_latestthreads_thread")."\";");
 		$altbg = alt_trow();
 	}

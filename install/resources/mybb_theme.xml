@@ -4957,7 +4957,7 @@ body {
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/{$thread['threadlink']}">{$thread['subject']}</a></strong>
 <span class="smalltext"><br />
-<em>{$lang->latest_threads_lastpost}</em> {$lastposterlink}<br />
+<a href="{$thread['lastpostlink']}">{$lang->latest_threads_lastpost}</a> {$lastposterlink}<br />
 {$lastpostdate} {$lastposttime}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_replies} {$thread['replies']}<br />
 <strong>&raquo; </strong>{$lang->latest_threads_views} {$thread['views']}

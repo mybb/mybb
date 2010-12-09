@@ -100,8 +100,8 @@ $l['confirm_moderator_deletion'] = "Are you sure you wish to remove this moderat
 $l['confirm_forum_deletion'] = "Are you sure you wish to delete this forum?";
 $l['confirm_clear_custom_permission'] = "Are you sure you wish to clear this custom permission?";
 
-$l['create_a'] = "Create a";
-$l['create_a_desc'] = "Select the type of forum you are creating - a forum you can post in, or a category, which contains other forums.";
+$l['forum_type'] = "Forum Type";
+$l['forum_type_desc'] = "Select the type of forum you are creating - a forum you can post in, or a category, which contains other forums.";
 $l['forum'] = "Forum";
 $l['category'] = "Category";
 $l['title'] = "Title";
