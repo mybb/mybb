@@ -528,7 +528,7 @@ class datacache
 					// Append - local settings override that of a parent - array_merge works here
 					if($this->moderators[$forum['fid']])
 					{
-						if(count($forum_mods))
+						if(is_array($forum_mods) && count($forum_mods))
 						{
 							$forum_mods = array_merge($forum_mods, $this->moderators[$forum['fid']]);
 						}
