@@ -1565,7 +1565,7 @@ class Moderation
 		$query = $db->simple_select("threads", "tid, prefix", "tid IN ($tid_list) AND prefix != 0");
 		while($thread = $db->fetch_array($query))
 		{
-			$query = $db->simple_select("threadprefixes", "COUNT(*) as num_prefixes", "(CONCAT(',',forums,',') LIKE '%,$new_fid,%' OR forums='-1') AND pid='".$thread['prefix']."'");
+			$query = $db->simple_select("threadprefixes", "COUNT(*) as num_prefixes", "(CONCAT(',',forums,',') LIKE '%,$moveto,%' OR forums='-1') AND pid='".$thread['prefix']."'");
 			if($db->fetch_field($query, "num_prefixes") == 0)
 			{
 				$sqlarray = array(
