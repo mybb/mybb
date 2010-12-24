@@ -1224,6 +1224,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 	}
 	
 	$current_permissions = array();
+	$only_view_own_threads = 1;
 	
 	foreach($groups as $gid)
 	{
@@ -1262,7 +1263,18 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 					$current_permissions[$permission] = $access;
 				}
 			}
+
+			if(!$level_permissions["canonlyviewownthreads"])
+			{
+				$only_view_own_threads = 0;
+			}
 		}
+	}
+
+	// Figure out if we can view more than our own threads
+	if($only_view_own_threads == 0)
+	{
+		$current_permissions["canonlyviewownthreads"] = 0;
 	}
 
 	if(count($current_permissions) == 0)
