@@ -501,7 +501,7 @@ function build_friendly_wol_location($user_activity)
 		$perms = array();
 		$tid_sql = implode(",", $tid_list);
 		$query = $db->query("
-			SELECT t.fid, t.tid, t.subject, t.visible, p.displaystyle AS threadprefix
+			SELECT t.uid, t.fid, t.tid, t.subject, t.visible, p.displaystyle AS threadprefix
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
 			WHERE tid IN({$tid_sql}) {$fidnot} {$visible}
@@ -514,7 +514,7 @@ function build_friendly_wol_location($user_activity)
 				$perms[$thread['fid']] = forum_permissions($thread['fid']);
 			}
 
-			if($perms[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+			if($perms[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'] && !is_moderator($thread['fid']))
 			{
 				continue;
 			}
