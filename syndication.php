@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: syndication.php 5125 2010-07-27 07:28:03Z RyanGordon $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

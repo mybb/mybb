@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: config_badwords.lang.php 5071 2010-07-02 11:38:44Z Tomm $
+ * $Id$
  */
 
 $l['bad_words'] = "Word Filters";

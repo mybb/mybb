@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright Œ 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: config_calendars.lang.php 5125 2010-07-27 07:28:03Z RyanGordon $
+ * $Id$
  */
 
 $l['calendars'] = "Calendars";

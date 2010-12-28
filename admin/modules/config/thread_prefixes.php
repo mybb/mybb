@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: thread_prefixes.php 4985 2010-06-02 09:09:43Z Tomm $
+ * $Id$
  */
 
 

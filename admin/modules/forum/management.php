@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: management.php 5162 2010-08-01 22:09:04Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

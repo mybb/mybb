@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: upgrade.php 5157 2010-07-31 23:36:15Z RyanGordon $
+ * $Id$
  */
 
 if(function_exists("unicode_decode"))

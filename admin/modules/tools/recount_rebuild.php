@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: recount_rebuild.php 5112 2010-07-25 22:30:31Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

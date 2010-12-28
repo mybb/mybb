@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: misc.lang.php 5063 2010-07-02 08:09:12Z Tomm $
+ * $Id$
  */
 
 $l['nav_helpdocs'] = "Help Documents";

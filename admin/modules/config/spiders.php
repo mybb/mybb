@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: spiders.php 4946 2010-05-20 00:15:28Z dennis $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

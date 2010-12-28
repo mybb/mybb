@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_error.php 5027 2010-06-16 04:22:21Z RyanGordon $
+ * $Id$
  */
  
 // Set to 1 if recieving a blank page (template failure).

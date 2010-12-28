@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_moderation.php 5145 2010-07-30 21:30:51Z RyanGordon $
+ * $Id$
  */
 
 class Moderation

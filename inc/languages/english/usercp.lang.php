@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: usercp.lang.php 5067 2010-07-02 08:58:29Z Tomm $
+ * $Id$
  */
 
 $l['nav_usercp'] = "User Control Panel";

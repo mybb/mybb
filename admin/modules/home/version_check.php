@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: version_check.php 5093 2010-07-17 21:12:40Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

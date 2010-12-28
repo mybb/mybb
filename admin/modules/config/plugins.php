@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: plugins.php 5117 2010-07-26 04:09:21Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

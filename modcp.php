@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: modcp.php 5120 2010-07-26 20:10:05Z RyanGordon $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

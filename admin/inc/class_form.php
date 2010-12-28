@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_form.php 5078 2010-07-03 18:02:07Z RyanGordon $
+ * $Id$
  */
 
 /**

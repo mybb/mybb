@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: post.php 5171 2010-08-02 21:13:47Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

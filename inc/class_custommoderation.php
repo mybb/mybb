@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_custommoderation.php 5138 2010-07-28 18:31:24Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

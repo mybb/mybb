@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: modcp.lang.php 5113 2010-07-25 22:36:53Z RyanGordon $
+ * $Id$
  */
 
 $l['nav_width'] = "180";

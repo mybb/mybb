@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_feedgeneration.php 5040 2010-06-18 01:30:02Z RyanGordon $
+ * $Id$
  */
 
 class FeedGenerator

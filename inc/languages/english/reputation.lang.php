@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: reputation.lang.php 5048 2010-06-22 06:07:51Z Huji $
+ * $Id$
  */
 
 $l['nav_reputation'] = "Reputation Report";

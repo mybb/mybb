@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: ratethread.lang.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 $l['redirect_threadrated'] = "Thank you, the thread has been rated successfully. You will now be returned to the thread.";

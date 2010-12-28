@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: badwords.php 5086 2010-07-09 15:35:29Z Tomm $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

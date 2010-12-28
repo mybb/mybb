@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_datacache.php 5057 2010-06-23 08:07:55Z RyanGordon $
+ * $Id$
  */
 
 class datacache

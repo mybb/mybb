@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright Œ 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: config_warning.lang.php 4941 2010-05-15 18:17:38Z RyanGordon $
+ * $Id$
  */
  
 $l['warning_system'] = "Warning System";

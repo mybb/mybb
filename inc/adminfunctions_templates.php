@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: adminfunctions_templates.php 5164 2010-08-02 03:35:35Z RyanGordon $
+ * $Id$
  */
 
 /**

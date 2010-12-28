@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: style_themes.lang.php 5096 2010-07-19 08:04:09Z Tomm $
+ * $Id$
  */
 
 $l['themes'] = "Themes";

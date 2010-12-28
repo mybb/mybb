@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: languages.php 5128 2010-07-27 20:02:25Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

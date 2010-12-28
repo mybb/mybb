@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/eula.html
  *
- * $Id: class_feedparser.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 class FeedParser

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: global.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 // If archive mode does not work, uncomment the line below and try again

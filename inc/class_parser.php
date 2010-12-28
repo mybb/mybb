@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: class_parser.php 5141 2010-07-29 23:32:11Z RyanGordon $
+ * $Id$
  */
 
 /*

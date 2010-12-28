@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: db_mysqli.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 class DB_MySQLi

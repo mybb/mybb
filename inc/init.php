@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: init.php 5080 2010-07-04 19:12:25Z RyanGordon $
+ * $Id$
  */
 
 // Disallow direct access to this file for security reasons

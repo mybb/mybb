@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_online.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();

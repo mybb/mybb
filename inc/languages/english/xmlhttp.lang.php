@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  * 
- * $Id: xmlhttp.lang.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 $l['no_new_subject'] = "You did not enter a new subject.";

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_compat.php 5024 2010-06-16 01:01:05Z RyanGordon $
+ * $Id$
  */
 
 /**

@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: index.php 5156 2010-07-31 22:58:56Z RyanGordon $
+ * $Id$
  */
 
 define("IN_MYBB", 1);

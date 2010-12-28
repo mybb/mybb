@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: index.php 5092 2010-07-17 11:09:40Z Huji $
+ * $Id$
  */
 
 if(function_exists("unicode_decode"))

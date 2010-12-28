@@ -3,7 +3,7 @@
  * MyBB 1.6 English Language Pack
  * Copyright 2010 MyBB Group, All Rights Reserved
  *
- * $Id: datahandler_pm.lang.php 5016 2010-06-12 00:24:02Z RyanGordon $
+ * $Id$
  */
 
 $l['pmdata_too_long_subject'] = 'The subject of your private message is too long. Please enter a shorter subject.';

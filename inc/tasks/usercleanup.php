@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: usercleanup.php 5158 2010-08-01 04:27:58Z RyanGordon $
+ * $Id$
  */
 
 function task_usercleanup($task)

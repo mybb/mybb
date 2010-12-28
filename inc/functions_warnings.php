@@ -6,7 +6,7 @@
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: functions_warnings.php 5062 2010-07-02 07:59:57Z Tomm $
+ * $Id$
  */
 
 /**
