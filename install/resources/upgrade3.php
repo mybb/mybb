@@ -483,7 +483,7 @@ function upgrade3_dbchanges2()
 	  disporder smallint(6) NOT NULL default '0',
 	  isdefault char(3) NOT NULL default '',
 	  PRIMARY KEY  (gid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->drop_table("settings");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."settings (
@@ -496,14 +496,14 @@ function upgrade3_dbchanges2()
 	  disporder smallint(6) NOT NULL default '0',
 	  gid smallint(6) NOT NULL default '0',
 	  PRIMARY KEY  (sid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->drop_table("datacache");
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."datacache (
 	  title varchar(30) NOT NULL default '',
 	  cache mediumtext NOT NULL,
 	  PRIMARY KEY(title)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$contents .= "<p>Done</p>";
 	$contents .= "<p>Dropping settings and rebuilding them...";

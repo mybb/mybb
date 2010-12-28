@@ -418,7 +418,7 @@ function upgradethemes()
 		  status varchar(10) NOT NULL default '',
 		  dateline int(10) NOT NULL default '0',
 		  PRIMARY KEY  (tid)
-		) TYPE=MyISAM{$charset};");
+		) ENGINE=MyISAM{$charset};");
 	}
 
 	if($system_upgrade_detail['revert_all_themes'] > 0)
@@ -433,7 +433,7 @@ function upgradethemes()
 		 stylesheets text NOT NULL,
 		 allowedgroups text NOT NULL,
 		 PRIMARY KEY (tid)
-		) TYPE=MyISAM{$charset};");
+		) ENGINE=MyISAM{$charset};");
 
 		$db->drop_table("themestylesheets");
 		$db->write_query("CREATE TABLE ".TABLE_PREFIX."themestylesheets(
@@ -445,7 +445,7 @@ function upgradethemes()
 			cachefile varchar(100) NOT NULL default '',
 			lastmodified bigint(30) NOT NULL default '0',
 			PRIMARY KEY(sid)
-		) TYPE=MyISAM{$charset};");
+		) ENGINE=MyISAM{$charset};");
 
 		$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 		if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
@@ -472,7 +472,7 @@ function upgradethemes()
 		  sid smallint unsigned NOT NULL auto_increment,
 		  title varchar(120) NOT NULL default '',
 		  PRIMARY KEY  (sid)
-		) TYPE=MyISAM{$charset};");
+		) ENGINE=MyISAM{$charset};");
 		
 		$db->insert_query("templatesets", array('title' => 'Default Templates'));
 	}
@@ -788,7 +788,7 @@ function sync_settings($redo=0)
 				  disporder smallint unsigned NOT NULL default '0',
 				  isdefault int(1) NOT NULL default '0',
 				  PRIMARY KEY  (gid)
-				) TYPE=MyISAM;");
+				) ENGINE=MyISAM;");
 		}
 
 		$db->drop_table("settings");
@@ -835,7 +835,7 @@ function sync_settings($redo=0)
 				  gid smallint unsigned NOT NULL default '0',
 				  isdefault int(1) NOT NULL default '0',
 				  PRIMARY KEY (sid)
-				) TYPE=MyISAM;");
+				) ENGINE=MyISAM;");
 		}
 	}
 	else
@@ -1010,7 +1010,7 @@ function sync_tasks($redo=0)
 					logging int(1) NOT NULL default '0',
 					locked bigint(30) NOT NULL default '0',
 					PRIMARY KEY (tid)
-				) TYPE=MyISAM;");
+				) ENGINE=MyISAM;");
 		}
 	}
 	else

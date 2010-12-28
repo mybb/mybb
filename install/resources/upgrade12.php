@@ -443,7 +443,7 @@ function upgrade12_dbchanges2()
 		conditions text NOT NULL,
 		perpage smallint(4) NOT NULL default '50',
 		PRIMARY KEY(mid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."maillogs (
 		mid int unsigned NOT NULL auto_increment,
@@ -457,7 +457,7 @@ function upgrade12_dbchanges2()
 		tid int unsigned NOT NULL default '0',
 		ipaddress varchar(20) NOT NULL default '',
 		PRIMARY KEY(mid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."mailerrors(
 		eid int unsigned NOT NULL auto_increment,
@@ -470,7 +470,7 @@ function upgrade12_dbchanges2()
 		smtperror varchar(200) NOT NULL default '',
 		smtpcode int(5) NOT NULL default '0',
 		PRIMARY KEY(eid)
- 	) TYPE=MyISAM{$collation};");
+ 	) ENGINE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotions (
 		pid int unsigned NOT NULL auto_increment,
@@ -489,7 +489,7 @@ function upgrade12_dbchanges2()
 		newusergroup smallint unsigned NOT NULL default '0',
 		usergrouptype varchar(120) NOT NULL default '0',
 		PRIMARY KEY (pid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."promotionlogs(
 		plid int unsigned NOT NULL auto_increment,
@@ -500,7 +500,7 @@ function upgrade12_dbchanges2()
 		dateline bigint(30) NOT NULL default '0',
 		type varchar(9) NOT NULL default 'primary',
 		PRIMARY KEY(plid)
- 	) TYPE=MyISAM{$collation};");
+ 	) ENGINE=MyISAM{$collation};");
 
 	if($db->field_exists('maxemails', "usergroups"))
 	{
@@ -544,7 +544,7 @@ function upgrade12_dbchanges2()
 		logging int(1) NOT NULL default '0',
 		locked bigint(30) NOT NULL default '0',
 		PRIMARY KEY(tid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."tasklog (
@@ -553,7 +553,7 @@ function upgrade12_dbchanges2()
 		dateline bigint(30) NOT NULL default '0',
 		data text NOT NULL,
 		PRIMARY KEY(lid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 
 	include_once MYBB_ROOT."inc/functions_task.php";
@@ -630,7 +630,7 @@ function upgrade12_dbchanges2()
 		percentage int(3) NOT NULL default '0',
 		action text NOT NULL,
 		PRIMARY KEY(lid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warningtypes (
 		tid int unsigned NOT NULL auto_increment,
@@ -638,7 +638,7 @@ function upgrade12_dbchanges2()
 		points int unsigned NOT NULL default '0',
 		expirationtime bigint(30) NOT NULL default '0',
 		PRIMARY KEY(tid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."warnings (
 		wid int unsigned NOT NULL auto_increment,
@@ -656,7 +656,7 @@ function upgrade12_dbchanges2()
 		revokereason text NOT NULL,
 		notes text NOT NULL,
 		PRIMARY KEY(wid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	if($db->field_exists('warningpoints', "users"))
 	{
@@ -729,7 +729,7 @@ function upgrade12_dbchanges2()
 	  action varchar(50) NOT NULL default '',
 	  data text NOT NULL,
 	  KEY module (module, action)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 	
 	if($db->field_exists('data', "adminsessions"))
 	{
@@ -795,7 +795,7 @@ function upgrade12_dbchanges3()
 	  lastuse bigint(30) NOT NULL default '0',
 	  dateline bigint(30) NOT NULL default '0',
 	  PRIMARY KEY (fid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	// Now we convert all of the old bans in to the new system!
 	$ban_types = array('bannedips', 'bannedemails', 'bannedusernames');
@@ -874,7 +874,7 @@ function upgrade12_dbchanges4()
 		useragent varchar(200) NOT NULL default '',
 		lastvisit bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."stats (
 		dateline bigint(30) NOT NULL default '0',
@@ -882,7 +882,7 @@ function upgrade12_dbchanges4()
 		numthreads int unsigned NOT NULL default '0',
 		numposts int unsigned NOT NULL default '0',
 		PRIMARY KEY(dateline)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->insert_query("spiders", array('name' => 'GoogleBot', 'useragent' => 'google'));
 	$db->insert_query("spiders", array('name' => 'Lycos', 'useragent' => 'lycos'));
@@ -1092,7 +1092,7 @@ function upgrade12_dbchanges5()
 		prefix varchar(50) NOT NULL default '',
 		title varchar(100) NOT NULL default '',
 		PRIMARY KEY (gid)
-		) TYPE=MyISAM{$collation};");
+		) ENGINE=MyISAM{$collation};");
 	
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');");
 	$db->write_query("INSERT INTO ".TABLE_PREFIX."templategroups (gid,prefix,title) VALUES ('2','editpost','<lang:group_editpost>');");
@@ -1165,7 +1165,7 @@ function upgrade12_dbchanges5()
 	
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."threadviews (
 		tid int unsigned NOT NULL default '0'
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."calendars (
 	  cid int unsigned NOT NULL auto_increment,
@@ -1180,7 +1180,7 @@ function upgrade12_dbchanges5()
 	  allowimgcode int(1) NOT NULL default '0',
 	  allowsmilies int(1) NOT NULL default '0',
 	  PRIMARY KEY(cid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$calendar_array = array(
 		'name' => 'Default Calendar',
@@ -1203,7 +1203,7 @@ function upgrade12_dbchanges5()
 	  canaddevents int(1) NOT NULL default '0',
 	  canbypasseventmod int(1) NOT NULL default '0',
 	  canmoderateevents int(1) NOT NULL default '0'
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$db->write_query("CREATE TABLE ".TABLE_PREFIX."forumsread (
 	  fid int unsigned NOT NULL default '0',
@@ -1211,7 +1211,7 @@ function upgrade12_dbchanges5()
 	  dateline int(10) NOT NULL default '0',
 	  KEY dateline (dateline),
 	  UNIQUE KEY fid (fid,uid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	if($db->field_exists('dateuploaded', "attachments"))
 	{
@@ -1232,7 +1232,7 @@ function upgrade12_dbchanges5()
 		perpage int(4) NOT NULL default '0',
 		view_type varchar(6) NOT NULL default '',
 		PRIMARY KEY(vid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	$views = file_get_contents(INSTALL_ROOT.'resources/adminviews.xml');
 	$parser = new XMLParser($views);
@@ -1873,7 +1873,7 @@ function upgrade12_redothemes()
 		cachefile varchar(100) NOT NULL default '',
 		lastmodified bigint(30) NOT NULL default '0',
 		PRIMARY KEY(sid)
-	) TYPE=MyISAM{$collation};");
+	) ENGINE=MyISAM{$collation};");
 
 	// Define our default stylesheets - MyBB 1.4 contains additional stylesheets that our converted themes will also need
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');

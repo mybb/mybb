@@ -371,7 +371,7 @@ function upgrade17_dbchanges4()
 				forums text NOT NULL,
 				groups text NOT NULL,
 				PRIMARY KEY(pid)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 			$db->write_query("CREATE TABLE ".TABLE_PREFIX."delayedmoderation (
 				did int unsigned NOT NULL auto_increment,
 				type varchar(30) NOT NULL default '',
@@ -382,7 +382,7 @@ function upgrade17_dbchanges4()
 				dateline bigint(30) NOT NULL default '0',
 				inputs text NOT NULL,
 				PRIMARY KEY (did)
-			) TYPE=MyISAM;");
+			) ENGINE=MyISAM;");
 	}
 	
 	$added_tasks = sync_tasks();
