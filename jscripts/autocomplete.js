@@ -344,7 +344,7 @@ autoComplete.prototype = {
 		if(this.currentKeyCode != 8 && this.currentKeyCode != 46)
 		{
 			this.highlightItem(0);
-			this.setTypeAhead(0, 1);
+			/*his.setTypeAhead(0, 1);*/
 		}
 	},
 
