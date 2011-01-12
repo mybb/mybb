@@ -379,6 +379,12 @@ if(!$mybb->input['action'])
 		error($lang->reputations_disabled_group);
 	}
 
+	if($mybb->usergroup['canviewprofiles'] == 0)
+	{
+		// Reputation page is a part of a profile
+		error_no_permission();
+	}
+
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
 	$lang->reputation_report = $lang->sprintf($lang->reputation_report, $user['username']);
 
