@@ -1127,76 +1127,70 @@ if($mybb->input['action'] == "thread")
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
 
 		$comma = '';
-		$onlinemembers = '';
 		$guestcount = 0;
 		$membercount = 0;
 		$inviscount = 0;
+		$onlinemembers = '';
+		$doneusers = array();
+
 		$query = $db->query("
-			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.usergroup, u.displaygroup
+			SELECT s.ip, s.uid, s.time, u.username, u.invisible, u.usergroup, u.displaygroup
 			FROM ".TABLE_PREFIX."sessions s
 			LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
 			WHERE s.time > '$timecut' AND location2='$tid' AND nopermission != 1
 			ORDER BY u.username ASC, s.time DESC
 		");
+
 		while($user = $db->fetch_array($query))
 		{
 			if($user['uid'] == 0)
 			{
 				++$guestcount;
 			}
-			else
+			else if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
 			{
-				if($doneusers[$user['uid']] < $user['time'] || !$doneusers[$user['uid']])
-				{
-					$doneusers[$user['uid']] = $user['time'];
-					++$membercount;
-					if($user['invisible'] == 1)
-					{
-						$invisiblemark = "*";
+				++$membercount;
+				$doneusers[$user['uid']] = $user['time'];
 
-						if($user['uid'] != $mybb->user['uid'])
-						{
-							++$inviscount;
-						}
-					}
-					else
-					{
-						$invisiblemark = '';
-					}
-					
-					if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
-					{
-						$user['profilelink'] = get_profile_link($user['uid']);
-						$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
-						$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
-						eval("\$onlinemembers .= \"".$templates->get("showthread_usersbrowsing_user", 1, 0)."\";");
-						$comma = $lang->comma;
-					}
+				$invisiblemark = '';
+				if($user['invisible'] == 1)
+				{
+					$invisiblemark = "*";
+					++$inviscount;
+				}
+
+				if($user['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $user['uid'] == $mybb->user['uid'])
+				{
+					$user['profilelink'] = get_profile_link($user['uid']);
+					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
+					$user['reading'] = my_date($mybb->settings['timeformat'], $user['time']);
+
+					eval("\$onlinemembers .= \"".$templates->get("showthread_usersbrowsing_user", 1, 0)."\";");
+					$comma = $lang->comma;
 				}
 			}
 		}
-		
-		$invisonline = '';
-		$onlinesep2 = $onlinesep = '';
-		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1)
-		{
-			if($onlinemembers)
-			{
-				$onlinesep = $lang->comma;
-			}
-
- 			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
- 		}
 
 		if($guestcount)
- 		{
-			if($onlinemembers)
-			{
-				$onlinesep2 = $lang->comma;
-			}
-
+		{
 			$guestsonline = $lang->sprintf($lang->users_browsing_thread_guests, $guestcount);
- 		}
+		}
+
+		if($guestcount && $onlinemembers)
+		{
+			$onlinesep = $lang->comma;
+		}
+
+		$invisonline = '';
+		if($inviscount && $mybb->usergroup['canviewwolinvis'] != 1 && ($inviscount != 1 && $mybb->user['invisible'] != 1))
+		{
+			$invisonline = $lang->sprintf($lang->users_browsing_thread_invis, $inviscount);
+		}
+
+		if($invisonline != '' && $guestcount)
+		{
+			$onlinesep2 = $lang->comma;
+		}
 
 		eval("\$usersbrowsing = \"".$templates->get("showthread_usersbrowsing")."\";");
 	}
