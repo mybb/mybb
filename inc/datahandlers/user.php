@@ -447,11 +447,6 @@ class UserDataHandler extends DataHandler
 	{
 		global $db;
 
-		if($this->admin_override == true)
-		{
-			return true;
-		}
-
 		$user = &$this->data;
 		$profile_fields = &$this->data['profile_fields'];
 
@@ -482,12 +477,12 @@ class UserDataHandler extends DataHandler
 			// If the profile field is required, but not filled in, present error.
 			if($type != "multiselect" && $type != "checkbox")
 			{
-				if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP'))
+				if(trim($profile_fields[$field]) == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
 				{
 					$this->set_error('missing_required_profile_field', array($profilefield['name']));
 				}
 			}
-			elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP'))
+			elseif(($type == "multiselect" || $type == "checkbox") && $profile_fields[$field] == "" && $profilefield['required'] == 1 && !defined('IN_ADMINCP') && THIS_SCRIPT != "modcp.php")
 			{
 				$this->set_error('missing_required_profile_field', array($profilefield['name']));
 			}

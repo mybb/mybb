@@ -1622,7 +1622,6 @@ if($mybb->input['action'] == "do_editprofile")
 	$errors = '';
 
 	// Validate the user and get any errors that might have occurred.
-	$userhandler->admin_override = true;
 	if(!$userhandler->validate_user())
 	{
 		$errors = $userhandler->get_friendly_errors();
