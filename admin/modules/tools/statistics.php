@@ -99,7 +99,7 @@ if(!$mybb->input['action'])
 	if(empty($stats))
 	{
 		flash_message($lang->error_no_results_found_for_criteria, 'error');
-		admin_redirect("index.php?module=tools-statistics");
+		admin_redirect("index.php?module=tools");
 	}
 	
 	krsort($stats, SORT_NUMERIC);
