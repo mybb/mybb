@@ -401,12 +401,12 @@ if(!$mybb->input['action'])
 	$display_group = usergroup_displaygroup($user['displaygroup']);
 
 	// This user has a custom user title
-	if($user['usertitle'] != '')
+	if(trim($user['usertitle']) != '')
 	{
 		$usertitle = $user['usertitle'];
 	}
 	// Using our display group's user title
-	else if($display_group['usertitle'] != '')
+	elseif(trim($display_group['usertitle']) != '')
 	{
 		$usertitle = $display_group['usertitle'];
 	}

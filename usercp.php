@@ -576,7 +576,8 @@ if($mybb->input['action'] == "profile")
 		{
 			$defaulttitle = $mybb->usergroup['usertitle'];
 		}
-		if(empty($user['usertitle']))
+
+		if(trim($user['usertitle']) == '')
 		{
 			$lang->current_custom_usertitle = '';
 		}
