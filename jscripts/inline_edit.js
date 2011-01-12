@@ -115,7 +115,7 @@ inlineEditor.prototype = {
 
 		this.textbox = document.createElement("input");
 		this.textbox.style.width = "95%";
-		this.textbox.maxlength="85";
+		this.textbox.maxLength="85";
 		this.textbox.className = "textbox";
 		this.textbox.type = "text";
 		Event.observe(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
