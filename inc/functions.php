@@ -1019,7 +1019,7 @@ function user_permissions($uid=0)
 		// This user was not already cached, fetch their user information.
 		if(!$user_cache[$uid])
 		{
-			$user_cache[$uid] = get_user($uid);
+			$user_cache[$uid] = get_user($uid, "usergroup, additionalgroups");
 		}
 
 		// Collect group permissions.
@@ -4702,9 +4702,11 @@ function get_calendar_week_link($calendar, $week)
  * Get the user data of a user id.
  *
  * @param int The user id of the user.
+ * @param string A list of valid SQL fields to retrieve from the database for the user
+ * @param boolean Whether to retrieve the information from the database (if the user_cache exists)
  * @return array The users data
  */
-function get_user($uid)
+function get_user($uid, $fields="*", $hardrefresh=false)
 {
 	global $mybb, $db;
 	static $user_cache;
@@ -4715,19 +4717,18 @@ function get_user($uid)
 	{
 		return $mybb->user;
 	}
-	elseif(isset($user_cache[$uid]))
+	elseif(isset($user_cache[$uid]) && $hardrefresh == false)
 	{
 		return $user_cache[$uid];
 	}
 	else
 	{
-		$query = $db->simple_select("users", "*", "uid='{$uid}'");
+		$query = $db->simple_select("users", $db->escape_string($fields), "uid='{$uid}'");
 		$user_cache[$uid] = $db->fetch_array($query);
 
 		return $user_cache[$uid];
 	}
 }
-
 
 /**
  * Get the forum of a specific forum id.
