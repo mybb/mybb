@@ -16,7 +16,7 @@ $templatelist = "forumdisplay,forumdisplay_thread,breadcrumb_bit,forumbit_depth1
 $templatelist .= ",forumbit_depth1_forum_lastpost,forumdisplay_thread_multipage_page,forumdisplay_thread_multipage,forumdisplay_thread_multipage_more";
 $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit";
-$templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col";
+$templatelist .= ",forumdisplay_usersbrowsing_guests,forumdisplay_usersbrowsing_user,forumdisplay_usersbrowsing,forumdisplay_inlinemoderation,forumdisplay_thread_modbit,forumdisplay_inlinemoderation_col,forumdisplay_inlinemoderation_selectall";
 $templatelist .= ",forumdisplay_announcements_announcement,forumdisplay_announcements,forumdisplay_threads_sep,forumbit_depth3_statusicon,forumbit_depth3,forumdisplay_sticky_sep,forumdisplay_thread_attachment_count,forumdisplay_threadlist_inlineedit_js,forumdisplay_rssdiscovery,forumdisplay_announcement_rating,forumdisplay_announcements_announcement_modbit,forumdisplay_rules,forumdisplay_rules_link,forumdisplay_thread_gotounread,forumdisplay_nothreads,forumdisplay_inlinemoderation_custom_tool,forumdisplay_inlinemoderation_custom";
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -83,24 +83,32 @@ if($fpermissions['canview'] != 1)
 
 if($mybb->user['uid'] == 0)
 {
-	// Build a forum cache.
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."forums
-		WHERE active != 0
-		ORDER BY pid, disporder
-	");
-	
 	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+ 
+ 	if(!is_array($forumsread))
+ 	{
+ 		$forumsread = array();
+ 	}
 
-	if(!is_array($forumsread))
+	if(!$forum_cache)
 	{
-		$forumsread = array();
+		// Rebuild forum's cache if we've lost it somewhere
+		$forum_cache = $cache->read("forums");
+	}
+
+	foreach($forum_cache as $forum)
+	{
+		if($forumsread[$forum['fid']])
+		{
+			$forum['lastread'] = $forumsread[$forum['fid']];
+		}
+
+		$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 	}
 }
 else
 {
-	// Build a forum cache.
+	// Build a forum cache from the database
 	$query = $db->query("
 		SELECT f.*, fr.dateline AS lastread
 		FROM ".TABLE_PREFIX."forums f
@@ -108,17 +116,12 @@ else
 		WHERE f.active != 0
 		ORDER BY pid, disporder
 	");
-}
-while($forum = $db->fetch_array($query))
-{
-	if($mybb->user['uid'] == 0)
+
+	while($forum = $db->fetch_array($query))
 	{
-		if($forumsread[$forum['fid']])
-		{
-			$forum['lastread'] = $forumsread[$forum['fid']];
-		}
+		// Retrieved forumread from database, not cookies
+		$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 	}
-	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
 
 // Get the forum moderators if the setting is enabled.
@@ -1161,20 +1164,20 @@ if(fetch_unread_count($fid) == 0 && $unread_forums == 0)
 	mark_forum_read($fid);
 }
 
-
 // Subscription status
-$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
-if($db->fetch_field($query, 'fid'))
-{
-	$add_remove_subscription = 'remove';
-	$add_remove_subscription_text = $lang->unsubscribe_forum;
-}
-else
-{
-	$add_remove_subscription = 'add';
-	$add_remove_subscription_text = $lang->subscribe_forum;
-}
+$add_remove_subscription = 'add';
+$add_remove_subscription_text = $lang->subscribe_forum;
 
+if($mybb->user['uid'])
+{
+	$query = $db->simple_select("forumsubscriptions", "fid", "fid='".$fid."' AND uid='{$mybb->user['uid']}'", array('limit' => 1));
+
+	if($db->fetch_field($query, 'fid'))
+	{
+		$add_remove_subscription = 'remove';
+		$add_remove_subscription_text = $lang->unsubscribe_forum;
+	}
+}
 
 // Is this a real forum with threads?
 if($foruminfo['type'] != "c")

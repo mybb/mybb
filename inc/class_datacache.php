@@ -101,7 +101,13 @@ class datacache
 		{
 			return $this->cache[$name];
 		}
-		
+		// If we're not hard refreshing, and this cache doesn't exist, return false
+		// It would have been loaded pre-global if it did exist anyway...
+		else if($hard == false && !is_object($this->handler))
+		{
+			return false;
+		}
+
 		if(is_object($this->handler))
 		{
 			$data = $this->handler->fetch($name);

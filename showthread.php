@@ -17,7 +17,7 @@ $templatelist .= ",multipage_prevpage,multipage_nextpage,multipage_page_current,
 $templatelist .= ",postbit_editedby,showthread_similarthreads,showthread_similarthreads_bit,postbit_iplogged_show,postbit_iplogged_hiden,showthread_quickreply";
 $templatelist .= ",forumjump_advanced,forumjump_special,forumjump_bit,showthread_multipage,postbit_reputation,postbit_quickdelete,postbit_attachments,thumbnails_thumbnail,postbit_attachments_attachment,postbit_attachments_thumbnails,postbit_attachments_images_image,postbit_attachments_images,postbit_posturl,postbit_rep_button";
 $templatelist .= ",postbit_inlinecheck,showthread_inlinemoderation,postbit_attachments_thumbnails_thumbnail,postbit_quickquote,postbit_qqmessage,postbit_ignored,postbit_groupimage,postbit_multiquote,showthread_search,postbit_warn,postbit_warninglevel,showthread_moderationoptions_custom_tool,showthread_moderationoptions_custom,showthread_inlinemoderation_custom_tool,showthread_inlinemoderation_custom,postbit_classic,showthread_classic_header,showthread_poll_resultbit,showthread_poll_results";
-$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user";
+$templatelist .= ",showthread_usersbrowsing,showthread_usersbrowsing_user,multipage_page_link_current,multipage_breadcrumb";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -622,6 +622,7 @@ if($mybb->input['action'] == "thread")
 	$rating = '';
 	if($forum['allowtratings'] != 0)
 	{
+		$rated = 0;
 		$lang->load("ratethread");
 		if($thread['numratings'] <= 0)
 		{
@@ -636,9 +637,13 @@ if($mybb->input['action'] == "thread")
 			$thread['numratings'] = intval($thread['numratings']);
 		}
 
-		// Check if we have already voted on this thread - it won't show hover effect then.
-		$query = $db->simple_select("threadratings", "uid", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
-		$rated = $db->fetch_field($query, 'uid');
+		if($thread['num_ratings'])
+		{
+			// At least >someone< has rated this thread, was it me?
+			// Check if we have already voted on this thread - it won't show hover effect then.
+			$query = $db->simple_select("threadratings", "uid", "tid='{$tid}' AND uid='{$mybb->user['uid']}'");
+			$rated = $db->fetch_field($query, 'uid');
+		}
 
 		$not_rated = '';
 		if(!$rated)
@@ -1104,18 +1109,20 @@ if($mybb->input['action'] == "thread")
 	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
 	
 	// Subscription status
-	$query = $db->simple_select("threadsubscriptions", "tid", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
-	if($db->fetch_field($query, 'tid'))
+	$add_remove_subscription = 'add';
+	$add_remove_subscription_text = $lang->subscribe_thread;
+
+	if($mybb->user['uid'])
 	{
-		$add_remove_subscription = 'remove';
-		$add_remove_subscription_text = $lang->unsubscribe_thread;
+		$query = $db->simple_select("threadsubscriptions", "tid", "tid='".intval($tid)."' AND uid='".intval($mybb->user['uid'])."'", array('limit' => 1));
+
+		if($db->fetch_field($query, 'tid'))
+		{
+			$add_remove_subscription = 'remove';
+			$add_remove_subscription_text = $lang->unsubscribe_thread;
+		}
 	}
-	else
-	{
-		$add_remove_subscription = 'add';
-		$add_remove_subscription_text = $lang->subscribe_thread;
-	}
-	
+
 	if($mybb->settings['postlayout'] == "classic")
 	{
 		eval("\$classic_header = \"".$templates->get("showthread_classic_header")."\";");		
