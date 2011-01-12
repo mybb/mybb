@@ -4401,7 +4401,7 @@ body {
 		</tbody>
 	</table>
 </form>]]></template>
-		<template name="memberlist" version="1600"><![CDATA[<html>
+		<template name="memberlist" version="1602"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->member_list}</title>
 {$headerinclude}
@@ -4440,7 +4440,7 @@ body {
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->y}" style="padding: 5px;">{$lang->y}</a>
 		<a href="memberlist.php?username_match=begins&amp;username={$lang->z}" style="padding: 5px;">{$lang->z}</a>
 	</div>
-	<div><strong>{$lang->member_list}</strong></td></div>
+	<div><strong>{$lang->member_list}</strong></div></td>
 </tr>
 <tr>
 <td class="tcat" width="1%"><span class="smalltext"><strong>{$lang->avatar}</strong></span></td>
@@ -4488,7 +4488,7 @@ body {
 			<option value="regdate"{$sort_selected['regdate']}>{$lang->sort_by_regdate}</option>
 			<option value="lastvisit"{$sort_selected['lastvisit']}>{$lang->sort_by_lastvisit}</option>
 			<option value="postnum"{$sort_selected['postnum']}>{$lang->sort_by_posts}</option>
-			<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</options>
+			<option value="referrals"{$sort_selected['referrals']}>{$lang->sort_by_referrals}</option>
 		</select><br />
 		<span class="smalltext">
 		<input type="radio" class="radio" name="order" id="order_asc" value="ascending"{$order_check['ascending']} /> <label for="order_asc">{$lang->order_asc}</label><br />
