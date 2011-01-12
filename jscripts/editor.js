@@ -439,7 +439,7 @@ messageEditor.prototype = {
 		var dropdown = this.getElementToolbarItem(mnu);
 		var label = dropdown.down('.editor_dropdown_label');
 
-		if(!dropdown.insertText || (mnu.activeItem && mnu.activeItem == element))
+		if(!dropdown.insertText || (dropdown.insertText != "video" && mnu.activeItem && mnu.activeItem == element))
 			return;
 		
 		mnu.lastItemValue = element.extra;
