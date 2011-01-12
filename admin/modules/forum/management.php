@@ -2084,32 +2084,40 @@ if(!$mybb->input['action'])
 			}
 			if(!empty($mybb->input['usergroup']))
 			{
-				preg_match("/\(".$lang->usergroup." (.*?)\)/", $mybb->input['usergroup'], $match_group);
+				$isgroup = 1;
+				$gid = intval($mybb->input['usergroup']);
 
-				$mod_gid = intval($match_group[1]);
-				if(!empty($match_group) && $mod_gid > 0)
-				{
-					$query = $db->simple_select("usergroups", "gid AS id, title AS name", "gid='".$mod_gid."'", array('limit' => 1));
-					$isgroup = 1;
-				}
-				else
-				{
-					// Didn't select a valid moderator
-					flash_message($lang->error_moderator_not_found, 'error');
-					admin_redirect("index.php?module=forum-management&fid={$fid}#tab_moderators");
-				}
+				if(!$groupscache[$gid])
+ 				{
+ 					// Didn't select a valid moderator
+ 					flash_message($lang->error_moderator_not_found, 'error');
+ 					admin_redirect("index.php?module=forum-management&fid={$fid}#tab_moderators");
+ 				}
+
+				$newmod = array(
+					"id" => $gid,
+					"name" => $groupscache[$gid]['title']
+				);
 			}
 			else
 			{
 				$query = $db->simple_select("users", "uid AS id, username AS name", "username='".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+
+				if(!$db->num_rows($query))
+				{
+					flash_message($lang->error_moderator_not_found, 'error');
+					admin_redirect("index.php?module=forum-management&fid={$fid}#tab_moderators");
+				}
+
 				$isgroup = 0;
+				$newmod = $db->fetch_array($query);
 			}
-			$newmod = $db->fetch_array($query);
+
 			if($newmod['id'])
 			{
 				$query = $db->simple_select("moderators", "id", "id='".$newmod['id']."' AND fid='".$fid."' AND isgroup='{$isgroup}'", array('limit' => 1));
-				$mod = $db->fetch_array($query);
-				if(!$mod['id'])
+
+				if(!$db->num_rows($query))
 				{
 					$new_mod = array(
 						"fid" => $fid,
@@ -2122,14 +2130,15 @@ if(!$mybb->input['action'])
 						"canmanagethreads" => 1,
 						"canmovetononmodforum" => 1
 					);
+
 					$mid = $db->insert_query("moderators", $new_mod);
 					
 					if(!$isgroup)
 					{
 						$db->update_query("users", array('usergroup' => 6), "uid='{$newmod['id']}' AND usergroup='2'");
 					}
+
 					$cache->update_moderators();
-					
 					$plugins->run_hooks("admin_forum_management_start_moderators_commit");
 					
 					// Log admin action
@@ -2499,19 +2508,22 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form = new Form("index.php?module=forum-management", "post", "management");
 		echo $form->generate_hidden_field("fid", $mybb->input['fid']);
 		echo $form->generate_hidden_field("add", "moderators");
+
+		// Usergroup Moderator
+		if(!is_array($usergroups))
+		{
+			$usergroups = $groupscache;
+		}
+
+		foreach($usergroups as $group)
+		{
+			$modgroups[$group['gid']] = $lang->usergroup." ".$group['gid'].": ".$group['title'];
+		}
+
 		$form_container = new FormContainer($lang->add_usergroup_as_moderator);
-		$form_container->output_row($lang->usergroup." <em>*</em>", $lang->moderator_usergroup_desc, $form->generate_text_box('usergroup', $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
+		$form_container->output_row($lang->usergroup." <em>*</em>", $lang->moderator_usergroup_desc, $form->generate_select_box('usergroup', $modgroups, $mybb->input['usergroup'], array('id' => 'usergroup')), 'usergroup');
 		$form_container->end();
-		
-		// Autocompletion for usergroups
-		echo '
-		<script type="text/javascript" src="../jscripts/autocomplete.js?ver=1400"></script>
-		<script type="text/javascript">
-		<!--
-			new autoComplete("usergroup", "../xmlhttp.php?action=get_usergroups", {valueSpan: "usergroup"});
-		// -->
-		</script>';
-		
+
 		$buttons[] = $form->generate_submit_button($lang->add_usergroup_moderator);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -2523,6 +2535,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$form_container = new FormContainer($lang->add_user_as_moderator);
 		$form_container->output_row($lang->username." <em>*</em>", $lang->moderator_username_desc, $form->generate_text_box('username', $mybb->input['username'], array('id' => 'username')), 'username');
 		$form_container->end();
+
 		// Autocompletion for usernames
 		echo '
 		<script type="text/javascript" src="../jscripts/autocomplete.js?ver=1400"></script>
