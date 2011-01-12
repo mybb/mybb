@@ -1395,57 +1395,72 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 	{
 		return false;
 	}
-	
-	if(!isset($modpermscache[$fid][$uid]))
+
+	if(isset($modpermscache[$fid][$uid]))
 	{
-		if(!$parentslist)
-		{
-			$parentslist = get_parent_list($fid);
-		}
-		
-		// Get user groups
-		$query = $db->simple_select("users", "usergroup,additionalgroups", "uid='{$uid}'");
-		$usergroups = $db->fetch_array($query);
-		$groups = "'{$usergroups['usergroup']}'";
-		if(!empty($usergroups['additionalgroups']))
-		{
-			$groups .= ",'{$usergroups['additionalgroups']}'";
-		}
-		
-		$query = $db->simple_select("moderators", "*", "((id IN ({$groups}) AND isgroup='1') OR (id='{$uid}' AND isgroup='0')) AND fid='$fid'");
-		while($results = $db->fetch_array($query))
-		{
-			$perms['caneditposts'] = max($perms['caneditposts'], $results['caneditposts']);
-			$perms['candeleteposts'] = max($perms['candeleteposts'], $results['candeleteposts']);
-			$perms['canviewips'] = max($perms['canviewips'], $results['canviewips']);
-			$perms['canopenclosethreads'] = max($perms['canopenclosethreads'], $results['canopenclosethreads']);
-			$perms['canmanagethreads'] = max($perms['canmanagethreads'], $results['canmanagethreads']);
-			$perms['canmovetononmodforum'] = max($perms['canmovetononmodforum'], $results['canmovetononmodforum']);
-		}
-		
-		$sql = build_parent_list($fid, "fid", "OR", $parentslist);
-		$query = $db->simple_select("moderators", "*", "((id IN ({$groups}) AND isgroup='1') OR (id='{$uid}' AND isgroup='0')) AND {$sql}");
-		$uperms = $db->fetch_array($query);
-		
-		if(!$uperms && !$perms)
-		{
-			return false;
-		}
-		
-		//Join the group permissions with the user permissions
-		$perms['caneditposts'] = max($perms['caneditposts'], $uperms['caneditposts']);
-		$perms['candeleteposts'] = max($perms['candeleteposts'], $uperms['candeleteposts']);
-		$perms['canviewips'] = max($perms['canviewips'], $uperms['canviewips']);
-		$perms['canopenclosethreads'] = max($perms['canopenclosethreads'], $uperms['canopenclosethreads']);
-		$perms['canmanagethreads'] = max($perms['canmanagethreads'], $uperms['canmanagethreads']);
-		$perms['canmovetononmodforum'] = max($perms['canmovetononmodforum'], $uperms['canmovetononmodforum']);
-			
-		$modpermscache[$fid][$uid] = $perms;
+		return $modpermscache[$fid][$uid];
 	}
-	else
+
+	if(!$parentslist)
 	{
-		$perms = $modpermscache[$fid][$uid];
+		$parentslist = get_parent_list($fid);
 	}
+
+	// Get user groups
+	$perms = array();
+	$usergroups = get_user($uid, "usergroup, additionalgroups");
+	$groups = "'{$usergroups['usergroup']}'";
+
+	if(!empty($usergroups['additionalgroups']))
+	{
+		$groups .= ",'{$usergroups['additionalgroups']}'";
+	}
+
+	$sql = build_parent_list($fid, "fid", "OR", $parentslist);
+	$query = $db->simple_select("moderators", "*", "((id IN ({$groups}) AND isgroup='1') OR (id='{$uid}' AND isgroup='0')) AND {$sql}", array("order_by" => "isgroup", "order_dir" => "DESC"));
+
+	if(!$db->num_rows($query))
+	{
+		return false;
+	}
+
+	// We have some moderator data, what do we know?
+	// We always check usergroup permissions first - user settings override usergroup settings
+	while($perm = $db->fetch_array($query))
+	{
+		if(!$perm['isgroup'])
+		{
+			foreach($perm as $action => $value)
+			{
+				if(strpos($action, "can") === false)
+				{
+					continue;
+				}
+
+				// Figure out the user permissions
+				if($value == 0)
+				{
+					// The user doesn't have permission to set this action
+					$perms[$action] = 0;
+				}
+				else
+				{
+					$perms[$action] = max($perm[$action], $perms[$action]);
+				}
+			}
+		}
+		else
+		{
+			$perms['caneditposts'] = max($perm['caneditposts'], $perms['caneditposts']);
+			$perms['candeleteposts'] = max($perms['candeleteposts'], $perm['candeleteposts']);
+			$perms['canviewips'] = max($perms['canviewips'], $perm['canviewips']);
+			$perms['canopenclosethreads'] = max($perms['canopenclosethreads'], $perm['canopenclosethreads']);
+			$perms['canmanagethreads'] = max($perms['canmanagethreads'], $perm['canmanagethreads']);
+			$perms['canmovetononmodforum'] = max($perms['canmovetononmodforum'], $perm['canmovetononmodforum']);
+		}
+	}
+
+	$modpermscache[$fid][$uid] = $perms;
 
 	return $perms;
 }
