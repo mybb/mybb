@@ -4919,7 +4919,7 @@ body {
 		<table width="100%">
 			<tr><td>{$post['posturl']}<span class="smalltext"><strong>{$post['icon']}{$post['subject']} {$post['subject_extra']}</strong></span>
 			<br />
-			<div id="pid_{$post['pid']}" style="padding: 5px 0 5px 0;">
+			<div id="pid_{$post['pid']}" class="post_body">
 				{$post['message']}
 			</div>
 			{$post['attachments']}
