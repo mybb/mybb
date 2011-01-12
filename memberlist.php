@@ -138,10 +138,11 @@ else
 	}
 
 	// Searching for a matching username
-	$search_username = htmlspecialchars_uni($mybb->input['username']);
-	if(trim($mybb->input['username']))
+	$search_username = htmlspecialchars_uni(trim($mybb->input['username']));
+	if($search_username != '')
 	{
-		$username_like_query = $db->escape_string_like($mybb->input['username']);
+		$username_like_query = $db->escape_string_like($search_username);
+
 		// Name begins with
 		if($mybb->input['username_match'] == "begins")
 		{
@@ -153,7 +154,8 @@ else
 		{
 			$search_query .= " AND u.username LIKE '%".$username_like_query."%'";
 		}
-		$search_url .= "&username=".urlencode($mybb->input['username']);
+
+		$search_url .= "&username=".urlencode($search_username);
 	}
 
 	// Website contains
