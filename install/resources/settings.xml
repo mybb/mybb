@@ -1069,7 +1069,13 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="maxmessagelength">
 			<title>Maximum Message Length</title>
-			<description><![CDATA[The maximum number of characters to allow in a message. A setting of 0 allows an unlimited length.]]></description>
+			<description><![CDATA[The maximum number of characters (bytes) to allow in a message. A setting of 0 allows an unlimited length.
+<br />This should correlate with the message column type in the posts database table, and adjust accordingly. Below are the maximum lengths for each column type.
+<ul>
+	<li>TEXT: 65535 (default)</li>
+	<li>MEDIUMTEXT: 16777215</li>
+	<li>LONGTEXT: 4294967295</li>
+</ul>]]></description>
 			<disporder>2</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[65535]]></settingvalue>
