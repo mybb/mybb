@@ -1252,8 +1252,7 @@ if($mybb->input['action'] == "profile")
 	
 	if($mybb->user['uid'] != $uid)
 	{
-		$query = $db->simple_select("users", "*", "uid='$uid'");
-		$memprofile = $db->fetch_array($query);
+		$memprofile = get_user($uid);
 	}
 	else
 	{
