@@ -597,6 +597,7 @@ $multipage = multipage($threadcount, $perpage, $page, $page_url);
 if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
+
 	switch($db->type)
 	{
 		case "pgsql":
@@ -605,12 +606,11 @@ if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 		default:
 			$ratingadd = "(t.totalratings/t.numratings) AS averagerating, ";
 	}
+
 	$lpbackground = "trow2";
 	eval("\$ratingcol = \"".$templates->get("forumdisplay_threadlist_rating")."\";");
 	eval("\$ratingsort = \"".$templates->get("forumdisplay_threadlist_sortrating")."\";");
 	$colspan = "7";
-	$select_voting = "\nLEFT JOIN ".TABLE_PREFIX."threadratings r ON(r.tid=t.tid AND r.uid='{$mybb->user['uid']}')";
-	$select_rating_user = "r.uid AS rated, ";
 }
 else
 {
@@ -704,12 +704,11 @@ if($fpermissions['canviewthreads'] != 0)
 {
 	// Start Getting Threads
 	$query = $db->query("
-		SELECT t.*, p.displaystyle AS threadprefix, {$ratingadd}{$select_rating_user}t.username AS threadusername, u.username
+		SELECT t.*, p.displaystyle AS threadprefix, {$ratingadd}t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
-		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid){$select_voting}
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid = t.prefix)
 		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
-		GROUP BY t.tid
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
 	");
@@ -735,6 +734,19 @@ if($fpermissions['canviewthreads'] != 0)
 			{
 				unset($moved_threads[$tid]);
 			}
+		}
+	}
+
+	if($foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && $tids)
+	{
+		// Check if we've rated threads on this page
+		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
+		$imp = implode(",", $tids);
+		$query = $db->simple_select("threadratings", "tid, uid", "tid IN ({$imp}) AND uid = '{$mybb->user['uid']}'");
+
+		while($rating = $db->fetch_array($query))
+		{
+			$threadcache[$rating['tid']]['rated'] = 1;
 		}
 	}
 }
