@@ -616,9 +616,17 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 					$altbg = "trow2";
 				}
 
+				$charset = "UTF-8";
+				if($lang->settings['charset'])
+				{
+					$charset = $lang->settings['charset'];
+				}
+
 				require_once MYBB_ROOT."inc/functions_post.php";
 				$pid = $post['pid'];
 				$post = build_postbit($post);
+
+				header("Content-type: text/plain; charset={$charset}");
 				echo $post;
 
 				// Build a new posthash incase the user wishes to quick reply again
