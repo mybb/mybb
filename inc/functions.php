@@ -1019,7 +1019,7 @@ function user_permissions($uid=0)
 		// This user was not already cached, fetch their user information.
 		if(!$user_cache[$uid])
 		{
-			$user_cache[$uid] = get_user($uid, "usergroup, additionalgroups");
+			$user_cache[$uid] = get_user($uid);
 		}
 
 		// Collect group permissions.
@@ -4702,11 +4702,9 @@ function get_calendar_week_link($calendar, $week)
  * Get the user data of a user id.
  *
  * @param int The user id of the user.
- * @param string A list of valid basic SQL column names to retrieve from the database for the user
- * @param boolean Whether to retrieve specific information 
  * @return array The users data
  */
-function get_user($uid, $fields="*", $specify=false)
+function get_user($uid)
 {
 	global $mybb, $db;
 	static $user_cache;
@@ -4717,43 +4715,15 @@ function get_user($uid, $fields="*", $specify=false)
 	{
 		return $mybb->user;
 	}
-	elseif(isset($user_cache[$uid]) && $specify == false)
+	elseif(isset($user_cache[$uid]))
 	{
 		return $user_cache[$uid];
 	}
 	else
 	{
-		// If we're asking for specific fields, check first if they exist in our cache
-		if($specify == true && $fields != "*" && $user_cache[$uid])
-		{
-			$imp_fields = explode(",", trim($fields));
-
-			$specific_fields = array();
-			foreach($imp_fields as $field)
-			{
-				if($user_cache[$uid][$field])
-				{
-					$specific_fields[$field] = $user_cache[$uid][$field];
-				}
-			}
-
-			if(count($specific_fields) == count($imp_fields))
-			{
-				// We have all the required information, return specific array
-				return $specific_fields;
-			}
-		}
-
-		// We're being asked for more information than we've stored, gather data
-		$query = $db->simple_select("users", $db->escape_string($fields), "uid='{$uid}'");
-
-		if($specify == true)
-		{
-			// If we're asking for specific data, return it alone
-			return $db->fetch_array($query);
-		}
-
+		$query = $db->simple_select("users", "*", "uid='{$uid}'");
 		$user_cache[$uid] = $db->fetch_array($query);
+
 		return $user_cache[$uid];
 	}
 }
