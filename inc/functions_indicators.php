@@ -75,18 +75,14 @@ function fetch_unread_count($fid)
 				$comma = ',';
 			}
 		}
-		
+
 		if(!empty($tids))
 		{
 			$count = 0;
-			
-			// We set a limit to 100 otherwise it'll become too processor intensive, especially if we have many threads.
-			$query = $db->query("
-				SELECT lastpost, tid, fid
-				FROM ".TABLE_PREFIX."threads
-				WHERE visible=1 AND closed NOT LIKE 'moved|%' AND fid IN ($fid) AND tid IN ($tids) AND lastpost > '{$cutoff}'
-				LIMIT 100
-			");
+
+			// We've read at least some threads, are they here?
+			$query = $db->simple_select("threads", "lastpost, tid, fid", "visible=1 AND closed NOT LIKE 'moved|%' AND fid IN ($fid) AND lastpost > '{$cutoff}'", array("limit" => 100));
+
 			while($thread = $db->fetch_array($query))
 			{
 				if($thread['lastpost'] > intval($threadsread[$thread['tid']]) && $thread['lastpost'] > intval($forumsread[$thread['fid']]))
@@ -94,8 +90,12 @@ function fetch_unread_count($fid)
 					++$count;
 				}
 			}
+
 			return $count;
 		}
+
+		// Not read any threads?
+		return false;
 	}
 	else
 	{

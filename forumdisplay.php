@@ -1171,7 +1171,9 @@ if(is_array($threadcache))
 
 // If there are no unread threads in this forum and no unread child forums - mark it as read
 require_once MYBB_ROOT."inc/functions_indicators.php";
-if(fetch_unread_count($fid) == 0 && $unread_forums == 0)
+
+$unread_threads = fetch_unread_count($fid);
+if($unread_threads !== false && $unread_threads == 0 && $unread_forums == 0)
 {
 	mark_forum_read($fid);
 }
