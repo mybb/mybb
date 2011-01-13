@@ -2105,6 +2105,13 @@ if(!$mybb->input['action'])
 
 	$num_days = gmdate("t", gmmktime(0, 0, 0, $month, 1, $year));
 
+	if($day > 31 && in_array($next_month['month'], array(4, 6, 11, 9)))
+	{
+		// If we're a day over a 30 day month, gather the events from a week before too.
+		// Otherwise it will start on events for the 2nd - not the 'start' date for the month.
+		$start_timestamp -= (86400 * 7);
+	}
+
 	$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 	
 	// Fetch birthdays
