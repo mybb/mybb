@@ -514,7 +514,7 @@ function css_to_array($css)
 	$stripped_css = preg_replace('#(?<!\\")\}#', "\n}\n", $css);
 
 	// Fetch out classes and comments
-	preg_match_all('#(\/\*(.|[\r\n])*?\*\/)?([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~\^]+)(\s*)\{(.*?)\}\n#msi', $stripped_css, $matches, PREG_PATTERN_ORDER);
+	preg_match_all('#(\/\*(.|[\r\n])*?\*\/)?([a-z0-9a+\\\[\]\-\"=_:>\*\.\#\,\s\(\)\|~|@\^]+)(\s*)\{(.*?)\}\n#msi', $stripped_css, $matches, PREG_PATTERN_ORDER);
 	$total = count($matches[1]);
 
 	for($i=0; $i < $total; $i++)
