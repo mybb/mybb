@@ -1295,10 +1295,40 @@ class DB_PgSQL
 	 * @param string The table
 	 * @param string The column name
 	 * @param string the new column definition
+	 * @param boolean Whether to drop or set a column
+	 * @param boolean The new default value (if one is to be set)
 	 */
-	function modify_column($table, $column, $new_definition)
+	function modify_column($table, $column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
-		return $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} TYPE {$new_definition}");
+		$result1 = $result2 = $result3 = true;
+
+		if($new_definition !== false)
+		{
+			$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} TYPE {$new_definition}");
+		}
+
+		if($new_not_null !== false)
+		{
+			$set_drop = "DROP";
+
+			if(strtolower($new_not_null) == "set")
+			{
+				$set_drop = "SET";
+			}
+
+			$result2 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} {$set_drop} NOT NULL");
+		}
+
+		if($new_default_value !== false)
+		{
+			$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} SET DEFAULT {$new_default_value}");
+		}
+		else
+		{
+			$result3 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} ALTER COLUMN {$column} DROP DEFAULT");
+		}
+
+		return $result1 && $result2 && $result3;
 	}
 	
 	/**
@@ -1308,11 +1338,13 @@ class DB_PgSQL
 	 * @param string The old column name
 	 * @param string the new column name
 	 * @param string the new column definition
+	 * @param boolean Whether to drop or set a column
+	 * @param boolean The new default value (if one is to be set)
 	 */
-	function rename_column($table, $old_column, $new_column, $new_definition)
+	function rename_column($table, $old_column, $new_column, $new_definition, $new_not_null=false, $new_default_value=false)
 	{
 		$result1 = $this->write_query("ALTER TABLE {$this->table_prefix}{$table} RENAME COLUMN {$old_column} TO {$new_column}");
-		$result2 = $this->modify_column($table, $new_column, $new_definition);
+		$result2 = $this->modify_column($table, $new_column, $new_definition, $new_not_null, $new_default_value);
 		return ($result1 && $result2);
 	}
 	

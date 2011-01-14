@@ -304,7 +304,7 @@ function upgrade17_dbchanges4()
 		switch($db->type)
 		{
 			case "pgsql":
-				$db->rename_column("moderators", "uid", "id", "int NOT NULL default '0'");
+				$db->rename_column("moderators", "uid", "id", "int", true, "'0'");
 				break;
 			default:
 				$db->rename_column("moderators", "uid", "id", "int unsigned NOT NULL default '0'");
