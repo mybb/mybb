@@ -186,7 +186,19 @@ class DB_SQLite
 		}
 	  	else
 	  	{
-			$query = $this->db->query($string);
+			try
+			{
+				$query = $this->db->query($string);
+			}
+			catch(PDOException $exception)
+			{
+				$error = array(
+					"message" => $exception->getMessage(),
+					"code" => $exception->getCode()
+				);
+
+				$this->error($error['message'], $error['code']);
+			}
 		}
 		
 		if($this->error_number($query) > 0 && !$hide_errors)
