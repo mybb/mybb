@@ -227,6 +227,24 @@ function get_calendar_permissions($cid=0)
 		{
 			$calendar_permissions[$permission['cid']][$permission['gid']] = $permission;
 		}
+
+		// Add in our usergroup permissions (if custom ones are set, these aren't added)
+		if(is_array($calendar_permissions))
+		{
+			foreach($calendar_permissions as $calendar => $permission)
+			{
+				if(is_array($calendar_permissions[$calendar][$mybb->user['usergroup']]))
+				{
+					// Already has permissions set
+					continue;
+				}
+
+				// Use the group permissions!
+				$calendar_permissions[$calendar][$mybb->user['usergroup']] = $group_permissions;
+				$calendar_permissions[$calendar][$mybb->user['usergroup']]['cid'] = $calendar;
+				$calendar_permissions[$calendar][$mybb->user['usergroup']]['gid'] = $mybb->user['usergroup'];
+			}
+		}
 	}
 
 	if($cid > 0)
