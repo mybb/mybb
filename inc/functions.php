@@ -1413,7 +1413,12 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 
 	if(!empty($usergroups['additionalgroups']))
 	{
-		$groups .= ",'{$usergroups['additionalgroups']}'";
+		$extra_groups = explode(",", $usergroups['additionalgroups']);
+
+		foreach($extra_groups as $extra_group)
+		{
+			$groups .= ",'{$extra_group}'";
+		}
 	}
 
 	$sql = build_parent_list($fid, "fid", "OR", $parentslist);
