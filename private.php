@@ -122,7 +122,7 @@ if($mybb->input['preview'])
 	$mybb->input['action'] = "send";
 }
 
-if(($mybb->input['action'] == "do_search" || $mybb->input['quick_search']) && $mybb->request_method == "post")
+if(($mybb->input['action'] == "do_search" || $mybb->input['action'] == "do_stuff" && ($mybb->input['quick_search'] || !$mybb->input['hop'] && !$mybb->input['moveto'] && !$mybb->input['delete'])) && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("private_do_search_start");
 	
