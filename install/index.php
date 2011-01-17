@@ -1837,7 +1837,8 @@ function create_admin_user()
 					'optionscode' => $db->escape_string($setting['optionscode'][0]['value']),
 					'value' => $db->escape_string($setting['settingvalue'][0]['value']),
 					'disporder' => intval($setting['disporder'][0]['value']),
-					'gid' => $gid
+					'gid' => $gid,
+					'isdefault' => 1
 				);
 
 				$db->insert_query('settings', $settingdata);

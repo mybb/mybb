@@ -848,17 +848,19 @@ function sync_settings($redo=0)
         {
             $wheresettings = "isdefault='1'";
         }
-		
-        $query = $db->simple_select("settings", "name,sid", $wheresettings);
-		while($setting = $db->fetch_array($query))
-		{
-			$settings[$setting['name']] = $setting['sid'];
-		}
-		
+
 		$query = $db->simple_select("settinggroups", "name,title,gid", $wheresettings);
 		while($group = $db->fetch_array($query))
 		{
 			$settinggroups[$group['name']] = $group['gid'];
+		}
+
+		// Collect all the user's settings - regardless of 'defaultivity' - we'll check them all
+		// against default settings and insert/update them accordingly
+        $query = $db->simple_select("settings", "name,sid");
+		while($setting = $db->fetch_array($query))
+		{
+			$settings[$setting['name']] = $setting['sid'];
 		}
 	}
 	$settings_xml = file_get_contents(INSTALL_ROOT."resources/settings.xml");
