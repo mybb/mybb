@@ -51,6 +51,12 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		$day += $calendar['startofweek']+1;
 		$calendar_month = $prev_month['month'];
 		$calendar_year = $prev_month['year'];
+
+		if($day > 31 && $calendar['startofweek'] == 1 && $prev_month_days == 30)
+		{
+			// We need to fix it for these days
+			$day = 25;
+		}
 	}
 	else
 	{
