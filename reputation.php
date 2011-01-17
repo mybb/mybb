@@ -437,18 +437,22 @@ if(!$mybb->input['action'])
 	switch($mybb->input['show'])
 	{
 		case "positive":
+			$s_url = "&show=positive";
 			$conditions = 'AND r.reputation>0';
 			$show_selected['positive'] = 'selected="selected"';
 			break;
 		case "neutral":
+			$s_url = "&show=neutral";
 			$conditions = 'AND r.reputation=0';
 			$show_selected['neutral'] = 'selected="selected"';
 			break;
 		case "negative":
+			$s_url = "&show=negative";
 			$conditions = 'AND r.reputation<0';
 			$show_selected['negative'] = 'selected="selected"';
 			break;
 		default:
+			$s_url = '&show=all';
 			$conditions = '';
 			$show_select['all'] = 'selected="selected"';
 			break;
@@ -459,14 +463,22 @@ if(!$mybb->input['action'])
 	switch($mybb->input['sort'])
 	{
 		case "username":
+			$s_url .= "&sort=username";
 			$order = "u.username ASC";
 			$sort_selected['username'] = 'selected="selected"';
 			break;
 		default:
+			$s_url .= '&sort=dateline';
 			$order = "r.dateline DESC";
 			$sort_selected['last_updated'] = 'selected="selected"';
 			break;
 	}
+
+	if(!$mybb->input['show'] && !$mybb->input['sort'])
+	{
+		$s_url = '';
+	}
+
 	// Fetch the total number of reputations for this user
 	$query = $db->simple_select("reputation r", "COUNT(r.rid) AS reputation_count", "r.uid='{$user['uid']}' $conditions");
 	$reputation_count = $db->fetch_field($query, "reputation_count");
@@ -612,7 +624,7 @@ if(!$mybb->input['action'])
 	// Build out multipage navigation
 	if($reputation_count > 0)
 	{
-		$multipage = multipage($reputation_count, $mybb->settings['repsperpage'], $page, "reputation.php?uid={$user['uid']}");
+		$multipage = multipage($reputation_count, $mybb->settings['repsperpage'], $page, "reputation.php?uid={$user['uid']}".$s_url);
 	}
 
 	// Fetch the reputations which will be displayed on this page
