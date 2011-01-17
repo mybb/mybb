@@ -3230,7 +3230,7 @@ body {
 		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
 		<template name="member_profile_online" version="1400"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_offline" version="1400"><![CDATA[<span class="offline" style="font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
-		<template name="member_profile" version="1600"><![CDATA[<html>
+		<template name="member_profile" version="1602"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->profile}</title>
 {$headerinclude}
@@ -3291,7 +3291,7 @@ body {
 <td colspan="2" class="thead"><strong>{$lang->users_contact_details}</strong></td>
 </tr>
 <tr>
-<td class="trow1"><strong>{$lang->homepage}</strong></td>
+<td class="trow1" width="40%"><strong>{$lang->homepage}</strong></td>
 <td class="trow1">{$website}</td>
 </tr>
 {$sendemail}
