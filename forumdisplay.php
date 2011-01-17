@@ -583,7 +583,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 		$and = "&";
 	}
 	
-	if($datecut > 0 && $datecut != 9999)
+	if($datecut > 0)
 	{
 		$page_url .= "{$q}{$and}datecut={$datecut}";
 	}
