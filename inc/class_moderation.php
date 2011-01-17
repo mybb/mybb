@@ -1251,8 +1251,9 @@ class Moderation
 		$pids_list = implode(',', $pids);
 
 		// Get the icon for the first split post
-		$query = $db->simple_select("posts", "icon", "pid=".intval($pids[0]));
+		$query = $db->simple_select("posts", "icon, visible", "pid=".intval($pids[0]));
 		$icon = $db->fetch_array($query);
+		$visible = $db->fetch_array($query, "visible");
 
 		if($destination_tid == 0)
 		{
@@ -1270,13 +1271,22 @@ class Moderation
 				"lastpost" => intval($thread['lastpost']),
 				"lastposter" => $db->escape_string($thread['lastposter']),
 				"replies" => count($pids)-1,
-				"visible" => 1,
+				"visible" => $visible,
 				"notes" => ''
 			);
 			$newtid = $db->insert_query("threads", $query);
 			
 			$forum_counters[$moveto]['threads'] = $forum_cache[$moveto]['threads'];
-			++$forum_counters[$moveto]['threads'];
+			$forum_counters[$moveto]['unapprovedthreads'] = $forum_cache[$moveto]['unapprovedthreads'];
+			if($visible)
+			{
+				++$forum_counters[$moveto]['threads'];
+			}
+			else
+			{
+				// Unapproved thread?
+				++$forum_counters[$moveto]['unapprovedthreads'];
+			}
 		}
 
 		// Get attachment counts for each post
