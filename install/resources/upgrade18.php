@@ -36,7 +36,7 @@ function upgrade18_dbchanges()
 		$group_count = $db->fetch_field($query, "group_count");
 
 		++$group_count;
-		$db->query("ALTER SEQUENCE ".$config['database']['table_prefix']."usergroups_gid_seq RESTART WITH ".$group_count."");
+		$db->query("ALTER SEQUENCE ".$mybb->config['database']['table_prefix']."usergroups_gid_seq RESTART WITH ".$group_count."");
 	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");

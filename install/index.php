@@ -1625,10 +1625,18 @@ function populate_tables()
 		$db->query($val);
 	}
 
-	// Update the fid sequence for PgSQL
+	// Update the sequences for PgSQL
 	if($config['database']['type'] == "pgsql")
 	{
-		$db->query("ALTER SEQUENCE ".$config['database']['table_prefix']."forums_fid_seq RESTART WITH 3");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}attachtypes_atid_seq', (SELECT max(atid) FROM {$config['database']['table_prefix']}attachtypes));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}forums_fid_seq', (SELECT max(fid) FROM {$config['database']['table_prefix']}forums));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}helpdocs_hid_seq', (SELECT max(hid) FROM {$config['database']['table_prefix']}helpdocs));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}helpsections_sid_seq', (SELECT max(sid) FROM {$config['database']['table_prefix']}helpsections));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}icons_iid_seq', (SELECT max(iid) FROM {$config['database']['table_prefix']}icons));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}profilefields_fid_seq', (SELECT max(fid) FROM {$config['database']['table_prefix']}profilefields));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}smilies_sid_seq', (SELECT max(sid) FROM {$config['database']['table_prefix']}smilies));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}spiders_sid_seq', (SELECT max(sid) FROM {$config['database']['table_prefix']}spiders));");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}templategroups_gid_seq', (SELECT max(gid) FROM {$config['database']['table_prefix']}templategroups));");
 	}
 
 	echo $lang->populate_step_inserted;
@@ -2017,8 +2025,7 @@ function install_done()
 	// Restart usergroup sequence with correct # of groups
 	if($config['database']['type'] == "pgsql")
 	{
-		$pgsql_group_count = $group_count + 1;
-		$db->query("ALTER SEQUENCE ".$config['database']['table_prefix']."usergroups_gid_seq RESTART WITH ".$pgsql_group_count."");
+		$db->query("SELECT setval('{$config['database']['table_prefix']}usergroups_gid_seq', (SELECT max(gid) FROM {$config['database']['table_prefix']}usergroups));");
 	}
 
 	echo $lang->done . '</p>';
