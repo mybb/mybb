@@ -1252,8 +1252,8 @@ class Moderation
 
 		// Get the icon for the first split post
 		$query = $db->simple_select("posts", "icon, visible", "pid=".intval($pids[0]));
-		$icon = $db->fetch_array($query);
-		$visible = $db->fetch_array($query, "visible");
+		$icon = $db->fetch_field($query, "icon");
+		$visible = $db->fetch_field($query, "visible");
 
 		if($destination_tid == 0)
 		{
