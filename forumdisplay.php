@@ -83,6 +83,7 @@ if($fpermissions['canview'] != 1)
 
 if($mybb->user['uid'] == 0)
 {
+	// Cookie'd forum read time
 	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
  
  	if(!is_array($forumsread))
@@ -90,21 +91,7 @@ if($mybb->user['uid'] == 0)
  		$forumsread = array();
  	}
 
-	if(!$forum_cache)
-	{
-		// Rebuild forum's cache if we've lost it somewhere
-		$forum_cache = $cache->read("forums");
-	}
-
-	foreach($forum_cache as $forum)
-	{
-		if($forumsread[$forum['fid']])
-		{
-			$forum['lastread'] = $forumsread[$forum['fid']];
-		}
-
-		$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
-	}
+	$query = $db->simple_select("forums", "*", "active != 0", array("order_by" => "pid, disporder"));
 }
 else
 {
@@ -116,12 +103,16 @@ else
 		WHERE f.active != 0
 		ORDER BY pid, disporder
 	");
+}
 
-	while($forum = $db->fetch_array($query))
+while($forum = $db->fetch_array($query))
+{
+	if($mybb->user['uid'] == 0 && $forumsread[$forum['fid']])
 	{
-		// Retrieved forumread from database, not cookies
-		$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
+		$forum['lastread'] = $forumsread[$forum['fid']];
 	}
+
+	$fcache[$forum['pid']][$forum['disporder']][$forum['fid']] = $forum;
 }
 
 // Get the forum moderators if the setting is enabled.
