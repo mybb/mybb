@@ -46,7 +46,7 @@ $errors = '';
 $moderated_forums = array();
 if($mybb->usergroup['issupermod'] != 1)
 {
-	$query = $db->simple_select("moderators", "*", "id='{$mybb->user['uid']}' AND isgroup = '0'");
+	$query = $db->simple_select("moderators", "*", "(id='{$mybb->user['uid']}' AND isgroup = '0') OR (id='{$mybb->user['usergroup']}' AND isgroup = '1')");
 	while($forum = $db->fetch_array($query))
 	{
 		$flist .= ",'{$forum['fid']}'";
