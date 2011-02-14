@@ -118,7 +118,7 @@ $l['success_view_deleted'] = "The selected administration view has been deleted 
 
 $l['confirm_view_deletion'] = "Are you sure you want to delete the selected view?";
 
-$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user/users&amp;action=activate_user&amp;uid={1}\">Activate Account</a></p>";
+$l['warning_coppa_user'] = "<p class=\"alert\"><strong>Warning: </strong> This user is awaiting COPPA validation. <a href=\"index.php?module=user-users&amp;action=activate_user&amp;uid={1}\">Activate Account</a></p>";
 
 $l['required_profile_info'] = "Required Profile Information";
 $l['password'] = "Password";
