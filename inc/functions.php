@@ -3160,7 +3160,7 @@ function build_breadcrumb()
 				
 				$multipage = null;
 				$multipage_dropdown = null;
-				if(!empty($navbit['multipage']))
+				if(!empty($navbit['multipage']) && $navbit['multipage']['num_threads'])
 				{
 					$multipage = multipage($navbit['multipage']['num_threads'], $mybb->settings['threadsperpage'], $navbit['multipage']['current_page'], $navbit['multipage']['url'], true);
 					if($multipage)
