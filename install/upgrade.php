@@ -595,6 +595,7 @@ function buildcaches()
 	$cache->update_most_replied_threads();
 	$cache->update_most_viewed_threads();
 	$cache->update_groupleaders();
+	$cache->update_threadprefixes();
 
 	$contents .= $lang->done."</p>";
 

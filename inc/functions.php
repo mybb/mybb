@@ -2527,6 +2527,52 @@ function build_clickable_smilies()
 }
 
 /**
+ * Builds thread prefixes and returns a selected prefix (or all)
+ * 
+ *  @param int The prefix ID (0 to return all)
+ *  @return array The thread prefix's values (or all thread prefixes)
+ */
+function build_prefixes($pid=0)
+{
+	global $cache;
+	static $prefixes_cache;
+
+	if(is_array($prefixes_cache))
+	{
+		if($pid > 0 && is_array($prefixes_cache[$pid]))
+		{
+			return $prefixes_cache[$pid];
+		}
+
+		return $prefixes_cache;
+	}
+
+	$prefix_cache = $cache->read("threadprefixes");
+
+	if($prefix_cache === false)
+	{
+		return false;
+	}
+
+	$prefixes_cache = array();
+	foreach($prefix_cache as $prefix)
+	{
+		$prefixes_cache[$prefix['pid']] = $prefix;
+	}
+
+	if($pid != 0 && is_array($prefixes_cache[$pid]))
+	{
+		return $prefixes_cache[$pid];
+	}
+	else if(!empty($prefixes_cache))
+	{
+		return $prefixes_cache;
+	}
+
+	return false;
+}
+
+/**
  * Build the thread prefix selection menu
  * 
  *  @param mixed The forum ID (integer ID or string all)
@@ -2535,110 +2581,112 @@ function build_clickable_smilies()
  */
 function build_prefix_select($fid, $selected_pid=0, $multiple=0)
 {
-	global $db, $lang, $mybb;
+	global $cache, $db, $lang, $mybb;
 	
 	if($fid != 'all')
 	{
 		$fid = intval($fid);
 	}
 
-	// Does this user have additional groups?
+	$prefix_cache = build_prefixes(0);
+	if($fid != 'all' && !$prefix_cache)
+	{
+		return false; // We've got no prefixes to show
+	}
+
+	$groups = array($mybb->user['usergroup']);
 	if($mybb->user['additionalgroups'])
 	{
 		$exp = explode(",", $mybb->user['additionalgroups']);
 
-		// Because we like apostrophes...
-		$imps = array();
 		foreach($exp as $group)
 		{
-			$imps[] = "'{$group}'";
+			$groups[] = $group;
+		}
+	}
+
+	// Go through each of our prefixes and decide which ones we can use
+	$prefixes = array();
+	foreach($prefix_cache as $prefix)
+	{
+		if($fid != "all" && $prefix['forums'] != "-1")
+		{
+			// Decide whether this prefix can be used in our forum
+			$forums = explode(",", $prefix['forums']);
+
+			if(!in_array($fid, $forums))
+			{
+				// This prefix is not in our forum list
+				continue;
+			}
 		}
 
-		$additional_groups = implode(",", $imps);
-		$extra_sql = "groups IN ({$additional_groups}) OR ";
-	}
-	else
-	{
-		$extra_sql = '';
+		if($prefix['groups'] != "-1")
+		{
+			$prefix_groups = explode(",", $prefix['groups']);
+
+			foreach($groups as $group)
+			{
+				if(in_array($group, $prefix_groups) && !isset($prefixes[$prefix['pid']]))
+				{
+					// Our group can use this prefix!
+					$prefixes[$prefix['pid']] = $prefix;
+				}
+			}
+		}
+		else
+		{
+			// This prefix is for anybody to use...
+			$prefixes[$prefix['pid']] = $prefix;
+		}
 	}
 
-	switch($db->type)
+	if(empty($prefixes) && $fid != "all")
 	{
-		case "pgsql":
-		case "sqlite":
-			$whereforum = "";
-			if($fid != 'all')
-			{
-				$whereforum = " AND (','||forums||',' LIKE '%,{$fid},%' OR ','||forums||',' LIKE '%,-1,%' OR forums='')";
-			}
-			
-			$query = $db->query("
-				SELECT pid, prefix
-				FROM ".TABLE_PREFIX."threadprefixes
-				WHERE ({$extra_sql}','||groups||',' LIKE '%,{$mybb->user['usergroup']},%' OR ','||groups||',' LIKE '%,-1,%' OR groups='')
-				{$whereforum}
-			");
-			break;
-		default:
-			$whereforum = "";
-			if($fid != 'all')
-			{
-				$whereforum = " AND (CONCAT(',',forums,',') LIKE '%,{$fid},%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='')";
-			}
-			
-			$query = $db->query("
-				SELECT pid, prefix
-				FROM ".TABLE_PREFIX."threadprefixes
-				WHERE ({$extra_sql}CONCAT(',',groups,',') LIKE '%,{$mybb->user['usergroup']},%' OR CONCAT(',',groups,',') LIKE '%,-1,%' OR groups='')
-				{$whereforum}
-			");
+		return false;
 	}
-	
+
 	$prefixselect = "";
-	
-	if($db->num_rows($query) > 0)
+	$multipleselect = "";
+	if($multiple != 0)
 	{
-		$multipleselect = "";
-		if($multiple != 0)
-		{
-			$multipleselect = " multiple=\"multiple\" size=\"5\"";
-		}
-		
-		$prefixselect = "<select name=\"threadprefix\"{$multipleselect}>\n";
-		
-		if($multiple == 1)
-		{
-			$any_selected = "";
-			if($selected_pid == 'any')
-			{
-				$any_selected = " selected=\"selected\"";
-			}
-			
-			$prefixselect .= "<option value=\"any\"".$any_selected.">".$lang->any_prefix."</option>\n";
-		}
-		
-		$default_selected = "";
-		if((intval($selected_pid) == 0) && $selected_pid != 'any')
-		{
-			$default_selected = " selected=\"selected\"";
-		}
-		
-		$prefixselect .= "<option value=\"0\"".$default_selected.">".$lang->no_prefix."</option>\n";
-		
-		while($prefix = $db->fetch_array($query))
-		{
-			$selected = "";
-			if($prefix['pid'] == $selected_pid)
-			{
-				$selected = " selected=\"selected\"";
-			}
-			
-			$prefixselect .= "<option value=\"".$prefix['pid']."\"".$selected.">".htmlspecialchars_uni($prefix['prefix'])."</option>\n";
-		}
-		
-		$prefixselect .= "</select>\n&nbsp;";
+		$multipleselect = " multiple=\"multiple\" size=\"5\"";
 	}
-	
+
+	$prefixselect = "<select name=\"threadprefix\"{$multipleselect}>\n";
+
+	if($multiple == 1)
+	{
+		$any_selected = "";
+		if($selected_pid == 'any')
+		{
+			$any_selected = " selected=\"selected\"";
+		}
+
+		$prefixselect .= "<option value=\"any\"".$any_selected.">".$lang->any_prefix."</option>\n";
+	}
+
+	$default_selected = "";
+	if((intval($selected_pid) == 0) && $selected_pid != 'any')
+	{
+		$default_selected = " selected=\"selected\"";
+	}
+
+	$prefixselect .= "<option value=\"0\"".$default_selected.">".$lang->no_prefix."</option>\n";
+
+	foreach($prefixes as $prefix)
+	{
+		$selected = "";
+		if($prefix['pid'] == $selected_pid)
+		{
+			$selected = " selected=\"selected\"";
+		}
+
+		$prefixselect .= "<option value=\"".$prefix['pid']."\"".$selected.">".htmlspecialchars_uni($prefix['prefix'])."</option>\n";
+	}
+
+	$prefixselect .= "</select>\n&nbsp;";
+
 	return $prefixselect;
 }
 

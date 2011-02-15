@@ -825,7 +825,22 @@ class datacache
 		
 		$this->update("groupleaders", $groupleaders);
 	}
-	
+
+	function update_threadprefixes()
+	{
+		global $db;
+
+		$prefixes = array();
+		$query = $db->simple_select("threadprefixes", "*", "", array("order_by" => "pid"));
+
+		while($prefix = $db->fetch_array($query))
+		{
+			$prefixes[$prefix['pid']] = $prefix;
+		}
+
+		$this->update("threadprefixes", $prefixes);
+	}
+
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
 	function reload_mostonline()
 	{

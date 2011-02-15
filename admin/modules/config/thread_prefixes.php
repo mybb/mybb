@@ -1,14 +1,13 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
  * $Id$
  */
-
 
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
@@ -128,6 +127,7 @@ if($mybb->input['action'] == 'add_prefix')
 			
 			// Log admin action
 			log_admin_action($pid, $mybb->input['prefix']);
+			$cache->update_threadprefixes();
 			
 			flash_message($lang->success_thread_prefix_created, 'success');
 			admin_redirect('index.php?module=config-thread_prefixes');
@@ -231,8 +231,8 @@ if($mybb->input['action'] == 'edit_prefix')
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_edit_prefix_start');
 	
-	$query = $db->simple_select('threadprefixes', 'COUNT(pid) as prefixes', "pid = '{$mybb->input['pid']}'");
-	if($db->fetch_field($query, 'prefixes') < 1)
+	$prefix = build_prefixes($mybb->input['pid']);
+	if(!$prefix['pid'])
 	{
 		flash_message($lang->error_invalid_prefix, 'error');
 		admin_redirect('index.php?module=config-thread_prefixes');
@@ -329,6 +329,7 @@ if($mybb->input['action'] == 'edit_prefix')
 			
 			// Log admin action
 			log_admin_action($mybb->input['pid'], $mybb->input['prefix']);
+			$cache->update_threadprefixes();
 			
 			flash_message($lang->success_thread_prefix_updated, 'success');
 			admin_redirect('index.php?module=config-thread_prefixes');
@@ -463,9 +464,7 @@ if($mybb->input['action'] == 'delete_prefix')
 {
 	$plugins->run_hooks('admin_config_thread_prefixes_delete_prefix');
 	
-	$query = $db->simple_select('threadprefixes', '*', "pid='{$mybb->input['pid']}'");
-	$prefix = $db->fetch_array($query);
-	
+	$prefix = build_prefixes($mybb->input['pid']);
 	if(!$prefix['pid'])
 	{
 		flash_message($lang->error_invalid_thread_prefix, 'error');
@@ -491,6 +490,7 @@ if($mybb->input['action'] == 'delete_prefix')
 		
 		// Log admin action
 		log_admin_action($prefix['pid'], $prefix['prefix']);
+		$cache->update_threadprefixes();
 		
 		flash_message($lang->success_thread_prefix_deleted, 'success');
 		admin_redirect('index.php?module=config-thread_prefixes');
@@ -512,13 +512,16 @@ if(!$mybb->input['action'])
 	$table->construct_header($lang->prefix);
 	$table->construct_header($lang->controls, array('class' => 'align_center', 'colspan' => 2));
 	
-	$query = $db->simple_select('threadprefixes', 'pid, prefix', "", array('order_by' => 'prefix'));
-	while($prefix = $db->fetch_array($query))
+	$prefixes = build_prefixes();
+	if($prefixes)
 	{
-		$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\"><strong>".htmlspecialchars_uni($prefix['prefix'])."</strong></a>");
-		$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=delete_prefix&amp;pid={$prefix['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_prefix_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => 'align_center'));
-		$table->construct_row();
+		foreach($prefixes as $prefix)
+		{
+			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\"><strong>".htmlspecialchars_uni($prefix['prefix'])."</strong></a>");
+			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=edit_prefix&amp;pid={$prefix['pid']}\">{$lang->edit}</a>", array('width' => 100, 'class' => "align_center"));
+			$table->construct_cell("<a href=\"index.php?module=config-thread_prefixes&amp;action=delete_prefix&amp;pid={$prefix['pid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_thread_prefix_deletion}')\">{$lang->delete}</a>", array('width' => 100, 'class' => 'align_center'));
+			$table->construct_row();
+		}
 	}
 	
 	if($table->num_rows() == 0)

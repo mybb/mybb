@@ -56,11 +56,13 @@ $thread['threadprefix'] = '';
 $thread['displayprefix'] = '';
 if($thread['prefix'] != 0)
 {
-	$query = $db->simple_select('threadprefixes', 'prefix, displaystyle', "pid='{$thread['prefix']}'");
-	$threadprefix = $db->fetch_array($query);
-	
-	$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
-	$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
+	$threadprefix = build_prefixes($thread['prefix']);
+
+	if($threadprefix['prefix'])
+	{
+		$thread['threadprefix'] = $threadprefix['prefix'].'&nbsp;';
+		$thread['displayprefix'] = $threadprefix['displaystyle'].'&nbsp;';
+	}
 }
 
 if(substr($thread['closed'], 0, 6) == "moved|")
@@ -975,9 +977,8 @@ if($mybb->input['action'] == "thread")
 		{
 			case "pgsql":
 				$query = $db->query("
-					SELECT t.*, t.username AS threadusername, p.displaystyle AS threadprefix, u.username
+					SELECT t.*, t.username AS threadusername, u.username
 					FROM ".TABLE_PREFIX."threads t
-					LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid = t.prefix)
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid), plainto_tsquery ('".$db->escape_string($thread['subject'])."') AS query
 					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.subject @@ query AND ts_rank_cd(to_tsvector('english',t.subject), query ) >= '{$mybb->settings['similarityrating']}'
 					ORDER BY t.lastpost DESC
@@ -986,9 +987,8 @@ if($mybb->input['action'] == "thread")
 				break;
 			default:
 				$query = $db->query("
-					SELECT t.*, t.username AS threadusername, p.displaystyle AS threadprefix, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
+					SELECT t.*, t.username AS threadusername, u.username, MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') AS relevance
 					FROM ".TABLE_PREFIX."threads t
-					LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid = t.prefix)
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
 					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND MATCH (t.subject) AGAINST ('".$db->escape_string($thread['subject'])."') >= '{$mybb->settings['similarityrating']}'
 					ORDER BY t.lastpost DESC
@@ -1025,7 +1025,8 @@ if($mybb->input['action'] == "thread")
 			// If this thread has a prefix, insert a space between prefix and subject
 			if($similar_thread['prefix'] != 0)
 			{
-				$similar_thread['threadprefix'] .= '&nbsp;';
+				$prefix = build_prefixes($similar_thread['prefix']);
+				$similar_thread['threadprefix'] = $prefix['displaystyle'].'&nbsp;';
 			}
 			
 			$similar_thread['subject'] = $parser->parse_badwords($similar_thread['subject']);

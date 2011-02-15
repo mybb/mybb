@@ -695,10 +695,9 @@ if($fpermissions['canviewthreads'] != 0)
 {
 	// Start Getting Threads
 	$query = $db->query("
-		SELECT t.*, p.displaystyle AS threadprefix, {$ratingadd}t.username AS threadusername, u.username
+		SELECT t.*, {$ratingadd}t.username AS threadusername, u.username
 		FROM ".TABLE_PREFIX."threads t
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid)
-		LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid = t.prefix)
 		WHERE t.fid='$fid' $tuseronly $tvisibleonly $datecutsql2
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
@@ -855,9 +854,11 @@ if(is_array($threadcache))
 		}
 		
 		// If this thread has a prefix, insert a space between prefix and subject
+		$threadprefix = '';
 		if($thread['prefix'] != 0)
 		{
-			$thread['threadprefix'] .= '&nbsp;';
+			$threadprefix = build_prefixes($thread['prefix']);
+			$thread['threadprefix'] = $threadprefix['displaystyle'].'&nbsp;';
 		}
 
 		$thread['subject'] = $parser->parse_badwords($thread['subject']);
