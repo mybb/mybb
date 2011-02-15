@@ -76,7 +76,13 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		output_page($error);
 		exit;
 	}
-
+	
+	// If a post has been given but post ratings have been disabled, set the post to 0. This will mean all subsequent code will think no post was given.
+	if($mybb->input['pid'] != 0 && $mybb->settings['postrep'] != 1)
+	{
+		$mybb->input['pid'] = 0;
+	}
+	
 	// Check if this user has reached their "maximum reputations per day" quota
 	if($mybb->usergroup['maxreputationsday'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 	{
@@ -110,9 +116,9 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 		}
 	}
 	
-	// Has the user given too much reputation to another in the same thread?
 	if($mybb->input['pid'])
 	{
+		// Has the user given too much reputation to another in the same thread?
 		if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 		{
 			$timesearch = TIME_NOW - (60 * 60 * 24);
@@ -132,6 +138,12 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 				output_page($error);
 				exit;
 			}
+		}
+		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
+		$post = get_post($mybb->input['pid']);
+		if($uid != $post['uid'])
+		{
+			$mybb->input['pid'] = 0;
 		}
 	}
 
@@ -183,7 +195,7 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		output_page($error);
 		exit;
 	}
-
+	
 	if($mybb->input['pid'] == 0)
 	{
 		$mybb->input['comments'] = trim($mybb->input['comments']); // Trim whitespace to check for length
@@ -202,6 +214,16 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	{
 		$show_back = 1;
 		$message = $lang->add_invalidpower;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		output_page($error);
+		exit;
+	}
+	
+	// The user is trying to give a negative reputation, but negative reps have been disabled.
+	if($mybb->input['reputation'] < 0 && $mybb->settings['negrep'] != 1)
+	{
+		$show_back = 1;
+		$message = $lang->add_negative_disabled;
 		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
 		output_page($error);
 		exit;

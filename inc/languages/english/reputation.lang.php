@@ -22,6 +22,7 @@ $l['add_maxperuser'] = "You've already given this user as many reputation rating
 $l['add_maxperthread'] = "You've already given this user as many reputation ratings (in one thread) as you can for today.";
 $l['add_no_comment'] = "You must enter a comment of at least 10 characters to give this user a reputation rating.";
 $l['add_toolong'] = "You must enter a reason no longer then then {1} characters.";
+$l['add_negative_disabled'] = "The administrator has disabled negative reputations.";
 $l['reputation_report'] = "Reputation Report for {1}";
 $l['reputation_members'] = "Reputation from Members:";
 $l['reputation_posts'] = "Reputation from Posts:";
