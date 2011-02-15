@@ -841,6 +841,49 @@ class datacache
 		$this->update("threadprefixes", $prefixes);
 	}
 
+	function update_forumsdisplay()
+	{
+		global $db;
+
+		$fd_statistics = array();
+
+		$time = TIME_NOW; // Look for announcements that don't end, or that are ending some time in the future
+		$query = $db->simple_select("announcements", "fid", "enddate = '0' OR enddate > '{$time}'", array("order_by" => "aid"));
+
+		if($db->num_rows($query))
+		{
+			while($forum = $db->fetch_array($query))
+			{
+				if(!isset($fd_statistics[$forum['fid']]['announcements']))
+				{
+					$fd_statistics[$forum['fid']]['announcements'] = 1;
+				}
+			}
+		}
+
+		// Do we have any mod tools to use in our forums?
+		$query = $db->simple_select("modtools", "forums, tid", "type = 't'", array("order_by" => "tid"));
+
+		if($db->num_rows($query))
+		{
+			unset($forum);
+			while($tool = $db->fetch_array($query))
+			{
+				$forums = explode(",", $tool['forums']);
+
+				foreach($forums as $forum)
+				{
+					if(!isset($fd_statistics[$forum]['modtools']))
+					{
+						$fd_statistics[$forum]['modtools'] = 1;
+					}
+				}
+			}
+		}
+
+		$this->update("forumsdisplay", $fd_statistics);
+	}
+
 	/* Other, extra functions for reloading caches if we just changed to another cache extension (i.e. from db -> xcache) */
 	function reload_mostonline()
 	{

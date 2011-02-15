@@ -2170,6 +2170,7 @@ function install_done()
 	$cache->update_birthdays();
 	$cache->update_groupleaders();
 	$cache->update_threadprefixes();
+	$cache->update_forumsdisplay();
 	$cache->update("plugins", array());
 	$cache->update("internal_settings", array('encryption_key' => random_str(32)));
 	

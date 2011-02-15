@@ -52,6 +52,7 @@ function task_dailycleanup($task)
 	$cache->update_most_replied_threads();
 	$cache->update_most_viewed_threads();
 	$cache->update_birthdays();
+	$cache->update_forumsdisplay();
 	
 	add_task_log($task, $lang->task_dailycleanup_ran);
 }

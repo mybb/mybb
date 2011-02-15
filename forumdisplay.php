@@ -621,72 +621,77 @@ if($ismod)
 }
 
 // Get Announcements
-$limit = '';
-$announcements = '';
-if($mybb->settings['announcementlimit'])
+$forum_stats = $cache->read("forumsdisplay");
+if($forum_stats[-1]['announcements'] || $forum_stats[$fid]['announcements'])
 {
-	$limit = "LIMIT 0, ".$mybb->settings['announcementlimit'];
-}
-
-$sql = build_parent_list($fid, "fid", "OR", $parentlist);
-$time = TIME_NOW;
-$query = $db->query("
-	SELECT a.*, u.username
-	FROM ".TABLE_PREFIX."announcements a
-	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
-	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
-	ORDER BY a.startdate DESC $limit
-");
-$bgcolor = alt_trow(true); // Reset the trow colors
-while($announcement = $db->fetch_array($query))
-{
-	if($announcement['startdate'] > $mybb->user['lastvisit'])
+	$limit = '';
+	$announcements = '';
+	if($mybb->settings['announcementlimit'])
 	{
-		$new_class = ' class="subject_new"';
-		$folder = "newfolder";
-	}
-	else
-	{
-		$new_class = ' class="subject_old"';
-		$folder = "folder";
+		$limit = "LIMIT 0, ".$mybb->settings['announcementlimit'];
 	}
 
-	$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
-	$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
-	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
-	$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
-	$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
-	$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
-	
-	if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
-	{
-		eval("\$rating = \"".$templates->get("forumdisplay_announcement_rating")."\";");
-		$lpbackground = "trow2";
-	}
-	else
-	{
-		$rating = '';
-		$lpbackground = "trow1";
-	}
-	
-	if($ismod)
-	{
-		eval("\$modann = \"".$templates->get("forumdisplay_announcements_announcement_modbit")."\";");
-	}
-	else
-	{
-		$modann = '';
-	}
-	
-	$plugins->run_hooks("forumdisplay_announcement");
-	eval("\$announcements .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
-	$bgcolor = alt_trow();
-}
+	$sql = build_parent_list($fid, "fid", "OR", $parentlist);
+	$time = TIME_NOW;
+	$query = $db->query("
+		SELECT a.*, u.username
+		FROM ".TABLE_PREFIX."announcements a
+		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
+		WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND ($sql OR fid='-1')
+		ORDER BY a.startdate DESC $limit
+	");
 
-if($announcements)
-{
-	eval("\$announcementlist = \"".$templates->get("forumdisplay_announcements")."\";");
-	$shownormalsep = true;
+	$bgcolor = alt_trow(true); // Reset the trow colors
+	while($announcement = $db->fetch_array($query))
+	{
+		if($announcement['startdate'] > $mybb->user['lastvisit'])
+		{
+			$new_class = ' class="subject_new"';
+			$folder = "newfolder";
+		}
+		else
+		{
+			$new_class = ' class="subject_old"';
+			$folder = "folder";
+		}
+
+		$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
+		$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
+		$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
+		$postdate = my_date($mybb->settings['dateformat'], $announcement['startdate']);
+		$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
+		$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
+	
+		if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
+		{
+			eval("\$rating = \"".$templates->get("forumdisplay_announcement_rating")."\";");
+			$lpbackground = "trow2";
+		}
+		else
+		{
+			$rating = '';
+			$lpbackground = "trow1";
+		}
+	
+		if($ismod)
+		{
+			eval("\$modann = \"".$templates->get("forumdisplay_announcements_announcement_modbit")."\";");
+		}
+		else
+		{
+			$modann = '';
+		}
+	
+		$plugins->run_hooks("forumdisplay_announcement");
+		eval("\$announcements .= \"".$templates->get("forumdisplay_announcements_announcement")."\";");
+		$bgcolor = alt_trow();
+	}
+
+	if($announcements)
+	{
+		eval("\$announcementlist = \"".$templates->get("forumdisplay_announcements")."\";");
+		$shownormalsep = true;
+	}
 }
 
 $icon_cache = $cache->read("posticons");
@@ -1139,21 +1144,24 @@ if(is_array($threadcache))
 	$customthreadtools = '';
 	if($ismod)
 	{
-		switch($db->type)
+		if($forum_stats[-1]['modtools'] || $forum_stats[$fid]['modtools'])
 		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-				break;
-			default:
-				$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					break;
+				default:
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+			}
+
+			while($tool = $db->fetch_array($query))
+			{
+				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
+			}
 		}
-		while($tool = $db->fetch_array($query))
-		{
-			eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
-		}
-		
-		if(!empty($customthreadtools))
+		else
 		{
 			eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
 		}

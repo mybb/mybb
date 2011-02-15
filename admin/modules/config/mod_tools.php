@@ -9,7 +9,6 @@
  * $Id$
  */
 
-
 // Disallow direct access to this file for security reasons
 if(!defined("IN_MYBB"))
 {
@@ -88,6 +87,7 @@ if($mybb->input['action'] == "delete_thread_tool")
 
 		// Log admin action
 		log_admin_action($tool['tid'], $tool['name']);
+		$cache->update_forumsdisplay();
 
 		flash_message($lang->success_thread_tool_deleted, 'success');
 		admin_redirect("index.php?module=config-mod_tools");
@@ -307,6 +307,7 @@ if($mybb->input['action'] == "edit_thread_tool")
 
 			// Log admin action
 			log_admin_action($mybb->input['tid'], $mybb->input['title']);
+			$cache->update_forumsdisplay();
 
 			flash_message($lang->success_mod_tool_updated, 'success');
 			admin_redirect("index.php?module=config-mod_tools");
@@ -693,6 +694,7 @@ if($mybb->input['action'] == "add_thread_tool")
 
 			// Log admin action
 			log_admin_action($tid, $mybb->input['title']);
+			$cache->update_forumsdisplay();
 			
 			flash_message($lang->success_mod_tool_created, 'success');
 			admin_redirect("index.php?module=config-mod_tools");

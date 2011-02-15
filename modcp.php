@@ -535,6 +535,7 @@ if($mybb->input['action'] == "do_delete_announcement")
 	$plugins->run_hooks("modcp_do_delete_announcement");
 
 	$db->delete_query("announcements", "aid='{$aid}'");
+	$cache->update_forumsdisplay();
 
 	redirect("modcp.php?action=announcements", $lang->redirect_delete_announcement);
 }
@@ -662,6 +663,7 @@ if($mybb->input['action'] == "do_new_announcement")
 		
 		$plugins->run_hooks("modcp_do_new_announcement_end");
 		
+		$cache->update_forumsdisplay();
 		redirect("modcp.php?action=announcements", $lang->redirect_add_announcement);
 	}
 	else
@@ -940,6 +942,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 		
 		$plugins->run_hooks("modcp_do_edit_announcement_end");
 		
+		$cache->update_forumsdisplay();
 		redirect("modcp.php?action=announcements", $lang->redirect_edit_announcement);
 	}
 	else

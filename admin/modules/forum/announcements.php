@@ -133,6 +133,7 @@ if($mybb->input['action'] == "add")
 	
 			// Log admin action
 			log_admin_action($aid, $mybb->input['title']);
+			$cache->update_forumsdisplay();
 	
 			flash_message($lang->success_added_announcement, 'success');
 			admin_redirect("index.php?module=forum-announcements");
@@ -427,6 +428,7 @@ if($mybb->input['action'] == "edit")
 	
 			// Log admin action
 			log_admin_action($mybb->input['aid'], $mybb->input['title']);
+			$cache->update_forumsdisplay();
 	
 			flash_message($lang->success_updated_announcement, 'success');
 			admin_redirect("index.php?module=forum-announcements");
@@ -634,6 +636,7 @@ if($mybb->input['action'] == "delete")
 		
 		// Log admin action
 		log_admin_action($announcement['aid'], $announcement['title']);
+		$cache->update_forumsdisplay();
 
 		flash_message($lang->success_announcement_deleted, 'success');
 		admin_redirect("index.php?module=forum-announcements");
