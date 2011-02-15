@@ -962,11 +962,12 @@ function fetch_page_url($url, $page)
  	{
 		$find = array(
 			"-page-{page}",
-			"&amp;page={page}"
+			"&amp;page={page}",
+			"{page}"
 		);
 
 		// Remove "Page 1" to the defacto URL
-		$url = str_replace($find, array("", ""), $url);
+		$url = str_replace($find, array("", "", $page), $url);
 		return $url;
 	}
 	else if(strpos($url, "{page}") === false)
