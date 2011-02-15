@@ -707,9 +707,16 @@ if($fpermissions['canviewthreads'] != 0)
 		ORDER BY t.sticky DESC, {$t}{$sortfield} $sortordernow $sortfield2
 		LIMIT $start, $perpage
 	");
+
+	$ratings = false;
 	while($thread = $db->fetch_array($query))
 	{		
 		$threadcache[$thread['tid']] = $thread;
+
+		if($thread['numratings'] > 0 && $ratings == false)
+		{
+			$ratings = true; // Looks for ratings in the forum
+		}
 
 		// If this is a moved thread - set the tid for participation marking and thread read marking to that of the moved thread
 		if(substr($thread['closed'], 0, 5) == "moved")
@@ -732,7 +739,7 @@ if($fpermissions['canviewthreads'] != 0)
 		}
 	}
 
-	if($foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && $tids)
+	if($foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && $tids && $ratings == true)
 	{
 		// Check if we've rated threads on this page
 		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate
