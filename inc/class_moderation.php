@@ -1264,7 +1264,7 @@ class Moderation
 			$query = array(
 				"fid" => $moveto,
 				"subject" => $newsubject,
-				"icon" => intval($icon['icon']),
+				"icon" => intval($icon),
 				"uid" => intval($thread['uid']),
 				"username" => $db->escape_string($thread['username']),
 				"dateline" => intval($thread['dateline']),
