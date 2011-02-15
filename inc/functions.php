@@ -2867,40 +2867,51 @@ function get_colored_warning_level($level)
  */
 function get_ip()
 {
-	if(isset($_SERVER['REMOTE_ADDR']))
-	{
-		$ip = $_SERVER['REMOTE_ADDR'];
-	}
-	elseif(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-	{
-		if(preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses))
-		{
-			foreach($addresses[0] as $key => $val)
-			{
-				if(!preg_match("#^(10|172\.16|192\.168)\.#", $val))
-				{
-					$ip = $val;
-					break;
-				}
-			}
-		}
-	}
+    global $mybb, $plugins;
 
-	if(!isset($ip))
-	{
-		if(isset($_SERVER['HTTP_CLIENT_IP']))
-		{
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
-		}
-		else
-		{
-			$ip = '';
-		}
-	}
+    $ip = 0;
 
-	$ip = preg_replace("#([^.0-9 ]*)#", "", $ip);
-	return $ip;
-}
+    if(!preg_match("#^(10|172\.16|192\.168)\.#", $_SERVER['REMOTE_ADDR']))
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    if($mybb->settings['ip_forwarded_check'])
+    {
+        if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        {
+            preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses);
+        }
+        elseif(isset($_SERVER['HTTP_X_REAL_IP']))
+        {
+            preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_REAL_IP'], $addresses);
+        }
+
+        foreach($addresses[0] as $key => $val)
+        {
+            if(!preg_match("#^(10|172\.16|192\.168)\.#", $val))
+            {
+                $ip = $val;
+                break;
+            }
+        }
+    }
+
+    if(!$ip)
+    {
+        if(isset($_SERVER['HTTP_CLIENT_IP']))
+        {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        }
+    }
+
+    if($plugins)
+    {
+        $plugins->run_hooks("get_ip", array("ip" => &$ip));
+    }
+
+    return $ip;
+} 
 
 /**
  * Fetch the friendly size (GB, MB, KB, B) for a specified file size.
