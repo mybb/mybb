@@ -120,32 +120,7 @@ if(!$forum || $forum['type'] != "f")
 	error($lang->error_invalidforum);
 }
 
-$stickybit = " OR sticky=1";
-if($thread['sticky'] == 1)
-{
-	$stickybit = " AND sticky=1";
-}
-
-// Figure out what page the thread is actually on for our breadcrumb
-switch($db->type)
-{
-	case "pgsql":
-		$query = $db->query("
-			SELECT COUNT(tid) as threads
-			FROM ".TABLE_PREFIX."threads
-			WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}
-			GROUP BY lastpost
-			ORDER BY lastpost DESC
-		");
-		break;
-	default:
-		$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
-}
-
-$thread_position = $db->fetch_field($query, "threads");
-$thread_page = ceil(($thread_position/$mybb->settings['threadsperpage']));
-
-$breadcrumb_multipage = array("current_page" => $thread_page);
+$breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
 	// How many pages are there?
@@ -180,7 +155,35 @@ if($mybb->settings['showforumpagesbreadcrumb'])
 		$threadcount = $db->fetch_field($query, "threads");
 	}
 
-	$breadcrumb_multipage['num_threads'] = $threadcount;
+	$stickybit = " OR sticky=1";
+	if($thread['sticky'] == 1)
+	{
+		$stickybit = " AND sticky=1";
+	}
+
+	// Figure out what page the thread is actually on
+	switch($db->type)
+	{
+		case "pgsql":
+			$query = $db->query("
+				SELECT COUNT(tid) as threads
+				FROM ".TABLE_PREFIX."threads
+				WHERE fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}
+				GROUP BY lastpost
+				ORDER BY lastpost DESC
+			");
+			break;
+		default:
+			$query = $db->simple_select("threads", "COUNT(tid) as threads", "fid = '$fid' AND (lastpost >= '".intval($thread['lastpost'])."'{$stickybit}) {$visibleonly} {$uid_only}", array('order_by' => 'lastpost', 'order_dir' => 'desc'));
+	}
+
+	$thread_position = $db->fetch_field($query, "threads");
+	$thread_page = ceil(($thread_position/$mybb->settings['threadsperpage']));
+
+	$breadcrumb_multipage = array(
+		"num_threads" => $threadcount,
+		"current_page" => $thread_page
+	);
 }
 
 // Build the navigation.
