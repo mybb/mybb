@@ -639,6 +639,11 @@ else if($mybb->input['action'] == "complex_password")
 }
 else if($mybb->input['action'] == "username_availability")
 {
+	if(!verify_post_check($mybb->input['my_post_key'], true))
+	{
+		xmlhttp_error($lang->invalid_post_code);
+	}
+
 	require_once MYBB_ROOT."inc/functions_user.php";
 	$username = $mybb->input['value'];
 
@@ -678,19 +683,24 @@ else if($mybb->input['action'] == "username_availability")
 
 	if($user['uid'])
 	{
-		$lang->username_taken = $lang->sprintf($lang->username_taken, $username);
+		$lang->username_taken = $lang->sprintf($lang->username_taken, htmlspecialchars_uni($username));
 		echo "<fail>{$lang->username_taken}</fail>";
 		exit;		
 	}
 	else
 	{
-		$lang->username_available = $lang->sprintf($lang->username_available, $username);
+		$lang->username_available = $lang->sprintf($lang->username_available, htmlspecialchars_uni($username));
 		echo "<success>{$lang->username_available}</success>";
 		exit;
 	}
 }
 else if($mybb->input['action'] == "username_exists")
 {
+	if(!verify_post_check($mybb->input['my_post_key'], true))
+	{
+		xmlhttp_error($lang->invalid_post_code);
+	}
+
 	require_once MYBB_ROOT."inc/functions_user.php";
 	$username = $mybb->input['value'];
 
@@ -708,13 +718,13 @@ else if($mybb->input['action'] == "username_exists")
 
 	if($user['uid'])
 	{
-		$lang->valid_username = $lang->sprintf($lang->valid_username, $username);
+		$lang->valid_username = $lang->sprintf($lang->valid_username, htmlspecialchars_uni($username));
 		echo "<success>{$lang->valid_username}</success>";
 		exit;
 	}
 	else
 	{
-		$lang->invalid_username = $lang->sprintf($lang->invalid_username, $username);
+		$lang->invalid_username = $lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username));
 		echo "<fail>{$lang->invalid_username}</fail>";
 		exit;
 	}

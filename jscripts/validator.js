@@ -144,7 +144,7 @@ FormValidator.prototype = {
 						extra = "&" + escape(options.extra_body) + "=" + encodeURIComponent(this.getValue(options.extra_body));
 					}
 					
-					new Ajax.Request(options.url, {method:'post', postBody:"value=" + encodeURIComponent(value) + extra, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
+					new Ajax.Request(options.url, {method:'post', postBody:"value=" + encodeURIComponent(value) + extra + "&my_post_key=" + my_post_key, onComplete: function(request) { this.ajaxValidateComplete(id, options, request); }.bind(this)});
 
 					return "loading";
 					break;
