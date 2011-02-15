@@ -349,7 +349,7 @@ function save_quick_perms($fid)
  *
  * @param array Array containing module and action to check for
  */
-function check_admin_permissions($action)
+function check_admin_permissions($action, $error = true)
 {
 	global $mybb, $page, $lang, $modules_dir;
 	
@@ -365,11 +365,18 @@ function check_admin_permissions($action)
 		$permissions = $func();
 		if($permissions['permissions'][$action['action']] && $mybb->admin['permissions'][$action['module']][$action['action']] != 1)
 		{
-			$page->output_header($lang->access_denied);
-			$page->add_breadcrumb_item($lang->access_denied, "index.php?module=home-index");
-			$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
-			$page->output_footer();
-			exit;
+			if($error)
+			{
+				$page->output_header($lang->access_denied);
+				$page->add_breadcrumb_item($lang->access_denied, "index.php?module=home-index");
+				$page->output_error("<b>{$lang->access_denied}</b><ul><li style=\"list-style-type: none;\">{$lang->access_denied_desc}</li></ul>");
+				$page->output_footer();
+				exit;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 	

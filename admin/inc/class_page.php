@@ -769,9 +769,16 @@ class DefaultSidebarItem
 	 */
 	function add_menu_items($items, $active)
 	{
+		global $run_module;
+		
 		$this->_contents = "<ul class=\"menu\">";
 		foreach($items as $item)
 		{
+			if(!check_admin_permissions(array("module" => $run_module, "action" => $item['id']), false))
+			{
+				continue;
+			}
+			
 			$class = "";
 			if($item['id'] == $active)
 			{
