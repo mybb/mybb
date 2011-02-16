@@ -63,6 +63,8 @@ class Page extends DefaultPage
 
 	function output_nav_tabs($tabs=array(), $active='')
 	{
+		global $plugins;
+		$plugins->run_hooks_by_ref("admin_page_output_nav_tabs_start", $tabs);
 		if(count($tabs) > 1)
 		{
 			$first = true;
@@ -96,6 +98,8 @@ class Page extends DefaultPage
 			echo "<p>{$intro_tab['description']}</p>";
 			echo "</div>";
 		}
+		$arguments = array('tabs' => $tabs, 'active' => $active);
+		$plugins->run_hooks("admin_page_output_nav_tabs_end", $arguments);
 	}
 }
 
