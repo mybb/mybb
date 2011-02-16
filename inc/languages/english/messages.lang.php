@@ -21,6 +21,7 @@ $l['error_maxposts'] = "I'm sorry, but your daily post limit has been exceeded. 
 $l['error_nohostname'] = "No hostname could be found for the IP you entered.";
 $l['error_invalidthread'] = "The specified thread does not exist.";
 $l['error_invalidpost'] = "The specified post does not exist.";
+$l['error_invalidannouncement'] = "The specified announcement does not exist.";
 $l['error_invalidattachment'] = "The specified attachment does not exist.";
 $l['error_invalidforum'] = "Invalid forum";
 $l['error_closedinvalidforum'] = "You may not post in this forum either because the forum is closed, or it is a category.";

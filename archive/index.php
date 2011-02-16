@@ -93,6 +93,18 @@ switch($action)
 			archive_error_no_permission();
 		}
 		
+		if($thread['visible'] != 1)
+		{
+			if(is_moderator($forum['fid']))
+			{
+				archive_error($lang->sprintf($lang->error_unapproved_thread, $mybb->settings['bburl']."/".get_thread_link($thread['tid'])));
+			}
+			else
+			{
+				archive_error($lang->error_invalidthread);
+			}
+		}
+		
 		if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 		{
 			archive_error_no_permission();
@@ -413,7 +425,17 @@ switch($action)
 		break;
 	default:
 		header("HTTP/1.0 404 Not Found");
-		echo $lang->archive_not_found;
+		switch($action2)
+		{
+			case "announcement":
+				archive_error($lang->error_invalidannouncement);
+			case "thread":
+				archive_error($lang->error_invalidthread);
+			case "forum":
+				archive_error($lang->error_invalidforum);
+			default:
+				archive_error($lang->archive_not_found);
+		}
 }
 
 $plugins->run_hooks("archive_end");

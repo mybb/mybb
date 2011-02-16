@@ -81,7 +81,7 @@ if($endpart != "index.php")
 	$todo = explode("-", $endpart, 3);
 	if($todo[0])
 	{
-		$action = $todo[0];
+		$action = $action2 = $todo[0];
 	}
 	$page = intval($todo[2]);
 	$id = intval($todo[1]);
@@ -104,7 +104,7 @@ if($endpart != "index.php")
 	}
 	elseif($action == "thread")
 	{
-		$query = $db->simple_select("threads", "*", "tid='{$id}' AND visible='1' AND closed NOT LIKE 'moved|%'");
+		$query = $db->simple_select("threads", "*", "tid='{$id}' AND closed NOT LIKE 'moved|%'");
 		$thread = $db->fetch_array($query);
 		if(!$thread['tid'])
 		{
@@ -120,7 +120,7 @@ if($endpart != "index.php")
 			$action = "404";
 		}
 	}
-	else if($action != 'index')
+	elseif($action != 'index')
 	{
 		$action = "404";
 	}
