@@ -94,7 +94,8 @@ if($mybb->input['action'] == "prune")
 		{
 			$moderation->delete_post($post['pid']);
 		}
-
+		$cache->update_reportedposts();
+		
 		$plugins->run_hooks("admin_user_banning_prune_commit");
 
 		// Log admin action
