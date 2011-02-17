@@ -446,6 +446,7 @@ if($mybb->input['action'] == "modlogs")
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
+		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
 		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
 		$trow = alt_trow();
@@ -3283,6 +3284,7 @@ if(!$mybb->input['action'])
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
+		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
 		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
 		$trow = alt_trow();
