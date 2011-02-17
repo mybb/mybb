@@ -126,6 +126,22 @@ class CustomModeration extends Moderation
 			{
 				$this->delete_post($pid);
 			}
+			
+			$delete_tids = array();
+			$imploded_pids = implode(",", array_map("intval", $pids));
+			$query = $db->simple_select("threads", "tid", "firstpost IN ({$imploded_pids})");
+			while($threadid = $db->fetch_field($query, "tid"))
+			{
+				$delete_tids[] = $threadid;
+			}
+			if(!empty($delete_tids))
+			{
+				foreach($delete_tids as $delete_tid)
+				{
+					$this->delete_thread($delete_tid);
+					mark_reports($delete_tid, "thread");
+				}
+			}
 		}
 		else
 		{
