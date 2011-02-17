@@ -58,7 +58,7 @@ add_breadcrumb($lang->nav_newthread);
 
 $forumpermissions = forum_permissions($fid);
 
-if($forum['open'] == 0 || $forum['type'] != "f")
+if($forum['open'] == 0 || $forum['type'] != "f" || $forum['linkto'] != "")
 {
 	error($lang->error_closedinvalidforum);
 }
