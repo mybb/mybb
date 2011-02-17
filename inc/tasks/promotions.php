@@ -13,10 +13,22 @@ function task_promotions($task)
 {
 	global $mybb, $db, $lang, $cache;
 	
+	$usergroups = $cache->read("usergroups");
 	// Iterate through all our promotions
 	$query = $db->simple_select("promotions", "*", "enabled = '1'");
 	while($promotion = $db->fetch_array($query))
 	{
+		// Does the destination usergroup even exist?? If it doesn't and it moves a user to it, the user will get PHP errors.
+		if(!array_key_exists($promotion['newusergroup'], $usergroups))
+		{
+			// Instead of just skipping this promotion, disable it to stop it even being selected when this task is run.
+			$update = array(
+				"enabled" => 0
+			);
+			$db->update_query("promotions", $update, "pid = '" . intval($promotion['pid']) . "'");
+			continue;
+		}
+		
 		$and = "";
 		$sql_where = "";
 		
