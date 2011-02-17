@@ -84,13 +84,13 @@ class CustomModeration extends Moderation
 		// If the tool type is a post tool, then execute the post moderation
 		if($tool['type'] == 'p')
 		{
-			$this->execute_post_moderation($post_options, $pids, $tids);
+			$deleted_thread = $this->execute_post_moderation($post_options, $pids, $tids);
 		}
 		// Always execute thead moderation
 		$this->execute_thread_moderation($thread_options, $tids);
 
 		// If the thread is deleted, indicate to the calling script to redirect to the forum, and not the nonexistant thread
-		if($thread_options['deletethread'] == 1)
+		if($thread_options['deletethread'] == 1 || $deleted_thread === 1)
 		{
 			return 'forum';
 		}
@@ -141,6 +141,8 @@ class CustomModeration extends Moderation
 					$this->delete_thread($delete_tid);
 					mark_reports($delete_tid, "thread");
 				}
+				// return 1 here so the code in execute() above knows to redirect to the forum
+				return 1;
 			}
 		}
 		else

@@ -147,6 +147,11 @@ switch($action)
 			$pids[$post['pid']] = $post['pid'];
 		}
 		
+		if(empty($pids))
+		{
+			archive_error($lang->error_invalidthread);
+		}
+		
 		archive_multipage($postcount, $perpage, $page, "{$base_url}thread-$id");
 
 		$pids = implode(",", $pids);

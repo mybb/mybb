@@ -483,7 +483,6 @@ class Moderation
 
 		// Remove any reports attached to this post
 		$db->delete_query("reportedposts", "pid='$pid'");
-		$cache->update_reportedposts();
 
 		$num_unapproved_posts = $num_approved_posts = 0;
 		// Update unapproved post count
