@@ -118,9 +118,13 @@ class postParser
 			{
 				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
 			}
-			// Remove these completely
-			$message = preg_replace("#\s*<base[^>]*>\s*#is", "", $message);
-			$message = preg_replace("#\s*<meta[^>]*>\s*#is", "", $message);
+
+			// Replace meta and base tags in our post - these are > dangerous <
+			$message = preg_replace_callback("#<(m|b)(\w+)(\s*[^>]*)>#si", create_function(
+				'$matches',
+				'return htmlspecialchars($matches[0]);'
+			), $message);
+
 			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
 		}
 		
@@ -167,17 +171,16 @@ class postParser
 		
 		if($this->options['allow_mycode'])
 		{
+			$message = preg_replace_callback("#\[(code|php)\](.*?)\[/\\1\]#si", create_function(
+				'$matches',
+				'return htmlspecialchars($matches[0]);'
+			), $message);
+
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)
 			{
 				foreach($code_matches as $text)
 				{
-					// Fix up HTML inside the code tags so it is clean
-					if($options['allow_html'] != 0)
-					{
-						$text[2] = $this->parse_html($text[2]);
-					}
-					
 					if(my_strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
@@ -535,7 +538,7 @@ class postParser
 	function fix_javascript($message)
 	{
 		$js_array = array(
-			"#(&\#(0*)106;|&\#(0*)74;|j)((&\#(0*)97;|&\#(0*)65;|a)(&\#(0*)118;|&\#(0*)86;|v)(&\#(0*)97;|&\#(0*)65;|a)(\s)?(&\#(0*)115;|&\#(0*)83;|s)(&\#(0*)99;|&\#(0*)67;|c)(&\#(0*)114;|&\#(0*)82;|r)(&\#(0*)105;|&\#(0*)73;|i)(&\#112;|&\#(0*)80;|p)(&\#(0*)116;|&\#(0*)84;|t)(&\#(0*)58;|\:))#i",
+			"#(&\#(0*)106;?|&\#(0*)74;?|&\#x(0*)4a;?|&\#x(0*)6a;?|j)((&\#(0*)97;?|&\#(0*)65;?|a)(&\#(0*)118;?|&\#(0*)86;?|v)(&\#(0*)97;?|&\#(0*)65;?|a)(\s)?(&\#(0*)115;?|&\#(0*)83;?|s)(&\#(0*)99;?|&\#(0*)67;?|c)(&\#(0*)114;?|&\#(0*)82;?|r)(&\#(0*)105;?|&\#(0*)73;?|i)(&\#112;?|&\#(0*)80;?|p)(&\#(0*)116;?|&\#(0*)84;?|t)(&\#(0*)58;?|\:))#i",
 			"#(o)(nmouseover\s?=)#i",
 			"#(o)(nmouseout\s?=)#i",
 			"#(o)(nmousedown\s?=)#i",
