@@ -120,7 +120,7 @@ class postParser
 			}
 
 			// Replace meta and base tags in our post - these are > dangerous <
-			$message = preg_replace_callback("#<(m|b)(\w+)(\s*[^>]*)>#si", create_function(
+			$message = preg_replace_callback("#<(m[^a]|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
 				'$matches',
 				'return htmlspecialchars($matches[0]);'
 			), $message);
@@ -131,7 +131,11 @@ class postParser
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if($this->options['allow_mycode'])
 		{
-			// First we split up the contents of code and php tags to ensure they're not parsed.
+			$message = preg_replace_callback("#\[(code|php)\](.*?)\[/\\1\]#si", create_function(
+				'$matches',
+				'return htmlspecialchars($matches[0]);'
+			), $message);
+
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
@@ -171,11 +175,6 @@ class postParser
 		
 		if($this->options['allow_mycode'])
 		{
-			$message = preg_replace_callback("#\[(code|php)\](.*?)\[/\\1\]#si", create_function(
-				'$matches',
-				'return htmlspecialchars($matches[0]);'
-			), $message);
-
 			// Now that we're done, if we split up any code tags, parse them and glue it all back together
 			if(count($code_matches) > 0)
 			{
