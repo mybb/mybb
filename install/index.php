@@ -1992,8 +1992,8 @@ function install_done()
 	echo $lang->done_step_usergroupsinserted;
 	
 	// Insert all of our user groups from the XML file	
-	$settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
-	$parser = new XMLParser($settings);
+	$usergroup_settings = file_get_contents(INSTALL_ROOT.'resources/usergroups.xml');
+	$parser = new XMLParser($usergroup_settings);
 	$parser->collapse_dups = 0;
 	$tree = $parser->get_tree();
 
