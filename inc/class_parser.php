@@ -119,23 +119,12 @@ class postParser
 				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
 			}
 
-			// Replace meta and base tags in our post - these are > dangerous <
-			$message = preg_replace_callback("#<(m[^a]|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
-				'$matches',
-				'return htmlspecialchars($matches[0]);'
-			), $message);
-
 			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
 		}
 		
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if($this->options['allow_mycode'])
 		{
-			$message = preg_replace_callback("#\[(code|php)\](.*?)\[/\\1\]#si", create_function(
-				'$matches',
-				'return htmlspecialchars($matches[0]);'
-			), $message);
-
 			preg_match_all("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", $message, $code_matches, PREG_SET_ORDER);
 			$message = preg_replace("#\[(code|php)\](.*?)\[/\\1\](\r\n?|\n?)#si", "<mybb-code>\n", $message);
 		}
@@ -191,6 +180,15 @@ class postParser
 					$message = preg_replace("#\<mybb-code>\n?#", $code, $message, 1);
 				}
 			}
+		}
+
+		// Replace meta and base tags in our post - these are > dangerous <
+		if($this->options['allow_html'])
+		{
+			$message = preg_replace_callback("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", create_function(
+				'$matches',
+				'return htmlspecialchars($matches[0]);'
+			), $message);
 		}
 
 		if($options['nl2br'] !== 0)
