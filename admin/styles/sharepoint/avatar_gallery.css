@@ -1,0 +1,63 @@
+body {
+margin: 0;
+padding: 0;
+	background: #f5f5f5;
+}
+
+#gallery_breadcrumb {
+	background: #ADCBE6;
+	color: #000;
+	padding: 5px;
+	font-size: 96%;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+	border-top: 1px solid #000;
+}
+
+#gallery {
+	padding: 6px;
+}
+
+#avatars, #avatars li, #galleries, #galleries li {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+#avatars li, #galleries li {
+float: left;
+}
+
+#avatars {
+clear: left;
+}
+
+#avatars li a, #galleries li a {
+display: block;
+margin-right: 4px;
+margin-left: 4px;
+padding-top: 2px;
+width: 120px;
+height: 120px;
+background: #fff;
+text-align: center;
+border: 1px solid #ccc;
+margin-top: 4px;
+}
+
+#avatars li a:hover, #galleries li a:hover {
+border: 1px solid #f00;
+}
+
+#avatars li span.image, #galleries li span.image {
+display: block;
+height: 80px;
+text-align: center;
+}
+
+#avatars li span.title, #galleries li span.title {
+display: block;
+font-weight: bold;
+margin-top: 8px;
+
+}
