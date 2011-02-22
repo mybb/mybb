@@ -4953,7 +4953,7 @@ body {
 {$lang->password}<br />&nbsp;&nbsp;<input type="password" class="textbox" name="password" value="" /><br /><br />
 <label title="{$lang->remember_me_desc}"><input type="checkbox" class="checkbox" name="remember" value="yes" /> {$lang->remember_me}</label><br /><br />
 <br /><input type="submit" class="button" name="loginsubmit" value="{$lang->login}" /></form>]]></template>
-		<template name="portal_latestthreads_thread" version="120"><![CDATA[<tr>
+		<template name="portal_latestthreads_thread" version="1601"><![CDATA[<tr>
 <td class="{$altbg}">
 <strong><a href="{$mybb->settings['bburl']}/{$thread['threadlink']}">{$thread['subject']}</a></strong>
 <span class="smalltext"><br />
