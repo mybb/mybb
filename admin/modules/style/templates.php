@@ -385,7 +385,13 @@ if($mybb->input['action'] == "edit_template")
 		{
 			$errors[] = $lang->error_missing_title;
 		}
-		
+
+		// Are we trying to do malicious things in our template?
+		if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"])?[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $db->escape_string($mybb->input['template']))))
+		{
+			$errors[] = $lang->error_security_problem;
+		}
+
 		if(!$errors)
 		{
 			$query = $db->simple_select("templates", "*", "tid='{$mybb->input['tid']}'");
@@ -474,7 +480,6 @@ if($mybb->input['action'] == "edit_template")
 	
 	if($errors)
 	{
-		$page->output_inline_error($errors);
 		$template = $mybb->input;
 	}
 	else
@@ -526,7 +531,12 @@ if($mybb->input['action'] == "edit_template")
 	);
 	
 	$page->output_nav_tabs($sub_tabs, 'edit_template');
-	
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
 	$form = new Form("index.php?module=style-templates&amp;action=edit_template{$expand_str}", "post", "edit_template");
 	echo $form->generate_hidden_field('tid', $template['tid'])."\n";
 	
