@@ -425,7 +425,7 @@ var MyBB = {
 					onfocus: "if(this.value == '"+lang.username+"') { this.value=''; }",
 					onblur: "if(this.value == '') { this.value='"+lang.username+"'; }"
 				})
-			}).insert({ bottom: " " });
+			}).insert({ bottom: "&nbsp;" });
 
 			form.insert({ bottom: new Element("input",
 				{
@@ -437,7 +437,7 @@ var MyBB = {
 					onfocus: "if(this.value == '"+lang.password+"') { this.value=''; }",
 					onblur: "if(this.value == '') { this.value='"+lang.password+"'; }"
 				})
-			}).insert({ bottom: " " });
+			}).insert({ bottom: "&nbsp;" });
 
 			form.insert({ bottom: new Element("input",
 				{
@@ -448,7 +448,7 @@ var MyBB = {
 				})
 			});
 
-			var span = new Element("span", { class: "remember_me" }).insert({ bottom: new Element("input",
+			var span = new Element("span", { "class": "remember_me" }).insert({ bottom: new Element("input",
 				{
 					name: "quick_remember",
 					id: "quick_login_remember",
