@@ -387,140 +387,89 @@ var MyBB = {
 	{		
 		if($("quick_login"))
 		{
-			var form = document.createElement("form");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", "member.php");
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"action\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "action");
-			}
-			
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", "do_login");
-			form.appendChild(input);
-			
+			var form = new Element("form", { method: "post", action: "member.php" });
+			form.insert({ bottom: new Element("input",
+				{
+					name: "action",
+					type: "hidden",
+					value: "do_login"
+				})
+			});
+
 			if(document.location.href)
 			{
-				if(this.browser == "ie")
+				form.insert({ bottom: new Element("input",
+					{
+						name: "url",
+						type: "hidden",
+						value: this.HTMLchars(document.location.href)
+					})
+				});
+			}
+
+			form.insert({ bottom: new Element("input",
 				{
-					var input = document.createElement("<input name=\"url\">");
-				}
-				else
+					name: "quick_login",
+					type: "hidden",
+					value: "1"
+				})
+			});
+
+			form.insert({ bottom: new Element("input",
 				{
-					var input = document.createElement("input");
-					input.setAttribute("name", "url");
-				}
-				
-				input.setAttribute("type", "hidden");
-				input.setAttribute("value", this.HTMLchars(document.location.href));
-				form.appendChild(input);
-			}
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"quick_login\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "quick_login");
-			}
-			
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", "1");
-			form.appendChild(input);
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"quick_username\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "quick_username");
-			}
-			input.setAttribute("type", "text");
-			input.setAttribute("value", lang.username);
-			input.setAttribute("class", "textbox");
-			input.setAttribute("onfocus", "if(this.value == '"+lang.username+"') { this.value=''; }");
-			input.setAttribute("onblur", "if(this.value == '') { this.value='"+lang.username+"'; }");
-			input.id = 'quick_login_username';
-			form.appendChild(input);
-			form.innerHTML += " ";
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"quick_password\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "quick_password");
-			}
-			input.setAttribute("type", "password");
-			input.setAttribute("value", lang.password);
-			input.setAttribute("class", "textbox");
-			input.setAttribute("onfocus", "if(this.value == '"+lang.password+"') { this.value=''; }");
-			input.setAttribute("onblur", "if(this.value == '') { this.value='"+lang.password+"'; }");
-			form.appendChild(input);
-			
-			form.innerHTML += " ";
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"submit\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "submit");
-			}
-			input.setAttribute("type", "submit");
-			input.setAttribute("value", lang.login);
-			input.setAttribute("class", "button");
-			form.appendChild(input);
-			
-			if(this.browser == "ie")
-			{
-				var span = document.createElement("<span class=\"remember_me\">");
-			}
-			else
-			{
-				var span = document.createElement("span");
-				span.setAttribute("class", "remember_me");
-			}
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"quick_remember\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "quick_remember");
-			}
-			input.setAttribute("type", "checkbox");
-			input.setAttribute("checked", "checked");
-			input.setAttribute("value", "yes");
-			input.setAttribute("class", "checkbox");
-			input.id = 'quick_login_remember';
-			span.appendChild(input);
-			
+					name: "quick_username",
+					id: "quick_login_username",
+					type: "text",
+					value: lang.username,
+					"class": "textbox",
+					onfocus: "if(this.value == '"+lang.username+"') { this.value=''; }",
+					onblur: "if(this.value == '') { this.value='"+lang.username+"'; }"
+				})
+			}).insert({ bottom: " " });
+
+			form.insert({ bottom: new Element("input",
+				{
+					name: "quick_password",
+					id: "quick_login_password",
+					type: "password",
+					value: lang.password,
+					"class": "textbox",
+					onfocus: "if(this.value == '"+lang.password+"') { this.value=''; }",
+					onblur: "if(this.value == '') { this.value='"+lang.password+"'; }"
+				})
+			}).insert({ bottom: " " });
+
+			form.insert({ bottom: new Element("input",
+				{
+					name: "submit",
+					type: "submit",
+					value: lang.login,
+					"class": "button"
+				})
+			});
+
+			var span = new Element("span", { class: "remember_me" }).insert({ bottom: new Element("input",
+				{
+					name: "quick_remember",
+					id: "quick_login_remember",
+					type: "checkbox",
+					value: "yes",
+					"class": "checkbox"
+				})
+			});
+
 			span.innerHTML += "<label for=\"quick_login_remember\"> "+lang.remember_me+"</label>";
-			form.appendChild(span);
-			
+			form.insert({ bottom: span });
+
 			form.innerHTML += lang.lost_password+lang.register_url;
-						
+	
 			$("quick_login").innerHTML = "";
-			$("quick_login").appendChild(form);
+			$("quick_login").insert({ before: form });
+
+			$("quick_login_remember").setAttribute("checked", "checked");
 			$('quick_login_username').focus();
 		}
-		
+
 		return false;
 	}
 };
