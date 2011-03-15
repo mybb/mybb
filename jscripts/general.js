@@ -107,68 +107,44 @@ var MyBB = {
 
 		if(confirmReturn == true)
 		{
-			form = document.createElement("form");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", "calendar.php");
-			form.setAttribute("style", "display: none;");
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"action\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "action");
-			}
-			input.setAttribute("name", "action");
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", "do_editevent");
-			form.appendChild(input);
+			var form = new Element("form", { method: "post", action: "calendar.php", style: "display: none;" });
+
+			form.insert({ bottom: new Element("input",
+				{
+					name: "action",
+					type: "hidden",
+					value: "do_editevent"
+				})
+			});
 
 			if(my_post_key)
 			{
-				if(this.browser == "ie")
+				form.insert({ bottom: new Element("input",
+					{
+						name: "my_post_key",
+						type: "hidden",
+						value: my_post_key
+					})
+				});
+			}
+
+			form.insert({ bottom: new Element("input",
 				{
-					var input = document.createElement("<input name=\"my_post_key\">");
-				}
-				else
+					name: "eid",
+					type: "hidden",
+					value: eid
+				})
+			});
+
+			form.insert({ bottom: new Element("input",
 				{
-					var input = document.createElement("input");
-					input.setAttribute("name", "my_post_key");
-				}
-				input.setAttribute("type", "hidden");
-				input.setAttribute("value", my_post_key);
-				form.appendChild(input);
-			}
+					name: "delete",
+					type: "hidden",
+					value: 1
+				})
+			});
 
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"eid\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "eid");
-			}
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", eid);
-			form.appendChild(input);
-
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"delete\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "delete");
-			}
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", 1);
-			form.appendChild(input);
-
-			document.getElementsByTagName("body")[0].appendChild(form);
+			$$("body")[0].insert({ bottom: form });
 			form.submit();
 		}
 	},
@@ -205,54 +181,36 @@ var MyBB = {
 
 		if(confirmReturn == true)
 		{
-			form = document.createElement("form");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", "reputation.php?action=delete");
-			form.setAttribute("style", "display: none;");
+			var form = new Element("form", { method: "post", action: "reputation.php?action=delete", style: "display: none;" });
 
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"rid\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "rid");
-			}
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", rid);
-			form.appendChild(input);
+			form.insert({ bottom: new Element("input",
+				{
+					name: "rid",
+					type: "hidden",
+					value: rid
+				})
+			});
 
 			if(my_post_key)
 			{
-				if(this.browser == "ie")
-				{
-					var input = document.createElement("<input name=\"my_post_key\">");
-				}
-				else
-				{
-					var input = document.createElement("input");
-					input.setAttribute("name", "my_post_key");
-				}
-				input.setAttribute("type", "hidden");
-				input.setAttribute("value", my_post_key);
-				form.appendChild(input);
+				form.insert({ bottom: new Element("input",
+					{
+						name: "my_post_key",
+						type: "hidden",
+						value: my_post_key
+					})
+				});
 			}
-			
-			if(this.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"uid\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "uid");
-			}
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", uid);
-			form.appendChild(input);
 
-			document.getElementsByTagName("body")[0].appendChild(form);
+			form.insert({ bottom: new Element("input",
+				{
+					name: "uid",
+					type: "hidden",
+					value: uid
+				})
+			});
+
+			$$("body")[0].insert({ bottom: form });
 			form.submit();
 		}
 	},
@@ -315,23 +273,17 @@ var MyBB = {
 		{
 			if(use_xmlhttprequest != 1 || !new Ajax.Request('misc.php?action=dstswitch&ajax=1', {method: 'post'})) // Ajax update failed? (No ajax support) Fake it
 			{
-				form = document.createElement("form");
-				form.setAttribute("method", "post");
-				form.setAttribute("action", "misc.php");
-				form.setAttribute("style", "display: none;");
-				if(this.browser == "ie")
-				{
-					var input = document.createElement("<input name=\"action\">");
-				}
-				else
-				{
-					var input = document.createElement("input");
-					input.setAttribute("name", "action");
-				}
-				input.setAttribute("type", "hidden");
-				input.setAttribute("value", "dstswitch");
-				form.appendChild(input);
-				document.getElementsByTagName("body")[0].appendChild(form);
+				var form = new Element("form", { method: "post", action: "misc.php", style: "display: none;" });
+
+				form.insert({ bottom: new Element("input",
+					{
+						name: "action",
+						type: "hidden",
+						value: "dstswitch"
+					})
+				});
+
+				$$("body")[0].insert({ bottom: form });
 				form.submit();
 			}
 		}

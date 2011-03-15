@@ -147,41 +147,28 @@ var Thread = {
 		confirmReturn = confirm(quickdelete_confirm);
 		if(confirmReturn == true)
 		{
-			form = document.createElement("form");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", "editpost.php?action=deletepost&delete=1");
-			form.setAttribute("style", "display: none;");
+			var form = new Element("form", { method: "post", action: "editpost.php?action=deletepost&delete=1", style: "display: none;" });
 
 			if(my_post_key)
 			{
-				if(MyBB.browser == "ie")
-				{
-					var input = document.createElement("<input name=\"my_post_key\">");
-				}
-				else
-				{
-					var input = document.createElement("input");
-					input.setAttribute("name", "my_post_key");
-				}
-				input.setAttribute("type", "hidden");
-				input.setAttribute("value", my_post_key);
-				form.appendChild(input);
+				form.insert({ bottom: new Element("input",
+					{
+						name: "my_post_key",
+						type: "hidden",
+						value: my_post_key
+					})
+				});
 			}
 
-			if(MyBB.browser == "ie")
-			{
-				var input = document.createElement("<input name=\"pid\">");
-			}
-			else
-			{
-				var input = document.createElement("input");
-				input.setAttribute("name", "pid");
-			}
-			input.setAttribute("type", "hidden");
-			input.setAttribute("value", pid);
+			form.insert({ bottom: new Element("input",
+				{
+					name: "pid",
+					type: "hidden",
+					value: pid
+				})
+			});
 
-			form.appendChild(input);
-			document.getElementsByTagName("body")[0].appendChild(form);
+			$$("body")[0].insert({ bottom: form });
 			form.submit();
 		}
 	},
