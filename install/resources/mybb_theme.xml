@@ -1614,7 +1614,7 @@ body {
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread" version="1600"><![CDATA[<html>
+		<template name="showthread" version="1603"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -1623,7 +1623,7 @@ body {
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/thread.js?ver=1600"></script>
+<script type="text/javascript" src="jscripts/thread.js?ver=1603"></script>
 </head>
 <body>
 	{$header}
@@ -3184,12 +3184,12 @@ body {
 </html>]]></template>
 		<template name="usercp_avatar_gallery_avatar" version="120"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" title="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="1600"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" title="{$lang->avatar}" {$avatar_width_height} /></td>]]></template>
-		<template name="headerinclude" version="1600"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1603"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.js?ver=1600"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1600"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.js?ver=1603"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1603"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1600"></script>
 {$stylesheets}
 <script type="text/javascript">
