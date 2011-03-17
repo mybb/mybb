@@ -58,11 +58,22 @@ $l['chmod_files_and_dirs'] = "CHMOD Files and Directories";
 
 $l['notice_process_long_time'] = "This process may take up to several hours depending on the size of your forum and this table.";
 
+$l['check_templates'] = "Check Templates";
+$l['check_templates_desc'] = "Checks all installed templates for known security issues.";
+$l['check_templates_title'] = "Check Template Security";
+$l['check_templates_info'] = "This process will check your templates against security issues that could affect your forum and the server it runs on. This might take a while if you've installed many themes.
+<br /><br />To start the process, press the 'Proceed' button below.";
+$l['check_templates_info_desc'] = "The templates below matched known security issues. Please review them.";
+$l['full_edit'] = "Full Edit";
+
 $l['error_chmod'] = "of the required files and directories do not have proper CHMOD settings.";
 $l['error_invalid_table'] = "The specified table does not exist.";
 $l['error_db_encoding_not_set'] = "Your current setup of MyBB is not setup to use this tool yet. Please see <a href=\"http://wiki.mybboard.net/index.php/UTF8_Setup\">the wiki</a> for more information on how to set it up.";
 $l['error_not_supported'] = "Your current Database Engine is not supported by the UTF-8 Conversion Tool.";
+$l['error_invalid_input'] = "There was a problem checking the templates. Please try again or contact the MyBB Group for support.";
+$l['error_master_templates_altered'] = "The Master Templates have been altered. Please contact the MyBB Group for support on how to alter these.";
 
+$l['success_templates_checked'] = "Templates checked successfully - no security issues were found!";
 $l['success_all_tables_already_converted'] = "All tables have already been converted or are already in UTF-8 format.";
 $l['success_table_converted'] = "The selected table \"{1}\" has been converted to UTF-8 successfully.";
 $l['success_chmod'] = "All of the required files and directories have the proper CHMOD settings.";

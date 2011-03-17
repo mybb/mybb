@@ -385,6 +385,8 @@ if($mybb->input['action'] == "import")
 						case -3:
 							$errors[] = $lang->error_theme_already_exists;
 							break;
+						case -4:
+							$errors[] = $lang->error_theme_security_problem;
 					}
 				}
 			}

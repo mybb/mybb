@@ -17,8 +17,157 @@ if(!defined("IN_MYBB"))
 
 $page->add_breadcrumb_item($lang->system_health, "index.php?module=tools-system_health");
 
+$sub_tabs['system_health'] = array(
+	'title' => $lang->system_health,
+	'link' => "index.php?module=tools-system_health",
+	'description' => $lang->system_health_desc
+);
+
+$sub_tabs['utf8_conversion'] = array(
+	'title' => $lang->utf8_conversion,
+	'link' => "index.php?module=tools-system_health&amp;action=utf8_conversion",
+	'description' => $lang->utf8_conversion_desc2
+);
+
+$sub_tabs['template_check'] = array(
+	'title' => $lang->check_templates,
+	'link' => "index.php?module=tools-system_health&amp;action=check_templates",
+	'description' => $lang->check_templates_desc
+);
+
 $plugins->run_hooks("admin_tools_system_health_begin");
 
+if($mybb->input['action'] == "do_check_templates" && $mybb->request_method == "post")
+{
+	$plugins->run_hooks("admin_tools_system_health_template_do_check_start");
+
+	$query = $db->simple_select("templates", "*", "", array("order_by" => "sid, title", "order_dir" => "ASC"));
+
+	if(!$db->num_rows($query))
+	{
+		flash_message($lang->error_invalid_input, 'error');
+		admin_redirect("index.php?module=tools-system_health");
+	}
+
+	$t_cache = array();
+	while($template = $db->fetch_array($query))
+	{
+		if(check_template($template['template']) == true)
+		{
+			$t_cache[$template['sid']][] = $template;
+		}
+	}
+
+	if(empty($t_cache))
+	{
+		flash_message($lang->success_templates_checked, 'success');
+		admin_redirect("index.php?module=tools-system_health");
+	}
+
+	$plugins->run_hooks("admin_tools_system_health_template_do_check");
+
+	$page->add_breadcrumb_item($lang->check_templates);
+	$page->output_header($lang->check_templates);
+
+	$page->output_nav_tabs($sub_tabs, 'template_check');
+	$page->output_inline_error(array($lang->check_templates_info_desc));
+
+	$templatesets = array(
+		-2 => array(
+			"title" => "MyBB Master Templates"
+		)
+	);
+	$query = $db->simple_select("templatesets", "*");
+	while($set = $db->fetch_array($query))
+	{
+		$templatesets[$set['sid']] = $set;
+	}
+
+	$count = 0;
+	foreach($t_cache as $sid => $templates)
+	{
+		if(!$done_set[$sid])
+		{
+			$table = new Table();
+			$table->construct_header($templatesets[$sid]['title'], array("colspan" => 2));
+
+			$done_set[$sid] = 1;
+			++$count;
+		}
+
+		if($sid == -2)
+		{
+			// Some cheeky clown has altered the master templates!
+			$table->construct_cell($lang->error_master_templates_altered, array("colspan" => 2));
+			$table->construct_row();
+		}
+
+		foreach($templates as $template)
+		{
+			if($sid == -2)
+			{
+				$table->construct_cell($template['title'], array('colspan' => 2));
+			}
+			else
+			{
+				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
+				$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}");
+
+				$table->construct_cell("<a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report\">{$template['title']}</a>", array('width' => '80%'));
+				$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+			}
+
+			$table->construct_row();
+		}
+
+		if($done_set[$sid] && !$done_output[$sid])
+		{		
+			$done_output[$sid] = 1;
+			if($count == 1)
+			{
+				$table->output($lang->check_templates);
+			}
+			else
+			{
+				$table->output();
+			}
+		}
+	}
+
+	$page->output_footer();
+}
+
+if($mybb->input['action'] == "check_templates")
+{
+	$plugins->run_hooks("admin_tools_system_health_template_check");
+
+	$page->add_breadcrumb_item($lang->check_templates);
+	$page->output_header($lang->check_templates);
+
+	$page->output_nav_tabs($sub_tabs, 'template_check');
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
+	$form = new Form("index.php?module=tools-system_health", "post", "check_set");
+	echo $form->generate_hidden_field("action", "do_check_templates");
+
+	$form_container = new FormContainer($lang->check_templates);
+	$form_container->output_row($lang->check_templates_title, "", $lang->check_templates_info);
+	$form_container->end();
+
+	$buttons = array();
+	$buttons[] = $form->generate_submit_button($lang->proceed);
+
+	$form->output_submit_wrapper($buttons);
+	
+	$form->end();
+
+	$page->output_footer();
+}
+	
 if($mybb->input['action'] == "utf8_conversion")
 {
 	$plugins->run_hooks("admin_tools_system_health_utf8_conversion");
@@ -424,18 +573,6 @@ if($mybb->input['action'] == "utf8_conversion")
 	
 	$page->output_header($lang->system_health." - ".$lang->utf8_conversion);
 	
-	$sub_tabs['system_health'] = array(
-		'title' => $lang->system_health,
-		'link' => "index.php?module=tools-system_health",
-		'description' => $lang->system_health_desc
-	);
-	
-	$sub_tabs['utf8_conversion'] = array(
-		'title' => $lang->utf8_conversion,
-		'link' => "index.php?module=tools-system_health&amp;action=utf8_conversion",
-		'description' => $lang->utf8_conversion_desc2
-	);
-	
 	$page->output_nav_tabs($sub_tabs, 'utf8_conversion');
 	
 	asort($mybb_tables);
@@ -469,18 +606,6 @@ if(!$mybb->input['action'])
 	$plugins->run_hooks("admin_tools_system_health_start");
 	
 	$page->output_header($lang->system_health);
-	
-	$sub_tabs['system_health'] = array(
-		'title' => $lang->system_health,
-		'link' => "index.php?module=tools-system_health",
-		'description' => $lang->system_health_desc
-	);
-	
-	$sub_tabs['utf8_conversion'] = array(
-		'title' => $lang->utf8_conversion,
-		'link' => "index.php?module=tools-system_health&amp;action=utf8_conversion",
-		'description' => $lang->utf8_conversion_desc2
-	);
 	
 	$page->output_nav_tabs($sub_tabs, 'system_health');
 	

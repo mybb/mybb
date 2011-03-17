@@ -166,6 +166,8 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		}
 		$day_bits = "";
 	}
+	
+	$this_month = $monthnames[$month];
 	eval("\$mini_calendar .= \"".$templates->get("calendar_mini")."\";");
 	return $mini_calendar;
 }

@@ -642,6 +642,22 @@ function login_attempt_check_acp($uid=0, $return_num=false)
 }
 
 /**
+ * Checks whether there are any 'security' issues in templates via complex syntax
+ *
+ * @param string The template to be scanned
+ * @return boolean A true/false depending on if an issue was detected
+ */
+function check_template($template)
+{
+	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"])?[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/**
  * Provides a function to entirely delete a user's posts, and find the threads attached to them
  *
  * @param integer The uid of the user

@@ -60,7 +60,7 @@ if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_templat
 		'description' => $lang->find_updated_desc
 	);
 }
-else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set" || $mybb->input['action'] == "edit_template")
+else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set" || $mybb->input['action'] == "check_set" || $mybb->input['action'] == "edit_template")
 {
 	$sub_tabs['manage_templates'] = array(
 		'title' => $lang->manage_templates,
@@ -387,7 +387,7 @@ if($mybb->input['action'] == "edit_template")
 		}
 
 		// Are we trying to do malicious things in our template?
-		if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"])?[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $db->escape_string($mybb->input['template']))))
+		if(check_template($mybb->input['template']))
 		{
 			$errors[] = $lang->error_security_problem;
 		}
@@ -508,7 +508,8 @@ if($mybb->input['action'] == "edit_template")
 	$page->add_breadcrumb_item($lang->edit_template_breadcrumb.$template['title'], "index.php?module=style-templates&amp;sid={$sid}");
 	
 	$page->output_header($lang->edit_template);
-	
+
+
 	$sub_tabs = array();
 	
 	if($mybb->input['from'] == "diff_report")
@@ -1052,7 +1053,7 @@ LEGEND;
 		}
 		
 		foreach($templates as $template)
-		{		
+		{
 			$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
 			$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;from=diff_report");
 			$popup->add_item($lang->diff_report, "index.php?module=style-templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid1=".$template['sid']."&amp;sid2=-2&amp;from=diff_report");
@@ -1631,5 +1632,4 @@ if(!$mybb->input['action'])
 
 	$page->output_footer();
 }
-
 ?>

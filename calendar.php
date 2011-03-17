@@ -38,18 +38,18 @@ if($mybb->usergroup['canviewcalendar'] == 0)
 
 $monthnames = array(
 	"offset",
-	$lang->alt_month_1,
-	$lang->alt_month_2,
-	$lang->alt_month_3,
-	$lang->alt_month_4,
-	$lang->alt_month_5,
-	$lang->alt_month_6,
-	$lang->alt_month_7,
-	$lang->alt_month_8,
-	$lang->alt_month_9,
-	$lang->alt_month_10,
-	$lang->alt_month_11,
-	$lang->alt_month_12
+	"$lang->alt_month_1",
+	"$lang->alt_month_2",
+	"$lang->alt_month_3",
+	"$lang->alt_month_4",
+	"$lang->alt_month_5",
+	"$lang->alt_month_6",
+	"$lang->alt_month_7",
+	"$lang->alt_month_8",
+	"$lang->alt_month_9",
+	"$lang->alt_month_10",
+	"$lang->alt_month_11",
+	"$lang->alt_month_12"
 );
 
 // Make navigation
@@ -277,7 +277,7 @@ if($mybb->input['action'] == "addevent")
 		}
 		if($mybb->input['repeats'])
 		{
-			$repeats_sel[$mybb->input['repeats']] = " selected=\"selected\"";
+			$repeats_sel["{$mybb->input['repeats']}"] = " selected=\"selected\"";
 		}
 		$repeats_1_days = intval($mybb->input['repeats_1_days']);
 		$repeats_3_weeks = intval($mybb->input['repeats_3_weeks']);
@@ -290,36 +290,36 @@ if($mybb->input['action'] == "addevent")
 					continue;
 				}
 				$day = intval($day);
-				$repeats_3_days[$day] = " checked=\"checked\"";
+				$repeats_3_days["{$day}"] = " checked=\"checked\"";
 			}
 		}
 		if($mybb->input['repeats_4_type'] == 1)
 		{
-			$repeats_4_type[1] = "checked=\"checked\"";
+			$repeats_4_type['1'] = "checked=\"checked\"";
 		}
 		else
 		{
-			$repeats_4_type[2] = "checked=\"checked\"";
+			$repeats_4_type['2'] = "checked=\"checked\"";
 		}
 		$repeats_4_day = intval($mybb->input['repeats_4_day']);
 		$repeats_4_months = intval($mybb->input['repeats_4_months']);
-		$repeats_4_occurance[$mybb->input['repeats_4_occurance']] = "selected=\"selected\"";
-		$repeats_4_weekday[$mybb->input['repeats_4_weekday']] = "selected=\"selected\"";
+		$repeats_4_occurance["{$mybb->input['repeats_4_occurance']}"] = "selected=\"selected\"";
+		$repeats_4_weekday["{$mybb->input['repeats_4_weekday']}"] = "selected=\"selected\"";
 		$repeats_4_months2 = intval($mybb->input['repeats_4_months2']);
 		if($mybb->input['repeats_5_type'] == 1)
 		{
-			$repeats_5_type[1] = "checked=\"checked\"";
+			$repeats_5_type['1'] = "checked=\"checked\"";
 		}
 		else
 		{
-			$repeats_5_type[2] = "checked=\"checked\"";
+			$repeats_5_type['2'] = "checked=\"checked\"";
 		}
 		$repeats_5_day = intval($mybb->input['repeats_5_day']);
-		$repeats_5_month[$mybb->input['repeats_5_month']] = "selected=\"selected\"";
+		$repeats_5_month["{$mybb->input['repeats_5_month']}"] = "selected=\"selected\"";
 		$repeats_5_years = intval($mybb->input['repeats_5_years']);
-		$repeats_5_occurance[$mybb->input['repeats_5_occurance']] = "selected=\"selected\"";
-		$repeats_5_weekday[$mybb->input['repeats_5_weekday']] = "selected=\"selected\"";
-		$repeats_5_month2[$mybb->input['repeats_5_month2']] = "selected=\"selected\"";
+		$repeats_5_occurance["{$mybb->input['repeats_5_occurance']}"] = "selected=\"selected\"";
+		$repeats_5_weekday["{$mybb->input['repeats_5_weekday']}"] = "selected=\"selected\"";
+		$repeats_5_month2["{$mybb->input['repeats_5_month2']}"] = "selected=\"selected\"";
 		$repeats_5_years2 = intval($mybb->input['repeats_5_years2']);
 
 		$timezone = $mybb->input['timezone'];
@@ -356,7 +356,7 @@ if($mybb->input['action'] == "addevent")
 		$type = "single";
 		$repeats_1_days = 1;
 		$repeats_3_weeks = 1;
-		$repeats_4_type[1] = "checked=\"checked\"";
+		$repeats_4_type['1'] = "checked=\"checked\"";
 		$repeats_4_day = 1;
 		$repeats_4_months = 1;
 		$repeats_4_occurance[1] = "selected=\"selected\"";
@@ -717,7 +717,7 @@ if($mybb->input['action'] == "editevent")
 		}
 		if($mybb->input['repeats'])
 		{
-			$repeats_sel[$mybb->input['repeats']] = " selected=\"selected\"";
+			$repeats_sel["{$mybb->input['repeats']}"] = " selected=\"selected\"";
 		}
 		$repeats_1_days = intval($mybb->input['repeats_1_days']);
 		$repeats_3_weeks = intval($mybb->input['repeats_3_weeks']);
@@ -727,16 +727,16 @@ if($mybb->input['action'] == "editevent")
 			{
 				if($val != 1) continue;
 				$day = intval($day);
-				$repeats_3_days[$day] = " checked=\"checked\"";
+				$repeats_3_days["{$day}"] = " checked=\"checked\"";
 			}
 		}
 		if($mybb->input['repeats_4_type'] == 1)
 		{
-			$repeats_4_type[1] = "checked=\"checked\"";
+			$repeats_4_type['1'] = "checked=\"checked\"";
 		}
 		else
 		{
-			$repeats_4_type[2] = "checked=\"checked\"";
+			$repeats_4_type['2'] = "checked=\"checked\"";
 		}
 		$repeats_4_day = intval($mybb->input['repeats_4_day']);
 		$repeats_4_months = intval($mybb->input['repeats_4_months']);
@@ -806,13 +806,13 @@ if($mybb->input['action'] == "editevent")
 			$repeats = unserialize($event['repeats']);
 			if($repeats['repeats'] >= 0)
 			{
-				$repeats_sel[$repeats['repeats']] = " selected=\"selected\"";
+				$repeats_sel["{$repeats['repeats']}"] = " selected=\"selected\"";
 				switch($repeats['repeats'])
 				{
 					case 1:
 						$repeats_1_days = $repeats['days'];
 						$repeats_3_weeks = 1;
-						$repeats_4_type[1] = "checked=\"checked\"";
+						$repeats_4_type['1'] = "checked=\"checked\"";
 						$repeats_4_day = 1;
 						$repeats_4_months = 1;
 						$repeats_4_months2 = 1;
@@ -827,10 +827,10 @@ if($mybb->input['action'] == "editevent")
 						{
 							foreach($repeats['days'] as $weekday)
 							{
-								$repeats_3_days[$weekday] = " checked=\"checked\"";
+								$repeats_3_days["{$weekday}"] = " checked=\"checked\"";
 							}
 						}
-						$repeats_4_type[1] = "checked=\"checked\"";
+						$repeats_4_type['1'] = "checked=\"checked\"";
 						$repeats_4_day = 1;
 						$repeats_4_months = 1;
 						$repeats_4_months2 = 1;
@@ -843,13 +843,13 @@ if($mybb->input['action'] == "editevent")
 						$repeats_3_weeks = 1;
 						if($repeats['day'])
 						{
-							$repeats_4_type[1] = "checked=\"checked\"";
+							$repeats_4_type['1'] = "checked=\"checked\"";
 							$repeats_4_day = $repeats['day'];
 							$repeats_4_months = $repeats_4_months2 = $repeats['months'];
 						}
 						else
 						{
-							$repeats_4_type[2] = "checked=\"checked\"";
+							$repeats_4_type['2'] = "checked=\"checked\"";
 							$repeats_4_day = 1;
 							$repeats_4_months2 = $repeats_4_months = $repeats['months'];
 							$repeats_4_occurance[$repeats['occurance']] = "selected=\"selected\"";
@@ -862,7 +862,7 @@ if($mybb->input['action'] == "editevent")
 					case 5:
 						$repeats_1_days = 1;
 						$repeats_3_weeks = 1;
-						$repeats_4_type[1] = "checked=\"checked\"";
+						$repeats_4_type['1'] = "checked=\"checked\"";
 						$repeats_4_day = 1;
 						$repeats_4_months = 1;
 						$repeats_4_months2 = 1;
@@ -1421,6 +1421,9 @@ if($mybb->input['action'] == "event")
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
 	}
 
+	$this_month = $monthnames[$month];
+	$week_from_text = $week_from[1];
+
 	// Now output the page
 	$plugins->run_hooks("calendar_event_end");
 	eval("\$event = \"".$templates->get("calendar_event")."\";");
@@ -1487,7 +1490,8 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb("$day $monthnames[$month] $year", get_calendar_link($calendar['cid'], $year, $month, $day));
+	add_breadcrumb("{$day} {$monthnames[$month]} {$year}", get_calendar_link($calendar['cid'], $year, $month, $day));
+	$this_month = $monthnames[$month];
 
 	$plugins->run_hooks("calendar_dayview_start");
 
@@ -1824,7 +1828,7 @@ if($mybb->input['action'] == "weekview")
 	$friendly_week_to = gmdate($mybb->settings['dateformat'], $week_to_stamp);
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb("{$monthnames[$week_from[1]]} {$week_from[2]}", get_calendar_link($calendar['cid'], $week_from[2], $week_from[1]));
+	add_breadcrumb("{$monthnames['".$week_from[1]."']} {$week_from[2]}", get_calendar_link($calendar['cid'], $week_from[2], $week_from[1]));
 	add_breadcrumb($lang->weekly_overview);
 
 	// Establish if we have a month ending in this week
@@ -2003,6 +2007,8 @@ if($mybb->input['action'] == "weekview")
 		eval("\$addevent = \"".$templates->get("calendar_addeventlink")."\";");
 	}
 
+	$this_month = $monthnames[$week_from[1]];
+
 	// Now output the page
 	$plugins->run_hooks("calendar_weekview_end");
 
@@ -2066,7 +2072,7 @@ if(!$mybb->input['action'])
 	}
 
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb("$monthnames[$month] $year", get_calendar_link($calendar['cid'], $year, $month));
+	add_breadcrumb("{$monthnames[$month]} {$year}", get_calendar_link($calendar['cid'], $year, $month));
 
 	$next_month = get_next_month($month, $year);
 	$prev_month = get_prev_month($month, $year);
@@ -2282,6 +2288,10 @@ if(!$mybb->input['action'])
 
 	$plugins->run_hooks("calendar_end");
 
+	$previous_month_text = $monthnames[$prev_month['month']];
+	$next_month_text = $monthnames[$next_month['month']];
+	$this_month = $monthnames[$month];
+	
 	eval("\$calendar = \"".$templates->get("calendar")."\";");
 	output_page($calendar);
 }
