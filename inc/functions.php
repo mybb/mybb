@@ -4114,9 +4114,9 @@ function my_wordwrap($message)
 	{
 		$message = convert_through_utf8($message);
 		
-		if(!($new_message = @preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
+		if(!($new_message = @preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#u", "$0&#8203;", $message)))
 		{
-			$new_message = preg_replace("#(?>[^\s&/<>\"\\-\.\[\]]{{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);	
+			$new_message = preg_replace("#(((?>[^\s&/<>\"\\-\[\]])|(&\#[a-z0-9]{1,10};)){{$mybb->settings['wordwrap']}})#", "$0&#8203;", $message);	
 		}
 		
 		$new_message = convert_through_utf8($new_message, false);
