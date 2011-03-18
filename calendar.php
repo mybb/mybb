@@ -1758,7 +1758,7 @@ if($mybb->input['action'] == "dayview")
 	}
 
 	// Now output the page
-	$plugins->run_hooks("calendar_event_end");
+	$plugins->run_hooks("calendar_dayview_end");
 
 	eval("\$day_view = \"".$templates->get("calendar_dayview")."\";");
 	output_page($day_view);
