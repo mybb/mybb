@@ -298,18 +298,16 @@ if($mybb->input['action'] == "add")
 	// If we have an existing reputation for this user, the user can modify or delete it.
 	if($existing_reputation['uid'] || $existing_post_reputation['uid'])
 	{
-		if($existing_post_reputation)
-		{
-			$existing_reputation = $existing_post_reputation;
-		}
-
 		$vote_title = $lang->sprintf($lang->update_reputation_vote, $user['username']);
 		$vote_button = $lang->update_vote;
 		if($existing_reputation['uid'])
 		{
 			$comments = htmlspecialchars_uni($existing_reputation['comments']);
 		}
-
+		elseif($existing_post_reputation['uid'])
+		{
+			$comments = htmlspecialchars_uni($existing_post_reputation['comments']);
+		}
 		$delete_button = "<input type=\"submit\" name=\"delete\" value=\"{$lang->delete_vote}\" />";
 	}
 	// Otherwise we're adding an entirely new reputation for this user.
@@ -338,17 +336,17 @@ if($mybb->input['action'] == "add")
 	$vote_check = '';
 	if($existing_reputation['uid'])
 	{
-		$vote_check["{$existing_reputation['reputation']}"] = " selected=\"selected\"";
+		$vote_check[$existing_reputation['reputation']] = " selected=\"selected\"";
 	}
 	$reputationpower = $mybb->usergroup['reputationpower'];
 	for($i = 1; $i <= $reputationpower; ++$i)
 	{
 		$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
-		$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check['".$i."']}>{$positive_title}</option>\n".$positive_power;
+		$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
 		if($mybb->settings['negrep'])
 		{
 			$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
-			$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check['-".$i."']}>{$negative_title}</option>\n";
+			$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
 		}
 	}
 	

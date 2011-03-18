@@ -639,6 +639,7 @@ if($mybb->input['action'] == "warn")
 	$query = $db->simple_select("warningtypes", "*", "", array("order_by" => "title"));
 	while($type = $db->fetch_array($query))
 	{
+		$checked = $type_checked[$type['tid']];
 		$type['title'] = htmlspecialchars_uni($type['title']);
 		$new_warning_level = round(($user['warningpoints']+$type['points'])/$mybb->settings['maxwarningpoints']*100);
 		if($new_warning_level > 100)

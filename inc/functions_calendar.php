@@ -166,8 +166,6 @@ function build_mini_calendar($calendar, $month, $year, &$events_cache)
 		}
 		$day_bits = "";
 	}
-	
-	$this_month = $monthnames[$month];
 	eval("\$mini_calendar .= \"".$templates->get("calendar_mini")."\";");
 	return $mini_calendar;
 }
@@ -359,6 +357,8 @@ function build_calendar_jump($selected=0)
  */
 function get_next_month($month, $year)
 {
+	global $monthnames;
+
 	if($month == 12)
 	{
 		$nextmonth = 1;
@@ -369,7 +369,8 @@ function get_next_month($month, $year)
 		$nextmonth = $month+1;
 		$nextyear = $year;
 	}
-	return array("month" => $nextmonth, "year" => $nextyear);
+
+	return array("month" => $nextmonth, "year" => $nextyear, "name" => $monthnames[$nextmonth]);
 }
 
 /**
@@ -381,6 +382,8 @@ function get_next_month($month, $year)
  */
 function get_prev_month($month, $year)
 {
+	global $monthnames;
+
 	if($month == 1)
 	{
 		$prevmonth = 12;
@@ -391,7 +394,8 @@ function get_prev_month($month, $year)
 		$prevmonth = $month-1;
 		$prevyear = $year;
 	}
-	return array("month" => $prevmonth, "year" => $prevyear);
+
+	return array("month" => $prevmonth, "year" => $prevyear, "name" => $monthnames[$prevmonth]);
 }
 
 /**
