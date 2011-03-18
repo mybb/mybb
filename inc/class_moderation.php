@@ -1539,10 +1539,10 @@ class Moderation
 			}
 
 			$query1 = $db->query("
-				SELECT COUNT(p.pid) AS posts, u.uid
+				SELECT COUNT(p.pid) AS posts, p.visible, u.uid
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
-				WHERE tid='{$thread['tid']}'
+				WHERE p.tid = '{$thread['tid']}'
 				GROUP BY u.uid
 				ORDER BY posts DESC
 			");
