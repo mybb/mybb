@@ -67,6 +67,11 @@ if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
 	// If user is logged in, update their language selection with the new one
 	if($mybb->user['uid'])
 	{
+		if($mybb->cookies['mybblang'])
+		{
+			my_unsetcookie("mybblang");
+		}
+
 		$db->update_query("users", array("language" => $db->escape_string($mybb->settings['bblanguage'])), "uid='{$mybb->user['uid']}'");
 	}
 	// Guest = cookie
@@ -77,7 +82,7 @@ if($mybb->input['language'] && $lang->language_exists($mybb->input['language']))
 	$mybb->user['language'] = $mybb->settings['bblanguage'];
 }
 // Cookied language!
-else if($mybb->cookies['mybblang'] && $lang->language_exists($mybb->cookies['mybblang']))
+else if(!$mybb->user['uid'] && $mybb->cookies['mybblang'] && $lang->language_exists($mybb->cookies['mybblang']))
 {
 	$mybb->settings['bblanguage'] = $mybb->cookies['mybblang'];
 }
