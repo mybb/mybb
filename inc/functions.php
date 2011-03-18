@@ -5925,12 +5925,24 @@ function subforums_count($array)
  */
 function my_ip2long($ip)
 {
-	$ip = ip2long($ip);
-	if($ip >= 2147483648) // Won't occur on 32-bit PHP
+	$ip_long = ip2long($ip);
+
+	if(!$ip_long)
 	{
-		$ip -= 4294967296;
+		$ip_long = sprintf("%u", ip2long($ip));
+		
+		if(!$ip_long)
+		{
+			return 0;
+		}
 	}
-	return $ip;
+
+	if($ip_long >= 2147483648) // Won't occur on 32-bit PHP
+	{
+		$ip_long -= 4294967296;
+	}
+
+	return $ip_long;
 }
 
 /**
