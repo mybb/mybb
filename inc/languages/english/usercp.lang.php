@@ -47,6 +47,7 @@ $l['birthdayprivacyall'] = "Display Age and Date of Birth";
 $l['birthdayprivacynone'] = "Hide Age and Date of Birth";
 $l['birthdayprivacyage'] = "Display Only Age";
 $l['avatar'] = "Avatar:";
+$l['avatar_mine'] = "This is your Avatar";
 $l['change_avatar'] = "Change Avatar";
 $l['avatar_url'] = "Avatar URL:";
 $l['avatar_url_note'] = "Enter the URL of an avatar on the internet.";
