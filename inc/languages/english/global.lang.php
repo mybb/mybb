@@ -280,6 +280,7 @@ $l['banned_warning'] = "Your forum account is currently banned.";
 $l['banned_warning2'] = "Ban Reason";
 $l['banned_warning3'] = "Ban will be lifted";
 $l['banned_lifted_never'] = "Never";
+$l['banned_email_warning'] = "You are currently using an email that is not allowed to be used on this forum. Please reset it before continuing.";
 $l['powered_by'] = "Powered By";
 $l['copyright'] = "Copyright";
 $l['attach_quota'] = "You are currently using <strong>{1}</strong> of your allocated attachment usage ({2})";

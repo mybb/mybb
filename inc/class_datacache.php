@@ -717,6 +717,24 @@ class datacache
 	}
 
 	/**
+	 * Updates the banned emails cache
+	 */
+	function update_bannedemails()
+	{
+		global $db;
+
+		$banned_emails = array();
+		$query = $db->simple_select("banfilters", "fid, filter", "type = '3'");
+
+		while($banned_email = $db->fetch_array($query))
+		{
+			$banned_emails[$banned_email['fid']] = $banned_email;
+		}
+
+		$this->update("bannedemails", $banned_emails);
+	}
+
+	/**
 	 * Updates the search engine spiders cache
 	 */
 	function update_spiders()

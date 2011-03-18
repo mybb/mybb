@@ -2167,6 +2167,7 @@ function install_done()
 	$cache->update_spiders();
 	$cache->update_bannedips();
 	$cache->update_banned();
+	$cache->update_bannedemails();
 	$cache->update_birthdays();
 	$cache->update_groupleaders();
 	$cache->update_threadprefixes();

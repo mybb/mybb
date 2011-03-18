@@ -5319,12 +5319,21 @@ function is_banned_username($username, $update_lastuse=false)
  */
 function is_banned_email($email, $update_lastuse=false)
 {
-	global $db;
-	$query = $db->simple_select("banfilters", "*", "type='3'");
-	while($banned_email = $db->fetch_array($query))
+	global $cache, $db;
+
+	$banned_cache = $cache->read("bannedemails");
+	
+	if(!$banned_cache)
+	{
+		$cache->update_bannedemails();
+		$banned_cache = $cache->read("bannedemails");
+	}
+
+	foreach($banned_cache as $banned_email)
 	{
 		// Make regular expression * match
 		$banned_email['filter'] = str_replace('\*', '(.*)', preg_quote($banned_email['filter'], '#'));
+
 		if(preg_match("#{$banned_email['filter']}#i", $email))
 		{
 			// Updating last use

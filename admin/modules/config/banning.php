@@ -41,6 +41,10 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		{
 			$cache->update_bannedips();
 		}
+		else if($mybb->input['type'] == 3)
+		{
+			$cache->update_bannedemails();
+		}
 		
 		$plugins->run_hooks("admin_config_banning_add_commit");
 
@@ -124,11 +128,14 @@ if($mybb->input['action'] == "delete")
 		// Log admin action
 		log_admin_action($filter['fid'], $filter['filter'], $filter['type']);
 
-
 		// Banned IP? Rebuild banned IP cache
 		if($filter['type'] == 1)
 		{
 			$cache->update_bannedips();
+		}
+		else if($filter['type'] == 3)
+		{
+			$cache->update_bannedemails();
 		}
 
 		flash_message($lang->success_ban_deleted, 'success');

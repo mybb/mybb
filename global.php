@@ -656,6 +656,25 @@ if($mybb->usergroup['canview'] != 1)
 	}
 }
 
+// Find out if this user of ours is using a banned email address.
+// If they are, redirect them to change it
+if($mybb->settings['emailkeep'] && $mybb->user['uid'])
+{
+	$banned_emails = $cache->read("bannedemails");
+
+	if(is_banned_email($mybb->user['email']))
+	{
+		if(THIS_SCRIPT != "usercp.php" || THIS_SCRIPT == "usercp.php" && $mybb->input['action'] != "email" && $mybb->input['action'] != "do_email")
+		{
+			redirect("usercp.php?action=email");
+		}
+		else if($mybb->request_method != "post")
+		{
+			$banned_email_error = inline_error(array($lang->banned_email_warning));
+		}
+	}
+}
+
 // work out which items the user has collapsed
 $colcookie = $mybb->cookies['collapsed'];
 
