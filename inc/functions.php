@@ -732,7 +732,6 @@ function error_no_permission()
 	);
 
 	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
-	$url = htmlspecialchars_uni("http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
 
 	if($mybb->input['ajax'])
 	{
