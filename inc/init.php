@@ -140,10 +140,6 @@ $db->connect($config['database']);
 $db->set_table_prefix(TABLE_PREFIX);
 $db->type = $config['database']['type'];
 
-// Once connected, unset access to database host/user/password
-unset($config['database']['hostname'], $config['database']['username'], $config['database']['password']);
-unset($mybb->config['database']['hostname'], $mybb->config['database']['username'], $mybb->config['database']['password']);
-
 // Language initialisation
 require_once MYBB_ROOT."inc/class_language.php";
 $lang = new MyLanguage;
