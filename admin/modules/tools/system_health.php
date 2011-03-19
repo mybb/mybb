@@ -809,7 +809,7 @@ if(!$mybb->input['action'])
 	
 	if($errors)
 	{
-		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybboard.net/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.</em></p>");
+		$page->output_error("<p><em>{$errors} {$lang->error_chmod}</span></strong> {$lang->chmod_info} <a href=\"http://wiki.mybb.com/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.</em></p>");
 	}
 	else
 	{

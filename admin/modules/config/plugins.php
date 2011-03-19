@@ -225,7 +225,7 @@ if($mybb->input['action'] == "check")
 		admin_redirect("index.php?module=config-plugins");
 	}
 	
-	$url = "http://mods.mybboard.net/version_check.php?";
+	$url = "http://mods.mybb.com/version_check.php?";
 	foreach($info as $guid)
 	{
 		$url .= "info[]=".urlencode($guid)."&";
@@ -288,7 +288,7 @@ if($mybb->input['action'] == "check")
 			$table->construct_cell("<strong>{$names[$plugin['attributes']['guid']]['name']}</strong>");
 			$table->construct_cell("{$names[$plugin['attributes']['guid']]['version']}", array("class" => "align_center"));
 			$table->construct_cell("<strong><span style=\"color: #C00\">{$plugin['version']['value']}</span></strong>", array("class" => "align_center"));
-			$table->construct_cell("<strong><a href=\"http://mods.mybboard.net/view/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
+			$table->construct_cell("<strong><a href=\"http://mods.mybb.com/view/{$plugin['download_url']['value']}\" target=\"_blank\">{$lang->download}</a></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
 	}

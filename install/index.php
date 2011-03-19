@@ -1464,7 +1464,7 @@ function create_tables()
  *
  * Please see the MyBB Wiki for advanced
  * database configuration for larger installations
- * http://wiki.mybboard.net/
+ * http://wiki.mybb.com/
  */
 
 \$config['database']['type'] = '{$mybb->input['dbengine']}';
