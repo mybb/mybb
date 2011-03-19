@@ -1378,7 +1378,7 @@ if($mybb->input['action'] == "event")
 		$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
 	}
 
-	$repeats = fetch_friendly_repitition($event);
+	$repeats = fetch_friendly_repetition($event);
 	if($repeats)
 	{
 		$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";
@@ -1707,7 +1707,7 @@ if($mybb->input['action'] == "dayview")
 				$time_period = gmdate($mybb->settings['dateformat'], $event['starttime_user']);
 			}
 
-			$repeats = fetch_friendly_repitition($event);
+			$repeats = fetch_friendly_repetition($event);
 			if($repeats)
 			{
 				$repeats = "<span class=\"smalltext\"><strong>{$lang->repeats}</strong><br />{$repeats}</span>";

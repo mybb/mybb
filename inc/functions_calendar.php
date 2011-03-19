@@ -893,7 +893,7 @@ function fetch_next_occurance($event, $range, $last_occurance, $first=false)
  * @param array The array of the event
  * @return string The friendly repetition string
  */
-function fetch_friendly_repitition($event)
+function fetch_friendly_repetition($event)
 {
 	global $lang;
 
@@ -946,7 +946,7 @@ function fetch_friendly_repitition($event)
 					{
 						$weekdays .= $lang->comma;
 					}
-					else if(!$event['repeats']['days'][$id+1])
+					else if(!$event['repeats']['days'][$id+1] && $weekdays)
 					{
 						$weekdays .= " {$lang->and} ";
 					}
