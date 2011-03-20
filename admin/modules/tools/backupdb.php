@@ -342,7 +342,7 @@ if($mybb->input['action'] == "backup")
 	}
 	
 	$table = new Table;
-	$table->construct_header($lang->table_selectiona);
+	$table->construct_header($lang->table_selection);
 	$table->construct_header($lang->backup_options);
 	
 	$table_selects = array();
