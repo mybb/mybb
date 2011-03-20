@@ -347,6 +347,7 @@ if($mybb->input['action'] == "nextnewest")
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
 	header("Location: ".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
+	exit;
 }
 
 // Jump to the next oldest posts.
@@ -377,6 +378,7 @@ if($mybb->input['action'] == "nextoldest")
 	// Redirect to the proper page.
 	$pid = $db->fetch_field($query, "pid");
 	header("Location: ".htmlspecialchars_decode(get_post_link($pid, $nextthread['tid']))."#pid{$pid}");
+	exit;
 }
 
 if($mybb->input['pid'])
