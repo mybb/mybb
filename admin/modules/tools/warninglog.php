@@ -129,7 +129,7 @@ if($mybb->input['action'] == "view")
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 		$post_link = get_post_link($warning['pid']);
 		$table->construct_cell("<strong>{$lang->warned_user}</strong><br /><br />{$user_link}");
-		$table->construct_cell("<strong>{$lang->post}</strong><br /><br /><a href=\"{$post_link}\">{$warning['post_subject']}</a>");
+		$table->construct_cell("<strong>{$lang->post}</strong><br /><br /><a href=\"{$mybb->settings['bburl']}/{$post_link}\">{$warning['post_subject']}</a>");
 		$table->construct_row();
 	}
 	else
