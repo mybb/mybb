@@ -4242,6 +4242,22 @@ function format_bdays($display, $bm, $bd, $by, $wd)
 		'M',
 	);
 
+	$html = array(
+		'&#109;',
+		'&#99;',
+		'&#68;',
+		'&#121;',
+		'&#89;',
+		'&#106;',
+		'&#83;',
+		'&#70;',
+		'&#108;',
+		'&#77;',
+	);
+
+	$bdays = str_replace($find, $html, $bdays);
+	$bmonth = str_replace($find, $html, $bmonth);
+	
 	$replace = array(
 		sprintf('%02s', $bm),
 		sprintf('%02s', $bd),
