@@ -107,7 +107,7 @@ if($forumpermissions['canview'] == 0 || $forumpermissions['canpostreplys'] == 0 
 	error_no_permission();
 }
 
-if($forumpermissions['canonlyviewthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 {
 	error_no_permission();
 }
