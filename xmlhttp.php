@@ -622,7 +622,7 @@ else if($mybb->input['action'] == "validate_captcha")
 else if($mybb->input['action'] == "complex_password")
 {
 	$password = trim($mybb->input['value']);
-	$password = str_replace(array(unicode_chr(160), unicode_chr(173), unicode_chr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
+	$password = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $password);
 
 	header("Content-type: text/xml; charset={$charset}");
 	if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $password))
@@ -649,7 +649,7 @@ else if($mybb->input['action'] == "username_availability")
 
 	// Fix bad characters
 	$username = trim($username);
-	$username = str_replace(array(unicode_chr(160), unicode_chr(173), unicode_chr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
+	$username = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
 
 	// Remove multiple spaces from the username
 	$username = preg_replace("#\s{2,}#", " ", $username);

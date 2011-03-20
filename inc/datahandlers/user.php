@@ -70,7 +70,7 @@ class UserDataHandler extends DataHandler
 
 		// Fix bad characters
 		$username = trim_blank_chrs($username);
-		$username = str_replace(array(unicode_chr(160), unicode_chr(173), unicode_chr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
+		$username = str_replace(array(unichr(160), unichr(173), unichr(0xCA), dec_to_utf8(8238), dec_to_utf8(8237), dec_to_utf8(8203)), array(" ", "-", "", "", "", ""), $username);
 
 		// Remove multiple spaces from the username
 		$username = preg_replace("#\s{2,}#", " ", $username);
