@@ -822,10 +822,11 @@ if($mybb->input['action'] == "thread")
 		}
 		if($mybb->input['pid'])
 		{
+			$post = get_post($mybb->input['pid']);
 			$query = $db->query("
-				SELECT COUNT(p.pid) AS count FROM ".TABLE_PREFIX."posts p
+				SELECT COUNT(p.dateline) AS count FROM ".TABLE_PREFIX."posts p
 				WHERE p.tid='$tid'
-				AND p.pid <= '".$mybb->input['pid']."'
+				AND p.dateline <= '".$post['dateline']."'
 				$visible
 			");
 			$result = $db->fetch_field($query, "count");
