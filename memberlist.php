@@ -114,9 +114,13 @@ else
 	{
 		$per_page = $mybb->input['perpage'];
 	}
-	else
+	else if($mybb->settings['membersperpage'])
 	{
 		$per_page = $mybb->input['perpage'] = intval($mybb->settings['membersperpage']);	
+	}
+	else
+	{
+		$per_page = $mybb->input['perpage'] = 20;
 	}
 	
 	$search_query = '1=1';
