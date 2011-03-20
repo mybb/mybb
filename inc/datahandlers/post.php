@@ -762,6 +762,19 @@ class PostDataHandler extends DataHandler
 			}
 		}
 		
+		$post['pid'] = intval($post['pid']);
+		$post['uid'] = intval($post['uid']);
+
+		if($post['pid'] > 0)
+		{
+			$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
+			$draft_check = $db->fetch_field($query, "tid");
+		}
+		else
+		{
+			$draft_check = false;
+		}
+		
 		if($this->method != "update" && $visible == 1)
 		{
 			$double_post = $this->verify_post_merge();
@@ -778,6 +791,11 @@ class PostDataHandler extends DataHandler
 				$update_query['edituid'] = intval($post['uid']);
 				$update_query['edittime'] = TIME_NOW;
 				$query = $db->update_query("posts", $update_query, "pid='".$double_post['pid']."'");
+				
+				if($draft_check)
+				{
+					$db->delete_query("posts", "pid='".$post['pid']."'");
+				}
 				
 				// Assign any uploaded attachments with the specific posthash to the merged post.
 				if($double_post['posthash'])
@@ -825,19 +843,6 @@ class PostDataHandler extends DataHandler
 			}
 			
 			$db->update_query("users", $update_array, "uid='{$post['uid']}'", 1, true);
-		}
-
-		$post['pid'] = intval($post['pid']);
-		$post['uid'] = intval($post['uid']);
-
-		if($post['pid'] > 0)
-		{
-			$query = $db->simple_select("posts", "tid", "pid='{$post['pid']}' AND uid='{$post['uid']}' AND visible='-2'");
-			$draft_check = $db->fetch_field($query, "tid");
-		}
-		else
-		{
-			$draft_check = false;
 		}
 
 		// Are we updating a post which is already a draft? Perhaps changing it into a visible post?
