@@ -526,7 +526,7 @@ if($mybb->input['action'] == "results")
 			}
 
 			// If this user is the author of the thread and it is not closed or they are a moderator, they can edit
-			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $fpermissions[$thread['fid']]['caneditposts'] == 1) || is_moderator($fid, "caneditposts"))
+			if(($thread['uid'] == $mybb->user['uid'] && $thread['closed'] != 1 && $mybb->user['uid'] != 0 && $fpermissions[$thread['fid']]['caneditposts'] == 1) || is_moderator($thread['fid'], "caneditposts"))
 			{
 				$inline_edit_class = "subject_editable";
 			}
