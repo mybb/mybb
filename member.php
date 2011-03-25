@@ -1468,6 +1468,12 @@ if($mybb->input['action'] == "profile")
 				}
 				$membdayage = $lang->membdayage;
 			}
+			elseif($membday[2])
+			{
+				$membday = mktime(0, 0, 0, 1, 1, $membday[2]);
+				$membday = date("Y", $membday);
+				$membdayage = '';
+			}
 			else
 			{
 				$membday = mktime(0, 0, 0, $membday[1], $membday[0], 0);
