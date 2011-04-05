@@ -2925,6 +2925,12 @@ if(!$mybb->input['action'])
 {
 	// Get posts per day
 	$daysreg = (TIME_NOW - $mybb->user['regdate']) / (24*3600);
+
+	if($daysreg < 1)
+	{
+		$daysreg = 1;
+	}
+	
 	$perday = $mybb->user['postnum'] / $daysreg;
 	$perday = round($perday, 2);
 	if($perday > $mybb->user['postnum'])
