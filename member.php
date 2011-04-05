@@ -1353,6 +1353,12 @@ if($mybb->input['action'] == "profile")
 	}
 
 	$daysreg = (TIME_NOW - $memprofile['regdate']) / (24*3600);
+
+	if($daysreg < 0)
+	{
+		$daysreg = 1;
+	}
+
 	$ppd = $memprofile['postnum'] / $daysreg;
 	$ppd = round($ppd, 2);
 	if($ppd > $memprofile['postnum'])
