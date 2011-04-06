@@ -1354,7 +1354,7 @@ if($mybb->input['action'] == "profile")
 
 	$daysreg = (TIME_NOW - $memprofile['regdate']) / (24*3600);
 
-	if($daysreg < 0)
+	if($daysreg < 1)
 	{
 		$daysreg = 1;
 	}
