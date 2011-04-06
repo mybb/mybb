@@ -92,6 +92,12 @@ else
 	$ismod = false;
 }
 
+// Make sure we are looking at a real thread here.
+if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
+{
+	error($lang->error_invalidthread);
+}
+
 $forumpermissions = forum_permissions($thread['fid']);
 
 // Does the user have permission to view this thread?
@@ -103,12 +109,6 @@ if($forumpermissions['canview'] != 1 || $forumpermissions['canviewthreads'] != 1
 if($forumpermissions['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
 {
 	error_no_permission();
-}
-
-// Make sure we are looking at a real thread here.
-if(!$thread['tid'] || ($thread['visible'] == 0 && $ismod == false) || ($thread['visible'] > 1 && $ismod == true))
-{
-	error($lang->error_invalidthread);
 }
 
 $archive_url = build_archive_link("thread", $tid);
