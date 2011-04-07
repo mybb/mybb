@@ -3100,6 +3100,11 @@ function build_users_view($view)
 			{
 				foreach($input as $value => $text)
 				{
+					if($value == $column)
+					{
+						$value = $text;
+					}
+
 					if($value == "N/A")
 					{
 						continue;
@@ -3635,6 +3640,7 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 		list($type, $options) = explode("\n", $profile_field['type'], 2);
 		$type = trim($type);
 		$field_name = "fid{$profile_field['fid']}";
+
 		switch($type)
 		{
 			case "multiselect":
@@ -3687,7 +3693,14 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				{
 					$profile_field['length'] = 1;
 				}
-				$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+				if($search == true)
+				{
+					$code = $form->generate_select_box("profile_fields[{$field_name}][{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+				}
+				else
+				{
+					$code = $form->generate_select_box("profile_fields[{$field_name}]", $options, $values[$field_name], array('id' => "profile_field_{$field_name}", 'size' => $profile_field['length']));
+				}
 				break;
 			case "radio":
 				$radio_options = array();
@@ -3753,6 +3766,11 @@ function user_search_conditions($input=array(), &$form)
 		$input['conditions'] = unserialize($input['conditions']);
 	}
 	
+	if(!is_array($input['custom_profile_fields']))
+	{
+		$input['custom_profile_fields'] = unserialize($input['custom_profile_fields']);
+	}
+	
 	if(!is_array($input['fields']))
 	{
 		$input['fields'] = unserialize($input['fields']);
@@ -3807,8 +3825,8 @@ function user_search_conditions($input=array(), &$form)
 		}
 	}
 	
-	output_custom_profile_fields($profile_fields['required'], $mybb->input['profile_fields'], $form_container, $form, true);
-	output_custom_profile_fields($profile_fields['optional'], $mybb->input['profile_fields'], $form_container, $form, true);
+	output_custom_profile_fields($profile_fields['required'], $input['custom_profile_fields'], $form_container, $form, true);
+	output_custom_profile_fields($profile_fields['optional'], $input['custom_profile_fields'], $form_container, $form, true);
 	
 	$form_container->end();
 	

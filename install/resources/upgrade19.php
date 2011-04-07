@@ -44,6 +44,8 @@ function upgrade19_dbchanges()
 		$db->query("SELECT setval('{$mybb->config['database']['table_prefix']}usergroups_gid_seq', (SELECT max(gid) FROM {$mybb->config['database']['table_prefix']}usergroups));");
 	}
 
+	$db->add_column("adminviews", "custom_profile_fields", "text NOT NULL AFTER conditions");
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("19_done");
 }
