@@ -592,7 +592,7 @@ class postParser
 
 		// Assign pattern and replace values.
 		$pattern = array(
-			"#\[quote=(?:&quot;|\"|')?(.*?)[\"']?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#esi",
+			"#\[quote=(?:&quot;|\"|')?(.*?)[\"'][^\]]?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#esi",
 			"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si"
 		);
 
