@@ -191,7 +191,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			
 			$accepted_parameters = array();
 			$accepted_parameters['report'] = array("do_reports", "reports", "allreports");			
-			$accepted_parameters['new_annoucement'] = array("do_new_announcement", "new_announcement");
+			$accepted_parameters['new_announcement'] = array("do_new_announcement", "new_announcement");
 			$accepted_parameters['delete_announcement'] = array("do_delete_announcement", "delete_announcement");
 			$accepted_parameters['edit_announcement'] = array("do_edit_announcement", "edit_announcement");
 			$accepted_parameters['mod_queue'] = array("do_modqueue", "modqueue");
