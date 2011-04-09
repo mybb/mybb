@@ -167,6 +167,11 @@ elseif($mybb->input['do'] == "login")
 		$post_verify = false;
 	
 		$mybb->request_method = "get";
+		
+		if($mybb->input['module'])
+		{
+		admin_redirect("index.php?module=".$mybb->input['module']);
+		}
 	}
 	else
 	{
