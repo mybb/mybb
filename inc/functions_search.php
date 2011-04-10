@@ -414,6 +414,11 @@ function privatemessage_perform_search_mysql($search)
 						// If this word is a search operator set the boolean
 						if($i % 2 && ($word == "and" || $word == "or"))
 						{
+							if($i <= 1 && $subject_lookin == " AND (")
+							{
+								continue;
+							}
+
 							$boolean = $word;
 						}
 						// Otherwise check the length of the word as it is a normal search term
@@ -639,6 +644,11 @@ function perform_search_mysql($search)
 						// If this word is a search operator set the boolean
 						if($i % 2 && ($word == "and" || $word == "or"))
 						{
+							if($i <= 1 && $subject_lookin == " AND (")
+							{
+								continue;
+							}
+
 							$boolean = $word;
 						}
 						// Otherwise check the length of the word as it is a normal search term
