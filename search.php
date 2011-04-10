@@ -290,6 +290,34 @@ if($mybb->input['action'] == "results")
 			$threadcount = $count['resultcount'];
 		}
 		
+		$permsql = "";
+		$onlyusfids = array();
+		
+		// Check group permissions if we can't view threads not started by us
+		$group_permissions = forum_permissions();
+		foreach($group_permissions as $fid => $forum_permissions)
+		{
+			if($forum_permissions['canonlyviewownthreads'] == 1)
+			{
+				$onlyusfids[] = $fid;
+			}
+		}
+		if(!empty($onlyusfids))
+		{
+			$permsql .= "AND ((t.fid IN(".implode(',', $onlyusfids).") AND t.uid='{$mybb->user['uid']}') OR t.fid NOT IN(".implode(',', $onlyusfids)."))";
+		}
+	
+		$unsearchforums = get_unsearchable_forums();
+		if($unsearchforums)
+		{
+			$permsql .= " AND t.fid NOT IN ($unsearchforums)";
+		}
+		$inactiveforums = get_inactive_forums();
+		if($inactiveforums)
+		{
+		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
+		}
+		
 		// Begin selecting matching threads, cache them.
 		$sqlarray = array(
 			'order_by' => $sortfield,
@@ -302,7 +330,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."threadprefixes p ON (p.pid=t.prefix)
-			WHERE $where_conditions AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%'
+			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
