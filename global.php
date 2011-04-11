@@ -660,8 +660,6 @@ if($mybb->usergroup['canview'] != 1)
 // If they are, redirect them to change it
 if($mybb->settings['emailkeep'] && $mybb->user['uid'])
 {
-	$banned_emails = $cache->read("bannedemails");
-
 	if(is_banned_email($mybb->user['email']))
 	{
 		if(THIS_SCRIPT != "usercp.php" || THIS_SCRIPT == "usercp.php" && $mybb->input['action'] != "email" && $mybb->input['action'] != "do_email")
