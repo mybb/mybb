@@ -3105,7 +3105,7 @@ function build_users_view($view)
 						$value = $text;
 					}
 
-					if($value == "N/A")
+					if($value == $lang->na)
 					{
 						continue;
 					}
@@ -3115,7 +3115,7 @@ function build_users_view($view)
 			}
 			else if(!empty($input))
 			{
-				if($input == "N/A")
+				if($input == $lang->na)
 				{
 					continue;
 				}
