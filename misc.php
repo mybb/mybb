@@ -49,6 +49,12 @@ if($mybb->input['action'] == "dstswitch" && $mybb->request_method == "post" && $
 }
 if($mybb->input['action'] == "markread")
 {
+	if($mybb->user['uid'] && verify_post_check($mybb->input['my_post_key'], true) !== true)
+	{
+		// Protect our user's unread forums from CSRF
+		error($lang->invalid_post_code);
+	}
+
 	if($mybb->input['fid'])
 	{
 		$mybb->input['fid'] = intval($mybb->input['fid']);
