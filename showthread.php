@@ -219,7 +219,7 @@ if($mybb->input['action'] == "newpost")
 	}
 	else
 	{
-		$forum_read = my_get_array_cookie("forumread", $fid);
+		$forum_read = intval(my_get_array_cookie("forumread", $fid));
 	}
 	
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
@@ -241,7 +241,7 @@ if($mybb->input['action'] == "newpost")
 	
 	if(!$lastread)
 	{
-		$readcookie = $threadread = my_get_array_cookie("threadread", $thread['tid']);
+		$readcookie = $threadread = intval(my_get_array_cookie("threadread", $thread['tid']));
 		if($readcookie > $forum_read)
 		{
 			$lastread = $readcookie;
@@ -264,6 +264,8 @@ if($mybb->input['action'] == "newpost")
 		"order_by" => "dateline",
 		"order_dir" => "asc"
 	);
+
+	$lastread = intval($lastread);
 	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}'", $options);
 	$newpost = $db->fetch_array($query);
 	

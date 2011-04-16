@@ -414,9 +414,23 @@ function privatemessage_perform_search_mysql($search)
 						// If this word is a search operator set the boolean
 						if($i % 2 && ($word == "and" || $word == "or"))
 						{
-							if($i <= 1 && $subject_lookin == " AND (")
+							if($i <= 1)
 							{
-								continue;
+								if($search['subject'] && $search['message'] && $subject_lookin == " AND (")
+								{
+									// We're looking for anything, check for a subject lookin
+									continue;
+								}
+								elseif($search['subject'] && !$search['message'] && $subject_lookin == " AND (")
+								{
+									// Just in a subject?
+									continue;
+								}
+								elseif(!$search['subject'] && $search['message'] && $message_lookin == " {$string} (")
+								{
+									// Just in a message?
+									continue;	
+								}
 							}
 
 							$boolean = $word;
@@ -442,13 +456,6 @@ function privatemessage_perform_search_mysql($search)
 							}
 						}
 					}
-					
-					if($subject_lookin == " AND (")
-					{
-						// There are no search keywords to look for
-						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
-						error($lang->error_minsearchlength);
-					}
 				}	
 				// In the middle of a quote (phrase)
 				else
@@ -466,6 +473,32 @@ function privatemessage_perform_search_mysql($search)
 						$message_lookin .= " $boolean LOWER(message) LIKE '%{$phrase}%'";
 					}					
 				}
+
+				// Check to see if we have any search terms and not a malformed SQL string
+				$error = false;
+				if($search['subject'] && $search['message'] && $subject_lookin == " AND (")
+				{
+					// We're looking for anything, check for a subject lookin
+					$error = true;
+				}
+				elseif($search['subject'] && !$search['message'] && $subject_lookin == " AND (")
+				{
+					// Just in a subject?
+					$error = true;
+				}
+				elseif(!$search['subject'] && $search['message'] && $message_lookin == " {$string} (")
+				{
+					// Just in a message?
+					$error = true;	
+				}
+
+				if($error == true)
+				{
+					// There are no search keywords to look for
+					$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+					error($lang->error_minsearchlength);
+				}
+
 				$inquote = !$inquote;
 			}
 
@@ -676,13 +709,6 @@ function perform_search_mysql($search)
 							}
 						}
 					}
-					
-					if($subject_lookin == " AND (")
-					{
-						// There are no search keywords to look for
-						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
-						error($lang->error_minsearchlength);
-					}
 				}	
 				// In the middle of a quote (phrase)
 				else
@@ -700,6 +726,14 @@ function perform_search_mysql($search)
 						$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$phrase}%'";
 					}					
 				}
+
+				if($subject_lookin == " AND (")
+				{
+					// There are no search keywords to look for
+					$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+					error($lang->error_minsearchlength);
+				}
+
 				$inquote = !$inquote;
 			}
 			$subject_lookin .= ")";
