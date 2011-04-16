@@ -442,6 +442,13 @@ function privatemessage_perform_search_mysql($search)
 							}
 						}
 					}
+
+					if($subject_lookin == " AND (")
+					{
+						// There are no search keywords to look for
+						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						error($lang->error_minsearchlength);
+					}
 				}	
 				// In the middle of a quote (phrase)
 				else
@@ -668,6 +675,13 @@ function perform_search_mysql($search)
 								$message_lookin .= " $boolean LOWER(p.message) LIKE '%{$word}%'";
 							}
 						}
+					}
+
+					if($subject_lookin == " AND (")
+					{
+						// There are no search keywords to look for
+						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						error($lang->error_minsearchlength);
 					}
 				}	
 				// In the middle of a quote (phrase)
