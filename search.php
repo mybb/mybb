@@ -315,7 +315,7 @@ if($mybb->input['action'] == "results")
 		$inactiveforums = get_inactive_forums();
 		if($inactiveforums)
 		{
-		$permsql .= " AND t.fid NOT IN ($inactiveforums)";
+			$permsql .= " AND t.fid NOT IN ($inactiveforums)";
 		}
 		
 		// Begin selecting matching threads, cache them.
