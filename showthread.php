@@ -207,7 +207,7 @@ if($mybb->input['action'] == "newpost")
 	}
 	else
 	{
-		$forum_read = my_get_array_cookie("forumread", $fid);
+		$forum_read = intval(my_get_array_cookie("forumread", $fid));
 	}
 	
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $thread['lastpost'] > $forum_read)
