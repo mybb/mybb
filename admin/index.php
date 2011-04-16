@@ -170,7 +170,7 @@ elseif($mybb->input['do'] == "login")
 		
 		if($mybb->input['module'])
 		{
-		admin_redirect("index.php?module=".$mybb->input['module']);
+			admin_redirect("index.php?module=".$mybb->input['module']);
 		}
 	}
 	else
