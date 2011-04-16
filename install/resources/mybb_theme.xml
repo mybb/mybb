@@ -964,7 +964,7 @@ ul.thread_tools li.subscription_remove {
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
-			<template name="forumdisplay_threadlist" version="1412"><![CDATA[<div class="float_left">
+			<template name="forumdisplay_threadlist" version="1416"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -974,7 +974,7 @@ ul.thread_tools li.subscription_remove {
 	<tr>
 		<td class="thead" colspan="{$colspan}">
 			<div style="float: right;">
-				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}">{$lang->markforum_read}</a> | <a href="usercp2.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
+				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}{$post_code_string}">{$lang->markforum_read}</a> | <a href="usercp2.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
 			</div>
 			<div>
 				<strong>{$foruminfo['name']}</strong>
@@ -3074,12 +3074,12 @@ ul.thread_tools li.subscription_remove {
 </html>]]></template>
 		<template name="usercp_avatar_gallery_avatar" version="120"><![CDATA[<td width="20%" align="center"><label for="avatar-{$avatar}"><img src="{$avatarpath}" alt="{$avatar}" title="{$avatar}" /><br /><input type="radio" class="radio" name="avatar" value="{$avatar}" id="avatar-{$avatar}" /><strong>{$avatarname}</strong></td>]]></template>
 		<template name="usercp_avatar_current" version="120"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar}" title="{$lang->avatar}" {$avatar_width_height} /></td>]]></template>
-		<template name="headerinclude" version="1400"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
+		<template name="headerinclude" version="1416"><![CDATA[<link rel="alternate" type="application/rss+xml" title="{$lang->latest_threads} (RSS 2.0)" href="{$mybb->settings['bburl']}/syndication.php" />
 <link rel="alternate" type="application/atom+xml" title="{$lang->latest_threads} (Atom 1.0)" href="{$mybb->settings['bburl']}/syndication.php?type=atom1.0" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/prototype.js?ver=1400"></script>
-<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1400"></script>
+<script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/general.js?ver=1416"></script>
 <script type="text/javascript" src="{$mybb->settings['bburl']}/jscripts/popup_menu.js?ver=1400"></script>
 {$stylesheets}
 <script type="text/javascript">
@@ -7799,7 +7799,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<label><input type="radio" name="postoptions[subscriptionmethod]" {$postoptions_subscriptionmethod_instant} value="instant" style="vertical-align: middle;" /> {$lang->instant_email_subscribe}</label><br />
 </td>
 </tr>]]></template>
-	<template name="index_boardstats" version="1400"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+	<template name="index_boardstats" version="1416"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 <tr>
 <td class="thead">
@@ -7816,7 +7816,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="tfoot" style="text-align: right">
 		<span class="smalltext">
 			{$logoutlink}
-			<a href="misc.php?action=markread">{$lang->markread}</a> |
+			<a href="misc.php?action=markread{$post_code_string}">{$lang->markread}</a> |
 			<a href="showteam.php">{$lang->forumteam}</a> |
 			<a href="stats.php">{$lang->forumstats}</a>
 		</span>

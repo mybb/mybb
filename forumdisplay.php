@@ -1131,6 +1131,12 @@ if($foruminfo['type'] != "c")
 		eval("\$inline_edit_js = \"".$templates->get("forumdisplay_threadlist_inlineedit_js")."\";");
 	}
 
+	$post_code_string = '';
+	if($mybb->user['uid'])
+	{
+		$post_code_string = "&my_post_key=".$mybb->post_code;
+	}
+
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
 	eval("\$rssdiscovery = \"".$templates->get("forumdisplay_rssdiscovery")."\";");
 	eval("\$threadslist = \"".$templates->get("forumdisplay_threadlist")."\";");

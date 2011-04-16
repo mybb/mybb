@@ -288,7 +288,7 @@ var MyBB = {
 		{
 			return false;
 		}
-		new Ajax.Request('misc.php?action=markread&fid='+fid+'&ajax=1', {method: 'get', onComplete: function(request) {MyBB.forumMarkedRead(fid, request); }});
+		new Ajax.Request('misc.php?action=markread&fid='+fid+'&ajax=1&my_post_key='+my_post_key, {method: 'get', onComplete: function(request) {MyBB.forumMarkedRead(fid, request); }});
 	},
 
 	forumMarkedRead: function(fid, request)

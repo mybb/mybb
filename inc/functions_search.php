@@ -420,6 +420,13 @@ function perform_search_mysql($search)
 							}
 						}
 					}
+
+					if($subject_lookin == " AND (")
+					{
+						// There are no search keywords to look for
+						$lang->error_minsearchlength = $lang->sprintf($lang->error_minsearchlength, $mybb->settings['minsearchword']);
+						error($lang->error_minsearchlength);
+					}
 				}	
 				// In the middle of a quote (phrase)
 				else
