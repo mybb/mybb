@@ -67,22 +67,9 @@ function task_delayedmoderation($task)
 					}
 					break;
 				case "move":
-					if(count($tids) > 1)
+					foreach($tids as $tid)
 					{
-						foreach($tids as $tid)
-						{
-							$moderation->move_thread($tid, $input['new_forum']);
-						}
-					}
-					else
-					{
-						$expire = 0;
-						if(intval($input['redirect_expire']) > 0)
-						{
-							$expire = $delayedmoderation['dateline'] + (intval($input['redirect_expire']) * 86400);
-						}
-						
-						$moderation->move_thread($tid, $input['new_forum'], $input['method'], $expire);
+						$moderation->move_thread($tid, $input['new_forum']);
 					}
 					break;
 				case "stick":
