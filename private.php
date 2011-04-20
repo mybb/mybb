@@ -791,7 +791,7 @@ if($mybb->input['action'] == "send")
 			$subject = preg_replace("#(FW|RE):( *)#is", '', $subject);
 			$postdate = my_date($mybb->settings['dateformat'], $pm['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $pm['dateline']);
-			$message = "[quote={$pm['quotename']}]\n$message\n[/quote]";
+			$message = "[quote='{$pm['quotename']}']\n$message\n[/quote]";
 			$message = preg_replace('#^/me (.*)$#im', "* ".$pm['quotename']." \\1", $message);
 
 			if($mybb->input['do'] == 'forward')
