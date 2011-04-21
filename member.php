@@ -1457,7 +1457,7 @@ if($mybb->input['action'] == "profile")
 		
 		if($memprofile['birthdayprivacy'] != 'none')
 		{
-			if($membday[2])
+			if($membday[0] && $membday[1] && $membday[2])
 			{
 				$lang->membdayage = $lang->sprintf($lang->membdayage, get_age($memprofile['birthday']));
 				
