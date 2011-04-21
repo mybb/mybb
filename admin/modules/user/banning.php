@@ -435,7 +435,7 @@ if(!$mybb->input['action'])
 	// Get the banned users
 	while($ban = $db->fetch_array($query))
 	{
-		$profile_link = build_profile_link($ban['username'], $ban['uid']);
+		$profile_link = build_profile_link($ban['username'], $ban['uid'], "_blank");
 		$ban_date = my_date($mybb->settings['dateformat'], $ban['dateline']);
 		if($ban['lifted'] == 'perm' || $ban['lifted'] == '' || $ban['bantime'] == 'perm' || $ban['bantime'] == '---')
 		{

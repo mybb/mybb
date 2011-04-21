@@ -216,7 +216,7 @@ if(!$mybb->input['action'])
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		if($logitem['tsubject'])
 		{
 			$information = "<strong>{$lang->thread}</strong> <a href=\"../".get_thread_link($logitem['tid'])."\" target=\"_blank\">".htmlspecialchars_uni($logitem['tsubject'])."</a><br />";
@@ -227,7 +227,7 @@ if(!$mybb->input['action'])
 		}
 		if($logitem['psubject'])
 		{
-			$information .= "<strong>{$lang->post}</strong> <a href=\"../".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
+			$information .= "<strong>{$lang->post}</strong> <a href=\"../".get_post_link($logitem['pid'])."#pid{$logitem['pid']}\" target=\"_blank\">".htmlspecialchars_uni($logitem['psubject'])."</a>";
 		}
 
 		if(!$logitem['tsubject'] || !$logitem['fname'] || !$logitem['psubject'])
@@ -235,7 +235,7 @@ if(!$mybb->input['action'])
 			$data = unserialize($logitem['data']);
 			if($data['uid'])
 			{
-				$information = $lang->user_info." <a href=\"".get_profile_link($data['uid'])."\">".htmlspecialchars_uni($data['username'])."</a>";
+				$information = $lang->user_info." <a href=\"".get_profile_link($data['uid'])."\" target=\"_blank\">".htmlspecialchars_uni($data['username'])."</a>";
 			}
 		}
 

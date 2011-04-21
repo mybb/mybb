@@ -218,7 +218,7 @@ if(!$mybb->input['action'])
 		$logitem['dateline'] = date("jS M Y, G:i", $logitem['dateline']);
 		$trow = alt_trow();
 		$username = format_name($logitem['username'], $logitem['usergroup'], $logitem['displaygroup']);
-		$logitem['profilelink'] = build_profile_link($username, $logitem['uid']);
+		$logitem['profilelink'] = build_profile_link($username, $logitem['uid'], "_blank");
 		$logitem['data'] = unserialize($logitem['data']);
 		
 		// Get detailed information from meta

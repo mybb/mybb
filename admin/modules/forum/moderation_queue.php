@@ -199,10 +199,10 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$forum_name = $forum_cache[$thread['fid']]['name'];
 			$threaddate = my_date($mybb->settings['dateformat'], $thread['dateline']);
 			$threadtime = my_date($mybb->settings['timeformat'], $thread['dateline']);
-			$profile_link = build_profile_link($thread['username'], $thread['uid']);
+			$profile_link = build_profile_link($thread['username'], $thread['uid'], "_blank");
 			$thread['postmessage'] = nl2br(htmlspecialchars_uni($thread['postmessage']));
 
-			$table->construct_cell("<a href=\"../{$thread['threadlink']}\">{$thread['subject']}</a>");
+			$table->construct_cell("<a href=\"../{$thread['threadlink']}\" target=\"_blank\">{$thread['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$threaddate}, {$threadtime}", array("class" => "align_center"));
 			$table->construct_row();
@@ -213,7 +213,7 @@ if($mybb->input['type'] == "threads" || !$mybb->input['type'])
 			$controls .= $form->generate_radio_button("threads[{$thread['tid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
 
-			$forum = "<strong>{$lang->forum} <a href=\"../{$thread['forumlink']}\">{$forum_name}</a></strong><br />";
+			$forum = "<strong>{$lang->forum} <a href=\"../{$thread['forumlink']}\" target=\"_blank\">{$forum_name}</a></strong><br />";
 
 			$table->construct_cell("<div class=\"modqueue_message\">{$controls}<div class=\"modqueue_meta\">{$forum}</div>{$thread['postmessage']}</div>", array("colspan" => 3));
 			$table->construct_row();
@@ -307,10 +307,10 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$forum_name = $forum_cache[$post['fid']]['name'];
 			$postdate = my_date($mybb->settings['dateformat'], $post['dateline']);
 			$posttime = my_date($mybb->settings['timeformat'], $post['dateline']);
-			$profile_link = build_profile_link($post['username'], $post['uid']);
+			$profile_link = build_profile_link($post['username'], $post['uid'], "_blank");
 			$post['message'] = nl2br(htmlspecialchars_uni($post['message']));
 
-			$table->construct_cell("<a href=\"../{$post['postlink']}#pid{$post['pid']}\">{$post['subject']}</a>");
+			$table->construct_cell("<a href=\"../{$post['postlink']}#pid{$post['pid']}\" target=\"_blank\">{$post['subject']}</a>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$postdate}, {$posttime}", array("class" => "align_center"));
 			$table->construct_row();
@@ -321,8 +321,8 @@ if($mybb->input['type'] == "posts" || $mybb->input['type'] == "")
 			$controls .= $form->generate_radio_button("posts[{$post['pid']}]", "approve", $lang->approve, array('class' => 'radio_approve', 'checked' => false));
 			$controls .= "</div>";
 
-			$thread = "<strong>{$lang->thread} <a href=\"../{$post['threadlink']}\">{$post['threadsubject']}</a></strong>";
-			$forum = "<strong>{$lang->forum} <a href=\"../{$post['forumlink']}\">{$forum_name}</a></strong><br />";
+			$thread = "<strong>{$lang->thread} <a href=\"../{$post['threadlink']}\" target=\"_blank\">{$post['threadsubject']}</a></strong>";
+			$forum = "<strong>{$lang->forum} <a href=\"../{$post['forumlink']}\" target=\"_blank\">{$forum_name}</a></strong><br />";
 
 			$table->construct_cell("<div class=\"modqueue_message\">{$controls}<div class=\"modqueue_meta\">{$forum}{$thread}</div>{$post['message']}</div>", array("colspan" => 3));
 			$table->construct_row();
@@ -420,9 +420,9 @@ if($mybb->input['type'] == "attachments" || $mybb->input['type'] == "")
 
 			$link = get_post_link($attachment['pid'], $attachment['tid']) . "#pid{$attachment['pid']}";
 			$thread_link = get_thread_link($attachment['tid']);
-			$profile_link = build_profile_link($attachment['username'], $attachment['uid']);
+			$profile_link = build_profile_link($attachment['username'], $attachment['uid'], "_blank");
 
-			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">{$lang->post} <a href=\"{$link}\">{$attachment['postsubject']}</a></small>");
+			$table->construct_cell("<a href=\"../attachment.php?aid={$attachment['aid']}\" target=\"_blank\">{$attachment['filename']}</a> ({$attachment['filesize']})<br /><small class=\"modqueue_meta\">{$lang->post} <a href=\"{$link}\" target=\"_blank\">{$attachment['postsubject']}</a></small>");
 			$table->construct_cell($profile_link, array("class" => "align_center"));
 			$table->construct_cell("{$attachdate}, {$attachtime}", array("class" => "align_center"));
 

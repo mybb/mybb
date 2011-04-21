@@ -106,7 +106,7 @@ if($mybb->input['action'] == "view")
 	
 	$page->output_header($lang->warning_details);
 
-	$user_link = build_profile_link($user['username'], $user['uid']);
+	$user_link = build_profile_link($user['username'], $user['uid'], "_blank");
 
 	if(is_array($warn_errors))
 	{
@@ -129,7 +129,7 @@ if($mybb->input['action'] == "view")
 		$warning['post_subject'] = htmlspecialchars_uni($warning['post_subject']);
 		$post_link = get_post_link($warning['pid']);
 		$table->construct_cell("<strong>{$lang->warned_user}</strong><br /><br />{$user_link}");
-		$table->construct_cell("<strong>{$lang->post}</strong><br /><br /><a href=\"{$mybb->settings['bburl']}/{$post_link}\">{$warning['post_subject']}</a>");
+		$table->construct_cell("<strong>{$lang->post}</strong><br /><br /><a href=\"{$mybb->settings['bburl']}/{$post_link}\" target=\"_blank\">{$warning['post_subject']}</a>");
 		$table->construct_row();
 	}
 	else
@@ -138,7 +138,7 @@ if($mybb->input['action'] == "view")
 		$table->construct_row();
 	}	
 
-	$issuedby = build_profile_link($warning['username'], $warning['uid']);
+	$issuedby = build_profile_link($warning['username'], $warning['uid'], "_blank");
 	$notes = nl2br(htmlspecialchars_uni($warning['notes']));
 	
 	$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
@@ -211,7 +211,7 @@ if($mybb->input['action'] == "view")
 	{
 		$date_revoked = my_date($mybb->settings['dateformat'], $warning['daterevoked']).", ".my_date($mybb->settings['timeformat'], $warning['daterevoked']);
 		$revoked_user = get_user($warning['revokedby']);
-		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid']);
+		$revoked_by = build_profile_link($revoked_user['username'], $revoked_user['uid'], "_blank");
 		$revoke_reason = nl2br(htmlspecialchars_uni($warning['revokereason']));
 		
 		$revoke_table = new Table;
@@ -390,10 +390,10 @@ if(!$mybb->input['action'])
 		}
 		else
 		{
-			$username_link = build_profile_link($username, $row['uid']);
+			$username_link = build_profile_link($username, $row['uid'], "_blank");
 		}
 		$mod_username = format_name($row['mod_username'], $row['mod_usergroup'], $row['mod_displaygroup']);
-		$mod_username_link = build_profile_link($mod_username, $row['mod_uid']);
+		$mod_username_link = build_profile_link($mod_username, $row['mod_uid'], "_blank");
 		$issued_date = my_date($mybb->settings['dateformat'], $row['dateline']).' '.my_date($mybb->settings['timeformat'], $row['dateline']);
 		$revoked_text = '';
 		if($row['daterevoked'] > 0)

@@ -131,7 +131,7 @@ function home_action_handler($action)
 				{
 					$class = "";
 				}
-				$online_users .= "<li{$class}>".build_profile_link($user['username'], $user['uid'])."</li>";
+				$online_users .= "<li{$class}>".build_profile_link($user['username'], $user['uid'], "_blank")."</li>";
 				$done_users["{$user['uid']}.{$user['ip']}"] = 1;
 			}
 		}

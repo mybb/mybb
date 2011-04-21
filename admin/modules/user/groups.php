@@ -280,7 +280,7 @@ if($mybb->input['action'] == "join_requests")
 	while($request = $db->fetch_array($query))
 	{
 		$table->construct_cell($form->generate_check_box("users[]", $request['uid'], ""));
-		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'])."</strong>");
+		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'], "_blank")."</strong>");
 		$table->construct_cell(htmlspecialchars_uni($request['reason']));
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $request['dateline']), array('class' => 'align_center'));
 		$table->construct_cell("<a href=\"index.php?module=user-groups&action=approve_join_request&amp;rid={$request['rid']}\">{$lang->approve}</a>", array("class" => "align_center"));
@@ -423,7 +423,7 @@ if($mybb->input['action'] == "leaders")
 			$canmanagerequests = $lang->no;
 		}
 		
-		$table->construct_cell("<strong>".build_profile_link($leader['username'], $leader['uid'])."</strong>");
+		$table->construct_cell("<strong>".build_profile_link($leader['username'], $leader['uid'], "_blank")."</strong>");
 		$table->construct_cell($canmanagemembers, array("class" => "align_center"));
 		$table->construct_cell($canmanagerequests, array("class" => "align_center"));
 		$table->construct_cell("<a href=\"index.php?module=user-groups&amp;action=edit_leader&lid={$leader['lid']}\">{$lang->edit}</a>", array("class" => "align_center"));
