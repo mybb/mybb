@@ -993,9 +993,13 @@ class postParser
 				{
 					$id = str_replace('!v=', '', $fragments[0]); // http://www.youtube.com/watch#!v=fds123
 				}
-				else
+				elseif($input['v'])
 				{
 					$id = $input['v']; // http://www.youtube.com/watch?v=fds123
+				}
+				else
+				{
+					$id = $path[1]; // http://www.youtu.be/fds123
 				}
 				break;
 			default:
