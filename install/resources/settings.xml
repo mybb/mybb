@@ -509,6 +509,15 @@ email=Sent via Email]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="no_plugins">
+			<title>Disable All Plugins</title>
+			<description><![CDATA[Setting this to yes will disable all plugins without deactivating or uninstalling them. This is equivalent of manually defining NO_PLUGINS at the top of init.php.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="mailsettings" title="Mail Settings" description="This section allows you to control various aspects of the MyBB mail system, such as sending with PHP mail or with a off server SMTP server." disporder="22" isdefault="1">
 		<setting name="mail_handler">

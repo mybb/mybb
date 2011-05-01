@@ -218,7 +218,7 @@ if(!defined("IN_INSTALL") && !defined("IN_UPGRADE") && $version['version_code'] 
 }
 
 // Load plugins
-if(!defined("NO_PLUGINS"))
+if(!defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 {
 	$plugins->load();
 }

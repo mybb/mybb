@@ -197,7 +197,7 @@ function run_shutdown()
 	}
 
 	// And finally.. plugins
-	if(!is_object($plugins) && !defined("NO_PLUGINS"))
+	if(!is_object($plugins) && !defined("NO_PLUGINS") && !($mybb->settings['no_plugins'] == 1))
 	{
 		require_once MYBB_ROOT."inc/class_plugins.php";
 		$plugins = new pluginSystem;
