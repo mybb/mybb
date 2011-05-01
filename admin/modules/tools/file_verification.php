@@ -60,6 +60,18 @@ if(!$mybb->input['action'])
 				$parts[1] = "./{$mybb->config['admin_dir']}".substr($parts[1], 7);
 			}
 			
+			if(file_exists(MYBB_ROOT."forums.php") && !file_exists(MYBB_ROOT."portal.php"))
+			{
+				if(trim($parts[1]) == "./index.php")
+				{
+				$parts[1] = "./forums.php";
+				}
+				elseif($parts[1] == "./portal.php")
+				{
+					$parts[1] = "./index.php";
+				}
+			}
+			
 			$checksums[trim($parts[1])][] = $parts[0];
 		}
 		
