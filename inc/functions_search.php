@@ -899,12 +899,14 @@ function perform_search_mysql($search)
 	$onlyusfids = array();
 	
 	// Check group permissions if we can't view threads not started by us
-	$group_permissions = forum_permissions();
-	foreach($group_permissions as $fid => $forum_permissions)
+	if($group_permissions = forum_permissions())
 	{
-		if($forum_permissions['canonlyviewownthreads'] == 1)
+		foreach($group_permissions as $fid => $forum_permissions)
 		{
-			$onlyusfids[] = $fid;
+			if($forum_permissions['canonlyviewownthreads'] == 1)
+			{
+				$onlyusfids[] = $fid;
+			}
 		}
 	}
 	if(!empty($onlyusfids))
