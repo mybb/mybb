@@ -286,19 +286,14 @@ if(!$mybb->input['action'])
 	$form_container->output_row_header($lang->data_per_page, array('width' => 50));
 	$form_container->output_row_header("&nbsp;");
 	
-	$form_container->output_cell("<label>{$lang->rebuild_thread_counters}</label><div class=\"description\">{$lang->rebuild_thread_counters_desc}</div>");
-	$form_container->output_cell($form->generate_text_box("threadcounters", 500, array('style' => 'width: 150px;')));
-	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildthreadcounters")));
-	$form_container->construct_row();
-	
 	$form_container->output_cell("<label>{$lang->rebuild_forum_counters}</label><div class=\"description\">{$lang->rebuild_forum_counters_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("forumcounters", 50, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildforumcounters")));
 	$form_container->construct_row();
 	
-	$form_container->output_cell("<label>{$lang->recount_stats}</label><div class=\"description\">{$lang->recount_stats_desc}</div>");
-	$form_container->output_cell($lang->na);
-	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountstats")));
+	$form_container->output_cell("<label>{$lang->rebuild_thread_counters}</label><div class=\"description\">{$lang->rebuild_thread_counters_desc}</div>");
+	$form_container->output_cell($form->generate_text_box("threadcounters", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildthreadcounters")));
 	$form_container->construct_row();
 	
 	$form_container->output_cell("<label>{$lang->recount_user_posts}</label><div class=\"description\">{$lang->recount_user_posts_desc}</div>");
@@ -309,6 +304,11 @@ if(!$mybb->input['action'])
 	$form_container->output_cell("<label>{$lang->rebuild_attachment_thumbs}</label><div class=\"description\">{$lang->rebuild_attachment_thumbs_desc}</div>");
 	$form_container->output_cell($form->generate_text_box("attachmentthumbs", 20, array('style' => 'width: 150px;')));
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_rebuildattachmentthumbs")));
+	$form_container->construct_row();
+	
+	$form_container->output_cell("<label>{$lang->recount_stats}</label><div class=\"description\">{$lang->recount_stats_desc}</div>");
+	$form_container->output_cell($lang->na);
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountstats")));
 	$form_container->construct_row();
 	
 	$plugins->run_hooks("admin_tools_recount_rebuild_output_list");
