@@ -594,6 +594,9 @@ function build_postbit($post, $post_type=0)
 	if($post['icon'] > 0 && $icon_cache[$post['icon']])
 	{
 		$icon = $icon_cache[$post['icon']];
+
+		$icon['path'] = htmlspecialchars_uni($icon['path']);
+		$icon['name'] = htmlspecialchars_uni($icon['name']);
 		$post['icon'] = "<img src=\"{$icon['path']}\" alt=\"{$icon['name']}\" style=\"vertical-align: middle;\" />&nbsp;";
 	}
 	else

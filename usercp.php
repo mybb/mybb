@@ -403,6 +403,7 @@ if($mybb->input['action'] == "profile")
 	while($profilefield = $db->fetch_array($query))
 	{
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
+		$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 		$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
 		$thing = explode("\n", $profilefield['type'], "2");
 		$type = $thing[0];

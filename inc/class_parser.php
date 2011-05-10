@@ -435,6 +435,8 @@ class postParser
 				$orig_message = $message;
 				$find = $this->parse_html($find);
 				$find = preg_quote($find, "#");
+
+				$replace = strip_tags($replace, "<img>");
 				
 				// Fix issues for smileys starting with a ";"
 				$orig_find = $find;

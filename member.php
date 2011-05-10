@@ -1720,6 +1720,8 @@ if($mybb->input['action'] == "profile")
 				$customfieldval = htmlspecialchars_uni($userfields[$field]);
 			}
 		}
+
+		$customfield['name'] = htmlspecialchars_uni($customfield['name']);
 		eval("\$customfields .= \"".$templates->get("member_profile_customfields_field")."\";");
 		$bgcolor = alt_trow();
 	}

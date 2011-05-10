@@ -1569,6 +1569,9 @@ function get_post_icons()
 	
 	foreach($posticons as $dbicon)
 	{
+		$dbicon['path'] = htmlspecialchars_uni($dbicon['path']);
+		$dbicon['name'] = htmlspecialchars_uni($dbicon['name']);
+
 		if($icon == $dbicon['iid'])
 		{
 			$iconlist .= "<label><input type=\"radio\" name=\"icon\" value=\"".$dbicon['iid']."\" checked=\"checked\" /> <img src=\"".$dbicon['path']."\" alt=\"".$dbicon['name']."\" /></label>";

@@ -649,6 +649,14 @@ function login_attempt_check_acp($uid=0, $return_num=false)
  */
 function check_template($template)
 {
+	// Check to see of $config is in the template
+	if(preg_match("#\\\$(config|mybb->config)#i", $template))
+	{
+		return true;
+	}
+
+	// Any other malicious acts?
+	// Courtesy of ZiNgA BuRgA
 	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
 	{
 		return true;
