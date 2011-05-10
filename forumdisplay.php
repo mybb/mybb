@@ -88,7 +88,14 @@ if($mybb->user['uid'] == 0)
  
  	if(!is_array($forumsread))
  	{
- 		$forumsread = array();
+ 		if($mybb->cookies['mybb']['readallforums'])
+		{
+			$forumsread[$fid] = $mybb->cookies['mybb']['lastvisit'];
+		}
+		else
+		{
+ 			$forumsread = array();
+		}
  	}
 
 	$query = $db->simple_select("forums", "*", "active != 0", array("order_by" => "pid, disporder"));
@@ -820,6 +827,11 @@ if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 else
 {
 	$forum_read = my_get_array_cookie("forumread", $fid);
+
+	if($mybb->cookies['mybb']['readallforums'] && !$forum_read)
+	{
+		$forum_read = $mybb->cookies['mybb']['lastvisit'];
+	}
 }
 
 $unreadpost = 0;
