@@ -342,6 +342,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		{
 			$admin_view['conditions'] = unserialize($admin_view['conditions']);
 			$admin_view['fields'] = unserialize($admin_view['fields']);
+			$admin_view['profile_fields'] = unserialize($admin_view['custom_profile_fields']);
 			$mybb->input = $admin_view;
 		}
 

@@ -3766,9 +3766,9 @@ function user_search_conditions($input=array(), &$form)
 		$input['conditions'] = unserialize($input['conditions']);
 	}
 	
-	if(!is_array($input['custom_profile_fields']))
+	if(!is_array($input['profile_fields']))
 	{
-		$input['custom_profile_fields'] = unserialize($input['custom_profile_fields']);
+		$input['profile_fields'] = unserialize($input['profile_fields']);
 	}
 	
 	if(!is_array($input['fields']))
@@ -3825,8 +3825,8 @@ function user_search_conditions($input=array(), &$form)
 		}
 	}
 	
-	output_custom_profile_fields($profile_fields['required'], $input['custom_profile_fields'], $form_container, $form, true);
-	output_custom_profile_fields($profile_fields['optional'], $input['custom_profile_fields'], $form_container, $form, true);
+	output_custom_profile_fields($profile_fields['required'], $input['profile_fields'], $form_container, $form, true);
+	output_custom_profile_fields($profile_fields['optional'], $input['profile_fields'], $form_container, $form, true);
 	
 	$form_container->end();
 	
