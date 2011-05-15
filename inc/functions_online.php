@@ -418,7 +418,7 @@ function fetch_wol_activity($location, $nopermission=false)
 			}
 			elseif($parameters['action'] == "view")
 			{
-				$user_activity['activity'] == "warnings_view";
+				$user_activity['activity'] = "warnings_view";
 			}
 			else
 			{
