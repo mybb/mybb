@@ -674,7 +674,7 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->rating_user;
 			break;
 		case "member_resendactivation":
-			$location_name = $lang->resending_account_activation;
+			$location_name = $lang->member_resendactivation;
 			break;
 		case "member_lostpw":
 			$location_name = $lang->member_lostpw;
