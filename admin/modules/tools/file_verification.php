@@ -64,7 +64,7 @@ if(!$mybb->input['action'])
 			{
 				if(trim($parts[1]) == "./index.php")
 				{
-				$parts[1] = "./forums.php";
+					$parts[1] = "./forums.php";
 				}
 				elseif($parts[1] == "./portal.php")
 				{
