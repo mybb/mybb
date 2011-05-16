@@ -793,7 +793,11 @@ if($mybb->input['action'] == "resendactivation")
 	{
 		error($lang->error_activated_by_admin);
 	}
-
+	if($mybb->user['uid'] && $mybb->user['usergroup'] != 5)
+	{
+		error($lang->error_alreadyactivated);
+	}
+	
 	eval("\$activate = \"".$templates->get("member_resendactivation")."\";");
 	output_page($activate);
 }
