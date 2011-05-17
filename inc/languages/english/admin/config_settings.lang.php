@@ -79,6 +79,7 @@ $l['error_cannot_edit_default'] = "Default settings and groups may not be edited
 $l['error_cannot_edit_php'] = "This is a special type of setting which cannot be edited.";
 $l['error_ajax_search'] = "There was a problem searching for settings:";
 $l['error_ajax_unknown'] = "An unknown error occurred while searching for settings.";
+$l['error_chmod_settings_file'] = "The settings file \"./inc/settings.php\" isn't writable. Please CHMOD to 777.<br />For more information on CHMODing, see the <a href=\"http://wiki.mybb.com/index.php/HowTo_Chmod\" target=\"_blank\">MyBB Wiki</a>.";
 
 $l['success_setting_added'] = "The setting has been created successfully.";
 $l['success_setting_updated'] = "The setting has been updated successfully.";

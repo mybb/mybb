@@ -845,6 +845,12 @@ if($mybb->input['action'] == "change")
 	
 	if($mybb->request_method == "post")
 	{
+		if(!is_writable(MYBB_ROOT.'inc/settings.php'))
+		{
+			flash_message($lang->error_chmod_settings_file, 'error');
+			admin_redirect("index.php?module=config-settings");
+		}
+		
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
