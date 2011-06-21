@@ -2881,6 +2881,8 @@ function get_ip()
 
     if($mybb->settings['ip_forwarded_check'])
     {
+		$addresses = array();
+
         if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
         {
             preg_match_all("#[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}#s", $_SERVER['HTTP_X_FORWARDED_FOR'], $addresses);
