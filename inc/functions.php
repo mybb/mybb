@@ -3264,7 +3264,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 					$navbits[$navsize]['url'] = get_forum_link($forumnav['fid'], $multipage['current_page']);
 					
 					$navbits[$navsize]['multipage'] = $multipage;
-					$navbits[$navsize]['multipage']['url'] = get_forum_link($forumnav['fid']);
+					$navbits[$navsize]['multipage']['url'] = str_replace('{fid}', $forumnav['fid'], FORUM_URL_PAGED);
 				}
 				else
 				{
