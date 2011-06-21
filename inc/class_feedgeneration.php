@@ -163,7 +163,7 @@ class FeedGenerator
 						$this->xml .= "\t\t\t<dc:creator><![CDATA[".$this->sanitize_content($item['author'])."]]></dc:creator>\n";
 					}
 					$this->xml .= "\t\t\t<guid isPermaLink=\"false\">".$item['link']."</guid>\n";
-					$this->xml .= "\t\t\t<description><![CDATA[".$this->sanitize_content($item['description'])."]]></description>\n";
+					$this->xml .= "\t\t\t<description><![CDATA[".$item['description']."]]></description>\n";
 					$this->xml .= "\t\t\t<content:encoded><![CDATA[".$item['description']."]]></content:encoded>\n";
 					$this->xml .= "\t\t</item>\n";
 					break;
