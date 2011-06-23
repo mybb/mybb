@@ -120,6 +120,9 @@ if(!$forum || $forum['type'] != "f")
 	error($lang->error_invalidforum);
 }
 
+// Forumdisplay cache
+$forum_stats = $cache->read("forumsdisplay");
+
 $breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
@@ -1101,33 +1104,39 @@ if($mybb->input['action'] == "thread")
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{
-		$customthreadtools = $customposttools = '';
-		switch($db->type)
+		if($forum_stats[-1]['modtools'] || $forum_stats[$forum['fid']]['modtools'])
 		{
-			case "pgsql":
-			case "sqlite":
-				$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums=''");
-				break;
-			default:
-				$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
-		}
+			$customthreadtools = $customposttools = '';
+	
+			switch($db->type)
+			{
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", "tid, name, type", "','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums=''");
+					break;
+				default:
+					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
+			}
 		
-		while($tool = $db->fetch_array($query))
-		{
-			if($tool['type'] == 'p')
+			while($tool = $db->fetch_array($query))
 			{
-				eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");
+				if($tool['type'] == 'p')
+				{
+					eval("\$customposttools .= \"".$templates->get("showthread_inlinemoderation_custom_tool")."\";");
+				}
+				else
+				{
+					eval("\$customthreadtools .= \"".$templates->get("showthread_moderationoptions_custom_tool")."\";");
+				}
 			}
-			else
+
+			// Build inline moderation dropdown
+			if(!empty($customposttools))
 			{
-				eval("\$customthreadtools .= \"".$templates->get("showthread_moderationoptions_custom_tool")."\";");
+				eval("\$customposttools = \"".$templates->get("showthread_inlinemoderation_custom")."\";");
 			}
 		}
-		// Build inline moderation dropdown
-		if(!empty($customposttools))
-		{
-			eval("\$customposttools = \"".$templates->get("showthread_inlinemoderation_custom")."\";");
-		}
+
 		eval("\$inlinemod = \"".$templates->get("showthread_inlinemoderation")."\";");
 
 		// Build thread moderation dropdown

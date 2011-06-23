@@ -891,6 +891,11 @@ class datacache
 
 				foreach($forums as $forum)
 				{
+					if(!$forum)
+					{
+						$forum = -1;
+					}
+
 					if(!isset($fd_statistics[$forum]['modtools']))
 					{
 						$fd_statistics[$forum]['modtools'] = 1;
