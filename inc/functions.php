@@ -1383,7 +1383,7 @@ function check_forum_password($fid, $pid=0)
  */
 function get_moderator_permissions($fid, $uid="0", $parentslist="")
 {
-	global $mybb, $db;
+	global $mybb, $cache, $db;
 	static $modpermscache;
 
 	if($uid < 1)
@@ -1403,38 +1403,39 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 
 	if(!$parentslist)
 	{
-		$parentslist = get_parent_list($fid);
+		$parentslist = explode(',', get_parent_list($fid));
 	}
 
 	// Get user groups
 	$perms = array();
-	$usergroups = get_user($uid, "usergroup, additionalgroups");
-	$groups = "'{$usergroups['usergroup']}'";
+	$user = get_user($uid);
 
-	if(!empty($usergroups['additionalgroups']))
+	$groups = array($user['usergroup']);
+
+	if(!empty($user['additionalgroups']))
 	{
-		$extra_groups = explode(",", $usergroups['additionalgroups']);
+		$extra_groups = explode(",", $user['additionalgroups']);
 
 		foreach($extra_groups as $extra_group)
 		{
-			$groups .= ",'{$extra_group}'";
+			$groups[] = $extra_group;
 		}
 	}
 
-	$sql = build_parent_list($fid, "fid", "OR", $parentslist);
-	$query = $db->simple_select("moderators", "*", "((id IN ({$groups}) AND isgroup='1') OR (id='{$uid}' AND isgroup='0')) AND {$sql}", array("order_by" => "isgroup", "order_dir" => "DESC"));
+	$mod_cache = $cache->read("moderators");
 
-	if(!$db->num_rows($query))
+	foreach($mod_cache as $fid => $forum)
 	{
-		return false;
-	}
-
-	// We have some moderator data, what do we know?
-	// We always check usergroup permissions first - user settings override usergroup settings
-	while($perm = $db->fetch_array($query))
-	{
-		if(!$perm['isgroup'])
+		if(!is_array($forum) || !in_array($fid, $parentslist))
 		{
+			// No perms or we're not after this forum
+			continue;
+		}
+
+		// User settings override usergroup settings
+		if(is_array($forum['users'][$uid]))
+		{
+			$perm = $forum['users'][$uid];
 			foreach($perm as $action => $value)
 			{
 				if(strpos($action, "can") === false)
@@ -1454,14 +1455,25 @@ function get_moderator_permissions($fid, $uid="0", $parentslist="")
 				}
 			}
 		}
-		else
+
+		foreach($groups as $group)
 		{
-			$perms['caneditposts'] = max($perm['caneditposts'], $perms['caneditposts']);
-			$perms['candeleteposts'] = max($perms['candeleteposts'], $perm['candeleteposts']);
-			$perms['canviewips'] = max($perms['canviewips'], $perm['canviewips']);
-			$perms['canopenclosethreads'] = max($perms['canopenclosethreads'], $perm['canopenclosethreads']);
-			$perms['canmanagethreads'] = max($perms['canmanagethreads'], $perm['canmanagethreads']);
-			$perms['canmovetononmodforum'] = max($perms['canmovetononmodforum'], $perm['canmovetononmodforum']);
+			if(!is_array($forum['usergroups'][$group]))
+			{
+				// There are no permissions set for this group
+				continue;
+			}
+
+			$perm = $forum['usergroups'][$group];
+			foreach($perm as $action => $value)
+			{
+				if(strpos($action, "can") === false)
+				{
+					continue;
+				}
+
+				$perms[$action] = max($perm[$action], $perms[$action]);
+			}
 		}
 	}
 
