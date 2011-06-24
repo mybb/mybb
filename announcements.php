@@ -65,18 +65,35 @@ $archive_url = build_archive_link("announcement", $aid);
 $time = TIME_NOW;
 
 $query = $db->query("
-	SELECT u.*, u.username AS userusername, a.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle, g.usereputationsystem
+	SELECT u.*, u.username AS userusername, a.*, f.*
 	FROM ".TABLE_PREFIX."announcements a
 	LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=a.uid)
 	LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-	LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 	WHERE a.startdate<='$time' AND (a.enddate>='$time' OR a.enddate='0') AND a.aid='$aid'
 ");
+
 $announcementarray = $db->fetch_array($query);
 
 if(!$announcementarray)
 {
 	error($lang->error_invalidannouncement);
+}
+
+// Gather usergroup data from the cache
+// Field => Array Key
+$data_key = array(
+	'title' => 'grouptitle',
+	'usertitle' => 'groupusertitle',
+	'stars' => 'groupstars',
+	'starimage' => 'groupstarimage',
+	'image' => 'groupimage',
+	'namestyle' => 'namestyle',
+	'usereputationsystem' => 'usereputationsystem'
+);
+
+foreach($data_key as $field => $key)
+{
+	$announcementarray[$key] = $groupscache[$announcementarray['usergroup']][$field];
 }
 
 $announcementarray['dateline'] = $announcementarray['startdate'];

@@ -677,13 +677,14 @@ if($mybb->input['action'] == "send")
 	{
 		$options = $mybb->input['options'];
 		$query = $db->query("
-			SELECT u.username AS userusername, u.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.namestyle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.usereputationsystem
+			SELECT u.username AS userusername, u.*, f.*
 			FROM ".TABLE_PREFIX."users u
 			LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 			WHERE u.uid='".$mybb->user['uid']."'
 		");
+
 		$post = $db->fetch_array($query);
+
 		$post['userusername'] = $mybb->user['username'];
 		$post['postusername'] = $mybb->user['username'];
 		$post['message'] = $previewmessage;
@@ -691,6 +692,7 @@ if($mybb->input['action'] == "send")
 		$post['icon'] = $mybb->input['icon'];
 		$post['smilieoff'] = $options['disablesmilies'];
 		$post['dateline'] = TIME_NOW;
+
 		if(!$options['signature'])
 		{
 			$post['includesig'] = 0;
@@ -699,6 +701,23 @@ if($mybb->input['action'] == "send")
 		{
 			$post['includesig'] = 1;
 		}
+
+		// Merge usergroup data from the cache
+		$data_key = array(
+			'title' => 'grouptitle',
+			'usertitle' => 'groupusertitle',
+			'stars' => 'groupstars',
+			'starimage' => 'groupstarimage',
+			'image' => 'groupimage',
+			'namestyle' => 'namestyle',
+			'usereputationsystem' => 'usereputationsystem'
+		);
+
+		foreach($data_key as $field => $key)
+		{
+			$post[$key] = $groupscache[$post['usergroup']][$field];
+		}
+
 		$postbit = build_postbit($post, 2);
 		eval("\$preview = \"".$templates->get("previewpost")."\";");
 	}
@@ -894,11 +913,10 @@ if($mybb->input['action'] == "read")
 	$pmid = intval($mybb->input['pmid']);
 
 	$query = $db->query("
-		SELECT pm.*, u.*, f.*, g.title AS grouptitle, g.usertitle AS groupusertitle, g.stars AS groupstars, g.starimage AS groupstarimage, g.image AS groupimage, g.namestyle
+		SELECT pm.*, u.*, f.*
 		FROM ".TABLE_PREFIX."privatemessages pm
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
 		LEFT JOIN ".TABLE_PREFIX."userfields f ON (f.ufid=u.uid)
-		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
 		WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
 	");
 	$pm = $db->fetch_array($query);
@@ -911,6 +929,21 @@ if($mybb->input['action'] == "read")
 	if(!$pm['pmid'])
 	{
 		error($lang->error_invalidpm);
+	}
+
+	// If we've gotten a PM, attach the group info
+	$data_key = array(
+		'title' => 'grouptitle',
+		'usertitle' => 'groupusertitle',
+		'stars' => 'groupstars',
+		'starimage' => 'groupstarimage',
+		'image' => 'groupimage',
+		'namestyle' => 'namestyle'
+	);
+
+	foreach($data_key as $field => $key)
+	{
+		$pm[$key] = $groupscache[$pm['usergroup']][$field];
 	}
 
 	if($pm['receipt'] == 1)

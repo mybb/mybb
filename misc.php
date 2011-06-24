@@ -326,18 +326,14 @@ elseif($mybb->input['action'] == "buddypopup")
 	if($mybb->user['buddylist'] != "")
 	{
 		$timecut = TIME_NOW - $mybb->settings['wolcutoff'];
-		$query = $db->query("
-			SELECT u.*, g.canusepms
-			FROM ".TABLE_PREFIX."users u
-			LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-			WHERE u.uid IN ({$mybb->user['buddylist']})
-			ORDER BY u.lastactive
-		");
+		$query = $db->simple_select("users", "*", "uid IN ({$mybb->user['buddylist']})", array('order_by' => 'lastactive'));
+
 		while($buddy = $db->fetch_array($query))
 		{
 			$buddy_name = format_name($buddy['username'], $buddy['usergroup'], $buddy['displaygroup']);
 			$profile_link = build_profile_link($buddy_name, $buddy['uid'], '_blank', 'if(window.opener) { window.opener.location = this.href; return false; }');
-			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $buddy['canusepms'] != 0)
+
+			if($mybb->user['receivepms'] != 0 && $buddy['receivepms'] != 0 && $groupscache[$buddy['usergroup']]['canusepms'] != 0)
 			{
 				eval("\$send_pm = \"".$templates->get("misc_buddypopup_user_sendpm")."\";");
 			}
