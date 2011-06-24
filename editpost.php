@@ -33,7 +33,7 @@ if(!$mybb->user['uid'])
 $pid = intval($mybb->input['pid']);
 
 // if we already have the post information...
-if(isset($style) && $style['pid'] == $pid)
+if(isset($style) && $style['pid'] == $pid && $style['type'] != 'f')
 {
 	$post = &$style;
 }
@@ -73,7 +73,12 @@ if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
 
 // Add prefix to breadcrumb
 $query = $db->simple_select('threadprefixes', 'displaystyle', "pid='{$thread['prefix']}'");
-$breadcrumbprefix = $db->fetch_field($query, 'displaystyle').'&nbsp;';
+$breadcrumbprefix = $db->fetch_field($query, 'displaystyle');
+
+if($breadcrumbprefix)
+{
+	$breadcrumbprefix .= '&nbsp;';
+}
 
 // Make navigation
 build_forum_breadcrumb($fid);
