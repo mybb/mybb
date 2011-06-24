@@ -14,6 +14,7 @@ $l['redirect_loggedin'] = "You have successfully been logged in.<br />You will n
 $l['error_invalidpworusername'] = "You have entered an invalid username/password combination. <br /><br />If you have forgotten your password please <a href=\"member.php?action=lostpw\">retrieve a new one</a>.";
 $l['error_incompletefields'] = "It appears you have left one or more required fields blank. Please go back and enter the required fields."; 
 $l['error_alreadyuploaded'] = "This post already contains an attachment with the same name. Please rename the file and upload it again. Alternatively you may click \"Update Attachment\".";
+$l['error_alreadyuploaded_perm'] = "This post already contains an attachment with the same name. Please rename the file and upload it again.";
 $l['error_nomessage'] = "Sorry, we cannot proceed because you did not enter a valid message. Please go back and do so.";
 $l['error_invalidemail'] = "You did not enter a valid email address.";
 $l['error_nomember'] = "The member you specified is either invalid or doesn't exist.";

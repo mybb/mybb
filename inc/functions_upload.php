@@ -419,6 +419,12 @@ function upload_attachment($attachment, $update_attachment=false)
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'] && $update_attachment == false)
 	{
+		if(!$mybb->usergroup['caneditattachments'])
+		{
+			$ret['error'] = $lang->error_alreadyuploaded_perm;
+			return $ret;
+		}
+
 		$ret['error'] = $lang->error_alreadyuploaded;
 		return $ret;
 	}
