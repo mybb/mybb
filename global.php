@@ -346,7 +346,7 @@ if($mybb->user['uid'] != 0)
 	}
 	
 	// Format the welcome back message
-	$lang->welcome_back = $lang->sprintf($lang->welcome_back, $mybb->user['username'], $lastvisit);
+	$lang->welcome_back = $lang->sprintf($lang->welcome_back, build_profile_link($mybb->user['username'], $mybb->user['uid']), $lastvisit);
 
 	// Tell the user their PM usage
 	$lang->welcome_pms_usage = $lang->sprintf($lang->welcome_pms_usage, my_number_format($mybb->user['pms_unread']), my_number_format($mybb->user['pms_total']));
