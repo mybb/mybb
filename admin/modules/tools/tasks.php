@@ -349,7 +349,7 @@ if($mybb->input['action'] == "edit")
 			
 			if($enable_confirmation == true)
 			{
-				admin_redirect("index.php?module=tools-tasks&action=enable&tid={$task['tid']}&my_post_key={$mybb->post_code}");
+				admin_redirect("index.php?module=tools-tasks&amp;action=enable&amp;tid={$task['tid']}&amp;my_post_key={$mybb->post_code}");
 			}
 			else
 			{

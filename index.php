@@ -274,7 +274,7 @@ if($mybb->settings['showwol'] != 0 || $mybb->settings['showindexstats'] != 0 || 
 	$post_code_string = '';
 	if($mybb->user['uid'])
 	{
-		$post_code_string = "&my_post_key=".$mybb->post_code;
+		$post_code_string = "&amp;my_post_key=".$mybb->post_code;
 	}
 
 	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");

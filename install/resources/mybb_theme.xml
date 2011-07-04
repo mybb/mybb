@@ -9346,10 +9346,10 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_event_modoptions" version="1400"><![CDATA[				<form method="post" action="calendar.php">
+		<template name="calendar_event_modoptions" version="1604"><![CDATA[				<form method="post" action="calendar.php">
 					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 					<input type="hidden" name="eid" value="{$event['eid']}">
-					<select name="action" onchange="if(this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={$event['eid']}&my_post_key={$mybb->post_code}') }">
+					<select name="action" onchange="if(this.options[this.selectedIndex].value != '') { window.location=('calendar.php?action='+this.options[this.selectedIndex].value+'&amp;eid={$event['eid']}&amp;my_post_key={$mybb->post_code}') }">
 						<option value="" style="font-weight: bold;">{$lang->moderator_options}</option>
 						<option value="{$approve_value}">{$approve}</option>
 						<option value="move">{$lang->move_event}</option>

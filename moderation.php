@@ -126,7 +126,7 @@ switch($mybb->input['action'])
 		}
 		else
 		{
-			moderation_redirect("moderation.php?action=delayedmoderation&tid={$tid}&my_post_key={$mybb->post_code}", $lang->redirect_delayed_moderation_cancelled);
+			moderation_redirect("moderation.php?action=delayedmoderation&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}", $lang->redirect_delayed_moderation_cancelled);
 		}
 		break;
 	case "do_delayedmoderation":

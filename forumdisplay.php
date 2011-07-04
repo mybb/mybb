@@ -1233,7 +1233,7 @@ if($foruminfo['type'] != "c")
 	$post_code_string = '';
 	if($mybb->user['uid'])
 	{
-		$post_code_string = "&my_post_key=".$mybb->post_code;
+		$post_code_string = "&amp;my_post_key=".$mybb->post_code;
 	}
 
 	$lang->rss_discovery_forum = $lang->sprintf($lang->rss_discovery_forum, htmlspecialchars_uni(strip_tags($foruminfo['name'])));
