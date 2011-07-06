@@ -18,7 +18,7 @@ $l['bad_word_max'] = "A filtered word can't be longer than 100 characters.";
 $l['replacement'] = "Replacement";
 $l['replacement_desc'] = "Enter the string which will replace the filtered word (If this is blank, asterisks will be shown)";
 $l['replacement_word_max'] = "A replacement word can't be longer than 100 characters.";
-$l['error_replacement_word_invalid'] = "A replacement word cannot be equivilient to it's word filter.";
+$l['error_replacement_word_invalid'] = "A replacement word cannot be equivalient to it's word filter.";
 
 $l['save_bad_word'] = "Save Filter";
 $l['no_bad_words'] = "There are no word filters currently set at this time.";

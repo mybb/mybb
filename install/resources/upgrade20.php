@@ -46,6 +46,10 @@ function upgrade19_dbchanges()
 
 	$db->add_column("adminviews", "custom_profile_fields", "text NOT NULL AFTER conditions");
 
+	$query = $db->simple_select("settings", "sid", "description like '%equivi%'");
+	$bug1599sid = $db->fetch_field($query, 'sid');
+	$db->update_query("settings", array('sid' => $db->escape_string($bug1599sid)), "description='Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see <a href=\"http://wiki.mybb.com/index.php/SEF_URLS\">The MyBB wiki</a> for assistance.'");
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("19_done");
 }

@@ -1104,7 +1104,7 @@ class postParser
 	}
 
 	/**
-	 * Parses message to plain text equivilents of MyCode.
+	 * Parses message to plain text equivalents of MyCode.
 	 *
 	 * @param string The message to be parsed
 	 * @return string The parsed message.

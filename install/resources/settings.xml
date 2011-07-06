@@ -1468,7 +1468,7 @@ download=As Download Link]]></optionscode>
 	<settinggroup name="server" title="Server and Optimization Options" description="These options allow you to set various server and optimization preferences allowing you to reduce the load on your server, and gain better performance on your board." disporder="3" isdefault="1">
 		<setting name="seourls">
 			<title>Enable search engine friendly URLs?</title>
-			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivilent for your web server). Automatic detection may not work on all servers.</strong> Please see <a href="http://wiki.mybb.com/index.php/SEF_URLS">The MyBB wiki</a> for assistance.]]></description>
+			<description><![CDATA[Search engine friendly URLs change the MyBB links to shorter URLs which search engines prefer and are easier to type. showthread.php?tid=1 becomes thread-1.html. <strong>Once this setting is enabled you need to make sure you have the MyBB .htaccess in your MyBB root directory (or the equivalent for your web server). Automatic detection may not work on all servers.</strong> Please see <a href="http://wiki.mybb.com/index.php/SEF_URLS">The MyBB wiki</a> for assistance.]]></description>
 			<disporder>1</disporder>
 			<optionscode><![CDATA[select
 auto=Automatic Detection

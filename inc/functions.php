@@ -5271,7 +5271,7 @@ function build_highlight_array($terms)
 }
 
 /**
- * Converts a decimal reference of a character to its UTF-8 equivilant
+ * Converts a decimal reference of a character to its UTF-8 equivalant
  * (Code by Anne van Kesteren, http://annevankesteren.nl/2005/05/character-references)
  *
  * @param string Decimal value of a character reference
@@ -5694,7 +5694,7 @@ function escaped_explode($delimeter, $string, $escape="")
  * Fetch an IPv4 long formatted range for searching IPv4 IP addresses.
  *
  * @param string The IP address to convert to a range based LONG
- * @rturn mixed If a full IP address is provided, the ip2long equivilent, otherwise an array of the upper & lower extremities of the IP
+ * @rturn mixed If a full IP address is provided, the ip2long equivalent, otherwise an array of the upper & lower extremities of the IP
  */
 function fetch_longipv4_range($ip)
 {
@@ -6089,7 +6089,7 @@ function signed($int)
  * Returns a securely generated seed for PHP's RNG (Random Number Generator)
  *
  * @param int Length of the seed bytes (8 is default. Provides good cryptographic variance)
- * @return int An integer equivilent of a secure hexadecimal seed
+ * @return int An integer equivalent of a secure hexadecimal seed
  */
 function secure_seed_rng($count=8)
 {
@@ -6129,7 +6129,7 @@ function secure_seed_rng($count=8)
  * @param int Optional lowest value to be returned (default: 0) 
  * @param int Optional highest value to be returned (default: mt_getrandmax()) 
  * @param boolean True forces it to reseed the RNG first
- * @return int An integer equivilent of a secure hexadecimal seed
+ * @return int An integer equivalent of a secure hexadecimal seed
  */
 function my_rand($min=null, $max=null, $force_seed=false)
 {
