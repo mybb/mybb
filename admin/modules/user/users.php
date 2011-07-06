@@ -2953,6 +2953,10 @@ function build_users_view($view)
 		update_admin_session('last_users_url', str_replace("&amp;", "&", $view['url']));
 	}
 	
+	if(isset($view['conditions']['referrer'])){
+		$view['url'] .= "&amp;action=referrers&amp;uid=".htmlspecialchars($view['conditions']['referrer']);
+	}
+	
 	// Do we not have any views?
 	if(empty($view))
 	{
