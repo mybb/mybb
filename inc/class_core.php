@@ -155,14 +155,14 @@ class MyBB {
 		// Determine Magic Quotes Status (< PHP 6.0)
 		if(version_compare(PHP_VERSION, '6.0', '<'))
 		{
-			if(get_magic_quotes_gpc())
+			if(@get_magic_quotes_gpc())
 			{
 				$this->magicquotes = 1;
 				$this->strip_slashes_array($_POST);
 				$this->strip_slashes_array($_GET);
 				$this->strip_slashes_array($_COOKIE);
 			}
-			set_magic_quotes_runtime(0);
+			@set_magic_quotes_runtime(0);
 			@ini_set("magic_quotes_gpc", 0);
 			@ini_set("magic_quotes_runtime", 0);
 		}
