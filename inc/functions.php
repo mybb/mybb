@@ -5271,7 +5271,7 @@ function build_highlight_array($terms)
 }
 
 /**
- * Converts a decimal reference of a character to its UTF-8 equivalant
+ * Converts a decimal reference of a character to its UTF-8 equivalent
  * (Code by Anne van Kesteren, http://annevankesteren.nl/2005/05/character-references)
  *
  * @param string Decimal value of a character reference
@@ -6071,7 +6071,7 @@ function verify_files($path=MYBB_ROOT, $count=0)
  * Returns a signed value equal to an integer
  *
  * @param int The integer
- * @return string The signed equivallent
+ * @return string The signed equivalent
  */
 function signed($int)
 {
