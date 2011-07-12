@@ -245,7 +245,7 @@ $l['posting_rating_field_canratethreads'] = "Can rate threads?";
 $l['editing_field_caneditposts'] = "Can edit own posts?";
 $l['editing_field_candeleteposts'] = "Can delete own posts?";
 $l['editing_field_candeletethreads'] = "Can delete own threads?";
-$l['editing_field_caneditattachments'] = "Can edit own attachments?";
+$l['editing_field_caneditattachments'] = "Can update own attachments?";
 
 $l['polls_field_canpostpolls'] = "Can post polls?";
 $l['polls_field_canvotepolls'] = "Can vote in polls?";
