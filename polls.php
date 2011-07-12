@@ -719,8 +719,11 @@ if($mybb->input['action'] == "showresults")
 	eval("\$showresults = \"".$templates->get("polls_showresults")."\";");
 	output_page($showresults);
 }
-if($mybb->input['action'] == "vote")
+if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 {
+	// Verify incoming POST request
+	verify_post_check($mybb->input['my_post_key']);
+	
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
 	$poll['timeout'] = $poll['timeout']*60*60*24;

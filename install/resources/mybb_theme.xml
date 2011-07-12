@@ -2328,7 +2328,8 @@ body {
 		<template name="forumdisplay_newthread" version="120"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" alt="{$lang->post_thread}" title="{$lang->post_thread}" /></a>]]></template>
 		<template name="showthread_threaded_bitactive" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
 		<template name="showthread_threaded_bit" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
-		<template name="showthread_poll" version="120"><![CDATA[<form action="polls.php" method="get">
+		<template name="showthread_poll" version="1604"><![CDATA[<form action="polls.php" method="post">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="vote" />
 <input type="hidden" name="pid" value="{$poll['pid']}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
