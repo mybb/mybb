@@ -414,12 +414,15 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 	}
 
+	// Gather forum permissions
+	$forumpermissions = forum_permissions($forum['fid']);
+
 	// Check if an attachment with this name is already in the post
 	$query = $db->simple_select("attachments", "*", "filename='".$db->escape_string($attachment['name'])."' AND (posthash='$posthash' OR (pid='".intval($pid)."' AND pid!='0'))");
 	$prevattach = $db->fetch_array($query);
 	if($prevattach['aid'] && $update_attachment == false)
 	{
-		if(!$mybb->usergroup['caneditattachments'])
+		if(!$mybb->usergroup['caneditattachments'] && !$forumpermissions['caneditattachments'])
 		{
 			$ret['error'] = $lang->error_alreadyuploaded_perm;
 			return $ret;

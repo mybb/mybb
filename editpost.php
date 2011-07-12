@@ -173,7 +173,7 @@ if(!$mybb->input['attachmentaid'] && ($mybb->input['newattachment'] || $mybb->in
 	if($_FILES['attachment']['size'] > 0 && $forumpermissions['canpostattachments'] != 0 && ($mybb->settings['maxattachments'] == 0 || $attachcount < $mybb->settings['maxattachments']))
 	{
 		$update_attachment = false;
-		if($mybb->input['updateattachment'] && $mybb->usergroup['caneditattachments'])
+		if($mybb->input['updateattachment'] && ($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments']))
 		{
 			$update_attachment = true;
 		}
@@ -196,7 +196,7 @@ if($mybb->input['attachmentaid'] && isset($mybb->input['attachmentact']) && $myb
 	verify_post_check($mybb->input['my_post_key']);
 	
 	$mybb->input['attachmentaid'] = intval($mybb->input['attachmentaid']);
-	if($mybb->input['attachmentact'] == "remove" && $mybb->usergroup['caneditattachments'])
+	if($mybb->input['attachmentact'] == "remove")
 	{
 		remove_attachment($pid, "", $mybb->input['attachmentaid']);
 	}
@@ -424,10 +424,10 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 					eval("\$attach_mod_options = \"".$templates->get("post_attachments_attachment_mod_approve")."\";");
 				}
 			}
-			if($mybb->usergroup['caneditattachments'])
-			{
-				eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
-			}
+
+			// Remove Attachment
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+
 			if($attachment['visible'] != 1)
 			{
 				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
@@ -456,7 +456,7 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 		$lang->attach_quota = $lang->sprintf($lang->attach_quota, $friendlyusage, $friendlyquota);
 		if($mybb->settings['maxattachments'] == 0 || ($mybb->settings['maxattachments'] != 0 && $attachcount < $mybb->settings['maxattachments']) && !$noshowattach)
 		{
-			if($mybb->usergroup['caneditattachments'])
+			if($mybb->usergroup['caneditattachments'] || $forumpermissions['caneditattachments'])
 			{
 				eval("\$attach_update_options = \"".$templates->get("post_attachments_update")."\";");
 			}
