@@ -35,19 +35,36 @@ if($mybb->input['action'] == "today")
 
 	$plugins->run_hooks("online_today_start");
 
-	$todaycount = 0;
-	$stime = TIME_NOW-(60*60*24);
+	$threshold = TIME_NOW-(60*60*24);
+	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}'");
+	$todaycount = $db->fetch_field($query, "users");
+
+	// Add pagination
+	$perpage = $mybb->settings['threadsperpage'];
+
+	if(intval($mybb->input['page']) > 0)
+	{
+		$page = intval($mybb->input['page']);
+		$start = ($page-1) * $perpage;
+		$pages = ceil($todaycount / $perpage);
+		if($page > $pages)
+		{
+			$start = 0;
+			$page = 1;
+		}
+	}
+	else
+	{
+		$start = 0;
+		$page = 1;
+	}
+
+	$query = $db->simple_select("users", "*", "lastactive > '{$threshold}'", array("order_by" => "lastactive", "order_dir" => "desc", "limit" => $perpage, "limit_start" => $start));
+
 	$todayrows = '';
-	$query = $db->query("
-		SELECT u.*
-		FROM ".TABLE_PREFIX."users u
-		LEFT JOIN ".TABLE_PREFIX."usergroups g ON (g.gid=u.usergroup)
-		WHERE u.lastactive > $stime
-		ORDER BY u.lastactive DESC
-	");
 	while($online = $db->fetch_array($query))
 	{
-		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
+		if($online['invisible'] != 1 || $groupscache[$online['usergroup']]['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
 			if($online['invisible'] == 1)
 			{
@@ -57,14 +74,16 @@ if($mybb->input['action'] == "today")
 			{
 				$invisiblemark = "";
 			}
+	
 			$username = $online['username'];
 			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
 			$onlinetime = my_date($mybb->settings['timeformat'], $online['lastactive']);
+
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
-		++$todaycount;
 	}
+
 	if($todaycount == 1)
 	{
 		$onlinetoday = $lang->member_online_today;
@@ -73,6 +92,8 @@ if($mybb->input['action'] == "today")
 	{
 		$onlinetoday = $lang->sprintf($lang->members_were_online_today, $todaycount);
 	}
+
+	$multipage = multipage($todaycount, $perpage, $page, "online.php?action=today");
 
 	$plugins->run_hooks("online_today_end");
 
