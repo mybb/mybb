@@ -35,7 +35,7 @@ $l['rating_user'] = "Rating User";
 $l['viewing_memberlist'] = "Viewing <a href=\"memberlist.php\">Member List</a>";
 $l['viewing_whoposted'] = "Viewing Who Posted";
 $l['viewing_whoposted2'] = "Viewing Who Posted in Thread <a href=\"{1}\">{2}</a>";
-$l['marking_read'] = "<a href=\"misc.php?action=markread\">Marking Forums as Read</a>";
+$l['marking_read'] = "<a href=\"misc.php?action=markread&amp;my_post_key={1}\">Marking Forums as Read</a>";
 $l['viewing_helpdocs'] = "Viewing <a href=\"misc.php?action=help\">Help Documents</a>";
 $l['viewing_buddylist'] = "Viewing <a href=\"misc.php?action=buddypopup\">Buddy List</a>";
 $l['viewing_smilies'] = "Viewing <a href=\"misc.php?action=smilies\">Smilie List</a>";
