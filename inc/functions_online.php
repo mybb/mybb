@@ -698,7 +698,7 @@ function build_friendly_wol_location($user_activity)
 			}
 			break;
 		case "misc_markread":
-			$location_name = $lang->marking_read;
+			$location_name = $lang->sprintf($lang->marking_read, $mybb->post_code);
 			break;
 		case "misc_help":
 			$location_name = $lang->viewing_helpdocs;

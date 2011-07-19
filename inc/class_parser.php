@@ -354,10 +354,16 @@ class postParser
 			}
 		}
 
-		// Replace lists.
-		while(preg_match("#\[list(=(a|A|i|I|1))?\](.*?)\[/list\]#si", $message))
+		// Special code requiring special attention
+		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 		{
-			$message = preg_replace("#\s?\[list(=(a|A|i|I|1))?\](((?R)|.)*?)\[/list\]#esi", "self::mycode_parse_list('$3', '$2')\n", $message);
+			$message = preg_replace("#\s?\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')\n", $message);
+		}
+
+		// Replace lists.
+		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
+		{
+			$message = preg_replace("#\s?\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')\n", $message);
 		}
 
 		// Convert images when allowed.
@@ -1150,10 +1156,16 @@ class postParser
 			$message = preg_replace('#(>|^|\r|\n)/slap ([^\r\n<]*)#i', "\\1* {$options['me_username']} {$lang->slaps} \\2 {$lang->with_trout}", $message);
 		}
 
-		// Replace lists.
-		while(preg_match("#\[list(=(a|A|i|I|1))?\](.*?)\[/list\]#si", $message))
+		// Special code requiring special attention
+		while(preg_match("#\[list\](.*?)\[/list\]#esi", $message))
 		{
-			$message = preg_replace("#\s?\[list(=(a|A|i|I|1))?\](((?R)|.)*?)\[/list\]#esi", "self::mycode_parse_list('$3', '$2')\n", $message);
+			$message = preg_replace("#\s?\[list\](.*?)\[/list\](\r\n?|\n?)#esi", "\$this->mycode_parse_list('$1')\n", $message);
+		}
+
+		// Replace lists.
+		while(preg_match("#\[list=(a|A|i|I|1)\](.*?)\[/list\](\r\n?|\n?)#esi", $message))
+		{
+			$message = preg_replace("#\s?\[list=(a|A|i|I|1)\](.*?)\[/list\]#esi", "\$this->mycode_parse_list('$2', '$1')\n", $message);
 		}
 
 		// Run plugin hooks

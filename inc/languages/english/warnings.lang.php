@@ -1,4 +1,11 @@
 <?php
+/**
+ * MyBB 1.6 English Language Pack
+ * Copyright 2010 MyBB Group, All Rights Reserved
+ * 
+ * $Id$
+ */
+ 
 $l['nav_profile'] = "Profile of {1}";
 $l['nav_warning_log'] = "Warning Log";
 $l['nav_add_warning'] = "Warn User";
