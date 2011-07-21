@@ -1039,7 +1039,7 @@ ul.thread_tools li.subscription_remove {
 	<tr>
 		<td class="thead" colspan="{$colspan}">
 			<div style="float: right;">
-				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}{$post_code_string}>{$lang->markforum_read}</a> | <a href="usercp2.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
+				<span class="smalltext"><strong><a href="misc.php?action=markread&amp;fid={$fid}{$post_code_string}">{$lang->markforum_read}</a> | <a href="usercp2.php?action={$add_remove_subscription}subscription&amp;type=forum&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a>{$clearstoredpass}</strong></span>
 			</div>
 			<div>
 				<strong>{$foruminfo['name']}</strong>
