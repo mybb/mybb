@@ -617,11 +617,12 @@ class postParser
 		{
 			$replace = array(
 				"\$this->mycode_parse_post_quotes('$2', '$1', true)",
+				"\n$1 {$lang->wrote}\n--\n$2\n--\n",
 				"\n{$lang->quote}\n--\n$1\n--\n"
 			);
 		}
 
-		while(preg_match($pattern[0], $message) || preg_match($pattern[1], $message))
+		while(preg_match($pattern[0], $message) || preg_match($pattern[1], $message) || preg_match($pattern[2], $message))
 		{
 			$message = preg_replace($pattern, $replace, $message);
 		}
