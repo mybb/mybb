@@ -4148,7 +4148,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="online_today" version="120"><![CDATA[<html>
+		<template name="online_today" version="1604"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->online_today}</title>
 {$headerinclude}
@@ -4165,6 +4165,8 @@ body {
 <td align="center" colspan="2" class="trow1" style="white-space: nowrap">{$onlinetoday}</td>
 </tr>
 </table>
+<br />
+{$multipage}
 {$footer}
 </body>
 </html>]]></template>
