@@ -21,7 +21,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade19_dbchanges()
+function upgrade20_dbchanges()
 {
 	global $db, $output, $mybb;
 
@@ -47,6 +47,6 @@ function upgrade19_dbchanges()
 	$db->add_column("adminviews", "custom_profile_fields", "text NOT NULL AFTER conditions");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("19_done");
+	$output->print_footer("20_done");
 }
 ?>

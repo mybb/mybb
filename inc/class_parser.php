@@ -600,32 +600,29 @@ class postParser
 
 		// Assign pattern and replace values.
 		$pattern = array(
-			"#\[quote=(?:&quot;|\"|')?(.*?)[\"'][^\]]?(?:&quot;|\"|')?\](.*?)\[\/quote\](\r\n?|\n?)#esi",
-			"#\[quote=(.*?)\](.*?)\[\/quote\](\r\n?|\n?)#si",
+			"#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\](.*?)\[/quote\](\r\n?|\n?)#esi",
 			"#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si"
 		);
 
 		if($text_only == false)
 		{
 			$replace = array(
-				"\$this->mycode_parse_post_quotes('$2','$1')",
-				"<blockquote><cite>$1 $lang->wrote</cite>$2</blockquote>\n",
+				"\$this->mycode_parse_post_quotes('$4','$2$3')",
 				"<blockquote><cite>$lang->quote</cite>$1</blockquote>\n"
 			);
 		}
 		else
 		{
 			$replace = array(
-				"\$this->mycode_parse_post_quotes('$2', '$1', true)",
-				"\n$1 {$lang->wrote}\n--\n$2\n--\n",
+				"\$this->mycode_parse_post_quotes('$4','$2$3', true)",
 				"\n{$lang->quote}\n--\n$1\n--\n"
 			);
 		}
 
-		while(preg_match($pattern[0], $message) || preg_match($pattern[1], $message) || preg_match($pattern[2], $message))
+		do
 		{
-			$message = preg_replace($pattern, $replace, $message);
-		}
+			$message = preg_replace($pattern, $replace, $message, -1, $count);
+		} while($count);
 
 		if($text_only == false)
 		{

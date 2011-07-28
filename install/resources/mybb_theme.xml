@@ -3331,7 +3331,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_profile_adminoptions" version="1602"><![CDATA[
+		<template name="member_profile_adminoptions" version="1604"><![CDATA[
 <br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
@@ -3339,8 +3339,8 @@ body {
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?module=user-banning&amp;uid={$uid}">{$lang->admin_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;uid={$uid}">{$lang->admin_ban_in_acp}</a></li>
 </ul>
 </td>
 </tr>
