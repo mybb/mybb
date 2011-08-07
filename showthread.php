@@ -698,24 +698,6 @@ if($mybb->input['action'] == "thread")
 		{
 			$ignored_users[$uid] = 1;
 		}
-	}// Which thread mode is our user using by default?
-	if(!empty($mybb->user['threadmode']))
-	{
-		$defaultmode = $mybb->user['threadmode'];
-	}
-	else if($mybb->settings['threadusenetstyle'] == 1)
-	{
-		$defaultmode = 'threaded';
-	}
-	else
-	{
-		$defaultmode = 'linear';
-	}
-	
-	// If mode is unset, set the default mode
-	if(!isset($mybb->input['mode']))
-	{
-		$mybb->input['mode'] = $defaultmode;
 	}
 	
 	// Which thread mode is our user using by default?
