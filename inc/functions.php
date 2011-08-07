@@ -4571,6 +4571,8 @@ function get_event_poster($event)
  */
 function get_event_date($event)
 {
+	global $mybb;
+	
 	$event_date = explode("-", $event['date']);
 	$event_date = mktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 	$event_date = my_date($mybb->settings['dateformat'], $event_date);
