@@ -286,7 +286,7 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	}
 	else
 	{
-		redirect(get_forum_link($forum['fid']), $lang->redirect_pollpostedmoderated);
+		redirect(get_forum_link($thread['fid']), $lang->redirect_pollpostedmoderated);
 	}
 }
 
