@@ -196,7 +196,7 @@ class MyBB {
 		}
 
 		// Are we running in debug mode?
-		if(isset($mybb->input['debug']) || preg_match("#[?&]debug=1#", $_SERVER['REQUEST_URI']))
+		if(isset($this->input['debug']) && $this->input['debug'] == 1)
 		{
 			$this->debug_mode = true;
 		}
