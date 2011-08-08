@@ -5580,7 +5580,8 @@ function fetch_remote_file($url, $post_data=array())
 		
 		$headers[] = "Host: {$url['host']}";
 		$headers[] = "Connection: Close";
-		$headers[] = "\r\n";
+		// The line below is not required - Bug #1451
+		// $headers[] = "\r\n";
 		
 		if(!empty($post_body))
 		{
