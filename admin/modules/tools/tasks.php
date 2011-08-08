@@ -502,7 +502,7 @@ if($mybb->input['action'] == "enable" || $mybb->input['action'] == "disable")
 	}
 	else
 	{
-		$plugins->run_hooks("admin_tools_tasks_enable");
+		$plugins->run_hooks("admin_tools_tasks_disable");
 	}
 	
 	$query = $db->simple_select("tasks", "*", "tid='".intval($mybb->input['tid'])."'");
