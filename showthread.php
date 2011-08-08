@@ -656,7 +656,7 @@ if($mybb->input['action'] == "thread")
 			$thread['numratings'] = intval($thread['numratings']);
 		}
 
-		if($thread['num_ratings'])
+		if($thread['numratings'])
 		{
 			// At least >someone< has rated this thread, was it me?
 			// Check if we have already voted on this thread - it won't show hover effect then.
