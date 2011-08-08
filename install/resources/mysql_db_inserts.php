@@ -101,7 +101,6 @@ $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Internet Archiv
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Alexa Internet','ia_archiver');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Bing','msnbot');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Yahoo!','Slurp');";
-$inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Cuil','twiceler');";
 $inserts[] = "INSERT INTO mybb_spiders (name,useragent) VALUES ('Baidu','Baiduspider');";
 
 $inserts[] = "INSERT INTO mybb_templategroups (gid,prefix,title) VALUES ('1','calendar','<lang:group_calendar>');";
