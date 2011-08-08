@@ -254,7 +254,10 @@ function send_mail_queue($count=10)
 			// Delete the message from the queue
 			$db->delete_query("mailqueue", "mid='{$email['mid']}'");
 			
-			my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+			if($db->affected_rows() == 1)
+			{
+				my_mail($email['mailto'], $email['subject'], $email['message'], $email['mailfrom'], "", $email['headers']);
+			}
 		}
 		// Update the mailqueue cache and remove the lock
 		$cache->update_mailqueue(TIME_NOW, 0);
