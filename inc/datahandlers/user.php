@@ -464,7 +464,7 @@ class UserDataHandler extends DataHandler
 		$options = array(
 			'order_by' => 'disporder'
 		);
-		$query = $db->simple_select('profilefields', 'name, type, fid, required', $editable, $options);
+		$query = $db->simple_select('profilefields', 'name, type, fid, required, maxlength', $editable, $options);
 
 		// Then loop through the profile fields.
 		while($profilefield = $db->fetch_array($query))
