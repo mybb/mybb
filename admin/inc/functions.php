@@ -649,8 +649,8 @@ function login_attempt_check_acp($uid=0, $return_num=false)
  */
 function check_template($template)
 {
-	// Check to see of $config is in the template
-	if(preg_match("#\\\$(GLOBALS\\s*\\[\\s*'(GLOBALS|config)'\\s*\\]|(config|(GLOBALS\\s*\\[\\s*'mybb'\\s*\\]|mybb)\\s*->\\s*config)(?![A-Za-z0-9_]))#", $template))
+	// Check to see if our database password is in the template
+	if(preg_match("#database'?\\s*\]\\s*\[\\s*'?password#", $template))
 	{
 		return true;
 	}
