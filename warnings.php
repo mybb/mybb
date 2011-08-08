@@ -511,7 +511,7 @@ if($mybb->input['action'] == "warn")
 			$first = false;
 
 			$post_link = "";
-			$issuedby = build_profile_link($warning['username'], $warning['uid']);
+			$issuedby = build_profile_link($warning['username'], $warning['issuedby']);
 			$date_issued = my_date($mybb->settings['dateformat'], $warning['dateline']).", ".my_date($mybb->settings['timeformat'], $warning['dateline']);
 			if($warning['type_title'])
 			{
