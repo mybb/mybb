@@ -389,7 +389,7 @@ class EventDataHandler extends DataHandler
 			$this->verify_date();
 		}
 
-		if(($this->method == "insert" && $events['endtime']) || array_key_exists('repeats', $event))
+		if(($this->method == "insert" && $event['endtime']) || array_key_exists('repeats', $event))
 		{
 			$this->verify_repeats();
 		}
