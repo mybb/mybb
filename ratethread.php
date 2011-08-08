@@ -51,7 +51,7 @@ if(!$forum)
 else
 {
 	// Is our forum closed?
-	if ($forum['open'] == 0)
+	if($forum['open'] == 0)
 	{
 		// Doesn't look like it is
 		error($lang->error_closedinvalidforum);
