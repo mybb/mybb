@@ -169,6 +169,12 @@ class postParser
 			{
 				foreach($code_matches as $text)
 				{
+					// Fix up HTML inside the code tags so it is clean
+					if($options['allow_html'] != 0)
+					{
+						$text[2] = $this->parse_html($text[2]);
+					}
+
 					if(my_strtolower($text[1]) == "code")
 					{
 						$code = $this->mycode_parse_code($text[2]);
