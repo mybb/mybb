@@ -5229,19 +5229,17 @@ function build_highlight_array($terms)
 	{
 		$terms = htmlspecialchars_uni($terms);
 		$split_words = preg_split("#\s{1,}#", $terms, -1);
-		if(!is_array($split_words))
+		if(is_array($split_words))
 		{
-			continue;
-		}
-		foreach($split_words as $word)
-		{
-			if(!$word || strlen($word) < $mybb->settings['minsearchword'])
+			foreach($split_words as $word)
 			{
-				continue;
+				if(!$word || strlen($word) < $mybb->settings['minsearchword'])
+				{
+					continue;
+				}
+				$words[] = trim($word);
 			}
-			$words[] = trim($word);
 		}
-
 	}
 
 	if(!is_array($words))
