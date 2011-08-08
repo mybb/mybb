@@ -51,10 +51,7 @@ if(!$mybb->input['action'])
 	$stats = $cache->read("stats");
 	
 	$serverload = get_server_load();
-	if(!$serverload)
-	{
-		$serverload = $lang->unknown;
-	}
+	
 	// Get the number of users
 	$query = $db->simple_select("users", "COUNT(uid) AS numusers");
 	$users = my_number_format($db->fetch_field($query, "numusers"));
