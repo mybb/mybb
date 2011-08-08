@@ -53,15 +53,16 @@ if($mybb->input['action'] == "newpoll")
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 	
-	// $forum_cache is available now
-	if (!isset($forum_cache[$fid]))
+	// Get forum info
+	$forum = get_forum($fid);
+	if(!$forum)
 	{
-		error(); // Something weird happened, this forum should exist in cache
+		error($lang->error_invalidforum);
 	}
 	else
 	{
 		// Is our forum closed?
-		if ($forum_cache[$fid]['open'] == 0)
+		if ($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -154,15 +155,16 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
 	
-	// $forum_cache is available now
-	if (!isset($forum_cache[$fid]))
+	// Get forum info
+	$forum = get_forum($fid);
+	if(!$forum)
 	{
-		error(); // Something weird happened, this forum should exist in cache
+		error($lang->error_invalidforum);
 	}
 	else
 	{
 		// Is our forum closed?
-		if ($forum_cache[$fid]['open'] == 0)
+		if ($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -311,15 +313,16 @@ if($mybb->input['action'] == "editpoll")
 
 	$forumpermissions = forum_permissions($fid);
 	
-	// $forum_cache is available now
-	if (!isset($forum_cache[$fid]))
+	// Get forum info
+	$forum = get_forum($fid);
+	if(!$forum)
 	{
-		error(); // Something weird happened, this forum should exist in cache
+		error($lang->error_invalidforum);
 	}
 	else
 	{
 		// Is our forum closed?
-		if ($forum_cache[$fid]['open'] == 0)
+		if ($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -478,15 +481,16 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$forumpermissions = forum_permissions($thread['fid']);
 	
-	// $forum_cache is available now
-	if (!isset($forum_cache[$thread['fid']]))
+	// Get forum info
+	$forum = get_forum($thread['fid']);
+	if(!$forum)
 	{
-		error(); // Something weird happened, this forum should exist in cache
+		error($lang->error_invalidforum);
 	}
 	else
 	{
 		// Is our forum closed?
-		if ($forum_cache[$thread['fid']]['open'] == 0)
+		if ($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -809,15 +813,16 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		error_no_permission();
 	}
 	
-	// $forum_cache is available now
-	if (!isset($forum_cache[$fid]))
+	// Get forum info
+	$forum = get_forum($fid);
+	if(!$forum)
 	{
-		error(); // Something weird happened, this forum should exist in cache
+		error($lang->error_invalidforum);
 	}
 	else
 	{
 		// Is our forum closed?
-		if ($forum_cache[$fid]['open'] == 0)
+		if ($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
@@ -941,15 +946,17 @@ if($mybb->input['action'] == "do_undovote")
 		error($lang->error_invalidpoll);
 	}
 	
-	// We do not have $forum_cache available here since no forums permissions are checked in undo vote 
+	// We do not have $forum_cache available here since no forums permissions are checked in undo vote
+	// Get thread ID and then get forum info
 	$query = $db->simple_select("threads", "*", "tid='".intval($poll['tid'])."'");
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
-	$forum = get_forum($fid);
 	
-	if (empty($forum))
+	// Get forum info
+	$forum = get_forum($fid);
+	if(!$forum)
 	{
-		error(); // Something weird happened, this forum should exist...
+		error($lang->error_invalidforum);
 	}
 	else
 	{
