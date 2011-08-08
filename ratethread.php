@@ -42,6 +42,22 @@ if(!$forum)
 	error($lang->error_invalidforum);
 }
 
+// Get forum info
+$forum = get_forum($fid);
+if(!$forum)
+{
+	error($lang->error_invalidforum);
+}
+else
+{
+	// Is our forum closed?
+	if ($forum['open'] == 0)
+	{
+		// Doesn't look like it is
+		error($lang->error_closedinvalidforum);
+	}
+}
+
 // Check if this forum is password protected and we have a valid password
 check_forum_password($forum['fid']);
 
