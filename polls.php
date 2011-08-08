@@ -52,6 +52,21 @@ if($mybb->input['action'] == "newpoll")
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
+	
+	// $forum_cache is available now
+	if (!isset($forum_cache[$fid]))
+	{
+		error(); // Something weird happened, this forum should exist in cache
+	}
+	else
+	{
+		// Is our forum closed?
+		if ($forum_cache[$fid]['open'] == 0)
+		{
+			// Doesn't look like it is
+			error($lang->error_closedinvalidforum);
+		}
+	}
 
 	if(!$thread['tid'])
 	{
@@ -138,6 +153,21 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	$thread = $db->fetch_array($query);
 	$fid = $thread['fid'];
 	$forumpermissions = forum_permissions($fid);
+	
+	// $forum_cache is available now
+	if (!isset($forum_cache[$fid]))
+	{
+		error(); // Something weird happened, this forum should exist in cache
+	}
+	else
+	{
+		// Is our forum closed?
+		if ($forum_cache[$fid]['open'] == 0)
+		{
+			// Doesn't look like it is
+			error($lang->error_closedinvalidforum);
+		}
+	}
 
 	if(!$thread['tid'])
 	{
@@ -279,8 +309,22 @@ if($mybb->input['action'] == "editpoll")
 	add_breadcrumb(htmlspecialchars_uni($thread['subject']), get_thread_link($thread['tid']));
 	add_breadcrumb($lang->nav_editpoll);
 
-
 	$forumpermissions = forum_permissions($fid);
+	
+	// $forum_cache is available now
+	if (!isset($forum_cache[$fid]))
+	{
+		error(); // Something weird happened, this forum should exist in cache
+	}
+	else
+	{
+		// Is our forum closed?
+		if ($forum_cache[$fid]['open'] == 0)
+		{
+			// Doesn't look like it is
+			error($lang->error_closedinvalidforum);
+		}
+	}
 
 	$query = $db->simple_select("forums", "*", "fid='$fid'");
 	$forum = $db->fetch_array($query);
@@ -433,6 +477,21 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$thread = $db->fetch_array($query);
 
 	$forumpermissions = forum_permissions($thread['fid']);
+	
+	// $forum_cache is available now
+	if (!isset($forum_cache[$thread['fid']]))
+	{
+		error(); // Something weird happened, this forum should exist in cache
+	}
+	else
+	{
+		// Is our forum closed?
+		if ($forum_cache[$thread['fid']]['open'] == 0)
+		{
+			// Doesn't look like it is
+			error($lang->error_closedinvalidforum);
+		}
+	}
 
 	$query = $db->simple_select("forums", "*", "fid='".$thread['fid']."'");
 	$forum = $db->fetch_array($query);
@@ -749,6 +808,21 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	{
 		error_no_permission();
 	}
+	
+	// $forum_cache is available now
+	if (!isset($forum_cache[$fid]))
+	{
+		error(); // Something weird happened, this forum should exist in cache
+	}
+	else
+	{
+		// Is our forum closed?
+		if ($forum_cache[$fid]['open'] == 0)
+		{
+			// Doesn't look like it is
+			error($lang->error_closedinvalidforum);
+		}
+	}
 
 	$expiretime = $poll['dateline'] + $poll['timeout'];
 	$now = TIME_NOW;
@@ -866,6 +940,27 @@ if($mybb->input['action'] == "do_undovote")
 	{
 		error($lang->error_invalidpoll);
 	}
+	
+	// We do not have $forum_cache available here since no forums permissions are checked in undo vote 
+	$query = $db->simple_select("threads", "*", "tid='".intval($poll['tid'])."'");
+	$thread = $db->fetch_array($query);
+	$fid = $thread['fid'];
+	$forum = get_forum($fid);
+	
+	if (empty($forum))
+	{
+		error(); // Something weird happened, this forum should exist...
+	}
+	else
+	{
+		// Is our forum closed?
+		if ($forum['open'] == 0)
+		{
+			// Doesn't look like it is
+			error($lang->error_closedinvalidforum);
+		}
+	}
+	
 	$poll['timeout'] = $poll['timeout']*60*60*24;
 	
 
