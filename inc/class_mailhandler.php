@@ -282,7 +282,7 @@ class MailHandler
 		elseif($mybb->settings['returnemail'])
 		{
 			$this->headers .= "Return-Path: {$mybb->settings['returnemail']}{$this->delimiter}";
-			$this->headers .= "Reply-To: {$mybb->settings['adminemail']}{$this->delimiter}";
+			$this->headers .= "Reply-To: {$mybb->settings['returnemail']}{$this->delimiter}";
 		}
 		else
 		{
