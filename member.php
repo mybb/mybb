@@ -1414,6 +1414,9 @@ if($mybb->input['action'] == "profile")
 		else
 		{
 			$returnhome = explode("-", $memprofile['returndate']);
+			
+			// PHP native date functions use integers so timestamps for years after 2038 will not work
+			// Thus we use adodb_mktime
 			if($returnhome[2] >= 2038)
 			{
 				require_once MYBB_ROOT."inc/functions_time.php";
@@ -1425,8 +1428,22 @@ if($mybb->input['action'] == "profile")
 				$returnmkdate = mktime(0, 0, 0, $returnhome[1], $returnhome[0], $returnhome[2]);
 				$returndate = my_date($mybb->settings['dateformat'], $returnmkdate);
 			}
+			
+			// If our away time has expired already, we should be back, right?
+			if ($returnmkdate < TIME_NOW)
+			{
+				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
+				
+				// Update our status to "not away"
+				$memprofile['away'] = 0;
+			}
 		}
-		eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
+		
+		// Check if our away status is set to 1, it may have been updated already (see a few lines above)
+		if ($memprofile['away'] == 1)
+		{
+			eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
+		}
 	}
 	if($memprofile['dst'] == 1)
 	{

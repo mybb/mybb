@@ -398,7 +398,7 @@ if($mybb->input['action'] == "edit")
 			$task_list[$file_id] = $task_file;
 		}
 	}
-	$form_container->output_row($lang->task." <em>*</em>", $lang->task_desc, $form->generate_select_box("file", $task_list, $task_data['file'], array('id' => 'file')), 'file');
+	$form_container->output_row($lang->task." <em>*</em>", $lang->task_file_desc, $form->generate_select_box("file", $task_list, $task_data['file'], array('id' => 'file')), 'file');
 	$form_container->output_row($lang->time_minutes, $lang->time_minutes_desc, $form->generate_text_box('minute', $task_data['minute'], array('id' => 'minute')), 'minute');
 	$form_container->output_row($lang->time_hours, $lang->time_hours_desc, $form->generate_text_box('hour', $task_data['hour'], array('id' => 'hour')), 'hour');
 	$form_container->output_row($lang->time_days_of_month, $lang->time_days_of_month_desc, $form->generate_text_box('day', $task_data['day'], array('id' => 'day')), 'day');
