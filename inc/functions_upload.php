@@ -444,12 +444,6 @@ function upload_attachment($attachment, $update_attachment=false)
 		}
 	}
 	
-	// If safe_mode is enabled, don't attempt to use the monthly directories as it won't work
-	if(ini_get('safe_mode') == 1 || strtolower(ini_get('safe_mode')) == 'on')
-	{
-		$month_dir = '';
-	}
-	
 	// All seems to be good, lets move the attachment!
 	$filename = "post_".$mybb->user['uid']."_".TIME_NOW."_".md5(random_str()).".attach";
 	
