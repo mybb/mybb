@@ -1385,7 +1385,7 @@ function create_tables()
 	
 	if(strstr($mybb->input['dbengine'], "sqlite") !== false)
 	{
-		if(strstr($config['dbname'], "./") !== false || strstr($config['dbname'], "../") !== false)
+		if(strstr($config['dbname'], "./") !== false || strstr($config['dbname'], "../") !== false || empty($config['dbname']))
 		{
 			$errors[] = $lang->db_step_error_sqlite_invalid_dbname;
 			database_info();
