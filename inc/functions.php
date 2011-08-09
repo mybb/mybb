@@ -751,6 +751,16 @@ function error_no_permission()
 	}
 	else
 	{
+		// Redirect to where the user came from
+		if($_SERVER['HTTP_REFERER'])
+		{
+			$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
+		}
+		else
+		{
+			$redirect_url = '';
+		}
+		
 		eval("\$errorpage = \"".$templates->get("error_nopermission")."\";");
 	}
 
