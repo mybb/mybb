@@ -5597,6 +5597,11 @@ function fetch_remote_file($url, $post_data=array())
 		{
 			$headers[] = $post_body;
 		}
+		else
+		{
+			// If we have no post body, we need to add an empty element to make sure we've got \r\n\r\n before the (non-existent) body starts
+			$headers[] = '';
+		}
 		
 		$headers = implode("\r\n", $headers);	
 		if(!@fwrite($fp, $headers))
