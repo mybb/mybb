@@ -62,7 +62,6 @@ $l['copy_permissions_from'] = "Copy Permissions From...";
 $l['copy_permissions_from_desc'] = "If you wish, you can copy the forum and group permissions from another group. To make use of this, select a group to copy permissions from.";
 $l['save_user_group'] = "Save User Group";
 $l['list_users'] = "List Users";
-$l['group_leaders'] = "Group Leaders";
 
 $l['general'] = "General";
 $l['forums_posts'] = "Forums and Posts";
