@@ -180,7 +180,7 @@ $l['success_stylesheet_properties_updated'] = "The properties for the selected s
 $l['success_stylesheet_updated'] = "The selected stylesheet has been updated successfully.";
 $l['success_stylesheet_deleted'] = "The selected stylesheet has been deleted / reverted successfully.";
 $l['success_theme_set_default'] = "The selected theme is now the forum default.";
-$l['success_theme_forced'] = "All users have been forced to the selected theme successfully.";
+$l['success_theme_forced'] = "All users have been forced to use the selected theme successfully.";
 $l['success_theme_properties_updated'] = "The properties for the select theme have been updated successfully.";
 $l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
 
