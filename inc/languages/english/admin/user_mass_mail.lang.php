@@ -79,9 +79,7 @@ $l['review_text_version_desc'] = "Please review the automatically generated text
 
 $l['step_one'] = "Step 1";
 
-$l['subject'] = "Subject";
 $l['status'] = "Status";
-$l['delivery_date'] = "Delivery Date";
 $l['recipients'] = "Recipients";
 $l['delivered'] = "Delivered";
 $l['canceled'] = "Canceled";

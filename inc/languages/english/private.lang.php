@@ -92,7 +92,6 @@ $l['compose_bcc_show_title'] = "Show the BCC input box allowing you to blind car
 $l['separate_names'] = "Separate multiple user names with a comma.";
 $l['max_recipients'] = "<br />You may send this message to a maximum of <strong>{1}</strong> people.";
 $l['compose_subject'] = "Subject:";
-$l['compose_message2'] = "Compose Message";
 $l['compose_message'] = "Message:";
 $l['compose_options'] = "Options:";
 $l['options_sig'] = "<strong>Signature:</strong> include your signature in this message.";

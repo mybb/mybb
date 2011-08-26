@@ -107,14 +107,12 @@ $l['custom_tool'] = "Custom Moderator Tool: {1}";
 
 $l['delayed_moderation'] = "Delayed Moderation";
 $l['delayed_moderation_desc'] = "Here you can delay a moderation action for a selected number of days.";
-$l['thread'] = "Thread:";
 $l['threads'] = "Threads:";
 $l['threads_selected'] = "{1} thread(s) selected";
 $l['delay_moderation_for'] = "Delay moderation for:";
 $l['days'] = "day(s)";
 $l['moderation_action'] = "Moderation Action:";
 $l['open_close_thread'] = "Open/Close Thread";
-$l['merge_threads'] = "Merge Threads";
 $l['remove_redirects'] = "Remove Redirects";
 $l['remove_subscriptions'] = "Remove Subscriptions";
 $l['approve_unapprove_thread'] = "Approve/Unapprove Thread";

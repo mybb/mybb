@@ -110,7 +110,6 @@ $l['day_or_days'] = "day(s)";
 $l['week_or_weeks_on'] = "week(s) on";
 $l['repeats_monthly'] = "Monthly";
 $l['repeats_yearly'] = "Yearly";
-$l['repeats_every'] = "Repeats every";
 $l['repeats_on_day'] = "Repeats on day";
 $l['of_every'] = "of every";
 $l['month_or_months'] = "month(s)";

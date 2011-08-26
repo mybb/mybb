@@ -30,11 +30,9 @@ $l['manage_forums'] = "Manage Forums";
 $l['forum'] = "Forum";
 $l['order'] = "Order";
 
-$l['edit_forum'] = "Edit Forum";
 $l['subforums'] = "Sub Forums";
 $l['moderators'] = "Moderators";
 $l['permissions'] = "Permissions";
-$l['add_child_forum'] = "Add Child Forum";
 $l['delete_forum'] = "Delete Forum";
 
 $l['sub_forums'] = "Sub Forums";
@@ -102,7 +100,6 @@ $l['confirm_clear_custom_permission'] = "Are you sure you wish to clear this cus
 
 $l['forum_type'] = "Forum Type";
 $l['forum_type_desc'] = "Select the type of forum you are creating - a forum you can post in, or a category, which contains other forums.";
-$l['forum'] = "Forum";
 $l['category'] = "Category";
 $l['title'] = "Title";
 $l['description'] = "Description";

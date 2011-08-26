@@ -273,7 +273,7 @@ if(!$mybb->input['action'])
 	}
 	else
 	{
-		$form_container = new FormContainer($lang->ban_ip_address);
+		$form_container = new FormContainer($lang->ban_an_ip_address);
 		$form_container->output_row($lang->ip_address." <em>*</em>", $lang->ip_address_desc, $form->generate_text_box('filter', $mybb->input['filter'], array('id' => 'filter')), 'filter');
 		$buttons[] = $form->generate_submit_button($lang->ban_ip_address);
 	}

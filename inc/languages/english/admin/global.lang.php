@@ -113,7 +113,6 @@ $l['next'] = "Next";
 $l['delete'] = "Delete";
 $l['reset'] = "Reset";
 $l['and'] = "and";
-$l['go'] = "Go";
 $l['on'] = "On";
 $l['off'] = "Off";
 

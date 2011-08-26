@@ -26,15 +26,12 @@ $l['post'] = "Post:";
 $l['user_info'] = "User:";
 
 $l['filter_moderator_logs'] = "Filter Moderator Logs";
-$l['forum'] = "Forum:";
 $l['forum_moderator'] = "Forum Moderator:";
 $l['sort_by'] = "Sort By:";
 $l['results_per_page'] = "Results Per Page:";
 $l['all_moderators'] = "All Moderators";
 $l['older_than'] = "Older than ";
 
-$l['date'] = "Date";
-$l['username'] = "Username";
 $l['forum_name'] = "Forum Name";
 $l['thread_subject'] = "Thread Subject";
 

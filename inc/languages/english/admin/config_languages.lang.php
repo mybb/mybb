@@ -17,7 +17,6 @@ $l['quick_phrases_desc'] = "Quick access to commonly modified language phrases."
 $l['edit_with'] = "Edit with {1}";
 $l['edit_language_variables'] = "Edit Language Variables";
 $l['edit_language_variables_desc'] = "Here you can edit the different language strings to your liking.";
-$l['edit_properties'] = "Edit Properties";
 $l['edit_properties_desc'] = "Here you can edit a language pack properties.";
 $l['installed_language_packs'] = "Installed Language Packs";
 $l['front_end'] = "Front End";

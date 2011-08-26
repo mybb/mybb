@@ -646,7 +646,7 @@ if($mybb->input['action'] == "do_newreply" && $mybb->request_method == "post")
 		}
 		else
 		{
-			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_forum, get_forum_link($fid)); 
+			$lang->redirect_newreply .= $lang->sprintf($lang->redirect_return_thread, get_forum_link($fid)); 
 			redirect($url, $lang->redirect_newreply); 
 			exit;
 		}

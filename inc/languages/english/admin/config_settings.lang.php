@@ -51,7 +51,6 @@ $l['bbsettings'] = "Settings";
 $l['insert_new_setting_group'] = "Insert New Setting Group";
 $l['setting_group_setting'] = "Setting Group / Setting";
 $l['order'] = "Order";
-$l['edit_setting_group'] = "Edit Setting Group";
 $l['delete_setting_group'] = "Delete Setting Group";
 $l['save_display_orders'] = "Save Display Orders";
 $l['update_setting_group'] = "Update Setting Group";

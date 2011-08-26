@@ -30,7 +30,7 @@ $l['disallow_username'] = "Disallow Username";
 $l['add_disallowed_email_address'] = "Add a Disallowed Email Address";
 $l['email_address_desc'] = "Note: To indicate a wild card match, use *";
 $l['disallow_email_address'] = "Disallow Email Address";
-$l['ban_ip_address'] = "Ban an IP Address";
+$l['ban_an_ip_address'] = "Ban an IP Address";
 $l['ip_address_desc'] = "Note: To ban a range of IP addresses use * (Ex: 127.0.0.*)";
 $l['ban_ip_address'] = "Ban IP Address";
 

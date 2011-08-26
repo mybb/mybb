@@ -20,6 +20,6 @@ $l['redirect_newthread'] = "Akismet has detected that this is a spam message and
 $l['redirect_return_forum'] = "You may return to the forum <a href=\"{1}\">here</a>.";
 
 $l['redirect_newreply'] = "Akismet has detected that this is a spam message and will not be processed.<br />If you find this is in error please contact your system administrator.";
-$l['redirect_return_forum']= "You may return to the thread <a href=\"{1}\">here</a>.<br />Alternatively, return to the <a href=\"{2}\">forum.</a>";
+$l['redirect_return_thread']= "You may return to the thread <a href=\"{1}\">here</a>.<br />Alternatively, return to the <a href=\"{2}\">forum.</a>";
 
 ?>
