@@ -64,8 +64,9 @@ if($mybb->input['action'] == "today")
 	$todayrows = '';
 	while($online = $db->fetch_array($query))
 	{
-		if($online['invisible'] != 1 || $groupscache[$online['usergroup']]['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
+		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
+if($online['uid'] == $mybb->user['uid']) echo "true<br>"; else echo "false<br>";
 			if($online['invisible'] == 1)
 			{
 				$invisiblemark = "*";
