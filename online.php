@@ -66,7 +66,6 @@ if($mybb->input['action'] == "today")
 	{
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
-if($online['uid'] == $mybb->user['uid']) echo "true<br>"; else echo "false<br>";
 			if($online['invisible'] == 1)
 			{
 				$invisiblemark = "*";
