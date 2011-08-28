@@ -250,11 +250,6 @@ function draw_string(&$im, $string)
 			//$pos_x = $pos_x + $string_width + ($string_width/4);
 			$pos_x = $spacing / 4 + $i * $spacing;
 			$pos_y = ceil(($img_height-$string_height/2));
-			
-			if($pos_x + $string_width > $img_width)
-			{
-				$pos_x = $pos_x - ($pos_x - $string_width);
-			}
 
 			// Draw a shadow
 			$shadow_x = my_rand(-3, 3) + $pos_x;
