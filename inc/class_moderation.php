@@ -761,7 +761,7 @@ class Moderation
 					"replies" => 0,
 					"closed" => "moved|$tid",
 					"sticky" => $thread['sticky'],
-					"visible" => $thread['visible'],
+					"visible" => intval($thread['visible']),
 					"notes" => ''
 				);
 				$redirect_tid = $db->insert_query("threads", $threadarray);
@@ -794,7 +794,7 @@ class Moderation
 					"replies" => $thread['replies'],
 					"closed" => $thread['closed'],
 					"sticky" => $thread['sticky'],
-					"visible" => $thread['visible'],
+					"visible" => intval($thread['visible']),
 					"unapprovedposts" => $thread['unapprovedposts'],
 					"attachmentcount" => $thread['attachmentcount'],
 					"prefix" => $thread['prefix'],
@@ -1269,7 +1269,7 @@ class Moderation
 				"lastpost" => intval($thread['lastpost']),
 				"lastposter" => $db->escape_string($thread['lastposter']),
 				"replies" => count($pids)-1,
-				"visible" => $visible,
+				"visible" => intval($visible),
 				"notes" => ''
 			);
 			$newtid = $db->insert_query("threads", $query);
