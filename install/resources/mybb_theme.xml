@@ -4039,9 +4039,12 @@ body {
 
 {$pmsdownload}]]></template>
 		<template name="postbit_avatar" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}"><img src="{$post['avatar']}" alt="" {$avatar_width_height} /></a>]]></template>
-		<template name="usercp_profile_customfield" version="1400"><![CDATA[<tr>
-<td><span class="smalltext">
-<a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:</span></td>
+		<template name="usercp_profile_customfield" version="1605"><![CDATA[<tr>
+<td>
+<a title="{$profilefield['description']}" style="text-decoration: none;">{$profilefield['name']}</a>:
+<br />
+<span class="smalltext">{$profilefield['description']}</span>
+</td>
 </tr>
 <tr>
 <td>{$code}</td>
@@ -7432,8 +7435,12 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$requiredfields}
 </table>
 </fieldset>]]></template>
-		<template name="member_register_customfield" version="1410"><![CDATA[<tr>
-<td><span class="smalltext">{$profilefield['name']}</span></td>
+		<template name="member_register_customfield" version="1605"><![CDATA[<tr>
+<td>
+{$profilefield['name']}
+<br />
+<span class="smalltext">{$profilefield['description']}</span>
+</td>
 </tr>
 <tr>
 <td>{$code}</td>
