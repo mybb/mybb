@@ -177,6 +177,12 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 	// Deleting our current reputation of this user.
 	if($mybb->input['delete'])
 	{
+		// Only administrators, super moderators, as well as users who gave a specifc vote can delete one.
+		if($mybb->usergroup['cancp'] != 1 && $mybb->usergroup['issupermod'] != 1 && $existing_reputation['adduid'] != $mybb->user['uid'])
+		{
+			error_no_permission();
+		}
+		
 		if($mybb->input['pid'] != 0)
 		{
 			$db->delete_query("reputation", "uid='{$uid}' AND adduid='".$mybb->user['uid']."' AND pid = '".intval($mybb->input['pid'])."'");
@@ -378,7 +384,7 @@ if($mybb->input['action'] == "delete")
 	}
 
 	// Delete the specified reputation
-	$db->delete_query("reputation", "uid='{$uid}' AND rid='".$mybb->input['rid']."'");
+	$db->delete_query("reputation", "uid='{$uid}' AND rid='".intval($mybb->input['rid'])."'");
 
 	// Recount the reputation of this user - keep it in sync.
 	$query = $db->simple_select("reputation", "SUM(reputation) AS reputation_count", "uid='{$uid}'");
