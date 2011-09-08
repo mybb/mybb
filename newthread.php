@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newthread.php');
 
 $templatelist = "newthread,previewpost,error_invalidforum,redirect_newthread,loginbox,changeuserbox,newthread_postpoll,posticons,attachment,newthread_postpoll,codebuttons,smilieinsert,error_nosubject";
-$templatelist .= "posticons,newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method";
+$templatelist .= "posticons,newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -836,6 +836,9 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
+
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+
 			$attach_mod_options = '';
 			if($attachment['visible'] != 1)
 			{
