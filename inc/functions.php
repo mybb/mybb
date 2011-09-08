@@ -3200,7 +3200,15 @@ function build_breadcrumb()
 						$sep = $multipage_dropdown.$sep;
 					}
 				}
-				
+
+				$find = array(
+					"-page-1",
+					"&amp;page=1",
+				);
+
+				// Replace page 1 URLs
+				$navbit['url'] = str_replace($find, '', $navbit['url']);
+
 				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
 			}
 		}
