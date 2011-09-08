@@ -151,7 +151,7 @@ foreach($usergroups as $usergroup)
 		}	
 	}
 	
-	if($usergroup['gid'] == 6 && !empty($user['forumlist']))
+	if($usergroup['gid'] == 6)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
 	}
