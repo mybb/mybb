@@ -1732,7 +1732,7 @@ function my_get_array_cookie($name, $id)
  * @param int The cookie content id.
  * @param string The value to set the cookie to.
  */
-function my_set_array_cookie($name, $id, $value)
+function my_set_array_cookie($name, $id, $value, $expires)
 {
 	global $mybb;
 	
@@ -1747,7 +1747,7 @@ function my_set_array_cookie($name, $id, $value)
 
 	$newcookie[$id] = $value;
 	$newcookie = serialize($newcookie);
-	my_setcookie("mybb[$name]", addslashes($newcookie));
+	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
 	
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;

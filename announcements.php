@@ -101,6 +101,25 @@ $announcementarray['userusername'] = $announcementarray['username'];
 $announcement = build_postbit($announcementarray, 3);
 $lang->forum_announcement = $lang->sprintf($lang->forum_announcement, htmlspecialchars_uni($announcementarray['subject']));
 
+if($announcementarray['startdate'] > $mybb->user['lastvisit'])
+{
+	$setcookie = true;
+	if($mybb->cookies['mybb']['announcements'])
+	{
+		$cookie = unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
+	
+		if(isset($cookie[$announcementarray['aid']]))
+		{
+			$setcookie = false;
+		}
+	}
+
+	if($setcookie)
+	{
+		my_set_array_cookie('announcements', $announcementarray['aid'], $announcementarray['startdate'], -1);
+	}
+}
+
 $plugins->run_hooks("announcements_end");
 
 eval("\$forumannouncement = \"".$templates->get("announcement")."\";");

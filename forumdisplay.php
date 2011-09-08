@@ -648,10 +648,17 @@ if($forum_stats[-1]['announcements'] || $forum_stats[$fid]['announcements'])
 		ORDER BY a.startdate DESC $limit
 	");
 
+	// See if this announcement has been read in our announcement array
+	$cookie = array();
+	if(isset($mybb->cookies['mybb']['announcements']))
+	{
+		$cookie = unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
+	}
+
 	$bgcolor = alt_trow(true); // Reset the trow colors
 	while($announcement = $db->fetch_array($query))
 	{
-		if($announcement['startdate'] > $mybb->user['lastvisit'])
+		if($announcement['startdate'] > $mybb->user['lastvisit'] && !$cookie[$announcement['aid']])
 		{
 			$new_class = ' class="subject_new"';
 			$folder = "newfolder";
@@ -660,6 +667,12 @@ if($forum_stats[-1]['announcements'] || $forum_stats[$fid]['announcements'])
 		{
 			$new_class = ' class="subject_old"';
 			$folder = "folder";
+		}
+
+		// Mmm, eat those announcement cookies if they're older than our last visit
+		if($cookie[$announcement['aid']] < $mybb->user['lastvisit'])
+		{
+			unset($cookie[$announcement['aid']]);
 		}
 
 		$announcement['announcementlink'] = get_announcement_link($announcement['aid']);
@@ -698,6 +711,16 @@ if($forum_stats[-1]['announcements'] || $forum_stats[$fid]['announcements'])
 	{
 		eval("\$announcementlist = \"".$templates->get("forumdisplay_announcements")."\";");
 		$shownormalsep = true;
+	}
+
+	if(empty($cookie))
+	{
+		// Clean up cookie crumbs
+		my_setcookie('mybb[announcements]', 0, (TIME_NOW - (60*60*24*365)));
+	}
+	else if(!empty($cookie))
+	{
+		my_setcookie("mybb[announcements]", addslashes(serialize($cookie)), -1);
 	}
 }
 
