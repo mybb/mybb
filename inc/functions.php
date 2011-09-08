@@ -2579,7 +2579,8 @@ function build_prefixes($pid=0)
 
 	if($prefix_cache === false)
 	{
-		return false;
+		// No cache
+		return array();
 	}
 
 	$prefixes_cache = array();
