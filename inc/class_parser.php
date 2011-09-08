@@ -627,8 +627,14 @@ class postParser
 
 		do
 		{
+			$previous_message = $message;
 			$message = preg_replace($pattern, $replace, $message, -1, $count);
 		} while($count);
+
+		if(!$message)
+		{
+			$message = $previous_message;
+		}
 
 		if($text_only == false)
 		{
