@@ -123,6 +123,18 @@ if(!$forum || $forum['type'] != "f")
 // Forumdisplay cache
 $forum_stats = $cache->read("forumsdisplay");
 
+if(!is_array($forum_stats))
+{
+	$cache->update_forumdisplay();
+	$forum_stats = $cache->read("forumsdisplay");
+
+	if(!is_array($forum_stats))
+	{
+		// Still in limbo?
+		// $forum_stats = array();
+	}
+}
+
 $breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {
