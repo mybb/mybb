@@ -312,7 +312,20 @@ function fetch_wol_activity($location, $nopermission=false)
 			$user_activity['activity'] = "report";
 			break;
 		case "reputation":
-			$user_activity['activity'] = "reputation";
+			if(is_numeric($parameters['uid']))
+			{
+				$uid_list[] = $parameters['uid'];
+				$user_activity['uid'] = $parameters['uid'];
+			}
+
+			if($parameters['action'] == "add")
+			{
+				$user_activity['activity'] = "reputation";
+			}
+			else
+			{
+				$user_activity['activity'] = "reputation_report";
+			}
 			break;
 		case "search":
 			$user_activity['activity'] = "search";
@@ -839,7 +852,10 @@ function build_friendly_wol_location($user_activity)
 			break;
 		// reputation.php functions
 		case "reputation":
-			$location_name = $lang->giving_reputation;
+			$location_name = $lang->sprintf($lang->giving_reputation, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
+			break;
+		case "reputation_report":
+			$location_name = $lang->sprintf($lang->viewing_reputation_report, "reputation.php?uid={$user_activity['uid']}", $usernames[$user_activity['uid']]);
 			break;
 		// search.php functions
 		case "search":
