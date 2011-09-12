@@ -1723,15 +1723,22 @@ function configure()
 		$websiteurl = $hostname.'/';
 		$websitename = 'Your Website';
 		$contactemail = '';
+
+		$protocol = "http://";
+		if(!empty($_SERVER['HTTPS']) || substr($bburl, 0, 5) == "https")
+		{
+			$protocol = "https://";
+		}
+
 		// Attempt auto-detection
 		if($_SERVER['HTTP_HOST'])
 		{
-			$hostname = 'http://'.$_SERVER['HTTP_HOST'];
+			$hostname = $protocol.$_SERVER['HTTP_HOST'];
 			$cookiedomain = '.'.$_SERVER['HTTP_HOST'];
 		}
 		elseif($_SERVER['SERVER_NAME'])
 		{
-			$hostname = 'http://'.$_SERVER['SERVER_NAME'];
+			$hostname = $protocol.$_SERVER['SERVER_NAME'];
 			$cookiedomain = '.'.$_SERVER['SERVER_NAME'];
 		}
 		
