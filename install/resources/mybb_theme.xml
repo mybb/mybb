@@ -1978,9 +1978,9 @@ body {
 {$usercpmenu}
 </table>
 </td>]]></template>
-		<template name="usercp_nav_messenger" version="1400"><![CDATA[<tr>
+		<template name="usercp_nav_messenger" version="1605"><![CDATA[<tr>
 	<td class="tcat">
-		<div class="float_right"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.gif" id="usercppms_img" class="expander" alt="[-]"/></div>
+		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.gif" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
 	</td>
 </tr>
