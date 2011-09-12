@@ -3202,13 +3202,9 @@ function build_breadcrumb()
 					}
 				}
 
-				$find = array(
-					"-page-1",
-					"&amp;page=1",
-				);
-
 				// Replace page 1 URLs
-				$navbit['url'] = str_replace($find, '', $navbit['url']);
+				$navbit['url'] = str_replace("-page-1.html", ".html", $navbit['url']);
+				$navbit['url'] = preg_replace("/&amp;page=1$/", "", $navbit['url']);
 
 				eval("\$nav .= \"".$templates->get("nav_bit")."\";");
 			}
