@@ -119,11 +119,13 @@ foreach($usergroups as $usergroup)
 	{
 		continue;
 	}
+
 	$bgcolor = '';
 	foreach($usergroup['user_list'] as $user)
 	{
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 		$user['profilelink'] = get_profile_link($user['uid']);
+
 		// For the postbit templates
 		$post['uid'] = $user['uid'];
 		$emailcode = $pmcode = '';
@@ -151,15 +153,17 @@ foreach($usergroups as $usergroup)
 		}	
 	}
 	
-	if($usergroup['gid'] == 6)
+	if($modrows && $usergroup['gid'] == 6)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_moderators")."\";");
 	}
-	else
+
+	if($usergrouprows)
 	{
 		eval("\$grouplist .= \"".$templates->get("showteam_usergroup")."\";");
 	}
-	$usergrouprows = '';
+
+	$usergrouprows = $modrows = '';
 }
 
 if(empty($grouplist))
