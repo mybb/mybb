@@ -2407,7 +2407,6 @@ function build_mycode_inserter($bind="message")
 			"editor_enter_image",
 			"editor_enter_video_url",
 			"editor_video_dailymotion",
-			"editor_video_googlevideo",
 			"editor_video_metacafe",
 			"editor_video_myspacetv",
 			"editor_video_vimeo",

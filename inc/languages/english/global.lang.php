@@ -159,7 +159,6 @@ $l['editor_enter_email_title'] = "Optionally, you may also enter a title for the
 $l['editor_enter_image'] = "Please enter the remote URL of the image you wish to insert.";
 $l['editor_enter_video_url'] = "Please enter the URL of the video.";
 $l['editor_video_dailymotion'] = "Dailymotion";
-$l['editor_video_googlevideo'] = "Google Video";
 $l['editor_video_metacafe'] = "MetaCafe";
 $l['editor_video_myspacetv'] = "MySpace TV";
 $l['editor_video_vimeo'] = "Vimeo";

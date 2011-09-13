@@ -989,9 +989,6 @@ class postParser
 			case "dailymotion":
 				list($id, ) = split("_", $path[2], 1); // http://www.dailymotion.com/video/fds123_title-goes-here
 				break;
-			case "googlevideo":
-				$id = $input['docid']; // http://video.google.com/videoplay?docid=fds123
-				break;
 			case "metacafe":
 				$id = $path[2]; // http://www.metacafe.com/watch/fds123/title_goes_here/
 				$title = htmlspecialchars_uni($path[3]);
