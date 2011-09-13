@@ -120,8 +120,18 @@ class MailHandler
 		else
 		{
 			$this->from = "";
+
+			if($mybb->settings['mail_handler'] == 'smtp')
+			{
+				$this->from = $mybb->settings['adminemail'];
+			}
+			else
+			{
+				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
+				$this->from .= " <{$mybb->settings['adminemail']}>";
+			}
 		}
-		
+
 		if($return_email)
 		{
 			$this->return_email = $return_email;
@@ -129,18 +139,27 @@ class MailHandler
 		else
 		{
 			$this->return_email = "";
+			if($mybb->settings['returnemail'])
+			{
+				$this->return_email = $mybb->settings['returnemail'];
+			}
+			else
+			{
+				$this->return_email = $mybb->settings['adminemail'];
+			}
 		}
 
 		$this->set_to($to);
 		$this->set_subject($subject);
+
 		if($charset)
 		{
 			$this->set_charset($charset);
 		}
+
 		$this->parse_format = $format;
 		$this->set_common_headers();
 		$this->set_message($message, $message_text);
-
 	}
 
 	/**
@@ -256,38 +275,13 @@ class MailHandler
 	 */
 	function set_common_headers()
 	{
-		global $mybb;
-
 		// Build mail headers
-		if(!trim($this->from))
-		{
-			if($mybb->settings['mail_handler'] == 'smtp')
-			{
-				$this->from = $mybb->settings['adminemail'];
-			}
-			else
-			{
-				$this->from = '"'.$this->utf8_encode($mybb->settings['bbname']).'"';
-				$this->from .= " <{$mybb->settings['adminemail']}>";
-			}
-		}
-
 		$this->headers .= "From: {$this->from}{$this->delimiter}";
 		
 		if($this->return_email)
 		{
 			$this->headers .= "Return-Path: {$this->return_email}{$this->delimiter}";
 			$this->headers .= "Reply-To: {$this->return_email}{$this->delimiter}";
-		}
-		elseif($mybb->settings['returnemail'])
-		{
-			$this->headers .= "Return-Path: {$mybb->settings['returnemail']}{$this->delimiter}";
-			$this->headers .= "Reply-To: {$mybb->settings['returnemail']}{$this->delimiter}";
-		}
-		else
-		{
-			$this->headers .= "Return-Path: {$mybb->settings['adminemail']}{$this->delimiter}";
-			$this->headers .= "Reply-To: {$mybb->settings['adminemail']}{$this->delimiter}";
 		}
 
 		if(isset($_SERVER['SERVER_NAME']))
