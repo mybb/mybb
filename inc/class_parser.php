@@ -435,7 +435,7 @@ class postParser
 		
 		// First we take out any of the tags we don't want parsed between (url= etc)
 		preg_match_all("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])#i", $message, $bad_matches, PREG_PATTERN_ORDER);
-        $message = preg_replace("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])#si", "<mybb-bad-sm>", $message);
+		$message = preg_replace("#\[(url(=[^\]]*)?\]|quote=([^\]]*)?\])#si", "<mybb-bad-sm>", $message);
 		
 		// Impose a hard limit of 500 smilies per message as to not overload the parser
 		$remaining = 500;
