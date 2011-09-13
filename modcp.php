@@ -393,7 +393,7 @@ if($mybb->input['action'] == "modlogs")
 		FROM ".TABLE_PREFIX."moderatorlog l
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=l.uid)
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
-		WHERE 1=1 {$where}
+		WHERE 1=1 {$where}{$tflist}
 	");
 	$rescount = $db->fetch_field($query, "count");
 
@@ -439,7 +439,7 @@ if($mybb->input['action'] == "modlogs")
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
-		WHERE 1=1 {$where}
+		WHERE 1=1 {$where}{$tflist}
 		ORDER BY {$sortby} {$order}
 		LIMIT {$start}, {$perpage}
 	");
