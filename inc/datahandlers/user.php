@@ -395,7 +395,7 @@ class UserDataHandler extends DataHandler
 			$this->set_error("invalid_birthday_coppa");
 			return false;
 		}
-		elseif(($mybb->settings['coppa'] == "deny" || $mybb->settings['coppa'] == "enabled") && $birthday['year'] > (date("Y")-13))
+		elseif($mybb->settings['coppa'] == "deny" && $birthday['year'] > (date("Y")-13))
 		{
 			$this->set_error("invalid_birthday_coppa2");
 			return false;
