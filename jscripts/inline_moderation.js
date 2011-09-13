@@ -35,7 +35,12 @@ var inlineModeration = {
 				inlineCheck = element.id.split("_");
 				id = inlineCheck[1];
 
-				if(inlineIds.indexOf(id) != -1)
+				if(inlineIds.indexOf('ALL') != -1)
+				{
+					inlineModeration.clearChecked();
+					inlineCookie = null;
+				}
+				else if(inlineIds.indexOf(id) != -1)
 				{
 					element.checked = true;
 					var tr = element.up('tr');
@@ -97,6 +102,7 @@ var inlineModeration = {
 		}
 
 		var newIds = new Array();
+		var remIds = new Array();
 		inlineCookie = Cookie.get(inlineModeration.cookieName);
 
 		if(inlineCookie)
@@ -131,10 +137,31 @@ var inlineModeration = {
 			{
 				tr.removeClassName('trow_selected');
 			}
+
+			if(inlineCookie.indexOf("ALL") != -1)
+			{
+				// We've already selected all threads, add this to our "no-go" cookie
+				remIds[remIds.length] = id;
+			}
 		}
 
-		inlineData = "|"+newIds.join("|")+"|";
 		goButton = $("inline_go");
+
+		if(remIds)
+		{
+			inlineData = "|"+remIds.join("|")+"|";
+			Cookie.set(inlineModeration.cookieName + '_removed', inlineData, 3600000);
+
+			// Get the right count for us
+			var count = goButton.value.replace(/[^\d]/g, '');
+			inlineModeration.inlineCount = count;
+			inlineModeration.inlineCount--;
+		}
+		else
+		{
+			inlineData = "|"+newIds.join("|")+"|";
+			Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
+		}
 
 		if(inlineModeration.inlineCount < 0)
 		{
@@ -142,7 +169,6 @@ var inlineModeration = {
 		}
 
 		goButton.value = go_text+" ("+inlineModeration.inlineCount+")";
-		Cookie.set(inlineModeration.cookieName, inlineData, 3600000);
 
 		return true;
 	},
@@ -189,6 +215,7 @@ var inlineModeration = {
 		goButton = $("inline_go");
 		goButton.value = go_text+" (0)";
 		Cookie.unset(inlineModeration.cookieName);
+		Cookie.unset(inlineModeration.cookieName + '_removed');
 
 		return true;
 	},

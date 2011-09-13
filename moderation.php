@@ -2408,13 +2408,31 @@ function getallids($id, $type)
 	global $db, $mybb;
 	
 	$ids = array();
-	
+
+	// Get any removed threads (after our user hit 'all')
+	$removed_ids = array();
+	$cookie = "inlinemod_".$type.$id."_removed";
+	if($mybb->cookies[$cookie])
+	{
+		$removed_ids = explode("|", $mybb->cookies[$cookie]);
+
+		if(!is_array($removed_ids))
+		{
+			$removed_ids = array();
+		}
+	}
+
 	// "Select all Threads in this forum" only supported by forumdisplay and search
 	if($type == 'forum')
 	{
 		$query = $db->simple_select("threads", "tid", "fid='".intval($id)."'");
 		while($tid = $db->fetch_field($query, "tid"))
 		{
+			if(in_array($tid, $removed_ids))
+			{
+				continue;
+			}
+
 			$ids[] = $tid;
 		}
 	}
@@ -2430,6 +2448,17 @@ function getallids($id, $type)
 		{
 			$ids = explode(',', $searchlog['threads']);
 		}
+
+		if(is_array($ids))
+		{
+			foreach($ids as $key => $tid)
+			{
+				if(in_array($tid, $removed_ids))
+				{
+					unset($ids[$key]);
+				}
+			}
+		}
 	}
 	
 	return $ids;
@@ -2438,6 +2467,7 @@ function getallids($id, $type)
 function clearinline($id, $type)
 {
 	my_unsetcookie("inlinemod_".$type.$id);
+	my_unsetcookie("inlinemod_".$type.$id."_removed");
 }
 
 function extendinline($id, $type)
@@ -2445,6 +2475,7 @@ function extendinline($id, $type)
 	global $mybb;
 	
 	my_setcookie("inlinemod_$type$id", '', TIME_NOW+3600);
+	my_setcookie("inlinemod_$type$id_removed", '', TIME_NOW+3600);
 }
 
 /**
