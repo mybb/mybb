@@ -706,6 +706,7 @@ div.error.ul {
 	padding: 5px;
 	margin-top: 5px;
 	font-weight: normal;
+	white-space: nowrap;
 }
 
 .pagination_breadcrumb_link {
