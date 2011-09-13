@@ -1747,7 +1747,7 @@ function configure()
 			$cookiedomain = my_substr($cookiedomain, 4);
 		}
 		
-		if($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost')
+		if($_SERVER['HTTP_HOST'] == 'localhost' || $_SERVER['SERVER_NAME'] == 'localhost' || ip2long($_SERVER['SERVER_NAME']) != false)
 		{
 			$cookiedomain = '';
 		}
