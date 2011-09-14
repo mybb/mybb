@@ -1922,8 +1922,8 @@ function create_admin_user()
 			{
 				$fields[] = $field['attributes']['name'];
 			}
+
 			$conditions = array();
-			
 			if(is_array($view['conditions'][0]['condition']))
 			{
 				foreach($view['conditions'][0]['condition'] as $condition)
@@ -1937,6 +1937,15 @@ function create_admin_user()
 				}
 			}
 
+			$custom_profile_fields = array();
+			if(is_array($view['custom_profile_fields'][0]['field']))
+			{
+				foreach($view['custom_profile_fields'][0]['field'] as $field)
+				{
+					$custom_profile_fields[] = $field['attributes']['name'];
+				}
+			}
+
 			$new_view = array(
 				"uid" => 0,
 				"type" => $db->escape_string($view['attributes']['type']),
@@ -1944,6 +1953,7 @@ function create_admin_user()
 				"title" => $db->escape_string($view['title'][0]['value']),
 				"fields" => $db->escape_string(serialize($fields)),
 				"conditions" => $db->escape_string(serialize($conditions)),
+				"custom_profile_fields" => $db->escape_string(serialize($custom_profile_fields)),
 				"sortby" => $db->escape_string($view['sortby'][0]['value']),
 				"sortorder" => $db->escape_string($view['sortorder'][0]['value']),
 				"perpage" => intval($view['perpage'][0]['value']),
