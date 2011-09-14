@@ -1387,16 +1387,13 @@ if($mybb->input['action'] == "subscriptions")
 
 			if($thread['lastpost'] > $cutoff)
 			{
-				if($thread['lastpost'] > $cutoff)
+				if($thread['lastread'])
 				{
-					if($thread['lastread'])
-					{
-						$lastread = $thread['lastread'];
-					}
-					else
-					{
-						$lastread = 1;
-					}
+					$lastread = $thread['lastread'];
+				}
+				else
+				{
+					$lastread = 1;
 				}
 			}
 
@@ -1413,7 +1410,7 @@ if($mybb->input['action'] == "subscriptions")
 				}
 			}
 
-			if($thread['lastpost'] > $lastread && $lastread)
+			if($lastread && $lastread < $thread['lastpost'])
 			{
 				$folder .= "new";
 				$folder_label .= $lang->icon_new;
@@ -3155,6 +3152,7 @@ if(!$mybb->input['action'])
 				{
 					$folder = '';
 					$folder_label = '';
+					$gotounread = '';
 
 					if($thread['tid'])
 					{
