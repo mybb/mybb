@@ -23,6 +23,9 @@ $l['add_maxperthread'] = "You've already given this user as many reputation rati
 $l['add_no_comment'] = "You must enter a comment of at least 10 characters to give this user a reputation rating.";
 $l['add_toolong'] = "You must enter a reason no longer then then {1} characters.";
 $l['add_negative_disabled'] = "The administrator has disabled negative reputations.";
+$l['add_neutral_disabled'] = "The administrator has disabled neutral reputations.";
+$l['add_positive_disabled'] = "The administrator has disabled positive reputations.";
+$l['add_all_rep_disabled'] = "The administrator has disabled all types of reputation. You cannot rate this user.";
 $l['reputation_report'] = "Reputation Report for {1}";
 $l['reputation_members'] = "Reputation from Members:";
 $l['reputation_posts'] = "Reputation from Posts:";
@@ -41,6 +44,8 @@ $l['go_back'] = "Back";
 $l['add_reputation_vote'] = "Add a reputation rating for {1}";
 $l['add_reputation_to_post'] = "This reputation is for {1}'s post.<br />";
 $l['neg_rep_disabled'] = "<span class=\"smalltext\">* - <em>Negative reputation is currently disabled</em></span>";
+$l['pos_rep_disabled'] = "<span class=\"smalltext\">* - <em>Positive reputation is currently disabled</em></span>";
+$l['neu_rep_disabled'] = "<span class=\"smalltext\">* - <em>Neutral reputation is currently disabled</em></span>";
 $l['no_comment_needed'] = "You're adding reputation because of this user's post, which is linked in their profile. A comment isn't needed, but if you want to leave one, please enter it below.<br />";
 $l['no_comment'] = "[No comment]";
 $l['vote_added'] = "Rating Added";

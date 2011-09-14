@@ -1665,7 +1665,7 @@ if($mybb->input['action'] == "profile")
 	}
 
 	// Fetch the reputation for this user
-	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1)
+	if($memperms['usereputationsystem'] == 1 && $displaygroup['usereputationsystem'] == 1 && $mybb->settings['enablereputation'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 	{
 		$bg_color = alt_trow();
 		$reputation = get_reputation($memprofile['reputation']);

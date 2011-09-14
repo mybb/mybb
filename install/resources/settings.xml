@@ -1380,49 +1380,67 @@ download=As Download Link]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="posrep">
+			<title>Allow Positive Reputation</title>
+			<description><![CDATA[Allow users to give others positive reputation?]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="negrep">
 			<title>Allow Negative Reputation</title>
 			<description><![CDATA[Allow users to give others negative reputation?]]></description>
-			<disporder>1</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>2</isdefault>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="neurep">
+			<title>Allow Negative Reputation</title>
+			<description><![CDATA[Allow users to give others neutral reputation?]]></description>
+			<disporder>4</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="multirep">
 			<title>Allow Multiple Reputation</title>
 			<description><![CDATA[Can users give multiple reputations to the same user?<br />Note: Does not effect "Post" reputation]]></description>
-			<disporder>1</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>3</isdefault>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="postrep">
 			<title>Allow Post Reputations</title>
 			<description><![CDATA[Enable reputation to be linked to posts?]]></description>
-			<disporder>1</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
-			<isdefault>4</isdefault>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="repsperpage">
 			<title>Reputation Comments Per Page</title>
 			<description><![CDATA[Here you can enter the number of reputation comments to show per page on the reputation system]]></description>
-			<disporder>2</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[15]]></settingvalue>
-			<isdefault>5</isdefault>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxreplength">
 			<title>Maximum Reputation Length</title>
 			<description><![CDATA[The maximum number of characters a reputation can be.]]></description>
-			<disporder>3</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[300]]></settingvalue>
-			<isdefault>6</isdefault>
+			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 	</settinggroup>

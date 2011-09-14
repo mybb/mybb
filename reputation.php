@@ -234,7 +234,27 @@ if($mybb->input['action'] == "do_add" && $mybb->request_method == "post")
 		output_page($error);
 		exit;
 	}
-	
+
+	// This user is trying to give a neutral reputation, but neutral reps have been disabled.
+	if($mybb->input['reputation'] == 0 && $mybb->settings['neurep'] != 1)
+	{
+		$show_back = 1;
+		$message = $lang->add_neutral_disabled;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		output_page($error);
+		exit;
+	}
+
+	// This user is trying to give a positive reputation, but positive reps have been disabled.
+	if($mybb->input['reputation'] > 0 && $mybb->settings['posrep'] != 1)
+	{
+		$show_back = 1;
+		$message = $lang->add_positive_disabled;
+		eval("\$error = \"".$templates->get("reputation_add_error")."\";");
+		output_page($error);
+		exit;
+	}
+
 	// The length of the comment is too long
 	if(my_strlen($mybb->input['comments']) > $mybb->settings['maxreplength'])
 	{
@@ -337,28 +357,50 @@ if($mybb->input['action'] == "add")
 	}
 
 	// Draw the "power" options
-	$positive_power = '';
-	$negative_power = '';
-	$vote_check = '';
-	if($existing_reputation['uid'])
+	if($mybb->settings['negrep'] || $mybb->settings['neurep'] || $mybb->settings['posrep'])
 	{
-		$vote_check[$existing_reputation['reputation']] = " selected=\"selected\"";
-	}
-	$reputationpower = $mybb->usergroup['reputationpower'];
-	for($i = 1; $i <= $reputationpower; ++$i)
-	{
-		$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
-		$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
-		if($mybb->settings['negrep'])
-		{
-			$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
-			$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
-		}
-	}
-	
-	$plugins->run_hooks("reputation_add_end");
+		$vote_check = '';
+		$positive_power = '';
+		$negative_power = '';
+		$reputationpower = $mybb->usergroup['reputationpower'];
 
-	eval("\$reputation_add = \"".$templates->get("reputation_add")."\";");
+		if($existing_reputation['uid'])
+		{
+			$vote_check[$existing_reputation['reputation']] = " selected=\"selected\"";
+		}
+
+		if($mybb->settings['neurep'])
+		{
+			$neutral_title = $lang->power_neutral;
+			$neutral_power = "\t\t\t\t\t<option value=\"0\" class=\"reputation_neutral\" onclick=\"$('reputation').className='reputation_neutral'\"{$vote_check[0]}>{$lang->power_neutral}</option>\n";
+		}
+
+		for($i = 1; $i <= $reputationpower; ++$i)
+		{
+			if($mybb->settings['posrep'])
+			{
+				$positive_title = $lang->sprintf($lang->power_positive, "+".$i);
+				$positive_power = "\t\t\t\t\t<option value=\"{$i}\" class=\"reputation_positive\" onclick=\"$('reputation').className='reputation_positive'\"{$vote_check[$i]}>{$positive_title}</option>\n".$positive_power;
+			}
+
+			if($mybb->settings['negrep'])
+			{
+				$negative_title = $lang->sprintf($lang->power_negative, "-".$i);
+				$negative_power .= "\t\t\t\t\t<option value=\"-{$i}\" class=\"reputation_negative\" onclick=\"$('reputation').className='reputation_negative'\"{$vote_check[-$i]}>{$negative_title}</option>\n";
+			}
+		}
+
+		$plugins->run_hooks("reputation_add_end");
+		eval("\$reputation_add = \"".$templates->get("reputation_add")."\";");
+	}
+	else
+	{
+		$message = $lang->add_all_rep_disabled;
+
+		$plugins->run_hooks("reputation_add_end_error");
+		eval("\$reputation_add = \"".$templates->get("reputation_add_error")."\";");
+	}
+
 	output_page($reputation_add);
 }
 
@@ -447,7 +489,7 @@ if(!$mybb->input['action'])
 	}
 
 	// If the user has permission to add reputations - show the image
-	if($mybb->usergroup['cangivereputations'] == 1)
+	if($mybb->usergroup['cangivereputations'] == 1 && ($mybb->settings['posrep'] || $mybb->settings['neurep'] || $mybb->settings['negrep']))
 	{
 		eval("\$add_reputation = \"".$templates->get("reputation_addlink")."\";");
 	}
@@ -626,8 +668,17 @@ if(!$mybb->input['action'])
 	// Is negative reputation disabled? If so, tell the user
 	if($mybb->settings['negrep'] == 0)
 	{
-		$negative_count = $negative_count."*";
 		$neg_rep_info = $lang->neg_rep_disabled;
+	}
+
+	if($mybb->settings['posrep'] == 0)
+	{
+		$pos_rep_info = $lang->pos_rep_disabled;
+	}
+
+	if($mybb->settings['neurep'] == 0)
+	{
+		$neu_rep_info = $lang->neu_rep_disabled;
 	}
 
 	// Check if we're browsing a specific page of results

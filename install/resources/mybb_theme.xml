@@ -3866,7 +3866,7 @@ body {
 </table>
 </body>
 </html>]]></template>
-		<template name="reputation" version="1600"><![CDATA[<html>
+		<template name="reputation" version="1605"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation_report}</title>
 {$headerinclude}
@@ -3898,9 +3898,9 @@ body {
 					<strong>{$lang->total_reputation}:</strong> <span class="repbox {$total_class}">{$user['reputation']}</span><br /><br />
 					<strong>{$lang->reputation_members} {$rep_members}</strong><br />
 					<strong>{$lang->reputation_posts} {$rep_posts}</strong><br />
-					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count}<br />
-					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count}<br />
-					<strong class="reputation_negative">{$lang->negative_count}:</strong> {$negative_count}
+					<strong class="reputation_positive">{$lang->positive_count}:</strong> {$positive_count} {$pos_rep_info}<br />
+					<strong class="reputation_neutral">{$lang->neutral_count}:</strong> {$neutral_count} {$neu_rep_info}<br />
+					<strong class="reputation_negative">{$lang->negative_count}:</strong> {$negative_count} {$neg_rep_info}
 				</span>
 			</td>
 			<td align="right" style="width: 300px;">
@@ -6234,7 +6234,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	<td class="{$bgcolor}" style="white-space: nowrap; text-align: center;"><span class="smalltext">{$posted}</span></td>
 	{$inline_mod_checkbox}
 </tr>]]></template>
-		<template name="reputation_add" version="1600"><![CDATA[<html>
+		<template name="reputation_add" version="1605"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reputation}</title>
 {$headerinclude}
@@ -6253,7 +6253,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 				<input type="hidden" name="rid" value="{$rid}" />
 				<select name="reputation" id="reputation">
 					{$positive_power}
-					<option value="0" class="reputation_neutral" onclick="$('reputation').className='reputation_neutral'"{$vote_check[0]}>{$lang->power_neutral}</option>
+					{$neutral_power}
 					{$negative_power}
 				</select>
 				<br /><br />
