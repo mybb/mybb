@@ -63,7 +63,8 @@ $usergroup_permissions = array(
 	"canwarnusers" => 0,
 	"canreceivewarnings" => 1,
 	"maxwarningsday" => 0,
-	"canmodcp" => 0
+	"canmodcp" => 0,
+	"showinbirthdaylist" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -823,7 +824,8 @@ if($mybb->input['action'] == "edit")
 				"canwarnusers" => intval($mybb->input['canwarnusers']),
 				"canreceivewarnings" =>intval($mybb->input['canreceivewarnings']),
 				"maxwarningsday" => intval($mybb->input['maxwarningsday']),
-				"canmodcp" => intval($mybb->input['canmodcp'])
+				"canmodcp" => intval($mybb->input['canmodcp']),
+				"showinbirthdaylist" => intval($mybb->input['showinbirthdaylist'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -1049,6 +1051,7 @@ if($mybb->input['action'] == "edit")
 
 	$misc_options = array(
 		$form->generate_check_box("canviewmemberlist", 1, $lang->can_view_member_list, array("checked" => $mybb->input['canviewmemberlist'])),
+		$form->generate_check_box("showinbirthdaylist", 1, $lang->show_in_birthday_list, array("checked" => $mybb->input['showinbirthdaylist'])),
 		$form->generate_check_box("cansendemail", 1, $lang->can_email_users, array("checked" => $mybb->input['cansendemail'])),
 		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_text_box('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50'))
 	);

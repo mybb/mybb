@@ -183,29 +183,69 @@ if($mybb->settings['showbirthdays'] != 0)
 	
 	$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
 	$today_bdays = $bdaycache[$bdaydate]['users'];
-	
+
 	$comma = '';
 	if(!empty($today_bdays))
 	{
-		foreach($today_bdays as $bdayuser)
+		if(intval($mybb->settings['showbirthdayspostlimit']) > 0)
 		{
-			$bday = explode("-", $bdayuser['birthday']);
-			if($year > $bday['2'] && $bday['2'] != '')
+			$bdayusers = array();
+			foreach($today_bdays as $key => $bdayuser_pc)
 			{
-				$age = " (".($year - $bday['2']).")";
+				$bdayusers[$bdayuser_pc['uid']] = $key;
 			}
-			else
+
+			if(!empty($bdayusers))
 			{
-				$age = '';
+				// Find out if our users have enough posts to be seen on our birthday list
+				$bday_sql = implode(",", array_keys($bdayusers));
+				$query = $db->simple_select("users", "uid, postnum", "uid IN ({$bday_sql})");
+
+				while($bdayuser = $db->fetch_array($query))
+				{
+					if($bdayuser['postnum'] < $mybb->settings['showbirthdayspostlimit'])
+					{
+						unset($today_bdays[$bdayusers[$bdayuser['uid']]]);
+					}
+				}
 			}
-			$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
-			$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
-			eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
-			++$bdaycount;
-			$comma = $lang->comma;
+		}
+
+		// We still have birthdays - display them in our list!
+		if(!empty($today_bdays))
+		{
+			foreach($today_bdays as $bdayuser)
+			{
+				if($bdayuser['displaygroup'] == 0)
+				{
+					$bdayuser['displaygroup'] = $bdayuser['usergroup'];
+				}
+
+				// If this user's display group can't be seen in the birthday list, skip it
+				if($groupscache[$bdayuser['displaygroup']] && $groupscache[$bdayuser['displaygroup']]['showinbirthdaylist'] != 1)
+				{
+					continue;
+				}
+
+				$bday = explode("-", $bdayuser['birthday']);
+				if($year > $bday['2'] && $bday['2'] != '')
+				{
+					$age = " (".($year - $bday['2']).")";
+				}
+				else
+				{
+					$age = '';
+				}
+
+				$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
+				$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
+				eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
+				++$bdaycount;
+				$comma = $lang->comma;
+			}
 		}
 	}
-	
+
 	if($hiddencount > 0)
 	{
 		if($bdaycount > 0)

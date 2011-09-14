@@ -31,6 +31,25 @@ function upgrade21_dbchanges()
 
 	$db->delete_query("settings", "name = 'standardheaders'");
 
+	if($db->field_exists('showinbirthdaylist', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "showinbirthdaylist");
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$db->add_column("usergroups", "showinbirthdaylist", "int NOT NULL default '0'");
+			break;
+		default:
+			$db->add_column("usergroups", "showinbirthdaylist", "int(1) NOT NULL default '0'");
+			break;
+	}
+
+	// Update all usergroups to show in the birthday list
+	$db->update_query("usergroups", array("showinbirthdaylist" => 1));
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("21_done");
 }

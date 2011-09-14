@@ -884,6 +884,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canreceivewarnings int NOT NULL default '0',
   maxwarningsday int NOT NULL default '3',
   canmodcp int NOT NULL default '0',
+  showinbirthdaylist int NOT NULL default '0',
   PRIMARY KEY (gid)
 );";
 

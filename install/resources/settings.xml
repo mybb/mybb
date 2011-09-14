@@ -288,10 +288,19 @@
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="showbirthdayspostlimit">
+			<title>Only Show Birthdays with x Posts</title>
+			<description><![CDATA[You can choose to only display users with at least the following amount of posts. A setting of 0 will show all users who have a birthday today.]]></description>
+			<disporder>7</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="showwol">
 			<title>Show Who's Online?</title>
 			<description><![CDATA[Display the currently active users on the forum home page.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -300,7 +309,7 @@
 		<setting name="showindexstats">
 			<title>Show Small Stats Section</title>
 			<description><![CDATA[Do you want to show the total number of threads, posts, members, and the last member on the forum home?]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -309,7 +318,7 @@
 		<setting name="showforumviewing">
 			<title>Show x viewing forum</title>
 			<description><![CDATA[Displays the currently active users viewing each forum.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
