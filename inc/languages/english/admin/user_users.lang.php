@@ -332,6 +332,10 @@ $l['reg_ip_matches'] = "Registration IP address matches";
 $l['wildcard'] = "* denotes a wild card";
 $l['posted_with_ip'] = "Has posted with the IP address";
 $l['custom_profile_fields_match'] = "Where custom profile fields match...";
+$l['is_not_blank'] = " is not empty";
+$l['or'] = "or";
+$l['reg_in_x_days'] = "Registered in the last";
+$l['days'] = "days";
 
 $l['view'] = "View";
 $l['create_new_view'] = "Create New View";

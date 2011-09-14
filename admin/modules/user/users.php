@@ -2997,9 +2997,13 @@ function build_users_view($view)
 	$user_like_fields = array("username", "email", "website", "icq", "aim", "yahoo", "msn", "signature", "usertitle");
 	foreach($user_like_fields as $search_field)
 	{
-		if($view['conditions'][$search_field])
+		if($view['conditions'][$search_field] && !$view['conditions'][$search_field.'_blank'])
 		{
 			$search_sql .= " AND u.{$search_field} LIKE '%".$db->escape_string_like($view['conditions'][$search_field])."%'";
+		}
+		else if(isset($view['conditions'][$search_field.'_blank']))
+		{
+			$search_sql .= " AND u.{$search_field} != ''";
 		}
 	}
 
@@ -3032,6 +3036,18 @@ function build_users_view($view)
 					$direction = "=";
 			}
 			$search_sql .= " AND u.{$search_field}{$direction}'".$db->escape_string($view['conditions'][$search_field])."'";
+		}
+	}
+
+	// Registration searching
+	$reg_fields = array("regdate");
+	foreach($reg_fields as $search_field)
+	{
+		if(intval($view['conditions'][$search_field]))
+		{
+			$threshold = TIME_NOW - (intval($view['conditions'][$search_field]) * 24 * 60 * 60);
+
+			$search_sql .= " AND u.{$search_field} >= '{$threshold}'";
 		}
 	}
 
@@ -3113,8 +3129,16 @@ function build_users_view($view)
 					{
 						continue;
 					}
-					
-					$userfield_sql .= ' AND '.$db->escape_string($column)."='".$db->escape_string($value)."'";
+
+					if(strpos($column, '_blank') !== false)
+					{
+						$column = str_replace('_blank', '', $column);
+						$userfield_sql .= ' AND '.$db->escape_string($column)." != ''";
+					}
+					else
+					{
+						$userfield_sql .= ' AND '.$db->escape_string($column)."='".$db->escape_string($value)."'";
+					}
 				}
 			}
 			else if(!empty($input))
@@ -3123,11 +3147,19 @@ function build_users_view($view)
 				{
 					continue;
 				}
-					
-				$userfield_sql .= ' AND '.$db->escape_string($column)." LIKE '%".$db->escape_string($input)."%'";
+				
+				if(strpos($column, '_blank') !== false)
+				{
+					$column = str_replace('_blank', '', $column);
+					$userfield_sql .= ' AND '.$db->escape_string($column)." != ''";
+				}
+				else
+				{
+					$userfield_sql .= ' AND '.$db->escape_string($column)." LIKE '%".$db->escape_string($input)."%'";
+				}
 			}
 		}
-		
+
 		if($userfield_sql != '1=1')
 		{
 			$userfield_uids = array(0);
@@ -3745,12 +3777,13 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "textarea":
-				$code = $form->generate_text_area("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50));
+				$code = $form->generate_text_area("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50))." {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
 				break;
 			default:
-				$code = $form->generate_text_box("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length']));
+				$code = $form->generate_text_box("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length']))." {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
 				break;
 		}
+
 		$form_container->output_row($profile_field['name'], $profile_field['description'], $code, "", array('id' => "profile_field_{$field_name}"));
 		$code = $user_options = $selected_options = $radio_options = $val = $options = '';
 	}
@@ -3792,13 +3825,13 @@ function user_search_conditions($input=array(), &$form)
 
 	$form_container->output_row($lang->is_member_of_groups, $lang->additional_user_groups_desc, $form->generate_select_box('conditions[usergroup][]', $options, $input['conditions']['usergroup'], array('id' => 'usergroups', 'multiple' => true, 'size' => 5)), 'usergroups');
 
-	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website')), 'website');
-	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq')), 'icq');
-	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim')), 'aim');
-	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo')), 'yahoo');
-	$form_container->output_row($lang->msn_contains, "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn')), 'msn');
-	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature')), 'signature');
-	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle')), 'usertitle');
+	$form_container->output_row($lang->website_contains, "", $form->generate_text_box('conditions[website]', $input['conditions']['website'], array('id' => 'website'))." {$lang->or} ".$form->generate_check_box('conditions[website_blank]', 1, $lang->is_not_blank, array('id' => 'website_blank', 'checked' => $input['conditions']['website_blank'])), 'website');
+	$form_container->output_row($lang->icq_number_contains, "", $form->generate_text_box('conditions[icq]', $input['conditions']['icq'], array('id' => 'icq'))." {$lang->or} ".$form->generate_check_box('conditions[icq_blank]', 1, $lang->is_not_blank, array('id' => 'icq_blank', 'checked' => $input['conditions']['icq_blank'])), 'icq');
+	$form_container->output_row($lang->aim_handle_contains, "", $form->generate_text_box('conditions[aim]', $input['conditions']['aim'], array('id' => 'aim'))." {$lang->or} ".$form->generate_check_box('conditions[aim_blank]', 1, $lang->is_not_blank, array('id' => 'aim_blank', 'checked' => $input['conditions']['aim_blank'])), 'aim');
+	$form_container->output_row($lang->yahoo_contains, "", $form->generate_text_box('conditions[yahoo]', $input['conditions']['yahoo'], array('id' => 'yahoo'))." {$lang->or} ".$form->generate_check_box('conditions[yahoo_blank]', 1, $lang->is_not_blank, array('id' => 'yahoo_blank', 'checked' => $input['conditions']['yahoo_blank'])), 'yahoo');
+	$form_container->output_row($lang->msn_contains, "", $form->generate_text_box('conditions[msn]', $input['conditions']['msn'], array('id' => 'msn'))." {$lang->or} ".$form->generate_check_box('conditions[msn_blank]', 1, $lang->is_not_blank, array('id' => 'msn_blank', 'checked' => $input['conditions']['msn_blank'])), 'msn');
+	$form_container->output_row($lang->signature_contains, "", $form->generate_text_box('conditions[signature]', $input['conditions']['signature'], array('id' => 'signature'))." {$lang->or} ".$form->generate_check_box('conditions[signature_blank]', 1, $lang->is_not_blank, array('id' => 'signature_blank', 'checked' => $input['conditions']['signature_blank'])), 'signature');
+	$form_container->output_row($lang->user_title_contains, "", $form->generate_text_box('conditions[usertitle]', $input['conditions']['usertitle'], array('id' => 'usertitle'))." {$lang->or} ".$form->generate_check_box('conditions[usertitle_blank]', 1, $lang->is_not_blank, array('id' => 'usertitle_blank', 'checked' => $input['conditions']['usertitle_blank'])), 'usertitle');
 	$greater_options = array(
 		"greater_than" => $lang->greater_than,
 		"is_exactly" => $lang->is_exactly,
@@ -3806,6 +3839,7 @@ function user_search_conditions($input=array(), &$form)
 	);
 	$form_container->output_row($lang->post_count_is, "", $form->generate_select_box('conditions[postnum_dir]', $greater_options, $input['conditions']['postnum_dir'], array('id' => 'numposts_dir'))." ".$form->generate_text_box('conditions[postnum]', $input['conditions']['postnum'], array('id' => 'numposts')), 'numposts');
 
+	$form_container->output_row($lang->reg_in_x_days, '', $form->generate_text_box('conditions[regdate]', $input['conditions']['regdate'], array('id' => 'regdate')).' '.$lang->days, 'regdate');
 	$form_container->output_row($lang->reg_ip_matches, $lang->wildcard, $form->generate_text_box('conditions[regip]', $input['conditions']['regip'], array('id' => 'regip')), 'regip');
 	$form_container->output_row($lang->last_known_ip, $lang->wildcard, $form->generate_text_box('conditions[lastip]', $input['conditions']['lastip'], array('id' => 'lastip')), 'lastip');
 	$form_container->output_row($lang->posted_with_ip, $lang->wildcard, $form->generate_text_box('conditions[postip]', $input['conditions']['postip'], array('id' => 'postip')), 'postip');
