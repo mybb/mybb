@@ -168,9 +168,38 @@ elseif($mybb->input['do'] == "login")
 	
 		$mybb->request_method = "get";
 		
-		if($mybb->input['module'])
+		if(!empty($mybb->input['module']))
 		{
-			admin_redirect("index.php?module=".$mybb->input['module']);
+			// $query_string should contain the module
+			$query_string = '?module='.htmlspecialchars($mybb->input['module']);
+			
+			// Now we look for any paramters passed in $_SERVER['QUERY_STRING']
+			if($_SERVER['QUERY_STRING'])
+			{
+				$qstring = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
+				$qstring = str_replace('action=logout', '', $qstring);
+				$qstring = preg_replace('#&+#', '&', $qstring);
+				$qstring = str_replace('?&', '?', $qstring);
+				
+				// So what do we do? We know that parameters are devided by ampersands
+				// That means we must get to work!
+				$parameters = explode('&', $qstring);
+				
+				// Remove our first member if it's for the module
+				if(substr($parameters[0], 0, 8) == '?module=')
+				{
+					unset($parameters[0]);
+				}
+				
+				foreach($parameters as $key => $param)
+				{
+					$params = explode("=", $param);
+					
+					$query_string .= '&'.htmlspecialchars($params[0])."=".htmlspecialchars($params[1]);
+				}
+			}
+		
+			admin_redirect("index.php".$query_string);
 		}
 	}
 	else
