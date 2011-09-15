@@ -37,7 +37,7 @@ function config_meta()
 	$sub_menu['150'] = array("id" => "warning", "title" => $lang->warning_system, "link" => "index.php?module=config-warning");
 	$sub_menu['160'] = array("id" => "thread_prefixes", "title" => $lang->thread_prefixes, "link" => "index.php?module=config-thread_prefixes");
 	
-	$plugins->run_hooks_by_ref("admin_config_menu", $sub_menu);
+	$plugins->run_hooks("admin_config_menu", &$sub_menu);
 	
 	$page->add_menu_item($lang->configuration, "config", "index.php?module=config", 10, $sub_menu);
 	
@@ -69,7 +69,7 @@ function config_action_handler($action)
 		'thread_prefixes' => array('active' => 'thread_prefixes', 'file' => 'thread_prefixes.php')
 	);
 	
-	$plugins->run_hooks_by_ref("admin_config_action_handler", $actions);
+	$plugins->run_hooks("admin_config_action_handler", &$actions);
 
 	if(isset($actions[$action]))
 	{
@@ -106,7 +106,7 @@ function config_admin_permissions()
 		"thread_prefixes" => $lang->can_manage_thread_prefixes
 	);
 	
-	$plugins->run_hooks_by_ref("admin_config_permissions", $admin_permissions);
+	$plugins->run_hooks("admin_config_permissions", &$admin_permissions);
 	
 	return array("name" => $lang->configuration, "permissions" => $admin_permissions, "disporder" => 10);
 }

@@ -894,7 +894,7 @@ if($mybb->input['action'] == "edit")
 		"users_permissions" => $lang->users_permissions,
 		"misc" => $lang->misc		
 	);
-	$plugins->run_hooks_by_ref("admin_user_groups_edit_graph_tabs", $tabs);
+	$plugins->run_hooks("admin_user_groups_edit_graph_tabs", &$tabs);
 	$page->output_tab_control($tabs);
 	
 	echo "<div id=\"tab_general\">";	

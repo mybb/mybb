@@ -29,7 +29,7 @@ function tools_meta()
 	$sub_menu['70'] = array("id" => "optimizedb", "title" => $lang->optimize_database, "link" => "index.php?module=tools-optimizedb");
 	$sub_menu['80'] = array("id" => "file_verification", "title" => $lang->file_verification, "link" => "index.php?module=tools-file_verification");
 	
-	$plugins->run_hooks_by_ref("admin_tools_menu", $sub_menu);
+	$plugins->run_hooks("admin_tools_menu", &$sub_menu);
 	
 	$page->add_menu_item($lang->tools_and_maintenance, "tools", "index.php?module=tools", 50, $sub_menu);
 	
@@ -59,7 +59,7 @@ function tools_action_handler($action)
 		'statistics' => array('active' => 'statistics', 'file' => 'statistics.php'),
 	);
 	
-	$plugins->run_hooks_by_ref("admin_tools_action_handler", $actions);
+	$plugins->run_hooks("admin_tools_action_handler", &$actions);
 
 	$sub_menu = array();
 	$sub_menu['10'] = array("id" => "adminlog", "title" => $lang->administrator_log, "link" => "index.php?module=tools-adminlog");
@@ -69,7 +69,7 @@ function tools_action_handler($action)
 	$sub_menu['50'] = array("id" => "warninglog", "title" => $lang->user_warning_log, "link" => "index.php?module=tools-warninglog");
 	$sub_menu['60'] = array("id" => "statistics", "title" => $lang->statistics, "link" => "index.php?module=tools-statistics");
 	
-	$plugins->run_hooks_by_ref("admin_tools_menu_logs", $sub_menu);
+	$plugins->run_hooks("admin_tools_menu_logs", &$sub_menu);
 	
 	if(!isset($actions[$action]))
 	{
@@ -113,7 +113,7 @@ function tools_admin_permissions()
 		"statistics" => $lang->can_view_statistics,
 	);
 	
-	$plugins->run_hooks_by_ref("admin_tools_permissions", $admin_permissions);
+	$plugins->run_hooks("admin_tools_permissions", &$admin_permissions);
 	
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }

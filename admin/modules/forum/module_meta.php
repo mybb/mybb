@@ -25,7 +25,7 @@ function forum_meta()
 	$sub_menu['30'] = array("id" => "moderation_queue", "title" => $lang->moderation_queue, "link" => "index.php?module=forum-moderation_queue");
 	$sub_menu['40'] = array("id" => "attachments", "title" => $lang->attachments, "link" => "index.php?module=forum-attachments");
 	
-	$plugins->run_hooks_by_ref("admin_forum_menu", $sub_menu);
+	$plugins->run_hooks("admin_forum_menu", &$sub_menu);
 
 	$page->add_menu_item($lang->forums_and_posts, "forum", "index.php?module=forum", 20, $sub_menu);
 
@@ -45,7 +45,7 @@ function forum_action_handler($action)
 		'management' => array('active' => 'management', 'file' => 'management.php')
 	);
 	
-	$plugins->run_hooks_by_ref("admin_forum_action_handler", $actions);
+	$plugins->run_hooks("admin_forum_action_handler", &$actions);
 	
 	if(isset($actions[$action]))
 	{
@@ -70,7 +70,7 @@ function forum_admin_permissions()
 		"attachments" => $lang->can_manage_attachments,
 	);
 	
-	$plugins->run_hooks_by_ref("admin_forum_permissions", $admin_permissions);
+	$plugins->run_hooks("admin_forum_permissions", &$admin_permissions);
 	
 	return array("name" => $lang->forums_and_posts, "permissions" => $admin_permissions, "disporder" => 20);
 }

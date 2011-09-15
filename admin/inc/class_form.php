@@ -775,7 +775,7 @@ class DefaultForm
 	function output_submit_wrapper($buttons)
 	{
 		global $plugins;
-		$plugins->run_hooks_by_ref("admin_form_output_submit_wrapper", $buttons);
+		$plugins->run_hooks("admin_form_output_submit_wrapper", &$buttons);
 		$return = "<div class=\"form_button_wrapper\">\n";
 		foreach($buttons as $button)
 		{
@@ -800,7 +800,7 @@ class DefaultForm
 	function end()
 	{
 		global $plugins;
-		$plugins->run_hooks_by_ref("admin_form_end", $this);
+		$plugins->run_hooks("admin_form_end", &$this);
 		if($this->_return == false)
 		{
 			echo "</form>";
@@ -866,7 +866,7 @@ class DefaultFormContainer
 			'row_options' => &$row_options,
 			'this' => &$this
 		);
-		$plugins->run_hooks_by_ref("admin_formcontainer_output_row", $pluginargs);
+		$plugins->run_hooks("admin_formcontainer_output_row", &$pluginargs);
 		if($label_for != '')
 		{
 			$for = " for=\"{$label_for}\"";

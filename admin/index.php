@@ -421,7 +421,7 @@ while(($module = readdir($dir)) !== false)
 	}
 }
 
-$plugins->run_hooks_by_ref("admin_tabs", $modules);
+$plugins->run_hooks("admin_tabs", &$modules);
 
 closedir($dir);
 
