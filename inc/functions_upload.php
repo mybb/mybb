@@ -330,7 +330,7 @@ function upload_avatar($avatar=array(), $uid=0)
 		"width" => intval($img_dimensions[0]),
 		"height" => intval($img_dimensions[1])
 	);
-	$plugins->run_hooks_by_ref("upload_avatar_end", $ret);
+	$plugins->run_hooks("upload_avatar_end", &$ret);
 	return $ret;
 }
 
@@ -573,7 +573,7 @@ function upload_attachment($attachment, $update_attachment=false)
 		$attacharray['visible'] = 1;
 	}
 	
-	$plugins->run_hooks_by_ref("upload_attachment_do_insert", $attacharray);
+	$plugins->run_hooks("upload_attachment_do_insert", &$attacharray);
 	
 	if($prevattach['aid'] && $update_attachment == true)
 	{
@@ -630,7 +630,7 @@ function upload_file($file, $path, $filename="")
 	$upload['path'] = $path;
 	$upload['type'] = $file['type'];
 	$upload['size'] = $file['size'];
-	$plugins->run_hooks_by_ref("upload_file_end", $upload);
+	$plugins->run_hooks("upload_file_end", &$upload);
 	return $upload;
 }
 ?>

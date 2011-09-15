@@ -450,7 +450,7 @@ function fetch_wol_activity($location, $nopermission=false)
 	// Expects $location to be passed through already sanitized
 	$user_activity['location'] = $location;
 	
-	$plugins->run_hooks_by_ref("fetch_wol_activity_end", $user_activity);
+	$plugins->run_hooks("fetch_wol_activity_end", &$user_activity);
 	
 	return $user_activity;
 }
@@ -941,7 +941,7 @@ function build_friendly_wol_location($user_activity)
 	}
 	
 	$plugin_array = array('user_activity' => &$user_activity, 'location_name' => &$location_name);
-	$plugins->run_hooks_by_ref("build_friendly_wol_location_end", $plugin_array);
+	$plugins->run_hooks("build_friendly_wol_location_end", &$plugin_array);
 	
 	if($user_activity['nopermission'] == 1)
 	{

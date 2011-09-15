@@ -453,7 +453,7 @@ class Moderation
 	{
 		global $db, $cache, $plugins;
 
-		$plugins->run_hooks_by_ref("class_moderation_delete_post_start", $pid);
+		$plugins->run_hooks("class_moderation_delete_post_start", &$pid);
 		// Get pid, uid, fid, tid, visibility, forum post count status of post
 		$pid = intval($pid);
 		$query = $db->query("

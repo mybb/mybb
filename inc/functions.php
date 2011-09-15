@@ -247,7 +247,7 @@ function send_mail_queue($count=10)
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 
-		$plugins->run_hooks_by_ref("send_mail_queue_mail", $query);
+		$plugins->run_hooks("send_mail_queue_mail", &$query);
 
 		while($email = $db->fetch_array($query))
 		{
@@ -398,7 +398,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 	if(is_object($plugins))
 	{
-		$plugins->run_hooks_by_ref("my_date", $date);
+		$plugins->run_hooks("my_date", &$date);
 	}
 
 	return $date;
@@ -647,7 +647,7 @@ function error($error="", $title="")
 {
 	global $header, $footer, $theme, $headerinclude, $db, $templates, $lang, $mybb, $plugins;
 
-	$plugins->run_hooks_by_ref("error", $error);
+	$plugins->run_hooks("error", &$error);
 	if(!$error)
 	{
 		$error = $lang->unknown_error;
@@ -779,7 +779,7 @@ function redirect($url, $message="", $title="")
 
 	$redirect_args = array('url' => &$url, 'message' => &$message, 'title' => &$title);
 	
-	$plugins->run_hooks_by_ref("redirect", $redirect_args);
+	$plugins->run_hooks("redirect", &$redirect_args);
 
 	if($mybb->input['ajax'])
 	{
@@ -2425,7 +2425,7 @@ function build_mycode_inserter($bind="message")
 		);
 		$editor_language = "var editor_language = {\n";
 		
-		$plugins->run_hooks_by_ref("mycode_add_codebuttons", $editor_lang_strings);
+		$plugins->run_hooks("mycode_add_codebuttons", &$editor_lang_strings);
 
 		foreach($editor_lang_strings as $key => $lang_string)
 		{
@@ -5792,7 +5792,7 @@ function fetch_ban_times()
 		"0-0-2" => "2 {$lang->years}"
 	);
 
-	$plugins->run_hooks_by_ref("functions_fetch_ban_times", $ban_times);
+	$plugins->run_hooks("functions_fetch_ban_times", &$ban_times);
 
 	$ban_times['---'] = $lang->permanent;
 	return $ban_times;
