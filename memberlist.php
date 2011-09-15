@@ -231,7 +231,12 @@ else
 	");
 	while($user = $db->fetch_array($query))
 	{
-		$plugins->run_hooks("memberlist_user");
+		$plugins->run_hooks("memberlist_user", &$user);
+		if(!$user['username'])
+		{
+			continue;
+		}
+		
 		$alt_bg = alt_trow();
 
 		$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);

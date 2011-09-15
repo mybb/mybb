@@ -956,7 +956,12 @@ class DefaultFormContainer
 	{
 		global $plugins;
 		
-		$plugins->run_hooks("admin_formcontainer_end", $return);
+		$hook = array(
+			'return'	=> &$return,
+			'this'		=> &$this
+		);
+		
+		$plugins->run_hooks("admin_formcontainer_end", $hook);
 		if($return == true)
 		{
 			return $this->_container->output($this->_title, 1, "general form_container {$this->extra_class}", true);
