@@ -48,7 +48,7 @@ function build_forumbits($pid=0, $depth=1)
 				continue;
 			}
 			
-			$plugins->run_hooks("build_forumbits_forum", &$forum);
+			$plugins->run_hooks("build_forumbits_forum", $forum);
 
 			// Build the link to this forum
 			$forum_url = get_forum_link($forum['fid']);

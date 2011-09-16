@@ -394,7 +394,7 @@ class EventDataHandler extends DataHandler
 			$this->verify_repeats();
 		}
 		
-		$plugins->run_hooks("datahandler_event_validate", &$this);
+		$plugins->run_hooks("datahandler_event_validate", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -467,7 +467,7 @@ class EventDataHandler extends DataHandler
 			'repeats' => $db->escape_string(serialize($event['repeats']))
 		);
 
-		$plugins->run_hooks("datahandler_event_insert", &$this);
+		$plugins->run_hooks("datahandler_event_insert", $this);
 
 		$this->eid = $db->insert_query("events", $this->event_insert_data);
 
@@ -569,7 +569,7 @@ class EventDataHandler extends DataHandler
 			$this->event_update_data['uid'] = intval($event['uid']);
 		}
 
-		$plugins->run_hooks("datahandler_event_update", &$this);
+		$plugins->run_hooks("datahandler_event_update", $this);
 
 		$db->update_query("events", $this->event_update_data, "eid='".intval($event['eid'])."'");
 
