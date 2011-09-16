@@ -1415,6 +1415,8 @@ function print_setting_peekers()
 			new Peeker($("setting_mail_handler"), $("row_setting_smtp_pass"), /smtp/, false);
 			new Peeker($("setting_mail_handler"), $("row_setting_secure_smtp"), /smtp/, false);
 			new Peeker($("setting_mail_handler"), $("row_setting_mail_parameters"), /mail/, false);
+			new Peeker($("setting_captchaimage"), $("row_setting_captchapublickey"), 2, false);
+			new Peeker($("setting_captchaimage"), $("row_setting_captchaprivatekey"), 2, false);
 		}
 	</script>';
 }

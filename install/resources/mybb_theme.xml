@@ -7958,6 +7958,25 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </tr>
 </table>
 </fieldset>]]></template>
+	<template name="member_register_regimage_recaptcha" version="1605"><![CDATA[<br />
+<script type="text/javascript">
+<!--
+	var RecaptchaOptions = {
+		theme: 'clean'
+	};
+// -->
+</script>
+<fieldset class="trow2">
+	<legend><strong>{$lang->image_verification}</strong></legend>
+	<table cellspacing="0" cellpadding="{$theme['tablespace']}">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}/challenge?k={$public_key}"></script></td>
+	</tr>
+</table>
+</fieldset>]]></template>
 		<template name="error_inline" version="120"><![CDATA[<div class="error">
 	<p><em>{$title}</em></p>
 	<ul>

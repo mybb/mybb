@@ -154,17 +154,19 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		$errors = $userhandler->get_friendly_errors();
 	}
 
-	if($mybb->settings['captchaimage'] == 1 && function_exists("imagecreatefrompng"))
+	if($mybb->settings['captchaimage'])
 	{
-		$imagehash = $db->escape_string($mybb->input['imagehash']);
-		$imagestring = $db->escape_string(my_strtolower($mybb->input['imagestring']));
-		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND LOWER(imagestring)='$imagestring'");
-		$imgcheck = $db->fetch_array($query);
-		if(!$imgcheck['dateline'])
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
 		{
-			$errors[]  = $lang->error_regimageinvalid;
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
 		}
-		$db->delete_query("captcha", "imagehash='$imagehash'");
 	}
 
 	if(is_array($errors))
@@ -661,20 +663,21 @@ if($mybb->input['action'] == "register")
 			
 		}
 		// Spambot registration image thingy
-		if($mybb->settings['captchaimage'] == 1 && function_exists("imagecreatefrompng"))
+		if($mybb->settings['captchaimage'])
 		{
-			$randomstr = random_str(5);
-			$imagehash = md5(random_str(12));
-			$regimagearray = array(
-				"imagehash" => $imagehash,
-				"imagestring" => $randomstr,
-				"dateline" => TIME_NOW
-			);
-			$db->insert_query("captcha", $regimagearray);
-			eval("\$regimage = \"".$templates->get("member_register_regimage")."\";");
+			require_once MYBB_ROOT.'inc/class_captcha.php';
+			$captcha = new captcha(true);
 
-			// JS validator extra
-			$validator_extra .= "\tregValidator.register('imagestring', 'ajax', {url:'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message:'{$lang->js_validator_captcha_valid}', failure_message:'{$lang->js_validator_no_image_text}'});\n";
+			if($captcha->html)
+			{
+				$regimage = $captcha->html;
+
+				if($mybb->settings['captchaimage'] == 1)
+				{
+					// JS validator extra for our default CAPTCHA
+					$validator_extra .= "\tregValidator.register('imagestring', 'ajax', { url: 'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message: '{$lang->js_validator_captcha_valid}', failure_message: '{$lang->js_validator_no_image_text}'} );\n";
+				}
+			}
 		}
 		if($mybb->settings['regtype'] != "randompass")
 		{
