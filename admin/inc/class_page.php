@@ -651,7 +651,7 @@ EOF;
 	function output_nav_tabs($tabs=array(), $active='')
 	{
 		global $plugins;
-		$plugins->run_hooks("admin_page_output_nav_tabs_start", &$tabs);
+		$plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
 		echo "<div class=\"nav_tabs\">";
 		echo "\t<ul>\n";
 		foreach($tabs as $id => $tab)

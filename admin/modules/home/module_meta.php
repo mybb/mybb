@@ -24,7 +24,7 @@ function home_meta()
 	$sub_menu['20'] = array("id" => "preferences", "title" => $lang->preferences, "link" => "index.php?module=home-preferences");
 	$sub_menu['30'] = array("id" => "version_check", "title" => $lang->version_check, "link" => "index.php?module=home-version_check");
 	$sub_menu['40'] = array("id" => "credits", "title" => $lang->mybb_credits, "link" => "index.php?module=home-credits");
-	$plugins->run_hooks("admin_home_menu", &$sub_menu);
+	$plugins->run_hooks("admin_home_menu", $sub_menu);
 	
 	$page->add_menu_item($lang->home, "home", "index.php", 1, $sub_menu);
 	
@@ -53,7 +53,7 @@ function home_action_handler($action)
 		$page->active_action = $actions[$action]['active'];
 	}
 	
-	$plugins->run_hooks("admin_home_action_handler", &$actions);
+	$plugins->run_hooks("admin_home_action_handler", $actions);
 	
 	if($page->active_action == "dashboard")
 	{
@@ -66,7 +66,7 @@ function home_action_handler($action)
 		$sub_menu['50'] = array("id" => "plugins", "title" => $lang->plugins, "link" => "index.php?module=config-plugins");
 		$sub_menu['60'] = array("id" => "backupdb", "title" => $lang->database_backups, "link" => "index.php?module=tools-backupdb");
 		
-		$plugins->run_hooks("admin_home_menu_quick_access", &$sub_menu);
+		$plugins->run_hooks("admin_home_menu_quick_access", $sub_menu);
 		
 		$sidebar = new SidebarItem($lang->quick_access);
 		$sidebar->add_menu_items($sub_menu, $page->active_action);

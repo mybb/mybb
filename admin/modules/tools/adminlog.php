@@ -495,7 +495,7 @@ function get_admin_log_action($logitem)
 	}
 	
 	$plugin_array = array('logitem' => &$logitem, 'lang_string' => &$lang_string);
-	$plugins->run_hooks("admin_tools_get_admin_log_action", &$plugin_array);
+	$plugins->run_hooks("admin_tools_get_admin_log_action", $plugin_array);
 	
 	if(isset($lang->$lang_string))
 	{
