@@ -126,8 +126,7 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 				SELECT p.pid
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."reputation r ON (p.pid=r.pid)
-				WHERE r.uid = '{$uid}'
-				AND r.dateline > '{$timesearch}'
+				WHERE r.uid = '{$uid}' AND r.dateline > '{$timesearch}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}'
 			");
 			$numtoday = $db->num_rows($query);
 
