@@ -988,7 +988,7 @@ lastvisit=Last Visit]]></optionscode>
 			<optionscode><![CDATA[select
 ascending=Ascending
 descending=Descending]]></optionscode>
-			<settingvalue><![CDATA[ASC]]></settingvalue>
+			<settingvalue><![CDATA[ascending]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
