@@ -63,6 +63,7 @@
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 		<showinbirthdaylist><![CDATA[0]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[2]]></gid>
@@ -127,6 +128,7 @@
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -191,6 +193,7 @@
 		<maxwarningsday><![CDATA[3]]></maxwarningsday>
 		<canmodcp><![CDATA[1]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -255,6 +258,7 @@
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 		<canmodcp><![CDATA[1]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -319,6 +323,7 @@
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -383,6 +388,7 @@
 		<maxwarningsday><![CDATA[3]]></maxwarningsday>
 		<canmodcp><![CDATA[1]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -447,5 +453,6 @@
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<showinbirthdaylist><![CDATA[0]]></showinbirthdaylist>
+		<canoverridepm><![CDATA[0]]></canoverridepm>
 	</usergroup>
 </usergroups>

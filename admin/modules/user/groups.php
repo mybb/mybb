@@ -64,7 +64,8 @@ $usergroup_permissions = array(
 	"canreceivewarnings" => 1,
 	"maxwarningsday" => 0,
 	"canmodcp" => 0,
-	"showinbirthdaylist" => 0
+	"showinbirthdaylist" => 0,
+	"canoverridepms" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -825,7 +826,8 @@ if($mybb->input['action'] == "edit")
 				"canreceivewarnings" =>intval($mybb->input['canreceivewarnings']),
 				"maxwarningsday" => intval($mybb->input['maxwarningsday']),
 				"canmodcp" => intval($mybb->input['canmodcp']),
-				"showinbirthdaylist" => intval($mybb->input['showinbirthdaylist'])
+				"showinbirthdaylist" => intval($mybb->input['showinbirthdaylist']),
+				"canoverridepm" => intval($mybb->input['canoverridepm'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -1018,6 +1020,7 @@ if($mybb->input['action'] == "edit")
 	$pm_options = array(
 		$form->generate_check_box("canusepms", 1, $lang->can_use_pms, array("checked" => $mybb->input['canusepms'])),
 		$form->generate_check_box("cansendpms", 1, $lang->can_send_pms, array("checked" => $mybb->input['cansendpms'])),
+		$form->generate_check_box("canoverridepm", 1, $lang->can_override_pms, array("checked" => $mybb->input['canoverridepm'])),
 		$form->generate_check_box("cantrackpms", 1, $lang->can_track_pms, array("checked" => $mybb->input['cantrackpms'])),
 		$form->generate_check_box("candenypmreceipts", 1, $lang->can_deny_reciept, array("checked" => $mybb->input['candenypmreceipts'])),
 		"{$lang->message_quota}:<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_text_box('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),

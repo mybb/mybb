@@ -117,6 +117,7 @@ $l['can_use_pms'] = "Can use private messaging?";
 $l['can_send_pms'] = "Can send private messages?";
 $l['can_track_pms'] = "Can track sent private messages?";
 $l['can_deny_reciept'] = "Can deny message receipt notifications?";
+$l['can_override_pms'] = "Can send private messages even if recipients have them disabled?";
 $l['message_quota'] = "Message Quota:";
 $l['message_quota_desc'] = "Maximum number of private messages that can be stored by users in this group. If empty, users can store unlimited messages.";
 $l['max_recipients'] = "Maximum Recipients Per Message:";

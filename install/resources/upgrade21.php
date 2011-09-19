@@ -36,14 +36,21 @@ function upgrade21_dbchanges()
 		$db->drop_column("usergroups", "showinbirthdaylist");
 	}
 
+	if($db->field_exists('canoverridepm', 'usergroups'))
+	{
+		$db->drop_column("usergroups", "canoverridepm");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
 		case "sqlite":
 			$db->add_column("usergroups", "showinbirthdaylist", "int NOT NULL default '0'");
+			$db->add_column("usergroups", "canoverridepm", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("usergroups", "showinbirthdaylist", "int(1) NOT NULL default '0'");
+			$db->add_column("usergroups", "canoverridepm", "int(1) NOT NULL default '0'");
 			break;
 	}
 

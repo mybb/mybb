@@ -180,7 +180,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 	}
 
 	// Are we notifying the user?
-	if(!$warn_errors && $mybb->input['send_pm'] == 1 && $group_permissions['canusepms']  != 0 && $user['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
+	if(!$warn_errors && $mybb->input['send_pm'] == 1 && $group_permissions['canusepms'] != 0 && $mybb->settings['enablepms'] != 0)
 	{
 		// Bring up the PM handler
 		require_once MYBB_ROOT."inc/datahandlers/pm.php";
@@ -201,6 +201,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 		);
 
 		$pmhandler->set_data($pm);
+		$pmhandler->admin_override = true;
 
 		// Now let the pm handler do all the hard work.
 		if(!$pmhandler->validate_pm())
