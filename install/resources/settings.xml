@@ -911,7 +911,7 @@ disabled=Disable this feature]]></optionscode>
 		</setting>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
-			<description><![CDATA[If a current user has an email already registered in your banned list, should he be allowed to keep it.]]></description>
+			<description><![CDATA[If a current user has an email already registered in your banned list, should he be allowed to keep it?]]></description>
 			<disporder>29</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
@@ -1195,7 +1195,7 @@ descending=Descending]]></optionscode>
 		</setting>
 		<setting name="logip">
 			<title>Log Posting IP Addresses</title>
-			<description><![CDATA[Do you wish to log ip addresses of users who post, and who you want to show ip addresses to.]]></description>
+			<description><![CDATA[Do you wish to log ip addresses of users who post, and who you want to show ip addresses to?]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[radio
 no=Do not log IP
@@ -1243,7 +1243,7 @@ show=Show to all Users]]></optionscode>
 		</setting>
 		<setting name="subscribeexcerpt">
 			<title>Amount of Characters for Subscription Previews</title>
-			<description><![CDATA[How many characters of the post do you want to send with the email notification of a new reply.]]></description>
+			<description><![CDATA[How many characters of the post do you want to send with the email notification of a new reply?]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100]]></settingvalue>
