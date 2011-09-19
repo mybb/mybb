@@ -3777,10 +3777,22 @@ function output_custom_profile_fields($fields, $values, &$form_container, &$form
 				}
 				break;
 			case "textarea":
-				$code = $form->generate_text_area("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50))." {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
+				$extra = '';
+				if($mybb->input['action'] == "search")
+				{
+					$extra = " {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
+				}
+
+				$code = $form->generate_text_area("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'rows' => 6, 'cols' => 50)).$extra;
 				break;
 			default:
-				$code = $form->generate_text_box("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length']))." {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
+				$extra = '';
+				if($mybb->input['action'] == "search")
+				{
+					$extra = " {$lang->or} ".$form->generate_check_box("profile_fields[{$field_name}_blank]", 1, $lang->is_not_blank, array('id' => "{$field_name}_blank", 'checked' => $values[$field_name.'_blank']));
+				}
+
+				$code = $form->generate_text_box("profile_fields[{$field_name}]", $values[$field_name], array('id' => "profile_field_{$field_name}", 'maxlength' => $profile_field['maxlength'], 'length' => $profile_field['length'])).$extra;
 				break;
 		}
 
