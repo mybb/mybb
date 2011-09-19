@@ -1438,7 +1438,7 @@ download=As Download Link]]></optionscode>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="neurep">
-			<title>Allow Negative Reputation</title>
+			<title>Allow Neutral Reputation</title>
 			<description><![CDATA[Allow users to give others neutral reputation?]]></description>
 			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
