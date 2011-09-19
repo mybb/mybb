@@ -8297,8 +8297,28 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </table>
 </td>
 </tr>]]></template>
-	<template name="post_captcha_hidden" version="120"><![CDATA[<input type="hidden" name="imagehash" value="{$imagehash}" />
-	<input type="hidden" name="imagestring" value="{$imagestring}" />]]></template>
+	<template name="post_captcha_recaptcha" version="1605"><![CDATA[<tr id="captcha_trow">
+<td class="trow1" valign="top"><strong>{$lang->image_verification}</strong></td>
+<td class="trow1">
+<script type="text/javascript">
+<!--
+	var RecaptchaOptions = {
+		theme: 'clean'
+	};
+// -->
+</script>
+<table style="width: 300px; padding: 4px;">
+	<tr>
+		<td><span class="smalltext">{$lang->verification_note}</span></td>
+	</tr>
+	<tr>
+		<td><script type="text/javascript" src="{$server}/challenge?k={$public_key}"></script></td>
+	</tr>
+</table>
+</td>
+</tr>]]></template>
+	<template name="post_captcha_hidden" version="1605"><![CDATA[<input type="hidden" name="{$hash}" value="{$field['hash']}" />
+<input type="hidden" name="{$string}" value="{$field['string']}" />]]></template>
 	<template name="newreply_multiquote_external" version="1400"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newreply.php?tid={$tid}" onclick="return Post.loadMultiQuoted();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="newthread_multiquote_external" version="1400"><![CDATA[<div id="multiquote_unloaded"><span class="smalltext">{$multiquote_text} <a href="./newthread.php?fid={$fid}&amp;load_all_quotes=1" onclick="return Post.loadMultiQuotedAll();">{$multiquote_quote}</a>, <a href="javascript:Post.clearMultiQuoted();">{$multiquote_deselect}</a></span></div>]]></template>
 	<template name="postbit_author_user" version="1400"><![CDATA[

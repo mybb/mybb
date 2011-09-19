@@ -47,6 +47,13 @@ class captcha
 	public $type = 0;
 
 	/**
+	 * The template to display the CAPTCHA in
+	 *
+	 * @var string
+	 */
+	 public $captch_template = '';
+
+	/**
 	 * CAPTCHA Server URL
 	 *
 	 * @var string
@@ -81,11 +88,22 @@ class captcha
 	 */
 	public $errors = array();
 
-	function __construct($build = false)
+	function __construct($build = false, $template = "")
 	{
 		global $mybb;
 
 		$this->type = $mybb->settings['captchaimage'];
+
+		// Prepare the build template
+		if($template)
+		{
+			$this->captcha_template = $template;
+
+			if($this->type == 2)
+			{
+				$this->captcha_template .= "_recaptcha";
+			}
+		}
 
 		// Work on which CAPTCHA we've got installed
 		if($this->type == 2 && $mybb->settings['captchapublickey'] && $mybb->settings['captchaprivatekey'])
@@ -131,7 +149,8 @@ class captcha
 		);
 
 		$db->insert_query("captcha", $insert_array);
-		eval("\$this->html = \"".$templates->get("member_register_regimage")."\";");
+		eval("\$this->html = \"".$templates->get($this->captcha_template)."\";");
+		//eval("\$this->html = \"".$templates->get("member_register_regimage")."\";");
 	}
 
 	function build_recaptcha()
@@ -142,7 +161,39 @@ class captcha
 		$server = $this->server;
 		$public_key = $mybb->settings['captchapublickey'];
 
-		eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
+		eval("\$this->html = \"".$templates->get($this->captcha_template, 1, 0)."\";");
+		//eval("\$this->html = \"".$templates->get("member_register_regimage_recaptcha")."\";");
+	}
+
+	function build_hidden_captcha()
+	{
+		global $mybb, $templates;
+
+		$field = array();
+
+		if($this->type == 1)
+		{
+			// Names
+			$hash = "imagehash";
+			$string = "imagestring";
+
+			// Values
+			$field['hash'] = $db->escape_string($mybb->input['imagehash']);
+			$field['string'] = $db->escape_string($mybb->input['imagestring']);
+		}
+		else if($this->type == 2)
+		{
+			// Names
+			$hash = "recaptcha_challenge_field";
+			$string = "recaptcha_response_field";
+
+			// Values
+			$field['hash'] = $mybb->input['recaptcha_challenge_field'];
+			$field['string'] = $mybb->input['recaptcha_response_field'];
+		}
+
+		eval("\$this->html = \"".$templates->get("post_captcha_hidden")."\";");
+		return $this->html;
 	}
 
 	function validate_captcha()

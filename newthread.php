@@ -367,24 +367,25 @@ if($mybb->input['action'] == "do_newthread" && $mybb->request_method == "post")
 	}
 	
 	// Check captcha image
-	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
+	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
-		$imagehash = $db->escape_string($mybb->input['imagehash']);
-		$imagestring = $db->escape_string($mybb->input['imagestring']);
-		$query = $db->simple_select("captcha", "*", "imagehash='$imagehash'"); 
-		$imgcheck = $db->fetch_array($query);
-		if(my_strtolower($imgcheck['imagestring']) != my_strtolower($imagestring) || !$imgcheck['imagehash'])
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha;
+
+		if($post_captcha->validate_captcha() == false)
 		{
-			$post_errors[] = $lang->invalid_captcha;
+			// CAPTCHA validation failed
+			foreach($post_captcha->get_errors() as $error)
+			{
+				$post_errors[] = $error;
+			}
 		}
 		else
 		{
-			$db->delete_query("captcha", "imagehash='$imagehash'");
 			$hide_captcha = true;
 		}
 	}
 
-	
 	// One or more errors returned, fetch error list and throw to newthread page
 	if(count($post_errors) > 0)
 	{
@@ -881,37 +882,40 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	}
 	
 	// Show captcha image for guests if enabled
-	if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
+	if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 	{
 		$correct = false;
-		// If previewing a post - check their current captcha input - if correct, hide the captcha input area
-		if($mybb->input['previewpost'] || $hide_captcha == true)
+		require_once MYBB_ROOT.'inc/class_captcha.php';
+		$post_captcha = new captcha(false, "post_captcha");
+
+		if($mybb->input['previewpost'] || $hide_captcha == true && $post_captcha->type == 1)
 		{
-			$imagehash = $db->escape_string($mybb->input['imagehash']);
-			$imagestring = $db->escape_string($mybb->input['imagestring']);
-			$query = $db->simple_select("captcha", "*", "imagehash='$imagehash' AND imagestring='$imagestring'");
-			$imgcheck = $db->fetch_array($query);
-			if($imgcheck['dateline'] > 0)
+			// If previewing a post - check their current captcha input - if correct, hide the captcha input area
+			// ... but only if it's a default one, reCAPTCHAs must be filled in every time due to draconian limits
+			if($post_captcha->validate_captcha() == true)
 			{
-				eval("\$captcha = \"".$templates->get("post_captcha_hidden")."\";");			
 				$correct = true;
-			}
-			else
-			{
-				$db->delete_query("captcha", "imagehash='$imagehash'");
+
+				// Generate a hidden list of items for our captcha
+				$captcha = $post_captcha->build_hidden_captcha();
 			}
 		}
+
 		if(!$correct)
-		{	
-			$randomstr = random_str(5);
-			$imagehash = md5(random_str(12));
-			$imagearray = array(
-				"imagehash" => $imagehash,
-				"imagestring" => $randomstr,
-				"dateline" => TIME_NOW
-			);
-			$db->insert_query("captcha", $imagearray);
-			eval("\$captcha = \"".$templates->get("post_captcha")."\";");			
+		{
+			if($post_captcha->type == 1)
+			{
+				$post_captcha->build_captcha();
+			}
+			else if($post_captcha->type == 2)
+			{
+				$post_captcha->build_recaptcha();
+			}
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
 		}
 	}
 	

@@ -1059,17 +1059,15 @@ if($mybb->input['action'] == "thread")
 		$last_pid = $db->fetch_field($query, "pid");
 		
 		// Show captcha image for guests if enabled
-		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng") && !$mybb->user['uid'])
+		if($mybb->settings['captchaimage'] && !$mybb->user['uid'])
 		{
-			$randomstr = random_str(5);
-			$imagehash = md5(random_str(12));
-			$imagearray = array(
-				"imagehash" => $imagehash,
-				"imagestring" => $randomstr,
-				"dateline" => TIME_NOW
-			);
-			$db->insert_query("captcha", $imagearray);
-			eval("\$captcha = \"".$templates->get("post_captcha")."\";");
+			require_once MYBB_ROOT.'inc/class_captcha.php';
+			$post_captcha = new captcha(true, "post_captcha");
+
+			if($post_captcha->html)
+			{
+				$captcha = $post_captcha->html;
+			}
 		}
 		if($mybb->user['signature'])
 		{

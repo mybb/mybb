@@ -666,7 +666,7 @@ if($mybb->input['action'] == "register")
 		if($mybb->settings['captchaimage'])
 		{
 			require_once MYBB_ROOT.'inc/class_captcha.php';
-			$captcha = new captcha(true);
+			$captcha = new captcha(true, "member_register_regimage");
 
 			if($captcha->html)
 			{

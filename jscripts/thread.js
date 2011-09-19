@@ -325,29 +325,37 @@ var Thread = {
 
 	quickReplyDone: function(request)
 	{
-		if($('captcha_img'))
+		if($('captcha_trow'))
 		{
 			captcha = request.responseText.match(/^<captcha>([0-9a-zA-Z]+)(\|([0-9a-zA-Z]+)|)<\/captcha>/);
 			if(captcha)
 			{
 				request.responseText = request.responseText.replace(/^<captcha>(.*)<\/captcha>/, '');
-				if(captcha[1])
+
+				if(captcha[1] == "reload")
 				{
-					imghash = captcha[1];
-					$('imagehash').value = imghash;
-					if(captcha[3])
+					Recaptcha.reload();
+				}
+				else if($("captcha_img"))
+				{
+					if(captcha[1])
 					{
-						$('imagestring').type = "hidden";
-						$('imagestring').value = captcha[3];
-						// hide the captcha
-						$('captcha_trow').style.display = "none";
-					}
-					else
-					{
-						$('captcha_img').src = "captcha.php?action=regimage&imagehash="+imghash;
-						$('imagestring').type = "text";
-						$('imagestring').value = "";
-						$('captcha_trow').style.display = "";
+						imghash = captcha[1];
+						$('imagehash').value = imghash;
+						if(captcha[3])
+						{
+							$('imagestring').type = "hidden";
+							$('imagestring').value = captcha[3];
+							// hide the captcha
+							$('captcha_trow').style.display = "none";
+						}
+						else
+						{
+							$('captcha_img').src = "captcha.php?action=regimage&imagehash="+imghash;
+							$('imagestring').type = "text";
+							$('imagestring').value = "";
+							$('captcha_trow').style.display = "";
+						}
 					}
 				}
 			}
