@@ -43,6 +43,10 @@ var QuickPermEditor = {
 			}
 		}
 		$('fields_'+id).value = new_input;
-		$('fields_inherit_'+id).value = 0;
+
+		if($('fields_inherit_'+id))
+		{
+			$('fields_inherit_'+id).value = 0;
+		}
 	},
 };
