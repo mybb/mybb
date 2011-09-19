@@ -232,6 +232,15 @@
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="readparentforums">
+			<title>Attempt to Mark Parent Forums as Read</title>
+			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://wiki.mybb.com/index.php/1.6.5">MyBB Wiki</a> for more information regarding this change.]]></description>
+			<disporder>8</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="forumhome" title="Forum Home Options" description="This section allows you to manage the various settings used on the forum home (index.php) of your boards such as enabling and disabling different features." disporder="5" isdefault="1">
 		<setting name="showdescriptions">

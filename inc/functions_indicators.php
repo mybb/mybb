@@ -135,16 +135,71 @@ function mark_forum_read($fid)
 	// Can only do "true" tracking for registered users
 	if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
 	{
+		// Experimental setting to mark parent forums as read
+		$forums_to_read = array();
+
+		if($mybb->settings['readparentforums'])
+		{
+			$ignored_forums = array();
+			$forums = array_reverse(explode(",", get_parent_list($fid)));
+
+			unset($forums[0]);
+			if(!empty($forums))
+			{
+				$ignored_forums[] = $fid;
+
+				foreach($forums as $forum)
+				{
+					$fids = array($forum);
+					$ignored_forums[] = $forum;
+
+					$children = explode(",", get_parent_list($forum));
+					foreach($children as $child)
+					{
+						if(in_array($child, $ignored_forums))
+						{
+							continue;
+						}
+
+						$fids[] = $child;
+						$ignored_forums[] = $child;
+					}
+
+					if(fetch_unread_count(implode(",", $fids)) == 0)
+					{
+						$forums_to_read[] = $forum;
+					}
+				}
+			}
+		}
+
 		switch($db->type)
 		{
 			case "pgsql":
 			case "sqlite":
 				add_shutdown(array($db, "replace_query"), array("forumsread", array('fid' => $fid, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), array("fid", "uid")));
+				
+				if(!empty($forums_to_read))
+				{
+					foreach($forums_to_read as $forum)
+					{
+						add_shutdown(array($db, "replace_query"), array("forumsread", array('fid' => $forum, 'uid' => $mybb->user['uid'], 'dateline' => TIME_NOW), array('fid', 'uid')));
+					}
+				}
 				break;
 			default:
+				$child_sql = '';
+				if(!empty($forums_to_read))
+				{
+					foreach($forums_to_read as $forum)
+					{
+						$child_sql .= ", ('{$forum}', '{$mybb->user['uid']}', '".TIME_NOW."')";
+					}
+				}
+
 				$db->shutdown_query("
 					REPLACE INTO ".TABLE_PREFIX."forumsread (fid, uid, dateline)
-					VALUES('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."')
+					VALUES('{$fid}', '{$mybb->user['uid']}', '".TIME_NOW."'){$child_sql}
 				");
 		}
 	}
