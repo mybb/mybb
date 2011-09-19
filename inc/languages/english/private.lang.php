@@ -24,7 +24,7 @@ $l['pms_disabled'] = "You cannot use the private messaging functionality as it h
 
 $l['private_messaging'] = "Private Messaging";
 $l['inbox'] = "Inbox";
-$l['compose_message'] = "Compose Message";
+$l['compose_message2'] = "Compose Message";
 $l['manage_folders'] = "Manage Folders";
 $l['pms_in_folder'] = "Private Messages in folder <em>{1}</em>";
 $l['pm_search_results'] = "Private Message Search Results";
