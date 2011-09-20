@@ -898,7 +898,13 @@ if($mybb->input['action'] == "change")
 			$mybb->settings['cookieprefix'] = $mybb->input['upsetting']['cookieprefix'];
 			my_setcookie("adminsid", $admin_session['sid']);
 		}
-		
+
+		// Have we opted for a reCAPTCHA and not set a public/private key?
+		if($mybb->input['upsetting']['captchaimage'] == 2 && !$mybb->input['upsetting']['captchaprivatekey'] && !$mybb->input['upsetting']['captchapublickey'])
+		{
+			$db->update_query("settings", array("value" => 1), "name = 'captchaimage'");
+		}
+
 		rebuild_settings();
 		
 		$plugins->run_hooks("admin_config_settings_change_commit");
