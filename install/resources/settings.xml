@@ -780,10 +780,28 @@ admin=Administrator Activation]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="hiddencaptchaimage">
+			<title>Display a hidden CAPTCHA</title>
+			<description><![CDATA[Do you want to display a hidden CAPTCHA field when a user registers? This may prevent spambots from registering on your forum.]]></description>
+			<disporder>15</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="hiddencaptchaimagefield">
+			<title>Hidden CAPTCHA field</title>
+			<description><![CDATA[You can choose a name for your hidden CAPTCHA field below.]]></description>
+			<disporder>16</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[email3]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="failedlogintext">
 			<title>Display number of failed logins</title>
 			<description><![CDATA[Do you wish to display a line of text telling the user how many more login attempts they have?]]></description>
-			<disporder>15</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -792,7 +810,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="usereferrals">
 			<title>Use Referrals System</title>
 			<description><![CDATA[Do you want to use the user referrals system on these forums?]]></description>
-			<disporder>16</disporder>
+			<disporder>18</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -801,7 +819,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigmycode">
 			<title>Allow MyCode in Signatures</title>
 			<description><![CDATA[Do you want to allow MyCode to be used in users' signatures?]]></description>
-			<disporder>17</disporder>
+			<disporder>19</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -810,7 +828,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="maxsigimages">
 			<title>Maximum Number of Images per Signature</title>
 			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their signature. Set to 0 to disable images in signatures altogether.]]></description>
-			<disporder>18</disporder>
+			<disporder>20</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -819,7 +837,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigsmilies">
 			<title>Allow Smilies in Signatures</title>
 			<description><![CDATA[Do you want to allow smilies to be used in users' signatures?]]></description>
-			<disporder>19</disporder>
+			<disporder>21</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -828,7 +846,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sightml">
 			<title>Allow HTML in Signatures</title>
 			<description><![CDATA[Do you want to allow HTML to be used in users' signatures?]]></description>
-			<disporder>20</disporder>
+			<disporder>22</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -837,7 +855,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigimgcode">
 			<title>Allow [img] Code in Signatures</title>
 			<description><![CDATA[Do you want to allow [img] code to be used in users' signatures?]]></description>
-			<disporder>21</disporder>
+			<disporder>23</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -846,7 +864,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="siglength">
 			<title>Length limit in Signatures</title>
 			<description><![CDATA[The maximum number of characters a user can place in a signature.]]></description>
-			<disporder>22</disporder>
+			<disporder>24</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -855,7 +873,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="sigcountmycode">
 			<title>MyCode affects signature length</title>
 			<description><![CDATA[Do you want MyCode to be counted as part of the limit when users use MyCode in their signature?]]></description>
-			<disporder>23</disporder>
+			<disporder>25</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -864,7 +882,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
 			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
-			<disporder>24</disporder>
+			<disporder>26</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -873,7 +891,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
-			<disporder>25</disporder>
+			<disporder>27</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -882,7 +900,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avatarresizing">
 			<title>Avatar Resizing Mode</title>
 			<description><![CDATA[If you wish to automatically resize all large avatars, provide users the option of resizing their avatar, or not resize avatars at all you can change this setting.]]></description>
-			<disporder>26</disporder>
+			<disporder>28</disporder>
 			<optionscode><![CDATA[select
 auto=Automatically resize large avatars
 user=Give users the choice of resizing large avatars
@@ -894,7 +912,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avatardir">
 			<title>Avatar Directory</title>
 			<description><![CDATA[The directory where your avatars are stored. These are used in the avatar list in the User CP.]]></description>
-			<disporder>27</disporder>
+			<disporder>29</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -903,7 +921,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
 			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
-			<disporder>28</disporder>
+			<disporder>30</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -912,7 +930,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
 			<description><![CDATA[If a current user has an email already registered in your banned list, should he be allowed to keep it?]]></description>
-			<disporder>29</disporder>
+			<disporder>31</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -921,7 +939,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
 			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
-			<disporder>30</disporder>
+			<disporder>32</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
 deny=Deny users under the age of 13
@@ -933,7 +951,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowaway">
 			<title>Allow Away Statuses?</title>
 			<description><![CDATA[Should users be allowed to set their status to 'Away' with a custom reason & return date?]]></description>
-			<disporder>31</disporder>
+			<disporder>33</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -942,7 +960,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowbuddyonly">
 			<title>Allow Buddy-Only Messaging?</title>
 			<description><![CDATA[Allow users to send private messages only to people on their buddy list?]]></description>
-			<disporder>32</disporder>
+			<disporder>34</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>

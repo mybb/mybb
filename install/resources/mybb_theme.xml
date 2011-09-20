@@ -7984,7 +7984,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</ul>
 </div>
 <br />]]></template>
-		<template name="member_register" version="1405"><![CDATA[<html>
+		<template name="member_register" version="1605"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
@@ -8022,6 +8022,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <tr>
 	<td colspan="2" style="display: none;" id="email_status">&nbsp;</td>
 </tr>
+{$hiddencaptcha}
 </table>
 </fieldset>
 {$requiredfields}
@@ -8130,6 +8131,9 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
+		<template name="member_register_hiddencaptcha" version="1605"><![CDATA[<tr style="display: none;">
+	<td colspan="2" id="{$captcha_field}_status">Leave this field empty: <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
+</tr>]]></template>
 		<template name="global_bannedwarning" version="1400"><![CDATA[<div class="red_alert">
 <strong>{$lang->banned_warning}</strong>
 {$lang->banned_warning2}: {$reason}<br />

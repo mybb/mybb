@@ -194,6 +194,7 @@ $l['error_bannedusername'] = "You have entered a username that is banned from re
 $l['error_notloggedout'] = "Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.";
 $l['error_regimageinvalid'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_regimagerequired'] = "Please fill out the image verification code to continue the login process. Please enter the code exactly how it appears in the image.";
+$l['error_spam_deny'] = "Our systems detect that you may be a spammer and therefore you have been denied registration. If you feel this is a mistake, please contact the Administrator.";
 
 $l['js_validator_no_username'] = "You must enter a username";
 $l['js_validator_invalid_email'] = "You need to enter a valid email address";

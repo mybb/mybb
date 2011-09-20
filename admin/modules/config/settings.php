@@ -1388,6 +1388,7 @@ function print_setting_peekers()
 			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarityrating"), /1/, true);
 			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
 			new Peeker($$(".setting_disableregs"), $("row_setting_regtype"), /0/, true);
+			new Peeker($$(".setting_hiddencaptchaimage"), $("row_setting_hiddencaptchaimagefield"), /1/, true);
 			new Peeker($$(".setting_showsimilarthreads"), $("row_setting_similarlimit"), /1/, true);
 			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintime"), /[^0]/, false);
 			new Peeker($("setting_failedlogincount"), $("row_setting_failedlogintext"), /[^0]/, false);

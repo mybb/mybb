@@ -105,6 +105,10 @@ $l['update_sig'] = "Update Signature";
 $l['preview'] = "Preview Signature";
 $l['current_sig'] = "Your Current Signature";
 $l['sig_preview'] = "Signature Preview";
+
+$l['sig_suspended'] = "Your ability to add a signature has been suspended.";
+$l['sig_suspended_posts'] = "You must have at least {1} posts before adding a signature.";
+
 $l['change_email'] = "Change Email Address";
 $l['enter_password'] = "Please Enter Your Password";
 $l['please_enter_confirm_new_email'] = "Please Enter and Confirm Your New Email Address";

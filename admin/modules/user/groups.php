@@ -65,7 +65,10 @@ $usergroup_permissions = array(
 	"maxwarningsday" => 0,
 	"canmodcp" => 0,
 	"showinbirthdaylist" => 0,
-	"canoverridepms" => 0
+	"canoverridepms" => 0,
+	"canusesig" => 0,
+	"canusesigxposts" => 0,
+	"signofollow" => 0
 );
 
 // Disallow direct access to this file for security reasons
@@ -827,7 +830,10 @@ if($mybb->input['action'] == "edit")
 				"maxwarningsday" => intval($mybb->input['maxwarningsday']),
 				"canmodcp" => intval($mybb->input['canmodcp']),
 				"showinbirthdaylist" => intval($mybb->input['showinbirthdaylist']),
-				"canoverridepm" => intval($mybb->input['canoverridepm'])
+				"canoverridepm" => intval($mybb->input['canoverridepm']),
+				"canusesig" => intval($mybb->input['canusesig']),
+				"canusesigxposts" => intval($mybb->input['canusesigxposts']),
+				"signofollow" => intval($mybb->input['signofollow'])
 			);
 
 			// Only update the candisplaygroup setting if not a default user group
@@ -997,7 +1003,10 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canusercp", 1, $lang->can_access_usercp, array("checked" => $mybb->input['canusercp'])),
 		$form->generate_check_box("canchangename", 1, $lang->can_change_username, array("checked" => $mybb->input['canchangename'])),
 		$form->generate_check_box("cancustomtitle", 1, $lang->can_use_usertitles, array("checked" => $mybb->input['cancustomtitle'])),
-		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars']))
+		$form->generate_check_box("canuploadavatars", 1, $lang->can_upload_avatars, array("checked" => $mybb->input['canuploadavatars'])),
+		$form->generate_check_box("canusesig", 1, $lang->can_use_signature, array("checked" => $mybb->input['canusesig'])),
+		$form->generate_check_box("signofollow", 1, $lang->uses_no_follow, array("checked" => $mybb->input['signofollow'])),
+		"{$lang->required_posts}<br /><small class=\"input\">{$lang->required_posts_desc}</small><br />".$form->generate_text_box('canusesigxposts', $mybb->input['canusesigxposts'], array('id' => 'canusesigxposts', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->account_management, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $account_options)."</div>");	
 

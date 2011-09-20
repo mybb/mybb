@@ -63,6 +63,7 @@ if($mybb->input['action'] == "add")
 				"required" => $db->escape_string($mybb->input['required']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
+				"postnum" => $db->escape_string($mybb->input['postnum'])
 			);
 			
 			$fid = $db->insert_query("profilefields", $new_profile_field);
@@ -127,6 +128,7 @@ if($mybb->input['action'] == "add")
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_profile_field);
@@ -199,6 +201,7 @@ if($mybb->input['action'] == "edit")
 				"required" => $db->escape_string($mybb->input['required']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
+				"postnum" => intval($mybb->input['postnum'])
 			);
 			
 			$db->update_query("profilefields", $profile_field, "fid = '".intval($mybb->input['fid'])."'");
@@ -260,6 +263,7 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->required." <em>*</em>", $lang->required_desc, $form->generate_yes_no_radio('required', $mybb->input['required']));
 	$form_container->output_row($lang->editable_by_user." <em>*</em>", $lang->editable_by_user_desc, $form->generate_yes_no_radio('editable', $mybb->input['editable']));
 	$form_container->output_row($lang->hide_on_profile." <em>*</em>", $lang->hide_on_profile_desc, $form->generate_yes_no_radio('hidden', $mybb->input['hidden']));
+	$form_container->output_row($lang->min_posts_enabled, $lang->min_posts_enabled_desc, $form->generate_text_box('postnum', $mybb->input['postnum'], array('id' => 'postnum')), 'postnum');
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_profile_field);

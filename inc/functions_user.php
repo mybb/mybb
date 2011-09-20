@@ -455,9 +455,12 @@ function usercp_menu_profile()
 		eval("\$changenameop = \"".$templates->get("usercp_nav_changename")."\";");
 	}
 
-	if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
+	if($mybb->usergroup['canusesig'] == 1 && ($mybb->usergroup['canusesigxposts'] == 0 || $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] > $mybb->usergroup['canusesigxposts']))
 	{
-		eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
+		if($mybb->user['suspendsignature'] == 0 || $mybb->user['suspendsignature'] == 1 && $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] < TIME_NOW)
+		{
+			eval("\$changesigop = \"".$templates->get("usercp_nav_editsignature")."\";");
+		}
 	}
 
 	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_profile")."\";");

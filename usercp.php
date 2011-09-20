@@ -402,6 +402,12 @@ if($mybb->input['action'] == "profile")
 	$query = $db->simple_select("profilefields", "*", "editable=1", array('order_by' => 'disporder'));
 	while($profilefield = $db->fetch_array($query))
 	{
+		// Does this field have a minimum post count?
+		if($profilefield['postnum'] && $profilefield['postnum'] > $user['postnum'])
+		{
+			continue;
+		}
+
 		$profilefield['type'] = htmlspecialchars_uni($profilefield['type']);
 		$profilefield['name'] = htmlspecialchars_uni($profilefield['name']);
 		$profilefield['description'] = htmlspecialchars_uni($profilefield['description']);
@@ -1650,7 +1656,18 @@ if($mybb->input['action'] == "editsig")
 	if($mybb->user['suspendsignature'] && ($mybb->user['suspendsigtime'] == 0 || $mybb->user['suspendsigtime'] > 0 && $mybb->user['suspendsigtime'] > TIME_NOW))
 	{
 		// User currently has no signature and they're suspended
+		error($lang->sig_suspended);
+	}
+
+	if($mybb->usergroup['canusesig'] != 1)
+	{
+		// Usergroup has no permission to use this facility
 		error_no_permission();
+	}
+	else if($mybb->usergroup['canusesig'] == 1 && $mybb->usergroup['canusesigxposts'] > 0 && $mybb->user['postnum'] < $mybb->usergroup['canusesigxposts'])
+	{
+		// Usergroup can use this facility, but only after x posts
+		error($lang->sprintf($lang->sig_suspended_posts, $mybb->usergroup['canusesigxposts']));
 	}
 
 	if($sig && $template)

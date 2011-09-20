@@ -14,7 +14,7 @@ define('THIS_SCRIPT', 'member.php');
 define("ALLOWABLE_PAGE", "register,do_register,login,do_login,logout,lostpw,do_lostpw,activate,resendactivation,do_resendactivation,resetpassword");
 
 $nosession['avatar'] = 1;
-$templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered";
+$templatelist = "member_register,error_nousername,error_nopassword,error_passwordmismatch,error_invalidemail,error_usernametaken,error_emailmismatch,error_noemail,redirect_registered,member_register_hiddencaptcha";
 $templatelist .= ",redirect_loggedout,login,redirect_loggedin,error_invalidusername,error_invalidpassword,member_profile_email,member_profile_offline,member_profile_reputation,member_profile_warn,member_profile_warninglevel,member_profile_customfields_field,member_profile_customfields,member_profile_adminoptions,member_profile,member_login,member_profile_online,member_profile_modoptions,member_profile_signature,member_profile_groupimage,member_profile_referrals";
 require_once "./global.php";
 
@@ -80,6 +80,17 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_register_start");
+
+	// If we have hidden CATPCHA enabled and it's filled, deny registration
+	if($mybb->settings['hiddencaptchaimage'])
+	{
+		$string = $mybb->settings['hiddencaptchaimagefield'];
+
+		if($mybb->input[$string] != '')
+		{
+			error($lang->error_spam_deny);
+		}
+	}
 
 	if($mybb->settings['regtype'] == "randompass")
 	{
@@ -678,6 +689,13 @@ if($mybb->input['action'] == "register")
 					$validator_extra .= "\tregValidator.register('imagestring', 'ajax', { url: 'xmlhttp.php?action=validate_captcha', extra_body: 'imagehash', loading_message: '{$lang->js_validator_captcha_valid}', failure_message: '{$lang->js_validator_no_image_text}'} );\n";
 				}
 			}
+		}
+		// Hidden CAPTCHA for Spambots
+		if($mybb->settings['hiddencaptchaimage'])
+		{
+			$captcha_field = $mybb->settings['hiddencaptchaimagefield'];
+
+			eval("\$hiddencaptcha = \"".$templates->get("member_register_hiddencaptcha")."\";");
 		}
 		if($mybb->settings['regtype'] != "randompass")
 		{

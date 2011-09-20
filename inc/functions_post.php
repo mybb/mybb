@@ -571,7 +571,7 @@ function build_postbit($post, $post_type=0)
 
 	get_post_attachments($id, $post);
 
-	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW))
+	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $post['postnum'] > $usergroup['canusesigxposts']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
@@ -580,6 +580,11 @@ function build_postbit($post, $post_type=0)
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
 			"me_username" => $post['username']
 		);
+
+		if($usergroup['signofollow'])
+		{
+			$sig_parser['nofollow_on'] = 1;
+		}
 
 		$post['signature'] = $parser->parse_message($post['signature'], $sig_parser);
 		eval("\$post['signature'] = \"".$templates->get("postbit_signature")."\";");

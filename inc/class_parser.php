@@ -880,13 +880,19 @@ class postParser
 				$name = my_substr($url, 0, 40)."...".my_substr($url, -10);
 			}
 		}
-		
+
+		$nofollow = '';
+		if(isset($this->options['nofollow_on']))
+		{
+			$nofollow = " rel=\"nofollow\"";
+		}
+
 		// Fix some entities in URLs
 		$entities = array('$' => '%24', '&#36;' => '%24', '^' => '%5E', '`' => '%60', '[' => '%5B', ']' => '%5D', '{' => '%7B', '}' => '%7D', '"' => '%22', '<' => '%3C', '>' => '%3E', ' ' => '%20');
 		$fullurl = str_replace(array_keys($entities), array_values($entities), $fullurl);
 
 		$name = preg_replace("#&amp;\#([0-9]+);#si", "&#$1;", $name); // Fix & but allow unicode
-		$link = "<a href=\"$fullurl\" target=\"_blank\">$name</a>";
+		$link = "<a href=\"$fullurl\" target=\"_blank\"{$nofollow}>$name</a>";
 		return $link;
 	}
 

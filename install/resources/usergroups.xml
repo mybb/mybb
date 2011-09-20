@@ -64,6 +64,9 @@
 		<maxwarningsday><![CDATA[0]]></maxwarningsday>
 		<showinbirthdaylist><![CDATA[0]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[0]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[2]]></gid>
@@ -129,6 +132,9 @@
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[1]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[3]]></gid>
@@ -194,6 +200,9 @@
 		<canmodcp><![CDATA[1]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[1]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[4]]></gid>
@@ -259,6 +268,9 @@
 		<canmodcp><![CDATA[1]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[1]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[5]]></gid>
@@ -324,6 +336,9 @@
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[0]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[6]]></gid>
@@ -389,6 +404,9 @@
 		<canmodcp><![CDATA[1]]></canmodcp>
 		<showinbirthdaylist><![CDATA[1]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[1]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 	<usergroup>
 		<gid><![CDATA[7]]></gid>
@@ -454,5 +472,8 @@
 		<canmodcp><![CDATA[0]]></canmodcp>
 		<showinbirthdaylist><![CDATA[0]]></showinbirthdaylist>
 		<canoverridepm><![CDATA[0]]></canoverridepm>
+		<canusesig><![CDATA[0]]></canusesig>
+		<canusesigxposts><![CDATA[0]]></canusesigxposts>
+		<signofollow><![CDATA[0]]></signofollow>
 	</usergroup>
 </usergroups>
