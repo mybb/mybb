@@ -418,7 +418,7 @@
 		</setting>
 		<setting name="cookiepath">
 			<title>Cookie Path</title>
-			<description><![CDATA[The path which cookies are set to, we recommend setting this to the full directory path to your forums with a trailing slash.]]></description>
+			<description><![CDATA[The path which cookies are set to. We recommend setting this to the full directory path to your forums with a trailing slash.]]></description>
 			<disporder>10</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[/]]></settingvalue>
@@ -505,7 +505,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="thousandssep">
 			<title>Thousands Numeric Separator</title>
-			<description><![CDATA[The punctuation you want to use .  (for example, the setting ',' with the number 1200 will give you a number such as 1,200)]]></description>
+			<description><![CDATA[The punctuation you want to use. For example, a setting of ',' with the number 1200 will give you 1,200.]]></description>
 			<disporder>19</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[,]]></settingvalue>
