@@ -28,7 +28,7 @@ function user_meta()
 	$sub_menu['60'] = array("id" => "mass_mail", "title" => $lang->mass_mail, "link" => "index.php?module=user-mass_mail");
 	$sub_menu['70'] = array("id" => "group_promotions", "title" => $lang->group_promotions, "link" => "index.php?module=user-group_promotions");
 	
-	$plugins->run_hooks("admin_user_menu", $sub_menu);
+	$sub_menu = $plugins->run_hooks("admin_user_menu", $sub_menu);
 
 	$page->add_menu_item($lang->users_and_groups, "user", "index.php?module=user", 30, $sub_menu);
 	return true;
@@ -50,7 +50,7 @@ function user_action_handler($action)
 		'users' => array('active' => 'users', 'file' => 'users.php')
 	);
 	
-	$plugins->run_hooks("admin_user_action_handler", $actions);
+	$actions = $plugins->run_hooks("admin_user_action_handler", $actions);
 	
 	if(isset($actions[$action]))
 	{
@@ -78,7 +78,7 @@ function user_admin_permissions()
 		"group_promotions" => $lang->can_manage_group_promotions
 	);
 	
-	$plugins->run_hooks("admin_user_permissions", $admin_permissions);
+	$admin_permissions = $plugins->run_hooks("admin_user_permissions", $admin_permissions);
 	
 	return array("name" => $lang->users_and_groups, "permissions" => $admin_permissions, "disporder" => 30);
 }

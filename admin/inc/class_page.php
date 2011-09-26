@@ -606,7 +606,7 @@ EOF;
 	function output_tab_control($tabs=array(), $observe_onload=true, $id="tabs")
 	{
 		global $plugins;
-		$plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
+		$tabs = $plugins->run_hooks("admin_page_output_tab_control_start", $tabs);
 		echo "<script type=\"text/javascript\">\n";
 		if($observe_onload)
 		{
@@ -651,7 +651,7 @@ EOF;
 	function output_nav_tabs($tabs=array(), $active='')
 	{
 		global $plugins;
-		$plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
+		$tabs = $plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
 		echo "<div class=\"nav_tabs\">";
 		echo "\t<ul>\n";
 		foreach($tabs as $id => $tab)

@@ -657,7 +657,7 @@ if($mybb->input['action'] == "permissions")
 			'cansearch' => 'misc',
 		);
 		
-		$plugins->run_hooks("admin_forum_management_permission_groups", $groups);
+		$groups = $plugins->run_hooks("admin_forum_management_permission_groups", $groups);
 		
 		$tabs = array();
 		foreach(array_unique(array_values($groups)) as $group)
