@@ -450,7 +450,7 @@ while(($module = readdir($dir)) !== false)
 	}
 }
 
-$plugins->run_hooks("admin_tabs", $modules);
+$modules = $plugins->run_hooks("admin_tabs", $modules);
 
 closedir($dir);
 

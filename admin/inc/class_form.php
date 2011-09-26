@@ -775,7 +775,7 @@ class DefaultForm
 	function output_submit_wrapper($buttons)
 	{
 		global $plugins;
-		$plugins->run_hooks("admin_form_output_submit_wrapper", $buttons);
+		$buttons = $plugins->run_hooks("admin_form_output_submit_wrapper", $buttons);
 		$return = "<div class=\"form_button_wrapper\">\n";
 		foreach($buttons as $button)
 		{
@@ -800,7 +800,10 @@ class DefaultForm
 	function end()
 	{
 		global $plugins;
-		$plugins->run_hooks("admin_form_end", $this);
+		$hook = array(
+			'this'	=> &$this
+		);
+		$plugins->run_hooks("admin_form_end", $hook);
 		if($this->_return == false)
 		{
 			echo "</form>";
