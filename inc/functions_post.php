@@ -613,16 +613,16 @@ function build_postbit($post, $post_type=0)
 	switch($post_type)
 	{
 		case 1: // Message preview
-			$plugins->run_hooks("postbit_prev", $post);
+			$post = $plugins->run_hooks("postbit_prev", $post);
 			break;
 		case 2: // Private message
-			$plugins->run_hooks("postbit_pm", $post);
+			$post = $plugins->run_hooks("postbit_pm", $post);
 			break;
 		case 3: // Announcement
-			$plugins->run_hooks("postbit_announcement", $post);
+			$post = $plugins->run_hooks("postbit_announcement", $post);
 			break;
 		default: // Regular post
-			$plugins->run_hooks("postbit", $post);
+			$post = $plugins->run_hooks("postbit", $post);
 
 			// Is this author on the ignore list of the current user? Hide this post
 			if(is_array($ignored_users) && $post['uid'] != 0 && $ignored_users[$post['uid']] == 1)

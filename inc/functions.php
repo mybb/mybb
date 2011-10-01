@@ -398,7 +398,7 @@ function my_date($format, $stamp="", $offset="", $ty=1, $adodb=false)
 
 	if(is_object($plugins))
 	{
-		$plugins->run_hooks("my_date", $date);
+		$date = $plugins->run_hooks("my_date", $date);
 	}
 
 	return $date;
@@ -647,7 +647,7 @@ function error($error="", $title="")
 {
 	global $header, $footer, $theme, $headerinclude, $db, $templates, $lang, $mybb, $plugins;
 
-	$plugins->run_hooks("error", $error);
+	$error = $plugins->run_hooks("error", $error);
 	if(!$error)
 	{
 		$error = $lang->unknown_error;
@@ -2425,7 +2425,7 @@ function build_mycode_inserter($bind="message")
 		);
 		$editor_language = "var editor_language = {\n";
 		
-		$plugins->run_hooks("mycode_add_codebuttons", $editor_lang_strings);
+		$editor_lang_strings = $plugins->run_hooks("mycode_add_codebuttons", $editor_lang_strings);
 
 		foreach($editor_lang_strings as $key => $lang_string)
 		{
@@ -5792,7 +5792,7 @@ function fetch_ban_times()
 		"0-0-2" => "2 {$lang->years}"
 	);
 
-	$plugins->run_hooks("functions_fetch_ban_times", $ban_times);
+	$ban_times = $plugins->run_hooks("functions_fetch_ban_times", $ban_times);
 
 	$ban_times['---'] = $lang->permanent;
 	return $ban_times;

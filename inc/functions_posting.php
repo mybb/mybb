@@ -210,7 +210,7 @@ function parse_quoted_message(&$quoted_post, $remove_message_quotes=true)
 		}
 	}
 	
-	$plugins->run_hooks("parse_quoted_message", $quoted_post);
+	$quoted_post = $plugins->run_hooks("parse_quoted_message", $quoted_post);
 	
 	return "[quote='{$quoted_post['username']}' pid='{$quoted_post['pid']}' dateline='{$quoted_post['dateline']}']\n{$quoted_post['message']}\n[/quote]\n\n";
 }

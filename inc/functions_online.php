@@ -450,7 +450,7 @@ function fetch_wol_activity($location, $nopermission=false)
 	// Expects $location to be passed through already sanitized
 	$user_activity['location'] = $location;
 	
-	$plugins->run_hooks("fetch_wol_activity_end", $user_activity);
+	$user_activity = $plugins->run_hooks("fetch_wol_activity_end", $user_activity);
 	
 	return $user_activity;
 }
