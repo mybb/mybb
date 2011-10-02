@@ -97,7 +97,8 @@ class pluginSystem
 						require_once $hook['file'];
 					}
 					
-					$returnargs = call_user_func_array($hook['function'], array(&$arguments));
+					$func = $hook['function'];
+					$returnargs = $func($arguments);
 					
 					
 					if($returnargs)
@@ -112,9 +113,9 @@ class pluginSystem
 	}
 	
 	/**
-	 * DEPRECIATED
-	 * Run the hooks that have plugins but passes REQUIRED argument by reference.
-	 * This is a separate function to provide backwards compat with PHP 4.
+	 * Run the hooks that have plugins but passes REQUIRED argument that is received by reference.
+	 * This argument must be received by reference in the plugin file!
+	 * This is a separate function to allow by reference calls for things you cannot use the $var = $plugins->run_hooks("hook_name", $var) syntax.
 	 *
 	 * @param string The name of the hook that is run.
 	 * @param string The argument for the hook that is run - passed by reference. The passed value MUST be a variable
@@ -138,12 +139,13 @@ class pluginSystem
 						require_once $hook['file'];
 					}
 					
-					call_user_func_array($hook['function'], array(&$arguments));				
+					$func = $hook['function'];
+					$returnargs = $func($arguments);
 				}
 			}
 		}
 		$this->current_hook = '';
-	}	
+	}
 
 	/**
 	 * Remove a specific hook.

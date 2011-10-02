@@ -800,10 +800,7 @@ class DefaultForm
 	function end()
 	{
 		global $plugins;
-		$hook = array(
-			'this'	=> &$this
-		);
-		$plugins->run_hooks("admin_form_end", $hook);
+		$plugins->run_hooks_by_ref("admin_form_end", $this);
 		if($this->_return == false)
 		{
 			echo "</form>";

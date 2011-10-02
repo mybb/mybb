@@ -247,8 +247,6 @@ function send_mail_queue($count=10)
 		// Fetch emails for this page view - and send them
 		$query = $db->simple_select("mailqueue", "*", "", array("order_by" => "mid", "order_dir" => "asc", "limit_start" => 0, "limit" => $count));
 
-		$plugins->run_hooks("send_mail_queue_mail", $query);
-
 		while($email = $db->fetch_array($query))
 		{
 			// Delete the message from the queue
