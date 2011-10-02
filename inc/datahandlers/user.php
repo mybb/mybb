@@ -925,7 +925,7 @@ class UserDataHandler extends DataHandler
 			$this->verify_checkfields();
 		}
 		
-		$plugins->run_hooks("datahandler_user_validate", $this);
+		$plugins->run_hooks_by_ref("datahandler_user_validate", $this);
 		
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -1036,7 +1036,7 @@ class UserDataHandler extends DataHandler
 			$this->user_insert_data['dst'] = 0;
 		}
 
-		$plugins->run_hooks("datahandler_user_insert", $this);
+		$plugins->run_hooks_by_ref("datahandler_user_insert", $this);
 		
 		$this->uid = $db->insert_query("users", $this->user_insert_data);
 		
@@ -1240,7 +1240,7 @@ class UserDataHandler extends DataHandler
 			unset($this->user_update_data['pmnotice']);
 		}
 		
-		$plugins->run_hooks("datahandler_user_update", $this);
+		$plugins->run_hooks_by_ref("datahandler_user_update", $this);
 		
 		if(count($this->user_update_data) < 1 && empty($user['user_fields']))
 		{ 
