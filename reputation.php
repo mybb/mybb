@@ -118,17 +118,25 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 	
 	if($mybb->input['pid'])
 	{
-		// Has the user given too much reputation to another in the same thread?
+		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
+		$post = get_post($mybb->input['pid']);
+		if($uid != $post['uid'])
+		{
+			$mybb->input['pid'] = 0;
+		}
+		else
+		// We have the correct post, but has the user given too much reputation to another in the same thread?
 		if($mybb->usergroup['maxreputationsperthread'] != 0 && ($mybb->input['action'] != "do_add" || ($mybb->input['action'] == "do_add" && !$mybb->input['delete'])))
 		{
 			$timesearch = TIME_NOW - (60 * 60 * 24);
-			$query = $db->query("
-				SELECT p.pid
-				FROM ".TABLE_PREFIX."posts p
-				LEFT JOIN ".TABLE_PREFIX."reputation r ON (p.pid=r.pid)
-				WHERE r.uid = '{$uid}' AND r.dateline > '{$timesearch}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}'
+			$query = $db->query("				
+				SELECT COUNT(p.pid) AS posts
+				FROM ".TABLE_PREFIX."reputation r
+				LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid = r.pid)
+				WHERE r.uid = '{$uid}' AND r.adduid = '{$mybb->user['uid']}' AND p.tid = '{$post['tid']}' AND r.dateline > '{$timesearch}'
 			");
-			$numtoday = $db->num_rows($query);
+
+			$numtoday = $db->fetch_field($query, 'posts');
 
 			if($numtoday >= $mybb->usergroup['maxreputationsperthread'])
 			{
@@ -137,12 +145,6 @@ if($mybb->input['action'] == "add" || $mybb->input['action'] == "do_add")
 				output_page($error);
 				exit;
 			}
-		}
-		// Make sure that this post exists, and that the author of the post we're giving this reputation for corresponds with the user the rep is being given to.
-		$post = get_post($mybb->input['pid']);
-		if($uid != $post['uid'])
-		{
-			$mybb->input['pid'] = 0;
 		}
 	}
 
