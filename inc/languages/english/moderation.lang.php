@@ -49,6 +49,7 @@ $l['method_move'] = "Move thread";
 $l['method_move_redirect'] = "Move thread and leave redirect in existing forum for days:";
 $l['redirect_expire_note'] = "(leave blank for 'infinite')";
 $l['method_copy'] = "Copy thread to the new forum";
+$l['split_thread_subject'] = "[split]";
 $l['split_thread'] = "Split Thread";
 $l['new_thread_info'] = "New Thread Information";
 $l['posts_to_split'] = "Posts to Split";

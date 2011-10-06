@@ -187,7 +187,7 @@ class CustomModeration extends Moderation
 				if(empty($post_options['splitpostsnewsubject']))
 				{
 					// Enter in a subject if a predefined one does not exist.
-					$post_options['splitpostsnewsubject'] = '[split] '.$thread['subject'];
+					$post_options['splitpostsnewsubject'] = "{$lang->split_thread_subject} {$thread['subject']}";
 				}
 				$new_subject = str_ireplace('{subject}', $thread['subject'], $post_options['splitpostsnewsubject']);
 				$new_tid = $this->split_posts($pids, $tid, $post_options['splitposts'], $new_subject);
