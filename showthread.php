@@ -125,7 +125,13 @@ $forum_stats = $cache->read("forumsdisplay");
 
 if(!is_array($forum_stats))
 {
-	$forum_stats = array();
+	// Attempt to rebuild it?
+	$forum_stats = $cache->read("forumdisplay", true);
+
+	if(!is_array($forum_stats))
+	{
+		$forum_stats = array();
+	}
 }
 
 $breadcrumb_multipage = array();

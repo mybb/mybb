@@ -2574,10 +2574,15 @@ function build_prefixes($pid=0)
 
 	$prefix_cache = $cache->read("threadprefixes");
 
-	if($prefix_cache === false)
+	if(!is_array($prefix_cache))
 	{
 		// No cache
-		return array();
+		$prefix_cache = $cache->read("threadprefixes", true);
+
+		if(!is_array($prefix_cache))
+		{
+			return array();
+		}
 	}
 
 	$prefixes_cache = array();
