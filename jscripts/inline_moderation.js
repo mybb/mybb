@@ -197,7 +197,7 @@ var inlineModeration = {
 		$H(inputs).each(function(element) {
 			var element = element.value;
 			if(!element.value) return;
-			if((element.name != "allbox") && (element.type == "checkbox") && (element.id.split("_")[0] == "inlinemod"))
+			if(element.type == "checkbox" && (element.id.split("_")[0] == "inlinemod" || element.name == "allbox"))
 			{
 				element.checked = false;
 			}
