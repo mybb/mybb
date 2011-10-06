@@ -147,7 +147,7 @@ var inlineModeration = {
 
 		goButton = $("inline_go");
 
-		if(remIds)
+		if(remIds.length)
 		{
 			inlineData = "|"+remIds.join("|")+"|";
 			Cookie.set(inlineModeration.cookieName + '_removed', inlineData, 3600000);
