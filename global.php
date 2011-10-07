@@ -61,7 +61,7 @@ $mybb->user['ismoderator'] = is_moderator("", "", $mybb->user['uid']);
 $mybb->post_code = generate_post_check();
 
 // Set and load the language
-if($mybb->input['language'] && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['postcode'], true))
+if($mybb->input['language'] && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
 {
 	$mybb->settings['bblanguage'] = $mybb->input['language'];
 	// If user is logged in, update their language selection with the new one
