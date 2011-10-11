@@ -62,12 +62,14 @@ if($mybb->input['action'] == "today")
 	$query = $db->simple_select("users", "*", "lastactive > '{$threshold}'", array("order_by" => "lastactive", "order_dir" => "desc", "limit" => $perpage, "limit_start" => $start));
 
 	$todayrows = '';
+	$invis_count = 0;
 	while($online = $db->fetch_array($query))
 	{
 		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
 		{
 			if($online['invisible'] == 1)
 			{
+				++$invis_count;
 				$invisiblemark = "*";
 			}
 			else
@@ -91,6 +93,18 @@ if($mybb->input['action'] == "today")
 	else
 	{
 		$onlinetoday = $lang->sprintf($lang->members_were_online_today, $todaycount);
+	}
+
+	if($invis_count)
+	{
+		$string = $lang->members_online_hidden;
+
+		if($invis_count == 1)
+		{
+			$string = $lang->member_online_hidden;
+		}
+
+		$onlinetoday .= $lang->sprintf($string, $invis_count);
 	}
 
 	$multipage = multipage($todaycount, $perpage, $page, "online.php?action=today");
