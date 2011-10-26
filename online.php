@@ -65,18 +65,15 @@ if($mybb->input['action'] == "today")
 	$invis_count = 0;
 	while($online = $db->fetch_array($query))
 	{
-		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
+		$invisiblemark = '';
+		if($online['invisible'] == 1)
 		{
-			if($online['invisible'] == 1)
-			{
-				++$invis_count;
-				$invisiblemark = "*";
-			}
-			else
-			{
-				$invisiblemark = "";
-			}
-	
+			++$invis_count;
+			$invisiblemark = "*";
+		}
+
+		if($online['invisible'] != 1 || $mybb->usergroup['canviewwolinvis'] == 1 || $online['uid'] == $mybb->user['uid'])
+		{	
 			$username = $online['username'];
 			$username = format_name($username, $online['usergroup'], $online['displaygroup']);
 			$online['profilelink'] = build_profile_link($username, $online['uid']);
