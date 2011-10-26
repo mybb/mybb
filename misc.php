@@ -352,6 +352,7 @@ elseif($mybb->input['action'] == "buddypopup")
 
 			if($buddy['avatar'])
 			{
+				$buddy['avatar'] = htmlspecialchars_uni($buddy['avatar']);
 				if($buddy['avatardimensions'])
 				{
 					require_once MYBB_ROOT."inc/functions_image.php";

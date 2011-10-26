@@ -724,7 +724,7 @@ else if($mybb->input['action'] == "username_exists")
 	}
 	else
 	{
-		$lang->invalid_username = $lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username));
+		$lang->invalid_username = htmlspecialchars_uni($lang->sprintf($lang->invalid_username, htmlspecialchars_uni($username)));
 		echo "<fail>{$lang->invalid_username}</fail>";
 		exit;
 	}
