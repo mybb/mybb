@@ -111,6 +111,7 @@ $l['birthdayprivacy'] = "Date of Birth Privacy:";
 $l['birthdayprivacyall'] = "Display Age and Date of Birth";
 $l['birthdayprivacynone'] = "Hide Age and Date of Birth";
 $l['birthdayprivacyage'] = "Display Only Age";
+$l['leave_this_field_empty'] = "Leave this field empty:";
 $l['error_need_to_be_thirteen'] = "You need to be of thirteen years or older to register on this forum.";
 $l['coppa_registration'] = "COPPA Registration Form";
 $l['coppa_form_instructions'] = "Please print this form, fill it in and either fax it to the number below or mail it to the provided mailing address.";

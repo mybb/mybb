@@ -8132,7 +8132,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 </body>
 </html>]]></template>
 		<template name="member_register_hiddencaptcha" version="1605"><![CDATA[<tr style="display: none;">
-	<td colspan="2" id="{$captcha_field}_status">Leave this field empty: <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
+	<td colspan="2" id="{$captcha_field}_status">{$lang->leave_this_field_empty} <input type="text" class="textbox" name="{$captcha_field}" id="{$captcha_field}" style="width: 100%" maxlength="50" value="" /></td>
 </tr>]]></template>
 		<template name="global_bannedwarning" version="1400"><![CDATA[<div class="red_alert">
 <strong>{$lang->banned_warning}</strong>
