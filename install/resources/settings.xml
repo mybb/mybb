@@ -785,7 +785,7 @@ admin=Administrator Activation]]></optionscode>
 			<description><![CDATA[Do you want to display a hidden CAPTCHA field when a user registers? This may prevent spambots from registering on your forum.]]></description>
 			<disporder>15</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
-			<settingvalue><![CDATA[1]]></settingvalue>
+			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
