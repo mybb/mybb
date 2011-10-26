@@ -892,10 +892,20 @@ if($mybb->input['action'] == "thread")
         }
         else
         {
-            if($mybb->input['highlight'])
-            {
-                $highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
-            }
+			if($mybb->input['highlight'])
+			{
+				if(is_array($mybb->input['highlight']))
+				{
+					foreach($mybb->input['highlight'] as $highlight_word)
+					{
+						$highlight .= "&amp;highlight[]=".urlencode($highlight_word);
+					}
+				}
+				else
+				{
+					$highlight = "&amp;highlight=".urlencode($mybb->input['highlight']);
+				}
+			}
             
             if($defaultmode != "linear")
             {

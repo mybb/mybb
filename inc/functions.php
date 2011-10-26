@@ -5197,6 +5197,11 @@ function build_highlight_array($terms)
 		$mybb->settings['minsearchword'] = 3;
 	} 
 
+	if(is_array($terms))
+	{
+		$terms = implode(' ', $terms);
+	}
+
 	// Strip out any characters that shouldn't be included
 	$bad_characters = array(
 		"(",
