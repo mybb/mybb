@@ -84,6 +84,20 @@ if(!$mybb->input['action'])
 	$table->construct_cell("&nbsp;");
 	$table->construct_cell("<a href=\"http://community.mybb.com/user-24611.html\" target=\"_blank\">Jammerx2</a>");
 	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-16693.html\" target=\"_blank\">F&aacute;bio Maia</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-8582.html\" target=\"_blank\">Pirata Nervo</a>");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("&nbsp;");
+	$table->construct_row();
+
+	$table->construct_cell("&nbsp;");
+	$table->construct_cell("<a href=\"http://community.mybb.com/user-7331.html\" target=\"_blank\">Mike Creuzer</a>");
+	$table->construct_cell("&nbsp;");
 	$table->construct_cell("&nbsp;");
 	$table->construct_cell("&nbsp;");
 	$table->construct_row();
