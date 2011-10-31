@@ -316,8 +316,8 @@ $l['admin_step_error_noemail'] = 'You did not enter your email address for the A
 
 $l['done_step_usergroupsinserted'] = "<p>Importing user groups...";
 $l['done_step_admincreated'] = '<p>Creating Administrator account...';
-$l['done_step_adminoptions'] = '<p>Building Administrator permissions\'s...';
-$l['done_step_cachebuilding'] = '<p>Building data cache\'s...';
+$l['done_step_adminoptions'] = '<p>Building Administrator permissions\'...';
+$l['done_step_cachebuilding'] = '<p>Building data caches...';
 $l['done_step_success'] = '<p class="success">Your copy of MyBB has successfully been installed and configured correctly.</p>
 <p>The MyBB Group thanks you for your support in installing our software and we hope to see you around the community forums if you need help or wish to become a part of the MyBB community.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'lock\' file in this directory.</p><p>You may now proceed to your new copy of <a href="../index.php">MyBB</a> or its <a href="../admin/index.php">Admin Control Panel</a>.</p>';
@@ -332,7 +332,7 @@ $l['upgrade_templates_reverted_success'] = "<p>All of the templates have success
 $l['upgrade_settings_sync'] = 'Settings Synchronisation';
 $l['upgrade_settings_sync_success'] = "<p>The board settings have been synchronised with the latest in MyBB.</p><p>{1} new settings inserted along with {2} new setting groups.</p><p>To finalise the upgrade, please click next below to continue.</p>";
 $l['upgrade_datacache_building'] = 'Data Cache Building';
-$l['upgrade_building_datacache'] = '<p>Building cache\'s...';
+$l['upgrade_building_datacache'] = '<p>Building caches...';
 $l['upgrade_continue'] = 'Please press next to continue';
 $l['upgrade_locked'] = "<p>Your installer has been locked. To unlock the installer please delete the 'lock' file in this directory.</p><p>You may now proceed to your upgraded copy of <a href=\"../index.php\">MyBB</a> or its <a href=\"../{1}/index.php\">Admin Control Panel</a>.</p>";
 $l['upgrade_removedir'] = 'Please remove this directory before exploring your upgraded MyBB.';
