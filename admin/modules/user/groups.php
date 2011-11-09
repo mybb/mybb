@@ -65,7 +65,7 @@ $usergroup_permissions = array(
 	"maxwarningsday" => 0,
 	"canmodcp" => 0,
 	"showinbirthdaylist" => 0,
-	"canoverridepms" => 0,
+	"canoverridepm" => 0,
 	"canusesig" => 0,
 	"canusesigxposts" => 0,
 	"signofollow" => 0
@@ -1032,8 +1032,8 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canoverridepm", 1, $lang->can_override_pms, array("checked" => $mybb->input['canoverridepm'])),
 		$form->generate_check_box("cantrackpms", 1, $lang->can_track_pms, array("checked" => $mybb->input['cantrackpms'])),
 		$form->generate_check_box("candenypmreceipts", 1, $lang->can_deny_reciept, array("checked" => $mybb->input['candenypmreceipts'])),
-		"{$lang->message_quota}:<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_text_box('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),
-		"{$lang->max_recipients}:<br /><small>{$lang->max_recipients_desc}</small><br />".$form->generate_text_box('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50'))
+		"{$lang->message_quota}<br /><small>{$lang->message_quota_desc}</small><br />".$form->generate_text_box('pmquota', $mybb->input['pmquota'], array('id' => 'pmquota', 'class' => 'field50')),
+		"{$lang->max_recipients}<br /><small>{$lang->max_recipients_desc}</small><br />".$form->generate_text_box('maxpmrecipients', $mybb->input['maxpmrecipients'], array('id' => 'maxpmrecipients', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->private_messaging, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $pm_options)."</div>");
 	

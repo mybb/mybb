@@ -2389,7 +2389,7 @@ if($mybb->input['action'] == "inline_edit")
 				echo $form->generate_hidden_field('inline_action', 'multiban');
 				echo $form->generate_hidden_field('processed', '1');
 
-				$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key={$mybb->post_code}">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
+				$form_container = new FormContainer('<div class="float_right"><a href="index.php?module=user-users&amp;action=inline_edit&amp;inline_action=multilift&amp;my_post_key='.$mybb->post_code.'">'.$lang->lift_bans.'</a></div>'.$lang->mass_ban);
 				$form_container->output_row($lang->ban_reason, "", $form->generate_text_box('reason', $mybb->input['reason'], array('id' => 'reason')), 'reason');				
 				$ban_times = fetch_ban_times();
 				foreach($ban_times as $time => $period)
