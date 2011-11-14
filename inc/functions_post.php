@@ -279,6 +279,7 @@ function build_postbit($post, $post_type=0)
 			$post['userstars'] .= "<br />";
 		}
 
+		$postnum = $post['postnum'];
 		$post['postnum'] = my_number_format($post['postnum']);
 
 		// Determine the status to show for the user (Online/Offline/Away)
@@ -571,7 +572,7 @@ function build_postbit($post, $post_type=0)
 
 	get_post_attachments($id, $post);
 
-	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $post['postnum'] > $usergroup['canusesigxposts']))
+	if($post['includesig'] != 0 && $post['username'] && $post['signature'] != "" && ($mybb->user['uid'] == 0 || $mybb->user['showsigs'] != 0) && ($post['suspendsignature'] == 0 || $post['suspendsignature'] == 1 && $post['suspendsigtime'] != 0 && $post['suspendsigtime'] < TIME_NOW) && $usergroup['canusesig'] == 1 && ($usergroup['canusesigxposts'] == 0 || $usergroup['canusesigxposts'] > 0 && $postnum > $usergroup['canusesigxposts']))
 	{
 		$sig_parser = array(
 			"allow_html" => $mybb->settings['sightml'],
