@@ -1447,7 +1447,7 @@ if($mybb->input['action'] == "edit")
 	);
 
 	echo "<div id=\"tab_modoptions\">\n";
-	$form_container = new FormContainer($lang->mod_options);
+	$form_container = new FormContainer($lang->mod_options.": {$user['username']}");
 	$form_container->output_row($lang->user_notes, '', $form->generate_text_area('usernotes', $mybb->input['usernotes'], array('id' => 'usernotes')), 'usernotes');
 
 	// Mod posts

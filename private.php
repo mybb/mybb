@@ -644,6 +644,8 @@ if($mybb->input['action'] == "send")
 		}
 	}
 
+	$lang->post_icon = $lang->message_icon;
+
 	$posticons = get_post_icons();
 	$previewmessage = $mybb->input['message'];
 	$message = htmlspecialchars_uni($mybb->input['message']);

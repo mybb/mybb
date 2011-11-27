@@ -94,6 +94,7 @@ $l['max_recipients'] = "<br />You may send this message to a maximum of <strong>
 $l['compose_subject'] = "Subject:";
 $l['compose_message'] = "Message:";
 $l['compose_options'] = "Options:";
+$l['message_icon'] = "Message Icon:";
 $l['options_sig'] = "<strong>Signature:</strong> include your signature in this message.";
 $l['options_disable_smilies'] = "<strong>Disable Smilies:</strong> disable smilies from showing in this message.";
 $l['options_save_copy'] = "<strong>Save a Copy:</strong> save a copy of this message in your Sent Items folder.";
