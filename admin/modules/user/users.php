@@ -2045,7 +2045,7 @@ if($mybb->input['action'] == "search")
 			$admin_view['sortby'] = $mybb->input['sortby'];
 		}
 		
-		if($mybb->input['perpage'])
+		if(intval($mybb->input['perpage']))
 		{
 			$admin_view['perpage'] = $mybb->input['perpage'];
 		}
