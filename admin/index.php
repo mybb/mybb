@@ -80,12 +80,21 @@ $logged_out = false;
 $fail_check = 0;
 $post_verify = true;
 
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
+
 if($mybb->input['action'] == "logout")
 {
-	// Delete session from the database
-	$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
-	my_setcookie("adminsid", "");
-	$logged_out = true;
+	if(verify_post_check($mybb->input['my_post_key']))
+	{
+		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		my_setcookie("adminsid", "");
+		$logged_out = true;
+	}
+	else
+	{
+		admin_redirect('index.php');
+	}
 }
 elseif($mybb->input['action'] == "unlock")
 {
@@ -479,9 +488,6 @@ if($run_module != "home")
 {
 	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
 }
-
-// Set our POST validation code here
-$mybb->post_code = generate_post_check();
 
 // Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
 $post_check_ignores = array(
