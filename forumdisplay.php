@@ -635,7 +635,8 @@ if(!is_array($forum_stats))
 	$forum_stats = $cache->read("forumdisplay", true);
 }
 
-if(is_array($forum_stats) && ($forum_stats[-1]['announcements'] || $forum_stats[$fid]['announcements']))
+$parentlist_exp = explode(',', $parentlist);
+if(is_array($forum_stats) && ($forum_stats[-1]['announcements'] || array_intersect_key(array_flip($parentlist_exp), $forum_stats)))
 {
 	$limit = '';
 	$announcements = '';
