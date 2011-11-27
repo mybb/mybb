@@ -313,7 +313,7 @@ if($foruminfo['rulestype'] != 0 && $foruminfo['rules'])
 	);
 
 	$foruminfo['rules'] = $parser->parse_message($foruminfo['rules'], $rules_parser);
-	if($foruminfo['rulestype'] == 1)
+	if($foruminfo['rulestype'] == 1 || $foruminfo['rulestype'] == 3)
 	{
 		eval("\$rules = \"".$templates->get("forumdisplay_rules")."\";");
 	}

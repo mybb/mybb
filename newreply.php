@@ -12,7 +12,7 @@
 define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newreply.php');
 
-$templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,redirect_threadposted,loginbox,changeuserbox,posticons,newreply_threadreview,forumrules,attachments,newreply_threadreview_post";
+$templatelist = "newreply,previewpost,error_invalidforum,error_invalidthread,redirect_threadposted,loginbox,changeuserbox,posticons,newreply_threadreview,forumrules,attachments,newreply_threadreview_post,forumdisplay_rules,forumdisplay_rules_link";
 $templatelist .= ",smilieinsert,smilieinsert_getmore,codebuttons,post_attachments_new,post_attachments,post_savedraftbutton,newreply_modoptions,newreply_threadreview_more,newreply_disablesmilies,postbit_online,postbit_find,postbit_pm,postbit_www,postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_edit,postbit_quickdelete,postbit_inlinecheck,postbit_posturl,postbit_quote,postbit_multiquote,postbit_report,postbit_ignored,postbit,post_subscription_method";
 
 require_once "./global.php";
@@ -1224,6 +1224,41 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 	
 	$lang->post_reply_to = $lang->sprintf($lang->post_reply_to, $thread['subject']);
 	$lang->reply_to = $lang->sprintf($lang->reply_to, $thread['subject']);
+
+	// Do we have any forum rules to show for this forum?
+	$forumrules = '';
+	if($forum['rulestype'] >= 2 && $forum['rules'])
+	{
+		if(!$forum['rulestitle'])
+		{
+			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
+		}
+
+		if(!$parser)
+		{
+			require_once MYBB_ROOT.'inc/class_parser.php';
+			$parser = new postParser;
+		}
+
+		$rules_parser = array(
+			"allow_html" => 1,
+			"allow_mycode" => 1,
+			"allow_smilies" => 1,
+			"allow_imgcode" => 1
+		);
+
+		$forum['rules'] = $parser->parse_message($forum['rules'], $rules_parser);
+		$foruminfo = $forum;
+
+		if($forum['rulestype'] == 3)
+		{
+			eval("\$forumrules = \"".$templates->get("forumdisplay_rules")."\";");
+		}
+		else if($forum['rulestype'] == 2)
+		{
+			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
+		}
+	}
 
 	$plugins->run_hooks("newreply_end");
 	

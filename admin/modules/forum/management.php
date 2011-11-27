@@ -978,6 +978,7 @@ if($mybb->input['action'] == "add")
 	$display_methods = array(
 		'0' => $lang->dont_display_rules,
 		'1' => $lang->display_rules_inline,
+		'3' => $lang->display_rules_inline_new,
 		'2' => $lang->display_rules_link
 	);
 	
@@ -1520,6 +1521,7 @@ if($mybb->input['action'] == "edit")
 	$display_methods = array(
 		'0' => $lang->dont_display_rules,
 		'1' => $lang->display_rules_inline,
+		'3' => $lang->display_rules_inline_new,
 		'2' => $lang->display_rules_link
 	);
 	

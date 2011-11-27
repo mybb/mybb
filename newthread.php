@@ -13,7 +13,8 @@ define("IN_MYBB", 1);
 define('THIS_SCRIPT', 'newthread.php');
 
 $templatelist = "newthread,previewpost,error_invalidforum,redirect_newthread,loginbox,changeuserbox,newthread_postpoll,posticons,attachment,newthread_postpoll,codebuttons,smilieinsert,error_nosubject";
-$templatelist .= "posticons,newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove";
+$templatelist .= "posticons,newthread_disablesmilies,newreply_modoptions,post_attachments_new,post_attachments,post_savedraftbutton,post_subscription_method,post_attachments_attachment_remove,";
+$templatelist .= "forumdisplay_rules,forumdisplay_rules_link";
 
 require_once "./global.php";
 require_once MYBB_ROOT."inc/functions_post.php";
@@ -923,6 +924,41 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 	{
 		$lang->max_options = $lang->sprintf($lang->max_options, $mybb->settings['maxpolloptions']);
 		eval("\$pollbox = \"".$templates->get("newthread_postpoll")."\";");
+	}
+
+	// Do we have any forum rules to show for this forum?
+	$forumrules = '';
+	if($forum['rulestype'] >= 2 && $forum['rules'])
+	{
+		if(!$forum['rulestitle'])
+		{
+			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);
+		}
+
+		if(!$parser)
+		{
+			require_once MYBB_ROOT.'inc/class_parser.php';
+			$parser = new postParser;
+		}
+
+		$rules_parser = array(
+			"allow_html" => 1,
+			"allow_mycode" => 1,
+			"allow_smilies" => 1,
+			"allow_imgcode" => 1
+		);
+
+		$forum['rules'] = $parser->parse_message($forum['rules'], $rules_parser);
+		$foruminfo = $forum;
+
+		if($forum['rulestype'] == 3)
+		{
+			eval("\$forumrules = \"".$templates->get("forumdisplay_rules")."\";");
+		}
+		else if($forum['rulestype'] == 2)
+		{
+			eval("\$forumrules = \"".$templates->get("forumdisplay_rules_link")."\";");
+		}
 	}
 
 	$plugins->run_hooks("newthread_end");

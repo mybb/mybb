@@ -144,6 +144,7 @@ $l['forum_specific_style'] = "Forum-Specific Style:";
 $l['use_default'] = "Use Default";
 $l['dont_display_rules'] = "Don't display rules for this forum";
 $l['display_rules_inline'] = "Display rules for this forum on the thread listing";
+$l['display_rules_inline_new'] = "Display rules in the thread listing and for new threads/replies";
 $l['display_rules_link'] = "Display a link to the rules for this forum";
 $l['display_method'] = "Display Method:";
 $l['rules'] = "Rules:";

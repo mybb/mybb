@@ -32,6 +32,7 @@ $l['verification_subnote'] = "(case insensitive)";
 $l['invalid_captcha'] = "The image verification code that you entered was incorrect. Please enter the code exactly how it appears in the image.";
 $l['error_post_already_submitted'] = "You have already posted this thread in this forum. Please visit the forum to see your thread.";
 $l['no_prefix'] = "No Prefix";
+$l['forum_rules'] = "{1} - Rules";
 
 $l['multiquote_external_one'] = "You have selected one post from another thread.";
 $l['multiquote_external'] = "You have selected {1} posts from other threads.";

@@ -2949,7 +2949,8 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_rules" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="forumdisplay_rules" version="1606"><![CDATA[<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$foruminfo['rulestitle']}</strong></td>
 </tr>
@@ -2958,7 +2959,8 @@ body {
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay_rules_link" version="120"><![CDATA[<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<template name="forumdisplay_rules_link" version="1606"><![CDATA[<br />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1"><strong><a href="misc.php?action=rules&amp;fid={$fid}">{$foruminfo['rulestitle']}</a></strong></td>
 </tr>
