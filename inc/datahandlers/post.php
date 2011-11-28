@@ -219,9 +219,10 @@ class PostDataHandler extends DataHandler
 		global $mybb;
 
 		$post = &$this->data;
-		
+		$post['message'] = trim_blank_chrs($post['message']);
+
 		// Do we even have a message at all?
-		if(my_strlen(trim_blank_chrs($post['message'])) == 0)
+		if(my_strlen($post['message']) == 0)
 		{
 			$this->set_error("missing_message");
 			return false;
