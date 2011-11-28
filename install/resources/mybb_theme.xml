@@ -3792,7 +3792,7 @@ body {
 // -->
 </script>]]></template>
 		<template name="postbit_quote" version="120"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->postbit_quote}" title="{$lang->postbit_quote}" /></a>]]></template>
-		<template name="postbit_rep_button" version="1600"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});"><img src="{$theme['imglangdir']}/postbit_reputation.gif" alt="{$lang->postbit_reputation}" title="{$lang->postbit_reputation}" /></a>]]></template>
+		<template name="postbit_rep_button" version="1606"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});"><img src="{$theme['imglangdir']}/postbit_reputation.gif" alt="{$lang->postbit_reputation_add}" title="{$lang->postbit_reputation_add}" /></a>]]></template>
 		<template name="postbit_report" version="120"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_report.gif" alt="{$lang->postbit_report}" title="{$lang->postbit_report}" /></a>]]></template>
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>
 		<template name="polls_showresults_resultbit" version="1402"><![CDATA[<tr>
