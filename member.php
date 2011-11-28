@@ -1585,15 +1585,20 @@ if($mybb->input['action'] == "profile")
 	else
 	{
 		// No usergroup title so get a default one
-		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-		while($title = $db->fetch_array($query))
+		$usertitles = $cache->read('usertitles');
+
+		if(is_array($usertitles))
 		{
-			if($memprofile['postnum'] >= $title['posts'])
+			foreach($usertitles as $title)
 			{
-				$usertitle = $title['title'];
-				$stars = $title['stars'];
-				$starimage = $title['starimage'];
-				break;
+				if($memprofile['postnum'] >= $title['posts'])
+				{
+					$usertitle = $title['title'];
+					$stars = $title['stars'];
+					$starimage = $title['starimage'];
+
+					break;
+				}
 			}
 		}
 	}
@@ -1605,15 +1610,22 @@ if($mybb->input['action'] == "profile")
 	}
 	elseif(!$stars)
 	{
-		// This is for cases where the user has a title, but the group has no defined number of stars (use number of stars as per default usergroups)
-		$query = $db->simple_select("usertitles", "*", "", array('order_by' => 'posts', 'order_dir' => 'DESC'));
-		while($title = $db->fetch_array($query))
+		if(!is_array($usertitles))
 		{
-			if($memprofile['postnum'] >= $title['posts'])
+			$usertitles = $cache->read('usertitles');
+		}
+
+		// This is for cases where the user has a title, but the group has no defined number of stars (use number of stars as per default usergroups)
+		if(is_array($usertitles))
+		{
+			foreach($usertitles as $title)
 			{
-				$stars = $title['stars'];
-				$starimage = $title['starimage'];
-				break;
+				if($memprofile['postnum'] >= $title['posts'])
+				{
+					$stars = $title['stars'];
+					$starimage = $title['starimage'];
+					break;
+				}
 			}
 		}
 	}
