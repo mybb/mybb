@@ -200,10 +200,9 @@ $mybb->settings = &$settings;
 $mybb->parse_cookies();
 $mybb->cache = &$cache;
 
-if($mybb->settings['useshutdownfunc'] != 0)
+if($mybb->use_shutdown == true)
 {
-	$mybb->use_shutdown = true;
-	register_shutdown_function(array(&$mybb, "__destruct"));
+	register_shutdown_function('run_shutdown');
 }
 
 // Did we just upgrade to a new version and haven't run the upgrade scripts yet?

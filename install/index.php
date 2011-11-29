@@ -2160,9 +2160,6 @@ function install_done()
 		$db->create_fulltext_index('posts', 'message');
 	}
 
-	// Register a shutdown function which actually tests if this functionality is working
-	add_shutdown('test_shutdown_function');
-
 	echo $lang->done_step_cachebuilding;
 	require_once MYBB_ROOT.'inc/class_datacache.php';
 	$cache = new datacache;
@@ -2283,13 +2280,5 @@ function write_settings()
 		fwrite($file, $settings);
 		fclose($file);
 	}
-}
-
-function test_shutdown_function()
-{
-	global $db;
-	
-	$db->update_query("settings", array('value' => 1), "name='useshutdownfunc'");
-	write_settings();
 }
 ?>

@@ -59,7 +59,7 @@ else
 	echo base64_decode("R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==");
 	
 	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->settings['useshutdownfunc'] != 0 || $mybb->use_shutdown == true)
+	if($mybb->use_shutdown == true)
 	{
 		add_shutdown("run_task");
 	}

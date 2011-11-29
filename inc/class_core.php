@@ -116,7 +116,7 @@ class MyBB {
 	/**
 	 * Using built in shutdown functionality provided by register_shutdown_function for < PHP 5?
 	 */
-	public $use_shutdown = false;
+	public $use_shutdown = true;
 	
 	/**
 	 * Debug mode?

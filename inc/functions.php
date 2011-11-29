@@ -92,12 +92,6 @@ function output_page($contents)
 	echo $contents;
 
 	$plugins->run_hooks("post_output_page");
-
-	// If the use shutdown functionality is turned off, run any shutdown related items now.
-	if($mybb->settings['useshutdownfunc'] == 0 && $mybb->use_shutdown != true)
-	{
-		run_shutdown();
-	}
 }
 
 /**

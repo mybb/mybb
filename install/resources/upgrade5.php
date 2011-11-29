@@ -613,20 +613,8 @@ function upgrade5_indexes()
 		}
 	}
 
-	// Register a shutdown function which actually tests if this functionality is working
-	add_shutdown('test_shutdown_function');
-
 	$contents .= "Click next to continue with the upgrade process.</p>";
 	$output->print_contents($contents);
 	$output->print_footer("5_done");
-}
-
-
-
-function test_shutdown_function()
-{
-	global $db;
-	$db->update_query("settings", array('value' => 'yes'), "name='useshutdownfunc'");
-	write_settings();
 }
 ?>
