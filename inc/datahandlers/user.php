@@ -1254,7 +1254,7 @@ class UserDataHandler extends DataHandler
 		}
 		
 		$cache->update_moderators();
-		if(isset($user['bday']))
+		if(isset($user['bday']) || isset($user['username']))
 		{
 			$cache->update_birthdays();
 		}
