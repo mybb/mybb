@@ -33,7 +33,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 	$imgtype = $imgdesc[2];
 	$imgattr = $imgdesc[3];
 	$imgbits = $imgdesc['bits'];
-	$imgchan = $imdesc['channels'];
+	$imgchan = $imgdesc['channels'];
 	
 	if($imgwidth == 0 || $imgheight == 0)
 	{
@@ -204,13 +204,13 @@ function check_thumbnail_memory($width, $height, $type, $bitdepth, $channels)
 			switch($matches[2])
 			{
 				case "k":
-					$memory_limit = (($memory_limit+$thumbnail_memory) / 1024)."K";
+					$memory_limit = ceil((($memory_limit+$thumbnail_memory) / 1024))."K";
 					break;
 				case "m":
-					$memory_limit = (($memory_limit+$thumbnail_memory) / 1048576)."M";
+					$memory_limit = ceil((($memory_limit+$thumbnail_memory) / 1048576))."M";
 					break;
 				case "g":
-					$memory_limit = (($memory_limit+$thumbnail_memory) / 1073741824)."G";
+					$memory_limit = ceil((($memory_limit+$thumbnail_memory) / 1073741824))."G";
 			}
 		}
 		
