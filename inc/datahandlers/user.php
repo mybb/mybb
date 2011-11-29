@@ -527,6 +527,11 @@ class UserDataHandler extends DataHandler
 			}
 			else
 			{
+				if($profilefield['maxlength'] > 0 && my_strlen($profile_fields[$field]) > $profilefield['maxlength'])
+				{
+					$this->set_error('max_limit_reached', array($profilefield['name'], $profilefield['maxlength']));
+				}
+
 				$options = $db->escape_string($profile_fields[$field]);
 			}
 			$user['user_fields'][$field] = $options;
