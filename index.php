@@ -303,7 +303,7 @@ if($mybb->settings['showindexstats'] != 0)
 }
 
 // Show the board statistics table only if one or more index statistics are enabled.
-if($mybb->settings['showwol'] != 0 || $mybb->settings['showindexstats'] != 0 || ($mybb->settings['showbirthdays'] != 0 && $bdaycount > 0))
+if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) || $mybb->settings['showindexstats'] != 0 || ($mybb->settings['showbirthdays'] != 0 && $bdaycount > 0))
 {
 	if(!is_array($stats))
 	{
