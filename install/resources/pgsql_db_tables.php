@@ -416,6 +416,7 @@ $tables[] = "CREATE TABLE mybb_moderators (
   canopenclosethreads int NOT NULL default '0',
   canmanagethreads int NOT NULL default '0',
   canmovetononmodforum int NOT NULL default '0',
+  canusecustomtools int NOT NULL default '0',
   PRIMARY KEY (mid)
 );";
 
