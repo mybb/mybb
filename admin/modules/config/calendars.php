@@ -460,7 +460,7 @@ if(!$mybb->input['action'])
 	
 	if($table->num_rows()  == 0)
 	{
-		$table->construct_cell($lang->no_calendars, array('colspan' => 4));
+		$table->construct_cell($lang->no_calendars, array('colspan' => 5));
 		$table->construct_row();
 		$no_results = true;
 	}
