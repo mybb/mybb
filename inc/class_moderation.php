@@ -2131,7 +2131,7 @@ class Moderation
 		$tids = array_map('intval', $tids);
 		$tids_csv = implode(',', $tids);
 		
-		$update_thread = array('prefix' => $prefix);
+		$update_thread = array('prefix' => intval($prefix));
 		$db->update_query('threads', $update_thread, "tid IN ({$tids_csv})");
 		
 		$arguments = array('tids' => $tids, 'prefix' => $prefix);
