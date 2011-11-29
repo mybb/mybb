@@ -812,7 +812,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   canoverridepm int(1) NOT NULL default '0',
   canusesig int(1) NOT NULL default '0',
   canusesigxposts bigint(30) NOT NULL default '0',
-  signofollow int(1) NOT NULL default '0',
+  signofollow int(1) NOT NULL default '0'
 );";
 
 
