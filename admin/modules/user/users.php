@@ -611,6 +611,11 @@ if($mybb->input['action'] == "edit")
 			"aim" => $mybb->input['aim'],
 			"yahoo" => $mybb->input['yahoo'],
 			"msn" => $mybb->input['msn'],
+			"birthday" => array(
+				"day" => $mybb->input['bday1'],
+				"month" => $mybb->input['bday2'],
+				"year" => $mybb->input['bday3']
+			),
 			"style" => $mybb->input['style'],
 			"signature" => $mybb->input['signature'],
 			"dateformat" => intval($mybb->input['dateformat']),
@@ -896,6 +901,22 @@ if($mybb->input['action'] == "edit")
 		$mybb->input['profile_fields'] = $db->fetch_array($query);
 	}
 
+	if($mybb->input['bday1'] || $mybb->input['bday2'] || $mybb->input['bday3'])
+	{
+		$mybb->input['bday'][0] = $mybb->input['bday1'];
+		$mybb->input['bday'][1] = $mybb->input['bday2'];
+		$mybb->input['bday'][2] = intval($mybb->input['bday3']);
+	}
+	else
+	{
+		$mybb->input['bday'] = array();
+
+		if($user['birthday'])
+		{
+			$mybb->input['bday'] = explode('-', $user['birthday']);
+		}
+	}
+
 	// Fetch custom profile fields
 	$query = $db->simple_select("profilefields", "*", "", array('order_by' => 'disporder'));
 	while($profile_field = $db->fetch_array($query))
@@ -1045,15 +1066,10 @@ if($mybb->input['action'] == "edit")
 		$warning_level = get_colored_warning_level($warning_level);
 	}
 
-
+	$age = $lang->na;
 	if($user['birthday'])
 	{
 		$age = get_age($user['birthday']);
-	}
-
-	else
-	{
-		$age = '';
 	}
 
 	$table->construct_cell("<div style=\"width: 126px; height: 126px;\" class=\"user_avatar\"><img src=\"".htmlspecialchars_uni($user['avatar'])."\" style=\"margin-top: {$avatar_top}px\" width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\" alt=\"\" /></div>", array('rowspan' => 6, 'width' => 1));
@@ -1120,7 +1136,35 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->aim_handle, "", $form->generate_text_box('aim', $mybb->input['aim'], array('id' => 'aim')), 'aim');
 	$form_container->output_row($lang->yahoo_messanger_handle, "", $form->generate_text_box('yahoo', $mybb->input['yahoo'], array('id' => 'yahoo')), 'yahoo');
 	$form_container->output_row($lang->msn_messanger_handle, "", $form->generate_text_box('msn', $mybb->input['msn'], array('id' => 'msn')), 'msn');
+
 	// Birthday
+	$birthday_days = array(0 => '');
+	for($i = 1; $i <= 31; $i++)
+	{
+		$birthday_days[$i] = $i;
+	}
+
+	$birthday_months = array(
+		0 => '',
+		1 => $lang->january,
+		2 => $lang->february,
+		3 => $lang->march,
+		4 => $lang->april,
+		5 => $lang->may,
+		6 => $lang->june,
+		7 => $lang->july,
+		8 => $lang->august,
+		9 => $lang->september,
+		10 => $lang->october,
+		11 => $lang->november,
+		12 => $lang->december
+	);
+
+	$birthday_row = $form->generate_select_box('bday1', $birthday_days, $mybb->input['bday'][0], array('id' => 'bday_day'));
+	$birthday_row .= ' '.$form->generate_select_box('bday2', $birthday_months, $mybb->input['bday'][1], array('id' => 'bday_month'));
+	$birthday_row .= ' '.$form->generate_text_box('bday3', $mybb->input['bday'][2], array('id' => 'bday_year', 'style' => 'width: 3em;'));
+
+	$form_container->output_row($lang->birthday, "", $birthday_row, 'birthday');
 
 	// Output custom profile fields - optional
 	output_custom_profile_fields($profile_fields['optional'], $mybb->input['profile_fields'], $form_container, $form);

@@ -157,6 +157,7 @@ $l['icq_number'] = "ICQ Number";
 $l['aim_handle'] = "AIM Handle";
 $l['yahoo_messanger_handle'] = "Yahoo! Messenger Handle";
 $l['msn_messanger_handle'] = "MSN Messenger Handle";
+$l['birthday'] = "Date of Birth";
 
 $l['hide_from_whos_online'] = "Hide from the Who's Online list";
 $l['login_cookies_privacy'] = "Login, Cookies &amp; Privacy";
