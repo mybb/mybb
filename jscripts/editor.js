@@ -672,6 +672,7 @@ messageEditor.prototype = {
 		this.openDropDownMenu.style.display = 'none';
 		this.getElementToolbarItem(this.openDropDownMenu).removeClassName('editor_dropdown_menu_open');
 		var dropDown = this.getElementToolbarItem(this.openDropDownMenu);
+		this.removeElementState(this.openDropDownMenu.parentNode, 'clicked');
 		this.removeElementState(element, 'clicked');
 		this.openDropDownMenu = null;
 		Event.stopObserving(document, 'click', this.hideOpenDropDownMenu.bindAsEventListener(this));
