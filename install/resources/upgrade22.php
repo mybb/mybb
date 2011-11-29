@@ -45,7 +45,7 @@ function upgrade22_dbchanges()
 			break;
 	}
 
-	// Update existing moderators with the new permission
+	// Update existing moderators with the new permissions
 	$db->update_query('moderators', array('canusecustomtools' => 1));
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
