@@ -1256,9 +1256,17 @@ if($mybb->input['action'] == "subscriptions")
 	if(is_array($del_subscriptions))
 	{
 		$tids = implode(',', $del_subscriptions);
+
 		if($tids)
 		{
 			$db->delete_query("threadsubscriptions", "tid IN ({$tids}) AND uid='{$mybb->user['uid']}'");
+		}
+
+		$threadcount = $threadcount - count($del_subscriptions);
+
+		if($threadcount < 0)
+		{
+			$threadcount = 0;
 		}
 	}
 
@@ -1495,14 +1503,10 @@ if($mybb->input['action'] == "subscriptions")
 	eval("\$subscriptions = \"".$templates->get("usercp_subscriptions")."\";");
 	output_page($subscriptions);
 }
+
 if($mybb->input['action'] == "forumsubscriptions")
 {
 	$plugins->run_hooks("usercp_forumsubscriptions_start");
-	$query = $db->simple_select("forumpermissions", "*", "gid='".$db->escape_string($mybb->user['usergroup'])."'");
-	while($permissions = $db->fetch_array($query))
-	{
-		$permissioncache[$permissions['gid']][$permissions['fid']] = $permissions;
-	}
 	
 	if($mybb->user['uid'] == 0)
 	{
@@ -1538,10 +1542,10 @@ if($mybb->input['action'] == "forumsubscriptions")
 		}
 		$readforums[$forum['fid']] = $forum['lastread'];
 	}
-	
-	require_once MYBB_ROOT."inc/functions_forumlist.php";
-	
+
 	$fpermissions = forum_permissions();
+	require_once MYBB_ROOT."inc/functions_forumlist.php";
+
 	$query = $db->query("
 		SELECT fs.*, f.*, t.subject AS lastpostsubject, fr.dateline AS lastread
 		FROM ".TABLE_PREFIX."forumsubscriptions fs
@@ -1551,48 +1555,59 @@ if($mybb->input['action'] == "forumsubscriptions")
 		WHERE f.type='f' AND fs.uid='".$mybb->user['uid']."'
 		ORDER BY f.name ASC
 	");
+
 	$forums = '';
 	while($forum = $db->fetch_array($query))
 	{
 		$forum_url = get_forum_link($forum['fid']);
 		$forumpermissions = $fpermissions[$forum['fid']];
-		if($forumpermissions['canview'] != 0)
+
+		if($forumpermissions['canview'] == 0)
 		{
-			$lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']), array('lastpost' => $forum['lastpost']));
-			$folder = $lightbulb['folder'];
-			if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
-			{
-				$lastpost = "<div align=\"center\">$lang->never</div>";
-			}
-			else
-			{
-				$lastpost_date = my_date($mybb->settings['dateformat'], $forum['lastpost']);
-				$lastpost_time = my_date($mybb->settings['timeformat'], $forum['lastpost']);
-				$lastposttid = $forum['lastposttid'];
-				$lastposter = $forum['lastposter'];
-				$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
-				$lastpost_subject = $forum['lastpostsubject'];
-				if(my_strlen($lastpost_subject) > 25)
-				{
-					$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
-				}
-				$lastpost_link = get_thread_link($forum['lastposttid'], 0, "lastpost");
-				eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
-			}
+			continue;
 		}
+
+		$lightbulb = get_forum_lightbulb(array('open' => $forum['open'], 'lastread' => $forum['lastread']), array('lastpost' => $forum['lastpost']));
+		$folder = $lightbulb['folder'];
+
+		if($forum['lastpost'] == 0 || $forum['lastposter'] == "")
+		{
+			$lastpost = "<div align=\"center\">$lang->never</div>";
+		}
+		else
+		{
+			$lastpost_date = my_date($mybb->settings['dateformat'], $forum['lastpost']);
+			$lastpost_time = my_date($mybb->settings['timeformat'], $forum['lastpost']);
+			$lastposttid = $forum['lastposttid'];
+			$lastposter = $forum['lastposter'];
+			$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
+			$lastpost_subject = $forum['lastpostsubject'];
+			if(my_strlen($lastpost_subject) > 25)
+			{
+				$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
+			}
+			$lastpost_link = get_thread_link($forum['lastposttid'], 0, "lastpost");
+			eval("\$lastpost = \"".$templates->get("forumbit_depth2_forum_lastpost")."\";");
+		}
+
 		$posts = my_number_format($forum['posts']);
 		$threads = my_number_format($forum['threads']);
+
 		if($mybb->settings['showdescriptions'] == 0)
 		{
 			$forum['description'] = "";
 		}
+
 		eval("\$forums .= \"".$templates->get("usercp_forumsubscriptions_forum")."\";");
 	}
+
 	if(!$forums)
 	{
 		eval("\$forums = \"".$templates->get("usercp_forumsubscriptions_none")."\";");
 	}
+
 	$plugins->run_hooks("usercp_forumsubscriptions_end");
+
 	eval("\$forumsubscriptions = \"".$templates->get("usercp_forumsubscriptions")."\";");
 	output_page($forumsubscriptions);
 }
