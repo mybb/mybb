@@ -145,6 +145,7 @@ class PostDataHandler extends DataHandler
 		global $db;
 		$post = &$this->data;
 		$subject = &$post['subject'];
+		$subject = trim_blank_chrs($subject);
 
 		// Are we editing an existing thread or post?
 		if($this->method == "update" && $post['pid'])
@@ -173,7 +174,7 @@ class PostDataHandler extends DataHandler
 			}
 
 			// If this is the first post there needs to be a subject, else make it the default one.
-			if(my_strlen(trim_blank_chrs($subject)) == 0 && $first_post)
+			if(my_strlen($subject) == 0 && $first_post)
 			{
 				$this->set_error("firstpost_no_subject");
 				return false;
@@ -188,7 +189,7 @@ class PostDataHandler extends DataHandler
 		// This is a new post
 		else if($this->action == "post")
 		{
-			if(my_strlen(trim_blank_chrs($subject)) == 0)
+			if(my_strlen($subject) == 0)
 			{
 				$thread = get_thread($post['tid']);
 				$subject = "RE: ".$thread['subject'];
@@ -198,11 +199,18 @@ class PostDataHandler extends DataHandler
 		// This is a new thread and we require that a subject is present.
 		else
 		{
-			if(my_strlen(trim_blank_chrs($subject)) == 0)
+			if(my_strlen($subject) == 0)
 			{
 				$this->set_error("missing_subject");
 				return false;
 			}
+		}
+
+		if(my_strlen($subject) > 85)
+		{
+			// Subject is too long
+			$this->set_error('subject_too_long', my_strlen($subject));
+			return false;
 		}
 
 		// Subject is valid - return true.
