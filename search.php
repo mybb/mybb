@@ -816,7 +816,23 @@ if($mybb->input['action'] == "results")
 			$donenew = 0;
 			$last_read = 0;
 			$post['thread_lastread'] = $readthreads[$post['tid']];
-			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forumread)
+
+			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'])
+			{
+				$forum_read = $readforums[$post['fid']];
+			
+				$read_cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
+				if($forum_read == 0 || $forum_read < $read_cutoff)
+				{
+					$forum_read = $read_cutoff;
+				}
+			}
+			else
+			{
+				$forum_read = $forumsread[$post['fid']];
+			}
+
+			if($mybb->settings['threadreadcut'] > 0 && $mybb->user['uid'] && $post['thread_lastpost'] > $forum_read)
 			{
 				$cutoff = TIME_NOW-$mybb->settings['threadreadcut']*60*60*24;
 				if($post['thread_lastpost'] > $cutoff)
@@ -841,13 +857,13 @@ if($mybb->input['action'] == "results")
 			if(!$last_read)
 			{
 				$readcookie = $threadread = my_get_array_cookie("threadread", $post['tid']);
-				if($readcookie > $forumread)
+				if($readcookie > $forum_read)
 				{
 					$last_read = $readcookie;
 				}
-				elseif($forumread > $mybb->user['lastvisit'])
+				elseif($forum_read > $mybb->user['lastvisit'])
 				{
-					$last_read = $forumread;
+					$last_read = $forum_read;
 				}
 				else
 				{
