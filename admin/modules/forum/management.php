@@ -312,7 +312,8 @@ if($mybb->input['action'] == "editmod")
 				'canviewips' => intval($mybb->input['canviewips']),
 				'canopenclosethreads' => intval($mybb->input['canopenclosethreads']),
 				'canmanagethreads' => intval($mybb->input['canmanagethreads']),
-				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum'])
+				'canmovetononmodforum' => intval($mybb->input['canmovetononmodforum']),
+				'canusecustomtools' => intval($mybb->input['canusecustomtools'])
 			);
 			$db->update_query("moderators", $update_array, "mid='".intval($mybb->input['mid'])."'");
 			
@@ -370,7 +371,8 @@ if($mybb->input['action'] == "editmod")
 		$form->generate_check_box('canviewips', 1, $lang->can_view_ips, array('checked' => $mod_data['canviewips'], 'id' => 'canviewips')),
 		$form->generate_check_box('canopenclosethreads', 1, $lang->can_open_close_threads, array('checked' => $mod_data['canopenclosethreads'], 'id' => 'canopenclosethreads')),
 		$form->generate_check_box('canmanagethreads', 1, $lang->can_manage_threads, array('checked' => $mod_data['canmanagethreads'], 'id' => 'canmanagethreads')),
-		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum'))
+		$form->generate_check_box('canmovetononmodforum', 1, $lang->can_move_to_other_forums, array('checked' => $mod_data['canmovetononmodforum'], 'id' => 'canmovetononmodforum')),
+		$form->generate_check_box('canusecustomtools', 1, $lang->can_use_custom_tools, array('checked' => $mod_data['canusecustomtools'], 'id' => 'canusecustomtools'))
 	);
 	
 	$form_container->output_row($lang->moderator_permissions, "", "<div class=\"forum_settings_bit\">".implode("</div><div class=\"forum_settings_bit\">", $moderator_permissions)."</div>");
@@ -2130,7 +2132,8 @@ if(!$mybb->input['action'])
 						"canviewips" => 1,
 						"canopenclosethreads" => 1,
 						"canmanagethreads" => 1,
-						"canmovetononmodforum" => 1
+						"canmovetononmodforum" => 1,
+						"canusecustomtools" => 1
 					);
 
 					$mid = $db->insert_query("moderators", $new_mod);

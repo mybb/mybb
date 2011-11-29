@@ -1193,27 +1193,31 @@ if(is_array($threadcache))
 	$customthreadtools = '';
 	if($ismod)
 	{
-		if($forum_stats[-1]['modtools'] || $forum_stats[$fid]['modtools'])
+		if(is_moderator($fid, "canusecustomtools"))
 		{
-			switch($db->type)
+			if($forum_stats[-1]['modtools'] || $forum_stats[$fid]['modtools'])
 			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-					break;
-				default:
-					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-			}
+				switch($db->type)
+				{
+					case "pgsql":
+					case "sqlite":
+						$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+						break;
+					default:
+						$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
+				}
 
-			while($tool = $db->fetch_array($query))
+				while($tool = $db->fetch_array($query))
+				{
+					eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
+				}
+			}
+			else
 			{
-				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
+				eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
 			}
 		}
-		else
-		{
-			eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
-		}
+
 		eval("\$inlinemod = \"".$templates->get("forumdisplay_inlinemoderation")."\";");
 	}
 }

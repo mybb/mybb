@@ -1105,10 +1105,10 @@ if($mybb->input['action'] == "thread")
 	// If the user is a moderator, show the moderation tools.
 	if($ismod)
 	{
-		if($forum_stats[-1]['modtools'] || $forum_stats[$forum['fid']]['modtools'])
+		$customthreadtools = $customposttools = '';
+
+		if(is_moderator($forum['fid'], "canusecustomtools") && ($forum_stats[-1]['modtools'] || $forum_stats[$forum['fid']]['modtools']))
 		{
-			$customthreadtools = $customposttools = '';
-	
 			switch($db->type)
 			{
 				case "pgsql":
@@ -1118,7 +1118,7 @@ if($mybb->input['action'] == "thread")
 				default:
 					$query = $db->simple_select("modtools", "tid, name, type", "CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums=''");
 			}
-		
+	
 			while($tool = $db->fetch_array($query))
 			{
 				if($tool['type'] == 'p')
@@ -1145,8 +1145,10 @@ if($mybb->input['action'] == "thread")
 		{
 			eval("\$customthreadtools = \"".$templates->get("showthread_moderationoptions_custom")."\";");
 		}
+
 		eval("\$moderationoptions = \"".$templates->get("showthread_moderationoptions")."\";");
 	}
+
 	$lang->newthread_in = $lang->sprintf($lang->newthread_in, $forum['name']);
 	
 	// Subscription status
