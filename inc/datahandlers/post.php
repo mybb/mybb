@@ -785,7 +785,7 @@ class PostDataHandler extends DataHandler
 			{
 				$this->pid = $double_post['pid'];
 				
-				$post['message'] = $double_post['message'] .= $mybb->settings['postmergesep']."\n".$post['message'];
+				$post['message'] = $double_post['message'] .= "\n".$mybb->settings['postmergesep']."\n".$post['message'];
 				$update_query = array(
 					"message" => $db->escape_string($double_post['message'])
 				);
