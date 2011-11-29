@@ -568,7 +568,7 @@ div.error p em {
 	background: url('images/error.gif') no-repeat 0;
 }
 
-div.error.ul {
+div.error ul {
 	margin-left: 24px;
 }
 
