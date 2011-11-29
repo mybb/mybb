@@ -1243,7 +1243,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
-		redirect("private.php", $lang->redirect_pmstrackingstopped);
+		redirect("private.php?action=tracking", $lang->redirect_pmstrackingstopped);
 	}
 	elseif($mybb->input['stoptrackingunread'])
 	{
@@ -1258,7 +1258,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
-		redirect("private.php", $lang->redirect_pmstrackingstopped);
+		redirect("private.php?action=tracking", $lang->redirect_pmstrackingstopped);
 	}
 	elseif($mybb->input['cancel'])
 	{
@@ -1284,7 +1284,7 @@ if($mybb->input['action'] == "do_tracking" && $mybb->request_method == "post")
 			}
 		}
 		$plugins->run_hooks("private_do_tracking_end");
-		redirect("private.php", $lang->redirect_pmstrackingcanceled);
+		redirect("private.php?action=tracking", $lang->redirect_pmstrackingcanceled);
 	}
 }
 
