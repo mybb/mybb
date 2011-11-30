@@ -1307,7 +1307,7 @@ if($mybb->input['action'] == "profile")
 	$lang->users_forum_info = $lang->sprintf($lang->users_forum_info, $memprofile['username']);
 	$lang->users_contact_details = $lang->sprintf($lang->users_contact_details, $memprofile['username']);
 
-	if($mybb->settings['enablepms'] != 0 && $memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	if($mybb->settings['enablepms'] != 0 && (($memprofile['receivepms'] != 0 && $memperms['canusepms'] != 0 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false) || $mybb->usergroup['canoverridepm'] == 1))
 	{
 		$lang->send_pm = $lang->sprintf($lang->send_pm, $memprofile['username']);
 	}
@@ -1335,7 +1335,7 @@ if($mybb->input['action'] == "profile")
 		$avatar = '';
 	}
 
-	if($memprofile['hideemail'] != 1)
+	if($memprofile['hideemail'] != 1 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
@@ -1976,7 +1976,7 @@ if($mybb->input['action'] == "emailuser")
 		}
 	}	
 	
-	$query = $db->simple_select("users", "uid, username, email, hideemail", "uid='".intval($mybb->input['uid'])."'");
+	$query = $db->simple_select("users", "uid, username, email, hideemail, ignorelist", "uid='".intval($mybb->input['uid'])."'");
 	$to_user = $db->fetch_array($query);
 	
 	$lang->email_user = $lang->sprintf($lang->email_user, $to_user['username']);
@@ -1989,6 +1989,11 @@ if($mybb->input['action'] == "emailuser")
 	if($to_user['hideemail'] != 0)
 	{
 		error($lang->error_hideemail);
+	}
+
+	if($to_user['ignorelist'] && my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false)
+	{
+		error_no_permission();
 	}
 	
 	if(count($errors) > 0)
