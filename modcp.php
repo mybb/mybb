@@ -2888,6 +2888,9 @@ if($mybb->input['action'] == "liftban")
 	
 	$plugins->run_hooks("modcp_liftban_start");
 
+	$query = $db->simple_select("users", "username", "uid = '{$ban['uid']}'");
+	$username = $db->fetch_field($query, "username");
+
 	$updated_group = array(
 		'usergroup' => $ban['oldgroup'],
 		'additionalgroups' => $ban['oldadditionalgroups'],
@@ -2936,7 +2939,7 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 	else
 	{
 		// Get the users info from their Username
-		$query = $db->simple_select("users", "uid, usergroup, additionalgroups, displaygroup", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
+		$query = $db->simple_select("users", "uid, username, usergroup, additionalgroups, displaygroup", "username = '".$db->escape_string($mybb->input['username'])."'", array('limit' => 1));
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
