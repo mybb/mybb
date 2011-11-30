@@ -80,9 +80,6 @@ $logged_out = false;
 $fail_check = 0;
 $post_verify = true;
 
-// Set our POST validation code here
-$mybb->post_code = generate_post_check();
-
 if($mybb->input['action'] == "logout")
 {
 	if(verify_post_check($mybb->input['my_post_key']))
@@ -488,6 +485,9 @@ if($run_module != "home")
 {
 	check_admin_permissions(array('module' => $page->active_module, 'action' => $page->active_action));
 }
+
+// Set our POST validation code here
+$mybb->post_code = generate_post_check();
 
 // Only POST actions with a valid post code can modify information. Here we check if the incoming request is a POST and if that key is valid.
 $post_check_ignores = array(
