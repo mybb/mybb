@@ -1335,7 +1335,7 @@ if($mybb->input['action'] == "profile")
 		$avatar = '';
 	}
 
-	if($memprofile['hideemail'] != 1 && my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false)
+	if($memprofile['hideemail'] != 1 && (my_strpos(",".$memprofile['ignorelist'].",", ",".$mybb->user['uid'].",") === false || $mybb->usergroup['cansendemailoverride'] != 0))
 	{
 		eval("\$sendemail = \"".$templates->get("member_profile_email")."\";");
 	}
@@ -1991,7 +1991,7 @@ if($mybb->input['action'] == "emailuser")
 		error($lang->error_hideemail);
 	}
 
-	if($to_user['ignorelist'] && my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false)
+	if($to_user['ignorelist'] && (my_strpos(",".$to_user['ignorelist'].",", ",".$mybb->user['uid'].",") !== false && $mybb->usergroup['cansendemailoverride'] != 1))
 	{
 		error_no_permission();
 	}

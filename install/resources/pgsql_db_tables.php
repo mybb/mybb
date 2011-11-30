@@ -856,6 +856,7 @@ $tables[] = "CREATE TABLE mybb_usergroups (
   pmquota int NOT NULL default '0',
   maxpmrecipients int NOT NULL default '5',
   cansendemail int NOT NULL default '0',
+  cansendemailoverride int NOT NULL default '0',
   maxemails int NOT NULL default '5',
   canviewmemberlist int NOT NULL default '0',
   canviewcalendar int NOT NULL default '0',

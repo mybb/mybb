@@ -34,14 +34,22 @@ function upgrade22_dbchanges()
 		$db->drop_column('moderators', 'canusecustomtools');
 	}
 
+	if($db->field_exists('cansendemailoverride', 'usergroups'))
+	{
+		$db->drop_column('usergroups', 'cansendemailoverride');
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
 		case "sqlite":
+			
 			$db->add_column("moderators", "canusecustomtools", "int NOT NULL default '0'");
+			$db->add_column("usergroups", "cansendemailoverride", "int NOT NULL default '0' AFTER cansendemail");
 			break;
 		default:
 			$db->add_column("moderators", "canusecustomtools", "int(1) NOT NULL default '0'");
+			$db->add_column("usergroups", "cansendemailoverride", "int(1) NOT NULL default '0' AFTER cansendemail");
 			break;
 	}
 

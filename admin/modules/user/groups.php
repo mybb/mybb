@@ -34,6 +34,7 @@ $usergroup_permissions = array(
 	"pmquota" => 100,
 	"maxpmrecipients" => 5,
 	"cansendemail" => 1,
+	"cansendemailoverride" => 0,
 	"maxemails" => 4,
 	"canviewmemberlist" => 1,
 	"canviewcalendar" => 1,
@@ -801,6 +802,7 @@ if($mybb->input['action'] == "edit")
 				"pmquota" => intval($mybb->input['pmquota']),
 				"maxpmrecipients" => intval($mybb->input['maxpmrecipients']),
 				"cansendemail" => intval($mybb->input['cansendemail']),
+				"cansendemailoverride" => intval($mybb->input['cansendemailoverride']),
 				"maxemails" => intval($mybb->input['maxemails']),		
 				"canviewmemberlist" => intval($mybb->input['canviewmemberlist']),
 				"canviewcalendar" => intval($mybb->input['canviewcalendar']),
@@ -1065,6 +1067,7 @@ if($mybb->input['action'] == "edit")
 		$form->generate_check_box("canviewmemberlist", 1, $lang->can_view_member_list, array("checked" => $mybb->input['canviewmemberlist'])),
 		$form->generate_check_box("showinbirthdaylist", 1, $lang->show_in_birthday_list, array("checked" => $mybb->input['showinbirthdaylist'])),
 		$form->generate_check_box("cansendemail", 1, $lang->can_email_users, array("checked" => $mybb->input['cansendemail'])),
+		$form->generate_check_box("cansendemailoverride", 1, $lang->can_email_users_override, array("checked" => $mybb->input['cansendemailoverride'])),
 		"{$lang->max_emails_per_day}<br /><small class=\"input\">{$lang->max_emails_per_day_desc}</small><br />".$form->generate_text_box('maxemails', $mybb->input['maxemails'], array('id' => 'maxemails', 'class' => 'field50'))
 	);
 	$form_container->output_row($lang->misc, "", "<div class=\"group_settings_bit\">".implode("</div><div class=\"group_settings_bit\">", $misc_options)."</div>");

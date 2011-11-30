@@ -154,6 +154,7 @@ $l['can_view_ips'] = "Can view IP addresses on who's online?";
 $l['can_view_member_list'] = "Can view member list?";
 $l['show_in_birthday_list'] = "Can be shown in the birthday list?";
 $l['can_email_users'] = "Can send threads to friends and email users?";
+$l['can_email_users_override'] = "Can email users even if they appear on their ignore list?";
 $l['max_emails_per_day'] = "Maximum Emails Per Day:";
 $l['max_emails_per_day_desc'] = "The maximum number of emails users can send using the 'Email User' and 'Send Thread to Friend' features.";
 $l['outstanding_join_request'] = "outstanding join requests";
