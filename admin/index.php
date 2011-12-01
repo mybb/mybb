@@ -80,20 +80,7 @@ $logged_out = false;
 $fail_check = 0;
 $post_verify = true;
 
-if($mybb->input['action'] == "logout")
-{
-	if(verify_post_check($mybb->input['my_post_key']))
-	{
-		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
-		my_setcookie("adminsid", "");
-		$logged_out = true;
-	}
-	else
-	{
-		admin_redirect('index.php');
-	}
-}
-elseif($mybb->input['action'] == "unlock")
+if($mybb->input['action'] == "unlock")
 {
 	$user = array();
 	if($mybb->input['username'])
@@ -322,6 +309,17 @@ else
 			}
 		}
 	}
+}
+
+if($mybb->input['action'] == "logout" && $mybb->user)
+{
+	if(verify_post_check($mybb->input['my_post_key']))
+	{
+		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
+		my_setcookie("adminsid", "");
+	}
+
+	admin_redirect('index.php');
 }
 
 if(!$mybb->user['usergroup'])
