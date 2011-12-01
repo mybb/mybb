@@ -39,6 +39,9 @@ if($mybb->input['action'] == "today")
 	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}'");
 	$todaycount = $db->fetch_field($query, "users");
 
+	$query = $db->simple_select("users", "COUNT(uid) AS users", "lastactive > '{$threshold}' AND invisible = '1'");
+	$invis_count = $db->fetch_field($query, "users");
+
 	// Add pagination
 	$perpage = $mybb->settings['threadsperpage'];
 
@@ -62,13 +65,11 @@ if($mybb->input['action'] == "today")
 	$query = $db->simple_select("users", "*", "lastactive > '{$threshold}'", array("order_by" => "lastactive", "order_dir" => "desc", "limit" => $perpage, "limit_start" => $start));
 
 	$todayrows = '';
-	$invis_count = 0;
 	while($online = $db->fetch_array($query))
 	{
 		$invisiblemark = '';
 		if($online['invisible'] == 1)
 		{
-			++$invis_count;
 			$invisiblemark = "*";
 		}
 
