@@ -370,6 +370,7 @@ EOF;
 		if($_SERVER['QUERY_STRING'])
 		{
 			$query_string = '?'.preg_replace('#adminsid=(.{32})#i', '', $_SERVER['QUERY_STRING']);
+			$query_string = preg_replace('#my_post_key=(.{32})#i', '', $query_string);
 			$query_string = str_replace('action=logout', '', $query_string);
 			$query_string = preg_replace('#&+#', '&', $query_string);
 			$query_string = str_replace('?&', '?', $query_string);

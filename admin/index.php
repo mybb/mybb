@@ -317,9 +317,8 @@ if($mybb->input['action'] == "logout" && $mybb->user)
 	{
 		$db->delete_query("adminsessions", "sid='".$db->escape_string($mybb->cookies['adminsid'])."'");
 		my_setcookie("adminsid", "");
+		$logged_out = true;
 	}
-
-	admin_redirect('index.php');
 }
 
 if(!$mybb->user['usergroup'])
