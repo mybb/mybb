@@ -5427,7 +5427,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 		
 		// Make regular expression * match
 		$banned_ip['filter'] = str_replace('\*', '(.*)', preg_quote($banned_ip['filter'], '#'));
-		if(preg_match("#{$banned_ip['filter']}#i", $ip_address))
+		if(preg_match("#^{$banned_ip['filter']}$#i", $ip_address))
 		{
 			// Updating last use
 			if($update_lastuse == true)
@@ -5437,6 +5437,7 @@ function is_banned_ip($ip_address, $update_lastuse=false)
 			return true;
 		}
 	}
+
 	// Still here - good ip
 	return false;
 }
