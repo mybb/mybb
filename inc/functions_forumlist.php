@@ -19,6 +19,7 @@
 function build_forumbits($pid=0, $depth=1)
 {
 	global $fcache, $moderatorcache, $forumpermissions, $theme, $mybb, $templates, $bgcolor, $collapsed, $lang, $showdepth, $plugins, $parser, $forum_viewers;
+	static $private_forums;
 	
 	$forum_listing = '';
 
@@ -65,7 +66,55 @@ function build_forumbits($pid=0, $depth=1)
 			if($permissions['canonlyviewownthreads'] == 1)
 			{
 				$hideinfo = true;
-				$hidelastpostinfo = true;
+
+				// If we only see our own threads, find out if there's a new post in one of them so the lightbulb shows
+				if(!is_array($private_forums))
+				{
+					$private_forums = $fids = array();
+					foreach($fcache[$pid] as $parent_p)
+					{
+						foreach($parent_p as $forum_p)
+						{
+							if($forumpermissions[$forum_p['fid']]['canonlyviewownthreads'])
+							{
+								$fids[] = $forum_p['fid'];
+							}
+						}
+					}
+
+					if(!empty($fids))
+					{
+						$fids = implode(',', $fids);
+						$query = $db->simple_select("threads", "tid, fid, lastpost", "uid = '{$mybb->user['uid']}' AND fid IN ({$fids})", array("order_by" => "lastpost", "order_dir" => "desc"));
+
+						while($thread = $db->fetch_array($query))
+						{
+							if(!$private_forums[$thread['fid']])
+							{
+								$private_forums[$thread['fid']] = $thread;
+							}
+						}
+					}
+				}
+
+				if($private_forums[$forum['fid']]['lastpost'])
+				{
+					$forum['lastpost'] = $private_forums[$forum['fid']]['lastpost'];
+					
+					$lastpost_data = array(
+						"lastpost" => $private_forums[$forum['fid']]['lastpost']
+					);
+				}
+			}
+			else
+			{
+				$lastpost_data = array(
+					"lastpost" => $forum['lastpost'],
+					"lastpostsubject" => $forum['lastpostsubject'],
+					"lastposter" => $forum['lastposter'],
+					"lastposttid" => $forum['lastposttid'],
+					"lastposteruid" => $forum['lastposteruid']
+				);
 			}
 
 			if($forum['password'] != '' && $mybb->cookies['forumpass'][$forum['fid']] != md5($mybb->user['uid'].$forum['password']))
@@ -73,15 +122,7 @@ function build_forumbits($pid=0, $depth=1)
 			    $hideinfo = true;
 			    $showlockicon = 1;
 			}
-			
-			$lastpost_data = array(
-				"lastpost" => $forum['lastpost'],
-				"lastpostsubject" => $forum['lastpostsubject'],
-				"lastposter" => $forum['lastposter'],
-				"lastposttid" => $forum['lastposttid'],
-				"lastposteruid" => $forum['lastposteruid']
-			);
-			
+
 			// Fetch subforums of this forum
 			if(isset($fcache[$forum['fid']]))
 			{
@@ -116,7 +157,7 @@ function build_forumbits($pid=0, $depth=1)
 			}
 
 			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
-			if($hideinfo == true || $hidelastpostinfo == true)
+			if($hidelastpostinfo == true)
 			{
 				unset($lastpost_data);
 			}
