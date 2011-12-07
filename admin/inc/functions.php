@@ -153,7 +153,7 @@ function draw_admin_pagination($page, $per_page, $total_items, $url)
 	if($from > 2)
 	{
 		$first = fetch_page_url($url, 1);
-		$pagination .= "<a href=\"{$first}\" title=\"Page 1\" class=\"pagination_first\">1</a> ... ";
+		$pagination .= "<a href=\"{$first}\" title=\"{$lang->page} 1\" class=\"pagination_first\">1</a> ... ";
 	}
 
 	for($i = $from; $i <= $to; ++$i)
