@@ -5376,27 +5376,32 @@ function is_banned_email($email, $update_lastuse=false)
 
 	$banned_cache = $cache->read("bannedemails");
 	
-	if(!$banned_cache)
+	if($banned_cache === false)
 	{
+		// Failed to read cache, see if we can rebuild it
 		$cache->update_bannedemails();
 		$banned_cache = $cache->read("bannedemails");
 	}
 
-	foreach($banned_cache as $banned_email)
+	if(is_array($banned_cache) && !empty($banned_cache))
 	{
-		// Make regular expression * match
-		$banned_email['filter'] = str_replace('\*', '(.*)', preg_quote($banned_email['filter'], '#'));
-
-		if(preg_match("#{$banned_email['filter']}#i", $email))
+		foreach($banned_cache as $banned_email)
 		{
-			// Updating last use
-			if($update_lastuse == true)
+			// Make regular expression * match
+			$banned_email['filter'] = str_replace('\*', '(.*)', preg_quote($banned_email['filter'], '#'));
+
+			if(preg_match("#{$banned_email['filter']}#i", $email))
 			{
-				$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_email['fid']}'");
+				// Updating last use
+				if($update_lastuse == true)
+				{
+					$db->update_query("banfilters", array("lastuse" => TIME_NOW), "fid='{$banned_email['fid']}'");
+				}
+				return true;
 			}
-			return true;
 		}
 	}
+
 	// Still here - good email
 	return false;
 }
