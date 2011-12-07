@@ -299,6 +299,11 @@ else
 		eval("\$users .= \"".$templates->get("managegroup_user")."\";");
 	}
 
+	if(!$users)
+	{
+		eval("\$users = \"".$templates->get("managegroup_no_users")."\";");
+	}
+
 	$add_user = '';
 	$remove_users = '';
 	if($groupleader['canmanagemembers'] == 1)

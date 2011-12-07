@@ -33,6 +33,7 @@ $l['decline'] = "Decline";
 $l['action_requests'] = "Perform Actions";
 $l['join_requests_moderated'] = "The join requests have been moderated.<br />You will now be taken to the request listing.";
 $l['no_requests'] = "There are currently no pending join requests for this group.";
+$l['no_users'] = "There are no users in this group.";
 $l['user_added'] = "The user has been added to the user group.";
 $l['users_removed'] = "The selected users have been removed from the user group.";
 $l['group_no_members'] = "There are currently no members in this group.<br />To return to the group management page, click <a href=\"usercp.php?action=usergroups\">here</a>.";

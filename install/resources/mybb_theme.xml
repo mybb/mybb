@@ -3533,6 +3533,9 @@ body {
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
+		<template name="managegroup_no_users" version="1606"><![CDATA[<tr>
+<td class="trow1" colspan="6">{$lang->no_users}</td>
+</tr>]]></template>
 		<template name="managegroup_user" version="1400"><![CDATA[<tr>
 <td class="{$altbg}">{$user['profilelink']} {$leader}</td>
 <td class="{$altbg}" align="center" width="100">{$email}</td>
