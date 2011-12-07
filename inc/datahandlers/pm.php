@@ -141,7 +141,7 @@ class PMDataHandler extends DataHandler
 	 */
 	function verify_recipient()
 	{
-		global $db, $mybb, $lang;
+		global $cache, $db, $mybb, $lang;
 
 		$pm = &$this->data;
 
@@ -304,7 +304,17 @@ class PMDataHandler extends DataHandler
 				}
 				$emailmessage = $lang->sprintf($emailmessage, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
-				my_mail($user['email'], $emailsubject, $emailmessage);
+
+				$new_email = array(
+					"mailto" => $db->escape_string($user['email']),
+					"mailfrom" => '',
+					"subject" => $db->escape_string($emailsubject),
+					"message" => $db->escape_string($emailmessage),
+					"headers" => ''
+				);
+
+				$db->insert_query("mailqueue", $new_email);
+				$cache->update_mailqueue();
 	
 				if($this->admin_override != true)
 				{
@@ -456,7 +466,7 @@ class PMDataHandler extends DataHandler
 	 */
 	function insert_pm()
 	{
-		global $db, $mybb, $plugins, $lang;
+		global $cache, $db, $mybb, $plugins, $lang;
 
 		// Yes, validating is required.
 		if(!$this->get_validated())
@@ -597,7 +607,17 @@ class PMDataHandler extends DataHandler
 				
 				$emailmessage = $lang->sprintf($emailmessage, $recipient['username'], $pm['sender']['username'], $mybb->settings['bbname'], $mybb->settings['bburl']);
 				$emailsubject = $lang->sprintf($emailsubject, $mybb->settings['bbname']);
-				my_mail($recipient['email'], $emailsubject, $emailmessage);
+				
+				$new_email = array(
+					"mailto" => $db->escape_string($recipient['email']),
+					"mailfrom" => '',
+					"subject" => $db->escape_string($emailsubject),
+					"message" => $db->escape_string($emailmessage),
+					"headers" => ''
+				);
+
+				$db->insert_query("mailqueue", $new_email);
+				$cache->update_mailqueue();
 			}
 
 			$this->pm_insert_data['uid'] = $recipient['uid'];
