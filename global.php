@@ -241,7 +241,7 @@ foreach($stylesheet_scripts as $stylesheet_script)
 }
 
 // Are we linking to a remote theme server?
-if(substr($theme['imgdir'], 0, 7) == "http://")
+if(substr($theme['imgdir'], 0, 7) == "http://" || substr($theme['imgdir'], 0, 8) == "https://")
 {
 	// If a language directory for the current language exists within the theme - we use it
 	if(!empty($mybb->user['language']))
