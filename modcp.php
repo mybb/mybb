@@ -973,6 +973,26 @@ if($mybb->input['action'] == "edit_announcement")
 		error_no_permission();
 	}
 
+	if(!$announcement['startdate'])
+	{
+		// No start date? Make it now.
+		$announcement['startdate'] = TIME_NOW;
+	}
+
+	$makeshift_end = false;
+	if(!$announcement['enddate'])
+	{
+		$makeshift_end = true;
+		$makeshift_time = TIME_NOW;
+		if($announcement['startdate'])
+		{
+			$makeshift_time = $announcement['startdate'];
+		}
+
+		// No end date? Make it a year from now.
+		$announcement['enddate'] = $makeshift_time + (60 * 60 * 24 * 366);
+	}
+
 	// Deal with inline errors
 	if(is_array($errors))
 	{
@@ -1107,7 +1127,7 @@ if($mybb->input['action'] == "edit_announcement")
 		$smilies_sel['no'] = ' checked="checked"';
 	}
 
-	if(($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0))
+	if(($errored && $mybb->input['endtime_type'] == 2) || (!$errored && intval($announcement['enddate']) == 0) || $makeshift_end == true)
 	{
 		$end_type_sel['infinite'] = ' checked="checked"';
 	}
