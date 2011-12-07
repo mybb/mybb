@@ -172,12 +172,39 @@ if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 	eval("\$searchforum = \"".$templates->get("forumdisplay_searchforum")."\";");
 }
 
+// Gather forum stats
+$has_announcements = $has_modtools = false;
+$forum_stats = $cache->read("forumsdisplay");
+
+if(!is_array($forum_stats))
+{
+	// Attempt to rebuild the cache if we've failed to read it
+	$forum_stats = $cache->read("forumdisplay", true);
+}
+
+if(is_array($forum_stats))
+{
+	if($forum_stats[-1]['modtools'] || $forum_stats[$fid]['modtools'])
+	{
+		// Mod tools are specific to forums, not parents
+		$has_modtools = true;
+	}
+
+	if($forum_stats[-1]['announcements'] || $forum_stats[$fid]['announcements'])
+	{
+		// Global or forum-specific announcements
+		$has_announcements = true;
+	}
+}
+
 $done_moderators = array(
 	"users" => array(),
 	"groups" => array()
 );
+
 $moderators = '';
 $parentlistexploded = explode(",", $parentlist);
+
 foreach($parentlistexploded as $mfid)
 {
 	// This forum has moderators
@@ -209,6 +236,11 @@ foreach($parentlistexploded as $mfid)
 				$comma = $lang->comma;
 			}
 		}
+	}
+
+	if($forum_stats[$mfid]['announcements'])
+	{
+		$has_announcements = true;
 	}
 }
 $comma = '';
@@ -628,15 +660,7 @@ if($ismod)
 }
 
 // Get Announcements
-$forum_stats = $cache->read("forumsdisplay");
-
-if(!is_array($forum_stats))
-{
-	$forum_stats = $cache->read("forumdisplay", true);
-}
-
-$parentlist_exp = explode(',', $parentlist);
-if(is_array($forum_stats) && ($forum_stats[-1]['announcements'] || array_intersect_key(array_flip($parentlist_exp), $forum_stats)))
+if($has_announcements == true)
 {
 	$limit = '';
 	$announcements = '';
@@ -1193,26 +1217,24 @@ if(is_array($threadcache))
 	$customthreadtools = '';
 	if($ismod)
 	{
-		if(is_moderator($fid, "canusecustomtools"))
+		if(is_moderator($fid, "canusecustomtools") && $has_modtools == true)
 		{
-			if($forum_stats[-1]['modtools'] || $forum_stats[$fid]['modtools'])
+			switch($db->type)
 			{
-				switch($db->type)
-				{
-					case "pgsql":
-					case "sqlite":
-						$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
-						break;
-					default:
-						$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
-				}
-
-				while($tool = $db->fetch_array($query))
-				{
-					eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
-				}
+				case "pgsql":
+				case "sqlite":
+					$query = $db->simple_select("modtools", 'tid, name', "(','||forums||',' LIKE '%,$fid,%' OR ','||forums||',' LIKE '%,-1,%' OR forums='') AND type = 't'");
+					break;
+				default:
+					$query = $db->simple_select("modtools", 'tid, name', "(CONCAT(',',forums,',') LIKE '%,$fid,%' OR CONCAT(',',forums,',') LIKE '%,-1,%' OR forums='') AND type = 't'");
 			}
-			else
+
+			while($tool = $db->fetch_array($query))
+			{
+				eval("\$customthreadtools .= \"".$templates->get("forumdisplay_inlinemoderation_custom_tool")."\";");
+			}
+			
+			if($customthreadtools)
 			{
 				eval("\$customthreadtools = \"".$templates->get("forumdisplay_inlinemoderation_custom")."\";");
 			}
