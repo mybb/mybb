@@ -6892,7 +6892,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_split" version="1605"><![CDATA[<html>
+		<template name="moderation_split" version="1606"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
@@ -7762,7 +7762,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_splitposts" version="1605"><![CDATA[<html>
+		<template name="moderation_inline_splitposts" version="1606"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
