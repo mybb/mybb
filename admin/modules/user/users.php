@@ -1878,6 +1878,9 @@ if($mybb->input['action'] == "merge")
 				$cache->update_moderators();
 			}
 
+			// Banning
+			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
+
 			// Merging Reputation
 			// First, let's change all the details over to our new user...
 			$rep_update = array(
