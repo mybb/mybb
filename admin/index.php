@@ -411,6 +411,8 @@ if(!$mybb->user['uid'] || $logged_out == true)
 $page->add_breadcrumb_item($lang->home, "index.php");
 
 // Begin dealing with the modules
+$is_super_admin = is_super_admin($mybb->user['uid']);
+
 $modules_dir = MYBB_ADMIN_DIR."modules";
 $dir = opendir($modules_dir);
 while(($module = readdir($dir)) !== false)
@@ -425,7 +427,7 @@ while(($module = readdir($dir)) !== false)
 		$has_permission = false;
 		if(function_exists($module."_admin_permissions"))
 		{
-			if(isset($mybb->admin['permissions'][$module]))
+			if(isset($mybb->admin['permissions'][$module]) || $is_super_admin == true)
 			{
 				$has_permission = true;
 			}
