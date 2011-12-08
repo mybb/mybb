@@ -102,6 +102,11 @@ elseif($mybb->input['action'] == "clearpass")
 
 	if($mybb->input['fid'])
 	{
+		if(!verify_post_check($mybb->input['my_post_key']))
+		{
+			error($lang->invalid_post_code);
+		}
+
 		my_unsetcookie("forumpass[".intval($mybb->input['fid'])."]");
 		redirect("index.php", $lang->redirect_forumpasscleared);
 	}
