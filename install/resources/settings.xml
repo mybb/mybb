@@ -214,10 +214,19 @@
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="allowthreadratings">
+			<title>Use Thread Ratings?</title>
+			<description><![CDATA[Allow users to rate threads?]]></description>
+			<disporder>6</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[1]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="browsingthisforum">
 			<title>Users Browsing this Forum</title>
 			<description><![CDATA[Here you can turn off the 'users browsing this forum' feature.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -226,7 +235,7 @@
 		<setting name="announcementlimit">
 			<title>Announcements Limit</title>
 			<description><![CDATA[The number of forum announcements to  show in the thread listing on the forum display pages. Set to 0 to disable announcements altogether.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -235,7 +244,7 @@
 		<setting name="readparentforums">
 			<title>Attempt to Mark Parent Forums as Read</title>
 			<description><![CDATA[When set to yes, this setting will attempt to mark the parent forums of a sub-forum as read if there are no more unread posts. Please note that this setting can lead to a decrease in performance and multiple database queries and therefore must be treated as experimental. See the <a href="http://wiki.mybb.com/index.php/1.6.5">MyBB Wiki</a> for more information regarding this change.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>

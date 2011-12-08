@@ -624,7 +624,7 @@ else
 }
 $multipage = multipage($threadcount, $perpage, $page, $page_url);
 
-if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
+if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 {
 	$lang->load("ratethread");
 
@@ -713,7 +713,7 @@ if($has_announcements == true)
 		$posttime = my_date($mybb->settings['timeformat'], $announcement['startdate']);
 		$announcement['profilelink'] = build_profile_link($announcement['username'], $announcement['uid']);
 
-		if($foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
+		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $fpermissions['canviewthreads'] != 0)
 		{
 			eval("\$rating = \"".$templates->get("forumdisplay_announcement_rating")."\";");
 			$lpbackground = "trow2";
@@ -800,7 +800,7 @@ if($fpermissions['canviewthreads'] != 0)
 		}
 	}
 
-	if($foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && $tids && $ratings == true)
+	if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0 && $mybb->user['uid'] && $tids && $ratings == true)
 	{
 		// Check if we've rated threads on this page
 		// Guests get the pleasure of not being ID'd, but will be checked when they try and rate

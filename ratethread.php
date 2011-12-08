@@ -29,7 +29,7 @@ if(!$thread['tid'])
 }
 
 $forumpermissions = forum_permissions($thread['fid']);
-if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0)
+if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0)
 {
 	error_no_permission();
 }
