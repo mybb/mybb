@@ -966,7 +966,7 @@ class postParser
 			return "[video={$video}]{$url}[/video]";
 		}
 		
-		$parsed_url = @parse_url($url);
+		$parsed_url = @parse_url(urldecode($url));
 		if($parsed_url == false)
 		{
 			return "[video={$video}]{$url}[/video]";;
