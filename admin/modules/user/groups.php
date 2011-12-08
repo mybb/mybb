@@ -149,7 +149,13 @@ if($mybb->input['action'] == "approve_join_request")
 		flash_message($lang->error_invalid_join_request, 'error');
 		admin_redirect("index.php?module=user-groups");
 	}
-	
+
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=user-groups&action=join_requests&gid={$request['gid']}");
+	}
+
 	// Add the user to the group
 	join_usergroup($request['uid'], $request['gid']);
 	
@@ -171,6 +177,12 @@ if($mybb->input['action'] == "deny_join_request")
 	{
 		flash_message($lang->error_invalid_join_request, 'error');
 		admin_redirect("index.php?module=user-groups");
+	}
+
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=user-groups&action=join_requests&gid={$request['gid']}");
 	}
 
 	// Delete the join request
@@ -273,7 +285,7 @@ if($mybb->input['action'] == "join_requests")
 	$table->construct_header($lang->users);
 	$table->construct_header($lang->reason);
 	$table->construct_header($lang->date_requested, array("class" => 'align_center', "width" => 200));
-	$table->construct_header($lang->controls, array("class" => "align_center", "colspan" => 2, "width" => 200));
+	$table->construct_header($lang->controls, array("class" => "align_center", "width" => 200));
 
 	$query = $db->query("
 		SELECT j.*, u.username
@@ -283,14 +295,19 @@ if($mybb->input['action'] == "join_requests")
 		ORDER BY dateline ASC
 		LIMIT {$start}, {$per_page}
 	");
+
 	while($request = $db->fetch_array($query))
 	{
 		$table->construct_cell($form->generate_check_box("users[]", $request['uid'], ""));
 		$table->construct_cell("<strong>".build_profile_link($request['username'], $request['uid'], "_blank")."</strong>");
 		$table->construct_cell(htmlspecialchars_uni($request['reason']));
 		$table->construct_cell(my_date($mybb->settings['dateformat'].", ".$mybb->settings['timeformat'], $request['dateline']), array('class' => 'align_center'));
-		$table->construct_cell("<a href=\"index.php?module=user-groups&action=approve_join_request&amp;rid={$request['rid']}\">{$lang->approve}</a>", array("class" => "align_center"));
-		$table->construct_cell("<a href=\"index.php?module=user-groups&action=deny_join_request&amp;rid={$request['rid']}\">{$lang->deny}</a>", array("class" => "align_center"));
+
+		$popup = new PopupMenu("join_{$request['rid']}", $lang->options);
+		$popup->add_item($lang->approve, "index.php?module=user-groups&action=approve_join_request&amp;rid={$request['rid']}&amp;my_post_key={$mybb->post_code}");
+		$popup->add_item($lang->deny, "index.php?module=user-groups&action=deny_join_request&amp;rid={$request['rid']}&amp;my_post_key={$mybb->post_code}");
+
+		$table->construct_cell($popup->fetch(), array('class' => "align_center"));
 		$table->construct_row();	
 	}
 	
