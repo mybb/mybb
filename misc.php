@@ -304,7 +304,7 @@ elseif($mybb->input['action'] == "buddypopup")
 	{
 		error_no_permission();
 	}
-	if($mybb->input['removebuddy'])
+	if($mybb->input['removebuddy'] && verify_post_check($mybb->input['my_post_key']))
 	{
 		$buddies = $mybb->user['buddylist'];
 		$namesarray = explode(",",$buddies);
