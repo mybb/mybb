@@ -87,13 +87,19 @@ if($mybb->input['action'] == "do_reports")
 		error($lang->error_noselected_reports);
 	}
 
-	$mybb->input['reports'] = array_map("intval", $mybb->input['reports']);
-	$rids = implode($mybb->input['reports'], "','");
-	$rids = "'0','{$rids}'";
+	$sql = '1=1';
+	if(!$mybb->input['allbox'])
+	{
+		$mybb->input['reports'] = array_map("intval", $mybb->input['reports']);
+		$rids = implode($mybb->input['reports'], "','");
+		$rids = "'0','{$rids}'";
+
+		$sql = "rid IN ({$rids})";
+	}
 
 	$plugins->run_hooks("modcp_do_reports");
 
-	$db->update_query("reportedposts", array('reportstatus' => 1), "rid IN ({$rids}){$flist}");
+	$db->update_query("reportedposts", array('reportstatus' => 1), "{$sql}{$flist}");
 	$cache->update_reportedposts();
 	
 	$page = intval($mybb->input['page']);
