@@ -971,7 +971,7 @@ if(is_array($threadcache))
 		}
 
 		$rating = '';
-		if($foruminfo['allowtratings'] != 0)
+		if($mybb->settings['allowthreadratings'] != 0 && $foruminfo['allowtratings'] != 0)
 		{
 			if($moved[0] == "moved")
 			{
