@@ -501,10 +501,7 @@ if($mybb->input['action'] == "permissions")
 		
 		if($mybb->input['ajax'] == 1)
 		{
-			echo "<script type=\"text/javascript\">
-			$('row_{$gid}').innerHTML = '".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."';
-			QuickPermEditor.init({$gid});
-			</script>\n";
+			echo "<script type=\"text/javascript\">$('row_{$gid}').update('".str_replace(array("'", "\t", "\n"), array("\\'", "", ""), retrieve_single_permissions_row($gid, $fid))."'); QuickPermEditor.init({$gid});</script>";
 			die;
 		}
 		else
