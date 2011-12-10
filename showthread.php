@@ -80,11 +80,13 @@ if(!$thread['username'])
 }
 
 $visibleonly = "AND visible='1'";
+$visibleonly2 = "AND p.visible='1' AND t.visible='1'";
 
 // Is the currently logged in user a moderator of this forum?
 if(is_moderator($fid))
 {
 	$visibleonly = " AND (visible='1' OR visible='0')";
+	$visibleonly2 = "AND (p.visible='1' OR p.visible='0') AND (t.visible='1' OR t.visible='0')";
 	$ismod = true;
 }
 else
@@ -280,7 +282,7 @@ if($mybb->input['action'] == "newpost")
 	);
 
 	$lastread = intval($lastread);
-	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}'", $options);
+	$query = $db->simple_select("posts", "pid", "tid='{$tid}' AND dateline > '{$lastread}' {$visibleonly}", $options);
 	$newpost = $db->fetch_array($query);
 	
 	if($newpost['pid'] && $lastread)
@@ -315,7 +317,7 @@ if($mybb->input['action'] == "lastpost")
 			SELECT p.pid
 			FROM ".TABLE_PREFIX."posts p
 			LEFT JOIN ".TABLE_PREFIX."threads t ON(p.tid=t.tid)
-			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%'
+			WHERE t.fid='".$thread['fid']."' AND t.closed NOT LIKE 'moved|%' {$visibleonly2}
 			ORDER BY p.dateline DESC
 			LIMIT 1
 		");
@@ -329,7 +331,7 @@ if($mybb->input['action'] == "lastpost")
 			'limit_start' => 0,
 			'limit' => 1
 		);
-		$query = $db->simple_select('posts', 'pid', "tid={$tid}", $options);
+		$query = $db->simple_select('posts', 'pid', "tid={$tid} {$visibleonly}", $options);
 		$pid = $db->fetch_field($query, "pid");
 	}
 	header("Location: ".htmlspecialchars_decode(get_post_link($pid, $tid))."#pid{$pid}");
