@@ -2086,6 +2086,15 @@ function update_thread_counters($tid, $changes=array())
 function update_thread_data($tid)
 {
 	global $db;
+
+	$thread = get_thread($tid);
+
+	// If this is a moved thread marker, don't update it - we need it to stay as it is
+	if(strpos($thread['closed'], 'moved|') !== false)
+	{
+		return false;
+	}
+
 	$query = $db->query("
 		SELECT u.uid, u.username, p.username AS postusername, p.dateline
 		FROM ".TABLE_PREFIX."posts p
