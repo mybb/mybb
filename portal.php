@@ -363,6 +363,14 @@ if($mybb->settings['portal_showdiscussions'] != 0 && $mybb->settings['portal_sho
 	);
 	while($thread = $db->fetch_array($query))
 	{
+		$forumpermissions[$thread['fid']] = forum_permissions($thread['fid']);
+
+		// Make sure we can view this thread
+		if($forumpermissions[$thread['fid']]['canview'] == 0 || $forumpermissions[$thread['fid']]['canviewthreads'] == 0 || $forumpermissions[$thread['fid']]['canonlyviewownthreads'] == 1 && $thread['uid'] != $mybb->user['uid'])
+		{
+			continue;
+		}
+
 		$lastpostdate = my_date($mybb->settings['dateformat'], $thread['lastpost']);
 		$lastposttime = my_date($mybb->settings['timeformat'], $thread['lastpost']);
 		// Don't link to guest's profiles (they have no profile).
