@@ -1656,6 +1656,10 @@ if($mybb->input['action'] == "delete")
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
 
+		// Update forums & threads if user is the lastposter
+		$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
+		$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
+
 		// Did this user have an uploaded avatar?
 		if($user['avatartype'] == "upload")
 		{
@@ -1877,6 +1881,10 @@ if($mybb->input['action'] == "merge")
 				// Update the moderator cache...
 				$cache->update_moderators();
 			}
+
+			// Forums & Threads
+			$db->update_query("forums", array("lastposteruid" => $destination_user['uid']), "lastposteruid = '{$source_user['uid']}'");
+			$db->update_query("threads", array("lastposteruid" => $destination_user['uid']), "lastposteruid = '{$source_user['uid']}'");
 
 			// Banning
 			$db->update_query("banned", array('admin' => $destination_user['uid']), "admin = '{$source_user['uid']}'");
