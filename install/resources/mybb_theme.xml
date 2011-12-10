@@ -9685,7 +9685,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="warnings_warn_type" version="1603"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$checked} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> $points</label></dt>
+		<template name="warnings_warn_type" version="1606"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$checked} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> {$points}</label></dt>
 					<dd style="margin-top: 4px;" id="type_{$type['tid']}" class="types">
 						<div class="smalltext">{$lang->new_warning_level}</div>
 						<div class="tborder" style="width: 150px; float: left; margin: 0; padding: 1px;">
