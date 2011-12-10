@@ -220,23 +220,6 @@ var imagepath = '../images';
 			}
 		}
 		return $trail;
-	}	
-	
-	/**
-	 * Output an introductory message.
-	 *
-	 * @param string The title of the introductory message.
-	 * @param string The introductory message.
-	 * @param string An additional class name to add to the message if there is one.
-	 */
-	function output_intro($title, $description, $class="")
-	{
-		echo "		<div class=\"intro_description\">\n";
-		echo "	<div class=\"{$class}\">\n";
-		echo "	<h2>{$title}</h2>\n";
-		echo "	<p>{$description}</p>\n";
-		echo "</div>\n";
-		echo "</div>\n";	
 	}
 	
 	/**
