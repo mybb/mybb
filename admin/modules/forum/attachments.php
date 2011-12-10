@@ -714,11 +714,11 @@ if(!$mybb->input['action'])
 		// Now we fetch the results if there were 100% no errors
 		if(!$errors)
 		{
+			$mybb->input['perpage'] = intval($mybb->input['perpage']);
 			if(!$mybb->input['perpage'])
 			{
 				$mybb->input['perpage'] = 20;
 			}
-			$mybb->input['perpage'] = intval($mybb->input['perpage']);
 
 			$mybb->input['page'] = intval($mybb->input['page']);
 			if($mybb->input['page'])
