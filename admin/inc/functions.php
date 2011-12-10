@@ -300,15 +300,6 @@ function save_quick_perms($fid)
 				$ppolls = 0;
 			}
 			
-			if($canpostattachments[$usergroup['gid']] == 1)
-			{
-				$pattachments = 1;
-			}
-			else
-			{
-				$pattachments = 0;
-			}
-			
 			if(!$preplies && !$pthreads)
 			{
 				$ppost = 0;
@@ -324,7 +315,6 @@ function save_quick_perms($fid)
 				"canview" => intval($pview),
 				"canpostthreads" => intval($pthreads),
 				"canpostreplys" => intval($preplies),
-				"canpostattachments" => intval($pattachments),
 				"canpostpolls" => intval($ppolls),
 			);
 			
