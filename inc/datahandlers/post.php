@@ -635,7 +635,7 @@ class PostDataHandler extends DataHandler
 			$this->verify_options();
 		}
 
-		$plugins->run_hooks_by_ref("datahandler_post_validate_post", $this);
+		$plugins->run_hooks("datahandler_post_validate_post", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -873,7 +873,7 @@ class PostDataHandler extends DataHandler
 				"posthash" => $db->escape_string($post['posthash'])
 			);
 
-			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
+			$plugins->run_hooks("datahandler_post_insert_post", $this);
 
 			$db->update_query("posts", $this->post_update_data, "pid='{$post['pid']}'");
 			$this->pid = $post['pid'];
@@ -899,7 +899,7 @@ class PostDataHandler extends DataHandler
 				"posthash" => $db->escape_string($post['posthash'])
 			);
 
-			$plugins->run_hooks_by_ref("datahandler_post_insert_post", $this);
+			$plugins->run_hooks("datahandler_post_insert_post", $this);
 
 			$this->pid = $db->insert_query("posts", $this->post_insert_data);
 		}
@@ -1090,7 +1090,7 @@ class PostDataHandler extends DataHandler
 			$this->verify_options();
 		}
 
-		$plugins->run_hooks_by_ref("datahandler_post_validate_thread", $this);
+		$plugins->run_hooks("datahandler_post_validate_thread", $this);
 
 		// We are done validating, return.
 		$this->set_validated(true);
@@ -1185,7 +1185,7 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible
 			);
 
-			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
+			$plugins->run_hooks("datahandler_post_insert_thread", $this);
 
 			$db->update_query("threads", $this->thread_insert_data, "tid='{$thread['tid']}'");
 
@@ -1201,7 +1201,7 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
-			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
+			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);
 
 			$db->update_query("posts", $this->post_insert_data, "pid='{$thread['pid']}'");
 			$this->tid = $thread['tid'];
@@ -1227,7 +1227,7 @@ class PostDataHandler extends DataHandler
 				"notes" => ''
 			);
 
-			$plugins->run_hooks_by_ref("datahandler_post_insert_thread", $this);
+			$plugins->run_hooks("datahandler_post_insert_thread", $this);
 
 			$this->tid = $db->insert_query("threads", $this->thread_insert_data);
 
@@ -1247,7 +1247,7 @@ class PostDataHandler extends DataHandler
 				"visible" => $visible,
 				"posthash" => $db->escape_string($thread['posthash'])
 			);
-			$plugins->run_hooks_by_ref("datahandler_post_insert_thread_post", $this);
+			$plugins->run_hooks("datahandler_post_insert_thread_post", $this);
 
 			$this->pid = $db->insert_query("posts", $this->post_insert_data);
 
@@ -1596,7 +1596,7 @@ class PostDataHandler extends DataHandler
 			}
 			if(count($this->thread_update_data) > 0)
 			{
-				$plugins->run_hooks_by_ref("datahandler_post_update_thread", $this);
+				$plugins->run_hooks("datahandler_post_update_thread", $this);
 
 				$db->update_query("threads", $this->thread_update_data, "tid='".intval($post['tid'])."'");
 			}
@@ -1642,7 +1642,7 @@ class PostDataHandler extends DataHandler
 
 		$this->post_update_data['visible'] = $visible;
 		
-		$plugins->run_hooks_by_ref("datahandler_post_update", $this);
+		$plugins->run_hooks("datahandler_post_update", $this);
 
 		$db->update_query("posts", $this->post_update_data, "pid='".intval($post['pid'])."'");
 

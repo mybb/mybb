@@ -435,7 +435,7 @@ class PMDataHandler extends DataHandler
 
 		$this->verify_options();
 
-		$plugins->run_hooks_by_ref("datahandler_pm_validate", $this);
+		$plugins->run_hooks("datahandler_pm_validate", $this);
 
 		// Choose the appropriate folder to save in.
 		if($pm['saveasdraft'])
@@ -556,7 +556,7 @@ class PMDataHandler extends DataHandler
 				$this->pm_insert_data['deletetime'] = $pm['pmid'];
 			}
 
-			$plugins->run_hooks_by_ref("datahandler_pm_insert_updatedraft", $this);
+			$plugins->run_hooks("datahandler_pm_insert_updatedraft", $this);
 			$db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// If this is a draft, end it here - below deals with complete messages
@@ -623,7 +623,7 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['uid'] = $recipient['uid'];
 			$this->pm_insert_data['toid'] = $recipient['uid'];
 
-			$plugins->run_hooks_by_ref("datahandler_pm_insert", $this);
+			$plugins->run_hooks("datahandler_pm_insert", $this);
 			$this->pmid = $db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// If PM noices/alerts are on, show!
@@ -677,7 +677,7 @@ class PMDataHandler extends DataHandler
 			$this->pm_insert_data['status'] = 1;
 			$this->pm_insert_data['receipt'] = 0;
 
-			$plugins->run_hooks_by_ref("datahandler_pm_insert_savedcopy", $this);
+			$plugins->run_hooks("datahandler_pm_insert_savedcopy", $this);
 			$db->insert_query("privatemessages", $this->pm_insert_data);
 
 			// Because the sender saved a copy, update their total pm count

@@ -78,7 +78,7 @@ class pluginSystem
 	 * @param string The argument for the hook that is run. The passed value MUST be a variable
 	 * @return string The arguments for the hook.
 	 */
-	function run_hooks($hook, $arguments="")
+	function run_hooks($hook, &$arguments="")
 	{
 		if(!is_array($this->hooks[$hook]))
 		{
@@ -110,41 +110,6 @@ class pluginSystem
 		}
 		$this->current_hook = '';
 		return $arguments;
-	}
-	
-	/**
-	 * Run the hooks that have plugins but passes REQUIRED argument that is received by reference.
-	 * This argument must be received by reference in the plugin file!
-	 * This is a separate function to allow by reference calls for things you cannot use the $var = $plugins->run_hooks("hook_name", $var) syntax.
-	 *
-	 * @param string The name of the hook that is run.
-	 * @param string The argument for the hook that is run - passed by reference. The passed value MUST be a variable
-	 */
-	function run_hooks_by_ref($hook, &$arguments)
-	{
-		if(empty($this->hooks[$hook]) && !is_array($this->hooks[$hook]))
-		{
-			return $arguments;
-		}
-		$this->current_hook = $hook;
-		ksort($this->hooks[$hook]);
-		foreach($this->hooks[$hook] as $priority => $hooks)
-		{
-			if(is_array($hooks))
-			{
-				foreach($hooks as $hook)
-				{
-					if($hook['file'])
-					{
-						require_once $hook['file'];
-					}
-					
-					$func = $hook['function'];
-					$returnargs = $func($arguments);
-				}
-			}
-		}
-		$this->current_hook = '';
 	}
 
 	/**
