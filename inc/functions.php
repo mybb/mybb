@@ -2944,11 +2944,12 @@ function get_ip()
 
     if($plugins)
     {
-        $plugins->run_hooks("get_ip", array("ip" => $ip));
+    	$ip_array = array("ip" => &$ip); // Used for backwards compatibility on this hook with the updated run_hooks() function.
+        $plugins->run_hooks("get_ip", $ip_array);
     }
 
     return $ip;
-} 
+}
 
 /**
  * Fetch the friendly size (GB, MB, KB, B) for a specified file size.
