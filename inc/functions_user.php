@@ -67,13 +67,13 @@ function validate_password_from_username($username, $password)
 	$username = $db->escape_string(my_strtolower($username));
 	switch($mybb->settings['username_method'])
 	{
-		case 1:
+		case 0:
 			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$username."'", array('limit' => 1));
 			break;
-		case 2:
+		case 1:
 			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(email)='".$username."'", array('limit' => 1));
 			break;
-		case 3:
+		case 2:
 			$query = $db->simple_select("users", "uid,username,password,salt,loginkey,coppauser,usergroup", "LOWER(username)='".$username."' OR LOWER(email)='".$username."'", array('limit' => 1));
 			break;
 		default:

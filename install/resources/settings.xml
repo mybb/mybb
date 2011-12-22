@@ -568,7 +568,7 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="username_method">
 			<title>Allowed Login Methods</title>
-			<description><![CDATA[]]></description>
+			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.]]></description>
 			<disporder>25</disporder>
 			<optionscode><![CDATA[select
 0=Userame Only
