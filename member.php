@@ -753,7 +753,21 @@ if($mybb->input['action'] == "activate")
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
-			error($lang->error_invalidpworusername);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					error($lang->error_invalidpworusername);
+					break;
+				case 1:
+					error($lang->error_invalidpworusername1);
+					break;
+				case 2:
+					error($lang->error_invalidpworusername2);
+					break;
+				default:
+					error($lang->error_invalidpworusername);
+					break;
+			}
 		}
 		$uid = $user['uid'];
 	}
@@ -933,7 +947,21 @@ if($mybb->input['action'] == "resetpassword")
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
-			error($lang->error_invalidpworusername);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					error($lang->error_invalidpworusername);
+					break;
+				case 1:
+					error($lang->error_invalidpworusername1);
+					break;
+				case 2:
+					error($lang->error_invalidpworusername2);
+					break;
+				default:
+					error($lang->error_invalidpworusername);
+					break;
+			}
 		}
 	}
 	else
@@ -1007,7 +1035,21 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 	if(!username_exists($mybb->input['username']))
 	{
 		my_setcookie('loginattempts', $logins + 1);
-		error($lang->error_invalidpworusername.$login_text);
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				error($lang->error_invalidpworusername.$login_text);
+				break;
+			case 1:
+				error($lang->error_invalidpworusername1.$login_text);
+				break;
+			case 2:
+				error($lang->error_invalidpworusername2.$login_text);
+				break;
+			default:
+				error($lang->error_invalidpworusername.$login_text);
+				break;
+		}
 	}
 	
 	$query = $db->simple_select("users", "loginattempts", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
@@ -1029,7 +1071,21 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
 		}
 		
-		$errors[] = $lang->error_invalidpworusername.$login_text;
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$errors[] = $lang->error_invalidpworusername.$login_text;
+				break;
+			case 1:
+				$errors[] = $lang->error_invalidpworusername1.$login_text;
+				break;
+			case 2:
+				$errors[] = $lang->error_invalidpworusername2.$login_text;
+				break;
+			default:
+				$errors[] = $lang->error_invalidpworusername.$login_text;
+				break;
+		}
 	}
 	else
 	{
