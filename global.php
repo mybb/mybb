@@ -356,6 +356,21 @@ if($mybb->user['uid'] != 0)
 // Otherwise, we have a guest
 else
 {
+	switch($mybb->settings['username_method'])
+	{
+		case 0:
+			$login_username = $lang->login_username;
+			break;
+		case 1:
+			$login_username = $lang->login_username1;
+			break;
+		case 2:
+			$login_username = $lang->login_username2;
+			break;
+		default:
+			$login_username = $lang->login_username;
+			break;
+	}
 	eval("\$welcomeblock = \"".$templates->get("header_welcomeblock_guest")."\";");
 }
 

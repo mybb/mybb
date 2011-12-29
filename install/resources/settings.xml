@@ -571,7 +571,7 @@ email=Sent via Email]]></optionscode>
 			<description><![CDATA[The login methods you wish to allow for the username field. Username only, Email only, or allow both.]]></description>
 			<disporder>25</disporder>
 			<optionscode><![CDATA[select
-0=Userame Only
+0=Username Only
 1=Email Only
 2=Both Username and Email]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>

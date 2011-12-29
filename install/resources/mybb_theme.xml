@@ -3390,7 +3390,7 @@ body {
 ]]></template>
 		<template name="header_welcomeblock_guest" version="1600"><![CDATA[<script type="text/javascript">
 <!--
-	lang.username = "{$lang->login_username}";
+	lang.username = "{$login_username}";
 	lang.password = "{$lang->login_password}";
 	lang.login = "{$lang->login}";
 	lang.lost_password = " &mdash; <a href=\"{$mybb->settings['bburl']}/member.php?action=lostpw\">{$lang->lost_password}<\/a>";
@@ -5495,7 +5495,7 @@ body {
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
-	<input type="text" class="textbox" name="username" title="{$lang->login_username}" value="{$lang->login_username}" onfocus="if(this.value == '{$lang->login_username}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_username}'; }" />
+	<input type="text" class="textbox" name="username" title="{$login_username}" value="{$lang->login_username}" onfocus="if(this.value == '{$lang->login_username}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_username}'; }" />
 	<input type="password" class="textbox" name="password" title="{$lang->login_password}" value="{$lang->login_password}" onfocus="if(this.value == '{$lang->login_password}') { this.value=''; }" onblur="if(this.value=='') { this.value='{$lang->login_password}'; }" />
 	{$gobutton}
 </form>]]></template>

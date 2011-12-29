@@ -38,6 +38,21 @@ else
 	//Function call is not fatal
 	if(login_attempt_check(false) !== false)
 	{
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$login_username = $lang->login_username;
+				break;
+			case 1:
+				$login_username = $lang->login_username1;
+				break;
+			case 2:
+				$login_username = $lang->login_username2;
+				break;
+			default:
+				$login_username = $lang->login_username;
+				break;
+		}
 		eval("\$loginform = \"".$templates->get("index_loginform")."\";");
 	}
 }
