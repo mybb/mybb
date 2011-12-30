@@ -121,7 +121,7 @@ If the above link does not work correctly, go to
 {3}/member.php?action=resetpassword
 
 You will need to enter the following:
-Email: {1}
+Your email address
 Activation Code: {5}
 
 Thank you,
@@ -172,6 +172,30 @@ $l['email_randompassword'] = "{1},
 Thank you for registering on {2}. Below is your username and the randomly generated password. To login to {2}, you will need these details.
 
 Username: {3}
+Password: {4}
+
+It is recommended you change your password immediately after you login. You can do this by going to your User CP then clicking Change Password on the left menu.
+
+Thank you,
+{2} Staff";
+
+$l['email_randompassword1'] = "{1},
+
+Thank you for registering on {2}. Below is your username and the randomly generated password. To login to {2}, you will need these details.
+
+Your email address
+Password: {4}
+
+It is recommended you change your password immediately after you login. You can do this by going to your User CP then clicking Change Password on the left menu.
+
+Thank you,
+{2} Staff";
+
+$l['email_randompassword2'] = "{1},
+
+Thank you for registering on {2}. Below is your username and the randomly generated password. To login to {2}, you will need these details.
+
+Username: {3} (Or your email address)
 Password: {4}
 
 It is recommended you change your password immediately after you login. You can do this by going to your User CP then clicking Change Password on the left menu.
@@ -233,6 +257,40 @@ If the above link does not work correctly, go to
 
 You will need to enter the following:
 Username: {1}
+Activation Code: {5}
+
+Thank you,
+{2} Staff";
+
+$l['email_activateaccount1'] = "{1},
+
+To complete the registration process on {2}, you will need to go to the URL below in your web browser.
+
+{3}/member.php?action=activate&uid={4}&code={5}
+
+If the above link does not work correctly, go to
+
+{3}/member.php?action=activate
+
+You will need to enter the following:
+Your email address
+Activation Code: {5}
+
+Thank you,
+{2} Staff";
+
+$l['email_activateaccount2'] = "{1},
+
+To complete the registration process on {2}, you will need to go to the URL below in your web browser.
+
+{3}/member.php?action=activate&uid={4}&code={5}
+
+If the above link does not work correctly, go to
+
+{3}/member.php?action=activate
+
+You will need to enter the following:
+Username: {1} (Or your email address)
 Activation Code: {5}
 
 Thank you,

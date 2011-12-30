@@ -277,7 +277,21 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 			);
 			$db->insert_query("awaitingactivation", $activationarray);
 			$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				case 1:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				case 2:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+				default:
+					$emailmessage = $lang->sprintf($lang->email_activateaccount, $user_info['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user_info['uid'], $activationcode);
+					break;
+			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
 			
 			$lang->redirect_registered_activation = $lang->sprintf($lang->redirect_registered_activation, $mybb->settings['bbname'], $user_info['username']);
@@ -289,7 +303,21 @@ if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 		else if($mybb->settings['regtype'] == "randompass")
 		{
 			$emailsubject = $lang->sprintf($lang->emailsubject_randompassword, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					break;
+				case 1:
+					$emailmessage = $lang->sprintf($lang->email_randompassword1, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					break;
+				case 2:
+					$emailmessage = $lang->sprintf($lang->email_randompassword2, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					break;
+				default:
+					$emailmessage = $lang->sprintf($lang->email_randompassword, $user['username'], $mybb->settings['bbname'], $user_info['username'], $user_info['password']);
+					break;
+			}
 			my_mail($user_info['email'], $emailsubject, $emailmessage);
 
 			$plugins->run_hooks("member_do_register_end");
@@ -749,7 +777,21 @@ if($mybb->input['action'] == "activate")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+		switch($mybb->settings['username'])
+		{
+			case 0:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+				break;
+			case 1:
+				$query = $db->simple_select("users", "*", "LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+				break;
+			case 2:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."' OR LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+				break;
+			default:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+				break;
+		}
 		$user = $db->fetch_array($query);
 		if(!$user['username'])
 		{
@@ -880,7 +922,21 @@ if($mybb->input['action'] == "do_resendactivation" && $mybb->request_method == "
 				$email = $user['email'];
 				$activationcode = $user['code'];
 				$emailsubject = $lang->sprintf($lang->emailsubject_activateaccount, $mybb->settings['bbname']);
-				$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+				switch($mybb->settings['username_method'])
+				{
+					case 0:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+						break;
+					case 1:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount1, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+						break;
+					case 2:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount2, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+						break;
+					default:
+						$emailmessage = $lang->sprintf($lang->email_activateaccount, $user['username'], $mybb->settings['bbname'], $mybb->settings['bburl'], $user['uid'], $activationcode);
+						break;
+				}
 				my_mail($email, $emailsubject, $emailmessage);
 			}
 		}
@@ -957,7 +1013,21 @@ if($mybb->input['action'] == "resetpassword")
 
 	if($mybb->input['username'])
 	{
-		$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+				break;
+			case 1:
+				$query = $db->simple_select("users", "*", "LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+				break;
+			case 2:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."' OR LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+				break;
+			default:
+				$query = $db->simple_select("users", "*", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'");
+				break;
+		}
 		$user = $db->fetch_array($query);
 		if(!$user['uid'])
 		{
@@ -1011,21 +1081,7 @@ if($mybb->input['action'] == "resetpassword")
 		$plugins->run_hooks("member_resetpassword_process");
 
 		$emailsubject = $lang->sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$emailmessage = $lang->sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
-				break;
-			case 1:
-				$emailmessage = $lang->sprintf($lang->email_passwordreset1, $username, $mybb->settings['bbname'], $password);
-				break;
-			case 2:
-				$emailmessage = $lang->sprintf($lang->email_passwordreset2, $username, $mybb->settings['bbname'], $password);
-				break;
-			default:
-				$emailmessage = $lang->sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
-				break;
-		}
+		$emailmessage = $lang->sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
 		my_mail($email, $emailsubject, $emailmessage);
 
 		$plugins->run_hooks("member_resetpassword_reset");
@@ -1080,7 +1136,7 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		}
 	}
 	
-	$query = $db->simple_select("users", "loginattempts", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
+	$query = $db->simple_select("users", "loginattempts", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."' OR LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
 	$loginattempts = $db->fetch_field($query, "loginattempts");
 	
 	$errors = array();

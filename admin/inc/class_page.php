@@ -302,7 +302,7 @@ var imagepath = '../images';
 	 */
 	function show_login($message="", $class="success")
 	{
-		global $lang, $cp_style;
+		global $lang, $cp_style, $mybb;
 
 		$copy_year = COPY_YEAR;
 		
@@ -359,6 +359,21 @@ EOF;
 			$query_string = str_replace('?&', '?', $query_string);
 			$query_string = htmlspecialchars_uni($query_string);
 		}
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$lang_username = $lang->username;
+				break;
+			case 1:
+				$lang_username = $lang->username1;
+				break;
+			case 2:
+				$lang_username = $lang->username2;
+				break;
+			default:
+				$lang_username = $lang->username;
+				break;
+		}
         
         // TODO: Better Fix?
        	$_SERVER['PHP_SELF'] = htmlspecialchars_uni($_SERVER['PHP_SELF']);
@@ -367,7 +382,7 @@ print <<<EOF
 		<form method="post" action="{$_SERVER['PHP_SELF']}{$query_string}">
 		<div class="form_container">
 
-			<div class="label"{$login_label_width}><label for="username">{$lang->username}</label></div>
+			<div class="label"{$login_label_width}><label for="username">{$lang_username}</label></div>
 
 			<div class="field"><input type="text" name="username" id="username" class="text_input initial_focus" /></div>
 
@@ -440,6 +455,21 @@ EOF;
 		global $lang, $mybb, $cp_style;
 
 		$copy_year = COPY_YEAR;
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$lang_username = $lang->username;
+				break;
+			case 1:
+				$lang_username = $lang->username1;
+				break;
+			case 2:
+				$lang_username = $lang->username2;
+				break;
+			default:
+				$lang_username = $lang->username;
+				break;
+		}
 
 		print <<<EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -464,7 +494,7 @@ EOF;
 		<form method="post" action="index.php">
 		<div class="form_container">
 
-			<div class="label"{$login_label_width}><label for="username">{$lang->username}</label></div>
+			<div class="label"{$login_label_width}><label for="username">{$lang_username}</label></div>
 
 			<div class="field"><input type="text" name="username" id="username" class="text_input initial_focus" /></div>
 
