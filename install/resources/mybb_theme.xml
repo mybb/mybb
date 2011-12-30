@@ -6752,7 +6752,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="2"><strong>{$lang->reset_password}</strong></td>
 </tr>
 <tr>
-<td class="trow1" width="30%"><strong>{$lang->username}</strong></td>
+<td class="trow1" width="30%"><strong>{$lang_username}</strong></td>
 <td class="trow1"><input type="text" class="textbox" name="username" value="{$user['username']}" /></td>
 </tr>
 <tr>

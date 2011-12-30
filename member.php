@@ -1091,6 +1091,22 @@ if($mybb->input['action'] == "resetpassword")
 	else
 	{
 		$plugins->run_hooks("member_resetpassword_form");
+		
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$lang_username = $lang->username;
+				break;
+			case 1:
+				$lang_username = $lang->username1;
+				break;
+			case 2:
+				$lang_username = $lang->username2;
+				break;
+			default:
+				$lang_username = $lang->username;
+				break;
+		}
 
 		eval("\$activate = \"".$templates->get("member_resetpassword")."\";");
 		output_page($activate);
