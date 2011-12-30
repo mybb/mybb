@@ -110,6 +110,38 @@ Activation Code: {5}
 
 Thank you,
 {2} Staff";
+$l['email_lostpw1'] = "{1},
+
+To complete the phase of resetting your account password at {2}, you will need to go to the URL below in your web browser.
+
+{3}/member.php?action=resetpassword&uid={4}&code={5}
+
+If the above link does not work correctly, go to
+
+{3}/member.php?action=resetpassword
+
+You will need to enter the following:
+Email: {1}
+Activation Code: {5}
+
+Thank you,
+{2} Staff";
+$l['email_lostpw2'] = "{1},
+
+To complete the phase of resetting your account password at {2}, you will need to go to the URL below in your web browser.
+
+{3}/member.php?action=resetpassword&uid={4}&code={5}
+
+If the above link does not work correctly, go to
+
+{3}/member.php?action=resetpassword
+
+You will need to enter the following:
+Username: {1} (Or your email address)
+Activation Code: {5}
+
+Thank you,
+{2} Staff";
 
 
 $l['email_reportpost'] = "{1} from {2} has reported this post:

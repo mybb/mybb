@@ -928,7 +928,22 @@ if($mybb->input['action'] == "do_lostpw" && $mybb->request_method == "post")
 			$email = $user['email'];
 			$activationcode = $user['activationcode'];
 			$emailsubject = $lang->sprintf($lang->emailsubject_lostpw, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
+			switch($mybb->settings['username_method'])
+			{
+				case 0:
+					$email_lostpw = $lang->email_lostpw;
+					break;
+				case 1:
+					$email_lostpw = $lang->email_lostpw1;
+					break;
+				case 2:
+					$email_lostpw = $lang->email_lostpw2;
+					break;
+				default:
+					$email_lostpw = $lang->email_lostpw;
+					break;
+			}
+			$emailmessage = $lang->sprintf($email_lostpw, $username, $mybb->settings['bbname'], $mybb->settings['bburl'], $uid, $activationcode);
 			my_mail($email, $emailsubject, $emailmessage);
 		}
 	}
@@ -997,7 +1012,22 @@ if($mybb->input['action'] == "resetpassword")
 		$plugins->run_hooks("member_resetpassword_process");
 
 		$emailsubject = $lang->sprintf($lang->emailsubject_passwordreset, $mybb->settings['bbname']);
-		$emailmessage = $lang->sprintf($lang->email_passwordreset, $username, $mybb->settings['bbname'], $password);
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$email_passwordreset = $lang->email_passwordreset;
+				break;
+			case 1:
+				$email_passwordreset = $lang->email_passwordreset1;
+				break;
+			case 2:
+				$email_passwordreset = $lang->email_passwordreset2;
+				break;
+			default:
+				$email_passwordreset = $lang->email_passwordreset;
+				break;
+		}
+		$emailmessage = $lang->sprintf($email_passwordreset, $username, $mybb->settings['bbname'], $password);
 		my_mail($email, $emailsubject, $emailmessage);
 
 		$plugins->run_hooks("member_resetpassword_reset");
@@ -1240,7 +1270,18 @@ if($mybb->input['action'] == "login")
 	{
 		$password = htmlspecialchars_uni($mybb->input['password']);
 	}
-
+	
+	switch($mybb->settings['username_method'])
+	{
+		case 1:
+			$lang->username = $lang->username1;
+			break;
+		case 2:
+			$lang->username = $lang->username2;
+			break;
+		default:
+			break;
+	}
 	eval("\$login = \"".$templates->get("member_login")."\";");
 	output_page($login);
 }

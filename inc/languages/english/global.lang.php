@@ -65,6 +65,8 @@ $l['wrong_forum_password'] = "The password you entered is incorrect. Please try 
 
 $l['reset_button'] = "Reset";
 $l['username'] = "Username:";
+$l['username1'] = "Username:";
+$l['username2'] = "Username:";
 $l['password'] = "Password:";
 $l['login_username'] = "Username";
 $l['login_username1'] = "Email";
