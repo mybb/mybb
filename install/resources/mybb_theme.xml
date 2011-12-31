@@ -7143,7 +7143,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td class="thead" colspan="2"><span class="smalltext"><strong>{$lang->login}</strong></span></td>
 </tr>
 <tr>
-<td class="trow1"><strong>{$lang->username}</strong></td>
+<td class="trow1"><strong>{$lang_username}</strong></td>
 <td class="trow1"><input type="text" class="textbox" name="username" tabindex="1" /></td>
 </tr>
 <tr>
