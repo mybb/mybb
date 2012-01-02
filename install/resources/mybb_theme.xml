@@ -6738,7 +6738,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$lang->votes}&nbsp;</td>
 <td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
-		<template name="member_resetpassword" version="127"><![CDATA[<html>
+		<template name="member_resetpassword" version="1606"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reset_password}</title>
 {$headerinclude}
@@ -7128,7 +7128,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <br />
 <hr size="1" />]]></template>
-		<template name="error_nopermission" version="1605"><![CDATA[{$lang->error_nopermission_guest_1}
+		<template name="error_nopermission" version="1606"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
 <li>{$lang->error_nopermission_guest_2}</li>
 <li>{$lang->error_nopermission_guest_3}</li>
