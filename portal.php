@@ -195,6 +195,21 @@ if($mybb->settings['portal_showwelcome'] != 0)
 	{
 		$lang->guest_welcome_registration = $lang->sprintf($lang->guest_welcome_registration, $mybb->settings['bburl'] . '/member.php?action=register');
 		$mybb->user['username'] = $lang->guest;
+		switch($mybb->settings['username_method'])
+		{
+			case 0:
+				$username = $lang->username;
+				break;
+			case 1:
+				$username = $lang->username1;
+				break;
+			case 2:
+				$username = $lang->username2;
+				break;
+			default:
+				$username = $lang->username;
+				break;
+		}
 		eval("\$welcometext = \"".$templates->get("portal_welcome_guesttext")."\";");
 	}
 	$lang->welcome = $lang->sprintf($lang->welcome, $mybb->user['username']);

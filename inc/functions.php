@@ -767,9 +767,6 @@ function error_no_permission()
 			default:
 				$lang_username = $lang->username;
 				break;
-			case 0:
-				$lang_username = $lang->username;
-				break;
 		}
 		eval("\$errorpage = \"".$templates->get("error_nopermission")."\";");
 	}
