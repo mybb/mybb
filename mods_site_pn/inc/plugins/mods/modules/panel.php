@@ -31,7 +31,7 @@ class Panel implements Modules
 		
 		$inline_errors = '';
 
-		if ($mybb->input['panelaction'] == 'createproject' && $mybb->input['step'] == 2)
+		if ($mybb->input['panelaction'] == 'createproject')
 		{
 			// Let's make sure we're doing this via POST
 			if ($mybb->request_method != 'post')
