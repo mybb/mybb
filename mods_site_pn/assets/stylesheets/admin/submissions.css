@@ -1,0 +1,61 @@
+.submenu .submissions_unvalidated a
+{
+	background: url('/images/admin/mods/submissions_unvalidated.png') no-repeat 3px;
+}
+
+.submenu .submissions_download a
+{
+	background: url('/images/admin/mods/submissions_download.png') no-repeat 3px;
+}
+
+.submenu .submissions_resource a
+{
+	background: url('/images/admin/mods/submissions_resource.png') no-repeat 3px;
+}
+
+.submenu .submissions_translation a
+{
+	background: url('/images/admin/mods/submissions_translation.png') no-repeat 3px;
+}
+
+.mandatory, .rejected
+{
+	color: red;
+}
+
+.visible
+{
+	color: green;
+}
+
+.invisible_item, .validating
+{
+	color: grey;
+}
+
+.pagination
+{
+	clear: both;
+	margin-top: 10px;
+}
+
+.pagination .pages
+{
+	font-weight: bold;
+}
+
+.pagination .current, .pagination a
+{
+	padding: 2px 6px;
+	margin: 2px;
+}
+
+.pagination a
+{
+	border: 1px solid #CCCCCC;
+}
+
+.pagination a:hover
+{
+	background: #EFEFEF;
+}

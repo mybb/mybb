@@ -1,0 +1,90 @@
+body {
+	font: 12px Trebuchet MS, Verdana,Arial,Helvetica,sans-serif;
+	margin: 0;
+	background: #efefef;
+}
+
+a {
+color: maroon;
+}
+
+#container {
+	width: 410px;
+	margin: 100px auto;
+	border: 1px solid #ccc;
+}
+
+#header {
+	height: 80px;
+	background:  #000;
+}
+
+#header h1 {
+	height: 54px;
+	margin: 0;
+	color: #FFF;
+	font-size: 22px;
+	padding: 26px 0 0 0;
+	font-weight: normal;
+text-align: center;
+}
+
+#header h1 a {
+	text-decoration: none;
+	color: #fff;
+}
+
+#content {
+background: #fff;
+}
+
+p, form {
+padding: 10px;
+}
+
+p {
+margin-bottom: 0;
+}
+
+h2 {
+	background:  #398eb8;
+	color:#fff;
+margin: 0;
+padding: 10px;
+font-size: 14px;
+}
+
+input.textbox {
+border: 1px solid #ccc;
+width: 380px;
+font-size: 16px;
+padding: 4px;
+}
+
+form .label {
+ margin-top: 5px;
+ margin-bottom: 3px;
+}
+
+form label {
+ font-weight: bold;
+}
+
+p.submit {
+border-top: 2px solid #000;
+padding-top: 3px;
+margin-top: 8px;
+margin-right: 0;
+padding-right: 0;
+text-align: right;
+}
+
+p.submit input {
+font-size: 13px;
+font-weight: bold;
+}
+
+div.userMessages .error {
+	text-align: center;
+	margin: 10px 10px 0 10px;
+}

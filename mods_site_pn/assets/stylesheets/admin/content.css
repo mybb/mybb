@@ -1,0 +1,146 @@
+/* Sub Menu Icons */
+
+.submenu .pages_add_new a {
+	background: url(/assets/images/admin/pages_new.png) no-repeat 3px;
+}
+
+.submenu .templates_add_new a {
+	background: url(/assets/images/admin/templates_new.png) no-repeat 3px;
+}
+
+.submenu .assets_add_new a {
+	background: url(/assets/images/admin/asset_new.png) no-repeat 3px;
+}
+
+.submenu .assets_new_directory a,
+.submenu .templates_new_directory a {
+	background: url(/assets/images/admin/asset_new_directory.png) no-repeat 3px;
+}
+
+.submenu .content_pages a {
+	background: url(/assets/images/admin/content_pages.png) no-repeat 3px;
+}
+
+.submenu .content_templates a {
+	background: url(/assets/images/admin/content_templates.png) no-repeat 3px;
+}
+
+.submenu .content_assets a {
+	background: url(/assets/images/admin/asset.png) no-repeat 3px;
+}
+
+.submenu .snippets_add_new a {
+	background: url(/assets/images/admin/content_management_snippets_create.png) no-repeat 3px;
+}
+
+.submenu .content_snippets a {
+	background: url(/assets/images/admin/content_management_snippets.png) no-repeat 3px;
+}
+
+.submenu .news_add_new a {
+	background: url(/assets/images/admin/news_create.png) no-repeat 3px;
+}
+
+.submenu .content_news a {
+	background: url(/assets/images/admin/news.png) no-repeat 3px;
+}
+
+.submenu .content_menu a {
+	background: url(/assets/images/admin/content_management_menu.png) no-repeat 3px;
+}
+
+.submenu .menu_add_new a {
+	background: url(/assets/images/admin/content_management_menu_add.png) no-repeat 3px;
+}
+
+/* Template List */
+
+.template_list thead th.filesize, .template_list tbody td.filesize, .template_list thead th.modified, .template_list tbody td.modified {
+	text-align: right;
+}
+
+.template_list tbody td.icon {
+	width:  3%;
+}
+
+.template_list thead th.filename {
+	width: 52%;
+}
+
+.template_list thead th.filesize {
+	width:  10%;
+}
+
+.template_list thead th.modified {
+	width:  35%;
+}
+
+.template_list tbody tr.parent_directory {
+	font-style: italic;
+}
+
+/* Page List */
+
+.page_list thead th.title,
+.page_list thead th.friendlyUrl {
+	width: 35%;
+}
+
+.page_list thead th.modified {
+	width: 25%;
+}
+
+/* Menu Item List */
+
+.menu_list thead th.title {
+	width: 35%;
+}
+
+.menu_list thead th.url {
+	width: 62%;
+}
+
+.menu_list tbody td.utility {
+	width: 3%;
+	vertical-align: middle;
+}
+
+/* Asset List */
+
+.asset_list thead th.filesize, .asset_list tbody td.filesize, .asset_list thead th.modified, .asset_list tbody td.modified {
+	text-align: right;
+}
+
+.asset_list tbody td.icon {
+	width:  3%;
+	vertical-align: top;
+}
+
+.asset_list thead th.filename {
+	width: 52%;
+}
+
+.asset_list thead th.filesize {
+	width:  15%;
+}
+
+.asset_list thead th.modified {
+	width:  35%;
+}
+
+.asset_list tbody tr.parent_directory {
+	font-style: italic;
+}
+
+.asset_list .type {
+	color: #444;
+	font-size: 11px;
+}
+
+th.delete, th.utility {
+	width:  1px;
+}
+
+.news_list thead th.date, .news_list tbody td.date {
+	text-align: right;
+}

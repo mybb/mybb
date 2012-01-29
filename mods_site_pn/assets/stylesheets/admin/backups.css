@@ -1,0 +1,5 @@
+/* Sub Menu Icons */
+.submenu .backup_add_new a
+{
+	background: url('/images/admin/mods/backup.png') no-repeat 3px;
+}

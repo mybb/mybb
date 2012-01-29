@@ -1,0 +1,17 @@
+#projectTags {
+	margin: 0 0 7px 0;
+	overflow: auto;
+}
+
+.form_container #projectTags .title {
+	margin: 10px 0 0 0;
+	font-weight: bold;
+}
+
+.form_container #projectTags .tag {
+	margin-right: 5px;
+}
+
+#addTagButton {
+	margin-left: 5px;
+}

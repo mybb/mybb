@@ -1,0 +1,7 @@
+.submenu .themeDemo a {
+	background: url(/assets/images/icons/theme.png) no-repeat 3px;
+}
+
+.submenu .awaitingModeration a {
+	background: url(/assets/images/icons/submissions_unvalidated.png) no-repeat 3px;
+}
