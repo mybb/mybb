@@ -734,6 +734,7 @@ $tables[] = "CREATE TABLE mybb_themestylesheets(
 	stylesheet text NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
 	lastmodified numeric(30,0) NOT NULL default '0',
+	disporder smallint NOT NULL default '0',
 	PRIMARY KEY(sid)
 );";
 

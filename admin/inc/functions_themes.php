@@ -191,6 +191,7 @@ function import_theme_xml($xml, $options=array())
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
 		
+		$loop = 1;
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
 			if(substr($stylesheet['attributes']['name'], -4) != ".css")
@@ -203,13 +204,19 @@ function import_theme_xml($xml, $options=array())
 				$stylesheet['attributes']['lastmodified'] = TIME_NOW;
 			}
 			
+			if(!$stylesheet['attributes']['disporder'])
+			{
+				$stylesheet['attributes']['disporder'] = $loop;
+			}
+
 			$new_stylesheet = array(
 				"name" => $db->escape_string($stylesheet['attributes']['name']),
 				"tid" => $theme_id,
 				"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
 				"stylesheet" => $db->escape_string($stylesheet['value']),
 				"lastmodified" => intval($stylesheet['attributes']['lastmodified']),
-				"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
+				"cachefile" => $db->escape_string($stylesheet['attributes']['name']),
+				"disporder" => intval($stylesheet['attributes']['disporder'])
 			);
 			$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 			$css_url = "css.php?stylesheet={$sid}";
@@ -241,6 +248,8 @@ function import_theme_xml($xml, $options=array())
 					$theme_stylesheets[$attached_file][$action][] = $css_url;
 				}
 			}
+
+			++$loop;
 		}
 		// Now we have our list of built stylesheets, save them
 		$updated_theme = array(

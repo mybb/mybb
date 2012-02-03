@@ -208,34 +208,29 @@ $theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
 $theme['stylesheets'] = unserialize($theme['stylesheets']);
-$stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
-foreach($stylesheet_scripts as $stylesheet_script)
+foreach($theme['stylesheets'] as $script => $stylesheet)
 {
-	$stylesheet_actions = array("global");
-	if($mybb->input['action'])
+	if(!in_array($script, array('global', THIS_SCRIPT)))
 	{
-		$stylesheet_actions[] = $mybb->input['action'];
+		continue;
 	}
-	// Load stylesheets for global actions and the current action
-	foreach($stylesheet_actions as $stylesheet_action)
+
+	foreach(array('global', $mybb->input['action']) as $action)
 	{
-		if(!$stylesheet_action)
+		if(!$stylesheet[$action])
 		{
 			continue;
 		}
-		
-		if($theme['stylesheets'][$stylesheet_script][$stylesheet_action])
+
+		foreach($stylesheet[$action] as $page_stylesheet)
 		{
-			// Actually add the stylesheets to the list
-			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
+			if($already_loaded[$page_stylesheet])
 			{
-				if($already_loaded[$page_stylesheet])
-				{
-					continue;
-				}
-				$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
-				$already_loaded[$page_stylesheet] = 1;
+				continue;
 			}
+
+			$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+			$already_loaded[$page_stylesheet] = 1;
 		}
 	}
 }

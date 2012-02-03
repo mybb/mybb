@@ -9,7 +9,7 @@
 		<editortheme><![CDATA[default]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1600"><![CDATA[body {
+		<stylesheet name="global.css" version="1600" disporder="1"><![CDATA[body {
 	background: #efefef;
 	color: #000;
 	font-family: Verdana, Arial, Sans-Serif;
@@ -714,7 +714,7 @@ div.error ul {
 	cursor: pointer;
 }]]>
 		</stylesheet>
-		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1600"><![CDATA[.usercp_nav_item {
+		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1600" disporder="2"><![CDATA[.usercp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
 }
@@ -822,7 +822,7 @@ div.error ul {
 	padding: 8px;
 	border:1px solid #CCCCCC;
 }]]></stylesheet>
-		<stylesheet name="modcp.css" attachedto="modcp.php" version="1400"><![CDATA[.modcp_nav_item {
+		<stylesheet name="modcp.css" attachedto="modcp.php" version="1400" disporder="3"><![CDATA[.modcp_nav_item {
 	display: block;
 	padding: 1px 0 1px 23px;
 }
@@ -915,7 +915,7 @@ div.error ul {
 	border: 1px solid #ccc;
 	text-decoration: none;
 }]]></stylesheet>
-		<stylesheet name="star_ratings.css" attachedto="forumdisplay.php|showthread.php" version="1400"><![CDATA[.star_rating,
+		<stylesheet name="star_ratings.css" attachedto="forumdisplay.php|showthread.php" version="1400" disporder="4"><![CDATA[.star_rating,
 .star_rating li a:hover,
 .star_rating .current_rating {
 	background: url(images/star_rating.gif) left -1000px repeat-x;
@@ -1000,7 +1000,7 @@ td .star_rating {
 	vertical-align: middle;
 	padding-right: 5px;
 }]]></stylesheet>
-		<stylesheet name="showthread.css" attachedto="showthread.php" version="1400"><![CDATA[ul.thread_tools, ul.thread_tools li {
+		<stylesheet name="showthread.css" attachedto="showthread.php" version="1400" disporder="5"><![CDATA[ul.thread_tools, ul.thread_tools li {
 	list-style: none;
 	padding: 0;
 	margin: 0;
