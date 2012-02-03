@@ -1,0 +1,150 @@
+/* MyBB Admin CP
+ *
+ * Login CSS
+ */
+
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	background: #efefef;
+	color: #000000;
+	margin: 0;
+}
+
+a {
+	color: #035488;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #444;
+	text-decoration: underline;
+}
+
+.invisible {
+	display: none;
+}
+
+#container {
+	width: 410px;
+	margin: 100px auto;
+	border: 1px solid #ccc;
+}
+
+#logo h1 {
+	height: 82px;
+	background: #fff url(images/logo.gif) top center no-repeat;
+	border-bottom: 1px solid #000;
+	margin: 0;
+	padding: 0;
+}
+
+#header h1 a {
+	float: left;
+	height: 82px;
+	width: 410px;
+}
+
+#content {
+background: #fff;
+}
+
+p, form {
+padding: 10px;
+}
+
+form {
+  padding-bottom: 0;
+}
+
+p {
+margin-bottom: 0;
+}
+
+h2 {
+	background: #016DB1 url(images/thead_bg.gif) repeat-x top left;
+	border-bottom: 1px solid #000000;
+	color:#fff;
+  margin: 0;
+  padding: 8px;
+  font-size: 14px;
+}
+
+input.text_input {
+	border: 1px solid #0F5C8E;
+	background: #fff;
+	width: 380px;
+	padding: 4px;
+	font-size: 16px;
+}
+
+input.text_input:focus {
+	border: 1px solid #000;
+}
+
+#message {
+  margin: 10px;
+	padding: 10px;
+	text-align: left;
+	background: #efefef;
+	border: 1px solid #ccc;
+}
+
+#message.error {
+	border: 1px solid #FC6;
+	background: #FFC;
+	color: #000;
+}
+
+#message.error .text {
+  color: #C00;
+  font-weight: bold;
+}
+
+#message.success {
+	margin: 10px;
+	padding: 10px;
+	border: #080 1px solid;
+	background-color: #E8FCDC;
+	color: #000;
+}
+
+#message.success .text {
+  color: #080;
+  font-weight: bold;
+  }
+
+form .label {
+ margin-top: 5px;
+ margin-bottom: 3px;
+}
+
+form label {
+ font-weight: bold;
+}
+
+.form_button_wrapper {
+	margin-top: 5px;
+	text-align: center;
+	border: 1px solid #ccc;
+	background: #efefef;
+	padding: 3px;
+}
+
+p.submit {
+  border-top: 2px solid #000;
+  padding-top: 3px;
+  margin-top: 8px;
+  margin-right: 0;
+  padding-right: 0;
+  text-align: right;
+}
+
+p.submit input {
+	border: 3px double #0F5C8E;
+	padding: 3px;
+	background: #fff url(images/submit_bg.gif) repeat-x top;
+	color: #0F5C8E;
+	font-weight: bold;
+	margin-right: 3px;
+}
