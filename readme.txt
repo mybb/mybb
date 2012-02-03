@@ -1,1 +1,1 @@
-Test repository for holding 1.8 files (until a more official repository can be made)
+This is a test repository until one can be made.
