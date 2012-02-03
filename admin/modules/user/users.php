@@ -159,6 +159,12 @@ if($mybb->input['action'] == "avatar_gallery")
 	// We've selected a new avatar for this user!
 	if($mybb->input['avatar'])
 	{
+	if(!verify_post_check($mybb->input['my_post_key']))
+		{
+			echo $lang->invalid_post_verify_key2;
+			exit;
+		}
+
 		$mybb->input['avatar'] = str_replace(array("./", ".."), "", $mybb->input['avatar']);
 		
 		if(file_exists("../".$mybb->settings['avatardir']."/".$mybb->input['avatar']))
@@ -334,7 +340,7 @@ if($mybb->input['action'] == "avatar_gallery")
 			$scaled_dimensions = scale_image($avatar['width'], $avatar['height'], 80, 80);
 			$top = ceil((80-$scaled_dimensions['height'])/2);
 			$left = ceil((80-$scaled_dimensions['width'])/2);
-			echo "<li><a href=\"index.php?module=user-users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;avatar={$avatar['path']}\"><span class=\"image\"><img src=\"{$mybb->settings['avatardir']}/{$avatar['path']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\" /></span><span class=\"title\">{$avatar['friendly_name']}</span></a></li>\n";
+			echo "<li><a href=\"index.php?module=user-users&amp;action=avatar_gallery&amp;uid={$user['uid']}&amp;avatar={$avatar['path']}&amp;my_post_key={$mybb->post_code}\"><span class=\"image\"><img src=\"{$mybb->settings['avatardir']}/{$avatar['path']}\" alt=\"\" style=\"margin-top: {$top}px;\" height=\"{$scaled_dimensions['height']}\" width=\"{$scaled_dimensions['width']}\" /></span><span class=\"title\">{$avatar['friendly_name']}</span></a></li>\n";
 		}
 	}
 	echo "</ul>\n";
@@ -347,7 +353,13 @@ if($mybb->input['action'] == "avatar_gallery")
 if($mybb->input['action'] == "activate_user")
 {
 	$plugins->run_hooks("admin_user_users_coppa_activate");
-	
+
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=user-users");
+	}
+
 	$query = $db->simple_select("users", "*", "uid='".intval($mybb->input['uid'])."'");
 	$user = $db->fetch_array($query);
 
@@ -3366,11 +3378,11 @@ function build_users_view($view)
 			{
 				if($user['coppauser'])
 				{
-					$popup->add_item($lang->approve_coppa_user, "index.php?module=user-users&amp;action=activate_user&amp;uid={$user['uid']}{$from_bit}");
+					$popup->add_item($lang->approve_coppa_user, "index.php?module=user-users&amp;action=activate_user&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}{$from_bit}");
 				}
 				else
 				{
-					$popup->add_item($lang->approve_user, "index.php?module=user-users&amp;action=activate_user&amp;uid={$user['uid']}{$from_bit}");
+					$popup->add_item($lang->approve_user, "index.php?module=user-users&amp;action=activate_user&amp;uid={$user['uid']}&amp;my_post_key={$mybb->post_code}{$from_bit}");
 				}
 			}
 

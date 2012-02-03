@@ -40,13 +40,18 @@ $plugins->run_hooks("admin_user_group_promotions_begin");
 if($mybb->input['action'] == "disable")
 {
 	$plugins->run_hooks("admin_user_group_promotions_disable");
-	
+
+	if($mybb->input['no']) 
+	{ 
+		admin_redirect("index.php?module=user-group_promotions"); 
+	}
+
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
 		admin_redirect("index.php?module=user-group_promotions");
 	}
-	
+
 	$query = $db->simple_select("promotions", "*", "pid='".intval($mybb->input['pid'])."'");
 	$promotion = $db->fetch_array($query);
 
@@ -56,18 +61,26 @@ if($mybb->input['action'] == "disable")
 		admin_redirect("index.php?module=user-group_promotions");
 	}
 
-	$promotion = array(
-		"enabled" => 0
-	);
-	$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
-	
-	$plugins->run_hooks("admin_user_group_promotions_disable_commit");
+	if($mybb->request_method == "post")
+	{
+		$promotion = array(
+			"enabled" => 0
+		);
 
-	// Log admin action
-	log_admin_action($promotion['pid'], $promotion['title']);
+		$db->update_query("promotions", $promotion, "pid = '{$mybb->input['pid']}'");
 
-	flash_message($lang->success_promo_disabled, 'success');
-	admin_redirect("index.php?module=user-group_promotions");
+		$plugins->run_hooks("admin_user_group_promotions_disable_commit");
+
+		// Log admin action
+		log_admin_action($promotion['pid'], $promotion['title']);
+
+		flash_message($lang->success_promo_disabled, 'success');
+		admin_redirect("index.php?module=user-group_promotions");
+	}
+	else
+	{
+		$page->output_confirm_action("index.php?module=user-group_promotions&amp;action=disable&amp;pid={$promotion['pid']}", $lang->confirm_promo_disable); 
+	}
 }
 
 if($mybb->input['action'] == "delete")
@@ -77,7 +90,7 @@ if($mybb->input['action'] == "delete")
 	if($mybb->input['no']) 
 	{ 
 		admin_redirect("index.php?module=user-group_promotions"); 
-	} 
+	}
 	
 	if(!trim($mybb->input['pid']))
 	{
@@ -115,7 +128,13 @@ if($mybb->input['action'] == "delete")
 if($mybb->input['action'] == "enable")
 {
 	$plugins->run_hooks("admin_user_group_promotions_enable");
-	
+
+	if(!verify_post_check($mybb->input['my_post_key']))
+	{
+		flash_message($lang->invalid_post_verify_key2, 'error');
+		admin_redirect("index.php?module=user-group_promotions");
+	}
+
 	if(!trim($mybb->input['pid']))
 	{
 		flash_message($lang->error_no_promo_id, 'error');
@@ -635,11 +654,11 @@ if(!$mybb->input['action'])
 		$popup->add_item($lang->edit_promotion, "index.php?module=user-group_promotions&amp;action=edit&amp;pid={$promotion['pid']}");
 		if($promotion['enabled'] == 1)
 		{
-			$popup->add_item($lang->disable_promotion, "index.php?module=user-group_promotions&amp;action=disable&amp;pid={$promotion['pid']}");
+			$popup->add_item($lang->disable_promotion, "index.php?module=user-group_promotions&amp;action=disable&amp;pid={$promotion['pid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_promo_disable}')");
 		}
 		else
 		{
-			$popup->add_item($lang->enable_promotion, "index.php?module=user-group_promotions&amp;action=enable&amp;pid={$promotion['pid']}");
+			$popup->add_item($lang->enable_promotion, "index.php?module=user-group_promotions&amp;action=enable&amp;pid={$promotion['pid']}&amp;my_post_key={$mybb->post_code}");
 		}
 		$popup->add_item($lang->delete_promotion, "index.php?module=user-group_promotions&amp;action=delete&amp;pid={$promotion['pid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_promo_deletion}')");
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
@@ -656,5 +675,4 @@ if(!$mybb->input['action'])
 	
 	$page->output_footer();
 }
-
 ?>

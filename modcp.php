@@ -452,7 +452,7 @@ if($mybb->input['action'] == "modlogs")
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
-		$logitem['action'] = $logitem['action'];
+		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
 		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
 		$trow = alt_trow();
@@ -551,12 +551,15 @@ if($mybb->input['action'] == "delete_announcement")
 {
 	$aid = intval($mybb->input['aid']);
 	$query = $db->simple_select("announcements", "aid, subject, fid", "aid='{$aid}'");
+
 	$announcement = $db->fetch_array($query);
+	$announcement['subject'] = htmlspecialchars_uni($announcement['subject']);
 
 	if(!$announcement['aid'])
 	{
 		error($lang->error_invalid_announcement);
 	}
+
 	if(($mybb->usergroup['issupermod'] != 1 && $announcement['fid'] == -1) || ($announcement['fid'] != -1 && !is_moderator($announcement['fid'])))
 	{
 		error_no_permission();
@@ -3315,7 +3318,7 @@ if(!$mybb->input['action'])
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
-		$logitem['action'] = $logitem['action'];
+		$logitem['action'] = htmlspecialchars_uni($logitem['action']);
 		$log_date = my_date($mybb->settings['dateformat'], $logitem['dateline']);
 		$log_time = my_date($mybb->settings['timeformat'], $logitem['dateline']);
 		$trow = alt_trow();

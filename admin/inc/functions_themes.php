@@ -193,6 +193,11 @@ function import_theme_xml($xml, $options=array())
 		
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
+			if(substr($stylesheet['attributes']['name'], -4) != ".css")
+			{
+				continue;
+			}
+
 			if(!$stylesheet['attributes']['lastmodified'])
 			{
 				$stylesheet['attributes']['lastmodified'] = TIME_NOW;

@@ -673,8 +673,10 @@ if($mybb->input['action'] == "editevent")
 		error_no_permission();
 	}
 
+	$event['name'] = htmlspecialchars_uni($event['name']);
+	
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb(htmlspecialchars_uni($event['name']), get_event_link($event['eid']));
+	add_breadcrumb($event['name'], get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_editevent);
 
 	$plugins->run_hooks("calendar_editevent_start");
@@ -1003,8 +1005,10 @@ if($mybb->input['action'] == "move")
 		error_no_permission();
 	}
 
+	$event['name'] = htmlspecialchars_uni($event['name']);
+
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb(htmlspecialchars_uni($event['name']), get_event_link($event['eid']));
+	add_breadcrumb($event['name'], get_event_link($event['eid']));
 	add_breadcrumb($lang->nav_move_event);
 
 	$plugins->run_hooks("calendar_move_start");
@@ -1213,12 +1217,12 @@ if($mybb->input['action'] == "event")
 		error_no_permission();
 	}
 
+	$event['name'] = htmlspecialchars_uni($event['name']);
+
 	add_breadcrumb(htmlspecialchars_uni($calendar['name']), get_calendar_link($calendar['cid']));
-	add_breadcrumb(htmlspecialchars_uni($event['name']), get_event_link($event['eid']));
+	add_breadcrumb($event['name'], get_event_link($event['eid']));
 
 	$plugins->run_hooks("calendar_event_start");
-
-	$event['name'] = htmlspecialchars_uni($event['name']);
 
 	$event_parser_options = array(
 		"allow_html" => $calendar['allowhtml'],

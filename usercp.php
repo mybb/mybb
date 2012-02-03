@@ -1581,7 +1581,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 			$lastposttid = $forum['lastposttid'];
 			$lastposter = $forum['lastposter'];
 			$lastpost_profilelink = build_profile_link($lastposter, $forum['lastposteruid']);
-			$lastpost_subject = $forum['lastpostsubject'];
+			$lastpost_subject = htmlspecialchars_uni($forum['lastpostsubject']);
 			if(my_strlen($lastpost_subject) > 25)
 			{
 				$lastpost_subject = my_substr($lastpost_subject, 0, 25) . "...";
@@ -2868,13 +2868,18 @@ if($mybb->input['action'] == "attachments")
 			$attachment['postlink'] = get_post_link($attachment['pid'], $attachment['tid']);
 			$attachment['threadlink'] = get_thread_link($attachment['tid']);
 			$attachment['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($attachment['threadsubject']));
+
 			$size = get_friendly_size($attachment['filesize']);
 			$icon = get_attachment_icon(get_extension($attachment['filename']));
+			$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+
 			$sizedownloads = $lang->sprintf($lang->attachment_size_downloads, $size, $attachment['downloads']);
 			$attachdate = my_date($mybb->settings['dateformat'], $attachment['dateline']);
 			$attachtime = my_date($mybb->settings['timeformat'], $attachment['dateline']);
 			$altbg = alt_trow();
+
 			eval("\$attachments .= \"".$templates->get("usercp_attachments_attachment")."\";");
+
 			// Add to bandwidth total
 			$bandwidth += ($attachment['filesize'] * $attachment['downloads']);
 			$totaldownloads += $attachment['downloads'];
