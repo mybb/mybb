@@ -775,7 +775,7 @@ function update_theme_stylesheet_list($tid)
 	$tid_list = implode(',', $parent_list);
 	
 	// Get our list of stylesheets
-	$query = $db->simple_select("themestylesheets", "sid,cachefile,attachedto,tid,lastmodified,name", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
+	$query = $db->simple_select("themestylesheets", "*", "tid IN ({$tid_list})", array('order_by' => 'tid', 'order_dir' => 'desc'));
 	while($stylesheet = $db->fetch_array($query))
 	{
 		if(!$stylesheets[$stylesheet['name']])
@@ -788,7 +788,9 @@ function update_theme_stylesheet_list($tid)
 			$stylesheets[$stylesheet['name']] = $stylesheet;
 		}
 	}
-	
+
+	uasort($stylesheets, 'order_stylesheets');
+
 	foreach($stylesheets as $name => $stylesheet)
 	{
 		$sid = $stylesheet['sid'];
@@ -853,6 +855,16 @@ function update_theme_stylesheet_list($tid)
 	}
 	
 	return true;
+}
+
+function order_stylesheets($a, $b)
+{
+	if($a['disporder'] == $b['disporder'])
+	{
+		return 0;
+	}
+
+	return ($a['disporder'] < $b['disporder']) ? -1 : 1;
 }
 
 function make_parent_theme_list($tid)

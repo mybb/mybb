@@ -68,6 +68,7 @@ $l['import_theme'] = "Import Theme";
 $l['create_a_theme'] = "Create a Theme";
 $l['name'] = "Name";
 $l['name_desc'] = "Specify a name for the new theme.";
+$l['display_order'] = "Order";
 
 $l['edit_theme_properties'] = "Edit Theme Properties";
 $l['name_desc_edit'] = "Specify a name for the theme.";
@@ -87,6 +88,7 @@ $l['table_spacing_desc'] = "The width of the inner padding of table cells, in pi
 $l['inner_border'] = "Inner Table Border Width";
 $l['inner_border_desc'] = "The amount of padding between each table cell, in pixels. This is HTML's <em>cellspacing</em> attribute of the <em>table</em> tag.";
 $l['save_theme_properties'] = "Save Theme Properties";
+$l['save_stylesheet_order'] = "Save Stylesheet Orders";
 
 $l['background'] = "Background";
 $l['extra_css_atribs'] = "Extra CSS Attributes";
