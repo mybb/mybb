@@ -1016,64 +1016,36 @@ if($mybb->input['action'] == "edit")
 	// Save any stylesheet orders
 	if($mybb->request_method == "post" && $mybb->input['do'] == "save_orders")
 	{
-		// Retrieve a list of stylesheets and get their display orders
-		$changed = array();
-		foreach($stylesheets as $filename => $style)
+		if(!is_array($mybb->input['disporder']))
 		{
-			if(strpos($filename, 'css.php?stylesheet=') !== false)
-			{
-				$style['sid'] = (integer)str_replace('css.php?stylesheet=', '', $filename);
-				$filename = $theme_stylesheets[$style['sid']];
-			}
-			else
-			{
-				$filename = basename($filename);
-				$style['sid'] = $theme_stylesheets[$filename]['sid'];
-			}
-
-			if($theme_stylesheets[$filename]['disporder'] != intval($mybb->input['disporder'][$style['sid']]))
-			{
-				$changed[] = $theme_stylesheets[$filename];
-			}
-		}
-
-		if(empty($changed))
-		{
-			die('No orders changed');
-		}
-		else
-		{
-			// We have some work to do and save these orders
-			foreach($changed as $stylesheet)
-			{
-				$sid = $stylesheet['sid'];
-				$disporder = intval($mybb->input['disporder'][$sid]);
-
-				if($theme['tid'] != $stylesheet['tid'])
-				{
-					$stylesheet['disporder'] = $disporder;
-					$sid = copy_stylesheet_to_theme($stylesheet, $theme['tid']);
-
-					$stylesheet['sid'] = $sid;
-				}
-
-				$updated_stylesheet = array(
-					'lastmodified' => TIME_NOW,
-					'disporder' => $disporder
-				);
-
-				$db->update_query("themestylesheets", $updated_stylesheet, "sid = '{$sid}'");
-
-				if(!cache_stylesheet($theme['tid'], $stylesheet['name'], $stylesheet['stylesheet']))
-				{
-					$db->update_query("themestylesheets", array('cachefile' => "css.php?stylesheet={$sid}"), "sid = '{$sid}'", 1);
-				}
-			}
-
-			update_theme_stylesheet_list($theme['tid']);
-
+			// Error out
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 		}
+
+		$orders = array();
+		foreach($theme_stylesheets as $stylesheet => $properties)
+		{
+			if(is_array($properties))
+			{
+				$order = intval($mybb->input['disporder'][$properties['sid']]);
+
+				$orders[$properties['name']] = $order;
+			}
+		}
+
+		asort($orders, SORT_NUMERIC);
+
+		// Save the orders in the theme properties
+		$properties = unserialize($theme['properties']);
+		$properties['disporder'] = $orders;
+
+		$update_array = array(
+			"properties" => $db->escape_string(serialize($properties))
+		);
+
+		$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
+
+		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
 
 	$page->add_breadcrumb_item(htmlspecialchars_uni($theme['name']), "index.php?module=style-themes&amp;action=edit&amp;tid={$mybb->input['tid']}");
@@ -1096,6 +1068,7 @@ if($mybb->input['action'] == "edit")
 		'link' => "index.php?module=style-themes&amp;action=export&amp;tid={$mybb->input['tid']}"
 	);
 	
+	$properties = unserialize($theme['properties']);
 	$page->output_nav_tabs($sub_tabs, 'edit_stylesheets');
 	
 	$table = new Table;
@@ -1108,7 +1081,23 @@ if($mybb->input['action'] == "edit")
 	echo $form->generate_hidden_field("tid", $theme['tid']);
 	echo $form->generate_hidden_field("do", 'save_orders');
 
-	foreach($stylesheets as $filename => $style)
+	// Order the stylesheets
+	$ordered_stylesheets = array();
+
+	foreach($properties['disporder'] as $style_name => $order)
+	{
+		foreach($stylesheets as $filename => $style)
+		{
+			if(basename($filename) != $style_name)
+			{
+				continue;
+			}
+
+			$ordered_stylesheets[$filename] = $style;
+		}
+	}
+
+	foreach($ordered_stylesheets as $filename => $style)
 	{
 		if(strpos($filename, 'css.php?stylesheet=') !== false)
 		{
@@ -1210,7 +1199,7 @@ if($mybb->input['action'] == "edit")
 		}
 		
 		$table->construct_cell("<strong><a href=\"index.php?module=style-themes&amp;action=edit_stylesheet&amp;file=".htmlspecialchars_uni($filename)."&amp;tid={$theme['tid']}\">{$filename}</a></strong>{$inherited}<br />{$attached_to}");
-		$table->construct_cell($form->generate_text_box("disporder[{$theme_stylesheets[$filename]['sid']}]", $theme_stylesheets[$filename]['disporder'], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
+		$table->construct_cell($form->generate_text_box("disporder[{$theme_stylesheets[$filename]['sid']}]", $properties['disporder'][$filename], array('style' => 'width: 80%; text-align: center;')), array("class" => "align_center"));
 		$table->construct_cell($popup->fetch(), array("class" => "align_center"));
 		$table->construct_row();
 	}
@@ -1228,8 +1217,7 @@ if($mybb->input['action'] == "edit")
 	{
 		$page->output_inline_error($errors);
 	}
-	
-	$properties = unserialize($theme['properties']);
+
 	$form = new Form("index.php?module=style-themes&amp;action=edit", "post", "edit");
 	echo $form->generate_hidden_field("tid", $theme['tid']);
 	$form_container = new FormContainer($lang->edit_theme_properties);

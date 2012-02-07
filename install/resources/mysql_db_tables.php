@@ -763,7 +763,6 @@ $tables[] = "CREATE TABLE mybb_themestylesheets(
 	stylesheet text NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
 	lastmodified bigint(30) NOT NULL default '0',
-	disporder smallint(5) NOT NULL default '0',
 	PRIMARY KEY(sid)
 ) ENGINE=MyISAM;";
 

@@ -207,7 +207,9 @@ if(!$theme['tid'])
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
+$theme_stylesheets = array();
 $theme['stylesheets'] = unserialize($theme['stylesheets']);
+
 foreach($theme['stylesheets'] as $script => $stylesheet)
 {
 	if(!in_array($script, array('global', THIS_SCRIPT)))
@@ -224,13 +226,24 @@ foreach($theme['stylesheets'] as $script => $stylesheet)
 
 		foreach($stylesheet[$action] as $page_stylesheet)
 		{
-			if($already_loaded[$page_stylesheet])
+			if(!$already_loaded[$page_stylesheet])
 			{
-				continue;
+				$theme_stylesheets[basename($page_stylesheet)] = $page_stylesheet;
 			}
-
-			$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$page_stylesheet}\" />\n";
+			
 			$already_loaded[$page_stylesheet] = 1;
+		}
+	}
+}
+
+$stylesheets = '';
+if(!empty($theme_stylesheets))
+{
+	foreach($theme['disporder'] as $style_name => $order)
+	{
+		if($theme_stylesheets[$style_name])
+		{
+			$stylesheets .= "<link type=\"text/css\" rel=\"stylesheet\" href=\"{$mybb->settings['bburl']}/{$theme_stylesheets[$style_name]}\" />\n";
 		}
 	}
 }

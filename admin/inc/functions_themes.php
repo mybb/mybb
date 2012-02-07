@@ -190,7 +190,29 @@ function import_theme_xml($xml, $options=array())
 			// Trick the system into thinking we have a good array =P
 			$theme['stylesheets']['stylesheet'] = array($theme['stylesheets']['stylesheet']);
 		}
-		
+
+		// Retrieve a list of inherited stylesheets
+		$query = $db->simple_select("themes", "stylesheets", "tid = '{$theme_id}'");
+		if($db->num_rows($query))
+		{
+			$inherited_stylesheets = unserialize($db->fetch_field($query, "stylesheets"));
+
+			$loop = 1;
+			foreach($inherited_stylesheets['inherited'] as $action => $stylesheets)
+			{
+				foreach($stylesheets as $filename => $stylesheet)
+				{
+					if($properties['disporder'][basename($filename)])
+					{
+						continue;
+					}
+
+					$properties['disporder'][basename($filename)] = $loop;
+					++$loop;
+				}
+			}
+		}
+
 		$loop = 1;
 		foreach($theme['stylesheets']['stylesheet'] as $stylesheet)
 		{
@@ -209,14 +231,15 @@ function import_theme_xml($xml, $options=array())
 				$stylesheet['attributes']['disporder'] = $loop;
 			}
 
+			$properties['disporder'][$stylesheet['attributes']['name']] = $stylesheet['attributes']['disporder'];
+
 			$new_stylesheet = array(
 				"name" => $db->escape_string($stylesheet['attributes']['name']),
 				"tid" => $theme_id,
 				"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
 				"stylesheet" => $db->escape_string($stylesheet['value']),
 				"lastmodified" => intval($stylesheet['attributes']['lastmodified']),
-				"cachefile" => $db->escape_string($stylesheet['attributes']['name']),
-				"disporder" => intval($stylesheet['attributes']['disporder'])
+				"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
 			);
 			$sid = $db->insert_query("themestylesheets", $new_stylesheet);
 			$css_url = "css.php?stylesheet={$sid}";
@@ -255,6 +278,24 @@ function import_theme_xml($xml, $options=array())
 		$updated_theme = array(
 			"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
 		);
+
+		if(is_array($properties['disporder']))
+		{
+			asort($properties['disporder'], SORT_NUMERIC);
+
+			// Because inherited stylesheets can mess this up
+			$loop = 1;
+			$orders = array();
+			foreach($properties['disporder'] as $filename => $order)
+			{
+				$orders[$filename] = $loop;
+				++$loop;
+			}
+
+			$properties['disporder'] = $orders;
+			$updated_theme['properties'] = $db->escape_string(serialize($properties));
+		}
+
 		$db->update_query("themes", $updated_theme, "tid='{$theme_id}'");
 	}
 	
@@ -798,8 +839,6 @@ function update_theme_stylesheet_list($tid)
 		}
 	}
 
-	uasort($stylesheets, 'order_stylesheets');
-
 	foreach($stylesheets as $name => $stylesheet)
 	{
 		$sid = $stylesheet['sid'];
@@ -864,16 +903,6 @@ function update_theme_stylesheet_list($tid)
 	}
 	
 	return true;
-}
-
-function order_stylesheets($a, $b)
-{
-	if($a['disporder'] == $b['disporder'])
-	{
-		return 0;
-	}
-
-	return ($a['disporder'] < $b['disporder']) ? -1 : 1;
 }
 
 function make_parent_theme_list($tid)

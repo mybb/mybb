@@ -673,8 +673,7 @@ $tables[] = "CREATE TABLE mybb_themestylesheets(
 	attachedto TEXT NOT NULL,
 	stylesheet TEXT NOT NULL,
 	cachefile varchar(100) NOT NULL default '',
-	lastmodified bigint(30) NOT NULL default '0',
-	disporder smallint NOT NULL default '0'
+	lastmodified bigint(30) NOT NULL default '0'
 );";
 
 $tables[] = "CREATE TABLE mybb_threadprefixes (

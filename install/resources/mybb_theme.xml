@@ -1,105 +1,299 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<theme name="MyBB Master Style" version="1600">
+<theme name="MyBB Master Style" version="1800">
 	<properties>
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
-		<logo><![CDATA[images/logo.gif]]></logo>
+		<logo><![CDATA[images/logo.png]]></logo>
 		<tablespace><![CDATA[4]]></tablespace>
 		<borderwidth><![CDATA[1]]></borderwidth>
 		<editortheme><![CDATA[default]]></editortheme>
 	</properties>
 	<stylesheets>
-		<stylesheet name="global.css" version="1600" disporder="1"><![CDATA[body {
-	background: #efefef;
+		<stylesheet name="global.css" version="1800" disporder="1"><![CDATA[body {
+	background: #fff;
 	color: #000;
-	font-family: Verdana, Arial, Sans-Serif;
-	font-size: 13px;
-	text-align: center; /* IE 5 fix */
+	text-align: center;
 	line-height: 1.4;
+	margin: 0;
+	
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
+	font-size: 13px;
 }
 
 a:link {
-	color: #026CB1;
+	color: #0072BC;
 	text-decoration: none;
 }
 
 a:visited {
-	color: #026CB1;
+	color: #0072BC;
 	text-decoration: none;
 }
 
 a:hover, a:active {
-	color: #000;
+	color: #0072BC;
 	text-decoration: underline;
 }
 
 #container {
-	width: 95%;
-	background: #fff;
-	border: 1px solid #e4e4e4;
-	color: #000000;
+	color: #000;
+	text-align: left;
+	line-height: 1.4;
+	margin: 0;
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
+	font-size: 13px;
+	min-width: 990px;
+}
+
+.wrapper {
+	width: 85%;
+	min-width: 970px;
+	max-width: 1500px;
 	margin: auto auto;
-	padding: 20px;
-	text-align: left; /* IE 5 fix */
+}
+
+#logo {
+	background: #fff;
+	padding: 10px 0;
+	border-bottom: 1px solid #263c30;
 }
 
 #content {
-	/* FIX: Make internet explorer wrap correctly */
+	background: #fff;
 	width: auto !important;
-
+	padding: 20px 10px;
+	overflow: hidden;
 }
 
-.menu ul {
-	color: #000000;
+#panel ul.menu {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#panel ul.menu li {
+	margin: 0 5px;
+	display: inline;
+}
+
+#panel ul.menu li a {
+	padding-left: 20px;
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#panel .upper ul.top_links {
+	float: right;
 	font-weight: bold;
-	text-align: right;
-	padding: 4px;
 }
 
-.menu ul a:link {
-	color: #000000;
-	text-decoration: none;
+#panel .upper ul.top_links a.search {
+	background-image: url(images/headerlinks/dark/search.gif);
 }
 
-.menu ul a:visited {
-	color: #000000;
-	text-decoration: none;
+#panel .upper ul.top_links a.memberlist {
+	background-image: url(images/headerlinks/dark/memberlist.gif);
 }
 
-.menu ul a:hover, .menu ul a:active {
-	color: #4874a3;
-	text-decoration: none;
+#panel .upper ul.top_links a.calendar {
+	background-image: url(images/headerlinks/dark/calendar.gif);
 }
 
-#panel {
+#panel .upper ul.top_links a.help {
+	background-image: url(images/headerlinks/dark/help.gif);
+}
+
+#panel .upper a.logout {
+	font-weight: bold;
+	background: url(images/headerlinks/dark/logout.gif) right no-repeat;
+	padding-right: 20px;
+	margin-left: 10px;
+}
+
+#panel .upper a.login,
+#panel .upper a.lost_password {
+	background: url(images/headerlinks/dark/login.gif) no-repeat;
+	padding-left: 20px;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+#panel .upper a.register {
+	background: url(images/headerlinks/dark/logout.gif) right no-repeat;
+	padding-right: 20px;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+#panel .lower ul.panel_links {
+	float: left;
+}
+
+#panel .lower ul.panel_links a.usercp {
+	background-image: url(images/headerlinks/usercp.gif);
+}
+
+#panel .lower ul.panel_links a.modcp {
+	background-image: url(images/headerlinks/modcp.gif);
+}
+
+#panel .lower ul.panel_links a.admincp {
+	background-image: url(images/headerlinks/admincp.gif);
+}
+
+#panel .lower ul.user_links {
+	float: right;
+}
+
+#panel .lower ul.user_links li a {
+	padding: 0;
+}
+
+#panel .upper {
+	background: #0f0f0f url(images/tcat.png) repeat-x;
+	color: #fff;
+	border-top: 1px solid #444;
+	border-bottom: 1px solid #000;
+	padding: 7px;
+	clear: both;
+}
+
+#panel .upper a:link,
+#panel .upper a:visited,
+#panel .upper a:hover,
+#panel .upper a:active {
+	color: #fff;
+}
+
+#panel .lower {
 	background: #efefef;
-	color: #000000;
-	font-size: 11px;
-	border: 1px solid #D4D4D4;
-	padding: 8px;
+	color: #999;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #ccc;
+	padding: 5px;
+	overflow: hidden;
+}
+
+#panel .lower a:link,
+#panel .lower a:visited {
+	color: #666;
+}
+
+#panel .lower a:hover,
+#panel .lower a:active {
+	color: #333;
+	text-decoration: none;
 }
 
 #panel .remember_me input {
 	vertical-align: middle;
-	margin-top: -1px;
+	margin: -3px 0 0 5px;
+}
+
+#panel input {
+	margin: -3px 0;
+}
+
+#panel input.button {
+	padding: 0;
+}
+
+#footer {
+	clear: both;
+}
+
+#footer ul.menu {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#footer ul.menu li {
+	margin: 0 5px;
+	display: inline;
+}
+
+#footer .upper {
+	background: #efefef;
+	border-top: 1px solid #bbb;
+	border-bottom: 1px solid #bbb;
+	padding: 6px;	
+	font-size: 12px;
+	overflow: hidden;
+}
+
+#footer a:link,
+#footer a:visited {
+	color: #777;
+}
+
+#footer a:hover,
+#footer a:active {
+	color: #555;
+	text-decoration: none;
+}
+
+#footer .upper .language {
+	float: right;
+	margin: -1px;
+}
+
+#footer .upper .language select {
+	border-color: #ccc;
+}
+
+#footer .upper ul.bottom_links {
+	float: left;
+	margin: 0 0 0 -5px;
+}
+
+#footer .lower {
+	color: #666;
+	padding: 6px 6px 12px 6px;
+	overflow: hidden;
+	font-size: 11px;
+}
+
+#footer .lower a:link,
+#footer .lower a:visited {
+	color: #444;
+	font-weight: bold;
+}
+
+#footer .lower a:hover,
+#footer .lower a:active {
+	color: #333;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+#footer .lower #current_time {
+	float: right;
+color: #888;
+}
+
+fieldset {
+	border: 1px solid #ddd;
 }
 
 table {
 	color: #000000;
-	font-family: Verdana, Arial, Sans-Serif;
 	font-size: 13px;
 }
 
 .tborder {
-	background: #81A2C4;
+	background: #fff;
 	width: 100%;
 	margin: auto auto;
-	border: 1px solid #0F5C8E;
+	border: 1px solid #ccc;
+	padding: 1px;
 }
 
 .thead {
-	background: #026CB1 url(images/thead_bg.gif) top left repeat-x;
+	background: #02426c url(images/thead.png) top left repeat-x;
 	color: #ffffff;
+	border-bottom: 1px solid #263c30;
+	padding: 8px;
 }
 
 .thead a:link {
@@ -118,49 +312,73 @@ table {
 }
 
 .tcat {
-	background: #ADCBE7;
-	color: #000000;
+	background: #0f0f0f url(images/tcat.png) repeat-x;
+	color: #fff;
+	border-top: 1px solid #444;
+	border-bottom: 1px solid #000;
+	padding: 6px;
+	
 	font-size: 12px;
 }
 
 .tcat a:link {
-	color: #000000;
+	color: #fff;
 }
 
 .tcat a:visited {
-	color: #000000;
+	color: #fff;
 }
 
 .tcat a:hover, .tcat a:active {
-	color: #000000;
+	color: #fff;
 }
 
 .trow1 {
 	background: #f5f5f5;
+	border: 1px solid;
+	border-color: #fff #ddd #ddd #fff;
 }
 
 .trow2 {
-	background: #EFEFEF;
+	background: #efefef;
+	border: 1px solid;
+	border-color: #fff #ddd #ddd #fff;
 }
 
 .trow_shaded {
 	background: #ffdde0;
+	border: 1px solid;
+	border-color: #fff #ffb8be #ffb8be #fff;
 }
 
 .trow_selected td {
 	background: #FFFBD9;
+	color: #000;
+	border-right-color: #F7E86A;
+	border-bottom-color: #F7E86A;
+}
+
+.trow_selected td a:link,
+.trow_selected td a:visited,
+.trow_selected td a:hover,
+.trow_selected td a:active {
+	color: #000;
 }
 
 .trow_sep {
-	background: #e5e5e5;
+	background: #ddd;
 	color: #000;
+	border-bottom: 1px solid #c5c5c5;
+	padding: 6px;
 	font-size: 12px;
 	font-weight: bold;
 }
 
 .tfoot {
-	background: #026CB1 url(images/thead_bg.gif) top left repeat-x;
+	background: #02426c url(images/thead.png) top left repeat-x;
 	color: #ffffff;
+	border-top: 1px solid #fff;
+	padding: 6px;
 }
 
 .tfoot a:link {
@@ -178,6 +396,13 @@ table {
 	text-decoration: underline;
 }
 
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #263c30;
+}
+
 .bottommenu {
 	background: #efefef;
 	color: #000000;
@@ -187,8 +412,7 @@ table {
 
 .navigation {
 	color: #000000;
-	font-size: 13px;
-	font-weight: bold;
+	font-size: 12px;
 }
 
 .navigation a:link {
@@ -200,12 +424,12 @@ table {
 }
 
 .navigation a:hover, .navigation a:active {
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 .navigation .active {
 	color: #000000;
-	font-size: 13px;
+	font-size: small;
 	font-weight: bold;
 }
 
@@ -221,23 +445,35 @@ table {
 input.textbox {
 	background: #ffffff;
 	color: #000000;
-	border: 1px solid #0f5c8e;
-	padding: 1px;
+	border: 1px solid #ccc;
+	padding: 3px;
+	
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
 textarea {
 	background: #ffffff;
 	color: #000000;
-	border: 1px solid #0f5c8e;
+	border: 1px solid #ccc;
 	padding: 2px;
-	font-family: Verdana, Arial, Sans-Serif;
 	line-height: 1.4;
+	
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 	font-size: 13px;
 }
 
 select {
 	background: #ffffff;
-	border: 1px solid #0f5c8e;
+	padding: 3px;
+	border: 1px solid #ccc;
+	
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
+}
+
+input.button {
+	padding: 2px;
+	cursor: pointer;
+	font-family: Tahoma, Verdana, Arial, Sans-Serif;
 }
 
 .editor {
@@ -247,33 +483,34 @@ select {
 
 .editor_control_bar {
 	background: #fff;
-	border: 1px solid #0f5c8e;
+	border: 1px solid #ccc;
 }
 
 .autocomplete {
 	background: #fff;
-	border: 1px solid #000;
 	color: black;
+	border: 1px solid #ccc;
+	padding: 1px;
 }
 
 .autocomplete_selected {
-	background: #adcee7;
-	color: #000;
+	background: #0072BC;
+	color: #fff;
 }
 
 .popup_menu {
-	background: #ccc;
-	border: 1px solid #000;
+	background: #fff;
+	border: 1px solid #ccc;
 }
 
 .popup_menu .popup_item {
-	background: #fff;
+	background: #efefef;
 	color: #000;
 }
 
 .popup_menu .popup_item:hover {
-	background: #C7DBEE;
-	color: #000;
+	background: #0072BC;
+	color: #fff;
 }
 
 .trow_reputation_positive {
@@ -355,8 +592,9 @@ img {
 }
 
 .selectall {
-	background-color: #FFFBD9;
-	font-weight: bold;
+	background: #FFFBD9;
+	border-bottom: 1px solid #F7E86A;
+	color: #000;
 	text-align: center;
 }
 
@@ -365,26 +603,6 @@ img {
 }
 
 .float_right {
-	float: right;
-}
-
-.menu ul {
-	list-style: none;
-	margin: 0;
-}
-
-.menu li {
-	display: inline;
-	padding-left: 5px;
-}
-
-.menu img {
-	padding-right: 5px;
-	vertical-align: top;
-}
-
-#panel .links {
-	margin: 0;
 	float: right;
 }
 
@@ -407,16 +625,12 @@ hr {
 	border: 0px;
 }
 
-#copyright {
-	font: 11px Verdana, Arial, Sans-Serif;
-	margin: 0;
-	padding: 10px 0 0 0;
-}
-
 #debug {
 	float: right;
 	text-align: right;
-	margin-top: 0;
+	margin-top: 20px;
+	
+	font-size: 11px;
 }
 
 blockquote {
@@ -491,9 +705,10 @@ form {
 
 .popup_menu .popup_item {
 	display: block;
-	padding: 3px;
-	text-decoration: none;
+	padding: 4px;
 	white-space: nowrap;
+	
+	text-decoration: none;
 }
 
 .popup_menu a.popup_item:hover {
@@ -565,10 +780,10 @@ div.error p em {
 	padding-left: 24px;
 	display: block;
 	color: #C00;
-	background: url('images/error.gif') no-repeat 0;
+	background: url(images/error.gif) no-repeat 0;
 }
 
-div.error ul {
+div.error.ul {
 	margin-left: 24px;
 }
 
@@ -589,28 +804,34 @@ div.error ul {
 .tfoot .pagination, .tcat .pagination {
 	padding-top: 0;
 }
+
 .pagination .pages {
 	font-weight: bold;
 }
 
 .pagination .pagination_current, .pagination a {
-	padding: 2px 6px;
+	padding: 3px 6px;
 	margin-bottom: 3px;
 }
 
 .pagination a {
-	border: 1px solid #81A2C4;
+	background: #f5f5f5;
+	border: 1px solid #ccc;
 }
 
 .pagination .pagination_current {
-	background: #F5F5F5;
-	border: 1px solid #81A2C4;
-	font-weight: bold;
+	background: none;
 	color: #000;
+	border: none;
+	
+	font-weight: bold;
 }
 
 .pagination a:hover {
-	background: #F5F5F5;
+	background: #48715b;
+	color: #fff;
+	border-color: #263c30;
+	
 	text-decoration: none;
 }
 
@@ -637,6 +858,7 @@ div.error ul {
 .forum_legend dd {
 	float: left;
 	margin-right: 10px;
+	margin-top: 7px;
 }
 
 .forum_legend dt {
@@ -662,12 +884,18 @@ div.error ul {
 	padding: 5px;
 }
 
+.post_buttons {
+	background: #f5f5f5;
+	padding: 3px 3px 0 3px;
+	border-bottom: 1px solid #ddd;
+}
+
 .post_content {
 	padding: 5px 10px;
 }
 
 .quick_jump {
-	background: url('images/jump.gif') no-repeat 0;
+	background: url(images/jump.gif) no-repeat 0;
 	width: 13px;
 	height: 13px;
 	padding-left: 13px; /* amount of padding needed for image to fully show */
@@ -700,18 +928,23 @@ div.error ul {
 }
 
 .pagination_breadcrumb {
-	background-color: #f5f5f5;
+	background-color: #efefef;
 	border: 1px solid #fff;
 	outline: 1px solid #ccc;
 	padding: 5px;
 	margin-top: 5px;
+	
 	font-weight: normal;
-	white-space: nowrap;
 }
 
 .pagination_breadcrumb_link {
 	vertical-align: middle;
 	cursor: pointer;
+}
+
+form #message
+{
+    width: 500px;
 }]]>
 		</stylesheet>
 		<stylesheet name="usercp.css" attachedto="usercp.php|usercp2.php|private.php" version="1600" disporder="2"><![CDATA[.usercp_nav_item {
@@ -915,7 +1148,7 @@ div.error ul {
 	border: 1px solid #ccc;
 	text-decoration: none;
 }]]></stylesheet>
-		<stylesheet name="star_ratings.css" attachedto="forumdisplay.php|showthread.php" version="1400" disporder="4"><![CDATA[.star_rating,
+		<stylesheet name="star_ratings.css" attachedto="forumdisplay.php|showthread.php" version="1800" disporder="4"><![CDATA[.star_rating,
 .star_rating li a:hover,
 .star_rating .current_rating {
 	background: url(images/star_rating.gif) left -1000px repeat-x;
@@ -996,11 +1229,12 @@ td .star_rating {
 }
 
 .inline_rating {
+	background: url(images/star_rating.gif) left -1000px repeat-x;
 	float: left;
 	vertical-align: middle;
 	padding-right: 5px;
 }]]></stylesheet>
-		<stylesheet name="showthread.css" attachedto="showthread.php" version="1400" disporder="5"><![CDATA[ul.thread_tools, ul.thread_tools li {
+	<stylesheet name="showthread.css" attachedto="showthread.php" version="1400" disporder="5"><![CDATA[ul.thread_tools, ul.thread_tools li {
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -1027,6 +1261,80 @@ ul.thread_tools li.subscription_add {
 
 ul.thread_tools li.subscription_remove {
 	background: url('images/unsubscribe.gif') no-repeat 0px 0px;
+}]]></stylesheet>
+	<stylesheet name="css3.css" version="1800" disporder="6"><![CDATA[tr td.trow1:first-child,
+tr td.trow2:first-child,
+tr td.trow_shaded:first-child {
+	border-left: 0;
+}
+
+tr td.trow1:last-child,
+tr td.trow2:last-child,
+tr td.trow_shaded:last-child {
+	border-right: 0;
+}
+
+.tborder {
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+
+.thead,
+.rounded_top {
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}
+
+.tfoot,
+.rounded_bottom {
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+input.textbox,
+select,
+textarea,
+.editor_control_bar,
+fieldset,
+.pm_alert,
+.red_alert,
+.popup_menu {
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.popup_menu .popup_item_container:first-child .popup_item {
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;	
+}
+
+.popup_menu .popup_item_container:last-child .popup_item {
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.pagination a {
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }]]></stylesheet>
 	</stylesheets>
 	<templates>
@@ -1561,13 +1869,26 @@ body {
 		<template name="modcp_ipsearch_noresults" version="1400"><![CDATA[<tr>
 	<td class="trow1" align="center" colspan="2">{$lang->error_no_results}</td>
 </tr>]]></template>
-		<template name="header_welcomeblock_member" version="1400"><![CDATA[	<span style="float:right;">{$lang->welcome_current_time}</span>
-		{$lang->welcome_back} (<a href="{$mybb->settings['bburl']}/usercp.php"><strong>{$lang->welcome_usercp}</strong></a>{$modcplink}{$admincplink} &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}">{$lang->welcome_logout}</a>)<br />
-				<span class="links">
-					<a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 350, 350);">{$lang->welcome_open_buddy_list}</a>
-				</span>
-				<a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a> | <a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a> | <a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}]]></template>
-		<template name="header_welcomeblock_member_moderator" version="1400"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/modcp.php">{$lang->welcome_modcp}</a>]]></template>
+		<template name="header_welcomeblock_member" version="1800"><![CDATA[<!-- Continuation of div(class="upper") as opened in the header template -->
+	<span class="welcome">{$lang->welcome_back} <a href="{$mybb->settings['bburl']}/member.php?action=logout&amp;logoutkey={$mybb->user['logoutkey']}" class="logout">{$lang->welcome_logout}</a></span>
+	</div>
+</div>
+<div class="lower">
+	<div class="wrapper">
+		<ul class="menu panel_links">
+			<li><a href="{$mybb->settings['bburl']}/usercp.php" class="usercp">{$lang->welcome_usercp}</a></li>
+			{$modcplink}
+			{$admincplink}
+		</ul>
+		<ul class="menu user_links">
+			<li><a href="#" onclick="MyBB.popupWindow('{$mybb->settings['bburl']}/misc.php?action=buddypopup', 'buddyList', 350, 350);">{$lang->welcome_open_buddy_list}</a></li>
+			<li><a href="{$mybb->settings['bburl']}/search.php?action=getnew">{$lang->welcome_newposts}</a></li>
+			<li><a href="{$mybb->settings['bburl']}/search.php?action=getdaily">{$lang->welcome_todaysposts}</a></li>
+			<li><a href="{$mybb->settings['bburl']}/private.php">{$lang->welcome_pms}</a> {$lang->welcome_pms_usage}</li>
+		</ul>
+	</div>
+</div>]]></template>
+		<template name="header_welcomeblock_member_moderator" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php" class="modcp">{$lang->welcome_modcp}</a></li>]]></template>
 		<template name="postbit_online" version="1400"><![CDATA[<a href="online.php" title="{$lang->postbit_status_online}"><img src="{$theme['imgdir']}/buddy_online.gif" border="0" alt="{$lang->postbit_status_online}" /></a>]]></template>
 		<template name="showthread_moderationoptions" version="1600"><![CDATA[{$inlinemod}
 <form action="moderation.php" method="post" style="margin-top: 0; margin-bottom: 0;" id="moderator_options">
@@ -1634,7 +1955,7 @@ body {
 			<td class="tcat"><span class="smalltext"><strong>{$lang->message}</strong></span></td>
 		</tr>
 		]]></template>
-		<template name="showthread" version="1603"><![CDATA[<html>
+		<template name="showthread" version="1800"><![CDATA[<html>
 <head>
 <title>{$thread['subject']}</title>
 {$headerinclude}
@@ -1643,7 +1964,7 @@ body {
 	var quickdelete_confirm = "{$lang->quickdelete_confirm}";
 // -->
 </script>
-<script type="text/javascript" src="jscripts/thread.js?ver=1603"></script>
+<script type="text/javascript" src="jscripts/thread.js?ver=1400"></script>
 </head>
 <body>
 	{$header}
@@ -1656,9 +1977,9 @@ body {
 		{$newreply}
 	</div>
 	{$ratethread}
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; border-bottom-width: 0;">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="clear: both; margin-bottom: 5px;">
 		<tr>
-			<td class="thead" colspan="2">
+			<td class="thead rounded_bottom" colspan="2">
 				<div style="float: right;">
 					<span class="smalltext"><strong><a href="showthread.php?mode=threaded&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->threaded}</a> | <a href="showthread.php?mode=linear&amp;tid={$tid}&amp;pid={$pid}#pid{$pid}">{$lang->linear}</a></strong></span>
 				</div>
@@ -1667,14 +1988,13 @@ body {
 				</div>
 			</td>
 		</tr>
-		{$classic_header}
 	</table>
 	<div id="posts">
 		{$posts}
 	</div>
-	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="border-top-width: 0;">
+	<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
-			<td colspan="2" class="tfoot">
+			<td colspan="2" class="tfoot rounded_top">
 				{$search_thread}
 				<div>
 					<strong>&laquo; <a href="{$next_oldest_link}">{$lang->next_oldest}</a> | <a href="{$next_newest_link}">{$lang->next_newest}</a> &raquo;</strong>
@@ -1697,7 +2017,7 @@ body {
 		<ul class="thread_tools">
 			<li class="printable"><a href="printthread.php?tid={$tid}">{$lang->view_printable}</a></li>
 			<li class="sendthread"><a href="sendthread.php?tid={$tid}">{$lang->send_thread}</a></li>
-			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}&amp;my_post_key={$mybb->post_code}">{$add_remove_subscription_text}</a></li>
+			<li class="subscription_{$add_remove_subscription}"><a href="usercp2.php?action={$add_remove_subscription}subscription&amp;tid={$tid}">{$add_remove_subscription_text}</a></li>
 		</ul>
 	</div>
 
@@ -2344,7 +2664,7 @@ body {
 	</div>
 	</td>
 </tr>]]></template>
-		<template name="header_welcomeblock_member_admin" version="1605"><![CDATA[ &mdash; <a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php">{$lang->welcome_admin}</a>]]></template>
+		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
 		<template name="forumdisplay_newthread" version="120"><![CDATA[<a href="newthread.php?fid={$fid}"><img src="{$theme['imglangdir']}/newthread.gif" alt="{$lang->post_thread}" title="{$lang->post_thread}" /></a>]]></template>
 		<template name="showthread_threaded_bitactive" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><strong>{$post['subject']}</strong> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate} {$posttime}</span></div>]]></template>
 		<template name="showthread_threaded_bit" version="120"><![CDATA[<div style="margin-left: {$indentsize}px;"><a href="showthread.php?tid={$tid}&amp;pid={$post['pid']}&amp;mode=threaded">{$post['subject']}</a> <span class="smalltext">- {$lang->by} {$post['profilelink']} - {$postdate}, {$posttime}</span></div>]]></template>
@@ -2674,31 +2994,41 @@ body {
 {$referral_link}]]></template>
 		<template name="usercp_reputation" version="1600"><![CDATA[<strong>{$lang->reputation}</strong> {$reputation_link} [<a href="reputation.php?uid={$mybb->user['uid']}">{$lang->details}</a>]<br />]]></template>
 		<template name="usercp_currentavatar" version="1600"><![CDATA[<td class="trow1" valign="middle" align="center" width="1"><div class="usercp_container"><img src="{$mybb->user['avatar']}" alt="{$mybb->user['username']}" title="{$mybb->user['username']}" {$avatar_width_height} /></div></td>]]></template>
-		<template name="footer" version="1413"><![CDATA[			<br />
-			<div class="bottommenu">
-				<div class="float_right">{$lang_select}</div>
-				<div>
-					<span class="smalltext"><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a> | <a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a> | <a href="#top">{$lang->bottomlinks_returntop}</a> | <a href="#content">{$lang->bottomlinks_returncontent}</a> | <a href="<archive_url>">{$lang->bottomlinks_litemode}</a> | <a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></span>
-				</div>
-			</div>
-			</div>
-		<hr class="hidden" />
-			<div id="copyright">
-				<div id="debug"><debugstuff></div>
+		<template name="footer" version="1800"><![CDATA[<div id="debug"><debugstuff></div>
+	</div>
+</div>
+<div id="footer">
+	<div class="upper">
+		<div class="wrapper">
+			{$lang_select}
+			<ul class="menu bottom_links">
+				<li><a href="{$mybb->settings['contactlink']}">{$lang->bottomlinks_contactus}</a></li>
+				<li><a href="{$mybb->settings['homeurl']}">{$mybb->settings['homename']}</a></li>
+				<li><a href="#top">{$lang->bottomlinks_returntop}</a></li>
+				<li><a href="<archive_url>">{$lang->bottomlinks_litemode}</a></li>
+				<li><a href="{$mybb->settings['bburl']}/misc.php?action=syndication">{$lang->bottomlinks_syndication}</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="lower">
+		<div class="wrapper">
+			<span id="current_time">{$lang->welcome_current_time}</span>
+			<span id="copyright">
 				<!-- MyBB is free software developed and maintained by a volunteer community. 
-					 It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact, 
-					 to show your support for MyBB.  If you choose to remove or modify the copyright below, 
-					 you may be refused support on the MyBB Community Forums.
-					 
-					 This is free software, support us and we'll support you. -->
-{$lang->powered_by} <a href="http://mybb.com/" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://mybb.com/" target="_blank">MyBB Group</a>.<br />
+					It would be much appreciated by the MyBB Group if you left the full copyright and "powered by" notice intact, 
+					to show your support for MyBB.  If you choose to remove or modify the copyright below, 
+					you may be refused support on the MyBB Community Forums.
+				 
+					This is free software, support us and we'll support you. -->
+				{$lang->powered_by} <a href="http://www.mybboard.net" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybboard.net" target="_blank">MyBB Group</a>.
 				<!-- End powered by -->
-				<br />
-<br class="clear" />
+			</span>
+		</div>
+	</div>
+</div>
 <!-- The following piece of code allows MyBB to run scheduled tasks. DO NOT REMOVE -->{$task_image}<!-- End task image code -->
 {$auto_dst_detection}
-		</div>
-		</div>]]></template>
+</div>]]></template>
 		<template name="private_archive_csv" version="120"><![CDATA[{$lang->export_date_sent},{$lang->export_folder},{$lang->export_subject},{$lang->export_to},{$lang->export_from},{$lang->export_message}
 {$pmsdownload}]]></template>
 		<template name="usercp_profile_customtitle" version="120"><![CDATA[<fieldset class="trow2">
@@ -3244,13 +3574,13 @@ body {
 </tr>
 {$similarthreadbits}
 </table>]]></template>
-		<template name="nav_sep" version="120"><![CDATA[ / ]]></template>
+		<template name="nav_sep" version="1800"><![CDATA[&rsaquo;]]></template>
 		<template name="post_attachments_new" version="1604"><![CDATA[<tr>
 <td class="trow1" width="1"><img src="{$theme['imgdir']}/paperclip.gif" alt="" /></td>
 <td class="trow1" style="white-space: nowrap"><strong>{$lang->new_attachment}</strong> <input type="file" name="attachment" size="30" class="fileupload" /></td><td class="trow1" align="center">{$attach_update_options} <input type="submit" class="button" name="newattachment" value="{$lang->add_attachment}"  tabindex="13" />
 </td>
 </tr>]]></template>
-		<template name="nav_sep_active" version="120"><![CDATA[ / ]]></template>
+		<template name="nav_sep_active" version="1800"><![CDATA[<br /><img src="{$theme['imgdir']}/nav_bit.gif" alt="" />]]></template>
 		<template name="member_profile_online" version="1400"><![CDATA[<a href="online.php"><span class="online" style="font-weight: bold;">{$lang->postbit_status_online}</span></a> ({$location} @ {$location_time})]]></template>
 		<template name="member_profile_offline" version="1400"><![CDATA[<span class="offline" style="font-weight: bold;">{$lang->postbit_status_offline}</span>]]></template>
 		<template name="member_profile" version="1602"><![CDATA[<html>
@@ -3388,46 +3718,49 @@ body {
 </tr>
 </table>
 ]]></template>
-		<template name="header_welcomeblock_guest" version="1606"><![CDATA[<script type="text/javascript">
+		<template name="header_welcomeblock_guest" version="1800"><![CDATA[<script type="text/javascript">
 <!--
-	lang.username = "{$login_username}";
+	lang.username = "{$lang->login_username}";
 	lang.password = "{$lang->login_password}";
 	lang.login = "{$lang->login}";
-	lang.lost_password = " &mdash; <a href=\"{$mybb->settings['bburl']}/member.php?action=lostpw\">{$lang->lost_password}<\/a>";
-	lang.register_url = " &mdash; <a href=\"{$mybb->settings['bburl']}/member.php?action=register\">{$lang->welcome_register}<\/a>";
+	lang.lost_password = "<a href=\"{$mybb->settings['bburl']}/member.php?action=lostpw\" class=\"lost_password\">{$lang->lost_password}<\/a>";
+	lang.register_url = "<a href=\"{$mybb->settings['bburl']}/member.php?action=register\" class=\"register\">{$lang->welcome_register}<\/a>";
 	lang.remember_me = "{$lang->remember_me}";
 // -->
 </script>
-<span style="float: right;">{$lang->welcome_current_time}</span>
-		<span id="quick_login">{$lang->welcome_guest} (<a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="MyBB.quickLogin(); return false;">{$lang->welcome_login}</a> &mdash; <a href="{$mybb->settings['bburl']}/member.php?action=register">{$lang->welcome_register}</a>)</span>]]></template>
-		<template name="header" version="1600"><![CDATA[	<div id="container">
+<!-- Continuation of div(class="upper") as opened in the header template -->
+	<span class="welcome" id="quick_login">{$lang->welcome_guest} <a href="{$mybb->settings['bburl']}/member.php?action=login" onclick="MyBB.quickLogin(); return false;" class="login">{$lang->welcome_login}</a> <a href="{$mybb->settings['bburl']}/member.php?action=register" class="register">{$lang->welcome_register}</a></span>
+	</div>
+</div>]]></template>
+		<template name="header" version="1800"><![CDATA[<div id="container">
 		<a name="top" id="top"></a>
 		<div id="header">
-			<div class="logo"><a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a></div>
-			<div class="menu">
-				<ul>
-					<li><a href="{$mybb->settings['bburl']}/search.php"><img src="{$theme['imgdir']}/toplinks/search.gif" alt="" title="" />{$lang->toplinks_search}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/memberlist.php"><img src="{$theme['imgdir']}/toplinks/memberlist.gif" alt="" title="" />{$lang->toplinks_memberlist}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/calendar.php"><img src="{$theme['imgdir']}/toplinks/calendar.gif" alt="" title="" />{$lang->toplinks_calendar}</a></li>
-					<li><a href="{$mybb->settings['bburl']}/misc.php?action=help"><img src="{$theme['imgdir']}/toplinks/help.gif" alt="" title="" />{$lang->toplinks_help}</a></li>
-				</ul>
+			<div id="logo">
+				<div class="wrapper">
+					<a href="{$mybb->settings['bburl']}/index.php"><img src="{$theme['logo']}" alt="{$mybb->settings['bbname']}" title="{$mybb->settings['bbname']}" /></a>
+				</div>
 			</div>
-			<hr class="hidden" />
 			<div id="panel">
-				{$welcomeblock}
+				<div class="upper"><!-- This div(class="upper") is closed in the header_welcomeblock_member and header_welcomeblock_guest templates -->
+					<div class="wrapper">
+						<ul class="menu top_links">
+							<li><a href="{$mybb->settings['bburl']}/search.php" class="search">{$lang->toplinks_search}</a></li>
+							<li><a href="{$mybb->settings['bburl']}/memberlist.php" class="memberlist">{$lang->toplinks_memberlist}</a></li>
+							<li><a href="{$mybb->settings['bburl']}/calendar.php" class="calendar">{$lang->toplinks_calendar}</a></li>
+							<li><a href="{$mybb->settings['bburl']}/misc.php?action=help" class="help">{$lang->toplinks_help}</a></li>
+						</ul>
+						{$welcomeblock}
 			</div>
 		</div>
-		<hr class="hidden" />
-		<br class="clear" />
 		<div id="content">
-			{$pm_notice}
-			{$bannedwarning}
-			{$bbclosedwarning}
-			{$unreadreports}
-			{$pending_joinrequests}
-			<navigation>
-			<br />
-]]></template>
+			<div class="wrapper">
+				{$pm_notice}
+				{$bannedwarning}
+				{$bbclosedwarning}
+				{$unreadreports}
+				{$pending_joinrequests}
+				<navigation>
+				<br />]]></template>
 		<template name="usercp_usergroups_leader_usergroup" version="120"><![CDATA[<tr>
 <td class="{$trow}"><strong>{$usergroup['title']}</strong></td>
 <td class="{$trow}" align="center">{$usergroup['users']} {$memberlistlink}</td>
@@ -4870,12 +5203,12 @@ body {
 		<template name="forumdisplay_threads_sep" version="120"><![CDATA[<tr>
 <td class="trow_sep" colspan="{$colspan}">{$lang->normal_threads}</td>
 </tr>]]></template>
-		<template name="postbit" version="1600"><![CDATA[{$ignore_bit}
+		<template name="postbit" version="1800"><![CDATA[{$ignore_bit}
 <a name="pid{$post['pid']}" id="pid{$post['pid']}"></a>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="margin-bottom: 5px; {$post_visibility}" id="post_{$post['pid']}">
 	<tbody>
 		<tr>
-			<td class="tcat">
+			<td class="tcat rounded_top">
 				<div class="float_left smalltext">
 					{$post['postdate']}, {$post['posttime']} <span id="edited_by_{$post['pid']}">{$post['editedmsg']}</span>
 				</div>
@@ -8393,16 +8726,17 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 	</td>
 </tr>
 </table>]]></template>
-	<template name="footer_languageselect" version="1605"><![CDATA[<form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
-		{$lang_redirect_url['form_html']}
-		<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-		<select name="language" onchange="MyBB.changeLanguage();">
-			<optgroup label="{$lang->select_language}">
-				{$lang_options}
-			</optgroup>
-		</select>
-		{$gobutton}
-	</form>]]></template>
+	<template name="footer_languageselect" version="1800"><![CDATA[<div class="language">
+<form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
+	{$lang_redirect_url['form_html']}
+	<select name="language" onchange="MyBB.changeLanguage();">
+		<optgroup label="{$lang->select_language}">
+			{$lang_options}
+		</optgroup>
+	</select>
+	{$gobutton}
+</form>
+</div>]]></template>
 	<template name="usercp_addsubscription_thread" version="1600"><![CDATA[<html>
 <head>
 <title>{$lang->subscribe_to_thread}</title>
