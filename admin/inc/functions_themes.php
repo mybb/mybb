@@ -197,18 +197,21 @@ function import_theme_xml($xml, $options=array())
 		{
 			$inherited_stylesheets = unserialize($db->fetch_field($query, "stylesheets"));
 
-			$loop = 1;
-			foreach($inherited_stylesheets['inherited'] as $action => $stylesheets)
+			if(is_array($inherited_stylesheets['inherited']))
 			{
-				foreach($stylesheets as $filename => $stylesheet)
+				$loop = 1;
+				foreach($inherited_stylesheets['inherited'] as $action => $stylesheets)
 				{
-					if($properties['disporder'][basename($filename)])
+					foreach($stylesheets as $filename => $stylesheet)
 					{
-						continue;
-					}
+						if($properties['disporder'][basename($filename)])
+						{
+							continue;
+						}
 
-					$properties['disporder'][basename($filename)] = $loop;
-					++$loop;
+						$properties['disporder'][basename($filename)] = $loop;
+						++$loop;
+					}
 				}
 			}
 		}
