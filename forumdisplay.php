@@ -238,7 +238,8 @@ foreach($parentlistexploded as $mfid)
 		}
 	}
 
-	if($forum_stats[$mfid]['announcements'])
+
+	if($forum_stats[$mfid] && $forum_stats[$mfid]['announcements'])
 	{
 		$has_announcements = true;
 	}

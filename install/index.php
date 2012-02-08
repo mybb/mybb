@@ -1502,7 +1502,7 @@ function create_tables()
  *  By default, the database is used to store this data.
  *
  *  If you wish to use the file system (cache/ directory), MemCache, xcache, or eAccelerator
- *  you can change the value below to 'files', 'memcache', 'xcache' or 'eaccelerator' from 'db'.
+ *  you can change the value below to 'files', 'memcache', 'xcache', 'apc' or 'eaccelerator' from 'db'.
  */
 
 \$config['cache_store'] = 'db';

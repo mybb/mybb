@@ -62,6 +62,11 @@ class datacache
 				require_once MYBB_ROOT."/inc/cachehandlers/xcache.php";
 				$this->handler = new xcacheCacheHandler($this->silent);
 				break;
+			// APC cache
+			case "apc":
+				require_once MYBB_ROOT."/inc/cachehandlers/apc.php";
+				$this->handler = new apcCacheHandler($this->silent);
+				break;
 		}
 		
 		if(is_object($this->handler))

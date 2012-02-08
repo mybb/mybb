@@ -880,6 +880,12 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_invalid_templateset;
 		}
 		
+		$theme_properties = unserialize($theme['properties']);
+		if($theme_properties['disporder'])
+		{
+			$properties['disporder'] = $theme_properties['disporder'];
+		}
+		
 		$allowedgroups = array();
 		if(is_array($mybb->input['allowedgroups']))
 		{

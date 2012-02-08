@@ -366,6 +366,10 @@ class MyBB {
 				$message = "MyBB was unable to load the SQL extension. Please contact the MyBB Group for support. <a href=\"http://mybb.com\">MyBB Website</a>";
 				$error_code = MYBB_SQL_LOAD_ERROR;
 				break;
+			case "apc_load_error":
+				$message = "APC needs to be configured with PHP to use the APC cache support.";
+				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;
+				break;
 			case "eaccelerator_load_error":
 				$message = "eAccelerator needs to be configured with PHP to use the eAccelerator cache support.";
 				$error_code = MYBB_CACHEHANDLER_LOAD_ERROR;

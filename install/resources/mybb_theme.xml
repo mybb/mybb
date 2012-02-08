@@ -4,8 +4,8 @@
 		<templateset><![CDATA[1]]></templateset>
 		<imgdir><![CDATA[images]]></imgdir>
 		<logo><![CDATA[images/logo.png]]></logo>
-		<tablespace><![CDATA[4]]></tablespace>
-		<borderwidth><![CDATA[1]]></borderwidth>
+		<tablespace><![CDATA[5]]></tablespace>
+		<borderwidth><![CDATA[0]]></borderwidth>
 		<editortheme><![CDATA[default]]></editortheme>
 	</properties>
 	<stylesheets>
