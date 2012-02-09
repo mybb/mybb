@@ -212,7 +212,7 @@ $theme['stylesheets'] = unserialize($theme['stylesheets']);
 
 foreach($theme['stylesheets'] as $script => $stylesheet)
 {
-	if(!in_array($script, array('global', THIS_SCRIPT)))
+	if(!in_array($script, array('global', THIS_SCRIPT)) && $script != $theme['color'])
 	{
 		continue;
 	}

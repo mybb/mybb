@@ -29,6 +29,16 @@ $l['browse_all_themes'] = "Browse All Themes";
 $l['export_theme'] = "Export Theme";
 $l['export_theme_desc'] = "Here you can export your themes and customized templates. Exporting themes is useful if you wish to share them with others or import them to another forum.";
 
+$l['colors_manage'] = "Manage Colors";
+$l['colors_attached_to'] = "color setting {1}";
+$l['colors_setting'] = "Base Color";
+$l['colors_setting_desc'] = "Select the color this theme should use as its base color. Stylesheets attached to this color will be used.";
+$l['colors_no_color_setting'] = "There are no colors available. Please create a list of colors below to use this feature.";
+$l['colors_add'] = "Manage Colors";
+$l['colors_add_desc'] = "A list of colors available for this theme. This should be a list of key paired (key=item) colors, for example, <em>blue=Blue</em>. Separate items with a new line.";
+$l['colors_please_select'] = "None";
+$l['colors_add_edit_desc'] = "Select a color to attach this stylesheet to. You can select more than one color.";
+
 $l['include_custom_only'] = "Include customized items only?";
 $l['include_custom_only_desc'] = "If you wish to include items (css and stylesheets) inherited from parent themes select \"no\", otherwise only customized elements will be exported.";
 $l['include_templates'] = "Include templates in the export as well?";
@@ -103,6 +113,7 @@ $l['font_weight'] = "Font Weight";
 $l['stylesheets'] = "Stylesheets";
 $l['inherited_from'] = "Inherited from";
 $l['attached_to'] = "Attached to";
+$l['attached_to_nothing'] = "Attached to nothing";
 $l['attached_to_desc'] = "You can either attach stylesheets globally or to specific files. If you attach it to specific files you can attach it to specific actions within each file.";
 $l['actions'] = "actions";
 $l['of'] = "of";
@@ -173,6 +184,7 @@ $l['error_inheriting_stylesheets'] = "You cannot delete this theme because there
 $l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple editor. It can only be edited in advanced mode.";
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB themes server. Please try again in a few minutes.";
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
+$l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
 
 $l['success_imported_theme'] = "The selected theme has been imported successfully.";
 $l['success_theme_created'] = "The theme has been created successfully.";
