@@ -516,6 +516,11 @@ if($mybb->input['action'] == "export")
 		{
 			if($property == "inherited") continue;
 			
+			if(is_array($value))
+			{
+				$value = serialize($value);
+			}
+
 			$xml .= "\t\t<{$property}><![CDATA[{$value}]]></{$property}>\r\n";
 		}
 		$xml .= "\t</properties>\r\n";
@@ -823,7 +828,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("themestylesheets", "tid='{$theme['tid']}'");
 		
 		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid']);
+		update_theme_stylesheet_list($theme['tid'], $theme, true);
 		
 		$db->update_query("users", array('style' => 0), "style='{$theme['tid']}'");
 		
@@ -976,7 +981,7 @@ if($mybb->input['action'] == "edit")
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 		}
 	}
-		
+
 	// Fetch list of all of the stylesheets for this theme
 	$file_stylesheets = unserialize($theme['stylesheets']);
 	
@@ -1043,6 +1048,7 @@ if($mybb->input['action'] == "edit")
 		if(!is_array($mybb->input['disporder']))
 		{
 			// Error out
+			flash_message($lang->error_no_display_order, 'error');
 			admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 		}
 
@@ -1069,6 +1075,7 @@ if($mybb->input['action'] == "edit")
 
 		$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
 
+		flash_message($lang->success_stylesheet_order_updated, 'success');
 		admin_redirect("index.php?module=style-themes&action=edit&tid={$theme['tid']}");
 	}
 
@@ -1425,50 +1432,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 	}
 	
 	// Fetch list of all of the stylesheets for this theme
-	$file_stylesheets = unserialize($theme['stylesheets']);
-	
-	$stylesheets = array();
-	$inherited_load = array();
-	
-	// Now we loop through the list of stylesheets for each file
-	foreach($file_stylesheets as $file => $action_stylesheet)
-	{
-		if($file == 'inherited')
-		{
-			continue;
-		}
-		
-		foreach($action_stylesheet as $action => $style)
-		{
-			foreach($style as $stylesheet2)
-			{
-				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
-				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
-				{
-					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
-					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
-					{
-						$inherited_load[] = $value;
-					}
-				}
-			}
-		}
-	}
-	
-	foreach($stylesheets as $file => $stylesheet2)
-	{
-		if(is_array($stylesheet2['inherited']))
-		{
-			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
-			{
-				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-				unset($stylesheet2['inherited'][$inherited_file]);
-			}
-		}
-		
-		unset($stylesheets[$file]);
-		$stylesheets[basename($file)] = $stylesheet2;
-	}
+	$stylesheets = fetch_theme_stylesheets($theme);
 	
 	if(!array_key_exists($stylesheet['cachefile'], $stylesheets) && array_key_exists("css.php?stylesheet=".$stylesheet['tid'], $stylesheets))
 	{
@@ -1555,8 +1519,13 @@ if($mybb->input['action'] == "stylesheet_properties")
 			$db->update_query("themestylesheets", $update_array, "sid='{$stylesheet['sid']}'", 1);
 			
 			// If the name changed, re-cache our stylesheet
+			$theme_c = $update_d = false;
 			if($stylesheet['name'] != $mybb->input['name'])
 			{
+				// Update the theme stylesheet list if the name is changed
+				$theme_c = $theme;
+				$update_d = true;
+
 				$db->update_query("themestylesheets", array('lastmodified' => TIME_NOW), "sid='{$stylesheet['sid']}'", 1);
 				if(!cache_stylesheet($theme['tid'], str_replace('/', '', $mybb->input['name']), $theme['stylesheet']))
 				{
@@ -1566,7 +1535,7 @@ if($mybb->input['action'] == "stylesheet_properties")
 			}
 			
 			// Update the CSS file list for this theme
-			update_theme_stylesheet_list($theme['tid']);
+			update_theme_stylesheet_list($theme['tid'], $theme_c, $update_d);
 			
 			$plugins->run_hooks("admin_style_themes_stylesheet_properties_commit");
 			
@@ -1944,51 +1913,7 @@ if($mybb->input['action'] == "edit_stylesheet" && (!$mybb->input['mode'] || $myb
 	}
 	
 	// Fetch list of all of the stylesheets for this theme
-	$file_stylesheets = unserialize($theme['stylesheets']);
-	
-	$stylesheets = array();
-	$inherited_load = array();
-	
-	// Now we loop through the list of stylesheets for each file
-	foreach($file_stylesheets as $file => $action_stylesheet)
-	{
-		if($file == 'inherited')
-		{
-			continue;
-		}
-		
-		foreach($action_stylesheet as $action => $style)
-		{
-			foreach($style as $stylesheet2)
-			{
-				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
-				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
-				{
-					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
-					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
-					{
-						$inherited_load[] = $value;
-					}
-				}
-			}
-		}
-	}
-	
-	foreach($stylesheets as $file => $stylesheet2)
-	{
-		if(is_array($stylesheet2['inherited']))
-		{
-			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
-			{
-				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-				unset($stylesheet2['inherited'][$inherited_file]);
-			}
-		}
-		
-		$stylesheets[basename($file)] = $stylesheet2;
-		unset($stylesheets[$file]);
-	}
-	
+	$stylesheets = fetch_theme_stylesheets($theme);	
 	$this_stylesheet = $stylesheets[$stylesheet['name']];	
 	unset($stylesheets);
 	
@@ -2187,51 +2112,7 @@ if($mybb->input['action'] == "edit_stylesheet" && $mybb->input['mode'] == "advan
 	}
 	
 	// Fetch list of all of the stylesheets for this theme
-	$file_stylesheets = unserialize($theme['stylesheets']);
-	
-	$stylesheets = array();
-	$inherited_load = array();
-	
-	// Now we loop through the list of stylesheets for each file
-	foreach($file_stylesheets as $file => $action_stylesheet)
-	{
-		if($file == 'inherited')
-		{
-			continue;
-		}
-		
-		foreach($action_stylesheet as $action => $style)
-		{
-			foreach($style as $stylesheet2)
-			{
-				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
-				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
-				{
-					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
-					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
-					{
-						$inherited_load[] = $value;
-					}
-				}
-			}
-		}
-	}
-	
-	foreach($stylesheets as $file => $stylesheet2)
-	{
-		if(is_array($stylesheet2['inherited']))
-		{
-			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
-			{
-				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-				unset($stylesheet2['inherited'][$inherited_file]);
-			}
-		}
-		
-		$stylesheets[basename($file)] = $stylesheet2;
-		unset($stylesheets[$file]);
-	}
-	
+	$stylesheets = fetch_theme_stylesheets($theme);
 	$this_stylesheet = $stylesheets[$stylesheet['name']];	
 	unset($stylesheets);
 	
@@ -2362,34 +2243,11 @@ if($mybb->input['action'] == "delete_stylesheet")
 
 	if($mybb->request_method == "post")
 	{
-		$properties = unserialize($theme['properties']);
-
-		if(is_array($properties['disporder']))
-		{
-			$loop = 1;
-			$orders = array();
-			unset($properties['disporder'][$stylesheet['name']]);
-
-			foreach($properties['disporder'] as $style => $order)
-			{
-				$orders[$style] = $loop;
-				++$loop;
-			}
-
-			$properties['disporder'] = $orders;
-
-			$update_array = array(
-				"properties" => $db->escape_string(serialize($properties))
-			);
-
-			$db->update_query("themes", $update_array, "tid = '{$theme['tid']}'");
-		}
-
 		$db->delete_query("themestylesheets", "sid='{$stylesheet['sid']}'", 1);
 		@unlink(MYBB_ROOT."cache/themes/theme{$theme['tid']}/{$stylesheet['cachefile']}");
 		
 		// Update the CSS file list for this theme
-		update_theme_stylesheet_list($theme['tid']);
+		update_theme_stylesheet_list($theme['tid'], $theme, true);
 		
 		$plugins->run_hooks("admin_style_themes_delete_stylesheet_commit");
 		
@@ -2420,50 +2278,7 @@ if($mybb->input['action'] == "add_stylesheet")
 	}
 	
 	// Fetch list of all of the stylesheets for this theme
-	$file_stylesheets = unserialize($theme['stylesheets']);
-	
-	$stylesheets = array();
-	$inherited_load = array();
-	
-	// Now we loop through the list of stylesheets for each file
-	foreach($file_stylesheets as $file => $action_stylesheet)
-	{
-		if($file == 'inherited')
-		{
-			continue;
-		}
-		
-		foreach($action_stylesheet as $action => $style)
-		{
-			foreach($style as $stylesheet2)
-			{
-				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
-				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
-				{
-					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
-					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
-					{
-						$inherited_load[] = $value;
-					}
-				}
-			}
-		}
-	}
-	
-	foreach($stylesheets as $file => $stylesheet2)
-	{
-		if(is_array($stylesheet2['inherited']))
-		{
-			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
-			{
-				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
-				unset($stylesheet2['inherited'][$inherited_file]);
-			}
-		}
-		
-		$stylesheets[basename($file)] = $stylesheet2;
-		unset($stylesheets[$file]);
-	}
+	$stylesheets = fetch_theme_stylesheets($theme);
 	
 	if($mybb->request_method == "post")
 	{
@@ -2537,18 +2352,6 @@ if($mybb->input['action'] == "add_stylesheet")
 					$attached = $mybb->input['color'];
 				}
 			}
-
-			$properties = unserialize($theme['properties']);
-			if(is_array($properties['disporder']))
-			{
-				$properties['disporder'][$mybb->input['name']] = count($properties['disporder']) + 1;
-
-				$update_array = array(
-					'properties' => $db->escape_string(serialize($properties))
-				);
-				
-				$db->update_query("themes", $update_array, "tid = '".intval($mybb->input['tid'])."'");
-			}
 			
 			// Add Stylesheet			
 			$insert_array = array(
@@ -2568,7 +2371,7 @@ if($mybb->input['action'] == "add_stylesheet")
 			}
 			
 			// Update the CSS file list for this theme
-			update_theme_stylesheet_list($theme['tid']);
+			update_theme_stylesheet_list($theme['tid'], $theme, true);
 
 			$plugins->run_hooks("admin_style_themes_add_stylesheet_commit");
 			

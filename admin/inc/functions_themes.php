@@ -92,6 +92,19 @@ function import_theme_xml($xml, $options=array())
 				continue;
 			}
 			
+			if($property == 'colors' || $property == 'disporder')
+			{
+				$data = @unserialize($value['value']);
+
+				if(!is_array($data))
+				{
+					// Bad data?
+					continue;
+				}
+
+				$value['value'] = $data;
+			}
+
 			$properties[$property] = $value['value'];
 		}
 	}
@@ -121,7 +134,7 @@ function import_theme_xml($xml, $options=array())
 	{
 		return -2;
 	}
-	
+
 	// Do we have any templates to insert?
 	if(!empty($theme['templates']['template']) && !$options['no_templates'])
 	{		
@@ -811,7 +824,7 @@ function copy_stylesheet_to_theme($stylesheet, $tid)
 	return $sid;
 }
 
-function update_theme_stylesheet_list($tid)
+function update_theme_stylesheet_list($tid, $theme = false, $update_disporders = false)
 {
 	global $db;
 	
@@ -894,14 +907,57 @@ function update_theme_stylesheet_list($tid)
 	$updated_theme = array(
 		"stylesheets" => $db->escape_string(serialize($theme_stylesheets))
 	);
-	$db->update_query("themes", $updated_theme, "tid='{$tid}'");
+
+	// Do we have a theme present? If so, update the stylesheet display orders
+	if($update_disporders)
+	{
+		if(!is_array($theme) || !$theme)
+		{
+			$theme_cache = cache_themes();
+			$theme = $theme_cache[$tid];
+		}
+
+		$orders = $orphaned_stylesheets = array();
+		$properties = $theme['properties'];
+
+		if(!is_array($properties))
+		{
+			$properties = unserialize($theme['properties']);
+		}
+
+		foreach($stylesheets as $stylesheet)
+		{
+			if(!$properties['disporder'][$stylesheet['name']])
+			{
+				$orphaned_stylesheets[] = $stylesheet['name'];
+				continue;
+			}
+
+			$orders[$stylesheet['name']] = $properties['disporder'][$stylesheet['name']];
+		}
+
+		if(!empty($orphaned_stylesheets))
+		{
+			$loop = count($orders) + 1;
+			foreach($orphaned_stylesheets as $stylesheet)
+			{
+				$orders[$stylesheet] = $loop;
+				++$loop;
+			}
+		}
+
+		$properties['disporder'] = $orders;
+		$updated_theme['properties'] = $db->escape_string(serialize($properties));
+	}
+
+	$db->update_query("themes", $updated_theme, "tid = '{$tid}'");
 	
 	// Do we have any children themes that need updating too?
 	if(count($child_list) > 0)
 	{
 		foreach($child_list as $id)
 		{
-			update_theme_stylesheet_list($id);
+			update_theme_stylesheet_list($id, false, $update_disporders);
 		}
 	}
 	
@@ -1150,6 +1206,69 @@ function build_theme_array($ignoretid = null, $parent=0, $depth=0)
 	{
 		return $list;
 	}
+}
+
+function fetch_theme_stylesheets($theme)
+{
+	// Fetch list of all of the stylesheets for this theme
+	$file_stylesheets = unserialize($theme['stylesheets']);
+
+	if(!is_array($file_stylesheets))
+	{
+		return false;
+	}
+
+	$stylesheets = array();
+	$inherited_load = array();
+	
+	// Now we loop through the list of stylesheets for each file
+	foreach($file_stylesheets as $file => $action_stylesheet)
+	{
+		if($file == 'inherited')
+		{
+			continue;
+		}
+		
+		foreach($action_stylesheet as $action => $style)
+		{
+			foreach($style as $stylesheet2)
+			{
+				$stylesheets[$stylesheet2]['applied_to'][$file][] = $action;
+				if(is_array($file_stylesheets['inherited'][$file."_".$action]) && in_array($stylesheet2, array_keys($file_stylesheets['inherited'][$file."_".$action])))
+				{
+					$stylesheets[$stylesheet2]['inherited'] = $file_stylesheets['inherited'][$file."_".$action];
+					foreach($file_stylesheets['inherited'][$file."_".$action] as $value)
+					{
+						$inherited_load[] = $value;
+					}
+				}
+			}
+		}
+	}
+
+	foreach($stylesheets as $file => $stylesheet2)
+	{
+		if(is_array($stylesheet2['inherited']))
+		{
+			foreach($stylesheet2['inherited'] as $inherited_file => $tid)
+			{
+				$stylesheet2['inherited'][basename($inherited_file)] = $tid;
+				unset($stylesheet2['inherited'][$inherited_file]);
+			}
+		}
+		
+		$stylesheets[basename($file)] = $stylesheet2;
+		unset($stylesheets[$file]);
+	}
+
+	return $stylesheets;
+}
+
+function update_stylesheet_displayorder($theme, $added = array())
+{
+	global $db, $lang, $mybb;
+
+	
 }
 
 function upgrade_css_120_to_140($css)

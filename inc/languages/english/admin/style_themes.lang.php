@@ -185,6 +185,7 @@ $l['error_cannot_parse'] = "MyBB cannot parse this stylesheet for the simple edi
 $l['error_communication_problem'] = "There was a problem communicating with the MyBB themes server. Please try again in a few minutes.";
 $l['error_no_results_found'] = "No results were found for the specified keyword(s).";
 $l['error_no_color_picked'] = "You didn't specify which colors to attach this stylesheet to.";
+$l['error_no_display_order'] = "There was an error finding the display orders for the stylesheets. Please refresh the page and try again.";
 
 $l['success_imported_theme'] = "The selected theme has been imported successfully.";
 $l['success_theme_created'] = "The theme has been created successfully.";
@@ -196,6 +197,7 @@ $l['success_theme_set_default'] = "The selected theme is now the forum default."
 $l['success_theme_forced'] = "All users have been forced to use the selected theme successfully.";
 $l['success_theme_properties_updated'] = "The properties for the select theme have been updated successfully.";
 $l['success_stylesheet_added'] = "The stylesheet for this theme has been created successfully.";
+$l['success_stylesheet_order_updated'] = "The display orders for the stylesheets have been updated successfully.";
 
 $l['confirm_theme_deletion'] = "Are you sure you want to delete this theme?";
 $l['confirm_stylesheet_deletion'] = "Are you sure you want to delete / revert this stylesheet?";

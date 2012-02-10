@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+	<scheme><![CDATA[black=Black]]></scheme>
+	<scheme><![CDATA[calm=Calm]]></scheme>
+	<scheme><![CDATA[dawn=Dawn]]></scheme>
+	<stylesheets>
+		<stylesheet name="color_black.css" attachedto="black" version="1800"><![CDATA[a:link {
+	color: #555;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #444;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #000;
+	text-decoration: underline;
+}
+
+#logo {
+	background: #202020 url(images/colors/black_header.png) top left repeat-x;
+	border-bottom: 1px solid #000;
+}
+
+#panel .upper {
+	background: #dcdbdc url(images/1/tcat.png) repeat-x;
+	color: #000;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bbb;
+}
+
+#panel .upper a:link,
+#panel .upper a:visited,
+#panel .upper a:hover,
+#panel .upper a:active {
+	color: #000;
+}
+
+#panel .upper ul.top_links a.search {
+	background-image: url(images/headerlinks/light/search.gif);
+}
+
+#panel .upper ul.top_links a.memberlist {
+	background-image: url(images/headerlinks/light/memberlist.gif);
+}
+
+#panel .upper ul.top_links a.calendar {
+	background-image: url(images/headerlinks/light/calendar.gif);
+}
+
+#panel .upper ul.top_links a.help {
+	background-image: url(images/headerlinks/light/help.gif);
+}
+
+#panel .upper a.logout {
+	background-image: url(images/headerlinks/light/logout.gif) right no-repeat;
+}
+
+#panel .upper a.login,
+#panel .upper a.lost_password {
+	background-image: url(images/headerlinks/light/login.gif) no-repeat;
+}
+
+#panel .upper a.register {
+	background-image: url(images/headerlinks/light/logout.gif);
+}
+
+.thead {
+	background: #202121 url(images/colors/black_thead.png) top left repeat-x;
+	border-bottom: 1px solid #000;
+}
+
+.tcat {
+	background: #dcdbdc url(images/colors/black_tcat.png) repeat-x;
+	color: #000000;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #bbb;
+}
+
+.tcat a:link,
+.tcat a:visited,
+.tcat a:hover,
+.tcat a:active {
+	color: #000000;
+}
+
+.tfoot {
+	background: #202121 url(images/colors/black_thead.png) top left repeat-x;
+	color: #ffffff;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #111;
+}
+
+.popup_menu .popup_item:hover {
+	background: #333;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #333;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_calm.css" attachedto="calm" version="1800"><![CDATA[a:link {
+	color: #48715b;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #48715b;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #48715b;
+	text-decoration: underline;
+}
+
+#logo {
+	background: #385947 url(images/colors/calm_header.png) top left repeat-x;
+	border-bottom: 1px solid #263c30;
+}
+
+.thead {
+	background: #385947 url(images/colors/calm_thead.png) top left repeat-x;
+	color: #ffffff;
+	border-bottom: 1px solid #263c30;
+}
+
+.tfoot {
+	background: #385a48 url(images/colors/calm_thead.png) top left repeat-x;
+	color: #ffffff;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #263c30;
+}
+
+.popup_menu .popup_item:hover {
+	background: #48715b;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #48715b;
+	color: #fff;
+}]]>
+	</stylesheet>
+	<stylesheet name="color_dawn.css" attachedto="dawn" version="1800"><![CDATA[a:link {
+	color: #d56c2c;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #d56c2c;
+	text-decoration: none;
+}
+
+a:hover, a:active {
+	color: #d56c2c;
+	text-decoration: underline;
+}
+
+#logo {
+	background: #d56c2c url(images/colors/dawn_header.png) top left repeat-x;
+	border-bottom: 1px solid #011929;
+}
+
+.thead {
+	background: #d56c2c url(images/colors/dawn_thead.png) top left repeat-x;
+	border-bottom: 1px solid #9a4e20;
+}
+
+.tfoot {
+	background: #d56c2c url(images/colors/dawn_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #9a4e20;
+}
+
+.popup_menu .popup_item:hover {
+	background: #f2a555;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #f2a555;
+	color: #fff;
+}]]>
+		</stylesheet>
+	</stylesheets>
+</colors>

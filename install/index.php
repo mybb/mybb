@@ -1684,12 +1684,68 @@ function insert_templates()
 	$tid = build_new_theme("Default", null, $theme_id);
 	
 	// Update our properties template set to the correct one
-	$query = $db->simple_select("themes", "properties", "tid='{$tid}'", array('limit' => 1));
-	$properties = unserialize($db->fetch_field($query, "properties"));
+	$query = $db->simple_select("themes", "stylesheets, properties", "tid='{$tid}'", array('limit' => 1));
+
+	$theme = $db->fetch_array($query);	
+	$properties = unserialize($theme['properties']);
+	$stylesheets = unserialize($theme['stylesheets']);
+
 	$properties['templateset'] = $templateset;
 	unset($properties['inherited']['templateset']);
 
-	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(serialize($properties))), "tid='{$tid}'");
+	// 1.8: Stylesheet Colors
+	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme_colors.xml');
+
+	require_once MYBB_ROOT."inc/class_xml.php";
+	$parser = new XMLParser($contents);
+	$tree = $parser->get_tree();
+
+	if(is_array($tree) && is_array($tree['colors']))
+	{
+		if(is_array($tree['colors']['scheme']))
+		{
+			foreach($tree['colors']['scheme'] as $tag => $value)
+			{
+				$exp = explode("=", $value['value']);
+
+				$properties['colors'][$exp[0]] = $exp[1];
+			}
+		}
+
+		if(is_array($tree['colors']['stylesheets']))
+		{
+			$count = count($properties['disporder']) + 1;
+			foreach($tree['colors']['stylesheets']['stylesheet'] as $stylesheet)
+			{
+				$new_stylesheet = array(
+					"name" => $db->escape_string($stylesheet['attributes']['name']),
+					"tid" => $tid,
+					"attachedto" => $db->escape_string($stylesheet['attributes']['attachedto']),
+					"stylesheet" => $db->escape_string($stylesheet['value']),
+					"lastmodified" => TIME_NOW,
+					"cachefile" => $db->escape_string($stylesheet['attributes']['name'])
+				);
+			
+				$sid = $db->insert_query("themestylesheets", $new_stylesheet);
+				$css_url = "css.php?stylesheet={$sid}";
+
+				$cached = cache_stylesheet($tid, $stylesheet['attributes']['name'], $stylesheet['value']);
+
+				if($cached)
+				{
+					$css_url = $cached;
+				}
+
+				// Add to display and stylesheet list
+				$properties['disporder'][$stylesheet['attributes']['name']] = $count;
+				$stylesheets[$stylesheet['attributes']['attachedto']]['global'][] = $css_url;
+
+				++$count;
+			}
+		}
+	}
+
+	$db->update_query("themes", array("def" => 1, "properties" => $db->escape_string(serialize($properties)), "stylesheets" => $db->escape_string(serialize($stylesheets))), "tid = '{$tid}'");
 
 	echo $lang->theme_step_imported;
 	$output->print_footer('configuration');
