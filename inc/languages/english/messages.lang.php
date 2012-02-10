@@ -356,6 +356,19 @@ Thank you,
 {2} Staff
 {5}";
 
+$l['email_changeemail_noactivation'] = "{1},
+
+We have received a request on {2} to change your email address (see details below).
+
+Old Email Address: {3}
+New Email Address: {4}
+
+This change has been automatically processed. If you did not request this change, please get it touch with an Administrator.
+
+Thank you,
+{2} Staff
+{5}";
+
 $l['email_newpm'] = "{1},
 		
 You have received a new private message on {3} from {2}. To view this message, you can follow this link:
