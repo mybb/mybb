@@ -29,7 +29,15 @@ function upgrade23_dbchanges()
 
 	echo "<p>Performing necessary upgrade queries...</p>";
 
-	// 1.8 updates here
+	if($db->type == "mysql" || $db->type == "mysqli")
+	{
+		if($db->index_exists('posts', 'tiddate'))
+		{
+			$db->drop_index('posts', 'tiddate');
+		}
+
+		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
+	}
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("23_updatetheme");

@@ -503,6 +503,7 @@ $tables[] = "CREATE TABLE mybb_posts (
   KEY visible (visible),
   KEY dateline (dateline),
   KEY longipaddress (longipaddress),
+  KEY tiddate (tid, dateline),
   PRIMARY KEY (pid)
 ) ENGINE=MyISAM;";
 

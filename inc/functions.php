@@ -2006,8 +2006,6 @@ function update_forum_counters($fid, $changes=array())
 
 	// Update last post info
 	update_forum_lastpost($fid);
-	
-	$cache->update_forums();
 }
 
 /**
