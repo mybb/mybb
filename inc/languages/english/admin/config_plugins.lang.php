@@ -15,6 +15,8 @@ $l['browse_plugins_desc'] = "Here you may browse the official MyBB modifications
 $l['browse_all_plugins'] = "Browse All Plugins";
 
 $l['plugin'] = "Plugin";
+$l['active_plugin'] = "Active Plugins";
+$l['inactive_plugin'] = "Inactive Plugins";
 $l['your_version'] = "Your Version";
 $l['latest_version'] = "Latest Version";
 $l['download'] = "Download";
@@ -24,6 +26,8 @@ $l['install_and_activate'] = "Install &amp; Activate";
 $l['uninstall'] = "Uninstall";
 $l['created_by'] = "Created by";
 $l['no_plugins'] = "There are no plugins on your forum at this time.";
+$l['no_active_plugins'] = "There are no active plugins on your forum.";
+$l['no_inactive_plugins'] = "There are no inactive plugins available.";
 
 $l['plugin_incompatible'] = "This plugin is incompatible with MyBB {1}";
 
