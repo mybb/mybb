@@ -15,9 +15,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-// should also have a 'view coppa awaiting activation' view
 require_once MYBB_ROOT."inc/functions_upload.php";
-
 
 $page->add_breadcrumb_item($lang->users, "index.php?module=user-users");
 
@@ -1649,50 +1647,20 @@ if($mybb->input['action'] == "delete")
 
 	if($mybb->request_method == "post")
 	{
-		// Delete the user
-		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
-		$db->delete_query("userfields", "ufid='{$user['uid']}'");
-		$db->delete_query("privatemessages", "uid='{$user['uid']}'");
-		$db->delete_query("events", "uid='{$user['uid']}'");
-		$db->delete_query("forumsubscriptions", "uid='{$user['uid']}'");
-		$db->delete_query("threadsubscriptions", "uid='{$user['uid']}'");
-		$db->delete_query("sessions", "uid='{$user['uid']}'");
-		$db->delete_query("banned", "uid='{$user['uid']}'");
-		$db->delete_query("threadratings", "uid='{$user['uid']}'");
-		$db->delete_query("users", "uid='{$user['uid']}'");
-		$db->delete_query("joinrequests", "uid='{$user['uid']}'");
-		$db->delete_query("warnings", "uid='{$user['uid']}'");
-		$db->delete_query("reputation", "uid='{$user['uid']}' OR adduid='{$user['uid']}'");
-		$db->delete_query("awaitingactivation", "uid='{$uid}'");
-
-		// Update forum stats
-		update_stats(array('numusers' => '-1'));
-
-		// Update forums & threads if user is the lastposter
-		$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
-		$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
-
-		// Did this user have an uploaded avatar?
-		if($user['avatartype'] == "upload")
-		{
-			// Removes the ./ at the beginning the timestamp on the end...
-			@unlink("../".substr($user['avatar'], 2, -20));
-		}
-
-		// Was this user a moderator?
-		if(is_moderator($user['uid']))
-		{
-			$db->delete_query("moderators", "id='{$user['uid']}' AND isgroup = '0'");
-			$cache->update_moderators();
-		}
-
 		$plugins->run_hooks("admin_user_users_delete_commit");
 
-		// Log admin action
+		if(delete_user($user) == false)
+		{
+			flash_message($lang->error_cannot_delete_user, 'error');
+			admin_redirect("index.php?module=user-users");
+		}
+
 		log_admin_action($user['uid'], $user['username']);
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
+		
+		die();
 	}
 	else
 	{
