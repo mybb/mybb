@@ -5685,6 +5685,49 @@ function is_super_admin($uid)
 }
 
 /**
+ * Checks if a user is a member of a particular group
+ * Originates from frostschutz's PluginLibrary
+ * github.com/frostschutz
+ *
+ * @param mixed A selection of groups to check
+ * @param mixed User to check selection against
+ * @return mixed Array of groups this user belongs to
+ */
+function is_member($groups, $user = false)
+{
+	global $mybb;
+
+	if($user == false)
+	{
+		$user = $mybb->user;
+	}
+	else if(!is_array($user))
+	{
+		// Assume it's a UID
+		$user = get_user($user);
+	}
+
+	$memberships = explode(',', array_map('intval', $user['additionalgroups']));
+	$memberships[] = $user['usergroup'];
+
+	if(!is_array($groups))
+	{
+		if(is_string($groups))
+		{
+			$groups = explode(',', $groups);
+		}
+		else
+		{
+			$groups = (array)$groups;
+		}
+	}
+
+	$groups = array_filter(array_map('intval', $groups));
+	
+	return array_intersect($groups, $memberships);
+}
+
+/**
  * Split a string based on the specified delimeter, ignoring said delimeter in escaped strings.
  * Ex: the "quick brown fox" jumped, could return 1 => the, 2 => quick brown fox, 3 => jumped
  *

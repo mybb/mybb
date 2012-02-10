@@ -191,6 +191,84 @@ class datacache
 	}
 	
 	/**
+	 * Delete cache contents.
+	 * Originally from frostschutz's PluginLibrary
+	 * github.com/frostschutz
+	 *
+	 * @param string Cache name or title
+	 * @param boolean To delete a cache starting with name_
+	 */
+	 function delete($name, $greedy = false)
+	 {
+		 global $db, $cache;
+
+		// Prepare for database query.
+		$dbname = $db->escape_string($name);
+		$where = "title = '{$dbname}'";
+
+		// Delete on-demand or handler cache
+		if($this->handler)
+		{
+			$this->handler->delete($name);
+		}
+
+		// Greedy?
+		if($greedy)
+		{
+			$name .= '_';
+			$names = array();
+			$keys = array_keys($cache->cache);
+
+			foreach($keys as $key)
+			{
+				if(strpos($key, $name) === 0)
+				{
+					$names[$key] = 0;
+				}
+			}
+
+			$ldbname = strtr($dbname,
+				array(
+					'%' => '=%',
+					'=' => '==',
+					'_' => '=_'
+				)
+			);
+
+			$where .= " OR title LIKE '{$ldbname}=_%' ESCAPE '='";
+
+			if($this->handler)
+			{
+				$query = $db->simple_select("datacache", "title", $where);
+
+				while($row = $db->fetch_array($query))
+				{
+					$names[$row['title']] = 0;
+				}
+			
+				// ...from the filesystem...
+				$start = strlen(MYBB_ROOT."cache/");
+				foreach((array)@glob(MYBB_ROOT."cache/{$name}*.php") as $filename)
+				{
+					if($filename)
+					{
+						$filename = substr($filename, $start, strlen($filename)-4-$start);
+						$names[$filename] = 0;
+					}
+				}
+
+				foreach($names as $key => $val)
+				{
+					$this->handler->delete($key);
+				}
+			}
+		}
+
+		// Delete database cache
+		$db->delete_query("datacache", $where);
+	}
+	 
+	/**
 	 * Select the size of the cache 
 	 *
 	 * @param string The name of the cache
