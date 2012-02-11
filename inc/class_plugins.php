@@ -111,6 +111,15 @@ class pluginSystem
 		$this->current_hook = '';
 		return $arguments;
 	}
+	
+	/**
+	 * Run hooks by ref
+	 * Wrapper for run hooks to maintain backwards compatibility
+	 */
+	function run_hooks_by_ref($hook, &$arguments)
+	{
+		$this->run_hooks($hook, $arguments);
+	}
 
 	/**
 	 * Remove a specific hook.
