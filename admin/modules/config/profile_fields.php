@@ -63,7 +63,7 @@ if($mybb->input['action'] == "add")
 				"required" => $db->escape_string($mybb->input['required']),
 				"editable" => $db->escape_string($mybb->input['editable']),
 				"hidden" => $db->escape_string($mybb->input['hidden']),
-				"postnum" => $db->escape_string($mybb->input['postnum'])
+				"postnum" => intval($mybb->input['postnum'])
 			);
 			
 			$fid = $db->insert_query("profilefields", $new_profile_field);
