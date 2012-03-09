@@ -579,7 +579,8 @@ function build_postbit($post, $post_type=0)
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $post['username']
+			"me_username" => $post['username'],
+			"filter_badwords" => 1
 		);
 
 		if($usergroup['signofollow'])
