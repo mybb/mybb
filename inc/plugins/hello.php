@@ -104,7 +104,7 @@ function hello_world($page)
 	return $page;
 }
 
-function hello_world_postbit($post)
+function hello_world_postbit(&$post)
 {
 	$post['message'] = "<strong>Hello world!</strong><br /><br />{$post['message']}";
 }
