@@ -434,8 +434,7 @@ if($mybb->input['action'] == "delete")
 	$reputation_value = $db->fetch_field($query, "reputation_count");
 
 	// Create moderator log
-	$rep_remove = build_profile_link($existing_reputation['username'], $existing_reputation['adduid']);
-	log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->sprintf($lang->delete_reputation_log, $rep_remove));
+	log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->sprintf($lang->delete_reputation_log, $existing_reputation['username'], $existing_reputation['adduid']));
 
 	$db->update_query("users", array('reputation' => intval($reputation_value)), "uid='{$uid}'");
 
