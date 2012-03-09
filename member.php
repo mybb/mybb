@@ -1544,7 +1544,8 @@ if($mybb->input['action'] == "profile")
 			"allow_mycode" => $mybb->settings['sigmycode'],
 			"allow_smilies" => $mybb->settings['sigsmilies'],
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
-			"me_username" => $memprofile['username']
+			"me_username" => $memprofile['username'],
+			"filter_badwords" => 1
 		);
 
 		$memprofile['signature'] = $parser->parse_message($memprofile['signature'], $sig_parser);
