@@ -744,14 +744,13 @@ function error_no_permission()
 	else
 	{
 		// Redirect to where the user came from
-		if($_SERVER['HTTP_REFERER'])
+		$redirect_url = $_SERVER['PHP_SELF'];
+		if($_SERVER['QUERY_STRING'])
 		{
-			$redirect_url = htmlentities($_SERVER['HTTP_REFERER']);
+			$redirect_url .= '?'.$_SERVER['QUERY_STRING'];
 		}
-		else
-		{
-			$redirect_url = '';
-		}
+
+		$redirect_url = htmlspecialchars_uni($redirect_url);
 		
 		switch($mybb->settings['username_method'])
 		{
