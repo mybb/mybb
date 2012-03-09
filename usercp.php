@@ -1693,6 +1693,7 @@ if($mybb->input['action'] == "editsig")
 			"allow_smilies" => $mybb->settings['sigsmilies'],
 			"allow_imgcode" => $mybb->settings['sigimgcode'],
 			"me_username" => $mybb->user['username'],
+			"filter_badwords" => 1
 		);
 
 		$sigpreview = $parser->parse_message($sig, $sig_parser);
