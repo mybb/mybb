@@ -125,17 +125,6 @@ if(!$forum || $forum['type'] != "f")
 // Forumdisplay cache
 $forum_stats = $cache->read("forumsdisplay");
 
-if(!is_array($forum_stats))
-{
-	// Attempt to rebuild it?
-	$forum_stats = $cache->read("forumdisplay", true);
-
-	if(!is_array($forum_stats))
-	{
-		$forum_stats = array();
-	}
-}
-
 $breadcrumb_multipage = array();
 if($mybb->settings['showforumpagesbreadcrumb'])
 {

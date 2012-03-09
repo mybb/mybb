@@ -176,12 +176,6 @@ if($fpermissions['cansearch'] != 0 && $foruminfo['type'] == "f")
 $has_announcements = $has_modtools = false;
 $forum_stats = $cache->read("forumsdisplay");
 
-if(!is_array($forum_stats))
-{
-	// Attempt to rebuild the cache if we've failed to read it
-	$forum_stats = $cache->read("forumdisplay", true);
-}
-
 if(is_array($forum_stats))
 {
 	if($forum_stats[-1]['modtools'] || $forum_stats[$fid]['modtools'])
