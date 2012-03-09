@@ -110,13 +110,13 @@ class datacache
 		// It would have been loaded pre-global if it did exist anyway...
 		else if($hard == false && !is_object($this->handler))
 		{
-			return false;
+			return array();
 		}
 
 		if(is_object($this->handler))
 		{
 			$data = $this->handler->fetch($name);
-			
+
 			// No data returned - cache gone bad?
 			if($data === false)
 			{
@@ -127,7 +127,7 @@ class datacache
 				
 				if($data == null)
 				{
-					$data = '';
+					$data = array();
 				}
 				
 				// Update cache for handler
@@ -139,9 +139,10 @@ class datacache
 		{
 			$query = $db->simple_select("datacache", "title,cache", "title='$name'");
 			$cache_data = $db->fetch_array($query);
+
 			if(!$cache_data['title'])
 			{
-				$data = false;
+				$data = array();
 			}
 			else
 			{
@@ -152,13 +153,13 @@ class datacache
 		// Cache locally
 		$this->cache[$name] = $data;
 		
-		if($data !== false)
+		if(is_array($data))
 		{
 			return $data;
 		}
 		else
 		{
-			return false;
+			return array();
 		}
 	}
 
