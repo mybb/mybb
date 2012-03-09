@@ -432,15 +432,19 @@ function upload_attachment($attachment, $update_attachment=false)
 		return $ret;
 	}
 
-	// Check if the attachment directory (YYYYMM) exists, if not, create it
-	$month_dir = gmdate("Ym");
-	if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
+	$month_dir = '';
+	if(ini_get('safe_mode') != 1 && strtolower(ini_get('safe_mode')) != 'on')
 	{
-		@mkdir($mybb->settings['uploadspath']."/".$month_dir);
-		// Still doesn't exist - oh well, throw it in the main directory
+		// Check if the attachment directory (YYYYMM) exists, if not, create it
+		$month_dir = gmdate("Ym");
 		if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
 		{
-			$month_dir = '';
+			@mkdir($mybb->settings['uploadspath']."/".$month_dir);
+			// Still doesn't exist - oh well, throw it in the main directory
+			if(!@is_dir($mybb->settings['uploadspath']."/".$month_dir))
+			{
+				$month_dir = '';
+			}
 		}
 	}
 	
