@@ -131,7 +131,7 @@ var imagepath = '../images';
 		echo $this->_generate_breadcrumb();
 		echo "			</div>\n";
 		echo "           <div id=\"inner\">\n";
-		if($admin_session['data']['flash_message'])
+			if(isset($admin_session['data']['flash_message']) && $admin_session['data']['flash_message'])
 		{
 			$message = $admin_session['data']['flash_message']['message'];
 			$type = $admin_session['data']['flash_message']['type'];

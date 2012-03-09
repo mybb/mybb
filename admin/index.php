@@ -151,9 +151,10 @@ elseif($mybb->input['do'] == "login")
 			"ip" => $db->escape_string(get_ip()),
 			"dateline" => TIME_NOW,
 			"lastactive" => TIME_NOW,
-			"data" => "",
+			"data" => serialize(array()),
 		);
 		$db->insert_query("adminsessions", $admin_session);
+		$admin_session['data'] = array();
 		$db->update_query("adminoptions", array("loginattempts" => 0, "loginlockoutexpiry" => 0), "uid='".intval($mybb->user['uid'])."'", 1);
 		my_setcookie("adminsid", $sid);
 		my_setcookie('acploginattempts', 0);
