@@ -992,7 +992,7 @@ if($mybb->input['action'] == "thread")
 					SELECT t.*, t.username AS threadusername, u.username
 					FROM ".TABLE_PREFIX."threads t
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid = t.uid), plainto_tsquery ('".$db->escape_string($thread['subject'])."') AS query
-					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.subject @@ query AND ts_rank_cd(to_tsvector('english',t.subject), query ) >= '{$mybb->settings['similarityrating']}'
+					WHERE t.fid='{$thread['fid']}' AND t.tid!='{$thread['tid']}' AND t.visible='1' AND t.closed NOT LIKE 'moved|%' AND t.subject @@ query
 					ORDER BY t.lastpost DESC
 					OFFSET 0 LIMIT {$mybb->settings['similarlimit']}
 				");
