@@ -646,7 +646,7 @@ function check_template($template)
 	}
 
 	// System calls via backtick
-	if(preg_match('#\\$\\{`[^`]+`\\}#s', $template))
+	if(preg_match('#\$\s*\{#', $template))
 	{
 		return true;
 	}
