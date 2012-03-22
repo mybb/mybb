@@ -100,7 +100,7 @@ class datacache
 	function read($name, $hard=false)
 	{
 		global $db, $mybb;
-		
+
 		// Already have this cache and we're not doing a hard refresh? Return cached copy
 		if(isset($this->cache[$name]) && $hard == false)
 		{
@@ -110,7 +110,7 @@ class datacache
 		// It would have been loaded pre-global if it did exist anyway...
 		else if($hard == false && !is_object($this->handler))
 		{
-			return array();
+			return false;
 		}
 
 		if(is_object($this->handler))
@@ -124,16 +124,11 @@ class datacache
 				$query = $db->simple_select("datacache", "title,cache", "title='".$db->escape_string($name)."'");
 				$cache_data = $db->fetch_array($query);
 				$data = @unserialize($cache_data['cache']);
-				
-				if($data == null)
-				{
-					$data = array();
-				}
-				
+
 				// Update cache for handler
 				$this->handler->put($name, $data);
 			}
-		}		
+		}
 		// Else, using internal database cache
 		else
 		{
@@ -142,7 +137,7 @@ class datacache
 
 			if(!$cache_data['title'])
 			{
-				$data = array();
+				$data = false;
 			}
 			else
 			{
@@ -153,13 +148,13 @@ class datacache
 		// Cache locally
 		$this->cache[$name] = $data;
 		
-		if(is_array($data))
+		if($data !== false)
 		{
 			return $data;
 		}
 		else
 		{
-			return array();
+			return false;
 		}
 	}
 
