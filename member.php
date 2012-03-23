@@ -1118,13 +1118,15 @@ $inline_errors = "";
 if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_login_start");
-	
-	// Checks to make sure the user can login; they haven't had too many tries at logging in.
+
 	// Is a fatal call if user has had too many tries
+	$errors = array();
+	$do_captcha = false;
 	$logins = login_attempt_check();
-	$login_text = '';
-	
-	// Did we come from the quick login form
+
+	require_once MYBB_ROOT."inc/datahandlers/login.php";
+	$loginhandler = new LoginDataHandler("get");
+
 	if($mybb->input['quick_login'] == "1" && $mybb->input['quick_password'] && $mybb->input['quick_username'])
 	{
 		$mybb->input['password'] = $mybb->input['quick_password'];
@@ -1132,137 +1134,38 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		$mybb->input['remember'] = $mybb->input['quick_remember'];
 	}
 
-	if(!username_exists($mybb->input['username']))
-	{
-		my_setcookie('loginattempts', $logins + 1);
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				error($lang->error_invalidpworusername.$login_text);
-				break;
-			case 1:
-				error($lang->error_invalidpworusername1.$login_text);
-				break;
-			case 2:
-				error($lang->error_invalidpworusername2.$login_text);
-				break;
-			default:
-				error($lang->error_invalidpworusername.$login_text);
-				break;
-		}
-	}
-	
-	$query = $db->simple_select("users", "loginattempts", "LOWER(username)='".$db->escape_string(my_strtolower($mybb->input['username']))."' OR LOWER(email)='".$db->escape_string(my_strtolower($mybb->input['username']))."'", array('limit' => 1));
-	$loginattempts = $db->fetch_field($query, "loginattempts");
-	
-	$errors = array();
-	
-	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-	if(!$user['uid'])
-	{
-		my_setcookie('loginattempts', $logins + 1);
-		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($mybb->input['username']))."'", 1, true);
-		
-		$mybb->input['action'] = "login";
-		$mybb->input['request_method'] = "get";
-		
-		if($mybb->settings['failedlogincount'] != 0 && $mybb->settings['failedlogintext'] == 1)
-		{
-			$login_text = $lang->sprintf($lang->failed_login_again, $mybb->settings['failedlogincount'] - $logins);
-		}
-		
-		switch($mybb->settings['username_method'])
-		{
-			case 0:
-				$errors[] = $lang->error_invalidpworusername.$login_text;
-				break;
-			case 1:
-				$errors[] = $lang->error_invalidpworusername1.$login_text;
-				break;
-			case 2:
-				$errors[] = $lang->error_invalidpworusername2.$login_text;
-				break;
-			default:
-				$errors[] = $lang->error_invalidpworusername.$login_text;
-				break;
-		}
-	}
-	else
-	{
-		$correct = true;
-	}
-	
-	if($mybb->settings['failedcaptchalogincount'] > 0 && ($loginattempts > $mybb->settings['failedcaptchalogincount'] || intval($mybb->cookies['loginattempts']) > $mybb->settings['failedcaptchalogincount']))
-	{		
-		// Show captcha image if enabled
-		if($mybb->settings['captchaimage'] == 1 && function_exists("imagepng"))
-		{
-			// Check their current captcha input - if correct, hide the captcha input area
-			if($mybb->input['imagestring'])
-			{
-				$imagehash = $db->escape_string($mybb->input['imagehash']);
-				$imagestring = $db->escape_string($mybb->input['imagestring']);
-				$query = $db->simple_select("captcha", "*", "imagehash='{$imagehash}' AND imagestring='{$imagestring}'");
-				$imgcheck = $db->fetch_array($query);
-				if($imgcheck['dateline'] > 0)
-				{
-					$correct = true;
-				}
-				else
-				{
-					$db->delete_query("captcha", "imagehash='{$imagehash}'");
-					$errors[] = $lang->error_regimageinvalid;
-				}
-			}
-			else if($mybb->input['quick_login'] == 1 && $mybb->input['quick_password'] && $mybb->input['quick_username'])
-			{
-				$errors[] = $lang->error_regimagerequired;
-			}
-			else
-			{
-				$errors[] = $lang->error_regimagerequired;
-			}
-		}
-		
-		$do_captcha = true;
-	}
-	
-	if(!empty($errors))
+	$user = array(
+		'username' => $mybb->input['username'],
+		'password' => $mybb->input['password'],
+		'remember' => $mybb->input['remember'],
+		'imagestring' => $mybb->input['imagestring']
+	);
+
+	$loginhandler->set_data($user);
+	$validated = $loginhandler->validate_login();
+
+	if(!$validated)
 	{
 		$mybb->input['action'] = "login";
 		$mybb->input['request_method'] = "get";
-		
-		$inline_errors = inline_error($errors);
+
+		my_setcookie('loginattempts', $logins + 1);
+		$db->update_query("users", array('loginattempts' => 'loginattempts+1'), "LOWER(username) = '".$db->escape_string(my_strtolower($user['username']))."'", 1, true);
+
+		$errors = $loginhandler->get_friendly_errors();
 	}
-	else if($correct)
-	{		
-		if($user['coppauser'])
+	else if($validated && $loginhandler->captcha_verified == true)
+	{
+		// Successful login
+		if($loginhandler->login_data['coppauser'])
 		{
 			error($lang->error_awaitingcoppa);
 		}
-		
-		my_setcookie('loginattempts', 1);
-		$db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' AND sid != '".$session->sid."'");
-		$newsession = array(
-			"uid" => $user['uid'],
-		);
-		$db->update_query("sessions", $newsession, "sid='".$session->sid."'");
-		
-		$db->update_query("users", array("loginattempts" => 1), "uid='{$user['uid']}'");
-		
-		if($mybb->input['remember'] != "yes")
-		{
-			$remember = -1;
-		}
-		else
-		{
-			$remember = null;
-		}
-		my_setcookie("mybbuser", $user['uid']."_".$user['loginkey'], $remember, true);
-		my_setcookie("sid", $session->sid, -1, true);
-		
+
+		$loginhandler->complete_login();
+
 		$plugins->run_hooks("member_do_login_end");
-		
+
 		if($mybb->input['url'] != "" && my_strpos(basename($mybb->input['url']), 'member.php') === false)
 		{
 			if((my_strpos(basename($mybb->input['url']), 'newthread.php') !== false || my_strpos(basename($mybb->input['url']), 'newreply.php') !== false) && my_strpos($mybb->input['url'], '&processed=1') !== false)
@@ -1277,15 +1180,20 @@ if($mybb->input['action'] == "do_login" && $mybb->request_method == "post")
 		}
 		else
 		{
+
 			redirect("index.php", $lang->redirect_loggedin);
 		}
 	}
-	else
+
+	if($loginhandler->captcha_verified == false)
 	{
+		// CAPTCHA required
 		$mybb->input['action'] = "login";
 		$mybb->input['request_method'] = "get";
+
+		$do_captcha = true;
 	}
-	
+
 	$plugins->run_hooks("member_do_login_end");
 }
 
