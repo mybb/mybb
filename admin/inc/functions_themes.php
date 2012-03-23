@@ -946,6 +946,7 @@ function update_theme_stylesheet_list($tid, $theme = false, $update_disporders =
 			}
 		}
 
+		asort($orders);
 		$properties['disporder'] = $orders;
 		$updated_theme['properties'] = $db->escape_string(serialize($properties));
 	}
