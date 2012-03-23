@@ -1659,8 +1659,6 @@ if($mybb->input['action'] == "delete")
 
 		flash_message($lang->success_user_deleted, 'success');
 		admin_redirect("index.php?module=user-users");
-		
-		die();
 	}
 	else
 	{
