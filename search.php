@@ -184,7 +184,7 @@ if($mybb->input['action'] == "results")
 			ORDER BY pid, disporder
 		");
 		
-		$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
 	}
 	else
 	{
@@ -197,6 +197,7 @@ if($mybb->input['action'] == "results")
 			ORDER BY pid, disporder
 		");
 	}
+
 	while($forum = $db->fetch_array($query))
 	{
 		if($mybb->user['uid'] == 0)

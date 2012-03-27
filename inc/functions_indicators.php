@@ -73,9 +73,10 @@ function fetch_unread_count($fid)
 	{
 		$comma = '';
 		$tids = '';
-		$threadsread = unserialize($mybb->cookies['mybb']['threadread']);
-		$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
-		if(is_array($threadsread))
+		$threadsread = my_unserialize($mybb->cookies['mybb']['threadread']);
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+
+		if(!empty($threadsread))
 		{
 			foreach($threadsread as $key => $value)
 			{

@@ -2736,7 +2736,8 @@ if($mybb->input['action'] == "inline_edit")
 								unset($mybb->input['additionalgroups'][$key]);
 							}
 						}
-						$additionalgroups = implode(",", $mybb->input['additionalgroups']);
+
+						$additionalgroups = implode(",", array_map('intval', $mybb->input['additionalgroups']));
 					}
 					else
 					{
@@ -2745,9 +2746,9 @@ if($mybb->input['action'] == "inline_edit")
 
 					// Create an update array
 					$update_array = array(
-						"usergroup" => $mybb->input['usergroup'],
+						"usergroup" => intval($mybb->input['usergroup']),
 						"additionalgroups" => $additionalgroups,
-						"displaygroup" => $mybb->input['displaygroup']
+						"displaygroup" => intval($mybb->input['displaygroup'])
 					);
 
 					// Do the usergroup update for all those selected
@@ -3219,6 +3220,13 @@ function build_users_view($view)
 
 		foreach($view['conditions']['usergroup'] as $usergroup)
 		{
+			$usergroup = intval($usergroup);
+		
+			if(!$usergroup)
+			{
+				continue;
+			}
+
 			switch($db->type)
 			{
 				case "pgsql":
@@ -3229,7 +3237,8 @@ function build_users_view($view)
 					$additional_sql .= "OR CONCAT(',',additionalgroups,',') LIKE '%,{$usergroup},%'";
 			}
 		}
-		$search_sql .= " AND (u.usergroup IN (".implode(",", $view['conditions']['usergroup']).") {$additional_sql})";
+
+		$search_sql .= " AND (u.usergroup IN (".implode(",", array_map('intval', $view['conditions']['usergroup'])).") {$additional_sql})";
 	}
 
 	// COPPA users only?
