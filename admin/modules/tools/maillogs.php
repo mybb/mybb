@@ -169,24 +169,35 @@ if(!$mybb->input['action'])
 		}
 	}
 
+	$touid = intval($mybb->input['touid']);
+	$toname = $db->escape_string($mybb->input['toname']);
+	$toemail = $db->escape_string($mybb->input['toemail']);
+
+	$fromuid = intval($mybb->input['fromuid']);
+	$fromname = $db->escape_string($mybb->input['fromname']);
+	$fromemail = $db->escape_string($mybb->input['fromemail']);
+
+	$subject = $db->escape_string($mybb->input['subject']);
+
 	// Begin criteria filtering
 	if($mybb->input['subject'])
 	{
-		$additional_sql_criteria .= " AND l.subject LIKE '%".$db->escape_string($mybb->input['subject'])."%'";
+		$additional_sql_criteria .= " AND l.subject LIKE '%{$subject}%'";
 		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
 	}
 
 	if($mybb->input['fromuid'])
 	{
-		$query = $db->simple_select("users", "uid, username", "uid='".intval($mybb->input['fromuid'])."'");
+		$query = $db->simple_select("users", "uid, username", "uid = '{$fromuid}'");
 		$user = $db->fetch_array($query);
 		$from_filter = $user['username'];
-		$additional_sql_criteria .= " AND l.fromuid='".intval($mybb->input['fromuid'])."'";
-		$additional_criteria[] = "fromuid='".intval($mybb->input['fromuid'])."'";
+
+		$additional_sql_criteria .= " AND l.fromuid = '{$fromuid}'";
+		$additional_criteria[] = "fromuid='{$fromuid}'";
 	}
 	else if($mybb->input['fromname'])
 	{
-		$query = $db->simple_select("users", "uid, username", "LOWER(username)='".my_strtolower($mybb->input['fromname'])."'");
+		$query = $db->simple_select("users", "uid, username", "LOWER(username) = '{$fromname}'");
 		$user = $db->fetch_array($query);
 		$from_filter = $user['username'];
 
@@ -195,28 +206,30 @@ if(!$mybb->input['action'])
 			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?module=tools-maillogs");
 		}
-		$additional_sql_criteria .= "AND l.fromuid='{$user['uid']}'";
+
+		$additional_sql_criteria .= "AND l.fromuid = '{$user['uid']}'";
 		$additional_criteria = "fromuid={$user['uid']}";
 	}
 
 	if($mybb->input['fromemail'])
 	{
-		$additional_sql_criteria .= " AND l.fromemail LIKE '%".$db->escape_string($mybb->input['fromemail'])."%'";
+		$additional_sql_criteria .= " AND l.fromemail LIKE '%{$fromemail}%'";
 		$additional_criteria[] = "fromemail=".urlencode($mybb->input['fromemail']);
 		$from_filter = $mybb->input['fromemail'];
 	}
 
 	if($mybb->input['touid'])
 	{
-		$query = $db->simple_select("users", "uid, username", "uid='".intval($mybb->input['touid'])."'");
+		$query = $db->simple_select("users", "uid, username", "uid = '{$touid}'");
 		$user = $db->fetch_array($query);
 		$to_filter = $user['username'];
-		$additional_sql_criteria .= " AND l.touid='".intval($mybb->input['touid'])."'";
-		$additional_criteria[] = "touid='".intval($mybb->input['touid'])."'";
+
+		$additional_sql_criteria .= " AND l.touid = '{$touid}'";
+		$additional_criteria[] = "touid='{$touid}'";
 	}
 	else if($mybb->input['toname'])
 	{
-		$query = $db->simple_select("users", "uid, username", "LOWER(username)='".my_strtolower($mybb->input['toname'])."'");
+		$query = $db->simple_select("users", "uid, username", "LOWER(username)='".my_strtolower($toname)."'");
 		$user = $db->fetch_array($query);
 		$to_filter = $user['username'];
 
@@ -225,13 +238,14 @@ if(!$mybb->input['action'])
 			flash_message($lang->error_invalid_user, 'error');
 			admin_redirect("index.php?module=tools-maillogs");
 		}
+
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
 		$additional_criteria = "touid='{$user['uid']}'";
 	}
 
 	if($mybb->input['toemail'])
 	{
-		$additional_sql_criteria .= " AND l.toemail LIKE '%".$db->escape_string($mybb->input['toemail'])."%'";
+		$additional_sql_criteria .= " AND l.toemail LIKE '%{$toemail}%'";
 		$additional_criteria[] = "toemail='".urlencode($mybb->input['toemail'])."'";
 		$to_filter = $mybb->input['toemail'];
 	}
