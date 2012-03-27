@@ -1719,7 +1719,7 @@ function my_get_array_cookie($name, $id)
 		return false;
 	}
 
-	$cookie = unserialize($mybb->cookies['mybb'][$name]);
+	$cookie = my_unserialize($mybb->cookies['mybb'][$name]);
 
 	if(is_array($cookie) && isset($cookie[$id]))
 	{
@@ -1743,21 +1743,33 @@ function my_set_array_cookie($name, $id, $value, $expires="")
 	global $mybb;
 	
 	$cookie = $mybb->cookies['mybb'];
-	$newcookie = unserialize($cookie[$name]);
-
-	if(!is_array($newcookie))
-	{
-		// Burnt / malformed cookie - reset
-		$newcookie = array();
-	}
+	$newcookie = my_unserialize($cookie[$name]);
 
 	$newcookie[$id] = $value;
 	$newcookie = serialize($newcookie);
 	my_setcookie("mybb[$name]", addslashes($newcookie), $expires);
-	
+
 	// Make sure our current viarables are up-to-date as well
 	$mybb->cookies['mybb'][$name] = $newcookie;
 }
+
+/**
+ * Verifies that data passed is an array
+ *
+ * @param array Data to unserialize
+ * @return array Unserialized data array
+ */
+function my_unserialize($data)
+{
+	$array = unserialize($data);
+
+	if(!is_array($array))
+	{
+		$array = array();
+	}
+
+	return $array;
+} 
 
 /**
  * Returns the serverload of the system.

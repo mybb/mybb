@@ -84,9 +84,9 @@ if($fpermissions['canview'] != 1)
 if($mybb->user['uid'] == 0)
 {
 	// Cookie'd forum read time
-	$forumsread = unserialize($mybb->cookies['mybb']['forumread']);
- 
- 	if(!is_array($forumsread))
+	$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+
+ 	if(is_array($forumsread) && empty($forumsread))
  	{
  		if($mybb->cookies['mybb']['readallforums'])
 		{
@@ -677,7 +677,7 @@ if($has_announcements == true)
 	$cookie = array();
 	if(isset($mybb->cookies['mybb']['announcements']))
 	{
-		$cookie = unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
+		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 	}
 
 	$bgcolor = alt_trow(true); // Reset the trow colors
