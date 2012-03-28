@@ -6,7 +6,7 @@
  * Website: http://www.mybboard.com
  * License: http://mybb.com/about/license
  *
- * $Id: $
+ * $Id: upgrade23.php 5767 2012-03-28 11:19:47Z Tomm $
  */
 
 /**
@@ -51,6 +51,8 @@ function upgrade23_dbchanges()
 			$db->add_column('usergroups', 'cansendemailoverride', "int(1) NOT NULL default '0'");
 			break;
 	}
+
+	$db->update_query('moderators', array('canusecustomtools' => 1), "canmanagethreads = '1'");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("23_done");
