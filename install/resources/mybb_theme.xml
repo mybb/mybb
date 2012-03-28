@@ -1395,7 +1395,7 @@ ul.thread_tools li.subscription_remove {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_reports" version="1606"><![CDATA[<html>
+		<template name="modcp_reports" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
 {$headerinclude}
@@ -2968,7 +2968,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="forumdisplay_rules" version="1606"><![CDATA[<br />
+		<template name="forumdisplay_rules" version="1607"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="thead"><strong>{$foruminfo['rulestitle']}</strong></td>
@@ -2978,7 +2978,7 @@ body {
 </tr>
 </table>
 <br />]]></template>
-		<template name="forumdisplay_rules_link" version="1606"><![CDATA[<br />
+		<template name="forumdisplay_rules_link" version="1607"><![CDATA[<br />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
 <td class="trow1"><strong><a href="misc.php?action=rules&amp;fid={$fid}">{$foruminfo['rulestitle']}</a></strong></td>
@@ -3388,7 +3388,7 @@ body {
 </tr>
 </table>
 ]]></template>
-		<template name="header_welcomeblock_guest" version="1606"><![CDATA[<script type="text/javascript">
+		<template name="header_welcomeblock_guest" version="1607"><![CDATA[<script type="text/javascript">
 <!--
 	lang.username = "{$login_username}";
 	lang.password = "{$lang->login_password}";
@@ -3552,7 +3552,7 @@ body {
 <br />
 <div align="center"><input type="submit" class="button" value="{$lang->add_member_submit}" /></div>
 </form>]]></template>
-		<template name="managegroup_no_users" version="1606"><![CDATA[<tr>
+		<template name="managegroup_no_users" version="1607"><![CDATA[<tr>
 <td class="trow1" colspan="6">{$lang->no_users}</td>
 </tr>]]></template>
 		<template name="managegroup_user" version="1400"><![CDATA[<tr>
@@ -3814,7 +3814,7 @@ body {
 // -->
 </script>]]></template>
 		<template name="postbit_quote" version="120"><![CDATA[<a href="newreply.php?tid={$tid}&amp;pid={$post['pid']}"><img src="{$theme['imglangdir']}/postbit_quote.gif" alt="{$lang->postbit_quote}" title="{$lang->postbit_quote}" /></a>]]></template>
-		<template name="postbit_rep_button" version="1606"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});"><img src="{$theme['imglangdir']}/postbit_reputation.gif" alt="{$lang->postbit_reputation_add}" title="{$lang->postbit_reputation_add}" /></a>]]></template>
+		<template name="postbit_rep_button" version="1607"><![CDATA[<a href="javascript:MyBB.reputation({$post['uid']},{$post['pid']});"><img src="{$theme['imglangdir']}/postbit_reputation.gif" alt="{$lang->postbit_reputation_add}" title="{$lang->postbit_reputation_add}" /></a>]]></template>
 		<template name="postbit_report" version="120"><![CDATA[<a href="javascript:Thread.reportPost({$post['pid']});"><img src="{$theme['imglangdir']}/postbit_report.gif" alt="{$lang->postbit_report}" title="{$lang->postbit_report}" /></a>]]></template>
 		<template name="postbit_www" version="120"><![CDATA[<a href="{$post['website']}" target="_blank"><img src="{$theme['imglangdir']}/postbit_www.gif" alt="{$lang->postbit_website}" title="{$lang->postbit_website}" /></a>]]></template>
 		<template name="polls_showresults_resultbit" version="1402"><![CDATA[<tr>
@@ -4977,7 +4977,7 @@ body {
 </table>]]></template>
 		<template name="postbit_gotopost" version="1400"><![CDATA[<a href="{$url}" class="quick_jump">&nbsp;</a>]]></template>
 		<template name="forumdisplay_threadlist_clearpass" version="1606"><![CDATA[ | <a href="misc.php?action=clearpass&amp;fid={$fid}&amp;my_post_key={$mybb->post_code}">{$lang->clear_stored_password}</a>]]></template>
-		<template name="portal_welcome_guesttext" version="1606"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
+		<template name="portal_welcome_guesttext" version="1607"><![CDATA[<span class="smalltext">{$lang->guest_welcome_registration}</span><br />
 <br />
 <form method="post" action="{$portal_url}"><input type="hidden" name="action" value="do_login" />
 {$username}<br />&nbsp;&nbsp;<input type="text" class="textbox" name="username" value="" /><br /><br />
@@ -5289,7 +5289,7 @@ body {
 {$lang->num_options} <input type="text" class="textbox" name="numpolloptions" value="{$numpolloptions}" size="10" /> {$lang->max_options}</span>
 </td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1606"><![CDATA[<tr>
+		<template name="modcp_reports_report" version="1607"><![CDATA[<tr>
 <td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
 <td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
 <td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
@@ -5345,7 +5345,7 @@ body {
 	<template name="modcp_reports_allnoreports" version="120"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="6">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_noreports" version="1606"><![CDATA[<tr>
+		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="global_unreadreports" version="1600"><![CDATA[<div class="red_alert"><a href="modcp.php?action=reports">{$lang->unread_reports}</a></div>
@@ -5491,7 +5491,7 @@ body {
 </tr>]]></template>
 		<template name="memberlist_user_avatar" version="1400"><![CDATA[<img src="{$user['avatar']}" alt="" {$avatar_width_height} />]]></template>
 		<template name="memberlist_user_groupimage" version="1400"><![CDATA[<img src="{$usergroup['image']}" alt="{$usergroup['title']}" title="{$usergroup['title']}" />]]></template>
-		<template name="index_loginform" version="1606"><![CDATA[<br /><br />
+		<template name="index_loginform" version="1607"><![CDATA[<br /><br />
 <form action="member.php" method="post">
 	<input type="hidden" name="action" value="do_login" />
 	<span class="smalltext"><strong>{$lang->quick_login}</strong></span>
@@ -6738,7 +6738,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <td>{$lang->votes}&nbsp;</td>
 <td><input type="text" class="textbox" name="votes[{$counter}]" value="{$optionvotes}" /></td>
 </tr>]]></template>
-		<template name="member_resetpassword" version="1606"><![CDATA[<html>
+		<template name="member_resetpassword" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reset_password}</title>
 {$headerinclude}
@@ -6915,7 +6915,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_split" version="1606"><![CDATA[<html>
+		<template name="moderation_split" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
@@ -7128,7 +7128,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 <br />
 <br />
 <hr size="1" />]]></template>
-		<template name="error_nopermission" version="1606"><![CDATA[{$lang->error_nopermission_guest_1}
+		<template name="error_nopermission" version="1607"><![CDATA[{$lang->error_nopermission_guest_1}
 <ol>
 <li>{$lang->error_nopermission_guest_2}</li>
 <li>{$lang->error_nopermission_guest_3}</li>
@@ -7785,7 +7785,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_inline_splitposts" version="1606"><![CDATA[<html>
+		<template name="moderation_inline_splitposts" version="1607"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->split_thread}</title>
 {$headerinclude}
@@ -9685,7 +9685,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="warnings_warn_type" version="1606"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$checked} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> {$points}</label></dt>
+		<template name="warnings_warn_type" version="1607"><![CDATA[					<dt><label style="display: block;"><input type="radio" name="type" value="{$type['tid']}" {$checked} class="types_check" onclick="checkType();" style="vertical-align: middle;" /> <strong>{$type['title']}</strong> {$points}</label></dt>
 					<dd style="margin-top: 4px;" id="type_{$type['tid']}" class="types">
 						<div class="smalltext">{$lang->new_warning_level}</div>
 						<div class="tborder" style="width: 150px; float: left; margin: 0; padding: 1px;">
