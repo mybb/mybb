@@ -69,6 +69,15 @@ else
 	$flist = $tflist = '';
 }
 
+// Retrieve a list of unviewable forums
+$unviewableforums = get_unviewable_forums();
+
+if($unviewableforums && !is_super_admin($mybb->user['uid']))
+{
+	$flist .= " AND fid NOT IN ({$unviewableforums})";
+	$tflist .= " AND t.fid NOT IN ({$unviewableforums})";
+}
+
 // Fetch the Mod CP menu
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
 
@@ -3305,6 +3314,12 @@ if(!$mybb->input['action'])
 		$latest_thread = "<span style=\"text-align: center;\">{$lang->lastpost_never}</span>";
 	}
 
+	$where = '';
+	if($tflist)
+	{
+		$where = "WHERE (t.fid <> 0 {$tflist}) OR (!l.fid)";
+	}
+
 	$query = $db->query("
 		SELECT l.*, u.username, u.usergroup, u.displaygroup, t.subject AS tsubject, f.name AS fname, p.subject AS psubject
 		FROM ".TABLE_PREFIX."moderatorlog l
@@ -3312,9 +3327,11 @@ if(!$mybb->input['action'])
 		LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=l.tid)
 		LEFT JOIN ".TABLE_PREFIX."forums f ON (f.fid=l.fid)
 		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=l.pid)
+		{$where}
 		ORDER BY l.dateline DESC
 		LIMIT 5
 	");
+
 	while($logitem = $db->fetch_array($query))
 	{
 		$information = '';
@@ -3440,5 +3457,4 @@ if(!$mybb->input['action'])
 	eval("\$modcp = \"".$templates->get("modcp")."\";");
 	output_page($modcp);
 }
-
 ?>

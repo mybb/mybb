@@ -106,7 +106,7 @@ if($announcementarray['startdate'] > $mybb->user['lastvisit'])
 	$setcookie = true;
 	if($mybb->cookies['mybb']['announcements'])
 	{
-		$cookie = unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
+		$cookie = my_unserialize(stripslashes($mybb->cookies['mybb']['announcements']));
 	
 		if(isset($cookie[$announcementarray['aid']]))
 		{

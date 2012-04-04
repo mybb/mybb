@@ -365,6 +365,8 @@ if($mybb->input['action'] == "orphans")
 			$query = $db->simple_select("attachments", "*", "aid IN (".implode(",", $aids).")");
 			while($attachment = $db->fetch_array($query))
 			{
+				$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+
 				if($missing_attachment_files[$attachment['aid']])
 				{
 					$reason = $lang->reason_file_missing;
@@ -875,7 +877,7 @@ if(!$mybb->input['action'])
 function build_attachment_row($attachment, &$table, $use_form=false)
 {
 	global $mybb, $form;
-	$attachment['filename'] = htmlspecialchars($attachment['filename']);
+	$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
 
 	// Here we do a bit of detection, we want to automatically check for removal any missing attachments and any not assigned to a post uploaded > 24hours ago
 	// Check if the attachment exists in the file system
