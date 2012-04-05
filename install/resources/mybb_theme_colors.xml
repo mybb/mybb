@@ -3,20 +3,19 @@
 	<scheme><![CDATA[black=Black]]></scheme>
 	<scheme><![CDATA[calm=Calm]]></scheme>
 	<scheme><![CDATA[dawn=Dawn]]></scheme>
+	<scheme><![CDATA[earth=Earth]]></scheme>
+	<scheme><![CDATA[flame=Flame]]></scheme>
+	<scheme><![CDATA[leaf=Leaf]]></scheme>
+	<scheme><![CDATA[night=Night]]></scheme>
+	<scheme><![CDATA[sun=Sun]]></scheme>
+	<scheme><![CDATA[twilight=Twilight]]></scheme>
+	<scheme><![CDATA[water=Water]]></scheme>
 	<stylesheets>
-		<stylesheet name="color_black.css" attachedto="black" version="1800"><![CDATA[a:link {
+		<stylesheet name="color_black.css" attachedto="black" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
 	color: #555;
-	text-decoration: none;
-}
-
-a:visited {
-	color: #444;
-	text-decoration: none;
-}
-
-a:hover, a:active {
-	color: #000;
-	text-decoration: underline;
 }
 
 #logo {
@@ -25,7 +24,7 @@ a:hover, a:active {
 }
 
 #panel .upper {
-	background: #dcdbdc url(images/1/tcat.png) repeat-x;
+	background: #dcdbdc url(images/colors/black_tcat.png) repeat-x;
 	color: #000;
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #bbb;
@@ -109,19 +108,11 @@ a:hover, a:active {
 	color: #fff;
 }]]>
 		</stylesheet>
-		<stylesheet name="color_calm.css" attachedto="calm" version="1800"><![CDATA[a:link {
+		<stylesheet name="color_calm.css" attachedto="calm" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
 	color: #48715b;
-	text-decoration: none;
-}
-
-a:visited {
-	color: #48715b;
-	text-decoration: none;
-}
-
-a:hover, a:active {
-	color: #48715b;
-	text-decoration: underline;
 }
 
 #logo {
@@ -158,19 +149,11 @@ a:hover, a:active {
 	color: #fff;
 }]]>
 	</stylesheet>
-	<stylesheet name="color_dawn.css" attachedto="dawn" version="1800"><![CDATA[a:link {
+	<stylesheet name="color_dawn.css" attachedto="dawn" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
 	color: #d56c2c;
-	text-decoration: none;
-}
-
-a:visited {
-	color: #d56c2c;
-	text-decoration: none;
-}
-
-a:hover, a:active {
-	color: #d56c2c;
-	text-decoration: underline;
 }
 
 #logo {
@@ -202,6 +185,287 @@ a:hover, a:active {
 
 .autocomplete_selected {
 	background: #f2a555;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_earth.css" attachedto="earth" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #6d5545;
+}
+
+#logo {
+	background: #4a3a2e url(images/colors/earth_header.png) top left repeat-x;
+	border-bottom: 1px solid #31261e;
+}
+
+.thead {
+	background: #4a3b2f url(images/colors/earth_thead.png) top left repeat-x;
+	border-bottom: 1px solid #31261e;
+}
+
+.tfoot {
+	background: #4a3b2f url(images/colors/earth_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #31261e;
+}
+
+.popup_menu .popup_item:hover {
+	background: #6d5545;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #6d5545;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_flame.css" attachedto="flame" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #a20000;
+}
+
+#logo {
+	background: #750000 url(images/colors/flame_header.png) top left repeat-x;
+	border-bottom: 1px solid #550000;
+}
+
+.thead {
+	background: #750000 url(images/colors/flame_thead.png) top left repeat-x;
+	border-bottom: 1px solid #550000;
+}
+
+.tfoot {
+	background: #750000 url(images/colors/flame_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #550000;
+}
+
+.popup_menu .popup_item:hover {
+	background: #a20000;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #a20000;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_leaf.css" attachedto="leaf" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #5aaf33;
+}
+
+#logo {
+	background: #386e21 url(images/colors/leaf_header.png) top left repeat-x;
+	border-bottom: 1px solid #234615;
+}
+
+.thead {
+	background: #386e21 url(images/colors/leaf_thead.png) top left repeat-x;
+	border-bottom: 1px solid #234615;
+}
+
+.tfoot {
+	background: #386e21 url(images/colors/leaf_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #234615;
+}
+
+.popup_menu .popup_item:hover {
+	background: #5aaf33;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #5aaf33;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_night.css" attachedto="night" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #023a61;
+}
+
+#logo {
+	background: #022338 url(images/colors/night_header.png) top left repeat-x;
+	border-bottom: 1px solid #011929;
+}
+
+.thead {
+	background: #022338 url(images/colors/night_thead.png) top left repeat-x;
+	border-bottom: 1px solid #011929;
+}
+
+.tfoot {
+	background: #022338 url(images/colors/night_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #011929;
+}
+
+.popup_menu .popup_item:hover {
+	background: #023a61;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #023a61;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_sun.css" attachedto="sun" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #555;
+}
+
+#logo {
+	background: #ffdd4d url(images/colors/sun_header.png) top left repeat-x;
+	border-bottom: 1px solid #111;
+}
+
+.thead {
+	background: #ffdd4d url(images/colors/sun_thead.png) top left repeat-x;
+	border-bottom: 1px solid #ffaf1a;
+	color: #000;
+}
+
+.thead a:link,
+.thead a:visited,
+.thead a:hover,
+.thead a:active {
+	color: #000;
+}
+
+.tfoot {
+	background: #ffdd4d url(images/colors/sun_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #ffaf1a;
+}
+
+.popup_menu .popup_item:hover {
+	background: #ffea9c;
+	color: #000;
+}
+
+.autocomplete_selected {
+	background: #ffea9c;
+	color: #000;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_twilight.css" attachedto="twilight" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #426276;
+}
+
+#logo {
+	background: #273a46 url(images/colors/twilight_header.png) top left repeat-x;
+	border-bottom: 1px solid #1d2b34;
+}
+
+.thead {
+	background: #273a46 url(images/colors/twilight_thead.png) top left repeat-x;
+	border-bottom: 1px solid #1d2b34;
+}
+
+.tfoot {
+	background: #273a46 url(images/colors/twilight_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #1d2b34;
+}
+
+.popup_menu .popup_item:hover {
+	background: #426276;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #426276;
+	color: #fff;
+}]]>
+		</stylesheet>
+		<stylesheet name="color_water.css" attachedto="water" version="1800"><![CDATA[a:link,
+a:visited,
+a:hover,
+a:active {
+	color: #2d9595;
+}
+
+#logo {
+	background: #1e6365 url(images/colors/water_header.png) top left repeat-x;
+	border-bottom: 1px solid #133f41;
+}
+
+.thead {
+	background: #1e6365 url(images/colors/water_thead.png) top left repeat-x;
+	border-bottom: 1px solid #133f41;
+}
+
+.tfoot {
+	background: #1e6365 url(images/colors/water_thead.png) top left repeat-x;
+	border-top: 1px solid #fff;
+}
+
+.thead input.textbox,
+.thead select,
+.tfoot input.textbox,
+.tfoot select {
+	border: 1px solid #133f41;
+}
+
+.popup_menu .popup_item:hover {
+	background: #2d9595;
+	color: #fff;
+}
+
+.autocomplete_selected {
+	background: #2d9595;
 	color: #fff;
 }]]>
 		</stylesheet>
