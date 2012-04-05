@@ -68,17 +68,31 @@ $maintimer = new timer();
 require_once MYBB_ROOT."inc/class_core.php";
 $mybb = new MyBB;
 
+$not_installed = false;
 if(!file_exists(MYBB_ROOT."inc/config.php"))
 {
-	$mybb->trigger_generic_error("board_not_installed");
+	$not_installed = true;
+}
+else
+{
+	// Include the required core files
+	require_once MYBB_ROOT."inc/config.php";
+	$mybb->config = &$config;
+	
+	if(!isset($config['database']))
+	{
+		$not_installed = true;
+	}
 }
 
-// Include the required core files
-require_once MYBB_ROOT."inc/config.php";
-$mybb->config = &$config;
-
-if(!isset($config['database']))
+if($not_installed !== false)
 {
+	if(file_exists(MYBB_ROOT."install/index.php"))
+	{
+		header("Location: ./install/index.php");
+		exit;
+	}
+
 	$mybb->trigger_generic_error("board_not_installed");
 }
 
