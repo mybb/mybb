@@ -126,7 +126,7 @@ class LoginDataHandler extends DataHandler
 
 	function verify_password($strict = true)
 	{
-		global $db;
+		global $db, $mybb;
 
 		if(!$this->login_data['username'])
 		{

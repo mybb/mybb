@@ -13,7 +13,7 @@ define("IN_MYBB", 1);
 define("IN_ADMINCP", 1);
 
 // Here you can change how much of an Admin CP IP address must match in a previous session for the user is validated (defaults to 3 which matches a.b.c)
-define("ADMIN_IP_SEGMENTS", 3);
+define("ADMIN_IP_SEGMENTS", 0);
 
 require_once dirname(dirname(__FILE__))."/inc/init.php";
 
@@ -124,12 +124,26 @@ if($mybb->input['action'] == "unlock")
 	$default_page->show_lockout_unlock();
 }
 elseif($mybb->input['do'] == "login")
-{	
-	$user = validate_password_from_username($mybb->input['username'], $mybb->input['password']);
-	if($user['uid'])
+{
+	require_once MYBB_ROOT."inc/datahandlers/login.php";
+	$loginhandler = new LoginDataHandler("get");
+
+	$mybb->settings['username_method'] = 0; // Overrides to check for ACP login
+
+	$loginhandler->set_data(array(
+		'username' => $mybb->input['username'],
+		'password' => $mybb->input['password']
+	));
+
+	if($loginhandler->verify_username() !== false && $loginhandler->verify_password() !== false)
 	{
-		$query = $db->simple_select("users", "*", "uid='".$user['uid']."'");
-		$mybb->user = $db->fetch_array($query);
+		$loginhandler->login_data['uid'] = intval($loginhandler->login_data['uid']);
+		$query = $db->simple_select("users", "*", "uid = '{$loginhandler->login_data['uid']}'");
+		
+		if($db->num_rows($query))
+		{
+			$mybb->user = $db->fetch_array($query);
+		}
 	}
 
 	if($mybb->user['uid'])
