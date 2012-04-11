@@ -529,13 +529,10 @@ eval("\$header = \"".$templates->get("header")."\";");
 $copy_year = my_date("Y", TIME_NOW);
 
 // Are we showing version numbers in the footer?
+$mybbversion = '';
 if($mybb->settings['showvernum'] == 1)
 {
 	$mybbversion = ' '.$mybb->version;
-}
-else
-{
-	$mybbversion = '';
 }
 
 // Check to see if we have any tasks to run
@@ -558,23 +555,27 @@ $lang_select = '';
 if($mybb->settings['showlanguageselect'] != 0)
 {
 	$languages = $lang->get_languages();
-	foreach($languages as $key => $language)
+
+	if(count($languages) > 1)
 	{
-		$language = htmlspecialchars_uni($language);
-		// Current language matches
-		if($lang->language == $key)
+		foreach($languages as $key => $language)
 		{
-			$lang_options .= "<option value=\"{$key}\" selected=\"selected\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+			$language = htmlspecialchars_uni($language);
+
+			// Current language matches
+			if($lang->language == $key)
+			{
+				$lang_options .= "<option value=\"{$key}\" selected=\"selected\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+			}
+			else
+			{
+				$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
+			}
 		}
-		else
-		{
-			$lang_options .= "<option value=\"{$key}\">&nbsp;&nbsp;&nbsp;{$language}</option>\n";
-		}
+
+		$lang_redirect_url = get_current_location(true, 'language');
+		eval("\$lang_select = \"".$templates->get("footer_languageselect")."\";");
 	}
-	
-	$lang_redirect_url = get_current_location(true, 'language');
-	
-	eval("\$lang_select = \"".$templates->get("footer_languageselect")."\";");
 }
 
 // DST Auto detection enabled?
@@ -596,7 +597,7 @@ $archive_url = $mybb->settings['bburl']."/archive/index.php";
 // Check banned ip addresses
 if(is_banned_ip($session->ipaddress, true))
 {
-	if ($mybb->user['uid'])
+	if($mybb->user['uid'])
     {
         $db->delete_query("sessions", "ip='".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
     }
@@ -659,12 +660,11 @@ if($mybb->usergroup['canview'] != 1)
 		if(is_string(ALLOWABLE_PAGE))
 		{
 			$allowable_actions = explode(',', ALLOWABLE_PAGE);
-			
 			if(!in_array($mybb->input['action'], $allowable_actions))
 			{
 				error_no_permission();
 			}
-			
+
 			unset($allowable_actions);
 		}
 		else if(ALLOWABLE_PAGE !== 1)
