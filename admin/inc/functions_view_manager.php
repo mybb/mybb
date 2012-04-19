@@ -40,14 +40,15 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 
 	if($mybb->input['do'] == "set_default")
 	{
-		$query = $db->simple_select("adminviews", "vid", "vid='".intval($mybb->input['vid'])."'");
+		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
-		
+
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
 			flash_message($lang->error_invalid_admin_view, 'error');
 			admin_redirect($base_url."&action=views");
 		}
+
 		set_default_view($type, $admin_view['vid']);
 		flash_message($lang->succuss_view_set_as_default, 'success');
 		admin_redirect($base_url."&action=views");
@@ -126,7 +127,8 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		// Write in our JS based field selector
 		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		$page->extra_header .= "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
-		
+
+		$page->add_breadcrumb_item($lang->create_new_view);
 		$page->output_header($lang->create_new_view);
 			
 		$form = new Form($base_url."&amp;action=views&amp;do=add", "post");
@@ -307,14 +309,6 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				admin_redirect($base_url."&vid={$admin_view['vid']}");
 			}
 		}
-		else
-		{
-			$default_view = fetch_default_view($type);
-			if($default_view = $view['vid'])
-			{
-				$mybb->input['isdefault'] = 1;
-			}
-		}
 		
 		// Write in our JS based field selector
 		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
@@ -344,6 +338,14 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			$admin_view['fields'] = unserialize($admin_view['fields']);
 			$admin_view['profile_fields'] = unserialize($admin_view['custom_profile_fields']);
 			$mybb->input = $admin_view;
+
+			$mybb->input['isdefault'] = 0;
+			$default_view = fetch_default_view($type);
+
+			if($default_view == $admin_view['vid'])
+			{
+				$mybb->input['isdefault'] = 1;
+			}
 		}
 
 		$form_container = new FormContainer($lang->edit_view);
