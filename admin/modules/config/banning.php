@@ -200,6 +200,11 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, $mybb->input['type']);
 
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
 	$table = new Table;
 	if($mybb->input['type'] == "usernames")
 	{
@@ -260,11 +265,7 @@ if(!$mybb->input['action'])
 	$table->output($title);
 
 	$form = new Form("index.php?module=config-banning&amp;action=add", "post", "add");
-	if($errors)
-	{
-		$page->output_inline_error($errors);
-	}
-	
+
 	if($mybb->input['type'] == "usernames")
 	{
 		$form_container = new FormContainer($lang->add_disallowed_username);
