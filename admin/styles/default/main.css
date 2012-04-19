@@ -239,7 +239,7 @@ html>body #menu ul {
 	text-decoration: none;
 }
 /* Fix IE. Hide from IE Mac \*/
-* html #left_menu li a, , * html #left_menu li { 
+* html #left_menu li a, * html #left_menu li { 
 	height: 1%;
 }
 /* End */
@@ -432,12 +432,12 @@ a.popup_button:hover {
 }
 
 table.individual_cell_border {
-	border-style: collapse;
+	border-collapse: collapse;
 }
 
 table.cell_border_bottom td {
 	border: 1px solid #CCC;
-	border-style: collapse;
+	border-collapse: collapse;
 	border-spacing: 1px;
 }
 
@@ -894,12 +894,11 @@ ul.tabs li.last a.active {
 }
 
 .view_fields ul {
-	overflow: auto; // Scroll fix for Opera
+	overflow: auto; /* Scroll fix for Opera */
 	overflow-y: auto;
 	overflow-x: hidden;
 	margin-top: 4px;
 }
-
 
 .view_fields li {
 	-moz-border-radius: 3px;
