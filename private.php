@@ -485,9 +485,6 @@ if($mybb->input['action'] == "results")
 			$message['message'] = my_substr($message['message'], 0, 200)."...";
 		}
 		
-		// For my sanity...
-		$message['message'] = htmlspecialchars_uni($message['message']);
-		
 		eval("\$messagelist .= \"".$templates->get("private_search_messagebit")."\";");
 	}
 	
