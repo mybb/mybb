@@ -921,7 +921,7 @@ switch($mybb->input['action'])
 
 		$query = $db->simple_select("forums", "*", "fid='$moveto'");
 		$newforum = $db->fetch_array($query);
-		if($newforum['type'] != "f")
+		if($newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
 			error($lang->error_invalidforum);
 		}
