@@ -746,6 +746,14 @@ if($mybb->input['action'] == "edit")
 		flash_message($lang->error_invalid_user_group, 'error');
 		admin_redirect("index.php?module=user-group");
 	}
+	else
+	{
+		if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+		{
+			$errors[] = $lang->error_disallowed_namestyle_username;
+			$mybb->input['namestyle'] = $usergroup['namestyle'];
+		}
+	}
 
 	if($mybb->request_method == "post")
 	{

@@ -169,6 +169,7 @@ $l['error_invalid_username'] = "The username you entered is invalid.";
 $l['error_already_leader'] = "The user is already a leader of this user group.";
 $l['error_invalid_group_leader'] = "You specified an invalid group leader.";
 $l['error_missing_namestyle_username'] = "The username style must contain {username}";
+$l['error_disallowed_namestyle_username'] = "You can't use script, meta or base tags in the username style.";
 $l['error_default_group_delete'] = "Default groups cannot be deleted";
 
 $l['success_group_created'] = "The new user group has been created successfully.";
