@@ -489,6 +489,12 @@ $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 // Check if this user has a new private message.
 if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->input['action'] != "read"))
 {
+	if(!$parser)
+	{
+		require_once MYBB_ROOT.'inc/class_parser.php';
+		$parser = new postParser;
+	}
+
 	$query = $db->query("
 		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
 		FROM ".TABLE_PREFIX."privatemessages pm
