@@ -26,6 +26,7 @@ $l['add_bad_word'] = "Add a Filter";
 
 $l['error_missing_bad_word'] = "You did not enter a word filter.";
 $l['error_invalid_bid'] = "The specified filter does not exist.";
+$l['error_bad_word_filtered'] = "The filter you entered already exists.";
 
 $l['success_added_bad_word'] = "The filter has been added successfully.";
 $l['success_deleted_bad_word'] = "The filter has been deleted successfully.";
