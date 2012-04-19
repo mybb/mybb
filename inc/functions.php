@@ -2321,6 +2321,15 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 		else
 		{
 			$template = "advanced";
+
+			if(strpos(FORUM_URL, '.html') !== false)
+			{
+				$forum_link = "'".str_replace('{fid}', "'+this.options[this.selectedIndex].value+'", FORUM_URL)."'";
+			}
+			else
+			{
+				$forum_link = "'".str_replace('{fid}', "'+this.options[this.selectedIndex].value", FORUM_URL);
+			}
 		}
 
 		eval("\$forumjump = \"".$templates->get("forumjump_".$template)."\";");
