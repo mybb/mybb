@@ -1650,7 +1650,6 @@ if($mybb->input['action'] == "delete")
 	if($mybb->request_method == "post")
 	{
 		// Delete the user
-		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
 		$db->delete_query("userfields", "ufid='{$user['uid']}'");
 		$db->delete_query("privatemessages", "uid='{$user['uid']}'");
 		$db->delete_query("events", "uid='{$user['uid']}'");
@@ -1663,12 +1662,14 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("joinrequests", "uid='{$user['uid']}'");
 		$db->delete_query("warnings", "uid='{$user['uid']}'");
 		$db->delete_query("reputation", "uid='{$user['uid']}' OR adduid='{$user['uid']}'");
-		$db->delete_query("awaitingactivation", "uid='{$uid}'");
+		$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
+		$db->delete_query("posts", "uid = '{$user['uid']}' AND visible = '-2'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
 
 		// Update forums & threads if user is the lastposter
+		$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
 		$db->update_query("forums", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 		$db->update_query("threads", array("lastposteruid" => 0), "lastposteruid = '{$user['uid']}'");
 
