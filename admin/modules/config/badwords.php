@@ -37,7 +37,17 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 	{
 		$errors[] = $lang->replacement_word_max;
 	}
-	
+
+	if(!$errors)
+	{
+		$query = $db->simple_select("badwords", "bid", "badword = '".$db->escape_string($mybb->input['badword'])."'");
+
+		if($db->num_rows($query))
+		{
+			$errors[] = $lang->error_bad_word_filtered;
+		}
+	}
+
 	$badword = str_replace('\*', '([a-zA-Z0-9_]{1})', preg_quote($mybb->input['badword'], "#"));
 	
 	// Don't allow certain badword replacements to be added if it would cause an infinite recursive loop.
