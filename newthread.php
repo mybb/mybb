@@ -608,6 +608,18 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 		{
 			$posticons = get_post_icons();
 		}
+		if($postoptions['subscriptionmethod'] == "none")
+		{
+			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
+		}
+		else if($postoptions['subscriptionmethod'] == "instant")
+		{
+			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+		}
+		else
+		{
+			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
+		}
 	}
 	
 	// Otherwise, this is our initial visit to this page.

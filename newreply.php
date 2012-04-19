@@ -821,6 +821,18 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 		{
 			$postoptionschecked['disablesmilies'] = " checked=\"checked\"";
 		}
+		if($postoptions['subscriptionmethod'] == "none")
+		{
+			$postoptions_subscriptionmethod_none = "checked=\"checked\"";
+		}
+		else if($postoptions['subscriptionmethod'] == "instant")
+		{
+			$postoptions_subscriptionmethod_instant = "checked=\"checked\"";
+		}
+		else
+		{
+			$postoptions_subscriptionmethod_dont = "checked=\"checked\"";
+		}
 		$mybb->input['icon'] = $post['icon'];
 	}
 	else
