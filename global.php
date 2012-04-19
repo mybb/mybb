@@ -489,7 +489,9 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 		ORDER BY pm.dateline DESC
 		LIMIT 1
 	");
+
 	$pm = $db->fetch_array($query);
+	$pm['subject'] = $parser->parse_badwords($pm['subject']);
 	
 	if($pm['fromuid'] == 0)
 	{
