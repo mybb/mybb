@@ -324,6 +324,7 @@ switch($action)
 				echo "<ol>\n";
 				while($announcement = $db->fetch_array($query))
 				{
+					$announcement['subject'] = $parser->parse_badwords($announcement['subject']);
 					echo "<li><a href=\"{$base_url}announcement-{$announcement['aid']}.html\">".htmlspecialchars_uni($announcement['subject'])."</a></li>";
 				}
 				echo "</ol>\n</div>\n";
