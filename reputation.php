@@ -797,7 +797,8 @@ if(!$mybb->input['action'])
 			"allow_html" => 0,
 			"allow_mycode" => 0,
 			"allow_smilies" => 1,
-			"allow_imgcode" => 0
+			"allow_imgcode" => 0,
+			"filter_badwords" => 1
 		);
 
 		$reputation_vote['comments'] = $parser->parse_message($reputation_vote['comments'], $reputation_parser);
