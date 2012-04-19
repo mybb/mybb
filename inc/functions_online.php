@@ -9,7 +9,7 @@
  * $Id: functions_online.php 5623 2011-10-01 02:46:09Z ralgith $
  */
 
-$uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
+$uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $ann_list = $eid_list = array();
 
 /**
  * Fetch a users activity and any corresponding details from their location.
@@ -19,7 +19,7 @@ $uid_list = $aid_list = $pid_list = $tid_list = $fid_list = $eid_list = array();
  */
 function fetch_wol_activity($location, $nopermission=false)
 {
-	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $user, $parameters;
+	global $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $ann_list, $eid_list, $plugins, $user, $parameters;
 
 	$user_activity = array();
 
@@ -47,16 +47,15 @@ function fetch_wol_activity($location, $nopermission=false)
 		$filename = "nopermission";
 	}
 
-
 	switch($filename)
 	{
 		case "announcements":
-			if(is_numeric($parameters['fid']))
+			if(is_numeric($parameters['aid']))
 			{
-				$fid_list[] = $parameters['fid'];
+				$ann_list[] = $parameters['aid'];
 			}
 			$user_activity['activity'] = "announcements";
-			$user_activity['fid'] = $parameters['fid'];
+			$user_activity['ann'] = $parameters['aid'];
 			break;
 		case "attachment":
 			if(is_numeric($parameters['aid']))
@@ -463,8 +462,8 @@ function fetch_wol_activity($location, $nopermission=false)
  */
 function build_friendly_wol_location($user_activity)
 {
-	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $eid_list, $plugins, $parser, $mybb;
-	global $threads, $forums, $forums_linkto, $posts, $events, $usernames, $attachments;
+	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $ann_list, $eid_list, $plugins, $parser, $mybb;
+	global $threads, $forums, $forums_linkto, $posts, $announcements, $events, $usernames, $attachments;
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
@@ -493,6 +492,18 @@ function build_friendly_wol_location($user_activity)
 		{
 			$attachments[$attachment['aid']] = $attachment['pid'];
 			$pid_list[] = $attachment['pid'];
+		}
+	}
+
+	// Fetch any announcements
+	if(!is_array($announcements) && count($ann_list) > 0)
+	{
+		$aid_sql = implode(",", $ann_list);
+		$query = $db->simple_select("announcements", "aid,subject", "aid IN ({$aid_sql}) {$fidnot}");
+		while($announcement = $db->fetch_array($query))
+		{
+			$announcement_title = htmlspecialchars_uni($parser->parse_badwords($announcement['subject']));
+			$announcements[$announcement['aid']] = $announcement_title;
 		}
 	}
 
@@ -576,9 +587,9 @@ function build_friendly_wol_location($user_activity)
 	{
 		// announcement.php functions
 		case "announcements":
-			if($forums[$user_activity['fid']])
+			if($announcements[$user_activity['ann']])
 			{
-				$location_name = $lang->sprintf($lang->viewing_announcements, get_forum_link($user_activity['fid']), $forums[$user_activity['fid']]);
+				$location_name =  $lang->sprintf($lang->viewing_announcements, get_announcement_link($user_activity['ann']), $announcements[$user_activity['ann']]);
 			}
 			else
 			{
