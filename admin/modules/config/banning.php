@@ -28,6 +28,12 @@ if($mybb->input['action'] == "add" && $mybb->request_method == "post")
 		$errors[] = $lang->error_missing_ban_input;
 	}
 
+	$query = $db->simple_select("banfilters", "fid", "filter = '".$db->escape_string($mybb->input['filter'])."' AND type = '".intval($mybb->input['type'])."'");
+	if($db->num_rows($query))
+	{
+		$errors[] = $lang->error_filter_already_banned;
+	}
+
 	if(!$errors)
 	{
 		$new_filter = array(
