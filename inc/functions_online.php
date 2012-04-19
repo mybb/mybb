@@ -867,7 +867,7 @@ function build_friendly_wol_location($user_activity)
 			$location_name = $lang->sprintf($lang->giving_reputation, get_profile_link($user_activity['uid']), $usernames[$user_activity['uid']]);
 			break;
 		case "reputation_report":
-			if($user_activity['uid'] > 0)
+			if($usernames[$user_activity['uid']])
 			{
 				$location_name = $lang->sprintf($lang->viewing_reputation_report, "reputation.php?uid={$user_activity['uid']}", $usernames[$user_activity['uid']]);
 			}
