@@ -1578,6 +1578,7 @@ if($mybb->input['action'] == "forumsubscriptions")
 		}
 		else
 		{
+			$forum['lastpostsubject'] = $parser->parse_badwords($forum['lastpostsubject']);
 			$lastpost_date = my_date($mybb->settings['dateformat'], $forum['lastpost']);
 			$lastpost_time = my_date($mybb->settings['timeformat'], $forum['lastpost']);
 			$lastposttid = $forum['lastposttid'];
