@@ -2964,6 +2964,12 @@ if($mybb->input['action'] == "do_notepad" && $mybb->request_method == "post")
 	// Verify incoming POST request
 	verify_post_check($mybb->input['my_post_key']);
 
+	// Cap at 60,000 chars; text will allow up to 65535?
+	if(my_strlen($mybb->input['notepad']) > 60000)
+	{
+		$mybb->input['notepad'] = my_substr($mybb->input['notepad'], 0, 60000);
+	}
+
 	$plugins->run_hooks("usercp_do_notepad_start");
 	$db->update_query("users", array('notepad' => $db->escape_string($mybb->input['notepad'])), "uid='".$mybb->user['uid']."'");
 	$plugins->run_hooks("usercp_do_notepad_end");
