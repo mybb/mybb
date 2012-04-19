@@ -367,6 +367,11 @@ if($mybb->input['action'] == "results")
 			}
 		}
 
+		if(!$mybb->settings['maxmultipagelinks'])
+		{
+			$mybb->settings['maxmultipagelinks'] = 5;
+		}
+
 		foreach($thread_cache as $thread)
 		{
 			$bgcolor = alt_trow();
@@ -502,9 +507,9 @@ if($mybb->input['action'] == "results")
 			{
 				$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
 				$thread['pages'] = ceil($thread['pages']);
-				if($thread['pages'] > 4)
+				if($thread['pages'] > $mybb->settings['maxmultipagelinks'])
 				{
-					$pagesstop = 4;
+					$pagesstop = $mybb->settings['maxmultipagelinks'] - 1;
 					$page_link = get_thread_link($thread['tid'], $thread['pages']).$highlight;
 					eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
 				}

@@ -887,6 +887,16 @@ $threads = '';
 $load_inline_edit_js = 0;
 if(is_array($threadcache))
 {
+	if(!$mybb->settings['maxmultipagelinks'])
+	{
+		$mybb->settings['maxmultipagelinks'] = 5;		
+	}
+
+	if(!$mybb->settings['postsperpage'])
+	{
+		$mybb->settings['postperpage'] = 20;
+	}
+
 	foreach($threadcache as $thread)
 	{
 		$plugins->run_hooks("forumdisplay_thread");
@@ -994,11 +1004,6 @@ if(is_array($threadcache))
 		$morelink = '';
 		$thread['posts'] = $thread['replies'] + 1;
 
-		if(!$mybb->settings['postsperpage'])
-		{
-			$mybb->settings['postperpage'] = 20;
-		}
-
 		if($thread['unapprovedposts'] > 0 && $ismod)
 		{
 			$thread['posts'] += $thread['unapprovedposts'];
@@ -1009,9 +1014,9 @@ if(is_array($threadcache))
 			$thread['pages'] = $thread['posts'] / $mybb->settings['postsperpage'];
 			$thread['pages'] = ceil($thread['pages']);
 
-			if($thread['pages'] > 5)
+			if($thread['pages'] > $mybb->settings['maxmultipagelinks'])
 			{
-				$pagesstop = 4;
+				$pagesstop = $mybb->settings['maxmultipagelinks'] - 1;
 				$page_link = get_thread_link($thread['tid'], $thread['pages']);
 				eval("\$morelink = \"".$templates->get("forumdisplay_thread_multipage_more")."\";");
 			}
