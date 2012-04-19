@@ -312,7 +312,19 @@ class captcha
 		foreach($this->errors as $error)
 		{
 			$lang_string = $error['error_code'];
-			
+
+			if(!$lang_string)
+			{
+				if($lang->invalid_captcha_verify)
+				{
+					$lang_string = 'invalid_captcha_verify';
+				}
+				else
+				{
+					$lang_string = 'unknown_error';
+				}
+			}
+
 			if(!$lang->$lang_string)
 			{
 				$errors[] = $error['error_code'];
