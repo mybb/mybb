@@ -2607,8 +2607,8 @@ if($mybb->input['action'] == "inline_edit")
 						}
 
 						// Require the rebuild functions
-						require_once(MYBB_ROOT.'/inc/functions.php');
-						require_once(MYBB_ROOT.'/inc/functions_rebuild.php');
+						require_once MYBB_ROOT.'/inc/functions.php';
+						require_once MYBB_ROOT.'/inc/functions_rebuild.php';
 
 						// We've finished deleting user's posts, so let's delete the threads
 						if(is_array($prune_array['to_delete']) && count($prune_array['to_delete']) > 0)
