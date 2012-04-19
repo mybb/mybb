@@ -221,6 +221,11 @@ if(!$mybb->input['action'])
 
 	$page->output_nav_tabs($sub_tabs, "badwords");
 
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+
 	$table = new Table;
 	$table->construct_header($lang->bad_word);
 	$table->construct_header($lang->replacement, array("width" => "50%"));
@@ -251,10 +256,7 @@ if(!$mybb->input['action'])
 	$table->output($lang->bad_word_filters);
 
 	$form = new Form("index.php?module=config-badwords&amp;action=add", "post", "add");
-	if($errors)
-	{
-		$page->output_inline_error($errors);
-	}
+
 	$form_container = new FormContainer($lang->add_bad_word);
 	$form_container->output_row($lang->bad_word." <em>*</em>", $lang->bad_word_desc, $form->generate_text_box('badword', $mybb->input['badword'], array('id' => 'badword')), 'badword');
 	$form_container->output_row($lang->replacement, $lang->replacement_desc, $form->generate_text_box('replacement', $mybb->input['replacement'], array('id' => 'replacement')), 'replacement');
