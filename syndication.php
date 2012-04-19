@@ -133,13 +133,13 @@ $query = $db->simple_select("threads", "subject, tid, dateline, firstpost", "vis
 // Loop through all the threads.
 while($thread = $db->fetch_array($query))
 {
-    $items[$thread['tid']] = array(
-        "title" => $thread['subject'],
-        "link" => $channel['link'].get_thread_link($thread['tid']),        
-        "date" => $thread['dateline'],
-    );
-    
-    $firstposts[] = $thread['firstpost'];
+	$items[$thread['tid']] = array(
+		"title" => $parser->parse_badwords($thread['subject']),
+		"link" => $channel['link'].get_thread_link($thread['tid']),        
+		"date" => $thread['dateline'],
+	);
+
+	$firstposts[] = $thread['firstpost'];
 }
 
 if(!empty($firstposts))
