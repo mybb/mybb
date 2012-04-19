@@ -1729,9 +1729,9 @@ body {
 			</ul>
 		</div>
 </div>]]></template>
-		<template name="forumjump_advanced" version="120"><![CDATA[<form action="forumdisplay.php" method="get">
+		<template name="forumjump_advanced" version="1608"><![CDATA[<form action="forumdisplay.php" method="get">
 <span class="smalltext"><strong>{$lang->forumjump}</strong></span>
-<select name="{$name}" onchange="window.location=('forumdisplay.php?fid='+this.options[this.selectedIndex].value)">
+<select name="{$name}" onchange="window.location=({$forum_link})">
 <option value="-1" {$jumpsel['default']}>{$lang->forumjump_select}</option>
 <option value="-1">--------------------</option>
 <option value="-4">{$lang->forumjump_pms}</option>
