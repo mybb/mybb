@@ -127,7 +127,14 @@ else
 			break;
 
 		default:
-			header("Content-type: application/force-download");
+			$filetype = $attachment['filetype'];
+
+			if(!$filetype)
+			{
+				$filetype = 'application/force-download';
+			}
+
+			header("Content-type: {$filetype}");
 			$disposition = "attachment";
 	}
 
