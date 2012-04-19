@@ -208,7 +208,7 @@ if(!$mybb->input['action'])
 		}
 
 		$additional_sql_criteria .= "AND l.fromuid = '{$user['uid']}'";
-		$additional_criteria = "fromuid={$user['uid']}";
+		$additional_criteria[] = "fromuid={$user['uid']}";
 	}
 
 	if($mybb->input['fromemail'])
@@ -240,7 +240,7 @@ if(!$mybb->input['action'])
 		}
 
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
-		$additional_criteria = "touid='{$user['uid']}'";
+		$additional_criteria[] = "touid='{$user['uid']}'";
 	}
 
 	if($mybb->input['toemail'])
