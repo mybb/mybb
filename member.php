@@ -1505,7 +1505,8 @@ if($mybb->input['action'] == "profile")
 		$awaydate = my_date($mybb->settings['dateformat'], $memprofile['awaydate']);
 		if(!empty($memprofile['awayreason']))
 		{
-			$awayreason = htmlspecialchars_uni($memprofile['awayreason']);
+			$reason = $parser->parse_badwords($memprofile['awayreason']);
+			$awayreason = htmlspecialchars_uni($reason);
 		}
 		else
 		{
@@ -1534,7 +1535,7 @@ if($mybb->input['action'] == "profile")
 			}
 			
 			// If our away time has expired already, we should be back, right?
-			if ($returnmkdate < TIME_NOW)
+			if($returnmkdate < TIME_NOW)
 			{
 				$db->update_query('users', array('away' => '0', 'awaydate' => '', 'returndate' => '', 'awayreason' => ''), 'uid=\''.intval($memprofile['uid']).'\'');
 				
@@ -1544,7 +1545,7 @@ if($mybb->input['action'] == "profile")
 		}
 		
 		// Check if our away status is set to 1, it may have been updated already (see a few lines above)
-		if ($memprofile['away'] == 1)
+		if($memprofile['away'] == 1)
 		{
 			eval("\$awaybit = \"".$templates->get("member_profile_away")."\";");
 		}
@@ -1848,6 +1849,8 @@ if($mybb->input['action'] == "profile")
 		}
 		else
 		{
+			$userfields[$field] = $parser->parse_badwords($userfields[$field]);
+
 			if($customfield['type'] == "textarea")
 			{
 				$customfieldval = nl2br(htmlspecialchars_uni($userfields[$field]));
