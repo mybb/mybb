@@ -444,15 +444,20 @@ if($mybb->input['action'] == "delete")
 // Otherwise, show a listing of reputations for the given user.
 if(!$mybb->input['action'])
 {
-	if($user_permissions['usereputationsystem'] != 1)
-	{
-		error($lang->reputations_disabled_group);
-	}
-
 	if($mybb->usergroup['canviewprofiles'] == 0)
 	{
 		// Reputation page is a part of a profile
 		error_no_permission();
+	}
+
+	// Fetch display group properties.
+	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image', 'usereputationsystem');
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+
+	if($user_permissions['usereputationsystem'] != 1 || $display_group['usereputationsystem'] == 0)
+	{
+		// Group has reputation disabled or user has a display group that has reputation disabled
+		error($lang->reputations_disabled_group);
 	}
 
 	$lang->nav_profile = $lang->sprintf($lang->nav_profile, $user['username']);
@@ -466,9 +471,6 @@ if(!$mybb->input['action'])
 	{
 		$user['displaygroup'] = $user['usergroup'];
 	}
-
-	// Fetch display group properties.
-	$display_group = usergroup_displaygroup($user['displaygroup']);
 
 	// This user has a custom user title
 	if(trim($user['usertitle']) != '')
