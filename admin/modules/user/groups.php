@@ -758,6 +758,14 @@ if($mybb->input['action'] == "edit")
 		{
 			$errors[] = $lang->error_missing_namestyle_username;
 		}
+		else
+		{
+			if(preg_match("#<((m[^a])|(b[^diloru>])|(s[^aemptu>]))(\s*[^>]*)>#si", $mybb->input['namestyle']))
+			{
+				$errors[] = $lang->error_disallowed_namestyle_username;
+				$mybb->input['namestyle'] = $usergroup['namestyle'];
+			}
+		}
 
 		if(!$errors)
 		{
