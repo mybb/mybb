@@ -75,6 +75,7 @@ $l['viewing_noperms'] = "Viewing No Permissions Page";
 $l['unknown_location'] = "<a href=\"{1}\">Unknown Location</a>";
 $l['giving_reputation'] = "Giving Reputation to <a href=\"{1}\">{2}</a>";
 $l['viewing_reputation_report'] = "Viewing <a href=\"{1}\">{2}'s Reputation</a>";
+$l['viewing_reputation_report2'] = "Viewing Reputation";
 $l['member_resendactivation'] = "Resending Account Activation Email";
 $l['member_lostpw'] = "Retrieving <a href=\"member.php?action=lostpw\">Lost Password</a>";
 $l['sending_thread'] = "Sending a thread to a friend";
