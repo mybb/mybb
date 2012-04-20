@@ -335,7 +335,7 @@ if($mybb->input['action'] == "nextnewest")
 		"limit" => 1,
 		"order_by" => "lastpost"
 	);
-	$query = $db->simple_select('threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} AND visible=1 AND closed NOT LIKE 'moved|%'", $options);
+	$query = $db->simple_select('threads', '*', "fid={$thread['fid']} AND lastpost > {$thread['lastpost']} {$visibleonly} AND closed NOT LIKE 'moved|%'", $options);
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next newest posts?
@@ -366,7 +366,7 @@ if($mybb->input['action'] == "nextoldest")
 		"order_by" => "lastpost",
 		"order_dir" => "desc"
 	);
-	$query = $db->simple_select("threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." AND visible=1 AND closed NOT LIKE 'moved|%'", $options);
+	$query = $db->simple_select("threads", "*", "fid=".$thread['fid']." AND lastpost < ".$thread['lastpost']." {$visibleonly} AND closed NOT LIKE 'moved|%'", $options);
 	$nextthread = $db->fetch_array($query);
 
 	// Are there actually next oldest posts?
