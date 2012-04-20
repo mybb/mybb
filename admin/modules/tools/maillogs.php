@@ -132,7 +132,12 @@ if(!$mybb->input['action'])
 {
 	$plugins->run_hooks("admin_tools_maillogs_start");
 	
-	$per_page = 20;
+	$per_page = $mybb->settings['threadsperpage'];
+
+	if(!$per_page)
+	{
+		$per_page = 20;
+	}
 
 	if($mybb->input['page'] && $mybb->input['page'] > 1)
 	{
@@ -183,7 +188,7 @@ if(!$mybb->input['action'])
 	if($mybb->input['subject'])
 	{
 		$additional_sql_criteria .= " AND l.subject LIKE '%{$subject}%'";
-		$additional_criteria[] = "subject='".htmlspecialchars_uni($mybb->input['subject'])."'";
+		$additional_criteria[] = "subject=".urlencode($mybb->input['subject']);
 	}
 
 	if($mybb->input['fromuid'])
@@ -193,7 +198,7 @@ if(!$mybb->input['action'])
 		$from_filter = $user['username'];
 
 		$additional_sql_criteria .= " AND l.fromuid = '{$fromuid}'";
-		$additional_criteria[] = "fromuid='{$fromuid}'";
+		$additional_criteria[] = "fromuid={$fromuid}";
 	}
 	else if($mybb->input['fromname'])
 	{
@@ -225,7 +230,7 @@ if(!$mybb->input['action'])
 		$to_filter = $user['username'];
 
 		$additional_sql_criteria .= " AND l.touid = '{$touid}'";
-		$additional_criteria[] = "touid='{$touid}'";
+		$additional_criteria[] = "touid={$touid}";
 	}
 	else if($mybb->input['toname'])
 	{
@@ -240,19 +245,23 @@ if(!$mybb->input['action'])
 		}
 
 		$additional_sql_criteria .= "AND l.touid='{$user['uid']}'";
-		$additional_criteria[] = "touid='{$user['uid']}'";
+		$additional_criteria[] = "touid={$user['uid']}";
 	}
 
 	if($mybb->input['toemail'])
 	{
 		$additional_sql_criteria .= " AND l.toemail LIKE '%{$toemail}%'";
-		$additional_criteria[] = "toemail='".urlencode($mybb->input['toemail'])."'";
+		$additional_criteria[] = "toemail=".urlencode($mybb->input['toemail']);
 		$to_filter = $mybb->input['toemail'];
 	}
 
-	if($additional_criteria)
+	if(!empty($additional_criteria))
 	{
 		$additional_criteria = "&amp;".implode("&amp;", $additional_criteria);
+	}
+	else
+	{
+		$additional_criteria = '';
 	}
 
 	$page->output_header($lang->user_email_log);
