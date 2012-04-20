@@ -776,6 +776,7 @@ function delete_user($user)
 	$db->delete_query("reputation", "uid='{$user['uid']}' OR adduid='{$user['uid']}'");
 	$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
 	$db->delete_query("posts", "uid = '{$user['uid']}' AND visible = '-2'");
+	$db->delete_query("threads", "uid = '{$user['uid']}' AND visible = '-2'");
 
 	// Update post data
 	$db->update_query("posts", array('uid' => 0), "uid='{$user['uid']}'");
