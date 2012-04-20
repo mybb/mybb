@@ -463,7 +463,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			admin_redirect($base_url."&action=views");
 		}
 		
-		$query = $db->simple_select("adminviews", "vid", "vid='".intval($mybb->input['vid'])."'");
+		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid='".intval($mybb->input['vid'])."'");
 		$admin_view = $db->fetch_array($query);
 		
 		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
