@@ -187,7 +187,14 @@ class MailHandler
 	 * @param string message
 	 */
 	function set_message($message, $message_text="")
-	{		
+	{
+		$message = $this->cleanup_crlf($message);
+
+		if($message_text)
+		{
+			$message_text = $this->cleanup_crlf($message_text);
+		}
+
 		if($this->parse_format == "html" || $this->parse_format == "both")
 		{
 			$this->set_html_headers($message, $message_text);
@@ -347,7 +354,23 @@ class MailHandler
 		$string = trim($string);
 		return $string;
 	}
-	
+
+	/**
+	 * Converts message text to suit the correct delimiter
+	 * See dev.mybb.com/issues/1735 (Jorge Oliveira)
+	 *
+	 * @param string The text being converted
+	 * @return string The converted string
+	 */
+	function cleanup_crlf($text)
+	{
+		$text = str_replace("\r\n", "\n", $text);
+		$text = str_replace("\r", "\n", $text);
+		$text = str_replace("\n", "\r\n", $text);
+
+		return $text;
+	}
+
 	/**
 	 * Encode a string based on the character set enabled. Used to encode subjects
 	 * and recipients in email messages going out so that they show up correctly
