@@ -660,7 +660,7 @@ if($mybb->input['action'] == "search_replace")
 						{
 							// Do replacement
 							$newtemplate = str_ireplace($mybb->input['find'], $mybb->input['replace'], $template['template']);
-							if($newtemplate != $template['template'])
+							if($newtemplate != $template['template'] && check_template($newtemplate) === false)
 							{
 								// If the template is different, that means the search term has been found.
 								if(trim($mybb->input['replace']) != "")
