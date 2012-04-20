@@ -1140,6 +1140,8 @@ switch($mybb->input['action'])
 			$hostname = $lang->resolve_fail;
 		}
 
+		$username = build_profile_link($post['username'], $post['uid']);
+
 		// Moderator options
 		$modoptions = "";
 		if($mybb->usergroup['canmodcp'] == 1)
