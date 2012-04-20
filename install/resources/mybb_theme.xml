@@ -6447,7 +6447,7 @@ body {
 {$footer}
 </body>
 </html>]]></template>
-		<template name="moderation_getip" version="120"><![CDATA[<html>
+		<template name="moderation_getip" version="1608"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->get_post_ip}</title>
 {$headerinclude}
@@ -6458,7 +6458,10 @@ body {
 <tr>
 <td class="thead" colspan="2"><strong>{$lang->get_post_ip}</strong></td>
 </tr>
-{$loginbox}
+<tr>
+<td class="trow1" width="20%"><strong>{$lang->username}</strong></td>
+<td class="trow1">{$username}</td>
+</tr>
 <tr>
 <td class="trow2"><strong>{$lang->ip_address}</strong></td>
 <td class="trow2">{$post['ipaddress']}</td>
