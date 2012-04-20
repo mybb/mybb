@@ -1574,10 +1574,19 @@ no=Disabled]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="seourls_archive">
+			<title>Enable search engine friendly URLs in Archive?</title>
+			<description><![CDATA[Search engine friendly URLs can be used in the archive. <strong>Once this setting is enabled ensure the archive still works as expected.</strong>]]></description>
+			<disporder>2</disporder>
+			<optionscode><![CDATA[yesno]]></optionscode>
+			<settingvalue><![CDATA[0]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="gzipoutput">
 			<title>Use GZip Page Compression?</title>
 			<description><![CDATA[Do you want to compress pages in GZip format when they are sent to the browser? This means quicker downloads for your visitors, and less traffic usage for you.]]></description>
-			<disporder>2</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1586,7 +1595,7 @@ no=Disabled]]></optionscode>
 		<setting name="gziplevel">
 			<title>GZip Page Compression Level</title>
 			<description><![CDATA[Set the level for GZip Page Compression from 0-9.  (0=no compression, 9=maximum compression).  This will only take effect if GZip Page Compression is enabled above and if your PHP version is newer than 4.2.  If you use an older version of PHP, the default compression level of the zlib library will be used instead.]]></description>
-			<disporder>3</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[4]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1595,7 +1604,7 @@ no=Disabled]]></optionscode>
 		<setting name="nocacheheaders">
 			<title>Send No Cache Headers</title>
 			<description><![CDATA[With this option you can prevent caching of the page by the browser.]]></description>
-			<disporder>4</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1604,7 +1613,7 @@ no=Disabled]]></optionscode>
 		<setting name="redirects">
 			<title>Friendly Redirection Pages</title>
 			<description><![CDATA[This will enable friendly redirection pages instead of bumping the user directly to the page.]]></description>
-			<disporder>5</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1613,7 +1622,7 @@ no=Disabled]]></optionscode>
 		<setting name="load">
 			<title>*NIX Load Limiting</title>
 			<description><![CDATA[Limit the maximum server load before MyBB rejects people.  0 for none.  Recommended limit is 5.0.]]></description>
-			<disporder>6</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1622,7 +1631,7 @@ no=Disabled]]></optionscode>
 		<setting name="tplhtmlcomments">
 			<title>Output template start/end comments?</title>
 			<description><![CDATA[This will enable or disable the output of template start/end comments in the HTML.]]></description>
-			<disporder>7</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1631,7 +1640,7 @@ no=Disabled]]></optionscode>
 		<setting name="use_xmlhttprequest">
 			<title>Enable XMLHttp request features?</title>
 			<description><![CDATA[This will enable or disable the XMLHttp request features.]]></description>
-			<disporder>8</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1640,7 +1649,7 @@ no=Disabled]]></optionscode>
 		<setting name="extraadmininfo">
 			<title>Advanced Stats / Debug information</title>
 			<description><![CDATA[Shows Server load, parse time, generation time, Gzip compression, etc on the bottom of all pages in the root folder. Please note that only administrators see this information.]]></description>
-			<disporder>9</disporder>
+			<disporder>10</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1649,7 +1658,7 @@ no=Disabled]]></optionscode>
 		<setting name="uploadspath">
 			<title>Uploads Path</title>
 			<description><![CDATA[The path used for all board uploads. It <b>must be chmod 777</b> (on Unix servers).]]></description>
-			<disporder>10</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1658,7 +1667,7 @@ no=Disabled]]></optionscode>
 		<setting name="useerrorhandling">
 			<title>Use Error Handling</title>
 			<description><![CDATA[If you do not wish to use the integrated error handling for MyBB, you may turn this option off. However, it is reccommended that it stay on]]></description>
-			<disporder>11</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[onoff]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1667,7 +1676,7 @@ no=Disabled]]></optionscode>
 		<setting name="errorlogmedium">
 			<title>Error Logging Medium</title>
 			<description><![CDATA[The type of the error handling to use.]]></description>
-			<disporder>12</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[select
 none=Neither
 log=Log errors
@@ -1681,7 +1690,7 @@ both=Log and email errors
 		<setting name="errortypemedium">
 			<title>Error Type Medium</title>
 			<description><![CDATA[The type of errors to show.]]></description>
-			<disporder>13</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[select
 warning=Warnings
 error=Errors
@@ -1695,7 +1704,7 @@ none=Hide Errors and Warnings
 		<setting name="errorloglocation">
 			<title>Error Logging Location</title>
 			<description><![CDATA[The location of the log to send errors to, if specified.]]></description>
-			<disporder>14</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./error.log]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1704,7 +1713,7 @@ none=Hide Errors and Warnings
 		<setting name="enableforumjump">
 			<title>Enable Forum Jump Menu?</title>
 			<description><![CDATA[The forum jump menu is shown on the forum and thread view pages. It can add significant load to your forums if you have a large amount of forums. Set to 'No' to disable it.]]></description>
-			<disporder>15</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1713,7 +1722,7 @@ none=Hide Errors and Warnings
 		<setting name="ip_forwarded_check">
 			<title>Scrutinize User's IP address?</title>
 			<description><![CDATA[Do you want to check a user's IP address for HTTP_X_FORWARDED_FOR or HTTP_X_REAL_IP headers? If you're unsure, set this to no.]]></description>
-			<disporder>16</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>

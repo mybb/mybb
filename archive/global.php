@@ -41,14 +41,9 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 }
 
 // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
-if((DIRECTORY_SEPARATOR == '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || stripos(SAPI_NAME, 'cgi') !== false || defined("ARCHIVE_QUERY_STRINGS"))
-{
-	$url = $_SERVER['QUERY_STRING'];
-	$base_url = $mybb->settings['bburl']."/archive/index.php?";
-	$endpart = $url;
-}
-// Otherwise, we're using 100% friendly URLs
-else
+//if((DIRECTORY_SEPARATOR != '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || stripos(SAPI_NAME, 'cgi') !== false || defined("ARCHIVE_QUERY_STRINGS"))
+// http://dev.mybb.com/issues/1489 - remove automatic detection and rely on users to set the right option here
+if($mybb->settings['seourls_archive'] == 1)
 {
 	if($_SERVER['REQUEST_URI'])
     {
@@ -68,6 +63,12 @@ else
 	}
 	$base_url = $mybb->settings['bburl']."/archive/index.php/";
 	$endpart = my_substr(strrchr($url, "/"), 1);
+}
+else
+{
+	$url = $_SERVER['QUERY_STRING'];
+	$base_url = $mybb->settings['bburl']."/archive/index.php?";
+	$endpart = $url;
 }
 
 $action = "index";
