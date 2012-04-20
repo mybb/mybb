@@ -2506,22 +2506,32 @@ if($mybb->input['action'] == "ipsearch")
 			else
 			{
 				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-				if(!is_array($ip_range))
+				
+				if($ip_range)
 				{
-					$post_ip_sql = "longipaddress='{$ip_range}'";
-				}
-				else
-				{
-					$post_ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
+					if(!is_array($ip_range))
+					{
+						$post_ip_sql = "longipaddress='{$ip_range}'";
+					}
+					else
+					{
+						$post_ip_sql = "longipaddress > '{$ip_range[0]}' AND longipaddress < '{$ip_range[1]}'";
+					}
 				}
 			}
+
 			$plugins->run_hooks("modcp_ipsearch_posts_start");
-			$query = $db->query("
-				SELECT COUNT(pid) AS count
-				FROM ".TABLE_PREFIX."posts
-				WHERE {$post_ip_sql}
-			");
-			$post_results = $db->fetch_field($query, "count");
+
+			if($post_ip_sql)
+			{
+				$query = $db->query("
+					SELECT COUNT(pid) AS count
+					FROM ".TABLE_PREFIX."posts
+					WHERE {$post_ip_sql}
+				");
+
+				$post_results = $db->fetch_field($query, "count");
+			}
 		}
 
 		// Searching user IP addresses
@@ -2535,25 +2545,40 @@ if($mybb->input['action'] == "ipsearch")
 			else
 			{
 				$ip_range = fetch_longipv4_range($mybb->input['ipaddress']);
-				if(!is_array($ip_range))
+
+				if($ip_range)
 				{
-					$user_ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
-				}
-				else
-				{
-					$user_ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
+					if(!is_array($ip_range))
+					{
+						$user_ip_sql = "longregip='{$ip_range}' OR longlastip='{$ip_range}'";
+					}
+					else
+					{
+						$user_ip_sql = "(longregip > '{$ip_range[0]}' AND longregip < '{$ip_range[1]}') OR (longlastip > '{$ip_range[0]}' AND longlastip < '{$ip_range[1]}')";
+					}
 				}
 			}
+
 			$plugins->run_hooks("modcp_ipsearch_users_start");
-			$query = $db->query("
-				SELECT COUNT(uid) AS count
-				FROM ".TABLE_PREFIX."users
-				WHERE {$user_ip_sql}
-			");
-			$user_results = $db->fetch_field($query, "count");
+
+			if($user_ip_sql)
+			{
+				$query = $db->query("
+					SELECT COUNT(uid) AS count
+					FROM ".TABLE_PREFIX."users
+					WHERE {$user_ip_sql}
+				");
+
+				$user_results = $db->fetch_field($query, "count");
+			}
 		}
 
 		$total_results = $post_results+$user_results;
+
+		if(!$total_results)
+		{
+			$total_results = 1;
+		}
 
 		// Now we have the result counts, paginate
 		$perpage = intval($mybb->input['perpage']);
@@ -2600,7 +2625,7 @@ if($mybb->input['action'] == "ipsearch")
 		$multipage = multipage($total_results, $perpage, $page, $page_url);
 
 		$post_limit = $perpage;
-		if($mybb->input['search_users'] && $start <= $user_results)
+		if($mybb->input['search_users'] && $user_results && $start <= $user_results)
 		{
 			$query = $db->query("
 				SELECT username, uid, regip, lastip
@@ -2647,7 +2672,7 @@ if($mybb->input['action'] == "ipsearch")
 				$post_start = 0;
 			}
 		}
-		if($mybb->input['search_posts'] && (!$mybb->input['search_users'] || ($mybb->input['search_users'] && $post_limit > 0)))
+		if($mybb->input['search_posts'] && $post_results && (!$mybb->input['search_users'] || ($mybb->input['search_users'] && $post_limit > 0)))
 		{
 			$ipaddresses = $tids = $uids = array();
 			$query = $db->query("
@@ -2711,7 +2736,7 @@ if($mybb->input['action'] == "ipsearch")
 		
 		if(!strstr($mybb->input['ipaddress'], "*") && !strstr($mybb->input['ipaddress'], ":"))
 		{
-			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
+			$misc_info_link = "<div class=\"float_right\">(<a href=\"modcp.php?action=iplookup&ipaddress=".htmlspecialchars_uni($mybb->input['ipaddress'])."\" onclick=\"MyBB.popupWindow('{$mybb->settings['bburl']}/modcp.php?action=iplookup&ipaddress=".urlencode($mybb->input['ipaddress'])."', 'iplookup', 500, 250); return false;\">{$lang->info_on_ip}</a>)</div>";
 		}
 
 		eval("\$ipsearch_results = \"".$templates->get("modcp_ipsearch_results")."\";");
