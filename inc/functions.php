@@ -833,7 +833,7 @@ function redirect($url, $message="", $title="")
 
 		run_shutdown();
 		
-		if(my_substr($url, 0, 7) !== 'http://' && my_substr($url, 0, 8) !== 'https://')
+		if(my_substr($url, 0, 7) !== 'http://' && my_substr($url, 0, 8) !== 'https://' && my_substr($url, 0, 1) !== '/')
 		{
 			header("Location: {$mybb->settings['bburl']}/{$url}");
 		}
