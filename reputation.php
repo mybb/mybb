@@ -454,7 +454,7 @@ if(!$mybb->input['action'])
 	$displaygroupfields = array('title', 'description', 'namestyle', 'usertitle', 'stars', 'starimage', 'image', 'usereputationsystem');
 	$display_group = usergroup_displaygroup($user['displaygroup']);
 
-	if($user_permissions['usereputationsystem'] != 1 || $display_group['usereputationsystem'] == 0)
+	if($user_permissions['usereputationsystem'] != 1 || $display_group['title'] && $display_group['usereputationsystem'] == 0)
 	{
 		// Group has reputation disabled or user has a display group that has reputation disabled
 		error($lang->reputations_disabled_group);
