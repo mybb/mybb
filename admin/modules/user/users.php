@@ -1664,6 +1664,7 @@ if($mybb->input['action'] == "delete")
 		$db->delete_query("reputation", "uid='{$user['uid']}' OR adduid='{$user['uid']}'");
 		$db->delete_query("awaitingactivation", "uid='{$user['uid']}'");
 		$db->delete_query("posts", "uid = '{$user['uid']}' AND visible = '-2'");
+		$db->delete_query("threads", "uid = '{$user['uid']}' AND visible = '-2'");
 
 		// Update forum stats
 		update_stats(array('numusers' => '-1'));
