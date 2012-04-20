@@ -43,13 +43,14 @@ You have received a warning from the staff of {2}.
 --
 
 --";
+$l['expiration_never'] = "permanently";
 $l['expiration_hours'] = "hours";
 $l['expiration_days'] = "days";
 $l['expiration_weeks'] = "weeks";
 $l['expiration_months'] = "months";
-$l['redirect_warned_banned'] = "The user has also been moved to the {1} group for {2}.";
-$l['redirect_warned_suspended'] = "This users posting privileges have been suspended for {1}.";
-$l['redirect_warned_moderate'] = "All posts by this user will now be moderated for {1}.";
+$l['redirect_warned_banned'] = "The user has also been moved to the {1} group {2}.";
+$l['redirect_warned_suspended'] = "This users posting privileges have been suspended {1}.";
+$l['redirect_warned_moderate'] = "All posts by this user will now be moderated {1}.";
 $l['redirect_warned'] = "The warning level of {1} has been increased to {2}%.{3}<br /><br />You will now be taken back to where you came from.";
 $l['error_warning_system_disabled'] = "You cannot use the warning system as it has been disabled by the board administrator.";
 $l['reached_max_warnings_day'] = "You cannot warn anyone as you have reached your limit on the number of warnings you can give out per day.<br /><br />The maximum number of warnings you can give out per day is {1}.";
@@ -78,7 +79,7 @@ $l['result'] = "Result:";
 $l['result_banned'] = "User will be moved to banned group ({1}) {2}";
 $l['result_suspended'] = "Posting privileges will be suspended {1}";
 $l['result_moderated'] = "Posts will be moderated for {1}";
-$l['result_period'] = "{1} {2}";
+$l['result_period'] = "for {1} {2}";
 $l['hour_or_hours'] = "Hour(s)";
 $l['day_or_days'] = "Day(s)";
 $l['week_or_weeks'] = "Week(s)";

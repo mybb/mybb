@@ -259,12 +259,14 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 
 		if($new_level['lid'])
 		{
+			$expiration = 0;
 			$action = unserialize($new_level['action']);
+
 			switch($action['type'])
 			{
 				// Ban the user for a specified time
 				case 1:
-					if($action['length'] != 0)
+					if($action['length'] > 0)
 					{
 						$expiration = TIME_NOW+$action['length'];
 					}
@@ -281,7 +283,7 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 						}
 						
 						// Never lift the ban?
-						if($action['length'] == 0)
+						if($action['length'] <= 0)
 						{
 							$bantime = '---';
 						}
@@ -341,20 +343,27 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 							$new_ban['oldadditionalgroups'] = $db->escape_string($existing_ban['oldadditionalgroups']);
 							$new_ban['olddisplaygroup'] = $db->escape_string($existing_ban['olddisplaygroup']);
 						}
-						
+
+						$period = $lang->expiration_never;
+						$ban_length = fetch_friendly_expiration($action['length']);
+
+						if($ban_length['time'])
+						{
+							$lang_str = "expiration_".$ban_length['period'];
+							$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
+						}
+
+						$group_name = $groupscache[$action['usergroup']]['title'];
+						$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_banned, $group_name, $period);
+
 						$db->insert_query("banned", $new_ban);
 						$updated_user['usergroup'] = $action['usergroup'];
 						$updated_user['additionalgroups'] = $updated_user['displaygroup'] = "";
-						$ban_length = fetch_friendly_expiration($action['length']);
-						$lang_str = "expiration_".$ban_length['period'];
-						$group_name = $groupscache[$action['usergroup']]['title'];
-						$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
-						$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_banned, $group_name, $period);
 					}
 					break;
 				// Suspend posting privileges
 				case 2:
-					if($action['length'] != 0)
+					if($action['length'] > 0)
 					{
 						$expiration = TIME_NOW+$action['length'];
 					}
@@ -363,18 +372,25 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 					{
 						if(($user['suspensiontime'] != 0 && $user['suspendposting']) || !$user['suspendposting'])
 						{
+							$period = $lang->expiration_never;
+							$ban_length = fetch_friendly_expiration($action['length']);
+
+							if($ban_length['time'])
+							{
+								$lang_str = "expiration_".$ban_length['period'];
+								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
+							}
+
+							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_suspended, $period);
+
 							$updated_user['suspensiontime'] = $expiration;
 							$updated_user['suspendposting'] = 1;
-							$period = fetch_friendly_expiration($action['length']);
-							$lang_str = "expiration_".$period['period'];
-							$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
-							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_suspended, $period);
 						}
 					}
 					break;
 				// Moderate new posts
 				case 3:
-					if($action['length'] != 0)
+					if($action['length'] > 0)
 					{
 						$expiration = TIME_NOW+$action['length'];
 					}
@@ -383,12 +399,19 @@ if($mybb->input['action'] == "do_warn" && $mybb->request_method == "post")
 					{
 						if(($user['moderationtime'] != 0 && $user['moderateposts']) || !$user['suspendposting'])
 						{
+							$period = $lang->expiration_never;
+							$ban_length = fetch_friendly_expiration($action['length']);
+
+							if($ban_length['time'])
+							{
+								$lang_str = "expiration_".$ban_length['period'];
+								$period = $lang->sprintf($lang->result_period, $ban_length['time'], $lang->$lang_str);
+							}
+
+							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_moderate, $period);
+
 							$updated_user['moderationtime'] = $expiration;
 							$updated_user['moderateposts'] = 1;
-							$period = fetch_friendly_expiration($action['length']);
-							$lang_str = "expiration_".$period['period'];
-							$period = $lang->sprintf($lang->result_period, $period['time'], $lang->$lang_str);
-							$friendly_action = "<br /><br />".$lang->sprintf($lang->redirect_warned_moderate, $period);
 						}
 					}
 					break;
