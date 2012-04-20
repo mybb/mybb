@@ -900,6 +900,11 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 		$numvotes = $numvotes+1;
 	}
 
+	if(!$votesql)
+	{
+		error($lang->error_nopolloptions);
+	}
+
 	$db->write_query("
 		INSERT INTO 
 		".TABLE_PREFIX."pollvotes (pid,uid,voteoption,dateline) 
