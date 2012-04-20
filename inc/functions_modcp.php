@@ -37,7 +37,7 @@ function modcp_can_manage_user($uid)
 
 function fetch_forum_announcements($pid=0, $depth=1)
 {
-	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums;
+	global $mybb, $db, $lang, $theme, $announcements, $templates, $announcements_forum, $moderated_forums, $unviewableforums;
 	static $forums_by_parent, $forum_cache, $parent_forums;
 
 	if(!is_array($forum_cache))
@@ -70,6 +70,11 @@ function fetch_forum_announcements($pid=0, $depth=1)
 	{
 		foreach($children as $forum)
 		{
+			if($forum['linkto'] || ($unviewableforums && in_array($forum['fid'], $unviewableforums)))
+			{
+				continue;
+			}
+
 			if($forum['active'] == 0 || !is_moderator($forum['fid']))
 			{
 				// Check if this forum is a parent of a moderated forum
