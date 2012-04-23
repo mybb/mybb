@@ -113,7 +113,7 @@ function tools_admin_permissions()
 		"statistics" => $lang->can_view_statistics,
 	);
 	
-	$plugins->run_hooks("admin_tools_permissions", $admin_permissions);
+	$admin_permissions = $plugins->run_hooks("admin_tools_permissions", $admin_permissions);
 	
 	return array("name" => $lang->tools_and_maintenance, "permissions" => $admin_permissions, "disporder" => 50);
 }
