@@ -64,7 +64,7 @@ class Page extends DefaultPage
 	function output_nav_tabs($tabs=array(), $active='')
 	{
 		global $plugins;
-		$plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
+		$tabs = $plugins->run_hooks("admin_page_output_nav_tabs_start", $tabs);
 		if(count($tabs) > 1)
 		{
 			$first = true;
