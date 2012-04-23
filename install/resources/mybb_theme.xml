@@ -783,7 +783,7 @@ div.error p em {
 	background: url(images/error.gif) no-repeat 0;
 }
 
-div.error.ul {
+div.error ul {
 	margin-left: 24px;
 }
 
@@ -2587,7 +2587,7 @@ fieldset,
 					you may be refused support on the MyBB Community Forums.
 				 
 					This is free software, support us and we'll support you. -->
-				{$lang->powered_by} <a href="http://www.mybboard.net" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybboard.net" target="_blank">MyBB Group</a>.
+				{$lang->powered_by} <a href="http://www.mybb.com" target="_blank">MyBB{$mybbversion}</a>, &copy; 2002-{$copy_year} <a href="http://www.mybb.com" target="_blank">MyBB Group</a>.
 				<!-- End powered by -->
 			</span>
 		</div>
@@ -2599,6 +2599,7 @@ fieldset,
 		<template name="footer_languageselect" version="1800"><![CDATA[<div class="language">
 <form method="{$lang_redirect_url['form_method']}" action="{$lang_redirect_url['location']}" id="lang_select">
 	{$lang_redirect_url['form_html']}
+	<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 	<select name="language" onchange="MyBB.changeLanguage();">
 		<optgroup label="{$lang->select_language}">
 			{$lang_options}
@@ -3088,7 +3089,7 @@ fieldset,
 		</ul>
 	</div>
 </div>]]></template>
-		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
+		<template name="header_welcomeblock_member_admin" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php" class="admincp">{$lang->welcome_admin}</a></li>]]></template>
 		<template name="header_welcomeblock_member_moderator" version="1800"><![CDATA[<li><a href="{$mybb->settings['bburl']}/modcp.php" class="modcp">{$lang->welcome_modcp}</a></li>]]></template>
 		<template name="index" version="1400"><![CDATA[<html>
 <head>
@@ -3582,7 +3583,7 @@ fieldset,
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_profile_adminoptions" version="1605"><![CDATA[
+		<template name="member_profile_adminoptions" version="1800"><![CDATA[
 <br /><table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" width="100%" class="tborder">
 <tr>
 <td colspan="2" class="thead"><strong>{$lang->admin_options}</strong></td>
@@ -3590,8 +3591,8 @@ fieldset,
 <tr>
 <td class="trow1">
 <ul>
-<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
-<li><a href="{$mybb->settings['bburl']}/{$config['admin_dir']}/index.php?module=user-banning&amp;uid={$uid}">{$lang->admin_ban_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-users&amp;action=edit&amp;uid={$uid}">{$lang->admin_edit_in_acp}</a></li>
+<li><a href="{$mybb->settings['bburl']}/{$admin_dir}/index.php?module=user-banning&amp;uid={$uid}">{$lang->admin_ban_in_acp}</a></li>
 </ul>
 </td>
 </tr>
