@@ -1725,7 +1725,7 @@ function configure()
 		$contactemail = '';
 
 		$protocol = "http://";
-		if(!empty($_SERVER['HTTPS']) || substr($bburl, 0, 5) == "https")
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != "off") || substr($bburl, 0, 5) == "https")
 		{
 			$protocol = "https://";
 		}
