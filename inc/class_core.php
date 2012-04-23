@@ -15,7 +15,7 @@ class MyBB {
 	 *
 	 * @var string
 	 */
-	public $version = "1.8.0";
+	public $version = "1.7.0";
 	
 	/**
 	 * The version code of MyBB we're running.
