@@ -653,7 +653,7 @@ function check_template($template)
 
 	// Any other malicious acts?
 	// Courtesy of ZiNgA BuRgA
-	if(preg_match("~\\{\\$.+?\\}~s", preg_replace('~\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}~', '', $template)))
+	if(preg_match("#\\{\\$.+?\\}#s", preg_replace('(*UTF8)#\\{\\$+[a-zA-Z_][a-zA-Z_0-9]*((?:-\\>|\\:\\:)\\$*[a-zA-Z_][a-zA-Z_0-9]*|\\[\s*\\$*([\'"]?)[a-zA-Z_ 0-9 ]+\\2\\]\s*)*\\}#', '', $template)))
 	{
 		return true;
 	}
