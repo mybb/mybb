@@ -209,9 +209,8 @@ switch($mybb->input['action'])
 			
 			if($mybb->input['type'] == 'move')
 			{
-				$query = $db->simple_select("forums", "*", "fid='{$fid}'");
-				$newforum = $db->fetch_array($query);
-				if($newforum['type'] != 'f')
+				$newforum = get_forum($fid);
+				if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 				{
 					$errors[] = $lang->error_invalidforum;
 				}
@@ -919,9 +918,8 @@ switch($mybb->input['action'])
 			error_no_permission();
 		}
 
-		$query = $db->simple_select("forums", "*", "fid='$moveto'");
-		$newforum = $db->fetch_array($query);
-		if($newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
+		$newforum = get_forum($moveto);
+		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
 			error($lang->error_invalidforum);
 		}
@@ -1352,8 +1350,9 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->simple_select("forums", "fid", "fid='$moveto'", array('limit' => 1));
-		if($db->num_rows($query) == 0)
+
+		$newforum = get_forum($moveto);
+		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
 			error($lang->error_invalidforum);
 		}
@@ -1782,7 +1781,7 @@ switch($mybb->input['action'])
 		}
 		
 		$newforum = get_forum($moveto);
-		if($newforum['type'] != "f")
+		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
 			error($lang->error_invalidforum);
 		}
@@ -2129,13 +2128,14 @@ switch($mybb->input['action'])
 		{
 			$moveto = $fid;
 		}
-		$query = $db->simple_select("forums", "COUNT(fid) as count", "fid='$moveto'");
-		if($db->fetch_field($query, 'count') == 0)
+
+		$newforum = get_forum($moveto);
+		if(!$newforum || $newforum['type'] != "f" || $newforum['type'] == "f" && $newforum['linkto'] != '')
 		{
 			error($lang->error_invalidforum);
 		}
-		$newsubject = $mybb->input['newsubject'];
 
+		$newsubject = $mybb->input['newsubject'];
 		$newtid = $moderation->split_posts($plist, $tid, $moveto, $newsubject);
 
 		$pid_list = implode(', ', $plist);
