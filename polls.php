@@ -322,16 +322,12 @@ if($mybb->input['action'] == "editpoll")
 	else
 	{
 		// Is our forum closed?
-		if ($forum['open'] == 0)
+		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
 	}
-
-	$query = $db->simple_select("forums", "*", "fid='$fid'");
-	$forum = $db->fetch_array($query);
-
 
 	if(!$tid)
 	{
@@ -490,15 +486,12 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	else
 	{
 		// Is our forum closed?
-		if ($forum['open'] == 0)
+		if($forum['open'] == 0)
 		{
 			// Doesn't look like it is
 			error($lang->error_closedinvalidforum);
 		}
 	}
-
-	$query = $db->simple_select("forums", "*", "fid='".$thread['fid']."'");
-	$forum = $db->fetch_array($query);
 
 	if($thread['visible'] == 0 || !$thread['tid'])
 	{

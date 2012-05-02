@@ -440,10 +440,12 @@ if(is_array($announcementsfids))
 	$announcementsfids = implode(',', $fid_array);
 }
 // And get them!
-$query = $db->simple_select("forums", "*", "fid IN (".$announcementsfids.")");
-while($forumrow = $db->fetch_array($query))
+foreach($forum_cache as $fid => $f)
 {
-    $forum[$forumrow['fid']] = $forumrow;
+	if(is_array($fid_array) && in_array($fid, $fid_array))
+	{
+		$forum[$fid] = $f;
+	}
 }
 
 $numannouncements = intval($mybb->settings['portal_numannouncements']);
