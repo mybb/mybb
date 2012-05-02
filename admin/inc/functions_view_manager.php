@@ -463,10 +463,11 @@ document.write('".str_replace("/", "\/", $field_select)."');
 			admin_redirect($base_url."&action=views");
 		}
 		
-		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid='".intval($mybb->input['vid'])."'");
+		$vid = intval($mybb->input['vid']);
+		$query = $db->simple_select("adminviews", "vid, uid, visibility", "vid = '{$vid}'");
 		$admin_view = $db->fetch_array($query);
 		
-		if(!$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
+		if($vid == 1 || !$admin_view['vid'] || $admin_view['visibility'] == 1 && $mybb->user['uid'] != $admin_view['uid'])
 		{
 			flash_message($lang->error_invalid_view_delete, 'error');
 			admin_redirect($base_url."&action=views");
@@ -604,7 +605,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 				$popup->add_item($lang->set_as_default, "{$base_url}&amp;action=views&amp;do=set_default&amp;vid={$view['vid']}");
 			}
 			
-			if($views > 1)
+			if($views > 1 && $view['vid'] != 1)
 			{
 				$popup->add_item($lang->delete_view, "{$base_url}&amp;action=views&amp;do=delete&amp;vid={$view['vid']}&amp;my_post_key={$mybb->post_code}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_view_deletion}')");
 			}
