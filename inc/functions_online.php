@@ -464,7 +464,7 @@ function fetch_wol_activity($location, $nopermission=false)
 function build_friendly_wol_location($user_activity)
 {
 	global $db, $lang, $uid_list, $aid_list, $pid_list, $tid_list, $fid_list, $ann_list, $eid_list, $plugins, $parser, $mybb;
-	global $threads, $forums, $forums_linkto, $posts, $announcements, $events, $usernames, $attachments;
+	global $threads, $forums, $forums_linkto, $forum_cache, $posts, $announcements, $events, $usernames, $attachments;
 
 	// Fetch forum permissions for this user
 	$unviewableforums = get_unviewable_forums();
@@ -563,12 +563,18 @@ function build_friendly_wol_location($user_activity)
 	// Fetch any forums
 	if(!is_array($forums) && count($fid_list) > 0)
 	{
-		$fid_sql = implode(",", $fid_list);
-		$query = $db->simple_select("forums", "fid,name,linkto", "fid IN ($fid_sql) $fidnot");
-		while($forum = $db->fetch_array($query))
+		if($fidnot && $unviewableforums)
 		{
-			$forums[$forum['fid']] = $forum['name'];
-			$forums_linkto[$forum['fid']] = $forum['linkto'];
+			$fidnot = explode(',', $unviewableforums);
+		}
+
+		foreach($forum_cache as $fid => $forum)
+		{
+			if(in_array($fid, $fid_list) && (!$fidnot || is_array($fidnot) && !in_array("'{$fid}'", $fidnot)))
+			{
+				$forums[$fid] = $forum['name'];
+				$forums_linkto[$fid] = $forum['linkto'];
+			}
 		}
 	}
 

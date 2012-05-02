@@ -117,19 +117,20 @@ elseif($mybb->input['action'] == "rules")
 	{
 		$plugins->run_hooks("misc_rules_start");
 
-		$query = $db->simple_select("forums", "*", "fid='".intval($mybb->input['fid'])."' AND active!=0");
-		$forum = $db->fetch_array($query);
+		$fid = intval($mybb->input['fid']);
 
-		$forumpermissions = forum_permissions($forum['fid']);
-
-		if($forum['type'] != "f" || $forum['rules'] == '')
+		$forum = get_forum($fid);
+		if(!$forum || $forum['type'] != "f" || $forum['rules'] == '')
 		{
 			error($lang->error_invalidforum);
 		}
+
+		$forumpermissions = forum_permissions($forum['fid']);
 		if($forumpermissions['canview'] != 1)
 		{
 			error_no_permission();
 		}
+
 		if(!$forum['rulestitle'])
 		{
 			$forum['rulestitle'] = $lang->sprintf($lang->forum_rules, $forum['name']);

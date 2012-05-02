@@ -204,28 +204,34 @@ if($mybb->input['action'] == "reports")
 		ORDER BY r.dateline DESC
 		LIMIT {$start}, {$perpage}
 	");
-	while($report = $db->fetch_array($query))
-	{
-		$trow = alt_trow();
-		if(is_moderator($report['fid']))
-		{
-			$trow = 'trow_shaded';
-		}
-		$report['postlink'] = get_post_link($report['pid'], $report['tid']);
-		$report['threadlink'] = get_thread_link($report['tid']);
-		$report['posterlink'] = get_profile_link($report['postuid']);
-		$report['reporterlink'] = get_profile_link($report['uid']);
-		$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
-		$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
-		$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
-		eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
-	}
-	if(!$reports)
+
+	if(!$db->num_rows($query))
 	{
 		eval("\$reports = \"".$templates->get("modcp_reports_noreports")."\";");
 	}
+	else
+	{
+		while($report = $db->fetch_array($query))
+		{
+			$trow = alt_trow();
+			if(is_moderator($report['fid']))
+			{
+				$trow = 'trow_shaded';
+			}
 
-	$plugins->run_hooks("modcp_reports");
+			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
+			$report['threadlink'] = get_thread_link($report['tid']);
+			$report['posterlink'] = get_profile_link($report['postuid']);
+			$report['reporterlink'] = get_profile_link($report['uid']);
+			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
+			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
+			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+
+			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
+		}
+	}
+
+	$plugins->run_hooks("modcp_reports_end");
 
 	eval("\$reportedposts = \"".$templates->get("modcp_reports")."\";");
 	output_page($reportedposts);
@@ -294,16 +300,9 @@ if($mybb->input['action'] == "allreports")
 	{
 		eval("\$allreportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
-
-	$query = $db->simple_select("forums", "fid, name");
-	while($forum = $db->fetch_array($query))
-	{
-		$forums[$forum['fid']] = $forum['name'];
-	}
 	
 	$plugins->run_hooks("modcp_allreports_start");
 
-	$reports = '';
 	$query = $db->query("
 		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
 		FROM ".TABLE_PREFIX."reportedposts r
@@ -312,48 +311,46 @@ if($mybb->input['action'] == "allreports")
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
 		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
 		ORDER BY r.dateline DESC
-		LIMIT $start, $perpage
+		LIMIT {$start}, {$perpage}
 	");
-	while($report = $db->fetch_array($query))
-	{
-		$report['postlink'] = get_post_link($report['pid'], $report['tid']);
-		$report['threadlink'] = get_thread_link($report['tid']);
-		$report['posterlink'] = get_profile_link($report['postuid']);
-		$report['reporterlink'] = get_profile_link($report['uid']);
 
-		$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
-		$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
-
-		if($report['reportstatus'] == 0)
-		{
-			$trow = "trow_shaded";
-		}
-		else
-		{
-			$trow = alt_trow();
-		}
-
-		$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
-
-		if($report['threadsubject'])
-		{
-			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
-			$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
-		}
-		else
-		{
-			$report['threadsubject'] = $lang->na;
-		}
-
-		eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
-	}
-
-	if(!$allreports)
+	$allreports = '';
+	if(!$db->num_rows($query))
 	{
 		eval("\$allreports = \"".$templates->get("modcp_reports_allnoreports")."\";");
 	}
+	else
+	{
+		while($report = $db->fetch_array($query))
+		{
+			$trow = alt_trow();
+			$report['threadsubject'] = $lang->na;
+			$report['threadlink'] = get_thread_link($report['tid']);
 
-	$plugins->run_hooks("modcp_reports");
+			$report['posterlink'] = get_profile_link($report['postuid']);
+			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
+			$report['postusername'] = build_profile_link($report['postusername'], $report['postuid']);
+			$report['reporterlink'] = get_profile_link($report['uid']);
+
+			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
+			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
+
+			if($report['reportstatus'] == 0)
+			{
+				$trow = "trow_shaded";
+			}
+	
+			if($report['threadsubject'])
+			{
+				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+				$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
+			}
+
+			eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
+		}
+	}
+
+	$plugins->run_hooks("modcp_allreports_end");
 
 	eval("\$allreportedposts = \"".$templates->get("modcp_reports_allreports")."\";");
 	output_page($allreportedposts);
