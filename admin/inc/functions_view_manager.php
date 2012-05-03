@@ -34,7 +34,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		'description' => $lang->create_new_view_desc
 	);
 
-	$page->add_breadcrumb_item($lang->view_manager);
+	$page->add_breadcrumb_item($lang->view_manager, 'index.php?module=user-users&amp;action=views');
 
 	// Lang strings should be in global lang file
 
@@ -314,6 +314,7 @@ document.write('".str_replace("/", "\/", $field_select)."');
 		$page->extra_header .= "<script src=\"../jscripts/scriptaculous.js?load=effects,dragdrop\" type=\"text/javascript\"></script>\n";
 		$page->extra_header .= "<script src=\"jscripts/view_manager.js\" type=\"text/javascript\"></script>\n";
 
+		$page->add_breadcrumb_item($lang->edit_view);
 		$page->output_header($lang->edit_view);
 			
 		$form = new Form($base_url."&amp;action=views&amp;do=edit&amp;vid={$admin_view['vid']}", "post");
