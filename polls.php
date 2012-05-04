@@ -887,7 +887,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	}
 	else
 	{
-		if(!isset($votesarray[$option-1]))
+		if(is_array($option) || !isset($votesarray[$option-1]))
 		{
 			error($lang->error_nopolloptions);
 		}
