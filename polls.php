@@ -868,17 +868,20 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$numvotes = $poll['numvotes'];
 	if($poll['multiple'] == 1)
 	{
-		foreach($option as $voteoption => $vote)
+		if(is_array($option))
 		{
-			if($vote == 1 && isset($votesarray[$voteoption-1]))
+			foreach($option as $voteoption => $vote)
 			{
-				if($votesql)
+				if($vote == 1 && isset($votesarray[$voteoption-1]))
 				{
-					$votesql .= ",";
+					if($votesql)
+					{
+						$votesql .= ",";
+					}
+					$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($voteoption)."','$now')";
+					$votesarray[$voteoption-1]++;
+					$numvotes = $numvotes+1;
 				}
-				$votesql .= "('".$poll['pid']."','".$mybb->user['uid']."','".$db->escape_string($voteoption)."','$now')";
-				$votesarray[$voteoption-1]++;
-				$numvotes = $numvotes+1;
 			}
 		}
 	}
