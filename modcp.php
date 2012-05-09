@@ -3261,6 +3261,7 @@ if(!$mybb->input['action'])
 		$attachment['profilelink'] = build_profile_link($attachment['username'], $attachment['uid']);
 		$attachment['link'] = get_post_link($attachment['pid'], $attachment['tid']);
 		$attachment['filename'] = htmlspecialchars_uni($attachment['filename']);
+		$unapproved_attachments = my_number_format($unapproved_attachments);
 
 		eval("\$latest_attachment = \"".$templates->get("modcp_lastattachment")."\";");
 	}
@@ -3299,6 +3300,7 @@ if(!$mybb->input['action'])
 		}
 		$post['subject'] = htmlspecialchars_uni($post['subject']);
 		$post['fullsubject'] = htmlspecialchars_uni($post['fullsubject']);
+		$unapproved_posts = my_number_format($unapproved_posts);
 
 		eval("\$latest_post = \"".$templates->get("modcp_lastpost")."\";");
 	}
@@ -3325,6 +3327,7 @@ if(!$mybb->input['action'])
 		}
 		$thread['subject'] = htmlspecialchars_uni($thread['subject']);
 		$thread['fullsubject'] = htmlspecialchars_uni($thread['fullsubject']);
+		$unapproved_threads = my_number_format($unapproved_threads);
 
 		eval("\$latest_thread = \"".$templates->get("modcp_lastthread")."\";");
 	}

@@ -360,6 +360,8 @@ switch($action)
 					}
 
 					$plugins->run_hooks("archive_forum_thread");
+					
+					$sticky['replies'] = my_number_format($sticky['replies']);
 
 					echo "<li><a href=\"{$base_url}thread-{$sticky['tid']}.html\">{$sticky['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$sticky['replies']} {$lang_reply_text})</span></li>";
@@ -396,6 +398,8 @@ switch($action)
 					}
 
 					$plugins->run_hooks("archive_forum_thread");
+					
+					$thread['replies'] = my_number_format($thread['replies']);
 
 					echo "<li><a href=\"{$base_url}thread-{$thread['tid']}.html\">{$thread['subject']}</a>";
 					echo "<span class=\"replycount\"> ({$thread['replies']} {$lang_reply_text})</span></li>";

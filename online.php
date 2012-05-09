@@ -83,6 +83,9 @@ if($mybb->input['action'] == "today")
 			eval("\$todayrows .= \"".$templates->get("online_today_row")."\";");
 		}
 	}
+	
+	$todaycount = my_number_format($todaycount);
+	$invis_count = my_number_format($invis_count);
 
 	if($todaycount == 1)
 	{
