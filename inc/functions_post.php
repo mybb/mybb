@@ -123,7 +123,7 @@ function build_postbit($post, $post_type=0)
 		{
 			if(!$mybb->settings['postsperpage'])
 			{
-				$mybb->settings['postperpage'] = 20;
+				$mybb->settings['postsperpage'] = 20;
 			}
 			
 			$postcounter = $mybb->settings['postsperpage']*($page-1);

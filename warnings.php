@@ -1048,7 +1048,7 @@ if(!$mybb->input['action'])
 
 	if(!$mybb->settings['postsperpage'])
 	{
-		$mybb->settings['postperpage'] = 20;
+		$mybb->settings['postsperpage'] = 20;
 	}
 		
 	// Figure out if we need to display multiple pages.

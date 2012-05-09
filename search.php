@@ -491,7 +491,7 @@ if($mybb->input['action'] == "results")
 			
 			if(!$mybb->settings['postsperpage'])
 			{
-				$mybb->settings['postperpage'] = 20;
+				$mybb->settings['postsperpage'] = 20;
 			}
 
 			$thread['pages'] = 0;

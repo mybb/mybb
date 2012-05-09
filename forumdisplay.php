@@ -895,7 +895,7 @@ if(is_array($threadcache))
 
 	if(!$mybb->settings['postsperpage'])
 	{
-		$mybb->settings['postperpage'] = 20;
+		$mybb->settings['postsperpage'] = 20;
 	}
 
 	foreach($threadcache as $thread)
