@@ -1308,53 +1308,14 @@ if($mybb->input['action'] == "profile")
 	{
 		error_no_permission();
 	}
-	if($mybb->input['uid'] == "lastposter")
+
+	if($mybb->input['uid'])
 	{
-		if($mybb->input['tid'])
-		{
-			$query = $db->simple_select("posts", "uid", "tid='".intval($mybb->input['tid'])."' AND visible = 1", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => '1'));
-			$post = $db->fetch_array($query);
-			$uid = $post['uid'];
-		}
-		elseif($mybb->input['fid'])
-		{
-			$flist = '';
-			switch($db->type)
-			{
-				case "pgsql":
-				case "sqlite":
-					$query = $db->simple_select("forums", "fid", "INSTR(','||parentlist||',',',".intval($mybb->input['fid']).",') > 0");
-					break;
-				default:
-					$query = $db->simple_select("forums", "fid", "INSTR(CONCAT(',',parentlist,','),',".intval($mybb->input['fid']).",') > 0");
-			}
-			
-			while($forum = $db->fetch_array($query))
-			{
-				if($forum['fid'] == $mybb->input['fid'])
-				{
-					$theforum = $forum;
-				}
-				$flist .= ",".$forum['fid'];
-			}
-			$query = $db->simple_select("threads", "tid", "fid IN (0$flist) AND visible = 1", array('order_by' => 'lastpost', 'order_dir' => 'DESC', 'limit' => '1'));
-			$thread = $db->fetch_array($query);
-			$tid = $thread['tid'];
-			$query = $db->simple_select("posts", "uid", "tid='$tid' AND visible = 1", array('order_by' => 'dateline', 'order_dir' => 'DESC', 'limit' => '1'));
-			$post = $db->fetch_array($query);
-			$uid = $post['uid'];
-		}
+		$uid = intval($mybb->input['uid']);
 	}
 	else
 	{
-		if($mybb->input['uid'])
-		{
-			$uid = intval($mybb->input['uid']);
-		}
-		else
-		{
-			$uid = $mybb->user['uid'];
-		}
+		$uid = $mybb->user['uid'];
 	}
 	
 	if($mybb->user['uid'] != $uid)
