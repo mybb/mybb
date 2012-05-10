@@ -34,7 +34,7 @@ function view_manager($base_url, $type, $fields, $sort_options=array(), $conditi
 		'description' => $lang->create_new_view_desc
 	);
 
-	$page->add_breadcrumb_item($lang->view_manager, 'index.php?module=user-users&amp;action=views);
+	$page->add_breadcrumb_item($lang->view_manager, 'index.php?module=user-users&amp;action=views');
 
 	// Lang strings should be in global lang file
 
