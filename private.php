@@ -1109,6 +1109,11 @@ if($mybb->input['action'] == "tracking")
 	$readmessages = '';
 	$unreadmessages = '';
 	
+	if(!$mybb->settings['postsperpage'])
+	{
+		$mybb->settings['postsperpage'] = 20;
+	}
+	
 	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['postsperpage'];
 	
