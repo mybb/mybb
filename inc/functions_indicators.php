@@ -39,7 +39,7 @@ function mark_thread_read($tid, $fid)
 	// Default back to cookie marking
 	else
 	{
-		my_set_array_cookie("threadread", $tid, TIME_NOW);
+		my_set_array_cookie("threadread", $tid, TIME_NOW, -1);
 	}
 
 	$unread_count = fetch_unread_count($fid);
@@ -215,7 +215,7 @@ function mark_forum_read($fid)
 	// Mark in a cookie
 	else
 	{
-		my_set_array_cookie("forumread", $fid, TIME_NOW);
+		my_set_array_cookie("forumread", $fid, TIME_NOW, -1);
 	}
 }
 
