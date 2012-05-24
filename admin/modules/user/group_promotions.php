@@ -1,12 +1,12 @@
 <?php
 /**
  * MyBB 1.6
- * Copyright � 2010 MyBB Group, All Rights Reserved
+ * Copyright 2010 MyBB Group, All Rights Reserved
  *
  * Website: http://mybb.com
  * License: http://mybb.com/about/license
  *
- * $Id: group_promotions.php 5746 2012-02-03 10:03:25Z Tomm $
+ * $Id: group_promotions.php 5832 2012-05-24 08:08:19Z Tomm $
  */
 
 // Disallow direct access to this file for security reasons
