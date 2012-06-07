@@ -507,7 +507,7 @@ if($mybb->input['action'] == "edit_template")
 	
 	$page->add_breadcrumb_item($lang->edit_template_breadcrumb.$template['title'], "index.php?module=style-templates&amp;sid={$sid}");
 	
-	$page->output_header($lang->edit_template);
+	$page->output_header($lang->sprintf($lang->editing_template, $template['title']));
 
 
 	$sub_tabs = array();
