@@ -10,7 +10,7 @@
  */
 
 /**
- * Disk Cache Handler
+ * APC Cache Handler
  */
 class apcCacheHandler
 {

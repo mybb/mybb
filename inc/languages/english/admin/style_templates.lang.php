@@ -21,6 +21,7 @@ $l['search_replace_desc'] = "This tool will allow you to search for template tit
 $l['find_updated'] = "Find Updated Templates";
 $l['find_updated_desc'] = "Allows you to find changed templates in new versions of MyBB so you can properly apply the changes.";
 $l['edit_template'] = "Edit Template";
+$l['editing_template'] = "Editing Template: {1}";
 $l['edit_template_desc'] = "Here you can edit the template's code, title or set.";
 $l['edit_set'] = "Edit Set";
 $l['edit_set_desc'] = "Here you can edit the properties for this template set.";
