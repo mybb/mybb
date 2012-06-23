@@ -183,7 +183,7 @@ class UserDataHandler extends DataHandler
 			// First, see if there is one or more complex character(s) in the password.
 			if(!preg_match("/^.*(?=.{".$mybb->settings['minpasswordlength'].",})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/", $user['password']))
 			{
-				$this->set_error('no_complex_characters');
+				$this->set_error('no_complex_characters', array($mybb->settings['minpasswordlength']));
 				return false;
 			}
 		}
