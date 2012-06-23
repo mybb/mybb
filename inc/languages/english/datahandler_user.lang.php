@@ -14,7 +14,7 @@ $l['userdata_invalid_usertitle_length'] = 'The custom user title you entered is 
 $l['userdata_username_exists'] = 'The username you entered already exists. Please enter a different username.';
 
 $l['userdata_invalid_password_length'] = 'The password you entered is of invalid length. Please enter a password between {1} and {2} characters.';
-$l['userdata_no_complex_characters'] = 'The password you entered is not complex enough. Please enter a password that is at least 8 characters long, and contains an upper case letter, lower case letter and a number.';
+$l['userdata_no_complex_characters'] = 'The password you entered is not complex enough. Please enter a password that is at least {1} characters long, and contains an upper case letter, lower case letter and a number.';
 $l['userdata_passwords_dont_match'] = 'The password you entered as confirmation does not match the original one. Please confirm your password correctly.';
 
 $l['userdata_missing_email'] = 'You did not enter an email address. Please enter one.';
