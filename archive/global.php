@@ -41,7 +41,7 @@ if(is_dir(MYBB_ROOT."install") && !file_exists(MYBB_ROOT."install/lock"))
 }
 
 // If the server OS is not Windows and not Apache or the PHP is running as a CGI or we have defined ARCHIVE_QUERY_STRINGS, use query strings - DIRECTORY_SEPARATOR checks if running windows
-//if((DIRECTORY_SEPARATOR != '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || stripos(SAPI_NAME, 'cgi') !== false || defined("ARCHIVE_QUERY_STRINGS"))
+// if((DIRECTORY_SEPARATOR == '\\' && stripos($_SERVER['SERVER_SOFTWARE'], 'apache') == false) || strstr(php_sapi_name(),'cgi') || defined("ARCHIVE_QUERY_STRINGS"))
 // http://dev.mybb.com/issues/1489 - remove automatic detection and rely on users to set the right option here
 if($mybb->settings['seourls_archive'] == 1)
 {
