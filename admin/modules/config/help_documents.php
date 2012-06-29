@@ -57,7 +57,7 @@ if($mybb->input['action'] == "add")
 				$sql_array = array(
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
-					"usetranslation" => 0,
+					"usetranslation" => intval($mybb->input['usetranslation']),
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
@@ -104,10 +104,12 @@ if($mybb->input['action'] == "add")
 			$query = $db->simple_select("helpsections", "MAX(disporder) as maxdisp");
 			$mybb->input['disporder'] = $db->fetch_field($query, "maxdisp")+1;
 			$mybb->input['enabled'] = 1;
-			$mybb->input['translation'] = 0;
+			$mybb->input['usetranslation'] = 1;
 		}
 	
 		$form = new Form("index.php?module=config-help_documents&amp;action=add&amp;type=section", "post", "add");
+		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
+
 		$form_container = new FormContainer($lang->add_new_section);
 		$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('name', $mybb->input['name'], array('id' => 'name')), 'name');
 		$form_container->output_row($lang->short_description." <em>*</em>", "", $form->generate_text_box('description', $mybb->input['description'], array('id' => 'description')), 'description');
@@ -116,7 +118,7 @@ if($mybb->input['action'] == "add")
 		$form_container->end();
 	
 		$buttons[] = $form->generate_submit_button($lang->save_section);
-	
+
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 	}
@@ -166,7 +168,7 @@ if($mybb->input['action'] == "add")
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
 					"document" => $db->escape_string($mybb->input['document']),
-					"usetranslation" => 0,
+					"usetranslation" => intval($mybb->input['usetranslation']),
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
@@ -214,10 +216,12 @@ if($mybb->input['action'] == "add")
 			$query = $db->simple_select("helpdocs", "MAX(disporder) as maxdisp");
 			$mybb->input['disporder'] = $db->fetch_field($query, "maxdisp")+1;
 			$mybb->input['enabled'] = 1;
-			$mybb->input['translation'] = 0;
+			$mybb->input['translation'] = 1;
 		}
 	
 		$form = new Form("index.php?module=config-help_documents&amp;action=add&amp;type=document", "post", "add");
+		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
+
 		$form_container = new FormContainer($lang->add_new_document);
 		$query = $db->simple_select("helpsections", "sid, name");
 		while($section = $db->fetch_array($query))
@@ -397,7 +401,7 @@ if($mybb->input['action'] == "edit")
 					"name" => $db->escape_string($mybb->input['name']),
 					"description" => $db->escape_string($mybb->input['description']),
 					"document" => $db->escape_string($mybb->input['document']),
-					"usetranslation" => 0,
+					"usetranslation" => intval($mybb->input['usetranslation']),
 					"enabled" => intval($mybb->input['enabled']),
 					"disporder" => intval($mybb->input['disporder'])
 				);
@@ -441,11 +445,13 @@ if($mybb->input['action'] == "edit")
 			$mybb->input['document'] = $doc['document'];
 			$mybb->input['disporder'] = $doc['disporder'];
 			$mybb->input['enabled'] = $doc['enabled'];
+			$mybb->input['usetranslation'] = $doc['usetranslation'];
 		}
 	
 		$form = new Form("index.php?module=config-help_documents&amp;action=edit", "post", "edit");
 		
 		echo $form->generate_hidden_field("hid", $mybb->input['hid']);
+		echo $form->generate_hidden_field("usetranslation", $mybb->input['usetranslation']);
 				
 		$form_container = new FormContainer($lang->edit_document." ({$lang->id} ".intval($mybb->input['hid']).")");
 		
