@@ -1021,7 +1021,9 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			{
 				eval("\$postinsert = \"".$templates->get("post_attachments_attachment_postinsert")."\";");
 			}
-			$attach_mod_options = '';
+
+			eval("\$attach_rem_options = \"".$templates->get("post_attachments_attachment_remove")."\";");
+
 			if($attachment['visible'] != 1)
 			{
 				eval("\$attachments .= \"".$templates->get("post_attachments_attachment_unapproved")."\";");
