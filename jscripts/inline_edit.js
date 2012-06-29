@@ -199,6 +199,7 @@ inlineEditor.prototype = {
 
 	cancelEdit: function()
 	{
+		this.textbox.value = ''
 		Element.remove(this.textbox);
 		this.testNode.innerHTML = this.cache;
 		this.element = $(this.currentElement);
