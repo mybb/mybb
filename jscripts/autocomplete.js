@@ -371,7 +371,7 @@ autoComplete.prototype = {
 
 	popupOut: function()
 	{
-		this.overPopup = 1;
+		this.overPopup = 0;
 	},
 
 	updateValue: function(selectedItem)
@@ -490,7 +490,7 @@ autoComplete.prototype = {
 			selectStart = selectEnd;
 		}
 
-		if(this.textbox.setSelectionange)
+		if(this.textbox.setSelectionRange)
 		{
 			this.textbox.setSelectionRange(selectStart, selectEnd);
 		}
