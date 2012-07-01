@@ -851,23 +851,42 @@ if($mybb->input['action'] == "change")
 			admin_redirect("index.php?module=config-settings");
 		}
 		
-				// If we are changing the hidden captcha, make sure it doesn't conflict with another registration field
+		// If we are changing the hidden captcha, make sure it doesn't conflict with another registration field
 		if(isset($mybb->input['upsetting']['hiddencaptchaimagefield']))
 		{
-			// CSV of all default registration fields
-			$regfieldscsv = "username,password,password2,email,email2,imagestring,allownotices,hideemail,receivepms,pmnotice,emailpmnotify,invisible,subscriptionmethod,timezoneoffset,dstcorrection,language,step,action,regsubmit";
-			// And an array for them
-			$regfieldsarray = explode(",",$regfieldscsv);	
-			
-			if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'],$regfieldsarray))
+			// Not allowed to be hidden captcha fields
+			$disallowed_fields = array(
+				'username',
+				'password',
+				'password2',
+				'email',
+				'email2',
+				'imagestring',
+				'allownotices',
+				'hideemail',
+				'receivepms'
+				'pmnotice',
+				'emailpmnotify',
+				'invisible',
+				'subscriptionmethod',
+				'timezoneoffset',
+				'dstcorrection',
+				'language',
+				'step',
+				'action',
+				'regsubmit'
+			);
+
+			if(in_array($mybb->input['upsetting']['hiddencaptchaimagefield'], $disallowed_fields))
 			{
 				// Whoopsies, you can't do that!
-				$errormessage = str_replace("{1}",htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']),$lang->error_hidden_captcha_conflict);
+				$error_message = $lang->sprintf($lang->error_hidden_captcha_conflict, htmlspecialchars_uni($mybb->input['upsetting']['hiddencaptchaimagefield']));
+
 				flash_message($errormessage, 'error');
 				admin_redirect("index.php?module=config-settings&action=change&gid=9");
 			}
 		}
-		
+
 		if(is_array($mybb->input['upsetting']))
 		{
 			foreach($mybb->input['upsetting'] as $name => $value)
