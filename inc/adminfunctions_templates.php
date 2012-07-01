@@ -16,7 +16,7 @@
  * @param string The regular expression to match in the template
  * @param string The replacement string
  * @param int Set to 1 to automatically create templates which do not exist for that set (based off master) - Defaults to 1
- * @return bolean true if updated one or more templates, false if not.
+ * @return boolean true if updated one or more templates, false if not.
  */
 
 function find_replace_templatesets($title, $find, $replace, $autocreate=1)
