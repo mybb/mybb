@@ -469,7 +469,7 @@ if($mybb->input['action'] == "results")
 			$senddate = $lang->not_sent;
 		}
 		
-		$foldername = htmlspecialchars_uni($foldernames[$message['folder']]);
+		$foldername = $foldernames[$message['folder']];
 		
 		// What we do here is parse the post using our post parser, then strip the tags from it
 		$parser_options = array(
@@ -1904,8 +1904,7 @@ if(!$mybb->input['action'])
 	}
 	
 	$folder = $mybb->input['fid'];
-	
-	$foldername = htmlspecialchars_uni($foldernames[$folder]);
+	$foldername = $foldernames[$folder];
 
 	$lang->pms_in_folder = $lang->sprintf($lang->pms_in_folder, $foldername);
 	if($folder == 2 || $folder == 3)
