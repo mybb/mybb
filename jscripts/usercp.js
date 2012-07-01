@@ -39,7 +39,7 @@ var UserCP = {
 					this.spinner.destroy();
 					this.spinner = '';
 				}
-				alert('There was an error fetching the posts.\n\n'+message[1]);
+				alert('There was an error fetching the buddy list.\n\n'+message[1]);
 				return false;
 			}
 			else if(request.responseText)
