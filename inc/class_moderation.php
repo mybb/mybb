@@ -237,6 +237,7 @@ class Moderation
 		$db->delete_query("polls", "tid='$tid'");
 		$db->delete_query("pollvotes", "pid='".$thread['poll']."'");
 		$db->delete_query("threadsread", "tid='$tid'");
+		$db->delete_query("threadratings", "tid='$tid'");
 
 		$updated_counters = array(
 			"posts" => "-{$num_approved_posts}",

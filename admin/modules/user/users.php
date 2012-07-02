@@ -2620,6 +2620,7 @@ if($mybb->input['action'] == "inline_edit")
 								$db->delete_query("threadsubscriptions", "tid='$tid'");
 								$db->delete_query("polls", "tid='$tid'");;
 								$db->delete_query("threadsread", "tid='$tid'");
+								$db->delete_query("threadratings", "tid='$tid'");
 							}
 						}
 
