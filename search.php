@@ -978,7 +978,7 @@ if($mybb->input['action'] == "results")
 			$num_results = $db->num_rows($query);
 			$lang->page_selected = $lang->sprintf($lang->page_selected, intval($num_results));
 			$lang->select_all = $lang->sprintf($lang->select_all, intval($postcount));
-			$lang->all_selected = $lang->sprintf($lang->page_selected, intval($postcount));
+			$lang->all_selected = $lang->sprintf($lang->all_selected, intval($postcount));
 			eval("\$selectall = \"".$templates->get("search_posts_inlinemoderation_selectall")."\";");
 			
 			$customthreadtools = $customposttools = '';

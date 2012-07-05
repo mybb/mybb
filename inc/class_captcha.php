@@ -167,7 +167,7 @@ class captcha
 
 	function build_hidden_captcha()
 	{
-		global $mybb, $templates;
+		global $db, $mybb, $templates;
 
 		$field = array();
 
