@@ -483,6 +483,7 @@ switch($mybb->input['sortby'])
 		break;
 }
 
+$sortsel['rating'] = ''; // Needs to be initialized in order to speed-up things. Fixes #2031
 $sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
 
 // Pick the right string to join the sort URL
@@ -504,6 +505,9 @@ else
 {
 	$sorturl = get_forum_link($fid).$string."datecut=$datecut";
 }
+
+// Needs to be initialized in order to speed-up things. Fixes #2031
+$orderarrow = array('rating'=>'', 'subject'=>'', 'starter'=>'', 'replies'=>'', 'views'=>''); 
 eval("\$orderarrow['$sortby'] = \"".$templates->get("forumdisplay_orderarrow")."\";");
 
 $threadcount = 0;
