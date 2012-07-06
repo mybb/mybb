@@ -5778,7 +5778,7 @@ function fetch_longipv4_range($ip)
 
 	if($ip == "*")
 	{
-		return array(ip2long('0.0.0.0'), ip2long('255.255.255.255'));
+		return array(my_ip2long('128.0.0.0'), my_ip2long('127.255.255.255'));
 	}
 
 	if(strpos($ip, ".*") === false)
@@ -5786,11 +5786,11 @@ function fetch_longipv4_range($ip)
 		$ip = str_replace("*", "", $ip);
 		if(count($ip_bits) == 4)
 		{
-			return ip2long($ip);
+			return my_ip2long($ip);
 		}
 		else
 		{
-			return array(ip2long($ip.".0"), ip2long($ip.".255"));
+			return array(my_ip2long($ip.".0"), my_ip2long($ip.".255"));
 		}
 	}
 	// Wildcard based IP provided
@@ -5811,7 +5811,7 @@ function fetch_longipv4_range($ip)
 			}
 			$sep = ".";
 		}
-		return array(ip2long($ip_string1), ip2long($ip_string2));
+		return array(my_ip2long($ip_string1), my_ip2long($ip_string2));
 	}
 } 
 
