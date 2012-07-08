@@ -864,7 +864,7 @@ if($mybb->input['action'] == "change")
 				'imagestring',
 				'allownotices',
 				'hideemail',
-				'receivepms'
+				'receivepms',
 				'pmnotice',
 				'emailpmnotify',
 				'invisible',
