@@ -96,7 +96,7 @@ function generate_thumbnail($file, $path, $filename, $maxheight, $maxwidth)
 			// Save Alpha...
 			imagesavealpha($thumbim, true);
 		}
-		elseif($imgtype == 2)
+		elseif($imgtype == 1)
 		{
 			// Transparent GIF?
 			$trans_color = imagecolortransparent($im);
