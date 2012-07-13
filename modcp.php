@@ -318,7 +318,7 @@ if($mybb->input['action'] == "allreports")
 		while($report = $db->fetch_array($query))
 		{
 			$trow = alt_trow();
-			$report['threadsubject'] = $lang->na;
+			
 			$report['threadlink'] = get_thread_link($report['tid']);
 
 			$report['posterlink'] = get_profile_link($report['postuid']);
@@ -334,11 +334,18 @@ if($mybb->input['action'] == "allreports")
 				$trow = "trow_shaded";
 			}
 	
-			if($report['threadsubject'])
+			// No subject? Set it to N/A
+			if($report['threadsubject'] == '')
 			{
-				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
-				$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
+				$report['threadsubject'] = $lang->na;
 			}
+			else
+			{
+				// Only parse bad words and sanitize subject if there is one...
+				$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+			}
+
+			$report['threadsubject'] = "<a href=\"".get_thread_link($report['tid'])."\" target=\"_blank\">{$report['threadsubject']}</a>";
 
 			eval("\$allreports .= \"".$templates->get("modcp_reports_allreport")."\";");
 		}
