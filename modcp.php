@@ -1359,7 +1359,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=threads");
+		$multipage = multipage($unapproved_threads, $perpage, $page, "modcp.php?action=modqueue&type=threads");
 
 		$query = $db->query("
 			SELECT t.tid, t.dateline, t.fid, t.subject, p.message AS postmessage, u.username AS username, t.uid
@@ -1445,7 +1445,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
+		$multipage = multipage($unapproved_posts, $perpage, $page, "modcp.php?action=modqueue&amp;type=posts");
 
 		$query = $db->query("
 			SELECT p.pid, p.subject, p.message, t.subject AS threadsubject, t.tid, u.username, p.uid, t.fid, p.dateline
@@ -1531,7 +1531,7 @@ if($mybb->input['action'] == "modqueue")
 			$page = 1;
 		}
 
-		$multipage = multipage($pages, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
+		$multipage = multipage($unapproved_attachments, $perpage, $page, "modcp.php?action=modqueue&amp;type=attachments");
 
 		$query = $db->query("
 			SELECT a.*, p.subject AS postsubject, p.dateline, p.uid, u.username, t.tid, t.subject AS threadsubject
