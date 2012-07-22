@@ -491,9 +491,7 @@ else if($mybb->input['action'] == "edit_post")
 		
 		// Send our headers.
 		header("Content-type: text/plain; charset={$charset}");
-		echo "<p>\n";
-		echo $post['message'];
-		echo "</p>\n";
+		echo $post['message']."\n";
 		if($editedmsg)
 		{
 			echo str_replace(array("\r", "\n"), "", "<editedmsg>{$editedmsg}</editedmsg>");
