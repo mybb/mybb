@@ -1394,7 +1394,7 @@ class Moderation
 					{
 						$forum_counters[$post['fid']]['unapprovedposts'] = $forum_cache[$post['fid']]['unapprovedposts'];
 					}
-					--$forum_counters[$post['fid']]['posts'];
+					--$forum_counters[$post['fid']]['unapprovedposts'];
 					// Add 1 to the new forum's unapproved posts
 					if(!isset($forum_counters[$moveto]['unapprovedposts']))
 					{

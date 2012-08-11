@@ -3319,7 +3319,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 				// Convert & to &amp;
 				$navbits[$navsize]['name'] = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $forumnav['name']);
 
-				if(IN_ARCHIVE == 1)
+				if(defined("IN_ARCHIVE"))
 				{
 					// Set up link to forum in breadcrumb.
 					if($pforumcache[$fid][$forumnav['pid']]['type'] == 'f' || $pforumcache[$fid][$forumnav['pid']]['type'] == 'c')
