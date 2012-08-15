@@ -28,6 +28,11 @@ if(!$thread['tid'])
 	error($lang->error_invalidthread);
 }
 
+if($thread['uid'] == $mybb->user['uid'])
+{
+	error($lang->error_cannotrateownthread);
+}
+
 $forumpermissions = forum_permissions($thread['fid']);
 if($forumpermissions['canview'] == 0 || $forumpermissions['canratethreads'] == 0 || $mybb->usergroup['canratethreads'] == 0 || $mybb->settings['allowthreadratings'] == 0)
 {
