@@ -179,20 +179,20 @@ if($mybb->input['action'] == "add_template")
 		{
 			$errors[] = $lang->error_invalid_set;
 		}
-		
+
 		if(!$errors)
 		{
 			$template_array = array(
 				'title' => $db->escape_string($mybb->input['title']),
 				'sid' => $sid,
-				'template' => $db->escape_string($mybb->input['template']),
+				'template' => $db->escape_string(rtrim($mybb->input['template'])),
 				'version' => $db->escape_string($mybb->version_code),
 				'status' => '',
 				'dateline' => TIME_NOW
 			);
-						
+
 			$tid = $db->insert_query("templates", $template_array);
-			
+
 			$plugins->run_hooks("admin_style_templates_add_template_commit");
 			
 			// Log admin action
@@ -396,16 +396,16 @@ if($mybb->input['action'] == "edit_template")
 		{
 			$query = $db->simple_select("templates", "*", "tid='{$mybb->input['tid']}'");
 			$template = $db->fetch_array($query);
-			
+
 			$template_array = array(
 				'title' => $db->escape_string($mybb->input['title']),
 				'sid' => $sid,
-				'template' => $db->escape_string(trim($mybb->input['template'])),
+				'template' => $db->escape_string(rtrim($mybb->input['template'])),
 				'version' => $mybb->version_code,
 				'status' => '',
 				'dateline' => TIME_NOW
 			);
-			
+
 			// Make sure we have the correct tid associated with this template. If the user double submits then the tid could originally be the master template tid, but because the form is sumbitted again, the tid doesn't get updated to the new modified template one. This then causes the master template to be overwritten
 			$query = $db->simple_select("templates", "tid", "title='".$db->escape_string($template['title'])."' AND (sid = '-2' OR sid = '{$template['sid']}')", array('order_by' => 'sid', 'order_dir' => 'desc', 'limit' => 1));
 			$template['tid'] = $db->fetch_field($query, "tid");
