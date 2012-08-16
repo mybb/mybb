@@ -300,34 +300,13 @@ function build_postbit($post, $post_type=0)
 			}
 		}
 
-		if($post['avatar'] != "" && ($mybb->user['showavatars'] != 0 || !$mybb->user['uid']))
+		$post['useravatar'] = '';
+		if($mybb->user['showavatars'] != 0)
 		{
-			$post['avatar'] = htmlspecialchars_uni($post['avatar']);
-			$avatar_dimensions = explode("|", $post['avatardimensions']);
-			
-			if($avatar_dimensions[0] && $avatar_dimensions[1])
-			{
-				list($max_width, $max_height) = explode("x", my_strtolower($mybb->settings['postmaxavatarsize']));
-			 	if($avatar_dimensions[0] > $max_width || $avatar_dimensions[1] > $max_height)
-				{
-					require_once MYBB_ROOT."inc/functions_image.php";
-					$scaled_dimensions = scale_image($avatar_dimensions[0], $avatar_dimensions[1], $max_width, $max_height);
-					$avatar_width_height = "width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\"";
-				}
-				else
-				{
-					$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";	
-				}
-			}
-			
+			$useravatar = format_avatar(htmlspecialchars_uni($post['avatar']), $post['avatardimensions']);
 			eval("\$post['useravatar'] = \"".$templates->get("postbit_avatar")."\";");
-			$post['avatar_padding'] = "padding-right: 10px;";
 		}
-		else
-		{
-			$post['useravatar'] = "";
-		}
-		
+
 		eval("\$post['button_find'] = \"".$templates->get("postbit_find")."\";");
 		
 		if($mybb->settings['enablepms'] == 1 && $post['receivepms'] != 0 && $mybb->usergroup['cansendpms'] == 1 && my_strpos(",".$post['ignorelist'].",", ",".$mybb->user['uid'].",") === false)

@@ -7617,7 +7617,7 @@ body {
 	{$lang->postbit_posts} {$post['postnum']}<br />
 	{$lang->postbit_joined} {$post['userregdate']}
 	{$post['replink']}{$post['warninglevel']}]]></template>
-		<template name="postbit_avatar" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}"><img src="{$post['avatar']}" alt="" {$avatar_width_height} /></a>]]></template>
+		<template name="postbit_avatar" version="1800"><![CDATA[<a href="{$post['profilelink_plain']}"><img src="{$useravatar['image']}" alt="" {$useravatar['width_height']} /></a>]]></template>
 		<template name="postbit_away" version="1400"><![CDATA[<a href="{$post['profilelink_plain']}" title="{$lang->postbit_status_away}"><img src="{$theme['imgdir']}/buddy_away.gif" border="0" alt="{$lang->postbit_status_away}" /></a>]]></template>
 		<template name="postbit_classic" version="1600"><![CDATA[{$ignore_bit}
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder" style="{$post_extra_style} {$post_visibility}" id="post_{$post['pid']}">

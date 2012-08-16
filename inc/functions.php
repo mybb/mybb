@@ -2406,6 +2406,70 @@ function format_name($username, $usergroup, $displaygroup="")
 }
 
 /**
+ * Formats an avatar to a certain dimension
+ *
+ * @param string The avatar file name
+ * @param string Dimensions of the avatar, width x height (e.g. 44|44)
+ * @param string The maximum dimensions of the formatted avatar
+ * @return array Information for the formatted avatar
+ */
+function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
+{
+	global $mybb;
+	static $avatars;
+
+	if(!isset($avatars))
+	{
+		$avatars = array();
+	}
+
+	if(!$avatar)
+	{
+		// Default avatar
+		$avatar = 'images/default_avatar.gif';
+		$dimensions = '44|44';
+	}
+
+	if($avatars[$avatar])
+	{
+		return $avatars[$avatar];
+	}
+
+	if(!$max_dimensions)
+	{
+		$max_dimensions = $mybb->settings['postmaxavatarsize'];
+	}
+
+	if($dimensions)
+	{
+		$dimensions = explode("|", $dimensions);
+
+		if($dimensions[0] && $dimensions[1])
+		{
+			list($max_width, $max_height) = explode('x', $max_dimensions);
+
+			if($dimensions[0] > $max_width || $dimensions[1] > $max_height)
+			{
+				require_once MYBB_ROOT."inc/functions_image.php";
+				$scaled_dimensions = scale_image($dimensions[0], $dimensions[1], $max_width, $max_height);
+				$avatar_width_height = "width=\"{$scaled_dimensions['width']}\" height=\"{$scaled_dimensions['height']}\"";
+			}
+			else
+			{
+				$avatar_width_height = "width=\"{$dimensions[0]}\" height=\"{$dimensions[1]}\"";	
+			}
+		}
+	}
+
+	$avatars[$avatar] = array(
+		'image' => $avatar,
+		'width_height' => $avatar_width_height
+	);
+
+	return $avatars[$avatar];
+}
+
+/**
  * Build the javascript based MyCode inserter
  *
  * @return string The MyCode inserter
