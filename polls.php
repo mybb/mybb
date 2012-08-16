@@ -300,6 +300,11 @@ if($mybb->input['action'] == "editpoll")
 
 	$query = $db->simple_select("polls", "*", "pid='$pid'");
 	$poll = $db->fetch_array($query);
+	
+	if(!$poll['pid'])
+	{
+		error($lang->error_invalidpoll);
+	}
 
 	$query = $db->simple_select("threads", "*", "poll='$pid'");
 	$thread = $db->fetch_array($query);
@@ -471,6 +476,11 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
+	
+	if(!$poll['pid'])
+	{
+		error($lang->error_invalidpoll);
+	}
 
 	$query = $db->simple_select("threads", "*", "poll='".intval($mybb->input['pid'])."'");
 	$thread = $db->fetch_array($query);
@@ -620,6 +630,12 @@ if($mybb->input['action'] == "showresults")
 {
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
+	
+	if(!$poll['pid'])
+	{
+		error($lang->error_invalidpoll);
+	}
+	
 	$tid = $poll['tid'];
 	$query = $db->simple_select("threads", "*", "tid='$tid'");
 	$thread = $db->fetch_array($query);
