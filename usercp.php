@@ -1793,41 +1793,6 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
 		remove_avatars($mybb->user['uid']);
 	}
-	elseif($mybb->input['gallery']) // Gallery avatar
-	{
-		if(empty($mybb->input['avatar']))
-		{
-			$avatar_error = $lang->error_noavatar;
-		}
-		
-		$mybb->input['gallery'] = str_replace(array("./", ".."), "", $mybb->input['gallery']);
-		$mybb->input['avatar'] = str_replace(array("./", ".."), "", $mybb->input['avatar']);
-
-		if(empty($avatar_error))
-		{
-			if($mybb->input['gallery'] == "default")
-			{
-				$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['avatar']);
-			}
-			else
-			{
-				$avatarpath = $db->escape_string($mybb->settings['avatardir']."/".$mybb->input['gallery']."/".$mybb->input['avatar']);
-			}
-
-			if(file_exists($avatarpath))
-			{
-				$dimensions = @getimagesize($avatarpath);
-
-				$updated_avatar = array(
-					"avatar" => $avatarpath.'?dateline='.TIME_NOW,
-					"avatardimensions" => "{$dimensions[0]}|{$dimensions[1]}",
-					"avatartype" => "gallery"
-				);
-				$db->update_query("users", $updated_avatar, "uid='".$mybb->user['uid']."'");
-			}
-			remove_avatars($mybb->user['uid']);
-		}
-	}
 	elseif($_FILES['avatarupload']['name']) // upload avatar
 	{
 		if($mybb->usergroup['canuploadavatars'] == 0)
@@ -1929,149 +1894,54 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 if($mybb->input['action'] == "avatar")
 {
 	$plugins->run_hooks("usercp_avatar_start");
-	// Get a listing of available galleries
-	$gallerylist['default'] = $lang->default_gallery;
-	$avatardir = @opendir($mybb->settings['avatardir']);
-	while($dir = @readdir($avatardir))
-	{
-		if(is_dir($mybb->settings['avatardir']."/$dir") && substr($dir, 0, 1) != ".")
-		{
-			$gallerylist[$dir] = str_replace("_", " ", $dir);
-		}
-	}
-	@closedir($avatardir);
-	natcasesort($gallerylist);
-	reset($gallerylist);
-	$galleries = '';
-	foreach($gallerylist as $dir => $friendlyname)
-	{
-		if($dir == $mybb->input['gallery'])
-		{
-			$activegallery = $friendlyname;
-			$selected = "selected=\"selected\"";
-		}
-		$galleries .= "<option value=\"$dir\" $selected>$friendlyname</option>\n";
-		$selected = "";
-	}
 
-	// Check to see if we're in a gallery or not
-	if($activegallery)
+	if($mybb->user['avatartype'] == "upload" || stristr($mybb->user['avatar'], $mybb->settings['avataruploadpath']))
 	{
-		$gallery = str_replace("..", "", $mybb->input['gallery']);
-		$lang->avatars_in_gallery = $lang->sprintf($lang->avatars_in_gallery, $activegallery);
-		// Get a listing of avatars in this gallery
-		$avatardir = $mybb->settings['avatardir'];
-		if($gallery != "default")
-		{
-			$avatardir .= "/$gallery";
-		}
-		$opendir = opendir($avatardir);
-		while($avatar = @readdir($opendir))
-		{
-			$avatarpath = $avatardir."/".$avatar;
-			if(is_file($avatarpath) && preg_match("#\.(jpg|jpeg|gif|bmp|png)$#i", $avatar))
-			{
-				$avatars[] = $avatar;
-			}
-		}
-		@closedir($opendir);
-
-		if(is_array($avatars))
-		{
-			natcasesort($avatars);
-			reset($avatars);
-			$count = 0;
-			$avatarlist = "<tr>\n";
-			foreach($avatars as $avatar)
-			{
-				$avatarpath = $avatardir."/".$avatar;
-				$avatarname = preg_replace("#\.(jpg|jpeg|gif|bmp|png)$#i", "", $avatar);
-				$avatarname = ucwords(str_replace("_", " ", $avatarname));
-				if($mybb->user['avatar'] == $avatarpath)
-				{
-					$checked = "checked=\"checked\"";
-				}
-				if($count == 5)
-				{
-					$avatarlist .= "</tr>\n<tr>\n";
-					$count = 0;
-				}
-				++$count;
-				eval("\$avatarlist .= \"".$templates->get("usercp_avatar_gallery_avatar")."\";");
-			}
-			if($count != 0)
-			{
-				for($i = $count; $i <= 5; ++$i)
-				{
-					eval("\$avatarlist .= \"".$templates->get("usercp_avatar_gallery_blankblock")."\";");
-				}
-			}
-		}
-		else
-		{
-			eval("\$avatarlist = \"".$templates->get("usercp_avatar_gallery_noavatars")."\";");
-		}
-		
-		$plugins->run_hooks("usercp_avatar_end");
-		
-		eval("\$gallery = \"".$templates->get("usercp_avatar_gallery")."\";");
-		output_page($gallery);
+		$avatarmsg = "<br /><strong>".$lang->already_uploaded_avatar."</strong>";
 	}
-	// Show main avatar page
+	elseif($mybb->user['avatartype'] == "remote" || my_strpos(my_strtolower($mybb->user['avatar']), "http://") !== false)
+	{
+		$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
+		$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
+	}
+	$urltoavatar = htmlspecialchars_uni($mybb->user['avatar']);
+	if($mybb->user['avatar'])
+	{
+		$avatar_dimensions = explode("|", $mybb->user['avatardimensions']);
+		if($avatar_dimensions[0] && $avatar_dimensions[1])
+		{
+			$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
+		}
+		eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
+		$colspan = 1;
+	}
 	else
 	{
-		if($mybb->user['avatartype'] == "upload" || stristr($mybb->user['avatar'], $mybb->settings['avataruploadpath']))
-		{
-			$avatarmsg = "<br /><strong>".$lang->already_uploaded_avatar."</strong>";
-		}
-		elseif($mybb->user['avatartype'] == "gallery" || stristr($mybb->user['avatar'], $mybb->settings['avatardir']))
-		{
-			$avatarmsg = "<br /><strong>".$lang->using_gallery_avatar."</strong>";
-		}
-		elseif($mybb->user['avatartype'] == "remote" || my_strpos(my_strtolower($mybb->user['avatar']), "http://") !== false)
-		{
-			$avatarmsg = "<br /><strong>".$lang->using_remote_avatar."</strong>";
-			$avatarurl = htmlspecialchars_uni($mybb->user['avatar']);
-		}
-		$urltoavatar = htmlspecialchars_uni($mybb->user['avatar']);
-		if($mybb->user['avatar'])
-		{
-			$avatar_dimensions = explode("|", $mybb->user['avatardimensions']);
-			if($avatar_dimensions[0] && $avatar_dimensions[1])
-			{
-				$avatar_width_height = "width=\"{$avatar_dimensions[0]}\" height=\"{$avatar_dimensions[1]}\"";
-			}
-			eval("\$currentavatar = \"".$templates->get("usercp_avatar_current")."\";");
-			$colspan = 1;
-		}
-		else
-		{
-			$colspan = 2;
-		}
-		if($mybb->settings['maxavatardims'] != "")
-		{
-			list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-			$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
-		}
-		if($mybb->settings['avatarsize'])
-		{
-			$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
-			$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
-		}
-		if($mybb->settings['avatarresizing'] == "auto")
-		{
-			$auto_resize = "<br /><span class=\"smalltext\">{$lang->avatar_auto_resize_note}</span>\n";
-		}
-		else if($mybb->settings['avatarresizing'] == "user")
-		{
-			$auto_resize = "<br /><span class=\"smalltext\"><input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->avatar_auto_resize_option}</label></span>";
-		}
-		
-		$plugins->run_hooks("usercp_avatar_end");
-		
-		eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
-		output_page($avatar);
+		$colspan = 2;
 	}
+	if($mybb->settings['maxavatardims'] != "")
+	{
+		list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
+		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_dimensions, $maxwidth, $maxheight);
+	}
+	if($mybb->settings['avatarsize'])
+	{
+		$maxsize = get_friendly_size($mybb->settings['avatarsize']*1024);
+		$lang->avatar_note .= "<br />".$lang->sprintf($lang->avatar_note_size, $maxsize);
+	}
+	if($mybb->settings['avatarresizing'] == "auto")
+	{
+		$auto_resize = "<br /><span class=\"smalltext\">{$lang->avatar_auto_resize_note}</span>\n";
+	}
+	else if($mybb->settings['avatarresizing'] == "user")
+	{
+		$auto_resize = "<br /><span class=\"smalltext\"><input type=\"checkbox\" name=\"auto_resize\" value=\"1\" checked=\"checked\" id=\"auto_resize\" /> <label for=\"auto_resize\">{$lang->avatar_auto_resize_option}</label></span>";
+	}
+	
+	$plugins->run_hooks("usercp_avatar_end");
+	
+	eval("\$avatar = \"".$templates->get("usercp_avatar")."\";");
+	output_page($avatar);
 }
 
 if($mybb->input['action'] == "do_editlists")

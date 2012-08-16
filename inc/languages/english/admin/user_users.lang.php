@@ -260,10 +260,8 @@ $l['last_known_ip'] = "Last Known IP";
 $l['registration_date'] = "Registration Date";
 $l['info_on_ip'] = "Information on this IP address";
 
-$l['avatar_gallery'] = "Avatar Gallery";
 $l['current_avatar'] = "Current Avatar";
 $l['user_current_using_uploaded_avatar'] = "This user is currently using an uploaded avatar.";
-$l['user_current_using_gallery_avatar'] = "This user is currently using an avatar from the avatar gallery.";
 $l['user_currently_using_remote_avatar'] = "This user is currently using a remotely linked avatar.";
 $l['max_dimensions_are'] = "The maximum dimensions for avatars are";
 $l['avatar_max_size'] = "Avatars can be a maximum of";
@@ -274,7 +272,6 @@ $l['attempt_to_auto_resize'] = "Attempt to resize this avatar if it is too large
 $l['specify_custom_avatar'] = "Specify Custom Avatar";
 $l['upload_avatar'] = "Upload Avatar";
 $l['or_specify_avatar_url'] = "or Specify Avatar URL";
-$l['or_select_avatar_gallery'] = "or select from Avatar Gallery";
 
 $l['user_notes'] = "User Notes";
 
