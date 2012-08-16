@@ -237,16 +237,16 @@ if($mybb->input['action'] == "do_newpoll" && $mybb->request_method == "post")
 	
 	$optionslist = '';
 	$voteslist = '';
-	for($i = 1; $i <= $optioncount; ++$i)
+	for($i = 1; $i <= $polloptions; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
-			if($i > 1)
+			if($optionslist != '')
 			{
 				$optionslist .= '||~|~||';
 				$voteslist .= '||~|~||';
 			}
-			$optionslist .= $options[$i];
+			$optionslist .= trim($options[$i]);
 			$voteslist .= '0';
 		}
 	}
@@ -572,17 +572,17 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 	$voteslist = '';
 	$numvotes = '';
 	$votes = $mybb->input['votes'];
-	for($i = 1; $i <= $optioncount; ++$i)
+	for($i = 1; $i <= $numoptions; ++$i)
 	{
 		if(trim($options[$i]) != '')
 		{
-			if($i > 1)
+			if($optionslist != '')
 			{
 				$optionslist .= "||~|~||";
 				$voteslist .= "||~|~||";
 			}
 			
-			$optionslist .= $options[$i];
+			$optionslist .= trim($options[$i]);
 			if(intval($votes[$i]) <= 0)
 			{
 				$votes[$i] = "0";
@@ -605,7 +605,7 @@ if($mybb->input['action'] == "do_editpoll" && $mybb->request_method == "post")
 		"question" => $db->escape_string($mybb->input['question']),
 		"options" => $db->escape_string($optionslist),
 		"votes" => $db->escape_string($voteslist),
-		"numoptions" => intval($numoptions),
+		"numoptions" => intval($optioncount),
 		"numvotes" => $numvotes,
 		"timeout" => $timeout,
 		"closed" => $postoptions['closed'],
