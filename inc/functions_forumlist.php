@@ -159,7 +159,10 @@ function build_forumbits($pid=0, $depth=1)
 			// If we are hiding information (lastpost) because we aren't authenticated against the password for this forum, remove them
 			if($hidelastpostinfo == true)
 			{
-				unset($lastpost_data);
+				$lastpost_data = array(
+					'lastpost' => 0,
+					'lastposter' => ''
+				);
 			}
 			
 			// If the current forums lastpost is greater than other child forums of the current parent, overwrite it
