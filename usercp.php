@@ -2305,7 +2305,7 @@ if($mybb->input['action'] == "drafts")
 		}
 		elseif($draft['threadvisible'] == -2) // We're looking at a draft thread
 		{
-			$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">".htmlspecialchars_uni($draft['forumname'])."</a>";
+			$detail = $lang->forum." <a href=\"".get_forum_link($draft['fid'])."\">{$draft['forumname']}</a>";
 			$editurl = "newthread.php?action=editdraft&amp;tid={$draft['tid']}";
 			$id = $draft['tid'];
 			$type = "thread";
