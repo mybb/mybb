@@ -360,7 +360,7 @@ if($mybb->user['uid'])
 	
 	if(!empty($admin_options['cpstyle']) && file_exists(MYBB_ADMIN_DIR."/styles/{$admin_options['cpstyle']}/main.css"))
 	{
-		$page->style = $cp_style = $admin_options['cpstyle'];
+		$cp_style = $admin_options['cpstyle'];
 	}
 
 	// Update the session information in the DB
