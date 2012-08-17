@@ -9724,7 +9724,10 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				<td class="tcat" colspan="2"><strong>{$lang->custom_avatar}</strong></td>
 			</tr>
 			<tr>
-				<td class="trow1" width="40%"><strong>{$lang->avatar_upload}</strong></td>
+				<td class="trow1" width="40%">
+					<strong>{$lang->avatar_upload}</strong>
+					<br /><span class="smalltext">{$lang->avatar_upload_note}</span>
+				</td>
 				<td class="trow1" width="60%">
 					<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 					<input type="file" name="avatarupload" size="25" class="fileupload" />
@@ -9732,8 +9735,14 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 				</td>
 			</tr>
 			<tr>
-				<td class="trow2" width="40%"><strong>{$lang->avatar_url}</strong></td>
-				<td class="trow2" width="60%"><input type="text" class="textbox" name="avatarurl" size="45" value="{$avatarurl}" /></td>
+				<td class="trow2" width="40%">
+					<strong>{$lang->avatar_url}</strong>
+					<br /><span class="smalltext">{$lang->avatar_url_note}</span>
+				</td>
+				<td class="trow2" width="60%">
+					<input type="text" class="textbox" name="avatarurl" size="45" value="{$avatarurl}" />
+					<br /><span class="smalltext">{$lang->avatar_url_gravatar}</span>
+				</td>
 			</tr>
 		</table>
 
@@ -9750,7 +9759,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="usercp_avatar_current" version="1603"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$urltoavatar}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$avatar_width_height} /></td>]]></template>
+		<template name="usercp_avatar_current" version="1800"><![CDATA[<td class="trow1" width="150" align="right"><img src="{$useravatar['image']}" alt="{$lang->avatar_mine}" title="{$lang->avatar_mine}" {$useravatar['width_height']} /></td>]]></template>
 		<template name="usercp_changename" version="1400"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->change_username}</title>

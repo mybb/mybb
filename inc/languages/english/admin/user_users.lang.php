@@ -271,7 +271,7 @@ $l['avatar_auto_resize'] = "If the avatar is too large, it will automatically be
 $l['attempt_to_auto_resize'] = "Attempt to resize this avatar if it is too large?";
 $l['specify_custom_avatar'] = "Specify Custom Avatar";
 $l['upload_avatar'] = "Upload Avatar";
-$l['or_specify_avatar_url'] = "or Specify Avatar URL";
+$l['or_specify_avatar_url'] = "or Specify Avatar/Gravatar URL";
 
 $l['user_notes'] = "User Notes";
 
