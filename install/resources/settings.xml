@@ -900,10 +900,28 @@ admin=Administrator Activation]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="useravatar">
+			<title>Default User Avatar</title>
+			<description><![CDATA[If the user does not set a custom avatar this image will be used instead.]]></description>
+			<disporder>26</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[images/default_avatar.gif]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="useravatardims">
+			<title>Default Avatar Dimensions</title>
+			<description><![CDATA[The dimensions of the default avatar; width by height (e.g. 40|40).]]></description>
+			<disporder>27</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[40|40]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
 			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
-			<disporder>26</disporder>
+			<disporder>28</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -912,7 +930,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
-			<disporder>27</disporder>
+			<disporder>29</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -921,7 +939,7 @@ admin=Administrator Activation]]></optionscode>
 		<setting name="avatarresizing">
 			<title>Avatar Resizing Mode</title>
 			<description><![CDATA[If you wish to automatically resize all large avatars, provide users the option of resizing their avatar, or not resize avatars at all you can change this setting.]]></description>
-			<disporder>28</disporder>
+			<disporder>30</disporder>
 			<optionscode><![CDATA[select
 auto=Automatically resize large avatars
 user=Give users the choice of resizing large avatars
@@ -930,19 +948,10 @@ disabled=Disable this feature]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
-		<setting name="avatardir">
-			<title>Avatar Directory</title>
-			<description><![CDATA[The directory where your avatars are stored. These are used in the avatar list in the User CP.]]></description>
-			<disporder>29</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
-			<settingvalue><![CDATA[images/avatars]]></settingvalue>
-			<isdefault>1</isdefault>
-			<helpkey></helpkey>
-		</setting>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
 			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
-			<disporder>30</disporder>
+			<disporder>31</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -951,7 +960,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="emailkeep">
 			<title>Users Keep Email</title>
 			<description><![CDATA[If a current user has an email already registered in your banned list, should they be allowed to keep it?]]></description>
-			<disporder>31</disporder>
+			<disporder>32</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -960,7 +969,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="coppa">
 			<title>COPPA Compliance</title>
 			<description><![CDATA[If you wish to enable <a href="http://www.coppa.org/comply.htm">COPPA</a> support on your forums, please select the registration allowance below.]]></description>
-			<disporder>32</disporder>
+			<disporder>33</disporder>
 			<optionscode><![CDATA[select
 enabled=Enabled
 deny=Deny users under the age of 13
@@ -972,7 +981,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowaway">
 			<title>Allow Away Statuses?</title>
 			<description><![CDATA[Should users be allowed to set their status to 'Away' with a custom reason & return date?]]></description>
-			<disporder>33</disporder>
+			<disporder>34</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -981,7 +990,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowbuddyonly">
 			<title>Allow Buddy-Only Messaging?</title>
 			<description><![CDATA[Allow users to send private messages only to people on their buddy list?]]></description>
-			<disporder>34</disporder>
+			<disporder>35</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>

@@ -2426,8 +2426,8 @@ function format_avatar($avatar, $dimensions = '', $max_dimensions = '')
 	if(!$avatar)
 	{
 		// Default avatar
-		$avatar = 'images/default_avatar.gif';
-		$dimensions = '44|44';
+		$avatar = $mybb->settings['useravatar'];
+		$dimensions = $mybb->settings['useravatardimensions'];
 	}
 
 	if($avatars[$avatar])
