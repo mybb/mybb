@@ -504,6 +504,7 @@ if($mybb->input['action'] == "newthread" || $mybb->input['action'] == "editdraft
 					LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
 					LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 					WHERE p.pid IN ($quoted_posts) {$unviewable_forums} {$visible_where}
+					ORDER BY p.dateline
 				");
 				while($quoted_post = $db->fetch_array($query))
 				{
