@@ -34,9 +34,10 @@ function build_forumbits($pid=0, $depth=1)
 	{
 		foreach($parent as $forum)
 		{
-			$forums = $subforums = $sub_forums = '';
-			$lastpost_data = '';
-			$counters = '';
+			$subforums = $sub_forums = '';
+			$lastpost_data = array(
+				'lastpost' => 0
+			);
 			$forum_viewers_text = '';
 			$forum_viewers_text_plain = '';
 
