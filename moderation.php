@@ -977,6 +977,7 @@ switch($mybb->input['action'])
 		{
 			$modaction['dateline'] = my_date("jS M Y, G:i", $modaction['dateline']);
 			$modaction['profilelink'] = build_profile_link($modaction['username'], $modaction['uid']);
+			$modaction['action'] = htmlspecialchars_uni($modaction['action']);
 			$info = '';
 			if($modaction['tsubject'])
 			{
