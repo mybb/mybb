@@ -27,8 +27,21 @@ $l['server_load'] = "Server Load";
 $l['attachments'] = "Attachments";
 $l['used'] = "Used";
 
+$l['version_check'] = "Check for Updates";
 $l['last_update_check_two_weeks'] = "Your last <a href=\"{1}\">MyBB version check</a> was more than two weeks ago.";
 $l['new_version_available'] = "You are currently running {1} whilst the latest generally available release is {2}.";
+$l['version_check_description'] = "Here you can check that you are currently running the latest copy of MyBB and see the latest announcements directly from MyBB.";
+$l['latest_mybb_announcements'] = "Latest MyBB Announcements";
+$l['your_version'] = "Your Version";
+$l['latest_version'] = "Latest Version";
+$l['update_forum'] = "Please upgrade to the latest version of MyBB by visiting the <a href=\"http://mybb.com\" target=\"_blank\">MyBB Website</a>.";
+$l['read_more'] = "Read more";
+
+$l['success_up_to_date'] = "Congratulations, you are running the latest version of MyBB.";
+
+$l['error_out_of_date'] = "Your copy of MyBB is out of date.";
+$l['error_communication'] = "There was a problem communicating with the version server. Please try again in a few minutes.";
+$l['error_fetch_news'] = "MyBB was unable to successfully fetch the latest announcements from the MyBB website.";
 
 $l['admin_notes_public'] = "These notes are public to all administrators.";
 $l['admin_notes'] = "Administrator Notes";

@@ -10,7 +10,6 @@ $l['home'] = "Home";
 
 $l['dashboard'] = "Dashboard";
 $l['preferences'] = "Preferences";
-$l['version_check'] = "Version Check";
 $l['mybb_credits'] = "MyBB Credits";
 
 $l['add_new_forum'] = "Add New Forum";
