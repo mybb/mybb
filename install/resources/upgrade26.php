@@ -21,7 +21,7 @@ $upgrade_detail = array(
 
 @set_time_limit(0);
 
-function upgrade24_dbchanges()
+function upgrade26_dbchanges()
 {
 	global $output, $mybb;
 
@@ -39,11 +39,13 @@ function upgrade24_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
+	sync_tasks(0);
+
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("24_updatetheme");
+	$output->print_footer("26_updatetheme");
 }
 
-function upgrade24_updatetheme()
+function upgrade26_updatetheme()
 {
 	global $db, $mybb, $output;
 
@@ -160,6 +162,6 @@ function upgrade24_updatetheme()
 	echo $contents;
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
-	$output->print_footer("24_done");
+	$output->print_footer("26_done");
 }
 ?>

@@ -132,4 +132,16 @@
 		<enabled>1</enabled>
 		<logging>1</logging>
 	</task>
+	<task>
+		<title>Version Check</title>
+		<description><![CDATA[Automatically checks for news and new versions of MyBB twice a month.]]></description>
+		<file>versioncheck</file>
+		<minute>0</minute>
+		<hour>0</hour>
+		<day>1,15</day>
+		<weekday>*</weekday>
+		<month>*</month>
+		<enabled>1</enabled>
+		<logging>1</logging>
+	</task>
 </tasks>
