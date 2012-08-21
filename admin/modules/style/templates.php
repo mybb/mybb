@@ -30,7 +30,7 @@ if(isset($mybb->input['expand']))
 	$expand_str2 = "&expand=".implode("|", $expand_array);
 }
 
-if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_template" || $mybb->input['action'] == "search_replace" || $mybb->input['action'] == "find_updated" || (!$mybb->input['action'] && !$sid))
+if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_template" || ($mybb->input['action'] == "add_template_group" && !$sid) || $mybb->input['action'] == "search_replace" || $mybb->input['action'] == "find_updated" || (!$mybb->input['action'] && !$sid))
 {
 	$sub_tabs['templates'] = array(
 		'title' => $lang->manage_template_sets,
@@ -40,14 +40,15 @@ if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_templat
 
 	$sub_tabs['add_set'] = array(
 		'title' => $lang->add_set,
-		'link' => "index.php?module=style-templates&amp;action=add_set"
+		'link' => "index.php?module=style-templates&amp;action=add_set&amp;sid=".$sid.$expand_str
 	);
 
-	$sub_tabs['add_template'] = array(
-		'title' => $lang->add_template,
-		'link' => "index.php?module=style-templates&amp;action=add_template{$expand_str}"
+	$sub_tabs['add_template_group'] = array(
+		'title' => $lang->add_template_group,
+		'link' => "index.php?module=style-templates&amp;action=add_template_group".$expand_str,
+		'description' => $lang->add_template_group_desc
 	);
-	
+
 	$sub_tabs['search_replace'] = array(
 		'title' => $lang->search_replace,
 		'link' => "index.php?module=style-templates&amp;action=search_replace",
@@ -60,7 +61,7 @@ if($mybb->input['action'] == "add_set" || $mybb->input['action'] == "add_templat
 		'description' => $lang->find_updated_desc
 	);
 }
-else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set" || $mybb->input['action'] == "check_set" || $mybb->input['action'] == "edit_template")
+else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set" || $mybb->input['action'] == "check_set" || $mybb->input['action'] == "edit_template" || $mybb->input['action'] == "add_template_group")
 {
 	$sub_tabs['manage_templates'] = array(
 		'title' => $lang->manage_templates,
@@ -72,7 +73,7 @@ else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set
 	{
 		$sub_tabs['edit_set'] = array(
 			'title' => $lang->edit_set,
-			'link' => "index.php?module=style-templates&amp;action=edit_set&amp;sid=".$sid.$expand_str,
+			'link' => "index.php?module=style-templates&amp;action=edit_set".$expand_str,
 			'description' => $lang->edit_set_desc
 		);
 	}
@@ -81,6 +82,12 @@ else if(($sid && !$mybb->input['action']) || $mybb->input['action'] == "edit_set
 		'title' => $lang->add_template,
 		'link' => "index.php?module=style-templates&amp;action=add_template&amp;sid=".$sid.$expand_str,
 		'description' => $lang->add_template_desc
+	);
+
+	$sub_tabs['add_template_group'] = array(
+		'title' => $lang->add_template_group,
+		'link' => "index.php?module=style-templates&amp;action=add_template_group&amp;sid=".$sid.$expand_str,
+		'description' => $lang->add_template_group_desc
 	);
 }
 
@@ -288,6 +295,72 @@ if($mybb->input['action'] == "add_template")
 	});
 </script>";
 	}
+
+	$page->output_footer();
+}
+
+if($mybb->input['action'] == "add_template_group")
+{
+	$plugins->run_hooks("admin_style_templates_add_template");
+
+	$errors = array();
+	if($mybb->request_method == "post")
+	{
+		$prefix = trim($mybb->input['prefix']);
+		if(!$prefix)
+		{
+			$errors[] = $lang->error_missing_group_prefix;
+		}
+
+		$title = trim($mybb->input['title']);
+		if(!$title)
+		{
+			$errors[] = $lang->error_missing_group_title;
+		}
+
+		if(!$errors)
+		{
+			$query = $db->simple_select("templategroups", "COUNT(gid) AS gid", "prefix = '".$db->escape_string($mybb->input['prefix'])."'");
+
+			if($db->num_rows($query))
+			{
+				$errors[] = $lang->error_duplicate_group_prefix;
+			}
+			else
+			{
+				// Add template group
+			}
+		}
+	}
+
+	if($mybb->input['sid'])
+	{
+		$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
+	}
+
+	$page->add_breadcrumb_item($lang->add_template_group);
+	$page->output_header($lang->add_template_group);
+	$page->output_nav_tabs($sub_tabs, 'add_template_group');
+
+	if($errors)
+	{
+		$page->output_inline_error($errors);
+	}
+	
+	$form = new Form("index.php?module=style-templates&amp;action=add_template_group{$expand_str}", "post", "add_template_group");
+	echo $form->generate_hidden_field('sid', $sid);
+
+	$form_container = new FormContainer($lang->add_template_group);
+	$form_container->output_row($lang->template_group_prefix, $lang->template_group_prefix_desc, $form->generate_text_box('prefix', $template_group['prefix'], array('id' => 'prefix')), 'prefix');
+	$form_container->output_row($lang->template_group_title, $lang->template_group_title_desc, $form->generate_text_box('title', $template_group['title'], array('id' => 'title')), 'title');
+	$form_container->end();
+
+	$buttons = array(
+		$form->generate_submit_button($lang->add_template_group)
+	);
+
+	$form->output_submit_wrapper($buttons);
+	$form->end();
 
 	$page->output_footer();
 }

@@ -121,6 +121,11 @@ $l['template_name'] = "Template Name";
 $l['template_name_desc'] = "Name of the template. If you change this on the default template, it will save the template as a custom template under the new name.";
 $l['template_set_desc'] = "Which template set should this template be in?";
 
+$l['template_group_prefix'] = "Template Group Prefix";
+$l['template_group_prefix_desc'] = "The prefix name to group templates. This must not already exist. For example, to group templates <em>hello_world</em>, <em>hello_foobar</em> and <em>hello_foo</em>, enter <strong>hello</strong> here.";
+$l['template_group_title'] = "Template Group Title";
+$l['template_group_title_desc'] = "The title of the prefix group. This will be shown in the templates list. For example, for our <em>hello</em> templates, enter <strong>Hello</strong> here.";
+
 $l['templates_the_same'] = "The two templates you've selected are both the same and cannot be compared.";
 $l['master_updated_ins'] = "Changes that have been made between your previous version and this one are highlighted like this.";
 $l['master_updated_del'] = "Any customizations you've made to your templates (the old ones) are highlighted like this.";
@@ -147,6 +152,9 @@ $l['error_invalid_input'] = "Please make sure you have the correct template set 
 $l['error_invalid_set'] = "Please select a valid template set.";
 $l['error_invalid_template_set'] = "Invalid template set selected.";
 $l['error_themes_attached_template_set'] = "This template set cannot be deleted as there are themes attached to this template set.";
+$l['error_missing_group_prefix'] = "Please enter a prefix for the template group.";
+$l['error_missing_group_title'] = "Please enter a title for the template group.";
+$l['error_duplicate_group_prefix'] = "A template group already exists with this prefix. Please enter another prefix.";
 
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_template_deleted'] = "The selected template has successfully been deleted.";
