@@ -117,6 +117,8 @@ $plugins->run_hooks("xmlhttp");
 // Fetch a list of usernames beginning with a certain string (used for auto completion)
 if($mybb->input['action'] == "get_users")
 {
+	$mybb->input['query'] = ltrim($mybb->input['query']);
+
 	// If the string is less than 3 characters, quit.
 	if(my_strlen($mybb->input['query']) < 3)
 	{
