@@ -2401,7 +2401,7 @@ fieldset,
 				<td class="tcat" colspan="2"><strong>{$weekday_month} {$weekday_year}</strong></td>
 			</tr>
 			{$days}]]></template>
-		<template name="editpost" version="1600"><![CDATA[<html>
+		<template name="editpost" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_post}</title>
 {$headerinclude}
@@ -2412,22 +2412,7 @@ fieldset,
 {$preview}
 {$post_errors}
 {$attacherror}
-<form action="editpost.php" method="post" name="editpost">
-<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" colspan="3"><strong>{$lang->delete_post}</strong></td>
-</tr>
-<tr>
-<td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="1" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
-<td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
-<td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
-</tr>
-</table>
-<input type="hidden" name="action" value="deletepost" />
-<input type="hidden" name="pid" value="{$pid}" />
-</form>
-<br />
+{$deletebox}
 <form action="editpost.php?pid={$pid}&amp;processed=1" method="post" enctype="multipart/form-data" name="input">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
@@ -2468,6 +2453,22 @@ fieldset,
 {$footer}
 </body>
 </html>]]></template>
+		<template name="editpost_delete" version="1800"><![CDATA[<form action="editpost.php" method="post" name="editpost">
+<input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<tr>
+<td class="thead" colspan="3"><strong>{$lang->delete_post}</strong></td>
+</tr>
+<tr>
+<td class="trow1" style="white-space: nowrap"><input type="checkbox" class="checkbox" name="delete" value="1" tabindex="9" /> <strong>{$lang->delete_q}</strong></td>
+<td class="trow1" width="100%">{$lang->delete_1}<br /><span class="smalltext">{$lang->delete_2}</span></td>
+<td class="trow1"><input type="submit" class="button" name="submit" value="{$lang->delete_now}" tabindex="10" /></td>
+</tr>
+</table>
+<input type="hidden" name="action" value="deletepost" />
+<input type="hidden" name="pid" value="{$pid}" />
+</form>
+<br />]]></template>
 		<template name="editpost_disablesmilies" version="120"><![CDATA[<br />
 <label><input type="checkbox" class="checkbox" name="postoptions[disablesmilies]" value="1" tabindex="8"{$postoptionschecked['disablesmilies']} /> {$lang->options_disablesmilies}</label>]]></template>
 		<template name="error" version="120"><![CDATA[<html>

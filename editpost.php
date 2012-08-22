@@ -389,6 +389,12 @@ if(!$mybb->input['action'] || $mybb->input['action'] == "editpost")
 	// Setup a unique posthash for attachment management
 	$posthash = htmlspecialchars_uni($post['posthash']);
 
+	// Can we delete posts?
+	if(is_moderator($fid, "candeleteposts") || $forumpermissions['candeleteposts'] == 1 && $mybb->user['uid'] == $post['uid'])
+	{
+		eval("\$deletebox = \"".$templates->get("editpost_delete")."\";");
+	}
+
 	$bgcolor = "trow1";
 	if($forumpermissions['canpostattachments'] != 0)
 	{ // Get a listing of the current attachments, if there are any
