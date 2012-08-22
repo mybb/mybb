@@ -39,6 +39,31 @@ function upgrade26_dbchanges()
 		$db->write_query("ALTER TABLE ".TABLE_PREFIX."posts ADD INDEX (`tid`, `dateline`)");
 	}
 
+	if($db->field_exists('isdefault', 'templategroups'))
+	{
+		$db->drop_column("templategroups", "isdefault");
+	}
+
+	switch($db->type)
+	{
+		case "pgsql":
+		case "sqlite":
+			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
+			break;
+		default:
+			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
+			break;
+	}
+
+	$groups = array();
+	for($i = 1; $i <= 39; $i++)
+	{
+		$groups[] = $i;
+	}
+
+	$sql = implode(',', $groups);
+	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
+
 	sync_tasks(0);
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");

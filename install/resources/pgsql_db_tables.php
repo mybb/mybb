@@ -694,6 +694,7 @@ $tables[] = "CREATE TABLE mybb_templategroups (
   gid serial,
   prefix varchar(50) NOT NULL default '',
   title varchar(100) NOT NULL default '',
+  isdefault int NOT NULL default '0',
   PRIMARY KEY (gid)
 );";
 

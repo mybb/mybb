@@ -739,7 +739,7 @@ if($mybb->input['action'] == "edit_template_group")
 					'isdefault' => 0
 				);
 
-				$gid = $db->insert_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
+				$gid = $db->update_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
 
 				$plugins->run_hooks('admin_style_templates_edit_template_group_commit');
 

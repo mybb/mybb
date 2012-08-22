@@ -638,7 +638,8 @@ $tables[] = "CREATE TABLE mybb_tasklog (
 $tables[] = "CREATE TABLE mybb_templategroups (
   gid INTEGER PRIMARY KEY,
   prefix varchar(50) NOT NULL default '',
-  title varchar(100) NOT NULL default ''
+  title varchar(100) NOT NULL default '',
+  isdefault int(1) NOT NULL default '0',
 );";
 
 $tables[] = "CREATE TABLE mybb_templates (

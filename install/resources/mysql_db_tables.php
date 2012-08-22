@@ -724,6 +724,7 @@ $tables[] = "CREATE TABLE mybb_templategroups (
   gid int unsigned NOT NULL auto_increment,
   prefix varchar(50) NOT NULL default '',
   title varchar(100) NOT NULL default '',
+  isdefault int(1) NOT NULL default '0',
   PRIMARY KEY (gid)
 ) ENGINE=MyISAM;";
 
