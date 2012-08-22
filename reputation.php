@@ -710,15 +710,46 @@ if(!$mybb->input['action'])
 
 	// Fetch the reputations which will be displayed on this page
 	$query = $db->query("
-		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup, p.pid AS post_link
+		SELECT r.*, r.uid AS rated_uid, u.uid, u.username, u.reputation AS user_reputation, u.usergroup AS user_usergroup, u.displaygroup AS user_displaygroup
 		FROM ".TABLE_PREFIX."reputation r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=r.adduid)
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (p.pid=r.pid)
 		WHERE r.uid='{$user['uid']}' $conditions
 		ORDER BY $order
 		LIMIT $start, {$mybb->settings['repsperpage']}
 	");
+
+	// Gather a list of items that have post reputation
+	$reputation_cache = $post_cache = $post_reputation = array();
+
 	while($reputation_vote = $db->fetch_array($query))
+	{
+		$reputation_cache[] = $reputation_vote;
+
+		// If this is a post, hold it and gather some information about it
+		if($reputation_vote['pid'] && !isset($post_cache[$reputation_vote['pid']]))
+		{
+			$post_cache[$reputation_vote['pid']] = $reputation_vote['pid'];
+		}
+	}
+
+	if(!empty($post_cache))
+	{
+		$sql = implode(',', $post_cache);
+
+		$query = $db->query("
+			SELECT p.pid, p.uid, p.message, t.tid, t.subject
+			FROM ".TABLE_PREFIX."posts p
+			LEFT JOIN ".TABLE_PREFIX."threads t ON (t.tid=p.tid)
+			WHERE p.pid IN ({$sql})
+		");
+
+		while($post = $db->fetch_array($query))
+		{
+			$post_reputation[$post['pid']] = $post;
+		}
+	}
+
+	foreach($reputation_cache as $reputation_vote)
 	{
 		// Get the reputation for the user who posted this comment
 		if($reputation_vote['adduid'] == 0)
@@ -774,10 +805,22 @@ if(!$mybb->input['action'])
 		$last_updated = $lang->sprintf($lang->last_updated, $last_updated_date, $last_updated_time);
 		
 		// Is this rating specific to a post?
-		if($reputation_vote['pid'] && $reputation_vote['post_link'])
+		if($reputation_vote['pid'])
 		{
-			$link = "<a href=\"".get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}\">{$lang->postrep_post}".$reputation_vote['pid']."</a>";
-			$postrep_given = $lang->sprintf($lang->postrep_given, $link);
+			$link = get_post_link($reputation_vote['pid'])."#pid{$reputation_vote['pid']}";
+
+			$thread_link = '';
+			if(isset($post_reputation[$reputation_vote['pid']]))
+			{
+				$post = $post_reputation[$reputation_vote['pid']];
+
+				$thread_link = get_thread_link($post['tid']);
+				$subject = htmlspecialchars_uni($post['subject']);
+
+				$thread_link = $lang->sprintf($lang->postrep_given_thread, "<a href=\"{$thread_link}\">{$subject}</a>");
+			}
+
+			$postrep_given = $lang->sprintf($lang->postrep_given, $link, $user['username'], $thread_link);
 		}
 		else
 		{
