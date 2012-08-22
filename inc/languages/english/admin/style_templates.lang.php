@@ -16,6 +16,8 @@ $l['add_set'] = "Add Set";
 $l['add_set_desc'] = "Here you can create a new template set. A new template set creates a copy of the master MyBB templates and allows you to edit them without interfering with changes in any other template sets you may already have";
 $l['add_template'] = "Add Template";
 $l['add_template_desc'] = "Here you can create a new template.";
+$l['add_template_group'] = "Add Template Group";
+$l['add_template_group_desc'] = "Add a template group to collate templates together.";
 $l['search_replace'] = "Search/Replace";
 $l['search_replace_desc'] = "This tool will allow you to search for template titles or templates that contain certain text, and optionally replace it with another text automatically.";
 $l['find_updated'] = "Find Updated Templates";
@@ -64,6 +66,7 @@ $l['used_by_all_themes'] = "Used by all themes";
 $l['expand_templates'] = "Expand Templates";
 $l['edit_template_set'] = "Edit Template Set";
 $l['delete_template_set'] = "Delete Template Set";
+$l['empty_template_set'] = "<em>There are no templates in this set.</em>";
 
 $l['inline_edit'] = "Inline Edit";
 $l['full_edit'] = "Full Edit";
@@ -126,6 +129,11 @@ $l['template_group_prefix_desc'] = "The prefix name to group templates. This mus
 $l['template_group_title'] = "Template Group Title";
 $l['template_group_title_desc'] = "The title of the prefix group. This will be shown in the templates list. For example, for our <em>hello</em> templates, enter <strong>Hello</strong> here.";
 
+$l['edit_template_group'] = "Edit Template Group";
+$l['editing_template_group'] = "Editing Template Group {1}";
+$l['delete_template_group'] = "Delete Template Group";
+$l['save_template_group'] = "Save Template Group";
+
 $l['templates_the_same'] = "The two templates you've selected are both the same and cannot be compared.";
 $l['master_updated_ins'] = "Changes that have been made between your previous version and this one are highlighted like this.";
 $l['master_updated_del'] = "Any customizations you've made to your templates (the old ones) are highlighted like this.";
@@ -140,6 +148,7 @@ $l['no_global_templates'] = "There are currently no global templates.";
 $l['no_updated_templates'] = "There are currently no templates which have been updated since you last upgraded.";
 
 $l['confirm_template_set_deletion'] = "Are you sure you want to delete this template set?";
+$l['confirm_template_group_delete'] = "Are you sure you want to delete this template group? This action does not remove the templates in the group.";
 $l['confirm_template_deletion'] = "Are you sure you want to delete this template?"; 
 $l['confirm_template_revertion'] = "Are you sure you want to revert this template?"; 
 
@@ -155,10 +164,14 @@ $l['error_themes_attached_template_set'] = "This template set cannot be deleted 
 $l['error_missing_group_prefix'] = "Please enter a prefix for the template group.";
 $l['error_missing_group_title'] = "Please enter a title for the template group.";
 $l['error_duplicate_group_prefix'] = "A template group already exists with this prefix. Please enter another prefix.";
+$l['error_missing_template_group'] = "The template group could not be found.";
+$l['error_default_template_group'] = "You cannot edit or remove a default template group.";
 
 $l['success_template_saved'] = "The selected template has successfully been saved.";
 $l['success_template_deleted'] = "The selected template has successfully been deleted.";
 $l['success_template_reverted'] = "The selected template has successfully been reverted.";
 $l['success_template_set_saved'] = "The selected template set has successfully been saved.";
 $l['success_template_set_deleted'] = "The selected template set has successfully been deleted.";
+$l['success_template_group_saved'] = "The selected template group has successfully been saved.";
+$l['success_template_group_deleted'] = "The selected template group has successfully been deleted.";
 ?>

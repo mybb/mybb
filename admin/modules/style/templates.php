@@ -301,7 +301,7 @@ if($mybb->input['action'] == "add_template")
 
 if($mybb->input['action'] == "add_template_group")
 {
-	$plugins->run_hooks("admin_style_templates_add_template");
+	$plugins->run_hooks("admin_style_templates_add_template_group");
 
 	$errors = array();
 	if($mybb->request_method == "post")
@@ -321,14 +321,34 @@ if($mybb->input['action'] == "add_template_group")
 		if(!$errors)
 		{
 			$query = $db->simple_select("templategroups", "COUNT(gid) AS gid", "prefix = '".$db->escape_string($mybb->input['prefix'])."'");
+			$prefix_count = $db->fetch_field($query, 'gid');
 
-			if($db->num_rows($query))
+			if($prefix_count >= 1)
 			{
 				$errors[] = $lang->error_duplicate_group_prefix;
 			}
 			else
 			{
 				// Add template group
+				$insert_array = array(
+					'prefix' => $db->escape_string($prefix),
+					'title' => $db->escape_string($title),
+					'isdefault' => 0
+				);
+
+				$gid = $db->insert_query('templategroups', $insert_array);
+
+				$plugins->run_hooks('admin_style_templates_add_template_group_commit');
+
+				log_admin_action($gid, $title);
+				flash_message($lang->success_template_group_saved, 'success');
+
+				if($sid)
+				{
+					admin_redirect("index.php?module=style-templates&amp;sid={$sid}".$expand_str2);
+				}
+
+				admin_redirect('index.php?module=style-templates');
 			}
 		}
 	}
@@ -344,9 +364,14 @@ if($mybb->input['action'] == "add_template_group")
 
 	if($errors)
 	{
+		$template_group = array(
+			'prefix' => $prefix,
+			'title' => $title
+		);
+
 		$page->output_inline_error($errors);
 	}
-	
+
 	$form = new Form("index.php?module=style-templates&amp;action=add_template_group{$expand_str}", "post", "add_template_group");
 	echo $form->generate_hidden_field('sid', $sid);
 
@@ -654,6 +679,107 @@ if($mybb->input['action'] == "edit_template")
 	});
 </script>";
 	}
+
+	$page->output_footer();
+}
+
+if($mybb->input['action'] == "edit_template_group")
+{
+	$query = $db->simple_select("templategroups", "*", "gid = '".intval($mybb->input['gid'])."'");
+
+	if(!$db->num_rows($query))
+	{
+		flash_message($lang->error_missing_template_group, 'error');
+		admin_redirect("index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
+	}
+
+	$template_group = $db->fetch_array($query);
+	if(isset($template_group['isdefault']) && $template_group['isdefault'] == 1)
+	{
+		flash_message($lang->error_default_template_group, 'error');
+		admin_redirect("index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
+	}
+
+	$plugins->run_hooks("admin_style_templates_edit_template_group");
+
+	$errors = array();
+	if($mybb->request_method == "post")
+	{
+		$prefix = trim($mybb->input['prefix']);
+		if(!$prefix)
+		{
+			$errors[] = $lang->error_missing_group_prefix;
+		}
+
+		$title = trim($mybb->input['title']);
+		if(!$title)
+		{
+			$errors[] = $lang->error_missing_group_title;
+		}
+
+		if(!$errors)
+		{
+			if($prefix != $template_group['prefix'])
+			{
+				$query = $db->simple_select("templategroups", "COUNT(gid) AS gid", "prefix = '".$db->escape_string($mybb->input['prefix'])."'");
+				$prefix_count = $db->fetch_field($query, 'gid');
+
+				if($prefix_count >= 1)
+				{
+					$errors[] = $lang->error_duplicate_group_prefix;
+				}
+			}
+
+			if(!$errors)
+			{
+				// Add template group
+				$update_array = array(
+					'prefix' => $db->escape_string($prefix),
+					'title' => $db->escape_string($title),
+					'isdefault' => 0
+				);
+
+				$gid = $db->insert_query('templategroups', $update_array, "gid = '{$template_group['gid']}'");
+
+				$plugins->run_hooks('admin_style_templates_edit_template_group_commit');
+
+				log_admin_action($gid, $title);
+				flash_message($lang->success_template_group_saved, 'success');
+				admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
+			}
+		}
+	}
+
+	$lang->editing_template_group = $lang->sprintf($lang->editing_template_group, $template_group['title']);
+
+	$page->add_breadcrumb_item($template_sets[$sid], "index.php?module=style-templates&amp;sid={$sid}{$expand_str}");
+	$page->add_breadcrumb_item($lang->editing_template_group, "index.php?module=style-templates&amp;sid={$sid}");
+
+	$page->output_header($lang->editing_template_group);
+
+	if($errors)
+	{
+		$template_group['prefix'] = $prefix;
+		$template_group['title'] = $title;
+
+		$page->output_inline_error($errors);
+	}
+
+	$form = new Form("index.php?module=style-templates&amp;action=edit_template_group", "post");
+	echo $form->generate_hidden_field('sid', $sid);
+	echo $form->generate_hidden_field('gid', $template_group['gid']);
+
+	$form_container = new FormContainer($lang->edit_template_group);
+	$form_container->output_row($lang->template_group_prefix, $lang->template_group_prefix_desc, $form->generate_text_box('prefix', $template_group['prefix'], array('id' => 'prefix')), 'prefix');
+	$form_container->output_row($lang->template_group_title, $lang->template_group_title_desc, $form->generate_text_box('title', $template_group['title'], array('id' => 'title')), 'title');
+	$form_container->end();
+
+	$buttons = array(
+		$form->generate_submit_button($lang->save_template_group)
+	);
+
+	$form->output_submit_wrapper($buttons);
+	$form->end();
 
 	$page->output_footer();
 }
@@ -1155,6 +1281,46 @@ LEGEND;
 	$page->output_footer();
 }
 
+if($mybb->input['action'] == "delete_template_group")
+{
+	$plugins->run_hooks("admin_style_template_group_delete");
+
+	$gid = intval($mybb->input['gid']);
+	$query = $db->simple_select("templategroups", "*", "gid='{$gid}'");
+
+	if(!$db->num_rows($query))
+	{
+		flash_message($lang->error_missing_template_group, 'error');
+		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
+	}
+
+	// User clicked no
+	if($mybb->input['no'])
+	{
+		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
+	}
+
+	$template_group = $db->fetch_array($query);
+
+	if($mybb->request_method == "post")
+	{
+		// Delete the group
+		$db->delete_query("templategroups", "gid = '{$template_group['gid']}'");
+
+		$plugins->run_hooks("admin_style_template_group_delete_commit");
+
+		// Log admin action
+		log_admin_action($template_group['gid'], $template_group['title']);
+
+		flash_message($lang->success_template_group_deleted, 'success');
+		admin_redirect("index.php?module=style-templates&amp;sid={$sid}");
+	}
+	else
+	{		
+		$page->output_confirm_action("index.php?module=style-templates&amp;action=delete_template_group&amp;gid={$group['gid']}&amp;sid={$sid}", $lang->confirm_template_group_delete);
+	}
+}
+
 if($mybb->input['action'] == "delete_set")
 {
 	$plugins->run_hooks("admin_style_templates_delete_set");
@@ -1533,9 +1699,9 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 			unset($template_groups[$group]['templates'][$template['title']]['template']);
 		}
 	}
-	
+
 	foreach($template_groups as $prefix => $group)
-	{	
+	{
 		$tmp_expand = "";
 		if(in_array($group['gid'], $expand_array))
 		{
@@ -1564,51 +1730,72 @@ if($mybb->input['sid'] && !$mybb->input['action'])
 		{
 			$group['expand_str'] = "&amp;expand={$group['expand_str']}";
 		}
-		
-		if($expanded == true && isset($group['templates']) && count($group['templates']) > 0)
+
+		$set_popup = '';
+		if(isset($group['isdefault']) && !$group['isdefault'])
 		{
-			$table->construct_cell("<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
+			$popup = new PopupMenu("template_set_{$group['gid']}", $lang->options);
+			$popup->add_item($lang->edit_template_group, "index.php?module=style-templates&amp;sid={$sid}&amp;action=edit_template_group&amp;gid={$group['gid']}{$group['expand_str']}");
+			$popup->add_item($lang->delete_template_group, "index.php?module=style-templates&amp;sid={$sid}&amp;action=delete_template_group&amp;gid={$group['gid']}&amp;my_post_key={$mybb->post_code}{$group['expand_str']}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_group_delete}')");
+
+			$set_popup = "<div class=\"float_right\">{$popup->fetch()}</div>";
+		}
+
+		if($expanded == true)
+		{
+			// Show templates in this group
+			$table->construct_cell("{$set_popup}<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
 			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
 			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
-		
-			$templates = $group['templates'];
-			ksort($templates);
-			
-			foreach($templates as $template)
+
+			if(isset($group['templates']) && count($group['templates']) > 0)
 			{
-				$template['pretty_title'] = $template['title'];
-				
-				$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
-				$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}");
-				
-				if(isset($template['modified']) && $template['modified'] == true)
-				{					
-					if($sid > 0)
-					{
-						$popup->add_item($lang->diff_report, "index.php?module=style-templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid2={$sid}");
-					
-						$popup->add_item($lang->revert_to_orig, "index.php?module=style-templates&amp;action=revert&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
-					}
-					
-					$template['pretty_title'] = "<span style=\"color: green;\">{$template['title']}</span>";
-				}				
-				// This template does not exist in the master list
-				else if(isset($template['original']) && $template['original'] == false)
+				$templates = $group['templates'];
+				ksort($templates);
+			
+				foreach($templates as $template)
 				{
-					$popup->add_item($lang->delete_template, "index.php?module=style-templates&amp;action=delete_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
+					$template['pretty_title'] = $template['title'];
+				
+					$popup = new PopupMenu("template_{$template['tid']}", $lang->options);
+					$popup->add_item($lang->full_edit, "index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}");
+				
+					if(isset($template['modified']) && $template['modified'] == true)
+					{					
+						if($sid > 0)
+						{
+							$popup->add_item($lang->diff_report, "index.php?module=style-templates&amp;action=diff_report&amp;title=".urlencode($template['title'])."&amp;sid2={$sid}");
 					
-					$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
+							$popup->add_item($lang->revert_to_orig, "index.php?module=style-templates&amp;action=revert&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_revertion}')");
+						}
+					
+						$template['pretty_title'] = "<span style=\"color: green;\">{$template['title']}</span>";
+					}				
+					// This template does not exist in the master list
+					else if(isset($template['original']) && $template['original'] == false)
+					{
+						$popup->add_item($lang->delete_template, "index.php?module=style-templates&amp;action=delete_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}&amp;my_post_key={$mybb->post_code}{$expand_str}", "return AdminCP.deleteConfirmation(this, '{$lang->confirm_template_deletion}')");
+					
+						$template['pretty_title'] = "<span style=\"color: blue;\">{$template['title']}</span>";
+					}
+				
+					$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
+					$table->construct_cell($popup->fetch(), array("class" => "align_center"));
+				
+					$table->construct_row();
 				}
-				
-				$table->construct_cell("<span style=\"padding: 20px;\"><a href=\"index.php?module=style-templates&amp;action=edit_template&amp;title=".urlencode($template['title'])."&amp;sid={$sid}{$expand_str}\" >{$template['pretty_title']}</a></span>");
-				$table->construct_cell($popup->fetch(), array("class" => "align_center"));
-				
+			}
+			else
+			{
+				// No templates in this group
+				$table->construct_cell($lang->empty_template_set, array('colspan' => 2));
 				$table->construct_row();
 			}
 		}
-		else if(isset($group['templates']) && count($group['templates']) > 0)
-		{			
-			$table->construct_cell("<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
+		else
+		{
+			// Collapse template set
+			$table->construct_cell("{$set_popup}<strong><a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$group['title']}</a></strong>");
  			$table->construct_cell("<a href=\"index.php?module=style-templates&amp;sid={$sid}{$group['expand_str']}#group_{$group['gid']}\">{$expand}</a>", array("class" => "align_center"));
  			$table->construct_row(array("class" => "alt_row", "id" => "group_".$group['gid'], "name" => "group_".$group['gid']));
 		}
