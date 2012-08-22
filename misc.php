@@ -166,17 +166,19 @@ elseif($mybb->input['action'] == "help")
 	$lang->load("customhelpdocs");
 	$lang->load("customhelpsections");
 
+	$hid = intval($mybb->input['hid']);
 	add_breadcrumb($lang->nav_helpdocs, "misc.php?action=help");
 
-	$query = $db->query("
-		SELECT h.*, s.enabled AS section
-		FROM ".TABLE_PREFIX."helpdocs h
-		LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
-		WHERE h.hid='".intval($mybb->input['hid'])."'
-	");
-	$helpdoc = $db->fetch_array($query);
-	if($helpdoc['hid'])
+	if($hid)
 	{
+		$query = $db->query("
+			SELECT h.*, s.enabled AS section
+			FROM ".TABLE_PREFIX."helpdocs h
+			LEFT JOIN ".TABLE_PREFIX."helpsections s ON (s.sid=h.sid)
+			WHERE h.hid='{$hid}'
+		");
+
+		$helpdoc = $db->fetch_array($query);
 		if($helpdoc['section'] != 0 && $helpdoc['enabled'] != 0)
 		{
 			$plugins->run_hooks("misc_help_helpdoc_start");

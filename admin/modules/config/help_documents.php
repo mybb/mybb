@@ -495,28 +495,21 @@ if($mybb->input['action'] == "delete")
 		if(isset($mybb->input['sid']))
 		{
 			$sid = intval($mybb->input['sid']);
-			
+
 			$query = $db->simple_select("helpsections", "*", "sid='{$sid}'");
 			$section = $db->fetch_array($query);
-			
+
 			// Invalid section?
 			if(!$section['sid'])
 			{
 				flash_message($lang->error_missing_section_id, 'error');
 				admin_redirect("index.php?module=config-help_documents");
 			}
-			
-			// Default section?
-			if($sid <= 2)
-			{
-				flash_message($lang->error_cannot_delete_section, 'error');
-				admin_redirect("index.php?module=config-help_documents");
-			}
-			
+
 			// Delete section and its documents
 			$db->delete_query("helpsections", "sid = '{$sid}'", 1);
 			$db->delete_query("helpdocs", "sid = '{$sid}'");
-			
+
 			$plugins->run_hooks("admin_config_help_documents_delete_section_commit");
 
 			// Log admin action
@@ -530,31 +523,24 @@ if($mybb->input['action'] == "delete")
 		else
 		{
 			$hid = intval($mybb->input['hid']);
-			
+
 			$query = $db->simple_select("helpdocs", "*", "hid='{$hid}'");
 			$doc = $db->fetch_array($query);
-			
+
 			// Invalid document?
 			if(!$doc['hid'])
 			{
 				flash_message($lang->error_missing_hid, 'error');
 				admin_redirect("index.php?module=config-help_documents");
-			}			
-			
-			// Default document?
-			if($hid <= 7)
-			{
-				flash_message($lang->error_cannot_delete_document, 'error');
-				admin_redirect("index.php?module=config-help_documents");
 			}
 			
 			$db->delete_query("helpdocs", "hid = '{$hid}'", 1);
-			
+
 			$plugins->run_hooks("admin_config_help_documents_delete_page_commit");
 
 			// Log admin action
 			log_admin_action($doc['hid'], $doc['name'], 'document');
-			
+
 			flash_message($lang->success_document_deleted, 'success');
 			admin_redirect("index.php?module=config-help_documents");
 		}
@@ -609,59 +595,21 @@ if(!$mybb->input['action'])
 	$query = $db->simple_select("helpsections", "*", "", array('order_by' => "disporder"));
 	while($section = $db->fetch_array($query))
 	{
-		// Icon to differentiate section type
-		if($section['sid'] > 2)
-		{
-			$icon = "<img src=\"styles/default/images/icons/custom.gif\" title=\"{$lang->custom_doc_sec}\" alt=\"{$lang->custom_doc_sec}\" style=\"vertical-align: middle;\" />";
-		}
-		else
-		{
-			$icon = "<img src=\"styles/default/images/icons/default.gif\" title=\"{$lang->default_doc_sec}\" alt=\"{$lang->default_doc_sec}\" style=\"vertical-align: middle;\" />";
-		}
-		$table->construct_cell("<div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=config-help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$section['name']}</a></strong><br /><small>{$section['description']}</small></div>");
- 
+		$table->construct_cell("<div><strong><a href=\"index.php?module=config-help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$section['name']}</a></strong><br /><small>{$section['description']}</small></div>");
 		$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=edit&amp;sid={$section['sid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
-		
-		// Show delete only if not a default section
-		if($section['sid'] > 2)
-		{
-			$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=delete&amp;sid={$section['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
-		}
-		else
-		{
-			$table->construct_cell("&nbsp;", array("width" => '90'));
-		}
+		$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=delete&amp;sid={$section['sid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_section_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
 		$table->construct_row();
-			
+
 		$query2 = $db->simple_select("helpdocs", "*", "sid='{$section['sid']}'", array('order_by' => "disporder"));
 		while($doc = $db->fetch_array($query2))
 		{
-			// Icon to differentiate document type
-			if($doc['hid'] > 7)
-			{
-				$icon = "<img src=\"styles/default/images/icons/custom.gif\" title=\"{$lang->custom_doc_sec}\" alt=\"{$lang->custom_doc_sec}\" style=\"vertical-align: middle;\" />";
-			}
-			else
-			{
-				$icon = "<img src=\"styles/default/images/icons/default.gif\" title=\"{$lang->default_doc_sec}\" alt=\"{$lang->default_doc_sec}\" style=\"vertical-align: middle;\" />";
-			}
-			$table->construct_cell("<div style=\"padding-left: 40px;\"><div class=\"float_right\">{$icon}</div><div><strong><a href=\"index.php?module=config-help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$doc['name']}</a></strong><br /><small>{$doc['description']}</small></div></div>");
-
+			$table->construct_cell("<div style=\"padding-left: 40px;\"><div><strong><a href=\"index.php?module=config-help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$doc['name']}</a></strong><br /><small>{$doc['description']}</small></div></div>");
 			$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=edit&amp;hid={$doc['hid']}\">{$lang->edit}</a>", array("class" => "align_center", "width" => '60'));
-			
-			// Only show delete if not a default document
-			if($doc['hid'] > 7)
-			{
-				$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=delete&amp;hid={$doc['hid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
-			}
-			else
-			{
-				$table->construct_cell("&nbsp;", array("width" => '90'));
-			}
+			$table->construct_cell("<a href=\"index.php?module=config-help_documents&amp;action=delete&amp;hid={$doc['hid']}&amp;my_post_key={$mybb->post_code}\" onclick=\"return AdminCP.deleteConfirmation(this, '{$lang->confirm_document_deletion}')\">{$lang->delete}</a>", array("class" => "align_center", "width" => '90'));
 			$table->construct_row();
 		}
 	}
-	
+
 	// No documents message
 	if($table->num_rows()  == 0)
 	{
@@ -670,16 +618,6 @@ if(!$mybb->input['action'])
 	}
 
 	$table->output($lang->help_documents);
-	
-	echo <<<LEGEND
-	<fieldset>
-<legend>{$lang->legend}</legend>
-<img src="styles/default/images/icons/custom.gif" alt="{$lang->custom_doc_sec}" style="vertical-align: middle;" /> {$lang->custom_doc_sec}<br />
-<img src="styles/default/images/icons/default.gif" alt="{$lang->default_doc_sec}" style="vertical-align: middle;" /> {$lang->default_doc_sec}
-</fieldset>
-LEGEND;
-
 	$page->output_footer();
 }
-
 ?>
