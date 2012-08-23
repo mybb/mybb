@@ -244,10 +244,27 @@ class PostDataHandler extends DataHandler
 		}
 
 		// And if we've got a minimum message length do we meet that requirement too?
-		else if(my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
+		else
 		{
-			$this->set_error("message_too_short", array($mybb->settings['minmessagelength']));
-			return false;
+			if(!$mybb->settings['mycodemessagelength'])
+			{
+				// Check to see of the text is full of MyCode
+				require_once MYBB_ROOT."inc/class_parser.php";
+				$parser = new postParser;
+
+				$message = $parser->text_parse_message($post['message']);
+
+				if(my_strlen($message) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
+				{
+					$this->set_error("message_too_short", array($mybb->settings['minmessagelength']));
+					return false;
+				}
+			}
+			else if(my_strlen($post['message']) < $mybb->settings['minmessagelength'] && $mybb->settings['minmessagelength'] > 0 && !is_moderator($post['fid'], "", $post['uid']))
+			{
+				$this->set_error("message_too_short", array($mybb->settings['minmessagelength']));
+				return false;
+			}
 		}
 		return true;
 	}
