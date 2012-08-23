@@ -4923,11 +4923,9 @@ function get_calendar_week_link($calendar, $week)
  * Get the user data of a user id.
  *
  * @param int The user id of the user.
- * @param boolean Whether or not to recache the user.
- * @param array An array of fields to gather from the database
  * @return array The users data
  */
-function get_user($uid, $recache = false, $fields = array())
+function get_user($uid)
 {
 	global $mybb, $db;
 	static $user_cache;
@@ -4938,20 +4936,13 @@ function get_user($uid, $recache = false, $fields = array())
 	{
 		return $mybb->user;
 	}
-	elseif(isset($user_cache[$uid]) && !$recache)
+	elseif(isset($user_cache[$uid]))
 	{
 		return $user_cache[$uid];
 	}
 	else
 	{
-		$select = '*';
-		if(is_array($fields) && !empty($fields))
-		{
-			array_walk($fields, array('db', 'escape_string'));
-			$select = implode(', ', $fields);
-		}
-
-		$query = $db->simple_select("users", $select, "uid = '{$uid}'");
+		$query = $db->simple_select("users", "*", "uid = '{$uid}'");
 		$user_cache[$uid] = $db->fetch_array($query);
 
 		return $user_cache[$uid];
@@ -5003,13 +4994,14 @@ function get_forum($fid, $active_override=0)
  *
  * @param int The thread id of the thread.
  * @param boolean Whether or not to recache the thread.
- * @param array An array of fields to gather from the database
  * @return string The database row of the thread.
  */
-function get_thread($tid, $recache = false, $fields = array())
+function get_thread($tid, $recache = false)
 {
 	global $db;
 	static $thread_cache;
+
+	$tid = intval($tid);
 
 	if(isset($thread_cache[$tid]) && !$recache)
 	{
@@ -5017,16 +5009,7 @@ function get_thread($tid, $recache = false, $fields = array())
 	}
 	else
 	{
-		$select = '*';
-		$tid = intval($tid);
-
-		if(is_array($fields) && !empty($fields))
-		{
-			array_walk($fields, array('db', 'escape_string'));
-			$select = implode(', ', $fields);
-		}
-
-		$query = $db->simple_select("threads", $select, "tid = '{$tid}'");
+		$query = $db->simple_select("threads", "*", "tid = '{$tid}'");
 		$thread = $db->fetch_array($query);
 
 		if($thread)
@@ -5050,27 +5033,20 @@ function get_thread($tid, $recache = false, $fields = array())
  * @param array An array of fields to gather from the database
  * @return string The database row of the post.
  */
-function get_post($pid, $recache = false, $fields = array())
+function get_post($pid)
 {
 	global $db;
 	static $post_cache;
 
-	if(isset($post_cache[$pid]) && !$recache)
+	$pid = intval($pid);
+
+	if(isset($post_cache[$pid]))
 	{
 		return $post_cache[$pid];
 	}
 	else
 	{
-		$select = '*';
-		$pid = intval($pid);
-
-		if(is_array($fields) && !empty($fields))
-		{
-			array_walk($fields, array('db', 'escape_string'));
-			$select = implode(', ', $fields);
-		}
-
-		$query = $db->simple_select("posts", $select, "pid = '{$pid}'");
+		$query = $db->simple_select("posts", "*", "pid = '{$pid}'");
 		$post = $db->fetch_array($query);
 
 		if($post)
