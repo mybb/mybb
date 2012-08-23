@@ -1823,8 +1823,9 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 		if(filter_var($mybb->input['avatarurl'], FILTER_VALIDATE_EMAIL) !== false)
 		{
 			// Gravatar
+			// If user image does not exist, or is a higher rating, use the mystery man
 			$email = md5(strtolower(trim($mybb->input['avatarurl'])));
-			
+
 			$s = '';
 			if(!$mybb->settings['maxavatardims'])
 			{
@@ -1833,12 +1834,21 @@ if($mybb->input['action'] == "do_avatar" && $mybb->request_method == "post")
 
 			// Because Gravatars are square, hijack the width
 			list($maxwidth, $maxheight) = explode("x", my_strtolower($mybb->settings['maxavatardims']));
-
-			$s = "?s={$maxwidth}";
 			$maxheight = intval($maxwidth);
 
+			// Rating?
+			$types = array('g', 'pg', 'r', 'x');
+			$rating = $mybb->settings['useravatarrating'];
+
+			if(!in_array($rating, $types))
+			{
+				$rating = 'g';
+			}
+
+			$s = "?s={$maxheight}&r={$rating}&d=mm";
+
 			$updated_avatar = array(
-				"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}",
+				"avatar" => "http://www.gravatar.com/avatar/{$email}{$s}.jpg",
 				"avatardimensions" => "{$maxheight}|{$maxheight}",
 				"avatartype" => "gravatar"
 			);

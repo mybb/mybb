@@ -994,7 +994,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="sigmycode">
 			<title>Allow MyCode in Signatures</title>
 			<description><![CDATA[Do you want to allow MyCode to be used in users' signatures?]]></description>
-			<disporder>19</disporder>
+			<disporder>1</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1003,7 +1003,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="sigcountmycode">
 			<title>MyCode affects signature length</title>
 			<description><![CDATA[Do you want MyCode to be counted as part of the limit when users use MyCode in their signature?]]></description>
-			<disporder>25</disporder>
+			<disporder>2</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1012,7 +1012,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="sigsmilies">
 			<title>Allow Smilies in Signatures</title>
 			<description><![CDATA[Do you want to allow smilies to be used in users' signatures?]]></description>
-			<disporder>21</disporder>
+			<disporder>3</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1021,7 +1021,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="sightml">
 			<title>Allow HTML in Signatures</title>
 			<description><![CDATA[Do you want to allow HTML to be used in users' signatures?]]></description>
-			<disporder>22</disporder>
+			<disporder>4</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1030,7 +1030,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="sigimgcode">
 			<title>Allow [img] Code in Signatures</title>
 			<description><![CDATA[Do you want to allow [img] code to be used in users' signatures?]]></description>
-			<disporder>23</disporder>
+			<disporder>5</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1039,7 +1039,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="maxsigimages">
 			<title>Maximum Number of Images per Signature</title>
 			<description><![CDATA[Enter the maximum number of images (including smilies) a user can put in their signature. Set to 0 to disable images in signatures altogether.]]></description>
-			<disporder>20</disporder>
+			<disporder>6</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[2]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1048,7 +1048,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="siglength">
 			<title>Length limit in Signatures</title>
 			<description><![CDATA[The maximum number of characters a user can place in a signature.]]></description>
-			<disporder>24</disporder>
+			<disporder>7</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[255]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1057,7 +1057,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="useravatar">
 			<title>Default User Avatar</title>
 			<description><![CDATA[If the user does not set a custom avatar this image will be used instead.]]></description>
-			<disporder>26</disporder>
+			<disporder>8</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[images/default_avatar.gif]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1066,16 +1066,36 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="useravatardims">
 			<title>Default Avatar Dimensions</title>
 			<description><![CDATA[The dimensions of the default avatar; width by height (e.g. 40|40).]]></description>
-			<disporder>27</disporder>
+			<disporder>9</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[40|40]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
+		<setting name="useravatarrating">
+			<title>Gravatar Rating</title>
+			<description><![CDATA[Allows you to set the maximum rating for Gravatars if a user chooses to use one. If a user avatar is higher than this rating a default avatar will be used. The ratings are:
+
+<ul>
+<li><strong>G</strong>: suitable for display on all websites with any audience type</li>
+<li><strong>PG</strong>: may contain rude gestures, provocatively dressed individuals, the lesser swear words or mild violence</li>
+<li><strong>R</strong>: may contain such things as harsh profanity, intense violence, nudity or hard drug use</li>
+<li><strong>X</strong>: may contain hardcore sexual imagery or extremely disturbing violence</li>
+</ul>]]></description>
+			<disporder>10</disporder>
+			<optionscode><![CDATA[select
+g=G
+pg=PG
+r=R
+x=X]]></optionscode>
+			<settingvalue><![CDATA[g]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
 		<setting name="maxavatardims">
 			<title>Maximum Avatar Dimensions</title>
 			<description><![CDATA[The maximum dimensions that an avatar can be, in the format of width<b>x</b>height. If this is left blank then there will be no dimension restriction.]]></description>
-			<disporder>28</disporder>
+			<disporder>11</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[100x100]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1084,7 +1104,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avatarsize">
 			<title>Max Uploaded Avatar Size</title>
 			<description><![CDATA[Maximum file size (in kilobytes) of uploaded avatars.]]></description>
-			<disporder>29</disporder>
+			<disporder>12</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[10]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1093,7 +1113,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avatarresizing">
 			<title>Avatar Resizing Mode</title>
 			<description><![CDATA[If you wish to automatically resize all large avatars, provide users the option of resizing their avatar, or not resize avatars at all you can change this setting.]]></description>
-			<disporder>30</disporder>
+			<disporder>13</disporder>
 			<optionscode><![CDATA[select
 auto=Automatically resize large avatars
 user=Give users the choice of resizing large avatars
@@ -1105,7 +1125,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="avataruploadpath">
 			<title>Avatar Upload Path</title>
 			<description><![CDATA[This is the path where custom avatars will be uploaded to. This directory <b>must be chmod 777</b> (writable) for uploads to work.]]></description>
-			<disporder>31</disporder>
+			<disporder>14</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[./uploads/avatars]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1114,7 +1134,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="customtitlemaxlength">
 			<title>Custom User Title Maximum Length</title>
 			<description><![CDATA[Maximum length a user can enter for the custom user title.]]></description>
-			<disporder>8</disporder>
+			<disporder>15</disporder>
 			<optionscode><![CDATA[text]]></optionscode>
 			<settingvalue><![CDATA[40]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1123,7 +1143,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowaway">
 			<title>Allow Away Statuses?</title>
 			<description><![CDATA[Should users be allowed to set their status to 'Away' with a custom reason & return date?]]></description>
-			<disporder>34</disporder>
+			<disporder>16</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[1]]></settingvalue>
 			<isdefault>1</isdefault>
@@ -1132,7 +1152,7 @@ disabled=Disable this feature]]></optionscode>
 		<setting name="allowbuddyonly">
 			<title>Allow Buddy-Only Messaging?</title>
 			<description><![CDATA[Allow users to send private messages only to people on their buddy list?]]></description>
-			<disporder>35</disporder>
+			<disporder>17</disporder>
 			<optionscode><![CDATA[yesno]]></optionscode>
 			<settingvalue><![CDATA[0]]></settingvalue>
 			<isdefault>1</isdefault>
