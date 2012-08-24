@@ -568,7 +568,11 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   uid int NOT NULL default '0',
   reportstatus int NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
+  type varchar(50) NOT NULL default '',
+  reports int NOT NULL default '0',
   dateline bigint NOT NULL default '0',
+  lastreport bigint NOT NULL default '0',
+  lastreporter int NOT NULL default '0',
   PRIMARY KEY (rid)
 );";
 

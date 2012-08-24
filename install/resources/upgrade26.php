@@ -44,14 +44,42 @@ function upgrade26_dbchanges()
 		$db->drop_column("templategroups", "isdefault");
 	}
 
+	if($db->field_exists('type', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "type");
+	}
+
+	if($db->field_exists('reports', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "reports");
+	}
+
+	if($db->field_exists('lastreport', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "lastreport");
+	}
+
+	if($db->field_exists('lastreporter', 'reportedposts'))
+	{
+		$db->drop_column("reportedposts", "lastreporter");
+	}
+
 	switch($db->type)
 	{
 		case "pgsql":
 		case "sqlite":
 			$db->add_column("templategroups", "isdefault", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int NOT NULL default '0'");
+			$db->add_column("reportedposts", "lastreport", "bigint NOT NULL default '0'");
+			$db->add_column("reportedposts", "lastreporter", "int NOT NULL default '0'");
 			break;
 		default:
 			$db->add_column("templategroups", "isdefault", "int(1) NOT NULL default '0'");
+			$db->add_column("reportedposts", "type", "varchar(50) NOT NULL default ''");
+			$db->add_column("reportedposts", "reports", "int unsigned NOT NULL default '0'");
+			$db->add_column("reportedposts", "lastreport", "bigint(30) NOT NULL default '0'");
+			$db->add_column("reportedposts", "lastreporter", "int unsigned NOT NULL default '0'");
 			break;
 	}
 
@@ -63,6 +91,8 @@ function upgrade26_dbchanges()
 
 	$sql = implode(',', $groups);
 	$db->update_query("templategroups", array('isdefault' => 1), "gid IN ({$sql})");
+
+	$db->update_query("reportedposts", array("type" => "post"));
 
 	sync_tasks(0);
 

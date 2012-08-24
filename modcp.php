@@ -123,44 +123,19 @@ if($mybb->input['action'] == "reports")
 {
 	add_breadcrumb($lang->mcp_nav_reported_posts, "modcp.php?action=reports");
 
-	if(!$mybb->settings['threadsperpage'])
-	{
-		$mybb->settings['threadsperpage'] = 20;
-	}
-
-	// Figure out if we need to display multiple pages.
 	$perpage = $mybb->settings['threadsperpage'];
-	if($mybb->input['page'] != "last")
+	if(!$perpage)
 	{
-		$page = intval($mybb->input['page']);
+		$perpage = 20;
 	}
 
+	// Multipage
 	$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "reportstatus ='0'");
 	$report_count = $db->fetch_field($query, "count");
 
-	$mybb->input['rid'] = intval($mybb->input['rid']);
-
-	if($mybb->input['rid'])
-	{
-		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "rid <= '".$mybb->input['rid']."'");
-		$result = $db->fetch_field($query, "count");
-		if(($result % $perpage) == 0)
-		{
-			$page = $result / $perpage;
-		}
-		else
-		{
-			$page = intval($result / $perpage) + 1;
-		}
-	}
 	$postcount = intval($report_count);
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
-
-	if($mybb->input['page'] == "last")
-	{
-		$page = $pages;
-	}
 
 	if($page > $pages || $page <= 0)
 	{
@@ -176,51 +151,175 @@ if($mybb->input['action'] == "reports")
 		$start = 0;
 		$page = 1;
 	}
-	$upper = $start+$perpage;
 
-	$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
 	if($postcount > $perpage)
 	{
+		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
 		eval("\$reportspages = \"".$templates->get("modcp_reports_multipage")."\";");
 	}
-	
+
 	$plugins->run_hooks("modcp_reports_start");
 
+	// Reports
 	$reports = '';
 	$query = $db->query("
-		SELECT r.*, u.username, up.username AS postusername, up.uid AS postuid, t.subject AS threadsubject
+		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reportedposts r
-		LEFT JOIN ".TABLE_PREFIX."posts p ON (r.pid=p.pid)
-		LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid=t.tid)
-		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid=u.uid)
-		LEFT JOIN ".TABLE_PREFIX."users up ON (p.uid=up.uid)
-		WHERE r.reportstatus='0'
-		ORDER BY r.dateline DESC
+		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid = u.uid)
+		WHERE r.reportstatus = '0'
+		ORDER BY r.lastreport DESC
 		LIMIT {$start}, {$perpage}
 	");
 
 	if(!$db->num_rows($query))
 	{
+		// No unread reports
 		eval("\$reports = \"".$templates->get("modcp_reports_noreports")."\";");
 	}
 	else
 	{
+		$reportcache = $usercache = $postcache = array();
+
 		while($report = $db->fetch_array($query))
 		{
-			$trow = alt_trow();
-			if(is_moderator($report['fid']))
+			if($report['type'] == 'profile' || $report['type'] == 'reputation')
 			{
-				$trow = 'trow_shaded';
+				// Profile UID is in PID
+				if(!isset($usercache[$report['pid']]))
+				{
+					$usercache[$report['pid']] = $report['pid'];
+				}
+
+				// Reputation comment? The offender is the TID
+				if($report['type'] == 'reputation' && !isset($usercache[$report['tid']]))
+				{
+					$usercache[$report['tid']] = $report['tid'];
+				}
+			}
+			else if(!$report['type'] || $report['type'] == 'post')
+			{
+				// This (should) be a post
+				$postcache[$report['pid']] = $report['pid'];
 			}
 
-			$report['postlink'] = get_post_link($report['pid'], $report['tid']);
-			$report['threadlink'] = get_thread_link($report['tid']);
-			$report['posterlink'] = get_profile_link($report['postuid']);
-			$report['reporterlink'] = get_profile_link($report['uid']);
-			$reportdate = my_date($mybb->settings['dateformat'], $report['dateline']);
-			$reporttime = my_date($mybb->settings['timeformat'], $report['dateline']);
-			$report['threadsubject'] = htmlspecialchars_uni($parser->parse_badwords($report['threadsubject']));
+			// Lastpost info - is it missing (pre-1.8)?
+			if(!$report['lastreport'])
+			{
+				// Last reporter is our first reporter
+				$report['lastreport'] = $report['dateline'];
+				$report['lastreporter'] = $report['uid'];				
+			}
 
+			if(!isset($usercache[$report['lastreporter']]))
+			{
+				$usercache[$report['lastreporter']] = $report['lastreporter'];
+			}
+
+			$reportcache[] = $report;
+		}
+
+		// Report Center gets messy
+		// Find information about our users (because we don't log it when they file a report)
+		if(!empty($usercache))
+		{
+			$sql = implode(',', array_keys($usercache));
+			$query = $db->simple_select("users", "uid, username", "uid IN ({$sql})");
+
+			while($user = $db->fetch_array($query))
+			{
+				$usercache[$user['uid']] = $user;
+			}
+		}
+
+		// Messy * 2
+		// Find out post information for our reported posts
+		if(!empty($postcache))
+		{
+			$sql = implode(',', array_keys($postcache));
+			$query = $db->query("
+				SELECT p.pid, p.uid, p.username, p.tid, t.subject
+				FROM ".TABLE_PREFIX."posts p
+				LEFT JOIN ".TABLE_PREFIX."threads t ON (p.tid = t.tid)
+				WHERE p.pid IN ({$sql})
+			");
+
+			while($post = $db->fetch_array($query))
+			{
+				$postcache[$post['pid']] = $post;
+			}
+		}
+
+		// Now that we have all of the information needed, display the reports
+		foreach($reportcache as $report)
+		{
+			$trow = alt_trow();
+
+			if(!$report['type'])
+			{
+				// Assume a post
+				$report['type'] = 'post';
+			}
+
+			// Report Information
+			$report_information = '';
+
+			$string = "report_type_{$report['type']}";
+			$type = $lang->$string;
+
+			switch($report['type'])
+			{
+				case 'profile':
+					// For profiles, we only need user data
+					$user_link = get_profile_link($report['pid']);
+					$user_username = $usercache[$report['pid']]['username'];
+
+					$string = "report_info_{$report['type']}";
+					$report_information = $lang->sprintf($lang->$string, $user_link);
+					break;
+				case 'reputation':
+					// For reputation we need a handful of things
+					// First, the profile on which the offending comment has been made (comment is FID)
+					$profile_link = get_profile_link($report['pid']);
+					$profile_username = $usercache[$report['pid']]['username'];
+					$profile_rep_link = "reputation.php?uid={$report['pid']}&amp;comment={$report['fid']}";
+
+					// Who is the offender? It's the TID!
+					$user_link = get_profile_link($report['tid']);
+					$user_username = $usercache[$report['tid']]['username'];
+
+					$string = "report_info_{$report['type']}";
+					$report_information = $lang->sprintf($lang->$string, $profile_rep_link, $profile_link, $profile_username);
+					break;
+				default:
+					// Determine type
+					$type_link = get_post_link($report['pid'])."#pid{$report['pid']}";
+
+					// For posts, the next step is thread info
+					$thread_subject = $postcache[$report['pid']]['subject'];
+					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
+
+					// Next, it's the user information
+					$user_username = $postcache[$report['pid']]['username'];
+					$user_link = get_profile_link($postcache[$report['pid']]['uid']);
+
+					$string = "report_info_{$report['type']}";
+					$report_information = $lang->sprintf($lang->$string, $type_link, $type, $thread_link, $thread_subject, $user_link, $user_username);
+					break;
+			}
+
+			$report_reports = 1;
+			if($report['reports'])
+			{
+				$report_reports = my_number_format($report['reports']);
+			}
+
+			$lastreporterlink = get_profile_link($report['lastreporter']);
+			$lastreportername = $usercache[$report['lastreporter']]['username'];
+
+			$lastreportdate = my_date($mybb->settings['dateformat'], $report['lastreport']);
+			$lastreporttime = my_date($mybb->settings['timeformat'], $report['lastreport']);
+
+			// Plugin hook
 			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");
 		}
 	}

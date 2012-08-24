@@ -49,6 +49,15 @@ $l['error_no_results'] = "Sorry, there were no results found with the criteria y
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
 $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
+$l['report_info'] = "Content";
+$l['report_type'] = "Reported For";
+$l['report_count'] = "Reports";
+$l['report_lastpost'] = "Last Reported";
+
+$l['report_info_post'] = "A <a href=\"{1}\">{2}</a> in <a href=\"{3}\">{4}</a>";
+$l['report_info_profile'] = "<a href=\"{1}\">Profile Content</a>";
+$l['report_info_reputation'] = "<a href=\"{1}\">Reputation Comment</a> on <a href=\"{2}\">{3}</a>";
+
 $l['moderator_notes'] = "Moderator Notes";
 $l['notes_public_all'] = "These notes are public to all moderators.";
 $l['save_notes'] = "Save Notes";

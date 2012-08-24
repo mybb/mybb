@@ -6016,7 +6016,7 @@ body {
 		<template name="modcp_no_announcements_global" version="1400"><![CDATA[					<tr>
 						<td class="trow1" colspan="3">{$lang->no_global_announcements}</td>
 					</tr>]]></template>
-		<template name="modcp_reports" version="1607"><![CDATA[<html>
+		<template name="modcp_reports" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
 {$headerinclude}
@@ -6029,29 +6029,27 @@ body {
 <table width="100%" border="0" align="center">
 <tr>
 {$modcp_nav}
-<td valign="top">
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="thead" align="center" colspan="7"><strong>{$lang->reported_posts_note}</strong></td>
-</tr>
-<tr>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->poster}</strong></span></td>
-<td class="tcat" align="center" width="25%"><span class="smalltext"><strong>{$lang->thread}</strong></span></td>
-<td class="tcat" align="center" width="15%"><span class="smalltext"><strong>{$lang->reporter}</strong></span></td>
-<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->report_reason}</strong></span></td>
-<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_time}</strong></span></td>
-<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
-</tr>
-{$reports}
-{$reportspages}
-<tr>
-<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
-</tr>
-</table>
-<br />
-<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
-</td>
+	<td valign="top">
+		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+		<tr>
+			<td class="thead" colspan="5"><strong>{$lang->reported_posts_note}</strong></td>
+		</tr>
+		<tr>
+			<td class="tcat" width="45%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
+			<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
+			<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
+			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
+			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
+		</tr>
+		{$reports}
+		{$reportspages}
+		<tr>
+			<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
+		</tr>
+		</table>
+		<br />
+		<div align="center"><input type="hidden" name="action" value="do_reports" /><input type="submit" class="button" name="reportsubmit" value="{$lang->mark_read}" /></div>
+	</td>
 </tr>
 </table>
 </form>
@@ -6125,14 +6123,12 @@ body {
 		<template name="modcp_reports_noreports" version="1607"><![CDATA[<tr>
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
-		<template name="modcp_reports_report" version="1607"><![CDATA[<tr>
-<td class="{$trow}" align="center"><label for="reports_{$report['rid']}"><a href="{$report['postlink']}#pid{$report['pid']}" target="_blank">{$report['pid']}</a></label></td>
-<td class="{$trow}" align="center"><a href="{$report['posterlink']}" target="_blank">{$report['postusername']}</a></td>
-<td class="{$trow}"><a href="{$report['threadlink']}" target="_blank">{$report['threadsubject']}</a></td>
-<td class="{$trow}" align="center"><a href="{$report['reporterlink']}" target="_blank">{$report['username']}</a></td>
-<td class="{$trow}">{$report['reason']}</td>
-<td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</small></td>
-<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
+		<template name="modcp_reports_report" version="1800"><![CDATA[<tr>
+	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$lang->by} <a href="{$user_link}">{$user_username}</a></span></td>
+	<td class="{$trow}" align="center">{$report['reason']}</td>
+	<td class="{$trow}" align="center">{$report_reports}</td>
+	<td class="{$trow} smalltext" align="right">{$lastreportdate} {$lastreporttime}<br />{$lang->by} <a href="{$lastreporterlink}">{$lastreportername}</a></td>
+	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
 		<template name="modcp_warninglogs" version="1405"><![CDATA[<html>
 <head>

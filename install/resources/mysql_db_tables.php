@@ -588,9 +588,14 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   uid int unsigned NOT NULL default '0',
   reportstatus int(1) NOT NULL default '0',
   reason varchar(250) NOT NULL default '',
+  type varchar(50) NOT NULL default '',
+  reports int unsigned NOT NULL default '0',
   dateline bigint(30) NOT NULL default '0',
+  lastreport bigint(30) NOT NULL default '0',
+  lastreporter int unsigned NOT NULL default '0',
   KEY fid (fid),
   KEY dateline (dateline),
+  KEY lastreport (lastreport)
   PRIMARY KEY (rid)
 ) ENGINE=MyISAM;";
 
