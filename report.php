@@ -69,6 +69,24 @@ if($mybb->input['action'] == "report")
 	else
 	{
 		// Generate reason box
+		$options = $mybb->settings['reportreasons'];
+
+		if(!$options)
+		{
+			// Leave a message here - we'll default to calling it spam
+			
+		}
+		else
+		{
+			$reasons = '';
+			$options = explode("\n", $options);
+
+			foreach($options as $option)
+			{
+				$option = explode("=", $option);
+				$reasons .= "<option value=\"{$option[0]}\">".trim($option[1])."</option>\n";
+			}
+		}
 	}
 
 	$plugins->run_hooks("report_end");
