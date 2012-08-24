@@ -57,9 +57,22 @@ if($mybb->input['action'] == "report")
 {
 	$plugins->run_hooks("report_start");
 	$pid = $mybb->input['pid'];
+
+	// Check for duplicate
+	$query = $db->simple_select("reportedposts", "COUNT(pid) AS posts", "pid = '{$pid}' AND (type = 'post' OR type = '')");
+	$is_duplicate = $db->fetch_field($query, "posts");
 	
+	if($is_duplicate)
+	{
+		// Show duplicate message
+	}
+	else
+	{
+		// Generate reason box
+	}
+
 	$plugins->run_hooks("report_end");
-	
+
 	eval("\$report = \"".$templates->get("report")."\";");
 	output_page($report);
 }
@@ -160,9 +173,13 @@ elseif($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 			"tid" => $thread['tid'],
 			"fid" => $thread['fid'],
 			"uid" => $mybb->user['uid'],
-			"dateline" => TIME_NOW,
 			"reportstatus" => 0,
-			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason']))
+			"reason" => $db->escape_string(htmlspecialchars_uni($mybb->input['reason'])),
+			"type" => "post",
+			"reports" => 1,
+			"dateline" => TIME_NOW,
+			"lastreport" => TIME_NOW,
+			"lastreporter" => $mybb->user['uid']
 		);
 		$db->insert_query("reportedposts", $reportedpost);
 		$cache->update_reportedposts();

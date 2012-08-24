@@ -8456,35 +8456,37 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </div>
 </body>
 </html>]]></template>
-		<template name="report" version="120"><![CDATA[<html>
+		<template name="report" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
 {$headerinclude}
 </head>
 <body>
-<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
-<tr>
-<td class="trow1" align="center">
-<br />
-<br />
-<strong>{$lang->report_to_mod}</strong>
 <form action="report.php" method="post">
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="pid" value="{$pid}" />
-<blockquote>{$lang->only_report}</blockquote>
-<br />
-<br />
-<span class="smalltext">{$lang->report_reason}</span>
-<br />
-<input type="text" class="textbox" name="reason" size="40" maxlength="250" />
-<br />
-<br />
-<div align="center"><input type="submit" class="button" value="{$lang->report_post}" /></div>
-</form>
-</td>
+
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+<thead>
+	<tr>
+		<td class="thead" colspan="2"><strong>{$lang->report_post}</strong>
+	</tr>
+</thead>
+<tr>
+	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
+</tr>
+<tr>
+	<td class="trow1"><span class="smalltext">{$lang->report_reason}</span></td>
+	<td class="trow1"><input type="text" class="textbox" name="reason" size="40" maxlength="250" /></td>
 </tr>
 </table>
+
+<br />
+<div align="center">
+	<input type="submit" class="button" value="{$lang->report_post}" />
+</div>
+</form>
 </body>
 </html>]]></template>
 		<template name="report_error" version="123"><![CDATA[<html>

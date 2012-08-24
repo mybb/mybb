@@ -303,7 +303,7 @@ if($mybb->input['action'] == "reports")
 					$user_link = get_profile_link($postcache[$report['pid']]['uid']);
 
 					$string = "report_info_{$report['type']}";
-					$report_information = $lang->sprintf($lang->$string, $type_link, $type, $thread_link, $thread_subject, $user_link, $user_username);
+					$report_information = $lang->sprintf($lang->$string, $type_link, $thread_link, $thread_subject);
 					break;
 			}
 
