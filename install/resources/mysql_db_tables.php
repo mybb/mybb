@@ -595,7 +595,7 @@ $tables[] = "CREATE TABLE mybb_reportedposts (
   lastreporter int unsigned NOT NULL default '0',
   KEY fid (fid),
   KEY dateline (dateline),
-  KEY lastreport (lastreport)
+  KEY lastreport (lastreport),
   PRIMARY KEY (rid)
 ) ENGINE=MyISAM;";
 
