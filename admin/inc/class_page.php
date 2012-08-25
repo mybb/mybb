@@ -155,11 +155,7 @@ var imagepath = '../images';
 		
 		$plugins->run_hooks("admin_page_output_footer");
 		
-		$memory_usage = $lang->na;
-		if(function_exists("memory_get_usage"))
-		{
-			$memory_usage = get_friendly_size(memory_get_peak_usage(true));
-		}
+		$memory_usage = get_friendly_size(get_memory_usage());
 		
 		$totaltime = $maintimer->stop();
 		$querycount = $db->query_count;

@@ -63,9 +63,15 @@ function output_page($contents)
 				$gzipen = "Disabled";
 			}
 
-			if(function_exists("memory_get_usage"))
+			$memory_usage = get_memory_usage();
+
+			if($memory_usage)
 			{
-				$memory_usage = " / Memory Usage: ".get_friendly_size(memory_get_peak_usage(true));
+				$memory_usage = " / Memory Usage: ".get_friendly_size($memory_usage);
+			}
+			else
+			{
+				$memory_usage = '';
 			}
 
 			$other = "PHP version: $phpversion / Server Load: $serverload / GZip Compression: $gzipen";
@@ -1840,6 +1846,24 @@ function get_server_load()
 }
 
 /**
+ * Returns the amount of memory allocated to the script.
+ *
+ * @return int The amount of memory allocated to the script.
+ */
+function get_memory_usage()
+{
+	if(function_exists('memory_get_peak_usage'))
+	{
+		return memory_get_peak_usage(true);
+	}
+	elseif(function_exists('memory_get_usage'))
+	{
+		return memory_get_usage(true);
+	}
+	return false;
+}
+
+/**
  * Updates the forum statistics with specific values (or addition/subtraction of the previous value)
  *
  * @param array Array of items being updated (numthreads,numposts,numusers)
@@ -3470,7 +3494,7 @@ function build_archive_link($type, $id="")
  */
 function debug_page()
 {
-	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime;
+	global $db, $debug, $templates, $templatelist, $mybb, $maintimer, $globaltime, $ptimer, $parsetime, $lang;
 
 	$totaltime = $maintimer->totaltime;
 	$phptime = $maintimer->format($maintimer->totaltime - $db->query_time);
@@ -3535,17 +3559,22 @@ function debug_page()
 	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".count($templates->cache)." (".intval(count(explode(",", $templatelist)))." Cached / ".intval(count($templates->uncached_templates))." Manually Loaded)</font></td>\n";
 	echo "</tr>\n";
 
-	if(function_exists("memory_get_usage"))
+	$memory_usage = get_memory_usage();
+	if(!$memory_usage)
 	{
-		$memory_usage = memory_get_peak_usage(true);
-		$memory_limit = @ini_get("memory_limit");
-		echo "<tr>\n";
-		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
-		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">".get_friendly_size($memory_usage)." ({$memory_usage} bytes)</font></td>\n";
-		echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
-		echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";
-		echo "</tr>\n";
+		$memory_usage = $lang->unknown;
 	}
+	else
+	{
+		$memory_usage = get_friendly_size($memory_usage)." ({$memory_usage} bytes)";
+	}
+	$memory_limit = @ini_get("memory_limit");
+	echo "<tr>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Usage:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_usage}</font></td>\n";
+	echo "<td bgcolor=\"#EFEFEF\" width=\"25%\"><b><font face=\"Tahoma\" size=\"2\">Memory Limit:</font></b></td>\n";
+	echo "<td bgcolor=\"#FEFEFE\" width=\"25%\"><font face=\"Tahoma\" size=\"2\">{$memory_limit}</font></td>\n";
+	echo "</tr>\n";
 
 	echo "</table>\n";
 
