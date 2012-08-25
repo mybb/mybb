@@ -55,8 +55,6 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	date_default_timezone_set('GMT');
 }
 
-require_once MYBB_ROOT."inc/functions_compat.php";
-
 require_once MYBB_ROOT."inc/class_error.php";
 $error_handler = new errorHandler();
 
