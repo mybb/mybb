@@ -178,6 +178,7 @@ if($mybb->input['action'] == "reports")
 	}
 	else
 	{
+		$reportedposts = $cache->read("reportedposts");
 		$reportcache = $usercache = $postcache = array();
 
 		while($report = $db->fetch_array($query))
@@ -270,8 +271,7 @@ if($mybb->input['action'] == "reports")
 			{
 				case 'profile':
 					// For profiles, we only need user data
-					$user_link = get_profile_link($report['pid']);
-					$user_username = $usercache[$report['pid']]['username'];
+					$content_user = build_profile_link($usercache[$report['pid']]['username'], $report['pid']);
 
 					$string = "report_info_{$report['type']}";
 					$report_information = $lang->sprintf($lang->$string, $user_link);
@@ -284,8 +284,7 @@ if($mybb->input['action'] == "reports")
 					$profile_rep_link = "reputation.php?uid={$report['pid']}&amp;comment={$report['fid']}";
 
 					// Who is the offender? It's the TID!
-					$user_link = get_profile_link($report['tid']);
-					$user_username = $usercache[$report['tid']]['username'];
+					$content_user = build_profile_link($usercache[$report['tid']]['username'], $report['tid']);
 
 					$string = "report_info_{$report['type']}";
 					$report_information = $lang->sprintf($lang->$string, $profile_rep_link, $profile_link, $profile_username);
@@ -299,12 +298,42 @@ if($mybb->input['action'] == "reports")
 					$thread_link = get_thread_link($postcache[$report['pid']]['tid']);
 
 					// Next, it's the user information
-					$user_username = $postcache[$report['pid']]['username'];
-					$user_link = get_profile_link($postcache[$report['pid']]['uid']);
+					$content_user = build_profile_link($postcache[$report['pid']]['username'], $postcache[$report['pid']]['uid']);
 
 					$string = "report_info_{$report['type']}";
 					$report_information = $lang->sprintf($lang->$string, $type_link, $thread_link, $thread_subject);
 					break;
+			}
+
+			// Report reason and comment
+			if($report['reason'])
+			{
+				$report_reason = $lang->report_reason_other;
+
+				$reason = explode("\n", $report['reason']);
+				$lang_string = "report_reason_{$reason[0]}";
+
+				if(isset($lang->$lang_string))
+				{
+					// Translated string
+					$report_reason = $lang->$lang_string;
+				}
+				else if(isset($reportedposts['reasons'][$reason[0]]))
+				{
+					// Non-translated string, use the ACP version
+					$report_reason = $reportedposts['reasons'][$reason[0]];
+				}
+				else
+				{
+					// Report reason might have been removed?
+					$report_reason = $lang->na;
+				}
+
+				$report_comment = htmlspecialchars_uni($reason[1]);
+				$report_user = build_profile_link($report['username'], $report['uid']);
+
+				$report_date = my_date($mybb->settings['dateformat'], $report['dateline']);
+				$report_time = my_date($mybb->settings['timeformat'], $report['dateline']);
 			}
 
 			$report_reports = 1;
@@ -313,11 +342,14 @@ if($mybb->input['action'] == "reports")
 				$report_reports = my_number_format($report['reports']);
 			}
 
-			$lastreporterlink = get_profile_link($report['lastreporter']);
-			$lastreportername = $usercache[$report['lastreporter']]['username'];
+			if($report['lastreporter'])
+			{
+				$lastreporter_link = get_profile_link($report['lastreporter']);
+				$lastreporter_name = $usercache[$report['lastreporter']]['username'];
+			}
 
-			$lastreportdate = my_date($mybb->settings['dateformat'], $report['lastreport']);
-			$lastreporttime = my_date($mybb->settings['timeformat'], $report['lastreport']);
+			$lastreport_date = my_date($mybb->settings['dateformat'], $report['lastreport']);
+			$lastreport_time = my_date($mybb->settings['timeformat'], $report['lastreport']);
 
 			// Plugin hook
 			eval("\$reports .= \"".$templates->get("modcp_reports_report")."\";");

@@ -49,10 +49,13 @@ $l['error_no_results'] = "Sorry, there were no results found with the criteria y
 $l['redirect_reportsmarked'] = "The selected reported posts have been marked as read.";
 $l['redirect_modnotes'] = "The moderator notes have been updated.";
 
+$l['for'] = "for";
 $l['report_info'] = "Content";
-$l['report_type'] = "Reported For";
+$l['report_type'] = "Report Comment";
 $l['report_count'] = "Reports";
 $l['report_lastpost'] = "Last Reported";
+
+$l['report_reason_other'] = "Other Reason";
 
 $l['report_info_post'] = "A <a href=\"{1}\">Post</a> in <a href=\"{2}\">{3}</a>";
 $l['report_info_profile'] = "<a href=\"{1}\">Profile Content</a>";

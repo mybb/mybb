@@ -942,7 +942,13 @@ if($mybb->input['action'] == "change")
 		}
 
 		rebuild_settings();
-		
+
+		// If we have changed our report reasons recache them
+		if(isset($mybb->input['upsetting']['reportreasons']))
+		{
+			$cache->update_reportedposts();
+		}
+
 		$plugins->run_hooks("admin_config_settings_change_commit");
 			
 		// Log admin action

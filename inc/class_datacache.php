@@ -680,26 +680,41 @@ class datacache
 	 */
 	function update_reportedposts()
 	{
-		global $db;
+		global $db, $mybb;
+
 		$reports = array();
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS unreadcount", "reportstatus='0'");
 		$num = $db->fetch_array($query);
-		
+
 		$query = $db->simple_select("reportedposts", "COUNT(rid) AS reportcount");
 		$total = $db->fetch_array($query);
-		
+
 		$query = $db->simple_select("reportedposts", "dateline", "reportstatus='0'", array('order_by' => 'dateline', 'order_dir' => 'DESC'));
 		$latest = $db->fetch_array($query);
-		
+
+		$reasons = array();
+		$options = $mybb->settings['reportreasons'];
+
+		if($options)
+		{
+			$options = explode("\n", $options);
+
+			foreach($options as $option)
+			{
+				$option = explode("=", $option);
+				$reasons[$option[0]] = $option[1];
+			}
+		}
+
 		$reports = array(
 			"unread" => $num['unreadcount'],
 			"total" => $total['reportcount'],
-			"lastdateline" => $latest['dateline']
+			"lastdateline" => $latest['dateline'],
+			"reasons" => $reasons
 		);
-		
+
 		$this->update("reportedposts", $reports);
 	}
-
 
 	/**
 	 * Update mycode cache.

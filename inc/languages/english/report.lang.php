@@ -8,8 +8,12 @@
 
 $l['report_post'] = "Report Post";
 $l['report_to_mod'] = "Report this post to a moderator";
-$l['only_report'] = "You should only report posts that are spam, advertising messages, or abuse.";
 $l['report_reason'] = "Your reason for reporting this post:";
+
+$l['report_reason_other'] = "Other Reason";
+
+$l['report_comment'] = "Add a comment with your report (optional):";
+$l['report_duplicate'] = "This post has already been reported by another member.<br />You may also report this post below.";
 $l['thank_you'] = "Thank You.";
 $l['post_reported'] = "The post has successfully been reported. You can now close this window.";
 $l['report_error'] = "Error";
