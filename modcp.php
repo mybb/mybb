@@ -121,7 +121,7 @@ if($mybb->input['action'] == "do_reports")
 
 if($mybb->input['action'] == "reports")
 {
-	add_breadcrumb($lang->mcp_nav_reported_posts, "modcp.php?action=reports");
+	add_breadcrumb($lang->mcp_nav_report_center, "modcp.php?action=reports");
 
 	$perpage = $mybb->settings['threadsperpage'];
 	if(!$perpage)

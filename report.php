@@ -36,6 +36,10 @@ if($type == 'post')
 		error_no_permission();
 	}
 
+	// Set the type of report
+	$report_type = $lang->report_post;
+	$report_type_thanks = $lang->success_post_reported;
+
 	$error = '';
 	$post = get_post($mybb->input['pid']);
 
@@ -56,6 +60,7 @@ if($type == 'post')
 		}
 
 		// Password protected forums ......... yhummmmy!
+		$fid = $forum['fid'];
 		check_forum_password($forum['parentlist']);
 	}
 
@@ -77,7 +82,9 @@ if($type == 'post')
 		$report = $db->fetch_array($query);
 	}
 
-	$thread = get_thread($post['tid']);
+	$tid = $post['tid'];
+	$thread = get_thread($tid);
+
 	if($mybb->input['action'] == "do_report" && $mybb->request_method == "post")
 	{
 		// Save Report
@@ -88,7 +95,7 @@ if($type == 'post')
 		{
 			$update_array = array(
 				'type' => 'post',
-				'reports' => ++$report['votes'],
+				'reports' => ++$report['reports'],
 				'lastreport' => TIME_NOW,
 				'lastreporter' => $mybb->user['uid']
 			);
@@ -224,14 +231,14 @@ if($type == 'post')
 					$db->insert_query("reportedposts", $insert_array);
 					$cache->update_reportedposts();
 				}
-
-				$plugins->run_hooks("report_do_report_end");
-
-				eval("\$report = \"".$templates->get("report_thanks")."\";");
-				output_page($report);
-				exit;
 			}
 		}
+
+		$plugins->run_hooks("report_do_report_end");
+
+		eval("\$report = \"".$templates->get("report_thanks")."\";");
+		output_page($report);
+		exit;
 	}
 
 	// Report a Post

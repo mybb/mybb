@@ -173,14 +173,13 @@ email=Sent via Email]]></optionscode>
 		</setting>
 		<setting name="reportreasons">
 			<title>Reporting Reasons</title>
-			<description><![CDATA[Options users can select for reporting content. Enter a key=item list with a new line separating each reason.]]></description>
+			<description><![CDATA[Options users can select for reporting content. Enter a key=item list with a new line separating each reason. An 'Other' option is automatically added to this list and does need to be added here.<br />If your forum uses multiple languages please see the MyBB Docs for how to translate these strings.]]></description>
 			<disporder>17</disporder>
-			<optionscode><![CDATA[text]]></optionscode>
+			<optionscode><![CDATA[textarea]]></optionscode>
 			<settingvalue><![CDATA[rules=Breaks Forum Rules
 inappropriate=Inappropriate Content
 spam=Spam Content
-wrong=Wrong Forum
-other=Other]]></settingvalue>
+wrong=Wrong Forum]]></settingvalue>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>

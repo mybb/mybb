@@ -7,17 +7,19 @@
  */
 
 $l['report_post'] = "Report Post";
-$l['report_to_mod'] = "Report this post to a moderator";
-$l['report_reason'] = "Your reason for reporting this post:";
-
+$l['report_profile'] = "Report Profile";
+$l['report_reputation'] = "Report Reputation";
+$l['report_add_comment'] = "Add a comment with your report (optional):";
+$l['report_to_mod'] = "Report content to a moderator";
+$l['report_reason'] = "Your reason for reporting this content:";
 $l['report_reason_other'] = "Other Reason";
 
-$l['report_comment'] = "Add a comment with your report (optional):";
-$l['report_duplicate'] = "This post has already been reported by another member.<br />You may also report this post below.";
 $l['thank_you'] = "Thank You.";
-$l['post_reported'] = "The post has successfully been reported. You can now close this window.";
+$l['success_post_reported'] = "The post has successfully been reported. You can now close this window.";
+
 $l['report_error'] = "Error";
-$l['no_reason'] = "You cannot report a post without specifying a reason for reporting it.";
 $l['go_back'] = "Back";
 $l['close_window'] = "Close Window";
+$l['error_no_reason'] = "You cannot report content without specifying a reason for reporting it.";
+$l['error_report_duplicate'] = "This content has already been reported by another member.<br />You may also report this content below.";
 ?>

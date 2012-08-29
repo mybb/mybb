@@ -8458,7 +8458,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </html>]]></template>
 		<template name="report" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
+<title>{$mybb->settings['bbname']} - {$report_type}</title>
 {$headerinclude}
 </head>
 <body>
@@ -8466,32 +8466,34 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <input type="hidden" name="my_post_key" value="{$mybb->post_code}" />
 <input type="hidden" name="action" value="do_report" />
 <input type="hidden" name="pid" value="{$pid}" />
+<input type="hidden" name="tid" value="{$tid}" />
+<input type="hidden" name="fid" value="{$fid}" />
 
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <thead>
 	<tr>
-		<td class="thead" colspan="2"><strong>{$lang->report_post}</strong>
+		<td class="thead" colspan="2"><strong>{$report_type}</strong>
 	</tr>
 </thead>
 <tr>
 	<td class="tcat" colspan="2">{$lang->report_to_mod}</td>
 </tr>
-<tr>
-	<td class="trow1"><span class="smalltext">{$lang->report_reason}</span></td>
-	<td class="trow1"><input type="text" class="textbox" name="reason" size="40" maxlength="250" /></td>
-</tr>
+{$report_reasons}
 </table>
 
 <br />
 <div align="center">
-	<input type="submit" class="button" value="{$lang->report_post}" />
+	<input type="submit" class="button" value="{$report_type}" />
 </div>
 </form>
 </body>
 </html>]]></template>
-		<template name="report_error" version="123"><![CDATA[<html>
+		<template name="report_duplicate" version="1800"><![CDATA[<tr>
+	<td class="trow1" colspan="2"><span class="smalltext"><strong>{$lang->error_report_duplicate}</strong></span></td>
+</tr>]]></template>
+		<template name="report_error" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
+<title>{$mybb->settings['bbname']} - {$report_type}</title>
 {$headerinclude}
 </head>
 <body>
@@ -8507,9 +8509,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 </body>
 </html>]]></template>
-		<template name="report_noreason" version="1400"><![CDATA[<html>
+		<template name="report_noreason" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
+<title>{$mybb->settings['bbname']} - {$report_type}</title>
 {$headerinclude}
 </head>
 <body>
@@ -8520,7 +8522,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <br />
 <br />
 <strong>{$lang->report_error}</strong>
-<blockquote>{$lang->no_reason}</blockquote>
+<blockquote>{$lang->error_no_reason}</blockquote>
 <br /><br />
 <div>
 	<script type="text/javascript">
@@ -8535,9 +8537,17 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </table>
 </body>
 </html>]]></template>
-		<template name="report_thanks" version="1400"><![CDATA[<html>
+		<template name="report_reasons" version="1800"><![CDATA[<tr>
+	<td class="trow1" align="left"><span class="smalltext">{$lang->report_reason}</span></td>
+	<td class="trow1" align="left"><select name="reason">{$reasons}</select></td>
+</tr>
+<tr>
+	<td class="trow2" align="left"><span class="smalltext">{$lang->report_add_comment}</span></td>
+	<td class="trow2" align="left"><input type="text" class="textbox" name="comment" size="40" maxlength="250" /></td>
+</tr>]]></template>
+		<template name="report_thanks" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->report_post}</title>
+<title>{$mybb->settings['bbname']} - {$report_type}</title>
 {$headerinclude}
 </head>
 <body>
@@ -8548,7 +8558,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 <br />
 <br />
 <strong>{$lang->thank_you}</strong>
-<blockquote>{$lang->post_reported}</blockquote>
+<blockquote>{$report_type_thanks}</blockquote>
 <br /><br />
 <div style="text-align: center;">
 	<script type="text/javascript">
