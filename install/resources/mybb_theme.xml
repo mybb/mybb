@@ -6035,8 +6035,8 @@ body {
 			<td class="thead" colspan="5"><strong>{$lang->reported_posts_note}</strong></td>
 		</tr>
 		<tr>
-			<td class="tcat" width="45%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
-			<td class="tcat" align="center" width="20%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
+			<td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
+			<td class="tcat" align="left" width="25%"><span class="smalltext"><strong>{$lang->report_type}</strong></span></td>
 			<td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->report_count}</strong></span></td>
 			<td class="tcat" align="right" width="20%"><span class="smalltext"><strong>{$lang->report_lastpost}</strong></span></td>
 			<td class="tcat" align="center" width="5%"><input type="checkbox" name="allbox" onclick="selectReportedPosts();" /></td>
@@ -6124,10 +6124,10 @@ body {
 <td class="trow1" align="center" colspan="7">{$lang->no_reports}</td>
 </tr>]]></template>
 		<template name="modcp_reports_report" version="1800"><![CDATA[<tr>
-	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$lang->by} <a href="{$user_link}">{$user_username}</a></span></td>
-	<td class="{$trow}" align="center">{$report['reason']}</td>
+	<td class="{$trow}">{$report_information}<br /><span class="smalltext">{$lang->by} {$content_user} {$lang->for} {$report_reason}</td>
+	<td class="{$trow}" align="left">{$report_comment}<br /><span class="smalltext">{$report_date} {$report_time} {$lang->by} {$report_user}</span></td>
 	<td class="{$trow}" align="center">{$report_reports}</td>
-	<td class="{$trow} smalltext" align="right">{$lastreportdate} {$lastreporttime}<br />{$lang->by} <a href="{$lastreporterlink}">{$lastreportername}</a></td>
+	<td class="{$trow} smalltext" align="right">{$lastreport_date} {$lastreport_time}<br />{$lang->by} <a href="{$lastreporter_link}">{$lastreporter_name}</a></td>
 	<td class="{$trow}" align="center"><input type="checkbox" class="checkbox" name="reports[]" id="reports_{$report['rid']}" value="{$report['rid']}" /></td>
 </tr>]]></template>
 		<template name="modcp_warninglogs" version="1405"><![CDATA[<html>
