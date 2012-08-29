@@ -213,7 +213,7 @@ if($type == 'post')
 						'fid' => $post['fid'],
 						'uid' => $mybb->user['uid'],
 						'reportstatus' => 0,
-						'reason' => $db->escape_string($reason),
+						'reason' => $db->escape_string($reason."\n".$comment),
 						'type' => 'post',
 						'reports' => 1,
 						'dateline' => TIME_NOW,

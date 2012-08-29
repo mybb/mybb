@@ -329,9 +329,13 @@ if($mybb->input['action'] == "reports")
 					$report_reason = $lang->na;
 				}
 
-				$report_comment = htmlspecialchars_uni($reason[1]);
-				$report_user = build_profile_link($report['username'], $report['uid']);
+				$report_comment = $lang->na;
+				if($reason[1])
+				{
+					$report_comment = htmlspecialchars_uni($reason[1]);
+				}
 
+				$report_user = build_profile_link($report['username'], $report['uid']);
 				$report_date = my_date($mybb->settings['dateformat'], $report['dateline']);
 				$report_time = my_date($mybb->settings['timeformat'], $report['dateline']);
 			}

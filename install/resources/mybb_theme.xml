@@ -5993,7 +5993,7 @@ body {
 	<tbody style="{$collapsed['modcpforums_e']}" id="modcpforums_e">
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=announcements" class="modcp_nav_item modcp_nav_announcements">{$lang->mcp_nav_announcements}</a></td></tr>
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modqueue" class="modcp_nav_item modcp_nav_modqueue">{$lang->mcp_nav_modqueue}</a></td></tr>
-		<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_reported_posts}</a></td></tr>
+		<tr><td class="trow1 smalltext"><a href="modcp.php?action=reports" class="modcp_nav_item modcp_nav_reports">{$lang->mcp_nav_report_center}</a></td></tr>
 		<tr><td class="trow1 smalltext"><a href="modcp.php?action=modlogs" class="modcp_nav_item modcp_nav_modlogs">{$lang->mcp_nav_modlogs}</a></td></tr>
 	</tbody>
 	<tr>
@@ -6018,7 +6018,7 @@ body {
 					</tr>]]></template>
 		<template name="modcp_reports" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->reported_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->report_center}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6032,7 +6032,7 @@ body {
 	<td valign="top">
 		<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 		<tr>
-			<td class="thead" colspan="5"><strong>{$lang->reported_posts_note}</strong></td>
+			<td class="thead" colspan="5"><strong>{$lang->report_center}</strong></td>
 		</tr>
 		<tr>
 			<td class="tcat" width="40%"><span class="smalltext"><strong>{$lang->report_info}</strong></span></td>
@@ -6044,7 +6044,7 @@ body {
 		{$reports}
 		{$reportspages}
 		<tr>
-			<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reported_posts}</a></strong></span></td>
+			<td class="tfoot" colspan="7" align="right"><span class="smalltext"><strong><a href="modcp.php?action=allreports">{$lang->view_all_reports}</a></strong></span></td>
 		</tr>
 		</table>
 		<br />
@@ -6085,9 +6085,9 @@ body {
 <td class="{$trow}">{$report['reason']}</td>
 <td class="{$trow}" align="center" style="white-space: nowrap"><span class="smalltext">{$reportdate}<br />{$reporttime}</span></td>
 </tr>]]></template>
-		<template name="modcp_reports_allreports" version="1400"><![CDATA[<html>
+		<template name="modcp_reports_allreports" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->all_reported_posts}</title>
+<title>{$mybb->settings['bbname']} - {$lang->all_reports}</title>
 {$headerinclude}
 </head>
 <body>
@@ -6098,7 +6098,7 @@ body {
 <td valign="top">
 <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 <tr>
-<td class="thead" align="center" colspan="6"><strong>{$lang->all_reported_posts_note}</strong></td>
+<td class="thead" align="center" colspan="6"><strong>{$lang->all_reports}</strong></td>
 </tr>
 <tr>
 <td class="tcat" align="center" width="10%"><span class="smalltext"><strong>{$lang->post_id}</strong></span></td>
