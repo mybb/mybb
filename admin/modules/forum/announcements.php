@@ -69,52 +69,64 @@ if($mybb->input['action'] == "add")
 			$errors[] = $lang->error_missing_forum;
 		}
 		
+		$startdate = @explode(" ", $mybb->input['starttime_time']);
+		$startdate = @explode(":", $startdate[0]);
+		$enddate = @explode(" ", $mybb->input['endtime_time']);
+		$enddate = @explode(":", $enddate[0]);
+	
+		if(stristr($mybb->input['starttime_time'], "pm"))
+		{
+			$startdate[0] = 12+$startdate[0];
+			if($startdate[0] >= 24)
+			{
+				$startdate[0] = "00";
+			}
+		}
+		
+		if(stristr($mybb->input['endtime_time'], "pm"))
+		{
+			$enddate[0] = 12+$enddate[0];
+			if($enddate[0] >= 24)
+			{
+				$enddate[0] = "00";
+			}
+		}
+		
+		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+		if(!in_array($mybb->input['starttime_month'], $months))
+		{
+			$mybb->input['starttime_month'] = 1;
+		}
+		
+		$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+		if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
+		{
+			$errors[] = $lang->error_invalid_start_date;
+		}
+		
+		if($mybb->input['endtime_type'] == "2")
+		{
+			$enddate = '0';
+		}
+		else
+		{
+			if(!in_array($mybb->input['endtime_month'], $months))
+			{
+				$mybb->input['endtime_month'] = 1;
+			}
+			$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+			if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
+			{
+				$errors[] = $lang->error_invalid_end_date;
+			}
+			if($enddate <= $startdate)
+			{
+				$errors[] = $lang->error_end_before_start;
+			}
+		}
+		
 		if(!$errors)
 		{
-			$startdate = @explode(" ", $mybb->input['starttime_time']);
-			$startdate = @explode(":", $startdate[0]);
-			$enddate = @explode(" ", $mybb->input['endtime_time']);
-			$enddate = @explode(":", $enddate[0]);
-		
-			if(stristr($mybb->input['starttime_time'], "pm"))
-			{
-				$startdate[0] = 12+$startdate[0];
-				if($startdate[0] >= 24)
-				{
-					$startdate[0] = "00";
-				}
-			}
-			
-			if(stristr($mybb->input['endtime_time'], "pm"))
-			{
-				$enddate[0] = 12+$enddate[0];
-				if($enddate[0] >= 24)
-				{
-					$enddate[0] = "00";
-				}
-			}
-			
-			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
-			if(!in_array($mybb->input['starttime_month'], $months))
-			{
-				$mybb->input['starttime_month'] = 1;
-			}
-			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-			
-			if($mybb->input['endtime_type'] == "2")
-			{
-				$enddate = '0';
-			}
-			else
-			{
-				if(!in_array($mybb->input['endtime_month'], $months))
-				{
-					$mybb->input['endtime_month'] = 1;
-				}
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-			}
-			
 			$insert_announcement = array(
 				"fid" => $mybb->input['fid'],
 				"uid" => $mybb->user['uid'],
@@ -137,6 +149,10 @@ if($mybb->input['action'] == "add")
 	
 			flash_message($lang->success_added_announcement, 'success');
 			admin_redirect("index.php?module=forum-announcements");
+		}
+		else
+		{
+			$mybb->input['action'] = 'add';
 		}
 	}
 	
@@ -365,52 +381,65 @@ if($mybb->input['action'] == "edit")
 			$errors[] = $lang->error_missing_forum;
 		}
 		
+		$startdate = @explode(" ", $mybb->input['starttime_time']);
+		$startdate = @explode(":", $startdate[0]);
+		$enddate = @explode(" ", $mybb->input['endtime_time']);
+		$enddate = @explode(":", $enddate[0]);
+	
+		if(stristr($mybb->input['starttime_time'], "pm"))
+		{
+			$startdate[0] = 12+$startdate[0];
+			if($startdate[0] >= 24)
+			{
+				$startdate[0] = "00";
+			}
+		}
+		
+		if(stristr($mybb->input['endtime_time'], "pm"))
+		{
+			$enddate[0] = 12+$enddate[0];
+			if($enddate[0] >= 24)
+			{
+				$enddate[0] = "00";
+			}
+		}
+		
+		$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+		if(!in_array($mybb->input['starttime_month'], $months))
+		{
+			$mybb->input['starttime_month'] = 1;
+		}
+		
+		$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+		if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
+		{
+			$errors[] = $lang->error_invalid_start_date;
+		}
+		
+		if($mybb->input['endtime_type'] == "2")
+		{
+			$enddate = '0';
+		}
+		else
+		{
+			if(!in_array($mybb->input['endtime_month'], $months))
+			{
+				$mybb->input['endtime_month'] = 1;
+			}
+			$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+			if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
+			{
+				$errors[] = $lang->error_invalid_end_date;
+			}
+			
+			if($enddate <= $startdate)
+			{
+				$errors[] = $lang->error_end_before_start;
+			}
+		}
+		
 		if(!$errors)
 		{
-			$startdate = @explode(" ", $mybb->input['starttime_time']);
-			$startdate = @explode(":", $startdate[0]);
-			$enddate = @explode(" ", $mybb->input['endtime_time']);
-			$enddate = @explode(":", $enddate[0]);
-		
-			if(stristr($mybb->input['starttime_time'], "pm"))
-			{
-				$startdate[0] = 12+$startdate[0];
-				if($startdate[0] >= 24)
-				{
-					$startdate[0] = "00";
-				}
-			}
-			
-			if(stristr($mybb->input['endtime_time'], "pm"))
-			{
-				$enddate[0] = 12+$enddate[0];
-				if($enddate[0] >= 24)
-				{
-					$enddate[0] = "00";
-				}
-			}
-			
-			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
-			if(!in_array($mybb->input['starttime_month'], $months))
-			{
-				$mybb->input['starttime_month'] = 1;
-			}
-			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-			
-			if($mybb->input['endtime_type'] == "2")
-			{
-				$enddate = '0';
-			}
-			else
-			{
-				if(!in_array($mybb->input['endtime_month'], $months))
-				{
-					$mybb->input['endtime_month'] = 1;
-				}
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-			}
-			
 			$update_announcement = array(
 				"fid" => $mybb->input['fid'],
 				"subject" => $db->escape_string($mybb->input['title']),
@@ -432,6 +461,10 @@ if($mybb->input['action'] == "edit")
 	
 			flash_message($lang->success_updated_announcement, 'success');
 			admin_redirect("index.php?module=forum-announcements");
+		}
+		else
+		{
+			$mybb->input['action'] = 'edit';
 		}
 	}
 	
