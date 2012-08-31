@@ -646,11 +646,6 @@ if($mybb->input['action'] == "do_new_announcement")
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
-	
-	if($startdate < 0 || $startdate == false)
-	{
-		$errors[] = $lang->error_invalid_start_date;
-	}
 
 	if($mybb->input['endtime_type'] == "2")
 	{
