@@ -71,72 +71,97 @@ if($mybb->input['action'] == "add")
 		
 		if(!$errors)
 		{
-			$startdate = @explode(" ", $mybb->input['starttime_time']);
-			$startdate = @explode(":", $startdate[0]);
-			$enddate = @explode(" ", $mybb->input['endtime_time']);
-			$enddate = @explode(":", $enddate[0]);
-		
-			if(stristr($mybb->input['starttime_time'], "pm"))
+			if(isset($mybb->input['preview']))
 			{
-				$startdate[0] = 12+$startdate[0];
-				if($startdate[0] >= 24)
+				$parser_options = array();
+				
+				$parser_options['allow_html'] = (int)$mybb->input['allowhtml'];
+				$parser_options['allow_mycode'] = (int)$mybb->input['allowmycode'];
+				$parser_options['allow_smilies'] = (int)$mybb->input['allowsmilies'];
+				$parser_options['allow_imgcode'] = 1;
+				$parser_options['allow_videocode'] = 1;
+				$parser_options['me_username'] = htmlspecialchars_uni($mybb->user['username']);
+				$parser_options['filter_badwords'] = 1;
+				
+				// Set up the message parser if it doesn't already exist.
+				if(!is_object($parser))
 				{
-					$startdate[0] = "00";
+					require_once MYBB_ROOT."inc/class_parser.php";
+					$parser = new postParser;
 				}
-			}
 			
-			if(stristr($mybb->input['endtime_time'], "pm"))
-			{
-				$enddate[0] = 12+$enddate[0];
-				if($enddate[0] >= 24)
-				{
-					$enddate[0] = "00";
-				}
-			}
-			
-			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
-			if(!in_array($mybb->input['starttime_month'], $months))
-			{
-				$mybb->input['starttime_month'] = 1;
-			}
-			
-			$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-			
-			if($mybb->input['endtime_type'] == "2")
-			{
-				$enddate = '0';
+				$preview['message'] = $parser->parse_message($mybb->input['message'], $parser_options);
+				$preview['subject'] = htmlspecialchars_uni($mybb->input['title']);
 			}
 			else
 			{
-				if(!in_array($mybb->input['endtime_month'], $months))
+				$startdate = @explode(" ", $mybb->input['starttime_time']);
+				$startdate = @explode(":", $startdate[0]);
+				$enddate = @explode(" ", $mybb->input['endtime_time']);
+				$enddate = @explode(":", $enddate[0]);
+			
+				if(stristr($mybb->input['starttime_time'], "pm"))
 				{
-					$mybb->input['endtime_month'] = 1;
+					$startdate[0] = 12+$startdate[0];
+					if($startdate[0] >= 24)
+					{
+						$startdate[0] = "00";
+					}
 				}
-				$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				
+				if(stristr($mybb->input['endtime_time'], "pm"))
+				{
+					$enddate[0] = 12+$enddate[0];
+					if($enddate[0] >= 24)
+					{
+						$enddate[0] = "00";
+					}
+				}
+				
+				$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+				if(!in_array($mybb->input['starttime_month'], $months))
+				{
+					$mybb->input['starttime_month'] = 1;
+				}
+				
+				$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
+				
+				if($mybb->input['endtime_type'] == "2")
+				{
+					$enddate = '0';
+				}
+				else
+				{
+					if(!in_array($mybb->input['endtime_month'], $months))
+					{
+						$mybb->input['endtime_month'] = 1;
+					}
+					$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
+				}
+				
+				$insert_announcement = array(
+					"fid" => $mybb->input['fid'],
+					"uid" => $mybb->user['uid'],
+					"subject" => $db->escape_string($mybb->input['title']),
+					"message" => $db->escape_string($mybb->input['message']),
+					"startdate" => $startdate,
+					"enddate" => $enddate,
+					"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
+					"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
+					"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
+				);
+		
+				$aid = $db->insert_query("announcements", $insert_announcement);
+				
+				$plugins->run_hooks("admin_forum_announcements_add_commit");
+		
+				// Log admin action
+				log_admin_action($aid, $mybb->input['title']);
+				$cache->update_forumsdisplay();
+		
+				flash_message($lang->success_added_announcement, 'success');
+				admin_redirect("index.php?module=forum-announcements");
 			}
-			
-			$insert_announcement = array(
-				"fid" => $mybb->input['fid'],
-				"uid" => $mybb->user['uid'],
-				"subject" => $db->escape_string($mybb->input['title']),
-				"message" => $db->escape_string($mybb->input['message']),
-				"startdate" => $startdate,
-				"enddate" => $enddate,
-				"allowhtml" => $db->escape_string($mybb->input['allowhtml']),
-				"allowmycode" => $db->escape_string($mybb->input['allowmycode']),
-				"allowsmilies" => $db->escape_string($mybb->input['allowsmilies']),
-			);
-	
-			$aid = $db->insert_query("announcements", $insert_announcement);
-			
-			$plugins->run_hooks("admin_forum_announcements_add_commit");
-	
-			// Log admin action
-			log_admin_action($aid, $mybb->input['title']);
-			$cache->update_forumsdisplay();
-	
-			flash_message($lang->success_added_announcement, 'success');
-			admin_redirect("index.php?module=forum-announcements");
 		}
 	}
 	
@@ -277,6 +302,13 @@ if($mybb->input['action'] == "add")
 		$enddateyear = gmdate("Y", TIME_NOW) + 1;
 	}
 	
+	if(isset($preview))
+	{
+		$form_container = new FormContainer($lang->announcement_preview);
+		$form_container->output_row($preview['subject'], "", $preview['message'], 'preview');
+		$form_container->end();
+	}
+	
 	$form_container = new FormContainer($lang->add_an_announcement);
 	$form_container->output_row($lang->title." <em>*</em>", "", $form->generate_text_box('title', $mybb->input['title'], array('id' => 'title')), 'title');
 	$form_container->output_row($lang->start_date." <em>*</em>", $lang->start_date_desc, "<select name=\"starttime_day\">\n{$startdateday}</select>\n &nbsp; \n<select name=\"starttime_month\">\n{$startdatemonth}</select>\n &nbsp; \n<input type=\"text\" name=\"starttime_year\" value=\"{$startdateyear}\" size=\"4\" maxlength=\"4\" />\n - {$lang->time} ".$form->generate_text_box('starttime_time', $mybb->input['starttime_time'], array('id' => 'starttime_time', 'style' => 'width: 50px;')));
@@ -332,6 +364,7 @@ if($mybb->input['action'] == "add")
 	$form_container->end();
 
 	$buttons[] = $form->generate_submit_button($lang->save_announcement);
+	$buttons[] = $form->generate_submit_button($lang->preview_announcement, array('name' => 'preview'));
 	$form->output_submit_wrapper($buttons);
 	$form->end();
 

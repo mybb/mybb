@@ -11,6 +11,7 @@ $l['forum_announcements_desc'] = "Here you can manage the announcements on your 
 $l['add_announcement'] = "Add Announcement";
 $l['add_announcement_desc'] = "Here you can add an announcement for a single forum or all forums.";
 $l['update_announcement'] = "Save Announcement";
+$l['preview_announcement'] = "Preview Announcement";
 $l['update_announcement_desc'] = "Here you can update an announcements details.";
 
 $l['start_date_desc'] = "On this date and time (in GMT), the announcement will appear in the selected forum(s).";
@@ -47,5 +48,7 @@ $l['allow_mycode'] = "Allow MyCode?";
 $l['allow_smilies'] = "Allow Smilies?";
 $l['time'] = "Time:";
 $l['set_time'] = "Set Time";
+
+$l['announcement_preview'] = 'Announcement Preview';
 
 ?>
