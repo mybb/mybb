@@ -771,7 +771,8 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
+	
+	if($startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -787,11 +788,11 @@ if($mybb->input['action'] == "do_new_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
+		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		if($enddate <= $startdate)
+		elseif($enddate < $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -801,24 +802,32 @@ if($mybb->input['action'] == "do_new_announcement")
 
 	if(!$errors)
 	{
-		$insert_announcement = array(
-			'fid' => $announcement_fid,
-			'uid' => $mybb->user['uid'],
-			'subject' => $db->escape_string($mybb->input['title']),
-			'message' => $db->escape_string($mybb->input['message']),
-			'startdate' => $startdate,
-			'enddate' => $enddate,
-			'allowhtml' => $db->escape_string($mybb->input['allowhtml']),
-			'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
-			'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
-		);
+		if(isset($mybb->input['preview']))
+		{
+			$preview = array();
+			$mybb->input['action'] = 'new_announcement';
+		}
+		else
+		{
+			$insert_announcement = array(
+				'fid' => $announcement_fid,
+				'uid' => $mybb->user['uid'],
+				'subject' => $db->escape_string($mybb->input['title']),
+				'message' => $db->escape_string($mybb->input['message']),
+				'startdate' => $startdate,
+				'enddate' => $enddate,
+				'allowhtml' => $db->escape_string($mybb->input['allowhtml']),
+				'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
+				'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
+			);
 
-		$aid = $db->insert_query("announcements", $insert_announcement);
-		
-		$plugins->run_hooks("modcp_do_new_announcement_end");
-		
-		$cache->update_forumsdisplay();
-		redirect("modcp.php?action=announcements", $lang->redirect_add_announcement);
+			$aid = $db->insert_query("announcements", $insert_announcement);
+			
+			$plugins->run_hooks("modcp_do_new_announcement_end");
+			
+			$cache->update_forumsdisplay();
+			redirect("modcp.php?action=announcements", $lang->redirect_add_announcement);
+		}
 	}
 	else
 	{
@@ -872,14 +881,47 @@ if($mybb->input['action'] == "new_announcement")
 	}
 	else
 	{
-		// Note: dates are in GMT timezone
-		$starttime_time = gmdate("g:i a", TIME_NOW);
-		$endtime_time = gmdate("g:i a", TIME_NOW);
-		$startday = $endday = gmdate("j", TIME_NOW);
-		$startmonth = $endmonth = gmdate("m", TIME_NOW);
-		$startdateyear = gmdate("Y", TIME_NOW);
+		// Do we have a preview?
+		if(isset($preview))
+		{
+			// Set $announcement to input stuff
+			$announcement['subject'] = $mybb->input['title'];
+			$announcement['message'] = $mybb->input['message'];
+			$announcement['allowhtml'] = $mybb->input['allowhtml'];
+			$announcement['allowmycode'] = $mybb->input['allowmycode'];
+			$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
+			
+			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+			if(!in_array($mybb->input['starttime_month'], $months))
+			{
+				$mybb->input['starttime_month'] = 1;
+			}
+			
+			if(!in_array($mybb->input['endtime_month'], $months))
+			{
+				$mybb->input['endtime_month'] = 1;
+			}
+			
+			$startmonth = $mybb->input['starttime_month'];
+			$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
+			$startday = intval($mybb->input['starttime_day']);
+			$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+			$endmonth = $mybb->input['endtime_month'];
+			$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
+			$endday = intval($mybb->input['endtime_day']);
+			$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		}
+		else
+		{
+			// Note: dates are in GMT timezone
+			$starttime_time = gmdate("g:i a", TIME_NOW);
+			$endtime_time = gmdate("g:i a", TIME_NOW);
+			$startday = $endday = gmdate("j", TIME_NOW);
+			$startmonth = $endmonth = gmdate("m", TIME_NOW);
+			$startdateyear = gmdate("Y", TIME_NOW);
 
-		$enddateyear = $startdateyear+1;
+			$enddateyear = $startdateyear+1;
+		}
 	}
 
 	// Generate form elements
@@ -977,6 +1019,49 @@ if($mybb->input['action'] == "new_announcement")
 	$codebuttons = build_mycode_inserter();
 	$smilieinserter = build_clickable_smilies();
 	
+	if(isset($preview))
+	{
+		$announcementarray = array(
+			'fid' => $announcement_fid,
+			'uid' => $mybb->user['uid'],
+			'subject' => $mybb->input['title'],
+			'message' => $mybb->input['message'],
+			'allowhtml' => intval($mybb->input['allowhtml']),
+			'allowmycode' => intval($mybb->input['allowmycode']),
+			'allowsmilies' => intval($mybb->input['allowsmilies']),
+			'dateline' => TIME_NOW,
+			'userusername' => $mybb->user['username'],
+		);
+		
+		$array = $mybb->user;
+		foreach($array as $key => $element)
+		{
+			$announcementarray[$key] = $element;
+		}
+		
+		// Gather usergroup data from the cache
+		// Field => Array Key
+		$data_key = array(
+			'title' => 'grouptitle',
+			'usertitle' => 'groupusertitle',
+			'stars' => 'groupstars',
+			'starimage' => 'groupstarimage',
+			'image' => 'groupimage',
+			'namestyle' => 'namestyle',
+			'usereputationsystem' => 'usereputationsystem'
+		);
+
+		foreach($data_key as $field => $key)
+		{
+			$announcementarray[$key] = $groupscache[$announcementarray['usergroup']][$field];
+		}
+		
+		require_once MYBB_ROOT."inc/functions_post.php";
+		$preview = build_postbit($announcementarray, 3);
+	}
+	else
+		$preview = '';
+	
 	$plugins->run_hooks("modcp_new_announcement");
 
 	eval("\$announcements = \"".$templates->get("modcp_announcements_new")."\";");
@@ -1050,7 +1135,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
+	if($startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1066,11 +1151,11 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
+		if($enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		if($enddate <= $startdate)
+		elseif($enddate < $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1081,23 +1166,31 @@ if($mybb->input['action'] == "do_edit_announcement")
 	// Proceed to update if no errors
 	if(!$errors)
 	{
-		$update_announcement = array(
-			'uid' => $mybb->user['uid'],
-			'subject' => $db->escape_string($mybb->input['title']),
-			'message' => $db->escape_string($mybb->input['message']),
-			'startdate' => $startdate,
-			'enddate' => $enddate,
-			'allowhtml' => $db->escape_string($mybb->input['allowhtml']),
-			'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
-			'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
-		);
+		if(isset($mybb->input['preview']))
+		{
+			$preview = array();
+			$mybb->input['action'] = 'edit_announcement';
+		}
+		else
+		{
+			$update_announcement = array(
+				'uid' => $mybb->user['uid'],
+				'subject' => $db->escape_string($mybb->input['title']),
+				'message' => $db->escape_string($mybb->input['message']),
+				'startdate' => $startdate,
+				'enddate' => $enddate,
+				'allowhtml' => $db->escape_string($mybb->input['allowhtml']),
+				'allowmycode' => $db->escape_string($mybb->input['allowmycode']),
+				'allowsmilies' => $db->escape_string($mybb->input['allowsmilies']),
+			);
 
-		$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
-		
-		$plugins->run_hooks("modcp_do_edit_announcement_end");
-		
-		$cache->update_forumsdisplay();
-		redirect("modcp.php?action=announcements", $lang->redirect_edit_announcement);
+			$db->update_query("announcements", $update_announcement, "aid='{$aid}'");
+			
+			$plugins->run_hooks("modcp_do_edit_announcement_end");
+			
+			$cache->update_forumsdisplay();
+			redirect("modcp.php?action=announcements", $lang->redirect_edit_announcement);
+		}
 	}
 	else
 	{
@@ -1182,20 +1275,53 @@ if($mybb->input['action'] == "edit_announcement")
 	}
 	else
 	{
-		// Note: dates are in GMT timezone
-		$starttime_time = gmdate('g:i a', $announcement['startdate']);
-		$endtime_time = gmdate('g:i a', $announcement['enddate']);
+		// Do we have a preview?
+		if(isset($preview))
+		{
+			// Set $announcement to input stuff
+			$announcement['subject'] = $mybb->input['title'];
+			$announcement['message'] = $mybb->input['message'];
+			$announcement['allowhtml'] = $mybb->input['allowhtml'];
+			$announcement['allowmycode'] = $mybb->input['allowmycode'];
+			$announcement['allowsmilies'] = $mybb->input['allowsmilies'];
+			
+			$months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');			
+			if(!in_array($mybb->input['starttime_month'], $months))
+			{
+				$mybb->input['starttime_month'] = 1;
+			}
+			
+			if(!in_array($mybb->input['endtime_month'], $months))
+			{
+				$mybb->input['endtime_month'] = 1;
+			}
+			
+			$startmonth = $mybb->input['starttime_month'];
+			$startdateyear = htmlspecialchars_uni($mybb->input['starttime_year']);
+			$startday = intval($mybb->input['starttime_day']);
+			$starttime_time = htmlspecialchars($mybb->input['starttime_time']);
+			$endmonth = $mybb->input['endtime_month'];
+			$enddateyear = htmlspecialchars_uni($mybb->input['endtime_year']);
+			$endday = intval($mybb->input['endtime_day']);
+			$endtime_time = htmlspecialchars($mybb->input['endtime_time']);
+		}
+		else
+		{
+			// Note: dates are in GMT timezone
+			$starttime_time = gmdate('g:i a', $announcement['startdate']);
+			$endtime_time = gmdate('g:i a', $announcement['enddate']);
 
-		$startday = gmdate('j', $announcement['startdate']);
-		$endday = gmdate('j', $announcement['enddate']);
+			$startday = gmdate('j', $announcement['startdate']);
+			$endday = gmdate('j', $announcement['enddate']);
 
-		$startmonth = gmdate('m', $announcement['startdate']);
-		$endmonth = gmdate('m', $announcement['enddate']);
+			$startmonth = gmdate('m', $announcement['startdate']);
+			$endmonth = gmdate('m', $announcement['enddate']);
 
-		$startdateyear = gmdate('Y', $announcement['startdate']);
-		$enddateyear = gmdate('Y', $announcement['enddate']);
+			$startdateyear = gmdate('Y', $announcement['startdate']);
+			$enddateyear = gmdate('Y', $announcement['enddate']);
 
-		$errored = false;
+			$errored = false;
+		}
 	}
 
 	// Generate form elements
@@ -1292,6 +1418,49 @@ if($mybb->input['action'] == "edit_announcement")
 	// MyCode editor
 	$codebuttons = build_mycode_inserter();
 	$smilieinserter = build_clickable_smilies();
+	
+	if(isset($preview))
+	{
+		$announcementarray = array(
+			'fid' => $announcement_fid,
+			'uid' => $mybb->user['uid'],
+			'subject' => $mybb->input['title'],
+			'message' => $mybb->input['message'],
+			'allowhtml' => intval($mybb->input['allowhtml']),
+			'allowmycode' => intval($mybb->input['allowmycode']),
+			'allowsmilies' => intval($mybb->input['allowsmilies']),
+			'dateline' => TIME_NOW,
+			'userusername' => $mybb->user['username'],
+		);
+		
+		$array = $mybb->user;
+		foreach($array as $key => $element)
+		{
+			$announcementarray[$key] = $element;
+		}
+		
+		// Gather usergroup data from the cache
+		// Field => Array Key
+		$data_key = array(
+			'title' => 'grouptitle',
+			'usertitle' => 'groupusertitle',
+			'stars' => 'groupstars',
+			'starimage' => 'groupstarimage',
+			'image' => 'groupimage',
+			'namestyle' => 'namestyle',
+			'usereputationsystem' => 'usereputationsystem'
+		);
+
+		foreach($data_key as $field => $key)
+		{
+			$announcementarray[$key] = $groupscache[$announcementarray['usergroup']][$field];
+		}
+		
+		require_once MYBB_ROOT."inc/functions_post.php";
+		$preview = build_postbit($announcementarray, 3);
+	}
+	else
+		$preview = '';
 	
 	$plugins->run_hooks("modcp_edit_announcement");
 

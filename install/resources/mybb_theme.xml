@@ -4853,7 +4853,7 @@ body {
 	{$footer}
 </body>
 </html>]]></template>
-		<template name="modcp_announcements_edit" version="1405"><![CDATA[<html>
+		<template name="modcp_announcements_edit" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
 {$headerinclude}
@@ -4870,6 +4870,7 @@ body {
 				{$modcp_nav}
 				<td valign="top">
 					{$errors}
+					{$preview}
 					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 						<tr>
 							<td class="thead" colspan="6"><strong>{$lang->edit_announcement}</strong></td>
@@ -4930,7 +4931,7 @@ body {
 					<br />
 					<div align="center">
 						<input type="submit" class="button" name="Edit Announcement" value="{$lang->edit_announcement}" />&nbsp;&nbsp;
-						<input type="reset" class="button" name="Reset" value="{$lang->reset}" />
+						<input type="submit" class="button" name="preview" value="{$lang->preview}" />
 					</div>
 				</td>
 			</tr>
@@ -4958,7 +4959,7 @@ body {
 					{$announcements_global}
 				</table>
 				<br />]]></template>
-		<template name="modcp_announcements_new" version="1405"><![CDATA[<html>
+		<template name="modcp_announcements_new" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
 {$headerinclude}
@@ -4974,6 +4975,7 @@ body {
 				{$modcp_nav}
 				<td valign="top">
 					{$errors}
+					{$preview}
 					<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
 						<tr>
 							<td class="thead" colspan="6"><strong>{$lang->add_announcement}</strong></td>
@@ -5034,7 +5036,7 @@ body {
 					<br />
 					<div align="center">
 						<input type="submit" class="button" name="Add Announcement" value="{$lang->add_announcement}" />&nbsp;&nbsp;
-						<input type="reset" class="button" name="Reset" value="{$lang->reset}" />
+						<input type="submit" class="button" name="preview" value="{$lang->preview}" />
 					</div>
 				</td>
 			</tr>

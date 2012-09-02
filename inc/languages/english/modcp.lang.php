@@ -289,4 +289,6 @@ $l['error_invalid_start_date'] = "The starting date for the announcement is inva
 $l['error_invalid_end_date'] = "The ending date for the announcement is invalid.";
 $l['error_end_before_start'] = "The ending date must be after the start date.";
 $l['error_invalid_announcement'] = "The specified announcement is invalid.";
+
+$l['preview'] = 'Preview';
 ?>
