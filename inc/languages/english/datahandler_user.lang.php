@@ -30,6 +30,7 @@ $l['userdata_invalid_msn_address'] = 'The MSN address you entered is invalid. Pl
 $l['userdata_invalid_birthday'] = 'The birthday you entered is invalid. Please enter a valid birthday or leave the field empty.';
 $l['userdata_invalid_birthday_coppa'] = 'To verify your age, please enter the year you were born. You may hide your Age and Date of Birth in your profile options.';
 $l['userdata_invalid_birthday_coppa2'] = 'You must be at least 13 years of age to be a member of this message board. Please contact an Administrator.';
+$l['userdata_invalid_birthday_privacy'] = 'Please choose a valid birthday privacy option.';
 $l['userdata_invalid_referrer'] = 'The referrer you entered does not exist. Please enter an existing referrer or leave the field empty.';
 $l['userdata_invalid_language'] = 'The language you selected does not exist. Please select an existing language.';
 $l['userdata_missing_returndate'] = 'The Return Date you specified is missing one or more fields. Please make sure you have filled in the day, month, and year fields.';

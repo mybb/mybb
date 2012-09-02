@@ -419,7 +419,28 @@ class UserDataHandler extends DataHandler
 		}
 		return true;
 	}
-	
+
+	/**
+	 * Verifies if the birthday privacy option is valid or not.
+	 *
+	 * @return boolean True when valid, false when invalid.
+	 */
+	function verify_birthday_privacy()
+	{
+		$birthdayprivacy = &$this->data['birthdayprivacy'];
+		$accepted = array(
+					'none',
+					'age',
+					'all');
+
+		if(!in_array($birthdayprivacy, $accepted))
+		{
+			$this->set_error("invalid_birthday_privacy");
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	* Verifies if the post count field is filled in correctly.
 	*
@@ -928,6 +949,10 @@ class UserDataHandler extends DataHandler
 		if($this->method == "insert" && array_key_exists('regcheck1', $user) && array_key_exists('regcheck2', $user))
 		{
 			$this->verify_checkfields();
+		}
+		if(array_key_exists('birthdayprivacy', $user))
+		{
+			$this->verify_birthday_privacy();
 		}
 		
 		$plugins->run_hooks("datahandler_user_validate", $this);
