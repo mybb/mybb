@@ -34,6 +34,9 @@ $l['error_invalid_announcement'] = "Please input a valid announcement.";
 $l['error_missing_title'] = "You did not enter a title.";
 $l['error_missing_message'] = "You did not enter a message.";
 $l['error_missing_forum'] = "You did not select a forum.";
+$l['error_invalid_start_date'] = "The starting date for the announcement is invalid.";
+$l['error_invalid_end_date'] = "The ending date for the announcement is invalid.";
+$l['error_end_before_start'] = "The ending date must be after the start date.";
 
 $l['add_an_announcement'] = "Add an announcement";
 $l['update_an_announcement'] = "Update an announcement";

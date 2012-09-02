@@ -771,8 +771,7 @@ if($mybb->input['action'] == "do_new_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -788,11 +787,11 @@ if($mybb->input['action'] == "do_new_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
@@ -1051,7 +1050,7 @@ if($mybb->input['action'] == "do_edit_announcement")
 	}
 
 	$startdate = gmmktime(intval($startdate[0]), intval($startdate[1]), 0, (int)$mybb->input['starttime_month'], intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year']));
-	if($startdate < 0 || $startdate == false)
+	if(!checkdate(intval($mybb->input['starttime_month']), intval($mybb->input['starttime_day']), intval($mybb->input['starttime_year'])) || $startdate < 0 || $startdate == false)
 	{
 		$errors[] = $lang->error_invalid_start_date;
 	}
@@ -1067,11 +1066,11 @@ if($mybb->input['action'] == "do_edit_announcement")
 			$mybb->input['endtime_month'] = 1;
 		}
 		$enddate = gmmktime(intval($enddate[0]), intval($enddate[1]), 0, (int)$mybb->input['endtime_month'], intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year']));
-		if($enddate < 0 || $enddate == false)
+		if(!checkdate(intval($mybb->input['endtime_month']), intval($mybb->input['endtime_day']), intval($mybb->input['endtime_year'])) || $enddate < 0 || $enddate == false)
 		{
 			$errors[] = $lang->error_invalid_end_date;
 		}
-		elseif($enddate < $startdate)
+		if($enddate <= $startdate)
 		{
 			$errors[] = $lang->error_end_before_start;
 		}
