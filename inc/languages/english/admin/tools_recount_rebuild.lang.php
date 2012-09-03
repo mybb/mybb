@@ -12,6 +12,8 @@ $l['recount_rebuild_desc'] = "Here you can recount &amp; rebuild data to fix any
 $l['data_per_page'] = "Data Entries Per Page";
 $l['recount_stats'] = "Recount Statistics";
 $l['recount_stats_desc'] = "This will recount and update your forum statistics on the forum index and statistics pages.";
+$l['recount_reputation'] = "Recount Reputation";
+$l['recount_reputation_desc'] = "This will recount the reputation of each user.";
 $l['rebuild_forum_counters'] = "Rebuild Forum Counters";
 $l['rebuild_forum_counters_desc'] = "When this is run, the post/thread counters and last post of each forum will be updated to reflect the correct values.";
 $l['rebuild_thread_counters'] = "Rebuild Thread Counters";
@@ -26,6 +28,7 @@ $l['success_rebuilt_thread_counters'] = "The thread counters have been rebuilt s
 $l['success_rebuilt_user_counters'] = "The user posts count have been recounted successfully.";
 $l['success_rebuilt_attachment_thumbnails'] = "The attachment thumbnails have been rebuilt successfully.";
 $l['success_rebuilt_forum_stats'] = "The forum statistics have been rebuilt successfully.";
+$l['success_rebuilt_reputation'] = "The user reputation has been rebuilt successfully.";
 
 $l['confirm_proceed_rebuild'] = "Click \"Proceed\" to continue the recount and rebuild process.";
 $l['automatically_redirecting'] = "Automatically Redirecting...";

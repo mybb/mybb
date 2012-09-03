@@ -110,6 +110,34 @@ function acp_recount_user_posts()
 	check_proceed($num_users, $end, ++$page, $per_page, "userposts", "do_recountuserposts", $lang->success_rebuilt_user_counters);
 }
 
+function acp_recount_reputation()
+{
+	global $db, $mybb, $lang;
+	
+	$query = $db->simple_select("users", "COUNT(uid) as num_users");
+	$num_users = $db->fetch_field($query, 'num_users');
+	
+	$page = intval($mybb->input['page']);
+	$per_page = intval($mybb->input['reputation']);
+	$start = ($page-1) * $per_page;
+	$end = $start + $per_page;
+	
+	$query = $db->simple_select("users", "uid", '', array('order_by' => 'uid', 'order_dir' => 'asc', 'limit_start' => $start, 'limit' => $per_page));
+	while($user = $db->fetch_array($query))
+	{		
+		$query2 = $db->query("
+			SELECT SUM(reputation) as total_rep
+			FROM ".TABLE_PREFIX."reputation
+			WHERE `uid`='{$user['uid']}'
+		");
+		$total_rep = $db->fetch_field($query2, "total_rep");
+		
+		$db->update_query("users", array("reputation" => intval($total_rep)), "uid='{$user['uid']}'");
+	}
+	
+	check_proceed($num_users, $end, ++$page, $per_page, "reputation", "do_recountreputation", $lang->success_rebuilt_reputation);
+}
+
 function acp_rebuild_attachment_thumbnails()
 {
 	global $db, $mybb, $lang;
@@ -255,6 +283,23 @@ if(!$mybb->input['action'])
 			
 			acp_rebuild_attachment_thumbnails();
 		}
+		elseif(isset($mybb->input['do_recountreputation']))
+		{
+			$plugins->run_hooks("admin_tools_recount_recount_reputation");
+			
+			if($mybb->input['page'] == 1)
+			{
+				// Log admin action
+				log_admin_action("reputation");
+			}
+			
+			if(!intval($mybb->input['reputation']))
+			{
+				$mybb->input['reputation'] = 500;
+			}
+			
+			acp_recount_reputation();
+		}
 		else
 		{
 			$cache->update_stats();
@@ -309,6 +354,11 @@ if(!$mybb->input['action'])
 	$form_container->output_cell("<label>{$lang->recount_stats}</label><div class=\"description\">{$lang->recount_stats_desc}</div>");
 	$form_container->output_cell($lang->na);
 	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountstats")));
+	$form_container->construct_row();
+	
+	$form_container->output_cell("<label>{$lang->recount_reputation}</label><div class=\"description\">{$lang->recount_reputation_desc}</div>");
+	$form_container->output_cell($form->generate_text_box("reputation", 500, array('style' => 'width: 150px;')));
+	$form_container->output_cell($form->generate_submit_button($lang->go, array("name" => "do_recountreputation")));
 	$form_container->construct_row();
 	
 	$plugins->run_hooks("admin_tools_recount_rebuild_output_list");
