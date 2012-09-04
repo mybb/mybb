@@ -100,15 +100,24 @@ if(!$mybb->input['action'])
 			$table->construct_cell("<strong><span style=\"color: {$color};\">{$file['status']}</span></strong>", array("class" => "align_center"));
 			$table->construct_row();
 		}
-		
+
+		$no_errors = false;
 		if($table->num_rows() == 0)
 		{
+			$no_errors = true;
 			$table->construct_cell($lang->no_corrupt_files_found, array('colspan' => 3));
 			$table->construct_row();
 		}
-		
-		$table->output($lang->file_verification.": ".$lang->found_problems);
-		
+
+		if($no_errors)
+		{
+			$table->output($lang->file_verification.": ".$lang->no_problems_found);
+		}
+		else
+		{
+			$table->output($lang->file_verification.": ".$lang->found_problems);
+		}
+
 		$page->output_footer();
 		exit;
 	}
