@@ -206,7 +206,18 @@ class PostDataHandler extends DataHandler
 			}
 		}
 
-		if(my_strlen($subject) > 85)
+		// If post is reply and begins with "RE: ", remove 4 from subject length.
+		$subject_length = my_strlen($subject);
+		if($this->action == "post")
+		{
+			$position_re = my_strpos($subject, "RE: ");
+			if($position_re !== false && $position_re == 0)
+			{
+				$subject_length = $subject_length - 4;
+			}
+		}
+		
+		if($subject_length > 85)
 		{
 			// Subject is too long
 			$this->set_error('subject_too_long', my_strlen($subject));
