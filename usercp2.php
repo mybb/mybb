@@ -32,6 +32,8 @@ usercp_menu();
 
 $server_http_referer = htmlentities($_SERVER['HTTP_REFERER']);
 
+$plugins->run_hooks("usercp2_start");
+
 if($mybb->input['action'] == "do_addsubscription")
 {
 	if($mybb->input['type'] != "forum")
@@ -195,4 +197,7 @@ else
 {
 	error($lang->error_invalidaction);
 }
+
+$plugins->run_hooks("usercp2_end");
+
 ?>
