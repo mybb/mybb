@@ -633,7 +633,8 @@ if($mybb->input['action'] == "edit")
 				)
 			);
 
-			require_once MYBB_ROOT."inc/functions_warnings.php";
+			require_once MYBB_ROOT."inc/class_warnings.php";
+			$warnings_object = new Warnings;
 			foreach($moderator_options as $option)
 			{
 				if(!$mybb->input[$option['action']])
@@ -660,7 +661,7 @@ if($mybb->input['action'] == "edit")
 
 					if(!is_array($errors))
 					{
-						$suspend_length = fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
+						$suspend_length = $warnings_object->fetch_time_length(intval($mybb->input[$option['time']]), $mybb->input[$option['period']]);
 	
 						if($user[$option['update_field']] == 1 && ($mybb->input[$option['time']] || $mybb->input[$option['period']] == "never"))
 						{
@@ -1299,7 +1300,6 @@ if($mybb->input['action'] == "edit")
 	$form_container->output_row($lang->upload_avatar, $auto_resize, $form->generate_file_upload_box('avatar_upload', array('id' => 'avatar_upload')), 'avatar_upload');
 	$form_container->output_row($lang->or_specify_avatar_url, "", $form->generate_text_box('avatar_url', $avatar_url, array('id' => 'avatar_url')), 'avatar_url');
 	$form_container->end();
-	echo "</div>\n";
 	
 	//
 	// MODERATOR OPTIONS

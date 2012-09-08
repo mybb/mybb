@@ -15,7 +15,8 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-require_once MYBB_ROOT."inc/functions_warnings.php";
+require_once MYBB_ROOT."inc/class_warnings.php";
+$warnings_object = new Warnings;
 
 $page->add_breadcrumb_item($lang->warning_system, "index.php?module=config-warning");
 
@@ -64,7 +65,7 @@ if($mybb->input['action'] == "add_level")
 				$action = array(
 					"type" => 1,
 					"usergroup" => intval($mybb->input['action_1_usergroup']),
-					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
+					"length" => $warnings_object->fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
 			// Suspend posting
@@ -72,7 +73,7 @@ if($mybb->input['action'] == "add_level")
 			{
 				$action = array(
 					"type" => 2,
-					"length" => fetch_time_length($mybb->input['action_2_time'], $mybb->input['action_2_period'])
+					"length" => $warnings_object->fetch_time_length($mybb->input['action_2_time'], $mybb->input['action_2_period'])
 				);
 			}
 			// Moderate posts
@@ -80,7 +81,7 @@ if($mybb->input['action'] == "add_level")
 			{
 				$action = array(
 					"type" => 3,
-					"length" => fetch_time_length($mybb->input['action_3_time'], $mybb->input['action_3_period'])
+					"length" => $warnings_object->fetch_time_length($mybb->input['action_3_time'], $mybb->input['action_3_period'])
 				);
 			}
 			$new_level = array(
@@ -227,7 +228,7 @@ if($mybb->input['action'] == "edit_level")
 				$action = array(
 					"type" => 1,
 					"usergroup" => intval($mybb->input['action_1_usergroup']),
-					"length" => fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
+					"length" => $warnings_object->fetch_time_length($mybb->input['action_1_time'], $mybb->input['action_1_period'])
 				);
 			}
 			// Suspend posting
@@ -235,7 +236,7 @@ if($mybb->input['action'] == "edit_level")
 			{
 				$action = array(
 					"type" => 2,
-					"length" => fetch_time_length($mybb->input['action_2_time'], $mybb->input['action_2_period'])
+					"length" => $warnings_object->fetch_time_length($mybb->input['action_2_time'], $mybb->input['action_2_period'])
 				);
 			}
 			// Moderate posts
@@ -243,7 +244,7 @@ if($mybb->input['action'] == "edit_level")
 			{
 				$action = array(
 					"type" => 3,
-					"length" => fetch_time_length($mybb->input['action_3_time'], $mybb->input['action_3_period'])
+					"length" => $warnings_object->fetch_time_length($mybb->input['action_3_time'], $mybb->input['action_3_period'])
 				);
 			}
 			$updated_level = array(
@@ -288,19 +289,19 @@ if($mybb->input['action'] == "edit_level")
 		if($action['type'] == 1)
 		{
 			$mybb->input['action_1_usergroup'] = $action['usergroup'];
-			$length = fetch_friendly_expiration($action['length']);
+			$length = $warnings_object->fetch_friendly_expiration($action['length']);
 			$mybb->input['action_1_time'] = $length['time'];
 			$mybb->input['action_1_period'] = $length['period'];
 		}
 		else if($action['type'] == 2)
 		{
-			$length = fetch_friendly_expiration($action['length']);
+			$length = $warnings_object->fetch_friendly_expiration($action['length']);
 			$mybb->input['action_2_time'] = $length['time'];
 			$mybb->input['action_2_period'] = $length['period'];
 		}
 		else if($action['type'] == 3)
 		{
-			$length = fetch_friendly_expiration($action['length']);
+			$length = $warnings_object->fetch_friendly_expiration($action['length']);
 			$mybb->input['action_3_time'] = $length['time'];
 			$mybb->input['action_3_period'] = $length['period'];
 		}
@@ -452,7 +453,7 @@ if($mybb->input['action'] == "add_type")
 			$new_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"points" => intval($mybb->input['points']),
-				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
+				"expirationtime" =>  $warnings_object->fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 			
 			$tid = $db->insert_query("warningtypes", $new_type);
@@ -539,7 +540,7 @@ if($mybb->input['action'] == "edit_type")
 			$updated_type = array(
 				"title" => $db->escape_string($mybb->input['title']),
 				"points" => intval($mybb->input['points']),
-				"expirationtime" =>  fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
+				"expirationtime" =>  $warnings_object->fetch_time_length($mybb->input['expire_time'], $mybb->input['expire_period'])
 			);
 			
 			$db->update_query("warningtypes", $updated_type, "tid='{$type['tid']}'");
@@ -555,7 +556,7 @@ if($mybb->input['action'] == "edit_type")
 	}
 	else
 	{
-		$expiration = fetch_friendly_expiration($type['expirationtime']);
+		$expiration = $warnings_object->fetch_friendly_expiration($type['expirationtime']);
 		$mybb->input = array(
 			"title" => $type['title'],
 			"points" => $type['points'],
@@ -660,7 +661,7 @@ if($mybb->input['action'] == "levels")
 	{
 		$table->construct_cell("<strong>{$level['percentage']}%</strong>", array("class" => "align_center"));
 		$action = unserialize($level['action']);
-		$period = fetch_friendly_expiration($action['length']);
+		$period = $warnings_object->fetch_friendly_expiration($action['length']);
 
 		// Get the right language for the ban period
 		$lang_str = "expiration_".$period['period'];
@@ -732,7 +733,7 @@ if(!$mybb->input['action'])
 		$type['name'] = htmlspecialchars_uni($type['title']);
 		$table->construct_cell("<a href=\"index.php?module=config-warning&amp;action=edit_type&amp;tid={$type['tid']}\"><strong>{$type['title']}</strong></a>");
 		$table->construct_cell("{$type['points']}", array("class" => "align_center"));
-		$expiration = fetch_friendly_expiration($type['expirationtime']);
+		$expiration = $warnings_object->fetch_friendly_expiration($type['expirationtime']);
 		$lang_str = "expiration_".$expiration['period'];
 		if($type['expirationtime'] > 0)
 		{
