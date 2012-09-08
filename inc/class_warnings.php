@@ -90,7 +90,7 @@ class Warnings {
 		}
 	}
 	
-	public function function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
+	public function find_warnlevels_to_check(&$query, &$max_expiration_times, &$check_levels)
 	{
 		global $db;
 		
