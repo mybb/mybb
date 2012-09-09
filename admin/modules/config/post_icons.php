@@ -131,28 +131,32 @@ if($mybb->input['action'] == "add_multiple")
 			{
 				$aicons[$icon['path']] = 1;
 			}
-			
-			while($file = readdir($dir))
+
+			if(!$errors)
 			{
-				if($file != ".." && $file != ".")
+				while($file = readdir($dir))
 				{
-					$ext = get_extension($file);
-					if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
+					if($file != ".." && $file != ".")
 					{
-						if(!$aicons[$path.$file])
+						$ext = get_extension($file);
+						if($ext == "gif" || $ext == "jpg" || $ext == "jpeg" || $ext == "png" || $ext == "bmp")
 						{
-							$icons[] = $file;
+							if(!$aicons[$path.$file])
+							{
+								$icons[] = $file;
+							}
 						}
 					}
 				}
+				closedir($dir);
+	
+				if(count($icons) == 0)
+				{
+					$errors[] = $lang->error_no_images;
+				}
 			}
-			closedir($dir);
 
-			if(count($icons) == 0)
-			{
-				$errors[] = $lang->error_no_images;
-			}
-
+			// Check for errors again (from above statement)!
 			if(!$errors)
 			{
 				// We have no errors so let's proceed!
