@@ -11436,7 +11436,8 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$announcement}
 {$footer}
 </body>
-</html>]]></template><template name="announcement" version="1800"><![CDATA[<html>
+</html>]]></template>
+		<template name="contact" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->contact}</title>
 {$headerinclude}
@@ -11452,16 +11453,17 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->contact_subject}:</strong></td>
-<td class="trow1"><input type="text" name="subject" class="textbox" /></td>
+<td class="trow1"><input type="text" name="subject" class="textbox" value="{$mybb->input['subject']}" /></td>
 </tr>
 <tr>
 <td class="trow2" valign="top"><strong>{$lang->contact_message}:</strong></td>
-<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" ></textarea></td>
+<td class="trow2"><textarea cols="50" rows="10" name="message" class="textarea" >{$mybb->input['message']}</textarea></td>
 </tr>
 <tr>
 <td class="trow1" valign="top"><strong>{$lang->contact_email}:</strong><br /><span class="smalltext">{$lang->contact_email_desc}</span></td>
-<td class="trow1"><input type="text" name="email" class="textbox" /></td>
+<td class="trow1"><input type="text" name="email" class="textbox" value="{$mybb->input['email']}" /></td>
 </tr>
+{$captcha}
 </table>
 </table>
 <br />

@@ -14,13 +14,17 @@ define('THIS_SCRIPT', 'contact.php');
 
 $templatelist = "contact";
 require_once "./global.php";
+require_once MYBB_ROOT.'inc/class_captcha.php';
 
 // Load global language phrases
 $lang->load("contact");
 
 if(!$mybb->user['uid'])
 {
-	error_no_permission();
+	if($mybb->settings['contact_guests'] == 1)
+	{
+		error_no_permission();
+	}
 }
 
 $errors = '';
@@ -55,6 +59,19 @@ if($mybb->request_method == "post" && isset($mybb->input['submit']))
 	}
 	
 	// Should we have a CAPTCHA? Perhaps yes...
+	if($mybb->settings['captchaimage'])
+	{
+		$captcha = new captcha;
+
+		if($captcha->validate_captcha() == false)
+		{
+			// CAPTCHA validation failed
+			foreach($captcha->get_errors() as $error)
+			{
+				$errors[] = $error;
+			}
+		}
+	}
 	
 	if(empty($errors))
 	{
@@ -71,7 +88,22 @@ if($mybb->request_method == "post" && isset($mybb->input['submit']))
 }
 
 // Generate CAPTCHA?
+if($mybb->settings['captchaimage'])
+{
+	$post_captcha = new captcha(true, "post_captcha");
 
+	if($post_captcha->html)
+	{
+		$captcha = $post_captcha->html;
+	}
+}
+else
+	$captcha = '';
+
+$mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
+$mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
+$mybb->input['email'] = htmlspecialchars_uni($mybb->input['email']);
+	
 // Contact page
 eval("\$page = \"".$templates->get("contact")."\";");
 output_page($page);
