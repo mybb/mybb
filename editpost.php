@@ -39,8 +39,7 @@ if(isset($style) && $style['pid'] == $pid && $style['type'] != 'f')
 }
 else
 {
-	$query = $db->simple_select("posts", "*", "pid='$pid'");
-	$post = $db->fetch_array($query);
+	$post = get_post($pid);
 }
 
 if(!$post['pid'])
@@ -72,10 +71,16 @@ if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
 }
 
 // Add prefix to breadcrumb
-$query = $db->simple_select('threadprefixes', 'displaystyle', "pid='{$thread['prefix']}'");
-$breadcrumbprefix = $db->fetch_field($query, 'displaystyle');
+if($thread['prefix'])
+{
+	$threadprefixes = $cache->read('threadprefixes');
+	if(isset($threadprefixes[$thread['prefix']]))
+	{
+		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'];
+	}
+}
 
-if($breadcrumbprefix)
+if(!empty($breadcrumbprefix))
 {
 	$breadcrumbprefix .= '&nbsp;';
 }
