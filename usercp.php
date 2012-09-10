@@ -1264,7 +1264,7 @@ if($mybb->input['action'] == "subscriptions")
 		if($forumpermissions['canview'] == 0 || $forumpermissions['canviewthreads'] == 0)
 		{
 			// Hmm, you don't have permission to view this thread - unsubscribe!
-			$del_subscriptions[] = $subscription['tid'];
+			$del_subscriptions[] = $subscription['sid'];
 		}
 		else if($subscription['tid'])
 		{
@@ -1274,11 +1274,11 @@ if($mybb->input['action'] == "subscriptions")
 
 	if(is_array($del_subscriptions))
 	{
-		$tids = implode(',', $del_subscriptions);
+		$sids = implode(',', $del_subscriptions);
 
-		if($tids)
+		if($sids)
 		{
-			$db->delete_query("threadsubscriptions", "tid IN ({$tids}) AND uid='{$mybb->user['uid']}'");
+			$db->delete_query("threadsubscriptions", "sid IN ({$sids}) AND uid='{$mybb->user['uid']}'");
 		}
 
 		$threadcount = $threadcount - count($del_subscriptions);
