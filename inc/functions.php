@@ -3139,7 +3139,7 @@ function get_attachment_icon($ext)
  */
 function get_unviewable_forums($only_readable_threads=false)
 {
-	global $forum_cache, $permissioncache, $mybb, $unviewableforums, $unviewable, $templates, $forumpass;
+	global $forum_cache, $permissioncache, $mybb, $unviewable, $templates, $forumpass;
 
 	$pid = intval($pid);
 
