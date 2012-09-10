@@ -1057,7 +1057,7 @@ switch($mybb->input['action'])
 		}
 		while($delayedmod = $db->fetch_array($query))
 		{
-			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['dateline']+($delayedmod['delay']*24*60*60));
+			$delayedmod['dateline'] = my_date("jS M Y, G:i", $delayedmod['delaydateline']);
 			$delayedmod['profilelink'] = build_profile_link($delayedmod['username'], $delayedmod['uid']);
 			$delayedmod['action'] = $actions[$delayedmod['type']];
 			$info = '';
