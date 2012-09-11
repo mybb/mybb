@@ -212,7 +212,16 @@ function archive_error($error)
  */
 function archive_error_no_permission()
 {
-	global $lang;
+	global $lang, $db, $session;
+
+	$noperm_array = array (
+		"nopermission" => '1',
+		"location1" => 0,
+		"location2" => 0
+	);
+
+	$db->update_query("sessions", $noperm_array, "sid='{$session->sid}'", 1);
+
 	archive_error($lang->archive_nopermission);
 }
 
