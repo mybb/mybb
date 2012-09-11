@@ -184,6 +184,7 @@ if($mybb->input['action'] == "edit")
 				"htmlmessage" => $db->escape_string($mybb->input['htmlmessage']),
 				"format" => intval($mybb->input['format']),
 				"type" => intval($mybb->input['type']),
+				"perpage" => intval($mybb->input['perpage'])
 			);
 			$db->update_query("massemails", $updated_email, "mid='{$email['mid']}'");
 
