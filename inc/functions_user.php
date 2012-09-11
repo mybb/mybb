@@ -434,6 +434,15 @@ function usercp_menu_messenger()
 {
 	global $db, $mybb, $templates, $theme, $usercpmenu, $lang, $collapsed, $collapsedimg;
 
+	$usercp_nav_messenger = $templates->get("usercp_nav_messenger");
+	// Hide tracking link if no permission
+	$tracking = '';
+	if($mybb->usergroup['cantrackpms'])
+	{
+		$tracking = $templates->get("usercp_nav_messenger_tracking");
+	}
+	eval("\$ucp_nav_tracking = \"". $tracking ."\";");
+
 	$foldersexploded = explode("$%%$", $mybb->user['pmfolders']);
 	foreach($foldersexploded as $key => $folders)
 	{
@@ -455,7 +464,7 @@ function usercp_menu_messenger()
 		$folderlinks .= "<div><a href=\"private.php?fid=$folderinfo[0]\" class=\"usercp_nav_item {$class}\">$folderinfo[1]</a></div>\n";
 	}
 	
-	eval("\$usercpmenu .= \"".$templates->get("usercp_nav_messenger")."\";");
+	eval("\$usercpmenu .= \"".$usercp_nav_messenger."\";");
 }
 
 /**
