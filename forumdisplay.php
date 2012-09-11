@@ -598,7 +598,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 		$and = "&";
 	}
 	
-	if($sortby != "lastpost")
+	if((!empty($foruminfo['defaultsortby']) && $sortby != $foruminfo['defaultsortby']) || (empty($foruminfo['defaultsortby']) && $sortby != "lastpost"))
 	{
 		$page_url .= "{$q}{$and}sortby={$sortby}";
 		$q = '';
