@@ -80,6 +80,10 @@ if($unviewableforums && !is_super_admin($mybb->user['uid']))
 	$unviewableforums = str_replace("'", '', $unviewableforums);
 	$unviewableforums = explode(',', $unviewableforums);
 }
+else
+{
+	$unviewableforums = array();
+}
 
 // Fetch the Mod CP menu
 eval("\$modcp_nav = \"".$templates->get("modcp_nav")."\";");
