@@ -102,6 +102,7 @@ $l['error_invalid_view_sortorder'] = "You have selected an invalid sort order";
 $l['error_invalid_view_delete'] = "You selected an invalid administration view to delete";
 $l['error_cannot_delete_view'] = "You must have atleast 1 administration view.";
 $l['error_inline_no_users_selected'] = "Sorry, but you did not select any users. Please select some users and try again.";
+$l['error_no_referred_users'] = "The selected user does not have any referred users.";
 
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 
