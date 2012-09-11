@@ -103,6 +103,7 @@ $l['error_invalid_view_delete'] = "You selected an invalid administration view t
 $l['error_cannot_delete_view'] = "You must have atleast 1 administration view.";
 $l['error_inline_no_users_selected'] = "Sorry, but you did not select any users. Please select some users and try again.";
 $l['error_cannot_delete_user'] = "This user cannot be deleted.";
+$l['error_no_referred_users'] = "The selected user does not have any referred users.";
 
 $l['user_deletion_confirmation'] = "Are you sure you wish to delete this user?";
 

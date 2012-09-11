@@ -1510,8 +1510,21 @@ if($mybb->input['action'] == "referrers")
 	$admin_view['conditions'] = unserialize($admin_view['conditions']);
 	$admin_view['conditions']['referrer'] = $mybb->input['uid'];
 
-	echo build_users_view($admin_view);
-	
+	$view = build_users_view($admin_view);
+
+	// No referred users
+	if(!$view)
+	{
+		$table = new Table;
+		$table->construct_cell($lang->error_no_referred_users);
+		$table->construct_row();
+		$table->output($lang->show_referrers);
+	}
+	else
+	{
+		echo $view;
+	}
+
 	$page->output_footer();
 }
 
