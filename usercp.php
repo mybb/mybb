@@ -2603,8 +2603,8 @@ if($mybb->input['action'] == "usergroups")
 
 	// Fetch the list of groups the member is in
 	// Do the primary group first
-	$query = $db->simple_select("usergroups", "*", "gid='".$mybb->user['usergroup']."'");
-	$usergroup = $db->fetch_array($query);
+	$usergroups = $mybb->cache->read('usergroups');
+	$usergroup = $usergroups[$mybb->user['usergroup']];
 	$leavelink = "<div style=\"text-align:center;\"><span class=\"smalltext\">{$lang->usergroup_leave_primary}</span></div>";
 	$trow = alt_trow();
 	if($usergroup['candisplaygroup'] == 1 && $usergroup['gid'] == $mybb->user['displaygroup'])
