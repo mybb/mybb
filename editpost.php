@@ -71,18 +71,14 @@ if($forum['open'] == 0 || $mybb->user['suspendposting'] == 1)
 }
 
 // Add prefix to breadcrumb
+$breadcrumbprefix = '';
 if($thread['prefix'])
 {
 	$threadprefixes = $cache->read('threadprefixes');
 	if(isset($threadprefixes[$thread['prefix']]))
 	{
-		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'];
+		$breadcrumbprefix = $threadprefixes[$thread['prefix']]['displaystyle'].'&nbsp;';
 	}
-}
-
-if(!empty($breadcrumbprefix))
-{
-	$breadcrumbprefix .= '&nbsp;';
 }
 
 // Make navigation
