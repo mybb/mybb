@@ -85,7 +85,7 @@ function upgrade15_usernameverify()
 
 function upgrade15_usernameupdate()
 {
-	global $db, $output, $mybb;
+	global $db, $output, $mybb, $plugins;
 
 	$output->print_header("Performing Queries");
 
@@ -94,6 +94,9 @@ function upgrade15_usernameupdate()
 	
 	require_once MYBB_ROOT."inc/datahandler.php";
 	require_once MYBB_ROOT."inc/datahandlers/user.php";
+	// Load plugin system for datahandler
+	require_once MYBB_ROOT."inc/class_plugins.php";
+	$plugins = new pluginSystem;
 	
 	$not_renameable = array();
 	
