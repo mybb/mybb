@@ -1998,7 +1998,7 @@ body {
 {$usercpmenu}
 </table>
 </td>]]></template>
-		<template name="usercp_nav_messenger" version="1605"><![CDATA[<tr>
+		<template name="usercp_nav_messenger" version="1609"><![CDATA[<tr>
 	<td class="tcat">
 		<div class="expcolimage"><img src="{$theme['imgdir']}/collapse{$collapsedimg['usercppms']}.gif" id="usercppms_img" class="expander" alt="[-]"/></div>
 		<div><span class="smalltext"><strong>{$lang->ucp_nav_messenger}</strong></span></div>
@@ -2011,7 +2011,7 @@ body {
 			{$folderlinks}
 		</td>
 	</tr>
-	<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>
+	{$ucp_nav_tracking}
 	<tr><td class="trow1 smalltext"><a href="private.php?action=folders" class="usercp_nav_item usercp_nav_pmfolders">{$lang->ucp_nav_edit_folders}</a></td></tr>
 </tbody>
 ]]></template>
@@ -2100,6 +2100,7 @@ body {
 </tr>
 </table>
 </fieldset>]]></template>
+		<template name="usercp_nav_messenger_tracking" version="1609"><![CDATA[<tr><td class="trow1 smalltext"><a href="private.php?action=tracking" class="usercp_nav_item usercp_nav_pmtracking">{$lang->ucp_nav_tracking}</a></td></tr>]]></template>
 		<template name="usercp_options" version="1600"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->edit_options}</title>
@@ -3610,7 +3611,7 @@ body {
 ]]></template>
 		<template name="managegroup_leaders" version="1600"><![CDATA[<p>{$lang->group_leaders}: {$leaders}</p>]]></template>
 		<template name="managegroup_leaders_bit" version="1600"><![CDATA[{$leader_profile_link}{$comma}]]></template>
-		<template name="private_send" version="1600"><![CDATA[<html>
+		<template name="private_send" version="1609"><![CDATA[<html>
 <head>
 <title>{$lang->compose_pm}</title>
 {$headerinclude}
@@ -3662,7 +3663,7 @@ body {
 <label><input type="checkbox" class="checkbox" name="options[signature]" value="1" tabindex="5" {$optionschecked['signature']} />{$lang->options_sig}</label><br />
 <label><input type="checkbox" class="checkbox" name="options[disablesmilies]" value="1" tabindex="6" {$optionschecked['disablesmilies']} />{$lang->options_disable_smilies}</label><br />
 <label><input type="checkbox" class="checkbox" name="options[savecopy]" value="1" tabindex="7" {$optionschecked['savecopy']} />{$lang->options_save_copy}</label><br />
-<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />
+{$private_send_tracking}
 </span></td>
 </tr>
 </table>
@@ -3703,6 +3704,7 @@ body {
 {$autocompletejs}
 </body>
 </html>]]></template>
+		<template name="private_send_tracking" version="1609"><![CDATA[<label><input type="checkbox" class="checkbox" name="options[readreceipt]" value="1" tabindex="8" {$optionschecked['readreceipt']} />{$lang->options_read_receipt}</label><br />]]></template>
 		<template name="showthread_newreply_closed" version="120"><![CDATA[<a href="newreply.php?tid={$tid}"><img src="{$theme['imglangdir']}/closed.gif" alt="{$lang->thread_closed}" title="{$lang->thread_closed}" /></a>&nbsp;]]></template>
 		<template name="polls_editpoll" version="1400"><![CDATA[<html>
 <head>

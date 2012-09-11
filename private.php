@@ -585,6 +585,11 @@ if($mybb->input['action'] == "do_send" && $mybb->request_method == "post")
 		$pm['bcc'] = array_map("trim", $pm['bcc']);
 	}
 
+	if(!$mybb->usergroup['cantrackpms'])
+	{
+		$mybb->input['options']['readreceipt'] = false;
+	}
+
 	$pm['options'] = array(
 		"signature" => $mybb->input['options']['signature'],
 		"disablesmilies" => $mybb->input['options']['disablesmilies'],
@@ -897,10 +902,19 @@ if($mybb->input['action'] == "send")
 		$buddy_select = 'bcc';
 		eval("\$buddy_select_bcc = \"".$templates->get("private_send_buddyselect")."\";");
 	}
-	
+
+	// Hide tracking option if no permission
+	$private_send = $templates->get("private_send");
+	$tracking = '';
+	if($mybb->usergroup['cantrackpms'])
+	{
+		$tracking = $templates->get("private_send_tracking");
+	}
+	eval("\$private_send_tracking = \"".$tracking."\";");
+
 	$plugins->run_hooks("private_send_end");
 
-	eval("\$send = \"".$templates->get("private_send")."\";");
+	eval("\$send = \"".$private_send."\";");
 	output_page($send);
 }
 
@@ -1105,6 +1119,11 @@ if($mybb->input['action'] == "read")
 
 if($mybb->input['action'] == "tracking")
 {
+	if(!$mybb->usergroup['cantrackpms'])
+	{
+		error_no_permission();
+	}
+
 	$plugins->run_hooks("private_tracking_start");
 	$readmessages = '';
 	$unreadmessages = '';
