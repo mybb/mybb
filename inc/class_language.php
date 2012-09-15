@@ -128,9 +128,12 @@ class MyLanguage
 		// Datahandlers are never in admin lang directory.
 		if($isdatahandler === true)
 		{
-			$this->language = str_replace('/admin', '', $this->language);
+			$lfile = $this->path."/".str_replace('/admin', '', $this->language)."/".$section.".lang.php";
 		}
-		$lfile = $this->path."/".$this->language."/".$section.".lang.php";
+		else
+		{
+			$lfile = $this->path."/".$this->languag."/".$section.".lang.php";
+		}
 		
 		if(file_exists($lfile))
 		{
