@@ -132,7 +132,7 @@ class MyLanguage
 		}
 		else
 		{
-			$lfile = $this->path."/".$this->languag."/".$section.".lang.php";
+			$lfile = $this->path."/".$this->language."/".$section.".lang.php";
 		}
 		
 		if(file_exists($lfile))
