@@ -709,7 +709,7 @@ switch($mybb->input['action'])
 		$lang->thread_unapproved = $lang->sprintf($lang->thread_unapproved, $thread['subject']);
 		log_moderator_action($modlogdata, $lang->thread_unapproved);
 
-		$moderation->unapprove_threads($tid, $fid);
+		$moderation->unapprove_threads($tid);
 
 		moderation_redirect(get_thread_link($thread['tid']), $lang->redirect_threadunapproved);
 		break;
