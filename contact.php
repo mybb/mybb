@@ -98,7 +98,9 @@ if($mybb->settings['captchaimage'])
 	}
 }
 else
+{
 	$captcha = '';
+}
 
 $mybb->input['subject'] = htmlspecialchars_uni($mybb->input['subject']);
 $mybb->input['message'] = htmlspecialchars_uni($mybb->input['message']);
