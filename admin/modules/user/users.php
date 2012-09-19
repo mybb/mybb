@@ -3173,7 +3173,17 @@ function build_users_view($view)
 			// Build popup menu
 			$popup = new PopupMenu("user_{$user['uid']}", $lang->options);
 			$popup->add_item($lang->edit_profile_and_settings, "index.php?module=user-users&amp;action=edit&amp;uid={$user['uid']}");
-			$popup->add_item($lang->ban_user, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
+			
+			// Banning options... is this user banned?
+			if($usergroups[$user['usergroup']]['isbannedgroup'] == 1)
+			{
+				// Yes, so do we want to edit the ban or pardon his crime?
+				$popup->add_item($lang->edit_ban, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
+				$popup->add_item($lang->lift_ban, "index.php?module=user-banning&action=lift&uid={$user['uid']}&my_post_key={$mybb->post_code}");
+			} else {
+				// Not banned... but soon maybe!
+				$popup->add_item($lang->ban_user, "index.php?module=user-banning&amp;uid={$user['uid']}#username");
+			}
 
 			if($user['usergroup'] == 5)
 			{
