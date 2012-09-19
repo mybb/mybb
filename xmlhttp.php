@@ -367,6 +367,14 @@ else if($mybb->input['action'] == "edit_post")
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			xmlhttp_error($lang->edit_time_limit);
 		}
+		// User can't edit unapproved post
+		$post_query = $db->simple_select("posts", "visible", "pid='" . (int)$post['pid'] . "'");
+		$post_visible = $db->fetch_field($post_query, "visible");
+		echo $post_visible;
+		if(!$post_visible)
+		{
+			xmlhttp_error($lang->post_moderation);
+		}
 	}
 
 	// Forum is closed - no editing allowed (for anyone)
