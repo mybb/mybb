@@ -118,6 +118,13 @@ if($mybb->input['action'] == "deletepost" && $mybb->request_method == "post")
 		{
 			error_no_permission();
 		}
+		// User can't delete unapproved post
+		$post_query = $db->simple_select("posts", "visible", "pid='" . (int)$pid . "'");
+		$post_visible = $db->fetch_field($post_query, "visible");
+		if(!$post_visible)
+		{
+			error_no_permission();
+		}
 	}
 }
 else
@@ -142,6 +149,13 @@ else
 		{
 			$lang->edit_time_limit = $lang->sprintf($lang->edit_time_limit, $mybb->settings['edittimelimit']);
 			error($lang->edit_time_limit);
+		}
+		// User can't edit unapproved post
+		$post_query = $db->simple_select("posts", "visible", "pid='" . (int)$pid . "'");
+		$post_visible = $db->fetch_field($post_query, "visible");
+		if(!$post_visible)
+		{
+			error_no_permission();
 		}
 	}
 }
