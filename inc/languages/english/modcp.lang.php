@@ -185,6 +185,7 @@ $l['multi_approve_threads'] = "Selected Threads Approved";
 $l['multi_delete_threads'] = "Selected Threads Deleted";
 $l['edited_user'] = "Edited User's Profile";
 $l['edited_user_info'] = "<strong>User:</strong> <a href=\"{2}\">{1}</a>";
+$l['edited_user_ban'] = "Edited User Ban";
 $l['banned_user'] = "Banned User";
 $l['lifted_ban'] = "Lifted User Ban";
 

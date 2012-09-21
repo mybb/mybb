@@ -3071,6 +3071,8 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 
 		if($mybb->input['uid'])
 		{
+			$username_select = $db->simple_select('users', 'username', "uid='" . (int)$mybb->input['uid'] . "'");
+			$user['username'] = $db->fetch_field($username_select, 'username');
 			$update_array = array(
 				'gid' => intval($mybb->input['usergroup']),
 				'admin' => intval($mybb->user['uid']),
@@ -3109,7 +3111,16 @@ if($mybb->input['action'] == "do_banuser" && $mybb->request_method == "post")
 		$db->update_query('users', $update_array, "uid = {$user['uid']}");
 
 		$cache->update_banned();
-		log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
+
+		// Log edit or add ban
+		if($mybb->input['uid'])
+		{
+			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->edited_user_ban);
+		}
+		else
+		{
+			log_moderator_action(array("uid" => $user['uid'], "username" => $user['username']), $lang->banned_user);
+		}
 		
 		$plugins->run_hooks("modcp_do_banuser_end");
 
