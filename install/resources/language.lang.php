@@ -68,7 +68,7 @@ $l['welcome_step'] = '<p>Welcome to the installation wizard for MyBB {1}. This w
 </ul>
 <p>After each step has successfully been completed, click Next to move on to the next step.</p>
 <p>Click "Next" to view the MyBB license agreement.</p>
-<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://wiki.mybb.com/index.php/Anonymous_Statistics" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
+<p><input type="checkbox" name="allow_anonymous_info" value="1" id="allow_anonymous" checked="checked" /> <label for="allow_anonymous"> Send anonymous statistics about your server specifications to the MyBB Group</label> (<a href="http://docs.mybb.com/Anonymous_Statistics.html" style="color: #555;" target="_blank"><small>What information is sent?</small></a>)</p>';
 
 $l['license_step'] = '<div class="license_agreement">
 {1}
