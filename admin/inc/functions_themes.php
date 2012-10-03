@@ -388,8 +388,8 @@ function cache_stylesheet($tid, $filename, $stylesheet)
 	$stylesheet = parse_theme_variables($stylesheet, $theme_vars);
 	$stylesheet = preg_replace("#url\((\"|'|)(.*)\\1\)#e", "fix_css_urls('$2')", $stylesheet);
 	$stylesheet = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $stylesheet);
-    $stylesheet = str_replace(': ', ':', $stylesheet);
-    $stylesheet = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $stylesheet);
+	$stylesheet = str_replace(': ', ':', $stylesheet);
+	$stylesheet = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $stylesheet);
 
 	$fp = @fopen(MYBB_ROOT."{$theme_directory}/{$filename}", "wb");
 	if(!$fp)
@@ -480,7 +480,7 @@ function build_new_theme($name, $properties=null, $parent=1)
 		"def" => 0,
 		"allowedgroups" => "all",
 		"properties" => "",
-        "stylesheets" => ""
+		"stylesheets" => ""
 	);
 	$tid = $db->insert_query("themes", $new_theme);
 
@@ -672,7 +672,7 @@ function css_selectors_sort_cmp($a, $b)
 	{
 		$b['name'] = $b['class_name'];
 	}
-    return strcmp($a['name'], $b['name']);
+	return strcmp($a['name'], $b['name']);
 }
 
 function get_css_properties($css, $id)
