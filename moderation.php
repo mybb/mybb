@@ -41,6 +41,7 @@ switch($mybb->input['action'])
 $tid = intval($mybb->input['tid']);
 $pid = intval($mybb->input['pid']);
 $fid = intval($mybb->input['fid']);
+$pmid = intval($mybb->input['pmid']);
 
 if($pid)
 {
@@ -69,6 +70,22 @@ if($fid)
 
 	// Make navigation
 	build_forum_breadcrumb($fid);
+}
+
+if($pmid)
+{
+	$query = $db->query("
+		SELECT *
+		FROM ".TABLE_PREFIX."privatemessages
+		WHERE pmid='".intval($mybb->input['pmid'])."'
+	");
+	
+	$post = $db->fetch_array($query);
+
+	if(!$post['pmid'])
+	{
+		error($lang->error_invalidpm);
+	}
 }
 
 $thread['subject'] = htmlspecialchars_uni($parser->parse_badwords($thread['subject'])); 
@@ -1128,7 +1145,7 @@ switch($mybb->input['action'])
 	// Lets look up the ip address of a post
 	case "getip":
 		add_breadcrumb($lang->nav_getip);
-		if(!is_moderator($fid, "canviewips"))
+		if(!is_moderator($fid, "canviewips") || !$mybb->usergroup['issupermod'])
 		{
 			error_no_permission();
 		}
@@ -1138,7 +1155,14 @@ switch($mybb->input['action'])
 		{
 			$hostname = $lang->resolve_fail;
 		}
-
+		
+		//do we have a PM
+		if(!isset($post['username']))
+		{
+			$user = get_user($post['uid']);
+			$post['username'] = $user['username'];
+		}
+		
 		$username = build_profile_link($post['username'], $post['uid']);
 
 		// Moderator options

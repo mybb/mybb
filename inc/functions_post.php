@@ -505,16 +505,40 @@ function build_postbit($post, $post_type=0)
 		{
 			eval("\$post['button_report'] = \"".$templates->get("postbit_report")."\";");
 		}
-		
+	}
+	elseif($post_type == 3) // announcement
+	{
+		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid))
+		{
+			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
+			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
+		}
+	}
+	
+	// Show post IP addresses... PMs now can have IP addresses too as of 1.8!
+	if(!$post_type || $post_type == 2)
+	{
 		if($mybb->settings['logip'] != "no")
 		{
 			if($mybb->settings['logip'] == "show")
 			{
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
 			}
-			else if($mybb->settings['logip'] == "hide" && is_moderator($fid, "canviewips"))
+			else if($mybb->settings['logip'] == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
 			{
+				// Doing a little fudging around so we don't need two templates, one for private messages and one for posts
+				if($post_type == 2)
+				{
+					$post['pid'] = $post['pmid'];
+				}
+				
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
+				
+				// Derping with the template again
+				if($post_type == 2)
+				{
+					$post['iplogged'] = str_replace('pid','pmid',$post['iplogged']);
+				}	
 			}
 			else
 			{
@@ -524,14 +548,6 @@ function build_postbit($post, $post_type=0)
 		else
 		{
 			$post['iplogged'] = "";
-		}
-	}
-	elseif($post_type == 3) // announcement
-	{
-		if($mybb->usergroup['issupermod'] == 1 || is_moderator($fid))
-		{
-			eval("\$post['button_edit'] = \"".$templates->get("announcement_edit")."\";");
-			eval("\$post['button_quickdelete'] = \"".$templates->get("announcement_quickdelete")."\";");
 		}
 	}
 	

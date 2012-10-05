@@ -523,7 +523,8 @@ class PMDataHandler extends DataHandler
 			'smilieoff' => $pm['options']['disablesmilies'],
 			'receipt' => intval($pm['options']['readreceipt']),
 			'readtime' => 0,
-			'recipients' => $db->escape_string(serialize($recipient_list))
+			'recipients' => $db->escape_string(serialize($recipient_list)),
+			'ipaddress' => $pm['ipaddress']
 		);
 
 		// Check if we're updating a draft or not.

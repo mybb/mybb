@@ -526,6 +526,7 @@ $tables[] = "CREATE TABLE mybb_privatemessages (
   smilieoff int(1) NOT NULL default '0',
   receipt int(1) NOT NULL default '0',
   readtime bigint(30) NOT NULL default '0',
+  ipaddress varchar(120) NOT NULL default '',
   KEY uid (uid, folder),
   KEY toid (toid),
   PRIMARY KEY (pmid)
