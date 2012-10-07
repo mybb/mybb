@@ -2172,6 +2172,16 @@ if($mybb->input['action'] == "do_editlists")
 			}
 		}
 
+		if($found_users < count($users))
+		{
+			if($error_message)
+			{
+				$error_message .= "<br />";
+			}
+
+			$error_message .= $lang->invalid_user_selected;
+		}
+
 		if(($adding_self != true || ($adding_self == true && count($users) > 0)) && ($error_message == "" || count($users) > 1))
 		{
 			if($mybb->input['manage'] == "ignored")
@@ -2199,16 +2209,6 @@ if($mybb->input['action'] == "do_editlists")
 		if(count($existing_users) == 0)
 		{
 			$message = "";
-		}
-
-		if($found_users < count($users))
-		{
-			if($error_message)
-			{
-				$error_message .= "<br />";
-			}
-
-			$error_message .= $lang->invalid_user_selected;
 		}
 	}
 
