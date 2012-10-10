@@ -4376,7 +4376,7 @@ body {
 		<template name="private_search_results_nomessages" version="1600"><![CDATA[<tr>
 <td colspan="7" class="trow1">{$lang->nomessages}</td>
 </tr>]]></template>
-		<template name="codebuttons" version="1600"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1600"></script>
+		<template name="codebuttons" version="1609"><![CDATA[<script type="text/javascript" src="jscripts/editor.js?ver=1609"></script>
 <script type="text/javascript">
 <!--
 	{$editor_language}
