@@ -55,6 +55,8 @@ $inactiveforums = get_inactive_forums();
 
 $unviewable = '';
 
+$plugins->run_hooks('syndication_start');
+
 // If there are any, add SQL to exclude them.
 if($unviewableforums)
 {

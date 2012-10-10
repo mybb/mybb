@@ -25,6 +25,8 @@ if($stylesheet)
 	$query = $db->simple_select("themestylesheets", "stylesheet", "sid=".$stylesheet, $options);
 	$stylesheet = $db->fetch_field($query, "stylesheet");
 
+	$plugins->run_hooks("css_start");
+
 	header("Content-type: text/css");
 	echo $stylesheet;
 }

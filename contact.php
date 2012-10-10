@@ -19,6 +19,8 @@ require_once MYBB_ROOT.'inc/class_captcha.php';
 // Load global language phrases
 $lang->load("contact");
 
+$plugins->run_hooks('contact_start');
+
 if(!$mybb->user['uid'])
 {
 	if($mybb->settings['contact_guests'] == 1)
