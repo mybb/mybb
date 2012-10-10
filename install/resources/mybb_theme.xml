@@ -7696,7 +7696,7 @@ body {
 </tr>
 </table>]]></template>
 		<template name="postbit_inlinecheck" version="120"><![CDATA[| <input type="checkbox" class="checkbox" name="inlinemod_{$post['pid']}" id="inlinemod_{$post['pid']}" value="1" style="vertical-align: middle;" {$inlinecheck}  />]]></template>
-		<template name="postbit_iplogged_hiden" version="1400"><![CDATA[<p class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;pid={$post['pid']}">{$lang->postbit_ipaddress_logged}</a></p>]]></template>
+		<template name="postbit_iplogged_hiden" version="1400"><![CDATA[<p class="smalltext">{$lang->postbit_ipaddress} <a href="moderation.php?action=getip&amp;{$idtype}={$post[$idtype]}">{$lang->postbit_ipaddress_logged}</a></p>]]></template>
 		<template name="postbit_iplogged_show" version="1400"><![CDATA[<p class="smalltext">{$lang->postbit_ipaddress} {$post['ipaddress']}</p>]]></template>
 		<template name="postbit_multiquote" version="1400"><![CDATA[<a href="javascript:Thread.multiQuote({$post['pid']});" style="display: none;" id="multiquote_link_{$post['pid']}"><img src="{$theme['imglangdir']}/postbit_multiquote.gif" alt="{$lang->postbit_multiquote}" title="{$lang->postbit_multiquote}" id="multiquote_{$post['pid']}" /></a>
 <script type="text/javascript">

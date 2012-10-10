@@ -61,6 +61,7 @@ function build_postbit($post, $post_type=0)
 			break;
 		case 2: // Private message
 			global $message, $pmid;
+			$idtype = 'pmid';
 			$parser_options['allow_html'] = $mybb->settings['pmsallowhtml'];
 			$parser_options['allow_mycode'] = $mybb->settings['pmsallowmycode'];
 			$parser_options['allow_smilies'] = $mybb->settings['pmsallowsmilies'];
@@ -84,6 +85,7 @@ function build_postbit($post, $post_type=0)
 			global $forum, $thread, $tid;
 			$oldforum = $forum;
 			$id = intval($post['pid']);
+			$idtype = 'pid';
 			$parser_options['allow_html'] = $forum['allowhtml'];
 			$parser_options['allow_mycode'] = $forum['allowmycode'];
 			$parser_options['allow_smilies'] = $forum['allowsmilies'];
@@ -525,20 +527,8 @@ function build_postbit($post, $post_type=0)
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_show")."\";");
 			}
 			else if($mybb->settings['logip'] == "hide" && (is_moderator($fid, "canviewips") || $mybb->usergroup['issupermod']))
-			{
-				// Doing a little fudging around so we don't need two templates, one for private messages and one for posts
-				if($post_type == 2)
-				{
-					$post['pid'] = $post['pmid'];
-				}
-				
+			{		
 				eval("\$post['iplogged'] = \"".$templates->get("postbit_iplogged_hiden")."\";");
-				
-				// Derping with the template again
-				if($post_type == 2)
-				{
-					$post['iplogged'] = str_replace('pid','pmid',$post['iplogged']);
-				}	
 			}
 			else
 			{
