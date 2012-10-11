@@ -769,6 +769,7 @@ if($fpermissions['canviewthreads'] != 0)
 	");
 
 	$ratings = false;
+	$moved_threads = array();
 	while($thread = $db->fetch_array($query))
 	{		
 		$threadcache[$thread['tid']] = $thread;
@@ -792,9 +793,9 @@ if($fpermissions['canviewthreads'] != 0)
 		else
 		{
 			$tids[$thread['tid']] = $thread['tid'];
-			if($moved_threads[$tid])
+			if(isset($moved_threads[$thread['tid']]))
 			{
-				unset($moved_threads[$tid]);
+				unset($moved_threads[$thread['tid']]);
 			}
 		}
 	}
