@@ -11037,9 +11037,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 </body>
 </html>]]></template>
-<template name="modcp_announcements_new" version="1405"><![CDATA[<html>
+<template name="modcp_announcements_new" version="1609"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
 </head>
 <body>
@@ -11122,9 +11122,9 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	{$footer}
 </body>
 </html>]]></template>
-<template name="modcp_announcements_edit" version="1405"><![CDATA[<html>
+<template name="modcp_announcements_edit" version="1609"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
 </head>
 <body>
