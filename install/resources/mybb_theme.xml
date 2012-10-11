@@ -9321,7 +9321,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 {$footer}
 </body>
 </html>]]></template>
-		<template name="calendar_move" version="1402"><![CDATA[<html>
+		<template name="calendar_move" version="1609"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->move_event}</title>
 {$headerinclude}
@@ -9335,7 +9335,7 @@ body { font-family: Verdana, Arial, sans-serif; font-size: 13px; }
 			<td colspan="2" width="100%" class="thead"><strong>{$lang->move_event}: {$event['name']}</strong></td>
 		</tr>
 		<tr>
-			<td width="20%" class="trow1"><strong>{$lang->move_to_calendar}:</strong></td>
+			<td width="20%" class="trow1"><strong>{$lang->move_to_calendar}</strong></td>
 			<td class="trow1">
 				<select name="new_calendar">
 					{$calendar_select}
