@@ -2256,7 +2256,7 @@ fieldset,
 		<template name="calendar_mini_weekrow_day" version="1400"><![CDATA[				<td class="{$day_class}" valign="middle" align="center">
 					{$day_link}
 				</td>]]></template>
-		<template name="calendar_move" version="1402"><![CDATA[<html>
+		<template name="calendar_move" version="1609"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->calendar} - {$lang->move_event}</title>
 {$headerinclude}
@@ -2270,7 +2270,7 @@ fieldset,
 			<td colspan="2" width="100%" class="thead"><strong>{$lang->move_event}: {$event['name']}</strong></td>
 		</tr>
 		<tr>
-			<td width="20%" class="trow1"><strong>{$lang->move_to_calendar}:</strong></td>
+			<td width="20%" class="trow1"><strong>{$lang->move_to_calendar}</strong></td>
 			<td class="trow1">
 				<select name="new_calendar">
 					{$calendar_select}
