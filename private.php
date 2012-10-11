@@ -14,8 +14,8 @@ define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'private.php');
 
 $templatelist = "private_send,private_send_buddyselect,private_read,private_tracking,private_tracking_readmessage,private_tracking_unreadmessage";
-$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons";
-$templatelist .= "usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
+$templatelist .= ",private_folders,private_folders_folder,private_folders_folder_unremovable,private,usercp_nav_changename,usercp_nav,private_empty_folder,private_empty,posticons,private_archive_txt,private_archive_csv,private_archive_html";
+$templatelist .= ",usercp_nav_messenger,usercp_nav_changename,usercp_nav_profile,usercp_nav_misc,usercp_nav_messenger,multipage_nextpage,multipage_page_current,multipage_page,multipage_start,multipage_end,multipage,usercp_nav_editsignature,private_read_action,postbit_away,postbit_avatar,postbit_warn,postbit_rep_button";
 $templatelist .= ",private_messagebit,codebuttons,smilieinsert,posticons,private_send_autocomplete,private_messagebit_denyreceipt,private_read_to, postbit_online,postbit_find,postbit_pm, postbit_email,postbit_reputation,postbit_warninglevel,postbit_author_user,postbit_reply_pm,postbit_forward_pm,postbit_delete_pm,postbit,private_tracking_nomessage,private_nomessages";
 
 require_once "./global.php";
@@ -1869,10 +1869,14 @@ if($mybb->input['action'] == "do_export" && $mybb->request_method == "post")
 		eval("\$pmsdownload .= \"".$templates->get("private_archive_".$mybb->input['exporttype']."_message", 1, 0)."\";");
 		$ids .= ",'{$message['pmid']}'";
 	}
-	
-	$query = $db->simple_select("themestylesheets", "stylesheet", "sid=1", array('limit' => 1));
-	$css = $db->fetch_field($query, "stylesheet");
-	
+
+	if($mybb->input['exporttype'] == "html")
+	{
+		// Gather global stylesheet for HTML
+		$query = $db->simple_select("themestylesheets", "stylesheet", "sid = '1'", array('limit' => 1));
+		$css = $db->fetch_field($query, "stylesheet");
+	}
+
 	$plugins->run_hooks("private_do_export_end");
 
 	eval("\$archived = \"".$templates->get("private_archive_".$mybb->input['exporttype'], 1, 0)."\";");
