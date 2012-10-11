@@ -582,9 +582,16 @@ if($mybb->input['action'] == "profile")
 	{
 		if($mybb->usergroup['usertitle'] == "")
 		{
-			$query = $db->simple_select("usertitles", "*", "posts <='".$mybb->user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-			$utitle = $db->fetch_array($query);
-			$defaulttitle = $utitle['title'];
+			$defaulttitle = '';
+			$usertitles = $cache->read('usertitles');
+
+			foreach($usertitles as $title)
+			{
+				if($title['posts'] <= $mybb->user['postnum'])
+				{
+					$defaulttitle = $title['title'];
+				}
+			}
 		}
 		else
 		{
