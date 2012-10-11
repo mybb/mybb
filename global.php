@@ -95,6 +95,7 @@ else if(!isset($mybb->settings['bblanguage']))
 $lang->set_language($mybb->settings['bblanguage']);
 $lang->load("global");
 $lang->load("messages");
+$newpmmsg = '';
 
 // Run global_start plugin hook now that the basics are set up
 $plugins->run_hooks("global_start");
