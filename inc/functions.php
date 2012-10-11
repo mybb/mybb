@@ -3996,10 +3996,8 @@ function get_current_location($fields=false, $ignore=array())
 		{
 			$ignore = array($ignore);
 		}
-		
-		$form_html = "";
-		$field_parts = explode('&', $field_parts);
-		
+
+		$form_html = '';
 		if(!empty($mybb->input))
 		{
 			foreach($mybb->input as $name => $value)
