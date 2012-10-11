@@ -1010,6 +1010,15 @@ disabled=Disable this feature]]></optionscode>
 			<isdefault>1</isdefault>
 			<helpkey></helpkey>
 		</setting>
+		<setting name="regtime">
+			<title>Minimum Registration Time</title>
+			<description><![CDATA[The minimum time in seconds a user must take to fill out the registration form.  Used to prevent automated bot signups.  Setting this to 0 to disables the function.]]></description>
+			<disporder>21</disporder>
+			<optionscode><![CDATA[text]]></optionscode>
+			<settingvalue><![CDATA[15]]></settingvalue>
+			<isdefault>1</isdefault>
+			<helpkey></helpkey>
+		</setting>
 	</settinggroup>
 	<settinggroup name="profile" title="Profile Options" description="The options here control the various settings of user profiles around the forums." disporder="9" isdefault="1">
 		<setting name="sigmycode">

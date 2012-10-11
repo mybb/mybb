@@ -80,7 +80,29 @@ if(($mybb->input['action'] == "register" || $mybb->input['action'] == "do_regist
 if($mybb->input['action'] == "do_register" && $mybb->request_method == "post")
 {
 	$plugins->run_hooks("member_do_register_start");
-
+	
+	// Are checking how long it takes for users to register?
+	if($mybb->settings['regtime'] > 0)
+	{
+		// Is the field actually set?
+		if(isset($mybb->input['regtime']))
+		{
+			// Check how long it took for this person to register
+			$time = TIME_NOW;
+			$timetook = time() - (int)$mybb->input['regtime'];
+			
+			// See if they registered faster than normal
+			if($timetook < $mybb->settings['regtime'])
+			{
+				// This user registered pretty quickly, bot detected!
+				$lang->error_spam_deny_time = $lang->sprintf($lang->error_spam_deny_time,$mybb->settings['regtime'],$timetook);
+				error($lang->error_spam_deny_time);
+			}
+		} else {
+			error($lang->error_spam_deny."s");
+		}
+	}
+	
 	// If we have hidden CATPCHA enabled and it's filled, deny registration
 	if($mybb->settings['hiddencaptchaimage'])
 	{
@@ -763,6 +785,9 @@ if($mybb->input['action'] == "register")
 				$langoptions .= "<option value=\"$lname\">$language</option>\n";
 			}
 		}
+
+		// Set the time so we can find automated signups
+		$time = TIME_NOW;
 
 		$plugins->run_hooks("member_register_end");
 

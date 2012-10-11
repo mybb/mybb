@@ -3646,7 +3646,7 @@ fieldset,
 	<td class="{$bg_color}"><strong>{$lang->warning_level}</strong></td>
 	<td class="{$bg_color}"><a href="{$warning_link}">{$warning_level}</a> {$warn_user}</td>
 </tr>]]></template>
-		<template name="member_register" version="1605"><![CDATA[<html>
+		<template name="member_register" version="1800"><![CDATA[<html>
 <head>
 <title>{$mybb->settings['bbname']} - {$lang->registration}</title>
 {$headerinclude}
@@ -3775,6 +3775,7 @@ fieldset,
 </table>
 <br />
 <div align="center">
+<input type="hidden" name="regtime" value="{$time}" />
 <input type="hidden" name="step" value="registration" />
 <input type="hidden" name="action" value="do_register" />
 <input type="submit" class="button" name="regsubmit" value="{$lang->submit_registration}" />
