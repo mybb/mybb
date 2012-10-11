@@ -1850,25 +1850,33 @@ if($mybb->input['action'] == "editprofile")
 		$mybb->input[$field] = htmlspecialchars_uni($mybb->input[$field]);
 	}
 
-	if($user['usertitle'] == "")
+	// Custom user title, check to see if we have a default group title
+	if(!$user['displaygroup'])
 	{
-		$query = $db->simple_select("usertitles", "*", "posts <='".$user['postnum']."'", array('order_by' => 'posts', 'order_dir' => 'DESC', 'limit' => 1));
-		$utitle = $db->fetch_array($query);
-		$defaulttitle = $utitle['title'];
+		$user['displaygroup'] = $user['usergroup'];
+	}
+
+	$displaygroupfields = array('usertitle');
+	$display_group = usergroup_displaygroup($user['displaygroup']);
+
+	if(!empty($display_group['usertitle']))
+	{
+		$defaulttitle = $display_group['usertitle'];
 	}
 	else
 	{
-		if(!$user['displaygroup'])
-		{
-			$user['displaygroup'] = $user['usergroup'];
-		}
+		// Go for post count title if a group default isn't set
+		$usertitles = $cache->read('usertitles');
 
-		$displaygroupfields = array(
-			"usertitle"
-		);
-		$display_group = usergroup_displaygroup($user['displaygroup']);
-		$defaulttitle = $display_group['usertitle'];
+		foreach($usertitles as $title)
+		{
+			if($title['posts'] <= $mybb->user['postnum'])
+			{
+				$defaulttitle = $title['title'];
+			}
+		}
 	}
+
 	if(empty($user['usertitle']))
 	{
 		$lang->current_custom_usertitle = '';
