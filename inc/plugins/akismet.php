@@ -552,11 +552,11 @@ function akismet_moderation_start()
 	
 	if($snippit == "thread")
 	{
-		redirect("./forumdisplay.php?fid={$post['fid']}", $lang->thread_spam_success);
+		redirect(get_forum_link($post['fid']), $lang->thread_spam_success);
 	}
 	else
 	{
-		redirect("./showthread.php?tid={$post['tid']}", $lang->post_spam_success);
+		redirect(get_thread_link($post['tid']), $lang->post_spam_success);
 	}
 }
 
