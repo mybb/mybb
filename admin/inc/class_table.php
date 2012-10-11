@@ -66,15 +66,15 @@ class DefaultTable
 				$i = 0;
 			}
 			$i++;
-			if($cell['extra']['class'])
+			if(isset($cell['extra']['class']))            
 			{
 				$cells .= " class=\"".trim($cell['extra']['class'])."\"";
 			}
-			if($cell['extra']['style'])
+			if(isset($cell['extra']['style']))            
 			{
 				$cells .= " style=\"".$cell['extra']['style']."\"";
 			}
-			if($cell['extra']['id'])
+			if(isset($cell['extra']['id']))
 			{
 				$cells .= $cell['extra']['id'];
 			}
@@ -86,7 +86,7 @@ class DefaultTable
 			{
 				$cells .= " rowspan=\"".$cell['extra']['rowspan']."\"";
 			}
-			if($cell['extra']['width'])
+			if(isset($cell['extra']['width']))            
 			{
 				$cells .= " width=\"".$cell['extra']['width']."\"";
 			}
