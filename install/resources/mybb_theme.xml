@@ -11496,8 +11496,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 	var my_post_key = "{$mybb->post_code}";
 	var imagepath = "{$theme['imgdir']}";
 // -->
-</script>
-{$newpmmsg}]]></template>
+</script>]]></template>
 		<template name="htmldoctype" version="120"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">]]></template>
 		<template name="loginbox" version="120"><![CDATA[<tr>
 <td class="trow2"><strong>{$lang->username}</strong></td>
