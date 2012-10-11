@@ -1283,7 +1283,7 @@ switch($mybb->input['action'])
 
 		log_moderator_action($modlogdata, $lang->thread_merged);
 
-		moderation_redirect("showthread.php?tid=$tid", $lang->redirect_threadsmerged);
+		moderation_redirect(get_thread_link($tid), $lang->redirect_threadsmerged);
 		break;
 
 	// Divorce the posts in this thread (Split!)
