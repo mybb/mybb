@@ -4855,7 +4855,7 @@ body {
 </html>]]></template>
 		<template name="modcp_announcements_edit" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->edit_announcement}</title>
 {$headerinclude}
 </head>
 <body>
@@ -4961,7 +4961,7 @@ body {
 				<br />]]></template>
 		<template name="modcp_announcements_new" version="1800"><![CDATA[<html>
 <head>
-<title>{$mybb->settings['bbname']} - {$lang->manage_announcement}</title>
+<title>{$mybb->settings['bbname']} - {$lang->add_announcement}</title>
 {$headerinclude}
 </head>
 <body>
