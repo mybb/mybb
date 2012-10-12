@@ -478,6 +478,37 @@ if($mybb->input['action'] == "edit")
 	if($errors)
 	{
 		$page->output_inline_error($errors);
+
+		// Gather start and end date data
+		$startday = $mybb->input['starttime_day'];
+		$start_time = $mybb->input['starttime_time'];
+		$startmonth = $mybb->input['starttime_month'];
+		$startmonthsel[$startmonth] = 'selected="selected"';
+		$startdateyear = $mybb->input['starttime_year'];
+
+		if($mybb->input['endtime_type'] == 1)
+		{
+			// Set time
+			$endtime_checked[1] = 'checked="checked"';
+			$endtime_checked[2] = '';
+
+			$endday = $mybb->input['endtime_day'];
+			$endtime = $mybb->input['endtime_time'];
+			$endmonth = $mybb->input['endtime_month'];
+			$endmonthsel[$endmonth] = 'selected';
+			$enddateyear = $mybb->input['endtime_year'];
+		}
+		else
+		{
+			// Never
+			$endtime_checked[1] = '';
+			$endtime_checked[2] = 'checked="checked"';
+
+			$endday = $startday;
+			$endmonth = $startmonth;
+			$endmonthsel[$endmonth] = 'selected';
+			$enddateyear = $startdateyear + 1;
+		}
 	}
 	else
 	{
