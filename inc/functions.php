@@ -1243,7 +1243,7 @@ function fetch_forum_permissions($fid, $gid, $groupperms)
 
 	$groups = explode(",", $gid);
 
-	if(!$fpermcache[$fid]) // This forum has no custom or inherited permissions so lets just return the group permissions
+	if(empty($fpermcache[$fid])) // This forum has no custom or inherited permissions so lets just return the group permissions
 	{
 		return $groupperms;
 	}
@@ -2269,6 +2269,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 	global $forum_cache, $jumpfcache, $permissioncache, $mybb, $selecteddone, $forumjump, $forumjumpbits, $gobutton, $theme, $templates, $lang;
 
 	$pid = intval($pid);
+	$jumpsel['default'] = '';
 
 	if($permissions)
 	{
@@ -2296,7 +2297,7 @@ function build_forum_jump($pid="0", $selitem="", $addselect="1", $depth="", $sho
 		$permissioncache = forum_permissions();
 	}
 
-	if(is_array($jumpfcache[$pid]))
+	if(isset($jumpfcache[$pid]) && is_array($jumpfcache[$pid]))
 	{
 		foreach($jumpfcache[$pid] as $main)
 		{
@@ -3237,6 +3238,7 @@ function build_breadcrumb()
 	eval("\$navsep = \"".$templates->get("nav_sep")."\";");
 	
 	$i = 0;
+	$activesep = '';
 	
 	if(is_array($navbits))
 	{
@@ -3334,7 +3336,7 @@ function build_forum_breadcrumb($fid, $multipage=array())
 		{
 			if($fid == $forumnav['fid'])
 			{
-				if($pforumcache[$forumnav['pid']])
+				if(!empty($pforumcache[$forumnav['pid']]))
 				{
 					build_forum_breadcrumb($forumnav['pid']);
 				}
@@ -5077,25 +5079,29 @@ function login_attempt_check($fatal = true)
 	// Use cookie if possible, otherwise use session
 	// Session stops user clearing cookies to bypass the login
 	// Also use the greater of the two numbers present, stops people using scripts with altered cookie data to stay the same
-	$cookielogins = intval($mybb->cookies['loginattempts']);
-	$cookietime = $mybb->cookies['failedlogin'];
+	$cookielogins = 0;
+	$cookietime = 0;
 
-	if(empty($cookielogins) || $cookielogins < $session->logins)
+	if(!empty($mybb->cookies['loginattempts']))
+	{
+		$cookielogins = $mybb->cookies['loginattempts'];
+	}
+
+	if(!empty($mybb->cookies['failedlogin']))
+	{
+		$cookietime = $mybb->cookies['failedlogin'];
+	}
+
+	$loginattempts = $cookielogins;
+	if($cookielogins < $session->logins)
 	{
 		$loginattempts = $session->logins;
 	}
-	else
-	{
-		$loginattempts = $cookielogins;
-	}
 
-	if(empty($cookietime) || $cookietime < $session->failedlogin)
+	$failedlogin = $cookietime;
+	if($cookietime < $session->failedlogin)
 	{
 		$failedlogin = $session->failedlogin;
-	}
-	else
-	{
-		$failedlogin = $cookietime;
 	}
 
 	// Work out if the user has had more than the allowed number of login attempts
