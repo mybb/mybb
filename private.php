@@ -651,7 +651,7 @@ if($mybb->input['action'] == "send")
 	$posticons = get_post_icons();
 	$previewmessage = $mybb->input['message'];
 	$message = htmlspecialchars_uni($mybb->input['message']);
-	$subject = $previewsubject = htmlspecialchars_uni($mybb->input['subject']);
+	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
 
 	if($mybb->input['preview'] || $send_errors)
 	{

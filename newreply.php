@@ -970,7 +970,8 @@ if($mybb->input['action'] == "newreply" || $mybb->input['action'] == "editdraft"
 			eval("\$preview = \"".$templates->get("previewpost")."\";");
 		}
 	}
-	$subject = htmlspecialchars_uni($subject);
+
+	$subject = htmlspecialchars_uni($parser->parse_badwords($subject));
 
 	if(!$pid && !$mybb->input['previewpost'])
 	{
