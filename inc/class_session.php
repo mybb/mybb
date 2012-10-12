@@ -67,7 +67,7 @@ class session
 		}
 
 		// If we have a valid session id and user id, load that users session.
-		if($mybb->cookies['mybbuser'])
+		if(!empty($mybb->cookies['mybbuser']))
 		{
 			$logon = explode("_", $mybb->cookies['mybbuser'], 2);
 			$this->load_user($logon[0], $logon[1]);
@@ -101,7 +101,7 @@ class session
 
 
 		// As a token of our appreciation for getting this far (and they aren't a spider), give the user a cookie
-		if($this->sid && ($mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
+		if($this->sid && (isset($mybb->cookies['sid'] ) && $mybb->cookies['sid'] != $this->sid) && $this->is_spider != true)
 		{
 			my_setcookie("sid", $this->sid, -1, true);
 		}
@@ -140,7 +140,7 @@ class session
 		$this->logins = $mybb->user['loginattempts'];
 		$this->failedlogin = $mybb->user['failedlogin'];
 		
-		if($bannedcache[$uid])
+		if(!empty($bannedcache[$uid]))
 		{
 			$banned_user = $bannedcache[$uid];
 			$mybb->user['bandate'] = $banned_user['dateline'];

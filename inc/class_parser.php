@@ -154,7 +154,7 @@ class postParser
 		}
 		
 		// Parse Highlights
-		if($this->options['highlight'])
+		if(!empty($this->options['highlight']))
 		{
 			$message = $this->highlight_message($message, $this->options['highlight']);
 		}
@@ -197,7 +197,7 @@ class postParser
 			), $message);
 		}
 
-		if($options['nl2br'] !== 0)
+		if(!empty($options['nl2br']))
 		{
 			$message = nl2br($message);
 			// Fix up new lines and block level elements
@@ -533,7 +533,7 @@ class postParser
 				}
 			}
 		}
-		if($options['strip_tags'] == 1)
+		if(isset($options['strip_tags']) && $options['strip_tags'] == 1)
 		{
 			$message = strip_tags($message);
 		}

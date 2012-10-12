@@ -34,7 +34,7 @@ class pluginSystem
 	{
 		global $cache, $plugins;
 		$pluginlist = $cache->read("plugins");
-		if(is_array($pluginlist['active']))
+		if(!empty($pluginlist['active']) && is_array($pluginlist['active']))
 		{
 			foreach($pluginlist['active'] as $plugin)
 			{

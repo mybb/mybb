@@ -61,7 +61,7 @@ $mybb->user['ismoderator'] = is_moderator("", "", $mybb->user['uid']);
 $mybb->post_code = generate_post_check();
 
 // Set and load the language
-if($mybb->input['language'] && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
+if(!empty($mybb->input['language']) && $lang->language_exists($mybb->input['language']) && verify_post_check($mybb->input['my_post_key'], true))
 {
 	$mybb->settings['bblanguage'] = $mybb->input['language'];
 	// If user is logged in, update their language selection with the new one
@@ -82,7 +82,7 @@ if($mybb->input['language'] && $lang->language_exists($mybb->input['language']) 
 	$mybb->user['language'] = $mybb->settings['bblanguage'];
 }
 // Cookied language!
-else if(!$mybb->user['uid'] && $mybb->cookies['mybblang'] && $lang->language_exists($mybb->cookies['mybblang']))
+else if(!$mybb->user['uid'] && !empty($mybb->cookies['mybblang']) && $lang->language_exists($mybb->cookies['mybblang']))
 {
 	$mybb->settings['bblanguage'] = $mybb->cookies['mybblang'];
 }
@@ -134,7 +134,7 @@ if(in_array($current_page, $valid))
 	cache_forums();
 
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
-	if($mybb->input['pid'])
+	if(!empty($mybb->input['pid']))
 	{
 		$query = $db->simple_select("posts", "fid", "pid = '".intval($mybb->input['pid'])."'", array("limit" => 1));
 		$fid = $db->fetch_field($query, "fid");
@@ -145,9 +145,8 @@ if(in_array($current_page, $valid))
 			$load_from_forum = 1;
 		}
 	}
-
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
-	else if($mybb->input['tid'])
+	else if(!empty($mybb->input['tid']))
 	{
 		$query = $db->simple_select("threads", "fid", "tid = '".intval($mybb->input['tid'])."'", array("limit" => 1));
 		$fid = $db->fetch_field($query, "fid");
@@ -208,12 +207,13 @@ if(!$theme['tid'])
 $theme = @array_merge($theme, unserialize($theme['properties']));
 
 // Fetch all necessary stylesheets
+$stylesheets = '';
 $theme['stylesheets'] = unserialize($theme['stylesheets']);
 $stylesheet_scripts = array("global", basename($_SERVER['PHP_SELF']));
 foreach($stylesheet_scripts as $stylesheet_script)
 {
 	$stylesheet_actions = array("global");
-	if($mybb->input['action'])
+	if(!empty($mybb->input['action']))
 	{
 		$stylesheet_actions[] = $mybb->input['action'];
 	}
@@ -225,12 +225,12 @@ foreach($stylesheet_scripts as $stylesheet_script)
 			continue;
 		}
 		
-		if($theme['stylesheets'][$stylesheet_script][$stylesheet_action])
+		if(!empty($theme['stylesheets'][$stylesheet_script][$stylesheet_action]))
 		{
 			// Actually add the stylesheets to the list
 			foreach($theme['stylesheets'][$stylesheet_script][$stylesheet_action] as $page_stylesheet)
 			{
-				if($already_loaded[$page_stylesheet])
+				if(!empty($already_loaded[$page_stylesheet]))
 				{
 					continue;
 				}
@@ -480,7 +480,8 @@ if($mybb->usergroup['isbannedgroup'] == 1)
 $lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
-if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->input['action'] != "read"))
+$pm_notice = '';
+if(isset($mybb->user['pmnotice']) && $mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != "private.php" || $mybb->input['action'] != "read"))
 {
 	if(!$parser)
 	{
@@ -555,7 +556,7 @@ else
 }
 
 // Are we showing the quick language selection box?
-$lang_select = '';
+$lang_select = $lang_options = '';
 if($mybb->settings['showlanguageselect'] != 0)
 {
 	$languages = $lang->get_languages();
@@ -579,6 +580,7 @@ if($mybb->settings['showlanguageselect'] != 0)
 }
 
 // DST Auto detection enabled?
+$auto_dst_detection = '';
 if($mybb->user['uid'] > 0 && $mybb->user['dstcorrection'] == 2)
 {
 	$auto_dst_detection = "<script type=\"text/javascript\">if(MyBB) { Event.observe(window, 'load', function() { MyBB.detectDSTChange('".($mybb->user['timezone']+$mybb->user['dst'])."'); }); }</script>\n";
@@ -694,9 +696,12 @@ if($mybb->user['uid'] && is_banned_email($mybb->user['email']) && $mybb->setting
 }
 
 // work out which items the user has collapsed
-$colcookie = $mybb->cookies['collapsed'];
+$colcookie = empty($mybb->cookies['collapsed']) ? false : $mybb->cookies['collapsed'];
 
 // set up collapsable items (to automatically show them us expanded)
+$collapsed = array('boardstats' => '', 'boardstats_e' => '', 'quickreply' => '', 'quickreply_e' => '');
+$collapsedimg = $collapsed;
+
 if($colcookie)
 {
 	$col = explode("|", $colcookie);
