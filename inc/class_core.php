@@ -74,6 +74,13 @@ class MyBB {
 	public $magicquotes = 0;
 	
 	/**
+	 * Whether or not MyBB supports SEO URLs
+	 *
+	 * @var boolean
+	 */
+	public $seo_support = false;
+
+	/**
 	 * MyBB configuration.
 	 *
 	 * @var array

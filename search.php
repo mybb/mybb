@@ -9,7 +9,6 @@
  * $Id: search.php 5673 2011-11-29 11:42:59Z Tomm $
  */
 
-
 define("IN_MYBB", 1);
 define("IGNORE_CLEAN_VARS", "sid");
 define('THIS_SCRIPT', 'search.php');
@@ -152,7 +151,7 @@ if($mybb->input['action'] == "results")
 	$highlight = "";
 	if($search['keywords'])
 	{
-		if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+		if($mybb->seo_support == true)
 		{
 			$highlight = "?highlight=".urlencode($search['keywords']);
 		}

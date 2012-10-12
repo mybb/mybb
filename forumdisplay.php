@@ -488,7 +488,7 @@ $sortsel['rating'] = ''; // Needs to be initialized in order to speed-up things.
 $sortsel[$mybb->input['sortby']] = "selected=\"selected\"";
 
 // Pick the right string to join the sort URL
-if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+if($mybb->seo_support == true)
 {
 	$string = "?";
 }
@@ -587,7 +587,7 @@ if($mybb->input['sortby'] || $mybb->input['order'] || $mybb->input['datecut']) /
 {	
 	$page_url = str_replace("{fid}", $fid, FORUM_URL_PAGED);
 	
-	if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+	if($mybb->seo_support == true)
 	{
 		$q = "?";
 		$and = '';

@@ -240,6 +240,8 @@ add_shutdown('send_mail_queue');
 /* URL Definitions */
 if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
 {
+	$mybb->seo_support = true;
+
 	define('FORUM_URL', "forum-{fid}.html");
 	define('FORUM_URL_PAGED', "forum-{fid}-page-{page}.html");
 	define('THREAD_URL', "thread-{tid}.html");

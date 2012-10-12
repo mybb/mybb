@@ -280,7 +280,7 @@ if($mybb->input['action'] == "newpost")
 		if($mybb->input['highlight'])
 		{
 			$string = "&";
-			if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+			if($mybb->seo_support == true)
 			{
 				$string = "?";
 			}
@@ -862,7 +862,7 @@ if($mybb->input['action'] == "thread")
 		// Work out if we have terms to highlight
         $highlight = "";
         $threadmode = "";
-        if($mybb->settings['seourls'] == "yes" || ($mybb->settings['seourls'] == "auto" && $_SERVER['SEO_SUPPORT'] == 1))
+        if($mybb->seo_support == true)
         {
             if($mybb->input['highlight'])
             {
