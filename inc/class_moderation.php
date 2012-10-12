@@ -1542,7 +1542,7 @@ class Moderation
 				FROM ".TABLE_PREFIX."posts p
 				LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=p.uid)
 				WHERE p.tid = '{$thread['tid']}'
-				GROUP BY u.uid
+				GROUP BY p.visible, u.uid
 				ORDER BY posts DESC
 			");
 			while($posters = $db->fetch_array($query1))
