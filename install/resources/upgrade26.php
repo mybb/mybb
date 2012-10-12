@@ -28,7 +28,7 @@ function upgrade26_dbchanges()
 	$output->print_header("Updating Database");
 	echo "<p>Performing necessary upgrade queries...</p>";
 
-	$db->modify_column("polls", "numvotes", "text NOT NULL default '0'");
+	$db->modify_column("polls", "numvotes", "text NOT NULL");
 
 	$output->print_contents("<p>Click next to continue with the upgrade process.</p>");
 	$output->print_footer("26_done");

@@ -881,7 +881,7 @@ if($mybb->input['action'] == "vote" && $mybb->request_method == "post")
 	$now = TIME_NOW;
 	$votesarray = explode("||~|~||", $poll['votes']);
 	$option = $mybb->input['option'];
-	$numvotes = $poll['numvotes'];
+	$numvotes = (int)$poll['numvotes'];
 	if($poll['multiple'] == 1)
 	{
 		if(is_array($option))
@@ -957,6 +957,7 @@ if($mybb->input['action'] == "do_undovote")
 	
 	$query = $db->simple_select("polls", "*", "pid='".intval($mybb->input['pid'])."'");
 	$poll = $db->fetch_array($query);
+	$poll['numvotes'] = (int)$poll['numvotes'];
 	
 	if(!$poll['pid'])
 	{
