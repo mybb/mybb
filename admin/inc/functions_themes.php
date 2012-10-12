@@ -157,7 +157,31 @@ function import_theme_xml($xml, $options=array())
 			}
 		}
 
+		$security_check = false;
+		$templatecache = array();
 		foreach($templates as $template)
+		{
+			if(check_template($template['value']))
+			{
+				$security_check = true;
+				break;
+			}
+
+			$templatecache = array(
+				"title" => $db->escape_string($template['attributes']['name']),
+				"template" => $db->escape_string($template['value']),
+				"sid" => $db->escape_string($sid),
+				"version" => $db->escape_string($template['attributes']['version']),
+				"dateline" => TIME_NOW
+			);
+		}
+
+		if($security_check == true)
+		{
+			return -4;
+		}
+
+		foreach($templatecache as $template)
 		{
 			// PostgreSQL causes apache to stop sending content sometimes and
 			// causes the page to stop loading during many queries all at one time
@@ -167,14 +191,7 @@ function import_theme_xml($xml, $options=array())
 				flush();
 			}
 
-			$new_template = array(
-				"title" => $db->escape_string($template['attributes']['name']),
-				"template" => $db->escape_string($template['value']),
-				"sid" => $db->escape_string($sid),
-				"version" => $db->escape_string($template['attributes']['version']),
-				"dateline" => TIME_NOW
-			);
-			$db->insert_query("templates", $new_template);
+			$db->insert_query("templates", $template);
 		}
 
 		$properties['templateset'] = $sid;
