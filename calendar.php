@@ -1548,7 +1548,7 @@ if($mybb->input['action'] == "dayview")
 	$start_timestamp = gmmktime(0, 0, 0, $month, $day, $year);
 	$end_timestamp = gmmktime(23, 59, 59, $month, $day, $year);
 
-	$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 
 	if(is_array($events_cache["$day-$month-$year"]))
 	{
@@ -1855,7 +1855,7 @@ if($mybb->input['action'] == "weekview")
 	$events_from = gmmktime(0, 0, 0, $week_from[1], 1, $week_from[2]);
 	$events_to = gmmktime(0, 0, 0, $week_to[1], $week_to[3], $week_to[2]);
 
-	$events_cache = get_events($calendar['cid'], $events_from, $events_to, $calendar_permissions['canmoderateevents']);
+	$events_cache = get_events($calendar, $events_from, $events_to, $calendar_permissions['canmoderateevents']);
 
 	$today = my_date("dnY");
 
@@ -2117,7 +2117,7 @@ if(!$mybb->input['action'])
 		$start_timestamp -= (86400 * 7);
 	}
 
-	$events_cache = get_events($calendar['cid'], $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
+	$events_cache = get_events($calendar, $start_timestamp, $end_timestamp, $calendar_permissions['canmoderateevents']);
 	
 	// Fetch birthdays
 	if($calendar['showbirthdays'])
