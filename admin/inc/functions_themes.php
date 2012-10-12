@@ -144,26 +144,43 @@ function import_theme_xml($xml, $options=array())
 			}
 		}
 	
+		$security_check = false;
+		$templatecache = array();
 		foreach($templates as $template)
 		{
-			// PostgreSQL causes apache to stop sending content sometimes and 
-			// causes the page to stop loading during many queries all at one time
-			if($db->engine == "pgsql")
+			if(check_template($template['value']))
 			{
-				echo " ";
-				flush();
+				$security_check = true;
+				break;
 			}
-			
-			$new_template = array(
+
+			$templatecache = array(
 				"title" => $db->escape_string($template['attributes']['name']),
 				"template" => $db->escape_string($template['value']),
 				"sid" => $db->escape_string($sid),
 				"version" => $db->escape_string($template['attributes']['version']),
 				"dateline" => TIME_NOW
 			);
-			$db->insert_query("templates", $new_template);
 		}
-		
+
+		if($security_check == true)
+		{
+			return -4;
+		}
+
+		foreach($templatecache as $template)
+		{
+			// PostgreSQL causes apache to stop sending content sometimes and
+			// causes the page to stop loading during many queries all at one time
+			if($db->engine == "pgsql")
+			{
+				echo " ";
+				flush();
+			}
+
+			$db->insert_query("templates", $template);
+		}
+
 		$properties['templateset'] = $sid;
 	}
 

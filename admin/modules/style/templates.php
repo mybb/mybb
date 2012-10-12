@@ -179,7 +179,13 @@ if($mybb->input['action'] == "add_template")
 		{
 			$errors[] = $lang->error_invalid_set;
 		}
-		
+
+		// Are we trying to do malicious things in our template?
+		if(check_template($mybb->input['template']))
+		{
+			$errors[] = $lang->error_security_problem;
+		}
+
 		if(!$errors)
 		{
 			$template_array = array(
