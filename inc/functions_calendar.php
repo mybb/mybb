@@ -424,7 +424,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		SELECT u.*, e.*
 		FROM ".TABLE_PREFIX."events e
 		LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=e.uid)
-		WHERE e.cid='{$calendar}' {$visible_where} AND ((e.endtime>={$start} AND e.starttime<={$end}) OR (e.endtime=0 AND e.starttime>={$start} AND e.starttime<={$end})) AND ((e.uid='{$mybb->user['uid']}' AND private='1') OR private!='1')
+		WHERE e.cid='{$calendar['cid']}' {$visible_where} AND ((e.endtime>={$start} AND e.starttime<={$end}) OR (e.endtime=0 AND e.starttime>={$start} AND e.starttime<={$end})) AND ((e.uid='{$mybb->user['uid']}' AND private='1') OR private!='1')
 		ORDER BY endtime DESC
 	");
 	while($event = $db->fetch_array($query))
@@ -450,7 +450,7 @@ function get_events($calendar, $start, $end, $unapproved=0, $private=1)
 		{
 			$event_date = explode("-", gmdate("j-n-Y", $event['starttime_user']));
 			$event['endtime_user'] = $event['endtime']+($offset*3600);
-			$event['weekday_start'] = $calendar['weekstart'];
+			$event['weekday_start'] = $calendar['startofweek'];
 
 			$start_day = gmmktime(0, 0, 0, $event_date[1], $event_date[0], $event_date[2]);
 
