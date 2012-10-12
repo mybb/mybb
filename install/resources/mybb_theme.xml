@@ -2844,7 +2844,7 @@ fieldset,
 		</script>
 	</td>
 ]]></template>
-		<template name="forumdisplay_threadlist" version="1603"><![CDATA[<div class="float_left">
+		<template name="forumdisplay_threadlist" version="1609"><![CDATA[<div class="float_left">
 	{$multipage}
 </div>
 <div class="float_right">
@@ -2875,7 +2875,7 @@ fieldset,
 	<tr>
 		<td class="tfoot" align="right" colspan="{$colspan}">
 			<form action="forumdisplay.php" method="get">
-				<input type="hidden" name="selectall" value="{$allselected}" />
+				<input type="hidden" name="selectall" value="" />
 				<input type="hidden" name="fid" value="{$fid}" />
 				<select name="sortby">
 					<option value="subject" {$sortsel['subject']}>{$lang->sort_by_subject}</option>
