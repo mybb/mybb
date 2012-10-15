@@ -9,28 +9,26 @@
  * $Id: index.php 5736 2011-12-29 19:56:07Z ralgith $
  */
 
-define("IN_MYBB", 1);
+define('IN_MYBB', 1);
 define('THIS_SCRIPT', 'index.php');
 
-$templatelist = "index,index_whosonline,index_welcomemembertext,index_welcomeguest,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,index_modcolumn,forumbit_moderators,forumbit_subforums,index_welcomeguesttext";
-$templatelist .= ",index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats";
+$templatelist = 'index,index_whosonline,index_welcomemembertext,index_welcomeguest,index_whosonline_memberbit,forumbit_depth1_cat,forumbit_depth1_forum,forumbit_depth2_cat,forumbit_depth2_forum,forumbit_depth1_forum_lastpost,forumbit_depth2_forum_lastpost,index_modcolumn,forumbit_moderators,forumbit_subforums,index_welcomeguesttext,index_birthdays_birthday,index_birthdays,index_pms,index_loginform,index_logoutlink,index_stats,forumbit_depth3,forumbit_depth3_statusicon,index_boardstats';
 
-require_once "./global.php";
+require_once './global.php';
 
-require_once MYBB_ROOT."inc/functions_post.php";
-require_once MYBB_ROOT."inc/functions_forumlist.php";
-require_once MYBB_ROOT."inc/class_parser.php";
+require_once MYBB_ROOT.'inc/functions_forumlist.php';
+require_once MYBB_ROOT.'inc/class_parser.php';
 $parser = new postParser;
 
-$plugins->run_hooks("index_start");
+$plugins->run_hooks('index_start');
 
 // Load global language phrases
-$lang->load("index");
+$lang->load('index');
 
 $logoutlink = $loginform = '';
 if($mybb->user['uid'] != 0)
 {
-	eval("\$logoutlink = \"".$templates->get("index_logoutlink")."\";");
+	eval('$logoutlink = "'.$templates->get('index_logoutlink').'";');
 }
 else
 {
@@ -53,38 +51,35 @@ else
 				$login_username = $lang->login_username;
 				break;
 		}
-		eval("\$loginform = \"".$templates->get("index_loginform")."\";");
+		eval('$loginform = "'.$templates->get('index_loginform').'";');
 	}
 }
 $whosonline = '';
 if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 {
 	// Get the online users.
-	$timesearch = TIME_NOW - $mybb->settings['wolcutoff'];
+	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
 	$comma = '';
-	$query = $db->query("
+	$query = $db->query('
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM ".TABLE_PREFIX."sessions s
-		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
-		WHERE s.time>'$timesearch'
+		FROM '.TABLE_PREFIX.'sessions s
+		LEFT JOIN '.TABLE_PREFIX.'users u ON (s.uid=u.uid)
+		WHERE s.time>\''.$timesearch.'\'
 		ORDER BY u.username ASC, s.time DESC
-	");
+	');
 
-	$forum_viewers = array();
-	$membercount = 0;
-	$onlinemembers = '';
-	$guestcount = 0;
-	$anoncount = 0;
-	$doneusers = array();
+	$forum_viewers = $doneusers = array();
+	$membercount = $guestcount = $anoncount = 0;
+	$onlinemembers = $comma = '';
 
 	// Fetch spiders
-	$spiders = $cache->read("spiders");
+	$spiders = $cache->read('spiders');
 
 	// Loop through all users.
 	while($user = $db->fetch_array($query))
 	{
 		// Create a key to test if this user is a search bot.
-		$botkey = my_strtolower(str_replace("bot=", '', $user['sid']));
+		$botkey = my_strtolower(str_replace('bot=', '', $user['sid']));
 
 		// Decide what type of user we are dealing with.
 		if($user['uid'] > 0)
@@ -103,7 +98,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					// If this usergroup can see anonymously logged-in users, mark them.
 					if($user['invisible'] == 1)
 					{
-						$invisiblemark = "*";
+						$invisiblemark = '*';
 					}
 					else
 					{
@@ -113,14 +108,14 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 					// Properly format the username and assign the template.
 					$user['username'] = format_name($user['username'], $user['usergroup'], $user['displaygroup']);
 					$user['profilelink'] = build_profile_link($user['username'], $user['uid']);
-					eval("\$onlinemembers .= \"".$templates->get("index_whosonline_memberbit", 1, 0)."\";");
+					eval('$onlinemembers .= "'.$templates->get('index_whosonline_memberbit', 1, 0).'";');
 					$comma = $lang->comma;
 				}
 				// This user has been handled.
 				$doneusers[$user['uid']] = $user['time'];
 			}
 		}
-		elseif(my_strpos($user['sid'], "bot=") !== false && $spiders[$botkey])
+		elseif(my_strpos($user['sid'], 'bot=') !== false && $spiders[$botkey])
 		{
 			// The user is a search bot.
 			$onlinemembers .= $comma.format_name($spiders[$botkey]['name'], $spiders[$botkey]['usergroup']);
@@ -135,7 +130,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 
 		if($user['location1'])
 		{
-			$forum_viewers[$user['location1']]++;
+			++$forum_viewers[$user['location1']];
 		}
 	}
 
@@ -175,7 +170,7 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 		$guestbit = $lang->online_guest_singular;
 	}
 	$lang->online_note = $lang->sprintf($lang->online_note, my_number_format($onlinecount), $onlinebit, $mybb->settings['wolcutoffmins'], my_number_format($membercount), $memberbit, my_number_format($anoncount), $anonbit, my_number_format($guestcount), $guestbit);
-	eval("\$whosonline = \"".$templates->get("index_whosonline")."\";");
+	eval('$whosonline = "'.$templates->get('index_whosonline').'";');
 }
 
 // Build the birthdays for to show on the index page.
@@ -183,17 +178,16 @@ $bdays = $birthdays = '';
 if($mybb->settings['showbirthdays'] != 0)
 {
 	// First, see what day this is.
-	$bdaycount = 0; $bdayhidden = 0;
-	$bdaytime = TIME_NOW;
-	$bdaydate = my_date("j-n", $bdaytime, '', 0);
-	$year = my_date("Y", $bdaytime, '', 0);
+	$bdaycount = $bdayhidden = 0;
+	$bdaydate = my_date('j-n', TIME_NOW, '', 0);
+	$year = my_date('Y', TIME_NOW, '', 0);
 	
-	$bdaycache = $cache->read("birthdays");
+	$bdaycache = $cache->read('birthdays');
 	
 	if(!is_array($bdaycache))
 	{
 		$cache->update_birthdays();
-		$bdaycache = $cache->read("birthdays");
+		$bdaycache = $cache->read('birthdays');
 	}
 	
 	$hiddencount = $bdaycache[$bdaydate]['hiddencount'];
@@ -202,7 +196,7 @@ if($mybb->settings['showbirthdays'] != 0)
 	$comma = '';
 	if(!empty($today_bdays))
 	{
-		if(intval($mybb->settings['showbirthdayspostlimit']) > 0)
+		if((int)$mybb->settings['showbirthdayspostlimit'] > 0)
 		{
 			$bdayusers = array();
 			foreach($today_bdays as $key => $bdayuser_pc)
@@ -213,8 +207,8 @@ if($mybb->settings['showbirthdays'] != 0)
 			if(!empty($bdayusers))
 			{
 				// Find out if our users have enough posts to be seen on our birthday list
-				$bday_sql = implode(",", array_keys($bdayusers));
-				$query = $db->simple_select("users", "uid, postnum", "uid IN ({$bday_sql})");
+				$bday_sql = implode(',', array_keys($bdayusers));
+				$query = $db->simple_select('users', 'uid, postnum', 'uid IN ('.$bday_sql.')');
 
 				while($bdayuser = $db->fetch_array($query))
 				{
@@ -242,10 +236,10 @@ if($mybb->settings['showbirthdays'] != 0)
 					continue;
 				}
 
-				$bday = explode("-", $bdayuser['birthday']);
+				$bday = explode('-', $bdayuser['birthday']);
 				if($year > $bday['2'] && $bday['2'] != '')
 				{
-					$age = " (".($year - $bday['2']).")";
+					$age = ' ('.($year - $bday['2']).')';
 				}
 				else
 				{
@@ -254,7 +248,7 @@ if($mybb->settings['showbirthdays'] != 0)
 
 				$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
 				$bdayuser['profilelink'] = build_profile_link($bdayuser['username'], $bdayuser['uid']);
-				eval("\$bdays .= \"".$templates->get("index_birthdays_birthday", 1, 0)."\";");
+				eval('$bdays .= "'.$templates->get('index_birthdays_birthday', 1, 0).'";');
 				++$bdaycount;
 				$comma = $lang->comma;
 			}
@@ -265,28 +259,29 @@ if($mybb->settings['showbirthdays'] != 0)
 	{
 		if($bdaycount > 0)
 		{
-			$bdays .= " - ";
+			$bdays .= ' - ';
 		}
-		$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
+		$bdays .= $hiddencount.' '.$lang->birthdayhidden;
 	}
 	
 	// If there are one or more birthdays, show them.
 	if($bdaycount > 0 || $hiddencount > 0)
 	{
-		eval("\$birthdays = \"".$templates->get("index_birthdays")."\";");
+		eval('$birthdays = "'.$templates->get('index_birthdays').'";');
 	}
 }
 
 // Build the forum statistics to show on the index page.
+$forumstats = '';
 if($mybb->settings['showindexstats'] != 0)
 {
 	// First, load the stats cache.
-	$stats = $cache->read("stats");
+	$stats = $cache->read('stats');
 
 	// Check who's the newest member.
 	if(!$stats['lastusername'])
 	{
-		$newestmember = "no-one";
+		$newestmember = 'no-one';
 	}
 	else
 	{
@@ -299,13 +294,13 @@ if($mybb->settings['showindexstats'] != 0)
 	$lang->stats_newestuser = $lang->sprintf($lang->stats_newestuser, $newestmember);
 
 	// Find out what the highest users online count is.
-	$mostonline = $cache->read("mostonline");
+	$mostonline = $cache->read('mostonline');
 	if($onlinecount > $mostonline['numusers'])
 	{
 		$time = TIME_NOW;
 		$mostonline['numusers'] = $onlinecount;
 		$mostonline['time'] = $time;
-		$cache->update("mostonline", $mostonline);
+		$cache->update('mostonline', $mostonline);
 	}
 	$recordcount = $mostonline['numusers'];
 	$recorddate = my_date($mybb->settings['dateformat'], $mostonline['time']);
@@ -314,49 +309,49 @@ if($mybb->settings['showindexstats'] != 0)
 	// Then format that language string.
 	$lang->stats_mostonline = $lang->sprintf($lang->stats_mostonline, my_number_format($recordcount), $recorddate, $recordtime);
 
-	eval("\$forumstats = \"".$templates->get("index_stats")."\";");
+	eval('$forumstats = "'.$templates->get('index_stats').'";');
 }
 
 // Show the board statistics table only if one or more index statistics are enabled.
+$boardstats = '';
 if(($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0) || $mybb->settings['showindexstats'] != 0 || ($mybb->settings['showbirthdays'] != 0 && $bdaycount > 0))
 {
-	if(!is_array($stats))
+	if(!isset($stats) || isset($stats) && !is_array($stats))
 	{
 		// Load the stats cache.
-		$stats = $cache->read("stats");
+		$stats = $cache->read('stats');
 	}
 
 	$post_code_string = '';
 	if($mybb->user['uid'])
 	{
-		$post_code_string = "&amp;my_post_key=".$mybb->post_code;
+		$post_code_string = '&amp;my_post_key='.$mybb->post_code;
 	}
 
-	eval("\$boardstats = \"".$templates->get("index_boardstats")."\";");
+	eval('$boardstats = "'.$templates->get('index_boardstats').'";');
 }
 
 if($mybb->user['uid'] == 0)
 {
 	// Build a forum cache.
-	$query = $db->query("
-		SELECT *
-		FROM ".TABLE_PREFIX."forums
-		WHERE active != 0
-		ORDER BY pid, disporder
-	");
-	
-	$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+	$query = $db->simple_select('forums', '*', 'active!=0', array('order_by' => 'pid, disporder'));
+
+	$forumsread = array();
+	if(isset($mybb->cookies['mybb']['forumread']))
+	{
+		$forumsread = my_unserialize($mybb->cookies['mybb']['forumread']);
+	}
 }
 else
 {
 	// Build a forum cache.
-	$query = $db->query("
+	$query = $db->query('
 		SELECT f.*, fr.dateline AS lastread
-		FROM ".TABLE_PREFIX."forums f
-		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid=f.fid AND fr.uid='{$mybb->user['uid']}')
+		FROM '.TABLE_PREFIX.'forums f
+		LEFT JOIN '.TABLE_PREFIX.'forumsread fr ON (fr.fid=f.fid AND fr.uid=\''.(int)$mybb->user['uid'].'\')
 		WHERE f.active != 0
 		ORDER BY pid, disporder
-	");
+	');
 }
 
 while($forum = $db->fetch_array($query))
@@ -373,14 +368,15 @@ while($forum = $db->fetch_array($query))
 $forumpermissions = forum_permissions();
 
 // Get the forum moderators if the setting is enabled.
-if($mybb->settings['modlist'] != "off")
+$moderatorcache = array();
+if($mybb->settings['modlist'] != 0 && $mybb->settings['modlist'] != 'off')
 {	
-	$moderatorcache = $cache->read("moderators");
+	$moderatorcache = $cache->read('moderators');
 }
 
-$excols = "index";
-$permissioncache['-1'] = "1";
-$bgcolor = "trow1";
+$excols = 'index';
+$permissioncache['-1'] = '1';
+$bgcolor = 'trow1';
 
 // Decide if we're showing first-level subforums on the index page.
 if($mybb->settings['subforumsindex'] != 0)
@@ -394,9 +390,9 @@ else
 $forum_list = build_forumbits();
 $forums = $forum_list['forum_list'];
 
-$plugins->run_hooks("index_end");
+$plugins->run_hooks('index_end');
 
-eval("\$index = \"".$templates->get("index")."\";");
+eval('$index = "'.$templates->get('index').'";');
 output_page($index);
 
 ?>
