@@ -444,15 +444,38 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 	// 0 or more reported posts currently exist
 	if($reported['unread'] > 0)
 	{
-		if($reported['unread'] == 1)
+		// We want to avoid one extra query for users that can moderate any forum
+		if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
 		{
-			$lang->unread_reports = $lang->unread_report;
+			$unread = (int)$reported['unread'];
 		}
 		else
 		{
-			$lang->unread_reports = $lang->sprintf($lang->unread_reports, $reported['unread']);
+			$unread = 0;
+			$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
+
+			while($fid = $db->fetch_field($query, 'fid'))
+			{
+				if(is_moderator($fid))
+				{
+					++$unread;
+				}
+			}
 		}
-		eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+
+		if($unread > 0)
+		{
+			if($unread == 1)
+			{
+				$lang->unread_reports = $lang->unread_report;
+			}
+			else
+			{
+				$lang->unread_reports = $lang->sprintf($lang->unread_reports, my_number_format($unread));
+			}
+
+			eval('$unreadreports = "'.$templates->get('global_unreadreports').'";');
+		}
 	}
 }
 

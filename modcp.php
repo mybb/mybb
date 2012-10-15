@@ -134,10 +134,32 @@ if($mybb->input['action'] == "reports")
 	}
 
 	// Multipage
-	$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "reportstatus ='0'");
-	$report_count = $db->fetch_field($query, "count");
+	$where = '';
+	if($mybb->usergroup['cancp'] || $mybb->usergroup['issupermod'])
+	{
+		$query = $db->simple_select("reportedposts", "COUNT(rid) AS count", "reportstatus ='0'");
+		$report_count = $db->fetch_field($query, "count");
+	}
+	else
+	{
+		$query = $db->simple_select('reportedposts', 'rid,fid', "reportstatus='0'");
 
-	$postcount = intval($report_count);
+		$report_count = 0;
+		$rids = array(0);
+		while($report = $db->fetch_array($query))
+		{
+			if(is_moderator($report['fid']))
+			{
+				++$report_count;
+				$rids[] = (int)$report['rid'];
+			}
+		}
+		$rids = implode("','", array_unique($rids));
+		$where = " AND r.rid IN ('{$rids}')";
+		unset($report, $rids);
+	}
+
+	$postcount = (int)$report_count;
 	$pages = $postcount / $perpage;
 	$pages = ceil($pages);
 
@@ -156,6 +178,7 @@ if($mybb->input['action'] == "reports")
 		$page = 1;
 	}
 
+	$multipage = $reportspages = '';
 	if($postcount > $perpage)
 	{
 		$multipage = multipage($postcount, $perpage, $page, "modcp.php?action=reports");
@@ -170,7 +193,7 @@ if($mybb->input['action'] == "reports")
 		SELECT r.*, u.username
 		FROM ".TABLE_PREFIX."reportedposts r
 		LEFT JOIN ".TABLE_PREFIX."users u ON (r.uid = u.uid)
-		WHERE r.reportstatus = '0'
+		WHERE r.reportstatus = '0'{$where}
 		ORDER BY r.lastreport DESC
 		LIMIT {$start}, {$perpage}
 	");
