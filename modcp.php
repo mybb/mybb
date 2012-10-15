@@ -144,7 +144,7 @@ if($mybb->input['action'] == "reports")
 		$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
 
 		$report_count = 0;
-		while($fid = $db->fetch_field($fid))
+		while($fid = $db->fetch_field($query, 'fid'))
 		{
 			if(is_moderator($fid))
 			{
