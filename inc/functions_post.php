@@ -269,7 +269,7 @@ function build_postbit($post, $post_type=0)
 			$post['stars'] = $usergroup['stars'];
 		}
 
-		if(empty$post['starimage'])
+		if(empty($post['starimage']))
 		{
 			$post['starimage'] = $usergroup['starimage'];
 		}
