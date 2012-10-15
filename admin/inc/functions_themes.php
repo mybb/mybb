@@ -167,7 +167,7 @@ function import_theme_xml($xml, $options=array())
 				break;
 			}
 
-			$templatecache = array(
+			$templatecache[] = array(
 				"title" => $db->escape_string($template['attributes']['name']),
 				"template" => $db->escape_string($template['value']),
 				"sid" => $db->escape_string($sid),
