@@ -107,10 +107,9 @@ if($mybb->input['action'] == "do_reports")
 	if(!$mybb->input['allbox'])
 	{
 		$mybb->input['reports'] = array_map("intval", $mybb->input['reports']);
-		$rids = implode($mybb->input['reports'], "','");
-		$rids = "'0','{$rids}'";
+		$rids = implode("','", $mybb->input['reports']);
 
-		$sql = "rid IN ({$rids})";
+		$sql = "rid IN ('0','{$rids}')";
 	}
 
 	$plugins->run_hooks("modcp_do_reports");
@@ -142,21 +141,18 @@ if($mybb->input['action'] == "reports")
 	}
 	else
 	{
-		$query = $db->simple_select('reportedposts', 'rid,fid', "reportstatus='0'");
+		$query = $db->simple_select('reportedposts', 'fid', "reportstatus='0'");
 
 		$report_count = 0;
-		$rids = array(0);
-		while($report = $db->fetch_array($query))
+		while($fid = $db->fetch_field($fid))
 		{
-			if(is_moderator($report['fid']))
+			if(is_moderator($fid))
 			{
 				++$report_count;
-				$rids[] = (int)$report['rid'];
 			}
 		}
-		$rids = implode("','", array_unique($rids));
-		$where = " AND r.rid IN ('{$rids}')";
-		unset($report, $rids);
+		$where = str_replace('t.fid', 'r.fid', $tflist);
+		unset($fid);
 	}
 
 	$postcount = (int)$report_count;
