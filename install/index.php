@@ -1670,10 +1670,12 @@ function insert_templates()
 	$contents = @file_get_contents(INSTALL_ROOT.'resources/mybb_theme.xml');
 	if(file_exists(MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php"))
 	{
+		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions.php";
 		require_once MYBB_ROOT.$mybb->config['admin_dir']."/inc/functions_themes.php";
 	}
 	elseif(file_exists(MYBB_ROOT."admin/inc/functions_themes.php"))
 	{
+		require_once MYBB_ROOT."admin/inc/functions.php";
 		require_once MYBB_ROOT."admin/inc/functions_themes.php";
 	}
 	else
