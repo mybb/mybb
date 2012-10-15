@@ -679,7 +679,7 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 {
 	if(isset($mybb->input['referrername']))
 	{
-		$condition = "username = '".$db->escape_string($mybb->input['referrername'])."'"
+		$condition = "username = '".$db->escape_string($mybb->input['referrername'])."'";
 	}
 	else
 	{
