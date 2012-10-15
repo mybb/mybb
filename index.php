@@ -60,13 +60,13 @@ if($mybb->settings['showwol'] != 0 && $mybb->usergroup['canviewonline'] != 0)
 	// Get the online users.
 	$timesearch = TIME_NOW - (int)$mybb->settings['wolcutoff'];
 	$comma = '';
-	$query = $db->query('
+	$query = $db->query("
 		SELECT s.sid, s.ip, s.uid, s.time, s.location, s.location1, u.username, u.invisible, u.usergroup, u.displaygroup
-		FROM '.TABLE_PREFIX.'sessions s
-		LEFT JOIN '.TABLE_PREFIX.'users u ON (s.uid=u.uid)
-		WHERE s.time>\''.$timesearch.'\'
+		FROM ".TABLE_PREFIX."sessions s
+		LEFT JOIN ".TABLE_PREFIX."users u ON (s.uid=u.uid)
+		WHERE s.time > '".$timesearch."'
 		ORDER BY u.username ASC, s.time DESC
-	');
+	");
 
 	$forum_viewers = $doneusers = array();
 	$membercount = $guestcount = $anoncount = 0;
@@ -208,7 +208,7 @@ if($mybb->settings['showbirthdays'] != 0)
 			{
 				// Find out if our users have enough posts to be seen on our birthday list
 				$bday_sql = implode(',', array_keys($bdayusers));
-				$query = $db->simple_select('users', 'uid, postnum', 'uid IN ('.$bday_sql.')');
+				$query = $db->simple_select('users', 'uid, postnum', "uid IN ({$bday_sql})");
 
 				while($bdayuser = $db->fetch_array($query))
 				{
@@ -236,14 +236,11 @@ if($mybb->settings['showbirthdays'] != 0)
 					continue;
 				}
 
+				$age = '';
 				$bday = explode('-', $bdayuser['birthday']);
 				if($year > $bday['2'] && $bday['2'] != '')
 				{
 					$age = ' ('.($year - $bday['2']).')';
-				}
-				else
-				{
-					$age = '';
 				}
 
 				$bdayuser['username'] = format_name($bdayuser['username'], $bdayuser['usergroup'], $bdayuser['displaygroup']);
@@ -261,9 +258,10 @@ if($mybb->settings['showbirthdays'] != 0)
 		{
 			$bdays .= ' - ';
 		}
-		$bdays .= $hiddencount.' '.$lang->birthdayhidden;
+
+		$bdays .= "{$hiddencount} {$lang->birthdayhidden}";
 	}
-	
+
 	// If there are one or more birthdays, show them.
 	if($bdaycount > 0 || $hiddencount > 0)
 	{
@@ -345,13 +343,13 @@ if($mybb->user['uid'] == 0)
 else
 {
 	// Build a forum cache.
-	$query = $db->query('
+	$query = $db->query("
 		SELECT f.*, fr.dateline AS lastread
-		FROM '.TABLE_PREFIX.'forums f
-		LEFT JOIN '.TABLE_PREFIX.'forumsread fr ON (fr.fid=f.fid AND fr.uid=\''.(int)$mybb->user['uid'].'\')
+		FROM ".TABLE_PREFIX."forums f
+		LEFT JOIN ".TABLE_PREFIX."forumsread fr ON (fr.fid = f.fid AND fr.uid = '{$mybb->user['uid']}')
 		WHERE f.active != 0
 		ORDER BY pid, disporder
-	');
+	");
 }
 
 while($forum = $db->fetch_array($query))
@@ -379,14 +377,12 @@ $permissioncache['-1'] = '1';
 $bgcolor = 'trow1';
 
 // Decide if we're showing first-level subforums on the index page.
+$showdepth = 2;
 if($mybb->settings['subforumsindex'] != 0)
 {
 	$showdepth = 3;
 }
-else
-{
-	$showdepth = 2;
-}
+
 $forum_list = build_forumbits();
 $forums = $forum_list['forum_list'];
 
@@ -394,5 +390,4 @@ $plugins->run_hooks('index_end');
 
 eval('$index = "'.$templates->get('index').'";');
 output_page($index);
-
 ?>

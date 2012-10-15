@@ -72,7 +72,7 @@ if(isset($mybb->input['language']) && $lang->language_exists($mybb->input['langu
 			my_unsetcookie('mybblang');
 		}
 
-		$db->update_query('users', array('language' => $db->escape_string($mybb->settings['bblanguage'])), 'uid=\''.(int)$mybb->user['uid'].'\'');
+		$db->update_query('users', array('language' => $db->escape_string($mybb->settings['bblanguage'])), "uid = '{$mybb->user['uid']}'");
 	}
 	// Guest = cookie
 	else
@@ -112,7 +112,9 @@ $style = array();
 // This user has a custom theme set in their profile
 if(isset($mybb->user['style']) && (int)$mybb->user['style'] != 0)
 {
-	$loadstyle = 'tid=\''.(int)$mybb->user['style'].'\'';
+	$mybb->user['style'] = (int)$mybb->user['style'];
+
+	$loadstyle = "tid = '{$mybb->user['style']}'";
 	$load_from_user = 1;
 }
 
@@ -136,7 +138,8 @@ if(in_array($current_page, $valid))
 	// If we're accessing a post, fetch the forum theme for it and if we're overriding it
 	if(isset($mybb->input['pid']))
 	{
-		$query = $db->simple_select('posts', 'fid', 'pid=\''.(int)$mybb->input['pid'].'\'', array('limit'=> 1));
+		$pid = (int)$mybb->input['pid'];
+		$query = $db->simple_select("posts", "fid", "pid = '{$pid}'", array("limit" => 1));
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -145,11 +148,11 @@ if(in_array($current_page, $valid))
 			$load_from_forum = 1;
 		}
 	}
-
 	// We have a thread id and a forum id, we can easily fetch the theme for this forum
 	else if(isset($mybb->input['tid']))
 	{
-		$query = $db->simple_select('threads', 'fid', 'tid=\''.(int)$mybb->input['tid'].'\'', array('limit' => 1));
+		$tid = (int)$mybb->input['tid'];
+		$query = $db->simple_select('threads', 'fid', "tid = '{$mybb->input['tid']}'", array('limit' => 1));
 		$fid = $db->fetch_field($query, 'fid');
 
 		if($fid)
@@ -158,7 +161,6 @@ if(in_array($current_page, $valid))
 			$load_from_forum = 1;
 		}
 	}
-
 	// We have a forum id - simply load the theme from it
 	else if(isset($mybb->input['fid']))
 	{
@@ -171,17 +173,19 @@ unset($valid);
 // From all of the above, a theme was found
 if(isset($style['style']) && $style['style'] > 0)
 {
+	$style['style'] = (int)$style['style'];
+
 	// This theme is forced upon the user, overriding their selection
 	if($style['overridestyle'] == 1 || !isset($mybb->user['style']))
 	{
-		$loadstyle = 'tid=\''.(int)$style['style'].'\'';
+		$loadstyle = "tid = '{$style['style']}'";
 	}
 }
 
 // After all of that no theme? Load the board default
 if(empty($loadstyle))
 {
-	$loadstyle = 'def=\'1\'';
+	$loadstyle = "def = '1'";
 }
 
 // Fetch the theme to load from the database
@@ -194,13 +198,14 @@ if(!isset($theme['tid']) || isset($theme['tid']) && !$theme['tid'])
 	// Missing theme was from a forum, run a query to set any forums using the theme to the default
 	if($load_from_forum == 1)
 	{
-		$db->update_query('forums', array('style' => 0), 'style=\''.(int)$style['style'].'\'');
+		$db->update_query('forums', array('style' => 0), "style = '{$style['style']}'");
 	}
 	// Missing theme was from a user, run a query to set any users using the theme to the default
 	else if($load_from_user == 1)
 	{
-		$db->update_query('users', array('style' => 0), 'style=\''.(int)$mybb->user['style'].'\'');
+		$db->update_query('users', array('style' => 0), "style = '{$mybb->user['style']}'");
 	}
+
 	// Attempt to load the master or any other theme if the master is not available
 	$query = $db->simple_select('themes', 'name, tid, properties, stylesheets', '', array('order_by' => 'tid', 'limit' => 1));
 	$theme = $db->fetch_array($query);
@@ -216,6 +221,7 @@ if(isset($mybb->input['action']))
 {
 	$actions[] = $mybb->input['action'];
 }
+
 foreach($theme['stylesheets'] as $script => $stylesheet)
 {
 	if(!in_array($script, array('global', THIS_SCRIPT)) && $script != $theme['color'])
@@ -315,7 +321,9 @@ if(isset($templatelist))
 {
 	$templatelist .= ',';
 }
-$templatelist .= 'css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports,global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,header_welcomeblock_member_moderator,redirect,error';
+
+$templatelist .= 'css,headerinclude,header,footer,gobutton,htmldoctype,header_welcomeblock_member,header_welcomeblock_guest,header_welcomeblock_member_admin,global_pm_alert,global_unreadreports';
+$templatelist .= ',global_pending_joinrequests,nav,nav_sep,nav_bit,nav_sep_active,nav_bit_active,footer_languageselect,header_welcomeblock_member_moderator,redirect,error';
 $templates->cache($db->escape_string($templatelist));
 
 // Set the current date and time now
@@ -388,26 +396,26 @@ else
 	eval('$welcomeblock = "'.$templates->get('header_welcomeblock_guest').'";');
 }
 
+// See if there are any pending join requests for group leaders
 $pending_joinrequests = '';
-
-// Read the group leaders cache
 $groupleaders = $cache->read('groupleaders');
 if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb->user['uid'], $groupleaders))
 {
 	$groupleader = $groupleaders[$mybb->user['uid']];
 	
-	$gids = '\'0\'';
+	$gids = "'0'";
 	foreach($groupleader as $user)
 	{
 		if($user['canmanagerequests'] != 1)
 		{
 			continue;
 		}
-		
-		$gids .= ',\''.(int)$user['gid'].'\'';
+
+		$user['gid'] = (int)$user['gid'];
+		$gids .= ",'{$user['gid']}'";
 	}
-	
-	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', 'gid IN ('.$gids.')');
+
+	$query = $db->simple_select('joinrequests', 'COUNT(uid) as total', "gid IN ({$gids})");
 	$total_joinrequests = $db->fetch_field($query, 'total');
 
 	if($total_joinrequests > 0)
@@ -421,6 +429,7 @@ if($mybb->user['uid'] != 0 && is_array($groupleaders) && array_key_exists($mybb-
 			$total_joinrequests = my_number_format($total_joinrequests);
 			$lang->pending_joinrequests = $lang->sprintf($lang->pending_joinrequests, $total_joinrequests);
 		}
+
 		eval('$pending_joinrequests = "'.$templates->get('global_pending_joinrequests').'";');
 	}
 }
@@ -448,14 +457,10 @@ if($mybb->usergroup['cancp'] == 1 || $mybb->user['ismoderator'] && $mybb->usergr
 }
 
 // Got a character set?
+$charset = 'UTF-8';
 if(isset($lang->settings['charset']) && $lang->settings['charset'])
 {
 	$charset = $lang->settings['charset'];
-}
-// If not, revert to UTF-8
-else
-{
-	$charset = 'UTF-8';
 }
 
 // Is this user apart of a banned group?
@@ -463,34 +468,36 @@ $bannedwarning = '';
 if($mybb->usergroup['isbannedgroup'] == 1)
 {
 	// Fetch details on their ban
-	$query = $db->simple_select('banned', '*', 'uid=\''.(int)$mybb->user['uid'].'\'', array('limit' => 1));
+	$query = $db->simple_select('banned', '*', "uid = '{$mybb->user['uid']}'", array('limit' => 1));
 	$ban = $db->fetch_array($query);
+
 	if($ban['uid'])
 	{
 		// Format their ban lift date and reason appropriately
+		$banlift = $lang->banned_lifted_never;
+		$reason = htmlspecialchars_uni($ban['reason']);
+
 		if($ban['lifted'] > 0)
 		{
-			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']).' , '.my_date($mybb->settings['timeformat'], $ban['lifted']);
+			$banlift = my_date($mybb->settings['dateformat'], $ban['lifted']).', '.my_date($mybb->settings['timeformat'], $ban['lifted']);
 		}
-		else 
-		{
-			$banlift = $lang->banned_lifted_never;
-		}
-		$reason = htmlspecialchars_uni($ban['reason']);
 	}
+
 	if(empty($reason))
 	{
 		$reason = $lang->unknown;
 	}
+
 	if(empty($banlift))
 	{
 		$banlift = $lang->unknown;
 	}
+
 	// Display a nice warning to the user
 	eval('$bannedwarning = "'.$templates->get('global_bannedwarning').'";');
 }
 
-$lang->ajax_loading = str_replace('\'', '\\\'', $lang->ajax_loading);
+$lang->ajax_loading = str_replace("'", "\\'", $lang->ajax_loading);
 
 // Check if this user has a new private message.
 if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->settings['enablepms'] != 0 && $mybb->usergroup['canusepms'] != 0 && $mybb->usergroup['canview'] != 0 && ($current_page != 'private.php' || $mybb->input['action'] != 'read'))
@@ -501,18 +508,18 @@ if($mybb->user['pmnotice'] == 2 && $mybb->user['pms_unread'] > 0 && $mybb->setti
 		$parser = new postParser;
 	}
 
-	$query = $db->query('
+	$query = $db->query("
 		SELECT pm.subject, pm.pmid, fu.username AS fromusername, fu.uid AS fromuid
-		FROM '.TABLE_PREFIX.'privatemessages pm
-		LEFT JOIN '.TABLE_PREFIX.'users fu ON (fu.uid=pm.fromid)
-		WHERE pm.folder=\'1\' AND pm.uid=\''.(int)$mybb->user['uid'].'\' AND pm.status=\'0\'
+		FROM ".TABLE_PREFIX."privatemessages pm
+		LEFT JOIN ".TABLE_PREFIX."users fu on (fu.uid=pm.fromid)
+		WHERE pm.folder = '1' AND pm.uid = '{$mybb->user['uid']}' AND pm.status = '0'
 		ORDER BY pm.dateline DESC
 		LIMIT 1
-	');
+	");
 
 	$pm = $db->fetch_array($query);
 	$pm['subject'] = $parser->parse_badwords($pm['subject']);
-	
+
 	if($pm['fromuid'] == 0)
 	{
 		$pm['fromusername'] = $lang->mybb_engine;
@@ -550,18 +557,16 @@ if($mybb->settings['showvernum'] == 1)
 }
 
 // Check to see if we have any tasks to run
+$task_image = '';
 $task_cache = $cache->read('tasks');
 if(!$task_cache['nextrun'])
 {
 	$task_cache['nextrun'] = TIME_NOW;
 }
+
 if($task_cache['nextrun'] <= TIME_NOW)
 {
 	$task_image = '<img src="'.$mybb->settings['bburl'].'/task.php" border="0" width="1" height="1" alt="" />';
-}
-else
-{
-	$task_image = '';
 }
 
 // Are we showing the quick language selection box?
@@ -612,22 +617,22 @@ if(is_banned_ip($session->ipaddress, true))
 {
 	if($mybb->user['uid'])
     {
-        $db->delete_query('sessions', 'ip=\''.$db->escape_string($session->ipaddress).'\' OR uid=\''.(int)$mybb->user['uid'].'\'');
+		$db->delete_query('sessions', "ip = '".$db->escape_string($session->ipaddress)."' OR uid='{$mybb->user['uid']}'");
     }
     else
     {
-        $db->delete_query('sessions', 'ip=\''.$db->escape_string($session->ipaddress).'\'');
+		$db->delete_query('sessions', "ip = '".$db->escape_string($session->ipaddress)."'");
     }
 	error($lang->error_banned);
 }
 
 $closed_bypass = array(
-	"member.php" => array(
-		"login",
-		"do_login",
-		"logout",
+	'member.php' => array(
+		'login',
+		'do_login',
+		'logout',
 	),
-	"captcha.php",
+	'captcha.php',
 );
 
 // If the board is closed, the user is not an administrator and they're not trying to login, show the board closed message
@@ -651,14 +656,16 @@ if(!$mybb->user['uid'] && $mybb->settings['usereferrals'] == 1 && (isset($mybb->
 {
 	if(isset($mybb->input['referrername']))
 	{
-		$condition = 'username=\''.$db->escape_string($mybb->input['referrername']).'\'';
+		$condition = "username = '".$db->escape_string($mybb->input['referrername'])."'"
 	}
 	else
 	{
-		$condition = 'uid=\''.(int)$mybb->input['referrer'].'\'';
+		$condition = "uid = '".(int)$mybb->input['referrer']."'";
 	}
+
 	$query = $db->simple_select('users', 'uid', $condition, array('limit' => 1));
 	$referrer = $db->fetch_array($query);
+
 	if($referrer['uid'])
 	{
 		my_setcookie('mybb[referrer]', $referrer['uid']);
