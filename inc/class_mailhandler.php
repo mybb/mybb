@@ -312,7 +312,6 @@ class MailHandler
 		}
 		$this->headers .= "Content-Transfer-Encoding: 8bit{$this->delimiter}";
 		$this->headers .= "X-Priority: 3{$this->delimiter}";
-		$this->headers .= "X-MSMail-Priority: Normal{$this->delimiter}";
 		$this->headers .= "X-Mailer: MyBB{$this->delimiter}";
 		$this->headers .= "MIME-Version: 1.0{$this->delimiter}";
 	}
