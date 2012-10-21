@@ -10035,7 +10035,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 {$footer}
 </body>
 </html>]]></template>
-		<template name="member_coppa_form" version="1400"><![CDATA[<html>
+		<template name="member_coppa_form" version="1609"><![CDATA[<html>
 <head>
 	<title>{$mybb->settings['bbname']} - {$lang->coppa_compliance}</title>
 	<style type="text/css">
@@ -10092,7 +10092,7 @@ document.write('<br /><span class="smalltext"><a href="#" onclick="UserCP.openBu
 		<dd class="single">{$lang->coppa_parent_agreement}</dd>
 
 		<dt><label for="signature">{$lang->signature}</label></dt>
-		<dd><input type="text" class="textbox" id="signature" /> Date: <input type="text" class="textbox date" id="date" /></dd>
+		<dd><input type="text" class="textbox" id="signature" /> {$lang->date}: <input type="text" class="textbox date" id="date" /></dd>
 	</dl>
 </body>
 </html>]]></template>
