@@ -89,7 +89,6 @@ $l['find'] = "Find";
 $l['modlogs'] = "Moderator Logs";
 $l['action'] = "Action";
 $l['all_moderators'] = "All Moderators";
-$l['date'] = "Date";
 $l['ip'] = "IP Address";
 $l['info_on_ip'] = "Information on This IP Address";
 $l['information']  = "Information";
