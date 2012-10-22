@@ -746,12 +746,12 @@ if($mybb->input['action'] == "send")
 			SELECT pm.*, u.username AS quotename
 			FROM ".TABLE_PREFIX."privatemessages pm
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=pm.fromid)
-			WHERE pm.pmid='".intval($mybb->input['pmid'])."' AND pm.uid='".$mybb->user['uid']."'
+			WHERE pm.pmid='{$mybb->input['pmid']}' AND pm.uid='{$mybb->user['uid']}'
 		");
-		$pm = $db->fetch_array($query);
 
-		$message = htmlspecialchars_uni($pm['message']);
-		$subject = htmlspecialchars_uni($pm['subject']);
+		$pm = $db->fetch_array($query);
+		$message = htmlspecialchars_uni($parser->parse_badwords($pm['message']));
+		$subject = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
 
 		if($pm['folder'] == "3")
 		{ // message saved in drafts
@@ -1036,6 +1036,7 @@ if($mybb->input['action'] == "read")
 
 	$pm['userusername'] = $pm['username'];
 	$pm['subject'] = htmlspecialchars_uni($parser->parse_badwords($pm['subject']));
+
 	if($pm['fromid'] == 0)
 	{
 		$pm['username'] = $lang->mybb_engine;
