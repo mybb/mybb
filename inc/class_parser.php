@@ -114,13 +114,13 @@ class postParser
 		}
 		else
 		{		
-			while(preg_match("#<script(.*)>(.*)</script(.*)>#is", $message))
+			while(preg_match("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", $message))
 			{
-				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
+				$message = preg_replace("#<s(cript|tyle)(.*)>(.*)</s(cript|tyle)(.*)>#is", "&lt;s$1$2&gt;$3&lt;/s$4$5&gt;", $message);
 			}
 
-			$find = array('<?php', '<!--', '-->', '?>', '<style>', '</style>', "<br />\n", "<br>\n");
-			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', '&lt;style&gt;', '&lt;/style&gt;', "\n", "\n");
+			$find = array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n");
+			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n");
 			$message = str_replace($find, $replace, $message);
 		}
 
