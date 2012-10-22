@@ -26,13 +26,14 @@ function build_postbit($post, $post_type=0)
 	$hascustomtitle = 0;
 
 	// Set default values for any fields not provided here
-	foreach(array('subject_extra', 'attachments', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $field)
+	foreach(array('subject_extra', 'attachments', 'button_warn', 'button_reply_pm', 'button_replyall_pm', 'button_forward_pm', 'button_delete_pm') as $post_field)
 	{
-		if(empty($key))
+		if(empty($post_field))
 		{
-			$post[$key] = '';
+			$post[$post_field] = '';
 		}
 	}
+
 	// Set up the message parser if it doesn't already exist.
 	if(!$parser)
 	{
