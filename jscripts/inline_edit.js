@@ -119,7 +119,7 @@ inlineEditor.prototype = {
 		this.textbox.className = "textbox";
 		this.textbox.type = "text";
 		Event.observe(this.textbox, "blur", this.onBlur.bindAsEventListener(this));
-		Event.observe(this.textbox, "keypress", this.onKeyUp.bindAsEventListener(this));
+		Event.observe(this.textbox, "keydown", this.onKeyUp.bindAsEventListener(this));
 		this.textbox.setAttribute("autocomplete", "off");
 		this.textbox.name = "value";
 		this.textbox.index = this.element.index;
