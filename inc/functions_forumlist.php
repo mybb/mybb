@@ -155,7 +155,7 @@ function build_forumbits($pid=0, $depth=1)
 				}
 
 				// If the child forums' lastpost is greater than the one for this forum, set it as the child forums greatest.
-				if(empty($parent_lastpost['lastpost']) || isset($parent_lastpost['lastpost']) && $lastpost_data['lastpost'] > $parent_lastpost['lastpost'])
+				if($forum_info['lastpost']['lastpost'] > $lastpost_data['lastpost'])
 				{
 					$lastpost_data = $forum_info['lastpost'];
 					
