@@ -119,9 +119,11 @@ class postParser
 				$message = preg_replace("#<script(.*)>(.*)</script(.*)>#is", "&lt;script$1&gt;$2&lt;/script$3&gt;", $message);
 			}
 
-			$message = str_replace(array('<?php', '<!--', '-->', '?>', "<br />\n", "<br>\n"), array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', "\n", "\n"), $message);
+			$find = array('<?php', '<!--', '-->', '?>', '<style>', '</style>', "<br />\n", "<br>\n");
+			$replace = array('&lt;?php', '&lt;!--', '--&gt;', '?&gt;', '&lt;style&gt;', '&lt;/style&gt;', "\n", "\n");
+			$message = str_replace($find, $replace, $message);
 		}
-		
+
 		// If MyCode needs to be replaced, first filter out [code] and [php] tags.
 		if($this->options['allow_mycode'])
 		{
@@ -564,7 +566,10 @@ class postParser
 			"#(o)(nfocus\s?=)#i",
 			"#(o)(nselect\s?=)#i",
 			"#(o)(nunload\s?=)#i",
-			"#(o)(nkeypress\s?=)#i"
+			"#(o)(nkeypress\s?=)#i",
+			"#(o)(nerror\s?=)#i",
+			"#(o)(nreset\s?=)#i",
+			"#(o)(nabort\s?=)#i"
 		);
 		
 		$message = preg_replace($js_array, "$1<strong></strong>$2$4", $message);
